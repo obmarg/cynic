@@ -83,6 +83,32 @@ pub fn boolean<'a>() -> SelectionSet<'a, bool, ()> {
     }
 }
 
+pub fn vec<'a, DecodesTo, TypeLock>(
+    inner_selection: SelectionSet<'a, DecodesTo, TypeLock>,
+) -> SelectionSet<'a, Vec<DecodesTo>, TypeLock>
+where
+    DecodesTo: 'a,
+{
+    SelectionSet {
+        fields: inner_selection.fields,
+        decoder: json_decode::list(inner_selection.decoder),
+        phantom: PhantomData,
+    }
+}
+
+pub fn option<'a, DecodesTo, TypeLock>(
+    inner_selection: SelectionSet<'a, DecodesTo, TypeLock>,
+) -> SelectionSet<'a, Option<DecodesTo>, TypeLock>
+where
+    DecodesTo: 'a,
+{
+    SelectionSet {
+        fields: inner_selection.fields,
+        decoder: json_decode::option(inner_selection.decoder),
+        phantom: PhantomData,
+    }
+}
+
 // TODO: ok, so to fix this issue it seems like i can:
 // 1. Make SelectionSet a trait, return specific types from each of these functions?
 //      Except that won't fix this, as the issue is our SelectionSet _contains_ a dyn

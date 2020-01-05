@@ -96,27 +96,59 @@ fn select_function_for_field(
     use graphql_parser::schema::Type;
     use inflector::Inflector;
 
-    let mut nullable = true;
-    let mut field_type = &field.field_type;
-
-    // TODO: optional types.
-
-    if let Type::NonNullType(kind) = field_type {
-        field_type = kind.as_ref();
-        nullable = false;
-    }
-
     let query_field_name = syn::LitStr::new(&field.name, Span::call_site());
     let rust_field_name = format_ident!("{}", field.name.to_snake_case());
 
-    // TODO: Need to update this to support custom scalars.
+    let (field_type, scalar_call) = field_type_and_scalar_call(&field.field_type);
 
-    let (field_type, scalar_func) = match field_type {
-        Type::NonNullType(_) => {
-            panic!("Non-null type somehow got past guard in select_function_for_field")
+    if let Some(scalar_call) = scalar_call {
+        quote! {
+            pub fn #rust_field_name() -> ::cynic::selection_set::SelectionSet<'static, #field_type, #type_lock> {
+                use ::cynic::selection_set::{string, integer, float, boolean};
+
+                ::cynic::selection_set::field(#query_field_name, #scalar_call)
+            }
+        }
+    } else {
+        quote! {
+            pub fn #rust_field_name<'a, T>(fields: ::cynic::selection_set::SelectionSet<'a, T, #field_type>)
+                -> ::cynic::selection_set::SelectionSet<T, #type_lock>
+                where T: 'a {
+                    ::cynic::selection_set::field(#query_field_name, fields)
+                }
+        }
+    }
+}
+
+enum FieldType {
+    Enum(syn::Type, String),
+    Object(syn::Type),
+    List(syn::Type),
+}
+
+fn field_type_and_scalar_call(
+    gql_type: &graphql_parser::schema::Type,
+) -> (TokenStream, Option<TokenStream>) {
+    use graphql_parser::schema::Type;
+
+    // TODO: Need to update this to support custom scalars.
+    match gql_type {
+        Type::NonNullType(inner_type) => {
+            let (inner_type, scalar_call) = field_type_and_scalar_call(inner_type);
+            (
+                quote! { Option<#inner_type> },
+                scalar_call.map(|expr| quote! { ::cynic::selection_set::option(#expr) }),
+            )
+        }
+        Type::ListType(inner_type) => {
+            let (inner_type, scalar_call) = field_type_and_scalar_call(inner_type);
+            (
+                quote! { Vec<#inner_type> },
+                scalar_call.map(|expr| quote! { ::cynic::selection_set::vec(#expr) }),
+            )
         }
         Type::NamedType(name) => {
-            if name == "String" {
+            let (field_type, scalar_func) = if name == "String" {
                 ("String".to_string(), Some("string"))
             } else if name == "Int" {
                 ("i64".to_string(), Some("integer"))
@@ -129,29 +161,12 @@ fn select_function_for_field(
                 ("String".to_string(), Some("string"))
             } else {
                 (name.to_string(), None)
-            }
-        }
-        Type::ListType(_) => unimplemented!(),
-    };
+            };
 
-    let field_type = format_ident!("{}", field_type);
-    let scalar_func = scalar_func.map(|f| format_ident!("{}", f));
+            let field_type = format_ident!("{}", field_type);
+            let scalar_func = scalar_func.map(|f| format_ident!("{}", f));
 
-    if let Some(scalar_func) = scalar_func {
-        quote! {
-            pub fn #rust_field_name() -> ::cynic::selection_set::SelectionSet<'static, #field_type, #type_lock> {
-                use ::cynic::selection_set::{string, integer, float, boolean};
-
-                ::cynic::selection_set::field(#query_field_name, #scalar_func())
-            }
-        }
-    } else {
-        quote! {
-            pub fn #rust_field_name<'a, T>(fields: ::cynic::selection_set::SelectionSet<'a, T, #field_type>)
-                -> ::cynic::selection_set::SelectionSet<T, #type_lock>
-                where T: 'a {
-                    ::cynic::selection_set::field(#query_field_name, fields)
-                }
+            (quote! { #field_type }, scalar_func.map(|f| quote! { #f() }))
         }
     }
 }
