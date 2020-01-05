@@ -62,7 +62,12 @@ fn query_dsl_from_schema(input: QueryDslParams) -> Result<TokenStream, Error> {
         .map(|(_, v)| dsl_for_object(v))
         .collect();
 
+    let enums: Vec<_> = schema_data.enums.iter().map(define_enum).collect();
+
     Ok(quote! {
+        #(
+            #enums
+        )*
         #(
             #objects
         )*
@@ -85,6 +90,24 @@ fn dsl_for_object(object: &graphql_parser::schema::ObjectType) -> TokenStream {
             #(
                 #function_tokens
             )*
+        }
+    }
+}
+
+fn define_enum(gql_enum: &graphql_parser::schema::EnumType) -> TokenStream {
+    use inflector::Inflector;
+
+    let enum_name = format_ident!("{}", gql_enum.name);
+    let enum_values = gql_enum
+        .values
+        .iter()
+        .map(|v| format_ident!("{}", v.name.to_pascal_case()));
+
+    quote! {
+        pub enum #enum_name {
+            #(
+                #enum_values
+            ),*
         }
     }
 }
@@ -174,21 +197,26 @@ fn field_type_and_scalar_call(
 #[derive(Debug)]
 struct SchemaData {
     types: HashMap<String, graphql_parser::schema::ObjectType>,
+    enums: Vec<graphql_parser::schema::EnumType>,
 }
 
 fn data_from_schema(document: graphql_parser::schema::Document) -> SchemaData {
     use graphql_parser::schema::{Definition, TypeDefinition};
 
     let mut types = HashMap::new();
+    let mut enums = vec![];
 
     for definition in document.definitions {
         match definition {
             Definition::TypeDefinition(TypeDefinition::Object(object)) => {
                 types.insert(object.name.clone(), object.clone());
             }
+            Definition::TypeDefinition(TypeDefinition::Enum(gql_enum)) => {
+                enums.push(gql_enum.clone())
+            }
             _ => {}
         }
     }
 
-    SchemaData { types }
+    SchemaData { types, enums }
 }
