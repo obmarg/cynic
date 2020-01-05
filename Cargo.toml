@@ -1,4 +1,4 @@
 [workspace]
 members = [
-    "cynic",
+    "cynic", "cynic-codegen"
 ]

@@ -9,3 +9,10 @@ edition = "2018"
 [dependencies]
 json-decode = { path = "../../json-decode" }
 serde_json = "1.0.44"
+cynic-codegen = { path = "../cynic-codegen" }
+
+
+[[example]]
+name = "simple"
+required-features = []
+doc = true

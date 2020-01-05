@@ -51,10 +51,34 @@ impl<'a, DecodesTo, TypeLock> SelectionSet<'a, DecodesTo, TypeLock> {
     }
 }
 
-fn string<'a>() -> SelectionSet<'a, String, ()> {
+pub fn string<'a>() -> SelectionSet<'a, String, ()> {
     SelectionSet {
         fields: vec![],
         decoder: json_decode::string(),
+        phantom: PhantomData,
+    }
+}
+
+pub fn integer<'a>() -> SelectionSet<'a, i64, ()> {
+    SelectionSet {
+        fields: vec![],
+        decoder: json_decode::integer(),
+        phantom: PhantomData,
+    }
+}
+
+pub fn float<'a>() -> SelectionSet<'a, f64, ()> {
+    SelectionSet {
+        fields: vec![],
+        decoder: json_decode::float(),
+        phantom: PhantomData,
+    }
+}
+
+pub fn boolean<'a>() -> SelectionSet<'a, bool, ()> {
+    SelectionSet {
+        fields: vec![],
+        decoder: json_decode::boolean(),
         phantom: PhantomData,
     }
 }
@@ -69,7 +93,7 @@ fn string<'a>() -> SelectionSet<'a, String, ()> {
 //      in the generic parameters...
 // 4. Just make json_decode return Boxes/Rc's?
 
-fn field<'a, DecodesTo, TypeLock, InnerTypeLock>(
+pub fn field<'a, DecodesTo, TypeLock, InnerTypeLock>(
     field_name: &str,
     selection_set: SelectionSet<'a, DecodesTo, InnerTypeLock>,
 ) -> SelectionSet<'a, DecodesTo, TypeLock>
@@ -89,7 +113,7 @@ where
     }
 }
 
-fn map1<'a, F, T1, NewDecodesTo, TypeLock>(
+pub fn map<'a, F, T1, NewDecodesTo, TypeLock>(
     func: F,
     param1: SelectionSet<'a, T1, TypeLock>,
 ) -> SelectionSet<'a, NewDecodesTo, TypeLock>
@@ -101,11 +125,11 @@ where
     SelectionSet {
         phantom: PhantomData,
         fields: param1.fields,
-        decoder: json_decode::map1(func, param1.decoder),
+        decoder: json_decode::map(func, param1.decoder),
     }
 }
 
-fn map2<'a, F, T1, T2, NewDecodesTo, TypeLock>(
+pub fn map2<'a, F, T1, T2, NewDecodesTo, TypeLock>(
     func: F,
     param1: SelectionSet<'a, T1, TypeLock>,
     param2: SelectionSet<'a, T2, TypeLock>,
@@ -166,7 +190,7 @@ mod tests {
     }
 
     mod query_dsl {
-        use super::super::{field, SelectionSet};
+        use super::super::{field, string, SelectionSet};
 
         pub struct RootQuery;
 
@@ -186,8 +210,8 @@ mod tests {
         pub struct TestStruct;
 
         impl TestStruct {
-            pub fn field_one(inner: SelectionSet<String, ()>) -> SelectionSet<String, TestStruct> {
-                field("field_one", inner)
+            pub fn field_one() -> SelectionSet<'static, String, TestStruct> {
+                field("field_one", string())
             }
 
             pub fn nested<'a, T>(
@@ -203,22 +227,22 @@ mod tests {
         pub struct NestedStruct;
 
         impl NestedStruct {
-            pub fn a_string(inner: SelectionSet<String, ()>) -> SelectionSet<String, NestedStruct> {
-                field("a_string", inner)
+            pub fn a_string() -> SelectionSet<'static, String, NestedStruct> {
+                field("a_string", string())
             }
         }
     }
 
     #[test]
     fn decode_using_dsl() {
-        let selection_set: SelectionSet<_, query_dsl::RootQuery> = map1(
+        let selection_set: SelectionSet<_, query_dsl::RootQuery> = map(
             Query::new,
             query_dsl::Query::test_struct(map2(
                 TestStruct::new,
-                query_dsl::TestStruct::field_one(string()),
-                query_dsl::TestStruct::nested(map1(
+                query_dsl::TestStruct::field_one(),
+                query_dsl::TestStruct::nested(map(
                     NestedStruct::new,
-                    query_dsl::NestedStruct::a_string(string()),
+                    query_dsl::NestedStruct::a_string(),
                 )),
             )),
         );
@@ -240,14 +264,14 @@ mod tests {
 
     #[test]
     fn test_query_building() {
-        let selection_set: SelectionSet<_, query_dsl::RootQuery> = map1(
+        let selection_set: SelectionSet<_, query_dsl::RootQuery> = map(
             Query::new,
             query_dsl::Query::test_struct(map2(
                 TestStruct::new,
-                query_dsl::TestStruct::field_one(string()),
-                query_dsl::TestStruct::nested(map1(
+                query_dsl::TestStruct::field_one(),
+                query_dsl::TestStruct::nested(map(
                     NestedStruct::new,
-                    query_dsl::NestedStruct::a_string(string()),
+                    query_dsl::NestedStruct::a_string(),
                 )),
             )),
         );
@@ -257,5 +281,4 @@ mod tests {
             "test_struct {\n  field_one\n  nested {\n    a_string\n  }\n}\n"
         )
     }
-
 }

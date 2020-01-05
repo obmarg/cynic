@@ -1,0 +1,12 @@
+type Query {
+  testStruct: TestStruct
+}
+
+type TestStruct {
+  fieldOne: String!
+  nested: Nested!
+}
+
+type Nested {
+  aString: String!
+}
