@@ -1,3 +1,4 @@
+use crate::scalar;
 use json_decode::Decoder;
 use std::marker::PhantomData;
 
@@ -87,6 +88,17 @@ pub fn json<'a>() -> SelectionSet<'a, serde_json::Value, ()> {
     SelectionSet {
         fields: vec![],
         decoder: json_decode::json(),
+        phantom: PhantomData,
+    }
+}
+
+pub fn scalar<'a, S>() -> SelectionSet<'a, S, ()>
+where
+    S: scalar::Scalar + 'a,
+{
+    SelectionSet {
+        fields: vec![],
+        decoder: scalar::decoder(),
         phantom: PhantomData,
     }
 }

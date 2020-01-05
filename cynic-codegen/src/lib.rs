@@ -1,7 +1,7 @@
 extern crate proc_macro;
 use proc_macro2::{Span, TokenStream};
-use quote::{format_ident, quote};
-use std::collections::HashMap;
+use quote::quote;
+use std::collections::{HashMap, HashSet};
 
 #[derive(Debug, PartialEq)]
 enum Error {
@@ -59,7 +59,7 @@ fn query_dsl_from_schema(input: QueryDslParams) -> Result<TokenStream, Error> {
     let objects: Vec<_> = schema_data
         .types
         .iter()
-        .map(|(_, v)| dsl_for_object(v))
+        .map(|(_, v)| dsl_for_object(v, &schema_data.scalar_names))
         .collect();
 
     let enums: Vec<_> = schema_data.enums.iter().map(define_enum).collect();
@@ -74,13 +74,16 @@ fn query_dsl_from_schema(input: QueryDslParams) -> Result<TokenStream, Error> {
     })
 }
 
-fn dsl_for_object(object: &graphql_parser::schema::ObjectType) -> TokenStream {
-    let struct_name = format_ident!("{}", object.name);
+fn dsl_for_object(
+    object: &graphql_parser::schema::ObjectType,
+    scalar_names: &HashSet<String>,
+) -> TokenStream {
+    let struct_name = name_to_ident(&object.name);
 
     let function_tokens: Vec<_> = object
         .fields
         .iter()
-        .map(|f| select_function_for_field(f, &struct_name))
+        .map(|f| select_function_for_field(f, &struct_name, scalar_names))
         .collect();
 
     quote! {
@@ -97,11 +100,12 @@ fn dsl_for_object(object: &graphql_parser::schema::ObjectType) -> TokenStream {
 fn define_enum(gql_enum: &graphql_parser::schema::EnumType) -> TokenStream {
     use inflector::Inflector;
 
-    let enum_name = format_ident!("{}", gql_enum.name);
+    let enum_name = name_to_ident(&gql_enum.name);
+
     let enum_values = gql_enum
         .values
         .iter()
-        .map(|v| format_ident!("{}", v.name.to_pascal_case()));
+        .map(|v| name_to_ident(&v.name.to_pascal_case()));
 
     quote! {
         pub enum #enum_name {
@@ -112,17 +116,27 @@ fn define_enum(gql_enum: &graphql_parser::schema::EnumType) -> TokenStream {
     }
 }
 
+fn name_to_ident(name: &str) -> proc_macro2::Ident {
+    use quote::format_ident;
+    if name == "type" {
+        format_ident!("{}_", name)
+    } else {
+        format_ident!("{}", name)
+    }
+}
+
 fn select_function_for_field(
     field: &graphql_parser::schema::Field,
     type_lock: &proc_macro2::Ident,
+    scalar_names: &HashSet<String>,
 ) -> TokenStream {
     use graphql_parser::schema::Type;
     use inflector::Inflector;
 
     let query_field_name = syn::LitStr::new(&field.name, Span::call_site());
-    let rust_field_name = format_ident!("{}", field.name.to_snake_case());
+    let rust_field_name = name_to_ident(&field.name.to_snake_case());
 
-    let (field_type, scalar_call) = field_type_and_scalar_call(&field.field_type);
+    let (field_type, scalar_call) = field_type_and_scalar_call(&field.field_type, scalar_names);
 
     if let Some(scalar_call) = scalar_call {
         quote! {
@@ -151,20 +165,20 @@ enum FieldType {
 
 fn field_type_and_scalar_call(
     gql_type: &graphql_parser::schema::Type,
+    scalar_names: &HashSet<String>,
 ) -> (TokenStream, Option<TokenStream>) {
     use graphql_parser::schema::Type;
 
-    // TODO: Need to update this to support custom scalars.
     match gql_type {
         Type::NonNullType(inner_type) => {
-            let (inner_type, scalar_call) = field_type_and_scalar_call(inner_type);
+            let (inner_type, scalar_call) = field_type_and_scalar_call(inner_type, scalar_names);
             (
                 quote! { Option<#inner_type> },
                 scalar_call.map(|expr| quote! { ::cynic::selection_set::option(#expr) }),
             )
         }
         Type::ListType(inner_type) => {
-            let (inner_type, scalar_call) = field_type_and_scalar_call(inner_type);
+            let (inner_type, scalar_call) = field_type_and_scalar_call(inner_type, scalar_names);
             (
                 quote! { Vec<#inner_type> },
                 scalar_call.map(|expr| quote! { ::cynic::selection_set::vec(#expr) }),
@@ -187,12 +201,19 @@ fn field_type_and_scalar_call(
                     quote! { ::serde_json::Value },
                     Some(quote! { ::cynic::selection_set::json() }),
                 );
+            } else if scalar_names.contains(name) {
+                // We've got a custom scalar.
+                let field_type = name_to_ident(&name);
+                return (
+                    quote! { #field_type },
+                    Some(quote! { ::cynic::selection_set::scalar() }),
+                );
             } else {
                 (name.to_string(), None)
             };
 
-            let field_type = format_ident!("{}", field_type);
-            let scalar_func = scalar_func.map(|f| format_ident!("{}", f));
+            let field_type = name_to_ident(&field_type);
+            let scalar_func = scalar_func.map(name_to_ident);
 
             (quote! { #field_type }, scalar_func.map(|f| quote! { #f() }))
         }
@@ -203,6 +224,7 @@ fn field_type_and_scalar_call(
 struct SchemaData {
     types: HashMap<String, graphql_parser::schema::ObjectType>,
     enums: Vec<graphql_parser::schema::EnumType>,
+    scalar_names: HashSet<String>,
 }
 
 fn data_from_schema(document: graphql_parser::schema::Document) -> SchemaData {
@@ -210,6 +232,7 @@ fn data_from_schema(document: graphql_parser::schema::Document) -> SchemaData {
 
     let mut types = HashMap::new();
     let mut enums = vec![];
+    let mut scalar_names = HashSet::new();
 
     for definition in document.definitions {
         match definition {
@@ -217,11 +240,18 @@ fn data_from_schema(document: graphql_parser::schema::Document) -> SchemaData {
                 types.insert(object.name.clone(), object.clone());
             }
             Definition::TypeDefinition(TypeDefinition::Enum(gql_enum)) => {
-                enums.push(gql_enum.clone())
+                enums.push(gql_enum.clone());
+            }
+            Definition::TypeDefinition(TypeDefinition::Scalar(scalar)) => {
+                scalar_names.insert(scalar.name.clone());
             }
             _ => {}
         }
     }
 
-    SchemaData { types, enums }
+    SchemaData {
+        types,
+        enums,
+        scalar_names,
+    }
 }

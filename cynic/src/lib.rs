@@ -1,4 +1,7 @@
+mod scalar;
 pub mod selection_set;
+
+pub use scalar::Scalar;
 
 fn main() {
     println!("Hello, world!");
