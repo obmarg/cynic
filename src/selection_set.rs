@@ -6,9 +6,35 @@ enum Error {
     DecodeError(json_decode::DecodeError),
 }
 
-struct SelectionSet<'a, DecodesTo, TypeLock> {
-    // Temporary type for fields - will probably needs something smarter at some point.
-    fields: Vec<String>,
+enum Field {
+    Leaf(String),
+    Composite(String, Vec<Field>),
+}
+
+impl Field {
+    fn query(&self, indent: usize, indent_size: usize) -> String {
+        match self {
+            Field::Leaf(field_name) => format!("{:indent$}{}\n", "", field_name, indent = indent),
+            Field::Composite(field_name, child_fields) => {
+                let child_query: String = child_fields
+                    .iter()
+                    .map(|f| f.query(indent + indent_size, indent_size))
+                    .collect();
+
+                format!(
+                    "{0:indent$}{field_name} {{\n{child_query}{0:indent$}}}\n",
+                    "",
+                    field_name = field_name,
+                    child_query = child_query,
+                    indent = indent
+                )
+            }
+        }
+    }
+}
+
+pub struct SelectionSet<'a, DecodesTo, TypeLock> {
+    fields: Vec<Field>,
 
     decoder: Box<dyn Decoder<'a, DecodesTo> + 'a>,
 
@@ -19,10 +45,13 @@ impl<'a, DecodesTo, TypeLock> SelectionSet<'a, DecodesTo, TypeLock> {
     fn decode(&self, value: &serde_json::Value) -> Result<DecodesTo, Error> {
         (*self.decoder).decode(value).map_err(Error::DecodeError)
     }
+
+    fn query(&self) -> String {
+        self.fields.iter().map(|f| f.query(0, 2)).collect()
+    }
 }
 
 fn string<'a>() -> SelectionSet<'a, String, ()> {
-    // TODO: probably need to do something about the inner fields?
     SelectionSet {
         fields: vec![],
         decoder: json_decode::string(),
@@ -47,9 +76,14 @@ fn field<'a, DecodesTo, TypeLock, InnerTypeLock>(
 where
     DecodesTo: 'a,
 {
-    // TODO: probably need to do something about the inner fields?
+    let field = if selection_set.fields.is_empty() {
+        Field::Leaf(field_name.to_string())
+    } else {
+        Field::Composite(field_name.to_string(), selection_set.fields)
+    };
+
     SelectionSet {
-        fields: vec![field_name.to_string()],
+        fields: vec![field],
         decoder: json_decode::field(field_name, selection_set.decoder),
         phantom: PhantomData,
     }
@@ -66,8 +100,30 @@ where
 {
     SelectionSet {
         phantom: PhantomData,
-        fields: param1.fields.clone(),
+        fields: param1.fields,
         decoder: json_decode::map1(func, param1.decoder),
+    }
+}
+
+fn map2<'a, F, T1, T2, NewDecodesTo, TypeLock>(
+    func: F,
+    param1: SelectionSet<'a, T1, TypeLock>,
+    param2: SelectionSet<'a, T2, TypeLock>,
+) -> SelectionSet<'a, NewDecodesTo, TypeLock>
+where
+    F: Fn(T1, T2) -> NewDecodesTo + 'a,
+    T1: 'a,
+    T2: 'a,
+    NewDecodesTo: 'a,
+{
+    let mut fields = Vec::with_capacity(param1.fields.len() + param2.fields.len());
+    fields.extend(param1.fields.into_iter());
+    fields.extend(param2.fields.into_iter());
+
+    SelectionSet {
+        phantom: PhantomData,
+        fields,
+        decoder: json_decode::map2(func, param1.decoder, param2.decoder),
     }
 }
 
@@ -76,40 +132,130 @@ mod tests {
     use super::*;
 
     #[derive(Debug, PartialEq)]
-    struct TestStruct {
-        field_one: String,
+    struct Query {
+        test_struct: TestStruct,
     }
 
-    impl TestStruct {
-        fn new(field_one: String) -> Self {
-            TestStruct {
-                field_one: field_one,
-            }
+    impl Query {
+        fn new(test_struct: TestStruct) -> Self {
+            Query { test_struct }
         }
     }
 
-    struct RootQuery;
+    #[derive(Debug, PartialEq)]
+    struct TestStruct {
+        field_one: String,
+        nested: NestedStruct,
+    }
 
-    struct Query;
+    impl TestStruct {
+        fn new(field_one: String, nested: NestedStruct) -> Self {
+            TestStruct { field_one, nested }
+        }
+    }
 
-    impl Query {
-        fn field_one(s: SelectionSet<String, ()>) -> SelectionSet<String, RootQuery> {
-            field("field_one", s)
+    #[derive(Debug, PartialEq)]
+    struct NestedStruct {
+        a_string: String,
+    }
+
+    impl NestedStruct {
+        fn new(a_string: String) -> Self {
+            NestedStruct { a_string }
+        }
+    }
+
+    mod query_dsl {
+        use super::super::{field, SelectionSet};
+
+        pub struct RootQuery;
+
+        pub struct Query;
+
+        impl Query {
+            pub fn test_struct<'a, T>(
+                fields: SelectionSet<'a, T, TestStruct>,
+            ) -> SelectionSet<'a, T, RootQuery>
+            where
+                T: 'a,
+            {
+                field("test_struct", fields)
+            }
+        }
+
+        pub struct TestStruct;
+
+        impl TestStruct {
+            pub fn field_one(inner: SelectionSet<String, ()>) -> SelectionSet<String, TestStruct> {
+                field("field_one", inner)
+            }
+
+            pub fn nested<'a, T>(
+                fields: SelectionSet<'a, T, NestedStruct>,
+            ) -> SelectionSet<'a, T, TestStruct>
+            where
+                T: 'a,
+            {
+                field("nested", fields)
+            }
+        }
+
+        pub struct NestedStruct;
+
+        impl NestedStruct {
+            pub fn a_string(inner: SelectionSet<String, ()>) -> SelectionSet<String, NestedStruct> {
+                field("a_string", inner)
+            }
         }
     }
 
     #[test]
     fn decode_using_dsl() {
-        let selection_set: SelectionSet<_, RootQuery> =
-            map1(TestStruct::new, Query::field_one(string()));
+        let selection_set: SelectionSet<_, query_dsl::RootQuery> = map1(
+            Query::new,
+            query_dsl::Query::test_struct(map2(
+                TestStruct::new,
+                query_dsl::TestStruct::field_one(string()),
+                query_dsl::TestStruct::nested(map1(
+                    NestedStruct::new,
+                    query_dsl::NestedStruct::a_string(string()),
+                )),
+            )),
+        );
 
-        let json = serde_json::from_str(r#"{"field_one": "test"}"#).unwrap();
+        let json = serde_json::json!({"test_struct": {"field_one": "test", "nested": {"a_string": "hello"}}});
 
         assert_eq!(
             selection_set.decode(&json),
-            Ok(TestStruct {
-                field_one: "test".to_string()
+            Ok(Query {
+                test_struct: TestStruct {
+                    field_one: "test".to_string(),
+                    nested: NestedStruct {
+                        a_string: "hello".to_string()
+                    }
+                }
             })
         )
     }
+
+    #[test]
+    fn test_query_building() {
+        let selection_set: SelectionSet<_, query_dsl::RootQuery> = map1(
+            Query::new,
+            query_dsl::Query::test_struct(map2(
+                TestStruct::new,
+                query_dsl::TestStruct::field_one(string()),
+                query_dsl::TestStruct::nested(map1(
+                    NestedStruct::new,
+                    query_dsl::NestedStruct::a_string(string()),
+                )),
+            )),
+        );
+
+        assert_eq!(
+            selection_set.query(),
+            "test_struct {\n  field_one\n  nested {\n    a_string\n  }\n}\n"
+        )
+    }
+
 }
