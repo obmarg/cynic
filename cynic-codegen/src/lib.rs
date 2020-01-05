@@ -179,9 +179,14 @@ fn field_type_and_scalar_call(
                 ("f64".to_string(), Some("float"))
             } else if name == "Boolean" {
                 ("bool".to_string(), Some("boolean"))
-            } else if name == "String" {
+            } else if name == "ID" {
                 // TODO: Could do something more sensible for IDs here...
                 ("String".to_string(), Some("string"))
+            } else if name == "JSON" {
+                return (
+                    quote! { ::serde_json::Value },
+                    Some(quote! { ::cynic::selection_set::json() }),
+                );
             } else {
                 (name.to_string(), None)
             };

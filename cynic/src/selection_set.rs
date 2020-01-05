@@ -83,6 +83,14 @@ pub fn boolean<'a>() -> SelectionSet<'a, bool, ()> {
     }
 }
 
+pub fn json<'a>() -> SelectionSet<'a, serde_json::Value, ()> {
+    SelectionSet {
+        fields: vec![],
+        decoder: json_decode::json(),
+        phantom: PhantomData,
+    }
+}
+
 pub fn vec<'a, DecodesTo, TypeLock>(
     inner_selection: SelectionSet<'a, DecodesTo, TypeLock>,
 ) -> SelectionSet<'a, Vec<DecodesTo>, TypeLock>
