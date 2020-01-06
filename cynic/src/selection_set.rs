@@ -1,37 +1,11 @@
-use crate::scalar;
 use json_decode::Decoder;
 use std::marker::PhantomData;
+
+use crate::{field::Field, scalar, Argument};
 
 #[derive(Debug, PartialEq)]
 enum Error {
     DecodeError(json_decode::DecodeError),
-}
-
-enum Field {
-    Leaf(String),
-    Composite(String, Vec<Field>),
-}
-
-impl Field {
-    fn query(&self, indent: usize, indent_size: usize) -> String {
-        match self {
-            Field::Leaf(field_name) => format!("{:indent$}{}\n", "", field_name, indent = indent),
-            Field::Composite(field_name, child_fields) => {
-                let child_query: String = child_fields
-                    .iter()
-                    .map(|f| f.query(indent + indent_size, indent_size))
-                    .collect();
-
-                format!(
-                    "{0:indent$}{field_name} {{\n{child_query}{0:indent$}}}\n",
-                    "",
-                    field_name = field_name,
-                    child_query = child_query,
-                    indent = indent
-                )
-            }
-        }
-    }
 }
 
 pub struct SelectionSet<'a, DecodesTo, TypeLock> {
@@ -47,12 +21,19 @@ impl<'a, DecodesTo, TypeLock> SelectionSet<'a, DecodesTo, TypeLock> {
         (*self.decoder).decode(value).map_err(Error::DecodeError)
     }
 
-    fn query(&self) -> String {
-        self.fields.iter().map(|f| f.query(0, 2)).collect()
+    fn query_and_arguments<'b>(&'b self) -> (String, Vec<&'b serde_json::Value>) {
+        let mut arguments = vec![];
+        let query = self
+            .fields
+            .iter()
+            .map(|f| f.query(0, 2, &mut arguments))
+            .collect();
+
+        (query, arguments)
     }
 }
 
-pub fn string<'a>() -> SelectionSet<'a, String, ()> {
+pub fn string() -> SelectionSet<'static, String, ()> {
     SelectionSet {
         fields: vec![],
         decoder: json_decode::string(),
@@ -60,7 +41,7 @@ pub fn string<'a>() -> SelectionSet<'a, String, ()> {
     }
 }
 
-pub fn integer<'a>() -> SelectionSet<'a, i64, ()> {
+pub fn integer() -> SelectionSet<'static, i64, ()> {
     SelectionSet {
         fields: vec![],
         decoder: json_decode::integer(),
@@ -68,7 +49,7 @@ pub fn integer<'a>() -> SelectionSet<'a, i64, ()> {
     }
 }
 
-pub fn float<'a>() -> SelectionSet<'a, f64, ()> {
+pub fn float() -> SelectionSet<'static, f64, ()> {
     SelectionSet {
         fields: vec![],
         decoder: json_decode::float(),
@@ -76,7 +57,7 @@ pub fn float<'a>() -> SelectionSet<'a, f64, ()> {
     }
 }
 
-pub fn boolean<'a>() -> SelectionSet<'a, bool, ()> {
+pub fn boolean() -> SelectionSet<'static, bool, ()> {
     SelectionSet {
         fields: vec![],
         decoder: json_decode::boolean(),
@@ -84,7 +65,7 @@ pub fn boolean<'a>() -> SelectionSet<'a, bool, ()> {
     }
 }
 
-pub fn json<'a>() -> SelectionSet<'a, serde_json::Value, ()> {
+pub fn json() -> SelectionSet<'static, serde_json::Value, ()> {
     SelectionSet {
         fields: vec![],
         decoder: json_decode::json(),
@@ -92,9 +73,9 @@ pub fn json<'a>() -> SelectionSet<'a, serde_json::Value, ()> {
     }
 }
 
-pub fn scalar<'a, S>() -> SelectionSet<'a, S, ()>
+pub fn scalar<S>() -> SelectionSet<'static, S, ()>
 where
-    S: scalar::Scalar + 'a,
+    S: scalar::Scalar + 'static,
 {
     SelectionSet {
         fields: vec![],
@@ -141,15 +122,16 @@ where
 
 pub fn field<'a, DecodesTo, TypeLock, InnerTypeLock>(
     field_name: &str,
+    arguments: Vec<Argument>,
     selection_set: SelectionSet<'a, DecodesTo, InnerTypeLock>,
 ) -> SelectionSet<'a, DecodesTo, TypeLock>
 where
     DecodesTo: 'a,
 {
     let field = if selection_set.fields.is_empty() {
-        Field::Leaf(field_name.to_string())
+        Field::Leaf(field_name.to_string(), arguments)
     } else {
-        Field::Composite(field_name.to_string(), selection_set.fields)
+        Field::Composite(field_name.to_string(), arguments, selection_set.fields)
     };
 
     SelectionSet {
@@ -236,11 +218,20 @@ mod tests {
     }
 
     mod query_dsl {
-        use super::super::{field, string, SelectionSet};
+        use super::super::{field, string, Argument, SelectionSet};
 
         pub struct RootQuery;
 
         pub struct Query;
+
+        pub struct QueryWithArgsArguments {
+            pub required_arg: String,
+        }
+
+        #[derive(Default)]
+        pub struct QueryWithArgsOptionals {
+            pub opt_string: Option<String>,
+        }
 
         impl Query {
             pub fn test_struct<'a, T>(
@@ -249,7 +240,25 @@ mod tests {
             where
                 T: 'a,
             {
-                field("test_struct", fields)
+                field("test_struct", vec![], fields)
+            }
+
+            pub fn with_args<'a, T: 'a>(
+                required: QueryWithArgsArguments,
+                optionals: QueryWithArgsOptionals,
+                fields: SelectionSet<'a, T, NestedStruct>,
+            ) -> SelectionSet<'a, T, RootQuery> {
+                let mut args = vec![Argument::new(
+                    "required_arg",
+                    serde_json::Value::String(required.required_arg),
+                )];
+                if optionals.opt_string.is_some() {
+                    args.push(Argument::new(
+                        "opt_string",
+                        serde_json::Value::String(optionals.opt_string.unwrap()),
+                    ));
+                }
+                field("nested", args, fields)
             }
         }
 
@@ -257,7 +266,7 @@ mod tests {
 
         impl TestStruct {
             pub fn field_one() -> SelectionSet<'static, String, TestStruct> {
-                field("field_one", string())
+                field("field_one", vec![], string())
             }
 
             pub fn nested<'a, T>(
@@ -266,7 +275,7 @@ mod tests {
             where
                 T: 'a,
             {
-                field("nested", fields)
+                field("nested", vec![], fields)
             }
         }
 
@@ -274,7 +283,7 @@ mod tests {
 
         impl NestedStruct {
             pub fn a_string() -> SelectionSet<'static, String, NestedStruct> {
-                field("a_string", string())
+                field("a_string", vec![], string())
             }
         }
     }
@@ -323,8 +332,47 @@ mod tests {
         );
 
         assert_eq!(
-            selection_set.query(),
-            "test_struct {\n  field_one\n  nested {\n    a_string\n  }\n}\n"
+            selection_set.query_and_arguments(),
+            (
+                "test_struct {\n  field_one\n  nested {\n    a_string\n  }\n}\n".to_string(),
+                vec![]
+            )
         )
+    }
+
+    #[test]
+    fn test_vars_with_optionals_missing() {
+        let selection_set: SelectionSet<Option<i32>, query_dsl::RootQuery> = map(
+            |_| {None},
+            query_dsl::Query::with_args(
+                query_dsl::QueryWithArgsArguments {
+                    required_arg: "test".to_string(),
+                },
+                Default::default(),
+                map(NestedStruct::new, query_dsl::NestedStruct::a_string()),
+            ),
+        );
+
+        let (query, args) = selection_set.query_and_arguments();
+        assert_eq!(args.len(), 1);
+    }
+
+
+    fn test_vars_with_optionals_present() {
+        let selection_set: SelectionSet<Option<i32>, query_dsl::RootQuery> = map(
+            |_| {None},
+            query_dsl::Query::with_args(
+                query_dsl::QueryWithArgsArguments {
+                    required_arg: "test".to_string(),
+                },
+                query_dsl::QueryWithArgsOptionals {
+                    opt_string: Some("test".to_string()),
+                },
+                map(NestedStruct::new, query_dsl::NestedStruct::a_string()),
+            ),
+        );
+
+        let (query, args) = selection_set.query_and_arguments();
+        assert_eq!(args.len(), 1);
     }
 }

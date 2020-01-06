@@ -143,7 +143,7 @@ fn select_function_for_field(
             pub fn #rust_field_name() -> ::cynic::selection_set::SelectionSet<'static, #field_type, #type_lock> {
                 use ::cynic::selection_set::{string, integer, float, boolean};
 
-                ::cynic::selection_set::field(#query_field_name, #scalar_call)
+                ::cynic::selection_set::field(#query_field_name, vec![], #scalar_call)
             }
         }
     } else {
@@ -151,7 +151,7 @@ fn select_function_for_field(
             pub fn #rust_field_name<'a, T>(fields: ::cynic::selection_set::SelectionSet<'a, T, #field_type>)
                 -> ::cynic::selection_set::SelectionSet<T, #type_lock>
                 where T: 'a {
-                    ::cynic::selection_set::field(#query_field_name, fields)
+                    ::cynic::selection_set::field(#query_field_name, vec![], fields)
                 }
         }
     }
