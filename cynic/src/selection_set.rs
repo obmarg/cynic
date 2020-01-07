@@ -343,7 +343,7 @@ mod tests {
     #[test]
     fn test_vars_with_optionals_missing() {
         let selection_set: SelectionSet<Option<i32>, query_dsl::RootQuery> = map(
-            |_| {None},
+            |_| None,
             query_dsl::Query::with_args(
                 query_dsl::QueryWithArgsArguments {
                     required_arg: "test".to_string(),
@@ -357,10 +357,9 @@ mod tests {
         assert_eq!(args.len(), 1);
     }
 
-
     fn test_vars_with_optionals_present() {
         let selection_set: SelectionSet<Option<i32>, query_dsl::RootQuery> = map(
-            |_| {None},
+            |_| None,
             query_dsl::Query::with_args(
                 query_dsl::QueryWithArgsArguments {
                     required_arg: "test".to_string(),

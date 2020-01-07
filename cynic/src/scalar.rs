@@ -14,6 +14,36 @@ where
     })
 }
 
+impl Scalar for i64 {
+    fn decode(value: &serde_json::Value) -> Result<Self, DecodeError> {
+        json_decode::integer().decode(value)
+    }
+}
+
+impl Scalar for f64 {
+    fn decode(value: &serde_json::Value) -> Result<Self, DecodeError> {
+        json_decode::float().decode(value)
+    }
+}
+
+impl Scalar for bool {
+    fn decode(value: &serde_json::Value) -> Result<Self, DecodeError> {
+        json_decode::boolean().decode(value)
+    }
+}
+
+impl Scalar for String {
+    fn decode(value: &serde_json::Value) -> Result<Self, DecodeError> {
+        json_decode::string().decode(value)
+    }
+}
+
+impl Scalar for serde_json::Value {
+    fn decode(value: &serde_json::Value) -> Result<Self, DecodeError> {
+        json_decode::json().decode(value)
+    }
+}
+
 struct ScalarDecoder<S: Scalar> {
     phantom: PhantomData<S>,
 }
