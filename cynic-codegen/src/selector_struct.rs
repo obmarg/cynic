@@ -1,8 +1,11 @@
 use proc_macro2::TokenStream;
 use std::collections::HashSet;
 
+use crate::argument::Argument;
+use crate::argument_struct::ArgumentStruct;
 use crate::field_selector::FieldSelector;
 use crate::field_type::FieldType;
+use crate::graphql_extensions::FieldExt;
 use crate::ident::Ident;
 
 /// We generate a SelectorStruct for each queryable object in the schema.
@@ -18,7 +21,7 @@ pub struct SelectorStruct {
 
 impl SelectorStruct {
     pub fn from_object(
-        obj: graphql_parser::schema::ObjectType,
+        obj: &graphql_parser::schema::ObjectType,
         scalar_names: &HashSet<String>,
     ) -> Self {
         let name = Ident::for_type(&obj.name);
@@ -26,12 +29,26 @@ impl SelectorStruct {
             name: name.clone(),
             fields: obj
                 .fields
-                .into_iter()
+                .iter()
                 .map(|field| {
+                    let required_args_struct_name = if !field.required_arguments().is_empty() {
+                        Some(ArgumentStruct::name_for_field(field, true))
+                    } else {
+                        None
+                    };
+
+                    let optional_args_struct_name = if !field.optional_arguments().is_empty() {
+                        Some(ArgumentStruct::name_for_field(field, false))
+                    } else {
+                        None
+                    };
+
                     FieldSelector::for_field(
                         &field.name,
                         FieldType::from_schema_type(&field.field_type, scalar_names),
                         name.clone(),
+                        required_args_struct_name,
+                        optional_args_struct_name,
                     )
                 })
                 .collect(),

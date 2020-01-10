@@ -2,13 +2,18 @@ extern crate proc_macro;
 use proc_macro2::TokenStream;
 use std::collections::HashSet;
 
+mod argument;
+mod argument_struct;
 mod field_selector;
 mod field_type;
 mod graphql_enum;
+mod graphql_extensions;
 mod ident;
 mod selector_struct;
 
+use argument_struct::ArgumentStruct;
 use graphql_enum::GraphQLEnum;
+use graphql_extensions::FieldExt;
 use selector_struct::SelectorStruct;
 
 #[derive(Debug, PartialEq)]
@@ -72,6 +77,7 @@ fn query_dsl_from_schema(input: QueryDslParams) -> Result<TokenStream, Error> {
 struct GraphQLSchema {
     selectors: Vec<SelectorStruct>,
     enums: Vec<GraphQLEnum>,
+    argument_structs: Vec<ArgumentStruct>,
 }
 
 impl From<graphql_parser::schema::Document> for GraphQLSchema {
@@ -91,11 +97,32 @@ impl From<graphql_parser::schema::Document> for GraphQLSchema {
 
         let mut selectors = vec![];
         let mut enums = vec![];
+        let mut argument_structs = vec![];
 
         for definition in document.definitions {
             match definition {
                 Definition::TypeDefinition(TypeDefinition::Object(object)) => {
-                    selectors.push(SelectorStruct::from_object(object, &scalar_names));
+                    selectors.push(SelectorStruct::from_object(&object, &scalar_names));
+
+                    for field in &object.fields {
+                        let required_arguments = field.required_arguments();
+                        if !required_arguments.is_empty() {
+                            argument_structs.push(ArgumentStruct::from_field(
+                                field,
+                                true,
+                                &scalar_names,
+                            ));
+                        }
+
+                        let optional_arguments = field.optional_arguments();
+                        if !optional_arguments.is_empty() {
+                            argument_structs.push(ArgumentStruct::from_field(
+                                field,
+                                false,
+                                &scalar_names,
+                            ));
+                        }
+                    }
                 }
                 Definition::TypeDefinition(TypeDefinition::Enum(gql_enum)) => {
                     enums.push(gql_enum.into());
@@ -104,7 +131,11 @@ impl From<graphql_parser::schema::Document> for GraphQLSchema {
             }
         }
 
-        GraphQLSchema { selectors, enums }
+        GraphQLSchema {
+            selectors,
+            enums,
+            argument_structs,
+        }
     }
 }
 
@@ -114,6 +145,7 @@ impl quote::ToTokens for GraphQLSchema {
 
         let enums = &self.enums;
         let selectors = &self.selectors;
+        let argument_structs = &self.argument_structs;
 
         tokens.append_all(quote! {
             #(
@@ -121,6 +153,9 @@ impl quote::ToTokens for GraphQLSchema {
             )*
             #(
                 #selectors
+            )*
+            #(
+                #argument_structs
             )*
         })
     }
