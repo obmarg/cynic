@@ -1,12 +1,12 @@
 use proc_macro2::TokenStream;
 use std::collections::HashSet;
 
-use crate::argument_struct::ArgumentStruct;
-use crate::field_selector::FieldSelector;
-use crate::field_type::FieldType;
-use crate::graphql_extensions::FieldExt;
+use super::argument_struct::ArgumentStruct;
+use super::field_selector::FieldSelector;
+use super::field_type::FieldType;
+use super::graphql_extensions::FieldExt;
+use super::type_path::TypePath;
 use crate::ident::Ident;
-use crate::type_path::TypePath;
 
 /// We generate a SelectorStruct for each queryable object in the schema.
 ///

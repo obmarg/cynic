@@ -2,8 +2,8 @@ use graphql_parser::schema;
 use proc_macro2::TokenStream;
 use std::collections::HashSet;
 
+use super::type_path::TypePath;
 use crate::ident::Ident;
-use crate::type_path::TypePath;
 
 #[derive(Debug)]
 pub enum FieldType {

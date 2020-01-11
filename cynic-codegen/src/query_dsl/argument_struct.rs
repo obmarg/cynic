@@ -2,8 +2,8 @@ use graphql_parser::schema;
 use proc_macro2::TokenStream;
 use std::collections::HashSet;
 
-use super::ident::Ident;
 use super::struct_field::StructField;
+use crate::ident::Ident;
 
 // TODO: Generate some of these somewhere...
 

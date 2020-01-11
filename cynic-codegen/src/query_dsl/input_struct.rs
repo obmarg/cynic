@@ -2,10 +2,9 @@ use graphql_parser::schema;
 use proc_macro2::TokenStream;
 use std::collections::HashSet;
 
-use crate::field_type::FieldType;
+use super::struct_field::StructField;
+use super::type_path::TypePath;
 use crate::ident::Ident;
-use crate::struct_field::StructField;
-use crate::type_path::TypePath;
 
 #[derive(Debug)]
 pub struct InputStruct {
