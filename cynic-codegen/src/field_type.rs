@@ -7,7 +7,7 @@ use crate::type_path::TypePath;
 
 #[derive(Debug)]
 pub enum FieldType {
-    Scalar(Ident, bool),
+    Scalar(TypePath, bool),
     Other(TypePath, bool),
     List(Box<FieldType>, bool),
 }
@@ -23,7 +23,7 @@ impl FieldType {
 
     fn from_schema_type_internal(
         schema_type: &schema::Type,
-        mut type_path: TypePath,
+        type_path: TypePath,
         scalar_names: &HashSet<String>,
         nullable: bool,
     ) -> Self {
@@ -44,24 +44,24 @@ impl FieldType {
             ),
             Type::NamedType(name) => {
                 if scalar_names.contains(name) {
-                    FieldType::Scalar(Ident::for_inbuilt_scalar(name), nullable)
+                    FieldType::Scalar(
+                        TypePath::concat(&[type_path, Ident::for_inbuilt_scalar(name).into()]),
+                        nullable,
+                    )
                 } else if name == "Int" {
-                    FieldType::Scalar(Ident::for_inbuilt_scalar("i64"), nullable)
+                    FieldType::Scalar(Ident::for_inbuilt_scalar("i64").into(), nullable)
                 } else if name == "Float" {
-                    FieldType::Scalar(Ident::for_inbuilt_scalar("f64"), nullable)
+                    FieldType::Scalar(Ident::for_inbuilt_scalar("f64").into(), nullable)
                 } else if name == "Boolean" {
-                    FieldType::Scalar(Ident::for_inbuilt_scalar("bool"), nullable)
-                } else if name == "JSON" {
-                    // TODO: figure out how to use ident like this...
-                    // Probably just need a type path...
-                    FieldType::Scalar(Ident::for_inbuilt_scalar("serde_json::Value"), nullable)
+                    FieldType::Scalar(Ident::for_inbuilt_scalar("bool").into(), nullable)
                 } else if name == "String" || name == "ID" {
                     // TODO: Could do something more sensible for IDs here...
-                    FieldType::Scalar(Ident::for_inbuilt_scalar("String"), nullable)
+                    FieldType::Scalar(Ident::for_inbuilt_scalar("String").into(), nullable)
                 } else {
-                    // TODO: Not sure I'm happy with this API...
-                    type_path.push(Ident::for_type(name).into());
-                    FieldType::Other(type_path, nullable)
+                    FieldType::Other(
+                        TypePath::concat(&[type_path, Ident::for_type(name).into()]),
+                        nullable,
+                    )
                 }
             }
         }
