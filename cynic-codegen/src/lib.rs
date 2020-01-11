@@ -62,9 +62,7 @@ impl syn::parse::Parse for QueryDslParams {
 pub fn query_dsl(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let input = syn::parse_macro_input!(input as QueryDslParams);
 
-    let rv = query_dsl_from_schema(input).unwrap().into();
-    println!("{}", rv);
-    rv
+    query_dsl_from_schema(input).unwrap().into()
 }
 
 fn query_dsl_from_schema(input: QueryDslParams) -> Result<TokenStream, Error> {
