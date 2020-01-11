@@ -6,6 +6,10 @@ use proc_macro2::TokenStream;
 pub struct Ident(String);
 
 impl Ident {
+    pub fn new(s: &str) -> Self {
+        Ident(s.to_string())
+    }
+
     pub fn for_inbuilt_scalar(s: &str) -> Self {
         Ident(s.to_string())
     }
@@ -15,6 +19,10 @@ impl Ident {
     }
 
     pub fn for_field(s: &str) -> Self {
+        Ident(s.to_snake_case())
+    }
+
+    pub fn for_module(s: &str) -> Self {
         Ident(s.to_snake_case())
     }
 }

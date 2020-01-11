@@ -7,6 +7,7 @@ use crate::field_selector::FieldSelector;
 use crate::field_type::FieldType;
 use crate::graphql_extensions::FieldExt;
 use crate::ident::Ident;
+use crate::type_path::TypePath;
 
 /// We generate a SelectorStruct for each queryable object in the schema.
 ///
@@ -32,13 +33,19 @@ impl SelectorStruct {
                 .iter()
                 .map(|field| {
                     let required_args_struct_name = if !field.required_arguments().is_empty() {
-                        Some(ArgumentStruct::name_for_field(field, true))
+                        Some(TypePath::new(vec![
+                            Ident::for_module(&obj.name),
+                            ArgumentStruct::name_for_field(field, true),
+                        ]))
                     } else {
                         None
                     };
 
                     let optional_args_struct_name = if !field.optional_arguments().is_empty() {
-                        Some(ArgumentStruct::name_for_field(field, false))
+                        Some(TypePath::new(vec![
+                            Ident::for_module(&obj.name),
+                            ArgumentStruct::name_for_field(field, false),
+                        ]))
                     } else {
                         None
                     };

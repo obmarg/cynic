@@ -2,6 +2,7 @@ use proc_macro2::{Span, TokenStream};
 
 use crate::field_type::FieldType;
 use crate::ident::Ident;
+use crate::type_path::TypePath;
 
 /// A FieldSelector in our generated DSL.
 ///
@@ -14,8 +15,8 @@ pub struct FieldSelector {
     query_field_name: String,
     field_type: FieldType,
     type_lock: Ident,
-    required_args_struct_name: Option<Ident>,
-    optional_args_struct_name: Option<Ident>,
+    required_args_struct_name: Option<TypePath>,
+    optional_args_struct_name: Option<TypePath>,
 }
 
 impl FieldSelector {
@@ -23,8 +24,8 @@ impl FieldSelector {
         name: &str,
         field_type: FieldType,
         type_lock: Ident,
-        required_args_struct_name: Option<Ident>,
-        optional_args_struct_name: Option<Ident>,
+        required_args_struct_name: Option<TypePath>,
+        optional_args_struct_name: Option<TypePath>,
     ) -> FieldSelector {
         FieldSelector {
             rust_field_name: Ident::for_field(name),
@@ -55,11 +56,11 @@ impl quote::ToTokens for FieldSelector {
 
         let arguments = vec![
             self.required_args_struct_name
-                .clone()
-                .map(|ident| quote! { required: #ident }),
+                .as_ref()
+                .map(|type_path| quote! { required: #type_path }),
             self.optional_args_struct_name
-                .clone()
-                .map(|ident| quote! { optional: #ident }),
+                .as_ref()
+                .map(|type_path| quote! { optional: #type_path }),
         ];
         let arguments = arguments.iter().flatten().collect::<Vec<_>>();
 

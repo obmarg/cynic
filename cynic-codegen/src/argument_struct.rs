@@ -43,7 +43,7 @@ impl quote::ToTokens for ArgumentStruct {
         let arguments = &self.arguments;
 
         tokens.append_all(quote! {
-            struct #name {
+            pub struct #name {
                 #(
                     #arguments,
                 )*

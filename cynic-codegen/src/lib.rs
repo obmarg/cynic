@@ -9,11 +9,14 @@ mod field_type;
 mod graphql_enum;
 mod graphql_extensions;
 mod ident;
+mod module;
 mod selector_struct;
+mod type_path;
 
 use argument_struct::ArgumentStruct;
 use graphql_enum::GraphQLEnum;
 use graphql_extensions::FieldExt;
+use module::Module;
 use selector_struct::SelectorStruct;
 
 #[derive(Debug, PartialEq)]
@@ -77,7 +80,7 @@ fn query_dsl_from_schema(input: QueryDslParams) -> Result<TokenStream, Error> {
 struct GraphQLSchema {
     selectors: Vec<SelectorStruct>,
     enums: Vec<GraphQLEnum>,
-    argument_structs: Vec<ArgumentStruct>,
+    argument_struct_modules: Vec<Module<ArgumentStruct>>,
 }
 
 impl From<graphql_parser::schema::Document> for GraphQLSchema {
@@ -97,13 +100,14 @@ impl From<graphql_parser::schema::Document> for GraphQLSchema {
 
         let mut selectors = vec![];
         let mut enums = vec![];
-        let mut argument_structs = vec![];
+        let mut argument_struct_modules = vec![];
 
         for definition in document.definitions {
             match definition {
                 Definition::TypeDefinition(TypeDefinition::Object(object)) => {
                     selectors.push(SelectorStruct::from_object(&object, &scalar_names));
 
+                    let mut argument_structs = vec![];
                     for field in &object.fields {
                         let required_arguments = field.required_arguments();
                         if !required_arguments.is_empty() {
@@ -123,6 +127,10 @@ impl From<graphql_parser::schema::Document> for GraphQLSchema {
                             ));
                         }
                     }
+
+                    if !argument_structs.is_empty() {
+                        argument_struct_modules.push(Module::new(&object.name, argument_structs));
+                    }
                 }
                 Definition::TypeDefinition(TypeDefinition::Enum(gql_enum)) => {
                     enums.push(gql_enum.into());
@@ -134,7 +142,7 @@ impl From<graphql_parser::schema::Document> for GraphQLSchema {
         GraphQLSchema {
             selectors,
             enums,
-            argument_structs,
+            argument_struct_modules,
         }
     }
 }
@@ -145,7 +153,7 @@ impl quote::ToTokens for GraphQLSchema {
 
         let enums = &self.enums;
         let selectors = &self.selectors;
-        let argument_structs = &self.argument_structs;
+        let argument_struct_modules = &self.argument_struct_modules;
 
         tokens.append_all(quote! {
             #(
@@ -155,7 +163,7 @@ impl quote::ToTokens for GraphQLSchema {
                 #selectors
             )*
             #(
-                #argument_structs
+                #argument_struct_modules
             )*
         })
     }
