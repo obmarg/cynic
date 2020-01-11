@@ -15,6 +15,16 @@ impl TypePath {
     pub fn new(path: Vec<Ident>) -> Self {
         TypePath { path: path.into() }
     }
+
+    pub fn empty() -> Self {
+        TypePath {
+            path: VecDeque::new(),
+        }
+    }
+
+    pub fn push(&mut self, ident: Ident) {
+        self.path.push_back(ident);
+    }
 }
 
 impl From<Ident> for TypePath {

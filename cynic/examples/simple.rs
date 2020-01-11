@@ -3,6 +3,9 @@ fn main() {
 }
 
 mod query_dsl {
+    // A custom scalar
+    struct Upload;
+
     cynic::query_dsl!("cynic/examples/simple.graphql");
 }
 

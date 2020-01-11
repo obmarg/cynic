@@ -2,20 +2,22 @@ extern crate proc_macro;
 use proc_macro2::TokenStream;
 use std::collections::HashSet;
 
-mod argument;
 mod argument_struct;
 mod field_selector;
 mod field_type;
 mod graphql_enum;
 mod graphql_extensions;
 mod ident;
+mod input_struct;
 mod module;
 mod selector_struct;
+mod struct_field;
 mod type_path;
 
 use argument_struct::ArgumentStruct;
 use graphql_enum::GraphQLEnum;
 use graphql_extensions::FieldExt;
+use input_struct::InputStruct;
 use module::Module;
 use selector_struct::SelectorStruct;
 
@@ -81,6 +83,7 @@ struct GraphQLSchema {
     selectors: Vec<SelectorStruct>,
     enums: Vec<GraphQLEnum>,
     argument_struct_modules: Vec<Module<ArgumentStruct>>,
+    inputs: Vec<InputStruct>,
 }
 
 impl From<graphql_parser::schema::Document> for GraphQLSchema {
@@ -101,6 +104,7 @@ impl From<graphql_parser::schema::Document> for GraphQLSchema {
         let mut selectors = vec![];
         let mut enums = vec![];
         let mut argument_struct_modules = vec![];
+        let mut inputs = vec![];
 
         for definition in document.definitions {
             match definition {
@@ -135,6 +139,9 @@ impl From<graphql_parser::schema::Document> for GraphQLSchema {
                 Definition::TypeDefinition(TypeDefinition::Enum(gql_enum)) => {
                     enums.push(gql_enum.into());
                 }
+                Definition::TypeDefinition(TypeDefinition::InputObject(obj)) => {
+                    inputs.push(InputStruct::from_input_object(obj, &scalar_names));
+                }
                 _ => {}
             }
         }
@@ -143,6 +150,7 @@ impl From<graphql_parser::schema::Document> for GraphQLSchema {
             selectors,
             enums,
             argument_struct_modules,
+            inputs,
         }
     }
 }
@@ -154,6 +162,7 @@ impl quote::ToTokens for GraphQLSchema {
         let enums = &self.enums;
         let selectors = &self.selectors;
         let argument_struct_modules = &self.argument_struct_modules;
+        let inputs = &self.inputs;
 
         tokens.append_all(quote! {
             #(
@@ -164,6 +173,9 @@ impl quote::ToTokens for GraphQLSchema {
             )*
             #(
                 #argument_struct_modules
+            )*
+            #(
+                #inputs
             )*
         })
     }

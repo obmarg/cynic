@@ -2,7 +2,8 @@
 use graphql_parser::schema::{Field, InputValue};
 use std::collections::HashSet;
 
-use crate::argument::Argument;
+use crate::struct_field::StructField;
+use crate::type_path::TypePath;
 
 pub trait FieldExt {
     fn required_arguments(&self) -> Vec<InputValue>;
@@ -16,7 +17,7 @@ impl FieldExt for Field {
             .filter(|arg| {
                 // Note: We're passing an empty scalar_names in here, but that's OK as
                 // we only want to know if things are required
-                Argument::from_input_value(arg, &HashSet::new()).is_required()
+                StructField::from_input_value(arg, TypePath::empty(), &HashSet::new()).is_required()
             })
             .map(|a| a.clone())
             .collect()
@@ -28,7 +29,8 @@ impl FieldExt for Field {
             .filter(|arg| {
                 // Note: We're passing an empty scalar_names in here, but that's OK as
                 // we only want to know if things are required
-                !Argument::from_input_value(arg, &HashSet::new()).is_required()
+                !StructField::from_input_value(arg, TypePath::empty(), &HashSet::new())
+                    .is_required()
             })
             .map(|a| a.clone())
             .collect()

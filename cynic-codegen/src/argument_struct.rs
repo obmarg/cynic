@@ -2,15 +2,15 @@ use graphql_parser::schema;
 use proc_macro2::TokenStream;
 use std::collections::HashSet;
 
-use super::argument::Argument;
 use super::ident::Ident;
+use super::struct_field::StructField;
 
 // TODO: Generate some of these somewhere...
 
 #[derive(Debug)]
 pub struct ArgumentStruct {
     name: Ident,
-    arguments: Vec<Argument>,
+    arguments: Vec<StructField>,
 }
 
 impl ArgumentStruct {
@@ -29,7 +29,13 @@ impl ArgumentStruct {
             arguments: field
                 .arguments
                 .iter()
-                .map(|arg| Argument::from_input_value(&arg, scalar_names))
+                .map(|arg| {
+                    StructField::from_input_value(
+                        &arg,
+                        Ident::for_module("super").into(),
+                        scalar_names,
+                    )
+                })
                 .collect(),
         }
     }

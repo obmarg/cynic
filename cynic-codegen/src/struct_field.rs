@@ -4,18 +4,23 @@ use std::collections::HashSet;
 
 use super::field_type::FieldType;
 use super::ident::Ident;
+use super::type_path::TypePath;
 
 #[derive(Debug)]
-pub struct Argument {
+pub struct StructField {
     name: Ident,
     argument_type: FieldType,
 }
 
-impl Argument {
-    pub fn from_input_value(value: &schema::InputValue, scalar_names: &HashSet<String>) -> Self {
-        Argument {
+impl StructField {
+    pub fn from_input_value(
+        value: &schema::InputValue,
+        type_path: TypePath,
+        scalar_names: &HashSet<String>,
+    ) -> Self {
+        StructField {
             name: Ident::for_field(&value.name),
-            argument_type: FieldType::from_schema_type(&value.value_type, scalar_names),
+            argument_type: FieldType::from_schema_type(&value.value_type, type_path, scalar_names),
         }
     }
 
@@ -24,7 +29,7 @@ impl Argument {
     }
 }
 
-impl quote::ToTokens for Argument {
+impl quote::ToTokens for StructField {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         use quote::{quote, TokenStreamExt};
 

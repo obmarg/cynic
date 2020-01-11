@@ -1,7 +1,6 @@
 use proc_macro2::TokenStream;
 use std::collections::HashSet;
 
-use crate::argument::Argument;
 use crate::argument_struct::ArgumentStruct;
 use crate::field_selector::FieldSelector;
 use crate::field_type::FieldType;
@@ -52,7 +51,11 @@ impl SelectorStruct {
 
                     FieldSelector::for_field(
                         &field.name,
-                        FieldType::from_schema_type(&field.field_type, scalar_names),
+                        FieldType::from_schema_type(
+                            &field.field_type,
+                            TypePath::empty(),
+                            scalar_names,
+                        ),
                         name.clone(),
                         required_args_struct_name,
                         optional_args_struct_name,
