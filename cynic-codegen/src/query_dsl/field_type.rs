@@ -82,6 +82,15 @@ impl FieldType {
             FieldType::Other(_, nullable) => nullable.clone(),
         }
     }
+
+    pub fn as_type_lock(&self) -> TypePath {
+        match self {
+            FieldType::List(inner, _) => inner.as_type_lock(),
+            // TODO: I think this is wrong for scalars, but whatever.
+            FieldType::Scalar(type_path, _) => type_path.clone(),
+            FieldType::Other(type_path, _) => type_path.clone(),
+        }
+    }
 }
 
 impl quote::ToTokens for FieldType {

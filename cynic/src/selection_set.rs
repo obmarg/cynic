@@ -16,6 +16,18 @@ pub struct SelectionSet<'a, DecodesTo, TypeLock> {
     phantom: PhantomData<TypeLock>,
 }
 
+pub trait Selectable {
+    type TypeLock;
+    fn query_and_arguments<'a>(&'a self) -> (String, Vec<&'a serde_json::Value>);
+}
+
+impl<'a, DecodesTo, TypeLock> Selectable for SelectionSet<'a, DecodesTo, TypeLock> {
+    type TypeLock = TypeLock;
+    fn query_and_arguments<'b>(&'b self) -> (String, Vec<&'b serde_json::Value>) {
+        (self as &SelectionSet<'a, DecodesTo, TypeLock>).query_and_arguments()
+    }
+}
+
 impl<'a, DecodesTo, TypeLock> SelectionSet<'a, DecodesTo, TypeLock> {
     fn decode(&self, value: &serde_json::Value) -> Result<DecodesTo, Error> {
         (*self.decoder).decode(value).map_err(Error::DecodeError)

@@ -67,6 +67,7 @@ impl quote::ToTokens for FieldSelector {
         let field_type = &self.field_type;
         let type_lock = &self.type_lock;
         let rust_field_name = &self.rust_field_name;
+        let argument_type_lock = self.field_type.as_type_lock();
 
         if let Some(scalar_call) = scalar_call {
             tokens.append_all(quote! {
@@ -81,8 +82,8 @@ impl quote::ToTokens for FieldSelector {
             tokens.append_all(quote! {
                 pub fn #rust_field_name<'a, T>(
                     #(#arguments, )*
-                    fields: ::cynic::selection_set::SelectionSet<'a, T, #field_type>
-                ) -> ::cynic::selection_set::SelectionSet<T, #type_lock>
+                    fields: ::cynic::selection_set::SelectionSet<'a, T, #argument_type_lock>
+                ) -> ::cynic::selection_set::SelectionSet<'a, T, #type_lock>
                     where T: 'a {
                         ::cynic::selection_set::field(#query_field_name, vec![], fields)
                     }

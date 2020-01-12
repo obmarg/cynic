@@ -1,6 +1,9 @@
 extern crate proc_macro;
 
+use proc_macro::TokenStream;
+
 mod error;
+mod fragment_derive;
 mod ident;
 mod module;
 mod query_dsl;
@@ -8,8 +11,18 @@ mod query_dsl;
 use error::Error;
 
 #[proc_macro]
-pub fn query_dsl(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
+pub fn query_dsl(input: TokenStream) -> TokenStream {
     let input = syn::parse_macro_input!(input as query_dsl::QueryDslParams);
 
     query_dsl::query_dsl_from_schema(input).unwrap().into()
+}
+
+#[proc_macro_derive(QueryFragment)]
+pub fn query_fragment_derive(input: TokenStream) -> TokenStream {
+    let ast = syn::parse_macro_input!(input as syn::DeriveInput);
+
+    match fragment_derive::fragment_derive(&ast) {
+        Ok(tokens) => tokens.into(),
+        Err(e) => e.to_compile_error().into(),
+    }
 }
