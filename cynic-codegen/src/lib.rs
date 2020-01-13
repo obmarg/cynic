@@ -28,8 +28,10 @@ pub fn query_dsl(input: TokenStream) -> TokenStream {
 pub fn query_fragment_derive(input: TokenStream) -> TokenStream {
     let ast = syn::parse_macro_input!(input as syn::DeriveInput);
 
-    match fragment_derive::fragment_derive(&ast) {
+    let rv = match fragment_derive::fragment_derive(&ast) {
         Ok(tokens) => tokens.into(),
         Err(e) => e.to_compile_error().into(),
-    }
+    };
+
+    rv
 }

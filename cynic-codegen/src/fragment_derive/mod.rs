@@ -4,7 +4,7 @@ use proc_macro2::{Span, TokenStream};
 use quote::format_ident;
 
 use crate::query_dsl::{FieldSelector, QueryDsl, SelectorStruct};
-use crate::{Ident, TypePath};
+use crate::{FieldType, Ident, TypePath};
 
 pub fn fragment_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
     let struct_attrs = parse_struct_attrs(&ast.attrs)?;
@@ -205,8 +205,55 @@ impl quote::ToTokens for FieldSelectorParameter {
     }
 }
 
+enum SelectorFunction {
+    Field(TypePath),
+    Opt(Box<SelectorFunction>),
+    Vector(Box<SelectorFunction>),
+}
+
+impl SelectorFunction {
+    fn for_field(field_type: &FieldType, field_constructor: TypePath) -> SelectorFunction {
+        if field_type.is_nullable() {
+            SelectorFunction::Opt(Box::new(SelectorFunction::for_field(
+                &field_type.clone().as_required(),
+                field_constructor,
+            )))
+        } else if let FieldType::List(inner, _) = field_type {
+            SelectorFunction::Vector(Box::new(SelectorFunction::for_field(
+                &inner,
+                field_constructor,
+            )))
+        } else {
+            SelectorFunction::Field(field_constructor)
+        }
+    }
+}
+
+impl SelectorFunction {
+    fn to_call(&self, parameters: TokenStream) -> TokenStream {
+        use quote::quote;
+
+        match self {
+            SelectorFunction::Field(type_path) => quote! { #type_path(#parameters) },
+            SelectorFunction::Opt(inner) => {
+                let inner = inner.to_call(parameters);
+                quote! {
+                    ::cynic::selection_set::option(#inner)
+                }
+            }
+            SelectorFunction::Vector(inner) => {
+                let inner = inner.to_call(parameters);
+                quote! {
+                   ::cynic::selection_set::vec(#inner)
+                }
+            }
+        }
+    }
+}
+
 struct FieldSelectorCall {
-    selector_function_path: TypePath,
+    selector_function: SelectorFunction,
+    // TODO: not sure parameters is even needed - remove it if not...
     parameters: Vec<FieldSelectorParameter>,
 }
 
@@ -214,11 +261,12 @@ impl quote::ToTokens for FieldSelectorCall {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         use quote::{quote, TokenStreamExt};
 
-        let selector_function_path = &self.selector_function_path;
         let parameters = &self.parameters;
+        // TODO: If to_call doesn't require parameters we could convert it into ToTokens
+        let selector_function_call = &self.selector_function.to_call(quote! {});
 
         tokens.append_all(quote! {
-            #selector_function_path(#(#parameters),*)
+            #selector_function_call
         });
     }
 }
@@ -280,16 +328,22 @@ impl FragmentImpl {
                         name: Ident::new(&field_name),
                         type_path: field.ty.clone(),
                     });
+
                     if let Some(&selector) = selector_fields.get(&field_name) {
                         fields.push(FieldSelectorCall {
-                            selector_function_path: TypePath::concat(&[
-                                selector_struct_path.clone(),
-                                selector.rust_field_name.clone().into(),
-                            ]),
+                            selector_function: SelectorFunction::for_field(
+                                &selector.field_type,
+                                TypePath::concat(&[
+                                    selector_struct_path.clone(),
+                                    selector.rust_field_name.clone().into(),
+                                ]),
+                            ),
                             parameters: if selector.field_type.contains_scalar() {
                                 vec![]
                             } else {
                                 vec![FieldSelectorParameter {
+                                    // TODO: This bit is wrong.  If this is an Option<Vec> then we can't just
+                                    // call selection_set on it...
                                     field_type: field.ty.clone(),
                                 }]
                             },

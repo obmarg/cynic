@@ -4,7 +4,7 @@ use std::collections::HashSet;
 
 use crate::{Ident, TypePath};
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum FieldType {
     Scalar(TypePath, bool),
     Other(TypePath, bool),
@@ -88,6 +88,14 @@ impl FieldType {
             // TODO: I think this is wrong for scalars, but whatever.
             FieldType::Scalar(type_path, _) => type_path.clone(),
             FieldType::Other(type_path, _) => type_path.clone(),
+        }
+    }
+
+    pub fn as_required(&self) -> Self {
+        match self {
+            FieldType::List(inner, _) => FieldType::List(inner.clone(), false),
+            FieldType::Scalar(type_path, _) => FieldType::Scalar(type_path.clone(), false),
+            FieldType::Other(type_path, _) => FieldType::Other(type_path.clone(), false),
         }
     }
 }
