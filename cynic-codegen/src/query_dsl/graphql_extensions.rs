@@ -2,8 +2,7 @@
 use graphql_parser::schema::{Field, InputValue};
 use std::collections::HashSet;
 
-use super::struct_field::StructField;
-use super::type_path::TypePath;
+use crate::{StructField, TypePath};
 
 pub trait FieldExt {
     fn required_arguments(&self) -> Vec<InputValue>;

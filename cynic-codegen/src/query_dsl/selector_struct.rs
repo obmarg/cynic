@@ -3,10 +3,9 @@ use std::collections::HashSet;
 
 use super::argument_struct::ArgumentStruct;
 use super::field_selector::FieldSelector;
-use super::field_type::FieldType;
 use super::graphql_extensions::FieldExt;
-use super::type_path::TypePath;
-use crate::ident::Ident;
+
+use crate::{FieldType, Ident, TypePath};
 
 /// We generate a SelectorStruct for each queryable object in the schema.
 ///

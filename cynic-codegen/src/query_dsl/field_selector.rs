@@ -1,8 +1,6 @@
 use proc_macro2::{Span, TokenStream};
 
-use super::field_type::FieldType;
-use super::type_path::TypePath;
-use crate::ident::Ident;
+use crate::{FieldType, Ident, TypePath};
 
 /// A FieldSelector in our generated DSL.
 ///

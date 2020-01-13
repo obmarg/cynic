@@ -3,13 +3,10 @@ use std::collections::HashSet;
 
 mod argument_struct;
 mod field_selector;
-mod field_type;
 mod graphql_enum;
 mod graphql_extensions;
 mod input_struct;
 mod selector_struct;
-mod struct_field;
-mod type_path;
 
 use super::module::Module;
 use crate::Error;
@@ -19,7 +16,6 @@ use graphql_enum::GraphQLEnum;
 use graphql_extensions::FieldExt;
 use input_struct::InputStruct;
 pub use selector_struct::SelectorStruct;
-pub use type_path::TypePath;
 
 #[derive(Debug)]
 pub struct QueryDslParams {

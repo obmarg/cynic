@@ -3,8 +3,8 @@ use std::collections::HashMap;
 use proc_macro2::{Span, TokenStream};
 use quote::format_ident;
 
-use crate::query_dsl::{self, FieldSelector, QueryDsl, SelectorStruct, TypePath};
-use crate::Ident;
+use crate::query_dsl::{FieldSelector, QueryDsl, SelectorStruct};
+use crate::{Ident, TypePath};
 
 pub fn fragment_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
     // TODO:

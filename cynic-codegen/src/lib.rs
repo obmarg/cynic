@@ -3,13 +3,19 @@ extern crate proc_macro;
 use proc_macro::TokenStream;
 
 mod error;
+mod field_type;
 mod fragment_derive;
 mod ident;
 mod module;
 mod query_dsl;
+mod struct_field;
+mod type_path;
 
 use error::Error;
+use field_type::FieldType;
 use ident::Ident;
+use struct_field::StructField;
+use type_path::TypePath;
 
 #[proc_macro]
 pub fn query_dsl(input: TokenStream) -> TokenStream {
