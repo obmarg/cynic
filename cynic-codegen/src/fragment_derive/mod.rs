@@ -7,20 +7,6 @@ use crate::query_dsl::{FieldSelector, QueryDsl, SelectorStruct};
 use crate::{Ident, TypePath};
 
 pub fn fragment_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
-    // TODO:
-    // 1. Get the schema name, type & path to the DSL module from derive attributes.
-    // 2. Parse the schema, erroring on the schema name attr span.
-    // 3. Check the type exists in the schema, erroring in the type attr span.
-    // 4. Check the derive is for a struct, erroring appropriately if not.
-    // 5. Get each of the fields in the struct - their names and types.
-    //      We should probably support additional attrs here to allow for name mapping.
-    // 6. Check that each of the names exists in the GQL type, erroring on appropriate
-    //      span if not.
-    // 7. Strip additional attrs from the struct fields.
-    // 8. Output the struct
-    // 9. Output an implementation of QueryFragment that calls the DSL for each field.
-    //    - Will probably need to generate new-like constructor functions.
-
     let struct_attrs = parse_struct_attrs(&ast.attrs)?;
 
     let schema = std::fs::read_to_string(&struct_attrs.schema_path.value).map_err(|e| {
@@ -237,10 +223,29 @@ impl quote::ToTokens for FieldSelectorCall {
     }
 }
 
+struct ConstructorParameter {
+    name: Ident,
+    type_path: syn::Type,
+}
+
+impl quote::ToTokens for ConstructorParameter {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
+        use quote::{quote, TokenStreamExt};
+
+        let name = &self.name;
+        let type_path = &self.type_path;
+
+        tokens.append_all(quote! {
+            #name: #type_path
+        })
+    }
+}
+
 struct FragmentImpl {
     target_struct: Ident,
     fields: Vec<FieldSelectorCall>,
     selector_struct_path: TypePath,
+    constructor_params: Vec<ConstructorParameter>,
 }
 
 impl FragmentImpl {
@@ -265,11 +270,16 @@ impl FragmentImpl {
         let selector_struct_path =
             TypePath::concat(&[query_dsl_path, selector_struct.name.clone().into()]);
         let mut fields = vec![];
+        let mut constructor_params = vec![];
 
         if let Fields::Named(named_fields) = &data_struct.fields {
             for field in &named_fields.named {
                 if let Some(ident) = &field.ident {
                     let field_name = ident.to_string();
+                    constructor_params.push(ConstructorParameter {
+                        name: Ident::new(&field_name),
+                        type_path: field.ty.clone(),
+                    });
                     if let Some(&selector) = selector_fields.get(&field_name) {
                         fields.push(FieldSelectorCall {
                             selector_function_path: TypePath::concat(&[
@@ -310,6 +320,7 @@ impl FragmentImpl {
             fields,
             target_struct,
             selector_struct_path,
+            constructor_params,
         })
     }
 }
@@ -321,6 +332,12 @@ impl quote::ToTokens for FragmentImpl {
         let target_struct = &self.target_struct;
         let selector_struct = &self.selector_struct_path;
         let fields = &self.fields;
+        let constructor_params = &self.constructor_params;
+        let constructor_param_names = self
+            .constructor_params
+            .iter()
+            .map(|p| &p.name)
+            .collect::<Vec<_>>();
 
         let map_function = quote::format_ident!("map{}", fields.len());
 
@@ -331,10 +348,12 @@ impl quote::ToTokens for FragmentImpl {
                 fn selection_set() -> Self::SelectionSet {
                     use ::cynic::QueryFragment;
 
+                    let new = |#(#constructor_params),*| #target_struct {
+                        #(#constructor_param_names),*
+                    };
+
                     ::cynic::selection_set::#map_function(
-                        // TODO: Use a function we've generated _eventually_
-                        // .     for now just using a new that we assume the user has defined...
-                        #target_struct::new,
+                        new,
                         #(
                             #fields
                         ),*

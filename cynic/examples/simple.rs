@@ -21,12 +21,6 @@ struct TestStruct {
     nested: Nested,
 }
 
-impl TestStruct {
-    fn new(field_one: String, nested: Nested) -> Self {
-        TestStruct { field_one, nested }
-    }
-}
-
 #[derive(cynic::QueryFragment)]
 #[cynic(
     schema_path = "cynic/examples/simple.graphql",
@@ -35,12 +29,6 @@ impl TestStruct {
 )]
 struct Nested {
     a_string: String,
-}
-
-impl Nested {
-    fn new(a_string: String) -> Self {
-        Self { a_string }
-    }
 }
 
 #[derive(cynic::QueryFragment)]
