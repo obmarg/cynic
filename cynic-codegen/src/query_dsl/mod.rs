@@ -14,10 +14,12 @@ mod type_path;
 use super::module::Module;
 use crate::Error;
 use argument_struct::ArgumentStruct;
+pub use field_selector::FieldSelector;
 use graphql_enum::GraphQLEnum;
 use graphql_extensions::FieldExt;
 use input_struct::InputStruct;
-use selector_struct::SelectorStruct;
+pub use selector_struct::SelectorStruct;
+pub use type_path::TypePath;
 
 #[derive(Debug)]
 pub struct QueryDslParams {
@@ -42,7 +44,7 @@ pub fn query_dsl_from_schema(input: QueryDslParams) -> Result<TokenStream, Error
     use quote::quote;
 
     let schema = std::fs::read_to_string(&input.schema_filename)?;
-    let schema_data: GraphQLSchema = graphql_parser::schema::parse_schema(&schema)?.into();
+    let schema_data: QueryDsl = graphql_parser::schema::parse_schema(&schema)?.into();
 
     Ok(quote! {
         #schema_data
@@ -50,14 +52,14 @@ pub fn query_dsl_from_schema(input: QueryDslParams) -> Result<TokenStream, Error
 }
 
 #[derive(Debug)]
-struct GraphQLSchema {
-    selectors: Vec<SelectorStruct>,
-    enums: Vec<GraphQLEnum>,
-    argument_struct_modules: Vec<Module<ArgumentStruct>>,
-    inputs: Vec<InputStruct>,
+pub struct QueryDsl {
+    pub selectors: Vec<SelectorStruct>,
+    pub enums: Vec<GraphQLEnum>,
+    pub argument_struct_modules: Vec<Module<ArgumentStruct>>,
+    pub inputs: Vec<InputStruct>,
 }
 
-impl From<graphql_parser::schema::Document> for GraphQLSchema {
+impl From<graphql_parser::schema::Document> for QueryDsl {
     fn from(document: graphql_parser::schema::Document) -> Self {
         use graphql_parser::schema::{Definition, TypeDefinition};
 
@@ -117,7 +119,7 @@ impl From<graphql_parser::schema::Document> for GraphQLSchema {
             }
         }
 
-        GraphQLSchema {
+        QueryDsl {
             selectors,
             enums,
             argument_struct_modules,
@@ -126,7 +128,7 @@ impl From<graphql_parser::schema::Document> for GraphQLSchema {
     }
 }
 
-impl quote::ToTokens for GraphQLSchema {
+impl quote::ToTokens for QueryDsl {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         use quote::{quote, TokenStreamExt};
 

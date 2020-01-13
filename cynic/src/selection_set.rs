@@ -153,6 +153,8 @@ where
     }
 }
 
+pub use map as map1;
+
 pub fn map<'a, F, T1, NewDecodesTo, TypeLock>(
     func: F,
     param1: SelectionSet<'a, T1, TypeLock>,

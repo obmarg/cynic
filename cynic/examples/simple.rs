@@ -10,6 +10,12 @@ mod query_dsl {
 
 use cynic::selection_set;
 
+#[derive(cynic::QueryFragment)]
+#[cynic(
+    schema_path = "cynic/examples/simple.graphql",
+    query_module = "query_dsl",
+    graphql_type = "TestStruct"
+)]
 struct TestStruct {
     field_one: String,
     nested: Nested,
@@ -21,6 +27,12 @@ impl TestStruct {
     }
 }
 
+#[derive(cynic::QueryFragment)]
+#[cynic(
+    schema_path = "cynic/examples/simple.graphql",
+    query_module = "query_dsl",
+    graphql_type = "Nested"
+)]
 struct Nested {
     a_string: String,
 }
@@ -32,8 +44,20 @@ impl Nested {
 }
 
 #[derive(cynic::QueryFragment)]
-#[cynic(schema_path = "abcd", query_module = "", graphql_type = "")]
-struct Test {}
+#[cynic(
+    schema_path = "cynic/examples/simple.graphql",
+    query_module = "query_dsl",
+    graphql_type = "TestStruct"
+)]
+struct Test {
+    field_one: String,
+}
+
+impl Test {
+    fn new(field_one: String) -> Self {
+        Test { field_one }
+    }
+}
 
 /*
 fn query() {
@@ -49,7 +73,13 @@ fn query() {
 
 impl cynic::QueryRoot for query_dsl::TestStruct {}
 
-impl cynic::QueryFragment for TestStruct {
+// TODO: Some sort of ToQuery trait
+// That's only implemented when QueryFragment::SelectionSet::TypeLock == RootQuery
+// TODO: I should figure out how arguments could work?
+
+/*
+
+impl cynic::QueryFragment<'static> for TestStruct {
     type SelectionSet = selection_set::SelectionSet<'static, Self, query_dsl::TestStruct>;
 
     fn selection_set() -> Self::SelectionSet {
@@ -63,13 +93,14 @@ impl cynic::QueryFragment for TestStruct {
     }
 }
 
-impl cynic::QueryFragment for Nested {
+impl cynic::QueryFragment<'static> for Nested {
     type SelectionSet = selection_set::SelectionSet<'static, Self, query_dsl::Nested>;
 
     fn selection_set() -> Self::SelectionSet {
         selection_set::map(Nested::new, query_dsl::Nested::a_string())
     }
 }
+*/
 
 mod test {
 

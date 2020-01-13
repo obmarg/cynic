@@ -11,8 +11,15 @@ fn main() {
     println!("Hello, world!");
 }
 
+// Ok, so I need a way of figuring out TypeLocks.
+// I _could_ do QueryFragment<T>
+// and then do impl<T> QueryFragment<T> for X
+// Though I'd need a way to constrain T.
+//
+// Perhaps with some kind of marker trait?
+// Contains<T>?
 
-pub trait QueryFragment {
+pub trait QueryFragment<'a> {
     type SelectionSet: selection_set::Selectable;
 
     fn selection_set() -> Self::SelectionSet;
@@ -20,10 +27,10 @@ pub trait QueryFragment {
 
 pub trait QueryRoot {}
 
-// TODO: Think about this API
-pub fn to_query<Fragment>() -> String
+// TODO: THink about this API
+pub fn to_query<'a, Fragment>() -> String
 where
-    Fragment: QueryFragment,
+    Fragment: QueryFragment<'a>,
     Fragment::SelectionSet: selection_set::Selectable,
     <Fragment::SelectionSet as selection_set::Selectable>::TypeLock: QueryRoot,
 {

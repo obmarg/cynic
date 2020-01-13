@@ -9,6 +9,7 @@ mod module;
 mod query_dsl;
 
 use error::Error;
+use ident::Ident;
 
 #[proc_macro]
 pub fn query_dsl(input: TokenStream) -> TokenStream {
@@ -17,7 +18,7 @@ pub fn query_dsl(input: TokenStream) -> TokenStream {
     query_dsl::query_dsl_from_schema(input).unwrap().into()
 }
 
-#[proc_macro_derive(QueryFragment)]
+#[proc_macro_derive(QueryFragment, attributes(cynic))]
 pub fn query_fragment_derive(input: TokenStream) -> TokenStream {
     let ast = syn::parse_macro_input!(input as syn::DeriveInput);
 

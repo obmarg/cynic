@@ -15,8 +15,8 @@ use crate::ident::Ident;
 /// create the selection sets which make up a graphql query.
 #[derive(Debug)]
 pub struct SelectorStruct {
-    name: Ident,
-    fields: Vec<FieldSelector>,
+    pub name: Ident,
+    pub fields: Vec<FieldSelector>,
 }
 
 impl SelectorStruct {

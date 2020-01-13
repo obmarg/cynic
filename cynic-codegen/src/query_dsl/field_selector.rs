@@ -11,12 +11,12 @@ use crate::ident::Ident;
 /// field.
 #[derive(Debug)]
 pub struct FieldSelector {
-    rust_field_name: Ident,
-    query_field_name: String,
-    field_type: FieldType,
-    type_lock: Ident,
-    required_args_struct_name: Option<TypePath>,
-    optional_args_struct_name: Option<TypePath>,
+    pub rust_field_name: Ident,
+    pub query_field_name: String,
+    pub field_type: FieldType,
+    pub type_lock: Ident,
+    pub required_args_struct_name: Option<TypePath>,
+    pub optional_args_struct_name: Option<TypePath>,
 }
 
 impl FieldSelector {
