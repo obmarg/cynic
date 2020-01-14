@@ -6,6 +6,8 @@ use quote::format_ident;
 use crate::query_dsl::{FieldSelector, QueryDsl, SelectorStruct};
 use crate::{FieldType, Ident, TypePath};
 
+mod cynic_arguments;
+
 pub fn fragment_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
     use quote::{quote, quote_spanned};
 
