@@ -1,5 +1,5 @@
 fn main() {
-    println!("{}", cynic::to_query::<TestStruct>());
+    println!("{}", cynic::to_query::<TestStruct>(()));
 }
 
 mod query_dsl {
@@ -35,9 +35,12 @@ struct Nested {
 #[cynic(
     schema_path = "cynic/examples/simple.graphql",
     query_module = "query_dsl",
-    graphql_type = "TestStruct"
+    graphql_type = "TestStruct",
+    // Argument type can default to () or something
+    // argument_type = "Args"
 )]
 struct Test {
+    #[cynic_arguments(x = args.xyz, y = "1")]
     field_one: String,
 }
 
@@ -69,6 +72,7 @@ impl cynic::QueryRoot for query_dsl::TestStruct {}
 
 impl cynic::QueryFragment<'static> for TestStruct {
     type SelectionSet = selection_set::SelectionSet<'static, Self, query_dsl::TestStruct>;
+    type Arguments = ArgStruct;
 
     fn selection_set() -> Self::SelectionSet {
         // TODO: Got to say I'm not that enamoured with this syntax.

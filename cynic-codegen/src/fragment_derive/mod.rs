@@ -7,11 +7,13 @@ use crate::query_dsl::{FieldSelector, QueryDsl, SelectorStruct};
 use crate::{FieldType, Ident, TypePath};
 
 pub fn fragment_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
-    let struct_attrs = parse_struct_attrs(&ast.attrs)?;
+    use quote::{quote, quote_spanned};
 
-    let schema = std::fs::read_to_string(&struct_attrs.schema_path.value).map_err(|e| {
+    let attributes = parse_struct_attrs(&ast.attrs)?;
+
+    let schema = std::fs::read_to_string(&attributes.schema_path.value).map_err(|e| {
         syn::Error::new(
-            struct_attrs.schema_path.span,
+            attributes.schema_path.span,
             format!("Could not load schema file: {}", e),
         )
     })?;
@@ -19,36 +21,41 @@ pub fn fragment_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error
     let query_dsl: QueryDsl = graphql_parser::schema::parse_schema(&schema)
         .map_err(|e| {
             syn::Error::new(
-                struct_attrs.schema_path.span,
+                attributes.schema_path.span,
                 format!("Could not parse schema: {}", e),
             )
         })?
         .into();
 
-    let selector_struct_name = Ident::for_type(&struct_attrs.graphql_type.value);
+    let selector_struct_name = Ident::for_type(&attributes.graphql_type.value);
     let selector_struct = query_dsl
         .selectors
         .iter()
         .find(|s| s.name == selector_struct_name)
         .ok_or(syn::Error::new(
-            struct_attrs.graphql_type.span,
+            attributes.graphql_type.span,
             format!(
                 "Can't find {} in {}",
-                struct_attrs.graphql_type.value, struct_attrs.schema_path.value
+                attributes.graphql_type.value, attributes.schema_path.value
             ),
         ))?;
+
+    let argument_struct = if let Some(arg_struct) = attributes.argument_struct {
+        let arg_struct_val = arg_struct.value;
+        let argument_struct = quote_spanned! { arg_struct.span => #arg_struct_val };
+        syn::parse2(argument_struct)?
+    } else {
+        syn::parse2(quote! { () })?
+    };
 
     if let syn::Data::Struct(data_struct) = &ast.data {
         let fragment_impl = FragmentImpl::new_for(
             &data_struct,
             &ast.ident,
             &selector_struct,
-            Ident::new_spanned(
-                &struct_attrs.query_module.value,
-                struct_attrs.query_module.span,
-            )
-            .into(),
-            &struct_attrs.graphql_type.value,
+            Ident::new_spanned(&attributes.query_module.value, attributes.query_module.span).into(),
+            &attributes.graphql_type.value,
+            argument_struct,
         )?;
         Ok(quote::quote! {
             #fragment_impl
@@ -81,6 +88,7 @@ struct CynicAttributes {
     schema_path: Attribute,
     query_module: Attribute,
     graphql_type: Attribute,
+    argument_struct: Option<Attribute>,
 }
 
 fn parse_struct_attrs(attrs: &Vec<syn::Attribute>) -> Result<CynicAttributes, syn::Error> {
@@ -159,10 +167,13 @@ fn parse_struct_attrs(attrs: &Vec<syn::Attribute>) -> Result<CynicAttributes, sy
             "Missing required attribute: graphql_type",
         ))?;
 
+    let argument_struct = attr_map.remove(&DeriveAttribute::ArgumentStruct);
+
     Ok(CynicAttributes {
         schema_path,
         query_module,
         graphql_type,
+        argument_struct,
     })
 }
 
@@ -171,6 +182,7 @@ enum DeriveAttribute {
     SchemaPath,
     QueryModule,
     GraphqlType,
+    ArgumentStruct,
 }
 
 impl std::str::FromStr for DeriveAttribute {
@@ -183,8 +195,10 @@ impl std::str::FromStr for DeriveAttribute {
             Ok(DeriveAttribute::QueryModule)
         } else if s == "graphql_type" {
             Ok(DeriveAttribute::GraphqlType)
+        } else if s == "argument_struct" {
+            Ok(DeriveAttribute::ArgumentStruct)
         } else {
-            Err(format!("Unknown cynic attribute: {}.  Expected one of schema_path, query_module, or graphql_type", s))
+            Err(format!("Unknown cynic attribute: {}.  Expected one of schema_path, query_module, graphql_type or argument_struct", s))
         }
     }
 }
@@ -253,17 +267,22 @@ impl SelectorFunction {
 
 struct FieldSelectorCall {
     selector_function: SelectorFunction,
-    // TODO: not sure parameters is even needed - remove it if not...
-    parameters: Vec<FieldSelectorParameter>,
+    contains_composite: bool,
+    query_fragment_field_type: syn::Type,
 }
 
 impl quote::ToTokens for FieldSelectorCall {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         use quote::{quote, TokenStreamExt};
 
-        let parameters = &self.parameters;
-        // TODO: If to_call doesn't require parameters we could convert it into ToTokens
-        let selector_function_call = &self.selector_function.to_call(quote! {});
+        let inner_call = if self.contains_composite {
+            let field_type = &self.query_fragment_field_type;
+            quote! {#field_type::selection_set(args.into_args())}
+        } else {
+            quote! {}
+        };
+
+        let selector_function_call = &self.selector_function.to_call(inner_call);
 
         tokens.append_all(quote! {
             #selector_function_call
@@ -294,6 +313,7 @@ struct FragmentImpl {
     fields: Vec<FieldSelectorCall>,
     selector_struct_path: TypePath,
     constructor_params: Vec<ConstructorParameter>,
+    argument_struct: syn::Type,
 }
 
 impl FragmentImpl {
@@ -303,6 +323,7 @@ impl FragmentImpl {
         selector_struct: &SelectorStruct,
         query_dsl_path: TypePath,
         graphql_type_name: &str,
+        argument_struct: syn::Type,
     ) -> Result<Self, syn::Error> {
         use syn::{spanned::Spanned, Fields};
         // TODO: Mostly just need to iterate over fields.
@@ -338,15 +359,8 @@ impl FragmentImpl {
                                     selector.rust_field_name.clone().into(),
                                 ]),
                             ),
-                            parameters: if selector.field_type.contains_scalar() {
-                                vec![]
-                            } else {
-                                vec![FieldSelectorParameter {
-                                    // TODO: This bit is wrong.  If this is an Option<Vec> then we can't just
-                                    // call selection_set on it...
-                                    field_type: field.ty.clone(),
-                                }]
-                            },
+                            contains_composite: !selector.field_type.contains_scalar(),
+                            query_fragment_field_type: field.ty.clone(),
                         })
                     } else {
                         return Err(syn::Error::new(
@@ -375,6 +389,7 @@ impl FragmentImpl {
             target_struct,
             selector_struct_path,
             constructor_params,
+            argument_struct,
         })
     }
 }
@@ -383,6 +398,7 @@ impl quote::ToTokens for FragmentImpl {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         use quote::{quote, TokenStreamExt};
 
+        let argument_struct = &self.argument_struct;
         let target_struct = &self.target_struct;
         let selector_struct = &self.selector_struct_path;
         let fields = &self.fields;
@@ -398,9 +414,10 @@ impl quote::ToTokens for FragmentImpl {
         tokens.append_all(quote! {
             impl ::cynic::QueryFragment<'static> for #target_struct {
                 type SelectionSet = ::cynic::SelectionSet<'static, Self, #selector_struct>;
+                type Arguments = #argument_struct;
 
-                fn selection_set() -> Self::SelectionSet {
-                    use ::cynic::QueryFragment;
+                fn selection_set(args: Self::Arguments) -> Self::SelectionSet {
+                    use ::cynic::{QueryFragment, IntoArguments};
 
                     let new = |#(#constructor_params),*| #target_struct {
                         #(#constructor_param_names),*

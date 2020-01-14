@@ -24,7 +24,7 @@ pub fn query_dsl(input: TokenStream) -> TokenStream {
     query_dsl::query_dsl_from_schema(input).unwrap().into()
 }
 
-#[proc_macro_derive(QueryFragment, attributes(cynic))]
+#[proc_macro_derive(QueryFragment, attributes(cynic, cynic_arguments))]
 pub fn query_fragment_derive(input: TokenStream) -> TokenStream {
     let ast = syn::parse_macro_input!(input as syn::DeriveInput);
 
