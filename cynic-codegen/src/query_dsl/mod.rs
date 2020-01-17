@@ -4,16 +4,15 @@ use std::collections::HashSet;
 mod argument_struct;
 mod field_selector;
 mod graphql_enum;
-mod graphql_extensions;
 mod input_struct;
 mod selector_struct;
 
 use super::module::Module;
+use crate::graphql_extensions::{DocumentExt, FieldExt};
 use crate::Error;
-use argument_struct::ArgumentStruct;
+pub use argument_struct::ArgumentStruct;
 pub use field_selector::FieldSelector;
 use graphql_enum::GraphQLEnum;
-use graphql_extensions::FieldExt;
 use input_struct::InputStruct;
 pub use selector_struct::SelectorStruct;
 
@@ -59,16 +58,7 @@ impl From<graphql_parser::schema::Document> for QueryDsl {
     fn from(document: graphql_parser::schema::Document) -> Self {
         use graphql_parser::schema::{Definition, TypeDefinition};
 
-        let mut scalar_names = HashSet::new();
-
-        for definition in &document.definitions {
-            match definition {
-                Definition::TypeDefinition(TypeDefinition::Scalar(scalar)) => {
-                    scalar_names.insert(scalar.name.clone());
-                }
-                _ => {}
-            }
-        }
+        let scalar_names = document.scalar_names();
 
         let mut selectors = vec![];
         let mut enums = vec![];

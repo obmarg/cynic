@@ -5,7 +5,7 @@ type Query {
 }
 
 type TestStruct {
-  fieldOne: String!
+  fieldOne(x: Int, y: String): String!
   nested: Nested!
   json: JSON
 }

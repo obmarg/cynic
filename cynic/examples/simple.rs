@@ -17,6 +17,7 @@ use cynic::selection_set;
     graphql_type = "TestStruct"
 )]
 struct TestStruct {
+    #[cynic_arguments(x = Some(1), y = Some("1".to_string()))]
     field_one: String,
     nested: Nested,
 }
@@ -40,7 +41,7 @@ struct Nested {
     // argument_type = "Args"
 )]
 struct Test {
-    #[cynic_arguments(x = args.xyz, y = "1")]
+    #[cynic_arguments(x = Some(1), y = Some("1".to_string()))]
     field_one: String,
 }
 
@@ -110,5 +111,5 @@ mod test {
     // Another custom scalar
     struct Upload;
 
-    cynic::query_dsl!("cms-schema.gql");
+    //cynic::query_dsl!("cms-schema.gql");
 }

@@ -3,10 +3,13 @@ use std::collections::HashMap;
 use proc_macro2::{Span, TokenStream};
 use quote::format_ident;
 
-use crate::query_dsl::{FieldSelector, QueryDsl, SelectorStruct};
-use crate::{FieldType, Ident, TypePath};
+use crate::{query_dsl, FieldType, Ident, TypePath};
 
 mod cynic_arguments;
+mod schema_parsing;
+
+use cynic_arguments::{arguments_from_field_attrs, FieldArgument};
+use schema_parsing::{Field, Object, Schema};
 
 pub fn fragment_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
     use quote::{quote, quote_spanned};
@@ -20,20 +23,18 @@ pub fn fragment_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error
         )
     })?;
 
-    let query_dsl: QueryDsl = graphql_parser::schema::parse_schema(&schema)
+    let schema: Schema = graphql_parser::schema::parse_schema(&schema)
         .map_err(|e| {
             syn::Error::new(
                 attributes.schema_path.span,
-                format!("Could not parse schema: {}", e),
+                format!("Could not parse schema file: {}", e),
             )
         })?
         .into();
 
-    let selector_struct_name = Ident::for_type(&attributes.graphql_type.value);
-    let selector_struct = query_dsl
-        .selectors
-        .iter()
-        .find(|s| s.name == selector_struct_name)
+    let object = schema
+        .objects
+        .get(&Ident::for_type(&attributes.graphql_type.value))
         .ok_or(syn::Error::new(
             attributes.graphql_type.span,
             format!(
@@ -54,7 +55,7 @@ pub fn fragment_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error
         let fragment_impl = FragmentImpl::new_for(
             &data_struct,
             &ast.ident,
-            &selector_struct,
+            &object,
             Ident::new_spanned(&attributes.query_module.value, attributes.query_module.span).into(),
             &attributes.graphql_type.value,
             argument_struct,
@@ -271,23 +272,62 @@ struct FieldSelectorCall {
     selector_function: SelectorFunction,
     contains_composite: bool,
     query_fragment_field_type: syn::Type,
+    argument_structs: Vec<ArgumentStruct>,
 }
 
 impl quote::ToTokens for FieldSelectorCall {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         use quote::{quote, TokenStreamExt};
 
+        let initial_args = if self.argument_structs.is_empty() {
+            quote! {}
+        } else {
+            let argument_structs = &self.argument_structs;
+            quote! {
+                #(#argument_structs),* ,
+            }
+        };
+
         let inner_call = if self.contains_composite {
             let field_type = &self.query_fragment_field_type;
-            quote! {#field_type::selection_set(args.into_args())}
+            quote! {
+                #field_type::selection_set(#initial_args args.into_args())
+            }
         } else {
-            quote! {}
+            quote! {#initial_args}
         };
 
         let selector_function_call = &self.selector_function.to_call(inner_call);
 
         tokens.append_all(quote! {
             #selector_function_call
+        });
+    }
+}
+
+struct ArgumentStruct {
+    type_name: TypePath,
+    fields: Vec<FieldArgument>,
+    required: bool,
+}
+
+impl quote::ToTokens for ArgumentStruct {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
+        use quote::{quote, TokenStreamExt};
+
+        let type_name = &self.type_name;
+        let arguments = &self.fields;
+        let default = if !self.required {
+            quote! { , ..Default::default() }
+        } else {
+            quote! {}
+        };
+
+        tokens.append_all(quote! {
+            #type_name {
+                #(#arguments),*
+                #default
+            }
         });
     }
 }
@@ -322,7 +362,7 @@ impl FragmentImpl {
     fn new_for(
         data_struct: &syn::DataStruct,
         name: &syn::Ident,
-        selector_struct: &SelectorStruct,
+        object: &Object,
         query_dsl_path: TypePath,
         graphql_type_name: &str,
         argument_struct: syn::Type,
@@ -331,15 +371,12 @@ impl FragmentImpl {
         // TODO: Mostly just need to iterate over fields.
         // For first pass lets _just_ support named fields.
         // And no attributes for now.
-        let selector_fields: HashMap<String, &FieldSelector> = selector_struct
-            .fields
-            .iter()
-            .map(|f| (f.rust_field_name.to_string(), f))
-            .collect();
 
         let target_struct = Ident::new_spanned(&name.to_string(), name.span());
-        let selector_struct_path =
-            TypePath::concat(&[query_dsl_path, selector_struct.name.clone().into()]);
+        let selector_struct_path = TypePath::concat(&[
+            query_dsl_path.clone(),
+            object.selector_struct.clone().into(),
+        ]);
         let mut fields = vec![];
         let mut constructor_params = vec![];
 
@@ -352,17 +389,25 @@ impl FragmentImpl {
                         type_path: field.ty.clone(),
                     });
 
-                    if let Some(&selector) = selector_fields.get(&field_name) {
+                    let arguments = arguments_from_field_attrs(&field.attrs)?;
+
+                    let field_name = Ident::for_field(&field_name);
+
+                    if let Some(gql_field) = object.fields.get(&field_name) {
+                        let argument_structs =
+                            argument_structs(arguments, gql_field, &object.name, &query_dsl_path)?;
+
                         fields.push(FieldSelectorCall {
                             selector_function: SelectorFunction::for_field(
-                                &selector.field_type,
+                                &gql_field.field_type,
                                 TypePath::concat(&[
                                     selector_struct_path.clone(),
-                                    selector.rust_field_name.clone().into(),
+                                    field_name.clone().into(),
                                 ]),
                             ),
-                            contains_composite: !selector.field_type.contains_scalar(),
+                            contains_composite: !gql_field.field_type.contains_scalar(),
                             query_fragment_field_type: field.ty.clone(),
+                            argument_structs,
                         })
                     } else {
                         return Err(syn::Error::new(
@@ -435,4 +480,63 @@ impl quote::ToTokens for FragmentImpl {
             }
         })
     }
+}
+
+/// Constructs some ArgumentStructs from the arguments of a
+fn argument_structs(
+    arguments: Vec<FieldArgument>,
+    field: &Field,
+    containing_object_name: &Ident,
+    query_dsl_path: &TypePath,
+) -> Result<Vec<ArgumentStruct>, syn::Error> {
+    let mut required = vec![];
+    let mut optional = vec![];
+    for provided_argument in arguments {
+        let arg_name = provided_argument.argument_name.clone().into();
+        if let Some(argument_def) = field.arguments.get(&arg_name) {
+            if argument_def.required {
+                required.push(provided_argument);
+            } else {
+                optional.push(provided_argument);
+            }
+        } else {
+            return Err(syn::Error::new(
+                provided_argument.argument_name.span(),
+                format!(
+                    "{} is not a valid argument for this field",
+                    provided_argument.argument_name
+                ),
+            ));
+        }
+    }
+    // TODO: We need to create & pass structs based on their existence on fields
+    // not whether or not they have been provided...
+    // Also need to be checking for the presence of required arguments and
+    // complaining if missing.
+
+    let mut rv = vec![];
+    if !required.is_empty() {
+        rv.push(ArgumentStruct {
+            type_name: TypePath::concat(&[
+                query_dsl_path.clone(),
+                Ident::for_module(&containing_object_name.to_string()).into(),
+                query_dsl::ArgumentStruct::name_for_field(&field.name.to_string(), true).into(),
+            ]),
+            fields: required,
+            required: true,
+        });
+    }
+    if !optional.is_empty() {
+        rv.push(ArgumentStruct {
+            type_name: TypePath::concat(&[
+                query_dsl_path.clone(),
+                Ident::for_module(&containing_object_name.to_string()).into(),
+                query_dsl::ArgumentStruct::name_for_field(&field.name.to_string(), false).into(),
+            ]),
+            fields: optional,
+            required: false,
+        });
+    }
+
+    Ok(rv)
 }

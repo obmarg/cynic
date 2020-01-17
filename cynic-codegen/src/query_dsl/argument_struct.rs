@@ -10,12 +10,13 @@ use crate::{Ident, StructField};
 pub struct ArgumentStruct {
     name: Ident,
     arguments: Vec<StructField>,
+    required: bool,
 }
 
 impl ArgumentStruct {
-    pub fn name_for_field(field: &schema::Field, required: bool) -> Ident {
+    pub fn name_for_field(field_name: &str, required: bool) -> Ident {
         let postfix = if required { "Args" } else { "OptionalArgs" };
-        Ident::for_type(&format!("{}{}", field.name, postfix))
+        Ident::for_type(&format!("{}{}", field_name, postfix))
     }
 
     pub fn from_field(
@@ -24,7 +25,7 @@ impl ArgumentStruct {
         scalar_names: &HashSet<String>,
     ) -> ArgumentStruct {
         ArgumentStruct {
-            name: ArgumentStruct::name_for_field(&field, required),
+            name: ArgumentStruct::name_for_field(&field.name, required),
             arguments: field
                 .arguments
                 .iter()
@@ -36,6 +37,7 @@ impl ArgumentStruct {
                     )
                 })
                 .collect(),
+            required,
         }
     }
 }
@@ -46,8 +48,14 @@ impl quote::ToTokens for ArgumentStruct {
 
         let name = &self.name;
         let arguments = &self.arguments;
+        let attrs = if self.required {
+            quote! {}
+        } else {
+            quote! { #[derive(Default)] }
+        };
 
         tokens.append_all(quote! {
+            #attrs
             pub struct #name {
                 #(
                     #arguments,

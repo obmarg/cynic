@@ -3,7 +3,7 @@ use std::collections::HashSet;
 
 use super::argument_struct::ArgumentStruct;
 use super::field_selector::FieldSelector;
-use super::graphql_extensions::FieldExt;
+use crate::graphql_extensions::FieldExt;
 
 use crate::{FieldType, Ident, TypePath};
 
@@ -33,7 +33,7 @@ impl SelectorStruct {
                     let required_args_struct_name = if !field.required_arguments().is_empty() {
                         Some(TypePath::new(vec![
                             Ident::for_module(&obj.name),
-                            ArgumentStruct::name_for_field(field, true),
+                            ArgumentStruct::name_for_field(&field.name, true),
                         ]))
                     } else {
                         None
@@ -42,7 +42,7 @@ impl SelectorStruct {
                     let optional_args_struct_name = if !field.optional_arguments().is_empty() {
                         Some(TypePath::new(vec![
                             Ident::for_module(&obj.name),
-                            ArgumentStruct::name_for_field(field, false),
+                            ArgumentStruct::name_for_field(&field.name, false),
                         ]))
                     } else {
                         None

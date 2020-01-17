@@ -32,7 +32,7 @@ where
         let contents = &self.contents;
 
         tokens.append_all(quote! {
-            mod #name {
+            pub mod #name {
                 #(
                     #contents
                 )*

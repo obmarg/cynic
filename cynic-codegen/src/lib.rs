@@ -5,6 +5,7 @@ use proc_macro::TokenStream;
 mod error;
 mod field_type;
 mod fragment_derive;
+mod graphql_extensions;
 mod ident;
 mod module;
 mod query_dsl;
@@ -21,7 +22,10 @@ use type_path::TypePath;
 pub fn query_dsl(input: TokenStream) -> TokenStream {
     let input = syn::parse_macro_input!(input as query_dsl::QueryDslParams);
 
-    query_dsl::query_dsl_from_schema(input).unwrap().into()
+    let rv = query_dsl::query_dsl_from_schema(input).unwrap().into();
+
+    eprintln!("{}", rv);
+    rv
 }
 
 #[proc_macro_derive(QueryFragment, attributes(cynic, cynic_arguments))]
@@ -33,5 +37,6 @@ pub fn query_fragment_derive(input: TokenStream) -> TokenStream {
         Err(e) => e.to_compile_error().into(),
     };
 
+    eprintln!("{}", rv);
     rv
 }

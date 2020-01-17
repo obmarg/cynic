@@ -44,6 +44,14 @@ impl PartialEq for Ident {
     }
 }
 
+impl Eq for Ident {}
+
+impl std::hash::Hash for Ident {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.0.hash(state)
+    }
+}
+
 impl std::fmt::Display for Ident {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
         write!(f, "{}", self.0)
@@ -58,6 +66,12 @@ fn transform_keywords(mut s: String) -> String {
             s.push('_');
             s
         }
+    }
+}
+
+impl From<proc_macro2::Ident> for Ident {
+    fn from(ident: proc_macro2::Ident) -> Ident {
+        Ident::new(&ident.to_string())
     }
 }
 
