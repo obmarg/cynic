@@ -30,11 +30,26 @@ impl quote::ToTokens for GraphQLEnum {
         let enum_values = &self.value_names;
 
         tokens.append_all(quote! {
+            // TODO: Actually not sure I can straight up derive serialize & deserialize
+            // as i've probably implemented some transformation on the names.
+            // I should update the fields with #serde(from) annotations or something
             #[derive(PartialEq, Eq, Debug, ::serde::Serialize, ::serde::de::DeserializeOwned)]
             pub enum #enum_name {
                 #(
                     #enum_values
                 ),*
+            }
+
+            // TODO: maybe derive the QueryFragment sometime?
+            // Also not entirely convinced that this is the right way to do it,
+            // should the query fragment code just be enum aware?
+            impl QueryFragment for #enum_name {
+                type SelectionSet = ::cynic::SelectionSet<'static, Self, ()>;
+                type Arguments = ();
+
+                fn selection_set(args: Self::Arguments) -> Self::SelectionSet {
+                    ::cynic::selection_set::json()
+                }
             }
         })
     }
