@@ -185,27 +185,43 @@ where
     }
 }
 
-pub fn map2<'a, F, T1, T2, NewDecodesTo, TypeLock>(
-    func: F,
-    param1: SelectionSet<'a, T1, TypeLock>,
-    param2: SelectionSet<'a, T2, TypeLock>,
-) -> SelectionSet<'a, NewDecodesTo, TypeLock>
-where
-    F: Fn(T1, T2) -> NewDecodesTo + 'a,
-    T1: 'a,
-    T2: 'a,
-    NewDecodesTo: 'a,
-{
-    let mut fields = Vec::with_capacity(param1.fields.len() + param2.fields.len());
-    fields.extend(param1.fields.into_iter());
-    fields.extend(param2.fields.into_iter());
+macro_rules! define_map {
+    ($fn_name:ident, $($i:ident),+) => {
+        pub fn $fn_name<'a, F, $($i, )+ NewDecodesTo, TypeLock>(
+            func: F,
+            $($i: SelectionSet<'a, $i, TypeLock>,)+
+        ) -> SelectionSet<'a, NewDecodesTo, TypeLock>
+        where
+            F: Fn($($i, )+) -> NewDecodesTo + 'a,
+            $($i: 'a,)+
+            NewDecodesTo: 'a
+        {
+            let mut fields = Vec::new();
+            $(
+                fields.extend($i.fields.into_iter());
+            )+
 
-    SelectionSet {
-        phantom: PhantomData,
-        fields,
-        decoder: json_decode::map2(func, param1.decoder, param2.decoder),
-    }
+            SelectionSet {
+                phantom: PhantomData,
+                fields,
+                decoder: json_decode::$fn_name(func, $($i.decoder, )+)
+            }
+        }
+    };
 }
+
+define_map!(map2, _1, _2);
+define_map!(map3, _1, _2, _3);
+define_map!(map4, _1, _2, _3, _4);
+define_map!(map5, _1, _2, _3, _4, _5);
+define_map!(map6, _1, _2, _3, _4, _5, _6);
+define_map!(map7, _1, _2, _3, _4, _5, _6, _7);
+define_map!(map8, _1, _2, _3, _4, _5, _6, _7, _8);
+define_map!(map9, _1, _2, _3, _4, _5, _6, _7, _8, _9);
+define_map!(map10, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10);
+define_map!(map11, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11);
+define_map!(map12, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12);
+define_map!(map13, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13);
 
 #[cfg(test)]
 mod tests {
