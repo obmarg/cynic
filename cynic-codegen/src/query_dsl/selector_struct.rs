@@ -68,6 +68,11 @@ impl quote::ToTokens for SelectorStruct {
 
         let name = &self.name;
         let fields = &self.fields;
+        let query_root = if self.name.to_string() == "Query" {
+            quote! { impl ::cynic::QueryRoot for #name {} }
+        } else {
+            quote! {}
+        };
 
         tokens.append_all(quote! {
             pub struct #name;
@@ -77,6 +82,8 @@ impl quote::ToTokens for SelectorStruct {
                     #fields
                 )*
             }
+
+            #query_root
         });
     }
 }
