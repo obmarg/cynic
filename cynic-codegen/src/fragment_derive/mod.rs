@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 use proc_macro2::{Span, TokenStream};
 use quote::format_ident;
@@ -402,9 +402,13 @@ impl FragmentImpl {
                     let field_name = Ident::for_field(&field_name);
 
                     if let Some(gql_field) = object.fields.get(&field_name) {
-                        let argument_structs =
-                            argument_structs(arguments, gql_field, &object.name, &query_dsl_path)?;
-
+                        let argument_structs = argument_structs(
+                            arguments,
+                            gql_field,
+                            &object.name,
+                            &query_dsl_path,
+                            field.span(),
+                        )?;
                         fields.push(FieldSelectorCall {
                             selector_function: SelectorFunction::for_field(
                                 &gql_field.field_type,
@@ -498,7 +502,33 @@ fn argument_structs(
     field: &Field,
     containing_object_name: &Ident,
     query_dsl_path: &TypePath,
+    missing_arg_span: Span,
 ) -> Result<Vec<ArgumentStruct>, syn::Error> {
+    let all_required: HashSet<Ident> = field
+        .arguments
+        .iter()
+        .filter(|(name, arg)| arg.required)
+        .map(|(name, _)| name.clone())
+        .collect();
+
+    let provided_names: HashSet<Ident> = arguments
+        .iter()
+        .map(|arg| arg.argument_name.clone().into())
+        .collect();
+
+    let missing_args: Vec<_> = all_required
+        .difference(&provided_names)
+        .map(|s| s.to_string())
+        .collect();
+    if !missing_args.is_empty() {
+        let missing_args = missing_args.join(", ");
+
+        return Err(syn::Error::new(
+            missing_arg_span,
+            format!("Missing cynic_arguments: {}", missing_args),
+        ));
+    }
+
     let mut required = vec![];
     let mut optional = vec![];
     for provided_argument in arguments {
