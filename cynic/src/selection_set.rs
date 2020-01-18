@@ -2,7 +2,7 @@ use json_decode::Decoder;
 use std::collections::HashMap;
 use std::marker::PhantomData;
 
-use crate::{field::Field, scalar, Argument, GraphQLQuery};
+use crate::{field::Field, scalar, Argument, GraphQLResponse, QueryBody, QueryRoot};
 
 #[derive(Debug, PartialEq)]
 enum Error {
@@ -17,15 +17,26 @@ pub struct SelectionSet<'a, DecodesTo, TypeLock> {
     phantom: PhantomData<TypeLock>,
 }
 
-pub trait Selectable {
+// TODO: This definitely should live in a different file.
+pub trait Query {
     type TypeLock;
+    type ResponseData;
 
-    fn to_query<'a>(&'a self) -> Result<GraphQLQuery<'a>, ()>;
+    fn body<'a>(&'a self) -> Result<QueryBody<'a>, ()>;
+    fn decode_response(
+        &self,
+        response: GraphQLResponse<serde_json::Value>,
+    ) -> Result<GraphQLResponse<Self::ResponseData>, json_decode::DecodeError>;
 }
 
-impl<'a, DecodesTo, TypeLock> Selectable for SelectionSet<'a, DecodesTo, TypeLock> {
+impl<'a, DecodesTo, TypeLock> Query for SelectionSet<'a, DecodesTo, TypeLock>
+where
+    TypeLock: QueryRoot,
+{
     type TypeLock = TypeLock;
-    fn to_query<'b>(&'b self) -> Result<GraphQLQuery<'b>, ()> {
+    type ResponseData = DecodesTo;
+
+    fn body<'b>(&'b self) -> Result<QueryBody<'b>, ()> {
         (self as &SelectionSet<'a, DecodesTo, TypeLock>)
             .query_and_arguments()
             .map(|(query, arguments)| {
@@ -35,8 +46,26 @@ impl<'a, DecodesTo, TypeLock> Selectable for SelectionSet<'a, DecodesTo, TypeLoc
                     .map(|(i, value)| (format!("${}", i), value))
                     .collect();
 
-                GraphQLQuery { query, variables }
+                QueryBody { query, variables }
             })
+    }
+
+    fn decode_response(
+        &self,
+        response: GraphQLResponse<serde_json::Value>,
+    ) -> Result<GraphQLResponse<DecodesTo>, json_decode::DecodeError> {
+        if let Some(data) = response.data {
+            Ok(GraphQLResponse {
+                // TODO: GET RID OF UNWRAP.  I am being extremely lazy by calling it.
+                data: Some(self.decode(&data).unwrap()),
+                errors: response.errors,
+            })
+        } else {
+            Ok(GraphQLResponse {
+                data: None,
+                errors: response.errors,
+            })
+        }
     }
 }
 
@@ -87,6 +116,18 @@ pub fn boolean() -> SelectionSet<'static, bool, ()> {
     SelectionSet {
         fields: vec![],
         decoder: json_decode::boolean(),
+        phantom: PhantomData,
+    }
+}
+
+pub fn serde<T>() -> SelectionSet<'static, T, ()>
+where
+    for<'de> T: serde::Deserialize<'de>,
+    T: 'static,
+{
+    SelectionSet {
+        fields: vec![],
+        decoder: json_decode::serde(),
         phantom: PhantomData,
     }
 }
@@ -222,6 +263,18 @@ define_map!(map10, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10);
 define_map!(map11, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11);
 define_map!(map12, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12);
 define_map!(map13, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13);
+define_map!(map14, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14);
+define_map!(map15, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15);
+define_map!(map16, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16);
+define_map!(map17, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17);
+define_map!(map18, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18);
+define_map!(
+    map19, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19
+);
+define_map!(
+    map20, _1, _2, _3, _4, _5, _6, _7, _8, _9, _10, _11, _12, _13, _14, _15, _16, _17, _18, _19,
+    _20
+);
 
 #[cfg(test)]
 mod tests {

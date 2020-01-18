@@ -2,7 +2,7 @@ use graphql_parser::schema;
 use proc_macro2::TokenStream;
 use std::collections::HashSet;
 
-use crate::{Ident, StructField};
+use crate::{Ident, StructField, TypeIndex};
 
 // TODO: Generate some of these somewhere...
 
@@ -22,7 +22,7 @@ impl ArgumentStruct {
     pub fn from_field(
         field: &schema::Field,
         required: bool,
-        scalar_names: &HashSet<String>,
+        type_index: &TypeIndex,
     ) -> ArgumentStruct {
         ArgumentStruct {
             name: ArgumentStruct::name_for_field(&field.name, required),
@@ -33,7 +33,7 @@ impl ArgumentStruct {
                     StructField::from_input_value(
                         &arg,
                         Ident::for_module("super").into(),
-                        scalar_names,
+                        type_index,
                     )
                 })
                 .collect(),

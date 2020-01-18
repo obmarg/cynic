@@ -1,7 +1,6 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
-use crate::graphql_extensions::DocumentExt;
-use crate::{FieldType, Ident, TypePath};
+use crate::{FieldType, Ident, TypeIndex, TypePath};
 
 pub struct Schema {
     pub objects: HashMap<Ident, Object>,
@@ -11,14 +10,14 @@ impl From<graphql_parser::schema::Document> for Schema {
     fn from(document: graphql_parser::schema::Document) -> Self {
         use graphql_parser::schema::{Definition, TypeDefinition};
 
-        let scalar_names = document.scalar_names();
+        let type_index = TypeIndex::for_schema(&document);
 
         let mut objects = HashMap::new();
 
         for definition in document.definitions {
             match definition {
                 Definition::TypeDefinition(TypeDefinition::Object(object)) => {
-                    let object = Object::from_object(object, &scalar_names);
+                    let object = Object::from_object(object, &type_index);
                     objects.insert(object.name.clone(), object);
                 }
                 _ => {}
@@ -36,10 +35,7 @@ pub struct Object {
 }
 
 impl Object {
-    fn from_object(
-        obj: graphql_parser::schema::ObjectType,
-        scalar_names: &HashSet<String>,
-    ) -> Object {
+    fn from_object(obj: graphql_parser::schema::ObjectType, scalar_names: &TypeIndex) -> Object {
         Object {
             selector_struct: Ident::for_type(&obj.name),
             fields: obj
@@ -60,18 +56,18 @@ pub struct Field {
 }
 
 impl Field {
-    fn from_field(field: &graphql_parser::schema::Field, scalar_names: &HashSet<String>) -> Field {
+    fn from_field(field: &graphql_parser::schema::Field, type_index: &TypeIndex) -> Field {
         Field {
             name: Ident::for_field(&field.name),
             field_type: FieldType::from_schema_type(
                 &field.field_type,
                 TypePath::new(vec![]),
-                scalar_names,
+                type_index,
             ),
             arguments: field
                 .arguments
                 .iter()
-                .map(Argument::from_input_value)
+                .map(|a| Argument::from_input_value(a, type_index))
                 .map(|a| (a.name.clone(), a))
                 .collect(),
         }
@@ -84,12 +80,12 @@ pub struct Argument {
 }
 
 impl Argument {
-    fn from_input_value(value: &graphql_parser::schema::InputValue) -> Argument {
-        // Note: passing a bad TypePath & scalar_names here intentionally,
-        // so as to avoid having to pass them in.  Only need this FieldType
-        // to check if argument is required...
+    fn from_input_value(
+        value: &graphql_parser::schema::InputValue,
+        type_index: &TypeIndex,
+    ) -> Argument {
         let argument_type =
-            FieldType::from_schema_type(&value.value_type, Ident::new("").into(), &HashSet::new());
+            FieldType::from_schema_type(&value.value_type, Ident::new("").into(), type_index);
         Argument {
             name: Ident::for_field(&value.name),
             required: !argument_type.is_nullable(),

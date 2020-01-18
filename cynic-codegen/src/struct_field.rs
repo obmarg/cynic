@@ -4,7 +4,7 @@ use std::collections::HashSet;
 
 use super::field_type::FieldType;
 use super::type_path::TypePath;
-use crate::ident::Ident;
+use crate::{Ident, TypeIndex};
 
 #[derive(Debug)]
 pub struct StructField {
@@ -16,11 +16,11 @@ impl StructField {
     pub fn from_input_value(
         value: &schema::InputValue,
         type_path: TypePath,
-        scalar_names: &HashSet<String>,
+        type_index: &TypeIndex,
     ) -> Self {
         StructField {
             name: Ident::for_field(&value.name),
-            argument_type: FieldType::from_schema_type(&value.value_type, type_path, scalar_names),
+            argument_type: FieldType::from_schema_type(&value.value_type, type_path, type_index),
         }
     }
 

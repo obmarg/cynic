@@ -9,6 +9,7 @@ use crate::ident::Ident;
 pub struct TypePath {
     path: Vec<Ident>,
     relative: bool,
+    is_void: bool,
 }
 
 impl TypePath {
@@ -16,6 +17,7 @@ impl TypePath {
         TypePath {
             path: path,
             relative: true,
+            is_void: false,
         }
     }
 
@@ -23,6 +25,15 @@ impl TypePath {
         TypePath {
             path: path,
             relative: false,
+            is_void: false,
+        }
+    }
+
+    pub fn void() -> Self {
+        TypePath {
+            path: vec![],
+            relative: false,
+            is_void: true,
         }
     }
 
@@ -43,6 +54,7 @@ impl TypePath {
         TypePath {
             path: result_path,
             relative,
+            is_void: false,
         }
     }
 
@@ -50,6 +62,7 @@ impl TypePath {
         TypePath {
             path: vec![],
             relative: true,
+            is_void: false,
         }
     }
 
@@ -63,6 +76,7 @@ impl From<Ident> for TypePath {
         TypePath {
             path: vec![ident],
             relative: true,
+            is_void: false,
         }
     }
 }
@@ -71,6 +85,11 @@ impl quote::ToTokens for TypePath {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         use quote::{quote, TokenStreamExt};
         use std::iter::FromIterator;
+
+        if self.is_void {
+            tokens.append_all(quote! { () });
+            return;
+        }
 
         let initial = if !self.relative && !self.path.is_empty() {
             Some(quote! { :: })

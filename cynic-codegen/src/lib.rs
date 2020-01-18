@@ -11,12 +11,14 @@ mod ident;
 mod module;
 mod query_dsl;
 mod struct_field;
+mod type_index;
 mod type_path;
 
 use error::Error;
 use field_type::FieldType;
 use ident::Ident;
 use struct_field::StructField;
+use type_index::TypeIndex;
 use type_path::TypePath;
 
 #[proc_macro]

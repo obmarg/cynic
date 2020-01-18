@@ -8,8 +8,8 @@ mod input_struct;
 mod selector_struct;
 
 use super::module::Module;
-use crate::graphql_extensions::{DocumentExt, FieldExt};
-use crate::Error;
+use crate::graphql_extensions::FieldExt;
+use crate::{Error, TypeIndex};
 pub use argument_struct::ArgumentStruct;
 pub use field_selector::FieldSelector;
 use graphql_enum::GraphQLEnum;
@@ -58,7 +58,7 @@ impl From<graphql_parser::schema::Document> for QueryDsl {
     fn from(document: graphql_parser::schema::Document) -> Self {
         use graphql_parser::schema::{Definition, TypeDefinition};
 
-        let scalar_names = document.scalar_names();
+        let type_index = TypeIndex::for_schema(&document);
 
         let mut selectors = vec![];
         let mut enums = vec![];
@@ -68,7 +68,7 @@ impl From<graphql_parser::schema::Document> for QueryDsl {
         for definition in document.definitions {
             match definition {
                 Definition::TypeDefinition(TypeDefinition::Object(object)) => {
-                    selectors.push(SelectorStruct::from_object(&object, &scalar_names));
+                    selectors.push(SelectorStruct::from_object(&object, &type_index));
 
                     let mut argument_structs = vec![];
                     for field in &object.fields {
@@ -77,7 +77,7 @@ impl From<graphql_parser::schema::Document> for QueryDsl {
                             argument_structs.push(ArgumentStruct::from_field(
                                 field,
                                 true,
-                                &scalar_names,
+                                &type_index,
                             ));
                         }
 
@@ -86,7 +86,7 @@ impl From<graphql_parser::schema::Document> for QueryDsl {
                             argument_structs.push(ArgumentStruct::from_field(
                                 field,
                                 false,
-                                &scalar_names,
+                                &type_index,
                             ));
                         }
                     }
@@ -99,7 +99,7 @@ impl From<graphql_parser::schema::Document> for QueryDsl {
                     enums.push(gql_enum.into());
                 }
                 Definition::TypeDefinition(TypeDefinition::InputObject(obj)) => {
-                    inputs.push(InputStruct::from_input_object(obj, &scalar_names));
+                    inputs.push(InputStruct::from_input_object(obj, &type_index));
                 }
                 _ => {}
             }

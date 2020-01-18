@@ -5,7 +5,7 @@ use super::argument_struct::ArgumentStruct;
 use super::field_selector::FieldSelector;
 use crate::graphql_extensions::FieldExt;
 
-use crate::{FieldType, Ident, TypePath};
+use crate::{FieldType, Ident, TypeIndex, TypePath};
 
 /// We generate a SelectorStruct for each queryable object in the schema.
 ///
@@ -19,10 +19,7 @@ pub struct SelectorStruct {
 }
 
 impl SelectorStruct {
-    pub fn from_object(
-        obj: &graphql_parser::schema::ObjectType,
-        scalar_names: &HashSet<String>,
-    ) -> Self {
+    pub fn from_object(obj: &graphql_parser::schema::ObjectType, type_index: &TypeIndex) -> Self {
         let name = Ident::for_type(&obj.name);
         SelectorStruct {
             name: name.clone(),
@@ -53,7 +50,7 @@ impl SelectorStruct {
                         FieldType::from_schema_type(
                             &field.field_type,
                             TypePath::empty(),
-                            scalar_names,
+                            type_index,
                         ),
                         name.clone(),
                         required_args_struct_name,

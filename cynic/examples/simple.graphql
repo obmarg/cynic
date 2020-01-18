@@ -7,9 +7,11 @@ type Query {
 type TestStruct {
   fieldOne(x: Int, y: String): String!
   nested: Nested!
+  optNested: Nested
   json: JSON
 }
 
 type Nested {
   aString: String!
+  optString: String
 }

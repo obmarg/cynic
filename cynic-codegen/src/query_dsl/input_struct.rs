@@ -2,7 +2,7 @@ use graphql_parser::schema;
 use proc_macro2::TokenStream;
 use std::collections::HashSet;
 
-use crate::{Ident, StructField, TypePath};
+use crate::{Ident, StructField, TypeIndex, TypePath};
 
 #[derive(Debug)]
 pub struct InputStruct {
@@ -11,13 +11,13 @@ pub struct InputStruct {
 }
 
 impl InputStruct {
-    pub fn from_input_object(obj: schema::InputObjectType, scalar_names: &HashSet<String>) -> Self {
+    pub fn from_input_object(obj: schema::InputObjectType, type_index: &TypeIndex) -> Self {
         InputStruct {
             name: Ident::for_type(&obj.name),
             fields: obj
                 .fields
                 .iter()
-                .map(|field| StructField::from_input_value(&field, TypePath::empty(), scalar_names))
+                .map(|field| StructField::from_input_value(&field, TypePath::empty(), type_index))
                 .collect(),
         }
     }

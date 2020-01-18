@@ -217,7 +217,7 @@ impl quote::ToTokens for FieldSelectorParameter {
         let field_type = &self.field_type;
 
         tokens.append_all(quote! {
-            #field_type::selection_set()
+            #field_type::query()
         });
     }
 }
@@ -230,6 +230,14 @@ enum SelectorFunction {
 
 impl SelectorFunction {
     fn for_field(field_type: &FieldType, field_constructor: TypePath) -> SelectorFunction {
+        if let FieldType::Scalar(_, _) = field_type {
+            // We special case scalars as their vec/optional-ness is always handled
+            // by the functions on the generated query_dsl.
+            // Whereas other types call into the QueryFragment::query function
+            // which can't know whether the type is optional/repeated at this level.
+            return SelectorFunction::Field(field_constructor);
+        }
+
         if field_type.is_nullable() {
             SelectorFunction::Opt(Box::new(SelectorFunction::for_field(
                 &field_type.clone().as_required(),
@@ -291,7 +299,7 @@ impl quote::ToTokens for FieldSelectorCall {
         let inner_call = if self.contains_composite {
             let field_type = &self.query_fragment_field_type;
             quote! {
-                #field_type::selection_set(#initial_args args.into_args())
+                #field_type::query(#initial_args args.into_args())
             }
         } else {
             quote! {#initial_args}
@@ -465,7 +473,7 @@ impl quote::ToTokens for FragmentImpl {
                 type SelectionSet = ::cynic::SelectionSet<'static, Self, #selector_struct>;
                 type Arguments = #argument_struct;
 
-                fn selection_set(args: Self::Arguments) -> Self::SelectionSet {
+                fn query(args: Self::Arguments) -> Self::SelectionSet {
                     use ::cynic::{QueryFragment, IntoArguments};
 
                     let new = |#(#constructor_params),*| #target_struct {

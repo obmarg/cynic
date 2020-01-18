@@ -24,6 +24,7 @@ struct TestStruct {
     #[cynic_arguments(x = Some(1), y = Some("1".to_string()))]
     field_one: String,
     nested: Nested,
+    opt_nested: Option<Nested>,
 }
 
 #[derive(cynic::QueryFragment)]
@@ -34,6 +35,7 @@ struct TestStruct {
 )]
 struct Nested {
     a_string: String,
+    opt_string: Option<String>,
 }
 
 #[derive(cynic::QueryFragment)]
@@ -77,7 +79,7 @@ impl cynic::QueryFragment<'static> for TestStruct {
     type SelectionSet = selection_set::SelectionSet<'static, Self, query_dsl::TestStruct>;
     type Arguments = ArgStruct;
 
-    fn selection_set() -> Self::SelectionSet {
+    fn query() -> Self::SelectionSet {
         // TODO: Got to say I'm not that enamoured with this syntax.
         // Is there a better way to write this?
         selection_set::map2(
@@ -91,7 +93,7 @@ impl cynic::QueryFragment<'static> for TestStruct {
 impl cynic::QueryFragment<'static> for Nested {
     type SelectionSet = selection_set::SelectionSet<'static, Self, query_dsl::Nested>;
 
-    fn selection_set() -> Self::SelectionSet {
+    fn query() -> Self::SelectionSet {
         selection_set::map(Nested::new, query_dsl::Nested::a_string())
     }
 }

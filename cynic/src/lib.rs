@@ -2,12 +2,14 @@ use std::collections::HashMap;
 
 mod argument;
 mod field;
+mod result;
 mod scalar;
 pub mod selection_set;
 
 pub use argument::Argument;
+pub use result::{GraphQLError, GraphQLResponse, GraphQLResult, PossiblyParsedData};
 pub use scalar::Scalar;
-pub use selection_set::SelectionSet;
+pub use selection_set::{Query, SelectionSet};
 
 fn main() {
     println!("Hello, world!");
@@ -22,16 +24,10 @@ fn main() {
 // Contains<T>?
 
 pub trait QueryFragment<'a> {
-    type SelectionSet: selection_set::Selectable;
+    type SelectionSet;
     type Arguments: FragmentArguments;
 
-    // TODO: Need an argument type here...
-
-    // Selection set needs to implement the argument type.
-
-    // And we provide some sort of conversion between argument
-    // types.  Maybe From?  Maybe something else...
-    fn selection_set(arguments: Self::Arguments) -> Self::SelectionSet;
+    fn query(arguments: Self::Arguments) -> Self::SelectionSet;
 }
 
 /// A marker trait for the arguments types on QueryFragments.
@@ -73,24 +69,12 @@ where
 
 pub trait QueryRoot {}
 
-#[derive(Debug)]
-pub struct GraphQLQuery<'a> {
+#[derive(Debug, serde::Serialize)]
+pub struct QueryBody<'a> {
     query: String,
     variables: HashMap<String, &'a serde_json::Value>,
-}
-
-// TODO: THink about this API
-pub fn to_query<'a, Fragment>(args: Fragment::Arguments) -> String
-where
-    Fragment: QueryFragment<'a>,
-    Fragment::SelectionSet: selection_set::Selectable,
-    <Fragment::SelectionSet as selection_set::Selectable>::TypeLock: QueryRoot,
-{
-    use selection_set::Selectable;
-
-    let selection_set = Fragment::selection_set(args);
-    let query = selection_set.to_query();
-    format!("{:?}", query)
+    // TODO: not sure we need this next one
+    //operation_name: String,
 }
 
 pub use cynic_codegen::{query_dsl, FragmentArguments, QueryFragment};

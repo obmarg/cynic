@@ -6,18 +6,20 @@ use crate::ident::Ident;
 #[derive(Debug)]
 pub struct GraphQLEnum {
     name: Ident,
-    value_names: Vec<Ident>,
+    rust_value_names: Vec<Ident>,
+    graphql_names: Vec<String>,
 }
 
 impl From<EnumType> for GraphQLEnum {
     fn from(enum_type: EnumType) -> Self {
         GraphQLEnum {
             name: Ident::for_type(&enum_type.name),
-            value_names: enum_type
+            rust_value_names: enum_type
                 .values
                 .iter()
                 .map(|v| Ident::for_type(&v.name))
                 .collect(),
+            graphql_names: enum_type.values.iter().map(|v| v.name.clone()).collect(),
         }
     }
 }
@@ -27,15 +29,17 @@ impl quote::ToTokens for GraphQLEnum {
         use quote::{quote, TokenStreamExt};
 
         let enum_name = &self.name;
-        let enum_values = &self.value_names;
+        let enum_values = &self.rust_value_names;
+        let graphql_names = self
+            .graphql_names
+            .iter()
+            .map(|n| proc_macro2::Literal::string(&n));
 
         tokens.append_all(quote! {
-            // TODO: Actually not sure I can straight up derive serialize & deserialize
-            // as i've probably implemented some transformation on the names.
-            // I should update the fields with #serde(from) annotations or something
-            #[derive(PartialEq, Eq, Debug, ::serde::Serialize, ::serde::de::DeserializeOwned)]
+            #[derive(PartialEq, Eq, Debug, ::serde::Serialize, ::serde::Deserialize)]
             pub enum #enum_name {
                 #(
+                    #[serde(rename=#graphql_names)]
                     #enum_values
                 ),*
             }
@@ -43,12 +47,12 @@ impl quote::ToTokens for GraphQLEnum {
             // TODO: maybe derive the QueryFragment sometime?
             // Also not entirely convinced that this is the right way to do it,
             // should the query fragment code just be enum aware?
-            impl QueryFragment for #enum_name {
+            impl ::cynic::QueryFragment<'static> for #enum_name {
                 type SelectionSet = ::cynic::SelectionSet<'static, Self, ()>;
                 type Arguments = ();
 
-                fn selection_set(args: Self::Arguments) -> Self::SelectionSet {
-                    ::cynic::selection_set::json()
+                fn query(args: Self::Arguments) -> Self::SelectionSet {
+                    ::cynic::selection_set::serde()
                 }
             }
         })

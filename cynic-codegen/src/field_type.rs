@@ -1,12 +1,12 @@
 use graphql_parser::schema;
 use proc_macro2::TokenStream;
-use std::collections::HashSet;
 
-use crate::{Ident, TypePath};
+use crate::{Ident, TypeIndex, TypePath};
 
 #[derive(Debug, Clone)]
 pub enum FieldType {
     Scalar(TypePath, bool),
+    Enum(TypePath, bool),
     Other(TypePath, bool),
     List(Box<FieldType>, bool),
 }
@@ -15,36 +15,38 @@ impl FieldType {
     pub fn from_schema_type(
         schema_type: &schema::Type,
         type_path: TypePath,
-        scalar_names: &HashSet<String>,
+        type_index: &TypeIndex,
     ) -> Self {
-        FieldType::from_schema_type_internal(schema_type, type_path, scalar_names, true)
+        FieldType::from_schema_type_internal(schema_type, type_path, type_index, true)
     }
 
     fn from_schema_type_internal(
         schema_type: &schema::Type,
         type_path: TypePath,
-        scalar_names: &HashSet<String>,
+        type_index: &TypeIndex,
         nullable: bool,
     ) -> Self {
         use schema::Type;
 
         match schema_type {
             Type::NonNullType(inner_type) => {
-                FieldType::from_schema_type_internal(inner_type, type_path, scalar_names, false)
+                FieldType::from_schema_type_internal(inner_type, type_path, type_index, false)
             }
             Type::ListType(inner_type) => FieldType::List(
                 Box::new(FieldType::from_schema_type_internal(
-                    inner_type,
-                    type_path,
-                    scalar_names,
-                    true,
+                    inner_type, type_path, type_index, true,
                 )),
                 nullable,
             ),
             Type::NamedType(name) => {
-                if scalar_names.contains(name) {
+                if type_index.is_scalar(name) {
                     FieldType::Scalar(
                         TypePath::concat(&[type_path, Ident::for_inbuilt_scalar(name).into()]),
+                        nullable,
+                    )
+                } else if type_index.is_enum(name) {
+                    FieldType::Enum(
+                        TypePath::concat(&[type_path, Ident::for_type(name).into()]),
                         nullable,
                     )
                 } else if name == "Int" {
@@ -70,6 +72,7 @@ impl FieldType {
         match self {
             FieldType::List(inner, _) => inner.contains_scalar(),
             FieldType::Scalar(_, _) => true,
+            FieldType::Enum(_, _) => false,
             FieldType::Other(_, _) => false,
         }
     }
@@ -78,6 +81,7 @@ impl FieldType {
         match self {
             FieldType::List(_, nullable) => nullable.clone(),
             FieldType::Scalar(_, nullable) => nullable.clone(),
+            FieldType::Enum(_, nullable) => nullable.clone(),
             FieldType::Other(_, nullable) => nullable.clone(),
         }
     }
@@ -87,6 +91,7 @@ impl FieldType {
             FieldType::List(inner, _) => inner.as_type_lock(),
             // TODO: I think this is wrong for scalars, but whatever.
             FieldType::Scalar(type_path, _) => type_path.clone(),
+            FieldType::Enum(_, _) => TypePath::void(),
             FieldType::Other(type_path, _) => type_path.clone(),
         }
     }
@@ -95,6 +100,7 @@ impl FieldType {
         match self {
             FieldType::List(inner, _) => FieldType::List(inner.clone(), false),
             FieldType::Scalar(type_path, _) => FieldType::Scalar(type_path.clone(), false),
+            FieldType::Enum(type_path, _) => FieldType::Enum(type_path.clone(), false),
             FieldType::Other(type_path, _) => FieldType::Other(type_path.clone(), false),
         }
     }
@@ -112,7 +118,7 @@ impl FieldType {
     /// and we use selection set functions manully to build up the required &
     /// list types.
     pub fn get_inner_type_from_syn(&self, ty: &syn::Type) -> syn::Type {
-        use syn::{GenericArgument, PathArguments, Type, TypePath};
+        use syn::{GenericArgument, PathArguments, Type};
         if self.is_nullable() {
             // Strip off a top level nullable & recurse...
             if let Type::Path(expr) = ty {
@@ -152,6 +158,7 @@ impl quote::ToTokens for FieldType {
             FieldType::List(inner_type, _) => quote! { Vec<#inner_type> },
             FieldType::Scalar(typename, _) => quote! { #typename },
             FieldType::Other(typename, _) => quote! { #typename },
+            FieldType::Enum(typename, _) => quote! { #typename },
         };
 
         if nullable {
