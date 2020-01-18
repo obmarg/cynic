@@ -406,7 +406,9 @@ impl FragmentImpl {
                                 ]),
                             ),
                             contains_composite: !gql_field.field_type.contains_scalar(),
-                            query_fragment_field_type: field.ty.clone(),
+                            query_fragment_field_type: gql_field
+                                .field_type
+                                .get_inner_type_from_syn(&field.ty),
                             argument_structs,
                         })
                     } else {
