@@ -549,13 +549,9 @@ fn argument_structs(
             ));
         }
     }
-    // TODO: We need to create & pass structs based on their existence on fields
-    // not whether or not they have been provided...
-    // Also need to be checking for the presence of required arguments and
-    // complaining if missing.
 
     let mut rv = vec![];
-    if !required.is_empty() {
+    if field.arguments.iter().any(|(_, arg)| arg.required) {
         rv.push(ArgumentStruct {
             type_name: TypePath::concat(&[
                 query_dsl_path.clone(),
@@ -566,7 +562,8 @@ fn argument_structs(
             required: true,
         });
     }
-    if !optional.is_empty() {
+
+    if field.arguments.iter().any(|(_, arg)| !arg.required) {
         rv.push(ArgumentStruct {
             type_name: TypePath::concat(&[
                 query_dsl_path.clone(),
