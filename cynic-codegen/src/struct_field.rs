@@ -8,8 +8,8 @@ use crate::ident::Ident;
 
 #[derive(Debug)]
 pub struct StructField {
-    name: Ident,
-    argument_type: FieldType,
+    pub(crate) name: Ident,
+    pub(crate) argument_type: FieldType,
 }
 
 impl StructField {

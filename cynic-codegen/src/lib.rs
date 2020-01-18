@@ -4,6 +4,7 @@ use proc_macro::TokenStream;
 
 mod error;
 mod field_type;
+mod fragment_arguments_derive;
 mod fragment_derive;
 mod graphql_extensions;
 mod ident;
@@ -33,6 +34,19 @@ pub fn query_fragment_derive(input: TokenStream) -> TokenStream {
     let ast = syn::parse_macro_input!(input as syn::DeriveInput);
 
     let rv = match fragment_derive::fragment_derive(&ast) {
+        Ok(tokens) => tokens.into(),
+        Err(e) => e.to_compile_error().into(),
+    };
+
+    eprintln!("{}", rv);
+    rv
+}
+
+#[proc_macro_derive(FragmentArguments)]
+pub fn fragment_arguments_derive(input: TokenStream) -> TokenStream {
+    let ast = syn::parse_macro_input!(input as syn::DeriveInput);
+
+    let rv = match fragment_arguments_derive::fragment_arguments_derive(&ast) {
         Ok(tokens) => tokens.into(),
         Err(e) => e.to_compile_error().into(),
     };

@@ -67,13 +67,28 @@ impl quote::ToTokens for FieldSelector {
         let rust_field_name = &self.rust_field_name;
         let argument_type_lock = self.field_type.as_type_lock();
 
+        let argument_names = vec![
+            self.required_args_struct_name
+                .as_ref()
+                .map(|_| Ident::new("required")),
+            self.optional_args_struct_name
+                .clone()
+                .map(|_| Ident::new("optional")),
+        ];
+        let argument_names: Vec<_> = argument_names.iter().flatten().collect();
+
         if let Some(scalar_call) = scalar_call {
             tokens.append_all(quote! {
                 pub fn #rust_field_name(#(#arguments, )*) ->
                 ::cynic::selection_set::SelectionSet<'static, #field_type, #type_lock> {
                     use ::cynic::selection_set::{string, integer, float, boolean};
 
-                    ::cynic::selection_set::field(#query_field_name, vec![], #scalar_call)
+                    let mut args: Vec<::cynic::Argument> = vec![];
+                    #(
+                        args.extend(#argument_names.into_iter());
+                    )*
+
+                    ::cynic::selection_set::field(#query_field_name, args, #scalar_call)
                 }
             })
         } else {

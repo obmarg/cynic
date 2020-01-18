@@ -1,7 +1,8 @@
 use json_decode::Decoder;
+use std::collections::HashMap;
 use std::marker::PhantomData;
 
-use crate::{field::Field, scalar, Argument};
+use crate::{field::Field, scalar, Argument, GraphQLQuery};
 
 #[derive(Debug, PartialEq)]
 enum Error {
@@ -18,13 +19,24 @@ pub struct SelectionSet<'a, DecodesTo, TypeLock> {
 
 pub trait Selectable {
     type TypeLock;
-    fn query_and_arguments<'a>(&'a self) -> (String, Vec<&'a serde_json::Value>);
+
+    fn to_query<'a>(&'a self) -> Result<GraphQLQuery<'a>, ()>;
 }
 
 impl<'a, DecodesTo, TypeLock> Selectable for SelectionSet<'a, DecodesTo, TypeLock> {
     type TypeLock = TypeLock;
-    fn query_and_arguments<'b>(&'b self) -> (String, Vec<&'b serde_json::Value>) {
-        (self as &SelectionSet<'a, DecodesTo, TypeLock>).query_and_arguments()
+    fn to_query<'b>(&'b self) -> Result<GraphQLQuery<'b>, ()> {
+        (self as &SelectionSet<'a, DecodesTo, TypeLock>)
+            .query_and_arguments()
+            .map(|(query, arguments)| {
+                let variables = arguments
+                    .into_iter()
+                    .enumerate()
+                    .map(|(i, value)| (format!("${}", i), value))
+                    .collect();
+
+                GraphQLQuery { query, variables }
+            })
     }
 }
 
@@ -33,15 +45,17 @@ impl<'a, DecodesTo, TypeLock> SelectionSet<'a, DecodesTo, TypeLock> {
         (*self.decoder).decode(value).map_err(Error::DecodeError)
     }
 
-    fn query_and_arguments<'b>(&'b self) -> (String, Vec<&'b serde_json::Value>) {
-        let mut arguments = vec![];
+    fn query_and_arguments<'b>(&'b self) -> Result<(String, Vec<&'b serde_json::Value>), ()> {
+        let mut arguments: Vec<Result<&serde_json::Value, ()>> = vec![];
         let query = self
             .fields
             .iter()
             .map(|f| f.query(0, 2, &mut arguments))
             .collect();
 
-        (query, arguments)
+        let arguments: Vec<_> = arguments.into_iter().collect::<Result<Vec<_>, ()>>()?;
+
+        Ok((query, arguments))
     }
 }
 
@@ -347,10 +361,10 @@ mod tests {
 
         assert_eq!(
             selection_set.query_and_arguments(),
-            (
+            Ok((
                 "test_struct {\n  field_one\n  nested {\n    a_string\n  }\n}\n".to_string(),
                 vec![]
-            )
+            ))
         )
     }
 
@@ -367,7 +381,7 @@ mod tests {
             ),
         );
 
-        let (query, args) = selection_set.query_and_arguments();
+        let (query, args) = selection_set.query_and_arguments().unwrap();
         assert_eq!(args.len(), 1);
     }
 
@@ -385,7 +399,7 @@ mod tests {
             ),
         );
 
-        let (query, args) = selection_set.query_and_arguments();
+        let (query, args) = selection_set.query_and_arguments().unwrap();
         assert_eq!(args.len(), 1);
     }
 }

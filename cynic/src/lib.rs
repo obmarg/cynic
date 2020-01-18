@@ -1,3 +1,5 @@
+use std::collections::HashMap;
+
 mod argument;
 mod field;
 mod scalar;
@@ -71,6 +73,12 @@ where
 
 pub trait QueryRoot {}
 
+#[derive(Debug)]
+pub struct GraphQLQuery<'a> {
+    query: String,
+    variables: HashMap<String, &'a serde_json::Value>,
+}
+
 // TODO: THink about this API
 pub fn to_query<'a, Fragment>(args: Fragment::Arguments) -> String
 where
@@ -81,8 +89,8 @@ where
     use selection_set::Selectable;
 
     let selection_set = Fragment::selection_set(args);
-    let query = selection_set.query_and_arguments();
+    let query = selection_set.to_query();
     format!("{:?}", query)
 }
 
-pub use cynic_codegen::{query_dsl, QueryFragment};
+pub use cynic_codegen::{query_dsl, FragmentArguments, QueryFragment};

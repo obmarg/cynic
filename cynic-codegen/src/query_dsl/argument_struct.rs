@@ -54,12 +54,31 @@ impl quote::ToTokens for ArgumentStruct {
             quote! { #[derive(Default)] }
         };
 
+        let argument_names: Vec<_> = arguments.iter().map(|a| a.name.clone()).collect();
+        let argument_strings: Vec<_> = arguments
+            .iter()
+            .map(|a| proc_macro2::Literal::string(&a.name.to_string()))
+            .collect();
+
         tokens.append_all(quote! {
             #attrs
             pub struct #name {
                 #(
                     #arguments,
                 )*
+            }
+
+            impl IntoIterator for #name {
+                type Item = ::cynic::Argument;
+                type IntoIter = ::std::vec::IntoIter<::cynic::Argument>;
+
+                fn into_iter(self) -> Self::IntoIter {
+                    vec![
+                        #(
+                            ::cynic::Argument::new_serialize(#argument_strings, self.#argument_names)
+                        ),*
+                    ].into_iter()
+                }
             }
         })
     }

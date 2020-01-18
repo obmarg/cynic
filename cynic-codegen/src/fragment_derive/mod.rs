@@ -44,7 +44,7 @@ pub fn fragment_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error
         ))?;
 
     let argument_struct = if let Some(arg_struct) = attributes.argument_struct {
-        let arg_struct_val = arg_struct.value;
+        let arg_struct_val = Ident::new(&arg_struct.value);
         let argument_struct = quote_spanned! { arg_struct.span => #arg_struct_val };
         syn::parse2(argument_struct)?
     } else {

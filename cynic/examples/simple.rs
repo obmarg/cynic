@@ -1,5 +1,5 @@
 fn main() {
-    println!("{}", cynic::to_query::<TestStruct>(()));
+    println!("{}", cynic::to_query::<TestStruct>(TestArgs {}));
 }
 
 mod query_dsl {
@@ -10,11 +10,15 @@ mod query_dsl {
 
 use cynic::selection_set;
 
+#[derive(cynic::FragmentArguments)]
+struct TestArgs {}
+
 #[derive(cynic::QueryFragment)]
 #[cynic(
     schema_path = "cynic/examples/simple.graphql",
     query_module = "query_dsl",
-    graphql_type = "TestStruct"
+    graphql_type = "TestStruct",
+    argument_struct = "TestArgs"
 )]
 struct TestStruct {
     #[cynic_arguments(x = Some(1), y = Some("1".to_string()))]
@@ -36,9 +40,7 @@ struct Nested {
 #[cynic(
     schema_path = "cynic/examples/simple.graphql",
     query_module = "query_dsl",
-    graphql_type = "TestStruct",
-    // Argument type can default to () or something
-    // argument_type = "Args"
+    graphql_type = "TestStruct"
 )]
 struct Test {
     #[cynic_arguments(x = Some(1), y = Some("1".to_string()))]

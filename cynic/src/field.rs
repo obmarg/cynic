@@ -10,7 +10,7 @@ impl Field {
         &'a self,
         indent: usize,
         indent_size: usize,
-        argument_values: &mut Vec<&'a serde_json::Value>,
+        argument_values: &mut Vec<Result<&'a serde_json::Value, ()>>,
     ) -> String {
         match self {
             Field::Leaf(field_name, args) => {
@@ -46,7 +46,7 @@ impl Field {
 /// Extracts any argument values & returns a string to be used in a query.
 fn handle_arguments<'a>(
     arguments: &'a Vec<Argument>,
-    argument_values: &mut Vec<&'a serde_json::Value>,
+    argument_values: &mut Vec<Result<&'a serde_json::Value, ()>>,
 ) -> String {
     if arguments.is_empty() {
         "".to_string()
@@ -56,8 +56,8 @@ fn handle_arguments<'a>(
         let comma_seperated = arguments
             .iter()
             .map(|arg| {
-                argument_values.push(&arg.value);
-                let rv = format!("{}=${}", arg.name, argument_index);
+                argument_values.push(arg.value.as_ref().map_err(|_| ()).clone());
+                let rv = format!("{}: ${}", arg.name, argument_index);
                 argument_index += 1;
                 rv
             })
@@ -121,7 +121,7 @@ mod tests {
         assert_eq!(
             arguments
                 .into_iter()
-                .map(|v| serde_json::from_value::<bool>(v.clone()).unwrap())
+                .map(|v| serde_json::from_value::<bool>(v.unwrap().clone()).unwrap())
                 .collect::<Vec<_>>(),
             vec![false, true]
         )
