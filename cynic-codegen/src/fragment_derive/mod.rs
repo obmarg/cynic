@@ -299,7 +299,7 @@ impl quote::ToTokens for FieldSelectorCall {
         let inner_call = if self.contains_composite {
             let field_type = &self.query_fragment_field_type;
             quote! {
-                #field_type::query(#initial_args args.into_args())
+                #initial_args #field_type::query(args.into_args())
             }
         } else {
             quote! {#initial_args}
@@ -326,14 +326,14 @@ impl quote::ToTokens for ArgumentStruct {
         let type_name = &self.type_name;
         let arguments = &self.fields;
         let default = if !self.required {
-            quote! { , ..Default::default() }
+            quote! { ..Default::default() }
         } else {
             quote! {}
         };
 
         tokens.append_all(quote! {
             #type_name {
-                #(#arguments),*
+                #(#arguments, )*
                 #default
             }
         });
