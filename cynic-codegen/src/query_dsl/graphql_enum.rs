@@ -30,7 +30,7 @@ impl quote::ToTokens for GraphQLEnum {
         let enum_values = &self.value_names;
 
         tokens.append_all(quote! {
-            #[derive(PartialEq, Eq, Debug)]
+            #[derive(PartialEq, Eq, Debug, ::serde::Serialize, ::serde::de::DeserializeOwned)]
             pub enum #enum_name {
                 #(
                     #enum_values

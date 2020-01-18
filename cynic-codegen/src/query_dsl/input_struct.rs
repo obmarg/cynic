@@ -31,6 +31,7 @@ impl quote::ToTokens for InputStruct {
         let fields = &self.fields;
 
         tokens.append_all(quote! {
+            #[derive(Debug, ::serde::Serialize)]
             pub struct #name {
                 #(
                     #fields,
