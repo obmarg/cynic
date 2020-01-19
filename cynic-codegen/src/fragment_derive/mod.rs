@@ -473,7 +473,7 @@ impl quote::ToTokens for FragmentImpl {
         let map_function = quote::format_ident!("map{}", fields.len());
 
         tokens.append_all(quote! {
-            impl ::cynic::QueryFragment<'static> for #target_struct {
+            impl ::cynic::QueryFragment for #target_struct {
                 type SelectionSet = ::cynic::SelectionSet<'static, Self, #selector_struct>;
                 type Arguments = #argument_struct;
 

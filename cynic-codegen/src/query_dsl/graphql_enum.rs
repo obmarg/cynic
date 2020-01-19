@@ -47,7 +47,7 @@ impl quote::ToTokens for GraphQLEnum {
             // TODO: maybe derive the QueryFragment sometime?
             // Also not entirely convinced that this is the right way to do it,
             // should the query fragment code just be enum aware?
-            impl ::cynic::QueryFragment<'static> for #enum_name {
+            impl ::cynic::QueryFragment for #enum_name {
                 type SelectionSet = ::cynic::SelectionSet<'static, Self, ()>;
                 type Arguments = ();
 

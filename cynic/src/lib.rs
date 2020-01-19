@@ -23,7 +23,7 @@ fn main() {
 // Perhaps with some kind of marker trait?
 // Contains<T>?
 
-pub trait QueryFragment<'a> {
+pub trait QueryFragment {
     type SelectionSet;
     type Arguments: FragmentArguments;
 
