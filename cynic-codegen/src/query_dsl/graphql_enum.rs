@@ -51,7 +51,7 @@ impl quote::ToTokens for GraphQLEnum {
                 type SelectionSet = ::cynic::SelectionSet<'static, Self, ()>;
                 type Arguments = ();
 
-                fn query(args: Self::Arguments) -> Self::SelectionSet {
+                fn fragment(args: Self::Arguments) -> Self::SelectionSet {
                     ::cynic::selection_set::serde()
                 }
             }

@@ -5,7 +5,7 @@ use std::marker::PhantomData;
 use crate::{field::Field, scalar, Argument, GraphQLResponse, QueryBody, QueryRoot};
 
 #[derive(Debug, PartialEq)]
-enum Error {
+pub(crate) enum Error {
     DecodeError(json_decode::DecodeError),
 }
 
@@ -18,63 +18,14 @@ pub struct SelectionSet<'a, DecodesTo, TypeLock> {
 }
 
 // TODO: This definitely should live in a different file.
-pub trait Query {
-    type TypeLock;
-    type ResponseData;
-
-    fn body<'a>(&'a self) -> Result<QueryBody<'a>, ()>;
-    fn decode_response(
-        &self,
-        response: GraphQLResponse<serde_json::Value>,
-    ) -> Result<GraphQLResponse<Self::ResponseData>, json_decode::DecodeError>;
-}
-
-impl<'a, DecodesTo, TypeLock> Query for SelectionSet<'a, DecodesTo, TypeLock>
-where
-    TypeLock: QueryRoot,
-{
-    type TypeLock = TypeLock;
-    type ResponseData = DecodesTo;
-
-    fn body<'b>(&'b self) -> Result<QueryBody<'b>, ()> {
-        (self as &SelectionSet<'a, DecodesTo, TypeLock>)
-            .query_and_arguments()
-            .map(|(query, arguments)| {
-                let variables = arguments
-                    .into_iter()
-                    .enumerate()
-                    .map(|(i, value)| (format!("${}", i), value))
-                    .collect();
-
-                QueryBody { query, variables }
-            })
-    }
-
-    fn decode_response(
-        &self,
-        response: GraphQLResponse<serde_json::Value>,
-    ) -> Result<GraphQLResponse<DecodesTo>, json_decode::DecodeError> {
-        if let Some(data) = response.data {
-            Ok(GraphQLResponse {
-                // TODO: GET RID OF UNWRAP.  I am being extremely lazy by calling it.
-                data: Some(self.decode(&data).unwrap()),
-                errors: response.errors,
-            })
-        } else {
-            Ok(GraphQLResponse {
-                data: None,
-                errors: response.errors,
-            })
-        }
-    }
-}
-
 impl<'a, DecodesTo, TypeLock> SelectionSet<'a, DecodesTo, TypeLock> {
-    fn decode(&self, value: &serde_json::Value) -> Result<DecodesTo, Error> {
+    pub(crate) fn decode(&self, value: &serde_json::Value) -> Result<DecodesTo, Error> {
         (*self.decoder).decode(value).map_err(Error::DecodeError)
     }
 
-    fn query_and_arguments<'b>(&'b self) -> Result<(String, Vec<&'b serde_json::Value>), ()> {
+    pub(crate) fn query_and_arguments<'b>(
+        &'b self,
+    ) -> Result<(String, Vec<&'b serde_json::Value>), ()> {
         let mut arguments: Vec<Result<&serde_json::Value, ()>> = vec![];
         let query = self
             .fields
@@ -204,6 +155,25 @@ where
     SelectionSet {
         fields: vec![field],
         decoder: json_decode::field(field_name, selection_set.decoder),
+        phantom: PhantomData,
+    }
+}
+
+pub(crate) fn select_query_field<'a, DecodesTo, InnerTypeLock: QueryRoot>(
+    selection_set: SelectionSet<'a, DecodesTo, InnerTypeLock>,
+) -> SelectionSet<'a, DecodesTo, ()>
+where
+    DecodesTo: 'a,
+{
+    let field = if selection_set.fields.is_empty() {
+        Field::Leaf("query".to_string(), vec![])
+    } else {
+        Field::Composite("query".to_string(), vec![], selection_set.fields)
+    };
+
+    SelectionSet {
+        fields: vec![field],
+        decoder: selection_set.decoder,
         phantom: PhantomData,
     }
 }

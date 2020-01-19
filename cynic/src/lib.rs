@@ -2,14 +2,16 @@ use std::collections::HashMap;
 
 mod argument;
 mod field;
+mod query;
 mod result;
 mod scalar;
 pub mod selection_set;
 
 pub use argument::Argument;
+pub use query::Query;
 pub use result::{GraphQLError, GraphQLResponse, GraphQLResult, PossiblyParsedData};
 pub use scalar::Scalar;
-pub use selection_set::{Query, SelectionSet};
+pub use selection_set::SelectionSet;
 
 fn main() {
     println!("Hello, world!");
@@ -27,7 +29,7 @@ pub trait QueryFragment {
     type SelectionSet;
     type Arguments: FragmentArguments;
 
-    fn query(arguments: Self::Arguments) -> Self::SelectionSet;
+    fn fragment(arguments: Self::Arguments) -> Self::SelectionSet;
 }
 
 /// A marker trait for the arguments types on QueryFragments.

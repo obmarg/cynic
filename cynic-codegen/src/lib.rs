@@ -2,6 +2,7 @@ extern crate proc_macro;
 
 use proc_macro::TokenStream;
 
+mod attributes;
 mod error;
 mod field_type;
 mod fragment_arguments_derive;

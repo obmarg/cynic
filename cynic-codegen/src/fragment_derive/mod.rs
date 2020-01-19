@@ -3,7 +3,10 @@ use std::collections::{HashMap, HashSet};
 use proc_macro2::{Span, TokenStream};
 use quote::format_ident;
 
-use crate::{query_dsl, FieldType, Ident, TypePath};
+use crate::{
+    attributes::{extract_meta_attrs, Attribute},
+    query_dsl, FieldType, Ident, TypePath,
+};
 
 mod cynic_arguments;
 mod schema_parsing;
@@ -12,9 +15,14 @@ use cynic_arguments::{arguments_from_field_attrs, FieldArgument};
 use schema_parsing::{Field, Object, Schema};
 
 pub fn fragment_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
-    use quote::{quote, quote_spanned};
+    fragment_derive_impl(ast, parse_struct_attrs(&ast.attrs)?)
+}
 
-    let attributes = parse_struct_attrs(&ast.attrs)?;
+pub fn fragment_derive_impl(
+    ast: &syn::DeriveInput,
+    attributes: FragmentDeriveAttributes,
+) -> Result<TokenStream, syn::Error> {
+    use quote::{quote, quote_spanned};
 
     let schema = std::fs::read_to_string(&attributes.schema_path.value).map_err(|e| {
         syn::Error::new(
@@ -72,107 +80,42 @@ pub fn fragment_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error
 }
 
 #[derive(Debug)]
-struct Attribute {
-    value: String,
-    span: Span,
+pub struct FragmentDeriveAttributes {
+    pub schema_path: Attribute,
+    pub query_module: Attribute,
+    pub graphql_type: Attribute,
+    pub argument_struct: Option<Attribute>,
 }
 
-impl From<syn::LitStr> for Attribute {
-    fn from(s: syn::LitStr) -> Self {
-        Attribute {
-            value: s.value(),
-            span: s.span(),
-        }
-    }
-}
+fn parse_struct_attrs(attrs: &Vec<syn::Attribute>) -> Result<FragmentDeriveAttributes, syn::Error> {
+    let (mut attr_map, attr_span) = extract_meta_attrs::<DeriveAttribute>(attrs)?;
 
-#[derive(Debug)]
-struct CynicAttributes {
-    schema_path: Attribute,
-    query_module: Attribute,
-    graphql_type: Attribute,
-    argument_struct: Option<Attribute>,
-}
-
-fn parse_struct_attrs(attrs: &Vec<syn::Attribute>) -> Result<CynicAttributes, syn::Error> {
     use syn::{spanned::Spanned, Lit, Meta, MetaList, MetaNameValue, NestedMeta};
-
-    let cynic_meta = attrs
-        .iter()
-        .find(|a| a.path.is_ident(&format_ident!("cynic")))
-        .ok_or(syn::Error::new(
-            Span::call_site(),
-            "cynic attribute not provided",
-        ))
-        .and_then(|attr| attr.parse_meta())?;
-
-    let mut attr_map: HashMap<DeriveAttribute, Attribute> = HashMap::new();
-
-    if let Meta::List(MetaList { nested, .. }) = &cynic_meta {
-        for meta in nested {
-            if let NestedMeta::Meta(Meta::NameValue(MetaNameValue { path, lit, .. })) = meta {
-                if let Some(ident) = path.get_ident() {
-                    let attr_name = ident
-                        .to_string()
-                        .parse()
-                        .map_err(|e| syn::Error::new(ident.span(), &e))?;
-
-                    if let Lit::Str(lit_str) = lit {
-                        attr_map.insert(attr_name, lit_str.clone().into());
-                    } else {
-                        // TODO: Re-factor this into something nicer...
-                        // Could probably return an Error enum and move the strings
-                        // elsewhere.
-                        // Could potentially also do this with combinators or similar..
-                        return Err(syn::Error::new(
-                            lit.span(),
-                            "values in the cynic attribute should be string literals",
-                        ));
-                    }
-                } else {
-                    return Err(syn::Error::new(
-                        path.span(),
-                        "keys in the cynic attribute should be a single identifier",
-                    ));
-                }
-            } else {
-                return Err(syn::Error::new(
-                    meta.span(),
-                    "The cynic attribute accepts a list of key=\"value\" pairs",
-                ));
-            }
-        }
-    } else {
-        return Err(syn::Error::new(
-            cynic_meta.span(),
-            "The cynic attribute accepts a list of key=\"value\" pairs",
-        ));
-    }
 
     let schema_path = attr_map
         .remove(&DeriveAttribute::SchemaPath)
         .ok_or(syn::Error::new(
-            cynic_meta.span(),
+            attr_span,
             "Missing required attribute: schema_path",
         ))?;
 
     let query_module = attr_map
         .remove(&DeriveAttribute::QueryModule)
         .ok_or(syn::Error::new(
-            cynic_meta.span(),
+            attr_span,
             "Missing required attribute: query_module",
         ))?;
 
     let graphql_type = attr_map
         .remove(&DeriveAttribute::GraphqlType)
         .ok_or(syn::Error::new(
-            cynic_meta.span(),
+            attr_span,
             "Missing required attribute: graphql_type",
         ))?;
 
     let argument_struct = attr_map.remove(&DeriveAttribute::ArgumentStruct);
 
-    Ok(CynicAttributes {
+    Ok(FragmentDeriveAttributes {
         schema_path,
         query_module,
         graphql_type,
@@ -217,7 +160,7 @@ impl quote::ToTokens for FieldSelectorParameter {
         let field_type = &self.field_type;
 
         tokens.append_all(quote! {
-            #field_type::query()
+            #field_type::fragment()
         });
     }
 }
@@ -299,7 +242,7 @@ impl quote::ToTokens for FieldSelectorCall {
         let inner_call = if self.contains_composite {
             let field_type = &self.query_fragment_field_type;
             quote! {
-                #initial_args #field_type::query(args.into_args())
+                #initial_args #field_type::fragment(args.into_args())
             }
         } else {
             quote! {#initial_args}
@@ -477,7 +420,7 @@ impl quote::ToTokens for FragmentImpl {
                 type SelectionSet = ::cynic::SelectionSet<'static, Self, #selector_struct>;
                 type Arguments = #argument_struct;
 
-                fn query(args: Self::Arguments) -> Self::SelectionSet {
+                fn fragment(args: Self::Arguments) -> Self::SelectionSet {
                     use ::cynic::{QueryFragment, IntoArguments};
 
                     let new = |#(#constructor_params),*| #target_struct {
