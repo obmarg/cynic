@@ -1,13 +1,13 @@
-use json_decode::{DecodeError, Decoder};
+use json_decode::{BoxDecoder, DecodeError, Decoder};
 use std::marker::PhantomData;
 
 pub trait Scalar: Sized {
     fn decode(value: &serde_json::Value) -> Result<Self, DecodeError>;
 }
 
-pub fn decoder<'a, S>() -> Box<dyn Decoder<'a, S> + 'a>
+pub fn decoder<'a, S>() -> BoxDecoder<'a, S>
 where
-    S: Scalar + 'a,
+    S: Scalar + 'a + Send + Sync,
 {
     Box::new(ScalarDecoder {
         phantom: PhantomData,

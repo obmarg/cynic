@@ -1,4 +1,4 @@
-use json_decode::Decoder;
+use json_decode::{BoxDecoder, Decoder};
 use std::collections::HashMap;
 use std::marker::PhantomData;
 
@@ -12,7 +12,7 @@ enum Error {
 pub struct SelectionSet<'a, DecodesTo, TypeLock> {
     fields: Vec<Field>,
 
-    decoder: Box<dyn Decoder<'a, DecodesTo> + 'a>,
+    decoder: BoxDecoder<'a, DecodesTo>,
 
     phantom: PhantomData<TypeLock>,
 }
@@ -123,7 +123,7 @@ pub fn boolean() -> SelectionSet<'static, bool, ()> {
 pub fn serde<T>() -> SelectionSet<'static, T, ()>
 where
     for<'de> T: serde::Deserialize<'de>,
-    T: 'static,
+    T: 'static + Send + Sync,
 {
     SelectionSet {
         fields: vec![],
@@ -142,7 +142,7 @@ pub fn json() -> SelectionSet<'static, serde_json::Value, ()> {
 
 pub fn scalar<S>() -> SelectionSet<'static, S, ()>
 where
-    S: scalar::Scalar + 'static,
+    S: scalar::Scalar + 'static + Send + Sync,
 {
     SelectionSet {
         fields: vec![],
@@ -155,7 +155,7 @@ pub fn vec<'a, DecodesTo, TypeLock>(
     inner_selection: SelectionSet<'a, DecodesTo, TypeLock>,
 ) -> SelectionSet<'a, Vec<DecodesTo>, TypeLock>
 where
-    DecodesTo: 'a,
+    DecodesTo: 'a + Send + Sync,
 {
     SelectionSet {
         fields: inner_selection.fields,
@@ -168,7 +168,7 @@ pub fn option<'a, DecodesTo, TypeLock>(
     inner_selection: SelectionSet<'a, DecodesTo, TypeLock>,
 ) -> SelectionSet<'a, Option<DecodesTo>, TypeLock>
 where
-    DecodesTo: 'a,
+    DecodesTo: 'a + Send + Sync,
 {
     SelectionSet {
         fields: inner_selection.fields,
@@ -215,7 +215,7 @@ pub fn map<'a, F, T1, NewDecodesTo, TypeLock>(
     param1: SelectionSet<'a, T1, TypeLock>,
 ) -> SelectionSet<'a, NewDecodesTo, TypeLock>
 where
-    F: Fn(T1) -> NewDecodesTo + 'a,
+    F: Fn(T1) -> NewDecodesTo + 'a + Send + Sync,
     T1: 'a,
     NewDecodesTo: 'a,
 {
@@ -233,7 +233,7 @@ macro_rules! define_map {
             $($i: SelectionSet<'a, $i, TypeLock>,)+
         ) -> SelectionSet<'a, NewDecodesTo, TypeLock>
         where
-            F: Fn($($i, )+) -> NewDecodesTo + 'a,
+            F: Fn($($i, )+) -> NewDecodesTo + 'a + Send + Sync,
             $($i: 'a,)+
             NewDecodesTo: 'a
         {
