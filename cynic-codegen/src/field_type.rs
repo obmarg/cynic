@@ -147,6 +147,60 @@ impl FieldType {
         }
         ty.clone()
     }
+
+    /// Generates a call to selection set functions for this type.
+    ///
+    /// Where inner_select is a call to the sub-fields to select (or the scalar
+    /// function if that's necceasry here)
+    pub fn selection_set_call(&self, inner_select: TokenStream) -> TokenStream {
+        use quote::quote;
+
+        if self.is_nullable() {
+            let inner = self.as_required().selection_set_call(inner_select);
+            return quote! {
+                ::cynic::selection_set::option(#inner)
+            };
+        }
+
+        match self {
+            FieldType::List(inner_type, _) => {
+                let inner = inner_type.selection_set_call(inner_select);
+                quote! {
+                    ::cynic::selection_set::vec(#inner)
+                }
+            }
+            FieldType::Enum(_, _) | FieldType::Other(_, _) | FieldType::Scalar(_, _) => {
+                quote! { #inner_select }
+            }
+        }
+    }
+
+    /// Creates the output DecodesTo for a selector function that represents
+    /// this type.  For example if inner is `T` and this is an optional
+    /// vec this will spit out Option<Vec<T>>
+    pub fn decodes_to(&self, inner_token: TokenStream) -> TokenStream {
+        // TODO: Probably possible to combine this with the ToTokens implementation below.
+        use quote::quote;
+
+        if self.is_nullable() {
+            let inner = self.as_required().decodes_to(inner_token);
+            return quote! {
+                Option<#inner>
+            };
+        }
+
+        match self {
+            FieldType::List(inner_type, _) => {
+                let inner = inner_type.decodes_to(inner_token);
+                quote! {
+                    Vec<#inner>
+                }
+            }
+            FieldType::Enum(_, _) | FieldType::Other(_, _) | FieldType::Scalar(_, _) => {
+                quote! { #inner_token }
+            }
+        }
+    }
 }
 
 impl quote::ToTokens for FieldType {

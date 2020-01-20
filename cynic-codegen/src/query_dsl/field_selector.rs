@@ -42,15 +42,15 @@ impl quote::ToTokens for FieldSelector {
 
         let query_field_name = syn::LitStr::new(&self.query_field_name, Span::call_site());
 
-        let scalar_call = if self.field_type.contains_scalar() {
-            if self.field_type.is_nullable() {
-                Some(quote! { ::cynic::selection_set::option(::cynic::selection_set::scalar()) })
-            } else {
-                Some(quote! { ::cynic::selection_set::scalar() })
-            }
+        let selector = if self.field_type.contains_scalar() {
+            // We call the scalar selector for scalars
+            quote! { ::cynic::selection_set::scalar() }
         } else {
-            None
+            // Otherwise we pass in the fields that the function
+            // we generate accept as an argument.
+            quote! { fields }
         };
+        let selector = self.field_type.selection_set_call(selector);
 
         let arguments = vec![
             self.required_args_struct_name
@@ -76,8 +76,9 @@ impl quote::ToTokens for FieldSelector {
                 .map(|_| Ident::new("optional")),
         ];
         let argument_names: Vec<_> = argument_names.iter().flatten().collect();
+        let decodes_to = self.field_type.decodes_to(quote! { T });
 
-        if let Some(scalar_call) = scalar_call {
+        if self.field_type.contains_scalar() {
             tokens.append_all(quote! {
                 pub fn #rust_field_name(#(#arguments, )*) ->
                 ::cynic::selection_set::SelectionSet<'static, #field_type, #type_lock> {
@@ -88,7 +89,7 @@ impl quote::ToTokens for FieldSelector {
                         args.extend(#argument_names.into_iter());
                     )*
 
-                    ::cynic::selection_set::field(#query_field_name, args, #scalar_call)
+                    ::cynic::selection_set::field(#query_field_name, args, #selector)
                 }
             })
         } else {
@@ -96,9 +97,13 @@ impl quote::ToTokens for FieldSelector {
                 pub fn #rust_field_name<'a, T>(
                     #(#arguments, )*
                     fields: ::cynic::selection_set::SelectionSet<'a, T, #argument_type_lock>
-                ) -> ::cynic::selection_set::SelectionSet<'a, T, #type_lock>
-                    where T: 'a {
-                        ::cynic::selection_set::field(#query_field_name, vec![], fields)
+                ) -> ::cynic::selection_set::SelectionSet<'a, #decodes_to, #type_lock>
+                    where T: 'a + Send + Sync {
+                        ::cynic::selection_set::field(
+                            #query_field_name,
+                            vec![],
+                            #selector
+                        )
                     }
             })
         }

@@ -203,18 +203,8 @@ impl SelectorFunction {
 
         match self {
             SelectorFunction::Field(type_path) => quote! { #type_path(#parameters) },
-            SelectorFunction::Opt(inner) => {
-                let inner = inner.to_call(parameters);
-                quote! {
-                    ::cynic::selection_set::option(#inner)
-                }
-            }
-            SelectorFunction::Vector(inner) => {
-                let inner = inner.to_call(parameters);
-                quote! {
-                   ::cynic::selection_set::vec(#inner)
-                }
-            }
+            SelectorFunction::Opt(inner) => inner.to_call(parameters),
+            SelectorFunction::Vector(inner) => inner.to_call(parameters),
         }
     }
 }

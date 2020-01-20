@@ -424,6 +424,7 @@ mod tests {
         assert_eq!(args.len(), 1);
     }
 
+    #[test]
     fn test_vars_with_optionals_present() {
         let selection_set: SelectionSet<Option<i32>, query_dsl::RootQuery> = map(
             |_| None,
@@ -439,6 +440,6 @@ mod tests {
         );
 
         let (query, args) = selection_set.query_and_arguments().unwrap();
-        assert_eq!(args.len(), 1);
+        assert_eq!(args.len(), 2);
     }
 }
