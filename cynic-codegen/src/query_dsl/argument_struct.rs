@@ -1,4 +1,4 @@
-use graphql_parser::schema;
+use graphql_parser::schema::{self, InputValue};
 use proc_macro2::TokenStream;
 use std::collections::HashSet;
 
@@ -21,13 +21,13 @@ impl ArgumentStruct {
 
     pub fn from_field(
         field: &schema::Field,
+        arguments: &Vec<InputValue>,
         required: bool,
         type_index: &TypeIndex,
     ) -> ArgumentStruct {
         ArgumentStruct {
             name: ArgumentStruct::name_for_field(&field.name, required),
-            arguments: field
-                .arguments
+            arguments: arguments
                 .iter()
                 .map(|arg| {
                     StructField::from_input_value(
@@ -60,6 +60,30 @@ impl quote::ToTokens for ArgumentStruct {
             .map(|a| proc_macro2::Literal::string(&a.name.to_string()))
             .collect();
 
+        let num_args = proc_macro2::Literal::usize_unsuffixed(argument_names.len());
+
+        let into_iter_impl = if self.required {
+            quote! {
+                vec![
+                    #(
+                        ::cynic::Argument::new_serialize(#argument_strings, self.#argument_names)
+                    ),*
+                ].into_iter()
+            }
+        } else {
+            quote! {
+                let mut args = Vec::with_capacity(#num_args);
+
+                #(
+                    if self.#argument_names.is_some() {
+                        args.push(::cynic::Argument::new_serialize(#argument_strings, self.#argument_names));
+                    }
+                )*
+
+                args.into_iter()
+            }
+        };
+
         tokens.append_all(quote! {
             #attrs
             pub struct #name {
@@ -73,11 +97,7 @@ impl quote::ToTokens for ArgumentStruct {
                 type IntoIter = ::std::vec::IntoIter<::cynic::Argument>;
 
                 fn into_iter(self) -> Self::IntoIter {
-                    vec![
-                        #(
-                            ::cynic::Argument::new_serialize(#argument_strings, self.#argument_names)
-                        ),*
-                    ].into_iter()
+                    #into_iter_impl
                 }
             }
         })

@@ -76,6 +76,7 @@ impl From<graphql_parser::schema::Document> for QueryDsl {
                         if !required_arguments.is_empty() {
                             argument_structs.push(ArgumentStruct::from_field(
                                 field,
+                                &required_arguments,
                                 true,
                                 &type_index,
                             ));
@@ -85,6 +86,7 @@ impl From<graphql_parser::schema::Document> for QueryDsl {
                         if !optional_arguments.is_empty() {
                             argument_structs.push(ArgumentStruct::from_field(
                                 field,
+                                &optional_arguments,
                                 false,
                                 &type_index,
                             ));

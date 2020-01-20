@@ -99,9 +99,14 @@ impl quote::ToTokens for FieldSelector {
                     fields: ::cynic::selection_set::SelectionSet<'a, T, #argument_type_lock>
                 ) -> ::cynic::selection_set::SelectionSet<'a, #decodes_to, #type_lock>
                     where T: 'a + Send + Sync {
+                        let mut args: Vec<::cynic::Argument> = vec![];
+                        #(
+                            args.extend(#argument_names.into_iter());
+                        )*
+
                         ::cynic::selection_set::field(
                             #query_field_name,
-                            vec![],
+                            args,
                             #selector
                         )
                     }
