@@ -10,6 +10,8 @@ use crate::{Ident, TypeIndex};
 pub struct StructField {
     pub(crate) name: Ident,
     pub(crate) argument_type: FieldType,
+    pub(crate) gql_name: String,
+    pub(crate) gql_type: String,
 }
 
 impl StructField {
@@ -18,9 +20,13 @@ impl StructField {
         type_path: TypePath,
         type_index: &TypeIndex,
     ) -> Self {
+        use crate::graphql_extensions::TypeExt;
+
         StructField {
             name: Ident::for_field(&value.name),
             argument_type: FieldType::from_schema_type(&value.value_type, type_path, type_index),
+            gql_type: value.value_type.to_graphql_string(),
+            gql_name: value.name.clone(),
         }
     }
 

@@ -57,8 +57,9 @@ impl quote::ToTokens for ArgumentStruct {
         let argument_names: Vec<_> = arguments.iter().map(|a| a.name.clone()).collect();
         let argument_strings: Vec<_> = arguments
             .iter()
-            .map(|a| proc_macro2::Literal::string(&a.name.to_string()))
+            .map(|a| proc_macro2::Literal::string(&a.gql_name.to_string()))
             .collect();
+        let argument_gql_types: Vec<_> = arguments.iter().map(|a| a.gql_type.clone()).collect();
 
         let num_args = proc_macro2::Literal::usize_unsuffixed(argument_names.len());
 
@@ -66,7 +67,11 @@ impl quote::ToTokens for ArgumentStruct {
             quote! {
                 vec![
                     #(
-                        ::cynic::Argument::new_serialize(#argument_strings, self.#argument_names)
+                        ::cynic::Argument::new_serialize(
+                            #argument_strings,
+                            #argument_gql_types,
+                            self.#argument_names
+                        )
                     ),*
                 ].into_iter()
             }
@@ -76,7 +81,11 @@ impl quote::ToTokens for ArgumentStruct {
 
                 #(
                     if self.#argument_names.is_some() {
-                        args.push(::cynic::Argument::new_serialize(#argument_strings, self.#argument_names));
+                        args.push(::cynic::Argument::new_serialize(
+                            #argument_strings,
+                            #argument_gql_types,
+                            self.#argument_names
+                        ));
                     }
                 )*
 

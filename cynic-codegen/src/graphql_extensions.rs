@@ -1,5 +1,5 @@
 /// Some extension traits for graphql_parser types.
-use graphql_parser::schema::{Document, Field, InputValue};
+use graphql_parser::schema::{Document, Field, InputValue, Type};
 use std::collections::HashSet;
 
 use crate::{StructField, TypeIndex, TypePath};
@@ -34,5 +34,19 @@ impl FieldExt for Field {
             })
             .map(|a| a.clone())
             .collect()
+    }
+}
+
+pub trait TypeExt {
+    fn to_graphql_string(&self) -> String;
+}
+
+impl TypeExt for Type {
+    fn to_graphql_string(&self) -> String {
+        match self {
+            Type::NamedType(name) => name.clone(),
+            Type::ListType(inner) => format!("[{}]", inner.to_graphql_string()),
+            Type::NonNullType(inner) => format!("{}!", inner.to_graphql_string()),
+        }
     }
 }

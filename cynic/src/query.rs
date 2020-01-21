@@ -12,7 +12,7 @@ where
 {
     pub fn new<Root: QueryRoot>(selection_set: SelectionSet<'a, ResponseData, Root>) -> Self {
         Query {
-            selection_set: selection_set::select_query_field(selection_set),
+            selection_set: selection_set::query_root(selection_set),
         }
     }
 
@@ -23,7 +23,7 @@ where
                 let variables = arguments
                     .into_iter()
                     .enumerate()
-                    .map(|(i, value)| (format!("${}", i), value))
+                    .map(|(i, value)| (format!("$_{}", i), value))
                     .collect();
 
                 QueryBody { query, variables }

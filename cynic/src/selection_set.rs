@@ -27,10 +27,11 @@ impl<'a, DecodesTo, TypeLock> SelectionSet<'a, DecodesTo, TypeLock> {
         &'b self,
     ) -> Result<(String, Vec<&'b serde_json::Value>), ()> {
         let mut arguments: Vec<Result<&serde_json::Value, ()>> = vec![];
+        let mut argument_types: Vec<&str> = vec![];
         let query = self
             .fields
             .iter()
-            .map(|f| f.query(0, 2, &mut arguments))
+            .map(|f| f.query(0, 2, &mut arguments, &mut argument_types))
             .collect();
 
         let arguments: Vec<_> = arguments.into_iter().collect::<Result<Vec<_>, ()>>()?;
@@ -159,20 +160,14 @@ where
     }
 }
 
-pub(crate) fn select_query_field<'a, DecodesTo, InnerTypeLock: QueryRoot>(
+pub(crate) fn query_root<'a, DecodesTo, InnerTypeLock: QueryRoot>(
     selection_set: SelectionSet<'a, DecodesTo, InnerTypeLock>,
 ) -> SelectionSet<'a, DecodesTo, ()>
 where
     DecodesTo: 'a,
 {
-    let field = if selection_set.fields.is_empty() {
-        Field::Leaf("query".to_string(), vec![])
-    } else {
-        Field::Composite("query".to_string(), vec![], selection_set.fields)
-    };
-
     SelectionSet {
-        fields: vec![field],
+        fields: vec![Field::Root(selection_set.fields)],
         decoder: selection_set.decoder,
         phantom: PhantomData,
     }
@@ -317,11 +312,13 @@ mod tests {
             ) -> SelectionSet<'a, T, RootQuery> {
                 let mut args = vec![Argument::new(
                     "required_arg",
+                    "String!",
                     serde_json::Value::String(required.required_arg),
                 )];
                 if optionals.opt_string.is_some() {
                     args.push(Argument::new(
                         "opt_string",
+                        "String",
                         serde_json::Value::String(optionals.opt_string.unwrap()),
                     ));
                 }

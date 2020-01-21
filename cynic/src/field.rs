@@ -1,6 +1,7 @@
 use crate::Argument;
 
 pub enum Field {
+    Root(Vec<Field>),
     Leaf(String, Vec<Argument>),
     Composite(String, Vec<Argument>, Vec<Field>),
 }
@@ -11,10 +12,11 @@ impl Field {
         indent: usize,
         indent_size: usize,
         argument_values: &mut Vec<Result<&'a serde_json::Value, ()>>,
+        argument_types: &mut Vec<&'a str>,
     ) -> String {
         match self {
             Field::Leaf(field_name, args) => {
-                let arguments = handle_arguments(args, argument_values);
+                let arguments = handle_field_arguments(args, argument_values, argument_types);
                 format!(
                     "{:indent$}{field_name}{arguments}\n",
                     "",
@@ -24,10 +26,17 @@ impl Field {
                 )
             }
             Field::Composite(field_name, args, child_fields) => {
-                let arguments = handle_arguments(args, argument_values);
+                let arguments = handle_field_arguments(args, argument_values, argument_types);
                 let child_query: String = child_fields
                     .iter()
-                    .map(|f| f.query(indent + indent_size, indent_size, argument_values))
+                    .map(|f| {
+                        f.query(
+                            indent + indent_size,
+                            indent_size,
+                            argument_values,
+                            argument_types,
+                        )
+                    })
                     .collect();
 
                 format!(
@@ -39,14 +48,36 @@ impl Field {
                     arguments = arguments
                 )
             }
+            Field::Root(fields) => {
+                let child_query: String = fields
+                    .iter()
+                    .map(|f| {
+                        f.query(
+                            indent + indent_size,
+                            indent_size,
+                            argument_values,
+                            argument_types,
+                        )
+                    })
+                    .collect();
+
+                let arguments = handle_query_arguments(argument_types);
+
+                format!(
+                    "query Query({arguments}) {{\n{child_query}}}\n",
+                    arguments = arguments,
+                    child_query = child_query
+                )
+            }
         }
     }
 }
 
 /// Extracts any argument values & returns a string to be used in a query.
-fn handle_arguments<'a>(
+fn handle_field_arguments<'a>(
     arguments: &'a Vec<Argument>,
     argument_values: &mut Vec<Result<&'a serde_json::Value, ()>>,
+    argument_types: &mut Vec<&'a str>,
 ) -> String {
     if arguments.is_empty() {
         "".to_string()
@@ -57,7 +88,8 @@ fn handle_arguments<'a>(
             .iter()
             .map(|arg| {
                 argument_values.push(arg.value.as_ref().map_err(|_| ()).clone());
-                let rv = format!("{}: ${}", arg.name, argument_index);
+                argument_types.push(&arg.type_);
+                let rv = format!("{}: $_{}", arg.name, argument_index);
                 argument_index += 1;
                 rv
             })
@@ -65,6 +97,22 @@ fn handle_arguments<'a>(
             .join(", ");
 
         format!("({})", comma_seperated)
+    }
+}
+
+/// Extracts any argument values & returns a string to be used in a query.
+fn handle_query_arguments<'a>(argument_types: &'a Vec<&str>) -> String {
+    if argument_types.is_empty() {
+        "".to_string()
+    } else {
+        let comma_seperated = argument_types
+            .iter()
+            .enumerate()
+            .map(|(i, arg_type)| format!("$_{}: {}", i, arg_type))
+            .collect::<Vec<_>>()
+            .join(", ");
+
+        format!("{}", comma_seperated)
     }
 }
 
@@ -87,19 +135,25 @@ mod tests {
             ],
         );
         let mut arguments = vec![];
+        let mut argument_types = vec![];
 
         assert_eq!(
-            fields.query(0, 2, &mut arguments),
+            fields.query(0, 2, &mut arguments, &mut argument_types),
             "test_struct {\n  field_one\n  nested {\n    a_string\n  }\n}\n"
         );
         assert!(arguments.is_empty());
+        assert!(argument_types.is_empty());
     }
 
     #[test]
     fn test_query_with_arguments() {
         let fields = Field::Composite(
             "test_struct".to_string(),
-            vec![Argument::new("an_arg", serde_json::Value::Bool(false))],
+            vec![Argument::new(
+                "an_arg",
+                "Bool!",
+                serde_json::Value::Bool(false),
+            )],
             vec![
                 Field::Leaf("field_one".to_string(), vec![]),
                 Field::Composite(
@@ -107,15 +161,20 @@ mod tests {
                     vec![],
                     vec![Field::Leaf(
                         "a_string".to_string(),
-                        vec![Argument::new("another_arg", serde_json::Value::Bool(true))],
+                        vec![Argument::new(
+                            "another_arg",
+                            "Bool!",
+                            serde_json::Value::Bool(true),
+                        )],
                     )],
                 ),
             ],
         );
         let mut arguments = vec![];
+        let mut argument_types = vec![];
 
         assert_eq!(
-            fields.query(0, 2, &mut arguments),
+            fields.query(0, 2, &mut arguments, &mut argument_types),
             "test_struct(an_arg: $0) {\n  field_one\n  nested {\n    a_string(another_arg: $1)\n  }\n}\n"
         );
         assert_eq!(
@@ -124,6 +183,7 @@ mod tests {
                 .map(|v| serde_json::from_value::<bool>(v.unwrap().clone()).unwrap())
                 .collect::<Vec<_>>(),
             vec![false, true]
-        )
+        );
+        assert_eq!(argument_types, vec!["Bool!", "Bool!"]);
     }
 }
