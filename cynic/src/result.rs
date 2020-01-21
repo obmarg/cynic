@@ -5,7 +5,7 @@
 /// failed.  We represent that with a PossiblyParsedData<T>.
 pub type GraphQLResult<T> = Result<T, (PossiblyParsedData<T>, Vec<GraphQLError>)>;
 
-#[derive(serde::Deserialize)]
+#[derive(Debug, serde::Deserialize)]
 pub struct GraphQLResponse<T> {
     pub data: Option<T>,
     pub errors: Option<Vec<GraphQLError>>,

@@ -62,7 +62,7 @@ impl std::convert::TryFrom<Expr> for ArgumentExpression {
                 }
             }
             _ => Err(syn::Error::new(
-                dbg!(expr).span(),
+                expr.span(),
                 format!("Must be a literal or an expression of the form args.an_argument"),
             )),
         }

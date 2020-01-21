@@ -64,7 +64,7 @@ impl Field {
                 let arguments = handle_query_arguments(argument_types);
 
                 format!(
-                    "query Query({arguments}) {{\n{child_query}}}\n",
+                    "query Query{arguments} {{\n{child_query}}}\n",
                     arguments = arguments,
                     child_query = child_query
                 )
@@ -112,7 +112,7 @@ fn handle_query_arguments<'a>(argument_types: &'a Vec<&str>) -> String {
             .collect::<Vec<_>>()
             .join(", ");
 
-        format!("{}", comma_seperated)
+        format!("({})", comma_seperated)
     }
 }
 
