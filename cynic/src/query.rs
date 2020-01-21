@@ -23,7 +23,7 @@ where
                 let variables = arguments
                     .into_iter()
                     .enumerate()
-                    .map(|(i, value)| (format!("$_{}", i), value))
+                    .map(|(i, value)| (format!("_{}", i), value))
                     .collect();
 
                 QueryBody { query, variables }
