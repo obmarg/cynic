@@ -1,25 +1,14 @@
 //! Utilities for parsing attributes
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 use std::{fmt::Display, str::FromStr};
 
-use proc_macro2::{Span, TokenStream};
+use proc_macro2::Span;
 use quote::format_ident;
-
-use crate::{query_dsl, FieldType, Ident, TypePath};
 
 #[derive(Debug, Clone)]
 pub struct Attribute {
     pub value: String,
     pub span: Span,
-}
-
-impl Attribute {
-    pub fn new(value: &str, span: Span) -> Self {
-        Attribute {
-            value: value.to_string(),
-            span,
-        }
-    }
 }
 
 impl From<syn::LitStr> for Attribute {

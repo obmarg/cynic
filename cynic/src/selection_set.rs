@@ -416,7 +416,7 @@ mod tests {
             ),
         );
 
-        let (query, args) = selection_set.query_and_arguments().unwrap();
+        let (_query, args) = selection_set.query_and_arguments().unwrap();
         assert_eq!(args.len(), 1);
     }
 
@@ -435,7 +435,7 @@ mod tests {
             ),
         );
 
-        let (query, args) = selection_set.query_and_arguments().unwrap();
+        let (_query, args) = selection_set.query_and_arguments().unwrap();
         assert_eq!(args.len(), 2);
     }
 }

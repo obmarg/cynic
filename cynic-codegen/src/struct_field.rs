@@ -1,6 +1,5 @@
 use graphql_parser::schema;
 use proc_macro2::TokenStream;
-use std::collections::HashSet;
 
 use super::field_type::FieldType;
 use super::type_path::TypePath;

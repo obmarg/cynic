@@ -1,6 +1,5 @@
 /// Some extension traits for graphql_parser types.
-use graphql_parser::schema::{Document, Field, InputValue, Type};
-use std::collections::HashSet;
+use graphql_parser::schema::{Field, InputValue, Type};
 
 use crate::{StructField, TypeIndex, TypePath};
 

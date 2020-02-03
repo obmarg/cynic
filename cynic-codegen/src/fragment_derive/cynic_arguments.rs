@@ -92,8 +92,6 @@ pub struct FieldArgument {
 
 impl Parse for FieldArgument {
     fn parse(input: ParseStream) -> Result<Self> {
-        use std::convert::TryInto;
-
         let argument_name = input.parse()?;
         input.parse::<Token![=]>()?;
         let expr: Expr = input.parse()?;
@@ -121,7 +119,6 @@ impl quote::ToTokens for FieldArgument {
 #[cfg(test)]
 mod test {
     use super::*;
-    use assert_matches::assert_matches;
     use syn::parse_quote;
 
     #[test]

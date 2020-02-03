@@ -1,5 +1,4 @@
 use proc_macro2::TokenStream;
-use std::collections::HashSet;
 
 use super::argument_struct::ArgumentStruct;
 use super::field_selector::FieldSelector;

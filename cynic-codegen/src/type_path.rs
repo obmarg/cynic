@@ -65,10 +65,6 @@ impl TypePath {
             is_void: false,
         }
     }
-
-    pub fn push(&mut self, ident: Ident) {
-        self.path.push(ident);
-    }
 }
 
 impl From<Ident> for TypePath {
@@ -84,7 +80,6 @@ impl From<Ident> for TypePath {
 impl quote::ToTokens for TypePath {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         use quote::{quote, TokenStreamExt};
-        use std::iter::FromIterator;
 
         if self.is_void {
             tokens.append_all(quote! { () });

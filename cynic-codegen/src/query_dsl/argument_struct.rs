@@ -1,6 +1,5 @@
 use graphql_parser::schema::{self, InputValue};
 use proc_macro2::TokenStream;
-use std::collections::HashSet;
 
 use crate::{Ident, StructField, TypeIndex};
 

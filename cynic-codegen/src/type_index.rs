@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use graphql_parser::schema::{Definition, Document, InputValue, TypeDefinition};
+use graphql_parser::schema::{Definition, Document, TypeDefinition};
 
 /// The kind of a GraphQL type
 #[derive(Debug, PartialEq)]

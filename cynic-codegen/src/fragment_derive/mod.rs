@@ -1,7 +1,6 @@
-use std::collections::{HashMap, HashSet};
+use std::collections::HashSet;
 
 use proc_macro2::{Span, TokenStream};
-use quote::format_ident;
 
 use crate::{
     attributes::{extract_meta_attrs, Attribute},
@@ -89,8 +88,6 @@ pub struct FragmentDeriveAttributes {
 
 fn parse_struct_attrs(attrs: &Vec<syn::Attribute>) -> Result<FragmentDeriveAttributes, syn::Error> {
     let (mut attr_map, attr_span) = extract_meta_attrs::<DeriveAttribute>(attrs)?;
-
-    use syn::{spanned::Spanned, Lit, Meta, MetaList, MetaNameValue, NestedMeta};
 
     let schema_path = attr_map
         .remove(&DeriveAttribute::SchemaPath)
@@ -437,7 +434,7 @@ fn argument_structs(
     let all_required: HashSet<Ident> = field
         .arguments
         .iter()
-        .filter(|(name, arg)| arg.required)
+        .filter(|(_name, arg)| arg.required)
         .map(|(name, _)| name.clone())
         .collect();
 
