@@ -20,12 +20,21 @@
 //! }
 //! ```
 //!
-//! This macro will read the provided schema and generate some functions & structs
-//! that can be used for querying it.  You shouldn't need to use a lot of the
-//! functions - they mostly exist to encode the type rules of the GraphQL schmea
-//! into Rust.  Higher level macros will usually make use of these for us, though if you
-//! have a particularly unusual edge case you may need to dig into them.  
-//! The structs & enums generated as part of this module may well be of use though.
+//! This module generates a few things:
+//!
+//! 1. Some structs to represent the Input types the underlying schema.
+//!    You may need to use these to build mutations or as parameters to queries.
+//! 2. Definitons of all the Enums in the provided schema.  You'll need these if
+//!    you want to use any enum types.
+//! 3. Type safe selection set functions.  These can be used to build up a query
+//!    manually, though it's usually easier to use the QueryFragment derive
+//!    functionality explained below.  Hopefully you'll not need to use these
+//!    directly too often.
+//!
+//! Though using macros to generate these is convenient, it does leave a lot of code
+//! to the imagination.  You can get a glimpse of the things this defines by running
+//! `cargo doc --document-private-items` and having a look in the `query_dsl` module
+//! It's not ideal, but at least provides some visibility into the various enum types.
 //!
 //! ### Creating QueryFragments
 //!
