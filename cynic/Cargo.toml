@@ -6,6 +6,7 @@ edition = "2018"
 homepage = "https://github.com/polyandglot/cynic"
 description = "A GraphQL query builder & data mapper for Rust"
 keywords = ["graphql", "client", "api"]
+license = "MPL-2.0"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -13,7 +14,7 @@ keywords = ["graphql", "client", "api"]
 json-decode = "0.1.0"
 serde = { version = "1.0.104", features = [ "derive" ] }
 serde_json = "1.0.44"
-cynic-codegen = { path = "../cynic-codegen" }
+cynic-codegen = { path = "../cynic-codegen", version = "0.1.0" }
 
 
 [[example]]
