@@ -6,6 +6,7 @@ edition = "2018"
 homepage = "https://github.com/polyandglot/cynic"
 description = "Codegen for cynic - a GraphQL query builder & data mapper for Rust"
 license = "MPL-2.0"
+documentation = "https://docs.rs/cynic-codegen"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

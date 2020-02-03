@@ -7,6 +7,7 @@ homepage = "https://github.com/polyandglot/cynic"
 description = "A GraphQL query builder & data mapper for Rust"
 keywords = ["graphql", "client", "api"]
 license = "MPL-2.0"
+documentation = "https://docs.rs/cynic"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
