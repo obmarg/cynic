@@ -1,8 +1,11 @@
 [package]
 name = "cynic"
 version = "0.1.0"
-authors = ["Graeme Coupar <grambo@grambo.me.uk>"]
+authors = ["Graeme Coupar <graeme@polyandglot.dev>"]
 edition = "2018"
+homepage = "https://github.com/polyandglot/cynic"
+description = "A GraphQL query builder & data mapper for Rust"
+keywords = ["graphql", "client", "api"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
