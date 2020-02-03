@@ -28,7 +28,6 @@ pub fn query_dsl(input: TokenStream) -> TokenStream {
 
     let rv = query_dsl::query_dsl_from_schema(input).unwrap().into();
 
-    eprintln!("{}", rv);
     rv
 }
 
@@ -41,7 +40,6 @@ pub fn query_fragment_derive(input: TokenStream) -> TokenStream {
         Err(e) => e.to_compile_error().into(),
     };
 
-    eprintln!("{}", rv);
     rv
 }
 
@@ -54,6 +52,5 @@ pub fn fragment_arguments_derive(input: TokenStream) -> TokenStream {
         Err(e) => e.to_compile_error().into(),
     };
 
-    eprintln!("{}", rv);
     rv
 }
