@@ -10,7 +10,7 @@ keywords = ["graphql", "client", "api"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-json-decode = { path = "../../json-decode" }
+json-decode = "0.1.0"
 serde = { version = "1.0.104", features = [ "derive" ] }
 serde_json = "1.0.44"
 cynic-codegen = { path = "../cynic-codegen" }

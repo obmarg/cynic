@@ -1,6 +1,4 @@
-use crate::{
-    selection_set, FragmentArguments, GraphQLResponse, QueryBody, QueryRoot, SelectionSet,
-};
+use crate::{selection_set, GraphQLResponse, QueryBody, QueryRoot, SelectionSet};
 
 pub struct Query<'a, ResponseData> {
     selection_set: SelectionSet<'a, ResponseData, ()>,

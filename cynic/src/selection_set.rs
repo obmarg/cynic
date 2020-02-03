@@ -1,8 +1,7 @@
-use json_decode::{BoxDecoder, Decoder};
-use std::collections::HashMap;
+use json_decode::BoxDecoder;
 use std::marker::PhantomData;
 
-use crate::{field::Field, scalar, Argument, GraphQLResponse, QueryBody, QueryRoot};
+use crate::{field::Field, scalar, Argument, QueryRoot};
 
 #[derive(Debug, PartialEq)]
 pub(crate) enum Error {
