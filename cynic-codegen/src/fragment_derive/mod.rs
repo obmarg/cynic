@@ -309,9 +309,6 @@ impl FragmentImpl {
         argument_struct: syn::Type,
     ) -> Result<Self, syn::Error> {
         use syn::{spanned::Spanned, Fields};
-        // TODO: Mostly just need to iterate over fields.
-        // For first pass lets _just_ support named fields.
-        // And no attributes for now.
 
         let target_struct = Ident::new_spanned(&name.to_string(), name.span());
         let selector_struct_path = TypePath::concat(&[

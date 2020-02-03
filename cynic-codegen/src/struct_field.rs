@@ -43,7 +43,6 @@ impl quote::ToTokens for StructField {
         let argument_type = &self.argument_type;
 
         tokens.append_all(quote! {
-            // TODO: Figure out if public is correct for _all_ the struct fields
             pub #name: #argument_type
         })
     }

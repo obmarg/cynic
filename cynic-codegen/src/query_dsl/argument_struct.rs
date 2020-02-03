@@ -4,8 +4,6 @@ use std::collections::HashSet;
 
 use crate::{Ident, StructField, TypeIndex};
 
-// TODO: Generate some of these somewhere...
-
 #[derive(Debug)]
 pub struct ArgumentStruct {
     name: Ident,

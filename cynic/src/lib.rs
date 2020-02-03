@@ -13,18 +13,6 @@ pub use result::{GraphQLError, GraphQLResponse, GraphQLResult, PossiblyParsedDat
 pub use scalar::Scalar;
 pub use selection_set::SelectionSet;
 
-fn main() {
-    println!("Hello, world!");
-}
-
-// Ok, so I need a way of figuring out TypeLocks.
-// I _could_ do QueryFragment<T>
-// and then do impl<T> QueryFragment<T> for X
-// Though I'd need a way to constrain T.
-//
-// Perhaps with some kind of marker trait?
-// Contains<T>?
-
 pub trait QueryFragment {
     type SelectionSet;
     type Arguments: FragmentArguments;
@@ -75,8 +63,6 @@ pub trait QueryRoot {}
 pub struct QueryBody<'a> {
     query: String,
     variables: HashMap<String, &'a serde_json::Value>,
-    // TODO: not sure we need this next one
-    //operation_name: String,
 }
 
 pub use cynic_codegen::{query_dsl, FragmentArguments, QueryFragment};
