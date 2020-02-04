@@ -27,7 +27,7 @@
 //! 2. Definitons of all the Enums in the provided schema.  You'll need these if
 //!    you want to use any enum types.
 //! 3. Type safe selection set functions.  These can be used to build up a query
-//!    manually, though it's usually easier to use the QueryFragment derive
+//!    manually, though it's usually easier to use the `QueryFragment` derive
 //!    functionality explained below.  Hopefully you'll not need to use these
 //!    directly too often.
 //!
@@ -39,9 +39,9 @@
 //! ### Creating QueryFragments
 //!
 //! Now that you have a query_dsl defined, you can start building some queries.
-//! Cynic lets you do this by deriving "QueryFragment" for a struct.  For example,
-//! if we wanted to know what director a Star Wars film had, we could use this
-//! `QueryFragment`:
+//! Cynic lets you do this by deriving `QueryFragment` for a struct.  For example,
+//! if we wanted to know what director title & director a Star Wars film had, we
+//! could define this `QueryFragment`:
 //!
 //! ```rust
 //! #[derive(cynic::QueryFragment)]
@@ -57,7 +57,8 @@
 //! ```
 //!
 //! This `Film` struct can now be used as the type of a field on any other
-//! `QueryFragment` struct and cynic will know what to do.
+//! `QueryFragment` struct and cynic will know how to turn that into a GraphQL
+//! query, and populate the `Film` struct from the response.
 //!
 //! For example, if we wanted to know the Director for a particular film:
 //!
@@ -82,10 +83,10 @@
 //! ### Sending Queries
 //!
 //! Notice that `FilmDirectorQuery` above defines it's `graphql_type` as `Root` - the root
-//! query type in SWAPI.  Whenever you define a type at this level of the heirarchy it can
-//! be used as a query on its own, rather than as part of another query.
+//! query type in SWAPI.  Whenever you define a `QueryFragment` at this level of the
+//! heirarchy it can be used as a query on its own rather than as part of another query.
 //!
-//! To send the FilmDirectorQuery above:
+//! To send the `FilmDirectorQuery` above:
 //!
 //! ```rust
 //! let query = cynic::Query::new(FilmDirectorQuery::fragment(()))
@@ -96,12 +97,12 @@
 //! let result = query.decode_response(response.json().await?).unwrap();
 //! ```
 //!
-//! After this code has run, result will be an instance of FilmDirectorQuery
+//! After this code has run, result will be an instance of `FilmDirectorQuery`
 //! with the film populated appropriately.
 //!
 //! ### Dynamic Query Arguments
 //!
-//! The query above was useful for demonstration, but you'd usually want to be able to
+//! The query above was useful for demonstration, but you'll usually want to be able to
 //! provide parameters to your query.  To do this, you should define a struct that contains
 //! all of the parameters you want to provide:
 //!
@@ -112,11 +113,11 @@
 //! }
 //! ```
 //!
-//! Deriving FragmentArguments allows this struct to be used as arguments on an
-//! entire query or just part of a query.
+//! Deriving `FragmentArguments` allows this struct to be used as arguments to a
+//! `QueryFragment` fragment, whether it represents part of a query or a whole query.
 //!
 //! You can now define a query to use these arguments on.  For example, to make
-//! FilmDirectorQuery a bit more dynamic:
+//! `FilmDirectorQuery` a bit more dynamic:
 //!
 //! ```rust
 //! #[derive(cynic::QueryFragment)]
@@ -132,9 +133,9 @@
 //! }
 //! ```
 //!
-//! By adding the `argument_struct` parameter to our QueryFragment we've made a variable
+//! By adding the `argument_struct` parameter to our `QueryFragment` we've made a variable
 //! named `args` avaiable for use in the `cynic_arguments` attribute.  This `args` will
-//! be an instance of `FilmArguments`, and will need to be provided whenever this is used
+//! be an instance of `FilmArguments` and will need to be provided whenever this is used
 //! as a query.
 //!
 //! To build a query using this new struct:
