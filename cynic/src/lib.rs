@@ -20,7 +20,7 @@
 //! }
 //! ```
 //!
-//! This module generates a few things:
+//! This macro generates a few things:
 //!
 //! 1. Some structs to represent the Input types the underlying schema.
 //!    You may need to use these to build mutations or as parameters to queries.
@@ -33,7 +33,7 @@
 //!
 //! Though using macros to generate these is convenient, it does leave a lot of code
 //! to the imagination.  You can get a glimpse of the things this defines by running
-//! `cargo doc --document-private-items` and having a look in the `query_dsl` module
+//! `cargo doc --document-private-items` and having a look in the `query_dsl` module.
 //! It's not ideal, but at least provides some visibility into the various enum types.
 //!
 //! ### Creating QueryFragments
@@ -82,7 +82,7 @@
 //!
 //! ### Sending Queries
 //!
-//! Notice that `FilmDirectorQuery` above defines it's `graphql_type` as `Root` - the root
+//! Notice that `FilmDirectorQuery` above defines its `graphql_type` as `Root` - the root
 //! query type in SWAPI.  Whenever you define a `QueryFragment` at this level of the
 //! heirarchy it can be used as a query on its own rather than as part of another query.
 //!

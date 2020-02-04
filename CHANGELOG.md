@@ -11,6 +11,11 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+### Bug Fixes
+
+- Now supports schemas that define their root query types.  Before we just
+  assumed there was a type called query.
+
 ## v0.1.2 - 2020-02-04
 
 - No changes

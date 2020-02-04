@@ -64,10 +64,16 @@ impl From<graphql_parser::schema::Document> for QueryDsl {
         let mut argument_struct_modules = vec![];
         let mut inputs = vec![];
 
+        let root_query_type = find_root_query(&document.definitions);
+
         for definition in document.definitions {
             match definition {
                 Definition::TypeDefinition(TypeDefinition::Object(object)) => {
-                    selectors.push(SelectorStruct::from_object(&object, &type_index));
+                    selectors.push(SelectorStruct::from_object(
+                        &object,
+                        &type_index,
+                        object.name == root_query_type,
+                    ));
 
                     let mut argument_structs = vec![];
                     for field in &object.fields {
@@ -113,6 +119,23 @@ impl From<graphql_parser::schema::Document> for QueryDsl {
             inputs,
         }
     }
+}
+
+fn find_root_query(definitions: &Vec<graphql_parser::schema::Definition>) -> String {
+    use graphql_parser::schema::Definition;
+    for definition in definitions {
+        match definition {
+            Definition::SchemaDefinition(schema) => {
+                if let Some(query_type) = &schema.query {
+                    return query_type.clone();
+                }
+            }
+            _ => {}
+        }
+    }
+
+    // Default to a type named "Query"
+    "Query".to_string()
 }
 
 impl quote::ToTokens for QueryDsl {

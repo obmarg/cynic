@@ -15,13 +15,19 @@ use crate::{FieldType, Ident, TypeIndex, TypePath};
 pub struct SelectorStruct {
     pub name: Ident,
     pub fields: Vec<FieldSelector>,
+    pub is_root: bool,
 }
 
 impl SelectorStruct {
-    pub fn from_object(obj: &graphql_parser::schema::ObjectType, type_index: &TypeIndex) -> Self {
+    pub fn from_object(
+        obj: &graphql_parser::schema::ObjectType,
+        type_index: &TypeIndex,
+        is_root: bool,
+    ) -> Self {
         let name = Ident::for_type(&obj.name);
         SelectorStruct {
             name: name.clone(),
+            is_root,
             fields: obj
                 .fields
                 .iter()
