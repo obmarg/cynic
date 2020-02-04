@@ -9,6 +9,10 @@ This project intends to inhere to [Semantic
 Versioning](http://semver.org/spec/v2.0.0.html), but has not yet reached 1.0 so
 all APIs might be changed.
 
-## Unreleased - yyyy-mm-dd
+## v0.1.1 - 2020-02-04
+
+- Some tweaks to the documentation.
+
+## v0.1.0 - 2020-02-03
 
 - Initial release
