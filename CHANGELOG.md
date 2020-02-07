@@ -11,6 +11,10 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+### New Features
+
+- Added a StarWars API example
+
 ### Bug Fixes
 
 - Now supports schemas that define their root query types.  Before we just
