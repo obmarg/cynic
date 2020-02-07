@@ -109,17 +109,6 @@
 //! all of the parameters you want to provide:
 //!
 //! ```rust
-//! #[derive(cynic::FragmentArguments)]
-//! struct FilmArguments {
-//!     id: Option<String>
-//! }
-//!
-//! // Deriving `FragmentArguments` allows this struct to be used as arguments to a
-//! // `QueryFragment` fragment, whether it represents part of a query or a whole query.
-//!
-//! // You can now define a query to use these arguments on.  For example, to make
-//! // `FilmDirectorQuery` a bit more dynamic:
-//!
 //! # mod query_dsl {
 //! #    type Node = String;
 //! #   cynic::query_dsl!("../examples/examples/starwars.schema.graphql");
@@ -135,7 +124,15 @@
 //! #    title: Option<String>,
 //! #    director: Option<String>
 //! # }
+//! // Deriving `FragmentArguments` allows this struct to be used as arguments to a
+//! // `QueryFragment` fragment, whether it represents part of a query or a whole query.
+//! #[derive(cynic::FragmentArguments)]
+//! struct FilmArguments {
+//!     id: Option<String>
+//! }
 //!
+//! // You can now define a query to use these arguments on.  For example, to make
+//! // `FilmDirectorQuery` a bit more dynamic:
 //! #[derive(cynic::QueryFragment)]
 //! #[cynic(
 //!     schema_path = "../examples/examples/starwars.schema.graphql",
