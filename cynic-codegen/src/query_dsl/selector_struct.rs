@@ -73,7 +73,7 @@ impl quote::ToTokens for SelectorStruct {
 
         let name = &self.name;
         let fields = &self.fields;
-        let query_root = if self.name.to_string() == "Query" {
+        let query_root = if self.is_root {
             quote! { impl ::cynic::QueryRoot for #name {} }
         } else {
             quote! {}
