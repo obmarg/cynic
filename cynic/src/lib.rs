@@ -51,8 +51,8 @@
 //!     graphql_type = "Film"
 //! )]
 //! struct Film {
-//!     title: String,
-//!     director: String
+//!     title: Option<String>,
+//!     director: Option<String>
 //! }
 //! ```
 //!
@@ -71,7 +71,7 @@
 //! )]
 //! struct FilmDirectorQuery {
 //!     #[cynic_arguments(id = "ZmlsbXM6MQ==")]
-//!     film: Film,
+//!     film: Option<Film>,
 //! }
 //! ```
 //!
@@ -89,12 +89,12 @@
 //! To send the `FilmDirectorQuery` above:
 //!
 //! ```rust
-//! let query = cynic::Query::new(FilmDirectorQuery::fragment(()))
-//! let response = reqwest::Client::new()
+//! let query = cynic::Query::new(FilmDirectorQuery::fragment(()));
+//! let response = reqwest::blocking::Client::new()
 //!                     .post("a_url")
-//!                     .json(query.body().unwrap())
-//!                     .send();
-//! let result = query.decode_response(response.json().await?).unwrap();
+//!                     .json(&query.body()?)
+//!                     .send()?;
+//! let result = query.decode_response(response.json().await?)?;
 //! ```
 //!
 //! After this code has run, result will be an instance of `FilmDirectorQuery`
@@ -128,8 +128,8 @@
 //!     argument_struct = "FilmArguments"
 //! )]
 //! struct FilmDirectorQueryWithArgs {
-//!     #[cynic_arguments(id = args.id)]
-//!     film: Film,
+//!     #[cynic_arguments(id = args.id.clone())]
+//!     film: Option<Film>,
 //! }
 //! ```
 //!
