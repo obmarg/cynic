@@ -175,7 +175,7 @@ mod tests {
 
         assert_eq!(
             fields.query(0, 2, &mut arguments, &mut argument_types),
-            "test_struct(an_arg: $0) {\n  field_one\n  nested {\n    a_string(another_arg: $1)\n  }\n}\n"
+            "test_struct(an_arg: $_0) {\n  field_one\n  nested {\n    a_string(another_arg: $_1)\n  }\n}\n"
         );
         assert_eq!(
             arguments
