@@ -1,5 +1,5 @@
 fn main() {
-    println!("{}", cynic::to_query::<TestStruct>(TestArgs {}));
+    //println!("{}", cynic::to_query::<TestStruct>(TestArgs {}));
 }
 
 mod query_dsl {

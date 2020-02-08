@@ -16,7 +16,8 @@
 //!
 //! ```rust
 //! mod query_dsl {
-//!     cynic::query_dsl!("swapi.graphql");
+//! #   type Node = String;
+//!     cynic::query_dsl!("../examples/examples/starwars.schema.graphql");
 //! }
 //! ```
 //!
@@ -44,9 +45,14 @@
 //! could define this `QueryFragment`:
 //!
 //! ```rust
+//! # mod query_dsl {
+//! #    type Node = String;
+//! #   cynic::query_dsl!("../examples/examples/starwars.schema.graphql");
+//! # }
+//!
 //! #[derive(cynic::QueryFragment)]
 //! #[cynic(
-//!     schema_path = "swapi.graphql",
+//!     schema_path = "../examples/examples/starwars.schema.graphql",
 //!     query_module = "query_dsl",
 //!     graphql_type = "Film"
 //! )]
@@ -54,47 +60,43 @@
 //!     title: Option<String>,
 //!     director: Option<String>
 //! }
-//! ```
 //!
-//! This `Film` struct can now be used as the type of a field on any other
-//! `QueryFragment` struct and cynic will know how to turn that into a GraphQL
-//! query, and populate the `Film` struct from the response.
+//! // This `Film` struct can now be used as the type of a field on any other
+//! // `QueryFragment` struct and cynic will know how to turn that into a GraphQL
+//! // query, and populate the `Film` struct from the response.
 //!
-//! For example, if we wanted to know the Director for a particular film:
+//! // For example, if we wanted to know the Director for a particular film:
 //!
-//! ```rust
 //! #[derive(cynic::QueryFragment)]
 //! #[cynic(
-//!     schema_path = "swapi.graphql",
+//!     schema_path = "../examples/examples/starwars.schema.graphql",
 //!     query_module = "query_dsl",
 //!     graphql_type = "Root"
 //! )]
 //! struct FilmDirectorQuery {
-//!     #[cynic_arguments(id = "ZmlsbXM6MQ==")]
+//!     // Here we use the `#[cynic_arguments()]` attribute on the `film` field to provide a
+//!     // hard coded film ID to look up.  Though useful for demonstration, hard coded
+//!     // arguments like this aren't much use in reality.  For more details on providing
+//!     // runtime arguments please see below.
+//!     #[cynic_arguments(id = Some("ZmlsbXM6MQ==".to_string()))]
 //!     film: Option<Film>,
 //! }
+//!
+//! // You can then build a `cynic::Query` from this fragment
+//! use cynic::QueryFragment;
+//! let query = cynic::Query::new(FilmDirectorQuery::fragment(()));
+//!
 //! ```
 //!
-//! Here we use the `#[cynic_arguments()]` attribute on the `film` field to provide a
-//! hard coded film ID to look up.  Though useful for demonstration, hard coded
-//! arguments like this aren't much use in reality.  For more details on providing
-//! runtime arguments please see below.
+//! `query` above implements `serde::Serialize` so can be used with any HTTP
+//! client.  For example, with `reqwest`:
 //!
-//! ### Sending Queries
-//!
-//! Notice that `FilmDirectorQuery` above defines its `graphql_type` as `Root` - the root
-//! query type in SWAPI.  Whenever you define a `QueryFragment` at this level of the
-//! heirarchy it can be used as a query on its own rather than as part of another query.
-//!
-//! To send the `FilmDirectorQuery` above:
-//!
-//! ```rust
-//! let query = cynic::Query::new(FilmDirectorQuery::fragment(()));
+//! ```rust,ignore
 //! let response = reqwest::blocking::Client::new()
 //!                     .post("a_url")
 //!                     .json(&query.body()?)
 //!                     .send()?;
-//! let result = query.decode_response(response.json().await?)?;
+//! let result = query.decode_response(response.json()?)?;
 //! ```
 //!
 //! After this code has run, result will be an instance of `FilmDirectorQuery`
@@ -107,47 +109,53 @@
 //! all of the parameters you want to provide:
 //!
 //! ```rust
+//! # mod query_dsl {
+//! #    type Node = String;
+//! #   cynic::query_dsl!("../examples/examples/starwars.schema.graphql");
+//! # }
+//!
+//! # #[derive(cynic::QueryFragment)]
+//! # #[cynic(
+//! #     schema_path = "../examples/examples/starwars.schema.graphql",
+//! #    query_module = "query_dsl",
+//! #    graphql_type = "Film"
+//! # )]
+//! # struct Film {
+//! #    title: Option<String>,
+//! #    director: Option<String>
+//! # }
+//! // Deriving `FragmentArguments` allows this struct to be used as arguments to a
+//! // `QueryFragment` fragment, whether it represents part of a query or a whole query.
 //! #[derive(cynic::FragmentArguments)]
 //! struct FilmArguments {
 //!     id: Option<String>
 //! }
-//! ```
 //!
-//! Deriving `FragmentArguments` allows this struct to be used as arguments to a
-//! `QueryFragment` fragment, whether it represents part of a query or a whole query.
-//!
-//! You can now define a query to use these arguments on.  For example, to make
-//! `FilmDirectorQuery` a bit more dynamic:
-//!
-//! ```rust
+//! // You can now define a query to use these arguments on.  For example, to make
+//! // `FilmDirectorQuery` a bit more dynamic:
 //! #[derive(cynic::QueryFragment)]
 //! #[cynic(
-//!     schema_path = "swapi.graphql",
+//!     schema_path = "../examples/examples/starwars.schema.graphql",
 //!     query_module = "query_dsl",
 //!     graphql_type = "Root",
+//!     // By adding the `argument_struct` parameter to our `QueryFragment` we've made a variable
+//!     // named `args` avaiable for use in the `cynic_arguments` attribute.
 //!     argument_struct = "FilmArguments"
 //! )]
 //! struct FilmDirectorQueryWithArgs {
+//!     // Here we use `args`, which we've declared above to be an instance of `FilmArguments`
 //!     #[cynic_arguments(id = args.id.clone())]
 //!     film: Option<Film>,
 //! }
-//! ```
 //!
-//! By adding the `argument_struct` parameter to our `QueryFragment` we've made a variable
-//! named `args` avaiable for use in the `cynic_arguments` attribute.  This `args` will
-//! be an instance of `FilmArguments` and will need to be provided whenever this is used
-//! as a query.
-//!
-//! To build a query using this new struct:
-//!
-//! ```rust
+//! // Then we can build a query using this new struct;
+//! use cynic::QueryFragment;
 //! let query = cynic::Query::new(
 //!     FilmDirectorQueryWithArgs::fragment(
-//!         FilmArguments{ id: "ZmlsbXM6MQ==".to_string() }
+//!         FilmArguments{ id: Some("ZmlsbXM6MQ==".to_string()) }
 //!     )
 //! );
 //! ```
-//!
 use std::collections::HashMap;
 
 mod argument;
