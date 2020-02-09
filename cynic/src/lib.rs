@@ -16,7 +16,6 @@
 //!
 //! ```rust
 //! mod query_dsl {
-//! #   type Node = String;
 //!     cynic::query_dsl!("../examples/examples/starwars.schema.graphql");
 //! }
 //! ```
@@ -46,7 +45,6 @@
 //!
 //! ```rust
 //! # mod query_dsl {
-//! #    type Node = String;
 //! #   cynic::query_dsl!("../examples/examples/starwars.schema.graphql");
 //! # }
 //!
@@ -110,7 +108,6 @@
 //!
 //! ```rust
 //! # mod query_dsl {
-//! #    type Node = String;
 //! #   cynic::query_dsl!("../examples/examples/starwars.schema.graphql");
 //! # }
 //!
