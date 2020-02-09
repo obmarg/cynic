@@ -5,6 +5,7 @@ mod field_selector;
 mod graphql_enum;
 mod input_struct;
 mod selector_struct;
+mod union_struct;
 
 use super::module::Module;
 use crate::graphql_extensions::FieldExt;
@@ -14,6 +15,7 @@ pub use field_selector::FieldSelector;
 use graphql_enum::GraphQLEnum;
 use input_struct::InputStruct;
 pub use selector_struct::SelectorStruct;
+use union_struct::UnionStruct;
 
 #[derive(Debug)]
 pub struct QueryDslParams {
@@ -51,6 +53,7 @@ pub struct QueryDsl {
     pub enums: Vec<GraphQLEnum>,
     pub argument_struct_modules: Vec<Module<ArgumentStruct>>,
     pub inputs: Vec<InputStruct>,
+    pub unions: Vec<UnionStruct>,
 }
 
 impl From<graphql_parser::schema::Document> for QueryDsl {
@@ -63,6 +66,7 @@ impl From<graphql_parser::schema::Document> for QueryDsl {
         let mut enums = vec![];
         let mut argument_struct_modules = vec![];
         let mut inputs = vec![];
+        let mut unions = vec![];
 
         let root_query_type = find_root_query(&document.definitions);
 
@@ -108,6 +112,9 @@ impl From<graphql_parser::schema::Document> for QueryDsl {
                 Definition::TypeDefinition(TypeDefinition::InputObject(obj)) => {
                     inputs.push(InputStruct::from_input_object(obj, &type_index));
                 }
+                Definition::TypeDefinition(TypeDefinition::Union(union)) => {
+                    unions.push(UnionStruct::from_union(&union));
+                }
                 _ => {}
             }
         }
@@ -117,6 +124,7 @@ impl From<graphql_parser::schema::Document> for QueryDsl {
             enums,
             argument_struct_modules,
             inputs,
+            unions,
         }
     }
 }
@@ -146,10 +154,14 @@ impl quote::ToTokens for QueryDsl {
         let selectors = &self.selectors;
         let argument_struct_modules = &self.argument_struct_modules;
         let inputs = &self.inputs;
+        let unions = &self.unions;
 
         tokens.append_all(quote! {
             #(
                 #enums
+            )*
+            #(
+                #unions
             )*
             #(
                 #selectors

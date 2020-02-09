@@ -55,6 +55,17 @@ impl Test {
     }
 }
 
+#[derive(cynic::InlineFragments)]
+#[cynic(
+    schema_path = "cynic/examples/simple.graphql",
+    query_module = "query_dsl",
+    graphql_type = "MyUnionType"
+)]
+enum MyUnionType {
+    Test(Test),
+    Nested(Nested),
+}
+
 /*
 fn query() {
     let query = query_dsl::Query::test_struct(selection_set::map2(

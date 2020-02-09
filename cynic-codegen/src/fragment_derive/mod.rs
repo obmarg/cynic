@@ -296,6 +296,7 @@ struct FragmentImpl {
     selector_struct_path: TypePath,
     constructor_params: Vec<ConstructorParameter>,
     argument_struct: syn::Type,
+    graphql_type_name: String,
 }
 
 impl FragmentImpl {
@@ -382,6 +383,7 @@ impl FragmentImpl {
             selector_struct_path,
             constructor_params,
             argument_struct,
+            graphql_type_name: graphql_type_name.to_string(),
         })
     }
 }
@@ -395,6 +397,7 @@ impl quote::ToTokens for FragmentImpl {
         let selector_struct = &self.selector_struct_path;
         let fields = &self.fields;
         let constructor_params = &self.constructor_params;
+        let graphql_type = proc_macro2::Literal::string(&self.graphql_type_name);
         let constructor_param_names = self
             .constructor_params
             .iter()
@@ -421,6 +424,10 @@ impl quote::ToTokens for FragmentImpl {
                             #fields
                         ),*
                     )
+                }
+
+                fn graphql_type() -> String {
+                    #graphql_type.to_string()
                 }
             }
         })

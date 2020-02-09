@@ -1,4 +1,5 @@
-use json_decode::BoxDecoder;
+use json_decode::{BoxDecoder, DecodeError};
+use std::collections::HashMap;
 use std::marker::PhantomData;
 
 use crate::{field::Field, scalar, Argument, QueryRoot};
@@ -8,6 +9,8 @@ pub(crate) enum Error {
     DecodeError(json_decode::DecodeError),
 }
 
+pub trait HasSubtype<Subtype> {}
+
 pub struct SelectionSet<'a, DecodesTo, TypeLock> {
     fields: Vec<Field>,
 
@@ -16,8 +19,31 @@ pub struct SelectionSet<'a, DecodesTo, TypeLock> {
     phantom: PhantomData<TypeLock>,
 }
 
-// TODO: This definitely should live in a different file.
 impl<'a, DecodesTo, TypeLock> SelectionSet<'a, DecodesTo, TypeLock> {
+    pub fn map<F, R>(self, f: F) -> SelectionSet<'a, R, TypeLock>
+    where
+        F: (Fn(DecodesTo) -> R) + 'a + Sync + Send,
+        DecodesTo: 'a,
+        R: 'a,
+    {
+        SelectionSet {
+            fields: self.fields,
+            decoder: json_decode::map(f, self.decoder),
+            phantom: PhantomData,
+        }
+    }
+
+    pub fn transform_typelock<NewLock>(self) -> SelectionSet<'a, DecodesTo, NewLock>
+    where
+        NewLock: HasSubtype<TypeLock>,
+    {
+        SelectionSet {
+            fields: self.fields,
+            decoder: self.decoder,
+            phantom: PhantomData,
+        }
+    }
+
     pub(crate) fn decode(&self, value: &serde_json::Value) -> Result<DecodesTo, Error> {
         (*self.decoder).decode(value).map_err(Error::DecodeError)
     }
@@ -156,6 +182,58 @@ where
         fields: vec![field],
         decoder: json_decode::field(field_name, selection_set.decoder),
         phantom: PhantomData,
+    }
+}
+
+pub fn inline_fragments<'a, DecodesTo, TypeLock>(
+    fragments: Vec<(String, SelectionSet<'a, DecodesTo, TypeLock>)>,
+) -> SelectionSet<'a, DecodesTo, TypeLock>
+where
+    DecodesTo: 'a + Send + Sync,
+{
+    let mut fields = vec![];
+    let mut decoders = HashMap::new();
+
+    fields.push(Field::Leaf("__typename".to_string(), vec![]));
+
+    for (fragment_type, selection_set) in fragments {
+        fields.push(Field::InlineFragment(
+            fragment_type.to_string(),
+            selection_set.fields,
+        ));
+        decoders.insert(fragment_type, selection_set.decoder);
+    }
+
+    SelectionSet {
+        fields: fields,
+        decoder: Box::new(FragmentDecoder {
+            decoders,
+            backup_decoder: None,
+        }),
+        phantom: PhantomData,
+    }
+}
+
+struct FragmentDecoder<'a, DecodesTo> {
+    decoders: HashMap<String, BoxDecoder<'a, DecodesTo>>,
+    backup_decoder: Option<BoxDecoder<'a, DecodesTo>>,
+}
+
+impl<'a, DecodesTo> json_decode::Decoder<'a, DecodesTo> for FragmentDecoder<'a, DecodesTo> {
+    fn decode(&self, value: &serde_json::Value) -> Result<DecodesTo, DecodeError> {
+        // TODO: Don't unwrap
+        let typename = value["__typename"].as_str().unwrap();
+
+        if let Some(decoder) = self.decoders.get(typename) {
+            decoder.decode(value)
+        } else if let Some(backup_decoder) = &self.backup_decoder {
+            backup_decoder.decode(value)
+        } else {
+            Err(json_decode::DecodeError::Other(format!(
+                "Unknown __typename: {}",
+                typename,
+            )))
+        }
     }
 }
 
