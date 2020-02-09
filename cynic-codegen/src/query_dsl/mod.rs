@@ -4,6 +4,7 @@ mod argument_struct;
 mod field_selector;
 mod graphql_enum;
 mod input_struct;
+mod interface_struct;
 mod selector_struct;
 mod union_struct;
 
@@ -14,6 +15,7 @@ pub use argument_struct::ArgumentStruct;
 pub use field_selector::FieldSelector;
 use graphql_enum::GraphQLEnum;
 use input_struct::InputStruct;
+use interface_struct::InterfaceStruct;
 pub use selector_struct::SelectorStruct;
 use union_struct::UnionStruct;
 
@@ -54,6 +56,7 @@ pub struct QueryDsl {
     pub argument_struct_modules: Vec<Module<ArgumentStruct>>,
     pub inputs: Vec<InputStruct>,
     pub unions: Vec<UnionStruct>,
+    pub interfaces: Vec<InterfaceStruct>,
 }
 
 impl From<graphql_parser::schema::Document> for QueryDsl {
@@ -67,6 +70,7 @@ impl From<graphql_parser::schema::Document> for QueryDsl {
         let mut argument_struct_modules = vec![];
         let mut inputs = vec![];
         let mut unions = vec![];
+        let mut interfaces = vec![];
 
         let root_query_type = find_root_query(&document.definitions);
 
@@ -115,6 +119,9 @@ impl From<graphql_parser::schema::Document> for QueryDsl {
                 Definition::TypeDefinition(TypeDefinition::Union(union)) => {
                     unions.push(UnionStruct::from_union(&union));
                 }
+                Definition::TypeDefinition(TypeDefinition::Interface(interface)) => {
+                    interfaces.push(InterfaceStruct::from_interface(&interface));
+                }
                 _ => {}
             }
         }
@@ -125,6 +132,7 @@ impl From<graphql_parser::schema::Document> for QueryDsl {
             argument_struct_modules,
             inputs,
             unions,
+            interfaces,
         }
     }
 }
@@ -155,6 +163,7 @@ impl quote::ToTokens for QueryDsl {
         let argument_struct_modules = &self.argument_struct_modules;
         let inputs = &self.inputs;
         let unions = &self.unions;
+        let interfaces = &self.interfaces;
 
         tokens.append_all(quote! {
             #(
@@ -162,6 +171,9 @@ impl quote::ToTokens for QueryDsl {
             )*
             #(
                 #unions
+            )*
+            #(
+                #interfaces
             )*
             #(
                 #selectors

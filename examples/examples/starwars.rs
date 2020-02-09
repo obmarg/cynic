@@ -1,8 +1,4 @@
 mod query_dsl {
-    // This is 100% wrong - a node is an interface w/
-    // an id field.  Gets it to compile for now though...
-    type Node = String;
-
     cynic::query_dsl!("examples/examples/starwars.schema.graphql");
 }
 
