@@ -9,9 +9,11 @@ use crate::{
 
 mod cynic_arguments;
 mod schema_parsing;
+mod type_validation;
 
 use cynic_arguments::{arguments_from_field_attrs, FieldArgument};
 use schema_parsing::{Field, Object, Schema};
+use type_validation::check_types_are_compatible;
 
 pub fn fragment_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
     fragment_derive_impl(ast, parse_struct_attrs(&ast.attrs)?)
@@ -329,6 +331,8 @@ impl FragmentImpl {
                     let field_name = Ident::for_field(&field_name);
 
                     if let Some(gql_field) = object.fields.get(&field_name) {
+                        check_types_are_compatible(&gql_field.field_type, &field.ty)?;
+
                         let argument_structs = argument_structs(
                             arguments,
                             gql_field,
