@@ -9,6 +9,7 @@ mod fragment_arguments_derive;
 mod fragment_derive;
 mod graphql_extensions;
 mod ident;
+mod inline_fragments_derive;
 mod module;
 mod query_dsl;
 mod struct_field;
@@ -48,6 +49,18 @@ pub fn fragment_arguments_derive(input: TokenStream) -> TokenStream {
     let ast = syn::parse_macro_input!(input as syn::DeriveInput);
 
     let rv = match fragment_arguments_derive::fragment_arguments_derive(&ast) {
+        Ok(tokens) => tokens.into(),
+        Err(e) => e.to_compile_error().into(),
+    };
+
+    rv
+}
+
+#[proc_macro_derive(InlineFragments, attributes(cynic))]
+pub fn inline_fragments_derive(input: TokenStream) -> TokenStream {
+    let ast = syn::parse_macro_input!(input as syn::DeriveInput);
+
+    let rv = match inline_fragments_derive::inline_fragments_derive(&ast) {
         Ok(tokens) => tokens.into(),
         Err(e) => e.to_compile_error().into(),
     };

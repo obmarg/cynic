@@ -176,6 +176,36 @@ pub trait QueryFragment {
     type Arguments: FragmentArguments;
 
     fn fragment(arguments: Self::Arguments) -> Self::SelectionSet;
+    fn graphql_type() -> String;
+}
+
+pub trait InlineFragments
+where
+    Self: Sized,
+{
+    type TypeLock;
+    type Arguments: FragmentArguments;
+
+    fn graphql_type() -> String;
+    fn fragments(
+        arguments: Self::Arguments,
+    ) -> Vec<(String, SelectionSet<'static, Self, Self::TypeLock>)>;
+}
+
+impl<T> QueryFragment for T
+where
+    T: InlineFragments + Send + Sync + 'static,
+{
+    type SelectionSet = SelectionSet<'static, T, T::TypeLock>;
+    type Arguments = <T as InlineFragments>::Arguments;
+
+    fn fragment(arguments: Self::Arguments) -> Self::SelectionSet {
+        selection_set::inline_fragments(Self::fragments(arguments))
+    }
+
+    fn graphql_type() -> String {
+        Self::graphql_type()
+    }
 }
 
 /// A marker trait for the arguments types on QueryFragments.
@@ -223,4 +253,4 @@ pub struct QueryBody<'a> {
     variables: HashMap<String, &'a serde_json::Value>,
 }
 
-pub use cynic_codegen::{query_dsl, FragmentArguments, QueryFragment};
+pub use cynic_codegen::{query_dsl, FragmentArguments, InlineFragments, QueryFragment};

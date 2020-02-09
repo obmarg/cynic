@@ -4,6 +4,7 @@ pub enum Field {
     Root(Vec<Field>),
     Leaf(String, Vec<Argument>),
     Composite(String, Vec<Argument>, Vec<Field>),
+    InlineFragment(String, Vec<Field>),
 }
 
 impl Field {
@@ -46,6 +47,27 @@ impl Field {
                     child_query = child_query,
                     indent = indent,
                     arguments = arguments
+                )
+            }
+            Field::InlineFragment(type_name, child_fields) => {
+                let child_query: String = child_fields
+                    .iter()
+                    .map(|f| {
+                        f.query(
+                            indent + indent_size,
+                            indent_size,
+                            argument_values,
+                            argument_types,
+                        )
+                    })
+                    .collect();
+
+                format!(
+                    "{0:indent$}... on {type_name} {{\n{child_query}{0:indent$}}}\n",
+                    "",
+                    type_name = type_name,
+                    child_query = child_query,
+                    indent = indent
                 )
             }
             Field::Root(fields) => {
@@ -143,6 +165,31 @@ mod tests {
         );
         assert!(arguments.is_empty());
         assert!(argument_types.is_empty());
+    }
+
+    #[test]
+    fn test_inline_fragments() {
+        let fields = Field::Composite(
+            "test".to_string(),
+            vec![],
+            vec![
+                Field::Leaf("__typename".to_string(), vec![]),
+                Field::InlineFragment(
+                    "TypeOne".to_string(),
+                    vec![Field::Leaf("a_field".to_string(), vec![])],
+                ),
+                Field::InlineFragment(
+                    "TypeTwo".to_string(),
+                    vec![Field::Leaf("another_field".to_string(), vec![])],
+                ),
+            ],
+        );
+        let mut arguments = vec![];
+        let mut argument_types = vec![];
+        assert_eq!(
+            fields.query(0, 2, &mut arguments, &mut argument_types),
+            "test {\n  __typename\n  ... on TypeOne {\n    a_field\n  }\n  ... on TypeTwo {\n    another_field\n  }\n}\n"
+        );
     }
 
     #[test]
