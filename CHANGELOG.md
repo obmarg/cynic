@@ -14,6 +14,8 @@ all APIs might be changed.
 ### New Features
 
 - Added a StarWars API example
+- `#[derive(QueryFragment)]` now explicitly checks for required/list type
+  mismatches & other easy mistakes, and warns the user appropriately.
 
 ### Bug Fixes
 
