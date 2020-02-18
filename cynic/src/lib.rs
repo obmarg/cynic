@@ -250,4 +250,6 @@ pub struct QueryBody<'a> {
     variables: HashMap<String, &'a serde_json::Value>,
 }
 
-pub use cynic_codegen::{query_dsl, FragmentArguments, InlineFragments, QueryFragment};
+pub use cynic_proc_macros::{
+    query_dsl, scalars_as_strings, FragmentArguments, InlineFragments, QueryFragment,
+};

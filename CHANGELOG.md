@@ -20,6 +20,12 @@ all APIs might be changed.
   A temporary measure until I can come up with an easier way to manage large
   numbers of scalars.
 
+### Changed
+
+- Split the procedural macros out into their own cynic-proc-macros crate.
+  cynic-codegen now exists as a re-usable library for programatically 
+  doing the codegen.
+
 ### Bug Fixes
 
 - Now supports schemas that define their root query types.  Before we just

@@ -28,7 +28,7 @@ pub fn scalars_as_strings(input: Params) -> Result<TokenStream, Error> {
     let scalars = scalars_from_schema(graphql_parser::schema::parse_schema(&schema)?);
 
     Ok(quote! {
-        #(scalars),
+        #(#scalars)*
     })
 }
 

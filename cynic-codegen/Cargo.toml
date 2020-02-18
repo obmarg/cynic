@@ -10,9 +10,6 @@ documentation = "https://docs.rs/cynic-codegen"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[lib]
-proc-macro = true
-
 [dependencies]
 graphql-parser = "0.2.3"
 proc-macro2 = "1.0.7"
