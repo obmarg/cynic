@@ -16,6 +16,9 @@ all APIs might be changed.
 - Added a StarWars API example
 - `#[derive(QueryFragment)]` now explicitly checks for required/list type
   mismatches & other easy mistakes, and warns the user appropriately.
+- Added `scalars_as_strings` for stubbing out all scalar types as strings.
+  A temporary measure until I can come up with an easier way to manage large
+  numbers of scalars.
 
 ### Bug Fixes
 

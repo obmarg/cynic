@@ -12,6 +12,7 @@ mod ident;
 mod inline_fragments_derive;
 mod module;
 mod query_dsl;
+mod scalars_as_strings;
 mod struct_field;
 mod type_index;
 mod type_path;
@@ -28,6 +29,21 @@ pub fn query_dsl(input: TokenStream) -> TokenStream {
     let input = syn::parse_macro_input!(input as query_dsl::QueryDslParams);
 
     let rv = query_dsl::query_dsl_from_schema(input).unwrap().into();
+
+    //eprintln!("{}", rv);
+
+    rv
+}
+
+#[proc_macro]
+pub fn scalars_as_strings(input: TokenStream) -> TokenStream {
+    let input = syn::parse_macro_input!(input as scalars_as_strings::Params);
+
+    let rv = scalars_as_strings::scalars_as_strings(input)
+        .unwrap()
+        .into();
+
+    //eprintln!("{}", rv);
 
     rv
 }

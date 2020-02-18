@@ -6,24 +6,24 @@ use proc_macro2::{Span, TokenStream};
 pub struct Ident(String, Option<Span>);
 
 impl Ident {
-    pub fn new(s: &str) -> Self {
-        Ident(s.to_string(), None)
+    pub fn new<T: Into<String>>(s: T) -> Self {
+        Ident(s.into(), None)
     }
 
-    pub fn new_spanned(s: &str, span: Span) -> Ident {
-        Ident(s.to_string(), Some(span))
+    pub fn new_spanned<T: Into<String>>(s: T, span: Span) -> Ident {
+        Ident(s.into(), Some(span))
     }
 
-    pub fn for_inbuilt_scalar(s: &str) -> Self {
-        Ident(transform_keywords(s.to_string()), None)
+    pub fn for_inbuilt_scalar<T: Into<String>>(s: T) -> Self {
+        Ident(transform_keywords(s.into()), None)
     }
 
-    pub fn for_type(s: &str) -> Self {
-        Ident(transform_keywords(s.to_pascal_case()), None)
+    pub fn for_type<T: AsRef<str>>(s: T) -> Self {
+        Ident(transform_keywords(s.as_ref().to_pascal_case()), None)
     }
 
-    pub fn for_field(s: &str) -> Self {
-        Ident(transform_keywords(s.to_snake_case()), None)
+    pub fn for_field<T: AsRef<str>>(s: T) -> Self {
+        Ident(transform_keywords(s.as_ref().to_snake_case()), None)
     }
 
     pub fn for_module(s: &str) -> Self {
