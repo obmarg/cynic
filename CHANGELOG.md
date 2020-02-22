@@ -19,6 +19,7 @@ all APIs might be changed.
 - Added `scalars_as_strings` for stubbing out all scalar types as strings.
   A temporary measure until I can come up with an easier way to manage large
   numbers of scalars.
+- Added an `output_query_dsl` function suitable for running inside build.rs
 
 ### Changed
 

@@ -21,7 +21,7 @@ use union_struct::UnionStruct;
 
 #[derive(Debug)]
 pub struct QueryDslParams {
-    schema_filename: String,
+    pub schema_filename: String,
 }
 
 impl QueryDslParams {
