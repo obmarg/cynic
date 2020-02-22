@@ -33,6 +33,7 @@ all APIs might be changed.
 - Fixed a few things that stop the examples in the documentation from
   compiling.
 - Fixed all the tests
+- We now use the correct case for non built-in scalar types
 
 ## v0.1.2 - 2020-02-04
 

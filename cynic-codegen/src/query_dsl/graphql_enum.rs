@@ -34,6 +34,7 @@ impl quote::ToTokens for GraphQLEnum {
             .graphql_names
             .iter()
             .map(|n| proc_macro2::Literal::string(&n));
+        let string_enum_name = proc_macro2::Literal::string(&enum_name.to_string());
 
         tokens.append_all(quote! {
             #[derive(PartialEq, Eq, Debug, ::serde::Serialize, ::serde::Deserialize)]
@@ -53,6 +54,10 @@ impl quote::ToTokens for GraphQLEnum {
 
                 fn fragment(args: Self::Arguments) -> Self::SelectionSet {
                     ::cynic::selection_set::serde()
+                }
+
+                fn graphql_type() -> String {
+                    #string_enum_name.to_string()
                 }
             }
         })
