@@ -26,6 +26,8 @@ all APIs might be changed.
 - Split the procedural macros out into their own cynic-proc-macros crate.
   cynic-codegen now exists as a re-usable library for programatically 
   doing the codegen.
+- The IntoArguments trait is now named FromArguments and has had it's
+  parameters switched up.
 
 ### Bug Fixes
 
@@ -35,6 +37,8 @@ all APIs might be changed.
   compiling.
 - Fixed all the tests
 - We now use the correct case for non built-in scalar types
+- Fixed an issue that prevented propagation of argument structs into inner
+  QueryFragments
 
 ## v0.1.2 - 2020-02-04
 

@@ -13,7 +13,7 @@ struct Film {
     director: Option<String>,
 }
 
-#[derive(cynic::FragmentArguments)]
+#[derive(Clone, cynic::FragmentArguments)]
 struct FilmArguments {
     id: Option<String>,
 }

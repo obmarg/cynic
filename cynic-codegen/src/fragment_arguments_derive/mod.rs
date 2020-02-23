@@ -7,8 +7,8 @@ pub fn fragment_arguments_derive(ast: &syn::DeriveInput) -> Result<TokenStream, 
     Ok(quote! {
         impl ::cynic::FragmentArguments for #ident {}
 
-        impl ::cynic::IntoArguments<()> for #ident {
-            fn into_args(&self) -> () {
+        impl ::cynic::FromArguments<#ident> for () {
+            fn from_arguments(_: &#ident) -> () {
                 ()
             }
         }

@@ -3,14 +3,14 @@ fn main() {
 }
 
 mod query_dsl {
-    type JSON = serde_json::Value;
+    type Json = serde_json::Value;
 
     cynic::query_dsl!("cynic/examples/simple.graphql");
 }
 
 use cynic::selection_set;
 
-#[derive(cynic::FragmentArguments)]
+#[derive(Clone, cynic::FragmentArguments)]
 struct TestArgs {}
 
 #[derive(cynic::QueryFragment)]

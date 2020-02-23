@@ -123,7 +123,7 @@
 //! # }
 //! // Deriving `FragmentArguments` allows this struct to be used as arguments to a
 //! // `QueryFragment` fragment, whether it represents part of a query or a whole query.
-//! #[derive(cynic::FragmentArguments)]
+//! #[derive(cynic::FragmentArguments, Clone)]
 //! struct FilmArguments {
 //!     id: Option<String>
 //! }
@@ -209,7 +209,7 @@ where
 ///
 /// We use this in combination with the IntoArguments trait below
 /// to convert between different argument types in a query heirarchy.
-pub trait FragmentArguments {}
+pub trait FragmentArguments: Clone {}
 
 impl FragmentArguments for () {}
 
@@ -220,25 +220,17 @@ impl FragmentArguments for () {}
 /// but an inner QueryFragment needs none then we can use () as the arguments
 /// type on the inner fragments and use the blanket implementation of IntoArguments
 /// to convert to ().
-///
-/// Similarly, the
-pub trait IntoArguments<T> {
-    fn into_args(&self) -> T;
+pub trait FromArguments<T> {
+    fn from_arguments(args: &T) -> Self;
 }
 
-impl IntoArguments<()> for dyn FragmentArguments {
-    fn into_args(&self) -> () {
-        ()
-    }
-}
-
-impl<T> IntoArguments<T> for T
+impl<T> FromArguments<T> for T
 where
-    T: Clone,
+    T: Clone + FragmentArguments,
 {
-    fn into_args(&self) -> T {
+    fn from_arguments(other: &T) -> Self {
         // TODO: Figure out if there's a way to avoid this clone...
-        self.clone()
+        other.clone()
     }
 }
 

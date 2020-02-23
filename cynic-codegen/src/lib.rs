@@ -21,7 +21,6 @@ use struct_field::StructField;
 use type_index::TypeIndex;
 use type_path::TypePath;
 
-
 pub fn output_query_dsl<P: AsRef<std::path::Path>>(schema: P, output_path: P) -> Result<(), Error> {
     use query_dsl::QueryDslParams;
     use std::io::Write;
