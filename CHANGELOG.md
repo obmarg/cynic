@@ -13,7 +13,9 @@ all APIs might be changed.
 
 ### New Features
 
-- Added a StarWars API example
+- Union types can be queried via `#[derive(InlineFragments)]` on an enum.
+- Schemas that use interfaces are now supported, though interfaces are not
+  yet queryable.
 - `#[derive(QueryFragment)]` now explicitly checks for required/list type
   mismatches & other easy mistakes, and warns the user appropriately.
 - Added `scalars_as_strings` for stubbing out all scalar types as strings.
@@ -28,6 +30,7 @@ all APIs might be changed.
   doing the codegen.
 - The IntoArguments trait is now named FromArguments and has had it's
   parameters switched up.
+- Added a StarWars API example
 
 ### Bug Fixes
 
