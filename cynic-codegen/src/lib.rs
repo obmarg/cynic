@@ -1,17 +1,15 @@
-extern crate proc_macro;
-
-use proc_macro::TokenStream;
+pub mod fragment_arguments_derive;
+pub mod fragment_derive;
+pub mod inline_fragments_derive;
+pub mod query_dsl;
+pub mod scalars_as_strings;
 
 mod attributes;
 mod error;
 mod field_type;
-mod fragment_arguments_derive;
-mod fragment_derive;
 mod graphql_extensions;
 mod ident;
-mod inline_fragments_derive;
 mod module;
-mod query_dsl;
 mod struct_field;
 mod type_index;
 mod type_path;
@@ -23,47 +21,35 @@ use struct_field::StructField;
 use type_index::TypeIndex;
 use type_path::TypePath;
 
-#[proc_macro]
-pub fn query_dsl(input: TokenStream) -> TokenStream {
-    let input = syn::parse_macro_input!(input as query_dsl::QueryDslParams);
+pub fn output_query_dsl<P: AsRef<std::path::Path>>(schema: P, output_path: P) -> Result<(), Error> {
+    use query_dsl::QueryDslParams;
+    use std::io::Write;
 
-    let rv = query_dsl::query_dsl_from_schema(input).unwrap().into();
+    let tokens = query_dsl::query_dsl_from_schema(QueryDslParams {
+        schema_filename: schema.as_ref().to_str().unwrap().to_string(),
+    })?;
 
-    rv
+    {
+        let mut out = std::fs::File::create(output_path.as_ref()).unwrap();
+        write!(&mut out, "{}", tokens).unwrap();
+    }
+
+    format_code(output_path.as_ref());
+
+    Ok(())
 }
 
-#[proc_macro_derive(QueryFragment, attributes(cynic, cynic_arguments))]
-pub fn query_fragment_derive(input: TokenStream) -> TokenStream {
-    let ast = syn::parse_macro_input!(input as syn::DeriveInput);
-
-    let rv = match fragment_derive::fragment_derive(&ast) {
-        Ok(tokens) => tokens.into(),
-        Err(e) => e.to_compile_error().into(),
-    };
-
-    rv
-}
-
-#[proc_macro_derive(FragmentArguments)]
-pub fn fragment_arguments_derive(input: TokenStream) -> TokenStream {
-    let ast = syn::parse_macro_input!(input as syn::DeriveInput);
-
-    let rv = match fragment_arguments_derive::fragment_arguments_derive(&ast) {
-        Ok(tokens) => tokens.into(),
-        Err(e) => e.to_compile_error().into(),
-    };
-
-    rv
-}
-
-#[proc_macro_derive(InlineFragments, attributes(cynic))]
-pub fn inline_fragments_derive(input: TokenStream) -> TokenStream {
-    let ast = syn::parse_macro_input!(input as syn::DeriveInput);
-
-    let rv = match inline_fragments_derive::inline_fragments_derive(&ast) {
-        Ok(tokens) => tokens.into(),
-        Err(e) => e.to_compile_error().into(),
-    };
-
-    rv
+#[allow(unused_variables)]
+fn format_code(filename: &std::path::Path) {
+    #[cfg(feature = "rustfmt")]
+    {
+        std::process::Command::new("cargo")
+            .args(&["fmt", "--", filename.to_str().unwrap()])
+            .spawn()
+            .expect("failed to execute process");
+    }
+    #[cfg(not(feature = "rustfmt"))]
+    {
+        return code;
+    }
 }

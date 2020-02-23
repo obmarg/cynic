@@ -231,7 +231,7 @@ impl quote::ToTokens for FieldSelectorCall {
         let inner_call = if self.contains_composite {
             let field_type = &self.query_fragment_field_type;
             quote! {
-                #initial_args #field_type::fragment(args.into_args())
+                #initial_args #field_type::fragment(FromArguments::from_arguments(&args))
             }
         } else {
             quote! {#initial_args}
@@ -412,7 +412,7 @@ impl quote::ToTokens for FragmentImpl {
                 type Arguments = #argument_struct;
 
                 fn fragment(args: Self::Arguments) -> Self::SelectionSet {
-                    use ::cynic::{QueryFragment, IntoArguments};
+                    use ::cynic::{QueryFragment, FromArguments};
 
                     let new = |#(#constructor_params),*| #target_struct {
                         #(#constructor_param_names),*

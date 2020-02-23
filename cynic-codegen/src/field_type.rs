@@ -41,7 +41,7 @@ impl FieldType {
             Type::NamedType(name) => {
                 if type_index.is_scalar(name) {
                     FieldType::Scalar(
-                        TypePath::concat(&[type_path, Ident::for_inbuilt_scalar(name).into()]),
+                        TypePath::concat(&[type_path, Ident::for_type(name).into()]),
                         nullable,
                     )
                 } else if type_index.is_enum(name) {

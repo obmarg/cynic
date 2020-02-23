@@ -1,0 +1,18 @@
+[package]
+name = "cynic-proc-macros"
+version = "0.1.2"
+authors = ["Graeme Coupar <graeme@polyandglot.dev>"]
+edition = "2018"
+homepage = "https://github.com/polyandglot/cynic"
+description = "Procedural macro crate for cynic - a GraphQL query builder & data mapper for Rust"
+license = "MPL-2.0"
+documentation = "https://docs.rs/cynic-proc-macros"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+proc-macro = true
+
+[dependencies]
+cynic-codegen = { path = "../cynic-codegen", version = "0.1.2" }
+syn = "1.0.13"
