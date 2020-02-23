@@ -4,7 +4,6 @@ pub mod inline_fragments_derive;
 pub mod query_dsl;
 pub mod scalars_as_strings;
 
-mod attributes;
 mod error;
 mod field_type;
 mod graphql_extensions;

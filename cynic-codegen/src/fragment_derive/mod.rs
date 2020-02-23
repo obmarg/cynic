@@ -1,12 +1,9 @@
 use std::collections::HashSet;
 
-use darling::util::{IdentString, SpannedValue};
+use darling::util::SpannedValue;
 use proc_macro2::{Span, TokenStream};
 
-use crate::{
-    attributes::{extract_meta_attrs, Attribute},
-    query_dsl, FieldType, Ident, TypePath,
-};
+use crate::{query_dsl, FieldType, Ident, TypePath};
 
 mod cynic_arguments;
 mod schema_parsing;
@@ -55,7 +52,6 @@ pub fn fragment_derive_impl(input: FragmentDeriveInput) -> Result<TokenStream, s
         ))?;
 
     let argument_struct = if let Some(arg_struct) = input.argument_struct {
-        use syn::spanned::Spanned;
         let span = arg_struct.span();
 
         let arg_struct_val: Ident = arg_struct.into();
@@ -267,8 +263,6 @@ impl FragmentImpl {
         graphql_type_name: &str,
         argument_struct: syn::Type,
     ) -> Result<Self, syn::Error> {
-        use syn::{spanned::Spanned, Fields};
-
         let target_struct = Ident::new_spanned(&name.to_string(), name.span());
         let selector_struct_path = TypePath::concat(&[
             query_dsl_path.clone(),
