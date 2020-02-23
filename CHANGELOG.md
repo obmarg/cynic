@@ -22,6 +22,11 @@ all APIs might be changed.
   A temporary measure until I can come up with an easier way to manage large
   numbers of scalars.
 - Added an `output_query_dsl` function suitable for running inside build.rs
+- Added a flatten option at the field level.  When present this will flatten
+  nested options & vectors into the provided type.  Used to handle the common 
+  case in GQL where someone has defined an optional list of optionals.  This is
+  a pain in Rust, since the same thing can usually be represented by a
+  non-optional list of non-optionals.
 
 ### Changed
 

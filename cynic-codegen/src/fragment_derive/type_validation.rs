@@ -3,6 +3,7 @@ use crate::FieldType;
 pub fn check_types_are_compatible(
     gql_type: &FieldType,
     rust_type: &syn::Type,
+    flattening: bool,
 ) -> Result<(), syn::Error> {
     use quote::quote;
     use syn::spanned::Spanned;
@@ -18,8 +19,9 @@ pub fn check_types_are_compatible(
 
     if gql_type.is_nullable() {
         if let ParsedType::Optional(inner) = parsed_type {
-            return check_types_are_compatible(&gql_type.as_required(), &inner);
-        } else {
+            return check_types_are_compatible(&gql_type.as_required(), &inner, flattening);
+        } else if !flattening {
+            // If we're flattening then it's all good.  But otherwise we should return an error.
             return Err(syn::Error::new(
                         rust_type.span(),
                         format!(
@@ -38,8 +40,9 @@ pub fn check_types_are_compatible(
                     ));
     } else if let FieldType::List(item_type, _) = gql_type {
         if let ParsedType::List(inner) = parsed_type {
-            return check_types_are_compatible(&item_type, &inner);
-        } else {
+            return check_types_are_compatible(&item_type, &inner, flattening);
+        } else if !flattening {
+            // If we're flattening then it's all good.  But otherwise we should return an error.
             return Err(syn::Error::new(
                         rust_type.span(),
                         format!(
@@ -117,24 +120,34 @@ mod tests {
         let optional_field = FieldType::Scalar(TypePath::empty(), true);
 
         assert_matches!(
-            check_types_are_compatible(&required_field, &syn::parse2(quote! { i32 }).unwrap()),
+            check_types_are_compatible(
+                &required_field,
+                &syn::parse2(quote! { i32 }).unwrap(),
+                false
+            ),
             Ok(())
         );
         assert_matches!(
             check_types_are_compatible(
                 &optional_field,
-                &syn::parse2(quote! { Option<i32> }).unwrap()
+                &syn::parse2(quote! { Option<i32> }).unwrap(),
+                false
             ),
             Ok(())
         );
         assert_matches!(
-            check_types_are_compatible(&optional_field, &syn::parse2(quote! { i32 }).unwrap()),
+            check_types_are_compatible(
+                &optional_field,
+                &syn::parse2(quote! { i32 }).unwrap(),
+                false
+            ),
             Err(_)
         );
         assert_matches!(
             check_types_are_compatible(
                 &required_field,
-                &syn::parse2(quote! { Option<i32> }).unwrap()
+                &syn::parse2(quote! { Option<i32> }).unwrap(),
+                false
             ),
             Err(_)
         );
@@ -149,35 +162,93 @@ mod tests {
             FieldType::List(Box::new(FieldType::Scalar(TypePath::empty(), true)), true);
 
         assert_matches!(
-            check_types_are_compatible(&list, &syn::parse2(quote! { Vec<i32> }).unwrap()),
+            check_types_are_compatible(&list, &syn::parse2(quote! { Vec<i32> }).unwrap(), false),
             Ok(())
         );
         assert_matches!(
             check_types_are_compatible(
                 &optional_list,
-                &syn::parse2(quote! { Option<Vec<i32>> }).unwrap()
+                &syn::parse2(quote! { Option<Vec<i32>> }).unwrap(),
+                false
             ),
             Ok(())
         );
         assert_matches!(
             check_types_are_compatible(
                 &option_list_option,
-                &syn::parse2(quote! { Option<Vec<Option<i32>>> }).unwrap()
+                &syn::parse2(quote! { Option<Vec<Option<i32>>> }).unwrap(),
+                false
             ),
             Ok(())
         );
         assert_matches!(
-            check_types_are_compatible(&list, &syn::parse2(quote! { i32 }).unwrap()),
+            check_types_are_compatible(&list, &syn::parse2(quote! { i32 }).unwrap(), false),
             Err(_)
         );
         assert_matches!(
-            check_types_are_compatible(&optional_list, &syn::parse2(quote! { Vec<i32> }).unwrap()),
+            check_types_are_compatible(
+                &optional_list,
+                &syn::parse2(quote! { Vec<i32> }).unwrap(),
+                false
+            ),
             Err(_)
         );
         assert_matches!(
             check_types_are_compatible(
                 &option_list_option,
-                &syn::parse2(quote! { Option<Vec<i32>> }).unwrap()
+                &syn::parse2(quote! { Option<Vec<i32>> }).unwrap(),
+                false
+            ),
+            Err(_)
+        );
+    }
+
+    #[test]
+    fn test_validation_when_flattening() {
+        let list = FieldType::List(Box::new(FieldType::Scalar(TypePath::empty(), false)), false);
+        let optional_list =
+            FieldType::List(Box::new(FieldType::Scalar(TypePath::empty(), false)), true);
+        let option_list_option =
+            FieldType::List(Box::new(FieldType::Scalar(TypePath::empty(), true)), true);
+
+        assert_matches!(
+            check_types_are_compatible(
+                &option_list_option,
+                &syn::parse2(quote! { Vec<i32> }).unwrap(),
+                true
+            ),
+            Ok(())
+        );
+        assert_matches!(
+            check_types_are_compatible(
+                &option_list_option,
+                &syn::parse2(quote! { Option<Vec<i32>> }).unwrap(),
+                true
+            ),
+            Ok(())
+        );
+        assert_matches!(
+            check_types_are_compatible(
+                &optional_list,
+                &syn::parse2(quote! { Vec<i32> }).unwrap(),
+                true
+            ),
+            Ok(())
+        );
+
+        assert_matches!(
+            check_types_are_compatible(
+                &list,
+                &syn::parse2(quote! { Vec<Option<i32>> }).unwrap(),
+                true
+            ),
+            Err(_)
+        );
+        assert_matches!(
+            check_types_are_compatible(
+                &list,
+                &syn::parse2(quote! { Option<Vec<i32>> }).unwrap(),
+                true
             ),
             Err(_)
         );
