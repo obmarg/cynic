@@ -1,63 +1,88 @@
+use darling::util::SpannedValue;
 use proc_macro2::{Span, TokenStream};
 
 use crate::{Ident, TypePath};
 
-mod attributes;
-use attributes::InlineFragmentsDeriveAttributes;
-
 pub fn inline_fragments_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
-    inline_fragments_derive_impl(ast, attributes::parse(&ast.attrs)?)
+    use darling::FromDeriveInput;
+
+    match InlineFragmentsDeriveInput::from_derive_input(ast) {
+        Ok(input) => inline_fragments_derive_impl(input),
+        Err(e) => Ok(e.write_errors()),
+    }
+}
+
+#[derive(darling::FromDeriveInput)]
+#[darling(attributes(cynic), supports(enum_newtype))]
+pub struct InlineFragmentsDeriveInput {
+    ident: proc_macro2::Ident,
+    data: darling::ast::Data<SpannedValue<InlineFragmentsDeriveVariant>, ()>,
+
+    pub schema_path: SpannedValue<String>,
+    pub query_module: SpannedValue<String>,
+    pub graphql_type: SpannedValue<String>,
+    #[darling(default)]
+    pub argument_struct: Option<syn::Ident>,
+}
+
+#[derive(darling::FromVariant)]
+#[darling(attributes(cynic_arguments), forward_attrs)]
+struct InlineFragmentsDeriveVariant {
+    ident: proc_macro2::Ident,
+    fields: darling::ast::Fields<InlineFragmentsDeriveField>,
+}
+
+#[derive(darling::FromField)]
+#[darling(attributes(cynic_arguments), forward_attrs)]
+struct InlineFragmentsDeriveField {
+    ty: syn::Type,
 }
 
 fn inline_fragments_derive_impl(
-    ast: &syn::DeriveInput,
-    attributes: InlineFragmentsDeriveAttributes,
+    input: InlineFragmentsDeriveInput,
 ) -> Result<TokenStream, syn::Error> {
     use quote::{quote, quote_spanned};
 
-    let schema = std::fs::read_to_string(&attributes.schema_path.value).map_err(|e| {
+    let schema = std::fs::read_to_string(&*input.schema_path).map_err(|e| {
         syn::Error::new(
-            attributes.schema_path.span,
+            input.schema_path.span(),
             format!("Could not load schema file: {}", e),
         )
     })?;
 
     let schema = graphql_parser::schema::parse_schema(&schema).map_err(|e| {
         syn::Error::new(
-            attributes.schema_path.span,
+            input.schema_path.span(),
             format!("Could not parse schema file: {}", e),
         )
     })?;
 
-    if !find_union_type(&attributes.graphql_type.value, &schema) {
+    if !find_union_type(&input.graphql_type, &schema) {
         return Err(syn::Error::new(
-            attributes.graphql_type.span,
-            format!(
-                "Could not find a Union type named {}",
-                attributes.graphql_type.value
-            ),
+            input.graphql_type.span(),
+            format!("Could not find a Union type named {}", &*input.graphql_type),
         ));
     }
 
-    let argument_struct = if let Some(arg_struct) = attributes.argument_struct {
-        let arg_struct_val = Ident::new(&arg_struct.value);
-        let argument_struct = quote_spanned! { arg_struct.span => #arg_struct_val };
+    let argument_struct = if let Some(arg_struct) = input.argument_struct {
+        let span = arg_struct.span();
+        let arg_struct_val: Ident = arg_struct.into();
+        let argument_struct = quote_spanned! { span => #arg_struct_val };
         syn::parse2(argument_struct)?
     } else {
         syn::parse2(quote! { () })?
     };
 
-    if let syn::Data::Enum(data_enum) = &ast.data {
+    if let darling::ast::Data::Enum(variants) = &input.data {
         let inline_fragments_impl = InlineFragmentsImpl {
-            target_struct: ast.ident.clone(),
+            target_struct: input.ident.clone(),
             type_lock: TypePath::concat(&[
-                Ident::new_spanned(&attributes.query_module.value, attributes.query_module.span)
-                    .into(),
-                Ident::for_type(&attributes.graphql_type.value).into(),
+                Ident::new_spanned(&*input.query_module, input.query_module.span()).into(),
+                Ident::for_type(&*input.graphql_type).into(),
             ]),
             argument_struct,
-            possible_types: possible_types_from_enum(data_enum)?,
-            graphql_type_name: attributes.graphql_type.value,
+            possible_types: possible_types_from_variants(variants)?,
+            graphql_type_name: (*input.graphql_type).clone(),
         };
 
         Ok(quote! { #inline_fragments_impl })
@@ -69,37 +94,19 @@ fn inline_fragments_derive_impl(
     }
 }
 
-fn possible_types_from_enum(
-    data_enum: &syn::DataEnum,
+fn possible_types_from_variants(
+    variants: &[SpannedValue<InlineFragmentsDeriveVariant>],
 ) -> Result<Vec<(syn::Ident, syn::Type)>, syn::Error> {
-    use syn::{spanned::Spanned, Fields};
-
     let mut result = vec![];
-    for variant in &data_enum.variants {
-        match &variant.fields {
-            Fields::Unnamed(fields) => {
-                if fields.unnamed.len() != 1 {
-                    return Err(syn::Error::new(
-                        variant.fields.span(),
-                        "InlineFragments derive requires enum variants to have one field",
-                    ));
-                }
-                let field = fields.unnamed.first().unwrap();
-                result.push((variant.ident.clone(), field.ty.clone()));
-            }
-            Fields::Named(_) => {
-                return Err(syn::Error::new(
-                    variant.fields.span(),
-                    "Can't derive InlineFragments on an enum with named fields",
-                ))
-            }
-            Fields::Unit => {
-                return Err(syn::Error::new(
-                    variant.fields.span(),
-                    "Can't derive InlineFragments on an enum with a unit variant",
-                ))
-            }
+    for variant in variants {
+        if variant.fields.style != darling::ast::Style::Tuple || variant.fields.fields.len() != 1 {
+            return Err(syn::Error::new(
+                variant.span(),
+                "InlineFragments derive requires enum variants to have one unnamed field",
+            ));
         }
+        let field = variant.fields.fields.first().unwrap();
+        result.push((variant.ident.clone(), field.ty.clone()));
     }
     Ok(result)
 }

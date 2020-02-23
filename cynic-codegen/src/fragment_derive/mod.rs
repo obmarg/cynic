@@ -1,11 +1,9 @@
 use std::collections::HashSet;
 
+use darling::util::SpannedValue;
 use proc_macro2::{Span, TokenStream};
 
-use crate::{
-    attributes::{extract_meta_attrs, Attribute},
-    query_dsl, FieldType, Ident, TypePath,
-};
+use crate::{query_dsl, FieldType, Ident, TypePath};
 
 mod cynic_arguments;
 mod schema_parsing;
@@ -16,18 +14,21 @@ use schema_parsing::{Field, Object, Schema};
 use type_validation::check_types_are_compatible;
 
 pub fn fragment_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
-    fragment_derive_impl(ast, parse_struct_attrs(&ast.attrs)?)
+    use darling::FromDeriveInput;
+
+    match FragmentDeriveInput::from_derive_input(ast) {
+        Ok(input) => fragment_derive_impl(input),
+        Err(e) => Ok(e.write_errors()),
+    }
 }
 
-pub fn fragment_derive_impl(
-    ast: &syn::DeriveInput,
-    attributes: FragmentDeriveAttributes,
-) -> Result<TokenStream, syn::Error> {
+pub fn fragment_derive_impl(input: FragmentDeriveInput) -> Result<TokenStream, syn::Error> {
     use quote::{quote, quote_spanned};
 
-    let schema = std::fs::read_to_string(&attributes.schema_path.value).map_err(|e| {
+    let schema_path = input.schema_path;
+    let schema = std::fs::read_to_string(&std::path::Path::new(&*schema_path)).map_err(|e| {
         syn::Error::new(
-            attributes.schema_path.span,
+            schema_path.span(),
             format!("Could not load schema file: {}", e),
         )
     })?;
@@ -35,38 +36,39 @@ pub fn fragment_derive_impl(
     let schema: Schema = graphql_parser::schema::parse_schema(&schema)
         .map_err(|e| {
             syn::Error::new(
-                attributes.schema_path.span,
+                schema_path.span(),
                 format!("Could not parse schema file: {}", e),
             )
         })?
         .into();
 
+    let graphql_type = input.graphql_type;
     let object = schema
         .objects
-        .get(&Ident::for_type(&attributes.graphql_type.value))
+        .get(&Ident::for_type(&*graphql_type))
         .ok_or(syn::Error::new(
-            attributes.graphql_type.span,
-            format!(
-                "Can't find {} in {}",
-                attributes.graphql_type.value, attributes.schema_path.value
-            ),
+            graphql_type.span(),
+            format!("Can't find {} in {}", *graphql_type, *schema_path),
         ))?;
 
-    let argument_struct = if let Some(arg_struct) = attributes.argument_struct {
-        let arg_struct_val = Ident::new(&arg_struct.value);
-        let argument_struct = quote_spanned! { arg_struct.span => #arg_struct_val };
+    let argument_struct = if let Some(arg_struct) = input.argument_struct {
+        let span = arg_struct.span();
+
+        let arg_struct_val: Ident = arg_struct.into();
+        let argument_struct = quote_spanned! { span => #arg_struct_val };
         syn::parse2(argument_struct)?
     } else {
         syn::parse2(quote! { () })?
     };
 
-    if let syn::Data::Struct(data_struct) = &ast.data {
+    if let darling::ast::Data::Struct(fields) = &input.data {
+        let query_module = input.query_module;
         let fragment_impl = FragmentImpl::new_for(
-            &data_struct,
-            &ast.ident,
+            &fields,
+            &input.ident,
             &object,
-            Ident::new_spanned(&attributes.query_module.value, attributes.query_module.span).into(),
-            &attributes.graphql_type.value,
+            Ident::new_spanned(&*query_module, query_module.span()).into(),
+            &graphql_type,
             argument_struct,
         )?;
         Ok(quote::quote! {
@@ -80,72 +82,25 @@ pub fn fragment_derive_impl(
     }
 }
 
-#[derive(Debug)]
-pub struct FragmentDeriveAttributes {
-    pub schema_path: Attribute,
-    pub query_module: Attribute,
-    pub graphql_type: Attribute,
-    pub argument_struct: Option<Attribute>,
+#[derive(darling::FromDeriveInput)]
+#[darling(attributes(cynic), supports(struct_named))]
+pub struct FragmentDeriveInput {
+    ident: proc_macro2::Ident,
+    data: darling::ast::Data<(), FragmentDeriveField>,
+
+    pub schema_path: SpannedValue<String>,
+    pub query_module: SpannedValue<String>,
+    pub graphql_type: SpannedValue<String>,
+    #[darling(default)]
+    pub argument_struct: Option<syn::Ident>,
 }
 
-fn parse_struct_attrs(attrs: &Vec<syn::Attribute>) -> Result<FragmentDeriveAttributes, syn::Error> {
-    let (mut attr_map, attr_span) = extract_meta_attrs::<DeriveAttribute>(attrs)?;
-
-    let schema_path = attr_map
-        .remove(&DeriveAttribute::SchemaPath)
-        .ok_or(syn::Error::new(
-            attr_span,
-            "Missing required attribute: schema_path",
-        ))?;
-
-    let query_module = attr_map
-        .remove(&DeriveAttribute::QueryModule)
-        .ok_or(syn::Error::new(
-            attr_span,
-            "Missing required attribute: query_module",
-        ))?;
-
-    let graphql_type = attr_map
-        .remove(&DeriveAttribute::GraphqlType)
-        .ok_or(syn::Error::new(
-            attr_span,
-            "Missing required attribute: graphql_type",
-        ))?;
-
-    let argument_struct = attr_map.remove(&DeriveAttribute::ArgumentStruct);
-
-    Ok(FragmentDeriveAttributes {
-        schema_path,
-        query_module,
-        graphql_type,
-        argument_struct,
-    })
-}
-
-#[derive(Debug, PartialEq, Eq, Hash)]
-enum DeriveAttribute {
-    SchemaPath,
-    QueryModule,
-    GraphqlType,
-    ArgumentStruct,
-}
-
-impl std::str::FromStr for DeriveAttribute {
-    type Err = String;
-
-    fn from_str(s: &str) -> Result<DeriveAttribute, String> {
-        if s == "schema_path" {
-            Ok(DeriveAttribute::SchemaPath)
-        } else if s == "query_module" {
-            Ok(DeriveAttribute::QueryModule)
-        } else if s == "graphql_type" {
-            Ok(DeriveAttribute::GraphqlType)
-        } else if s == "argument_struct" {
-            Ok(DeriveAttribute::ArgumentStruct)
-        } else {
-            Err(format!("Unknown cynic attribute: {}.  Expected one of schema_path, query_module, graphql_type or argument_struct", s))
-        }
-    }
+#[derive(darling::FromField)]
+#[darling(attributes(cynic_arguments), forward_attrs)]
+struct FragmentDeriveField {
+    ident: Option<proc_macro2::Ident>,
+    ty: syn::Type,
+    attrs: Vec<syn::Attribute>,
 }
 
 struct FieldSelectorParameter {
@@ -301,84 +256,78 @@ struct FragmentImpl {
 
 impl FragmentImpl {
     fn new_for(
-        data_struct: &syn::DataStruct,
+        fields: &darling::ast::Fields<FragmentDeriveField>,
         name: &syn::Ident,
         object: &Object,
         query_dsl_path: TypePath,
         graphql_type_name: &str,
         argument_struct: syn::Type,
     ) -> Result<Self, syn::Error> {
-        use syn::{spanned::Spanned, Fields};
-
         let target_struct = Ident::new_spanned(&name.to_string(), name.span());
         let selector_struct_path = TypePath::concat(&[
             query_dsl_path.clone(),
             object.selector_struct.clone().into(),
         ]);
-        let mut fields = vec![];
+        let mut field_selectors = vec![];
         let mut constructor_params = vec![];
 
-        if let Fields::Named(named_fields) = &data_struct.fields {
-            for field in &named_fields.named {
-                if let Some(ident) = &field.ident {
-                    let field_name = ident.to_string();
-                    constructor_params.push(ConstructorParameter {
-                        name: Ident::new(&field_name),
-                        type_path: field.ty.clone(),
-                    });
-
-                    let arguments = arguments_from_field_attrs(&field.attrs)?;
-
-                    let field_name = Ident::for_field(&field_name);
-
-                    if let Some(gql_field) = object.fields.get(&field_name) {
-                        check_types_are_compatible(&gql_field.field_type, &field.ty)?;
-
-                        let argument_structs = argument_structs(
-                            arguments,
-                            gql_field,
-                            &object.name,
-                            &query_dsl_path,
-                            field.span(),
-                        )?;
-                        fields.push(FieldSelectorCall {
-                            selector_function: SelectorFunction::for_field(
-                                &gql_field.field_type,
-                                TypePath::concat(&[
-                                    selector_struct_path.clone(),
-                                    field_name.clone().into(),
-                                ]),
-                            ),
-                            contains_composite: !gql_field.field_type.contains_scalar(),
-                            query_fragment_field_type: gql_field
-                                .field_type
-                                .get_inner_type_from_syn(&field.ty),
-                            argument_structs,
-                        })
-                    } else {
-                        return Err(syn::Error::new(
-                            field.span(),
-                            format!(
-                                "Field {} does not exist on the GraphQL type {}",
-                                field_name, graphql_type_name
-                            ),
-                        ));
-                    }
-                } else {
-                    return Err(syn::Error::new(
-                        field.span(),
-                        "QueryFragment derive currently only supports named fields",
-                    ));
-                }
-            }
-        } else {
+        if fields.style != darling::ast::Style::Struct {
             return Err(syn::Error::new(
-                data_struct.fields.span(),
+                name.span(),
                 "QueryFragment derive currently only supports named fields",
             ));
         }
+
+        for field in &fields.fields {
+            if let Some(ident) = &field.ident {
+                let field_name = ident.to_string();
+                constructor_params.push(ConstructorParameter {
+                    name: Ident::new(&field_name),
+                    type_path: field.ty.clone(),
+                });
+
+                let arguments = arguments_from_field_attrs(&field.attrs)?;
+
+                let field_name = Ident::for_field(&field_name);
+
+                if let Some(gql_field) = object.fields.get(&field_name) {
+                    check_types_are_compatible(&gql_field.field_type, &field.ty)?;
+
+                    let argument_structs = argument_structs(
+                        arguments,
+                        gql_field,
+                        &object.name,
+                        &query_dsl_path,
+                        ident.span(),
+                    )?;
+                    field_selectors.push(FieldSelectorCall {
+                        selector_function: SelectorFunction::for_field(
+                            &gql_field.field_type,
+                            TypePath::concat(&[
+                                selector_struct_path.clone(),
+                                field_name.clone().into(),
+                            ]),
+                        ),
+                        contains_composite: !gql_field.field_type.contains_scalar(),
+                        query_fragment_field_type: gql_field
+                            .field_type
+                            .get_inner_type_from_syn(&field.ty),
+                        argument_structs,
+                    })
+                } else {
+                    return Err(syn::Error::new(
+                        ident.span(),
+                        format!(
+                            "Field {} does not exist on the GraphQL type {}",
+                            field_name, graphql_type_name
+                        ),
+                    ));
+                }
+            }
+        }
+
         Ok(FragmentImpl {
-            fields,
+            fields: field_selectors,
             target_struct,
             selector_struct_path,
             constructor_params,
