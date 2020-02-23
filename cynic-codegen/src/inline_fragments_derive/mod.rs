@@ -26,14 +26,14 @@ pub struct InlineFragmentsDeriveInput {
 }
 
 #[derive(darling::FromVariant)]
-#[darling(attributes(cynic_arguments), forward_attrs)]
+#[darling(attributes(cynic))]
 struct InlineFragmentsDeriveVariant {
     ident: proc_macro2::Ident,
     fields: darling::ast::Fields<InlineFragmentsDeriveField>,
 }
 
 #[derive(darling::FromField)]
-#[darling(attributes(cynic_arguments), forward_attrs)]
+#[darling(attributes(cynic))]
 struct InlineFragmentsDeriveField {
     ty: syn::Type,
 }

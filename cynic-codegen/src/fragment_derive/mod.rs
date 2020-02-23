@@ -96,7 +96,7 @@ pub struct FragmentDeriveInput {
 }
 
 #[derive(darling::FromField)]
-#[darling(attributes(cynic_arguments), forward_attrs)]
+#[darling(attributes(cynic), forward_attrs(cynic_arguments))]
 struct FragmentDeriveField {
     ident: Option<proc_macro2::Ident>,
     ty: syn::Type,
