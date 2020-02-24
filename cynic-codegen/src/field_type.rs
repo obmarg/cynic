@@ -132,6 +132,10 @@ impl FieldType {
                     }
                 }
             }
+
+            // Note: as we no longer require Opt<Vec<Opt<>> to match our types precisely
+            // we go ahead and recurse anyway here...
+            return self.as_required().get_inner_type_from_syn(ty);
         } else if let FieldType::List(inner_self, _) = self {
             if let Type::Path(expr) = ty {
                 if let Some(segment) = expr.path.segments.first() {
@@ -144,6 +148,10 @@ impl FieldType {
                     }
                 }
             }
+
+            // Note: as we no longer require rust types to match GQL types precisely
+            // we go ahead and recurse anyway here...
+            return inner_self.get_inner_type_from_syn(ty);
         }
         ty.clone()
     }

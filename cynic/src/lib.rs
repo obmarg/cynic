@@ -160,7 +160,9 @@ mod field;
 mod query;
 mod result;
 mod scalar;
+
 pub mod selection_set;
+pub mod utils;
 
 pub use argument::Argument;
 pub use query::Query;

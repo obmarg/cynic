@@ -100,50 +100,43 @@ pub struct FragmentDeriveInput {
 struct FragmentDeriveField {
     ident: Option<proc_macro2::Ident>,
     ty: syn::Type,
+
     attrs: Vec<syn::Attribute>,
-}
 
-struct FieldSelectorParameter {
-    field_type: syn::Type,
-}
-
-impl quote::ToTokens for FieldSelectorParameter {
-    fn to_tokens(&self, tokens: &mut TokenStream) {
-        use quote::{quote, TokenStreamExt};
-
-        let field_type = &self.field_type;
-
-        tokens.append_all(quote! {
-            #field_type::fragment()
-        });
-    }
+    #[darling(default)]
+    flatten: bool,
 }
 
 enum SelectorFunction {
     Field(TypePath),
     Opt(Box<SelectorFunction>),
     Vector(Box<SelectorFunction>),
+    Flatten(Box<SelectorFunction>),
 }
 
 impl SelectorFunction {
-    fn for_field(field_type: &FieldType, field_constructor: TypePath) -> SelectorFunction {
-        if let FieldType::Scalar(_, _) = field_type {
-            // We special case scalars as their vec/optional-ness is always handled
-            // by the functions on the generated query_dsl.
-            // Whereas other types call into the QueryFragment::query function
-            // which can't know whether the type is optional/repeated at this level.
-            return SelectorFunction::Field(field_constructor);
-        }
-
-        if field_type.is_nullable() {
+    fn for_field(
+        field_type: &FieldType,
+        field_constructor: TypePath,
+        flatten: bool,
+    ) -> SelectorFunction {
+        if flatten {
+            SelectorFunction::Flatten(Box::new(SelectorFunction::for_field(
+                field_type,
+                field_constructor,
+                false,
+            )))
+        } else if field_type.is_nullable() {
             SelectorFunction::Opt(Box::new(SelectorFunction::for_field(
                 &field_type.clone().as_required(),
                 field_constructor,
+                false,
             )))
         } else if let FieldType::List(inner, _) = field_type {
             SelectorFunction::Vector(Box::new(SelectorFunction::for_field(
                 &inner,
                 field_constructor,
+                false,
             )))
         } else {
             SelectorFunction::Field(field_constructor)
@@ -155,10 +148,21 @@ impl SelectorFunction {
     fn to_call(&self, parameters: TokenStream) -> TokenStream {
         use quote::quote;
 
+        // Most of the complexities around this are dealt with in the query_dsl
+        // so apart from flattening we can just forward to the inner type.
         match self {
             SelectorFunction::Field(type_path) => quote! { #type_path(#parameters) },
             SelectorFunction::Opt(inner) => inner.to_call(parameters),
             SelectorFunction::Vector(inner) => inner.to_call(parameters),
+            SelectorFunction::Flatten(inner) => {
+                let inner_call = inner.to_call(parameters);
+                quote! {
+                    #inner_call.map(|item| {
+                        use ::cynic::utils::FlattenInto;
+                        item.flatten_into()
+                    })
+                }
+            }
         }
     }
 }
@@ -291,7 +295,7 @@ impl FragmentImpl {
                 let field_name = Ident::for_field(&field_name);
 
                 if let Some(gql_field) = object.fields.get(&field_name) {
-                    check_types_are_compatible(&gql_field.field_type, &field.ty)?;
+                    check_types_are_compatible(&gql_field.field_type, &field.ty, field.flatten)?;
 
                     let argument_structs = argument_structs(
                         arguments,
@@ -307,6 +311,7 @@ impl FragmentImpl {
                                 selector_struct_path.clone(),
                                 field_name.clone().into(),
                             ]),
+                            field.flatten,
                         ),
                         contains_composite: !gql_field.field_type.contains_scalar(),
                         query_fragment_field_type: gql_field
