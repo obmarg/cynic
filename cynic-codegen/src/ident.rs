@@ -1,5 +1,7 @@
 use inflector::Inflector;
+use lazy_static::lazy_static;
 use proc_macro2::{Span, TokenStream};
+use std::collections::HashSet;
 
 /// A convenience type for working with identifiers we write out in our macros.
 #[derive(Debug, Clone)]
@@ -58,15 +60,82 @@ impl std::fmt::Display for Ident {
     }
 }
 
+lazy_static! {
+    // A list of keywords in rust,
+    // Taken from https://doc.rust-lang.org/reference/keywords.html
+    static ref KEYWORDS: HashSet<&'static str> = {
+        let mut set = HashSet::new();
+
+        // Strict Keywords 2015
+        set.insert("as");
+        set.insert("break");
+        set.insert("const");
+        set.insert("continue");
+        set.insert("crate");
+        set.insert("else");
+        set.insert("enum");
+        set.insert("extern");
+        set.insert("false");
+        set.insert("fn");
+        set.insert("for");
+        set.insert("if");
+        set.insert("impl");
+        set.insert("in");
+        set.insert("let");
+        set.insert("loop");
+        set.insert("match");
+        set.insert("mod");
+        set.insert("move");
+        set.insert("mut");
+        set.insert("pub");
+        set.insert("ref");
+        set.insert("return");
+        set.insert("self");
+        set.insert("Self");
+        set.insert("static");
+        set.insert("struct");
+        set.insert("super");
+        set.insert("trait");
+        set.insert("true");
+        set.insert("type");
+        set.insert("unsafe");
+        set.insert("use");
+        set.insert("where");
+        set.insert("while");
+
+        // Strict keywords 2018
+        set.insert("async");
+        set.insert("await");
+        set.insert("dyn");
+
+        // Reserved Keywords 2015
+        set.insert("abstract");
+        set.insert("become");
+        set.insert("box");
+        set.insert("do");
+        set.insert("final");
+        set.insert("macro");
+        set.insert("override");
+        set.insert("priv");
+        set.insert("typeof");
+        set.insert("unsized");
+        set.insert("virtual");
+        set.insert("yield");
+
+        // Reserved Keywords 2018
+        set.insert("try");
+
+        set
+    };
+}
+
 fn transform_keywords(mut s: String) -> String {
-    match syn::parse_str::<syn::Ident>(&s) {
-        Ok(_) => s,
-        Err(_) => {
-            // s is _probably_ a keyword
-            s.push('_');
-            s
-        }
+    let s_ref: &str = &s;
+    if KEYWORDS.contains(s_ref) {
+        s.push('_');
     }
+
+    s
 }
 
 impl From<proc_macro2::Ident> for Ident {

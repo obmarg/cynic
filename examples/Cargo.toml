@@ -8,4 +8,5 @@ edition = "2018"
 
 [dependencies]
 cynic = { path = "../cynic" }
+cynic-codegen = { path = "../cynic-codegen" }
 reqwest = { version = "0.10.1", features = ["json", "blocking"] }
