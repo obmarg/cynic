@@ -3,7 +3,7 @@ use std::collections::HashSet;
 use darling::util::SpannedValue;
 use proc_macro2::{Span, TokenStream};
 
-use crate::{query_dsl, FieldType, Ident, TypePath};
+use crate::{load_schema, query_dsl, FieldType, Ident, TypePath};
 
 mod cynic_arguments;
 mod schema_parsing;
@@ -26,20 +26,8 @@ pub fn fragment_derive_impl(input: FragmentDeriveInput) -> Result<TokenStream, s
     use quote::{quote, quote_spanned};
 
     let schema_path = input.schema_path;
-    let schema = std::fs::read_to_string(&std::path::Path::new(&*schema_path)).map_err(|e| {
-        syn::Error::new(
-            schema_path.span(),
-            format!("Could not load schema file: {}", e),
-        )
-    })?;
-
-    let schema: Schema = graphql_parser::schema::parse_schema(&schema)
-        .map_err(|e| {
-            syn::Error::new(
-                schema_path.span(),
-                format!("Could not parse schema file: {}", e),
-            )
-        })?
+    let schema: Schema = load_schema(&*schema_path)
+        .map_err(|e| e.to_syn_error(schema_path.span()))?
         .into();
 
     let graphql_type = input.graphql_type;

@@ -10,7 +10,7 @@ mod union_struct;
 
 use super::module::Module;
 use crate::graphql_extensions::FieldExt;
-use crate::{Error, TypeIndex};
+use crate::{load_schema, Error, TypeIndex};
 pub use argument_struct::ArgumentStruct;
 pub use field_selector::FieldSelector;
 use graphql_enum::GraphQLEnum;
@@ -41,8 +41,7 @@ impl syn::parse::Parse for QueryDslParams {
 pub fn query_dsl_from_schema(input: QueryDslParams) -> Result<TokenStream, Error> {
     use quote::quote;
 
-    let schema = std::fs::read_to_string(&input.schema_filename)?;
-    let schema_data: QueryDsl = graphql_parser::schema::parse_schema(&schema)?.into();
+    let schema_data: QueryDsl = load_schema(input.schema_filename)?.into();
 
     Ok(quote! {
         #schema_data

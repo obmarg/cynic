@@ -52,3 +52,10 @@ fn format_code(filename: &std::path::Path) {
         return code;
     }
 }
+
+fn load_schema(
+    filename: impl AsRef<std::path::Path>,
+) -> Result<graphql_parser::schema::Document, Error> {
+    let schema = std::fs::read_to_string(filename)?;
+    Ok(graphql_parser::schema::parse_schema(&schema)?.into())
+}
