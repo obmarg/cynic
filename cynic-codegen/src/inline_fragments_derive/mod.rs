@@ -1,7 +1,7 @@
 use darling::util::SpannedValue;
 use proc_macro2::{Span, TokenStream};
 
-use crate::{Ident, TypePath};
+use crate::{load_schema, Ident, TypePath};
 
 pub fn inline_fragments_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
     use darling::FromDeriveInput;
@@ -43,19 +43,8 @@ fn inline_fragments_derive_impl(
 ) -> Result<TokenStream, syn::Error> {
     use quote::{quote, quote_spanned};
 
-    let schema = std::fs::read_to_string(&*input.schema_path).map_err(|e| {
-        syn::Error::new(
-            input.schema_path.span(),
-            format!("Could not load schema file: {}", e),
-        )
-    })?;
-
-    let schema = graphql_parser::schema::parse_schema(&schema).map_err(|e| {
-        syn::Error::new(
-            input.schema_path.span(),
-            format!("Could not parse schema file: {}", e),
-        )
-    })?;
+    let schema =
+        load_schema(&*input.schema_path).map_err(|e| e.to_syn_error(input.schema_path.span()))?;
 
     if !find_union_type(&input.graphql_type, &schema) {
         return Err(syn::Error::new(

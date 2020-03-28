@@ -25,44 +25,40 @@ impl SelectorStruct {
         is_root: bool,
     ) -> Self {
         let name = Ident::for_type(&obj.name);
+
+        let mut processed_fields = Vec::with_capacity(obj.fields.len());
+        for field in &obj.fields {
+            let required_args_struct_name = if !field.required_arguments().is_empty() {
+                Some(TypePath::new(vec![
+                    Ident::for_module(&obj.name),
+                    ArgumentStruct::name_for_field(&field.name, true),
+                ]))
+            } else {
+                None
+            };
+
+            let optional_args_struct_name = if !field.optional_arguments().is_empty() {
+                Some(TypePath::new(vec![
+                    Ident::for_module(&obj.name),
+                    ArgumentStruct::name_for_field(&field.name, false),
+                ]))
+            } else {
+                None
+            };
+
+            processed_fields.push(FieldSelector::for_field(
+                &field.name,
+                FieldType::from_schema_type(&field.field_type, TypePath::empty(), type_index),
+                name.clone(),
+                required_args_struct_name,
+                optional_args_struct_name,
+            ));
+        }
+
         SelectorStruct {
             name: name.clone(),
             is_root,
-            fields: obj
-                .fields
-                .iter()
-                .map(|field| {
-                    let required_args_struct_name = if !field.required_arguments().is_empty() {
-                        Some(TypePath::new(vec![
-                            Ident::for_module(&obj.name),
-                            ArgumentStruct::name_for_field(&field.name, true),
-                        ]))
-                    } else {
-                        None
-                    };
-
-                    let optional_args_struct_name = if !field.optional_arguments().is_empty() {
-                        Some(TypePath::new(vec![
-                            Ident::for_module(&obj.name),
-                            ArgumentStruct::name_for_field(&field.name, false),
-                        ]))
-                    } else {
-                        None
-                    };
-
-                    FieldSelector::for_field(
-                        &field.name,
-                        FieldType::from_schema_type(
-                            &field.field_type,
-                            TypePath::empty(),
-                            type_index,
-                        ),
-                        name.clone(),
-                        required_args_struct_name,
-                        optional_args_struct_name,
-                    )
-                })
-                .collect(),
+            fields: processed_fields,
         }
     }
 }
