@@ -33,6 +33,8 @@ pub fn document_to_fragment_structs(
     let possible_structs = query_parsing::parse_query_document(&query)?;
     let type_index = TypeIndex::from_schema(&schema);
 
+    let mut lines = vec![];
+
     for st in possible_structs {
         match st {
             PotentialStruct::QueryFragment(fragment) => {
@@ -43,22 +45,26 @@ pub fn document_to_fragment_structs(
                     type_index.type_for_path(&fragment.path)?.inner_name()
                 };
 
-                println!("struct {} {{", name);
+                // TODO: Should I just give up and use quote here?
+                // could just distribute as a binary, and either run in build.rs/macros
+                // or as part of a CLI - essentially giving the option of "ejected" or not.
+
+                lines.push(format!("struct {} {{", name));
 
                 for field in fragment.fields {
                     let mut field_path = fragment.path.clone();
                     field_path.push(field.name);
                     let field_ty = type_index.type_for_path(&field_path)?;
 
-                    println!("\t{}: {},", field.name, field_ty.type_spec())
+                    lines.push(format!("\t{}: {},", field.name, field_ty.type_spec()))
                 }
-                println!("}}\n");
+                lines.push(format!("}}\n"));
             }
             _ => {}
         }
     }
 
-    Ok("".to_string())
+    Ok(lines.join("\n"))
 }
 
 #[cfg(test)]
