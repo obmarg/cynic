@@ -1,10 +1,12 @@
 use graphql_parser::{query, schema};
 
 mod query_parsing;
+mod type_ext;
 mod type_index;
 
 use query_parsing::PotentialStruct;
-use type_index::{inner_name, TypeIndex};
+use type_ext::TypeExt;
+use type_index::TypeIndex;
 
 #[derive(thiserror::Error, Debug)]
 pub enum Error {
@@ -38,18 +40,17 @@ pub fn document_to_fragment_structs(
                     // We have a root query type here, so lets make up a name
                     "Root"
                 } else {
-                    inner_name(type_index.type_for_path(&fragment.path)?)
+                    type_index.type_for_path(&fragment.path)?.inner_name()
                 };
 
                 println!("struct {} {{", name);
 
                 for field in fragment.fields {
-                    // TODO: temporarily ignoring Options and Vecs here:
                     let mut field_path = fragment.path.clone();
                     field_path.push(field.name);
                     let field_ty = type_index.type_for_path(&field_path)?;
 
-                    println!("\t{}: {},", field.name, inner_name(field_ty))
+                    println!("\t{}: {},", field.name, field_ty.type_spec())
                 }
                 println!("}}\n");
             }

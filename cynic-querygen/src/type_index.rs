@@ -7,7 +7,7 @@ use graphql_parser::query::Type;
 use graphql_parser::schema::{Definition, Document, TypeDefinition};
 use std::collections::HashMap;
 
-use crate::Error;
+use crate::{type_ext::TypeExt, Error};
 
 pub struct TypeIndex<'a> {
     types: HashMap<&'a str, GraphqlType<'a>>,
@@ -77,10 +77,13 @@ impl<'a> TypeIndex<'a> {
                 current_type_name.to_string(),
             )),
             [first, rest @ ..] => {
-                let inner_name = inner_name(fields.get(first).ok_or(Error::UnknownField(
-                    first.to_string(),
-                    current_type_name.to_string(),
-                ))?);
+                let inner_name = fields
+                    .get(first)
+                    .ok_or(Error::UnknownField(
+                        first.to_string(),
+                        current_type_name.to_string(),
+                    ))?
+                    .inner_name();
 
                 let inner_type = self.types.get(inner_name).unwrap();
 
@@ -99,12 +102,4 @@ enum GraphqlType<'a> {
     Enum,
     Object(HashMap<&'a str, &'a Type<'a, &'a str>>),
     Scalar,
-}
-
-pub fn inner_name<'a>(ty: &Type<'a, &'a str>) -> &'a str {
-    match ty {
-        Type::NamedType(s) => s,
-        Type::ListType(inner) => inner_name(inner),
-        Type::NonNullType(inner) => inner_name(inner),
-    }
 }

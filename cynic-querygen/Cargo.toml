@@ -9,3 +9,6 @@ edition = "2018"
 [dependencies]
 graphql-parser = "0.3"
 thiserror = "1.0.13"
+
+[dev-dependencies]
+rstest = "0.6.3"
