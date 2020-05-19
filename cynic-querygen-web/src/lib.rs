@@ -1,0 +1,101 @@
+// (Lines like the one below ignore selected Clippy rules
+//  - it's useful when you want to check your code with `cargo make verify`
+// but some rules are too "annoying" or are not applicable for your case.)
+#![allow(clippy::wildcard_imports)]
+
+use seed::{prelude::*, *};
+
+// ------ ------
+//     Init
+// ------ ------
+
+// `init` describes what should happen when your app started.
+fn init(_: Url, _: &mut impl Orders<Msg>) -> Model {
+    Model::default()
+}
+
+// ------ ------
+//     Model
+// ------ ------
+
+// `Model` describes our app state.
+struct Model {
+    schema: String,
+    query: String,
+    generated_code: Result<String, cynic_querygen::Error>,
+}
+
+impl Default for Model {
+    fn default() -> Model {
+        Model {
+            schema: "".into(),
+            query: "".into(),
+            generated_code: Ok("".into()),
+        }
+    }
+}
+
+impl Model {
+    fn generate_code(&mut self) {
+        if self.query != "" && self.schema != "" {
+            self.generated_code =
+                cynic_querygen::document_to_fragment_structs(&self.query, &self.schema);
+        }
+    }
+}
+
+// ------ ------
+//    Update
+// ------ ------
+
+#[derive(Clone)]
+// `Msg` describes the different events you can modify state with.
+enum Msg {
+    SchemaChange(String),
+    QueryChange(String),
+}
+
+// `update` describes how to handle each `Msg`.
+fn update(msg: Msg, model: &mut Model, _: &mut impl Orders<Msg>) {
+    match msg {
+        Msg::SchemaChange(schema) => {
+            model.schema = schema;
+            model.generate_code();
+        }
+        Msg::QueryChange(query) => {
+            model.query = query;
+            model.generate_code();
+        }
+    }
+}
+
+// ------ ------
+//     View
+// ------ ------
+
+// (Remove the line below once your `Model` become more complex.)
+#[allow(clippy::trivially_copy_pass_by_ref)]
+// `view` describes what to display.
+fn view(model: &Model) -> Node<Msg> {
+    let generated_code = match &model.generated_code {
+        Ok(code) => code.clone(),
+        Err(e) => e.to_string(),
+    };
+
+    div![
+        textarea![input_ev(Ev::Input, Msg::SchemaChange)],
+        textarea![input_ev(Ev::Input, Msg::QueryChange)],
+        textarea![generated_code],
+    ]
+}
+
+// ------ ------
+//     Start
+// ------ ------
+
+// (This function is invoked by `init` function in `index.html`.)
+#[wasm_bindgen(start)]
+pub fn start() {
+    // Mount the `app` to the element with the `id` "app".
+    App::start("app", init, update, view);
+}

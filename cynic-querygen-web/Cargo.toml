@@ -1,0 +1,29 @@
+[package]
+version = "0.1.0"
+name = "cynic-querygen-web"
+repository = "https://github.com/polyandglot/cynic"
+authors = ["Graeme Coupar<graeme@polyandglot.dev>"]
+description = "Web interface for generating cynic query structures from graphql"
+edition = "2018"
+
+[lib]
+crate-type = ["cdylib"]
+
+[dev-dependencies]
+wasm-bindgen-test = "0.3.12"
+
+[dependencies]
+# Referenced commit fixes base url and memory bugs in Seed 0.7.0
+# (https://github.com/seed-rs/seed/pull/454 + https://github.com/seed-rs/seed/pull/455).
+# Replace with "0.8.0" once the new Seed version is released.
+seed = { git = "https://github.com/seed-rs/seed", rev = "b25cf59" }
+
+cynic-querygen = { path = "../cynic-querygen" }
+
+[profile.release]
+lto = true
+opt-level = 'z'
+codegen-units = 1
+
+[package.metadata.wasm-pack.profile.release]
+wasm-opt = ['-Os']
