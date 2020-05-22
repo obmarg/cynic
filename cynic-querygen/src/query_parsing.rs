@@ -30,7 +30,14 @@ pub fn parse_query_document<'a>(
         .map(|definition| {
             match definition {
                 Definition::Operation(OperationDefinition::Query(query)) => {
-                    Ok(selection_set_to_structs(&query.selection_set, vec![])?)
+                    let mut structs = selection_set_to_structs(&query.selection_set, vec![])?;
+
+                    // selection_set_to_structs traverses the tree in post-order
+                    // (sort of), so we reverse to get the root node first.
+                    structs.reverse();
+
+                    Ok(structs)
+
                     // TODO: Some stuff
                     // OK, so the best idea is probably to traverse the query.
                     // By traversing the query we can output a list of the structs we encounter:
