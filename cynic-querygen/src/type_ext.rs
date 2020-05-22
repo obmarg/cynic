@@ -30,6 +30,9 @@ fn type_spec_imp<'a>(ty: &Type<'a, &'a str>, nullable: bool) -> Cow<'a, str> {
     }
 
     match ty {
+        Type::NamedType("Int") => Cow::Borrowed("i32"),
+        Type::NamedType("Float") => Cow::Borrowed("f32"),
+        Type::NamedType("Boolean") => Cow::Borrowed("bool"),
         Type::NamedType(s) => Cow::Borrowed(s),
         Type::ListType(inner) => Cow::Owned(format!("Vec<{}>", type_spec_imp(inner, true))),
         Type::NonNullType(inner) => panic!("NonNullType somehow got past an if let"),
