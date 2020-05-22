@@ -83,9 +83,60 @@ fn view(model: &Model) -> Node<Msg> {
     };
 
     div![
-        textarea![input_ev(Ev::Input, Msg::SchemaChange)],
-        textarea![input_ev(Ev::Input, Msg::QueryChange)],
-        textarea![generated_code],
+        style! {
+            St::Display => St::Flex,
+            St::Width => "80%",
+            St::JustifyContent => "center",
+            St::AlignContent => "center"
+        },
+        div![
+            style! {
+                St::FlexGrow => "1",
+                St::Margin => px(4)
+                St::Display => St::Flex,
+                St::FlexDirection => "column"
+            },
+            label!["Schema"],
+            textarea![
+                attrs! {
+                    At::Rows => 40
+                    At::Cols => 40
+                },
+                input_ev(Ev::Input, Msg::SchemaChange)
+            ],
+        ],
+        div![
+            style! {
+                St::FlexGrow => "1",
+                St::Margin => px(4)
+                St::Display => St::Flex,
+                St::FlexDirection => "column"
+            },
+            label!["Query"],
+            textarea![
+                attrs! {
+                    At::Rows => 40
+                    At::Cols => 40
+                },
+                input_ev(Ev::Input, Msg::QueryChange)
+            ],
+        ],
+        div![
+            style! {
+                St::FlexGrow => "1",
+                St::Margin => px(4)
+                St::Display => St::Flex,
+                St::FlexDirection => "column"
+            },
+            label!["Output"],
+            textarea![
+                attrs! {
+                    At::Rows => 40
+                    At::Cols => 40
+                },
+                generated_code
+            ],
+        ],
     ]
 }
 
