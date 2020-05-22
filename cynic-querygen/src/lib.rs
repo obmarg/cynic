@@ -23,9 +23,25 @@ pub enum Error {
     UnknownField(String, String),
 }
 
+#[derive(Debug)]
+pub struct QueryGenOptions {
+    pub schema_path: String,
+    pub query_module: String,
+}
+
+impl Default for QueryGenOptions {
+    fn default() -> QueryGenOptions {
+        QueryGenOptions {
+            schema_path: "schema.graphql".into(),
+            query_module: "query_dsl".into(),
+        }
+    }
+}
+
 pub fn document_to_fragment_structs(
     query: impl AsRef<str>,
     schema: impl AsRef<str>,
+    options: &QueryGenOptions,
 ) -> Result<String, Error> {
     let schema = graphql_parser::parse_schema::<&str>(schema.as_ref())?;
     let query = graphql_parser::parse_query::<&str>(query.as_ref())?;
@@ -45,10 +61,12 @@ pub fn document_to_fragment_structs(
                     type_index.type_for_path(&fragment.path)?.inner_name()
                 };
 
-                // TODO: Should I just give up and use quote here?
-                // could just distribute as a binary, and either run in build.rs/macros
-                // or as part of a CLI - essentially giving the option of "ejected" or not.
-
+                lines.push("#[derive(cynic::QueryFragment)]".into());
+                lines.push("#[cynic(".into());
+                lines.push(format!("    schema_path = \"{}\",", options.schema_path));
+                lines.push(format!("    query_module = \"{}\",", options.query_module));
+                lines.push(format!("    graphql_type = \"{}\",", name));
+                lines.push(")]".into());
                 lines.push(format!("struct {} {{", name));
 
                 for field in fragment.fields {
