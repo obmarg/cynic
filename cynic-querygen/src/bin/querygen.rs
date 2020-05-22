@@ -133,6 +133,11 @@ fn main() {
 
     println!(
         "{:?}",
-        cynic_querygen::document_to_fragment_structs(query, schema_data).unwrap()
+        cynic_querygen::document_to_fragment_structs(
+            query,
+            schema_data,
+            &cynic_querygen::QueryGenOptions::default()
+        )
+        .unwrap()
     );
 }
