@@ -3,6 +3,12 @@ use proc_macro2::{Span, TokenStream};
 
 use crate::{load_schema, Ident, TypePath};
 
+pub mod input;
+
+pub use input::InlineFragmentsDeriveInput;
+
+use input::{InlineFragmentsDeriveField, InlineFragmentsDeriveVariant};
+
 pub fn inline_fragments_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
     use darling::FromDeriveInput;
 
@@ -12,33 +18,7 @@ pub fn inline_fragments_derive(ast: &syn::DeriveInput) -> Result<TokenStream, sy
     }
 }
 
-#[derive(darling::FromDeriveInput)]
-#[darling(attributes(cynic), supports(enum_newtype))]
-pub struct InlineFragmentsDeriveInput {
-    ident: proc_macro2::Ident,
-    data: darling::ast::Data<SpannedValue<InlineFragmentsDeriveVariant>, ()>,
-
-    pub schema_path: SpannedValue<String>,
-    pub query_module: SpannedValue<String>,
-    pub graphql_type: SpannedValue<String>,
-    #[darling(default)]
-    pub argument_struct: Option<syn::Ident>,
-}
-
-#[derive(darling::FromVariant)]
-#[darling(attributes(cynic))]
-struct InlineFragmentsDeriveVariant {
-    ident: proc_macro2::Ident,
-    fields: darling::ast::Fields<InlineFragmentsDeriveField>,
-}
-
-#[derive(darling::FromField)]
-#[darling(attributes(cynic))]
-struct InlineFragmentsDeriveField {
-    ty: syn::Type,
-}
-
-fn inline_fragments_derive_impl(
+pub(crate) fn inline_fragments_derive_impl(
     input: InlineFragmentsDeriveInput,
 ) -> Result<TokenStream, syn::Error> {
     use quote::{quote, quote_spanned};

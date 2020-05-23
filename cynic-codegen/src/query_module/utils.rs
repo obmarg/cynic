@@ -1,35 +1,40 @@
-use syn::{Item, Meta, MetaList, NestedMeta};
+use syn::{Attribute, Item, Meta, MetaList, NestedMeta};
 
 #[derive(Debug, PartialEq)]
 pub enum Derive {
     QueryFragment,
+    InlineFragments,
 }
 
 pub fn find_derives(item: &Item) -> Vec<Derive> {
-    if let Item::Struct(s) = item {
-        let attr = s.attrs.iter().find(|attr| attr.path.is_ident("derive"));
+    match item {
+        Item::Struct(s) => derive_from_attributes(&s.attrs),
+        Item::Enum(e) => derive_from_attributes(&e.attrs),
+        _ => vec![],
+    }
+}
 
-        if let None = attr {
+fn derive_from_attributes(attrs: &[Attribute]) -> Vec<Derive> {
+    let attr = attrs.iter().find(|attr| attr.path.is_ident("derive"));
+
+    if let None = attr {
+        return vec![];
+    }
+    let attr = attr.unwrap();
+
+    let meta_list = match attr.parse_meta() {
+        Ok(Meta::List(list)) => list,
+        _ => {
             return vec![];
         }
-        let attr = attr.unwrap();
+    };
 
-        let meta_list = match attr.parse_meta() {
-            Ok(Meta::List(list)) => list,
-            _ => {
-                return vec![];
-            }
-        };
-
-        return meta_list
-            .nested
-            .iter()
-            .map(derive_for_nested_meta)
-            .flatten()
-            .collect();
-    }
-
-    return vec![];
+    return meta_list
+        .nested
+        .iter()
+        .map(derive_for_nested_meta)
+        .flatten()
+        .collect();
 }
 
 fn derive_for_nested_meta(nested: &NestedMeta) -> Option<Derive> {
@@ -37,6 +42,7 @@ fn derive_for_nested_meta(nested: &NestedMeta) -> Option<Derive> {
         if let Some(last) = path.segments.last() {
             match last.ident.to_string().as_ref() {
                 "QueryFragment" => return Some(Derive::QueryFragment),
+                "InlineFragments" => return Some(Derive::InlineFragments),
                 _ => (),
             }
         }
@@ -48,32 +54,7 @@ pub fn strip_cynic_attrs(item: syn::Item) -> syn::Item {
     let mut item = item;
     match item {
         Item::Struct(mut s) => {
-            s.attrs = s
-                .attrs
-                .into_iter()
-                .filter(|attr| !attr.path.is_ident("cynic"))
-                .map(|attr| {
-                    if attr.path.is_ident("derive") {
-                        let mut meta_list = match attr.parse_meta() {
-                            Ok(Meta::List(list)) => list,
-                            _ => return attr,
-                        };
-                        meta_list.nested = meta_list
-                            .nested
-                            .into_iter()
-                            .filter(|nested| derive_for_nested_meta(nested).is_none())
-                            .collect();
-
-                        // TODO: test this fucker
-
-                        syn::parse_quote! {
-                            #[#meta_list]
-                        }
-                    } else {
-                        attr
-                    }
-                })
-                .collect();
+            s.attrs = filter_cynic_attrs(s.attrs);
 
             for field in &mut s.fields {
                 field.attrs = field
@@ -85,11 +66,44 @@ pub fn strip_cynic_attrs(item: syn::Item) -> syn::Item {
             }
 
             Item::Struct(s)
+        }
+        Item::Enum(mut e) => {
+            e.attrs = filter_cynic_attrs(e.attrs);
 
-            // TODO: Do a filter on field attributes as well.
+            // TODO: Probably need to filter out attributes here as well...
+
+            Item::Enum(e)
         }
         other => other,
     }
+}
+
+fn filter_cynic_attrs(attrs: Vec<Attribute>) -> Vec<Attribute> {
+    attrs
+        .into_iter()
+        .filter(|attr| !attr.path.is_ident("cynic"))
+        .map(|attr| {
+            if attr.path.is_ident("derive") {
+                let mut meta_list = match attr.parse_meta() {
+                    Ok(Meta::List(list)) => list,
+                    _ => return attr,
+                };
+                meta_list.nested = meta_list
+                    .nested
+                    .into_iter()
+                    .filter(|nested| derive_for_nested_meta(nested).is_none())
+                    .collect();
+
+                // TODO: test this fucker
+
+                syn::parse_quote! {
+                    #[#meta_list]
+                }
+            } else {
+                attr
+            }
+        })
+        .collect()
 }
 
 #[cfg(test)]
@@ -130,7 +144,18 @@ mod tests {
     }
 
     #[test]
-    fn test_strip_cynic_attrs() {
+    fn test_find_derives_on_enum() {
+        let item: syn::Item = syn::parse2(quote! {
+            #[derive(cynic::InlineFragments)]
+            enum Something {}
+        })
+        .unwrap();
+
+        assert_eq!(find_derives(&item), vec![Derive::InlineFragments]);
+    }
+
+    #[test]
+    fn test_strip_cynic_attrs_struct() {
         let input: syn::Item = syn::parse2(quote! {
             #[derive(Debug, cynic::QueryFragment, serde::Serialize)]
             #[cynic(query_path = "something")]
@@ -150,6 +175,26 @@ mod tests {
                 field: i32,
                 other_field: f32
             }
+        })
+        .unwrap();
+
+        assert_eq!(strip_cynic_attrs(input), expected)
+    }
+
+    #[test]
+    fn test_strip_cynic_attrs_enum() {
+        let input: syn::Item = syn::parse2(quote! {
+            #[derive(Debug, cynic::InlineFragments, serde::Serialize)]
+            #[cynic(query_path = "something")]
+            #[serde(something)]
+            enum Something { }
+        })
+        .unwrap();
+
+        let expected: syn::Item = syn::parse2(quote! {
+            #[derive(Debug, serde::Serialize)]
+            #[serde(something)]
+            enum Something { }
         })
         .unwrap();
 

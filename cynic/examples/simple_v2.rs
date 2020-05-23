@@ -52,11 +52,7 @@ mod queries {
     }
 
     #[derive(cynic::InlineFragments)]
-    #[cynic(
-        schema_path = "cynic/examples/simple.graphql",
-        query_module = "query_dsl",
-        graphql_type = "MyUnionType"
-    )]
+    #[cynic(graphql_type = "MyUnionType")]
     pub enum MyUnionType {
         Test(Test),
         Nested(Nested),

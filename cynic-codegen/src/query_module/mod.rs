@@ -65,6 +65,7 @@ fn derive_for_item(item: &syn::Item, args: &TransformModuleArgs) -> TokenStream 
     match utils::find_derives(item).first() {
         None => TokenStream::new(),
         Some(Derive::QueryFragment) => fragment_derive(item, args),
+        Some(Derive::InlineFragments) => inline_fragments_derive(item, args),
     }
 }
 
@@ -91,6 +92,37 @@ fn fragment_derive(item: &syn::Item, args: &TransformModuleArgs) -> TokenStream 
 
     match fragment_derive_impl(
         input.to_fragment_derive_input(&args.schema_path, &args.query_module),
+    ) {
+        Ok(res) => res,
+        Err(e) => e.to_compile_error(),
+    }
+}
+
+fn inline_fragments_derive(item: &syn::Item, args: &TransformModuleArgs) -> TokenStream {
+    use crate::inline_fragments_derive::{
+        inline_fragments_derive_impl, input::QueryModuleInlineFragmentsDeriveInput,
+    };
+    use darling::FromDeriveInput;
+    use syn::spanned::Spanned;
+
+    let derive_input: syn::DeriveInput = match item {
+        syn::Item::Enum(e) => e.clone().into(),
+        _ => {
+            return syn::Error::new(
+                item.span(),
+                format!("Can only derive InlineFragments on an enum"),
+            )
+            .to_compile_error()
+        }
+    };
+
+    let input = match QueryModuleInlineFragmentsDeriveInput::from_derive_input(&derive_input) {
+        Ok(input) => input,
+        Err(e) => return e.write_errors(),
+    };
+
+    match inline_fragments_derive_impl(
+        input.to_inline_fragments_derive_input(&args.schema_path, &args.query_module),
     ) {
         Ok(res) => res,
         Err(e) => e.to_compile_error(),
