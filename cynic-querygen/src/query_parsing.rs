@@ -37,14 +37,6 @@ pub fn parse_query_document<'a>(
                     structs.reverse();
 
                     Ok(structs)
-
-                    // TODO: Some stuff
-                    // OK, so the best idea is probably to traverse the query.
-                    // By traversing the query we can output a list of the structs we encounter:
-                    // their type names, fields selected, positions in query and respective arguments.
-                    //
-                    // Once we have that list we can group them by type names and _hopefully_ consolidate,
-                    // warning if we have too much differentiating.
                 }
                 Definition::Operation(OperationDefinition::Mutation(_)) => {
                     return Err(Error::UnsupportedQueryDocument(format!(
@@ -76,11 +68,6 @@ fn selection_set_to_structs<'a>(
     selection_set: &'a SelectionSet<'a, &'a str>,
     path: Vec<&'a str>,
 ) -> Result<Vec<PotentialStruct<'a>>, Error> {
-    // TODO: Ok, so for this to work I basically need a single QueryFragment for all the fields,
-    // (and any of their nested QueryFragments).
-    //
-    // an InlineFragmentDerive for any InlineFragments and errors for any FragmentSpreads...
-    // So not sure what I've written here makes any sense...
     let mut rv = Vec::new();
 
     let path = &path;

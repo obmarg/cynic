@@ -1,8 +1,3 @@
-// TODO: Ok, so this is a bit weird.
-// The query is heirarchical, but the schema is not.
-// So we need to take the schema and build up a heirarchy, then flatten that, indexed by position.
-// WOW Argh.
-
 use graphql_parser::query::Type;
 use graphql_parser::schema::{Definition, Document, TypeDefinition};
 use std::collections::HashMap;
