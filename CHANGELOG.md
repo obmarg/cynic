@@ -27,6 +27,9 @@ all APIs might be changed.
   case in GQL where someone has defined an optional list of optionals.  This is
   a pain in Rust, since the same thing can usually be represented by a
   non-optional list of non-optionals.
+- Added a cynic-querygen for generating QueryFragment structs from a graphql
+  schema & query.  This currently has a WIP web interface and a WIP CLI, though
+  neither of them are particularly user friendly at this point.
 
 ### Changed
 
