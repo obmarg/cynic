@@ -6,6 +6,8 @@ mod utils;
 
 use utils::Derive;
 
+use crate::fragment_derive;
+
 #[derive(Debug, FromMeta)]
 struct TransformModuleArgs {
     schema_path: SpannedValue<String>,
@@ -32,6 +34,8 @@ fn transform_query_module_impl(
     let schema = crate::load_schema(&*args.schema_path)
         .map_err(|e| e.to_syn_error(args.schema_path.span()))?;
 
+    let fragment_derive_schema: fragment_derive::Schema = schema.clone().into();
+
     if let None = query_module.content {
         return Ok(quote! { #query_module });
     }
@@ -39,7 +43,7 @@ fn transform_query_module_impl(
 
     let derives: Vec<TokenStream> = module_items
         .into_iter()
-        .map(|i| derive_for_item(i, &args))
+        .map(|i| derive_for_item(i, &args, &fragment_derive_schema))
         .collect();
 
     let (brace, module_items) = query_module.content.unwrap();
@@ -61,15 +65,23 @@ fn transform_query_module_impl(
     })
 }
 
-fn derive_for_item(item: &syn::Item, args: &TransformModuleArgs) -> TokenStream {
+fn derive_for_item(
+    item: &syn::Item,
+    args: &TransformModuleArgs,
+    fragment_derive_schema: &fragment_derive::Schema,
+) -> TokenStream {
     match utils::find_derives(item).first() {
         None => TokenStream::new(),
-        Some(Derive::QueryFragment) => fragment_derive(item, args),
+        Some(Derive::QueryFragment) => fragment_derive(item, args, fragment_derive_schema),
         Some(Derive::InlineFragments) => inline_fragments_derive(item, args),
     }
 }
 
-fn fragment_derive(item: &syn::Item, args: &TransformModuleArgs) -> TokenStream {
+fn fragment_derive(
+    item: &syn::Item,
+    args: &TransformModuleArgs,
+    schema: &fragment_derive::Schema,
+) -> TokenStream {
     use crate::fragment_derive::{fragment_derive_impl, input::QueryModuleFragmentDeriveInput};
     use darling::FromDeriveInput;
     use syn::spanned::Spanned;
@@ -92,6 +104,7 @@ fn fragment_derive(item: &syn::Item, args: &TransformModuleArgs) -> TokenStream 
 
     match fragment_derive_impl(
         input.to_fragment_derive_input(&args.schema_path, &args.query_module),
+        schema,
     ) {
         Ok(res) => res,
         Err(e) => e.to_compile_error(),

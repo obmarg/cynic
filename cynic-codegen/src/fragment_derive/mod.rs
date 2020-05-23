@@ -12,27 +12,33 @@ mod type_validation;
 pub(crate) mod input;
 
 use cynic_arguments::{arguments_from_field_attrs, FieldArgument};
-use schema_parsing::{Field, Object, Schema};
+use schema_parsing::{Field, Object};
 use type_validation::check_types_are_compatible;
 
 pub use input::{FragmentDeriveField, FragmentDeriveInput};
+
+pub(crate) use schema_parsing::Schema;
 
 pub fn fragment_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
     use darling::FromDeriveInput;
 
     match FragmentDeriveInput::from_derive_input(ast) {
-        Ok(input) => fragment_derive_impl(input),
+        Ok(input) => load_schema(&*input.schema_path)
+            .map_err(|e| e.to_syn_error(input.schema_path.span()))
+            .map(Schema::from)
+            .and_then(|schema| fragment_derive_impl(input, &schema))
+            .or_else(|e| Ok(e.to_compile_error())),
         Err(e) => Ok(e.write_errors()),
     }
 }
 
-pub fn fragment_derive_impl(input: FragmentDeriveInput) -> Result<TokenStream, syn::Error> {
+pub fn fragment_derive_impl(
+    input: FragmentDeriveInput,
+    schema: &Schema,
+) -> Result<TokenStream, syn::Error> {
     use quote::{quote, quote_spanned};
 
     let schema_path = input.schema_path;
-    let schema: Schema = load_schema(&*schema_path)
-        .map_err(|e| e.to_syn_error(schema_path.span()))?
-        .into();
 
     let graphql_type = input.graphql_type;
     let object = schema

@@ -60,7 +60,7 @@ pub fn strip_cynic_attrs(item: syn::Item) -> syn::Item {
                 field.attrs = field
                     .attrs
                     .iter()
-                    .filter(|attr| !attr.path.is_ident("cynic_arguments"))
+                    .filter(|attr| !is_cynic_attr(&attr.path))
                     .cloned()
                     .collect();
             }
@@ -76,6 +76,10 @@ pub fn strip_cynic_attrs(item: syn::Item) -> syn::Item {
         }
         other => other,
     }
+}
+
+fn is_cynic_attr(path: &syn::Path) -> bool {
+    path.is_ident("cynic_arguments") || path.is_ident("cynic")
 }
 
 fn filter_cynic_attrs(attrs: Vec<Attribute>) -> Vec<Attribute> {
