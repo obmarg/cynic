@@ -3,7 +3,7 @@ extern crate proc_macro;
 use proc_macro::TokenStream;
 
 use cynic_codegen::{
-    fragment_arguments_derive, fragment_derive, inline_fragments_derive, query_dsl,
+    fragment_arguments_derive, fragment_derive, inline_fragments_derive, query_dsl, query_module,
     scalars_as_strings,
 };
 
@@ -67,6 +67,21 @@ pub fn inline_fragments_derive(input: TokenStream) -> TokenStream {
     };
 
     //eprintln!("{}", rv);
+
+    rv
+}
+
+#[proc_macro_attribute]
+pub fn query_module(attrs: TokenStream, input: TokenStream) -> TokenStream {
+    let module = syn::parse_macro_input!(input as syn::ItemMod);
+    let attrs = syn::parse_macro_input!(attrs as syn::AttributeArgs);
+
+    let rv: TokenStream = match query_module::transform_query_module(attrs, module) {
+        Ok(tokens) => tokens.into(),
+        Err(e) => e.to_compile_error().into(),
+    };
+
+    // eprintln!("{}", rv);
 
     rv
 }

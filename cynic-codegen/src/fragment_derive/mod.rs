@@ -9,9 +9,13 @@ mod cynic_arguments;
 mod schema_parsing;
 mod type_validation;
 
+pub(crate) mod input;
+
 use cynic_arguments::{arguments_from_field_attrs, FieldArgument};
 use schema_parsing::{Field, Object, Schema};
 use type_validation::check_types_are_compatible;
+
+pub use input::{FragmentDeriveField, FragmentDeriveInput};
 
 pub fn fragment_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
     use darling::FromDeriveInput;
@@ -68,31 +72,6 @@ pub fn fragment_derive_impl(input: FragmentDeriveInput) -> Result<TokenStream, s
             format!("QueryFragment can only be derived from a struct"),
         ))
     }
-}
-
-#[derive(darling::FromDeriveInput)]
-#[darling(attributes(cynic), supports(struct_named))]
-pub struct FragmentDeriveInput {
-    ident: proc_macro2::Ident,
-    data: darling::ast::Data<(), FragmentDeriveField>,
-
-    pub schema_path: SpannedValue<String>,
-    pub query_module: SpannedValue<String>,
-    pub graphql_type: SpannedValue<String>,
-    #[darling(default)]
-    pub argument_struct: Option<syn::Ident>,
-}
-
-#[derive(darling::FromField)]
-#[darling(attributes(cynic), forward_attrs(cynic_arguments))]
-struct FragmentDeriveField {
-    ident: Option<proc_macro2::Ident>,
-    ty: syn::Type,
-
-    attrs: Vec<syn::Attribute>,
-
-    #[darling(default)]
-    flatten: bool,
 }
 
 enum SelectorFunction {
