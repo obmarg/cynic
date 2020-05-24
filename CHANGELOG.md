@@ -30,6 +30,13 @@ all APIs might be changed.
 - Added a cynic-querygen for generating QueryFragment structs from a graphql
   schema & query.  This currently has a WIP web interface and a WIP CLI, though
   neither of them are particularly user friendly at this point.
+- Added a `cynic::query_module` attribute macro that can be applied to modules
+  containing QueryFragments & InlineFragments. When this attribute is present
+  the derive will be done for all QueryFragments & InlineFragments contained
+  within.  This allows users to omit some of the parameters these derives
+  usually require, as the query_module attribute provides them and fills them
+  in.  These modules may be expanded in the future to provide more
+  "intelligent" features.
 
 ### Changed
 

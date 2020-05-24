@@ -2,6 +2,7 @@ pub mod fragment_arguments_derive;
 pub mod fragment_derive;
 pub mod inline_fragments_derive;
 pub mod query_dsl;
+pub mod query_module;
 pub mod scalars_as_strings;
 
 mod error;
