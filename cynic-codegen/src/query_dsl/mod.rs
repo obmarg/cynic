@@ -2,7 +2,6 @@ use proc_macro2::TokenStream;
 
 mod argument_struct;
 mod field_selector;
-mod graphql_enum;
 mod input_struct;
 mod interface_struct;
 mod selector_struct;
@@ -13,7 +12,6 @@ use crate::graphql_extensions::FieldExt;
 use crate::{load_schema, Error, TypeIndex};
 pub use argument_struct::ArgumentStruct;
 pub use field_selector::FieldSelector;
-use graphql_enum::GraphQLEnum;
 use input_struct::InputStruct;
 use interface_struct::InterfaceStruct;
 pub use selector_struct::SelectorStruct;
@@ -51,7 +49,6 @@ pub fn query_dsl_from_schema(input: QueryDslParams) -> Result<TokenStream, Error
 #[derive(Debug)]
 pub struct QueryDsl {
     pub selectors: Vec<SelectorStruct>,
-    pub enums: Vec<GraphQLEnum>,
     pub argument_struct_modules: Vec<Module<ArgumentStruct>>,
     pub inputs: Vec<InputStruct>,
     pub unions: Vec<UnionStruct>,
@@ -65,7 +62,6 @@ impl From<graphql_parser::schema::Document> for QueryDsl {
         let type_index = TypeIndex::for_schema(&document);
 
         let mut selectors = vec![];
-        let mut enums = vec![];
         let mut argument_struct_modules = vec![];
         let mut inputs = vec![];
         let mut unions = vec![];
@@ -109,9 +105,6 @@ impl From<graphql_parser::schema::Document> for QueryDsl {
                         argument_struct_modules.push(Module::new(&object.name, argument_structs));
                     }
                 }
-                Definition::TypeDefinition(TypeDefinition::Enum(gql_enum)) => {
-                    enums.push(gql_enum.into());
-                }
                 Definition::TypeDefinition(TypeDefinition::InputObject(obj)) => {
                     inputs.push(InputStruct::from_input_object(obj, &type_index));
                 }
@@ -127,7 +120,6 @@ impl From<graphql_parser::schema::Document> for QueryDsl {
 
         QueryDsl {
             selectors,
-            enums,
             argument_struct_modules,
             inputs,
             unions,
@@ -157,7 +149,6 @@ impl quote::ToTokens for QueryDsl {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         use quote::{quote, TokenStreamExt};
 
-        let enums = &self.enums;
         let selectors = &self.selectors;
         let argument_struct_modules = &self.argument_struct_modules;
         let inputs = &self.inputs;
@@ -165,9 +156,6 @@ impl quote::ToTokens for QueryDsl {
         let interfaces = &self.interfaces;
 
         tokens.append_all(quote! {
-            #(
-                #enums
-            )*
             #(
                 #unions
             )*
