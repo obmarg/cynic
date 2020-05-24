@@ -24,6 +24,10 @@ impl Ident {
         Ident(transform_keywords(s.as_ref().to_pascal_case()), None)
     }
 
+    pub fn for_variant<T: AsRef<str>>(s: T) -> Self {
+        Ident(transform_keywords(s.as_ref().to_pascal_case()), None)
+    }
+
     pub fn for_field<T: AsRef<str>>(s: T) -> Self {
         Ident(transform_keywords(s.as_ref().to_snake_case()), None)
     }

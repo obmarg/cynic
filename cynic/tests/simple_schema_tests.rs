@@ -24,6 +24,7 @@ struct TestStruct {
     field_one: String,
     nested: Nested,
     opt_nested: Option<Nested>,
+    dessert: Option<Dessert>,
 }
 
 #[derive(cynic::QueryFragment, PartialEq, Debug)]
@@ -46,6 +47,16 @@ struct Nested {
 )]
 struct TestQuery {
     test_struct: Option<TestStruct>,
+}
+
+#[derive(cynic::Enum, Clone, Debug, PartialEq)]
+#[cynic(
+    schema_path = "cynic/examples/simple.graphql",
+    graphql_type = "Dessert"
+)]
+pub enum Dessert {
+    Cheesecake,
+    IceCream,
 }
 
 fn run_test(input: serde_json::Value, expected_result: TestQuery) {
@@ -74,7 +85,8 @@ fn test_decoding_entire_struct() {
                 "optNested": {
                     "aString": "test2",
                     "optString": "test3"
-                }
+                },
+                "dessert": "CHEESECAKE"
             }
         }),
         TestQuery {
@@ -88,6 +100,7 @@ fn test_decoding_entire_struct() {
                     a_string: "test2".to_string(),
                     opt_string: Some("test3".to_string()),
                 }),
+                dessert: Some(Dessert::Cheesecake),
             }),
         },
     );

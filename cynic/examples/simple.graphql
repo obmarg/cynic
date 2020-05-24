@@ -9,6 +9,7 @@ type TestStruct {
   fieldOne(x: Int, y: String): String!
   nested: Nested!
   optNested: Nested
+  dessert: Dessert
   json: JSON
 }
 
@@ -17,4 +18,9 @@ union MyUnionType = Nested | TestStruct
 type Nested {
   aString: String!
   optString: String
+}
+
+enum Dessert {
+  CHEESECAKE
+  ICE_CREAM
 }
