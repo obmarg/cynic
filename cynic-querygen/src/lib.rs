@@ -51,6 +51,11 @@ pub fn document_to_fragment_structs(
 
     let mut lines = vec![];
 
+    lines.push("#[cynic::query_module(".into());
+    lines.push(format!("    schema_path = \"{}\",", options.schema_path));
+    lines.push(format!("    query_module = \"{}\",", options.query_module));
+    lines.push(")]\nmod queries {".into());
+
     for st in possible_structs {
         match st {
             PotentialStruct::QueryFragment(fragment) => {
@@ -61,26 +66,23 @@ pub fn document_to_fragment_structs(
                     type_index.type_for_path(&fragment.path)?.inner_name()
                 };
 
-                lines.push("#[derive(cynic::QueryFragment)]".into());
-                lines.push("#[cynic(".into());
-                lines.push(format!("    schema_path = \"{}\",", options.schema_path));
-                lines.push(format!("    query_module = \"{}\",", options.query_module));
-                lines.push(format!("    graphql_type = \"{}\",", name));
-                lines.push(")]".into());
-                lines.push(format!("struct {} {{", name));
+                lines.push("    #[derive(cynic::QueryFragment)]".into());
+                lines.push(format!("    #[cynic(graphql_type = \"{}\")]", name));
+                lines.push(format!("    pub struct {} {{", name));
 
                 for field in fragment.fields {
                     let mut field_path = fragment.path.clone();
                     field_path.push(field.name);
                     let field_ty = type_index.type_for_path(&field_path)?;
 
-                    lines.push(format!("    {}: {},", field.name, field_ty.type_spec()))
+                    lines.push(format!("        pub {}: {},", field.name, field_ty.type_spec()))
                 }
-                lines.push(format!("}}\n"));
+                lines.push(format!("    }}\n"));
             }
             _ => {}
         }
     }
+    lines.push("}".into());
 
     Ok(lines.join("\n"))
 }
