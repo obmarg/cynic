@@ -59,49 +59,7 @@ mod queries {
     }
 }
 
-/*
-fn query() {
-    let query = query_dsl::Query::test_struct(selection_set::map2(
-        TestStruct::new,
-        query_dsl::TestStruct::field_one(),
-        query_dsl::TestStruct::nested(selection_set::map(
-            Nested::new,
-            query_dsl::Nested::a_string(),
-        )),
-    ));
-}*/
-
 impl cynic::QueryRoot for query_dsl::TestStruct {}
-
-// TODO: Some sort of ToQuery trait
-// That's only implemented when QueryFragment::SelectionSet::TypeLock == RootQuery
-// TODO: I should figure out how arguments could work?
-
-/*
-
-impl cynic::QueryFragment<'static> for TestStruct {
-    type SelectionSet = selection_set::SelectionSet<'static, Self, query_dsl::TestStruct>;
-    type Arguments = ArgStruct;
-
-    fn query() -> Self::SelectionSet {
-        // TODO: Got to say I'm not that enamoured with this syntax.
-        // Is there a better way to write this?
-        selection_set::map2(
-            TestStruct::new,
-            query_dsl::TestStruct::field_one(),
-            query_dsl::TestStruct::nested(Nested::selection_set()),
-        )
-    }
-}
-
-impl cynic::QueryFragment<'static> for Nested {
-    type SelectionSet = selection_set::SelectionSet<'static, Self, query_dsl::Nested>;
-
-    fn query() -> Self::SelectionSet {
-        selection_set::map(Nested::new, query_dsl::Nested::a_string())
-    }
-}
-*/
 
 mod test {
 

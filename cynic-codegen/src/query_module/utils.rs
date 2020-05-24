@@ -98,8 +98,6 @@ fn filter_cynic_attrs(attrs: Vec<Attribute>) -> Vec<Attribute> {
                     .filter(|nested| derive_for_nested_meta(nested).is_none())
                     .collect();
 
-                // TODO: test this fucker
-
                 syn::parse_quote! {
                     #[#meta_list]
                 }
