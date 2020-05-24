@@ -75,7 +75,11 @@ pub fn document_to_fragment_structs(
                     field_path.push(field.name);
                     let field_ty = type_index.type_for_path(&field_path)?;
 
-                    lines.push(format!("        pub {}: {},", field.name, field_ty.type_spec()))
+                    lines.push(format!(
+                        "        pub {}: {},",
+                        field.name,
+                        field_ty.type_spec()
+                    ))
                 }
                 lines.push(format!("    }}\n"));
             }
