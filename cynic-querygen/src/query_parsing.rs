@@ -1,6 +1,7 @@
 use graphql_parser::query::{Definition, Document, OperationDefinition, Selection, SelectionSet};
+use graphql_parser::schema::EnumType;
 
-use crate::Error;
+use crate::{Error, GraphqlType, TypeExt, TypeIndex};
 
 #[derive(Debug, PartialEq)]
 pub struct Field<'a> {
@@ -14,23 +15,31 @@ pub struct QueryFragment<'a> {
 }
 
 #[derive(Debug, PartialEq)]
+pub struct Enum<'a> {
+    pub def: &'a EnumType<'a, &'a str>,
+}
+
+#[derive(Debug, PartialEq)]
 pub struct InlineFragment {}
 
 #[derive(Debug, PartialEq)]
 pub enum PotentialStruct<'a> {
     QueryFragment(QueryFragment<'a>),
     InlineFragment(InlineFragment),
+    Enum(Enum<'a>),
 }
 
 pub fn parse_query_document<'a>(
     doc: &'a Document<'a, &'a str>,
+    type_index: &TypeIndex<'a>,
 ) -> Result<Vec<PotentialStruct<'a>>, Error> {
     doc.definitions
         .iter()
         .map(|definition| {
             match definition {
                 Definition::Operation(OperationDefinition::Query(query)) => {
-                    let mut structs = selection_set_to_structs(&query.selection_set, vec![])?;
+                    let mut structs =
+                        selection_set_to_structs(&query.selection_set, vec![], type_index)?;
 
                     // selection_set_to_structs traverses the tree in post-order
                     // (sort of), so we reverse to get the root node first.
@@ -67,10 +76,18 @@ pub fn parse_query_document<'a>(
 fn selection_set_to_structs<'a>(
     selection_set: &'a SelectionSet<'a, &'a str>,
     path: Vec<&'a str>,
+    type_index: &TypeIndex<'a>,
 ) -> Result<Vec<PotentialStruct<'a>>, Error> {
     let mut rv = Vec::new();
 
     let path = &path;
+
+    if !path.is_empty() {
+        let type_name = type_index.type_for_path(&path)?.inner_name();
+        if let Some(GraphqlType::Enum(en)) = type_index.lookup_type(type_name) {
+            return Ok(vec![PotentialStruct::Enum(Enum { def: en })]);
+        }
+    }
 
     let mut this_fragment = QueryFragment {
         path: path.clone(),
@@ -85,7 +102,11 @@ fn selection_set_to_structs<'a>(
                 let mut new_path = path.clone();
                 new_path.push(field.name);
 
-                rv.extend(selection_set_to_structs(&field.selection_set, new_path)?);
+                rv.extend(selection_set_to_structs(
+                    &field.selection_set,
+                    new_path,
+                    type_index,
+                )?);
             }
             Selection::FragmentSpread(_) => {
                 return Err(Error::UnsupportedQueryDocument(

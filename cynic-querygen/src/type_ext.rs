@@ -1,13 +1,15 @@
 use graphql_parser::query::Type;
 use std::borrow::Cow;
 
+use crate::TypeIndex;
+
 pub trait TypeExt<'a> {
     fn inner_name(&self) -> &str;
     fn type_spec(&self) -> Cow<'a, str>;
 }
 
 impl<'a> TypeExt<'a> for Type<'a, &'a str> {
-    fn type_spec(&self) -> Cow<'a, str> {
+    fn type_spec(&self, type_index: &TypeIndex<'a>) -> Cow<'a, str> {
         type_spec_imp(self, true)
     }
 
@@ -20,7 +22,11 @@ impl<'a> TypeExt<'a> for Type<'a, &'a str> {
     }
 }
 
-fn type_spec_imp<'a>(ty: &Type<'a, &'a str>, nullable: bool) -> Cow<'a, str> {
+fn type_spec_imp<'a>(
+    ty: &Type<'a, &'a str>,
+    nullable: bool,
+    type_index: &TypeIndex<'a>,
+) -> Cow<'a, str> {
     if let Type::NonNullType(inner) = ty {
         return type_spec_imp(inner, false);
     }
@@ -30,12 +36,14 @@ fn type_spec_imp<'a>(ty: &Type<'a, &'a str>, nullable: bool) -> Cow<'a, str> {
     }
 
     match ty {
+        Type::ListType(inner) => Cow::Owned(format!("Vec<{}>", type_spec_imp(inner, true))),
+        Type::NonNullType(inner) => panic!("NonNullType somehow got past an if let"),
         Type::NamedType("Int") => Cow::Borrowed("i64"),
         Type::NamedType("Float") => Cow::Borrowed("f64"),
         Type::NamedType("Boolean") => Cow::Borrowed("bool"),
-        Type::NamedType(s) => Cow::Borrowed(s),
-        Type::ListType(inner) => Cow::Owned(format!("Vec<{}>", type_spec_imp(inner, true))),
-        Type::NonNullType(inner) => panic!("NonNullType somehow got past an if let"),
+        Type::NamedType(s) => {
+            Cow::Borrowed(s),
+        }
     }
 }
 

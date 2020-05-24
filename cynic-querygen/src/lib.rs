@@ -1,12 +1,13 @@
 use graphql_parser::{query, schema};
+use inflector::Inflector;
 
 mod query_parsing;
 mod type_ext;
 mod type_index;
 
-use query_parsing::PotentialStruct;
+use query_parsing::{Enum, PotentialStruct};
 use type_ext::TypeExt;
-use type_index::TypeIndex;
+use type_index::{GraphqlType, TypeIndex};
 
 #[derive(thiserror::Error, Debug)]
 pub enum Error {
@@ -21,6 +22,9 @@ pub enum Error {
 
     #[error("could not find field `{0}` on `{1}`")]
     UnknownField(String, String),
+
+    #[error("could not find enum `{0}`")]
+    UnknownEnum(String),
 }
 
 #[derive(Debug)]
@@ -46,8 +50,8 @@ pub fn document_to_fragment_structs(
     let schema = graphql_parser::parse_schema::<&str>(schema.as_ref())?;
     let query = graphql_parser::parse_query::<&str>(query.as_ref())?;
 
-    let possible_structs = query_parsing::parse_query_document(&query)?;
     let type_index = TypeIndex::from_schema(&schema);
+    let possible_structs = query_parsing::parse_query_document(&query, &type_index)?;
 
     let mut lines = vec![];
 
@@ -82,6 +86,17 @@ pub fn document_to_fragment_structs(
                     ))
                 }
                 lines.push(format!("    }}\n"));
+            }
+            PotentialStruct::Enum(Enum { def: en }) => {
+                let type_name = en.name;
+                lines.push("    #[derive(cynic::Enum)]".into());
+                lines.push(format!("    #[cynic(graphql_type = \"{}\")]", type_name));
+                lines.push(format!("    pub enum {} {{", type_name.to_pascal_case()));
+
+                for variant in &en.values {
+                    lines.push(format!("        {},", variant.name.to_pascal_case()))
+                }
+                lines.push("    }}\n".into());
             }
             _ => {}
         }

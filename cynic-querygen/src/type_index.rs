@@ -1,5 +1,5 @@
 use graphql_parser::query::Type;
-use graphql_parser::schema::{Definition, Document, TypeDefinition};
+use graphql_parser::schema::{Definition, Document, EnumType, ScalarType, TypeDefinition};
 use std::collections::HashMap;
 
 use crate::{type_ext::TypeExt, Error};
@@ -30,7 +30,7 @@ impl<'a> TypeIndex<'a> {
                     Some((obj.name, GraphqlType::Object(fields)))
                 }
                 Definition::TypeDefinition(TypeDefinition::Enum(en)) => {
-                    Some((en.name, GraphqlType::Enum))
+                    Some((en.name, GraphqlType::Enum(en)))
                 }
                 _ => None,
             })
@@ -56,6 +56,10 @@ impl<'a> TypeIndex<'a> {
         } else {
             panic!("TODO: make this an error");
         }
+    }
+
+    pub fn lookup_type(&self, name: &str) -> Option<&GraphqlType<'a>> {
+        self.types.get(name)
     }
 
     fn find_type_recursive<'b>(
@@ -93,8 +97,8 @@ impl<'a> TypeIndex<'a> {
 }
 
 #[derive(Debug, PartialEq)]
-enum GraphqlType<'a> {
-    Enum,
+pub enum GraphqlType<'a> {
+    Enum(&'a EnumType<'a, &'a str>),
     Object(HashMap<&'a str, &'a Type<'a, &'a str>>),
     Scalar,
 }
