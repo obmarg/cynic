@@ -82,7 +82,7 @@ pub fn document_to_fragment_structs(
                     lines.push(format!(
                         "        pub {}: {},",
                         field.name,
-                        field_ty.type_spec()
+                        field_ty.type_spec(&type_index)
                     ))
                 }
                 lines.push(format!("    }}\n"));

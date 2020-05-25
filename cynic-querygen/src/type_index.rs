@@ -37,15 +37,10 @@ impl<'a> TypeIndex<'a> {
             .flatten()
             .collect::<HashMap<_, _>>();
 
-        types.insert("String", GraphqlType::Scalar);
-        types.insert("Int", GraphqlType::Scalar);
-        types.insert("Boolean", GraphqlType::Scalar);
-        types.insert("ID", GraphqlType::Scalar);
+        let mut rv = TypeIndex::default();
+        rv.types.extend(types);
 
-        TypeIndex {
-            types,
-            root: "Query".into(),
-        }
+        rv
     }
 
     pub fn type_for_path<'b>(&self, path: &[&'b str]) -> Result<&'a Type<'a, &'a str>, Error> {
@@ -92,6 +87,22 @@ impl<'a> TypeIndex<'a> {
                     panic!("TODO: make this an error");
                 }
             }
+        }
+    }
+}
+
+impl<'a> Default for TypeIndex<'a> {
+    fn default() -> TypeIndex<'a> {
+        let mut types = HashMap::new();
+
+        types.insert("String", GraphqlType::Scalar);
+        types.insert("Int", GraphqlType::Scalar);
+        types.insert("Boolean", GraphqlType::Scalar);
+        types.insert("ID", GraphqlType::Scalar);
+
+        TypeIndex {
+            types,
+            root: "Query".into(),
         }
     }
 }
