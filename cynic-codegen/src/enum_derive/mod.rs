@@ -15,11 +15,14 @@ use input::EnumDeriveVariant;
 
 pub fn enum_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
     use darling::FromDeriveInput;
+    use syn::spanned::Spanned;
+
+    let enum_span = ast.span();
 
     match EnumDeriveInput::from_derive_input(ast) {
         Ok(input) => load_schema(&*input.schema_path)
             .map_err(|e| e.to_syn_error(input.schema_path.span()))
-            .and_then(|schema| enum_derive_impl(input, &schema))
+            .and_then(|schema| enum_derive_impl(input, &schema, enum_span))
             .or_else(|e| Ok(e.to_compile_error())),
         Err(e) => Ok(e.write_errors()),
     }
@@ -28,6 +31,7 @@ pub fn enum_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
 pub fn enum_derive_impl(
     input: EnumDeriveInput,
     schema: &Document,
+    enum_span: Span,
 ) -> Result<TokenStream, syn::Error> {
     use quote::{quote, quote_spanned};
 
@@ -56,6 +60,7 @@ pub fn enum_derive_impl(
             enum_def,
             &input.ident.to_string(),
             input.rename_all,
+            &enum_span,
         ) {
             Ok(pairs) => pairs,
             Err(error_tokens) => return Ok(error_tokens),
@@ -86,7 +91,7 @@ pub fn enum_derive_impl(
         })
     } else {
         Err(syn::Error::new(
-            Span::call_site(),
+            enum_span,
             format!("Enum can only be derived from an enum"),
         ))
     }
@@ -97,6 +102,7 @@ fn join_variants<'a>(
     enum_def: &'a EnumType,
     enum_name: &str,
     rename_all: Option<RenameAll>,
+    enum_span: &Span,
 ) -> Result<Vec<(&'a EnumDeriveVariant, &'a EnumValue)>, TokenStream> {
     let mut map = HashMap::new();
     for variant in variants {
@@ -134,7 +140,7 @@ fn join_variants<'a>(
         let missing_variants_string = missing_variants.join(", ");
         errors.extend(
             syn::Error::new(
-                Span::call_site(),
+                enum_span.clone(),
                 format!("Missing variants: {}", missing_variants_string),
             )
             .to_compile_error(),
@@ -206,7 +212,13 @@ mod tests {
         gql_enum.values.push(EnumValue::new(enum_value_1.into()));
         gql_enum.values.push(EnumValue::new(enum_value_2.into()));
 
-        let result = join_variants(&variants, &gql_enum, "Desserts", rename_rule);
+        let result = join_variants(
+            &variants,
+            &gql_enum,
+            "Desserts",
+            rename_rule,
+            &Span::call_site(),
+        );
 
         assert_matches!(result, Ok(_));
         let pairs = result.unwrap();
@@ -245,6 +257,7 @@ mod tests {
             &gql_enum,
             "Desserts",
             Some(RenameAll::ScreamingSnakeCase),
+            &Span::call_site(),
         );
 
         assert_matches!(result, Ok(_));
@@ -273,7 +286,7 @@ mod tests {
         gql_enum.values.push(EnumValue::new("CHEESECAKE".into()));
         gql_enum.values.push(EnumValue::new("ICE_CREAM".into()));
 
-        let result = join_variants(&variants, &gql_enum, "Desserts", None);
+        let result = join_variants(&variants, &gql_enum, "Desserts", None, &Span::call_site());
 
         assert_matches!(result, Err(_));
     }
@@ -287,7 +300,7 @@ mod tests {
         let mut gql_enum = EnumType::new("Desserts".into());
         gql_enum.values.push(EnumValue::new("ICE_CREAM".into()));
 
-        let result = join_variants(&variants, &gql_enum, "Desserts", None);
+        let result = join_variants(&variants, &gql_enum, "Desserts", None, &Span::call_site());
 
         assert_matches!(result, Err(_));
     }
