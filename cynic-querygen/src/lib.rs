@@ -96,7 +96,7 @@ pub fn document_to_fragment_structs(
                 for variant in &en.values {
                     lines.push(format!("        {},", variant.name.to_pascal_case()))
                 }
-                lines.push("    }}\n".into());
+                lines.push("    }\n".into());
             }
             _ => {}
         }
