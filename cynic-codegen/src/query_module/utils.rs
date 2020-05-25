@@ -4,6 +4,7 @@ use syn::{Attribute, Item, Meta, MetaList, NestedMeta};
 pub enum Derive {
     QueryFragment,
     InlineFragments,
+    Enum,
 }
 
 pub fn find_derives(item: &Item) -> Vec<Derive> {
@@ -43,6 +44,7 @@ fn derive_for_nested_meta(nested: &NestedMeta) -> Option<Derive> {
             match last.ident.to_string().as_ref() {
                 "QueryFragment" => return Some(Derive::QueryFragment),
                 "InlineFragments" => return Some(Derive::InlineFragments),
+                "Enum" => return Some(Derive::Enum),
                 _ => (),
             }
         }
@@ -70,7 +72,14 @@ pub fn strip_cynic_attrs(item: syn::Item) -> syn::Item {
         Item::Enum(mut e) => {
             e.attrs = filter_cynic_attrs(e.attrs);
 
-            // TODO: Probably need to filter out attributes here as well...
+            for variant in &mut e.variants {
+                variant.attrs = variant
+                    .attrs
+                    .iter()
+                    .filter(|attr| !is_cynic_attr(&attr.path))
+                    .cloned()
+                    .collect();
+            }
 
             Item::Enum(e)
         }
@@ -189,14 +198,19 @@ mod tests {
             #[derive(Debug, cynic::InlineFragments, serde::Serialize)]
             #[cynic(query_path = "something")]
             #[serde(something)]
-            enum Something { }
+            enum Something {
+                #[cynic(rename = "test")]
+                AVariant
+            }
         })
         .unwrap();
 
         let expected: syn::Item = syn::parse2(quote! {
             #[derive(Debug, serde::Serialize)]
             #[serde(something)]
-            enum Something { }
+            enum Something {
+                AVariant
+            }
         })
         .unwrap();
 

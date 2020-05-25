@@ -77,6 +77,15 @@ impl FieldType {
         }
     }
 
+    pub fn contains_enum(&self) -> bool {
+        match self {
+            FieldType::List(inner, _) => inner.contains_scalar(),
+            FieldType::Scalar(_, _) => false,
+            FieldType::Enum(_, _) => true,
+            FieldType::Other(_, _) => false,
+        }
+    }
+
     pub fn is_nullable(&self) -> bool {
         match self {
             FieldType::List(_, nullable) => nullable.clone(),

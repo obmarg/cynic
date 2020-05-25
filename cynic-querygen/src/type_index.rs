@@ -1,5 +1,5 @@
 use graphql_parser::query::Type;
-use graphql_parser::schema::{Definition, Document, TypeDefinition};
+use graphql_parser::schema::{Definition, Document, EnumType, ScalarType, TypeDefinition};
 use std::collections::HashMap;
 
 use crate::{type_ext::TypeExt, Error};
@@ -30,22 +30,17 @@ impl<'a> TypeIndex<'a> {
                     Some((obj.name, GraphqlType::Object(fields)))
                 }
                 Definition::TypeDefinition(TypeDefinition::Enum(en)) => {
-                    Some((en.name, GraphqlType::Enum))
+                    Some((en.name, GraphqlType::Enum(en)))
                 }
                 _ => None,
             })
             .flatten()
             .collect::<HashMap<_, _>>();
 
-        types.insert("String", GraphqlType::Scalar);
-        types.insert("Int", GraphqlType::Scalar);
-        types.insert("Boolean", GraphqlType::Scalar);
-        types.insert("ID", GraphqlType::Scalar);
+        let mut rv = TypeIndex::default();
+        rv.types.extend(types);
 
-        TypeIndex {
-            types,
-            root: "Query".into(),
-        }
+        rv
     }
 
     pub fn type_for_path<'b>(&self, path: &[&'b str]) -> Result<&'a Type<'a, &'a str>, Error> {
@@ -56,6 +51,10 @@ impl<'a> TypeIndex<'a> {
         } else {
             panic!("TODO: make this an error");
         }
+    }
+
+    pub fn lookup_type(&self, name: &str) -> Option<&GraphqlType<'a>> {
+        self.types.get(name)
     }
 
     fn find_type_recursive<'b>(
@@ -92,9 +91,25 @@ impl<'a> TypeIndex<'a> {
     }
 }
 
+impl<'a> Default for TypeIndex<'a> {
+    fn default() -> TypeIndex<'a> {
+        let mut types = HashMap::new();
+
+        types.insert("String", GraphqlType::Scalar);
+        types.insert("Int", GraphqlType::Scalar);
+        types.insert("Boolean", GraphqlType::Scalar);
+        types.insert("ID", GraphqlType::Scalar);
+
+        TypeIndex {
+            types,
+            root: "Query".into(),
+        }
+    }
+}
+
 #[derive(Debug, PartialEq)]
-enum GraphqlType<'a> {
-    Enum,
+pub enum GraphqlType<'a> {
+    Enum(&'a EnumType<'a, &'a str>),
     Object(HashMap<&'a str, &'a Type<'a, &'a str>>),
     Scalar,
 }

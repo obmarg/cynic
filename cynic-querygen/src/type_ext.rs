@@ -1,14 +1,17 @@
 use graphql_parser::query::Type;
+use inflector::Inflector;
 use std::borrow::Cow;
+
+use crate::{GraphqlType, TypeIndex};
 
 pub trait TypeExt<'a> {
     fn inner_name(&self) -> &str;
-    fn type_spec(&self) -> Cow<'a, str>;
+    fn type_spec(&self, type_index: &TypeIndex<'a>) -> Cow<'a, str>;
 }
 
 impl<'a> TypeExt<'a> for Type<'a, &'a str> {
-    fn type_spec(&self) -> Cow<'a, str> {
-        type_spec_imp(self, true)
+    fn type_spec(&self, type_index: &TypeIndex<'a>) -> Cow<'a, str> {
+        type_spec_imp(self, true, type_index)
     }
 
     fn inner_name(&self) -> &str {
@@ -20,22 +23,32 @@ impl<'a> TypeExt<'a> for Type<'a, &'a str> {
     }
 }
 
-fn type_spec_imp<'a>(ty: &Type<'a, &'a str>, nullable: bool) -> Cow<'a, str> {
+fn type_spec_imp<'a>(
+    ty: &Type<'a, &'a str>,
+    nullable: bool,
+    type_index: &TypeIndex<'a>,
+) -> Cow<'a, str> {
     if let Type::NonNullType(inner) = ty {
-        return type_spec_imp(inner, false);
+        return type_spec_imp(inner, false, type_index);
     }
 
     if nullable {
-        return Cow::Owned(format!("Option<{}>", type_spec_imp(ty, false)));
+        return Cow::Owned(format!("Option<{}>", type_spec_imp(ty, false, type_index)));
     }
 
     match ty {
+        Type::ListType(inner) => {
+            Cow::Owned(format!("Vec<{}>", type_spec_imp(inner, true, type_index)))
+        }
+        Type::NonNullType(inner) => panic!("NonNullType somehow got past an if let"),
         Type::NamedType("Int") => Cow::Borrowed("i64"),
         Type::NamedType("Float") => Cow::Borrowed("f64"),
         Type::NamedType("Boolean") => Cow::Borrowed("bool"),
-        Type::NamedType(s) => Cow::Borrowed(s),
-        Type::ListType(inner) => Cow::Owned(format!("Vec<{}>", type_spec_imp(inner, true))),
-        Type::NonNullType(inner) => panic!("NonNullType somehow got past an if let"),
+        Type::NamedType(s) => match type_index.lookup_type(s) {
+            Some(GraphqlType::Enum(_)) => Cow::Owned(s.to_pascal_case()),
+            Some(GraphqlType::Object(_)) => Cow::Owned(s.to_pascal_case()),
+            _ => Cow::Borrowed(s),
+        },
     }
 }
 
@@ -60,6 +73,7 @@ mod tests {
         )
     )]
     fn type_spec_returns_correct_type(input: Type<'static, &'static str>, expected: &'static str) {
-        assert_eq!(input.type_spec(), expected);
+        let type_index = TypeIndex::default();
+        assert_eq!(input.type_spec(&type_index), expected);
     }
 }

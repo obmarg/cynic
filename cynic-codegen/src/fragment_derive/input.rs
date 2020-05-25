@@ -1,4 +1,3 @@
-use crate::load_schema;
 use darling::util::SpannedValue;
 
 #[derive(darling::FromDeriveInput)]

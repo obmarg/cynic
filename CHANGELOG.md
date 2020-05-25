@@ -11,6 +11,12 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+### Breaking Changes
+
+- The generated `query_dsl` no longer contains generated enums - users should
+  provide their own enums and `derive(cynic::Enum)` on them. Cynic querygen
+  can be used to help with this.
+
 ### New Features
 
 - Union types can be queried via `#[derive(InlineFragments)]` on an enum.
@@ -34,11 +40,15 @@ all APIs might be changed.
   containing QueryFragments & InlineFragments. When this attribute is present
   the derive will be done for all QueryFragments & InlineFragments contained
   within. This allows users to omit some of the parameters these derives
-  usually require, as the query_module attribute provides them and fills them
+  usually require, as the `query_module` attribute provides them and fills them
   in. These modules may be expanded in the future to provide more
   "intelligent" features.
 - Added support for mapN up to N = 50, therefore adding support for GraphQL
   objects with up to 50 fields.
+- Added new `cynic::Enum` derive that matches up a Rust enum with a GraphQL enum.
+  `cynic-querygen` will automatically provide enums using this derive when a
+  query includes an enum.
+- Added `SelectionSet::and_then` for chaining decode operations on selection sets.
 
 ### Changed
 

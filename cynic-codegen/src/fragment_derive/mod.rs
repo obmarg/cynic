@@ -140,10 +140,15 @@ impl SelectorFunction {
     }
 }
 
+enum SelectorCallStyle {
+    QueryFragment(syn::Type),
+    Enum(syn::Type),
+    Scalar,
+}
+
 struct FieldSelectorCall {
     selector_function: SelectorFunction,
-    contains_composite: bool,
-    query_fragment_field_type: syn::Type,
+    style: SelectorCallStyle,
     argument_structs: Vec<ArgumentStruct>,
 }
 
@@ -160,13 +165,14 @@ impl quote::ToTokens for FieldSelectorCall {
             }
         };
 
-        let inner_call = if self.contains_composite {
-            let field_type = &self.query_fragment_field_type;
-            quote! {
+        let inner_call = match &self.style {
+            SelectorCallStyle::Scalar => quote! {#initial_args},
+            SelectorCallStyle::QueryFragment(field_type) => quote! {
                 #initial_args #field_type::fragment(FromArguments::from_arguments(&args))
-            }
-        } else {
-            quote! {#initial_args}
+            },
+            SelectorCallStyle::Enum(enum_type) => quote! {
+                #initial_args #enum_type::select()
+            },
         };
 
         let selector_function_call = &self.selector_function.to_call(inner_call);
@@ -286,10 +292,17 @@ impl FragmentImpl {
                             ]),
                             field.flatten,
                         ),
-                        contains_composite: !gql_field.field_type.contains_scalar(),
-                        query_fragment_field_type: gql_field
-                            .field_type
-                            .get_inner_type_from_syn(&field.ty),
+                        style: if gql_field.field_type.contains_scalar() {
+                            SelectorCallStyle::Scalar
+                        } else if gql_field.field_type.contains_enum() {
+                            SelectorCallStyle::Enum(
+                                gql_field.field_type.get_inner_type_from_syn(&field.ty),
+                            )
+                        } else {
+                            SelectorCallStyle::QueryFragment(
+                                gql_field.field_type.get_inner_type_from_syn(&field.ty),
+                            )
+                        },
                         argument_structs,
                     })
                 } else {
@@ -339,7 +352,8 @@ impl quote::ToTokens for FragmentImpl {
                 type Arguments = #argument_struct;
 
                 fn fragment(args: Self::Arguments) -> Self::SelectionSet {
-                    use ::cynic::{QueryFragment, FromArguments};
+                    #[allow(dead_code)]
+                    use ::cynic::{QueryFragment, FromArguments, Enum};
 
                     let new = |#(#constructor_params),*| #target_struct {
                         #(#constructor_param_names),*

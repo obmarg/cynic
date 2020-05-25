@@ -33,6 +33,20 @@ impl<'a, DecodesTo, TypeLock> SelectionSet<'a, DecodesTo, TypeLock> {
         }
     }
 
+    pub fn and_then<F, R>(self, f: F) -> SelectionSet<'a, R, TypeLock>
+    where
+        F: (Fn(DecodesTo) -> SelectionSet<'a, R, TypeLock>) + 'a + Sync + Send,
+        DecodesTo: 'a,
+        R: 'a,
+    {
+        let boxed_func = Box::new(f);
+        SelectionSet {
+            fields: self.fields,
+            decoder: json_decode::and_then(move |value| (*boxed_func)(value).decoder, self.decoder),
+            phantom: PhantomData,
+        }
+    }
+
     pub fn transform_typelock<NewLock>(self) -> SelectionSet<'a, DecodesTo, NewLock>
     where
         NewLock: HasSubtype<TypeLock>,
@@ -450,9 +464,30 @@ define_map!(
     _39, _40, _41, _42, _43, _44, _45, _46, _47, _48, _49, _50
 );
 
+pub fn succeed<'a, V>(value: V) -> SelectionSet<'a, V, ()>
+where
+    V: Clone + Send + Sync + 'a,
+{
+    SelectionSet {
+        fields: vec![],
+        decoder: json_decode::succeed(value),
+        phantom: PhantomData,
+    }
+}
+
+pub fn fail<'a, V>(err: impl Into<String>) -> SelectionSet<'static, V, ()> {
+    SelectionSet {
+        fields: vec![],
+        decoder: json_decode::fail(err),
+        phantom: PhantomData,
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    use assert_matches::assert_matches;
 
     #[derive(Debug, PartialEq)]
     struct Query {
@@ -647,5 +682,19 @@ mod tests {
 
         let (_query, args) = selection_set.query_and_arguments().unwrap();
         assert_eq!(args.len(), 2);
+    }
+
+    #[test]
+    fn test_and_then() {
+        let selection_set = string().and_then(|s| {
+            if s == "ok" {
+                succeed("YAS")
+            } else {
+                fail("no way min")
+            }
+        });
+
+        assert_matches!(selection_set.decode(&serde_json::json!("ok")), Ok("YAS"));
+        assert_matches!(selection_set.decode(&serde_json::json!("nope")), Err(_));
     }
 }

@@ -178,10 +178,7 @@ pub trait QueryFragment {
     fn graphql_type() -> String;
 }
 
-pub trait InlineFragments
-where
-    Self: Sized,
-{
+pub trait InlineFragments: Sized {
     type TypeLock;
     type Arguments: FragmentArguments;
 
@@ -205,6 +202,14 @@ where
     fn graphql_type() -> String {
         Self::graphql_type()
     }
+}
+
+/// A trait for GraphQL enums.
+///
+/// Enums don't take arguments & always decode to themselves w/ no type lock
+/// so this is a fairly simple trait to implement.
+pub trait Enum: Sized {
+    fn select() -> SelectionSet<'static, Self, ()>;
 }
 
 /// A marker trait for the arguments types on QueryFragments.
@@ -245,5 +250,6 @@ pub struct QueryBody<'a> {
 }
 
 pub use cynic_proc_macros::{
-    query_dsl, query_module, scalars_as_strings, FragmentArguments, InlineFragments, QueryFragment,
+    query_dsl, query_module, scalars_as_strings, Enum, FragmentArguments, InlineFragments,
+    QueryFragment,
 };
