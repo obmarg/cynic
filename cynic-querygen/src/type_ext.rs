@@ -44,6 +44,7 @@ fn type_spec_imp<'a>(
         Type::NamedType("Int") => Cow::Borrowed("i64"),
         Type::NamedType("Float") => Cow::Borrowed("f64"),
         Type::NamedType("Boolean") => Cow::Borrowed("bool"),
+        Type::NamedType("ID") => Cow::Borrowed("cynic::Id"),
         Type::NamedType(s) => match type_index.lookup_type(s) {
             Some(GraphqlType::Enum(_)) => Cow::Owned(s.to_pascal_case()),
             Some(GraphqlType::Object(_)) => Cow::Owned(s.to_pascal_case()),
