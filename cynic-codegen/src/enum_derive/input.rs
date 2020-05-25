@@ -38,6 +38,7 @@ pub(crate) struct QueryModuleEnumDeriveInput {
     pub schema_path: Option<SpannedValue<String>>,
     pub graphql_type: SpannedValue<String>,
 
+    #[darling(default)]
     rename_all: Option<RenameAll>,
 }
 
