@@ -24,9 +24,6 @@ all APIs might be changed.
   yet queryable.
 - `#[derive(QueryFragment)]` now explicitly checks for required/list type
   mismatches & other easy mistakes, and warns the user appropriately.
-- Added `scalars_as_strings` for stubbing out all scalar types as strings.
-  A temporary measure until I can come up with an easier way to manage large
-  numbers of scalars.
 - Added an `output_query_dsl` function suitable for running inside build.rs
 - Added a flatten option at the field level. When present this will flatten
   nested options & vectors into the provided type. Used to handle the common
@@ -49,6 +46,8 @@ all APIs might be changed.
   `cynic-querygen` will automatically provide enums using this derive when a
   query includes an enum.
 - Added `SelectionSet::and_then` for chaining decode operations on selection sets.
+- Added `cynic::Scalar` derive for newtype structs so that users can easily
+  define their own scalars.  Also added support for this to cynic-querygen
 
 ### Changed
 

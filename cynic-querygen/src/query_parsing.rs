@@ -1,6 +1,7 @@
 use graphql_parser::query::{Definition, Document, OperationDefinition, Selection, SelectionSet};
 use graphql_parser::schema::EnumType;
 
+use crate::type_index::ScalarKind;
 use crate::{Error, GraphqlType, TypeExt, TypeIndex};
 
 #[derive(Debug, PartialEq)]
@@ -27,6 +28,7 @@ pub enum PotentialStruct<'a> {
     QueryFragment(QueryFragment<'a>),
     InlineFragment(InlineFragment),
     Enum(Enum<'a>),
+    Scalar(String),
 }
 
 pub fn parse_query_document<'a>(
@@ -84,8 +86,14 @@ fn selection_set_to_structs<'a>(
 
     if !path.is_empty() {
         let type_name = type_index.type_for_path(&path)?.inner_name();
-        if let Some(GraphqlType::Enum(en)) = type_index.lookup_type(type_name) {
-            return Ok(vec![PotentialStruct::Enum(Enum { def: en })]);
+        match type_index.lookup_type(type_name) {
+            Some(GraphqlType::Enum(en)) => {
+                return Ok(vec![PotentialStruct::Enum(Enum { def: en })])
+            }
+            Some(GraphqlType::Scalar(ScalarKind::Custom)) => {
+                return Ok(vec![PotentialStruct::Scalar(type_name.to_string())]);
+            }
+            _ => (),
         }
     }
 
