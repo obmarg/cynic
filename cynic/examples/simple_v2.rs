@@ -14,6 +14,8 @@ use cynic::selection_set;
 
 #[cynic::query_module(
     schema_path = "cynic/examples/simple.graphql",
+    // TODO: Make query_module optional (automatically does it if missing)
+    // Some complications around what to do with scalars here though...
     query_module = "query_dsl"
 )]
 mod queries {
@@ -29,6 +31,7 @@ mod queries {
         field_one: String,
         nested: Nested,
         opt_nested: Option<Nested>,
+        dessert: Option<Dessert>,
     }
 
     #[derive(cynic::QueryFragment)]
@@ -49,6 +52,13 @@ mod queries {
         fn new(field_one: String) -> Self {
             Test { field_one }
         }
+    }
+
+    #[derive(cynic::Enum, Clone, Copy)]
+    #[cynic(graphql_type = "Dessert", rename_all = "SCREAMING_SNAKE_CASE")]
+    pub enum Dessert {
+        Cheesecake,
+        IceCream,
     }
 
     #[derive(cynic::InlineFragments)]

@@ -29,7 +29,7 @@ pub struct EnumDeriveVariant {
 /// This is used by the query_module generation, which provides some of the parameters
 /// without the users input.
 #[derive(darling::FromDeriveInput)]
-#[darling(attributes(cynic), supports(struct_named))]
+#[darling(attributes(cynic), supports(enum_unit))]
 pub(crate) struct QueryModuleEnumDeriveInput {
     ident: proc_macro2::Ident,
     data: darling::ast::Data<EnumDeriveVariant, ()>,

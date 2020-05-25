@@ -1,5 +1,6 @@
 // TODO: docstring.
 use darling::{util::SpannedValue, FromMeta};
+use graphql_parser::schema::Document;
 use proc_macro2::{Span, TokenStream};
 
 mod utils;
@@ -43,7 +44,7 @@ fn transform_query_module_impl(
 
     let derives: Vec<TokenStream> = module_items
         .into_iter()
-        .map(|i| derive_for_item(i, &args, &fragment_derive_schema))
+        .map(|i| derive_for_item(i, &args, &schema, &fragment_derive_schema))
         .collect();
 
     let (brace, module_items) = query_module.content.unwrap();
@@ -68,12 +69,14 @@ fn transform_query_module_impl(
 fn derive_for_item(
     item: &syn::Item,
     args: &TransformModuleArgs,
+    schema: &Document,
     fragment_derive_schema: &fragment_derive::Schema,
 ) -> TokenStream {
     match utils::find_derives(item).first() {
         None => TokenStream::new(),
         Some(Derive::QueryFragment) => fragment_derive(item, args, fragment_derive_schema),
         Some(Derive::InlineFragments) => inline_fragments_derive(item, args),
+        Some(Derive::Enum) => enum_derive(item, args, schema),
     }
 }
 
@@ -136,6 +139,33 @@ fn inline_fragments_derive(item: &syn::Item, args: &TransformModuleArgs) -> Toke
 
     match inline_fragments_derive_impl(
         input.to_inline_fragments_derive_input(&args.schema_path, &args.query_module),
+    ) {
+        Ok(res) => res,
+        Err(e) => e.to_compile_error(),
+    }
+}
+
+fn enum_derive(item: &syn::Item, args: &TransformModuleArgs, schema: &Document) -> TokenStream {
+    use crate::enum_derive::{enum_derive_impl, input::QueryModuleEnumDeriveInput};
+    use darling::FromDeriveInput;
+    use syn::spanned::Spanned;
+
+    let derive_input: syn::DeriveInput = match item {
+        syn::Item::Enum(e) => e.clone().into(),
+        _ => {
+            return syn::Error::new(item.span(), format!("Can only derive Enum on an enum"))
+                .to_compile_error()
+        }
+    };
+
+    let input = match QueryModuleEnumDeriveInput::from_derive_input(&derive_input) {
+        Ok(input) => input,
+        Err(e) => return e.write_errors(),
+    };
+
+    match enum_derive_impl(
+        input.to_enum_derive_input(&args.schema_path, &args.query_module),
+        schema,
     ) {
         Ok(res) => res,
         Err(e) => e.to_compile_error(),

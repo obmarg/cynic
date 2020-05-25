@@ -8,7 +8,7 @@ use crate::{
     load_schema, Ident,
 };
 
-mod input;
+pub(crate) mod input;
 
 pub use input::EnumDeriveInput;
 use input::EnumDeriveVariant;
