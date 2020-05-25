@@ -52,7 +52,8 @@ struct TestQuery {
 #[derive(cynic::Enum, Clone, Debug, PartialEq)]
 #[cynic(
     schema_path = "cynic/examples/simple.graphql",
-    graphql_type = "Dessert"
+    graphql_type = "Dessert",
+    rename_all = "SCREAMING_SNAKE_CASE"
 )]
 pub enum Dessert {
     Cheesecake,

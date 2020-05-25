@@ -3,7 +3,10 @@ use graphql_parser::schema::{Definition, Document, EnumType, EnumValue, TypeDefi
 use proc_macro2::{Span, TokenStream};
 use std::collections::{HashMap, HashSet};
 
-use crate::{load_schema, Ident};
+use crate::{
+    ident::{RenameAll, RenameRule},
+    load_schema, Ident,
+};
 
 mod input;
 
@@ -48,7 +51,12 @@ pub fn enum_derive_impl(
     let enum_def = enum_def.unwrap();
 
     if let darling::ast::Data::Enum(variants) = &input.data {
-        let pairs = match join_variants(variants, enum_def, &input.ident.to_string()) {
+        let pairs = match join_variants(
+            variants,
+            enum_def,
+            &input.ident.to_string(),
+            input.rename_all,
+        ) {
             Ok(pairs) => pairs,
             Err(error_tokens) => return Ok(error_tokens),
         };
@@ -88,21 +96,25 @@ fn join_variants<'a>(
     variants: &'a [EnumDeriveVariant],
     enum_def: &'a EnumType,
     enum_name: &str,
+    rename_all: Option<RenameAll>,
 ) -> Result<Vec<(&'a EnumDeriveVariant, &'a EnumValue)>, TokenStream> {
     let mut map = HashMap::new();
     for variant in variants {
-        map.insert(variant.ident.clone().into(), (Some(variant), None));
+        let transformed_ident = Ident::from_proc_macro2(
+            &variant.ident,
+            RenameRule::new(rename_all, variant.rename.as_ref()),
+        );
+        map.insert(transformed_ident, (Some(variant), None));
     }
 
     for value in &enum_def.values {
-        let our_ident = Ident::for_variant(&value.name);
-        let mut entry = map.entry(our_ident).or_insert((None, None));
+        let mut entry = map.entry(Ident::new(&value.name)).or_insert((None, None));
         entry.1 = Some(value);
     }
 
     let mut missing_variants = vec![];
     let mut errors = TokenStream::new();
-    for (_, value) in map.iter() {
+    for (transformed_ident, value) in map.iter() {
         match value {
             (None, Some(enum_value)) => missing_variants.push(enum_value.name.as_ref()),
             (Some(variant), None) => errors.extend(
@@ -110,8 +122,7 @@ fn join_variants<'a>(
                     variant.ident.span(),
                     format!(
                         "Could not find a variant {} in the GraphQL enum {}",
-                        variant.ident.to_string(),
-                        enum_name
+                        transformed_ident, enum_name
                     ),
                 )
                 .to_compile_error(),
@@ -143,22 +154,59 @@ fn join_variants<'a>(
 mod tests {
     use super::*;
     use assert_matches::assert_matches;
+    use rstest::rstest;
 
-    #[test]
-    fn join_variants_happy_path() {
+    #[rstest(
+        enum_variant_1,
+        enum_variant_2,
+        enum_value_1,
+        enum_value_2,
+        rename_rule,
+        case(
+            "Cheesecake",
+            "IceCream",
+            "CHEESECAKE",
+            "ICE_CREAM",
+            Some(RenameAll::ScreamingSnakeCase)
+        ),
+        case("CHEESECAKE", "ICE_CREAM", "CHEESECAKE", "ICE_CREAM", None),
+        case(
+            "Cheesecake",
+            "IceCream",
+            "cheesecake",
+            "ice-cream",
+            Some(RenameAll::KebabCase)
+        ),
+        case(
+            "Cheesecake",
+            "IceCream",
+            "CHEESECAKE",
+            "ICE-CREAM",
+            Some(RenameAll::ScreamingKebabCase)
+        )
+    )]
+    fn join_variants_happy_path(
+        enum_variant_1: &str,
+        enum_variant_2: &str,
+        enum_value_1: &str,
+        enum_value_2: &str,
+        rename_rule: Option<RenameAll>,
+    ) {
         let variants = vec![
             EnumDeriveVariant {
-                ident: proc_macro2::Ident::new("Cheesecake", Span::call_site()),
+                ident: proc_macro2::Ident::new(&enum_variant_1, Span::call_site()),
+                rename: None,
             },
             EnumDeriveVariant {
-                ident: proc_macro2::Ident::new("IceCream", Span::call_site()),
+                ident: proc_macro2::Ident::new(&enum_variant_2, Span::call_site()),
+                rename: None,
             },
         ];
         let mut gql_enum = EnumType::new("Desserts".into());
-        gql_enum.values.push(EnumValue::new("CHEESECAKE".into()));
-        gql_enum.values.push(EnumValue::new("ICE_CREAM".into()));
+        gql_enum.values.push(EnumValue::new(enum_value_1.into()));
+        gql_enum.values.push(EnumValue::new(enum_value_2.into()));
 
-        let result = join_variants(&variants, &gql_enum, "Desserts");
+        let result = join_variants(&variants, &gql_enum, "Desserts", rename_rule);
 
         assert_matches!(result, Ok(_));
         let pairs = result.unwrap();
@@ -172,20 +220,60 @@ mod tests {
 
         assert_eq!(
             names,
-            maplit::hashset! {("Cheesecake".into(), "CHEESECAKE".into()), ("IceCream".into(), "ICE_CREAM".into())}
+            maplit::hashset! {(enum_variant_1.into(), enum_value_1.into()), (enum_variant_2.into(), enum_value_2.into())}
+        );
+    }
+
+    #[test]
+    fn join_variants_with_field_rename() {
+        let variants = vec![
+            EnumDeriveVariant {
+                ident: proc_macro2::Ident::new("Cheesecake", Span::call_site()),
+                rename: None,
+            },
+            EnumDeriveVariant {
+                ident: proc_macro2::Ident::new("IceCream", Span::call_site()),
+                rename: Some(SpannedValue::new("iced-goodness".into(), Span::call_site())),
+            },
+        ];
+        let mut gql_enum = EnumType::new("Desserts".into());
+        gql_enum.values.push(EnumValue::new("CHEESECAKE".into()));
+        gql_enum.values.push(EnumValue::new("iced-goodness".into()));
+
+        let result = join_variants(
+            &variants,
+            &gql_enum,
+            "Desserts",
+            Some(RenameAll::ScreamingSnakeCase),
+        );
+
+        assert_matches!(result, Ok(_));
+        let pairs = result.unwrap();
+
+        assert_eq!(pairs.len(), 2);
+
+        let names: HashSet<_> = pairs
+            .iter()
+            .map(|(variant, ty)| (variant.ident.to_string(), ty.name.clone()))
+            .collect();
+
+        assert_eq!(
+            names,
+            maplit::hashset! {("Cheesecake".into(), "CHEESECAKE".into()), ("IceCream".into(), "iced-goodness".into())}
         );
     }
 
     #[test]
     fn join_variants_missing_rust_variant() {
         let variants = vec![EnumDeriveVariant {
-            ident: proc_macro2::Ident::new("Cheesecake", Span::call_site()),
+            ident: proc_macro2::Ident::new("CHEESECAKE", Span::call_site()),
+            rename: None,
         }];
         let mut gql_enum = EnumType::new("Desserts".into());
         gql_enum.values.push(EnumValue::new("CHEESECAKE".into()));
         gql_enum.values.push(EnumValue::new("ICE_CREAM".into()));
 
-        let result = join_variants(&variants, &gql_enum, "Desserts");
+        let result = join_variants(&variants, &gql_enum, "Desserts", None);
 
         assert_matches!(result, Err(_));
     }
@@ -193,12 +281,13 @@ mod tests {
     #[test]
     fn join_variants_missing_gql_variant() {
         let variants = vec![EnumDeriveVariant {
-            ident: proc_macro2::Ident::new("Cheesecake", Span::call_site()),
+            ident: proc_macro2::Ident::new("CHEESECAKE", Span::call_site()),
+            rename: None,
         }];
         let mut gql_enum = EnumType::new("Desserts".into());
         gql_enum.values.push(EnumValue::new("ICE_CREAM".into()));
 
-        let result = join_variants(&variants, &gql_enum, "Desserts");
+        let result = join_variants(&variants, &gql_enum, "Desserts", None);
 
         assert_matches!(result, Err(_));
     }

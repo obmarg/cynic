@@ -1,5 +1,7 @@
 use darling::util::SpannedValue;
 
+use crate::ident::RenameAll;
+
 #[derive(darling::FromDeriveInput)]
 #[darling(attributes(cynic), supports(enum_unit))]
 pub struct EnumDeriveInput {
@@ -8,11 +10,18 @@ pub struct EnumDeriveInput {
 
     pub schema_path: SpannedValue<String>,
     pub graphql_type: SpannedValue<String>,
+
+    #[darling(default)]
+    pub(super) rename_all: Option<RenameAll>,
 }
 
 #[derive(Debug, darling::FromVariant)]
+#[darling(attributes(cynic))]
 pub struct EnumDeriveVariant {
     pub(super) ident: proc_macro2::Ident,
+
+    #[darling(default)]
+    pub(super) rename: Option<SpannedValue<String>>,
 }
 
 /// An alternative EnumDeriveInput struct that doesn't require as many fields.
@@ -28,6 +37,8 @@ pub(crate) struct QueryModuleEnumDeriveInput {
     #[darling(default)]
     pub schema_path: Option<SpannedValue<String>>,
     pub graphql_type: SpannedValue<String>,
+
+    rename_all: Option<RenameAll>,
 }
 
 impl QueryModuleEnumDeriveInput {
@@ -41,6 +52,7 @@ impl QueryModuleEnumDeriveInput {
             data: self.data,
             schema_path: self.schema_path.unwrap_or_else(|| schema_path.clone()),
             graphql_type: self.graphql_type,
+            rename_all: self.rename_all,
         }
     }
 }

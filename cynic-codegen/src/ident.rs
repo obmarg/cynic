@@ -16,6 +16,14 @@ impl Ident {
         Ident(s.into(), Some(span))
     }
 
+    pub fn from_proc_macro2(i: &proc_macro2::Ident, rename: impl Into<Option<RenameRule>>) -> Self {
+        if let Some(rename) = rename.into() {
+            Ident::new_spanned(rename.apply(i.to_string()), i.span())
+        } else {
+            Ident::new_spanned(i.to_string(), i.span())
+        }
+    }
+
     pub fn for_inbuilt_scalar<T: Into<String>>(s: T) -> Self {
         Ident(transform_keywords(s.into()), None)
     }
@@ -24,7 +32,7 @@ impl Ident {
         Ident(transform_keywords(s.as_ref().to_pascal_case()), None)
     }
 
-    pub fn for_variant<T: AsRef<str>>(s: T) -> Self {
+    pub fn for_variant(s: impl AsRef<str>) -> Self {
         Ident(transform_keywords(s.as_ref().to_pascal_case()), None)
     }
 
@@ -61,6 +69,102 @@ impl std::hash::Hash for Ident {
 impl std::fmt::Display for Ident {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
         write!(f, "{}", self.0)
+    }
+}
+
+impl From<proc_macro2::Ident> for Ident {
+    fn from(ident: proc_macro2::Ident) -> Ident {
+        Ident::new_spanned(&ident.to_string(), ident.span())
+    }
+}
+
+impl Into<proc_macro2::Ident> for &Ident {
+    fn into(self) -> proc_macro2::Ident {
+        use quote::format_ident;
+        if self.0 == "type" {
+            format_ident!("{}_", self.0)
+        } else {
+            format_ident!("{}", self.0)
+        }
+    }
+}
+
+impl quote::ToTokens for Ident {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
+        use quote::{quote_spanned, TokenStreamExt};
+
+        let macro_ident: proc_macro2::Ident = self.into();
+        if let Some(span) = self.1 {
+            tokens.append_all(quote_spanned! {span => #macro_ident })
+        } else {
+            macro_ident.to_tokens(tokens);
+        }
+    }
+}
+
+#[derive(Debug)]
+pub enum RenameRule {
+    RenameAll(RenameAll),
+    RenameTo(String),
+}
+
+impl RenameRule {
+    pub fn new(all: Option<RenameAll>, specific: Option<impl AsRef<String>>) -> Option<RenameRule> {
+        match (specific, all) {
+            (Some(specific), _) => Some(RenameRule::RenameTo(specific.as_ref().to_string())),
+            (_, Some(all)) => Some(RenameRule::RenameAll(all)),
+            _ => None,
+        }
+    }
+
+    fn apply(&self, string: impl AsRef<str>) -> String {
+        match self {
+            RenameRule::RenameTo(s) => s.clone(),
+            RenameRule::RenameAll(RenameAll::Lowercase) => string.as_ref().to_lowercase(),
+            RenameRule::RenameAll(RenameAll::Uppercase) => string.as_ref().to_uppercase(),
+            RenameRule::RenameAll(RenameAll::PascalCase) => string.as_ref().to_pascal_case(),
+            RenameRule::RenameAll(RenameAll::CamelCase) => string.as_ref().to_camel_case(),
+            RenameRule::RenameAll(RenameAll::SnakeCase) => string.as_ref().to_snake_case(),
+            RenameRule::RenameAll(RenameAll::ScreamingSnakeCase) => {
+                string.as_ref().to_screaming_snake_case()
+            }
+            RenameRule::RenameAll(RenameAll::KebabCase) => string.as_ref().to_kebab_case(),
+            RenameRule::RenameAll(RenameAll::ScreamingKebabCase) => {
+                string.as_ref().to_kebab_case().to_uppercase()
+            }
+        }
+    }
+}
+
+#[derive(Debug, Clone, Copy)]
+pub enum RenameAll {
+    Lowercase,
+    Uppercase,
+    PascalCase,
+    CamelCase,
+    SnakeCase,
+    ScreamingSnakeCase,
+    KebabCase,
+    ScreamingKebabCase,
+}
+
+impl darling::FromMeta for RenameAll {
+    fn from_string(value: &str) -> Result<RenameAll, darling::Error> {
+        // TODO: Decide whether to make this case insensitive.
+        match value {
+            "lowercase" => Ok(RenameAll::Lowercase),
+            "UPPERCASE" => Ok(RenameAll::Uppercase),
+            "PascalCase" => Ok(RenameAll::PascalCase),
+            "camelCase" => Ok(RenameAll::CamelCase),
+            "snake_case" => Ok(RenameAll::SnakeCase),
+            "SCREAMING_SNAKE_CASE" => Ok(RenameAll::ScreamingSnakeCase),
+            "kebab-case" => Ok(RenameAll::KebabCase),
+            "SCREAMING-KEBAB-CASE" => Ok(RenameAll::ScreamingKebabCase),
+            _ => {
+                // Feels like it'd be nice if this error listed all the options...
+                Err(darling::Error::unknown_value(value))
+            }
+        }
     }
 }
 
@@ -140,36 +244,6 @@ fn transform_keywords(mut s: String) -> String {
     }
 
     s
-}
-
-impl From<proc_macro2::Ident> for Ident {
-    fn from(ident: proc_macro2::Ident) -> Ident {
-        Ident::new(&ident.to_string())
-    }
-}
-
-impl Into<proc_macro2::Ident> for &Ident {
-    fn into(self) -> proc_macro2::Ident {
-        use quote::format_ident;
-        if self.0 == "type" {
-            format_ident!("{}_", self.0)
-        } else {
-            format_ident!("{}", self.0)
-        }
-    }
-}
-
-impl quote::ToTokens for Ident {
-    fn to_tokens(&self, tokens: &mut TokenStream) {
-        use quote::{quote_spanned, TokenStreamExt};
-
-        let macro_ident: proc_macro2::Ident = self.into();
-        if let Some(span) = self.1 {
-            tokens.append_all(quote_spanned! {span => #macro_ident })
-        } else {
-            macro_ident.to_tokens(tokens);
-        }
-    }
 }
 
 #[cfg(test)]
