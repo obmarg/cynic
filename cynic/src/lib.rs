@@ -164,6 +164,8 @@ mod scalar;
 pub mod selection_set;
 pub mod utils;
 
+pub use json_decode::DecodeError;
+
 pub use argument::Argument;
 pub use query::Query;
 pub use result::{GraphQLError, GraphQLResponse, GraphQLResult, PossiblyParsedData};
@@ -251,5 +253,5 @@ pub struct QueryBody<'a> {
 
 pub use cynic_proc_macros::{
     query_dsl, query_module, scalars_as_strings, Enum, FragmentArguments, InlineFragments,
-    QueryFragment,
+    QueryFragment, Scalar,
 };

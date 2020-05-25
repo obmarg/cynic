@@ -5,7 +5,8 @@ fn main() {
 }
 
 mod query_dsl {
-    type Json = serde_json::Value;
+    #[derive(cynic::Scalar)]
+    pub struct Json(serde_json::Value);
 
     cynic::query_dsl!("cynic/examples/simple.graphql");
 }
