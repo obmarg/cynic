@@ -113,7 +113,7 @@ pub fn document_to_fragment_structs(
             }
             schema::Definition::TypeDefinition(schema::TypeDefinition::Enum(en)) => {
                 let type_name = en.name;
-                lines.push("    #[derive(cynic::Enum)]".into());
+                lines.push("    #[derive(cynic::Enum, Clone, Copy)]".into());
                 lines.push(format!("    #[cynic(graphql_type = \"{}\")]", type_name));
                 lines.push(format!("    pub enum {} {{", type_name.to_pascal_case()));
 
