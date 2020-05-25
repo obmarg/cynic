@@ -167,6 +167,7 @@ fn enum_derive(item: &syn::Item, args: &TransformModuleArgs, schema: &Document) 
     match enum_derive_impl(
         input.to_enum_derive_input(&args.schema_path, &args.query_module),
         schema,
+        item.span(),
     ) {
         Ok(res) => res,
         Err(e) => e.to_compile_error(),
