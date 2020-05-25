@@ -61,16 +61,19 @@ mod tests {
     #[rstest(
         input,
         expected,
-        case(Type::NamedType("ID"), "Option<ID>"),
-        case(Type::ListType(Type::NamedType("ID").into()), "Option<Vec<Option<ID>>>"),
-        case(Type::ListType(Type::NonNullType(Type::NamedType("ID").into()).into()), "Option<Vec<ID>>"),
+        case(Type::NamedType("Int"), "Option<i64>"),
+        case(Type::NamedType("Float"), "Option<f64>"),
+        case(Type::NamedType("Boolean"), "Option<bool>"),
+        case(Type::NamedType("ID"), "Option<cynic::Id>"),
+        case(Type::ListType(Type::NamedType("ID").into()), "Option<Vec<Option<cynic::Id>>>"),
+        case(Type::ListType(Type::NonNullType(Type::NamedType("ID").into()).into()), "Option<Vec<cynic::Id>>"),
         case(
             Type::NonNullType(Type::ListType(Type::NamedType("ID").into()).into()),
-            "Vec<Option<ID>>"
+            "Vec<Option<cynic::Id>>"
         ),
         case(
             Type::NonNullType(Type::ListType(Type::NonNullType(Type::NamedType("ID").into()).into()).into()),
-            "Vec<ID>"
+            "Vec<cynic::Id>"
         )
     )]
     fn type_spec_returns_correct_type(input: Type<'static, &'static str>, expected: &'static str) {
