@@ -252,6 +252,5 @@ pub struct QueryBody<'a> {
 }
 
 pub use cynic_proc_macros::{
-    query_dsl, query_module, scalars_as_strings, Enum, FragmentArguments, InlineFragments,
-    QueryFragment, Scalar,
+    query_dsl, query_module, Enum, FragmentArguments, InlineFragments, QueryFragment, Scalar,
 };

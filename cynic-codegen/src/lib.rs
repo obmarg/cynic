@@ -5,7 +5,6 @@ pub mod inline_fragments_derive;
 pub mod query_dsl;
 pub mod query_module;
 pub mod scalar_derive;
-pub mod scalars_as_strings;
 
 mod error;
 mod field_type;
