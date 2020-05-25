@@ -77,6 +77,7 @@ fn derive_for_item(
         Some(Derive::QueryFragment) => fragment_derive(item, args, fragment_derive_schema),
         Some(Derive::InlineFragments) => inline_fragments_derive(item, args),
         Some(Derive::Enum) => enum_derive(item, args, schema),
+        Some(Derive::Scalar) => scalar_derive(item),
     }
 }
 
@@ -167,6 +168,33 @@ fn enum_derive(item: &syn::Item, args: &TransformModuleArgs, schema: &Document) 
         input.to_enum_derive_input(&args.schema_path, &args.query_module),
         schema,
     ) {
+        Ok(res) => res,
+        Err(e) => e.to_compile_error(),
+    }
+}
+
+fn scalar_derive(item: &syn::Item) -> TokenStream {
+    use crate::scalar_derive::{scalar_derive_impl, ScalarDeriveInput};
+    use darling::FromDeriveInput;
+    use syn::spanned::Spanned;
+
+    let derive_input: syn::DeriveInput = match item {
+        syn::Item::Struct(s) => s.clone().into(),
+        _ => {
+            return syn::Error::new(
+                item.span(),
+                format!("Can only derive Scalar on a newtype struct"),
+            )
+            .to_compile_error()
+        }
+    };
+
+    let input = match ScalarDeriveInput::from_derive_input(&derive_input) {
+        Ok(input) => input,
+        Err(e) => return e.write_errors(),
+    };
+
+    match scalar_derive_impl(input) {
         Ok(res) => res,
         Err(e) => e.to_compile_error(),
     }

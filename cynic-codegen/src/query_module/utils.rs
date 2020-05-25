@@ -5,6 +5,7 @@ pub enum Derive {
     QueryFragment,
     InlineFragments,
     Enum,
+    Scalar,
 }
 
 pub fn find_derives(item: &Item) -> Vec<Derive> {
@@ -45,6 +46,7 @@ fn derive_for_nested_meta(nested: &NestedMeta) -> Option<Derive> {
                 "QueryFragment" => return Some(Derive::QueryFragment),
                 "InlineFragments" => return Some(Derive::InlineFragments),
                 "Enum" => return Some(Derive::Enum),
+                "Scalar" => return Some(Derive::Scalar),
                 _ => (),
             }
         }
