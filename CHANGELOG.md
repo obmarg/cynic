@@ -48,6 +48,7 @@ all APIs might be changed.
 - Added `SelectionSet::and_then` for chaining decode operations on selection sets.
 - Added `cynic::Scalar` derive for newtype structs so that users can easily
   define their own scalars.  Also added support for this to cynic-querygen
+- Added `cynic::Id` type to handle Ids in queries.
 
 ### Changed
 

@@ -157,6 +157,7 @@ use std::collections::HashMap;
 
 mod argument;
 mod field;
+mod id;
 mod query;
 mod result;
 mod scalar;
@@ -167,6 +168,7 @@ pub mod utils;
 pub use json_decode::DecodeError;
 
 pub use argument::Argument;
+pub use id::Id;
 pub use query::Query;
 pub use result::{GraphQLError, GraphQLResponse, GraphQLResult, PossiblyParsedData};
 pub use scalar::Scalar;
