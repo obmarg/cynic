@@ -59,6 +59,10 @@ pub fn document_to_fragment_structs(
     lines.push(format!("    schema_path = \"{}\",", options.schema_path));
     lines.push(format!("    query_module = \"{}\",", options.query_module));
     lines.push(")]\nmod queries {".into());
+    lines.push(format!(
+        "    use super::{{{}, types::*}};\n",
+        options.query_module
+    ));
 
     for st in possible_structs {
         match st {
@@ -87,7 +91,27 @@ pub fn document_to_fragment_structs(
                 }
                 lines.push(format!("    }}\n"));
             }
-            PotentialStruct::Enum(Enum { def: en }) => {
+            _ => {}
+        }
+    }
+    lines.push("}\n".into());
+
+    lines.push("#[cynic::query_module(".into());
+    lines.push(format!("    schema_path = \"{}\",", options.schema_path));
+    lines.push(format!("    query_module = \"{}\",", options.query_module));
+    lines.push(")]\nmod types {".into());
+
+    // Output any custom scalars & enums we need.
+    for def in &schema.definitions {
+        match def {
+            schema::Definition::TypeDefinition(schema::TypeDefinition::Scalar(scalar)) => {
+                lines.push("    #[derive(cynic::Scalar)]".into());
+                lines.push(format!(
+                    "    pub struct {}(String);\n",
+                    scalar.name.to_pascal_case()
+                ));
+            }
+            schema::Definition::TypeDefinition(schema::TypeDefinition::Enum(en)) => {
                 let type_name = en.name;
                 lines.push("    #[derive(cynic::Enum)]".into());
                 lines.push(format!("    #[cynic(graphql_type = \"{}\")]", type_name));
@@ -98,14 +122,18 @@ pub fn document_to_fragment_structs(
                 }
                 lines.push("    }\n".into());
             }
-            PotentialStruct::Scalar(name) => {
-                lines.push("    #[derive(cynic::Scalar)]".into());
-                lines.push(format!("    pub struct {}(String);\n", name));
-            }
-            _ => {}
+            _ => (),
         }
     }
-    lines.push("}".into());
+    lines.push("}\n".into());
+
+    lines.push(format!("mod {}{{", options.query_module));
+    lines.push("    use super::types::*;".into());
+    lines.push(format!(
+        "    cynic::query_dsl!(\"{}\");",
+        options.schema_path
+    ));
+    lines.push("}\n".into());
 
     Ok(lines.join("\n"))
 }
