@@ -14,7 +14,7 @@ all APIs might be changed.
 ### Breaking Changes
 
 - The generated `query_dsl` no longer contains generated enums - users should
-  provide their own enums and `derive(cynic::Enum)` on them.  Cynic querygen
+  provide their own enums and `derive(cynic::Enum)` on them. Cynic querygen
   can be used to help with this.
 
 ### New Features
@@ -48,6 +48,7 @@ all APIs might be changed.
 - Added new `cynic::Enum` derive that matches up a Rust enum with a GraphQL enum.
   `cynic-querygen` will automatically provide enums using this derive when a
   query includes an enum.
+- Added `SelectionSet::and_then` for chaining decode operations on selection sets.
 
 ### Changed
 
