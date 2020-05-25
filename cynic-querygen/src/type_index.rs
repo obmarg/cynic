@@ -18,7 +18,7 @@ impl<'a> TypeIndex<'a> {
             .iter()
             .map(|definition| match definition {
                 Definition::TypeDefinition(TypeDefinition::Scalar(scalar)) => {
-                    Some((scalar.name, GraphqlType::Scalar))
+                    Some((scalar.name, GraphqlType::Scalar(ScalarKind::Custom)))
                 }
                 Definition::TypeDefinition(TypeDefinition::Object(obj)) => {
                     let fields = obj
@@ -95,10 +95,10 @@ impl<'a> Default for TypeIndex<'a> {
     fn default() -> TypeIndex<'a> {
         let mut types = HashMap::new();
 
-        types.insert("String", GraphqlType::Scalar);
-        types.insert("Int", GraphqlType::Scalar);
-        types.insert("Boolean", GraphqlType::Scalar);
-        types.insert("ID", GraphqlType::Scalar);
+        types.insert("String", GraphqlType::Scalar(ScalarKind::BuiltIn));
+        types.insert("Int", GraphqlType::Scalar(ScalarKind::BuiltIn));
+        types.insert("Boolean", GraphqlType::Scalar(ScalarKind::BuiltIn));
+        types.insert("ID", GraphqlType::Scalar(ScalarKind::BuiltIn));
 
         TypeIndex {
             types,
@@ -108,8 +108,14 @@ impl<'a> Default for TypeIndex<'a> {
 }
 
 #[derive(Debug, PartialEq)]
+pub enum ScalarKind {
+    BuiltIn,
+    Custom,
+}
+
+#[derive(Debug, PartialEq)]
 pub enum GraphqlType<'a> {
     Enum(&'a EnumType<'a, &'a str>),
     Object(HashMap<&'a str, &'a Type<'a, &'a str>>),
-    Scalar,
+    Scalar(ScalarKind),
 }

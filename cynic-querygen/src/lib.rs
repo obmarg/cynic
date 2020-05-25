@@ -98,6 +98,10 @@ pub fn document_to_fragment_structs(
                 }
                 lines.push("    }\n".into());
             }
+            PotentialStruct::Scalar(name) => {
+                lines.push("    #[derive(cynic::Scalar)]".into());
+                lines.push(format!("    pub struct {}(String);\n", name));
+            }
             _ => {}
         }
     }
