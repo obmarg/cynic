@@ -53,6 +53,7 @@ struct TestQuery {
 #[cynic(
     schema_path = "cynic/examples/simple.graphql",
     graphql_type = "Dessert",
+    query_module = "query_dsl",
     rename_all = "SCREAMING_SNAKE_CASE"
 )]
 pub enum Dessert {

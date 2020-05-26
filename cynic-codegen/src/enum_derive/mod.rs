@@ -75,8 +75,11 @@ pub fn enum_derive_impl(
 
         let variants: Vec<_> = pairs.iter().map(|(variant, _)| &variant.ident).collect();
 
+        let query_module = Ident::for_module(&input.query_module);
+        let enum_marker_ident = Ident::for_type(&*input.graphql_type);
+
         Ok(quote! {
-            impl ::cynic::Enum for #ident {
+            impl ::cynic::Enum<#query_module::#enum_marker_ident> for #ident {
                 fn select() -> cynic::SelectionSet<'static, Self, ()> {
                     ::cynic::selection_set::string().and_then(|s| {
                         match s.as_ref() {

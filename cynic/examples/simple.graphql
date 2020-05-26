@@ -7,6 +7,7 @@ type Query {
 
 type TestStruct {
   fieldOne(x: Int, y: String): String!
+  tastyCakes(first: Dessert!, second: Dessert): Dessert!
   nested: Nested!
   optNested: Nested
   dessert: Dessert

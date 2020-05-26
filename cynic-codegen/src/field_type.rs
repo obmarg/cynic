@@ -5,9 +5,9 @@ use crate::{Ident, TypeIndex, TypePath};
 
 #[derive(Debug, Clone)]
 pub enum FieldType {
-    Scalar(TypePath, bool),
-    Enum(TypePath, bool),
-    Other(TypePath, bool),
+    Scalar(Ident, bool),
+    Enum(Ident, bool),
+    Other(Ident, bool),
     List(Box<FieldType>, bool),
 }
 
@@ -40,15 +40,9 @@ impl FieldType {
             ),
             Type::NamedType(name) => {
                 if type_index.is_scalar(name) {
-                    FieldType::Scalar(
-                        TypePath::concat(&[type_path, Ident::for_type(name).into()]),
-                        nullable,
-                    )
+                    FieldType::Scalar(Ident::for_type(name), nullable)
                 } else if type_index.is_enum(name) {
-                    FieldType::Enum(
-                        TypePath::concat(&[type_path, Ident::for_type(name).into()]),
-                        nullable,
-                    )
+                    FieldType::Enum(Ident::for_type(name), nullable)
                 } else if name == "Int" {
                     FieldType::Scalar(Ident::for_inbuilt_scalar("i64").into(), nullable)
                 } else if name == "Float" {
@@ -59,10 +53,7 @@ impl FieldType {
                     // TODO: Could do something more sensible for IDs here...
                     FieldType::Scalar(Ident::for_inbuilt_scalar("String").into(), nullable)
                 } else {
-                    FieldType::Other(
-                        TypePath::concat(&[type_path, Ident::for_type(name).into()]),
-                        nullable,
-                    )
+                    FieldType::Other(Ident::for_type(name).into(), nullable)
                 }
             }
         }
@@ -86,6 +77,16 @@ impl FieldType {
         }
     }
 
+    /// Returns the path to the enum marker struct stored in this field, if any
+    pub fn inner_enum_path(&self) -> Option<Ident> {
+        match self {
+            FieldType::List(inner, _) => inner.inner_enum_path(),
+            FieldType::Scalar(_, _) => None,
+            FieldType::Enum(path, _) => Some(path.clone()),
+            FieldType::Other(_, _) => None,
+        }
+    }
+
     pub fn is_nullable(&self) -> bool {
         match self {
             FieldType::List(_, nullable) => nullable.clone(),
@@ -95,13 +96,13 @@ impl FieldType {
         }
     }
 
-    pub fn as_type_lock(&self) -> TypePath {
+    pub fn as_type_lock(&self, path_to_types: TypePath) -> TypePath {
         match self {
-            FieldType::List(inner, _) => inner.as_type_lock(),
+            FieldType::List(inner, _) => inner.as_type_lock(path_to_types),
             // TODO: I think this is wrong for scalars, but whatever.
-            FieldType::Scalar(type_path, _) => type_path.clone(),
+            FieldType::Scalar(ident, _) => TypePath::concat(&[path_to_types, ident.clone().into()]),
             FieldType::Enum(_, _) => TypePath::void(),
-            FieldType::Other(type_path, _) => type_path.clone(),
+            FieldType::Other(ident, _) => TypePath::concat(&[path_to_types, ident.clone().into()]),
         }
     }
 
@@ -216,6 +217,31 @@ impl FieldType {
             FieldType::Enum(_, _) | FieldType::Other(_, _) | FieldType::Scalar(_, _) => {
                 quote! { #inner_token }
             }
+        }
+    }
+
+    // Converts a FieldType to a rust type definition.
+    //
+    // generic_inner_type should be provided if the inner type doesn't represent a
+    // concrete type and needs to use a type parameter defined at an outer level.
+    // The name of the type parameter should be passed in to generic_inner_type.
+    pub fn to_tokens(&self, generic_inner_type: Option<Ident>) -> TokenStream {
+        use quote::quote;
+
+        let nullable = self.is_nullable();
+        let rust_type = match (self, generic_inner_type) {
+            (FieldType::List(_, _), Some(generic)) => quote! { Vec<#generic> },
+            (FieldType::List(inner_type, _), _) => quote! { Vec<#inner_type> },
+            (_, Some(generic)) => quote! { #generic },
+            (FieldType::Scalar(typename, _), _) => quote! { #typename },
+            (FieldType::Other(typename, _), _) => quote! { #typename },
+            (FieldType::Enum(typename, _), _) => quote! { #typename },
+        };
+
+        if nullable {
+            quote! { Option<#rust_type> }
+        } else {
+            rust_type
         }
     }
 }
