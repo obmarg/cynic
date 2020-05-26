@@ -121,6 +121,9 @@ mod test {
         fn decode(_: &serde_json::Value) -> Result<Self, json_decode::DecodeError> {
             Ok(DateTime {})
         }
+        fn encode(&self) -> Result<serde_json::Value, ()> {
+            todo!()
+        }
     }
 
     // Another custom scalar

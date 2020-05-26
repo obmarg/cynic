@@ -167,7 +167,7 @@ pub mod utils;
 
 pub use json_decode::DecodeError;
 
-pub use argument::Argument;
+pub use argument::{Argument, SerializableArgument};
 pub use id::Id;
 pub use query::Query;
 pub use result::{GraphQLError, GraphQLResponse, GraphQLResult, PossiblyParsedData};
@@ -222,7 +222,10 @@ pub trait Enum<TypeLock>: Sized {
 /// This trait is generic over some TypeLock which is used to tie an InputType
 /// back into it's GraphQL input object.  Generally this will be some type
 /// generated in the GQL code.
-pub trait InputObject<TypeLock> {}
+pub trait InputObject<TypeLock> {
+    fn serialize(&self) -> Result<serde_json::Value, ()>;
+}
+
 
 /// A marker trait for the arguments types on QueryFragments.
 ///
