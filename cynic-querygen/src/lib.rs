@@ -91,6 +91,17 @@ pub fn document_to_fragment_structs(
                 }
                 lines.push(format!("    }}\n"));
             }
+            PotentialStruct::Enum(en) => {
+                let type_name = en.def.name;
+                lines.push("    #[derive(cynic::Enum, Clone, Copy)]".into());
+                lines.push(format!("    #[cynic(graphql_type = \"{}\")]", type_name));
+                lines.push(format!("    pub enum {} {{", type_name.to_pascal_case()));
+
+                for variant in &en.def.values {
+                    lines.push(format!("        {},", variant.name.to_pascal_case()))
+                }
+                lines.push("    }\n".into());
+            }
             _ => {}
         }
     }
@@ -101,7 +112,7 @@ pub fn document_to_fragment_structs(
     lines.push(format!("    query_module = \"{}\",", options.query_module));
     lines.push(")]\nmod types {".into());
 
-    // Output any custom scalars & enums we need.
+    // Output any custom scalars we need.
     for def in &schema.definitions {
         match def {
             schema::Definition::TypeDefinition(schema::TypeDefinition::Scalar(scalar)) => {
@@ -110,17 +121,6 @@ pub fn document_to_fragment_structs(
                     "    pub struct {}(String);\n",
                     scalar.name.to_pascal_case()
                 ));
-            }
-            schema::Definition::TypeDefinition(schema::TypeDefinition::Enum(en)) => {
-                let type_name = en.name;
-                lines.push("    #[derive(cynic::Enum, Clone, Copy)]".into());
-                lines.push(format!("    #[cynic(graphql_type = \"{}\")]", type_name));
-                lines.push(format!("    pub enum {} {{", type_name.to_pascal_case()));
-
-                for variant in &en.values {
-                    lines.push(format!("        {},", variant.name.to_pascal_case()))
-                }
-                lines.push("    }\n".into());
             }
             _ => (),
         }
