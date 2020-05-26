@@ -93,7 +93,9 @@ pub fn document_to_fragment_structs(
             }
             PotentialStruct::Enum(en) => {
                 let type_name = en.def.name;
-                lines.push("    #[derive(cynic::Enum, Clone, Copy)]".into());
+                lines.push(
+                    "    #[derive(cynic::Enum, Clone, Copy, serde::Serialize, Debug)]".into(),
+                );
                 lines.push(format!("    #[cynic(graphql_type = \"{}\")]", type_name));
                 lines.push(format!("    pub enum {} {{", type_name.to_pascal_case()));
 
@@ -116,7 +118,7 @@ pub fn document_to_fragment_structs(
     for def in &schema.definitions {
         match def {
             schema::Definition::TypeDefinition(schema::TypeDefinition::Scalar(scalar)) => {
-                lines.push("    #[derive(cynic::Scalar)]".into());
+                lines.push("    #[derive(cynic::Scalar, Debug, serde::Serialize)]".into());
                 lines.push(format!(
                     "    pub struct {}(String);\n",
                     scalar.name.to_pascal_case()
