@@ -1,18 +1,19 @@
 use proc_macro2::TokenStream;
 
 mod argument_struct;
+mod enum_marker;
 mod field_selector;
-mod input_struct;
+mod input_object_marker;
 mod interface_struct;
 mod selector_struct;
 mod union_struct;
 
 use super::module::Module;
-use crate::graphql_extensions::FieldExt;
 use crate::{load_schema, Error, TypeIndex};
 pub use argument_struct::ArgumentStruct;
+use enum_marker::EnumMarker;
 pub use field_selector::FieldSelector;
-use input_struct::InputStruct;
+use input_object_marker::InputObjectMarker;
 use interface_struct::InterfaceStruct;
 pub use selector_struct::SelectorStruct;
 use union_struct::UnionStruct;
@@ -50,9 +51,10 @@ pub fn query_dsl_from_schema(input: QueryDslParams) -> Result<TokenStream, Error
 pub struct QueryDsl {
     pub selectors: Vec<SelectorStruct>,
     pub argument_struct_modules: Vec<Module<ArgumentStruct>>,
-    pub inputs: Vec<InputStruct>,
     pub unions: Vec<UnionStruct>,
     pub interfaces: Vec<InterfaceStruct>,
+    pub enums: Vec<EnumMarker>,
+    pub input_objects: Vec<InputObjectMarker>,
 }
 
 impl From<graphql_parser::schema::Document> for QueryDsl {
@@ -63,56 +65,41 @@ impl From<graphql_parser::schema::Document> for QueryDsl {
 
         let mut selectors = vec![];
         let mut argument_struct_modules = vec![];
-        let mut inputs = vec![];
+        let mut input_objects = vec![];
         let mut unions = vec![];
         let mut interfaces = vec![];
+        let mut enums = vec![];
 
         let root_query_type = find_root_query(&document.definitions);
 
         for definition in document.definitions {
             match definition {
                 Definition::TypeDefinition(TypeDefinition::Object(object)) => {
-                    selectors.push(SelectorStruct::from_object(
+                    // Ok, so would be nice to restructure this so that the argument structs
+                    // are visible at the point we're generating the field_selectors...
+                    let selector = SelectorStruct::from_object(
                         &object,
                         &type_index,
                         object.name == root_query_type,
-                    ));
-
-                    let mut argument_structs = vec![];
-                    for field in &object.fields {
-                        let required_arguments = field.required_arguments();
-                        if !required_arguments.is_empty() {
-                            argument_structs.push(ArgumentStruct::from_field(
-                                field,
-                                &required_arguments,
-                                true,
-                                &type_index,
-                            ));
-                        }
-
-                        let optional_arguments = field.optional_arguments();
-                        if !optional_arguments.is_empty() {
-                            argument_structs.push(ArgumentStruct::from_field(
-                                field,
-                                &optional_arguments,
-                                false,
-                                &type_index,
-                            ));
-                        }
+                    );
+                    if !selector.argument_structs.is_empty() {
+                        argument_struct_modules
+                            .push(Module::new(&object.name, selector.argument_structs.clone()));
                     }
 
-                    if !argument_structs.is_empty() {
-                        argument_struct_modules.push(Module::new(&object.name, argument_structs));
-                    }
+                    selectors.push(selector);
                 }
-                Definition::TypeDefinition(TypeDefinition::InputObject(obj)) => {
-                    inputs.push(InputStruct::from_input_object(obj, &type_index));
+                Definition::TypeDefinition(TypeDefinition::InputObject(input_type)) => {
+                    input_objects.push(InputObjectMarker::from_input_object(&input_type));
                 }
                 Definition::TypeDefinition(TypeDefinition::Union(union)) => {
                     unions.push(UnionStruct::from_union(&union));
                 }
                 Definition::TypeDefinition(TypeDefinition::Interface(interface)) => {
                     interfaces.push(InterfaceStruct::from_interface(&interface));
+                }
+                Definition::TypeDefinition(TypeDefinition::Enum(en)) => {
+                    enums.push(EnumMarker::from_enum(&en));
                 }
                 _ => {}
             }
@@ -121,9 +108,10 @@ impl From<graphql_parser::schema::Document> for QueryDsl {
         QueryDsl {
             selectors,
             argument_struct_modules,
-            inputs,
+            input_objects,
             unions,
             interfaces,
+            enums,
         }
     }
 }
@@ -151,9 +139,10 @@ impl quote::ToTokens for QueryDsl {
 
         let selectors = &self.selectors;
         let argument_struct_modules = &self.argument_struct_modules;
-        let inputs = &self.inputs;
+        let input_objects = &self.input_objects;
         let unions = &self.unions;
         let interfaces = &self.interfaces;
+        let enums = &self.enums;
 
         tokens.append_all(quote! {
             #(
@@ -169,7 +158,10 @@ impl quote::ToTokens for QueryDsl {
                 #argument_struct_modules
             )*
             #(
-                #inputs
+                #input_objects
+            )*
+            #(
+                #enums
             )*
         })
     }

@@ -7,6 +7,8 @@ type Query {
 
 type TestStruct {
   fieldOne(x: Int, y: String): String!
+  tastyCakes(first: Dessert!, second: Dessert): Dessert!
+  fieldWithInput(input: AnInputType!): Dessert!
   nested: Nested!
   optNested: Nested
   dessert: Dessert
@@ -23,4 +25,8 @@ type Nested {
 enum Dessert {
   CHEESECAKE
   ICE_CREAM
+}
+
+input AnInputType {
+  favouriteDessert: Dessert
 }

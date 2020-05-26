@@ -15,6 +15,7 @@ use crate::{FieldType, Ident, TypeIndex, TypePath};
 pub struct SelectorStruct {
     pub name: Ident,
     pub fields: Vec<FieldSelector>,
+    pub argument_structs: Vec<ArgumentStruct>,
     pub is_root: bool,
 }
 
@@ -27,21 +28,31 @@ impl SelectorStruct {
         let name = Ident::for_type(&obj.name);
 
         let mut processed_fields = Vec::with_capacity(obj.fields.len());
+        let mut argument_structs = Vec::with_capacity(2 * obj.fields.len());
+
         for field in &obj.fields {
-            let required_args_struct_name = if !field.required_arguments().is_empty() {
-                Some(TypePath::new(vec![
-                    Ident::for_module(&obj.name),
-                    ArgumentStruct::name_for_field(&field.name, true),
-                ]))
+            let required_args = if !field.required_arguments().is_empty() {
+                let args = ArgumentStruct::from_field(
+                    field,
+                    &field.required_arguments(),
+                    true,
+                    &type_index,
+                );
+                argument_structs.push(args.clone());
+                Some(args)
             } else {
                 None
             };
 
-            let optional_args_struct_name = if !field.optional_arguments().is_empty() {
-                Some(TypePath::new(vec![
-                    Ident::for_module(&obj.name),
-                    ArgumentStruct::name_for_field(&field.name, false),
-                ]))
+            let optional_args = if !field.optional_arguments().is_empty() {
+                let args = ArgumentStruct::from_field(
+                    field,
+                    &field.optional_arguments(),
+                    false,
+                    &type_index,
+                );
+                argument_structs.push(args.clone());
+                Some(args)
             } else {
                 None
             };
@@ -50,8 +61,9 @@ impl SelectorStruct {
                 &field.name,
                 FieldType::from_schema_type(&field.field_type, TypePath::empty(), type_index),
                 name.clone(),
-                required_args_struct_name,
-                optional_args_struct_name,
+                Ident::for_module(&obj.name),
+                required_args,
+                optional_args,
             ));
         }
 
@@ -59,6 +71,7 @@ impl SelectorStruct {
             name: name.clone(),
             is_root,
             fields: processed_fields,
+            argument_structs,
         }
     }
 }

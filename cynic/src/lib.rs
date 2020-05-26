@@ -210,11 +210,19 @@ where
 
 /// A trait for GraphQL enums.
 ///
-/// Enums don't take arguments & always decode to themselves w/ no type lock
-/// so this is a fairly simple trait to implement.
-pub trait Enum: Sized {
+/// This trait is generic over some TypeLock which is used to tie an Enum
+/// definition back into it's GraphQL enum.  Generally this will be some
+/// type generated in the GQL code.
+pub trait Enum<TypeLock>: Sized {
     fn select() -> SelectionSet<'static, Self, ()>;
 }
+
+/// A trait for GraphQL input objects.
+///
+/// This trait is generic over some TypeLock which is used to tie an InputType
+/// back into it's GraphQL input object.  Generally this will be some type
+/// generated in the GQL code.
+pub trait InputObject<TypeLock> {}
 
 /// A marker trait for the arguments types on QueryFragments.
 ///

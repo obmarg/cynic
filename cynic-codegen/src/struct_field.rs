@@ -5,7 +5,7 @@ use super::field_type::FieldType;
 use super::type_path::TypePath;
 use crate::{Ident, TypeIndex};
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct StructField {
     pub(crate) name: Ident,
     pub(crate) argument_type: FieldType,
@@ -32,17 +32,76 @@ impl StructField {
     pub fn is_required(&self) -> bool {
         !self.argument_type.is_nullable()
     }
+
+    pub fn generic_parameter(&self) -> Option<GenericParameter> {
+        if let Some(path) = self.argument_type.inner_enum_path() {
+            Some(GenericParameter {
+                name: Ident::for_type(format!("{}T", self.name)),
+                constraint: GenericConstraint::Enum(path),
+            })
+        } else if let Some(path) = self.argument_type.inner_input_object_path() {
+            Some(GenericParameter {
+                name: Ident::for_type(format!("{}T", self.name)),
+                constraint: GenericConstraint::InputObject(path),
+            })
+        } else {
+            None
+        }
+    }
 }
 
-impl quote::ToTokens for StructField {
-    fn to_tokens(&self, tokens: &mut TokenStream) {
-        use quote::{quote, TokenStreamExt};
+/// A GenericParameter, which struct fields may or may not require.
+///
+/// We use these for input struct or enum arguments. We're expecting users
+/// to define these types but we need to take them as arguements so we make
+/// our argument structs generic, and apply constraints to make sure the
+/// correct types are passed in.
+pub struct GenericParameter {
+    pub name: Ident,
+    pub constraint: GenericConstraint,
+}
+
+impl GenericParameter {
+    pub fn to_tokens(&self, path_to_markers: TypePath) -> TokenStream {
+        use quote::quote;
 
         let name = &self.name;
-        let argument_type = &self.argument_type;
+        let constraint = self.constraint.to_tokens(path_to_markers);
 
-        tokens.append_all(quote! {
-            pub #name: #argument_type
-        })
+        quote! {
+            #name: #constraint
+        }
+    }
+}
+
+/// Our generic parameters need constraints - this enum specifies what they
+/// should be.
+pub enum GenericConstraint {
+    /// An enum type constraint: `where T: Enum<SomeEnumMarkerStruct>
+    Enum(Ident),
+    /// An input object constraint: `where T: InputObject<SomeInputObjectMarkerStruct>
+    InputObject(Ident),
+}
+
+impl GenericConstraint {
+    fn to_tokens(&self, path_to_markers: TypePath) -> TokenStream {
+        use quote::quote;
+
+        match self {
+            GenericConstraint::Enum(ident) => {
+                let type_path = TypePath::concat(&[path_to_markers, ident.clone().into()]);
+
+                // TODO: For now putting a serialize requirement here.
+                // Kinda want to get away from needing that, but for now it's needed.
+                quote! { ::cynic::Enum<#type_path> + ::serde::Serialize }
+            }
+            GenericConstraint::InputObject(ident) => {
+                let type_path = TypePath::concat(&[path_to_markers, ident.clone().into()]);
+
+                // TODO: For now putting a serialize requirement here.
+                // Kinda want to get away from needing that, but for now it's needed.
+                quote! { ::cynic::InputObject<#type_path> + ::serde::Serialize }
+            }
+        }
     }
 }

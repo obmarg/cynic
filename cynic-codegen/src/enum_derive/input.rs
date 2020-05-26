@@ -9,6 +9,7 @@ pub struct EnumDeriveInput {
     pub(super) data: darling::ast::Data<EnumDeriveVariant, ()>,
 
     pub schema_path: SpannedValue<String>,
+    pub query_module: SpannedValue<String>,
     pub graphql_type: SpannedValue<String>,
 
     #[darling(default)]
@@ -35,6 +36,8 @@ pub(crate) struct QueryModuleEnumDeriveInput {
     data: darling::ast::Data<EnumDeriveVariant, ()>,
 
     #[darling(default)]
+    pub query_module: Option<SpannedValue<String>>,
+    #[darling(default)]
     pub schema_path: Option<SpannedValue<String>>,
     pub graphql_type: SpannedValue<String>,
 
@@ -52,6 +55,7 @@ impl QueryModuleEnumDeriveInput {
             ident: self.ident,
             data: self.data,
             schema_path: self.schema_path.unwrap_or_else(|| schema_path.clone()),
+            query_module: self.query_module.unwrap_or_else(|| query_module.clone()),
             graphql_type: self.graphql_type,
             rename_all: self.rename_all,
         }

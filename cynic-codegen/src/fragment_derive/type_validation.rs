@@ -25,7 +25,7 @@ pub fn check_types_are_compatible(
             return Err(syn::Error::new(
                         rust_type.span(),
                         format!(
-                            "This GraphQL type is optional but you're not wrapping the type in Option.  Did you mean Option<{}>", 
+                            "This GraphQL type is optional but you're not wrapping the type in Option.  Did you mean Option<{}>",
                             quote! { #rust_type }
                         )
                     ));
@@ -34,7 +34,7 @@ pub fn check_types_are_compatible(
         return Err(syn::Error::new(
                         rust_type.span(),
                         format!(
-                            "This GraphQL type is required but you're wrapping the type in Option.  Did you mean {}", 
+                            "This GraphQL type is required but you're wrapping the type in Option.  Did you mean {}",
                             quote! { #inner }
                         )
                     ));
@@ -46,7 +46,7 @@ pub fn check_types_are_compatible(
             return Err(syn::Error::new(
                         rust_type.span(),
                         format!(
-                            "This GraphQL type is a list but you're not wrapping the type in Vec.  Did you mean Vec<{}>", 
+                            "This GraphQL type is a list but you're not wrapping the type in Vec.  Did you mean Vec<{}>",
                             quote! { #rust_type }
                         )
                     ));
@@ -55,7 +55,7 @@ pub fn check_types_are_compatible(
         return Err(syn::Error::new(
                         rust_type.span(),
                         format!(
-                            "This GraphQL type is not a list but you're wrapping the type in Vec.  Did you mean {}", 
+                            "This GraphQL type is not a list but you're wrapping the type in Vec.  Did you mean {}",
                             quote! { #inner }
                         )
                     ));
@@ -110,14 +110,14 @@ fn parse_type<'a>(ty: &'a syn::Type) -> ParsedType<'a> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{FieldType, TypePath};
+    use crate::{FieldType, Ident, TypePath};
     use assert_matches::assert_matches;
     use quote::quote;
 
     #[test]
     fn test_required_validation() {
-        let required_field = FieldType::Scalar(TypePath::empty(), false);
-        let optional_field = FieldType::Scalar(TypePath::empty(), true);
+        let required_field = FieldType::Scalar(Ident::new(""), false);
+        let optional_field = FieldType::Scalar(Ident::new(""), true);
 
         assert_matches!(
             check_types_are_compatible(
@@ -155,11 +155,11 @@ mod tests {
 
     #[test]
     fn test_list_validation() {
-        let list = FieldType::List(Box::new(FieldType::Scalar(TypePath::empty(), false)), false);
+        let list = FieldType::List(Box::new(FieldType::Scalar(Ident::new(""), false)), false);
         let optional_list =
-            FieldType::List(Box::new(FieldType::Scalar(TypePath::empty(), false)), true);
+            FieldType::List(Box::new(FieldType::Scalar(Ident::new(""), false)), true);
         let option_list_option =
-            FieldType::List(Box::new(FieldType::Scalar(TypePath::empty(), true)), true);
+            FieldType::List(Box::new(FieldType::Scalar(Ident::new(""), true)), true);
 
         assert_matches!(
             check_types_are_compatible(&list, &syn::parse2(quote! { Vec<i32> }).unwrap(), false),
@@ -205,11 +205,11 @@ mod tests {
 
     #[test]
     fn test_validation_when_flattening() {
-        let list = FieldType::List(Box::new(FieldType::Scalar(TypePath::empty(), false)), false);
+        let list = FieldType::List(Box::new(FieldType::Scalar(Ident::new(""), false)), false);
         let optional_list =
-            FieldType::List(Box::new(FieldType::Scalar(TypePath::empty(), false)), true);
+            FieldType::List(Box::new(FieldType::Scalar(Ident::new(""), false)), true);
         let option_list_option =
-            FieldType::List(Box::new(FieldType::Scalar(TypePath::empty(), true)), true);
+            FieldType::List(Box::new(FieldType::Scalar(Ident::new(""), true)), true);
 
         assert_matches!(
             check_types_are_compatible(

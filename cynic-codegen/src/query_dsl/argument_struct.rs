@@ -1,9 +1,11 @@
 use graphql_parser::schema::{self, InputValue};
 use proc_macro2::TokenStream;
+use quote::format_ident;
 
-use crate::{Ident, StructField, TypeIndex};
+use crate::struct_field::{GenericConstraint, GenericParameter};
+use crate::{Ident, StructField, TypeIndex, TypePath};
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct ArgumentStruct {
     name: Ident,
     arguments: Vec<StructField>,
@@ -22,8 +24,9 @@ impl ArgumentStruct {
         required: bool,
         type_index: &TypeIndex,
     ) -> ArgumentStruct {
+        let name = ArgumentStruct::name_for_field(&field.name, required);
         ArgumentStruct {
-            name: ArgumentStruct::name_for_field(&field.name, required),
+            name,
             arguments: arguments
                 .iter()
                 .map(|arg| {
@@ -36,6 +39,28 @@ impl ArgumentStruct {
                 .collect(),
             required,
         }
+    }
+
+    // Returns a list of the generic parameters this argument struct has
+    pub fn generic_parameters(&self) -> Vec<GenericParameter> {
+        self.arguments
+            .iter()
+            .map(|field| field.generic_parameter())
+            .flatten()
+            .collect()
+    }
+
+    pub fn type_tokens(&self, path_to_type: &Ident) -> TokenStream {
+        use quote::quote;
+
+        let generic_params = self
+            .generic_parameters()
+            .into_iter()
+            .map(|param| param.name);
+
+        let name = &self.name;
+
+        quote! { #path_to_type :: #name < #(#generic_params),* > }
     }
 }
 
@@ -90,15 +115,40 @@ impl quote::ToTokens for ArgumentStruct {
             }
         };
 
+        let generic_param_defs = {
+            let generic_defs = self
+                .generic_parameters()
+                .into_iter()
+                .map(|param| param.to_tokens(Ident::for_module("super").into()));
+
+            quote! { < #(#generic_defs,)*> }
+        };
+
+        let generic_param_names = {
+            let names = self
+                .generic_parameters()
+                .into_iter()
+                .map(|param| param.name);
+
+            quote! { < #(#names,)* > }
+        };
+
+        let arguments = self.arguments.iter().enumerate().map(|(i, field)| {
+            let name = &field.name;
+            let generic_inner_type = field.generic_parameter().map(|param| param.name);
+            let type_tokens = field.argument_type.to_tokens(generic_inner_type);
+            quote! { pub #name: #type_tokens }
+        });
+
         tokens.append_all(quote! {
             #attrs
-            pub struct #name {
+            pub struct #name #generic_param_defs {
                 #(
                     #arguments,
                 )*
             }
 
-            impl IntoIterator for #name {
+            impl #generic_param_defs IntoIterator for #name #generic_param_names {
                 type Item = ::cynic::Argument;
                 type IntoIter = ::std::vec::IntoIter<::cynic::Argument>;
 

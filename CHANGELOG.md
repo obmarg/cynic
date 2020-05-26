@@ -16,6 +16,9 @@ all APIs might be changed.
 - The generated `query_dsl` no longer contains generated enums - users should
   provide their own enums and `derive(cynic::Enum)` on them. Cynic querygen
   can be used to help with this.
+- The generated `query_dsl` no longer contains generated input objects - users
+  should provide their own structs and `impl cynic::InputObject` on them. A
+  derive for this should be coming in the future.
 
 ### New Features
 
@@ -49,6 +52,8 @@ all APIs might be changed.
 - Added `cynic::Scalar` derive for newtype structs so that users can easily
   define their own scalars.  Also added support for this to cynic-querygen
 - Added `cynic::Id` type to handle Ids in queries.
+- Added `cynic::InputObject` trait to allow the `query_dsl` to handle
+  InputObjects generically.
 
 ### Changed
 
