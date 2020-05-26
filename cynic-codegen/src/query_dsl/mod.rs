@@ -4,7 +4,6 @@ mod argument_struct;
 mod enum_marker;
 mod field_selector;
 mod input_object_marker;
-mod input_struct;
 mod interface_struct;
 mod selector_struct;
 mod union_struct;
