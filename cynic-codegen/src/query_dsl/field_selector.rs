@@ -99,6 +99,7 @@ impl quote::ToTokens for FieldSelector {
         }
 
         if self.field_type.contains_scalar() {
+            let field_type = field_type.to_tokens(None);
             tokens.append_all(quote! {
                 pub fn #rust_field_name<#(#generic_params)*>(#(#arguments, )*) ->
                 ::cynic::selection_set::SelectionSet<'static, #field_type, #type_lock> {

@@ -8,6 +8,7 @@ pub enum Kind {
     Scalar,
     Enum,
     Object,
+    InputObject,
 }
 
 pub struct TypeIndex {
@@ -34,6 +35,9 @@ impl TypeIndex {
                 Definition::TypeDefinition(TypeDefinition::Object(object)) => {
                     name_to_kind.insert(object.name.clone(), Kind::Object);
                 }
+                Definition::TypeDefinition(TypeDefinition::InputObject(object)) => {
+                    name_to_kind.insert(object.name.clone(), Kind::InputObject);
+                }
 
                 _ => {}
             }
@@ -53,6 +57,13 @@ impl TypeIndex {
         self.name_to_kind
             .get(name)
             .map(|kind| *kind == Kind::Enum)
+            .unwrap_or(false)
+    }
+
+    pub fn is_input_object(&self, name: &str) -> bool {
+        self.name_to_kind
+            .get(name)
+            .map(|kind| *kind == Kind::InputObject)
             .unwrap_or(false)
     }
 }

@@ -7,6 +7,7 @@ use crate::{Ident, TypeIndex, TypePath};
 pub enum FieldType {
     Scalar(Ident, bool),
     Enum(Ident, bool),
+    InputObject(Ident, bool),
     Other(Ident, bool),
     List(Box<FieldType>, bool),
 }
@@ -43,6 +44,8 @@ impl FieldType {
                     FieldType::Scalar(Ident::for_type(name), nullable)
                 } else if type_index.is_enum(name) {
                     FieldType::Enum(Ident::for_type(name), nullable)
+                } else if type_index.is_input_object(name) {
+                    FieldType::InputObject(Ident::for_type(name), nullable)
                 } else if name == "Int" {
                     FieldType::Scalar(Ident::for_inbuilt_scalar("i64").into(), nullable)
                 } else if name == "Float" {
@@ -63,17 +66,15 @@ impl FieldType {
         match self {
             FieldType::List(inner, _) => inner.contains_scalar(),
             FieldType::Scalar(_, _) => true,
-            FieldType::Enum(_, _) => false,
-            FieldType::Other(_, _) => false,
+            _ => false,
         }
     }
 
     pub fn contains_enum(&self) -> bool {
         match self {
             FieldType::List(inner, _) => inner.contains_scalar(),
-            FieldType::Scalar(_, _) => false,
             FieldType::Enum(_, _) => true,
-            FieldType::Other(_, _) => false,
+            _ => false,
         }
     }
 
@@ -81,9 +82,17 @@ impl FieldType {
     pub fn inner_enum_path(&self) -> Option<Ident> {
         match self {
             FieldType::List(inner, _) => inner.inner_enum_path(),
-            FieldType::Scalar(_, _) => None,
             FieldType::Enum(path, _) => Some(path.clone()),
-            FieldType::Other(_, _) => None,
+            _ => None,
+        }
+    }
+
+    /// Returns the path to the input object marker struct stored in this field, if any
+    pub fn inner_input_object_path(&self) -> Option<Ident> {
+        match self {
+            FieldType::List(inner, _) => inner.inner_input_object_path(),
+            FieldType::InputObject(path, _) => Some(path.clone()),
+            _ => None,
         }
     }
 
@@ -92,6 +101,7 @@ impl FieldType {
             FieldType::List(_, nullable) => nullable.clone(),
             FieldType::Scalar(_, nullable) => nullable.clone(),
             FieldType::Enum(_, nullable) => nullable.clone(),
+            FieldType::InputObject(_, nullable) => nullable.clone(),
             FieldType::Other(_, nullable) => nullable.clone(),
         }
     }
@@ -102,6 +112,9 @@ impl FieldType {
             // TODO: I think this is wrong for scalars, but whatever.
             FieldType::Scalar(ident, _) => TypePath::concat(&[path_to_types, ident.clone().into()]),
             FieldType::Enum(_, _) => TypePath::void(),
+            FieldType::InputObject(ident, _) => {
+                TypePath::concat(&[path_to_types, ident.clone().into()])
+            }
             FieldType::Other(ident, _) => TypePath::concat(&[path_to_types, ident.clone().into()]),
         }
     }
@@ -111,6 +124,9 @@ impl FieldType {
             FieldType::List(inner, _) => FieldType::List(inner.clone(), false),
             FieldType::Scalar(type_path, _) => FieldType::Scalar(type_path.clone(), false),
             FieldType::Enum(type_path, _) => FieldType::Enum(type_path.clone(), false),
+            FieldType::InputObject(type_path, _) => {
+                FieldType::InputObject(type_path.clone(), false)
+            }
             FieldType::Other(type_path, _) => FieldType::Other(type_path.clone(), false),
         }
     }
@@ -187,6 +203,9 @@ impl FieldType {
                     ::cynic::selection_set::vec(#inner)
                 }
             }
+            FieldType::InputObject(_, _) => {
+                panic!("Input objects should never be selected, what's going on here...")
+            }
             FieldType::Enum(_, _) | FieldType::Other(_, _) | FieldType::Scalar(_, _) => {
                 quote! { #inner_select }
             }
@@ -214,6 +233,9 @@ impl FieldType {
                     Vec<#inner>
                 }
             }
+            FieldType::InputObject(_, _) => {
+                panic!("Input objects should never be selected, what's going on here...")
+            }
             FieldType::Enum(_, _) | FieldType::Other(_, _) | FieldType::Scalar(_, _) => {
                 quote! { #inner_token }
             }
@@ -229,39 +251,26 @@ impl FieldType {
         use quote::quote;
 
         let nullable = self.is_nullable();
-        let rust_type = match (self, generic_inner_type) {
-            (FieldType::List(_, _), Some(generic)) => quote! { Vec<#generic> },
-            (FieldType::List(inner_type, _), _) => quote! { Vec<#inner_type> },
+        let rust_type = match (self, &generic_inner_type) {
+            (FieldType::List(inner_type, _), _) => {
+                let inner_type = inner_type.to_tokens(generic_inner_type);
+                quote! { Vec<#inner_type> }
+            }
             (_, Some(generic)) => quote! { #generic },
             (FieldType::Scalar(typename, _), _) => quote! { #typename },
             (FieldType::Other(typename, _), _) => quote! { #typename },
-            (FieldType::Enum(typename, _), _) => quote! { #typename },
+            (FieldType::Enum(_, _), _) => {
+                panic!("Enums are always generic, we shouldn't get here.")
+            }
+            (FieldType::InputObject(_, _), _) => {
+                panic!("InputObjects are always generic, we shouldn't get here.")
+            }
         };
 
         if nullable {
             quote! { Option<#rust_type> }
         } else {
             rust_type
-        }
-    }
-}
-
-impl quote::ToTokens for FieldType {
-    fn to_tokens(&self, tokens: &mut TokenStream) {
-        use quote::{quote, TokenStreamExt};
-
-        let nullable = self.is_nullable();
-        let rust_type = match self {
-            FieldType::List(inner_type, _) => quote! { Vec<#inner_type> },
-            FieldType::Scalar(typename, _) => quote! { #typename },
-            FieldType::Other(typename, _) => quote! { #typename },
-            FieldType::Enum(typename, _) => quote! { #typename },
-        };
-
-        if nullable {
-            tokens.append_all(quote! { Option<#rust_type> });
-        } else {
-            tokens.append_all(rust_type);
         }
     }
 }

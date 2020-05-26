@@ -217,6 +217,13 @@ pub trait Enum<TypeLock>: Sized {
     fn select() -> SelectionSet<'static, Self, ()>;
 }
 
+/// A trait for GraphQL input objects.
+///
+/// This trait is generic over some TypeLock which is used to tie an InputType
+/// back into it's GraphQL input object.  Generally this will be some type
+/// generated in the GQL code.
+pub trait InputObject<TypeLock> {}
+
 /// A marker trait for the arguments types on QueryFragments.
 ///
 /// We use this in combination with the IntoArguments trait below

@@ -39,22 +39,14 @@ impl StructField {
                 name: Ident::for_type(format!("{}T", self.name)),
                 constraint: GenericConstraint::Enum(path),
             })
+        } else if let Some(path) = self.argument_type.inner_input_object_path() {
+            Some(GenericParameter {
+                name: Ident::for_type(format!("{}T", self.name)),
+                constraint: GenericConstraint::InputObject(path),
+            })
         } else {
             None
         }
-    }
-}
-
-impl quote::ToTokens for StructField {
-    fn to_tokens(&self, tokens: &mut TokenStream) {
-        use quote::{quote, TokenStreamExt};
-
-        let name = &self.name;
-        let argument_type = &self.argument_type;
-
-        tokens.append_all(quote! {
-            pub #name: #argument_type
-        })
     }
 }
 
@@ -87,6 +79,8 @@ impl GenericParameter {
 pub enum GenericConstraint {
     /// An enum type constraint: `where T: Enum<SomeEnumMarkerStruct>
     Enum(Ident),
+    /// An input object constraint: `where T: InputObject<SomeInputObjectMarkerStruct>
+    InputObject(Ident),
 }
 
 impl GenericConstraint {
@@ -100,6 +94,13 @@ impl GenericConstraint {
                 // TODO: For now putting a serialize requirement here.
                 // Kinda want to get away from needing that, but for now it's needed.
                 quote! { ::cynic::Enum<#type_path> + ::serde::Serialize }
+            }
+            GenericConstraint::InputObject(ident) => {
+                let type_path = TypePath::concat(&[path_to_markers, ident.clone().into()]);
+
+                // TODO: For now putting a serialize requirement here.
+                // Kinda want to get away from needing that, but for now it's needed.
+                quote! { ::cynic::InputObject<#type_path> + ::serde::Serialize }
             }
         }
     }
