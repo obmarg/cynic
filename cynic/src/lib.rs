@@ -226,7 +226,6 @@ pub trait InputObject<TypeLock> {
     fn serialize(&self) -> Result<serde_json::Value, ()>;
 }
 
-
 /// A marker trait for the arguments types on QueryFragments.
 ///
 /// We use this in combination with the IntoArguments trait below
