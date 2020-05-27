@@ -91,16 +91,12 @@ impl GenericConstraint {
             GenericConstraint::Enum(ident) => {
                 let type_path = TypePath::concat(&[path_to_markers, ident.clone().into()]);
 
-                // TODO: For now putting a serialize requirement here.
-                // Kinda want to get away from needing that, but for now it's needed.
-                quote! { ::cynic::Enum<#type_path> + ::serde::Serialize }
+                quote! { ::cynic::Enum<#type_path> + ::cynic::SerializableArgument }
             }
             GenericConstraint::InputObject(ident) => {
                 let type_path = TypePath::concat(&[path_to_markers, ident.clone().into()]);
 
-                // TODO: For now putting a serialize requirement here.
-                // Kinda want to get away from needing that, but for now it's needed.
-                quote! { ::cynic::InputObject<#type_path> + ::serde::Serialize }
+                quote! { ::cynic::InputObject<#type_path> + ::cynic::SerializableArgument }
             }
         }
     }

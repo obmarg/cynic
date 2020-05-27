@@ -89,7 +89,7 @@ impl quote::ToTokens for ArgumentStruct {
             quote! {
                 vec![
                     #(
-                        ::cynic::Argument::new_serialize(
+                        ::cynic::Argument::from_serializable(
                             #argument_strings,
                             #argument_gql_types,
                             self.#argument_names
@@ -103,7 +103,7 @@ impl quote::ToTokens for ArgumentStruct {
 
                 #(
                     if self.#argument_names.is_some() {
-                        args.push(::cynic::Argument::new_serialize(
+                        args.push(::cynic::Argument::from_serializable(
                             #argument_strings,
                             #argument_gql_types,
                             self.#argument_names

@@ -3,6 +3,7 @@ use std::marker::PhantomData;
 
 pub trait Scalar: Sized {
     fn decode(value: &serde_json::Value) -> Result<Self, DecodeError>;
+    fn encode(&self) -> Result<serde_json::Value, ()>;
 }
 
 pub fn decoder<'a, S>() -> BoxDecoder<'a, S>
@@ -18,11 +19,19 @@ impl Scalar for i64 {
     fn decode(value: &serde_json::Value) -> Result<Self, DecodeError> {
         json_decode::integer().decode(value)
     }
+
+    fn encode(&self) -> Result<serde_json::Value, ()> {
+        Ok((*self).into())
+    }
 }
 
 impl Scalar for f64 {
     fn decode(value: &serde_json::Value) -> Result<Self, DecodeError> {
         json_decode::float().decode(value)
+    }
+
+    fn encode(&self) -> Result<serde_json::Value, ()> {
+        Ok((*self).into())
     }
 }
 
@@ -30,17 +39,29 @@ impl Scalar for bool {
     fn decode(value: &serde_json::Value) -> Result<Self, DecodeError> {
         json_decode::boolean().decode(value)
     }
+
+    fn encode(&self) -> Result<serde_json::Value, ()> {
+        Ok((*self).into())
+    }
 }
 
 impl Scalar for String {
     fn decode(value: &serde_json::Value) -> Result<Self, DecodeError> {
         json_decode::string().decode(value)
     }
+
+    fn encode(&self) -> Result<serde_json::Value, ()> {
+        Ok(self.clone().into())
+    }
 }
 
 impl Scalar for serde_json::Value {
     fn decode(value: &serde_json::Value) -> Result<Self, DecodeError> {
         json_decode::json().decode(value)
+    }
+
+    fn encode(&self) -> Result<serde_json::Value, ()> {
+        Ok(self.clone())
     }
 }
 
