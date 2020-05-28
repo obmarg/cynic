@@ -48,6 +48,7 @@ impl<'a> ArgumentStruct<'a> {
                 .map(|var| Field {
                     name: var.name,
                     field_type: &var.var_type,
+                    arguments: vec![],
                 })
                 .collect(),
         }
@@ -65,10 +66,7 @@ pub enum PotentialStruct<'a> {
 impl PotentialStruct<'_> {
     fn uses_arguments(&self) -> bool {
         match self {
-            PotentialStruct::QueryFragment(q) => {
-                // TODO: Check if query fragment uses arguments
-                false
-            }
+            PotentialStruct::QueryFragment(q) => q.fields.iter().any(|f| !f.arguments.is_empty()),
             _ => false,
         }
     }
@@ -180,6 +178,7 @@ fn selection_set_to_structs<'a, 'b>(
                 this_fragment.fields.push(Field {
                     name: field.name,
                     field_type,
+                    arguments: field.arguments.clone(),
                 });
 
                 rv.extend(selection_set_to_structs(

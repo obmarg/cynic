@@ -4,10 +4,12 @@ use inflector::Inflector;
 mod query_parsing;
 mod type_ext;
 mod type_index;
+mod value_ext;
 
 use query_parsing::{Enum, PotentialStruct};
 use type_ext::TypeExt;
 use type_index::{FieldType, TypeIndex};
+use value_ext::ValueExt;
 
 #[derive(thiserror::Error, Debug)]
 pub enum Error {
@@ -88,6 +90,16 @@ pub fn document_to_fragment_structs(
                 lines.push(format!("    pub struct {} {{", name));
 
                 for field in fragment.fields {
+                    if !field.arguments.is_empty() {
+                        let arguments_string = field
+                            .arguments
+                            .iter()
+                            .map(|(name, val)| format!("{} = {}", name, val.to_literal()))
+                            .collect::<Vec<_>>()
+                            .join(", ");
+
+                        lines.push(format!("        #[cynic_arguments({})]", arguments_string));
+                    }
                     // TODO: print out arguments
                     lines.push(format!(
                         "        pub {}: {},",
@@ -108,13 +120,13 @@ pub fn document_to_fragment_structs(
                 }
                 lines.push("    }\n".into());
             }
-            PotentialStruct::ArgumentStruct(variable_struct) => {
-                lines.push("    #[derive(Clone, cynic::FragmentArguments]".into());
-                lines.push("    pub struct Arguments {".into());
+            PotentialStruct::ArgumentStruct(argument_struct) => {
+                lines.push("    #[derive(Clone, cynic::FragmentArguments)]".into());
+                lines.push(format!("    pub struct {} {{", argument_struct.name));
 
-                for field in &variable_struct.fields {
+                for field in &argument_struct.fields {
                     lines.push(format!(
-                        "    pub {}: {},",
+                        "        pub {}: {},",
                         field.name,
                         field.field_type.type_spec(&type_index)
                     ));
