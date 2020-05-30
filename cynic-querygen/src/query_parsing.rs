@@ -91,6 +91,14 @@ pub fn parse_query_document<'a>(
 
                         structs.push(PotentialStruct::ArgumentStruct(argument_struct));
 
+                        for variable in &query.variable_definitions {
+                            if let Some(st) =
+                                struct_from_type_name(variable.var_type.inner_name(), type_index)?
+                            {
+                                structs.push(st)
+                            }
+                        }
+
                         Some(argument_struct_name)
                     } else {
                         None
@@ -151,12 +159,8 @@ fn selection_set_to_structs<'a, 'b>(
 
     if !path.is_empty() {
         let type_name = type_index.type_for_path(&path)?.inner_name();
-        match type_index.lookup_type(type_name) {
-            Some(FieldType::Enum(en)) => return Ok(vec![PotentialStruct::Enum(Enum { def: en })]),
-            Some(FieldType::Scalar(ScalarKind::Custom)) => {
-                return Ok(vec![PotentialStruct::Scalar(type_name.to_string())]);
-            }
-            _ => (),
+        if let Some(st) = struct_from_type_name(type_name, type_index)? {
+            return Ok(vec![st]);
         }
     }
 
@@ -180,6 +184,16 @@ fn selection_set_to_structs<'a, 'b>(
                     field_type,
                     arguments: field.arguments.clone(),
                 });
+
+                rv.extend(
+                    field
+                        .arguments
+                        .iter()
+                        .map(|(_, arg_value)| argument_to_structs(arg_value, type_index))
+                        .collect::<Result<Vec<_>, _>>()?
+                        .into_iter()
+                        .flatten(),
+                );
 
                 rv.extend(selection_set_to_structs(
                     &field.selection_set,
@@ -211,4 +225,34 @@ fn selection_set_to_structs<'a, 'b>(
     }
 
     Ok(rv)
+}
+
+fn argument_to_structs<'a>(
+    arg_value: &Value<'a, &'a str>,
+    type_index: &TypeIndex<'a>,
+) -> Result<Vec<PotentialStruct<'a>>, Error> {
+    match arg_value {
+        Value::Enum(enum_name) => {
+            if let Some(FieldType::Enum(en)) = type_index.lookup_type(enum_name) {
+                Ok(vec![PotentialStruct::Enum(Enum { def: en })])
+            } else {
+                Err(Error::UnknownEnum(enum_name.to_string()))
+            }
+        }
+        _ => Ok(vec![]),
+    }
+}
+
+fn struct_from_type_name<'a>(
+    type_name: &str,
+    type_index: &TypeIndex<'a>,
+) -> Result<Option<PotentialStruct<'a>>, Error> {
+    match type_index.lookup_type(type_name) {
+        Some(FieldType::Enum(en)) => return Ok(Some(PotentialStruct::Enum(Enum { def: en }))),
+        Some(FieldType::Scalar(ScalarKind::Custom)) => {
+            return Ok(Some(PotentialStruct::Scalar(type_name.to_string())));
+        }
+        None => Err(Error::UnknownType(type_name.to_string())),
+        _ => Ok(None),
+    }
 }

@@ -27,6 +27,9 @@ pub enum Error {
 
     #[error("could not find enum `{0}`")]
     UnknownEnum(String),
+
+    #[error("could not find type `{0}`")]
+    UnknownType(String),
 }
 
 #[derive(Debug)]
