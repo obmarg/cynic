@@ -11,7 +11,7 @@ impl<'a> ValueExt for Value<'a, &'a str> {
             Value::Variable(name) => format!("args.{}", name),
             Value::Int(num) => num.as_i64().unwrap().to_string(),
             Value::Float(num) => num.to_string(),
-            Value::String(s) => format!("\"{}\"", s),
+            Value::String(s) => format!("\"{}\".to_string()", s),
             Value::Boolean(b) => b.to_string(),
             Value::Null => "None".into(),
             Value::Enum(v) => v.to_string(),
