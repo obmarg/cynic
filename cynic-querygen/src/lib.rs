@@ -4,10 +4,12 @@ use inflector::Inflector;
 mod query_parsing;
 mod type_ext;
 mod type_index;
+mod value_ext;
 
 use query_parsing::{Enum, PotentialStruct};
 use type_ext::TypeExt;
-use type_index::{GraphqlType, TypeIndex};
+use type_index::{FieldType, TypeIndex};
+use value_ext::ValueExt;
 
 #[derive(thiserror::Error, Debug)]
 pub enum Error {
@@ -25,6 +27,9 @@ pub enum Error {
 
     #[error("could not find enum `{0}`")]
     UnknownEnum(String),
+
+    #[error("could not find type `{0}`")]
+    UnknownType(String),
 }
 
 #[derive(Debug)]
@@ -69,24 +74,40 @@ pub fn document_to_fragment_structs(
             PotentialStruct::QueryFragment(fragment) => {
                 let name = if fragment.path.is_empty() {
                     // We have a root query type here, so lets make up a name
-                    "Root"
+                    fragment.name.unwrap_or("Query")
                 } else {
                     type_index.type_for_path(&fragment.path)?.inner_name()
                 };
 
+                let argument_struct_param = if let Some(name) = fragment.argument_struct_name {
+                    format!(", argument_struct = \"{}\"", name)
+                } else {
+                    "".to_string()
+                };
+
                 lines.push("    #[derive(cynic::QueryFragment)]".into());
-                lines.push(format!("    #[cynic(graphql_type = \"{}\")]", name));
+                lines.push(format!(
+                    "    #[cynic(graphql_type = \"{}\"{})]",
+                    name, argument_struct_param
+                ));
                 lines.push(format!("    pub struct {} {{", name));
 
                 for field in fragment.fields {
-                    let mut field_path = fragment.path.clone();
-                    field_path.push(field.name);
-                    let field_ty = type_index.type_for_path(&field_path)?;
+                    if !field.arguments.is_empty() {
+                        let arguments_string = field
+                            .arguments
+                            .iter()
+                            .map(|(name, val)| format!("{} = {}", name, val.to_literal()))
+                            .collect::<Vec<_>>()
+                            .join(", ");
 
+                        lines.push(format!("        #[cynic_arguments({})]", arguments_string));
+                    }
+                    // TODO: print out arguments
                     lines.push(format!(
                         "        pub {}: {},",
                         field.name,
-                        field_ty.type_spec(&type_index)
+                        field.field_type.type_spec(&type_index)
                     ))
                 }
                 lines.push(format!("    }}\n"));
@@ -100,6 +121,20 @@ pub fn document_to_fragment_structs(
                 for variant in &en.def.values {
                     lines.push(format!("        {},", variant.name.to_pascal_case()))
                 }
+                lines.push("    }\n".into());
+            }
+            PotentialStruct::ArgumentStruct(argument_struct) => {
+                lines.push("    #[derive(Clone, cynic::FragmentArguments)]".into());
+                lines.push(format!("    pub struct {} {{", argument_struct.name));
+
+                for field in &argument_struct.fields {
+                    lines.push(format!(
+                        "        pub {}: {},",
+                        field.name,
+                        field.field_type.type_spec(&type_index)
+                    ));
+                }
+
                 lines.push("    }\n".into());
             }
             _ => {}

@@ -5,7 +5,7 @@ use std::collections::HashMap;
 use crate::{type_ext::TypeExt, Error};
 
 pub struct TypeIndex<'a> {
-    types: HashMap<&'a str, GraphqlType<'a>>,
+    types: HashMap<&'a str, FieldType<'a>>,
     root: String,
 }
 
@@ -18,7 +18,7 @@ impl<'a> TypeIndex<'a> {
             .iter()
             .map(|definition| match definition {
                 Definition::TypeDefinition(TypeDefinition::Scalar(scalar)) => {
-                    Some((scalar.name, GraphqlType::Scalar(ScalarKind::Custom)))
+                    Some((scalar.name, FieldType::Scalar(ScalarKind::Custom)))
                 }
                 Definition::TypeDefinition(TypeDefinition::Object(obj)) => {
                     let fields = obj
@@ -27,10 +27,10 @@ impl<'a> TypeIndex<'a> {
                         .map(|field| (field.name, &field.field_type))
                         .collect();
 
-                    Some((obj.name, GraphqlType::Object(fields)))
+                    Some((obj.name, FieldType::Object(fields)))
                 }
                 Definition::TypeDefinition(TypeDefinition::Enum(en)) => {
-                    Some((en.name, GraphqlType::Enum(en)))
+                    Some((en.name, FieldType::Enum(en)))
                 }
                 _ => None,
             })
@@ -46,14 +46,14 @@ impl<'a> TypeIndex<'a> {
     pub fn type_for_path<'b>(&self, path: &[&'b str]) -> Result<&'a Type<'a, &'a str>, Error> {
         // TODO: tidy up unwraps etc.
         let root = self.types.get(self.root.as_str()).unwrap();
-        if let GraphqlType::Object(root_fields) = root {
+        if let FieldType::Object(root_fields) = root {
             self.find_type_recursive(root_fields, self.root.as_str(), path)
         } else {
             panic!("TODO: make this an error");
         }
     }
 
-    pub fn lookup_type(&self, name: &str) -> Option<&GraphqlType<'a>> {
+    pub fn lookup_type(&self, name: &str) -> Option<&FieldType<'a>> {
         self.types.get(name)
     }
 
@@ -81,7 +81,7 @@ impl<'a> TypeIndex<'a> {
 
                 let inner_type = self.types.get(inner_name).unwrap();
 
-                if let GraphqlType::Object(fields) = inner_type {
+                if let FieldType::Object(fields) = inner_type {
                     self.find_type_recursive(fields, &inner_name, rest)
                 } else {
                     panic!("TODO: make this an error");
@@ -95,10 +95,10 @@ impl<'a> Default for TypeIndex<'a> {
     fn default() -> TypeIndex<'a> {
         let mut types = HashMap::new();
 
-        types.insert("String", GraphqlType::Scalar(ScalarKind::BuiltIn));
-        types.insert("Int", GraphqlType::Scalar(ScalarKind::BuiltIn));
-        types.insert("Boolean", GraphqlType::Scalar(ScalarKind::BuiltIn));
-        types.insert("ID", GraphqlType::Scalar(ScalarKind::BuiltIn));
+        types.insert("String", FieldType::Scalar(ScalarKind::BuiltIn));
+        types.insert("Int", FieldType::Scalar(ScalarKind::BuiltIn));
+        types.insert("Boolean", FieldType::Scalar(ScalarKind::BuiltIn));
+        types.insert("ID", FieldType::Scalar(ScalarKind::BuiltIn));
 
         TypeIndex {
             types,
@@ -114,7 +114,7 @@ pub enum ScalarKind {
 }
 
 #[derive(Debug, PartialEq)]
-pub enum GraphqlType<'a> {
+pub enum FieldType<'a> {
     Enum(&'a EnumType<'a, &'a str>),
     Object(HashMap<&'a str, &'a Type<'a, &'a str>>),
     Scalar(ScalarKind),
