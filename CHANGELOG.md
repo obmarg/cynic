@@ -11,6 +11,8 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.2.0 - 2016-06-11
+
 ### Breaking Changes
 
 - The generated `query_dsl` no longer contains generated enums - users should
