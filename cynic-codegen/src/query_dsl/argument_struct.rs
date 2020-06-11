@@ -141,6 +141,7 @@ impl quote::ToTokens for ArgumentStruct {
 
         tokens.append_all(quote! {
             #attrs
+            #[allow(dead_code)]
             pub struct #name #generic_param_defs {
                 #(
                     #arguments,

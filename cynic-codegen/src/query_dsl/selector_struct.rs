@@ -89,8 +89,10 @@ impl quote::ToTokens for SelectorStruct {
         };
 
         tokens.append_all(quote! {
+            #[allow(dead_code)]
             pub struct #name;
 
+            #[allow(dead_code)]
             impl #name {
                 #(
                     #fields

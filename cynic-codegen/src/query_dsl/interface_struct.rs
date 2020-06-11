@@ -26,6 +26,7 @@ impl quote::ToTokens for InterfaceStruct {
         let name = &self.name;
 
         tokens.append_all(quote! {
+            #[allow(dead_code)]
             pub struct #name {}
         });
     }

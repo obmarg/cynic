@@ -29,6 +29,7 @@ impl quote::ToTokens for UnionStruct {
         let subtypes = &self.subtypes;
 
         tokens.append_all(quote! {
+            #[allow(dead_code)]
             pub struct #name {}
 
             #(

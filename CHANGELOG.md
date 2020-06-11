@@ -22,6 +22,8 @@ all APIs might be changed.
   public but were not
 - Cleaned up a ton of compiler warnings - mostly unused imports and a few unused
   variables
+- `query_dsl` adds `allow(dead_code)` annotations so we don't get tons of dead
+  code warnings when we're not exercising an entire schema.
 
 ## v0.2.0 - 2016-06-11
 
