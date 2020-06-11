@@ -11,6 +11,10 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+### Bug Fixes
+
+- Generated `query_dsl` now disables unused import warnings where appropriate.
+
 ## v0.2.0 - 2016-06-11
 
 ### Breaking Changes

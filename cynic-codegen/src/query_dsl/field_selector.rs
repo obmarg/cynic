@@ -103,7 +103,7 @@ impl quote::ToTokens for FieldSelector {
             tokens.append_all(quote! {
                 pub fn #rust_field_name<#(#generic_params)*>(#(#arguments, )*) ->
                 ::cynic::selection_set::SelectionSet<'static, #field_type, #type_lock> {
-                    #![allow(dead_code)]
+                    #[allow(unused_imports)]
                     use ::cynic::selection_set::{string, integer, float, boolean};
 
                     let mut args: Vec<::cynic::Argument> = vec![];

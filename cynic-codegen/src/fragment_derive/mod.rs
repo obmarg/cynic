@@ -352,7 +352,7 @@ impl quote::ToTokens for FragmentImpl {
                 type Arguments = #argument_struct;
 
                 fn fragment(args: Self::Arguments) -> Self::SelectionSet {
-                    #[allow(dead_code)]
+                    #[allow(unused_imports)]
                     use ::cynic::{QueryFragment, FromArguments, Enum};
 
                     let new = |#(#constructor_params),*| #target_struct {
