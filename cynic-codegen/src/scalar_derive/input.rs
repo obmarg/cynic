@@ -1,5 +1,3 @@
-use darling::util::SpannedValue;
-
 #[derive(darling::FromDeriveInput)]
 #[darling(supports(struct_newtype))]
 pub struct ScalarDeriveInput {

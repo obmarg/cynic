@@ -1,4 +1,4 @@
-use syn::{Attribute, Item, Meta, MetaList, NestedMeta};
+use syn::{Attribute, Item, Meta, NestedMeta};
 
 #[derive(Debug, PartialEq)]
 pub enum Derive {
@@ -55,7 +55,6 @@ fn derive_for_nested_meta(nested: &NestedMeta) -> Option<Derive> {
 }
 
 pub fn strip_cynic_attrs(item: syn::Item) -> syn::Item {
-    let mut item = item;
     match item {
         Item::Struct(mut s) => {
             s.attrs = filter_cynic_attrs(s.attrs);

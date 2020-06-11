@@ -40,7 +40,7 @@ fn type_spec_imp<'a>(
         Type::ListType(inner) => {
             Cow::Owned(format!("Vec<{}>", type_spec_imp(inner, true, type_index)))
         }
-        Type::NonNullType(inner) => panic!("NonNullType somehow got past an if let"),
+        Type::NonNullType(_) => panic!("NonNullType somehow got past an if let"),
         Type::NamedType("Int") => Cow::Borrowed("i64"),
         Type::NamedType("Float") => Cow::Borrowed("f64"),
         Type::NamedType("Boolean") => Cow::Borrowed("bool"),

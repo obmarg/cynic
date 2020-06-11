@@ -1,7 +1,6 @@
-use darling::util::SpannedValue;
 use graphql_parser::schema::{Definition, Document, EnumType, EnumValue, TypeDefinition};
 use proc_macro2::{Span, TokenStream};
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
 use crate::{
     ident::{RenameAll, RenameRule},
@@ -33,7 +32,7 @@ pub fn enum_derive_impl(
     schema: &Document,
     enum_span: Span,
 ) -> Result<TokenStream, syn::Error> {
-    use quote::{quote, quote_spanned};
+    use quote::quote;
 
     let enum_def = schema.definitions.iter().find_map(|def| {
         if let Definition::TypeDefinition(TypeDefinition::Enum(e)) = def {
@@ -173,7 +172,9 @@ fn join_variants<'a>(
 mod tests {
     use super::*;
     use assert_matches::assert_matches;
+    use darling::util::SpannedValue;
     use rstest::rstest;
+    use std::collections::HashSet;
 
     #[rstest(
         enum_variant_1,

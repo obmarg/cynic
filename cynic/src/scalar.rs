@@ -127,8 +127,6 @@ fn chrono_decode_error(err: chrono::ParseError) -> DecodeError {
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-
     #[cfg(feature = "chrono")]
     #[test]
     fn test_utc_datetime_scalar() {

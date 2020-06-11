@@ -1,6 +1,5 @@
 use std::collections::HashSet;
 
-use darling::util::SpannedValue;
 use proc_macro2::{Span, TokenStream};
 
 use crate::{load_schema, query_dsl, FieldType, Ident, TypePath};

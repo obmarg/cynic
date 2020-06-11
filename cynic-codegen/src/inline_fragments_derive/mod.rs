@@ -7,7 +7,7 @@ pub mod input;
 
 pub use input::InlineFragmentsDeriveInput;
 
-use input::{InlineFragmentsDeriveField, InlineFragmentsDeriveVariant};
+use input::InlineFragmentsDeriveVariant;
 
 pub fn inline_fragments_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
     use darling::FromDeriveInput;

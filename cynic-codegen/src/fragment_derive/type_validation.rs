@@ -110,7 +110,7 @@ fn parse_type<'a>(ty: &'a syn::Type) -> ParsedType<'a> {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{FieldType, Ident, TypePath};
+    use crate::{FieldType, Ident};
     use assert_matches::assert_matches;
     use quote::quote;
 

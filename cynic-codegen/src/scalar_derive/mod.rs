@@ -1,16 +1,7 @@
-use darling::util::SpannedValue;
-use graphql_parser::schema::{Definition, Document, EnumType, EnumValue, TypeDefinition};
-use proc_macro2::{Span, TokenStream};
-use std::collections::{HashMap, HashSet};
-
-use crate::{
-    ident::{RenameAll, RenameRule},
-    load_schema, Ident,
-};
+use proc_macro2::TokenStream;
 
 pub(crate) mod input;
 
-use input::ScalarDeriveField;
 pub use input::ScalarDeriveInput;
 
 pub fn scalar_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
@@ -23,7 +14,7 @@ pub fn scalar_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> 
 }
 
 pub fn scalar_derive_impl(input: ScalarDeriveInput) -> Result<TokenStream, syn::Error> {
-    use quote::{quote, quote_spanned};
+    use quote::quote;
 
     // We're assuming that Darling has already validated this as a newtype enum,
     // so we can get away with panicing here.

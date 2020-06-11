@@ -1,9 +1,8 @@
 use graphql_parser::schema::{self, InputValue};
 use proc_macro2::TokenStream;
-use quote::format_ident;
 
-use crate::struct_field::{GenericConstraint, GenericParameter};
-use crate::{Ident, StructField, TypeIndex, TypePath};
+use crate::struct_field::GenericParameter;
+use crate::{Ident, StructField, TypeIndex};
 
 #[derive(Debug, Clone)]
 pub struct ArgumentStruct {
@@ -133,7 +132,7 @@ impl quote::ToTokens for ArgumentStruct {
             quote! { < #(#names,)* > }
         };
 
-        let arguments = self.arguments.iter().enumerate().map(|(i, field)| {
+        let arguments = self.arguments.iter().map(|field| {
             let name = &field.name;
             let generic_inner_type = field.generic_parameter().map(|param| param.name);
             let type_tokens = field.argument_type.to_tokens(generic_inner_type);

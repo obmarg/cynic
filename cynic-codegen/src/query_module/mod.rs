@@ -1,7 +1,7 @@
 // TODO: docstring.
 use darling::{util::SpannedValue, FromMeta};
 use graphql_parser::schema::Document;
-use proc_macro2::{Span, TokenStream};
+use proc_macro2::TokenStream;
 
 mod utils;
 
@@ -47,7 +47,7 @@ fn transform_query_module_impl(
         .map(|i| derive_for_item(i, &args, &schema, &fragment_derive_schema))
         .collect();
 
-    let (brace, module_items) = query_module.content.unwrap();
+    let (_, module_items) = query_module.content.unwrap();
     let module_items: Vec<_> = module_items
         .into_iter()
         .map(utils::strip_cynic_attrs)

@@ -1,5 +1,5 @@
 use graphql_parser::query::Type;
-use graphql_parser::schema::{Definition, Document, EnumType, ScalarType, TypeDefinition};
+use graphql_parser::schema::{Definition, Document, EnumType, TypeDefinition};
 use std::collections::HashMap;
 
 use crate::{type_ext::TypeExt, Error};
@@ -13,7 +13,7 @@ type FieldMap<'a> = HashMap<&'a str, &'a Type<'a, &'a str>>;
 
 impl<'a> TypeIndex<'a> {
     pub fn from_schema<'b>(schema: &'b Document<'b, &'b str>) -> TypeIndex<'b> {
-        let mut types = schema
+        let types = schema
             .definitions
             .iter()
             .map(|definition| match definition {

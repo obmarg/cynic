@@ -6,7 +6,7 @@ mod type_ext;
 mod type_index;
 mod value_ext;
 
-use query_parsing::{Enum, PotentialStruct};
+use query_parsing::PotentialStruct;
 use type_ext::TypeExt;
 use type_index::{FieldType, TypeIndex};
 use value_ext::ValueExt;

@@ -1,4 +1,4 @@
-use crate::{Enum, InputObject, Scalar};
+use crate::Scalar;
 
 pub struct Argument {
     pub(crate) name: String,
