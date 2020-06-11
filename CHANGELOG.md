@@ -24,6 +24,8 @@ all APIs might be changed.
   variables
 - `query_dsl` adds `allow(dead_code)` annotations so we don't get tons of dead
   code warnings when we're not exercising an entire schema.
+- `query_dsl` no longer creates mutable `Vec` for fields without arguments -
+  this was leading to tons of "doesn't need to be mutable" warnings.
 
 ## v0.2.0 - 2016-06-11
 

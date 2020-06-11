@@ -98,6 +98,19 @@ impl quote::ToTokens for FieldSelector {
             }
         }
 
+        let construct_args = if argument_names.is_empty() {
+            quote! {
+                let args = Vec::new();
+            }
+        } else {
+            quote! {
+                let mut args: Vec<::cynic::Argument> = vec![];
+                #(
+                    args.extend(#argument_names.into_iter());
+                )*
+            }
+        };
+
         if self.field_type.contains_scalar() {
             let field_type = field_type.to_tokens(None);
             tokens.append_all(quote! {
@@ -106,10 +119,7 @@ impl quote::ToTokens for FieldSelector {
                     #[allow(unused_imports)]
                     use ::cynic::selection_set::{string, integer, float, boolean};
 
-                    let mut args: Vec<::cynic::Argument> = vec![];
-                    #(
-                        args.extend(#argument_names.into_iter());
-                    )*
+                    #construct_args
 
                     ::cynic::selection_set::field(#query_field_name, args, #selector)
                 }
@@ -121,10 +131,7 @@ impl quote::ToTokens for FieldSelector {
                     fields: ::cynic::selection_set::SelectionSet<'a, T, #argument_type_lock>
                 ) -> ::cynic::selection_set::SelectionSet<'a, #decodes_to, #type_lock>
                     {
-                        let mut args: Vec<::cynic::Argument> = vec![];
-                        #(
-                            args.extend(#argument_names.into_iter());
-                        )*
+                        #construct_args
 
                         ::cynic::selection_set::field(
                             #query_field_name,
