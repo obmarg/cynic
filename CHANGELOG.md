@@ -11,6 +11,10 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+### New Features
+
+- Added chrono::DateTime scalar support behind a chrono feature flag.
+
 ### Bug Fixes
 
 - Generated `query_dsl` now disables unused import warnings where appropriate.
