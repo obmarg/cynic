@@ -1,16 +1,51 @@
+//! `SelectionSet`s are the core building block of GraphQL queries in cynic.
+//!
+//! A `SelectionSet` represents part of a query with one or more fields that
+//! should be queried, and details of how those fields should be deserialized
+//! after the query is run.
+//!
+//! The functions in this module fall into a few categories:
+//!
+//! 1. Functions that decode scalar values, such as `int` & `bool`.
+//! 2. Functions that decode container types such as `vec` & `option`.  These
+//!    take a selection set that is used to decode the contents of the container.
+//! 3. The `field` function, which selects a particular field of an object, and
+//!    uses another selection set to decode the type of that object.
+//! 4. Combinators like the `map`, `map2` etc, functions that combine multiple
+//!    selection sets into a single type.
+//!
+//! Cynic provides Query DSL generation & derive macros that mean for many cases you
+//! shouldn't need to use the functions in this module directly.  However for more
+//! advanced use cases (or if you dislike macros) these can still be useful.
+
 use json_decode::{BoxDecoder, DecodeError};
 use std::collections::HashMap;
 use std::marker::PhantomData;
 
 use crate::{field::Field, scalar, Argument, QueryRoot};
 
+/// An error used by SelectionSet functions.
 #[derive(Debug, PartialEq)]
 pub(crate) enum Error {
+    /// Something went wrong when decoding the results of query.
     DecodeError(json_decode::DecodeError),
 }
 
+/// A marker trait used to encode GraphQL subtype relationships into the Rust
+/// typesystem.
 pub trait HasSubtype<Subtype> {}
 
+/// A `SelectionSet` is a combination of a set of fields to fetch as part of a
+/// GraphQL query and a decoder function that will decode the results of that
+/// query.
+///
+/// Each `SelectionSet` has two generic parmeters:
+///
+/// - `DecodesTo` is the type that the selection set will decode when it is fed
+///   the results of it's query.
+/// - `TypeLock` is used to enforce type safety.  It allows the `query_dsl`
+///   functionality in cynic to annotate each SelectionSet it returns such
+///   that you can't build incorrect queries.
 pub struct SelectionSet<'a, DecodesTo, TypeLock> {
     fields: Vec<Field>,
 
@@ -20,6 +55,15 @@ pub struct SelectionSet<'a, DecodesTo, TypeLock> {
 }
 
 impl<'a, DecodesTo, TypeLock> SelectionSet<'a, DecodesTo, TypeLock> {
+    /// Maps a `SelectionSet<_, DecodesTo, _>` to a `SelectionSet<_, R, _>` by applying
+    /// the provided function `f` to the decoded data when decoding query results.
+    ///
+    /// For example, to fetch a string and then lowercase it:
+    ///
+    /// ```rust
+    /// # use cynic::selection_set::{field, string};
+    /// string().map(|s| s.to_lowercase());
+    /// ```
     pub fn map<F, R>(self, f: F) -> SelectionSet<'a, R, TypeLock>
     where
         F: (Fn(DecodesTo) -> R) + 'a + Sync + Send,
@@ -33,6 +77,20 @@ impl<'a, DecodesTo, TypeLock> SelectionSet<'a, DecodesTo, TypeLock> {
         }
     }
 
+    /// Creates a `SelectionSet` that depends on previous resutls.
+    ///
+    /// For example, to decode a different type depending on the value of
+    /// another field:
+    ///
+    /// ```rust
+    /// # use cynic::selection_set::{field, string, fail};
+    /// field::<_, (), ()>("__typename", vec![], string())
+    ///     .and_then(|typename| match typename.as_ref() {
+    ///         "Cat" => field("cat", vec![], string()),
+    ///         "Dog" => field("dog", vec![], string()),
+    ///         _ => fail("")
+    ///     });
+    /// ```
     pub fn and_then<F, R>(self, f: F) -> SelectionSet<'a, R, TypeLock>
     where
         F: (Fn(DecodesTo) -> SelectionSet<'a, R, TypeLock>) + 'a + Sync + Send,
@@ -47,6 +105,12 @@ impl<'a, DecodesTo, TypeLock> SelectionSet<'a, DecodesTo, TypeLock> {
         }
     }
 
+    /// Changes the `TypeLock` on a `SelectionSet`.
+    ///
+    /// This is used when querying for an interface or a union type where you have
+    /// a `SelectionSet` type locked to a subtype of an interface and want to use
+    /// get a `SelectionSet` compatible with a field that has the type of the
+    /// interface.
     pub fn transform_typelock<NewLock>(self) -> SelectionSet<'a, DecodesTo, NewLock>
     where
         NewLock: HasSubtype<TypeLock>,
@@ -79,6 +143,7 @@ impl<'a, DecodesTo, TypeLock> SelectionSet<'a, DecodesTo, TypeLock> {
     }
 }
 
+/// Creates a `SelectionSet` that will decode a `String`
 pub fn string() -> SelectionSet<'static, String, ()> {
     SelectionSet {
         fields: vec![],
@@ -87,6 +152,7 @@ pub fn string() -> SelectionSet<'static, String, ()> {
     }
 }
 
+/// Creates a `SelectionSet` that will decode an `i64`
 pub fn integer() -> SelectionSet<'static, i64, ()> {
     SelectionSet {
         fields: vec![],
@@ -95,6 +161,7 @@ pub fn integer() -> SelectionSet<'static, i64, ()> {
     }
 }
 
+/// Creates a `SelectionSet` that will decode an `f64`
 pub fn float() -> SelectionSet<'static, f64, ()> {
     SelectionSet {
         fields: vec![],
@@ -103,6 +170,7 @@ pub fn float() -> SelectionSet<'static, f64, ()> {
     }
 }
 
+/// Creates a `SelectionSet` that will decode a `bool`
 pub fn boolean() -> SelectionSet<'static, bool, ()> {
     SelectionSet {
         fields: vec![],
@@ -111,6 +179,7 @@ pub fn boolean() -> SelectionSet<'static, bool, ()> {
     }
 }
 
+/// Creates a `SelectionSet` that will decode a type that implements `serde::Deserialize`
 pub fn serde<T>() -> SelectionSet<'static, T, ()>
 where
     for<'de> T: serde::Deserialize<'de>,
@@ -123,6 +192,7 @@ where
     }
 }
 
+/// Creates a `SelectionSet` that will decode into a `serde_json::Value`
 pub fn json() -> SelectionSet<'static, serde_json::Value, ()> {
     SelectionSet {
         fields: vec![],
@@ -131,6 +201,7 @@ pub fn json() -> SelectionSet<'static, serde_json::Value, ()> {
     }
 }
 
+/// Creates a `SelectionSet` that will decode a type that implements `Scalar`
 pub fn scalar<S>() -> SelectionSet<'static, S, ()>
 where
     S: scalar::Scalar + 'static + Send + Sync,
@@ -142,6 +213,7 @@ where
     }
 }
 
+/// Creates a `SelectionSet` that decodes a Vec of `inner_selection`
 pub fn vec<'a, DecodesTo, TypeLock>(
     inner_selection: SelectionSet<'a, DecodesTo, TypeLock>,
 ) -> SelectionSet<'a, Vec<DecodesTo>, TypeLock>
@@ -155,6 +227,7 @@ where
     }
 }
 
+/// Creates a `SelectionSet` that decodes a nullable into an Option
 pub fn option<'a, DecodesTo, TypeLock>(
     inner_selection: SelectionSet<'a, DecodesTo, TypeLock>,
 ) -> SelectionSet<'a, Option<DecodesTo>, TypeLock>
@@ -168,16 +241,7 @@ where
     }
 }
 
-// TODO: ok, so to fix this issue it seems like i can:
-// 1. Make SelectionSet a trait, return specific types from each of these functions?
-//      Except that won't fix this, as the issue is our SelectionSet _contains_ a dyn
-//      which we can only behind a pointer, yet json_decode wants to own things.
-// 2. Make json_decode take references?  Would probably need to do a lot of cloning
-//      so not ideal.  Though if I changed from Box to Rc/Arc we'd be good for cloning...
-// 3. Expose concrete types from json_decode and then do 1, including the decoder type
-//      in the generic parameters...
-// 4. Just make json_decode return Boxes/Rc's?
-
+/// Selects a field from a GraphQL object, decoding it with another `SelectionSet`
 pub fn field<'a, DecodesTo, TypeLock, InnerTypeLock>(
     field_name: &str,
     arguments: Vec<Argument>,
@@ -199,6 +263,10 @@ where
     }
 }
 
+/// Creates a SelectionSet that adds some inline fragments to a query.
+///
+/// This should be provided a Vec of typenames to the selection set that should
+/// be applied if that type is found.
 pub fn inline_fragments<'a, DecodesTo, TypeLock>(
     fragments: Vec<(String, SelectionSet<'a, DecodesTo, TypeLock>)>,
 ) -> SelectionSet<'a, DecodesTo, TypeLock>
@@ -264,8 +332,10 @@ where
     }
 }
 
+/// Applies a function to the result of a selection.
 pub use map as map1;
 
+/// Applies a function to the result of a selection.
 pub fn map<'a, F, T1, NewDecodesTo, TypeLock>(
     func: F,
     param1: SelectionSet<'a, T1, TypeLock>,
@@ -284,6 +354,32 @@ where
 
 macro_rules! define_map {
     ($fn_name:ident, $($i:ident),+) => {
+        /// Applies a function to the result of some SelectionSets.
+        ///
+        /// This can be used to create structs from the SelectionSets of their fields.
+        /// For example, to create a user with three fields we would use the `map3` function:
+        ///
+        /// ```
+        /// # use cynic::selection_set::{field, map3, string, integer};
+        /// struct User {
+        ///     id: i64,
+        ///     name: String,
+        ///     email: String,
+        /// }
+        ///
+        /// impl User {
+        ///     fn new(id: i64, name: String, email: String) -> User {
+        ///         User { id, name, email }
+        ///     }
+        /// }
+        ///
+        /// map3(
+        ///     User::new,
+        ///     field::<_, (), ()>("id", vec![], integer()),
+        ///     field::<_, (), ()>("email", vec![], string()),
+        ///     field::<_, (), ()>("email", vec![], string()),
+        /// );
+        /// ```
         pub fn $fn_name<'a, F, $($i, )+ NewDecodesTo, TypeLock>(
             func: F,
             $($i: SelectionSet<'a, $i, TypeLock>,)+
@@ -464,6 +560,10 @@ define_map!(
     _39, _40, _41, _42, _43, _44, _45, _46, _47, _48, _49, _50
 );
 
+/// Creates a `SelectionSet` that always decodes succesfully to a particular value
+///
+/// This is handy when used with `SelectionSet::and_then` - you can return a specific
+/// hard coded value in some case.
 pub fn succeed<'a, V>(value: V) -> SelectionSet<'a, V, ()>
 where
     V: Clone + Send + Sync + 'a,
@@ -475,6 +575,13 @@ where
     }
 }
 
+/// Creates a `SelectionSet` that always fails to decode.
+///
+/// This is handy when used with `SelectionSet::and_then` where you want to
+/// give a custom error message in some case.
+///
+/// See the [`SelectionSet::and_then`](cynic::selection_set::SelectionSet::and_then)
+/// docs for an example.
 pub fn fail<'a, V>(err: impl Into<String>) -> SelectionSet<'static, V, ()> {
     SelectionSet {
         fields: vec![],

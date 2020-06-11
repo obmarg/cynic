@@ -14,6 +14,7 @@ all APIs might be changed.
 ### New Features
 
 - Added chrono::DateTime scalar support behind a chrono feature flag.
+- The `cynic::selection_set` module and all it's contents are now documented.
 
 ### Bug Fixes
 
