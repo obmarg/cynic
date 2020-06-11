@@ -130,6 +130,7 @@ mod tests {
     #[cfg(feature = "chrono")]
     #[test]
     fn test_utc_datetime_scalar() {
+        use super::*;
         use chrono::{DateTime, Utc};
 
         let datetime: DateTime<Utc> = Utc::now();
@@ -140,6 +141,7 @@ mod tests {
     #[cfg(feature = "chrono")]
     #[test]
     fn test_fixed_offset_datetime_scalar() {
+        use super::*;
         use chrono::{DateTime, FixedOffset, TimeZone};
 
         let datetime: DateTime<FixedOffset> = FixedOffset::east(3600 * 5)
