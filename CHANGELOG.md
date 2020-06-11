@@ -18,6 +18,8 @@ all APIs might be changed.
 ### Bug Fixes
 
 - Generated `query_dsl` now disables unused import warnings where appropriate.
+- Exposed `Id::inner` & `Id::into_inner` functions - these were meant to be
+  public but were not
 
 ## v0.2.0 - 2016-06-11
 

@@ -2,11 +2,11 @@
 pub struct Id(String);
 
 impl Id {
-    fn inner(&self) -> &str {
+    pub fn inner(&self) -> &str {
         return &self.0;
     }
 
-    fn into_inner(self) -> String {
+    pub fn into_inner(self) -> String {
         return self.0;
     }
 }
