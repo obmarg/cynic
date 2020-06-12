@@ -15,6 +15,8 @@ all APIs might be changed.
 
 - Added chrono::DateTime scalar support behind a chrono feature flag.
 - The `cynic::selection_set` module and all it's contents are now documented.
+- `QueryBody` now exposes it's arguments & query fields for greater flexibility
+  (and use in snapshot testing etc.)
 
 ### Bug Fixes
 

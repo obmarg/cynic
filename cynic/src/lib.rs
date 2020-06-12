@@ -259,8 +259,8 @@ pub trait QueryRoot {}
 
 #[derive(Debug, serde::Serialize)]
 pub struct QueryBody<'a> {
-    query: String,
-    variables: HashMap<String, &'a serde_json::Value>,
+    pub query: String,
+    pub variables: HashMap<String, &'a serde_json::Value>,
 }
 
 pub use cynic_proc_macros::{
