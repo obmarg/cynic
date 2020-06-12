@@ -30,6 +30,8 @@ all APIs might be changed.
 - `ID` fields are now correctly given the `cynic::Id` type in `query_dsl` - previously
   they were being forced to String.
 - `cynic::Id` is now a `cynic::Scalar`
+- Fixed an issue in `derive(QueryFragment)` where Enums inside lists would not be
+  treated as Enums.
 
 ## v0.2.0 - 2016-06-11
 

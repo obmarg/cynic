@@ -76,7 +76,7 @@ impl FieldType {
 
     pub fn contains_enum(&self) -> bool {
         match self {
-            FieldType::List(inner, _) => inner.contains_scalar(),
+            FieldType::List(inner, _) => inner.contains_enum(),
             FieldType::Enum(_, _) => true,
             _ => false,
         }
