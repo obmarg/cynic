@@ -11,6 +11,8 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.3.0 - 2020-06-12
+
 ### New Features
 
 - Added chrono::DateTime scalar support behind a chrono feature flag.
