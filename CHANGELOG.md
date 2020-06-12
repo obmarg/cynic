@@ -34,6 +34,7 @@ all APIs might be changed.
 - `cynic::Id` is now a `cynic::Scalar`
 - Fixed an issue in `derive(QueryFragment)` where Enums inside lists would not be
   treated as Enums.
+- `DecodeError` now implements `std::error::Error`
 
 ## v0.2.0 - 2016-06-11
 
