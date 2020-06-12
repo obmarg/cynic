@@ -1,10 +1,10 @@
 mod query_dsl {
-    cynic::query_dsl!("examples/examples/starwars.schema.graphql");
+    cynic::query_dsl!("examples/starwars.schema.graphql");
 }
 
 #[derive(cynic::QueryFragment, Debug)]
 #[cynic(
-    schema_path = "examples/examples/starwars.schema.graphql",
+    schema_path = "examples/starwars.schema.graphql",
     query_module = "query_dsl",
     graphql_type = "Film"
 )]
@@ -20,7 +20,7 @@ struct FilmArguments {
 
 #[derive(cynic::QueryFragment, Debug)]
 #[cynic(
-    schema_path = "examples/examples/starwars.schema.graphql",
+    schema_path = "examples/starwars.schema.graphql",
     query_module = "query_dsl",
     graphql_type = "Root",
     argument_struct = "FilmArguments"

@@ -8,13 +8,13 @@ mod query_dsl {
     #[derive(cynic::Scalar)]
     pub struct Json(serde_json::Value);
 
-    cynic::query_dsl!("cynic/examples/simple.graphql");
+    cynic::query_dsl!("examples/simple.graphql");
 }
 
 use cynic::selection_set;
 
 #[cynic::query_module(
-    schema_path = "cynic/examples/simple.graphql",
+    schema_path = "examples/simple.graphql",
     // TODO: Make query_module optional (automatically does it if missing)
     // Some complications around what to do with scalars here though...
     query_module = "query_dsl"

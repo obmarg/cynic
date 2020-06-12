@@ -5,7 +5,7 @@ fn main() {
 mod query_dsl {
     type Json = serde_json::Value;
 
-    cynic::query_dsl!("cynic/examples/simple.graphql");
+    cynic::query_dsl!("examples/simple.graphql");
 }
 
 use cynic::selection_set;
@@ -15,7 +15,7 @@ struct TestArgs {}
 
 #[derive(cynic::QueryFragment)]
 #[cynic(
-    schema_path = "cynic/examples/simple.graphql",
+    schema_path = "examples/simple.graphql",
     query_module = "query_dsl",
     graphql_type = "TestStruct",
     argument_struct = "TestArgs"
@@ -29,7 +29,7 @@ struct TestStruct {
 
 #[derive(cynic::QueryFragment)]
 #[cynic(
-    schema_path = "cynic/examples/simple.graphql",
+    schema_path = "examples/simple.graphql",
     query_module = "query_dsl",
     graphql_type = "Nested"
 )]
@@ -40,7 +40,7 @@ struct Nested {
 
 #[derive(cynic::QueryFragment)]
 #[cynic(
-    schema_path = "cynic/examples/simple.graphql",
+    schema_path = "examples/simple.graphql",
     query_module = "query_dsl",
     graphql_type = "TestStruct"
 )]
@@ -57,7 +57,7 @@ impl Test {
 
 #[derive(cynic::InlineFragments)]
 #[cynic(
-    schema_path = "cynic/examples/simple.graphql",
+    schema_path = "examples/simple.graphql",
     query_module = "query_dsl",
     graphql_type = "MyUnionType"
 )]

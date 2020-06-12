@@ -11,6 +11,14 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+### Breaking Changes
+
+- `schema_path` parameters are now relative to `CARGO_MANFIEST_DIR` rather than
+  the current working directory.  This fixes an issue with cargo workspace projects
+  where doc-tests would be relative to the sub-crate but cargo builds were relative
+  to the workspace root.  For projects not using workspaces this will probably make
+  no difference
+
 ## v0.3.0 - 2020-06-12
 
 ### New Features

@@ -58,6 +58,17 @@ fn format_code(filename: &std::path::Path) {
 fn load_schema(
     filename: impl AsRef<std::path::Path>,
 ) -> Result<graphql_parser::schema::Document, Error> {
+    use std::path::PathBuf;
+    let mut pathbuf = PathBuf::new();
+
+    let filename = if let Ok(manifest_dir) = std::env::var("CARGO_MANIFEST_DIR") {
+        pathbuf.push(manifest_dir);
+        pathbuf.push(filename);
+        pathbuf.as_path()
+    } else {
+        filename.as_ref()
+    };
+
     let schema = std::fs::read_to_string(filename)?;
     Ok(graphql_parser::schema::parse_schema(&schema)?.into())
 }
