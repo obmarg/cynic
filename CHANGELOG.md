@@ -11,6 +11,8 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+## 0.4.0 - 2020-06-12
+
 ### Breaking Changes
 
 - `schema_path` parameters are now relative to `CARGO_MANFIEST_DIR` rather than
