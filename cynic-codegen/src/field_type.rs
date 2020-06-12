@@ -5,7 +5,7 @@ use crate::{Ident, TypeIndex, TypePath};
 
 #[derive(Debug, Clone)]
 pub enum FieldType {
-    Scalar(Ident, bool),
+    Scalar(TypePath, bool),
     Enum(Ident, bool),
     InputObject(Ident, bool),
     Other(Ident, bool),
@@ -41,7 +41,7 @@ impl FieldType {
             ),
             Type::NamedType(name) => {
                 if type_index.is_scalar(name) {
-                    FieldType::Scalar(Ident::for_type(name), nullable)
+                    FieldType::Scalar(Ident::for_type(name).into(), nullable)
                 } else if type_index.is_enum(name) {
                     FieldType::Enum(Ident::for_type(name), nullable)
                 } else if type_index.is_input_object(name) {
@@ -52,9 +52,13 @@ impl FieldType {
                     FieldType::Scalar(Ident::for_inbuilt_scalar("f64").into(), nullable)
                 } else if name == "Boolean" {
                     FieldType::Scalar(Ident::for_inbuilt_scalar("bool").into(), nullable)
-                } else if name == "String" || name == "ID" {
-                    // TODO: Could do something more sensible for IDs here...
+                } else if name == "String" {
                     FieldType::Scalar(Ident::for_inbuilt_scalar("String").into(), nullable)
+                } else if name == "ID" {
+                    FieldType::Scalar(
+                        TypePath::new_absolute(vec![Ident::new("cynic"), Ident::new("Id")]),
+                        nullable,
+                    )
                 } else {
                     FieldType::Other(Ident::for_type(name).into(), nullable)
                 }

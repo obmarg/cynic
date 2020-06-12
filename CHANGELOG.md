@@ -27,6 +27,9 @@ all APIs might be changed.
   code warnings when we're not exercising an entire schema.
 - `query_dsl` no longer creates mutable `Vec` for fields without arguments -
   this was leading to tons of "doesn't need to be mutable" warnings.
+- `ID` fields are now correctly given the `cynic::Id` type in `query_dsl` - previously
+  they were being forced to String.
+- `cynic::Id` is now a `cynic::Scalar`
 
 ## v0.2.0 - 2016-06-11
 

@@ -116,8 +116,8 @@ mod tests {
 
     #[test]
     fn test_required_validation() {
-        let required_field = FieldType::Scalar(Ident::new(""), false);
-        let optional_field = FieldType::Scalar(Ident::new(""), true);
+        let required_field = FieldType::Scalar(Ident::new("").into(), false);
+        let optional_field = FieldType::Scalar(Ident::new("").into(), true);
 
         assert_matches!(
             check_types_are_compatible(
@@ -155,11 +155,18 @@ mod tests {
 
     #[test]
     fn test_list_validation() {
-        let list = FieldType::List(Box::new(FieldType::Scalar(Ident::new(""), false)), false);
-        let optional_list =
-            FieldType::List(Box::new(FieldType::Scalar(Ident::new(""), false)), true);
-        let option_list_option =
-            FieldType::List(Box::new(FieldType::Scalar(Ident::new(""), true)), true);
+        let list = FieldType::List(
+            Box::new(FieldType::Scalar(Ident::new("").into(), false)),
+            false,
+        );
+        let optional_list = FieldType::List(
+            Box::new(FieldType::Scalar(Ident::new("").into(), false)),
+            true,
+        );
+        let option_list_option = FieldType::List(
+            Box::new(FieldType::Scalar(Ident::new("").into(), true)),
+            true,
+        );
 
         assert_matches!(
             check_types_are_compatible(&list, &syn::parse2(quote! { Vec<i32> }).unwrap(), false),
@@ -205,11 +212,18 @@ mod tests {
 
     #[test]
     fn test_validation_when_flattening() {
-        let list = FieldType::List(Box::new(FieldType::Scalar(Ident::new(""), false)), false);
-        let optional_list =
-            FieldType::List(Box::new(FieldType::Scalar(Ident::new(""), false)), true);
-        let option_list_option =
-            FieldType::List(Box::new(FieldType::Scalar(Ident::new(""), true)), true);
+        let list = FieldType::List(
+            Box::new(FieldType::Scalar(Ident::new("").into(), false)),
+            false,
+        );
+        let optional_list = FieldType::List(
+            Box::new(FieldType::Scalar(Ident::new("").into(), false)),
+            true,
+        );
+        let option_list_option = FieldType::List(
+            Box::new(FieldType::Scalar(Ident::new("").into(), true)),
+            true,
+        );
 
         assert_matches!(
             check_types_are_compatible(

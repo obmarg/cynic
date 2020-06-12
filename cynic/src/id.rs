@@ -16,3 +16,13 @@ impl<T: Into<String>> From<T> for Id {
         Id(s.into())
     }
 }
+
+impl crate::Scalar for Id {
+    fn decode(value: &serde_json::Value) -> Result<Self, json_decode::DecodeError> {
+        String::decode(value).map(Into::into)
+    }
+
+    fn encode(&self) -> Result<serde_json::Value, ()> {
+        self.0.encode()
+    }
+}

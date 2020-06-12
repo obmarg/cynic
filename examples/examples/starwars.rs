@@ -15,7 +15,7 @@ struct Film {
 
 #[derive(Clone, cynic::FragmentArguments)]
 struct FilmArguments {
-    id: Option<String>,
+    id: Option<cynic::Id>,
 }
 
 #[derive(cynic::QueryFragment, Debug)]
@@ -34,7 +34,7 @@ fn main() {
     use cynic::QueryFragment;
 
     let query = cynic::Query::new(FilmDirectorQuery::fragment(FilmArguments {
-        id: Some("ZmlsbXM6MQ==".to_string()),
+        id: Some("ZmlsbXM6MQ==".into()),
     }));
 
     let response = reqwest::blocking::Client::new()
