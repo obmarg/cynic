@@ -76,7 +76,7 @@
 //!     // hard coded film ID to look up.  Though useful for demonstration, hard coded
 //!     // arguments like this aren't much use in reality.  For more details on providing
 //!     // runtime arguments please see below.
-//!     #[cynic_arguments(id = Some("ZmlsbXM6MQ==".to_string()))]
+//!     #[cynic_arguments(id = Some("ZmlsbXM6MQ==".into()))]
 //!     film: Option<Film>,
 //! }
 //!
@@ -125,7 +125,7 @@
 //! // `QueryFragment` fragment, whether it represents part of a query or a whole query.
 //! #[derive(cynic::FragmentArguments, Clone)]
 //! struct FilmArguments {
-//!     id: Option<String>
+//!     id: Option<cynic::Id>
 //! }
 //!
 //! // You can now define a query to use these arguments on.  For example, to make
@@ -149,7 +149,7 @@
 //! use cynic::QueryFragment;
 //! let query = cynic::Query::new(
 //!     FilmDirectorQueryWithArgs::fragment(
-//!         FilmArguments{ id: Some("ZmlsbXM6MQ==".to_string()) }
+//!         FilmArguments{ id: Some("ZmlsbXM6MQ==".into()) }
 //!     )
 //! );
 //! ```
