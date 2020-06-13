@@ -41,13 +41,25 @@ impl FieldType {
                 } else if type_index.is_input_object(name) {
                     FieldType::InputObject(Ident::for_type(name), nullable)
                 } else if name == "Int" {
-                    FieldType::Scalar(Ident::for_inbuilt_scalar("i64").into(), nullable)
+                    FieldType::Scalar(
+                        TypePath::new_builtin(Ident::for_inbuilt_scalar("i64")),
+                        nullable,
+                    )
                 } else if name == "Float" {
-                    FieldType::Scalar(Ident::for_inbuilt_scalar("f64").into(), nullable)
+                    FieldType::Scalar(
+                        TypePath::new_builtin(Ident::for_inbuilt_scalar("f64")),
+                        nullable,
+                    )
                 } else if name == "Boolean" {
-                    FieldType::Scalar(Ident::for_inbuilt_scalar("bool").into(), nullable)
+                    FieldType::Scalar(
+                        TypePath::new_builtin(Ident::for_inbuilt_scalar("bool")),
+                        nullable,
+                    )
                 } else if name == "String" {
-                    FieldType::Scalar(Ident::for_inbuilt_scalar("String").into(), nullable)
+                    FieldType::Scalar(
+                        TypePath::new_builtin(Ident::for_inbuilt_scalar("String")),
+                        nullable,
+                    )
                 } else if name == "ID" {
                     FieldType::Scalar(
                         TypePath::new_absolute(vec![Ident::new("cynic"), Ident::new("Id")]),
@@ -245,18 +257,37 @@ impl FieldType {
     // generic_inner_type should be provided if the inner type doesn't represent a
     // concrete type and needs to use a type parameter defined at an outer level.
     // The name of the type parameter should be passed in to generic_inner_type.
-    pub fn to_tokens(&self, generic_inner_type: Option<Ident>) -> TokenStream {
+    pub fn to_tokens(
+        &self,
+        generic_inner_type: Option<Ident>,
+        mut path_to_types: TypePath,
+    ) -> TokenStream {
         use quote::quote;
 
         let nullable = self.is_nullable();
         let rust_type = match (self, &generic_inner_type) {
             (FieldType::List(inner_type, _), _) => {
-                let inner_type = inner_type.to_tokens(generic_inner_type);
+                let inner_type = inner_type.to_tokens(generic_inner_type, path_to_types);
                 quote! { Vec<#inner_type> }
             }
-            (_, Some(generic)) => quote! { #generic },
-            (FieldType::Scalar(typename, _), _) => quote! { #typename },
-            (FieldType::Other(typename, _), _) => quote! { #typename },
+            (_, Some(generic_type)) => {
+                quote! { #generic_type }
+            }
+            (FieldType::Scalar(scalar_path, _), _) => {
+                let type_path = if scalar_path.is_absolute() {
+                    scalar_path.clone()
+                } else {
+                    TypePath::concat(&[path_to_types, scalar_path.clone()])
+                };
+                quote! { #type_path }
+            }
+            (FieldType::Other(typename, _), _) => {
+                path_to_types.push(typename.clone());
+
+                let path_to_types = &path_to_types;
+
+                quote! { #path_to_types }
+            }
             (FieldType::Enum(_, _), _) => {
                 panic!("Enums are always generic, we shouldn't get here.")
             }

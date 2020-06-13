@@ -10,6 +10,7 @@ pub struct TypePath {
     path: Vec<Ident>,
     relative: bool,
     is_void: bool,
+    builtin: bool,
 }
 
 impl TypePath {
@@ -18,6 +19,7 @@ impl TypePath {
             path: path,
             relative: true,
             is_void: false,
+            builtin: false,
         }
     }
 
@@ -26,6 +28,16 @@ impl TypePath {
             path: path,
             relative: false,
             is_void: false,
+            builtin: false,
+        }
+    }
+
+    pub fn new_builtin(ident: Ident) -> Self {
+        TypePath {
+            path: vec![ident],
+            relative: false,
+            is_void: false,
+            builtin: true,
         }
     }
 
@@ -34,6 +46,7 @@ impl TypePath {
             path: vec![],
             relative: false,
             is_void: true,
+            builtin: false,
         }
     }
 
@@ -55,6 +68,7 @@ impl TypePath {
             path: result_path,
             relative,
             is_void: false,
+            builtin: false,
         }
     }
 
@@ -63,7 +77,16 @@ impl TypePath {
             path: vec![],
             relative: true,
             is_void: false,
+            builtin: false,
         }
+    }
+
+    pub fn push(&mut self, ident: Ident) {
+        self.path.push(ident);
+    }
+
+    pub fn is_absolute(&self) -> bool {
+        !self.relative
     }
 }
 
@@ -73,6 +96,7 @@ impl From<Ident> for TypePath {
             path: vec![ident],
             relative: true,
             is_void: false,
+            builtin: false,
         }
     }
 }
@@ -86,7 +110,7 @@ impl quote::ToTokens for TypePath {
             return;
         }
 
-        let initial = if !self.relative && !self.path.is_empty() {
+        let initial = if !self.relative && !self.path.is_empty() && !self.builtin {
             Some(quote! { :: })
         } else {
             None

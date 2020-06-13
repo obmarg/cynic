@@ -3,7 +3,7 @@ use proc_macro2::TokenStream;
 use crate::field_argument::GenericParameter;
 use crate::{
     schema::{self, InputValue},
-    FieldArgument, Ident, TypeIndex,
+    FieldArgument, Ident, TypeIndex, TypePath,
 };
 
 #[derive(Debug, Clone)]
@@ -131,7 +131,9 @@ impl quote::ToTokens for ArgumentStruct {
         let arguments = self.arguments.iter().map(|field| {
             let name = &field.name;
             let generic_inner_type = field.generic_parameter().map(|param| param.name);
-            let type_tokens = field.argument_type.to_tokens(generic_inner_type);
+            let type_tokens = field
+                .argument_type
+                .to_tokens(generic_inner_type, TypePath::empty());
             quote! { pub #name: #type_tokens }
         });
 

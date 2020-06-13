@@ -1,6 +1,6 @@
 use proc_macro2::TokenStream;
 
-use crate::{schema::InputValue, FieldArgument, FieldType, Ident, TypeIndex, TypePath};
+use crate::{schema::InputValue, FieldArgument, FieldType, Ident, TypeIndex};
 
 /// A builder struct that is generated for each field in the query, to
 /// allow optional arguments to be provided to that field.
@@ -53,10 +53,12 @@ impl FieldSelectionBuilder {
         let selector = self.field_type.selection_set_call(selector);
 
         if self.field_type.contains_scalar() {
-            let field_type = self.field_type.to_tokens(None);
+            let field_type = self
+                .field_type
+                .to_tokens(None, Ident::for_module("super").into());
             quote! {
                 pub fn select(self) ->
-                ::cynic::selection_set::SelectionSet<'static, #field_type, #type_lock> {
+                ::cynic::selection_set::SelectionSet<'static, #field_type, super::#type_lock> {
                     #[allow(unused_imports)]
                     use ::cynic::selection_set::{string, integer, float, boolean};
 
@@ -65,13 +67,15 @@ impl FieldSelectionBuilder {
             }
         } else {
             let decodes_to = self.field_type.decodes_to(quote! { T });
-            let argument_type_lock = self.field_type.as_type_lock(TypePath::empty());
+            let argument_type_lock = self
+                .field_type
+                .as_type_lock(Ident::for_module("super").into());
 
             quote! {
                 pub fn select<'a, T: 'a + Send + Sync>(
                     self,
                     fields: ::cynic::selection_set::SelectionSet<'a, T, #argument_type_lock>
-                ) -> ::cynic::selection_set::SelectionSet<'a, #decodes_to, #type_lock>
+                ) -> ::cynic::selection_set::SelectionSet<'a, #decodes_to, super::#type_lock>
                     {
                         ::cynic::selection_set::field(
                             #query_field_name,
@@ -109,7 +113,8 @@ impl quote::ToTokens for FieldSelectionBuilder {
 
         let argument_types = self.optional_args.iter().map(|a| {
             let generic_inner_type = a.generic_parameter().map(|param| param.name);
-            a.argument_type.to_tokens(generic_inner_type)
+            a.argument_type
+                .to_tokens(generic_inner_type, Ident::for_module("super").into())
         });
 
         let select_func = self.select_function_tokens();
@@ -120,7 +125,7 @@ impl quote::ToTokens for FieldSelectionBuilder {
             }
 
             impl #name {
-                pub(super) fn new(args: Vec<::cynic::Argument>) {
+                pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
                     #name { args }
                 }
 

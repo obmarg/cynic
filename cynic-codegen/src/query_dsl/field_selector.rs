@@ -59,10 +59,15 @@ impl quote::ToTokens for FieldSelector {
 
             if let Some(generic_param) = arg.generic_parameter() {
                 generic_params.push(generic_param.to_tokens(TypePath::empty()));
-                let arg_type = arg.argument_type.to_tokens(Some(generic_param.name));
+
+                let arg_type = arg
+                    .argument_type
+                    .to_tokens(Some(generic_param.name), TypePath::empty());
+
                 argument_defs.push(quote! { #arg_name: #arg_type });
             } else {
-                let arg_type = arg.argument_type.to_tokens(None);
+                let arg_type = arg.argument_type.to_tokens(None, TypePath::empty());
+
                 argument_defs.push(quote! { #arg_name: #arg_type });
             }
         }
