@@ -1,4 +1,4 @@
-use crate::{Error, StructField, TypeIndex, TypePath};
+use crate::{Error, FieldArgument, TypeIndex};
 
 // Alias all the graphql_parser schema types so we don't have to specify generic parameters
 // everywhere
@@ -46,8 +46,7 @@ impl FieldExt for Field {
             .filter(|arg| {
                 // Note: We're passing an empty TypeIndex in here, but that's OK as
                 // we only want to know if things are required
-                StructField::from_input_value(arg, TypePath::empty(), &TypeIndex::empty())
-                    .is_required()
+                FieldArgument::from_input_value(arg, &TypeIndex::empty()).is_required()
             })
             .map(|a| a.clone())
             .collect()
@@ -59,8 +58,7 @@ impl FieldExt for Field {
             .filter(|arg| {
                 // Note: We're passing an empty TypeIndex in here, but that's OK as
                 // we only want to know if things are required
-                !StructField::from_input_value(arg, TypePath::empty(), &TypeIndex::empty())
-                    .is_required()
+                !FieldArgument::from_input_value(arg, &TypeIndex::empty()).is_required()
             })
             .map(|a| a.clone())
             .collect()

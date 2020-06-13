@@ -1,20 +1,20 @@
 use proc_macro2::TokenStream;
 
-mod argument_struct;
 mod enum_marker;
 mod field_selector;
 mod input_object_marker;
 mod interface_struct;
+mod selection_builder;
 mod selector_struct;
 mod union_struct;
 
 use super::module::Module;
 use crate::{load_schema, schema, Error, TypeIndex};
-pub use argument_struct::ArgumentStruct;
 use enum_marker::EnumMarker;
 pub use field_selector::FieldSelector;
 use input_object_marker::InputObjectMarker;
 use interface_struct::InterfaceStruct;
+use selection_builder::FieldSelectionBuilder;
 pub use selector_struct::SelectorStruct;
 use union_struct::UnionStruct;
 
@@ -50,7 +50,7 @@ pub fn query_dsl_from_schema(input: QueryDslParams) -> Result<TokenStream, Error
 #[derive(Debug)]
 pub struct QueryDsl {
     pub selectors: Vec<SelectorStruct>,
-    pub argument_struct_modules: Vec<Module<ArgumentStruct>>,
+    pub argument_struct_modules: Vec<Module<FieldSelectionBuilder>>,
     pub unions: Vec<UnionStruct>,
     pub interfaces: Vec<InterfaceStruct>,
     pub enums: Vec<EnumMarker>,
@@ -72,7 +72,7 @@ impl From<schema::Document> for QueryDsl {
 
         let root_query_type = find_root_query(&document.definitions);
 
-        for definition in document.definitions {
+        for definition in &document.definitions {
             match definition {
                 Definition::TypeDefinition(TypeDefinition::Object(object)) => {
                     // Ok, so would be nice to restructure this so that the argument structs
@@ -82,9 +82,11 @@ impl From<schema::Document> for QueryDsl {
                         &type_index,
                         object.name == root_query_type,
                     );
-                    if !selector.argument_structs.is_empty() {
-                        argument_struct_modules
-                            .push(Module::new(&object.name, selector.argument_structs.clone()));
+                    if !selector.selection_builders.is_empty() {
+                        argument_struct_modules.push(Module::new(
+                            &object.name,
+                            selector.selection_builders.clone(),
+                        ));
                     }
 
                     selectors.push(selector);

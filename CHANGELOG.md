@@ -20,10 +20,24 @@ all APIs might be changed.
 ### Breaking Changes
 
 - `schema_path` parameters are now relative to `CARGO_MANFIEST_DIR` rather than
-  the current working directory.  This fixes an issue with cargo workspace projects
-  where doc-tests would be relative to the sub-crate but cargo builds were relative
-  to the workspace root.  For projects not using workspaces this will probably make
-  no difference
+  the current working directory.  This fixes an issue with cargo workspace
+  projects where doc-tests would be relative to the sub-crate but cargo builds
+  were relative to the workspace root.  For projects not using workspaces this
+  will probably make no difference
+- The `query_dsl` has been reworked.  Before each field with arguments had one
+  or two structs: one for optional arguments & one for required arguments, and
+  these were passed to the selector function before the selection set argument.
+  Now each selector function takes the required arguments, and then returns a
+  struct that follows the builder pattern to allow for optional arguments to be
+  added.  This fixes a few issues and is a bit more ergonomic.
+
+### Bug Fixes
+
+- Fixed a bug where any type used as an optional argument needed to implement
+  Default.  This was fixed by the `query_dsl` rework.
+- Fixed a bug where optional arguments that were enums or interfaces had to be
+  provided or type inference problems occurred.  This was also fixed by the
+  `query_dsl` rework.
 
 ## v0.3.0 - 2020-06-12
 

@@ -2,68 +2,65 @@ use std::collections::HashMap;
 
 use crate::schema::{Definition, Document, TypeDefinition};
 
-/// The kind of a GraphQL type
-#[derive(Debug, PartialEq)]
-pub enum Kind {
-    Scalar,
-    Enum,
-    Object,
-    InputObject,
+pub struct TypeIndex<'a> {
+    //name_to_kind: HashMap<String, Kind>,
+    types: HashMap<&'a str, &'a TypeDefinition>,
 }
 
-pub struct TypeIndex {
-    name_to_kind: HashMap<String, Kind>,
-}
-
-impl TypeIndex {
+impl<'a> TypeIndex<'a> {
     pub fn empty() -> Self {
         TypeIndex {
-            name_to_kind: HashMap::new(),
+            types: HashMap::new(),
         }
     }
 
-    pub fn for_schema(document: &Document) -> Self {
-        let mut name_to_kind = HashMap::new();
+    pub fn for_schema(document: &'a Document) -> Self {
+        let mut types = HashMap::new();
         for definition in &document.definitions {
             match definition {
-                Definition::TypeDefinition(TypeDefinition::Scalar(scalar)) => {
-                    name_to_kind.insert(scalar.name.clone(), Kind::Scalar);
+                Definition::TypeDefinition(type_def) => {
+                    types.insert(name_for_type(type_def), type_def);
                 }
-                Definition::TypeDefinition(TypeDefinition::Enum(en)) => {
-                    name_to_kind.insert(en.name.clone(), Kind::Enum);
-                }
-                Definition::TypeDefinition(TypeDefinition::Object(object)) => {
-                    name_to_kind.insert(object.name.clone(), Kind::Object);
-                }
-                Definition::TypeDefinition(TypeDefinition::InputObject(object)) => {
-                    name_to_kind.insert(object.name.clone(), Kind::InputObject);
-                }
-
                 _ => {}
             }
         }
 
-        TypeIndex { name_to_kind }
+        TypeIndex { types }
+    }
+
+    pub fn lookup_type(&self, name: &str) -> Option<&'a TypeDefinition> {
+        self.types.get(name).map(|d| *d)
     }
 
     pub fn is_scalar(&self, name: &str) -> bool {
-        self.name_to_kind
+        self.types
             .get(name)
-            .map(|kind| *kind == Kind::Scalar)
+            .map(|def| matches!(def, TypeDefinition::Scalar(_)))
             .unwrap_or(false)
     }
 
     pub fn is_enum(&self, name: &str) -> bool {
-        self.name_to_kind
+        self.types
             .get(name)
-            .map(|kind| *kind == Kind::Enum)
+            .map(|def| matches!(def, TypeDefinition::Enum(_)))
             .unwrap_or(false)
     }
 
     pub fn is_input_object(&self, name: &str) -> bool {
-        self.name_to_kind
+        self.types
             .get(name)
-            .map(|kind| *kind == Kind::InputObject)
+            .map(|def| matches!(def, TypeDefinition::InputObject(_)))
             .unwrap_or(false)
+    }
+}
+
+fn name_for_type(type_def: &TypeDefinition) -> &str {
+    match type_def {
+        TypeDefinition::Scalar(inner) => &inner.name,
+        TypeDefinition::Object(inner) => &inner.name,
+        TypeDefinition::Interface(inner) => &inner.name,
+        TypeDefinition::Union(inner) => &inner.name,
+        TypeDefinition::Enum(inner) => &inner.name,
+        TypeDefinition::InputObject(inner) => &inner.name,
     }
 }

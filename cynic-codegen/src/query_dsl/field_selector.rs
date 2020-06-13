@@ -1,12 +1,13 @@
-use proc_macro2::{Span, TokenStream};
+use proc_macro2::TokenStream;
 
-use crate::{query_dsl::ArgumentStruct, FieldType, Ident, TypePath};
+use crate::{schema::InputValue, FieldArgument, FieldType, Ident, TypeIndex, TypePath};
 
-/// A FieldSelector in our generated DSL.
+/// A selection function for a field in our generated DSL
 ///
-/// Each field in the schema will have one of these associated with it.
-/// The generated function can be called to get a SelectionSet for that
-/// field.
+/// Each object in the schema will have one of these for each of it's
+/// fields.  Calling this function will return a SelectionBuilder that
+/// can be used to supply other arguments, and eventually build a
+/// selection set.
 #[derive(Debug)]
 pub struct FieldSelector {
     pub rust_field_name: Ident,
@@ -14,8 +15,8 @@ pub struct FieldSelector {
     pub field_type: FieldType,
     pub type_lock: Ident,
     pub argument_structs_path: Ident,
-    pub required_args_struct: Option<ArgumentStruct>,
-    pub optional_args_struct: Option<ArgumentStruct>,
+    pub required_args: Vec<FieldArgument>,
+    pub selection_builder: TypePath,
 }
 
 impl FieldSelector {
@@ -24,8 +25,9 @@ impl FieldSelector {
         field_type: FieldType,
         type_lock: Ident,
         argument_structs_path: Ident,
-        required_args_struct: Option<ArgumentStruct>,
-        optional_args_struct: Option<ArgumentStruct>,
+        required_args: Vec<InputValue>,
+        selection_builder: TypePath,
+        type_index: &TypeIndex,
     ) -> FieldSelector {
         FieldSelector {
             rust_field_name: Ident::for_field(name),
@@ -33,8 +35,11 @@ impl FieldSelector {
             field_type,
             type_lock,
             argument_structs_path,
-            required_args_struct,
-            optional_args_struct,
+            required_args: required_args
+                .iter()
+                .map(|v| FieldArgument::from_input_value(v, type_index))
+                .collect(),
+            selection_builder,
         }
     }
 }
@@ -43,103 +48,57 @@ impl quote::ToTokens for FieldSelector {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         use quote::{quote, TokenStreamExt};
 
-        let query_field_name = syn::LitStr::new(&self.query_field_name, Span::call_site());
-
-        let selector = if self.field_type.contains_scalar() {
-            // We call the scalar selector for scalars
-            quote! { ::cynic::selection_set::scalar() }
-        } else {
-            // Otherwise we pass in the fields that the function
-            // we generate accept as an argument.
-            quote! { fields }
-        };
-        let selector = self.field_type.selection_set_call(selector);
-
-        let arguments = vec![
-            self.required_args_struct.as_ref().map(|args| {
-                let type_tokens = args.type_tokens(&self.argument_structs_path);
-                quote! { required: #type_tokens }
-            }),
-            self.optional_args_struct.as_ref().map(|args| {
-                let type_tokens = args.type_tokens(&self.argument_structs_path);
-                quote! { optional: #type_tokens }
-            }),
-        ];
-        let arguments = arguments.iter().flatten().collect::<Vec<_>>();
-
-        let field_type = &self.field_type;
-        let type_lock = &self.type_lock;
         let rust_field_name = &self.rust_field_name;
-        let argument_type_lock = self.field_type.as_type_lock(TypePath::empty());
-
-        let argument_names = vec![
-            self.required_args_struct
-                .as_ref()
-                .map(|_| Ident::new("required")),
-            self.optional_args_struct
-                .as_ref()
-                .map(|_| Ident::new("optional")),
-        ];
-        let argument_names: Vec<_> = argument_names.iter().flatten().collect();
-        let decodes_to = self.field_type.decodes_to(quote! { T });
 
         let mut generic_params = Vec::new();
-        if !self.field_type.contains_scalar() {
-            generic_params.push(quote! { 'a });
-            generic_params.push(quote! { T: 'a + Send + Sync});
-        }
-        for args in vec![&self.required_args_struct, &self.optional_args_struct] {
-            if let Some(args) = args {
-                generic_params.extend(
-                    args.generic_parameters()
-                        .into_iter()
-                        .map(|p| p.to_tokens(TypePath::empty())),
-                )
+
+        let mut argument_defs = Vec::with_capacity(self.required_args.len());
+        for arg in &self.required_args {
+            let arg_name = &arg.name;
+
+            if let Some(generic_param) = arg.generic_parameter() {
+                generic_params.push(generic_param.to_tokens(TypePath::empty()));
+
+                let arg_type = arg
+                    .argument_type
+                    .to_tokens(Some(generic_param.name), TypePath::empty());
+
+                argument_defs.push(quote! { #arg_name: #arg_type });
+            } else {
+                let arg_type = arg.argument_type.to_tokens(None, TypePath::empty());
+
+                argument_defs.push(quote! { #arg_name: #arg_type });
             }
         }
 
-        let construct_args = if argument_names.is_empty() {
-            quote! {
-                let args = Vec::new();
-            }
-        } else {
-            quote! {
-                let mut args: Vec<::cynic::Argument> = vec![];
-                #(
-                    args.extend(#argument_names.into_iter());
-                )*
-            }
-        };
+        let argument_names: Vec<_> = self.required_args.iter().map(|a| a.name.clone()).collect();
+        let argument_strings: Vec<_> = self
+            .required_args
+            .iter()
+            .map(|a| proc_macro2::Literal::string(&a.gql_name.to_string()))
+            .collect();
+        let argument_gql_types: Vec<_> = self
+            .required_args
+            .iter()
+            .map(|a| a.gql_type.clone())
+            .collect();
 
-        if self.field_type.contains_scalar() {
-            let field_type = field_type.to_tokens(None);
-            tokens.append_all(quote! {
-                pub fn #rust_field_name<#(#generic_params)*>(#(#arguments, )*) ->
-                ::cynic::selection_set::SelectionSet<'static, #field_type, #type_lock> {
-                    #[allow(unused_imports)]
-                    use ::cynic::selection_set::{string, integer, float, boolean};
+        let selection_builder = &self.selection_builder;
 
-                    #construct_args
-
-                    ::cynic::selection_set::field(#query_field_name, args, #selector)
-                }
-            })
-        } else {
-            tokens.append_all(quote! {
-                pub fn #rust_field_name<#(#generic_params, )*>(
-                    #(#arguments, )*
-                    fields: ::cynic::selection_set::SelectionSet<'a, T, #argument_type_lock>
-                ) -> ::cynic::selection_set::SelectionSet<'a, #decodes_to, #type_lock>
-                    {
-                        #construct_args
-
-                        ::cynic::selection_set::field(
-                            #query_field_name,
-                            args,
-                            #selector
+        tokens.append_all(quote! {
+            pub fn #rust_field_name<#(#generic_params, )*>(
+                #(#argument_defs, )*
+            ) -> #selection_builder {
+                #selection_builder::new(vec![
+                    #(
+                        ::cynic::Argument::from_serializable(
+                            #argument_strings,
+                            #argument_gql_types,
+                            #argument_names
                         )
-                    }
-            })
-        }
+                    )*
+                ])
+            }
+        })
     }
 }
