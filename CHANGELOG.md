@@ -11,6 +11,10 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+### Bug Fixes
+
+- `cynic-codegen` will now build with the rustfmt feature disabled.
+
 ## 0.4.0 - 2020-06-12
 
 ### Breaking Changes

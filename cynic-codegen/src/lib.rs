@@ -50,8 +50,4 @@ fn format_code(filename: &std::path::Path) {
             .spawn()
             .expect("failed to execute process");
     }
-    #[cfg(not(feature = "rustfmt"))]
-    {
-        return code;
-    }
 }
