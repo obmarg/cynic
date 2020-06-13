@@ -54,7 +54,6 @@ impl quote::ToTokens for FieldSelector {
 
         let mut argument_defs = Vec::with_capacity(self.required_args.len());
         for arg in &self.required_args {
-            // TODO: Move this into FieldArgument perhaps?
             let arg_name = &arg.name;
 
             if let Some(generic_param) = arg.generic_parameter() {
