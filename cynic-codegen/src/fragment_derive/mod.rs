@@ -1,8 +1,8 @@
-use std::collections::HashSet;
+use std::collections::{HashMap, HashSet};
 
 use proc_macro2::{Span, TokenStream};
 
-use crate::{load_schema, query_dsl, FieldType, Ident, TypePath};
+use crate::{load_schema, FieldType, Ident, TypePath};
 
 mod cynic_arguments;
 mod schema_parsing;
@@ -117,17 +117,49 @@ impl SelectorFunction {
 }
 
 impl SelectorFunction {
-    fn to_call(&self, parameters: TokenStream) -> TokenStream {
+    fn to_call(
+        &self,
+        required_arguments: &[FieldArgument],
+        optional_arguments: &[FieldArgument],
+        inner_selection_tokens: TokenStream,
+    ) -> TokenStream {
         use quote::quote;
 
         // Most of the complexities around this are dealt with in the query_dsl
         // so apart from flattening we can just forward to the inner type.
         match self {
-            SelectorFunction::Field(type_path) => quote! { #type_path(#parameters) },
-            SelectorFunction::Opt(inner) => inner.to_call(parameters),
-            SelectorFunction::Vector(inner) => inner.to_call(parameters),
+            SelectorFunction::Field(type_path) => {
+                let required_arguments = required_arguments.iter().map(|arg| &arg.expr);
+                let optional_arg_names = optional_arguments.iter().map(|arg| &arg.argument_name);
+                let optional_arg_exprs = optional_arguments.iter().map(|arg| &arg.expr);
+
+                quote! {
+                    #type_path(
+                        #(#required_arguments, )*
+                    )
+                    #(
+                        .#optional_arg_names(#optional_arg_exprs)
+                    )*
+                    .select(#inner_selection_tokens)
+                }
+            }
+            SelectorFunction::Opt(inner) => inner.to_call(
+                required_arguments,
+                optional_arguments,
+                inner_selection_tokens,
+            ),
+            SelectorFunction::Vector(inner) => inner.to_call(
+                required_arguments,
+                optional_arguments,
+                inner_selection_tokens,
+            ),
             SelectorFunction::Flatten(inner) => {
-                let inner_call = inner.to_call(parameters);
+                let inner_call = inner.to_call(
+                    required_arguments,
+                    optional_arguments,
+                    inner_selection_tokens,
+                );
+
                 quote! {
                     #inner_call.map(|item| {
                         use ::cynic::utils::FlattenInto;
@@ -148,63 +180,32 @@ enum SelectorCallStyle {
 struct FieldSelectorCall {
     selector_function: SelectorFunction,
     style: SelectorCallStyle,
-    argument_structs: Vec<ArgumentStruct>,
+    required_arguments: Vec<FieldArgument>,
+    optional_arguments: Vec<FieldArgument>,
 }
 
 impl quote::ToTokens for FieldSelectorCall {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         use quote::{quote, TokenStreamExt};
 
-        let initial_args = if self.argument_structs.is_empty() {
-            quote! {}
-        } else {
-            let argument_structs = &self.argument_structs;
-            quote! {
-                #(#argument_structs),* ,
-            }
-        };
-
-        let inner_call = match &self.style {
-            SelectorCallStyle::Scalar => quote! {#initial_args},
+        let inner_selection_tokens = match &self.style {
+            SelectorCallStyle::Scalar => quote! {},
             SelectorCallStyle::QueryFragment(field_type) => quote! {
-                #initial_args #field_type::fragment(FromArguments::from_arguments(&args))
+                #field_type::fragment(FromArguments::from_arguments(&args))
             },
             SelectorCallStyle::Enum(enum_type) => quote! {
-                #initial_args #enum_type::select()
+                #enum_type::select()
             },
         };
 
-        let selector_function_call = &self.selector_function.to_call(inner_call);
+        let selector_function_call = &self.selector_function.to_call(
+            &self.required_arguments,
+            &self.optional_arguments,
+            inner_selection_tokens,
+        );
 
         tokens.append_all(quote! {
             #selector_function_call
-        });
-    }
-}
-
-struct ArgumentStruct {
-    type_name: TypePath,
-    fields: Vec<FieldArgument>,
-    required: bool,
-}
-
-impl quote::ToTokens for ArgumentStruct {
-    fn to_tokens(&self, tokens: &mut TokenStream) {
-        use quote::{quote, TokenStreamExt};
-
-        let type_name = &self.type_name;
-        let arguments = &self.fields;
-        let default = if !self.required {
-            quote! { ..Default::default() }
-        } else {
-            quote! {}
-        };
-
-        tokens.append_all(quote! {
-            #type_name {
-                #(#arguments, )*
-                #default
-            }
         });
     }
 }
@@ -275,13 +276,9 @@ impl FragmentImpl {
                 if let Some(gql_field) = object.fields.get(&field_name) {
                     check_types_are_compatible(&gql_field.field_type, &field.ty, field.flatten)?;
 
-                    let argument_structs = argument_structs(
-                        arguments,
-                        gql_field,
-                        &object.name,
-                        &query_dsl_path,
-                        ident.span(),
-                    )?;
+                    let (required_arguments, optional_arguments) =
+                        validate_and_group_args(arguments, gql_field, ident.span())?;
+
                     field_selectors.push(FieldSelectorCall {
                         selector_function: SelectorFunction::for_field(
                             &gql_field.field_type,
@@ -302,7 +299,8 @@ impl FragmentImpl {
                                 gql_field.field_type.get_inner_type_from_syn(&field.ty),
                             )
                         },
-                        argument_structs,
+                        required_arguments,
+                        optional_arguments,
                     })
                 } else {
                     return Err(syn::Error::new(
@@ -374,19 +372,19 @@ impl quote::ToTokens for FragmentImpl {
     }
 }
 
-/// Constructs some ArgumentStructs from the arguments of a
-fn argument_structs(
+/// Validates the FieldArguments against the arguments defined on field
+/// in the schema.  If everythings good, groups into required & optional
+/// arguments in the correct order.
+fn validate_and_group_args(
     arguments: Vec<FieldArgument>,
     field: &Field,
-    containing_object_name: &Ident,
-    query_dsl_path: &TypePath,
     missing_arg_span: Span,
-) -> Result<Vec<ArgumentStruct>, syn::Error> {
+) -> Result<(Vec<FieldArgument>, Vec<FieldArgument>), syn::Error> {
     let all_required: HashSet<Ident> = field
         .arguments
         .iter()
-        .filter(|(_name, arg)| arg.required)
-        .map(|(name, _)| name.clone())
+        .filter(|arg| arg.required)
+        .map(|arg| arg.name.clone())
         .collect();
 
     let provided_names: HashSet<Ident> = arguments
@@ -407,51 +405,42 @@ fn argument_structs(
         ));
     }
 
+    let all_arg_names: HashSet<Ident> =
+        field.arguments.iter().map(|arg| arg.name.clone()).collect();
+
+    let unknown_args: Vec<_> = provided_names
+        .difference(&all_arg_names)
+        .map(|s| s.to_string())
+        .collect();
+
+    if !unknown_args.is_empty() {
+        let unknown_args = unknown_args.join(", ");
+
+        return Err(syn::Error::new(
+            missing_arg_span,
+            format!("Unknown arguments: {}", unknown_args),
+        ));
+    }
+
+    let provided_arguments: HashMap<Ident, _> = arguments
+        .into_iter()
+        .map(|a| (a.argument_name.clone().into(), a))
+        .collect();
+
     let mut required = vec![];
-    let mut optional = vec![];
-    for provided_argument in arguments {
-        let arg_name = provided_argument.argument_name.clone().into();
-        if let Some(argument_def) = field.arguments.get(&arg_name) {
-            if argument_def.required {
-                required.push(provided_argument);
+    let mut optionals = vec![];
+    for schema_arg in &field.arguments {
+        if let Some(provided_arg) = provided_arguments.get(&schema_arg.name) {
+            if schema_arg.required {
+                required.push(provided_arg);
             } else {
-                optional.push(provided_argument);
+                optionals.push(provided_arg);
             }
-        } else {
-            return Err(syn::Error::new(
-                provided_argument.argument_name.span(),
-                format!(
-                    "{} is not a valid argument for this field",
-                    provided_argument.argument_name
-                ),
-            ));
         }
     }
 
-    let mut rv = vec![];
-    if field.arguments.iter().any(|(_, arg)| arg.required) {
-        rv.push(ArgumentStruct {
-            type_name: TypePath::concat(&[
-                query_dsl_path.clone(),
-                Ident::for_module(&containing_object_name.to_string()).into(),
-                query_dsl::ArgumentStruct::name_for_field(&field.name.to_string(), true).into(),
-            ]),
-            fields: required,
-            required: true,
-        });
-    }
-
-    if field.arguments.iter().any(|(_, arg)| !arg.required) {
-        rv.push(ArgumentStruct {
-            type_name: TypePath::concat(&[
-                query_dsl_path.clone(),
-                Ident::for_module(&containing_object_name.to_string()).into(),
-                query_dsl::ArgumentStruct::name_for_field(&field.name.to_string(), false).into(),
-            ]),
-            fields: optional,
-            required: false,
-        });
-    }
-
-    Ok(rv)
+    Ok((
+        required.into_iter().cloned().collect(),
+        optionals.into_iter().cloned().collect(),
+    ))
 }

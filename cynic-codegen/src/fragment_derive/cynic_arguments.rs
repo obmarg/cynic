@@ -82,7 +82,7 @@ impl quote::ToTokens for ArgumentExpression {
     }
 }
 
-#[derive(PartialEq, Debug)]
+#[derive(PartialEq, Debug, Clone)]
 pub struct FieldArgument {
     pub argument_name: Ident,
     //expr: ArgumentExpression,

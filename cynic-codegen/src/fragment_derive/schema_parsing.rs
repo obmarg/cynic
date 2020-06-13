@@ -50,7 +50,7 @@ impl Object {
 }
 
 pub struct Field {
-    pub arguments: HashMap<Ident, Argument>,
+    pub arguments: Vec<Argument>,
     pub name: Ident,
     pub field_type: FieldType,
 }
@@ -64,7 +64,6 @@ impl Field {
                 .arguments
                 .iter()
                 .map(|a| Argument::from_input_value(a, type_index))
-                .map(|a| (a.name.clone(), a))
                 .collect(),
         }
     }

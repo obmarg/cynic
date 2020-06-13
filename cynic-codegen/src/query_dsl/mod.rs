@@ -1,6 +1,5 @@
 use proc_macro2::TokenStream;
 
-mod argument_struct;
 mod enum_marker;
 mod field_selector;
 mod input_object_marker;
@@ -11,7 +10,6 @@ mod union_struct;
 
 use super::module::Module;
 use crate::{load_schema, schema, Error, TypeIndex};
-pub use argument_struct::ArgumentStruct;
 use enum_marker::EnumMarker;
 pub use field_selector::FieldSelector;
 use input_object_marker::InputObjectMarker;
