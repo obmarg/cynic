@@ -1,6 +1,6 @@
 use proc_macro2::TokenStream;
 
-use crate::Ident;
+use crate::{schema, Ident};
 
 /// We generate an InterfaceStruct for each interface in the schema.
 ///
@@ -12,7 +12,7 @@ pub struct InterfaceStruct {
 }
 
 impl InterfaceStruct {
-    pub fn from_interface(interface: &graphql_parser::schema::InterfaceType) -> Self {
+    pub fn from_interface(interface: &schema::InterfaceType) -> Self {
         InterfaceStruct {
             name: Ident::for_type(&interface.name),
         }

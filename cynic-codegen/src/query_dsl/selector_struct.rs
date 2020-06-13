@@ -2,9 +2,11 @@ use proc_macro2::TokenStream;
 
 use super::argument_struct::ArgumentStruct;
 use super::field_selector::FieldSelector;
-use crate::graphql_extensions::FieldExt;
 
-use crate::{FieldType, Ident, TypeIndex, TypePath};
+use crate::{
+    schema::{self, FieldExt},
+    FieldType, Ident, TypeIndex, TypePath,
+};
 
 /// We generate a SelectorStruct for each queryable object in the schema.
 ///
@@ -20,11 +22,7 @@ pub struct SelectorStruct {
 }
 
 impl SelectorStruct {
-    pub fn from_object(
-        obj: &graphql_parser::schema::ObjectType,
-        type_index: &TypeIndex,
-        is_root: bool,
-    ) -> Self {
+    pub fn from_object(obj: &schema::ObjectType, type_index: &TypeIndex, is_root: bool) -> Self {
         let name = Ident::for_type(&obj.name);
 
         let mut processed_fields = Vec::with_capacity(obj.fields.len());

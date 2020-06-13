@@ -1,8 +1,10 @@
-use graphql_parser::schema::{self, InputValue};
 use proc_macro2::TokenStream;
 
 use crate::struct_field::GenericParameter;
-use crate::{Ident, StructField, TypeIndex};
+use crate::{
+    schema::{self, InputValue},
+    Ident, StructField, TypeIndex,
+};
 
 #[derive(Debug, Clone)]
 pub struct ArgumentStruct {

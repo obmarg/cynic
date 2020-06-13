@@ -1,7 +1,6 @@
-use graphql_parser::schema;
 use proc_macro2::TokenStream;
 
-use crate::{Ident, TypeIndex, TypePath};
+use crate::{schema, Ident, TypeIndex, TypePath};
 
 #[derive(Debug, Clone)]
 pub enum FieldType {

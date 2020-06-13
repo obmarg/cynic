@@ -1,6 +1,6 @@
 use proc_macro2::TokenStream;
 
-use crate::Ident;
+use crate::{schema, Ident};
 
 /// We generate an InputObject for each input_type in the schema.
 ///
@@ -12,7 +12,7 @@ pub struct InputObjectMarker {
 }
 
 impl InputObjectMarker {
-    pub fn from_input_object(en: &graphql_parser::schema::InputObjectType) -> Self {
+    pub fn from_input_object(en: &schema::InputObjectType) -> Self {
         InputObjectMarker {
             name: Ident::for_type(&en.name),
         }

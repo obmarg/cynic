@@ -1,14 +1,14 @@
 use std::collections::HashMap;
 
-use crate::{FieldType, Ident, TypeIndex, TypePath};
+use crate::{schema, FieldType, Ident, TypeIndex, TypePath};
 
 pub struct Schema {
     pub objects: HashMap<Ident, Object>,
 }
 
-impl From<graphql_parser::schema::Document> for Schema {
-    fn from(document: graphql_parser::schema::Document) -> Self {
-        use graphql_parser::schema::{Definition, TypeDefinition};
+impl From<schema::Document> for Schema {
+    fn from(document: schema::Document) -> Self {
+        use schema::{Definition, TypeDefinition};
 
         let type_index = TypeIndex::for_schema(&document);
 
@@ -35,7 +35,7 @@ pub struct Object {
 }
 
 impl Object {
-    fn from_object(obj: graphql_parser::schema::ObjectType, scalar_names: &TypeIndex) -> Object {
+    fn from_object(obj: schema::ObjectType, scalar_names: &TypeIndex) -> Object {
         Object {
             selector_struct: Ident::for_type(&obj.name),
             fields: obj
@@ -56,7 +56,7 @@ pub struct Field {
 }
 
 impl Field {
-    fn from_field(field: &graphql_parser::schema::Field, type_index: &TypeIndex) -> Field {
+    fn from_field(field: &schema::Field, type_index: &TypeIndex) -> Field {
         Field {
             name: Ident::for_field(&field.name),
             field_type: FieldType::from_schema_type(
@@ -80,10 +80,7 @@ pub struct Argument {
 }
 
 impl Argument {
-    fn from_input_value(
-        value: &graphql_parser::schema::InputValue,
-        type_index: &TypeIndex,
-    ) -> Argument {
+    fn from_input_value(value: &schema::InputValue, type_index: &TypeIndex) -> Argument {
         let argument_type =
             FieldType::from_schema_type(&value.value_type, Ident::new("").into(), type_index);
         Argument {

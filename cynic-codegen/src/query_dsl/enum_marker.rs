@@ -1,6 +1,6 @@
 use proc_macro2::TokenStream;
 
-use crate::Ident;
+use crate::{schema, Ident};
 
 /// We generate an EnumMarker for each enum in the schema.
 ///
@@ -12,7 +12,7 @@ pub struct EnumMarker {
 }
 
 impl EnumMarker {
-    pub fn from_enum(en: &graphql_parser::schema::EnumType) -> Self {
+    pub fn from_enum(en: &schema::EnumType) -> Self {
         EnumMarker {
             name: Ident::for_type(&en.name),
         }

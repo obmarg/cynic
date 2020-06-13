@@ -1,10 +1,11 @@
-use graphql_parser::schema::{Definition, Document, EnumType, EnumValue, TypeDefinition};
 use proc_macro2::{Span, TokenStream};
 use std::collections::HashMap;
 
 use crate::{
     ident::{RenameAll, RenameRule},
-    load_schema, Ident,
+    load_schema,
+    schema::{Definition, Document, EnumType, EnumValue, TypeDefinition},
+    Ident,
 };
 
 pub(crate) mod input;

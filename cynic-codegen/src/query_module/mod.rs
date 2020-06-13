@@ -1,13 +1,12 @@
 // TODO: docstring.
 use darling::{util::SpannedValue, FromMeta};
-use graphql_parser::schema::Document;
 use proc_macro2::TokenStream;
 
 mod utils;
 
 use utils::Derive;
 
-use crate::fragment_derive;
+use crate::{fragment_derive, schema::Document};
 
 #[derive(Debug, FromMeta)]
 struct TransformModuleArgs {

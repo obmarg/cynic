@@ -9,7 +9,7 @@ mod selector_struct;
 mod union_struct;
 
 use super::module::Module;
-use crate::{load_schema, Error, TypeIndex};
+use crate::{load_schema, schema, Error, TypeIndex};
 pub use argument_struct::ArgumentStruct;
 use enum_marker::EnumMarker;
 pub use field_selector::FieldSelector;
@@ -57,9 +57,9 @@ pub struct QueryDsl {
     pub input_objects: Vec<InputObjectMarker>,
 }
 
-impl From<graphql_parser::schema::Document> for QueryDsl {
-    fn from(document: graphql_parser::schema::Document) -> Self {
-        use graphql_parser::schema::{Definition, TypeDefinition};
+impl From<schema::Document> for QueryDsl {
+    fn from(document: schema::Document) -> Self {
+        use schema::{Definition, TypeDefinition};
 
         let type_index = TypeIndex::for_schema(&document);
 
@@ -116,8 +116,8 @@ impl From<graphql_parser::schema::Document> for QueryDsl {
     }
 }
 
-fn find_root_query(definitions: &Vec<graphql_parser::schema::Definition>) -> String {
-    use graphql_parser::schema::Definition;
+fn find_root_query(definitions: &Vec<schema::Definition>) -> String {
+    use schema::Definition;
     for definition in definitions {
         match definition {
             Definition::SchemaDefinition(schema) => {

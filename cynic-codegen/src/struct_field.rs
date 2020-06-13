@@ -1,9 +1,8 @@
-use graphql_parser::schema;
 use proc_macro2::TokenStream;
 
 use super::field_type::FieldType;
 use super::type_path::TypePath;
-use crate::{Ident, TypeIndex};
+use crate::{schema, Ident, TypeIndex};
 
 #[derive(Debug, Clone)]
 pub struct StructField {
@@ -19,7 +18,7 @@ impl StructField {
         type_path: TypePath,
         type_index: &TypeIndex,
     ) -> Self {
-        use crate::graphql_extensions::TypeExt;
+        use crate::schema::TypeExt;
 
         StructField {
             name: Ident::for_field(&value.name),

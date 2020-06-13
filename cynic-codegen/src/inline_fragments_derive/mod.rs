@@ -1,7 +1,7 @@
 use darling::util::SpannedValue;
 use proc_macro2::{Span, TokenStream};
 
-use crate::{load_schema, Ident, TypePath};
+use crate::{load_schema, schema, Ident, TypePath};
 
 pub mod input;
 
@@ -129,7 +129,7 @@ impl quote::ToTokens for InlineFragmentsImpl {
     }
 }
 
-fn find_union_type(name: &str, schema: &graphql_parser::schema::Document) -> bool {
+fn find_union_type(name: &str, schema: &schema::Document) -> bool {
     for definition in &schema.definitions {
         use graphql_parser::schema::{Definition, TypeDefinition};
         match definition {

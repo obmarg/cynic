@@ -8,9 +8,9 @@ pub mod scalar_derive;
 
 mod error;
 mod field_type;
-mod graphql_extensions;
 mod ident;
 mod module;
+mod schema;
 mod struct_field;
 mod type_index;
 mod type_path;
@@ -18,6 +18,7 @@ mod type_path;
 use error::Error;
 use field_type::FieldType;
 use ident::Ident;
+use schema::load_schema;
 use struct_field::StructField;
 use type_index::TypeIndex;
 use type_path::TypePath;
@@ -53,22 +54,4 @@ fn format_code(filename: &std::path::Path) {
     {
         return code;
     }
-}
-
-fn load_schema(
-    filename: impl AsRef<std::path::Path>,
-) -> Result<graphql_parser::schema::Document, Error> {
-    use std::path::PathBuf;
-    let mut pathbuf = PathBuf::new();
-
-    let filename = if let Ok(manifest_dir) = std::env::var("CARGO_MANIFEST_DIR") {
-        pathbuf.push(manifest_dir);
-        pathbuf.push(filename);
-        pathbuf.as_path()
-    } else {
-        filename.as_ref()
-    };
-
-    let schema = std::fs::read_to_string(filename)?;
-    Ok(graphql_parser::schema::parse_schema(&schema)?.into())
 }

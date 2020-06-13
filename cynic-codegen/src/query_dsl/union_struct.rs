@@ -1,6 +1,6 @@
 use proc_macro2::TokenStream;
 
-use crate::Ident;
+use crate::{schema, Ident};
 
 /// We generate a UnionStruct for each union in the schema.
 ///
@@ -13,7 +13,7 @@ pub struct UnionStruct {
 }
 
 impl UnionStruct {
-    pub fn from_union(union: &graphql_parser::schema::UnionType) -> Self {
+    pub fn from_union(union: &schema::UnionType) -> Self {
         UnionStruct {
             name: Ident::for_type(&union.name),
             subtypes: union.types.iter().map(|ty| Ident::for_type(ty)).collect(),
