@@ -1,15 +1,15 @@
 use proc_macro2::TokenStream;
 
-use crate::struct_field::GenericParameter;
+use crate::field_argument::GenericParameter;
 use crate::{
     schema::{self, InputValue},
-    Ident, StructField, TypeIndex,
+    FieldArgument, Ident, TypeIndex,
 };
 
 #[derive(Debug, Clone)]
 pub struct ArgumentStruct {
     name: Ident,
-    arguments: Vec<StructField>,
+    arguments: Vec<FieldArgument>,
     required: bool,
 }
 
@@ -30,13 +30,7 @@ impl ArgumentStruct {
             name,
             arguments: arguments
                 .iter()
-                .map(|arg| {
-                    StructField::from_input_value(
-                        &arg,
-                        Ident::for_module("super").into(),
-                        type_index,
-                    )
-                })
+                .map(|arg| FieldArgument::from_input_value(&arg, type_index))
                 .collect(),
             required,
         }

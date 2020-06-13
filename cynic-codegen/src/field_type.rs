@@ -12,17 +12,12 @@ pub enum FieldType {
 }
 
 impl FieldType {
-    pub fn from_schema_type(
-        schema_type: &schema::Type,
-        type_path: TypePath,
-        type_index: &TypeIndex,
-    ) -> Self {
-        FieldType::from_schema_type_internal(schema_type, type_path, type_index, true)
+    pub fn from_schema_type(schema_type: &schema::Type, type_index: &TypeIndex) -> Self {
+        FieldType::from_schema_type_internal(schema_type, type_index, true)
     }
 
     fn from_schema_type_internal(
         schema_type: &schema::Type,
-        type_path: TypePath,
         type_index: &TypeIndex,
         nullable: bool,
     ) -> Self {
@@ -30,11 +25,11 @@ impl FieldType {
 
         match schema_type {
             Type::NonNullType(inner_type) => {
-                FieldType::from_schema_type_internal(inner_type, type_path, type_index, false)
+                FieldType::from_schema_type_internal(inner_type, type_index, false)
             }
             Type::ListType(inner_type) => FieldType::List(
                 Box::new(FieldType::from_schema_type_internal(
-                    inner_type, type_path, type_index, true,
+                    inner_type, type_index, true,
                 )),
                 nullable,
             ),

@@ -7,19 +7,19 @@ pub mod query_module;
 pub mod scalar_derive;
 
 mod error;
+mod field_argument;
 mod field_type;
 mod ident;
 mod module;
 mod schema;
-mod struct_field;
 mod type_index;
 mod type_path;
 
 use error::Error;
+use field_argument::FieldArgument;
 use field_type::FieldType;
 use ident::Ident;
 use schema::load_schema;
-use struct_field::StructField;
 use type_index::TypeIndex;
 use type_path::TypePath;
 

@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::{schema, FieldType, Ident, TypeIndex, TypePath};
+use crate::{schema, FieldType, Ident, TypeIndex};
 
 pub struct Schema {
     pub objects: HashMap<Ident, Object>,
@@ -14,7 +14,7 @@ impl From<schema::Document> for Schema {
 
         let mut objects = HashMap::new();
 
-        for definition in document.definitions {
+        for definition in &document.definitions {
             match definition {
                 Definition::TypeDefinition(TypeDefinition::Object(object)) => {
                     let object = Object::from_object(object, &type_index);
@@ -35,7 +35,7 @@ pub struct Object {
 }
 
 impl Object {
-    fn from_object(obj: schema::ObjectType, scalar_names: &TypeIndex) -> Object {
+    fn from_object(obj: &schema::ObjectType, scalar_names: &TypeIndex) -> Object {
         Object {
             selector_struct: Ident::for_type(&obj.name),
             fields: obj
@@ -59,11 +59,7 @@ impl Field {
     fn from_field(field: &schema::Field, type_index: &TypeIndex) -> Field {
         Field {
             name: Ident::for_field(&field.name),
-            field_type: FieldType::from_schema_type(
-                &field.field_type,
-                TypePath::new(vec![]),
-                type_index,
-            ),
+            field_type: FieldType::from_schema_type(&field.field_type, type_index),
             arguments: field
                 .arguments
                 .iter()
@@ -81,8 +77,7 @@ pub struct Argument {
 
 impl Argument {
     fn from_input_value(value: &schema::InputValue, type_index: &TypeIndex) -> Argument {
-        let argument_type =
-            FieldType::from_schema_type(&value.value_type, Ident::new("").into(), type_index);
+        let argument_type = FieldType::from_schema_type(&value.value_type, type_index);
         Argument {
             name: Ident::for_field(&value.name),
             required: !argument_type.is_nullable(),

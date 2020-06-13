@@ -1,7 +1,7 @@
 use proc_macro2::TokenStream;
 
-use super::argument_struct::ArgumentStruct;
 use super::field_selector::FieldSelector;
+use super::selection_builder::FieldSelectionBuilder;
 
 use crate::{
     schema::{self, FieldExt},
@@ -17,7 +17,7 @@ use crate::{
 pub struct SelectorStruct {
     pub name: Ident,
     pub fields: Vec<FieldSelector>,
-    pub argument_structs: Vec<ArgumentStruct>,
+    pub selection_builders: Vec<FieldSelectionBuilder>,
     pub is_root: bool,
 }
 
@@ -26,50 +26,40 @@ impl SelectorStruct {
         let name = Ident::for_type(&obj.name);
 
         let mut processed_fields = Vec::with_capacity(obj.fields.len());
-        let mut argument_structs = Vec::with_capacity(2 * obj.fields.len());
+        let mut selection_builders = Vec::with_capacity(obj.fields.len());
 
         for field in &obj.fields {
-            let required_args = if !field.required_arguments().is_empty() {
-                let args = ArgumentStruct::from_field(
-                    field,
-                    &field.required_arguments(),
-                    true,
-                    &type_index,
-                );
-                argument_structs.push(args.clone());
-                Some(args)
-            } else {
-                None
-            };
+            let field_type = FieldType::from_schema_type(&field.field_type, type_index);
 
-            let optional_args = if !field.optional_arguments().is_empty() {
-                let args = ArgumentStruct::from_field(
-                    field,
-                    &field.optional_arguments(),
-                    false,
-                    &type_index,
-                );
-                argument_structs.push(args.clone());
-                Some(args)
-            } else {
-                None
-            };
+            let selection_builder = FieldSelectionBuilder::for_field(
+                &field.name,
+                field_type.clone(),
+                name.clone(),
+                field.optional_arguments(),
+                type_index,
+            );
 
             processed_fields.push(FieldSelector::for_field(
                 &field.name,
-                FieldType::from_schema_type(&field.field_type, TypePath::empty(), type_index),
+                field_type,
                 name.clone(),
                 Ident::for_module(&obj.name),
-                required_args,
-                optional_args,
+                field.required_arguments(),
+                TypePath::new(vec![
+                    Ident::for_module(&name.to_string()),
+                    selection_builder.name.clone(),
+                ]),
+                type_index,
             ));
+
+            selection_builders.push(selection_builder);
         }
 
         SelectorStruct {
             name: name.clone(),
             is_root,
             fields: processed_fields,
-            argument_structs,
+            selection_builders,
         }
     }
 }
