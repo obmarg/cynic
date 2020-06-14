@@ -1,4 +1,4 @@
-use crate::Scalar;
+use crate::{Scalar, SerializeError};
 
 pub struct Argument {
     pub(crate) name: String,
@@ -32,18 +32,18 @@ impl serde::Serialize for Argument {
 }
 
 pub trait SerializableArgument {
-    fn serialize(&self) -> Result<serde_json::Value, ()>;
+    fn serialize(&self) -> Result<serde_json::Value, SerializeError>;
 }
 
 // All Input objects are serializable.
 impl<TypeLock> SerializableArgument for dyn crate::InputObject<TypeLock> {
-    fn serialize(&self) -> Result<serde_json::Value, ()> {
+    fn serialize(&self) -> Result<serde_json::Value, SerializeError> {
         self.serialize()
     }
 }
 
 impl<T: SerializableArgument> SerializableArgument for Vec<T> {
-    fn serialize(&self) -> Result<serde_json::Value, ()> {
+    fn serialize(&self) -> Result<serde_json::Value, SerializeError> {
         self.iter()
             .map(|s| s.serialize())
             .collect::<Result<Vec<_>, _>>()
@@ -52,7 +52,7 @@ impl<T: SerializableArgument> SerializableArgument for Vec<T> {
 }
 
 impl<T: SerializableArgument> SerializableArgument for Option<T> {
-    fn serialize(&self) -> Result<serde_json::Value, ()> {
+    fn serialize(&self) -> Result<serde_json::Value, SerializeError> {
         match self {
             Some(inner) => Ok(inner.serialize()?),
             None => Ok(serde_json::Value::Null),
@@ -61,7 +61,7 @@ impl<T: SerializableArgument> SerializableArgument for Option<T> {
 }
 
 impl<T: Scalar> SerializableArgument for T {
-    fn serialize(&self) -> Result<serde_json::Value, ()> {
+    fn serialize(&self) -> Result<serde_json::Value, SerializeError> {
         self.encode()
     }
 }

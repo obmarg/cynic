@@ -1,9 +1,7 @@
 use json_decode::BoxDecoder;
 use std::collections::HashMap;
 
-use crate::{
-    selection_set::query_root, Argument, GraphQLResponse, QueryBody, QueryRoot, SelectionSet,
-};
+use crate::{selection_set::query_root, Argument, GraphQLResponse, QueryRoot, SelectionSet};
 
 #[derive(serde::Serialize)]
 pub struct Query<'a, ResponseData> {

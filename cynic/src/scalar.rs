@@ -1,9 +1,11 @@
 use json_decode::{BoxDecoder, DecodeError, Decoder};
 use std::marker::PhantomData;
 
+use crate::SerializeError;
+
 pub trait Scalar: Sized {
     fn decode(value: &serde_json::Value) -> Result<Self, DecodeError>;
-    fn encode(&self) -> Result<serde_json::Value, ()>;
+    fn encode(&self) -> Result<serde_json::Value, SerializeError>;
 }
 
 pub fn decoder<'a, S>() -> BoxDecoder<'a, S>
@@ -20,7 +22,7 @@ impl Scalar for i64 {
         json_decode::integer().decode(value)
     }
 
-    fn encode(&self) -> Result<serde_json::Value, ()> {
+    fn encode(&self) -> Result<serde_json::Value, SerializeError> {
         Ok((*self).into())
     }
 }
@@ -30,7 +32,7 @@ impl Scalar for f64 {
         json_decode::float().decode(value)
     }
 
-    fn encode(&self) -> Result<serde_json::Value, ()> {
+    fn encode(&self) -> Result<serde_json::Value, SerializeError> {
         Ok((*self).into())
     }
 }
@@ -40,7 +42,7 @@ impl Scalar for bool {
         json_decode::boolean().decode(value)
     }
 
-    fn encode(&self) -> Result<serde_json::Value, ()> {
+    fn encode(&self) -> Result<serde_json::Value, SerializeError> {
         Ok((*self).into())
     }
 }
@@ -50,7 +52,7 @@ impl Scalar for String {
         json_decode::string().decode(value)
     }
 
-    fn encode(&self) -> Result<serde_json::Value, ()> {
+    fn encode(&self) -> Result<serde_json::Value, SerializeError> {
         Ok(self.clone().into())
     }
 }
@@ -60,7 +62,7 @@ impl Scalar for serde_json::Value {
         json_decode::json().decode(value)
     }
 
-    fn encode(&self) -> Result<serde_json::Value, ()> {
+    fn encode(&self) -> Result<serde_json::Value, SerializeError> {
         Ok(self.clone())
     }
 }
@@ -94,7 +96,7 @@ impl Scalar for chrono::DateTime<chrono::FixedOffset> {
         }
     }
 
-    fn encode(&self) -> Result<serde_json::Value, ()> {
+    fn encode(&self) -> Result<serde_json::Value, SerializeError> {
         Ok(serde_json::Value::String(self.to_rfc3339()))
     }
 }
@@ -115,7 +117,7 @@ impl Scalar for chrono::DateTime<chrono::Utc> {
         }
     }
 
-    fn encode(&self) -> Result<serde_json::Value, ()> {
+    fn encode(&self) -> Result<serde_json::Value, SerializeError> {
         Ok(serde_json::Value::String(self.to_rfc3339()))
     }
 }
