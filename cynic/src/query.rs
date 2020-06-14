@@ -9,7 +9,6 @@ pub struct Query<'a, ResponseData> {
     pub variables: HashMap<String, Argument>,
     #[serde(skip)]
     decoder: BoxDecoder<'a, ResponseData>,
-    // selection_set: SelectionSet<'a, ResponseData, ()>,
 }
 
 impl<'a, ResponseData: 'a> Query<'a, ResponseData> {
