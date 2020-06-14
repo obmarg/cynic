@@ -35,8 +35,7 @@ impl<'a, ResponseData: 'a> Query<'a, ResponseData> {
     ) -> Result<GraphQLResponse<ResponseData>, json_decode::DecodeError> {
         if let Some(data) = response.data {
             Ok(GraphQLResponse {
-                // TODO: GET RID OF UNWRAP.  I am being extremely lazy by calling it.
-                data: Some(self.decoder.decode(&data).unwrap()),
+                data: Some(self.decoder.decode(&data)?),
                 errors: response.errors,
             })
         } else {

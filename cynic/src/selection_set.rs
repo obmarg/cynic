@@ -294,8 +294,9 @@ struct FragmentDecoder<'a, DecodesTo> {
 
 impl<'a, DecodesTo> json_decode::Decoder<'a, DecodesTo> for FragmentDecoder<'a, DecodesTo> {
     fn decode(&self, value: &serde_json::Value) -> Result<DecodesTo, DecodeError> {
-        // TODO: Don't unwrap
-        let typename = value["__typename"].as_str().unwrap();
+        let typename = value["__typename"].as_str().ok_or_else(|| {
+            json_decode::DecodeError::MissingField("__typename".into(), value.to_string())
+        })?;
 
         if let Some(decoder) = self.decoders.get(typename) {
             decoder.decode(value)
