@@ -92,7 +92,7 @@
 //! ```rust,ignore
 //! let response = reqwest::blocking::Client::new()
 //!                     .post("a_url")
-//!                     .json(&query.body()?)
+//!                     .json(&query)
 //!                     .send()?;
 //! let result = query.decode_response(response.json()?)?;
 //! ```
