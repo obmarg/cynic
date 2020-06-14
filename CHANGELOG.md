@@ -18,7 +18,9 @@ all APIs might be changed.
   previously exposed by `Query::body()` will now be surfaced when serializing a
   Query.
 - `Argument::new` has been updated to take a `SerialiableArgument` itself.
-
+- Removed `selection_set::Error`.
+- `SerializableArgument::serialize` & `Scalar::encode` now return
+  `Box<std::error::Error>` errors rather than `()`
 
 ### Bug Fixes
 

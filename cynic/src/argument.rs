@@ -25,8 +25,7 @@ impl serde::Serialize for Argument {
 
         match self.value.serialize() {
             Ok(json_val) => serde::Serialize::serialize(&json_val, serializer),
-            // TODO: Better error here...
-            Err(e) => Err(S::Error::custom("Could not serialize")),
+            Err(e) => Err(S::Error::custom(e.to_string())),
         }
     }
 }

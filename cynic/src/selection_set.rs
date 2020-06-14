@@ -24,13 +24,6 @@ use std::marker::PhantomData;
 
 use crate::{field::Field, scalar, Argument, QueryRoot};
 
-/// An error used by SelectionSet functions.
-#[derive(Debug, PartialEq)]
-pub(crate) enum Error {
-    /// Something went wrong when decoding the results of query.
-    DecodeError(json_decode::DecodeError),
-}
-
 /// A marker trait used to encode GraphQL subtype relationships into the Rust
 /// typesystem.
 pub trait HasSubtype<Subtype> {}
@@ -122,15 +115,15 @@ impl<'a, DecodesTo, TypeLock> SelectionSet<'a, DecodesTo, TypeLock> {
         }
     }
 
-    pub(crate) fn decode(&self, value: &serde_json::Value) -> Result<DecodesTo, Error> {
-        (*self.decoder).decode(value).map_err(Error::DecodeError)
+    #[cfg(test)]
+    fn decode(&self, value: &serde_json::Value) -> Result<DecodesTo, DecodeError> {
+        (*self.decoder).decode(value)
     }
 
     pub(crate) fn query_arguments_and_decoder(
         self,
     ) -> (String, Vec<Argument>, BoxDecoder<'a, DecodesTo>) {
         let mut arguments: Vec<Argument> = vec![];
-        let mut argument_types: Vec<&str> = vec![];
         let query = self
             .fields
             .into_iter()
