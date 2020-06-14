@@ -31,15 +31,11 @@ struct FilmDirectorQuery {
 }
 
 fn main() {
-    use cynic::QueryFragment;
-
-    let query = cynic::Query::new(FilmDirectorQuery::fragment(FilmArguments {
-        id: Some("ZmlsbXM6MQ==".into()),
-    }));
+    let query = build_query();
 
     let response = reqwest::blocking::Client::new()
         .post("https://swapi-graphql.netlify.com/.netlify/functions/index")
-        .json(&query.body().unwrap())
+        .json(&query)
         .send()
         .unwrap();
 
@@ -48,4 +44,27 @@ fn main() {
     let result = query.decode_response(response.json().unwrap()).unwrap();
 
     println!("{:?}", result);
+}
+
+fn build_query() -> cynic::Query<'static, FilmDirectorQuery> {
+    use cynic::QueryFragment;
+    cynic::Query::new(FilmDirectorQuery::fragment(FilmArguments {
+        id: Some("ZmlsbXM6MQ==".into()),
+    }))
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+
+    #[test]
+    fn snapshot_test_menu_query() {
+        // Running a snapshot test of the query building functionality as that gives us
+        // a place to copy and paste the actual GQL we're using for running elsewhere,
+        // and also helps ensure we don't change queries by mistake
+
+        let query = build_query();
+
+        insta::assert_snapshot!(query.query);
+    }
 }

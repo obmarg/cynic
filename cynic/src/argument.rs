@@ -2,28 +2,31 @@ use crate::Scalar;
 
 pub struct Argument {
     pub(crate) name: String,
-    pub(crate) value: Result<serde_json::Value, ()>,
+    pub(crate) value: Box<dyn SerializableArgument>,
     pub(crate) type_: String,
 }
 
 impl Argument {
-    pub fn new(name: &str, gql_type: &str, value: serde_json::Value) -> Self {
+    pub fn new(name: &str, gql_type: &str, value: impl SerializableArgument + 'static) -> Argument {
         Argument {
             name: name.to_string(),
-            value: Ok(value),
+            value: Box::new(value),
             type_: gql_type.to_string(),
         }
     }
+}
 
-    pub fn from_serializable(
-        name: &str,
-        gql_type: &str,
-        value: impl SerializableArgument,
-    ) -> Argument {
-        Argument {
-            name: name.to_string(),
-            value: value.serialize(),
-            type_: gql_type.to_string(),
+impl serde::Serialize for Argument {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        use serde::ser::Error;
+
+        match self.value.serialize() {
+            Ok(json_val) => serde::Serialize::serialize(&json_val, serializer),
+            // TODO: Better error here...
+            Err(e) => Err(S::Error::custom("Could not serialize")),
         }
     }
 }

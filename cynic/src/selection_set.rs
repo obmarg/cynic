@@ -49,7 +49,7 @@ pub trait HasSubtype<Subtype> {}
 pub struct SelectionSet<'a, DecodesTo, TypeLock> {
     fields: Vec<Field>,
 
-    decoder: BoxDecoder<'a, DecodesTo>,
+    pub(crate) decoder: BoxDecoder<'a, DecodesTo>,
 
     phantom: PhantomData<TypeLock>,
 }
@@ -126,20 +126,18 @@ impl<'a, DecodesTo, TypeLock> SelectionSet<'a, DecodesTo, TypeLock> {
         (*self.decoder).decode(value).map_err(Error::DecodeError)
     }
 
-    pub(crate) fn query_and_arguments<'b>(
-        &'b self,
-    ) -> Result<(String, Vec<&'b serde_json::Value>), ()> {
-        let mut arguments: Vec<Result<&serde_json::Value, ()>> = vec![];
+    pub(crate) fn query_arguments_and_decoder(
+        self,
+    ) -> (String, Vec<Argument>, BoxDecoder<'a, DecodesTo>) {
+        let mut arguments: Vec<Argument> = vec![];
         let mut argument_types: Vec<&str> = vec![];
         let query = self
             .fields
-            .iter()
-            .map(|f| f.query(0, 2, &mut arguments, &mut argument_types))
+            .into_iter()
+            .map(|f| f.query(0, 2, &mut arguments))
             .collect();
 
-        let arguments: Vec<_> = arguments.into_iter().collect::<Result<Vec<_>, ()>>()?;
-
-        Ok((query, arguments))
+        (query, arguments, self.decoder)
     }
 }
 
@@ -746,13 +744,13 @@ mod tests {
             )),
         );
 
+        let (query, args, _) = selection_set.query_arguments_and_decoder();
+
         assert_eq!(
-            selection_set.query_and_arguments(),
-            Ok((
-                "test_struct {\n  field_one\n  nested {\n    a_string\n  }\n}\n".to_string(),
-                vec![]
-            ))
-        )
+            query,
+            "test_struct {\n  field_one\n  nested {\n    a_string\n  }\n}\n"
+        );
+        assert!(args.is_empty());
     }
 
     #[test]
@@ -768,7 +766,7 @@ mod tests {
             ),
         );
 
-        let (_query, args) = selection_set.query_and_arguments().unwrap();
+        let (_query, args, _) = selection_set.query_arguments_and_decoder();
         assert_eq!(args.len(), 1);
     }
 
@@ -787,7 +785,7 @@ mod tests {
             ),
         );
 
-        let (_query, args) = selection_set.query_and_arguments().unwrap();
+        let (_query, args, _) = selection_set.query_arguments_and_decoder();
         assert_eq!(args.len(), 2);
     }
 

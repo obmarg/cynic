@@ -1,6 +1,6 @@
 //! # Cynic
 //!
-//! Cynic is a GraphQL query builder & data mapper for Rust.  
+//! Cynic is a GraphQL query builder & data mapper for Rust.
 //!
 //! See [the README on GitHub](https://github.com/polyandglot/cynic) for more details.
 //!
@@ -258,9 +258,9 @@ where
 pub trait QueryRoot {}
 
 #[derive(Debug, serde::Serialize)]
-pub struct QueryBody<'a> {
+pub struct QueryBody {
     pub query: String,
-    pub variables: HashMap<String, &'a serde_json::Value>,
+    pub variables: HashMap<String, serde_json::Value>,
 }
 
 pub use cynic_proc_macros::{

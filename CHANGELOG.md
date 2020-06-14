@@ -11,6 +11,15 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+### Breaking Changes
+
+- `Query::body` no longer exists, the `Query` itself is now directly
+  serializable, and exposes the `query` type itself.  Errors that were
+  previously exposed by `Query::body()` will now be surfaced when serializing a
+  Query.
+- `Argument::new` has been updated to take a `SerialiableArgument` itself.
+
+
 ### Bug Fixes
 
 - `cynic-codegen` will now build with the rustfmt feature disabled.

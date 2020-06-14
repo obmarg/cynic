@@ -91,7 +91,7 @@ impl quote::ToTokens for FieldSelector {
             ) -> #selection_builder {
                 #selection_builder::new(vec![
                     #(
-                        ::cynic::Argument::from_serializable(
+                        ::cynic::Argument::new(
                             #argument_strings,
                             #argument_gql_types,
                             #argument_names

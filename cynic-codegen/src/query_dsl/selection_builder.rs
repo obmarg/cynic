@@ -134,7 +134,7 @@ impl quote::ToTokens for FieldSelectionBuilder {
                         mut self, #argument_names: #argument_types
                     ) -> Self {
                         self.args.push(
-                            ::cynic::Argument::from_serializable(
+                            ::cynic::Argument::new(
                                 #argument_strings,
                                 #argument_gql_types,
                                 #argument_names
