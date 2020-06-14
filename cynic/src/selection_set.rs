@@ -24,13 +24,6 @@ use std::marker::PhantomData;
 
 use crate::{field::Field, scalar, Argument, QueryRoot};
 
-/// An error used by SelectionSet functions.
-#[derive(Debug, PartialEq)]
-pub(crate) enum Error {
-    /// Something went wrong when decoding the results of query.
-    DecodeError(json_decode::DecodeError),
-}
-
 /// A marker trait used to encode GraphQL subtype relationships into the Rust
 /// typesystem.
 pub trait HasSubtype<Subtype> {}
@@ -49,7 +42,7 @@ pub trait HasSubtype<Subtype> {}
 pub struct SelectionSet<'a, DecodesTo, TypeLock> {
     fields: Vec<Field>,
 
-    decoder: BoxDecoder<'a, DecodesTo>,
+    pub(crate) decoder: BoxDecoder<'a, DecodesTo>,
 
     phantom: PhantomData<TypeLock>,
 }
@@ -122,24 +115,22 @@ impl<'a, DecodesTo, TypeLock> SelectionSet<'a, DecodesTo, TypeLock> {
         }
     }
 
-    pub(crate) fn decode(&self, value: &serde_json::Value) -> Result<DecodesTo, Error> {
-        (*self.decoder).decode(value).map_err(Error::DecodeError)
+    #[cfg(test)]
+    fn decode(&self, value: &serde_json::Value) -> Result<DecodesTo, DecodeError> {
+        (*self.decoder).decode(value)
     }
 
-    pub(crate) fn query_and_arguments<'b>(
-        &'b self,
-    ) -> Result<(String, Vec<&'b serde_json::Value>), ()> {
-        let mut arguments: Vec<Result<&serde_json::Value, ()>> = vec![];
-        let mut argument_types: Vec<&str> = vec![];
+    pub(crate) fn query_arguments_and_decoder(
+        self,
+    ) -> (String, Vec<Argument>, BoxDecoder<'a, DecodesTo>) {
+        let mut arguments: Vec<Argument> = vec![];
         let query = self
             .fields
-            .iter()
-            .map(|f| f.query(0, 2, &mut arguments, &mut argument_types))
+            .into_iter()
+            .map(|f| f.query(0, 2, &mut arguments))
             .collect();
 
-        let arguments: Vec<_> = arguments.into_iter().collect::<Result<Vec<_>, ()>>()?;
-
-        Ok((query, arguments))
+        (query, arguments, self.decoder)
     }
 }
 
@@ -303,8 +294,9 @@ struct FragmentDecoder<'a, DecodesTo> {
 
 impl<'a, DecodesTo> json_decode::Decoder<'a, DecodesTo> for FragmentDecoder<'a, DecodesTo> {
     fn decode(&self, value: &serde_json::Value) -> Result<DecodesTo, DecodeError> {
-        // TODO: Don't unwrap
-        let typename = value["__typename"].as_str().unwrap();
+        let typename = value["__typename"].as_str().ok_or_else(|| {
+            json_decode::DecodeError::MissingField("__typename".into(), value.to_string())
+        })?;
 
         if let Some(decoder) = self.decoders.get(typename) {
             decoder.decode(value)
@@ -746,13 +738,13 @@ mod tests {
             )),
         );
 
+        let (query, args, _) = selection_set.query_arguments_and_decoder();
+
         assert_eq!(
-            selection_set.query_and_arguments(),
-            Ok((
-                "test_struct {\n  field_one\n  nested {\n    a_string\n  }\n}\n".to_string(),
-                vec![]
-            ))
-        )
+            query,
+            "test_struct {\n  field_one\n  nested {\n    a_string\n  }\n}\n"
+        );
+        assert!(args.is_empty());
     }
 
     #[test]
@@ -768,7 +760,7 @@ mod tests {
             ),
         );
 
-        let (_query, args) = selection_set.query_and_arguments().unwrap();
+        let (_query, args, _) = selection_set.query_arguments_and_decoder();
         assert_eq!(args.len(), 1);
     }
 
@@ -787,7 +779,7 @@ mod tests {
             ),
         );
 
-        let (_query, args) = selection_set.query_and_arguments().unwrap();
+        let (_query, args, _) = selection_set.query_arguments_and_decoder();
         assert_eq!(args.len(), 2);
     }
 

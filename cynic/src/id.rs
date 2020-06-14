@@ -1,3 +1,5 @@
+use crate::SerializeError;
+
 #[derive(Clone, Debug)]
 pub struct Id(String);
 
@@ -22,7 +24,7 @@ impl crate::Scalar for Id {
         String::decode(value).map(Into::into)
     }
 
-    fn encode(&self) -> Result<serde_json::Value, ()> {
+    fn encode(&self) -> Result<serde_json::Value, SerializeError> {
         self.0.encode()
     }
 }

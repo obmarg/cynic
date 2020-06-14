@@ -10,3 +10,6 @@ edition = "2018"
 cynic = { path = "../cynic" }
 cynic-codegen = { path = "../cynic-codegen" }
 reqwest = { version = "0.10.1", features = ["json", "blocking"] }
+
+[dev-dependencies]
+insta = "0.16.0"

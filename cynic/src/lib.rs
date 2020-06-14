@@ -1,6 +1,6 @@
 //! # Cynic
 //!
-//! Cynic is a GraphQL query builder & data mapper for Rust.  
+//! Cynic is a GraphQL query builder & data mapper for Rust.
 //!
 //! See [the README on GitHub](https://github.com/polyandglot/cynic) for more details.
 //!
@@ -92,7 +92,7 @@
 //! ```rust,ignore
 //! let response = reqwest::blocking::Client::new()
 //!                     .post("a_url")
-//!                     .json(&query.body()?)
+//!                     .json(&query)
 //!                     .send()?;
 //! let result = query.decode_response(response.json()?)?;
 //! ```
@@ -153,7 +153,6 @@
 //!     )
 //! );
 //! ```
-use std::collections::HashMap;
 
 mod argument;
 mod field;
@@ -208,6 +207,8 @@ where
     }
 }
 
+pub type SerializeError = Box<dyn std::error::Error>;
+
 /// A trait for GraphQL enums.
 ///
 /// This trait is generic over some TypeLock which is used to tie an Enum
@@ -223,7 +224,7 @@ pub trait Enum<TypeLock>: Sized {
 /// back into it's GraphQL input object.  Generally this will be some type
 /// generated in the GQL code.
 pub trait InputObject<TypeLock> {
-    fn serialize(&self) -> Result<serde_json::Value, ()>;
+    fn serialize(&self) -> Result<serde_json::Value, SerializeError>;
 }
 
 /// A marker trait for the arguments types on QueryFragments.
@@ -256,12 +257,6 @@ where
 }
 
 pub trait QueryRoot {}
-
-#[derive(Debug, serde::Serialize)]
-pub struct QueryBody<'a> {
-    pub query: String,
-    pub variables: HashMap<String, &'a serde_json::Value>,
-}
 
 pub use cynic_proc_macros::{
     query_dsl, query_module, Enum, FragmentArguments, InlineFragments, QueryFragment, Scalar,
