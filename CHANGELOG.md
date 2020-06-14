@@ -11,6 +11,8 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.5.0 - 2020-06-14
+
 ### Breaking Changes
 
 - `Query::body` no longer exists, the `Query` itself is now directly
@@ -27,7 +29,7 @@ all APIs might be changed.
 - `cynic-codegen` will now build with the rustfmt feature disabled.
 - Removed some unwraps that I lazily put in and forgot to remove.
 
-## 0.4.0 - 2020-06-12
+## v0.4.0 - 2020-06-12
 
 ### Breaking Changes
 
