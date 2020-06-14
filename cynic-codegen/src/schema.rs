@@ -30,7 +30,18 @@ pub fn load_schema(filename: impl AsRef<std::path::Path>) -> Result<Document, Er
 
     let schema = std::fs::read_to_string(filename)?;
     let borrowed_schema = graphql_parser::schema::parse_schema::<String>(&schema)?;
-    Ok(borrowed_schema.into_static())
+    Ok(schema_into_static(borrowed_schema))
+}
+
+fn schema_into_static<'a>(
+    doc: graphql_parser::schema::Document<'a, String>,
+) -> graphql_parser::schema::Document<'static, String> {
+    // A workaround until https://github.com/graphql-rust/graphql-parser/pull/33 is
+    // merged upstream.
+
+    // A document that uses Strings for it's data should be safe to cast to 'static lifetime
+    // as there's nothing inside it to reference 'a anyway
+    unsafe { std::mem::transmute::<_, Document>(doc) }
 }
 
 /// Extension trait for the schema Field type

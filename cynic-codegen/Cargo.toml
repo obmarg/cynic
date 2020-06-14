@@ -15,7 +15,7 @@ default = ["rustfmt"]
 rustfmt = []
 
 [dependencies]
-graphql-parser = { git = "https://github.com/obmarg/graphql-parser.git" }
+graphql-parser = "0.3.0"
 proc-macro2 = "1.0"
 syn = "1.0"
 quote = "1.0"
