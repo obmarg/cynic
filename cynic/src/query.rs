@@ -19,7 +19,7 @@ impl<'a, ResponseData: 'a> Query<'a, ResponseData> {
         let variables = arguments
             .into_iter()
             .enumerate()
-            .map(|(i, a)| (format!("$_{}", i), a))
+            .map(|(i, a)| (format!("_{}", i), a))
             .collect();
 
         Query {

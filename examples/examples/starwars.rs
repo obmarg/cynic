@@ -31,6 +31,11 @@ struct FilmDirectorQuery {
 }
 
 fn main() {
+    let result = run_query();
+    println!("{:?}", result);
+}
+
+fn run_query() -> cynic::GraphQLResponse<FilmDirectorQuery> {
     let query = build_query();
 
     let response = reqwest::blocking::Client::new()
@@ -41,9 +46,7 @@ fn main() {
 
     println!("{:?}", response);
 
-    let result = query.decode_response(response.json().unwrap()).unwrap();
-
-    println!("{:?}", result);
+    query.decode_response(response.json().unwrap()).unwrap()
 }
 
 fn build_query() -> cynic::Query<'static, FilmDirectorQuery> {
@@ -66,5 +69,14 @@ mod test {
         let query = build_query();
 
         insta::assert_snapshot!(query.query);
+    }
+
+    #[test]
+    fn test_running_query() {
+        let result = run_query();
+        if result.errors.is_some() {
+            assert_eq!(result.errors.unwrap().len(), 0);
+        }
+        insta::assert_debug_snapshot!(result.data);
     }
 }
