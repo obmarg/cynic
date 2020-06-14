@@ -13,6 +13,7 @@ documentation = "https://docs.rs/cynic-codegen"
 [features]
 default = ["rustfmt"]
 rustfmt = []
+optimised-query-modules = []
 
 [dependencies]
 graphql-parser = { git = "https://github.com/obmarg/graphql-parser.git" }
