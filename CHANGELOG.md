@@ -15,6 +15,12 @@ all APIs might be changed.
 
 - `cynic::Id` now derives PartialEq, Hash & Eq
 
+### Bug Fixes
+
+- Using a `query_module` should no longer cause errors on an individual derive
+  to be attributed to the `query_module` span - the error information should
+  now be associated with the derive it originated from.
+
 ## v0.5.0 - 2020-06-14
 
 ### Breaking Changes
@@ -32,9 +38,6 @@ all APIs might be changed.
 
 - `cynic-codegen` will now build with the rustfmt feature disabled.
 - Removed some unwraps that I lazily put in and forgot to remove.
-- Using a `query_module` should no longer cause errors on an individual derive
-  to be attributed to the `query_module` span - the error information should
-  now be associated with the derive it originated from.
 
 ## v0.4.0 - 2020-06-12
 
