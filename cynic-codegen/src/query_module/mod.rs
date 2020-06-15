@@ -221,7 +221,6 @@ fn scalar_derive(item: &syn::Item) -> TokenStream {
 }
 
 fn insert_cynic_attrs(args: &TransformModuleArgs, item: syn::Item) -> syn::Item {
-    use darling::FromDeriveInput;
     use syn::Item;
 
     match utils::find_derives(&item).get(0) {

@@ -14,6 +14,7 @@ all APIs might be changed.
 ### New Features
 
 - `cynic::Id` now derives PartialEq, Hash & Eq
+- Added `cynic::Id::new` function
 
 ### Bug Fixes
 

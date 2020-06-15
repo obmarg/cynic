@@ -4,6 +4,9 @@ use crate::SerializeError;
 pub struct Id(String);
 
 impl Id {
+    pub fn new(s: impl Into<String>) -> Self {
+        Id(s.into())
+    }
     pub fn inner(&self) -> &str {
         return &self.0;
     }
