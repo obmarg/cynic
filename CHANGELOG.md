@@ -32,6 +32,9 @@ all APIs might be changed.
 
 - `cynic-codegen` will now build with the rustfmt feature disabled.
 - Removed some unwraps that I lazily put in and forgot to remove.
+- Using a `query_module` should no longer cause errors on an individual derive
+  to be attributed to the `query_module` span - the error information should
+  now be associated with the derive it originated from.
 
 ## v0.4.0 - 2020-06-12
 
