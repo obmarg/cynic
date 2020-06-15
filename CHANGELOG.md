@@ -11,6 +11,10 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+### New Features
+
+- `cynic::Id` now derives PartialEq, Hash & Eq
+
 ## v0.5.0 - 2020-06-14
 
 ### Breaking Changes

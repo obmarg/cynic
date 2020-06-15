@@ -1,6 +1,6 @@
 use crate::SerializeError;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 pub struct Id(String);
 
 impl Id {
