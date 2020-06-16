@@ -32,6 +32,7 @@ where
         let contents = &self.contents;
 
         tokens.append_all(quote! {
+            #[allow(dead_code)]
             pub mod #name {
                 #(
                     #contents

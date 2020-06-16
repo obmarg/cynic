@@ -21,6 +21,7 @@ all APIs might be changed.
 - Using a `query_module` should no longer cause errors on an individual derive
   to be attributed to the `query_module` span - the error information should
   now be associated with the derive it originated from.
+- Fixed some dead code warnings in the selection builders output by query DSL
 
 ## v0.5.0 - 2020-06-14
 
