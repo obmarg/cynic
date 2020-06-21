@@ -1,0 +1,6 @@
+[book]
+authors = ["Graeme Coupar"]
+language = "en"
+multilingual = false
+src = "src"
+title = "Cynic - A GraphQL Client For Rust"
