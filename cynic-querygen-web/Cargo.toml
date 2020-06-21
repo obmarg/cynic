@@ -20,10 +20,5 @@ seed = { git = "https://github.com/seed-rs/seed", rev = "b25cf59" }
 
 cynic-querygen = { path = "../cynic-querygen" }
 
-[profile.release]
-lto = true
-opt-level = 'z'
-codegen-units = 1
-
 [package.metadata.wasm-pack.profile.release]
 wasm-opt = ['-Os']
