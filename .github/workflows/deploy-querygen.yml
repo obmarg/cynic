@@ -1,0 +1,28 @@
+name: Deploy cynic-querygen-web
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install cargo-make
+      run: curl -o cargo-make.zip -L https://github.com/sagiegurari/cargo-make/releases/download/0.31.0/cargo-make-v0.31.0-x86_64-unknown-linux-musl.zip && unzip cargo-make.zip && mkdir -p ~/.cargo/bin && cp cargo-make-v0.31.0-x86_64-unknown-linux-musl/cargo-make ~/.cargo/bin
+      #run: cargo install cargo-make
+    - name: Build cynic-querygen-web
+      run: cargo make build_release
+      working-directory: ./cynic-querygen-web
+    - name: Construct release
+      run: mkdir release && cp index.html release && cp -r pkg release
+      working-directory: ./cynic-querygen-web
+    - name: Deploy cynic-querygen-web
+      uses: netlify/actions/cli@master
+      with:
+        args: deploy --dir=cynic-querygen-web/release
+      env:
+        NETLIFY_SITE_ID: ${{ secrets.QUERYGEN_NETLIFY_SITE_ID }}
+        NETLIFY_AUTH_TOKEN: ${{ secrets.QUERYGEN_NETLIFY_AUTH_TOKEN }}
