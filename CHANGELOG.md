@@ -11,6 +11,8 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.7.0 - 2020-06-23
+
 ### Breaking Changes
 
 - `SerializableArgument`s are now required to be `Send`.  Found this was
