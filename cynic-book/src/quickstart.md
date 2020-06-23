@@ -91,7 +91,7 @@ mod tests {
     fn all_films_query_gql_output() {
         use cynic::QueryFragment;
         let query = cynic::Query::new(AllFilmsQuery::fragment(()));
-	insta::assert_snapshot!(query.query);
+        insta::assert_snapshot!(query.query);
     }
 }
 ```
