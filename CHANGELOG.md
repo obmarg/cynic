@@ -11,6 +11,14 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.7.0 - 2020-06-23
+
+### Breaking Changes
+
+- `SerializableArgument`s are now required to be `Send`.  Found this was
+  required for using cynic in an async context.  May revisit at some point to
+  see if it's 100% required.
+
 ## v0.6.0 - 2020-06-17
 
 ### New Features
