@@ -2,12 +2,16 @@ use crate::{Scalar, SerializeError};
 
 pub struct Argument {
     pub(crate) name: String,
-    pub(crate) value: Box<dyn SerializableArgument>,
+    pub(crate) value: Box<dyn SerializableArgument + Send>,
     pub(crate) type_: String,
 }
 
 impl Argument {
-    pub fn new(name: &str, gql_type: &str, value: impl SerializableArgument + 'static) -> Argument {
+    pub fn new(
+        name: &str,
+        gql_type: &str,
+        value: impl SerializableArgument + 'static + Send,
+    ) -> Argument {
         Argument {
             name: name.to_string(),
             value: Box::new(value),
