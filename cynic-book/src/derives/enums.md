@@ -18,7 +18,7 @@ the variants on the enum in the schema.  If there are any extra or missing
 variants, the derive will emit errors.
 
 By default the variant names are expected to match the GraphQL variants
-xactly, but this can be controlled with either the `rename_all` top level
+exactly, but this can be controlled with either the `rename_all` top level
 parametr or the rename variant parameter.
 
 <!-- TODO: example of the above?  Better wording -->

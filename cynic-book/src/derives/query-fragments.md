@@ -127,6 +127,17 @@ let query = cynic::Query::new(FilmQuery::fragment(FilmArguments{
 }));
 ```
 
+#### Nested Arguments
+
+The example above showed how to pass arguments to the top level of a query.  If
+you want to pass arguments to a nested QueryFragment then all it's parent
+`QueryFragment`s must specify the same `argument_struct` in their `cynic`
+attribute.  This is neccesary so that the `FragmentArgument` struct gets passed
+down to that level of a query.
+
+If no nested QueryFragments require arguments, you can omit the
+`argument_struct` attr.
+
 ### Related
 
 - [FragmentArguments][1] are used to provide arguments to the fields of a
