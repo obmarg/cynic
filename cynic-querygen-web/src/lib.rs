@@ -5,6 +5,8 @@
 
 use seed::{prelude::*, *};
 
+mod view;
+
 // ------ ------
 //     Init
 // ------ ------
@@ -95,12 +97,17 @@ fn view(model: &Model) -> Node<Msg> {
     };
 
     div![
-        style![
-            St::Display => St::Flex,
-            St::FlexDirection => "column"
-        ],
-        codegen_options(),
-        textareas(&generated_code)
+        view::header(),
+        view::entry_page(),
+        /*
+        div![
+            style![
+                St::Display => St::Flex,
+                St::FlexDirection => "column"
+            ],
+            codegen_options(),
+            textareas(&generated_code)
+        ]*/
     ]
 }
 
