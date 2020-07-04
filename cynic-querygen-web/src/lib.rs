@@ -5,6 +5,7 @@
 
 use seed::{prelude::*, *};
 
+mod entry_page;
 mod view;
 
 // ------ ------
@@ -26,6 +27,7 @@ struct Model {
     query: String,
     opts: cynic_querygen::QueryGenOptions,
     generated_code: Result<String, cynic_querygen::Error>,
+    entry_page: entry_page::Model,
 }
 
 impl Default for Model {
@@ -35,6 +37,7 @@ impl Default for Model {
             query: "".into(),
             opts: Default::default(),
             generated_code: Ok("".into()),
+            entry_page: Default::default(),
         }
     }
 }
@@ -59,10 +62,11 @@ enum Msg {
     QueryChange(String),
     SchemaPathChange(String),
     QueryModuleChange(String),
+    EntryPageMsg(entry_page::Msg),
 }
 
 // `update` describes how to handle each `Msg`.
-fn update(msg: Msg, model: &mut Model, _: &mut impl Orders<Msg>) {
+fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
     match msg {
         Msg::SchemaChange(schema) => {
             model.schema = schema;
@@ -80,6 +84,18 @@ fn update(msg: Msg, model: &mut Model, _: &mut impl Orders<Msg>) {
             model.opts.query_module = query_module;
             model.generate_code();
         }
+        Msg::EntryPageMsg(msg) => {
+            let action = entry_page::update(
+                msg,
+                &mut model.entry_page,
+                &mut orders.proxy(Msg::EntryPageMsg),
+            );
+            match action {
+                None => {}
+                Some(entry_page::Action::BuildFromSchema(schema)) => {}
+                Some(entry_page::Action::BuildFromUrl(url)) => {}
+            }
+        }
     }
 }
 
@@ -96,9 +112,11 @@ fn view(model: &Model) -> Node<Msg> {
         Err(e) => e.to_string(),
     };
 
+    // Consider going super minimal like: https://legacy.graphqlbin.com/new
+
     div![
         view::header(),
-        view::entry_page(),
+        entry_page::view(&model.entry_page).map_msg(Msg::EntryPageMsg),
         /*
         div![
             style![
