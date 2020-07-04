@@ -11,6 +11,11 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+### Bug Fixes
+
+- Fixed an issue with cynic-querygen where it guessed the name for the root of
+  a query and crashed out if it was wrong (which was often).
+
 ## v0.7.0 - 2020-06-23
 
 ### Breaking Changes

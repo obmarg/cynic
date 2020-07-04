@@ -40,6 +40,14 @@ impl<'a> TypeIndex<'a> {
         let mut rv = TypeIndex::default();
         rv.types.extend(types);
 
+        for definition in &schema.definitions {
+            if let Definition::SchemaDefinition(schema_def) = definition {
+                if let Some(query) = schema_def.query {
+                    rv.root = query.to_string();
+                }
+            }
+        }
+
         rv
     }
 
