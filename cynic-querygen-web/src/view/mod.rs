@@ -1,22 +1,20 @@
 use seed::{prelude::*, *};
 
-use super::Msg;
-
-pub(crate) fn header() -> Node<Msg> {
+pub(crate) fn header<Msg>() -> Node<Msg> {
     section![
         C!["hero", "is-dark"],
         div![C!["hero-head"], navbar()],
-        div![
+        /*div![
             C!["hero-body"],
             div![
                 C!["container", "has-text-centered"],
                 h1![C!["title"], "Build GraphQL queries for Rust with Cynic"],
             ]
-        ]
+        ]*/
     ]
 }
 
-fn navbar() -> Node<Msg> {
+fn navbar<Msg>() -> Node<Msg> {
     nav![
         C!["navbar"],
         a![
@@ -39,8 +37,4 @@ fn navbar() -> Node<Msg> {
             ]
         ]
     ]
-}
-
-pub(crate) fn gql_editor() -> Node<Msg> {
-    custom![Tag::from("gql-editor")]
 }

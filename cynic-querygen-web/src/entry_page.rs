@@ -53,7 +53,11 @@ pub fn update(msg: Msg, model: &mut Model, _: &mut impl Orders<Msg>) -> Option<A
     }
 }
 
-pub(crate) fn view(model: &Model) -> Node<Msg> {
+pub fn view(model: &Model) -> Node<Msg> {
+    div![crate::view::header(), entry_page_view(model)]
+}
+
+fn entry_page_view(model: &Model) -> Node<Msg> {
     let schema_selector = match model {
         Model::New => div![],
         Model::Url(_) => view_url_entry(),
