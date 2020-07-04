@@ -1,7 +1,7 @@
 # Overview
 
 Cynic is a GraphQL library for Rust.  It's not the first but it takes a
-different approach from the existing libraries.  
+different approach from the existing libraries.
 
 Existing libraries take a query first approach to GQL - you write a query using
 GraphQL and libraries use that to generate Rust structs for you using macros.
@@ -48,6 +48,13 @@ The following features are not yet supported, though hopefully will be someday
 - GraphQL subscriptions.
 - Potentially other things (please open an issue if you find anything obviously
   missing)
+
+### Documentation
+
+Cynic is documented in a few places:
+
+1. There's a guide to using cynic on [cynic-rs.dev](https://cynic-rs.dev)
+2. The reference documentation on [docs.rs](https://docs.rs/cynic)
 
 ### Inspiration
 
