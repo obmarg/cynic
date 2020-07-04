@@ -12,9 +12,12 @@ import {
 
 interface EditorProps {
   schemaUrl: string;
+  container: HTMLElement;
 }
 
-const GraphQLEditor = ({ schemaUrl }: EditorProps) => {
+const GraphQLEditor = (props: EditorProps) => {
+  const { schemaUrl, container } = props;
+
   const [query, setQuery] = useState<string | undefined>();
   const [schema, setSchema] = useState<GraphQLSchema | undefined>();
   const [explorerOpen, setExplorerOpen] = useState(true);
@@ -28,6 +31,13 @@ const GraphQLEditor = ({ schemaUrl }: EditorProps) => {
 
     handler();
   }, [schemaUrl]);
+
+  const onEditQuery = (query: string) => {
+    container.dispatchEvent(
+      new CustomEvent("change", { bubbles: true, detail: query })
+    );
+    setQuery(query);
+  };
 
   return (
     <>
@@ -48,7 +58,7 @@ const GraphQLEditor = ({ schemaUrl }: EditorProps) => {
         <GraphiQLExplorer
           query={query}
           schema={schema}
-          onEdit={setQuery}
+          onEdit={onEditQuery}
           explorerIsOpen={explorerOpen}
           onToggleExplorer={() => setExplorerOpen(!explorerOpen)}
         />
@@ -57,7 +67,7 @@ const GraphQLEditor = ({ schemaUrl }: EditorProps) => {
           schema={schema}
           headerEditorEnabled
           query={query}
-          onEditQuery={setQuery}
+          onEditQuery={onEditQuery}
         >
           <GraphiQL.Logo>Query Builder</GraphiQL.Logo>
           <GraphiQL.Toolbar></GraphiQL.Toolbar>

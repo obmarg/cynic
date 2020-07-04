@@ -61,7 +61,9 @@ pub fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
     match msg {
         Msg::QueryChange(query) => {
             model.query = query;
-            model.generate_code();
+            seed::log!("Query: {}", &model.query);
+            // TODO: re-instate this
+            //model.generate_code();
         }
         Msg::SchemaPathChange(schema_path) => {
             model.opts.schema_path = schema_path;
@@ -85,7 +87,7 @@ pub fn view(model: &Model) -> Node<Msg> {
     div![crate::view::header(), gql_editor(&model.schema)]
 }
 
-fn gql_editor<Msg>(schema: &Schema) -> Node<Msg> {
+fn gql_editor(schema: &Schema) -> Node<Msg> {
     let schema_url = match schema {
         Schema::Url(url) => url,
         Schema::Schema(_) => todo!(),
@@ -98,6 +100,10 @@ fn gql_editor<Msg>(schema: &Schema) -> Node<Msg> {
         ],
         custom![
             C!["column", "is-full"],
+            ev(Ev::Change, |event| {
+                let custom_event: web_sys::CustomEvent = event.unchecked_into();
+                custom_event.detail().as_string().map(Msg::QueryChange)
+            }),
             attrs! {
                 "schema-url" => schema_url
             },
