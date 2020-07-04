@@ -40,3 +40,7 @@ fn navbar() -> Node<Msg> {
         ]
     ]
 }
+
+pub(crate) fn gql_editor() -> Node<Msg> {
+    custom![Tag::from("gql-editor")]
+}

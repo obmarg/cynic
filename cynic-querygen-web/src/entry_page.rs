@@ -36,6 +36,10 @@ pub fn update(msg: Msg, model: &mut Model, _: &mut impl Orders<Msg>) -> Option<A
             *model = Model::Pasted("".into());
             None
         }
+        (_, Model::New) => {
+            // We only care about the above events when we're new...
+            None
+        }
         (Msg::TextUpdated(s), Model::Url(_)) => {
             *model = Model::Url(s);
             None
@@ -44,12 +48,8 @@ pub fn update(msg: Msg, model: &mut Model, _: &mut impl Orders<Msg>) -> Option<A
             *model = Model::Pasted(s);
             None
         }
-        (Msg::TextUpdated(_), _) => {
-            // Shouldn't happen
-            None
-        }
         (Msg::BuildQuery, Model::Url(data)) => Some(Action::BuildFromUrl(data.clone())),
-        (Msg::BuildQuery, Model::Url(data)) => Some(Action::BuildFromSchema(data.clone())),
+        (Msg::BuildQuery, Model::Pasted(data)) => Some(Action::BuildFromSchema(data.clone())),
     }
 }
 

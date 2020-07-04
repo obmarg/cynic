@@ -117,6 +117,7 @@ fn view(model: &Model) -> Node<Msg> {
     div![
         view::header(),
         entry_page::view(&model.entry_page).map_msg(Msg::EntryPageMsg),
+        view::gql_editor(),
         /*
         div![
             style![
