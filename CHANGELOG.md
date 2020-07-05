@@ -15,6 +15,8 @@ all APIs might be changed.
 
 - Fixed an issue with cynic-querygen where it guessed the name for the root of
   a query and crashed out if it was wrong (which was often).
+- Fixed an issue where querygen would fail if given a query with a hardcoded
+  enum value (#33)
 
 ## v0.7.0 - 2020-06-23
 
