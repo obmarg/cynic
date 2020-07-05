@@ -22,7 +22,17 @@ const GeneratedRustViewer: React.FC = () => {
         id="secondary-editor-title"
         style={{
           cursor: viewerOpen ? "row-resize" : "n-resize",
+          paddingLeft: 8,
         }}
+        onMouseDown={(downEvent) =>
+          handleEditorResizeStart({
+            downEvent,
+            wasOpen: viewerOpen,
+            hadHeight: viewerHeight,
+            setOpen,
+            setHeight,
+          })
+        }
       >
         <div
           style={{
@@ -79,3 +89,71 @@ const Viewer: React.FC<ViewerProps> = (props) => {
   );
 };
 
+interface HandleEditorArg {
+  downEvent: React.MouseEvent<HTMLDivElement>;
+  wasOpen: boolean;
+  hadHeight: number;
+  setOpen: (bool) => void;
+  setHeight: (number) => void;
+}
+
+const handleEditorResizeStart = ({
+  downEvent,
+  wasOpen,
+  hadHeight,
+  setOpen,
+  setHeight,
+}: HandleEditorArg) => {
+  downEvent.preventDefault();
+
+  // Forgive me for this crime
+  const editorBar =
+    downEvent.currentTarget.parentElement.parentElement.parentElement
+      .parentElement;
+
+  let didMove = false;
+  const offset = downEvent.clientY - getTop(downEvent.target as HTMLElement);
+
+  let onMouseMove = (moveEvent: MouseEvent) => {
+    if (moveEvent.buttons === 0) {
+      return onMouseUp!();
+    }
+
+    didMove = true;
+
+    const topSize = moveEvent.clientY - getTop(editorBar) - offset;
+    const bottomSize = editorBar.clientHeight - topSize;
+
+    if (bottomSize < 60) {
+      setOpen(false);
+      setHeight(hadHeight);
+    } else {
+      setOpen(true);
+      setHeight(bottomSize);
+    }
+  };
+
+  let onMouseUp = () => {
+    if (!didMove) {
+      setOpen(!wasOpen);
+    }
+
+    document.removeEventListener("mousemove", onMouseMove!);
+    document.removeEventListener("mouseup", onMouseUp!);
+    onMouseMove = null;
+    onMouseUp = null;
+  };
+
+  document.addEventListener("mousemove", onMouseMove);
+  document.addEventListener("mouseup", onMouseUp);
+};
+
+export function getTop(initialElem: HTMLElement) {
+  let pt = 0;
+  let elem = initialElem;
+  while (elem.offsetParent) {
+    pt += elem.offsetTop;
+    elem = elem.offsetParent as HTMLElement;
+  }
+  return pt;
+}
