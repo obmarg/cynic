@@ -1,36 +1,25 @@
-use graphql_parser::query::Type;
-use graphql_parser::schema::{Definition, Document, EnumType, TypeDefinition};
+use graphql_parser::schema::{Definition, ScalarType};
 use std::collections::HashMap;
 
-use crate::{type_ext::TypeExt, Error};
+use crate::{
+    schema::{Document, Field, TypeDefinition},
+    type_ext::TypeExt,
+    Error,
+};
 
 pub struct TypeIndex<'a> {
-    types: HashMap<&'a str, FieldType<'a>>,
+    types: HashMap<&'a str, TypeDefinition<'a>>,
     root: String,
 }
 
-type FieldMap<'a> = HashMap<&'a str, &'a Type<'a, &'a str>>;
-
 impl<'a> TypeIndex<'a> {
-    pub fn from_schema<'b>(schema: &'b Document<'b, &'b str>) -> TypeIndex<'b> {
+    pub fn from_schema(schema: &'a Document<'a>) -> TypeIndex<'a> {
         let types = schema
             .definitions
             .iter()
             .map(|definition| match definition {
-                Definition::TypeDefinition(TypeDefinition::Scalar(scalar)) => {
-                    Some((scalar.name, FieldType::Scalar(ScalarKind::Custom)))
-                }
-                Definition::TypeDefinition(TypeDefinition::Object(obj)) => {
-                    let fields = obj
-                        .fields
-                        .iter()
-                        .map(|field| (field.name, &field.field_type))
-                        .collect();
-
-                    Some((obj.name, FieldType::Object(fields)))
-                }
-                Definition::TypeDefinition(TypeDefinition::Enum(en)) => {
-                    Some((en.name, FieldType::Enum(en)))
+                Definition::TypeDefinition(type_def) => {
+                    Some((name_for_type(type_def), type_def.clone()))
                 }
                 _ => None,
             })
@@ -51,48 +40,63 @@ impl<'a> TypeIndex<'a> {
         rv
     }
 
-    pub fn type_for_path<'b>(&self, path: &[&'b str]) -> Result<&'a Type<'a, &'a str>, Error> {
-        // TODO: tidy up unwraps etc.
+    pub fn field_for_path<'b>(&'a self, path: &[&'b str]) -> Result<&'a Field<'a>, Error> {
         let root = self.types.get(self.root.as_str()).unwrap();
-        if let FieldType::Object(root_fields) = root {
-            self.find_type_recursive(root_fields, self.root.as_str(), path)
+        if let TypeDefinition::Object(root_object) = root {
+            self.find_field_recursive(&root_object.fields, self.root.as_str(), path)
         } else {
-            panic!("TODO: make this an error");
+            Err(Error::ExpectedObject(self.root.clone()))
         }
     }
 
-    pub fn lookup_type(&self, name: &str) -> Option<&FieldType<'a>> {
+    /*
+    pub fn type_for_path<'b>(&'a self, path: &[&'b str]) -> Result<&'a Type<'a, &'a str>, Error> {
+        let root = self.types.get(self.root.as_str()).unwrap();
+        if let TypeDefinition::Object(root_object) = root {
+            Ok(&self
+                .find_field_recursive(&root_object.fields, self.root.as_str(), path)?
+                .field_type)
+        } else {
+            Err(Error::ExpectedObject(self.root.clone()))
+        }
+    }*/
+
+    pub fn lookup_type(&self, name: &str) -> Option<&TypeDefinition<'a>> {
         self.types.get(name)
     }
 
-    fn find_type_recursive<'b>(
-        &self,
-        fields: &FieldMap<'a>,
-        current_type_name: &'b str,
+    fn find_field_recursive<'b>(
+        &'a self,
+        fields: &'a [Field<'a>],
+        current_type_name: &'a str,
         path: &[&'b str],
-    ) -> Result<&'a Type<'a, &'a str>, Error> {
-        // TODO: tidy up unwraps etc.
+    ) -> Result<&'a Field<'a>, Error> {
+        let get_field = |name| fields.iter().find(|field| field.name == name);
+
         match path {
             [] => panic!("This shouldn't happen"),
-            [first] => fields.get(first).map(|f| *f).ok_or(Error::UnknownField(
+            [first] => get_field(*first).ok_or(Error::UnknownField(
                 first.to_string(),
                 current_type_name.to_string(),
             )),
             [first, rest @ ..] => {
-                let inner_name = fields
-                    .get(first)
+                let inner_name = get_field(first)
                     .ok_or(Error::UnknownField(
                         first.to_string(),
                         current_type_name.to_string(),
                     ))?
+                    .field_type
                     .inner_name();
 
-                let inner_type = self.types.get(inner_name).unwrap();
+                let inner_type = self
+                    .types
+                    .get(inner_name)
+                    .ok_or(Error::UnknownType(inner_name.to_string()))?;
 
-                if let FieldType::Object(fields) = inner_type {
-                    self.find_type_recursive(fields, &inner_name, rest)
+                if let TypeDefinition::Object(object) = inner_type {
+                    self.find_field_recursive(&object.fields, &inner_name, rest)
                 } else {
-                    panic!("TODO: make this an error");
+                    Err(Error::ExpectedObject(inner_name.to_string()))
                 }
             }
         }
@@ -103,27 +107,28 @@ impl<'a> Default for TypeIndex<'a> {
     fn default() -> TypeIndex<'a> {
         let mut types = HashMap::new();
 
-        types.insert("String", FieldType::Scalar(ScalarKind::BuiltIn));
-        types.insert("Int", FieldType::Scalar(ScalarKind::BuiltIn));
-        types.insert("Boolean", FieldType::Scalar(ScalarKind::BuiltIn));
-        types.insert("ID", FieldType::Scalar(ScalarKind::BuiltIn));
+        types.insert("String", TypeDefinition::Scalar(ScalarType::new("String")));
+        types.insert("Int", TypeDefinition::Scalar(ScalarType::new("Int")));
+        types.insert(
+            "Boolean",
+            TypeDefinition::Scalar(ScalarType::new("Boolean")),
+        );
+        types.insert("ID", TypeDefinition::Scalar(ScalarType::new("ID")));
 
         TypeIndex {
-            types,
             root: "Query".into(),
+            types,
         }
     }
 }
 
-#[derive(Debug, PartialEq)]
-pub enum ScalarKind {
-    BuiltIn,
-    Custom,
-}
-
-#[derive(Debug, PartialEq)]
-pub enum FieldType<'a> {
-    Enum(&'a EnumType<'a, &'a str>),
-    Object(HashMap<&'a str, &'a Type<'a, &'a str>>),
-    Scalar(ScalarKind),
+fn name_for_type<'a>(type_def: &TypeDefinition<'a>) -> &'a str {
+    match type_def {
+        TypeDefinition::Scalar(inner) => &inner.name,
+        TypeDefinition::Object(inner) => &inner.name,
+        TypeDefinition::Interface(inner) => &inner.name,
+        TypeDefinition::Union(inner) => &inner.name,
+        TypeDefinition::Enum(inner) => &inner.name,
+        TypeDefinition::InputObject(inner) => &inner.name,
+    }
 }

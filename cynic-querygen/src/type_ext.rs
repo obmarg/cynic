@@ -2,7 +2,7 @@ use graphql_parser::query::Type;
 use inflector::Inflector;
 use std::borrow::Cow;
 
-use crate::{FieldType, TypeIndex};
+use crate::{schema::TypeDefinition, TypeIndex};
 
 pub trait TypeExt<'a> {
     fn inner_name(&self) -> &str;
@@ -46,8 +46,8 @@ fn type_spec_imp<'a>(
         Type::NamedType("Boolean") => Cow::Borrowed("bool"),
         Type::NamedType("ID") => Cow::Borrowed("cynic::Id"),
         Type::NamedType(s) => match type_index.lookup_type(s) {
-            Some(FieldType::Enum(_)) => Cow::Owned(s.to_pascal_case()),
-            Some(FieldType::Object(_)) => Cow::Owned(s.to_pascal_case()),
+            Some(TypeDefinition::Enum(_)) => Cow::Owned(s.to_pascal_case()),
+            Some(TypeDefinition::Object(_)) => Cow::Owned(s.to_pascal_case()),
             _ => Cow::Borrowed(s),
         },
     }

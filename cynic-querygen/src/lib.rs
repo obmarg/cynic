@@ -1,14 +1,15 @@
-use graphql_parser::{query, schema};
+use graphql_parser::query;
 use inflector::Inflector;
 
 mod query_parsing;
+mod schema;
 mod type_ext;
 mod type_index;
 mod value_ext;
 
 use query_parsing::PotentialStruct;
 use type_ext::TypeExt;
-use type_index::{FieldType, TypeIndex};
+use type_index::TypeIndex;
 use value_ext::ValueExt;
 
 #[derive(thiserror::Error, Debug)]
@@ -20,7 +21,7 @@ pub enum Error {
     QueryParseError(#[from] query::ParseError),
 
     #[error("could not parse schema document: {0}")]
-    SchemaParseError(#[from] schema::ParseError),
+    SchemaParseError(#[from] graphql_parser::schema::ParseError),
 
     #[error("could not find field `{0}` on `{1}`")]
     UnknownField(String, String),
@@ -30,6 +31,12 @@ pub enum Error {
 
     #[error("could not find type `{0}`")]
     UnknownType(String),
+
+    #[error("expected type `{0}` to be an object")]
+    ExpectedObject(String),
+
+    #[error("couldn't find an argument named `{0}`")]
+    UnknownArgument(String),
 }
 
 #[derive(Debug)]
@@ -76,7 +83,10 @@ pub fn document_to_fragment_structs(
                     // We have a root query type here, so lets make up a name
                     fragment.name.unwrap_or("Query")
                 } else {
-                    type_index.type_for_path(&fragment.path)?.inner_name()
+                    type_index
+                        .field_for_path(&fragment.path)?
+                        .field_type
+                        .inner_name()
                 };
 
                 let argument_struct_param = if let Some(name) = fragment.argument_struct_name {

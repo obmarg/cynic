@@ -1,15 +1,14 @@
 use graphql_parser::query::{
     Definition, Document, OperationDefinition, Selection, SelectionSet, Value, VariableDefinition,
 };
-use graphql_parser::schema::{EnumType, Type};
 
-use crate::type_index::ScalarKind;
-use crate::{Error, FieldType, TypeExt, TypeIndex};
+use crate::schema::{self, EnumType, ScalarTypeExt, Type, TypeDefinition};
+use crate::{Error, TypeExt, TypeIndex};
 
 #[derive(Debug, PartialEq)]
 pub struct Field<'a> {
     pub name: &'a str,
-    pub field_type: &'a Type<'a, &'a str>,
+    pub field_type: &'a Type<'a>,
 
     pub arguments: Vec<(&'a str, Value<'a, &'a str>)>,
 }
@@ -27,7 +26,7 @@ pub struct QueryFragment<'a> {
 
 #[derive(Debug, PartialEq)]
 pub struct Enum<'a> {
-    pub def: &'a EnumType<'a, &'a str>,
+    pub def: &'a EnumType<'a>,
 }
 
 #[derive(Debug, PartialEq)]
@@ -74,7 +73,7 @@ impl PotentialStruct<'_> {
 
 pub fn parse_query_document<'a>(
     doc: &'a Document<'a, &'a str>,
-    type_index: &TypeIndex<'a>,
+    type_index: &'a TypeIndex<'a>,
 ) -> Result<Vec<PotentialStruct<'a>>, Error> {
     doc.definitions
         .iter()
@@ -149,7 +148,7 @@ pub fn parse_query_document<'a>(
 fn selection_set_to_structs<'a, 'b>(
     selection_set: &'a SelectionSet<'a, &'a str>,
     path: Vec<&'a str>,
-    type_index: &TypeIndex<'a>,
+    type_index: &'a TypeIndex<'a>,
     query_name: Option<&'a str>,
     argument_struct_name: Option<&'b str>,
 ) -> Result<Vec<PotentialStruct<'a>>, Error> {
@@ -158,7 +157,7 @@ fn selection_set_to_structs<'a, 'b>(
     let path = &path;
 
     if !path.is_empty() {
-        let type_name = type_index.type_for_path(&path)?.inner_name();
+        let type_name = type_index.field_for_path(&path)?.field_type.inner_name();
         if let Some(st) = struct_from_type_name(type_name, type_index)? {
             return Ok(vec![st]);
         }
@@ -177,11 +176,11 @@ fn selection_set_to_structs<'a, 'b>(
                 let mut new_path = path.clone();
                 new_path.push(field.name);
 
-                let field_type = type_index.type_for_path(&new_path)?;
+                let schema_field = type_index.field_for_path(&new_path)?;
 
                 this_fragment.fields.push(Field {
                     name: field.name,
-                    field_type,
+                    field_type: &schema_field.field_type,
                     arguments: field.arguments.clone(),
                 });
 
@@ -189,7 +188,9 @@ fn selection_set_to_structs<'a, 'b>(
                     field
                         .arguments
                         .iter()
-                        .map(|(_, arg_value)| argument_to_structs(arg_value, type_index))
+                        .map(|(name, value)| {
+                            argument_to_structs(name, value, schema_field, type_index)
+                        })
                         .collect::<Result<Vec<_>, _>>()?
                         .into_iter()
                         .flatten(),
@@ -228,12 +229,22 @@ fn selection_set_to_structs<'a, 'b>(
 }
 
 fn argument_to_structs<'a>(
+    arg_name: &'a str,
     arg_value: &Value<'a, &'a str>,
-    type_index: &TypeIndex<'a>,
+    schema_field: &'a schema::Field<'a>,
+    type_index: &'a TypeIndex<'a>,
 ) -> Result<Vec<PotentialStruct<'a>>, Error> {
+    let schema_argument = schema_field
+        .arguments
+        .iter()
+        .find(|arg| arg.name == arg_name)
+        .ok_or(Error::UnknownArgument(arg_name.to_string()))?;
+
     match arg_value {
-        Value::Enum(enum_name) => {
-            if let Some(FieldType::Enum(en)) = type_index.lookup_type(enum_name) {
+        Value::Enum(_) => {
+            let enum_name = schema_argument.value_type.inner_name();
+
+            if let Some(TypeDefinition::Enum(en)) = type_index.lookup_type(enum_name) {
                 Ok(vec![PotentialStruct::Enum(Enum { def: en })])
             } else {
                 Err(Error::UnknownEnum(enum_name.to_string()))
@@ -245,12 +256,17 @@ fn argument_to_structs<'a>(
 
 fn struct_from_type_name<'a>(
     type_name: &str,
-    type_index: &TypeIndex<'a>,
+    type_index: &'a TypeIndex<'a>,
 ) -> Result<Option<PotentialStruct<'a>>, Error> {
     match type_index.lookup_type(type_name) {
-        Some(FieldType::Enum(en)) => return Ok(Some(PotentialStruct::Enum(Enum { def: en }))),
-        Some(FieldType::Scalar(ScalarKind::Custom)) => {
-            return Ok(Some(PotentialStruct::Scalar(type_name.to_string())));
+        Some(TypeDefinition::Enum(en)) => return Ok(Some(PotentialStruct::Enum(Enum { def: en }))),
+        Some(TypeDefinition::Scalar(scalar_type)) => {
+            if !scalar_type.is_builtin() {
+                Ok(Some(PotentialStruct::Scalar(type_name.to_string())))
+            } else {
+                // We don't create structs for built in scalars
+                Ok(None)
+            }
         }
         None => Err(Error::UnknownType(type_name.to_string())),
         _ => Ok(None),
