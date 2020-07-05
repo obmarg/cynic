@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useRef, useEffect, useState } from "react";
 import CodeMirror from "codemirror";
+import "codemirror/mode/rust/rust";
 
 interface GeneratedRustViewer {
   generatedCode: string;
