@@ -2,7 +2,13 @@ import * as React from "react";
 import { useRef, useEffect, useState } from "react";
 import CodeMirror from "codemirror";
 
-const GeneratedRustViewer: React.FC = () => {
+interface GeneratedRustViewer {
+  generatedCode: string;
+}
+
+const GeneratedRustViewer: React.FC<GeneratedRustViewer> = ({
+  generatedCode,
+}) => {
   const [viewerOpen, setOpen] = useState(true);
   const [viewerHeight, setHeight] = useState(256);
   const viewerStyle = {
@@ -45,7 +51,7 @@ const GeneratedRustViewer: React.FC = () => {
           {"Generated Rust"}
         </div>
       </div>
-      <Viewer />
+      <Viewer value={generatedCode} />
     </section>
   );
 };
@@ -77,6 +83,12 @@ const Viewer: React.FC<ViewerProps> = (props) => {
       codeMirrorRef.current = null;
     };
   }, [sectionRef.current]);
+
+  useEffect(() => {
+    if (codeMirrorRef.current) {
+      codeMirrorRef.current.setValue(props.value);
+    }
+  }, [codeMirrorRef.current, props.value]);
 
   return (
     <section

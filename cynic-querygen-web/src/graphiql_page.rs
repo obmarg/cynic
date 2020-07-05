@@ -1,12 +1,8 @@
 use seed::{prelude::*, *};
 
-enum Schema {
-    Url(String),
-    Schema(String),
-}
-
 pub struct Model {
-    schema: Schema,
+    schema_url: Option<String>,
+    schema_data: Option<String>,
     query: String,
     opts: cynic_querygen::QueryGenOptions,
     generated_code: Result<String, cynic_querygen::Error>,
@@ -15,24 +11,25 @@ pub struct Model {
 impl Model {
     pub fn new_from_url(url: String) -> Self {
         Model {
-            schema: Schema::Url(url),
+            schema_url: Some(url),
             ..Model::default()
         }
     }
 
     pub fn new_from_schema(schema: String) -> Self {
         Model {
-            schema: Schema::Schema(schema),
+            schema_data: Some(schema),
             ..Model::default()
         }
     }
 
     fn generate_code(&mut self) {
-        if self.query != "" {
-            todo!();
-            // TODO: re-implement this bit
-            self.generated_code =
-                cynic_querygen::document_to_fragment_structs(&self.query, "TODO", &self.opts);
+        if self.query != "" && self.schema_data.is_some() {
+            self.generated_code = cynic_querygen::document_to_fragment_structs(
+                &self.query,
+                self.schema_data.as_ref().unwrap(),
+                &self.opts,
+            );
         }
     }
 }
@@ -40,7 +37,8 @@ impl Model {
 impl Default for Model {
     fn default() -> Model {
         Model {
-            schema: Schema::Schema("".into()),
+            schema_url: None,
+            schema_data: None,
             query: "".into(),
             opts: Default::default(),
             generated_code: Ok("".into()),
@@ -52,6 +50,7 @@ impl Default for Model {
 // `Msg` describes the different events you can modify state with.
 pub enum Msg {
     QueryChange(String),
+    SchemaLoaded(String),
     SchemaPathChange(String),
     QueryModuleChange(String),
 }
@@ -60,10 +59,14 @@ pub enum Msg {
 pub fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
     match msg {
         Msg::QueryChange(query) => {
+            seed::log!("Got query: {}", &query);
             model.query = query;
-            seed::log!("Query: {}", &model.query);
-            // TODO: re-instate this
-            //model.generate_code();
+            model.generate_code();
+        }
+        Msg::SchemaLoaded(schema) => {
+            seed::log!("Got schema: {}", &schema);
+            model.schema_data = Some(schema);
+            model.generate_code();
         }
         Msg::SchemaPathChange(schema_path) => {
             model.opts.schema_path = schema_path;
@@ -84,15 +87,17 @@ pub fn view(model: &Model) -> Node<Msg> {
 
     // Consider going super minimal like: https://legacy.graphqlbin.com/new
 
-    div![crate::view::header(), gql_editor(&model.schema)]
+    if let Some(schema_url) = &model.schema_url {
+        div![
+            crate::view::header(),
+            gql_editor(schema_url, &generated_code)
+        ]
+    } else {
+        div!["TODO"]
+    }
 }
 
-fn gql_editor(schema: &Schema) -> Node<Msg> {
-    let schema_url = match schema {
-        Schema::Url(url) => url,
-        Schema::Schema(_) => todo!(),
-    };
-
+fn gql_editor(schema_url: &str, generated_code: &str) -> Node<Msg> {
     div![
         C!["columns"],
         style![
@@ -100,14 +105,19 @@ fn gql_editor(schema: &Schema) -> Node<Msg> {
         ],
         custom![
             C!["column", "is-full"],
+            ev(Ev::from("schema-loaded"), |event| {
+                let custom_event: web_sys::CustomEvent = event.unchecked_into();
+                custom_event.detail().as_string().map(Msg::SchemaLoaded)
+            }),
             ev(Ev::Change, |event| {
                 let custom_event: web_sys::CustomEvent = event.unchecked_into();
                 custom_event.detail().as_string().map(Msg::QueryChange)
             }),
             attrs! {
                 "schema-url" => schema_url
+                "generated-code" => generated_code
             },
-            Tag::from("gql-editor")
+            Tag::from("gql-editor"),
         ]
     ]
 }

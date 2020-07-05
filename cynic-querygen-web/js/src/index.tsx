@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useCallback, useState, useEffect } from "react";
-import ReactiveElements from "reactive-elements";
+import ReactiveElements from "terryoy-reactive-elements";
 import GraphiQL from "graphiql";
 import GraphiQLExplorer from "graphiql-explorer";
 import "babel-polyfill";
@@ -8,37 +8,62 @@ import {
   getIntrospectionQuery,
   buildClientSchema,
   GraphQLSchema,
+  printSchema,
 } from "graphql";
 
 import GeneratedRustViewer from "./GeneratedRustViewer";
+import { FetcherParams, FetcherOpts } from "graphiql/dist/components/GraphiQL";
 
 interface EditorProps {
   schemaUrl: string;
   container: HTMLElement;
+  generatedCode: string;
 }
 
 const GraphQLEditor = (props: EditorProps) => {
-  const { schemaUrl, container } = props;
+  const { schemaUrl, container, generatedCode } = props;
 
   const [query, setQuery] = useState<string | undefined>();
+  const [headers, setHeaders] = useState<{ string: string } | undefined>();
   const [schema, setSchema] = useState<GraphQLSchema | undefined>();
   const [explorerOpen, setExplorerOpen] = useState(true);
+
   const graphQLFetcher = useCallback(makeFetcher(schemaUrl), [schemaUrl]);
 
   useEffect(() => {
     const handler = async () => {
-      const result = await graphQLFetcher({ query: getIntrospectionQuery() });
-      setSchema(buildClientSchema(result.data));
+      const result = await graphQLFetcher(
+        { query: getIntrospectionQuery(), operationName: null },
+        { shouldPersistHeaders: false, headers: headers }
+      );
+      const clientSchema = buildClientSchema(result.data);
+
+      setSchema(clientSchema);
+
+      container.dispatchEvent(
+        new CustomEvent("schema-loaded", {
+          bubbles: true,
+          detail: printSchema(clientSchema),
+        })
+      );
     };
 
     handler();
-  }, [schemaUrl]);
+  }, [schemaUrl, headers]);
 
   const onEditQuery = (query: string) => {
     container.dispatchEvent(
       new CustomEvent("change", { bubbles: true, detail: query })
     );
     setQuery(query);
+  };
+
+  const onEditHeaders = (headers: string) => {
+    try {
+      setHeaders(JSON.parse(headers));
+    } catch (e) {
+      // Do nothing, whatever
+    }
   };
 
   return (
@@ -70,11 +95,14 @@ const GraphQLEditor = (props: EditorProps) => {
           headerEditorEnabled
           query={query}
           onEditQuery={onEditQuery}
+          onEditHeaders={onEditHeaders}
         >
           <GraphiQL.Logo>Query Builder</GraphiQL.Logo>
           <GraphiQL.Toolbar></GraphiQL.Toolbar>
           <GraphiQL.Footer>
-            <GeneratedRustViewer></GeneratedRustViewer>
+            <GeneratedRustViewer
+              generatedCode={generatedCode}
+            ></GeneratedRustViewer>
           </GraphiQL.Footer>
         </GraphiQL>
       </div>
