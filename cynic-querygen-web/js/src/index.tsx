@@ -21,7 +21,9 @@ interface EditorProps {
 }
 
 const GraphQLEditor = (props: EditorProps) => {
-  const { schemaUrl, container, generatedCode } = props;
+  const { schemaUrl, container } = props;
+
+  const generatedCode = props.generatedCode.replace(/&NL;/g, "\n");
 
   const [query, setQuery] = useState<string | undefined>();
   const [headers, setHeaders] = useState<{ string: string } | undefined>();
