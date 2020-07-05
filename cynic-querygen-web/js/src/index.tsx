@@ -10,6 +10,8 @@ import {
   GraphQLSchema,
 } from "graphql";
 
+import GeneratedRustViewer from "./GeneratedRustViewer";
+
 interface EditorProps {
   schemaUrl: string;
   container: HTMLElement;
@@ -71,6 +73,9 @@ const GraphQLEditor = (props: EditorProps) => {
         >
           <GraphiQL.Logo>Query Builder</GraphiQL.Logo>
           <GraphiQL.Toolbar></GraphiQL.Toolbar>
+          <GraphiQL.Footer>
+            <GeneratedRustViewer></GeneratedRustViewer>
+          </GraphiQL.Footer>
         </GraphiQL>
       </div>
     </>
