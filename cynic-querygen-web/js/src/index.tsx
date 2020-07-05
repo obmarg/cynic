@@ -85,13 +85,12 @@ const GraphQLEditor = (props: EditorProps) => {
 ReactiveElements("gql-editor", GraphQLEditor, { useShadowDom: true });
 
 const makeFetcher = (schemaUrl) => {
-  return (graphQLParams) =>
+  return (graphQLParams: FetcherParams, opts: FetcherOpts) =>
     fetch(schemaUrl, {
       method: "post",
       headers: {
         "Content-Type": "application/json",
-        Authorization:
-          "Bearer ",
+        ...opts.headers,
       },
       body: JSON.stringify(graphQLParams),
     })
