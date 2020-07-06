@@ -11,12 +11,19 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+### Breaking Changes
+
+- Integer fields are now i32 rather than i64 inline with the GraphQL spec.  If
+  larger integers are required a custom scalar should be used.
+
 ### Bug Fixes
 
 - Fixed an issue with cynic-querygen where it guessed the name for the root of
   a query and crashed out if it was wrong (which was often).
 - Fixed an issue where querygen would fail if given a query with a hardcoded
   enum value (#33)
+- Integers are now i32 rather than i64, inline with the GraphQL spec.  If
+  larger integers are required a custom scalar should be used.
 
 ## v0.7.0 - 2020-06-23
 
