@@ -1,0 +1,73 @@
+---
+source: cynic-querygen/tests/starwars-querygen.rs
+expression: "document_to_fragment_structs(query, schema,\n                             &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
+---
+#[cynic::query_module(
+    schema_path = "schema.graphql",
+    query_module = "query_dsl",
+)]
+mod queries {
+    use super::{query_dsl, types::*};
+
+    #[derive(Clone, cynic::FragmentArguments)]
+    pub struct QueryArguments {
+        pub filmId: Option<cynic::Id>,
+        pub planetCursor: Option<String>,
+        pub residentConnection: Option<String>,
+    }
+
+    #[derive(cynic::QueryFragment)]
+    #[cynic(graphql_type = "Query", argument_struct = "QueryArguments")]
+    pub struct Query {
+        #[cynic_arguments(id = args.filmId)]
+        pub film: Option<Film>,
+    }
+
+    #[derive(cynic::QueryFragment)]
+    #[cynic(graphql_type = "Film", argument_struct = "QueryArguments")]
+    pub struct Film {
+        pub title: Option<String>,
+        pub director: Option<String>,
+        #[cynic_arguments(after = args.planetCursor)]
+        pub planetConnection: Option<FilmPlanetsConnection>,
+    }
+
+    #[derive(cynic::QueryFragment)]
+    #[cynic(graphql_type = "FilmPlanetsConnection", argument_struct = "QueryArguments")]
+    pub struct FilmPlanetsConnection {
+        pub planets: Option<Vec<Option<Planet>>>,
+    }
+
+    #[derive(cynic::QueryFragment)]
+    #[cynic(graphql_type = "Planet", argument_struct = "QueryArguments")]
+    pub struct Planet {
+        #[cynic_arguments(after = args.residentConnection)]
+        pub residentConnection: Option<PlanetResidentsConnection>,
+    }
+
+    #[derive(cynic::QueryFragment)]
+    #[cynic(graphql_type = "PlanetResidentsConnection")]
+    pub struct PlanetResidentsConnection {
+        pub residents: Option<Vec<Option<Person>>>,
+    }
+
+    #[derive(cynic::QueryFragment)]
+    #[cynic(graphql_type = "Person")]
+    pub struct Person {
+        pub name: Option<String>,
+    }
+
+}
+
+#[cynic::query_module(
+    schema_path = "schema.graphql",
+    query_module = "query_dsl",
+)]
+mod types {
+}
+
+mod query_dsl{
+    use super::types::*;
+    cynic::query_dsl!("schema.graphql");
+}
+
