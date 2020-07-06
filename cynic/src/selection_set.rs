@@ -143,8 +143,8 @@ pub fn string() -> SelectionSet<'static, String, ()> {
     }
 }
 
-/// Creates a `SelectionSet` that will decode an `i64`
-pub fn integer() -> SelectionSet<'static, i64, ()> {
+/// Creates a `SelectionSet` that will decode an `i32`
+pub fn integer() -> SelectionSet<'static, i32, ()> {
     SelectionSet {
         fields: vec![],
         decoder: json_decode::integer(),
@@ -354,13 +354,13 @@ macro_rules! define_map {
         /// ```
         /// # use cynic::selection_set::{field, map3, string, integer};
         /// struct User {
-        ///     id: i64,
+        ///     id: i32,
         ///     name: String,
         ///     email: String,
         /// }
         ///
         /// impl User {
-        ///     fn new(id: i64, name: String, email: String) -> User {
+        ///     fn new(id: i32, name: String, email: String) -> User {
         ///         User { id, name, email }
         ///     }
         /// }

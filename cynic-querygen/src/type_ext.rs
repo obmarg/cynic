@@ -41,7 +41,7 @@ fn type_spec_imp<'a>(
             Cow::Owned(format!("Vec<{}>", type_spec_imp(inner, true, type_index)))
         }
         Type::NonNullType(_) => panic!("NonNullType somehow got past an if let"),
-        Type::NamedType("Int") => Cow::Borrowed("i64"),
+        Type::NamedType("Int") => Cow::Borrowed("i32"),
         Type::NamedType("Float") => Cow::Borrowed("f64"),
         Type::NamedType("Boolean") => Cow::Borrowed("bool"),
         Type::NamedType("ID") => Cow::Borrowed("cynic::Id"),
@@ -61,7 +61,7 @@ mod tests {
     #[rstest(
         input,
         expected,
-        case(Type::NamedType("Int"), "Option<i64>"),
+        case(Type::NamedType("Int"), "Option<i32>"),
         case(Type::NamedType("Float"), "Option<f64>"),
         case(Type::NamedType("Boolean"), "Option<bool>"),
         case(Type::NamedType("ID"), "Option<cynic::Id>"),

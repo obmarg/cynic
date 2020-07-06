@@ -17,7 +17,7 @@ where
     })
 }
 
-impl Scalar for i64 {
+impl Scalar for i32 {
     fn decode(value: &serde_json::Value) -> Result<Self, DecodeError> {
         json_decode::integer().decode(value)
     }
