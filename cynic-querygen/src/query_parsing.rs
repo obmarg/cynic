@@ -24,6 +24,12 @@ pub struct QueryFragment<'a> {
     pub name: Option<&'a str>,
 }
 
+impl QueryFragment<'_> {
+    fn uses_arguments(&self) -> bool {
+        self.fields.iter().any(|f| !f.arguments.is_empty())
+    }
+}
+
 #[derive(Debug, PartialEq)]
 pub struct Enum<'a> {
     pub def: &'a EnumType<'a>,
@@ -152,7 +158,7 @@ fn selection_set_to_structs<'a, 'b>(
     query_name: Option<&'a str>,
     argument_struct_name: Option<&'b str>,
 ) -> Result<Vec<PotentialStruct<'a>>, Error> {
-    let mut rv = Vec::new();
+    let mut nested_types = Vec::new();
 
     let path = &path;
 
@@ -184,7 +190,7 @@ fn selection_set_to_structs<'a, 'b>(
                     arguments: field.arguments.clone(),
                 });
 
-                rv.extend(
+                nested_types.extend(
                     field
                         .arguments
                         .iter()
@@ -196,7 +202,7 @@ fn selection_set_to_structs<'a, 'b>(
                         .flatten(),
                 );
 
-                rv.extend(selection_set_to_structs(
+                nested_types.extend(selection_set_to_structs(
                     &field.selection_set,
                     new_path,
                     type_index,
@@ -218,14 +224,14 @@ fn selection_set_to_structs<'a, 'b>(
     }
 
     if !this_fragment.fields.is_empty() {
-        if rv.iter().any(|s| s.uses_arguments()) {
+        if this_fragment.uses_arguments() || nested_types.iter().any(|s| s.uses_arguments()) {
             this_fragment.argument_struct_name = argument_struct_name.map(|name| name.to_string());
         }
 
-        rv.push(PotentialStruct::QueryFragment(this_fragment));
+        nested_types.push(PotentialStruct::QueryFragment(this_fragment));
     }
 
-    Ok(rv)
+    Ok(nested_types)
 }
 
 fn argument_to_structs<'a>(
