@@ -1,0 +1,29 @@
+{
+  "name": "js",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "parcel watch src/index.tsx",
+    "build": "parcel build src/index.tsx"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "parcel-bundler": "^1.12.4",
+    "typescript": "^3.9.6"
+  },
+  "dependencies": {
+    "@types/react": "^16.9.41",
+    "@types/react-dom": "^16.9.8",
+    "babel-polyfill": "^6.26.0",
+    "graphiql": "^1.0.3",
+    "graphiql-explorer": "^0.6.2",
+    "graphql": "^15.2.0",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "terryoy-reactive-elements": "1.0.0-alpha.0"
+  }
+}

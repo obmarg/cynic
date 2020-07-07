@@ -10,14 +10,22 @@ jobs:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
+    - uses: actions/setup-node@v2-beta
+      with:
+        node-version: '12'
     - name: Install cargo-make
       run: curl -o cargo-make.zip -L https://github.com/sagiegurari/cargo-make/releases/download/0.31.0/cargo-make-v0.31.0-x86_64-unknown-linux-musl.zip && unzip cargo-make.zip && mkdir -p ~/.cargo/bin && cp cargo-make-v0.31.0-x86_64-unknown-linux-musl/cargo-make ~/.cargo/bin
-      #run: cargo install cargo-make
     - name: Build cynic-querygen-web
       run: cargo make build_release
       working-directory: ./cynic-querygen-web
+    - name: Install JS deps
+      run: npm install
+      working-directory: ./cynic-querygen-web/js
+    - name: Build JS
+      run: npm run build
+      working-directory: ./cynic-querygen-web/js
     - name: Construct release
-      run: mkdir release && cp index.html release && cp -r pkg release
+      run: mkdir release && cp index.html release && cp -r pkg release && cp js/dist/index.js pkg/gql.js
       working-directory: ./cynic-querygen-web
     - name: Deploy cynic-querygen-web
       uses: netlify/actions/cli@master

@@ -16,6 +16,11 @@ all APIs might be changed.
 - Integer fields are now i32 rather than i64 inline with the GraphQL spec.  If
   larger integers are required a custom scalar should be used.
 
+### New Features
+
+- querygen-web now incorporates graphiql & graphiql explorer, to make testing &
+  building queries easier.
+
 ### Bug Fixes
 
 - Fixed an issue with cynic-querygen where it guessed the name for the root of

@@ -4,10 +4,19 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.0/css/bulma.min.css"
+        integrity="sha256-aPeK/N8IHpHsvPBCf49iVKMdusfobKo2oxF8lRruWJg=" crossorigin="anonymous">
+    <!-- Note: Putting graphql.min.css here even though it's also loaded in our custom component
+        This means it'll be in the cache when custom component is rendered
+        Which prevents a codemirror issue when rendered before it's CSS is loaded
+    -->
+    <link href="https://unpkg.com/graphiql/graphiql.min.css" rel="stylesheet" />
+    <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
 </head>
 
 <body>
     <section id="app"></section>
+    <script type="application/javascript" src="/pkg/gql.js"></script>
     <script type="module">
         import init from '/pkg/package.js';
         init('/pkg/package_bg.wasm');

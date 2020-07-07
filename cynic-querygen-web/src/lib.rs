@@ -5,6 +5,10 @@
 
 use seed::{prelude::*, *};
 
+mod entry_page;
+mod graphiql_page;
+mod view;
+
 // ------ ------
 //     Init
 // ------ ------
@@ -19,30 +23,14 @@ fn init(_: Url, _: &mut impl Orders<Msg>) -> Model {
 // ------ ------
 
 // `Model` describes our app state.
-struct Model {
-    schema: String,
-    query: String,
-    opts: cynic_querygen::QueryGenOptions,
-    generated_code: Result<String, cynic_querygen::Error>,
+enum Model {
+    EntryPage(entry_page::Model),
+    GraphiqlPage(graphiql_page::Model),
 }
 
 impl Default for Model {
     fn default() -> Model {
-        Model {
-            schema: "".into(),
-            query: "".into(),
-            opts: Default::default(),
-            generated_code: Ok("".into()),
-        }
-    }
-}
-
-impl Model {
-    fn generate_code(&mut self) {
-        if self.query != "" && self.schema != "" {
-            self.generated_code =
-                cynic_querygen::document_to_fragment_structs(&self.query, &self.schema, &self.opts);
-        }
+        Model::EntryPage(entry_page::Model::default())
     }
 }
 
@@ -53,31 +41,46 @@ impl Model {
 #[derive(Clone)]
 // `Msg` describes the different events you can modify state with.
 enum Msg {
-    SchemaChange(String),
-    QueryChange(String),
-    SchemaPathChange(String),
-    QueryModuleChange(String),
+    EntryPageMsg(entry_page::Msg),
+    GraphiqlPageMsg(graphiql_page::Msg),
+    SwitchToGraphiqlWithSchema(String),
+    SwitchToGraphiqlWithUrl(String),
 }
 
 // `update` describes how to handle each `Msg`.
-fn update(msg: Msg, model: &mut Model, _: &mut impl Orders<Msg>) {
-    match msg {
-        Msg::SchemaChange(schema) => {
-            model.schema = schema;
-            model.generate_code();
+fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
+    match (&msg, model) {
+        (Msg::GraphiqlPageMsg(msg), Model::GraphiqlPage(page_model)) => {
+            graphiql_page::update(
+                msg.clone(),
+                page_model,
+                &mut orders.proxy(Msg::GraphiqlPageMsg),
+            );
         }
-        Msg::QueryChange(query) => {
-            model.query = query;
-            model.generate_code();
+        (Msg::EntryPageMsg(msg), Model::EntryPage(page_model)) => {
+            let action = entry_page::update(
+                msg.clone(),
+                page_model,
+                &mut orders.proxy(Msg::EntryPageMsg),
+            );
+
+            match action {
+                None => {}
+                Some(entry_page::Action::BuildFromSchema(schema)) => {
+                    orders.send_msg(Msg::SwitchToGraphiqlWithSchema(schema));
+                }
+                Some(entry_page::Action::BuildFromUrl(url)) => {
+                    orders.send_msg(Msg::SwitchToGraphiqlWithUrl(url));
+                }
+            }
         }
-        Msg::SchemaPathChange(schema_path) => {
-            model.opts.schema_path = schema_path;
-            model.generate_code();
+        (Msg::SwitchToGraphiqlWithSchema(schema), ref mut model) => {
+            **model = Model::GraphiqlPage(graphiql_page::Model::new_from_schema(schema.clone()))
         }
-        Msg::QueryModuleChange(query_module) => {
-            model.opts.query_module = query_module;
-            model.generate_code();
+        (Msg::SwitchToGraphiqlWithUrl(url), ref mut model) => {
+            **model = Model::GraphiqlPage(graphiql_page::Model::new_from_url(url.clone()))
         }
+        (_, _) => panic!("Invalid state reached"),
     }
 }
 
@@ -89,21 +92,13 @@ fn update(msg: Msg, model: &mut Model, _: &mut impl Orders<Msg>) {
 #[allow(clippy::trivially_copy_pass_by_ref)]
 // `view` describes what to display.
 fn view(model: &Model) -> Node<Msg> {
-    let generated_code = match &model.generated_code {
-        Ok(code) => code.clone(),
-        Err(e) => e.to_string(),
-    };
-
-    div![
-        style![
-            St::Display => St::Flex,
-            St::FlexDirection => "column"
-        ],
-        codegen_options(),
-        textareas(&generated_code)
-    ]
+    match model {
+        Model::EntryPage(model) => entry_page::view(model).map_msg(Msg::EntryPageMsg),
+        Model::GraphiqlPage(model) => graphiql_page::view(model).map_msg(Msg::GraphiqlPageMsg),
+    }
 }
 
+/*
 fn codegen_options() -> Node<Msg> {
     section![
         style! {
@@ -191,7 +186,7 @@ where
             input_ev(Ev::Input, msg)
         ],
     ]
-}
+}*/
 
 // ------ ------
 //     Start
