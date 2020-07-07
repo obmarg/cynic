@@ -11,6 +11,11 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+### New Features
+
+- querygen-web now incorporates graphiql & graphiql explorer, to make testing &
+  building queries easier.
+
 ### Bug Fixes
 
 - Fixed an issue with cynic-querygen where it guessed the name for the root of
