@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "parcel watch src/index.tsx"
+    "start": "parcel watch src/index.tsx",
+    "build": "parcel build src/index.tsx"
   },
   "keywords": [],
   "author": "",
