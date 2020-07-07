@@ -11,7 +11,7 @@ const GeneratedRustViewer: React.FC<GeneratedRustViewer> = ({
   generatedCode,
 }) => {
   const [viewerOpen, setOpen] = useState(true);
-  const [viewerHeight, setHeight] = useState(256);
+  const [viewerHeight, setHeight] = useState(512);
   const viewerStyle = {
     height: viewerOpen ? viewerHeight : undefined,
   };

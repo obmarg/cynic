@@ -89,19 +89,33 @@ pub fn view(model: &Model) -> Node<Msg> {
 
     if let Some(schema_url) = &model.schema_url {
         div![
+            style! {
+                "height" => "100vh",
+                "display" => "flex",
+                "flex-direction" => "column"
+            },
             crate::view::header(),
-            gql_editor(schema_url, &generated_code)
+            gql_editor(schema_url, None, &generated_code)
         ]
     } else {
-        div!["TODO"]
+        div![
+            style! {
+                "height" => "100vh",
+                "display" => "flex",
+                "flex-direction" => "column"
+            },
+            crate::view::header(),
+            gql_editor("", model.schema_data.as_deref(), &generated_code)
+        ]
     }
 }
 
-fn gql_editor(schema_url: &str, generated_code: &str) -> Node<Msg> {
+fn gql_editor(schema_url: &str, schema: Option<&str>, generated_code: &str) -> Node<Msg> {
     div![
         C!["columns"],
         style![
-            St::Height => "80vh",
+            St::Height => "100%",
+            "flex-grow" => 1
         ],
         custom![
             C!["column", "is-full"],
@@ -115,6 +129,7 @@ fn gql_editor(schema_url: &str, generated_code: &str) -> Node<Msg> {
             }),
             attrs! {
                 "schema-url" => schema_url
+                "schema" => schema.unwrap_or("").replace("\n", "&NL;")
                 "generated-code" => generated_code.replace("\n", "&NL;")
             },
             Tag::from("gql-editor"),

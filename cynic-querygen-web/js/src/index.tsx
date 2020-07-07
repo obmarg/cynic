@@ -9,6 +9,7 @@ import {
   buildClientSchema,
   GraphQLSchema,
   printSchema,
+  buildSchema,
 } from "graphql";
 
 import GeneratedRustViewer from "./GeneratedRustViewer";
@@ -18,6 +19,7 @@ interface EditorProps {
   schemaUrl: string;
   container: HTMLElement;
   generatedCode: string;
+  schema?: string;
 }
 
 const GraphQLEditor = (props: EditorProps) => {
@@ -33,25 +35,30 @@ const GraphQLEditor = (props: EditorProps) => {
   const graphQLFetcher = useCallback(makeFetcher(schemaUrl), [schemaUrl]);
 
   useEffect(() => {
-    const handler = async () => {
-      const result = await graphQLFetcher(
-        { query: getIntrospectionQuery(), operationName: null },
-        { shouldPersistHeaders: false, headers: headers }
-      );
-      const clientSchema = buildClientSchema(result.data);
+    if (schemaUrl && schemaUrl.length != 0) {
+      const handler = async () => {
+        const result = await graphQLFetcher(
+          { query: getIntrospectionQuery(), operationName: null },
+          { shouldPersistHeaders: false, headers: headers }
+        );
+        const clientSchema = buildClientSchema(result.data);
 
-      setSchema(clientSchema);
+        setSchema(clientSchema);
 
-      container.dispatchEvent(
-        new CustomEvent("schema-loaded", {
-          bubbles: true,
-          detail: printSchema(clientSchema),
-        })
-      );
-    };
+        container.dispatchEvent(
+          new CustomEvent("schema-loaded", {
+            bubbles: true,
+            detail: printSchema(clientSchema),
+          })
+        );
+      };
 
-    handler();
-  }, [schemaUrl, headers]);
+      handler();
+    } else if (props.schema && props.schema.length != 0) {
+      const parsedSchema = buildSchema(props.schema.replace(/&NL;/g, "\n"));
+      setSchema(parsedSchema);
+    }
+  }, [schemaUrl, props.schema, headers, container, setSchema]);
 
   const onEditQuery = (query: string) => {
     container.dispatchEvent(
