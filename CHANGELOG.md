@@ -11,6 +11,11 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+### Breaking Changes
+
+- Integer fields are now i32 rather than i64 inline with the GraphQL spec.  If
+  larger integers are required a custom scalar should be used.
+
 ### New Features
 
 - querygen-web now incorporates graphiql & graphiql explorer, to make testing &
@@ -22,6 +27,10 @@ all APIs might be changed.
   a query and crashed out if it was wrong (which was often).
 - Fixed an issue where querygen would fail if given a query with a hardcoded
   enum value (#33)
+- Integers are now i32 rather than i64, inline with the GraphQL spec.  If
+  larger integers are required a custom scalar should be used.
+- Querygen now puts `argument_struct` attrs on types that have arguments rather
+  than just types that have children with arguments. (#37)
 
 ## v0.7.0 - 2020-06-23
 

@@ -42,7 +42,7 @@ impl FieldType {
                     FieldType::InputObject(Ident::for_type(name), nullable)
                 } else if name == "Int" {
                     FieldType::Scalar(
-                        TypePath::new_builtin(Ident::for_inbuilt_scalar("i64")),
+                        TypePath::new_builtin(Ident::for_inbuilt_scalar("i32")),
                         nullable,
                     )
                 } else if name == "Float" {

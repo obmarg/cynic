@@ -1,0 +1,6 @@
+query Query($filmId: ID) {
+  film(id: $filmId) {
+    title
+    director
+  }
+}

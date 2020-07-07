@@ -1,12 +1,11 @@
 # Scalars
 
-Cynic supports all the built in GraphQL scalars by default.  If you want to
+Cynic supports all the built in GraphQL scalars by default. If you want to
 query a field of one of these types add a field of the corresponding Rust type
 to your `QueryFragment` struct.
 
 - `String` fields in GraphQL should be `String` fields in Rust.
-- `Int` fields in GraphQL should be `i64` in Rust (though this will be changing
-  to i32 soon, to align with the GraphQL spec).
+- `Int` fields in GraphQL should be `i32` in Rust.
 - `Boolean` fields in GraphQL map to `bool` in Rust.
 - `ID` fields in GraphQL map to the `cynic::Id` type in Rust.
 

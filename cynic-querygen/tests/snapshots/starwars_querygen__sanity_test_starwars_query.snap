@@ -15,7 +15,7 @@ mod queries {
     }
 
     #[derive(cynic::QueryFragment)]
-    #[cynic(graphql_type = "Query")]
+    #[cynic(graphql_type = "Query", argument_struct = "QueryArguments")]
     pub struct Query {
         #[cynic_arguments(id = args.filmId)]
         pub film: Option<Film>,
