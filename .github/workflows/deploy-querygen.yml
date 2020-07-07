@@ -25,7 +25,7 @@ jobs:
       run: npm run build
       working-directory: ./cynic-querygen-web/js
     - name: Construct release
-      run: mkdir release && cp index.html release && cp -r pkg release && cp js/dist/index.js pkg/gql.js
+      run: mkdir release && cp index.html release && cp -r pkg release && cp js/dist/index.js release/pkg/gql.js
       working-directory: ./cynic-querygen-web
     - name: Deploy cynic-querygen-web
       uses: netlify/actions/cli@master
