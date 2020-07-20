@@ -1,4 +1,4 @@
-query Query($filmId: ID, $planetCursor: String, $residentConnection: String) {
+query Query($filmId: ID!, $planetCursor: String, $residentConnection: String) {
   film(id: $filmId) {
     title
     director
