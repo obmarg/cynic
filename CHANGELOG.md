@@ -20,6 +20,9 @@ all APIs might be changed.
 
 - querygen-web now incorporates graphiql & graphiql explorer, to make testing &
   building queries easier.
+- querygen now supports bare selection sets, they're assumed to be queries.
+  Quite easy to create these in GraphiQL/GraphqlExplorer, and they work for
+  queries so seemed important.
 
 ### Bug Fixes
 

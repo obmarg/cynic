@@ -24,3 +24,4 @@ test_query_file!(
     "queries/starwars-sanity.graphql"
 );
 test_query_file!(test_nested_arguments, "queries/nested-arguments.graphql");
+test_query_file!(bare_selection_sets, "queries/bare-selection-set.graphql");
