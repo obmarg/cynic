@@ -83,72 +83,87 @@ pub fn parse_query_document<'a>(
 ) -> Result<Vec<PotentialStruct<'a>>, Error> {
     doc.definitions
         .iter()
-        .map(|definition| {
-            match definition {
-                Definition::Operation(OperationDefinition::Query(query)) => {
-                    let mut structs = vec![];
-
-                    let argument_struct_name = if !query.variable_definitions.is_empty() {
-                        let argument_struct =
-                            ArgumentStruct::from_variables(&query.variable_definitions, query.name);
-
-                        let argument_struct_name = argument_struct.name.clone();
-
-                        structs.push(PotentialStruct::ArgumentStruct(argument_struct));
-
-                        for variable in &query.variable_definitions {
-                            if let Some(st) =
-                                struct_from_type_name(variable.var_type.inner_name(), type_index)?
-                            {
-                                structs.push(st)
-                            }
-                        }
-
-                        Some(argument_struct_name)
-                    } else {
-                        None
-                    };
-
-                    let mut selection_structs = selection_set_to_structs(
-                        &query.selection_set,
-                        vec![],
-                        type_index,
-                        query.name,
-                        argument_struct_name.as_deref(),
-                    )?;
-
-                    // selection_set_to_structs traverses the tree in post-order
-                    // (sort of), so we reverse to get the root node first.
-                    selection_structs.reverse();
-
-                    structs.append(&mut selection_structs);
-
-                    Ok(structs)
-                }
-                Definition::Operation(OperationDefinition::Mutation(_)) => {
-                    return Err(Error::UnsupportedQueryDocument(format!(
-                        "mutations are not yet supported"
-                    )));
-                }
-                Definition::Operation(OperationDefinition::Subscription(_)) => {
-                    return Err(Error::UnsupportedQueryDocument(format!(
-                        "subscriptions are not supported"
-                    )));
-                }
-                Definition::Operation(OperationDefinition::SelectionSet(_)) => {
-                    return Err(Error::UnsupportedQueryDocument(format!(
-                        "top-level selection sets are not yet supported"
-                    )));
-                }
-                Definition::Fragment(_) => {
-                    return Err(Error::UnsupportedQueryDocument(format!(
-                        "fragments are not yet supported"
-                    )));
-                }
-            }
-        })
+        .map(|definition| parse_definition(&definition, type_index))
         .collect::<Result<Vec<Vec<_>>, Error>>()
         .map(|vec| vec.into_iter().flatten().collect())
+}
+
+fn parse_definition<'a>(
+    definition: &'a Definition<'a, &'a str>,
+    type_index: &'a TypeIndex<'a>,
+) -> Result<Vec<PotentialStruct<'a>>, Error> {
+    match definition {
+        Definition::Operation(OperationDefinition::Query(query)) => {
+            let mut structs = vec![];
+
+            let argument_struct_name = if !query.variable_definitions.is_empty() {
+                let argument_struct =
+                    ArgumentStruct::from_variables(&query.variable_definitions, query.name);
+
+                let argument_struct_name = argument_struct.name.clone();
+
+                structs.push(PotentialStruct::ArgumentStruct(argument_struct));
+
+                for variable in &query.variable_definitions {
+                    if let Some(st) =
+                        struct_from_type_name(variable.var_type.inner_name(), type_index)?
+                    {
+                        structs.push(st)
+                    }
+                }
+
+                Some(argument_struct_name)
+            } else {
+                None
+            };
+
+            let mut selection_structs = selection_set_to_structs(
+                &query.selection_set,
+                vec![],
+                type_index,
+                query.name,
+                argument_struct_name.as_deref(),
+            )?;
+
+            // selection_set_to_structs traverses the tree in post-order
+            // (sort of), so we reverse to get the root node first.
+            selection_structs.reverse();
+
+            structs.append(&mut selection_structs);
+
+            Ok(structs)
+        }
+        Definition::Operation(OperationDefinition::Mutation(_)) => {
+            return Err(Error::UnsupportedQueryDocument(format!(
+                "mutations are not yet supported"
+            )));
+        }
+        Definition::Operation(OperationDefinition::Subscription(_)) => {
+            return Err(Error::UnsupportedQueryDocument(format!(
+                "subscriptions are not supported"
+            )));
+        }
+        Definition::Operation(OperationDefinition::SelectionSet(selection_set)) => {
+            let mut selection_structs = selection_set_to_structs(
+                &selection_set,
+                vec![],
+                type_index,
+                Some("UnnamedQuery"),
+                None,
+            )?;
+
+            // selection_set_to_structs traverses the tree in post-order
+            // (sort of), so we reverse to get the root node first.
+            selection_structs.reverse();
+
+            Ok(selection_structs)
+        }
+        Definition::Fragment(_) => {
+            return Err(Error::UnsupportedQueryDocument(format!(
+                "fragments are not yet supported"
+            )));
+        }
+    }
 }
 
 fn selection_set_to_structs<'a, 'b>(
