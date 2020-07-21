@@ -157,6 +157,7 @@
 mod argument;
 mod field;
 mod id;
+mod into_argument;
 mod query;
 mod result;
 mod scalar;
@@ -172,6 +173,8 @@ pub use query::Query;
 pub use result::{GraphQLError, GraphQLResponse, GraphQLResult, PossiblyParsedData};
 pub use scalar::Scalar;
 pub use selection_set::SelectionSet;
+
+pub use into_argument::IntoArgument;
 
 pub trait QueryFragment {
     type SelectionSet;

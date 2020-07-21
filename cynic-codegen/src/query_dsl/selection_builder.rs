@@ -131,13 +131,13 @@ impl quote::ToTokens for FieldSelectionBuilder {
 
                 #(
                     pub fn #argument_names #argument_generics(
-                        mut self, #argument_names: #argument_types
+                        mut self, #argument_names: impl ::cynic::IntoArgument<#argument_types>
                     ) -> Self {
                         self.args.push(
                             ::cynic::Argument::new(
                                 #argument_strings,
                                 #argument_gql_types,
-                                #argument_names
+                                #argument_names.into_argument()
                             )
                         );
 
