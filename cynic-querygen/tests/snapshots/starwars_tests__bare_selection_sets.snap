@@ -1,5 +1,5 @@
 ---
-source: cynic-querygen/tests/starwars-querygen.rs
+source: cynic-querygen/tests/starwars-tests.rs
 expression: "document_to_fragment_structs(query, schema,\n                             &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
 ---
 #[cynic::query_module(
@@ -9,23 +9,23 @@ expression: "document_to_fragment_structs(query, schema,\n                      
 mod queries {
     use super::{query_dsl, types::*};
 
-    #[derive(Clone, cynic::FragmentArguments)]
-    pub struct QueryArguments {
-        pub filmId: Option<cynic::Id>,
+    #[derive(cynic::QueryFragment)]
+    #[cynic(graphql_type = "UnnamedQuery")]
+    pub struct UnnamedQuery {
+        pub allFilms: Option<FilmsConnection>,
     }
 
     #[derive(cynic::QueryFragment)]
-    #[cynic(graphql_type = "Query", argument_struct = "QueryArguments")]
-    pub struct Query {
-        #[cynic_arguments(id = args.filmId)]
-        pub film: Option<Film>,
+    #[cynic(graphql_type = "FilmsConnection")]
+    pub struct FilmsConnection {
+        pub films: Option<Vec<Option<Film>>>,
     }
 
     #[derive(cynic::QueryFragment)]
     #[cynic(graphql_type = "Film")]
     pub struct Film {
+        pub id: cynic::Id,
         pub title: Option<String>,
-        pub director: Option<String>,
     }
 
 }

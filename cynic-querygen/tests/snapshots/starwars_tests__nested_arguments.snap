@@ -1,5 +1,5 @@
 ---
-source: cynic-querygen/tests/starwars-querygen.rs
+source: cynic-querygen/tests/starwars-tests.rs
 expression: "document_to_fragment_structs(query, schema,\n                             &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
 ---
 #[cynic::query_module(
@@ -11,7 +11,7 @@ mod queries {
 
     #[derive(Clone, cynic::FragmentArguments)]
     pub struct QueryArguments {
-        pub filmId: Option<cynic::Id>,
+        pub filmId: cynic::Id,
         pub planetCursor: Option<String>,
         pub residentConnection: Option<String>,
     }
