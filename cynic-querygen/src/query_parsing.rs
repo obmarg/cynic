@@ -3,14 +3,39 @@ use graphql_parser::query::{
 };
 
 use crate::schema::{self, EnumType, ScalarTypeExt, Type, TypeDefinition};
-use crate::{Error, TypeExt, TypeIndex};
+use crate::{value_ext::ValueExt, Error, TypeExt, TypeIndex};
 
 #[derive(Debug, PartialEq)]
 pub struct Field<'a> {
     pub name: &'a str,
     pub field_type: &'a Type<'a>,
 
-    pub arguments: Vec<(&'a str, Value<'a, &'a str>)>,
+    pub arguments: Vec<FieldArgument<'a>>,
+}
+
+#[derive(Debug, PartialEq)]
+pub struct FieldArgument<'a> {
+    pub name: &'a str,
+    value: Value<'a, &'a str>,
+    argument_type: &'a TypeDefinition<'a>,
+}
+
+impl<'a> FieldArgument<'a> {
+    fn new(
+        name: &'a str,
+        value: Value<'a, &'a str>,
+        argument_type: &'a TypeDefinition<'a>,
+    ) -> Self {
+        FieldArgument {
+            name,
+            value,
+            argument_type,
+        }
+    }
+
+    pub fn to_literal(&self) -> Result<String, Error> {
+        self.value.to_literal(self.argument_type)
+    }
 }
 
 #[derive(Debug, PartialEq)]
@@ -202,7 +227,25 @@ fn selection_set_to_structs<'a, 'b>(
                 this_fragment.fields.push(Field {
                     name: field.name,
                     field_type: &schema_field.field_type,
-                    arguments: field.arguments.clone(),
+                    arguments: field
+                        .arguments
+                        .iter()
+                        .map(|(name, value)| -> Result<FieldArgument, Error> {
+                            let argument = schema_field
+                                .arguments
+                                .iter()
+                                .find(|arg| &arg.name == name)
+                                .ok_or(Error::UnknownArgument(name.to_string()))?;
+
+                            let argument_type = type_index
+                                .lookup_type(argument.value_type.inner_name())
+                                .ok_or(Error::UnknownType(
+                                    argument.value_type.inner_name().to_string(),
+                                ))?;
+
+                            Ok(FieldArgument::new(name, value.clone(), argument_type))
+                        })
+                        .collect::<Result<Vec<_>, _>>()?,
                 });
 
                 nested_types.extend(

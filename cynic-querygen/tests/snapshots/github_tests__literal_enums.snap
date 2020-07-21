@@ -1,0 +1,88 @@
+---
+source: cynic-querygen/tests/github-tests.rs
+expression: "document_to_fragment_structs(query, schema,\n                             &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
+---
+#[cynic::query_module(
+    schema_path = "schema.graphql",
+    query_module = "query_dsl",
+)]
+mod queries {
+    use super::{query_dsl, types::*};
+
+    #[derive(cynic::QueryFragment)]
+    #[cynic(graphql_type = "Query")]
+    pub struct Query {
+        #[cynic_arguments(owner = "obmarg".to_string(), name = "cynic".to_string())]
+        pub repository: Option<Repository>,
+    }
+
+    #[derive(cynic::QueryFragment)]
+    #[cynic(graphql_type = "Repository")]
+    pub struct Repository {
+        #[cynic_arguments(states = IssueState::Open, first = 10)]
+        pub issues: IssueConnection,
+    }
+
+    #[derive(cynic::QueryFragment)]
+    #[cynic(graphql_type = "IssueConnection")]
+    pub struct IssueConnection {
+        pub nodes: Option<Vec<Option<Issue>>>,
+    }
+
+    #[derive(cynic::QueryFragment)]
+    #[cynic(graphql_type = "Issue")]
+    pub struct Issue {
+        pub title: String,
+    }
+
+    #[derive(cynic::Enum, Clone, Copy, Debug)]
+    #[cynic(graphql_type = "IssueState")]
+    pub enum IssueState {
+        Closed,
+        Open,
+    }
+
+}
+
+#[cynic::query_module(
+    schema_path = "schema.graphql",
+    query_module = "query_dsl",
+)]
+mod types {
+    #[derive(cynic::Scalar, Debug)]
+    pub struct Date(String);
+
+    #[derive(cynic::Scalar, Debug)]
+    pub struct DateTime(String);
+
+    #[derive(cynic::Scalar, Debug)]
+    pub struct GitObjectID(String);
+
+    #[derive(cynic::Scalar, Debug)]
+    pub struct GitRefname(String);
+
+    #[derive(cynic::Scalar, Debug)]
+    pub struct GitSSHRemote(String);
+
+    #[derive(cynic::Scalar, Debug)]
+    pub struct GitTimestamp(String);
+
+    #[derive(cynic::Scalar, Debug)]
+    pub struct Html(String);
+
+    #[derive(cynic::Scalar, Debug)]
+    pub struct PreciseDateTime(String);
+
+    #[derive(cynic::Scalar, Debug)]
+    pub struct Uri(String);
+
+    #[derive(cynic::Scalar, Debug)]
+    pub struct X509Certificate(String);
+
+}
+
+mod query_dsl{
+    use super::types::*;
+    cynic::query_dsl!("schema.graphql");
+}
+
