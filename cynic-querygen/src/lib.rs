@@ -10,7 +10,6 @@ mod value_ext;
 use query_parsing::PotentialStruct;
 use type_ext::TypeExt;
 use type_index::TypeIndex;
-use value_ext::ValueExt;
 
 #[derive(thiserror::Error, Debug)]
 pub enum Error {
@@ -37,6 +36,9 @@ pub enum Error {
 
     #[error("couldn't find an argument named `{0}`")]
     UnknownArgument(String),
+
+    #[error("an enum-like value was provided to an argument that is not an enum")]
+    ArgumentNotEnum,
 }
 
 #[derive(Debug)]
@@ -107,8 +109,8 @@ pub fn document_to_fragment_structs(
                         let arguments_string = field
                             .arguments
                             .iter()
-                            .map(|(name, val)| format!("{} = {}", name, val.to_literal()))
-                            .collect::<Vec<_>>()
+                            .map(|arg| Ok(format!("{} = {}", arg.name, arg.to_literal()?)))
+                            .collect::<Result<Vec<_>, Error>>()?
                             .join(", ");
 
                         lines.push(format!("        #[cynic_arguments({})]", arguments_string));

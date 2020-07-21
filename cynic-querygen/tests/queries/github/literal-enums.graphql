@@ -1,0 +1,9 @@
+query {
+  repository(owner: "obmarg", name: "cynic") {
+    issues(states: OPEN, first: 10) {
+      nodes {
+        title
+      }
+    }
+  }
+}
