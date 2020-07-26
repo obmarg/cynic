@@ -69,19 +69,8 @@ impl IntoArgument<Option<String>> for Option<&str> {
         self.map(|s| s.to_string())
     }
 }
+
 // TODO: Do I also want to define things for Vecs?
 
-// TODO: Define for Enums/InputObjects, though maybe want the derives to take care
+// TODO: Define some more for Enums & InputObjects, though maybe want the derives to take care
 //       of that.
-
-// Things I definitely want to accept:
-// - T for T.
-// - T for Option<T>
-// - &T for T
-// - &T for Option<T>?
-// - DeRefs for T (just manually define these probably)
-// Cow etc. ?
-
-// Can't neccesarily use T for some of these but the set of
-// T is limited so just implement it manually for those things.
-// Essentially scalars, enums, input types
