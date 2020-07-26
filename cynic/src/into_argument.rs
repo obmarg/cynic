@@ -1,25 +1,16 @@
 // TODO: docs.
-use std::borrow::Cow;
 
 use crate::{argument::SerializableArgument, Id};
 
-pub trait IntoArgument<'a, Argument> {
-    type Output: SerializableArgument + Send + 'a;
+pub trait IntoArgument<Argument> {
+    type Output: SerializableArgument + Send + 'static;
 
     fn into_argument(self) -> Self::Output;
 }
 
-/*
-pub trait IntoArgument2<'a, Argument> {
-    fn into_argument(&'a self) -> &'a Argument;
-    // Think this is problematic because lifetimes become required _even if_ we're
-    // taking ownership
-}
-*/
-
-impl<'a, T, B> IntoArgument<'a, Option<B>> for T
+impl<T, B> IntoArgument<Option<B>> for T
 where
-    T: IntoArgument<'a, B>,
+    T: IntoArgument<B>,
 {
     type Output = Option<T::Output>;
 
@@ -30,7 +21,7 @@ where
 
 macro_rules! define_for_owned {
     ($inner:ty) => {
-        impl IntoArgument<'static, $inner> for $inner {
+        impl IntoArgument<$inner> for $inner {
             type Output = $inner;
 
             fn into_argument(self) -> $inner {
@@ -38,7 +29,7 @@ macro_rules! define_for_owned {
             }
         }
 
-        impl IntoArgument<'static, Option<$inner>> for Option<$inner> {
+        impl IntoArgument<Option<$inner>> for Option<$inner> {
             type Output = Option<$inner>;
 
             fn into_argument(self) -> Option<$inner> {
@@ -50,23 +41,29 @@ macro_rules! define_for_owned {
 
 macro_rules! define_for_borrow {
     ($inner:ty) => {
-        impl<'a> IntoArgument<'a, $inner> for &'a $inner {
-            type Output = &'a $inner;
+        impl IntoArgument<$inner> for &$inner {
+            type Output = $inner;
 
-            fn into_argument(self) -> &'a $inner {
-                self
+            fn into_argument(self) -> $inner {
+                self.clone()
             }
         }
 
-        impl<'a> IntoArgument<'a, Option<$inner>> for Option<&'a $inner> {
-            type Output = Option<&'a $inner>;
+        impl IntoArgument<Option<$inner>> for Option<&$inner> {
+            type Output = Option<$inner>;
 
-            fn into_argument(self) -> Option<&'a $inner> {
-                self
+            fn into_argument(self) -> Option<$inner> {
+                self.cloned()
             }
         }
 
-        // TODO: probably also want &'a Option<inner>?
+        impl IntoArgument<Option<$inner>> for &Option<$inner> {
+            type Output = Option<$inner>;
+
+            fn into_argument(self) -> Option<$inner> {
+                self.clone()
+            }
+        }
     };
 }
 
@@ -78,8 +75,21 @@ macro_rules! define_for_scalar {
 }
 
 define_for_scalar!(i32);
+define_for_scalar!(f64);
 define_for_scalar!(String);
+define_for_scalar!(bool);
 define_for_scalar!(Id);
+
+#[cfg(feature = "chrono")]
+define_for_scalar!(chrono::FixedOffset);
+
+#[cfg(feature = "chrono")]
+define_for_scalar!(chrono::DateTime<chrono::Utc>);
+
+// TODO: Do I also want to define things for Vecs?
+
+// TODO: Define for Enums/InputObjects, though maybe want the derives to take care
+//       of that.
 
 // TODO: Can I take advantage of the fact that there's a limited
 // subset of things that can be arguments here, and actually enumerate
@@ -102,19 +112,19 @@ impl<T> IntoArgument<T> for T {
 // Then just be specific about all the conversions we want to support,
 // using macros to cut down on the pain of defining all of them...
 
-impl<'a> IntoArgument<'a, String> for &'a str {
-    type Output = &'a str;
+impl IntoArgument<String> for &str {
+    type Output = String;
 
-    fn into_argument(self) -> &'a str {
-        self
+    fn into_argument(self) -> String {
+        self.to_string()
     }
 }
 
-impl<'a> IntoArgument<'a, Option<String>> for Option<&'a str> {
-    type Output = Option<&'a str>;
+impl IntoArgument<Option<String>> for Option<&str> {
+    type Output = Option<String>;
 
-    fn into_argument(self) -> Option<&'a str> {
-        self
+    fn into_argument(self) -> Option<String> {
+        self.map(|s| s.to_string())
     }
 }
 
