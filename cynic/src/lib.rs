@@ -76,7 +76,7 @@
 //!     // hard coded film ID to look up.  Though useful for demonstration, hard coded
 //!     // arguments like this aren't much use in reality.  For more details on providing
 //!     // runtime arguments please see below.
-//!     #[cynic_arguments(id = Some("ZmlsbXM6MQ==".into()))]
+//!     #[cynic_arguments(id = cynic::Id::new("ZmlsbXM6MQ=="))]
 //!     film: Option<Film>,
 //! }
 //!
