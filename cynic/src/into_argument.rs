@@ -1,7 +1,13 @@
-// TODO: docs.
-
 use crate::{argument::SerializableArgument, Id};
 
+/// IntoArgument is used to type-check arguments to queries in cynic.
+///
+/// A GraphQL argument that accepts `String!` will accept any type that is
+/// `IntoArgument<String>`.  Similarly, an optional `String` in GraphQL will
+/// accept any `IntoArgument<Option<String>>`.
+///
+/// There are implementations of this for most of the built in scalars to allow
+/// users to express arguments in a simple manner.
 pub trait IntoArgument<Argument>
 where
     Argument: SerializableArgument + Send + 'static,
