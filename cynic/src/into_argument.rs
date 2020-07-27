@@ -46,12 +46,6 @@ define_for_scalar!(String);
 define_for_scalar!(bool);
 define_for_scalar!(Id);
 
-#[cfg(feature = "chrono")]
-define_for_scalar!(chrono::FixedOffset);
-
-#[cfg(feature = "chrono")]
-define_for_scalar!(chrono::DateTime<chrono::Utc>);
-
 impl IntoArgument<String> for &str {
     fn into_argument(self) -> String {
         self.to_string()
