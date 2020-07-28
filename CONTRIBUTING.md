@@ -2,7 +2,10 @@
 
 When contributing to this repository, please first discuss the change you wish to make via issue,
 email, or any other method with the owners of this repository before making a change.  (For smaller
-bug fixes it's probably fine to skip this)
+bug fixes it's probably fine to skip this).
+
+If you have any questions about how to do anything or otherwise need help, please just ask in an
+issue.
 
 Please note we have a [code of conduct][1], please follow it in all your interactions with the project.
 
