@@ -28,7 +28,7 @@ mod queries {
     #[derive(cynic::QueryFragment)]
     #[cynic(graphql_type = "TestStruct", argument_struct = "TestArgs")]
     pub struct TestStruct {
-        #[cynic_arguments(x = Some(1), y = Some("1".to_string()))]
+        #[arguments(x = Some(1), y = Some("1".to_string()))]
         field_one: String,
         nested: Nested,
         opt_nested: Option<Nested>,
@@ -45,7 +45,7 @@ mod queries {
     #[derive(cynic::QueryFragment)]
     #[cynic(graphql_type = "TestStruct")]
     pub struct Test {
-        #[cynic_arguments(x = Some(1), y = Some("1".to_string()))]
+        #[arguments(x = Some(1), y = Some("1".to_string()))]
         field_one: String,
     }
 

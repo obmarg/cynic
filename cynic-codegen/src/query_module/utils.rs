@@ -89,7 +89,7 @@ pub fn strip_cynic_attrs(item: syn::Item) -> syn::Item {
 }
 
 fn is_cynic_attr(path: &syn::Path) -> bool {
-    path.is_ident("cynic_arguments") || path.is_ident("cynic")
+    path.is_ident("arguments") || path.is_ident("cynic")
 }
 
 fn filter_cynic_attrs(attrs: Vec<Attribute>) -> Vec<Attribute> {
@@ -173,7 +173,7 @@ mod tests {
             #[cynic(query_path = "something")]
             #[serde(something)]
             struct Something {
-                #[cynic_arguments(x = "1")]
+                #[arguments(x = "1")]
                 field: i32,
                 other_field: f32
             }
