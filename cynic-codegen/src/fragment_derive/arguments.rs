@@ -7,7 +7,7 @@ use syn::{
 
 pub fn arguments_from_field_attrs(attrs: &Vec<syn::Attribute>) -> Result<Vec<FieldArgument>> {
     for attr in attrs {
-        if attr.path.is_ident("cynic_arguments") {
+        if attr.path.is_ident("arguments") {
             let parsed: CynicArguments = attr.parse_args()?;
             return Ok(parsed.arguments.into_iter().collect());
         }
@@ -15,7 +15,7 @@ pub fn arguments_from_field_attrs(attrs: &Vec<syn::Attribute>) -> Result<Vec<Fie
     Ok(vec![])
 }
 
-/// Implements syn::Parse to parse out arguments from the cynic_arguments
+/// Implements syn::Parse to parse out arguments from the arguments
 /// attribute.
 #[derive(PartialEq, Debug)]
 struct CynicArguments {

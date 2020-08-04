@@ -12,14 +12,14 @@ mod queries {
     #[derive(cynic::QueryFragment)]
     #[cynic(graphql_type = "Query")]
     pub struct Query {
-        #[cynic_arguments(owner = "obmarg".to_string(), name = "cynic".to_string())]
+        #[arguments(owner = "obmarg".to_string(), name = "cynic".to_string())]
         pub repository: Option<Repository>,
     }
 
     #[derive(cynic::QueryFragment)]
     #[cynic(graphql_type = "Repository")]
     pub struct Repository {
-        #[cynic_arguments(states = IssueState::Open, first = 10)]
+        #[arguments(states = IssueState::Open, first = 10)]
         pub issues: IssueConnection,
     }
 

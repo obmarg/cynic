@@ -20,7 +20,7 @@ struct TestStruct {
     // TODO: Could automatically add Some here, though
     // honestly not sure, as what if the argument itself is some optional in a struct.
     // for now this doesn't seem like the worst decision.
-    //#[cynic_arguments(x = Some(1), y = Some("1".to_string()))]
+    //#[arguments(x = Some(1), y = Some("1".to_string()))]
     field_one: String,
     nested: Nested,
     opt_nested: Option<Nested>,
