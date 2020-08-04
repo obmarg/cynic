@@ -100,6 +100,7 @@ impl quote::ToTokens for InlineFragmentsImpl {
         let graphql_type = proc_macro2::Literal::string(&self.graphql_type_name);
 
         tokens.append_all(quote! {
+            #[automatically_derived]
             impl ::cynic::InlineFragments for #target_struct {
                 type TypeLock = #type_lock;
                 type Arguments = #arguments;

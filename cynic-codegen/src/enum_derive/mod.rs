@@ -79,6 +79,7 @@ pub fn enum_derive_impl(
         let enum_marker_ident = Ident::for_type(&*input.graphql_type);
 
         Ok(quote! {
+            #[automatically_derived]
             impl ::cynic::Enum<#query_module::#enum_marker_ident> for #ident {
                 fn select() -> cynic::SelectionSet<'static, Self, ()> {
                     ::cynic::selection_set::string().and_then(|s| {
@@ -92,6 +93,7 @@ pub fn enum_derive_impl(
                 }
             }
 
+            #[automatically_derived]
             impl ::cynic::SerializableArgument for #ident {
                 fn serialize(&self) -> Result<serde_json::Value, ::cynic::SerializeError> {
                     Ok(::serde_json::to_value(match self {
