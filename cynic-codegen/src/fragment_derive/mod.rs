@@ -4,13 +4,13 @@ use proc_macro2::{Span, TokenStream};
 
 use crate::{load_schema, FieldType, Ident, TypePath};
 
-mod cynic_arguments;
+mod arguments;
 mod schema_parsing;
 mod type_validation;
 
 pub(crate) mod input;
 
-use cynic_arguments::{arguments_from_field_attrs, FieldArgument};
+use arguments::{arguments_from_field_attrs, FieldArgument};
 use schema_parsing::{Field, Object};
 use type_validation::check_types_are_compatible;
 
@@ -344,12 +344,12 @@ impl quote::ToTokens for FragmentImpl {
         let map_function = quote::format_ident!("map{}", fields.len());
 
         tokens.append_all(quote! {
+            #[automatically_derived]
             impl ::cynic::QueryFragment for #target_struct {
                 type SelectionSet = ::cynic::SelectionSet<'static, Self, #selector_struct>;
                 type Arguments = #argument_struct;
 
                 fn fragment(args: Self::Arguments) -> Self::SelectionSet {
-                    #[allow(unused_imports)]
                     use ::cynic::{QueryFragment, FromArguments, Enum};
 
                     let new = |#(#constructor_params),*| #target_struct {
@@ -401,7 +401,7 @@ fn validate_and_group_args(
 
         return Err(syn::Error::new(
             missing_arg_span,
-            format!("Missing cynic_arguments: {}", missing_args),
+            format!("Missing arguments: {}", missing_args),
         ));
     }
 

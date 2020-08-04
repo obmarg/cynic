@@ -6,7 +6,7 @@ pub struct ScalarDeriveInput {
 }
 
 #[derive(darling::FromField)]
-#[darling(forward_attrs(cynic_arguments))]
+#[darling(forward_attrs(arguments))]
 pub struct ScalarDeriveField {
     pub(super) ty: syn::Type,
 }

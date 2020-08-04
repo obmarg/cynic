@@ -72,11 +72,11 @@
 //!     graphql_type = "Root"
 //! )]
 //! struct FilmDirectorQuery {
-//!     // Here we use the `#[cynic_arguments()]` attribute on the `film` field to provide a
+//!     // Here we use the `#[arguments()]` attribute on the `film` field to provide a
 //!     // hard coded film ID to look up.  Though useful for demonstration, hard coded
 //!     // arguments like this aren't much use in reality.  For more details on providing
 //!     // runtime arguments please see below.
-//!     #[cynic_arguments(id = cynic::Id::new("ZmlsbXM6MQ=="))]
+//!     #[arguments(id = cynic::Id::new("ZmlsbXM6MQ=="))]
 //!     film: Option<Film>,
 //! }
 //!
@@ -136,12 +136,12 @@
 //!     query_module = "query_dsl",
 //!     graphql_type = "Root",
 //!     // By adding the `argument_struct` parameter to our `QueryFragment` we've made a variable
-//!     // named `args` avaiable for use in the `cynic_arguments` attribute.
+//!     // named `args` avaiable for use in the `arguments` attribute.
 //!     argument_struct = "FilmArguments"
 //! )]
 //! struct FilmDirectorQueryWithArgs {
 //!     // Here we use `args`, which we've declared above to be an instance of `FilmArguments`
-//!     #[cynic_arguments(id = args.id.clone())]
+//!     #[arguments(id = args.id.clone())]
 //!     film: Option<Film>,
 //! }
 //!

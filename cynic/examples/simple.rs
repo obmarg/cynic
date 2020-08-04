@@ -21,7 +21,7 @@ struct TestArgs {}
     argument_struct = "TestArgs"
 )]
 struct TestStruct {
-    #[cynic_arguments(x = Some(1), y = "1")]
+    #[arguments(x = Some(1), y = "1")]
     field_one: String,
     nested: Nested,
     opt_nested: Option<Nested>,
@@ -45,7 +45,7 @@ struct Nested {
     graphql_type = "TestStruct"
 )]
 struct Test {
-    #[cynic_arguments(x = Some(1), y = Some("1".to_string()))]
+    #[arguments(x = Some(1), y = Some("1".to_string()))]
     field_one: String,
 }
 

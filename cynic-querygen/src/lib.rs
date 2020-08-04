@@ -113,7 +113,7 @@ pub fn document_to_fragment_structs(
                             .collect::<Result<Vec<_>, Error>>()?
                             .join(", ");
 
-                        lines.push(format!("        #[cynic_arguments({})]", arguments_string));
+                        lines.push(format!("        #[arguments({})]", arguments_string));
                     }
                     // TODO: print out arguments
                     lines.push(format!(

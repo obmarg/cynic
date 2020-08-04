@@ -19,7 +19,7 @@ mod queries {
     #[derive(cynic::QueryFragment)]
     #[cynic(graphql_type = "Query", argument_struct = "QueryArguments")]
     pub struct Query {
-        #[cynic_arguments(id = args.filmId)]
+        #[arguments(id = args.filmId)]
         pub film: Option<Film>,
     }
 
@@ -28,7 +28,7 @@ mod queries {
     pub struct Film {
         pub title: Option<String>,
         pub director: Option<String>,
-        #[cynic_arguments(after = args.planetCursor)]
+        #[arguments(after = args.planetCursor)]
         pub planetConnection: Option<FilmPlanetsConnection>,
     }
 
@@ -41,7 +41,7 @@ mod queries {
     #[derive(cynic::QueryFragment)]
     #[cynic(graphql_type = "Planet", argument_struct = "QueryArguments")]
     pub struct Planet {
-        #[cynic_arguments(after = args.residentConnection)]
+        #[arguments(after = args.residentConnection)]
         pub residentConnection: Option<PlanetResidentsConnection>,
     }
 

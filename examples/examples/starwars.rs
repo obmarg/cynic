@@ -26,7 +26,7 @@ struct FilmArguments {
     argument_struct = "FilmArguments"
 )]
 struct FilmDirectorQuery {
-    #[cynic_arguments(id = &args.id)]
+    #[arguments(id = &args.id)]
     film: Option<Film>,
 }
 
