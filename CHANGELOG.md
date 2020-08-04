@@ -15,6 +15,8 @@ all APIs might be changed.
 
 - Integer fields are now i32 rather than i64 inline with the GraphQL spec.  If
   larger integers are required a custom scalar should be used.
+- The `cynic_arguments` attribute for passing arguments to GraphQL fields is
+  now named `arguments`
 
 ### New Features
 
