@@ -10,7 +10,7 @@ mod queries {
     use super::{query_dsl, types::*};
 
     #[derive(cynic::QueryFragment)]
-    #[cynic(graphql_type = "UnnamedQuery")]
+    #[cynic(graphql_type = "Root")]
     pub struct UnnamedQuery {
         pub allFilms: Option<FilmsConnection>,
     }

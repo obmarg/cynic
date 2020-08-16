@@ -1,4 +1,4 @@
-query Query($filmId: ID) {
+query SanityCheckQuery($filmId: ID) {
   film(id: $filmId) {
     title
     director

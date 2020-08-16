@@ -10,13 +10,13 @@ mod queries {
     use super::{query_dsl, types::*};
 
     #[derive(Clone, cynic::FragmentArguments)]
-    pub struct QueryArguments {
+    pub struct SanityCheckQueryArguments {
         pub filmId: Option<cynic::Id>,
     }
 
     #[derive(cynic::QueryFragment)]
-    #[cynic(graphql_type = "Query", argument_struct = "QueryArguments")]
-    pub struct Query {
+    #[cynic(graphql_type = "Root", argument_struct = "SanityCheckQueryArguments")]
+    pub struct SanityCheckQuery {
         #[arguments(id = args.filmId)]
         pub film: Option<Film>,
     }

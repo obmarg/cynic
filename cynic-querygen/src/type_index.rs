@@ -101,6 +101,10 @@ impl<'a> TypeIndex<'a> {
             }
         }
     }
+
+    pub fn root_type_name(&self) -> &str {
+        &self.root
+    }
 }
 
 impl<'a> Default for TypeIndex<'a> {

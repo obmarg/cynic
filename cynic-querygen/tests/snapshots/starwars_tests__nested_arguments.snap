@@ -10,21 +10,21 @@ mod queries {
     use super::{query_dsl, types::*};
 
     #[derive(Clone, cynic::FragmentArguments)]
-    pub struct QueryArguments {
+    pub struct NestedArgsQueryArguments {
         pub filmId: cynic::Id,
         pub planetCursor: Option<String>,
         pub residentConnection: Option<String>,
     }
 
     #[derive(cynic::QueryFragment)]
-    #[cynic(graphql_type = "Query", argument_struct = "QueryArguments")]
-    pub struct Query {
+    #[cynic(graphql_type = "Root", argument_struct = "NestedArgsQueryArguments")]
+    pub struct NestedArgsQuery {
         #[arguments(id = args.filmId)]
         pub film: Option<Film>,
     }
 
     #[derive(cynic::QueryFragment)]
-    #[cynic(graphql_type = "Film", argument_struct = "QueryArguments")]
+    #[cynic(graphql_type = "Film", argument_struct = "NestedArgsQueryArguments")]
     pub struct Film {
         pub title: Option<String>,
         pub director: Option<String>,
@@ -33,13 +33,13 @@ mod queries {
     }
 
     #[derive(cynic::QueryFragment)]
-    #[cynic(graphql_type = "FilmPlanetsConnection", argument_struct = "QueryArguments")]
+    #[cynic(graphql_type = "FilmPlanetsConnection", argument_struct = "NestedArgsQueryArguments")]
     pub struct FilmPlanetsConnection {
         pub planets: Option<Vec<Option<Planet>>>,
     }
 
     #[derive(cynic::QueryFragment)]
-    #[cynic(graphql_type = "Planet", argument_struct = "QueryArguments")]
+    #[cynic(graphql_type = "Planet", argument_struct = "NestedArgsQueryArguments")]
     pub struct Planet {
         #[arguments(after = args.residentConnection)]
         pub residentConnection: Option<PlanetResidentsConnection>,
