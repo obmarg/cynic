@@ -11,13 +11,13 @@ mod queries {
 
     #[derive(Clone, cynic::FragmentArguments)]
     pub struct SanityCheckQueryArguments {
-        pub filmId: Option<cynic::Id>,
+        pub film_id: Option<cynic::Id>,
     }
 
     #[derive(cynic::QueryFragment)]
     #[cynic(graphql_type = "Root", argument_struct = "SanityCheckQueryArguments")]
     pub struct SanityCheckQuery {
-        #[arguments(id = args.filmId)]
+        #[arguments(id = args.film_id)]
         pub film: Option<Film>,
     }
 
