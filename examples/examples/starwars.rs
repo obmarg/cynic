@@ -26,7 +26,7 @@ struct FilmArguments {
     argument_struct = "FilmArguments"
 )]
 struct FilmDirectorQuery {
-    #[arguments(id = args.id.clone())]
+    #[arguments(id = &args.id)]
     film: Option<Film>,
 }
 

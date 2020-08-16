@@ -2,7 +2,8 @@
 //!
 //! Cynic is a GraphQL query builder & data mapper for Rust.
 //!
-//! See [the README on GitHub](https://github.com/polyandglot/cynic) for more details.
+//! This documentation is primarily intended to be a reference for specific functions,
+//! for a guide to using `Cynic` see the website: [cynic-rs.dev](https://cynic-rs.dev).
 //!
 //! ## Overview
 //!
@@ -76,7 +77,7 @@
 //!     // hard coded film ID to look up.  Though useful for demonstration, hard coded
 //!     // arguments like this aren't much use in reality.  For more details on providing
 //!     // runtime arguments please see below.
-//!     #[arguments(id = Some("ZmlsbXM6MQ==".into()))]
+//!     #[arguments(id = cynic::Id::new("ZmlsbXM6MQ=="))]
 //!     film: Option<Film>,
 //! }
 //!
@@ -157,6 +158,7 @@
 mod argument;
 mod field;
 mod id;
+mod into_argument;
 mod query;
 mod result;
 mod scalar;
@@ -172,6 +174,8 @@ pub use query::Query;
 pub use result::{GraphQLError, GraphQLResponse, GraphQLResult, PossiblyParsedData};
 pub use scalar::Scalar;
 pub use selection_set::SelectionSet;
+
+pub use into_argument::IntoArgument;
 
 pub trait QueryFragment {
     type SelectionSet;
