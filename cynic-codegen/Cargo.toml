@@ -1,6 +1,6 @@
 [package]
 name = "cynic-codegen"
-version = "0.7.0"
+version = "0.8.0"
 authors = ["Graeme Coupar <graeme@polyandglot.dev>"]
 edition = "2018"
 homepage = "https://github.com/polyandglot/cynic"

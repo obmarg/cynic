@@ -11,6 +11,8 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.8.0 - 2020-08-16
+
 ### Breaking Changes
 
 - Integer fields are now i32 rather than i64 inline with the GraphQL spec.  If
