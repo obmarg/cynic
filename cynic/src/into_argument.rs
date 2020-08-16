@@ -90,8 +90,3 @@ impl IntoArgument<Option<String>> for Option<&str> {
         self.map(|s| s.to_string())
     }
 }
-
-// TODO: Do I also want to define things for Vecs?
-
-// TODO: Define some more for Enums & InputObjects, though maybe want the derives to take care
-//       of that.
