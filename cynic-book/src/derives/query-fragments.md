@@ -141,6 +141,6 @@ If no nested QueryFragments require arguments, you can omit the
 - [Struct Level Attributes][2] can be added to a QueryFragment.
 - [cynic::Query Reference Docs][3]
 
-[1]: ./fragment_arguments.html
-[2]: ../struct_attributes.html
+[1]: ./query-arguments.html
+[2]: ../struct-attributes.html
 [quickstart]: ../quickstart.html
