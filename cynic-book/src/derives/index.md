@@ -6,8 +6,8 @@ have them type checked against the GraphQL schema itself.
 
 There are a number of different derives which this section details:
 
-- [Query Fragments](./derives/query_framents.html)
-- [Enums](./derives/enums.html)
-- [Scalars](./derives/scalars.html)
-- [Query Arguments](./derives/query_arguments.html)
-- [Inline Fragments](./derives/query_arguments.html)
+- [Query Fragments](./query-fragments.html)
+- [Enums](./enums.html)
+- [Scalars](./scalars.html)
+- [Query Arguments](./query-arguments.html)
+- [Inline Fragments](./inline-fragments.html)

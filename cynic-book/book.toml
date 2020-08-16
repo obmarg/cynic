@@ -7,3 +7,6 @@ title = "Cynic - A GraphQL Client For Rust"
 
 [output.html]
 git-repository-url = "https://github.com/obmarg/cynic"
+
+[output.linkcheck]  
+# Enable link checking

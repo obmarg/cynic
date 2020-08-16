@@ -41,6 +41,7 @@ all APIs might be changed.
   larger integers are required a custom scalar should be used.
 - Querygen now puts `argument_struct` attrs on types that have arguments rather
   than just types that have children with arguments. (#37)
+- Fixed a bunch of broken links in the book.
 
 ## v0.7.0 - 2020-06-23
 
