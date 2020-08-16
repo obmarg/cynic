@@ -7,7 +7,8 @@ use crate::{argument::SerializableArgument, Id};
 /// accept any `IntoArgument<Option<String>>`.
 ///
 /// There are implementations of this for most of the built in scalars to allow
-/// users to express arguments in a simple manner.
+/// users to express arguments in a simple manner.  The `cynic::Enum` derive
+/// also generates impls for converting options & refs easily.
 pub trait IntoArgument<Argument>
 where
     Argument: SerializableArgument + Send + 'static,

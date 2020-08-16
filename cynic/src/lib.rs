@@ -2,7 +2,8 @@
 //!
 //! Cynic is a GraphQL query builder & data mapper for Rust.
 //!
-//! See [the README on GitHub](https://github.com/polyandglot/cynic) for more details.
+//! This documentation is primarily intended to be a reference for specific functions,
+//! for a guide to using `Cynic` see the website: [cynic-rs.dev](https://cynic-rs.dev).
 //!
 //! ## Overview
 //!

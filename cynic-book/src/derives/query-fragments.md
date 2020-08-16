@@ -1,6 +1,6 @@
 # Query Fragments
 
-QueryFragments are the main tool for building queries in cynic.  A
+QueryFragments are the main tool for building queries in cynic. A
 QueryFragment tells cynic what fields to select from a GraphQL object, and how
 to decode those fields into a struct.
 
@@ -20,7 +20,7 @@ struct Film {
 ```
 
 When this struct is used in a query it will select the `title` & `director`
-fields of the `Film` type, which are both optional strings.  QueryFragments can
+fields of the `Film` type, which are both optional strings. QueryFragments can
 be nested inside each other, like so:
 
 ```rust
@@ -54,7 +54,7 @@ must be a `Vec`.
 ### Making a Query with QueryFragments
 
 QueryFragments that apply to the Query type (otherwise known as the Root type)
-of a schema can be used to build a `cynic::Query`.  This is the type that can
+of a schema can be used to build a `cynic::Query`. This is the type that can
 be sent to a server and used to decode the response.
 
 If we wanted to use our FilmConnection to get all the films from the star wars
@@ -80,7 +80,7 @@ let query = cynic::Query::new(AllFilmsQuery::fragment(());
 
 This `Query` can be converted into JSON using `serde`, sent to a server, and
 then then it's `decode_response` function can be used to decode the response
-itself.  An example of this is in the [Quickstart][Quickstart].
+itself. An example of this is in the [Quickstart][quickstart].
 
 The empty `()` we pass to fragment is for the arguments - this particular query
 has no arguments so we pass `Void`.
@@ -88,10 +88,10 @@ has no arguments so we pass `Void`.
 ### Passing Arguments
 
 To pass arguments into queries you must pass an `argument_struct` parameter
-to the `cynic` attribute, and then add `cynic_argument` attributes to the
-fields for which you want to provide arugments.   The `argument_struct`
+to the `cynic` attribute, and then add `arguments` attributes to the
+fields for which you want to provide arugments. The `argument_struct`
 parameter must name a struct that implements `cynic::FragmentArguments`, which
-can also be derived.   (See [fragment arguments][1] for more details)
+can also be derived. (See [query arguments][1] for more details)
 
 Here, we define a query that fetches a film by a particular ID:
 
@@ -109,14 +109,10 @@ struct FilmArguments {
     argument_struct = "FilmArguments"
 )]
 struct FilmQuery {
-    #[arguments(id = args.id.clone())]
+    #[arguments(id = &args.id)]
     film: Option<Film>,
 }
 ```
-
-Currently `arguments` takes ownership of arguments so you may need to
-clone as above.  Optional arguments are also wrapped in `Option<>` so to
-provide these you'll need to wrap them in `Some`.
 
 This can be converted into a query in a similar way we just need to provide
 the arguments:
@@ -129,10 +125,10 @@ let query = cynic::Query::new(FilmQuery::fragment(FilmArguments{
 
 #### Nested Arguments
 
-The example above showed how to pass arguments to the top level of a query.  If
+The example above showed how to pass arguments to the top level of a query. If
 you want to pass arguments to a nested QueryFragment then all it's parent
 `QueryFragment`s must specify the same `argument_struct` in their `cynic`
-attribute.  This is neccesary so that the `FragmentArgument` struct gets passed
+attribute. This is neccesary so that the `FragmentArgument` struct gets passed
 down to that level of a query.
 
 If no nested QueryFragments require arguments, you can omit the
@@ -143,8 +139,8 @@ If no nested QueryFragments require arguments, you can omit the
 - [FragmentArguments][1] are used to provide arguments to the fields of a
   QueryFragment.
 - [Struct Level Attributes][2] can be added to a QueryFragment.
-- [cynic::Query Reference Docs][3] 
+- [cynic::Query Reference Docs][3]
 
 [1]: ./fragment_arguments.html
 [2]: ../struct_attributes.html
-[Quickstart]: ../quickstart.html
+[quickstart]: ../quickstart.html
