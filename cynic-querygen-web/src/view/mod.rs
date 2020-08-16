@@ -32,8 +32,16 @@ fn navbar<Msg>() -> Node<Msg> {
             div![C!["navbar-start"]],
             div![
                 C!["navbar-end"],
-                a![C!["navbar-item"], "Guide"],
-                a![C!["navbar-item"], "Reference"],
+                a![
+                    C!["navbar-item"],
+                    attrs!["href" => "https://cynic-rs.dev"],
+                    "Guide"
+                ],
+                a![
+                    C!["navbar-item"],
+                    attrs!["href" => "https://docs.rs/cynic"],
+                    "Reference"
+                ],
             ]
         ]
     ]
