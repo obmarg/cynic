@@ -18,7 +18,7 @@ don't use them at all you should get dead code warnings from Rust.
 
 To use any fields of this struct as an argument to a QueryFragment, the struct
 must define an `argument_struct` parameter that points to the `FilmArguments`
-struct.  This allows arguments to be passed in using the `cynic_arguments`
+struct.  This allows arguments to be passed in using the `arguments`
 attribute on the fields where you wish to pass them.
 
 ```rust
@@ -30,7 +30,7 @@ attribute on the fields where you wish to pass them.
     argument_struct = "FilmArguments"
 )]
 struct FilmQuery {
-    #[cynic_arguments(id = args.id.clone())]
+    #[arguments(id = args.id.clone())]
     film: Option<Film>,
 }
 ```
