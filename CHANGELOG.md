@@ -25,6 +25,11 @@ all APIs might be changed.
 - querygen now supports bare selection sets, they're assumed to be queries.
   Quite easy to create these in GraphiQL/GraphqlExplorer, and they work for
   queries so seemed important.
+- Arguments are now converted using the `IntoArgument<T>` trait - default
+  conversions are provided for `Option` and reference types, so users don't
+  always have to wrap Options in `Some` or explicitly clone their arguments.
+- As a result of the above, cynic will no longer stop compiling when a schema 
+  changes a required argument to optional.
 
 ### Bug Fixes
 
