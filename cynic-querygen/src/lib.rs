@@ -119,7 +119,13 @@ pub fn document_to_fragment_structs(
                         let arguments_string = field
                             .arguments
                             .iter()
-                            .map(|arg| Ok(format!("{} = {}", arg.name, arg.to_literal()?)))
+                            .map(|arg| {
+                                Ok(format!(
+                                    "{} = {}",
+                                    arg.name.to_snake_case(),
+                                    arg.to_literal()?
+                                ))
+                            })
                             .collect::<Result<Vec<_>, Error>>()?
                             .join(", ");
 
@@ -152,7 +158,7 @@ pub fn document_to_fragment_structs(
                 for field in &argument_struct.fields {
                     lines.push(format!(
                         "        pub {}: {},",
-                        field.name,
+                        field.name.to_snake_case(),
                         field.field_type.type_spec(&type_index)
                     ));
                 }
