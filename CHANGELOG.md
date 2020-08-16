@@ -43,6 +43,7 @@ all APIs might be changed.
   than just types that have children with arguments. (#37)
 - Fixed an issue where querygen would use the name of the query as the
   `graphql_type` on the root struct of named queries.
+- Fixed a bunch of broken links in the book.
 
 ## v0.7.0 - 2020-06-23
 
