@@ -1,27 +1,27 @@
 # Overview
 
-Cynic is a GraphQL library for Rust.  It's not the first but it takes a
+Cynic is a GraphQL library for Rust. It's not the first but it takes a
 different approach from the existing libraries.
 
 Existing libraries take a query first approach to GQL - you write a query using
 GraphQL and libraries use that to generate Rust structs for you using macros.
-This is really easy and great for getting going quickly.  However, if you want
+This is really easy and great for getting going quickly. However, if you want
 to use structs that aren't quite what the macros output you're out of luck.
 Some more complex use cases like sharing structs among queries are also
 commonly not supported.
 
 Cynic takes a different approach - it uses Rust structs to define queries and
-generates GraphQL from them.  This gives you freedom to control the structs
+generates GraphQL from them. This gives you freedom to control the structs
 you'll be working with while still enjoying type safe queries, checked against
-the GraphQL schema.  When it's built in `derives` don't do exactly what you
+the GraphQL schema. When it's built in `derives` don't do exactly what you
 want it provides lower level APIs to hook in and fetch the data you want in the
 format you want to work with it.
 
 Of course writing out all the structs to represent a large GraphQL query can be
 quite challenging, and GraphQL has excellent tooling for building queries
-usually.  Cynic provides [`querygen`][1] to help with this - you write a
+usually. Cynic provides [`querygen`][1] to help with this - you write a
 GraphQL query using the existing GQL tooling and it'll generate some cynic
-structs to make that query.  You can use this as a starting point for your
+structs to make that query. You can use this as a starting point for your
 projects - either adding on to the rust structs directly, or re-using
 `querygen` as appropriate.
 
@@ -59,16 +59,16 @@ Cynic is documented in a few places:
 ### Using This Guide
 
 If you're new to Cynic the [quickstart](./quickstart.html) is a good place to
-start.  Afterwards you might want to read the [derives](./derives/) chapter,
-for more details about how to do common things with Cynic.
+start. Afterwards you might want to read the [derives](./derives/index.html)
+chapter, for more details about how to do common things with Cynic.
 
-The [Building Queries](./building-queries/) section is for more advanced users
-- either you've run into a case that the built in derives don't cover, or
-you're just curious how things work under the hood.
+The [Building Queries](./building-queries/index.html) section is for more
+advanced users - either you've run into a case that the built in derives
+don't cover, or you're just curious how things work under the hood.
 
 ### Inspiration
 
-- [graphql-client][2], the original Rust GraphQL client.  This is a great
+- [graphql-client][2], the original Rust GraphQL client. This is a great
   library for using GraphQL from Rust. It wasn't quite what I wanted but it
   might be what you want.
 - The idea of encoding the GraphQL typesystem into a DSL was taken from
