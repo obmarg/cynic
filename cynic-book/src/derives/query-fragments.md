@@ -109,12 +109,12 @@ struct FilmArguments {
     argument_struct = "FilmArguments"
 )]
 struct FilmQuery {
-    #[cynic_arguments(id = args.id.clone())]
+    #[arguments(id = args.id.clone())]
     film: Option<Film>,
 }
 ```
 
-Currently `cynic_arguments` takes ownership of arguments so you may need to
+Currently `arguments` takes ownership of arguments so you may need to
 clone as above.  Optional arguments are also wrapped in `Option<>` so to
 provide these you'll need to wrap them in `Some`.
 
