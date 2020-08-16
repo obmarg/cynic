@@ -1,4 +1,8 @@
-query Query($filmId: ID!, $planetCursor: String, $residentConnection: String) {
+query NestedArgsQuery(
+  $filmId: ID!
+  $planetCursor: String
+  $residentConnection: String
+) {
   film(id: $filmId) {
     title
     director

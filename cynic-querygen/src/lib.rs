@@ -81,14 +81,24 @@ pub fn document_to_fragment_structs(
     for st in possible_structs {
         match st {
             PotentialStruct::QueryFragment(fragment) => {
-                let name = if fragment.path.is_empty() {
-                    // We have a root query type here, so lets make up a name
-                    fragment.name.unwrap_or("Query")
+                let (name, graphql_type) = if fragment.path.is_empty() {
+                    (
+                        // We have a root query type here, so lets make up a
+                        // name if we don't have one.
+                        fragment.name.unwrap_or("Query"),
+                        // Our graphql_type needs to come from the root type
+                        // of the schema.
+                        type_index.root_type_name(),
+                    )
                 } else {
-                    type_index
+                    let type_name = type_index
                         .field_for_path(&fragment.path)?
                         .field_type
-                        .inner_name()
+                        .inner_name();
+
+                    // For non root types we use the GraphQL type name for the
+                    // type _and_ the `graphql_type` param.
+                    (type_name, type_name)
                 };
 
                 let argument_struct_param = if let Some(name) = fragment.argument_struct_name {
@@ -100,7 +110,7 @@ pub fn document_to_fragment_structs(
                 lines.push("    #[derive(cynic::QueryFragment)]".into());
                 lines.push(format!(
                     "    #[cynic(graphql_type = \"{}\"{})]",
-                    name, argument_struct_param
+                    graphql_type, argument_struct_param
                 ));
                 lines.push(format!("    pub struct {} {{", name));
 
