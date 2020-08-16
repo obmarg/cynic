@@ -24,21 +24,36 @@ where
     }
 }
 
-macro_rules! define_for_scalar {
+/// Defines useful argument conversions for scalar-like types
+///
+/// Mostly just converts references to owned via cloning and
+/// non option-wrapped types into Option where appropriate.
+#[macro_export]
+macro_rules! define_into_argument_for_scalar {
     ($inner:ty) => {
-        impl IntoArgument<Option<$inner>> for $inner {
+        impl $crate::IntoArgument<Option<$inner>> for $inner {
+            fn into_argument(self) -> Option<$inner> {
+                Some(self)
+            }
+        }
+
+        impl $crate::IntoArgument<Option<$inner>> for &$inner {
             fn into_argument(self) -> Option<$inner> {
                 Some(self.clone())
             }
         }
+    };
+}
 
-        impl IntoArgument<Option<$inner>> for Option<&$inner> {
+macro_rules! define_into_argument_for_option_refs {
+    ($inner:ty) => {
+        impl $crate::IntoArgument<Option<$inner>> for Option<&$inner> {
             fn into_argument(self) -> Option<$inner> {
                 self.cloned()
             }
         }
 
-        impl IntoArgument<Option<$inner>> for &Option<$inner> {
+        impl $crate::IntoArgument<Option<$inner>> for &Option<$inner> {
             fn into_argument(self) -> Option<$inner> {
                 self.clone()
             }
@@ -46,11 +61,17 @@ macro_rules! define_for_scalar {
     };
 }
 
-define_for_scalar!(i32);
-define_for_scalar!(f64);
-define_for_scalar!(String);
-define_for_scalar!(bool);
-define_for_scalar!(Id);
+define_into_argument_for_scalar!(i32);
+define_into_argument_for_scalar!(f64);
+define_into_argument_for_scalar!(String);
+define_into_argument_for_scalar!(bool);
+define_into_argument_for_scalar!(Id);
+
+define_into_argument_for_option_refs!(i32);
+define_into_argument_for_option_refs!(f64);
+define_into_argument_for_option_refs!(String);
+define_into_argument_for_option_refs!(bool);
+define_into_argument_for_option_refs!(Id);
 
 impl IntoArgument<String> for &str {
     fn into_argument(self) -> String {

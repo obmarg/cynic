@@ -103,6 +103,8 @@ pub fn enum_derive_impl(
                     })?)
                 }
             }
+
+            ::cynic::define_into_argument_for_scalar!(#ident);
         })
     } else {
         Err(syn::Error::new(
