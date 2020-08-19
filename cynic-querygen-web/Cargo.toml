@@ -1,7 +1,7 @@
 [package]
 version = "0.8.0"
 name = "cynic-querygen-web"
-repository = "https://github.com/polyandglot/cynic"
+repository = "https://github.com/obmarg/cynic"
 authors = ["Graeme Coupar<graeme@polyandglot.dev>"]
 description = "Web interface for generating cynic query structures from graphql"
 edition = "2018"
