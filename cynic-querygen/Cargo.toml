@@ -3,6 +3,8 @@ name = "cynic-querygen"
 version = "0.8.0"
 authors = ["Graeme Coupar <grambo@grambo.me.uk>"]
 edition = "2018"
+homepage = "https://cynic-rs.dev"
+repository = "https://github.com/obmarg/cynic"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
