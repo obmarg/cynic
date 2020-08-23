@@ -95,7 +95,7 @@ impl quote::ToTokens for FieldSelector {
                             #argument_strings,
                             #argument_gql_types,
                             #argument_names
-                        )
+                        ),
                     )*
                 ])
             }
