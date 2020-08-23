@@ -11,6 +11,11 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+### Bug Fixes
+
+- Fixed a compile issue in the generated `query_dsl` for schemas with fields
+  with > 1 required argument.
+
 ## v0.8.0 - 2020-08-16
 
 ### Breaking Changes
