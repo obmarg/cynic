@@ -1,0 +1,103 @@
+---
+source: cynic-querygen/tests/github-tests.rs
+expression: "document_to_fragment_structs(query, schema,\n                             &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
+---
+#[cynic::query_module(
+    schema_path = "schema.graphql",
+    query_module = "query_dsl",
+)]
+mod queries {
+    use super::{query_dsl, types::*};
+
+    #[derive(cynic::QueryFragment)]
+    #[cynic(graphql_type = "Query")]
+    pub struct PullRequestTitles {
+        #[arguments(name = "cynic".to_string(), owner = "obmarg".to_string())]
+        pub repository: Option<Repository>,
+    }
+
+    #[derive(cynic::QueryFragment)]
+    #[cynic(graphql_type = "Repository")]
+    pub struct Repository {
+        #[arguments(order_by = IssueOrder { direction: OrderDirection::Asc, field: IssueOrderField::CreatedAt })]
+        pub pullRequests: PullRequestConnection,
+    }
+
+    #[derive(cynic::QueryFragment)]
+    #[cynic(graphql_type = "PullRequestConnection")]
+    pub struct PullRequestConnection {
+        pub nodes: Option<Vec<Option<PullRequest>>>,
+    }
+
+    #[derive(cynic::QueryFragment)]
+    #[cynic(graphql_type = "PullRequest")]
+    pub struct PullRequest {
+        pub title: String,
+    }
+
+    #[derive(cynic::Enum, Clone, Copy, Debug)]
+    #[cynic(graphql_type = "IssueOrderField")]
+    pub enum IssueOrderField {
+        Comments,
+        CreatedAt,
+        UpdatedAt,
+    }
+
+    #[derive(cynic::Enum, Clone, Copy, Debug)]
+    #[cynic(graphql_type = "OrderDirection")]
+    pub enum OrderDirection {
+        Asc,
+        Desc,
+    }
+
+    #[derive(Clone, cynic::InputObject)]
+    #[cynic(graphql_type = "IssueOrder", rename_all="camelCase")]
+    pub struct IssueOrder {
+        pub direction: OrderDirection,
+        pub field: IssueOrderField,
+    }
+
+}
+
+#[cynic::query_module(
+    schema_path = "schema.graphql",
+    query_module = "query_dsl",
+)]
+mod types {
+    #[derive(cynic::Scalar, Debug)]
+    pub struct Date(String);
+
+    #[derive(cynic::Scalar, Debug)]
+    pub struct DateTime(String);
+
+    #[derive(cynic::Scalar, Debug)]
+    pub struct GitObjectID(String);
+
+    #[derive(cynic::Scalar, Debug)]
+    pub struct GitRefname(String);
+
+    #[derive(cynic::Scalar, Debug)]
+    pub struct GitSSHRemote(String);
+
+    #[derive(cynic::Scalar, Debug)]
+    pub struct GitTimestamp(String);
+
+    #[derive(cynic::Scalar, Debug)]
+    pub struct Html(String);
+
+    #[derive(cynic::Scalar, Debug)]
+    pub struct PreciseDateTime(String);
+
+    #[derive(cynic::Scalar, Debug)]
+    pub struct Uri(String);
+
+    #[derive(cynic::Scalar, Debug)]
+    pub struct X509Certificate(String);
+
+}
+
+mod query_dsl{
+    use super::types::*;
+    cynic::query_dsl!("schema.graphql");
+}
+

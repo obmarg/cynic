@@ -34,6 +34,9 @@ pub enum Error {
     #[error("expected type `{0}` to be an object")]
     ExpectedObject(String),
 
+    #[error("found a literal object but the argument is not an InputObject")]
+    ArgumentNotInputObject,
+
     #[error("couldn't find an argument named `{0}`")]
     UnknownArgument(String),
 
@@ -123,7 +126,7 @@ pub fn document_to_fragment_structs(
                                 Ok(format!(
                                     "{} = {}",
                                     arg.name.to_snake_case(),
-                                    arg.to_literal()?
+                                    arg.to_literal(&type_index)?
                                 ))
                             })
                             .collect::<Result<Vec<_>, Error>>()?
@@ -165,7 +168,25 @@ pub fn document_to_fragment_structs(
 
                 lines.push("    }\n".into());
             }
-            _ => {}
+            PotentialStruct::InputObject(input_object) => {
+                lines.push("    #[derive(Clone, cynic::InputObject)]".into());
+                lines.push(format!(
+                    "    #[cynic(graphql_type = \"{}\", rename_all=\"camelCase\")]",
+                    input_object.name
+                ));
+                lines.push(format!("    pub struct {} {{", input_object.name));
+
+                for field in input_object.fields {
+                    lines.push(format!(
+                        "        pub {}: {},",
+                        field.name.to_snake_case(),
+                        field.value_type.type_spec(&type_index)
+                    ))
+                }
+
+                lines.push("    }\n".into());
+            }
+            PotentialStruct::Scalar(_) => {}
         }
     }
     lines.push("}\n".into());

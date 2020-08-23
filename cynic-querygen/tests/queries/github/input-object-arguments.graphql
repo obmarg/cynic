@@ -1,0 +1,9 @@
+query PullRequestTitles($prOrder: IssueOrder!) {
+  repository(name: "cynic", owner: "obmarg") {
+    pullRequests(orderBy: $prOrder) {
+      nodes {
+        title
+      }
+    }
+  }
+}

@@ -20,3 +20,5 @@ macro_rules! test_query {
 }
 
 test_query!(literal_enums, "literal-enums.graphql");
+test_query!(input_object_literals, "input-object-literals.graphql");
+test_query!(input_object_arguments, "input-object-arguments.graphql");

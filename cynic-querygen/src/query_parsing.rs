@@ -2,7 +2,7 @@ use graphql_parser::query::{
     Definition, Document, OperationDefinition, Selection, SelectionSet, Value, VariableDefinition,
 };
 
-use crate::schema::{self, EnumType, ScalarTypeExt, Type, TypeDefinition};
+use crate::schema::{self, EnumType, InputValue, ScalarTypeExt, Type, TypeDefinition};
 use crate::{value_ext::ValueExt, Error, TypeExt, TypeIndex};
 
 #[derive(Debug, PartialEq)]
@@ -33,8 +33,8 @@ impl<'a> FieldArgument<'a> {
         }
     }
 
-    pub fn to_literal(&self) -> Result<String, Error> {
-        self.value.to_literal(self.argument_type)
+    pub fn to_literal(&self, type_index: &TypeIndex) -> Result<String, Error> {
+        self.value.to_literal(self.argument_type, type_index)
     }
 }
 
@@ -91,6 +91,7 @@ pub enum PotentialStruct<'a> {
     Enum(Enum<'a>),
     Scalar(String),
     ArgumentStruct(ArgumentStruct<'a>),
+    InputObject(InputObject<'a>),
 }
 
 impl PotentialStruct<'_> {
@@ -100,6 +101,12 @@ impl PotentialStruct<'_> {
             _ => false,
         }
     }
+}
+
+#[derive(Debug, PartialEq)]
+pub struct InputObject<'a> {
+    pub name: String,
+    pub fields: Vec<InputValue<'a>>,
 }
 
 pub fn parse_query_document<'a>(
@@ -130,11 +137,10 @@ fn parse_definition<'a>(
                 structs.push(PotentialStruct::ArgumentStruct(argument_struct));
 
                 for variable in &query.variable_definitions {
-                    if let Some(st) =
-                        struct_from_type_name(variable.var_type.inner_name(), type_index)?
-                    {
-                        structs.push(st)
-                    }
+                    structs.extend(structs_from_type_name(
+                        variable.var_type.inner_name(),
+                        type_index,
+                    )?);
                 }
 
                 Some(argument_struct_name)
@@ -204,8 +210,9 @@ fn selection_set_to_structs<'a, 'b>(
 
     if !path.is_empty() {
         let type_name = type_index.field_for_path(&path)?.field_type.inner_name();
-        if let Some(st) = struct_from_type_name(type_name, type_index)? {
-            return Ok(vec![st]);
+        let structs = structs_from_type_name(type_name, type_index)?;
+        if !structs.is_empty() {
+            return Ok(structs);
         }
     }
 
@@ -314,25 +321,52 @@ fn argument_to_structs<'a>(
                 Err(Error::UnknownEnum(enum_name.to_string()))
             }
         }
+        Value::Object(_) => {
+            // This is probably an InputObject, so lets extract the
+            // InputObject & any other types it contains
+            Ok(structs_from_type_name(
+                schema_argument.value_type.inner_name(),
+                type_index,
+            )?)
+        }
         _ => Ok(vec![]),
     }
 }
 
-fn struct_from_type_name<'a>(
+fn structs_from_type_name<'a>(
     type_name: &str,
     type_index: &'a TypeIndex<'a>,
-) -> Result<Option<PotentialStruct<'a>>, Error> {
+) -> Result<Vec<PotentialStruct<'a>>, Error> {
     match type_index.lookup_type(type_name) {
-        Some(TypeDefinition::Enum(en)) => return Ok(Some(PotentialStruct::Enum(Enum { def: en }))),
+        Some(TypeDefinition::Enum(en)) => return Ok(vec![PotentialStruct::Enum(Enum { def: en })]),
         Some(TypeDefinition::Scalar(scalar_type)) => {
             if !scalar_type.is_builtin() {
-                Ok(Some(PotentialStruct::Scalar(type_name.to_string())))
+                Ok(vec![PotentialStruct::Scalar(type_name.to_string())])
             } else {
                 // We don't create structs for built in scalars
-                Ok(None)
+                Ok(vec![])
             }
         }
+        Some(TypeDefinition::InputObject(input_object)) => {
+            let mut rv = Vec::new();
+            rv.push(PotentialStruct::InputObject(InputObject {
+                name: type_name.to_string(),
+                fields: input_object.fields.clone(),
+            }));
+
+            rv.extend(
+                input_object
+                    .fields
+                    .iter()
+                    .map(|field| structs_from_type_name(field.value_type.inner_name(), type_index))
+                    .collect::<Result<Vec<_>, _>>()?
+                    .into_iter()
+                    .flatten(),
+            );
+
+            Ok(rv)
+        }
         None => Err(Error::UnknownType(type_name.to_string())),
-        _ => Ok(None),
+        _ => Ok(vec![]),
     }
 }
