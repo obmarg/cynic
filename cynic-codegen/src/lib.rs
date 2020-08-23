@@ -10,6 +10,7 @@ pub mod scalar_derive;
 mod error;
 mod field_argument;
 mod field_type;
+mod generic_param;
 mod ident;
 mod module;
 mod schema;

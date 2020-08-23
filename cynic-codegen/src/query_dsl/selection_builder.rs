@@ -102,8 +102,8 @@ impl quote::ToTokens for FieldSelectionBuilder {
 
         let argument_gql_types = self.optional_args.iter().map(|a| a.gql_type.clone());
 
-        let argument_generics = self.optional_args.iter().map(|a| {
-            if let Some(param) = a.generic_parameter() {
+        let argument_generics = self.optional_args.iter().map(|optional_arg| {
+            if let Some(param) = optional_arg.generic_parameter() {
                 let param_tokens = param.to_tokens(Ident::for_module("super").into());
                 quote! { < #param_tokens >}
             } else {

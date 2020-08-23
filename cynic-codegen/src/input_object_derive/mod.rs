@@ -1,3 +1,4 @@
+use inflector::Inflector;
 use proc_macro2::{Span, TokenStream};
 use std::collections::HashMap;
 use syn::spanned::Spanned;
@@ -9,7 +10,7 @@ use crate::{
         Definition, Document, InputObjectType, InputValue, ScalarTypeExt, TypeDefinition, TypeExt,
     },
     type_validation::check_types_are_compatible,
-    Ident, TypeIndex,
+    FieldType, Ident, TypeIndex, TypePath,
 };
 
 pub(crate) mod input;
@@ -36,7 +37,7 @@ pub fn input_object_derive_impl(
     schema: &Document,
     struct_span: Span,
 ) -> Result<TokenStream, syn::Error> {
-    use quote::quote;
+    use quote::{quote, quote_spanned};
 
     let input_object_def = schema.definitions.iter().find_map(|def| {
         if let Definition::TypeDefinition(TypeDefinition::InputObject(obj)) = def {
@@ -89,62 +90,62 @@ pub fn input_object_derive_impl(
             ));
         }
 
-        // TODO: The above only checks Option types etc - probably want more thorough checking somehow...
-
         let ident = input.ident;
+        let query_module = Ident::for_module(&input.query_module);
+        let input_marker_ident = Ident::for_type(&*input.graphql_type);
 
         let gql_field_names = pairs
             .iter()
             .map(|(_, gql_value)| proc_macro2::Literal::string(&gql_value.name));
 
-        let field_values = pairs.iter().map(|(rust_field, gql_value)| {
-            let gql_type = type_index
-                .lookup_type(gql_value.value_type.inner_name())
-                .expect("Couldn't find type for InputObject field");
+        let typecheck_funcs = pairs.iter().map(|(rust_field, gql_value)| {
+            // The check_types_are_compatible call above only checks for Option
+            // and Vec wrappers - we don't have access to any of the type
+            // information of fields within our current struct.
+            //
+            // So, we have to construct some functions with constraints
+            // in order to make sure the fields are of the right type.
+            //
+            // That's what this block is doing.
+
+            let field_type = FieldType::from_schema_type(&gql_value.value_type, &type_index);
+            let generic_param = field_type.generic_parameter(Ident::new("T"));
+            let arg_type = field_type.to_tokens(
+                generic_param.as_ref().map(|p| p.name.clone()),
+                query_module.clone().into(),
+            );
 
             let rust_field_name = &rust_field.ident;
-            match gql_type {
-                TypeDefinition::Scalar(scalar) => {
-                    if scalar.is_builtin() {
-                        quote! {
-                            self.#rust_field_name
-                        }
-                    } else {
-                        quote! {
-                            self.#rust_field_name.encode()?
-                        }
+            let generic_param_definition =
+                generic_param.map(|p| p.to_tokens(query_module.clone().into()));
+
+            quote! {
+                fn #rust_field_name<#generic_param_definition>(data: &#arg_type) ->
+                    Result<::serde_json::Value, ::cynic::SerializeError> {
+                        data.serialize()
                     }
-                }
-                TypeDefinition::Enum(_) => {
-                    // TODO: quote_spanned?
-                    quote! {
-                        // TODO: Not sure this is right actually: Enum doesn't have a serialize function...
-                        // It does impl SerializableArgument so might be suitable to call that...
-                        self.#rust_field_name.serialize()?
-                    }
-                }
-                TypeDefinition::InputObject(_) => {
-                    // TODO: quote_spanned?
-                    quote! {
-                        self.#rust_field_name.serialize()?
-                    }
-                }
-                other => {
-                    // Fairly sure the spec only allows Scalars, Enums & InputObjects as
-                    // fields on InputObjects
-                    panic!("Unexpected type inside InputObject: {:?}", other);
-                }
             }
         });
 
-        let query_module = Ident::for_module(&input.query_module);
-        let input_marker_ident = Ident::for_type(&*input.graphql_type);
+        let field_values = pairs.iter().map(|(rust_field, gql_value)| {
+            let field_span = rust_field.ident.span();
+            let rust_field_name = &rust_field.ident;
+
+            // For each field we just call our type checking function with the current field
+            quote_spanned! { field_span =>
+                #rust_field_name(&self.#rust_field_name)?
+            }
+        });
 
         Ok(quote! {
             #[automatically_derived]
             impl ::cynic::InputObject<#query_module::#input_marker_ident> for #ident {
                 fn serialize(&self) -> Result<::serde_json::Value, ::cynic::SerializeError>  {
                     use ::cynic::{Scalar, Enum, SerializableArgument};
+                    #(
+                        #typecheck_funcs
+                    )*
+
                     Ok(serde_json::json!({
                         #(
                             #gql_field_names: #field_values,
@@ -159,7 +160,6 @@ pub fn input_object_derive_impl(
                     self.serialize()
                 }
             }
-
 
             // TODO: Figure out if this does what I want...
             ::cynic::define_into_argument_for_scalar!(#ident);
