@@ -2,6 +2,7 @@ pub mod enum_derive;
 pub mod fragment_arguments_derive;
 pub mod fragment_derive;
 pub mod inline_fragments_derive;
+pub mod input_object_derive;
 pub mod query_dsl;
 pub mod query_module;
 pub mod scalar_derive;
@@ -14,6 +15,7 @@ mod module;
 mod schema;
 mod type_index;
 mod type_path;
+mod type_validation;
 
 use error::Error;
 use field_argument::FieldArgument;

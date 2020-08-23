@@ -38,5 +38,6 @@ pub fn scalar_derive_impl(input: ScalarDeriveInput) -> Result<TokenStream, syn::
                 Ok(self.0.encode()?)
             }
         }
+
     })
 }

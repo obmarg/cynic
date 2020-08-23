@@ -11,6 +11,7 @@ pub type ObjectType = graphql_parser::schema::ObjectType<'static, String>;
 pub type EnumType = graphql_parser::schema::EnumType<'static, String>;
 pub type InterfaceType = graphql_parser::schema::InterfaceType<'static, String>;
 pub type InputObjectType = graphql_parser::schema::InputObjectType<'static, String>;
+pub type ScalarType = graphql_parser::schema::ScalarType<'static, String>;
 pub type UnionType = graphql_parser::schema::UnionType<'static, String>;
 pub type InputValue = graphql_parser::schema::InputValue<'static, String>;
 pub type EnumValue = graphql_parser::schema::EnumValue<'static, String>;
@@ -79,6 +80,7 @@ impl FieldExt for Field {
 /// Extension trait for the schema Type type
 pub trait TypeExt {
     fn to_graphql_string(&self) -> String;
+    fn inner_name(&self) -> &str;
 }
 
 impl TypeExt for Type {
@@ -87,6 +89,27 @@ impl TypeExt for Type {
             Type::NamedType(name) => name.clone(),
             Type::ListType(inner) => format!("[{}]", inner.to_graphql_string()),
             Type::NonNullType(inner) => format!("{}!", inner.to_graphql_string()),
+        }
+    }
+
+    fn inner_name(&self) -> &str {
+        match self {
+            Type::NamedType(s) => s,
+            Type::ListType(inner) => inner.inner_name(),
+            Type::NonNullType(inner) => inner.inner_name(),
+        }
+    }
+}
+
+pub trait ScalarTypeExt {
+    fn is_builtin(&self) -> bool;
+}
+
+impl ScalarTypeExt for ScalarType {
+    fn is_builtin(&self) -> bool {
+        match self.name.as_ref() {
+            "String" | "Int" | "Boolean" | "ID" => true,
+            _ => false,
         }
     }
 }

@@ -227,7 +227,7 @@ pub trait Enum<TypeLock>: Sized {
 /// This trait is generic over some TypeLock which is used to tie an InputType
 /// back into it's GraphQL input object.  Generally this will be some type
 /// generated in the GQL code.
-pub trait InputObject<TypeLock> {
+pub trait InputObject<TypeLock>: Clone {
     fn serialize(&self) -> Result<serde_json::Value, SerializeError>;
 }
 
@@ -263,5 +263,6 @@ where
 pub trait QueryRoot {}
 
 pub use cynic_proc_macros::{
-    query_dsl, query_module, Enum, FragmentArguments, InlineFragments, QueryFragment, Scalar,
+    query_dsl, query_module, Enum, FragmentArguments, InlineFragments, InputObject, QueryFragment,
+    Scalar,
 };
