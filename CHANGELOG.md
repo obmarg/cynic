@@ -15,6 +15,8 @@ all APIs might be changed.
 
 - Fixed a compile issue in the generated `query_dsl` for schemas with fields
   with > 1 required argument.
+- Fixed an issue that required users to add `serde_json` to their dependencies.
+  We now re-export it as `cynic::serde_json` and use that in our derive output.
 
 ## v0.8.0 - 2020-08-16
 

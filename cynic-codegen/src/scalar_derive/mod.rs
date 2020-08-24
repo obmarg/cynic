@@ -31,10 +31,10 @@ pub fn scalar_derive_impl(input: ScalarDeriveInput) -> Result<TokenStream, syn::
 
     Ok(quote! {
         impl ::cynic::Scalar for #ident {
-            fn decode(value: &serde_json::Value) -> Result<Self, ::cynic::DecodeError> {
+            fn decode(value: &::cynic::serde_json::Value) -> Result<Self, ::cynic::DecodeError> {
                 Ok(#ident(<#inner_type as ::cynic::Scalar>::decode(value)?))
             }
-            fn encode(&self) -> Result<serde_json::Value, ::cynic::SerializeError> {
+            fn encode(&self) -> Result<::cynic::serde_json::Value, ::cynic::SerializeError> {
                 Ok(self.0.encode()?)
             }
         }

@@ -95,8 +95,8 @@ pub fn enum_derive_impl(
 
             #[automatically_derived]
             impl ::cynic::SerializableArgument for #ident {
-                fn serialize(&self) -> Result<serde_json::Value, ::cynic::SerializeError> {
-                    Ok(::serde_json::to_value(match self {
+                fn serialize(&self) -> Result<::cynic::serde_json::Value, ::cynic::SerializeError> {
+                    Ok(::cynic::serde_json::to_value(match self {
                         #(
                             #ident::#variants => #string_literals.to_string(),
                         )*
