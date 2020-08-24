@@ -143,7 +143,10 @@ pub fn document_to_fragment_structs(
             PotentialStruct::Enum(en) => {
                 let type_name = en.def.name;
                 lines.push("    #[derive(cynic::Enum, Clone, Copy, Debug)]".into());
-                lines.push(format!("    #[cynic(graphql_type = \"{}\")]", type_name));
+                lines.push("    #[cynic(".into());
+                lines.push(format!("        graphql_type = \"{}\",", type_name));
+                lines.push("        rename_all = \"SCREAMING_SNAKE_CASE\"))]".into());
+                lines.push("    ))]".into());
                 lines.push(format!("    pub enum {} {{", type_name.to_pascal_case()));
 
                 for variant in &en.def.values {
