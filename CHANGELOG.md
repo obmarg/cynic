@@ -17,6 +17,10 @@ all APIs might be changed.
   with > 1 required argument.
 - Fixed an issue that required users to add `serde_json` to their dependencies.
   We now re-export it as `cynic::serde_json` and use that in our derive output.
+- querygen now adds `rename_all="SCREAMING_SNAKE_CASE"` to Enums by default -
+  the GQL convention is to have them in this format and querygen was already
+  doing the transformation into the `PascalCase` rust usually uses so this
+  should make things more likely to work by default.
 
 ## v0.8.0 - 2020-08-16
 

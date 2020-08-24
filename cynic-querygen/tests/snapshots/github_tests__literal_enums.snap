@@ -36,7 +36,10 @@ mod queries {
     }
 
     #[derive(cynic::Enum, Clone, Copy, Debug)]
-    #[cynic(graphql_type = "IssueState")]
+    #[cynic(
+        graphql_type = "IssueState",
+        rename_all = "SCREAMING_SNAKE_CASE"))]
+    ))]
     pub enum IssueState {
         Closed,
         Open,
