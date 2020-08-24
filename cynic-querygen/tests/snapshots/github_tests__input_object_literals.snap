@@ -36,7 +36,10 @@ mod queries {
     }
 
     #[derive(cynic::Enum, Clone, Copy, Debug)]
-    #[cynic(graphql_type = "IssueOrderField")]
+    #[cynic(
+        graphql_type = "IssueOrderField",
+        rename_all = "SCREAMING_SNAKE_CASE"
+    )]
     pub enum IssueOrderField {
         Comments,
         CreatedAt,
@@ -44,7 +47,10 @@ mod queries {
     }
 
     #[derive(cynic::Enum, Clone, Copy, Debug)]
-    #[cynic(graphql_type = "OrderDirection")]
+    #[cynic(
+        graphql_type = "OrderDirection",
+        rename_all = "SCREAMING_SNAKE_CASE"
+    )]
     pub enum OrderDirection {
         Asc,
         Desc,
