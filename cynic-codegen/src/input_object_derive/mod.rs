@@ -1,4 +1,3 @@
-use inflector::Inflector;
 use proc_macro2::{Span, TokenStream};
 use std::collections::HashMap;
 use syn::spanned::Spanned;
@@ -6,11 +5,9 @@ use syn::spanned::Spanned;
 use crate::{
     ident::{RenameAll, RenameRule},
     load_schema,
-    schema::{
-        Definition, Document, InputObjectType, InputValue, ScalarTypeExt, TypeDefinition, TypeExt,
-    },
+    schema::{Definition, Document, InputObjectType, InputValue, TypeDefinition},
     type_validation::check_types_are_compatible,
-    FieldType, Ident, TypeIndex, TypePath,
+    FieldType, Ident, TypeIndex,
 };
 
 pub(crate) mod input;
@@ -127,7 +124,7 @@ pub fn input_object_derive_impl(
             }
         });
 
-        let field_values = pairs.iter().map(|(rust_field, gql_value)| {
+        let field_values = pairs.iter().map(|(rust_field, _)| {
             let field_span = rust_field.ident.span();
             let rust_field_name = &rust_field.ident;
 
