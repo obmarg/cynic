@@ -9,27 +9,27 @@ expression: "document_to_fragment_structs(query, schema,\n                      
 mod queries {
     use super::{query_dsl, types::*};
 
-    #[derive(cynic::QueryFragment)]
+    #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "Query")]
     pub struct Query {
         #[arguments(owner = "obmarg".to_string(), name = "cynic".to_string())]
         pub repository: Option<Repository>,
     }
 
-    #[derive(cynic::QueryFragment)]
+    #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "Repository")]
     pub struct Repository {
         #[arguments(states = IssueState::Open, first = 10)]
         pub issues: IssueConnection,
     }
 
-    #[derive(cynic::QueryFragment)]
+    #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "IssueConnection")]
     pub struct IssueConnection {
         pub nodes: Option<Vec<Option<Issue>>>,
     }
 
-    #[derive(cynic::QueryFragment)]
+    #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "Issue")]
     pub struct Issue {
         pub title: String,

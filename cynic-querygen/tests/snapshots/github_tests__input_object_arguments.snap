@@ -9,12 +9,12 @@ expression: "document_to_fragment_structs(query, schema,\n                      
 mod queries {
     use super::{query_dsl, types::*};
 
-    #[derive(Clone, cynic::FragmentArguments)]
+    #[derive(cynic::FragmentArguments, Clone, Debug)]
     pub struct PullRequestTitlesArguments {
         pub pr_order: IssueOrder,
     }
 
-    #[derive(Clone, cynic::InputObject)]
+    #[derive(cynic::InputObject, Clone, Debug)]
     #[cynic(graphql_type = "IssueOrder", rename_all="camelCase")]
     pub struct IssueOrder {
         pub direction: OrderDirection,
@@ -42,27 +42,27 @@ mod queries {
         UpdatedAt,
     }
 
-    #[derive(cynic::QueryFragment)]
+    #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "Query", argument_struct = "PullRequestTitlesArguments")]
     pub struct PullRequestTitles {
         #[arguments(name = "cynic".to_string(), owner = "obmarg".to_string())]
         pub repository: Option<Repository>,
     }
 
-    #[derive(cynic::QueryFragment)]
+    #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "Repository", argument_struct = "PullRequestTitlesArguments")]
     pub struct Repository {
         #[arguments(order_by = args.pr_order)]
         pub pullRequests: PullRequestConnection,
     }
 
-    #[derive(cynic::QueryFragment)]
+    #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "PullRequestConnection")]
     pub struct PullRequestConnection {
         pub nodes: Option<Vec<Option<PullRequest>>>,
     }
 
-    #[derive(cynic::QueryFragment)]
+    #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "PullRequest")]
     pub struct PullRequest {
         pub title: String,

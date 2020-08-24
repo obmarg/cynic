@@ -110,7 +110,7 @@ pub fn document_to_fragment_structs(
                     "".to_string()
                 };
 
-                lines.push("    #[derive(cynic::QueryFragment)]".into());
+                lines.push("    #[derive(cynic::QueryFragment, Debug)]".into());
                 lines.push(format!(
                     "    #[cynic(graphql_type = \"{}\"{})]",
                     graphql_type, argument_struct_param
@@ -158,7 +158,7 @@ pub fn document_to_fragment_structs(
                 lines.push("    }\n".into());
             }
             PotentialStruct::ArgumentStruct(argument_struct) => {
-                lines.push("    #[derive(Clone, cynic::FragmentArguments)]".into());
+                lines.push("    #[derive(cynic::FragmentArguments, Clone, Debug)]".into());
                 lines.push(format!("    pub struct {} {{", argument_struct.name));
 
                 for field in &argument_struct.fields {
@@ -172,7 +172,7 @@ pub fn document_to_fragment_structs(
                 lines.push("    }\n".into());
             }
             PotentialStruct::InputObject(input_object) => {
-                lines.push("    #[derive(Clone, cynic::InputObject)]".into());
+                lines.push("    #[derive(cynic::InputObject, Clone, Debug)]".into());
                 lines.push(format!(
                     "    #[cynic(graphql_type = \"{}\", rename_all=\"camelCase\")]",
                     input_object.name
