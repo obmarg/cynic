@@ -97,6 +97,7 @@ fn derive_for_item(
         Some(Derive::InlineFragments) => inline_fragments_derive(item, args),
         Some(Derive::Enum) => enum_derive(item, args, schema),
         Some(Derive::Scalar) => scalar_derive(item),
+        Some(Derive::InputObject) => panic!("Optimised modules not implemented for input objects"),
     }
 }
 
@@ -235,7 +236,7 @@ fn insert_cynic_attrs(args: &TransformModuleArgs, item: syn::Item) -> syn::Item 
                 item
             }
         }
-        Some(Derive::QueryFragment) => {
+        Some(Derive::QueryFragment) | Some(Derive::InputObject) => {
             if let Item::Struct(mut st) = item {
                 let attrs = PresentAttributes::from_attributes(&st.attrs);
                 attrs.add_missing_attributes(&mut st.attrs, args);
