@@ -9,19 +9,19 @@ expression: "document_to_fragment_structs(query, schema,\n                      
 mod queries {
     use super::{query_dsl, types::*};
 
-    #[derive(cynic::QueryFragment)]
+    #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "Root")]
     pub struct UnnamedQuery {
         pub allFilms: Option<FilmsConnection>,
     }
 
-    #[derive(cynic::QueryFragment)]
+    #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "FilmsConnection")]
     pub struct FilmsConnection {
         pub films: Option<Vec<Option<Film>>>,
     }
 
-    #[derive(cynic::QueryFragment)]
+    #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "Film")]
     pub struct Film {
         pub id: cynic::Id,
