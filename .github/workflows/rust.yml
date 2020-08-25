@@ -9,11 +9,13 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - name: Check formatting
+      run: cargo fmt -- --check
     - name: Build
       run: cargo build --verbose
     - name: Run tests
       run: cargo test --verbose --all-features
     - name: Test examples
       run: cargo test --examples
-    - name: Check formatting
-      run: cargo fmt -- --check
+    - name: Build GitHub example
+      run: cargo check --example github --all-features
