@@ -136,8 +136,11 @@ pub fn input_object_derive_impl(
 
         Ok(quote! {
             #[automatically_derived]
-            impl ::cynic::InputObject<#query_module::#input_marker_ident> for #ident {
-                fn serialize(&self) -> Result<::cynic::serde_json::Value, ::cynic::SerializeError>  {
+            impl ::cynic::InputObject<#query_module::#input_marker_ident> for #ident {}
+
+            #[automatically_derived]
+            impl ::cynic::SerializableArgument for #ident {
+                fn serialize(&self) -> Result<::cynic::serde_json::Value, ::cynic::SerializeError> {
                     use ::cynic::{Scalar, Enum, SerializableArgument};
                     #(
                         #typecheck_funcs
@@ -148,13 +151,6 @@ pub fn input_object_derive_impl(
                             #gql_field_names: #field_values,
                         )*
                     }))
-                }
-            }
-
-            #[automatically_derived]
-            impl ::cynic::SerializableArgument for #ident {
-                fn serialize(&self) -> Result<::cynic::serde_json::Value, ::cynic::SerializeError> {
-                    self.serialize()
                 }
             }
 

@@ -227,9 +227,7 @@ pub trait Enum<TypeLock>: Sized {
 /// This trait is generic over some TypeLock which is used to tie an InputType
 /// back into it's GraphQL input object.  Generally this will be some type
 /// generated in the GQL code.
-pub trait InputObject<TypeLock>: Clone {
-    fn serialize(&self) -> Result<serde_json::Value, SerializeError>;
-}
+pub trait InputObject<TypeLock>: Clone {}
 
 /// A marker trait for the arguments types on QueryFragments.
 ///
