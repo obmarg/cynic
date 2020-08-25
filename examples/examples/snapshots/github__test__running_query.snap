@@ -1,0 +1,46 @@
+---
+source: examples/examples/github.rs
+expression: result.data
+---
+Some(
+    PullRequestTitles {
+        repository: Some(
+            Repository {
+                pull_requests: PullRequestConnection {
+                    nodes: [
+                        PullRequest {
+                            title: "Add CI using Github Actions",
+                        },
+                        PullRequest {
+                            title: "Simple type validation in QueryFragment derive.",
+                        },
+                        PullRequest {
+                            title: "Add support for union types via InlineFragments trait.",
+                        },
+                        PullRequest {
+                            title: "Add scalars_as_strings.",
+                        },
+                        PullRequest {
+                            title: "Convert parsing of derive input to use darling",
+                        },
+                        PullRequest {
+                            title: "Fix cynic_arguments parsing with darling",
+                        },
+                        PullRequest {
+                            title: "Added `flatten` option at the field level.",
+                        },
+                        PullRequest {
+                            title: "Optimisations",
+                        },
+                        PullRequest {
+                            title: "First attempt at querygen & web interface",
+                        },
+                        PullRequest {
+                            title: "Added query_module attribute macro.",
+                        },
+                    ],
+                },
+            },
+        ),
+    },
+)

@@ -1,0 +1,14 @@
+---
+source: examples/examples/github.rs
+expression: query.query
+---
+query Query($_0: String!, $_1: String!, $_2: Int, $_3: IssueOrder) {
+  repository(name: $_0, owner: $_1) {
+    pullRequests(first: $_2, orderBy: $_3) {
+      nodes {
+        title
+      }
+    }
+  }
+}
+
