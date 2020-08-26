@@ -38,13 +38,6 @@ pub trait SerializableArgument {
     fn serialize(&self) -> Result<serde_json::Value, SerializeError>;
 }
 
-// All Input objects are serializable.
-impl<TypeLock> SerializableArgument for dyn crate::InputObject<TypeLock> {
-    fn serialize(&self) -> Result<serde_json::Value, SerializeError> {
-        self.serialize()
-    }
-}
-
 impl<T: SerializableArgument> SerializableArgument for Vec<T> {
     fn serialize(&self) -> Result<serde_json::Value, SerializeError> {
         self.iter()

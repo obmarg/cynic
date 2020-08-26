@@ -9,19 +9,19 @@ expression: "document_to_fragment_structs(query, schema,\n                      
 mod queries {
     use super::{query_dsl, types::*};
 
-    #[derive(Clone, cynic::FragmentArguments)]
+    #[derive(cynic::FragmentArguments, Clone, Debug)]
     pub struct SanityCheckQueryArguments {
         pub film_id: Option<cynic::Id>,
     }
 
-    #[derive(cynic::QueryFragment)]
+    #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "Root", argument_struct = "SanityCheckQueryArguments")]
     pub struct SanityCheckQuery {
         #[arguments(id = args.film_id)]
         pub film: Option<Film>,
     }
 
-    #[derive(cynic::QueryFragment)]
+    #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "Film")]
     pub struct Film {
         pub title: Option<String>,

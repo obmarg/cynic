@@ -2,17 +2,15 @@ use std::collections::{HashMap, HashSet};
 
 use proc_macro2::{Span, TokenStream};
 
-use crate::{load_schema, FieldType, Ident, TypePath};
+use crate::{load_schema, type_validation::check_types_are_compatible, FieldType, Ident, TypePath};
 
 mod arguments;
 mod schema_parsing;
-mod type_validation;
 
 pub(crate) mod input;
 
 use arguments::{arguments_from_field_attrs, FieldArgument};
 use schema_parsing::{Field, Object};
-use type_validation::check_types_are_compatible;
 
 pub use input::{FragmentDeriveField, FragmentDeriveInput};
 

@@ -10,4 +10,5 @@ There are a number of different derives which this section details:
 - [Enums](./enums.html)
 - [Scalars](./scalars.html)
 - [Query Arguments](./query-arguments.html)
+- [Input Objects](./input-objects.html)
 - [Inline Fragments](./inline-fragments.html)

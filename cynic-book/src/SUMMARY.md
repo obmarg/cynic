@@ -9,6 +9,7 @@
   - [Enums](./derives/enums.md)
   - [Scalars](./derives/scalars.md)
   - [Query Arguments](./derives/query-arguments.md)
+  - [Input Objects](./derives/input-objects.md)
   - [Inline Fragments](./derives/inline-fragments.md)
 - [Building Queries Manually](./building-queries/index.md)
   - [Selection Sets](./building-queries/selection-sets.md)

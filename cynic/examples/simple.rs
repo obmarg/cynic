@@ -1,5 +1,10 @@
 fn main() {
-    //println!("{}", cynic::to_query::<TestStruct>(TestArgs {}));
+    use cynic::QueryFragment;
+
+    println!(
+        "{}",
+        cynic::Query::new(TestStruct::fragment(TestArgs {})).query
+    );
 }
 
 mod query_dsl {
@@ -25,6 +30,9 @@ struct TestStruct {
     field_one: String,
     nested: Nested,
     opt_nested: Option<Nested>,
+
+    #[arguments(input = AnInputType { favourite_dessert: None })]
+    field_with_input: Dessert,
 }
 
 #[derive(cynic::QueryFragment)]
@@ -47,12 +55,40 @@ struct Nested {
 struct Test {
     #[arguments(x = Some(1), y = Some("1".to_string()))]
     field_one: String,
+    #[arguments(input = AnInputType { favourite_dessert: None })]
+    field_with_input: Dessert,
 }
 
 impl Test {
-    fn new(field_one: String) -> Self {
-        Test { field_one }
+    fn new(field_one: String, field_with_input: Dessert) -> Self {
+        Test {
+            field_one,
+            field_with_input,
+        }
     }
+}
+
+#[derive(cynic::InputObject, Clone)]
+#[cynic(
+    schema_path = "examples/simple.graphql",
+    query_module = "query_dsl",
+    graphql_type = "AnInputType",
+    rename_all = "camelCase"
+)]
+struct AnInputType {
+    favourite_dessert: Option<Dessert>,
+}
+
+#[derive(cynic::Enum, Clone)]
+#[cynic(
+    schema_path = "examples/simple.graphql",
+    query_module = "query_dsl",
+    graphql_type = "Dessert",
+    rename_all = "SCREAMING_SNAKE_CASE"
+)]
+enum Dessert {
+    Cheesecake,
+    IceCream,
 }
 
 #[derive(cynic::InlineFragments)]

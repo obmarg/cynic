@@ -9,21 +9,21 @@ expression: "document_to_fragment_structs(query, schema,\n                      
 mod queries {
     use super::{query_dsl, types::*};
 
-    #[derive(Clone, cynic::FragmentArguments)]
+    #[derive(cynic::FragmentArguments, Clone, Debug)]
     pub struct NestedArgsQueryArguments {
         pub film_id: cynic::Id,
         pub planet_cursor: Option<String>,
         pub resident_connection: Option<String>,
     }
 
-    #[derive(cynic::QueryFragment)]
+    #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "Root", argument_struct = "NestedArgsQueryArguments")]
     pub struct NestedArgsQuery {
         #[arguments(id = args.film_id)]
         pub film: Option<Film>,
     }
 
-    #[derive(cynic::QueryFragment)]
+    #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "Film", argument_struct = "NestedArgsQueryArguments")]
     pub struct Film {
         pub title: Option<String>,
@@ -32,26 +32,26 @@ mod queries {
         pub planetConnection: Option<FilmPlanetsConnection>,
     }
 
-    #[derive(cynic::QueryFragment)]
+    #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "FilmPlanetsConnection", argument_struct = "NestedArgsQueryArguments")]
     pub struct FilmPlanetsConnection {
         pub planets: Option<Vec<Option<Planet>>>,
     }
 
-    #[derive(cynic::QueryFragment)]
+    #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "Planet", argument_struct = "NestedArgsQueryArguments")]
     pub struct Planet {
         #[arguments(after = args.resident_connection)]
         pub residentConnection: Option<PlanetResidentsConnection>,
     }
 
-    #[derive(cynic::QueryFragment)]
+    #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "PlanetResidentsConnection")]
     pub struct PlanetResidentsConnection {
         pub residents: Option<Vec<Option<Person>>>,
     }
 
-    #[derive(cynic::QueryFragment)]
+    #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "Person")]
     pub struct Person {
         pub name: Option<String>,

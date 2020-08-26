@@ -1,8 +1,8 @@
 # Enums
 
 Much like with query structs cynic expects you to own any enums you want to
-query for, or provide as arguments. The `cynic::Enum` trait controls is used
-to define an enum, and the easiest way to define that trait is to derive it:
+query for, or provide as arguments. The `cynic::Enum` trait is used to define
+an enum, and the easiest way to define that trait is to derive it:
 
 ```rust
 #[derive(cynic::Enum, Clone, Copy, Debug)]

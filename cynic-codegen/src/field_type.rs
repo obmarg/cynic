@@ -1,6 +1,9 @@
 use proc_macro2::TokenStream;
 
-use crate::{schema, Ident, TypeIndex, TypePath};
+use crate::{
+    generic_param::{GenericConstraint, GenericParameter},
+    schema, Ident, TypeIndex, TypePath,
+};
 
 #[derive(Debug, Clone)]
 pub enum FieldType {
@@ -300,6 +303,27 @@ impl FieldType {
             quote! { Option<#rust_type> }
         } else {
             rust_type
+        }
+    }
+
+    /// Returns a GenericParameter with the given name if applicable.
+    ///
+    /// Generic parameters are required when working with enum or input object
+    /// fields, as we can't name their concrete type just constrain functions
+    /// by the Enum or InputObject trait.
+    pub fn generic_parameter(&self, name: Ident) -> Option<GenericParameter> {
+        if let Some(path) = self.inner_enum_path() {
+            Some(GenericParameter {
+                name,
+                constraint: GenericConstraint::Enum(path),
+            })
+        } else if let Some(path) = self.inner_input_object_path() {
+            Some(GenericParameter {
+                name,
+                constraint: GenericConstraint::InputObject(path),
+            })
+        } else {
+            None
         }
     }
 }

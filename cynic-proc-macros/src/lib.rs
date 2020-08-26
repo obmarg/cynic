@@ -3,8 +3,8 @@ extern crate proc_macro;
 use proc_macro::TokenStream;
 
 use cynic_codegen::{
-    enum_derive, fragment_arguments_derive, fragment_derive, inline_fragments_derive, query_dsl,
-    query_module, scalar_derive,
+    enum_derive, fragment_arguments_derive, fragment_derive, inline_fragments_derive,
+    input_object_derive, query_dsl, query_module, scalar_derive,
 };
 
 #[proc_macro]
@@ -77,6 +77,20 @@ pub fn scalar_derive(input: TokenStream) -> TokenStream {
     let ast = syn::parse_macro_input!(input as syn::DeriveInput);
 
     let rv = match scalar_derive::scalar_derive(&ast) {
+        Ok(tokens) => tokens.into(),
+        Err(e) => e.to_compile_error().into(),
+    };
+
+    //eprintln!("{}", rv);
+
+    rv
+}
+
+#[proc_macro_derive(InputObject, attributes(cynic))]
+pub fn input_object_derive(input: TokenStream) -> TokenStream {
+    let ast = syn::parse_macro_input!(input as syn::DeriveInput);
+
+    let rv = match input_object_derive::input_object_derive(&ast) {
         Ok(tokens) => tokens.into(),
         Err(e) => e.to_compile_error().into(),
     };

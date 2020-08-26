@@ -227,9 +227,11 @@ pub trait Enum<TypeLock>: Sized {
 /// This trait is generic over some TypeLock which is used to tie an InputType
 /// back into it's GraphQL input object.  Generally this will be some type
 /// generated in the GQL code.
-pub trait InputObject<TypeLock> {
-    fn serialize(&self) -> Result<serde_json::Value, SerializeError>;
-}
+///
+/// It's recommended to derive this trait with the [InputObject](derive.InputObject.html)
+/// derive.  You can also implement it yourself, but you'll be responsible
+/// for implementing the `SerializableArgument` trait if you want to use it.
+pub trait InputObject<TypeLock>: Clone {}
 
 /// A marker trait for the arguments types on QueryFragments.
 ///
@@ -263,7 +265,8 @@ where
 pub trait QueryRoot {}
 
 pub use cynic_proc_macros::{
-    query_dsl, query_module, Enum, FragmentArguments, InlineFragments, QueryFragment, Scalar,
+    query_dsl, query_module, Enum, FragmentArguments, InlineFragments, InputObject, QueryFragment,
+    Scalar,
 };
 
 // We re-export serde_json as the output from a lot of our derive macros require it,

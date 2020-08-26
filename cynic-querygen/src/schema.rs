@@ -7,6 +7,7 @@ pub type Definition<'a> = graphql_parser::schema::Definition<'a, &'a str>;
 pub type TypeDefinition<'a> = graphql_parser::schema::TypeDefinition<'a, &'a str>;
 pub type EnumType<'a> = graphql_parser::schema::EnumType<'a, &'a str>;
 pub type ScalarType<'a> = graphql_parser::schema::ScalarType<'a, &'a str>;
+pub type InputValue<'a> = graphql_parser::schema::InputValue<'a, &'a str>;
 
 pub trait ScalarTypeExt {
     fn is_builtin(&self) -> bool;
