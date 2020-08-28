@@ -56,70 +56,6 @@ fn derive_for_nested_meta(nested: &NestedMeta) -> Option<Derive> {
     return None;
 }
 
-pub fn strip_cynic_attrs(item: syn::Item) -> syn::Item {
-    match item {
-        Item::Struct(mut s) => {
-            s.attrs = filter_cynic_attrs(s.attrs);
-
-            for field in &mut s.fields {
-                field.attrs = field
-                    .attrs
-                    .iter()
-                    .filter(|attr| !is_cynic_attr(&attr.path))
-                    .cloned()
-                    .collect();
-            }
-
-            Item::Struct(s)
-        }
-        Item::Enum(mut e) => {
-            e.attrs = filter_cynic_attrs(e.attrs);
-
-            for variant in &mut e.variants {
-                variant.attrs = variant
-                    .attrs
-                    .iter()
-                    .filter(|attr| !is_cynic_attr(&attr.path))
-                    .cloned()
-                    .collect();
-            }
-
-            Item::Enum(e)
-        }
-        other => other,
-    }
-}
-
-fn is_cynic_attr(path: &syn::Path) -> bool {
-    path.is_ident("arguments") || path.is_ident("cynic")
-}
-
-fn filter_cynic_attrs(attrs: Vec<Attribute>) -> Vec<Attribute> {
-    attrs
-        .into_iter()
-        .filter(|attr| !attr.path.is_ident("cynic"))
-        .map(|attr| {
-            if attr.path.is_ident("derive") {
-                let mut meta_list = match attr.parse_meta() {
-                    Ok(Meta::List(list)) => list,
-                    _ => return attr,
-                };
-                meta_list.nested = meta_list
-                    .nested
-                    .into_iter()
-                    .filter(|nested| derive_for_nested_meta(nested).is_none())
-                    .collect();
-
-                syn::parse_quote! {
-                    #[#meta_list]
-                }
-            } else {
-                attr
-            }
-        })
-        .collect()
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -166,57 +102,5 @@ mod tests {
         .unwrap();
 
         assert_eq!(find_derives(&item), vec![Derive::InlineFragments]);
-    }
-
-    #[test]
-    fn test_strip_cynic_attrs_struct() {
-        let input: syn::Item = syn::parse2(quote! {
-            #[derive(Debug, cynic::QueryFragment, serde::Serialize)]
-            #[cynic(query_path = "something")]
-            #[serde(something)]
-            struct Something {
-                #[arguments(x = "1")]
-                field: i32,
-                other_field: f32
-            }
-        })
-        .unwrap();
-
-        let expected: syn::Item = syn::parse2(quote! {
-            #[derive(Debug, serde::Serialize)]
-            #[serde(something)]
-            struct Something {
-                field: i32,
-                other_field: f32
-            }
-        })
-        .unwrap();
-
-        assert_eq!(strip_cynic_attrs(input), expected)
-    }
-
-    #[test]
-    fn test_strip_cynic_attrs_enum() {
-        let input: syn::Item = syn::parse2(quote! {
-            #[derive(Debug, cynic::InlineFragments, serde::Serialize)]
-            #[cynic(query_path = "something")]
-            #[serde(something)]
-            enum Something {
-                #[cynic(rename = "test")]
-                AVariant
-            }
-        })
-        .unwrap();
-
-        let expected: syn::Item = syn::parse2(quote! {
-            #[derive(Debug, serde::Serialize)]
-            #[serde(something)]
-            enum Something {
-                AVariant
-            }
-        })
-        .unwrap();
-
-        assert_eq!(strip_cynic_attrs(input), expected)
     }
 }

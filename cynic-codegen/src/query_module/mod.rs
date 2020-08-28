@@ -6,8 +6,6 @@ mod utils;
 
 use utils::Derive;
 
-use crate::{fragment_derive, schema::Document};
-
 #[derive(Debug, FromMeta)]
 struct TransformModuleArgs {
     schema_path: SpannedValue<String>,
@@ -31,194 +29,26 @@ fn transform_query_module_impl(
 ) -> Result<TokenStream, syn::Error> {
     use quote::quote;
 
-    let schema = crate::load_schema(&*args.schema_path)
-        .map_err(|e| e.to_syn_error(args.schema_path.span()))?;
-
-    let fragment_derive_schema: fragment_derive::Schema = schema.clone().into();
-
     if let None = query_module.content {
         return Ok(quote! { #query_module });
     }
 
-    if cfg!(feature = "optimised-query-modules") {
-        let (_, module_items) = query_module.content.as_ref().unwrap();
+    let (_, module_items) = query_module.content.unwrap();
 
-        let derives: Vec<TokenStream> = module_items
-            .into_iter()
-            .map(|i| derive_for_item(i, &args, &schema, &fragment_derive_schema))
-            .collect();
+    let module_items = module_items
+        .into_iter()
+        .map(|item| insert_cynic_attrs(&args, item));
 
-        let (_, module_items) = query_module.content.unwrap();
-        let module_items: Vec<_> = module_items
-            .into_iter()
-            .map(utils::strip_cynic_attrs)
-            .collect();
+    let attrs = query_module.attrs;
+    let visibility = query_module.vis;
+    let module_name = query_module.ident;
 
-        let attrs = query_module.attrs;
-        let visibility = query_module.vis;
-        let module_name = query_module.ident;
-
-        Ok(quote! {
-            #(#attrs)*
-            #visibility mod #module_name {
-                #(#module_items)*
-                #(#derives)*
-            }
-        })
-    } else {
-        let (_, module_items) = query_module.content.unwrap();
-
-        let module_items = module_items
-            .into_iter()
-            .map(|item| insert_cynic_attrs(&args, item));
-
-        let attrs = query_module.attrs;
-        let visibility = query_module.vis;
-        let module_name = query_module.ident;
-
-        Ok(quote! {
-            #(#attrs)*
-            #visibility mod #module_name {
-                #(#module_items)*
-            }
-        })
-    }
-}
-
-fn derive_for_item(
-    item: &syn::Item,
-    args: &TransformModuleArgs,
-    schema: &Document,
-    fragment_derive_schema: &fragment_derive::Schema,
-) -> TokenStream {
-    match utils::find_derives(item).first() {
-        None => TokenStream::new(),
-        Some(Derive::QueryFragment) => fragment_derive(item, args, fragment_derive_schema),
-        Some(Derive::InlineFragments) => inline_fragments_derive(item, args),
-        Some(Derive::Enum) => enum_derive(item, args, schema),
-        Some(Derive::Scalar) => scalar_derive(item),
-        Some(Derive::InputObject) => panic!("Optimised modules not implemented for input objects"),
-    }
-}
-
-fn fragment_derive(
-    item: &syn::Item,
-    args: &TransformModuleArgs,
-    schema: &fragment_derive::Schema,
-) -> TokenStream {
-    use crate::fragment_derive::{fragment_derive_impl, input::QueryModuleFragmentDeriveInput};
-    use darling::FromDeriveInput;
-    use syn::spanned::Spanned;
-
-    let derive_input: syn::DeriveInput = match item {
-        syn::Item::Struct(s) => s.clone().into(),
-        _ => {
-            return syn::Error::new(
-                item.span(),
-                format!("Can only derive QueryFragment on a struct"),
-            )
-            .to_compile_error()
+    Ok(quote! {
+        #(#attrs)*
+        #visibility mod #module_name {
+            #(#module_items)*
         }
-    };
-
-    let input = match QueryModuleFragmentDeriveInput::from_derive_input(&derive_input) {
-        Ok(input) => input,
-        Err(e) => return e.write_errors(),
-    };
-
-    match fragment_derive_impl(
-        input.to_fragment_derive_input(&args.schema_path, &args.query_module),
-        schema,
-    ) {
-        Ok(res) => res,
-        Err(e) => e.to_compile_error(),
-    }
-}
-
-fn inline_fragments_derive(item: &syn::Item, args: &TransformModuleArgs) -> TokenStream {
-    use crate::inline_fragments_derive::{
-        inline_fragments_derive_impl, input::QueryModuleInlineFragmentsDeriveInput,
-    };
-    use darling::FromDeriveInput;
-    use syn::spanned::Spanned;
-
-    let derive_input: syn::DeriveInput = match item {
-        syn::Item::Enum(e) => e.clone().into(),
-        _ => {
-            return syn::Error::new(
-                item.span(),
-                format!("Can only derive InlineFragments on an enum"),
-            )
-            .to_compile_error()
-        }
-    };
-
-    let input = match QueryModuleInlineFragmentsDeriveInput::from_derive_input(&derive_input) {
-        Ok(input) => input,
-        Err(e) => return e.write_errors(),
-    };
-
-    match inline_fragments_derive_impl(
-        input.to_inline_fragments_derive_input(&args.schema_path, &args.query_module),
-    ) {
-        Ok(res) => res,
-        Err(e) => e.to_compile_error(),
-    }
-}
-
-fn enum_derive(item: &syn::Item, args: &TransformModuleArgs, schema: &Document) -> TokenStream {
-    use crate::enum_derive::{enum_derive_impl, input::QueryModuleEnumDeriveInput};
-    use darling::FromDeriveInput;
-    use syn::spanned::Spanned;
-
-    let derive_input: syn::DeriveInput = match item {
-        syn::Item::Enum(e) => e.clone().into(),
-        _ => {
-            return syn::Error::new(item.span(), format!("Can only derive Enum on an enum"))
-                .to_compile_error()
-        }
-    };
-
-    let input = match QueryModuleEnumDeriveInput::from_derive_input(&derive_input) {
-        Ok(input) => input,
-        Err(e) => return e.write_errors(),
-    };
-
-    match enum_derive_impl(
-        input.to_enum_derive_input(&args.schema_path, &args.query_module),
-        schema,
-        item.span(),
-    ) {
-        Ok(res) => res,
-        Err(e) => e.to_compile_error(),
-    }
-}
-
-fn scalar_derive(item: &syn::Item) -> TokenStream {
-    use crate::scalar_derive::{scalar_derive_impl, ScalarDeriveInput};
-    use darling::FromDeriveInput;
-    use syn::spanned::Spanned;
-
-    let derive_input: syn::DeriveInput = match item {
-        syn::Item::Struct(s) => s.clone().into(),
-        _ => {
-            return syn::Error::new(
-                item.span(),
-                format!("Can only derive Scalar on a newtype struct"),
-            )
-            .to_compile_error()
-        }
-    };
-
-    let input = match ScalarDeriveInput::from_derive_input(&derive_input) {
-        Ok(input) => input,
-        Err(e) => return e.write_errors(),
-    };
-
-    match scalar_derive_impl(input) {
-        Ok(res) => res,
-        Err(e) => e.to_compile_error(),
-    }
+    })
 }
 
 fn insert_cynic_attrs(args: &TransformModuleArgs, item: syn::Item) -> syn::Item {
