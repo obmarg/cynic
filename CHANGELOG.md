@@ -39,6 +39,8 @@ all APIs might be changed.
   the GQL convention is to have them in this format and querygen was already
   doing the transformation into the `PascalCase` rust usually uses so this
   should make things more likely to work by default.
+- Removed fontawesome from the querygen HTML.  Think I added this along with
+  bulma but it's not being used, and adds 400kb to the payload.
 
 ## v0.8.0 - 2020-08-16
 
