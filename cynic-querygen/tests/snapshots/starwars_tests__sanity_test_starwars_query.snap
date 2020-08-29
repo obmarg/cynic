@@ -17,7 +17,7 @@ mod queries {
     #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "Root", argument_struct = "SanityCheckQueryArguments")]
     pub struct SanityCheckQuery {
-        #[arguments(id = args.film_id)]
+        #[arguments(id = &args.film_id)]
         pub film: Option<Film>,
     }
 
