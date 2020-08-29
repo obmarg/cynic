@@ -9,15 +9,33 @@ use cynic_querygen::{document_to_fragment_structs, QueryGenOptions};
 fn main() {
     let starwars_schema = "../../examples/examples/starwars.schema.graphql";
 
-    let cases = &[TestCase::new(
-        starwars_schema,
-        "../../cynic-querygen/tests/queries/starwars/sanity.graphql",
-        r#"queries::SanityCheckQuery::fragment(
+    let cases = &[
+        TestCase::new(
+            starwars_schema,
+            "../../cynic-querygen/tests/queries/starwars/sanity.graphql",
+            r#"queries::SanityCheckQuery::fragment(
                 queries::SanityCheckQueryArguments {
                     film_id: Some("ZmlsbXM6MQ==".into())
                 }
             )"#,
-    )];
+        ),
+        TestCase::new(
+            starwars_schema,
+            "../../cynic-querygen/tests/queries/starwars/nested-arguments.graphql",
+            r#"queries::NestedArgsQuery::fragment(
+                queries::NestedArgsQueryArguments {
+                    film_id: "ZmlsbXM6MQ==".into(),
+                    planet_cursor: None,
+                    resident_connection: None
+                }
+            )"#,
+        ),
+        TestCase::new(
+            starwars_schema,
+            "../../cynic-querygen/tests/queries/starwars/bare-selection-set.graphql",
+            r#"queries::UnnamedQuery::fragment(())"#,
+        ),
+    ];
 
     for case in cases {
         case.write_code();
