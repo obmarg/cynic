@@ -19,7 +19,7 @@ impl<'a> ValueExt for Value<'a, &'a str> {
         type_index: &TypeIndex,
     ) -> Result<String, Error> {
         Ok(match self {
-            Value::Variable(name) => format!("args.{}", name.to_snake_case()),
+            Value::Variable(name) => format!("&args.{}", name.to_snake_case()),
             Value::Int(num) => num.as_i64().unwrap().to_string(),
             Value::Float(num) => num.to_string(),
             Value::String(s) => format!("\"{}\".to_string()", s),

@@ -1,6 +1,12 @@
 [workspace]
 members = [
-    "cynic", "cynic-codegen", "cynic-proc-macros", "examples", "cynic-querygen", "cynic-querygen-web"
+    "cynic",
+    "cynic-codegen",
+    "cynic-proc-macros",
+    "examples",
+    "cynic-querygen",
+    "cynic-querygen-web",
+    "tests/querygen-compile-run"
 ]
 
 [profile.release]
