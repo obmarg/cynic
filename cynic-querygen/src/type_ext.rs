@@ -7,6 +7,7 @@ use crate::{schema::TypeDefinition, TypeIndex};
 pub trait TypeExt<'a> {
     fn inner_name(&self) -> &str;
     fn type_spec(&self, type_index: &TypeIndex<'a>) -> Cow<'a, str>;
+    fn is_required(&self) -> bool;
 }
 
 impl<'a> TypeExt<'a> for Type<'a, &'a str> {
@@ -19,6 +20,13 @@ impl<'a> TypeExt<'a> for Type<'a, &'a str> {
             Type::NamedType(s) => s,
             Type::ListType(inner) => inner.inner_name(),
             Type::NonNullType(inner) => inner.inner_name(),
+        }
+    }
+
+    fn is_required(&self) -> bool {
+        match self {
+            Type::NonNullType(_) => true,
+            _ => false,
         }
     }
 }
