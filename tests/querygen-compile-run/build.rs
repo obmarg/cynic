@@ -7,8 +7,11 @@ use std::{
 use cynic_querygen::{document_to_fragment_structs, QueryGenOptions};
 
 fn main() {
-    let starwars_schema = SchemaPath::from_examples("starwars.schema.graphql");
-    let jobs_schema = SchemaPath::from_test_schemas("graphql.jobs.gql");
+    let starwars_schema = Schema::from_examples(
+        "https://swapi-graphql.netlify.com/.netlify/functions/index",
+        "starwars.schema.graphql",
+    );
+    let jobs_schema = Schema::from_test_schemas("https://api.graphql.jobs/", "graphql.jobs.gql");
 
     let cases = &[
         TestCase::new(
@@ -46,9 +49,9 @@ fn main() {
             "tests/queries/graphql.jobs/jobs.graphql",
             r#"queries::Jobs::fragment(
                 queries::JobsArguments {
-                    input: Some(queries::LocationInput {
+                    input: queries::LocationInput {
                         slug: "london".into()
-                    })
+                    }
                 }
             )"#,
         ),
@@ -60,30 +63,30 @@ fn main() {
 }
 
 struct TestCase {
-    schema_path: SchemaPath,
+    schema: Schema,
     query_path: PathBuf,
     fragment_construct: String,
 }
 
 impl TestCase {
     fn new(
-        schema_path: &SchemaPath,
+        schema: &Schema,
         query_path: impl Into<PathBuf>,
         fragment_construct: impl Into<String>,
     ) -> Self {
         TestCase {
             query_path: query_path.into(),
-            schema_path: schema_path.clone(),
+            schema: schema.clone(),
             fragment_construct: fragment_construct.into(),
         }
     }
 
     fn write_code(&self) {
-        let schema = load_file(&self.schema_path.for_loading);
+        let schema = load_file(&self.schema.path_for_loading);
         let query = load_file(&self.query_path);
 
         let options = QueryGenOptions {
-            schema_path: self.schema_path.for_generated_code.to_str().unwrap().into(),
+            schema_path: self.schema.path_for_generated_code.to_str().unwrap().into(),
             ..QueryGenOptions::default()
         };
         let query_code = document_to_fragment_structs(&query, &schema, &options).unwrap();
@@ -114,11 +117,12 @@ impl TestCase {
 
             fn main() {{
                 use cynic::QueryFragment;
-                querygen_compile_run::send_query({fragment_construct}).unwrap();
+                querygen_compile_run::send_query("{url}", {fragment_construct}).unwrap();
             }}
 
             {query_code}
             "#,
+            url = self.schema.query_url,
             query_code = query_code,
             fragment_construct = self.fragment_construct
         )
@@ -127,29 +131,33 @@ impl TestCase {
 }
 
 #[derive(Clone, Debug)]
-struct SchemaPath {
-    for_generated_code: PathBuf,
-    for_loading: PathBuf,
+struct Schema {
+    query_url: String,
+    path_for_generated_code: PathBuf,
+    path_for_loading: PathBuf,
 }
 
-impl SchemaPath {
+impl Schema {
     /// Constructs a SchemaPath from the examples package
-    fn from_examples(path: impl Into<PathBuf>) -> SchemaPath {
+    fn from_examples(query_url: impl Into<String>, path: impl Into<PathBuf>) -> Schema {
         let example_path = PathBuf::from("../../examples/examples/");
         let path = example_path.join(path.into());
-        SchemaPath {
-            for_loading: path.clone(),
-            for_generated_code: PathBuf::from("./..").join(path),
+        Schema {
+            query_url: query_url.into(),
+            path_for_loading: path.clone(),
+            path_for_generated_code: PathBuf::from("./..").join(path),
         }
     }
 
     /// Constructs a SchemaPath from the examples package
-    fn from_test_schemas(path: impl Into<PathBuf>) -> SchemaPath {
+    fn from_test_schemas(query_url: impl Into<String>, path: impl Into<PathBuf>) -> Schema {
         let test_schema_path = PathBuf::from("tests/schemas");
         let path = test_schema_path.join(path.into());
-        SchemaPath {
-            for_loading: path.clone(),
-            for_generated_code: PathBuf::from("./../../../tests/querygen-compile-run").join(path),
+        Schema {
+            query_url: query_url.into(),
+            path_for_loading: path.clone(),
+            path_for_generated_code: PathBuf::from("./../../../tests/querygen-compile-run")
+                .join(path),
         }
     }
 }
