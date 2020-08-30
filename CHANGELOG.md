@@ -43,6 +43,8 @@ all APIs might be changed.
   bulma but it's not being used, and adds 400kb to the payload.
 - Fixed a bug where querygen would not snake case field names when generating
   `QueryFragment`s.
+- querygen will now take references to arguments rather than ownership (which
+  didn't work for most non-enum types).
 
 ## v0.8.0 - 2020-08-16
 
