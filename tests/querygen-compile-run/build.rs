@@ -7,11 +7,12 @@ use std::{
 use cynic_querygen::{document_to_fragment_structs, QueryGenOptions};
 
 fn main() {
-    let starwars_schema = "../../examples/examples/starwars.schema.graphql";
+    let starwars_schema = SchemaPath::from_examples("starwars.schema.graphql");
+    let jobs_schema = SchemaPath::from_test_schemas("graphql.jobs.gql");
 
     let cases = &[
         TestCase::new(
-            starwars_schema,
+            &starwars_schema,
             "../../cynic-querygen/tests/queries/starwars/sanity.graphql",
             r#"queries::SanityCheckQuery::fragment(
                 queries::SanityCheckQueryArguments {
@@ -20,7 +21,7 @@ fn main() {
             )"#,
         ),
         TestCase::new(
-            starwars_schema,
+            &starwars_schema,
             "../../cynic-querygen/tests/queries/starwars/nested-arguments.graphql",
             r#"queries::NestedArgsQuery::fragment(
                 queries::NestedArgsQueryArguments {
@@ -31,9 +32,25 @@ fn main() {
             )"#,
         ),
         TestCase::new(
-            starwars_schema,
+            &starwars_schema,
             "../../cynic-querygen/tests/queries/starwars/bare-selection-set.graphql",
             r#"queries::UnnamedQuery::fragment(())"#,
+        ),
+        TestCase::new(
+            &jobs_schema,
+            "tests/queries/graphql.jobs/london-jobs.graphql",
+            r#"queries::Jobs::fragment(())"#,
+        ),
+        TestCase::new(
+            &jobs_schema,
+            "tests/queries/graphql.jobs/jobs.graphql",
+            r#"queries::Jobs::fragment(
+                queries::JobsArguments {
+                    input: Some(queries::LocationInput {
+                        slug: "london".into()
+                    })
+                }
+            )"#,
         ),
     ];
 
@@ -43,35 +60,30 @@ fn main() {
 }
 
 struct TestCase {
-    schema_path: PathBuf,
+    schema_path: SchemaPath,
     query_path: PathBuf,
     fragment_construct: String,
 }
 
 impl TestCase {
     fn new(
-        schema_path: impl Into<PathBuf>,
+        schema_path: &SchemaPath,
         query_path: impl Into<PathBuf>,
         fragment_construct: impl Into<String>,
     ) -> Self {
         TestCase {
             query_path: query_path.into(),
-            schema_path: schema_path.into(),
+            schema_path: schema_path.clone(),
             fragment_construct: fragment_construct.into(),
         }
     }
 
     fn write_code(&self) {
-        let schema = load_file(&self.schema_path);
+        let schema = load_file(&self.schema_path.for_loading);
         let query = load_file(&self.query_path);
-        let up_dir = PathBuf::from("./..");
 
         let options = QueryGenOptions {
-            schema_path: up_dir
-                .join(self.schema_path.clone())
-                .to_str()
-                .unwrap()
-                .into(),
+            schema_path: self.schema_path.for_generated_code.to_str().unwrap().into(),
             ..QueryGenOptions::default()
         };
         let query_code = document_to_fragment_structs(&query, &schema, &options).unwrap();
@@ -111,6 +123,34 @@ impl TestCase {
             fragment_construct = self.fragment_construct
         )
         .unwrap();
+    }
+}
+
+#[derive(Clone, Debug)]
+struct SchemaPath {
+    for_generated_code: PathBuf,
+    for_loading: PathBuf,
+}
+
+impl SchemaPath {
+    /// Constructs a SchemaPath from the examples package
+    fn from_examples(path: impl Into<PathBuf>) -> SchemaPath {
+        let example_path = PathBuf::from("../../examples/examples/");
+        let path = example_path.join(path.into());
+        SchemaPath {
+            for_loading: path.clone(),
+            for_generated_code: PathBuf::from("./..").join(path),
+        }
+    }
+
+    /// Constructs a SchemaPath from the examples package
+    fn from_test_schemas(path: impl Into<PathBuf>) -> SchemaPath {
+        let test_schema_path = PathBuf::from("tests/schemas");
+        let path = test_schema_path.join(path.into());
+        SchemaPath {
+            for_loading: path.clone(),
+            for_generated_code: PathBuf::from("./../../../tests/querygen-compile-run").join(path),
+        }
     }
 }
 

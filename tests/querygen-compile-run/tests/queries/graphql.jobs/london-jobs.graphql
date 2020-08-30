@@ -1,0 +1,7 @@
+query Jobs {
+  city(input: { slug: "london" }) {
+    jobs {
+      title
+    }
+  }
+}
