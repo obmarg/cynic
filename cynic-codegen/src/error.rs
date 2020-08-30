@@ -4,6 +4,7 @@ use proc_macro2::Span;
 pub enum Error {
     IoError(String),
     ParseError(String),
+    FileNotFound(String),
 }
 
 impl Error {
@@ -11,6 +12,7 @@ impl Error {
         let message = match self {
             Error::IoError(e) => format!("Could not load schema file: {}", e),
             Error::ParseError(e) => format!("Could not parse schema file: {}", e),
+            Error::FileNotFound(e) => format!("Could not find file: {}", e),
         };
 
         syn::Error::new(schema_span, message)

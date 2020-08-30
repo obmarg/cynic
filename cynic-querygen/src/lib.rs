@@ -137,7 +137,7 @@ pub fn document_to_fragment_structs(
                     // TODO: print out arguments
                     lines.push(format!(
                         "        pub {}: {},",
-                        field.name,
+                        field.name.to_snake_case(),
                         field.field_type.type_spec(&type_index)
                     ))
                 }

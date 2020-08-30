@@ -21,15 +21,16 @@ pub fn load_schema(filename: impl AsRef<std::path::Path>) -> Result<Document, Er
     use std::path::PathBuf;
     let mut pathbuf = PathBuf::new();
 
-    let filename = if let Ok(manifest_dir) = std::env::var("CARGO_MANIFEST_DIR") {
+    if let Ok(manifest_dir) = std::env::var("CARGO_MANIFEST_DIR") {
         pathbuf.push(manifest_dir);
-        pathbuf.push(filename);
-        pathbuf.as_path()
     } else {
-        filename.as_ref()
-    };
+        pathbuf.push(std::env::current_dir()?);
+    }
+    pathbuf.push(filename);
 
-    let schema = std::fs::read_to_string(filename)?;
+    let schema = std::fs::read_to_string(&pathbuf)
+        .map_err(|_| Error::FileNotFound(pathbuf.to_str().unwrap().to_string()))?;
+
     let borrowed_schema = graphql_parser::schema::parse_schema::<String>(&schema)?;
     Ok(schema_into_static(borrowed_schema))
 }

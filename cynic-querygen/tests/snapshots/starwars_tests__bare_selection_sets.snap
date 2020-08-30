@@ -12,7 +12,7 @@ mod queries {
     #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "Root")]
     pub struct UnnamedQuery {
-        pub allFilms: Option<FilmsConnection>,
+        pub all_films: Option<FilmsConnection>,
     }
 
     #[derive(cynic::QueryFragment, Debug)]

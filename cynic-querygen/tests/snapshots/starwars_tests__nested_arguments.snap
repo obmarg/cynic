@@ -19,7 +19,7 @@ mod queries {
     #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "Root", argument_struct = "NestedArgsQueryArguments")]
     pub struct NestedArgsQuery {
-        #[arguments(id = args.film_id)]
+        #[arguments(id = &args.film_id)]
         pub film: Option<Film>,
     }
 
@@ -28,8 +28,8 @@ mod queries {
     pub struct Film {
         pub title: Option<String>,
         pub director: Option<String>,
-        #[arguments(after = args.planet_cursor)]
-        pub planetConnection: Option<FilmPlanetsConnection>,
+        #[arguments(after = &args.planet_cursor)]
+        pub planet_connection: Option<FilmPlanetsConnection>,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
@@ -41,8 +41,8 @@ mod queries {
     #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "Planet", argument_struct = "NestedArgsQueryArguments")]
     pub struct Planet {
-        #[arguments(after = args.resident_connection)]
-        pub residentConnection: Option<PlanetResidentsConnection>,
+        #[arguments(after = &args.resident_connection)]
+        pub resident_connection: Option<PlanetResidentsConnection>,
     }
 
     #[derive(cynic::QueryFragment, Debug)]

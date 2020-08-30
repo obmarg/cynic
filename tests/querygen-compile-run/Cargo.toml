@@ -1,0 +1,17 @@
+[package]
+name = "querygen-compile-run"
+version = "0.1.0"
+authors = ["Graeme Coupar <graeme@polyandglot.dev>"]
+edition = "2018"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+cynic = { path = "../../cynic" }
+reqwest = { version = "0.10", features = ["json", "blocking"] }
+
+[dev-dependencies]
+trybuild = "1.0"
+
+[build-dependencies]
+cynic-querygen = { path = "../../cynic-querygen" }

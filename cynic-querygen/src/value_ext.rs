@@ -1,12 +1,17 @@
 use graphql_parser::query::Value;
 use inflector::Inflector;
 
-use crate::{schema::TypeDefinition, type_ext::TypeExt, Error, TypeIndex};
+use crate::{
+    schema::{InputValue, TypeDefinition},
+    type_ext::TypeExt,
+    Error, TypeIndex,
+};
 
 /// Extension trait for graphql_parser::common::Value;
 pub trait ValueExt {
     fn to_literal(
         &self,
+        input_value: &InputValue<'_>,
         type_definition: &TypeDefinition<'_>,
         type_index: &TypeIndex,
     ) -> Result<String, Error>;
@@ -15,11 +20,22 @@ pub trait ValueExt {
 impl<'a> ValueExt for Value<'a, &'a str> {
     fn to_literal(
         &self,
+        input_value: &InputValue<'_>,
         type_definition: &TypeDefinition<'_>,
         type_index: &TypeIndex,
     ) -> Result<String, Error> {
         Ok(match self {
-            Value::Variable(name) => format!("args.{}", name.to_snake_case()),
+            Value::Variable(name) => {
+                if input_value.value_type.is_required() {
+                    // Required arguments don't currently go through IntoArgument, so we need
+                    // to manually clone them.
+                    format!("args.{}.clone()", name.to_snake_case())
+                } else {
+                    // Optional types go thorugh IntoArgument so we can take a reference
+                    // and trust IntoArgument to convert it to whatever we need.
+                    format!("&args.{}", name.to_snake_case())
+                }
+            }
             Value::Int(num) => num.as_i64().unwrap().to_string(),
             Value::Float(num) => num.to_string(),
             Value::String(s) => format!("\"{}\".to_string()", s),
@@ -35,7 +51,7 @@ impl<'a> ValueExt for Value<'a, &'a str> {
             Value::List(values) => {
                 let inner = values
                     .iter()
-                    .map(|v| Ok(v.to_literal(type_definition, type_index)?))
+                    .map(|v| Ok(v.to_literal(input_value, type_definition, type_index)?))
                     .collect::<Result<Vec<_>, Error>>()?
                     .join(", ");
 
@@ -63,7 +79,7 @@ impl<'a> ValueExt for Value<'a, &'a str> {
                             Ok(format!(
                                 "{}: {}",
                                 name.to_snake_case(),
-                                value.to_literal(type_definition, type_index)?
+                                value.to_literal(field, type_definition, type_index)?
                             ))
                         })
                         .collect::<Result<Vec<_>, Error>>()?
