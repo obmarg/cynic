@@ -1,27 +1,27 @@
 # Overview
 
-Cynic is a GraphQL library for Rust.  It's not the first but it takes a
+Cynic is a GraphQL library for Rust. It's not the first but it takes a
 different approach from the existing libraries.
 
 Existing libraries take a query first approach to GQL - you write a query using
 GraphQL and libraries use that to generate Rust structs for you using macros.
-This is really easy and great for getting going quickly.  However, if you want
+This is really easy and great for getting going quickly. However, if you want
 to use structs that aren't quite what the macros output you're out of luck.
 Some more complex use cases like sharing structs among queries are also
 commonly not supported.
 
 Cynic takes a different approach - it uses Rust structs to define queries and
-generates GraphQL from them.  This gives you freedom to control the structs
+generates GraphQL from them. This gives you freedom to control the structs
 you'll be working with while still enjoying type safe queries, checked against
-the GraphQL schema.  When it's built in `derives` don't do exactly what you
+the GraphQL schema. When it's built in `derives` don't do exactly what you
 want it provides lower level APIs to hook in and fetch the data you want in the
 format you want to work with it.
 
 Of course writing out all the structs to represent a large GraphQL query can be
 quite challenging, and GraphQL has excellent tooling for building queries
-usually.  Cynic provides [`querygen`][1] to help with this - you write a
+usually. Cynic provides [`querygen`][1] to help with this - you write a
 GraphQL query using the existing GQL tooling and it'll generate some cynic
-structs to make that query.  You can use this as a starting point for your
+structs to make that query. You can use this as a starting point for your
 projects - either adding on to the rust structs directly, or re-using
 `querygen` as appropriate.
 
@@ -33,12 +33,11 @@ supported:
 - Typesafe queries for scalars, enums & objects.
 - Defining custom scalars.
 - Building dynamic (but still type checked) queries at run time.
-- Query arguments
+- Query arguments including input objects
 
 The following features are possibly supported but not very thoroughly tested:
 
 - Mutations.
-- Sending input objects as arguments to queries or mutations.
 - Fetching union types via inline fragments
 
 The following features are not yet supported, though hopefully will be someday
@@ -58,7 +57,7 @@ Cynic is documented in a few places:
 
 ### Inspiration
 
-- [graphql-client][2], the original Rust GraphQL client.  This is a great
+- [graphql-client][2], the original Rust GraphQL client. This is a great
   library for using GraphQL from Rust. It wasn't quite what I wanted but it
   might be what you want.
 - The idea of encoding the GraphQL typesystem into a DSL was taken from

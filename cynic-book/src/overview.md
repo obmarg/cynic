@@ -33,12 +33,11 @@ supported:
 - Typesafe queries for scalars, enums & objects.
 - Defining custom scalars.
 - Building dynamic (but still type checked) queries at run time.
-- Query arguments
+- Query arguments including input objects
 
 The following features are possibly supported but not very thoroughly tested:
 
 - Mutations.
-- Sending input objects as arguments to queries or mutations.
 - Fetching union types via inline fragments
 
 The following features are not yet supported, though hopefully will be someday
