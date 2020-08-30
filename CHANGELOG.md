@@ -41,6 +41,8 @@ all APIs might be changed.
   should make things more likely to work by default.
 - Removed fontawesome from the querygen HTML.  Think I added this along with
   bulma but it's not being used, and adds 400kb to the payload.
+- Fixed a bug where querygen would not snake case field names when generating
+  `QueryFragment`s.
 
 ## v0.8.0 - 2020-08-16
 

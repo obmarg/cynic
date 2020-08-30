@@ -20,7 +20,7 @@ mod queries {
     #[cynic(graphql_type = "Repository")]
     pub struct Repository {
         #[arguments(order_by = IssueOrder { direction: OrderDirection::Asc, field: IssueOrderField::CreatedAt })]
-        pub pullRequests: PullRequestConnection,
+        pub pull_requests: PullRequestConnection,
     }
 
     #[derive(cynic::QueryFragment, Debug)]

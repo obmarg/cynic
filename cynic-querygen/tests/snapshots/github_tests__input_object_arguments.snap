@@ -53,7 +53,7 @@ mod queries {
     #[cynic(graphql_type = "Repository", argument_struct = "PullRequestTitlesArguments")]
     pub struct Repository {
         #[arguments(order_by = &args.pr_order)]
-        pub pullRequests: PullRequestConnection,
+        pub pull_requests: PullRequestConnection,
     }
 
     #[derive(cynic::QueryFragment, Debug)]

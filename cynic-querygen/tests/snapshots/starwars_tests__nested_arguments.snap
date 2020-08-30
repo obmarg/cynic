@@ -29,7 +29,7 @@ mod queries {
         pub title: Option<String>,
         pub director: Option<String>,
         #[arguments(after = &args.planet_cursor)]
-        pub planetConnection: Option<FilmPlanetsConnection>,
+        pub planet_connection: Option<FilmPlanetsConnection>,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
@@ -42,7 +42,7 @@ mod queries {
     #[cynic(graphql_type = "Planet", argument_struct = "NestedArgsQueryArguments")]
     pub struct Planet {
         #[arguments(after = &args.resident_connection)]
-        pub residentConnection: Option<PlanetResidentsConnection>,
+        pub resident_connection: Option<PlanetResidentsConnection>,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
