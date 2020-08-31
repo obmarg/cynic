@@ -70,7 +70,7 @@ mod queries {
     }
 }
 
-impl cynic::QueryRoot for query_dsl::TestStruct {}
+impl cynic::SchemaRoot for query_dsl::TestStruct {}
 
 mod test {
 

@@ -262,7 +262,8 @@ where
     }
 }
 
-pub trait QueryRoot {}
+/// A marker trait that indicates a particular type is at the root of a GraphQL schema.
+pub trait SchemaRoot {}
 
 pub use cynic_proc_macros::{
     query_dsl, query_module, Enum, FragmentArguments, InlineFragments, InputObject, QueryFragment,

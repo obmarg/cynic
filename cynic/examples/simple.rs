@@ -114,7 +114,7 @@ fn query() {
     ));
 }*/
 
-impl cynic::QueryRoot for query_dsl::TestStruct {}
+impl cynic::SchemaRoot for query_dsl::TestStruct {}
 
 // TODO: Some sort of ToQuery trait
 // That's only implemented when QueryFragment::SelectionSet::TypeLock == RootQuery

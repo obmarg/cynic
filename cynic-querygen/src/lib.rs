@@ -9,7 +9,7 @@ mod value_ext;
 
 use query_parsing::PotentialStruct;
 use type_ext::TypeExt;
-use type_index::TypeIndex;
+use type_index::{GraphPath, TypeIndex};
 
 #[derive(thiserror::Error, Debug)]
 pub enum Error {
@@ -84,24 +84,16 @@ pub fn document_to_fragment_structs(
     for st in possible_structs {
         match st {
             PotentialStruct::QueryFragment(fragment) => {
-                let (name, graphql_type) = if fragment.path.is_empty() {
-                    (
-                        // We have a root query type here, so lets make up a
-                        // name if we don't have one.
-                        fragment.name.unwrap_or("Query"),
-                        // Our graphql_type needs to come from the root type
-                        // of the schema.
-                        type_index.root_type_name(),
-                    )
-                } else {
-                    let type_name = type_index
-                        .field_for_path(&fragment.path)?
-                        .field_type
-                        .inner_name();
+                let graphql_type = type_index.type_name_for_path(&fragment.path)?;
 
+                let name = if fragment.path.is_root() {
+                    // If the user has given the query a name we use that, otherwise use the root
+                    // graphql_type name for this operation type
+                    fragment.name.unwrap_or(graphql_type)
+                } else {
                     // For non root types we use the GraphQL type name for the
                     // type _and_ the `graphql_type` param.
-                    (type_name, type_name)
+                    graphql_type
                 };
 
                 let argument_struct_param = if let Some(name) = fragment.argument_struct_name {

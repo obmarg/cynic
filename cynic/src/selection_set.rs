@@ -22,7 +22,7 @@ use json_decode::{BoxDecoder, DecodeError};
 use std::collections::HashMap;
 use std::marker::PhantomData;
 
-use crate::{field::Field, scalar, Argument, QueryRoot};
+use crate::{field::Field, scalar, Argument, SchemaRoot};
 
 /// A marker trait used to encode GraphQL subtype relationships into the Rust
 /// typesystem.
@@ -311,7 +311,7 @@ impl<'a, DecodesTo> json_decode::Decoder<'a, DecodesTo> for FragmentDecoder<'a, 
     }
 }
 
-pub(crate) fn query_root<'a, DecodesTo, InnerTypeLock: QueryRoot>(
+pub(crate) fn query_root<'a, DecodesTo, InnerTypeLock: SchemaRoot>(
     selection_set: SelectionSet<'a, DecodesTo, InnerTypeLock>,
 ) -> SelectionSet<'a, DecodesTo, ()>
 where

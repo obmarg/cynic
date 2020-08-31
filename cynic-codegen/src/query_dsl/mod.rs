@@ -70,7 +70,7 @@ impl From<schema::Document> for QueryDsl {
         let mut interfaces = vec![];
         let mut enums = vec![];
 
-        let root_query_type = find_root_query(&document.definitions);
+        let root_types = find_root_types(&document.definitions);
 
         for definition in &document.definitions {
             match definition {
@@ -80,7 +80,7 @@ impl From<schema::Document> for QueryDsl {
                     let selector = SelectorStruct::from_object(
                         &object,
                         &type_index,
-                        object.name == root_query_type,
+                        root_types.is_this_a_root(&object.name),
                     );
                     if !selector.selection_builders.is_empty() {
                         argument_struct_modules.push(Module::new(
@@ -118,21 +118,47 @@ impl From<schema::Document> for QueryDsl {
     }
 }
 
-fn find_root_query(definitions: &Vec<schema::Definition>) -> String {
+struct RootTypes {
+    query: String,
+    mutation: String,
+}
+
+impl RootTypes {
+    fn is_this_a_root(&self, name: &str) -> bool {
+        return name == self.query || name == self.mutation;
+    }
+}
+
+impl Default for RootTypes {
+    fn default() -> RootTypes {
+        RootTypes {
+            query: "Query".to_string(),
+            mutation: "Mutation".to_string(),
+        }
+    }
+}
+
+fn find_root_types(definitions: &[schema::Definition]) -> RootTypes {
     use schema::Definition;
+
+    let mut rv = RootTypes::default();
+
     for definition in definitions {
         match definition {
             Definition::SchemaDefinition(schema) => {
                 if let Some(query_type) = &schema.query {
-                    return query_type.clone();
+                    rv.query = query_type.clone();
                 }
+                if let Some(mutation_type) = &schema.mutation {
+                    rv.mutation = mutation_type.clone();
+                }
+                break;
             }
             _ => {}
         }
     }
 
-    // Default to a type named "Query"
-    "Query".to_string()
+    return rv;
 }
 
 impl quote::ToTokens for QueryDsl {

@@ -1,7 +1,7 @@
 use json_decode::BoxDecoder;
 use std::collections::HashMap;
 
-use crate::{selection_set::query_root, Argument, GraphQLResponse, QueryRoot, SelectionSet};
+use crate::{selection_set::query_root, Argument, GraphQLResponse, SchemaRoot, SelectionSet};
 
 #[derive(serde::Serialize)]
 pub struct Query<'a, ResponseData> {
@@ -12,7 +12,7 @@ pub struct Query<'a, ResponseData> {
 }
 
 impl<'a, ResponseData: 'a> Query<'a, ResponseData> {
-    pub fn new<Root: QueryRoot>(selection_set: SelectionSet<'a, ResponseData, Root>) -> Self {
+    pub fn new<Root: SchemaRoot>(selection_set: SelectionSet<'a, ResponseData, Root>) -> Self {
         let (query, arguments, decoder) = query_root(selection_set).query_arguments_and_decoder();
 
         let variables = arguments
