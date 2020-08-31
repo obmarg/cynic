@@ -12,14 +12,14 @@ There's a few things you'll need before you get started:
 2. A GraphQL API that you'd like to query, and a copy of it's schema.
 3. A GraphQL query that you'd like to run against the API. If you don't have
    one of these, you should probably use graphiql or graphql playground to get
-   started, or you can use the one I provide below.  For this quickstart I'll be
+   started, or you can use the one I provide below. For this quickstart I'll be
    assuming you're using a query without any arguments.
 
 #### Setting up dependencies.
 
 First things first: you need to add cynic to your dependencies. We'll also need
-an HTTP client library.  For the purposes of this quickstart we'll be using
-reqwest, but you can use any library you want.  Open up your `Cargo.toml` and
+an HTTP client library. For the purposes of this quickstart we'll be using
+reqwest, but you can use any library you want. Open up your `Cargo.toml` and
 add the following under the `[dependencies]` section:
 
 ```toml
@@ -42,7 +42,7 @@ Run a `cargo check` to make sure this builds and you're good to go.
 #### Adding your schema to the build.
 
 You'll want to make sure the GraphQL schema for your build is available to your
-builds.  For example, you could put it at `src/schema.graphql` - the rest of
+builds. For example, you could put it at `src/schema.graphql` - the rest of
 this tutorial will assume that's where you put the schema.
 
 #### Building your query structs.
@@ -74,11 +74,11 @@ TODO
 #### Checking your query (optional)
 
 Since cynic generates queries for you based on Rust structs, it's not always
-obvious what the GraphQL queries look like.  Sometimes you might want to run a
+obvious what the GraphQL queries look like. Sometimes you might want to run a
 query manually via Graphiql, or you might just want to see what effects
 changing the rust structs have on the query itself.
 
-I find writing snapshot tests using `insta` useful for this purpose.  Assuming
+I find writing snapshot tests using `insta` useful for this purpose. Assuming
 your query is called `AllFilmsQuery` like mine is, you can add the following to
 the same file you put the struct output into:
 
@@ -90,14 +90,14 @@ mod tests {
     #[test]
     fn all_films_query_gql_output() {
         use cynic::QueryFragment;
-        let query = cynic::Query::new(AllFilmsQuery::fragment(()));
+        let query = cynic::Operation::query(AllFilmsQuery::fragment(()));
         insta::assert_snapshot!(query.query);
     }
 }
 ```
 
-You can now run this test with `cargo test`.  It should fail the first time, as
-you've not yet saved a snapshot.  Run `cargo insta review` (you may need to
+You can now run this test with `cargo test`. It should fail the first time, as
+you've not yet saved a snapshot. Run `cargo insta review` (you may need to
 `cargo install insta` first) to approve the snapshot, and the test should succeed.
 
 You can use this snapshot test to double check the query whenever you make
@@ -106,9 +106,9 @@ query outside of cynic.
 
 #### Making your query
 
-Now, you're ready to make a query against a server.  Cynic doesn't provide any
+Now, you're ready to make a query against a server. Cynic doesn't provide any
 HTTP code for you, so you'll need to reach for your HTTP library of choice for
-this one.  We'll use reqwest here, but it should be similar for any others.
+this one. We'll use reqwest here, but it should be similar for any others.
 
 First, you'll want to build a `Query` similar to how we did it in the snapshot
 test above (again, swapping `AllFilmsQuery` for the name of your root query
@@ -116,7 +116,7 @@ struct):
 
 ```rust
 use cynic::QueryFragment;
-let query = cynic::Query::new(AllFilmsQuery::fragment());
+let query = cynic::Operation::query(AllFilmsQuery::fragment());
 ```
 
 This `Query` struct is serializable using `serde::Serialize`, so you should
@@ -139,7 +139,7 @@ First you need to decode this JSON, then you can pass it to the
 let all_films_result = query.decode_response(response.json().unwrap()).unwrap();
 ```
 
-Now you can do whatever you want with the results of your query.  And that's
+Now you can do whatever you want with the results of your query. And that's
 the end of the quickstart.
 
 [1]: https://generator.cynic-rs.dev

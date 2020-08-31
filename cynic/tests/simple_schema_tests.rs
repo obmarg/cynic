@@ -64,7 +64,7 @@ pub enum Dessert {
 fn run_test(input: serde_json::Value, expected_result: TestQuery) {
     use cynic::QueryFragment;
 
-    let query = cynic::Query::new(TestQuery::fragment(TestArgs {}));
+    let query = cynic::Operation::query(TestQuery::fragment(TestArgs {}));
 
     let test_data = cynic::GraphQLResponse {
         errors: None,

@@ -1,7 +1,7 @@
 fn main() {
     use queries::{TestArgs, TestStruct};
 
-    //println!("{}", cynic::Query::new<TestStruct>(TestArgs {}));
+    //println!("{}", cynic::Operation::query<TestStruct>(TestArgs {}));
 }
 
 mod query_dsl {
@@ -70,7 +70,7 @@ mod queries {
     }
 }
 
-impl cynic::SchemaRoot for query_dsl::TestStruct {}
+impl cynic::QueryRoot for query_dsl::TestStruct {}
 
 mod test {
 

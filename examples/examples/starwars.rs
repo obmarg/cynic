@@ -49,9 +49,9 @@ fn run_query() -> cynic::GraphQLResponse<FilmDirectorQuery> {
     query.decode_response(response.json().unwrap()).unwrap()
 }
 
-fn build_query() -> cynic::Query<'static, FilmDirectorQuery> {
+fn build_query() -> cynic::Operation<'static, FilmDirectorQuery> {
     use cynic::QueryFragment;
-    cynic::Query::new(FilmDirectorQuery::fragment(FilmArguments {
+    cynic::Operation::query(FilmDirectorQuery::fragment(FilmArguments {
         id: Some("ZmlsbXM6MQ==".into()),
     }))
 }

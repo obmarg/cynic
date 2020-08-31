@@ -75,7 +75,7 @@ struct AllFilmsQuery {
 This can be used as a query like so:
 
 ```
-let query = cynic::Query::new(AllFilmsQuery::fragment(());
+let query = cynic::Operation::query(AllFilmsQuery::fragment(());
 ```
 
 This `Query` can be converted into JSON using `serde`, sent to a server, and
@@ -118,7 +118,7 @@ This can be converted into a query in a similar way we just need to provide
 the arguments:
 
 ```rust
-let query = cynic::Query::new(FilmQuery::fragment(FilmArguments{
+let query = cynic::Operation::query(FilmQuery::fragment(FilmArguments{
     id: Some("ZmlsbXM6MQ==".into()),
 }));
 ```

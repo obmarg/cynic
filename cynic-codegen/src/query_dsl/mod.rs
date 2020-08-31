@@ -4,6 +4,7 @@ mod enum_marker;
 mod field_selector;
 mod input_object_marker;
 mod interface_struct;
+mod schema_roots;
 mod selection_builder;
 mod selector_struct;
 mod union_struct;
@@ -14,6 +15,7 @@ use enum_marker::EnumMarker;
 pub use field_selector::FieldSelector;
 use input_object_marker::InputObjectMarker;
 use interface_struct::InterfaceStruct;
+use schema_roots::{RootTypes, SchemaRoot};
 use selection_builder::FieldSelectionBuilder;
 pub use selector_struct::SelectorStruct;
 use union_struct::UnionStruct;
@@ -55,6 +57,7 @@ pub struct QueryDsl {
     pub interfaces: Vec<InterfaceStruct>,
     pub enums: Vec<EnumMarker>,
     pub input_objects: Vec<InputObjectMarker>,
+    pub schema_roots: Vec<SchemaRoot>,
 }
 
 impl From<schema::Document> for QueryDsl {
@@ -69,25 +72,24 @@ impl From<schema::Document> for QueryDsl {
         let mut unions = vec![];
         let mut interfaces = vec![];
         let mut enums = vec![];
+        let mut schema_roots = vec![];
 
-        let root_types = find_root_types(&document.definitions);
+        let root_types = RootTypes::from_definitions(&document.definitions);
 
         for definition in &document.definitions {
             match definition {
                 Definition::TypeDefinition(TypeDefinition::Object(object)) => {
                     // Ok, so would be nice to restructure this so that the argument structs
                     // are visible at the point we're generating the field_selectors...
-                    let selector = SelectorStruct::from_object(
-                        &object,
-                        &type_index,
-                        root_types.is_this_a_root(&object.name),
-                    );
+                    let selector = SelectorStruct::from_object(&object, &type_index);
                     if !selector.selection_builders.is_empty() {
                         argument_struct_modules.push(Module::new(
                             &object.name,
                             selector.selection_builders.clone(),
                         ));
                     }
+
+                    schema_roots.extend(root_types.root_from_selector_struct(&selector));
 
                     selectors.push(selector);
                 }
@@ -114,51 +116,9 @@ impl From<schema::Document> for QueryDsl {
             unions,
             interfaces,
             enums,
+            schema_roots,
         }
     }
-}
-
-struct RootTypes {
-    query: String,
-    mutation: String,
-}
-
-impl RootTypes {
-    fn is_this_a_root(&self, name: &str) -> bool {
-        return name == self.query || name == self.mutation;
-    }
-}
-
-impl Default for RootTypes {
-    fn default() -> RootTypes {
-        RootTypes {
-            query: "Query".to_string(),
-            mutation: "Mutation".to_string(),
-        }
-    }
-}
-
-fn find_root_types(definitions: &[schema::Definition]) -> RootTypes {
-    use schema::Definition;
-
-    let mut rv = RootTypes::default();
-
-    for definition in definitions {
-        match definition {
-            Definition::SchemaDefinition(schema) => {
-                if let Some(query_type) = &schema.query {
-                    rv.query = query_type.clone();
-                }
-                if let Some(mutation_type) = &schema.mutation {
-                    rv.mutation = mutation_type.clone();
-                }
-                break;
-            }
-            _ => {}
-        }
-    }
-
-    return rv;
 }
 
 impl quote::ToTokens for QueryDsl {
@@ -171,6 +131,7 @@ impl quote::ToTokens for QueryDsl {
         let unions = &self.unions;
         let interfaces = &self.interfaces;
         let enums = &self.enums;
+        let schema_roots = &self.schema_roots;
 
         tokens.append_all(quote! {
             #(
@@ -190,6 +151,9 @@ impl quote::ToTokens for QueryDsl {
             )*
             #(
                 #enums
+            )*
+            #(
+                #schema_roots
             )*
         })
     }

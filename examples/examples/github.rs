@@ -38,13 +38,13 @@ fn run_query() -> cynic::GraphQLResponse<queries::PullRequestTitles> {
 }
 
 #[cfg(feature = "github")]
-fn build_query() -> cynic::Query<'static, queries::PullRequestTitles> {
+fn build_query() -> cynic::Operation<'static, queries::PullRequestTitles> {
     use cynic::QueryFragment;
     use queries::{
         IssueOrder, IssueOrderField, OrderDirection, PullRequestTitles, PullRequestTitlesArguments,
     };
 
-    cynic::Query::new(PullRequestTitles::fragment(PullRequestTitlesArguments {
+    cynic::Operation::query(PullRequestTitles::fragment(PullRequestTitlesArguments {
         pr_order: IssueOrder {
             direction: OrderDirection::Asc,
             field: IssueOrderField::CreatedAt,

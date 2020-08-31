@@ -3,7 +3,7 @@ fn main() {
 
     println!(
         "{}",
-        cynic::Query::new(TestStruct::fragment(TestArgs {})).query
+        cynic::Operation::query(TestStruct::fragment(TestArgs {})).query
     );
 }
 
@@ -114,7 +114,7 @@ fn query() {
     ));
 }*/
 
-impl cynic::SchemaRoot for query_dsl::TestStruct {}
+impl cynic::QueryRoot for query_dsl::TestStruct {}
 
 // TODO: Some sort of ToQuery trait
 // That's only implemented when QueryFragment::SelectionSet::TypeLock == RootQuery

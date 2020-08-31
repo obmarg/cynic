@@ -83,7 +83,7 @@
 //!
 //! // You can then build a `cynic::Query` from this fragment
 //! use cynic::QueryFragment;
-//! let query = cynic::Query::new(FilmDirectorQuery::fragment(()));
+//! let query = cynic::Operation::query(FilmDirectorQuery::fragment(()));
 //!
 //! ```
 //!
@@ -148,7 +148,7 @@
 //!
 //! // Then we can build a query using this new struct;
 //! use cynic::QueryFragment;
-//! let query = cynic::Query::new(
+//! let query = cynic::Operation::query(
 //!     FilmDirectorQueryWithArgs::fragment(
 //!         FilmArguments{ id: Some("ZmlsbXM6MQ==".into()) }
 //!     )
@@ -159,7 +159,7 @@ mod argument;
 mod field;
 mod id;
 mod into_argument;
-mod query;
+mod operation;
 mod result;
 mod scalar;
 
@@ -170,7 +170,7 @@ pub use json_decode::DecodeError;
 
 pub use argument::{Argument, SerializableArgument};
 pub use id::Id;
-pub use query::Query;
+pub use operation::Operation;
 pub use result::{GraphQLError, GraphQLResponse, GraphQLResult, PossiblyParsedData};
 pub use scalar::Scalar;
 pub use selection_set::SelectionSet;
@@ -262,8 +262,13 @@ where
     }
 }
 
-/// A marker trait that indicates a particular type is at the root of a GraphQL schema.
-pub trait SchemaRoot {}
+/// A marker trait that indicates a particular type is at the root of a GraphQL schemas query
+/// heirarchy.
+pub trait QueryRoot {}
+
+/// A marker trait that indicates a particular type is at the root of a GraphQL schemas
+/// mutation heirarchy.
+pub trait MutationRoot {}
 
 pub use cynic_proc_macros::{
     query_dsl, query_module, Enum, FragmentArguments, InlineFragments, InputObject, QueryFragment,

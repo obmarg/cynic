@@ -1,7 +1,12 @@
 use crate::Argument;
 
+pub enum OperationType {
+    Query,
+    Mutation,
+}
+
 pub enum Field {
-    Root(Vec<Field>),
+    Root(Vec<Field>, OperationType),
     Leaf(String, Vec<Argument>),
     Composite(String, Vec<Argument>, Vec<Field>),
     InlineFragment(String, Vec<Field>),
@@ -55,7 +60,7 @@ impl Field {
                     indent = indent
                 )
             }
-            Field::Root(fields) => {
+            Field::Root(fields, operation_type) => {
                 let child_query: String = fields
                     .into_iter()
                     .map(|f| f.query(indent + indent_size, indent_size, arguments_out))
@@ -63,8 +68,14 @@ impl Field {
 
                 let arguments = handle_query_arguments(arguments_out);
 
+                let operation_def = match operation_type {
+                    OperationType::Query => "query Query",
+                    OperationType::Mutation => "mutation Mutation",
+                };
+
                 format!(
-                    "query Query{arguments} {{\n{child_query}}}\n",
+                    "{operation_def}{arguments} {{\n{child_query}}}\n",
+                    operation_def = operation_def,
                     arguments = arguments,
                     child_query = child_query
                 )
