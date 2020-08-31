@@ -1,8 +1,8 @@
-pub fn send_query<'a, ResponseData: 'a, Root: cynic::SchemaRoot>(
+pub fn send_query<'a, ResponseData: 'a, Root: cynic::QueryRoot>(
     url: &str,
     selection_set: cynic::SelectionSet<'a, ResponseData, Root>,
 ) -> Result<ResponseData, Box<dyn std::error::Error>> {
-    let query = cynic::Query::new(selection_set);
+    let query = cynic::Operation::query(selection_set);
 
     let response = reqwest::blocking::Client::new()
         .post(url)
