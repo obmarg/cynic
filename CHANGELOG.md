@@ -49,6 +49,8 @@ all APIs might be changed.
   `QueryFragment`s.
 - querygen will now take references to arguments rather than ownership (which
   didn't work for most non-enum types).
+- Fixed an issue where querygen was adding ID literals as Strings in arguments,
+  rather than IDs.
 
 ## v0.8.0 - 2020-08-16
 
