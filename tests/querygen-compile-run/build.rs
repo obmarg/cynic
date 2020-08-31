@@ -67,6 +67,23 @@ fn main() {
                 },
             )"#,
         ),
+        TestCase::new_norun(
+            &github_schema,
+            "../../cynic-querygen/tests/queries/github/input-object-arguments.graphql",
+            r#"queries::PullRequestTitles::fragment(
+                queries::PullRequestTitlesArguments {
+                    pr_order: queries::IssueOrder {
+                        direction: queries::OrderDirection::Asc,
+                        field: queries::IssueOrderField::CreatedAt,
+                    }
+                },
+            )"#,
+        ),
+        TestCase::new_norun(
+            &github_schema,
+            "../../cynic-querygen/tests/queries/github/input-object-literals.graphql",
+            r#"queries::PullRequestTitles::fragment(())"#,
+        ),
     ];
 
     for case in cases {
