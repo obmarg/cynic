@@ -57,9 +57,9 @@ impl<'a> ValueExt for Value<'a, &'a str> {
 
                 format!("vec![{}]", inner)
             }
-            Value::Object(obj) => {
+            Value::Object(object_literal) => {
                 if let TypeDefinition::InputObject(input_object) = type_definition {
-                    let fields = obj
+                    let mut fields = object_literal
                         .iter()
                         .map(|(name, value)| {
                             let field = input_object
@@ -82,8 +82,20 @@ impl<'a> ValueExt for Value<'a, &'a str> {
                                 value.to_literal(field, type_definition, type_index)?
                             ))
                         })
-                        .collect::<Result<Vec<_>, Error>>()?
-                        .join(", ");
+                        .collect::<Result<Vec<_>, Error>>()?;
+
+                    for object_field in &input_object.fields {
+                        if !object_literal.contains_key(object_field.name)
+                            && !object_field.value_type.is_required()
+                        {
+                            // If this field is not in the literal and is not required we default it
+                            // to None.  If it _is_ required, we let the rust compiler warn about that
+                            // in the generated code.
+                            fields.push(format!("{}: None", object_field.name.to_snake_case()));
+                        }
+                    }
+
+                    let fields = fields.join(", ");
 
                     format!("{} {{ {} }}", input_object.name.to_pascal_case(), fields)
                 } else {

@@ -12,6 +12,8 @@ fn main() {
         "starwars.schema.graphql",
     );
     let jobs_schema = Schema::from_test_schemas("https://api.graphql.jobs/", "graphql.jobs.gql");
+    let github_schema =
+        Schema::from_querygen_tests("https://api.github.com/graphql", "github.graphql");
 
     let cases = &[
         TestCase::new(
@@ -55,6 +57,16 @@ fn main() {
                 }
             )"#,
         ),
+        TestCase::new_norun(
+            &github_schema,
+            "../../cynic-querygen/tests/queries/github/add-comment-mutation.graphql",
+            r#"queries::CommentOnMutationSupportIssue::fragment(
+                queries::CommentOnMutationSupportIssueArguments {
+                    comment_body: "This is a test comment, posted by the new cynic mutation support"
+                        .into(),
+                },
+            )"#,
+        ),
     ];
 
     for case in cases {
@@ -66,6 +78,7 @@ struct TestCase {
     schema: Schema,
     query_path: PathBuf,
     fragment_construct: String,
+    should_run: bool,
 }
 
 impl TestCase {
@@ -78,6 +91,20 @@ impl TestCase {
             query_path: query_path.into(),
             schema: schema.clone(),
             fragment_construct: fragment_construct.into(),
+            should_run: true,
+        }
+    }
+
+    fn new_norun(
+        schema: &Schema,
+        query_path: impl Into<PathBuf>,
+        fragment_construct: impl Into<String>,
+    ) -> Self {
+        TestCase {
+            query_path: query_path.into(),
+            schema: schema.clone(),
+            fragment_construct: fragment_construct.into(),
+            should_run: false,
         }
     }
 
@@ -108,6 +135,12 @@ impl TestCase {
 
         let mut file = File::create(format!("tests/generated/{}", test_filename)).unwrap();
 
+        let norun_code = if self.should_run {
+            ""
+        } else {
+            "#![allow(unreachable_code)] return;"
+        };
+
         // TODO: So, need a way to know the query struct name here.
         // Also need to be able to construct any variable structs...
         write!(
@@ -116,12 +149,14 @@ impl TestCase {
             #![allow(unused_imports)]
 
             fn main() {{
+                {norun_code}
                 use cynic::QueryFragment;
                 querygen_compile_run::send_query("{url}", {fragment_construct}).unwrap();
             }}
 
             {query_code}
             "#,
+            norun_code = norun_code,
             url = self.schema.query_url,
             query_code = query_code,
             fragment_construct = self.fragment_construct
@@ -149,7 +184,7 @@ impl Schema {
         }
     }
 
-    /// Constructs a SchemaPath from the examples package
+    /// Constructs a SchemaPath from this package
     fn from_test_schemas(query_url: impl Into<String>, path: impl Into<PathBuf>) -> Schema {
         let test_schema_path = PathBuf::from("tests/schemas");
         let path = test_schema_path.join(path.into());
@@ -158,6 +193,17 @@ impl Schema {
             path_for_loading: path.clone(),
             path_for_generated_code: PathBuf::from("./../../../tests/querygen-compile-run")
                 .join(path),
+        }
+    }
+
+    /// Constructs a SchemaPath from this package
+    fn from_querygen_tests(query_url: impl Into<String>, path: impl Into<PathBuf>) -> Schema {
+        let test_schema_path = PathBuf::from("../../cynic-querygen/tests/schemas");
+        let path = test_schema_path.join(path.into());
+        Schema {
+            query_url: query_url.into(),
+            path_for_loading: path.clone(),
+            path_for_generated_code: PathBuf::from("./../").join(path),
         }
     }
 }

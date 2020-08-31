@@ -12,7 +12,7 @@ mod queries {
     #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "Query")]
     pub struct PullRequestTitles {
-        #[arguments(name = "cynic".to_string(), owner = "obmarg".to_string())]
+        #[arguments(name = "cynic".into(), owner = "obmarg".into())]
         pub repository: Option<Repository>,
     }
 

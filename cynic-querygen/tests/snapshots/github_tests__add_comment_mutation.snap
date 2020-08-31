@@ -17,7 +17,7 @@ mod queries {
     #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "Mutation", argument_struct = "CommentOnMutationSupportIssueArguments")]
     pub struct CommentOnMutationSupportIssue {
-        #[arguments(input = AddCommentInput { body: args.comment_body.clone(), subject_id: "MDU6SXNzdWU2ODU4NzUxMzQ=".to_string() })]
+        #[arguments(input = AddCommentInput { body: args.comment_body.clone(), subject_id: "MDU6SXNzdWU2ODU4NzUxMzQ=".into(), client_mutation_id: None })]
         pub add_comment: Option<AddCommentPayload>,
     }
 

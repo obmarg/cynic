@@ -1,4 +1,4 @@
-pub fn send_query<'a, ResponseData: 'a, Root: cynic::QueryRoot>(
+pub fn send_query<'a, ResponseData: 'a, Root: cynic::SchemaRoot>(
     url: &str,
     selection_set: cynic::SelectionSet<'a, ResponseData, Root>,
 ) -> Result<ResponseData, Box<dyn std::error::Error>> {
