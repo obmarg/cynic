@@ -115,7 +115,7 @@ impl TestCase {
             schema: schema.clone(),
             fragment_construct: fragment_construct.into(),
             should_run: true,
-            mutation: false
+            mutation: false,
         }
     }
 
@@ -129,7 +129,7 @@ impl TestCase {
             schema: schema.clone(),
             fragment_construct: fragment_construct.into(),
             should_run: false,
-            mutation: false
+            mutation: false,
         }
     }
 
@@ -144,7 +144,7 @@ impl TestCase {
             fragment_construct: fragment_construct.into(),
             // We don't run mutations by default
             should_run: false,
-            mutation: true
+            mutation: true,
         }
     }
 
