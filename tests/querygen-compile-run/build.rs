@@ -84,11 +84,13 @@ fn main() {
             "../../cynic-querygen/tests/queries/github/input-object-literals.graphql",
             r#"queries::PullRequestTitles::fragment(())"#,
         ),
+        /*
         TestCase::query_norun(
             &github_schema,
             "../../cynic-querygen/tests/queries/github/literal-enums.graphql",
             r#"queries::Query::fragment(())"#,
         ),
+        */
     ];
 
     for case in cases {
