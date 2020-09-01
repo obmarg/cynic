@@ -16,7 +16,7 @@ fn main() {
         Schema::from_querygen_tests("https://api.github.com/graphql", "github.graphql");
 
     let cases = &[
-        TestCase::new(
+        TestCase::query(
             &starwars_schema,
             "../../cynic-querygen/tests/queries/starwars/sanity.graphql",
             r#"queries::SanityCheckQuery::fragment(
@@ -25,7 +25,7 @@ fn main() {
                 }
             )"#,
         ),
-        TestCase::new(
+        TestCase::query(
             &starwars_schema,
             "../../cynic-querygen/tests/queries/starwars/nested-arguments.graphql",
             r#"queries::NestedArgsQuery::fragment(
@@ -36,17 +36,17 @@ fn main() {
                 }
             )"#,
         ),
-        TestCase::new(
+        TestCase::query(
             &starwars_schema,
             "../../cynic-querygen/tests/queries/starwars/bare-selection-set.graphql",
             r#"queries::UnnamedQuery::fragment(())"#,
         ),
-        TestCase::new(
+        TestCase::query(
             &jobs_schema,
             "tests/queries/graphql.jobs/london-jobs.graphql",
             r#"queries::Jobs::fragment(())"#,
         ),
-        TestCase::new(
+        TestCase::query(
             &jobs_schema,
             "tests/queries/graphql.jobs/jobs.graphql",
             r#"queries::Jobs::fragment(
@@ -57,7 +57,7 @@ fn main() {
                 }
             )"#,
         ),
-        TestCase::new_norun(
+        TestCase::mutation(
             &github_schema,
             "../../cynic-querygen/tests/queries/github/add-comment-mutation.graphql",
             r#"queries::CommentOnMutationSupportIssue::fragment(
@@ -67,7 +67,7 @@ fn main() {
                 },
             )"#,
         ),
-        TestCase::new_norun(
+        TestCase::query_norun(
             &github_schema,
             "../../cynic-querygen/tests/queries/github/input-object-arguments.graphql",
             r#"queries::PullRequestTitles::fragment(
@@ -79,10 +79,15 @@ fn main() {
                 },
             )"#,
         ),
-        TestCase::new_norun(
+        TestCase::query_norun(
             &github_schema,
             "../../cynic-querygen/tests/queries/github/input-object-literals.graphql",
             r#"queries::PullRequestTitles::fragment(())"#,
+        ),
+        TestCase::query_norun(
+            &github_schema,
+            "../../cynic-querygen/tests/queries/github/literal-enums.graphql",
+            r#"queries::Query::fragment(())"#,
         ),
     ];
 
@@ -96,10 +101,11 @@ struct TestCase {
     query_path: PathBuf,
     fragment_construct: String,
     should_run: bool,
+    mutation: bool,
 }
 
 impl TestCase {
-    fn new(
+    fn query(
         schema: &Schema,
         query_path: impl Into<PathBuf>,
         fragment_construct: impl Into<String>,
@@ -109,10 +115,11 @@ impl TestCase {
             schema: schema.clone(),
             fragment_construct: fragment_construct.into(),
             should_run: true,
+            mutation: false
         }
     }
 
-    fn new_norun(
+    fn query_norun(
         schema: &Schema,
         query_path: impl Into<PathBuf>,
         fragment_construct: impl Into<String>,
@@ -122,6 +129,22 @@ impl TestCase {
             schema: schema.clone(),
             fragment_construct: fragment_construct.into(),
             should_run: false,
+            mutation: false
+        }
+    }
+
+    fn mutation(
+        schema: &Schema,
+        query_path: impl Into<PathBuf>,
+        fragment_construct: impl Into<String>,
+    ) -> Self {
+        TestCase {
+            query_path: query_path.into(),
+            schema: schema.clone(),
+            fragment_construct: fragment_construct.into(),
+            // We don't run mutations by default
+            should_run: false,
+            mutation: true
         }
     }
 
@@ -158,6 +181,12 @@ impl TestCase {
             "#![allow(unreachable_code)] return;"
         };
 
+        let operation_function = if self.mutation {
+            "send_mutation"
+        } else {
+            "send_query"
+        };
+
         // TODO: So, need a way to know the query struct name here.
         // Also need to be able to construct any variable structs...
         write!(
@@ -168,12 +197,13 @@ impl TestCase {
             fn main() {{
                 {norun_code}
                 use cynic::QueryFragment;
-                querygen_compile_run::send_query("{url}", {fragment_construct}).unwrap();
+                querygen_compile_run::{operation_function}("{url}", {fragment_construct}).unwrap();
             }}
 
             {query_code}
             "#,
             norun_code = norun_code,
+            operation_function = operation_function,
             url = self.schema.query_url,
             query_code = query_code,
             fragment_construct = self.fragment_construct
