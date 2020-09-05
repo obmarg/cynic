@@ -1,0 +1,14 @@
+---
+source: examples/examples/github-mutation.rs
+expression: query.query
+---
+mutation Mutation($_0: AddCommentInput!) {
+  addComment(input: $_0) {
+    commentEdge {
+      node {
+        id
+      }
+    }
+  }
+}
+

@@ -1,18 +1,21 @@
 use json_decode::BoxDecoder;
 use std::collections::HashMap;
 
-use crate::{selection_set::query_root, Argument, GraphQLResponse, QueryRoot, SelectionSet};
+use crate::{
+    selection_set::{mutation_root, query_root},
+    Argument, GraphQLResponse, MutationRoot, QueryRoot, SelectionSet,
+};
 
 #[derive(serde::Serialize)]
-pub struct Query<'a, ResponseData> {
+pub struct Operation<'a, ResponseData> {
     pub query: String,
     pub variables: HashMap<String, Argument>,
     #[serde(skip)]
     decoder: BoxDecoder<'a, ResponseData>,
 }
 
-impl<'a, ResponseData: 'a> Query<'a, ResponseData> {
-    pub fn new<Root: QueryRoot>(selection_set: SelectionSet<'a, ResponseData, Root>) -> Self {
+impl<'a, ResponseData: 'a> Operation<'a, ResponseData> {
+    pub fn query<Root: QueryRoot>(selection_set: SelectionSet<'a, ResponseData, Root>) -> Self {
         let (query, arguments, decoder) = query_root(selection_set).query_arguments_and_decoder();
 
         let variables = arguments
@@ -21,7 +24,26 @@ impl<'a, ResponseData: 'a> Query<'a, ResponseData> {
             .map(|(i, a)| (format!("_{}", i), a))
             .collect();
 
-        Query {
+        Operation {
+            query,
+            variables,
+            decoder,
+        }
+    }
+
+    pub fn mutation<Root: MutationRoot>(
+        selection_set: SelectionSet<'a, ResponseData, Root>,
+    ) -> Self {
+        let (query, arguments, decoder) =
+            mutation_root(selection_set).query_arguments_and_decoder();
+
+        let variables = arguments
+            .into_iter()
+            .enumerate()
+            .map(|(i, a)| (format!("_{}", i), a))
+            .collect();
+
+        Operation {
             query,
             variables,
             decoder,

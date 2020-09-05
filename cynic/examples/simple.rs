@@ -3,7 +3,7 @@ fn main() {
 
     println!(
         "{}",
-        cynic::Query::new(TestStruct::fragment(TestArgs {})).query
+        cynic::Operation::query(TestStruct::fragment(TestArgs {})).query
     );
 }
 

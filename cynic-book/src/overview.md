@@ -30,18 +30,20 @@ projects - either adding on to the rust structs directly, or re-using
 Cynic is currently a work in progress, but the following features are
 supported:
 
-- Typesafe queries for scalars, enums & objects.
+- Typesafe queries & mutations.
 - Defining custom scalars.
 - Building dynamic (but still type checked) queries at run time.
 - Query arguments including input objects
 
-The following features are possibly supported but not very thoroughly tested:
+The following features are not well supported or tested and may not work well,
+or at all:
 
-- Mutations.
 - Fetching union types via inline fragments
 
-The following features are not yet supported, though hopefully will be someday
-(please open an issue if you'd like to implement them yourself)
+The following features are not yet supported, though should be soon (if you
+want to help out with the project I'd be happy for someone else to try and
+implement these - if you open an issue I'd be happy to give pointers on how to
+go about implementing any of them)
 
 - Fetching interface types.
 - GraphQL subscriptions.

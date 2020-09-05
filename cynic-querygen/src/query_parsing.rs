@@ -3,7 +3,7 @@ use graphql_parser::query::{
 };
 
 use crate::schema::{self, EnumType, InputValue, ScalarTypeExt, Type, TypeDefinition};
-use crate::{value_ext::ValueExt, Error, TypeExt, TypeIndex};
+use crate::{value_ext::ValueExt, Error, GraphPath, TypeExt, TypeIndex};
 
 #[derive(Debug, PartialEq)]
 pub struct Field<'a> {
@@ -45,7 +45,7 @@ impl<'a> FieldArgument<'a> {
 #[derive(Debug, PartialEq)]
 pub struct QueryFragment<'a> {
     pub fields: Vec<Field<'a>>,
-    pub path: Vec<&'a str>,
+    pub path: GraphPath<'a>,
 
     pub argument_struct_name: Option<String>,
 
@@ -74,8 +74,12 @@ impl<'a> ArgumentStruct<'a> {
     fn from_variables(
         variables: &'a Vec<VariableDefinition<'a, &'a str>>,
         query_name: Option<&'a str>,
-    ) -> ArgumentStruct<'a> {
-        ArgumentStruct {
+    ) -> Option<ArgumentStruct<'a>> {
+        if variables.is_empty() {
+            return None;
+        }
+
+        Some(ArgumentStruct {
             name: format!("{}Arguments", query_name.unwrap_or("")),
             fields: variables
                 .iter()
@@ -85,7 +89,7 @@ impl<'a> ArgumentStruct<'a> {
                     arguments: vec![],
                 })
                 .collect(),
-        }
+        })
     }
 }
 
@@ -131,30 +135,25 @@ fn parse_definition<'a>(
     match definition {
         Definition::Operation(OperationDefinition::Query(query)) => {
             let mut structs = vec![];
+            let mut argument_struct_name = None;
 
-            let argument_struct_name = if !query.variable_definitions.is_empty() {
-                let argument_struct =
-                    ArgumentStruct::from_variables(&query.variable_definitions, query.name);
-
-                let argument_struct_name = argument_struct.name.clone();
-
+            if let Some(argument_struct) =
+                ArgumentStruct::from_variables(&query.variable_definitions, query.name)
+            {
+                argument_struct_name = Some(argument_struct.name.clone());
                 structs.push(PotentialStruct::ArgumentStruct(argument_struct));
+            }
 
-                for variable in &query.variable_definitions {
-                    structs.extend(structs_from_type_name(
-                        variable.var_type.inner_name(),
-                        type_index,
-                    )?);
-                }
-
-                Some(argument_struct_name)
-            } else {
-                None
-            };
+            for variable in &query.variable_definitions {
+                structs.extend(structs_from_type_name(
+                    variable.var_type.inner_name(),
+                    type_index,
+                )?);
+            }
 
             let mut selection_structs = selection_set_to_structs(
                 &query.selection_set,
-                vec![],
+                GraphPath::for_query(),
                 type_index,
                 query.name,
                 argument_struct_name.as_deref(),
@@ -168,10 +167,39 @@ fn parse_definition<'a>(
 
             Ok(structs)
         }
-        Definition::Operation(OperationDefinition::Mutation(_)) => {
-            return Err(Error::UnsupportedQueryDocument(format!(
-                "mutations are not yet supported"
-            )));
+        Definition::Operation(OperationDefinition::Mutation(mutation)) => {
+            let mut structs = vec![];
+            let mut argument_struct_name = None;
+
+            if let Some(argument_struct) =
+                ArgumentStruct::from_variables(&mutation.variable_definitions, mutation.name)
+            {
+                argument_struct_name = Some(argument_struct.name.clone());
+                structs.push(PotentialStruct::ArgumentStruct(argument_struct));
+            }
+
+            for variable in &mutation.variable_definitions {
+                structs.extend(structs_from_type_name(
+                    variable.var_type.inner_name(),
+                    type_index,
+                )?);
+            }
+
+            let mut selection_structs = selection_set_to_structs(
+                &mutation.selection_set,
+                GraphPath::for_mutation(),
+                type_index,
+                mutation.name,
+                argument_struct_name.as_deref(),
+            )?;
+
+            // selection_set_to_structs traverses the tree in post-order
+            // (sort of), so we reverse to get the root node first.
+            selection_structs.reverse();
+
+            structs.append(&mut selection_structs);
+
+            Ok(structs)
         }
         Definition::Operation(OperationDefinition::Subscription(_)) => {
             return Err(Error::UnsupportedQueryDocument(format!(
@@ -179,9 +207,11 @@ fn parse_definition<'a>(
             )));
         }
         Definition::Operation(OperationDefinition::SelectionSet(selection_set)) => {
+            // A selection set is what gets parsed when there's an un-named top level query.
+            // We essentially treat it the same as a query and extract structs from the selection sets.
             let mut selection_structs = selection_set_to_structs(
                 &selection_set,
-                vec![],
+                GraphPath::for_query(),
                 type_index,
                 Some("UnnamedQuery"),
                 None,
@@ -203,16 +233,14 @@ fn parse_definition<'a>(
 
 fn selection_set_to_structs<'a, 'b>(
     selection_set: &'a SelectionSet<'a, &'a str>,
-    path: Vec<&'a str>,
+    path: GraphPath<'a>,
     type_index: &'a TypeIndex<'a>,
     query_name: Option<&'a str>,
     argument_struct_name: Option<&'b str>,
 ) -> Result<Vec<PotentialStruct<'a>>, Error> {
     let mut nested_types = Vec::new();
 
-    let path = &path;
-
-    if !path.is_empty() {
+    if !path.is_root() {
         let type_name = type_index.field_for_path(&path)?.field_type.inner_name();
         let structs = structs_from_type_name(type_name, type_index)?;
         if !structs.is_empty() {
@@ -230,8 +258,7 @@ fn selection_set_to_structs<'a, 'b>(
     for item in &selection_set.items {
         match item {
             Selection::Field(field) => {
-                let mut new_path = path.clone();
-                new_path.push(field.name);
+                let new_path = path.push(field.name);
 
                 let schema_field = type_index.field_for_path(&new_path)?;
 

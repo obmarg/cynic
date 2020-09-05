@@ -16,13 +16,13 @@ use crate::{
 #[derive(Debug)]
 pub struct SelectorStruct {
     pub name: Ident,
+    pub graphql_name: String,
     pub fields: Vec<FieldSelector>,
     pub selection_builders: Vec<FieldSelectionBuilder>,
-    pub is_root: bool,
 }
 
 impl SelectorStruct {
-    pub fn from_object(obj: &schema::ObjectType, type_index: &TypeIndex, is_root: bool) -> Self {
+    pub fn from_object(obj: &schema::ObjectType, type_index: &TypeIndex) -> Self {
         let name = Ident::for_type(&obj.name);
 
         let mut processed_fields = Vec::with_capacity(obj.fields.len());
@@ -57,7 +57,7 @@ impl SelectorStruct {
 
         SelectorStruct {
             name: name.clone(),
-            is_root,
+            graphql_name: obj.name.clone(),
             fields: processed_fields,
             selection_builders,
         }
@@ -70,11 +70,6 @@ impl quote::ToTokens for SelectorStruct {
 
         let name = &self.name;
         let fields = &self.fields;
-        let query_root = if self.is_root {
-            quote! { impl ::cynic::QueryRoot for #name {} }
-        } else {
-            quote! {}
-        };
 
         tokens.append_all(quote! {
             #[allow(dead_code)]
@@ -86,8 +81,6 @@ impl quote::ToTokens for SelectorStruct {
                     #fields
                 )*
             }
-
-            #query_root
         });
     }
 }

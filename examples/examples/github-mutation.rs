@@ -1,4 +1,4 @@
-//! An example using the GitHub API
+//! A mutation example using the GitHub API
 //!
 //! Note that a lot of this example is feature flagged: this is because rust-analyzer
 //! wants to build it as part of the cynic package when I'm working on cynic.  It
@@ -16,7 +16,7 @@ fn main() {
 }
 
 #[cfg(feature = "github")]
-fn run_query() -> cynic::GraphQLResponse<queries::PullRequestTitles> {
+fn run_query() -> cynic::GraphQLResponse<queries::CommentOnMutationSupportIssue> {
     let query = build_query();
 
     let token = std::env::var("GITHUB_TOKEN").expect("GITHUB_TOKEN env var must be set");
@@ -38,18 +38,15 @@ fn run_query() -> cynic::GraphQLResponse<queries::PullRequestTitles> {
 }
 
 #[cfg(feature = "github")]
-fn build_query() -> cynic::Operation<'static, queries::PullRequestTitles> {
+fn build_query() -> cynic::Operation<'static, queries::CommentOnMutationSupportIssue> {
     use cynic::QueryFragment;
-    use queries::{
-        IssueOrder, IssueOrderField, OrderDirection, PullRequestTitles, PullRequestTitlesArguments,
-    };
+    use queries::{CommentOnMutationSupportIssue, CommentOnMutationSupportIssueArguments};
 
-    cynic::Operation::query(PullRequestTitles::fragment(PullRequestTitlesArguments {
-        pr_order: IssueOrder {
-            direction: OrderDirection::Asc,
-            field: IssueOrderField::CreatedAt,
+    cynic::Operation::mutation(CommentOnMutationSupportIssue::fragment(
+        CommentOnMutationSupportIssueArguments {
+            comment_body: "Testing".into(),
         },
-    }))
+    ))
 }
 
 #[cfg(feature = "github")]
@@ -61,60 +58,48 @@ mod queries {
     use super::{query_dsl, types::*};
 
     #[derive(cynic::FragmentArguments, Clone, Debug)]
-    pub struct PullRequestTitlesArguments {
-        pub pr_order: IssueOrder,
-    }
-
-    #[derive(cynic::InputObject, Clone, Debug)]
-    #[cynic(graphql_type = "IssueOrder", rename_all = "camelCase")]
-    pub struct IssueOrder {
-        pub direction: OrderDirection,
-        pub field: IssueOrderField,
-    }
-
-    #[derive(cynic::Enum, Clone, Copy, Debug)]
-    #[cynic(graphql_type = "OrderDirection", rename_all = "SCREAMING_SNAKE_CASE")]
-    pub enum OrderDirection {
-        Asc,
-        Desc,
-    }
-
-    #[derive(cynic::Enum, Clone, Copy, Debug)]
-    #[cynic(graphql_type = "IssueOrderField", rename_all = "SCREAMING_SNAKE_CASE")]
-    pub enum IssueOrderField {
-        Comments,
-        CreatedAt,
-        UpdatedAt,
-    }
-
-    #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "Query", argument_struct = "PullRequestTitlesArguments")]
-    pub struct PullRequestTitles {
-        #[arguments(name = "cynic".to_string(), owner = "obmarg".to_string())]
-        pub repository: Option<Repository>,
+    pub struct CommentOnMutationSupportIssueArguments {
+        pub comment_body: String,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
     #[cynic(
-        graphql_type = "Repository",
-        argument_struct = "PullRequestTitlesArguments"
+        graphql_type = "Mutation",
+        argument_struct = "CommentOnMutationSupportIssueArguments"
     )]
-    pub struct Repository {
-        #[arguments(order_by = &args.pr_order, first = 10)]
-        pub pull_requests: PullRequestConnection,
+    pub struct CommentOnMutationSupportIssue {
+        #[arguments(input = AddCommentInput {
+            body: args.comment_body.clone(),
+            subject_id: "MDU6SXNzdWU2ODU4NzUxMzQ=".into(),
+            client_mutation_id: None
+        })]
+        pub add_comment: Option<AddCommentPayload>,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "PullRequestConnection")]
-    pub struct PullRequestConnection {
-        #[cynic(flatten)]
-        pub nodes: Vec<PullRequest>,
+    #[cynic(graphql_type = "AddCommentPayload")]
+    pub struct AddCommentPayload {
+        pub comment_edge: Option<IssueCommentEdge>,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "PullRequest")]
-    pub struct PullRequest {
-        pub title: String,
+    #[cynic(graphql_type = "IssueCommentEdge")]
+    pub struct IssueCommentEdge {
+        pub node: Option<IssueComment>,
+    }
+
+    #[derive(cynic::QueryFragment, Debug)]
+    #[cynic(graphql_type = "IssueComment")]
+    pub struct IssueComment {
+        pub id: cynic::Id,
+    }
+
+    #[derive(cynic::InputObject, Clone, Debug)]
+    #[cynic(graphql_type = "AddCommentInput", rename_all = "camelCase")]
+    pub struct AddCommentInput {
+        pub body: String,
+        pub client_mutation_id: Option<String>,
+        pub subject_id: cynic::Id,
     }
 }
 
@@ -182,19 +167,5 @@ mod test {
         if result.errors.is_some() {
             assert_eq!(result.errors.unwrap().len(), 0);
         }
-        assert_eq!(
-            result
-                .data
-                .as_ref()
-                .unwrap()
-                .repository
-                .as_ref()
-                .unwrap()
-                .pull_requests
-                .nodes
-                .len(),
-            10
-        );
-        insta::assert_debug_snapshot!(result.data);
     }
 }

@@ -9,58 +9,42 @@ expression: "document_to_fragment_structs(query, schema,\n                      
 mod queries {
     use super::{query_dsl, types::*};
 
-    #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "Query")]
-    pub struct PullRequestTitles {
-        #[arguments(name = "cynic".into(), owner = "obmarg".into())]
-        pub repository: Option<Repository>,
+    #[derive(cynic::FragmentArguments, Clone, Debug)]
+    pub struct CommentOnMutationSupportIssueArguments {
+        pub comment_body: String,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "Repository")]
-    pub struct Repository {
-        #[arguments(order_by = IssueOrder { direction: OrderDirection::Asc, field: IssueOrderField::CreatedAt })]
-        pub pull_requests: PullRequestConnection,
+    #[cynic(graphql_type = "Mutation", argument_struct = "CommentOnMutationSupportIssueArguments")]
+    pub struct CommentOnMutationSupportIssue {
+        #[arguments(input = AddCommentInput { body: args.comment_body.clone(), subject_id: "MDU6SXNzdWU2ODU4NzUxMzQ=".into(), client_mutation_id: None })]
+        pub add_comment: Option<AddCommentPayload>,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "PullRequestConnection")]
-    pub struct PullRequestConnection {
-        pub nodes: Option<Vec<Option<PullRequest>>>,
+    #[cynic(graphql_type = "AddCommentPayload")]
+    pub struct AddCommentPayload {
+        pub comment_edge: Option<IssueCommentEdge>,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "PullRequest")]
-    pub struct PullRequest {
-        pub title: String,
+    #[cynic(graphql_type = "IssueCommentEdge")]
+    pub struct IssueCommentEdge {
+        pub node: Option<IssueComment>,
     }
 
-    #[derive(cynic::Enum, Clone, Copy, Debug)]
-    #[cynic(
-        graphql_type = "IssueOrderField",
-        rename_all = "SCREAMING_SNAKE_CASE"
-    )]
-    pub enum IssueOrderField {
-        Comments,
-        CreatedAt,
-        UpdatedAt,
-    }
-
-    #[derive(cynic::Enum, Clone, Copy, Debug)]
-    #[cynic(
-        graphql_type = "OrderDirection",
-        rename_all = "SCREAMING_SNAKE_CASE"
-    )]
-    pub enum OrderDirection {
-        Asc,
-        Desc,
+    #[derive(cynic::QueryFragment, Debug)]
+    #[cynic(graphql_type = "IssueComment")]
+    pub struct IssueComment {
+        pub id: cynic::Id,
     }
 
     #[derive(cynic::InputObject, Clone, Debug)]
-    #[cynic(graphql_type = "IssueOrder", rename_all="camelCase")]
-    pub struct IssueOrder {
-        pub direction: OrderDirection,
-        pub field: IssueOrderField,
+    #[cynic(graphql_type = "AddCommentInput", rename_all="camelCase")]
+    pub struct AddCommentInput {
+        pub body: String,
+        pub client_mutation_id: Option<String>,
+        pub subject_id: cynic::Id,
     }
 
 }
