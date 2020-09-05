@@ -1,6 +1,6 @@
 # Query Fragments
 
-QueryFragments are the main tool for building queries in cynic. A
+QueryFragments are the main tool for building queries & mutations in cynic. A
 QueryFragment tells cynic what fields to select from a GraphQL object, and how
 to decode those fields into a struct.
 
@@ -133,6 +133,16 @@ down to that level of a query.
 
 If no nested QueryFragments require arguments, you can omit the
 `argument_struct` attr.
+
+### Mutations
+
+Mutations are also constructed using QueryFragments in a very similar way to
+queries.  Instead of selecting query fields you select a mutation, and pass in
+any arguments in exactly the same way.  Instead of calling the
+`Operation::query` function to construct an `Operation` you call the
+`Operation::mutation` function.
+
+<!-- TODO: An example of doing mutations -->
 
 ### Related
 
