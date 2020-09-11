@@ -11,6 +11,8 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.9.0 - 2020-09-11
+
 ### Breaking Changes
 
 - InputObject no longer has a serialize method - this is now handled by a
