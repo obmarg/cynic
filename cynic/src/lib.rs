@@ -83,17 +83,17 @@
 //!
 //! // You can then build a `cynic::Query` from this fragment
 //! use cynic::QueryFragment;
-//! let query = cynic::Operation::query(FilmDirectorQuery::fragment(()));
+//! let operation = cynic::Operation::query(FilmDirectorQuery::fragment(()));
 //!
 //! ```
 //!
-//! `query` above implements `serde::Serialize` so can be used with any HTTP
+//! `operation` above implements `serde::Serialize` so can be used with any HTTP
 //! client.  For example, with `reqwest`:
 //!
 //! ```rust,ignore
 //! let response = reqwest::blocking::Client::new()
 //!                     .post("a_url")
-//!                     .json(&query)
+//!                     .json(&operation)
 //!                     .send()?;
 //! let result = query.decode_response(response.json()?)?;
 //! ```
@@ -148,7 +148,7 @@
 //!
 //! // Then we can build a query using this new struct;
 //! use cynic::QueryFragment;
-//! let query = cynic::Operation::query(
+//! let operation = cynic::Operation::query(
 //!     FilmDirectorQueryWithArgs::fragment(
 //!         FilmArguments{ id: Some("ZmlsbXM6MQ==".into()) }
 //!     )
