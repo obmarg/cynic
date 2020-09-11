@@ -52,13 +52,16 @@ the query you're wanting to run, and convert it into one or more rust structs.
 This can be quite laborious and error prone for larger queries though so cynic
 provides [`querygen`][1] to help you get started.
 
-Go to [https://generator.cynic-rs.dev][1] (please excuse the UI) and enter your
-schema (in GraphQL SDL) and your GraphQL query in the left most 2 textareas.
-The right most text area should now contain some Rust code. You should copy and
-paste this into a file in your repository.  Ensure that the `schema_path`
-listed matches the path to your GraphQL schema locally, relative to your
-`Cargo.toml` - so with the example it would be `src/schema.graphql`
+Go to [https://generator.cynic-rs.dev][1] and select how you'd like to input
+your schema. If the GraphQL API you wish to use is accessible on the internet
+you can just link directly to it (although it will need to be have CORS headers
+enabled). Otherwise you can upload your schema to the generator.
 
+Once you've provided the schema, you should be dropped into a GraphiQL
+interface but with an extra panel that contains Rust generated from your query
+& schema.
+
+<!--
 For example, I've chosen to add the star wars schema and the following query:
 
 ```graphql
@@ -70,6 +73,8 @@ and been given, the following rust code:
 ```rust
 TODO
 ```
+
+-->
 
 #### Checking your query (optional)
 
