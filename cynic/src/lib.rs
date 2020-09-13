@@ -158,6 +158,7 @@
 mod argument;
 mod field;
 mod id;
+mod integrations;
 mod into_argument;
 mod operation;
 mod result;
