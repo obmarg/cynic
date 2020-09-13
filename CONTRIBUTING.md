@@ -1,13 +1,18 @@
 # Contributing
 
 When contributing to this repository, please first discuss the change you wish to make via issue,
-email, or any other method with the owners of this repository before making a change.  (For smaller
-bug fixes it's probably fine to skip this).
-
-If you have any questions about how to do anything or otherwise need help, please just ask in an
-issue.
+email, or on discord before making a change.  (For smaller bug fixes it's probably fine to skip 
+this).
 
 Please note we have a [code of conduct][1], please follow it in all your interactions with the project.
+
+## Getting Help
+
+If you have any questions about how to do anything or otherwise need help, please just ask.  
+You can do this by:
+
+1. [Joining the disord server](https://discord.gg/Y5xDmDP)
+2. [Opening an issue on this repository](https://github.com/obmarg/cynic/issues/new)
 
 ## Coding Guidelines
 
