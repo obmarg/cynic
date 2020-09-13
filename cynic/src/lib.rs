@@ -152,7 +152,15 @@
 //!     FilmDirectorQueryWithArgs::fragment(
 //!         FilmArguments{ id: Some("ZmlsbXM6MQ==".into()) }
 //!     )
-//! );
+//! );examples
+//!
+//! ## Feature Flags
+//!
+//! Cynic has a few features that are controlled by feature flags.
+//!
+//! - `chrono` adds support for chrono::DateTime scalars.
+//! - `uuid` adds support for Uuid scalars
+//! - `bson` adds support for ObjectId scalars
 //! ```
 
 mod argument;
