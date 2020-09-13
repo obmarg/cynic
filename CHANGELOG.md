@@ -11,6 +11,10 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+### New Features
+
+- The `bson` feature, which allows to use ObjectId in schemas, added.
+
 ## v0.9.0 - 2020-09-11
 
 ### Breaking Changes
