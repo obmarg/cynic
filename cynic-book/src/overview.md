@@ -14,7 +14,7 @@
 </p>
 
 <h4>
-  <a href="https://cynic-rs.dev">Documentation</a>
+  <a href="https://github.com/obmarg/cynic">Repository</a>
   <span> | </span>
   <a href="https://github.com/obmarg/cynic/tree/master/examples/examples">Examples</a>
   <span> | </span>
