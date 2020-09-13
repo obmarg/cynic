@@ -152,7 +152,8 @@
 //!     FilmDirectorQueryWithArgs::fragment(
 //!         FilmArguments{ id: Some("ZmlsbXM6MQ==".into()) }
 //!     )
-//! );examples
+//! );
+//! ```
 //!
 //! ## Feature Flags
 //!
@@ -161,7 +162,6 @@
 //! - `chrono` adds support for chrono::DateTime scalars.
 //! - `uuid` adds support for Uuid scalars
 //! - `bson` adds support for ObjectId scalars
-//! ```
 
 mod argument;
 mod field;
