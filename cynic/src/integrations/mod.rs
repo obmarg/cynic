@@ -7,3 +7,7 @@ pub mod chrono;
 #[cfg(feature = "bson")]
 /// Cynic support for [bson](https://github.com/mongodb/bson-rust) types.
 pub mod bson;
+
+#[cfg(feature = "uuid")]
+/// Cynic support for [uuid](https://doc.rust-lang.org/uuid/uuid/struct.Uuid.html) types.
+pub mod uuid;
