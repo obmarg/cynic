@@ -1,25 +1,28 @@
-<h1>Cynic</h1>
+<div align="center">
+  <img src="https://github.com/obmarg/cynic/raw/master/logo.png" width="150"/>
+  <h1>Cynic</h1>
 
-<p>
-  <strong>A bring your own types GraphQL client for Rust</strong>
-</p>
+  <p>
+    <strong>A bring your own types GraphQL client for Rust</strong>
+  </p>
 
-<p>
-  <a href="https://crates.io/crates/cynic"><img alt="Crate Info" src="https://img.shields.io/crates/v/cynic.svg"/></a>
-  <a href="https://docs.rs/cynic/"><img alt="API Docs" src="https://img.shields.io/badge/docs.rs-cynic-green"/></a>
-  <a href="https://discord.gg/Y5xDmDP"><img alt="Discord Chat" src="https://img.shields.io/discord/754633560933269544"/></a>
-  <!-- 
-      <a href="https://blog.rust-lang.org/2020/07/16/Rust-1.45.0.html"><img alt="Rustc Version 1.45+" src="https://img.shields.io/badge/rustc-1.45%2B-lightgrey.svg"/></a>
-      -->
-</p>
+  <p>
+    <a href="https://crates.io/crates/cynic"><img alt="Crate Info" src="https://img.shields.io/crates/v/cynic.svg"/></a>
+    <a href="https://docs.rs/cynic/"><img alt="API Docs" src="https://img.shields.io/badge/docs.rs-cynic-green"/></a>
+    <a href="https://discord.gg/Y5xDmDP"><img alt="Discord Chat" src="https://img.shields.io/discord/754633560933269544"/></a>
+    <!-- 
+        <a href="https://blog.rust-lang.org/2020/07/16/Rust-1.45.0.html"><img alt="Rustc Version 1.45+" src="https://img.shields.io/badge/rustc-1.45%2B-lightgrey.svg"/></a>
+        -->
+  </p>
 
-<h4>
-  <a href="https://cynic-rs.dev">Documentation</a>
-  <span> | </span>
-  <a href="https://github.com/obmarg/cynic/tree/master/examples/examples">Examples</a>
-  <span> | </span>
-  <a href="https://github.com/obmarg/cynic/blob/master/CHANGELOG.md">Changelog</a>
-</h4>
+  <h4>
+    <a href="https://cynic-rs.dev">Documentation</a>
+    <span> | </span>
+    <a href="https://github.com/obmarg/cynic/tree/master/examples/examples">Examples</a>
+    <span> | </span>
+    <a href="https://github.com/obmarg/cynic/blob/master/CHANGELOG.md">Changelog</a>
+  </h4>
+</div>
 
 # Overview
 
