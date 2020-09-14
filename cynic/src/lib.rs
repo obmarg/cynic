@@ -163,7 +163,12 @@
 //! - `uuid` adds support for Uuid scalars
 //! - `bson` adds support for ObjectId scalars
 //! - `url` adds support for Url scalars \
-//!   Note: `url` feature could increase output [file size](https://github.com/servo/rust-url/issues/557)
+//!
+//! It's worth noting that each of these features pulls in extra 
+//! dependencies, which may impact your build size.  Particularly 
+//! if you're targetting WASM.  In particular the `url` crate has 
+//! [known issues](https://github.com/servo/rust-url/issues/557) when
+//! targetting web assembly.
 
 mod argument;
 mod field;
