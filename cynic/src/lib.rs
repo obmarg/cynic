@@ -162,6 +162,8 @@
 //! - `chrono` adds support for chrono::DateTime scalars.
 //! - `uuid` adds support for Uuid scalars
 //! - `bson` adds support for ObjectId scalars
+//! - `url` adds support for Url scalars \
+//!   Note: `url` feature could increase output [file size](https://github.com/servo/rust-url/issues/557)
 
 mod argument;
 mod field;
