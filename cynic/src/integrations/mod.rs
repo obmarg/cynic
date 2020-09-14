@@ -11,3 +11,7 @@ pub mod bson;
 #[cfg(feature = "uuid")]
 /// Cynic support for [uuid](https://doc.rust-lang.org/uuid/uuid/struct.Uuid.html) types.
 pub mod uuid;
+
+#[cfg(feature = "url")]
+/// Cynic support for [url](https://github.com/servo/rust-url) types.
+pub mod url;
