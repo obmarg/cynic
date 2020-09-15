@@ -15,6 +15,7 @@ all APIs might be changed.
 
 - The `bson` feature, which allows to use ObjectId in schemas, added.
 - The `uuid` feature, which allows to use Uuid in schemas, added.
+- The `url` feature, which allows to use Url in schemas, added.
 
 ## v0.9.0 - 2020-09-11
 
