@@ -1,18 +1,40 @@
 # Contributing
 
-When contributing to this repository, please first discuss the change you wish to make via issue,
-email, or on discord before making a change.  (For smaller bug fixes it's probably fine to skip 
-this).
+If you want to contribute to cynic, that's great!  There's plenty of
+improvements to make, features that still need built and probably a bug or two
+hiding in there.
 
-Please note we have a [code of conduct][1], please follow it in all your interactions with the project.
+Please note we have a [code of conduct][COC], please follow it in all your
+interactions with the project.
+
+There's a few different ways to contribute:
+
+- If you've found a bug or have an idea for a feature you'd like to implement,
+  please [create an issue][NewIssue] to discuss or send a message [on
+  discord][Discord].
+- If you'd like to contribute to an existing issue feel free to comment on the
+  issue and let us know.  If anything isn't clear someone will be happy to
+  explain (the project is still fairly new, and I have treated the issue
+  tracker like a notepad occasionally, sorry about that 😬).
+- If you'd like to contribute but you're not sure how:
+  - We have [Good First Issues][GFI] labelled.
+  - We [use milestones][Milestones] to plan what's going into the next release,
+    any free work in there would be great to pick up.
+  - The documentation (both on [docs.rs](https://docs.rs/cynic) & on
+    [cynic-rs.dev](https://cynic-rs.dev)) could always be improved - try
+    following one of the guides, and let us know what wasn't clear, what you
+    thinks missing or even what
+  - You can just try to use cynic in a project - we'd appreciate any bug
+    reports or feedback on the API, and it's always nice seeing what people
+    build.
 
 ## Getting Help
 
 If you have any questions about how to do anything or otherwise need help, please just ask.  
 You can do this by:
 
-1. [Joining the disord server](https://discord.gg/Y5xDmDP)
-2. [Opening an issue on this repository](https://github.com/obmarg/cynic/issues/new)
+1. [Joining the discord server][Discord]
+2. [Opening an issue on this repository][NewIssue]
 
 ## Coding Guidelines
 
@@ -30,4 +52,8 @@ You can do this by:
 5. A maintainer will review the PR as soon as possible, and once it is approved will merge
    and make a release.
    
-[1]: ./CODE_OF_CONDUCT.md
+[COC]: ./CODE_OF_CONDUCT.md
+[Discord]: https://discord.gg/Y5xDmDP
+[NewIssue]: https://github.com/obmarg/cynic/issues/new
+[GFI]: https://github.com/obmarg/cynic/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22
+[Milestones]: https://github.com/obmarg/cynic/milestones
