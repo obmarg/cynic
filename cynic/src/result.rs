@@ -28,7 +28,8 @@ impl<T> GraphQLResponse<T> {
     }
 }*/
 
-#[derive(Debug, serde::Deserialize)]
+#[derive(Debug, serde::Deserialize, thiserror::Error)]
+#[error("{message}")]
 pub struct GraphQLError {
     message: String,
 }
