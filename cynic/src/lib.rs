@@ -252,13 +252,13 @@ pub trait InputObject<TypeLock>: Clone {}
 /// A marker trait for the arguments types on QueryFragments.
 ///
 /// We use this in combination with the IntoArguments trait below
-/// to convert between different argument types in a query heirarchy.
+/// to convert between different argument types in a query hierarchy.
 pub trait FragmentArguments: Clone {}
 
 impl FragmentArguments for () {}
 
 /// Used for converting between different argument types in a QueryFragment
-/// heirarchy.
+/// hierarchy.
 ///
 /// For example if an outer QueryFragment has a struct with several parameters
 /// but an inner QueryFragment needs none then we can use () as the arguments
@@ -279,11 +279,11 @@ where
 }
 
 /// A marker trait that indicates a particular type is at the root of a GraphQL schemas query
-/// heirarchy.
+/// hierarchy.
 pub trait QueryRoot {}
 
 /// A marker trait that indicates a particular type is at the root of a GraphQL schemas
-/// mutation heirarchy.
+/// mutation hierarchy.
 pub trait MutationRoot {}
 
 pub use cynic_proc_macros::{
