@@ -11,11 +11,21 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+### Breaking Changes
+
+- `QueryFragment::fragment` and `InlineFragment::fragments` now accept their
+  Argument parameters by reference.
+
 ### New Features
 
 - The `bson` feature, which allows to use ObjectId in schemas, added.
 - The `uuid` feature, which allows to use Uuid in schemas, added.
 - The `url` feature, which allows to use Url in schemas, added.
+
+### Changes
+
+- A `SerializableArgument` no longer needs to be `'static + Send`.
+- A `FragmentArguments` no longer needs to be `Clone`
 
 ## v0.9.0 - 2020-09-11
 

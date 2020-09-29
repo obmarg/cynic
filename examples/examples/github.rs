@@ -60,7 +60,7 @@ fn build_query() -> cynic::Operation<'static, queries::PullRequestTitles> {
 mod queries {
     use super::{query_dsl, types::*};
 
-    #[derive(cynic::FragmentArguments, Clone, Debug)]
+    #[derive(cynic::FragmentArguments, Debug)]
     pub struct PullRequestTitlesArguments {
         pub pr_order: IssueOrder,
     }

@@ -96,7 +96,7 @@ can also be derived. (See [query arguments][1] for more details)
 Here, we define a query that fetches a film by a particular ID:
 
 ```rust
-#[derive(Clone, cynic::FragmentArguments)]
+#[derive(cynic::FragmentArguments)]
 struct FilmArguments {
     id: Option<cynic::Id>,
 }
@@ -137,8 +137,8 @@ If no nested QueryFragments require arguments, you can omit the
 ### Mutations
 
 Mutations are also constructed using QueryFragments in a very similar way to
-queries.  Instead of selecting query fields you select a mutation, and pass in
-any arguments in exactly the same way.  Instead of calling the
+queries. Instead of selecting query fields you select a mutation, and pass in
+any arguments in exactly the same way. Instead of calling the
 `Operation::query` function to construct an `Operation` you call the
 `Operation::mutation` function.
 

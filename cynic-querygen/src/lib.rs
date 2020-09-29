@@ -150,7 +150,7 @@ pub fn document_to_fragment_structs(
                 lines.push("    }\n".into());
             }
             PotentialStruct::ArgumentStruct(argument_struct) => {
-                lines.push("    #[derive(cynic::FragmentArguments, Clone, Debug)]".into());
+                lines.push("    #[derive(cynic::FragmentArguments, Debug)]".into());
                 lines.push(format!("    pub struct {} {{", argument_struct.name));
 
                 for field in &argument_struct.fields {

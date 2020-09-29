@@ -124,7 +124,7 @@
 //! # }
 //! // Deriving `FragmentArguments` allows this struct to be used as arguments to a
 //! // `QueryFragment` fragment, whether it represents part of a query or a whole query.
-//! #[derive(cynic::FragmentArguments, Clone)]
+//! #[derive(cynic::FragmentArguments)]
 //! struct FilmArguments {
 //!     id: Option<cynic::Id>
 //! }
@@ -197,7 +197,7 @@ pub trait QueryFragment {
     type SelectionSet;
     type Arguments: FragmentArguments;
 
-    fn fragment(arguments: Self::Arguments) -> Self::SelectionSet;
+    fn fragment(arguments: &Self::Arguments) -> Self::SelectionSet;
     fn graphql_type() -> String;
 }
 
@@ -207,7 +207,7 @@ pub trait InlineFragments: Sized {
 
     fn graphql_type() -> String;
     fn fragments(
-        arguments: Self::Arguments,
+        arguments: &Self::Arguments,
     ) -> Vec<(String, SelectionSet<'static, Self, Self::TypeLock>)>;
 }
 
@@ -218,7 +218,7 @@ where
     type SelectionSet = SelectionSet<'static, T, T::TypeLock>;
     type Arguments = <T as InlineFragments>::Arguments;
 
-    fn fragment(arguments: Self::Arguments) -> Self::SelectionSet {
+    fn fragment(arguments: &Self::Arguments) -> Self::SelectionSet {
         selection_set::inline_fragments(Self::fragments(arguments))
     }
 
@@ -253,7 +253,7 @@ pub trait InputObject<TypeLock>: Clone {}
 ///
 /// We use this in combination with the IntoArguments trait below
 /// to convert between different argument types in a query heirarchy.
-pub trait FragmentArguments: Clone {}
+pub trait FragmentArguments {}
 
 impl FragmentArguments for () {}
 
@@ -265,16 +265,16 @@ impl FragmentArguments for () {}
 /// type on the inner fragments and use the blanket implementation of IntoArguments
 /// to convert to ().
 pub trait FromArguments<T> {
-    fn from_arguments(args: &T) -> Self;
+    fn from_arguments(args: T) -> Self;
 }
 
-impl<T> FromArguments<T> for T
+impl<'a, T> FromArguments<&'a T> for &'a T
 where
-    T: Clone + FragmentArguments,
+    T: FragmentArguments,
 {
-    fn from_arguments(other: &T) -> Self {
+    fn from_arguments(args: &'a T) -> Self {
         // TODO: Figure out if there's a way to avoid this clone...
-        other.clone()
+        args
     }
 }
 

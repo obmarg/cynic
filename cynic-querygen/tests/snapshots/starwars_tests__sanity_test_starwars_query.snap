@@ -9,7 +9,7 @@ expression: "document_to_fragment_structs(query, schema,\n                      
 mod queries {
     use super::{query_dsl, types::*};
 
-    #[derive(cynic::FragmentArguments, Clone, Debug)]
+    #[derive(cynic::FragmentArguments, Debug)]
     pub struct SanityCheckQueryArguments {
         pub film_id: Option<cynic::Id>,
     }

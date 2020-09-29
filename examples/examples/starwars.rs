@@ -13,7 +13,7 @@ struct Film {
     director: Option<String>,
 }
 
-#[derive(Clone, cynic::FragmentArguments)]
+#[derive(cynic::FragmentArguments)]
 struct FilmArguments {
     id: Option<cynic::Id>,
 }
@@ -51,7 +51,7 @@ fn run_query() -> cynic::GraphQLResponse<FilmDirectorQuery> {
 
 fn build_query() -> cynic::Operation<'static, FilmDirectorQuery> {
     use cynic::QueryFragment;
-    cynic::Operation::query(FilmDirectorQuery::fragment(FilmArguments {
+    cynic::Operation::query(FilmDirectorQuery::fragment(&FilmArguments {
         id: Some("ZmlsbXM6MQ==".into()),
     }))
 }

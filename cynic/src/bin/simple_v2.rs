@@ -22,7 +22,7 @@ use cynic::selection_set;
 mod queries {
     use super::query_dsl;
 
-    #[derive(Clone, cynic::FragmentArguments)]
+    #[derive(cynic::FragmentArguments)]
     pub struct TestArgs {}
 
     #[derive(cynic::QueryFragment)]
