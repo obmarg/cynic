@@ -11,14 +11,14 @@ use crate::{argument::SerializableArgument, Id};
 /// also generates impls for converting options & refs easily.
 pub trait IntoArgument<Argument>
 where
-    Argument: SerializableArgument + Send + 'static,
+    Argument: SerializableArgument,
 {
     fn into_argument(self) -> Argument;
 }
 
 impl<T> IntoArgument<T> for T
 where
-    T: SerializableArgument + Send + 'static,
+    T: SerializableArgument,
 {
     fn into_argument(self) -> T {
         self
