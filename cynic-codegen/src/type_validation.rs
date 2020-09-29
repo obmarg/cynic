@@ -17,6 +17,8 @@ pub fn check_types_are_compatible(
         ));
     }
 
+    // @TODO process `ParsedType::Box`?
+
     if gql_type.is_nullable() {
         if let ParsedType::Optional(inner) = parsed_type {
             return check_types_are_compatible(&gql_type.as_required(), &inner, flattening);
@@ -69,6 +71,7 @@ pub fn check_types_are_compatible(
 enum ParsedType<'a> {
     Optional(&'a syn::Type),
     List(&'a syn::Type),
+    Box(&'a syn::Type),
     SimpleType,
     Unknown,
 }
@@ -76,6 +79,17 @@ enum ParsedType<'a> {
 fn parse_type<'a>(ty: &'a syn::Type) -> ParsedType<'a> {
     if let syn::Type::Path(type_path) = ty {
         if let Some(last_segment) = type_path.path.segments.last() {
+            if last_segment.ident.to_string() == "Box" {
+                if let syn::PathArguments::AngleBracketed(angle_bracketed) = &last_segment.arguments
+                {
+                    for arg in &angle_bracketed.args {
+                        if let syn::GenericArgument::Type(inner_type) = arg {
+                            return ParsedType::Box(inner_type);
+                        }
+                    }
+                }
+                return ParsedType::Unknown;
+            }
             if last_segment.ident.to_string() == "Option" {
                 if let syn::PathArguments::AngleBracketed(angle_bracketed) = &last_segment.arguments
                 {

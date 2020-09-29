@@ -139,6 +139,9 @@ pub fn input_object_derive_impl(
             impl ::cynic::InputObject<#query_module::#input_marker_ident> for #ident {}
 
             #[automatically_derived]
+            impl ::cynic::InputObject<#query_module::#input_marker_ident> for Box<#ident> {}
+
+            #[automatically_derived]
             impl ::cynic::SerializableArgument for #ident {
                 fn serialize(&self) -> Result<::cynic::serde_json::Value, ::cynic::SerializeError> {
                     use ::cynic::{Scalar, Enum, SerializableArgument};
@@ -151,6 +154,13 @@ pub fn input_object_derive_impl(
                             #gql_field_names: #field_values,
                         )*
                     }))
+                }
+            }
+
+            #[automatically_derived]
+            impl ::cynic::SerializableArgument for Box<#ident> {
+                fn serialize(&self) -> Result<::cynic::serde_json::Value, ::cynic::SerializeError> {
+                    #ident::serialize(self)
                 }
             }
 
