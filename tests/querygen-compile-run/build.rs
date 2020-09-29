@@ -81,6 +81,20 @@ fn main() {
         ),
         TestCase::query_norun(
             &github_schema,
+            "tests/queries/github/nested-arguments.graphql",
+            r#"queries::PullRequestTitles::fragment(
+                queries::PullRequestTitlesArguments {
+                    owner: "obmarg".into(),
+                    repo: "cynic".into(),
+                    pr_order: queries::IssueOrder {
+                        direction: queries::OrderDirection::Asc,
+                        field: queries::IssueOrderField::CreatedAt,
+                    }
+                },
+            )"#,
+        ),
+        TestCase::query_norun(
+            &github_schema,
             "../../cynic-querygen/tests/queries/github/input-object-literals.graphql",
             r#"queries::PullRequestTitles::fragment(())"#,
         ),
