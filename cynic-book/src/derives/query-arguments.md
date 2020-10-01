@@ -1,6 +1,6 @@
 # Query Arguments
 
-A heirarchy of QueryFragments can take a struct of arguments. This struct must
+A hierarchy of QueryFragments can take a struct of arguments. This struct must
 implement `FragmentArguments` which can be derived:
 
 ```

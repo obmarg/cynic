@@ -1,6 +1,6 @@
 //! The build script for this package outputs some generated code to
 //! `tests/generated`.  This file ensures that those files can be
-//! built succesfully.
+//! built successfully.
 use std::fs::read_dir;
 
 #[test]
