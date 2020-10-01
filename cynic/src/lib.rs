@@ -83,7 +83,7 @@
 //!
 //! // You can then build a `cynic::Query` from this fragment
 //! use cynic::QueryFragment;
-//! let operation = cynic::Operation::query(FilmDirectorQuery::fragment(()));
+//! let operation = cynic::Operation::query(FilmDirectorQuery::fragment(&()));
 //!
 //! ```
 //!
@@ -142,7 +142,7 @@
 //! )]
 //! struct FilmDirectorQueryWithArgs {
 //!     // Here we use `args`, which we've declared above to be an instance of `FilmArguments`
-//!     #[arguments(id = args.id.clone())]
+//!     #[arguments(id = &args.id)]
 //!     film: Option<Film>,
 //! }
 //!
@@ -150,7 +150,7 @@
 //! use cynic::QueryFragment;
 //! let operation = cynic::Operation::query(
 //!     FilmDirectorQueryWithArgs::fragment(
-//!         FilmArguments{ id: Some("ZmlsbXM6MQ==".into()) }
+//!         &FilmArguments{ id: Some("ZmlsbXM6MQ==".into()) }
 //!     )
 //! );
 //! ```
