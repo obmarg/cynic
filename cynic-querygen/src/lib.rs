@@ -164,7 +164,7 @@ pub fn document_to_fragment_structs(
                 lines.push("    }\n".into());
             }
             PotentialStruct::InputObject(input_object) => {
-                lines.push("    #[derive(cynic::InputObject, Clone, Debug)]".into());
+                lines.push("    #[derive(cynic::InputObject, Debug)]".into());
                 lines.push(format!(
                     "    #[cynic(graphql_type = \"{}\", rename_all=\"camelCase\")]",
                     input_object.name

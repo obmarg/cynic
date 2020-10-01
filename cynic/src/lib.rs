@@ -247,7 +247,9 @@ pub trait Enum<TypeLock>: Sized {
 /// It's recommended to derive this trait with the [InputObject](derive.InputObject.html)
 /// derive.  You can also implement it yourself, but you'll be responsible
 /// for implementing the `SerializableArgument` trait if you want to use it.
-pub trait InputObject<TypeLock>: Clone {}
+pub trait InputObject<TypeLock> {}
+
+impl<TypeLock, T> InputObject<TypeLock> for &T where T: InputObject<TypeLock> {}
 
 /// A marker trait for the arguments types on QueryFragments.
 ///

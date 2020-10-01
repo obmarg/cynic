@@ -154,8 +154,7 @@ pub fn input_object_derive_impl(
                 }
             }
 
-            // TODO: Figure out if this does what I want...
-            ::cynic::define_into_argument_for_scalar!(#ident);
+            ::cynic::impl_into_argument_for_options!(#ident);
         })
     } else {
         Err(syn::Error::new(

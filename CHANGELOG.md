@@ -15,6 +15,15 @@ all APIs might be changed.
 
 - `QueryFragment::fragment` and `InlineFragment::fragments` now accept their
   Argument parameters by reference.
+- `define_into_argument_for_scalar` has been renamed to
+  `impl_into_argument_for_options`
+- There's no longer a blanket impl of `SerializableArgument` for any `Scalar`.
+  `SerializableArgument` now needs to be implemented on each `Scalar`.  There's
+  a `impl_serializable_argument_for_scalar` macro that does this.  The `Scalar`
+  derive automatically calls this macro, so this is only a change if you have a
+  custom `Scalar`
+- The `IntoArgument` trait now has an `Output` associated type that is used for
+  the return value of `IntoArgument::into_argument`
 
 ### New Features
 
@@ -25,7 +34,7 @@ all APIs might be changed.
 ### Changes
 
 - A `SerializableArgument` no longer needs to be `'static + Send`.
-- A `FragmentArguments` no longer needs to be `Clone`
+- `FragmentArguments` & `InputObject`s no longer need to be `Clone`.
 
 ## v0.9.0 - 2020-09-11
 

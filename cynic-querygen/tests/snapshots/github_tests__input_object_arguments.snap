@@ -14,7 +14,7 @@ mod queries {
         pub pr_order: IssueOrder,
     }
 
-    #[derive(cynic::InputObject, Clone, Debug)]
+    #[derive(cynic::InputObject, Debug)]
     #[cynic(graphql_type = "IssueOrder", rename_all="camelCase")]
     pub struct IssueOrder {
         pub direction: OrderDirection,
