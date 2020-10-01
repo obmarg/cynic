@@ -250,6 +250,7 @@ pub trait Enum<TypeLock>: Sized {
 pub trait InputObject<TypeLock> {}
 
 impl<TypeLock, T> InputObject<TypeLock> for &T where T: InputObject<TypeLock> {}
+impl<TypeLock, T> InputObject<TypeLock> for Box<T> where T: InputObject<TypeLock> {}
 
 /// A marker trait for the arguments types on QueryFragments.
 ///

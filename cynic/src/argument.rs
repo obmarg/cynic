@@ -52,6 +52,12 @@ impl<T: SerializableArgument> SerializableArgument for Option<T> {
     }
 }
 
+impl<T: SerializableArgument> SerializableArgument for Box<T> {
+    fn serialize(&self) -> Result<serde_json::Value, SerializeError> {
+        self.as_ref().serialize()
+    }
+}
+
 impl<T: SerializableArgument> SerializableArgument for &T {
     fn serialize(&self) -> Result<serde_json::Value, SerializeError> {
         (*self).serialize()
