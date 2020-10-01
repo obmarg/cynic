@@ -83,7 +83,7 @@
 //!
 //! // You can then build a `cynic::Query` from this fragment
 //! use cynic::QueryFragment;
-//! let operation = cynic::Operation::query(FilmDirectorQuery::fragment(()));
+//! let operation = cynic::Operation::query(FilmDirectorQuery::fragment(&()));
 //!
 //! ```
 //!
@@ -124,7 +124,7 @@
 //! # }
 //! // Deriving `FragmentArguments` allows this struct to be used as arguments to a
 //! // `QueryFragment` fragment, whether it represents part of a query or a whole query.
-//! #[derive(cynic::FragmentArguments, Clone)]
+//! #[derive(cynic::FragmentArguments)]
 //! struct FilmArguments {
 //!     id: Option<cynic::Id>
 //! }
@@ -142,7 +142,7 @@
 //! )]
 //! struct FilmDirectorQueryWithArgs {
 //!     // Here we use `args`, which we've declared above to be an instance of `FilmArguments`
-//!     #[arguments(id = args.id.clone())]
+//!     #[arguments(id = &args.id)]
 //!     film: Option<Film>,
 //! }
 //!
@@ -150,7 +150,7 @@
 //! use cynic::QueryFragment;
 //! let operation = cynic::Operation::query(
 //!     FilmDirectorQueryWithArgs::fragment(
-//!         FilmArguments{ id: Some("ZmlsbXM6MQ==".into()) }
+//!         &FilmArguments{ id: Some("ZmlsbXM6MQ==".into()) }
 //!     )
 //! );
 //! ```
@@ -197,7 +197,7 @@ pub trait QueryFragment {
     type SelectionSet;
     type Arguments: FragmentArguments;
 
-    fn fragment(arguments: Self::Arguments) -> Self::SelectionSet;
+    fn fragment(arguments: &Self::Arguments) -> Self::SelectionSet;
     fn graphql_type() -> String;
 }
 
@@ -207,7 +207,7 @@ pub trait InlineFragments: Sized {
 
     fn graphql_type() -> String;
     fn fragments(
-        arguments: Self::Arguments,
+        arguments: &Self::Arguments,
     ) -> Vec<(String, SelectionSet<'static, Self, Self::TypeLock>)>;
 }
 
@@ -218,7 +218,7 @@ where
     type SelectionSet = SelectionSet<'static, T, T::TypeLock>;
     type Arguments = <T as InlineFragments>::Arguments;
 
-    fn fragment(arguments: Self::Arguments) -> Self::SelectionSet {
+    fn fragment(arguments: &Self::Arguments) -> Self::SelectionSet {
         selection_set::inline_fragments(Self::fragments(arguments))
     }
 
@@ -247,13 +247,15 @@ pub trait Enum<TypeLock>: Sized {
 /// It's recommended to derive this trait with the [InputObject](derive.InputObject.html)
 /// derive.  You can also implement it yourself, but you'll be responsible
 /// for implementing the `SerializableArgument` trait if you want to use it.
-pub trait InputObject<TypeLock>: Clone {}
+pub trait InputObject<TypeLock> {}
+
+impl<TypeLock, T> InputObject<TypeLock> for &T where T: InputObject<TypeLock> {}
 
 /// A marker trait for the arguments types on QueryFragments.
 ///
 /// We use this in combination with the IntoArguments trait below
 /// to convert between different argument types in a query hierarchy.
-pub trait FragmentArguments: Clone {}
+pub trait FragmentArguments {}
 
 impl FragmentArguments for () {}
 
@@ -265,16 +267,16 @@ impl FragmentArguments for () {}
 /// type on the inner fragments and use the blanket implementation of IntoArguments
 /// to convert to ().
 pub trait FromArguments<T> {
-    fn from_arguments(args: &T) -> Self;
+    fn from_arguments(args: T) -> Self;
 }
 
-impl<T> FromArguments<T> for T
+impl<'a, T> FromArguments<&'a T> for &'a T
 where
-    T: Clone + FragmentArguments,
+    T: FragmentArguments,
 {
-    fn from_arguments(other: &T) -> Self {
+    fn from_arguments(args: &'a T) -> Self {
         // TODO: Figure out if there's a way to avoid this clone...
-        other.clone()
+        args
     }
 }
 

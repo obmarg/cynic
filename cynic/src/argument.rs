@@ -1,20 +1,16 @@
-use crate::{Scalar, SerializeError};
+use crate::SerializeError;
 
 pub struct Argument {
     pub(crate) name: String,
-    pub(crate) value: Box<dyn SerializableArgument + Send>,
+    pub(crate) serialize_result: Result<serde_json::Value, SerializeError>,
     pub(crate) type_: String,
 }
 
 impl Argument {
-    pub fn new(
-        name: &str,
-        gql_type: &str,
-        value: impl SerializableArgument + 'static + Send,
-    ) -> Argument {
+    pub fn new(name: &str, gql_type: &str, value: impl SerializableArgument) -> Argument {
         Argument {
             name: name.to_string(),
-            value: Box::new(value),
+            serialize_result: value.serialize(),
             type_: gql_type.to_string(),
         }
     }
@@ -27,8 +23,8 @@ impl serde::Serialize for Argument {
     {
         use serde::ser::Error;
 
-        match self.value.serialize() {
-            Ok(json_val) => serde::Serialize::serialize(&json_val, serializer),
+        match &self.serialize_result {
+            Ok(json_val) => serde::Serialize::serialize(json_val, serializer),
             Err(e) => Err(S::Error::custom(e.to_string())),
         }
     }
@@ -56,8 +52,33 @@ impl<T: SerializableArgument> SerializableArgument for Option<T> {
     }
 }
 
-impl<T: Scalar> SerializableArgument for T {
+impl<T: SerializableArgument> SerializableArgument for &T {
     fn serialize(&self) -> Result<serde_json::Value, SerializeError> {
-        self.encode()
+        (*self).serialize()
     }
 }
+
+impl SerializableArgument for &str {
+    fn serialize(&self) -> Result<serde_json::Value, SerializeError> {
+        Ok(serde_json::Value::String(self.to_string()))
+    }
+}
+
+/// Implements serializable argument for scalar types.
+#[macro_export]
+macro_rules! impl_serializable_argument_for_scalar {
+    ($inner:ty) => {
+        impl $crate::SerializableArgument for $inner {
+            fn serialize(&self) -> Result<$crate::serde_json::Value, $crate::SerializeError> {
+                use $crate::Scalar;
+                self.encode()
+            }
+        }
+    };
+}
+
+impl_serializable_argument_for_scalar!(i32);
+impl_serializable_argument_for_scalar!(f64);
+impl_serializable_argument_for_scalar!(String);
+impl_serializable_argument_for_scalar!(bool);
+impl_serializable_argument_for_scalar!(crate::Id);

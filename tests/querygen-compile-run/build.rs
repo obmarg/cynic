@@ -20,7 +20,7 @@ fn main() {
             &starwars_schema,
             "../../cynic-querygen/tests/queries/starwars/sanity.graphql",
             r#"queries::SanityCheckQuery::fragment(
-                queries::SanityCheckQueryArguments {
+                &queries::SanityCheckQueryArguments {
                     film_id: Some("ZmlsbXM6MQ==".into())
                 }
             )"#,
@@ -29,7 +29,7 @@ fn main() {
             &starwars_schema,
             "../../cynic-querygen/tests/queries/starwars/nested-arguments.graphql",
             r#"queries::NestedArgsQuery::fragment(
-                queries::NestedArgsQueryArguments {
+                &queries::NestedArgsQueryArguments {
                     film_id: "ZmlsbXM6MQ==".into(),
                     planet_cursor: None,
                     resident_connection: None
@@ -39,18 +39,18 @@ fn main() {
         TestCase::query(
             &starwars_schema,
             "../../cynic-querygen/tests/queries/starwars/bare-selection-set.graphql",
-            r#"queries::UnnamedQuery::fragment(())"#,
+            r#"queries::UnnamedQuery::fragment(&())"#,
         ),
         TestCase::query(
             &jobs_schema,
             "tests/queries/graphql.jobs/london-jobs.graphql",
-            r#"queries::Jobs::fragment(())"#,
+            r#"queries::Jobs::fragment(&())"#,
         ),
         TestCase::query(
             &jobs_schema,
             "tests/queries/graphql.jobs/jobs.graphql",
             r#"queries::Jobs::fragment(
-                queries::JobsArguments {
+                &queries::JobsArguments {
                     input: queries::LocationInput {
                         slug: "london".into()
                     }
@@ -61,7 +61,7 @@ fn main() {
             &github_schema,
             "../../cynic-querygen/tests/queries/github/add-comment-mutation.graphql",
             r#"queries::CommentOnMutationSupportIssue::fragment(
-                queries::CommentOnMutationSupportIssueArguments {
+                &queries::CommentOnMutationSupportIssueArguments {
                     comment_body: "This is a test comment, posted by the new cynic mutation support"
                         .into(),
                 },
@@ -71,7 +71,7 @@ fn main() {
             &github_schema,
             "../../cynic-querygen/tests/queries/github/input-object-arguments.graphql",
             r#"queries::PullRequestTitles::fragment(
-                queries::PullRequestTitlesArguments {
+                &queries::PullRequestTitlesArguments {
                     pr_order: queries::IssueOrder {
                         direction: queries::OrderDirection::Asc,
                         field: queries::IssueOrderField::CreatedAt,
@@ -83,7 +83,7 @@ fn main() {
             &github_schema,
             "tests/queries/github/nested-arguments.graphql",
             r#"queries::PullRequestTitles::fragment(
-                queries::PullRequestTitlesArguments {
+                &queries::PullRequestTitlesArguments {
                     owner: "obmarg".into(),
                     repo: "cynic".into(),
                     pr_order: queries::IssueOrder {
@@ -96,7 +96,7 @@ fn main() {
         TestCase::query_norun(
             &github_schema,
             "../../cynic-querygen/tests/queries/github/input-object-literals.graphql",
-            r#"queries::PullRequestTitles::fragment(())"#,
+            r#"queries::PullRequestTitles::fragment(&())"#,
         ),
         /*
         TestCase::query_norun(

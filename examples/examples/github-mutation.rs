@@ -43,7 +43,7 @@ fn build_query() -> cynic::Operation<'static, queries::CommentOnMutationSupportI
     use queries::{CommentOnMutationSupportIssue, CommentOnMutationSupportIssueArguments};
 
     cynic::Operation::mutation(CommentOnMutationSupportIssue::fragment(
-        CommentOnMutationSupportIssueArguments {
+        &CommentOnMutationSupportIssueArguments {
             comment_body: "Testing".into(),
         },
     ))
@@ -57,7 +57,7 @@ fn build_query() -> cynic::Operation<'static, queries::CommentOnMutationSupportI
 mod queries {
     use super::{query_dsl, types::*};
 
-    #[derive(cynic::FragmentArguments, Clone, Debug)]
+    #[derive(cynic::FragmentArguments, Debug)]
     pub struct CommentOnMutationSupportIssueArguments {
         pub comment_body: String,
     }

@@ -203,9 +203,9 @@ mod tests {
         assert_eq!(
             arguments
                 .iter()
-                .map(|a| a.value.serialize().unwrap())
+                .map(|a| a.serialize_result.as_ref().unwrap())
                 .collect::<Vec<_>>(),
-            vec![json!(false), json!(true)]
+            vec![&json!(false), &json!(true)]
         );
         assert_eq!(
             arguments

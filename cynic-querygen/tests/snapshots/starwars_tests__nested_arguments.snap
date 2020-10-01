@@ -9,7 +9,7 @@ expression: "document_to_fragment_structs(query, schema,\n                      
 mod queries {
     use super::{query_dsl, types::*};
 
-    #[derive(cynic::FragmentArguments, Clone, Debug)]
+    #[derive(cynic::FragmentArguments, Debug)]
     pub struct NestedArgsQueryArguments {
         pub film_id: cynic::Id,
         pub planet_cursor: Option<String>,

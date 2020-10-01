@@ -3,7 +3,7 @@ fn main() {
 
     println!(
         "{}",
-        cynic::Operation::query(TestStruct::fragment(TestArgs {})).query
+        cynic::Operation::query(TestStruct::fragment(&TestArgs {})).query
     );
 }
 
@@ -15,7 +15,7 @@ mod query_dsl {
 
 use cynic::selection_set;
 
-#[derive(Clone, cynic::FragmentArguments)]
+#[derive(cynic::FragmentArguments)]
 struct TestArgs {}
 
 #[derive(cynic::QueryFragment)]

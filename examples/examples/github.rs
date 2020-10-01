@@ -44,7 +44,7 @@ fn build_query() -> cynic::Operation<'static, queries::PullRequestTitles> {
         IssueOrder, IssueOrderField, OrderDirection, PullRequestTitles, PullRequestTitlesArguments,
     };
 
-    cynic::Operation::query(PullRequestTitles::fragment(PullRequestTitlesArguments {
+    cynic::Operation::query(PullRequestTitles::fragment(&PullRequestTitlesArguments {
         pr_order: IssueOrder {
             direction: OrderDirection::Asc,
             field: IssueOrderField::CreatedAt,
@@ -60,7 +60,7 @@ fn build_query() -> cynic::Operation<'static, queries::PullRequestTitles> {
 mod queries {
     use super::{query_dsl, types::*};
 
-    #[derive(cynic::FragmentArguments, Clone, Debug)]
+    #[derive(cynic::FragmentArguments, Debug)]
     pub struct PullRequestTitlesArguments {
         pub pr_order: IssueOrder,
     }

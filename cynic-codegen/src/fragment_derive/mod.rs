@@ -189,7 +189,7 @@ impl quote::ToTokens for FieldSelectorCall {
         let inner_selection_tokens = match &self.style {
             SelectorCallStyle::Scalar => quote! {},
             SelectorCallStyle::QueryFragment(field_type) => quote! {
-                #field_type::fragment(FromArguments::from_arguments(&args))
+                #field_type::fragment(FromArguments::from_arguments(args))
             },
             SelectorCallStyle::Enum(enum_type) => quote! {
                 #enum_type::select()
@@ -347,7 +347,7 @@ impl quote::ToTokens for FragmentImpl {
                 type SelectionSet = ::cynic::SelectionSet<'static, Self, #selector_struct>;
                 type Arguments = #argument_struct;
 
-                fn fragment(args: Self::Arguments) -> Self::SelectionSet {
+                fn fragment(args: &Self::Arguments) -> Self::SelectionSet {
                     use ::cynic::{QueryFragment, FromArguments, Enum};
 
                     let new = |#(#constructor_params),*| #target_struct {
