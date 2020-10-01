@@ -10,11 +10,19 @@ pub fn check_types_are_compatible(
 
     let parsed_type = parse_type(rust_type);
 
-    if parsed_type == ParsedType::Unknown {
-        return Err(syn::Error::new(
-            rust_type.span(),
-            "Cynic does not understand this type. Only un-parameterised types, Vecs & Options are accepted currently.",
-        ));
+    match parsed_type {
+        ParsedType::Unknown => {
+            return Err(syn::Error::new(
+                rust_type.span(),
+                "Cynic does not understand this type. Only un-parameterised types, Vecs, Options & Box are accepted currently.",
+            ))
+        },
+        ParsedType::Box(inner) => {
+            // Box is a transparent container for the purposes of checking compatability
+            // so just recurse
+            return check_types_are_compatible(gql_type, inner, flattening);
+        }
+        _ => {}
     }
 
     if gql_type.is_nullable() {
@@ -69,6 +77,7 @@ pub fn check_types_are_compatible(
 enum ParsedType<'a> {
     Optional(&'a syn::Type),
     List(&'a syn::Type),
+    Box(&'a syn::Type),
     SimpleType,
     Unknown,
 }
@@ -76,25 +85,24 @@ enum ParsedType<'a> {
 fn parse_type<'a>(ty: &'a syn::Type) -> ParsedType<'a> {
     if let syn::Type::Path(type_path) = ty {
         if let Some(last_segment) = type_path.path.segments.last() {
-            if last_segment.ident.to_string() == "Option" {
-                if let syn::PathArguments::AngleBracketed(angle_bracketed) = &last_segment.arguments
-                {
-                    for arg in &angle_bracketed.args {
-                        if let syn::GenericArgument::Type(inner_type) = arg {
-                            return ParsedType::Optional(inner_type);
-                        }
-                    }
+            if last_segment.ident.to_string() == "Box" {
+                if let Some(inner_type) = extract_generic_argument(last_segment) {
+                    return ParsedType::Box(inner_type);
                 }
+
+                return ParsedType::Unknown;
+            }
+            if last_segment.ident.to_string() == "Option" {
+                if let Some(inner_type) = extract_generic_argument(last_segment) {
+                    return ParsedType::Optional(inner_type);
+                }
+
                 return ParsedType::Unknown;
             } else if last_segment.ident.to_string() == "Vec" {
-                if let syn::PathArguments::AngleBracketed(angle_bracketed) = &last_segment.arguments
-                {
-                    for arg in &angle_bracketed.args {
-                        if let syn::GenericArgument::Type(inner_type) = arg {
-                            return ParsedType::List(inner_type);
-                        }
-                    }
+                if let Some(inner_type) = extract_generic_argument(last_segment) {
+                    return ParsedType::List(inner_type);
                 }
+
                 return ParsedType::Unknown;
             }
 
@@ -105,6 +113,19 @@ fn parse_type<'a>(ty: &'a syn::Type) -> ParsedType<'a> {
     }
 
     ParsedType::Unknown
+}
+
+/// Takes a PathSegment like `Vec<T>` and extracts the `T`
+fn extract_generic_argument<'a>(segment: &'a syn::PathSegment) -> Option<&'a syn::Type> {
+    if let syn::PathArguments::AngleBracketed(angle_bracketed) = &segment.arguments {
+        for arg in &angle_bracketed.args {
+            if let syn::GenericArgument::Type(inner_type) = arg {
+                return Some(inner_type);
+            }
+        }
+    }
+
+    None
 }
 
 #[cfg(test)]
