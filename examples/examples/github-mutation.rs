@@ -43,7 +43,7 @@ fn build_query() -> cynic::Operation<'static, queries::CommentOnMutationSupportI
     use queries::{CommentOnMutationSupportIssue, CommentOnMutationSupportIssueArguments};
 
     cynic::Operation::mutation(CommentOnMutationSupportIssue::fragment(
-        CommentOnMutationSupportIssueArguments {
+        &CommentOnMutationSupportIssueArguments {
             comment_body: "Testing".into(),
         },
     ))

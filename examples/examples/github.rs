@@ -44,7 +44,7 @@ fn build_query() -> cynic::Operation<'static, queries::PullRequestTitles> {
         IssueOrder, IssueOrderField, OrderDirection, PullRequestTitles, PullRequestTitlesArguments,
     };
 
-    cynic::Operation::query(PullRequestTitles::fragment(PullRequestTitlesArguments {
+    cynic::Operation::query(PullRequestTitles::fragment(&PullRequestTitlesArguments {
         pr_order: IssueOrder {
             direction: OrderDirection::Asc,
             field: IssueOrderField::CreatedAt,
