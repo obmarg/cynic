@@ -179,6 +179,7 @@ mod operation;
 mod result;
 mod scalar;
 
+pub mod http;
 pub mod selection_set;
 pub mod utils;
 
