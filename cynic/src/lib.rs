@@ -88,7 +88,8 @@
 //! ```
 //!
 //! `operation` above implements `serde::Serialize` so can be used with any HTTP
-//! client.  For example, with `reqwest`:
+//! client.  A selection of HTTP client integrations are provided in
+//! `cynic::http` - see the docs there for examples of using a `cynic::Operation`
 //!
 //! ```rust,ignore
 //! let response = reqwest::blocking::Client::new()
