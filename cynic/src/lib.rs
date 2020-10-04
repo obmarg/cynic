@@ -162,7 +162,9 @@
 //! - `chrono` adds support for chrono::DateTime scalars.
 //! - `uuid` adds support for Uuid scalars
 //! - `bson` adds support for ObjectId scalars
-//! - `url` adds support for Url scalars \
+//! - `url` adds support for Url scalars
+//! - `surf` adds integration with the [`surf`](https://github.com/http-rs/surf)
+//!   http client.
 //!
 //! It's worth noting that each of these features pulls in extra
 //! dependencies, which may impact your build size.  Particularly
