@@ -16,3 +16,4 @@
   - [The Query DSL](./building-queries/query-dsl.md)
   - [Writing Query Fragments](./building-queries/query-fragments.md)
 - [Struct Attributes](./struct-attributes.md)
+- [Sending HTTP Requests Manually](./manual-http-requests.md)

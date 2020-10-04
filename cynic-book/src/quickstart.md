@@ -19,13 +19,18 @@ There's a few things you'll need before you get started:
 
 First things first: you need to add cynic to your dependencies. We'll also need
 an HTTP client library. For the purposes of this quickstart we'll be using
-reqwest, but you can use any library you want. Open up your `Cargo.toml` and
+surf but you can use any library you want. Open up your `Cargo.toml` and
 add the following under the `[dependencies]` section:
 
 ```toml
-cynic = "0.6"
-reqwest = { version = "0.10.1", features = ["json", "blocking"] }
+cynic = { version = "0.10", features = ["surf"] }
+surf = "2.0.0-alpha.7"
 ```
+
+Note that we've added the `surf` feature flag of `cynic` - this pulls in some
+`surf` integration code, which we'll be using. If you're using a different HTTP
+client, you'll need a different feature flag or you may need to see the
+[documentation for making an HTTP request manually](./manual-http-requests.md).
 
 You may also optionally want to install `insta` - a snapshot testing library
 that can be useful for double checking your GraphQL queries are as expected.
@@ -126,25 +131,17 @@ let query = cynic::Operation::query(AllFilmsQuery::fragment(&()));
 
 This `Query` struct is serializable using `serde::Serialize`, so you should
 pass it in as the HTTP body using your HTTP client and then make a request.
-For example, to use reqwest to talk to the StarWars API:
+For example, to use surf to talk to the StarWars API (see the docs for
+`cynic::http` if you're using another client):
 
 ```rust
-let response = reqwest::blocking::Client::new()
-    .post("https://swapi-graphql.netlify.com/.netlify/functions/index")
-    .json(&query)
-    .send()
+let response = surf::post("https://swapi-graphql.netlify.com/.netlify/functions/index")
+    .run_graphql(&query)
+    .await
     .unwrap();
 ```
 
-Now, assuming everything went well, you should have a response containing JSON.
-First you need to decode this JSON, then you can pass it to the
-`decode_response` function which will handle decoding into your query structs:
-
-```rust
-let all_films_result = query.decode_response(response.json().unwrap()).unwrap();
-```
-
-Now you can do whatever you want with the results of your query. And that's
-the end of the quickstart.
+Now, assuming everything went well, you should have the response to your query
+which you can do whatever you want with. And that's the end of the quickstart.
 
 [1]: https://generator.cynic-rs.dev
