@@ -88,7 +88,8 @@
 //! ```
 //!
 //! `operation` above implements `serde::Serialize` so can be used with any HTTP
-//! client.  For example, with `reqwest`:
+//! client.  A selection of HTTP client integrations are provided in
+//! `cynic::http` - see the docs there for examples of using a `cynic::Operation`
 //!
 //! ```rust,ignore
 //! let response = reqwest::blocking::Client::new()
@@ -162,7 +163,9 @@
 //! - `chrono` adds support for chrono::DateTime scalars.
 //! - `uuid` adds support for Uuid scalars
 //! - `bson` adds support for ObjectId scalars
-//! - `url` adds support for Url scalars \
+//! - `url` adds support for Url scalars
+//! - `surf` adds integration with the [`surf`](https://github.com/http-rs/surf)
+//!   http client.
 //!
 //! It's worth noting that each of these features pulls in extra
 //! dependencies, which may impact your build size.  Particularly
@@ -179,6 +182,7 @@ mod operation;
 mod result;
 mod scalar;
 
+pub mod http;
 pub mod selection_set;
 pub mod utils;
 

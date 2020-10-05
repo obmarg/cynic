@@ -32,6 +32,8 @@ all APIs might be changed.
 - The `url` feature, which allows to use Url in schemas, added.
 - `InputObject`s may now contain fields inside a `Box`.  This allows for
   recursive `InputObject` types.
+- The `surf` feature enables integration with the `surf` HTTP client, so users
+  don't have to write it themselves.
 
 ### Changes
 

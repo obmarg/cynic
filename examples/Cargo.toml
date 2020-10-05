@@ -10,10 +10,16 @@ edition = "2018"
 github = ["serde_json"]
 
 [dependencies]
-cynic = { path = "../cynic" }
+cynic = { path = "../cynic", features = ["surf"] }
 cynic-codegen = { path = "../cynic-codegen" }
-reqwest = { version = "0.10.1", features = ["json", "blocking"] }
 serde_json = { version = "1.0", optional = true }
+
+# Reqwest example requirements
+reqwest = { version = "0.10.1", features = ["json", "blocking"] }
+
+# Surf example requirements
+surf = "2.0.0-alpha.7"
+async-std = "1.6.5"
 
 [dev-dependencies]
 insta = "0.16.0"
