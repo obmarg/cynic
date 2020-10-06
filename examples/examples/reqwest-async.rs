@@ -30,19 +30,21 @@ struct FilmDirectorQuery {
     film: Option<Film>,
 }
 
-fn main() {
-    let result = run_query();
+#[tokio::main]
+async fn main() {
+    let result = run_query().await;
     println!("{:?}", result);
 }
 
-fn run_query() -> cynic::GraphQLResponse<FilmDirectorQuery> {
-    use cynic::http::ReqwestBlockingExt;
+async fn run_query() -> cynic::GraphQLResponse<FilmDirectorQuery> {
+    use cynic::http::ReqwestExt;
 
     let query = build_query();
 
-    reqwest::blocking::Client::new()
+    reqwest::Client::new()
         .post("https://swapi-graphql.netlify.com/.netlify/functions/index")
         .run_graphql(query)
+        .await
         .unwrap()
 }
 
@@ -68,9 +70,9 @@ mod test {
         insta::assert_snapshot!(query.query);
     }
 
-    #[test]
-    fn test_running_query() {
-        let result = run_query();
+    #[tokio::test]
+    async fn test_running_query() {
+        let result = run_query().await;
         if result.errors.is_some() {
             assert_eq!(result.errors.unwrap().len(), 0);
         }

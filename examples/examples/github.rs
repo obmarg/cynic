@@ -17,23 +17,17 @@ fn main() {
 
 #[cfg(feature = "github")]
 fn run_query() -> cynic::GraphQLResponse<queries::PullRequestTitles> {
+    use cynic::http::ReqwestBlockingExt;
+
     let query = build_query();
 
     let token = std::env::var("GITHUB_TOKEN").expect("GITHUB_TOKEN env var must be set");
 
-    let response = reqwest::blocking::Client::new()
+    reqwest::blocking::Client::new()
         .post("https://api.github.com/graphql")
         .header("Authorization", format!("Bearer {}", token))
         .header("User-Agent", "obmarg")
-        .json(&query)
-        .send()
-        .unwrap();
-
-    let response_body = response.text().unwrap();
-    println!("{:?}", &response_body);
-
-    query
-        .decode_response(serde_json::from_str(&response_body).unwrap())
+        .run_graphql(query)
         .unwrap()
 }
 
