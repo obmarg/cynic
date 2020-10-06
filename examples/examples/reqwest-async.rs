@@ -1,7 +1,7 @@
-//! An example of querying the starwars API using surf via the cynic
-//! integration.
+//! An example that shows how to make & decode a GraphQL operation using
+//! the reqwest async integration
 //!
-//! This example requires the `surf` feature to be active.
+//! This example requires the `reqwest` feature to be active
 
 mod query_dsl {
     cynic::query_dsl!("examples/starwars.schema.graphql");
@@ -35,20 +35,20 @@ struct FilmDirectorQuery {
     film: Option<Film>,
 }
 
-fn main() {
-    async_std::task::block_on(async {
-        let result = run_query().await;
-        println!("{:?}", result);
-    })
+#[tokio::main]
+async fn main() {
+    let result = run_query().await;
+    println!("{:?}", result);
 }
 
 async fn run_query() -> cynic::GraphQLResponse<FilmDirectorQuery> {
-    use cynic::http::SurfExt;
+    use cynic::http::ReqwestExt;
 
-    let operation = build_query();
+    let query = build_query();
 
-    surf::post("http://swapi-graphql.netlify.com/.netlify/functions/index")
-        .run_graphql(operation)
+    reqwest::Client::new()
+        .post("https://swapi-graphql.netlify.com/.netlify/functions/index")
+        .run_graphql(query)
         .await
         .unwrap()
 }
@@ -75,14 +75,12 @@ mod test {
         insta::assert_snapshot!(query.query);
     }
 
-    #[test]
-    fn test_running_query() {
-        async_std::task::block_on(async {
-            let result = run_query().await;
-            if result.errors.is_some() {
-                assert_eq!(result.errors.unwrap().len(), 0);
-            }
-            insta::assert_debug_snapshot!(result.data);
-        });
+    #[tokio::test]
+    async fn test_running_query() {
+        let result = run_query().await;
+        if result.errors.is_some() {
+            assert_eq!(result.errors.unwrap().len(), 0);
+        }
+        insta::assert_debug_snapshot!(result.data);
     }
 }

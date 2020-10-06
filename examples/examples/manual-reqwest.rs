@@ -1,7 +1,5 @@
-//! An example of querying the starwars API using surf via the cynic
-//! integration.
-//!
-//! This example requires the `surf` feature to be active.
+//! An example that shows how to make & decode a GraphQL operation using
+//! reqwest without the cynic integration code
 
 mod query_dsl {
     cynic::query_dsl!("examples/starwars.schema.graphql");
@@ -36,21 +34,22 @@ struct FilmDirectorQuery {
 }
 
 fn main() {
-    async_std::task::block_on(async {
-        let result = run_query().await;
-        println!("{:?}", result);
-    })
+    let result = run_query();
+    println!("{:?}", result);
 }
 
-async fn run_query() -> cynic::GraphQLResponse<FilmDirectorQuery> {
-    use cynic::http::SurfExt;
+fn run_query() -> cynic::GraphQLResponse<FilmDirectorQuery> {
+    let query = build_query();
 
-    let operation = build_query();
+    let response = reqwest::blocking::Client::new()
+        .post("https://swapi-graphql.netlify.com/.netlify/functions/index")
+        .json(&query)
+        .send()
+        .unwrap();
 
-    surf::post("http://swapi-graphql.netlify.com/.netlify/functions/index")
-        .run_graphql(operation)
-        .await
-        .unwrap()
+    println!("{:?}", response);
+
+    query.decode_response(response.json().unwrap()).unwrap()
 }
 
 fn build_query() -> cynic::Operation<'static, FilmDirectorQuery> {
@@ -77,12 +76,10 @@ mod test {
 
     #[test]
     fn test_running_query() {
-        async_std::task::block_on(async {
-            let result = run_query().await;
-            if result.errors.is_some() {
-                assert_eq!(result.errors.unwrap().len(), 0);
-            }
-            insta::assert_debug_snapshot!(result.data);
-        });
+        let result = run_query();
+        if result.errors.is_some() {
+            assert_eq!(result.errors.unwrap().len(), 0);
+        }
+        insta::assert_debug_snapshot!(result.data);
     }
 }

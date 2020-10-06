@@ -34,6 +34,8 @@ all APIs might be changed.
   recursive `InputObject` types.
 - The `surf` feature enables integration with the `surf` HTTP client, so users
   don't have to write it themselves.
+- The `reqwest` & `reqwest-blocking` features, which add support for the
+  `reqwest` HTTP client. 
 
 ### Changes
 
