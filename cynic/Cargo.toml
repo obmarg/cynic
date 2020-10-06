@@ -14,7 +14,8 @@ documentation = "https://docs.rs/cynic"
 
 [features]
 default = []
-all = ["chrono", "bson", "uuid", "url", "surf"]
+all = ["chrono", "bson", "uuid", "url", "surf", "reqwest", "reqwest-blocking"]
+reqwest-blocking = ["reqwest/blocking"]
 
 [dependencies]
 json-decode = "0.5.0"
@@ -31,6 +32,9 @@ url = { version = "2.1.1", optional = true}
 
 # Surf feature deps
 surf = { version = "2.0.0", optional = true }
+
+# Reqwest feature deps
+reqwest = { version = "0.10", optional = true }
 
 [dev-dependencies]
 maplit = "1.0.2"
