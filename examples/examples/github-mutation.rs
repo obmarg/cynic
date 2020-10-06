@@ -6,6 +6,8 @@
 //! around 100k lines of rust), and it's too much for normal development.
 //!
 //! If you want to use this example be sure to remove all the feature flagging.
+//!
+//! This example also requires the `reqwest-blocking` feature to be active.
 
 fn main() {
     #[cfg(feature = "github")]

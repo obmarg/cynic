@@ -1,3 +1,5 @@
+//! An example of querying the starwars API using the reqwest-blocking feature
+
 mod query_dsl {
     cynic::query_dsl!("examples/starwars.schema.graphql");
 }

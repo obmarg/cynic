@@ -1,3 +1,8 @@
+//! An example of querying the starwars API using surf via the cynic
+//! integration.
+//!
+//! This example requires the `surf` feature to be active.
+
 mod query_dsl {
     cynic::query_dsl!("examples/starwars.schema.graphql");
 }

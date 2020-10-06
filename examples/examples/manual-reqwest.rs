@@ -1,7 +1,5 @@
 //! An example that shows how to make & decode a GraphQL operation using
-//! the reqwest async integration
-//!
-//! This example requires the `reqwest` feature to be active
+//! reqwest without the cynic integration code
 
 mod query_dsl {
     cynic::query_dsl!("examples/starwars.schema.graphql");
@@ -35,22 +33,23 @@ struct FilmDirectorQuery {
     film: Option<Film>,
 }
 
-#[tokio::main]
-async fn main() {
-    let result = run_query().await;
+fn main() {
+    let result = run_query();
     println!("{:?}", result);
 }
 
-async fn run_query() -> cynic::GraphQLResponse<FilmDirectorQuery> {
-    use cynic::http::ReqwestExt;
-
+fn run_query() -> cynic::GraphQLResponse<FilmDirectorQuery> {
     let query = build_query();
 
-    reqwest::Client::new()
+    let response = reqwest::blocking::Client::new()
         .post("https://swapi-graphql.netlify.com/.netlify/functions/index")
-        .run_graphql(query)
-        .await
-        .unwrap()
+        .json(&query)
+        .send()
+        .unwrap();
+
+    println!("{:?}", response);
+
+    query.decode_response(response.json().unwrap()).unwrap()
 }
 
 fn build_query() -> cynic::Operation<'static, FilmDirectorQuery> {
@@ -75,9 +74,9 @@ mod test {
         insta::assert_snapshot!(query.query);
     }
 
-    #[tokio::test]
-    async fn test_running_query() {
-        let result = run_query().await;
+    #[test]
+    fn test_running_query() {
+        let result = run_query();
         if result.errors.is_some() {
             assert_eq!(result.errors.unwrap().len(), 0);
         }
