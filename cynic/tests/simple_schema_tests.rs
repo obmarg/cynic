@@ -4,8 +4,6 @@ mod query_dsl {
     cynic::query_dsl!("src/bin/simple.graphql");
 }
 
-use cynic::selection_set;
-
 #[derive(cynic::FragmentArguments)]
 struct TestArgs {}
 

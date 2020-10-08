@@ -13,6 +13,9 @@ pub struct InputObjectDeriveInput {
     pub graphql_type: SpannedValue<String>,
 
     #[darling(default)]
+    pub require_all_fields: bool,
+
+    #[darling(default)]
     pub(super) rename_all: Option<RenameAll>,
 }
 

@@ -31,6 +31,10 @@ pub fn load_schema(filename: impl AsRef<std::path::Path>) -> Result<Document, Er
     let schema = std::fs::read_to_string(&pathbuf)
         .map_err(|_| Error::FileNotFound(pathbuf.to_str().unwrap().to_string()))?;
 
+    parse_schema(&schema)
+}
+
+pub(crate) fn parse_schema(schema: &str) -> Result<Document, Error> {
     let borrowed_schema = graphql_parser::schema::parse_schema::<String>(&schema)?;
     Ok(schema_into_static(borrowed_schema))
 }
@@ -82,6 +86,7 @@ impl FieldExt for Field {
 pub trait TypeExt {
     fn to_graphql_string(&self) -> String;
     fn inner_name(&self) -> &str;
+    fn is_required(&self) -> bool;
 }
 
 impl TypeExt for Type {
@@ -98,6 +103,13 @@ impl TypeExt for Type {
             Type::NamedType(s) => s,
             Type::ListType(inner) => inner.inner_name(),
             Type::NonNullType(inner) => inner.inner_name(),
+        }
+    }
+
+    fn is_required(&self) -> bool {
+        match self {
+            Type::NonNullType(_) => true,
+            _ => false,
         }
     }
 }

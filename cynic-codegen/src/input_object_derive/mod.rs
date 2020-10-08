@@ -63,6 +63,7 @@ pub fn input_object_derive_impl(
             input_object_def,
             &input.ident.to_string(),
             input.rename_all,
+            input.require_all_fields,
             &struct_span,
         ) {
             Ok(pairs) => pairs,
@@ -169,8 +170,11 @@ fn join_fields<'a>(
     input_object_def: &'a InputObjectType,
     input_object_name: &str,
     rename_all: Option<RenameAll>,
+    require_all_fields: bool,
     struct_span: &Span,
 ) -> Result<Vec<(&'a InputObjectDeriveField, &'a InputValue)>, TokenStream> {
+    use crate::schema::TypeExt;
+
     let mut map = HashMap::new();
     for field in fields {
         let transformed_ident = Ident::from_proc_macro2(
@@ -188,11 +192,15 @@ fn join_fields<'a>(
         entry.1 = Some(value);
     }
 
-    let mut missing_fields = vec![];
+    let mut missing_required_fields = vec![];
+    let mut missing_optional_fields = vec![];
     let mut errors = TokenStream::new();
     for (transformed_ident, value) in map.iter() {
         match value {
-            (None, Some(input_value)) => missing_fields.push(input_value.name.as_ref()),
+            (None, Some(input_value)) if input_value.value_type.is_required() => {
+                missing_required_fields.push(input_value.name.as_ref())
+            }
+            (None, Some(input_value)) => missing_optional_fields.push(input_value.name.as_ref()),
             (Some(field), None) => errors.extend(
                 syn::Error::new(
                     field.ident.span(),
@@ -206,22 +214,142 @@ fn join_fields<'a>(
             _ => (),
         }
     }
-    if !missing_fields.is_empty() {
-        let missing_fields_string = missing_fields.join(", ");
+
+    if !missing_required_fields.is_empty() {
+        let missing_fields_string = missing_required_fields.join(", ");
         errors.extend(
             syn::Error::new(
                 struct_span.clone(),
-                format!("Missing fields: {}", missing_fields_string),
+                format!(
+                    "This InputObject is missing these required fields: {}",
+                    missing_fields_string
+                ),
             )
             .to_compile_error(),
         )
     }
+
+    if require_all_fields && !missing_optional_fields.is_empty() {
+        let missing_fields_string = missing_optional_fields.join(", ");
+        errors.extend(
+            syn::Error::new(
+                struct_span.clone(),
+                format!(
+                    "This InputObject is missing these optional fields: {}.  If you wish to omit them you can remove the `require_all_fields` attribute from the InputObject",
+                    missing_fields_string
+                ),
+            )
+            .to_compile_error(),
+        )
+    }
+
     if !errors.is_empty() {
         return Err(errors);
     }
 
     Ok(map
         .into_iter()
+        .filter(|(_, (rust_field, _))| rust_field.is_some())
         .map(|(_, (a, b))| (a.unwrap(), b.unwrap()))
         .collect())
+}
+
+#[cfg(test)]
+mod test {
+    use assert_matches::assert_matches;
+
+    use super::*;
+    use crate::schema::{Definition, InputObjectType, TypeDefinition};
+
+    fn test_input_object() -> InputObjectType {
+        let schema = r#"
+        input TestType {
+            field_one: String!,
+            field_two: String
+        }
+        "#;
+
+        if let Definition::TypeDefinition(TypeDefinition::InputObject(rv)) =
+            crate::schema::parse_schema(schema)
+                .unwrap()
+                .definitions
+                .into_iter()
+                .nth(0)
+                .unwrap()
+        {
+            rv
+        } else {
+            panic!("Parsing failed")
+        }
+    }
+
+    #[test]
+    fn test_join_fields_when_all_required() {
+        let fields = vec![InputObjectDeriveField {
+            ident: Some(proc_macro2::Ident::new("field_one", Span::call_site())),
+            ty: syn::parse_quote! { String },
+            rename: None,
+        }];
+        let input_object = test_input_object();
+
+        let result = join_fields(
+            &fields,
+            &input_object,
+            "MyInputObject",
+            None,
+            true,
+            &Span::call_site(),
+        );
+
+        assert_matches!(result, Err(_))
+    }
+
+    #[test]
+    fn test_join_fields_when_required_field_missing() {
+        let fields = vec![InputObjectDeriveField {
+            ident: Some(proc_macro2::Ident::new("field_two", Span::call_site())),
+            ty: syn::parse_quote! { String },
+            rename: None,
+        }];
+        let input_object = test_input_object();
+
+        let result = join_fields(
+            &fields,
+            &input_object,
+            "MyInputObject",
+            None,
+            false,
+            &Span::call_site(),
+        );
+
+        assert_matches!(result, Err(_))
+    }
+
+    #[test]
+    fn test_join_fields_when_not_required() {
+        let fields = vec![InputObjectDeriveField {
+            ident: Some(proc_macro2::Ident::new("field_one", Span::call_site())),
+            ty: syn::parse_quote! { String },
+            rename: None,
+        }];
+        let input_object = test_input_object();
+
+        let result = join_fields(
+            &fields,
+            &input_object,
+            "MyInputObject",
+            None,
+            false,
+            &Span::call_site(),
+        );
+
+        assert_matches!(result, Ok(_));
+
+        let (rust_field_ref, input_field_ref) = result.unwrap().into_iter().nth(0).unwrap();
+        assert!(std::ptr::eq(rust_field_ref, fields.first().unwrap()));
+        assert!(std::ptr::eq(
+            input_field_ref,
+            input_object.fields.first().unwrap()
+        ));
+    }
 }

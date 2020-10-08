@@ -24,6 +24,9 @@ all APIs might be changed.
   custom `Scalar`
 - The `IntoArgument` trait now has an `Output` associated type that is used for
   the return value of `IntoArgument::into_argument`
+- The `InputObject` derive no longer complains if you omit optional fields.
+  The old behaviour can be brought back by attaching a `require_all_fields`
+  annotation to the InputObject.
 
 ### New Features
 
