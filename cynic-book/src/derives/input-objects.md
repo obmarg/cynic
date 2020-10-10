@@ -51,3 +51,7 @@ Each field can also have it's own attributes:
 
 - `rename="someFieldName"` can be used to map a field to a completely different
   GraphQL field name.
+- `skip_serializing_if="path"` can be used on optional fields to skip
+  serializing them.  By default an `Option` field will be sent as `null` to
+  servers, but if you provide `skip_serializing_if="Option::is_none"` then the
+  field will not be provided at all.

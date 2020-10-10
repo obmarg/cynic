@@ -6,9 +6,11 @@ use crate::{
     ident::{RenameAll, RenameRule},
     load_schema,
     schema::{Definition, Document, InputObjectType, InputValue, TypeDefinition},
-    type_validation::check_types_are_compatible,
-    FieldType, Ident, TypeIndex,
+    Ident, TypeIndex,
 };
+
+mod field_serializer;
+use field_serializer::FieldSerializer;
 
 pub(crate) mod input;
 
@@ -34,7 +36,7 @@ pub fn input_object_derive_impl(
     schema: &Document,
     struct_span: Span,
 ) -> Result<TokenStream, syn::Error> {
-    use quote::{quote, quote_spanned};
+    use quote::quote;
 
     let input_object_def = schema.definitions.iter().find_map(|def| {
         if let Definition::TypeDefinition(TypeDefinition::InputObject(obj)) = def {
@@ -58,10 +60,15 @@ pub fn input_object_derive_impl(
     let type_index = TypeIndex::for_schema(&schema);
 
     if let darling::ast::Data::Struct(fields) = &input.data {
+        let ident = &input.ident;
+        let input_marker_ident = Ident::for_type(&*input.graphql_type);
+        let query_module = Ident::for_module(&input.query_module);
+        let input_object_name = ident.to_string();
+
         let pairs = match join_fields(
             &fields.fields,
             input_object_def,
-            &input.ident.to_string(),
+            &input_object_name,
             input.rename_all,
             input.require_all_fields,
             &struct_span,
@@ -70,16 +77,21 @@ pub fn input_object_derive_impl(
             Err(error_tokens) => return Ok(error_tokens),
         };
 
-        // Check the types of our struct align with the GQL types.
-        let mut type_errors = Vec::new();
-        for (rust_field, gql_value) in pairs.iter() {
-            let field_type = crate::FieldType::from_schema_type(&gql_value.value_type, &type_index);
-            if let Err(e) = check_types_are_compatible(&field_type, &rust_field.ty, false) {
-                type_errors.push(e);
-            }
-        }
-        if !type_errors.is_empty() {
-            return Ok(type_errors.into_iter().map(|e| e.to_compile_error()).fold(
+        let field_serializers = pairs
+            .into_iter()
+            .map(|(rust_field, graphql_field)| {
+                FieldSerializer::new(rust_field, graphql_field, &type_index, &query_module)
+            })
+            .collect::<Vec<_>>();
+
+        let errors = field_serializers
+            .iter()
+            .map(|fs| fs.validate())
+            .flatten()
+            .collect::<Vec<_>>();
+
+        if !errors.is_empty() {
+            return Ok(errors.into_iter().map(|e| e.to_compile_error()).fold(
                 TokenStream::new(),
                 |mut a, b| {
                     a.extend(b);
@@ -88,52 +100,13 @@ pub fn input_object_derive_impl(
             ));
         }
 
-        let ident = input.ident;
-        let query_module = Ident::for_module(&input.query_module);
-        let input_marker_ident = Ident::for_type(&*input.graphql_type);
-
-        let gql_field_names = pairs
+        let output_struct = proc_macro2::Ident::new("output", Span::call_site());
+        let typecheck_funcs = field_serializers.iter().map(|fs| fs.type_check_fn());
+        let field_inserts = field_serializers
             .iter()
-            .map(|(_, gql_value)| proc_macro2::Literal::string(&gql_value.name));
+            .map(|fs| fs.field_insert_call(&output_struct));
 
-        let typecheck_funcs = pairs.iter().map(|(rust_field, gql_value)| {
-            // The check_types_are_compatible call above only checks for Option
-            // and Vec wrappers - we don't have access to any of the type
-            // information of fields within our current struct.
-            //
-            // So, we have to construct some functions with constraints
-            // in order to make sure the fields are of the right type.
-            //
-            // That's what this block is doing.
-
-            let field_type = FieldType::from_schema_type(&gql_value.value_type, &type_index);
-            let generic_param = field_type.generic_parameter(Ident::new("T"));
-            let arg_type = field_type.to_tokens(
-                generic_param.as_ref().map(|p| p.name.clone()),
-                query_module.clone().into(),
-            );
-
-            let rust_field_name = &rust_field.ident;
-            let generic_param_definition =
-                generic_param.map(|p| p.to_tokens(query_module.clone().into()));
-
-            quote! {
-                fn #rust_field_name<#generic_param_definition>(data: &#arg_type) ->
-                    Result<::cynic::serde_json::Value, ::cynic::SerializeError> {
-                        data.serialize()
-                    }
-            }
-        });
-
-        let field_values = pairs.iter().map(|(rust_field, _)| {
-            let field_span = rust_field.ident.span();
-            let rust_field_name = &rust_field.ident;
-
-            // For each field we just call our type checking function with the current field
-            quote_spanned! { field_span =>
-                #rust_field_name(&self.#rust_field_name)?
-            }
-        });
+        let map_len = field_serializers.len();
 
         Ok(quote! {
             #[automatically_derived]
@@ -147,11 +120,11 @@ pub fn input_object_derive_impl(
                         #typecheck_funcs
                     )*
 
-                    Ok(::cynic::serde_json::json!({
-                        #(
-                            #gql_field_names: #field_values,
-                        )*
-                    }))
+                    let mut output = ::cynic::serde_json::map::Map::with_capacity(#map_len);
+
+                    #(#field_inserts)*
+
+                    Ok(::cynic::serde_json::Value::Object(output))
                 }
             }
 
@@ -289,6 +262,7 @@ mod test {
             ident: Some(proc_macro2::Ident::new("field_one", Span::call_site())),
             ty: syn::parse_quote! { String },
             rename: None,
+            skip_serializing_if: None,
         }];
         let input_object = test_input_object();
 
@@ -310,6 +284,7 @@ mod test {
             ident: Some(proc_macro2::Ident::new("field_two", Span::call_site())),
             ty: syn::parse_quote! { String },
             rename: None,
+            skip_serializing_if: None,
         }];
         let input_object = test_input_object();
 
@@ -331,6 +306,7 @@ mod test {
             ident: Some(proc_macro2::Ident::new("field_one", Span::call_site())),
             ty: syn::parse_quote! { String },
             rename: None,
+            skip_serializing_if: None,
         }];
         let input_object = test_input_object();
 

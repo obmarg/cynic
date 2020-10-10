@@ -1,0 +1,4 @@
+input BlogPost {
+  author: String
+  content: String!
+}
