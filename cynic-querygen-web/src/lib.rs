@@ -3,7 +3,7 @@
 // but some rules are too "annoying" or are not applicable for your case.)
 #![allow(clippy::wildcard_imports)]
 
-use seed::{prelude::*, *};
+use seed::prelude::*;
 
 mod entry_page;
 mod graphiql_page;
