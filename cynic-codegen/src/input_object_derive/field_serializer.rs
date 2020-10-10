@@ -1,6 +1,6 @@
 use proc_macro2::TokenStream;
 use quote::{quote, quote_spanned};
-use syn::{spanned::Spanned, TypePath};
+use syn::spanned::Spanned;
 
 use super::InputObjectDeriveField;
 use crate::{
@@ -83,7 +83,7 @@ impl<'a> FieldSerializer<'a> {
         // For each field we just call our type checking function with the current field
         // and insert it into the output Map.
         let insert_call = quote_spanned! { field_span =>
-            output.insert(#gql_field_name.to_string(), #rust_field_name(&self.#rust_field_name)?);
+            #output_struct.insert(#gql_field_name.to_string(), #rust_field_name(&self.#rust_field_name)?);
         };
 
         if let Some(skip_check_fn) = &self.rust_field.skip_serializing_if {

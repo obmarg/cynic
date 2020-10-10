@@ -6,8 +6,7 @@ use crate::{
     ident::{RenameAll, RenameRule},
     load_schema,
     schema::{Definition, Document, InputObjectType, InputValue, TypeDefinition},
-    type_validation::check_types_are_compatible,
-    FieldType, Ident, TypeIndex,
+    Ident, TypeIndex,
 };
 
 mod field_serializer;
@@ -37,7 +36,7 @@ pub fn input_object_derive_impl(
     schema: &Document,
     struct_span: Span,
 ) -> Result<TokenStream, syn::Error> {
-    use quote::{quote, quote_spanned};
+    use quote::quote;
 
     let input_object_def = schema.definitions.iter().find_map(|def| {
         if let Definition::TypeDefinition(TypeDefinition::InputObject(obj)) = def {
