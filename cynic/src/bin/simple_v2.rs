@@ -1,4 +1,5 @@
 fn main() {
+    #[allow(unused_imports)]
     use queries::{TestArgs, TestStruct};
 
     //println!("{}", cynic::Operation::query<TestStruct>(TestArgs {}));
@@ -10,8 +11,6 @@ mod query_dsl {
 
     cynic::query_dsl!("src/bin/simple.graphql");
 }
-
-use cynic::selection_set;
 
 #[cynic::query_module(
     schema_path = "src/bin/simple.graphql",
@@ -29,30 +28,24 @@ mod queries {
     #[cynic(graphql_type = "TestStruct", argument_struct = "TestArgs")]
     pub struct TestStruct {
         #[arguments(x = 1, y = "1")]
-        field_one: String,
-        nested: Nested,
-        opt_nested: Option<Nested>,
-        dessert: Option<Dessert>,
+        pub field_one: String,
+        pub nested: Nested,
+        pub opt_nested: Option<Nested>,
+        pub dessert: Option<Dessert>,
     }
 
     #[derive(cynic::QueryFragment)]
     #[cynic(graphql_type = "Nested")]
     pub struct Nested {
-        a_string: String,
-        opt_string: Option<String>,
+        pub a_string: String,
+        pub opt_string: Option<String>,
     }
 
     #[derive(cynic::QueryFragment)]
     #[cynic(graphql_type = "TestStruct")]
     pub struct Test {
         #[arguments(x = 1, y = "1")]
-        field_one: String,
-    }
-
-    impl Test {
-        fn new(field_one: String) -> Self {
-            Test { field_one }
-        }
+        pub field_one: String,
     }
 
     #[derive(cynic::Enum, Clone, Copy)]
@@ -74,8 +67,6 @@ impl cynic::QueryRoot for query_dsl::TestStruct {}
 
 mod test {
 
-    type JSON = serde_json::Value;
-
     // A custom scalars.
     pub struct DateTime {}
 
@@ -87,9 +78,4 @@ mod test {
             todo!()
         }
     }
-
-    // Another custom scalar
-    struct Upload;
-
-    //cynic::query_dsl!("cms-schema.gql");
 }

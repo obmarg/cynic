@@ -51,12 +51,10 @@ impl Default for Model {
 pub enum Msg {
     QueryChange(String),
     SchemaLoaded(String),
-    SchemaPathChange(String),
-    QueryModuleChange(String),
 }
 
 // `update` describes how to handle each `Msg`.
-pub fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
+pub fn update(msg: Msg, model: &mut Model, _orders: &mut impl Orders<Msg>) {
     match msg {
         Msg::QueryChange(query) => {
             seed::log!("Got query: {}", &query);
@@ -66,14 +64,6 @@ pub fn update(msg: Msg, model: &mut Model, orders: &mut impl Orders<Msg>) {
         Msg::SchemaLoaded(schema) => {
             seed::log!("Got schema: {}", &schema);
             model.schema_data = Some(schema);
-            model.generate_code();
-        }
-        Msg::SchemaPathChange(schema_path) => {
-            model.opts.schema_path = schema_path;
-            model.generate_code();
-        }
-        Msg::QueryModuleChange(query_module) => {
-            model.opts.query_module = query_module;
             model.generate_code();
         }
     }

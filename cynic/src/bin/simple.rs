@@ -13,8 +13,6 @@ mod query_dsl {
     cynic::query_dsl!("src/bin/simple.graphql");
 }
 
-use cynic::selection_set;
-
 #[derive(cynic::FragmentArguments)]
 struct TestArgs {}
 
@@ -27,12 +25,12 @@ struct TestArgs {}
 )]
 struct TestStruct {
     #[arguments(x = Some(1), y = "1")]
-    field_one: String,
-    nested: Nested,
-    opt_nested: Option<Nested>,
+    pub field_one: String,
+    pub nested: Nested,
+    pub opt_nested: Option<Nested>,
 
     #[arguments(input = AnInputType { favourite_dessert: None })]
-    field_with_input: Dessert,
+    pub field_with_input: Dessert,
 }
 
 #[derive(cynic::QueryFragment)]
@@ -42,8 +40,8 @@ struct TestStruct {
     graphql_type = "Nested"
 )]
 struct Nested {
-    a_string: String,
-    opt_string: Option<String>,
+    pub a_string: String,
+    pub opt_string: Option<String>,
 }
 
 #[derive(cynic::QueryFragment)]
@@ -54,18 +52,9 @@ struct Nested {
 )]
 struct Test {
     #[arguments(x = Some(1), y = Some("1".to_string()))]
-    field_one: String,
+    pub field_one: String,
     #[arguments(input = AnInputType { favourite_dessert: None })]
-    field_with_input: Dessert,
-}
-
-impl Test {
-    fn new(field_one: String, field_with_input: Dessert) -> Self {
-        Test {
-            field_one,
-            field_with_input,
-        }
-    }
+    pub field_with_input: Dessert,
 }
 
 #[derive(cynic::InputObject, Clone)]
@@ -148,8 +137,6 @@ impl cynic::QueryFragment<'static> for Nested {
 
 mod test {
 
-    type JSON = serde_json::Value;
-
     // A custom scalars.
     pub struct DateTime {}
 
@@ -161,9 +148,4 @@ mod test {
             todo!()
         }
     }
-
-    // Another custom scalar
-    struct Upload;
-
-    //cynic::query_dsl!("cms-schema.gql");
 }
