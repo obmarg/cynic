@@ -10,6 +10,9 @@ use crate::{
     FieldType, Ident, TypeIndex,
 };
 
+mod field_serializer;
+use field_serializer::FieldSerializer;
+
 pub(crate) mod input;
 
 use input::InputObjectDeriveField;
@@ -58,10 +61,15 @@ pub fn input_object_derive_impl(
     let type_index = TypeIndex::for_schema(&schema);
 
     if let darling::ast::Data::Struct(fields) = &input.data {
+        let ident = &input.ident;
+        let input_marker_ident = Ident::for_type(&*input.graphql_type);
+        let query_module = Ident::for_module(&input.query_module);
+        let input_object_name = ident.to_string();
+
         let pairs = match join_fields(
             &fields.fields,
             input_object_def,
-            &input.ident.to_string(),
+            &input_object_name,
             input.rename_all,
             input.require_all_fields,
             &struct_span,
@@ -70,16 +78,21 @@ pub fn input_object_derive_impl(
             Err(error_tokens) => return Ok(error_tokens),
         };
 
-        // Check the types of our struct align with the GQL types.
-        let mut type_errors = Vec::new();
-        for (rust_field, gql_value) in pairs.iter() {
-            let field_type = crate::FieldType::from_schema_type(&gql_value.value_type, &type_index);
-            if let Err(e) = check_types_are_compatible(&field_type, &rust_field.ty, false) {
-                type_errors.push(e);
-            }
-        }
-        if !type_errors.is_empty() {
-            return Ok(type_errors.into_iter().map(|e| e.to_compile_error()).fold(
+        let field_serializers = pairs
+            .into_iter()
+            .map(|(rust_field, graphql_field)| {
+                FieldSerializer::new(rust_field, graphql_field, &type_index, &query_module)
+            })
+            .collect::<Vec<_>>();
+
+        let errors = field_serializers
+            .iter()
+            .map(|fs| fs.validate())
+            .flatten()
+            .collect::<Vec<_>>();
+
+        if !errors.is_empty() {
+            return Ok(errors.into_iter().map(|e| e.to_compile_error()).fold(
                 TokenStream::new(),
                 |mut a, b| {
                     a.extend(b);
@@ -88,63 +101,13 @@ pub fn input_object_derive_impl(
             ));
         }
 
-        let ident = input.ident;
-        let query_module = Ident::for_module(&input.query_module);
-        let input_marker_ident = Ident::for_type(&*input.graphql_type);
+        let output_struct = proc_macro2::Ident::new("output", Span::call_site());
+        let typecheck_funcs = field_serializers.iter().map(|fs| fs.type_check_fn());
+        let field_inserts = field_serializers
+            .iter()
+            .map(|fs| fs.field_insert_call(&output_struct));
 
-        let typecheck_funcs = pairs.iter().map(|(rust_field, gql_value)| {
-            // The check_types_are_compatible call above only checks for Option
-            // and Vec wrappers - we don't have access to any of the type
-            // information of fields within our current struct.
-            //
-            // So, we have to construct some functions with constraints
-            // in order to make sure the fields are of the right type.
-            //
-            // That's what this block is doing.
-
-            let field_type = FieldType::from_schema_type(&gql_value.value_type, &type_index);
-            let generic_param = field_type.generic_parameter(Ident::new("T"));
-            let arg_type = field_type.to_tokens(
-                generic_param.as_ref().map(|p| p.name.clone()),
-                query_module.clone().into(),
-            );
-
-            let rust_field_name = &rust_field.ident;
-            let generic_param_definition =
-                generic_param.map(|p| p.to_tokens(query_module.clone().into()));
-
-            quote! {
-                fn #rust_field_name<#generic_param_definition>(data: &#arg_type) ->
-                    Result<::cynic::serde_json::Value, ::cynic::SerializeError> {
-                        data.serialize()
-                    }
-            }
-        });
-
-        let field_inserts = pairs.iter().map(|(rust_field, gql_value)| {
-            let field_span = rust_field.ident.span();
-            let rust_field_name = &rust_field.ident;
-
-            let gql_field_name = proc_macro2::Literal::string(&gql_value.name);
-
-            // For each field we just call our type checking function with the current field
-            // and insert it into the output Map.
-            let insert_call = quote_spanned! { field_span =>
-                output.insert(#gql_field_name.to_string(), #rust_field_name(&self.#rust_field_name)?);
-            };
-
-            if let Some(skip_check_fn) = &rust_field.skip_serializing_if {
-                quote! {
-                    if !#skip_check_fn(&self.#rust_field_name) {
-                        #insert_call
-                    }
-                }
-            } else {
-                insert_call
-            }
-        });
-
-        let map_len = pairs.len();
+        let map_len = field_serializers.len();
 
         Ok(quote! {
             #[automatically_derived]
