@@ -92,10 +92,6 @@ pub fn input_object_derive_impl(
         let query_module = Ident::for_module(&input.query_module);
         let input_marker_ident = Ident::for_type(&*input.graphql_type);
 
-        let gql_field_names = pairs
-            .iter()
-            .map(|(_, gql_value)| proc_macro2::Literal::string(&gql_value.name));
-
         let typecheck_funcs = pairs.iter().map(|(rust_field, gql_value)| {
             // The check_types_are_compatible call above only checks for Option
             // and Vec wrappers - we don't have access to any of the type
@@ -125,15 +121,30 @@ pub fn input_object_derive_impl(
             }
         });
 
-        let field_values = pairs.iter().map(|(rust_field, _)| {
+        let field_inserts = pairs.iter().map(|(rust_field, gql_value)| {
             let field_span = rust_field.ident.span();
             let rust_field_name = &rust_field.ident;
 
+            let gql_field_name = proc_macro2::Literal::string(&gql_value.name);
+
             // For each field we just call our type checking function with the current field
-            quote_spanned! { field_span =>
-                #rust_field_name(&self.#rust_field_name)?
+            // and insert it into the output Map.
+            let insert_call = quote_spanned! { field_span =>
+                output.insert(#gql_field_name.to_string(), #rust_field_name(&self.#rust_field_name)?);
+            };
+
+            if let Some(skip_check_fn) = &rust_field.skip_serializing_if {
+                quote! {
+                    if !#skip_check_fn(&self.#rust_field_name) {
+                        #insert_call
+                    }
+                }
+            } else {
+                insert_call
             }
         });
+
+        let map_len = pairs.len();
 
         Ok(quote! {
             #[automatically_derived]
@@ -147,11 +158,11 @@ pub fn input_object_derive_impl(
                         #typecheck_funcs
                     )*
 
-                    Ok(::cynic::serde_json::json!({
-                        #(
-                            #gql_field_names: #field_values,
-                        )*
-                    }))
+                    let mut output = ::cynic::serde_json::map::Map::with_capacity(#map_len);
+
+                    #(#field_inserts)*
+
+                    Ok(::cynic::serde_json::Value::Object(output))
                 }
             }
 
@@ -289,6 +300,7 @@ mod test {
             ident: Some(proc_macro2::Ident::new("field_one", Span::call_site())),
             ty: syn::parse_quote! { String },
             rename: None,
+            skip_serializing_if: None,
         }];
         let input_object = test_input_object();
 
@@ -310,6 +322,7 @@ mod test {
             ident: Some(proc_macro2::Ident::new("field_two", Span::call_site())),
             ty: syn::parse_quote! { String },
             rename: None,
+            skip_serializing_if: None,
         }];
         let input_object = test_input_object();
 
@@ -331,6 +344,7 @@ mod test {
             ident: Some(proc_macro2::Ident::new("field_one", Span::call_site())),
             ty: syn::parse_quote! { String },
             rename: None,
+            skip_serializing_if: None,
         }];
         let input_object = test_input_object();
 

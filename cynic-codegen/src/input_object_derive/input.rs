@@ -26,5 +26,8 @@ pub struct InputObjectDeriveField {
     pub(super) ty: syn::Type,
 
     #[darling(default)]
+    pub(super) skip_serializing_if: Option<syn::Path>,
+
+    #[darling(default)]
     pub(super) rename: Option<SpannedValue<String>>,
 }
