@@ -42,6 +42,9 @@ all APIs might be changed.
 - Optional fields on an InputObject may now be annotated with
   `skip_serializing_if="path"`, similar to serde.  This allows users to omit
   fields from InputObjects under certain circumstances.
+- All optional fields of the GraphQLError type are now modeled according to the
+  spec, including the `extensions` field, which is expressed as an
+  `Option<serde_json::Value>`.
 
 ### Changes
 
