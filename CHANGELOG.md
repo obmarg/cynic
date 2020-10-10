@@ -39,6 +39,9 @@ all APIs might be changed.
   don't have to write it themselves.
 - The `reqwest` & `reqwest-blocking` features, which add support for the
   `reqwest` HTTP client. 
+- Optional fields on an InputObject may now be annotated with
+  `skip_serializing_if="path"`, similar to serde.  This allows users to omit
+  fields from InputObjects under certain circumstances.
 
 ### Changes
 
