@@ -19,7 +19,7 @@ mod surf_ext {
 
     use crate::{GraphQLResponse, Operation};
 
-    type BoxFuture<'a, T> = Pin<Box<dyn Future<Output = T> + 'a>>;
+    type BoxFuture<'a, T> = Pin<Box<dyn Future<Output = T> + Send + 'a>>;
 
     /// An extension trait for surf::RequestBuilder.
     ///
@@ -113,7 +113,7 @@ mod reqwest_ext {
 
     use crate::{GraphQLResponse, Operation};
 
-    type BoxFuture<'a, T> = Pin<Box<dyn Future<Output = T> + 'a>>;
+    type BoxFuture<'a, T> = Pin<Box<dyn Future<Output = T> + Send + 'a>>;
 
     /// An extension trait for reqwest::RequestBuilder.
     ///
