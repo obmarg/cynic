@@ -11,6 +11,8 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.10.0 - 2020-10-11
+
 ### Breaking Changes
 
 - `QueryFragment::fragment` and `InlineFragment::fragments` now accept their
