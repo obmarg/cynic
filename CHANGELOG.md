@@ -27,6 +27,7 @@ all APIs might be changed.
 - The `InputObject` derive no longer complains if you omit optional fields.
   The old behaviour can be brought back by attaching a `require_all_fields`
   annotation to the InputObject.
+- SerializeError now requires Send + Sync on it's boxed value.
 
 ### New Features
 

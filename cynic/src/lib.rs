@@ -231,7 +231,7 @@ where
     }
 }
 
-pub type SerializeError = Box<dyn std::error::Error>;
+pub type SerializeError = Box<dyn std::error::Error + Send + Sync>;
 
 /// A trait for GraphQL enums.
 ///
