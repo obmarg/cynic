@@ -1,9 +1,12 @@
 fn main() {
-    use cynic::QueryFragment;
+    use cynic::{FragmentContext, QueryFragment};
 
     println!(
         "{}",
-        cynic::Operation::query(TestStruct::fragment(&TestArgs {})).query
+        cynic::Operation::query(TestStruct::fragment(FragmentContext::with_args(
+            &TestArgs {}
+        )))
+        .query
     );
 }
 

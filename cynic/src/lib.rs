@@ -189,7 +189,7 @@ pub mod utils;
 pub use json_decode::DecodeError;
 
 pub use argument::{Argument, SerializableArgument};
-pub use fragments::{FragmentArguments, InlineFragments, QueryFragment};
+pub use fragments::{FragmentArguments, FragmentContext, InlineFragments, QueryFragment};
 pub use id::Id;
 pub use operation::Operation;
 pub use result::{GraphQLError, GraphQLResponse, GraphQLResult, PossiblyParsedData};
@@ -234,12 +234,13 @@ pub trait FromArguments<T> {
     fn from_arguments(args: T) -> Self;
 }
 
+// TODO: Find a better place for FromArguments
+
 impl<'a, T> FromArguments<&'a T> for &'a T
 where
     T: FragmentArguments,
 {
     fn from_arguments(args: &'a T) -> Self {
-        // TODO: Figure out if there's a way to avoid this clone...
         args
     }
 }

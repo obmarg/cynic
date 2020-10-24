@@ -11,6 +11,13 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+### Breaking Changes
+
+- `QueryFragment::fragment` now accepts a `FragmentContext` rather than
+  arguments.  This can be constructed with `FragmentContext::new` if you have
+  arguments or `FragmentContext::empty` if not.  This change was neccesary to
+  support recursive queries.
+
 ## v0.10.0 - 2020-10-11
 
 ### Breaking Changes

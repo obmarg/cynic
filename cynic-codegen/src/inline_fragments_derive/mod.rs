@@ -105,16 +105,19 @@ impl quote::ToTokens for InlineFragmentsImpl {
                 type TypeLock = #type_lock;
                 type Arguments = #arguments;
 
-                fn fragments(arguments: &Self::Arguments) ->
-                Vec<(String, ::cynic::SelectionSet<'static, Self, Self::TypeLock>)>
+                fn fragments(context: ::cynic::FragmentContext<'_, Self::Arguments>) ->
+                    Vec<(String, ::cynic::SelectionSet<'static, Self, Self::TypeLock>)>
                 {
                     use ::cynic::QueryFragment;
+
+                    let args = context.args;
 
                     let mut rv = vec![];
                     #(
                         rv.push((
                             #internal_types::graphql_type(),
-                            #internal_types::fragment(arguments)
+                            #internal_types
+                                ::fragment(::cynic::FragmentContext::with_args(args))
                                 .map(#target_struct::#variants)
                                 .transform_typelock()
                         ));

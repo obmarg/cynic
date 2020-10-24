@@ -4,11 +4,7 @@ pub trait QueryFragment {
     type SelectionSet;
     type Arguments: FragmentArguments;
 
-    // Ok, so what if this takes an `Into<FragmentContext>` instead.
-    // We introduce a struct FragmentContext<Arguments> type.
-    // impl Into<FragmentContext> for all args (or maybe just get users to convert manually?)
-    // Then use that to propagate any metadata around recursion.
-    fn fragment(arguments: &Self::Arguments) -> Self::SelectionSet;
+    fn fragment(arguments: FragmentContext<Self::Arguments>) -> Self::SelectionSet;
     fn graphql_type() -> String;
 }
 
@@ -18,7 +14,7 @@ pub trait InlineFragments: Sized {
 
     fn graphql_type() -> String;
     fn fragments(
-        arguments: &Self::Arguments,
+        arguments: FragmentContext<Self::Arguments>,
     ) -> Vec<(String, SelectionSet<'static, Self, Self::TypeLock>)>;
 }
 
@@ -29,7 +25,7 @@ where
     type SelectionSet = SelectionSet<'static, T, T::TypeLock>;
     type Arguments = <T as InlineFragments>::Arguments;
 
-    fn fragment(arguments: &Self::Arguments) -> Self::SelectionSet {
+    fn fragment(arguments: FragmentContext<Self::Arguments>) -> Self::SelectionSet {
         crate::selection_set::inline_fragments(Self::fragments(arguments))
     }
 
@@ -45,3 +41,21 @@ where
 pub trait FragmentArguments {}
 
 impl FragmentArguments for () {}
+
+// TODO: Docs, and think about the name?  FragmentContext/QueryContext/Context/something else?
+pub struct FragmentContext<'a, Args> {
+    pub args: &'a Args,
+}
+
+impl<'a, Args> FragmentContext<'a, Args> {
+    pub fn with_args(args: &'a Args) -> FragmentContext<'a, Args> {
+        FragmentContext { args }
+    }
+}
+
+impl FragmentContext<'static, ()> {
+    // TODO: Think about this name: empty? without_args? no_args?
+    pub fn empty() -> FragmentContext<'static, ()> {
+        FragmentContext { args: &() }
+    }
+}

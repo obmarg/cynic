@@ -60,9 +60,11 @@ pub enum Dessert {
 }
 
 fn run_test(input: serde_json::Value, expected_result: TestQuery) {
-    use cynic::QueryFragment;
+    use cynic::{FragmentContext, QueryFragment};
 
-    let query = cynic::Operation::query(TestQuery::fragment(&TestArgs {}));
+    let query = cynic::Operation::query(TestQuery::fragment(FragmentContext::with_args(
+        &TestArgs {},
+    )));
 
     let test_data = cynic::GraphQLResponse {
         errors: None,

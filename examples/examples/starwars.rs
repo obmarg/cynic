@@ -49,10 +49,15 @@ fn run_query() -> cynic::GraphQLResponse<FilmDirectorQuery> {
 }
 
 fn build_query() -> cynic::Operation<'static, FilmDirectorQuery> {
-    use cynic::QueryFragment;
-    cynic::Operation::query(FilmDirectorQuery::fragment(&FilmArguments {
-        id: Some("ZmlsbXM6MQ==".into()),
-    }))
+    use cynic::{FragmentContext, QueryFragment};
+
+    // TODO: Wonder if there's a way to make this more rust-y
+    // Using the builder pattern or similar?
+    cynic::Operation::query(FilmDirectorQuery::fragment(FragmentContext::with_args(
+        &FilmArguments {
+            id: Some("ZmlsbXM6MQ==".into()),
+        },
+    )))
 }
 
 #[cfg(test)]
