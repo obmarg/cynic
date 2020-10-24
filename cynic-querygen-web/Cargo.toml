@@ -13,10 +13,7 @@ crate-type = ["cdylib"]
 wasm-bindgen-test = "0.3.12"
 
 [dependencies]
-# Referenced commit fixes base url and memory bugs in Seed 0.7.0
-# (https://github.com/seed-rs/seed/pull/454 + https://github.com/seed-rs/seed/pull/455).
-# Replace with "0.8.0" once the new Seed version is released.
-seed = { git = "https://github.com/seed-rs/seed", rev = "b25cf59" }
+seed = "0.8.0"
 
 cynic-querygen = { path = "../cynic-querygen" }
 
