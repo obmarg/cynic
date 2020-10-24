@@ -18,14 +18,15 @@
 //! shouldn't need to use the functions in this module directly.  However for more
 //! advanced use cases (or if you dislike macros) these can still be useful.
 
+mod field;
+
 use json_decode::{BoxDecoder, DecodeError};
 use std::collections::HashMap;
 use std::marker::PhantomData;
 
-use crate::{
-    field::{Field, OperationType},
-    scalar, Argument, MutationRoot, QueryRoot,
-};
+use crate::{scalar, Argument, MutationRoot, QueryRoot};
+
+use field::{Field, OperationType};
 
 /// A marker trait used to encode GraphQL subtype relationships into the Rust
 /// typesystem.

@@ -13,7 +13,7 @@ pub enum Field {
 }
 
 impl Field {
-    pub(crate) fn query<'a>(
+    pub fn query<'a>(
         self,
         indent: usize,
         indent_size: usize,
