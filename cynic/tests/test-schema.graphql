@@ -1,4 +1,27 @@
-input BlogPost {
+input BlogPostInput {
   author: String
   content: String!
+}
+
+type BlogPost {
+  author: Author!
+  comments: [Comment!]!
+}
+
+type Comment {
+  author: Author!
+}
+
+type Author {
+  posts: [BlogPost!]!
+  comments: [Comment!]!
+}
+
+type Query {
+  allPosts: [BlogPost!]!
+  allAuthors: [Author!]!
+}
+
+schema {
+  query: Query
 }

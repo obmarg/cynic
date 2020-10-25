@@ -53,7 +53,7 @@ fn build_query() -> cynic::Operation<'static, FilmDirectorQuery> {
 
     // TODO: Wonder if there's a way to make this more rust-y
     // Using the builder pattern or similar?
-    cynic::Operation::query(FilmDirectorQuery::fragment(FragmentContext::with_args(
+    cynic::Operation::query(FilmDirectorQuery::fragment(FragmentContext::new(
         &FilmArguments {
             id: Some("ZmlsbXM6MQ==".into()),
         },

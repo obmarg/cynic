@@ -117,7 +117,7 @@ impl quote::ToTokens for InlineFragmentsImpl {
                         rv.push((
                             #internal_types::graphql_type(),
                             #internal_types
-                                ::fragment(::cynic::FragmentContext::with_args(args))
+                                ::fragment(context.with_args(::cynic::FromArguments::from_arguments(args)))
                                 .map(#target_struct::#variants)
                                 .transform_typelock()
                         ));

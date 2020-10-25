@@ -4,7 +4,9 @@ use syn::spanned::Spanned;
 
 use super::InputObjectDeriveField;
 use crate::{
-    schema::InputValue, type_validation::check_types_are_compatible, FieldType, Ident, TypeIndex,
+    schema::InputValue,
+    type_validation::{check_types_are_compatible, CheckMode},
+    FieldType, Ident, TypeIndex,
 };
 
 pub struct FieldSerializer<'a> {
@@ -32,9 +34,11 @@ impl<'a> FieldSerializer<'a> {
     /// Validates the FieldSerializer definition, returning errors if there are any.
     pub fn validate(&self) -> Option<syn::Error> {
         // First, check for type errors
-        if let Err(e) =
-            check_types_are_compatible(&self.graphql_field_type, &self.rust_field.ty, false)
-        {
+        if let Err(e) = check_types_are_compatible(
+            &self.graphql_field_type,
+            &self.rust_field.ty,
+            CheckMode::Normal,
+        ) {
             return Some(e);
         }
 

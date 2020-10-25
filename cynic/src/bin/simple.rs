@@ -3,10 +3,7 @@ fn main() {
 
     println!(
         "{}",
-        cynic::Operation::query(TestStruct::fragment(FragmentContext::with_args(
-            &TestArgs {}
-        )))
-        .query
+        cynic::Operation::query(TestStruct::fragment(FragmentContext::new(&TestArgs {}))).query
     );
 }
 

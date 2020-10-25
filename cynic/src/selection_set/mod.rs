@@ -573,13 +573,32 @@ define_map!(
 ///
 /// This is handy when used with `SelectionSet::and_then` - you can return a specific
 /// hard coded value in some case.
-pub fn succeed<'a, V>(value: V) -> SelectionSet<'a, V, ()>
+pub fn succeed<'a, V, TypeLock>(value: V) -> SelectionSet<'a, V, TypeLock>
 where
     V: Clone + Send + Sync + 'a,
 {
     SelectionSet {
         fields: vec![],
         decoder: json_decode::succeed(value),
+        phantom: PhantomData,
+    }
+}
+
+/// Creates a `SelectionSet` that always decodes succesfully to the result of a function
+///
+/// This is similar to `succeeed` but can be used in cases where the type you wish to
+/// return does not impl Clone.
+pub fn succeed_using<'a, F, V, TypeLock>(f: F) -> SelectionSet<'a, V, TypeLock>
+where
+    F: Fn() -> V + Send + Sync + 'a,
+    V: Send + Sync + 'a,
+{
+    SelectionSet {
+        fields: vec![],
+        decoder: json_decode::map(
+            move |_| f(),
+            json_decode::succeed::<Option<core::convert::Infallible>>(None),
+        ),
         phantom: PhantomData,
     }
 }
