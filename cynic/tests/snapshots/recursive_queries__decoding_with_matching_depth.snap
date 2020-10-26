@@ -1,0 +1,14 @@
+---
+source: cynic/tests/recursive-queries.rs
+expression: query.decode_response(data).unwrap().data
+---
+all_posts:
+  - comments:
+      - author:
+          posts:
+            - comments:
+                - author:
+                    posts:
+                      - comments:
+                          - author:
+                              posts: ~

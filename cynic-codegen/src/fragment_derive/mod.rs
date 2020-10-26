@@ -86,7 +86,7 @@ enum SelectorFunction {
     Opt(Box<SelectorFunction>),
     Vector(Box<SelectorFunction>),
     Flatten(Box<SelectorFunction>),
-    Recurse(u8, Box<SelectorFunction>),
+    Recurse(u8, Box<SelectorFunction>, bool),
 }
 
 impl SelectorFunction {
@@ -112,6 +112,7 @@ impl SelectorFunction {
                     false,
                     None,
                 )),
+                field_type.is_nullable(),
             )
         } else if field_type.is_nullable() {
             SelectorFunction::Opt(Box::new(SelectorFunction::for_field(
@@ -182,16 +183,26 @@ impl SelectorFunction {
                     })
                 }
             }
-            SelectorFunction::Recurse(limit, inner) => {
+            SelectorFunction::Recurse(limit, inner, field_nullable) => {
                 let inner_call = inner.to_call(
                     required_arguments,
                     optional_arguments,
                     inner_selection_tokens,
                 );
 
+                let recurse_branch = if !field_nullable {
+                    // If the field is required we need to wrap it in an option
+                    quote! {
+                        #inner_call.map(Some)
+                    }
+                } else {
+                    // Otherwise, just let the fields option do the work.
+                    inner_call
+                };
+
                 quote! {
                     if context.recurse_depth != Some(#limit) {
-                        #inner_call.map(Some)
+                        #recurse_branch
                     } else {
                         ::cynic::selection_set::succeed_using(|| None)
                     }

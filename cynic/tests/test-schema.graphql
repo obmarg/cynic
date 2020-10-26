@@ -15,6 +15,7 @@ type Comment {
 type Author {
   posts: [BlogPost!]!
   comments: [Comment!]!
+  friends: [Author!]
 }
 
 type Query {

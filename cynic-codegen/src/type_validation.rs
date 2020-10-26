@@ -103,23 +103,84 @@ fn recursing_check(gql_type: &FieldType, rust_type: &syn::Type) -> Result<(), sy
             ));
     };
 
-    todo!();
+    // TODO: Probably still need to care about box...
 
-    // TODO: The rest of this function.
+    if gql_type.is_nullable() {
+        // If the field is nullable then we just defer to the normal checks.
+        return normal_check(gql_type, rust_type, false);
+    };
+
+    if let ParsedType::Optional(inner_rust_type) = parsed_type {
+        normal_check(gql_type, inner_rust_type, false)
+    } else {
+        Err(syn::Error::new(
+            rust_type.span(),
+            "Recursive types must be wrapped in Option.  Did you mean Option<{}>",
+        ))
+    }
 
     /*
-    if let FieldType::List(inner_gql_type) = gql_type {
-        // Ok, this is a list type
-    } else {
-        // We've not got a list, so we have either a T or a T?
+    // TODO: I might actually need to take the optional status of fields into account here...
 
-        // A Option<Box<T>> is acceptable regardles of whether we're required.
-        // An Option<Option<Box<T>> is needed otherwise.
+    match (gql_type, parsed_type) {
+        (list_field @ FieldType::List(_, _), ParsedType::Optional(inner_rust_type)) => {
+            normal_check(list_field, inner_rust_type, false)
+        }
+        (FieldType::List(_, _), _) => Err(syn::Error::new(
+            rust_type.span(),
+            format!(
+                "Recursive lists must be wrapped in Option.  Did you mean Option<{}>",
+                quote! { #rust_type }
+            ),
+        )),
+        (FieldType::Scalar(_, _), _) => Err(syn::Error::new(
+            rust_type.span(),
+            format!("Scalar fields can't be recursive.  Remove the #[cynic(recurse)] attribute"),
+        )),
+        (FieldType::Enum(_, _), _) => Err(syn::Error::new(
+            rust_type.span(),
+            format!("Enum fields can't be recursive.  Remove the #[cynic(recurse)] attribute"),
+        )),
+        (FieldType::InputObject(_, _), _) => panic!("An input object is inside a normal object"),
+        (other_field_type, ParsedType::Optional(inner_rust_type)) => {
+            let parsed_inner_type = parse_type(inner_rust_type);
+            if let ParsedType::Box(inner_rust_type) = parsed_inner_type {
+                normal_check(other_field_type, inner_rust_type, false)
+            } else {
+                Err(syn::Error::new(
+                    rust_type.span(),
+                    format!(
+                        "Recursive fields must be optional and boxed. Did you mean Option<Box<{}>>",
+                        quote! { #inner_rust_type }
+                    ),
+                ))
+            }
+        }
+        (_, ParsedType::Box(_)) => {
+            Err(syn::Error::new(
+                rust_type.span(),
+                format!(
+                    "Recursive fields must be optional and boxed. Did you mean Option<{}>",
+                    quote! { #rust_type }
+                )
+            ))
 
-        // Need to think about how this plays with query_dsl though -
-        // it'll expect a particular inner type, so not sure we _can_ put the Box inside the option like this.
-        //
-        // Might need the box to live outside the option.
+        }
+        (_, ParsedType::List(inner)) => {
+            Err(syn::Error::new(
+                        rust_type.span(),
+                        format!(
+                            "This GraphQL type is not a list but you're wrapping the type in Vec.  Did you mean {}",
+                            quote! { #inner }
+                        )
+                    ))
+        }
+        (_, _) => {
+            Err(syn::Error::new(
+                rust_type.span(),
+                format!("Recursive fields must be optional and boxed. Try wrapping this type in Option<Box<>>")
+            ))
+        }
     }
     */
 }
