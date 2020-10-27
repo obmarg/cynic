@@ -38,8 +38,8 @@ mod tests {
     use syn::parse_quote;
 
     #[rstest(outer, inner,
-        case(parse_quote!{ Option<Vec<Option<T>> }, parse_quote!{ T }),
-        case(parse_quote!{ Vec<Option<T> }, parse_quote!{ T }),
+        case(parse_quote!{ Option<Vec<Option<T>>> }, parse_quote!{ T }),
+        case(parse_quote!{ Vec<Option<T>> }, parse_quote!{ T }),
         case(parse_quote!{ Option<T> }, parse_quote!{ T }),
         case(parse_quote!{ T }, parse_quote!{ T }),
     )]

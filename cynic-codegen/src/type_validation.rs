@@ -13,7 +13,8 @@ pub fn check_types_are_compatible(
     mode: CheckMode,
 ) -> Result<(), syn::Error> {
     match mode {
-        CheckMode::Normal | CheckMode::Flattening => normal_check(gql_type, rust_type, true),
+        CheckMode::Flattening => normal_check(gql_type, rust_type, true),
+        CheckMode::Normal => normal_check(gql_type, rust_type, false),
         CheckMode::Recursing => recursing_check(gql_type, rust_type),
     }
 }
@@ -91,7 +92,6 @@ fn normal_check(
 }
 
 fn recursing_check(gql_type: &FieldType, rust_type: &syn::Type) -> Result<(), syn::Error> {
-    use quote::quote;
     use syn::spanned::Spanned;
 
     let parsed_type = parse_type(rust_type);
@@ -102,8 +102,6 @@ fn recursing_check(gql_type: &FieldType, rust_type: &syn::Type) -> Result<(), sy
                 "Cynic does not understand this type. Only un-parameterised types, Vecs, Options & Box are accepted currently.",
             ));
     };
-
-    // TODO: Probably still need to care about box...
 
     if gql_type.is_nullable() {
         // If the field is nullable then we just defer to the normal checks.
@@ -118,71 +116,6 @@ fn recursing_check(gql_type: &FieldType, rust_type: &syn::Type) -> Result<(), sy
             "Recursive types must be wrapped in Option.  Did you mean Option<{}>",
         ))
     }
-
-    /*
-    // TODO: I might actually need to take the optional status of fields into account here...
-
-    match (gql_type, parsed_type) {
-        (list_field @ FieldType::List(_, _), ParsedType::Optional(inner_rust_type)) => {
-            normal_check(list_field, inner_rust_type, false)
-        }
-        (FieldType::List(_, _), _) => Err(syn::Error::new(
-            rust_type.span(),
-            format!(
-                "Recursive lists must be wrapped in Option.  Did you mean Option<{}>",
-                quote! { #rust_type }
-            ),
-        )),
-        (FieldType::Scalar(_, _), _) => Err(syn::Error::new(
-            rust_type.span(),
-            format!("Scalar fields can't be recursive.  Remove the #[cynic(recurse)] attribute"),
-        )),
-        (FieldType::Enum(_, _), _) => Err(syn::Error::new(
-            rust_type.span(),
-            format!("Enum fields can't be recursive.  Remove the #[cynic(recurse)] attribute"),
-        )),
-        (FieldType::InputObject(_, _), _) => panic!("An input object is inside a normal object"),
-        (other_field_type, ParsedType::Optional(inner_rust_type)) => {
-            let parsed_inner_type = parse_type(inner_rust_type);
-            if let ParsedType::Box(inner_rust_type) = parsed_inner_type {
-                normal_check(other_field_type, inner_rust_type, false)
-            } else {
-                Err(syn::Error::new(
-                    rust_type.span(),
-                    format!(
-                        "Recursive fields must be optional and boxed. Did you mean Option<Box<{}>>",
-                        quote! { #inner_rust_type }
-                    ),
-                ))
-            }
-        }
-        (_, ParsedType::Box(_)) => {
-            Err(syn::Error::new(
-                rust_type.span(),
-                format!(
-                    "Recursive fields must be optional and boxed. Did you mean Option<{}>",
-                    quote! { #rust_type }
-                )
-            ))
-
-        }
-        (_, ParsedType::List(inner)) => {
-            Err(syn::Error::new(
-                        rust_type.span(),
-                        format!(
-                            "This GraphQL type is not a list but you're wrapping the type in Vec.  Did you mean {}",
-                            quote! { #inner }
-                        )
-                    ))
-        }
-        (_, _) => {
-            Err(syn::Error::new(
-                rust_type.span(),
-                format!("Recursive fields must be optional and boxed. Try wrapping this type in Option<Box<>>")
-            ))
-        }
-    }
-    */
 }
 
 /// A simplified rust type structure
@@ -421,21 +354,10 @@ mod tests {
 
         case::optional_t(
             FieldType::Scalar(Ident::new("T").into(), true),
-            parse_quote! { Option<Option<Box<T>>> }
-        ),
-        case::optional_t_with_simplified(
-            FieldType::Scalar(Ident::new("T").into(), true),
-            parse_quote! { Option<Box<T>> }
+            parse_quote! { Option<T> }
         ),
 
         case::option_vec_required_t(
-            FieldType::List(
-                Box::new(FieldType::Scalar(Ident::new("T").into(), false)),
-                true
-            ),
-            parse_quote! { Option<Option<Vec<T>> }
-        ),
-        case::option_vec_required_t_simplified(
             FieldType::List(
                 Box::new(FieldType::Scalar(Ident::new("T").into(), false)),
                 true
@@ -449,28 +371,6 @@ mod tests {
                 false
             ),
             parse_quote! { Option<Vec<T>> }
-        ),
-        case::required_vec_required_t_simplified(
-            FieldType::List(
-                Box::new(FieldType::Scalar(Ident::new("T").into(), false)),
-                false
-            ),
-            parse_quote! { Vec<T> }
-        ),
-
-        case::required_vec_optional_t(
-            FieldType::List(
-                Box::new(FieldType::Scalar(Ident::new("T").into(), true)),
-                false
-            ),
-            parse_quote! { Option<Vec<Option<T>>> }
-        ),
-        case::required_vec_optional_t_simplified(
-            FieldType::List(
-                Box::new(FieldType::Scalar(Ident::new("T").into(), true)),
-                false
-            ),
-            parse_quote! { Vec<Option<T>> }
         ),
     )]
     fn test_recurse_validation_ok(graphql_field: FieldType, rust_field: syn::Type) {
@@ -490,10 +390,6 @@ mod tests {
             parse_quote! { T }
         ),
 
-        case::optional_t_option(
-            FieldType::Scalar(Ident::new("T").into(), true),
-            parse_quote! { Option<T> }
-        ),
         case::optional_t_standalone(
             FieldType::Scalar(Ident::new("T").into(), true),
             parse_quote! { T }
