@@ -19,70 +19,70 @@ fn main() {
         TestCase::query(
             &starwars_schema,
             "../../cynic-querygen/tests/queries/starwars/sanity.graphql",
-            r#"queries::SanityCheckQuery::fragment(
+            r#"queries::SanityCheckQuery::fragment(FragmentContext::new(
                 &queries::SanityCheckQueryArguments {
                     film_id: Some("ZmlsbXM6MQ==".into())
                 }
-            )"#,
+            ))"#,
         ),
         TestCase::query(
             &starwars_schema,
             "../../cynic-querygen/tests/queries/starwars/nested-arguments.graphql",
-            r#"queries::NestedArgsQuery::fragment(
+            r#"queries::NestedArgsQuery::fragment(FragmentContext::new(
                 &queries::NestedArgsQueryArguments {
                     film_id: "ZmlsbXM6MQ==".into(),
                     planet_cursor: None,
                     resident_connection: None
                 }
-            )"#,
+            ))"#,
         ),
         TestCase::query(
             &starwars_schema,
             "../../cynic-querygen/tests/queries/starwars/bare-selection-set.graphql",
-            r#"queries::UnnamedQuery::fragment(&())"#,
+            r#"queries::UnnamedQuery::fragment(FragmentContext::empty())"#,
         ),
         TestCase::query(
             &jobs_schema,
             "tests/queries/graphql.jobs/london-jobs.graphql",
-            r#"queries::Jobs::fragment(&())"#,
+            r#"queries::Jobs::fragment(FragmentContext::empty())"#,
         ),
         TestCase::query(
             &jobs_schema,
             "tests/queries/graphql.jobs/jobs.graphql",
-            r#"queries::Jobs::fragment(
+            r#"queries::Jobs::fragment(FragmentContext::new(
                 &queries::JobsArguments {
                     input: queries::LocationInput {
                         slug: "london".into()
                     }
                 }
-            )"#,
+            ))"#,
         ),
         TestCase::mutation(
             &github_schema,
             "../../cynic-querygen/tests/queries/github/add-comment-mutation.graphql",
-            r#"queries::CommentOnMutationSupportIssue::fragment(
+            r#"queries::CommentOnMutationSupportIssue::fragment(FragmentContext::new(
                 &queries::CommentOnMutationSupportIssueArguments {
                     comment_body: "This is a test comment, posted by the new cynic mutation support"
                         .into(),
                 },
-            )"#,
+            ))"#,
         ),
         TestCase::query_norun(
             &github_schema,
             "../../cynic-querygen/tests/queries/github/input-object-arguments.graphql",
-            r#"queries::PullRequestTitles::fragment(
+            r#"queries::PullRequestTitles::fragment(FragmentContext::new(
                 &queries::PullRequestTitlesArguments {
                     pr_order: queries::IssueOrder {
                         direction: queries::OrderDirection::Asc,
                         field: queries::IssueOrderField::CreatedAt,
                     }
                 },
-            )"#,
+            ))"#,
         ),
         TestCase::query_norun(
             &github_schema,
             "tests/queries/github/nested-arguments.graphql",
-            r#"queries::PullRequestTitles::fragment(
+            r#"queries::PullRequestTitles::fragment(FragmentContext::new(
                 &queries::PullRequestTitlesArguments {
                     owner: "obmarg".into(),
                     repo: "cynic".into(),
@@ -91,12 +91,12 @@ fn main() {
                         field: queries::IssueOrderField::CreatedAt,
                     }
                 },
-            )"#,
+            ))"#,
         ),
         TestCase::query_norun(
             &github_schema,
             "../../cynic-querygen/tests/queries/github/input-object-literals.graphql",
-            r#"queries::PullRequestTitles::fragment(&())"#,
+            r#"queries::PullRequestTitles::fragment(FragmentContext::empty())"#,
         ),
         /*
         TestCase::query_norun(
@@ -212,7 +212,7 @@ impl TestCase {
 
             fn main() {{
                 {norun_code}
-                use cynic::QueryFragment;
+                use cynic::{{QueryFragment, FragmentContext}};
                 querygen_compile_run::{operation_function}("{url}", {fragment_construct}).unwrap();
             }}
 

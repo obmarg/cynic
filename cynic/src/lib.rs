@@ -81,9 +81,11 @@
 //!     film: Option<Film>,
 //! }
 //!
-//! // You can then build a `cynic::Query` from this fragment
-//! use cynic::QueryFragment;
-//! let operation = cynic::Operation::query(FilmDirectorQuery::fragment(&()));
+//! // You can then build a `cynic::Operation` from this fragment
+//! use cynic::{QueryFragment, FragmentContext};
+//! let operation = cynic::Operation::query(
+//!     FilmDirectorQuery::fragment(FragmentContext::empty())
+//! );
 //!
 //! ```
 //!
@@ -151,7 +153,9 @@
 //! use cynic::QueryFragment;
 //! let operation = cynic::Operation::query(
 //!     FilmDirectorQueryWithArgs::fragment(
-//!         &FilmArguments{ id: Some("ZmlsbXM6MQ==".into()) }
+//!         cynic::FragmentContext::new(
+//!             &FilmArguments{ id: Some("ZmlsbXM6MQ==".into()) }
+//!         )
 //!     )
 //! );
 //! ```
