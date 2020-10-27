@@ -35,17 +35,19 @@ fn run_query() -> cynic::GraphQLResponse<queries::PullRequestTitles> {
 
 #[cfg(feature = "github")]
 fn build_query() -> cynic::Operation<'static, queries::PullRequestTitles> {
-    use cynic::QueryFragment;
+    use cynic::{FragmentContext, QueryFragment};
     use queries::{
         IssueOrder, IssueOrderField, OrderDirection, PullRequestTitles, PullRequestTitlesArguments,
     };
 
-    cynic::Operation::query(PullRequestTitles::fragment(&PullRequestTitlesArguments {
-        pr_order: IssueOrder {
-            direction: OrderDirection::Asc,
-            field: IssueOrderField::CreatedAt,
+    cynic::Operation::query(PullRequestTitles::fragment(FragmentContext::new(
+        &PullRequestTitlesArguments {
+            pr_order: IssueOrder {
+                direction: OrderDirection::Asc,
+                field: IssueOrderField::CreatedAt,
+            },
         },
-    }))
+    )))
 }
 
 #[cfg(feature = "github")]
@@ -54,7 +56,7 @@ fn build_query() -> cynic::Operation<'static, queries::PullRequestTitles> {
     query_module = "query_dsl"
 )]
 mod queries {
-    use super::{query_dsl, types::*};
+    use super::query_dsl;
 
     #[derive(cynic::FragmentArguments, Debug)]
     pub struct PullRequestTitlesArguments {

@@ -35,13 +35,13 @@ fn run_query() -> cynic::GraphQLResponse<queries::CommentOnMutationSupportIssue>
 
 #[cfg(feature = "github")]
 fn build_query() -> cynic::Operation<'static, queries::CommentOnMutationSupportIssue> {
-    use cynic::QueryFragment;
+    use cynic::{FragmentContext, QueryFragment};
     use queries::{CommentOnMutationSupportIssue, CommentOnMutationSupportIssueArguments};
 
     cynic::Operation::mutation(CommentOnMutationSupportIssue::fragment(
-        &CommentOnMutationSupportIssueArguments {
+        FragmentContext::new(&CommentOnMutationSupportIssueArguments {
             comment_body: "Testing".into(),
-        },
+        }),
     ))
 }
 
@@ -51,7 +51,7 @@ fn build_query() -> cynic::Operation<'static, queries::CommentOnMutationSupportI
     query_module = "query_dsl"
 )]
 mod queries {
-    use super::{query_dsl, types::*};
+    use super::query_dsl;
 
     #[derive(cynic::FragmentArguments, Debug)]
     pub struct CommentOnMutationSupportIssueArguments {
