@@ -18,7 +18,9 @@ For instance, to make a request with the `reqwest::blocking` client:
 
 ```rust
 use cynic::QueryFragment;
-let query = cynic::Operation::query(AllFilmsQuery::fragment(&()));
+let query = cynic::Operation::query(
+    AllFilmsQuery::fragment(FragmentContext::empty())
+);
 
 let response = reqwest::blocking::Client::new()
     .post("https://swapi-graphql.netlify.com/.netlify/functions/index")
