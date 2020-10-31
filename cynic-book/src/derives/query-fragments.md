@@ -75,6 +75,8 @@ struct AllFilmsQuery {
 An `Operation` can be created from this `QueryFragment`:
 
 ```
+use cynic::FragmentContext;
+
 let query = cynic::Operation::query(
     AllFilmsQuery::fragment(FragmentContext::empty())
 );
@@ -121,6 +123,8 @@ This can be converted into a query in a similar way we just need to provide
 a `FragmentContext` that contains the arguments:
 
 ```rust
+use cynic::FragmentContext;
+
 let query = cynic::Operation::query(FilmQuery::fragment(
     FragmentContext::new(
         &FilmArguments{

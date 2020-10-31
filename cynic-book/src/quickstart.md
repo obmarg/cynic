@@ -127,7 +127,8 @@ test above (again, swapping `AllFilmsQuery` for the name of your root query
 struct):
 
 ```rust
-use cynic::QueryFragment;
+use cynic::{QueryFragment, FragmentContext};
+
 let query = cynic::Operation::query(
     AllFilmsQuery::fragment(FragmentContext::empty())
 );

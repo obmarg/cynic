@@ -17,7 +17,8 @@ It's simple to make an HTTP query manually with `cynic`:
 For instance, to make a request with the `reqwest::blocking` client:
 
 ```rust
-use cynic::QueryFragment;
+use cynic::{QueryFragment, FragmentContext};
+
 let query = cynic::Operation::query(
     AllFilmsQuery::fragment(FragmentContext::empty())
 );
