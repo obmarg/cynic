@@ -8,10 +8,6 @@ pub trait QueryFragment {
     fn graphql_type() -> String;
 }
 
-// TODO: ALmost wondering if QueryFragment::fragment should return a Fn(Context) -> SelectionSet?
-// Would hide the context details from users
-// Could possibly be part of a rework of the Operation::query() API into a builder pattern style thing?
-
 pub trait InlineFragments: Sized {
     type TypeLock;
     type Arguments: FragmentArguments;
