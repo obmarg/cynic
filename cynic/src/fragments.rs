@@ -63,10 +63,10 @@ impl<'a, Args> FragmentContext<'a, Args> {
         }
     }
 
-    pub fn recurse(self) -> Self {
+    pub fn recurse(&self) -> Self {
         FragmentContext {
             recurse_depth: self.recurse_depth.or(Some(0)).map(|d| d + 1),
-            ..self
+            args: self.args,
         }
     }
 }

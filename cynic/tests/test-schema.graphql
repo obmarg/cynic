@@ -13,9 +13,15 @@ type Comment {
 }
 
 type Author {
+  name: String
   posts: [BlogPost!]!
   comments: [Comment!]!
   friends: [Author!]
+  referrer: Author
+
+  # A nonsense self referential field
+  # Don't think this would make sense usually, but it's useful for testing.
+  me: Author!
 }
 
 type Query {

@@ -83,6 +83,10 @@ impl FieldType {
         }
     }
 
+    pub fn is_list(&self) -> bool {
+        matches!(self, FieldType::List(_, _))
+    }
+
     pub fn contains_enum(&self) -> bool {
         match self {
             FieldType::List(inner, _) => inner.contains_enum(),

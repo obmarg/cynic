@@ -1,0 +1,19 @@
+---
+source: cynic/tests/recursive-queries.rs
+expression: query.decode_response(data).unwrap().data
+---
+all_authors:
+  - friends:
+      - friends:
+          - friends: ~
+            referrer: ~
+        referrer:
+          friends: ~
+          referrer: ~
+    referrer:
+      friends:
+        - friends: ~
+          referrer: ~
+      referrer:
+        friends: ~
+        referrer: ~

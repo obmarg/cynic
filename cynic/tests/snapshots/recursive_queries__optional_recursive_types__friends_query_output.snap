@@ -6,6 +6,11 @@ query Query {
   allAuthors {
     friends {
       friends
+      referrer
+    }
+    referrer {
+      friends
+      referrer
     }
   }
 }

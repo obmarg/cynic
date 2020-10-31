@@ -16,7 +16,7 @@ impl SynTypeExt for syn::Type {
         if let Type::Path(expr) = self {
             if let Some(segment) = expr.path.segments.first() {
                 let ident_string = segment.ident.to_string();
-                if ident_string == "Option" || ident_string == "Vec" {
+                if ident_string == "Option" || ident_string == "Vec" || ident_string == "Box" {
                     if let PathArguments::AngleBracketed(expr) = &segment.arguments {
                         if let Some(GenericArgument::Type(ty)) = expr.args.first() {
                             return ty.inner_type();

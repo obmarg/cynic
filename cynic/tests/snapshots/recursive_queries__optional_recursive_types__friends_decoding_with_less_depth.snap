@@ -4,5 +4,8 @@ expression: query.decode_response(data).unwrap().data
 ---
 all_authors:
   - friends:
-      - friends:
-          - friends: ~
+      - friends: ~
+        referrer: ~
+    referrer:
+      friends: ~
+      referrer: ~
