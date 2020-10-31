@@ -4,7 +4,8 @@ GraphQL allows for types to recurse and allows queries of those recursive types
 to a particular depth. Cynic supports this in it's `QueryFragment` derive when
 users provide the `recurse` attribute on the field that recurses.
 
-If we wanted to recurisvely fetch characters that were in a star wars film and the other films that they were in (and so on) we could do:
+If we wanted to recurisvely fetch characters that were in a star wars film and
+the other films that they were in (and so on) we could do:
 
 ```rust
 #[derive(cynic::QueryFragment, Debug)]
