@@ -1,4 +1,4 @@
-use crate::{Error, FieldArgument, TypeIndex};
+use crate::{FieldArgument, TypeIndex};
 
 // Alias all the graphql_parser schema types so we don't have to specify generic parameters
 // everywhere
@@ -17,7 +17,7 @@ pub type InputValue = graphql_parser::schema::InputValue<'static, String>;
 pub type EnumValue = graphql_parser::schema::EnumValue<'static, String>;
 
 /// Loads a schema from a filename, relative to CARGO_MANIFEST_DIR if it's set.
-pub fn load_schema(filename: impl AsRef<std::path::Path>) -> Result<Document, Error> {
+pub fn load_schema(filename: impl AsRef<std::path::Path>) -> Result<Document, SchemaLoadError> {
     use std::path::PathBuf;
     let mut pathbuf = PathBuf::new();
 
@@ -29,12 +29,12 @@ pub fn load_schema(filename: impl AsRef<std::path::Path>) -> Result<Document, Er
     pathbuf.push(filename);
 
     let schema = std::fs::read_to_string(&pathbuf)
-        .map_err(|_| Error::FileNotFound(pathbuf.to_str().unwrap().to_string()))?;
+        .map_err(|_| SchemaLoadError::FileNotFound(pathbuf.to_str().unwrap().to_string()))?;
 
     parse_schema(&schema)
 }
 
-pub(crate) fn parse_schema(schema: &str) -> Result<Document, Error> {
+pub(crate) fn parse_schema(schema: &str) -> Result<Document, SchemaLoadError> {
     let borrowed_schema = graphql_parser::schema::parse_schema::<String>(&schema)?;
     Ok(schema_into_static(borrowed_schema))
 }
@@ -48,6 +48,37 @@ fn schema_into_static<'a>(
     // A document that uses Strings for it's data should be safe to cast to 'static lifetime
     // as there's nothing inside it to reference 'a anyway
     unsafe { std::mem::transmute::<_, Document>(doc) }
+}
+
+#[derive(Debug, PartialEq, Clone)]
+pub enum SchemaLoadError {
+    IoError(String),
+    ParseError(String),
+    FileNotFound(String),
+}
+
+impl SchemaLoadError {
+    pub fn to_syn_error(self, schema_span: proc_macro2::Span) -> syn::Error {
+        let message = match self {
+            SchemaLoadError::IoError(e) => format!("Could not load schema file: {}", e),
+            SchemaLoadError::ParseError(e) => format!("Could not parse schema file: {}", e),
+            SchemaLoadError::FileNotFound(e) => format!("Could not find file: {}", e),
+        };
+
+        syn::Error::new(schema_span, message)
+    }
+}
+
+impl From<graphql_parser::schema::ParseError> for SchemaLoadError {
+    fn from(e: graphql_parser::schema::ParseError) -> SchemaLoadError {
+        SchemaLoadError::ParseError(e.to_string())
+    }
+}
+
+impl From<std::io::Error> for SchemaLoadError {
+    fn from(e: std::io::Error) -> SchemaLoadError {
+        SchemaLoadError::IoError(e.to_string())
+    }
 }
 
 /// Extension trait for the schema Field type

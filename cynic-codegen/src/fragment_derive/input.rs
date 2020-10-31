@@ -1,6 +1,6 @@
 use darling::util::SpannedValue;
 
-use crate::type_validation::CheckMode;
+use crate::{type_validation::CheckMode, Errors};
 
 #[derive(darling::FromDeriveInput)]
 #[darling(attributes(cynic), supports(struct_named))]
@@ -16,7 +16,7 @@ pub struct FragmentDeriveInput {
 }
 
 impl FragmentDeriveInput {
-    pub fn validate(&self) -> Result<(), Vec<syn::Error>> {
+    pub fn validate(&self) -> Result<(), Errors> {
         let errors = self
             .data
             .clone()
@@ -25,7 +25,7 @@ impl FragmentDeriveInput {
             .unwrap()
             .into_iter()
             .flatten()
-            .collect::<Vec<_>>();
+            .collect::<Errors>();
 
         if !errors.is_empty() {
             return Err(errors);
@@ -51,12 +51,13 @@ pub struct FragmentDeriveField {
 }
 
 impl FragmentDeriveField {
-    pub fn validate(&self) -> Result<(), syn::Error> {
+    pub fn validate(&self) -> Result<(), Errors> {
         if self.flatten && self.recurse.is_some() {
             return Err(syn::Error::new(
                 self.recurse.as_ref().unwrap().span(),
                 "A field can't be recurse if it's being flattened",
-            ));
+            )
+            .into());
         }
 
         Ok(())

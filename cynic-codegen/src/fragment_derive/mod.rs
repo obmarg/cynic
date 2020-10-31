@@ -2,7 +2,9 @@ use std::collections::{HashMap, HashSet};
 
 use proc_macro2::{Span, TokenStream};
 
-use crate::{load_schema, type_validation::check_types_are_compatible, FieldType, Ident, TypePath};
+use crate::{
+    load_schema, type_validation::check_types_are_compatible, Errors, FieldType, Ident, TypePath,
+};
 
 mod arguments;
 mod schema_parsing;
@@ -23,10 +25,10 @@ pub fn fragment_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error
 
     match FragmentDeriveInput::from_derive_input(ast) {
         Ok(input) => load_schema(&*input.schema_path)
-            .map_err(|e| e.to_syn_error(input.schema_path.span()))
+            .map_err(|e| Errors::from(e.to_syn_error(input.schema_path.span())))
             .map(Schema::from)
             .and_then(|schema| fragment_derive_impl(input, &schema))
-            .or_else(|e| Ok(e.to_compile_error())),
+            .or_else(|e| Ok(e.to_compile_errors())),
         Err(e) => Ok(e.write_errors()),
     }
 }
@@ -34,10 +36,10 @@ pub fn fragment_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error
 pub fn fragment_derive_impl(
     input: FragmentDeriveInput,
     schema: &Schema,
-) -> Result<TokenStream, syn::Error> {
+) -> Result<TokenStream, Errors> {
     use quote::{quote, quote_spanned};
 
-    // TODO: call input.validate here...
+    input.validate()?;
 
     let schema_path = input.schema_path;
 
@@ -77,7 +79,7 @@ pub fn fragment_derive_impl(
         Err(syn::Error::new(
             Span::call_site(),
             format!("QueryFragment can only be derived from a struct"),
-        ))
+        ))?
     }
 }
 
