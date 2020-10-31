@@ -4,9 +4,13 @@ pub trait QueryFragment {
     type SelectionSet;
     type Arguments: FragmentArguments;
 
-    fn fragment(arguments: FragmentContext<Self::Arguments>) -> Self::SelectionSet;
+    fn fragment(context: FragmentContext<Self::Arguments>) -> Self::SelectionSet;
     fn graphql_type() -> String;
 }
+
+// TODO: ALmost wondering if QueryFragment::fragment should return a Fn(Context) -> SelectionSet?
+// Would hide the context details from users
+// Could possibly be part of a rework of the Operation::query() API into a builder pattern style thing?
 
 pub trait InlineFragments: Sized {
     type TypeLock;
@@ -14,7 +18,7 @@ pub trait InlineFragments: Sized {
 
     fn graphql_type() -> String;
     fn fragments(
-        arguments: FragmentContext<Self::Arguments>,
+        context: FragmentContext<Self::Arguments>,
     ) -> Vec<(String, SelectionSet<'static, Self, Self::TypeLock>)>;
 }
 
@@ -25,8 +29,8 @@ where
     type SelectionSet = SelectionSet<'static, T, T::TypeLock>;
     type Arguments = <T as InlineFragments>::Arguments;
 
-    fn fragment(arguments: FragmentContext<Self::Arguments>) -> Self::SelectionSet {
-        crate::selection_set::inline_fragments(Self::fragments(arguments))
+    fn fragment(context: FragmentContext<Self::Arguments>) -> Self::SelectionSet {
+        crate::selection_set::inline_fragments(Self::fragments(context))
     }
 
     fn graphql_type() -> String {
@@ -42,13 +46,22 @@ pub trait FragmentArguments {}
 
 impl FragmentArguments for () {}
 
-// TODO: Docs, and think about the name?  FragmentContext/QueryContext/Context/something else?
+/// Context passed into a QueryFragment/InlineFragments
+///
+/// This contains the arguments to be used by the fragment and other
+/// metadata neccesary for building the fragment.
+///
+/// Should be built with the `new` function to pass in arguments or the
+/// `empty` function if there are no arguments.
 pub struct FragmentContext<'a, Args> {
     pub args: &'a Args,
     pub recurse_depth: Option<u8>,
 }
 
 impl<'a, Args> FragmentContext<'a, Args> {
+    /// Constructs a new FragmentContext with some arguments.
+    ///
+    /// The `empty` function can be used instead if there are no arguments.
     pub fn new(args: &'a Args) -> FragmentContext<'a, Args> {
         FragmentContext {
             args,
@@ -56,6 +69,7 @@ impl<'a, Args> FragmentContext<'a, Args> {
         }
     }
 
+    #[doc(hidden)]
     pub fn with_args<'b, NewArgs>(&self, args: &'b NewArgs) -> FragmentContext<'b, NewArgs> {
         FragmentContext {
             args,
@@ -63,6 +77,7 @@ impl<'a, Args> FragmentContext<'a, Args> {
         }
     }
 
+    #[doc(hidden)]
     pub fn recurse(&self) -> Self {
         FragmentContext {
             recurse_depth: self.recurse_depth.or(Some(0)).map(|d| d + 1),
@@ -72,7 +87,7 @@ impl<'a, Args> FragmentContext<'a, Args> {
 }
 
 impl FragmentContext<'static, ()> {
-    // TODO: Think about this name: empty? without_args? no_args?
+    /// Constructs a new FragmentContext with no arguments
     pub fn empty() -> FragmentContext<'static, ()> {
         FragmentContext {
             args: &(),
