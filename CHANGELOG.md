@@ -23,6 +23,13 @@ all APIs might be changed.
 - Cynic now supports recursive queries via the `#[cynic(recurse="N")]`
   attribute on fields that recurse.
 
+### Bug Fixes
+
+- The generator (and therefore the generator tests) should now work when run on
+  windows.
+- Paths output as part of generator are now all raw strings, so should support
+  windows path separators.
+
 ## v0.10.0 - 2020-10-11
 
 ### Breaking Changes
