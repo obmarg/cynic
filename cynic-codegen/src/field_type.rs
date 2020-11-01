@@ -83,6 +83,10 @@ impl FieldType {
         }
     }
 
+    pub fn is_list(&self) -> bool {
+        matches!(self, FieldType::List(_, _))
+    }
+
     pub fn contains_enum(&self) -> bool {
         match self {
             FieldType::List(inner, _) => inner.contains_enum(),
@@ -142,57 +146,6 @@ impl FieldType {
             }
             FieldType::Other(type_path, _) => FieldType::Other(type_path.clone(), false),
         }
-    }
-
-    /// Extracts the inner type from a syn::Type that corresponds with this type.
-    ///
-    /// This takes some (potentially nested) Options & Vectors and extracts enough layers
-    /// to get at the inner type.
-    ///
-    /// For example if this is a `[Int]` and we passed in a `Option<Vec<Option<u8>>>`
-    /// this would return the u8.
-    ///
-    /// This is useful when calling QueryFragment::selection_set functions in
-    /// our derived QueryFragment as only the inner type implements QueryFragment
-    /// and we use selection set functions manully to build up the required &
-    /// list types.
-    pub fn get_inner_type_from_syn(&self, ty: &syn::Type) -> syn::Type {
-        use syn::{GenericArgument, PathArguments, Type};
-        if self.is_nullable() {
-            // Strip off a top level nullable & recurse...
-            if let Type::Path(expr) = ty {
-                if let Some(segment) = expr.path.segments.first() {
-                    if segment.ident.to_string() == "Option" {
-                        if let PathArguments::AngleBracketed(expr) = &segment.arguments {
-                            if let Some(GenericArgument::Type(ty)) = expr.args.first() {
-                                return self.as_required().get_inner_type_from_syn(ty);
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Note: as we no longer require Opt<Vec<Opt<>> to match our types precisely
-            // we go ahead and recurse anyway here...
-            return self.as_required().get_inner_type_from_syn(ty);
-        } else if let FieldType::List(inner_self, _) = self {
-            if let Type::Path(expr) = ty {
-                if let Some(segment) = expr.path.segments.first() {
-                    if segment.ident.to_string() == "Vec" {
-                        if let PathArguments::AngleBracketed(expr) = &segment.arguments {
-                            if let Some(GenericArgument::Type(ty)) = expr.args.first() {
-                                return inner_self.get_inner_type_from_syn(ty);
-                            }
-                        }
-                    }
-                }
-            }
-
-            // Note: as we no longer require rust types to match GQL types precisely
-            // we go ahead and recurse anyway here...
-            return inner_self.get_inner_type_from_syn(ty);
-        }
-        ty.clone()
     }
 
     /// Generates a call to selection set functions for this type.

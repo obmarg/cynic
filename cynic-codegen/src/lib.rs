@@ -18,15 +18,18 @@ mod type_index;
 mod type_path;
 mod type_validation;
 
-use error::Error;
+use error::Errors;
 use field_argument::FieldArgument;
 use field_type::FieldType;
 use ident::Ident;
-use schema::load_schema;
+use schema::{load_schema, SchemaLoadError};
 use type_index::TypeIndex;
 use type_path::TypePath;
 
-pub fn output_query_dsl<P: AsRef<std::path::Path>>(schema: P, output_path: P) -> Result<(), Error> {
+pub fn output_query_dsl<P: AsRef<std::path::Path>>(
+    schema: P,
+    output_path: P,
+) -> Result<(), SchemaLoadError> {
     use query_dsl::QueryDslParams;
     use std::io::Write;
 

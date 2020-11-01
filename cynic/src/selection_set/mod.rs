@@ -52,6 +52,17 @@ pub struct SelectionSet<'a, DecodesTo, TypeLock> {
 }
 
 impl<'a, DecodesTo, TypeLock> SelectionSet<'a, DecodesTo, TypeLock> {
+    fn new(
+        fields: Vec<Field>,
+        decoder: BoxDecoder<'a, DecodesTo>,
+    ) -> SelectionSet<'a, DecodesTo, TypeLock> {
+        SelectionSet {
+            fields,
+            decoder,
+            phantom: PhantomData,
+        }
+    }
+
     /// Maps a `SelectionSet<_, DecodesTo, _>` to a `SelectionSet<_, R, _>` by applying
     /// the provided function `f` to the decoded data when decoding query results.
     ///
@@ -67,11 +78,7 @@ impl<'a, DecodesTo, TypeLock> SelectionSet<'a, DecodesTo, TypeLock> {
         DecodesTo: 'a,
         R: 'a,
     {
-        SelectionSet {
-            fields: self.fields,
-            decoder: json_decode::map(f, self.decoder),
-            phantom: PhantomData,
-        }
+        SelectionSet::new(self.fields, json_decode::map(f, self.decoder))
     }
 
     /// Creates a `SelectionSet` that depends on previous resutls.
@@ -95,11 +102,10 @@ impl<'a, DecodesTo, TypeLock> SelectionSet<'a, DecodesTo, TypeLock> {
         R: 'a,
     {
         let boxed_func = Box::new(f);
-        SelectionSet {
-            fields: self.fields,
-            decoder: json_decode::and_then(move |value| (*boxed_func)(value).decoder, self.decoder),
-            phantom: PhantomData,
-        }
+        SelectionSet::new(
+            self.fields,
+            json_decode::and_then(move |value| (*boxed_func)(value).decoder, self.decoder),
+        )
     }
 
     /// Changes the `TypeLock` on a `SelectionSet`.
@@ -112,11 +118,7 @@ impl<'a, DecodesTo, TypeLock> SelectionSet<'a, DecodesTo, TypeLock> {
     where
         NewLock: HasSubtype<TypeLock>,
     {
-        SelectionSet {
-            fields: self.fields,
-            decoder: self.decoder,
-            phantom: PhantomData,
-        }
+        SelectionSet::new(self.fields, self.decoder)
     }
 
     #[cfg(test)]
@@ -140,38 +142,22 @@ impl<'a, DecodesTo, TypeLock> SelectionSet<'a, DecodesTo, TypeLock> {
 
 /// Creates a `SelectionSet` that will decode a `String`
 pub fn string() -> SelectionSet<'static, String, ()> {
-    SelectionSet {
-        fields: vec![],
-        decoder: json_decode::string(),
-        phantom: PhantomData,
-    }
+    SelectionSet::new(vec![], json_decode::string())
 }
 
 /// Creates a `SelectionSet` that will decode an `i32`
 pub fn integer() -> SelectionSet<'static, i32, ()> {
-    SelectionSet {
-        fields: vec![],
-        decoder: json_decode::integer(),
-        phantom: PhantomData,
-    }
+    SelectionSet::new(vec![], json_decode::integer())
 }
 
 /// Creates a `SelectionSet` that will decode an `f64`
 pub fn float() -> SelectionSet<'static, f64, ()> {
-    SelectionSet {
-        fields: vec![],
-        decoder: json_decode::float(),
-        phantom: PhantomData,
-    }
+    SelectionSet::new(vec![], json_decode::float())
 }
 
 /// Creates a `SelectionSet` that will decode a `bool`
 pub fn boolean() -> SelectionSet<'static, bool, ()> {
-    SelectionSet {
-        fields: vec![],
-        decoder: json_decode::boolean(),
-        phantom: PhantomData,
-    }
+    SelectionSet::new(vec![], json_decode::boolean())
 }
 
 /// Creates a `SelectionSet` that will decode a type that implements `serde::Deserialize`
@@ -180,20 +166,12 @@ where
     for<'de> T: serde::Deserialize<'de>,
     T: 'static + Send + Sync,
 {
-    SelectionSet {
-        fields: vec![],
-        decoder: json_decode::serde(),
-        phantom: PhantomData,
-    }
+    SelectionSet::new(vec![], json_decode::serde())
 }
 
 /// Creates a `SelectionSet` that will decode into a `serde_json::Value`
 pub fn json() -> SelectionSet<'static, serde_json::Value, ()> {
-    SelectionSet {
-        fields: vec![],
-        decoder: json_decode::json(),
-        phantom: PhantomData,
-    }
+    SelectionSet::new(vec![], json_decode::json())
 }
 
 /// Creates a `SelectionSet` that will decode a type that implements `Scalar`
@@ -201,11 +179,7 @@ pub fn scalar<S>() -> SelectionSet<'static, S, ()>
 where
     S: scalar::Scalar + 'static + Send + Sync,
 {
-    SelectionSet {
-        fields: vec![],
-        decoder: scalar::decoder(),
-        phantom: PhantomData,
-    }
+    SelectionSet::new(vec![], scalar::decoder())
 }
 
 /// Creates a `SelectionSet` that decodes a Vec of `inner_selection`
@@ -215,11 +189,10 @@ pub fn vec<'a, DecodesTo, TypeLock>(
 where
     DecodesTo: 'a + Send + Sync,
 {
-    SelectionSet {
-        fields: inner_selection.fields,
-        decoder: json_decode::list(inner_selection.decoder),
-        phantom: PhantomData,
-    }
+    SelectionSet::new(
+        inner_selection.fields,
+        json_decode::list(inner_selection.decoder),
+    )
 }
 
 /// Creates a `SelectionSet` that decodes a nullable into an Option
@@ -229,11 +202,10 @@ pub fn option<'a, DecodesTo, TypeLock>(
 where
     DecodesTo: 'a + Send + Sync,
 {
-    SelectionSet {
-        fields: inner_selection.fields,
-        decoder: json_decode::option(inner_selection.decoder),
-        phantom: PhantomData,
-    }
+    SelectionSet::new(
+        inner_selection.fields,
+        json_decode::option(inner_selection.decoder),
+    )
 }
 
 /// Selects a field from a GraphQL object, decoding it with another `SelectionSet`
@@ -251,11 +223,10 @@ where
         Field::Composite(field_name.to_string(), arguments, selection_set.fields)
     };
 
-    SelectionSet {
-        fields: vec![field],
-        decoder: json_decode::field(field_name, selection_set.decoder),
-        phantom: PhantomData,
-    }
+    SelectionSet::new(
+        vec![field],
+        json_decode::field(field_name, selection_set.decoder),
+    )
 }
 
 /// Creates a SelectionSet that adds some inline fragments to a query.
@@ -281,14 +252,13 @@ where
         decoders.insert(fragment_type, selection_set.decoder);
     }
 
-    SelectionSet {
-        fields: fields,
-        decoder: Box::new(FragmentDecoder {
+    SelectionSet::new(
+        fields,
+        Box::new(FragmentDecoder {
             decoders,
             backup_decoder: None,
         }),
-        phantom: PhantomData,
-    }
+    )
 }
 
 struct FragmentDecoder<'a, DecodesTo> {
@@ -321,11 +291,10 @@ pub(crate) fn query_root<'a, DecodesTo, InnerTypeLock: QueryRoot>(
 where
     DecodesTo: 'a,
 {
-    SelectionSet {
-        fields: vec![Field::Root(selection_set.fields, OperationType::Query)],
-        decoder: selection_set.decoder,
-        phantom: PhantomData,
-    }
+    SelectionSet::new(
+        vec![Field::Root(selection_set.fields, OperationType::Query)],
+        selection_set.decoder,
+    )
 }
 
 pub(crate) fn mutation_root<'a, DecodesTo, InnerTypeLock: MutationRoot>(
@@ -334,11 +303,10 @@ pub(crate) fn mutation_root<'a, DecodesTo, InnerTypeLock: MutationRoot>(
 where
     DecodesTo: 'a,
 {
-    SelectionSet {
-        fields: vec![Field::Root(selection_set.fields, OperationType::Mutation)],
-        decoder: selection_set.decoder,
-        phantom: PhantomData,
-    }
+    SelectionSet::new(
+        vec![Field::Root(selection_set.fields, OperationType::Mutation)],
+        selection_set.decoder,
+    )
 }
 
 /// Applies a function to the result of a selection.
@@ -354,11 +322,7 @@ where
     T1: 'a,
     NewDecodesTo: 'a,
 {
-    SelectionSet {
-        phantom: PhantomData,
-        fields: param1.fields,
-        decoder: json_decode::map(func, param1.decoder),
-    }
+    SelectionSet::new(param1.fields, json_decode::map(func, param1.decoder))
 }
 
 macro_rules! define_map {
@@ -403,11 +367,7 @@ macro_rules! define_map {
                 fields.extend($i.fields.into_iter());
             )+
 
-            SelectionSet {
-                phantom: PhantomData,
-                fields,
-                decoder: json_decode::$fn_name(func, $($i.decoder, )+)
-            }
+            SelectionSet::new(fields, json_decode::$fn_name(func, $($i.decoder, )+))
         }
     };
 }
@@ -573,15 +533,29 @@ define_map!(
 ///
 /// This is handy when used with `SelectionSet::and_then` - you can return a specific
 /// hard coded value in some case.
-pub fn succeed<'a, V>(value: V) -> SelectionSet<'a, V, ()>
+pub fn succeed<'a, V, TypeLock>(value: V) -> SelectionSet<'a, V, TypeLock>
 where
     V: Clone + Send + Sync + 'a,
 {
-    SelectionSet {
-        fields: vec![],
-        decoder: json_decode::succeed(value),
-        phantom: PhantomData,
-    }
+    SelectionSet::new(vec![], json_decode::succeed(value))
+}
+
+/// Creates a `SelectionSet` that always decodes succesfully to the result of a function
+///
+/// This is similar to `succeeed` but can be used in cases where the type you wish to
+/// return does not impl Clone.
+pub fn succeed_using<'a, F, V, TypeLock>(f: F) -> SelectionSet<'a, V, TypeLock>
+where
+    F: Fn() -> V + Send + Sync + 'a,
+    V: Send + Sync + 'a,
+{
+    SelectionSet::new(
+        vec![],
+        json_decode::map(
+            move |_| f(),
+            json_decode::succeed::<Option<core::convert::Infallible>>(None),
+        ),
+    )
 }
 
 /// Creates a `SelectionSet` that always fails to decode.
@@ -592,11 +566,7 @@ where
 /// See the [`SelectionSet::and_then`](cynic::selection_set::SelectionSet::and_then)
 /// docs for an example.
 pub fn fail<'a, V>(err: impl Into<String>) -> SelectionSet<'static, V, ()> {
-    SelectionSet {
-        fields: vec![],
-        decoder: json_decode::fail(err),
-        phantom: PhantomData,
-    }
+    SelectionSet::new(vec![], json_decode::fail(err))
 }
 
 #[cfg(test)]
@@ -604,6 +574,7 @@ mod tests {
     use super::*;
 
     use assert_matches::assert_matches;
+    use serde_json::json;
 
     #[derive(Debug, PartialEq)]
     struct Query {
@@ -812,5 +783,16 @@ mod tests {
 
         assert_matches!(selection_set.decode(&serde_json::json!("ok")), Ok("YAS"));
         assert_matches!(selection_set.decode(&serde_json::json!("nope")), Err(_));
+    }
+
+    #[test]
+    fn test_optional() {
+        let selection_set = option(string());
+
+        assert_eq!(
+            selection_set.decode(&json!("ok")),
+            Ok(Some("ok".to_string()))
+        );
+        assert_eq!(selection_set.decode(&json!(null)), Ok(None));
     }
 }

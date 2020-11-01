@@ -402,6 +402,20 @@ dependencies = [
 ]
 
 [[package]]
+name = "console"
+version = "0.12.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c0b1aacfaffdbff75be81c15a399b4bedf78aaefe840e8af1d299ac2ade885d2"
+dependencies = [
+ "encode_unicode",
+ "lazy_static",
+ "libc",
+ "terminal_size",
+ "termios",
+ "winapi 0.3.9",
+]
+
+[[package]]
 name = "console_error_panic_hook"
 version = "0.1.6"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -537,6 +551,7 @@ dependencies = [
  "bson",
  "chrono",
  "cynic-proc-macros",
+ "insta 1.1.0",
  "json-decode",
  "maplit",
  "reqwest",
@@ -571,7 +586,7 @@ dependencies = [
  "async-std",
  "cynic",
  "cynic-codegen",
- "insta",
+ "insta 0.16.1",
  "reqwest",
  "serde_json",
  "surf",
@@ -592,7 +607,7 @@ version = "0.10.0"
 dependencies = [
  "Inflector",
  "graphql-parser",
- "insta",
+ "insta 0.16.1",
  "rstest",
  "thiserror",
 ]
@@ -1176,7 +1191,21 @@ version = "0.16.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "617e921abc813f96a3b00958c079e7bf1e2db998f8a04f1546dd967373a418ee"
 dependencies = [
- "console",
+ "console 0.11.3",
+ "difference",
+ "lazy_static",
+ "serde",
+ "serde_json",
+ "serde_yaml",
+]
+
+[[package]]
+name = "insta"
+version = "1.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e7e7528a20113cf7ca90eddfc2439c608188b6eafc0613964da2bd140c92acec"
+dependencies = [
+ "console 0.12.0",
  "difference",
  "lazy_static",
  "serde",

@@ -1,4 +1,5 @@
-use crate::{argument::SerializableArgument, Id};
+use super::SerializableArgument;
+use crate::Id;
 
 /// IntoArgument is used to type-check arguments to queries in cynic.
 ///

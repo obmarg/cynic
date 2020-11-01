@@ -14,7 +14,7 @@ fn test_input_object_renames() {
 
     #[derive(cynic::InputObject)]
     #[cynic(
-        graphql_type = "BlogPost",
+        graphql_type = "BlogPostInput",
         schema_path = "tests/test-schema.graphql",
         query_module = "query_dsl",
         rename_all = "lowercase"
@@ -41,7 +41,7 @@ fn test_input_object_skip_serializing() {
 
     #[derive(cynic::InputObject)]
     #[cynic(
-        graphql_type = "BlogPost",
+        graphql_type = "BlogPostInput",
         schema_path = "tests/test-schema.graphql",
         query_module = "query_dsl"
     )]

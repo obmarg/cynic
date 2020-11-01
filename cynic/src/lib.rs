@@ -81,9 +81,11 @@
 //!     film: Option<Film>,
 //! }
 //!
-//! // You can then build a `cynic::Query` from this fragment
-//! use cynic::QueryFragment;
-//! let operation = cynic::Operation::query(FilmDirectorQuery::fragment(&()));
+//! // You can then build a `cynic::Operation` from this fragment
+//! use cynic::{QueryFragment, FragmentContext};
+//! let operation = cynic::Operation::query(
+//!     FilmDirectorQuery::fragment(FragmentContext::empty())
+//! );
 //!
 //! ```
 //!
@@ -151,7 +153,9 @@
 //! use cynic::QueryFragment;
 //! let operation = cynic::Operation::query(
 //!     FilmDirectorQueryWithArgs::fragment(
-//!         &FilmArguments{ id: Some("ZmlsbXM6MQ==".into()) }
+//!         cynic::FragmentContext::new(
+//!             &FilmArguments{ id: Some("ZmlsbXM6MQ==".into()) }
+//!         )
 //!     )
 //! );
 //! ```
@@ -173,11 +177,10 @@
 //! [known issues](https://github.com/servo/rust-url/issues/557) when
 //! targetting web assembly.
 
-mod argument;
+mod arguments;
 mod fragments;
 mod id;
 mod integrations;
-mod into_argument;
 mod operation;
 mod result;
 mod scalar;
@@ -188,15 +191,23 @@ pub mod utils;
 
 pub use json_decode::DecodeError;
 
-pub use argument::{Argument, SerializableArgument};
-pub use fragments::{FragmentArguments, InlineFragments, QueryFragment};
+pub use arguments::{Argument, FromArguments, IntoArgument, SerializableArgument};
+pub use fragments::{FragmentArguments, FragmentContext, InlineFragments, QueryFragment};
 pub use id::Id;
 pub use operation::Operation;
 pub use result::{GraphQLError, GraphQLResponse, GraphQLResult, PossiblyParsedData};
 pub use scalar::Scalar;
 pub use selection_set::SelectionSet;
 
-pub use into_argument::IntoArgument;
+pub use cynic_proc_macros::{
+    query_dsl, query_module, Enum, FragmentArguments, InlineFragments, InputObject, QueryFragment,
+    Scalar,
+};
+
+// We re-export serde_json as the output from a lot of our derive macros require it,
+// and this way we can point at our copy rather than forcing users to add it to
+// their Cargo.toml
+pub use serde_json;
 
 pub type SerializeError = Box<dyn std::error::Error + Send + Sync>;
 
@@ -223,27 +234,6 @@ pub trait InputObject<TypeLock> {}
 impl<TypeLock, T> InputObject<TypeLock> for &T where T: InputObject<TypeLock> {}
 impl<TypeLock, T> InputObject<TypeLock> for Box<T> where T: InputObject<TypeLock> {}
 
-/// Used for converting between different argument types in a QueryFragment
-/// hierarchy.
-///
-/// For example if an outer QueryFragment has a struct with several parameters
-/// but an inner QueryFragment needs none then we can use () as the arguments
-/// type on the inner fragments and use the blanket implementation of IntoArguments
-/// to convert to ().
-pub trait FromArguments<T> {
-    fn from_arguments(args: T) -> Self;
-}
-
-impl<'a, T> FromArguments<&'a T> for &'a T
-where
-    T: FragmentArguments,
-{
-    fn from_arguments(args: &'a T) -> Self {
-        // TODO: Figure out if there's a way to avoid this clone...
-        args
-    }
-}
-
 /// A marker trait that indicates a particular type is at the root of a GraphQL schemas query
 /// hierarchy.
 pub trait QueryRoot {}
@@ -251,13 +241,3 @@ pub trait QueryRoot {}
 /// A marker trait that indicates a particular type is at the root of a GraphQL schemas
 /// mutation hierarchy.
 pub trait MutationRoot {}
-
-pub use cynic_proc_macros::{
-    query_dsl, query_module, Enum, FragmentArguments, InlineFragments, InputObject, QueryFragment,
-    Scalar,
-};
-
-// We re-export serde_json as the output from a lot of our derive macros require it,
-// and this way we can point at our copy rather than forcing users to add it to
-// their Cargo.toml
-pub use serde_json;

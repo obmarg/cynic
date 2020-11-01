@@ -1,0 +1,12 @@
+---
+source: cynic/tests/recursive-queries.rs
+expression: query.query
+---
+query Query {
+  allAuthors {
+    me {
+      me
+    }
+  }
+}
+

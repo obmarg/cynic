@@ -1,6 +1,25 @@
 use crate::FieldType;
 
+#[derive(Debug, PartialEq, Eq)]
+pub enum CheckMode {
+    Normal,
+    Flattening,
+    Recursing,
+}
+
 pub fn check_types_are_compatible(
+    gql_type: &FieldType,
+    rust_type: &syn::Type,
+    mode: CheckMode,
+) -> Result<(), syn::Error> {
+    match mode {
+        CheckMode::Flattening => normal_check(gql_type, rust_type, true),
+        CheckMode::Normal => normal_check(gql_type, rust_type, false),
+        CheckMode::Recursing => recursing_check(gql_type, rust_type),
+    }
+}
+
+fn normal_check(
     gql_type: &FieldType,
     rust_type: &syn::Type,
     flattening: bool,
@@ -20,14 +39,14 @@ pub fn check_types_are_compatible(
         ParsedType::Box(inner) => {
             // Box is a transparent container for the purposes of checking compatability
             // so just recurse
-            return check_types_are_compatible(gql_type, inner, flattening);
+            return normal_check(gql_type, inner, flattening);
         }
         _ => {}
     }
 
     if gql_type.is_nullable() {
         if let ParsedType::Optional(inner) = parsed_type {
-            return check_types_are_compatible(&gql_type.as_required(), &inner, flattening);
+            return normal_check(&gql_type.as_required(), &inner, flattening);
         } else if !flattening {
             // If we're flattening then it's all good.  But otherwise we should return an error.
             return Err(syn::Error::new(
@@ -48,7 +67,7 @@ pub fn check_types_are_compatible(
                     ));
     } else if let FieldType::List(item_type, _) = gql_type {
         if let ParsedType::List(inner) = parsed_type {
-            return check_types_are_compatible(&item_type, &inner, flattening);
+            return normal_check(&item_type, &inner, flattening);
         } else if !flattening {
             // If we're flattening then it's all good.  But otherwise we should return an error.
             return Err(syn::Error::new(
@@ -70,6 +89,33 @@ pub fn check_types_are_compatible(
     }
 
     Ok(())
+}
+
+fn recursing_check(gql_type: &FieldType, rust_type: &syn::Type) -> Result<(), syn::Error> {
+    use syn::spanned::Spanned;
+
+    let parsed_type = parse_type(rust_type);
+
+    if let ParsedType::Unknown = parsed_type {
+        return Err(syn::Error::new(
+                rust_type.span(),
+                "Cynic does not understand this type. Only un-parameterised types, Vecs, Options & Box are accepted currently.",
+            ));
+    };
+
+    if gql_type.is_nullable() {
+        // If the field is nullable then we just defer to the normal checks.
+        return normal_check(gql_type, rust_type, false);
+    };
+
+    if let ParsedType::Optional(inner_rust_type) = parsed_type {
+        normal_check(gql_type, inner_rust_type, false)
+    } else {
+        Err(syn::Error::new(
+            rust_type.span(),
+            "Recursive types must be wrapped in Option.  Did you mean Option<{}>",
+        ))
+    }
 }
 
 /// A simplified rust type structure
@@ -132,8 +178,11 @@ fn extract_generic_argument<'a>(segment: &'a syn::PathSegment) -> Option<&'a syn
 mod tests {
     use super::*;
     use crate::{FieldType, Ident};
+
     use assert_matches::assert_matches;
     use quote::quote;
+    use rstest::rstest;
+    use syn::parse_quote;
 
     #[test]
     fn test_required_validation() {
@@ -144,7 +193,7 @@ mod tests {
             check_types_are_compatible(
                 &required_field,
                 &syn::parse2(quote! { i32 }).unwrap(),
-                false
+                CheckMode::Normal
             ),
             Ok(())
         );
@@ -152,7 +201,7 @@ mod tests {
             check_types_are_compatible(
                 &optional_field,
                 &syn::parse2(quote! { Option<i32> }).unwrap(),
-                false
+                CheckMode::Normal
             ),
             Ok(())
         );
@@ -160,7 +209,7 @@ mod tests {
             check_types_are_compatible(
                 &optional_field,
                 &syn::parse2(quote! { i32 }).unwrap(),
-                false
+                CheckMode::Normal
             ),
             Err(_)
         );
@@ -168,7 +217,7 @@ mod tests {
             check_types_are_compatible(
                 &required_field,
                 &syn::parse2(quote! { Option<i32> }).unwrap(),
-                false
+                CheckMode::Normal
             ),
             Err(_)
         );
@@ -190,14 +239,18 @@ mod tests {
         );
 
         assert_matches!(
-            check_types_are_compatible(&list, &syn::parse2(quote! { Vec<i32> }).unwrap(), false),
+            check_types_are_compatible(
+                &list,
+                &syn::parse2(quote! { Vec<i32> }).unwrap(),
+                CheckMode::Normal
+            ),
             Ok(())
         );
         assert_matches!(
             check_types_are_compatible(
                 &optional_list,
                 &syn::parse2(quote! { Option<Vec<i32>> }).unwrap(),
-                false
+                CheckMode::Normal
             ),
             Ok(())
         );
@@ -205,19 +258,23 @@ mod tests {
             check_types_are_compatible(
                 &option_list_option,
                 &syn::parse2(quote! { Option<Vec<Option<i32>>> }).unwrap(),
-                false
+                CheckMode::Normal
             ),
             Ok(())
         );
         assert_matches!(
-            check_types_are_compatible(&list, &syn::parse2(quote! { i32 }).unwrap(), false),
+            check_types_are_compatible(
+                &list,
+                &syn::parse2(quote! { i32 }).unwrap(),
+                CheckMode::Normal
+            ),
             Err(_)
         );
         assert_matches!(
             check_types_are_compatible(
                 &optional_list,
                 &syn::parse2(quote! { Vec<i32> }).unwrap(),
-                false
+                CheckMode::Normal
             ),
             Err(_)
         );
@@ -225,7 +282,7 @@ mod tests {
             check_types_are_compatible(
                 &option_list_option,
                 &syn::parse2(quote! { Option<Vec<i32>> }).unwrap(),
-                false
+                CheckMode::Normal
             ),
             Err(_)
         );
@@ -250,7 +307,7 @@ mod tests {
             check_types_are_compatible(
                 &option_list_option,
                 &syn::parse2(quote! { Vec<i32> }).unwrap(),
-                true
+                CheckMode::Flattening
             ),
             Ok(())
         );
@@ -258,7 +315,7 @@ mod tests {
             check_types_are_compatible(
                 &option_list_option,
                 &syn::parse2(quote! { Option<Vec<i32>> }).unwrap(),
-                true
+                CheckMode::Flattening
             ),
             Ok(())
         );
@@ -266,7 +323,7 @@ mod tests {
             check_types_are_compatible(
                 &optional_list,
                 &syn::parse2(quote! { Vec<i32> }).unwrap(),
-                true
+                CheckMode::Flattening
             ),
             Ok(())
         );
@@ -275,7 +332,7 @@ mod tests {
             check_types_are_compatible(
                 &list,
                 &syn::parse2(quote! { Vec<Option<i32>> }).unwrap(),
-                true
+                CheckMode::Flattening
             ),
             Err(_)
         );
@@ -283,8 +340,113 @@ mod tests {
             check_types_are_compatible(
                 &list,
                 &syn::parse2(quote! { Option<Vec<i32>> }).unwrap(),
+                CheckMode::Flattening
+            ),
+            Err(_)
+        );
+    }
+
+    #[rstest(graphql_field, rust_field,
+        case::required_t(
+            FieldType::Scalar(Ident::new("T").into(), false),
+            parse_quote! { Option<Box<T>> }
+        ),
+
+        case::optional_t(
+            FieldType::Scalar(Ident::new("T").into(), true),
+            parse_quote! { Option<T> }
+        ),
+
+        case::option_vec_required_t(
+            FieldType::List(
+                Box::new(FieldType::Scalar(Ident::new("T").into(), false)),
                 true
             ),
+            parse_quote! { Option<Vec<T>> }
+        ),
+
+        case::required_vec_required_t(
+            FieldType::List(
+                Box::new(FieldType::Scalar(Ident::new("T").into(), false)),
+                false
+            ),
+            parse_quote! { Option<Vec<T>> }
+        ),
+    )]
+    fn test_recurse_validation_ok(graphql_field: FieldType, rust_field: syn::Type) {
+        assert_matches!(
+            check_types_are_compatible(&graphql_field, &rust_field, CheckMode::Recursing),
+            Ok(())
+        );
+    }
+
+    #[rstest(graphql_field, rust_field,
+        case::required_t_box(
+            FieldType::Scalar(Ident::new("T").into(), false),
+            parse_quote! { Box<T> }
+        ),
+        case::required_t_standalone(
+            FieldType::Scalar(Ident::new("T").into(), false),
+            parse_quote! { T }
+        ),
+
+        case::optional_t_standalone(
+            FieldType::Scalar(Ident::new("T").into(), true),
+            parse_quote! { T }
+        ),
+        case::optional_t_box(
+            FieldType::Scalar(Ident::new("T").into(), true),
+            parse_quote! { Box<T> }
+        ),
+
+        case::option_vec_required_t(
+            FieldType::List(
+                Box::new(FieldType::Scalar(Ident::new("T").into(), false)),
+                true
+            ),
+            parse_quote! { Vec<T> }
+        ),
+        case::option_vec_required_t(
+            FieldType::List(
+                Box::new(FieldType::Scalar(Ident::new("T").into(), false)),
+                true
+            ),
+            parse_quote! { Vec<Option<T>> }
+        ),
+
+        case::required_vec_required_t(
+            FieldType::List(
+                Box::new(FieldType::Scalar(Ident::new("T").into(), false)),
+                false
+            ),
+            parse_quote! { Vec<T> }
+        ),
+        case::required_vec_required_t_no_vec(
+            FieldType::List(
+                Box::new(FieldType::Scalar(Ident::new("T").into(), false)),
+                false
+            ),
+            parse_quote! { T }
+        ),
+
+        case::required_vec_optional_t_no_vec(
+            FieldType::List(
+                Box::new(FieldType::Scalar(Ident::new("T").into(), true)),
+                false
+            ),
+            parse_quote! { Option<T> }
+        ),
+        case::required_vec_optional_t_wrong_nesting(
+            FieldType::List(
+                Box::new(FieldType::Scalar(Ident::new("T").into(), true)),
+                false
+            ),
+            parse_quote! { Option<Vec<T>> }
+        ),
+    )]
+    fn test_recurse_validation_fail(graphql_field: FieldType, rust_field: syn::Type) {
+        assert_matches!(
+            check_types_are_compatible(&graphql_field, &rust_field, CheckMode::Recursing),
             Err(_)
         );
     }

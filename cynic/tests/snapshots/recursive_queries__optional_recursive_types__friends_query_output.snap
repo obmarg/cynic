@@ -1,0 +1,17 @@
+---
+source: cynic/tests/recursive-queries.rs
+expression: query.query
+---
+query Query {
+  allAuthors {
+    friends {
+      friends
+      referrer
+    }
+    referrer {
+      friends
+      referrer
+    }
+  }
+}
+

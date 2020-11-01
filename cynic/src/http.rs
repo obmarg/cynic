@@ -49,11 +49,11 @@ mod surf_ext {
     /// #     #[arguments(id = cynic::Id::new("ZmlsbXM6MQ=="))]
     /// #     film: Option<Film>,
     /// # }
-    /// use cynic::{http::SurfExt, QueryFragment};
+    /// use cynic::{http::SurfExt, QueryFragment, FragmentContext, Operation};
     ///
     /// # async move {
-    /// let operation = cynic::Operation::query(
-    ///     FilmDirectorQuery::fragment(&())
+    /// let operation = Operation::query(
+    ///     FilmDirectorQuery::fragment(FragmentContext::empty())
     /// );
     ///
     /// let response = surf::post("https://swapi-graphql.netlify.com/.netlify/functions/index")
@@ -143,11 +143,11 @@ mod reqwest_ext {
     /// #     #[arguments(id = cynic::Id::new("ZmlsbXM6MQ=="))]
     /// #     film: Option<Film>,
     /// # }
-    /// use cynic::{http::ReqwestExt, QueryFragment};
+    /// use cynic::{http::ReqwestExt, QueryFragment, FragmentContext, Operation};
     ///
     /// # async move {
     /// let operation = cynic::Operation::query(
-    ///     FilmDirectorQuery::fragment(&())
+    ///     FilmDirectorQuery::fragment(FragmentContext::empty())
     /// );
     ///
     /// let client = reqwest::Client::new();
@@ -239,10 +239,10 @@ mod reqwest_blocking_ext {
     /// #     #[arguments(id = cynic::Id::new("ZmlsbXM6MQ=="))]
     /// #     film: Option<Film>,
     /// # }
-    /// use cynic::{http::ReqwestBlockingExt, QueryFragment};
+    /// use cynic::{http::ReqwestBlockingExt, QueryFragment, FragmentContext, Operation};
     ///
     /// let operation = cynic::Operation::query(
-    ///     FilmDirectorQuery::fragment(&())
+    ///     FilmDirectorQuery::fragment(FragmentContext::empty())
     /// );
     ///
     /// let client = reqwest::blocking::Client::new();

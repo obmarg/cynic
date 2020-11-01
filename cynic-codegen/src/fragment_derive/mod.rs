@@ -2,15 +2,19 @@ use std::collections::{HashMap, HashSet};
 
 use proc_macro2::{Span, TokenStream};
 
-use crate::{load_schema, type_validation::check_types_are_compatible, FieldType, Ident, TypePath};
+use crate::{
+    load_schema, type_validation::check_types_are_compatible, Errors, FieldType, Ident, TypePath,
+};
 
 mod arguments;
 mod schema_parsing;
+mod type_ext;
 
 pub(crate) mod input;
 
 use arguments::{arguments_from_field_attrs, FieldArgument};
 use schema_parsing::{Field, Object};
+use type_ext::SynTypeExt;
 
 pub use input::{FragmentDeriveField, FragmentDeriveInput};
 
@@ -21,10 +25,10 @@ pub fn fragment_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error
 
     match FragmentDeriveInput::from_derive_input(ast) {
         Ok(input) => load_schema(&*input.schema_path)
-            .map_err(|e| e.to_syn_error(input.schema_path.span()))
+            .map_err(|e| Errors::from(e.to_syn_error(input.schema_path.span())))
             .map(Schema::from)
             .and_then(|schema| fragment_derive_impl(input, &schema))
-            .or_else(|e| Ok(e.to_compile_error())),
+            .or_else(|e| Ok(e.to_compile_errors())),
         Err(e) => Ok(e.write_errors()),
     }
 }
@@ -32,8 +36,10 @@ pub fn fragment_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error
 pub fn fragment_derive_impl(
     input: FragmentDeriveInput,
     schema: &Schema,
-) -> Result<TokenStream, syn::Error> {
+) -> Result<TokenStream, Errors> {
     use quote::{quote, quote_spanned};
+
+    input.validate()?;
 
     let schema_path = input.schema_path;
 
@@ -73,48 +79,84 @@ pub fn fragment_derive_impl(
         Err(syn::Error::new(
             Span::call_site(),
             format!("QueryFragment can only be derived from a struct"),
-        ))
+        ))?
     }
 }
 
-enum SelectorFunction {
+/// Selector for a "field type" - i.e. a nullable/list/required type that
+/// references some named schema type.
+enum FieldTypeSelectorCall {
     Field(TypePath),
-    Opt(Box<SelectorFunction>),
-    Vector(Box<SelectorFunction>),
-    Flatten(Box<SelectorFunction>),
+    Opt(Box<FieldTypeSelectorCall>),
+    Vector(Box<FieldTypeSelectorCall>),
+    Flatten(Box<FieldTypeSelectorCall>),
+    Recurse(u8, Box<FieldTypeSelectorCall>, bool),
+    Box(Box<FieldTypeSelectorCall>),
 }
 
-impl SelectorFunction {
+impl FieldTypeSelectorCall {
     fn for_field(
         field_type: &FieldType,
         field_constructor: TypePath,
         flatten: bool,
-    ) -> SelectorFunction {
+        recurse_limit: Option<u8>,
+    ) -> FieldTypeSelectorCall {
         if flatten {
-            SelectorFunction::Flatten(Box::new(SelectorFunction::for_field(
+            FieldTypeSelectorCall::Flatten(Box::new(FieldTypeSelectorCall::for_field(
                 field_type,
                 field_constructor,
                 false,
+                None,
             )))
+        } else if let Some(limit) = recurse_limit {
+            let inner_selector = Box::new(FieldTypeSelectorCall::for_field(
+                field_type,
+                field_constructor,
+                false,
+                None,
+            ));
+
+            if field_type.is_list() {
+                // List types can just recurse - no need for boxes
+                FieldTypeSelectorCall::Recurse(limit, inner_selector, field_type.is_nullable())
+            } else if field_type.is_nullable() {
+                // Optional types need to be wrapped in Box to keep the rust compiler happy
+                // i.e. `Box<Option<T>>`
+                FieldTypeSelectorCall::Box(Box::new(FieldTypeSelectorCall::Recurse(
+                    limit,
+                    inner_selector,
+                    field_type.is_nullable(),
+                )))
+            } else {
+                // Required types need their inner types to be wrapped in box
+                // i.e. `Option<Box<T>>`
+                FieldTypeSelectorCall::Recurse(
+                    limit,
+                    Box::new(FieldTypeSelectorCall::Box(inner_selector)),
+                    field_type.is_nullable(),
+                )
+            }
         } else if field_type.is_nullable() {
-            SelectorFunction::Opt(Box::new(SelectorFunction::for_field(
+            FieldTypeSelectorCall::Opt(Box::new(FieldTypeSelectorCall::for_field(
                 &field_type.clone().as_required(),
                 field_constructor,
                 false,
+                None,
             )))
         } else if let FieldType::List(inner, _) = field_type {
-            SelectorFunction::Vector(Box::new(SelectorFunction::for_field(
+            FieldTypeSelectorCall::Vector(Box::new(FieldTypeSelectorCall::for_field(
                 &inner,
                 field_constructor,
                 false,
+                None,
             )))
         } else {
-            SelectorFunction::Field(field_constructor)
+            FieldTypeSelectorCall::Field(field_constructor)
         }
     }
 }
 
-impl SelectorFunction {
+impl FieldTypeSelectorCall {
     fn to_call(
         &self,
         required_arguments: &[FieldArgument],
@@ -123,10 +165,8 @@ impl SelectorFunction {
     ) -> TokenStream {
         use quote::quote;
 
-        // Most of the complexities around this are dealt with in the query_dsl
-        // so apart from flattening we can just forward to the inner type.
         match self {
-            SelectorFunction::Field(type_path) => {
+            FieldTypeSelectorCall::Field(type_path) => {
                 let required_arguments = required_arguments.iter().map(|arg| &arg.expr);
                 let optional_arg_names = optional_arguments.iter().map(|arg| &arg.argument_name);
                 let optional_arg_exprs = optional_arguments.iter().map(|arg| &arg.expr);
@@ -141,17 +181,17 @@ impl SelectorFunction {
                     .select(#inner_selection_tokens)
                 }
             }
-            SelectorFunction::Opt(inner) => inner.to_call(
+            FieldTypeSelectorCall::Opt(inner) => inner.to_call(
                 required_arguments,
                 optional_arguments,
                 inner_selection_tokens,
             ),
-            SelectorFunction::Vector(inner) => inner.to_call(
+            FieldTypeSelectorCall::Vector(inner) => inner.to_call(
                 required_arguments,
                 optional_arguments,
                 inner_selection_tokens,
             ),
-            SelectorFunction::Flatten(inner) => {
+            FieldTypeSelectorCall::Flatten(inner) => {
                 let inner_call = inner.to_call(
                     required_arguments,
                     optional_arguments,
@@ -165,34 +205,75 @@ impl SelectorFunction {
                     })
                 }
             }
+            FieldTypeSelectorCall::Recurse(limit, inner, field_nullable) => {
+                let inner_call = inner.to_call(
+                    required_arguments,
+                    optional_arguments,
+                    inner_selection_tokens,
+                );
+
+                let recurse_branch = if !field_nullable {
+                    // If the field is required we need to wrap it in an option
+                    quote! {
+                        #inner_call.map(Some)
+                    }
+                } else {
+                    // Otherwise, just let the fields option do the work.
+                    inner_call
+                };
+
+                quote! {
+                    if context.recurse_depth != Some(#limit) {
+                        #recurse_branch
+                    } else {
+                        ::cynic::selection_set::succeed_using(|| None)
+                    }
+                }
+            }
+            FieldTypeSelectorCall::Box(inner) => {
+                let inner_call = inner.to_call(
+                    required_arguments,
+                    optional_arguments,
+                    inner_selection_tokens,
+                );
+
+                quote! {
+                    #inner_call.map(Box::new)
+                }
+            }
         }
     }
 }
 
-enum SelectorCallStyle {
+/// The call style to use for a particular named type selector function
+enum NamedTypeSelectorStyle {
     QueryFragment(syn::Type),
     Enum(syn::Type),
     Scalar,
 }
 
 struct FieldSelectorCall {
-    selector_function: SelectorFunction,
-    style: SelectorCallStyle,
+    selector_function: FieldTypeSelectorCall,
+    style: NamedTypeSelectorStyle,
     required_arguments: Vec<FieldArgument>,
     optional_arguments: Vec<FieldArgument>,
+    recurse_limit: Option<u8>,
 }
 
 impl quote::ToTokens for FieldSelectorCall {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         use quote::{quote, TokenStreamExt};
 
-        let inner_selection_tokens = match &self.style {
-            SelectorCallStyle::Scalar => quote! {},
-            SelectorCallStyle::QueryFragment(field_type) => quote! {
-                #field_type::fragment(FromArguments::from_arguments(args))
-            },
-            SelectorCallStyle::Enum(enum_type) => quote! {
+        let inner_selection_tokens = match (&self.style, self.recurse_limit) {
+            (NamedTypeSelectorStyle::Scalar, _) => quote! {},
+            (NamedTypeSelectorStyle::Enum(enum_type), _) => quote! {
                 #enum_type::select()
+            },
+            (NamedTypeSelectorStyle::QueryFragment(field_type), None) => quote! {
+                #field_type::fragment(context.with_args(FromArguments::from_arguments(args)))
+            },
+            (NamedTypeSelectorStyle::QueryFragment(field_type), Some(_)) => quote! {
+                #field_type::fragment(context.recurse().with_args(FromArguments::from_arguments(args)))
             },
         };
 
@@ -272,33 +353,35 @@ impl FragmentImpl {
                 let field_name = Ident::for_field(&field_name);
 
                 if let Some(gql_field) = object.fields.get(&field_name) {
-                    check_types_are_compatible(&gql_field.field_type, &field.ty, field.flatten)?;
+                    check_types_are_compatible(
+                        &gql_field.field_type,
+                        &field.ty,
+                        field.type_check_mode(),
+                    )?;
 
                     let (required_arguments, optional_arguments) =
                         validate_and_group_args(arguments, gql_field, ident.span())?;
 
                     field_selectors.push(FieldSelectorCall {
-                        selector_function: SelectorFunction::for_field(
+                        selector_function: FieldTypeSelectorCall::for_field(
                             &gql_field.field_type,
                             TypePath::concat(&[
                                 selector_struct_path.clone(),
                                 field_name.clone().into(),
                             ]),
                             field.flatten,
+                            field.recurse.as_ref().map(|f| **f),
                         ),
                         style: if gql_field.field_type.contains_scalar() {
-                            SelectorCallStyle::Scalar
+                            NamedTypeSelectorStyle::Scalar
                         } else if gql_field.field_type.contains_enum() {
-                            SelectorCallStyle::Enum(
-                                gql_field.field_type.get_inner_type_from_syn(&field.ty),
-                            )
+                            NamedTypeSelectorStyle::Enum(field.ty.inner_type())
                         } else {
-                            SelectorCallStyle::QueryFragment(
-                                gql_field.field_type.get_inner_type_from_syn(&field.ty),
-                            )
+                            NamedTypeSelectorStyle::QueryFragment(field.ty.inner_type())
                         },
                         required_arguments,
                         optional_arguments,
+                        recurse_limit: field.recurse.as_ref().map(|limit| **limit),
                     })
                 } else {
                     return Err(syn::Error::new(
@@ -347,8 +430,10 @@ impl quote::ToTokens for FragmentImpl {
                 type SelectionSet = ::cynic::SelectionSet<'static, Self, #selector_struct>;
                 type Arguments = #argument_struct;
 
-                fn fragment(args: &Self::Arguments) -> Self::SelectionSet {
+                fn fragment(context: ::cynic::FragmentContext<Self::Arguments>) -> Self::SelectionSet {
                     use ::cynic::{QueryFragment, FromArguments, Enum};
+
+                    let args = context.args;
 
                     let new = |#(#constructor_params),*| #target_struct {
                         #(#constructor_param_names),*

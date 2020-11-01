@@ -10,7 +10,7 @@ mod selector_struct;
 mod union_struct;
 
 use super::module::Module;
-use crate::{load_schema, schema, Error, TypeIndex};
+use crate::{load_schema, schema, SchemaLoadError, TypeIndex};
 use enum_marker::EnumMarker;
 pub use field_selector::FieldSelector;
 use input_object_marker::InputObjectMarker;
@@ -39,7 +39,7 @@ impl syn::parse::Parse for QueryDslParams {
     }
 }
 
-pub fn query_dsl_from_schema(input: QueryDslParams) -> Result<TokenStream, Error> {
+pub fn query_dsl_from_schema(input: QueryDslParams) -> Result<TokenStream, SchemaLoadError> {
     use quote::quote;
 
     let schema_data: QueryDsl = load_schema(input.schema_filename)?.into();

@@ -72,18 +72,23 @@ struct AllFilmsQuery {
 }
 ```
 
-This can be used as a query like so:
+An `Operation` can be created from this `QueryFragment`:
 
 ```
-let query = cynic::Operation::query(AllFilmsQuery::fragment(&());
+use cynic::FragmentContext;
+
+let query = cynic::Operation::query(
+    AllFilmsQuery::fragment(FragmentContext::empty())
+);
 ```
 
-This `Query` can be converted into JSON using `serde`, sent to a server, and
+This `Operation` can be converted into JSON using `serde`, sent to a server, and
 then then it's `decode_response` function can be used to decode the response
 itself. An example of this is in the [Quickstart][quickstart].
 
-The empty `()` we pass to fragment is for the arguments - this particular query
-has no arguments so we pass `Void`.
+We pass a `FragmentContext` in here, which can be used to provide arguments to
+a query. In this case we have no arguments, so we use the
+`FragmentContext::empty()` constructor.
 
 ### Passing Arguments
 
@@ -115,12 +120,18 @@ struct FilmQuery {
 ```
 
 This can be converted into a query in a similar way we just need to provide
-the arguments:
+a `FragmentContext` that contains the arguments:
 
 ```rust
-let query = cynic::Operation::query(FilmQuery::fragment(&FilmArguments{
-    id: Some("ZmlsbXM6MQ==".into()),
-}));
+use cynic::FragmentContext;
+
+let query = cynic::Operation::query(FilmQuery::fragment(
+    FragmentContext::new(
+        &FilmArguments{
+            id: Some("ZmlsbXM6MQ==".into()),
+        }
+    )
+));
 ```
 
 #### Nested Arguments
@@ -149,7 +160,9 @@ any arguments in exactly the same way. Instead of calling the
 - [FragmentArguments][1] are used to provide arguments to the fields of a
   QueryFragment.
 - [Struct Level Attributes][2] can be added to a QueryFragment.
+- [Recursive queries][recursive-queries] are supported by QueryFragments.
 
 [1]: ./query-arguments.html
 [2]: ../struct-attributes.html
+[recursive-queries]: ./recursive-queries.html
 [quickstart]: ../quickstart.html

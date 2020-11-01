@@ -100,7 +100,9 @@ mod tests {
     #[test]
     fn all_films_query_gql_output() {
         use cynic::QueryFragment;
-        let query = cynic::Operation::query(AllFilmsQuery::fragment(&()));
+        let query = cynic::Operation::query(
+            AllFilmsQuery::fragment(FragmentContext::empty())
+        );
         insta::assert_snapshot!(query.query);
     }
 }
@@ -125,8 +127,11 @@ test above (again, swapping `AllFilmsQuery` for the name of your root query
 struct):
 
 ```rust
-use cynic::QueryFragment;
-let query = cynic::Operation::query(AllFilmsQuery::fragment(&()));
+use cynic::{QueryFragment, FragmentContext};
+
+let query = cynic::Operation::query(
+    AllFilmsQuery::fragment(FragmentContext::empty())
+);
 ```
 
 This `Query` struct is serializable using `serde::Serialize`, so you should

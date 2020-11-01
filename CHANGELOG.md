@@ -11,6 +11,18 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+### Breaking Changes
+
+- `QueryFragment::fragment` now accepts a `FragmentContext` rather than
+  arguments. This can be constructed with `FragmentContext::new` if you have
+  arguments or `FragmentContext::empty` if not. This change was neccesary to
+  support recursive queries.
+
+### New Features
+
+- Cynic now supports recursive queries via the `#[cynic(recurse="N")]`
+  attribute on fields that recurse.
+
 ## v0.10.0 - 2020-10-11
 
 ### Breaking Changes
@@ -20,8 +32,8 @@ all APIs might be changed.
 - `define_into_argument_for_scalar` has been renamed to
   `impl_into_argument_for_options`
 - There's no longer a blanket impl of `SerializableArgument` for any `Scalar`.
-  `SerializableArgument` now needs to be implemented on each `Scalar`.  There's
-  a `impl_serializable_argument_for_scalar` macro that does this.  The `Scalar`
+  `SerializableArgument` now needs to be implemented on each `Scalar`. There's
+  a `impl_serializable_argument_for_scalar` macro that does this. The `Scalar`
   derive automatically calls this macro, so this is only a change if you have a
   custom `Scalar`
 - The `IntoArgument` trait now has an `Output` associated type that is used for
@@ -36,14 +48,14 @@ all APIs might be changed.
 - The `bson` feature, which allows to use ObjectId in schemas, added.
 - The `uuid` feature, which allows to use Uuid in schemas, added.
 - The `url` feature, which allows to use Url in schemas, added.
-- `InputObject`s may now contain fields inside a `Box`.  This allows for
+- `InputObject`s may now contain fields inside a `Box`. This allows for
   recursive `InputObject` types.
 - The `surf` feature enables integration with the `surf` HTTP client, so users
   don't have to write it themselves.
 - The `reqwest` & `reqwest-blocking` features, which add support for the
-  `reqwest` HTTP client. 
+  `reqwest` HTTP client.
 - Optional fields on an InputObject may now be annotated with
-  `skip_serializing_if="path"`, similar to serde.  This allows users to omit
+  `skip_serializing_if="path"`, similar to serde. This allows users to omit
   fields from InputObjects under certain circumstances.
 - All optional fields of the GraphQLError type are now modeled according to the
   spec, including the `extensions` field, which is expressed as an
