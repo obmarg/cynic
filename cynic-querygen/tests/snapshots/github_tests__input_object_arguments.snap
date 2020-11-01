@@ -3,7 +3,7 @@ source: cynic-querygen/tests/github-tests.rs
 expression: "document_to_fragment_structs(query, schema,\n                             &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
 ---
 #[cynic::query_module(
-    schema_path = "schema.graphql",
+    schema_path = r#"schema.graphql"#,
     query_module = "query_dsl",
 )]
 mod queries {
@@ -71,7 +71,7 @@ mod queries {
 }
 
 #[cynic::query_module(
-    schema_path = "schema.graphql",
+    schema_path = r#"schema.graphql"#,
     query_module = "query_dsl",
 )]
 mod types {
@@ -109,6 +109,6 @@ mod types {
 
 mod query_dsl{
     use super::types::*;
-    cynic::query_dsl!("schema.graphql");
+    cynic::query_dsl!(r#"schema.graphql"#);
 }
 

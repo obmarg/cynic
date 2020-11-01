@@ -73,7 +73,7 @@ pub fn document_to_fragment_structs(
     let mut lines = vec![];
 
     lines.push("#[cynic::query_module(".into());
-    lines.push(format!("    schema_path = \"{}\",", options.schema_path));
+    lines.push(format!("    schema_path = r#\"{}\"#,", options.schema_path));
     lines.push(format!("    query_module = \"{}\",", options.query_module));
     lines.push(")]\nmod queries {".into());
     lines.push(format!(
@@ -187,7 +187,7 @@ pub fn document_to_fragment_structs(
     lines.push("}\n".into());
 
     lines.push("#[cynic::query_module(".into());
-    lines.push(format!("    schema_path = \"{}\",", options.schema_path));
+    lines.push(format!("    schema_path = r#\"{}\"#,", options.schema_path));
     lines.push(format!("    query_module = \"{}\",", options.query_module));
     lines.push(")]\nmod types {".into());
 
@@ -209,7 +209,7 @@ pub fn document_to_fragment_structs(
     lines.push(format!("mod {}{{", options.query_module));
     lines.push("    use super::types::*;".into());
     lines.push(format!(
-        "    cynic::query_dsl!(\"{}\");",
+        "    cynic::query_dsl!(r#\"{}\"#);",
         options.schema_path
     ));
     lines.push("}\n".into());
