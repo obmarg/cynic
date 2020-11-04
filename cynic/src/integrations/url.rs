@@ -21,6 +21,8 @@ impl Scalar for Url {
     }
 }
 
+crate::impl_serializable_argument_for_scalar!(Url);
+
 #[cfg(test)]
 mod tests {
     use super::*;

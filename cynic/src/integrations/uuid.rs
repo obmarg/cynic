@@ -21,6 +21,8 @@ impl Scalar for Uuid {
     }
 }
 
+crate::impl_serializable_argument_for_scalar!(Uuid);
+
 #[cfg(test)]
 mod tests {
     use super::*;

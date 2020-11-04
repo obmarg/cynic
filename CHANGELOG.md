@@ -30,6 +30,14 @@ all APIs might be changed.
 - Paths output as part of generator are now all raw strings, so should support
   windows path separators.
 
+## v0.10.1 - 2020-11-04
+
+## Bug Fixes
+
+- Implemented SerializableArgument for the various scalars in the
+  `integrations` folder.  This was preventing them actually being used as
+  scalars in input contexts.
+
 ## v0.10.0 - 2020-10-11
 
 ### Breaking Changes
