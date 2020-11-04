@@ -11,6 +11,8 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.10.1 - 2020-11-04
+
 ## Bug Fixes
 
 - Implemented SerializableArgument for the various scalars in the
