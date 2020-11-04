@@ -1,7 +1,8 @@
-use graphql_parser::query;
 use inflector::Inflector;
 
+mod query;
 mod query_parsing;
+mod query_parsing_mk2;
 mod schema;
 mod type_ext;
 mod type_index;
