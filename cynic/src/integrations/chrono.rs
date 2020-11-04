@@ -21,6 +21,8 @@ impl Scalar for DateTime<FixedOffset> {
     }
 }
 
+crate::impl_serializable_argument_for_scalar!(DateTime<FixedOffset>);
+
 impl Scalar for DateTime<Utc> {
     fn decode(value: &serde_json::Value) -> Result<Self, DecodeError> {
         match value {
@@ -38,6 +40,8 @@ impl Scalar for DateTime<Utc> {
         Ok(serde_json::Value::String(self.to_rfc3339()))
     }
 }
+
+crate::impl_serializable_argument_for_scalar!(DateTime<Utc>);
 
 fn chrono_decode_error(err: chrono::ParseError) -> DecodeError {
     DecodeError::Other(err.to_string())

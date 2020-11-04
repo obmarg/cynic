@@ -11,6 +11,12 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+## Bug Fixes
+
+- Implemented SerializableArgument for the various scalars in the
+  `integrations` folder.  This was preventing them actually being used as
+  scalars in input contexts.
+
 ## v0.10.0 - 2020-10-11
 
 ### Breaking Changes
