@@ -1,4 +1,5 @@
 use inflector::Inflector;
+use std::borrow::Cow;
 
 mod query;
 mod query_parsing;
@@ -87,14 +88,17 @@ pub fn document_to_fragment_structs(
             PotentialStruct::QueryFragment(fragment) => {
                 let graphql_type = type_index.type_name_for_path(&fragment.path)?;
 
-                let name = if fragment.path.is_root() {
+                let name: Cow<'_, str> = if fragment.path.is_root() {
                     // If the user has given the query a name we use that, otherwise use the root
                     // graphql_type name for this operation type
-                    fragment.name.unwrap_or(graphql_type)
+                    fragment
+                        .name
+                        .map(Into::into)
+                        .unwrap_or(graphql_type.clone())
                 } else {
                     // For non root types we use the GraphQL type name for the
                     // type _and_ the `graphql_type` param.
-                    graphql_type
+                    graphql_type.clone()
                 };
 
                 let argument_struct_param = if let Some(name) = fragment.argument_struct_name {

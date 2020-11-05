@@ -5,7 +5,7 @@ use std::borrow::Cow;
 use crate::{schema::TypeDefinition, TypeIndex};
 
 pub trait TypeExt<'a> {
-    fn inner_name(&self) -> &str;
+    fn inner_name(&self) -> &'a str;
     fn type_spec(&self, type_index: &TypeIndex<'a>) -> Cow<'a, str>;
     fn is_required(&self) -> bool;
 }
@@ -15,7 +15,7 @@ impl<'a> TypeExt<'a> for Type<'a, &'a str> {
         type_spec_imp(self, true, type_index)
     }
 
-    fn inner_name(&self) -> &str {
+    fn inner_name(&self) -> &'a str {
         match self {
             Type::NamedType(s) => s,
             Type::ListType(inner) => inner.inner_name(),

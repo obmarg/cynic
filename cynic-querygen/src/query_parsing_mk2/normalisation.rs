@@ -3,50 +3,62 @@ use std::hash::{Hash, Hasher};
 use std::rc::{Rc, Weak};
 
 use crate::{
-    query::{self, Definition, Document, FragmentDefinition, OperationDefinition},
+    query::{
+        self, Definition, Document, FragmentDefinition, OperationDefinition, VariableDefinition,
+    },
     Error, GraphPath, TypeIndex,
 };
 
-struct NormalisedOperation<'a> {
-    root: Rc<SelectionSet<'a>>,
+#[derive(Debug, PartialEq)]
+struct NormalisedOperation<'query, 'doc> {
+    root: Rc<SelectionSet<'query, 'doc>>,
+    name: Option<&'query str>,
+    variable_definitions: Vec<&'doc VariableDefinition<'query>>,
+    kind: OperationKind,
+}
+
+#[derive(Debug, PartialEq)]
+enum OperationKind {
+    Query,
+    Mutation,
 }
 
 #[derive(Hash, PartialEq, Eq, Debug)]
-struct SelectionSet<'a> {
-    target_type: &'a str,
-    selections: Vec<Selection<'a>>,
+struct SelectionSet<'query, 'doc> {
+    target_type: String,
+    selections: Vec<Selection<'query, 'doc>>,
 }
 
 #[derive(Hash, PartialEq, Eq, Debug)]
-enum Selection<'a> {
+enum Selection<'query, 'doc> {
     // For now I just care about fields
     // Will probably need InlineFragments here sometime
     // Figure a normal FragmentSpread can be normalised in place.
-    Field(FieldSelection<'a>),
+    Field(FieldSelection<'query, 'doc>),
 }
 
 #[derive(Debug)]
-struct FieldSelection<'a> {
-    alias: Option<&'a str>,
-    name: &'a str,
-    arguments: Vec<(&'a str, HashableValue<'a>)>,
+struct FieldSelection<'query, 'doc> {
+    alias: Option<&'query str>,
+    name: &'query str,
+    arguments: Vec<(&'query str, HashableValue<'query, 'doc>)>,
     //  Problem here is we can't just store Value as that isn't hashable...
     //  So either some hashable wrapper type
     //  or a full translation (probably the former)
-    selection_set: Weak<SelectionSet<'a>>,
+    selection_set: Weak<SelectionSet<'query, 'doc>>,
 
     // Weak is not hashable so we need to take a hash when we create
     // the FieldSelection
     hash: u64,
 }
 
-impl<'a> FieldSelection<'a> {
+impl<'query, 'doc> FieldSelection<'query, 'doc> {
     fn new(
-        name: &'a str,
-        alias: Option<&'a str>,
-        arguments: &'a [(&'a str, query::Value<'a>)],
-        selection_set: &Rc<SelectionSet<'a>>,
-    ) -> FieldSelection<'a> {
+        name: &'query str,
+        alias: Option<&'query str>,
+        arguments: &'doc [(&'query str, query::Value<'query>)],
+        selection_set: &Rc<SelectionSet<'query, 'doc>>,
+    ) -> FieldSelection<'query, 'doc> {
         let arguments = arguments
             .iter()
             .map(|(k, v)| (*k, HashableValue::new(v)))
@@ -73,28 +85,28 @@ impl<'a> FieldSelection<'a> {
     }
 }
 
-impl<'a> Hash for FieldSelection<'a> {
+impl<'query, 'doc> Hash for FieldSelection<'query, 'doc> {
     fn hash<H: Hasher>(&self, state: &mut H) {
         self.hash.hash(state);
     }
 }
 
-impl<'a> PartialEq for FieldSelection<'a> {
+impl<'query, 'doc> PartialEq for FieldSelection<'query, 'doc> {
     fn eq(&self, other: &FieldSelection) -> bool {
         // TODO: Should probably implement an actual equals here...
         self.hash == other.hash
     }
 }
 
-impl<'a> Eq for FieldSelection<'a> {}
+impl<'query, 'doc> Eq for FieldSelection<'query, 'doc> {}
 
 #[derive(PartialEq, Debug)]
-struct HashableValue<'a> {
-    inner: &'a query::Value<'a>,
+struct HashableValue<'query, 'doc> {
+    inner: &'doc query::Value<'query>,
 }
 
-impl<'a> HashableValue<'a> {
-    fn new(inner: &'a query::Value<'a>) -> Self {
+impl<'query, 'doc> HashableValue<'query, 'doc> {
+    fn new(inner: &'doc query::Value<'query>) -> Self {
         HashableValue { inner }
     }
 }
@@ -103,9 +115,9 @@ impl<'a> HashableValue<'a> {
 // contain a floating point which is not Eq.
 //
 // But in practice I hope we'll be OK
-impl<'a> Eq for HashableValue<'a> {}
+impl<'query, 'doc> Eq for HashableValue<'query, 'doc> {}
 
-impl<'a> Hash for HashableValue<'a> {
+impl<'query, 'doc> Hash for HashableValue<'query, 'doc> {
     fn hash<H: Hasher>(&self, state: &mut H) {
         use query::Value;
 
@@ -137,21 +149,22 @@ impl<'a> Hash for HashableValue<'a> {
     }
 }
 
-type SelectionSetSet<'a> = HashSet<Rc<SelectionSet<'a>>>;
+type SelectionSetSet<'query, 'doc> = HashSet<Rc<SelectionSet<'query, 'doc>>>;
 
-struct NormalisedDocument<'a> {
-    selection_sets: SelectionSetSet<'a>,
-    operations: Vec<NormalisedOperation<'a>>,
+#[derive(Debug, PartialEq)]
+struct NormalisedDocument<'query, 'doc> {
+    selection_sets: SelectionSetSet<'query, 'doc>,
+    operations: Vec<NormalisedOperation<'query, 'doc>>,
 }
 
 // TODO: Make this (and all the types) public
-fn normalise<'a>(
-    document: &'a Document<'a>,
-    type_index: &'a TypeIndex<'a>,
-) -> Result<NormalisedDocument<'a>, Error> {
+fn normalise<'query, 'doc>(
+    document: &'doc Document<'query>,
+    type_index: &'doc TypeIndex<'query>,
+) -> Result<NormalisedDocument<'query, 'doc>, Error> {
     let fragment_map = extract_fragments(&document);
 
-    let mut selection_sets: SelectionSetSet<'a> = HashSet::new();
+    let mut selection_sets: SelectionSetSet<'query, 'doc> = HashSet::new();
     let mut operations = Vec::new();
 
     for definition in &document.definitions {
@@ -171,50 +184,70 @@ fn normalise<'a>(
     })
 }
 
-fn normalise_operation<'a, 'b>(
-    operation: &'a OperationDefinition<'a>,
-    fragment_map: &'b FragmentMap<'a>,
-    type_index: &'a TypeIndex<'a>,
-    selection_sets_out: &'b mut SelectionSetSet<'a>,
-) -> Result<NormalisedOperation<'a>, Error> {
-    // Ok, so real issue at this point is we don't have type information.
-    // So can't really figure out what type each field is.
-    // So almost need to walk the tree building that _and then_
-
+fn normalise_operation<'query, 'doc>(
+    operation: &'doc OperationDefinition<'query>,
+    fragment_map: &FragmentMap<'query, 'doc>,
+    type_index: &'doc TypeIndex<'query>,
+    selection_sets_out: &mut SelectionSetSet<'query, 'doc>,
+) -> Result<NormalisedOperation<'query, 'doc>, Error> {
     match operation {
         OperationDefinition::SelectionSet(selection_set) => {
-            normalise_selection_set(
+            let root = normalise_selection_set(
                 &selection_set,
                 type_index,
                 GraphPath::for_query(),
                 selection_sets_out,
             )?;
+
+            Ok(NormalisedOperation {
+                root,
+                name: None,
+                kind: OperationKind::Query,
+                variable_definitions: vec![],
+            })
         }
         OperationDefinition::Query(query) => {
-            // TODO: This one will be v similar to the selection set above,
-            // just with a potential for ArgumentStructs & Variables
-            todo!()
+            let root = normalise_selection_set(
+                &query.selection_set,
+                type_index,
+                GraphPath::for_query(),
+                selection_sets_out,
+            )?;
+
+            Ok(NormalisedOperation {
+                root,
+                name: query.name,
+                kind: OperationKind::Query,
+                variable_definitions: query.variable_definitions.iter().collect(),
+            })
         }
         OperationDefinition::Mutation(mutation) => {
-            // TODO: Imagine this one will be exactly the same as query.
-            todo!()
-        }
-        OperationDefinition::Subscription(_) => {
-            return Err(Error::UnsupportedQueryDocument(
-                "Subscriptions are not yet supported".into(),
-            ));
-        }
-    }
+            let root = normalise_selection_set(
+                &mutation.selection_set,
+                type_index,
+                GraphPath::for_mutation(),
+                selection_sets_out,
+            )?;
 
-    todo!()
+            Ok(NormalisedOperation {
+                root,
+                name: mutation.name,
+                kind: OperationKind::Mutation,
+                variable_definitions: mutation.variable_definitions.iter().collect(),
+            })
+        }
+        OperationDefinition::Subscription(_) => Err(Error::UnsupportedQueryDocument(
+            "Subscriptions are not yet supported".into(),
+        )),
+    }
 }
 
-fn normalise_selection_set<'a>(
-    selection_set: &'a query::SelectionSet<'a>,
-    type_index: &'a TypeIndex<'a>,
-    current_path: GraphPath,
-    selection_sets_out: &mut SelectionSetSet<'a>,
-) -> Result<Rc<SelectionSet<'a>>, Error> {
+fn normalise_selection_set<'query, 'doc>(
+    selection_set: &'doc query::SelectionSet<'query>,
+    type_index: &'doc TypeIndex<'query>,
+    current_path: GraphPath<'query>,
+    selection_sets_out: &mut SelectionSetSet<'query, 'doc>,
+) -> Result<Rc<SelectionSet<'query, 'doc>>, Error> {
     let mut selections = Vec::new();
 
     for item in &selection_set.items {
@@ -242,7 +275,7 @@ fn normalise_selection_set<'a>(
     }
 
     let rv = Rc::new(SelectionSet {
-        target_type: type_index.type_name_for_path(&current_path)?,
+        target_type: type_index.type_name_for_path(&current_path)?.to_string(),
         selections,
     });
 
@@ -255,9 +288,9 @@ fn normalise_selection_set<'a>(
     Ok(rv)
 }
 
-type FragmentMap<'a> = HashMap<&'a str, &'a FragmentDefinition<'a>>;
+type FragmentMap<'query, 'doc> = HashMap<&'query str, &'doc FragmentDefinition<'query>>;
 
-fn extract_fragments<'a>(document: &'a Document<'a>) -> FragmentMap<'a> {
+fn extract_fragments<'query, 'doc>(document: &'doc Document<'query>) -> FragmentMap<'query, 'doc> {
     document
         .definitions
         .iter()
@@ -273,8 +306,85 @@ fn extract_fragments<'a>(document: &'a Document<'a>) -> FragmentMap<'a> {
 
 #[cfg(test)]
 mod tests {
+    use super::*;
+    use crate::schema;
+
     #[test]
-    fn write_some_tests() {
+    fn normalise_deduplicates_identical_selections() {
+        let schema = load_schema();
+        let type_index = TypeIndex::from_schema(&schema);
+        let query = graphql_parser::parse_query::<&str>(
+            r#"
+            {
+              allFilms {
+                films {
+                  id
+                  title
+                }
+              }
+              film(id: "abcd") {
+                id
+                title
+              }
+            }
+            "#,
+        )
+        .unwrap();
+
+        let normalised = normalise(&query, &type_index).unwrap();
+
+        assert_eq!(
+            normalised
+                .selection_sets
+                .iter()
+                .filter(|s| s.target_type == "Film")
+                .count(),
+            1
+        );
+    }
+
+    #[test]
+    fn normalise_does_not_deduplicate_differing_selections() {
+        let schema = load_schema();
+        let type_index = TypeIndex::from_schema(&schema);
+        let query = graphql_parser::parse_query::<&str>(
+            r#"
+            {
+              allFilms {
+                films {
+                  id
+                  title
+                }
+              }
+              film(id: "abcd") {
+                title
+              }
+            }
+            "#,
+        )
+        .unwrap();
+
+        let normalised = normalise(&query, &type_index).unwrap();
+
+        assert_eq!(
+            normalised
+                .selection_sets
+                .iter()
+                .filter(|s| s.target_type == "Film")
+                .count(),
+            2
+        );
+    }
+
+    #[test]
+    fn are_there_any_other_test_i_want() {
         todo!()
+    }
+
+    fn load_schema() -> schema::Document<'static> {
+        graphql_parser::parse_schema::<&str>(include_str!(
+            "../../../examples/examples/starwars.schema.graphql"
+        ))
+        .unwrap()
     }
 }
