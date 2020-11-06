@@ -10,7 +10,7 @@ use crate::{
 };
 
 #[derive(Debug, PartialEq)]
-struct NormalisedOperation<'query, 'doc> {
+pub struct NormalisedOperation<'query, 'doc> {
     root: Rc<SelectionSet<'query, 'doc>>,
     name: Option<&'query str>,
     variable_definitions: Vec<&'doc VariableDefinition<'query>>,
@@ -18,19 +18,19 @@ struct NormalisedOperation<'query, 'doc> {
 }
 
 #[derive(Debug, PartialEq)]
-enum OperationKind {
+pub enum OperationKind {
     Query,
     Mutation,
 }
 
 #[derive(Hash, PartialEq, Eq, Debug)]
-struct SelectionSet<'query, 'doc> {
+pub struct SelectionSet<'query, 'doc> {
     target_type: String,
     selections: Vec<Selection<'query, 'doc>>,
 }
 
 #[derive(Hash, PartialEq, Eq, Debug)]
-enum Selection<'query, 'doc> {
+pub enum Selection<'query, 'doc> {
     // For now I just care about fields
     // Will probably need InlineFragments here sometime
     // Figure a normal FragmentSpread can be normalised in place.
@@ -38,7 +38,7 @@ enum Selection<'query, 'doc> {
 }
 
 #[derive(Debug)]
-struct FieldSelection<'query, 'doc> {
+pub struct FieldSelection<'query, 'doc> {
     alias: Option<&'query str>,
     name: &'query str,
     arguments: Vec<(&'query str, HashableValue<'query, 'doc>)>,
@@ -152,13 +152,12 @@ impl<'query, 'doc> Hash for HashableValue<'query, 'doc> {
 type SelectionSetSet<'query, 'doc> = HashSet<Rc<SelectionSet<'query, 'doc>>>;
 
 #[derive(Debug, PartialEq)]
-struct NormalisedDocument<'query, 'doc> {
+pub struct NormalisedDocument<'query, 'doc> {
     selection_sets: SelectionSetSet<'query, 'doc>,
     operations: Vec<NormalisedOperation<'query, 'doc>>,
 }
 
-// TODO: Make this (and all the types) public
-fn normalise<'query, 'doc>(
+pub fn normalise<'query, 'doc>(
     document: &'doc Document<'query>,
     type_index: &'doc TypeIndex<'query>,
 ) -> Result<NormalisedDocument<'query, 'doc>, Error> {
