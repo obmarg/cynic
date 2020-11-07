@@ -103,7 +103,8 @@ fn make_query_fragment<'text>(
             })
             .collect(),
         argument_struct_name: None,
-        name: Some(selection.target_type.clone()),
+        name: selection.target_type.clone(),
+        target_type: selection.target_type.clone(),
     })
 }
 

@@ -9,7 +9,7 @@ mod type_ext;
 mod type_index;
 mod value_ext;
 
-use query_parsing::PotentialStruct;
+use query_parsing::OutputDefinition;
 use type_ext::TypeExt;
 use type_index::{GraphPath, TypeIndex};
 
@@ -35,6 +35,9 @@ pub enum Error {
 
     #[error("expected type `{0}` to be an object")]
     ExpectedObject(String),
+
+    #[error("expected type `{0}` to be an input object")]
+    ExpectedInputObject(String),
 
     #[error("found a literal object but the argument is not an InputObject")]
     ArgumentNotInputObject,
@@ -79,7 +82,7 @@ pub fn document_to_fragment_structs(
     let query = graphql_parser::parse_query::<&str>(query.as_ref())?;
 
     let type_index = TypeIndex::from_schema(&schema);
-    let possible_structs = query_parsing::parse_query_document(&query, &type_index)?;
+    let output = query_parsing_mk2::parse_query_document(&query, &type_index)?;
 
     let mut lines = vec![];
 
@@ -92,113 +95,95 @@ pub fn document_to_fragment_structs(
         options.query_module
     ));
 
-    for st in possible_structs {
-        match st {
-            PotentialStruct::QueryFragment(fragment) => {
-                let graphql_type = type_index.type_name_for_path(&fragment.path)?;
+    for fragment in output.query_fragments {
+        let argument_struct_param = if let Some(name) = fragment.argument_struct_name {
+            format!(", argument_struct = \"{}\"", name)
+        } else {
+            "".to_string()
+        };
 
-                let name: Cow<'_, str> = if fragment.path.is_root() {
-                    // If the user has given the query a name we use that, otherwise use the root
-                    // graphql_type name for this operation type
-                    fragment
-                        .name
-                        .map(Into::into)
-                        .unwrap_or(graphql_type.clone())
-                } else {
-                    // For non root types we use the GraphQL type name for the
-                    // type _and_ the `graphql_type` param.
-                    graphql_type.clone()
-                };
+        lines.push("    #[derive(cynic::QueryFragment, Debug)]".into());
+        lines.push(format!(
+            "    #[cynic(graphql_type = \"{}\"{})]",
+            fragment.target_type, argument_struct_param
+        ));
+        lines.push(format!("    pub struct {} {{", fragment.name));
 
-                let argument_struct_param = if let Some(name) = fragment.argument_struct_name {
-                    format!(", argument_struct = \"{}\"", name)
-                } else {
-                    "".to_string()
-                };
+        for field in fragment.fields {
+            if !field.arguments.is_empty() {
+                let arguments_string = field
+                    .arguments
+                    .iter()
+                    .map(|arg| {
+                        Ok(format!(
+                            "{} = {}",
+                            arg.name.to_snake_case(),
+                            arg.to_literal(&type_index)?
+                        ))
+                    })
+                    .collect::<Result<Vec<_>, Error>>()?
+                    .join(", ");
 
-                lines.push("    #[derive(cynic::QueryFragment, Debug)]".into());
-                lines.push(format!(
-                    "    #[cynic(graphql_type = \"{}\"{})]",
-                    graphql_type, argument_struct_param
-                ));
-                lines.push(format!("    pub struct {} {{", name));
-
-                for field in fragment.fields {
-                    if !field.arguments.is_empty() {
-                        let arguments_string = field
-                            .arguments
-                            .iter()
-                            .map(|arg| {
-                                Ok(format!(
-                                    "{} = {}",
-                                    arg.name.to_snake_case(),
-                                    arg.to_literal(&type_index)?
-                                ))
-                            })
-                            .collect::<Result<Vec<_>, Error>>()?
-                            .join(", ");
-
-                        lines.push(format!("        #[arguments({})]", arguments_string));
-                    }
-                    // TODO: print out arguments
-                    lines.push(format!(
-                        "        pub {}: {},",
-                        field.name.to_snake_case(),
-                        field.field_type.type_spec(&type_index)
-                    ))
-                }
-                lines.push(format!("    }}\n"));
+                lines.push(format!("        #[arguments({})]", arguments_string));
             }
-            PotentialStruct::Enum(en) => {
-                let type_name = en.def.name;
-                lines.push("    #[derive(cynic::Enum, Clone, Copy, Debug)]".into());
-                lines.push("    #[cynic(".into());
-                lines.push(format!("        graphql_type = \"{}\",", type_name));
-                lines.push("        rename_all = \"SCREAMING_SNAKE_CASE\"".into());
-                lines.push("    )]".into());
-                lines.push(format!("    pub enum {} {{", type_name.to_pascal_case()));
-
-                for variant in &en.def.values {
-                    lines.push(format!("        {},", variant.name.to_pascal_case()))
-                }
-                lines.push("    }\n".into());
-            }
-            PotentialStruct::ArgumentStruct(argument_struct) => {
-                lines.push("    #[derive(cynic::FragmentArguments, Debug)]".into());
-                lines.push(format!("    pub struct {} {{", argument_struct.name));
-
-                for field in &argument_struct.fields {
-                    lines.push(format!(
-                        "        pub {}: {},",
-                        field.name.to_snake_case(),
-                        field.field_type.type_spec(&type_index)
-                    ));
-                }
-
-                lines.push("    }\n".into());
-            }
-            PotentialStruct::InputObject(input_object) => {
-                lines.push("    #[derive(cynic::InputObject, Debug)]".into());
-                lines.push(format!(
-                    "    #[cynic(graphql_type = \"{}\", rename_all=\"camelCase\")]",
-                    input_object.name
-                ));
-                lines.push(format!("    pub struct {} {{", input_object.name));
-
-                for field in input_object.fields {
-                    lines.push(format!(
-                        "        pub {}: {},",
-                        field.name.to_snake_case(),
-                        field.value_type.type_spec(&type_index)
-                    ))
-                }
-
-                lines.push("    }\n".into());
-            }
-            PotentialStruct::Scalar(_) => {}
+            // TODO: print out arguments
+            lines.push(format!(
+                "        pub {}: {},",
+                field.name.to_snake_case(),
+                field.field_type.type_spec(&type_index)
+            ))
         }
+        lines.push(format!("    }}\n"));
     }
-    lines.push("}\n".into());
+
+    for en in output.enums {
+        let type_name = en.def.name;
+        lines.push("    #[derive(cynic::Enum, Clone, Copy, Debug)]".into());
+        lines.push("    #[cynic(".into());
+        lines.push(format!("        graphql_type = \"{}\",", type_name));
+        lines.push("        rename_all = \"SCREAMING_SNAKE_CASE\"".into());
+        lines.push("    )]".into());
+        lines.push(format!("    pub enum {} {{", type_name.to_pascal_case()));
+
+        for variant in &en.def.values {
+            lines.push(format!("        {},", variant.name.to_pascal_case()))
+        }
+        lines.push("    }\n".into());
+    }
+
+    for argument_struct in output.argument_structs {
+        lines.push("    #[derive(cynic::FragmentArguments, Debug)]".into());
+        lines.push(format!("    pub struct {} {{", argument_struct.name));
+
+        for field in &argument_struct.fields {
+            lines.push(format!(
+                "        pub {}: {},",
+                field.name.to_snake_case(),
+                field.field_type.type_spec(&type_index)
+            ));
+        }
+
+        lines.push("    }\n".into());
+    }
+
+    for input_object in output.input_objects {
+        lines.push("    #[derive(cynic::InputObject, Debug)]".into());
+        lines.push(format!(
+            "    #[cynic(graphql_type = \"{}\", rename_all=\"camelCase\")]",
+            input_object.name
+        ));
+        lines.push(format!("    pub struct {} {{", input_object.name));
+
+        for field in input_object.fields {
+            lines.push(format!(
+                "        pub {}: {},",
+                field.name.to_snake_case(),
+                field.value_type.type_spec(&type_index)
+            ))
+        }
+
+        lines.push("    }\n".into());
+    }
 
     lines.push("#[cynic::query_module(".into());
     lines.push(format!("    schema_path = r#\"{}\"#,", options.schema_path));
@@ -206,17 +191,12 @@ pub fn document_to_fragment_structs(
     lines.push(")]\nmod types {".into());
 
     // Output any custom scalars we need.
-    for def in &schema.definitions {
-        match def {
-            schema::Definition::TypeDefinition(schema::TypeDefinition::Scalar(scalar)) => {
-                lines.push("    #[derive(cynic::Scalar, Debug)]".into());
-                lines.push(format!(
-                    "    pub struct {}(String);\n",
-                    scalar.name.to_pascal_case()
-                ));
-            }
-            _ => (),
-        }
+    for scalar in &output.scalars {
+        lines.push("    #[derive(cynic::Scalar, Debug)]".into());
+        lines.push(format!(
+            "    pub struct {}(String);\n",
+            scalar.0.to_pascal_case()
+        ));
     }
     lines.push("}\n".into());
 

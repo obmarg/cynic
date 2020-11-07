@@ -25,10 +25,10 @@ pub struct Scalar<'schema>(pub &'schema str);
 #[derive(Debug, PartialEq)]
 pub struct QueryFragment<'schema, 'query> {
     pub fields: Vec<Field<'schema, 'query>>,
-    //pub path: GraphPath<'schema>,
+    pub target_type: String,
     pub argument_struct_name: Option<String>,
 
-    pub name: Option<String>,
+    pub name: String,
 }
 
 impl QueryFragment<'_, '_> {

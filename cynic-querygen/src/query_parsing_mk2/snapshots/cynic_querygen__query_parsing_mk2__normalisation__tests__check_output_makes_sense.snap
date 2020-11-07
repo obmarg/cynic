@@ -1,0 +1,262 @@
+---
+source: cynic-querygen/src/query_parsing_mk2/normalisation.rs
+expression: normalised
+---
+NormalisedDocument {
+    selection_sets: {
+        SelectionSet {
+            target_type: "Film",
+            selections: [
+                Field(
+                    FieldSelection {
+                        alias: None,
+                        name: "id",
+                        arguments: [],
+                        field: Leaf(
+                            "id",
+                        ),
+                    },
+                ),
+                Field(
+                    FieldSelection {
+                        alias: None,
+                        name: "title",
+                        arguments: [],
+                        field: Leaf(
+                            "title",
+                        ),
+                    },
+                ),
+            ],
+        },
+        SelectionSet {
+            target_type: "Film",
+            selections: [
+                Field(
+                    FieldSelection {
+                        alias: None,
+                        name: "title",
+                        arguments: [],
+                        field: Leaf(
+                            "title",
+                        ),
+                    },
+                ),
+            ],
+        },
+        SelectionSet {
+            target_type: "FilmsConnection",
+            selections: [
+                Field(
+                    FieldSelection {
+                        alias: None,
+                        name: "films",
+                        arguments: [],
+                        field: Composite(
+                            SelectionSet {
+                                target_type: "Film",
+                                selections: [
+                                    Field(
+                                        FieldSelection {
+                                            alias: None,
+                                            name: "id",
+                                            arguments: [],
+                                            field: Leaf(
+                                                "id",
+                                            ),
+                                        },
+                                    ),
+                                    Field(
+                                        FieldSelection {
+                                            alias: None,
+                                            name: "title",
+                                            arguments: [],
+                                            field: Leaf(
+                                                "title",
+                                            ),
+                                        },
+                                    ),
+                                ],
+                            },
+                        ),
+                    },
+                ),
+            ],
+        },
+        SelectionSet {
+            target_type: "Root",
+            selections: [
+                Field(
+                    FieldSelection {
+                        alias: None,
+                        name: "allFilms",
+                        arguments: [],
+                        field: Composite(
+                            SelectionSet {
+                                target_type: "FilmsConnection",
+                                selections: [
+                                    Field(
+                                        FieldSelection {
+                                            alias: None,
+                                            name: "films",
+                                            arguments: [],
+                                            field: Composite(
+                                                SelectionSet {
+                                                    target_type: "Film",
+                                                    selections: [
+                                                        Field(
+                                                            FieldSelection {
+                                                                alias: None,
+                                                                name: "id",
+                                                                arguments: [],
+                                                                field: Leaf(
+                                                                    "id",
+                                                                ),
+                                                            },
+                                                        ),
+                                                        Field(
+                                                            FieldSelection {
+                                                                alias: None,
+                                                                name: "title",
+                                                                arguments: [],
+                                                                field: Leaf(
+                                                                    "title",
+                                                                ),
+                                                            },
+                                                        ),
+                                                    ],
+                                                },
+                                            ),
+                                        },
+                                    ),
+                                ],
+                            },
+                        ),
+                    },
+                ),
+                Field(
+                    FieldSelection {
+                        alias: None,
+                        name: "film",
+                        arguments: [
+                            (
+                                "id",
+                                String(
+                                    "abcd",
+                                ),
+                            ),
+                        ],
+                        field: Composite(
+                            SelectionSet {
+                                target_type: "Film",
+                                selections: [
+                                    Field(
+                                        FieldSelection {
+                                            alias: None,
+                                            name: "title",
+                                            arguments: [],
+                                            field: Leaf(
+                                                "title",
+                                            ),
+                                        },
+                                    ),
+                                ],
+                            },
+                        ),
+                    },
+                ),
+            ],
+        },
+    },
+    operations: [
+        NormalisedOperation {
+            root: SelectionSet {
+                target_type: "Root",
+                selections: [
+                    Field(
+                        FieldSelection {
+                            alias: None,
+                            name: "allFilms",
+                            arguments: [],
+                            field: Composite(
+                                SelectionSet {
+                                    target_type: "FilmsConnection",
+                                    selections: [
+                                        Field(
+                                            FieldSelection {
+                                                alias: None,
+                                                name: "films",
+                                                arguments: [],
+                                                field: Composite(
+                                                    SelectionSet {
+                                                        target_type: "Film",
+                                                        selections: [
+                                                            Field(
+                                                                FieldSelection {
+                                                                    alias: None,
+                                                                    name: "id",
+                                                                    arguments: [],
+                                                                    field: Leaf(
+                                                                        "id",
+                                                                    ),
+                                                                },
+                                                            ),
+                                                            Field(
+                                                                FieldSelection {
+                                                                    alias: None,
+                                                                    name: "title",
+                                                                    arguments: [],
+                                                                    field: Leaf(
+                                                                        "title",
+                                                                    ),
+                                                                },
+                                                            ),
+                                                        ],
+                                                    },
+                                                ),
+                                            },
+                                        ),
+                                    ],
+                                },
+                            ),
+                        },
+                    ),
+                    Field(
+                        FieldSelection {
+                            alias: None,
+                            name: "film",
+                            arguments: [
+                                (
+                                    "id",
+                                    String(
+                                        "abcd",
+                                    ),
+                                ),
+                            ],
+                            field: Composite(
+                                SelectionSet {
+                                    target_type: "Film",
+                                    selections: [
+                                        Field(
+                                            FieldSelection {
+                                                alias: None,
+                                                name: "title",
+                                                arguments: [],
+                                                field: Leaf(
+                                                    "title",
+                                                ),
+                                            },
+                                        ),
+                                    ],
+                                },
+                            ),
+                        },
+                    ),
+                ],
+            },
+            name: None,
+            variable_definitions: [],
+            kind: Query,
+        },
+    ],
+}
