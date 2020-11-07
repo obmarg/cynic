@@ -5,6 +5,7 @@ use std::{
 
 use super::{
     normalisation::{NormalisedDocument, Selection, SelectionSet},
+    sorting::Vertex,
     value::Value,
 };
 use crate::{
@@ -13,7 +14,7 @@ use crate::{
     Error, TypeIndex,
 };
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct InputObject {
     target_type: String,
     fields: BTreeMap<String, InputObjectField>,
@@ -29,10 +30,21 @@ impl InputObject {
     }
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord)]
+impl Vertex for InputObject {
+    fn adjacents(self: &Rc<InputObject>) -> Vec<Rc<InputObject>> {
+        self.fields
+            .iter()
+            .flat_map(|(_, field)| match field {
+                InputObjectField::Object(other_obj) => Some(Rc::clone(other_obj)),
+                _ => None,
+            })
+            .collect()
+    }
+}
+
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum InputObjectField {
     Object(Rc<InputObject>),
-    List(Vec<Rc<InputObject>>),
     NamedType(String),
 }
 

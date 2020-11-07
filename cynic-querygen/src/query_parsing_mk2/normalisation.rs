@@ -2,7 +2,7 @@ use std::collections::{BTreeSet, HashMap};
 use std::hash::Hash;
 use std::rc::Rc;
 
-use super::value::Value;
+use super::{sorting::Vertex, value::Value};
 use crate::{
     query::{
         self, Definition, Document, FragmentDefinition, OperationDefinition, VariableDefinition,
@@ -221,6 +221,17 @@ fn extract_fragments<'query, 'doc>(document: &'doc Document<'query>) -> Fragment
             }
         })
         .collect()
+}
+
+impl<'query> Vertex for SelectionSet<'query> {
+    fn adjacents(self: &Rc<Self>) -> Vec<Rc<Self>> {
+        self.selections
+            .iter()
+            .map(|selection| match selection {
+                Selection::Field(field) => Rc::clone(&field.selection_set),
+            })
+            .collect()
+    }
 }
 
 #[cfg(test)]

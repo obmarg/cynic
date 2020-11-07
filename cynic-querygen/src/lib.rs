@@ -44,6 +44,15 @@ pub enum Error {
 
     #[error("an enum-like value was provided to an argument that is not an enum")]
     ArgumentNotEnum,
+
+    #[error("expected an input object, enum or scalar")]
+    ExpectedInputType,
+
+    #[error("expected a homogenous list of input values")]
+    ExpectedHomogenousList,
+
+    #[error("expected a value that is or contains an input object")]
+    ExpectedInputObjectValue,
 }
 
 #[derive(Debug)]
