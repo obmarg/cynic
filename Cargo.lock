@@ -609,6 +609,7 @@ dependencies = [
  "graphql-parser",
  "insta 0.16.1",
  "rstest",
+ "rust_decimal",
  "thiserror",
 ]
 
@@ -1826,6 +1827,16 @@ dependencies = [
  "quote",
  "rustc_version",
  "syn",
+]
+
+[[package]]
+name = "rust_decimal"
+version = "1.8.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "c9e81662973c7a8d9663e64a0de4cd642b89a21d64966e3d99606efdc5fb0cc6"
+dependencies = [
+ "num-traits",
+ "serde",
 ]
 
 [[package]]

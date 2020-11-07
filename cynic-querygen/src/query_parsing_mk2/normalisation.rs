@@ -1,7 +1,8 @@
-use std::collections::{HashMap, HashSet};
-use std::hash::{Hash, Hasher};
-use std::rc::{Rc, Weak};
+use std::collections::{BTreeSet, HashMap};
+use std::hash::Hash;
+use std::rc::Rc;
 
+use super::value::Value;
 use crate::{
     query::{
         self, Definition, Document, FragmentDefinition, OperationDefinition, VariableDefinition,
@@ -11,7 +12,7 @@ use crate::{
 
 #[derive(Debug, PartialEq)]
 pub struct NormalisedOperation<'query, 'doc> {
-    root: Rc<SelectionSet<'query, 'doc>>,
+    root: Rc<SelectionSet<'query>>,
     name: Option<&'query str>,
     variable_definitions: Vec<&'doc VariableDefinition<'query>>,
     kind: OperationKind,
@@ -23,133 +24,52 @@ pub enum OperationKind {
     Mutation,
 }
 
-#[derive(Hash, PartialEq, Eq, Debug)]
-pub struct SelectionSet<'query, 'doc> {
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct SelectionSet<'query> {
     target_type: String,
-    selections: Vec<Selection<'query, 'doc>>,
+    selections: Vec<Selection<'query>>,
 }
 
-#[derive(Hash, PartialEq, Eq, Debug)]
-pub enum Selection<'query, 'doc> {
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum Selection<'query> {
     // For now I just care about fields
     // Will probably need InlineFragments here sometime
     // Figure a normal FragmentSpread can be normalised in place.
-    Field(FieldSelection<'query, 'doc>),
+    Field(FieldSelection<'query>),
 }
 
-#[derive(Debug)]
-pub struct FieldSelection<'query, 'doc> {
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct FieldSelection<'query> {
     alias: Option<&'query str>,
     name: &'query str,
-    arguments: Vec<(&'query str, HashableValue<'query, 'doc>)>,
-    //  Problem here is we can't just store Value as that isn't hashable...
-    //  So either some hashable wrapper type
-    //  or a full translation (probably the former)
-    selection_set: Weak<SelectionSet<'query, 'doc>>,
-
-    // Weak is not hashable so we need to take a hash when we create
-    // the FieldSelection
-    hash: u64,
+    arguments: Vec<(&'query str, Value<'query>)>,
+    selection_set: Rc<SelectionSet<'query>>,
 }
 
-impl<'query, 'doc> FieldSelection<'query, 'doc> {
+impl<'query, 'doc> FieldSelection<'query> {
     fn new(
         name: &'query str,
         alias: Option<&'query str>,
         arguments: &'doc [(&'query str, query::Value<'query>)],
-        selection_set: &Rc<SelectionSet<'query, 'doc>>,
-    ) -> FieldSelection<'query, 'doc> {
+        selection_set: &Rc<SelectionSet<'query>>,
+    ) -> FieldSelection<'query> {
         let arguments = arguments
             .iter()
-            .map(|(k, v)| (*k, HashableValue::new(v)))
+            .map(|(k, v)| (*k, Value::from(v)))
             .collect::<Vec<_>>();
-
-        let mut hasher = std::collections::hash_map::DefaultHasher::new();
-
-        name.hash(&mut hasher);
-        alias.hash(&mut hasher);
-        arguments.hash(&mut hasher);
-        selection_set.hash(&mut hasher);
-
-        let hash = hasher.finish();
-
-        let selection_set = Rc::downgrade(&selection_set);
 
         FieldSelection {
             name,
             alias,
             arguments,
-            selection_set,
-            hash,
+            selection_set: Rc::clone(selection_set),
         }
     }
 }
 
-impl<'query, 'doc> Hash for FieldSelection<'query, 'doc> {
-    fn hash<H: Hasher>(&self, state: &mut H) {
-        self.hash.hash(state);
-    }
-}
-
-impl<'query, 'doc> PartialEq for FieldSelection<'query, 'doc> {
-    fn eq(&self, other: &FieldSelection) -> bool {
-        // TODO: Should probably implement an actual equals here...
-        self.hash == other.hash
-    }
-}
-
-impl<'query, 'doc> Eq for FieldSelection<'query, 'doc> {}
-
-#[derive(PartialEq, Debug)]
-struct HashableValue<'query, 'doc> {
-    inner: &'doc query::Value<'query>,
-}
-
-impl<'query, 'doc> HashableValue<'query, 'doc> {
-    fn new(inner: &'doc query::Value<'query>) -> Self {
-        HashableValue { inner }
-    }
-}
-
-// Note: Technically this is wrong - a HashableValue _could_
-// contain a floating point which is not Eq.
-//
-// But in practice I hope we'll be OK
-impl<'query, 'doc> Eq for HashableValue<'query, 'doc> {}
-
-impl<'query, 'doc> Hash for HashableValue<'query, 'doc> {
-    fn hash<H: Hasher>(&self, state: &mut H) {
-        use query::Value;
-
-        match self.inner {
-            Value::Variable(var) => var.hash(state),
-            Value::Int(num) => num.as_i64().hash(state),
-            Value::Float(num) => {
-                // Can't hash an f64, so convert it to a string.
-                // Feel that there are definitely edge cases to this
-                // but not sure how else to approach it right now.
-                num.to_string().hash(state);
-            }
-            Value::String(s) => s.hash(state),
-            Value::Boolean(b) => b.hash(state),
-            Value::Null => ().hash(state),
-            Value::Enum(s) => s.hash(state),
-            Value::List(values) => {
-                for value in values {
-                    HashableValue::new(value).hash(state);
-                }
-            }
-            Value::Object(obj) => {
-                for (k, v) in obj {
-                    k.hash(state);
-                    HashableValue::new(v).hash(state)
-                }
-            }
-        }
-    }
-}
-
-type SelectionSetSet<'query, 'doc> = HashSet<Rc<SelectionSet<'query, 'doc>>>;
+/// Use a BTreeSet here as we want a deterministic order of output for a
+/// given document
+type SelectionSetSet<'query, 'doc> = BTreeSet<Rc<SelectionSet<'query>>>;
 
 #[derive(Debug, PartialEq)]
 pub struct NormalisedDocument<'query, 'doc> {
@@ -163,7 +83,7 @@ pub fn normalise<'query, 'doc>(
 ) -> Result<NormalisedDocument<'query, 'doc>, Error> {
     let fragment_map = extract_fragments(&document);
 
-    let mut selection_sets: SelectionSetSet<'query, 'doc> = HashSet::new();
+    let mut selection_sets: SelectionSetSet<'query, 'doc> = BTreeSet::new();
     let mut operations = Vec::new();
 
     for definition in &document.definitions {
@@ -246,7 +166,7 @@ fn normalise_selection_set<'query, 'doc>(
     type_index: &'doc TypeIndex<'query>,
     current_path: GraphPath<'query>,
     selection_sets_out: &mut SelectionSetSet<'query, 'doc>,
-) -> Result<Rc<SelectionSet<'query, 'doc>>, Error> {
+) -> Result<Rc<SelectionSet<'query>>, Error> {
     let mut selections = Vec::new();
 
     for item in &selection_set.items {
