@@ -43,7 +43,16 @@ pub struct FieldSelection<'query> {
     pub alias: Option<&'query str>,
     pub name: &'query str,
     pub arguments: Vec<(&'query str, Value<'query>)>,
-    pub selection_set: Rc<SelectionSet<'query>>,
+    pub field: Field<'query>,
+}
+
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub enum Field<'query> {
+    /// A composite field contains another selection set.
+    Composite(Rc<SelectionSet<'query>>),
+
+    /// A leaf field just contains it's type as a string
+    Leaf(String),
 }
 
 impl<'query, 'doc> FieldSelection<'query> {
@@ -51,7 +60,7 @@ impl<'query, 'doc> FieldSelection<'query> {
         name: &'query str,
         alias: Option<&'query str>,
         arguments: &'doc [(&'query str, query::Value<'query>)],
-        selection_set: &Rc<SelectionSet<'query>>,
+        field: Field<'query>,
     ) -> FieldSelection<'query> {
         let arguments = arguments
             .iter()
@@ -62,7 +71,7 @@ impl<'query, 'doc> FieldSelection<'query> {
             name,
             alias,
             arguments,
-            selection_set: Rc::clone(selection_set),
+            field,
         }
     }
 }
@@ -174,18 +183,22 @@ fn normalise_selection_set<'query, 'doc>(
             query::Selection::Field(field) => {
                 let new_path = current_path.push(field.name);
 
-                let normalised = normalise_selection_set(
-                    &field.selection_set,
-                    type_index,
-                    new_path,
-                    selection_sets_out,
-                )?;
+                let inner_field = if field.selection_set.items.is_empty() {
+                    Field::Leaf(type_index.field_for_path(&new_path)?.name.to_string())
+                } else {
+                    Field::Composite(normalise_selection_set(
+                        &field.selection_set,
+                        type_index,
+                        new_path,
+                        selection_sets_out,
+                    )?)
+                };
 
                 selections.push(Selection::Field(FieldSelection::new(
                     field.name,
                     field.alias,
                     &field.arguments,
-                    &normalised,
+                    inner_field,
                 )));
             }
             query::Selection::FragmentSpread(_) => todo!(),
@@ -227,10 +240,28 @@ impl<'query> Vertex for SelectionSet<'query> {
     fn adjacents(self: &Rc<Self>) -> Vec<Rc<Self>> {
         self.selections
             .iter()
-            .map(|selection| match selection {
-                Selection::Field(field) => Rc::clone(&field.selection_set),
+            .flat_map(|selection| match selection {
+                Selection::Field(FieldSelection {
+                    field: Field::Composite(selection_set),
+                    ..
+                }) => Some(Rc::clone(&selection_set)),
+                _ => None,
             })
             .collect()
+    }
+}
+
+impl<'query> SelectionSet<'query> {
+    pub fn leaf_type_names<'a>(&'a self) -> impl Iterator<Item = &'a str> {
+        self.selections
+            .iter()
+            .flat_map(|selection| match selection {
+                Selection::Field(FieldSelection {
+                    field: Field::Leaf(named_type),
+                    ..
+                }) => Some(named_type.as_ref()),
+                _ => None,
+            })
     }
 }
 

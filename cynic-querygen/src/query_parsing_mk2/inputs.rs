@@ -4,7 +4,7 @@ use std::{
 };
 
 use super::{
-    normalisation::{NormalisedDocument, Selection, SelectionSet},
+    normalisation::{Field, NormalisedDocument, Selection, SelectionSet},
     sorting::Vertex,
     value::Value,
 };
@@ -16,13 +16,13 @@ use crate::{
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct InputObject {
-    target_type: String,
-    fields: BTreeMap<String, InputObjectField>,
+    pub target_type: String,
+    pub fields: BTreeMap<String, InputObjectField>,
 }
 
 impl InputObject {
-    /// Extracts any named types used by this InputObject
-    pub fn named_types(&self) -> impl Iterator<Item = &str> {
+    /// Extracts any named leaf types used by this InputObject
+    pub fn leaf_type_names(&self) -> impl Iterator<Item = &str> {
         self.fields.iter().flat_map(|(_, field)| match field {
             InputObjectField::NamedType(name) => Some(name.as_ref()),
             _ => None,
@@ -48,7 +48,7 @@ pub enum InputObjectField {
     NamedType(String),
 }
 
-type InputObjectSet = BTreeSet<Rc<InputObject>>;
+pub type InputObjectSet = BTreeSet<Rc<InputObject>>;
 
 pub fn extract_input_objects<'query, 'schema>(
     doc: &NormalisedDocument<'query, '_>,
@@ -98,11 +98,13 @@ fn extract_objects_from_selection_set<'query, 'schema>(
     for selection in &selection_set.selections {
         match selection {
             Selection::Field(field) => {
-                extract_objects_from_selection_set(
-                    &field.selection_set,
-                    type_index,
-                    input_objects,
-                )?;
+                let selection_set = if let Field::Composite(ss) = &field.field {
+                    ss
+                } else {
+                    continue;
+                };
+
+                extract_objects_from_selection_set(selection_set, type_index, input_objects)?;
 
                 let field_definition = object_definition
                     .fields
