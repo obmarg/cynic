@@ -176,6 +176,8 @@ fn normalise_selection_set<'query, 'doc>(
     current_path: GraphPath<'query>,
     selection_sets_out: &mut SelectionSetSet<'query>,
 ) -> Result<Rc<SelectionSet<'query>>, Error> {
+    use crate::type_ext::TypeExt;
+
     let mut selections = Vec::new();
 
     for item in &selection_set.items {
@@ -184,7 +186,13 @@ fn normalise_selection_set<'query, 'doc>(
                 let new_path = current_path.push(field.name);
 
                 let inner_field = if field.selection_set.items.is_empty() {
-                    Field::Leaf(type_index.field_for_path(&new_path)?.name.to_string())
+                    Field::Leaf(
+                        type_index
+                            .field_for_path(&new_path)?
+                            .field_type
+                            .inner_name()
+                            .to_string(),
+                    )
                 } else {
                     Field::Composite(normalise_selection_set(
                         &field.selection_set,

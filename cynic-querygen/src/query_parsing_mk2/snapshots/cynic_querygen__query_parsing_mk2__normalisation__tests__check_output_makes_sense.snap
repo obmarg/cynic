@@ -13,7 +13,7 @@ NormalisedDocument {
                         name: "id",
                         arguments: [],
                         field: Leaf(
-                            "id",
+                            "ID",
                         ),
                     },
                 ),
@@ -23,7 +23,7 @@ NormalisedDocument {
                         name: "title",
                         arguments: [],
                         field: Leaf(
-                            "title",
+                            "String",
                         ),
                     },
                 ),
@@ -38,7 +38,7 @@ NormalisedDocument {
                         name: "title",
                         arguments: [],
                         field: Leaf(
-                            "title",
+                            "String",
                         ),
                     },
                 ),
@@ -62,7 +62,7 @@ NormalisedDocument {
                                             name: "id",
                                             arguments: [],
                                             field: Leaf(
-                                                "id",
+                                                "ID",
                                             ),
                                         },
                                     ),
@@ -72,7 +72,7 @@ NormalisedDocument {
                                             name: "title",
                                             arguments: [],
                                             field: Leaf(
-                                                "title",
+                                                "String",
                                             ),
                                         },
                                     ),
@@ -110,7 +110,7 @@ NormalisedDocument {
                                                                 name: "id",
                                                                 arguments: [],
                                                                 field: Leaf(
-                                                                    "id",
+                                                                    "ID",
                                                                 ),
                                                             },
                                                         ),
@@ -120,7 +120,7 @@ NormalisedDocument {
                                                                 name: "title",
                                                                 arguments: [],
                                                                 field: Leaf(
-                                                                    "title",
+                                                                    "String",
                                                                 ),
                                                             },
                                                         ),
@@ -156,7 +156,7 @@ NormalisedDocument {
                                             name: "title",
                                             arguments: [],
                                             field: Leaf(
-                                                "title",
+                                                "String",
                                             ),
                                         },
                                     ),
@@ -197,7 +197,7 @@ NormalisedDocument {
                                                                     name: "id",
                                                                     arguments: [],
                                                                     field: Leaf(
-                                                                        "id",
+                                                                        "ID",
                                                                     ),
                                                                 },
                                                             ),
@@ -207,7 +207,7 @@ NormalisedDocument {
                                                                     name: "title",
                                                                     arguments: [],
                                                                     field: Leaf(
-                                                                        "title",
+                                                                        "String",
                                                                     ),
                                                                 },
                                                             ),
@@ -243,7 +243,7 @@ NormalisedDocument {
                                                 name: "title",
                                                 arguments: [],
                                                 field: Leaf(
-                                                    "title",
+                                                    "String",
                                                 ),
                                             },
                                         ),
