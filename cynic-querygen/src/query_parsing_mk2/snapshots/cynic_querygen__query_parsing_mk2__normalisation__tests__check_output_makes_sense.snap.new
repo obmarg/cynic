@@ -1,0 +1,267 @@
+---
+source: cynic-querygen/src/query_parsing_mk2/normalisation.rs
+expression: normalised
+---
+NormalisedDocument {
+    selection_sets: {
+        SelectionSet {
+            target_type: "Film",
+            selections: [
+                Field(
+                    FieldSelection {
+                        alias: None,
+                        name: "id",
+                        arguments: [],
+                        selection_set: SelectionSet {
+                            target_type: "ID",
+                            selections: [],
+                        },
+                    },
+                ),
+                Field(
+                    FieldSelection {
+                        alias: None,
+                        name: "title",
+                        arguments: [],
+                        selection_set: SelectionSet {
+                            target_type: "String",
+                            selections: [],
+                        },
+                    },
+                ),
+            ],
+        },
+        SelectionSet {
+            target_type: "Film",
+            selections: [
+                Field(
+                    FieldSelection {
+                        alias: None,
+                        name: "title",
+                        arguments: [],
+                        selection_set: SelectionSet {
+                            target_type: "String",
+                            selections: [],
+                        },
+                    },
+                ),
+            ],
+        },
+        SelectionSet {
+            target_type: "FilmsConnection",
+            selections: [
+                Field(
+                    FieldSelection {
+                        alias: None,
+                        name: "films",
+                        arguments: [],
+                        selection_set: SelectionSet {
+                            target_type: "Film",
+                            selections: [
+                                Field(
+                                    FieldSelection {
+                                        alias: None,
+                                        name: "id",
+                                        arguments: [],
+                                        selection_set: SelectionSet {
+                                            target_type: "ID",
+                                            selections: [],
+                                        },
+                                    },
+                                ),
+                                Field(
+                                    FieldSelection {
+                                        alias: None,
+                                        name: "title",
+                                        arguments: [],
+                                        selection_set: SelectionSet {
+                                            target_type: "String",
+                                            selections: [],
+                                        },
+                                    },
+                                ),
+                            ],
+                        },
+                    },
+                ),
+            ],
+        },
+        SelectionSet {
+            target_type: "ID",
+            selections: [],
+        },
+        SelectionSet {
+            target_type: "Root",
+            selections: [
+                Field(
+                    FieldSelection {
+                        alias: None,
+                        name: "allFilms",
+                        arguments: [],
+                        selection_set: SelectionSet {
+                            target_type: "FilmsConnection",
+                            selections: [
+                                Field(
+                                    FieldSelection {
+                                        alias: None,
+                                        name: "films",
+                                        arguments: [],
+                                        selection_set: SelectionSet {
+                                            target_type: "Film",
+                                            selections: [
+                                                Field(
+                                                    FieldSelection {
+                                                        alias: None,
+                                                        name: "id",
+                                                        arguments: [],
+                                                        selection_set: SelectionSet {
+                                                            target_type: "ID",
+                                                            selections: [],
+                                                        },
+                                                    },
+                                                ),
+                                                Field(
+                                                    FieldSelection {
+                                                        alias: None,
+                                                        name: "title",
+                                                        arguments: [],
+                                                        selection_set: SelectionSet {
+                                                            target_type: "String",
+                                                            selections: [],
+                                                        },
+                                                    },
+                                                ),
+                                            ],
+                                        },
+                                    },
+                                ),
+                            ],
+                        },
+                    },
+                ),
+                Field(
+                    FieldSelection {
+                        alias: None,
+                        name: "film",
+                        arguments: [
+                            (
+                                "id",
+                                String(
+                                    "abcd",
+                                ),
+                            ),
+                        ],
+                        selection_set: SelectionSet {
+                            target_type: "Film",
+                            selections: [
+                                Field(
+                                    FieldSelection {
+                                        alias: None,
+                                        name: "title",
+                                        arguments: [],
+                                        selection_set: SelectionSet {
+                                            target_type: "String",
+                                            selections: [],
+                                        },
+                                    },
+                                ),
+                            ],
+                        },
+                    },
+                ),
+            ],
+        },
+        SelectionSet {
+            target_type: "String",
+            selections: [],
+        },
+    },
+    operations: [
+        NormalisedOperation {
+            root: SelectionSet {
+                target_type: "Root",
+                selections: [
+                    Field(
+                        FieldSelection {
+                            alias: None,
+                            name: "allFilms",
+                            arguments: [],
+                            selection_set: SelectionSet {
+                                target_type: "FilmsConnection",
+                                selections: [
+                                    Field(
+                                        FieldSelection {
+                                            alias: None,
+                                            name: "films",
+                                            arguments: [],
+                                            selection_set: SelectionSet {
+                                                target_type: "Film",
+                                                selections: [
+                                                    Field(
+                                                        FieldSelection {
+                                                            alias: None,
+                                                            name: "id",
+                                                            arguments: [],
+                                                            selection_set: SelectionSet {
+                                                                target_type: "ID",
+                                                                selections: [],
+                                                            },
+                                                        },
+                                                    ),
+                                                    Field(
+                                                        FieldSelection {
+                                                            alias: None,
+                                                            name: "title",
+                                                            arguments: [],
+                                                            selection_set: SelectionSet {
+                                                                target_type: "String",
+                                                                selections: [],
+                                                            },
+                                                        },
+                                                    ),
+                                                ],
+                                            },
+                                        },
+                                    ),
+                                ],
+                            },
+                        },
+                    ),
+                    Field(
+                        FieldSelection {
+                            alias: None,
+                            name: "film",
+                            arguments: [
+                                (
+                                    "id",
+                                    String(
+                                        "abcd",
+                                    ),
+                                ),
+                            ],
+                            selection_set: SelectionSet {
+                                target_type: "Film",
+                                selections: [
+                                    Field(
+                                        FieldSelection {
+                                            alias: None,
+                                            name: "title",
+                                            arguments: [],
+                                            selection_set: SelectionSet {
+                                                target_type: "String",
+                                                selections: [],
+                                            },
+                                        },
+                                    ),
+                                ],
+                            },
+                        },
+                    ),
+                ],
+            },
+            name: None,
+            variable_definitions: [],
+            kind: Query,
+        },
+    ],
+}

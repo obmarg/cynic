@@ -13,9 +13,9 @@ use crate::{
 #[derive(Debug, PartialEq)]
 pub struct NormalisedOperation<'query, 'doc> {
     root: Rc<SelectionSet<'query>>,
-    name: Option<&'query str>,
-    variable_definitions: Vec<&'doc VariableDefinition<'query>>,
-    kind: OperationKind,
+    pub name: Option<&'query str>,
+    pub variable_definitions: Vec<&'doc VariableDefinition<'query>>,
+    pub kind: OperationKind,
 }
 
 #[derive(Debug, PartialEq)]
@@ -26,8 +26,8 @@ pub enum OperationKind {
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SelectionSet<'query> {
-    target_type: String,
-    selections: Vec<Selection<'query>>,
+    pub target_type: String,
+    pub selections: Vec<Selection<'query>>,
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -40,10 +40,10 @@ pub enum Selection<'query> {
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct FieldSelection<'query> {
-    alias: Option<&'query str>,
-    name: &'query str,
-    arguments: Vec<(&'query str, Value<'query>)>,
-    selection_set: Rc<SelectionSet<'query>>,
+    pub alias: Option<&'query str>,
+    pub name: &'query str,
+    pub arguments: Vec<(&'query str, Value<'query>)>,
+    pub selection_set: Rc<SelectionSet<'query>>,
 }
 
 impl<'query, 'doc> FieldSelection<'query> {
@@ -69,12 +69,12 @@ impl<'query, 'doc> FieldSelection<'query> {
 
 /// Use a BTreeSet here as we want a deterministic order of output for a
 /// given document
-type SelectionSetSet<'query, 'doc> = BTreeSet<Rc<SelectionSet<'query>>>;
+type SelectionSetSet<'query> = BTreeSet<Rc<SelectionSet<'query>>>;
 
 #[derive(Debug, PartialEq)]
 pub struct NormalisedDocument<'query, 'doc> {
-    selection_sets: SelectionSetSet<'query, 'doc>,
-    operations: Vec<NormalisedOperation<'query, 'doc>>,
+    pub selection_sets: SelectionSetSet<'query>,
+    pub operations: Vec<NormalisedOperation<'query, 'doc>>,
 }
 
 pub fn normalise<'query, 'doc>(
@@ -83,7 +83,7 @@ pub fn normalise<'query, 'doc>(
 ) -> Result<NormalisedDocument<'query, 'doc>, Error> {
     let fragment_map = extract_fragments(&document);
 
-    let mut selection_sets: SelectionSetSet<'query, 'doc> = BTreeSet::new();
+    let mut selection_sets: SelectionSetSet<'query> = BTreeSet::new();
     let mut operations = Vec::new();
 
     for definition in &document.definitions {
@@ -107,7 +107,7 @@ fn normalise_operation<'query, 'doc>(
     operation: &'doc OperationDefinition<'query>,
     fragment_map: &FragmentMap<'query, 'doc>,
     type_index: &'doc TypeIndex<'query>,
-    selection_sets_out: &mut SelectionSetSet<'query, 'doc>,
+    selection_sets_out: &mut SelectionSetSet<'query>,
 ) -> Result<NormalisedOperation<'query, 'doc>, Error> {
     match operation {
         OperationDefinition::SelectionSet(selection_set) => {
@@ -165,7 +165,7 @@ fn normalise_selection_set<'query, 'doc>(
     selection_set: &'doc query::SelectionSet<'query>,
     type_index: &'doc TypeIndex<'query>,
     current_path: GraphPath<'query>,
-    selection_sets_out: &mut SelectionSetSet<'query, 'doc>,
+    selection_sets_out: &mut SelectionSetSet<'query>,
 ) -> Result<Rc<SelectionSet<'query>>, Error> {
     let mut selections = Vec::new();
 
@@ -296,8 +296,29 @@ mod tests {
     }
 
     #[test]
-    fn are_there_any_other_test_i_want() {
-        todo!()
+    fn check_output_makes_sense() {
+        let schema = load_schema();
+        let type_index = TypeIndex::from_schema(&schema);
+        let query = graphql_parser::parse_query::<&str>(
+            r#"
+            {
+              allFilms {
+                films {
+                  id
+                  title
+                }
+              }
+              film(id: "abcd") {
+                title
+              }
+            }
+            "#,
+        )
+        .unwrap();
+
+        let normalised = normalise(&query, &type_index).unwrap();
+
+        insta::assert_debug_snapshot!(normalised);
     }
 
     fn load_schema() -> schema::Document<'static> {

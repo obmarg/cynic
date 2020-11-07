@@ -607,7 +607,7 @@ version = "0.10.1"
 dependencies = [
  "Inflector",
  "graphql-parser",
- "insta 0.16.1",
+ "insta 1.1.0",
  "rstest",
  "rust_decimal",
  "thiserror",
