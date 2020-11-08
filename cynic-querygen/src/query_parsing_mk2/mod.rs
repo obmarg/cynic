@@ -83,20 +83,9 @@ fn make_query_fragment<'text>(
     })
 }
 
-fn make_input_object<'text>(
-    input: Rc<inputs::InputObject>,
-) -> Result<types::InputObject<'text>, Error> {
-    use crate::{schema::TypeDefinition, type_ext::TypeExt};
-    use normalisation::Selection;
-    use types::{Field, FieldArgument};
-
-    let mut fields = Vec::new();
-    for (field_name, _) in &input.fields {
-        fields.push(todo!());
-    }
-
+fn make_input_object<'text>(input: Rc<inputs::InputObject>) -> Result<types::InputObject, Error> {
     Ok(types::InputObject {
-        name: input.target_type.clone(),
-        fields,
+        name: input.schema_type.name.to_string(),
+        fields: input.fields.clone(),
     })
 }

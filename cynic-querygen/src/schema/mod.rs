@@ -53,7 +53,7 @@ pub struct UnionDetails<'schema> {
     types: Vec<OutputTypeRef<'schema>>,
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone)]
 pub struct InputObjectDetails<'schema> {
     pub name: &'schema str,
     pub fields: Vec<InputField<'schema>>,

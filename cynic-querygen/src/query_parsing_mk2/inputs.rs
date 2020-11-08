@@ -14,47 +14,37 @@ use crate::{
 };
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct InputObject {
-    pub target_type: String,
-    pub fields: BTreeMap<String, InputObjectField>,
+pub struct InputObject<'schema> {
+    pub schema_type: schema::InputObjectDetails<'schema>,
+    pub fields: Vec<schema::InputField<'schema>>,
+    _adjacents: Vec<Rc<InputObject<'schema>>>,
 }
 
-impl InputObject {
+impl<'schema> InputObject<'schema> {
     /// Extracts any named leaf types used by this InputObject
     pub fn leaf_type_names(&self) -> Vec<String> {
         self.fields
             .iter()
-            .flat_map(|(_, field)| match field {
-                InputObjectField::NamedType(name) => Some(name.to_string()),
+            .flat_map(|field| match field.value_type.inner_ref().lookup() {
+                Ok(InputType::Scalar(scalar)) => Some(scalar.name.to_string()),
+                Ok(InputType::Enum(def)) => Some(def.name.to_string()),
                 _ => None,
             })
             .collect()
     }
 }
 
-impl Vertex for InputObject {
-    fn adjacents(self: &Rc<InputObject>) -> Vec<Rc<InputObject>> {
-        self.fields
-            .iter()
-            .flat_map(|(_, field)| match field {
-                InputObjectField::Object(other_obj) => Some(Rc::clone(other_obj)),
-                _ => None,
-            })
-            .collect()
+impl<'schema> Vertex for InputObject<'schema> {
+    fn adjacents(self: &Rc<InputObject<'schema>>) -> Vec<Rc<InputObject<'schema>>> {
+        self._adjacents.clone()
     }
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub enum InputObjectField {
-    Object(Rc<InputObject>),
-    NamedType(String),
-}
-
-pub type InputObjectSet = BTreeSet<Rc<InputObject>>;
+pub type InputObjectSet<'schema> = BTreeSet<Rc<InputObject<'schema>>>;
 
 pub fn extract_input_objects<'query, 'schema>(
     doc: &NormalisedDocument<'query, 'schema>,
-) -> Result<InputObjectSet, Error> {
+) -> Result<InputObjectSet<'schema>, Error> {
     let mut result = InputObjectSet::new();
 
     // Walk the selection sets looking for input objects
@@ -78,7 +68,7 @@ pub fn extract_input_objects<'query, 'schema>(
 
 fn extract_objects_from_selection_set<'query, 'schema>(
     selection_set: &Rc<SelectionSet<'query, 'schema>>,
-    input_objects: &mut InputObjectSet,
+    input_objects: &mut InputObjectSet<'schema>,
 ) -> Result<(), Error> {
     if selection_set.selections.is_empty() {
         return Ok(());
@@ -110,16 +100,17 @@ fn extract_objects_from_selection_set<'query, 'schema>(
 }
 
 pub fn extract_input_objects_from_values<'schema, 'query>(
-    input_object: &schema::InputObjectDetails,
+    input_object: &schema::InputObjectDetails<'schema>,
     value: &Value<'query>,
-    input_objects: &mut InputObjectSet,
-) -> Result<Rc<InputObject>, Error> {
+    input_objects: &mut InputObjectSet<'schema>,
+) -> Result<Rc<InputObject<'schema>>, Error> {
     match value {
         Value::Variable(_) => {
             extract_whole_input_object(input_object, input_objects)
         }
         Value::Object(obj) => {
-            let mut fields = BTreeMap::new();
+            let mut fields = Vec::new();
+            let mut adjacents = Vec::new();
             for (field_name, field_val) in obj {
                 let field = input_object
                     .fields
@@ -131,21 +122,23 @@ pub fn extract_input_objects_from_values<'schema, 'query>(
 
                 let field_type = field.value_type.inner_ref().lookup()?;
 
-                let field_out_val = match field_type {
-                    InputType::InputObject(inner_obj) => InputObjectField::Object(
-                        extract_input_objects_from_values(&inner_obj, field_val, input_objects)?,
-                    ),
-                    InputType::Scalar(scalar) => {
-                        InputObjectField::NamedType(scalar.name.to_string())
+                match field_type {
+                    InputType::InputObject(inner_obj) => {
+                        adjacents.push(extract_input_objects_from_values(
+                            &inner_obj,
+                            field_val,
+                            input_objects,
+                        )?);
                     }
-                    InputType::Enum(en) => InputObjectField::NamedType(en.name.to_string()),
-                };
+                    _ => {}
+                }
 
-                fields.insert(field_name.to_string(), field_out_val);
+                fields.push(field.clone());
             }
 
             let rv = Rc::new(InputObject {
-                target_type: input_object.name.to_string(),
+                schema_type: input_object.clone(),
+                _adjacents: adjacents,
                 fields,
             });
 
@@ -185,27 +178,28 @@ pub fn extract_input_objects_from_values<'schema, 'query>(
 }
 
 pub fn extract_whole_input_object<'schema>(
-    input_object: &schema::InputObjectDetails,
-    input_objects: &mut InputObjectSet,
-) -> Result<Rc<InputObject>, Error> {
-    let mut fields = BTreeMap::new();
+    input_object: &schema::InputObjectDetails<'schema>,
+    input_objects: &mut InputObjectSet<'schema>,
+) -> Result<Rc<InputObject<'schema>>, Error> {
+    let mut fields = Vec::new();
+    let mut adjacents = Vec::new();
 
     for field in &input_object.fields {
         let field_type = field.value_type.inner_ref().lookup()?;
 
-        let field_out_val = match field_type {
+        match field_type {
             InputType::InputObject(inner_obj) => {
-                InputObjectField::Object(extract_whole_input_object(&inner_obj, input_objects)?)
+                adjacents.push(extract_whole_input_object(&inner_obj, input_objects)?);
             }
-            InputType::Scalar(scalar) => InputObjectField::NamedType(scalar.name.to_string()),
-            InputType::Enum(en) => InputObjectField::NamedType(en.name.to_string()),
-        };
+            _ => {}
+        }
 
-        fields.insert(field.name.to_string(), field_out_val);
+        fields.push(field.clone());
     }
 
     let rv = Rc::new(InputObject {
-        target_type: input_object.name.to_string(),
+        schema_type: input_object.clone(),
+        _adjacents: adjacents,
         fields,
     });
 
