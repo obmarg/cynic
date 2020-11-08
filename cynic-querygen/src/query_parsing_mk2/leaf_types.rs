@@ -5,7 +5,10 @@ use super::{
     normalisation::NormalisedDocument,
     types::{Enum, Scalar},
 };
-use crate::{schema::TypeDefinition, Error, TypeIndex};
+use crate::{
+    schema::{ScalarTypeExt, TypeDefinition},
+    Error, TypeIndex,
+};
 
 pub fn extract_leaf_types<'query, 'qdoc, 'schema>(
     doc: &NormalisedDocument<'query, 'qdoc>,
@@ -30,6 +33,9 @@ pub fn extract_leaf_types<'query, 'qdoc, 'schema>(
     for name in leaf_type_names {
         match type_index.lookup_type(name) {
             Some(TypeDefinition::Scalar(scalar)) => {
+                if scalar.is_builtin() {
+                    continue;
+                }
                 scalars.push(Scalar(scalar.name));
             }
             Some(TypeDefinition::Enum(def)) => {

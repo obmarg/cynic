@@ -191,12 +191,19 @@ pub fn document_to_fragment_structs(
     lines.push(")]\nmod types {".into());
 
     // Output any custom scalars we need.
-    for scalar in &output.scalars {
-        lines.push("    #[derive(cynic::Scalar, Debug)]".into());
-        lines.push(format!(
-            "    pub struct {}(String);\n",
-            scalar.0.to_pascal_case()
-        ));
+    // Note that currently our query_dsl needs _all_ scalars in a schema
+    // so we're parsing this out from schema.definitons rather than output.scalars
+    for def in &schema.definitions {
+        match def {
+            schema::Definition::TypeDefinition(schema::TypeDefinition::Scalar(scalar)) => {
+                lines.push("    #[derive(cynic::Scalar, Debug)]".into());
+                lines.push(format!(
+                    "    pub struct {}(String);\n",
+                    scalar.name.to_pascal_case()
+                ));
+            }
+            _ => (),
+        }
     }
     lines.push("}\n".into());
 
