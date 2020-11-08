@@ -51,7 +51,7 @@ pub enum InputObjectField {
 pub type InputObjectSet = BTreeSet<Rc<InputObject>>;
 
 pub fn extract_input_objects<'query, 'schema>(
-    doc: &NormalisedDocument<'query, '_>,
+    doc: &NormalisedDocument<'query>,
     type_index: &TypeIndex<'schema>,
 ) -> Result<InputObjectSet, Error> {
     let mut result = InputObjectSet::new();

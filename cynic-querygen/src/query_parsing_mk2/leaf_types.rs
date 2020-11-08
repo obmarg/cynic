@@ -10,8 +10,8 @@ use crate::{
     Error, TypeIndex,
 };
 
-pub fn extract_leaf_types<'query, 'qdoc, 'schema>(
-    doc: &NormalisedDocument<'query, 'qdoc>,
+pub fn extract_leaf_types<'query, 'schema>(
+    doc: &NormalisedDocument<'query>,
     inputs: &InputObjectSet,
     type_index: &TypeIndex<'schema>,
 ) -> Result<(Vec<Enum<'schema>>, Vec<Scalar<'schema>>), Error> {

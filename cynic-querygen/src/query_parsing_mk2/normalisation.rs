@@ -11,10 +11,10 @@ use crate::{
 };
 
 #[derive(Debug, PartialEq)]
-pub struct NormalisedOperation<'query, 'doc> {
+pub struct NormalisedOperation<'query> {
     root: Rc<SelectionSet<'query>>,
     pub name: Option<&'query str>,
-    pub variable_definitions: Vec<&'doc VariableDefinition<'query>>,
+    pub variable_definitions: Vec<VariableDefinition<'query>>,
     pub kind: OperationKind,
 }
 
@@ -81,15 +81,15 @@ impl<'query, 'doc> FieldSelection<'query> {
 type SelectionSetSet<'query> = BTreeSet<Rc<SelectionSet<'query>>>;
 
 #[derive(Debug, PartialEq)]
-pub struct NormalisedDocument<'query, 'doc> {
+pub struct NormalisedDocument<'query> {
     pub selection_sets: SelectionSetSet<'query>,
-    pub operations: Vec<NormalisedOperation<'query, 'doc>>,
+    pub operations: Vec<NormalisedOperation<'query>>,
 }
 
 pub fn normalise<'query, 'doc>(
     document: &'doc Document<'query>,
     type_index: &'doc TypeIndex<'query>,
-) -> Result<NormalisedDocument<'query, 'doc>, Error> {
+) -> Result<NormalisedDocument<'query>, Error> {
     let fragment_map = extract_fragments(&document);
 
     let mut selection_sets: SelectionSetSet<'query> = BTreeSet::new();
@@ -117,7 +117,7 @@ fn normalise_operation<'query, 'doc>(
     fragment_map: &FragmentMap<'query, 'doc>,
     type_index: &'doc TypeIndex<'query>,
     selection_sets_out: &mut SelectionSetSet<'query>,
-) -> Result<NormalisedOperation<'query, 'doc>, Error> {
+) -> Result<NormalisedOperation<'query>, Error> {
     match operation {
         OperationDefinition::SelectionSet(selection_set) => {
             let root = normalise_selection_set(
@@ -146,7 +146,7 @@ fn normalise_operation<'query, 'doc>(
                 root,
                 name: query.name,
                 kind: OperationKind::Query,
-                variable_definitions: query.variable_definitions.iter().collect(),
+                variable_definitions: query.variable_definitions.iter().cloned().collect(),
             })
         }
         OperationDefinition::Mutation(mutation) => {
@@ -161,7 +161,7 @@ fn normalise_operation<'query, 'doc>(
                 root,
                 name: mutation.name,
                 kind: OperationKind::Mutation,
-                variable_definitions: mutation.variable_definitions.iter().collect(),
+                variable_definitions: mutation.variable_definitions.iter().cloned().collect(),
             })
         }
         OperationDefinition::Subscription(_) => Err(Error::UnsupportedQueryDocument(
@@ -264,11 +264,14 @@ impl<'query> SelectionSet<'query> {
         self.selections
             .iter()
             .flat_map(|selection| match selection {
-                Selection::Field(FieldSelection {
-                    field: Field::Leaf(named_type),
-                    ..
-                }) => Some(named_type.as_ref()),
-                _ => None,
+                Selection::Field(field) => {
+                    let mut rv = Vec::new();
+                    if let Field::Leaf(named_type) = &field.field {
+                        rv.push(named_type.as_ref());
+                    }
+                    rv
+                }
+                _ => vec![],
             })
     }
 }
