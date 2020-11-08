@@ -1,14 +1,12 @@
 use inflector::Inflector;
-use std::borrow::Cow;
+use std::rc::Rc;
 
 mod query;
-mod query_parsing;
 mod query_parsing_mk2;
 mod schema;
 mod type_ext;
 mod value_ext;
 
-use query_parsing::OutputDefinition;
 use schema::{GraphPath, TypeIndex};
 use type_ext::TypeExt;
 
@@ -83,7 +81,7 @@ pub fn document_to_fragment_structs(
     let schema = graphql_parser::parse_schema::<&str>(schema.as_ref())?;
     let query = graphql_parser::parse_query::<&str>(query.as_ref())?;
 
-    let type_index = TypeIndex::from_schema(&schema);
+    let type_index = Rc::new(TypeIndex::from_schema(&schema));
     let output = query_parsing_mk2::parse_query_document(&query, &type_index)?;
 
     let mut lines = vec![];
@@ -132,7 +130,7 @@ pub fn document_to_fragment_structs(
             lines.push(format!(
                 "        pub {}: {},",
                 field.name.to_snake_case(),
-                field.field_type.type_spec(&type_index)
+                field.field_type.type_spec()
             ))
         }
         lines.push(format!("    }}\n"));
@@ -161,7 +159,8 @@ pub fn document_to_fragment_structs(
             lines.push(format!(
                 "        pub {}: {},",
                 field.name.to_snake_case(),
-                field.field_type.type_spec(&type_index)
+                /*field.type_spec()*/
+                "TODO"
             ));
         }
 
@@ -180,7 +179,7 @@ pub fn document_to_fragment_structs(
             lines.push(format!(
                 "        pub {}: {},",
                 field.name.to_snake_case(),
-                field.value_type.type_spec(&type_index)
+                field.type_spec()
             ))
         }
 

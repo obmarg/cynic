@@ -3,21 +3,20 @@ use std::{
     hash::{Hash, Hasher},
 };
 
-use std::{
-    convert::{TryFrom, TryInto},
-    rc::Rc,
-};
+use std::{convert::TryInto, fmt, rc::Rc};
 
-use super::{InputType, OutputType, Type, TypeIndex};
+use super::{InputType, OutputType, TypeIndex};
 use crate::Error;
 
+#[derive(Clone)]
 pub struct InputTypeRef<'schema> {
-    type_name: &'schema str,
+    pub(super) type_name: &'schema str,
     type_index: Rc<TypeIndex<'schema>>,
 }
 
+#[derive(Clone)]
 pub struct OutputTypeRef<'schema> {
-    type_name: &'schema str,
+    pub(super) type_name: &'schema str,
     type_index: Rc<TypeIndex<'schema>>,
 }
 
@@ -64,36 +63,16 @@ macro_rules! impl_type_ref {
                 self.type_name.hash(state);
             }
         }
+
+        impl<'schema> fmt::Debug for $target<'schema> {
+            fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+                f.debug_struct(stringify!($target))
+                    .field("type_name", &self.type_name)
+                    .finish()
+            }
+        }
     };
 }
 
 impl_type_ref!(InputTypeRef, InputType);
 impl_type_ref!(OutputTypeRef, OutputType);
-
-impl<'schema> TryFrom<super::Type<'schema>> for InputType<'schema> {
-    type Error = Error;
-
-    fn try_from(ty: Type<'schema>) -> Result<InputType<'schema>, Error> {
-        match ty {
-            Type::InputObject(inner) => Ok(InputType::InputObject(inner)),
-            Type::Scalar(inner) => Ok(InputType::Scalar(inner)),
-            Type::Enum(inner) => Ok(InputType::Enum(inner)),
-            _ => Err(Error::ExpectedInputType),
-        }
-    }
-}
-
-impl<'schema> TryFrom<Type<'schema>> for OutputType<'schema> {
-    type Error = Error;
-
-    fn try_from(ty: Type<'schema>) -> Result<OutputType<'schema>, Error> {
-        match ty {
-            Type::Scalar(inner) => Ok(OutputType::Scalar(inner)),
-            Type::Enum(inner) => Ok(OutputType::Enum(inner)),
-            Type::Object(inner) => Ok(OutputType::Object(inner)),
-            Type::Interface(inner) => Ok(OutputType::Interface(inner)),
-            Type::Union(inner) => Ok(OutputType::Union(inner)),
-            Type::InputObject(_) => Err(Error::ExpectedOutputType),
-        }
-    }
-}

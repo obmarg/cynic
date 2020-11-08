@@ -1,21 +1,31 @@
-use std::collections::{BTreeSet, HashMap};
-use std::hash::Hash;
-use std::rc::Rc;
+use std::{
+    collections::{BTreeSet, HashMap},
+    convert::TryInto,
+    hash::Hash,
+    rc::Rc,
+};
 
 use super::{sorting::Vertex, value::Value};
 use crate::{
     query::{
         self, Definition, Document, FragmentDefinition, OperationDefinition, VariableDefinition,
     },
+    schema::{InputField, InputFieldType, LeafType, OutputField, OutputType},
     Error, GraphPath, TypeIndex,
 };
 
 #[derive(Debug, PartialEq)]
-pub struct NormalisedOperation<'query> {
-    root: Rc<SelectionSet<'query>>,
+pub struct NormalisedOperation<'query, 'schema> {
+    root: Rc<SelectionSet<'query, 'schema>>,
     pub name: Option<&'query str>,
-    pub variable_definitions: Vec<VariableDefinition<'query>>,
+    pub variables: Vec<OperationVariable<'query, 'schema>>,
     pub kind: OperationKind,
+}
+
+#[derive(Debug, PartialEq)]
+pub struct OperationVariable<'query, 'schema> {
+    pub name: &'query str,
+    pub value_type: InputFieldType<'schema>,
 }
 
 #[derive(Debug, PartialEq)]
@@ -25,52 +35,58 @@ pub enum OperationKind {
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct SelectionSet<'query> {
-    pub target_type: String,
-    pub selections: Vec<Selection<'query>>,
+pub struct SelectionSet<'query, 'schema> {
+    pub target_type: OutputType<'schema>,
+    pub selections: Vec<Selection<'query, 'schema>>,
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub enum Selection<'query> {
+pub enum Selection<'query, 'schema> {
     // For now I just care about fields
     // Will probably need InlineFragments here sometime
     // Figure a normal FragmentSpread can be normalised in place.
-    Field(FieldSelection<'query>),
+    Field(FieldSelection<'query, 'schema>),
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct FieldSelection<'query> {
+pub struct FieldSelection<'query, 'schema> {
     pub alias: Option<&'query str>,
     pub name: &'query str,
-    pub arguments: Vec<(&'query str, Value<'query>)>,
-    pub field: Field<'query>,
+
+    pub schema_field: OutputField<'schema>,
+
+    pub arguments: Vec<(InputField<'schema>, Value<'query>)>,
+
+    pub field: Field<'query, 'schema>,
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub enum Field<'query> {
+pub enum Field<'query, 'schema> {
     /// A composite field contains another selection set.
-    Composite(Rc<SelectionSet<'query>>),
+    Composite(Rc<SelectionSet<'query, 'schema>>),
 
     /// A leaf field just contains it's type as a string
-    Leaf(String),
+    Leaf,
 }
 
-impl<'query, 'doc> FieldSelection<'query> {
+impl<'query, 'doc, 'schema> FieldSelection<'query, 'schema> {
     fn new(
         name: &'query str,
         alias: Option<&'query str>,
-        arguments: &'doc [(&'query str, query::Value<'query>)],
-        field: Field<'query>,
-    ) -> FieldSelection<'query> {
+        arguments: Vec<(InputField<'schema>, &query::Value<'query>)>,
+        schema_field: OutputField<'schema>,
+        field: Field<'query, 'schema>,
+    ) -> FieldSelection<'query, 'schema> {
         let arguments = arguments
-            .iter()
-            .map(|(k, v)| (*k, Value::from(v)))
+            .into_iter()
+            .map(|(k, v)| (k, Value::from(v)))
             .collect::<Vec<_>>();
 
         FieldSelection {
             name,
             alias,
             arguments,
+            schema_field,
             field,
         }
     }
@@ -78,21 +94,21 @@ impl<'query, 'doc> FieldSelection<'query> {
 
 /// Use a BTreeSet here as we want a deterministic order of output for a
 /// given document
-type SelectionSetSet<'query> = BTreeSet<Rc<SelectionSet<'query>>>;
+type SelectionSetSet<'query, 'schema> = BTreeSet<Rc<SelectionSet<'query, 'schema>>>;
 
 #[derive(Debug, PartialEq)]
-pub struct NormalisedDocument<'query> {
-    pub selection_sets: SelectionSetSet<'query>,
-    pub operations: Vec<NormalisedOperation<'query>>,
+pub struct NormalisedDocument<'query, 'schema> {
+    pub selection_sets: SelectionSetSet<'query, 'schema>,
+    pub operations: Vec<NormalisedOperation<'query, 'schema>>,
 }
 
-pub fn normalise<'query, 'doc>(
+pub fn normalise<'query, 'doc, 'schema>(
     document: &'doc Document<'query>,
-    type_index: &'doc TypeIndex<'query>,
-) -> Result<NormalisedDocument<'query>, Error> {
+    type_index: &'doc Rc<TypeIndex<'schema>>,
+) -> Result<NormalisedDocument<'query, 'schema>, Error> {
     let fragment_map = extract_fragments(&document);
 
-    let mut selection_sets: SelectionSetSet<'query> = BTreeSet::new();
+    let mut selection_sets: SelectionSetSet<'query, 'schema> = BTreeSet::new();
     let mut operations = Vec::new();
 
     for definition in &document.definitions {
@@ -112,12 +128,12 @@ pub fn normalise<'query, 'doc>(
     })
 }
 
-fn normalise_operation<'query, 'doc>(
+fn normalise_operation<'query, 'doc, 'schema>(
     operation: &'doc OperationDefinition<'query>,
     fragment_map: &FragmentMap<'query, 'doc>,
-    type_index: &'doc TypeIndex<'query>,
-    selection_sets_out: &mut SelectionSetSet<'query>,
-) -> Result<NormalisedOperation<'query>, Error> {
+    type_index: &'doc Rc<TypeIndex<'schema>>,
+    selection_sets_out: &mut SelectionSetSet<'query, 'schema>,
+) -> Result<NormalisedOperation<'query, 'schema>, Error> {
     match operation {
         OperationDefinition::SelectionSet(selection_set) => {
             let root = normalise_selection_set(
@@ -131,7 +147,7 @@ fn normalise_operation<'query, 'doc>(
                 root,
                 name: None,
                 kind: OperationKind::Query,
-                variable_definitions: vec![],
+                variables: vec![],
             })
         }
         OperationDefinition::Query(query) => {
@@ -146,7 +162,11 @@ fn normalise_operation<'query, 'doc>(
                 root,
                 name: query.name,
                 kind: OperationKind::Query,
-                variable_definitions: query.variable_definitions.iter().cloned().collect(),
+                variables: query
+                    .variable_definitions
+                    .iter()
+                    .map(|var| OperationVariable::from(var, type_index))
+                    .collect(),
             })
         }
         OperationDefinition::Mutation(mutation) => {
@@ -161,7 +181,11 @@ fn normalise_operation<'query, 'doc>(
                 root,
                 name: mutation.name,
                 kind: OperationKind::Mutation,
-                variable_definitions: mutation.variable_definitions.iter().cloned().collect(),
+                variables: mutation
+                    .variable_definitions
+                    .iter()
+                    .map(|var| OperationVariable::from(var, type_index))
+                    .collect(),
             })
         }
         OperationDefinition::Subscription(_) => Err(Error::UnsupportedQueryDocument(
@@ -170,12 +194,12 @@ fn normalise_operation<'query, 'doc>(
     }
 }
 
-fn normalise_selection_set<'query, 'doc>(
-    selection_set: &'doc query::SelectionSet<'query>,
-    type_index: &'doc TypeIndex<'query>,
+fn normalise_selection_set<'query, 'schema>(
+    selection_set: &query::SelectionSet<'query>,
+    type_index: &Rc<TypeIndex<'schema>>,
     current_path: GraphPath<'query>,
-    selection_sets_out: &mut SelectionSetSet<'query>,
-) -> Result<Rc<SelectionSet<'query>>, Error> {
+    selection_sets_out: &mut SelectionSetSet<'query, 'schema>,
+) -> Result<Rc<SelectionSet<'query, 'schema>>, Error> {
     use crate::type_ext::TypeExt;
 
     let mut selections = Vec::new();
@@ -185,14 +209,10 @@ fn normalise_selection_set<'query, 'doc>(
             query::Selection::Field(field) => {
                 let new_path = current_path.push(field.name);
 
+                let schema_field = type_index.field_for_path_2(&new_path)?;
+
                 let inner_field = if field.selection_set.items.is_empty() {
-                    Field::Leaf(
-                        type_index
-                            .field_for_path(&new_path)?
-                            .field_type
-                            .inner_name()
-                            .to_string(),
-                    )
+                    Field::Leaf
                 } else {
                     Field::Composite(normalise_selection_set(
                         &field.selection_set,
@@ -202,10 +222,22 @@ fn normalise_selection_set<'query, 'doc>(
                     )?)
                 };
 
+                let mut arguments = Vec::new();
+                for (name, value) in &field.arguments {
+                    let schema_arg = schema_field
+                        .arguments
+                        .iter()
+                        .find(|arg| arg.name == *name)
+                        .ok_or_else(|| Error::UnknownArgument(name.to_string()))?;
+
+                    arguments.push((schema_arg.clone(), value))
+                }
+
                 selections.push(Selection::Field(FieldSelection::new(
                     field.name,
                     field.alias,
-                    &field.arguments,
+                    arguments,
+                    schema_field,
                     inner_field,
                 )));
             }
@@ -215,7 +247,7 @@ fn normalise_selection_set<'query, 'doc>(
     }
 
     let rv = Rc::new(SelectionSet {
-        target_type: type_index.type_name_for_path(&current_path)?.to_string(),
+        target_type: type_index.type_for_path(&current_path)?.try_into()?,
         selections,
     });
 
@@ -226,6 +258,15 @@ fn normalise_selection_set<'query, 'doc>(
     selection_sets_out.insert(Rc::clone(&rv));
 
     Ok(rv)
+}
+
+impl<'query, 'schema> OperationVariable<'query, 'schema> {
+    fn from(def: &VariableDefinition<'query>, type_index: &Rc<TypeIndex<'schema>>) -> Self {
+        OperationVariable {
+            name: def.name,
+            value_type: todo!(),
+        }
+    }
 }
 
 type FragmentMap<'query, 'doc> = HashMap<&'query str, &'doc FragmentDefinition<'query>>;
@@ -244,7 +285,7 @@ fn extract_fragments<'query, 'doc>(document: &'doc Document<'query>) -> Fragment
         .collect()
 }
 
-impl<'query> Vertex for SelectionSet<'query> {
+impl<'query, 'schema> Vertex for SelectionSet<'query, 'schema> {
     fn adjacents(self: &Rc<Self>) -> Vec<Rc<Self>> {
         self.selections
             .iter()
@@ -259,20 +300,21 @@ impl<'query> Vertex for SelectionSet<'query> {
     }
 }
 
-impl<'query> SelectionSet<'query> {
-    pub fn leaf_type_names<'a>(&'a self) -> impl Iterator<Item = &'a str> {
+impl<'query, 'schema> SelectionSet<'query, 'schema> {
+    pub fn leaf_type_names(&self) -> Vec<String> {
         self.selections
             .iter()
             .flat_map(|selection| match selection {
                 Selection::Field(field) => {
                     let mut rv = Vec::new();
-                    if let Field::Leaf(named_type) = &field.field {
-                        rv.push(named_type.as_ref());
+                    if let Field::Leaf = &field.field {
+                        rv.push(field.schema_field.value_type.inner_name().to_string());
                     }
                     rv
                 }
                 _ => vec![],
             })
+            .collect()
     }
 }
 
@@ -284,7 +326,7 @@ mod tests {
     #[test]
     fn normalise_deduplicates_identical_selections() {
         let schema = load_schema();
-        let type_index = TypeIndex::from_schema(&schema);
+        let type_index = Rc::new(TypeIndex::from_schema(&schema));
         let query = graphql_parser::parse_query::<&str>(
             r#"
             {
@@ -309,7 +351,7 @@ mod tests {
             normalised
                 .selection_sets
                 .iter()
-                .filter(|s| s.target_type == "Film")
+                .filter(|s| s.target_type.name() == "Film")
                 .count(),
             1
         );
@@ -318,7 +360,7 @@ mod tests {
     #[test]
     fn normalise_does_not_deduplicate_differing_selections() {
         let schema = load_schema();
-        let type_index = TypeIndex::from_schema(&schema);
+        let type_index = Rc::new(TypeIndex::from_schema(&schema));
         let query = graphql_parser::parse_query::<&str>(
             r#"
             {
@@ -342,7 +384,7 @@ mod tests {
             normalised
                 .selection_sets
                 .iter()
-                .filter(|s| s.target_type == "Film")
+                .filter(|s| s.target_type.name() == "Film")
                 .count(),
             2
         );
@@ -351,7 +393,7 @@ mod tests {
     #[test]
     fn check_output_makes_sense() {
         let schema = load_schema();
-        let type_index = TypeIndex::from_schema(&schema);
+        let type_index = Rc::new(TypeIndex::from_schema(&schema));
         let query = graphql_parser::parse_query::<&str>(
             r#"
             {

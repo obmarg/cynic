@@ -1,7 +1,11 @@
 use rust_decimal::{prelude::FromPrimitive, Decimal};
 use std::collections::BTreeMap;
 
-use crate::{query, schema, Error, TypeIndex};
+use crate::{
+    query,
+    schema::{self, InputType},
+    Error, TypeIndex,
+};
 
 /// A GraphQL value.
 ///
@@ -11,6 +15,7 @@ use crate::{query, schema, Error, TypeIndex};
 pub enum Value<'query> {
     Variable(&'query str),
     Int(i64),
+    // TODO: consider ordered-float
     Float(Option<Decimal>),
     String(String),
     Boolean(bool),
@@ -23,18 +28,14 @@ pub enum Value<'query> {
 impl<'query> Value<'query> {
     pub fn to_literal<'schema>(
         &self,
-        input_value: &schema::InputValue<'_>,
-        type_definition: &schema::TypeDefinition<'_>,
-        type_index: &TypeIndex,
+        field_type: &schema::InputFieldType<'schema>,
     ) -> Result<String, Error> {
         use crate::{schema::TypeDefinition, TypeExt};
         use inflector::Inflector;
 
         Ok(match self {
             Value::Variable(name) => {
-                if input_value.value_type.inner_name() == "String"
-                    && input_value.value_type.is_required()
-                {
+                if field_type.inner_name() == "String" && field_type.is_required() {
                     // Required String arguments currently take owned Strings,
                     // so we need to clone them.
                     format!("args.{}.clone()", name.to_snake_case())
@@ -49,7 +50,7 @@ impl<'query> Value<'query> {
             Value::Boolean(b) => b.to_string(),
             Value::Null => "None".into(),
             Value::Enum(v) => {
-                if let TypeDefinition::Enum(en) = type_definition {
+                if let InputType::Enum(en) = field_type.inner_ref().lookup()? {
                     format!("{}::{}", en.name.to_pascal_case(), v.to_pascal_case())
                 } else {
                     return Err(Error::ArgumentNotEnum);
@@ -58,14 +59,14 @@ impl<'query> Value<'query> {
             Value::List(values) => {
                 let inner = values
                     .iter()
-                    .map(|v| Ok(v.to_literal(input_value, type_definition, type_index)?))
+                    .map(|v| Ok(v.to_literal(field_type)?))
                     .collect::<Result<Vec<_>, Error>>()?
                     .join(", ");
 
                 format!("vec![{}]", inner)
             }
             Value::Object(object_literal) => {
-                if let TypeDefinition::InputObject(input_object) = type_definition {
+                if let InputType::InputObject(input_object) = field_type.inner_ref().lookup()? {
                     let mut fields = object_literal
                         .iter()
                         .map(|(name, value)| {
@@ -78,15 +79,10 @@ impl<'query> Value<'query> {
                                     input_object.name.to_string(),
                                 ))?;
 
-                            let type_name = field.value_type.inner_name();
-                            let type_definition = type_index
-                                .lookup_type(type_name)
-                                .ok_or(Error::UnknownType(type_name.to_string()))?;
-
                             Ok(format!(
                                 "{}: {}",
                                 name.to_snake_case(),
-                                value.to_literal(field, type_definition, type_index)?
+                                value.to_literal(&field.value_type)?
                             ))
                         })
                         .collect::<Result<Vec<_>, Error>>()?;

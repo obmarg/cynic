@@ -9,9 +9,8 @@ use super::{
     value::Value,
 };
 use crate::{
-    schema::{self, TypeDefinition},
-    type_ext::TypeExt,
-    Error, TypeIndex,
+    schema::{self, InputType},
+    Error,
 };
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -22,11 +21,14 @@ pub struct InputObject {
 
 impl InputObject {
     /// Extracts any named leaf types used by this InputObject
-    pub fn leaf_type_names(&self) -> impl Iterator<Item = &str> {
-        self.fields.iter().flat_map(|(_, field)| match field {
-            InputObjectField::NamedType(name) => Some(name.as_ref()),
-            _ => None,
-        })
+    pub fn leaf_type_names(&self) -> Vec<String> {
+        self.fields
+            .iter()
+            .flat_map(|(_, field)| match field {
+                InputObjectField::NamedType(name) => Some(name.to_string()),
+                _ => None,
+            })
+            .collect()
     }
 }
 
@@ -51,26 +53,22 @@ pub enum InputObjectField {
 pub type InputObjectSet = BTreeSet<Rc<InputObject>>;
 
 pub fn extract_input_objects<'query, 'schema>(
-    doc: &NormalisedDocument<'query>,
-    type_index: &TypeIndex<'schema>,
+    doc: &NormalisedDocument<'query, 'schema>,
 ) -> Result<InputObjectSet, Error> {
     let mut result = InputObjectSet::new();
 
     // Walk the selection sets looking for input objects
     for selection_set in &doc.selection_sets {
-        extract_objects_from_selection_set(&selection_set, type_index, &mut result)?;
+        extract_objects_from_selection_set(&selection_set, &mut result)?;
     }
 
     // Find any query variables that are input objects
     for operation in &doc.operations {
-        for variable in &operation.variable_definitions {
-            let variable_type_name = variable.var_type.inner_name();
-            let variable_type = type_index
-                .lookup_type(variable_type_name)
-                .ok_or_else(|| Error::UnknownType(variable_type_name.to_string()))?;
+        for variable in &operation.variables {
+            let variable_type = variable.value_type.inner_ref().lookup()?;
 
-            if let TypeDefinition::InputObject(input_obj) = variable_type {
-                extract_whole_input_object(input_obj, type_index, &mut result)?;
+            if let InputType::InputObject(input_obj) = variable_type {
+                extract_whole_input_object(&input_obj, &mut result)?;
             }
         }
     }
@@ -79,21 +77,12 @@ pub fn extract_input_objects<'query, 'schema>(
 }
 
 fn extract_objects_from_selection_set<'query, 'schema>(
-    selection_set: &Rc<SelectionSet<'query>>,
-    type_index: &TypeIndex<'schema>,
+    selection_set: &Rc<SelectionSet<'query, 'schema>>,
     input_objects: &mut InputObjectSet,
 ) -> Result<(), Error> {
     if selection_set.selections.is_empty() {
         return Ok(());
     }
-
-    let object_definition = if let Some(TypeDefinition::Object(object_def)) =
-        type_index.lookup_type(&selection_set.target_type)
-    {
-        object_def
-    } else {
-        return Err(Error::ExpectedObject(selection_set.target_type.to_string()));
-    };
 
     for selection in &selection_set.selections {
         match selection {
@@ -104,43 +93,14 @@ fn extract_objects_from_selection_set<'query, 'schema>(
                     continue;
                 };
 
-                extract_objects_from_selection_set(selection_set, type_index, input_objects)?;
+                extract_objects_from_selection_set(selection_set, input_objects)?;
 
-                let field_definition = object_definition
-                    .fields
-                    .iter()
-                    .find(|f| f.name == field.name)
-                    .ok_or_else(|| {
-                        Error::UnknownField(
-                            field.name.to_string(),
-                            selection_set.target_type.to_string(),
-                        )
-                    })?;
+                for (arg, arg_value) in &field.arguments {
+                    let arg_type = arg.value_type.inner_ref().lookup()?;
 
-                for (arg_name, arg_value) in &field.arguments {
-                    let arg_definition = field_definition
-                        .arguments
-                        .iter()
-                        .find(|v| v.name == *arg_name)
-                        .ok_or_else(|| Error::UnknownArgument(arg_name.to_string()))?;
-
-                    let arg_type_name = arg_definition.value_type.inner_name();
-                    let arg_type = type_index
-                        .lookup_type(&arg_type_name)
-                        .ok_or_else(|| Error::UnknownType(arg_type_name.to_string()))?;
-
-                    let input_obj = if let TypeDefinition::InputObject(input_obj) = arg_type {
-                        input_obj
-                    } else {
-                        continue;
-                    };
-
-                    extract_input_objects_from_values(
-                        input_obj,
-                        arg_value,
-                        type_index,
-                        input_objects,
-                    )?;
+                    if let InputType::InputObject(input_obj) = arg_type {
+                        extract_input_objects_from_values(&input_obj, arg_value, input_objects)?;
+                    }
                 }
             }
         }
@@ -150,14 +110,13 @@ fn extract_objects_from_selection_set<'query, 'schema>(
 }
 
 pub fn extract_input_objects_from_values<'schema, 'query>(
-    input_object: &schema::InputObjectType,
+    input_object: &schema::InputObjectDetails,
     value: &Value<'query>,
-    type_index: &TypeIndex<'schema>,
     input_objects: &mut InputObjectSet,
 ) -> Result<Rc<InputObject>, Error> {
     match value {
         Value::Variable(_) => {
-            extract_whole_input_object(input_object, type_index, input_objects)
+            extract_whole_input_object(input_object, input_objects)
         }
         Value::Object(obj) => {
             let mut fields = BTreeMap::new();
@@ -170,25 +129,16 @@ pub fn extract_input_objects_from_values<'schema, 'query>(
                         Error::UnknownField(field_name.to_string(), input_object.name.to_string())
                     })?;
 
-                let field_type_name = field.value_type.inner_name();
-                let field_type = type_index
-                    .lookup_type(&field_type_name)
-                    .ok_or_else(|| Error::UnknownType(field_type_name.to_string()))?;
+                let field_type = field.value_type.inner_ref().lookup()?;
 
                 let field_out_val = match field_type {
-                    TypeDefinition::InputObject(inner_obj) => {
-                        InputObjectField::Object(extract_input_objects_from_values(
-                            inner_obj,
-                            field_val,
-                            type_index,
-                            input_objects,
-                        )?)
-                    }
-                    TypeDefinition::Scalar(scalar) => {
+                    InputType::InputObject(inner_obj) => InputObjectField::Object(
+                        extract_input_objects_from_values(&inner_obj, field_val, input_objects)?,
+                    ),
+                    InputType::Scalar(scalar) => {
                         InputObjectField::NamedType(scalar.name.to_string())
                     }
-                    TypeDefinition::Enum(en) => InputObjectField::NamedType(en.name.to_string()),
-                    _ => return Err(Error::ExpectedInputType),
+                    InputType::Enum(en) => InputObjectField::NamedType(en.name.to_string()),
                 };
 
                 fields.insert(field_name.to_string(), field_out_val);
@@ -210,7 +160,7 @@ pub fn extract_input_objects_from_values<'schema, 'query>(
         Value::List(inner_values) => {
             if inner_values.is_empty() {
                 // We still need the type in order to type this field...
-                return extract_whole_input_object(input_object, type_index, input_objects);
+                return extract_whole_input_object(input_object, input_objects);
             }
 
             let mut output_values = Vec::with_capacity(inner_values.len());
@@ -218,7 +168,6 @@ pub fn extract_input_objects_from_values<'schema, 'query>(
                 output_values.push(extract_input_objects_from_values(
                     input_object,
                     inner_value,
-                    type_index,
                     input_objects,
                 )?);
             }
@@ -236,25 +185,20 @@ pub fn extract_input_objects_from_values<'schema, 'query>(
 }
 
 pub fn extract_whole_input_object<'schema>(
-    input_object: &schema::InputObjectType,
-    type_index: &TypeIndex<'schema>,
+    input_object: &schema::InputObjectDetails,
     input_objects: &mut InputObjectSet,
 ) -> Result<Rc<InputObject>, Error> {
     let mut fields = BTreeMap::new();
 
     for field in &input_object.fields {
-        let field_type_name = field.value_type.inner_name();
-        let field_type = type_index
-            .lookup_type(field_type_name)
-            .ok_or_else(|| Error::UnknownType(field_type_name.to_string()))?;
+        let field_type = field.value_type.inner_ref().lookup()?;
 
         let field_out_val = match field_type {
-            TypeDefinition::InputObject(inner_obj) => InputObjectField::Object(
-                extract_whole_input_object(inner_obj, type_index, input_objects)?,
-            ),
-            TypeDefinition::Scalar(scalar) => InputObjectField::NamedType(scalar.name.to_string()),
-            TypeDefinition::Enum(en) => InputObjectField::NamedType(en.name.to_string()),
-            _ => return Err(Error::ExpectedInputType),
+            InputType::InputObject(inner_obj) => {
+                InputObjectField::Object(extract_whole_input_object(&inner_obj, input_objects)?)
+            }
+            InputType::Scalar(scalar) => InputObjectField::NamedType(scalar.name.to_string()),
+            InputType::Enum(en) => InputObjectField::NamedType(en.name.to_string()),
         };
 
         fields.insert(field.name.to_string(), field_out_val);
@@ -277,12 +221,12 @@ pub fn extract_whole_input_object<'schema>(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::query_parsing_mk2::normalisation::normalise;
+    use crate::{query_parsing_mk2::normalisation::normalise, TypeIndex};
 
     #[test]
     fn extracts_inline_input_types() {
         let schema = load_schema();
-        let type_index = TypeIndex::from_schema(&schema);
+        let type_index = Rc::new(TypeIndex::from_schema(&schema));
         let query = graphql_parser::parse_query::<&str>(
             r#"
               query {
@@ -306,7 +250,7 @@ mod tests {
         .unwrap();
 
         let normalised = normalise(&query, &type_index).unwrap();
-        let input_objects = extract_input_objects(&normalised, &type_index).unwrap();
+        let input_objects = extract_input_objects(&normalised).unwrap();
 
         assert_eq!(input_objects.len(), 2);
     }
@@ -314,7 +258,7 @@ mod tests {
     #[test]
     fn deduplicates_input_types_if_same() {
         let schema = load_schema();
-        let type_index = TypeIndex::from_schema(&schema);
+        let type_index = Rc::new(TypeIndex::from_schema(&schema));
         let query = graphql_parser::parse_query::<&str>(
             r#"
               query {
@@ -338,7 +282,7 @@ mod tests {
         .unwrap();
 
         let normalised = normalise(&query, &type_index).unwrap();
-        let input_objects = extract_input_objects(&normalised, &type_index).unwrap();
+        let input_objects = extract_input_objects(&normalised).unwrap();
 
         assert_eq!(input_objects.len(), 1);
     }
@@ -346,7 +290,7 @@ mod tests {
     #[test]
     fn finds_variable_input_types() {
         let schema = load_schema();
-        let type_index = TypeIndex::from_schema(&schema);
+        let type_index = Rc::new(TypeIndex::from_schema(&schema));
         let query = graphql_parser::parse_query::<&str>(
             r#"
               query MyQuery($input: IssueFilters!) {
@@ -370,7 +314,7 @@ mod tests {
         .unwrap();
 
         let normalised = normalise(&query, &type_index).unwrap();
-        let input_objects = extract_input_objects(&normalised, &type_index).unwrap();
+        let input_objects = extract_input_objects(&normalised).unwrap();
 
         assert_eq!(input_objects.len(), 1);
     }

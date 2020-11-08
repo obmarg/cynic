@@ -71,8 +71,8 @@ pub struct ArgumentStruct<'a> {
 }
 
 impl<'a> ArgumentStruct<'a> {
-    fn from_variables(
-        variables: &'a Vec<VariableDefinition<'a, &'a str>>,
+    fn from_variables<'query, 'schema>(
+        variables: &'a Vec<OperationVariable<'query, 'schema>>,
         query_name: Option<&'a str>,
     ) -> Option<ArgumentStruct<'a>> {
         if variables.is_empty() {

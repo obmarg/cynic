@@ -1,4 +1,5 @@
 //! Handles "leaf types" - i.e. enums & scalars that don't have any nested fields.
+use std::rc::Rc;
 
 use super::{
     inputs::InputObjectSet,
@@ -11,9 +12,9 @@ use crate::{
 };
 
 pub fn extract_leaf_types<'query, 'schema>(
-    doc: &NormalisedDocument<'query>,
+    doc: &NormalisedDocument<'query, 'schema>,
     inputs: &InputObjectSet,
-    type_index: &TypeIndex<'schema>,
+    type_index: &Rc<TypeIndex<'schema>>,
 ) -> Result<(Vec<Enum<'schema>>, Vec<Scalar<'schema>>), Error> {
     let mut leaf_type_names = Vec::new();
     leaf_type_names.extend(
@@ -31,7 +32,7 @@ pub fn extract_leaf_types<'query, 'schema>(
     let mut scalars = Vec::new();
 
     for name in leaf_type_names {
-        match type_index.lookup_type(name) {
+        match type_index.lookup_type(&name) {
             Some(TypeDefinition::Scalar(scalar)) => {
                 if scalar.is_builtin() {
                     continue;

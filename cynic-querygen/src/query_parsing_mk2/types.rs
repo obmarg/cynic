@@ -1,9 +1,11 @@
 use graphql_parser::query::{Definition, Document, OperationDefinition, Selection, SelectionSet};
 use std::rc::Rc;
 
-use super::Value;
-use crate::query::VariableDefinition;
-use crate::schema::{self, EnumType, InputValue, ScalarTypeExt, Type, TypeDefinition};
+use super::{normalisation::OperationVariable, Value};
+use crate::schema::{
+    self, EnumType, InputField, InputFieldType, InputValue, OutputFieldType, ScalarTypeExt, Type,
+    TypeDefinition,
+};
 use crate::{value_ext::ValueExt, Error, GraphPath, TypeExt, TypeIndex};
 
 pub struct Output<'schema, 'query> {
@@ -45,12 +47,12 @@ pub struct Enum<'schema> {
 #[derive(Debug, PartialEq)]
 pub struct ArgumentStruct<'schema, 'query> {
     pub name: String,
-    pub fields: Vec<Field<'schema, 'query>>,
+    pub fields: Vec<OperationVariable<'query, 'schema>>,
 }
 
 impl<'schema, 'query> ArgumentStruct<'schema, 'query> {
     fn from_variables(
-        variables: Vec<VariableDefinition<'schema>>,
+        variables: Vec<OperationVariable<'query, 'schema>>,
         query_name: Option<String>,
     ) -> Option<ArgumentStruct<'schema, 'query>> {
         if variables.is_empty() {
@@ -59,14 +61,7 @@ impl<'schema, 'query> ArgumentStruct<'schema, 'query> {
 
         Some(ArgumentStruct {
             name: format!("{}Arguments", query_name.unwrap_or("".to_string())),
-            fields: variables
-                .iter()
-                .map(|var| Field {
-                    name: var.name,
-                    field_type: var.var_type.clone(),
-                    arguments: vec![],
-                })
-                .collect(),
+            fields: variables,
         })
     }
 }
@@ -74,7 +69,7 @@ impl<'schema, 'query> ArgumentStruct<'schema, 'query> {
 #[derive(Debug, PartialEq)]
 pub struct Field<'schema, 'query> {
     pub name: &'schema str,
-    pub field_type: Type<'schema>,
+    pub field_type: OutputFieldType<'schema>,
 
     pub arguments: Vec<FieldArgument<'schema, 'query>>,
 }
@@ -83,33 +78,29 @@ pub struct Field<'schema, 'query> {
 pub struct FieldArgument<'schema, 'query> {
     pub name: &'schema str,
     value: Value<'query>,
-    input_value: InputValue<'schema>,
-    argument_type: TypeDefinition<'schema>,
+    field_type: InputFieldType<'schema>,
 }
 
 impl<'schema, 'query> FieldArgument<'schema, 'query> {
     pub fn new(
         name: &'schema str,
         value: Value<'query>,
-        input_value: InputValue<'schema>,
-        argument_type: TypeDefinition<'schema>,
+        field_type: InputFieldType<'schema>,
     ) -> Self {
         FieldArgument {
             name,
             value,
-            input_value,
-            argument_type,
+            field_type,
         }
     }
 
     pub fn to_literal(&self, type_index: &TypeIndex) -> Result<String, Error> {
-        self.value
-            .to_literal(&self.input_value, &self.argument_type, type_index)
+        self.value.to_literal(&self.field_type)
     }
 }
 
 #[derive(Debug, PartialEq)]
 pub struct InputObject<'schema> {
     pub name: String,
-    pub fields: Vec<InputValue<'schema>>,
+    pub fields: Vec<InputField<'schema>>,
 }

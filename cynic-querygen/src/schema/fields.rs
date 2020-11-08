@@ -1,26 +1,30 @@
-use std::rc::Rc;
+use std::{borrow::Cow, rc::Rc};
 
-use super::{parser, InputTypeRef, OutputTypeRef, TypeIndex};
+use super::{parser, InputType, InputTypeRef, OutputType, OutputTypeRef, TypeIndex};
 
 /// A field on an output type i.e. an object or interface
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone)]
 pub struct OutputField<'schema> {
-    name: &'schema str,
-    value_type: OutputFieldType<'schema>,
-    arguments: Vec<InputField<'schema>>,
+    pub name: &'schema str,
+    pub value_type: OutputFieldType<'schema>,
+    pub arguments: Vec<InputField<'schema>>,
 }
 
-/// A field on an input object
+/// A field on an input object or an argument
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone)]
 pub struct InputField<'schema> {
-    name: &'schema str,
-    value_type: InputFieldType<'schema>,
+    pub name: &'schema str,
+    pub value_type: InputFieldType<'schema>,
 }
 
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone)]
 pub enum InputFieldType<'schema> {
     NamedType(InputTypeRef<'schema>),
     ListType(Box<InputFieldType<'schema>>),
     NonNullType(Box<InputFieldType<'schema>>),
 }
 
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone)]
 pub enum OutputFieldType<'schema> {
     NamedType(OutputTypeRef<'schema>),
     ListType(Box<OutputFieldType<'schema>>),
@@ -42,6 +46,55 @@ impl<'schema> OutputField<'schema> {
                 .collect(),
         }
     }
+
+    pub fn type_spec(&self) -> Cow<'schema, str> {
+        output_type_spec_imp(&self.value_type, true)
+    }
+}
+
+impl<'schema> OutputFieldType<'schema> {
+    pub fn type_spec(&self) -> Cow<'schema, str> {
+        output_type_spec_imp(self, true)
+    }
+}
+
+fn output_type_spec_imp<'schema>(
+    ty: &OutputFieldType<'schema>,
+    nullable: bool,
+) -> Cow<'schema, str> {
+    use inflector::Inflector;
+
+    if let OutputFieldType::NonNullType(inner) = ty {
+        return output_type_spec_imp(inner, false);
+    }
+
+    if nullable {
+        return Cow::Owned(format!("Option<{}>", output_type_spec_imp(ty, false)));
+    }
+
+    match ty {
+        OutputFieldType::ListType(inner) => {
+            Cow::Owned(format!("Vec<{}>", output_type_spec_imp(inner, true)))
+        }
+
+        OutputFieldType::NonNullType(_) => panic!("NonNullType somehow got past an if let"),
+
+        OutputFieldType::NamedType(s) => {
+            match s.type_name {
+                "Int" => return Cow::Borrowed("i32"),
+                "Float" => return Cow::Borrowed("f64"),
+                "Boolean" => return Cow::Borrowed("bool"),
+                "ID" => return Cow::Borrowed("cynic::Id"),
+                _ => {}
+            }
+
+            match s.lookup() {
+                Ok(OutputType::Enum(_)) => Cow::Owned(s.type_name.to_pascal_case()),
+                Ok(OutputType::Object(_)) => Cow::Owned(s.type_name.to_pascal_case()),
+                _ => Cow::Borrowed(s.type_name),
+            }
+        }
+    }
 }
 
 impl<'schema> InputField<'schema> {
@@ -52,6 +105,73 @@ impl<'schema> InputField<'schema> {
         InputField {
             name: field.name,
             value_type: InputFieldType::from_parser(&field.value_type, type_index),
+        }
+    }
+
+    pub fn type_spec(&self) -> Cow<'schema, str> {
+        input_type_spec_imp(&self.value_type, true)
+    }
+}
+
+fn input_type_spec_imp<'schema>(ty: &InputFieldType<'schema>, nullable: bool) -> Cow<'schema, str> {
+    use inflector::Inflector;
+
+    if let InputFieldType::NonNullType(inner) = ty {
+        return input_type_spec_imp(inner, false);
+    }
+
+    if nullable {
+        return Cow::Owned(format!("Option<{}>", input_type_spec_imp(ty, false)));
+    }
+
+    match ty {
+        InputFieldType::ListType(inner) => {
+            Cow::Owned(format!("Vec<{}>", input_type_spec_imp(inner, true)))
+        }
+
+        InputFieldType::NonNullType(_) => panic!("NonNullType somehow got past an if let"),
+
+        InputFieldType::NamedType(s) => {
+            match s.type_name {
+                "Int" => return Cow::Borrowed("i32"),
+                "Float" => return Cow::Borrowed("f64"),
+                "Boolean" => return Cow::Borrowed("bool"),
+                "ID" => return Cow::Borrowed("cynic::Id"),
+                _ => {}
+            }
+
+            match s.lookup() {
+                Ok(InputType::Enum(_)) => Cow::Owned(s.type_name.to_pascal_case()),
+                Ok(InputType::InputObject(_)) => Cow::Owned(s.type_name.to_pascal_case()),
+                _ => Cow::Borrowed(s.type_name),
+            }
+        }
+    }
+}
+
+impl<'schema> InputFieldType<'schema> {
+    pub fn inner_name(&self) -> &'schema str {
+        match self {
+            InputFieldType::NamedType(name) => name.type_name,
+            InputFieldType::NonNullType(inner) => inner.inner_name(),
+            InputFieldType::ListType(inner) => inner.inner_name(),
+        }
+    }
+
+    pub fn is_required(&self) -> bool {
+        match self {
+            InputFieldType::NonNullType(_) => true,
+            _ => false,
+        }
+    }
+}
+
+impl<'schema> OutputFieldType<'schema> {
+    pub fn inner_name(&self) -> &'schema str {
+        match self {
+            OutputFieldType::NamedType(name) => name.type_name,
+            OutputFieldType::NonNullType(inner) => inner.inner_name(),
+            OutputFieldType::ListType(inner) => inner.inner_name(),
         }
     }
 }
@@ -82,3 +202,20 @@ macro_rules! impl_field_type_from_parser_type {
 
 impl_field_type_from_parser_type!(InputFieldType, InputTypeRef);
 impl_field_type_from_parser_type!(OutputFieldType, OutputTypeRef);
+
+macro_rules! impl_inner_ref {
+    ($target:ident, $inner_type:ident) => {
+        impl<'schema> $target<'schema> {
+            pub fn inner_ref(&self) -> &$inner_type<'schema> {
+                match self {
+                    $target::NamedType(inner) => inner,
+                    $target::NonNullType(inner) => inner.inner_ref(),
+                    $target::ListType(inner) => inner.inner_ref(),
+                }
+            }
+        }
+    };
+}
+
+impl_inner_ref!(InputFieldType, InputTypeRef);
+impl_inner_ref!(OutputFieldType, OutputTypeRef);
