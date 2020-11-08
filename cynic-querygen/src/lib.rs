@@ -6,12 +6,11 @@ mod query_parsing;
 mod query_parsing_mk2;
 mod schema;
 mod type_ext;
-mod type_index;
 mod value_ext;
 
 use query_parsing::OutputDefinition;
+use schema::{GraphPath, TypeIndex};
 use type_ext::TypeExt;
-use type_index::{GraphPath, TypeIndex};
 
 #[derive(thiserror::Error, Debug)]
 pub enum Error {
@@ -50,6 +49,9 @@ pub enum Error {
 
     #[error("expected an input object, enum or scalar")]
     ExpectedInputType,
+
+    #[error("expected an enum, scalar, object, union or interface")]
+    ExpectedOutputType,
 
     #[error("expected a homogenous list of input values")]
     ExpectedHomogenousList,

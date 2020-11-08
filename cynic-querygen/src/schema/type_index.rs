@@ -1,12 +1,13 @@
 use graphql_parser::schema::{Definition, ScalarType};
-use std::borrow::Cow;
-use std::collections::HashMap;
+use std::{borrow::Cow, collections::HashMap, rc::Rc};
 
 use crate::{
     schema::{Document, Field, TypeDefinition},
     type_ext::TypeExt,
     Error,
 };
+
+use super::Type;
 
 pub struct TypeIndex<'schema> {
     types: HashMap<&'schema str, TypeDefinition<'schema>>,
@@ -78,6 +79,15 @@ impl<'schema> TypeIndex<'schema> {
 
     pub fn lookup_type(&self, name: &str) -> Option<&TypeDefinition<'schema>> {
         self.types.get(name)
+    }
+
+    pub fn lookup_type_2(self: Rc<Self>, name: &str) -> Result<Type<'schema>, Error> {
+        let type_def = self
+            .types
+            .get(name)
+            .ok_or_else(|| Error::UnknownType(name.to_string()))?;
+
+        Ok(Type::from_type_defintion(type_def, &self))
     }
 
     fn find_field_recursive<'find>(
