@@ -109,43 +109,7 @@ impl<'schema> InputField<'schema> {
     }
 
     pub fn type_spec(&self) -> Cow<'schema, str> {
-        input_type_spec_imp(&self.value_type, true)
-    }
-}
-
-fn input_type_spec_imp<'schema>(ty: &InputFieldType<'schema>, nullable: bool) -> Cow<'schema, str> {
-    use inflector::Inflector;
-
-    if let InputFieldType::NonNullType(inner) = ty {
-        return input_type_spec_imp(inner, false);
-    }
-
-    if nullable {
-        return Cow::Owned(format!("Option<{}>", input_type_spec_imp(ty, false)));
-    }
-
-    match ty {
-        InputFieldType::ListType(inner) => {
-            Cow::Owned(format!("Vec<{}>", input_type_spec_imp(inner, true)))
-        }
-
-        InputFieldType::NonNullType(_) => panic!("NonNullType somehow got past an if let"),
-
-        InputFieldType::NamedType(s) => {
-            match s.type_name.as_ref() {
-                "Int" => return Cow::Borrowed("i32"),
-                "Float" => return Cow::Borrowed("f64"),
-                "Boolean" => return Cow::Borrowed("bool"),
-                "ID" => return Cow::Borrowed("cynic::Id"),
-                _ => {}
-            }
-
-            match s.lookup() {
-                Ok(InputType::Enum(_)) => Cow::Owned(s.type_name.to_pascal_case()),
-                Ok(InputType::InputObject(_)) => Cow::Owned(s.type_name.to_pascal_case()),
-                _ => s.type_name.clone(),
-            }
-        }
+        self.value_type.type_spec()
     }
 }
 
@@ -189,6 +153,46 @@ impl<'schema> InputFieldType<'schema> {
         match self {
             InputFieldType::NonNullType(_) => true,
             _ => false,
+        }
+    }
+
+    pub fn type_spec(&self) -> Cow<'schema, str> {
+        input_type_spec_imp(&self, true)
+    }
+}
+
+fn input_type_spec_imp<'schema>(ty: &InputFieldType<'schema>, nullable: bool) -> Cow<'schema, str> {
+    use inflector::Inflector;
+
+    if let InputFieldType::NonNullType(inner) = ty {
+        return input_type_spec_imp(inner, false);
+    }
+
+    if nullable {
+        return Cow::Owned(format!("Option<{}>", input_type_spec_imp(ty, false)));
+    }
+
+    match ty {
+        InputFieldType::ListType(inner) => {
+            Cow::Owned(format!("Vec<{}>", input_type_spec_imp(inner, true)))
+        }
+
+        InputFieldType::NonNullType(_) => panic!("NonNullType somehow got past an if let"),
+
+        InputFieldType::NamedType(s) => {
+            match s.type_name.as_ref() {
+                "Int" => return Cow::Borrowed("i32"),
+                "Float" => return Cow::Borrowed("f64"),
+                "Boolean" => return Cow::Borrowed("bool"),
+                "ID" => return Cow::Borrowed("cynic::Id"),
+                _ => {}
+            }
+
+            match s.lookup() {
+                Ok(InputType::Enum(_)) => Cow::Owned(s.type_name.to_pascal_case()),
+                Ok(InputType::InputObject(_)) => Cow::Owned(s.type_name.to_pascal_case()),
+                _ => s.type_name.clone(),
+            }
         }
     }
 }

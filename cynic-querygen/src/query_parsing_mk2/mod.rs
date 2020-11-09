@@ -1,3 +1,5 @@
+use std::rc::Rc;
+
 mod inputs;
 mod leaf_types;
 mod normalisation;
@@ -5,11 +7,10 @@ mod sorting;
 mod types;
 mod value;
 
+use normalisation::NormalisedOperation;
 use value::Value;
 
 use crate::{query::Document, schema::OutputType, Error, TypeIndex};
-
-use std::rc::Rc;
 
 pub fn parse_query_document<'text>(
     doc: &Document<'text>,
@@ -33,13 +34,18 @@ pub fn parse_query_document<'text>(
         .map(make_input_object)
         .collect::<Result<Vec<_>, _>>()?;
 
+    let argument_structs = normalised
+        .operations
+        .iter()
+        .flat_map(make_argument_struct)
+        .collect::<Vec<_>>();
+
     Ok(types::Output {
         query_fragments,
         input_objects,
         enums,
         scalars,
-        // TODO: argument structs
-        argument_structs: vec![],
+        argument_structs,
     })
 }
 
@@ -48,7 +54,7 @@ fn make_query_fragment<'text>(
 ) -> Result<types::QueryFragment<'text, 'text>, Error> {
     use crate::{schema::TypeDefinition, type_ext::TypeExt};
     use normalisation::Selection;
-    use types::{Field, FieldArgument};
+    use types::{FieldArgument, OutputField};
 
     Ok(types::QueryFragment {
         fields: selection
@@ -58,7 +64,7 @@ fn make_query_fragment<'text>(
                 Selection::Field(field) => {
                     let schema_field = &field.schema_field;
 
-                    Field {
+                    OutputField {
                         name: schema_field.name,
                         field_type: schema_field.value_type.clone(),
                         arguments: field
@@ -87,5 +93,21 @@ fn make_input_object<'text>(input: Rc<inputs::InputObject>) -> Result<types::Inp
     Ok(types::InputObject {
         name: input.schema_type.name.to_string(),
         fields: input.fields.clone(),
+    })
+}
+
+fn make_argument_struct<'query, 'schema>(
+    operation: &NormalisedOperation<'query, 'schema>,
+) -> Option<types::ArgumentStruct<'schema, 'query>> {
+    // TODO: Need to decide which order for these lifetime arguments:
+    // different order is asking for trouble.
+
+    if operation.variables.is_empty() {
+        return None;
+    }
+
+    Some(types::ArgumentStruct {
+        name: format!("{}Arguments", operation.name.unwrap_or("")),
+        fields: operation.variables.clone(),
     })
 }

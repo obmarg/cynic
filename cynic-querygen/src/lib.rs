@@ -96,6 +96,21 @@ pub fn document_to_fragment_structs(
         options.query_module
     ));
 
+    for argument_struct in output.argument_structs {
+        lines.push("    #[derive(cynic::FragmentArguments, Debug)]".into());
+        lines.push(format!("    pub struct {} {{", argument_struct.name));
+
+        for field in &argument_struct.fields {
+            lines.push(format!(
+                "        pub {}: {},",
+                field.name.to_snake_case(),
+                field.value_type.type_spec()
+            ));
+        }
+
+        lines.push("    }\n".into());
+    }
+
     for fragment in output.query_fragments {
         let argument_struct_param = if let Some(name) = fragment.argument_struct_name {
             format!(", argument_struct = \"{}\"", name)
@@ -149,22 +164,6 @@ pub fn document_to_fragment_structs(
         for variant in &en.def.values {
             lines.push(format!("        {},", variant.name.to_pascal_case()))
         }
-        lines.push("    }\n".into());
-    }
-
-    for argument_struct in output.argument_structs {
-        lines.push("    #[derive(cynic::FragmentArguments, Debug)]".into());
-        lines.push(format!("    pub struct {} {{", argument_struct.name));
-
-        for field in &argument_struct.fields {
-            lines.push(format!(
-                "        pub {}: {},",
-                field.name.to_snake_case(),
-                /*field.type_spec()*/
-                "TODO"
-            ));
-        }
-
         lines.push("    }\n".into());
     }
 

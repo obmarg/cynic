@@ -22,7 +22,7 @@ pub struct NormalisedOperation<'query, 'schema> {
     pub kind: OperationKind,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct OperationVariable<'query, 'schema> {
     pub name: &'query str,
     pub value_type: InputFieldType<'schema>,

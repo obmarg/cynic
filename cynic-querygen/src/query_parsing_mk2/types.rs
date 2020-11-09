@@ -26,7 +26,7 @@ pub struct Scalar<'schema>(pub &'schema str);
 
 #[derive(Debug, PartialEq)]
 pub struct QueryFragment<'schema, 'query> {
-    pub fields: Vec<Field<'schema, 'query>>,
+    pub fields: Vec<OutputField<'schema, 'query>>,
     pub target_type: String,
     pub argument_struct_name: Option<String>,
 
@@ -67,7 +67,7 @@ impl<'schema, 'query> ArgumentStruct<'schema, 'query> {
 }
 
 #[derive(Debug, PartialEq)]
-pub struct Field<'schema, 'query> {
+pub struct OutputField<'schema, 'query> {
     pub name: &'schema str,
     pub field_type: OutputFieldType<'schema>,
 
