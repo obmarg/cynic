@@ -264,7 +264,7 @@ impl<'query, 'schema> OperationVariable<'query, 'schema> {
     fn from(def: &VariableDefinition<'query>, type_index: &Rc<TypeIndex<'schema>>) -> Self {
         OperationVariable {
             name: def.name,
-            value_type: todo!(), // InputFieldType::from_parser(&def.var_type, type_index),
+            value_type: InputFieldType::from_variable_definition(def, type_index),
         }
     }
 }

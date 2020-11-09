@@ -80,7 +80,7 @@ fn output_type_spec_imp<'schema>(
         OutputFieldType::NonNullType(_) => panic!("NonNullType somehow got past an if let"),
 
         OutputFieldType::NamedType(s) => {
-            match s.type_name {
+            match s.type_name.as_ref() {
                 "Int" => return Cow::Borrowed("i32"),
                 "Float" => return Cow::Borrowed("f64"),
                 "Boolean" => return Cow::Borrowed("bool"),
@@ -91,7 +91,7 @@ fn output_type_spec_imp<'schema>(
             match s.lookup() {
                 Ok(OutputType::Enum(_)) => Cow::Owned(s.type_name.to_pascal_case()),
                 Ok(OutputType::Object(_)) => Cow::Owned(s.type_name.to_pascal_case()),
-                _ => Cow::Borrowed(s.type_name),
+                _ => s.type_name.clone(),
             }
         }
     }
@@ -132,7 +132,7 @@ fn input_type_spec_imp<'schema>(ty: &InputFieldType<'schema>, nullable: bool) ->
         InputFieldType::NonNullType(_) => panic!("NonNullType somehow got past an if let"),
 
         InputFieldType::NamedType(s) => {
-            match s.type_name {
+            match s.type_name.as_ref() {
                 "Int" => return Cow::Borrowed("i32"),
                 "Float" => return Cow::Borrowed("f64"),
                 "Boolean" => return Cow::Borrowed("bool"),
@@ -143,16 +143,43 @@ fn input_type_spec_imp<'schema>(ty: &InputFieldType<'schema>, nullable: bool) ->
             match s.lookup() {
                 Ok(InputType::Enum(_)) => Cow::Owned(s.type_name.to_pascal_case()),
                 Ok(InputType::InputObject(_)) => Cow::Owned(s.type_name.to_pascal_case()),
-                _ => Cow::Borrowed(s.type_name),
+                _ => s.type_name.clone(),
             }
         }
     }
 }
 
 impl<'schema> InputFieldType<'schema> {
-    pub fn inner_name(&self) -> &'schema str {
+    pub fn from_variable_definition<'query>(
+        def: &crate::query::VariableDefinition<'query>,
+        type_index: &Rc<TypeIndex<'schema>>,
+    ) -> Self {
+        InputFieldType::from_query_type(&def.var_type, type_index)
+    }
+
+    fn from_query_type<'query>(
+        query_type: &crate::query::Type<'query>,
+        type_index: &Rc<TypeIndex<'schema>>,
+    ) -> Self {
+        use parser::Type;
+
+        match query_type {
+            Type::NamedType(name) => {
+                InputFieldType::NamedType(InputTypeRef::new_owned(name.to_string(), type_index))
+            }
+            Type::ListType(inner) => InputFieldType::ListType(Box::new(Self::from_query_type(
+                inner.as_ref(),
+                type_index,
+            ))),
+            Type::NonNullType(inner) => InputFieldType::NonNullType(Box::new(
+                Self::from_query_type(inner.as_ref(), type_index),
+            )),
+        }
+    }
+
+    pub fn inner_name(&self) -> Cow<'schema, str> {
         match self {
-            InputFieldType::NamedType(name) => name.type_name,
+            InputFieldType::NamedType(name) => name.type_name.clone(),
             InputFieldType::NonNullType(inner) => inner.inner_name(),
             InputFieldType::ListType(inner) => inner.inner_name(),
         }
@@ -167,9 +194,9 @@ impl<'schema> InputFieldType<'schema> {
 }
 
 impl<'schema> OutputFieldType<'schema> {
-    pub fn inner_name(&self) -> &'schema str {
+    pub fn inner_name(&self) -> Cow<'schema, str> {
         match self {
-            OutputFieldType::NamedType(name) => name.type_name,
+            OutputFieldType::NamedType(name) => name.type_name.clone(),
             OutputFieldType::NonNullType(inner) => inner.inner_name(),
             OutputFieldType::ListType(inner) => inner.inner_name(),
         }

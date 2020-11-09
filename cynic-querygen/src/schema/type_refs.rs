@@ -3,20 +3,20 @@ use std::{
     hash::{Hash, Hasher},
 };
 
-use std::{convert::TryInto, fmt, rc::Rc};
+use std::{borrow::Cow, convert::TryInto, fmt, rc::Rc};
 
 use super::{InputType, OutputType, TypeIndex};
 use crate::Error;
 
 #[derive(Clone)]
 pub struct InputTypeRef<'schema> {
-    pub(super) type_name: &'schema str,
+    pub(super) type_name: Cow<'schema, str>,
     type_index: Rc<TypeIndex<'schema>>,
 }
 
 #[derive(Clone)]
 pub struct OutputTypeRef<'schema> {
-    pub(super) type_name: &'schema str,
+    pub(super) type_name: Cow<'schema, str>,
     type_index: Rc<TypeIndex<'schema>>,
 }
 
@@ -28,13 +28,23 @@ macro_rules! impl_type_ref {
                 type_index: &Rc<TypeIndex<'schema>>,
             ) -> Self {
                 Self {
-                    type_name,
+                    type_name: Cow::Borrowed(type_name),
+                    type_index: Rc::clone(type_index),
+                }
+            }
+
+            pub(super) fn new_owned(
+                type_name: String,
+                type_index: &Rc<TypeIndex<'schema>>,
+            ) -> Self {
+                Self {
+                    type_name: Cow::Owned(type_name),
                     type_index: Rc::clone(type_index),
                 }
             }
 
             pub fn lookup(&self) -> Result<$lookup_type<'schema>, Error> {
-                self.type_index.lookup_type_2(self.type_name)?.try_into()
+                self.type_index.lookup_type_2(&self.type_name)?.try_into()
             }
         }
 
@@ -48,13 +58,13 @@ macro_rules! impl_type_ref {
 
         impl<'schema> PartialOrd for $target<'schema> {
             fn partial_cmp(&self, other: &Self) -> Option<Ordering> {
-                Some(self.type_name.cmp(other.type_name))
+                Some(self.type_name.cmp(&other.type_name))
             }
         }
 
         impl<'schema> Ord for $target<'schema> {
             fn cmp(&self, other: &Self) -> Ordering {
-                self.type_name.cmp(other.type_name)
+                self.type_name.cmp(&other.type_name)
             }
         }
 
