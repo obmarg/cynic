@@ -16,7 +16,7 @@ use crate::{
 
 #[derive(Debug, PartialEq)]
 pub struct NormalisedOperation<'query, 'schema> {
-    root: Rc<SelectionSet<'query, 'schema>>,
+    pub root: Rc<SelectionSet<'query, 'schema>>,
     pub name: Option<&'query str>,
     pub variables: Vec<OperationVariable<'query, 'schema>>,
     pub kind: OperationKind,

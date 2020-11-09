@@ -2,11 +2,13 @@ use std::rc::Rc;
 
 mod inputs;
 mod leaf_types;
+mod naming;
 mod normalisation;
 mod sorting;
 mod types;
 mod value;
 
+use naming::Namer;
 use normalisation::NormalisedOperation;
 use value::Value;
 
@@ -23,10 +25,17 @@ pub fn parse_query_document<'text>(
 
     // TODO: Ok, so in here i think we should name things.
     // Probably after the top sort.
+    let mut query_namer = Namer::new();
+
+    for operation in &normalised.operations {
+        if let Some(name) = operation.name {
+            query_namer.force_name(&operation.root, name);
+        }
+    }
 
     let query_fragments = sorting::topological_sort(normalised.selection_sets.into_iter())
         .into_iter()
-        .map(make_query_fragment)
+        .map(|selection| make_query_fragment(selection, &mut query_namer))
         .collect::<Result<Vec<_>, _>>()?;
 
     let input_objects = sorting::topological_sort(input_objects.into_iter())
@@ -51,6 +60,7 @@ pub fn parse_query_document<'text>(
 
 fn make_query_fragment<'text>(
     selection: Rc<normalisation::SelectionSet<'text, 'text>>,
+    namer: &mut Namer<Rc<normalisation::SelectionSet<'text, 'text>>>,
 ) -> Result<types::QueryFragment<'text, 'text>, Error> {
     use crate::{schema::TypeDefinition, type_ext::TypeExt};
     use normalisation::Selection;
@@ -84,7 +94,7 @@ fn make_query_fragment<'text>(
             })
             .collect(),
         argument_struct_name: None,
-        name: selection.target_type.name().to_string(),
+        name: namer.name_subject(&selection),
         target_type: selection.target_type.name().to_string(),
     })
 }
