@@ -22,7 +22,11 @@ pub fn parse_query_document<'text>(
     let normalised = normalisation::normalise(doc, type_index)?;
     let input_objects = inputs::extract_input_objects(&normalised)?;
 
-    let (enums, scalars) = leaf_types::extract_leaf_types(&normalised, &input_objects, type_index)?;
+    let (mut enums, mut scalars) =
+        leaf_types::extract_leaf_types(&normalised, &input_objects, type_index)?;
+
+    enums.sort_by_key(|e| e.def.name);
+    scalars.sort_by_key(|s| s.0);
 
     // TODO: Ok, so in here i think we should name things.
     // Probably after the top sort.

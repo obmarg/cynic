@@ -188,6 +188,7 @@ pub fn document_to_fragment_structs(
 
         lines.push("    }\n".into());
     }
+    lines.push("}\n".into());
 
     lines.push("#[cynic::query_module(".into());
     lines.push(format!("    schema_path = r#\"{}\"#,", options.schema_path));
