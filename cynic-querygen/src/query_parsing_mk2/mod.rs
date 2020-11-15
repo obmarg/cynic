@@ -9,6 +9,7 @@ mod sorting;
 mod types;
 mod value;
 
+use arguments::ArgumentStructDetails;
 use naming::Namer;
 use normalisation::NormalisedOperation;
 
@@ -27,17 +28,19 @@ pub fn parse_query_document<'text>(
     // Probably after the top sort.
     let mut query_namer = Namer::new();
 
+    let arg_struct_details = arguments::build_argument_structs(&normalised);
+
     for operation in &normalised.operations {
         if let Some(name) = operation.name {
             query_namer.force_name(&operation.root, name);
+            arg_struct_details
+                .force_name_argument_struct_for(&operation.root, format!("{}Arguments", name));
         }
     }
 
-    let argument_structs = arguments::build_argument_structs(&normalised);
-
-    let query_fragments = sorting::topological_sort(normalised.selection_sets.into_iter())
+    let query_fragments = sorting::topological_sort(normalised.selection_sets.iter().cloned())
         .into_iter()
-        .map(|selection| make_query_fragment(selection, &mut query_namer))
+        .map(|selection| make_query_fragment(selection, &mut query_namer, &arg_struct_details))
         .collect::<Result<Vec<_>, _>>()?;
 
     let input_objects = sorting::topological_sort(input_objects.into_iter())
@@ -50,13 +53,14 @@ pub fn parse_query_document<'text>(
         input_objects,
         enums,
         scalars,
-        argument_structs,
+        argument_structs: arg_struct_details.argument_structs(),
     })
 }
 
 fn make_query_fragment<'text>(
     selection: Rc<normalisation::SelectionSet<'text, 'text>>,
     namer: &mut Namer<Rc<normalisation::SelectionSet<'text, 'text>>>,
+    argument_struct_details: &ArgumentStructDetails<'text, 'text, '_>,
 ) -> Result<types::QueryFragment<'text, 'text>, Error> {
     use crate::{schema::TypeDefinition, type_ext::TypeExt};
     use normalisation::Selection;
@@ -85,7 +89,7 @@ fn make_query_fragment<'text>(
                 }
             })
             .collect(),
-        argument_struct_name: None,
+        argument_struct_name: argument_struct_details.argument_name_for_selection(&selection),
 
         name: namer.name_subject(&selection),
         target_type: selection.target_type.name().to_string(),

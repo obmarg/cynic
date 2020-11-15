@@ -99,9 +99,9 @@ pub fn document_to_fragment_structs(
         options.query_module
     ));
 
-    for argument_struct in output.argument_structs {
+    for (struct_name, argument_struct) in output.argument_structs {
         lines.push("    #[derive(cynic::FragmentArguments, Debug)]".into());
-        lines.push(format!("    pub struct {} {{", argument_struct.name));
+        lines.push(format!("    pub struct {} {{", struct_name));
 
         for field in &argument_struct.fields {
             lines.push(format!(

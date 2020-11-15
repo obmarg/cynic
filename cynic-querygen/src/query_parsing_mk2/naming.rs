@@ -4,6 +4,7 @@ pub trait Nameable: Eq + Hash {
     fn requested_name(&self) -> String;
 }
 
+#[derive(Debug)]
 pub struct Namer<Subject> {
     named_subjects: HashMap<Subject, String>,
     used_names: HashMap<String, u16>,

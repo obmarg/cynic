@@ -1,6 +1,7 @@
 use graphql_parser::query::{Definition, Document, OperationDefinition, Selection, SelectionSet};
 use inflector::Inflector;
 use std::rc::Rc;
+use uuid::Uuid;
 
 use super::{normalisation::Variable, value::TypedValue};
 use crate::schema::{
@@ -20,7 +21,7 @@ pub struct Output<'schema, 'query> {
     pub scalars: Vec<Scalar<'schema>>,
 
     // TODO: Argument structs can be sorted by name.
-    pub argument_structs: Vec<ArgumentStruct<'schema, 'query>>,
+    pub argument_structs: Vec<(String, Rc<ArgumentStruct<'schema, 'query>>)>,
 }
 
 pub struct Scalar<'schema>(pub &'schema str);
@@ -45,16 +46,17 @@ pub struct Enum<'schema> {
     pub def: EnumType<'schema>,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct ArgumentStruct<'schema, 'query> {
-    pub name: String,
+    pub id: Uuid,
+    pub(super) name: String,
     pub fields: Vec<ArgumentStructField<'schema, 'query>>,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum ArgumentStructField<'schema, 'query> {
     Variable(Variable<'query, 'schema>),
-    NestedStruct(ArgumentStruct<'schema, 'query>),
+    NestedStruct(Rc<ArgumentStruct<'schema, 'query>>),
 }
 
 impl<'schema, 'query> ArgumentStructField<'schema, 'query> {
