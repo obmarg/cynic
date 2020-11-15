@@ -1,6 +1,7 @@
 use std::{borrow::Cow, rc::Rc};
 
 use super::{parser, InputType, InputTypeRef, OutputType, OutputTypeRef, TypeIndex};
+use crate::Error;
 
 /// A field on an output type i.e. an object or interface
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone)]
@@ -146,6 +147,15 @@ impl<'schema> InputFieldType<'schema> {
             InputFieldType::NamedType(name) => name.type_name.clone(),
             InputFieldType::NonNullType(inner) => inner.inner_name(),
             InputFieldType::ListType(inner) => inner.inner_name(),
+        }
+    }
+
+    // Gets the inner InputFieldType of a list, if this type _is_ a list.
+    pub fn list_inner_type<'a>(&'a self) -> Result<&InputFieldType<'schema>, Error> {
+        match self {
+            InputFieldType::NonNullType(inner) => inner.list_inner_type(),
+            InputFieldType::NamedType(_) => Err(Error::ExpectedListType),
+            InputFieldType::ListType(inner) => Ok(inner.as_ref()),
         }
     }
 

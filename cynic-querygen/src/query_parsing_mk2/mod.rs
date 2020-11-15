@@ -1,5 +1,6 @@
 use std::rc::Rc;
 
+mod arguments;
 mod inputs;
 mod leaf_types;
 mod naming;
@@ -10,7 +11,6 @@ mod value;
 
 use naming::Namer;
 use normalisation::NormalisedOperation;
-use value::Value;
 
 use crate::{query::Document, schema::OutputType, Error, TypeIndex};
 
@@ -33,6 +33,8 @@ pub fn parse_query_document<'text>(
         }
     }
 
+    let argument_structs = arguments::build_argument_structs(&normalised);
+
     let query_fragments = sorting::topological_sort(normalised.selection_sets.into_iter())
         .into_iter()
         .map(|selection| make_query_fragment(selection, &mut query_namer))
@@ -42,12 +44,6 @@ pub fn parse_query_document<'text>(
         .into_iter()
         .map(make_input_object)
         .collect::<Result<Vec<_>, _>>()?;
-
-    let argument_structs = normalised
-        .operations
-        .iter()
-        .flat_map(make_argument_struct)
-        .collect::<Vec<_>>();
 
     Ok(types::Output {
         query_fragments,
@@ -80,12 +76,8 @@ fn make_query_fragment<'text>(
                         arguments: field
                             .arguments
                             .iter()
-                            .map(|(def, value)| -> Result<FieldArgument, Error> {
-                                Ok(FieldArgument::new(
-                                    def.name,
-                                    value.clone(),
-                                    def.value_type.clone(),
-                                ))
+                            .map(|(name, value)| -> Result<FieldArgument, Error> {
+                                Ok(FieldArgument::new(name, value.clone()))
                             })
                             .collect::<Result<Vec<_>, _>>()
                             .unwrap(),
@@ -94,6 +86,7 @@ fn make_query_fragment<'text>(
             })
             .collect(),
         argument_struct_name: None,
+
         name: namer.name_subject(&selection),
         target_type: selection.target_type.name().to_string(),
     })
@@ -115,9 +108,12 @@ fn make_argument_struct<'query, 'schema>(
     if operation.variables.is_empty() {
         return None;
     }
+    todo!()
 
+    /*
     Some(types::ArgumentStruct {
         name: format!("{}Arguments", operation.name.unwrap_or("")),
         fields: operation.variables.clone(),
     })
+    */
 }

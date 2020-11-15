@@ -1,11 +1,12 @@
 use std::{
+    borrow::Cow,
     collections::{BTreeSet, HashMap},
     convert::TryInto,
     hash::Hash,
     rc::Rc,
 };
 
-use super::{sorting::Vertex, value::Value};
+use super::{sorting::Vertex, value::TypedValue};
 use crate::{
     query::{
         self, Definition, Document, FragmentDefinition, OperationDefinition, VariableDefinition,
@@ -18,12 +19,12 @@ use crate::{
 pub struct NormalisedOperation<'query, 'schema> {
     pub root: Rc<SelectionSet<'query, 'schema>>,
     pub name: Option<&'query str>,
-    pub variables: Vec<OperationVariable<'query, 'schema>>,
+    pub variables: Vec<Variable<'query, 'schema>>,
     pub kind: OperationKind,
 }
 
-#[derive(Debug, PartialEq, Clone)]
-pub struct OperationVariable<'query, 'schema> {
+#[derive(Debug, PartialEq, Eq, Clone, PartialOrd, Ord, Hash)]
+pub struct Variable<'query, 'schema> {
     pub name: &'query str,
     pub value_type: InputFieldType<'schema>,
 }
@@ -55,7 +56,7 @@ pub struct FieldSelection<'query, 'schema> {
 
     pub schema_field: OutputField<'schema>,
 
-    pub arguments: Vec<(InputField<'schema>, Value<'query>)>,
+    pub arguments: Vec<(&'schema str, TypedValue<'query, 'schema>)>,
 
     pub field: Field<'query, 'schema>,
 }
@@ -73,22 +74,23 @@ impl<'query, 'doc, 'schema> FieldSelection<'query, 'schema> {
     fn new(
         name: &'query str,
         alias: Option<&'query str>,
-        arguments: Vec<(InputField<'schema>, &query::Value<'query>)>,
+        arguments: Vec<(&'schema str, TypedValue<'query, 'schema>)>,
         schema_field: OutputField<'schema>,
         field: Field<'query, 'schema>,
-    ) -> FieldSelection<'query, 'schema> {
-        let arguments = arguments
-            .into_iter()
-            .map(|(k, v)| (k, Value::from(v)))
-            .collect::<Vec<_>>();
-
-        FieldSelection {
+    ) -> Result<FieldSelection<'query, 'schema>, Error> {
+        Ok(FieldSelection {
             name,
             alias,
             arguments,
             schema_field,
             field,
-        }
+        })
+    }
+
+    pub fn contains_variables(&self) -> bool {
+        self.arguments
+            .iter()
+            .any(|(_, value)| value.contains_variable())
     }
 }
 
@@ -140,6 +142,7 @@ fn normalise_operation<'query, 'doc, 'schema>(
                 &selection_set,
                 type_index,
                 GraphPath::for_query(),
+                &[],
                 selection_sets_out,
             )?;
 
@@ -151,10 +154,17 @@ fn normalise_operation<'query, 'doc, 'schema>(
             })
         }
         OperationDefinition::Query(query) => {
+            let variables = query
+                .variable_definitions
+                .iter()
+                .map(|var| Variable::from(var, type_index))
+                .collect::<Vec<_>>();
+
             let root = normalise_selection_set(
                 &query.selection_set,
                 type_index,
                 GraphPath::for_query(),
+                &variables,
                 selection_sets_out,
             )?;
 
@@ -162,18 +172,21 @@ fn normalise_operation<'query, 'doc, 'schema>(
                 root,
                 name: query.name,
                 kind: OperationKind::Query,
-                variables: query
-                    .variable_definitions
-                    .iter()
-                    .map(|var| OperationVariable::from(var, type_index))
-                    .collect(),
+                variables,
             })
         }
         OperationDefinition::Mutation(mutation) => {
+            let variables = mutation
+                .variable_definitions
+                .iter()
+                .map(|var| Variable::from(var, type_index))
+                .collect::<Vec<_>>();
+
             let root = normalise_selection_set(
                 &mutation.selection_set,
                 type_index,
                 GraphPath::for_mutation(),
+                &variables,
                 selection_sets_out,
             )?;
 
@@ -181,11 +194,7 @@ fn normalise_operation<'query, 'doc, 'schema>(
                 root,
                 name: mutation.name,
                 kind: OperationKind::Mutation,
-                variables: mutation
-                    .variable_definitions
-                    .iter()
-                    .map(|var| OperationVariable::from(var, type_index))
-                    .collect(),
+                variables,
             })
         }
         OperationDefinition::Subscription(_) => Err(Error::UnsupportedQueryDocument(
@@ -198,6 +207,7 @@ fn normalise_selection_set<'query, 'schema>(
     selection_set: &query::SelectionSet<'query>,
     type_index: &Rc<TypeIndex<'schema>>,
     current_path: GraphPath<'query>,
+    variable_definitions: &[Variable<'query, 'schema>],
     selection_sets_out: &mut SelectionSetSet<'query, 'schema>,
 ) -> Result<Rc<SelectionSet<'query, 'schema>>, Error> {
     use crate::type_ext::TypeExt;
@@ -218,6 +228,7 @@ fn normalise_selection_set<'query, 'schema>(
                         &field.selection_set,
                         type_index,
                         new_path,
+                        variable_definitions,
                         selection_sets_out,
                     )?)
                 };
@@ -230,7 +241,14 @@ fn normalise_selection_set<'query, 'schema>(
                         .find(|arg| arg.name == *name)
                         .ok_or_else(|| Error::UnknownArgument(name.to_string()))?;
 
-                    arguments.push((schema_arg.clone(), value))
+                    arguments.push((
+                        schema_arg.name,
+                        TypedValue::from_query_value(
+                            value,
+                            schema_arg.value_type.clone(),
+                            variable_definitions,
+                        )?,
+                    ));
                 }
 
                 selections.push(Selection::Field(FieldSelection::new(
@@ -239,7 +257,7 @@ fn normalise_selection_set<'query, 'schema>(
                     arguments,
                     schema_field,
                     inner_field,
-                )));
+                )?));
             }
             query::Selection::FragmentSpread(_) => todo!(),
             query::Selection::InlineFragment(_) => todo!(),
@@ -260,9 +278,9 @@ fn normalise_selection_set<'query, 'schema>(
     Ok(rv)
 }
 
-impl<'query, 'schema> OperationVariable<'query, 'schema> {
+impl<'query, 'schema> Variable<'query, 'schema> {
     fn from(def: &VariableDefinition<'query>, type_index: &Rc<TypeIndex<'schema>>) -> Self {
-        OperationVariable {
+        Variable {
             name: def.name,
             value_type: InputFieldType::from_variable_definition(def, type_index),
         }
@@ -301,6 +319,12 @@ impl<'query, 'schema> Vertex for SelectionSet<'query, 'schema> {
 }
 
 impl<'query, 'schema> SelectionSet<'query, 'schema> {
+    pub fn contains_variables(&self) -> bool {
+        self.selections.iter().any(|selection| match selection {
+            Selection::Field(field_selection) => field_selection.contains_variables(),
+        })
+    }
+
     pub fn leaf_type_names(&self) -> Vec<String> {
         self.selections
             .iter()

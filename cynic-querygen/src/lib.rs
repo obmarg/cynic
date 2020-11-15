@@ -55,6 +55,9 @@ pub enum Error {
     #[error("expected a homogenous list of input values")]
     ExpectedHomogenousList,
 
+    #[error("expected field to be a list")]
+    ExpectedListType,
+
     #[error("expected a value that is or contains an input object")]
     ExpectedInputObjectValue,
 }
@@ -103,8 +106,8 @@ pub fn document_to_fragment_structs(
         for field in &argument_struct.fields {
             lines.push(format!(
                 "        pub {}: {},",
-                field.name.to_snake_case(),
-                field.value_type.type_spec()
+                field.name().to_snake_case(),
+                field.type_spec()
             ));
         }
 

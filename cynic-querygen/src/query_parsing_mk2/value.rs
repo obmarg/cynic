@@ -3,16 +3,76 @@ use std::collections::BTreeMap;
 
 use crate::{
     query,
-    schema::{self, InputType},
+    schema::{self, InputFieldType, InputType},
     Error, TypeIndex,
 };
+
+use super::normalisation::Variable;
+
+/// A literal value from a GraphQL query, along with it's type
+#[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct TypedValue<'query, 'schema> {
+    pub value: Value<'query, 'schema>,
+    pub value_type: InputFieldType<'schema>,
+}
+
+impl<'query, 'schema> TypedValue<'query, 'schema> {
+    pub fn from_query_value(
+        value: &query::Value<'query>,
+        value_type: InputFieldType<'schema>,
+        variable_definitions: &[Variable<'query, 'schema>],
+    ) -> Result<Self, Error> {
+        let value_type = match value {
+            query::Value::Variable(var_name) => {
+                // If this is just a variable then we'll take it's type as our value type.
+                // This will proably break on arguments inside lists or objects
+                // but I don't have the energy to properly support those right now.
+                variable_definitions
+                    .iter()
+                    .find(|var| var.name == *var_name)
+                    .ok_or_else(|| Error::UnknownArgument(var_name.to_string()))?
+                    .value_type
+                    .clone()
+            }
+            _ => value_type,
+        };
+
+        Ok(TypedValue {
+            value: Value::from_query_value(value, value_type.clone())?,
+            value_type,
+        })
+    }
+
+    pub fn is_variable(&self) -> bool {
+        matches!(self.value, Value::Variable(_))
+    }
+
+    pub fn contains_variable(&self) -> bool {
+        self.value.contains_variable()
+    }
+
+    pub fn variables(&self) -> Vec<Variable<'query, 'schema>> {
+        match &self.value {
+            Value::Variable(name) => vec![Variable {
+                name,
+                value_type: self.value_type.clone(),
+            }],
+            Value::Object(obj_literal) => obj_literal
+                .iter()
+                .flat_map(|(k, v)| v.variables())
+                .collect(),
+            Value::List(values) => values.iter().flat_map(TypedValue::variables).collect(),
+            _ => vec![],
+        }
+    }
+}
 
 /// A GraphQL value.
 ///
 /// We redefine this so we can map `Float(f64)` to Float(Option<Decimal>)
 /// which allows us to derive Ord, Hash & Eq
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub enum Value<'query> {
+pub enum Value<'query, 'schema> {
     Variable(&'query str),
     Int(i64),
     // TODO: consider ordered-float
@@ -21,17 +81,19 @@ pub enum Value<'query> {
     Boolean(bool),
     Null,
     Enum(&'query str),
-    List(Vec<Value<'query>>),
-    Object(BTreeMap<&'query str, Value<'query>>),
+    List(Vec<TypedValue<'query, 'schema>>),
+    Object(BTreeMap<&'query str, TypedValue<'query, 'schema>>),
 }
 
-impl<'query> Value<'query> {
-    pub fn to_literal<'schema>(
+impl<'query, 'schema> Value<'query, 'schema> {
+    pub fn to_literal(
         &self,
         field_type: &schema::InputFieldType<'schema>,
     ) -> Result<String, Error> {
         use crate::{schema::TypeDefinition, TypeExt};
         use inflector::Inflector;
+
+        // TODO: Simplify this to not require field_type
 
         Ok(match self {
             Value::Variable(name) => {
@@ -59,7 +121,7 @@ impl<'query> Value<'query> {
             Value::List(values) => {
                 let inner = values
                     .iter()
-                    .map(|v| Ok(v.to_literal(field_type)?))
+                    .map(|v| Ok(v.value.to_literal(field_type)?))
                     .collect::<Result<Vec<_>, Error>>()?
                     .join(", ");
 
@@ -82,7 +144,7 @@ impl<'query> Value<'query> {
                             Ok(format!(
                                 "{}: {}",
                                 name.to_snake_case(),
-                                value.to_literal(&field.value_type)?
+                                value.value.to_literal(&field.value_type)?
                             ))
                         })
                         .collect::<Result<Vec<_>, Error>>()?;
@@ -107,11 +169,23 @@ impl<'query> Value<'query> {
             }
         })
     }
+
+    fn contains_variable(&self) -> bool {
+        match self {
+            Value::Variable(_) => true,
+            Value::List(list) => list.iter().any(|v| v.contains_variable()),
+            Value::Object(obj) => obj.iter().any(|(_, v)| v.contains_variable()),
+            _ => false,
+        }
+    }
 }
 
-impl<'query> From<&query::Value<'query>> for Value<'query> {
-    fn from(val: &query::Value<'query>) -> Value<'query> {
-        match val {
+impl<'query, 'schema> Value<'query, 'schema> {
+    fn from_query_value(
+        val: &query::Value<'query>,
+        value_type: InputFieldType<'schema>,
+    ) -> Result<Value<'query, 'schema>, Error> {
+        Ok(match val {
             query::Value::Variable(var) => Value::Variable(var),
             query::Value::Int(num) => Value::Int(num.as_i64().unwrap()),
             query::Value::Float(num) => Value::Float(Decimal::from_f64(*num)),
@@ -119,10 +193,39 @@ impl<'query> From<&query::Value<'query>> for Value<'query> {
             query::Value::Boolean(b) => Value::Boolean(*b),
             query::Value::Null => Value::Null,
             query::Value::Enum(e) => Value::Enum(e),
-            query::Value::List(values) => Value::List(values.iter().map(Into::into).collect()),
-            query::Value::Object(obj) => {
-                Value::Object(obj.iter().map(|(k, v)| (*k, Value::from(v))).collect())
+            query::Value::List(values) => {
+                let inner_type = value_type.list_inner_type()?;
+                Value::List(
+                    values
+                        .iter()
+                        .map(|val| Ok(TypedValue::from_query_value(val, inner_type.clone(), &[])?))
+                        .collect::<Result<_, Error>>()?,
+                )
             }
-        }
+            query::Value::Object(obj) => {
+                if let InputType::InputObject(obj_type) = value_type.inner_ref().lookup()? {
+                    Value::Object(
+                        obj.iter()
+                            .map(|(k, v)| {
+                                let field = obj_type
+                                    .fields
+                                    .iter()
+                                    .find(|field| field.name == *k)
+                                    .ok_or_else(|| Error::UnknownType(k.to_string()))?;
+
+                                Ok((
+                                    *k,
+                                    TypedValue::from_query_value(v, field.value_type.clone(), &[])?,
+                                ))
+                            })
+                            .collect::<Result<_, Error>>()?,
+                    )
+                } else {
+                    return Err(Error::ExpectedInputObject(
+                        value_type.inner_name().to_string(),
+                    ));
+                }
+            }
+        })
     }
 }

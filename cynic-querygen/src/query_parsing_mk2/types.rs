@@ -1,7 +1,8 @@
 use graphql_parser::query::{Definition, Document, OperationDefinition, Selection, SelectionSet};
+use inflector::Inflector;
 use std::rc::Rc;
 
-use super::{normalisation::OperationVariable, Value};
+use super::{normalisation::Variable, value::TypedValue};
 use crate::schema::{
     self, EnumType, InputField, InputFieldType, InputValue, OutputFieldType, ScalarTypeExt, Type,
     TypeDefinition,
@@ -47,12 +48,35 @@ pub struct Enum<'schema> {
 #[derive(Debug, PartialEq)]
 pub struct ArgumentStruct<'schema, 'query> {
     pub name: String,
-    pub fields: Vec<OperationVariable<'query, 'schema>>,
+    pub fields: Vec<ArgumentStructField<'schema, 'query>>,
 }
 
+#[derive(Debug, PartialEq)]
+pub enum ArgumentStructField<'schema, 'query> {
+    Variable(Variable<'query, 'schema>),
+    NestedStruct(ArgumentStruct<'schema, 'query>),
+}
+
+impl<'schema, 'query> ArgumentStructField<'schema, 'query> {
+    pub fn name(&self) -> String {
+        match self {
+            ArgumentStructField::Variable(var) => var.name.to_string(),
+            ArgumentStructField::NestedStruct(arg_struct) => arg_struct.name.to_snake_case(),
+        }
+    }
+
+    pub fn type_spec(&self) -> String {
+        match self {
+            ArgumentStructField::Variable(var) => var.value_type.type_spec().to_string(),
+            ArgumentStructField::NestedStruct(arg_struct) => arg_struct.name.clone(),
+        }
+    }
+}
+
+/*
 impl<'schema, 'query> ArgumentStruct<'schema, 'query> {
     fn from_variables(
-        variables: Vec<OperationVariable<'query, 'schema>>,
+        variables: Vec<Variable<'query, 'schema>>,
         query_name: Option<String>,
     ) -> Option<ArgumentStruct<'schema, 'query>> {
         if variables.is_empty() {
@@ -65,6 +89,7 @@ impl<'schema, 'query> ArgumentStruct<'schema, 'query> {
         })
     }
 }
+*/
 
 #[derive(Debug, PartialEq)]
 pub struct OutputField<'schema, 'query> {
@@ -77,25 +102,17 @@ pub struct OutputField<'schema, 'query> {
 #[derive(Debug, PartialEq)]
 pub struct FieldArgument<'schema, 'query> {
     pub name: &'schema str,
-    value: Value<'query>,
-    field_type: InputFieldType<'schema>,
+    value: TypedValue<'schema, 'query>,
 }
 
 impl<'schema, 'query> FieldArgument<'schema, 'query> {
-    pub fn new(
-        name: &'schema str,
-        value: Value<'query>,
-        field_type: InputFieldType<'schema>,
-    ) -> Self {
-        FieldArgument {
-            name,
-            value,
-            field_type,
-        }
+    pub fn new(name: &'schema str, value: TypedValue<'schema, 'query>) -> Self {
+        FieldArgument { name, value }
     }
 
     pub fn to_literal(&self, type_index: &TypeIndex) -> Result<String, Error> {
-        self.value.to_literal(&self.field_type)
+        // TODO: ditch type index
+        self.value.value.to_literal(&self.value.value_type)
     }
 }
 

@@ -6,10 +6,10 @@ use std::{
 use super::{
     normalisation::{Field, NormalisedDocument, Selection, SelectionSet},
     sorting::Vertex,
-    value::Value,
+    value::TypedValue,
 };
 use crate::{
-    schema::{self, InputType},
+    schema::{self, InputFieldType, InputType},
     Error,
 };
 
@@ -85,8 +85,8 @@ fn extract_objects_from_selection_set<'query, 'schema>(
 
                 extract_objects_from_selection_set(selection_set, input_objects)?;
 
-                for (arg, arg_value) in &field.arguments {
-                    let arg_type = arg.value_type.inner_ref().lookup()?;
+                for (_, arg_value) in &field.arguments {
+                    let arg_type = arg_value.value_type.inner_ref().lookup()?;
 
                     if let InputType::InputObject(input_obj) = arg_type {
                         extract_input_objects_from_values(&input_obj, arg_value, input_objects)?;
@@ -99,16 +99,21 @@ fn extract_objects_from_selection_set<'query, 'schema>(
     Ok(())
 }
 
-pub fn extract_input_objects_from_values<'schema, 'query>(
+pub fn extract_input_objects_from_values<'query, 'schema>(
     input_object: &schema::InputObjectDetails<'schema>,
-    value: &Value<'query>,
+    typed_value: &TypedValue<'query, 'schema>,
     input_objects: &mut InputObjectSet<'schema>,
 ) -> Result<Rc<InputObject<'schema>>, Error> {
-    match value {
-        Value::Variable(_) => {
-            extract_whole_input_object(input_object, input_objects)
-        }
+    use super::value::Value;
+
+    if typed_value.is_variable() {
+        return extract_whole_input_object(input_object, input_objects);
+    }
+
+    match &typed_value.value {
         Value::Object(obj) => {
+            // TODO: Consider re-working this...
+
             let mut fields = Vec::new();
             let mut adjacents = Vec::new();
             for (field_name, field_val) in obj {
@@ -151,16 +156,24 @@ pub fn extract_input_objects_from_values<'schema, 'query>(
             Ok(rv)
         }
         Value::List(inner_values) => {
+            // TODO: Consider re-working this...
+
             if inner_values.is_empty() {
                 // We still need the type in order to type this field...
                 return extract_whole_input_object(input_object, input_objects);
             }
 
+            let inner_type = if let InputFieldType::ListType(inner_ty) = &typed_value.value_type {
+                inner_ty
+            } else {
+                return Err(Error::ExpectedListType);
+            };
+
             let mut output_values = Vec::with_capacity(inner_values.len());
             for inner_value in inner_values {
                 output_values.push(extract_input_objects_from_values(
                     input_object,
-                    inner_value,
+                    &inner_value,
                     input_objects,
                 )?);
             }
