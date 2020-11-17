@@ -35,11 +35,13 @@ pub fn parse_query_document<'text>(
     let arg_struct_details = arguments::build_argument_structs(&normalised);
 
     for operation in &normalised.operations {
-        if let Some(name) = operation.name {
-            query_namer.force_name(&operation.root, name);
-            arg_struct_details
-                .force_name_argument_struct_for(&operation.root, format!("{}Arguments", name));
-        }
+        let operation_name = operation.name.unwrap_or("UnnamedQuery");
+
+        query_namer.force_name(&operation.root, operation_name);
+        arg_struct_details.force_name_argument_struct_for(
+            &operation.root,
+            format!("{}Arguments", operation_name),
+        );
     }
 
     let query_fragments = sorting::topological_sort(normalised.selection_sets.iter().cloned())
