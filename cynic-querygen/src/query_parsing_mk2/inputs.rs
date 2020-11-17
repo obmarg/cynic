@@ -82,7 +82,7 @@ fn extract_objects_from_selection_set<'query, 'schema>(
                 extract_objects_from_selection_set(selection_set, input_objects)?;
 
                 for (_, arg_value) in &field.arguments {
-                    let arg_type = arg_value.value_type.inner_ref().lookup()?;
+                    let arg_type = arg_value.value_type().inner_ref().lookup()?;
 
                     if let InputType::InputObject(input_obj) = arg_type {
                         extract_input_objects_from_values(&input_obj, arg_value, input_objects)?;
@@ -100,15 +100,12 @@ pub fn extract_input_objects_from_values<'query, 'schema>(
     typed_value: &TypedValue<'query, 'schema>,
     input_objects: &mut InputObjectSet<'schema>,
 ) -> Result<Rc<InputObject<'schema>>, Error> {
-    use super::value::Value;
-
     if typed_value.is_variable() {
         return extract_whole_input_object(input_object, input_objects);
     }
 
-    match &typed_value.value {
-        Value::Object(obj) => {
-            // TODO: Consider re-working this...
+    match &typed_value {
+        TypedValue::Object(obj, _) => {
 
             let mut fields = Vec::new();
             let mut adjacents = Vec::new();
@@ -151,7 +148,7 @@ pub fn extract_input_objects_from_values<'query, 'schema>(
 
             Ok(rv)
         }
-        Value::List(inner_values) => {
+        TypedValue::List(inner_values, _) => {
             // TODO: Consider re-working this...
 
             if inner_values.is_empty() {
@@ -159,7 +156,7 @@ pub fn extract_input_objects_from_values<'query, 'schema>(
                 return extract_whole_input_object(input_object, input_objects);
             }
 
-            let inner_type = if let InputFieldType::ListType(inner_ty) = &typed_value.value_type {
+            let inner_type = if let InputFieldType::ListType(inner_ty) = &typed_value.value_type() {
                 inner_ty
             } else {
                 return Err(Error::ExpectedListType);
@@ -298,14 +295,14 @@ mod tests {
             r#"
               query MyQuery($input: IssueFilters!) {
                 cynic: repository(owner: "obmarg", name: "cynic") {
-                  issues(filterBy: $issueFilters) {
+                  issues(filterBy: $input) {
                     nodes {
                       title
                     }
                   }
                 }
               	kazan: repository(owner: "obmarg", name: "kazan") {
-                  issues(filterBy: $issueFilters) {
+                  issues(filterBy: $input) {
                     nodes {
                       title
                    }

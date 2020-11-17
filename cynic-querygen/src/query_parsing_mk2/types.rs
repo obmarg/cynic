@@ -109,7 +109,7 @@ impl<'schema, 'query> FieldArgument<'schema, 'query> {
 
     pub fn to_literal(&self, type_index: &TypeIndex) -> Result<String, Error> {
         // TODO: ditch type index
-        self.value.value.to_literal(&self.value.value_type)
+        self.value.to_literal(&self.value.value_type())
     }
 }
 

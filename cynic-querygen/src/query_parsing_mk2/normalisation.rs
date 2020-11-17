@@ -348,7 +348,7 @@ impl<'query, 'schema> SelectionSet<'query, 'schema> {
                 Selection::Field(sel) => sel
                     .arguments
                     .iter()
-                    .map(|(_, arg)| arg.value_type.inner_ref().clone()),
+                    .map(|(_, arg)| arg.value_type().inner_ref().clone()),
             })
             .collect()
     }

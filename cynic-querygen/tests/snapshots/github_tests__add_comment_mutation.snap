@@ -43,7 +43,6 @@ mod queries {
     #[cynic(graphql_type = "AddCommentInput", rename_all="camelCase")]
     pub struct AddCommentInput {
         pub body: String,
-        pub client_mutation_id: Option<String>,
         pub subject_id: cynic::Id,
     }
 
