@@ -1,49 +1,64 @@
 //! Handles "leaf types" - i.e. enums & scalars that don't have any nested fields.
 use std::rc::Rc;
 
-use super::{
-    inputs::InputObjectSet,
-    normalisation::NormalisedDocument,
-    types::{Enum, Scalar},
-};
+use super::{inputs::InputObjectSet, normalisation::NormalisedDocument, types::Scalar};
 use crate::{
-    schema::{ScalarTypeExt, TypeDefinition},
+    schema::{EnumDetails, InputType, OutputType, ScalarTypeExt, TypeDefinition},
     Error, TypeIndex,
 };
 
 pub fn extract_leaf_types<'query, 'schema>(
     doc: &NormalisedDocument<'query, 'schema>,
-    inputs: &InputObjectSet,
+    inputs: &InputObjectSet<'schema>,
     type_index: &Rc<TypeIndex<'schema>>,
-) -> Result<(Vec<Enum<'schema>>, Vec<Scalar<'schema>>), Error> {
-    let mut leaf_type_names = Vec::new();
-    leaf_type_names.extend(
-        doc.selection_sets
-            .iter()
-            .flat_map(|selection_set| selection_set.leaf_type_names()),
-    );
-    leaf_type_names.extend(
-        inputs
-            .iter()
-            .flat_map(|input_object| input_object.leaf_type_names()),
-    );
-
+) -> Result<(Vec<EnumDetails<'schema>>, Vec<Scalar<'schema>>), Error> {
     let mut enums = Vec::new();
     let mut scalars = Vec::new();
 
-    for name in leaf_type_names {
-        match type_index.lookup_type(&name) {
-            Some(TypeDefinition::Scalar(scalar)) => {
-                if scalar.is_builtin() {
+    let leaf_output_types = doc
+        .selection_sets
+        .iter()
+        .flat_map(|selection_set| selection_set.leaf_output_types());
+
+    for type_ref in leaf_output_types {
+        match type_ref.lookup()? {
+            OutputType::Scalar(s) => {
+                if s.is_builtin() {
                     continue;
                 }
-                scalars.push(Scalar(scalar.name));
+                scalars.push(Scalar(s.name));
             }
-            Some(TypeDefinition::Enum(def)) => {
-                enums.push(Enum { def: def.clone() });
+            OutputType::Enum(en) => {
+                enums.push(en.clone());
             }
-            Some(_) => {}
-            None => return Err(Error::UnknownType(name.to_string())),
+            _ => {}
+        }
+    }
+
+    let mut input_types = Vec::new();
+    input_types.extend(
+        doc.selection_sets
+            .iter()
+            .flat_map(|selection_set| selection_set.required_input_types()),
+    );
+    input_types.extend(
+        inputs
+            .iter()
+            .flat_map(|input_object| input_object.required_input_types()),
+    );
+
+    for type_ref in input_types {
+        match type_ref.lookup()? {
+            InputType::Scalar(s) => {
+                if s.is_builtin() {
+                    continue;
+                }
+                scalars.push(Scalar(s.name));
+            }
+            InputType::Enum(en) => {
+                enums.push(en.clone());
+            }
+            _ => {}
         }
     }
 

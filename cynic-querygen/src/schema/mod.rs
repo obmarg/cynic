@@ -41,10 +41,10 @@ pub struct InterfaceDetails<'schema> {
     fields: Vec<OutputField<'schema>>,
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone)]
 pub struct EnumDetails<'schema> {
     pub name: &'schema str,
-    values: Vec<&'schema str>,
+    pub values: Vec<&'schema str>,
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -124,6 +124,15 @@ impl<'schema> Type<'schema> {
                     .map(|field| InputField::from_parser(field, type_index))
                     .collect(),
             }),
+        }
+    }
+}
+
+impl<'schema> ScalarDetails<'schema> {
+    pub fn is_builtin(&self) -> bool {
+        match self.name {
+            "String" | "Int" | "Boolean" | "ID" => true,
+            _ => false,
         }
     }
 }

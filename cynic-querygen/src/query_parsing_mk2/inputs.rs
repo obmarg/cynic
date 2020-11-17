@@ -9,7 +9,7 @@ use super::{
     value::TypedValue,
 };
 use crate::{
-    schema::{self, InputFieldType, InputType},
+    schema::{self, InputFieldType, InputType, InputTypeRef},
     Error,
 };
 
@@ -21,15 +21,11 @@ pub struct InputObject<'schema> {
 }
 
 impl<'schema> InputObject<'schema> {
-    /// Extracts any named leaf types used by this InputObject
-    pub fn leaf_type_names(&self) -> Vec<String> {
+    /// Extracts any input types used by this InputObject
+    pub fn required_input_types(&self) -> Vec<InputTypeRef<'schema>> {
         self.fields
             .iter()
-            .flat_map(|field| match field.value_type.inner_ref().lookup() {
-                Ok(InputType::Scalar(scalar)) => Some(scalar.name.to_string()),
-                Ok(InputType::Enum(def)) => Some(def.name.to_string()),
-                _ => None,
-            })
+            .map(|field| field.value_type.inner_ref().clone())
             .collect()
     }
 }

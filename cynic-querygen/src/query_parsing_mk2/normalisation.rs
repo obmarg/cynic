@@ -11,7 +11,7 @@ use crate::{
     query::{
         self, Definition, Document, FragmentDefinition, OperationDefinition, VariableDefinition,
     },
-    schema::{InputField, InputFieldType, LeafType, OutputField, OutputType},
+    schema::{InputFieldType, InputTypeRef, OutputField, OutputType, OutputTypeRef},
     Error, GraphPath, TypeIndex,
 };
 
@@ -325,18 +325,30 @@ impl<'query, 'schema> SelectionSet<'query, 'schema> {
         })
     }
 
-    pub fn leaf_type_names(&self) -> Vec<String> {
+    pub fn leaf_output_types(&self) -> Vec<OutputTypeRef<'schema>> {
+        self.selections
+            .iter()
+            .flat_map(|selection| {
+                match selection {
+                    Selection::Field(field) => {
+                        if let Field::Leaf = &field.field {
+                            return Some(field.schema_field.value_type.inner_ref().clone());
+                        }
+                    }
+                }
+                None
+            })
+            .collect()
+    }
+
+    pub fn required_input_types(&self) -> Vec<InputTypeRef<'schema>> {
         self.selections
             .iter()
             .flat_map(|selection| match selection {
-                Selection::Field(field) => {
-                    let mut rv = Vec::new();
-                    if let Field::Leaf = &field.field {
-                        rv.push(field.schema_field.value_type.inner_name().to_string());
-                    }
-                    rv
-                }
-                _ => vec![],
+                Selection::Field(sel) => sel
+                    .arguments
+                    .iter()
+                    .map(|(_, arg)| arg.value_type.inner_ref().clone()),
             })
             .collect()
     }

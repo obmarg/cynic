@@ -5,8 +5,8 @@ use uuid::Uuid;
 
 use super::{normalisation::Variable, value::TypedValue};
 use crate::schema::{
-    self, EnumType, InputField, InputFieldType, InputValue, OutputFieldType, ScalarTypeExt, Type,
-    TypeDefinition,
+    self, EnumDetails, EnumType, InputField, InputFieldType, InputValue, OutputFieldType,
+    ScalarTypeExt, Type, TypeDefinition,
 };
 use crate::{value_ext::ValueExt, Error, GraphPath, TypeExt, TypeIndex};
 
@@ -15,7 +15,7 @@ pub struct Output<'schema, 'query> {
     pub input_objects: Vec<InputObject<'schema>>,
 
     // TODO: I want enums sorted by name & unique
-    pub enums: Vec<Enum<'schema>>,
+    pub enums: Vec<EnumDetails<'schema>>,
 
     // TODO: Scalars I also want sorted by name & unique.
     pub scalars: Vec<Scalar<'schema>>,
@@ -39,11 +39,6 @@ impl QueryFragment<'_, '_> {
     fn uses_arguments(&self) -> bool {
         self.fields.iter().any(|f| !f.arguments.is_empty())
     }
-}
-
-#[derive(Debug, PartialEq)]
-pub struct Enum<'schema> {
-    pub def: EnumType<'schema>,
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]

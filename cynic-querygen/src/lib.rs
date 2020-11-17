@@ -156,7 +156,7 @@ pub fn document_to_fragment_structs(
     }
 
     for en in output.enums {
-        let type_name = en.def.name;
+        let type_name = en.name;
         lines.push("    #[derive(cynic::Enum, Clone, Copy, Debug)]".into());
         lines.push("    #[cynic(".into());
         lines.push(format!("        graphql_type = \"{}\",", type_name));
@@ -164,8 +164,8 @@ pub fn document_to_fragment_structs(
         lines.push("    )]".into());
         lines.push(format!("    pub enum {} {{", type_name.to_pascal_case()));
 
-        for variant in &en.def.values {
-            lines.push(format!("        {},", variant.name.to_pascal_case()))
+        for variant in &en.values {
+            lines.push(format!("        {},", variant.to_pascal_case()))
         }
         lines.push("    }\n".into());
     }
