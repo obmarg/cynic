@@ -75,12 +75,6 @@ pub enum OutputType<'schema> {
     Union(UnionDetails<'schema>),
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub enum LeafType<'schema> {
-    Scalar(ScalarDetails<'schema>),
-    Enum(EnumDetails<'schema>),
-}
-
 impl<'schema> Type<'schema> {
     fn from_type_defintion(
         type_def: &TypeDefinition<'schema>,

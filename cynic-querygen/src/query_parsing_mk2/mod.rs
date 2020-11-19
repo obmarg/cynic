@@ -11,9 +11,8 @@ mod value;
 
 use arguments::ArgumentStructDetails;
 use naming::Namer;
-use normalisation::NormalisedOperation;
 
-use crate::{query::Document, schema::OutputType, Error, TypeIndex};
+use crate::{query::Document, Error, TypeIndex};
 
 pub fn parse_query_document<'text>(
     doc: &Document<'text>,
@@ -22,8 +21,7 @@ pub fn parse_query_document<'text>(
     let normalised = normalisation::normalise(doc, type_index)?;
     let input_objects = inputs::extract_input_objects(&normalised)?;
 
-    let (mut enums, mut scalars) =
-        leaf_types::extract_leaf_types(&normalised, &input_objects, type_index)?;
+    let (mut enums, mut scalars) = leaf_types::extract_leaf_types(&normalised, &input_objects)?;
 
     enums.sort_by_key(|e| e.name);
     scalars.sort_by_key(|s| s.0);
@@ -68,7 +66,6 @@ fn make_query_fragment<'text>(
     namer: &mut Namer<Rc<normalisation::SelectionSet<'text, 'text>>>,
     argument_struct_details: &ArgumentStructDetails<'text, 'text, '_>,
 ) -> Result<types::QueryFragment<'text, 'text>, Error> {
-    use crate::{schema::TypeDefinition, type_ext::TypeExt};
     use normalisation::Selection;
     use types::{FieldArgument, OutputField};
 
@@ -107,23 +104,4 @@ fn make_input_object<'text>(input: Rc<inputs::InputObject>) -> Result<types::Inp
         name: input.schema_type.name.to_string(),
         fields: input.fields.clone(),
     })
-}
-
-fn make_argument_struct<'query, 'schema>(
-    operation: &NormalisedOperation<'query, 'schema>,
-) -> Option<types::ArgumentStruct<'schema, 'query>> {
-    // TODO: Need to decide which order for these lifetime arguments:
-    // different order is asking for trouble.
-
-    if operation.variables.is_empty() {
-        return None;
-    }
-    todo!()
-
-    /*
-    Some(types::ArgumentStruct {
-        name: format!("{}Arguments", operation.name.unwrap_or("")),
-        fields: operation.variables.clone(),
-    })
-    */
 }

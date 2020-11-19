@@ -1,5 +1,4 @@
 use std::{
-    borrow::Cow,
     collections::{BTreeSet, HashMap},
     convert::TryInto,
     hash::Hash,
@@ -86,12 +85,6 @@ impl<'query, 'doc, 'schema> FieldSelection<'query, 'schema> {
             field,
         })
     }
-
-    pub fn contains_variables(&self) -> bool {
-        self.arguments
-            .iter()
-            .any(|(_, value)| value.contains_variable())
-    }
 }
 
 /// Use a BTreeSet here as we want a deterministic order of output for a
@@ -132,7 +125,7 @@ pub fn normalise<'query, 'doc, 'schema>(
 
 fn normalise_operation<'query, 'doc, 'schema>(
     operation: &'doc OperationDefinition<'query>,
-    fragment_map: &FragmentMap<'query, 'doc>,
+    _fragment_map: &FragmentMap<'query, 'doc>,
     type_index: &'doc Rc<TypeIndex<'schema>>,
     selection_sets_out: &mut SelectionSetSet<'query, 'schema>,
 ) -> Result<NormalisedOperation<'query, 'schema>, Error> {
@@ -210,8 +203,6 @@ fn normalise_selection_set<'query, 'schema>(
     variable_definitions: &[Variable<'query, 'schema>],
     selection_sets_out: &mut SelectionSetSet<'query, 'schema>,
 ) -> Result<Rc<SelectionSet<'query, 'schema>>, Error> {
-    use crate::type_ext::TypeExt;
-
     let mut selections = Vec::new();
 
     for item in &selection_set.items {
@@ -319,12 +310,6 @@ impl<'query, 'schema> Vertex for SelectionSet<'query, 'schema> {
 }
 
 impl<'query, 'schema> SelectionSet<'query, 'schema> {
-    pub fn contains_variables(&self) -> bool {
-        self.selections.iter().any(|selection| match selection {
-            Selection::Field(field_selection) => field_selection.contains_variables(),
-        })
-    }
-
     pub fn leaf_output_types(&self) -> Vec<OutputTypeRef<'schema>> {
         self.selections
             .iter()

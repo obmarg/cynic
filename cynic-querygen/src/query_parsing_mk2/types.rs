@@ -1,14 +1,10 @@
-use graphql_parser::query::{Definition, Document, OperationDefinition, Selection, SelectionSet};
 use inflector::Inflector;
 use std::rc::Rc;
 use uuid::Uuid;
 
 use super::{normalisation::Variable, value::TypedValue};
-use crate::schema::{
-    self, EnumDetails, EnumType, InputField, InputFieldType, InputValue, OutputFieldType,
-    ScalarTypeExt, Type, TypeDefinition,
-};
-use crate::{value_ext::ValueExt, Error, GraphPath, TypeExt, TypeIndex};
+use crate::schema::{EnumDetails, InputField, OutputFieldType};
+use crate::Error;
 
 pub struct Output<'schema, 'query> {
     pub query_fragments: Vec<QueryFragment<'schema, 'query>>,
@@ -33,12 +29,6 @@ pub struct QueryFragment<'schema, 'query> {
     pub argument_struct_name: Option<String>,
 
     pub name: String,
-}
-
-impl QueryFragment<'_, '_> {
-    fn uses_arguments(&self) -> bool {
-        self.fields.iter().any(|f| !f.arguments.is_empty())
-    }
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -107,8 +97,7 @@ impl<'schema, 'query> FieldArgument<'schema, 'query> {
         FieldArgument { name, value }
     }
 
-    pub fn to_literal(&self, type_index: &TypeIndex) -> Result<String, Error> {
-        // TODO: ditch type index
+    pub fn to_literal(&self) -> Result<String, Error> {
         self.value.to_literal(&self.value.value_type())
     }
 }

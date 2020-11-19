@@ -4,7 +4,7 @@ use std::collections::BTreeMap;
 use crate::{
     query,
     schema::{self, InputFieldType, InputType},
-    Error, TypeIndex,
+    Error,
 };
 
 use super::normalisation::Variable;
@@ -130,7 +130,7 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
             }],
             TypedValue::Object(obj_literal, _) => obj_literal
                 .iter()
-                .flat_map(|(k, v)| v.variables())
+                .flat_map(|(_, v)| v.variables())
                 .collect(),
             TypedValue::List(values, _) => values.iter().flat_map(TypedValue::variables).collect(),
             _ => vec![],
@@ -141,7 +141,6 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
         &self,
         field_type: &schema::InputFieldType<'schema>,
     ) -> Result<String, Error> {
-        use crate::{schema::TypeDefinition, TypeExt};
         use inflector::Inflector;
 
         // TODO: Simplify this to not require field_type
@@ -208,14 +207,5 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
                 }
             }
         })
-    }
-
-    pub fn contains_variable(&self) -> bool {
-        match self {
-            TypedValue::Variable(_, _) => true,
-            TypedValue::List(list, _) => list.iter().any(|v| v.contains_variable()),
-            TypedValue::Object(obj, _) => obj.iter().any(|(_, v)| v.contains_variable()),
-            _ => false,
-        }
     }
 }

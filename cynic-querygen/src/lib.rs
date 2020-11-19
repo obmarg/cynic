@@ -9,7 +9,6 @@ mod type_ext;
 mod value_ext;
 
 use schema::{GraphPath, TypeIndex};
-use type_ext::TypeExt;
 
 #[derive(thiserror::Error, Debug)]
 pub enum Error {
@@ -137,7 +136,7 @@ pub fn document_to_fragment_structs(
                         Ok(format!(
                             "{} = {}",
                             arg.name.to_snake_case(),
-                            arg.to_literal(&type_index)?
+                            arg.to_literal()?
                         ))
                     })
                     .collect::<Result<Vec<_>, Error>>()?

@@ -33,6 +33,7 @@ macro_rules! impl_type_ref {
                 }
             }
 
+            #[allow(dead_code)]
             pub(super) fn new_owned(
                 type_name: String,
                 type_index: &Rc<TypeIndex<'schema>>,

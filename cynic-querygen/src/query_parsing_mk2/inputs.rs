@@ -1,7 +1,4 @@
-use std::{
-    collections::{BTreeMap, BTreeSet},
-    rc::Rc,
-};
+use std::{collections::BTreeSet, rc::Rc};
 
 use super::{
     normalisation::{Field, NormalisedDocument, Selection, SelectionSet},
@@ -9,7 +6,7 @@ use super::{
     value::TypedValue,
 };
 use crate::{
-    schema::{self, InputFieldType, InputType, InputTypeRef},
+    schema::{self, InputType, InputTypeRef},
     Error,
 };
 
@@ -155,12 +152,6 @@ pub fn extract_input_objects_from_values<'query, 'schema>(
                 // We still need the type in order to type this field...
                 return extract_whole_input_object(input_object, input_objects);
             }
-
-            let inner_type = if let InputFieldType::ListType(inner_ty) = &typed_value.value_type() {
-                inner_ty
-            } else {
-                return Err(Error::ExpectedListType);
-            };
 
             let mut output_values = Vec::with_capacity(inner_values.len());
             for inner_value in inner_values {

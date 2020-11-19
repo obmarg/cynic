@@ -1,16 +1,14 @@
 //! Handles "leaf types" - i.e. enums & scalars that don't have any nested fields.
-use std::rc::Rc;
 
 use super::{inputs::InputObjectSet, normalisation::NormalisedDocument, types::Scalar};
 use crate::{
-    schema::{EnumDetails, InputType, OutputType, ScalarTypeExt, TypeDefinition},
-    Error, TypeIndex,
+    schema::{EnumDetails, InputType, OutputType},
+    Error,
 };
 
 pub fn extract_leaf_types<'query, 'schema>(
     doc: &NormalisedDocument<'query, 'schema>,
     inputs: &InputObjectSet<'schema>,
-    type_index: &Rc<TypeIndex<'schema>>,
 ) -> Result<(Vec<EnumDetails<'schema>>, Vec<Scalar<'schema>>), Error> {
     let mut enums = Vec::new();
     let mut scalars = Vec::new();

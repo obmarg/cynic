@@ -47,10 +47,6 @@ impl<'schema> OutputField<'schema> {
                 .collect(),
         }
     }
-
-    pub fn type_spec(&self) -> Cow<'schema, str> {
-        output_type_spec_imp(&self.value_type, true)
-    }
 }
 
 impl<'schema> OutputFieldType<'schema> {
@@ -203,16 +199,6 @@ fn input_type_spec_imp<'schema>(ty: &InputFieldType<'schema>, nullable: bool) ->
                 Ok(InputType::InputObject(_)) => Cow::Owned(s.type_name.to_pascal_case()),
                 _ => s.type_name.clone(),
             }
-        }
-    }
-}
-
-impl<'schema> OutputFieldType<'schema> {
-    pub fn inner_name(&self) -> Cow<'schema, str> {
-        match self {
-            OutputFieldType::NamedType(name) => name.type_name.clone(),
-            OutputFieldType::NonNullType(inner) => inner.inner_name(),
-            OutputFieldType::ListType(inner) => inner.inner_name(),
         }
     }
 }

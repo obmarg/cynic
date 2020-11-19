@@ -11,7 +11,6 @@ use super::{
     normalisation::{Field, NormalisedDocument, Selection, SelectionSet, Variable},
     types::{ArgumentStruct, ArgumentStructField},
 };
-use crate::schema::InputFieldType;
 
 pub fn build_argument_structs<'query, 'schema, 'doc>(
     doc: &'doc NormalisedDocument<'query, 'schema>,
@@ -31,15 +30,10 @@ pub fn build_argument_structs<'query, 'schema, 'doc>(
 
     let mut output = ArgumentStructDetails::new();
 
-    let pairs = doc
-        .operations
-        .iter()
-        .zip(&operation_argument_roots)
-        .map(|(op, args)| Some(op).zip(args.as_ref()))
-        .flatten();
-
-    for (op, args) in pairs {
-        args.as_argument_struct(&parent_map, &mut output);
+    for args in &operation_argument_roots {
+        if let Some(args) = args {
+            args.as_argument_struct(&parent_map, &mut output);
+        }
         // TODO: implement conversions on nested types?
     }
 
@@ -140,18 +134,6 @@ impl<'query, 'schema, 'doc> SelectionArguments<'query, 'schema, 'doc> {
             }
         }
     }
-
-    fn nested_arguments(&self) -> Vec<&Self> {
-        let mut rv = Vec::new();
-        rv.push(self);
-        for field in &self.fields {
-            if let SelectionArgument::NestedArguments(nested) = field {
-                rv.extend(nested.nested_arguments());
-            }
-        }
-
-        rv
-    }
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -182,7 +164,7 @@ impl<'query, 'schema, 'doc> ArgumentStructDetails<'query, 'schema, 'doc> {
     pub fn argument_structs(self) -> Vec<(String, Rc<ArgumentStruct<'schema, 'query>>)> {
         self.selection_structs
             .iter()
-            .map(|(k, v)| (self.namer.borrow_mut().name_subject(&v), Rc::clone(v)))
+            .map(|(_, v)| (self.namer.borrow_mut().name_subject(&v), Rc::clone(v)))
             .collect()
     }
 
