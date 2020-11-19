@@ -180,7 +180,7 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
             }
             TypedValue::Object(object_literal, _) => {
                 if let InputType::InputObject(input_object) = field_type.inner_ref().lookup()? {
-                    let mut fields = object_literal
+                    let fields = object_literal
                         .iter()
                         .map(|(name, value)| {
                             let field = input_object
@@ -199,17 +199,6 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
                             ))
                         })
                         .collect::<Result<Vec<_>, Error>>()?;
-
-                    for object_field in &input_object.fields {
-                        if !object_literal.contains_key(object_field.name)
-                            && !object_field.value_type.is_required()
-                        {
-                            // If this field is not in the literal and is not required we default it
-                            // to None.  If it _is_ required, we let the rust compiler warn about that
-                            // in the generated code.
-                            fields.push(format!("{}: None", object_field.name.to_snake_case()));
-                        }
-                    }
 
                     let fields = fields.join(", ");
 
