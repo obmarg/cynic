@@ -56,8 +56,63 @@ impl<'query, 'schema> Nameable for Rc<super::normalisation::SelectionSet<'query,
 
 #[cfg(test)]
 mod tests {
+    use super::*;
+
+    #[derive(Hash, PartialEq, Eq, Clone)]
+    struct NamedThing {
+        my_name: String,
+        other_field: String,
+    }
+
+    impl Nameable for NamedThing {
+        fn requested_name(&self) -> String {
+            self.my_name.to_owned()
+        }
+    }
+
     #[test]
-    fn write_some_tests() {
-        todo!()
+    fn test_naming() {
+        let thing_one = NamedThing {
+            my_name: "Thing".into(),
+            other_field: "xyz".into(),
+        };
+        let thing_two = NamedThing {
+            my_name: "Thing".into(),
+            other_field: "abc".into(),
+        };
+        let other_thing = NamedThing {
+            my_name: "OtherThing".into(),
+            other_field: "asd".into(),
+        };
+
+        let mut namer = Namer::new();
+
+        // First give things names
+        assert_eq!(namer.name_subject(&thing_one), "Thing");
+        assert_eq!(namer.name_subject(&thing_two), "Thing2");
+        assert_eq!(namer.name_subject(&other_thing), "OtherThing");
+
+        // Now make sure the names are still the same when called again
+        assert_eq!(namer.name_subject(&other_thing), "OtherThing");
+        assert_eq!(namer.name_subject(&thing_two), "Thing2");
+        assert_eq!(namer.name_subject(&thing_one), "Thing");
+    }
+
+    #[test]
+    fn test_force_name() {
+        let thing_one = NamedThing {
+            my_name: "Thing".into(),
+            other_field: "xyz".into(),
+        };
+        let thing_two = NamedThing {
+            my_name: "Thing".into(),
+            other_field: "abc".into(),
+        };
+
+        let mut namer = Namer::new();
+        namer.force_name(&thing_one, "DifferentName");
+
+        assert_eq!(namer.name_subject(&thing_two), "Thing");
+        assert_eq!(namer.name_subject(&thing_one), "DifferentName");
     }
 }
