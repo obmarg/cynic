@@ -2,12 +2,11 @@ use rust_decimal::{prelude::FromPrimitive, Decimal};
 use std::collections::BTreeMap;
 
 use crate::{
-    query,
     schema::{self, InputFieldType, InputType},
     Error,
 };
 
-use super::normalisation::Variable;
+use super::{normalisation::Variable, parser};
 
 /// A literal value from a GraphQL query, along with it's type
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -29,12 +28,12 @@ pub enum TypedValue<'query, 'schema> {
 
 impl<'query, 'schema> TypedValue<'query, 'schema> {
     pub fn from_query_value(
-        value: &query::Value<'query>,
+        value: &parser::Value<'query>,
         value_type: InputFieldType<'schema>,
         variable_definitions: &[Variable<'query, 'schema>],
     ) -> Result<Self, Error> {
         Ok(match value {
-            query::Value::Variable(var_name) => {
+            parser::Value::Variable(var_name) => {
                 // If this is just a variable then we'll take it's type as our value type.
                 // This will proably break on arguments inside lists or objects
                 // but I don't have the energy to properly support those right now.
@@ -50,13 +49,13 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
 
                 TypedValue::Variable(var_name, value_type)
             }
-            query::Value::Int(num) => TypedValue::Int(num.as_i64().unwrap(), value_type),
-            query::Value::Float(num) => TypedValue::Float(Decimal::from_f64(*num), value_type),
-            query::Value::String(s) => TypedValue::String(s.clone(), value_type),
-            query::Value::Boolean(b) => TypedValue::Boolean(*b, value_type),
-            query::Value::Null => TypedValue::Null(value_type),
-            query::Value::Enum(e) => TypedValue::Enum(e, value_type),
-            query::Value::List(values) => {
+            parser::Value::Int(num) => TypedValue::Int(num.as_i64().unwrap(), value_type),
+            parser::Value::Float(num) => TypedValue::Float(Decimal::from_f64(*num), value_type),
+            parser::Value::String(s) => TypedValue::String(s.clone(), value_type),
+            parser::Value::Boolean(b) => TypedValue::Boolean(*b, value_type),
+            parser::Value::Null => TypedValue::Null(value_type),
+            parser::Value::Enum(e) => TypedValue::Enum(e, value_type),
+            parser::Value::List(values) => {
                 let inner_type = value_type.list_inner_type()?;
                 TypedValue::List(
                     values
@@ -72,7 +71,7 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
                     value_type,
                 )
             }
-            query::Value::Object(obj) => {
+            parser::Value::Object(obj) => {
                 if let InputType::InputObject(obj_type) = value_type.inner_ref().lookup()? {
                     TypedValue::Object(
                         obj.iter()

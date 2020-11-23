@@ -5,11 +5,15 @@ use std::{
     rc::Rc,
 };
 
-use super::{sorting::Vertex, value::TypedValue};
-use crate::{
-    query::{
+use super::{
+    parser::{
         self, Definition, Document, FragmentDefinition, OperationDefinition, VariableDefinition,
     },
+    sorting::Vertex,
+    value::TypedValue,
+};
+
+use crate::{
     schema::{InputFieldType, InputTypeRef, OutputField, OutputType, OutputTypeRef},
     Error, GraphPath, TypeIndex,
 };
@@ -217,7 +221,7 @@ fn normalise_operation<'query, 'doc, 'schema>(
 }
 
 fn normalise_selection_set<'query, 'schema>(
-    selection_set: &query::SelectionSet<'query>,
+    selection_set: &parser::SelectionSet<'query>,
     type_index: &Rc<TypeIndex<'schema>>,
     current_path: GraphPath<'query>,
     variable_definitions: &[Variable<'query, 'schema>],
@@ -227,7 +231,7 @@ fn normalise_selection_set<'query, 'schema>(
 
     for item in &selection_set.items {
         match item {
-            query::Selection::Field(field) => {
+            parser::Selection::Field(field) => {
                 let new_path = current_path.push(field.name);
 
                 let schema_field = type_index.field_for_path(&new_path)?;
@@ -270,8 +274,8 @@ fn normalise_selection_set<'query, 'schema>(
                     inner_field,
                 )?));
             }
-            query::Selection::FragmentSpread(_) => todo!(),
-            query::Selection::InlineFragment(_) => todo!(),
+            parser::Selection::FragmentSpread(_) => todo!(),
+            parser::Selection::InlineFragment(_) => todo!(),
         }
     }
 

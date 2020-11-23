@@ -5,14 +5,16 @@ mod inputs;
 mod leaf_types;
 mod naming;
 mod normalisation;
+mod parser;
 mod sorting;
 mod types;
 mod value;
 
 use arguments::ArgumentStructDetails;
 use naming::Namer;
+use parser::Document;
 
-use crate::{query::Document, Error, TypeIndex};
+use crate::{Error, TypeIndex};
 
 pub fn parse_query_document<'text>(
     doc: &Document<'text>,

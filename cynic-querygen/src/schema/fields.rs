@@ -120,14 +120,14 @@ impl<'schema> InputField<'schema> {
 
 impl<'schema> InputFieldType<'schema> {
     pub fn from_variable_definition<'query>(
-        def: &crate::query::VariableDefinition<'query>,
+        def: &graphql_parser::query::VariableDefinition<'query, &'query str>,
         type_index: &Rc<TypeIndex<'schema>>,
     ) -> Self {
         InputFieldType::from_query_type(&def.var_type, type_index)
     }
 
     fn from_query_type<'query>(
-        query_type: &crate::query::Type<'query>,
+        query_type: &graphql_parser::query::Type<'query, &'query str>,
         type_index: &Rc<TypeIndex<'schema>>,
     ) -> Self {
         use parser::Type;

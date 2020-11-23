@@ -1,7 +1,6 @@
 use inflector::Inflector;
 use std::rc::Rc;
 
-mod query;
 mod query_parsing;
 mod schema;
 mod type_ext;
@@ -14,7 +13,7 @@ pub enum Error {
     UnsupportedQueryDocument(String),
 
     #[error("could not parse query document: {0}")]
-    QueryParseError(#[from] query::ParseError),
+    QueryParseError(#[from] graphql_parser::query::ParseError),
 
     #[error("could not parse schema document: {0}")]
     SchemaParseError(#[from] graphql_parser::schema::ParseError),
