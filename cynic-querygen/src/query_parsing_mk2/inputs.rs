@@ -103,7 +103,6 @@ pub fn extract_input_objects_from_values<'query, 'schema>(
 
     match &typed_value {
         TypedValue::Object(obj, _) => {
-
             let mut fields = Vec::new();
             let mut adjacents = Vec::new();
             for (field_name, field_val) in obj {
