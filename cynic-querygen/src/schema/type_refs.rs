@@ -45,7 +45,7 @@ macro_rules! impl_type_ref {
             }
 
             pub fn lookup(&self) -> Result<$lookup_type<'schema>, Error> {
-                self.type_index.lookup_type_2(&self.type_name)?.try_into()
+                self.type_index.lookup_type(&self.type_name)?.try_into()
             }
         }
 

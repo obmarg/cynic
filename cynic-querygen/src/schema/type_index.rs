@@ -46,30 +46,28 @@ impl<'schema> TypeIndex<'schema> {
         rv
     }
 
-    pub fn field_for_path<'path>(&self, path: &GraphPath<'path>) -> Result<&Field<'schema>, Error> {
+    pub fn field_for_path<'path>(
+        self: &Rc<TypeIndex<'schema>>,
+        path: &GraphPath<'path>,
+    ) -> Result<OutputField<'schema>, Error> {
         let root_name = match path.operation_type {
             OperationType::Query => self.query_root.clone(),
             OperationType::Mutation => self.mutation_root.clone(),
         };
 
         let root = self.types.get(root_name.as_str()).unwrap();
-        if let TypeDefinition::Object(root_object) = root {
-            self.find_field_recursive(&root_object.fields, root_name.as_str(), &path.path)
+        let field = if let TypeDefinition::Object(root_object) = root {
+            self.find_field_recursive(&root_object.fields, root_name.as_str(), &path.path)?
         } else {
-            Err(Error::ExpectedObject(root_name.to_string()))
-        }
-    }
+            return Err(Error::ExpectedObject(root_name.to_string()));
+        };
 
-    pub fn field_for_path_2<'path>(
-        self: &Rc<TypeIndex<'schema>>,
-        path: &GraphPath<'path>,
-    ) -> Result<OutputField<'schema>, Error> {
-        Ok(OutputField::from_parser(self.field_for_path(path)?, &self))
+        Ok(OutputField::from_parser(field, &self))
     }
 
     // Looks up the name of the type at Path.
     pub fn type_name_for_path<'path>(
-        &self,
+        self: &Rc<Self>,
         path: &GraphPath<'path>,
     ) -> Result<Cow<'schema, str>, Error> {
         match (path.is_root(), &path.operation_type) {
@@ -77,18 +75,14 @@ impl<'schema> TypeIndex<'schema> {
             (true, OperationType::Mutation) => Ok(Cow::Owned(self.mutation_root.clone())),
             (false, _) => Ok(Cow::Owned(
                 self.field_for_path(path)?
-                    .field_type
+                    .value_type
                     .inner_name()
                     .to_string(),
             )),
         }
     }
 
-    pub fn lookup_type(&self, name: &str) -> Option<&TypeDefinition<'schema>> {
-        self.types.get(name)
-    }
-
-    pub fn lookup_type_2(self: &Rc<Self>, name: &str) -> Result<Type<'schema>, Error> {
+    pub fn lookup_type(self: &Rc<Self>, name: &str) -> Result<Type<'schema>, Error> {
         let type_def = self
             .types
             .get(name)
@@ -101,7 +95,8 @@ impl<'schema> TypeIndex<'schema> {
         self: &Rc<Self>,
         path: &GraphPath<'path>,
     ) -> Result<Type<'schema>, Error> {
-        self.lookup_type_2(&self.type_name_for_path(path)?)
+        let type_name = self.type_name_for_path(path)?;
+        self.lookup_type(type_name.as_ref())
     }
 
     fn find_field_recursive<'find, 'path>(

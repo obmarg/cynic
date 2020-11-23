@@ -5,7 +5,6 @@ mod query;
 mod query_parsing;
 mod schema;
 mod type_ext;
-mod value_ext;
 
 use schema::{GraphPath, TypeIndex};
 

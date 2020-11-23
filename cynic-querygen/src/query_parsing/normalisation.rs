@@ -230,7 +230,7 @@ fn normalise_selection_set<'query, 'schema>(
             query::Selection::Field(field) => {
                 let new_path = current_path.push(field.name);
 
-                let schema_field = type_index.field_for_path_2(&new_path)?;
+                let schema_field = type_index.field_for_path(&new_path)?;
 
                 let inner_field = if field.selection_set.items.is_empty() {
                     Field::Leaf

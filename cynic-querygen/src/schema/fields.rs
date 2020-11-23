@@ -53,6 +53,14 @@ impl<'schema> OutputFieldType<'schema> {
     pub fn type_spec(&self) -> Cow<'schema, str> {
         output_type_spec_imp(self, true)
     }
+
+    pub fn inner_name(&self) -> Cow<'schema, str> {
+        match self {
+            OutputFieldType::NamedType(name) => name.type_name.clone(),
+            OutputFieldType::NonNullType(inner) => inner.inner_name(),
+            OutputFieldType::ListType(inner) => inner.inner_name(),
+        }
+    }
 }
 
 fn output_type_spec_imp<'schema>(
