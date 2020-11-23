@@ -79,6 +79,28 @@ impl<'query, 'schema, 'doc> SelectionArguments<'query, 'schema, 'doc> {
         parent_map: &HashMap<&Self, HashSet<&Self>>,
         output_mapping: &mut ArgumentStructDetails<'query, 'schema, 'doc>,
     ) -> Rc<ArgumentStruct<'schema, 'query>> {
+        // TODO: So I need some way of mapping SelectionSet -> ArgumentStruct
+        // THinking this function could output a HashMap<SelectionSet, ArgumentStruct>
+        // But wondering how to do that in the face of collapsing things....
+        //
+        // If we go down a mutation path then we need to rewrite every
+        // value that points to a particular argument struct name every time we do a collapse.
+        //
+        // Alternatively we could add a "registry" type thing that allows rewriting somehow.
+        //
+        // If we use two maps:
+        // 1. A map of selection set -> argument struct
+        // 2. A map of argument struct -> argument struct.
+        //
+        // Then to find the argument struct for a particular selection set we:
+        //
+        // Lookup the selection set in map 1
+        // Lookup the argument struct in map 2.  If we find, look up again.
+        // Recurse till we don't find anything and then you've got the actual argument struct.
+        //
+        // Can use UUIDs to identify these uniquely?  Or alternatively just use the Namer?
+        // Though namer keeps a copy of things so isn't great...
+
         let our_id = Uuid::new_v4();
 
         let fields = self

@@ -103,6 +103,7 @@ pub fn extract_input_objects_from_values<'query, 'schema>(
 
     match &typed_value {
         TypedValue::Object(obj, _) => {
+            // TODO: Consider re-working this to use type from the above
             let mut fields = Vec::new();
             let mut adjacents = Vec::new();
             for (field_name, field_val) in obj {
@@ -180,6 +181,11 @@ pub fn extract_whole_input_object<'schema>(
     let mut fields = Vec::new();
     let mut adjacents = Vec::new();
 
+    // TODO: Whole input objects can be recursive, so probably
+    // need some base cases in here...
+    //
+    // Might be a case for generic traversal code that can handle this?
+
     for field in &input_object.fields {
         let field_type = field.value_type.inner_ref().lookup()?;
 
@@ -211,7 +217,7 @@ pub fn extract_whole_input_object<'schema>(
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::{query_parsing_mk2::normalisation::normalise, TypeIndex};
+    use crate::{query_parsing::normalisation::normalise, TypeIndex};
 
     #[test]
     fn extracts_inline_input_types() {

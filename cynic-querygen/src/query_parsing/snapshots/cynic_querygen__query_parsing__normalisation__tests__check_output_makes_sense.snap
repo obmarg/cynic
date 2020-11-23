@@ -1,5 +1,5 @@
 ---
-source: cynic-querygen/src/query_parsing_mk2/normalisation.rs
+source: cynic-querygen/src/query_parsing/normalisation.rs
 expression: normalised
 ---
 NormalisedDocument {

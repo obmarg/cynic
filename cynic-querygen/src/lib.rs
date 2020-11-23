@@ -2,8 +2,7 @@ use inflector::Inflector;
 use std::rc::Rc;
 
 mod query;
-//mod query_parsing;
-mod query_parsing_mk2;
+mod query_parsing;
 mod schema;
 mod type_ext;
 mod value_ext;
@@ -85,7 +84,7 @@ pub fn document_to_fragment_structs(
     let query = graphql_parser::parse_query::<&str>(query.as_ref())?;
 
     let type_index = Rc::new(TypeIndex::from_schema(&schema));
-    let output = query_parsing_mk2::parse_query_document(&query, &type_index)?;
+    let output = query_parsing::parse_query_document(&query, &type_index)?;
 
     let mut lines = vec![];
 

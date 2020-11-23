@@ -69,6 +69,8 @@ fn make_query_fragment<'text>(
     use normalisation::Selection;
     use types::{FieldArgument, OutputField};
 
+    // TODO: Use arugment_struct_details in here...
+
     Ok(types::QueryFragment {
         fields: selection
             .selections

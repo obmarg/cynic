@@ -36,6 +36,20 @@ pub enum OperationKind {
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SelectionSet<'query, 'schema> {
+    // TODO: Ok, so this can have the schema type
+    // on it quite easily.
+    // Shouldn't affect hashing, ordering etc.
+    // Because they _have_ to match.
+    // Though that means we need an Ord/PartialOrd/Hash
+    // type for schema types :|
+    //
+    // Ok, so maybe we want a TypeWrapper for this that
+    // just uses the name for Ord & Hash.
+    //
+    // Ok, so could have a TypeRef { name: String, index: Rc<TypeIndex> }
+    // that can lazily construct a tree of "our" schema types.
+
+    // TODO: Could make this some sort of CompositeType?
     pub target_type: OutputType<'schema>,
     pub selections: Vec<Selection<'query, 'schema>>,
 }
@@ -55,8 +69,14 @@ pub struct FieldSelection<'query, 'schema> {
 
     pub schema_field: OutputField<'schema>,
 
+    // TODO: Ideally arguments also need to get typed...
+    //
+    // Could have some sort of InputTypeRef ?
+    // that can only be scalar, enum, input object?
     pub arguments: Vec<(&'schema str, TypedValue<'query, 'schema>)>,
 
+    // TODO: figure out if we even need this inner FIeld or
+    // we just have an optional selection set instead?
     pub field: Field<'query, 'schema>,
 }
 
@@ -336,6 +356,7 @@ impl<'query, 'schema> SelectionSet<'query, 'schema> {
                     .map(|(_, arg)| arg.value_type().inner_ref().clone()),
             })
             .collect()
+        // TODO: Return the arguments
     }
 }
 

@@ -6,6 +6,9 @@ use super::{normalisation::Variable, value::TypedValue};
 use crate::schema::{EnumDetails, InputField, OutputFieldType};
 use crate::Error;
 
+// TODO: NOt jazzed about the name of this file as
+// graphql has types so it almost sounds like this module is dealing with those...
+
 pub struct Output<'schema, 'query> {
     pub query_fragments: Vec<QueryFragment<'schema, 'query>>,
     pub input_objects: Vec<InputObject<'schema>>,
