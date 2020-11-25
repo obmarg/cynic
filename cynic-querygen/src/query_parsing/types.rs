@@ -9,8 +9,8 @@ use crate::Error;
 // TODO: NOt jazzed about the name of this file as
 // graphql has types so it almost sounds like this module is dealing with those...
 
-pub struct Output<'schema, 'query> {
-    pub query_fragments: Vec<QueryFragment<'schema, 'query>>,
+pub struct Output<'query, 'schema> {
+    pub query_fragments: Vec<QueryFragment<'query, 'schema>>,
     pub input_objects: Vec<InputObject<'schema>>,
 
     // TODO: I want enums sorted by name & unique
@@ -20,14 +20,14 @@ pub struct Output<'schema, 'query> {
     pub scalars: Vec<Scalar<'schema>>,
 
     // TODO: Argument structs can be sorted by name.
-    pub argument_structs: Vec<(String, Rc<ArgumentStruct<'schema, 'query>>)>,
+    pub argument_structs: Vec<(String, Rc<ArgumentStruct<'query, 'schema>>)>,
 }
 
 pub struct Scalar<'schema>(pub &'schema str);
 
 #[derive(Debug, PartialEq)]
-pub struct QueryFragment<'schema, 'query> {
-    pub fields: Vec<OutputField<'schema, 'query>>,
+pub struct QueryFragment<'query, 'schema> {
+    pub fields: Vec<OutputField<'query, 'schema>>,
     pub target_type: String,
     pub argument_struct_name: Option<String>,
 
@@ -35,19 +35,19 @@ pub struct QueryFragment<'schema, 'query> {
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ArgumentStruct<'schema, 'query> {
+pub struct ArgumentStruct<'query, 'schema> {
     pub id: Uuid,
     pub(super) name: String,
-    pub fields: Vec<ArgumentStructField<'schema, 'query>>,
+    pub fields: Vec<ArgumentStructField<'query, 'schema>>,
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub enum ArgumentStructField<'schema, 'query> {
+pub enum ArgumentStructField<'query, 'schema> {
     Variable(Variable<'query, 'schema>),
-    NestedStruct(Rc<ArgumentStruct<'schema, 'query>>),
+    NestedStruct(Rc<ArgumentStruct<'query, 'schema>>),
 }
 
-impl<'schema, 'query> ArgumentStructField<'schema, 'query> {
+impl<'query, 'schema> ArgumentStructField<'query, 'schema> {
     pub fn name(&self) -> String {
         match self {
             ArgumentStructField::Variable(var) => var.name.to_string(),
@@ -64,11 +64,11 @@ impl<'schema, 'query> ArgumentStructField<'schema, 'query> {
 }
 
 /*
-impl<'schema, 'query> ArgumentStruct<'schema, 'query> {
+impl<'query, 'schema> ArgumentStruct<'query, 'schema> {
     fn from_variables(
         variables: Vec<Variable<'query, 'schema>>,
         query_name: Option<String>,
-    ) -> Option<ArgumentStruct<'schema, 'query>> {
+    ) -> Option<ArgumentStruct<'query, 'schema>> {
         if variables.is_empty() {
             return None;
         }
@@ -82,21 +82,21 @@ impl<'schema, 'query> ArgumentStruct<'schema, 'query> {
 */
 
 #[derive(Debug, PartialEq)]
-pub struct OutputField<'schema, 'query> {
+pub struct OutputField<'query, 'schema> {
     pub name: &'schema str,
     pub field_type: OutputFieldType<'schema>,
 
-    pub arguments: Vec<FieldArgument<'schema, 'query>>,
+    pub arguments: Vec<FieldArgument<'query, 'schema>>,
 }
 
 #[derive(Debug, PartialEq)]
-pub struct FieldArgument<'schema, 'query> {
+pub struct FieldArgument<'query, 'schema> {
     pub name: &'schema str,
-    value: TypedValue<'schema, 'query>,
+    value: TypedValue<'query, 'schema>,
 }
 
-impl<'schema, 'query> FieldArgument<'schema, 'query> {
-    pub fn new(name: &'schema str, value: TypedValue<'schema, 'query>) -> Self {
+impl<'query, 'schema> FieldArgument<'query, 'schema> {
+    pub fn new(name: &'schema str, value: TypedValue<'query, 'schema>) -> Self {
         FieldArgument { name, value }
     }
 

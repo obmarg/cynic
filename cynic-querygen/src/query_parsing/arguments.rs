@@ -78,7 +78,7 @@ impl<'query, 'schema, 'doc> SelectionArguments<'query, 'schema, 'doc> {
         &self,
         parent_map: &HashMap<&Self, HashSet<&Self>>,
         output_mapping: &mut ArgumentStructDetails<'query, 'schema, 'doc>,
-    ) -> Rc<ArgumentStruct<'schema, 'query>> {
+    ) -> Rc<ArgumentStruct<'query, 'schema>> {
         // TODO: So I need some way of mapping SelectionSet -> ArgumentStruct
         // THinking this function could output a HashMap<SelectionSet, ArgumentStruct>
         // But wondering how to do that in the face of collapsing things....
@@ -169,8 +169,8 @@ enum SelectionArgument<'query, 'schema, 'doc> {
 pub struct ArgumentStructDetails<'query, 'schema, 'doc> {
     selection_set_map: HashMap<&'doc SelectionSet<'query, 'schema>, Uuid>,
     remappings: HashMap<Uuid, Uuid>,
-    selection_structs: HashMap<Uuid, Rc<ArgumentStruct<'schema, 'query>>>,
-    namer: RefCell<Namer<Rc<ArgumentStruct<'schema, 'query>>>>,
+    selection_structs: HashMap<Uuid, Rc<ArgumentStruct<'query, 'schema>>>,
+    namer: RefCell<Namer<Rc<ArgumentStruct<'query, 'schema>>>>,
 }
 
 impl<'query, 'schema, 'doc> ArgumentStructDetails<'query, 'schema, 'doc> {
@@ -183,7 +183,7 @@ impl<'query, 'schema, 'doc> ArgumentStructDetails<'query, 'schema, 'doc> {
         }
     }
 
-    pub fn argument_structs(self) -> Vec<(String, Rc<ArgumentStruct<'schema, 'query>>)> {
+    pub fn argument_structs(self) -> Vec<(String, Rc<ArgumentStruct<'query, 'schema>>)> {
         self.selection_structs
             .iter()
             .map(|(_, v)| (self.namer.borrow_mut().name_subject(&v), Rc::clone(v)))
@@ -193,7 +193,7 @@ impl<'query, 'schema, 'doc> ArgumentStructDetails<'query, 'schema, 'doc> {
     fn lookup_args_for_selection(
         &self,
         selection_set: &SelectionSet<'query, 'schema>,
-    ) -> Option<&Rc<ArgumentStruct<'schema, 'query>>> {
+    ) -> Option<&Rc<ArgumentStruct<'query, 'schema>>> {
         self.selection_set_map
             .get(selection_set)
             .and_then(|mut id| {
@@ -222,7 +222,7 @@ impl<'query, 'schema, 'doc> ArgumentStructDetails<'query, 'schema, 'doc> {
     }
 }
 
-impl<'schema, 'query> Nameable for Rc<ArgumentStruct<'schema, 'query>> {
+impl<'query, 'schema> Nameable for Rc<ArgumentStruct<'query, 'schema>> {
     fn requested_name(&self) -> String {
         self.name.clone()
     }
