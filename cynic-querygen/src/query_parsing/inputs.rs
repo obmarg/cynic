@@ -103,7 +103,6 @@ pub fn extract_input_objects_from_values<'query, 'schema>(
 
     match &typed_value {
         TypedValue::Object(obj, _) => {
-            // TODO: Consider re-working this to use type from the above
             let mut fields = Vec::new();
             let mut adjacents = Vec::new();
             for (field_name, field_val) in obj {
@@ -146,8 +145,6 @@ pub fn extract_input_objects_from_values<'query, 'schema>(
             Ok(rv)
         }
         TypedValue::List(inner_values, _) => {
-            // TODO: Consider re-working this...
-
             if inner_values.is_empty() {
                 // We still need the type in order to type this field...
                 return extract_whole_input_object(input_object, input_objects);

@@ -2,7 +2,7 @@ use rust_decimal::{prelude::FromPrimitive, Decimal};
 use std::collections::BTreeMap;
 
 use crate::{
-    schema::{self, InputFieldType, InputType},
+    schema::{InputFieldType, InputType},
     Error,
 };
 
@@ -13,7 +13,6 @@ use super::{normalisation::Variable, parser};
 pub enum TypedValue<'query, 'schema> {
     Variable(&'query str, InputFieldType<'schema>),
     Int(i64, InputFieldType<'schema>),
-    // TODO: consider ordered-float
     Float(Option<Decimal>, InputFieldType<'schema>),
     String(String, InputFieldType<'schema>),
     Boolean(bool, InputFieldType<'schema>),
@@ -136,16 +135,11 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
         }
     }
 
-    pub fn to_literal(
-        &self,
-        field_type: &schema::InputFieldType<'schema>,
-    ) -> Result<String, Error> {
+    pub fn to_literal(&self) -> Result<String, Error> {
         use inflector::Inflector;
 
-        // TODO: Simplify this to not require field_type
-
         Ok(match self {
-            TypedValue::Variable(name, _) => {
+            TypedValue::Variable(name, field_type) => {
                 if field_type.inner_name() == "String" && field_type.is_required() {
                     // Required String arguments currently take owned Strings,
                     // so we need to clone them.
@@ -160,7 +154,7 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
             TypedValue::String(s, _) => format!("\"{}\".into()", s),
             TypedValue::Boolean(b, _) => b.to_string(),
             TypedValue::Null(_) => "None".into(),
-            TypedValue::Enum(v, _) => {
+            TypedValue::Enum(v, field_type) => {
                 if let InputType::Enum(en) = field_type.inner_ref().lookup()? {
                     format!("{}::{}", en.name.to_pascal_case(), v.to_pascal_case())
                 } else {
@@ -170,31 +164,18 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
             TypedValue::List(values, _) => {
                 let inner = values
                     .iter()
-                    .map(|v| Ok(v.to_literal(field_type)?))
+                    .map(|v| Ok(v.to_literal()?))
                     .collect::<Result<Vec<_>, Error>>()?
                     .join(", ");
 
                 format!("vec![{}]", inner)
             }
-            TypedValue::Object(object_literal, _) => {
+            TypedValue::Object(object_literal, field_type) => {
                 if let InputType::InputObject(input_object) = field_type.inner_ref().lookup()? {
                     let fields = object_literal
                         .iter()
                         .map(|(name, value)| {
-                            let field = input_object
-                                .fields
-                                .iter()
-                                .find(|field| field.name == *name)
-                                .ok_or(Error::UnknownField(
-                                    name.to_string(),
-                                    input_object.name.to_string(),
-                                ))?;
-
-                            Ok(format!(
-                                "{}: {}",
-                                name.to_snake_case(),
-                                value.to_literal(&field.value_type)?
-                            ))
+                            Ok(format!("{}: {}", name.to_snake_case(), value.to_literal()?))
                         })
                         .collect::<Result<Vec<_>, Error>>()?;
 

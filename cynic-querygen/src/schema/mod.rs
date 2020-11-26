@@ -12,8 +12,6 @@ use std::{convert::TryFrom, rc::Rc};
 
 use crate::Error;
 
-// TODO: Put these types somewhere sensible
-
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum Type<'schema> {
     Scalar(ScalarDetails<'schema>),

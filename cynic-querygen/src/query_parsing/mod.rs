@@ -5,13 +5,14 @@ mod inputs;
 mod leaf_types;
 mod naming;
 mod normalisation;
+mod output;
 mod parser;
 mod sorting;
-mod types;
 mod value;
 
 use arguments::ArgumentStructDetails;
 use naming::Namer;
+use output::Output;
 use parser::Document;
 
 use crate::{Error, TypeIndex};
@@ -19,7 +20,7 @@ use crate::{Error, TypeIndex};
 pub fn parse_query_document<'text>(
     doc: &Document<'text>,
     type_index: &Rc<TypeIndex<'text>>,
-) -> Result<types::Output<'text, 'text>, Error> {
+) -> Result<Output<'text, 'text>, Error> {
     let normalised = normalisation::normalise(doc, type_index)?;
     let input_objects = inputs::extract_input_objects(&normalised)?;
 
@@ -28,8 +29,6 @@ pub fn parse_query_document<'text>(
     enums.sort_by_key(|e| e.name);
     scalars.sort_by_key(|s| s.0);
 
-    // TODO: Ok, so in here i think we should name things.
-    // Probably after the top sort.
     let mut query_namer = Namer::new();
 
     let arg_struct_details = arguments::build_argument_structs(&normalised);
@@ -54,7 +53,7 @@ pub fn parse_query_document<'text>(
         .map(make_input_object)
         .collect::<Result<Vec<_>, _>>()?;
 
-    Ok(types::Output {
+    Ok(Output {
         query_fragments,
         input_objects,
         enums,
@@ -67,13 +66,11 @@ fn make_query_fragment<'text>(
     selection: Rc<normalisation::SelectionSet<'text, 'text>>,
     namer: &mut Namer<Rc<normalisation::SelectionSet<'text, 'text>>>,
     argument_struct_details: &ArgumentStructDetails<'text, 'text, '_>,
-) -> Result<types::QueryFragment<'text, 'text>, Error> {
+) -> Result<output::QueryFragment<'text, 'text>, Error> {
     use normalisation::Selection;
-    use types::{FieldArgument, OutputField};
+    use output::{FieldArgument, OutputField, QueryFragment};
 
-    // TODO: Use arugment_struct_details in here...
-
-    Ok(types::QueryFragment {
+    Ok(QueryFragment {
         fields: selection
             .selections
             .iter()
@@ -103,8 +100,8 @@ fn make_query_fragment<'text>(
     })
 }
 
-fn make_input_object<'text>(input: Rc<inputs::InputObject>) -> Result<types::InputObject, Error> {
-    Ok(types::InputObject {
+fn make_input_object<'text>(input: Rc<inputs::InputObject>) -> Result<output::InputObject, Error> {
+    Ok(output::InputObject {
         name: input.schema_type.name.to_string(),
         fields: input.fields.clone(),
     })

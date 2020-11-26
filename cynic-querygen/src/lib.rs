@@ -141,7 +141,6 @@ pub fn document_to_fragment_structs(
 
                 lines.push(format!("        #[arguments({})]", arguments_string));
             }
-            // TODO: print out arguments
             lines.push(format!(
                 "        pub {}: {},",
                 field.name.to_snake_case(),

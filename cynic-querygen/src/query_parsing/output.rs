@@ -6,20 +6,11 @@ use super::{normalisation::Variable, value::TypedValue};
 use crate::schema::{EnumDetails, InputField, OutputFieldType};
 use crate::Error;
 
-// TODO: NOt jazzed about the name of this file as
-// graphql has types so it almost sounds like this module is dealing with those...
-
 pub struct Output<'query, 'schema> {
     pub query_fragments: Vec<QueryFragment<'query, 'schema>>,
     pub input_objects: Vec<InputObject<'schema>>,
-
-    // TODO: I want enums sorted by name & unique
     pub enums: Vec<EnumDetails<'schema>>,
-
-    // TODO: Scalars I also want sorted by name & unique.
     pub scalars: Vec<Scalar<'schema>>,
-
-    // TODO: Argument structs can be sorted by name.
     pub argument_structs: Vec<(String, Rc<ArgumentStruct<'query, 'schema>>)>,
 }
 
@@ -101,7 +92,7 @@ impl<'query, 'schema> FieldArgument<'query, 'schema> {
     }
 
     pub fn to_literal(&self) -> Result<String, Error> {
-        self.value.to_literal(&self.value.value_type())
+        self.value.to_literal()
     }
 }
 
