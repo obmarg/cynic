@@ -54,24 +54,6 @@ impl<'query, 'schema> ArgumentStructField<'query, 'schema> {
     }
 }
 
-/*
-impl<'query, 'schema> ArgumentStruct<'query, 'schema> {
-    fn from_variables(
-        variables: Vec<Variable<'query, 'schema>>,
-        query_name: Option<String>,
-    ) -> Option<ArgumentStruct<'query, 'schema>> {
-        if variables.is_empty() {
-            return None;
-        }
-
-        Some(ArgumentStruct {
-            name: format!("{}Arguments", query_name.unwrap_or("".to_string())),
-            fields: variables,
-        })
-    }
-}
-*/
-
 #[derive(Debug, PartialEq)]
 pub struct OutputField<'query, 'schema> {
     pub name: &'schema str,

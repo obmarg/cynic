@@ -105,8 +105,6 @@ impl<'schema> TypeIndex<'schema> {
         current_type_name: &str,
         path: &[&'path str],
     ) -> Result<&'find Field<'schema>, Error> {
-        //let get_field = |name| fields.iter().find(|field| field.name == name);
-
         match path {
             [] => panic!("This shouldn't happen"),
             [first] => fields

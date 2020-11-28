@@ -34,15 +34,10 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
         Ok(match value {
             parser::Value::Variable(var_name) => {
                 // If this is just a variable then we'll take it's type as our value type.
-                // This will proably break on arguments inside lists or objects
-                // but I don't have the energy to properly support those right now.
                 let value_type = variable_definitions
                     .iter()
                     .find(|var| var.name == *var_name)
-                    .ok_or_else(|| {
-                        println!("Variables: {:#?}", variable_definitions);
-                        Error::UnknownArgument(var_name.to_string())
-                    })?
+                    .ok_or_else(|| Error::UnknownArgument(var_name.to_string()))?
                     .value_type
                     .clone();
 
