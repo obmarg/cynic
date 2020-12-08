@@ -1,4 +1,7 @@
-use std::{collections::BTreeSet, rc::Rc};
+use std::{
+    collections::{BTreeSet, HashMap},
+    rc::Rc,
+};
 
 use super::{
     normalisation::{Field, NormalisedDocument, Selection, SelectionSet},
@@ -14,6 +17,7 @@ use crate::{
 pub struct InputObject<'schema> {
     pub schema_type: schema::InputObjectDetails<'schema>,
     pub fields: Vec<schema::InputField<'schema>>,
+    // Named _adjacents so as not to clash with the adjacents func in the Vertex trait
     _adjacents: Vec<Rc<InputObject<'schema>>>,
 }
 
@@ -51,7 +55,7 @@ pub fn extract_input_objects<'query, 'schema>(
             let variable_type = variable.value_type.inner_ref().lookup()?;
 
             if let InputType::InputObject(input_obj) = variable_type {
-                extract_whole_input_object(&input_obj, &mut result)?;
+                extract_whole_input_object_tree(&input_obj, &mut result)?;
             }
         }
     }
@@ -98,7 +102,7 @@ pub fn extract_input_objects_from_values<'query, 'schema>(
     input_objects: &mut InputObjectSet<'schema>,
 ) -> Result<Rc<InputObject<'schema>>, Error> {
     if typed_value.is_variable() {
-        return extract_whole_input_object(input_object, input_objects);
+        return extract_whole_input_object_tree(input_object, input_objects);
     }
 
     match &typed_value {
@@ -147,7 +151,7 @@ pub fn extract_input_objects_from_values<'query, 'schema>(
         TypedValue::List(inner_values, _) => {
             if inner_values.is_empty() {
                 // We still need the type in order to type this field...
-                return extract_whole_input_object(input_object, input_objects);
+                return extract_whole_input_object_tree(input_object, input_objects);
             }
 
             let mut output_values = Vec::with_capacity(inner_values.len());
@@ -171,17 +175,29 @@ pub fn extract_input_objects_from_values<'query, 'schema>(
     }
 }
 
-pub fn extract_whole_input_object<'schema>(
+pub fn extract_whole_input_object_tree<'schema>(
     input_object: &schema::InputObjectDetails<'schema>,
     input_objects: &mut InputObjectSet<'schema>,
+) -> Result<Rc<InputObject<'schema>>, Error> {
+    let mut object_map = HashMap::new();
+
+    let rv = extract_whole_input_object(input_object, &mut object_map)?;
+
+    input_objects.extend(object_map.into_iter().map(|(_, obj)| obj));
+
+    Ok(rv)
+}
+
+fn extract_whole_input_object<'schema>(
+    input_object: &schema::InputObjectDetails<'schema>,
+    input_objects: &mut HashMap<schema::InputObjectDetails<'schema>, Rc<InputObject<'schema>>>,
 ) -> Result<Rc<InputObject<'schema>>, Error> {
     let mut fields = Vec::new();
     let mut adjacents = Vec::new();
 
-    // TODO: Whole input objects can be recursive, so probably
-    // need some base cases in here...
-    //
-    // Might be a case for generic traversal code that can handle this?
+    if let Some(existing_obj) = input_objects.get(input_object) {
+        return Ok(Rc::clone(existing_obj));
+    }
 
     for field in &input_object.fields {
         let field_type = field.value_type.inner_ref().lookup()?;
@@ -202,11 +218,7 @@ pub fn extract_whole_input_object<'schema>(
         fields,
     });
 
-    if let Some(existing_obj) = input_objects.get(&rv) {
-        return Ok(Rc::clone(existing_obj));
-    }
-
-    input_objects.insert(Rc::clone(&rv));
+    input_objects.insert(input_object.clone(), Rc::clone(&rv));
 
     Ok(rv)
 }
