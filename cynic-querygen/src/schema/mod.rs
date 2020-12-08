@@ -6,7 +6,7 @@ mod type_refs;
 pub use fields::*;
 pub use parser::*;
 pub use type_index::{GraphPath, TypeIndex};
-pub use type_refs::{InputTypeRef, OutputTypeRef};
+pub use type_refs::{InputTypeRef, OutputTypeRef, TypeRef};
 
 use std::{convert::TryFrom, rc::Rc};
 
