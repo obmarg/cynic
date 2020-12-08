@@ -91,8 +91,8 @@ impl<'query, 'doc, 'schema> FieldSelection<'query, 'schema> {
     }
 }
 
-/// Use a BTreeSet here as we want a deterministic order of output for a
-/// given document
+// Use a BTreeSet here as we want a deterministic order of output for a
+// given document
 type SelectionSetSet<'query, 'schema> = BTreeSet<Rc<SelectionSet<'query, 'schema>>>;
 
 #[derive(Debug, PartialEq)]
