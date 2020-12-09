@@ -24,7 +24,7 @@ add the following under the `[dependencies]` section:
 
 ```toml
 cynic = { version = "0.10", features = ["surf"] }
-surf = "2.0.0-alpha.7"
+surf = "2.0.0"
 ```
 
 Note that we've added the `surf` feature flag of `cynic` - this pulls in some
