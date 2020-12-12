@@ -146,7 +146,13 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
             }
             TypedValue::Int(num, _) => num.to_string(),
             TypedValue::Float(num, _) => num.map(|d| d.to_string()).unwrap_or("null".to_string()),
-            TypedValue::String(s, _) => format!("\"{}\".into()", s),
+            TypedValue::String(s, field_type) => {
+                if field_type.inner_name() == "ID" {
+                    format!("cynic::Id::new(\"{}\")", s)
+                } else {
+                    format!("\"{}\".into()", s)
+                }
+            }
             TypedValue::Boolean(b, _) => b.to_string(),
             TypedValue::Null(_) => "None".into(),
             TypedValue::Enum(v, field_type) => {
