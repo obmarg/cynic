@@ -136,7 +136,7 @@ fn normalise_operation<'query, 'doc, 'schema>(
 ) -> Result<NormalisedOperation<'query, 'schema>, Error> {
     match operation {
         OperationDefinition::SelectionSet(selection_set) => {
-            let mut normaliser = Normaliser::new(type_index, fragment_map, &[], selection_sets_out);
+            let mut normaliser = Normaliser::new(type_index, fragment_map, selection_sets_out, &[]);
             let root =
                 normaliser.normalise_selection_set(&selection_set, GraphPath::for_query())?;
 
@@ -144,18 +144,16 @@ fn normalise_operation<'query, 'doc, 'schema>(
                 root,
                 name: None,
                 kind: OperationKind::Query,
-                variables: vec![],
+                variables: normaliser.variables,
             })
         }
         OperationDefinition::Query(query) => {
-            let variables = query
-                .variable_definitions
-                .iter()
-                .map(|var| Variable::from(var, type_index))
-                .collect::<Vec<_>>();
-
-            let mut normaliser =
-                Normaliser::new(type_index, fragment_map, &variables, selection_sets_out);
+            let mut normaliser = Normaliser::new(
+                type_index,
+                fragment_map,
+                selection_sets_out,
+                &query.variable_definitions,
+            );
 
             let root =
                 normaliser.normalise_selection_set(&query.selection_set, GraphPath::for_query())?;
@@ -164,18 +162,16 @@ fn normalise_operation<'query, 'doc, 'schema>(
                 root,
                 name: query.name,
                 kind: OperationKind::Query,
-                variables,
+                variables: normaliser.variables,
             })
         }
         OperationDefinition::Mutation(mutation) => {
-            let variables = mutation
-                .variable_definitions
-                .iter()
-                .map(|var| Variable::from(var, type_index))
-                .collect::<Vec<_>>();
-
-            let mut normaliser =
-                Normaliser::new(type_index, fragment_map, &variables, selection_sets_out);
+            let mut normaliser = Normaliser::new(
+                type_index,
+                fragment_map,
+                selection_sets_out,
+                &mutation.variable_definitions,
+            );
 
             let root = normaliser
                 .normalise_selection_set(&mutation.selection_set, GraphPath::for_mutation())?;
@@ -184,7 +180,7 @@ fn normalise_operation<'query, 'doc, 'schema>(
                 root,
                 name: mutation.name,
                 kind: OperationKind::Mutation,
-                variables,
+                variables: normaliser.variables,
             })
         }
         OperationDefinition::Subscription(_) => Err(Error::UnsupportedQueryDocument(
@@ -196,22 +192,25 @@ fn normalise_operation<'query, 'doc, 'schema>(
 struct Normaliser<'a, 'query, 'schema, 'doc> {
     type_index: &'a Rc<TypeIndex<'schema>>,
     fragment_map: &'a FragmentMap<'query, 'doc>,
-    variable_definitions: &'a [Variable<'query, 'schema>],
     selection_sets_out: &'a mut SelectionSetSet<'query, 'schema>,
+    variables: Vec<Variable<'query, 'schema>>,
 }
 
 impl<'a, 'query, 'schema, 'doc> Normaliser<'a, 'query, 'schema, 'doc> {
     fn new(
         type_index: &'a Rc<TypeIndex<'schema>>,
         fragment_map: &'a FragmentMap<'query, 'doc>,
-        variable_definitions: &'a [Variable<'query, 'schema>],
         selection_sets_out: &'a mut SelectionSetSet<'query, 'schema>,
+        variable_definitions: &'a [parser::VariableDefinition<'query>],
     ) -> Self {
         Normaliser {
             type_index,
             fragment_map,
-            variable_definitions,
             selection_sets_out,
+            variables: variable_definitions
+                .iter()
+                .map(|var| Variable::from(var, type_index))
+                .collect(),
         }
     }
 
@@ -270,7 +269,7 @@ impl<'a, 'query, 'schema, 'doc> Normaliser<'a, 'query, 'schema, 'doc> {
                         TypedValue::from_query_value(
                             value,
                             schema_arg.value_type.clone(),
-                            self.variable_definitions,
+                            &self.variables,
                         )?,
                     ));
                 }
