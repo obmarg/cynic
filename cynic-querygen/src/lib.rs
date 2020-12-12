@@ -56,6 +56,12 @@ pub enum Error {
 
     #[error("expected a value that is or contains an input object")]
     ExpectedInputObjectValue,
+
+    #[error("couldn't find a fragment named {0}")]
+    UnknownFragment(String),
+
+    #[error("Tried to apply a fragment for a {0} type on a {1} type")]
+    TypeConditionFailed(String, String),
 }
 
 #[derive(Debug)]

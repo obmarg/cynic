@@ -7,7 +7,8 @@ use std::{
 
 use super::{
     parser::{
-        self, Definition, Document, FragmentDefinition, OperationDefinition, VariableDefinition,
+        self, Definition, Document, FragmentDefinition, OperationDefinition, TypeCondition,
+        VariableDefinition,
     },
     sorting::Vertex,
     value::TypedValue,
@@ -129,69 +130,57 @@ pub fn normalise<'query, 'doc, 'schema>(
 
 fn normalise_operation<'query, 'doc, 'schema>(
     operation: &'doc OperationDefinition<'query>,
-    _fragment_map: &FragmentMap<'query, 'doc>,
+    fragment_map: &FragmentMap<'query, 'doc>,
     type_index: &'doc Rc<TypeIndex<'schema>>,
     selection_sets_out: &mut SelectionSetSet<'query, 'schema>,
 ) -> Result<NormalisedOperation<'query, 'schema>, Error> {
     match operation {
         OperationDefinition::SelectionSet(selection_set) => {
-            let root = normalise_selection_set(
-                &selection_set,
-                type_index,
-                GraphPath::for_query(),
-                &[],
-                selection_sets_out,
-            )?;
+            let mut normaliser = Normaliser::new(type_index, fragment_map, selection_sets_out, &[]);
+            let root =
+                normaliser.normalise_selection_set(&selection_set, GraphPath::for_query())?;
 
             Ok(NormalisedOperation {
                 root,
                 name: None,
                 kind: OperationKind::Query,
-                variables: vec![],
+                variables: normaliser.variables,
             })
         }
         OperationDefinition::Query(query) => {
-            let variables = query
-                .variable_definitions
-                .iter()
-                .map(|var| Variable::from(var, type_index))
-                .collect::<Vec<_>>();
-
-            let root = normalise_selection_set(
-                &query.selection_set,
+            let mut normaliser = Normaliser::new(
                 type_index,
-                GraphPath::for_query(),
-                &variables,
+                fragment_map,
                 selection_sets_out,
-            )?;
+                &query.variable_definitions,
+            );
+
+            let root =
+                normaliser.normalise_selection_set(&query.selection_set, GraphPath::for_query())?;
 
             Ok(NormalisedOperation {
                 root,
                 name: query.name,
                 kind: OperationKind::Query,
-                variables,
+                variables: normaliser.variables,
             })
         }
         OperationDefinition::Mutation(mutation) => {
-            let variables = mutation
-                .variable_definitions
-                .iter()
-                .map(|var| Variable::from(var, type_index))
-                .collect::<Vec<_>>();
-
-            let root = normalise_selection_set(
-                &mutation.selection_set,
+            let mut normaliser = Normaliser::new(
                 type_index,
-                GraphPath::for_mutation(),
-                &variables,
+                fragment_map,
                 selection_sets_out,
-            )?;
+                &mutation.variable_definitions,
+            );
+
+            let root = normaliser
+                .normalise_selection_set(&mutation.selection_set, GraphPath::for_mutation())?;
 
             Ok(NormalisedOperation {
                 root,
                 name: mutation.name,
                 kind: OperationKind::Mutation,
-                variables,
+                variables: normaliser.variables,
             })
         }
         OperationDefinition::Subscription(_) => Err(Error::UnsupportedQueryDocument(
@@ -200,32 +189,71 @@ fn normalise_operation<'query, 'doc, 'schema>(
     }
 }
 
-fn normalise_selection_set<'query, 'schema>(
-    selection_set: &parser::SelectionSet<'query>,
-    type_index: &Rc<TypeIndex<'schema>>,
-    current_path: GraphPath<'query>,
-    variable_definitions: &[Variable<'query, 'schema>],
-    selection_sets_out: &mut SelectionSetSet<'query, 'schema>,
-) -> Result<Rc<SelectionSet<'query, 'schema>>, Error> {
-    let mut selections = Vec::new();
+struct Normaliser<'a, 'query, 'schema, 'doc> {
+    type_index: &'a Rc<TypeIndex<'schema>>,
+    fragment_map: &'a FragmentMap<'query, 'doc>,
+    selection_sets_out: &'a mut SelectionSetSet<'query, 'schema>,
+    variables: Vec<Variable<'query, 'schema>>,
+}
 
-    for item in &selection_set.items {
-        match item {
+impl<'a, 'query, 'schema, 'doc> Normaliser<'a, 'query, 'schema, 'doc> {
+    fn new(
+        type_index: &'a Rc<TypeIndex<'schema>>,
+        fragment_map: &'a FragmentMap<'query, 'doc>,
+        selection_sets_out: &'a mut SelectionSetSet<'query, 'schema>,
+        variable_definitions: &'a [parser::VariableDefinition<'query>],
+    ) -> Self {
+        Normaliser {
+            type_index,
+            fragment_map,
+            selection_sets_out,
+            variables: variable_definitions
+                .iter()
+                .map(|var| Variable::from(var, type_index))
+                .collect(),
+        }
+    }
+
+    fn normalise_selection_set(
+        &mut self,
+        selection_set: &parser::SelectionSet<'query>,
+        current_path: GraphPath<'query>,
+    ) -> Result<Rc<SelectionSet<'query, 'schema>>, Error> {
+        let mut selections = Vec::new();
+
+        for item in &selection_set.items {
+            selections.extend(self.convert_selection(item, &current_path)?);
+        }
+
+        let rv = Rc::new(SelectionSet {
+            target_type: self.type_index.type_for_path(&current_path)?.try_into()?,
+            selections,
+        });
+
+        if let Some(existing_value) = self.selection_sets_out.get(&rv) {
+            return Ok(Rc::clone(existing_value));
+        }
+
+        self.selection_sets_out.insert(Rc::clone(&rv));
+
+        Ok(rv)
+    }
+
+    fn convert_selection(
+        &mut self,
+        selection: &parser::Selection<'query>,
+        current_path: &GraphPath<'query>,
+    ) -> Result<Vec<Selection<'query, 'schema>>, Error> {
+        match selection {
             parser::Selection::Field(field) => {
                 let new_path = current_path.push(field.name);
 
-                let schema_field = type_index.field_for_path(&new_path)?;
+                let schema_field = self.type_index.field_for_path(&new_path)?;
 
                 let inner_field = if field.selection_set.items.is_empty() {
                     Field::Leaf
                 } else {
-                    Field::Composite(normalise_selection_set(
-                        &field.selection_set,
-                        type_index,
-                        new_path,
-                        variable_definitions,
-                        selection_sets_out,
-                    )?)
+                    Field::Composite(self.normalise_selection_set(&field.selection_set, new_path)?)
                 };
 
                 let mut arguments = Vec::new();
@@ -241,36 +269,67 @@ fn normalise_selection_set<'query, 'schema>(
                         TypedValue::from_query_value(
                             value,
                             schema_arg.value_type.clone(),
-                            variable_definitions,
+                            &self.variables,
                         )?,
                     ));
                 }
 
-                selections.push(Selection::Field(FieldSelection::new(
+                Ok(vec![Selection::Field(FieldSelection::new(
                     field.name,
                     field.alias,
                     arguments,
                     schema_field,
                     inner_field,
-                )?));
+                )?)])
             }
-            parser::Selection::FragmentSpread(_) => todo!(),
-            parser::Selection::InlineFragment(_) => todo!(),
+            parser::Selection::FragmentSpread(spread) => {
+                let fragment = self
+                    .fragment_map
+                    .get(spread.fragment_name)
+                    .ok_or_else(|| Error::UnknownFragment(spread.fragment_name.to_string()))?;
+
+                let TypeCondition::On(condition) = fragment.type_condition;
+                let current_type = self.type_index.type_name_for_path(&current_path)?;
+                if condition != current_type {
+                    return Err(Error::TypeConditionFailed(
+                        condition.to_string(),
+                        current_type.to_string(),
+                    ));
+                }
+
+                Ok(fragment
+                    .selection_set
+                    .items
+                    .iter()
+                    .map(|item| self.convert_selection(item, current_path))
+                    .collect::<Result<Vec<_>, _>>()?
+                    .into_iter()
+                    .flatten()
+                    .collect())
+            }
+            parser::Selection::InlineFragment(fragment) => {
+                if let Some(TypeCondition::On(condition)) = fragment.type_condition {
+                    let current_type = self.type_index.type_name_for_path(&current_path)?;
+                    if condition != current_type {
+                        return Err(Error::TypeConditionFailed(
+                            condition.to_string(),
+                            current_type.to_string(),
+                        ));
+                    }
+                }
+
+                Ok(fragment
+                    .selection_set
+                    .items
+                    .iter()
+                    .map(|item| self.convert_selection(item, current_path))
+                    .collect::<Result<Vec<_>, _>>()?
+                    .into_iter()
+                    .flatten()
+                    .collect())
+            }
         }
     }
-
-    let rv = Rc::new(SelectionSet {
-        target_type: type_index.type_for_path(&current_path)?.try_into()?,
-        selections,
-    });
-
-    if let Some(existing_value) = selection_sets_out.get(&rv) {
-        return Ok(Rc::clone(existing_value));
-    }
-
-    selection_sets_out.insert(Rc::clone(&rv));
-
-    Ok(rv)
 }
 
 impl<'query, 'schema> Variable<'query, 'schema> {
@@ -347,6 +406,8 @@ impl<'query, 'schema> SelectionSet<'query, 'schema> {
 mod tests {
     use super::*;
     use crate::schema;
+
+    use assert_matches::assert_matches;
 
     #[test]
     fn normalise_deduplicates_identical_selections() {
@@ -439,6 +500,127 @@ mod tests {
         let normalised = normalise(&query, &type_index).unwrap();
 
         insta::assert_debug_snapshot!(normalised);
+    }
+
+    #[test]
+    fn check_fragment_spread_output() {
+        let schema = load_schema();
+        let type_index = Rc::new(TypeIndex::from_schema(&schema));
+        let query = graphql_parser::parse_query::<&str>(
+            r#"
+            fragment FilmFields on Film {
+              id
+              title
+            }
+            query AllFilms {
+              allFilms {
+                films {
+                    ...FilmFields
+                }
+              }
+              film(id: "abcd") {
+                ...FilmFields
+              }
+            }
+            "#,
+        )
+        .unwrap();
+
+        let normalised = normalise(&query, &type_index).unwrap();
+
+        let film_selections = normalised
+            .selection_sets
+            .iter()
+            .filter(|s| s.target_type.name() == "Film")
+            .collect::<Vec<_>>();
+
+        assert_eq!(film_selections.len(), 1);
+
+        insta::assert_debug_snapshot!(film_selections.get(0).unwrap().selections);
+    }
+
+    #[test]
+    fn check_fragment_type_mismatches() {
+        let schema = load_schema();
+        let type_index = Rc::new(TypeIndex::from_schema(&schema));
+        let query = graphql_parser::parse_query::<&str>(
+            r#"
+            fragment FilmFields on Film {
+              id
+              title
+            }
+
+            query AllFilms {
+              allFilms {
+                ...FilmFields
+              }
+            }
+            "#,
+        )
+        .unwrap();
+
+        assert_matches!(
+            normalise(&query, &type_index),
+            Err(Error::TypeConditionFailed(_, _))
+        )
+    }
+
+    #[test]
+    fn check_inline_fragment_output() {
+        let schema = load_schema();
+        let type_index = Rc::new(TypeIndex::from_schema(&schema));
+        let query = graphql_parser::parse_query::<&str>(
+            r#"
+            query AllFilms {
+              allFilms {
+                films {
+                    ... on Film {
+                      id
+                    }
+                    ... on Film {
+                      title
+                    }
+                }
+              }
+            }
+            "#,
+        )
+        .unwrap();
+
+        let normalised = normalise(&query, &type_index).unwrap();
+
+        let film_selections = normalised
+            .selection_sets
+            .iter()
+            .filter(|s| s.target_type.name() == "Film")
+            .collect::<Vec<_>>();
+
+        assert_eq!(film_selections.len(), 1);
+
+        insta::assert_debug_snapshot!(film_selections.get(0).unwrap().selections);
+    }
+
+    #[test]
+    fn check_inline_fragment_type_mismatches() {
+        let schema = load_schema();
+        let type_index = Rc::new(TypeIndex::from_schema(&schema));
+        let query = graphql_parser::parse_query::<&str>(
+            r#"
+            query AllFilms {
+              allFilms {
+                ... on Film {
+                  id
+                }
+              }
+            }
+            "#,
+        )
+        .unwrap();
+
+        assert_matches!(
+            normalise(&query, &type_index),
+            Err(Error::TypeConditionFailed(_, _))
+        )
     }
 
     fn load_schema() -> schema::Document<'static> {

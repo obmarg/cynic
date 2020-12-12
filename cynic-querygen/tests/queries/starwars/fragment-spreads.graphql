@@ -1,0 +1,16 @@
+fragment FilmFields on Film {
+  id
+  title
+}
+
+query AllFilms {
+  allFilms {
+    films {
+      ...FilmFields
+    }
+  }
+
+  film(id: "ZmlsbXM6MQ==") {
+    ...FilmFields
+  }
+}

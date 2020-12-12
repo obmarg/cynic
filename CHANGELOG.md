@@ -22,6 +22,8 @@ all APIs might be changed.
 
 - Cynic now supports recursive queries via the `#[cynic(recurse="N")]`
   attribute on fields that recurse.
+- The generator now understands query fragments, spreads and inline fragment
+  spreads.  Inline fragments for interface/union types are not yet supported.
 
 ### Bug Fixes
 
