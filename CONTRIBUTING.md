@@ -34,7 +34,7 @@ If you have any questions about how to do anything or otherwise need help, pleas
 You can do this by:
 
 1. [Joining the discord server][Discord]
-2. [Opening an issue on this repository][NewIssue]
+2. [Asking in Discussions][Discussions]
 
 ## Coding Guidelines
 
@@ -54,6 +54,6 @@ You can do this by:
    
 [COC]: ./CODE_OF_CONDUCT.md
 [Discord]: https://discord.gg/Y5xDmDP
-[NewIssue]: https://github.com/obmarg/cynic/issues/new
+[Discussions]: https://github.com/obmarg/cynic/discussions/new
 [GFI]: https://github.com/obmarg/cynic/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22
 [Milestones]: https://github.com/obmarg/cynic/milestones
