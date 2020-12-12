@@ -308,7 +308,27 @@ impl<'a, 'query, 'schema, 'doc> Normaliser<'a, 'query, 'schema, 'doc> {
                     .flatten()
                     .collect())
             }
-            parser::Selection::InlineFragment(_) => todo!(),
+            parser::Selection::InlineFragment(fragment) => {
+                if let Some(TypeCondition::On(condition)) = fragment.type_condition {
+                    let current_type = self.type_index.type_name_for_path(&current_path)?;
+                    if condition != current_type {
+                        return Err(Error::TypeConditionFailed(
+                            condition.to_string(),
+                            current_type.to_string(),
+                        ));
+                    }
+                }
+
+                Ok(fragment
+                    .selection_set
+                    .items
+                    .iter()
+                    .map(|item| self.convert_selection(item, current_path))
+                    .collect::<Result<Vec<_>, _>>()?
+                    .into_iter()
+                    .flatten()
+                    .collect())
+            }
         }
     }
 }
@@ -534,6 +554,64 @@ mod tests {
             query AllFilms {
               allFilms {
                 ...FilmFields
+              }
+            }
+            "#,
+        )
+        .unwrap();
+
+        assert_matches!(
+            normalise(&query, &type_index),
+            Err(Error::TypeConditionFailed(_, _))
+        )
+    }
+
+    #[test]
+    fn check_inline_fragment_output() {
+        let schema = load_schema();
+        let type_index = Rc::new(TypeIndex::from_schema(&schema));
+        let query = graphql_parser::parse_query::<&str>(
+            r#"
+            query AllFilms {
+              allFilms {
+                films {
+                    ... on Film {
+                      id
+                    }
+                    ... on Film {
+                      title
+                    }
+                }
+              }
+            }
+            "#,
+        )
+        .unwrap();
+
+        let normalised = normalise(&query, &type_index).unwrap();
+
+        let film_selections = normalised
+            .selection_sets
+            .iter()
+            .filter(|s| s.target_type.name() == "Film")
+            .collect::<Vec<_>>();
+
+        assert_eq!(film_selections.len(), 1);
+
+        insta::assert_debug_snapshot!(film_selections.get(0).unwrap().selections);
+    }
+
+    #[test]
+    fn check_inline_fragment_type_mismatches() {
+        let schema = load_schema();
+        let type_index = Rc::new(TypeIndex::from_schema(&schema));
+        let query = graphql_parser::parse_query::<&str>(
+            r#"
+            query AllFilms {
+              allFilms {
+                ... on Film {
+                  id
+                }
               }
             }
             "#,

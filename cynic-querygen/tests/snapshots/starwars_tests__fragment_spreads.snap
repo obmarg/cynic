@@ -13,7 +13,7 @@ mod queries {
     #[cynic(graphql_type = "Root")]
     pub struct AllFilms {
         pub all_films: Option<FilmsConnection>,
-        #[arguments(id = "abcd".into())]
+        #[arguments(id = cynic::Id::new("ZmlsbXM6MQ=="))]
         pub film: Option<Film>,
     }
 
