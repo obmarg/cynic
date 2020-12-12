@@ -22,3 +22,4 @@ macro_rules! test_query_file {
 test_query_file!(sanity_test_starwars_query, "sanity.graphql");
 test_query_file!(test_nested_arguments, "nested-arguments.graphql");
 test_query_file!(bare_selection_sets, "bare-selection-set.graphql");
+test_query_file!(multiple_queries, "multiple-queries.graphql");

@@ -67,8 +67,8 @@ fn make_query_fragment<'text>(
     namer: &mut Namer<Rc<normalisation::SelectionSet<'text, 'text>>>,
     argument_struct_details: &ArgumentStructDetails<'text, 'text, '_>,
 ) -> Result<output::QueryFragment<'text, 'text>, Error> {
-    use normalisation::Selection;
-    use output::{FieldArgument, OutputField, QueryFragment};
+    use normalisation::{Field, Selection};
+    use output::{FieldArgument, OutputField, QueryFragment, RustOutputFieldType};
 
     Ok(QueryFragment {
         fields: selection
@@ -78,9 +78,17 @@ fn make_query_fragment<'text>(
                 Selection::Field(field) => {
                     let schema_field = &field.schema_field;
 
+                    let inner_type_name = match &field.field {
+                        Field::Leaf => schema_field.value_type.inner_name().to_string(),
+                        Field::Composite(ss) => namer.name_subject(ss),
+                    };
+
                     OutputField {
                         name: schema_field.name,
-                        field_type: schema_field.value_type.clone(),
+                        field_type: RustOutputFieldType::from_schema_type(
+                            &schema_field.value_type,
+                            inner_type_name,
+                        ),
                         arguments: field
                             .arguments
                             .iter()

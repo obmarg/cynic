@@ -1,6 +1,6 @@
 use std::{borrow::Cow, rc::Rc};
 
-use super::{parser, InputType, InputTypeRef, OutputType, OutputTypeRef, TypeIndex};
+use super::{parser, InputType, InputTypeRef, OutputTypeRef, TypeIndex};
 use crate::Error;
 
 /// A field on an output type i.e. an object or interface
@@ -50,54 +50,11 @@ impl<'schema> OutputField<'schema> {
 }
 
 impl<'schema> OutputFieldType<'schema> {
-    pub fn type_spec(&self) -> Cow<'schema, str> {
-        output_type_spec_imp(self, true)
-    }
-
     pub fn inner_name(&self) -> Cow<'schema, str> {
         match self {
             OutputFieldType::NamedType(name) => name.type_name.clone(),
             OutputFieldType::NonNullType(inner) => inner.inner_name(),
             OutputFieldType::ListType(inner) => inner.inner_name(),
-        }
-    }
-}
-
-fn output_type_spec_imp<'schema>(
-    ty: &OutputFieldType<'schema>,
-    nullable: bool,
-) -> Cow<'schema, str> {
-    use inflector::Inflector;
-
-    if let OutputFieldType::NonNullType(inner) = ty {
-        return output_type_spec_imp(inner, false);
-    }
-
-    if nullable {
-        return Cow::Owned(format!("Option<{}>", output_type_spec_imp(ty, false)));
-    }
-
-    match ty {
-        OutputFieldType::ListType(inner) => {
-            Cow::Owned(format!("Vec<{}>", output_type_spec_imp(inner, true)))
-        }
-
-        OutputFieldType::NonNullType(_) => panic!("NonNullType somehow got past an if let"),
-
-        OutputFieldType::NamedType(s) => {
-            match s.type_name.as_ref() {
-                "Int" => return Cow::Borrowed("i32"),
-                "Float" => return Cow::Borrowed("f64"),
-                "Boolean" => return Cow::Borrowed("bool"),
-                "ID" => return Cow::Borrowed("cynic::Id"),
-                _ => {}
-            }
-
-            match s.lookup() {
-                Ok(OutputType::Enum(_)) => Cow::Owned(s.type_name.to_pascal_case()),
-                Ok(OutputType::Object(_)) => Cow::Owned(s.type_name.to_pascal_case()),
-                _ => s.type_name.clone(),
-            }
         }
     }
 }
