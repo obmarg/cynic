@@ -11,7 +11,7 @@ mod queries {
 
     #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "Query")]
-    pub struct Query {
+    pub struct UnnamedQuery {
         #[arguments(owner = "obmarg".into(), name = "cynic".into())]
         pub repository: Option<Repository>,
     }

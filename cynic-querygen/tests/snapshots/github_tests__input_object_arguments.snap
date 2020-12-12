@@ -14,34 +14,6 @@ mod queries {
         pub pr_order: IssueOrder,
     }
 
-    #[derive(cynic::InputObject, Debug)]
-    #[cynic(graphql_type = "IssueOrder", rename_all="camelCase")]
-    pub struct IssueOrder {
-        pub direction: OrderDirection,
-        pub field: IssueOrderField,
-    }
-
-    #[derive(cynic::Enum, Clone, Copy, Debug)]
-    #[cynic(
-        graphql_type = "OrderDirection",
-        rename_all = "SCREAMING_SNAKE_CASE"
-    )]
-    pub enum OrderDirection {
-        Asc,
-        Desc,
-    }
-
-    #[derive(cynic::Enum, Clone, Copy, Debug)]
-    #[cynic(
-        graphql_type = "IssueOrderField",
-        rename_all = "SCREAMING_SNAKE_CASE"
-    )]
-    pub enum IssueOrderField {
-        Comments,
-        CreatedAt,
-        UpdatedAt,
-    }
-
     #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "Query", argument_struct = "PullRequestTitlesArguments")]
     pub struct PullRequestTitles {
@@ -66,6 +38,34 @@ mod queries {
     #[cynic(graphql_type = "PullRequest")]
     pub struct PullRequest {
         pub title: String,
+    }
+
+    #[derive(cynic::Enum, Clone, Copy, Debug)]
+    #[cynic(
+        graphql_type = "IssueOrderField",
+        rename_all = "SCREAMING_SNAKE_CASE"
+    )]
+    pub enum IssueOrderField {
+        Comments,
+        CreatedAt,
+        UpdatedAt,
+    }
+
+    #[derive(cynic::Enum, Clone, Copy, Debug)]
+    #[cynic(
+        graphql_type = "OrderDirection",
+        rename_all = "SCREAMING_SNAKE_CASE"
+    )]
+    pub enum OrderDirection {
+        Asc,
+        Desc,
+    }
+
+    #[derive(cynic::InputObject, Debug)]
+    #[cynic(graphql_type = "IssueOrder", rename_all="camelCase")]
+    pub struct IssueOrder {
+        pub direction: OrderDirection,
+        pub field: IssueOrderField,
     }
 
 }

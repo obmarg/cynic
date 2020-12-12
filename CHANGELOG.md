@@ -30,6 +30,20 @@ all APIs might be changed.
 - Paths output as part of generator are now all raw strings, so should support
   windows path separators.
 
+### Changes
+
+- The generator is now a lot more thorough, it:
+  - Deduplicates generated types
+  - Supports multiple queries, sharing structs between all the generated queries
+    as appropriate.
+  - Generates unique names for each struct it creates, even when faced with
+    different structs targetting the same type.
+  - Generates partial InputObjects when faced with literals with missing fields
+    (previously it would generate all fields even when unused)
+  - Correctly generates different argument structs if a single type with
+    arguments is used in multiple queries.  Though the correct IntoArgument impl
+    is not yet generated.
+
 ## v0.10.1 - 2020-11-04
 
 ## Bug Fixes

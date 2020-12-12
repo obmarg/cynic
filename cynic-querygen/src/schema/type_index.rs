@@ -1,5 +1,5 @@
 use graphql_parser::schema::{Definition, ScalarType};
-use std::collections::HashMap;
+use std::{borrow::Cow, collections::HashMap, rc::Rc};
 
 use crate::{
     schema::{Document, Field, TypeDefinition},
@@ -7,14 +7,16 @@ use crate::{
     Error,
 };
 
-pub struct TypeIndex<'a> {
-    types: HashMap<&'a str, TypeDefinition<'a>>,
+use super::{OutputField, Type};
+
+pub struct TypeIndex<'schema> {
+    types: HashMap<&'schema str, TypeDefinition<'schema>>,
     query_root: String,
     mutation_root: String,
 }
 
-impl<'a> TypeIndex<'a> {
-    pub fn from_schema(schema: &'a Document<'a>) -> TypeIndex<'a> {
+impl<'schema> TypeIndex<'schema> {
+    pub fn from_schema(schema: &'_ Document<'schema>) -> TypeIndex<'schema> {
         let types = schema
             .definitions
             .iter()
@@ -44,50 +46,78 @@ impl<'a> TypeIndex<'a> {
         rv
     }
 
-    pub fn field_for_path<'b>(&'a self, path: &GraphPath) -> Result<&'a Field<'a>, Error> {
+    pub fn field_for_path<'path>(
+        self: &Rc<TypeIndex<'schema>>,
+        path: &GraphPath<'path>,
+    ) -> Result<OutputField<'schema>, Error> {
         let root_name = match path.operation_type {
-            OperationType::Query => &self.query_root,
-            OperationType::Mutation => &self.mutation_root,
-        }
-        .as_str();
+            OperationType::Query => self.query_root.clone(),
+            OperationType::Mutation => self.mutation_root.clone(),
+        };
 
-        let root = self.types.get(root_name).unwrap();
-        if let TypeDefinition::Object(root_object) = root {
-            self.find_field_recursive(&root_object.fields, root_name, &path.path)
+        let root = self.types.get(root_name.as_str()).unwrap();
+        let field = if let TypeDefinition::Object(root_object) = root {
+            self.find_field_recursive(&root_object.fields, root_name.as_str(), &path.path)?
         } else {
-            Err(Error::ExpectedObject(root_name.to_string()))
-        }
+            return Err(Error::ExpectedObject(root_name.to_string()));
+        };
+
+        Ok(OutputField::from_parser(field, &self))
     }
 
     // Looks up the name of the type at Path.
-    pub fn type_name_for_path(&'a self, path: &GraphPath) -> Result<&'a str, Error> {
+    pub fn type_name_for_path<'path>(
+        self: &Rc<Self>,
+        path: &GraphPath<'path>,
+    ) -> Result<Cow<'schema, str>, Error> {
         match (path.is_root(), &path.operation_type) {
-            (true, OperationType::Query) => Ok(&self.query_root),
-            (true, OperationType::Mutation) => Ok(&self.mutation_root),
-            (false, _) => Ok(self.field_for_path(path)?.field_type.inner_name()),
+            (true, OperationType::Query) => Ok(Cow::Owned(self.query_root.clone())),
+            (true, OperationType::Mutation) => Ok(Cow::Owned(self.mutation_root.clone())),
+            (false, _) => Ok(Cow::Owned(
+                self.field_for_path(path)?
+                    .value_type
+                    .inner_name()
+                    .to_string(),
+            )),
         }
     }
 
-    pub fn lookup_type(&self, name: &str) -> Option<&TypeDefinition<'a>> {
-        self.types.get(name)
+    pub fn lookup_type(self: &Rc<Self>, name: &str) -> Result<Type<'schema>, Error> {
+        let type_def = self
+            .types
+            .get(name)
+            .ok_or_else(|| Error::UnknownType(name.to_string()))?;
+
+        Ok(Type::from_type_defintion(type_def, &self))
     }
 
-    fn find_field_recursive<'b>(
-        &'a self,
-        fields: &'a [Field<'a>],
-        current_type_name: &'a str,
-        path: &[&'b str],
-    ) -> Result<&'a Field<'a>, Error> {
-        let get_field = |name| fields.iter().find(|field| field.name == name);
+    pub fn type_for_path<'path>(
+        self: &Rc<Self>,
+        path: &GraphPath<'path>,
+    ) -> Result<Type<'schema>, Error> {
+        let type_name = self.type_name_for_path(path)?;
+        self.lookup_type(type_name.as_ref())
+    }
 
+    fn find_field_recursive<'find, 'path>(
+        &'find self,
+        fields: &'find [Field<'schema>],
+        current_type_name: &str,
+        path: &[&'path str],
+    ) -> Result<&'find Field<'schema>, Error> {
         match path {
             [] => panic!("This shouldn't happen"),
-            [first] => get_field(*first).ok_or(Error::UnknownField(
-                first.to_string(),
-                current_type_name.to_string(),
-            )),
+            [first] => fields
+                .iter()
+                .find(|field| field.name == *first)
+                .ok_or(Error::UnknownField(
+                    first.to_string(),
+                    current_type_name.to_string(),
+                )),
             [first, rest @ ..] => {
-                let inner_name = get_field(first)
+                let inner_name = fields
+                    .iter()
+                    .find(|field| field.name == *first)
                     .ok_or(Error::UnknownField(
                         first.to_string(),
                         current_type_name.to_string(),

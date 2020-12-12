@@ -1,0 +1,114 @@
+---
+source: cynic-querygen/tests/starwars-tests.rs
+expression: "document_to_fragment_structs(query, schema,\n                             &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
+---
+#[cynic::query_module(
+    schema_path = r#"schema.graphql"#,
+    query_module = "query_dsl",
+)]
+mod queries {
+    use super::{query_dsl, types::*};
+
+    #[derive(cynic::FragmentArguments, Debug)]
+    pub struct SingleFilmArguments {
+        pub id: cynic::Id,
+    }
+
+    #[derive(cynic::QueryFragment, Debug)]
+    #[cynic(graphql_type = "Root", argument_struct = "SingleFilmArguments")]
+    pub struct SingleFilm {
+        #[arguments(id = &args.id)]
+        pub film: Option<Film>,
+    }
+
+    #[derive(cynic::QueryFragment, Debug)]
+    #[cynic(graphql_type = "Root")]
+    pub struct StarshipsAndFilms {
+        pub all_starships: Option<StarshipsConnection>,
+    }
+
+    #[derive(cynic::QueryFragment, Debug)]
+    #[cynic(graphql_type = "StarshipsConnection")]
+    pub struct StarshipsConnection {
+        pub starships: Option<Vec<Option<Starship>>>,
+    }
+
+    #[derive(cynic::QueryFragment, Debug)]
+    #[cynic(graphql_type = "Starship")]
+    pub struct Starship {
+        pub id: cynic::Id,
+        pub starship_class: Option<String>,
+        pub film_connection: Option<StarshipFilmsConnection>,
+    }
+
+    #[derive(cynic::QueryFragment, Debug)]
+    #[cynic(graphql_type = "StarshipFilmsConnection")]
+    pub struct StarshipFilmsConnection {
+        pub films: Option<Vec<Option<Film>>>,
+    }
+
+    #[derive(cynic::QueryFragment, Debug)]
+    #[cynic(graphql_type = "Root")]
+    pub struct PlanetsAndFilms {
+        pub all_planets: Option<PlanetsConnection>,
+    }
+
+    #[derive(cynic::QueryFragment, Debug)]
+    #[cynic(graphql_type = "Root")]
+    pub struct AllFilms {
+        pub all_films: Option<FilmsConnection>,
+    }
+
+    #[derive(cynic::QueryFragment, Debug)]
+    #[cynic(graphql_type = "PlanetsConnection")]
+    pub struct PlanetsConnection {
+        pub planets: Option<Vec<Option<Planet>>>,
+    }
+
+    #[derive(cynic::QueryFragment, Debug)]
+    #[cynic(graphql_type = "Planet")]
+    pub struct Planet {
+        pub film_connection: Option<PlanetFilmsConnection>,
+    }
+
+    #[derive(cynic::QueryFragment, Debug)]
+    #[cynic(graphql_type = "PlanetFilmsConnection")]
+    pub struct PlanetFilmsConnection {
+        pub films: Option<Vec<Option<Film2>>>,
+    }
+
+    #[derive(cynic::QueryFragment, Debug)]
+    #[cynic(graphql_type = "FilmsConnection")]
+    pub struct FilmsConnection {
+        pub films: Option<Vec<Option<Film>>>,
+    }
+
+    #[derive(cynic::QueryFragment, Debug)]
+    #[cynic(graphql_type = "Film")]
+    pub struct Film2 {
+        pub id: cynic::Id,
+        pub title: Option<String>,
+        pub edited: Option<String>,
+    }
+
+    #[derive(cynic::QueryFragment, Debug)]
+    #[cynic(graphql_type = "Film")]
+    pub struct Film {
+        pub id: cynic::Id,
+        pub title: Option<String>,
+    }
+
+}
+
+#[cynic::query_module(
+    schema_path = r#"schema.graphql"#,
+    query_module = "query_dsl",
+)]
+mod types {
+}
+
+mod query_dsl{
+    use super::types::*;
+    cynic::query_dsl!(r#"schema.graphql"#);
+}
+

@@ -42,6 +42,11 @@ fn main() {
             r#"queries::UnnamedQuery::fragment(FragmentContext::empty())"#,
         ),
         TestCase::query(
+            &starwars_schema,
+            "../../cynic-querygen/tests/queries/starwars/multiple-queries.graphql",
+            r#"queries::AllFilms::fragment(FragmentContext::empty())"#,
+        ),
+        TestCase::query(
             &jobs_schema,
             "tests/queries/graphql.jobs/london-jobs.graphql",
             r#"queries::Jobs::fragment(FragmentContext::empty())"#,
