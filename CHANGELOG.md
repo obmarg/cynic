@@ -29,6 +29,7 @@ all APIs might be changed.
   windows.
 - Paths output as part of generator are now all raw strings, so should support
   windows path separators.
+- The generator now correctly wraps literal ID parameters with `cynic::Id::New`
 
 ### Changes
 
