@@ -108,7 +108,7 @@ fn make_query_fragment<'text>(
     })
 }
 
-fn make_input_object<'text>(input: Rc<inputs::InputObject>) -> Result<output::InputObject, Error> {
+fn make_input_object(input: Rc<inputs::InputObject>) -> Result<output::InputObject, Error> {
     Ok(output::InputObject {
         name: input.schema_type.name.to_string(),
         fields: input.fields.clone(),

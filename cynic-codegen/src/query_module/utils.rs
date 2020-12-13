@@ -20,7 +20,7 @@ pub fn find_derives(item: &Item) -> Vec<Derive> {
 fn derive_from_attributes(attrs: &[Attribute]) -> Vec<Derive> {
     let attr = attrs.iter().find(|attr| attr.path.is_ident("derive"));
 
-    if let None = attr {
+    if attr.is_none() {
         return vec![];
     }
     let attr = attr.unwrap();
@@ -53,7 +53,8 @@ fn derive_for_nested_meta(nested: &NestedMeta) -> Option<Derive> {
             }
         }
     }
-    return None;
+
+    None
 }
 
 #[cfg(test)]

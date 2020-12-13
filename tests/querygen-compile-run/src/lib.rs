@@ -14,7 +14,7 @@ pub fn send_query<'a, ResponseData: 'a, Root: cynic::QueryRoot>(
     let response_data = query.decode_response(response.json()?)?;
     if let Some(_errors) = response_data.errors {
         println!("{:?}", _errors);
-        Err("GraphQL server returned errors")?
+        return Err("GraphQL server returned errors".into());
         // TODO: Better errors here
         //Err(errors)?
     }
@@ -38,7 +38,7 @@ pub fn send_mutation<'a, ResponseData: 'a, Root: cynic::MutationRoot>(
     let response_data = query.decode_response(response.json()?)?;
     if let Some(_errors) = response_data.errors {
         println!("{:?}", _errors);
-        Err("GraphQL server returned errors")?
+        return Err("GraphQL server returned errors".into());
         // TODO: Better errors here
         //Err(errors)?
     }

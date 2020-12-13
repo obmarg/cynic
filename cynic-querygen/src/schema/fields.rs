@@ -121,10 +121,7 @@ impl<'schema> InputFieldType<'schema> {
     }
 
     pub fn is_required(&self) -> bool {
-        match self {
-            InputFieldType::NonNullType(_) => true,
-            _ => false,
-        }
+        matches!(self, InputFieldType::NonNullType(_))
     }
 
     pub fn type_spec(&self) -> Cow<'schema, str> {

@@ -56,7 +56,7 @@ impl SelectorStruct {
         }
 
         SelectorStruct {
-            name: name.clone(),
+            name,
             graphql_name: obj.name.clone(),
             fields: processed_fields,
             selection_builders,

@@ -13,7 +13,7 @@ pub enum Field {
 }
 
 impl Field {
-    pub fn query<'a>(
+    pub fn query(
         self,
         indent: usize,
         indent_size: usize,
@@ -85,10 +85,7 @@ impl Field {
 }
 
 /// Extracts any argument values & returns a string to be used in a query.
-fn handle_field_arguments<'a>(
-    arguments: Vec<Argument>,
-    arguments_out: &mut Vec<Argument>,
-) -> String {
+fn handle_field_arguments(arguments: Vec<Argument>, arguments_out: &mut Vec<Argument>) -> String {
     if arguments.is_empty() {
         "".to_string()
     } else {
@@ -110,7 +107,7 @@ fn handle_field_arguments<'a>(
 }
 
 /// Extracts any argument values & returns a string to be used in a query.
-fn handle_query_arguments<'a>(arguments: &'a Vec<Argument>) -> String {
+fn handle_query_arguments(arguments: &[Argument]) -> String {
     if arguments.is_empty() {
         "".to_string()
     } else {

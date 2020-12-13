@@ -120,15 +120,12 @@ pub fn extract_input_objects_from_values<'query, 'schema>(
 
                 let field_type = field.value_type.inner_ref().lookup()?;
 
-                match field_type {
-                    InputType::InputObject(inner_obj) => {
-                        adjacents.push(extract_input_objects_from_values(
-                            &inner_obj,
-                            field_val,
-                            input_objects,
-                        )?);
-                    }
-                    _ => {}
+                if let InputType::InputObject(inner_obj) = field_type {
+                    adjacents.push(extract_input_objects_from_values(
+                        &inner_obj,
+                        field_val,
+                        input_objects,
+                    )?);
                 }
 
                 fields.push(field.clone());
@@ -202,11 +199,8 @@ fn extract_whole_input_object<'schema>(
     for field in &input_object.fields {
         let field_type = field.value_type.inner_ref().lookup()?;
 
-        match field_type {
-            InputType::InputObject(inner_obj) => {
-                adjacents.push(extract_whole_input_object(&inner_obj, input_objects)?);
-            }
-            _ => {}
+        if let InputType::InputObject(inner_obj) = field_type {
+            adjacents.push(extract_whole_input_object(&inner_obj, input_objects)?);
         }
 
         fields.push(field.clone());

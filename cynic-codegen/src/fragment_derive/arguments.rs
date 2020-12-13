@@ -5,7 +5,7 @@ use syn::{
     Expr, Ident, Result, Token,
 };
 
-pub fn arguments_from_field_attrs(attrs: &Vec<syn::Attribute>) -> Result<Vec<FieldArgument>> {
+pub fn arguments_from_field_attrs(attrs: &[syn::Attribute]) -> Result<Vec<FieldArgument>> {
     for attr in attrs {
         if attr.path.is_ident("arguments") {
             let parsed: CynicArguments = attr.parse_args()?;
@@ -63,7 +63,7 @@ impl std::convert::TryFrom<Expr> for ArgumentExpression {
             }
             _ => Err(syn::Error::new(
                 expr.span(),
-                format!("Must be a literal or an expression of the form args.an_argument"),
+                "Must be a literal or an expression of the form args.an_argument".to_string(),
             )),
         }
     }

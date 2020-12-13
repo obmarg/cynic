@@ -16,7 +16,7 @@ impl UnionStruct {
     pub fn from_union(union: &schema::UnionType) -> Self {
         UnionStruct {
             name: Ident::for_type(&union.name),
-            subtypes: union.types.iter().map(|ty| Ident::for_type(ty)).collect(),
+            subtypes: union.types.iter().map(Ident::for_type).collect(),
         }
     }
 }

@@ -92,7 +92,7 @@ impl RustOutputFieldType {
         self.output_type_spec_imp(true)
     }
 
-    fn output_type_spec_imp<'schema>(&self, nullable: bool) -> String {
+    fn output_type_spec_imp(&self, nullable: bool) -> String {
         if let RustOutputFieldType::NonNullType(inner) = self {
             return inner.output_type_spec_imp(false);
         }
@@ -117,7 +117,7 @@ impl RustOutputFieldType {
                     _ => {}
                 }
 
-                return s.clone();
+                s.clone()
             }
         }
     }

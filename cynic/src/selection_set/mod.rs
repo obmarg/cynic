@@ -353,6 +353,7 @@ macro_rules! define_map {
         ///     field::<_, (), ()>("email", vec![], string()),
         /// );
         /// ```
+        #[allow(clippy::too_many_arguments)]
         pub fn $fn_name<'a, F, $($i, )+ NewDecodesTo, TypeLock>(
             func: F,
             $($i: SelectionSet<'a, $i, TypeLock>,)+
@@ -565,7 +566,7 @@ where
 ///
 /// See the [`SelectionSet::and_then`](cynic::selection_set::SelectionSet::and_then)
 /// docs for an example.
-pub fn fail<'a, V>(err: impl Into<String>) -> SelectionSet<'static, V, ()> {
+pub fn fail<V>(err: impl Into<String>) -> SelectionSet<'static, V, ()> {
     SelectionSet::new(vec![], json_decode::fail(err))
 }
 

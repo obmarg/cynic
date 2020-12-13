@@ -23,7 +23,7 @@ all APIs might be changed.
 - Cynic now supports recursive queries via the `#[cynic(recurse="N")]`
   attribute on fields that recurse.
 - The generator now understands query fragments, spreads and inline fragment
-  spreads.  Inline fragments for interface/union types are not yet supported.
+  spreads. Inline fragments for interface/union types are not yet supported.
 
 ### Bug Fixes
 
@@ -32,6 +32,7 @@ all APIs might be changed.
 - Paths output as part of generator are now all raw strings, so should support
   windows path separators.
 - The generator now correctly wraps literal ID parameters with `cynic::Id::New`
+- Cynic derives (and cynic itself) no longer emit clippy warnings (on 1.48 at least)
 
 ### Changes
 
@@ -44,7 +45,7 @@ all APIs might be changed.
   - Generates partial InputObjects when faced with literals with missing fields
     (previously it would generate all fields even when unused)
   - Correctly generates different argument structs if a single type with
-    arguments is used in multiple queries.  Though the correct IntoArgument impl
+    arguments is used in multiple queries. Though the correct IntoArgument impl
     is not yet generated.
 
 ## v0.10.1 - 2020-11-04
@@ -52,7 +53,7 @@ all APIs might be changed.
 ## Bug Fixes
 
 - Implemented SerializableArgument for the various scalars in the
-  `integrations` folder.  This was preventing them actually being used as
+  `integrations` folder. This was preventing them actually being used as
   scalars in input contexts.
 
 ## v0.10.0 - 2020-10-11

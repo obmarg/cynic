@@ -16,7 +16,7 @@ pub struct TypePath {
 impl TypePath {
     pub fn new(path: Vec<Ident>) -> Self {
         TypePath {
-            path: path,
+            path,
             relative: true,
             is_void: false,
             builtin: false,
@@ -25,7 +25,7 @@ impl TypePath {
 
     pub fn new_absolute(path: Vec<Ident>) -> Self {
         TypePath {
-            path: path,
+            path,
             relative: false,
             is_void: false,
             builtin: false,

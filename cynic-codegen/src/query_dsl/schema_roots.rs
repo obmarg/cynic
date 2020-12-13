@@ -64,21 +64,18 @@ impl RootTypes {
         let mut rv = RootTypes::default();
 
         for definition in definitions {
-            match definition {
-                Definition::SchemaDefinition(schema) => {
-                    if let Some(query_type) = &schema.query {
-                        rv.query = query_type.clone();
-                    }
-                    if let Some(mutation_type) = &schema.mutation {
-                        rv.mutation = mutation_type.clone();
-                    }
-                    break;
+            if let Definition::SchemaDefinition(schema) = definition {
+                if let Some(query_type) = &schema.query {
+                    rv.query = query_type.clone();
                 }
-                _ => {}
+                if let Some(mutation_type) = &schema.mutation {
+                    rv.mutation = mutation_type.clone();
+                }
+                break;
             }
         }
 
-        return rv;
+        rv
     }
 
     pub fn root_from_selector_struct(&self, selector: &SelectorStruct) -> Option<SchemaRoot> {

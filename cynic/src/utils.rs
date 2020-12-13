@@ -11,13 +11,13 @@ impl<T> FlattenFrom<Option<Vec<Option<T>>>> for Option<Vec<T>> {
 impl<T> FlattenFrom<Option<Vec<Option<T>>>> for Vec<T> {
     fn flatten_from(args: Option<Vec<Option<T>>>) -> Vec<T> {
         args.map(|v| v.into_iter().flatten().collect())
-            .unwrap_or_else(|| vec![])
+            .unwrap_or_else(Vec::new)
     }
 }
 
 impl<T> FlattenFrom<Option<Vec<T>>> for Vec<T> {
     fn flatten_from(args: Option<Vec<T>>) -> Vec<T> {
-        args.unwrap_or_else(|| vec![])
+        args.unwrap_or_else(Vec::new)
     }
 }
 

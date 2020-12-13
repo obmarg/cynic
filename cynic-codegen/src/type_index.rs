@@ -17,11 +17,8 @@ impl<'a> TypeIndex<'a> {
     pub fn for_schema(document: &'a Document) -> Self {
         let mut types = HashMap::new();
         for definition in &document.definitions {
-            match definition {
-                Definition::TypeDefinition(type_def) => {
-                    types.insert(name_for_type(type_def), type_def);
-                }
-                _ => {}
+            if let Definition::TypeDefinition(type_def) = definition {
+                types.insert(name_for_type(type_def), type_def);
             }
         }
 
@@ -29,6 +26,7 @@ impl<'a> TypeIndex<'a> {
     }
 
     pub fn lookup_type(&self, name: &str) -> Option<&'a TypeDefinition> {
+        #[allow(clippy::map_clone)]
         self.types.get(name).map(|d| *d)
     }
 

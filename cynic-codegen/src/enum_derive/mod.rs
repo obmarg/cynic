@@ -21,7 +21,7 @@ pub fn enum_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
 
     match EnumDeriveInput::from_derive_input(ast) {
         Ok(input) => load_schema(&*input.schema_path)
-            .map_err(|e| e.to_syn_error(input.schema_path.span()))
+            .map_err(|e| e.into_syn_error(input.schema_path.span()))
             .and_then(|schema| enum_derive_impl(input, &schema, enum_span))
             .or_else(|e| Ok(e.to_compile_error())),
         Err(e) => Ok(e.write_errors()),
@@ -109,7 +109,7 @@ pub fn enum_derive_impl(
     } else {
         Err(syn::Error::new(
             enum_span,
-            format!("Enum can only be derived from an enum"),
+            "Enum can only be derived from an enum".to_string(),
         ))
     }
 }
@@ -157,7 +157,7 @@ fn join_variants<'a>(
         let missing_variants_string = missing_variants.join(", ");
         errors.extend(
             syn::Error::new(
-                enum_span.clone(),
+                *enum_span,
                 format!("Missing variants: {}", missing_variants_string),
             )
             .to_compile_error(),

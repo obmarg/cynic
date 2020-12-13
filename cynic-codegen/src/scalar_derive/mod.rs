@@ -23,7 +23,7 @@ pub fn scalar_derive_impl(input: ScalarDeriveInput) -> Result<TokenStream, syn::
         .take_struct()
         .expect("Expected enum")
         .into_iter()
-        .nth(0)
+        .next()
         .expect("Expected enum with one variant");
 
     let ident = input.ident;

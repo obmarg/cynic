@@ -128,7 +128,8 @@ enum ParsedType<'a> {
     Unknown,
 }
 
-fn parse_type<'a>(ty: &'a syn::Type) -> ParsedType<'a> {
+#[allow(clippy::cmp_owned)]
+fn parse_type(ty: &'_ syn::Type) -> ParsedType<'_> {
     if let syn::Type::Path(type_path) = ty {
         if let Some(last_segment) = type_path.path.segments.last() {
             if last_segment.ident.to_string() == "Box" {
@@ -162,7 +163,7 @@ fn parse_type<'a>(ty: &'a syn::Type) -> ParsedType<'a> {
 }
 
 /// Takes a PathSegment like `Vec<T>` and extracts the `T`
-fn extract_generic_argument<'a>(segment: &'a syn::PathSegment) -> Option<&'a syn::Type> {
+fn extract_generic_argument(segment: &syn::PathSegment) -> Option<&syn::Type> {
     if let syn::PathArguments::AngleBracketed(angle_bracketed) = &segment.arguments {
         for arg in &angle_bracketed.args {
             if let syn::GenericArgument::Type(inner_type) = arg {

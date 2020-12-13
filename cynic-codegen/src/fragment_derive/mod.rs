@@ -25,7 +25,7 @@ pub fn fragment_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error
 
     match FragmentDeriveInput::from_derive_input(ast) {
         Ok(input) => load_schema(&*input.schema_path)
-            .map_err(|e| Errors::from(e.to_syn_error(input.schema_path.span())))
+            .map_err(|e| Errors::from(e.into_syn_error(input.schema_path.span())))
             .map(Schema::from)
             .and_then(|schema| fragment_derive_impl(input, &schema))
             .or_else(|e| Ok(e.to_compile_errors())),
@@ -47,10 +47,12 @@ pub fn fragment_derive_impl(
     let object = schema
         .objects
         .get(&Ident::for_type(&*graphql_type))
-        .ok_or(syn::Error::new(
-            graphql_type.span(),
-            format!("Can't find {} in {}", *graphql_type, *schema_path),
-        ))?;
+        .ok_or_else(|| {
+            syn::Error::new(
+                graphql_type.span(),
+                format!("Can't find {} in {}", *graphql_type, *schema_path),
+            )
+        })?;
 
     let argument_struct = if let Some(arg_struct) = input.argument_struct {
         let span = arg_struct.span();
@@ -78,8 +80,9 @@ pub fn fragment_derive_impl(
     } else {
         Err(syn::Error::new(
             Span::call_site(),
-            format!("QueryFragment can only be derived from a struct"),
-        ))?
+            "QueryFragment can only be derived from a struct".to_string(),
+        )
+        .into())
     }
 }
 
@@ -326,10 +329,8 @@ impl FragmentImpl {
         argument_struct: syn::Type,
     ) -> Result<Self, syn::Error> {
         let target_struct = Ident::new_spanned(&name.to_string(), name.span());
-        let selector_struct_path = TypePath::concat(&[
-            query_dsl_path.clone(),
-            object.selector_struct.clone().into(),
-        ]);
+        let selector_struct_path =
+            TypePath::concat(&[query_dsl_path, object.selector_struct.clone().into()]);
         let mut field_selectors = vec![];
         let mut constructor_params = vec![];
 

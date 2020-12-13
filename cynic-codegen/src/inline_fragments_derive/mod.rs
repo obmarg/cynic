@@ -24,7 +24,7 @@ pub(crate) fn inline_fragments_derive_impl(
     use quote::{quote, quote_spanned};
 
     let schema =
-        load_schema(&*input.schema_path).map_err(|e| e.to_syn_error(input.schema_path.span()))?;
+        load_schema(&*input.schema_path).map_err(|e| e.into_syn_error(input.schema_path.span()))?;
 
     if !find_union_type(&input.graphql_type, &schema) {
         return Err(syn::Error::new(
@@ -58,7 +58,7 @@ pub(crate) fn inline_fragments_derive_impl(
     } else {
         Err(syn::Error::new(
             Span::call_site(),
-            format!("InlineFragments can only be derived from an enum"),
+            "InlineFragments can only be derived from an enum".to_string(),
         ))
     }
 }
@@ -136,14 +136,12 @@ impl quote::ToTokens for InlineFragmentsImpl {
 fn find_union_type(name: &str, schema: &schema::Document) -> bool {
     for definition in &schema.definitions {
         use graphql_parser::schema::{Definition, TypeDefinition};
-        match definition {
-            Definition::TypeDefinition(TypeDefinition::Union(union)) => {
-                if union.name == name {
-                    return true;
-                }
+        if let Definition::TypeDefinition(TypeDefinition::Union(union)) = definition {
+            if union.name == name {
+                return true;
             }
-            _ => {}
         }
     }
-    return false;
+
+    false
 }

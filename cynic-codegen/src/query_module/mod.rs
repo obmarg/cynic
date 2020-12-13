@@ -29,7 +29,7 @@ fn transform_query_module_impl(
 ) -> Result<TokenStream, syn::Error> {
     use quote::quote;
 
-    if let None = query_module.content {
+    if query_module.content.is_none() {
         return Ok(quote! { #query_module });
     }
 

@@ -63,6 +63,7 @@ mod tests {
     }
 
     #[test]
+    #[allow(clippy::many_single_char_names)]
     fn test_sorting_works() {
         let a = TestVertex::new("a", &[]);
         let b = TestVertex::new("b", &[]);

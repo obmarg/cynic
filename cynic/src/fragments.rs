@@ -69,7 +69,7 @@ impl<'a, Args> FragmentContext<'a, Args> {
     pub fn with_args<'b, NewArgs>(&self, args: &'b NewArgs) -> FragmentContext<'b, NewArgs> {
         FragmentContext {
             args,
-            recurse_depth: self.recurse_depth.clone(),
+            recurse_depth: self.recurse_depth,
         }
     }
 

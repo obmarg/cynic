@@ -110,25 +110,23 @@ impl<'schema> TypeIndex<'schema> {
             [first] => fields
                 .iter()
                 .find(|field| field.name == *first)
-                .ok_or(Error::UnknownField(
-                    first.to_string(),
-                    current_type_name.to_string(),
-                )),
+                .ok_or_else(|| {
+                    Error::UnknownField(first.to_string(), current_type_name.to_string())
+                }),
             [first, rest @ ..] => {
                 let inner_name = fields
                     .iter()
                     .find(|field| field.name == *first)
-                    .ok_or(Error::UnknownField(
-                        first.to_string(),
-                        current_type_name.to_string(),
-                    ))?
+                    .ok_or_else(|| {
+                        Error::UnknownField(first.to_string(), current_type_name.to_string())
+                    })?
                     .field_type
                     .inner_name();
 
                 let inner_type = self
                     .types
                     .get(inner_name)
-                    .ok_or(Error::UnknownType(inner_name.to_string()))?;
+                    .ok_or_else(|| Error::UnknownType(inner_name.to_string()))?;
 
                 if let TypeDefinition::Object(object) = inner_type {
                     self.find_field_recursive(&object.fields, &inner_name, rest)
