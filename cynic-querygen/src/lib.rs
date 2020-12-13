@@ -153,7 +153,7 @@ pub fn document_to_fragment_structs(
                 field.field_type.type_spec()
             ))
         }
-        lines.push("    }}\n".to_string());
+        lines.push("    }\n".to_string());
     }
 
     for en in output.enums {
