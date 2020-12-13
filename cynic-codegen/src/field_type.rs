@@ -69,7 +69,7 @@ impl FieldType {
                         nullable,
                     )
                 } else {
-                    FieldType::Other(Ident::for_type(name).into(), nullable)
+                    FieldType::Other(Ident::for_type(name), nullable)
                 }
             }
         }
@@ -115,11 +115,11 @@ impl FieldType {
 
     pub fn is_nullable(&self) -> bool {
         match self {
-            FieldType::List(_, nullable) => nullable.clone(),
-            FieldType::Scalar(_, nullable) => nullable.clone(),
-            FieldType::Enum(_, nullable) => nullable.clone(),
-            FieldType::InputObject(_, nullable) => nullable.clone(),
-            FieldType::Other(_, nullable) => nullable.clone(),
+            FieldType::List(_, nullable) => *nullable,
+            FieldType::Scalar(_, nullable) => *nullable,
+            FieldType::Enum(_, nullable) => *nullable,
+            FieldType::InputObject(_, nullable) => *nullable,
+            FieldType::Other(_, nullable) => *nullable,
         }
     }
 
@@ -127,7 +127,7 @@ impl FieldType {
         match self {
             FieldType::List(inner, _) => inner.as_type_lock(path_to_types),
             // TODO: I think this is wrong for scalars, but whatever.
-            FieldType::Scalar(ident, _) => TypePath::concat(&[path_to_types, ident.clone().into()]),
+            FieldType::Scalar(path, _) => TypePath::concat(&[path_to_types, path.clone()]),
             FieldType::Enum(_, _) => TypePath::void(),
             FieldType::InputObject(ident, _) => {
                 TypePath::concat(&[path_to_types, ident.clone().into()])

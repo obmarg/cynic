@@ -58,7 +58,7 @@ pub enum SchemaLoadError {
 }
 
 impl SchemaLoadError {
-    pub fn to_syn_error(self, schema_span: proc_macro2::Span) -> syn::Error {
+    pub fn into_syn_error(self, schema_span: proc_macro2::Span) -> syn::Error {
         let message = match self {
             SchemaLoadError::IoError(e) => format!("Could not load schema file: {}", e),
             SchemaLoadError::ParseError(e) => format!("Could not parse schema file: {}", e),
@@ -96,7 +96,7 @@ impl FieldExt for Field {
                 // we only want to know if things are required
                 FieldArgument::from_input_value(arg, &TypeIndex::empty()).is_required()
             })
-            .map(|a| a.clone())
+            .cloned()
             .collect()
     }
 
@@ -108,7 +108,7 @@ impl FieldExt for Field {
                 // we only want to know if things are required
                 !FieldArgument::from_input_value(arg, &TypeIndex::empty()).is_required()
             })
-            .map(|a| a.clone())
+            .cloned()
             .collect()
     }
 }
@@ -138,10 +138,7 @@ impl TypeExt for Type {
     }
 
     fn is_required(&self) -> bool {
-        match self {
-            Type::NonNullType(_) => true,
-            _ => false,
-        }
+        matches!(self, Type::NonNullType(_))
     }
 }
 
@@ -151,9 +148,6 @@ pub trait ScalarTypeExt {
 
 impl ScalarTypeExt for ScalarType {
     fn is_builtin(&self) -> bool {
-        match self.name.as_ref() {
-            "String" | "Int" | "Boolean" | "ID" => true,
-            _ => false,
-        }
+        matches!(self.name.as_ref(), "String" | "Int" | "Boolean" | "ID")
     }
 }

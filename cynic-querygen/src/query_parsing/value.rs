@@ -145,7 +145,9 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
                 }
             }
             TypedValue::Int(num, _) => num.to_string(),
-            TypedValue::Float(num, _) => num.map(|d| d.to_string()).unwrap_or("null".to_string()),
+            TypedValue::Float(num, _) => num
+                .map(|d| d.to_string())
+                .unwrap_or_else(|| "null".to_string()),
             TypedValue::String(s, field_type) => {
                 if field_type.inner_name() == "ID" {
                     format!("cynic::Id::new(\"{}\")", s)

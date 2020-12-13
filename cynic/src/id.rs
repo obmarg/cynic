@@ -8,11 +8,11 @@ impl Id {
         Id(s.into())
     }
     pub fn inner(&self) -> &str {
-        return &self.0;
+        &self.0
     }
 
     pub fn into_inner(self) -> String {
-        return self.0;
+        self.0
     }
 }
 

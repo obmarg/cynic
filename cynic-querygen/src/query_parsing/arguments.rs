@@ -95,9 +95,7 @@ impl<'query, 'schema, 'doc> SelectionArguments<'query, 'schema, 'doc> {
                         // This particular childs arguments are only used by it,
                         // so we can safely lift them up into our argument struct
                         output_mapping.selection_structs.remove(&nested_struct.id);
-                        output_mapping
-                            .remappings
-                            .insert(nested_struct.id, our_id.clone());
+                        output_mapping.remappings.insert(nested_struct.id, our_id);
 
                         Rc::try_unwrap(nested_struct).unwrap().fields
                     } else {
@@ -108,7 +106,7 @@ impl<'query, 'schema, 'doc> SelectionArguments<'query, 'schema, 'doc> {
             .collect();
 
         let rv = Rc::new(ArgumentStruct {
-            id: our_id.clone(),
+            id: our_id,
             name: format!("{}Arguments", self.target_selection.target_type.name()),
             fields,
         });
@@ -130,7 +128,7 @@ impl<'query, 'schema, 'doc> SelectionArguments<'query, 'schema, 'doc> {
                 parent_map
                     .entry(child)
                     .or_insert_with(HashSet::new)
-                    .insert(self.clone());
+                    .insert(self);
             }
         }
     }

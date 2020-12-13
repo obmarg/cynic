@@ -15,12 +15,9 @@ impl From<schema::Document> for Schema {
         let mut objects = HashMap::new();
 
         for definition in &document.definitions {
-            match definition {
-                Definition::TypeDefinition(TypeDefinition::Object(object)) => {
-                    let object = Object::from_object(object, &type_index);
-                    objects.insert(object.name.clone(), object);
-                }
-                _ => {}
+            if let Definition::TypeDefinition(TypeDefinition::Object(object)) = definition {
+                let object = Object::from_object(object, &type_index);
+                objects.insert(object.name.clone(), object);
             }
         }
 

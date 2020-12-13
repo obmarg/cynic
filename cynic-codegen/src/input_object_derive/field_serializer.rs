@@ -45,7 +45,7 @@ impl<'a> FieldSerializer<'a> {
         if self.rust_field.skip_serializing_if.is_some() && !self.graphql_field_type.is_nullable() {
             return Some(syn::Error::new(
                 self.rust_field.skip_serializing_if.as_ref().unwrap().span(),
-                format!("You can't specify skip_serializing_if on a required field"),
+                "You can't specify skip_serializing_if on a required field".to_string(),
             ));
         }
 
@@ -71,6 +71,7 @@ impl<'a> FieldSerializer<'a> {
             generic_param.map(|p| p.to_tokens(self.query_module.clone().into()));
 
         quote! {
+            #[allow(clippy::ptr_arg)]
             fn #rust_field_name<#generic_param_definition>(data: &#arg_type) ->
                 Result<::cynic::serde_json::Value, ::cynic::SerializeError> {
                     data.serialize()

@@ -24,7 +24,7 @@ pub fn input_object_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::E
 
     match InputObjectDeriveInput::from_derive_input(ast) {
         Ok(input) => load_schema(&*input.schema_path)
-            .map_err(|e| e.to_syn_error(input.schema_path.span()))
+            .map_err(|e| e.into_syn_error(input.schema_path.span()))
             .and_then(|schema| input_object_derive_impl(input, &schema, enum_span))
             .or_else(|e| Ok(e.to_compile_error())),
         Err(e) => Ok(e.write_errors()),
@@ -133,7 +133,7 @@ pub fn input_object_derive_impl(
     } else {
         Err(syn::Error::new(
             struct_span,
-            format!("Enum can only be derived from an enum"),
+            "Enum can only be derived from an enum".to_string(),
         ))
     }
 }
@@ -192,7 +192,7 @@ fn join_fields<'a>(
         let missing_fields_string = missing_required_fields.join(", ");
         errors.extend(
             syn::Error::new(
-                struct_span.clone(),
+                *struct_span,
                 format!(
                     "This InputObject is missing these required fields: {}",
                     missing_fields_string
@@ -206,7 +206,7 @@ fn join_fields<'a>(
         let missing_fields_string = missing_optional_fields.join(", ");
         errors.extend(
             syn::Error::new(
-                struct_span.clone(),
+                *struct_span,
                 format!(
                     "This InputObject is missing these optional fields: {}.  If you wish to omit them you can remove the `require_all_fields` attribute from the InputObject",
                     missing_fields_string
@@ -247,7 +247,7 @@ mod test {
                 .unwrap()
                 .definitions
                 .into_iter()
-                .nth(0)
+                .next()
                 .unwrap()
         {
             rv
@@ -321,7 +321,7 @@ mod test {
 
         assert_matches!(result, Ok(_));
 
-        let (rust_field_ref, input_field_ref) = result.unwrap().into_iter().nth(0).unwrap();
+        let (rust_field_ref, input_field_ref) = result.unwrap().into_iter().next().unwrap();
         assert!(std::ptr::eq(rust_field_ref, fields.first().unwrap()));
         assert!(std::ptr::eq(
             input_field_ref,

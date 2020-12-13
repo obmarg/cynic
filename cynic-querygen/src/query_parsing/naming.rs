@@ -37,7 +37,7 @@ where
         let used_count = self.used_names.entry(requested_name.clone()).or_insert(0);
         *used_count += 1;
         let name = if *used_count == 1 {
-            requested_name.to_string()
+            requested_name
         } else {
             format!("{}{}", requested_name, used_count)
         };
