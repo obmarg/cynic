@@ -187,8 +187,8 @@ mod tests {
 
     #[test]
     fn test_required_validation() {
-        let required_field = FieldType::Scalar(Ident::new("").into(), false);
-        let optional_field = FieldType::Scalar(Ident::new("").into(), true);
+        let required_field = FieldType::Scalar(Ident::new("test").into(), false);
+        let optional_field = FieldType::Scalar(Ident::new("test").into(), true);
 
         assert_matches!(
             check_types_are_compatible(
@@ -227,15 +227,15 @@ mod tests {
     #[test]
     fn test_list_validation() {
         let list = FieldType::List(
-            Box::new(FieldType::Scalar(Ident::new("").into(), false)),
+            Box::new(FieldType::Scalar(Ident::new("test").into(), false)),
             false,
         );
         let optional_list = FieldType::List(
-            Box::new(FieldType::Scalar(Ident::new("").into(), false)),
+            Box::new(FieldType::Scalar(Ident::new("test").into(), false)),
             true,
         );
         let option_list_option = FieldType::List(
-            Box::new(FieldType::Scalar(Ident::new("").into(), true)),
+            Box::new(FieldType::Scalar(Ident::new("test").into(), true)),
             true,
         );
 
@@ -292,15 +292,15 @@ mod tests {
     #[test]
     fn test_validation_when_flattening() {
         let list = FieldType::List(
-            Box::new(FieldType::Scalar(Ident::new("").into(), false)),
+            Box::new(FieldType::Scalar(Ident::new("test").into(), false)),
             false,
         );
         let optional_list = FieldType::List(
-            Box::new(FieldType::Scalar(Ident::new("").into(), false)),
+            Box::new(FieldType::Scalar(Ident::new("test").into(), false)),
             true,
         );
         let option_list_option = FieldType::List(
-            Box::new(FieldType::Scalar(Ident::new("").into(), true)),
+            Box::new(FieldType::Scalar(Ident::new("test").into(), true)),
             true,
         );
 

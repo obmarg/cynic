@@ -179,7 +179,8 @@ fn join_fields<'a>(
                     field.ident.span(),
                     format!(
                         "Could not find a field {} in the GraphQL InputObject {}",
-                        transformed_ident, input_object_name
+                        transformed_ident.graphql_name(),
+                        input_object_name
                     ),
                 )
                 .to_compile_error(),

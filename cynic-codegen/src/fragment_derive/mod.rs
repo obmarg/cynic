@@ -342,16 +342,16 @@ impl FragmentImpl {
         }
 
         for field in &fields.fields {
-            if let Some(ident) = &field.ident {
-                let field_name = ident.to_string();
+            if let Some(macro_ident) = &field.ident {
+                let field_name_span = macro_ident.span();
+                let field_name = Ident::from(macro_ident.clone());
+
                 constructor_params.push(ConstructorParameter {
-                    name: Ident::new(&field_name),
+                    name: field_name.clone(),
                     type_path: field.ty.clone(),
                 });
 
                 let arguments = arguments_from_field_attrs(&field.attrs)?;
-
-                let field_name = Ident::for_field(&field_name);
 
                 if let Some(gql_field) = object.fields.get(&field_name) {
                     check_types_are_compatible(
@@ -361,7 +361,7 @@ impl FragmentImpl {
                     )?;
 
                     let (required_arguments, optional_arguments) =
-                        validate_and_group_args(arguments, gql_field, ident.span())?;
+                        validate_and_group_args(arguments, gql_field, field_name_span)?;
 
                     field_selectors.push(FieldSelectorCall {
                         selector_function: FieldTypeSelectorCall::for_field(
@@ -386,10 +386,11 @@ impl FragmentImpl {
                     })
                 } else {
                     return Err(syn::Error::new(
-                        ident.span(),
+                        field_name_span,
                         format!(
                             "Field {} does not exist on the GraphQL type {}",
-                            field_name, graphql_type_name
+                            field_name.graphql_name(),
+                            graphql_type_name
                         ),
                     ));
                 }
@@ -478,7 +479,7 @@ fn validate_and_group_args(
 
     let missing_args: Vec<_> = all_required
         .difference(&provided_names)
-        .map(|s| s.to_string())
+        .map(|s| s.graphql_name())
         .collect();
     if !missing_args.is_empty() {
         let missing_args = missing_args.join(", ");
@@ -494,7 +495,7 @@ fn validate_and_group_args(
 
     let unknown_args: Vec<_> = provided_names
         .difference(&all_arg_names)
-        .map(|s| s.to_string())
+        .map(|s| s.graphql_name())
         .collect();
 
     if !unknown_args.is_empty() {
