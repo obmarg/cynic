@@ -353,7 +353,6 @@ impl FragmentImpl {
 
                 let arguments = arguments_from_field_attrs(&field.attrs)?;
 
-
                 if let Some(gql_field) = object.fields.get(&field_name) {
                     check_types_are_compatible(
                         &gql_field.field_type,
