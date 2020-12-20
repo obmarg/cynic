@@ -123,21 +123,22 @@ fn join_variants<'a>(
 ) -> Result<Vec<(&'a EnumDeriveVariant, &'a EnumValue)>, TokenStream> {
     let mut map = HashMap::new();
     for variant in variants {
-        let transformed_ident = Ident::from_proc_macro2(
+        let graphql_name = Ident::from_proc_macro2(
             &variant.ident,
             RenameRule::new(rename_all, variant.rename.as_ref()),
-        );
-        map.insert(transformed_ident, (Some(variant), None));
+        )
+        .graphql_name();
+        map.insert(graphql_name, (Some(variant), None));
     }
 
     for value in &enum_def.values {
-        let mut entry = map.entry(Ident::new(&value.name)).or_insert((None, None));
+        let mut entry = map.entry(value.name.clone()).or_insert((None, None));
         entry.1 = Some(value);
     }
 
     let mut missing_variants = vec![];
     let mut errors = TokenStream::new();
-    for (transformed_ident, value) in map.iter() {
+    for (graphql_name, value) in map.iter() {
         match value {
             (None, Some(enum_value)) => missing_variants.push(enum_value.name.as_ref()),
             (Some(variant), None) => errors.extend(
@@ -145,7 +146,7 @@ fn join_variants<'a>(
                     variant.ident.span(),
                     format!(
                         "Could not find a variant {} in the GraphQL enum {}",
-                        transformed_ident, enum_name
+                        graphql_name, enum_name
                     ),
                 )
                 .to_compile_error(),

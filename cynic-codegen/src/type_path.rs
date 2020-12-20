@@ -7,16 +7,22 @@ use crate::ident::Ident;
 /// Implements ToToken so it can be used inside quote!
 #[derive(Clone, Debug)]
 pub struct TypePath {
-    path: Vec<Ident>,
+    path: Vec<PathElement>,
     relative: bool,
     is_void: bool,
     builtin: bool,
 }
 
+#[derive(Clone, Debug)]
+enum PathElement {
+    Super,
+    Ident(Ident),
+}
+
 impl TypePath {
     pub fn new(path: Vec<Ident>) -> Self {
         TypePath {
-            path,
+            path: path.into_iter().map(Into::into).collect(),
             relative: true,
             is_void: false,
             builtin: false,
@@ -25,7 +31,7 @@ impl TypePath {
 
     pub fn new_absolute(path: Vec<Ident>) -> Self {
         TypePath {
-            path,
+            path: path.into_iter().map(Into::into).collect(),
             relative: false,
             is_void: false,
             builtin: false,
@@ -34,10 +40,19 @@ impl TypePath {
 
     pub fn new_builtin(ident: Ident) -> Self {
         TypePath {
-            path: vec![ident],
+            path: vec![ident.into()],
             relative: false,
             is_void: false,
             builtin: true,
+        }
+    }
+
+    pub fn new_super() -> Self {
+        TypePath {
+            path: vec![PathElement::Super],
+            relative: true,
+            is_void: false,
+            builtin: false,
         }
     }
 
@@ -82,7 +97,7 @@ impl TypePath {
     }
 
     pub fn push(&mut self, ident: Ident) {
-        self.path.push(ident);
+        self.path.push(ident.into());
     }
 
     pub fn is_absolute(&self) -> bool {
@@ -93,11 +108,32 @@ impl TypePath {
 impl From<Ident> for TypePath {
     fn from(ident: Ident) -> TypePath {
         TypePath {
-            path: vec![ident],
+            path: vec![ident.into()],
             relative: true,
             is_void: false,
             builtin: false,
         }
+    }
+}
+
+impl From<Ident> for PathElement {
+    fn from(ident: Ident) -> PathElement {
+        PathElement::Ident(ident)
+    }
+}
+
+impl quote::ToTokens for PathElement {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
+        use quote::{quote, TokenStreamExt};
+
+        tokens.append_all(match self {
+            PathElement::Ident(ident) => {
+                quote! { #ident }
+            }
+            PathElement::Super => {
+                quote! { super }
+            }
+        });
     }
 }
 

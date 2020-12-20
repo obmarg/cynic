@@ -1,60 +1,90 @@
 use inflector::Inflector;
 use lazy_static::lazy_static;
 use proc_macro2::{Span, TokenStream};
-use std::collections::HashSet;
+use quote::format_ident;
+use std::{borrow::Cow, collections::HashSet};
 
 /// A convenience type for working with identifiers we write out in our macros.
 #[derive(Debug, Clone)]
-pub struct Ident(String, Option<Span>);
+pub struct Ident {
+    rust: proc_macro2::Ident,
+    graphql: String,
+    span: Option<Span>,
+}
 
 impl Ident {
     pub fn new<T: Into<String>>(s: T) -> Self {
-        Ident(s.into(), None)
+        let s = s.into();
+
+        Ident {
+            rust: format_ident!("{}", transform_keywords(&s)),
+            graphql: s,
+            span: None,
+        }
     }
 
     pub fn new_spanned<T: Into<String>>(s: T, span: Span) -> Ident {
-        Ident(s.into(), Some(span))
+        Ident {
+            span: Some(span),
+            ..Ident::new(s)
+        }
     }
 
-    pub fn from_proc_macro2(i: &proc_macro2::Ident, rename: impl Into<Option<RenameRule>>) -> Self {
-        if let Some(rename) = rename.into() {
-            Ident::new_spanned(rename.apply(i.to_string()), i.span())
+    pub fn from_proc_macro2(
+        ident: &proc_macro2::Ident,
+        rename: impl Into<Option<RenameRule>>,
+    ) -> Self {
+        let ident_str = ident.to_string();
+        let graphql_name = if ident_str.starts_with("r#") {
+            // This is a raw identifier so strip the r# off...
+            ident_str.strip_prefix("r#").unwrap()
         } else {
-            Ident::new_spanned(i.to_string(), i.span())
+            &ident_str
+        };
+
+        Ident {
+            rust: ident.clone(),
+            graphql: rename
+                .into()
+                .map(|r| r.apply(graphql_name))
+                .unwrap_or_else(|| graphql_name.to_string()),
+            span: Some(ident.span()),
         }
     }
 
     pub fn for_inbuilt_scalar<T: Into<String>>(s: T) -> Self {
-        Ident(transform_keywords(s.into()), None)
+        Ident::new(s)
     }
 
     pub fn for_type<T: AsRef<str>>(s: T) -> Self {
-        Ident(transform_keywords(s.as_ref().to_pascal_case()), None)
+        Ident::new(s.as_ref().to_pascal_case())
     }
 
     pub fn for_variant(s: impl AsRef<str>) -> Self {
-        Ident(transform_keywords(s.as_ref().to_pascal_case()), None)
+        Ident::new(s.as_ref().to_pascal_case())
     }
 
     pub fn for_field<T: AsRef<str>>(s: T) -> Self {
-        Ident(transform_keywords(s.as_ref().to_snake_case()), None)
+        Ident::new(s.as_ref().to_snake_case())
     }
 
     pub fn for_module(s: &str) -> Self {
-        let ident = s.to_snake_case();
-        if ident == "super" {
-            // This is an allowed keyword for modules.
-            Ident(ident, None)
-        } else {
-            Ident(transform_keywords(ident), None)
-        }
+        Ident::new(s.to_snake_case())
+    }
+
+    pub fn rust_name(&self) -> String {
+        self.rust.to_string()
+    }
+
+    pub fn graphql_name(&self) -> String {
+        self.graphql.clone()
     }
 }
 
 impl PartialEq for Ident {
     fn eq(&self, other: &Ident) -> bool {
-        // We only care about the ident itself for comparisons
-        self.0 == other.0
+        // We only care about the GraphQL ident for comparison purposes.
+        self.graphql == other.graphql
     }
 }
 
@@ -62,30 +92,20 @@ impl Eq for Ident {}
 
 impl std::hash::Hash for Ident {
     fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.0.hash(state)
-    }
-}
-
-impl std::fmt::Display for Ident {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> Result<(), std::fmt::Error> {
-        write!(f, "{}", self.0)
+        // We only care about the GraphQL ident for hashing purposes.
+        self.graphql.hash(state);
     }
 }
 
 impl From<proc_macro2::Ident> for Ident {
     fn from(ident: proc_macro2::Ident) -> Ident {
-        Ident::new_spanned(&ident.to_string(), ident.span())
+        Ident::from_proc_macro2(&ident, None)
     }
 }
 
 impl Into<proc_macro2::Ident> for &Ident {
     fn into(self) -> proc_macro2::Ident {
-        use quote::format_ident;
-        if self.0 == "type" {
-            format_ident!("{}_", self.0)
-        } else {
-            format_ident!("{}", self.0)
-        }
+        self.rust.clone()
     }
 }
 
@@ -94,7 +114,7 @@ impl quote::ToTokens for Ident {
         use quote::{quote_spanned, TokenStreamExt};
 
         let macro_ident: proc_macro2::Ident = self.into();
-        if let Some(span) = self.1 {
+        if let Some(span) = self.span {
             tokens.append_all(quote_spanned! {span => #macro_ident })
         } else {
             macro_ident.to_tokens(tokens);
@@ -237,13 +257,13 @@ lazy_static! {
     };
 }
 
-fn transform_keywords(mut s: String) -> String {
+fn transform_keywords(s: &str) -> Cow<str> {
     let s_ref: &str = &s;
     if KEYWORDS.contains(s_ref) {
-        s.push('_');
+        format!("r#{}", s).into()
+    } else {
+        s.into()
     }
-
-    s
 }
 
 #[cfg(test)]
@@ -251,8 +271,30 @@ mod tests {
     use super::*;
 
     #[test]
+    fn test_from_proc_macro_2() {
+        let ident = Ident::from_proc_macro2(&format_ident!("r#test"), None);
+        assert_eq!(ident.graphql, "test");
+        assert_eq!(ident.rust, format_ident!("r#test"));
+
+        let ident = Ident::from_proc_macro2(&format_ident!("test"), None);
+        assert_eq!(ident.graphql, "test");
+        assert_eq!(ident.rust, format_ident!("test"));
+    }
+
+    #[test]
+    fn test_new() {
+        let ident = Ident::new("test");
+        assert_eq!(ident.graphql, "test");
+        assert_eq!(ident.rust, format_ident!("test"));
+
+        let ident = Ident::new("type");
+        assert_eq!(ident.graphql, "type");
+        assert_eq!(ident.rust, format_ident!("r#type"));
+    }
+
+    #[test]
     fn test_transform_keywords() {
-        assert_eq!(transform_keywords("test".to_string()), "test".to_string());
-        assert_eq!(transform_keywords("type".to_string()), "type_".to_string());
+        assert_eq!(transform_keywords("test"), "test");
+        assert_eq!(transform_keywords("type"), "r#type");
     }
 }

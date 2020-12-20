@@ -27,6 +27,6 @@ impl FieldArgument {
 
     pub fn generic_parameter(&self) -> Option<GenericParameter> {
         self.argument_type
-            .generic_parameter(Ident::for_type(format!("{}T", self.name)))
+            .generic_parameter(Ident::for_type(format!("{}T", self.name.rust_name())))
     }
 }

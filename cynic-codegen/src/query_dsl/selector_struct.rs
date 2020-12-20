@@ -46,7 +46,7 @@ impl SelectorStruct {
                 Ident::for_module(&obj.name),
                 field.required_arguments(),
                 TypePath::new(vec![
-                    Ident::for_module(&name.to_string()),
+                    Ident::for_module(&name.rust_name()),
                     selection_builder.name.clone(),
                 ]),
                 type_index,

@@ -46,6 +46,7 @@ impl Object {
     }
 }
 
+#[derive(Debug)]
 pub struct Field {
     pub arguments: Vec<Argument>,
     pub name: Ident,
@@ -66,6 +67,7 @@ impl Field {
     }
 }
 
+#[derive(Debug)]
 pub struct Argument {
     pub name: Ident,
     pub required: bool,

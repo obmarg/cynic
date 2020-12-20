@@ -17,6 +17,9 @@ all APIs might be changed.
   arguments. This can be constructed with `FragmentContext::new` if you have
   arguments or `FragmentContext::empty` if not. This change was neccesary to
   support recursive queries.
+- GraphQL fields with names that match rust keywords will no longer be
+  postfixed with a `_` - you should now use a raw identifier (or rename) for
+  these fields.
 
 ### New Features
 
@@ -33,6 +36,8 @@ all APIs might be changed.
   windows path separators.
 - The generator now correctly wraps literal ID parameters with `cynic::Id::New`
 - Cynic derives (and cynic itself) no longer emit clippy warnings (on 1.48 at least)
+- We now support raw identifiers in QueryFragment derives, useful for fields
+  named `type` or similar.
 
 ### Changes
 

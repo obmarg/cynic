@@ -1,6 +1,6 @@
 use proc_macro2::TokenStream;
 
-use crate::{schema::InputValue, FieldArgument, FieldType, Ident, TypeIndex};
+use crate::{schema::InputValue, FieldArgument, FieldType, Ident, TypeIndex, TypePath};
 
 /// A builder struct that is generated for each field in the query, to
 /// allow optional arguments to be provided to that field.
@@ -53,9 +53,7 @@ impl FieldSelectionBuilder {
         let selector = self.field_type.selection_set_call(selector);
 
         if self.field_type.contains_scalar() {
-            let field_type = self
-                .field_type
-                .to_tokens(None, Ident::for_module("super").into());
+            let field_type = self.field_type.to_tokens(None, TypePath::new_super());
             quote! {
                 pub fn select(self) ->
                 ::cynic::selection_set::SelectionSet<'static, #field_type, super::#type_lock> {
@@ -67,9 +65,7 @@ impl FieldSelectionBuilder {
             }
         } else {
             let decodes_to = self.field_type.decodes_to(quote! { T });
-            let argument_type_lock = self
-                .field_type
-                .as_type_lock(Ident::for_module("super").into());
+            let argument_type_lock = self.field_type.as_type_lock(TypePath::new_super());
 
             quote! {
                 pub fn select<'a, T: 'a + Send + Sync>(
@@ -104,7 +100,7 @@ impl quote::ToTokens for FieldSelectionBuilder {
 
         let argument_generics = self.optional_args.iter().map(|optional_arg| {
             if let Some(param) = optional_arg.generic_parameter() {
-                let param_tokens = param.to_tokens(Ident::for_module("super").into());
+                let param_tokens = param.to_tokens(TypePath::new_super());
                 quote! { < #param_tokens >}
             } else {
                 quote! {}
@@ -114,7 +110,7 @@ impl quote::ToTokens for FieldSelectionBuilder {
         let argument_types = self.optional_args.iter().map(|a| {
             let generic_inner_type = a.generic_parameter().map(|param| param.name);
             a.argument_type
-                .to_tokens(generic_inner_type, Ident::for_module("super").into())
+                .to_tokens(generic_inner_type, TypePath::new_super())
         });
 
         let select_func = self.select_function_tokens();
