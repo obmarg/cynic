@@ -1,8 +1,4 @@
-use inflector::Inflector;
-use std::rc::Rc;
-use uuid::Uuid;
-
-use crate::query_parsing::{TypedValue, Variable};
+use crate::query_parsing::TypedValue;
 use crate::schema::{EnumDetails, InputField, OutputFieldType};
 use crate::Error;
 
@@ -17,7 +13,7 @@ pub struct Output<'query, 'schema> {
     pub input_objects: Vec<InputObject<'schema>>,
     pub enums: Vec<EnumDetails<'schema>>,
     pub scalars: Vec<Scalar<'schema>>,
-    pub argument_structs: Vec<(String, Rc<ArgumentStruct<'query, 'schema>>)>,
+    pub argument_structs: Vec<ArgumentStruct<'query, 'schema>>,
 }
 
 pub struct Scalar<'schema>(pub &'schema str);

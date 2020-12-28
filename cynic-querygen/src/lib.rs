@@ -103,7 +103,7 @@ pub fn document_to_fragment_structs(
         options.query_module
     ));
 
-    for (struct_name, argument_struct) in output.argument_structs {
+    for argument_struct in output.argument_structs {
         use output::indented;
         use std::fmt::Write;
 

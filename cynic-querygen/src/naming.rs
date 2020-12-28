@@ -1,4 +1,4 @@
-use std::{collections::HashMap, hash::Hash, rc::Rc};
+use std::{collections::HashMap, hash::Hash};
 
 pub trait Nameable: Eq + Hash {
     fn requested_name(&self) -> String;

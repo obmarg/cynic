@@ -4,13 +4,11 @@ use std::{
     collections::{HashMap, HashSet},
     rc::Rc,
 };
+
 use uuid::Uuid;
 
 use super::normalisation::{Field, NormalisedDocument, Selection, SelectionSet, Variable};
-use crate::{
-    naming::Namer,
-    output::{ArgumentStruct, ArgumentStructField},
-};
+use crate::{naming::Namer, output};
 
 pub fn build_argument_structs<'query, 'schema, 'doc>(
     doc: &'doc NormalisedDocument<'query, 'schema>,
@@ -107,7 +105,7 @@ impl<'query, 'schema, 'doc> SelectionArguments<'query, 'schema, 'doc> {
 
         let rv = Rc::new(ArgumentStruct {
             id: our_id,
-            target_type_name: format!("{}Arguments", self.target_selection.target_type.name()),
+            target_type_name: self.target_selection.target_type.name().to_string(),
             fields,
         });
 
@@ -135,6 +133,25 @@ impl<'query, 'schema, 'doc> SelectionArguments<'query, 'schema, 'doc> {
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+struct ArgumentStruct<'query, 'schema> {
+    id: Uuid,
+    target_type_name: String,
+    fields: Vec<ArgumentStructField<'query, 'schema>>,
+}
+
+impl<'query, 'schema> crate::naming::Nameable for Rc<ArgumentStruct<'query, 'schema>> {
+    fn requested_name(&self) -> String {
+        format!("{}Arguments", self.target_type_name)
+    }
+}
+
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+enum ArgumentStructField<'query, 'schema> {
+    Variable(Variable<'query, 'schema>),
+    NestedStruct(Rc<ArgumentStruct<'query, 'schema>>),
+}
+
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 enum SelectionArgument<'query, 'schema, 'doc> {
     VariableArgument(Variable<'query, 'schema>),
     NestedArguments(SelectionArguments<'query, 'schema, 'doc>),
@@ -159,10 +176,30 @@ impl<'query, 'schema, 'doc> ArgumentStructDetails<'query, 'schema, 'doc> {
         }
     }
 
-    pub fn argument_structs(self) -> Vec<(String, Rc<ArgumentStruct<'query, 'schema>>)> {
+    pub fn argument_structs(self) -> Vec<output::ArgumentStruct<'query, 'schema>> {
         self.selection_structs
             .iter()
-            .map(|(_, v)| (self.namer.borrow_mut().name_subject(&v), Rc::clone(v)))
+            .map(|(_, arg_struct)| {
+                let name = self.namer.borrow_mut().name_subject(&arg_struct);
+                output::ArgumentStruct::new(
+                    name,
+                    arg_struct
+                        .fields
+                        .iter()
+                        .map(|field| match field {
+                            ArgumentStructField::Variable(var) => {
+                                output::ArgumentStructField::Variable(var.clone())
+                            }
+                            ArgumentStructField::NestedStruct(nested_struct) => {
+                                let nested_name =
+                                    self.namer.borrow_mut().name_subject(nested_struct);
+
+                                output::ArgumentStructField::NestedStruct(nested_name)
+                            }
+                        })
+                        .collect(),
+                )
+            })
             .collect()
     }
 
