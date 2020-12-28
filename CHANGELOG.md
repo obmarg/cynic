@@ -27,6 +27,7 @@ all APIs might be changed.
   attribute on fields that recurse.
 - The generator now understands query fragments, spreads and inline fragment
   spreads. Inline fragments for interface/union types are not yet supported.
+- Interfaces can be queried via `#[derive(InlineFragments)]` on an enum.  
 
 ### Bug Fixes
 
