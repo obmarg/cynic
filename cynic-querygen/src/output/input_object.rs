@@ -22,8 +22,16 @@ impl std::fmt::Display for InputObject<'_> {
         writeln!(f, "pub struct {} {{", self.name)?;
 
         for field in &self.fields {
+            let mut f = indented(f, 4);
+
+            if field.name.to_snake_case().to_camel_case() != field.name {
+                // If a snake -> camel casing roundtrip is not lossless
+                // we need to explicitly rename this field
+                writeln!(f, "#[cynic(rename = \"{}\")]", field.name)?;
+            }
+
             writeln!(
-                indented(f, 4),
+                f,
                 "pub {}: {},",
                 field.name.to_snake_case(),
                 field.type_spec()
