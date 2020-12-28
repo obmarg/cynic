@@ -1,11 +1,14 @@
-use crate::schema::{EnumDetails, InputField};
+use crate::schema::EnumDetails;
 
 mod argument_struct;
+mod enums;
 mod indent;
+mod input_object;
 pub mod query_fragment;
 
 pub use argument_struct::{ArgumentStruct, ArgumentStructField};
 pub use indent::indented;
+pub use input_object::InputObject;
 pub use query_fragment::QueryFragment;
 
 pub struct Output<'query, 'schema> {
@@ -17,9 +20,3 @@ pub struct Output<'query, 'schema> {
 }
 
 pub struct Scalar<'schema>(pub &'schema str);
-
-#[derive(Debug, PartialEq)]
-pub struct InputObject<'schema> {
-    pub name: String,
-    pub fields: Vec<InputField<'schema>>,
-}

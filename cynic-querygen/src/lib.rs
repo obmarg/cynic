@@ -122,37 +122,21 @@ pub fn document_to_fragment_structs(
     }
 
     for en in output.enums {
-        let type_name = en.name;
-        lines.push("    #[derive(cynic::Enum, Clone, Copy, Debug)]".into());
-        lines.push("    #[cynic(".into());
-        lines.push(format!("        graphql_type = \"{}\",", type_name));
-        lines.push("        rename_all = \"SCREAMING_SNAKE_CASE\"".into());
-        lines.push("    )]".into());
-        lines.push(format!("    pub enum {} {{", type_name.to_pascal_case()));
+        use output::indented;
+        use std::fmt::Write;
 
-        for variant in &en.values {
-            lines.push(format!("        {},", variant.to_pascal_case()))
-        }
-        lines.push("    }\n".into());
+        let mut s = String::new();
+        write!(indented(&mut s, 4), "{}", en).unwrap();
+        lines.push(s);
     }
 
     for input_object in output.input_objects {
-        lines.push("    #[derive(cynic::InputObject, Debug)]".into());
-        lines.push(format!(
-            "    #[cynic(graphql_type = \"{}\", rename_all=\"camelCase\")]",
-            input_object.name
-        ));
-        lines.push(format!("    pub struct {} {{", input_object.name));
+        use output::indented;
+        use std::fmt::Write;
 
-        for field in input_object.fields {
-            lines.push(format!(
-                "        pub {}: {},",
-                field.name.to_snake_case(),
-                field.type_spec()
-            ))
-        }
-
-        lines.push("    }\n".into());
+        let mut s = String::new();
+        write!(indented(&mut s, 4), "{}", input_object).unwrap();
+        lines.push(s);
     }
     lines.push("}\n".into());
 
