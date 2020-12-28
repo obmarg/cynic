@@ -47,6 +47,7 @@ all APIs might be changed.
   - Correctly generates different argument structs if a single type with
     arguments is used in multiple queries. Though the correct IntoArgument impl
     is not yet generated.
+- The generator now generates scalars with public fields
 
 ## v0.10.1 - 2020-11-04
 
