@@ -4,6 +4,7 @@ mod enum_marker;
 mod field_selector;
 mod input_object_marker;
 mod interface_struct;
+mod interfaces_implementations;
 mod schema_roots;
 mod selection_builder;
 mod selector_struct;
@@ -15,6 +16,7 @@ use enum_marker::EnumMarker;
 pub use field_selector::FieldSelector;
 use input_object_marker::InputObjectMarker;
 use interface_struct::InterfaceStruct;
+use interfaces_implementations::InterfacesImplementations;
 use schema_roots::{RootTypes, SchemaRoot};
 use selection_builder::FieldSelectionBuilder;
 pub use selector_struct::SelectorStruct;
@@ -58,6 +60,7 @@ pub struct QueryDsl {
     pub enums: Vec<EnumMarker>,
     pub input_objects: Vec<InputObjectMarker>,
     pub schema_roots: Vec<SchemaRoot>,
+    pub interfaces_implementations: Vec<InterfacesImplementations>,
 }
 
 impl From<schema::Document> for QueryDsl {
@@ -73,12 +76,17 @@ impl From<schema::Document> for QueryDsl {
         let mut interfaces = vec![];
         let mut enums = vec![];
         let mut schema_roots = vec![];
+        let mut interfaces_implementations = vec![];
 
         let root_types = RootTypes::from_definitions(&document.definitions);
 
         for definition in &document.definitions {
             match definition {
                 Definition::TypeDefinition(TypeDefinition::Object(object)) => {
+                    if let Some(impls) = InterfacesImplementations::from_object(object) {
+                        interfaces_implementations.push(impls);
+                    }
+
                     // Ok, so would be nice to restructure this so that the argument structs
                     // are visible at the point we're generating the field_selectors...
                     let selector = SelectorStruct::from_object(&object, &type_index);
@@ -117,6 +125,7 @@ impl From<schema::Document> for QueryDsl {
             interfaces,
             enums,
             schema_roots,
+            interfaces_implementations,
         }
     }
 }
@@ -132,6 +141,7 @@ impl quote::ToTokens for QueryDsl {
         let interfaces = &self.interfaces;
         let enums = &self.enums;
         let schema_roots = &self.schema_roots;
+        let interfaces_implementations = &self.interfaces_implementations;
 
         tokens.append_all(quote! {
             #(
@@ -154,6 +164,9 @@ impl quote::ToTokens for QueryDsl {
             )*
             #(
                 #schema_roots
+            )*
+            #(
+                interfaces_implementations
             )*
         })
     }

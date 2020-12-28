@@ -26,10 +26,13 @@ pub(crate) fn inline_fragments_derive_impl(
     let schema =
         load_schema(&*input.schema_path).map_err(|e| e.into_syn_error(input.schema_path.span()))?;
 
-    if !find_union_type(&input.graphql_type, &schema) {
+    if !find_union_type_or_interface(&input.graphql_type, &schema) {
         return Err(syn::Error::new(
             input.graphql_type.span(),
-            format!("Could not find a Union type named {}", &*input.graphql_type),
+            format!(
+                "Could not find a Union type or Interface named {}",
+                &*input.graphql_type
+            ),
         ));
     }
 
@@ -133,13 +136,21 @@ impl quote::ToTokens for InlineFragmentsImpl {
     }
 }
 
-fn find_union_type(name: &str, schema: &schema::Document) -> bool {
+fn find_union_type_or_interface(name: &str, schema: &schema::Document) -> bool {
     for definition in &schema.definitions {
         use graphql_parser::schema::{Definition, TypeDefinition};
-        if let Definition::TypeDefinition(TypeDefinition::Union(union)) = definition {
-            if union.name == name {
-                return true;
+        match definition {
+            Definition::TypeDefinition(TypeDefinition::Union(union)) => {
+                if union.name == name {
+                    return true;
+                }
             }
+            Definition::TypeDefinition(TypeDefinition::Interface(interface)) => {
+                if interface.name == name {
+                    return true;
+                }
+            }
+            _ => {}
         }
     }
 
