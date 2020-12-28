@@ -64,7 +64,7 @@ supported:
 The following features are not well supported or tested and may not work well,
 or at all:
 
-- Fetching union and interface types and via inline fragments
+- Fetching union and interface types via inline fragments
 
 The following features are not yet supported, though should be soon (if you
 want to help out with the project I'd be happy for someone else to try and
