@@ -1,7 +1,8 @@
 //! Handles "leaf types" - i.e. enums & scalars that don't have any nested fields.
 
-use super::{inputs::InputObjectSet, normalisation::NormalisedDocument, output::Scalar};
+use super::{inputs::InputObjectSet, normalisation::NormalisedDocument};
 use crate::{
+    output::Scalar,
     schema::{EnumDetails, Type, TypeRef},
     Error,
 };

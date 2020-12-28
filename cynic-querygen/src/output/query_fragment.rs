@@ -1,20 +1,9 @@
+use std::fmt::Write;
+
 use inflector::Inflector;
-use std::rc::Rc;
-use uuid::Uuid;
 
-use super::{normalisation::Variable, value::TypedValue};
-use crate::schema::{EnumDetails, InputField, OutputFieldType};
-use crate::Error;
-
-pub struct Output<'query, 'schema> {
-    pub query_fragments: Vec<QueryFragment<'query, 'schema>>,
-    pub input_objects: Vec<InputObject<'schema>>,
-    pub enums: Vec<EnumDetails<'schema>>,
-    pub scalars: Vec<Scalar<'schema>>,
-    pub argument_structs: Vec<(String, Rc<ArgumentStruct<'query, 'schema>>)>,
-}
-
-pub struct Scalar<'schema>(pub &'schema str);
+use super::indented;
+use crate::{query_parsing::TypedValue, schema::OutputFieldType, Error};
 
 #[derive(Debug, PartialEq)]
 pub struct QueryFragment<'query, 'schema> {
@@ -25,32 +14,26 @@ pub struct QueryFragment<'query, 'schema> {
     pub name: String,
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ArgumentStruct<'query, 'schema> {
-    pub id: Uuid,
-    pub(super) name: String,
-    pub fields: Vec<ArgumentStructField<'query, 'schema>>,
-}
+impl std::fmt::Display for QueryFragment<'_, '_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let argument_struct_param = if let Some(name) = &self.argument_struct_name {
+            format!(", argument_struct = \"{}\"", name)
+        } else {
+            "".to_string()
+        };
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub enum ArgumentStructField<'query, 'schema> {
-    Variable(Variable<'query, 'schema>),
-    NestedStruct(Rc<ArgumentStruct<'query, 'schema>>),
-}
-
-impl<'query, 'schema> ArgumentStructField<'query, 'schema> {
-    pub fn name(&self) -> String {
-        match self {
-            ArgumentStructField::Variable(var) => var.name.to_string(),
-            ArgumentStructField::NestedStruct(arg_struct) => arg_struct.name.to_snake_case(),
+        writeln!(f, "#[derive(cynic::QueryFragment, Debug)]")?;
+        writeln!(
+            f,
+            "#[cynic(graphql_type = \"{}\"{})]",
+            self.target_type, argument_struct_param
+        )?;
+        writeln!(f, "pub struct {} {{", self.name)?;
+        for field in &self.fields {
+            write!(indented(f, 4), "{}", field)?;
         }
-    }
 
-    pub fn type_spec(&self) -> String {
-        match self {
-            ArgumentStructField::Variable(var) => var.value_type.type_spec().to_string(),
-            ArgumentStructField::NestedStruct(arg_struct) => arg_struct.name.clone(),
-        }
+        writeln!(f, "}}")
     }
 }
 
@@ -60,6 +43,36 @@ pub struct OutputField<'query, 'schema> {
     pub field_type: RustOutputFieldType,
 
     pub arguments: Vec<FieldArgument<'query, 'schema>>,
+}
+
+impl std::fmt::Display for OutputField<'_, '_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        if !self.arguments.is_empty() {
+            let arguments_string = self
+                .arguments
+                .iter()
+                .map(|arg| {
+                    Ok(format!(
+                        "{} = {}",
+                        arg.name.to_snake_case(),
+                        arg.to_literal()?
+                    ))
+                })
+                .collect::<Result<Vec<_>, Error>>()
+                // TODO: This unwrap needs ditched somehow...
+                .unwrap()
+                .join(", ");
+
+            writeln!(f, "#[arguments({})]", arguments_string)?;
+        }
+
+        writeln!(
+            f,
+            "pub {}: {},",
+            self.name.to_snake_case(),
+            self.field_type.type_spec()
+        )
+    }
 }
 
 /// An OutputFieldType that has been given a rust-land name.  Allows for
@@ -137,10 +150,4 @@ impl<'query, 'schema> FieldArgument<'query, 'schema> {
     pub fn to_literal(&self) -> Result<String, Error> {
         self.value.to_literal()
     }
-}
-
-#[derive(Debug, PartialEq)]
-pub struct InputObject<'schema> {
-    pub name: String,
-    pub fields: Vec<InputField<'schema>>,
 }

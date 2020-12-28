@@ -1,4 +1,4 @@
-use std::{collections::HashMap, hash::Hash, rc::Rc};
+use std::{collections::HashMap, hash::Hash};
 
 pub trait Nameable: Eq + Hash {
     fn requested_name(&self) -> String;
@@ -45,12 +45,6 @@ where
         self.named_subjects.insert(subject.clone(), name.clone());
 
         name
-    }
-}
-
-impl<'query, 'schema> Nameable for Rc<super::normalisation::SelectionSet<'query, 'schema>> {
-    fn requested_name(&self) -> String {
-        self.target_type.name().to_owned()
     }
 }
 

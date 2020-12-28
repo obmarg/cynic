@@ -54,34 +54,34 @@ mod queries {
 )]
 mod types {
     #[derive(cynic::Scalar, Debug)]
-    pub struct Date(String);
+    pub struct Date(pub String);
 
     #[derive(cynic::Scalar, Debug)]
-    pub struct DateTime(String);
+    pub struct DateTime(pub String);
 
     #[derive(cynic::Scalar, Debug)]
-    pub struct GitObjectID(String);
+    pub struct GitObjectID(pub String);
 
     #[derive(cynic::Scalar, Debug)]
-    pub struct GitRefname(String);
+    pub struct GitRefname(pub String);
 
     #[derive(cynic::Scalar, Debug)]
-    pub struct GitSSHRemote(String);
+    pub struct GitSSHRemote(pub String);
 
     #[derive(cynic::Scalar, Debug)]
-    pub struct GitTimestamp(String);
+    pub struct GitTimestamp(pub String);
 
     #[derive(cynic::Scalar, Debug)]
-    pub struct Html(String);
+    pub struct Html(pub String);
 
     #[derive(cynic::Scalar, Debug)]
-    pub struct PreciseDateTime(String);
+    pub struct PreciseDateTime(pub String);
 
     #[derive(cynic::Scalar, Debug)]
-    pub struct Uri(String);
+    pub struct Uri(pub String);
 
     #[derive(cynic::Scalar, Debug)]
-    pub struct X509Certificate(String);
+    pub struct X509Certificate(pub String);
 
 }
 

@@ -3,19 +3,18 @@ use std::rc::Rc;
 mod arguments;
 mod inputs;
 mod leaf_types;
-mod naming;
 mod normalisation;
-mod output;
 mod parser;
 mod sorting;
 mod value;
 
 use arguments::ArgumentStructDetails;
-use naming::Namer;
-use output::Output;
 use parser::Document;
 
-use crate::{Error, TypeIndex};
+pub use normalisation::Variable;
+pub use value::TypedValue;
+
+use crate::{naming::Namer, output::Output, Error, TypeIndex};
 
 pub fn parse_query_document<'text>(
     doc: &Document<'text>,
@@ -66,9 +65,11 @@ fn make_query_fragment<'text>(
     selection: Rc<normalisation::SelectionSet<'text, 'text>>,
     namer: &mut Namer<Rc<normalisation::SelectionSet<'text, 'text>>>,
     argument_struct_details: &ArgumentStructDetails<'text, 'text, '_>,
-) -> Result<output::QueryFragment<'text, 'text>, Error> {
+) -> Result<crate::output::QueryFragment<'text, 'text>, Error> {
+    use crate::output::query_fragment::{
+        FieldArgument, OutputField, QueryFragment, RustOutputFieldType,
+    };
     use normalisation::{Field, Selection};
-    use output::{FieldArgument, OutputField, QueryFragment, RustOutputFieldType};
 
     Ok(QueryFragment {
         fields: selection
@@ -108,8 +109,8 @@ fn make_query_fragment<'text>(
     })
 }
 
-fn make_input_object(input: Rc<inputs::InputObject>) -> Result<output::InputObject, Error> {
-    Ok(output::InputObject {
+fn make_input_object(input: Rc<inputs::InputObject>) -> Result<crate::output::InputObject, Error> {
+    Ok(crate::output::InputObject {
         name: input.schema_type.name.to_string(),
         fields: input.fields.clone(),
     })

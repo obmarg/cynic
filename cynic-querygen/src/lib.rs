@@ -1,6 +1,8 @@
 use inflector::Inflector;
 use std::rc::Rc;
 
+mod naming;
+mod output;
 mod query_parsing;
 mod schema;
 mod type_ext;
@@ -84,141 +86,77 @@ pub fn document_to_fragment_structs(
     schema: impl AsRef<str>,
     options: &QueryGenOptions,
 ) -> Result<String, Error> {
+    use output::indented;
+    use std::fmt::Write;
+
     let schema = graphql_parser::parse_schema::<&str>(schema.as_ref())?;
     let query = graphql_parser::parse_query::<&str>(query.as_ref())?;
 
     let type_index = Rc::new(TypeIndex::from_schema(&schema));
-    let output = query_parsing::parse_query_document(&query, &type_index)?;
+    let parsed_output = query_parsing::parse_query_document(&query, &type_index)?;
 
-    let mut lines = vec![];
+    let mut output = String::new();
 
-    lines.push("#[cynic::query_module(".into());
-    lines.push(format!("    schema_path = r#\"{}\"#,", options.schema_path));
-    lines.push(format!("    query_module = \"{}\",", options.query_module));
-    lines.push(")]\nmod queries {".into());
-    lines.push(format!(
+    writeln!(output, "#[cynic::query_module(").unwrap();
+    writeln!(output, "    schema_path = r#\"{}\"#,", options.schema_path).unwrap();
+    writeln!(output, "    query_module = \"{}\",", options.query_module).unwrap();
+    writeln!(output, ")]\nmod queries {{").unwrap();
+    writeln!(
+        output,
         "    use super::{{{}, types::*}};\n",
         options.query_module
-    ));
+    )
+    .unwrap();
 
-    for (struct_name, argument_struct) in output.argument_structs {
-        lines.push("    #[derive(cynic::FragmentArguments, Debug)]".into());
-        lines.push(format!("    pub struct {} {{", struct_name));
-
-        for field in &argument_struct.fields {
-            lines.push(format!(
-                "        pub {}: {},",
-                field.name().to_snake_case(),
-                field.type_spec()
-            ));
-        }
-
-        lines.push("    }\n".into());
+    for argument_struct in parsed_output.argument_structs {
+        writeln!(indented(&mut output, 4), "{}", argument_struct).unwrap();
     }
 
-    for fragment in output.query_fragments {
-        let argument_struct_param = if let Some(name) = fragment.argument_struct_name {
-            format!(", argument_struct = \"{}\"", name)
-        } else {
-            "".to_string()
-        };
-
-        lines.push("    #[derive(cynic::QueryFragment, Debug)]".into());
-        lines.push(format!(
-            "    #[cynic(graphql_type = \"{}\"{})]",
-            fragment.target_type, argument_struct_param
-        ));
-        lines.push(format!("    pub struct {} {{", fragment.name));
-
-        for field in fragment.fields {
-            if !field.arguments.is_empty() {
-                let arguments_string = field
-                    .arguments
-                    .iter()
-                    .map(|arg| {
-                        Ok(format!(
-                            "{} = {}",
-                            arg.name.to_snake_case(),
-                            arg.to_literal()?
-                        ))
-                    })
-                    .collect::<Result<Vec<_>, Error>>()?
-                    .join(", ");
-
-                lines.push(format!("        #[arguments({})]", arguments_string));
-            }
-            lines.push(format!(
-                "        pub {}: {},",
-                field.name.to_snake_case(),
-                field.field_type.type_spec()
-            ))
-        }
-        lines.push("    }\n".to_string());
+    for fragment in parsed_output.query_fragments {
+        writeln!(indented(&mut output, 4), "{}", fragment).unwrap();
     }
 
-    for en in output.enums {
-        let type_name = en.name;
-        lines.push("    #[derive(cynic::Enum, Clone, Copy, Debug)]".into());
-        lines.push("    #[cynic(".into());
-        lines.push(format!("        graphql_type = \"{}\",", type_name));
-        lines.push("        rename_all = \"SCREAMING_SNAKE_CASE\"".into());
-        lines.push("    )]".into());
-        lines.push(format!("    pub enum {} {{", type_name.to_pascal_case()));
-
-        for variant in &en.values {
-            lines.push(format!("        {},", variant.to_pascal_case()))
-        }
-        lines.push("    }\n".into());
+    for en in parsed_output.enums {
+        writeln!(indented(&mut output, 4), "{}", en).unwrap();
     }
 
-    for input_object in output.input_objects {
-        lines.push("    #[derive(cynic::InputObject, Debug)]".into());
-        lines.push(format!(
-            "    #[cynic(graphql_type = \"{}\", rename_all=\"camelCase\")]",
-            input_object.name
-        ));
-        lines.push(format!("    pub struct {} {{", input_object.name));
-
-        for field in input_object.fields {
-            lines.push(format!(
-                "        pub {}: {},",
-                field.name.to_snake_case(),
-                field.type_spec()
-            ))
-        }
-
-        lines.push("    }\n".into());
+    for input_object in parsed_output.input_objects {
+        writeln!(indented(&mut output, 4), "{}", input_object).unwrap();
     }
-    lines.push("}\n".into());
+    writeln!(output, "}}\n").unwrap();
 
-    lines.push("#[cynic::query_module(".into());
-    lines.push(format!("    schema_path = r#\"{}\"#,", options.schema_path));
-    lines.push(format!("    query_module = \"{}\",", options.query_module));
-    lines.push(")]\nmod types {".into());
+    writeln!(output, "#[cynic::query_module(").unwrap();
+    writeln!(output, "    schema_path = r#\"{}\"#,", options.schema_path).unwrap();
+    writeln!(output, "    query_module = \"{}\",", options.query_module).unwrap();
+    writeln!(output, ")]\nmod types {{").unwrap();
 
     // Output any custom scalars we need.
     // Note that currently our query_dsl needs _all_ scalars in a schema
     // so we're parsing this out from schema.definitons rather than output.scalars
     for def in &schema.definitions {
         if let schema::Definition::TypeDefinition(schema::TypeDefinition::Scalar(scalar)) = def {
-            lines.push("    #[derive(cynic::Scalar, Debug)]".into());
-            lines.push(format!(
-                "    pub struct {}(String);\n",
+            writeln!(output, "    #[derive(cynic::Scalar, Debug)]").unwrap();
+            writeln!(
+                output,
+                "    pub struct {}(pub String);\n",
                 scalar.name.to_pascal_case()
-            ));
+            )
+            .unwrap();
         }
     }
-    lines.push("}\n".into());
+    writeln!(output, "}}\n").unwrap();
 
-    lines.push(format!("mod {}{{", options.query_module));
-    lines.push("    use super::types::*;".into());
-    lines.push(format!(
+    writeln!(output, "mod {}{{", options.query_module).unwrap();
+    writeln!(output, "    use super::types::*;").unwrap();
+    writeln!(
+        output,
         "    cynic::query_dsl!(r#\"{}\"#);",
         options.schema_path
-    ));
-    lines.push("}\n".into());
+    )
+    .unwrap();
+    writeln!(output, "}}\n").unwrap();
 
-    Ok(lines.join("\n"))
+    Ok(output)
 }
 
 #[cfg(test)]
