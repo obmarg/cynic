@@ -166,7 +166,7 @@ impl quote::ToTokens for QueryDsl {
                 #schema_roots
             )*
             #(
-                interfaces_implementations
+                #interfaces_implementations
             )*
         })
     }
