@@ -39,6 +39,8 @@ all APIs might be changed.
 - Cynic derives (and cynic itself) no longer emit clippy warnings (on 1.48 at least)
 - We now support raw identifiers in QueryFragment derives, useful for fields
   named `type` or similar.
+- The generator now correctly renames InputObject fields & Enum variants if the
+  default `rename_all` doesn't work for them.
 
 ### Changes
 
