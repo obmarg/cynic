@@ -22,7 +22,7 @@ impl InterfacesImplementations {
             interfaces: obj
                 .implements_interfaces
                 .iter()
-                .map(|interface| Ident::for_type(interface))
+                .map(Ident::for_type)
                 .collect(),
         })
     }
