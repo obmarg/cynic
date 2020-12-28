@@ -2,9 +2,15 @@ use inflector::Inflector;
 use std::rc::Rc;
 use uuid::Uuid;
 
-use super::{normalisation::Variable, value::TypedValue};
+use crate::query_parsing::{TypedValue, Variable};
 use crate::schema::{EnumDetails, InputField, OutputFieldType};
 use crate::Error;
+
+mod argument_struct;
+mod indent;
+
+pub use argument_struct::{ArgumentStruct, ArgumentStructField};
+pub use indent::indented;
 
 pub struct Output<'query, 'schema> {
     pub query_fragments: Vec<QueryFragment<'query, 'schema>>,
@@ -23,35 +29,6 @@ pub struct QueryFragment<'query, 'schema> {
     pub argument_struct_name: Option<String>,
 
     pub name: String,
-}
-
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ArgumentStruct<'query, 'schema> {
-    pub id: Uuid,
-    pub(super) name: String,
-    pub fields: Vec<ArgumentStructField<'query, 'schema>>,
-}
-
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub enum ArgumentStructField<'query, 'schema> {
-    Variable(Variable<'query, 'schema>),
-    NestedStruct(Rc<ArgumentStruct<'query, 'schema>>),
-}
-
-impl<'query, 'schema> ArgumentStructField<'query, 'schema> {
-    pub fn name(&self) -> String {
-        match self {
-            ArgumentStructField::Variable(var) => var.name.to_string(),
-            ArgumentStructField::NestedStruct(arg_struct) => arg_struct.name.to_snake_case(),
-        }
-    }
-
-    pub fn type_spec(&self) -> String {
-        match self {
-            ArgumentStructField::Variable(var) => var.value_type.type_spec().to_string(),
-            ArgumentStructField::NestedStruct(arg_struct) => arg_struct.name.clone(),
-        }
-    }
 }
 
 #[derive(Debug, PartialEq)]

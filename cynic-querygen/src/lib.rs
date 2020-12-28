@@ -1,6 +1,8 @@
 use inflector::Inflector;
 use std::rc::Rc;
 
+mod naming;
+mod output;
 mod query_parsing;
 mod schema;
 mod type_ext;
@@ -102,18 +104,12 @@ pub fn document_to_fragment_structs(
     ));
 
     for (struct_name, argument_struct) in output.argument_structs {
-        lines.push("    #[derive(cynic::FragmentArguments, Debug)]".into());
-        lines.push(format!("    pub struct {} {{", struct_name));
+        use output::indented;
+        use std::fmt::Write;
 
-        for field in &argument_struct.fields {
-            lines.push(format!(
-                "        pub {}: {},",
-                field.name().to_snake_case(),
-                field.type_spec()
-            ));
-        }
-
-        lines.push("    }\n".into());
+        let mut s = String::new();
+        write!(indented(&mut s, 4), "{}", argument_struct).unwrap();
+        lines.push(s);
     }
 
     for fragment in output.query_fragments {

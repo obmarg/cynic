@@ -6,9 +6,9 @@ use std::{
 };
 use uuid::Uuid;
 
-use super::{
-    naming::{Nameable, Namer},
-    normalisation::{Field, NormalisedDocument, Selection, SelectionSet, Variable},
+use super::normalisation::{Field, NormalisedDocument, Selection, SelectionSet, Variable};
+use crate::{
+    naming::Namer,
     output::{ArgumentStruct, ArgumentStructField},
 };
 
@@ -107,7 +107,7 @@ impl<'query, 'schema, 'doc> SelectionArguments<'query, 'schema, 'doc> {
 
         let rv = Rc::new(ArgumentStruct {
             id: our_id,
-            name: format!("{}Arguments", self.target_selection.target_type.name()),
+            target_type_name: format!("{}Arguments", self.target_selection.target_type.name()),
             fields,
         });
 
@@ -195,11 +195,5 @@ impl<'query, 'schema, 'doc> ArgumentStructDetails<'query, 'schema, 'doc> {
     ) {
         self.lookup_args_for_selection(selection_set)
             .map(|arg_struct| self.namer.borrow_mut().force_name(arg_struct, name));
-    }
-}
-
-impl<'query, 'schema> Nameable for Rc<ArgumentStruct<'query, 'schema>> {
-    fn requested_name(&self) -> String {
-        self.name.clone()
     }
 }

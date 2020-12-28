@@ -48,12 +48,6 @@ where
     }
 }
 
-impl<'query, 'schema> Nameable for Rc<super::normalisation::SelectionSet<'query, 'schema>> {
-    fn requested_name(&self) -> String {
-        self.target_type.name().to_owned()
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;

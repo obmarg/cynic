@@ -402,6 +402,12 @@ impl<'query, 'schema> SelectionSet<'query, 'schema> {
     }
 }
 
+impl<'query, 'schema> crate::naming::Nameable for Rc<SelectionSet<'query, 'schema>> {
+    fn requested_name(&self) -> String {
+        self.target_type.name().to_owned()
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
