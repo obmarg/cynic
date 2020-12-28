@@ -66,7 +66,9 @@ fn make_query_fragment<'text>(
     namer: &mut Namer<Rc<normalisation::SelectionSet<'text, 'text>>>,
     argument_struct_details: &ArgumentStructDetails<'text, 'text, '_>,
 ) -> Result<crate::output::QueryFragment<'text, 'text>, Error> {
-    use crate::output::{FieldArgument, OutputField, QueryFragment, RustOutputFieldType};
+    use crate::output::query_fragment::{
+        FieldArgument, OutputField, QueryFragment, RustOutputFieldType,
+    };
     use normalisation::{Field, Selection};
 
     Ok(QueryFragment {

@@ -113,43 +113,12 @@ pub fn document_to_fragment_structs(
     }
 
     for fragment in output.query_fragments {
-        let argument_struct_param = if let Some(name) = fragment.argument_struct_name {
-            format!(", argument_struct = \"{}\"", name)
-        } else {
-            "".to_string()
-        };
+        use output::indented;
+        use std::fmt::Write;
 
-        lines.push("    #[derive(cynic::QueryFragment, Debug)]".into());
-        lines.push(format!(
-            "    #[cynic(graphql_type = \"{}\"{})]",
-            fragment.target_type, argument_struct_param
-        ));
-        lines.push(format!("    pub struct {} {{", fragment.name));
-
-        for field in fragment.fields {
-            if !field.arguments.is_empty() {
-                let arguments_string = field
-                    .arguments
-                    .iter()
-                    .map(|arg| {
-                        Ok(format!(
-                            "{} = {}",
-                            arg.name.to_snake_case(),
-                            arg.to_literal()?
-                        ))
-                    })
-                    .collect::<Result<Vec<_>, Error>>()?
-                    .join(", ");
-
-                lines.push(format!("        #[arguments({})]", arguments_string));
-            }
-            lines.push(format!(
-                "        pub {}: {},",
-                field.name.to_snake_case(),
-                field.field_type.type_spec()
-            ))
-        }
-        lines.push("    }\n".to_string());
+        let mut s = String::new();
+        write!(indented(&mut s, 4), "{}", fragment).unwrap();
+        lines.push(s);
     }
 
     for en in output.enums {

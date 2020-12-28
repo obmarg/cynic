@@ -1,12 +1,12 @@
-use crate::query_parsing::TypedValue;
-use crate::schema::{EnumDetails, InputField, OutputFieldType};
-use crate::Error;
+use crate::schema::{EnumDetails, InputField};
 
 mod argument_struct;
 mod indent;
+pub mod query_fragment;
 
 pub use argument_struct::{ArgumentStruct, ArgumentStructField};
 pub use indent::indented;
+pub use query_fragment::QueryFragment;
 
 pub struct Output<'query, 'schema> {
     pub query_fragments: Vec<QueryFragment<'query, 'schema>>,
@@ -17,100 +17,6 @@ pub struct Output<'query, 'schema> {
 }
 
 pub struct Scalar<'schema>(pub &'schema str);
-
-#[derive(Debug, PartialEq)]
-pub struct QueryFragment<'query, 'schema> {
-    pub fields: Vec<OutputField<'query, 'schema>>,
-    pub target_type: String,
-    pub argument_struct_name: Option<String>,
-
-    pub name: String,
-}
-
-#[derive(Debug, PartialEq)]
-pub struct OutputField<'query, 'schema> {
-    pub name: &'schema str,
-    pub field_type: RustOutputFieldType,
-
-    pub arguments: Vec<FieldArgument<'query, 'schema>>,
-}
-
-/// An OutputFieldType that has been given a rust-land name.  Allows for
-/// the fact that there may be several rust structs that refer to the same schema
-/// type.
-#[derive(Debug, PartialEq)]
-pub enum RustOutputFieldType {
-    NamedType(String),
-    ListType(Box<RustOutputFieldType>),
-    NonNullType(Box<RustOutputFieldType>),
-}
-
-impl RustOutputFieldType {
-    pub fn from_schema_type(
-        schema_type: &OutputFieldType<'_>,
-        inner_name: String,
-    ) -> RustOutputFieldType {
-        match schema_type {
-            OutputFieldType::NonNullType(inner) => RustOutputFieldType::NonNullType(Box::new(
-                RustOutputFieldType::from_schema_type(inner, inner_name),
-            )),
-            OutputFieldType::ListType(inner) => RustOutputFieldType::ListType(Box::new(
-                RustOutputFieldType::from_schema_type(inner, inner_name),
-            )),
-            OutputFieldType::NamedType(_) => RustOutputFieldType::NamedType(inner_name),
-        }
-    }
-
-    pub fn type_spec(&self) -> String {
-        self.output_type_spec_imp(true)
-    }
-
-    fn output_type_spec_imp(&self, nullable: bool) -> String {
-        if let RustOutputFieldType::NonNullType(inner) = self {
-            return inner.output_type_spec_imp(false);
-        }
-
-        if nullable {
-            return format!("Option<{}>", self.output_type_spec_imp(false));
-        }
-
-        match self {
-            RustOutputFieldType::ListType(inner) => {
-                format!("Vec<{}>", inner.output_type_spec_imp(true))
-            }
-
-            RustOutputFieldType::NonNullType(_) => panic!("NonNullType somehow got past an if let"),
-
-            RustOutputFieldType::NamedType(s) => {
-                match s.as_ref() {
-                    "Int" => return "i32".into(),
-                    "Float" => return "f64".into(),
-                    "Boolean" => return "bool".into(),
-                    "ID" => return "cynic::Id".into(),
-                    _ => {}
-                }
-
-                s.clone()
-            }
-        }
-    }
-}
-
-#[derive(Debug, PartialEq)]
-pub struct FieldArgument<'query, 'schema> {
-    pub name: &'schema str,
-    value: TypedValue<'query, 'schema>,
-}
-
-impl<'query, 'schema> FieldArgument<'query, 'schema> {
-    pub fn new(name: &'schema str, value: TypedValue<'query, 'schema>) -> Self {
-        FieldArgument { name, value }
-    }
-
-    pub fn to_literal(&self) -> Result<String, Error> {
-        self.value.to_literal()
-    }
-}
 
 #[derive(Debug, PartialEq)]
 pub struct InputObject<'schema> {
