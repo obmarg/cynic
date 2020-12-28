@@ -1,4 +1,5 @@
 //! Handles "leaf types" - i.e. enums & scalars that don't have any nested fields.
+use std::collections::HashSet;
 
 use super::{inputs::InputObjectSet, normalisation::NormalisedDocument};
 use crate::{
@@ -16,7 +17,7 @@ pub fn extract_leaf_types<'query, 'schema>(
         .iter()
         .flat_map(|selection_set| selection_set.leaf_output_types())
         .map(TypeRef::from)
-        .collect::<Vec<_>>();
+        .collect::<HashSet<_>>();
 
     leaf_types.extend(
         doc.selection_sets
