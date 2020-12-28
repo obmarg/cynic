@@ -33,6 +33,7 @@ mod queries {
     #[cynic(graphql_type = "Issue")]
     pub struct Issue {
         pub title: String,
+        pub state: IssueState,
     }
 
     #[derive(cynic::Enum, Clone, Copy, Debug)]
@@ -88,4 +89,5 @@ mod query_dsl{
     use super::types::*;
     cynic::query_dsl!(r#"schema.graphql"#);
 }
+
 

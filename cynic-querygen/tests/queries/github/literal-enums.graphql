@@ -3,6 +3,7 @@ query {
     issues(states: OPEN, first: 10) {
       nodes {
         title
+        state
       }
     }
   }
