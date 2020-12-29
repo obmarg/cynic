@@ -11,7 +11,11 @@ use super::{normalisation::Variable, parser};
 /// A literal value from a GraphQL query, along with it's type
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum TypedValue<'query, 'schema> {
-    Variable(&'query str, InputFieldType<'schema>),
+    Variable {
+        name: &'query str,
+        value_type: InputFieldType<'schema>,
+        field_type: InputFieldType<'schema>,
+    },
     Int(i64, InputFieldType<'schema>),
     Float(Option<Decimal>, InputFieldType<'schema>),
     String(String, InputFieldType<'schema>),
@@ -28,29 +32,33 @@ pub enum TypedValue<'query, 'schema> {
 impl<'query, 'schema> TypedValue<'query, 'schema> {
     pub fn from_query_value(
         value: &parser::Value<'query>,
-        value_type: InputFieldType<'schema>,
+        field_type: InputFieldType<'schema>,
         variable_definitions: &[Variable<'query, 'schema>],
     ) -> Result<Self, Error> {
         Ok(match value {
-            parser::Value::Variable(var_name) => {
+            parser::Value::Variable(name) => {
                 // If this is just a variable then we'll take it's type as our value type.
                 let value_type = variable_definitions
                     .iter()
-                    .find(|var| var.name == *var_name)
-                    .ok_or_else(|| Error::UnknownArgument(var_name.to_string()))?
+                    .find(|var| var.name == *name)
+                    .ok_or_else(|| Error::UnknownArgument(name.to_string()))?
                     .value_type
                     .clone();
 
-                TypedValue::Variable(var_name, value_type)
+                TypedValue::Variable {
+                    name,
+                    value_type,
+                    field_type,
+                }
             }
-            parser::Value::Int(num) => TypedValue::Int(num.as_i64().unwrap(), value_type),
-            parser::Value::Float(num) => TypedValue::Float(Decimal::from_f64(*num), value_type),
-            parser::Value::String(s) => TypedValue::String(s.clone(), value_type),
-            parser::Value::Boolean(b) => TypedValue::Boolean(*b, value_type),
-            parser::Value::Null => TypedValue::Null(value_type),
-            parser::Value::Enum(e) => TypedValue::Enum(e, value_type),
+            parser::Value::Int(num) => TypedValue::Int(num.as_i64().unwrap(), field_type),
+            parser::Value::Float(num) => TypedValue::Float(Decimal::from_f64(*num), field_type),
+            parser::Value::String(s) => TypedValue::String(s.clone(), field_type),
+            parser::Value::Boolean(b) => TypedValue::Boolean(*b, field_type),
+            parser::Value::Null => TypedValue::Null(field_type),
+            parser::Value::Enum(e) => TypedValue::Enum(e, field_type),
             parser::Value::List(values) => {
-                let inner_type = value_type.list_inner_type()?;
+                let inner_type = field_type.list_inner_type()?;
                 TypedValue::List(
                     values
                         .iter()
@@ -62,11 +70,11 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
                             )?)
                         })
                         .collect::<Result<_, Error>>()?,
-                    value_type,
+                    field_type,
                 )
             }
             parser::Value::Object(obj) => {
-                if let InputType::InputObject(obj_type) = value_type.inner_ref().lookup()? {
+                if let InputType::InputObject(obj_type) = field_type.inner_ref().lookup()? {
                     TypedValue::Object(
                         obj.iter()
                             .map(|(k, v)| {
@@ -86,11 +94,11 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
                                 ))
                             })
                             .collect::<Result<_, Error>>()?,
-                        value_type,
+                        field_type,
                     )
                 } else {
                     return Err(Error::ExpectedInputObject(
-                        value_type.inner_name().to_string(),
+                        field_type.inner_name().to_string(),
                     ));
                 }
             }
@@ -99,7 +107,7 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
 
     pub fn value_type(&self) -> &InputFieldType<'schema> {
         match self {
-            TypedValue::Variable(_, ty) => ty,
+            TypedValue::Variable { value_type, .. } => value_type,
             TypedValue::Int(_, ty) => ty,
             TypedValue::Float(_, ty) => ty,
             TypedValue::String(_, ty) => ty,
@@ -112,12 +120,14 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
     }
 
     pub fn is_variable(&self) -> bool {
-        matches!(self, TypedValue::Variable(_, _))
+        matches!(self, TypedValue::Variable{ ..})
     }
 
     pub fn variables(&self) -> Vec<Variable<'query, 'schema>> {
         match &self {
-            TypedValue::Variable(name, value_type) => vec![Variable {
+            TypedValue::Variable {
+                name, value_type, ..
+            } => vec![Variable {
                 name,
                 value_type: value_type.clone(),
             }],
@@ -130,18 +140,33 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
         }
     }
 
-    pub fn to_literal(&self) -> Result<String, Error> {
+    pub fn to_literal(&self, context: LiteralContext) -> Result<String, Error> {
         use inflector::Inflector;
 
         Ok(match self {
-            TypedValue::Variable(name, field_type) => {
-                if field_type.inner_name() == "String" && field_type.is_required() {
-                    // Required String arguments currently take owned Strings,
-                    // so we need to clone them.
-                    format!("args.{}.clone()", name.to_snake_case())
-                } else {
-                    // Other arguments we're usually OK taking a reference.
+            TypedValue::Variable {
+                name,
+                field_type,
+                value_type,
+            } => {
+                let schema_type = field_type.inner_ref().lookup()?;
+                if schema_type.is_definitely_copy() {
+                    // Copy types will be implicitly copied so we can just put them literally
+                    format!("args.{}", name.to_snake_case())
+                } else if context == LiteralContext::Argument
+                    && (!field_type.is_required() || schema_type.is_input_object())
+                {
+                    // Optional arguments or input types are OK to take a reference.
                     format!("&args.{}", name.to_snake_case())
+                } else {
+                    // If this is a required arg _or_ not in argument position we'll need a clone
+                    let clone_field = format!("args.{}.clone()", name.to_snake_case());
+                    if value_type.is_required() && !field_type.is_required() {
+                        // Our value is not an Option but the field _is_ so wrap it in Some
+                        format!("Some({})", clone_field)
+                    } else {
+                        clone_field
+                    }
                 }
             }
             TypedValue::Int(num, _) => num.to_string(),
@@ -167,7 +192,7 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
             TypedValue::List(values, _) => {
                 let inner = values
                     .iter()
-                    .map(|v| Ok(v.to_literal()?))
+                    .map(|v| Ok(v.to_literal(LiteralContext::ListItem)?))
                     .collect::<Result<Vec<_>, Error>>()?
                     .join(", ");
 
@@ -178,7 +203,11 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
                     let fields = object_literal
                         .iter()
                         .map(|(name, value)| {
-                            Ok(format!("{}: {}", name.to_snake_case(), value.to_literal()?))
+                            Ok(format!(
+                                "{}: {}",
+                                name.to_snake_case(),
+                                value.to_literal(LiteralContext::InputObjectField)?
+                            ))
                         })
                         .collect::<Result<Vec<_>, Error>>()?;
 
@@ -191,4 +220,15 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
             }
         })
     }
+}
+
+/// The contexts in which a Value literal can appear in generated code.
+///
+/// Required because the correct way to express a literal varies depending
+/// on it's context.
+#[derive(Clone, Copy, PartialEq, Eq, Debug)]
+pub enum LiteralContext {
+    Argument,
+    InputObjectField,
+    ListItem,
 }

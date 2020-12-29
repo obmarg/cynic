@@ -148,6 +148,8 @@ impl<'query, 'schema> FieldArgument<'query, 'schema> {
     }
 
     pub fn to_literal(&self) -> Result<String, Error> {
-        self.value.to_literal()
+        use crate::query_parsing::LiteralContext;
+
+        self.value.to_literal(LiteralContext::Argument)
     }
 }

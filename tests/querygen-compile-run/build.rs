@@ -108,6 +108,16 @@ fn main() {
             "../../cynic-querygen/tests/queries/github/input-object-literals.graphql",
             r#"queries::PullRequestTitles::fragment(FragmentContext::empty())"#,
         ),
+        TestCase::mutation(
+            &github_schema,
+            "tests/queries/github/scalar-inside-input-object.graphql",
+            r#"queries::AddPRComment::fragment(FragmentContext::new(
+                &queries::AddPRCommentArguments{
+                    body: "hello!".into(),
+                    commit: crate::types::GitObjectID("abcd".into())
+                }
+            ))"#,
+        ),
         /*
         TestCase::query_norun(
             &github_schema,
