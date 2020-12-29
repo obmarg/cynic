@@ -1,7 +1,27 @@
-use chrono::{DateTime, FixedOffset, Utc};
+use chrono::{DateTime, FixedOffset, NaiveDate, Utc};
 use json_decode::DecodeError;
 
 use crate::{scalar::Scalar, SerializeError};
+
+impl Scalar for NaiveDate {
+    fn decode(value: &serde_json::Value) -> Result<Self, DecodeError> {
+        match value {
+            serde_json::Value::String(s) => {
+                Ok(NaiveDate::parse_from_str(s, "%Y-%m-%d").map_err(chrono_decode_error)?)
+            }
+            _ => Err(DecodeError::IncorrectType(
+                "String".to_string(),
+                value.to_string(),
+            )),
+        }
+    }
+
+    fn encode(&self) -> Result<serde_json::Value, SerializeError> {
+        Ok(serde_json::Value::String(
+            self.format("%Y-%m-%d").to_string(),
+        ))
+    }
+}
 
 impl Scalar for DateTime<FixedOffset> {
     fn decode(value: &serde_json::Value) -> Result<Self, DecodeError> {
@@ -67,5 +87,14 @@ mod tests {
             .and_hms(10, 15, 20);
 
         assert_eq!(DateTime::decode(&datetime.encode().unwrap()), Ok(datetime));
+    }
+
+    #[test]
+    fn test_naive_date_scalar() {
+        use chrono::NaiveDate;
+
+        let date: NaiveDate = NaiveDate::from_ymd(2020, 12, 29);
+
+        assert_eq!(NaiveDate::decode(&date.encode().unwrap()), Ok(date));
     }
 }

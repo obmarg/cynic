@@ -28,6 +28,9 @@ all APIs might be changed.
 - The generator now understands query fragments, spreads and inline fragment
   spreads. Inline fragments for interface/union types are not yet supported.
 - Interfaces can be queried via `#[derive(InlineFragments)]` on an enum.
+- Added support for using chrono::NaiveDate as scalars. The decode/encode
+  functions will convert to/from dates in the ISO 8601 format, that is
+  `YYYY-MM-DD`
 
 ### Bug Fixes
 
