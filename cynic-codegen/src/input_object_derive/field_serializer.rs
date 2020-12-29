@@ -6,7 +6,7 @@ use super::InputObjectDeriveField;
 use crate::{
     schema::InputValue,
     type_validation::{check_types_are_compatible, CheckMode},
-    FieldType, Ident, TypeIndex,
+    FieldType, Ident, TypeIndex, TypePath,
 };
 
 pub struct FieldSerializer<'a> {
@@ -63,7 +63,7 @@ impl<'a> FieldSerializer<'a> {
         let generic_param = self.graphql_field_type.generic_parameter(Ident::new("T"));
         let arg_type = self.graphql_field_type.to_tokens(
             generic_param.as_ref().map(|p| p.name.clone()),
-            self.query_module.clone().into(),
+            TypePath::empty(),
         );
 
         let rust_field_name = &self.rust_field.ident;
