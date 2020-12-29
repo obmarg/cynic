@@ -1,4 +1,4 @@
-use chrono::{DateTime, FixedOffset, Utc, NaiveDate};
+use chrono::{DateTime, FixedOffset, NaiveDate, Utc};
 use json_decode::DecodeError;
 
 use crate::{scalar::Scalar, SerializeError};
@@ -6,8 +6,9 @@ use crate::{scalar::Scalar, SerializeError};
 impl Scalar for NaiveDate {
     fn decode(value: &serde_json::Value) -> Result<Self, DecodeError> {
         match value {
-            serde_json::Value::String(s) => Ok(NaiveDate::parse_from_str(s, "%Y-%m-%d")
-                .map_err(chrono_decode_error)?),
+            serde_json::Value::String(s) => {
+                Ok(NaiveDate::parse_from_str(s, "%Y-%m-%d").map_err(chrono_decode_error)?)
+            }
             _ => Err(DecodeError::IncorrectType(
                 "String".to_string(),
                 value.to_string(),
@@ -16,7 +17,9 @@ impl Scalar for NaiveDate {
     }
 
     fn encode(&self) -> Result<serde_json::Value, SerializeError> {
-        Ok(serde_json::Value::String(self.format("%Y-%m-%d").to_string()))
+        Ok(serde_json::Value::String(
+            self.format("%Y-%m-%d").to_string(),
+        ))
     }
 }
 
