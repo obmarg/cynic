@@ -27,7 +27,7 @@ all APIs might be changed.
   attribute on fields that recurse.
 - The generator now understands query fragments, spreads and inline fragment
   spreads. Inline fragments for interface/union types are not yet supported.
-- Interfaces can be queried via `#[derive(InlineFragments)]` on an enum.  
+- Interfaces can be queried via `#[derive(InlineFragments)]` on an enum.
 
 ### Bug Fixes
 
@@ -43,6 +43,8 @@ all APIs might be changed.
   default `rename_all` doesn't work for them.
 - The `InputObject` derive no longer looks up scalars inside `query_dsl` (which
   required them to be `pub use`d in `query_dsl`).
+- The generator is now context aware with argument values, and does a better job
+  of figuring out whether to clone or take by reference.
 
 ### Changes
 
@@ -58,6 +60,8 @@ all APIs might be changed.
     arguments is used in multiple queries. Though the correct IntoArgument impl
     is not yet generated.
 - The generator now generates scalars with public fields
+- The generator now derives `Clone` on scalars as certain positions they can
+  appear in require cloning
 
 ## v0.10.1 - 2020-11-04
 
