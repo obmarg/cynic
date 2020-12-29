@@ -135,7 +135,7 @@ pub fn document_to_fragment_structs(
     // so we're parsing this out from schema.definitons rather than output.scalars
     for def in &schema.definitions {
         if let schema::Definition::TypeDefinition(schema::TypeDefinition::Scalar(scalar)) = def {
-            writeln!(output, "    #[derive(cynic::Scalar, Debug)]").unwrap();
+            writeln!(output, "    #[derive(cynic::Scalar, Debug, Clone)]").unwrap();
             writeln!(
                 output,
                 "    pub struct {}(pub String);\n",

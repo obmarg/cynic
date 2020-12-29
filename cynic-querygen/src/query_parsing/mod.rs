@@ -12,7 +12,7 @@ use arguments::ArgumentStructDetails;
 use parser::Document;
 
 pub use normalisation::Variable;
-pub use value::TypedValue;
+pub use value::{LiteralContext, TypedValue};
 
 use crate::{naming::Namer, output::Output, Error, TypeIndex};
 
