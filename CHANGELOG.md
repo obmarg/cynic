@@ -41,6 +41,8 @@ all APIs might be changed.
   named `type` or similar.
 - The generator now correctly renames InputObject fields & Enum variants if the
   default `rename_all` doesn't work for them.
+- The `InputObject` derive no longer looks up scalars inside `query_dsl` (which
+  required them to be `pub use`d in `query_dsl`).
 
 ### Changes
 
