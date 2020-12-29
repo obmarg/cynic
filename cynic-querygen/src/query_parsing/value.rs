@@ -160,31 +160,38 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
                     format!("&args.{}", name.to_snake_case())
                 } else {
                     // If this is a required arg _or_ not in argument position we'll need a clone
-                    let clone_field = format!("args.{}.clone()", name.to_snake_case());
-                    if value_type.is_required() && !field_type.is_required() {
-                        // Our value is not an Option but the field _is_ so wrap it in Some
-                        format!("Some({})", clone_field)
-                    } else {
-                        clone_field
-                    }
+                    coerce_variable(
+                        field_type,
+                        value_type,
+                        format!("args.{}.clone()", name.to_snake_case()),
+                    )
                 }
             }
-            TypedValue::Int(num, _) => num.to_string(),
-            TypedValue::Float(num, _) => num
-                .map(|d| d.to_string())
+            TypedValue::Int(num, field_type) => {
+                let literal = num.to_string();
+                coerce_literal(field_type, context, literal)
+            }
+            TypedValue::Float(num, field_type) => num
+                .map(|d| coerce_literal(field_type, context, d.to_string()))
                 .unwrap_or_else(|| "null".to_string()),
             TypedValue::String(s, field_type) => {
-                if field_type.inner_name() == "ID" {
+                let literal = if field_type.inner_name() == "ID" {
                     format!("cynic::Id::new(\"{}\")", s)
                 } else {
                     format!("\"{}\".into()", s)
-                }
+                };
+
+                coerce_literal(field_type, context, literal)
             }
-            TypedValue::Boolean(b, _) => b.to_string(),
+            TypedValue::Boolean(b, field_type) => {
+                coerce_literal(field_type, context, b.to_string())
+            }
             TypedValue::Null(_) => "None".into(),
             TypedValue::Enum(v, field_type) => {
                 if let InputType::Enum(en) = field_type.inner_ref().lookup()? {
-                    format!("{}::{}", en.name.to_pascal_case(), v.to_pascal_case())
+                    let literal = format!("{}::{}", en.name.to_pascal_case(), v.to_pascal_case());
+
+                    coerce_literal(field_type, context, literal)
                 } else {
                     return Err(Error::ArgumentNotEnum);
                 }
@@ -213,13 +220,72 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
 
                     let fields = fields.join(", ");
 
-                    format!("{} {{ {} }}", input_object.name.to_pascal_case(), fields)
+                    let literal =
+                        format!("{} {{ {} }}", input_object.name.to_pascal_case(), fields);
+
+                    coerce_literal(field_type, context, literal)
                 } else {
                     return Err(Error::ArgumentNotInputObject);
                 }
             }
         })
     }
+}
+
+fn coerce_variable(expected: &InputFieldType, actual: &InputFieldType, input: String) -> String {
+    fn inner_fn(
+        expected: &InputFieldType,
+        actual: &InputFieldType,
+        input: String,
+        wrap_options: bool,
+    ) -> String {
+        match (expected, actual) {
+            (InputFieldType::NamedType(_), InputFieldType::NamedType(_)) if wrap_options => {
+                format!("Some({})", input)
+            }
+            (InputFieldType::NamedType(_), InputFieldType::NamedType(_)) => input,
+            (InputFieldType::ListType(ie), InputFieldType::ListType(ia)) => {
+                inner_fn(ie, ia, input, true)
+            }
+            (InputFieldType::NonNullType(ie), InputFieldType::NonNullType(ia)) => {
+                inner_fn(ie, ia, input, false)
+            }
+            (InputFieldType::ListType(expected), actual) if wrap_options => {
+                format!("Some(vec![{}])", inner_fn(expected, actual, input, true))
+            }
+            (InputFieldType::ListType(expected), actual) => {
+                format!("vec![{}]", inner_fn(expected, actual, input, true))
+            }
+            (InputFieldType::NamedType(_), InputFieldType::NonNullType(_)) => {
+                format!("Some({})", input)
+            }
+            _ => input,
+        }
+    }
+
+    inner_fn(expected, actual, input, true)
+}
+
+fn coerce_literal(into_type: &InputFieldType, context: LiteralContext, input: String) -> String {
+    fn inner_fn(into_type: &InputFieldType, wrap_options: bool, input: String) -> String {
+        match into_type {
+            InputFieldType::NamedType(_) if wrap_options => format!("Some({})", input),
+            InputFieldType::NamedType(_) => input,
+            InputFieldType::ListType(inner) if wrap_options => {
+                format!("Some(vec![{}])", inner_fn(inner, true, input))
+            }
+            InputFieldType::ListType(inner) => format!("vec![{}]", inner_fn(inner, true, input)),
+            InputFieldType::NonNullType(inner) => inner_fn(inner, false, input),
+        }
+    }
+
+    // If we're in argument context we can rely on IntoArgument to handle
+    // Option wrapping so don't do it here.  Non argument contexts need this
+    // done here though. Also IntoArgument doesn't currently handle anything
+    // with lists though so if a list is present we do the unwrapping here.
+    let wrap_outer_options = context != LiteralContext::Argument || into_type.contains_list();
+
+    inner_fn(into_type, wrap_outer_options, input)
 }
 
 /// The contexts in which a Value literal can appear in generated code.
@@ -231,4 +297,167 @@ pub enum LiteralContext {
     Argument,
     InputObjectField,
     ListItem,
+}
+
+#[cfg(test)]
+mod tests {
+    use std::rc::Rc;
+
+    use super::*;
+    use crate::{schema::InputTypeRef, TypeIndex};
+
+    #[test]
+    fn variable_option_coercion() {
+        let index = Rc::new(TypeIndex::default());
+        let variable_type = InputFieldType::NonNullType(Box::new(InputFieldType::NamedType(
+            InputTypeRef::test_ref("Int".to_string(), &index),
+        )));
+        let expected_type =
+            InputFieldType::NamedType(InputTypeRef::test_ref("Int".to_string(), &index));
+
+        assert_eq!(
+            coerce_variable(
+                &expected_type,
+                &variable_type,
+                "SomeEnum::SomeVariant".into()
+            ),
+            "Some(SomeEnum::SomeVariant)"
+        );
+
+        let expected_type = InputFieldType::NonNullType(Box::new(expected_type));
+        assert_eq!(
+            coerce_variable(
+                &expected_type,
+                &variable_type,
+                "SomeEnum::SomeVariant".into()
+            ),
+            "SomeEnum::SomeVariant"
+        );
+    }
+
+    #[test]
+    fn variable_list_coercion() {
+        let index = Rc::new(TypeIndex::default());
+        let variable_type = InputFieldType::NonNullType(Box::new(InputFieldType::NamedType(
+            InputTypeRef::test_ref("Int".to_string(), &index),
+        )));
+        let expected_type = InputFieldType::ListType(Box::new(InputFieldType::NamedType(
+            InputTypeRef::test_ref("Int".to_string(), &index),
+        )));
+
+        assert_eq!(
+            coerce_variable(
+                &expected_type,
+                &variable_type,
+                "SomeEnum::SomeVariant".into()
+            ),
+            "Some(vec![Some(SomeEnum::SomeVariant)])"
+        );
+
+        let expected_type = InputFieldType::NonNullType(Box::new(expected_type));
+        assert_eq!(
+            coerce_variable(
+                &expected_type,
+                &variable_type,
+                "SomeEnum::SomeVariant".into()
+            ),
+            "vec![Some(SomeEnum::SomeVariant)]"
+        );
+
+        let expected_type = InputFieldType::NonNullType(Box::new(InputFieldType::ListType(
+            Box::new(InputFieldType::NonNullType(Box::new(
+                InputFieldType::NamedType(InputTypeRef::test_ref("Int".to_string(), &index)),
+            ))),
+        )));
+        assert_eq!(
+            coerce_variable(
+                &expected_type,
+                &variable_type,
+                "SomeEnum::SomeVariant".into()
+            ),
+            "vec![SomeEnum::SomeVariant]"
+        );
+    }
+
+    #[test]
+    fn literal_coercion_for_fields() {
+        let index = Rc::new(TypeIndex::default());
+        let expected_type =
+            InputFieldType::NamedType(InputTypeRef::test_ref("Int".to_string(), &index));
+
+        assert_eq!(
+            coerce_literal(
+                &expected_type,
+                LiteralContext::InputObjectField,
+                "123".to_string()
+            ),
+            "Some(123)"
+        );
+
+        let expected_non_nullable = InputFieldType::NonNullType(Box::new(expected_type.clone()));
+        assert_eq!(
+            coerce_literal(
+                &expected_non_nullable,
+                LiteralContext::InputObjectField,
+                "123".to_string()
+            ),
+            "123"
+        );
+
+        let expected_type = InputFieldType::ListType(Box::new(expected_type));
+
+        assert_eq!(
+            coerce_literal(
+                &expected_type,
+                LiteralContext::InputObjectField,
+                "123".to_string()
+            ),
+            "Some(vec![Some(123)])"
+        );
+
+        let expected_type = InputFieldType::NonNullType(Box::new(expected_type));
+        assert_eq!(
+            coerce_literal(
+                &expected_type,
+                LiteralContext::InputObjectField,
+                "123".to_string()
+            ),
+            "vec![Some(123)]"
+        );
+    }
+
+    #[test]
+    fn literal_coercion_for_arguments() {
+        let index = Rc::new(TypeIndex::default());
+        let expected_type =
+            InputFieldType::NamedType(InputTypeRef::test_ref("Int".to_string(), &index));
+
+        assert_eq!(
+            coerce_literal(&expected_type, LiteralContext::Argument, "123".to_string()),
+            "123"
+        );
+
+        let expected_non_nullable = InputFieldType::NonNullType(Box::new(expected_type.clone()));
+        assert_eq!(
+            coerce_literal(
+                &expected_non_nullable,
+                LiteralContext::Argument,
+                "123".to_string()
+            ),
+            "123"
+        );
+
+        let expected_type = InputFieldType::ListType(Box::new(expected_type));
+
+        assert_eq!(
+            coerce_literal(&expected_type, LiteralContext::Argument, "123".to_string()),
+            "Some(vec![Some(123)])"
+        );
+
+        let expected_type = InputFieldType::NonNullType(Box::new(expected_type));
+        assert_eq!(
+            coerce_literal(&expected_type, LiteralContext::Argument, "123".to_string()),
+            "vec![Some(123)]"
+        );
+    }
 }

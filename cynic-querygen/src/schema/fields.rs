@@ -120,6 +120,14 @@ impl<'schema> InputFieldType<'schema> {
         }
     }
 
+    pub fn contains_list(&self) -> bool {
+        match self {
+            InputFieldType::NonNullType(inner) => inner.contains_list(),
+            InputFieldType::NamedType(_) => false,
+            InputFieldType::ListType(_) => true,
+        }
+    }
+
     pub fn is_required(&self) -> bool {
         matches!(self, InputFieldType::NonNullType(_))
     }

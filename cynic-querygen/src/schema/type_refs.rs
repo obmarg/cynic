@@ -54,6 +54,15 @@ macro_rules! impl_type_ref {
                 }
             }
 
+            #[cfg(test)]
+            #[allow(dead_code)]
+            pub fn test_ref(type_name: String, type_index: &Rc<TypeIndex<'schema>>) -> Self {
+                Self {
+                    type_name: Cow::Owned(type_name),
+                    type_index: Rc::clone(type_index),
+                }
+            }
+
             #[allow(dead_code)]
             pub fn lookup(&self) -> Result<$lookup_type<'schema>, Error> {
                 Ok(self.type_index.lookup_type(&self.type_name)?.try_into()?)
