@@ -35,7 +35,7 @@ fn run_query() -> cynic::GraphQLResponse<queries::CommentOnMutationSupportIssue>
 
 #[cfg(feature = "github")]
 fn build_query() -> cynic::Operation<'static, queries::CommentOnMutationSupportIssue> {
-    use cynic::QueryBuilder;
+    use cynic::MutationBuilder;
     use queries::{CommentOnMutationSupportIssue, CommentOnMutationSupportIssueArguments};
 
     CommentOnMutationSupportIssue::build(&CommentOnMutationSupportIssueArguments {
