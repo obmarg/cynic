@@ -18,6 +18,8 @@ mod type_index;
 mod type_path;
 mod type_validation;
 
+pub use ident::RenameAll;
+
 use error::Errors;
 use field_argument::FieldArgument;
 use field_type::FieldType;
