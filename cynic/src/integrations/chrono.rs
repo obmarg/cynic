@@ -23,6 +23,8 @@ impl Scalar for NaiveDate {
     }
 }
 
+crate::impl_serializable_argument_for_scalar!(NaiveDate);
+
 impl Scalar for DateTime<FixedOffset> {
     fn decode(value: &serde_json::Value) -> Result<Self, DecodeError> {
         match value {
