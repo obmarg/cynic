@@ -1,10 +1,7 @@
 fn main() {
-    use cynic::{FragmentContext, QueryFragment};
+    use cynic::QueryBuilder;
 
-    println!(
-        "{}",
-        cynic::Operation::query(TestStruct::fragment(FragmentContext::new(&TestArgs {}))).query
-    );
+    println!("{}", TestStruct::build(&TestArgs {}).query);
 }
 
 mod query_dsl {
