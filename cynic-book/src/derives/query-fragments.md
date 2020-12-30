@@ -35,7 +35,8 @@ struct FilmsConnection {
 }
 ```
 
-If the above QueryFragment was used in a query, it would result in GraphQL that looked like:
+If the above QueryFragment was used in a query, it would result in GraphQL that
+looked like:
 
 ```
 films {
@@ -154,6 +155,34 @@ any arguments in exactly the same way. Instead of calling the
 `Operation::mutation` function.
 
 <!-- TODO: An example of doing mutations -->
+
+#### Struct Attributes
+
+A QueryFragment can be configured with several attributes on the struct itself:
+
+- `graphql_type = "AType"` is required and tells cynic which type in the
+  GraphQL schema to map this struct to
+- `schema_path` sets the path to the GraphQL schema. This is required, but
+  can be provided by nesting the QueryFragment inside a query module with this
+  attr.
+- `query_module` tells cynic where to find the query module - that is a module
+  that has called the `query_dsl!` macro. This is required but can also be
+  provided by nesting the QueryFragment inside a query module.
+
+#### Field Attributes
+
+Each field can also have it's own attributes:
+
+- `recurse = "5"` tells cynic that this field is recursive and should be
+  fetched to a maximum depth of 5.  Fields to which this is applied must be put
+  in a `Box` and wrapped in an `Option` if not already optional in the GQL
+  schema.
+- The `flatten` attr can be used to "flatten" out excessive Options.  As
+  GraphQL is used in languages with implicit nulls, it's not uncommon to see a
+  type `[Int]` - which in Rust maps to `Option<Vec<Option<i32>>`.  This isn't a
+  very nice type to work with - applying the `flatten` attribute lets you
+  represent this as a `Vec<i32>` in your QueryFragment.  Any outer nulls become
+  an empty list and inner nulls are dropped.
 
 ### Related
 

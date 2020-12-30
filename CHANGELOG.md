@@ -67,6 +67,7 @@ all APIs might be changed.
   appear in require cloning
 - The generator now outputs correct Rust code when faced with queries that rely
   on list coercion.
+- Improved the docs for attributes in the book
 
 ## v0.10.1 - 2020-11-04
 
