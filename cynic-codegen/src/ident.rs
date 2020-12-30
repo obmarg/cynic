@@ -129,11 +129,11 @@ pub enum RenameRule {
 }
 
 impl RenameRule {
-    pub fn new(all: Option<RenameAll>, specific: Option<impl AsRef<String>>) -> Option<RenameRule> {
+    pub fn new(all: RenameAll, specific: Option<impl AsRef<String>>) -> Option<RenameRule> {
         match (specific, all) {
             (Some(specific), _) => Some(RenameRule::RenameTo(specific.as_ref().to_string())),
-            (_, Some(all)) => Some(RenameRule::RenameAll(all)),
-            _ => None,
+            (_, RenameAll::None) => None,
+            (_, all) => Some(RenameRule::RenameAll(all)),
         }
     }
 
@@ -148,38 +148,42 @@ impl RenameRule {
             RenameRule::RenameAll(RenameAll::ScreamingSnakeCase) => {
                 string.as_ref().to_screaming_snake_case()
             }
-            RenameRule::RenameAll(RenameAll::KebabCase) => string.as_ref().to_kebab_case(),
-            RenameRule::RenameAll(RenameAll::ScreamingKebabCase) => {
-                string.as_ref().to_kebab_case().to_uppercase()
+            RenameRule::RenameAll(RenameAll::None) => {
+                panic!("RenameRule::new not filtering out RenameAll::None properly!")
             }
         }
     }
 }
 
 #[derive(Debug, Clone, Copy)]
+/// Rules to rename all fields in an InputObject or variants in an Enum
+/// as GraphQL naming conventions usually don't match rust
 pub enum RenameAll {
+    None,
+    /// For names that are entirely lowercase in GraphQL: `myfield`
     Lowercase,
+    /// For names that are entirely uppercase in GraphQL: `MYFIELD`
     Uppercase,
+    /// For names that are entirely pascal case in GraphQL: `MyField`
     PascalCase,
+    /// For names that are entirely camel case in GraphQL: `myField`
     CamelCase,
+    /// For names that are entirely snake case in GraphQL: `my_field`
     SnakeCase,
+    /// For names that are entirely snake case in GraphQL: `MY_FIELD`
     ScreamingSnakeCase,
-    KebabCase,
-    ScreamingKebabCase,
 }
 
 impl darling::FromMeta for RenameAll {
     fn from_string(value: &str) -> Result<RenameAll, darling::Error> {
-        // TODO: Decide whether to make this case insensitive.
-        match value {
+        match value.to_lowercase().as_ref() {
+            "none" => Ok(RenameAll::None),
             "lowercase" => Ok(RenameAll::Lowercase),
-            "UPPERCASE" => Ok(RenameAll::Uppercase),
-            "PascalCase" => Ok(RenameAll::PascalCase),
-            "camelCase" => Ok(RenameAll::CamelCase),
+            "uppercase" => Ok(RenameAll::Uppercase),
+            "pascalcase" => Ok(RenameAll::PascalCase),
+            "camelcase" => Ok(RenameAll::CamelCase),
             "snake_case" => Ok(RenameAll::SnakeCase),
-            "SCREAMING_SNAKE_CASE" => Ok(RenameAll::ScreamingSnakeCase),
-            "kebab-case" => Ok(RenameAll::KebabCase),
-            "SCREAMING-KEBAB-CASE" => Ok(RenameAll::ScreamingKebabCase),
+            "screaming_snake_case" => Ok(RenameAll::ScreamingSnakeCase),
             _ => {
                 // Feels like it'd be nice if this error listed all the options...
                 Err(darling::Error::unknown_value(value))

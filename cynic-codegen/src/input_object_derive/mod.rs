@@ -59,6 +59,8 @@ pub fn input_object_derive_impl(
 
     let type_index = TypeIndex::for_schema(&schema);
 
+    let rename_all = input.rename_all.unwrap_or(RenameAll::CamelCase);
+
     if let darling::ast::Data::Struct(fields) = &input.data {
         let ident = &input.ident;
         let input_marker_ident = Ident::for_type(&*input.graphql_type);
@@ -69,7 +71,7 @@ pub fn input_object_derive_impl(
             &fields.fields,
             input_object_def,
             &input_object_name,
-            input.rename_all,
+            rename_all,
             input.require_all_fields,
             &struct_span,
         ) {
@@ -142,7 +144,7 @@ fn join_fields<'a>(
     fields: &'a [InputObjectDeriveField],
     input_object_def: &'a InputObjectType,
     input_object_name: &str,
-    rename_all: Option<RenameAll>,
+    rename_all: RenameAll,
     require_all_fields: bool,
     struct_span: &Span,
 ) -> Result<Vec<(&'a InputObjectDeriveField, &'a InputValue)>, TokenStream> {
@@ -271,7 +273,7 @@ mod test {
             &fields,
             &input_object,
             "MyInputObject",
-            None,
+            RenameAll::None,
             true,
             &Span::call_site(),
         );
@@ -293,7 +295,7 @@ mod test {
             &fields,
             &input_object,
             "MyInputObject",
-            None,
+            RenameAll::None,
             false,
             &Span::call_site(),
         );
@@ -315,7 +317,7 @@ mod test {
             &fields,
             &input_object,
             "MyInputObject",
-            None,
+            RenameAll::None,
             false,
             &Span::call_site(),
         );

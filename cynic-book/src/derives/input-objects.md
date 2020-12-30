@@ -6,7 +6,7 @@ input object and the easiest way to define that trait is to derive it:
 
 ```rust
 #[derive(cynic::InputObject, Clone, Debug)]
-#[cynic(graphql_type = "IssueOrder", rename_all = "camelCase")]
+#[cynic(graphql_type = "IssueOrder")]
 pub struct IssueOrder {
     pub direction: OrderDirection,
     pub field: IssueOrderField,
@@ -39,19 +39,21 @@ An InputObject can be configured with several attributes on the struct itself:
 
 - `graphql_type = "AType"` is required and tells cynic which type in the
   GraphQL schema to map this struct to
-- `rename_all="camelCase"` tells cynic to rename all the rust field names with a particular
-  rule to match their GraphQL counterparts. Typically this would be set to
-  `camelCase` but others are supported.
 - `require_all_fields` can be provided when you want cynic to make sure your
   struct has all of the fields defined in the GraphQL schema.
+- `rename_all="camelCase"` tells cynic to rename all the rust field names with
+  a particular rule to match their GraphQL counterparts. If not provided this
+  defaults to camelCase to be consistent with GraphQL conventions.
+
+<!-- TODO: list of the rename rules, possibly pulled from codegen docs -->
 
 #### Field Attributes
 
 Each field can also have it's own attributes:
 
-- `rename="someFieldName"` can be used to map a field to a completely different
-  GraphQL field name.
+- `rename="someFieldName"` can be used to map a field to a completely
+  different GraphQL field name.
 - `skip_serializing_if="path"` can be used on optional fields to skip
-  serializing them.  By default an `Option` field will be sent as `null` to
+  serializing them. By default an `Option` field will be sent as `null` to
   servers, but if you provide `skip_serializing_if="Option::is_none"` then the
   field will not be provided at all.

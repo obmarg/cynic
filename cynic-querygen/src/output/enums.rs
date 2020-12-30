@@ -9,10 +9,7 @@ impl std::fmt::Display for EnumDetails<'_> {
         let type_name = self.name;
 
         writeln!(f, "#[derive(cynic::Enum, Clone, Copy, Debug)]")?;
-        writeln!(f, "#[cynic(")?;
-        writeln!(f, "    graphql_type = \"{}\",", type_name)?;
-        writeln!(f, "    rename_all = \"SCREAMING_SNAKE_CASE\"")?;
-        writeln!(f, ")]")?;
+        writeln!(f, "#[cynic(graphql_type = \"{}\")]", type_name)?;
         writeln!(f, "pub enum {} {{", type_name.to_pascal_case())?;
 
         for variant in &self.values {

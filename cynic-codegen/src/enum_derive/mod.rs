@@ -54,12 +54,14 @@ pub fn enum_derive_impl(
     }
     let enum_def = enum_def.unwrap();
 
+    let rename_all = input.rename_all.unwrap_or(RenameAll::ScreamingSnakeCase);
+
     if let darling::ast::Data::Enum(variants) = &input.data {
         let pairs = match join_variants(
             variants,
             enum_def,
             &input.ident.to_string(),
-            input.rename_all,
+            rename_all,
             &enum_span,
         ) {
             Ok(pairs) => pairs,
@@ -118,7 +120,7 @@ fn join_variants<'a>(
     variants: &'a [EnumDeriveVariant],
     enum_def: &'a EnumType,
     enum_name: &str,
-    rename_all: Option<RenameAll>,
+    rename_all: RenameAll,
     enum_span: &Span,
 ) -> Result<Vec<(&'a EnumDeriveVariant, &'a EnumValue)>, TokenStream> {
     let mut map = HashMap::new();
@@ -193,30 +195,16 @@ mod tests {
             "IceCream",
             "CHEESECAKE",
             "ICE_CREAM",
-            Some(RenameAll::ScreamingSnakeCase)
+            RenameAll::ScreamingSnakeCase
         ),
-        case("CHEESECAKE", "ICE_CREAM", "CHEESECAKE", "ICE_CREAM", None),
-        case(
-            "Cheesecake",
-            "IceCream",
-            "cheesecake",
-            "ice-cream",
-            Some(RenameAll::KebabCase)
-        ),
-        case(
-            "Cheesecake",
-            "IceCream",
-            "CHEESECAKE",
-            "ICE-CREAM",
-            Some(RenameAll::ScreamingKebabCase)
-        )
+        case("CHEESECAKE", "ICE_CREAM", "CHEESECAKE", "ICE_CREAM", RenameAll::None)
     )]
     fn join_variants_happy_path(
         enum_variant_1: &str,
         enum_variant_2: &str,
         enum_value_1: &str,
         enum_value_2: &str,
-        rename_rule: Option<RenameAll>,
+        rename_rule: RenameAll,
     ) {
         let variants = vec![
             EnumDeriveVariant {
@@ -276,7 +264,7 @@ mod tests {
             &variants,
             &gql_enum,
             "Desserts",
-            Some(RenameAll::ScreamingSnakeCase),
+            RenameAll::ScreamingSnakeCase,
             &Span::call_site(),
         );
 
@@ -306,7 +294,13 @@ mod tests {
         gql_enum.values.push(EnumValue::new("CHEESECAKE".into()));
         gql_enum.values.push(EnumValue::new("ICE_CREAM".into()));
 
-        let result = join_variants(&variants, &gql_enum, "Desserts", None, &Span::call_site());
+        let result = join_variants(
+            &variants,
+            &gql_enum,
+            "Desserts",
+            RenameAll::None,
+            &Span::call_site(),
+        );
 
         assert_matches!(result, Err(_));
     }
@@ -320,7 +314,13 @@ mod tests {
         let mut gql_enum = EnumType::new("Desserts".into());
         gql_enum.values.push(EnumValue::new("ICE_CREAM".into()));
 
-        let result = join_variants(&variants, &gql_enum, "Desserts", None, &Span::call_site());
+        let result = join_variants(
+            &variants,
+            &gql_enum,
+            "Desserts",
+            RenameAll::None,
+            &Span::call_site(),
+        );
 
         assert_matches!(result, Err(_));
     }

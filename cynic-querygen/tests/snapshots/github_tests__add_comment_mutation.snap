@@ -40,7 +40,7 @@ mod queries {
     }
 
     #[derive(cynic::InputObject, Debug)]
-    #[cynic(graphql_type = "AddCommentInput", rename_all="camelCase")]
+    #[cynic(graphql_type = "AddCommentInput")]
     pub struct AddCommentInput {
         pub body: String,
         pub subject_id: cynic::Id,
