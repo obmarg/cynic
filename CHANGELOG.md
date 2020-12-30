@@ -17,14 +17,16 @@ all APIs might be changed.
   arguments. This change was neccesary to support recursive queries.
 - It is no longer recommended to use `QueryFragment::fragment` directly -
   instead an Operation should be constructed with `QueryBuilder::build` or
-  `MutationBuilder::build`.
+  `MutationBuilder::build`.  Note that these return an `Operation` so you no
+  longer need to construct one manually.
 - GraphQL fields with names that match rust keywords will no longer be
   postfixed with a `_` - you should now use a raw identifier (or rename) for
   these fields.
 - Derived `Enums` now default to `rename_all = "SCREAMING_SNAKE_CASE"` if not
   provided. To revert to the old behaviour you should explicitly provide "None"
 - Derived `InputObjects` now default to `rename_all = "camelCase" if not
-  provided. To revert to the old behaviour you should explicitly provide "None"
+  provided. To revert to the old behaviour you should explicitly provide
+  `rename_all = "None"`
 - Removed the `kebab-case` & `SCREAMING-KEBAB-CASE` rename_all rules - fairly
   sure kebab case is not valid in GraphQL so this shouldn't affect much.
 
