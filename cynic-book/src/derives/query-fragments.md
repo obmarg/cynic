@@ -174,9 +174,8 @@ A QueryFragment can be configured with several attributes on the struct itself:
 Each field can also have it's own attributes:
 
 - `recurse = "5"` tells cynic that this field is recursive and should be
-  fetched to a maximum depth of 5.  Fields to which this is applied must be put
-  in a `Box` and wrapped in an `Option` if not already optional in the GQL
-  schema.
+  fetched to a maximum depth of 5.  See [Recursive Queries][recursive-queries]
+  for more info.
 - The `flatten` attr can be used to "flatten" out excessive Options.  As
   GraphQL is used in languages with implicit nulls, it's not uncommon to see a
   type `[Int]` - which in Rust maps to `Option<Vec<Option<i32>>`.  This isn't a
