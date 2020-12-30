@@ -74,6 +74,7 @@ all APIs might be changed.
 - The generator now outputs correct Rust code when faced with queries that rely
   on list coercion.
 - "rename_all" attribute is no longer case sensitive.
+- Improved the docs for attributes in the book
 
 ## v0.10.1 - 2020-11-04
 
