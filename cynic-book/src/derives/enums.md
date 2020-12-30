@@ -17,7 +17,7 @@ The derive will work on any enum that only has unit variants that match up with
 the variants on the enum in the schema. If there are any extra or missing
 variants, the derive will emit errors.
 
-#### Struct Attributes
+#### Enum Attributes
 
 An Enum can be configured with several attributes on the enum itself:
 
