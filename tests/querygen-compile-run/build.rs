@@ -118,13 +118,11 @@ fn main() {
                 }
             ))"#,
         ),
-        /*
         TestCase::query_norun(
             &github_schema,
             "../../cynic-querygen/tests/queries/github/literal-enums.graphql",
-            r#"queries::Query::fragment(())"#,
+            r#"queries::RepoIssues::fragment(FragmentContext::empty())"#,
         ),
-        */
     ];
 
     for case in cases {

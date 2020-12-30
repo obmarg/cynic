@@ -65,6 +65,8 @@ all APIs might be changed.
 - The generator now generates scalars with public fields
 - The generator now derives `Clone` on scalars as certain positions they can
   appear in require cloning
+- The generator now outputs correct Rust code when faced with queries that rely
+  on list coercion.
 
 ## v0.10.1 - 2020-11-04
 

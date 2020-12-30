@@ -11,7 +11,7 @@ mod queries {
 
     #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "Query")]
-    pub struct UnnamedQuery {
+    pub struct RepoIssues {
         #[arguments(owner = "obmarg".into(), name = "cynic".into())]
         pub repository: Option<Repository>,
     }
@@ -19,7 +19,7 @@ mod queries {
     #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "Repository")]
     pub struct Repository {
-        #[arguments(states = IssueState::Open, first = 10)]
+        #[arguments(states = Some(vec![IssueState::Open]), first = 10)]
         pub issues: IssueConnection,
     }
 
