@@ -20,6 +20,12 @@ all APIs might be changed.
 - GraphQL fields with names that match rust keywords will no longer be
   postfixed with a `_` - you should now use a raw identifier (or rename) for
   these fields.
+- Derived `Enums` now default to `rename_all = "SCREAMING_SNAKE_CASE"` if not
+  provided. To revert to the old behaviour you should explicitly provide "None"
+- Derived `InputObjects` now default to `rename_all = "camelCase" if not
+  provided. To revert to the old behaviour you should explicitly provide "None"
+- Removed the `kebab-case` & `SCREAMING-KEBAB-CASE` rename_all rules - fairly
+  sure kebab case is not valid in GraphQL so this shouldn't affect much.
 
 ### New Features
 
@@ -67,6 +73,7 @@ all APIs might be changed.
   appear in require cloning
 - The generator now outputs correct Rust code when faced with queries that rely
   on list coercion.
+- "rename_all" attribute is no longer case sensitive.
 
 ## v0.10.1 - 2020-11-04
 
