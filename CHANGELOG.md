@@ -14,9 +14,10 @@ all APIs might be changed.
 ### Breaking Changes
 
 - `QueryFragment::fragment` now accepts a `FragmentContext` rather than
-  arguments. This can be constructed with `FragmentContext::new` if you have
-  arguments or `FragmentContext::empty` if not. This change was neccesary to
-  support recursive queries.
+  arguments. This change was neccesary to support recursive queries.
+- It is no longer recommended to use `QueryFragment::fragment` directly -
+  instead an Operation should be constructed with `QueryBuilder::build` or
+  `MutationBuilder::build`.
 - GraphQL fields with names that match rust keywords will no longer be
   postfixed with a `_` - you should now use a raw identifier (or rename) for
   these fields.
@@ -37,6 +38,8 @@ all APIs might be changed.
 - Added support for using chrono::NaiveDate as scalars. The decode/encode
   functions will convert to/from dates in the ISO 8601 format, that is
   `YYYY-MM-DD`
+- Added `QueryBuilder` & `MutationBuilder` traits for constructing Operations
+  from QueryFragments.
 
 ### Bug Fixes
 

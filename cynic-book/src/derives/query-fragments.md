@@ -76,20 +76,17 @@ struct AllFilmsQuery {
 An `Operation` can be created from this `QueryFragment`:
 
 ```
-use cynic::FragmentContext;
+use cynic::QueryBuilder;
 
-let query = cynic::Operation::query(
-    AllFilmsQuery::fragment(FragmentContext::empty())
-);
+let operation = AllFilmsQuery::build(());
 ```
+
+This particular query has no arguments so we provide the unit type `()` in place
+of actual arguments.
 
 This `Operation` can be converted into JSON using `serde`, sent to a server, and
 then then it's `decode_response` function can be used to decode the response
 itself. An example of this is in the [Quickstart][quickstart].
-
-We pass a `FragmentContext` in here, which can be used to provide arguments to
-a query. In this case we have no arguments, so we use the
-`FragmentContext::empty()` constructor.
 
 ### Passing Arguments
 
@@ -121,18 +118,16 @@ struct FilmQuery {
 ```
 
 This can be converted into a query in a similar way we just need to provide
-a `FragmentContext` that contains the arguments:
+some `FilmArguments`:
 
 ```rust
-use cynic::FragmentContext;
+use cynic::QueryBuilder;
 
-let query = cynic::Operation::query(FilmQuery::fragment(
-    FragmentContext::new(
-        &FilmArguments{
-            id: Some("ZmlsbXM6MQ==".into()),
-        }
-    )
-));
+let operation = FilmQuery::build(
+    FilmArguments{
+        id: Some("ZmlsbXM6MQ==".into()),
+    }
+);
 ```
 
 #### Nested Arguments
@@ -150,9 +145,16 @@ If no nested QueryFragments require arguments, you can omit the
 
 Mutations are also constructed using QueryFragments in a very similar way to
 queries. Instead of selecting query fields you select a mutation, and pass in
-any arguments in exactly the same way. Instead of calling the
-`Operation::query` function to construct an `Operation` you call the
-`Operation::mutation` function.
+any arguments in exactly the same way. Mutations use the `MutationBuilder` 
+rather than `QueryBulder`:
+
+```rust
+use cynic::MutationBuilder;
+
+let operation = SomeMutation::build(SomeArguments { ... });
+```
+
+This `operation` can then be used in exactly the same way as with queries.
 
 <!-- TODO: An example of doing mutations -->
 
@@ -174,13 +176,13 @@ A QueryFragment can be configured with several attributes on the struct itself:
 Each field can also have it's own attributes:
 
 - `recurse = "5"` tells cynic that this field is recursive and should be
-  fetched to a maximum depth of 5.  See [Recursive Queries][recursive-queries]
+  fetched to a maximum depth of 5. See [Recursive Queries][recursive-queries]
   for more info.
-- The `flatten` attr can be used to "flatten" out excessive Options.  As
+- The `flatten` attr can be used to "flatten" out excessive Options. As
   GraphQL is used in languages with implicit nulls, it's not uncommon to see a
-  type `[Int]` - which in Rust maps to `Option<Vec<Option<i32>>`.  This isn't a
+  type `[Int]` - which in Rust maps to `Option<Vec<Option<i32>>`. This isn't a
   very nice type to work with - applying the `flatten` attribute lets you
-  represent this as a `Vec<i32>` in your QueryFragment.  Any outer nulls become
+  represent this as a `Vec<i32>` in your QueryFragment. Any outer nulls become
   an empty list and inner nulls are dropped.
 
 ### Related

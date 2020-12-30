@@ -99,11 +99,9 @@ mod tests {
 
     #[test]
     fn all_films_query_gql_output() {
-        use cynic::QueryFragment;
-        let query = cynic::Operation::query(
-            AllFilmsQuery::fragment(FragmentContext::empty())
-        );
-        insta::assert_snapshot!(query.query);
+        use cynic::QueryBuilder;
+        let operation = AllFilmsQuery::build(());
+        insta::assert_snapshot!(operation.query);
     }
 }
 ```
@@ -122,26 +120,24 @@ Now, you're ready to make a query against a server. Cynic doesn't provide any
 HTTP code for you, so you'll need to reach for your HTTP library of choice for
 this one. We'll use reqwest here, but it should be similar for any others.
 
-First, you'll want to build a `Query` similar to how we did it in the snapshot
-test above (again, swapping `AllFilmsQuery` for the name of your root query
-struct):
+First, you'll want to build an `Operation` similar to how we did it in the
+snapshot test above (again, swapping `AllFilmsQuery` for the name of your root
+query struct):
 
 ```rust
-use cynic::{QueryFragment, FragmentContext};
+use cynic::QueryBuilder;
 
-let query = cynic::Operation::query(
-    AllFilmsQuery::fragment(FragmentContext::empty())
-);
+let operation = AllFilmsQuery::build(());
 ```
 
-This `Query` struct is serializable using `serde::Serialize`, so you should
-pass it in as the HTTP body using your HTTP client and then make a request.
-For example, to use surf to talk to the StarWars API (see the docs for
-`cynic::http` if you're using another client):
+This builds an `Operation` struct with is serializable using
+`serde::Serialize`. You should pass it in as the HTTP body using your HTTP
+client and then make a request. For example, to use surf to talk to the
+StarWars API (see the docs for `cynic::http` if you're using another client):
 
 ```rust
 let response = surf::post("https://swapi-graphql.netlify.com/.netlify/functions/index")
-    .run_graphql(&query)
+    .run_graphql(&operation)
     .await
     .unwrap();
 ```

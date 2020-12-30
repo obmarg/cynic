@@ -82,10 +82,8 @@
 //! }
 //!
 //! // You can then build a `cynic::Operation` from this fragment
-//! use cynic::{QueryFragment, FragmentContext};
-//! let operation = cynic::Operation::query(
-//!     FilmDirectorQuery::fragment(FragmentContext::empty())
-//! );
+//! use cynic::{QueryBuilder};
+//! let operation = FilmDirectorQuery::build(());
 //!
 //! ```
 //!
@@ -150,13 +148,9 @@
 //! }
 //!
 //! // Then we can build a query using this new struct;
-//! use cynic::QueryFragment;
-//! let operation = cynic::Operation::query(
-//!     FilmDirectorQueryWithArgs::fragment(
-//!         cynic::FragmentContext::new(
-//!             &FilmArguments{ id: Some("ZmlsbXM6MQ==".into()) }
-//!         )
-//!     )
+//! use cynic::QueryBuilder;
+//! let operation = FilmDirectorQueryWithArgs::build(
+//!     FilmArguments{ id: Some("ZmlsbXM6MQ==".into()) }
 //! );
 //! ```
 //!
@@ -178,6 +172,7 @@
 //! targetting web assembly.
 
 mod arguments;
+mod builders;
 mod fragments;
 mod id;
 mod integrations;
@@ -192,6 +187,7 @@ pub mod utils;
 pub use json_decode::DecodeError;
 
 pub use arguments::{Argument, FromArguments, IntoArgument, SerializableArgument};
+pub use builders::{MutationBuilder, QueryBuilder};
 pub use fragments::{FragmentArguments, FragmentContext, InlineFragments, QueryFragment};
 pub use id::Id;
 pub use operation::Operation;

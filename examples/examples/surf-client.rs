@@ -54,13 +54,11 @@ async fn run_query() -> cynic::GraphQLResponse<FilmDirectorQuery> {
 }
 
 fn build_query() -> cynic::Operation<'static, FilmDirectorQuery> {
-    use cynic::{FragmentContext, QueryFragment};
+    use cynic::QueryBuilder;
 
-    cynic::Operation::query(FilmDirectorQuery::fragment(FragmentContext::new(
-        &FilmArguments {
-            id: Some("ZmlsbXM6MQ==".into()),
-        },
-    )))
+    FilmDirectorQuery::build(&FilmArguments {
+        id: Some("ZmlsbXM6MQ==".into()),
+    })
 }
 
 #[cfg(test)]
