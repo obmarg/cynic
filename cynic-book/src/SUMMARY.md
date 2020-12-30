@@ -12,6 +12,7 @@
   - [Input Objects](./derives/input-objects.md)
   - [Inline Fragments](./derives/inline-fragments.md)
   - [Recursive Queries](./derives/recursive-queries.md)
+  - [Recursive Queries](./derives/query-modules.md)
 - [Building Queries Manually](./building-queries/index.md)
   - [Selection Sets](./building-queries/selection-sets.md)
   - [The Query DSL](./building-queries/query-dsl.md)
