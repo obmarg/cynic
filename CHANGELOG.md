@@ -11,6 +11,8 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.11.0 - 2020-12-31
+
 ### Breaking Changes
 
 - `QueryFragment::fragment` now accepts a `FragmentContext` rather than
@@ -24,10 +26,10 @@ all APIs might be changed.
   these fields.
 - Derived `Enums` now default to `rename_all = "SCREAMING_SNAKE_CASE"` if not
   provided. To revert to the old behaviour you should explicitly provide "None"
-- Derived `InputObjects` now default to `rename_all = "camelCase" if not
+- Derived `InputObjects` now default to `rename_all = "camelCase"` if not
   provided. To revert to the old behaviour you should explicitly provide
   `rename_all = "None"`
-- Removed the `kebab-case` & `SCREAMING-KEBAB-CASE` rename_all rules - fairly
+- Removed the `kebab-case` & `SCREAMING-KEBAB-CASE` `rename_all` rules - fairly
   sure kebab case is not valid in GraphQL so this shouldn't affect much.
 
 ### New Features
@@ -78,7 +80,7 @@ all APIs might be changed.
   appear in require cloning
 - The generator now outputs correct Rust code when faced with queries that rely
   on list coercion.
-- "rename_all" attribute is no longer case sensitive.
+- `rename_all` attribute is no longer case sensitive.
 - Improved the docs for attributes in the book
 
 ## v0.10.1 - 2020-11-04
