@@ -14,7 +14,7 @@ to your `QueryFragment` struct.
 GraphQL allows a schema to define it's own scalars - cynic also supports these.
 You can implement the `Scalar` trait manually, but it's recommended to use a derive:
 
-```
+```rust
 #[derive(cynic::Scalar)]
 struct MyScalar(String);
 ```
