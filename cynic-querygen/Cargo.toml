@@ -11,11 +11,11 @@ repository = "https://github.com/obmarg/cynic"
 [dependencies]
 Inflector = "0.11.4"
 graphql-parser = "0.3"
-rust_decimal = "1.8"
+rust_decimal = "1.9"
 thiserror = "1.0.13"
 uuid = { version = "0.8", features = ["v4"] }
 
 [dev-dependencies]
 assert_matches = "1.4"
-insta = "1.1.0"
-rstest = "0.6.3"
+insta = "1.4.0"
+rstest = "0.7"

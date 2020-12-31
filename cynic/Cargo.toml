@@ -31,14 +31,14 @@ serde_json = "1.0"
 thiserror = "1.0.20"
 
 # Surf feature deps
-surf = { version = "2.0.0", default-features = false, optional = true }
+surf = { version = "2.1", default-features = false, optional = true }
 
 # Reqwest feature deps
 reqwest = { version = "0.11", optional = true, features = ["json"] }
 
 [dev-dependencies]
 maplit = "1.0.2"
-assert_matches = "1.3.0"
+assert_matches = "1.4"
 insta = "1.5"
 
 [package.metadata.docs.rs]
