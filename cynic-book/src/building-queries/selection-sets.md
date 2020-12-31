@@ -19,7 +19,7 @@ decode.  There are `string`, `integer`, `float`, `boolean` and more.
 
 For example:
 
-```
+```rust
 use cynic::selection_set::{bool, string};
 
 // Will decode as a bool
@@ -34,7 +34,7 @@ let select_string = string()
 If you're wanting to fetch some optional or list fields, cynic provides the
 `option` & `vec` combinators respectively:
 
-```
+```rust
 use cynic::selection_set::{string, bool, vec, option};
 
 // Will decode as an Option<String>
@@ -53,7 +53,7 @@ On their own, the selection sets above are not very useful - you need to be
 able to apply them to a particular field.  That's where the `field` function
 comes in:
 
-```
+```rust
 use cynic::selection_set::{field, string};
 
 // Selects a string from a "name" field
@@ -69,7 +69,7 @@ The `field` function is also how you provide arguments to a GraphQL field - the
 second argument is a list of `Argument` structs to provide to the field in the
 query.  To pass a parameter of `adults: true` to a field:
 
-```
+```rust
 let select_people = field(
 	"names",
 	vec![Argument::new("adults", "Bool", true)],
@@ -88,7 +88,7 @@ one, and pass the results of those selections to a function.
 
 For example, to query for the name & age of a `User`:
 
-```
+```rust
 struct User {
     name: String,
     age: Option<i32>
@@ -111,7 +111,7 @@ functions, one for each possible number of arguments up to 50.
 The third argument to the `field` function is just a `SelectionSet`, so you can
 combine the `field` & `mapN` functions to build up a nested query:
 
-```
+```rust
 let select_query = field(
 	"query", 
 	vec![], 

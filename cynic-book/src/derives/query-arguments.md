@@ -3,7 +3,7 @@
 A hierarchy of QueryFragments can take a struct of arguments. This struct must
 implement `FragmentArguments` which can be derived:
 
-```
+```rust
 #[derive(cynic::FragmentArguments)]
 struct FilmArguments {
     id: Option<cynic::Id>,

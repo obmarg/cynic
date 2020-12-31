@@ -75,7 +75,7 @@ struct AllFilmsQuery {
 
 An `Operation` can be created from this `QueryFragment`:
 
-```
+```rust
 use cynic::QueryBuilder;
 
 let operation = AllFilmsQuery::build(());
