@@ -25,12 +25,12 @@ mod surf_ext {
     ///
     /// ```rust,no_run
     /// # mod query_dsl {
-    /// #   cynic::query_dsl!("../examples/examples/starwars.schema.graphql");
+    /// #   cynic::query_dsl!("../schemas/starwars.schema.graphql");
     /// # }
     /// #
     /// # #[derive(cynic::QueryFragment)]
     /// # #[cynic(
-    /// #    schema_path = "../examples/examples/starwars.schema.graphql",
+    /// #    schema_path = "../schemas/starwars.schema.graphql",
     /// #    query_module = "query_dsl",
     /// #    graphql_type = "Film"
     /// # )]
@@ -41,7 +41,7 @@ mod surf_ext {
     /// #
     /// # #[derive(cynic::QueryFragment)]
     /// # #[cynic(
-    /// #     schema_path = "../examples/examples/starwars.schema.graphql",
+    /// #     schema_path = "../schemas/starwars.schema.graphql",
     /// #     query_module = "query_dsl",
     /// #     graphql_type = "Root"
     /// # )]
@@ -117,12 +117,12 @@ mod reqwest_ext {
     ///
     /// ```rust,no_run
     /// # mod query_dsl {
-    /// #   cynic::query_dsl!("../examples/examples/starwars.schema.graphql");
+    /// #   cynic::query_dsl!("../schemas/starwars.schema.graphql");
     /// # }
     /// #
     /// # #[derive(cynic::QueryFragment)]
     /// # #[cynic(
-    /// #    schema_path = "../examples/examples/starwars.schema.graphql",
+    /// #    schema_path = "../schemas/starwars.schema.graphql",
     /// #    query_module = "query_dsl",
     /// #    graphql_type = "Film"
     /// # )]
@@ -133,7 +133,7 @@ mod reqwest_ext {
     /// #
     /// # #[derive(cynic::QueryFragment)]
     /// # #[cynic(
-    /// #     schema_path = "../examples/examples/starwars.schema.graphql",
+    /// #     schema_path = "../schemas/starwars.schema.graphql",
     /// #     query_module = "query_dsl",
     /// #     graphql_type = "Root"
     /// # )]
@@ -211,12 +211,12 @@ mod reqwest_blocking_ext {
     ///
     /// ```rust,no_run
     /// # mod query_dsl {
-    /// #   cynic::query_dsl!("../examples/examples/starwars.schema.graphql");
+    /// #   cynic::query_dsl!("../schemas/starwars.schema.graphql");
     /// # }
     /// #
     /// # #[derive(cynic::QueryFragment)]
     /// # #[cynic(
-    /// #    schema_path = "../examples/examples/starwars.schema.graphql",
+    /// #    schema_path = "../schemas/starwars.schema.graphql",
     /// #    query_module = "query_dsl",
     /// #    graphql_type = "Film"
     /// # )]
@@ -227,7 +227,7 @@ mod reqwest_blocking_ext {
     /// #
     /// # #[derive(cynic::QueryFragment)]
     /// # #[cynic(
-    /// #     schema_path = "../examples/examples/starwars.schema.graphql",
+    /// #     schema_path = "../schemas/starwars.schema.graphql",
     /// #     query_module = "query_dsl",
     /// #     graphql_type = "Root"
     /// # )]
