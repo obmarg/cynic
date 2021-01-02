@@ -190,7 +190,7 @@ pub use arguments::{Argument, FromArguments, IntoArgument, SerializableArgument}
 pub use builders::{MutationBuilder, QueryBuilder};
 pub use fragments::{FragmentArguments, FragmentContext, InlineFragments, QueryFragment};
 pub use id::Id;
-pub use operation::Operation;
+pub use operation::{Operation, StreamingOperation};
 pub use result::{GraphQLError, GraphQLResponse, GraphQLResult, PossiblyParsedData};
 pub use scalar::Scalar;
 pub use selection_set::SelectionSet;
@@ -237,3 +237,7 @@ pub trait QueryRoot {}
 /// A marker trait that indicates a particular type is at the root of a GraphQL schemas
 /// mutation hierarchy.
 pub trait MutationRoot {}
+
+/// A marker trait that indicates a particular type is at the root of a GraphQL schemas
+/// subscription hierarchy.
+pub trait SubscriptionRoot {}

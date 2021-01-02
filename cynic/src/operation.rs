@@ -2,8 +2,8 @@ use json_decode::BoxDecoder;
 use std::collections::HashMap;
 
 use crate::{
-    selection_set::{mutation_root, query_root},
-    Argument, GraphQLResponse, MutationRoot, QueryRoot, SelectionSet,
+    selection_set::{mutation_root, query_root, subscription_root},
+    Argument, GraphQLResponse, MutationRoot, QueryRoot, SelectionSet, SubscriptionRoot,
 };
 
 /// An Operation that can be sent to a remote GraphQL server.
@@ -74,5 +74,45 @@ impl<'a, ResponseData: 'a> Operation<'a, ResponseData> {
                 errors: response.errors,
             })
         }
+    }
+}
+
+/// A StreamingOperation is an Operation that expects a stream of results.
+///
+/// Currently this is means subscriptions.
+pub struct StreamingOperation<'a, ResponseData> {
+    inner: Operation<'a, ResponseData>,
+}
+
+impl<'a, ResponseData: 'a> StreamingOperation<'a, ResponseData> {
+    /// Constructs a new Operation from a query `SelectionSet`
+    pub fn subscription<Root: SubscriptionRoot>(
+        selection_set: SelectionSet<'a, ResponseData, Root>,
+    ) -> Self {
+        let (query, arguments, decoder) =
+            subscription_root(selection_set).query_arguments_and_decoder();
+
+        let variables = arguments
+            .into_iter()
+            .enumerate()
+            .map(|(i, a)| (format!("_{}", i), a))
+            .collect();
+
+        StreamingOperation {
+            inner: Operation {
+                query,
+                variables,
+                decoder,
+            },
+        }
+    }
+}
+
+impl<ResponseData> serde::Serialize for StreamingOperation<'_, ResponseData> {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        self.inner.serialize(serializer)
     }
 }

@@ -256,4 +256,5 @@ pub mod subscription_root {
 pub struct MutationType {}
 impl ::cynic::MutationRoot for MutationRoot {}
 impl ::cynic::QueryRoot for QueryRoot {}
+impl ::cynic::SubscriptionRoot for SubscriptionRoot {}
 

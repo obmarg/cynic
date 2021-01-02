@@ -87,7 +87,7 @@ impl From<schema::Document> for QueryDsl {
                         interfaces_implementations.push(impls);
                     }
 
-                    // Ok, so would be nice to restructure this so that the argument structs
+                    // Would be nice to restructure this so that the argument structs
                     // are visible at the point we're generating the field_selectors...
                     let selector = SelectorStruct::from_object(&object, &type_index);
                     if !selector.selection_builders.is_empty() {
