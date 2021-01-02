@@ -44,10 +44,7 @@ fn build_query() -> cynic::Operation<'static, queries::CommentOnMutationSupportI
 }
 
 #[cfg(feature = "github")]
-#[cynic::query_module(
-    schema_path = "../cynic-querygen/tests/schemas/github.graphql",
-    query_module = "query_dsl"
-)]
+#[cynic::query_module(schema_path = "../schemas/github.graphql", query_module = "query_dsl")]
 mod queries {
     use super::query_dsl;
 
@@ -98,10 +95,7 @@ mod queries {
 }
 
 #[cfg(feature = "github")]
-#[cynic::query_module(
-    schema_path = "../cynic-querygen/tests/schemas/github.graphql",
-    query_module = "query_dsl"
-)]
+#[cynic::query_module(schema_path = "../schemas/github.graphql", query_module = "query_dsl")]
 mod types {
     #[derive(cynic::Scalar, Debug)]
     pub struct Date(String);
@@ -137,7 +131,7 @@ mod types {
 #[cfg(feature = "github")]
 mod query_dsl {
     use super::types::*;
-    cynic::query_dsl!("../cynic-querygen/tests/schemas/github.graphql");
+    cynic::query_dsl!("../schemas/github.graphql");
 }
 
 #[cfg(all(test, feature = "github"))]

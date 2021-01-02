@@ -17,7 +17,7 @@
 //!
 //! ```rust
 //! mod query_dsl {
-//!     cynic::query_dsl!("../examples/examples/starwars.schema.graphql");
+//!     cynic::query_dsl!("../schemas/starwars.schema.graphql");
 //! }
 //! ```
 //!
@@ -46,12 +46,12 @@
 //!
 //! ```rust
 //! # mod query_dsl {
-//! #   cynic::query_dsl!("../examples/examples/starwars.schema.graphql");
+//! #   cynic::query_dsl!("../schemas/starwars.schema.graphql");
 //! # }
 //!
 //! #[derive(cynic::QueryFragment)]
 //! #[cynic(
-//!     schema_path = "../examples/examples/starwars.schema.graphql",
+//!     schema_path = "../schemas/starwars.schema.graphql",
 //!     query_module = "query_dsl",
 //!     graphql_type = "Film"
 //! )]
@@ -68,7 +68,7 @@
 //!
 //! #[derive(cynic::QueryFragment)]
 //! #[cynic(
-//!     schema_path = "../examples/examples/starwars.schema.graphql",
+//!     schema_path = "../schemas/starwars.schema.graphql",
 //!     query_module = "query_dsl",
 //!     graphql_type = "Root"
 //! )]
@@ -110,12 +110,12 @@
 //!
 //! ```rust
 //! # mod query_dsl {
-//! #   cynic::query_dsl!("../examples/examples/starwars.schema.graphql");
+//! #   cynic::query_dsl!("../schemas/starwars.schema.graphql");
 //! # }
 //!
 //! # #[derive(cynic::QueryFragment)]
 //! # #[cynic(
-//! #     schema_path = "../examples/examples/starwars.schema.graphql",
+//! #     schema_path = "../schemas/starwars.schema.graphql",
 //! #    query_module = "query_dsl",
 //! #    graphql_type = "Film"
 //! # )]
@@ -134,7 +134,7 @@
 //! // `FilmDirectorQuery` a bit more dynamic:
 //! #[derive(cynic::QueryFragment)]
 //! #[cynic(
-//!     schema_path = "../examples/examples/starwars.schema.graphql",
+//!     schema_path = "../schemas/starwars.schema.graphql",
 //!     query_module = "query_dsl",
 //!     graphql_type = "Root",
 //!     // By adding the `argument_struct` parameter to our `QueryFragment` we've made a variable
