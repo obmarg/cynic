@@ -319,7 +319,7 @@ mod tests {
     }
 
     fn load_schema() -> schema::Document<'static> {
-        graphql_parser::parse_schema::<&str>(include_str!("../../tests/schemas/github.graphql"))
+        graphql_parser::parse_schema::<&str>(include_str!("../../../schemas/github.graphql"))
             .unwrap()
     }
 }

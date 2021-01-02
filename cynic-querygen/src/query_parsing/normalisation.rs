@@ -631,7 +631,7 @@ mod tests {
 
     fn load_schema() -> schema::Document<'static> {
         graphql_parser::parse_schema::<&str>(include_str!(
-            "../../../examples/examples/starwars.schema.graphql"
+            "../../../schemas/starwars.schema.graphql"
         ))
         .unwrap()
     }

@@ -6,7 +6,7 @@ macro_rules! test_query_file {
     ($name:ident, $filename:literal) => {
         #[test]
         fn $name() {
-            let schema = include_str!("../../examples/examples/starwars.schema.graphql");
+            let schema = include_str!("../../schemas/starwars.schema.graphql");
             let query = include_str!(concat!("queries/starwars/", $filename));
 
             assert_snapshot!(document_to_fragment_structs(

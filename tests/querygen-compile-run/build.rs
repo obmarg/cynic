@@ -7,13 +7,14 @@ use std::{
 use cynic_querygen::{document_to_fragment_structs, QueryGenOptions};
 
 fn main() {
-    let starwars_schema = Schema::from_examples(
+    let starwars_schema = Schema::from_repo_schemas(
         "https://swapi-graphql.netlify.com/.netlify/functions/index",
         "starwars.schema.graphql",
     );
-    let jobs_schema = Schema::from_test_schemas("https://api.graphql.jobs/", "graphql.jobs.gql");
+    let jobs_schema =
+        Schema::from_repo_schemas("https://api.graphql.jobs/", "graphql.jobs.graphql");
     let github_schema =
-        Schema::from_querygen_tests("https://api.github.com/graphql", "github.graphql");
+        Schema::from_repo_schemas("https://api.github.com/graphql", "github.graphql");
 
     let cases = &[
         TestCase::query(
@@ -233,36 +234,13 @@ struct Schema {
 
 impl Schema {
     /// Constructs a SchemaPath from the examples package
-    fn from_examples(query_url: impl Into<String>, path: impl Into<PathBuf>) -> Schema {
-        let example_path = PathBuf::from("../../examples/examples/");
+    fn from_repo_schemas(query_url: impl Into<String>, path: impl Into<PathBuf>) -> Schema {
+        let example_path = PathBuf::from("../../schemas/");
         let path = example_path.join(path.into());
         Schema {
             query_url: query_url.into(),
             path_for_loading: path.clone(),
             path_for_generated_code: PathBuf::from("./..").join(path),
-        }
-    }
-
-    /// Constructs a SchemaPath from this package
-    fn from_test_schemas(query_url: impl Into<String>, path: impl Into<PathBuf>) -> Schema {
-        let test_schema_path = PathBuf::from("tests/schemas");
-        let path = test_schema_path.join(path.into());
-        Schema {
-            query_url: query_url.into(),
-            path_for_loading: path.clone(),
-            path_for_generated_code: PathBuf::from("./../../../tests/querygen-compile-run")
-                .join(path),
-        }
-    }
-
-    /// Constructs a SchemaPath from this package
-    fn from_querygen_tests(query_url: impl Into<String>, path: impl Into<PathBuf>) -> Schema {
-        let test_schema_path = PathBuf::from("../../cynic-querygen/tests/schemas");
-        let path = test_schema_path.join(path.into());
-        Schema {
-            query_url: query_url.into(),
-            path_for_loading: path.clone(),
-            path_for_generated_code: PathBuf::from("./../").join(path),
         }
     }
 }
