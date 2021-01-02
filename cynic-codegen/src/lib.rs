@@ -28,9 +28,9 @@ use schema::{load_schema, SchemaLoadError};
 use type_index::TypeIndex;
 use type_path::TypePath;
 
-pub fn output_query_dsl<P: AsRef<std::path::Path>>(
-    schema: P,
-    output_path: P,
+pub fn output_query_dsl(
+    schema: impl AsRef<std::path::Path>,
+    output_path: impl AsRef<std::path::Path>,
 ) -> Result<(), SchemaLoadError> {
     use query_dsl::QueryDslParams;
     use std::io::Write;

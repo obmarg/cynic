@@ -1,0 +1,2535 @@
+---
+source: cynic-codegen/tests/query-dsl.rs
+expression: "format_code(format!(\"{}\", tokens))"
+---
+#[allow(dead_code)]
+pub struct City;
+#[allow(dead_code)]
+impl City {
+    pub fn id() -> city::IdSelectionBuilder {
+        city::IdSelectionBuilder::new(vec![])
+    }
+    pub fn name() -> city::NameSelectionBuilder {
+        city::NameSelectionBuilder::new(vec![])
+    }
+    pub fn slug() -> city::SlugSelectionBuilder {
+        city::SlugSelectionBuilder::new(vec![])
+    }
+    pub fn country() -> city::CountrySelectionBuilder {
+        city::CountrySelectionBuilder::new(vec![])
+    }
+    pub fn r#type() -> city::TypeSelectionBuilder {
+        city::TypeSelectionBuilder::new(vec![])
+    }
+    pub fn jobs() -> city::JobsSelectionBuilder {
+        city::JobsSelectionBuilder::new(vec![])
+    }
+    pub fn created_at() -> city::CreatedAtSelectionBuilder {
+        city::CreatedAtSelectionBuilder::new(vec![])
+    }
+    pub fn updated_at() -> city::UpdatedAtSelectionBuilder {
+        city::UpdatedAtSelectionBuilder::new(vec![])
+    }
+}
+#[allow(dead_code)]
+pub struct Commitment;
+#[allow(dead_code)]
+impl Commitment {
+    pub fn id() -> commitment::IdSelectionBuilder {
+        commitment::IdSelectionBuilder::new(vec![])
+    }
+    pub fn title() -> commitment::TitleSelectionBuilder {
+        commitment::TitleSelectionBuilder::new(vec![])
+    }
+    pub fn slug() -> commitment::SlugSelectionBuilder {
+        commitment::SlugSelectionBuilder::new(vec![])
+    }
+    pub fn jobs() -> commitment::JobsSelectionBuilder {
+        commitment::JobsSelectionBuilder::new(vec![])
+    }
+    pub fn created_at() -> commitment::CreatedAtSelectionBuilder {
+        commitment::CreatedAtSelectionBuilder::new(vec![])
+    }
+    pub fn updated_at() -> commitment::UpdatedAtSelectionBuilder {
+        commitment::UpdatedAtSelectionBuilder::new(vec![])
+    }
+}
+#[allow(dead_code)]
+pub struct Company;
+#[allow(dead_code)]
+impl Company {
+    pub fn id() -> company::IdSelectionBuilder {
+        company::IdSelectionBuilder::new(vec![])
+    }
+    pub fn name() -> company::NameSelectionBuilder {
+        company::NameSelectionBuilder::new(vec![])
+    }
+    pub fn slug() -> company::SlugSelectionBuilder {
+        company::SlugSelectionBuilder::new(vec![])
+    }
+    pub fn website_url() -> company::WebsiteUrlSelectionBuilder {
+        company::WebsiteUrlSelectionBuilder::new(vec![])
+    }
+    pub fn logo_url() -> company::LogoUrlSelectionBuilder {
+        company::LogoUrlSelectionBuilder::new(vec![])
+    }
+    pub fn jobs() -> company::JobsSelectionBuilder {
+        company::JobsSelectionBuilder::new(vec![])
+    }
+    pub fn twitter() -> company::TwitterSelectionBuilder {
+        company::TwitterSelectionBuilder::new(vec![])
+    }
+    pub fn emailed() -> company::EmailedSelectionBuilder {
+        company::EmailedSelectionBuilder::new(vec![])
+    }
+    pub fn created_at() -> company::CreatedAtSelectionBuilder {
+        company::CreatedAtSelectionBuilder::new(vec![])
+    }
+    pub fn updated_at() -> company::UpdatedAtSelectionBuilder {
+        company::UpdatedAtSelectionBuilder::new(vec![])
+    }
+}
+#[allow(dead_code)]
+pub struct Country;
+#[allow(dead_code)]
+impl Country {
+    pub fn id() -> country::IdSelectionBuilder {
+        country::IdSelectionBuilder::new(vec![])
+    }
+    pub fn name() -> country::NameSelectionBuilder {
+        country::NameSelectionBuilder::new(vec![])
+    }
+    pub fn slug() -> country::SlugSelectionBuilder {
+        country::SlugSelectionBuilder::new(vec![])
+    }
+    pub fn r#type() -> country::TypeSelectionBuilder {
+        country::TypeSelectionBuilder::new(vec![])
+    }
+    pub fn iso_code() -> country::IsoCodeSelectionBuilder {
+        country::IsoCodeSelectionBuilder::new(vec![])
+    }
+    pub fn cities() -> country::CitiesSelectionBuilder {
+        country::CitiesSelectionBuilder::new(vec![])
+    }
+    pub fn jobs() -> country::JobsSelectionBuilder {
+        country::JobsSelectionBuilder::new(vec![])
+    }
+    pub fn created_at() -> country::CreatedAtSelectionBuilder {
+        country::CreatedAtSelectionBuilder::new(vec![])
+    }
+    pub fn updated_at() -> country::UpdatedAtSelectionBuilder {
+        country::UpdatedAtSelectionBuilder::new(vec![])
+    }
+}
+#[allow(dead_code)]
+pub struct Job;
+#[allow(dead_code)]
+impl Job {
+    pub fn id() -> job::IdSelectionBuilder {
+        job::IdSelectionBuilder::new(vec![])
+    }
+    pub fn title() -> job::TitleSelectionBuilder {
+        job::TitleSelectionBuilder::new(vec![])
+    }
+    pub fn slug() -> job::SlugSelectionBuilder {
+        job::SlugSelectionBuilder::new(vec![])
+    }
+    pub fn commitment() -> job::CommitmentSelectionBuilder {
+        job::CommitmentSelectionBuilder::new(vec![])
+    }
+    pub fn cities() -> job::CitiesSelectionBuilder {
+        job::CitiesSelectionBuilder::new(vec![])
+    }
+    pub fn countries() -> job::CountriesSelectionBuilder {
+        job::CountriesSelectionBuilder::new(vec![])
+    }
+    pub fn remotes() -> job::RemotesSelectionBuilder {
+        job::RemotesSelectionBuilder::new(vec![])
+    }
+    pub fn description() -> job::DescriptionSelectionBuilder {
+        job::DescriptionSelectionBuilder::new(vec![])
+    }
+    pub fn apply_url() -> job::ApplyUrlSelectionBuilder {
+        job::ApplyUrlSelectionBuilder::new(vec![])
+    }
+    pub fn company() -> job::CompanySelectionBuilder {
+        job::CompanySelectionBuilder::new(vec![])
+    }
+    pub fn tags() -> job::TagsSelectionBuilder {
+        job::TagsSelectionBuilder::new(vec![])
+    }
+    pub fn is_published() -> job::IsPublishedSelectionBuilder {
+        job::IsPublishedSelectionBuilder::new(vec![])
+    }
+    pub fn is_featured() -> job::IsFeaturedSelectionBuilder {
+        job::IsFeaturedSelectionBuilder::new(vec![])
+    }
+    pub fn location_names() -> job::LocationNamesSelectionBuilder {
+        job::LocationNamesSelectionBuilder::new(vec![])
+    }
+    pub fn user_email() -> job::UserEmailSelectionBuilder {
+        job::UserEmailSelectionBuilder::new(vec![])
+    }
+    pub fn posted_at() -> job::PostedAtSelectionBuilder {
+        job::PostedAtSelectionBuilder::new(vec![])
+    }
+    pub fn created_at() -> job::CreatedAtSelectionBuilder {
+        job::CreatedAtSelectionBuilder::new(vec![])
+    }
+    pub fn updated_at() -> job::UpdatedAtSelectionBuilder {
+        job::UpdatedAtSelectionBuilder::new(vec![])
+    }
+}
+#[allow(dead_code)]
+pub struct Location;
+#[allow(dead_code)]
+impl Location {
+    pub fn id() -> location::IdSelectionBuilder {
+        location::IdSelectionBuilder::new(vec![])
+    }
+    pub fn slug() -> location::SlugSelectionBuilder {
+        location::SlugSelectionBuilder::new(vec![])
+    }
+    pub fn name() -> location::NameSelectionBuilder {
+        location::NameSelectionBuilder::new(vec![])
+    }
+    pub fn r#type() -> location::TypeSelectionBuilder {
+        location::TypeSelectionBuilder::new(vec![])
+    }
+}
+#[allow(dead_code)]
+pub struct Mutation;
+#[allow(dead_code)]
+impl Mutation {
+    pub fn subscribe<
+        InputT: ::cynic::InputObject<SubscribeInput> + ::cynic::SerializableArgument,
+    >(
+        input: InputT,
+    ) -> mutation::SubscribeSelectionBuilder {
+        mutation::SubscribeSelectionBuilder::new(vec![::cynic::Argument::new(
+            "input",
+            "SubscribeInput!",
+            input,
+        )])
+    }
+    pub fn post_job<InputT: ::cynic::InputObject<PostJobInput> + ::cynic::SerializableArgument>(
+        input: InputT,
+    ) -> mutation::PostJobSelectionBuilder {
+        mutation::PostJobSelectionBuilder::new(vec![::cynic::Argument::new(
+            "input",
+            "PostJobInput!",
+            input,
+        )])
+    }
+    pub fn update_job<
+        InputT: ::cynic::InputObject<UpdateJobInput> + ::cynic::SerializableArgument,
+    >(
+        input: InputT,
+        admin_secret: String,
+    ) -> mutation::UpdateJobSelectionBuilder {
+        mutation::UpdateJobSelectionBuilder::new(vec![
+            ::cynic::Argument::new("input", "UpdateJobInput!", input),
+            ::cynic::Argument::new("adminSecret", "String!", admin_secret),
+        ])
+    }
+    pub fn update_company<
+        InputT: ::cynic::InputObject<UpdateCompanyInput> + ::cynic::SerializableArgument,
+    >(
+        input: InputT,
+        admin_secret: String,
+    ) -> mutation::UpdateCompanySelectionBuilder {
+        mutation::UpdateCompanySelectionBuilder::new(vec![
+            ::cynic::Argument::new("input", "UpdateCompanyInput!", input),
+            ::cynic::Argument::new("adminSecret", "String!", admin_secret),
+        ])
+    }
+}
+#[allow(dead_code)]
+pub struct Query;
+#[allow(dead_code)]
+impl Query {
+    pub fn jobs() -> query::JobsSelectionBuilder {
+        query::JobsSelectionBuilder::new(vec![])
+    }
+    pub fn job<InputT: ::cynic::InputObject<JobInput> + ::cynic::SerializableArgument>(
+        input: InputT,
+    ) -> query::JobSelectionBuilder {
+        query::JobSelectionBuilder::new(vec![::cynic::Argument::new("input", "JobInput!", input)])
+    }
+    pub fn locations<
+        InputT: ::cynic::InputObject<LocationsInput> + ::cynic::SerializableArgument,
+    >(
+        input: InputT,
+    ) -> query::LocationsSelectionBuilder {
+        query::LocationsSelectionBuilder::new(vec![::cynic::Argument::new(
+            "input",
+            "LocationsInput!",
+            input,
+        )])
+    }
+    pub fn city<InputT: ::cynic::InputObject<LocationInput> + ::cynic::SerializableArgument>(
+        input: InputT,
+    ) -> query::CitySelectionBuilder {
+        query::CitySelectionBuilder::new(vec![::cynic::Argument::new(
+            "input",
+            "LocationInput!",
+            input,
+        )])
+    }
+    pub fn country<InputT: ::cynic::InputObject<LocationInput> + ::cynic::SerializableArgument>(
+        input: InputT,
+    ) -> query::CountrySelectionBuilder {
+        query::CountrySelectionBuilder::new(vec![::cynic::Argument::new(
+            "input",
+            "LocationInput!",
+            input,
+        )])
+    }
+    pub fn remote<InputT: ::cynic::InputObject<LocationInput> + ::cynic::SerializableArgument>(
+        input: InputT,
+    ) -> query::RemoteSelectionBuilder {
+        query::RemoteSelectionBuilder::new(vec![::cynic::Argument::new(
+            "input",
+            "LocationInput!",
+            input,
+        )])
+    }
+    pub fn commitments() -> query::CommitmentsSelectionBuilder {
+        query::CommitmentsSelectionBuilder::new(vec![])
+    }
+    pub fn cities() -> query::CitiesSelectionBuilder {
+        query::CitiesSelectionBuilder::new(vec![])
+    }
+    pub fn countries() -> query::CountriesSelectionBuilder {
+        query::CountriesSelectionBuilder::new(vec![])
+    }
+    pub fn remotes() -> query::RemotesSelectionBuilder {
+        query::RemotesSelectionBuilder::new(vec![])
+    }
+    pub fn companies() -> query::CompaniesSelectionBuilder {
+        query::CompaniesSelectionBuilder::new(vec![])
+    }
+}
+#[allow(dead_code)]
+pub struct Remote;
+#[allow(dead_code)]
+impl Remote {
+    pub fn id() -> remote::IdSelectionBuilder {
+        remote::IdSelectionBuilder::new(vec![])
+    }
+    pub fn name() -> remote::NameSelectionBuilder {
+        remote::NameSelectionBuilder::new(vec![])
+    }
+    pub fn slug() -> remote::SlugSelectionBuilder {
+        remote::SlugSelectionBuilder::new(vec![])
+    }
+    pub fn r#type() -> remote::TypeSelectionBuilder {
+        remote::TypeSelectionBuilder::new(vec![])
+    }
+    pub fn jobs() -> remote::JobsSelectionBuilder {
+        remote::JobsSelectionBuilder::new(vec![])
+    }
+    pub fn created_at() -> remote::CreatedAtSelectionBuilder {
+        remote::CreatedAtSelectionBuilder::new(vec![])
+    }
+    pub fn updated_at() -> remote::UpdatedAtSelectionBuilder {
+        remote::UpdatedAtSelectionBuilder::new(vec![])
+    }
+}
+#[allow(dead_code)]
+pub struct Tag;
+#[allow(dead_code)]
+impl Tag {
+    pub fn id() -> tag::IdSelectionBuilder {
+        tag::IdSelectionBuilder::new(vec![])
+    }
+    pub fn name() -> tag::NameSelectionBuilder {
+        tag::NameSelectionBuilder::new(vec![])
+    }
+    pub fn slug() -> tag::SlugSelectionBuilder {
+        tag::SlugSelectionBuilder::new(vec![])
+    }
+    pub fn jobs() -> tag::JobsSelectionBuilder {
+        tag::JobsSelectionBuilder::new(vec![])
+    }
+    pub fn created_at() -> tag::CreatedAtSelectionBuilder {
+        tag::CreatedAtSelectionBuilder::new(vec![])
+    }
+    pub fn updated_at() -> tag::UpdatedAtSelectionBuilder {
+        tag::UpdatedAtSelectionBuilder::new(vec![])
+    }
+}
+#[allow(dead_code)]
+pub struct User;
+#[allow(dead_code)]
+impl User {
+    pub fn id() -> user::IdSelectionBuilder {
+        user::IdSelectionBuilder::new(vec![])
+    }
+    pub fn name() -> user::NameSelectionBuilder {
+        user::NameSelectionBuilder::new(vec![])
+    }
+    pub fn email() -> user::EmailSelectionBuilder {
+        user::EmailSelectionBuilder::new(vec![])
+    }
+    pub fn subscribe() -> user::SubscribeSelectionBuilder {
+        user::SubscribeSelectionBuilder::new(vec![])
+    }
+    pub fn created_at() -> user::CreatedAtSelectionBuilder {
+        user::CreatedAtSelectionBuilder::new(vec![])
+    }
+    pub fn updated_at() -> user::UpdatedAtSelectionBuilder {
+        user::UpdatedAtSelectionBuilder::new(vec![])
+    }
+}
+#[allow(dead_code)]
+pub mod city {
+    pub struct IdSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl IdSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            IdSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, ::cynic::Id, super::City> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("id", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct NameSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl NameSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            NameSelectionBuilder { args }
+        }
+        pub fn select(self) -> ::cynic::selection_set::SelectionSet<'static, String, super::City> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("name", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct SlugSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl SlugSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            SlugSelectionBuilder { args }
+        }
+        pub fn select(self) -> ::cynic::selection_set::SelectionSet<'static, String, super::City> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("slug", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct CountrySelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl CountrySelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            CountrySelectionBuilder { args }
+        }
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Country>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::City> {
+            ::cynic::selection_set::field("country", self.args, fields)
+        }
+    }
+    pub struct TypeSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl TypeSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            TypeSelectionBuilder { args }
+        }
+        pub fn select(self) -> ::cynic::selection_set::SelectionSet<'static, String, super::City> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("type", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct JobsSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl JobsSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            JobsSelectionBuilder { args }
+        }
+        pub fn r#where<
+            RWhereT: ::cynic::InputObject<super::JobWhereInput> + ::cynic::SerializableArgument,
+        >(
+            mut self,
+            r#where: impl ::cynic::IntoArgument<Option<RWhereT>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "where",
+                "JobWhereInput",
+                r#where.into_argument(),
+            ));
+            self
+        }
+        pub fn order_by<
+            OrderByT: ::cynic::Enum<super::JobOrderByInput> + ::cynic::SerializableArgument,
+        >(
+            mut self,
+            order_by: impl ::cynic::IntoArgument<Option<OrderByT>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "orderBy",
+                "JobOrderByInput",
+                order_by.into_argument(),
+            ));
+            self
+        }
+        pub fn skip(mut self, skip: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+            self.args
+                .push(::cynic::Argument::new("skip", "Int", skip.into_argument()));
+            self
+        }
+        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "after",
+                "String",
+                after.into_argument(),
+            ));
+            self
+        }
+        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "before",
+                "String",
+                before.into_argument(),
+            ));
+            self
+        }
+        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "first",
+                "Int",
+                first.into_argument(),
+            ));
+            self
+        }
+        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+            self.args
+                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+            self
+        }
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Job>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<T>>, super::City> {
+            ::cynic::selection_set::field(
+                "jobs",
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(fields)),
+            )
+        }
+    }
+    pub struct CreatedAtSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl CreatedAtSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            CreatedAtSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, super::DateTime, super::City> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("createdAt", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct UpdatedAtSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl UpdatedAtSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            UpdatedAtSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, super::DateTime, super::City> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("updatedAt", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+}
+#[allow(dead_code)]
+pub mod commitment {
+    pub struct IdSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl IdSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            IdSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, ::cynic::Id, super::Commitment> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("id", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct TitleSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl TitleSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            TitleSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::Commitment> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("title", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct SlugSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl SlugSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            SlugSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::Commitment> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("slug", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct JobsSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl JobsSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            JobsSelectionBuilder { args }
+        }
+        pub fn r#where<
+            RWhereT: ::cynic::InputObject<super::JobWhereInput> + ::cynic::SerializableArgument,
+        >(
+            mut self,
+            r#where: impl ::cynic::IntoArgument<Option<RWhereT>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "where",
+                "JobWhereInput",
+                r#where.into_argument(),
+            ));
+            self
+        }
+        pub fn order_by<
+            OrderByT: ::cynic::Enum<super::JobOrderByInput> + ::cynic::SerializableArgument,
+        >(
+            mut self,
+            order_by: impl ::cynic::IntoArgument<Option<OrderByT>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "orderBy",
+                "JobOrderByInput",
+                order_by.into_argument(),
+            ));
+            self
+        }
+        pub fn skip(mut self, skip: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+            self.args
+                .push(::cynic::Argument::new("skip", "Int", skip.into_argument()));
+            self
+        }
+        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "after",
+                "String",
+                after.into_argument(),
+            ));
+            self
+        }
+        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "before",
+                "String",
+                before.into_argument(),
+            ));
+            self
+        }
+        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "first",
+                "Int",
+                first.into_argument(),
+            ));
+            self
+        }
+        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+            self.args
+                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+            self
+        }
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Job>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<T>>, super::Commitment> {
+            ::cynic::selection_set::field(
+                "jobs",
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(fields)),
+            )
+        }
+    }
+    pub struct CreatedAtSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl CreatedAtSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            CreatedAtSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, super::DateTime, super::Commitment>
+        {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("createdAt", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct UpdatedAtSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl UpdatedAtSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            UpdatedAtSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, super::DateTime, super::Commitment>
+        {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("updatedAt", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+}
+#[allow(dead_code)]
+pub mod company {
+    pub struct IdSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl IdSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            IdSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, ::cynic::Id, super::Company> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("id", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct NameSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl NameSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            NameSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::Company> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("name", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct SlugSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl SlugSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            SlugSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::Company> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("slug", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct WebsiteUrlSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl WebsiteUrlSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            WebsiteUrlSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::Company> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("websiteUrl", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct LogoUrlSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl LogoUrlSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            LogoUrlSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Company> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field(
+                "logoUrl",
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+            )
+        }
+    }
+    pub struct JobsSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl JobsSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            JobsSelectionBuilder { args }
+        }
+        pub fn r#where<
+            RWhereT: ::cynic::InputObject<super::JobWhereInput> + ::cynic::SerializableArgument,
+        >(
+            mut self,
+            r#where: impl ::cynic::IntoArgument<Option<RWhereT>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "where",
+                "JobWhereInput",
+                r#where.into_argument(),
+            ));
+            self
+        }
+        pub fn order_by<
+            OrderByT: ::cynic::Enum<super::JobOrderByInput> + ::cynic::SerializableArgument,
+        >(
+            mut self,
+            order_by: impl ::cynic::IntoArgument<Option<OrderByT>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "orderBy",
+                "JobOrderByInput",
+                order_by.into_argument(),
+            ));
+            self
+        }
+        pub fn skip(mut self, skip: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+            self.args
+                .push(::cynic::Argument::new("skip", "Int", skip.into_argument()));
+            self
+        }
+        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "after",
+                "String",
+                after.into_argument(),
+            ));
+            self
+        }
+        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "before",
+                "String",
+                before.into_argument(),
+            ));
+            self
+        }
+        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "first",
+                "Int",
+                first.into_argument(),
+            ));
+            self
+        }
+        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+            self.args
+                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+            self
+        }
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Job>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<T>>, super::Company> {
+            ::cynic::selection_set::field(
+                "jobs",
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(fields)),
+            )
+        }
+    }
+    pub struct TwitterSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl TwitterSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            TwitterSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Company> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field(
+                "twitter",
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+            )
+        }
+    }
+    pub struct EmailedSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl EmailedSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            EmailedSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, Option<bool>, super::Company> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field(
+                "emailed",
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+            )
+        }
+    }
+    pub struct CreatedAtSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl CreatedAtSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            CreatedAtSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, super::DateTime, super::Company>
+        {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("createdAt", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct UpdatedAtSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl UpdatedAtSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            UpdatedAtSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, super::DateTime, super::Company>
+        {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("updatedAt", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+}
+#[allow(dead_code)]
+pub mod country {
+    pub struct IdSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl IdSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            IdSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, ::cynic::Id, super::Country> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("id", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct NameSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl NameSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            NameSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::Country> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("name", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct SlugSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl SlugSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            SlugSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::Country> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("slug", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct TypeSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl TypeSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            TypeSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::Country> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("type", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct IsoCodeSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl IsoCodeSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            IsoCodeSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Country> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field(
+                "isoCode",
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+            )
+        }
+    }
+    pub struct CitiesSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl CitiesSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            CitiesSelectionBuilder { args }
+        }
+        pub fn r#where<
+            RWhereT: ::cynic::InputObject<super::CityWhereInput> + ::cynic::SerializableArgument,
+        >(
+            mut self,
+            r#where: impl ::cynic::IntoArgument<Option<RWhereT>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "where",
+                "CityWhereInput",
+                r#where.into_argument(),
+            ));
+            self
+        }
+        pub fn order_by<
+            OrderByT: ::cynic::Enum<super::CityOrderByInput> + ::cynic::SerializableArgument,
+        >(
+            mut self,
+            order_by: impl ::cynic::IntoArgument<Option<OrderByT>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "orderBy",
+                "CityOrderByInput",
+                order_by.into_argument(),
+            ));
+            self
+        }
+        pub fn skip(mut self, skip: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+            self.args
+                .push(::cynic::Argument::new("skip", "Int", skip.into_argument()));
+            self
+        }
+        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "after",
+                "String",
+                after.into_argument(),
+            ));
+            self
+        }
+        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "before",
+                "String",
+                before.into_argument(),
+            ));
+            self
+        }
+        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "first",
+                "Int",
+                first.into_argument(),
+            ));
+            self
+        }
+        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+            self.args
+                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+            self
+        }
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::City>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<T>>, super::Country> {
+            ::cynic::selection_set::field(
+                "cities",
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(fields)),
+            )
+        }
+    }
+    pub struct JobsSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl JobsSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            JobsSelectionBuilder { args }
+        }
+        pub fn r#where<
+            RWhereT: ::cynic::InputObject<super::JobWhereInput> + ::cynic::SerializableArgument,
+        >(
+            mut self,
+            r#where: impl ::cynic::IntoArgument<Option<RWhereT>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "where",
+                "JobWhereInput",
+                r#where.into_argument(),
+            ));
+            self
+        }
+        pub fn order_by<
+            OrderByT: ::cynic::Enum<super::JobOrderByInput> + ::cynic::SerializableArgument,
+        >(
+            mut self,
+            order_by: impl ::cynic::IntoArgument<Option<OrderByT>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "orderBy",
+                "JobOrderByInput",
+                order_by.into_argument(),
+            ));
+            self
+        }
+        pub fn skip(mut self, skip: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+            self.args
+                .push(::cynic::Argument::new("skip", "Int", skip.into_argument()));
+            self
+        }
+        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "after",
+                "String",
+                after.into_argument(),
+            ));
+            self
+        }
+        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "before",
+                "String",
+                before.into_argument(),
+            ));
+            self
+        }
+        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "first",
+                "Int",
+                first.into_argument(),
+            ));
+            self
+        }
+        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+            self.args
+                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+            self
+        }
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Job>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<T>>, super::Country> {
+            ::cynic::selection_set::field(
+                "jobs",
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(fields)),
+            )
+        }
+    }
+    pub struct CreatedAtSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl CreatedAtSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            CreatedAtSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, super::DateTime, super::Country>
+        {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("createdAt", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct UpdatedAtSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl UpdatedAtSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            UpdatedAtSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, super::DateTime, super::Country>
+        {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("updatedAt", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+}
+#[allow(dead_code)]
+pub mod job {
+    pub struct IdSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl IdSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            IdSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, ::cynic::Id, super::Job> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("id", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct TitleSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl TitleSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            TitleSelectionBuilder { args }
+        }
+        pub fn select(self) -> ::cynic::selection_set::SelectionSet<'static, String, super::Job> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("title", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct SlugSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl SlugSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            SlugSelectionBuilder { args }
+        }
+        pub fn select(self) -> ::cynic::selection_set::SelectionSet<'static, String, super::Job> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("slug", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct CommitmentSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl CommitmentSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            CommitmentSelectionBuilder { args }
+        }
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Commitment>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Job> {
+            ::cynic::selection_set::field("commitment", self.args, fields)
+        }
+    }
+    pub struct CitiesSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl CitiesSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            CitiesSelectionBuilder { args }
+        }
+        pub fn r#where<
+            RWhereT: ::cynic::InputObject<super::CityWhereInput> + ::cynic::SerializableArgument,
+        >(
+            mut self,
+            r#where: impl ::cynic::IntoArgument<Option<RWhereT>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "where",
+                "CityWhereInput",
+                r#where.into_argument(),
+            ));
+            self
+        }
+        pub fn order_by<
+            OrderByT: ::cynic::Enum<super::CityOrderByInput> + ::cynic::SerializableArgument,
+        >(
+            mut self,
+            order_by: impl ::cynic::IntoArgument<Option<OrderByT>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "orderBy",
+                "CityOrderByInput",
+                order_by.into_argument(),
+            ));
+            self
+        }
+        pub fn skip(mut self, skip: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+            self.args
+                .push(::cynic::Argument::new("skip", "Int", skip.into_argument()));
+            self
+        }
+        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "after",
+                "String",
+                after.into_argument(),
+            ));
+            self
+        }
+        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "before",
+                "String",
+                before.into_argument(),
+            ));
+            self
+        }
+        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "first",
+                "Int",
+                first.into_argument(),
+            ));
+            self
+        }
+        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+            self.args
+                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+            self
+        }
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::City>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<T>>, super::Job> {
+            ::cynic::selection_set::field(
+                "cities",
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(fields)),
+            )
+        }
+    }
+    pub struct CountriesSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl CountriesSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            CountriesSelectionBuilder { args }
+        }
+        pub fn r#where<
+            RWhereT: ::cynic::InputObject<super::CountryWhereInput> + ::cynic::SerializableArgument,
+        >(
+            mut self,
+            r#where: impl ::cynic::IntoArgument<Option<RWhereT>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "where",
+                "CountryWhereInput",
+                r#where.into_argument(),
+            ));
+            self
+        }
+        pub fn order_by<
+            OrderByT: ::cynic::Enum<super::CountryOrderByInput> + ::cynic::SerializableArgument,
+        >(
+            mut self,
+            order_by: impl ::cynic::IntoArgument<Option<OrderByT>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "orderBy",
+                "CountryOrderByInput",
+                order_by.into_argument(),
+            ));
+            self
+        }
+        pub fn skip(mut self, skip: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+            self.args
+                .push(::cynic::Argument::new("skip", "Int", skip.into_argument()));
+            self
+        }
+        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "after",
+                "String",
+                after.into_argument(),
+            ));
+            self
+        }
+        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "before",
+                "String",
+                before.into_argument(),
+            ));
+            self
+        }
+        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "first",
+                "Int",
+                first.into_argument(),
+            ));
+            self
+        }
+        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+            self.args
+                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+            self
+        }
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Country>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<T>>, super::Job> {
+            ::cynic::selection_set::field(
+                "countries",
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(fields)),
+            )
+        }
+    }
+    pub struct RemotesSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl RemotesSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            RemotesSelectionBuilder { args }
+        }
+        pub fn r#where<
+            RWhereT: ::cynic::InputObject<super::RemoteWhereInput> + ::cynic::SerializableArgument,
+        >(
+            mut self,
+            r#where: impl ::cynic::IntoArgument<Option<RWhereT>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "where",
+                "RemoteWhereInput",
+                r#where.into_argument(),
+            ));
+            self
+        }
+        pub fn order_by<
+            OrderByT: ::cynic::Enum<super::RemoteOrderByInput> + ::cynic::SerializableArgument,
+        >(
+            mut self,
+            order_by: impl ::cynic::IntoArgument<Option<OrderByT>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "orderBy",
+                "RemoteOrderByInput",
+                order_by.into_argument(),
+            ));
+            self
+        }
+        pub fn skip(mut self, skip: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+            self.args
+                .push(::cynic::Argument::new("skip", "Int", skip.into_argument()));
+            self
+        }
+        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "after",
+                "String",
+                after.into_argument(),
+            ));
+            self
+        }
+        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "before",
+                "String",
+                before.into_argument(),
+            ));
+            self
+        }
+        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "first",
+                "Int",
+                first.into_argument(),
+            ));
+            self
+        }
+        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+            self.args
+                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+            self
+        }
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Remote>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<T>>, super::Job> {
+            ::cynic::selection_set::field(
+                "remotes",
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(fields)),
+            )
+        }
+    }
+    pub struct DescriptionSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl DescriptionSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            DescriptionSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Job> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field(
+                "description",
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+            )
+        }
+    }
+    pub struct ApplyUrlSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl ApplyUrlSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            ApplyUrlSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Job> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field(
+                "applyUrl",
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+            )
+        }
+    }
+    pub struct CompanySelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl CompanySelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            CompanySelectionBuilder { args }
+        }
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Company>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Job> {
+            ::cynic::selection_set::field(
+                "company",
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
+    }
+    pub struct TagsSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl TagsSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            TagsSelectionBuilder { args }
+        }
+        pub fn r#where<
+            RWhereT: ::cynic::InputObject<super::TagWhereInput> + ::cynic::SerializableArgument,
+        >(
+            mut self,
+            r#where: impl ::cynic::IntoArgument<Option<RWhereT>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "where",
+                "TagWhereInput",
+                r#where.into_argument(),
+            ));
+            self
+        }
+        pub fn order_by<
+            OrderByT: ::cynic::Enum<super::TagOrderByInput> + ::cynic::SerializableArgument,
+        >(
+            mut self,
+            order_by: impl ::cynic::IntoArgument<Option<OrderByT>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "orderBy",
+                "TagOrderByInput",
+                order_by.into_argument(),
+            ));
+            self
+        }
+        pub fn skip(mut self, skip: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+            self.args
+                .push(::cynic::Argument::new("skip", "Int", skip.into_argument()));
+            self
+        }
+        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "after",
+                "String",
+                after.into_argument(),
+            ));
+            self
+        }
+        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "before",
+                "String",
+                before.into_argument(),
+            ));
+            self
+        }
+        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "first",
+                "Int",
+                first.into_argument(),
+            ));
+            self
+        }
+        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+            self.args
+                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+            self
+        }
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Tag>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<T>>, super::Job> {
+            ::cynic::selection_set::field(
+                "tags",
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(fields)),
+            )
+        }
+    }
+    pub struct IsPublishedSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl IsPublishedSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            IsPublishedSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, Option<bool>, super::Job> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field(
+                "isPublished",
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+            )
+        }
+    }
+    pub struct IsFeaturedSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl IsFeaturedSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            IsFeaturedSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, Option<bool>, super::Job> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field(
+                "isFeatured",
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+            )
+        }
+    }
+    pub struct LocationNamesSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl LocationNamesSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            LocationNamesSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Job> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field(
+                "locationNames",
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+            )
+        }
+    }
+    pub struct UserEmailSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl UserEmailSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            UserEmailSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Job> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field(
+                "userEmail",
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+            )
+        }
+    }
+    pub struct PostedAtSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl PostedAtSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            PostedAtSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, super::DateTime, super::Job> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("postedAt", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct CreatedAtSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl CreatedAtSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            CreatedAtSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, super::DateTime, super::Job> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("createdAt", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct UpdatedAtSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl UpdatedAtSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            UpdatedAtSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, super::DateTime, super::Job> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("updatedAt", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+}
+#[allow(dead_code)]
+pub mod location {
+    pub struct IdSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl IdSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            IdSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, ::cynic::Id, super::Location> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("id", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct SlugSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl SlugSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            SlugSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::Location> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("slug", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct NameSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl NameSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            NameSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::Location> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("name", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct TypeSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl TypeSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            TypeSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::Location> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("type", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+}
+#[allow(dead_code)]
+pub mod mutation {
+    pub struct SubscribeSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl SubscribeSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            SubscribeSelectionBuilder { args }
+        }
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::User>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Mutation> {
+            ::cynic::selection_set::field("subscribe", self.args, fields)
+        }
+    }
+    pub struct PostJobSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl PostJobSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            PostJobSelectionBuilder { args }
+        }
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Job>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Mutation> {
+            ::cynic::selection_set::field("postJob", self.args, fields)
+        }
+    }
+    pub struct UpdateJobSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl UpdateJobSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            UpdateJobSelectionBuilder { args }
+        }
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Job>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Mutation> {
+            ::cynic::selection_set::field("updateJob", self.args, fields)
+        }
+    }
+    pub struct UpdateCompanySelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl UpdateCompanySelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            UpdateCompanySelectionBuilder { args }
+        }
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Company>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Mutation> {
+            ::cynic::selection_set::field("updateCompany", self.args, fields)
+        }
+    }
+}
+#[allow(dead_code)]
+pub mod query {
+    pub struct JobsSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl JobsSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            JobsSelectionBuilder { args }
+        }
+        pub fn input<
+            InputT: ::cynic::InputObject<super::JobsInput> + ::cynic::SerializableArgument,
+        >(
+            mut self,
+            input: impl ::cynic::IntoArgument<Option<InputT>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "input",
+                "JobsInput",
+                input.into_argument(),
+            ));
+            self
+        }
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Job>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Vec<T>, super::Query> {
+            ::cynic::selection_set::field("jobs", self.args, ::cynic::selection_set::vec(fields))
+        }
+    }
+    pub struct JobSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl JobSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            JobSelectionBuilder { args }
+        }
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Job>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Query> {
+            ::cynic::selection_set::field("job", self.args, fields)
+        }
+    }
+    pub struct LocationsSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl LocationsSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            LocationsSelectionBuilder { args }
+        }
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Location>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Vec<T>, super::Query> {
+            ::cynic::selection_set::field(
+                "locations",
+                self.args,
+                ::cynic::selection_set::vec(fields),
+            )
+        }
+    }
+    pub struct CitySelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl CitySelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            CitySelectionBuilder { args }
+        }
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::City>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Query> {
+            ::cynic::selection_set::field("city", self.args, fields)
+        }
+    }
+    pub struct CountrySelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl CountrySelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            CountrySelectionBuilder { args }
+        }
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Country>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Query> {
+            ::cynic::selection_set::field("country", self.args, fields)
+        }
+    }
+    pub struct RemoteSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl RemoteSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            RemoteSelectionBuilder { args }
+        }
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Remote>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Query> {
+            ::cynic::selection_set::field("remote", self.args, fields)
+        }
+    }
+    pub struct CommitmentsSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl CommitmentsSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            CommitmentsSelectionBuilder { args }
+        }
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Commitment>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Vec<T>, super::Query> {
+            ::cynic::selection_set::field(
+                "commitments",
+                self.args,
+                ::cynic::selection_set::vec(fields),
+            )
+        }
+    }
+    pub struct CitiesSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl CitiesSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            CitiesSelectionBuilder { args }
+        }
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::City>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Vec<T>, super::Query> {
+            ::cynic::selection_set::field("cities", self.args, ::cynic::selection_set::vec(fields))
+        }
+    }
+    pub struct CountriesSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl CountriesSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            CountriesSelectionBuilder { args }
+        }
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Country>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Vec<T>, super::Query> {
+            ::cynic::selection_set::field(
+                "countries",
+                self.args,
+                ::cynic::selection_set::vec(fields),
+            )
+        }
+    }
+    pub struct RemotesSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl RemotesSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            RemotesSelectionBuilder { args }
+        }
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Remote>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Vec<T>, super::Query> {
+            ::cynic::selection_set::field("remotes", self.args, ::cynic::selection_set::vec(fields))
+        }
+    }
+    pub struct CompaniesSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl CompaniesSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            CompaniesSelectionBuilder { args }
+        }
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Company>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Vec<T>, super::Query> {
+            ::cynic::selection_set::field(
+                "companies",
+                self.args,
+                ::cynic::selection_set::vec(fields),
+            )
+        }
+    }
+}
+#[allow(dead_code)]
+pub mod remote {
+    pub struct IdSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl IdSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            IdSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, ::cynic::Id, super::Remote> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("id", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct NameSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl NameSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            NameSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::Remote> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("name", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct SlugSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl SlugSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            SlugSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::Remote> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("slug", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct TypeSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl TypeSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            TypeSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::Remote> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("type", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct JobsSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl JobsSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            JobsSelectionBuilder { args }
+        }
+        pub fn r#where<
+            RWhereT: ::cynic::InputObject<super::JobWhereInput> + ::cynic::SerializableArgument,
+        >(
+            mut self,
+            r#where: impl ::cynic::IntoArgument<Option<RWhereT>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "where",
+                "JobWhereInput",
+                r#where.into_argument(),
+            ));
+            self
+        }
+        pub fn order_by<
+            OrderByT: ::cynic::Enum<super::JobOrderByInput> + ::cynic::SerializableArgument,
+        >(
+            mut self,
+            order_by: impl ::cynic::IntoArgument<Option<OrderByT>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "orderBy",
+                "JobOrderByInput",
+                order_by.into_argument(),
+            ));
+            self
+        }
+        pub fn skip(mut self, skip: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+            self.args
+                .push(::cynic::Argument::new("skip", "Int", skip.into_argument()));
+            self
+        }
+        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "after",
+                "String",
+                after.into_argument(),
+            ));
+            self
+        }
+        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "before",
+                "String",
+                before.into_argument(),
+            ));
+            self
+        }
+        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "first",
+                "Int",
+                first.into_argument(),
+            ));
+            self
+        }
+        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+            self.args
+                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+            self
+        }
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Job>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<T>>, super::Remote> {
+            ::cynic::selection_set::field(
+                "jobs",
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(fields)),
+            )
+        }
+    }
+    pub struct CreatedAtSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl CreatedAtSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            CreatedAtSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, super::DateTime, super::Remote> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("createdAt", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct UpdatedAtSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl UpdatedAtSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            UpdatedAtSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, super::DateTime, super::Remote> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("updatedAt", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+}
+#[allow(dead_code)]
+pub mod tag {
+    pub struct IdSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl IdSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            IdSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, ::cynic::Id, super::Tag> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("id", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct NameSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl NameSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            NameSelectionBuilder { args }
+        }
+        pub fn select(self) -> ::cynic::selection_set::SelectionSet<'static, String, super::Tag> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("name", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct SlugSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl SlugSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            SlugSelectionBuilder { args }
+        }
+        pub fn select(self) -> ::cynic::selection_set::SelectionSet<'static, String, super::Tag> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("slug", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct JobsSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl JobsSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            JobsSelectionBuilder { args }
+        }
+        pub fn r#where<
+            RWhereT: ::cynic::InputObject<super::JobWhereInput> + ::cynic::SerializableArgument,
+        >(
+            mut self,
+            r#where: impl ::cynic::IntoArgument<Option<RWhereT>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "where",
+                "JobWhereInput",
+                r#where.into_argument(),
+            ));
+            self
+        }
+        pub fn order_by<
+            OrderByT: ::cynic::Enum<super::JobOrderByInput> + ::cynic::SerializableArgument,
+        >(
+            mut self,
+            order_by: impl ::cynic::IntoArgument<Option<OrderByT>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "orderBy",
+                "JobOrderByInput",
+                order_by.into_argument(),
+            ));
+            self
+        }
+        pub fn skip(mut self, skip: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+            self.args
+                .push(::cynic::Argument::new("skip", "Int", skip.into_argument()));
+            self
+        }
+        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "after",
+                "String",
+                after.into_argument(),
+            ));
+            self
+        }
+        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "before",
+                "String",
+                before.into_argument(),
+            ));
+            self
+        }
+        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "first",
+                "Int",
+                first.into_argument(),
+            ));
+            self
+        }
+        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+            self.args
+                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+            self
+        }
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Job>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<T>>, super::Tag> {
+            ::cynic::selection_set::field(
+                "jobs",
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(fields)),
+            )
+        }
+    }
+    pub struct CreatedAtSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl CreatedAtSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            CreatedAtSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, super::DateTime, super::Tag> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("createdAt", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct UpdatedAtSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl UpdatedAtSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            UpdatedAtSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, super::DateTime, super::Tag> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("updatedAt", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+}
+#[allow(dead_code)]
+pub mod user {
+    pub struct IdSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl IdSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            IdSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, ::cynic::Id, super::User> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("id", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct NameSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl NameSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            NameSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::User> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field(
+                "name",
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+            )
+        }
+    }
+    pub struct EmailSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl EmailSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            EmailSelectionBuilder { args }
+        }
+        pub fn select(self) -> ::cynic::selection_set::SelectionSet<'static, String, super::User> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("email", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct SubscribeSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl SubscribeSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            SubscribeSelectionBuilder { args }
+        }
+        pub fn select(self) -> ::cynic::selection_set::SelectionSet<'static, bool, super::User> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("subscribe", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct CreatedAtSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl CreatedAtSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            CreatedAtSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, super::DateTime, super::User> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("createdAt", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+    pub struct UpdatedAtSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl UpdatedAtSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            UpdatedAtSelectionBuilder { args }
+        }
+        pub fn select(
+            self,
+        ) -> ::cynic::selection_set::SelectionSet<'static, super::DateTime, super::User> {
+            #[allow(unused_imports)]
+            use cynic::selection_set::{boolean, float, integer, string};
+            ::cynic::selection_set::field("updatedAt", self.args, ::cynic::selection_set::scalar())
+        }
+    }
+}
+#[allow(dead_code)]
+pub struct CityWhereInput {}
+#[allow(dead_code)]
+pub struct CommitmentWhereInput {}
+#[allow(dead_code)]
+pub struct CompanyWhereInput {}
+#[allow(dead_code)]
+pub struct CountryWhereInput {}
+#[allow(dead_code)]
+pub struct JobInput {}
+#[allow(dead_code)]
+pub struct JobsInput {}
+#[allow(dead_code)]
+pub struct JobWhereInput {}
+#[allow(dead_code)]
+pub struct LocationInput {}
+#[allow(dead_code)]
+pub struct LocationsInput {}
+#[allow(dead_code)]
+pub struct PostJobInput {}
+#[allow(dead_code)]
+pub struct RemoteWhereInput {}
+#[allow(dead_code)]
+pub struct SubscribeInput {}
+#[allow(dead_code)]
+pub struct TagWhereInput {}
+#[allow(dead_code)]
+pub struct UpdateCompanyInput {}
+#[allow(dead_code)]
+pub struct UpdateJobInput {}
+#[allow(dead_code)]
+pub struct CityOrderByInput {}
+#[allow(dead_code)]
+pub struct CountryOrderByInput {}
+#[allow(dead_code)]
+pub struct JobOrderByInput {}
+#[allow(dead_code)]
+pub struct RemoteOrderByInput {}
+#[allow(dead_code)]
+pub struct TagOrderByInput {}
+impl ::cynic::MutationRoot for Mutation {}
+impl ::cynic::QueryRoot for Query {}
+
