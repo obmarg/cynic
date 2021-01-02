@@ -3,6 +3,7 @@ use crate::Argument;
 pub enum OperationType {
     Query,
     Mutation,
+    Subscription,
 }
 
 pub enum Field {
@@ -71,6 +72,7 @@ impl Field {
                 let operation_def = match operation_type {
                     OperationType::Query => "query Query",
                     OperationType::Mutation => "mutation Mutation",
+                    OperationType::Subscription => "subscription Subscription",
                 };
 
                 format!(

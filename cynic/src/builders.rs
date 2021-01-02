@@ -1,4 +1,7 @@
-use super::{FragmentContext, MutationRoot, Operation, QueryFragment, QueryRoot, SelectionSet};
+use super::{
+    FragmentContext, MutationRoot, Operation, QueryFragment, QueryRoot, SelectionSet,
+    StreamingOperation, SubscriptionRoot,
+};
 
 use std::borrow::Borrow;
 
@@ -47,5 +50,29 @@ where
 
     fn build(args: impl Borrow<Self::Arguments>) -> Operation<'a, Self::ResponseData> {
         Operation::mutation(Self::fragment(FragmentContext::new(args.borrow())))
+    }
+}
+
+/// Provides a `build` function on `QueryFragment`s that represent a subscription
+pub trait SubscriptionBuilder<'a> {
+    type Arguments;
+    type ResponseData;
+
+    /// Constructs a subscription operation for this QueryFragment.
+    fn build(args: impl Borrow<Self::Arguments>) -> StreamingOperation<'a, Self::ResponseData>;
+}
+
+impl<'a, T, R, Q> SubscriptionBuilder<'a> for T
+where
+    T: QueryFragment<SelectionSet = SelectionSet<'a, R, Q>>,
+    Q: SubscriptionRoot,
+    R: 'a,
+{
+    type Arguments = T::Arguments;
+
+    type ResponseData = R;
+
+    fn build(args: impl Borrow<Self::Arguments>) -> StreamingOperation<'a, Self::ResponseData> {
+        StreamingOperation::subscription(Self::fragment(FragmentContext::new(args.borrow())))
     }
 }

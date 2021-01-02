@@ -24,7 +24,7 @@ use json_decode::{BoxDecoder, DecodeError};
 use std::collections::HashMap;
 use std::marker::PhantomData;
 
-use crate::{scalar, Argument, MutationRoot, QueryRoot};
+use crate::{scalar, Argument, MutationRoot, QueryRoot, SubscriptionRoot};
 
 use field::{Field, OperationType};
 
@@ -305,6 +305,21 @@ where
 {
     SelectionSet::new(
         vec![Field::Root(selection_set.fields, OperationType::Mutation)],
+        selection_set.decoder,
+    )
+}
+
+pub(crate) fn subscription_root<'a, DecodesTo, InnerTypeLock: SubscriptionRoot>(
+    selection_set: SelectionSet<'a, DecodesTo, InnerTypeLock>,
+) -> SelectionSet<'a, DecodesTo, ()>
+where
+    DecodesTo: 'a,
+{
+    SelectionSet::new(
+        vec![Field::Root(
+            selection_set.fields,
+            OperationType::Subscription,
+        )],
         selection_set.decoder,
     )
 }

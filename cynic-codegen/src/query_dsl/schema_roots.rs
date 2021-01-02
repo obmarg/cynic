@@ -7,6 +7,7 @@ use crate::{schema, Ident};
 enum RootType {
     Query,
     Mutation,
+    Subscription,
 }
 
 #[derive(Debug, PartialEq)]
@@ -29,6 +30,13 @@ impl SchemaRoot {
             ty: RootType::Mutation,
         }
     }
+
+    pub fn for_subscription(name: &Ident) -> Self {
+        SchemaRoot {
+            name: name.clone(),
+            ty: RootType::Subscription,
+        }
+    }
 }
 
 impl quote::ToTokens for SchemaRoot {
@@ -48,6 +56,11 @@ impl quote::ToTokens for SchemaRoot {
                     impl ::cynic::QueryRoot for #name {}
                 }
             }
+            RootType::Subscription => {
+                quote! {
+                    impl ::cynic::SubscriptionRoot for #name {}
+                }
+            }
         });
     }
 }
@@ -55,6 +68,7 @@ impl quote::ToTokens for SchemaRoot {
 pub struct RootTypes {
     query: String,
     mutation: String,
+    subscription: Option<String>,
 }
 
 impl RootTypes {
@@ -71,6 +85,7 @@ impl RootTypes {
                 if let Some(mutation_type) = &schema.mutation {
                     rv.mutation = mutation_type.clone();
                 }
+                rv.subscription = schema.subscription.clone();
                 break;
             }
         }
@@ -83,6 +98,8 @@ impl RootTypes {
             Some(SchemaRoot::for_query(&selector.name))
         } else if selector.graphql_name == self.mutation {
             Some(SchemaRoot::for_mutation(&selector.name))
+        } else if Some(&selector.graphql_name) == self.subscription.as_ref() {
+            Some(SchemaRoot::for_subscription(&selector.name))
         } else {
             None
         }
@@ -94,6 +111,7 @@ impl Default for RootTypes {
         RootTypes {
             query: "Query".to_string(),
             mutation: "Mutation".to_string(),
+            subscription: None,
         }
     }
 }
