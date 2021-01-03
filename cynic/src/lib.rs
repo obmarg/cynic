@@ -164,6 +164,10 @@
 //! - `url` adds support for Url scalars
 //! - `surf` adds integration with the [`surf`](https://github.com/http-rs/surf)
 //!   http client.
+//! - `transport-ws` provides struct definitions for implementing the
+//!   graphql-transport-ws websocket protocol.
+//! - `transport-ws-async-tungstenite` provides an implementation of
+//!   graphql-transport-ws on top of `async-tungstenite`
 //!
 //! It's worth noting that each of these features pulls in extra
 //! dependencies, which may impact your build size.  Particularly
@@ -181,13 +185,14 @@ mod result;
 mod scalar;
 
 pub mod http;
+pub mod protocol;
 pub mod selection_set;
 pub mod utils;
 
 pub use json_decode::DecodeError;
 
 pub use arguments::{Argument, FromArguments, IntoArgument, SerializableArgument};
-pub use builders::{MutationBuilder, QueryBuilder};
+pub use builders::{MutationBuilder, QueryBuilder, SubscriptionBuilder};
 pub use fragments::{FragmentArguments, FragmentContext, InlineFragments, QueryFragment};
 pub use id::Id;
 pub use operation::{Operation, StreamingOperation};

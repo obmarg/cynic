@@ -81,7 +81,7 @@ impl<'a, ResponseData: 'a> Operation<'a, ResponseData> {
 ///
 /// Currently this is means subscriptions.
 pub struct StreamingOperation<'a, ResponseData> {
-    inner: Operation<'a, ResponseData>,
+    pub(crate) inner: Operation<'a, ResponseData>,
 }
 
 impl<'a, ResponseData: 'a> StreamingOperation<'a, ResponseData> {
@@ -105,6 +105,13 @@ impl<'a, ResponseData: 'a> StreamingOperation<'a, ResponseData> {
                 decoder,
             },
         }
+    }
+
+    pub fn decode_response(
+        &self,
+        response: GraphQLResponse<serde_json::Value>,
+    ) -> Result<GraphQLResponse<ResponseData>, json_decode::DecodeError> {
+        self.inner.decode_response(response)
     }
 }
 
