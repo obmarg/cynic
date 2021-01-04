@@ -14,7 +14,8 @@ pub struct IssueOrder {
 ```
 
 The derive will work on any struct that matches the format of the input object
-and it may contain scalar values or other `InputObject`s.
+and it may contain scalar values or other `InputObject`s.  See `Field Naming`
+below for how names are matched between GraphQL & Rust.
 
 By default the field names are expected to match the GraphQL variants
 exactly, but this can be controlled with either the `rename_all` top level
@@ -32,6 +33,14 @@ whereas optional fields that are present in the struct but set to None will be
 sent as `null`.
 
 <!-- TODO: example of the above?  Better wording. -->
+
+### Field Naming 
+
+It's a common GraphQL convention for fields to be named in `camelCase`.  To
+handle this smoothly, Cynic matches rust fields up to their equivalent
+`SCREAMING_SNAKE_CASE` GraphQL fields.  This behaviour can be disabled by
+specifying a `rename_all = "None"` attribute, or customised alternative
+`rename_all` values or individual `rename` attributes on the fields.
 
 #### Struct Attributes
 

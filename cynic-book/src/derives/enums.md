@@ -17,6 +17,14 @@ The derive will work on any enum that only has unit variants that match up with
 the variants on the enum in the schema. If there are any extra or missing
 variants, the derive will emit errors.
 
+#### Variant Naming
+
+The GraphQL spec [recommends that enums are "all caps"][1].  To handle this
+smoothly, Cynic matches rust variants up to their equivalent
+`SCREAMING_SNAKE_CASE` GraphQL variants.  This behaviour can be disabled by
+specifying a `rename_all = "None"` attribute, or customised alternative
+`rename_all` values or individual `rename` attributes on the variants.
+
 #### Enum Attributes
 
 An Enum can be configured with several attributes on the enum itself:
@@ -29,11 +37,13 @@ An Enum can be configured with several attributes on the enum itself:
 
 <!-- TODO: list of the rename rules, possibly pulled from codegen docs -->
 
-#### Field Attributes
+#### Variant Attributes
 
-Each field can also have it's own attributes:
+Each variant can also have it's own attributes:
 
 - `rename="SOME_VARIANT"` can be used to map a variant to a completely
   different GraphQL variant name.
 
 <!-- TODO: example of the above?  Better wording -->
+
+1: https://spec.graphql.org/June2018/#sec-Enum-Value
