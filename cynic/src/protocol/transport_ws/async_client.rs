@@ -1,9 +1,12 @@
 use std::{collections::HashMap, sync::Arc};
 
 use async_executors::{JoinHandle, SpawnHandle, SpawnHandleExt};
-use async_tungstenite::{tungstenite::Message, WebSocketStream};
+use async_tungstenite::{
+    tungstenite::{self, Message},
+    WebSocketStream,
+};
 use futures::{
-    channel::mpsc,
+    channel::{mpsc, oneshot},
     lock::Mutex,
     sink::SinkExt,
     stream::{Stream, StreamExt},
@@ -24,6 +27,8 @@ pub struct AsyncWebsocketClient {
     inner: Arc<ClientInner>,
     sender_sink: mpsc::Sender<Message>,
 }
+
+// TODO: Docstrings, book etc.
 
 impl AsyncWebsocketClient {
     // TODO: possibly make this generic over any old stream & sync type?
@@ -50,17 +55,28 @@ impl AsyncWebsocketClient {
             }
         }
 
+        let (shutdown_sender, shutdown_receiver) = oneshot::channel();
+
         let (receiver_sink, receiver_stream) = stream.split();
         let operations = Arc::new(Mutex::new(HashMap::new()));
 
         let receiver_handle = runtime
-            .spawn_handle(receiver_loop::<S>(receiver_stream, Arc::clone(&operations)))
+            .spawn_handle(receiver_loop::<S>(
+                receiver_stream,
+                Arc::clone(&operations),
+                shutdown_sender,
+            ))
             .unwrap();
 
         let (sender_sink, sender_stream) = mpsc::channel(1);
 
         let sender_handle = runtime
-            .spawn_handle(sender_loop(sender_stream, receiver_sink))
+            .spawn_handle(sender_loop(
+                sender_stream,
+                receiver_sink,
+                Arc::clone(&operations),
+                shutdown_receiver,
+            ))
             .unwrap();
 
         Ok(AsyncWebsocketClient {
@@ -93,7 +109,10 @@ impl AsyncWebsocketClient {
 
         self.sender_sink.send(msg).await.unwrap();
 
-        // TODO: Make this closable (probably a future PR)
+        // TODO: This needs to return a type that
+        // has close & some sort of status func on it.
+        // Have the receiver send details and have that intercepted
+        // by this type and stored.
         receiver.map(move |response| op.decode_response(response).unwrap())
     }
 }
@@ -102,52 +121,98 @@ type OperationSender = mpsc::Sender<GraphQLResponse<serde_json::Value>>;
 
 type OperationMap = Arc<Mutex<HashMap<Uuid, OperationSender>>>;
 
+// TODO: Think about whether there's actually some Arc cycles here
+// that I need to care about
+
 async fn receiver_loop<S>(
     mut receiver: futures::stream::SplitStream<WebSocketStream<S>>,
     operations: OperationMap,
+    shutdown: oneshot::Sender<()>,
 ) where
     S: futures::AsyncRead + futures::AsyncWrite + Unpin + Send,
 {
-    // TODO: how do I indicate errors in here to the rest of the client?
-    // preferably in a way that allows for retries...
+    // TODO: Ok, so basically need a oneshot from here -> sender that
+    // tells the sender to stop.  It can close it's incoming, drain it's stream
+    // and then close the streams in the HashMap.
     while let Some(msg) = receiver.next().await {
         println!("Received message: {:?}", msg);
-        let event = decode_message::<Event>(msg.unwrap()).unwrap();
-        let id = &Uuid::parse_str(event.id()).unwrap();
-        match event {
-            Event::Next { payload, .. } => {
-                let mut sink = operations.lock().await.get(&id).unwrap().clone();
-
-                sink.send(payload).await.unwrap()
-            }
-            Event::Complete { .. } => {
-                println!("Stream complete");
-                operations.lock().await.remove(&id);
-            }
-            Event::Error { payload, .. } => {
-                let mut sink = operations.lock().await.remove(&id).unwrap();
-
-                sink.send(GraphQLResponse {
-                    data: None,
-                    errors: Some(payload),
-                })
-                .await
-                .unwrap();
-            }
+        if handle_message(msg, &operations).await.is_err() {
+            println!("Error happened, killing things");
+            break;
         }
     }
+
+    shutdown.send(()).expect("Couldn't shutdown sender");
+}
+
+async fn handle_message(
+    msg: Result<Message, tungstenite::Error>,
+    operations: &OperationMap,
+) -> Result<(), ()> {
+    // TODO Make the unwraps into ?
+    let event = decode_message::<Event>(msg.unwrap()).unwrap();
+    let id = &Uuid::parse_str(event.id()).unwrap();
+    match event {
+        Event::Next { payload, .. } => {
+            let mut sink = operations.lock().await.get(&id).unwrap().clone();
+
+            sink.send(payload).await.unwrap()
+        }
+        Event::Complete { .. } => {
+            println!("Stream complete");
+            operations.lock().await.remove(&id);
+        }
+        Event::Error { payload, .. } => {
+            let mut sink = operations.lock().await.remove(&id).unwrap();
+
+            sink.send(GraphQLResponse {
+                data: None,
+                errors: Some(payload),
+            })
+            .await
+            .unwrap();
+        }
+    }
+
+    Ok(())
 }
 
 async fn sender_loop<S>(
-    mut message_stream: mpsc::Receiver<Message>,
+    message_stream: mpsc::Receiver<Message>,
     mut ws_sender: futures::stream::SplitSink<WebSocketStream<S>, Message>,
+    operations: OperationMap,
+    shutdown: oneshot::Receiver<()>,
 ) where
     S: futures::AsyncRead + futures::AsyncWrite + Unpin,
 {
-    // TODO: how do I indicate errors in here to the rest of the client?
-    while let Some(msg) = message_stream.next().await {
-        println!("Sending message: {:?}", msg);
-        ws_sender.send(msg).await.unwrap();
+    use futures::{future::FutureExt, select};
+
+    let mut message_stream = message_stream.fuse();
+    let mut shutdown = shutdown.fuse();
+
+    loop {
+        select! {
+            msg = message_stream.next() => {
+                if let Some(msg) = msg {
+                    println!("Sending message: {:?}", msg);
+                    ws_sender.send(msg).await.unwrap();
+                } else {
+                    // TODO: Do I need to indicate errors in here to the rest of the system?
+                    return;
+                }
+            }
+            _ = shutdown => {
+                // Shutdown the incoming message stream
+                let mut message_stream = message_stream.into_inner();
+                message_stream.close();
+                while message_stream.next().await.is_some() {}
+
+                // Clear out any operations
+                operations.lock().await.clear();
+
+                return;
+            }
+        }
     }
 }
 
@@ -176,6 +241,9 @@ fn decode_message<T: serde::de::DeserializeOwned>(message: Message) -> Result<T,
 
 #[cfg(test)]
 mod tests {
+    // TODO: Need to allow the client to just use stream & sink directly.
+    // That way I can impl tests for it indepdendant of tungsten stuff...
+
     // TODO: tests of shutdown behaviour etc would be good.
     // also mocked tests and what not
 }

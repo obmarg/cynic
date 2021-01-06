@@ -166,8 +166,8 @@
 //!   http client.
 //! - `transport-ws` provides struct definitions for implementing the
 //!   graphql-transport-ws websocket protocol.
-//! - `transport-ws-async-tungstenite` provides an implementation of
-//!   graphql-transport-ws on top of `async-tungstenite`
+//! - `transport-ws-futures` provides an implementation of
+//!   graphql-transport-ws on top of `futures::{Send, Sink}`
 //!
 //! It's worth noting that each of these features pulls in extra
 //! dependencies, which may impact your build size.  Particularly
