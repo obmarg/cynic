@@ -178,10 +178,10 @@ Each field can also have it's own attributes:
 - `recurse = "5"` tells cynic that this field is recursive and should be
   fetched to a maximum depth of 5. See [Recursive Queries][recursive-queries]
   for more info.
-- The `flatten` attr can be used to "flatten" out excessive Options. As
-  GraphQL is used in languages with implicit nulls, it's not uncommon to see a
-  type `[Int]` - which in Rust maps to `Option<Vec<Option<i32>>`. This isn't a
-  very nice type to work with - applying the `flatten` attribute lets you
+- The `flatten` attr can be used to "flatten" out excessive Options from lists.
+  As GraphQL is used in languages with implicit nulls, it's not uncommon to see
+  a type `[Int]` - which in Rust maps to `Option<Vec<Option<i32>>`. This isn't
+  a very nice type to work with - applying the `flatten` attribute lets you
   represent this as a `Vec<i32>` in your QueryFragment. Any outer nulls become
   an empty list and inner nulls are dropped.
 
