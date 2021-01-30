@@ -11,6 +11,8 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.11.1 - 2021-01-30
+
 ### Bug Fixes
 
 - Optional InputObject arguments can now be provided by reference.  Previously
