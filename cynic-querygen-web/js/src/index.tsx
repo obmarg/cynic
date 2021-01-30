@@ -121,24 +121,27 @@ const GraphQLEditor = (props: EditorProps) => {
 
 ReactiveElements("gql-editor", GraphQLEditor, { useShadowDom: true });
 
-const makeFetcher = (schemaUrl) => {
-  return (graphQLParams: FetcherParams, opts: FetcherOpts) =>
-    fetch(schemaUrl, {
+const makeFetcher = (schemaUrl: string) => {
+  return async (graphQLParams: FetcherParams, opts: FetcherOpts) => {
+    if (schemaUrl.length === 0) {
+      return "Can't run queries - you pasted a schema so we don't have a URL";
+    }
+
+    const response = await fetch(schemaUrl, {
       method: "post",
       headers: {
         "Content-Type": "application/json",
         ...opts.headers,
       },
       body: JSON.stringify(graphQLParams),
-    })
-      .then(function (response) {
-        return response.text();
-      })
-      .then(function (responseBody) {
-        try {
-          return JSON.parse(responseBody);
-        } catch (e) {
-          return responseBody;
-        }
-      });
+    });
+
+    const responseBody = await response.text();
+
+    try {
+      return JSON.parse(responseBody);
+    } catch (e) {
+      return responseBody;
+    }
+  };
 };
