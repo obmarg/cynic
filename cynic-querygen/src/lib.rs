@@ -64,6 +64,9 @@ pub enum Error {
 
     #[error("Tried to apply a fragment for a {0} type on a {1} type")]
     TypeConditionFailed(String, String),
+
+    #[error("Could not find a type named {0}, which we expected to be the root type")]
+    CouldntFindRootType(String),
 }
 
 #[derive(Debug)]
