@@ -4,12 +4,15 @@
 //! heavy dependencies, and there's several options to choose from.
 
 #[cfg(feature = "surf")]
+#[cfg_attr(docsrs, doc(cfg(feature = "surf")))]
 pub use self::surf_ext::SurfExt;
 
 #[cfg(feature = "reqwest")]
+#[cfg_attr(docsrs, doc(cfg(feature = "reqwest")))]
 pub use reqwest_ext::ReqwestExt;
 
 #[cfg(feature = "reqwest-blocking")]
+#[cfg_attr(docsrs, doc(cfg(feature = "reqwest-blocking")))]
 pub use reqwest_blocking_ext::ReqwestBlockingExt;
 
 #[cfg(feature = "surf")]
@@ -68,6 +71,7 @@ mod surf_ext {
     /// );
     /// # };
     /// ```
+    #[cfg_attr(docsrs, doc(cfg(feature = "surf")))]
     pub trait SurfExt {
         /// Runs a GraphQL query with the parameters in RequestBuilder, decodes
         /// the and returns the result.
@@ -161,6 +165,7 @@ mod reqwest_ext {
     /// );
     /// # };
     /// ```
+    #[cfg_attr(docsrs, doc(cfg(feature = "reqwest")))]
     pub trait ReqwestExt {
         /// Runs a GraphQL query with the parameters in RequestBuilder, decodes
         /// the and returns the result.
@@ -252,6 +257,7 @@ mod reqwest_blocking_ext {
     ///         .unwrap()
     /// );
     /// ```
+    #[cfg_attr(docsrs, doc(cfg(feature = "reqwest-blocking")))]
     pub trait ReqwestBlockingExt {
         /// Runs a GraphQL query with the parameters in RequestBuilder, decodes
         /// the and returns the result.
