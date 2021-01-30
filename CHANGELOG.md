@@ -13,6 +13,8 @@ all APIs might be changed.
 
 ### Bug Fixes
 
+- Optional InputObject arguments can now be provided by reference.  Previously
+  this required a clone.
 - The generator no longer tries (and fails) to run queries when it has no URL
   to work with.
 

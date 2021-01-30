@@ -124,6 +124,15 @@ fn main() {
             "../../cynic-querygen/tests/queries/github/literal-enums.graphql",
             r#"queries::RepoIssues::build(())"#,
         ),
+        TestCase::query_norun(
+            &github_schema,
+            "tests/queries/github/optional-input-object-argument.graphql",
+            r#"queries::PullRequestTitles::build(
+                queries::PullRequestTitlesArguments {
+                    pr_order: None
+                },
+            )"#,
+        ),
     ];
 
     for case in cases {
