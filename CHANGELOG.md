@@ -15,6 +15,7 @@ all APIs might be changed.
 
 - Optional InputObject arguments can now be provided by reference.  Previously
   this required a clone.
+- Makes sure docs.rs builds documentation for the HTTP client code.
 
 ## v0.11.0 - 2020-12-31
 
