@@ -15,6 +15,9 @@ all APIs might be changed.
 
 - Optional InputObject arguments can now be provided by reference.  Previously
   this required a clone.
+- The generator no longer panics if it can't find the root type of a schema.
+- The generator no longer tries (and fails) to run queries when it has no URL
+  to work with.
 - Makes sure docs.rs builds documentation for the HTTP client code.
 
 ## v0.11.0 - 2020-12-31

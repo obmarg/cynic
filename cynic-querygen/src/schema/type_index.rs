@@ -55,7 +55,11 @@ impl<'schema> TypeIndex<'schema> {
             OperationType::Mutation => self.mutation_root.clone(),
         };
 
-        let root = self.types.get(root_name.as_str()).unwrap();
+        let root = self
+            .types
+            .get(root_name.as_str())
+            .ok_or_else(|| Error::CouldntFindRootType(root_name.clone()))?;
+
         let field = if let TypeDefinition::Object(root_object) = root {
             self.find_field_recursive(&root_object.fields, root_name.as_str(), &path.path)?
         } else {
