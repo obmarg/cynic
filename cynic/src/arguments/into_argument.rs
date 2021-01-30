@@ -27,6 +27,28 @@ where
     }
 }
 
+impl<'a, T> IntoArgument<Option<T>> for Option<&'a T>
+where
+    T: SerializableArgument,
+{
+    type Output = Option<&'a T>;
+
+    fn into_argument(self) -> Self::Output {
+        self
+    }
+}
+
+impl<'a, T> IntoArgument<Option<T>> for &'a Option<T>
+where
+    T: SerializableArgument,
+{
+    type Output = Option<&'a T>;
+
+    fn into_argument(self) -> Self::Output {
+        self.as_ref()
+    }
+}
+
 /// Defines useful argument conversions for scalar-like types
 ///
 /// Mostly just converts references to owned via cloning and
@@ -52,37 +74,11 @@ macro_rules! impl_into_argument_for_options {
     };
 }
 
-macro_rules! impl_into_argument_for_option_refs {
-    ($inner:ty) => {
-        impl<'a> $crate::IntoArgument<Option<$inner>> for Option<&'a $inner> {
-            type Output = Option<&'a $inner>;
-
-            fn into_argument(self) -> Option<&'a $inner> {
-                self
-            }
-        }
-
-        impl<'a> $crate::IntoArgument<Option<$inner>> for &'a Option<$inner> {
-            type Output = Option<&'a $inner>;
-
-            fn into_argument(self) -> Option<&'a $inner> {
-                self.as_ref()
-            }
-        }
-    };
-}
-
 impl_into_argument_for_options!(i32);
 impl_into_argument_for_options!(f64);
 impl_into_argument_for_options!(String);
 impl_into_argument_for_options!(bool);
 impl_into_argument_for_options!(Id);
-
-impl_into_argument_for_option_refs!(i32);
-impl_into_argument_for_option_refs!(f64);
-impl_into_argument_for_option_refs!(String);
-impl_into_argument_for_option_refs!(bool);
-impl_into_argument_for_option_refs!(Id);
 
 impl<'a> IntoArgument<String> for &'a str {
     type Output = &'a str;
