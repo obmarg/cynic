@@ -11,6 +11,11 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+### Bug Fixes
+
+- The generator no longer tries (and fails) to run queries when it has no URL
+  to work with.
+
 ## v0.11.0 - 2020-12-31
 
 ### Breaking Changes
