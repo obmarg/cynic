@@ -604,7 +604,7 @@ dependencies = [
  "bson",
  "chrono",
  "cynic-proc-macros",
- "insta 1.4.0",
+ "insta 1.5.3",
  "json-decode",
  "maplit",
  "reqwest 0.11.0",
@@ -624,7 +624,7 @@ dependencies = [
  "assert_matches",
  "darling",
  "graphql-parser",
- "insta 1.4.0",
+ "insta 1.5.3",
  "lazy_static",
  "maplit",
  "proc-macro2",
@@ -662,7 +662,7 @@ dependencies = [
  "Inflector",
  "assert_matches",
  "graphql-parser",
- "insta 1.4.0",
+ "insta 1.5.3",
  "rstest",
  "rust_decimal",
  "thiserror",
@@ -1346,16 +1346,16 @@ dependencies = [
 
 [[package]]
 name = "insta"
-version = "1.4.0"
+version = "1.5.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "4ad34c5249910ef48fc32e776b6609b98e4601f2fea5b5dcd0ac01e296b62f87"
+checksum = "f62fca340815e6190f0ab60fd2729d297a55bcf9863025e5a8a4ce68f50066c4"
 dependencies = [
  "console 0.14.0",
- "difference",
  "lazy_static",
  "serde",
  "serde_json",
  "serde_yaml",
+ "similar",
  "uuid",
 ]
 
@@ -2269,6 +2269,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "similar"
+version = "0.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "2c2c5334976f6000d0c36cf95a0b70ff4daa310b935aa4ce190d02f1012c81d0"
+
+[[package]]
 name = "slab"
 version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2726,6 +2732,15 @@ name = "typenum"
 version = "1.12.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "373c8a200f9e67a0c95e62a4f52fbf80c23b4381c05a17845531982fa99e6b33"
+
+[[package]]
+name = "ui-tests"
+version = "0.1.0"
+dependencies = [
+ "cynic",
+ "serde_json",
+ "trybuild",
+]
 
 [[package]]
 name = "unicase"

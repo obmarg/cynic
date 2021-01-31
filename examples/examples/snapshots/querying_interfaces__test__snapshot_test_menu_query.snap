@@ -1,0 +1,18 @@
+---
+source: examples/examples/querying-interfaces.rs
+expression: query.query
+---
+query Query($_0: ID!) {
+  node(id: $_0) {
+    __typename
+    ... on Film {
+      title
+      director
+    }
+    ... on Planet {
+      name
+    }
+    id
+  }
+}
+

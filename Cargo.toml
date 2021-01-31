@@ -6,7 +6,8 @@ members = [
     "examples",
     "cynic-querygen",
     "cynic-querygen-web",
-    "tests/querygen-compile-run"
+    "tests/querygen-compile-run",
+    "tests/ui-tests"
 ]
 
 [profile.release]

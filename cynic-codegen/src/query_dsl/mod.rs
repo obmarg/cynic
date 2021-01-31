@@ -107,8 +107,22 @@ impl From<schema::Document> for QueryDsl {
                 Definition::TypeDefinition(TypeDefinition::Union(union)) => {
                     unions.push(UnionStruct::from_union(&union));
                 }
-                Definition::TypeDefinition(TypeDefinition::Interface(interface)) => {
-                    interfaces.push(InterfaceStruct::from_interface(&interface));
+                Definition::TypeDefinition(TypeDefinition::Interface(interface_def)) => {
+                    interfaces_implementations
+                        .push(InterfacesImplementations::from_interface(interface_def));
+
+                    let interface = InterfaceStruct::from_interface(&interface_def, &type_index);
+
+                    // Could be nice to restructure this so that the argument structs
+                    // just live inside the selector_struct or similar?
+                    if !interface.selector_struct.selection_builders.is_empty() {
+                        argument_struct_modules.push(Module::new(
+                            &interface_def.name,
+                            interface.selector_struct.selection_builders.clone(),
+                        ));
+                    }
+
+                    interfaces.push(interface);
                 }
                 Definition::TypeDefinition(TypeDefinition::Enum(en)) => {
                     enums.push(EnumMarker::from_enum(&en));

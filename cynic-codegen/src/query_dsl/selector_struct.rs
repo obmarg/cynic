@@ -23,12 +23,16 @@ pub struct SelectorStruct {
 
 impl SelectorStruct {
     pub fn from_object(obj: &schema::ObjectType, type_index: &TypeIndex) -> Self {
-        let name = Ident::for_type(&obj.name);
+        SelectorStruct::new(&obj.name, &obj.fields, type_index)
+    }
 
-        let mut processed_fields = Vec::with_capacity(obj.fields.len());
-        let mut selection_builders = Vec::with_capacity(obj.fields.len());
+    pub fn new(graphql_name: &str, fields: &[schema::Field], type_index: &TypeIndex) -> Self {
+        let name = Ident::for_type(graphql_name);
 
-        for field in &obj.fields {
+        let mut processed_fields = Vec::with_capacity(fields.len());
+        let mut selection_builders = Vec::with_capacity(fields.len());
+
+        for field in fields {
             let field_type = FieldType::from_schema_type(&field.field_type, type_index);
 
             let selection_builder = FieldSelectionBuilder::for_field(
@@ -43,7 +47,7 @@ impl SelectorStruct {
                 &field.name,
                 field_type,
                 name.clone(),
-                Ident::for_module(&obj.name),
+                Ident::for_module(graphql_name),
                 field.required_arguments(),
                 TypePath::new(vec![
                     Ident::for_module(&name.rust_name()),
@@ -57,7 +61,7 @@ impl SelectorStruct {
 
         SelectorStruct {
             name,
-            graphql_name: obj.name.clone(),
+            graphql_name: graphql_name.to_owned(),
             fields: processed_fields,
             selection_builders,
         }

@@ -58,7 +58,7 @@ mod queries {
     #[derive(cynic::InlineFragments)]
     #[cynic(graphql_type = "MyUnionType")]
     pub enum MyUnionType {
-        Test(Test),
+        TestStruct(Test),
         Nested(Nested),
     }
 }

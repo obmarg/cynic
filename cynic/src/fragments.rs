@@ -16,6 +16,10 @@ pub trait InlineFragments: Sized {
     fn fragments(
         context: FragmentContext<Self::Arguments>,
     ) -> Vec<(String, SelectionSet<'static, Self, Self::TypeLock>)>;
+
+    fn fallback(
+        context: FragmentContext<Self::Arguments>,
+    ) -> Option<SelectionSet<'static, Self, Self::TypeLock>>;
 }
 
 impl<T> QueryFragment for T
@@ -26,7 +30,10 @@ where
     type Arguments = <T as InlineFragments>::Arguments;
 
     fn fragment(context: FragmentContext<Self::Arguments>) -> Self::SelectionSet {
-        crate::selection_set::inline_fragments(Self::fragments(context))
+        crate::selection_set::inline_fragments(
+            Self::fragments(context.clone()),
+            Self::fallback(context),
+        )
     }
 
     fn graphql_type() -> String {
@@ -52,6 +59,15 @@ impl FragmentArguments for () {}
 pub struct FragmentContext<'a, Args> {
     pub args: &'a Args,
     pub recurse_depth: Option<u8>,
+}
+
+impl<'a, Args> Clone for FragmentContext<'a, Args> {
+    fn clone(&self) -> Self {
+        FragmentContext {
+            args: self.args,
+            recurse_depth: self.recurse_depth,
+        }
+    }
 }
 
 impl<'a, Args> FragmentContext<'a, Args> {

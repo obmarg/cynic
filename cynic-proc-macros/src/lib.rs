@@ -52,7 +52,7 @@ pub fn inline_fragments_derive(input: TokenStream) -> TokenStream {
 
     let rv = match inline_fragments_derive::inline_fragments_derive(&ast) {
         Ok(tokens) => tokens.into(),
-        Err(e) => e.to_compile_error().into(),
+        Err(e) => e.to_compile_errors().into(),
     };
 
     //eprintln!("{}", rv);
