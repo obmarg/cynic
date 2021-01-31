@@ -39,7 +39,7 @@ url = { version = "2.1.1", optional = true }
 surf = { version = "2.0.0", default-features = false, optional = true }
 
 # Reqwest feature deps
-reqwest = { version = "0.10", optional = true, features = ["json"] }
+reqwest = { version = "0.11", optional = true, features = ["json"] }
 
 [dev-dependencies]
 maplit = "1.0.2"

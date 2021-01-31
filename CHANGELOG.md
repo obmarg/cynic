@@ -11,11 +11,15 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+### Changes
+
+- Updated reqwest dependency to 0.11
+
 ## v0.11.1 - 2021-01-30
 
 ### Bug Fixes
 
-- Optional InputObject arguments can now be provided by reference.  Previously
+- Optional InputObject arguments can now be provided by reference. Previously
   this required a clone.
 - The generator no longer panics if it can't find the root type of a schema.
 - The generator no longer tries (and fails) to run queries when it has no URL
@@ -30,7 +34,7 @@ all APIs might be changed.
   arguments. This change was neccesary to support recursive queries.
 - It is no longer recommended to use `QueryFragment::fragment` directly -
   instead an Operation should be constructed with `QueryBuilder::build` or
-  `MutationBuilder::build`.  Note that these return an `Operation` so you no
+  `MutationBuilder::build`. Note that these return an `Operation` so you no
   longer need to construct one manually.
 - GraphQL fields with names that match rust keywords will no longer be
   postfixed with a `_` - you should now use a raw identifier (or rename) for
