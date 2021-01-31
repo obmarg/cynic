@@ -15,9 +15,16 @@ impl From<schema::Document> for Schema {
         let mut objects = HashMap::new();
 
         for definition in &document.definitions {
-            if let Definition::TypeDefinition(TypeDefinition::Object(object)) = definition {
-                let object = Object::from_object(object, &type_index);
-                objects.insert(object.name.clone(), object);
+            match definition {
+                Definition::TypeDefinition(TypeDefinition::Object(object)) => {
+                    let object = Object::from_object(object, &type_index);
+                    objects.insert(object.name.clone(), object);
+                }
+                Definition::TypeDefinition(TypeDefinition::Interface(iface)) => {
+                    let object = Object::from_interface(iface, &type_index);
+                    objects.insert(object.name.clone(), object);
+                }
+                _ => {}
             }
         }
 
@@ -32,6 +39,19 @@ pub struct Object {
 }
 
 impl Object {
+    fn from_interface(iface: &schema::InterfaceType, scalar_names: &TypeIndex) -> Object {
+        Object {
+            selector_struct: Ident::for_type(&iface.name),
+            fields: iface
+                .fields
+                .iter()
+                .map(|f| Field::from_field(f, scalar_names))
+                .map(|f| (f.name.clone(), f))
+                .collect(),
+            name: Ident::for_type(&iface.name),
+        }
+    }
+
     fn from_object(obj: &schema::ObjectType, scalar_names: &TypeIndex) -> Object {
         Object {
             selector_struct: Ident::for_type(&obj.name),

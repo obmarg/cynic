@@ -1,0 +1,17 @@
+---
+source: examples/examples/querying-interfaces.rs
+expression: result.data
+---
+Some(
+    FilmDirectorQuery {
+        node: Some(
+            Other(
+                OtherNode {
+                    id: Id(
+                        "c3RhcnNoaXBzOjY1",
+                    ),
+                },
+            ),
+        ),
+    },
+)

@@ -1,7 +1,7 @@
 use darling::util::SpannedValue;
 
 #[derive(darling::FromDeriveInput)]
-#[darling(attributes(cynic), supports(enum_newtype))]
+#[darling(attributes(cynic), supports(enum_newtype, enum_unit))]
 pub struct InlineFragmentsDeriveInput {
     pub(super) ident: proc_macro2::Ident,
     pub(super) data: darling::ast::Data<SpannedValue<InlineFragmentsDeriveVariant>, ()>,
@@ -18,6 +18,9 @@ pub struct InlineFragmentsDeriveInput {
 pub(super) struct InlineFragmentsDeriveVariant {
     pub ident: proc_macro2::Ident,
     pub fields: darling::ast::Fields<InlineFragmentsDeriveField>,
+
+    #[darling(default)]
+    pub(super) fallback: SpannedValue<bool>,
 }
 
 #[derive(darling::FromField)]

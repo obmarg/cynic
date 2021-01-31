@@ -12,6 +12,15 @@ pub struct InterfacesImplementations {
 }
 
 impl InterfacesImplementations {
+    pub fn from_interface(iface: &schema::InterfaceType) -> Self {
+        let ident = Ident::for_type(&iface.name);
+
+        Self {
+            implementor: ident.clone(),
+            interfaces: vec![ident],
+        }
+    }
+
     pub fn from_object(obj: &schema::ObjectType) -> Option<Self> {
         if obj.implements_interfaces.is_empty() {
             return None;

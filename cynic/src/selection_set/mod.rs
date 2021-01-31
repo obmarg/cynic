@@ -233,8 +233,14 @@ where
 ///
 /// This should be provided a Vec of typenames to the selection set that should
 /// be applied if that type is found.
+///
+/// An optional backup selection set can be provided for when we get a type
+/// we're not otherwise expecting.  This selection set should only contain
+/// fields that are applicable to any type (i.e. interface fields for interfaces,
+/// and no fields for union types)
 pub fn inline_fragments<'a, DecodesTo, TypeLock>(
     fragments: Vec<(String, SelectionSet<'a, DecodesTo, TypeLock>)>,
+    backup: Option<SelectionSet<'a, DecodesTo, TypeLock>>,
 ) -> SelectionSet<'a, DecodesTo, TypeLock>
 where
     DecodesTo: 'a + Send + Sync,
@@ -252,11 +258,19 @@ where
         decoders.insert(fragment_type, selection_set.decoder);
     }
 
+    let backup_decoder = if let Some(backup) = backup {
+        fields.extend(backup.fields);
+
+        Some(backup.decoder)
+    } else {
+        None
+    };
+
     SelectionSet::new(
         fields,
         Box::new(FragmentDecoder {
             decoders,
-            backup_decoder: None,
+            backup_decoder,
         }),
     )
 }
@@ -810,5 +824,88 @@ mod tests {
             Ok(Some("ok".to_string()))
         );
         assert_eq!(selection_set.decode(&json!(null)), Ok(None));
+    }
+
+    fn inline_fragment_query(
+        backup: Option<SelectionSet<'static, String, ()>>,
+    ) -> SelectionSet<String, ()> {
+        let select_field = |name| map::<_, _, _, ()>(|s| s, field(name, vec![], string()));
+        inline_fragments(
+            vec![
+                ("User".to_string(), select_field("name")),
+                ("Bot".to_string(), select_field("login")),
+            ],
+            backup,
+        )
+    }
+
+    #[test]
+    fn inline_fragments_no_backup_builds_correct_query() {
+        let selection_set = inline_fragment_query(None);
+
+        let (query, _, _) = selection_set.query_arguments_and_decoder();
+
+        insta::assert_snapshot!(query, @r###"
+        __typename
+        ... on User {
+          name
+        }
+        ... on Bot {
+          login
+        }
+        "###);
+    }
+
+    #[test]
+    fn inline_fragments_with_backup_builds_correct_query() {
+        let selection_set = inline_fragment_query(Some(field("other", vec![], string())));
+
+        let (query, _, _) = selection_set.query_arguments_and_decoder();
+
+        insta::assert_snapshot!(query, @r###"
+        __typename
+        ... on User {
+          name
+        }
+        ... on Bot {
+          login
+        }
+        other
+        "###);
+    }
+
+    #[test]
+    fn inline_fragments_decoding_without_backup() {
+        let selection_set = inline_fragment_query(None);
+
+        let (_, _, decoder) = selection_set.query_arguments_and_decoder();
+
+        let result =
+            decoder.decode(&json!({"__typename": "User", "name": "Graeme", "other": "hello"}));
+
+        assert_eq!(result, Ok("Graeme".into()));
+
+        let result = decoder.decode(&json!({"__typename": "Other"}));
+
+        assert_eq!(
+            result,
+            Err(DecodeError::Other("Unknown __typename: Other".to_string()))
+        )
+    }
+
+    #[test]
+    fn inline_fragments_decoding_with_backup() {
+        let selection_set = inline_fragment_query(Some(field("other", vec![], string())));
+
+        let (_, _, decoder) = selection_set.query_arguments_and_decoder();
+
+        let result =
+            decoder.decode(&json!({"__typename": "Bot", "login": "Dependabot", "other": "hello"}));
+
+        assert_eq!(result, Ok("Dependabot".into()));
+
+        let result = decoder.decode(&json!({"__typename": "Other", "other": "hello"}));
+
+        assert_eq!(result, Ok("hello".into()));
     }
 }

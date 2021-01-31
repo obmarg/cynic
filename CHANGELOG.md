@@ -11,6 +11,21 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+### Breaking Changes
+
+- `selection_set::inline_fragments` now takes a backup selection set parameter
+  for when we get an unexpected `__typename`.
+- The `InlineFragments` derive now performs exhaustiveness checking and
+  validates the provided variants.
+- `InlineFragments` has a new required function `fallback`
+
+### New Features
+
+- `InlineFragments` are now validated for exhaustiveness & correctness.
+- `InlineFragments` now support a fallback variant for the case where users
+  only care about some of the possibilities.
+- `QueryFragment` can now be derived for interfaces
+
 ### Changes
 
 - Updated reqwest dependency to 0.11

@@ -84,7 +84,7 @@ enum Dessert {
     graphql_type = "MyUnionType"
 )]
 enum MyUnionType {
-    Test(Test),
+    TestStruct(Test),
     Nested(Nested),
 }
 
