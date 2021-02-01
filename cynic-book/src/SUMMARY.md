@@ -3,7 +3,6 @@
 [Overview](./overview.md)
 
 - [Quickstart](./quickstart.md)
-- [Tutorial](./tutorial.md)
 - [Deriving GraphQL Queries](./derives/index.md)
   - [Query Fragments](./derives/query-fragments.md)
   - [Enums](./derives/enums.md)
