@@ -2,7 +2,10 @@ use std::collections::{HashMap, HashSet};
 
 use proc_macro2::{Span, TokenStream};
 
-use crate::{load_schema, type_validation::check_types_are_compatible, Errors, FieldType, Ident, TypePath, guess_field, format_guess};
+use crate::{
+    format_guess, guess_field, load_schema, type_validation::check_types_are_compatible, Errors,
+    FieldType, Ident, TypePath,
+};
 
 mod arguments;
 mod schema_parsing;
@@ -384,8 +387,10 @@ impl FragmentImpl {
                         recurse_limit: field.recurse.as_ref().map(|limit| **limit),
                     })
                 } else {
-                    let candidates :Vec<String>= object.fields.keys().map(|k| k.graphql_name()).collect();
-                    let guss_value = guess_field(candidates.borrow(), field_name.graphql_name().borrow(), 3);
+                    let candidates: Vec<String> =
+                        object.fields.keys().map(|k| k.graphql_name()).collect();
+                    let guss_value =
+                        guess_field(candidates.borrow(), field_name.graphql_name().borrow(), 3);
                     return Err(syn::Error::new(
                         field_name_span,
                         format!(

@@ -52,36 +52,39 @@ pub fn output_query_dsl(
 
 /// Using Hamming algorithm to guess possible similar fields.
 pub fn guess_field(candidates: &Vec<String>, field_name: &str, k: usize) -> Option<String> {
-    return candidates.iter().find(|x|
-        match hamming(x.as_str(), field_name) {
+    return candidates
+        .iter()
+        .find(|x| match hamming(x.as_str(), field_name) {
             //For example, consider the code consisting of two codewords "000" and "111".
             //The hamming distance between these two words is 3, and therefore it is k=2 error detecting.
             //Which means that if one bit is flipped or two bits are flipped, the error can be detected.
             //If three bits are flipped, then "000" becomes "111" and the error can not be detected.
-            Ok(distance) =>
+            Ok(distance) => {
                 if distance <= k {
                     true
                 } else {
                     false
                 }
-            Err(_) => false
-        }).map(|x| x.to_owned());
+            }
+            Err(_) => false,
+        })
+        .map(|x| x.to_owned());
 }
 
 pub fn format_guess(guess_field: Option<String>) -> String {
     return match guess_field {
         Some(v) => format!("According to the guess, what you need is {} ?", v),
-        None => "".to_owned()
+        None => "".to_owned(),
     };
 }
 
 #[allow(unused_variables)]
 fn format_code(filename: &std::path::Path) {
     #[cfg(feature = "rustfmt")]
-        {
-            std::process::Command::new("cargo")
-                .args(&["fmt", "--", filename.to_str().unwrap()])
-                .spawn()
-                .expect("failed to execute process");
-        }
+    {
+        std::process::Command::new("cargo")
+            .args(&["fmt", "--", filename.to_str().unwrap()])
+            .spawn()
+            .expect("failed to execute process");
+    }
 }
