@@ -28,9 +28,7 @@ crate::impl_serializable_argument_for_scalar!(NaiveDate);
 impl Scalar for NaiveTime {
     fn decode(value: &serde_json::Value) -> Result<Self, DecodeError> {
         match value {
-            serde_json::Value::String(s) => {
-                Ok(NaiveTime::parse_from_str(s, "%H:%M").map_err(chrono_decode_error)?)
-            }
+            serde_json::Value::String(s) => Ok(s.parse().map_err(chrono_decode_error)?),
             _ => Err(DecodeError::IncorrectType(
                 "String".to_string(),
                 value.to_string(),
@@ -39,7 +37,7 @@ impl Scalar for NaiveTime {
     }
 
     fn encode(&self) -> Result<serde_json::Value, SerializeError> {
-        Ok(serde_json::Value::String(self.format("%H:%M").to_string()))
+        Ok(serde_json::Value::String(self.to_string()))
     }
 }
 
@@ -107,8 +105,13 @@ mod tests {
         use chrono::NaiveTime;
 
         let time: NaiveTime = NaiveTime::from_hms(15, 03, 19);
-
         assert_eq!(NaiveTime::decode(&time.encode().unwrap()), Ok(time));
+
+        let time_with_millis: NaiveTime = NaiveTime::from_hms_milli(15, 03, 10, 234);
+        assert_eq!(
+            NaiveTime::decode(&time_with_millis.encode().unwrap()),
+            Ok(time_with_millis)
+        );
     }
 
     #[test]
