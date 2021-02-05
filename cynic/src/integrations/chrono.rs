@@ -1,4 +1,4 @@
-use chrono::{DateTime, FixedOffset, NaiveDate, Utc};
+use chrono::{DateTime, FixedOffset, NaiveDate, NaiveTime, Utc};
 use json_decode::DecodeError;
 
 use crate::{scalar::Scalar, SerializeError};
@@ -24,6 +24,26 @@ impl Scalar for NaiveDate {
 }
 
 crate::impl_serializable_argument_for_scalar!(NaiveDate);
+
+impl Scalar for NaiveTime {
+    fn decode(value: &serde_json::Value) -> Result<Self, DecodeError> {
+        match value {
+            serde_json::Value::String(s) => {
+                Ok(NaiveTime::parse_from_str(s, "%H:%M").map_err(chrono_decode_error)?)
+            }
+            _ => Err(DecodeError::IncorrectType(
+                "String".to_string(),
+                value.to_string(),
+            )),
+        }
+    }
+
+    fn encode(&self) -> Result<serde_json::Value, SerializeError> {
+        Ok(serde_json::Value::String(self.format("%H:%M").to_string()))
+    }
+}
+
+crate::impl_serializable_argument_for_scalar!(NaiveTime);
 
 impl Scalar for DateTime<FixedOffset> {
     fn decode(value: &serde_json::Value) -> Result<Self, DecodeError> {
@@ -74,10 +94,21 @@ mod tests {
     use super::*;
 
     #[test]
-    fn test_utc_datetime_scalar() {
-        let datetime: DateTime<Utc> = Utc::now();
+    fn test_naive_date_scalar() {
+        use chrono::NaiveDate;
 
-        assert_eq!(DateTime::decode(&datetime.encode().unwrap()), Ok(datetime));
+        let date: NaiveDate = NaiveDate::from_ymd(2020, 12, 29);
+
+        assert_eq!(NaiveDate::decode(&date.encode().unwrap()), Ok(date));
+    }
+
+    #[test]
+    fn test_naive_time_scalar() {
+        use chrono::NaiveTime;
+
+        let time: NaiveTime = NaiveTime::from_hms(15, 03, 19);
+
+        assert_eq!(NaiveTime::decode(&time.encode().unwrap()), Ok(time));
     }
 
     #[test]
@@ -92,11 +123,9 @@ mod tests {
     }
 
     #[test]
-    fn test_naive_date_scalar() {
-        use chrono::NaiveDate;
+    fn test_utc_datetime_scalar() {
+        let datetime: DateTime<Utc> = Utc::now();
 
-        let date: NaiveDate = NaiveDate::from_ymd(2020, 12, 29);
-
-        assert_eq!(NaiveDate::decode(&date.encode().unwrap()), Ok(date));
+        assert_eq!(DateTime::decode(&datetime.encode().unwrap()), Ok(datetime));
     }
 }
