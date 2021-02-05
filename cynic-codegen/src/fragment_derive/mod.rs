@@ -2,9 +2,7 @@ use std::collections::{HashMap, HashSet};
 
 use proc_macro2::{Span, TokenStream};
 
-use crate::{
-    load_schema, type_validation::check_types_are_compatible, Errors, FieldType, Ident, TypePath,
-};
+use crate::{load_schema, type_validation::check_types_are_compatible, Errors, FieldType, Ident, TypePath, guess_field, format_guess};
 
 mod arguments;
 mod schema_parsing;
@@ -19,6 +17,7 @@ use type_ext::SynTypeExt;
 pub use input::{FragmentDeriveField, FragmentDeriveInput};
 
 pub(crate) use schema_parsing::Schema;
+use std::borrow::Borrow;
 
 pub fn fragment_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
     use darling::FromDeriveInput;
@@ -385,12 +384,15 @@ impl FragmentImpl {
                         recurse_limit: field.recurse.as_ref().map(|limit| **limit),
                     })
                 } else {
+                    let candidates :Vec<String>= object.fields.keys().map(|k| k.graphql_name()).collect();
+                    let guss_value = guess_field(candidates.borrow(), field_name.graphql_name().borrow(), 3);
                     return Err(syn::Error::new(
                         field_name_span,
                         format!(
-                            "Field {} does not exist on the GraphQL type {}",
+                            "Field {} does not exist on the GraphQL type {}.{}",
                             field_name.graphql_name(),
-                            graphql_type_name
+                            graphql_type_name,
+                            format_guess(guss_value).as_str()
                         ),
                     ));
                 }

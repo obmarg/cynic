@@ -1,17 +1,13 @@
 use proc_macro2::{Span, TokenStream};
 use std::collections::HashMap;
 
-use crate::{
-    ident::{RenameAll, RenameRule},
-    load_schema,
-    schema::{Definition, Document, EnumType, EnumValue, TypeDefinition},
-    Ident,
-};
+use crate::{ident::{RenameAll, RenameRule}, load_schema, schema::{Definition, Document, EnumType, EnumValue, TypeDefinition}, Ident, guess_field, format_guess};
 
 pub(crate) mod input;
 
 pub use input::EnumDeriveInput;
 use input::EnumDeriveVariant;
+use std::borrow::Borrow;
 
 pub fn enum_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
     use darling::FromDeriveInput;
@@ -43,12 +39,21 @@ pub fn enum_derive_impl(
         }
         None
     });
+    let candidates :Vec<String>= schema.definitions.iter().map(|def| {
+        if let Definition::TypeDefinition(TypeDefinition::Enum(e)) = def {
+            e.clone().name
+        } else {
+            "".to_owned()
+        }
+    }).collect();
+    let guess_field =  guess_field(&candidates, (*(input.graphql_type)).borrow(), 3);
     if enum_def.is_none() {
         return Err(syn::Error::new(
             input.graphql_type.span(),
             format!(
-                "Could not find an enum named {} in {}",
-                *input.graphql_type, *input.schema_path
+                "Could not find an enum named {} in {}.{}",
+                *input.graphql_type, *input.schema_path,
+                format_guess(guess_field).as_str()
             ),
         ));
     }
