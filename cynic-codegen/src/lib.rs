@@ -54,7 +54,7 @@ pub fn output_query_dsl(
 pub fn guess_field(candidates: &Vec<String>, field_name: &str, k: usize) -> Option<String> {
     return candidates
         .iter()
-        .find(|x| match hamming(x.as_str(), field_name) {
+        .find(|x| x.ne("") && match hamming(x.as_str(), field_name) {
             //For example, consider the code consisting of two codewords "000" and "111".
             //The hamming distance between these two words is 3, and therefore it is k=2 error detecting.
             //Which means that if one bit is flipped or two bits are flipped, the error can be detected.
