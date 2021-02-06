@@ -25,6 +25,8 @@ all APIs might be changed.
 - `InlineFragments` now support a fallback variant for the case where users
   only care about some of the possibilities.
 - `QueryFragment` can now be derived for interfaces
+- `chrono::NaiveTime` is now supported as a Scalar when the `chrono` feature is
+  active
 
 ### Changes
 
