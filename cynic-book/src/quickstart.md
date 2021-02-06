@@ -136,7 +136,7 @@ client and then make a request. For example, to use surf to talk to the
 StarWars API (see the docs for `cynic::http` if you're using another client):
 
 ```rust
-let response = surf::post("https://swapi-graphql.netlify.com/.netlify/functions/index")
+let response = surf::post("https://swapi-graphql.netlify.app/.netlify/functions/index")
     .run_graphql(&operation)
     .await
     .unwrap();

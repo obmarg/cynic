@@ -77,7 +77,7 @@ fn run_query(id: cynic::Id) -> cynic::GraphQLResponse<FilmDirectorQuery> {
     let query = build_query(id);
 
     reqwest::blocking::Client::new()
-        .post("https://swapi-graphql.netlify.com/.netlify/functions/index")
+        .post("https://swapi-graphql.netlify.app/.netlify/functions/index")
         .run_graphql(query)
         .unwrap()
 }

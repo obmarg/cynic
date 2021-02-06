@@ -22,7 +22,7 @@ use cynic::QueryBuilder;
 let operation = AllFilmsQuery::build(());
 
 let response = reqwest::blocking::Client::new()
-    .post("https://swapi-graphql.netlify.com/.netlify/functions/index")
+    .post("https://swapi-graphql.netlify.app/.netlify/functions/index")
     .json(&operation)
     .send()
     .unwrap();
