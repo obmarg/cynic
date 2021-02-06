@@ -43,7 +43,7 @@ fn run_query() -> cynic::GraphQLResponse<FilmDirectorQuery> {
     let query = build_query();
 
     reqwest::blocking::Client::new()
-        .post("https://swapi-graphql.netlify.com/.netlify/functions/index")
+        .post("https://swapi-graphql.netlify.app/.netlify/functions/index")
         .run_graphql(query)
         .unwrap()
 }

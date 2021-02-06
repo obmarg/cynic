@@ -8,7 +8,7 @@ use cynic_querygen::{document_to_fragment_structs, QueryGenOptions};
 
 fn main() {
     let starwars_schema = Schema::from_repo_schemas(
-        "https://swapi-graphql.netlify.com/.netlify/functions/index",
+        "https://swapi-graphql.netlify.app/.netlify/functions/index",
         "starwars.schema.graphql",
     );
     let jobs_schema =

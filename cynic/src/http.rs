@@ -57,7 +57,7 @@ mod surf_ext {
     /// # async move {
     /// let operation = FilmDirectorQuery::build(());
     ///
-    /// let response = surf::post("https://swapi-graphql.netlify.com/.netlify/functions/index")
+    /// let response = surf::post("https://swapi-graphql.netlify.app/.netlify/functions/index")
     ///     .run_graphql(operation)
     ///     .await
     ///     .unwrap();
@@ -151,7 +151,7 @@ mod reqwest_ext {
     /// let operation = FilmDirectorQuery::build(());
     ///
     /// let client = reqwest::Client::new();
-    /// let response = client.post("https://swapi-graphql.netlify.com/.netlify/functions/index")
+    /// let response = client.post("https://swapi-graphql.netlify.app/.netlify/functions/index")
     ///     .run_graphql(operation)
     ///     .await
     ///     .unwrap();
@@ -245,7 +245,7 @@ mod reqwest_blocking_ext {
     /// let operation = FilmDirectorQuery::build(());
     ///
     /// let client = reqwest::blocking::Client::new();
-    /// let response = client.post("https://swapi-graphql.netlify.com/.netlify/functions/index")
+    /// let response = client.post("https://swapi-graphql.netlify.app/.netlify/functions/index")
     ///     .run_graphql(operation)
     ///     .unwrap();
     ///
