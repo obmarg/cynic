@@ -10,9 +10,9 @@ use crate::{
 
 pub(crate) mod input;
 
+use crate::suggestions::{format_guess, guess_field};
 pub use input::EnumDeriveInput;
 use input::EnumDeriveVariant;
-use crate::suggestions::{guess_field, format_guess};
 
 pub fn enum_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
     use darling::FromDeriveInput;
@@ -45,16 +45,13 @@ pub fn enum_derive_impl(
         None
     });
     if enum_def.is_none() {
-        let candidates = schema
-            .definitions
-            .iter()
-            .flat_map(|def| {
-                if let Definition::TypeDefinition(TypeDefinition::Enum(e)) = def {
-                    Some(e.name.as_str())
-                } else {
-                    None
-                }
-            });
+        let candidates = schema.definitions.iter().flat_map(|def| {
+            if let Definition::TypeDefinition(TypeDefinition::Enum(e)) = def {
+                Some(e.name.as_str())
+            } else {
+                None
+            }
+        });
 
         let guess_field = guess_field(candidates, &(*(input.graphql_type)));
         return Err(syn::Error::new(

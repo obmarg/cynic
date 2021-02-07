@@ -1,0 +1,19 @@
+error: Could not find an enum named Desseqt in ../../../cynic/src/bin/simple.graphql.Did you mean Dessert?
+  --> $DIR/enum-guess-validation.rs:15:1
+   |
+15 | graphql_type = "Desseqt"
+   | ^^^^^^^^^^^^
+
+error[E0433]: failed to resolve: there are too many leading `super` keywords
+ --> $DIR/enum-guess-validation.rs:1:5
+  |
+1 | use super::{query_dsl, types::*};
+  |     ^^^^^ there are too many leading `super` keywords
+
+warning: variant `ICE_CREAM` should have an upper camel case name
+  --> $DIR/enum-guess-validation.rs:19:5
+   |
+19 |     ICE_CREAM
+   |     ^^^^^^^^^ help: convert the identifier to upper camel case: `IceCream`
+   |
+   = note: `#[warn(non_camel_case_types)]` on by default

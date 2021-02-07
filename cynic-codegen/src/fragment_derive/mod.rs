@@ -3,8 +3,7 @@ use std::collections::{HashMap, HashSet};
 use proc_macro2::{Span, TokenStream};
 
 use crate::{
-    load_schema, type_validation::check_types_are_compatible, Errors,
-    FieldType, Ident, TypePath,
+    load_schema, type_validation::check_types_are_compatible, Errors, FieldType, Ident, TypePath,
 };
 
 mod arguments;
@@ -19,7 +18,7 @@ use type_ext::SynTypeExt;
 
 pub use input::{FragmentDeriveField, FragmentDeriveInput};
 
-use crate::suggestions::{format_guess, guess_field};
+// use crate::suggestions::{format_guess, guess_field};
 pub(crate) use schema_parsing::Schema;
 
 pub fn fragment_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
@@ -387,6 +386,7 @@ impl FragmentImpl {
                         recurse_limit: field.recurse.as_ref().map(|limit| **limit),
                     })
                 } else {
+                    // candidates cannot use &str?
                     // let candidates= object.fields.keys().map(|k| k.graphql_name().clone().as_str());
                     // let guss_value =
                     //     guess_field(candidates, &(field_name.graphql_name().clone()));
