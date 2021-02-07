@@ -1,26 +1,4 @@
-warning: the item `Definition` is imported redundantly
-   --> $DIR/mod.rs:357:38
-    |
-11  | use graphql_parser::schema::{Definition, TypeDefinition};
-    |                              ---------- the item `Definition` is already imported here
-...
-357 |         use graphql_parser::schema::{Definition, TypeDefinition};
-    |                                      ^^^^^^^^^^
-    |
-    = note: `#[warn(unused_imports)]` on by default
-
-warning: the item `TypeDefinition` is imported redundantly
-   --> $DIR/mod.rs:357:50
-    |
-11  | use graphql_parser::schema::{Definition, TypeDefinition};
-    |                                          -------------- the item `TypeDefinition` is already imported here
-...
-357 |         use graphql_parser::schema::{Definition, TypeDefinition};
-    |                                                  ^^^^^^^^^^^^^^
-
-warning: 2 warnings emitted
-
-error: Could not find an enum named Desseqt in ../../../cynic/src/bin/simple.graphql.Did you mean Dessert?
+error: Could not find an enum named Desseqt in ../../../cynic/src/bin/simple.graphql. Did you mean Dessert?
   --> $DIR/enum-guess-validation.rs:13:1
    |
 13 | graphql_type = "Desseqt"

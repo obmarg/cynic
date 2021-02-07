@@ -11,7 +11,7 @@ pub fn guess_field<'a>(
 
 pub fn format_guess(guess_field: Option<&str>) -> String {
     match guess_field {
-        Some(v) => format!("Did you mean {}?", v),
+        Some(v) => format!(" Did you mean {}?", v),
         None => "".to_owned(),
     }
 }

@@ -8,7 +8,6 @@ pub mod input;
 pub use input::InlineFragmentsDeriveInput;
 
 use crate::suggestions::{format_guess, guess_field};
-use graphql_parser::schema::{Definition, TypeDefinition};
 use input::InlineFragmentsDeriveVariant;
 use std::collections::HashSet;
 
@@ -31,6 +30,7 @@ pub(crate) fn inline_fragments_derive_impl(
 
     let target_type = find_union_or_interface_type(&input.graphql_type, &schema);
     if target_type.is_none() {
+        use graphql_parser::schema::{Definition, TypeDefinition};
         let candidates = schema.definitions.iter().flat_map(|def| match def {
             Definition::TypeDefinition(TypeDefinition::Union(union)) => Some(union.name.as_str()),
             Definition::TypeDefinition(TypeDefinition::Interface(interface)) => {

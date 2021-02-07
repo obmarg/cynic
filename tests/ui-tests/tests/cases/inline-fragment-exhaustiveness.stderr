@@ -1,4 +1,4 @@
-error: Could not find a match for Test in MyUnionType
+error: Could not find a match for Test in MyUnionType. Did you mean Nested?
   --> $DIR/inline-fragment-exhaustiveness.rs:16:5
    |
 16 |     Test(Test),

@@ -1,26 +1,4 @@
-warning: the item `Definition` is imported redundantly
-   --> $DIR/mod.rs:361:38
-    |
-12  | use graphql_parser::schema::{TypeDefinition, Definition};
-    |                                              ---------- the item `Definition` is already imported here
-...
-361 |         use graphql_parser::schema::{Definition, TypeDefinition};
-    |                                      ^^^^^^^^^^
-    |
-    = note: `#[warn(unused_imports)]` on by default
-
-warning: the item `TypeDefinition` is imported redundantly
-   --> $DIR/mod.rs:361:50
-    |
-12  | use graphql_parser::schema::{TypeDefinition, Definition};
-    |                              -------------- the item `TypeDefinition` is already imported here
-...
-361 |         use graphql_parser::schema::{Definition, TypeDefinition};
-    |                                                  ^^^^^^^^^^^^^^
-
-warning: 2 warnings emitted
-
-error: Field fiim does not exist on the GraphQL type Root.Did you mean film?
+error: Field fiim does not exist on the GraphQL type Root. Did you mean film?
   --> $DIR/fragment-guess-validation.rs:15:13
    |
 15 |         pub fiim: Option<Film>,
