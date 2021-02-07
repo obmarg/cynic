@@ -19,6 +19,7 @@ use type_ext::SynTypeExt;
 pub use input::{FragmentDeriveField, FragmentDeriveInput};
 
 // use crate::suggestions::{format_guess, guess_field};
+use crate::suggestions::{format_guess, guess_field};
 pub(crate) use schema_parsing::Schema;
 
 pub fn fragment_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
@@ -386,19 +387,17 @@ impl FragmentImpl {
                         recurse_limit: field.recurse.as_ref().map(|limit| **limit),
                     })
                 } else {
-                    // candidates cannot use &str?
-                    // let candidates= object.fields.keys().map(|k| k.graphql_name().clone().as_str());
-                    // let guss_value =
-                    //     guess_field(candidates, &(field_name.graphql_name().clone()));
-                    // return Err(syn::Error::new(
-                    //     field_name_span,
-                    //     format!(
-                    //         "Field {} does not exist on the GraphQL type {}.{}",
-                    //         field_name.graphql_name(),
-                    //         graphql_type_name,
-                    //         format_guess(guss_value).as_str()
-                    //     ),
-                    // ));
+                    let candidates = object.fields.keys().map(|k| k.graphql_name());
+                    let guss_value = guess_field(candidates, &(field_name.graphql_name()));
+                    return Err(syn::Error::new(
+                        field_name_span,
+                        format!(
+                            "Field {} does not exist on the GraphQL type {}.{}",
+                            field_name.graphql_name(),
+                            graphql_type_name,
+                            format_guess(guss_value).as_str()
+                        ),
+                    ));
                 }
             }
         }

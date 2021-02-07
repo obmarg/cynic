@@ -7,6 +7,8 @@ pub mod input;
 
 pub use input::InlineFragmentsDeriveInput;
 
+use crate::suggestions::{format_guess, guess_field};
+use graphql_parser::schema::{Definition, TypeDefinition};
 use input::InlineFragmentsDeriveVariant;
 use std::collections::HashSet;
 
@@ -29,11 +31,20 @@ pub(crate) fn inline_fragments_derive_impl(
 
     let target_type = find_union_or_interface_type(&input.graphql_type, &schema);
     if target_type.is_none() {
+        let candidates = schema.definitions.iter().flat_map(|def| match def {
+            Definition::TypeDefinition(TypeDefinition::Union(union)) => Some(union.name.as_str()),
+            Definition::TypeDefinition(TypeDefinition::Interface(interface)) => {
+                Some(interface.name.as_str())
+            }
+            _ => None,
+        });
+        let guess_field = guess_field(candidates, &(*(input.graphql_type)));
         return Err(syn::Error::new(
             input.graphql_type.span(),
             format!(
-                "Could not find a Union type or Interface named {}",
-                &*input.graphql_type
+                "Could not find a Union type or Interface named {}.{}",
+                &*input.graphql_type,
+                format_guess(guess_field)
             ),
         )
         .into());
@@ -120,12 +131,15 @@ fn exhaustiveness_check(
                 .find(|v| v.ident == *unexpected_variant_name)
                 .unwrap();
 
+            let candidates = required_variants.iter().map(|v| v.as_str());
+            let guess_field = guess_field(candidates, variant.ident.to_string().as_str());
             errors.push(syn::Error::new(
                 variant.span(),
                 format!(
-                    "Could not find a match for {} in {}",
+                    "Could not find a match for {} in {}.{}",
                     variant.ident,
-                    target_type.name()
+                    target_type.name(),
+                    format_guess(guess_field)
                 ),
             ))
         }
@@ -139,13 +153,15 @@ fn exhaustiveness_check(
                 .iter()
                 .find(|v| v.ident == *unexpected_variant_name)
                 .unwrap();
-
+            let candidates = required_variants.iter().map(|v| v.as_str());
+            let guess_field = guess_field(candidates, variant.ident.to_string().as_str());
             errors.push(syn::Error::new(
                 variant.span(),
                 format!(
-                    "Could not find a match for {} in {}",
+                    "Could not find a match for {} in {}.{}",
                     variant.ident,
-                    target_type.name()
+                    target_type.name(),
+                    format_guess(guess_field)
                 ),
             ));
         }

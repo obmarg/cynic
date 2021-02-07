@@ -156,16 +156,25 @@ fn join_variants<'a>(
     for (graphql_name, value) in map.iter() {
         match value {
             (None, Some(enum_value)) => missing_variants.push(enum_value.name.as_ref()),
-            (Some(variant), None) => errors.extend(
-                syn::Error::new(
-                    variant.ident.span(),
-                    format!(
-                        "Could not find a variant {} in the GraphQL enum {}",
-                        graphql_name, enum_name
-                    ),
+            (Some(variant), None) => {
+                let candidates = map.values().flat_map(|v| match v.1 {
+                    Some(input) => Some(input.name.as_str()),
+                    None => None,
+                });
+                let guess_field = guess_field(candidates, &(*(graphql_name)));
+                errors.extend(
+                    syn::Error::new(
+                        variant.ident.span(),
+                        format!(
+                            "Could not find a variant {} in the GraphQL enum {}.{}",
+                            graphql_name,
+                            enum_name,
+                            format_guess(guess_field)
+                        ),
+                    )
+                    .to_compile_error(),
                 )
-                .to_compile_error(),
-            ),
+            }
             _ => (),
         }
     }
