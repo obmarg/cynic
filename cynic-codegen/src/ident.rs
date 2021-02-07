@@ -76,8 +76,8 @@ impl Ident {
         self.rust.to_string()
     }
 
-    pub fn graphql_name(&self) -> String {
-        self.graphql.clone()
+    pub fn graphql_name(&self) -> &str {
+        &self.graphql
     }
 }
 

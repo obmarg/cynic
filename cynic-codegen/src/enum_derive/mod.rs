@@ -141,7 +141,8 @@ fn join_variants<'a>(
             &variant.ident,
             RenameRule::new(rename_all, variant.rename.as_ref()),
         )
-        .graphql_name();
+        .graphql_name()
+        .to_string();
         map.insert(graphql_name, (Some(variant), None));
     }
 
