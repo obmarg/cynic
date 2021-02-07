@@ -18,7 +18,6 @@ use type_ext::SynTypeExt;
 
 pub use input::{FragmentDeriveField, FragmentDeriveInput};
 
-// use crate::suggestions::{format_guess, guess_field};
 use crate::suggestions::{format_guess, guess_field};
 pub(crate) use schema_parsing::Schema;
 
