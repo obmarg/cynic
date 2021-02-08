@@ -1,6 +1,6 @@
 [package]
 name = "cynic-examples"
-version = "0.12.0-dev"
+version = "0.12.0"
 authors = ["Graeme Coupar <grambo@grambo.me.uk>"]
 edition = "2018"
 

@@ -11,6 +11,8 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.12.0 - 2020-02-08
+
 ### Breaking Changes
 
 - `selection_set::inline_fragments` now takes a backup selection set parameter
