@@ -3,17 +3,3 @@ error: Field fiim does not exist on the GraphQL type Root. Did you mean film?
    |
 15 |         pub fiim: Option<Film>,
    |             ^^^^
-
-warning: unused import: `types::*`
- --> $DIR/fragment-guess-validation.rs:8:28
-  |
-8 |     use super::{query_dsl, types::*};
-  |                            ^^^^^^^^
-  |
-  = note: `#[warn(unused_imports)]` on by default
-
-warning: unused import: `super::types::*`
-  --> $DIR/fragment-guess-validation.rs:39:9
-   |
-39 |     use super::types::*;
-   |         ^^^^^^^^^^^^^^^

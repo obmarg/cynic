@@ -6,7 +6,6 @@ pub mod input_object_derive;
 pub mod query_dsl;
 pub mod query_module;
 pub mod scalar_derive;
-pub mod suggestions;
 
 mod error;
 mod field_argument;
@@ -15,6 +14,7 @@ mod generic_param;
 mod ident;
 mod module;
 mod schema;
+mod suggestions;
 mod type_index;
 mod type_path;
 mod type_validation;

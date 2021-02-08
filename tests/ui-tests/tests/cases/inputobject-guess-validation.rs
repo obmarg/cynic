@@ -1,12 +1,10 @@
-
 #![allow(unused_imports)]
 
-fn main() {
-}
+fn main() {}
 
 #[cynic::query_module(
-schema_path = r#"./../../../schemas/github.graphql"#,
-query_module = "query_dsl",
+    schema_path = r#"./../../../schemas/github.graphql"#,
+    query_module = "query_dsl"
 )]
 mod queries {
     use super::{query_dsl, types::*};
@@ -24,7 +22,10 @@ mod queries {
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "Repository", argument_struct = "PullRequestTitlesArguments")]
+    #[cynic(
+        graphql_type = "Repository",
+        argument_struct = "PullRequestTitlesArguments"
+    )]
     pub struct Repository {
         #[arguments(order_by = &args.pr_order)]
         pub pull_requests: PullRequestConnection,
@@ -63,12 +64,11 @@ mod queries {
         pub direction: OrderDirection,
         pub fieid: IssueOrderField,
     }
-
 }
 
 #[cynic::query_module(
-schema_path = r#"./../../../schemas/github.graphql"#,
-query_module = "query_dsl",
+    schema_path = r#"./../../../schemas/github.graphql"#,
+    query_module = "query_dsl"
 )]
 mod types {
     #[derive(cynic::Scalar, Debug, Clone)]
@@ -100,10 +100,9 @@ mod types {
 
     #[derive(cynic::Scalar, Debug, Clone)]
     pub struct X509Certificate(pub String);
-
 }
 
-mod query_dsl{
+mod query_dsl {
     use super::types::*;
     cynic::query_dsl!(r#"./../../../schemas/github.graphql"#);
 }

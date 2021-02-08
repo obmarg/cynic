@@ -27,6 +27,8 @@ all APIs might be changed.
 - `QueryFragment` can now be derived for interfaces
 - `chrono::NaiveTime` is now supported as a Scalar when the `chrono` feature is
   active
+- Cynic errors will now suggest possible fixes when you mis-spell or mis-name
+  a type in your code.
 
 ### Changes
 
