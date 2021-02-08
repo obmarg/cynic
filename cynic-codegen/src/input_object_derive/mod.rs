@@ -14,6 +14,7 @@ use field_serializer::FieldSerializer;
 
 pub(crate) mod input;
 
+use crate::suggestions::{format_guess, guess_field};
 use input::InputObjectDeriveField;
 pub use input::InputObjectDeriveInput;
 
@@ -47,11 +48,21 @@ pub fn input_object_derive_impl(
         None
     });
     if input_object_def.is_none() {
+        let candidates = schema.definitions.iter().flat_map(|def| {
+            if let Definition::TypeDefinition(TypeDefinition::InputObject(obj)) = def {
+                Some(obj.name.as_str())
+            } else {
+                None
+            }
+        });
+        let guess_field = guess_field(candidates, &(*(input.graphql_type)));
         return Err(syn::Error::new(
             input.graphql_type.span(),
             format!(
-                "Could not find an InputObject named {} in {}",
-                *input.graphql_type, *input.schema_path
+                "Could not find an InputObject named {} in {}.{}",
+                *input.graphql_type,
+                *input.schema_path,
+                format_guess(guess_field)
             ),
         ));
     }
@@ -176,17 +187,25 @@ fn join_fields<'a>(
                 missing_required_fields.push(input_value.name.as_ref())
             }
             (None, Some(input_value)) => missing_optional_fields.push(input_value.name.as_ref()),
-            (Some(field), None) => errors.extend(
-                syn::Error::new(
-                    field.ident.span(),
-                    format!(
-                        "Could not find a field {} in the GraphQL InputObject {}",
-                        transformed_ident.graphql_name(),
-                        input_object_name
-                    ),
+            (Some(field), None) => {
+                let candidates = map.values().flat_map(|v| match v.1 {
+                    Some(input) => Some(input.name.as_str()),
+                    None => None,
+                });
+                let guess_field = guess_field(candidates, &(transformed_ident.graphql_name()));
+                errors.extend(
+                    syn::Error::new(
+                        field.ident.span(),
+                        format!(
+                            "Could not find a field {} in the GraphQL InputObject {}.{}",
+                            transformed_ident.graphql_name(),
+                            input_object_name,
+                            format_guess(guess_field)
+                        ),
+                    )
+                    .to_compile_error(),
                 )
-                .to_compile_error(),
-            ),
+            }
             _ => (),
         }
     }
