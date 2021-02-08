@@ -13,8 +13,8 @@ mod query_dsl {
     graphql_type = "MyUnionType"
 )]
 enum MyUnionType {
-    Test(Test),
-    Nested(Nested),
+    TestStruct(Test),
+    Nestde(Nested),
 }
 
 #[derive(cynic::QueryFragment)]

@@ -1,10 +1,10 @@
-error: Could not find a match for Test in MyUnionType. Did you mean TestStruct?
-  --> $DIR/inline-fragment-exhaustiveness.rs:16:5
+error: Could not find a match for Nestde in MyUnionType. Did you mean Nested?
+  --> $DIR/inline-fragment-exhaustiveness.rs:17:5
    |
-16 |     Test(Test),
-   |     ^^^^
+17 |     Nestde(Nested),
+   |     ^^^^^^
 
-error: This InlineFragment is missing a variant for TestStruct.  Either provide a variant for this type or add a fallback variant.
+error: This InlineFragment is missing a variant for Nested.  Either provide a variant for this type or add a fallback variant.
  --> $DIR/inline-fragment-exhaustiveness.rs:9:10
   |
 9 | #[derive(cynic::InlineFragments)]
