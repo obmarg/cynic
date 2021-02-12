@@ -11,6 +11,12 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+### Bug Fixes
+
+- `chrono::NaiveTime` now supports times without seconds (e.g. `10:30`)
+- Failures to parse chrono types now provide error messages that mention
+  chrono: these were fairly hard to diagnose before.
+
 ## v0.12.0 - 2020-02-08
 
 ### Breaking Changes
