@@ -106,6 +106,13 @@ impl<'a, ResponseData: 'a> StreamingOperation<'a, ResponseData> {
             },
         }
     }
+
+    pub fn decode_response(
+        &self,
+        response: GraphQLResponse<serde_json::Value>,
+    ) -> Result<GraphQLResponse<ResponseData>, json_decode::DecodeError> {
+        self.inner.decode_response(response)
+    }
 }
 
 impl<ResponseData> serde::Serialize for StreamingOperation<'_, ResponseData> {

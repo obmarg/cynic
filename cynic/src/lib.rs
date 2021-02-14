@@ -187,7 +187,7 @@ pub mod utils;
 pub use json_decode::DecodeError;
 
 pub use arguments::{Argument, FromArguments, IntoArgument, SerializableArgument};
-pub use builders::{MutationBuilder, QueryBuilder};
+pub use builders::{MutationBuilder, QueryBuilder, SubscriptionBuilder};
 pub use fragments::{FragmentArguments, FragmentContext, InlineFragments, QueryFragment};
 pub use id::Id;
 pub use operation::{Operation, StreamingOperation};
