@@ -105,11 +105,10 @@ pub fn document_to_fragment_structs(
         .definitions
         .iter()
         .filter(|def| {
-            if let schema::Definition::TypeDefinition(schema::TypeDefinition::Scalar(_)) = def {
-                true
-            } else {
-                false
-            }
+            matches!(
+                def,
+                schema::Definition::TypeDefinition(schema::TypeDefinition::Scalar(_))
+            )
         })
         .count();
 
@@ -181,7 +180,7 @@ pub fn document_to_fragment_structs(
         options.schema_path
     )
     .unwrap();
-    writeln!(output, "}}\n").unwrap(); // Why have two \n ?
+    writeln!(output, "}}\n").unwrap();
 
     Ok(output)
 }
