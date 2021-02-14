@@ -11,6 +11,10 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+### New Features
+
+- Support for building and decoding subscription queries.
+
 ## v0.12.1 - 2020-02-12
 
 ### Bug Fixes
