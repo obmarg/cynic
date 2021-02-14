@@ -28,7 +28,7 @@ chrono = { version = "0.4", features = ["serde"]}
 async-tungstenite = { version = "0.13", features = ["async-std-runtime"] }
 async_executors = { version = "0.4", features = ["async_std"] }
 futures = "0.3"
-graphql-ws-client = { git = "https://github.com/obmarg/graphql-ws-client.git", features = ["cynic", "async-tungstenite"] }
+graphql-ws-client = { git = "https://github.com/obmarg/graphql-ws-client.git", branch = "main", features = ["cynic", "async-tungstenite"] }
 
 [dev-dependencies]
 insta = "1.4"
