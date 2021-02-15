@@ -22,6 +22,8 @@ all APIs might be changed.
 - `chrono::NaiveTime` now supports times without seconds (e.g. `10:30`)
 - Failures to parse chrono types now provide error messages that mention
   chrono: these were fairly hard to diagnose before.
+- The generator no longer prints out an empty types module when there are
+  no custom scalars.
 
 ## v0.12.0 - 2020-02-08
 
