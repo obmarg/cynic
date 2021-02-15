@@ -100,16 +100,32 @@ pub fn document_to_fragment_structs(
 
     let mut output = String::new();
 
+    // https://github.com/obmarg/cynic/issues/71
+    let scalar_count = schema
+        .definitions
+        .iter()
+        .filter(|def| {
+            matches!(
+                def,
+                schema::Definition::TypeDefinition(schema::TypeDefinition::Scalar(_))
+            )
+        })
+        .count();
+
     writeln!(output, "#[cynic::query_module(").unwrap();
     writeln!(output, "    schema_path = r#\"{}\"#,", options.schema_path).unwrap();
     writeln!(output, "    query_module = \"{}\",", options.query_module).unwrap();
     writeln!(output, ")]\nmod queries {{").unwrap();
-    writeln!(
-        output,
-        "    use super::{{{}, types::*}};\n",
-        options.query_module
-    )
-    .unwrap();
+    if scalar_count > 0 {
+        writeln!(
+            output,
+            "    use super::{{{}, types::*}};\n",
+            options.query_module
+        )
+        .unwrap();
+    } else {
+        writeln!(output, "    use super::{};\n", options.query_module).unwrap();
+    }
 
     for argument_struct in parsed_output.argument_structs {
         writeln!(indented(&mut output, 4), "{}", argument_struct).unwrap();
@@ -128,29 +144,36 @@ pub fn document_to_fragment_structs(
     }
     writeln!(output, "}}\n").unwrap();
 
-    writeln!(output, "#[cynic::query_module(").unwrap();
-    writeln!(output, "    schema_path = r#\"{}\"#,", options.schema_path).unwrap();
-    writeln!(output, "    query_module = \"{}\",", options.query_module).unwrap();
-    writeln!(output, ")]\nmod types {{").unwrap();
+    if scalar_count > 0 {
+        writeln!(output, "#[cynic::query_module(").unwrap();
+        writeln!(output, "    schema_path = r#\"{}\"#,", options.schema_path).unwrap();
+        writeln!(output, "    query_module = \"{}\",", options.query_module).unwrap();
+        writeln!(output, ")]\nmod types {{").unwrap();
 
-    // Output any custom scalars we need.
-    // Note that currently our query_dsl needs _all_ scalars in a schema
-    // so we're parsing this out from schema.definitons rather than output.scalars
-    for def in &schema.definitions {
-        if let schema::Definition::TypeDefinition(schema::TypeDefinition::Scalar(scalar)) = def {
-            writeln!(output, "    #[derive(cynic::Scalar, Debug, Clone)]").unwrap();
-            writeln!(
-                output,
-                "    pub struct {}(pub String);\n",
-                scalar.name.to_pascal_case()
-            )
-            .unwrap();
+        // Output any custom scalars we need.
+        // Note that currently our query_dsl needs _all_ scalars in a schema
+        // so we're parsing this out from schema.definitons rather than output.scalars
+        for def in &schema.definitions {
+            if let schema::Definition::TypeDefinition(schema::TypeDefinition::Scalar(scalar)) = def
+            {
+                writeln!(output, "    #[derive(cynic::Scalar, Debug, Clone)]").unwrap();
+                writeln!(
+                    output,
+                    "    pub struct {}(pub String);\n",
+                    scalar.name.to_pascal_case()
+                )
+                .unwrap();
+            }
         }
+        writeln!(output, "}}\n").unwrap();
     }
-    writeln!(output, "}}\n").unwrap();
 
     writeln!(output, "mod {}{{", options.query_module).unwrap();
-    writeln!(output, "    use super::types::*;").unwrap();
+
+    if scalar_count > 0 {
+        writeln!(output, "    use super::types::*;").unwrap();
+    }
+
     writeln!(
         output,
         "    cynic::query_dsl!(r#\"{}\"#);",
