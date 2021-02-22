@@ -11,6 +11,12 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+### Breaking Changes
+
+- The return type of `cynic::Enum::select` now includes the `TypeLock` of the
+  enum.  This should only affect users that were implementing `cynic::Enum`
+  directly.  Users of the derive should be unaffected.
+
 ### New Features
 
 - Support for building and decoding subscription queries.
