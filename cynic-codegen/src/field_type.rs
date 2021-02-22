@@ -128,7 +128,7 @@ impl FieldType {
             FieldType::List(inner, _) => inner.as_type_lock(path_to_types),
             // TODO: I think this is wrong for scalars, but whatever.
             FieldType::Scalar(path, _) => TypePath::concat(&[path_to_types, path.clone()]),
-            FieldType::Enum(_, _) => TypePath::void(),
+            FieldType::Enum(ident, _) => TypePath::concat(&[path_to_types, ident.clone().into()]),
             FieldType::InputObject(ident, _) => {
                 TypePath::concat(&[path_to_types, ident.clone().into()])
             }
