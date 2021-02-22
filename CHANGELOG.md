@@ -15,6 +15,13 @@ all APIs might be changed.
 
 - Support for building and decoding subscription queries.
 
+### Bug Fixes
+
+- Cynic will now fail to compile you when you use an incorrect enum type for a
+  field in a QueryFragment.
+- Field type mismatch errors in QueryFragments are now reported on the span of
+  the field type.
+
 ## v0.12.2 - 2020-02-22
 
 ### Bug Fixes
