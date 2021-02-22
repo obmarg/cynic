@@ -11,6 +11,12 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.12.2 - 2020-02-22
+
+### Bug Fixes
+
+- Hopefully fixed the build of documentation for docs.rs
+
 ## v0.12.1 - 2020-02-12
 
 ### Bug Fixes

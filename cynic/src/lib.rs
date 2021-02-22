@@ -171,6 +171,8 @@
 //! [known issues](https://github.com/servo/rust-url/issues/557) when
 //! targetting web assembly.
 
+#![cfg_attr(docsrs, feature(doc_cfg))]
+
 mod arguments;
 mod builders;
 mod fragments;
