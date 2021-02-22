@@ -1,6 +1,6 @@
 [package]
 name = "cynic"
-version = "0.12.1"
+version = "0.12.2"
 authors = ["Graeme Coupar <graeme@polyandglot.dev>"]
 edition = "2018"
 homepage = "https://cynic-rs.dev"
@@ -27,7 +27,7 @@ json-decode = "0.5.0"
 serde = { version = "1.0.104", features = [ "derive" ] }
 serde_json = "1.0"
 thiserror = "1.0.20"
-cynic-proc-macros = { path = "../cynic-proc-macros", version = "0.12.1" }
+cynic-proc-macros = { path = "../cynic-proc-macros", version = "0.12.2" }
 chrono = { version = "0.4.11", optional = true }
 
 # Scalar feature deps
