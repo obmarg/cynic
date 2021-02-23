@@ -1,6 +1,7 @@
 use std::collections::{HashMap, HashSet};
 
 use proc_macro2::{Span, TokenStream};
+use syn::spanned::Spanned;
 
 use crate::{
     load_schema, type_validation::check_types_are_compatible, Errors, FieldType, Ident, TypePath,
@@ -270,21 +271,24 @@ struct FieldSelectorCall {
     required_arguments: Vec<FieldArgument>,
     optional_arguments: Vec<FieldArgument>,
     recurse_limit: Option<u8>,
+    span: proc_macro2::Span,
 }
 
 impl quote::ToTokens for FieldSelectorCall {
     fn to_tokens(&self, tokens: &mut TokenStream) {
-        use quote::{quote, TokenStreamExt};
+        use quote::{quote, quote_spanned, TokenStreamExt};
+
+        let span = self.span;
 
         let inner_selection_tokens = match (&self.style, self.recurse_limit) {
-            (NamedTypeSelectorStyle::Scalar, _) => quote! {},
-            (NamedTypeSelectorStyle::Enum(enum_type), _) => quote! {
+            (NamedTypeSelectorStyle::Scalar, _) => quote_spanned! {span => },
+            (NamedTypeSelectorStyle::Enum(enum_type), _) => quote_spanned! {span =>
                 #enum_type::select()
             },
-            (NamedTypeSelectorStyle::QueryFragment(field_type), None) => quote! {
+            (NamedTypeSelectorStyle::QueryFragment(field_type), None) => quote_spanned! {span =>
                 #field_type::fragment(context.with_args(FromArguments::from_arguments(args)))
             },
-            (NamedTypeSelectorStyle::QueryFragment(field_type), Some(_)) => quote! {
+            (NamedTypeSelectorStyle::QueryFragment(field_type), Some(_)) => quote_spanned! {span =>
                 #field_type::fragment(context.recurse().with_args(FromArguments::from_arguments(args)))
             },
         };
@@ -392,6 +396,7 @@ impl FragmentImpl {
                         required_arguments,
                         optional_arguments,
                         recurse_limit: field.recurse.as_ref().map(|limit| **limit),
+                        span: field.ty.span(),
                     })
                 } else {
                     let candidates = object.fields.keys().map(|k| k.graphql_name());

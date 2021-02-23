@@ -108,8 +108,8 @@ pub fn enum_derive_impl(
         Ok(quote! {
             #[automatically_derived]
             impl ::cynic::Enum<#query_module::#enum_marker_ident> for #ident {
-                fn select() -> cynic::SelectionSet<'static, Self, ()> {
-                    ::cynic::selection_set::string().and_then(|s| {
+                fn select() -> cynic::SelectionSet<'static, Self, #query_module::#enum_marker_ident> {
+                    ::cynic::selection_set::enum_with(|s| {
                         match s.as_ref() {
                             #(
                                 #string_literals => ::cynic::selection_set::succeed(#ident::#variants),

@@ -11,9 +11,28 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+### Breaking Changes
+
+- The return type of `cynic::Enum::select` now includes the `TypeLock` of the
+  enum.  This should only affect users that were implementing `cynic::Enum`
+  directly.  Users of the derive should be unaffected.
+
 ### New Features
 
 - Support for building and decoding subscription queries.
+
+### Bug Fixes
+
+- Cynic will now fail to compile you when you use an incorrect enum type for a
+  field in a QueryFragment.
+- Field type mismatch errors in QueryFragments are now reported on the span of
+  the field type.
+
+## v0.12.2 - 2020-02-22
+
+### Bug Fixes
+
+- Hopefully fixed the build of documentation for docs.rs
 
 ## v0.12.1 - 2020-02-12
 

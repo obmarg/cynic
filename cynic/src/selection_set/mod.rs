@@ -160,6 +160,18 @@ pub fn boolean() -> SelectionSet<'static, bool, ()> {
     SelectionSet::new(vec![], json_decode::boolean())
 }
 
+/// Creates a `SelectionSet` for decoding a GQL enum with a function.
+///
+/// Will decode a string and pass it to the given closure to convert
+/// into the actual enum.
+pub fn enum_with<E, TypeLock, F>(f: F) -> SelectionSet<'static, E, TypeLock>
+where
+    E: crate::Enum<TypeLock> + 'static,
+    F: (Fn(String) -> SelectionSet<'static, E, TypeLock>) + 'static + Sync + Send,
+{
+    SelectionSet::new(vec![], json_decode::string()).and_then(f)
+}
+
 /// Creates a `SelectionSet` that will decode a type that implements `serde::Deserialize`
 pub fn serde<T>() -> SelectionSet<'static, T, ()>
 where
@@ -595,7 +607,7 @@ where
 ///
 /// See the [`SelectionSet::and_then`](cynic::selection_set::SelectionSet::and_then)
 /// docs for an example.
-pub fn fail<V>(err: impl Into<String>) -> SelectionSet<'static, V, ()> {
+pub fn fail<V, TypeLock>(err: impl Into<String>) -> SelectionSet<'static, V, TypeLock> {
     SelectionSet::new(vec![], json_decode::fail(err))
 }
 

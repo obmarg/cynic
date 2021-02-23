@@ -171,6 +171,8 @@
 //! [known issues](https://github.com/servo/rust-url/issues/557) when
 //! targetting web assembly.
 
+#![cfg_attr(docsrs, feature(doc_cfg))]
+
 mod arguments;
 mod builders;
 mod fragments;
@@ -213,7 +215,7 @@ pub type SerializeError = Box<dyn std::error::Error + Send + Sync>;
 /// definition back into it's GraphQL enum.  Generally this will be some
 /// type generated in the GQL code.
 pub trait Enum<TypeLock>: Sized {
-    fn select() -> SelectionSet<'static, Self, ()>;
+    fn select() -> SelectionSet<'static, Self, TypeLock>;
 }
 
 /// A trait for GraphQL input objects.

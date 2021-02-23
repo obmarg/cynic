@@ -7,7 +7,8 @@ use cynic_codegen::query_dsl::{query_dsl_from_schema, QueryDslParams};
 
 #[rstest(schema_file => [
     "graphql.jobs.graphql",
-    "books.graphql"
+    "books.graphql",
+    "starwars.schema.graphql"
 ])]
 fn snapshot_query_dsl(schema_file: &str) {
     let schema_path = PathBuf::from("../schemas/").join(schema_file);
