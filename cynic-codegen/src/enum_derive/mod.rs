@@ -8,8 +8,9 @@ use crate::{
     Ident,
 };
 
-pub(crate) mod input;
+use crate::utils::ExtractString;
 
+pub(crate) mod input;
 use crate::suggestions::{format_guess, guess_field};
 pub use input::EnumDeriveInput;
 use input::EnumDeriveVariant;
@@ -38,7 +39,11 @@ pub fn enum_derive_impl(
 
     let enum_def = schema.definitions.iter().find_map(|def| {
         if let Definition::TypeDefinition(TypeDefinition::Enum(e)) = def {
-            if e.name == *input.graphql_type {
+            if e.name
+                == *input
+                    .graphql_type
+                    .extract_spanned_value(input.ident.to_string())
+            {
                 return Some(e);
             }
         }
@@ -53,12 +58,19 @@ pub fn enum_derive_impl(
             }
         });
 
-        let guess_field = guess_field(candidates, &(*(input.graphql_type)));
+        let guess_field = guess_field(
+            candidates,
+            &(**(input
+                .graphql_type
+                .extract_spanned_value(input.ident.to_string()))),
+        );
         return Err(syn::Error::new(
-            input.graphql_type.span(),
+            input.graphql_type.extract_spanned(),
             format!(
                 "Could not find an enum named {} in {}.{}",
-                *input.graphql_type,
+                *input
+                    .graphql_type
+                    .extract_spanned_value(input.ident.to_string()),
                 *input.schema_path,
                 format_guess(guess_field).as_str()
             ),
@@ -90,7 +102,8 @@ pub fn enum_derive_impl(
         let variants: Vec<_> = pairs.iter().map(|(variant, _)| &variant.ident).collect();
 
         let query_module = Ident::for_module(&input.query_module);
-        let enum_marker_ident = Ident::for_type(&*input.graphql_type);
+        let enum_marker_ident =
+            Ident::for_type(&**input.graphql_type.extract_spanned_value(ident.to_string()));
 
         Ok(quote! {
             #[automatically_derived]

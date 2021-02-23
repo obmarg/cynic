@@ -10,7 +10,9 @@ pub struct InputObjectDeriveInput {
 
     pub schema_path: SpannedValue<String>,
     pub query_module: SpannedValue<String>,
-    pub graphql_type: SpannedValue<String>,
+
+    #[darling(default)]
+    pub graphql_type: Option<SpannedValue<String>>,
 
     #[darling(default)]
     pub require_all_fields: bool,

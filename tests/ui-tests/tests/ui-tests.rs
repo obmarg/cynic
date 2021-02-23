@@ -6,4 +6,5 @@ fn ui_test_inlinefragments() {
     t.compile_fail("tests/cases/enum-guess-validation.rs");
     t.compile_fail("tests/cases/fragment-guess-validation.rs");
     t.compile_fail("tests/cases/inputobject-guess-validation.rs");
+    t.compile_fail("tests/cases/input-fragment-no-graphql-type.rs");
 }

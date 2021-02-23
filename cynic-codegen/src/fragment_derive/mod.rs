@@ -19,6 +19,7 @@ use type_ext::SynTypeExt;
 pub use input::{FragmentDeriveField, FragmentDeriveInput};
 
 use crate::suggestions::{format_guess, guess_field};
+use crate::utils::ExtractString;
 pub(crate) use schema_parsing::Schema;
 
 pub fn fragment_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
@@ -45,13 +46,20 @@ pub fn fragment_derive_impl(
     let schema_path = input.schema_path;
 
     let graphql_type = input.graphql_type;
+    let closure_input_ident = input.ident;
     let object = schema
         .objects
-        .get(&Ident::for_type(&*graphql_type))
+        .get(&Ident::for_type(
+            &*(graphql_type.extract_spanned_value(closure_input_ident.to_string())),
+        ))
         .ok_or_else(|| {
             syn::Error::new(
-                graphql_type.span(),
-                format!("Can't find {} in {}", *graphql_type, *schema_path),
+                graphql_type.extract_spanned(),
+                format!(
+                    "Can't find {} in {}",
+                    *graphql_type.extract_spanned_value(closure_input_ident.to_string()),
+                    *schema_path
+                ),
             )
         })?;
 
@@ -69,10 +77,10 @@ pub fn fragment_derive_impl(
         let query_module = input.query_module;
         let fragment_impl = FragmentImpl::new_for(
             &fields,
-            &input.ident,
+            &closure_input_ident,
             &object,
             Ident::new_spanned(&*query_module, query_module.span()).into(),
-            &graphql_type,
+            &(*graphql_type.extract_spanned_value(closure_input_ident.to_string())),
             argument_struct,
         )?;
         Ok(quote::quote! {

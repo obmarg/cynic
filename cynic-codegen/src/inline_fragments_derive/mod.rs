@@ -8,6 +8,7 @@ pub mod input;
 pub use input::InlineFragmentsDeriveInput;
 
 use crate::suggestions::{format_guess, guess_field};
+use crate::utils::ExtractString;
 use input::InlineFragmentsDeriveVariant;
 use std::collections::HashSet;
 
@@ -28,7 +29,12 @@ pub(crate) fn inline_fragments_derive_impl(
     let schema =
         load_schema(&*input.schema_path).map_err(|e| e.into_syn_error(input.schema_path.span()))?;
 
-    let target_type = find_union_or_interface_type(&input.graphql_type, &schema);
+    let target_type = find_union_or_interface_type(
+        &*input
+            .graphql_type
+            .extract_spanned_value(input.ident.to_string()),
+        &schema,
+    );
     if target_type.is_none() {
         use graphql_parser::schema::{Definition, TypeDefinition};
         let candidates = schema.definitions.iter().flat_map(|def| match def {
@@ -38,12 +44,19 @@ pub(crate) fn inline_fragments_derive_impl(
             }
             _ => None,
         });
-        let guess_field = guess_field(candidates, &(*(input.graphql_type)));
+        let guess_field = guess_field(
+            candidates,
+            &(**(input
+                .graphql_type
+                .extract_spanned_value(input.ident.to_string()))),
+        );
         return Err(syn::Error::new(
-            input.graphql_type.span(),
+            input.graphql_type.extract_spanned(),
             format!(
                 "Could not find a Union type or Interface named {}.{}",
-                &*input.graphql_type,
+                &*input
+                    .graphql_type
+                    .extract_spanned_value(input.ident.to_string()),
                 format_guess(guess_field)
             ),
         )
@@ -69,11 +82,19 @@ pub(crate) fn inline_fragments_derive_impl(
             target_struct: input.ident.clone(),
             type_lock: TypePath::concat(&[
                 Ident::new_spanned(&*input.query_module, input.query_module.span()).into(),
-                Ident::for_type(&*input.graphql_type).into(),
+                Ident::for_type(
+                    &*(input
+                        .graphql_type
+                        .extract_spanned_value(input.ident.to_string())),
+                )
+                .into(),
             ]),
             argument_struct,
             possible_types: possible_types_from_variants(variants)?,
-            graphql_type_name: (*input.graphql_type).clone(),
+            graphql_type_name: (*input
+                .graphql_type
+                .extract_spanned_value(input.ident.to_string()))
+            .clone(),
             fallback,
         };
 

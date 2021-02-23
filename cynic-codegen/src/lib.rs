@@ -6,6 +6,7 @@ pub mod input_object_derive;
 pub mod query_dsl;
 pub mod query_module;
 pub mod scalar_derive;
+pub mod utils;
 
 mod error;
 mod field_argument;

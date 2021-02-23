@@ -15,6 +15,7 @@ use field_serializer::FieldSerializer;
 pub(crate) mod input;
 
 use crate::suggestions::{format_guess, guess_field};
+use crate::utils::ExtractString;
 use input::InputObjectDeriveField;
 pub use input::InputObjectDeriveInput;
 
@@ -41,7 +42,11 @@ pub fn input_object_derive_impl(
 
     let input_object_def = schema.definitions.iter().find_map(|def| {
         if let Definition::TypeDefinition(TypeDefinition::InputObject(obj)) = def {
-            if obj.name == *input.graphql_type {
+            if obj.name
+                == *input
+                    .graphql_type
+                    .extract_spanned_value(input.ident.to_string())
+            {
                 return Some(obj);
             }
         }
@@ -55,12 +60,19 @@ pub fn input_object_derive_impl(
                 None
             }
         });
-        let guess_field = guess_field(candidates, &(*(input.graphql_type)));
+        let guess_field = guess_field(
+            candidates,
+            &(**(input
+                .graphql_type
+                .extract_spanned_value(input.ident.to_string()))),
+        );
         return Err(syn::Error::new(
-            input.graphql_type.span(),
+            input.graphql_type.extract_spanned(),
             format!(
                 "Could not find an InputObject named {} in {}.{}",
-                *input.graphql_type,
+                *input
+                    .graphql_type
+                    .extract_spanned_value(input.ident.to_string()),
                 *input.schema_path,
                 format_guess(guess_field)
             ),
@@ -74,7 +86,8 @@ pub fn input_object_derive_impl(
 
     if let darling::ast::Data::Struct(fields) = &input.data {
         let ident = &input.ident;
-        let input_marker_ident = Ident::for_type(&*input.graphql_type);
+        let input_marker_ident =
+            Ident::for_type(&**input.graphql_type.extract_spanned_value(ident.to_string()));
         let query_module = Ident::for_module(&input.query_module);
         let input_object_name = ident.to_string();
 
