@@ -4,6 +4,8 @@ pub(crate) mod input;
 
 pub use input::ScalarDeriveInput;
 
+use crate::Ident;
+
 pub fn scalar_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
     use darling::FromDeriveInput;
 
@@ -28,14 +30,24 @@ pub fn scalar_derive_impl(input: ScalarDeriveInput) -> Result<TokenStream, syn::
 
     let ident = input.ident;
     let inner_type = field.ty;
+    let type_lock = if let Some(graphql_type) = input.graphql_type {
+        // TODO: Need query_dsl in here
+        Ident::new_spanned((*graphql_type).clone(), graphql_type.span())
+    } else {
+        // TODO: Need query_dsl in here
+        ident.clone().into()
+    };
 
     Ok(quote! {
-        impl ::cynic::Scalar for #ident {
-            fn decode(value: &::cynic::serde_json::Value) -> Result<Self, ::cynic::DecodeError> {
-                Ok(#ident(<#inner_type as ::cynic::Scalar>::decode(value)?))
+        impl ::cynic::Scalar<#type_lock> for #ident {
+            type Codable = #inner_type;
+
+            fn from_codable(inner: Self::Codable) -> Result<Self, ::cynic::DecodeError> {
+                Ok(#ident(inner))
             }
-            fn encode(&self) -> Result<::cynic::serde_json::Value, ::cynic::SerializeError> {
-                Ok(self.0.encode()?)
+
+            fn to_codable(&self) -> Result<&Self::Codable, ::cynic::SerializeError> {
+                Ok(&self.0)
             }
         }
 

@@ -65,11 +65,7 @@ impl quote::ToTokens for FieldSelector {
             .iter()
             .map(|a| {
                 let name = &a.name;
-                if a.argument_type.contains_scalar() {
-                    quote! { #name }
-                } else {
-                    quote! { #name.into_argument() }
-                }
+                quote! { #name.into_argument() }
             })
             .collect();
         let argument_strings: Vec<_> = self

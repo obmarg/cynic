@@ -42,44 +42,27 @@ impl FieldSelectionBuilder {
         let query_field_name = &self.query_field_name;
         let type_lock = &self.type_lock;
 
-        let selector = if self.field_type.contains_scalar() {
-            // We call the scalar selector for scalars
-            quote! { ::cynic::selection_set::scalar() }
+        let arg_name = if self.field_type.contains_leaf_value() {
+            Ident::for_field("inner")
         } else {
-            // Otherwise we pass in the fields that the function
-            // we generate accept as an argument.
-            quote! { fields }
+            Ident::for_field("fields")
         };
-        let selector = self.field_type.selection_set_call(selector);
+        let selector = self.field_type.selection_set_call(quote! { #arg_name });
+        let decodes_to = self.field_type.decodes_to(quote! { T });
+        let argument_type_lock = self.field_type.as_type_lock(TypePath::new_super());
 
-        if self.field_type.contains_scalar() {
-            let field_type = self.field_type.to_tokens(None, TypePath::new_super());
-            quote! {
-                pub fn select(self) ->
-                ::cynic::selection_set::SelectionSet<'static, #field_type, super::#type_lock> {
-                    #[allow(unused_imports)]
-                    use ::cynic::selection_set::{string, integer, float, boolean};
-
-                    ::cynic::selection_set::field(#query_field_name, self.args, #selector)
+        quote! {
+            pub fn select<'a, T: 'a + Send + Sync>(
+                self,
+                #arg_name: ::cynic::selection_set::SelectionSet<'a, T, #argument_type_lock>
+            ) -> ::cynic::selection_set::SelectionSet<'a, #decodes_to, super::#type_lock>
+                {
+                    ::cynic::selection_set::field(
+                        #query_field_name,
+                        self.args,
+                        #selector
+                    )
                 }
-            }
-        } else {
-            let decodes_to = self.field_type.decodes_to(quote! { T });
-            let argument_type_lock = self.field_type.as_type_lock(TypePath::new_super());
-
-            quote! {
-                pub fn select<'a, T: 'a + Send + Sync>(
-                    self,
-                    fields: ::cynic::selection_set::SelectionSet<'a, T, #argument_type_lock>
-                ) -> ::cynic::selection_set::SelectionSet<'a, #decodes_to, super::#type_lock>
-                    {
-                        ::cynic::selection_set::field(
-                            #query_field_name,
-                            self.args,
-                            #selector
-                        )
-                    }
-            }
         }
     }
 }

@@ -24,9 +24,7 @@ impl ArgumentParameter {
         if self.argument_type.contains_enum() {
             Ok(quote! { #name: impl ::cynic::EnumArgument<#type_lock> })
         } else if self.argument_type.contains_scalar() {
-            // Note that on this branch type_lock is actually just a type_spec
-            // for now
-            Ok(quote! { #name: #type_lock })
+            Ok(quote! { #name: impl ::cynic::ScalarArgument<#type_lock> })
         } else if self.argument_type.contains_input_object() {
             Ok(quote! { #name: impl ::cynic::InputObjectArgument<#type_lock> })
         } else {

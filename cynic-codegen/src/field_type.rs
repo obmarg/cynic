@@ -103,6 +103,15 @@ impl FieldType {
         }
     }
 
+    pub fn contains_leaf_value(&self) -> bool {
+        match self {
+            FieldType::List(inner, _) => inner.contains_scalar(),
+            FieldType::Scalar(_, _) => true,
+            FieldType::Enum(_, _) => true,
+            _ => false,
+        }
+    }
+
     /// Returns the path to the enum marker struct stored in this field, if any
     pub fn inner_enum_path(&self) -> Option<Ident> {
         match self {
@@ -131,16 +140,25 @@ impl FieldType {
         }
     }
 
-    pub fn as_type_lock(&self, path_to_types: TypePath) -> TypePath {
+    pub fn as_type_lock(&self, path_to_markers: TypePath) -> TypePath {
         match self {
-            FieldType::List(inner, _) => inner.as_type_lock(path_to_types),
-            // TODO: I think this is wrong for scalars, but whatever.
-            FieldType::Scalar(path, _) => TypePath::concat(&[path_to_types, path.clone()]),
-            FieldType::Enum(ident, _) => TypePath::concat(&[path_to_types, ident.clone().into()]),
-            FieldType::InputObject(ident, _) => {
-                TypePath::concat(&[path_to_types, ident.clone().into()])
+            FieldType::List(inner, _) => inner.as_type_lock(path_to_markers),
+            FieldType::Scalar(path, _) => {
+                if path.is_absolute() {
+                    // Probably a built in scalar, so we don't need to put path_to_types
+                    // on the start.
+                    path.clone()
+                } else {
+                    TypePath::concat(&[path_to_markers, path.clone()])
+                }
             }
-            FieldType::Other(ident, _) => TypePath::concat(&[path_to_types, ident.clone().into()]),
+            FieldType::Enum(ident, _) => TypePath::concat(&[path_to_markers, ident.clone().into()]),
+            FieldType::InputObject(ident, _) => {
+                TypePath::concat(&[path_to_markers, ident.clone().into()])
+            }
+            FieldType::Other(ident, _) => {
+                TypePath::concat(&[path_to_markers, ident.clone().into()])
+            }
         }
     }
 
@@ -238,6 +256,7 @@ impl FieldType {
                 quote! { #generic_type }
             }
             (FieldType::Scalar(scalar_path, _), _) => {
+                // TODO: Wondering if this needs changed?
                 let type_path = if scalar_path.is_absolute() {
                     scalar_path.clone()
                 } else {
@@ -296,6 +315,18 @@ impl FieldType {
                 name,
                 constraint: GenericConstraint::InputObject(path),
             })
+        // TODO: Ok, so at least custom scalars need generic params here.
+        // Built in scalars can (at least for now) remain as hard coded values.
+        // But custom scalars have no concrete types so they'll need a
+        // generic constraint.
+        // Although probably worth thinking this through:
+        // Do I want to use IntoArgument to do the bulk of this work?
+        //
+        // Get away from that `impl IntoArgument<T>` double generic nonsense?
+        // It does seem kinda problematic
+        //
+        // Though required arguments don't at present use IntoArgument so not
+        // sure how far I can get with that...
         } else {
             None
         }

@@ -182,6 +182,7 @@ mod operation;
 mod result;
 mod scalar;
 
+pub mod codable;
 pub mod http;
 pub mod selection_set;
 pub mod utils;
@@ -189,7 +190,8 @@ pub mod utils;
 pub use json_decode::DecodeError;
 
 pub use arguments::{
-    Argument, EnumArgument, FromArguments, InputObjectArgument, IntoArgument, SerializableArgument,
+    Argument, EnumArgument, FromArguments, InputObjectArgument, IntoArgument, ScalarArgument,
+    SerializableArgument,
 };
 pub use builders::{MutationBuilder, QueryBuilder, SubscriptionBuilder};
 pub use fragments::{FragmentArguments, FragmentContext, InlineFragments, QueryFragment};

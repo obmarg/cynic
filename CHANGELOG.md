@@ -14,8 +14,21 @@ all APIs might be changed.
 ### Breaking Changes
 
 - The return type of `cynic::Enum::select` now includes the `TypeLock` of the
-  enum.  This should only affect users that were implementing `cynic::Enum`
-  directly.  Users of the derive should be unaffected.
+  enum. This should only affect users that were implementing `cynic::Enum`
+  directly. Users of the derive should be unaffected.
+- `IntoArgument` has been removed in favour of individual `EnumArgument`,
+  `ScalarArgument` and `InputObjectArgument` traits.
+- Scalars have been revamped:
+  - The scalar trait now has a typelock - TODO: expand on this
+  - `select` functions generated for scalar fields in `query_dsl` now take
+    a selection_set that decodes the scalar type. This gives some flexibility
+    around scalar types.
+  - `query_dsl` now defines markers for all the scalar types. As such you
+    should not import any custom scalars into your query_dsl module.
+- Required scalar arguments no longer have concrete types, so anything
+  that relied on type inference (i.e. `arg = "hello".into()`) will no longer
+  work. You should either call an explicit function, or rely on a
+  `ScalarArgument` impl to do the conversion.
 
 ### New Features
 

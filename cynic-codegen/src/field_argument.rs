@@ -26,6 +26,8 @@ impl FieldArgument {
     }
 
     pub fn generic_parameter(&self) -> Option<GenericParameter> {
+        // TOOD: Ok, so this one may warrant a different approach for now?
+        // Unless I'm happy banning `.into()` for Strings etc.?
         self.argument_type
             .generic_parameter(Ident::for_type(format!("{}T", self.name.rust_name())))
     }

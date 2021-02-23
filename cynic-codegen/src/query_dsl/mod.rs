@@ -1,7 +1,6 @@
 use proc_macro2::TokenStream;
 
 mod argument_parameter;
-mod enum_marker;
 mod field_selector;
 mod input_object_marker;
 mod interface_struct;
@@ -9,6 +8,7 @@ mod interfaces_implementations;
 mod schema_roots;
 mod selection_builder;
 mod selector_struct;
+mod type_lock_marker;
 mod union_struct;
 
 pub use field_selector::FieldSelector;
@@ -17,12 +17,12 @@ pub use selector_struct::SelectorStruct;
 use super::module::Module;
 use crate::{load_schema, schema, SchemaLoadError, TypeIndex};
 use argument_parameter::ArgumentParameter;
-use enum_marker::EnumMarker;
 use input_object_marker::InputObjectMarker;
 use interface_struct::InterfaceStruct;
 use interfaces_implementations::InterfacesImplementations;
 use schema_roots::{RootTypes, SchemaRoot};
 use selection_builder::FieldSelectionBuilder;
+use type_lock_marker::TypeLockMarker;
 use union_struct::UnionStruct;
 
 #[derive(Debug)]
@@ -60,7 +60,7 @@ pub struct QueryDsl {
     pub argument_struct_modules: Vec<Module<FieldSelectionBuilder>>,
     pub unions: Vec<UnionStruct>,
     pub interfaces: Vec<InterfaceStruct>,
-    pub enums: Vec<EnumMarker>,
+    pub type_lock_markers: Vec<TypeLockMarker>,
     pub input_objects: Vec<InputObjectMarker>,
     pub schema_roots: Vec<SchemaRoot>,
     pub interfaces_implementations: Vec<InterfacesImplementations>,
@@ -77,7 +77,7 @@ impl From<schema::Document> for QueryDsl {
         let mut input_objects = vec![];
         let mut unions = vec![];
         let mut interfaces = vec![];
-        let mut enums = vec![];
+        let mut type_lock_markers = vec![];
         let mut schema_roots = vec![];
         let mut interfaces_implementations = vec![];
 
@@ -128,7 +128,10 @@ impl From<schema::Document> for QueryDsl {
                     interfaces.push(interface);
                 }
                 Definition::TypeDefinition(TypeDefinition::Enum(en)) => {
-                    enums.push(EnumMarker::from_enum(&en));
+                    type_lock_markers.push(TypeLockMarker::from_enum(&en));
+                }
+                Definition::TypeDefinition(TypeDefinition::Scalar(scalar)) => {
+                    type_lock_markers.push(TypeLockMarker::from_scalar(&scalar))
                 }
                 _ => {}
             }
@@ -140,7 +143,7 @@ impl From<schema::Document> for QueryDsl {
             input_objects,
             unions,
             interfaces,
-            enums,
+            type_lock_markers,
             schema_roots,
             interfaces_implementations,
         }
@@ -156,10 +159,17 @@ impl quote::ToTokens for QueryDsl {
         let input_objects = &self.input_objects;
         let unions = &self.unions;
         let interfaces = &self.interfaces;
-        let enums = &self.enums;
+        let type_lock_markers = &self.type_lock_markers;
         let schema_roots = &self.schema_roots;
         let interfaces_implementations = &self.interfaces_implementations;
 
+        // TODO: consider putting `type_lock_markers` into a submodule
+        // so they don't clash with user types...
+        //
+        // Either that or document the breaking change...
+        //
+        // But it seems like bad practice to clash if users _don't_ stick their
+        // query-dsl in another module
         tokens.append_all(quote! {
             #(
                 #unions
@@ -177,7 +187,7 @@ impl quote::ToTokens for QueryDsl {
                 #input_objects
             )*
             #(
-                #enums
+                #type_lock_markers
             )*
             #(
                 #schema_roots

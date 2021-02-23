@@ -196,7 +196,7 @@ macro_rules! def_argument_generics {
 
 def_argument_generics!(EnumArgument, crate::Enum<TypeLock>);
 def_argument_generics!(InputObjectArgument, crate::InputObject<TypeLock>);
-def_argument_generics!(ScalarArgument, crate::Scalar);
+def_argument_generics!(ScalarArgument, crate::Scalar<TypeLock>);
 
 /// Defines useful argument conversions for input objects
 ///

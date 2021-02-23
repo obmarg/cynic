@@ -70,14 +70,16 @@ impl SerializableArgument for &str {
     }
 }
 
+// TODO: Consider how much of this stuff is actually needed now...
+
 /// Implements serializable argument for scalar types.
 #[macro_export]
 macro_rules! impl_serializable_argument_for_scalar {
     ($inner:ty) => {
         impl $crate::SerializableArgument for $inner {
             fn serialize(&self) -> Result<$crate::serde_json::Value, $crate::SerializeError> {
-                use $crate::Scalar;
-                self.encode()
+                use $crate::{codable::Codable, Scalar};
+                self.to_codable()?.encode()
             }
         }
     };

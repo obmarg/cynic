@@ -273,7 +273,14 @@ impl quote::ToTokens for FieldSelectorCall {
         let span = self.span;
 
         let inner_selection_tokens = match (&self.style, self.recurse_limit) {
-            (NamedTypeSelectorStyle::Scalar, _) => quote_spanned! {span => },
+            (NamedTypeSelectorStyle::Scalar, _) => {
+                // TODO: This needs to do something like the enum thing below
+                //
+                // Should I maybe make a select provided func on the Scalar
+                // trait?  If I don't have to I should avoid, but if type inference
+                // doesn't work it's probably less clumsy than a turbofish...
+                quote_spanned! {span => ::cynic::selection_set::scalar()}
+            }
             (NamedTypeSelectorStyle::Enum(enum_type), _) => quote_spanned! {span =>
                 #enum_type::select()
             },

@@ -140,6 +140,8 @@ impl<'a, DecodesTo, TypeLock> SelectionSet<'a, DecodesTo, TypeLock> {
     }
 }
 
+// TODO: expect most of these will need typelocks
+
 /// Creates a `SelectionSet` that will decode a `String`
 pub fn string() -> SelectionSet<'static, String, ()> {
     SelectionSet::new(vec![], json_decode::string())
@@ -187,9 +189,10 @@ pub fn json() -> SelectionSet<'static, serde_json::Value, ()> {
 }
 
 /// Creates a `SelectionSet` that will decode a type that implements `Scalar`
-pub fn scalar<S>() -> SelectionSet<'static, S, ()>
+pub fn scalar<S, TypeLock>() -> SelectionSet<'static, S, TypeLock>
 where
-    S: scalar::Scalar + 'static + Send + Sync,
+    S: scalar::Scalar<TypeLock> + 'static + Send + Sync,
+    TypeLock: 'static + Send + Sync,
 {
     SelectionSet::new(vec![], scalar::decoder())
 }

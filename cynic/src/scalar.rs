@@ -1,83 +1,66 @@
 use json_decode::{BoxDecoder, DecodeError, Decoder};
 use std::marker::PhantomData;
 
-use crate::{SerializableArgument, SerializeError};
+use crate::{codable::Codable, SerializableArgument, SerializeError};
 
-pub trait Scalar: Sized + SerializableArgument {
+/*
+pub trait Scalar: Sized {
+>>>>>>> f5ffc35 (First pass - got the scalar type defined, updated it's generation etc.)
     fn decode(value: &serde_json::Value) -> Result<Self, DecodeError>;
     fn encode(&self) -> Result<serde_json::Value, SerializeError>;
+}*/
+
+// Something like this?
+pub trait Scalar<TypeLock>: Sized + SerializableArgument {
+    type Codable: Codable;
+
+    fn from_codable(x: Self::Codable) -> Result<Self, DecodeError>;
+    fn to_codable(&self) -> Result<&Self::Codable, SerializeError>;
 }
 
-pub fn decoder<'a, S>() -> BoxDecoder<'a, S>
+pub fn decoder<'a, S, TypeLock>() -> BoxDecoder<'a, S>
 where
-    S: Scalar + 'a + Send + Sync,
+    S: Scalar<TypeLock> + 'a + Send + Sync,
+    TypeLock: 'a + Send + Sync,
 {
     Box::new(ScalarDecoder {
         phantom: PhantomData,
     })
 }
 
-impl Scalar for i32 {
-    fn decode(value: &serde_json::Value) -> Result<Self, DecodeError> {
-        json_decode::integer().decode(value)
-    }
+macro_rules! impl_scalar_for {
+    ($type:ty) => {
+        impl Scalar<$type> for $type {
+            type Codable = $type;
 
-    fn encode(&self) -> Result<serde_json::Value, SerializeError> {
-        Ok((*self).into())
-    }
+            fn from_codable(x: $type) -> Result<$type, DecodeError> {
+                Ok(x)
+            }
+
+            fn to_codable(&self) -> Result<&$type, SerializeError> {
+                Ok(&self)
+            }
+        }
+    };
 }
 
-impl Scalar for f64 {
-    fn decode(value: &serde_json::Value) -> Result<Self, DecodeError> {
-        json_decode::float().decode(value)
-    }
+impl_scalar_for!(i32);
+impl_scalar_for!(f64);
+impl_scalar_for!(bool);
+impl_scalar_for!(String);
 
-    fn encode(&self) -> Result<serde_json::Value, SerializeError> {
-        Ok((*self).into())
-    }
-}
-
-impl Scalar for bool {
-    fn decode(value: &serde_json::Value) -> Result<Self, DecodeError> {
-        json_decode::boolean().decode(value)
-    }
-
-    fn encode(&self) -> Result<serde_json::Value, SerializeError> {
-        Ok((*self).into())
-    }
-}
-
-impl Scalar for String {
-    fn decode(value: &serde_json::Value) -> Result<Self, DecodeError> {
-        json_decode::string().decode(value)
-    }
-
-    fn encode(&self) -> Result<serde_json::Value, SerializeError> {
-        Ok(self.clone().into())
-    }
-}
-
-impl Scalar for serde_json::Value {
-    fn decode(value: &serde_json::Value) -> Result<Self, DecodeError> {
-        json_decode::json().decode(value)
-    }
-
-    fn encode(&self) -> Result<serde_json::Value, SerializeError> {
-        Ok(self.clone())
-    }
-}
-
+impl_scalar_for!(serde_json::Value);
 crate::impl_serializable_argument_for_scalar!(serde_json::Value);
 
-struct ScalarDecoder<S: Scalar> {
-    phantom: PhantomData<S>,
+struct ScalarDecoder<S, T> {
+    phantom: PhantomData<(S, T)>,
 }
 
-impl<'a, S> Decoder<'a, S> for ScalarDecoder<S>
+impl<'a, S, TypeLock> Decoder<'a, S> for ScalarDecoder<S, TypeLock>
 where
-    S: Scalar + Sized,
+    S: Scalar<TypeLock> + Sized,
 {
     fn decode(&self, value: &serde_json::Value) -> Result<S, DecodeError> {
-        S::decode(value)
+        S::from_codable(S::Codable::decode(value)?)
     }
 }
