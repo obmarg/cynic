@@ -17,6 +17,18 @@ pub struct FragmentDeriveInput {
 
 impl FragmentDeriveInput {
     pub fn validate(&self) -> Result<(), Errors> {
+        let data_field_is_empty = matches!(self.data.clone(), darling::ast::Data::Struct(fields) if fields.fields.is_empty());
+        if data_field_is_empty {
+            return Err(syn::Error::new(
+                self.ident.span(),
+                format!(
+                    "At least one field should be selected for `{}`.",
+                    self.ident.to_string()
+                ),
+            )
+            .into());
+        }
+
         let errors = self
             .data
             .clone()
@@ -158,5 +170,26 @@ mod tests {
 
         let errors = input.validate().unwrap_err();
         assert_eq!(errors.len(), 2);
+    }
+
+    #[test]
+    fn test_fragment_derive_validate_failed() {
+        let input = FragmentDeriveInput {
+            ident: format_ident!("TestInput"),
+            data: darling::ast::Data::Struct(darling::ast::Fields {
+                style: darling::ast::Style::Struct,
+                fields: vec![],
+            }),
+            schema_path: "abcd".to_string().into(),
+            query_module: "abcd".to_string().into(),
+            graphql_type: "abcd".to_string().into(),
+            argument_struct: None,
+        };
+        let errors = input.validate().unwrap_err();
+        assert_eq!(
+            errors.to_compile_errors().to_string(),
+            r#"compile_error ! { "At least one field should be selected for `TestInput`." }"#
+                .to_string()
+        );
     }
 }
