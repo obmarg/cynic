@@ -221,20 +221,20 @@ impl Mutation {
     }
     pub fn update_job(
         input: impl ::cynic::InputObjectArgument<UpdateJobInput>,
-        admin_secret: String,
+        admin_secret: impl ::cynic::ScalarArgument<String>,
     ) -> mutation::UpdateJobSelectionBuilder {
         mutation::UpdateJobSelectionBuilder::new(vec![
             ::cynic::Argument::new("input", "UpdateJobInput!", input.into_argument()),
-            ::cynic::Argument::new("adminSecret", "String!", admin_secret),
+            ::cynic::Argument::new("adminSecret", "String!", admin_secret.into_argument()),
         ])
     }
     pub fn update_company(
         input: impl ::cynic::InputObjectArgument<UpdateCompanyInput>,
-        admin_secret: String,
+        admin_secret: impl ::cynic::ScalarArgument<String>,
     ) -> mutation::UpdateCompanySelectionBuilder {
         mutation::UpdateCompanySelectionBuilder::new(vec![
             ::cynic::Argument::new("input", "UpdateCompanyInput!", input.into_argument()),
-            ::cynic::Argument::new("adminSecret", "String!", admin_secret),
+            ::cynic::Argument::new("adminSecret", "String!", admin_secret.into_argument()),
         ])
     }
 }
@@ -385,12 +385,11 @@ pub mod city {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             IdSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, ::cynic::Id, super::City> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("id", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::City> {
+            ::cynic::selection_set::field("id", self.args, inner)
         }
     }
     pub struct NameSelectionBuilder {
@@ -400,10 +399,11 @@ pub mod city {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             NameSelectionBuilder { args }
         }
-        pub fn select(self) -> ::cynic::selection_set::SelectionSet<'static, String, super::City> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("name", self.args, ::cynic::selection_set::scalar())
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::City> {
+            ::cynic::selection_set::field("name", self.args, inner)
         }
     }
     pub struct SlugSelectionBuilder {
@@ -413,10 +413,11 @@ pub mod city {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             SlugSelectionBuilder { args }
         }
-        pub fn select(self) -> ::cynic::selection_set::SelectionSet<'static, String, super::City> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("slug", self.args, ::cynic::selection_set::scalar())
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::City> {
+            ::cynic::selection_set::field("slug", self.args, inner)
         }
     }
     pub struct CountrySelectionBuilder {
@@ -440,10 +441,11 @@ pub mod city {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             TypeSelectionBuilder { args }
         }
-        pub fn select(self) -> ::cynic::selection_set::SelectionSet<'static, String, super::City> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("type", self.args, ::cynic::selection_set::scalar())
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::City> {
+            ::cynic::selection_set::field("type", self.args, inner)
         }
     }
     pub struct JobsSelectionBuilder {
@@ -527,12 +529,11 @@ pub mod city {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CreatedAtSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, super::DateTime, super::City> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("createdAt", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::City> {
+            ::cynic::selection_set::field("createdAt", self.args, inner)
         }
     }
     pub struct UpdatedAtSelectionBuilder {
@@ -542,12 +543,11 @@ pub mod city {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             UpdatedAtSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, super::DateTime, super::City> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("updatedAt", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::City> {
+            ::cynic::selection_set::field("updatedAt", self.args, inner)
         }
     }
 }
@@ -560,12 +560,11 @@ pub mod commitment {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             IdSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, ::cynic::Id, super::Commitment> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("id", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Commitment> {
+            ::cynic::selection_set::field("id", self.args, inner)
         }
     }
     pub struct TitleSelectionBuilder {
@@ -575,12 +574,11 @@ pub mod commitment {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             TitleSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::Commitment> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("title", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Commitment> {
+            ::cynic::selection_set::field("title", self.args, inner)
         }
     }
     pub struct SlugSelectionBuilder {
@@ -590,12 +588,11 @@ pub mod commitment {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             SlugSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::Commitment> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("slug", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Commitment> {
+            ::cynic::selection_set::field("slug", self.args, inner)
         }
     }
     pub struct JobsSelectionBuilder {
@@ -679,13 +676,11 @@ pub mod commitment {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CreatedAtSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, super::DateTime, super::Commitment>
-        {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("createdAt", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Commitment> {
+            ::cynic::selection_set::field("createdAt", self.args, inner)
         }
     }
     pub struct UpdatedAtSelectionBuilder {
@@ -695,13 +690,11 @@ pub mod commitment {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             UpdatedAtSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, super::DateTime, super::Commitment>
-        {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("updatedAt", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Commitment> {
+            ::cynic::selection_set::field("updatedAt", self.args, inner)
         }
     }
 }
@@ -714,12 +707,11 @@ pub mod company {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             IdSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, ::cynic::Id, super::Company> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("id", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Company> {
+            ::cynic::selection_set::field("id", self.args, inner)
         }
     }
     pub struct NameSelectionBuilder {
@@ -729,12 +721,11 @@ pub mod company {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             NameSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::Company> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("name", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Company> {
+            ::cynic::selection_set::field("name", self.args, inner)
         }
     }
     pub struct SlugSelectionBuilder {
@@ -744,12 +735,11 @@ pub mod company {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             SlugSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::Company> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("slug", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Company> {
+            ::cynic::selection_set::field("slug", self.args, inner)
         }
     }
     pub struct WebsiteUrlSelectionBuilder {
@@ -759,12 +749,11 @@ pub mod company {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             WebsiteUrlSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::Company> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("websiteUrl", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Company> {
+            ::cynic::selection_set::field("websiteUrl", self.args, inner)
         }
     }
     pub struct LogoUrlSelectionBuilder {
@@ -774,15 +763,14 @@ pub mod company {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             LogoUrlSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Company> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Company> {
             ::cynic::selection_set::field(
                 "logoUrl",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -867,15 +855,14 @@ pub mod company {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             TwitterSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Company> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Company> {
             ::cynic::selection_set::field(
                 "twitter",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -886,15 +873,14 @@ pub mod company {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             EmailedSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<bool>, super::Company> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, bool>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Company> {
             ::cynic::selection_set::field(
                 "emailed",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -905,13 +891,11 @@ pub mod company {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CreatedAtSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, super::DateTime, super::Company>
-        {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("createdAt", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Company> {
+            ::cynic::selection_set::field("createdAt", self.args, inner)
         }
     }
     pub struct UpdatedAtSelectionBuilder {
@@ -921,13 +905,11 @@ pub mod company {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             UpdatedAtSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, super::DateTime, super::Company>
-        {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("updatedAt", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Company> {
+            ::cynic::selection_set::field("updatedAt", self.args, inner)
         }
     }
 }
@@ -940,12 +922,11 @@ pub mod country {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             IdSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, ::cynic::Id, super::Country> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("id", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Country> {
+            ::cynic::selection_set::field("id", self.args, inner)
         }
     }
     pub struct NameSelectionBuilder {
@@ -955,12 +936,11 @@ pub mod country {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             NameSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::Country> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("name", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Country> {
+            ::cynic::selection_set::field("name", self.args, inner)
         }
     }
     pub struct SlugSelectionBuilder {
@@ -970,12 +950,11 @@ pub mod country {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             SlugSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::Country> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("slug", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Country> {
+            ::cynic::selection_set::field("slug", self.args, inner)
         }
     }
     pub struct TypeSelectionBuilder {
@@ -985,12 +964,11 @@ pub mod country {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             TypeSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::Country> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("type", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Country> {
+            ::cynic::selection_set::field("type", self.args, inner)
         }
     }
     pub struct IsoCodeSelectionBuilder {
@@ -1000,15 +978,14 @@ pub mod country {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             IsoCodeSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Country> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Country> {
             ::cynic::selection_set::field(
                 "isoCode",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -1167,13 +1144,11 @@ pub mod country {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CreatedAtSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, super::DateTime, super::Country>
-        {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("createdAt", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Country> {
+            ::cynic::selection_set::field("createdAt", self.args, inner)
         }
     }
     pub struct UpdatedAtSelectionBuilder {
@@ -1183,13 +1158,11 @@ pub mod country {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             UpdatedAtSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, super::DateTime, super::Country>
-        {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("updatedAt", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Country> {
+            ::cynic::selection_set::field("updatedAt", self.args, inner)
         }
     }
 }
@@ -1202,12 +1175,11 @@ pub mod job {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             IdSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, ::cynic::Id, super::Job> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("id", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Job> {
+            ::cynic::selection_set::field("id", self.args, inner)
         }
     }
     pub struct TitleSelectionBuilder {
@@ -1217,10 +1189,11 @@ pub mod job {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             TitleSelectionBuilder { args }
         }
-        pub fn select(self) -> ::cynic::selection_set::SelectionSet<'static, String, super::Job> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("title", self.args, ::cynic::selection_set::scalar())
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Job> {
+            ::cynic::selection_set::field("title", self.args, inner)
         }
     }
     pub struct SlugSelectionBuilder {
@@ -1230,10 +1203,11 @@ pub mod job {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             SlugSelectionBuilder { args }
         }
-        pub fn select(self) -> ::cynic::selection_set::SelectionSet<'static, String, super::Job> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("slug", self.args, ::cynic::selection_set::scalar())
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Job> {
+            ::cynic::selection_set::field("slug", self.args, inner)
         }
     }
     pub struct CommitmentSelectionBuilder {
@@ -1479,15 +1453,14 @@ pub mod job {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             DescriptionSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Job> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Job> {
             ::cynic::selection_set::field(
                 "description",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -1498,15 +1471,14 @@ pub mod job {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             ApplyUrlSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Job> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Job> {
             ::cynic::selection_set::field(
                 "applyUrl",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -1609,15 +1581,14 @@ pub mod job {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             IsPublishedSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<bool>, super::Job> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, bool>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Job> {
             ::cynic::selection_set::field(
                 "isPublished",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -1628,15 +1599,14 @@ pub mod job {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             IsFeaturedSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<bool>, super::Job> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, bool>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Job> {
             ::cynic::selection_set::field(
                 "isFeatured",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -1647,15 +1617,14 @@ pub mod job {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             LocationNamesSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Job> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Job> {
             ::cynic::selection_set::field(
                 "locationNames",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -1666,15 +1635,14 @@ pub mod job {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             UserEmailSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Job> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Job> {
             ::cynic::selection_set::field(
                 "userEmail",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -1685,12 +1653,11 @@ pub mod job {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             PostedAtSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, super::DateTime, super::Job> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("postedAt", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Job> {
+            ::cynic::selection_set::field("postedAt", self.args, inner)
         }
     }
     pub struct CreatedAtSelectionBuilder {
@@ -1700,12 +1667,11 @@ pub mod job {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CreatedAtSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, super::DateTime, super::Job> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("createdAt", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Job> {
+            ::cynic::selection_set::field("createdAt", self.args, inner)
         }
     }
     pub struct UpdatedAtSelectionBuilder {
@@ -1715,12 +1681,11 @@ pub mod job {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             UpdatedAtSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, super::DateTime, super::Job> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("updatedAt", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Job> {
+            ::cynic::selection_set::field("updatedAt", self.args, inner)
         }
     }
 }
@@ -1733,12 +1698,11 @@ pub mod location {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             IdSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, ::cynic::Id, super::Location> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("id", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Location> {
+            ::cynic::selection_set::field("id", self.args, inner)
         }
     }
     pub struct SlugSelectionBuilder {
@@ -1748,12 +1712,11 @@ pub mod location {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             SlugSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::Location> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("slug", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Location> {
+            ::cynic::selection_set::field("slug", self.args, inner)
         }
     }
     pub struct NameSelectionBuilder {
@@ -1763,12 +1726,11 @@ pub mod location {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             NameSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::Location> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("name", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Location> {
+            ::cynic::selection_set::field("name", self.args, inner)
         }
     }
     pub struct TypeSelectionBuilder {
@@ -1778,12 +1740,11 @@ pub mod location {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             TypeSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::Location> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("type", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Location> {
+            ::cynic::selection_set::field("type", self.args, inner)
         }
     }
 }
@@ -2039,12 +2000,11 @@ pub mod remote {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             IdSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, ::cynic::Id, super::Remote> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("id", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Remote> {
+            ::cynic::selection_set::field("id", self.args, inner)
         }
     }
     pub struct NameSelectionBuilder {
@@ -2054,12 +2014,11 @@ pub mod remote {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             NameSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::Remote> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("name", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Remote> {
+            ::cynic::selection_set::field("name", self.args, inner)
         }
     }
     pub struct SlugSelectionBuilder {
@@ -2069,12 +2028,11 @@ pub mod remote {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             SlugSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::Remote> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("slug", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Remote> {
+            ::cynic::selection_set::field("slug", self.args, inner)
         }
     }
     pub struct TypeSelectionBuilder {
@@ -2084,12 +2042,11 @@ pub mod remote {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             TypeSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::Remote> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("type", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Remote> {
+            ::cynic::selection_set::field("type", self.args, inner)
         }
     }
     pub struct JobsSelectionBuilder {
@@ -2173,12 +2130,11 @@ pub mod remote {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CreatedAtSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, super::DateTime, super::Remote> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("createdAt", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Remote> {
+            ::cynic::selection_set::field("createdAt", self.args, inner)
         }
     }
     pub struct UpdatedAtSelectionBuilder {
@@ -2188,12 +2144,11 @@ pub mod remote {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             UpdatedAtSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, super::DateTime, super::Remote> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("updatedAt", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Remote> {
+            ::cynic::selection_set::field("updatedAt", self.args, inner)
         }
     }
 }
@@ -2206,12 +2161,11 @@ pub mod tag {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             IdSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, ::cynic::Id, super::Tag> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("id", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Tag> {
+            ::cynic::selection_set::field("id", self.args, inner)
         }
     }
     pub struct NameSelectionBuilder {
@@ -2221,10 +2175,11 @@ pub mod tag {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             NameSelectionBuilder { args }
         }
-        pub fn select(self) -> ::cynic::selection_set::SelectionSet<'static, String, super::Tag> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("name", self.args, ::cynic::selection_set::scalar())
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Tag> {
+            ::cynic::selection_set::field("name", self.args, inner)
         }
     }
     pub struct SlugSelectionBuilder {
@@ -2234,10 +2189,11 @@ pub mod tag {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             SlugSelectionBuilder { args }
         }
-        pub fn select(self) -> ::cynic::selection_set::SelectionSet<'static, String, super::Tag> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("slug", self.args, ::cynic::selection_set::scalar())
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Tag> {
+            ::cynic::selection_set::field("slug", self.args, inner)
         }
     }
     pub struct JobsSelectionBuilder {
@@ -2321,12 +2277,11 @@ pub mod tag {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CreatedAtSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, super::DateTime, super::Tag> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("createdAt", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Tag> {
+            ::cynic::selection_set::field("createdAt", self.args, inner)
         }
     }
     pub struct UpdatedAtSelectionBuilder {
@@ -2336,12 +2291,11 @@ pub mod tag {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             UpdatedAtSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, super::DateTime, super::Tag> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("updatedAt", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Tag> {
+            ::cynic::selection_set::field("updatedAt", self.args, inner)
         }
     }
 }
@@ -2354,12 +2308,11 @@ pub mod user {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             IdSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, ::cynic::Id, super::User> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("id", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::User> {
+            ::cynic::selection_set::field("id", self.args, inner)
         }
     }
     pub struct NameSelectionBuilder {
@@ -2369,16 +2322,11 @@ pub mod user {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             NameSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::User> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field(
-                "name",
-                self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
-            )
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::User> {
+            ::cynic::selection_set::field("name", self.args, ::cynic::selection_set::option(inner))
         }
     }
     pub struct EmailSelectionBuilder {
@@ -2388,10 +2336,11 @@ pub mod user {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             EmailSelectionBuilder { args }
         }
-        pub fn select(self) -> ::cynic::selection_set::SelectionSet<'static, String, super::User> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("email", self.args, ::cynic::selection_set::scalar())
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::User> {
+            ::cynic::selection_set::field("email", self.args, inner)
         }
     }
     pub struct SubscribeSelectionBuilder {
@@ -2401,10 +2350,11 @@ pub mod user {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             SubscribeSelectionBuilder { args }
         }
-        pub fn select(self) -> ::cynic::selection_set::SelectionSet<'static, bool, super::User> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("subscribe", self.args, ::cynic::selection_set::scalar())
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, bool>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::User> {
+            ::cynic::selection_set::field("subscribe", self.args, inner)
         }
     }
     pub struct CreatedAtSelectionBuilder {
@@ -2414,12 +2364,11 @@ pub mod user {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CreatedAtSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, super::DateTime, super::User> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("createdAt", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::User> {
+            ::cynic::selection_set::field("createdAt", self.args, inner)
         }
     }
     pub struct UpdatedAtSelectionBuilder {
@@ -2429,12 +2378,11 @@ pub mod user {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             UpdatedAtSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, super::DateTime, super::User> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("updatedAt", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::User> {
+            ::cynic::selection_set::field("updatedAt", self.args, inner)
         }
     }
 }
@@ -2472,6 +2420,8 @@ pub struct UpdateJobInput {}
 pub struct CityOrderByInput {}
 #[allow(dead_code)]
 pub struct CountryOrderByInput {}
+#[allow(dead_code)]
+pub struct DateTime {}
 #[allow(dead_code)]
 pub struct JobOrderByInput {}
 #[allow(dead_code)]

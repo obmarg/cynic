@@ -34,15 +34,22 @@ impl BookChanged {
 pub struct MutationRoot;
 #[allow(dead_code)]
 impl MutationRoot {
-    pub fn create_book(name: String, author: String) -> mutation_root::CreateBookSelectionBuilder {
+    pub fn create_book(
+        name: impl ::cynic::ScalarArgument<String>,
+        author: impl ::cynic::ScalarArgument<String>,
+    ) -> mutation_root::CreateBookSelectionBuilder {
         mutation_root::CreateBookSelectionBuilder::new(vec![
-            ::cynic::Argument::new("name", "String!", name),
-            ::cynic::Argument::new("author", "String!", author),
+            ::cynic::Argument::new("name", "String!", name.into_argument()),
+            ::cynic::Argument::new("author", "String!", author.into_argument()),
         ])
     }
-    pub fn delete_book(id: ::cynic::Id) -> mutation_root::DeleteBookSelectionBuilder {
+    pub fn delete_book(
+        id: impl ::cynic::ScalarArgument<::cynic::Id>,
+    ) -> mutation_root::DeleteBookSelectionBuilder {
         mutation_root::DeleteBookSelectionBuilder::new(vec![::cynic::Argument::new(
-            "id", "ID!", id,
+            "id",
+            "ID!",
+            id.into_argument(),
         )])
     }
 }
@@ -58,9 +65,13 @@ impl QueryRoot {
 pub struct SubscriptionRoot;
 #[allow(dead_code)]
 impl SubscriptionRoot {
-    pub fn interval(n: i32) -> subscription_root::IntervalSelectionBuilder {
+    pub fn interval(
+        n: impl ::cynic::ScalarArgument<i32>,
+    ) -> subscription_root::IntervalSelectionBuilder {
         subscription_root::IntervalSelectionBuilder::new(vec![::cynic::Argument::new(
-            "n", "Int!", n,
+            "n",
+            "Int!",
+            n.into_argument(),
         )])
     }
     pub fn books() -> subscription_root::BooksSelectionBuilder {
@@ -76,10 +87,11 @@ pub mod book {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             IdSelectionBuilder { args }
         }
-        pub fn select(self) -> ::cynic::selection_set::SelectionSet<'static, String, super::Book> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("id", self.args, ::cynic::selection_set::scalar())
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Book> {
+            ::cynic::selection_set::field("id", self.args, inner)
         }
     }
     pub struct NameSelectionBuilder {
@@ -89,10 +101,11 @@ pub mod book {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             NameSelectionBuilder { args }
         }
-        pub fn select(self) -> ::cynic::selection_set::SelectionSet<'static, String, super::Book> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("name", self.args, ::cynic::selection_set::scalar())
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Book> {
+            ::cynic::selection_set::field("name", self.args, inner)
         }
     }
     pub struct AuthorSelectionBuilder {
@@ -102,10 +115,11 @@ pub mod book {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             AuthorSelectionBuilder { args }
         }
-        pub fn select(self) -> ::cynic::selection_set::SelectionSet<'static, String, super::Book> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("author", self.args, ::cynic::selection_set::scalar())
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Book> {
+            ::cynic::selection_set::field("author", self.args, inner)
         }
     }
 }
@@ -120,9 +134,9 @@ pub mod book_changed {
         }
         pub fn select<'a, T: 'a + Send + Sync>(
             self,
-            fields: ::cynic::selection_set::SelectionSet<'a, T, super::MutationType>,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, super::MutationType>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::BookChanged> {
-            ::cynic::selection_set::field("mutationType", self.args, fields)
+            ::cynic::selection_set::field("mutationType", self.args, inner)
         }
     }
     pub struct IdSelectionBuilder {
@@ -132,13 +146,11 @@ pub mod book_changed {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             IdSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, ::cynic::Id, super::BookChanged>
-        {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("id", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::BookChanged> {
+            ::cynic::selection_set::field("id", self.args, inner)
         }
     }
     pub struct BookSelectionBuilder {
@@ -165,13 +177,11 @@ pub mod mutation_root {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CreateBookSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, ::cynic::Id, super::MutationRoot>
-        {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("createBook", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::MutationRoot> {
+            ::cynic::selection_set::field("createBook", self.args, inner)
         }
     }
     pub struct DeleteBookSelectionBuilder {
@@ -181,12 +191,11 @@ pub mod mutation_root {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             DeleteBookSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, bool, super::MutationRoot> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("deleteBook", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, bool>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::MutationRoot> {
+            ::cynic::selection_set::field("deleteBook", self.args, inner)
         }
     }
 }
@@ -216,12 +225,11 @@ pub mod subscription_root {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             IntervalSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, i32, super::SubscriptionRoot> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("interval", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::SubscriptionRoot> {
+            ::cynic::selection_set::field("interval", self.args, inner)
         }
     }
     pub struct BooksSelectionBuilder {

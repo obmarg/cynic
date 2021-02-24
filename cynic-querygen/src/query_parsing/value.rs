@@ -159,6 +159,7 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
                     // Optional arguments or input types are OK to take a reference.
                     format!("&args.{}", name.to_snake_case())
                 } else {
+                    // TODO: Rethink this branch...
                     // If this is a required arg _or_ not in argument position we'll need a clone
                     coerce_variable(
                         field_type,
@@ -177,8 +178,13 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
             TypedValue::String(s, field_type) => {
                 let literal = if field_type.inner_name() == "ID" {
                     format!("cynic::Id::new(\"{}\")", s)
+                } else if context == LiteralContext::Argument {
+                    // If we're in argument context then ScalarArgument gives
+                    // us leeway to pass in types.
+                    format!("\"{}\"", s)
                 } else {
-                    format!("\"{}\".into()", s)
+                    // In object or list position we explicitly need to convert to a String
+                    format!("\"{}\".to_string()", s)
                 };
 
                 coerce_literal(field_type, context, literal)

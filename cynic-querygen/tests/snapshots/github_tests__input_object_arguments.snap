@@ -17,7 +17,7 @@ mod queries {
     #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "Query", argument_struct = "PullRequestTitlesArguments")]
     pub struct PullRequestTitles {
-        #[arguments(name = "cynic".into(), owner = "obmarg".into())]
+        #[arguments(name = "cynic", owner = "obmarg")]
         pub repository: Option<Repository>,
     }
 

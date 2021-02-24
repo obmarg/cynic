@@ -224,6 +224,31 @@ macro_rules! impl_common_input_object_argument_conversions {
         // TODO: Try and implement list coercion in here...
     };
 }
+
+impl<'a> ScalarArgument<String> for &'a str {
+    type Output = &'a str;
+
+    fn into_argument(self) -> &'a str {
+        self
+    }
+}
+
+impl<'a> ScalarArgument<Option<String>> for &'a str {
+    type Output = Option<&'a str>;
+
+    fn into_argument(self) -> Option<&'a str> {
+        Some(self)
+    }
+}
+
+impl<'a> ScalarArgument<Option<String>> for Option<&'a str> {
+    type Output = Option<&'a str>;
+
+    fn into_argument(self) -> Option<&'a str> {
+        self
+    }
+}
+
 /*
 impl<E, TypeLock> EnumArgument<TypeLock> for E
 where
