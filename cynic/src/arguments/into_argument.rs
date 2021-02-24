@@ -158,45 +158,78 @@ macro_rules! def_argument_generics {
                 self.as_ref()
             }
         }
-
-        impl<T, TypeLock> $arg_type<Option<Vec<TypeLock>>> for Option<Vec<T>>
-        where
-            T: $trait,
-        {
-            type Output = Option<Vec<T>>;
-
-            fn into_argument(self) -> Self::Output {
-                self
-            }
-        }
-
-        impl<T, TypeLock> $arg_type<Option<Vec<Option<TypeLock>>>> for Option<Vec<Option<T>>>
-        where
-            T: $trait,
-        {
-            type Output = Option<Vec<Option<T>>>;
-
-            fn into_argument(self) -> Self::Output {
-                self
-            }
-        }
-
-        impl<T, TypeLock> $arg_type<Vec<TypeLock>> for Vec<T>
-        where
-            T: $trait,
-        {
-            type Output = Vec<T>;
-
-            fn into_argument(self) -> Self::Output {
-                self
-            }
-        }
     }
 }
 
 def_argument_generics!(EnumArgument, crate::Enum<TypeLock>);
 def_argument_generics!(InputObjectArgument, crate::InputObject<TypeLock>);
 def_argument_generics!(ScalarArgument, crate::Scalar<TypeLock>);
+
+impl<T, TypeLock> EnumArgument<Option<Vec<TypeLock>>> for Option<Vec<T>>
+where
+    T: crate::Enum<TypeLock>,
+{
+    type Output = Option<Vec<T>>;
+
+    fn into_argument(self) -> Self::Output {
+        self
+    }
+}
+
+impl<T, TypeLock> EnumArgument<Vec<TypeLock>> for Vec<T>
+where
+    T: crate::Enum<TypeLock>,
+{
+    type Output = Vec<T>;
+
+    fn into_argument(self) -> Self::Output {
+        self
+    }
+}
+
+impl<T, TypeLock> EnumArgument<Option<Vec<Option<TypeLock>>>> for Option<Vec<Option<T>>>
+where
+    T: crate::Enum<TypeLock>,
+{
+    type Output = Option<Vec<Option<T>>>;
+
+    fn into_argument(self) -> Self::Output {
+        self
+    }
+}
+
+impl<T, TypeLock> InputObjectArgument<Option<Vec<TypeLock>>> for Option<Vec<T>>
+where
+    T: crate::InputObject<TypeLock>,
+{
+    type Output = Option<Vec<T>>;
+
+    fn into_argument(self) -> Self::Output {
+        self
+    }
+}
+
+impl<T, TypeLock> InputObjectArgument<Vec<TypeLock>> for Vec<T>
+where
+    T: crate::InputObject<TypeLock>,
+{
+    type Output = Vec<T>;
+
+    fn into_argument(self) -> Self::Output {
+        self
+    }
+}
+
+impl<T, TypeLock> InputObjectArgument<Option<Vec<Option<TypeLock>>>> for Option<Vec<Option<T>>>
+where
+    T: crate::InputObject<TypeLock>,
+{
+    type Output = Option<Vec<Option<T>>>;
+
+    fn into_argument(self) -> Self::Output {
+        self
+    }
+}
 
 /// Defines useful argument conversions for input objects
 ///
@@ -248,6 +281,39 @@ impl<'a> ScalarArgument<Option<String>> for Option<&'a str> {
         self
     }
 }
+
+/// Defines useful argument conversions for input objects
+///
+/// Mostly just converts references to owned via cloning and
+/// non option-wrapped types into Option where appropriate.
+#[macro_export]
+macro_rules! impl_common_scalar_argument_conversions {
+    ($inner:ty, $type_lock:path) => {
+        impl $crate::ScalarArgument<Option<$type_lock>> for $inner {
+            type Output = Option<$inner>;
+
+            fn into_argument(self) -> Option<$inner> {
+                Some(self)
+            }
+        }
+
+        impl<'a> $crate::ScalarArgument<Option<$type_lock>> for &'a $inner {
+            type Output = Option<&'a $inner>;
+
+            fn into_argument(self) -> Option<&'a $inner> {
+                Some(self)
+            }
+        }
+
+        // TODO: Try and implement list coercion in here...
+    };
+}
+
+impl_common_scalar_argument_conversions!(i32, i32);
+impl_common_scalar_argument_conversions!(f64, f64);
+impl_common_scalar_argument_conversions!(String, String);
+impl_common_scalar_argument_conversions!(bool, bool);
+impl_common_scalar_argument_conversions!(Id, Id);
 
 /*
 impl<E, TypeLock> EnumArgument<TypeLock> for E

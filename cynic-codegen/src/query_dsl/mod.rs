@@ -16,7 +16,7 @@ pub use selector_struct::SelectorStruct;
 
 use super::module::Module;
 use crate::{load_schema, schema, SchemaLoadError, TypeIndex};
-use argument_parameter::ArgumentParameter;
+use argument_parameter::{ArgumentParameter, ArgumentParameterType};
 use input_object_marker::InputObjectMarker;
 use interface_struct::InterfaceStruct;
 use interfaces_implementations::InterfacesImplementations;

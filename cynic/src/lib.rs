@@ -175,6 +175,7 @@
 
 mod arguments;
 mod builders;
+mod enums;
 mod fragments;
 mod id;
 mod integrations;
@@ -194,6 +195,7 @@ pub use arguments::{
     SerializableArgument,
 };
 pub use builders::{MutationBuilder, QueryBuilder, SubscriptionBuilder};
+pub use enums::Enum;
 pub use fragments::{FragmentArguments, FragmentContext, InlineFragments, QueryFragment};
 pub use id::Id;
 pub use operation::{Operation, StreamingOperation};
@@ -212,15 +214,6 @@ pub use cynic_proc_macros::{
 pub use serde_json;
 
 pub type SerializeError = Box<dyn std::error::Error + Send + Sync>;
-
-/// A trait for GraphQL enums.
-///
-/// This trait is generic over some TypeLock which is used to tie an Enum
-/// definition back into it's GraphQL enum.  Generally this will be some
-/// type generated in the GQL code.
-pub trait Enum<TypeLock>: Sized + SerializableArgument {
-    fn select() -> SelectionSet<'static, Self, TypeLock>;
-}
 
 /// A trait for GraphQL input objects.
 ///

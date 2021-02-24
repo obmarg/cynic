@@ -1,5 +1,6 @@
 use proc_macro2::TokenStream;
 
+use super::ArgumentParameterType;
 use crate::{schema::InputValue, FieldArgument, FieldType, Ident, TypeIndex, TypePath};
 
 /// A builder struct that is generated for each field in the query, to
@@ -81,45 +82,10 @@ impl quote::ToTokens for FieldSelectionBuilder {
 
         let argument_gql_types = self.optional_args.iter().map(|a| a.gql_type.clone());
 
-        let argument_generics = self.optional_args.iter().map(|optional_arg| {
-            if optional_arg.argument_type.contains_enum()
-                || optional_arg.argument_type.contains_input_object()
-            {
-                // TODO: Clean up
-                quote! {}
-            } else if let Some(param) = optional_arg.generic_parameter() {
-                let param_tokens = param.to_tokens(TypePath::new_super());
-                quote! { < #param_tokens >}
-            } else {
-                quote! {}
-            }
-        });
-
         let argument_types = self.optional_args.iter().map(|a| {
-            // TODO: Tidy this up?
-            if a.argument_type.contains_enum() {
-                let typelock = a.argument_type.to_tokens(None, TypePath::new_super());
-                quote! {
-                    impl ::cynic::EnumArgument<#typelock>
-                }
-            } else if a.argument_type.contains_input_object() {
-                let typelock = a.argument_type.to_tokens(None, TypePath::new_super());
-
-                quote! {
-                    impl ::cynic::InputObjectArgument<#typelock>
-                }
-            } else {
-                let generic_inner_type = a.generic_parameter().map(|param| param.name);
-                let argument_type = a
-                    .argument_type
-                    .to_tokens(generic_inner_type, TypePath::new_super());
-                quote! {
-                    impl ::cynic::IntoArgument<#argument_type>
-                }
-            }
-
-            // TODO: Ok, so can I get rid of IntoArgument somehow...
-            // at least on the enum paths
+            ArgumentParameterType::from_type(a.argument_type.clone())
+                .to_tokens(TypePath::new_super())
+                .unwrap()
         });
 
         let select_func = self.select_function_tokens();
@@ -135,7 +101,7 @@ impl quote::ToTokens for FieldSelectionBuilder {
                 }
 
                 #(
-                    pub fn #argument_names #argument_generics(
+                    pub fn #argument_names(
                         mut self, #argument_names: #argument_types
                     ) -> Self {
                         self.args.push(

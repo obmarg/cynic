@@ -62,3 +62,42 @@ impl Codable for serde_json::Value {
         Ok(self.clone())
     }
 }
+
+impl<T: Codable> Codable for Vec<T> {
+    fn decode(_value: &serde_json::Value) -> Result<Self, DecodeError> {
+        todo!()
+    }
+
+    fn encode(&self) -> Result<serde_json::Value, SerializeError> {
+        self.iter()
+            .map(|s| s.encode())
+            .collect::<Result<Vec<_>, _>>()
+            .map(serde_json::Value::Array)
+    }
+}
+
+impl<T: Codable> Codable for Option<T> {
+    fn decode(value: &serde_json::Value) -> Result<Self, DecodeError> {
+        match value {
+            serde_json::Value::Null => Ok(None),
+            _ => Ok(Some(T::decode(value)?)),
+        }
+    }
+
+    fn encode(&self) -> Result<serde_json::Value, SerializeError> {
+        match self {
+            Some(inner) => Ok(inner.encode()?),
+            None => Ok(serde_json::Value::Null),
+        }
+    }
+}
+
+impl<T: Codable> Codable for Box<T> {
+    fn decode(value: &serde_json::Value) -> Result<Self, DecodeError> {
+        Ok(Box::new(T::decode(value)?))
+    }
+
+    fn encode(&self) -> Result<serde_json::Value, SerializeError> {
+        self.as_ref().encode()
+    }
+}

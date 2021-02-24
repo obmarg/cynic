@@ -477,12 +477,12 @@ pub mod city {
             ));
             self
         }
-        pub fn skip(mut self, skip: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn skip(mut self, skip: impl ::cynic::ScalarArgument<Option<i32>>) -> Self {
             self.args
                 .push(::cynic::Argument::new("skip", "Int", skip.into_argument()));
             self
         }
-        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn after(mut self, after: impl ::cynic::ScalarArgument<Option<String>>) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
@@ -490,7 +490,7 @@ pub mod city {
             ));
             self
         }
-        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn before(mut self, before: impl ::cynic::ScalarArgument<Option<String>>) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
@@ -498,7 +498,7 @@ pub mod city {
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn first(mut self, first: impl ::cynic::ScalarArgument<Option<i32>>) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
@@ -506,7 +506,7 @@ pub mod city {
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn last(mut self, last: impl ::cynic::ScalarArgument<Option<i32>>) -> Self {
             self.args
                 .push(::cynic::Argument::new("last", "Int", last.into_argument()));
             self
@@ -624,12 +624,12 @@ pub mod commitment {
             ));
             self
         }
-        pub fn skip(mut self, skip: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn skip(mut self, skip: impl ::cynic::ScalarArgument<Option<i32>>) -> Self {
             self.args
                 .push(::cynic::Argument::new("skip", "Int", skip.into_argument()));
             self
         }
-        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn after(mut self, after: impl ::cynic::ScalarArgument<Option<String>>) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
@@ -637,7 +637,7 @@ pub mod commitment {
             ));
             self
         }
-        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn before(mut self, before: impl ::cynic::ScalarArgument<Option<String>>) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
@@ -645,7 +645,7 @@ pub mod commitment {
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn first(mut self, first: impl ::cynic::ScalarArgument<Option<i32>>) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
@@ -653,7 +653,7 @@ pub mod commitment {
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn last(mut self, last: impl ::cynic::ScalarArgument<Option<i32>>) -> Self {
             self.args
                 .push(::cynic::Argument::new("last", "Int", last.into_argument()));
             self
@@ -803,12 +803,12 @@ pub mod company {
             ));
             self
         }
-        pub fn skip(mut self, skip: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn skip(mut self, skip: impl ::cynic::ScalarArgument<Option<i32>>) -> Self {
             self.args
                 .push(::cynic::Argument::new("skip", "Int", skip.into_argument()));
             self
         }
-        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn after(mut self, after: impl ::cynic::ScalarArgument<Option<String>>) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
@@ -816,7 +816,7 @@ pub mod company {
             ));
             self
         }
-        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn before(mut self, before: impl ::cynic::ScalarArgument<Option<String>>) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
@@ -824,7 +824,7 @@ pub mod company {
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn first(mut self, first: impl ::cynic::ScalarArgument<Option<i32>>) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
@@ -832,7 +832,7 @@ pub mod company {
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn last(mut self, last: impl ::cynic::ScalarArgument<Option<i32>>) -> Self {
             self.args
                 .push(::cynic::Argument::new("last", "Int", last.into_argument()));
             self
@@ -1018,12 +1018,12 @@ pub mod country {
             ));
             self
         }
-        pub fn skip(mut self, skip: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn skip(mut self, skip: impl ::cynic::ScalarArgument<Option<i32>>) -> Self {
             self.args
                 .push(::cynic::Argument::new("skip", "Int", skip.into_argument()));
             self
         }
-        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn after(mut self, after: impl ::cynic::ScalarArgument<Option<String>>) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
@@ -1031,7 +1031,7 @@ pub mod country {
             ));
             self
         }
-        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn before(mut self, before: impl ::cynic::ScalarArgument<Option<String>>) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
@@ -1039,7 +1039,7 @@ pub mod country {
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn first(mut self, first: impl ::cynic::ScalarArgument<Option<i32>>) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
@@ -1047,7 +1047,7 @@ pub mod country {
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn last(mut self, last: impl ::cynic::ScalarArgument<Option<i32>>) -> Self {
             self.args
                 .push(::cynic::Argument::new("last", "Int", last.into_argument()));
             self
@@ -1092,12 +1092,12 @@ pub mod country {
             ));
             self
         }
-        pub fn skip(mut self, skip: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn skip(mut self, skip: impl ::cynic::ScalarArgument<Option<i32>>) -> Self {
             self.args
                 .push(::cynic::Argument::new("skip", "Int", skip.into_argument()));
             self
         }
-        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn after(mut self, after: impl ::cynic::ScalarArgument<Option<String>>) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
@@ -1105,7 +1105,7 @@ pub mod country {
             ));
             self
         }
-        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn before(mut self, before: impl ::cynic::ScalarArgument<Option<String>>) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
@@ -1113,7 +1113,7 @@ pub mod country {
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn first(mut self, first: impl ::cynic::ScalarArgument<Option<i32>>) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
@@ -1121,7 +1121,7 @@ pub mod country {
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn last(mut self, last: impl ::cynic::ScalarArgument<Option<i32>>) -> Self {
             self.args
                 .push(::cynic::Argument::new("last", "Int", last.into_argument()));
             self
@@ -1253,12 +1253,12 @@ pub mod job {
             ));
             self
         }
-        pub fn skip(mut self, skip: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn skip(mut self, skip: impl ::cynic::ScalarArgument<Option<i32>>) -> Self {
             self.args
                 .push(::cynic::Argument::new("skip", "Int", skip.into_argument()));
             self
         }
-        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn after(mut self, after: impl ::cynic::ScalarArgument<Option<String>>) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
@@ -1266,7 +1266,7 @@ pub mod job {
             ));
             self
         }
-        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn before(mut self, before: impl ::cynic::ScalarArgument<Option<String>>) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
@@ -1274,7 +1274,7 @@ pub mod job {
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn first(mut self, first: impl ::cynic::ScalarArgument<Option<i32>>) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
@@ -1282,7 +1282,7 @@ pub mod job {
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn last(mut self, last: impl ::cynic::ScalarArgument<Option<i32>>) -> Self {
             self.args
                 .push(::cynic::Argument::new("last", "Int", last.into_argument()));
             self
@@ -1327,12 +1327,12 @@ pub mod job {
             ));
             self
         }
-        pub fn skip(mut self, skip: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn skip(mut self, skip: impl ::cynic::ScalarArgument<Option<i32>>) -> Self {
             self.args
                 .push(::cynic::Argument::new("skip", "Int", skip.into_argument()));
             self
         }
-        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn after(mut self, after: impl ::cynic::ScalarArgument<Option<String>>) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
@@ -1340,7 +1340,7 @@ pub mod job {
             ));
             self
         }
-        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn before(mut self, before: impl ::cynic::ScalarArgument<Option<String>>) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
@@ -1348,7 +1348,7 @@ pub mod job {
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn first(mut self, first: impl ::cynic::ScalarArgument<Option<i32>>) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
@@ -1356,7 +1356,7 @@ pub mod job {
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn last(mut self, last: impl ::cynic::ScalarArgument<Option<i32>>) -> Self {
             self.args
                 .push(::cynic::Argument::new("last", "Int", last.into_argument()));
             self
@@ -1401,12 +1401,12 @@ pub mod job {
             ));
             self
         }
-        pub fn skip(mut self, skip: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn skip(mut self, skip: impl ::cynic::ScalarArgument<Option<i32>>) -> Self {
             self.args
                 .push(::cynic::Argument::new("skip", "Int", skip.into_argument()));
             self
         }
-        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn after(mut self, after: impl ::cynic::ScalarArgument<Option<String>>) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
@@ -1414,7 +1414,7 @@ pub mod job {
             ));
             self
         }
-        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn before(mut self, before: impl ::cynic::ScalarArgument<Option<String>>) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
@@ -1422,7 +1422,7 @@ pub mod job {
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn first(mut self, first: impl ::cynic::ScalarArgument<Option<i32>>) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
@@ -1430,7 +1430,7 @@ pub mod job {
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn last(mut self, last: impl ::cynic::ScalarArgument<Option<i32>>) -> Self {
             self.args
                 .push(::cynic::Argument::new("last", "Int", last.into_argument()));
             self
@@ -1529,12 +1529,12 @@ pub mod job {
             ));
             self
         }
-        pub fn skip(mut self, skip: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn skip(mut self, skip: impl ::cynic::ScalarArgument<Option<i32>>) -> Self {
             self.args
                 .push(::cynic::Argument::new("skip", "Int", skip.into_argument()));
             self
         }
-        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn after(mut self, after: impl ::cynic::ScalarArgument<Option<String>>) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
@@ -1542,7 +1542,7 @@ pub mod job {
             ));
             self
         }
-        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn before(mut self, before: impl ::cynic::ScalarArgument<Option<String>>) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
@@ -1550,7 +1550,7 @@ pub mod job {
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn first(mut self, first: impl ::cynic::ScalarArgument<Option<i32>>) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
@@ -1558,7 +1558,7 @@ pub mod job {
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn last(mut self, last: impl ::cynic::ScalarArgument<Option<i32>>) -> Self {
             self.args
                 .push(::cynic::Argument::new("last", "Int", last.into_argument()));
             self
@@ -2078,12 +2078,12 @@ pub mod remote {
             ));
             self
         }
-        pub fn skip(mut self, skip: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn skip(mut self, skip: impl ::cynic::ScalarArgument<Option<i32>>) -> Self {
             self.args
                 .push(::cynic::Argument::new("skip", "Int", skip.into_argument()));
             self
         }
-        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn after(mut self, after: impl ::cynic::ScalarArgument<Option<String>>) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
@@ -2091,7 +2091,7 @@ pub mod remote {
             ));
             self
         }
-        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn before(mut self, before: impl ::cynic::ScalarArgument<Option<String>>) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
@@ -2099,7 +2099,7 @@ pub mod remote {
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn first(mut self, first: impl ::cynic::ScalarArgument<Option<i32>>) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
@@ -2107,7 +2107,7 @@ pub mod remote {
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn last(mut self, last: impl ::cynic::ScalarArgument<Option<i32>>) -> Self {
             self.args
                 .push(::cynic::Argument::new("last", "Int", last.into_argument()));
             self
@@ -2225,12 +2225,12 @@ pub mod tag {
             ));
             self
         }
-        pub fn skip(mut self, skip: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn skip(mut self, skip: impl ::cynic::ScalarArgument<Option<i32>>) -> Self {
             self.args
                 .push(::cynic::Argument::new("skip", "Int", skip.into_argument()));
             self
         }
-        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn after(mut self, after: impl ::cynic::ScalarArgument<Option<String>>) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
@@ -2238,7 +2238,7 @@ pub mod tag {
             ));
             self
         }
-        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn before(mut self, before: impl ::cynic::ScalarArgument<Option<String>>) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
@@ -2246,7 +2246,7 @@ pub mod tag {
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn first(mut self, first: impl ::cynic::ScalarArgument<Option<i32>>) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
@@ -2254,7 +2254,7 @@ pub mod tag {
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn last(mut self, last: impl ::cynic::ScalarArgument<Option<i32>>) -> Self {
             self.args
                 .push(::cynic::Argument::new("last", "Int", last.into_argument()));
             self
