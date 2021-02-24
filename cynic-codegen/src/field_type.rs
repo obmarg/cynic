@@ -246,6 +246,8 @@ impl FieldType {
     ) -> TokenStream {
         use quote::quote;
 
+        // TODO: wonder if this can be merge with as_type_lock somehow?
+
         let nullable = self.is_nullable();
         let rust_type = match (self, &generic_inner_type) {
             (FieldType::List(inner_type, _), _) => {

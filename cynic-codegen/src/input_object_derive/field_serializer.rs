@@ -60,6 +60,8 @@ impl<'a> FieldSerializer<'a> {
         // So, we have to construct some functions with constraints
         // in order to make sure the fields are of the right type.
 
+        // TODO: This func maybe needs work?  Not sure...
+
         let generic_param = self.graphql_field_type.generic_parameter(Ident::new("T"));
         let arg_type = self.graphql_field_type.to_tokens(
             generic_param.as_ref().map(|p| p.name.clone()),

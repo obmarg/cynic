@@ -38,11 +38,12 @@ impl ArgumentParameterType {
         use quote::quote;
 
         // TODO: Figure out if we can get rid of this generic_inner_type parameter...
-        let type_lock = self.argument_type.to_tokens(None, path_to_markers);
+        let type_lock = self.argument_type.to_tokens(None, path_to_markers.clone());
         if self.argument_type.contains_enum() {
             Ok(quote! { impl ::cynic::EnumArgument<#type_lock> })
         } else if self.argument_type.contains_scalar() {
-            Ok(quote! { impl ::cynic::ScalarArgument<#type_lock> })
+            let scalar_lock = self.argument_type.as_type_lock(path_to_markers);
+            Ok(quote! { impl ::cynic::ScalarArgument<#scalar_lock, #type_lock> })
         } else if self.argument_type.contains_input_object() {
             Ok(quote! { impl ::cynic::InputObjectArgument<#type_lock> })
         } else {

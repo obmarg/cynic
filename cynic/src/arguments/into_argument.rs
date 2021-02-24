@@ -118,7 +118,7 @@ pub trait InputObjectArgument<TypeLock> {
     fn into_argument(self) -> Self::Output;
 }
 
-pub trait ScalarArgument<TypeLock> {
+pub trait ScalarArgument<ScalarTypeLock, ArgumentTypeLock> {
     type Output: SerializableArgument;
 
     fn into_argument(self) -> Self::Output;
@@ -128,7 +128,7 @@ macro_rules! def_argument_generics {
     {$arg_type:ident, $trait:path} => {
         impl<T, TypeLock> $arg_type<TypeLock> for T
         where
-            T: $trait
+            T: $trait,
         {
             type Output = Self;
 
@@ -163,7 +163,47 @@ macro_rules! def_argument_generics {
 
 def_argument_generics!(EnumArgument, crate::Enum<TypeLock>);
 def_argument_generics!(InputObjectArgument, crate::InputObject<TypeLock>);
-def_argument_generics!(ScalarArgument, crate::Scalar<TypeLock>);
+//def_argument_generics!(ScalarArgument, crate::Scalar<TypeLock>);
+
+// TODO: temp until I bring Enum & InputObject in line as well...
+macro_rules! def_scalar_argument_generics {
+    {$arg_type:ident, $trait:path} => {
+        impl<T, TypeLock> $arg_type<TypeLock, TypeLock> for T
+        where
+            T: $trait,
+        {
+            type Output = Self;
+
+            fn into_argument(self) -> Self::Output {
+                self
+            }
+        }
+
+        impl<'a, T, TypeLock> $arg_type<TypeLock, Option<TypeLock>> for Option<&'a T>
+        where
+            T: $trait
+        {
+            type Output = Self;
+
+            fn into_argument(self) -> Self::Output {
+                self
+            }
+        }
+
+        impl<'a, T, TypeLock> $arg_type<TypeLock, Option<TypeLock>> for &'a Option<T>
+        where
+            T: $trait,
+        {
+            type Output = Option<&'a T>;
+
+            fn into_argument(self) -> Self::Output {
+                self.as_ref()
+            }
+        }
+    }
+}
+
+def_scalar_argument_generics!(ScalarArgument, crate::Scalar<TypeLock>);
 
 impl<T, TypeLock> EnumArgument<Option<Vec<TypeLock>>> for Option<Vec<T>>
 where
@@ -258,7 +298,7 @@ macro_rules! impl_common_input_object_argument_conversions {
     };
 }
 
-impl<'a> ScalarArgument<String> for &'a str {
+impl<'a> ScalarArgument<String, String> for &'a str {
     type Output = &'a str;
 
     fn into_argument(self) -> &'a str {
@@ -266,7 +306,7 @@ impl<'a> ScalarArgument<String> for &'a str {
     }
 }
 
-impl<'a> ScalarArgument<Option<String>> for &'a str {
+impl<'a> ScalarArgument<String, Option<String>> for &'a str {
     type Output = Option<&'a str>;
 
     fn into_argument(self) -> Option<&'a str> {
@@ -274,7 +314,7 @@ impl<'a> ScalarArgument<Option<String>> for &'a str {
     }
 }
 
-impl<'a> ScalarArgument<Option<String>> for Option<&'a str> {
+impl<'a> ScalarArgument<String, Option<String>> for Option<&'a str> {
     type Output = Option<&'a str>;
 
     fn into_argument(self) -> Option<&'a str> {
@@ -287,21 +327,55 @@ impl<'a> ScalarArgument<Option<String>> for Option<&'a str> {
 /// Mostly just converts references to owned via cloning and
 /// non option-wrapped types into Option where appropriate.
 #[macro_export]
-macro_rules! impl_common_scalar_argument_conversions {
-    ($inner:ty, $type_lock:path) => {
-        impl $crate::ScalarArgument<Option<$type_lock>> for $inner {
-            type Output = Option<$inner>;
+macro_rules! impl_scalar_argument {
+    ($type:ty, $type_lock:path) => {
+        impl $crate::ScalarArgument<$type_lock, Option<$type_lock>> for $type {
+            type Output = Option<$type>;
 
-            fn into_argument(self) -> Option<$inner> {
+            fn into_argument(self) -> Option<$type> {
                 Some(self)
             }
         }
 
-        impl<'a> $crate::ScalarArgument<Option<$type_lock>> for &'a $inner {
-            type Output = Option<&'a $inner>;
+        impl $crate::ScalarArgument<$type_lock, Option<$type_lock>> for Option<$type> {
+            type Output = Option<$type>;
 
-            fn into_argument(self) -> Option<&'a $inner> {
+            fn into_argument(self) -> Option<$type> {
+                self
+            }
+        }
+
+        impl<'a> $crate::ScalarArgument<$type_lock, Option<$type_lock>> for &'a $type {
+            type Output = Option<&'a $type>;
+
+            fn into_argument(self) -> Option<&'a $type> {
                 Some(self)
+            }
+        }
+
+        impl $crate::ScalarArgument<$type_lock, Option<Vec<$type_lock>>> for Option<Vec<$type>> {
+            type Output = Option<Vec<$type>>;
+
+            fn into_argument(self) -> Self::Output {
+                self
+            }
+        }
+
+        impl $crate::ScalarArgument<$type_lock, Vec<$type_lock>> for Vec<$type> {
+            type Output = Vec<$type>;
+
+            fn into_argument(self) -> Self::Output {
+                self
+            }
+        }
+
+        impl $crate::ScalarArgument<$type_lock, Option<Vec<Option<$type_lock>>>>
+            for Option<Vec<Option<$type>>>
+        {
+            type Output = Option<Vec<Option<$type>>>;
+
+            fn into_argument(self) -> Self::Output {
+                self
             }
         }
 
@@ -309,11 +383,11 @@ macro_rules! impl_common_scalar_argument_conversions {
     };
 }
 
-impl_common_scalar_argument_conversions!(i32, i32);
-impl_common_scalar_argument_conversions!(f64, f64);
-impl_common_scalar_argument_conversions!(String, String);
-impl_common_scalar_argument_conversions!(bool, bool);
-impl_common_scalar_argument_conversions!(Id, Id);
+impl_scalar_argument!(i32, i32);
+impl_scalar_argument!(f64, f64);
+impl_scalar_argument!(String, String);
+impl_scalar_argument!(bool, bool);
+impl_scalar_argument!(Id, Id);
 
 /*
 impl<E, TypeLock> EnumArgument<TypeLock> for E

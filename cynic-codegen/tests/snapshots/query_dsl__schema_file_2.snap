@@ -35,8 +35,8 @@ pub struct MutationRoot;
 #[allow(dead_code)]
 impl MutationRoot {
     pub fn create_book(
-        name: impl ::cynic::ScalarArgument<String>,
-        author: impl ::cynic::ScalarArgument<String>,
+        name: impl ::cynic::ScalarArgument<String, String>,
+        author: impl ::cynic::ScalarArgument<String, String>,
     ) -> mutation_root::CreateBookSelectionBuilder {
         mutation_root::CreateBookSelectionBuilder::new(vec![
             ::cynic::Argument::new("name", "String!", name.into_argument()),
@@ -44,7 +44,7 @@ impl MutationRoot {
         ])
     }
     pub fn delete_book(
-        id: impl ::cynic::ScalarArgument<::cynic::Id>,
+        id: impl ::cynic::ScalarArgument<::cynic::Id, ::cynic::Id>,
     ) -> mutation_root::DeleteBookSelectionBuilder {
         mutation_root::DeleteBookSelectionBuilder::new(vec![::cynic::Argument::new(
             "id",
@@ -66,7 +66,7 @@ pub struct SubscriptionRoot;
 #[allow(dead_code)]
 impl SubscriptionRoot {
     pub fn interval(
-        n: impl ::cynic::ScalarArgument<i32>,
+        n: impl ::cynic::ScalarArgument<i32, i32>,
     ) -> subscription_root::IntervalSelectionBuilder {
         subscription_root::IntervalSelectionBuilder::new(vec![::cynic::Argument::new(
             "n",
