@@ -188,7 +188,9 @@ pub mod utils;
 
 pub use json_decode::DecodeError;
 
-pub use arguments::{Argument, FromArguments, IntoArgument, SerializableArgument};
+pub use arguments::{
+    Argument, EnumArgument, FromArguments, InputObjectArgument, IntoArgument, SerializableArgument,
+};
 pub use builders::{MutationBuilder, QueryBuilder, SubscriptionBuilder};
 pub use fragments::{FragmentArguments, FragmentContext, InlineFragments, QueryFragment};
 pub use id::Id;
@@ -214,7 +216,7 @@ pub type SerializeError = Box<dyn std::error::Error + Send + Sync>;
 /// This trait is generic over some TypeLock which is used to tie an Enum
 /// definition back into it's GraphQL enum.  Generally this will be some
 /// type generated in the GQL code.
-pub trait Enum<TypeLock>: Sized {
+pub trait Enum<TypeLock>: Sized + SerializableArgument {
     fn select() -> SelectionSet<'static, Self, TypeLock>;
 }
 
@@ -227,7 +229,7 @@ pub trait Enum<TypeLock>: Sized {
 /// It's recommended to derive this trait with the [InputObject](derive.InputObject.html)
 /// derive.  You can also implement it yourself, but you'll be responsible
 /// for implementing the `SerializableArgument` trait if you want to use it.
-pub trait InputObject<TypeLock> {}
+pub trait InputObject<TypeLock>: SerializableArgument {}
 
 impl<TypeLock, T> InputObject<TypeLock> for &T where T: InputObject<TypeLock> {}
 impl<TypeLock, T> InputObject<TypeLock> for Box<T> where T: InputObject<TypeLock> {}

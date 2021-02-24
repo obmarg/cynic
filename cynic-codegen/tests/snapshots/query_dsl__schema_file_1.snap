@@ -201,45 +201,39 @@ impl Location {
 pub struct Mutation;
 #[allow(dead_code)]
 impl Mutation {
-    pub fn subscribe<
-        InputT: ::cynic::InputObject<SubscribeInput> + ::cynic::SerializableArgument,
-    >(
-        input: InputT,
+    pub fn subscribe(
+        input: impl ::cynic::InputObjectArgument<SubscribeInput>,
     ) -> mutation::SubscribeSelectionBuilder {
         mutation::SubscribeSelectionBuilder::new(vec![::cynic::Argument::new(
             "input",
             "SubscribeInput!",
-            input,
+            input.into_argument(),
         )])
     }
-    pub fn post_job<InputT: ::cynic::InputObject<PostJobInput> + ::cynic::SerializableArgument>(
-        input: InputT,
+    pub fn post_job(
+        input: impl ::cynic::InputObjectArgument<PostJobInput>,
     ) -> mutation::PostJobSelectionBuilder {
         mutation::PostJobSelectionBuilder::new(vec![::cynic::Argument::new(
             "input",
             "PostJobInput!",
-            input,
+            input.into_argument(),
         )])
     }
-    pub fn update_job<
-        InputT: ::cynic::InputObject<UpdateJobInput> + ::cynic::SerializableArgument,
-    >(
-        input: InputT,
+    pub fn update_job(
+        input: impl ::cynic::InputObjectArgument<UpdateJobInput>,
         admin_secret: String,
     ) -> mutation::UpdateJobSelectionBuilder {
         mutation::UpdateJobSelectionBuilder::new(vec![
-            ::cynic::Argument::new("input", "UpdateJobInput!", input),
+            ::cynic::Argument::new("input", "UpdateJobInput!", input.into_argument()),
             ::cynic::Argument::new("adminSecret", "String!", admin_secret),
         ])
     }
-    pub fn update_company<
-        InputT: ::cynic::InputObject<UpdateCompanyInput> + ::cynic::SerializableArgument,
-    >(
-        input: InputT,
+    pub fn update_company(
+        input: impl ::cynic::InputObjectArgument<UpdateCompanyInput>,
         admin_secret: String,
     ) -> mutation::UpdateCompanySelectionBuilder {
         mutation::UpdateCompanySelectionBuilder::new(vec![
-            ::cynic::Argument::new("input", "UpdateCompanyInput!", input),
+            ::cynic::Argument::new("input", "UpdateCompanyInput!", input.into_argument()),
             ::cynic::Argument::new("adminSecret", "String!", admin_secret),
         ])
     }
@@ -251,47 +245,47 @@ impl Query {
     pub fn jobs() -> query::JobsSelectionBuilder {
         query::JobsSelectionBuilder::new(vec![])
     }
-    pub fn job<InputT: ::cynic::InputObject<JobInput> + ::cynic::SerializableArgument>(
-        input: InputT,
-    ) -> query::JobSelectionBuilder {
-        query::JobSelectionBuilder::new(vec![::cynic::Argument::new("input", "JobInput!", input)])
+    pub fn job(input: impl ::cynic::InputObjectArgument<JobInput>) -> query::JobSelectionBuilder {
+        query::JobSelectionBuilder::new(vec![::cynic::Argument::new(
+            "input",
+            "JobInput!",
+            input.into_argument(),
+        )])
     }
-    pub fn locations<
-        InputT: ::cynic::InputObject<LocationsInput> + ::cynic::SerializableArgument,
-    >(
-        input: InputT,
+    pub fn locations(
+        input: impl ::cynic::InputObjectArgument<LocationsInput>,
     ) -> query::LocationsSelectionBuilder {
         query::LocationsSelectionBuilder::new(vec![::cynic::Argument::new(
             "input",
             "LocationsInput!",
-            input,
+            input.into_argument(),
         )])
     }
-    pub fn city<InputT: ::cynic::InputObject<LocationInput> + ::cynic::SerializableArgument>(
-        input: InputT,
+    pub fn city(
+        input: impl ::cynic::InputObjectArgument<LocationInput>,
     ) -> query::CitySelectionBuilder {
         query::CitySelectionBuilder::new(vec![::cynic::Argument::new(
             "input",
             "LocationInput!",
-            input,
+            input.into_argument(),
         )])
     }
-    pub fn country<InputT: ::cynic::InputObject<LocationInput> + ::cynic::SerializableArgument>(
-        input: InputT,
+    pub fn country(
+        input: impl ::cynic::InputObjectArgument<LocationInput>,
     ) -> query::CountrySelectionBuilder {
         query::CountrySelectionBuilder::new(vec![::cynic::Argument::new(
             "input",
             "LocationInput!",
-            input,
+            input.into_argument(),
         )])
     }
-    pub fn remote<InputT: ::cynic::InputObject<LocationInput> + ::cynic::SerializableArgument>(
-        input: InputT,
+    pub fn remote(
+        input: impl ::cynic::InputObjectArgument<LocationInput>,
     ) -> query::RemoteSelectionBuilder {
         query::RemoteSelectionBuilder::new(vec![::cynic::Argument::new(
             "input",
             "LocationInput!",
-            input,
+            input.into_argument(),
         )])
     }
     pub fn commitments() -> query::CommitmentsSelectionBuilder {
@@ -459,11 +453,9 @@ pub mod city {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             JobsSelectionBuilder { args }
         }
-        pub fn r#where<
-            RWhereT: ::cynic::InputObject<super::JobWhereInput> + ::cynic::SerializableArgument,
-        >(
+        pub fn r#where(
             mut self,
-            r#where: impl ::cynic::IntoArgument<Option<RWhereT>>,
+            r#where: impl ::cynic::InputObjectArgument<Option<super::JobWhereInput>>,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "where",
@@ -472,11 +464,9 @@ pub mod city {
             ));
             self
         }
-        pub fn order_by<
-            OrderByT: ::cynic::Enum<super::JobOrderByInput> + ::cynic::SerializableArgument,
-        >(
+        pub fn order_by(
             mut self,
-            order_by: impl ::cynic::IntoArgument<Option<OrderByT>>,
+            order_by: impl ::cynic::EnumArgument<Option<super::JobOrderByInput>>,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "orderBy",
@@ -615,11 +605,9 @@ pub mod commitment {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             JobsSelectionBuilder { args }
         }
-        pub fn r#where<
-            RWhereT: ::cynic::InputObject<super::JobWhereInput> + ::cynic::SerializableArgument,
-        >(
+        pub fn r#where(
             mut self,
-            r#where: impl ::cynic::IntoArgument<Option<RWhereT>>,
+            r#where: impl ::cynic::InputObjectArgument<Option<super::JobWhereInput>>,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "where",
@@ -628,11 +616,9 @@ pub mod commitment {
             ));
             self
         }
-        pub fn order_by<
-            OrderByT: ::cynic::Enum<super::JobOrderByInput> + ::cynic::SerializableArgument,
-        >(
+        pub fn order_by(
             mut self,
-            order_by: impl ::cynic::IntoArgument<Option<OrderByT>>,
+            order_by: impl ::cynic::EnumArgument<Option<super::JobOrderByInput>>,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "orderBy",
@@ -807,11 +793,9 @@ pub mod company {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             JobsSelectionBuilder { args }
         }
-        pub fn r#where<
-            RWhereT: ::cynic::InputObject<super::JobWhereInput> + ::cynic::SerializableArgument,
-        >(
+        pub fn r#where(
             mut self,
-            r#where: impl ::cynic::IntoArgument<Option<RWhereT>>,
+            r#where: impl ::cynic::InputObjectArgument<Option<super::JobWhereInput>>,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "where",
@@ -820,11 +804,9 @@ pub mod company {
             ));
             self
         }
-        pub fn order_by<
-            OrderByT: ::cynic::Enum<super::JobOrderByInput> + ::cynic::SerializableArgument,
-        >(
+        pub fn order_by(
             mut self,
-            order_by: impl ::cynic::IntoArgument<Option<OrderByT>>,
+            order_by: impl ::cynic::EnumArgument<Option<super::JobOrderByInput>>,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "orderBy",
@@ -1037,11 +1019,9 @@ pub mod country {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CitiesSelectionBuilder { args }
         }
-        pub fn r#where<
-            RWhereT: ::cynic::InputObject<super::CityWhereInput> + ::cynic::SerializableArgument,
-        >(
+        pub fn r#where(
             mut self,
-            r#where: impl ::cynic::IntoArgument<Option<RWhereT>>,
+            r#where: impl ::cynic::InputObjectArgument<Option<super::CityWhereInput>>,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "where",
@@ -1050,11 +1030,9 @@ pub mod country {
             ));
             self
         }
-        pub fn order_by<
-            OrderByT: ::cynic::Enum<super::CityOrderByInput> + ::cynic::SerializableArgument,
-        >(
+        pub fn order_by(
             mut self,
-            order_by: impl ::cynic::IntoArgument<Option<OrderByT>>,
+            order_by: impl ::cynic::EnumArgument<Option<super::CityOrderByInput>>,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "orderBy",
@@ -1115,11 +1093,9 @@ pub mod country {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             JobsSelectionBuilder { args }
         }
-        pub fn r#where<
-            RWhereT: ::cynic::InputObject<super::JobWhereInput> + ::cynic::SerializableArgument,
-        >(
+        pub fn r#where(
             mut self,
-            r#where: impl ::cynic::IntoArgument<Option<RWhereT>>,
+            r#where: impl ::cynic::InputObjectArgument<Option<super::JobWhereInput>>,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "where",
@@ -1128,11 +1104,9 @@ pub mod country {
             ));
             self
         }
-        pub fn order_by<
-            OrderByT: ::cynic::Enum<super::JobOrderByInput> + ::cynic::SerializableArgument,
-        >(
+        pub fn order_by(
             mut self,
-            order_by: impl ::cynic::IntoArgument<Option<OrderByT>>,
+            order_by: impl ::cynic::EnumArgument<Option<super::JobOrderByInput>>,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "orderBy",
@@ -1283,11 +1257,9 @@ pub mod job {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CitiesSelectionBuilder { args }
         }
-        pub fn r#where<
-            RWhereT: ::cynic::InputObject<super::CityWhereInput> + ::cynic::SerializableArgument,
-        >(
+        pub fn r#where(
             mut self,
-            r#where: impl ::cynic::IntoArgument<Option<RWhereT>>,
+            r#where: impl ::cynic::InputObjectArgument<Option<super::CityWhereInput>>,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "where",
@@ -1296,11 +1268,9 @@ pub mod job {
             ));
             self
         }
-        pub fn order_by<
-            OrderByT: ::cynic::Enum<super::CityOrderByInput> + ::cynic::SerializableArgument,
-        >(
+        pub fn order_by(
             mut self,
-            order_by: impl ::cynic::IntoArgument<Option<OrderByT>>,
+            order_by: impl ::cynic::EnumArgument<Option<super::CityOrderByInput>>,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "orderBy",
@@ -1361,11 +1331,9 @@ pub mod job {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CountriesSelectionBuilder { args }
         }
-        pub fn r#where<
-            RWhereT: ::cynic::InputObject<super::CountryWhereInput> + ::cynic::SerializableArgument,
-        >(
+        pub fn r#where(
             mut self,
-            r#where: impl ::cynic::IntoArgument<Option<RWhereT>>,
+            r#where: impl ::cynic::InputObjectArgument<Option<super::CountryWhereInput>>,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "where",
@@ -1374,11 +1342,9 @@ pub mod job {
             ));
             self
         }
-        pub fn order_by<
-            OrderByT: ::cynic::Enum<super::CountryOrderByInput> + ::cynic::SerializableArgument,
-        >(
+        pub fn order_by(
             mut self,
-            order_by: impl ::cynic::IntoArgument<Option<OrderByT>>,
+            order_by: impl ::cynic::EnumArgument<Option<super::CountryOrderByInput>>,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "orderBy",
@@ -1439,11 +1405,9 @@ pub mod job {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             RemotesSelectionBuilder { args }
         }
-        pub fn r#where<
-            RWhereT: ::cynic::InputObject<super::RemoteWhereInput> + ::cynic::SerializableArgument,
-        >(
+        pub fn r#where(
             mut self,
-            r#where: impl ::cynic::IntoArgument<Option<RWhereT>>,
+            r#where: impl ::cynic::InputObjectArgument<Option<super::RemoteWhereInput>>,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "where",
@@ -1452,11 +1416,9 @@ pub mod job {
             ));
             self
         }
-        pub fn order_by<
-            OrderByT: ::cynic::Enum<super::RemoteOrderByInput> + ::cynic::SerializableArgument,
-        >(
+        pub fn order_by(
             mut self,
-            order_by: impl ::cynic::IntoArgument<Option<OrderByT>>,
+            order_by: impl ::cynic::EnumArgument<Option<super::RemoteOrderByInput>>,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "orderBy",
@@ -1573,11 +1535,9 @@ pub mod job {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             TagsSelectionBuilder { args }
         }
-        pub fn r#where<
-            RWhereT: ::cynic::InputObject<super::TagWhereInput> + ::cynic::SerializableArgument,
-        >(
+        pub fn r#where(
             mut self,
-            r#where: impl ::cynic::IntoArgument<Option<RWhereT>>,
+            r#where: impl ::cynic::InputObjectArgument<Option<super::TagWhereInput>>,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "where",
@@ -1586,11 +1546,9 @@ pub mod job {
             ));
             self
         }
-        pub fn order_by<
-            OrderByT: ::cynic::Enum<super::TagOrderByInput> + ::cynic::SerializableArgument,
-        >(
+        pub fn order_by(
             mut self,
-            order_by: impl ::cynic::IntoArgument<Option<OrderByT>>,
+            order_by: impl ::cynic::EnumArgument<Option<super::TagOrderByInput>>,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "orderBy",
@@ -1897,11 +1855,9 @@ pub mod query {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             JobsSelectionBuilder { args }
         }
-        pub fn input<
-            InputT: ::cynic::InputObject<super::JobsInput> + ::cynic::SerializableArgument,
-        >(
+        pub fn input(
             mut self,
-            input: impl ::cynic::IntoArgument<Option<InputT>>,
+            input: impl ::cynic::InputObjectArgument<Option<super::JobsInput>>,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "input",
@@ -2143,11 +2099,9 @@ pub mod remote {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             JobsSelectionBuilder { args }
         }
-        pub fn r#where<
-            RWhereT: ::cynic::InputObject<super::JobWhereInput> + ::cynic::SerializableArgument,
-        >(
+        pub fn r#where(
             mut self,
-            r#where: impl ::cynic::IntoArgument<Option<RWhereT>>,
+            r#where: impl ::cynic::InputObjectArgument<Option<super::JobWhereInput>>,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "where",
@@ -2156,11 +2110,9 @@ pub mod remote {
             ));
             self
         }
-        pub fn order_by<
-            OrderByT: ::cynic::Enum<super::JobOrderByInput> + ::cynic::SerializableArgument,
-        >(
+        pub fn order_by(
             mut self,
-            order_by: impl ::cynic::IntoArgument<Option<OrderByT>>,
+            order_by: impl ::cynic::EnumArgument<Option<super::JobOrderByInput>>,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "orderBy",
@@ -2295,11 +2247,9 @@ pub mod tag {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             JobsSelectionBuilder { args }
         }
-        pub fn r#where<
-            RWhereT: ::cynic::InputObject<super::JobWhereInput> + ::cynic::SerializableArgument,
-        >(
+        pub fn r#where(
             mut self,
-            r#where: impl ::cynic::IntoArgument<Option<RWhereT>>,
+            r#where: impl ::cynic::InputObjectArgument<Option<super::JobWhereInput>>,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "where",
@@ -2308,11 +2258,9 @@ pub mod tag {
             ));
             self
         }
-        pub fn order_by<
-            OrderByT: ::cynic::Enum<super::JobOrderByInput> + ::cynic::SerializableArgument,
-        >(
+        pub fn order_by(
             mut self,
-            order_by: impl ::cynic::IntoArgument<Option<OrderByT>>,
+            order_by: impl ::cynic::EnumArgument<Option<super::JobOrderByInput>>,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "orderBy",

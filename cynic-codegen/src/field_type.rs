@@ -95,6 +95,14 @@ impl FieldType {
         }
     }
 
+    pub fn contains_input_object(&self) -> bool {
+        match self {
+            FieldType::List(inner, _) => inner.contains_enum(),
+            FieldType::InputObject(_, _) => true,
+            _ => false,
+        }
+    }
+
     /// Returns the path to the enum marker struct stored in this field, if any
     pub fn inner_enum_path(&self) -> Option<Ident> {
         match self {
@@ -244,11 +252,24 @@ impl FieldType {
 
                 quote! { #path_to_types }
             }
-            (FieldType::Enum(_, _), _) => {
-                panic!("Enums are always generic, we shouldn't get here.")
+            (FieldType::Enum(name, _), _) => {
+                let type_lock = TypePath::concat(&[path_to_types, name.clone().into()]);
+                quote! { #type_lock }
+                // TODO: remove this, no longer applies:
+                //
+                // panic!("Enums are always generic, we shouldn't get here.")
+                //
+                // TODO: Need to think about whether we want this branch on a different path...
             }
-            (FieldType::InputObject(_, _), _) => {
-                panic!("InputObjects are always generic, we shouldn't get here.")
+            (FieldType::InputObject(name, _), _) => {
+                let type_lock = TypePath::concat(&[path_to_types, name.clone().into()]);
+                quote! { #type_lock }
+                // TODO: remove this, no longer applies:
+                //
+                // panic!("Enums are always generic, we shouldn't get here.")
+                //
+                // panic!("InputObjects are always generic, we shouldn't get here.")
+                // TODO: Need to think about whether we want this branch on a different path...
             }
         };
 

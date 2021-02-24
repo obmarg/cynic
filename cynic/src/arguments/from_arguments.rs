@@ -5,7 +5,7 @@ use crate::FragmentArguments;
 ///
 /// For example if an outer QueryFragment has a struct with several parameters
 /// but an inner QueryFragment needs none then we can use () as the arguments
-/// type on the inner fragments and use the blanket implementation of IntoArguments
+/// type on the inner fragments and use the blanket implementation of FromArguments
 /// to convert to ().
 pub trait FromArguments<T> {
     fn from_arguments(args: T) -> Self;

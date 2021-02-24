@@ -231,11 +231,9 @@ pub mod subscription_root {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             BooksSelectionBuilder { args }
         }
-        pub fn mutation_type<
-            MutationTypeT: ::cynic::Enum<super::MutationType> + ::cynic::SerializableArgument,
-        >(
+        pub fn mutation_type(
             mut self,
-            mutation_type: impl ::cynic::IntoArgument<Option<MutationTypeT>>,
+            mutation_type: impl ::cynic::EnumArgument<Option<super::MutationType>>,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "mutationType",

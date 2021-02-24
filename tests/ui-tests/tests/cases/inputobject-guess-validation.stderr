@@ -10,8 +10,11 @@ error: This InputObject is missing these required fields: field
 62 |     #[cynic(graphql_type = "IssueOrder")]
    |     ^
 
-error[E0277]: the trait bound `&queries::IssueOrder: IntoArgument<Option<_>>` is not satisfied
+error[E0277]: the trait bound `queries::IssueOrder: InputObject<Option<query_dsl::IssueOrder>>` is not satisfied
   --> $DIR/inputobject-guess-validation.rs:30:32
    |
 30 |         #[arguments(order_by = &args.pr_order)]
-   |                                ^^^^^^^^^^^^^^ the trait `IntoArgument<Option<_>>` is not implemented for `&queries::IssueOrder`
+   |                                ^^^^^^^^^^^^^^ the trait `InputObject<Option<query_dsl::IssueOrder>>` is not implemented for `queries::IssueOrder`
+   |
+   = note: required because of the requirements on the impl of `InputObject<Option<query_dsl::IssueOrder>>` for `&queries::IssueOrder`
+   = note: required because of the requirements on the impl of `InputObjectArgument<Option<query_dsl::IssueOrder>>` for `&queries::IssueOrder`
