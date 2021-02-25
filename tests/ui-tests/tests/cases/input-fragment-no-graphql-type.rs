@@ -4,7 +4,7 @@ schema_path = r#"./../../../schemas/starwars.schema.graphql"#,
 query_module = "query_dsl",
 )]
 mod queries {
-    use super::{query_dsl, types::*};
+    use super::query_dsl;
 
     #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "Root")]
@@ -46,14 +46,6 @@ mod queries {
 
 }
 
-#[cynic::query_module(
-schema_path = r#"./../../../schemas/starwars.schema.graphql"#,
-query_module = "query_dsl",
-)]
-mod types {
-}
-
 mod query_dsl{
-    use super::types::*;
     cynic::query_dsl!("./../../../schemas/starwars.schema.graphql");
 }

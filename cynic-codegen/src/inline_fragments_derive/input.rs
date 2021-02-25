@@ -1,4 +1,5 @@
 use darling::util::SpannedValue;
+use proc_macro2::Span;
 
 #[derive(darling::FromDeriveInput)]
 #[darling(attributes(cynic), supports(enum_newtype, enum_unit))]
@@ -13,6 +14,25 @@ pub struct InlineFragmentsDeriveInput {
     pub graphql_type: Option<SpannedValue<String>>,
     #[darling(default)]
     pub argument_struct: Option<syn::Ident>,
+}
+
+impl InlineFragmentsDeriveInput {
+    pub fn graphql_type_name(&self) -> String {
+        String::from(
+            &*(self
+                .graphql_type
+                .as_ref()
+                .map(|val| val.clone())
+                .unwrap_or(SpannedValue::from(self.ident.to_string()))),
+        )
+    }
+
+    pub fn graphql_type_span(&self) -> Span {
+        self.graphql_type
+            .as_ref()
+            .map(|val| val.span())
+            .unwrap_or(self.ident.span())
+    }
 }
 
 #[derive(darling::FromVariant)]

@@ -1,4 +1,5 @@
 use darling::util::SpannedValue;
+use proc_macro2::Span;
 
 use crate::ident::RenameAll;
 
@@ -25,4 +26,24 @@ pub struct EnumDeriveVariant {
 
     #[darling(default)]
     pub(super) rename: Option<SpannedValue<String>>,
+}
+
+impl EnumDeriveInput {
+    pub fn graphql_type_name(&self) -> String {
+        // May be have a good way.
+        String::from(
+            &*(self
+                .graphql_type
+                .as_ref()
+                .map(|val| val.clone())
+                .unwrap_or(SpannedValue::from(self.ident.to_string()))),
+        )
+    }
+
+    pub fn graphql_type_span(&self) -> Span {
+        self.graphql_type
+            .as_ref()
+            .map(|val| val.span())
+            .unwrap_or(self.ident.span())
+    }
 }

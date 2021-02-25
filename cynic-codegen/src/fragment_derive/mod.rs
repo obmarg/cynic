@@ -20,7 +20,6 @@ use type_ext::SynTypeExt;
 pub use input::{FragmentDeriveField, FragmentDeriveInput};
 
 use crate::suggestions::{format_guess, guess_field};
-use crate::utils::ExtractString;
 pub(crate) use schema_parsing::Schema;
 
 pub fn fragment_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
@@ -44,27 +43,24 @@ pub fn fragment_derive_impl(
 
     input.validate()?;
 
-    let schema_path = input.schema_path;
+    let schema_path = &input.schema_path;
 
-    let graphql_type = input.graphql_type;
-    let closure_input_ident = input.ident;
     let object = schema
         .objects
-        .get(&Ident::for_type(
-            &*(graphql_type.extract_spanned_value(closure_input_ident.to_string())),
-        ))
+        .get(&Ident::for_type(&input.graphql_type_name()))
         .ok_or_else(|| {
             syn::Error::new(
-                graphql_type.extract_spanned(),
+                input.graphql_type_span(),
                 format!(
                     "Can't find {} in {}",
-                    *graphql_type.extract_spanned_value(closure_input_ident.to_string()),
-                    *schema_path
+                    input.graphql_type_name(),
+                    **schema_path
                 ),
             )
         })?;
 
-    let argument_struct = if let Some(arg_struct) = input.argument_struct {
+    let input_argument_struct = (&input.argument_struct).clone();
+    let argument_struct = if let Some(arg_struct) = input_argument_struct {
         let span = arg_struct.span();
 
         let arg_struct_val: Ident = arg_struct.into();
@@ -75,13 +71,14 @@ pub fn fragment_derive_impl(
     };
 
     if let darling::ast::Data::Struct(fields) = &input.data {
+        let graphql_name = &(input.graphql_type_name());
         let query_module = input.query_module;
         let fragment_impl = FragmentImpl::new_for(
             &fields,
-            &closure_input_ident,
+            &input.ident,
             &object,
             Ident::new_spanned(&*query_module, query_module.span()).into(),
-            &(*graphql_type.extract_spanned_value(closure_input_ident.to_string())),
+            graphql_name,
             argument_struct,
         )?;
         Ok(quote::quote! {

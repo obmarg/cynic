@@ -8,7 +8,6 @@ pub mod input;
 pub use input::InlineFragmentsDeriveInput;
 
 use crate::suggestions::{format_guess, guess_field};
-use crate::utils::ExtractString;
 use input::InlineFragmentsDeriveVariant;
 use std::collections::HashSet;
 
@@ -29,12 +28,7 @@ pub(crate) fn inline_fragments_derive_impl(
     let schema =
         load_schema(&*input.schema_path).map_err(|e| e.into_syn_error(input.schema_path.span()))?;
 
-    let target_type = find_union_or_interface_type(
-        &*input
-            .graphql_type
-            .extract_spanned_value(input.ident.to_string()),
-        &schema,
-    );
+    let target_type = find_union_or_interface_type(&input.graphql_type_name(), &schema);
     if target_type.is_none() {
         use graphql_parser::schema::{Definition, TypeDefinition};
         let candidates = schema.definitions.iter().flat_map(|def| match def {
@@ -44,19 +38,12 @@ pub(crate) fn inline_fragments_derive_impl(
             }
             _ => None,
         });
-        let guess_field = guess_field(
-            candidates,
-            &(**(input
-                .graphql_type
-                .extract_spanned_value(input.ident.to_string()))),
-        );
+        let guess_field = guess_field(candidates, &(input.graphql_type_name()));
         return Err(syn::Error::new(
-            input.graphql_type.extract_spanned(),
+            input.graphql_type_span(),
             format!(
                 "Could not find a Union type or Interface named {}.{}",
-                &*input
-                    .graphql_type
-                    .extract_spanned_value(input.ident.to_string()),
+                &input.graphql_type_name(),
                 format_guess(guess_field)
             ),
         )
@@ -64,7 +51,8 @@ pub(crate) fn inline_fragments_derive_impl(
     }
     let target_type = target_type.unwrap();
 
-    let argument_struct = if let Some(arg_struct) = input.argument_struct {
+    let input_argument_struct = (&input.argument_struct).clone();
+    let argument_struct = if let Some(arg_struct) = input_argument_struct {
         let span = arg_struct.span();
         let arg_struct_val: Ident = arg_struct.into();
         let argument_struct = quote_spanned! { span => #arg_struct_val };
@@ -82,19 +70,11 @@ pub(crate) fn inline_fragments_derive_impl(
             target_struct: input.ident.clone(),
             type_lock: TypePath::concat(&[
                 Ident::new_spanned(&*input.query_module, input.query_module.span()).into(),
-                Ident::for_type(
-                    &*(input
-                        .graphql_type
-                        .extract_spanned_value(input.ident.to_string())),
-                )
-                .into(),
+                Ident::for_type(&input.graphql_type_name()).into(),
             ]),
             argument_struct,
             possible_types: possible_types_from_variants(variants)?,
-            graphql_type_name: (*input
-                .graphql_type
-                .extract_spanned_value(input.ident.to_string()))
-            .clone(),
+            graphql_type_name: (input.graphql_type_name()).clone(),
             fallback,
         };
 
