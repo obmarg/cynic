@@ -27,6 +27,9 @@ all APIs might be changed.
   field in a QueryFragment.
 - Field type mismatch errors in QueryFragments are now reported on the span of
   the field type.
+- Cynic will no longer generate invalid QueryFragments if fields are not 
+  selected on a composite.
+- Cynic will now error if a QueryFragment selects no fields.
 
 ## v0.12.2 - 2020-02-22
 
