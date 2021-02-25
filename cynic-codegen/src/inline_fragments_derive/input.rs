@@ -18,20 +18,17 @@ pub struct InlineFragmentsDeriveInput {
 
 impl InlineFragmentsDeriveInput {
     pub fn graphql_type_name(&self) -> String {
-        String::from(
-            &*(self
-                .graphql_type
-                .as_ref()
-                .map(|val| val.clone())
-                .unwrap_or(SpannedValue::from(self.ident.to_string()))),
-        )
+        self.graphql_type
+            .as_ref()
+            .map(|sp| String::from((*sp).to_string()))
+            .unwrap_or_else(|| self.ident.to_string())
     }
 
     pub fn graphql_type_span(&self) -> Span {
         self.graphql_type
             .as_ref()
             .map(|val| val.span())
-            .unwrap_or(self.ident.span())
+            .unwrap_or_else(|| self.ident.span())
     }
 }
 
