@@ -251,7 +251,11 @@ impl<'a, 'query, 'schema, 'doc> Normaliser<'a, 'query, 'schema, 'doc> {
                 let schema_field = self.type_index.field_for_path(&new_path)?;
 
                 let inner_field = if field.selection_set.items.is_empty() {
-                    Field::Leaf
+                    if let OutputType::Object(_) = schema_field.value_type.inner_ref().lookup()? {
+                        return Err(Error::NoFieldSelected(schema_field.name.into()));
+                    } else {
+                        Field::Leaf
+                    }
                 } else {
                     Field::Composite(self.normalise_selection_set(&field.selection_set, new_path)?)
                 };
@@ -568,6 +572,61 @@ mod tests {
         assert_matches!(
             normalise(&query, &type_index),
             Err(Error::TypeConditionFailed(_, _))
+        )
+    }
+
+    #[test]
+    fn check_field_selected() {
+        let schema = load_schema();
+        let type_index = Rc::new(TypeIndex::from_schema(&schema));
+        let query = graphql_parser::parse_query::<&str>(
+            r#"
+           query MyQuery {
+              allFilms(after: "") {
+                edges {
+                  cursor
+                  node {
+                    created
+                    edited
+                    episodeID
+                  }
+                }
+              }
+            }
+            "#,
+        )
+        .unwrap();
+        let normalised = normalise(&query, &type_index).unwrap();
+
+        let film_selections = normalised
+            .selection_sets
+            .iter()
+            .map(|s| s.target_type.name())
+            .collect::<Vec<_>>();
+
+        assert_eq!(film_selections.len(), 4);
+    }
+
+    #[test]
+    fn check_no_field_selected() {
+        let schema = load_schema();
+        let type_index = Rc::new(TypeIndex::from_schema(&schema));
+        let query = graphql_parser::parse_query::<&str>(
+            r#"
+           query MyQuery {
+              allFilms(after: "") {
+                edges {
+                  cursor
+                  node
+                }
+              }
+            }
+            "#,
+        )
+        .unwrap();
+        assert_matches!(
+            normalise(&query, &type_index),
+            Err(Error::NoFieldSelected(_))
         )
     }
 
