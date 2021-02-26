@@ -1,6 +1,7 @@
 use darling::util::SpannedValue;
 
 use crate::ident::RenameAll;
+use proc_macro2::Span;
 
 #[derive(darling::FromDeriveInput)]
 #[darling(attributes(cynic), supports(struct_named))]
@@ -10,7 +11,9 @@ pub struct InputObjectDeriveInput {
 
     pub schema_path: SpannedValue<String>,
     pub query_module: SpannedValue<String>,
-    pub graphql_type: SpannedValue<String>,
+
+    #[darling(default)]
+    pub graphql_type: Option<SpannedValue<String>>,
 
     #[darling(default)]
     pub require_all_fields: bool,
@@ -30,4 +33,20 @@ pub struct InputObjectDeriveField {
 
     #[darling(default)]
     pub(super) rename: Option<SpannedValue<String>>,
+}
+
+impl InputObjectDeriveInput {
+    pub fn graphql_type_name(&self) -> String {
+        self.graphql_type
+            .as_ref()
+            .map(|sp| String::from(sp.to_string()))
+            .unwrap_or_else(|| self.ident.to_string())
+    }
+
+    pub fn graphql_type_span(&self) -> Span {
+        self.graphql_type
+            .as_ref()
+            .map(|val| val.span())
+            .unwrap_or_else(|| self.ident.span())
+    }
 }

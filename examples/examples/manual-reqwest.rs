@@ -9,7 +9,7 @@ mod query_dsl {
 #[cynic(
     schema_path = "../schemas/starwars.schema.graphql",
     query_module = "query_dsl",
-    graphql_type = "Film"
+    // graphql_type = "Film" Same name, no longer needed
 )]
 struct Film {
     title: Option<String>,

@@ -41,7 +41,7 @@ pub fn input_object_derive_impl(
 
     let input_object_def = schema.definitions.iter().find_map(|def| {
         if let Definition::TypeDefinition(TypeDefinition::InputObject(obj)) = def {
-            if obj.name == *input.graphql_type {
+            if obj.name == input.graphql_type_name() {
                 return Some(obj);
             }
         }
@@ -55,12 +55,12 @@ pub fn input_object_derive_impl(
                 None
             }
         });
-        let guess_field = guess_field(candidates, &(*(input.graphql_type)));
+        let guess_field = guess_field(candidates, &input.graphql_type_name());
         return Err(syn::Error::new(
-            input.graphql_type.span(),
+            input.graphql_type_span(),
             format!(
                 "Could not find an InputObject named {} in {}.{}",
-                *input.graphql_type,
+                input.graphql_type_name(),
                 *input.schema_path,
                 format_guess(guess_field)
             ),
@@ -74,7 +74,7 @@ pub fn input_object_derive_impl(
 
     if let darling::ast::Data::Struct(fields) = &input.data {
         let ident = &input.ident;
-        let input_marker_ident = Ident::for_type(&*input.graphql_type);
+        let input_marker_ident = Ident::for_type(&input.graphql_type_name());
         let query_module = Ident::for_module(&input.query_module);
         let input_object_name = ident.to_string();
 
