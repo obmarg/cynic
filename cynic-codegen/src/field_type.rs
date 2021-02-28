@@ -1,4 +1,5 @@
-use proc_macro2::TokenStream;
+use proc_macro2::{Span, TokenStream};
+use quote::quote;
 
 use crate::{
     generic_param::{GenericConstraint, GenericParameter},
@@ -162,6 +163,35 @@ impl FieldType {
         }
     }
 
+    /// Returns a wrapper path suitable for use in the second parameter to the `InputType` trait.
+    /// e.g. `Nullable<NamedType>` for `Int`, `NamedType` for `Int!`
+    pub fn wrapper_path(&self) -> Result<TokenStream, crate::Errors> {
+        match self {
+            FieldType::List(inner, nullable) => {
+                let inner_path = inner.wrapper_path()?;
+                if *nullable {
+                    Ok(quote! { ::cynic::inputs::Nullable<::cynic::inputs::List<#inner_path>> })
+                } else {
+                    Ok(quote! { ::cynic::inputs::List<#inner_path> })
+                }
+            }
+            FieldType::Scalar(_, nullable)
+            | FieldType::Enum(_, nullable)
+            | FieldType::InputObject(_, nullable) => {
+                if *nullable {
+                    Ok(quote! { ::cynic::inputs::Nullable<::cynic::inputs::NamedType> })
+                } else {
+                    Ok(quote! { ::cynic::inputs::NamedType })
+                }
+            }
+            _ => Err(syn::Error::new(
+                Span::call_site(),
+                "Arguments must be scalars, enums or input objects",
+            )
+            .into()),
+        }
+    }
+
     pub fn as_required(&self) -> Self {
         match self {
             FieldType::List(inner, _) => FieldType::List(inner.clone(), false),
@@ -179,8 +209,6 @@ impl FieldType {
     /// Where inner_select is a call to the sub-fields to select (or the scalar
     /// function if that's necceasry here)
     pub fn selection_set_call(&self, inner_select: TokenStream) -> TokenStream {
-        use quote::quote;
-
         if self.is_nullable() {
             let inner = self.as_required().selection_set_call(inner_select);
             return quote! {
@@ -209,7 +237,6 @@ impl FieldType {
     /// vec this will spit out Option<Vec<T>>
     pub fn decodes_to(&self, inner_token: TokenStream) -> TokenStream {
         // TODO: Probably possible to combine this with the ToTokens implementation below.
-        use quote::quote;
 
         if self.is_nullable() {
             let inner = self.as_required().decodes_to(inner_token);
@@ -244,8 +271,6 @@ impl FieldType {
         generic_inner_type: Option<Ident>,
         mut path_to_types: TypePath,
     ) -> TokenStream {
-        use quote::quote;
-
         // TODO: wonder if this can be merge with as_type_lock somehow?
 
         let nullable = self.is_nullable();

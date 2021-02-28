@@ -185,19 +185,18 @@ mod scalar;
 
 pub mod codable;
 pub mod http;
+pub mod inputs;
 pub mod selection_set;
 pub mod utils;
 
 pub use json_decode::DecodeError;
 
-pub use arguments::{
-    Argument, EnumArgument, FromArguments, InputObjectArgument, IntoArgument, ScalarArgument,
-    SerializableArgument,
-};
+pub use arguments::{Argument, FromArguments, SerializableArgument};
 pub use builders::{MutationBuilder, QueryBuilder, SubscriptionBuilder};
 pub use enums::Enum;
 pub use fragments::{FragmentArguments, FragmentContext, InlineFragments, QueryFragment};
 pub use id::Id;
+pub use inputs::InputType;
 pub use operation::{Operation, StreamingOperation};
 pub use result::{GraphQLError, GraphQLResponse, GraphQLResult, PossiblyParsedData};
 pub use scalar::Scalar;

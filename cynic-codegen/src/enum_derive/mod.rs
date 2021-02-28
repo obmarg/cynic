@@ -118,7 +118,7 @@ pub fn enum_derive_impl(
                 }
             }
 
-            ::cynic::impl_into_argument_for_options!(#ident);
+            ::cynic::impl_input_type!(#ident, #query_module::#enum_marker_ident);
         })
     } else {
         Err(syn::Error::new(

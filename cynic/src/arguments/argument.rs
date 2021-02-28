@@ -85,6 +85,8 @@ macro_rules! impl_serializable_argument_for_scalar {
     };
 }
 
+// TODO: Can the above just be generic now?
+
 impl_serializable_argument_for_scalar!(i32);
 impl_serializable_argument_for_scalar!(f64);
 impl_serializable_argument_for_scalar!(String);

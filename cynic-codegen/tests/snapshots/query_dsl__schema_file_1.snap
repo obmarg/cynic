@@ -202,39 +202,39 @@ pub struct Mutation;
 #[allow(dead_code)]
 impl Mutation {
     pub fn subscribe(
-        input: impl ::cynic::InputObjectArgument<SubscribeInput>,
+        input: impl ::cynic::InputType<SubscribeInput, ::cynic::inputs::NamedType>,
     ) -> mutation::SubscribeSelectionBuilder {
         mutation::SubscribeSelectionBuilder::new(vec![::cynic::Argument::new(
             "input",
             "SubscribeInput!",
-            input.into_argument(),
+            input.into_serializable(),
         )])
     }
     pub fn post_job(
-        input: impl ::cynic::InputObjectArgument<PostJobInput>,
+        input: impl ::cynic::InputType<PostJobInput, ::cynic::inputs::NamedType>,
     ) -> mutation::PostJobSelectionBuilder {
         mutation::PostJobSelectionBuilder::new(vec![::cynic::Argument::new(
             "input",
             "PostJobInput!",
-            input.into_argument(),
+            input.into_serializable(),
         )])
     }
     pub fn update_job(
-        input: impl ::cynic::InputObjectArgument<UpdateJobInput>,
-        admin_secret: impl ::cynic::ScalarArgument<String, String>,
+        input: impl ::cynic::InputType<UpdateJobInput, ::cynic::inputs::NamedType>,
+        admin_secret: impl ::cynic::InputType<String, ::cynic::inputs::NamedType>,
     ) -> mutation::UpdateJobSelectionBuilder {
         mutation::UpdateJobSelectionBuilder::new(vec![
-            ::cynic::Argument::new("input", "UpdateJobInput!", input.into_argument()),
-            ::cynic::Argument::new("adminSecret", "String!", admin_secret.into_argument()),
+            ::cynic::Argument::new("input", "UpdateJobInput!", input.into_serializable()),
+            ::cynic::Argument::new("adminSecret", "String!", admin_secret.into_serializable()),
         ])
     }
     pub fn update_company(
-        input: impl ::cynic::InputObjectArgument<UpdateCompanyInput>,
-        admin_secret: impl ::cynic::ScalarArgument<String, String>,
+        input: impl ::cynic::InputType<UpdateCompanyInput, ::cynic::inputs::NamedType>,
+        admin_secret: impl ::cynic::InputType<String, ::cynic::inputs::NamedType>,
     ) -> mutation::UpdateCompanySelectionBuilder {
         mutation::UpdateCompanySelectionBuilder::new(vec![
-            ::cynic::Argument::new("input", "UpdateCompanyInput!", input.into_argument()),
-            ::cynic::Argument::new("adminSecret", "String!", admin_secret.into_argument()),
+            ::cynic::Argument::new("input", "UpdateCompanyInput!", input.into_serializable()),
+            ::cynic::Argument::new("adminSecret", "String!", admin_secret.into_serializable()),
         ])
     }
 }
@@ -245,47 +245,49 @@ impl Query {
     pub fn jobs() -> query::JobsSelectionBuilder {
         query::JobsSelectionBuilder::new(vec![])
     }
-    pub fn job(input: impl ::cynic::InputObjectArgument<JobInput>) -> query::JobSelectionBuilder {
+    pub fn job(
+        input: impl ::cynic::InputType<JobInput, ::cynic::inputs::NamedType>,
+    ) -> query::JobSelectionBuilder {
         query::JobSelectionBuilder::new(vec![::cynic::Argument::new(
             "input",
             "JobInput!",
-            input.into_argument(),
+            input.into_serializable(),
         )])
     }
     pub fn locations(
-        input: impl ::cynic::InputObjectArgument<LocationsInput>,
+        input: impl ::cynic::InputType<LocationsInput, ::cynic::inputs::NamedType>,
     ) -> query::LocationsSelectionBuilder {
         query::LocationsSelectionBuilder::new(vec![::cynic::Argument::new(
             "input",
             "LocationsInput!",
-            input.into_argument(),
+            input.into_serializable(),
         )])
     }
     pub fn city(
-        input: impl ::cynic::InputObjectArgument<LocationInput>,
+        input: impl ::cynic::InputType<LocationInput, ::cynic::inputs::NamedType>,
     ) -> query::CitySelectionBuilder {
         query::CitySelectionBuilder::new(vec![::cynic::Argument::new(
             "input",
             "LocationInput!",
-            input.into_argument(),
+            input.into_serializable(),
         )])
     }
     pub fn country(
-        input: impl ::cynic::InputObjectArgument<LocationInput>,
+        input: impl ::cynic::InputType<LocationInput, ::cynic::inputs::NamedType>,
     ) -> query::CountrySelectionBuilder {
         query::CountrySelectionBuilder::new(vec![::cynic::Argument::new(
             "input",
             "LocationInput!",
-            input.into_argument(),
+            input.into_serializable(),
         )])
     }
     pub fn remote(
-        input: impl ::cynic::InputObjectArgument<LocationInput>,
+        input: impl ::cynic::InputType<LocationInput, ::cynic::inputs::NamedType>,
     ) -> query::RemoteSelectionBuilder {
         query::RemoteSelectionBuilder::new(vec![::cynic::Argument::new(
             "input",
             "LocationInput!",
-            input.into_argument(),
+            input.into_serializable(),
         )])
     }
     pub fn commitments() -> query::CommitmentsSelectionBuilder {
@@ -457,64 +459,91 @@ pub mod city {
         }
         pub fn r#where(
             mut self,
-            r#where: impl ::cynic::InputObjectArgument<Option<super::JobWhereInput>>,
+            r#where: impl ::cynic::InputType<
+                super::JobWhereInput,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "where",
                 "JobWhereInput",
-                r#where.into_argument(),
+                r#where.into_serializable(),
             ));
             self
         }
         pub fn order_by(
             mut self,
-            order_by: impl ::cynic::EnumArgument<Option<super::JobOrderByInput>>,
+            order_by: impl ::cynic::InputType<
+                super::JobOrderByInput,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "orderBy",
                 "JobOrderByInput",
-                order_by.into_argument(),
+                order_by.into_serializable(),
             ));
             self
         }
-        pub fn skip(mut self, skip: impl ::cynic::ScalarArgument<i32, Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("skip", "Int", skip.into_argument()));
+        pub fn skip(
+            mut self,
+            skip: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "skip",
+                "Int",
+                skip.into_serializable(),
+            ));
             self
         }
         pub fn after(
             mut self,
-            after: impl ::cynic::ScalarArgument<String, Option<String>>,
+            after: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_argument(),
+                after.into_serializable(),
             ));
             self
         }
         pub fn before(
             mut self,
-            before: impl ::cynic::ScalarArgument<String, Option<String>>,
+            before: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_argument(),
+                before.into_serializable(),
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::ScalarArgument<i32, Option<i32>>) -> Self {
+        pub fn first(
+            mut self,
+            first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_argument(),
+                first.into_serializable(),
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::ScalarArgument<i32, Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+        pub fn last(
+            mut self,
+            last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "last",
+                "Int",
+                last.into_serializable(),
+            ));
             self
         }
         pub fn select<'a, T: 'a + Send + Sync>(
@@ -610,64 +639,91 @@ pub mod commitment {
         }
         pub fn r#where(
             mut self,
-            r#where: impl ::cynic::InputObjectArgument<Option<super::JobWhereInput>>,
+            r#where: impl ::cynic::InputType<
+                super::JobWhereInput,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "where",
                 "JobWhereInput",
-                r#where.into_argument(),
+                r#where.into_serializable(),
             ));
             self
         }
         pub fn order_by(
             mut self,
-            order_by: impl ::cynic::EnumArgument<Option<super::JobOrderByInput>>,
+            order_by: impl ::cynic::InputType<
+                super::JobOrderByInput,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "orderBy",
                 "JobOrderByInput",
-                order_by.into_argument(),
+                order_by.into_serializable(),
             ));
             self
         }
-        pub fn skip(mut self, skip: impl ::cynic::ScalarArgument<i32, Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("skip", "Int", skip.into_argument()));
+        pub fn skip(
+            mut self,
+            skip: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "skip",
+                "Int",
+                skip.into_serializable(),
+            ));
             self
         }
         pub fn after(
             mut self,
-            after: impl ::cynic::ScalarArgument<String, Option<String>>,
+            after: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_argument(),
+                after.into_serializable(),
             ));
             self
         }
         pub fn before(
             mut self,
-            before: impl ::cynic::ScalarArgument<String, Option<String>>,
+            before: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_argument(),
+                before.into_serializable(),
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::ScalarArgument<i32, Option<i32>>) -> Self {
+        pub fn first(
+            mut self,
+            first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_argument(),
+                first.into_serializable(),
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::ScalarArgument<i32, Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+        pub fn last(
+            mut self,
+            last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "last",
+                "Int",
+                last.into_serializable(),
+            ));
             self
         }
         pub fn select<'a, T: 'a + Send + Sync>(
@@ -795,64 +851,91 @@ pub mod company {
         }
         pub fn r#where(
             mut self,
-            r#where: impl ::cynic::InputObjectArgument<Option<super::JobWhereInput>>,
+            r#where: impl ::cynic::InputType<
+                super::JobWhereInput,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "where",
                 "JobWhereInput",
-                r#where.into_argument(),
+                r#where.into_serializable(),
             ));
             self
         }
         pub fn order_by(
             mut self,
-            order_by: impl ::cynic::EnumArgument<Option<super::JobOrderByInput>>,
+            order_by: impl ::cynic::InputType<
+                super::JobOrderByInput,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "orderBy",
                 "JobOrderByInput",
-                order_by.into_argument(),
+                order_by.into_serializable(),
             ));
             self
         }
-        pub fn skip(mut self, skip: impl ::cynic::ScalarArgument<i32, Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("skip", "Int", skip.into_argument()));
+        pub fn skip(
+            mut self,
+            skip: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "skip",
+                "Int",
+                skip.into_serializable(),
+            ));
             self
         }
         pub fn after(
             mut self,
-            after: impl ::cynic::ScalarArgument<String, Option<String>>,
+            after: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_argument(),
+                after.into_serializable(),
             ));
             self
         }
         pub fn before(
             mut self,
-            before: impl ::cynic::ScalarArgument<String, Option<String>>,
+            before: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_argument(),
+                before.into_serializable(),
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::ScalarArgument<i32, Option<i32>>) -> Self {
+        pub fn first(
+            mut self,
+            first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_argument(),
+                first.into_serializable(),
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::ScalarArgument<i32, Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+        pub fn last(
+            mut self,
+            last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "last",
+                "Int",
+                last.into_serializable(),
+            ));
             self
         }
         pub fn select<'a, T: 'a + Send + Sync>(
@@ -1016,64 +1099,91 @@ pub mod country {
         }
         pub fn r#where(
             mut self,
-            r#where: impl ::cynic::InputObjectArgument<Option<super::CityWhereInput>>,
+            r#where: impl ::cynic::InputType<
+                super::CityWhereInput,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "where",
                 "CityWhereInput",
-                r#where.into_argument(),
+                r#where.into_serializable(),
             ));
             self
         }
         pub fn order_by(
             mut self,
-            order_by: impl ::cynic::EnumArgument<Option<super::CityOrderByInput>>,
+            order_by: impl ::cynic::InputType<
+                super::CityOrderByInput,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "orderBy",
                 "CityOrderByInput",
-                order_by.into_argument(),
+                order_by.into_serializable(),
             ));
             self
         }
-        pub fn skip(mut self, skip: impl ::cynic::ScalarArgument<i32, Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("skip", "Int", skip.into_argument()));
+        pub fn skip(
+            mut self,
+            skip: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "skip",
+                "Int",
+                skip.into_serializable(),
+            ));
             self
         }
         pub fn after(
             mut self,
-            after: impl ::cynic::ScalarArgument<String, Option<String>>,
+            after: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_argument(),
+                after.into_serializable(),
             ));
             self
         }
         pub fn before(
             mut self,
-            before: impl ::cynic::ScalarArgument<String, Option<String>>,
+            before: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_argument(),
+                before.into_serializable(),
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::ScalarArgument<i32, Option<i32>>) -> Self {
+        pub fn first(
+            mut self,
+            first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_argument(),
+                first.into_serializable(),
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::ScalarArgument<i32, Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+        pub fn last(
+            mut self,
+            last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "last",
+                "Int",
+                last.into_serializable(),
+            ));
             self
         }
         pub fn select<'a, T: 'a + Send + Sync>(
@@ -1096,64 +1206,91 @@ pub mod country {
         }
         pub fn r#where(
             mut self,
-            r#where: impl ::cynic::InputObjectArgument<Option<super::JobWhereInput>>,
+            r#where: impl ::cynic::InputType<
+                super::JobWhereInput,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "where",
                 "JobWhereInput",
-                r#where.into_argument(),
+                r#where.into_serializable(),
             ));
             self
         }
         pub fn order_by(
             mut self,
-            order_by: impl ::cynic::EnumArgument<Option<super::JobOrderByInput>>,
+            order_by: impl ::cynic::InputType<
+                super::JobOrderByInput,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "orderBy",
                 "JobOrderByInput",
-                order_by.into_argument(),
+                order_by.into_serializable(),
             ));
             self
         }
-        pub fn skip(mut self, skip: impl ::cynic::ScalarArgument<i32, Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("skip", "Int", skip.into_argument()));
+        pub fn skip(
+            mut self,
+            skip: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "skip",
+                "Int",
+                skip.into_serializable(),
+            ));
             self
         }
         pub fn after(
             mut self,
-            after: impl ::cynic::ScalarArgument<String, Option<String>>,
+            after: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_argument(),
+                after.into_serializable(),
             ));
             self
         }
         pub fn before(
             mut self,
-            before: impl ::cynic::ScalarArgument<String, Option<String>>,
+            before: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_argument(),
+                before.into_serializable(),
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::ScalarArgument<i32, Option<i32>>) -> Self {
+        pub fn first(
+            mut self,
+            first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_argument(),
+                first.into_serializable(),
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::ScalarArgument<i32, Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+        pub fn last(
+            mut self,
+            last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "last",
+                "Int",
+                last.into_serializable(),
+            ));
             self
         }
         pub fn select<'a, T: 'a + Send + Sync>(
@@ -1263,64 +1400,91 @@ pub mod job {
         }
         pub fn r#where(
             mut self,
-            r#where: impl ::cynic::InputObjectArgument<Option<super::CityWhereInput>>,
+            r#where: impl ::cynic::InputType<
+                super::CityWhereInput,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "where",
                 "CityWhereInput",
-                r#where.into_argument(),
+                r#where.into_serializable(),
             ));
             self
         }
         pub fn order_by(
             mut self,
-            order_by: impl ::cynic::EnumArgument<Option<super::CityOrderByInput>>,
+            order_by: impl ::cynic::InputType<
+                super::CityOrderByInput,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "orderBy",
                 "CityOrderByInput",
-                order_by.into_argument(),
+                order_by.into_serializable(),
             ));
             self
         }
-        pub fn skip(mut self, skip: impl ::cynic::ScalarArgument<i32, Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("skip", "Int", skip.into_argument()));
+        pub fn skip(
+            mut self,
+            skip: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "skip",
+                "Int",
+                skip.into_serializable(),
+            ));
             self
         }
         pub fn after(
             mut self,
-            after: impl ::cynic::ScalarArgument<String, Option<String>>,
+            after: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_argument(),
+                after.into_serializable(),
             ));
             self
         }
         pub fn before(
             mut self,
-            before: impl ::cynic::ScalarArgument<String, Option<String>>,
+            before: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_argument(),
+                before.into_serializable(),
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::ScalarArgument<i32, Option<i32>>) -> Self {
+        pub fn first(
+            mut self,
+            first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_argument(),
+                first.into_serializable(),
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::ScalarArgument<i32, Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+        pub fn last(
+            mut self,
+            last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "last",
+                "Int",
+                last.into_serializable(),
+            ));
             self
         }
         pub fn select<'a, T: 'a + Send + Sync>(
@@ -1343,64 +1507,91 @@ pub mod job {
         }
         pub fn r#where(
             mut self,
-            r#where: impl ::cynic::InputObjectArgument<Option<super::CountryWhereInput>>,
+            r#where: impl ::cynic::InputType<
+                super::CountryWhereInput,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "where",
                 "CountryWhereInput",
-                r#where.into_argument(),
+                r#where.into_serializable(),
             ));
             self
         }
         pub fn order_by(
             mut self,
-            order_by: impl ::cynic::EnumArgument<Option<super::CountryOrderByInput>>,
+            order_by: impl ::cynic::InputType<
+                super::CountryOrderByInput,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "orderBy",
                 "CountryOrderByInput",
-                order_by.into_argument(),
+                order_by.into_serializable(),
             ));
             self
         }
-        pub fn skip(mut self, skip: impl ::cynic::ScalarArgument<i32, Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("skip", "Int", skip.into_argument()));
+        pub fn skip(
+            mut self,
+            skip: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "skip",
+                "Int",
+                skip.into_serializable(),
+            ));
             self
         }
         pub fn after(
             mut self,
-            after: impl ::cynic::ScalarArgument<String, Option<String>>,
+            after: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_argument(),
+                after.into_serializable(),
             ));
             self
         }
         pub fn before(
             mut self,
-            before: impl ::cynic::ScalarArgument<String, Option<String>>,
+            before: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_argument(),
+                before.into_serializable(),
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::ScalarArgument<i32, Option<i32>>) -> Self {
+        pub fn first(
+            mut self,
+            first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_argument(),
+                first.into_serializable(),
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::ScalarArgument<i32, Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+        pub fn last(
+            mut self,
+            last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "last",
+                "Int",
+                last.into_serializable(),
+            ));
             self
         }
         pub fn select<'a, T: 'a + Send + Sync>(
@@ -1423,64 +1614,91 @@ pub mod job {
         }
         pub fn r#where(
             mut self,
-            r#where: impl ::cynic::InputObjectArgument<Option<super::RemoteWhereInput>>,
+            r#where: impl ::cynic::InputType<
+                super::RemoteWhereInput,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "where",
                 "RemoteWhereInput",
-                r#where.into_argument(),
+                r#where.into_serializable(),
             ));
             self
         }
         pub fn order_by(
             mut self,
-            order_by: impl ::cynic::EnumArgument<Option<super::RemoteOrderByInput>>,
+            order_by: impl ::cynic::InputType<
+                super::RemoteOrderByInput,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "orderBy",
                 "RemoteOrderByInput",
-                order_by.into_argument(),
+                order_by.into_serializable(),
             ));
             self
         }
-        pub fn skip(mut self, skip: impl ::cynic::ScalarArgument<i32, Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("skip", "Int", skip.into_argument()));
+        pub fn skip(
+            mut self,
+            skip: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "skip",
+                "Int",
+                skip.into_serializable(),
+            ));
             self
         }
         pub fn after(
             mut self,
-            after: impl ::cynic::ScalarArgument<String, Option<String>>,
+            after: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_argument(),
+                after.into_serializable(),
             ));
             self
         }
         pub fn before(
             mut self,
-            before: impl ::cynic::ScalarArgument<String, Option<String>>,
+            before: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_argument(),
+                before.into_serializable(),
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::ScalarArgument<i32, Option<i32>>) -> Self {
+        pub fn first(
+            mut self,
+            first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_argument(),
+                first.into_serializable(),
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::ScalarArgument<i32, Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+        pub fn last(
+            mut self,
+            last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "last",
+                "Int",
+                last.into_serializable(),
+            ));
             self
         }
         pub fn select<'a, T: 'a + Send + Sync>(
@@ -1557,64 +1775,91 @@ pub mod job {
         }
         pub fn r#where(
             mut self,
-            r#where: impl ::cynic::InputObjectArgument<Option<super::TagWhereInput>>,
+            r#where: impl ::cynic::InputType<
+                super::TagWhereInput,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "where",
                 "TagWhereInput",
-                r#where.into_argument(),
+                r#where.into_serializable(),
             ));
             self
         }
         pub fn order_by(
             mut self,
-            order_by: impl ::cynic::EnumArgument<Option<super::TagOrderByInput>>,
+            order_by: impl ::cynic::InputType<
+                super::TagOrderByInput,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "orderBy",
                 "TagOrderByInput",
-                order_by.into_argument(),
+                order_by.into_serializable(),
             ));
             self
         }
-        pub fn skip(mut self, skip: impl ::cynic::ScalarArgument<i32, Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("skip", "Int", skip.into_argument()));
+        pub fn skip(
+            mut self,
+            skip: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "skip",
+                "Int",
+                skip.into_serializable(),
+            ));
             self
         }
         pub fn after(
             mut self,
-            after: impl ::cynic::ScalarArgument<String, Option<String>>,
+            after: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_argument(),
+                after.into_serializable(),
             ));
             self
         }
         pub fn before(
             mut self,
-            before: impl ::cynic::ScalarArgument<String, Option<String>>,
+            before: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_argument(),
+                before.into_serializable(),
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::ScalarArgument<i32, Option<i32>>) -> Self {
+        pub fn first(
+            mut self,
+            first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_argument(),
+                first.into_serializable(),
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::ScalarArgument<i32, Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+        pub fn last(
+            mut self,
+            last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "last",
+                "Int",
+                last.into_serializable(),
+            ));
             self
         }
         pub fn select<'a, T: 'a + Send + Sync>(
@@ -1872,12 +2117,15 @@ pub mod query {
         }
         pub fn input(
             mut self,
-            input: impl ::cynic::InputObjectArgument<Option<super::JobsInput>>,
+            input: impl ::cynic::InputType<
+                super::JobsInput,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "input",
                 "JobsInput",
-                input.into_argument(),
+                input.into_serializable(),
             ));
             self
         }
@@ -2112,64 +2360,91 @@ pub mod remote {
         }
         pub fn r#where(
             mut self,
-            r#where: impl ::cynic::InputObjectArgument<Option<super::JobWhereInput>>,
+            r#where: impl ::cynic::InputType<
+                super::JobWhereInput,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "where",
                 "JobWhereInput",
-                r#where.into_argument(),
+                r#where.into_serializable(),
             ));
             self
         }
         pub fn order_by(
             mut self,
-            order_by: impl ::cynic::EnumArgument<Option<super::JobOrderByInput>>,
+            order_by: impl ::cynic::InputType<
+                super::JobOrderByInput,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "orderBy",
                 "JobOrderByInput",
-                order_by.into_argument(),
+                order_by.into_serializable(),
             ));
             self
         }
-        pub fn skip(mut self, skip: impl ::cynic::ScalarArgument<i32, Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("skip", "Int", skip.into_argument()));
+        pub fn skip(
+            mut self,
+            skip: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "skip",
+                "Int",
+                skip.into_serializable(),
+            ));
             self
         }
         pub fn after(
             mut self,
-            after: impl ::cynic::ScalarArgument<String, Option<String>>,
+            after: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_argument(),
+                after.into_serializable(),
             ));
             self
         }
         pub fn before(
             mut self,
-            before: impl ::cynic::ScalarArgument<String, Option<String>>,
+            before: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_argument(),
+                before.into_serializable(),
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::ScalarArgument<i32, Option<i32>>) -> Self {
+        pub fn first(
+            mut self,
+            first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_argument(),
+                first.into_serializable(),
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::ScalarArgument<i32, Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+        pub fn last(
+            mut self,
+            last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "last",
+                "Int",
+                last.into_serializable(),
+            ));
             self
         }
         pub fn select<'a, T: 'a + Send + Sync>(
@@ -2265,64 +2540,91 @@ pub mod tag {
         }
         pub fn r#where(
             mut self,
-            r#where: impl ::cynic::InputObjectArgument<Option<super::JobWhereInput>>,
+            r#where: impl ::cynic::InputType<
+                super::JobWhereInput,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "where",
                 "JobWhereInput",
-                r#where.into_argument(),
+                r#where.into_serializable(),
             ));
             self
         }
         pub fn order_by(
             mut self,
-            order_by: impl ::cynic::EnumArgument<Option<super::JobOrderByInput>>,
+            order_by: impl ::cynic::InputType<
+                super::JobOrderByInput,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "orderBy",
                 "JobOrderByInput",
-                order_by.into_argument(),
+                order_by.into_serializable(),
             ));
             self
         }
-        pub fn skip(mut self, skip: impl ::cynic::ScalarArgument<i32, Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("skip", "Int", skip.into_argument()));
+        pub fn skip(
+            mut self,
+            skip: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "skip",
+                "Int",
+                skip.into_serializable(),
+            ));
             self
         }
         pub fn after(
             mut self,
-            after: impl ::cynic::ScalarArgument<String, Option<String>>,
+            after: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_argument(),
+                after.into_serializable(),
             ));
             self
         }
         pub fn before(
             mut self,
-            before: impl ::cynic::ScalarArgument<String, Option<String>>,
+            before: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_argument(),
+                before.into_serializable(),
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::ScalarArgument<i32, Option<i32>>) -> Self {
+        pub fn first(
+            mut self,
+            first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_argument(),
+                first.into_serializable(),
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::ScalarArgument<i32, Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+        pub fn last(
+            mut self,
+            last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "last",
+                "Int",
+                last.into_serializable(),
+            ));
             self
         }
         pub fn select<'a, T: 'a + Send + Sync>(

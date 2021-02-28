@@ -35,21 +35,21 @@ pub struct MutationRoot;
 #[allow(dead_code)]
 impl MutationRoot {
     pub fn create_book(
-        name: impl ::cynic::ScalarArgument<String, String>,
-        author: impl ::cynic::ScalarArgument<String, String>,
+        name: impl ::cynic::InputType<String, ::cynic::inputs::NamedType>,
+        author: impl ::cynic::InputType<String, ::cynic::inputs::NamedType>,
     ) -> mutation_root::CreateBookSelectionBuilder {
         mutation_root::CreateBookSelectionBuilder::new(vec![
-            ::cynic::Argument::new("name", "String!", name.into_argument()),
-            ::cynic::Argument::new("author", "String!", author.into_argument()),
+            ::cynic::Argument::new("name", "String!", name.into_serializable()),
+            ::cynic::Argument::new("author", "String!", author.into_serializable()),
         ])
     }
     pub fn delete_book(
-        id: impl ::cynic::ScalarArgument<::cynic::Id, ::cynic::Id>,
+        id: impl ::cynic::InputType<::cynic::Id, ::cynic::inputs::NamedType>,
     ) -> mutation_root::DeleteBookSelectionBuilder {
         mutation_root::DeleteBookSelectionBuilder::new(vec![::cynic::Argument::new(
             "id",
             "ID!",
-            id.into_argument(),
+            id.into_serializable(),
         )])
     }
 }
@@ -66,12 +66,12 @@ pub struct SubscriptionRoot;
 #[allow(dead_code)]
 impl SubscriptionRoot {
     pub fn interval(
-        n: impl ::cynic::ScalarArgument<i32, i32>,
+        n: impl ::cynic::InputType<i32, ::cynic::inputs::NamedType>,
     ) -> subscription_root::IntervalSelectionBuilder {
         subscription_root::IntervalSelectionBuilder::new(vec![::cynic::Argument::new(
             "n",
             "Int!",
-            n.into_argument(),
+            n.into_serializable(),
         )])
     }
     pub fn books() -> subscription_root::BooksSelectionBuilder {
@@ -241,12 +241,15 @@ pub mod subscription_root {
         }
         pub fn mutation_type(
             mut self,
-            mutation_type: impl ::cynic::EnumArgument<Option<super::MutationType>>,
+            mutation_type: impl ::cynic::InputType<
+                super::MutationType,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "mutationType",
                 "MutationType",
-                mutation_type.into_argument(),
+                mutation_type.into_serializable(),
             ));
             self
         }

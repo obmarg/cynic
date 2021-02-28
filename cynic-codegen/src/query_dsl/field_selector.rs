@@ -65,7 +65,7 @@ impl quote::ToTokens for FieldSelector {
             .iter()
             .map(|a| {
                 let name = &a.name;
-                quote! { #name.into_argument() }
+                quote! { #name.into_serializable() }
             })
             .collect();
         let argument_strings: Vec<_> = self
