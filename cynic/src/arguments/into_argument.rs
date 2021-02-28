@@ -118,6 +118,19 @@ pub trait InputObjectArgument<TypeLock> {
     fn into_argument(self) -> Self::Output;
 }
 
+/// An argument for scalars accepted as arguments.  This is used to determine whether
+/// a type is compatible with a given scalar when provided as an argument: either directly
+/// as an field argument or inside an InputObject.
+///
+/// This trait has two type parameters:
+///
+/// - `ScalarTypeLock` should point to the marker trait of the underlying scalar in your
+///   `query_dsl` module.  This isn't directly used, but allows your crate to sidestep the
+///   orphan rule which would otherwise prevent you from implementing this type on Options,
+///   Vectors etc.
+/// - `ArgumentTypeLock` is a type lock for the given argument type - this should contian
+///    the `ScalarTypeLock` but wrapped in `Options`, or `Vec`s as appropraite to mirror the
+///    arguments list/nullability .
 pub trait ScalarArgument<ScalarTypeLock, ArgumentTypeLock> {
     type Output: SerializableArgument;
 
