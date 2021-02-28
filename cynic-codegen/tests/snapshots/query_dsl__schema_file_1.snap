@@ -2785,17 +2785,17 @@ pub struct UpdateCompanyInput {}
 #[allow(dead_code)]
 pub struct UpdateJobInput {}
 #[allow(dead_code)]
-pub struct CityOrderByInput {}
+pub enum CityOrderByInput {}
 #[allow(dead_code)]
-pub struct CountryOrderByInput {}
+pub enum CountryOrderByInput {}
 #[allow(dead_code)]
-pub struct DateTime {}
+pub enum DateTime {}
 #[allow(dead_code)]
-pub struct JobOrderByInput {}
+pub enum JobOrderByInput {}
 #[allow(dead_code)]
-pub struct RemoteOrderByInput {}
+pub enum RemoteOrderByInput {}
 #[allow(dead_code)]
-pub struct TagOrderByInput {}
+pub enum TagOrderByInput {}
 impl ::cynic::MutationRoot for Mutation {}
 impl ::cynic::QueryRoot for Query {}
 

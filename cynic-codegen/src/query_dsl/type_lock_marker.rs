@@ -29,11 +29,9 @@ impl quote::ToTokens for TypeLockMarker {
 
         let name = &self.name;
 
-        // TODO: this should be an empty enum so it can't even
-        // exist at runtime
         tokens.append_all(quote! {
             #[allow(dead_code)]
-            pub struct #name {}
+            pub enum #name {}
         });
     }
 }

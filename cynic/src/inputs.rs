@@ -144,6 +144,15 @@ macro_rules! impl_input_type {
             }
         }
 
+        // TODO: Still feel there must be a way to do this.
+        // Like by making Nullable<List<Nullable<Named>>> into a trait _somehow_
+        // then using that to do most of the impls?
+        // Not sure.
+        // Like impl InputType<Lock, Wrappers> for T
+        // where
+        //   Lock: Something
+        //   Wrappers: SomeOtherThing
+        //   T: SomehowConstrainedForBoth
         impl
             $crate::InputType<
                 $type_lock,

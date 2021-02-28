@@ -262,7 +262,7 @@ pub mod subscription_root {
     }
 }
 #[allow(dead_code)]
-pub struct MutationType {}
+pub enum MutationType {}
 impl ::cynic::MutationRoot for MutationRoot {}
 impl ::cynic::QueryRoot for QueryRoot {}
 impl ::cynic::SubscriptionRoot for SubscriptionRoot {}
