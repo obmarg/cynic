@@ -236,8 +236,6 @@ impl FieldType {
     /// this type.  For example if inner is `T` and this is an optional
     /// vec this will spit out Option<Vec<T>>
     pub fn decodes_to(&self, inner_token: TokenStream) -> TokenStream {
-        // TODO: Probably possible to combine this with the ToTokens implementation below.
-
         if self.is_nullable() {
             let inner = self.as_required().decodes_to(inner_token);
             return quote! {
@@ -271,8 +269,6 @@ impl FieldType {
         generic_inner_type: Option<Ident>,
         mut path_to_types: TypePath,
     ) -> TokenStream {
-        // TODO: wonder if this can be merge with as_type_lock somehow?
-
         let nullable = self.is_nullable();
         let rust_type = match (self, &generic_inner_type) {
             (FieldType::List(inner_type, _), _) => {
@@ -283,7 +279,6 @@ impl FieldType {
                 quote! { #generic_type }
             }
             (FieldType::Scalar(scalar_path, _), _) => {
-                // TODO: Wondering if this needs changed?
                 let type_path = if scalar_path.is_absolute() {
                     scalar_path.clone()
                 } else {
@@ -301,21 +296,10 @@ impl FieldType {
             (FieldType::Enum(name, _), _) => {
                 let type_lock = TypePath::concat(&[path_to_types, name.clone().into()]);
                 quote! { #type_lock }
-                // TODO: remove this, no longer applies:
-                //
-                // panic!("Enums are always generic, we shouldn't get here.")
-                //
-                // TODO: Need to think about whether we want this branch on a different path...
             }
             (FieldType::InputObject(name, _), _) => {
                 let type_lock = TypePath::concat(&[path_to_types, name.clone().into()]);
                 quote! { #type_lock }
-                // TODO: remove this, no longer applies:
-                //
-                // panic!("Enums are always generic, we shouldn't get here.")
-                //
-                // panic!("InputObjects are always generic, we shouldn't get here.")
-                // TODO: Need to think about whether we want this branch on a different path...
             }
         };
 
@@ -342,18 +326,6 @@ impl FieldType {
                 name,
                 constraint: GenericConstraint::InputObject(path),
             })
-        // TODO: Ok, so at least custom scalars need generic params here.
-        // Built in scalars can (at least for now) remain as hard coded values.
-        // But custom scalars have no concrete types so they'll need a
-        // generic constraint.
-        // Although probably worth thinking this through:
-        // Do I want to use IntoArgument to do the bulk of this work?
-        //
-        // Get away from that `impl IntoArgument<T>` double generic nonsense?
-        // It does seem kinda problematic
-        //
-        // Though required arguments don't at present use IntoArgument so not
-        // sure how far I can get with that...
         } else {
             None
         }

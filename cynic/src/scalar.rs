@@ -3,37 +3,12 @@ use std::marker::PhantomData;
 
 use crate::{codable::Codable, SerializableArgument, SerializeError};
 
-/*
-pub trait Scalar: Sized {
->>>>>>> f5ffc35 (First pass - got the scalar type defined, updated it's generation etc.)
-    fn decode(value: &serde_json::Value) -> Result<Self, DecodeError>;
-    fn encode(&self) -> Result<serde_json::Value, SerializeError>;
-}*/
-
-// Something like this?
 pub trait Scalar<TypeLock>: Sized + SerializableArgument {
     type Codable: Codable;
 
     fn from_codable(x: Self::Codable) -> Result<Self, DecodeError>;
     fn to_codable(&self) -> Result<&Self::Codable, SerializeError>;
 }
-
-/*
-impl<S, TypeLock> Scalar<Option<TypeLock>> for Option<S>
-where
-    S: Scalar<TypeLock>,
-{
-    type Codable = Option<S>;
-
-    fn from_codable(x: Self::Codable) -> Result<Self, DecodeError> {
-        todo!()
-    }
-
-    fn to_codable(&self) -> Result<&Self::Codable, SerializeError> {
-        todo!()
-    }
-}
-*/
 
 pub fn decoder<'a, S, TypeLock>() -> BoxDecoder<'a, S>
 where

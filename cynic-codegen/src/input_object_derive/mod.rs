@@ -142,9 +142,6 @@ pub fn input_object_derive_impl(
             }
 
             ::cynic::impl_input_type!(#ident, #query_module::#input_marker_ident);
-
-            //::cynic::impl_common_input_object_argument_conversions!(#ident, #query_module::#input_marker_ident);
-
         })
     } else {
         Err(syn::Error::new(

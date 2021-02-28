@@ -31,10 +31,8 @@ pub fn scalar_derive_impl(input: ScalarDeriveInput) -> Result<TokenStream, syn::
     let ident = input.ident;
     let inner_type = field.ty;
     let type_lock = if let Some(graphql_type) = input.graphql_type {
-        // TODO: Need query_dsl in here
         Ident::new_spanned((*graphql_type).clone(), graphql_type.span())
     } else {
-        // TODO: Need query_dsl in here
         ident.clone().into()
     };
 

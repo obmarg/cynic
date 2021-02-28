@@ -163,13 +163,6 @@ impl quote::ToTokens for QueryDsl {
         let schema_roots = &self.schema_roots;
         let interfaces_implementations = &self.interfaces_implementations;
 
-        // TODO: consider putting `type_lock_markers` into a submodule
-        // so they don't clash with user types...
-        //
-        // Either that or document the breaking change...
-        //
-        // But it seems like bad practice to clash if users _don't_ stick their
-        // query-dsl in another module
         tokens.append_all(quote! {
             #(
                 #unions
