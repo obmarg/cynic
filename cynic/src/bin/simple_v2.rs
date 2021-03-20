@@ -68,13 +68,13 @@ mod test {
     pub struct DateTime {}
 
     impl cynic::Scalar<super::query_dsl::Json> for DateTime {
-        type Serializable = String;
+        type Serialize = String;
 
-        fn from_serializable(_inner: Self::Serializable) -> Result<Self, ::cynic::DecodeError> {
+        fn from_serialize(_inner: String) -> Result<Self, ::cynic::DecodeError> {
             todo!()
         }
 
-        fn to_serializable(&self) -> Result<&Self::Serializable, ::cynic::SerializeError> {
+        fn to_serialize(&self) -> Result<String, ::cynic::SerializeError> {
             todo!()
         }
     }

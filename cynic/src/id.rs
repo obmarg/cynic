@@ -23,13 +23,13 @@ impl<T: Into<String>> From<T> for Id {
 }
 
 impl crate::Scalar<Id> for Id {
-    type Serializable = String;
+    type Serialize = String;
 
-    fn from_serializable(s: String) -> Result<Self, json_decode::DecodeError> {
+    fn from_serialize(s: String) -> Result<Self, json_decode::DecodeError> {
         Ok(s.into())
     }
 
-    fn to_serializable(&self) -> Result<&Self::Serializable, SerializeError> {
-        Ok(&self.0)
+    fn to_serialize(&self) -> Result<String, SerializeError> {
+        Ok(self.0.clone())
     }
 }
