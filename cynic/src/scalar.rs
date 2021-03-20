@@ -1,13 +1,13 @@
 use json_decode::{BoxDecoder, DecodeError, Decoder};
 use std::marker::PhantomData;
 
-use crate::{codable::Codable, SerializableArgument, SerializeError};
+use crate::{SerializableArgument, SerializeError};
 
 pub trait Scalar<TypeLock>: Sized + SerializableArgument {
-    type Codable: Codable;
+    type Serializable: serde::Serialize + serde::de::DeserializeOwned;
 
-    fn from_codable(x: Self::Codable) -> Result<Self, DecodeError>;
-    fn to_codable(&self) -> Result<&Self::Codable, SerializeError>;
+    fn from_serializable(x: Self::Serializable) -> Result<Self, DecodeError>;
+    fn to_serializable(&self) -> Result<&Self::Serializable, SerializeError>;
 }
 
 pub fn decoder<'a, S, TypeLock>() -> BoxDecoder<'a, S>
@@ -23,13 +23,13 @@ where
 macro_rules! impl_scalar_for {
     ($type:ty) => {
         impl Scalar<$type> for $type {
-            type Codable = $type;
+            type Serializable = $type;
 
-            fn from_codable(x: $type) -> Result<$type, DecodeError> {
+            fn from_serializable(x: $type) -> Result<$type, DecodeError> {
                 Ok(x)
             }
 
-            fn to_codable(&self) -> Result<&$type, SerializeError> {
+            fn to_serializable(&self) -> Result<&$type, SerializeError> {
                 Ok(&self)
             }
         }
@@ -53,6 +53,9 @@ where
     S: Scalar<TypeLock> + Sized,
 {
     fn decode(&self, value: &serde_json::Value) -> Result<S, DecodeError> {
-        S::from_codable(S::Codable::decode(value)?)
+        S::from_serializable(
+            serde_json::from_value(value.clone())
+                .map_err(|e| DecodeError::SerdeError(e.to_string()))?,
+        )
     }
 }

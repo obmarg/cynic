@@ -18,7 +18,7 @@ pub fn transform_query_module(
     query_module: syn::ItemMod,
 ) -> Result<TokenStream, syn::Error> {
     match TransformModuleArgs::from_list(&args) {
-        Ok(args) => transform_query_module_impl(args, query_module),
+        Ok(args) => Ok(transform_query_module_impl(args, query_module)),
         Err(e) => Ok(e.write_errors()),
     }
 }
@@ -26,11 +26,11 @@ pub fn transform_query_module(
 fn transform_query_module_impl(
     args: TransformModuleArgs,
     query_module: syn::ItemMod,
-) -> Result<TokenStream, syn::Error> {
+) -> TokenStream {
     use quote::quote;
 
     if query_module.content.is_none() {
-        return Ok(quote! { #query_module });
+        return quote! { #query_module };
     }
 
     let (_, module_items) = query_module.content.unwrap();
@@ -43,12 +43,12 @@ fn transform_query_module_impl(
     let visibility = query_module.vis;
     let module_name = query_module.ident;
 
-    Ok(quote! {
+    quote! {
         #(#attrs)*
         #visibility mod #module_name {
             #(#module_items)*
         }
-    })
+    }
 }
 
 fn insert_cynic_attrs(args: &TransformModuleArgs, item: syn::Item) -> syn::Item {

@@ -78,8 +78,8 @@ macro_rules! impl_serializable_argument_for_scalar {
     ($inner:ty) => {
         impl $crate::SerializableArgument for $inner {
             fn serialize(&self) -> Result<$crate::serde_json::Value, $crate::SerializeError> {
-                use $crate::{codable::Codable, Scalar};
-                self.to_codable()?.encode()
+                use $crate::Scalar;
+                Ok($crate::serde_json::to_value(self.to_serializable()?)?)
             }
         }
     };

@@ -38,13 +38,13 @@ pub fn scalar_derive_impl(input: ScalarDeriveInput) -> Result<TokenStream, syn::
 
     Ok(quote! {
         impl ::cynic::Scalar<#type_lock> for #ident {
-            type Codable = #inner_type;
+            type Serializable = #inner_type;
 
-            fn from_codable(inner: Self::Codable) -> Result<Self, ::cynic::DecodeError> {
+            fn from_serializable(inner: Self::Serializable) -> Result<Self, ::cynic::DecodeError> {
                 Ok(#ident(inner))
             }
 
-            fn to_codable(&self) -> Result<&Self::Codable, ::cynic::SerializeError> {
+            fn to_serializable(&self) -> Result<&Self::Serializable, ::cynic::SerializeError> {
                 Ok(&self.0)
             }
         }

@@ -183,7 +183,7 @@ mod operation;
 mod result;
 mod scalar;
 
-pub mod codable;
+//pub mod codable;
 pub mod http;
 pub mod inputs;
 pub mod selection_set;
