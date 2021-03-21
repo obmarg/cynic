@@ -50,6 +50,8 @@ mod queries {
     query_module = "query_dsl",
 )]
 mod types {
+    use super::query_dsl;
+
     #[derive(cynic::Scalar, Debug, Clone)]
     pub struct Date(pub String);
 

@@ -149,6 +149,7 @@ pub fn document_to_fragment_structs(
         writeln!(output, "    schema_path = r#\"{}\"#,", options.schema_path).unwrap();
         writeln!(output, "    query_module = \"{}\",", options.query_module).unwrap();
         writeln!(output, ")]\nmod types {{").unwrap();
+        writeln!(output, "    use super::query_dsl;\n").unwrap();
 
         // Output any custom scalars we need.
         // Note that currently our query_dsl needs _all_ scalars in a schema

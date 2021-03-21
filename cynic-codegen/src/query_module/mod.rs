@@ -54,21 +54,29 @@ fn transform_query_module_impl(
 fn insert_cynic_attrs(args: &TransformModuleArgs, item: syn::Item) -> syn::Item {
     use syn::Item;
 
-    match utils::find_derives(&item).get(0) {
-        None => item,
-        Some(Derive::Scalar) => item,
-        Some(Derive::InlineFragments) | Some(Derive::Enum) => {
+    let derives = utils::find_derives(&item);
+    let derive = derives.first();
+    if derive.is_none() {
+        return item;
+    }
+
+    let derive = derive.unwrap();
+
+    let required_attrs = RequiredAttributes::for_derive(derive);
+
+    match derive {
+        Derive::InlineFragments | Derive::Enum => {
             if let Item::Enum(mut en) = item {
-                let attrs = PresentAttributes::from_attributes(&en.attrs);
+                let attrs = required_attrs.with_current_attrs(&en.attrs);
                 attrs.add_missing_attributes(&mut en.attrs, args);
                 Item::Enum(en)
             } else {
                 item
             }
         }
-        Some(Derive::QueryFragment) | Some(Derive::InputObject) => {
+        Derive::QueryFragment | Derive::InputObject | Derive::Scalar => {
             if let Item::Struct(mut st) = item {
-                let attrs = PresentAttributes::from_attributes(&st.attrs);
+                let attrs = required_attrs.with_current_attrs(&st.attrs);
                 attrs.add_missing_attributes(&mut st.attrs, args);
                 Item::Struct(st)
             } else {
@@ -78,44 +86,57 @@ fn insert_cynic_attrs(args: &TransformModuleArgs, item: syn::Item) -> syn::Item 
     }
 }
 
-#[derive(Default, Debug)]
-struct PresentAttributes {
-    pub has_schema_path: bool,
-    pub has_query_module: bool,
+#[derive(Debug)]
+struct RequiredAttributes {
+    pub needs_schema_path: bool,
+    pub needs_query_module: bool,
 }
 
-impl PresentAttributes {
-    fn from_attributes(attrs: &[syn::Attribute]) -> Self {
+impl RequiredAttributes {
+    fn for_derive(d: &Derive) -> RequiredAttributes {
+        match d {
+            Derive::Scalar => RequiredAttributes {
+                needs_query_module: true,
+                needs_schema_path: false,
+            },
+            _ => RequiredAttributes {
+                needs_query_module: true,
+                needs_schema_path: true,
+            },
+        }
+    }
+
+    fn with_current_attrs(mut self, attrs: &[syn::Attribute]) -> Self {
         use syn::{Meta, NestedMeta};
 
-        let mut rv = PresentAttributes::default();
         for attr in attrs {
             if attr.path.is_ident("cynic") {
                 if let Ok(Meta::List(meta_list)) = attr.parse_meta() {
                     for nested in meta_list.nested {
                         if let NestedMeta::Meta(Meta::NameValue(name_val)) = nested {
                             if name_val.path.is_ident("schema_path") {
-                                rv.has_schema_path = true;
+                                self.needs_schema_path = false;
                             } else if name_val.path.is_ident("query_module") {
-                                rv.has_query_module = true;
+                                self.needs_query_module = false;
                             }
                         }
                     }
                 }
             }
         }
-        rv
+
+        self
     }
 
     fn add_missing_attributes(self, attrs: &mut Vec<syn::Attribute>, args: &TransformModuleArgs) {
-        if !self.has_schema_path {
+        if self.needs_schema_path {
             let schema_path = proc_macro2::Literal::string(&args.schema_path);
             attrs.push(syn::parse_quote! {
                 #[cynic(schema_path = #schema_path)]
             })
         }
 
-        if !self.has_query_module {
+        if self.needs_query_module {
             let query_module = proc_macro2::Literal::string(&args.query_module);
             attrs.push(syn::parse_quote! {
                 #[cynic(query_module = #query_module)]

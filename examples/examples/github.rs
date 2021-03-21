@@ -114,6 +114,8 @@ mod queries {
 #[cfg(feature = "github")]
 #[cynic::query_module(schema_path = "../schemas/github.graphql", query_module = "query_dsl")]
 mod types {
+    use super::query_dsl;
+
     #[derive(cynic::Scalar, Debug)]
     pub struct Date(String);
 
@@ -147,7 +149,6 @@ mod types {
 
 #[cfg(feature = "github")]
 mod query_dsl {
-    use super::types::*;
     cynic::query_dsl!("../schemas/github.graphql");
 }
 

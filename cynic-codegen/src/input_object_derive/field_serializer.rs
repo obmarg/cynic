@@ -6,7 +6,7 @@ use super::InputObjectDeriveField;
 use crate::{
     schema::InputValue,
     type_validation::{check_types_are_compatible, CheckMode},
-    FieldType, Ident, TypeIndex, TypePath,
+    FieldType, Ident, TypeIndex,
 };
 
 pub struct FieldSerializer<'a> {
@@ -52,7 +52,7 @@ impl<'a> FieldSerializer<'a> {
         None
     }
 
-    pub fn type_check_fn(&self, query_module_path: TypePath) -> TokenStream {
+    pub fn type_check_fn(&self) -> TokenStream {
         // The check_types_are_compatible call in validate only checks for Option
         // and Vec wrappers - we don't have access to any info
         // about the types of fields within our current struct.
@@ -60,7 +60,9 @@ impl<'a> FieldSerializer<'a> {
         // So, we have to construct some functions with constraints
         // in order to make sure the fields are of the right type.
 
-        let type_lock = self.graphql_field_type.as_type_lock(query_module_path);
+        let type_lock = self
+            .graphql_field_type
+            .as_type_lock(self.query_module.clone().into());
         let wrapper_type = self.graphql_field_type.wrapper_path().unwrap();
 
         let rust_field_name = &self.rust_field.ident;

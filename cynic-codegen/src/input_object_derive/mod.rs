@@ -113,9 +113,7 @@ pub fn input_object_derive_impl(
             ));
         }
 
-        let typecheck_funcs = field_serializers
-            .iter()
-            .map(|fs| fs.type_check_fn(query_module.clone().into()));
+        let typecheck_funcs = field_serializers.iter().map(|fs| fs.type_check_fn());
         let map_serializer_ident = proc_macro2::Ident::new("map_serializer", Span::call_site());
         let field_inserts = field_serializers
             .iter()
@@ -131,7 +129,7 @@ pub fn input_object_derive_impl(
             impl ::cynic::serde::Serialize for #ident {
                 fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
                 where
-                    S: serde::Serializer,
+                    S: ::cynic::serde::Serializer,
                 {
                     use ::cynic::serde::ser::SerializeMap;
                     #(
