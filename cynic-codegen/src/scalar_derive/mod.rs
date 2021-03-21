@@ -49,7 +49,6 @@ pub fn scalar_derive_impl(input: ScalarDeriveInput) -> Result<TokenStream, syn::
             }
         }
 
-        ::cynic::impl_serializable_argument_for_scalar!(#ident);
         ::cynic::impl_input_type!(#ident, #type_lock);
     })
 }

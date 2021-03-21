@@ -183,7 +183,6 @@ mod operation;
 mod result;
 mod scalar;
 
-//pub mod codable;
 pub mod http;
 pub mod inputs;
 pub mod selection_set;
@@ -191,7 +190,7 @@ pub mod utils;
 
 pub use json_decode::DecodeError;
 
-pub use arguments::{Argument, FromArguments, SerializableArgument};
+pub use arguments::{Argument, FromArguments};
 pub use builders::{MutationBuilder, QueryBuilder, SubscriptionBuilder};
 pub use enums::Enum;
 pub use fragments::{FragmentArguments, FragmentContext, InlineFragments, QueryFragment};
@@ -210,6 +209,7 @@ pub use cynic_proc_macros::{
 // We re-export serde_json as the output from a lot of our derive macros require it,
 // and this way we can point at our copy rather than forcing users to add it to
 // their Cargo.toml
+pub use serde;
 pub use serde_json;
 
 pub type SerializeError = Box<dyn std::error::Error + Send + Sync>;
@@ -223,7 +223,7 @@ pub type SerializeError = Box<dyn std::error::Error + Send + Sync>;
 /// It's recommended to derive this trait with the [InputObject](derive.InputObject.html)
 /// derive.  You can also implement it yourself, but you'll be responsible
 /// for implementing the `SerializableArgument` trait if you want to use it.
-pub trait InputObject<TypeLock>: SerializableArgument {}
+pub trait InputObject<TypeLock>: serde::Serialize {}
 
 impl<TypeLock, T> InputObject<TypeLock> for &T where T: InputObject<TypeLock> {}
 impl<TypeLock, T> InputObject<TypeLock> for Box<T> where T: InputObject<TypeLock> {}

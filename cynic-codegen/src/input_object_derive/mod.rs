@@ -113,11 +113,13 @@ pub fn input_object_derive_impl(
             ));
         }
 
-        let output_struct = proc_macro2::Ident::new("output", Span::call_site());
-        let typecheck_funcs = field_serializers.iter().map(|fs| fs.type_check_fn());
+        let typecheck_funcs = field_serializers
+            .iter()
+            .map(|fs| fs.type_check_fn(query_module.clone().into()));
+        let map_serializer_ident = proc_macro2::Ident::new("map_serializer", Span::call_site());
         let field_inserts = field_serializers
             .iter()
-            .map(|fs| fs.field_insert_call(&output_struct));
+            .map(|fs| fs.field_insert_call(&map_serializer_ident));
 
         let map_len = field_serializers.len();
 
@@ -126,6 +128,25 @@ pub fn input_object_derive_impl(
             impl ::cynic::InputObject<#query_module::#input_marker_ident> for #ident {}
 
             #[automatically_derived]
+            impl ::cynic::serde::Serialize for #ident {
+                fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                where
+                    S: serde::Serializer,
+                {
+                    use ::cynic::serde::ser::SerializeMap;
+                    #(
+                        #typecheck_funcs
+                    )*
+
+                    let mut map_serializer = serializer.serialize_map(Some(#map_len))?;
+
+                    #(#field_inserts)*
+
+                    map_serializer.end()
+                }
+            }
+
+            /*
             impl ::cynic::SerializableArgument for #ident {
                 fn serialize(&self) -> Result<::cynic::serde_json::Value, ::cynic::SerializeError> {
                     use ::cynic::{Scalar, Enum, SerializableArgument};
@@ -140,6 +161,7 @@ pub fn input_object_derive_impl(
                     Ok(::cynic::serde_json::Value::Object(output))
                 }
             }
+            */
 
             ::cynic::impl_input_type!(#ident, #query_module::#input_marker_ident);
         })

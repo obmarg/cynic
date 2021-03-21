@@ -10,8 +10,6 @@ mod query_dsl {
 fn test_input_object_renames() {
     #![allow(non_snake_case)]
 
-    use cynic::SerializableArgument;
-
     #[derive(cynic::InputObject)]
     #[cynic(
         graphql_type = "BlogPostInput",
@@ -25,11 +23,10 @@ fn test_input_object_renames() {
         writer: Option<String>,
     }
 
-    let post = BlogPost {
+    let post = serde_json::to_value(BlogPost {
         Content: "hi".into(),
         writer: Some("Me".into()),
-    }
-    .serialize()
+    })
     .unwrap();
 
     assert_eq!(post, json!({ "content": "hi", "author": "Me" }));
@@ -37,8 +34,6 @@ fn test_input_object_renames() {
 
 #[test]
 fn test_input_object_skip_serializing() {
-    use cynic::SerializableArgument;
-
     #[derive(cynic::InputObject)]
     #[cynic(
         graphql_type = "BlogPostInput",
@@ -51,19 +46,18 @@ fn test_input_object_skip_serializing() {
         author: Option<String>,
     }
 
-    let without_author = BlogPost {
+    let without_author = serde_json::to_value(BlogPost {
         content: "hi".into(),
         author: None,
-    }
-    .serialize()
+    })
     .unwrap();
     assert_eq!(without_author, json!({ "content": "hi" }));
 
-    let with_author = BlogPost {
+    let with_author = serde_json::to_value(BlogPost {
         content: "hi".into(),
         author: Some("Me".into()),
-    }
-    .serialize()
+    })
     .unwrap();
+
     assert_eq!(with_author, json!({ "content": "hi", "author": "Me" }));
 }

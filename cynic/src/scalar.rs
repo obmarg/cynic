@@ -1,9 +1,9 @@
 use json_decode::{BoxDecoder, DecodeError, Decoder};
 use std::marker::PhantomData;
 
-use crate::{SerializableArgument, SerializeError};
+use crate::SerializeError;
 
-pub trait Scalar<TypeLock>: Sized + SerializableArgument {
+pub trait Scalar<TypeLock>: Sized {
     type Serialize: serde::Serialize + serde::de::DeserializeOwned;
 
     fn from_serialize(x: Self::Serialize) -> Result<Self, DecodeError>;
@@ -44,7 +44,6 @@ impl_scalar!(bool, bool);
 impl_scalar!(String, String);
 
 impl_scalar!(serde_json::Value, serde_json::Value);
-crate::impl_serializable_argument_for_scalar!(serde_json::Value);
 
 struct ScalarDecoder<S, T> {
     phantom: PhantomData<(S, T)>,

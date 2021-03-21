@@ -146,6 +146,4 @@ mod test {
             todo!()
         }
     }
-
-    cynic::impl_serializable_argument_for_scalar!(DateTime);
 }

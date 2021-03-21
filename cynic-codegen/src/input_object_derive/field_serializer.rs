@@ -52,7 +52,7 @@ impl<'a> FieldSerializer<'a> {
         None
     }
 
-    pub fn type_check_fn(&self) -> TokenStream {
+    pub fn type_check_fn(&self, query_module_path: TypePath) -> TokenStream {
         // The check_types_are_compatible call in validate only checks for Option
         // and Vec wrappers - we don't have access to any info
         // about the types of fields within our current struct.
@@ -60,35 +60,37 @@ impl<'a> FieldSerializer<'a> {
         // So, we have to construct some functions with constraints
         // in order to make sure the fields are of the right type.
 
-        let generic_param = self.graphql_field_type.generic_parameter(Ident::new("T"));
-        let arg_type = self.graphql_field_type.to_tokens(
-            generic_param.as_ref().map(|p| p.name.clone()),
-            TypePath::empty(),
-        );
+        let type_lock = self.graphql_field_type.as_type_lock(query_module_path);
+        let wrapper_type = self.graphql_field_type.wrapper_path().unwrap();
 
         let rust_field_name = &self.rust_field.ident;
-        let generic_param_definition =
-            generic_param.map(|p| p.to_tokens(self.query_module.clone().into()));
+        let graphql_field_name = proc_macro2::Literal::string(&self.graphql_field.name);
 
         quote! {
             #[allow(clippy::ptr_arg)]
-            fn #rust_field_name<#generic_param_definition>(data: &#arg_type) ->
-                Result<::cynic::serde_json::Value, ::cynic::SerializeError> {
-                    data.serialize()
-                }
+            fn #rust_field_name<SM: ::cynic::serde::ser::SerializeMap>(
+                data: impl ::cynic::InputType<
+                    #type_lock,
+                    #wrapper_type
+                >,
+                map_serializer: &mut SM
+            ) -> Result<(), SM::Error> {
+                map_serializer.serialize_entry(
+                    #graphql_field_name,
+                    &data.into_serializable()
+                )
+            }
         }
     }
 
-    pub fn field_insert_call(&self, output_struct: &proc_macro2::Ident) -> TokenStream {
+    pub fn field_insert_call(&self, serializer_ident: &proc_macro2::Ident) -> TokenStream {
         let field_span = self.rust_field.ident.span();
         let rust_field_name = &self.rust_field.ident;
-
-        let gql_field_name = proc_macro2::Literal::string(&self.graphql_field.name);
 
         // For each field we just call our type checking function with the current field
         // and insert it into the output Map.
         let insert_call = quote_spanned! { field_span =>
-            #output_struct.insert(#gql_field_name.to_string(), #rust_field_name(&self.#rust_field_name)?);
+            #rust_field_name(&self.#rust_field_name, &mut #serializer_ident)?;
         };
 
         if let Some(skip_check_fn) = &self.rust_field.skip_serializing_if {

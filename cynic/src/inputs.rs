@@ -1,4 +1,4 @@
-use crate::{Id, SerializableArgument};
+use crate::Id;
 
 pub enum NamedType {}
 
@@ -16,7 +16,7 @@ pub struct List<T>(std::marker::PhantomData<T>);
 /// - `Wrappers` is used to specify the "wrapper types", for example if it is nullable
 ///    or in a list.
 pub trait InputType<NamedType, Wrappers> {
-    type Output: SerializableArgument;
+    type Output: serde::Serialize;
 
     fn into_serializable(self) -> Self::Output;
 }

@@ -45,17 +45,17 @@ impl GenericConstraint {
             GenericConstraint::Enum(ident) => {
                 let type_path = TypePath::concat(&[path_to_markers, ident.clone().into()]);
 
-                quote! { ::cynic::Enum<#type_path> + ::cynic::SerializableArgument }
+                quote! { ::cynic::Enum<#type_path> }
             }
             GenericConstraint::InputObject(ident) => {
                 let type_path = TypePath::concat(&[path_to_markers, ident.clone().into()]);
 
-                quote! { ::cynic::InputObject<#type_path> + ::cynic::SerializableArgument }
+                quote! { ::cynic::InputObject<#type_path> }
             }
             GenericConstraint::Scalar(scalar_path) => {
                 let type_path = TypePath::concat(&[path_to_markers, scalar_path.clone()]);
 
-                quote! { ::cynic::Scalar<#type_path> + ::cynic::SerializableArgument }
+                quote! { ::cynic::Scalar<#type_path> }
             }
         }
     }

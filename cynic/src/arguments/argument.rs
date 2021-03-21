@@ -7,10 +7,10 @@ pub struct Argument {
 }
 
 impl Argument {
-    pub fn new(name: &str, gql_type: &str, value: impl SerializableArgument) -> Argument {
+    pub fn new(name: &str, gql_type: &str, value: impl serde::Serialize) -> Argument {
         Argument {
             name: name.to_string(),
-            serialize_result: value.serialize(),
+            serialize_result: serde_json::to_value(value).map_err(Into::into),
             type_: gql_type.to_string(),
         }
     }
