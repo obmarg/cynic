@@ -10,33 +10,43 @@ Some(
                     nodes: [
                         PullRequest {
                             title: "Add CI using Github Actions",
+                            created_at: 2020-02-07T17:55:27Z,
                         },
                         PullRequest {
                             title: "Simple type validation in QueryFragment derive.",
+                            created_at: 2020-02-09T16:12:21Z,
                         },
                         PullRequest {
                             title: "Add support for union types via InlineFragments trait.",
+                            created_at: 2020-02-09T16:26:06Z,
                         },
                         PullRequest {
                             title: "Add scalars_as_strings.",
+                            created_at: 2020-02-18T21:00:57Z,
                         },
                         PullRequest {
                             title: "Convert parsing of derive input to use darling",
+                            created_at: 2020-02-23T19:42:14Z,
                         },
                         PullRequest {
                             title: "Fix cynic_arguments parsing with darling",
+                            created_at: 2020-02-23T21:23:34Z,
                         },
                         PullRequest {
                             title: "Added `flatten` option at the field level.",
+                            created_at: 2020-02-23T22:03:07Z,
                         },
                         PullRequest {
                             title: "Optimisations",
+                            created_at: 2020-03-28T14:05:36Z,
                         },
                         PullRequest {
                             title: "First attempt at querygen & web interface",
+                            created_at: 2020-05-23T09:58:12Z,
                         },
                         PullRequest {
                             title: "Added query_module attribute macro.",
+                            created_at: 2020-05-24T14:19:59Z,
                         },
                     ],
                 },

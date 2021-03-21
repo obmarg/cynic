@@ -95,42 +95,6 @@ mod queries {
 }
 
 #[cfg(feature = "github")]
-#[cynic::query_module(schema_path = "../schemas/github.graphql", query_module = "query_dsl")]
-mod types {
-    use super::query_dsl;
-
-    #[derive(cynic::Scalar, Debug)]
-    pub struct Date(String);
-
-    #[derive(cynic::Scalar, Debug)]
-    pub struct DateTime(String);
-
-    #[derive(cynic::Scalar, Debug)]
-    pub struct GitObjectID(String);
-
-    #[derive(cynic::Scalar, Debug)]
-    pub struct GitRefname(String);
-
-    #[derive(cynic::Scalar, Debug)]
-    pub struct GitSSHRemote(String);
-
-    #[derive(cynic::Scalar, Debug)]
-    pub struct GitTimestamp(String);
-
-    #[derive(cynic::Scalar, Debug)]
-    pub struct Html(String);
-
-    #[derive(cynic::Scalar, Debug)]
-    pub struct PreciseDateTime(String);
-
-    #[derive(cynic::Scalar, Debug)]
-    pub struct Uri(String);
-
-    #[derive(cynic::Scalar, Debug)]
-    pub struct X509Certificate(String);
-}
-
-#[cfg(feature = "github")]
 mod query_dsl {
     cynic::query_dsl!("../schemas/github.graphql");
 }

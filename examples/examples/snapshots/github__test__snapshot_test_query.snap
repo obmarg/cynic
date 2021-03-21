@@ -7,6 +7,7 @@ query Query($_0: String!, $_1: String!, $_2: Int, $_3: IssueOrder) {
     pullRequests(first: $_2, orderBy: $_3) {
       nodes {
         title
+        createdAt
       }
     }
   }
