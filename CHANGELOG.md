@@ -44,6 +44,9 @@ all APIs might be changed.
   that relied on type inference (i.e. `arg = "hello".into()`) will no longer
   work. You should either call an explicit function, or rely on a `InputType`
   impl to do the conversion.
+- The `uuid`, `chrono`, `bson`, and `url` features have been retired.  If you
+  were using these you should register them as `Scalar` with the `impl_scalar!`
+  macro.
 
 ### New Features
 

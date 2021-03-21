@@ -158,12 +158,12 @@
 //!
 //! Cynic has a few features that are controlled by feature flags.
 //!
-//! - `chrono` adds support for chrono::DateTime scalars.
-//! - `uuid` adds support for Uuid scalars
-//! - `bson` adds support for ObjectId scalars
-//! - `url` adds support for Url scalars
 //! - `surf` adds integration with the [`surf`](https://github.com/http-rs/surf)
 //!   http client.
+//! - `rewest` adds async integration with the
+//!   [`reqwest`](https://github.com/seanmonstar/reqwest) http client.
+//! - `rewest-blocking` adds blocking integration with the
+//!   [`reqwest`](https://github.com/seanmonstar/reqwest) http client.
 //!
 //! It's worth noting that each of these features pulls in extra
 //! dependencies, which may impact your build size.  Particularly
@@ -178,7 +178,6 @@ mod builders;
 mod enums;
 mod fragments;
 mod id;
-mod integrations;
 mod operation;
 mod result;
 mod scalar;
