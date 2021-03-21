@@ -55,6 +55,11 @@ all APIs might be changed.
   field in a QueryFragment.
 - Field type mismatch errors in QueryFragments are now reported on the span of
   the field type.
+- If a server adds a new scalar it will no longer break cynic clients.
+
+### Changes
+
+- You no longer need to define Scalars you are not using
 
 ## v0.12.2 - 2020-02-22
 
