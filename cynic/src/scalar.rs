@@ -20,10 +20,25 @@ where
     })
 }
 
-// TODO: Docs
+/// Implements [`cynic::Scalar`] for a given type & type lock.
+///
+/// For example, to use `uuid::Uuid` for a `Uuid` type defined in a schema:
+///
+/// ```rust
+/// # #[macro_use] extern crate cynic;
+/// # // Faking the query_dsl & chrono module here because it's easier than
+/// # // actually defining them
+/// #
+/// # mod query_dsl { pub struct Uuid {} }
+/// # mod uuid { pub type Uuid = String; }
+/// impl_scalar!(uuid::Uuid, query_dsl::Uuid);
+/// ```
+///
+/// This macro can be used on any type that implements `serde::Serialize`,
+/// provided the `query_dsl` is defined in the current crate
 #[macro_export]
 macro_rules! impl_scalar {
-    ($type_lock:path, $type:path) => {
+    ($type:path, $type_lock:path) => {
         impl $crate::Scalar<$type_lock> for $type {
             type Serialize = $type;
 

@@ -6,7 +6,7 @@ mod query_dsl {
 
 type DateTime = chrono::DateTime<chrono::Utc>;
 
-cynic::impl_scalar!(query_dsl::DateTime, DateTime);
+cynic::impl_scalar!(DateTime, query_dsl::DateTime);
 
 #[derive(cynic::QueryFragment, Debug)]
 #[cynic(
