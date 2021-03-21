@@ -123,7 +123,7 @@ impl quote::ToTokens for StandardDeserializeImpl<'_> {
                     #[derive(::cynic::serde::Deserialize)]
                     #[serde(field_identifier, crate="::cynic::serde")]
                     #[allow(non_camel_case_types)]
-                    enum Field {
+                    enum __FragmentDeriveField {
                         #(
                             #[serde(rename = #serialized_names)]
                             #field_variant_names,
@@ -154,14 +154,14 @@ impl quote::ToTokens for StandardDeserializeImpl<'_> {
                             while let Some(__key) = __map.next_key()? {
                                 match __key {
                                     #(
-                                        Field::#field_variant_names => {
+                                        __FragmentDeriveField::#field_variant_names => {
                                             if #field_names.is_some() {
                                                 return Err(::cynic::serde::de::Error::duplicate_field(#serialized_names));
                                             }
                                             #field_decodes
                                         }
                                     )*
-                                    Field::__Other => {
+                                    __FragmentDeriveField::__Other => {
                                         __map.next_value::<::cynic::serde::de::IgnoredAny>()?;
                                     }
                                 }
