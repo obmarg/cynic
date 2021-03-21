@@ -140,25 +140,23 @@ impl<'a, DecodesTo, TypeLock> SelectionSet<'a, DecodesTo, TypeLock> {
     }
 }
 
-// TODO: expect most of these will need typelocks
-
 /// Creates a `SelectionSet` that will decode a `String`
-pub fn string() -> SelectionSet<'static, String, ()> {
+pub fn string() -> SelectionSet<'static, String, String> {
     SelectionSet::new(vec![], json_decode::string())
 }
 
 /// Creates a `SelectionSet` that will decode an `i32`
-pub fn integer() -> SelectionSet<'static, i32, ()> {
+pub fn integer() -> SelectionSet<'static, i32, i32> {
     SelectionSet::new(vec![], json_decode::integer())
 }
 
 /// Creates a `SelectionSet` that will decode an `f64`
-pub fn float() -> SelectionSet<'static, f64, ()> {
+pub fn float() -> SelectionSet<'static, f64, f64> {
     SelectionSet::new(vec![], json_decode::float())
 }
 
 /// Creates a `SelectionSet` that will decode a `bool`
-pub fn boolean() -> SelectionSet<'static, bool, ()> {
+pub fn boolean() -> SelectionSet<'static, bool, bool> {
     SelectionSet::new(vec![], json_decode::boolean())
 }
 

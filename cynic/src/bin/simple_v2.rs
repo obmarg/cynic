@@ -61,21 +61,3 @@ mod queries {
 }
 
 impl cynic::QueryRoot for query_dsl::TestStruct {}
-
-mod test {
-
-    // A custom scalars.
-    pub struct DateTime {}
-
-    impl cynic::Scalar<super::query_dsl::Json> for DateTime {
-        type Serialize = String;
-
-        fn from_serialize(_inner: String) -> Result<Self, ::cynic::DecodeError> {
-            todo!()
-        }
-
-        fn to_serialize(&self) -> Result<String, ::cynic::SerializeError> {
-            todo!()
-        }
-    }
-}

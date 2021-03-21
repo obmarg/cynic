@@ -88,9 +88,6 @@ macro_rules! impl_input_type {
             }
         }
 
-        // TODO: See if _some_ of these can be made generic?
-        // expect they can't but worth a shot..
-
         impl<'a> $crate::InputType<$type_lock, $crate::inputs::Nullable<$crate::inputs::NamedType>>
             for &'a $type
         {
@@ -144,15 +141,6 @@ macro_rules! impl_input_type {
             }
         }
 
-        // TODO: Still feel there must be a way to do this.
-        // Like by making Nullable<List<Nullable<Named>>> into a trait _somehow_
-        // then using that to do most of the impls?
-        // Not sure.
-        // Like impl InputType<Lock, Wrappers> for T
-        // where
-        //   Lock: Something
-        //   Wrappers: SomeOtherThing
-        //   T: SomehowConstrainedForBoth
         impl
             $crate::InputType<
                 $type_lock,
@@ -167,8 +155,6 @@ macro_rules! impl_input_type {
                 self
             }
         }
-
-        // TODO: Try and implement list coercion in here...
     };
 }
 
