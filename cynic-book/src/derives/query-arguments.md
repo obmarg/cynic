@@ -44,17 +44,22 @@ the Root to the point that requires arguments must define the same
 `argument_struct` in their cynic attribute. If no nested QueryFragments
 require any arguments then it's OK to omit `argument_struct`.
 
-### IntoArguments
+### InputType
 
-Cynic uses the `IntoArguments` trait to convert arguments into the correct type.
-You can provide your own definition of this trait, but built in conversions are
-provided for:
+Cynic uses the `InputType` trait to convert arguments into the correct type.
+This trait tries to provide the same coercion rules you would get when writing
+raw GraphQL, as well as allowing arguments to be taken by value and by
+reference.  Amongst other things, this:
 
-1. Converting bare scalars & enums into Options. This means you don't have to
+1. Converts bare scalars & enums into Options. This means you don't have to
    explicitly wrap an argument in `Some`. This also allows cynic to be tolerant
    of schemas changing a required argument into an optional argument (which
    would usually be considered a non-breaking change when your client in a
    dynamic language)
-2. Converting references to scalars & enums into owned arguments via `clone`.
+2. Converts references to scalars & enums into owned arguments via `clone`.
    Cynic doesn't currently support taking arguments by reference, but this
    convenience saves users from having to explicitly clone.
+
+I've tried to be exhaustive with `InputType` impls, but it's possible that I've
+missed some.  In this case you may need to define your own, or raise an issue
+in `cynic`.
