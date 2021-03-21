@@ -211,8 +211,6 @@ pub use cynic_proc_macros::{
 pub use serde;
 pub use serde_json;
 
-pub type SerializeError = Box<dyn std::error::Error + Send + Sync>;
-
 /// A trait for GraphQL input objects.
 ///
 /// This trait is generic over some TypeLock which is used to tie an InputType

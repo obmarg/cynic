@@ -207,7 +207,7 @@ impl Mutation {
         mutation::SubscribeSelectionBuilder::new(vec![::cynic::Argument::new(
             "input",
             "SubscribeInput!",
-            input.into_serializable(),
+            ::cynic::serde_json::to_value(&input),
         )])
     }
     pub fn post_job(
@@ -216,7 +216,7 @@ impl Mutation {
         mutation::PostJobSelectionBuilder::new(vec![::cynic::Argument::new(
             "input",
             "PostJobInput!",
-            input.into_serializable(),
+            ::cynic::serde_json::to_value(&input),
         )])
     }
     pub fn update_job(
@@ -224,8 +224,16 @@ impl Mutation {
         admin_secret: impl ::cynic::InputType<String, ::cynic::inputs::NamedType>,
     ) -> mutation::UpdateJobSelectionBuilder {
         mutation::UpdateJobSelectionBuilder::new(vec![
-            ::cynic::Argument::new("input", "UpdateJobInput!", input.into_serializable()),
-            ::cynic::Argument::new("adminSecret", "String!", admin_secret.into_serializable()),
+            ::cynic::Argument::new(
+                "input",
+                "UpdateJobInput!",
+                ::cynic::serde_json::to_value(&input),
+            ),
+            ::cynic::Argument::new(
+                "adminSecret",
+                "String!",
+                ::cynic::serde_json::to_value(&admin_secret),
+            ),
         ])
     }
     pub fn update_company(
@@ -233,8 +241,16 @@ impl Mutation {
         admin_secret: impl ::cynic::InputType<String, ::cynic::inputs::NamedType>,
     ) -> mutation::UpdateCompanySelectionBuilder {
         mutation::UpdateCompanySelectionBuilder::new(vec![
-            ::cynic::Argument::new("input", "UpdateCompanyInput!", input.into_serializable()),
-            ::cynic::Argument::new("adminSecret", "String!", admin_secret.into_serializable()),
+            ::cynic::Argument::new(
+                "input",
+                "UpdateCompanyInput!",
+                ::cynic::serde_json::to_value(&input),
+            ),
+            ::cynic::Argument::new(
+                "adminSecret",
+                "String!",
+                ::cynic::serde_json::to_value(&admin_secret),
+            ),
         ])
     }
 }
@@ -251,7 +267,7 @@ impl Query {
         query::JobSelectionBuilder::new(vec![::cynic::Argument::new(
             "input",
             "JobInput!",
-            input.into_serializable(),
+            ::cynic::serde_json::to_value(&input),
         )])
     }
     pub fn locations(
@@ -260,7 +276,7 @@ impl Query {
         query::LocationsSelectionBuilder::new(vec![::cynic::Argument::new(
             "input",
             "LocationsInput!",
-            input.into_serializable(),
+            ::cynic::serde_json::to_value(&input),
         )])
     }
     pub fn city(
@@ -269,7 +285,7 @@ impl Query {
         query::CitySelectionBuilder::new(vec![::cynic::Argument::new(
             "input",
             "LocationInput!",
-            input.into_serializable(),
+            ::cynic::serde_json::to_value(&input),
         )])
     }
     pub fn country(
@@ -278,7 +294,7 @@ impl Query {
         query::CountrySelectionBuilder::new(vec![::cynic::Argument::new(
             "input",
             "LocationInput!",
-            input.into_serializable(),
+            ::cynic::serde_json::to_value(&input),
         )])
     }
     pub fn remote(
@@ -287,7 +303,7 @@ impl Query {
         query::RemoteSelectionBuilder::new(vec![::cynic::Argument::new(
             "input",
             "LocationInput!",
-            input.into_serializable(),
+            ::cynic::serde_json::to_value(&input),
         )])
     }
     pub fn commitments() -> query::CommitmentsSelectionBuilder {
@@ -467,7 +483,7 @@ pub mod city {
             self.args.push(::cynic::Argument::new(
                 "where",
                 "JobWhereInput",
-                r#where.into_serializable(),
+                ::cynic::serde_json::to_value(&r#where),
             ));
             self
         }
@@ -481,7 +497,7 @@ pub mod city {
             self.args.push(::cynic::Argument::new(
                 "orderBy",
                 "JobOrderByInput",
-                order_by.into_serializable(),
+                ::cynic::serde_json::to_value(&order_by),
             ));
             self
         }
@@ -492,7 +508,7 @@ pub mod city {
             self.args.push(::cynic::Argument::new(
                 "skip",
                 "Int",
-                skip.into_serializable(),
+                ::cynic::serde_json::to_value(&skip),
             ));
             self
         }
@@ -506,7 +522,7 @@ pub mod city {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_serializable(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
@@ -520,7 +536,7 @@ pub mod city {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_serializable(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
@@ -531,7 +547,7 @@ pub mod city {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_serializable(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
@@ -542,7 +558,7 @@ pub mod city {
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                last.into_serializable(),
+                ::cynic::serde_json::to_value(&last),
             ));
             self
         }
@@ -647,7 +663,7 @@ pub mod commitment {
             self.args.push(::cynic::Argument::new(
                 "where",
                 "JobWhereInput",
-                r#where.into_serializable(),
+                ::cynic::serde_json::to_value(&r#where),
             ));
             self
         }
@@ -661,7 +677,7 @@ pub mod commitment {
             self.args.push(::cynic::Argument::new(
                 "orderBy",
                 "JobOrderByInput",
-                order_by.into_serializable(),
+                ::cynic::serde_json::to_value(&order_by),
             ));
             self
         }
@@ -672,7 +688,7 @@ pub mod commitment {
             self.args.push(::cynic::Argument::new(
                 "skip",
                 "Int",
-                skip.into_serializable(),
+                ::cynic::serde_json::to_value(&skip),
             ));
             self
         }
@@ -686,7 +702,7 @@ pub mod commitment {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_serializable(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
@@ -700,7 +716,7 @@ pub mod commitment {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_serializable(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
@@ -711,7 +727,7 @@ pub mod commitment {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_serializable(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
@@ -722,7 +738,7 @@ pub mod commitment {
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                last.into_serializable(),
+                ::cynic::serde_json::to_value(&last),
             ));
             self
         }
@@ -859,7 +875,7 @@ pub mod company {
             self.args.push(::cynic::Argument::new(
                 "where",
                 "JobWhereInput",
-                r#where.into_serializable(),
+                ::cynic::serde_json::to_value(&r#where),
             ));
             self
         }
@@ -873,7 +889,7 @@ pub mod company {
             self.args.push(::cynic::Argument::new(
                 "orderBy",
                 "JobOrderByInput",
-                order_by.into_serializable(),
+                ::cynic::serde_json::to_value(&order_by),
             ));
             self
         }
@@ -884,7 +900,7 @@ pub mod company {
             self.args.push(::cynic::Argument::new(
                 "skip",
                 "Int",
-                skip.into_serializable(),
+                ::cynic::serde_json::to_value(&skip),
             ));
             self
         }
@@ -898,7 +914,7 @@ pub mod company {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_serializable(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
@@ -912,7 +928,7 @@ pub mod company {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_serializable(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
@@ -923,7 +939,7 @@ pub mod company {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_serializable(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
@@ -934,7 +950,7 @@ pub mod company {
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                last.into_serializable(),
+                ::cynic::serde_json::to_value(&last),
             ));
             self
         }
@@ -1107,7 +1123,7 @@ pub mod country {
             self.args.push(::cynic::Argument::new(
                 "where",
                 "CityWhereInput",
-                r#where.into_serializable(),
+                ::cynic::serde_json::to_value(&r#where),
             ));
             self
         }
@@ -1121,7 +1137,7 @@ pub mod country {
             self.args.push(::cynic::Argument::new(
                 "orderBy",
                 "CityOrderByInput",
-                order_by.into_serializable(),
+                ::cynic::serde_json::to_value(&order_by),
             ));
             self
         }
@@ -1132,7 +1148,7 @@ pub mod country {
             self.args.push(::cynic::Argument::new(
                 "skip",
                 "Int",
-                skip.into_serializable(),
+                ::cynic::serde_json::to_value(&skip),
             ));
             self
         }
@@ -1146,7 +1162,7 @@ pub mod country {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_serializable(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
@@ -1160,7 +1176,7 @@ pub mod country {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_serializable(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
@@ -1171,7 +1187,7 @@ pub mod country {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_serializable(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
@@ -1182,7 +1198,7 @@ pub mod country {
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                last.into_serializable(),
+                ::cynic::serde_json::to_value(&last),
             ));
             self
         }
@@ -1214,7 +1230,7 @@ pub mod country {
             self.args.push(::cynic::Argument::new(
                 "where",
                 "JobWhereInput",
-                r#where.into_serializable(),
+                ::cynic::serde_json::to_value(&r#where),
             ));
             self
         }
@@ -1228,7 +1244,7 @@ pub mod country {
             self.args.push(::cynic::Argument::new(
                 "orderBy",
                 "JobOrderByInput",
-                order_by.into_serializable(),
+                ::cynic::serde_json::to_value(&order_by),
             ));
             self
         }
@@ -1239,7 +1255,7 @@ pub mod country {
             self.args.push(::cynic::Argument::new(
                 "skip",
                 "Int",
-                skip.into_serializable(),
+                ::cynic::serde_json::to_value(&skip),
             ));
             self
         }
@@ -1253,7 +1269,7 @@ pub mod country {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_serializable(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
@@ -1267,7 +1283,7 @@ pub mod country {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_serializable(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
@@ -1278,7 +1294,7 @@ pub mod country {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_serializable(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
@@ -1289,7 +1305,7 @@ pub mod country {
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                last.into_serializable(),
+                ::cynic::serde_json::to_value(&last),
             ));
             self
         }
@@ -1408,7 +1424,7 @@ pub mod job {
             self.args.push(::cynic::Argument::new(
                 "where",
                 "CityWhereInput",
-                r#where.into_serializable(),
+                ::cynic::serde_json::to_value(&r#where),
             ));
             self
         }
@@ -1422,7 +1438,7 @@ pub mod job {
             self.args.push(::cynic::Argument::new(
                 "orderBy",
                 "CityOrderByInput",
-                order_by.into_serializable(),
+                ::cynic::serde_json::to_value(&order_by),
             ));
             self
         }
@@ -1433,7 +1449,7 @@ pub mod job {
             self.args.push(::cynic::Argument::new(
                 "skip",
                 "Int",
-                skip.into_serializable(),
+                ::cynic::serde_json::to_value(&skip),
             ));
             self
         }
@@ -1447,7 +1463,7 @@ pub mod job {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_serializable(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
@@ -1461,7 +1477,7 @@ pub mod job {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_serializable(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
@@ -1472,7 +1488,7 @@ pub mod job {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_serializable(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
@@ -1483,7 +1499,7 @@ pub mod job {
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                last.into_serializable(),
+                ::cynic::serde_json::to_value(&last),
             ));
             self
         }
@@ -1515,7 +1531,7 @@ pub mod job {
             self.args.push(::cynic::Argument::new(
                 "where",
                 "CountryWhereInput",
-                r#where.into_serializable(),
+                ::cynic::serde_json::to_value(&r#where),
             ));
             self
         }
@@ -1529,7 +1545,7 @@ pub mod job {
             self.args.push(::cynic::Argument::new(
                 "orderBy",
                 "CountryOrderByInput",
-                order_by.into_serializable(),
+                ::cynic::serde_json::to_value(&order_by),
             ));
             self
         }
@@ -1540,7 +1556,7 @@ pub mod job {
             self.args.push(::cynic::Argument::new(
                 "skip",
                 "Int",
-                skip.into_serializable(),
+                ::cynic::serde_json::to_value(&skip),
             ));
             self
         }
@@ -1554,7 +1570,7 @@ pub mod job {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_serializable(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
@@ -1568,7 +1584,7 @@ pub mod job {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_serializable(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
@@ -1579,7 +1595,7 @@ pub mod job {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_serializable(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
@@ -1590,7 +1606,7 @@ pub mod job {
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                last.into_serializable(),
+                ::cynic::serde_json::to_value(&last),
             ));
             self
         }
@@ -1622,7 +1638,7 @@ pub mod job {
             self.args.push(::cynic::Argument::new(
                 "where",
                 "RemoteWhereInput",
-                r#where.into_serializable(),
+                ::cynic::serde_json::to_value(&r#where),
             ));
             self
         }
@@ -1636,7 +1652,7 @@ pub mod job {
             self.args.push(::cynic::Argument::new(
                 "orderBy",
                 "RemoteOrderByInput",
-                order_by.into_serializable(),
+                ::cynic::serde_json::to_value(&order_by),
             ));
             self
         }
@@ -1647,7 +1663,7 @@ pub mod job {
             self.args.push(::cynic::Argument::new(
                 "skip",
                 "Int",
-                skip.into_serializable(),
+                ::cynic::serde_json::to_value(&skip),
             ));
             self
         }
@@ -1661,7 +1677,7 @@ pub mod job {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_serializable(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
@@ -1675,7 +1691,7 @@ pub mod job {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_serializable(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
@@ -1686,7 +1702,7 @@ pub mod job {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_serializable(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
@@ -1697,7 +1713,7 @@ pub mod job {
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                last.into_serializable(),
+                ::cynic::serde_json::to_value(&last),
             ));
             self
         }
@@ -1783,7 +1799,7 @@ pub mod job {
             self.args.push(::cynic::Argument::new(
                 "where",
                 "TagWhereInput",
-                r#where.into_serializable(),
+                ::cynic::serde_json::to_value(&r#where),
             ));
             self
         }
@@ -1797,7 +1813,7 @@ pub mod job {
             self.args.push(::cynic::Argument::new(
                 "orderBy",
                 "TagOrderByInput",
-                order_by.into_serializable(),
+                ::cynic::serde_json::to_value(&order_by),
             ));
             self
         }
@@ -1808,7 +1824,7 @@ pub mod job {
             self.args.push(::cynic::Argument::new(
                 "skip",
                 "Int",
-                skip.into_serializable(),
+                ::cynic::serde_json::to_value(&skip),
             ));
             self
         }
@@ -1822,7 +1838,7 @@ pub mod job {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_serializable(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
@@ -1836,7 +1852,7 @@ pub mod job {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_serializable(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
@@ -1847,7 +1863,7 @@ pub mod job {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_serializable(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
@@ -1858,7 +1874,7 @@ pub mod job {
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                last.into_serializable(),
+                ::cynic::serde_json::to_value(&last),
             ));
             self
         }
@@ -2125,7 +2141,7 @@ pub mod query {
             self.args.push(::cynic::Argument::new(
                 "input",
                 "JobsInput",
-                input.into_serializable(),
+                ::cynic::serde_json::to_value(&input),
             ));
             self
         }
@@ -2368,7 +2384,7 @@ pub mod remote {
             self.args.push(::cynic::Argument::new(
                 "where",
                 "JobWhereInput",
-                r#where.into_serializable(),
+                ::cynic::serde_json::to_value(&r#where),
             ));
             self
         }
@@ -2382,7 +2398,7 @@ pub mod remote {
             self.args.push(::cynic::Argument::new(
                 "orderBy",
                 "JobOrderByInput",
-                order_by.into_serializable(),
+                ::cynic::serde_json::to_value(&order_by),
             ));
             self
         }
@@ -2393,7 +2409,7 @@ pub mod remote {
             self.args.push(::cynic::Argument::new(
                 "skip",
                 "Int",
-                skip.into_serializable(),
+                ::cynic::serde_json::to_value(&skip),
             ));
             self
         }
@@ -2407,7 +2423,7 @@ pub mod remote {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_serializable(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
@@ -2421,7 +2437,7 @@ pub mod remote {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_serializable(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
@@ -2432,7 +2448,7 @@ pub mod remote {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_serializable(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
@@ -2443,7 +2459,7 @@ pub mod remote {
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                last.into_serializable(),
+                ::cynic::serde_json::to_value(&last),
             ));
             self
         }
@@ -2548,7 +2564,7 @@ pub mod tag {
             self.args.push(::cynic::Argument::new(
                 "where",
                 "JobWhereInput",
-                r#where.into_serializable(),
+                ::cynic::serde_json::to_value(&r#where),
             ));
             self
         }
@@ -2562,7 +2578,7 @@ pub mod tag {
             self.args.push(::cynic::Argument::new(
                 "orderBy",
                 "JobOrderByInput",
-                order_by.into_serializable(),
+                ::cynic::serde_json::to_value(&order_by),
             ));
             self
         }
@@ -2573,7 +2589,7 @@ pub mod tag {
             self.args.push(::cynic::Argument::new(
                 "skip",
                 "Int",
-                skip.into_serializable(),
+                ::cynic::serde_json::to_value(&skip),
             ));
             self
         }
@@ -2587,7 +2603,7 @@ pub mod tag {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_serializable(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
@@ -2601,7 +2617,7 @@ pub mod tag {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_serializable(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
@@ -2612,7 +2628,7 @@ pub mod tag {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_serializable(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
@@ -2623,7 +2639,7 @@ pub mod tag {
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                last.into_serializable(),
+                ::cynic::serde_json::to_value(&last),
             ));
             self
         }

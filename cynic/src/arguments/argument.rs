@@ -1,16 +1,18 @@
-use crate::SerializeError;
-
 pub struct Argument {
     pub(crate) name: String,
-    pub(crate) serialize_result: Result<serde_json::Value, SerializeError>,
+    pub(crate) serialize_result: Result<serde_json::Value, serde_json::Error>,
     pub(crate) type_: String,
 }
 
 impl Argument {
-    pub fn new(name: &str, gql_type: &str, value: impl serde::Serialize) -> Argument {
+    pub fn new(
+        name: &str,
+        gql_type: &str,
+        result: Result<serde_json::Value, serde_json::Error>,
+    ) -> Argument {
         Argument {
             name: name.to_string(),
-            serialize_result: serde_json::to_value(value).map_err(Into::into),
+            serialize_result: result,
             type_: gql_type.to_string(),
         }
     }

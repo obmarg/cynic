@@ -108,7 +108,7 @@ impl quote::ToTokens for FieldSelectionBuilder {
                             ::cynic::Argument::new(
                                 #argument_strings,
                                 #argument_gql_types,
-                                #argument_names.into_serializable()
+                                ::cynic::serde_json::to_value(&#argument_names)
                             )
                         );
 

@@ -79,7 +79,7 @@ impl<'a> FieldSerializer<'a> {
             ) -> Result<(), SM::Error> {
                 map_serializer.serialize_entry(
                     #graphql_field_name,
-                    &data.into_serializable()
+                    &data
                 )
             }
         }

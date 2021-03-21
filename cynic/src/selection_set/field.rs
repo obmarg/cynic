@@ -180,7 +180,7 @@ mod tests {
     fn test_query_with_arguments() {
         let fields = Field::Composite(
             "test_struct".to_string(),
-            vec![Argument::new("an_arg", "Bool!", false)],
+            vec![Argument::new("an_arg", "Bool!", Ok(json! { false }))],
             vec![
                 Field::Leaf("field_one".to_string(), vec![]),
                 Field::Composite(
@@ -188,7 +188,7 @@ mod tests {
                     vec![],
                     vec![Field::Leaf(
                         "a_string".to_string(),
-                        vec![Argument::new("another_arg", "Bool!", true)],
+                        vec![Argument::new("another_arg", "Bool!", Ok(json! { true }))],
                     )],
                 ),
             ],

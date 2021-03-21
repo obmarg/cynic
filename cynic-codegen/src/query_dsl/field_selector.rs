@@ -65,7 +65,7 @@ impl quote::ToTokens for FieldSelector {
             .iter()
             .map(|a| {
                 let name = &a.name;
-                quote! { #name.into_serializable() }
+                quote! { ::cynic::serde_json::to_value(&#name) }
             })
             .collect();
         let argument_strings: Vec<_> = self

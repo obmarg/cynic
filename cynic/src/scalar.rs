@@ -1,13 +1,10 @@
 use json_decode::{BoxDecoder, DecodeError, Decoder};
 use std::marker::PhantomData;
 
-use crate::SerializeError;
+pub trait Scalar<TypeLock>: Sized + serde::Serialize {
+    type Deserialize: serde::de::DeserializeOwned;
 
-pub trait Scalar<TypeLock>: Sized {
-    type Serialize: serde::Serialize + serde::de::DeserializeOwned;
-
-    fn from_serialize(x: Self::Serialize) -> Result<Self, DecodeError>;
-    fn to_serialize(&self) -> Result<Self::Serialize, SerializeError>;
+    fn from_deserialize(x: Self::Deserialize) -> Result<Self, DecodeError>;
 }
 
 pub fn decoder<'a, S, TypeLock>() -> BoxDecoder<'a, S>
@@ -40,14 +37,10 @@ where
 macro_rules! impl_scalar {
     ($type:path, $type_lock:path) => {
         impl $crate::Scalar<$type_lock> for $type {
-            type Serialize = $type;
+            type Deserialize = $type;
 
-            fn from_serialize(x: $type) -> Result<$type, $crate::DecodeError> {
+            fn from_deserialize(x: $type) -> Result<$type, $crate::DecodeError> {
                 Ok(x)
-            }
-
-            fn to_serialize(&self) -> Result<$type, $crate::SerializeError> {
-                Ok(self.clone())
             }
         }
     };
@@ -69,7 +62,7 @@ where
     S: Scalar<TypeLock> + Sized,
 {
     fn decode(&self, value: &serde_json::Value) -> Result<S, DecodeError> {
-        S::from_serialize(
+        S::from_deserialize(
             serde_json::from_value(value.clone())
                 .map_err(|e| DecodeError::SerdeError(e.to_string()))?,
         )

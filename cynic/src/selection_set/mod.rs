@@ -687,13 +687,13 @@ mod tests {
                 let mut args = vec![Argument::new(
                     "required_arg",
                     "String!",
-                    required.required_arg,
+                    serde_json::to_value(required.required_arg),
                 )];
                 if optionals.opt_string.is_some() {
                     args.push(Argument::new(
                         "opt_string",
                         "String",
-                        optionals.opt_string.unwrap(),
+                        serde_json::to_value(optionals.opt_string.unwrap()),
                     ));
                 }
                 field("nested", args, fields)

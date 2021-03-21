@@ -40,26 +40,12 @@ pub fn scalar_derive_impl(input: ScalarDeriveInput) -> Result<TokenStream, syn::
         type_lock_ident.into(),
     ]);
 
-    // Note: Not sure the Serialize impl below is ideal.
-    //
-    // Only providing it because the impl_input_type below
-    // returns the scalar itself instead of it's inner type
-    // and `InputType` requires that it's output be Serialize
-    // Could have a smarter impl_input_type that does the right thing for
-    // derived scalars.
-    //
-    // However, going to run with it for now.  Can maybe revisit this
-    // later.
     Ok(quote! {
         impl ::cynic::Scalar<#type_lock> for #ident {
-            type Serialize = #inner_type;
+            type Deserialize = #inner_type;
 
-            fn from_serialize(inner: Self::Serialize) -> Result<Self, ::cynic::DecodeError> {
+            fn from_deserialize(inner: Self::Deserialize) -> Result<Self, ::cynic::DecodeError> {
                 Ok(#ident(inner))
-            }
-
-            fn to_serialize(&self) -> Result<Self::Serialize, ::cynic::SerializeError> {
-                Ok(self.0.clone())
             }
         }
 
@@ -68,11 +54,7 @@ pub fn scalar_derive_impl(input: ScalarDeriveInput) -> Result<TokenStream, syn::
             where
                 S: ::cynic::serde::Serializer,
             {
-                use ::cynic::Scalar;
-
-                self.to_serialize()
-                    .map_err(|e| ::cynic::serde::ser::Error::custom(e))?
-                    .serialize(serializer)
+                self.0.serialize(serializer)
             }
         }
 

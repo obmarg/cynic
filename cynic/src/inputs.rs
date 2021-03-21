@@ -15,35 +15,40 @@ pub struct List<T>(std::marker::PhantomData<T>);
 ///   `query_dsl` module.
 /// - `Wrappers` is used to specify the "wrapper types", for example if it is nullable
 ///    or in a list.
-pub trait InputType<NamedType, Wrappers> {
-    type Output: serde::Serialize;
-
-    fn into_serializable(self) -> Self::Output;
+pub trait InputType<NamedType, Wrappers>: serde::Serialize {
+    //fn as_serializable(&self) -> Self::Output;
+    //fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error>;
 }
 
-impl<'a> InputType<String, NamedType> for &'a str {
-    type Output = &'a str;
-
-    fn into_serializable(self) -> &'a str {
-        self
-    }
+impl<T: ?Sized, TypeLock, Wrappers> InputType<TypeLock, Wrappers> for &T where
+    T: InputType<TypeLock, Wrappers>
+{
 }
 
-impl<'a> InputType<String, Nullable<NamedType>> for &'a str {
-    type Output = Option<&'a str>;
-
-    fn into_serializable(self) -> Option<&'a str> {
-        Some(self)
-    }
+impl<T: ?Sized, TypeLock, Wrappers> InputType<TypeLock, Wrappers> for Box<T> where
+    T: InputType<TypeLock, Wrappers>
+{
 }
 
-impl<'a> InputType<String, Nullable<NamedType>> for Option<&'a str> {
-    type Output = Option<&'a str>;
-
-    fn into_serializable(self) -> Option<&'a str> {
-        self
-    }
+impl<T: ?Sized, TypeLock, Wrappers> InputType<TypeLock, Wrappers> for std::rc::Rc<T>
+where
+    T: InputType<TypeLock, Wrappers>,
+    std::rc::Rc<T>: serde::Serialize,
+{
 }
+
+impl<T: ?Sized, TypeLock, Wrappers> InputType<TypeLock, Wrappers> for std::sync::Arc<T>
+where
+    T: InputType<TypeLock, Wrappers>,
+    std::sync::Arc<T>: serde::Serialize,
+{
+}
+
+impl<'a> InputType<String, NamedType> for &'a str {}
+
+impl<'a> InputType<String, Nullable<NamedType>> for &'a str {}
+
+impl<'a> InputType<String, Nullable<NamedType>> for Option<&'a str> {}
 
 /// Defines useful argument conversions for input objects
 ///
@@ -52,70 +57,21 @@ impl<'a> InputType<String, Nullable<NamedType>> for Option<&'a str> {
 #[macro_export]
 macro_rules! impl_input_type {
     ($type:ty, $type_lock:path) => {
-        impl $crate::InputType<$type_lock, $crate::inputs::NamedType> for $type {
-            type Output = $type;
-
-            fn into_serializable(self) -> Self::Output {
-                self
-            }
-        }
-
-        impl $crate::InputType<$type_lock, $crate::inputs::NamedType> for &$type {
-            type Output = Self;
-
-            fn into_serializable(self) -> Self::Output {
-                self
-            }
-        }
+        impl $crate::InputType<$type_lock, $crate::inputs::NamedType> for $type {}
 
         impl $crate::InputType<$type_lock, $crate::inputs::Nullable<$crate::inputs::NamedType>>
             for $type
         {
-            type Output = Option<$type>;
-
-            fn into_serializable(self) -> Option<$type> {
-                Some(self)
-            }
         }
 
         impl $crate::InputType<$type_lock, $crate::inputs::Nullable<$crate::inputs::NamedType>>
             for Option<$type>
         {
-            type Output = Option<$type>;
-
-            fn into_serializable(self) -> Option<$type> {
-                self
-            }
-        }
-
-        impl<'a> $crate::InputType<$type_lock, $crate::inputs::Nullable<$crate::inputs::NamedType>>
-            for &'a $type
-        {
-            type Output = Option<&'a $type>;
-
-            fn into_serializable(self) -> Option<&'a $type> {
-                Some(self)
-            }
         }
 
         impl<'a> $crate::InputType<$type_lock, $crate::inputs::Nullable<$crate::inputs::NamedType>>
             for Option<&'a $type>
         {
-            type Output = Option<&'a $type>;
-
-            fn into_serializable(self) -> Option<&'a $type> {
-                self
-            }
-        }
-
-        impl<'a> $crate::InputType<$type_lock, $crate::inputs::Nullable<$crate::inputs::NamedType>>
-            for &'a Option<$type>
-        {
-            type Output = Option<&'a $type>;
-
-            fn into_serializable(self) -> Option<&'a $type> {
-                self.as_ref()
-            }
         }
 
         impl
@@ -124,21 +80,11 @@ macro_rules! impl_input_type {
                 $crate::inputs::Nullable<$crate::inputs::List<$crate::inputs::NamedType>>,
             > for Option<Vec<$type>>
         {
-            type Output = Option<Vec<$type>>;
-
-            fn into_serializable(self) -> Self::Output {
-                self
-            }
         }
 
         impl $crate::InputType<$type_lock, $crate::inputs::List<$crate::inputs::NamedType>>
             for Vec<$type>
         {
-            type Output = Vec<$type>;
-
-            fn into_serializable(self) -> Self::Output {
-                self
-            }
         }
 
         impl
@@ -149,11 +95,6 @@ macro_rules! impl_input_type {
                 >,
             > for Option<Vec<Option<$type>>>
         {
-            type Output = Option<Vec<Option<$type>>>;
-
-            fn into_serializable(self) -> Self::Output {
-                self
-            }
         }
     };
 }

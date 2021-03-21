@@ -584,7 +584,7 @@ impl Root {
         root::NodeSelectionBuilder::new(vec![::cynic::Argument::new(
             "id",
             "ID!",
-            id.into_serializable(),
+            ::cynic::serde_json::to_value(&id),
         )])
     }
 }
@@ -1127,7 +1127,7 @@ pub mod film {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_serializable(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
@@ -1138,7 +1138,7 @@ pub mod film {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_serializable(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
@@ -1152,7 +1152,7 @@ pub mod film {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_serializable(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
@@ -1163,7 +1163,7 @@ pub mod film {
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                last.into_serializable(),
+                ::cynic::serde_json::to_value(&last),
             ));
             self
         }
@@ -1195,7 +1195,7 @@ pub mod film {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_serializable(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
@@ -1206,7 +1206,7 @@ pub mod film {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_serializable(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
@@ -1220,7 +1220,7 @@ pub mod film {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_serializable(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
@@ -1231,7 +1231,7 @@ pub mod film {
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                last.into_serializable(),
+                ::cynic::serde_json::to_value(&last),
             ));
             self
         }
@@ -1263,7 +1263,7 @@ pub mod film {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_serializable(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
@@ -1274,7 +1274,7 @@ pub mod film {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_serializable(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
@@ -1288,7 +1288,7 @@ pub mod film {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_serializable(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
@@ -1299,7 +1299,7 @@ pub mod film {
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                last.into_serializable(),
+                ::cynic::serde_json::to_value(&last),
             ));
             self
         }
@@ -1331,7 +1331,7 @@ pub mod film {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_serializable(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
@@ -1342,7 +1342,7 @@ pub mod film {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_serializable(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
@@ -1356,7 +1356,7 @@ pub mod film {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_serializable(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
@@ -1367,7 +1367,7 @@ pub mod film {
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                last.into_serializable(),
+                ::cynic::serde_json::to_value(&last),
             ));
             self
         }
@@ -1399,7 +1399,7 @@ pub mod film {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_serializable(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
@@ -1410,7 +1410,7 @@ pub mod film {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_serializable(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
@@ -1424,7 +1424,7 @@ pub mod film {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_serializable(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
@@ -1435,7 +1435,7 @@ pub mod film {
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                last.into_serializable(),
+                ::cynic::serde_json::to_value(&last),
             ));
             self
         }
@@ -2550,7 +2550,7 @@ pub mod person {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_serializable(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
@@ -2561,7 +2561,7 @@ pub mod person {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_serializable(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
@@ -2575,7 +2575,7 @@ pub mod person {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_serializable(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
@@ -2586,7 +2586,7 @@ pub mod person {
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                last.into_serializable(),
+                ::cynic::serde_json::to_value(&last),
             ));
             self
         }
@@ -2636,7 +2636,7 @@ pub mod person {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_serializable(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
@@ -2647,7 +2647,7 @@ pub mod person {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_serializable(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
@@ -2661,7 +2661,7 @@ pub mod person {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_serializable(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
@@ -2672,7 +2672,7 @@ pub mod person {
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                last.into_serializable(),
+                ::cynic::serde_json::to_value(&last),
             ));
             self
         }
@@ -2704,7 +2704,7 @@ pub mod person {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_serializable(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
@@ -2715,7 +2715,7 @@ pub mod person {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_serializable(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
@@ -2729,7 +2729,7 @@ pub mod person {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_serializable(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
@@ -2740,7 +2740,7 @@ pub mod person {
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                last.into_serializable(),
+                ::cynic::serde_json::to_value(&last),
             ));
             self
         }
@@ -3336,7 +3336,7 @@ pub mod planet {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_serializable(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
@@ -3347,7 +3347,7 @@ pub mod planet {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_serializable(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
@@ -3361,7 +3361,7 @@ pub mod planet {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_serializable(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
@@ -3372,7 +3372,7 @@ pub mod planet {
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                last.into_serializable(),
+                ::cynic::serde_json::to_value(&last),
             ));
             self
         }
@@ -3404,7 +3404,7 @@ pub mod planet {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_serializable(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
@@ -3415,7 +3415,7 @@ pub mod planet {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_serializable(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
@@ -3429,7 +3429,7 @@ pub mod planet {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_serializable(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
@@ -3440,7 +3440,7 @@ pub mod planet {
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                last.into_serializable(),
+                ::cynic::serde_json::to_value(&last),
             ));
             self
         }
@@ -3870,7 +3870,7 @@ pub mod root {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_serializable(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
@@ -3881,7 +3881,7 @@ pub mod root {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_serializable(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
@@ -3895,7 +3895,7 @@ pub mod root {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_serializable(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
@@ -3906,7 +3906,7 @@ pub mod root {
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                last.into_serializable(),
+                ::cynic::serde_json::to_value(&last),
             ));
             self
         }
@@ -3935,8 +3935,11 @@ pub mod root {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
-            self.args
-                .push(::cynic::Argument::new("id", "ID", id.into_serializable()));
+            self.args.push(::cynic::Argument::new(
+                "id",
+                "ID",
+                ::cynic::serde_json::to_value(&id),
+            ));
             self
         }
         pub fn film_id(
@@ -3949,7 +3952,7 @@ pub mod root {
             self.args.push(::cynic::Argument::new(
                 "filmID",
                 "ID",
-                film_id.into_serializable(),
+                ::cynic::serde_json::to_value(&film_id),
             ));
             self
         }
@@ -3977,7 +3980,7 @@ pub mod root {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_serializable(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
@@ -3988,7 +3991,7 @@ pub mod root {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_serializable(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
@@ -4002,7 +4005,7 @@ pub mod root {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_serializable(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
@@ -4013,7 +4016,7 @@ pub mod root {
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                last.into_serializable(),
+                ::cynic::serde_json::to_value(&last),
             ));
             self
         }
@@ -4042,8 +4045,11 @@ pub mod root {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
-            self.args
-                .push(::cynic::Argument::new("id", "ID", id.into_serializable()));
+            self.args.push(::cynic::Argument::new(
+                "id",
+                "ID",
+                ::cynic::serde_json::to_value(&id),
+            ));
             self
         }
         pub fn person_id(
@@ -4056,7 +4062,7 @@ pub mod root {
             self.args.push(::cynic::Argument::new(
                 "personID",
                 "ID",
-                person_id.into_serializable(),
+                ::cynic::serde_json::to_value(&person_id),
             ));
             self
         }
@@ -4088,7 +4094,7 @@ pub mod root {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_serializable(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
@@ -4099,7 +4105,7 @@ pub mod root {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_serializable(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
@@ -4113,7 +4119,7 @@ pub mod root {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_serializable(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
@@ -4124,7 +4130,7 @@ pub mod root {
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                last.into_serializable(),
+                ::cynic::serde_json::to_value(&last),
             ));
             self
         }
@@ -4153,8 +4159,11 @@ pub mod root {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
-            self.args
-                .push(::cynic::Argument::new("id", "ID", id.into_serializable()));
+            self.args.push(::cynic::Argument::new(
+                "id",
+                "ID",
+                ::cynic::serde_json::to_value(&id),
+            ));
             self
         }
         pub fn planet_id(
@@ -4167,7 +4176,7 @@ pub mod root {
             self.args.push(::cynic::Argument::new(
                 "planetID",
                 "ID",
-                planet_id.into_serializable(),
+                ::cynic::serde_json::to_value(&planet_id),
             ));
             self
         }
@@ -4199,7 +4208,7 @@ pub mod root {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_serializable(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
@@ -4210,7 +4219,7 @@ pub mod root {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_serializable(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
@@ -4224,7 +4233,7 @@ pub mod root {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_serializable(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
@@ -4235,7 +4244,7 @@ pub mod root {
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                last.into_serializable(),
+                ::cynic::serde_json::to_value(&last),
             ));
             self
         }
@@ -4264,8 +4273,11 @@ pub mod root {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
-            self.args
-                .push(::cynic::Argument::new("id", "ID", id.into_serializable()));
+            self.args.push(::cynic::Argument::new(
+                "id",
+                "ID",
+                ::cynic::serde_json::to_value(&id),
+            ));
             self
         }
         pub fn species_id(
@@ -4278,7 +4290,7 @@ pub mod root {
             self.args.push(::cynic::Argument::new(
                 "speciesID",
                 "ID",
-                species_id.into_serializable(),
+                ::cynic::serde_json::to_value(&species_id),
             ));
             self
         }
@@ -4310,7 +4322,7 @@ pub mod root {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_serializable(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
@@ -4321,7 +4333,7 @@ pub mod root {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_serializable(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
@@ -4335,7 +4347,7 @@ pub mod root {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_serializable(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
@@ -4346,7 +4358,7 @@ pub mod root {
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                last.into_serializable(),
+                ::cynic::serde_json::to_value(&last),
             ));
             self
         }
@@ -4375,8 +4387,11 @@ pub mod root {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
-            self.args
-                .push(::cynic::Argument::new("id", "ID", id.into_serializable()));
+            self.args.push(::cynic::Argument::new(
+                "id",
+                "ID",
+                ::cynic::serde_json::to_value(&id),
+            ));
             self
         }
         pub fn starship_id(
@@ -4389,7 +4404,7 @@ pub mod root {
             self.args.push(::cynic::Argument::new(
                 "starshipID",
                 "ID",
-                starship_id.into_serializable(),
+                ::cynic::serde_json::to_value(&starship_id),
             ));
             self
         }
@@ -4421,7 +4436,7 @@ pub mod root {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_serializable(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
@@ -4432,7 +4447,7 @@ pub mod root {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_serializable(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
@@ -4446,7 +4461,7 @@ pub mod root {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_serializable(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
@@ -4457,7 +4472,7 @@ pub mod root {
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                last.into_serializable(),
+                ::cynic::serde_json::to_value(&last),
             ));
             self
         }
@@ -4486,8 +4501,11 @@ pub mod root {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
-            self.args
-                .push(::cynic::Argument::new("id", "ID", id.into_serializable()));
+            self.args.push(::cynic::Argument::new(
+                "id",
+                "ID",
+                ::cynic::serde_json::to_value(&id),
+            ));
             self
         }
         pub fn vehicle_id(
@@ -4500,7 +4518,7 @@ pub mod root {
             self.args.push(::cynic::Argument::new(
                 "vehicleID",
                 "ID",
-                vehicle_id.into_serializable(),
+                ::cynic::serde_json::to_value(&vehicle_id),
             ));
             self
         }
@@ -4734,7 +4752,7 @@ pub mod species {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_serializable(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
@@ -4745,7 +4763,7 @@ pub mod species {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_serializable(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
@@ -4759,7 +4777,7 @@ pub mod species {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_serializable(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
@@ -4770,7 +4788,7 @@ pub mod species {
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                last.into_serializable(),
+                ::cynic::serde_json::to_value(&last),
             ));
             self
         }
@@ -4802,7 +4820,7 @@ pub mod species {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_serializable(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
@@ -4813,7 +4831,7 @@ pub mod species {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_serializable(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
@@ -4827,7 +4845,7 @@ pub mod species {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_serializable(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
@@ -4838,7 +4856,7 @@ pub mod species {
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                last.into_serializable(),
+                ::cynic::serde_json::to_value(&last),
             ));
             self
         }
@@ -5488,7 +5506,7 @@ pub mod starship {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_serializable(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
@@ -5499,7 +5517,7 @@ pub mod starship {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_serializable(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
@@ -5513,7 +5531,7 @@ pub mod starship {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_serializable(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
@@ -5524,7 +5542,7 @@ pub mod starship {
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                last.into_serializable(),
+                ::cynic::serde_json::to_value(&last),
             ));
             self
         }
@@ -5556,7 +5574,7 @@ pub mod starship {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_serializable(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
@@ -5567,7 +5585,7 @@ pub mod starship {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_serializable(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
@@ -5581,7 +5599,7 @@ pub mod starship {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_serializable(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
@@ -5592,7 +5610,7 @@ pub mod starship {
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                last.into_serializable(),
+                ::cynic::serde_json::to_value(&last),
             ));
             self
         }
@@ -6212,7 +6230,7 @@ pub mod vehicle {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_serializable(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
@@ -6223,7 +6241,7 @@ pub mod vehicle {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_serializable(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
@@ -6237,7 +6255,7 @@ pub mod vehicle {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_serializable(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
@@ -6248,7 +6266,7 @@ pub mod vehicle {
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                last.into_serializable(),
+                ::cynic::serde_json::to_value(&last),
             ));
             self
         }
@@ -6280,7 +6298,7 @@ pub mod vehicle {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_serializable(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
@@ -6291,7 +6309,7 @@ pub mod vehicle {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_serializable(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
@@ -6305,7 +6323,7 @@ pub mod vehicle {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_serializable(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
@@ -6316,7 +6334,7 @@ pub mod vehicle {
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                last.into_serializable(),
+                ::cynic::serde_json::to_value(&last),
             ));
             self
         }

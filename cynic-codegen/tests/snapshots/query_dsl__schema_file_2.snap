@@ -39,8 +39,8 @@ impl MutationRoot {
         author: impl ::cynic::InputType<String, ::cynic::inputs::NamedType>,
     ) -> mutation_root::CreateBookSelectionBuilder {
         mutation_root::CreateBookSelectionBuilder::new(vec![
-            ::cynic::Argument::new("name", "String!", name.into_serializable()),
-            ::cynic::Argument::new("author", "String!", author.into_serializable()),
+            ::cynic::Argument::new("name", "String!", ::cynic::serde_json::to_value(&name)),
+            ::cynic::Argument::new("author", "String!", ::cynic::serde_json::to_value(&author)),
         ])
     }
     pub fn delete_book(
@@ -49,7 +49,7 @@ impl MutationRoot {
         mutation_root::DeleteBookSelectionBuilder::new(vec![::cynic::Argument::new(
             "id",
             "ID!",
-            id.into_serializable(),
+            ::cynic::serde_json::to_value(&id),
         )])
     }
 }
@@ -71,7 +71,7 @@ impl SubscriptionRoot {
         subscription_root::IntervalSelectionBuilder::new(vec![::cynic::Argument::new(
             "n",
             "Int!",
-            n.into_serializable(),
+            ::cynic::serde_json::to_value(&n),
         )])
     }
     pub fn books() -> subscription_root::BooksSelectionBuilder {
@@ -249,7 +249,7 @@ pub mod subscription_root {
             self.args.push(::cynic::Argument::new(
                 "mutationType",
                 "MutationType",
-                mutation_type.into_serializable(),
+                ::cynic::serde_json::to_value(&mutation_type),
             ));
             self
         }
