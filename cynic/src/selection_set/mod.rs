@@ -88,7 +88,7 @@ impl<'a, DecodesTo, TypeLock> SelectionSet<'a, DecodesTo, TypeLock> {
     ///
     /// ```rust
     /// # use cynic::selection_set::{field, string, fail};
-    /// field::<_, (), ()>("__typename", vec![], string())
+    /// field::<_, (), _>("__typename", vec![], string())
     ///     .and_then(|typename| match typename.as_ref() {
     ///         "Cat" => field("cat", vec![], string()),
     ///         "Dog" => field("dog", vec![], string()),
@@ -390,9 +390,9 @@ macro_rules! define_map {
         ///
         /// map3(
         ///     User::new,
-        ///     field::<_, (), ()>("id", vec![], integer()),
-        ///     field::<_, (), ()>("email", vec![], string()),
-        ///     field::<_, (), ()>("email", vec![], string()),
+        ///     field::<_, (), _>("id", vec![], integer()),
+        ///     field::<_, (), _>("email", vec![], string()),
+        ///     field::<_, (), _>("email", vec![], string()),
         /// );
         /// ```
         #[allow(clippy::too_many_arguments)]
