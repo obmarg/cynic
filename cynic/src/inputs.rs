@@ -1,5 +1,3 @@
-use crate::Id;
-
 pub enum NamedType {}
 
 pub struct Nullable<T>(std::marker::PhantomData<T>);
@@ -98,9 +96,3 @@ macro_rules! impl_input_type {
         }
     };
 }
-
-impl_input_type!(i32, i32);
-impl_input_type!(f64, f64);
-impl_input_type!(String, String);
-impl_input_type!(bool, bool);
-impl_input_type!(Id, Id);

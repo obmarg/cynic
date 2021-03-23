@@ -43,6 +43,8 @@ macro_rules! impl_scalar {
                 Ok(x)
             }
         }
+
+        $crate::impl_input_type!($type, $type_lock);
     };
 }
 

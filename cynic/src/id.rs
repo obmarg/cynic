@@ -29,3 +29,5 @@ impl crate::Scalar<Id> for Id {
         Ok(s.into())
     }
 }
+
+crate::impl_input_type!(Id, Id);
