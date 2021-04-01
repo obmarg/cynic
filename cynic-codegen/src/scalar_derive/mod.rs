@@ -35,7 +35,7 @@ pub fn scalar_derive_impl(input: ScalarDeriveInput) -> Result<TokenStream, syn::
                 Ok(#ident(<#inner_type as ::cynic::Scalar>::decode(value)?))
             }
             fn encode(&self) -> Result<::cynic::serde_json::Value, ::cynic::SerializeError> {
-                Ok(self.0.encode()?)
+                self.0.encode()
             }
         }
 
