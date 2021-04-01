@@ -36,6 +36,13 @@ all APIs might be changed.
 - The `graphql_type` parameter for most of the derives is now optional.  It 
   defaults to the name of the struct/enum if not present.
 
+## v0.12.3 - 2020-04-01
+
+## Bug Fixes
+
+- The `cynic::Scalar` derive output no longer contains a spurious `?` that
+  clippy warns about in Rust 1.51.
+
 ## v0.12.2 - 2020-02-22
 
 ### Bug Fixes

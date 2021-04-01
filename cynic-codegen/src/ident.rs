@@ -103,9 +103,9 @@ impl From<proc_macro2::Ident> for Ident {
     }
 }
 
-impl Into<proc_macro2::Ident> for &Ident {
-    fn into(self) -> proc_macro2::Ident {
-        self.rust.clone()
+impl From<&Ident> for proc_macro2::Ident {
+    fn from(ident: &Ident) -> proc_macro2::Ident {
+        ident.rust.clone()
     }
 }
 

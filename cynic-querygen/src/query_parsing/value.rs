@@ -63,11 +63,11 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
                     values
                         .iter()
                         .map(|val| {
-                            Ok(TypedValue::from_query_value(
+                            TypedValue::from_query_value(
                                 val,
                                 inner_type.clone(),
                                 variable_definitions,
-                            )?)
+                            )
                         })
                         .collect::<Result<_, Error>>()?,
                     field_type,
@@ -199,7 +199,7 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
             TypedValue::List(values, _) => {
                 let inner = values
                     .iter()
-                    .map(|v| Ok(v.to_literal(LiteralContext::ListItem)?))
+                    .map(|v| v.to_literal(LiteralContext::ListItem))
                     .collect::<Result<Vec<_>, Error>>()?
                     .join(", ");
 
