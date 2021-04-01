@@ -63,7 +63,7 @@ macro_rules! impl_type_ref {
                 }
             }
 
-            #[allow(dead_code)]
+            #[allow(dead_code, clippy::needless_question_mark)]
             pub fn lookup(&self) -> Result<$lookup_type<'schema>, Error> {
                 Ok(self.type_index.lookup_type(&self.type_name)?.try_into()?)
             }

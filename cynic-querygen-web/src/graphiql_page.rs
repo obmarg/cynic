@@ -24,7 +24,7 @@ impl Model {
     }
 
     fn generate_code(&mut self) {
-        if self.query != "" && self.schema_data.is_some() {
+        if !self.query.is_empty() && self.schema_data.is_some() {
             self.generated_code = cynic_querygen::document_to_fragment_structs(
                 &self.query,
                 self.schema_data.as_ref().unwrap(),
