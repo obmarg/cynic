@@ -11,6 +11,8 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.12.3 - 2020-04-01
+
 ## Bug Fixes
 
 - The `cynic::Scalar` derive output no longer contains a spurious `?` that
