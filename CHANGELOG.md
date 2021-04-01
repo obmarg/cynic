@@ -11,6 +11,11 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+## Bug Fixes
+
+- The `cynic::Scalar` derive output no longer contains a spurious `?` that
+  clippy warns about in Rust 1.51.
+
 ## v0.12.2 - 2020-02-22
 
 ### Bug Fixes
