@@ -48,10 +48,19 @@ impl<'a> InputType<String, Nullable<NamedType>> for &'a str {}
 
 impl<'a> InputType<String, Nullable<NamedType>> for Option<&'a str> {}
 
-/// Defines useful argument conversions for input objects
+/// Defines common `InputType` impls for a given type & type lock.
 ///
-/// Mostly just converts references to owned via cloning and
-/// non option-wrapped types into Option where appropriate.
+/// The `InputType` trait is used to allow conversions while enforcing type
+/// safety on the various input types (scalars, input objects & enums)
+/// when they appear in input position.  For example an optional field
+/// will have an InputType definition that allows for non `Option` values
+/// to be passed.
+///
+/// These impls can't be defined generically as there's a lot of them and
+/// we quickly run into clashing impls.  This macro defines specific impls
+/// for each type, working around this.
+///
+/// Users usually shouldn't need to call this, as it's called by other macros.
 #[macro_export]
 macro_rules! impl_input_type {
     ($type:ty, $type_lock:path) => {
