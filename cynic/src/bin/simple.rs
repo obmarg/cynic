@@ -15,7 +15,6 @@ struct TestArgs {}
 #[cynic(
     schema_path = "src/bin/simple.graphql",
     query_module = "query_dsl",
-    graphql_type = "TestStruct",
     argument_struct = "TestArgs"
 )]
 struct TestStruct {
@@ -29,11 +28,7 @@ struct TestStruct {
 }
 
 #[derive(cynic::QueryFragment)]
-#[cynic(
-    schema_path = "src/bin/simple.graphql",
-    query_module = "query_dsl",
-    graphql_type = "Nested"
-)]
+#[cynic(schema_path = "src/bin/simple.graphql", query_module = "query_dsl")]
 struct Nested {
     pub a_string: String,
     pub opt_string: Option<String>,
@@ -56,7 +51,6 @@ struct Test {
 #[cynic(
     schema_path = "src/bin/simple.graphql",
     query_module = "query_dsl",
-    graphql_type = "AnInputType",
     rename_all = "camelCase"
 )]
 struct AnInputType {
@@ -67,7 +61,6 @@ struct AnInputType {
 #[cynic(
     schema_path = "src/bin/simple.graphql",
     query_module = "query_dsl",
-    graphql_type = "Dessert",
     rename_all = "SCREAMING_SNAKE_CASE"
 )]
 enum Dessert {
@@ -76,11 +69,7 @@ enum Dessert {
 }
 
 #[derive(cynic::InlineFragments)]
-#[cynic(
-    schema_path = "src/bin/simple.graphql",
-    query_module = "query_dsl",
-    graphql_type = "MyUnionType"
-)]
+#[cynic(schema_path = "src/bin/simple.graphql", query_module = "query_dsl")]
 enum MyUnionType {
     TestStruct(Test),
     Nested(Nested),

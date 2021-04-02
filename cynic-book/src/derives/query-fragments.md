@@ -11,7 +11,6 @@ Generally you'll use a derive to create query fragments, like this:
 #[cynic(
     schema_path = "examples/starwars.schema.graphql",
     query_module = "query_dsl",
-    graphql_type = "Film"
 )]
 struct Film {
     title: Option<String>,
@@ -145,7 +144,7 @@ If no nested QueryFragments require arguments, you can omit the
 
 Mutations are also constructed using QueryFragments in a very similar way to
 queries. Instead of selecting query fields you select a mutation, and pass in
-any arguments in exactly the same way. Mutations use the `MutationBuilder` 
+any arguments in exactly the same way. Mutations use the `MutationBuilder`
 rather than `QueryBulder`:
 
 ```rust
@@ -162,8 +161,8 @@ This `operation` can then be used in exactly the same way as with queries.
 
 A QueryFragment can be configured with several attributes on the struct itself:
 
-- `graphql_type = "AType"` is required and tells cynic which type in the
-  GraphQL schema to map this struct to
+- `graphql_type = "AType"` tells cynic which object in the GraphQL schema this
+  struct represents. The name of the struct is used if it is omitted.
 - `schema_path` sets the path to the GraphQL schema. This is required, but
   can be provided by nesting the QueryFragment inside a query module with this
   attr.

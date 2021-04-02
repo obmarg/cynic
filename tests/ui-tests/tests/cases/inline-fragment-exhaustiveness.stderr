@@ -1,7 +1,7 @@
 error: Could not find a match for Nestde in MyUnionType. Did you mean Nested?
-  --> $DIR/inline-fragment-exhaustiveness.rs:15:5
+  --> $DIR/inline-fragment-exhaustiveness.rs:14:5
    |
-15 |     Nestde(Nested),
+14 |     Nestde(Nested),
    |     ^^^^^^
 
 error: This InlineFragment is missing a variant for Nested.  Either provide a variant for this type or add a fallback variant.

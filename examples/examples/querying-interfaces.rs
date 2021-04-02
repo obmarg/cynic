@@ -7,8 +7,7 @@ mod query_dsl {
 #[derive(cynic::InlineFragments, Debug)]
 #[cynic(
     schema_path = "../schemas/starwars.schema.graphql",
-    query_module = "query_dsl",
-    graphql_type = "Node"
+    query_module = "query_dsl"
 )]
 enum Node {
     Film(Film),
@@ -21,8 +20,7 @@ enum Node {
 #[derive(cynic::QueryFragment, Debug)]
 #[cynic(
     schema_path = "../schemas/starwars.schema.graphql",
-    query_module = "query_dsl",
-    graphql_type = "Film"
+    query_module = "query_dsl"
 )]
 struct Film {
     title: Option<String>,
@@ -32,8 +30,7 @@ struct Film {
 #[derive(cynic::QueryFragment, Debug)]
 #[cynic(
     schema_path = "../schemas/starwars.schema.graphql",
-    query_module = "query_dsl",
-    graphql_type = "Planet"
+    query_module = "query_dsl"
 )]
 struct Planet {
     name: Option<String>,

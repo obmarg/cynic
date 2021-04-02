@@ -68,25 +68,22 @@ mod queries {
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "AddCommentPayload")]
     pub struct AddCommentPayload {
         pub comment_edge: Option<IssueCommentEdge>,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "IssueCommentEdge")]
     pub struct IssueCommentEdge {
         pub node: Option<IssueComment>,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "IssueComment")]
     pub struct IssueComment {
         pub id: cynic::Id,
     }
 
     #[derive(cynic::InputObject, Clone, Debug)]
-    #[cynic(graphql_type = "AddCommentInput", rename_all = "camelCase")]
+    #[cynic(rename_all = "camelCase")]
     pub struct AddCommentInput {
         pub body: String,
         pub client_mutation_id: Option<String>,

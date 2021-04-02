@@ -1,7 +1,7 @@
 error[E0308]: mismatched types
-  --> $DIR/wrong-enum-type.rs:17:21
+  --> $DIR/wrong-enum-type.rs:16:21
    |
-17 |         pub status: CheckConclusionState,
+16 |         pub status: CheckConclusionState,
    |                     ^^^^^^^^^^^^^^^^^^^^ expected enum `CheckStatusState`, found enum `query_dsl::CheckConclusionState`
    |
    = note: expected struct `SelectionSet<'_, _, CheckStatusState>`
