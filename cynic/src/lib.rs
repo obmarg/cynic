@@ -196,9 +196,12 @@ pub use fragments::{FragmentArguments, FragmentContext, InlineFragments, QueryFr
 pub use id::Id;
 pub use inputs::InputType;
 pub use operation::{Operation, StreamingOperation};
-pub use result::{GraphQLError, GraphQLResponse, GraphQLResult, PossiblyParsedData};
+pub use result::{GraphQlError, GraphQlResponse, GraphQlResult, PossiblyParsedData};
 pub use scalar::Scalar;
 pub use selection_set::SelectionSet;
+
+#[allow(deprecated)]
+pub use result::{GraphQLError, GraphQLResponse, GraphQLResult};
 
 pub use cynic_proc_macros::{
     query_dsl, query_module, Enum, FragmentArguments, InlineFragments, InputObject, QueryFragment,

@@ -45,12 +45,12 @@ pub fn parse_query_document<'text>(
     let query_fragments = sorting::topological_sort(normalised.selection_sets.iter().cloned())
         .into_iter()
         .map(|selection| make_query_fragment(selection, &mut query_namer, &arg_struct_details))
-        .collect::<Result<Vec<_>, _>>()?;
+        .collect::<Vec<_>>();
 
     let input_objects = sorting::topological_sort(input_objects.into_iter())
         .into_iter()
         .map(make_input_object)
-        .collect::<Result<Vec<_>, _>>()?;
+        .collect::<Vec<_>>();
 
     Ok(Output {
         query_fragments,
@@ -65,13 +65,13 @@ fn make_query_fragment<'text>(
     selection: Rc<normalisation::SelectionSet<'text, 'text>>,
     namer: &mut Namer<Rc<normalisation::SelectionSet<'text, 'text>>>,
     argument_struct_details: &ArgumentStructDetails<'text, 'text, '_>,
-) -> Result<crate::output::QueryFragment<'text, 'text>, Error> {
+) -> crate::output::QueryFragment<'text, 'text> {
     use crate::output::query_fragment::{
         FieldArgument, OutputField, QueryFragment, RustOutputFieldType,
     };
     use normalisation::{Field, Selection};
 
-    Ok(QueryFragment {
+    QueryFragment {
         fields: selection
             .selections
             .iter()
@@ -106,12 +106,12 @@ fn make_query_fragment<'text>(
 
         name: namer.name_subject(&selection),
         target_type: selection.target_type.name().to_string(),
-    })
+    }
 }
 
-fn make_input_object(input: Rc<inputs::InputObject>) -> Result<crate::output::InputObject, Error> {
-    Ok(crate::output::InputObject {
+fn make_input_object(input: Rc<inputs::InputObject>) -> crate::output::InputObject {
+    crate::output::InputObject {
         name: input.schema_type.name.to_string(),
         fields: input.fields.clone(),
-    })
+    }
 }

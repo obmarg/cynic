@@ -53,6 +53,12 @@ all APIs might be changed.
 
 - Support for building and decoding subscription queries.
 
+### Deprecated
+
+- `GraphQLError`, `GraphQLResponse`, & `GraphQLResult` have all been deprecated
+  in favour of `GraphQlError`, `GraphQlResponse`, & `GraphQlResult`. The types are
+  otherwise the same, just with different names.
+
 ### Bug Fixes
 
 - Cynic will now fail to compile you when you use an incorrect enum type for a
@@ -64,9 +70,9 @@ all APIs might be changed.
 
 ### Changes
 
-- The `graphql_type` parameter for most of the derives is now optional.  It 
+- The `graphql_type` parameter for most of the derives is now optional. It
   defaults to the name of the struct/enum if not present.
-- Cynic will no longer generate invalid QueryFragments if fields are not 
+- Cynic will no longer generate invalid QueryFragments if fields are not
   selected on a composite.
 - Cynic will now error if a QueryFragment selects no fields.
 

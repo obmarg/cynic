@@ -38,7 +38,7 @@ fn main() {
     println!("{:?}", result);
 }
 
-fn run_query() -> cynic::GraphQLResponse<FilmDirectorQuery> {
+fn run_query() -> cynic::GraphQlResponse<FilmDirectorQuery> {
     let query = build_query();
 
     let response = reqwest::blocking::Client::new()

@@ -18,7 +18,7 @@ fn main() {
 }
 
 #[cfg(feature = "github")]
-fn run_query() -> cynic::GraphQLResponse<queries::CommentOnMutationSupportIssue> {
+fn run_query() -> cynic::GraphQlResponse<queries::CommentOnMutationSupportIssue> {
     use cynic::http::ReqwestBlockingExt;
 
     let query = build_query();

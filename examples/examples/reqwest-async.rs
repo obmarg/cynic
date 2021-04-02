@@ -41,7 +41,7 @@ async fn main() {
     println!("{:?}", result);
 }
 
-async fn run_query() -> cynic::GraphQLResponse<FilmDirectorQuery> {
+async fn run_query() -> cynic::GraphQlResponse<FilmDirectorQuery> {
     use cynic::http::ReqwestExt;
 
     let query = build_query();

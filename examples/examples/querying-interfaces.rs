@@ -71,7 +71,7 @@ fn main() {
     println!("{:?}", result);
 }
 
-fn run_query(id: cynic::Id) -> cynic::GraphQLResponse<FilmDirectorQuery> {
+fn run_query(id: cynic::Id) -> cynic::GraphQlResponse<FilmDirectorQuery> {
     use cynic::http::ReqwestBlockingExt;
 
     let query = build_query(id);

@@ -33,7 +33,7 @@ fn main() {
     println!("{:?}", result);
 }
 
-fn run_query() -> cynic::GraphQLResponse<JobsQuery> {
+fn run_query() -> cynic::GraphQlResponse<JobsQuery> {
     use cynic::http::ReqwestBlockingExt;
 
     let query = build_query();

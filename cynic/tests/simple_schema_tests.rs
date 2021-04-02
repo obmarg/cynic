@@ -62,7 +62,7 @@ fn run_test(input: serde_json::Value, expected_result: TestQuery) {
 
     let query = cynic::Operation::query(TestQuery::fragment(FragmentContext::new(&TestArgs {})));
 
-    let test_data = cynic::GraphQLResponse {
+    let test_data = cynic::GraphQlResponse {
         errors: None,
         data: Some(input),
     };

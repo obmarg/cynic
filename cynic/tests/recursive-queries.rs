@@ -60,9 +60,9 @@ mod recursive_lists {
 
     #[test]
     fn test_decoding_with_matching_depth() {
-        use cynic::{FragmentContext, GraphQLResponse, Operation};
+        use cynic::{FragmentContext, GraphQlResponse, Operation};
 
-        let data = GraphQLResponse {
+        let data = GraphQlResponse {
             data: Some(json!({ "allPosts": posts(posts(posts(json!(null)))) })),
             errors: None,
         };
@@ -74,9 +74,9 @@ mod recursive_lists {
 
     #[test]
     fn test_decoding_with_extra_depth() {
-        use cynic::{FragmentContext, GraphQLResponse, Operation};
+        use cynic::{FragmentContext, GraphQlResponse, Operation};
 
-        let data = GraphQLResponse {
+        let data = GraphQlResponse {
             data: Some(json!({
                 "allPosts": posts(posts(posts(posts(json!(null)))))
             })),
@@ -145,9 +145,9 @@ mod optional_recursive_types {
 
     #[test]
     fn test_friends_decoding_with_matching_depth() {
-        use cynic::{FragmentContext, GraphQLResponse, Operation};
+        use cynic::{FragmentContext, GraphQlResponse, Operation};
 
-        let data = GraphQLResponse {
+        let data = GraphQlResponse {
             data: Some(json!({
                 "allAuthors":
                     authors(
@@ -166,9 +166,9 @@ mod optional_recursive_types {
     #[test]
     fn test_friends_decoding_with_less_depth() {
         // This is only a valid test for optional fields.
-        use cynic::{FragmentContext, GraphQLResponse, Operation};
+        use cynic::{FragmentContext, GraphQlResponse, Operation};
 
-        let data = GraphQLResponse {
+        let data = GraphQlResponse {
             data: Some(json!({
                 "allAuthors": authors(authors(null!(), null!()), author(null!(), null!()))
             })),
@@ -182,9 +182,9 @@ mod optional_recursive_types {
 
     #[test]
     fn test_friends_decoding_with_extra_depth() {
-        use cynic::{FragmentContext, GraphQLResponse, Operation};
+        use cynic::{FragmentContext, GraphQlResponse, Operation};
 
-        let data = GraphQLResponse {
+        let data = GraphQlResponse {
             data: Some(json!({
                 "allAuthors":
                     authors(authors(authors(authors(null!(), null!()), null!()), null!()), null!())
@@ -254,9 +254,9 @@ mod required_recursive_types {
 
     #[test]
     fn test_friends_decoding_with_matching_depth() {
-        use cynic::{FragmentContext, GraphQLResponse, Operation};
+        use cynic::{FragmentContext, GraphQlResponse, Operation};
 
-        let data = GraphQLResponse {
+        let data = GraphQlResponse {
             data: Some(json!({ "allAuthors": authors(author(author(null!()))) })),
             errors: None,
         };
@@ -269,9 +269,9 @@ mod required_recursive_types {
     #[test]
     fn test_friends_decoding_with_less_depth() {
         // This is only a valid test for optional fields.
-        use cynic::{FragmentContext, GraphQLResponse, Operation};
+        use cynic::{FragmentContext, GraphQlResponse, Operation};
 
-        let data = GraphQLResponse {
+        let data = GraphQlResponse {
             data: Some(json!({ "allAuthors": authors(author(null!())) })),
             errors: None,
         };
@@ -283,9 +283,9 @@ mod required_recursive_types {
 
     #[test]
     fn test_friends_decoding_with_extra_depth() {
-        use cynic::{FragmentContext, GraphQLResponse, Operation};
+        use cynic::{FragmentContext, GraphQlResponse, Operation};
 
-        let data = GraphQLResponse {
+        let data = GraphQlResponse {
             data: Some(json!({
                 "allAuthors": authors(author(author(author(null!()))))
             })),
