@@ -30,63 +30,9 @@ impl Parse for CynicArguments {
     }
 }
 
-#[derive(PartialEq, Debug)]
-pub enum ArgumentExpression {
-    Literal(syn::Lit),
-    FieldAccess(syn::ExprField),
-}
-
-impl std::convert::TryFrom<Expr> for ArgumentExpression {
-    type Error = syn::Error;
-
-    fn try_from(expr: Expr) -> Result<ArgumentExpression> {
-        use syn::spanned::Spanned;
-
-        match expr {
-            Expr::Lit(expr) => Ok(ArgumentExpression::Literal(expr.lit)),
-            Expr::Field(field_expr) => {
-                if let Expr::Path(expr) = *field_expr.base.clone() {
-                    if expr.path.is_ident("args") {
-                        Ok(ArgumentExpression::FieldAccess(field_expr))
-                    } else {
-                        Err(syn::Error::new(
-                            expr.span(),
-                            "Query arguments are exposed on a struct named args",
-                        ))
-                    }
-                } else {
-                    Err(syn::Error::new(
-                        field_expr.base.span(),
-                        "Arguments should be of the form args.an_argument",
-                    ))
-                }
-            }
-            _ => Err(syn::Error::new(
-                expr.span(),
-                "Must be a literal or an expression of the form args.an_argument".to_string(),
-            )),
-        }
-    }
-}
-
-impl quote::ToTokens for ArgumentExpression {
-    fn to_tokens(&self, tokens: &mut TokenStream) {
-        use quote::{quote, TokenStreamExt};
-
-        let result = match self {
-            ArgumentExpression::Literal(expr) => quote! { #expr },
-            ArgumentExpression::FieldAccess(expr) => quote! { #expr },
-        };
-
-        tokens.append_all(result);
-    }
-}
-
 #[derive(PartialEq, Debug, Clone)]
 pub struct FieldArgument {
     pub argument_name: Ident,
-    //expr: ArgumentExpression,
-    // TODO: Remove argument expression maybe?  seems too much work to be worth it just now.
     pub expr: syn::Expr,
 }
 
