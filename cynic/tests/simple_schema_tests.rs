@@ -9,7 +9,6 @@ struct TestArgs {}
 #[cynic(
     schema_path = "src/bin/simple.graphql",
     query_module = "query_dsl",
-    graphql_type = "TestStruct",
     //argument_struct = "TestArgs"
 )]
 struct TestStruct {
@@ -24,11 +23,7 @@ struct TestStruct {
 }
 
 #[derive(cynic::QueryFragment, PartialEq, Debug)]
-#[cynic(
-    schema_path = "src/bin/simple.graphql",
-    query_module = "query_dsl",
-    graphql_type = "Nested"
-)]
+#[cynic(schema_path = "src/bin/simple.graphql", query_module = "query_dsl")]
 struct Nested {
     a_string: String,
     opt_string: Option<String>,
@@ -48,7 +43,6 @@ struct TestQuery {
 #[derive(cynic::Enum, Clone, Debug, PartialEq)]
 #[cynic(
     schema_path = "src/bin/simple.graphql",
-    graphql_type = "Dessert",
     query_module = "query_dsl",
     rename_all = "SCREAMING_SNAKE_CASE"
 )]

@@ -35,7 +35,6 @@ mod surf_ext {
     /// # #[cynic(
     /// #    schema_path = "../schemas/starwars.schema.graphql",
     /// #    query_module = "query_dsl",
-    /// #    graphql_type = "Film"
     /// # )]
     /// # struct Film {
     /// #    title: Option<String>,
@@ -128,7 +127,6 @@ mod reqwest_ext {
     /// # #[cynic(
     /// #    schema_path = "../schemas/starwars.schema.graphql",
     /// #    query_module = "query_dsl",
-    /// #    graphql_type = "Film"
     /// # )]
     /// # struct Film {
     /// #    title: Option<String>,
@@ -223,7 +221,6 @@ mod reqwest_blocking_ext {
     /// # #[cynic(
     /// #    schema_path = "../schemas/starwars.schema.graphql",
     /// #    query_module = "query_dsl",
-    /// #    graphql_type = "Film"
     /// # )]
     /// # struct Film {
     /// #    title: Option<String>,

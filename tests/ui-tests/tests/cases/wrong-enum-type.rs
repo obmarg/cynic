@@ -10,7 +10,6 @@ mod queries {
     use super::{query_dsl, types::*};
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "CheckSuite")]
     pub struct CheckSuite {
         // Note: this is the wrong underlying enum type
         // Should be CheckStatusState
@@ -19,7 +18,6 @@ mod queries {
     }
 
     #[derive(cynic::Enum, Clone, Copy, Debug)]
-    #[cynic(graphql_type = "CheckConclusionState")]
     pub enum CheckConclusionState {
         ActionRequired,
         Cancelled,

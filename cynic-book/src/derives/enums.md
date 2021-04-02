@@ -6,7 +6,6 @@ an enum, and the easiest way to define that trait is to derive it:
 
 ```rust
 #[derive(cynic::Enum, Clone, Copy, Debug)]
-#[cynic(graphql_type = "Market")]
 pub enum Market {
     Uk,
     Ie,
@@ -19,9 +18,9 @@ variants, the derive will emit errors.
 
 #### Variant Naming
 
-The GraphQL spec [recommends that enums are "all caps"][1].  To handle this
+The GraphQL spec [recommends that enums are "all caps"][1]. To handle this
 smoothly, Cynic matches rust variants up to their equivalent
-`SCREAMING_SNAKE_CASE` GraphQL variants.  This behaviour can be disabled by
+`SCREAMING_SNAKE_CASE` GraphQL variants. This behaviour can be disabled by
 specifying a `rename_all = "None"` attribute, or customised alternative
 `rename_all` values or individual `rename` attributes on the variants.
 
@@ -29,8 +28,8 @@ specifying a `rename_all = "None"` attribute, or customised alternative
 
 An Enum can be configured with several attributes on the enum itself:
 
-- `graphql_type = "AType"` is required and tells cynic which type in the
-  GraphQL schema to map this enum to
+- `graphql_type = "AType"` tells cynic which enum in the GraphQL schema this
+  enum represents. The name of the enum is used if it is omitted.
 - `rename_all="camelCase"` tells cynic to rename all the rust field names with
   a particular rule to match their GraphQL counterparts. If not provided this
   defaults to `SCREAMING_SNAKE_CASE` to be consistent with GraphQL conventions.

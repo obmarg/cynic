@@ -16,13 +16,11 @@ mod queries {
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "FilmsConnection")]
     pub struct FilmsConnection {
         pub films: Option<Vec<Option<Film>>>,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "Film")]
     pub struct Film {
         pub id: cynic::Id,
         pub title: Option<String>,

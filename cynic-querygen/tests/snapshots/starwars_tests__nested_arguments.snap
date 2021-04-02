@@ -24,7 +24,7 @@ mod queries {
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "Film", argument_struct = "NestedArgsQueryArguments")]
+    #[cynic(argument_struct = "NestedArgsQueryArguments")]
     pub struct Film {
         pub title: Option<String>,
         pub director: Option<String>,
@@ -33,26 +33,24 @@ mod queries {
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "FilmPlanetsConnection", argument_struct = "NestedArgsQueryArguments")]
+    #[cynic(argument_struct = "NestedArgsQueryArguments")]
     pub struct FilmPlanetsConnection {
         pub planets: Option<Vec<Option<Planet>>>,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "Planet", argument_struct = "NestedArgsQueryArguments")]
+    #[cynic(argument_struct = "NestedArgsQueryArguments")]
     pub struct Planet {
         #[arguments(after = &args.resident_connection)]
         pub resident_connection: Option<PlanetResidentsConnection>,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "PlanetResidentsConnection")]
     pub struct PlanetResidentsConnection {
         pub residents: Option<Vec<Option<Person>>>,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "Person")]
     pub struct Person {
         pub name: Option<String>,
     }
@@ -62,4 +60,5 @@ mod queries {
 mod query_dsl{
     cynic::query_dsl!(r#"schema.graphql"#);
 }
+
 

@@ -10,7 +10,6 @@ mod queries {
     use super::{query_dsl, types::*};
 
     #[derive(cynic::Enum, Clone, Copy, Debug)]
-    #[cynic(graphql_type = "IssueOrderField")]
     pub enum IssueOrderField {
         Comments,
         CreatedAt,
@@ -18,14 +17,12 @@ mod queries {
     }
 
     #[derive(cynic::Enum, Clone, Copy, Debug)]
-    #[cynic(graphql_type = "OrderDirection")]
     pub enum OrderDirection {
         Asc,
         Desc,
     }
 
     #[derive(cynic::InputObject, Debug)]
-    #[cynic(graphql_type = "IssueOrder")]
     pub struct IssueOrder {
         pub direction: OrderDirection,
         pub fieid: IssueOrderField,

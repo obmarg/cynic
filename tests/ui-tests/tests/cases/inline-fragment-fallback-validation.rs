@@ -20,8 +20,7 @@ enum MyFailingUnionType {
 #[derive(cynic::QueryFragment)]
 #[cynic(
     schema_path = "../../../cynic/src/bin/simple.graphql",
-    query_module = "query_dsl",
-    graphql_type = "Nested"
+    query_module = "query_dsl"
 )]
 struct Nested {
     pub a_string: String,

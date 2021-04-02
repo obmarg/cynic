@@ -16,7 +16,6 @@ For example, the GitHub API has an `Assignee` union type which could be queried 
 #[cynic(
     schema_path = "github.graphql",
     query_module = "query_dsl",
-    graphql_type = "Assignee"
 )]
 enum Assignee {
     Bot(Bot),
@@ -32,8 +31,8 @@ implement `QueryFragment` for the respective GraphQL types.
 #### Fallbacks
 
 By default cynic will error you if you leave out any possible type for a given
-union type of interface.  If you don't want to provide cases for each of the
-possible types you can provide the `fallback` attribute on a variant.  That
+union type of interface. If you don't want to provide cases for each of the
+possible types you can provide the `fallback` attribute on a variant. That
 variant will be output whenever an unhandled type is returned.
 
 ```rust
@@ -41,7 +40,6 @@ variant will be output whenever an unhandled type is returned.
 #[cynic(
     schema_path = "github.graphql",
     query_module = "query_dsl",
-    graphql_type = "Assignee"
 )]
 enum Assignee {
     Bot(Bot),
@@ -65,7 +63,6 @@ also select some fields from the interface:
 #[cynic(
     schema_path = "github.graphql",
     query_module = "query_dsl",
-    graphql_type = "Actor"
 )]
 pub enum Actor {
     User(User),
@@ -78,7 +75,6 @@ pub enum Actor {
 #[cynic(
     schema_path = "github.graphql",
     query_module = "query_dsl",
-    graphql_type = "Actor"
 )]
 enum ActorFallback {
     pub login: String
@@ -93,8 +89,9 @@ concept of shared fields.
 An `InlineFragments` can be configured with several attributes on the
 enum itself:
 
-- `graphql_type = "AType"` is required and tells cynic which interface
-  or union type in the GraphQL schema to map this struct to
+- `graphql_type = "AType"` tells cynic which interface or union type
+  in the GraphQL schema this enum represents. The name of the enum is
+  used if it is omitted.
 - `schema_path` sets the path to the GraphQL schema. This is required,
   but
   can be provided by nesting the InlineFragments inside a query module
@@ -110,6 +107,6 @@ Each variant can also have it's own attributes:
 
 - `fallback` can be applied on a single variant to indicate that it
   should be used whenver cynic encounters a `__typename` that doesn't
-  match one of the other variants.  For interfaces this can contain a
-  `QueryFragment` type.  For union types it must be applied on a unit
+  match one of the other variants. For interfaces this can contain a
+  `QueryFragment` type. For union types it must be applied on a unit
   variant.

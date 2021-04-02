@@ -28,13 +28,11 @@ mod queries {
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "StarshipsConnection")]
     pub struct StarshipsConnection {
         pub starships: Option<Vec<Option<Starship>>>,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "Starship")]
     pub struct Starship {
         pub id: cynic::Id,
         pub starship_class: Option<String>,
@@ -42,7 +40,6 @@ mod queries {
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "StarshipFilmsConnection")]
     pub struct StarshipFilmsConnection {
         pub films: Option<Vec<Option<Film>>>,
     }
@@ -60,25 +57,21 @@ mod queries {
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "PlanetsConnection")]
     pub struct PlanetsConnection {
         pub planets: Option<Vec<Option<Planet>>>,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "Planet")]
     pub struct Planet {
         pub film_connection: Option<PlanetFilmsConnection>,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "PlanetFilmsConnection")]
     pub struct PlanetFilmsConnection {
         pub films: Option<Vec<Option<Film2>>>,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "FilmsConnection")]
     pub struct FilmsConnection {
         pub films: Option<Vec<Option<Film>>>,
     }
@@ -92,7 +85,6 @@ mod queries {
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "Film")]
     pub struct Film {
         pub id: cynic::Id,
         pub title: Option<String>,
@@ -103,4 +95,5 @@ mod queries {
 mod query_dsl{
     cynic::query_dsl!(r#"schema.graphql"#);
 }
+
 

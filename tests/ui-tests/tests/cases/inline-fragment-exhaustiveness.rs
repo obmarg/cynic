@@ -7,8 +7,7 @@ mod query_dsl {
 #[derive(cynic::InlineFragments)]
 #[cynic(
     schema_path = "../../../cynic/src/bin/simple.graphql",
-    query_module = "query_dsl",
-    graphql_type = "MyUnionType"
+    query_module = "query_dsl"
 )]
 enum MyUnionType {
     TestStruct(Test),
@@ -18,8 +17,7 @@ enum MyUnionType {
 #[derive(cynic::QueryFragment)]
 #[cynic(
     schema_path = "../../../cynic/src/bin/simple.graphql",
-    query_module = "query_dsl",
-    graphql_type = "Nested"
+    query_module = "query_dsl"
 )]
 struct Nested {
     pub a_string: String,

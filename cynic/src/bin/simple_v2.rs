@@ -22,7 +22,7 @@ mod queries {
     pub struct TestArgs {}
 
     #[derive(cynic::QueryFragment)]
-    #[cynic(graphql_type = "TestStruct", argument_struct = "TestArgs")]
+    #[cynic(argument_struct = "TestArgs")]
     pub struct TestStruct {
         #[arguments(x = 1, y = "1")]
         pub field_one: String,
@@ -32,7 +32,6 @@ mod queries {
     }
 
     #[derive(cynic::QueryFragment)]
-    #[cynic(graphql_type = "Nested")]
     pub struct Nested {
         pub a_string: String,
         pub opt_string: Option<String>,
@@ -46,14 +45,13 @@ mod queries {
     }
 
     #[derive(cynic::Enum, Clone, Copy)]
-    #[cynic(graphql_type = "Dessert", rename_all = "SCREAMING_SNAKE_CASE")]
+    #[cynic(rename_all = "SCREAMING_SNAKE_CASE")]
     pub enum Dessert {
         Cheesecake,
         IceCream,
     }
 
     #[derive(cynic::InlineFragments)]
-    #[cynic(graphql_type = "MyUnionType")]
     pub enum MyUnionType {
         TestStruct(Test),
         Nested(Nested),

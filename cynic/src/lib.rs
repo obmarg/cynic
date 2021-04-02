@@ -53,7 +53,6 @@
 //! #[cynic(
 //!     schema_path = "../schemas/starwars.schema.graphql",
 //!     query_module = "query_dsl",
-//!     graphql_type = "Film"
 //! )]
 //! struct Film {
 //!     title: Option<String>,
@@ -115,9 +114,8 @@
 //!
 //! # #[derive(cynic::QueryFragment)]
 //! # #[cynic(
-//! #     schema_path = "../schemas/starwars.schema.graphql",
+//! #    schema_path = "../schemas/starwars.schema.graphql",
 //! #    query_module = "query_dsl",
-//! #    graphql_type = "Film"
 //! # )]
 //! # struct Film {
 //! #    title: Option<String>,

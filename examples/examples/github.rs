@@ -63,21 +63,21 @@ mod queries {
     }
 
     #[derive(cynic::InputObject, Clone, Debug)]
-    #[cynic(graphql_type = "IssueOrder", rename_all = "camelCase")]
+    #[cynic(rename_all = "camelCase")]
     pub struct IssueOrder {
         pub direction: OrderDirection,
         pub field: IssueOrderField,
     }
 
     #[derive(cynic::Enum, Clone, Copy, Debug)]
-    #[cynic(graphql_type = "OrderDirection", rename_all = "SCREAMING_SNAKE_CASE")]
+    #[cynic(rename_all = "SCREAMING_SNAKE_CASE")]
     pub enum OrderDirection {
         Asc,
         Desc,
     }
 
     #[derive(cynic::Enum, Clone, Copy, Debug)]
-    #[cynic(graphql_type = "IssueOrderField", rename_all = "SCREAMING_SNAKE_CASE")]
+    #[cynic(rename_all = "SCREAMING_SNAKE_CASE")]
     pub enum IssueOrderField {
         Comments,
         CreatedAt,
@@ -92,24 +92,19 @@ mod queries {
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(
-        graphql_type = "Repository",
-        argument_struct = "PullRequestTitlesArguments"
-    )]
+    #[cynic(argument_struct = "PullRequestTitlesArguments")]
     pub struct Repository {
         #[arguments(order_by = &args.pr_order, first = 10)]
         pub pull_requests: PullRequestConnection,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "PullRequestConnection")]
     pub struct PullRequestConnection {
         #[cynic(flatten)]
         pub nodes: Vec<PullRequest>,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "PullRequest")]
     pub struct PullRequest {
         pub title: String,
         pub created_at: DateTime,

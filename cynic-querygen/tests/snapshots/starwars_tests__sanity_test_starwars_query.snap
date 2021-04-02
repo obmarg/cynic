@@ -22,7 +22,6 @@ mod queries {
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "Film")]
     pub struct Film {
         pub title: Option<String>,
         pub director: Option<String>,
@@ -33,4 +32,5 @@ mod queries {
 mod query_dsl{
     cynic::query_dsl!(r#"schema.graphql"#);
 }
+
 

@@ -16,18 +16,23 @@ pub struct QueryFragment<'query, 'schema> {
 
 impl std::fmt::Display for QueryFragment<'_, '_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let argument_struct_param = if let Some(name) = &self.argument_struct_name {
-            format!(", argument_struct = \"{}\"", name)
-        } else {
-            "".to_string()
-        };
-
         writeln!(f, "#[derive(cynic::QueryFragment, Debug)]")?;
-        writeln!(
-            f,
-            "#[cynic(graphql_type = \"{}\"{})]",
-            self.target_type, argument_struct_param
-        )?;
+
+        if self.target_type != self.name || self.argument_struct_name.is_some() {
+            write!(f, "#[cynic(")?;
+            if self.target_type != self.name {
+                write!(f, "graphql_type = \"{}\"", self.target_type)?;
+            }
+
+            if let Some(name) = &self.argument_struct_name {
+                if self.target_type != self.name {
+                    write!(f, ", ")?;
+                }
+                write!(f, "argument_struct = \"{}\"", name)?;
+            }
+            writeln!(f, ")]",)?;
+        }
+
         writeln!(f, "pub struct {} {{", self.name)?;
         for field in &self.fields {
             write!(indented(f, 4), "{}", field)?;

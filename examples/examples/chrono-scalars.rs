@@ -11,8 +11,7 @@ cynic::impl_scalar!(DateTime, query_dsl::DateTime);
 #[derive(cynic::QueryFragment, Debug)]
 #[cynic(
     schema_path = "../schemas/graphql.jobs.graphql",
-    query_module = "query_dsl",
-    graphql_type = "Job"
+    query_module = "query_dsl"
 )]
 struct Job {
     created_at: DateTime,

@@ -6,7 +6,6 @@ input object and the easiest way to define that trait is to derive it:
 
 ```rust
 #[derive(cynic::InputObject, Clone, Debug)]
-#[cynic(graphql_type = "IssueOrder")]
 pub struct IssueOrder {
     pub direction: OrderDirection,
     pub field: IssueOrderField,
@@ -14,7 +13,7 @@ pub struct IssueOrder {
 ```
 
 The derive will work on any struct that matches the format of the input object
-and it may contain scalar values or other `InputObject`s.  See `Field Naming`
+and it may contain scalar values or other `InputObject`s. See `Field Naming`
 below for how names are matched between GraphQL & Rust.
 
 By default the field names are expected to match the GraphQL variants
@@ -34,11 +33,11 @@ sent as `null`.
 
 <!-- TODO: example of the above?  Better wording. -->
 
-### Field Naming 
+### Field Naming
 
-It's a common GraphQL convention for fields to be named in `camelCase`.  To
+It's a common GraphQL convention for fields to be named in `camelCase`. To
 handle this smoothly, Cynic matches rust fields up to their equivalent
-`SCREAMING_SNAKE_CASE` GraphQL fields.  This behaviour can be disabled by
+`SCREAMING_SNAKE_CASE` GraphQL fields. This behaviour can be disabled by
 specifying a `rename_all = "None"` attribute, or customised alternative
 `rename_all` values or individual `rename` attributes on the fields.
 
@@ -46,8 +45,8 @@ specifying a `rename_all = "None"` attribute, or customised alternative
 
 An InputObject can be configured with several attributes on the struct itself:
 
-- `graphql_type = "AType"` is required and tells cynic which type in the
-  GraphQL schema to map this struct to
+- `graphql_type = "AType"` tells cynic which input object in the GraphQL
+  schema this struct represents. The name of the struct is used if it is omitted.
 - `require_all_fields` can be provided when you want cynic to make sure your
   struct has all of the fields defined in the GraphQL schema.
 - `rename_all="camelCase"` tells cynic to rename all the rust field names with

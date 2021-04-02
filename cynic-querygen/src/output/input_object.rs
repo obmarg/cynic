@@ -14,8 +14,10 @@ pub struct InputObject<'schema> {
 impl std::fmt::Display for InputObject<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         writeln!(f, "#[derive(cynic::InputObject, Debug)]")?;
-        writeln!(f, "#[cynic(graphql_type = \"{}\")]", self.name)?;
-        writeln!(f, "pub struct {} {{", self.name)?;
+        if self.name != self.name.to_pascal_case() {
+            writeln!(f, "#[cynic(graphql_type = \"{}\")]", self.name)?;
+        }
+        writeln!(f, "pub struct {} {{", self.name.to_pascal_case())?;
 
         for field in &self.fields {
             let mut f = indented(f, 4);

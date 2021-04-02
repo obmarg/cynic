@@ -9,7 +9,6 @@ the other films that they were in (and so on) we could do:
 
 ```rust
 #[derive(cynic::QueryFragment, Debug)]
-#[cynic(graphql_type = "Film")]
 struct Film {
     title: Option<String>,
     character_connection: Option<CharacterConnection>,
