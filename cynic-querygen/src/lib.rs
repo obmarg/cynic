@@ -67,6 +67,9 @@ pub enum Error {
 
     #[error("Could not find a type named {0}, which we expected to be the root type")]
     CouldntFindRootType(String),
+
+    #[error("At least one field should be selected for `{0}`.")]
+    NoFieldSelected(String),
 }
 
 #[derive(Debug)]

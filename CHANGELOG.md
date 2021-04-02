@@ -59,11 +59,23 @@ all APIs might be changed.
   field in a QueryFragment.
 - Field type mismatch errors in QueryFragments are now reported on the span of
   the field type.
+- You no longer need to define Scalars you are not using
 - If a server adds a new scalar it will no longer break cynic clients.
 
 ### Changes
 
-- You no longer need to define Scalars you are not using
+- The `graphql_type` parameter for most of the derives is now optional.  It 
+  defaults to the name of the struct/enum if not present.
+- Cynic will no longer generate invalid QueryFragments if fields are not 
+  selected on a composite.
+- Cynic will now error if a QueryFragment selects no fields.
+
+## v0.12.3 - 2020-04-01
+
+## Bug Fixes
+
+- The `cynic::Scalar` derive output no longer contains a spurious `?` that
+  clippy warns about in Rust 1.51.
 
 ## v0.12.2 - 2020-02-22
 

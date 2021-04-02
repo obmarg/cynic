@@ -43,20 +43,24 @@ pub fn fragment_derive_impl(
 
     input.validate()?;
 
-    let schema_path = input.schema_path;
+    let schema_path = &input.schema_path;
 
-    let graphql_type = input.graphql_type;
     let object = schema
         .objects
-        .get(&Ident::for_type(&*graphql_type))
+        .get(&Ident::for_type(&input.graphql_type_name()))
         .ok_or_else(|| {
             syn::Error::new(
-                graphql_type.span(),
-                format!("Can't find {} in {}", *graphql_type, *schema_path),
+                input.graphql_type_span(),
+                format!(
+                    "Can't find {} in {}",
+                    input.graphql_type_name(),
+                    **schema_path
+                ),
             )
         })?;
 
-    let argument_struct = if let Some(arg_struct) = input.argument_struct {
+    let input_argument_struct = (&input.argument_struct).clone();
+    let argument_struct = if let Some(arg_struct) = input_argument_struct {
         let span = arg_struct.span();
 
         let arg_struct_val: Ident = arg_struct.into();
@@ -67,13 +71,14 @@ pub fn fragment_derive_impl(
     };
 
     if let darling::ast::Data::Struct(fields) = &input.data {
+        let graphql_name = &(input.graphql_type_name());
         let query_module = input.query_module;
         let fragment_impl = FragmentImpl::new_for(
             &fields,
             &input.ident,
             &object,
             Ident::new_spanned(&*query_module, query_module.span()).into(),
-            &graphql_type,
+            graphql_name,
             argument_struct,
         )?;
         Ok(quote::quote! {

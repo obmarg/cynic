@@ -47,6 +47,7 @@ pub fn scalar_derive_impl(input: ScalarDeriveInput) -> Result<TokenStream, syn::
             fn from_deserialize(inner: Self::Deserialize) -> Result<Self, ::cynic::DecodeError> {
                 Ok(#ident(inner))
             }
+
         }
 
         impl ::cynic::serde::Serialize for #ident {

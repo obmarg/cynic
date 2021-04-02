@@ -1,6 +1,7 @@
 use darling::util::SpannedValue;
 
 use crate::{type_validation::CheckMode, Errors};
+use proc_macro2::Span;
 
 #[derive(darling::FromDeriveInput)]
 #[darling(attributes(cynic), supports(struct_named))]
@@ -10,13 +11,41 @@ pub struct FragmentDeriveInput {
 
     pub schema_path: SpannedValue<String>,
     pub query_module: SpannedValue<String>,
-    pub graphql_type: SpannedValue<String>,
+
+    #[darling(default)]
+    pub graphql_type: Option<SpannedValue<String>>,
     #[darling(default)]
     pub argument_struct: Option<syn::Ident>,
 }
 
 impl FragmentDeriveInput {
+    pub fn graphql_type_name(&self) -> String {
+        self.graphql_type
+            .as_ref()
+            .map(|sp| String::from(sp.to_string()))
+            .unwrap_or_else(|| self.ident.to_string())
+    }
+
+    pub fn graphql_type_span(&self) -> Span {
+        self.graphql_type
+            .as_ref()
+            .map(|val| val.span())
+            .unwrap_or_else(|| self.ident.span())
+    }
+
     pub fn validate(&self) -> Result<(), Errors> {
+        let data_field_is_empty = matches!(self.data.clone(), darling::ast::Data::Struct(fields) if fields.fields.is_empty());
+        if data_field_is_empty {
+            return Err(syn::Error::new(
+                self.ident.span(),
+                format!(
+                    "At least one field should be selected for `{}`.",
+                    self.ident.to_string()
+                ),
+            )
+            .into());
+        }
+
         let errors = self
             .data
             .clone()
@@ -113,7 +142,7 @@ mod tests {
             }),
             schema_path: "abcd".to_string().into(),
             query_module: "abcd".to_string().into(),
-            graphql_type: "abcd".to_string().into(),
+            graphql_type: Some("abcd".to_string().into()),
             argument_struct: None,
         };
 
@@ -152,11 +181,71 @@ mod tests {
             }),
             schema_path: "abcd".to_string().into(),
             query_module: "abcd".to_string().into(),
-            graphql_type: "abcd".to_string().into(),
+            graphql_type: Some("abcd".to_string().into()),
             argument_struct: None,
         };
 
         let errors = input.validate().unwrap_err();
         assert_eq!(errors.len(), 2);
+    }
+
+    #[test]
+    fn test_fragment_derive_validate_failed() {
+        let input = FragmentDeriveInput {
+            ident: format_ident!("TestInput"),
+            data: darling::ast::Data::Struct(darling::ast::Fields {
+                style: darling::ast::Style::Struct,
+                fields: vec![],
+            }),
+            schema_path: "abcd".to_string().into(),
+            query_module: "abcd".to_string().into(),
+            graphql_type: Some("abcd".to_string().into()),
+            argument_struct: None,
+        };
+        let errors = input.validate().unwrap_err();
+        assert_eq!(
+            errors.to_compile_errors().to_string(),
+            r#"compile_error ! { "At least one field should be selected for `TestInput`." }"#
+                .to_string()
+        );
+    }
+
+    #[test]
+    fn test_fragment_derive_validate_pass_no_graphql_type() {
+        let input = FragmentDeriveInput {
+            ident: format_ident!("TestInput"),
+            data: darling::ast::Data::Struct(darling::ast::Fields {
+                style: darling::ast::Style::Struct,
+                fields: vec![
+                    FragmentDeriveField {
+                        ident: Some(format_ident!("field_one")),
+                        ty: syn::parse_quote! { String },
+                        attrs: vec![],
+                        flatten: false,
+                        recurse: None,
+                    },
+                    FragmentDeriveField {
+                        ident: Some(format_ident!("field_two")),
+                        ty: syn::parse_quote! { String },
+                        attrs: vec![],
+                        flatten: true,
+                        recurse: None,
+                    },
+                    FragmentDeriveField {
+                        ident: Some(format_ident!("field_three")),
+                        ty: syn::parse_quote! { String },
+                        attrs: vec![],
+                        flatten: false,
+                        recurse: Some(8.into()),
+                    },
+                ],
+            }),
+            schema_path: "abcd".to_string().into(),
+            query_module: "abcd".to_string().into(),
+            graphql_type: None,
+            argument_struct: None,
+        };
+
+        assert_matches!(input.validate(), Ok(()));
     }
 }
