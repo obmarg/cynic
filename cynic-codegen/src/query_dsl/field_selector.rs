@@ -1,5 +1,6 @@
 use proc_macro2::TokenStream;
 
+use super::ArgumentParameter;
 use crate::{schema::InputValue, FieldArgument, FieldType, Ident, TypeIndex, TypePath};
 
 /// A selection function for a field in our generated DSL
@@ -50,28 +51,23 @@ impl quote::ToTokens for FieldSelector {
 
         let rust_field_name = &self.rust_field_name;
 
-        let mut generic_params = Vec::new();
-
         let mut argument_defs = Vec::with_capacity(self.required_args.len());
         for arg in &self.required_args {
-            let arg_name = &arg.name;
-
-            if let Some(generic_param) = arg.generic_parameter() {
-                generic_params.push(generic_param.to_tokens(TypePath::empty()));
-
-                let arg_type = arg
-                    .argument_type
-                    .to_tokens(Some(generic_param.name), TypePath::empty());
-
-                argument_defs.push(quote! { #arg_name: #arg_type });
-            } else {
-                let arg_type = arg.argument_type.to_tokens(None, TypePath::empty());
-
-                argument_defs.push(quote! { #arg_name: #arg_type });
-            }
+            argument_defs.push(
+                ArgumentParameter::new(arg.name.clone(), arg.argument_type.clone())
+                    .to_tokens(TypePath::empty())
+                    .unwrap(),
+            );
         }
 
-        let argument_names: Vec<_> = self.required_args.iter().map(|a| a.name.clone()).collect();
+        let argument_vals: Vec<_> = self
+            .required_args
+            .iter()
+            .map(|a| {
+                let name = &a.name;
+                quote! { ::cynic::serde_json::to_value(&#name) }
+            })
+            .collect();
         let argument_strings: Vec<_> = self
             .required_args
             .iter()
@@ -86,7 +82,7 @@ impl quote::ToTokens for FieldSelector {
         let selection_builder = &self.selection_builder;
 
         tokens.append_all(quote! {
-            pub fn #rust_field_name<#(#generic_params, )*>(
+            pub fn #rust_field_name(
                 #(#argument_defs, )*
             ) -> #selection_builder {
                 #selection_builder::new(vec![
@@ -94,7 +90,7 @@ impl quote::ToTokens for FieldSelector {
                         ::cynic::Argument::new(
                             #argument_strings,
                             #argument_gql_types,
-                            #argument_names
+                            #argument_vals
                         ),
                     )*
                 ])

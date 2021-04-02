@@ -308,22 +308,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "bson"
-version = "1.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c11f16001d679cb13d14b2c93c7d0fa13bb484a87c34a6c4c39707ad936499b5"
-dependencies = [
- "base64 0.12.3",
- "chrono",
- "hex",
- "lazy_static",
- "linked-hash-map",
- "rand",
- "serde",
- "serde_json",
-]
-
-[[package]]
 name = "bumpalo"
 version = "3.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -390,6 +374,7 @@ dependencies = [
  "libc",
  "num-integer",
  "num-traits",
+ "serde",
  "time 0.1.44",
  "winapi 0.3.9",
 ]
@@ -601,7 +586,6 @@ name = "cynic"
 version = "0.12.3"
 dependencies = [
  "assert_matches",
- "bson",
  "chrono",
  "cynic-proc-macros",
  "insta 1.5.3",
@@ -612,8 +596,6 @@ dependencies = [
  "serde_json",
  "surf",
  "thiserror",
- "url",
- "uuid",
 ]
 
 [[package]]
@@ -639,6 +621,7 @@ name = "cynic-examples"
 version = "0.12.3"
 dependencies = [
  "async-std",
+ "chrono",
  "cynic",
  "cynic-codegen",
  "insta 0.16.1",
@@ -1112,12 +1095,6 @@ checksum = "5aca5565f760fb5b220e499d72710ed156fdb74e631659e99377d9ebfbd13ae8"
 dependencies = [
  "libc",
 ]
-
-[[package]]
-name = "hex"
-version = "0.4.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "644f9158b2f133fd50f5fb3242878846d9eb792e445c893805ff0e3824006e35"
 
 [[package]]
 name = "hkdf"
@@ -2189,7 +2166,6 @@ version = "1.0.60"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "1500e84d27fe482ed1dc791a56eddc2f230046a040fa908c08bda1d9fb615779"
 dependencies = [
- "indexmap",
  "itoa",
  "ryu",
  "serde",

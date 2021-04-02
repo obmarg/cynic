@@ -107,17 +107,19 @@ pub fn enum_derive_impl(
             }
 
             #[automatically_derived]
-            impl ::cynic::SerializableArgument for #ident {
-                fn serialize(&self) -> Result<::cynic::serde_json::Value, ::cynic::SerializeError> {
-                    Ok(::cynic::serde_json::to_value(match self {
-                        #(
-                            #ident::#variants => #string_literals.to_string(),
-                        )*
-                    })?)
-                }
+            impl ::cynic::serde::Serialize for #ident {
+                fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                where
+                    S: ::cynic::serde::Serializer {
+                        match self {
+                            #(
+                                #ident::#variants => serializer.serialize_str(#string_literals),
+                            )*
+                        }
+                    }
             }
 
-            ::cynic::impl_into_argument_for_options!(#ident);
+            ::cynic::impl_input_type!(#ident, #query_module::#enum_marker_ident);
         })
     } else {
         Err(syn::Error::new(

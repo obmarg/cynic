@@ -74,7 +74,7 @@ pub fn enum_derive(input: TokenStream) -> TokenStream {
     rv
 }
 
-#[proc_macro_derive(Scalar)]
+#[proc_macro_derive(Scalar, attributes(cynic))]
 pub fn scalar_derive(input: TokenStream) -> TokenStream {
     let ast = syn::parse_macro_input!(input as syn::DeriveInput);
 

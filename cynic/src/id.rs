@@ -1,6 +1,6 @@
-use crate::SerializeError;
+use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Debug, PartialEq, Eq, Hash)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash, Serialize, Deserialize)]
 pub struct Id(String);
 
 impl Id {
@@ -22,12 +22,12 @@ impl<T: Into<String>> From<T> for Id {
     }
 }
 
-impl crate::Scalar for Id {
-    fn decode(value: &serde_json::Value) -> Result<Self, json_decode::DecodeError> {
-        String::decode(value).map(Into::into)
-    }
+impl crate::Scalar<Id> for Id {
+    type Deserialize = String;
 
-    fn encode(&self) -> Result<serde_json::Value, SerializeError> {
-        self.0.encode()
+    fn from_deserialize(s: String) -> Result<Self, json_decode::DecodeError> {
+        Ok(s.into())
     }
 }
+
+crate::impl_input_type!(Id, Id);

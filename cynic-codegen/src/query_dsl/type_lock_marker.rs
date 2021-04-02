@@ -2,24 +2,28 @@ use proc_macro2::TokenStream;
 
 use crate::{schema, Ident};
 
-/// We generate an EnumMarker for each enum in the schema.
-///
-/// These are output as empty structs that can be used as the TypeLock
-/// in an impl of the Enum trait.
+/// Outputs an empty struct that can be used a TypeLock for a given
+/// enum or scalar impl
 #[derive(Debug)]
-pub struct EnumMarker {
+pub struct TypeLockMarker {
     pub name: Ident,
 }
 
-impl EnumMarker {
+impl TypeLockMarker {
     pub fn from_enum(en: &schema::EnumType) -> Self {
-        EnumMarker {
+        TypeLockMarker {
             name: Ident::for_type(&en.name),
+        }
+    }
+
+    pub fn from_scalar(scalar: &schema::ScalarType) -> Self {
+        TypeLockMarker {
+            name: Ident::for_type(&scalar.name),
         }
     }
 }
 
-impl quote::ToTokens for EnumMarker {
+impl quote::ToTokens for TypeLockMarker {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         use quote::{quote, TokenStreamExt};
 
@@ -27,7 +31,7 @@ impl quote::ToTokens for EnumMarker {
 
         tokens.append_all(quote! {
             #[allow(dead_code)]
-            pub struct #name {}
+            pub enum #name {}
         });
     }
 }

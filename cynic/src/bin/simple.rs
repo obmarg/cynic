@@ -5,8 +5,6 @@ fn main() {
 }
 
 mod query_dsl {
-    type Json = serde_json::Value;
-
     cynic::query_dsl!("src/bin/simple.graphql");
 }
 
@@ -131,18 +129,3 @@ impl cynic::QueryFragment<'static> for Nested {
     }
 }
 */
-
-mod test {
-
-    // A custom scalars.
-    pub struct DateTime {}
-
-    impl cynic::Scalar for DateTime {
-        fn decode(_: &serde_json::Value) -> Result<Self, json_decode::DecodeError> {
-            Ok(DateTime {})
-        }
-        fn encode(&self) -> Result<serde_json::Value, ::cynic::SerializeError> {
-            todo!()
-        }
-    }
-}

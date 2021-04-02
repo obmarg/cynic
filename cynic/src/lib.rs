@@ -158,12 +158,12 @@
 //!
 //! Cynic has a few features that are controlled by feature flags.
 //!
-//! - `chrono` adds support for chrono::DateTime scalars.
-//! - `uuid` adds support for Uuid scalars
-//! - `bson` adds support for ObjectId scalars
-//! - `url` adds support for Url scalars
 //! - `surf` adds integration with the [`surf`](https://github.com/http-rs/surf)
 //!   http client.
+//! - `rewest` adds async integration with the
+//!   [`reqwest`](https://github.com/seanmonstar/reqwest) http client.
+//! - `rewest-blocking` adds blocking integration with the
+//!   [`reqwest`](https://github.com/seanmonstar/reqwest) http client.
 //!
 //! It's worth noting that each of these features pulls in extra
 //! dependencies, which may impact your build size.  Particularly
@@ -175,23 +175,26 @@
 
 mod arguments;
 mod builders;
+mod enums;
 mod fragments;
 mod id;
-mod integrations;
 mod operation;
 mod result;
 mod scalar;
 
 pub mod http;
+pub mod inputs;
 pub mod selection_set;
 pub mod utils;
 
 pub use json_decode::DecodeError;
 
-pub use arguments::{Argument, FromArguments, IntoArgument, SerializableArgument};
+pub use arguments::{Argument, FromArguments};
 pub use builders::{MutationBuilder, QueryBuilder, SubscriptionBuilder};
+pub use enums::Enum;
 pub use fragments::{FragmentArguments, FragmentContext, InlineFragments, QueryFragment};
 pub use id::Id;
+pub use inputs::InputType;
 pub use operation::{Operation, StreamingOperation};
 pub use result::{GraphQLError, GraphQLResponse, GraphQLResult, PossiblyParsedData};
 pub use scalar::Scalar;
@@ -205,18 +208,8 @@ pub use cynic_proc_macros::{
 // We re-export serde_json as the output from a lot of our derive macros require it,
 // and this way we can point at our copy rather than forcing users to add it to
 // their Cargo.toml
+pub use serde;
 pub use serde_json;
-
-pub type SerializeError = Box<dyn std::error::Error + Send + Sync>;
-
-/// A trait for GraphQL enums.
-///
-/// This trait is generic over some TypeLock which is used to tie an Enum
-/// definition back into it's GraphQL enum.  Generally this will be some
-/// type generated in the GQL code.
-pub trait Enum<TypeLock>: Sized {
-    fn select() -> SelectionSet<'static, Self, TypeLock>;
-}
 
 /// A trait for GraphQL input objects.
 ///
@@ -227,7 +220,7 @@ pub trait Enum<TypeLock>: Sized {
 /// It's recommended to derive this trait with the [InputObject](derive.InputObject.html)
 /// derive.  You can also implement it yourself, but you'll be responsible
 /// for implementing the `SerializableArgument` trait if you want to use it.
-pub trait InputObject<TypeLock> {}
+pub trait InputObject<TypeLock>: serde::Serialize {}
 
 impl<TypeLock, T> InputObject<TypeLock> for &T where T: InputObject<TypeLock> {}
 impl<TypeLock, T> InputObject<TypeLock> for Box<T> where T: InputObject<TypeLock> {}

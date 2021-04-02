@@ -14,8 +14,40 @@ all APIs might be changed.
 ### Breaking Changes
 
 - The return type of `cynic::Enum::select` now includes the `TypeLock` of the
-  enum.  This should only affect users that were implementing `cynic::Enum`
-  directly.  Users of the derive should be unaffected.
+  enum. This should only affect users that were implementing `cynic::Enum`
+  directly. Users of the derive should be unaffected.
+- `IntoArgument` has been removed in favour of the new `InputType` trait.
+- Scalars have been revamped:
+  - The scalar trait now has a typelock. This means that a Scalar impl is now
+    directly tied to the scalar definition in a given `query_dsl`.
+  - As a result, cynic can no longer define generic Scalar impls for 3rd party
+    types (such as `chrono`, `url`, `uuid` etc.). The `impl_scalar` macro has
+    been provided to allow users to use these types (or any type that is
+    `serde::Serialize`) in their queries.
+  - Cynic no longer requires you to define Scalar types you are not using.
+  - `select` functions generated for scalar fields in `query_dsl` now take
+    a selection_set that decodes the scalar type. This gives some flexibility
+    around scalar types.
+  - `query_dsl` now defines markers for all the scalar types. As such you
+    should not import any custom scalars into your query_dsl module.
+- `SerializableArgument` has been retired in favour of just using
+  `serde::Serialize`.
+- The `cynic::Scalar` derive has some new requirements:
+  - You should now derive (or otherwise implement) `serde::Serialize` for your
+    Scalar types.
+  - The derive now requires a `query_dsl` parameter. The `query_module` macro
+    will automatically insert this (if you're using it) but you may need to add
+    `use super::query_dsl;` to ensure it's in-scope.
+  - The derive now has an optional `graphql_type` parameter. This is required
+    if the name of your type and the name of the scalar in the schema differ.
+- Required scalar arguments no longer have concrete types, so anything
+  that relied on type inference (i.e. `arg = "hello".into()`) will no longer
+  work. You should either call an explicit function, or rely on a `InputType`
+  impl to do the conversion.
+- The `uuid`, `chrono`, `bson`, and `url` features have been retired. If you
+  were using these you should register them as `Scalar` with the `impl_scalar!`
+  macro.
+- `cynic::SerializeError` no longer exists.
 
 ### New Features
 
@@ -27,14 +59,16 @@ all APIs might be changed.
   field in a QueryFragment.
 - Field type mismatch errors in QueryFragments are now reported on the span of
   the field type.
-- Cynic will no longer generate invalid QueryFragments if fields are not 
-  selected on a composite.
-- Cynic will now error if a QueryFragment selects no fields.
+- You no longer need to define Scalars you are not using
+- If a server adds a new scalar it will no longer break cynic clients.
 
 ### Changes
 
 - The `graphql_type` parameter for most of the derives is now optional.  It 
   defaults to the name of the struct/enum if not present.
+- Cynic will no longer generate invalid QueryFragments if fields are not 
+  selected on a composite.
+- Cynic will now error if a QueryFragment selects no fields.
 
 ## v0.12.3 - 2020-04-01
 

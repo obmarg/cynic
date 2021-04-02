@@ -1,17 +1,11 @@
 error: Could not find a field fieid in the GraphQL InputObject IssueOrder. Did you mean field?
-  --> $DIR/inputobject-guess-validation.rs:65:13
+  --> $DIR/inputobject-guess-validation.rs:31:13
    |
-65 |         pub fieid: IssueOrderField,
+31 |         pub fieid: IssueOrderField,
    |             ^^^^^
 
 error: This InputObject is missing these required fields: field
-  --> $DIR/inputobject-guess-validation.rs:62:5
+  --> $DIR/inputobject-guess-validation.rs:28:5
    |
-62 |     #[cynic(graphql_type = "IssueOrder")]
+28 |     #[cynic(graphql_type = "IssueOrder")]
    |     ^
-
-error[E0277]: the trait bound `&queries::IssueOrder: IntoArgument<Option<_>>` is not satisfied
-  --> $DIR/inputobject-guess-validation.rs:30:32
-   |
-30 |         #[arguments(order_by = &args.pr_order)]
-   |                                ^^^^^^^^^^^^^^ the trait `IntoArgument<Option<_>>` is not implemented for `&queries::IssueOrder`

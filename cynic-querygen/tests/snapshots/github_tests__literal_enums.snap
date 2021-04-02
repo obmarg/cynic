@@ -12,7 +12,7 @@ mod queries {
     #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "Query")]
     pub struct RepoIssues {
-        #[arguments(owner = "obmarg".into(), name = "cynic".into())]
+        #[arguments(owner = "obmarg", name = "cynic")]
         pub repository: Option<Repository>,
     }
 
@@ -50,6 +50,8 @@ mod queries {
     query_module = "query_dsl",
 )]
 mod types {
+    use super::query_dsl;
+
     #[derive(cynic::Scalar, Debug, Clone)]
     pub struct Date(pub String);
 

@@ -278,7 +278,9 @@ impl quote::ToTokens for FieldSelectorCall {
         let span = self.span;
 
         let inner_selection_tokens = match (&self.style, self.recurse_limit) {
-            (NamedTypeSelectorStyle::Scalar, _) => quote_spanned! {span => },
+            (NamedTypeSelectorStyle::Scalar, _) => {
+                quote_spanned! {span => ::cynic::selection_set::scalar()}
+            }
             (NamedTypeSelectorStyle::Enum(enum_type), _) => quote_spanned! {span =>
                 #enum_type::select()
             },

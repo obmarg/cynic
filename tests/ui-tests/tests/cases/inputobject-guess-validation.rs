@@ -9,40 +9,6 @@ fn main() {}
 mod queries {
     use super::{query_dsl, types::*};
 
-    #[derive(cynic::FragmentArguments, Debug)]
-    pub struct PullRequestTitlesArguments {
-        pub pr_order: IssueOrder,
-    }
-
-    #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "Query", argument_struct = "PullRequestTitlesArguments")]
-    pub struct PullRequestTitles {
-        #[arguments(name = "cynic".into(), owner = "obmarg".into())]
-        pub repository: Option<Repository>,
-    }
-
-    #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(
-        graphql_type = "Repository",
-        argument_struct = "PullRequestTitlesArguments"
-    )]
-    pub struct Repository {
-        #[arguments(order_by = &args.pr_order)]
-        pub pull_requests: PullRequestConnection,
-    }
-
-    #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "PullRequestConnection")]
-    pub struct PullRequestConnection {
-        pub nodes: Option<Vec<Option<PullRequest>>>,
-    }
-
-    #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "PullRequest")]
-    pub struct PullRequest {
-        pub title: String,
-    }
-
     #[derive(cynic::Enum, Clone, Copy, Debug)]
     #[cynic(graphql_type = "IssueOrderField")]
     pub enum IssueOrderField {
@@ -71,6 +37,8 @@ mod queries {
     query_module = "query_dsl"
 )]
 mod types {
+    use super::query_dsl;
+
     #[derive(cynic::Scalar, Debug, Clone)]
     pub struct Date(pub String);
 

@@ -1,5 +1,6 @@
 use proc_macro2::TokenStream;
 
+use super::ArgumentParameterType;
 use crate::{schema::InputValue, FieldArgument, FieldType, Ident, TypeIndex, TypePath};
 
 /// A builder struct that is generated for each field in the query, to
@@ -42,44 +43,27 @@ impl FieldSelectionBuilder {
         let query_field_name = &self.query_field_name;
         let type_lock = &self.type_lock;
 
-        let selector = if self.field_type.contains_scalar() {
-            // We call the scalar selector for scalars
-            quote! { ::cynic::selection_set::scalar() }
+        let arg_name = if self.field_type.contains_leaf_value() {
+            Ident::for_field("inner")
         } else {
-            // Otherwise we pass in the fields that the function
-            // we generate accept as an argument.
-            quote! { fields }
+            Ident::for_field("fields")
         };
-        let selector = self.field_type.selection_set_call(selector);
+        let selector = self.field_type.selection_set_call(quote! { #arg_name });
+        let decodes_to = self.field_type.decodes_to(quote! { T });
+        let argument_type_lock = self.field_type.as_type_lock(TypePath::new_super());
 
-        if self.field_type.contains_scalar() {
-            let field_type = self.field_type.to_tokens(None, TypePath::new_super());
-            quote! {
-                pub fn select(self) ->
-                ::cynic::selection_set::SelectionSet<'static, #field_type, super::#type_lock> {
-                    #[allow(unused_imports)]
-                    use ::cynic::selection_set::{string, integer, float, boolean};
-
-                    ::cynic::selection_set::field(#query_field_name, self.args, #selector)
+        quote! {
+            pub fn select<'a, T: 'a + Send + Sync>(
+                self,
+                #arg_name: ::cynic::selection_set::SelectionSet<'a, T, #argument_type_lock>
+            ) -> ::cynic::selection_set::SelectionSet<'a, #decodes_to, super::#type_lock>
+                {
+                    ::cynic::selection_set::field(
+                        #query_field_name,
+                        self.args,
+                        #selector
+                    )
                 }
-            }
-        } else {
-            let decodes_to = self.field_type.decodes_to(quote! { T });
-            let argument_type_lock = self.field_type.as_type_lock(TypePath::new_super());
-
-            quote! {
-                pub fn select<'a, T: 'a + Send + Sync>(
-                    self,
-                    fields: ::cynic::selection_set::SelectionSet<'a, T, #argument_type_lock>
-                ) -> ::cynic::selection_set::SelectionSet<'a, #decodes_to, super::#type_lock>
-                    {
-                        ::cynic::selection_set::field(
-                            #query_field_name,
-                            self.args,
-                            #selector
-                        )
-                    }
-            }
         }
     }
 }
@@ -98,19 +82,10 @@ impl quote::ToTokens for FieldSelectionBuilder {
 
         let argument_gql_types = self.optional_args.iter().map(|a| a.gql_type.clone());
 
-        let argument_generics = self.optional_args.iter().map(|optional_arg| {
-            if let Some(param) = optional_arg.generic_parameter() {
-                let param_tokens = param.to_tokens(TypePath::new_super());
-                quote! { < #param_tokens >}
-            } else {
-                quote! {}
-            }
-        });
-
         let argument_types = self.optional_args.iter().map(|a| {
-            let generic_inner_type = a.generic_parameter().map(|param| param.name);
-            a.argument_type
-                .to_tokens(generic_inner_type, TypePath::new_super())
+            ArgumentParameterType::from_type(a.argument_type.clone())
+                .to_tokens(TypePath::new_super())
+                .unwrap()
         });
 
         let select_func = self.select_function_tokens();
@@ -126,14 +101,14 @@ impl quote::ToTokens for FieldSelectionBuilder {
                 }
 
                 #(
-                    pub fn #argument_names #argument_generics(
-                        mut self, #argument_names: impl ::cynic::IntoArgument<#argument_types>
+                    pub fn #argument_names(
+                        mut self, #argument_names: #argument_types
                     ) -> Self {
                         self.args.push(
                             ::cynic::Argument::new(
                                 #argument_strings,
                                 #argument_gql_types,
-                                #argument_names.into_argument()
+                                ::cynic::serde_json::to_value(&#argument_names)
                             )
                         );
 

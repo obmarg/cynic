@@ -53,6 +53,10 @@ fn build_query() -> cynic::Operation<'static, queries::PullRequestTitles> {
 mod queries {
     use super::query_dsl;
 
+    pub type DateTime = chrono::DateTime<chrono::Utc>;
+
+    cynic::impl_scalar!(DateTime, query_dsl::DateTime);
+
     #[derive(cynic::FragmentArguments, Debug)]
     pub struct PullRequestTitlesArguments {
         pub pr_order: IssueOrder,
@@ -108,46 +112,12 @@ mod queries {
     #[cynic(graphql_type = "PullRequest")]
     pub struct PullRequest {
         pub title: String,
+        pub created_at: DateTime,
     }
 }
 
 #[cfg(feature = "github")]
-#[cynic::query_module(schema_path = "../schemas/github.graphql", query_module = "query_dsl")]
-mod types {
-    #[derive(cynic::Scalar, Debug)]
-    pub struct Date(String);
-
-    #[derive(cynic::Scalar, Debug)]
-    pub struct DateTime(String);
-
-    #[derive(cynic::Scalar, Debug)]
-    pub struct GitObjectID(String);
-
-    #[derive(cynic::Scalar, Debug)]
-    pub struct GitRefname(String);
-
-    #[derive(cynic::Scalar, Debug)]
-    pub struct GitSSHRemote(String);
-
-    #[derive(cynic::Scalar, Debug)]
-    pub struct GitTimestamp(String);
-
-    #[derive(cynic::Scalar, Debug)]
-    pub struct Html(String);
-
-    #[derive(cynic::Scalar, Debug)]
-    pub struct PreciseDateTime(String);
-
-    #[derive(cynic::Scalar, Debug)]
-    pub struct Uri(String);
-
-    #[derive(cynic::Scalar, Debug)]
-    pub struct X509Certificate(String);
-}
-
-#[cfg(feature = "github")]
 mod query_dsl {
-    use super::types::*;
     cynic::query_dsl!("../schemas/github.graphql");
 }
 

@@ -1,4 +1,5 @@
-use proc_macro2::TokenStream;
+use proc_macro2::{Span, TokenStream};
+use quote::quote;
 
 use crate::{
     generic_param::{GenericConstraint, GenericParameter},
@@ -95,6 +96,23 @@ impl FieldType {
         }
     }
 
+    pub fn contains_input_object(&self) -> bool {
+        match self {
+            FieldType::List(inner, _) => inner.contains_enum(),
+            FieldType::InputObject(_, _) => true,
+            _ => false,
+        }
+    }
+
+    pub fn contains_leaf_value(&self) -> bool {
+        match self {
+            FieldType::List(inner, _) => inner.contains_scalar(),
+            FieldType::Scalar(_, _) => true,
+            FieldType::Enum(_, _) => true,
+            _ => false,
+        }
+    }
+
     /// Returns the path to the enum marker struct stored in this field, if any
     pub fn inner_enum_path(&self) -> Option<Ident> {
         match self {
@@ -123,16 +141,54 @@ impl FieldType {
         }
     }
 
-    pub fn as_type_lock(&self, path_to_types: TypePath) -> TypePath {
+    pub fn as_type_lock(&self, path_to_markers: TypePath) -> TypePath {
         match self {
-            FieldType::List(inner, _) => inner.as_type_lock(path_to_types),
-            // TODO: I think this is wrong for scalars, but whatever.
-            FieldType::Scalar(path, _) => TypePath::concat(&[path_to_types, path.clone()]),
-            FieldType::Enum(ident, _) => TypePath::concat(&[path_to_types, ident.clone().into()]),
-            FieldType::InputObject(ident, _) => {
-                TypePath::concat(&[path_to_types, ident.clone().into()])
+            FieldType::List(inner, _) => inner.as_type_lock(path_to_markers),
+            FieldType::Scalar(path, _) => {
+                if path.is_absolute() {
+                    // Probably a built in scalar, so we don't need to put path_to_types
+                    // on the start.
+                    path.clone()
+                } else {
+                    TypePath::concat(&[path_to_markers, path.clone()])
+                }
             }
-            FieldType::Other(ident, _) => TypePath::concat(&[path_to_types, ident.clone().into()]),
+            FieldType::Enum(ident, _) => TypePath::concat(&[path_to_markers, ident.clone().into()]),
+            FieldType::InputObject(ident, _) => {
+                TypePath::concat(&[path_to_markers, ident.clone().into()])
+            }
+            FieldType::Other(ident, _) => {
+                TypePath::concat(&[path_to_markers, ident.clone().into()])
+            }
+        }
+    }
+
+    /// Returns a wrapper path suitable for use in the second parameter to the `InputType` trait.
+    /// e.g. `Nullable<NamedType>` for `Int`, `NamedType` for `Int!`
+    pub fn wrapper_path(&self) -> Result<TokenStream, crate::Errors> {
+        match self {
+            FieldType::List(inner, nullable) => {
+                let inner_path = inner.wrapper_path()?;
+                if *nullable {
+                    Ok(quote! { ::cynic::inputs::Nullable<::cynic::inputs::List<#inner_path>> })
+                } else {
+                    Ok(quote! { ::cynic::inputs::List<#inner_path> })
+                }
+            }
+            FieldType::Scalar(_, nullable)
+            | FieldType::Enum(_, nullable)
+            | FieldType::InputObject(_, nullable) => {
+                if *nullable {
+                    Ok(quote! { ::cynic::inputs::Nullable<::cynic::inputs::NamedType> })
+                } else {
+                    Ok(quote! { ::cynic::inputs::NamedType })
+                }
+            }
+            _ => Err(syn::Error::new(
+                Span::call_site(),
+                "Arguments must be scalars, enums or input objects",
+            )
+            .into()),
         }
     }
 
@@ -153,8 +209,6 @@ impl FieldType {
     /// Where inner_select is a call to the sub-fields to select (or the scalar
     /// function if that's necceasry here)
     pub fn selection_set_call(&self, inner_select: TokenStream) -> TokenStream {
-        use quote::quote;
-
         if self.is_nullable() {
             let inner = self.as_required().selection_set_call(inner_select);
             return quote! {
@@ -182,9 +236,6 @@ impl FieldType {
     /// this type.  For example if inner is `T` and this is an optional
     /// vec this will spit out Option<Vec<T>>
     pub fn decodes_to(&self, inner_token: TokenStream) -> TokenStream {
-        // TODO: Probably possible to combine this with the ToTokens implementation below.
-        use quote::quote;
-
         if self.is_nullable() {
             let inner = self.as_required().decodes_to(inner_token);
             return quote! {
@@ -218,8 +269,6 @@ impl FieldType {
         generic_inner_type: Option<Ident>,
         mut path_to_types: TypePath,
     ) -> TokenStream {
-        use quote::quote;
-
         let nullable = self.is_nullable();
         let rust_type = match (self, &generic_inner_type) {
             (FieldType::List(inner_type, _), _) => {
@@ -244,11 +293,13 @@ impl FieldType {
 
                 quote! { #path_to_types }
             }
-            (FieldType::Enum(_, _), _) => {
-                panic!("Enums are always generic, we shouldn't get here.")
+            (FieldType::Enum(name, _), _) => {
+                let type_lock = TypePath::concat(&[path_to_types, name.clone().into()]);
+                quote! { #type_lock }
             }
-            (FieldType::InputObject(_, _), _) => {
-                panic!("InputObjects are always generic, we shouldn't get here.")
+            (FieldType::InputObject(name, _), _) => {
+                let type_lock = TypePath::concat(&[path_to_types, name.clone().into()]);
+                quote! { #type_lock }
             }
         };
 

@@ -578,8 +578,14 @@ impl Root {
     pub fn vehicle() -> root::VehicleSelectionBuilder {
         root::VehicleSelectionBuilder::new(vec![])
     }
-    pub fn node(id: ::cynic::Id) -> root::NodeSelectionBuilder {
-        root::NodeSelectionBuilder::new(vec![::cynic::Argument::new("id", "ID!", id)])
+    pub fn node(
+        id: impl ::cynic::InputType<::cynic::Id, ::cynic::inputs::NamedType>,
+    ) -> root::NodeSelectionBuilder {
+        root::NodeSelectionBuilder::new(vec![::cynic::Argument::new(
+            "id",
+            "ID!",
+            ::cynic::serde_json::to_value(&id),
+        )])
     }
 }
 #[allow(dead_code)]
@@ -1005,16 +1011,11 @@ pub mod film {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             TitleSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Film> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field(
-                "title",
-                self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
-            )
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Film> {
+            ::cynic::selection_set::field("title", self.args, ::cynic::selection_set::option(inner))
         }
     }
     pub struct EpisodeIDSelectionBuilder {
@@ -1024,15 +1025,14 @@ pub mod film {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             EpisodeIDSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<i32>, super::Film> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Film> {
             ::cynic::selection_set::field(
                 "episodeID",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -1043,15 +1043,14 @@ pub mod film {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             OpeningCrawlSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Film> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Film> {
             ::cynic::selection_set::field(
                 "openingCrawl",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -1062,15 +1061,14 @@ pub mod film {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             DirectorSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Film> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Film> {
             ::cynic::selection_set::field(
                 "director",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -1081,17 +1079,15 @@ pub mod film {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             ProducersSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<Vec<Option<String>>>, super::Film>
-        {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<Option<T>>>, super::Film> {
             ::cynic::selection_set::field(
                 "producers",
                 self.args,
                 ::cynic::selection_set::option(::cynic::selection_set::vec(
-                    ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                    ::cynic::selection_set::option(inner),
                 )),
             )
         }
@@ -1103,15 +1099,14 @@ pub mod film {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             ReleaseDateSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Film> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Film> {
             ::cynic::selection_set::field(
                 "releaseDate",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -1122,33 +1117,54 @@ pub mod film {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             SpeciesConnectionSelectionBuilder { args }
         }
-        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn after(
+            mut self,
+            after: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_argument(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn first(
+            mut self,
+            first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_argument(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
-        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn before(
+            mut self,
+            before: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_argument(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+        pub fn last(
+            mut self,
+            last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "last",
+                "Int",
+                ::cynic::serde_json::to_value(&last),
+            ));
             self
         }
         pub fn select<'a, T: 'a + Send + Sync>(
@@ -1169,33 +1185,54 @@ pub mod film {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             StarshipConnectionSelectionBuilder { args }
         }
-        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn after(
+            mut self,
+            after: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_argument(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn first(
+            mut self,
+            first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_argument(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
-        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn before(
+            mut self,
+            before: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_argument(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+        pub fn last(
+            mut self,
+            last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "last",
+                "Int",
+                ::cynic::serde_json::to_value(&last),
+            ));
             self
         }
         pub fn select<'a, T: 'a + Send + Sync>(
@@ -1216,33 +1253,54 @@ pub mod film {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             VehicleConnectionSelectionBuilder { args }
         }
-        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn after(
+            mut self,
+            after: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_argument(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn first(
+            mut self,
+            first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_argument(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
-        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn before(
+            mut self,
+            before: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_argument(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+        pub fn last(
+            mut self,
+            last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "last",
+                "Int",
+                ::cynic::serde_json::to_value(&last),
+            ));
             self
         }
         pub fn select<'a, T: 'a + Send + Sync>(
@@ -1263,33 +1321,54 @@ pub mod film {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CharacterConnectionSelectionBuilder { args }
         }
-        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn after(
+            mut self,
+            after: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_argument(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn first(
+            mut self,
+            first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_argument(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
-        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn before(
+            mut self,
+            before: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_argument(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+        pub fn last(
+            mut self,
+            last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "last",
+                "Int",
+                ::cynic::serde_json::to_value(&last),
+            ));
             self
         }
         pub fn select<'a, T: 'a + Send + Sync>(
@@ -1310,33 +1389,54 @@ pub mod film {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             PlanetConnectionSelectionBuilder { args }
         }
-        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn after(
+            mut self,
+            after: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_argument(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn first(
+            mut self,
+            first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_argument(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
-        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn before(
+            mut self,
+            before: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_argument(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+        pub fn last(
+            mut self,
+            last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "last",
+                "Int",
+                ::cynic::serde_json::to_value(&last),
+            ));
             self
         }
         pub fn select<'a, T: 'a + Send + Sync>(
@@ -1357,15 +1457,14 @@ pub mod film {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CreatedSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Film> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Film> {
             ::cynic::selection_set::field(
                 "created",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -1376,15 +1475,14 @@ pub mod film {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             EditedSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Film> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Film> {
             ::cynic::selection_set::field(
                 "edited",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -1395,12 +1493,11 @@ pub mod film {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             IdSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, ::cynic::Id, super::Film> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("id", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Film> {
+            ::cynic::selection_set::field("id", self.args, inner)
         }
     }
 }
@@ -1451,19 +1548,15 @@ pub mod film_characters_connection {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             TotalCountSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<
-            'static,
-            Option<i32>,
-            super::FilmCharactersConnection,
-        > {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::FilmCharactersConnection>
+        {
             ::cynic::selection_set::field(
                 "totalCount",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -1516,13 +1609,11 @@ pub mod film_characters_edge {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CursorSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::FilmCharactersEdge>
-        {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("cursor", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::FilmCharactersEdge> {
+            ::cynic::selection_set::field("cursor", self.args, inner)
         }
     }
 }
@@ -1573,16 +1664,15 @@ pub mod film_planets_connection {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             TotalCountSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<i32>, super::FilmPlanetsConnection>
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::FilmPlanetsConnection>
         {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
             ::cynic::selection_set::field(
                 "totalCount",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -1634,12 +1724,11 @@ pub mod film_planets_edge {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CursorSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::FilmPlanetsEdge> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("cursor", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::FilmPlanetsEdge> {
+            ::cynic::selection_set::field("cursor", self.args, inner)
         }
     }
 }
@@ -1687,16 +1776,14 @@ pub mod films_connection {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             TotalCountSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<i32>, super::FilmsConnection>
-        {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::FilmsConnection> {
             ::cynic::selection_set::field(
                 "totalCount",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -1745,12 +1832,11 @@ pub mod films_edge {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CursorSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::FilmsEdge> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("cursor", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::FilmsEdge> {
+            ::cynic::selection_set::field("cursor", self.args, inner)
         }
     }
 }
@@ -1801,16 +1887,15 @@ pub mod film_species_connection {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             TotalCountSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<i32>, super::FilmSpeciesConnection>
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::FilmSpeciesConnection>
         {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
             ::cynic::selection_set::field(
                 "totalCount",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -1862,12 +1947,11 @@ pub mod film_species_edge {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CursorSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::FilmSpeciesEdge> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("cursor", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::FilmSpeciesEdge> {
+            ::cynic::selection_set::field("cursor", self.args, inner)
         }
     }
 }
@@ -1918,19 +2002,15 @@ pub mod film_starships_connection {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             TotalCountSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<
-            'static,
-            Option<i32>,
-            super::FilmStarshipsConnection,
-        > {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::FilmStarshipsConnection>
+        {
             ::cynic::selection_set::field(
                 "totalCount",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -1982,13 +2062,11 @@ pub mod film_starships_edge {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CursorSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::FilmStarshipsEdge>
-        {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("cursor", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::FilmStarshipsEdge> {
+            ::cynic::selection_set::field("cursor", self.args, inner)
         }
     }
 }
@@ -2039,16 +2117,15 @@ pub mod film_vehicles_connection {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             TotalCountSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<i32>, super::FilmVehiclesConnection>
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::FilmVehiclesConnection>
         {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
             ::cynic::selection_set::field(
                 "totalCount",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -2100,13 +2177,11 @@ pub mod film_vehicles_edge {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CursorSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::FilmVehiclesEdge>
-        {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("cursor", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::FilmVehiclesEdge> {
+            ::cynic::selection_set::field("cursor", self.args, inner)
         }
     }
 }
@@ -2119,12 +2194,11 @@ pub mod node {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             IdSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, ::cynic::Id, super::Node> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("id", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Node> {
+            ::cynic::selection_set::field("id", self.args, inner)
         }
     }
 }
@@ -2137,16 +2211,11 @@ pub mod page_info {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             HasNextPageSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, bool, super::PageInfo> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field(
-                "hasNextPage",
-                self.args,
-                ::cynic::selection_set::scalar(),
-            )
+            inner: ::cynic::selection_set::SelectionSet<'a, T, bool>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo> {
+            ::cynic::selection_set::field("hasNextPage", self.args, inner)
         }
     }
     pub struct HasPreviousPageSelectionBuilder {
@@ -2156,16 +2225,11 @@ pub mod page_info {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             HasPreviousPageSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, bool, super::PageInfo> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field(
-                "hasPreviousPage",
-                self.args,
-                ::cynic::selection_set::scalar(),
-            )
+            inner: ::cynic::selection_set::SelectionSet<'a, T, bool>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo> {
+            ::cynic::selection_set::field("hasPreviousPage", self.args, inner)
         }
     }
     pub struct StartCursorSelectionBuilder {
@@ -2175,16 +2239,14 @@ pub mod page_info {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             StartCursorSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::PageInfo>
-        {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::PageInfo> {
             ::cynic::selection_set::field(
                 "startCursor",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -2195,16 +2257,14 @@ pub mod page_info {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             EndCursorSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::PageInfo>
-        {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::PageInfo> {
             ::cynic::selection_set::field(
                 "endCursor",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -2253,16 +2313,14 @@ pub mod people_connection {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             TotalCountSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<i32>, super::PeopleConnection>
-        {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::PeopleConnection> {
             ::cynic::selection_set::field(
                 "totalCount",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -2311,12 +2369,11 @@ pub mod people_edge {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CursorSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::PeopleEdge> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("cursor", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PeopleEdge> {
+            ::cynic::selection_set::field("cursor", self.args, inner)
         }
     }
 }
@@ -2329,16 +2386,11 @@ pub mod person {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             NameSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Person> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field(
-                "name",
-                self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
-            )
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Person> {
+            ::cynic::selection_set::field("name", self.args, ::cynic::selection_set::option(inner))
         }
     }
     pub struct BirthYearSelectionBuilder {
@@ -2348,15 +2400,14 @@ pub mod person {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             BirthYearSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Person> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Person> {
             ::cynic::selection_set::field(
                 "birthYear",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -2367,15 +2418,14 @@ pub mod person {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             EyeColorSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Person> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Person> {
             ::cynic::selection_set::field(
                 "eyeColor",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -2386,15 +2436,14 @@ pub mod person {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             GenderSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Person> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Person> {
             ::cynic::selection_set::field(
                 "gender",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -2405,15 +2454,14 @@ pub mod person {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             HairColorSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Person> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Person> {
             ::cynic::selection_set::field(
                 "hairColor",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -2424,15 +2472,14 @@ pub mod person {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             HeightSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<i32>, super::Person> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Person> {
             ::cynic::selection_set::field(
                 "height",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -2443,16 +2490,11 @@ pub mod person {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             MassSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<f64>, super::Person> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field(
-                "mass",
-                self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
-            )
+            inner: ::cynic::selection_set::SelectionSet<'a, T, f64>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Person> {
+            ::cynic::selection_set::field("mass", self.args, ::cynic::selection_set::option(inner))
         }
     }
     pub struct SkinColorSelectionBuilder {
@@ -2462,15 +2504,14 @@ pub mod person {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             SkinColorSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Person> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Person> {
             ::cynic::selection_set::field(
                 "skinColor",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -2499,33 +2540,54 @@ pub mod person {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             FilmConnectionSelectionBuilder { args }
         }
-        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn after(
+            mut self,
+            after: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_argument(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn first(
+            mut self,
+            first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_argument(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
-        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn before(
+            mut self,
+            before: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_argument(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+        pub fn last(
+            mut self,
+            last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "last",
+                "Int",
+                ::cynic::serde_json::to_value(&last),
+            ));
             self
         }
         pub fn select<'a, T: 'a + Send + Sync>(
@@ -2564,33 +2626,54 @@ pub mod person {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             StarshipConnectionSelectionBuilder { args }
         }
-        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn after(
+            mut self,
+            after: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_argument(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn first(
+            mut self,
+            first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_argument(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
-        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn before(
+            mut self,
+            before: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_argument(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+        pub fn last(
+            mut self,
+            last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "last",
+                "Int",
+                ::cynic::serde_json::to_value(&last),
+            ));
             self
         }
         pub fn select<'a, T: 'a + Send + Sync>(
@@ -2611,33 +2694,54 @@ pub mod person {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             VehicleConnectionSelectionBuilder { args }
         }
-        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn after(
+            mut self,
+            after: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_argument(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn first(
+            mut self,
+            first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_argument(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
-        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn before(
+            mut self,
+            before: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_argument(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+        pub fn last(
+            mut self,
+            last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "last",
+                "Int",
+                ::cynic::serde_json::to_value(&last),
+            ));
             self
         }
         pub fn select<'a, T: 'a + Send + Sync>(
@@ -2658,15 +2762,14 @@ pub mod person {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CreatedSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Person> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Person> {
             ::cynic::selection_set::field(
                 "created",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -2677,15 +2780,14 @@ pub mod person {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             EditedSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Person> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Person> {
             ::cynic::selection_set::field(
                 "edited",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -2696,12 +2798,11 @@ pub mod person {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             IdSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, ::cynic::Id, super::Person> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("id", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Person> {
+            ::cynic::selection_set::field("id", self.args, inner)
         }
     }
 }
@@ -2752,16 +2853,15 @@ pub mod person_films_connection {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             TotalCountSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<i32>, super::PersonFilmsConnection>
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::PersonFilmsConnection>
         {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
             ::cynic::selection_set::field(
                 "totalCount",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -2813,12 +2913,11 @@ pub mod person_films_edge {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CursorSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::PersonFilmsEdge> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("cursor", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PersonFilmsEdge> {
+            ::cynic::selection_set::field("cursor", self.args, inner)
         }
     }
 }
@@ -2869,19 +2968,15 @@ pub mod person_starships_connection {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             TotalCountSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<
-            'static,
-            Option<i32>,
-            super::PersonStarshipsConnection,
-        > {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::PersonStarshipsConnection>
+        {
             ::cynic::selection_set::field(
                 "totalCount",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -2934,13 +3029,11 @@ pub mod person_starships_edge {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CursorSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::PersonStarshipsEdge>
-        {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("cursor", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PersonStarshipsEdge> {
+            ::cynic::selection_set::field("cursor", self.args, inner)
         }
     }
 }
@@ -2991,19 +3084,15 @@ pub mod person_vehicles_connection {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             TotalCountSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<
-            'static,
-            Option<i32>,
-            super::PersonVehiclesConnection,
-        > {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::PersonVehiclesConnection>
+        {
             ::cynic::selection_set::field(
                 "totalCount",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -3056,13 +3145,11 @@ pub mod person_vehicles_edge {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CursorSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::PersonVehiclesEdge>
-        {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("cursor", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PersonVehiclesEdge> {
+            ::cynic::selection_set::field("cursor", self.args, inner)
         }
     }
 }
@@ -3075,16 +3162,11 @@ pub mod planet {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             NameSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Planet> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field(
-                "name",
-                self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
-            )
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Planet> {
+            ::cynic::selection_set::field("name", self.args, ::cynic::selection_set::option(inner))
         }
     }
     pub struct DiameterSelectionBuilder {
@@ -3094,15 +3176,14 @@ pub mod planet {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             DiameterSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<i32>, super::Planet> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Planet> {
             ::cynic::selection_set::field(
                 "diameter",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -3113,15 +3194,14 @@ pub mod planet {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             RotationPeriodSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<i32>, super::Planet> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Planet> {
             ::cynic::selection_set::field(
                 "rotationPeriod",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -3132,15 +3212,14 @@ pub mod planet {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             OrbitalPeriodSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<i32>, super::Planet> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Planet> {
             ::cynic::selection_set::field(
                 "orbitalPeriod",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -3151,15 +3230,14 @@ pub mod planet {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             GravitySelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Planet> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Planet> {
             ::cynic::selection_set::field(
                 "gravity",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -3170,15 +3248,14 @@ pub mod planet {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             PopulationSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<f64>, super::Planet> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, f64>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Planet> {
             ::cynic::selection_set::field(
                 "population",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -3189,17 +3266,16 @@ pub mod planet {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             ClimatesSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<Vec<Option<String>>>, super::Planet>
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<Option<T>>>, super::Planet>
         {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
             ::cynic::selection_set::field(
                 "climates",
                 self.args,
                 ::cynic::selection_set::option(::cynic::selection_set::vec(
-                    ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                    ::cynic::selection_set::option(inner),
                 )),
             )
         }
@@ -3211,17 +3287,16 @@ pub mod planet {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             TerrainsSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<Vec<Option<String>>>, super::Planet>
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<Option<T>>>, super::Planet>
         {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
             ::cynic::selection_set::field(
                 "terrains",
                 self.args,
                 ::cynic::selection_set::option(::cynic::selection_set::vec(
-                    ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                    ::cynic::selection_set::option(inner),
                 )),
             )
         }
@@ -3233,15 +3308,14 @@ pub mod planet {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             SurfaceWaterSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<f64>, super::Planet> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, f64>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Planet> {
             ::cynic::selection_set::field(
                 "surfaceWater",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -3252,33 +3326,54 @@ pub mod planet {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             ResidentConnectionSelectionBuilder { args }
         }
-        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn after(
+            mut self,
+            after: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_argument(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn first(
+            mut self,
+            first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_argument(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
-        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn before(
+            mut self,
+            before: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_argument(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+        pub fn last(
+            mut self,
+            last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "last",
+                "Int",
+                ::cynic::serde_json::to_value(&last),
+            ));
             self
         }
         pub fn select<'a, T: 'a + Send + Sync>(
@@ -3299,33 +3394,54 @@ pub mod planet {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             FilmConnectionSelectionBuilder { args }
         }
-        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn after(
+            mut self,
+            after: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_argument(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn first(
+            mut self,
+            first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_argument(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
-        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn before(
+            mut self,
+            before: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_argument(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+        pub fn last(
+            mut self,
+            last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "last",
+                "Int",
+                ::cynic::serde_json::to_value(&last),
+            ));
             self
         }
         pub fn select<'a, T: 'a + Send + Sync>(
@@ -3346,15 +3462,14 @@ pub mod planet {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CreatedSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Planet> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Planet> {
             ::cynic::selection_set::field(
                 "created",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -3365,15 +3480,14 @@ pub mod planet {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             EditedSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Planet> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Planet> {
             ::cynic::selection_set::field(
                 "edited",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -3384,12 +3498,11 @@ pub mod planet {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             IdSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, ::cynic::Id, super::Planet> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("id", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Planet> {
+            ::cynic::selection_set::field("id", self.args, inner)
         }
     }
 }
@@ -3440,16 +3553,15 @@ pub mod planet_films_connection {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             TotalCountSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<i32>, super::PlanetFilmsConnection>
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::PlanetFilmsConnection>
         {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
             ::cynic::selection_set::field(
                 "totalCount",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -3501,12 +3613,11 @@ pub mod planet_films_edge {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CursorSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::PlanetFilmsEdge> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("cursor", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PlanetFilmsEdge> {
+            ::cynic::selection_set::field("cursor", self.args, inner)
         }
     }
 }
@@ -3557,19 +3668,15 @@ pub mod planet_residents_connection {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             TotalCountSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<
-            'static,
-            Option<i32>,
-            super::PlanetResidentsConnection,
-        > {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::PlanetResidentsConnection>
+        {
             ::cynic::selection_set::field(
                 "totalCount",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -3622,13 +3729,11 @@ pub mod planet_residents_edge {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CursorSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::PlanetResidentsEdge>
-        {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("cursor", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PlanetResidentsEdge> {
+            ::cynic::selection_set::field("cursor", self.args, inner)
         }
     }
 }
@@ -3679,16 +3784,14 @@ pub mod planets_connection {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             TotalCountSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<i32>, super::PlanetsConnection>
-        {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::PlanetsConnection> {
             ::cynic::selection_set::field(
                 "totalCount",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -3740,12 +3843,11 @@ pub mod planets_edge {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CursorSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::PlanetsEdge> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("cursor", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PlanetsEdge> {
+            ::cynic::selection_set::field("cursor", self.args, inner)
         }
     }
 }
@@ -3758,33 +3860,54 @@ pub mod root {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             AllFilmsSelectionBuilder { args }
         }
-        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn after(
+            mut self,
+            after: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_argument(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn first(
+            mut self,
+            first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_argument(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
-        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn before(
+            mut self,
+            before: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_argument(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+        pub fn last(
+            mut self,
+            last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "last",
+                "Int",
+                ::cynic::serde_json::to_value(&last),
+            ));
             self
         }
         pub fn select<'a, T: 'a + Send + Sync>(
@@ -3805,16 +3928,31 @@ pub mod root {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             FilmSelectionBuilder { args }
         }
-        pub fn id(mut self, id: impl ::cynic::IntoArgument<Option<::cynic::Id>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("id", "ID", id.into_argument()));
+        pub fn id(
+            mut self,
+            id: impl ::cynic::InputType<
+                ::cynic::Id,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "id",
+                "ID",
+                ::cynic::serde_json::to_value(&id),
+            ));
             self
         }
-        pub fn film_id(mut self, film_id: impl ::cynic::IntoArgument<Option<::cynic::Id>>) -> Self {
+        pub fn film_id(
+            mut self,
+            film_id: impl ::cynic::InputType<
+                ::cynic::Id,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "filmID",
                 "ID",
-                film_id.into_argument(),
+                ::cynic::serde_json::to_value(&film_id),
             ));
             self
         }
@@ -3832,33 +3970,54 @@ pub mod root {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             AllPeopleSelectionBuilder { args }
         }
-        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn after(
+            mut self,
+            after: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_argument(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn first(
+            mut self,
+            first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_argument(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
-        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn before(
+            mut self,
+            before: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_argument(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+        pub fn last(
+            mut self,
+            last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "last",
+                "Int",
+                ::cynic::serde_json::to_value(&last),
+            ));
             self
         }
         pub fn select<'a, T: 'a + Send + Sync>(
@@ -3879,19 +4038,31 @@ pub mod root {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             PersonSelectionBuilder { args }
         }
-        pub fn id(mut self, id: impl ::cynic::IntoArgument<Option<::cynic::Id>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("id", "ID", id.into_argument()));
+        pub fn id(
+            mut self,
+            id: impl ::cynic::InputType<
+                ::cynic::Id,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "id",
+                "ID",
+                ::cynic::serde_json::to_value(&id),
+            ));
             self
         }
         pub fn person_id(
             mut self,
-            person_id: impl ::cynic::IntoArgument<Option<::cynic::Id>>,
+            person_id: impl ::cynic::InputType<
+                ::cynic::Id,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "personID",
                 "ID",
-                person_id.into_argument(),
+                ::cynic::serde_json::to_value(&person_id),
             ));
             self
         }
@@ -3913,33 +4084,54 @@ pub mod root {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             AllPlanetsSelectionBuilder { args }
         }
-        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn after(
+            mut self,
+            after: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_argument(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn first(
+            mut self,
+            first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_argument(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
-        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn before(
+            mut self,
+            before: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_argument(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+        pub fn last(
+            mut self,
+            last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "last",
+                "Int",
+                ::cynic::serde_json::to_value(&last),
+            ));
             self
         }
         pub fn select<'a, T: 'a + Send + Sync>(
@@ -3960,19 +4152,31 @@ pub mod root {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             PlanetSelectionBuilder { args }
         }
-        pub fn id(mut self, id: impl ::cynic::IntoArgument<Option<::cynic::Id>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("id", "ID", id.into_argument()));
+        pub fn id(
+            mut self,
+            id: impl ::cynic::InputType<
+                ::cynic::Id,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "id",
+                "ID",
+                ::cynic::serde_json::to_value(&id),
+            ));
             self
         }
         pub fn planet_id(
             mut self,
-            planet_id: impl ::cynic::IntoArgument<Option<::cynic::Id>>,
+            planet_id: impl ::cynic::InputType<
+                ::cynic::Id,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "planetID",
                 "ID",
-                planet_id.into_argument(),
+                ::cynic::serde_json::to_value(&planet_id),
             ));
             self
         }
@@ -3994,33 +4198,54 @@ pub mod root {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             AllSpeciesSelectionBuilder { args }
         }
-        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn after(
+            mut self,
+            after: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_argument(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn first(
+            mut self,
+            first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_argument(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
-        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn before(
+            mut self,
+            before: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_argument(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+        pub fn last(
+            mut self,
+            last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "last",
+                "Int",
+                ::cynic::serde_json::to_value(&last),
+            ));
             self
         }
         pub fn select<'a, T: 'a + Send + Sync>(
@@ -4041,19 +4266,31 @@ pub mod root {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             SpeciesSelectionBuilder { args }
         }
-        pub fn id(mut self, id: impl ::cynic::IntoArgument<Option<::cynic::Id>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("id", "ID", id.into_argument()));
+        pub fn id(
+            mut self,
+            id: impl ::cynic::InputType<
+                ::cynic::Id,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "id",
+                "ID",
+                ::cynic::serde_json::to_value(&id),
+            ));
             self
         }
         pub fn species_id(
             mut self,
-            species_id: impl ::cynic::IntoArgument<Option<::cynic::Id>>,
+            species_id: impl ::cynic::InputType<
+                ::cynic::Id,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "speciesID",
                 "ID",
-                species_id.into_argument(),
+                ::cynic::serde_json::to_value(&species_id),
             ));
             self
         }
@@ -4075,33 +4312,54 @@ pub mod root {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             AllStarshipsSelectionBuilder { args }
         }
-        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn after(
+            mut self,
+            after: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_argument(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn first(
+            mut self,
+            first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_argument(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
-        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn before(
+            mut self,
+            before: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_argument(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+        pub fn last(
+            mut self,
+            last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "last",
+                "Int",
+                ::cynic::serde_json::to_value(&last),
+            ));
             self
         }
         pub fn select<'a, T: 'a + Send + Sync>(
@@ -4122,19 +4380,31 @@ pub mod root {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             StarshipSelectionBuilder { args }
         }
-        pub fn id(mut self, id: impl ::cynic::IntoArgument<Option<::cynic::Id>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("id", "ID", id.into_argument()));
+        pub fn id(
+            mut self,
+            id: impl ::cynic::InputType<
+                ::cynic::Id,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "id",
+                "ID",
+                ::cynic::serde_json::to_value(&id),
+            ));
             self
         }
         pub fn starship_id(
             mut self,
-            starship_id: impl ::cynic::IntoArgument<Option<::cynic::Id>>,
+            starship_id: impl ::cynic::InputType<
+                ::cynic::Id,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "starshipID",
                 "ID",
-                starship_id.into_argument(),
+                ::cynic::serde_json::to_value(&starship_id),
             ));
             self
         }
@@ -4156,33 +4426,54 @@ pub mod root {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             AllVehiclesSelectionBuilder { args }
         }
-        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn after(
+            mut self,
+            after: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_argument(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn first(
+            mut self,
+            first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_argument(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
-        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn before(
+            mut self,
+            before: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_argument(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+        pub fn last(
+            mut self,
+            last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "last",
+                "Int",
+                ::cynic::serde_json::to_value(&last),
+            ));
             self
         }
         pub fn select<'a, T: 'a + Send + Sync>(
@@ -4203,19 +4494,31 @@ pub mod root {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             VehicleSelectionBuilder { args }
         }
-        pub fn id(mut self, id: impl ::cynic::IntoArgument<Option<::cynic::Id>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("id", "ID", id.into_argument()));
+        pub fn id(
+            mut self,
+            id: impl ::cynic::InputType<
+                ::cynic::Id,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "id",
+                "ID",
+                ::cynic::serde_json::to_value(&id),
+            ));
             self
         }
         pub fn vehicle_id(
             mut self,
-            vehicle_id: impl ::cynic::IntoArgument<Option<::cynic::Id>>,
+            vehicle_id: impl ::cynic::InputType<
+                ::cynic::Id,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
         ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "vehicleID",
                 "ID",
-                vehicle_id.into_argument(),
+                ::cynic::serde_json::to_value(&vehicle_id),
             ));
             self
         }
@@ -4254,16 +4557,11 @@ pub mod species {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             NameSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Species> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field(
-                "name",
-                self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
-            )
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Species> {
+            ::cynic::selection_set::field("name", self.args, ::cynic::selection_set::option(inner))
         }
     }
     pub struct ClassificationSelectionBuilder {
@@ -4273,15 +4571,14 @@ pub mod species {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             ClassificationSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Species> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Species> {
             ::cynic::selection_set::field(
                 "classification",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -4292,15 +4589,14 @@ pub mod species {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             DesignationSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Species> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Species> {
             ::cynic::selection_set::field(
                 "designation",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -4311,15 +4607,14 @@ pub mod species {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             AverageHeightSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<f64>, super::Species> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, f64>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Species> {
             ::cynic::selection_set::field(
                 "averageHeight",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -4330,15 +4625,14 @@ pub mod species {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             AverageLifespanSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<i32>, super::Species> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Species> {
             ::cynic::selection_set::field(
                 "averageLifespan",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -4349,20 +4643,16 @@ pub mod species {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             EyeColorsSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<
-            'static,
-            Option<Vec<Option<String>>>,
-            super::Species,
-        > {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<Option<T>>>, super::Species>
+        {
             ::cynic::selection_set::field(
                 "eyeColors",
                 self.args,
                 ::cynic::selection_set::option(::cynic::selection_set::vec(
-                    ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                    ::cynic::selection_set::option(inner),
                 )),
             )
         }
@@ -4374,20 +4664,16 @@ pub mod species {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             HairColorsSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<
-            'static,
-            Option<Vec<Option<String>>>,
-            super::Species,
-        > {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<Option<T>>>, super::Species>
+        {
             ::cynic::selection_set::field(
                 "hairColors",
                 self.args,
                 ::cynic::selection_set::option(::cynic::selection_set::vec(
-                    ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                    ::cynic::selection_set::option(inner),
                 )),
             )
         }
@@ -4399,20 +4685,16 @@ pub mod species {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             SkinColorsSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<
-            'static,
-            Option<Vec<Option<String>>>,
-            super::Species,
-        > {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<Option<T>>>, super::Species>
+        {
             ::cynic::selection_set::field(
                 "skinColors",
                 self.args,
                 ::cynic::selection_set::option(::cynic::selection_set::vec(
-                    ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                    ::cynic::selection_set::option(inner),
                 )),
             )
         }
@@ -4424,15 +4706,14 @@ pub mod species {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             LanguageSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Species> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Species> {
             ::cynic::selection_set::field(
                 "language",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -4461,33 +4742,54 @@ pub mod species {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             PersonConnectionSelectionBuilder { args }
         }
-        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn after(
+            mut self,
+            after: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_argument(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn first(
+            mut self,
+            first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_argument(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
-        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn before(
+            mut self,
+            before: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_argument(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+        pub fn last(
+            mut self,
+            last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "last",
+                "Int",
+                ::cynic::serde_json::to_value(&last),
+            ));
             self
         }
         pub fn select<'a, T: 'a + Send + Sync>(
@@ -4508,33 +4810,54 @@ pub mod species {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             FilmConnectionSelectionBuilder { args }
         }
-        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn after(
+            mut self,
+            after: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_argument(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn first(
+            mut self,
+            first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_argument(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
-        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn before(
+            mut self,
+            before: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_argument(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+        pub fn last(
+            mut self,
+            last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "last",
+                "Int",
+                ::cynic::serde_json::to_value(&last),
+            ));
             self
         }
         pub fn select<'a, T: 'a + Send + Sync>(
@@ -4555,15 +4878,14 @@ pub mod species {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CreatedSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Species> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Species> {
             ::cynic::selection_set::field(
                 "created",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -4574,15 +4896,14 @@ pub mod species {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             EditedSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Species> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Species> {
             ::cynic::selection_set::field(
                 "edited",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -4593,12 +4914,11 @@ pub mod species {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             IdSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, ::cynic::Id, super::Species> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("id", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Species> {
+            ::cynic::selection_set::field("id", self.args, inner)
         }
     }
 }
@@ -4649,16 +4969,14 @@ pub mod species_connection {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             TotalCountSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<i32>, super::SpeciesConnection>
-        {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::SpeciesConnection> {
             ::cynic::selection_set::field(
                 "totalCount",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -4710,12 +5028,11 @@ pub mod species_edge {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CursorSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::SpeciesEdge> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("cursor", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::SpeciesEdge> {
+            ::cynic::selection_set::field("cursor", self.args, inner)
         }
     }
 }
@@ -4766,16 +5083,15 @@ pub mod species_films_connection {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             TotalCountSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<i32>, super::SpeciesFilmsConnection>
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::SpeciesFilmsConnection>
         {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
             ::cynic::selection_set::field(
                 "totalCount",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -4827,13 +5143,11 @@ pub mod species_films_edge {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CursorSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::SpeciesFilmsEdge>
-        {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("cursor", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::SpeciesFilmsEdge> {
+            ::cynic::selection_set::field("cursor", self.args, inner)
         }
     }
 }
@@ -4884,19 +5198,15 @@ pub mod species_people_connection {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             TotalCountSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<
-            'static,
-            Option<i32>,
-            super::SpeciesPeopleConnection,
-        > {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::SpeciesPeopleConnection>
+        {
             ::cynic::selection_set::field(
                 "totalCount",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -4948,13 +5258,11 @@ pub mod species_people_edge {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CursorSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::SpeciesPeopleEdge>
-        {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("cursor", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::SpeciesPeopleEdge> {
+            ::cynic::selection_set::field("cursor", self.args, inner)
         }
     }
 }
@@ -4967,17 +5275,11 @@ pub mod starship {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             NameSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Starship>
-        {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field(
-                "name",
-                self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
-            )
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
+            ::cynic::selection_set::field("name", self.args, ::cynic::selection_set::option(inner))
         }
     }
     pub struct ModelSelectionBuilder {
@@ -4987,17 +5289,11 @@ pub mod starship {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             ModelSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Starship>
-        {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field(
-                "model",
-                self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
-            )
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
+            ::cynic::selection_set::field("model", self.args, ::cynic::selection_set::option(inner))
         }
     }
     pub struct StarshipClassSelectionBuilder {
@@ -5007,16 +5303,14 @@ pub mod starship {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             StarshipClassSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Starship>
-        {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
             ::cynic::selection_set::field(
                 "starshipClass",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -5027,20 +5321,16 @@ pub mod starship {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             ManufacturersSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<
-            'static,
-            Option<Vec<Option<String>>>,
-            super::Starship,
-        > {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<Option<T>>>, super::Starship>
+        {
             ::cynic::selection_set::field(
                 "manufacturers",
                 self.args,
                 ::cynic::selection_set::option(::cynic::selection_set::vec(
-                    ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                    ::cynic::selection_set::option(inner),
                 )),
             )
         }
@@ -5052,15 +5342,14 @@ pub mod starship {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CostInCreditsSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<f64>, super::Starship> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, f64>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
             ::cynic::selection_set::field(
                 "costInCredits",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -5071,15 +5360,14 @@ pub mod starship {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             LengthSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<f64>, super::Starship> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, f64>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
             ::cynic::selection_set::field(
                 "length",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -5090,17 +5378,11 @@ pub mod starship {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CrewSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Starship>
-        {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field(
-                "crew",
-                self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
-            )
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
+            ::cynic::selection_set::field("crew", self.args, ::cynic::selection_set::option(inner))
         }
     }
     pub struct PassengersSelectionBuilder {
@@ -5110,16 +5392,14 @@ pub mod starship {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             PassengersSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Starship>
-        {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
             ::cynic::selection_set::field(
                 "passengers",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -5130,15 +5410,14 @@ pub mod starship {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             MaxAtmospheringSpeedSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<i32>, super::Starship> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
             ::cynic::selection_set::field(
                 "maxAtmospheringSpeed",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -5149,15 +5428,14 @@ pub mod starship {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             HyperdriveRatingSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<f64>, super::Starship> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, f64>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
             ::cynic::selection_set::field(
                 "hyperdriveRating",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -5168,16 +5446,11 @@ pub mod starship {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             MgltselectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<i32>, super::Starship> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field(
-                "MGLT",
-                self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
-            )
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
+            ::cynic::selection_set::field("MGLT", self.args, ::cynic::selection_set::option(inner))
         }
     }
     pub struct CargoCapacitySelectionBuilder {
@@ -5187,15 +5460,14 @@ pub mod starship {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CargoCapacitySelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<f64>, super::Starship> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, f64>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
             ::cynic::selection_set::field(
                 "cargoCapacity",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -5206,16 +5478,14 @@ pub mod starship {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             ConsumablesSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Starship>
-        {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
             ::cynic::selection_set::field(
                 "consumables",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -5226,33 +5496,54 @@ pub mod starship {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             PilotConnectionSelectionBuilder { args }
         }
-        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn after(
+            mut self,
+            after: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_argument(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn first(
+            mut self,
+            first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_argument(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
-        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn before(
+            mut self,
+            before: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_argument(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+        pub fn last(
+            mut self,
+            last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "last",
+                "Int",
+                ::cynic::serde_json::to_value(&last),
+            ));
             self
         }
         pub fn select<'a, T: 'a + Send + Sync>(
@@ -5273,33 +5564,54 @@ pub mod starship {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             FilmConnectionSelectionBuilder { args }
         }
-        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn after(
+            mut self,
+            after: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_argument(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn first(
+            mut self,
+            first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_argument(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
-        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn before(
+            mut self,
+            before: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_argument(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+        pub fn last(
+            mut self,
+            last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "last",
+                "Int",
+                ::cynic::serde_json::to_value(&last),
+            ));
             self
         }
         pub fn select<'a, T: 'a + Send + Sync>(
@@ -5320,16 +5632,14 @@ pub mod starship {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CreatedSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Starship>
-        {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
             ::cynic::selection_set::field(
                 "created",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -5340,16 +5650,14 @@ pub mod starship {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             EditedSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Starship>
-        {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
             ::cynic::selection_set::field(
                 "edited",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -5360,12 +5668,11 @@ pub mod starship {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             IdSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, ::cynic::Id, super::Starship> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("id", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Starship> {
+            ::cynic::selection_set::field("id", self.args, inner)
         }
     }
 }
@@ -5416,19 +5723,15 @@ pub mod starship_films_connection {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             TotalCountSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<
-            'static,
-            Option<i32>,
-            super::StarshipFilmsConnection,
-        > {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::StarshipFilmsConnection>
+        {
             ::cynic::selection_set::field(
                 "totalCount",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -5480,13 +5783,11 @@ pub mod starship_films_edge {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CursorSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::StarshipFilmsEdge>
-        {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("cursor", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::StarshipFilmsEdge> {
+            ::cynic::selection_set::field("cursor", self.args, inner)
         }
     }
 }
@@ -5537,19 +5838,15 @@ pub mod starship_pilots_connection {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             TotalCountSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<
-            'static,
-            Option<i32>,
-            super::StarshipPilotsConnection,
-        > {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::StarshipPilotsConnection>
+        {
             ::cynic::selection_set::field(
                 "totalCount",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -5602,13 +5899,11 @@ pub mod starship_pilots_edge {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CursorSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::StarshipPilotsEdge>
-        {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("cursor", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::StarshipPilotsEdge> {
+            ::cynic::selection_set::field("cursor", self.args, inner)
         }
     }
 }
@@ -5659,16 +5954,15 @@ pub mod starships_connection {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             TotalCountSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<i32>, super::StarshipsConnection>
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::StarshipsConnection>
         {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
             ::cynic::selection_set::field(
                 "totalCount",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -5720,12 +6014,11 @@ pub mod starships_edge {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CursorSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::StarshipsEdge> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("cursor", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::StarshipsEdge> {
+            ::cynic::selection_set::field("cursor", self.args, inner)
         }
     }
 }
@@ -5738,16 +6031,11 @@ pub mod vehicle {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             NameSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Vehicle> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field(
-                "name",
-                self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
-            )
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Vehicle> {
+            ::cynic::selection_set::field("name", self.args, ::cynic::selection_set::option(inner))
         }
     }
     pub struct ModelSelectionBuilder {
@@ -5757,16 +6045,11 @@ pub mod vehicle {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             ModelSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Vehicle> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field(
-                "model",
-                self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
-            )
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Vehicle> {
+            ::cynic::selection_set::field("model", self.args, ::cynic::selection_set::option(inner))
         }
     }
     pub struct VehicleClassSelectionBuilder {
@@ -5776,15 +6059,14 @@ pub mod vehicle {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             VehicleClassSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Vehicle> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Vehicle> {
             ::cynic::selection_set::field(
                 "vehicleClass",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -5795,20 +6077,16 @@ pub mod vehicle {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             ManufacturersSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<
-            'static,
-            Option<Vec<Option<String>>>,
-            super::Vehicle,
-        > {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<Option<T>>>, super::Vehicle>
+        {
             ::cynic::selection_set::field(
                 "manufacturers",
                 self.args,
                 ::cynic::selection_set::option(::cynic::selection_set::vec(
-                    ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                    ::cynic::selection_set::option(inner),
                 )),
             )
         }
@@ -5820,15 +6098,14 @@ pub mod vehicle {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CostInCreditsSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<f64>, super::Vehicle> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, f64>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Vehicle> {
             ::cynic::selection_set::field(
                 "costInCredits",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -5839,15 +6116,14 @@ pub mod vehicle {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             LengthSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<f64>, super::Vehicle> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, f64>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Vehicle> {
             ::cynic::selection_set::field(
                 "length",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -5858,16 +6134,11 @@ pub mod vehicle {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CrewSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Vehicle> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field(
-                "crew",
-                self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
-            )
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Vehicle> {
+            ::cynic::selection_set::field("crew", self.args, ::cynic::selection_set::option(inner))
         }
     }
     pub struct PassengersSelectionBuilder {
@@ -5877,15 +6148,14 @@ pub mod vehicle {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             PassengersSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Vehicle> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Vehicle> {
             ::cynic::selection_set::field(
                 "passengers",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -5896,15 +6166,14 @@ pub mod vehicle {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             MaxAtmospheringSpeedSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<i32>, super::Vehicle> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Vehicle> {
             ::cynic::selection_set::field(
                 "maxAtmospheringSpeed",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -5915,15 +6184,14 @@ pub mod vehicle {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CargoCapacitySelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<f64>, super::Vehicle> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, f64>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Vehicle> {
             ::cynic::selection_set::field(
                 "cargoCapacity",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -5934,15 +6202,14 @@ pub mod vehicle {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             ConsumablesSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Vehicle> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Vehicle> {
             ::cynic::selection_set::field(
                 "consumables",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -5953,33 +6220,54 @@ pub mod vehicle {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             PilotConnectionSelectionBuilder { args }
         }
-        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn after(
+            mut self,
+            after: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_argument(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn first(
+            mut self,
+            first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_argument(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
-        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn before(
+            mut self,
+            before: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_argument(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+        pub fn last(
+            mut self,
+            last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "last",
+                "Int",
+                ::cynic::serde_json::to_value(&last),
+            ));
             self
         }
         pub fn select<'a, T: 'a + Send + Sync>(
@@ -6000,33 +6288,54 @@ pub mod vehicle {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             FilmConnectionSelectionBuilder { args }
         }
-        pub fn after(mut self, after: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn after(
+            mut self,
+            after: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                after.into_argument(),
+                ::cynic::serde_json::to_value(&after),
             ));
             self
         }
-        pub fn first(mut self, first: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
+        pub fn first(
+            mut self,
+            first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                first.into_argument(),
+                ::cynic::serde_json::to_value(&first),
             ));
             self
         }
-        pub fn before(mut self, before: impl ::cynic::IntoArgument<Option<String>>) -> Self {
+        pub fn before(
+            mut self,
+            before: impl ::cynic::InputType<
+                String,
+                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
+            >,
+        ) -> Self {
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                before.into_argument(),
+                ::cynic::serde_json::to_value(&before),
             ));
             self
         }
-        pub fn last(mut self, last: impl ::cynic::IntoArgument<Option<i32>>) -> Self {
-            self.args
-                .push(::cynic::Argument::new("last", "Int", last.into_argument()));
+        pub fn last(
+            mut self,
+            last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
+        ) -> Self {
+            self.args.push(::cynic::Argument::new(
+                "last",
+                "Int",
+                ::cynic::serde_json::to_value(&last),
+            ));
             self
         }
         pub fn select<'a, T: 'a + Send + Sync>(
@@ -6047,15 +6356,14 @@ pub mod vehicle {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CreatedSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Vehicle> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Vehicle> {
             ::cynic::selection_set::field(
                 "created",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -6066,15 +6374,14 @@ pub mod vehicle {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             EditedSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<String>, super::Vehicle> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Vehicle> {
             ::cynic::selection_set::field(
                 "edited",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -6085,12 +6392,11 @@ pub mod vehicle {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             IdSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, ::cynic::Id, super::Vehicle> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("id", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Vehicle> {
+            ::cynic::selection_set::field("id", self.args, inner)
         }
     }
 }
@@ -6141,16 +6447,15 @@ pub mod vehicle_films_connection {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             TotalCountSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<i32>, super::VehicleFilmsConnection>
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::VehicleFilmsConnection>
         {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
             ::cynic::selection_set::field(
                 "totalCount",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -6202,13 +6507,11 @@ pub mod vehicle_films_edge {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CursorSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::VehicleFilmsEdge>
-        {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("cursor", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::VehicleFilmsEdge> {
+            ::cynic::selection_set::field("cursor", self.args, inner)
         }
     }
 }
@@ -6259,19 +6562,15 @@ pub mod vehicle_pilots_connection {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             TotalCountSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<
-            'static,
-            Option<i32>,
-            super::VehiclePilotsConnection,
-        > {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::VehiclePilotsConnection>
+        {
             ::cynic::selection_set::field(
                 "totalCount",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -6323,13 +6622,11 @@ pub mod vehicle_pilots_edge {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CursorSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::VehiclePilotsEdge>
-        {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("cursor", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::VehiclePilotsEdge> {
+            ::cynic::selection_set::field("cursor", self.args, inner)
         }
     }
 }
@@ -6380,16 +6677,15 @@ pub mod vehicles_connection {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             TotalCountSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, Option<i32>, super::VehiclesConnection>
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::VehiclesConnection>
         {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
             ::cynic::selection_set::field(
                 "totalCount",
                 self.args,
-                ::cynic::selection_set::option(::cynic::selection_set::scalar()),
+                ::cynic::selection_set::option(inner),
             )
         }
     }
@@ -6441,12 +6737,11 @@ pub mod vehicles_edge {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
             CursorSelectionBuilder { args }
         }
-        pub fn select(
+        pub fn select<'a, T: 'a + Send + Sync>(
             self,
-        ) -> ::cynic::selection_set::SelectionSet<'static, String, super::VehiclesEdge> {
-            #[allow(unused_imports)]
-            use cynic::selection_set::{boolean, float, integer, string};
-            ::cynic::selection_set::field("cursor", self.args, ::cynic::selection_set::scalar())
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::VehiclesEdge> {
+            ::cynic::selection_set::field("cursor", self.args, inner)
         }
     }
 }

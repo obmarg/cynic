@@ -150,10 +150,6 @@ impl<'schema> InputType<'schema> {
             InputType::Scalar(details) => details.name == "Int" || details.name == "Boolean",
         }
     }
-
-    pub fn is_input_object(&self) -> bool {
-        matches!(self, InputType::InputObject(_))
-    }
 }
 
 impl<'schema> TryFrom<Type<'schema>> for InputType<'schema> {

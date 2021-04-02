@@ -29,10 +29,12 @@ impl GenericParameter {
 /// Our generic parameters need constraints - this enum specifies what they
 /// should be.
 pub enum GenericConstraint {
-    /// An enum type constraint: `where T: Enum<SomeEnumMarkerStruct>
+    /// An enum type constraint: `where T: Enum<SomeTypeLockMarkerStruct>
     Enum(Ident),
     /// An input object constraint: `where T: InputObject<SomeInputObjectMarkerStruct>
     InputObject(Ident),
+    /// A scalar object constraint: `where T: Scalar<X>
+    Scalar(TypePath),
 }
 
 impl GenericConstraint {
@@ -43,12 +45,17 @@ impl GenericConstraint {
             GenericConstraint::Enum(ident) => {
                 let type_path = TypePath::concat(&[path_to_markers, ident.clone().into()]);
 
-                quote! { ::cynic::Enum<#type_path> + ::cynic::SerializableArgument }
+                quote! { ::cynic::Enum<#type_path> }
             }
             GenericConstraint::InputObject(ident) => {
                 let type_path = TypePath::concat(&[path_to_markers, ident.clone().into()]);
 
-                quote! { ::cynic::InputObject<#type_path> + ::cynic::SerializableArgument }
+                quote! { ::cynic::InputObject<#type_path> }
+            }
+            GenericConstraint::Scalar(scalar_path) => {
+                let type_path = TypePath::concat(&[path_to_markers, scalar_path.clone()]);
+
+                quote! { ::cynic::Scalar<#type_path> }
             }
         }
     }

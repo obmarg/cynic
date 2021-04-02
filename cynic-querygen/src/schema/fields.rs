@@ -128,10 +128,6 @@ impl<'schema> InputFieldType<'schema> {
         }
     }
 
-    pub fn is_required(&self) -> bool {
-        matches!(self, InputFieldType::NonNullType(_))
-    }
-
     pub fn type_spec(&self) -> Cow<'schema, str> {
         input_type_spec_imp(&self, true)
     }

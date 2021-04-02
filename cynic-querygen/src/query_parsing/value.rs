@@ -153,13 +153,15 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
                 if schema_type.is_definitely_copy() {
                     // Copy types will be implicitly copied so we can just put them literally
                     format!("args.{}", name.to_snake_case())
-                } else if context == LiteralContext::Argument
-                    && (!field_type.is_required() || schema_type.is_input_object())
-                {
-                    // Optional arguments or input types are OK to take a reference.
+                } else if context == LiteralContext::Argument {
+                    // If we're in argument context then a reference should be OK.
+                    // `InputType` usually defines conversions for references.
+                    //
+                    // There are some cases where this is not true, but can fix
+                    // those when they crop up.
                     format!("&args.{}", name.to_snake_case())
                 } else {
-                    // If this is a required arg _or_ not in argument position we'll need a clone
+                    // If this is not in argument position we'll probably need a clone.
                     coerce_variable(
                         field_type,
                         value_type,
@@ -177,8 +179,13 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
             TypedValue::String(s, field_type) => {
                 let literal = if field_type.inner_name() == "ID" {
                     format!("cynic::Id::new(\"{}\")", s)
+                } else if context == LiteralContext::Argument {
+                    // If we're in argument context then InputType gives
+                    // us leeway to pass in a string directly.
+                    format!("\"{}\"", s)
                 } else {
-                    format!("\"{}\".into()", s)
+                    // In object or list position we explicitly need to convert to a String
+                    format!("\"{}\".to_string()", s)
                 };
 
                 coerce_literal(field_type, context, literal)

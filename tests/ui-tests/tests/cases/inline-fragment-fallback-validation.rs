@@ -1,8 +1,6 @@
 fn main() {}
 
 mod query_dsl {
-    type Json = serde_json::Value;
-
     cynic::query_dsl!("../../../cynic/src/bin/simple.graphql");
 }
 

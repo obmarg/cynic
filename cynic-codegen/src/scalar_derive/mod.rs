@@ -4,6 +4,8 @@ pub(crate) mod input;
 
 pub use input::ScalarDeriveInput;
 
+use crate::{Ident, TypePath};
+
 pub fn scalar_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
     use darling::FromDeriveInput;
 
@@ -28,17 +30,35 @@ pub fn scalar_derive_impl(input: ScalarDeriveInput) -> Result<TokenStream, syn::
 
     let ident = input.ident;
     let inner_type = field.ty;
+    let type_lock_ident = if let Some(graphql_type) = input.graphql_type {
+        Ident::new_spanned((*graphql_type).clone(), graphql_type.span())
+    } else {
+        ident.clone().into()
+    };
+    let type_lock = TypePath::concat(&[
+        Ident::new(input.query_module.as_ref()).into(),
+        type_lock_ident.into(),
+    ]);
 
     Ok(quote! {
-        impl ::cynic::Scalar for #ident {
-            fn decode(value: &::cynic::serde_json::Value) -> Result<Self, ::cynic::DecodeError> {
-                Ok(#ident(<#inner_type as ::cynic::Scalar>::decode(value)?))
+        impl ::cynic::Scalar<#type_lock> for #ident {
+            type Deserialize = #inner_type;
+
+            fn from_deserialize(inner: Self::Deserialize) -> Result<Self, ::cynic::DecodeError> {
+                Ok(#ident(inner))
             }
-            fn encode(&self) -> Result<::cynic::serde_json::Value, ::cynic::SerializeError> {
-                self.0.encode()
+
+        }
+
+        impl ::cynic::serde::Serialize for #ident {
+            fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+            where
+                S: ::cynic::serde::Serializer,
+            {
+                self.0.serialize(serializer)
             }
         }
 
-        ::cynic::impl_serializable_argument_for_scalar!(#ident);
+        ::cynic::impl_input_type!(#ident, #type_lock);
     })
 }

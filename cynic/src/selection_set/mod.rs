@@ -88,7 +88,7 @@ impl<'a, DecodesTo, TypeLock> SelectionSet<'a, DecodesTo, TypeLock> {
     ///
     /// ```rust
     /// # use cynic::selection_set::{field, string, fail};
-    /// field::<_, (), ()>("__typename", vec![], string())
+    /// field::<_, (), _>("__typename", vec![], string())
     ///     .and_then(|typename| match typename.as_ref() {
     ///         "Cat" => field("cat", vec![], string()),
     ///         "Dog" => field("dog", vec![], string()),
@@ -141,22 +141,22 @@ impl<'a, DecodesTo, TypeLock> SelectionSet<'a, DecodesTo, TypeLock> {
 }
 
 /// Creates a `SelectionSet` that will decode a `String`
-pub fn string() -> SelectionSet<'static, String, ()> {
+pub fn string() -> SelectionSet<'static, String, String> {
     SelectionSet::new(vec![], json_decode::string())
 }
 
 /// Creates a `SelectionSet` that will decode an `i32`
-pub fn integer() -> SelectionSet<'static, i32, ()> {
+pub fn integer() -> SelectionSet<'static, i32, i32> {
     SelectionSet::new(vec![], json_decode::integer())
 }
 
 /// Creates a `SelectionSet` that will decode an `f64`
-pub fn float() -> SelectionSet<'static, f64, ()> {
+pub fn float() -> SelectionSet<'static, f64, f64> {
     SelectionSet::new(vec![], json_decode::float())
 }
 
 /// Creates a `SelectionSet` that will decode a `bool`
-pub fn boolean() -> SelectionSet<'static, bool, ()> {
+pub fn boolean() -> SelectionSet<'static, bool, bool> {
     SelectionSet::new(vec![], json_decode::boolean())
 }
 
@@ -187,9 +187,10 @@ pub fn json() -> SelectionSet<'static, serde_json::Value, ()> {
 }
 
 /// Creates a `SelectionSet` that will decode a type that implements `Scalar`
-pub fn scalar<S>() -> SelectionSet<'static, S, ()>
+pub fn scalar<S, TypeLock>() -> SelectionSet<'static, S, TypeLock>
 where
-    S: scalar::Scalar + 'static + Send + Sync,
+    S: scalar::Scalar<TypeLock> + 'static + Send + Sync,
+    TypeLock: 'static + Send + Sync,
 {
     SelectionSet::new(vec![], scalar::decoder())
 }
@@ -389,9 +390,9 @@ macro_rules! define_map {
         ///
         /// map3(
         ///     User::new,
-        ///     field::<_, (), ()>("id", vec![], integer()),
-        ///     field::<_, (), ()>("email", vec![], string()),
-        ///     field::<_, (), ()>("email", vec![], string()),
+        ///     field::<_, (), _>("id", vec![], integer()),
+        ///     field::<_, (), _>("email", vec![], string()),
+        ///     field::<_, (), _>("email", vec![], string()),
         /// );
         /// ```
         #[allow(clippy::too_many_arguments)]
@@ -686,13 +687,13 @@ mod tests {
                 let mut args = vec![Argument::new(
                     "required_arg",
                     "String!",
-                    required.required_arg,
+                    serde_json::to_value(required.required_arg),
                 )];
                 if optionals.opt_string.is_some() {
                     args.push(Argument::new(
                         "opt_string",
                         "String",
-                        optionals.opt_string.unwrap(),
+                        serde_json::to_value(optionals.opt_string.unwrap()),
                     ));
                 }
                 field("nested", args, fields)
