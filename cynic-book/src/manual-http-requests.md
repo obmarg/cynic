@@ -11,7 +11,7 @@ It's simple to make an HTTP query manually with `cynic`:
   GraphQL request. This can be used with whatever JSON encoding functionality
   your HTTP client provides.
 - Once you've made the request, you should decode a
-  `cynic::GraphQLResponse<serde_json::Value>` from the response, and then pass
+  `cynic::GraphQlResponse<serde_json::Value>` from the response, and then pass
   that to the `decode_response` function of your `cynic::Operation`.
 
 For instance, to make a request with the `reqwest::blocking` client:

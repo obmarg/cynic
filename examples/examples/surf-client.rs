@@ -42,7 +42,7 @@ fn main() {
     })
 }
 
-async fn run_query() -> cynic::GraphQLResponse<FilmDirectorQuery> {
+async fn run_query() -> cynic::GraphQlResponse<FilmDirectorQuery> {
     use cynic::http::SurfExt;
 
     let operation = build_query();

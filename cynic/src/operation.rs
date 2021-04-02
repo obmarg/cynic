@@ -3,7 +3,7 @@ use std::collections::HashMap;
 
 use crate::{
     selection_set::{mutation_root, query_root, subscription_root},
-    Argument, GraphQLResponse, MutationRoot, QueryRoot, SelectionSet, SubscriptionRoot,
+    Argument, GraphQlResponse, MutationRoot, QueryRoot, SelectionSet, SubscriptionRoot,
 };
 
 /// An Operation that can be sent to a remote GraphQL server.
@@ -57,19 +57,19 @@ impl<'a, ResponseData: 'a> Operation<'a, ResponseData> {
         }
     }
 
-    /// Decodes a response.  Note that you need to decode a GraphQLResponse
+    /// Decodes a response.  Note that you need to decode a GraphQlResponse
     /// from JSON before passing to this function
     pub fn decode_response(
         &self,
-        response: GraphQLResponse<serde_json::Value>,
-    ) -> Result<GraphQLResponse<ResponseData>, json_decode::DecodeError> {
+        response: GraphQlResponse<serde_json::Value>,
+    ) -> Result<GraphQlResponse<ResponseData>, json_decode::DecodeError> {
         if let Some(data) = response.data {
-            Ok(GraphQLResponse {
+            Ok(GraphQlResponse {
                 data: Some(self.decoder.decode(&data)?),
                 errors: response.errors,
             })
         } else {
-            Ok(GraphQLResponse {
+            Ok(GraphQlResponse {
                 data: None,
                 errors: response.errors,
             })
@@ -109,8 +109,8 @@ impl<'a, ResponseData: 'a> StreamingOperation<'a, ResponseData> {
 
     pub fn decode_response(
         &self,
-        response: GraphQLResponse<serde_json::Value>,
-    ) -> Result<GraphQLResponse<ResponseData>, json_decode::DecodeError> {
+        response: GraphQlResponse<serde_json::Value>,
+    ) -> Result<GraphQlResponse<ResponseData>, json_decode::DecodeError> {
         self.inner.decode_response(response)
     }
 }

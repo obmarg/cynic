@@ -18,7 +18,7 @@ fn main() {
 }
 
 #[cfg(feature = "github")]
-fn run_query() -> cynic::GraphQLResponse<queries::PullRequestTitles> {
+fn run_query() -> cynic::GraphQlResponse<queries::PullRequestTitles> {
     use cynic::http::ReqwestBlockingExt;
 
     let query = build_query();

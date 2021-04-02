@@ -20,7 +20,7 @@ mod surf_ext {
     use serde_json::json;
     use std::{future::Future, pin::Pin};
 
-    use crate::{GraphQLResponse, Operation};
+    use crate::{GraphQlResponse, Operation};
 
     type BoxFuture<'a, T> = Pin<Box<dyn Future<Output = T> + Send + 'a>>;
 
@@ -81,17 +81,17 @@ mod surf_ext {
         fn run_graphql<'a, ResponseData: 'a>(
             self,
             operation: Operation<'a, ResponseData>,
-        ) -> BoxFuture<'a, Result<GraphQLResponse<ResponseData>, surf::Error>>;
+        ) -> BoxFuture<'a, Result<GraphQlResponse<ResponseData>, surf::Error>>;
     }
 
     impl SurfExt for surf::RequestBuilder {
         fn run_graphql<'a, ResponseData: 'a>(
             self,
             operation: Operation<'a, ResponseData>,
-        ) -> BoxFuture<'a, Result<GraphQLResponse<ResponseData>, surf::Error>> {
+        ) -> BoxFuture<'a, Result<GraphQlResponse<ResponseData>, surf::Error>> {
             Box::pin(async move {
                 self.body(json!(&operation))
-                    .recv_json::<GraphQLResponse<serde_json::Value>>()
+                    .recv_json::<GraphQlResponse<serde_json::Value>>()
                     .await
                     .and_then(|response| operation.decode_response(response).map_err(|e| e.into()))
             })
@@ -113,7 +113,7 @@ mod reqwest_ext {
     use super::CynicReqwestError;
     use std::{future::Future, pin::Pin};
 
-    use crate::{GraphQLResponse, Operation};
+    use crate::{GraphQlResponse, Operation};
 
     type BoxFuture<'a, T> = Pin<Box<dyn Future<Output = T> + Send + 'a>>;
 
@@ -175,23 +175,23 @@ mod reqwest_ext {
         fn run_graphql<'a, ResponseData: 'a>(
             self,
             operation: Operation<'a, ResponseData>,
-        ) -> BoxFuture<'a, Result<GraphQLResponse<ResponseData>, CynicReqwestError>>;
+        ) -> BoxFuture<'a, Result<GraphQlResponse<ResponseData>, CynicReqwestError>>;
     }
 
     impl ReqwestExt for reqwest::RequestBuilder {
         fn run_graphql<'a, ResponseData: 'a>(
             self,
             operation: Operation<'a, ResponseData>,
-        ) -> BoxFuture<'a, Result<GraphQLResponse<ResponseData>, CynicReqwestError>> {
+        ) -> BoxFuture<'a, Result<GraphQlResponse<ResponseData>, CynicReqwestError>> {
             Box::pin(async move {
                 match self
                     .json(&operation)
                     .send()
-                    //.recv_json::<GraphQLResponse<serde_json::Value>>()
+                    //.recv_json::<GraphQlResponse<serde_json::Value>>()
                     .await
                 {
                     Ok(response) => response
-                        .json::<GraphQLResponse<serde_json::Value>>()
+                        .json::<GraphQlResponse<serde_json::Value>>()
                         .await
                         .map_err(CynicReqwestError::ReqwestError)
                         .and_then(|gql_response| {
@@ -210,7 +210,7 @@ mod reqwest_ext {
 mod reqwest_blocking_ext {
     use super::CynicReqwestError;
 
-    use crate::{GraphQLResponse, Operation};
+    use crate::{GraphQlResponse, Operation};
 
     /// An extension trait for reqwest::blocking::RequestBuilder.
     ///
@@ -267,17 +267,17 @@ mod reqwest_blocking_ext {
         fn run_graphql<'a, ResponseData: 'a>(
             self,
             operation: Operation<'a, ResponseData>,
-        ) -> Result<GraphQLResponse<ResponseData>, CynicReqwestError>;
+        ) -> Result<GraphQlResponse<ResponseData>, CynicReqwestError>;
     }
 
     impl ReqwestBlockingExt for reqwest::blocking::RequestBuilder {
         fn run_graphql<'a, ResponseData: 'a>(
             self,
             operation: Operation<'a, ResponseData>,
-        ) -> Result<GraphQLResponse<ResponseData>, CynicReqwestError> {
+        ) -> Result<GraphQlResponse<ResponseData>, CynicReqwestError> {
             self.json(&operation)
                 .send()
-                .and_then(|response| response.json::<GraphQLResponse<serde_json::Value>>())
+                .and_then(|response| response.json::<GraphQlResponse<serde_json::Value>>())
                 .map_err(CynicReqwestError::ReqwestError)
                 .and_then(|gql_response| {
                     operation

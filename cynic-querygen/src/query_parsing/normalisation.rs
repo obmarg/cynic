@@ -81,14 +81,14 @@ impl<'query, 'doc, 'schema> FieldSelection<'query, 'schema> {
         arguments: Vec<(&'schema str, TypedValue<'query, 'schema>)>,
         schema_field: OutputField<'schema>,
         field: Field<'query, 'schema>,
-    ) -> Result<FieldSelection<'query, 'schema>, Error> {
-        Ok(FieldSelection {
+    ) -> FieldSelection<'query, 'schema> {
+        FieldSelection {
             name,
             alias,
             arguments,
             schema_field,
             field,
-        })
+        }
     }
 }
 
@@ -284,7 +284,7 @@ impl<'a, 'query, 'schema, 'doc> Normaliser<'a, 'query, 'schema, 'doc> {
                     arguments,
                     schema_field,
                     inner_field,
-                )?)])
+                ))])
             }
             parser::Selection::FragmentSpread(spread) => {
                 let fragment = self
@@ -601,10 +601,9 @@ mod tests {
         let film_selections = normalised
             .selection_sets
             .iter()
-            .map(|s| s.target_type.name())
-            .collect::<Vec<_>>();
+            .map(|s| s.target_type.name());
 
-        assert_eq!(film_selections.len(), 4);
+        assert_eq!(film_selections.count(), 4);
     }
 
     #[test]

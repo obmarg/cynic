@@ -22,7 +22,7 @@ impl FragmentDeriveInput {
     pub fn graphql_type_name(&self) -> String {
         self.graphql_type
             .as_ref()
-            .map(|sp| String::from(sp.to_string()))
+            .map(|sp| sp.to_string())
             .unwrap_or_else(|| self.ident.to_string())
     }
 

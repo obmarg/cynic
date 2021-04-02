@@ -74,7 +74,7 @@ pub(crate) fn inline_fragments_derive_impl(
             ]),
             argument_struct,
             possible_types: possible_types_from_variants(variants)?,
-            graphql_type_name: (input.graphql_type_name()).clone(),
+            graphql_type_name: input.graphql_type_name(),
             fallback,
         };
 
