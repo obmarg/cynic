@@ -114,9 +114,9 @@ mod tests {
     fn test_fragment_derive_validate_pass() {
         let input = FragmentDeriveInput {
             ident: format_ident!("TestInput"),
-            data: darling::ast::Data::Struct(darling::ast::Fields {
-                style: darling::ast::Style::Struct,
-                fields: vec![
+            data: darling::ast::Data::Struct(darling::ast::Fields::new(
+                darling::ast::Style::Struct,
+                vec![
                     FragmentDeriveField {
                         ident: Some(format_ident!("field_one")),
                         ty: syn::parse_quote! { String },
@@ -139,7 +139,7 @@ mod tests {
                         recurse: Some(8.into()),
                     },
                 ],
-            }),
+            )),
             schema_path: "abcd".to_string().into(),
             query_module: "abcd".to_string().into(),
             graphql_type: Some("abcd".to_string().into()),
@@ -153,9 +153,9 @@ mod tests {
     fn test_fragment_derive_validate_fails() {
         let input = FragmentDeriveInput {
             ident: format_ident!("TestInput"),
-            data: darling::ast::Data::Struct(darling::ast::Fields {
-                style: darling::ast::Style::Struct,
-                fields: vec![
+            data: darling::ast::Data::Struct(darling::ast::Fields::new(
+                darling::ast::Style::Struct,
+                vec![
                     FragmentDeriveField {
                         ident: Some(format_ident!("field_one")),
                         ty: syn::parse_quote! { String },
@@ -178,7 +178,7 @@ mod tests {
                         recurse: Some(8.into()),
                     },
                 ],
-            }),
+            )),
             schema_path: "abcd".to_string().into(),
             query_module: "abcd".to_string().into(),
             graphql_type: Some("abcd".to_string().into()),
@@ -193,10 +193,10 @@ mod tests {
     fn test_fragment_derive_validate_failed() {
         let input = FragmentDeriveInput {
             ident: format_ident!("TestInput"),
-            data: darling::ast::Data::Struct(darling::ast::Fields {
-                style: darling::ast::Style::Struct,
-                fields: vec![],
-            }),
+            data: darling::ast::Data::Struct(darling::ast::Fields::new(
+                darling::ast::Style::Struct,
+                vec![],
+            )),
             schema_path: "abcd".to_string().into(),
             query_module: "abcd".to_string().into(),
             graphql_type: Some("abcd".to_string().into()),
@@ -214,9 +214,9 @@ mod tests {
     fn test_fragment_derive_validate_pass_no_graphql_type() {
         let input = FragmentDeriveInput {
             ident: format_ident!("TestInput"),
-            data: darling::ast::Data::Struct(darling::ast::Fields {
-                style: darling::ast::Style::Struct,
-                fields: vec![
+            data: darling::ast::Data::Struct(darling::ast::Fields::new(
+                darling::ast::Style::Struct,
+                vec![
                     FragmentDeriveField {
                         ident: Some(format_ident!("field_one")),
                         ty: syn::parse_quote! { String },
@@ -239,7 +239,7 @@ mod tests {
                         recurse: Some(8.into()),
                     },
                 ],
-            }),
+            )),
             schema_path: "abcd".to_string().into(),
             query_module: "abcd".to_string().into(),
             graphql_type: None,
