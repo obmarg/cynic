@@ -336,13 +336,13 @@ impl FragmentImpl {
         fields: &darling::ast::Fields<FragmentDeriveField>,
         name: &syn::Ident,
         object: &Object,
-        query_dsl_path: TypePath,
+        schema_module_path: TypePath,
         graphql_type_name: &str,
         argument_struct: syn::Type,
     ) -> Result<Self, syn::Error> {
         let target_struct = Ident::new_spanned(&name.to_string(), name.span());
         let selector_struct_path =
-            TypePath::concat(&[query_dsl_path, object.selector_struct.clone().into()]);
+            TypePath::concat(&[schema_module_path, object.selector_struct.clone().into()]);
         let mut field_selectors = vec![];
         let mut constructor_params = vec![];
 

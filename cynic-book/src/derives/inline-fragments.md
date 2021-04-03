@@ -15,7 +15,7 @@ For example, the GitHub API has an `Assignee` union type which could be queried 
 #[derive(cynic::InlineFragments)]
 #[cynic(
     schema_path = "github.graphql",
-    query_module = "query_dsl",
+    query_module = "schema",
 )]
 enum Assignee {
     Bot(Bot),
@@ -39,7 +39,7 @@ variant will be output whenever an unhandled type is returned.
 #[derive(cynic::InlineFragments)]
 #[cynic(
     schema_path = "github.graphql",
-    query_module = "query_dsl",
+    query_module = "schema",
 )]
 enum Assignee {
     Bot(Bot),
@@ -62,7 +62,7 @@ also select some fields from the interface:
 #[derive(cynic::InlineFragments, Debug)]
 #[cynic(
     schema_path = "github.graphql",
-    query_module = "query_dsl",
+    query_module = "schema",
 )]
 pub enum Actor {
     User(User),
@@ -74,7 +74,7 @@ pub enum Actor {
 #[derive(cynic::QueryFragment)]
 #[cynic(
     schema_path = "github.graphql",
-    query_module = "query_dsl",
+    query_module = "schema",
 )]
 enum ActorFallback {
     pub login: String
@@ -97,7 +97,7 @@ enum itself:
   can be provided by nesting the InlineFragments inside a query module
   with this attr.
 - `query_module` tells cynic where to find the query module - that is a
-  module that has called the `query_dsl!` macro. This is required but
+  module that has called the `schema!` macro. This is required but
   can also be provided by nesting the QueryFragment inside a query
   module.
 

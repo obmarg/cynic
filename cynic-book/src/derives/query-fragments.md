@@ -10,7 +10,7 @@ Generally you'll use a derive to create query fragments, like this:
 #[derive(cynic::QueryFragment, Debug)]
 #[cynic(
     schema_path = "examples/starwars.schema.graphql",
-    query_module = "query_dsl",
+    query_module = "schema",
 )]
 struct Film {
     title: Option<String>,
@@ -26,7 +26,7 @@ be nested inside each other, like so:
 #[derive(cynic::QueryFragment, Debug)]
 #[cynic(
     schema_path = "examples/starwars.schema.graphql",
-    query_module = "query_dsl",
+    query_module = "schema",
     graphql_type = "Root",
 )]
 struct FilmsConnection {
@@ -64,7 +64,7 @@ API we need a QueryFragment like this:
 #[derive(cynic::QueryFragment, Debug)]
 #[cynic(
     schema_path = "examples/starwars.schema.graphql",
-    query_module = "query_dsl",
+    query_module = "schema",
     graphql_type = "Root",
 )]
 struct AllFilmsQuery {
@@ -106,7 +106,7 @@ struct FilmArguments {
 #[derive(cynic::QueryFragment, Debug)]
 #[cynic(
     schema_path = "examples/starwars.schema.graphql",
-    query_module = "query_dsl",
+    query_module = "schema",
     graphql_type = "Root",
     argument_struct = "FilmArguments"
 )]
@@ -167,7 +167,7 @@ A QueryFragment can be configured with several attributes on the struct itself:
   can be provided by nesting the QueryFragment inside a query module with this
   attr.
 - `query_module` tells cynic where to find the query module - that is a module
-  that has called the `query_dsl!` macro. This is required but can also be
+  that has called the `schema!` macro. This is required but can also be
   provided by nesting the QueryFragment inside a query module.
 
 #### Field Attributes

@@ -4,10 +4,10 @@ fn main() {}
 
 #[cynic::query_module(
     schema_path = r#"./../../../schemas/github.graphql"#,
-    query_module = "query_dsl"
+    query_module = "schema"
 )]
 mod queries {
-    use super::{query_dsl, types::*};
+    use super::{schema, types::*};
 
     #[derive(cynic::Enum, Clone, Copy, Debug)]
     pub enum IssueOrderField {
@@ -31,10 +31,10 @@ mod queries {
 
 #[cynic::query_module(
     schema_path = r#"./../../../schemas/github.graphql"#,
-    query_module = "query_dsl"
+    query_module = "schema"
 )]
 mod types {
-    use super::query_dsl;
+    use super::schema;
 
     #[derive(cynic::Scalar, Debug, Clone)]
     pub struct Date(pub String);
@@ -67,7 +67,7 @@ mod types {
     pub struct X509Certificate(pub String);
 }
 
-mod query_dsl {
+mod schema {
     use super::types::*;
-    cynic::query_dsl!(r#"./../../../schemas/github.graphql"#);
+    cynic::use_schema!(r#"./../../../schemas/github.graphql"#);
 }

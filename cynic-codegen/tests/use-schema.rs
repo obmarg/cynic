@@ -3,17 +3,19 @@ use std::{io::Write, path::PathBuf, process::Stdio};
 use insta::assert_snapshot;
 use rstest::rstest;
 
-use cynic_codegen::query_dsl::{query_dsl_from_schema, QueryDslParams};
+use cynic_codegen::use_schema::{use_schema, QueryDslParams};
+
+// TODO: Rename this file after running snapshots
 
 #[rstest(schema_file => [
     "graphql.jobs.graphql",
     "books.graphql",
     "starwars.schema.graphql"
 ])]
-fn snapshot_query_dsl(schema_file: &str) {
+fn snapshot_use_schema(schema_file: &str) {
     let schema_path = PathBuf::from("../schemas/").join(schema_file);
 
-    let tokens = query_dsl_from_schema(QueryDslParams {
+    let tokens = use_schema(QueryDslParams {
         schema_filename: schema_path.to_str().unwrap().to_string(),
     })
     .unwrap();

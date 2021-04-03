@@ -23,16 +23,16 @@ where
 ///
 /// ```rust
 /// # #[macro_use] extern crate cynic;
-/// # // Faking the query_dsl & chrono module here because it's easier than
+/// # // Faking the schema & chrono module here because it's easier than
 /// # // actually defining them
 /// #
-/// # mod query_dsl { pub struct Uuid {} }
+/// # mod schema { pub struct Uuid {} }
 /// # mod uuid { pub type Uuid = String; }
-/// impl_scalar!(uuid::Uuid, query_dsl::Uuid);
+/// impl_scalar!(uuid::Uuid, schema::Uuid);
 /// ```
 ///
 /// This macro can be used on any type that implements `serde::Serialize`,
-/// provided the `query_dsl` is defined in the current crate
+/// provided the `schema` is defined in the current crate
 #[macro_export]
 macro_rules! impl_scalar {
     ($type:path, $type_lock:path) => {

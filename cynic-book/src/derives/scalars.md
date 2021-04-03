@@ -22,7 +22,7 @@ If you have an existing type (including 3rd party types) that has a
 
 ```rust
 type DateTime = chrono::DateTime<chrono::Utc>;
-impl_scalar!(DateTime, query_dsl::DateTime);
+impl_scalar!(DateTime, schema::DateTime);
 ```
 
 This `DateTime` type alias can now be used anywhere that the schema expects a
@@ -35,7 +35,7 @@ You can also derive `Scalar` on any newtype structs:
 
 ```rust
 #[derive(cynic::Scalar, serde::Serialize)]
-#[cynic(query_module = "query_dsl")]
+#[cynic(query_module = "schema")]
 struct MyScalar(String);
 ```
 
@@ -56,5 +56,5 @@ A Scalar derive can be configured with several attributes on the struct itself:
   from the type of and tells cynic the name of the Scalar in the schema. This
   defaults to the name of the struct if not provided.
 - `query_module` tells cynic where to find the query module - that is a module
-  that has called the `query_dsl!` macro. This is required but can also be
+  that has called the `use_schema!` macro. This is required but can also be
   provided by nesting the QueryFragment inside a query module.

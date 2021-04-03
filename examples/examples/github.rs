@@ -2,7 +2,7 @@
 //!
 //! Note that a lot of this example is feature flagged: this is because rust-analyzer
 //! wants to build it as part of the cynic package when I'm working on cynic.  It
-//! builds quite slow because of the size of the GitHub API (the query_dsl output is
+//! builds quite slow because of the size of the GitHub API (the schema output is
 //! around 100k lines of rust), and it's too much for normal development.
 //!
 //! If you want to use this example be sure to remove all the feature flagging.
@@ -49,13 +49,13 @@ fn build_query() -> cynic::Operation<'static, queries::PullRequestTitles> {
 }
 
 #[cfg(feature = "github")]
-#[cynic::query_module(schema_path = "../schemas/github.graphql", query_module = "query_dsl")]
+#[cynic::query_module(schema_path = "../schemas/github.graphql", query_module = "schema")]
 mod queries {
-    use super::query_dsl;
+    use super::schema;
 
     pub type DateTime = chrono::DateTime<chrono::Utc>;
 
-    cynic::impl_scalar!(DateTime, query_dsl::DateTime);
+    cynic::impl_scalar!(DateTime, schema::DateTime);
 
     #[derive(cynic::FragmentArguments, Debug)]
     pub struct PullRequestTitlesArguments {
@@ -112,8 +112,8 @@ mod queries {
 }
 
 #[cfg(feature = "github")]
-mod query_dsl {
-    cynic::query_dsl!("../schemas/github.graphql");
+mod schema {
+    cynic::use_schema!("../schemas/github.graphql");
 }
 
 #[cfg(all(test, feature = "github"))]

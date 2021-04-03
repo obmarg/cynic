@@ -1,13 +1,13 @@
 //! An example of querying for interfaces with an InlineFragment
 
-mod query_dsl {
-    cynic::query_dsl!("../schemas/starwars.schema.graphql");
+mod schema {
+    cynic::use_schema!("../schemas/starwars.schema.graphql");
 }
 
 #[derive(cynic::InlineFragments, Debug)]
 #[cynic(
     schema_path = "../schemas/starwars.schema.graphql",
-    query_module = "query_dsl"
+    query_module = "schema"
 )]
 enum Node {
     Film(Film),
@@ -20,7 +20,7 @@ enum Node {
 #[derive(cynic::QueryFragment, Debug)]
 #[cynic(
     schema_path = "../schemas/starwars.schema.graphql",
-    query_module = "query_dsl"
+    query_module = "schema"
 )]
 struct Film {
     title: Option<String>,
@@ -30,7 +30,7 @@ struct Film {
 #[derive(cynic::QueryFragment, Debug)]
 #[cynic(
     schema_path = "../schemas/starwars.schema.graphql",
-    query_module = "query_dsl"
+    query_module = "schema"
 )]
 struct Planet {
     name: Option<String>,
@@ -39,7 +39,7 @@ struct Planet {
 #[derive(cynic::QueryFragment, Debug)]
 #[cynic(
     schema_path = "../schemas/starwars.schema.graphql",
-    query_module = "query_dsl",
+    query_module = "schema",
     graphql_type = "Node"
 )]
 struct OtherNode {
@@ -54,7 +54,7 @@ struct Arguments {
 #[derive(cynic::QueryFragment, Debug)]
 #[cynic(
     schema_path = "../schemas/starwars.schema.graphql",
-    query_module = "query_dsl",
+    query_module = "schema",
     graphql_type = "Root",
     argument_struct = "Arguments"
 )]

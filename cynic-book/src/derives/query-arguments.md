@@ -25,7 +25,7 @@ attribute on the fields where you wish to pass them.
 #[derive(cynic::QueryFragment, Debug)]
 #[cynic(
     schema_path = "examples/starwars.schema.graphql",
-    query_module = "query_dsl",
+    query_module = "schema",
     graphql_type = "Root",
     argument_struct = "FilmArguments"
 )]
@@ -49,7 +49,7 @@ require any arguments then it's OK to omit `argument_struct`.
 Cynic uses the `InputType` trait to convert arguments into the correct type.
 This trait tries to provide the same coercion rules you would get when writing
 raw GraphQL, as well as allowing arguments to be taken by value and by
-reference.  Amongst other things, this:
+reference. Amongst other things, this:
 
 1. Converts bare scalars & enums into Options. This means you don't have to
    explicitly wrap an argument in `Some`. This also allows cynic to be tolerant
@@ -61,5 +61,5 @@ reference.  Amongst other things, this:
    convenience saves users from having to explicitly clone.
 
 I've tried to be exhaustive with `InputType` impls, but it's possible that I've
-missed some.  In this case you may need to define your own, or raise an issue
+missed some. In this case you may need to define your own, or raise an issue
 in `cynic`.

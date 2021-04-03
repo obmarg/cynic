@@ -58,6 +58,9 @@ all APIs might be changed.
 - `GraphQLError`, `GraphQLResponse`, & `GraphQLResult` have all been deprecated
   in favour of `GraphQlError`, `GraphQlResponse`, & `GraphQlResult`. The types are
   otherwise the same, just with different names.
+- `query_dsl!` has been deprecated in favour of a similar macro named `use_schema!`
+- It's now recommended that you name your `query_dsl` module `schema` instead.
+- `cynic_codegen::output_query_dsl` is now named `cynic_codegen::output_schema_module`.
 
 ### Bug Fixes
 

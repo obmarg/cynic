@@ -1,7 +1,7 @@
 use crate::{Errors, FieldType, Ident, TypePath};
 use proc_macro2::TokenStream;
 
-/// A parmeter to a query_dsl function that represents a GraphQL parameter.
+/// A parmeter to a schema function that represents a GraphQL parameter.
 pub struct ArgumentParameter {
     name: Ident,
     param_type: ArgumentParameterType,

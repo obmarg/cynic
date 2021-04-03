@@ -5,18 +5,18 @@ fn main() {
     //println!("{}", cynic::Operation::query<TestStruct>(TestArgs {}));
 }
 
-mod query_dsl {
-    cynic::query_dsl!("src/bin/simple.graphql");
+mod schema {
+    cynic::use_schema!("src/bin/simple.graphql");
 }
 
 #[cynic::query_module(
     schema_path = "src/bin/simple.graphql",
     // TODO: Make query_module optional (automatically does it if missing)
     // Some complications around what to do with scalars here though...
-    query_module = "query_dsl"
+    query_module = "schema"
 )]
 mod queries {
-    use super::query_dsl;
+    use super::schema;
 
     #[derive(cynic::FragmentArguments)]
     pub struct TestArgs {}
@@ -58,4 +58,4 @@ mod queries {
     }
 }
 
-impl cynic::QueryRoot for query_dsl::TestStruct {}
+impl cynic::QueryRoot for schema::TestStruct {}

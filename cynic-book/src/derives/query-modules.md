@@ -7,10 +7,10 @@ cynic derives:
 - `query_module` - the rust path to the module in which you.
 
 You can provide these attributes manually on each of the derived structs you
-write.  But if you've got a lot of structs this might be tedious and/or just a
-lot of noise.  
+write. But if you've got a lot of structs this might be tedious and/or just a
+lot of noise.
 
-To work around this, cynic provides the `query_module` macro.  This macro can
+To work around this, cynic provides the `query_module` macro. This macro can
 be applied to any `mod` and will populate the `schema_path` & `query_module`
 attributes of any cynic derives contained within.
 
@@ -21,10 +21,10 @@ attribute:
 ```rust
 #[cynic::query_module(
     schema_path = r#"schema.graphql"#,
-    query_module = "query_dsl",
+    query_module = "schema",
 )]
 mod queries {
-    use super::{query_dsl, types::*};
+    use super::{schema, types::*};
 
     #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "Query")]
