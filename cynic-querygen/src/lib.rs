@@ -1,4 +1,3 @@
-use inflector::Inflector;
 use std::rc::Rc;
 
 mod naming;
@@ -103,80 +102,38 @@ pub fn document_to_fragment_structs(
 
     let mut output = String::new();
 
-    // https://github.com/obmarg/cynic/issues/71
-    let scalar_count = schema
-        .definitions
-        .iter()
-        .filter(|def| {
-            matches!(
-                def,
-                schema::Definition::TypeDefinition(schema::TypeDefinition::Scalar(_))
-            )
-        })
-        .count();
-
     writeln!(output, "#[cynic::query_module(").unwrap();
     writeln!(output, "    schema_path = r#\"{}\"#,", options.schema_path).unwrap();
     writeln!(output, "    query_module = \"{}\",", options.query_module).unwrap();
     writeln!(output, ")]\nmod queries {{").unwrap();
-    if scalar_count > 0 {
-        writeln!(
-            output,
-            "    use super::{{{}, types::*}};\n",
-            options.query_module
-        )
-        .unwrap();
-    } else {
-        writeln!(output, "    use super::{};\n", options.query_module).unwrap();
-    }
+
+    let mod_output = &mut indented(&mut output, 4);
+
+    writeln!(mod_output, "use super::{};\n", options.query_module).unwrap();
 
     for argument_struct in parsed_output.argument_structs {
-        writeln!(indented(&mut output, 4), "{}", argument_struct).unwrap();
+        writeln!(mod_output, "{}", argument_struct).unwrap();
     }
 
     for fragment in parsed_output.query_fragments {
-        writeln!(indented(&mut output, 4), "{}", fragment).unwrap();
+        writeln!(mod_output, "{}", fragment).unwrap();
     }
 
     for en in parsed_output.enums {
-        writeln!(indented(&mut output, 4), "{}", en).unwrap();
+        writeln!(mod_output, "{}", en).unwrap();
     }
 
     for input_object in parsed_output.input_objects {
-        writeln!(indented(&mut output, 4), "{}", input_object).unwrap();
+        writeln!(mod_output, "{}", input_object).unwrap();
     }
+
+    for scalar in parsed_output.scalars {
+        writeln!(mod_output, "{}", scalar).unwrap();
+    }
+
     writeln!(output, "}}\n").unwrap();
 
-    if scalar_count > 0 {
-        writeln!(output, "#[cynic::query_module(").unwrap();
-        writeln!(output, "    schema_path = r#\"{}\"#,", options.schema_path).unwrap();
-        writeln!(output, "    query_module = \"{}\",", options.query_module).unwrap();
-        writeln!(output, ")]\nmod types {{").unwrap();
-        writeln!(output, "    use super::schema;\n").unwrap();
-
-        // Output any custom scalars we need.
-        // Note that currently our query_dsl needs _all_ scalars in a schema
-        // so we're parsing this out from schema.definitons rather than output.scalars
-        for def in &schema.definitions {
-            if let schema::Definition::TypeDefinition(schema::TypeDefinition::Scalar(scalar)) = def
-            {
-                writeln!(output, "    #[derive(cynic::Scalar, Debug, Clone)]").unwrap();
-                writeln!(
-                    output,
-                    "    pub struct {}(pub String);\n",
-                    scalar.name.to_pascal_case()
-                )
-                .unwrap();
-            }
-        }
-        writeln!(output, "}}\n").unwrap();
-    }
-
     writeln!(output, "mod {} {{", options.query_module).unwrap();
-
-    if scalar_count > 0 {
-        writeln!(output, "    use super::types::*;").unwrap();
-    }
 
     writeln!(
         output,

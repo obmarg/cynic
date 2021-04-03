@@ -115,7 +115,7 @@ fn main() {
             r#"queries::AddPRComment::build(
                 &queries::AddPRCommentArguments{
                     body: "hello!".into(),
-                    commit: crate::types::GitObjectID("abcd".into())
+                    commit: queries::GitObjectID("abcd".into())
                 }
             )"#,
         ),

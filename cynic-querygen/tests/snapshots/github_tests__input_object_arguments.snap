@@ -7,7 +7,7 @@ expression: "document_to_fragment_structs(query, schema,\n                      
     query_module = "schema",
 )]
 mod queries {
-    use super::{schema, types::*};
+    use super::schema;
 
     #[derive(cynic::FragmentArguments, Debug)]
     pub struct PullRequestTitlesArguments {
@@ -59,47 +59,7 @@ mod queries {
 
 }
 
-#[cynic::query_module(
-    schema_path = r#"schema.graphql"#,
-    query_module = "schema",
-)]
-mod types {
-    use super::schema;
-
-    #[derive(cynic::Scalar, Debug, Clone)]
-    pub struct Date(pub String);
-
-    #[derive(cynic::Scalar, Debug, Clone)]
-    pub struct DateTime(pub String);
-
-    #[derive(cynic::Scalar, Debug, Clone)]
-    pub struct GitObjectID(pub String);
-
-    #[derive(cynic::Scalar, Debug, Clone)]
-    pub struct GitRefname(pub String);
-
-    #[derive(cynic::Scalar, Debug, Clone)]
-    pub struct GitSSHRemote(pub String);
-
-    #[derive(cynic::Scalar, Debug, Clone)]
-    pub struct GitTimestamp(pub String);
-
-    #[derive(cynic::Scalar, Debug, Clone)]
-    pub struct Html(pub String);
-
-    #[derive(cynic::Scalar, Debug, Clone)]
-    pub struct PreciseDateTime(pub String);
-
-    #[derive(cynic::Scalar, Debug, Clone)]
-    pub struct Uri(pub String);
-
-    #[derive(cynic::Scalar, Debug, Clone)]
-    pub struct X509Certificate(pub String);
-
-}
-
 mod schema {
-    use super::types::*;
     cynic::use_schema!(r#"schema.graphql"#);
 }
 
