@@ -40,9 +40,9 @@ pub trait HasSubtype<Subtype> {}
 ///
 /// - `DecodesTo` is the type that the selection set will decode when it is fed
 ///   the results of it's query.
-/// - `TypeLock` is used to enforce type safety.  It allows the `query_dsl`
-///   functionality in cynic to annotate each SelectionSet it returns such
-///   that you can't build incorrect queries.
+/// - `TypeLock` is used to enforce type safety.  It allows the functions in a
+///   `schema` module to annotate each SelectionSet it returns such that you
+///    can't build incorrect queries.
 pub struct SelectionSet<'a, DecodesTo, TypeLock> {
     fields: Vec<Field>,
 
@@ -653,7 +653,7 @@ mod tests {
         }
     }
 
-    mod query_dsl {
+    mod schema {
         use super::super::{field, string, Argument, SelectionSet};
 
         pub struct RootQuery;
@@ -728,14 +728,14 @@ mod tests {
 
     #[test]
     fn decode_using_dsl() {
-        let selection_set: SelectionSet<_, query_dsl::RootQuery> = map(
+        let selection_set: SelectionSet<_, schema::RootQuery> = map(
             Query::new,
-            query_dsl::Query::test_struct(map2(
+            schema::Query::test_struct(map2(
                 TestStruct::new,
-                query_dsl::TestStruct::field_one(),
-                query_dsl::TestStruct::nested(map(
+                schema::TestStruct::field_one(),
+                schema::TestStruct::nested(map(
                     NestedStruct::new,
-                    query_dsl::NestedStruct::a_string(),
+                    schema::NestedStruct::a_string(),
                 )),
             )),
         );
@@ -757,14 +757,14 @@ mod tests {
 
     #[test]
     fn test_query_building() {
-        let selection_set: SelectionSet<_, query_dsl::RootQuery> = map(
+        let selection_set: SelectionSet<_, schema::RootQuery> = map(
             Query::new,
-            query_dsl::Query::test_struct(map2(
+            schema::Query::test_struct(map2(
                 TestStruct::new,
-                query_dsl::TestStruct::field_one(),
-                query_dsl::TestStruct::nested(map(
+                schema::TestStruct::field_one(),
+                schema::TestStruct::nested(map(
                     NestedStruct::new,
-                    query_dsl::NestedStruct::a_string(),
+                    schema::NestedStruct::a_string(),
                 )),
             )),
         );
@@ -780,14 +780,14 @@ mod tests {
 
     #[test]
     fn test_vars_with_optionals_missing() {
-        let selection_set: SelectionSet<Option<i32>, query_dsl::RootQuery> = map(
+        let selection_set: SelectionSet<Option<i32>, schema::RootQuery> = map(
             |_| None,
-            query_dsl::Query::with_args(
-                query_dsl::QueryWithArgsArguments {
+            schema::Query::with_args(
+                schema::QueryWithArgsArguments {
                     required_arg: "test".to_string(),
                 },
                 Default::default(),
-                map(NestedStruct::new, query_dsl::NestedStruct::a_string()),
+                map(NestedStruct::new, schema::NestedStruct::a_string()),
             ),
         );
 
@@ -797,16 +797,16 @@ mod tests {
 
     #[test]
     fn test_vars_with_optionals_present() {
-        let selection_set: SelectionSet<Option<i32>, query_dsl::RootQuery> = map(
+        let selection_set: SelectionSet<Option<i32>, schema::RootQuery> = map(
             |_| None,
-            query_dsl::Query::with_args(
-                query_dsl::QueryWithArgsArguments {
+            schema::Query::with_args(
+                schema::QueryWithArgsArguments {
                     required_arg: "test".to_string(),
                 },
-                query_dsl::QueryWithArgsOptionals {
+                schema::QueryWithArgsOptionals {
                     opt_string: Some("test".to_string()),
                 },
-                map(NestedStruct::new, query_dsl::NestedStruct::a_string()),
+                map(NestedStruct::new, schema::NestedStruct::a_string()),
             ),
         );
 

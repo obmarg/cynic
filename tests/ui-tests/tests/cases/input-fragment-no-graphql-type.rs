@@ -1,10 +1,10 @@
 fn main() {}
 #[cynic::query_module(
-schema_path = r#"./../../../schemas/starwars.schema.graphql"#,
-query_module = "query_dsl",
+    schema_path = r#"./../../../schemas/starwars.schema.graphql"#,
+    query_module = "schema"
 )]
 mod queries {
-    use super::query_dsl;
+    use super::schema;
 
     #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "Root")]
@@ -43,9 +43,8 @@ mod queries {
         pub end_cursor: Option<String>,
         pub has_previous_page: bool,
     }
-
 }
 
-mod query_dsl{
-    cynic::query_dsl!("./../../../schemas/starwars.schema.graphql");
+mod schema {
+    cynic::use_schema!("./../../../schemas/starwars.schema.graphql");
 }

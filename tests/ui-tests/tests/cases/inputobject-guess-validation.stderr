@@ -9,7 +9,7 @@ error: This InputObject is missing these required fields: field
   |
 5 | / #[cynic::query_module(
 6 | |     schema_path = r#"./../../../schemas/github.graphql"#,
-7 | |     query_module = "query_dsl"
+7 | |     query_module = "schema"
 8 | | )]
   | |__^
   |

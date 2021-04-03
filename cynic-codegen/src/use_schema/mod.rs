@@ -44,10 +44,10 @@ impl syn::parse::Parse for QueryDslParams {
     }
 }
 
-pub fn query_dsl_from_schema(input: QueryDslParams) -> Result<TokenStream, SchemaLoadError> {
+pub fn use_schema(input: QueryDslParams) -> Result<TokenStream, SchemaLoadError> {
     use quote::quote;
 
-    let schema_data: QueryDsl = load_schema(input.schema_filename)?.into();
+    let schema_data: SchemaData = load_schema(input.schema_filename)?.into();
 
     Ok(quote! {
         #schema_data
@@ -55,7 +55,7 @@ pub fn query_dsl_from_schema(input: QueryDslParams) -> Result<TokenStream, Schem
 }
 
 #[derive(Debug)]
-pub struct QueryDsl {
+pub struct SchemaData {
     pub selectors: Vec<SelectorStruct>,
     pub argument_struct_modules: Vec<Module<FieldSelectionBuilder>>,
     pub unions: Vec<UnionStruct>,
@@ -66,7 +66,7 @@ pub struct QueryDsl {
     pub interfaces_implementations: Vec<InterfacesImplementations>,
 }
 
-impl From<schema::Document> for QueryDsl {
+impl From<schema::Document> for SchemaData {
     fn from(document: schema::Document) -> Self {
         use schema::{Definition, TypeDefinition};
 
@@ -137,7 +137,7 @@ impl From<schema::Document> for QueryDsl {
             }
         }
 
-        QueryDsl {
+        SchemaData {
             selectors,
             argument_struct_modules,
             input_objects,
@@ -150,7 +150,7 @@ impl From<schema::Document> for QueryDsl {
     }
 }
 
-impl quote::ToTokens for QueryDsl {
+impl quote::ToTokens for SchemaData {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         use quote::{quote, TokenStreamExt};
 

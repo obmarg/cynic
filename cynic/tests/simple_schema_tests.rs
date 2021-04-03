@@ -1,5 +1,5 @@
-mod query_dsl {
-    cynic::query_dsl!("src/bin/simple.graphql");
+mod schema {
+    cynic::use_schema!("src/bin/simple.graphql");
 }
 
 #[derive(cynic::FragmentArguments)]
@@ -8,7 +8,7 @@ struct TestArgs {}
 #[derive(cynic::QueryFragment, PartialEq, Debug)]
 #[cynic(
     schema_path = "src/bin/simple.graphql",
-    query_module = "query_dsl",
+    query_module = "schema",
     //argument_struct = "TestArgs"
 )]
 struct TestStruct {
@@ -23,7 +23,7 @@ struct TestStruct {
 }
 
 #[derive(cynic::QueryFragment, PartialEq, Debug)]
-#[cynic(schema_path = "src/bin/simple.graphql", query_module = "query_dsl")]
+#[cynic(schema_path = "src/bin/simple.graphql", query_module = "schema")]
 struct Nested {
     a_string: String,
     opt_string: Option<String>,
@@ -32,7 +32,7 @@ struct Nested {
 #[derive(cynic::QueryFragment, PartialEq, Debug)]
 #[cynic(
     schema_path = "src/bin/simple.graphql",
-    query_module = "query_dsl",
+    query_module = "schema",
     graphql_type = "Query",
     argument_struct = "TestArgs"
 )]
@@ -43,7 +43,7 @@ struct TestQuery {
 #[derive(cynic::Enum, Clone, Debug, PartialEq)]
 #[cynic(
     schema_path = "src/bin/simple.graphql",
-    query_module = "query_dsl",
+    query_module = "schema",
     rename_all = "SCREAMING_SNAKE_CASE"
 )]
 pub enum Dessert {

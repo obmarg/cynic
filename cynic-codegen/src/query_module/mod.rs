@@ -152,7 +152,7 @@ mod tests {
     fn args() -> TransformModuleArgs {
         TransformModuleArgs {
             schema_path: "test.graphql".to_string().into(),
-            query_module: "query_dsl".to_string().into(),
+            query_module: "schema".to_string().into(),
         }
     }
 
@@ -172,7 +172,7 @@ mod tests {
             syn::parse_quote! {
                 #[derive(cynic::QueryFragment)]
                 #[cynic(schema_path = "test.graphql")]
-                #[cynic(query_module = "query_dsl")]
+                #[cynic(query_module = "schema")]
                 struct Test {
                     a: String
                 }

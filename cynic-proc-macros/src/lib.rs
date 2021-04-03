@@ -6,14 +6,25 @@ use proc_macro::TokenStream;
 
 use cynic_codegen::{
     enum_derive, fragment_arguments_derive, fragment_derive, inline_fragments_derive,
-    input_object_derive, query_dsl, query_module, scalar_derive,
+    input_object_derive, query_module, scalar_derive, use_schema,
 };
 
+/// Imports a schema for use by cynic.
+///
+/// This creates all the required type markers & selection builder structures
+/// required to use cynic with a given schema.  It should usually be called
+/// in a module named schema, as the only statement in that module
+///
+/// ```rust,ignore
+/// mod schema {
+///     cynic::use_schema!("../schemas/starwars.schema.graphql");
+/// }
+/// ```
 #[proc_macro]
-pub fn query_dsl(input: TokenStream) -> TokenStream {
-    let input = syn::parse_macro_input!(input as query_dsl::QueryDslParams);
+pub fn use_schema(input: TokenStream) -> TokenStream {
+    let input = syn::parse_macro_input!(input as use_schema::QueryDslParams);
 
-    let rv = query_dsl::query_dsl_from_schema(input).unwrap().into();
+    let rv = use_schema::use_schema(input).unwrap().into();
 
     //eprintln!("{}", rv);
 

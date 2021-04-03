@@ -13,11 +13,11 @@
 //! ### Generating a Query DSL
 //!
 //! Once you've got your schema installed locally, you'll need to use the
-//! `query_dsl` macro to generate a query_dsl for your schema:
+//! `use_schema` macro to generate a schema module:
 //!
 //! ```rust
-//! mod query_dsl {
-//!     cynic::query_dsl!("../schemas/starwars.schema.graphql");
+//! mod schema {
+//!     cynic::use_schema!("../schemas/starwars.schema.graphql");
 //! }
 //! ```
 //!
@@ -34,25 +34,25 @@
 //!
 //! Though using macros to generate these is convenient, it does leave a lot of code
 //! to the imagination.  You can get a glimpse of the things this defines by running
-//! `cargo doc --document-private-items` and having a look in the `query_dsl` module.
+//! `cargo doc --document-private-items` and having a look in the `schema` module.
 //! It's not ideal, but at least provides some visibility into the various enum types.
 //!
 //! ### Creating QueryFragments
 //!
-//! Now that you have a query_dsl defined, you can start building some queries.
+//! Now that you have a schema defined, you can start building some queries.
 //! Cynic lets you do this by deriving `QueryFragment` for a struct.  For example,
 //! if we wanted to know what director title & director a Star Wars film had, we
 //! could define this `QueryFragment`:
 //!
 //! ```rust
-//! # mod query_dsl {
-//! #   cynic::query_dsl!("../schemas/starwars.schema.graphql");
+//! # mod schema {
+//! #   cynic::use_schema!("../schemas/starwars.schema.graphql");
 //! # }
 //!
 //! #[derive(cynic::QueryFragment)]
 //! #[cynic(
 //!     schema_path = "../schemas/starwars.schema.graphql",
-//!     query_module = "query_dsl",
+//!     query_module = "schema",
 //! )]
 //! struct Film {
 //!     title: Option<String>,
@@ -68,7 +68,7 @@
 //! #[derive(cynic::QueryFragment)]
 //! #[cynic(
 //!     schema_path = "../schemas/starwars.schema.graphql",
-//!     query_module = "query_dsl",
+//!     query_module = "schema",
 //!     graphql_type = "Root"
 //! )]
 //! struct FilmDirectorQuery {
@@ -108,14 +108,14 @@
 //! all of the parameters you want to provide:
 //!
 //! ```rust
-//! # mod query_dsl {
-//! #   cynic::query_dsl!("../schemas/starwars.schema.graphql");
+//! # mod schema {
+//! #   cynic::use_schema!("../schemas/starwars.schema.graphql");
 //! # }
 //!
 //! # #[derive(cynic::QueryFragment)]
 //! # #[cynic(
 //! #    schema_path = "../schemas/starwars.schema.graphql",
-//! #    query_module = "query_dsl",
+//! #    query_module = "schema",
 //! # )]
 //! # struct Film {
 //! #    title: Option<String>,
@@ -133,7 +133,7 @@
 //! #[derive(cynic::QueryFragment)]
 //! #[cynic(
 //!     schema_path = "../schemas/starwars.schema.graphql",
-//!     query_module = "query_dsl",
+//!     query_module = "schema",
 //!     graphql_type = "Root",
 //!     // By adding the `argument_struct` parameter to our `QueryFragment` we've made a variable
 //!     // named `args` avaiable for use in the `arguments` attribute.
@@ -202,9 +202,20 @@ pub use selection_set::SelectionSet;
 pub use result::{GraphQLError, GraphQLResponse, GraphQLResult};
 
 pub use cynic_proc_macros::{
-    query_dsl, query_module, Enum, FragmentArguments, InlineFragments, InputObject, QueryFragment,
+    query_module, use_schema, Enum, FragmentArguments, InlineFragments, InputObject, QueryFragment,
     Scalar,
 };
+
+#[deprecated(
+    since = "0.13.0",
+    note = "query_dsl has been depreacted, please update to use_schema instead"
+)]
+#[macro_export]
+macro_rules! query_dsl {
+    ($lt: literal) => {
+        ::cynic::use_schema!($lt);
+    };
+}
 
 // We re-export serde_json as the output from a lot of our derive macros require it,
 // and this way we can point at our copy rather than forcing users to add it to

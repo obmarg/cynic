@@ -2,8 +2,8 @@
 
 use serde_json::json;
 
-mod query_dsl {
-    cynic::query_dsl!("tests/test-schema.graphql");
+mod schema {
+    cynic::use_schema!("tests/test-schema.graphql");
 }
 
 #[test]
@@ -14,7 +14,7 @@ fn test_input_object_renames() {
     #[cynic(
         graphql_type = "BlogPostInput",
         schema_path = "tests/test-schema.graphql",
-        query_module = "query_dsl",
+        query_module = "schema",
         rename_all = "lowercase"
     )]
     struct BlogPost {
@@ -38,7 +38,7 @@ fn test_input_object_skip_serializing() {
     #[cynic(
         graphql_type = "BlogPostInput",
         schema_path = "tests/test-schema.graphql",
-        query_module = "query_dsl"
+        query_module = "schema"
     )]
     struct BlogPost {
         content: String,

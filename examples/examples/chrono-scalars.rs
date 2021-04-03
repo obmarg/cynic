@@ -1,17 +1,17 @@
 //! An example of querying the starwars API using the reqwest-blocking feature
 
-mod query_dsl {
-    cynic::query_dsl!("../schemas/graphql.jobs.graphql");
+mod schema {
+    cynic::use_schema!("../schemas/graphql.jobs.graphql");
 }
 
 type DateTime = chrono::DateTime<chrono::Utc>;
 
-cynic::impl_scalar!(DateTime, query_dsl::DateTime);
+cynic::impl_scalar!(DateTime, schema::DateTime);
 
 #[derive(cynic::QueryFragment, Debug)]
 #[cynic(
     schema_path = "../schemas/graphql.jobs.graphql",
-    query_module = "query_dsl"
+    query_module = "schema"
 )]
 struct Job {
     created_at: DateTime,
@@ -20,7 +20,7 @@ struct Job {
 #[derive(cynic::QueryFragment, Debug)]
 #[cynic(
     schema_path = "../schemas/graphql.jobs.graphql",
-    query_module = "query_dsl",
+    query_module = "schema",
     graphql_type = "Query"
 )]
 struct JobsQuery {

@@ -1,13 +1,13 @@
 fn main() {}
 
-mod query_dsl {
-    cynic::query_dsl!("../../../cynic/src/bin/simple.graphql");
+mod schema {
+    cynic::use_schema!("../../../cynic/src/bin/simple.graphql");
 }
 
 #[derive(cynic::InlineFragments)]
 #[cynic(
     schema_path = "../../../cynic/src/bin/simple.graphql",
-    query_module = "query_dsl",
+    query_module = "schema",
     graphql_type = "MyUnionType"
 )]
 enum MyFailingUnionType {
@@ -20,7 +20,7 @@ enum MyFailingUnionType {
 #[derive(cynic::QueryFragment)]
 #[cynic(
     schema_path = "../../../cynic/src/bin/simple.graphql",
-    query_module = "query_dsl"
+    query_module = "schema"
 )]
 struct Nested {
     pub a_string: String,
@@ -30,7 +30,7 @@ struct Nested {
 #[derive(cynic::InlineFragments)]
 #[cynic(
     schema_path = "../../../cynic/src/bin/simple.graphql",
-    query_module = "query_dsl",
+    query_module = "schema",
     graphql_type = "MyUnionType"
 )]
 enum MyOkUnionTYpe {

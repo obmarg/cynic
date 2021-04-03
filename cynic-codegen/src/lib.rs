@@ -3,9 +3,9 @@ pub mod fragment_arguments_derive;
 pub mod fragment_derive;
 pub mod inline_fragments_derive;
 pub mod input_object_derive;
-pub mod query_dsl;
 pub mod query_module;
 pub mod scalar_derive;
+pub mod use_schema;
 
 mod error;
 mod field_argument;
@@ -29,14 +29,25 @@ use schema::{load_schema, SchemaLoadError};
 use type_index::TypeIndex;
 use type_path::TypePath;
 
+#[deprecated(
+    since = "0.13.0",
+    note = "output_query_dsl is deprecated, use output_schema_module"
+)]
 pub fn output_query_dsl(
     schema: impl AsRef<std::path::Path>,
     output_path: impl AsRef<std::path::Path>,
 ) -> Result<(), SchemaLoadError> {
-    use query_dsl::QueryDslParams;
-    use std::io::Write;
+    output_schema_module(schema, output_path)
+}
 
-    let tokens = query_dsl::query_dsl_from_schema(QueryDslParams {
+pub fn output_schema_module(
+    schema: impl AsRef<std::path::Path>,
+    output_path: impl AsRef<std::path::Path>,
+) -> Result<(), SchemaLoadError> {
+    use std::io::Write;
+    use use_schema::QueryDslParams;
+
+    let tokens = use_schema::use_schema(QueryDslParams {
         schema_filename: schema.as_ref().to_str().unwrap().to_string(),
     })?;
 

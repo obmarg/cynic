@@ -10,7 +10,7 @@ pub struct List<T>(std::marker::PhantomData<T>);
 /// This trait has two type parameters:
 ///
 /// - `NamedType` should point to the marker trait of the underlying type in your
-///   `query_dsl` module.
+///   `schema` module.
 /// - `Wrappers` is used to specify the "wrapper types", for example if it is nullable
 ///    or in a list.
 pub trait InputType<NamedType, Wrappers>: serde::Serialize {

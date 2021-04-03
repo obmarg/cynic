@@ -4,8 +4,8 @@ fn main() {
     println!("{}", TestStruct::build(&TestArgs {}).query);
 }
 
-mod query_dsl {
-    cynic::query_dsl!("src/bin/simple.graphql");
+mod schema {
+    cynic::use_schema!("src/bin/simple.graphql");
 }
 
 #[derive(cynic::FragmentArguments)]
@@ -14,7 +14,7 @@ struct TestArgs {}
 #[derive(cynic::QueryFragment)]
 #[cynic(
     schema_path = "src/bin/simple.graphql",
-    query_module = "query_dsl",
+    query_module = "schema",
     argument_struct = "TestArgs"
 )]
 struct TestStruct {
@@ -28,7 +28,7 @@ struct TestStruct {
 }
 
 #[derive(cynic::QueryFragment)]
-#[cynic(schema_path = "src/bin/simple.graphql", query_module = "query_dsl")]
+#[cynic(schema_path = "src/bin/simple.graphql", query_module = "schema")]
 struct Nested {
     pub a_string: String,
     pub opt_string: Option<String>,
@@ -37,7 +37,7 @@ struct Nested {
 #[derive(cynic::QueryFragment)]
 #[cynic(
     schema_path = "src/bin/simple.graphql",
-    query_module = "query_dsl",
+    query_module = "schema",
     graphql_type = "TestStruct"
 )]
 struct Test {
@@ -50,7 +50,7 @@ struct Test {
 #[derive(cynic::InputObject, Clone)]
 #[cynic(
     schema_path = "src/bin/simple.graphql",
-    query_module = "query_dsl",
+    query_module = "schema",
     rename_all = "camelCase"
 )]
 struct AnInputType {
@@ -60,7 +60,7 @@ struct AnInputType {
 #[derive(cynic::Enum, Clone)]
 #[cynic(
     schema_path = "src/bin/simple.graphql",
-    query_module = "query_dsl",
+    query_module = "schema",
     rename_all = "SCREAMING_SNAKE_CASE"
 )]
 enum Dessert {
@@ -69,7 +69,7 @@ enum Dessert {
 }
 
 #[derive(cynic::InlineFragments)]
-#[cynic(schema_path = "src/bin/simple.graphql", query_module = "query_dsl")]
+#[cynic(schema_path = "src/bin/simple.graphql", query_module = "schema")]
 enum MyUnionType {
     TestStruct(Test),
     Nested(Nested),
@@ -77,17 +77,17 @@ enum MyUnionType {
 
 /*
 fn query() {
-    let query = query_dsl::Query::test_struct(selection_set::map2(
+    let query = schema::Query::test_struct(selection_set::map2(
         TestStruct::new,
-        query_dsl::TestStruct::field_one(),
-        query_dsl::TestStruct::nested(selection_set::map(
+        schema::TestStruct::field_one(),
+        schema::TestStruct::nested(selection_set::map(
             Nested::new,
-            query_dsl::Nested::a_string(),
+            schema::Nested::a_string(),
         )),
     ));
 }*/
 
-impl cynic::QueryRoot for query_dsl::TestStruct {}
+impl cynic::QueryRoot for schema::TestStruct {}
 
 // TODO: Some sort of ToQuery trait
 // That's only implemented when QueryFragment::SelectionSet::TypeLock == RootQuery
@@ -96,7 +96,7 @@ impl cynic::QueryRoot for query_dsl::TestStruct {}
 /*
 
 impl cynic::QueryFragment<'static> for TestStruct {
-    type SelectionSet = selection_set::SelectionSet<'static, Self, query_dsl::TestStruct>;
+    type SelectionSet = selection_set::SelectionSet<'static, Self, schema::TestStruct>;
     type Arguments = ArgStruct;
 
     fn query() -> Self::SelectionSet {
@@ -104,17 +104,17 @@ impl cynic::QueryFragment<'static> for TestStruct {
         // Is there a better way to write this?
         selection_set::map2(
             TestStruct::new,
-            query_dsl::TestStruct::field_one(),
-            query_dsl::TestStruct::nested(Nested::selection_set()),
+            schema::TestStruct::field_one(),
+            schema::TestStruct::nested(Nested::selection_set()),
         )
     }
 }
 
 impl cynic::QueryFragment<'static> for Nested {
-    type SelectionSet = selection_set::SelectionSet<'static, Self, query_dsl::Nested>;
+    type SelectionSet = selection_set::SelectionSet<'static, Self, schema::Nested>;
 
     fn query() -> Self::SelectionSet {
-        selection_set::map(Nested::new, query_dsl::Nested::a_string())
+        selection_set::map(Nested::new, schema::Nested::a_string())
     }
 }
 */
