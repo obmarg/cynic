@@ -9,6 +9,7 @@ description = "A GraphQL query builder & data mapper for Rust"
 keywords = ["graphql", "client", "api"]
 license = "MPL-2.0"
 documentation = "https://docs.rs/cynic"
+readme = "../README.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
