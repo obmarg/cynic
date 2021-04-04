@@ -39,6 +39,7 @@ reqwest = { version = "0.11", optional = true, features = ["json"] }
 [dev-dependencies]
 assert_matches = "1.4"
 chrono = { version = "0.4.19", features = ["serde"] }
+criterion = "0.3"
 insta = "1.9"
 maplit = "1.0.2"
 rstest = "0.12.0"
@@ -46,3 +47,7 @@ rstest = "0.12.0"
 [package.metadata.docs.rs]
 features = ["all"]
 rustdoc-args = ["--cfg", "docsrs"]
+
+[[bench]]
+name = "deser"
+harness = false
