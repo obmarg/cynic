@@ -37,10 +37,16 @@ surf = { version = "2.3", default-features = false, optional = true }
 reqwest = { version = "0.11", optional = true, features = ["json"] }
 
 [dev-dependencies]
+chrono = { version = "0.4.19", features = ["serde"]}
 maplit = "1.0.2"
 assert_matches = "1.4"
+criterion = "0.3"
 insta = "1.9"
 
 [package.metadata.docs.rs]
 features = ["all"]
 rustdoc-args = ["--cfg", "docsrs"]
+
+[[bench]]
+name = "deser"
+harness = false
