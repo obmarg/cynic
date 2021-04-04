@@ -44,7 +44,7 @@ fn build_query() -> cynic::Operation<'static, queries::CommentOnMutationSupportI
 }
 
 #[cfg(feature = "github")]
-#[cynic::query_module(schema_path = "../schemas/github.graphql", query_module = "schema")]
+#[cynic::schema_for_derives(file = "../schemas/github.graphql", module = "schema")]
 mod queries {
     use super::schema;
 

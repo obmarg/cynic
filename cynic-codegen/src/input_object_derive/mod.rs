@@ -21,12 +21,12 @@ pub use input::InputObjectDeriveInput;
 pub fn input_object_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
     use darling::FromDeriveInput;
 
-    let enum_span = ast.span();
+    let struct_span = ast.ident.span();
 
     match InputObjectDeriveInput::from_derive_input(ast) {
         Ok(input) => load_schema(&*input.schema_path)
             .map_err(|e| e.into_syn_error(input.schema_path.span()))
-            .and_then(|schema| input_object_derive_impl(input, &schema, enum_span))
+            .and_then(|schema| input_object_derive_impl(input, &schema, struct_span))
             .or_else(|e| Ok(e.to_compile_error())),
         Err(e) => Ok(e.write_errors()),
     }
@@ -59,7 +59,7 @@ pub fn input_object_derive_impl(
         return Err(syn::Error::new(
             input.graphql_type_span(),
             format!(
-                "Could not find an InputObject named {} in {}.{}",
+                "Could not find an input object named {} in {}.{}",
                 input.graphql_type_name(),
                 *input.schema_path,
                 format_guess(guess_field)
@@ -166,7 +166,7 @@ pub fn input_object_derive_impl(
     } else {
         Err(syn::Error::new(
             struct_span,
-            "Enum can only be derived from an enum".to_string(),
+            "InputObject can only be derived on a struct".to_string(),
         ))
     }
 }
@@ -217,7 +217,7 @@ fn join_fields<'a>(
                     syn::Error::new(
                         field.ident.span(),
                         format!(
-                            "Could not find a field {} in the GraphQL InputObject {}.{}",
+                            "Could not find a field {} in the GraphQL input object {}.{}",
                             transformed_ident.graphql_name(),
                             input_object_name,
                             format_guess(guess_field)

@@ -2,10 +2,7 @@
 
 fn main() {}
 
-#[cynic::query_module(
-    schema_path = r#"./../../../schemas/github.graphql"#,
-    query_module = "schema"
-)]
+#[cynic::schema_for_derives(file = r#"./../../../schemas/github.graphql"#, module = "schema")]
 mod queries {
     use super::{schema, types::*};
 
@@ -29,10 +26,7 @@ mod queries {
     }
 }
 
-#[cynic::query_module(
-    schema_path = r#"./../../../schemas/github.graphql"#,
-    query_module = "schema"
-)]
+#[cynic::schema_for_derives(file = r#"./../../../schemas/github.graphql"#, module = "schema")]
 mod types {
     use super::schema;
 

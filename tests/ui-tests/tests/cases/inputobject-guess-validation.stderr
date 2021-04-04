@@ -1,16 +1,11 @@
-error: Could not find a field fieid in the GraphQL InputObject IssueOrder. Did you mean field?
-  --> $DIR/inputobject-guess-validation.rs:28:13
+error: Could not find a field fieid in the GraphQL input object IssueOrder. Did you mean field?
+  --> $DIR/inputobject-guess-validation.rs:25:13
    |
-28 |         pub fieid: IssueOrderField,
+25 |         pub fieid: IssueOrderField,
    |             ^^^^^
 
 error: This InputObject is missing these required fields: field
- --> $DIR/inputobject-guess-validation.rs:5:1
-  |
-5 | / #[cynic::query_module(
-6 | |     schema_path = r#"./../../../schemas/github.graphql"#,
-7 | |     query_module = "schema"
-8 | | )]
-  | |__^
-  |
-  = note: this error originates in an attribute macro (in Nightly builds, run with -Z macro-backtrace for more info)
+  --> $DIR/inputobject-guess-validation.rs:23:16
+   |
+23 |     pub struct IssueOrder {
+   |                ^^^^^^^^^^

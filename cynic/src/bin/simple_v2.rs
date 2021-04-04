@@ -9,12 +9,7 @@ mod schema {
     cynic::use_schema!("src/bin/simple.graphql");
 }
 
-#[cynic::query_module(
-    schema_path = "src/bin/simple.graphql",
-    // TODO: Make query_module optional (automatically does it if missing)
-    // Some complications around what to do with scalars here though...
-    query_module = "schema"
-)]
+#[cynic::schema_for_derives(file = "src/bin/simple.graphql")]
 mod queries {
     use super::schema;
 

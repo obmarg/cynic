@@ -1,7 +1,7 @@
 error[E0308]: mismatched types
-  --> $DIR/wrong-enum-type.rs:16:21
+  --> $DIR/wrong-enum-type.rs:13:21
    |
-16 |         pub status: CheckConclusionState,
+13 |         pub status: CheckConclusionState,
    |                     ^^^^^^^^^^^^^^^^^^^^ expected enum `CheckStatusState`, found enum `schema::CheckConclusionState`
    |
    = note: expected struct `SelectionSet<'_, _, CheckStatusState>`

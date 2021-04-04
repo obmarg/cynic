@@ -2,9 +2,9 @@
 source: cynic-querygen/tests/starwars-tests.rs
 expression: "document_to_fragment_structs(query, schema,\n                             &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
 ---
-#[cynic::query_module(
-    schema_path = r#"schema.graphql"#,
-    query_module = "schema",
+#[cynic::schema_for_derives(
+    file = r#"schema.graphql"#,
+    module = "schema",
 )]
 mod queries {
     use super::schema;
