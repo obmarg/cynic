@@ -11,6 +11,8 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.13.0 - 2021-04-04
+
 ### Breaking Changes
 
 There are a number of breaking changes here, though they shouldn't require too
@@ -92,20 +94,20 @@ much work for users to update. An example of an upgrade can be found
   selected on a composite.
 - Cynic will now error if a QueryFragment selects no fields.
 
-## v0.12.3 - 2020-04-01
+## v0.12.3 - 2021-04-01
 
 ## Bug Fixes
 
 - The `cynic::Scalar` derive output no longer contains a spurious `?` that
   clippy warns about in Rust 1.51.
 
-## v0.12.2 - 2020-02-22
+## v0.12.2 - 2021-02-22
 
 ### Bug Fixes
 
 - Hopefully fixed the build of documentation for docs.rs
 
-## v0.12.1 - 2020-02-12
+## v0.12.1 - 2021-02-12
 
 ### Bug Fixes
 
@@ -115,7 +117,7 @@ much work for users to update. An example of an upgrade can be found
 - The generator no longer prints out an empty types module when there are
   no custom scalars.
 
-## v0.12.0 - 2020-02-08
+## v0.12.0 - 2021-02-08
 
 ### Breaking Changes
 
