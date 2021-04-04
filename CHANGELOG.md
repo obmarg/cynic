@@ -52,6 +52,8 @@ all APIs might be changed.
 ### New Features
 
 - Support for building and decoding subscription queries.
+- Alpha quality support for subscriptions over websockets with
+  [`graphql-ws-client`](https://github.com/obmarg/graphql-ws-client).
 
 ### Deprecated
 
