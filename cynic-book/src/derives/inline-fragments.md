@@ -13,10 +13,7 @@ For example, the GitHub API has an `Assignee` union type which could be queried 
 
 ```rust
 #[derive(cynic::InlineFragments)]
-#[cynic(
-    schema_path = "github.graphql",
-    query_module = "schema",
-)]
+#[cynic(schema_path = "github.graphql")]
 enum Assignee {
     Bot(Bot),
     Mannequin(Mannequin)
@@ -37,10 +34,7 @@ variant will be output whenever an unhandled type is returned.
 
 ```rust
 #[derive(cynic::InlineFragments)]
-#[cynic(
-    schema_path = "github.graphql",
-    query_module = "schema",
-)]
+#[cynic(schema_path = "github.graphql")]
 enum Assignee {
     Bot(Bot),
     User(User)
@@ -60,10 +54,7 @@ also select some fields from the interface:
 
 ```rust
 #[derive(cynic::InlineFragments, Debug)]
-#[cynic(
-    schema_path = "github.graphql",
-    query_module = "schema",
-)]
+#[cynic(schema_path = "github.graphql")]
 pub enum Actor {
     User(User),
 
@@ -72,10 +63,7 @@ pub enum Actor {
 }
 
 #[derive(cynic::QueryFragment)]
-#[cynic(
-    schema_path = "github.graphql",
-    query_module = "schema",
-)]
+#[cynic(schema_path = "github.graphql")]
 enum ActorFallback {
     pub login: String
 }
@@ -96,10 +84,11 @@ enum itself:
   but
   can be provided by nesting the InlineFragments inside a query module
   with this attr.
-- `query_module` tells cynic where to find the query module - that is a
-  module that has called the `schema!` macro. This is required but
-  can also be provided by nesting the QueryFragment inside a query
-  module.
+- `schema_module` tells cynic where to find the schema module - that is a
+  module that has called the `use_schema!` macro. This will default to
+  `schema` if not provided. An override can also be provided by nesting the
+  InlineFragments inside a module with the `schema_for_derives` attribute
+  macro.
 
 #### Variant Attributes
 

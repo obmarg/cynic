@@ -110,20 +110,20 @@ fn insert_cynic_attrs(args: &AddSchemaAttrParams, item: syn::Item) -> syn::Item 
 
 #[derive(Debug)]
 struct RequiredAttributes {
-    pub needs_schema_path: bool,
-    pub needs_query_module: bool,
+    needs_schema_path: bool,
+    needs_schema_module: bool,
 }
 
 impl RequiredAttributes {
     fn for_derive(d: &Derive) -> RequiredAttributes {
         match d {
             Derive::Scalar => RequiredAttributes {
-                needs_query_module: true,
                 needs_schema_path: false,
+                needs_schema_module: true,
             },
             _ => RequiredAttributes {
-                needs_query_module: true,
                 needs_schema_path: true,
+                needs_schema_module: true,
             },
         }
     }
@@ -138,8 +138,8 @@ impl RequiredAttributes {
                         if let NestedMeta::Meta(Meta::NameValue(name_val)) = nested {
                             if name_val.path.is_ident("schema_path") {
                                 self.needs_schema_path = false;
-                            } else if name_val.path.is_ident("query_module") {
-                                self.needs_query_module = false;
+                            } else if name_val.path.is_ident("schema_module") {
+                                self.needs_schema_module = false;
                             }
                         }
                     }
@@ -158,12 +158,12 @@ impl RequiredAttributes {
             })
         }
 
-        if self.needs_query_module {
+        if self.needs_schema_module {
             let query_module =
                 proc_macro2::Literal::string(args.module.as_deref().unwrap_or("schema"));
 
             attrs.push(syn::parse_quote! {
-                #[cynic(query_module = #query_module)]
+                #[cynic(schema_module = #query_module)]
             })
         }
     }
@@ -205,7 +205,7 @@ mod tests {
             syn::parse_quote! {
                 #[derive(cynic::QueryFragment)]
                 #[cynic(schema_path = "test.graphql")]
-                #[cynic(query_module = "schema")]
+                #[cynic(schema_module = "schema")]
                 struct Test {
                     a: String
                 }
@@ -217,7 +217,7 @@ mod tests {
     fn test_insert_cynic_attrs_when_already_inserted() {
         let item: syn::Item = syn::parse_quote! {
             #[derive(cynic::QueryFragment)]
-            #[cynic(schema_path = "other.graphql", query_module = "something")]
+            #[cynic(schema_path = "other.graphql", schema_module = "something")]
             struct Test {
                 a: String
             }
@@ -229,7 +229,7 @@ mod tests {
             result,
             syn::parse_quote! {
                 #[derive(cynic::QueryFragment)]
-                #[cynic(schema_path = "other.graphql", query_module = "something")]
+                #[cynic(schema_path = "other.graphql", schema_module = "something")]
                 struct Test {
                     a: String
                 }

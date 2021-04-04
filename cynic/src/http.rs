@@ -34,7 +34,7 @@ mod surf_ext {
     /// # #[derive(cynic::QueryFragment)]
     /// # #[cynic(
     /// #    schema_path = "../schemas/starwars.schema.graphql",
-    /// #    query_module = "schema",
+    /// #    schema_module = "schema",
     /// # )]
     /// # struct Film {
     /// #    title: Option<String>,
@@ -44,7 +44,7 @@ mod surf_ext {
     /// # #[derive(cynic::QueryFragment)]
     /// # #[cynic(
     /// #     schema_path = "../schemas/starwars.schema.graphql",
-    /// #     query_module = "schema",
+    /// #     schema_module = "schema",
     /// #     graphql_type = "Root"
     /// # )]
     /// # struct FilmDirectorQuery {
@@ -126,7 +126,7 @@ mod reqwest_ext {
     /// # #[derive(cynic::QueryFragment)]
     /// # #[cynic(
     /// #    schema_path = "../schemas/starwars.schema.graphql",
-    /// #    query_module = "schema",
+    /// #    schema_module = "schema",
     /// # )]
     /// # struct Film {
     /// #    title: Option<String>,
@@ -136,7 +136,7 @@ mod reqwest_ext {
     /// # #[derive(cynic::QueryFragment)]
     /// # #[cynic(
     /// #     schema_path = "../schemas/starwars.schema.graphql",
-    /// #     query_module = "schema",
+    /// #     schema_module = "schema",
     /// #     graphql_type = "Root"
     /// # )]
     /// # struct FilmDirectorQuery {
@@ -220,7 +220,7 @@ mod reqwest_blocking_ext {
     /// # #[derive(cynic::QueryFragment)]
     /// # #[cynic(
     /// #    schema_path = "../schemas/starwars.schema.graphql",
-    /// #    query_module = "schema",
+    /// #    schema_module = "schema",
     /// # )]
     /// # struct Film {
     /// #    title: Option<String>,
@@ -230,7 +230,7 @@ mod reqwest_blocking_ext {
     /// # #[derive(cynic::QueryFragment)]
     /// # #[cynic(
     /// #     schema_path = "../schemas/starwars.schema.graphql",
-    /// #     query_module = "schema",
+    /// #     schema_module = "schema",
     /// #     graphql_type = "Root"
     /// # )]
     /// # struct FilmDirectorQuery {

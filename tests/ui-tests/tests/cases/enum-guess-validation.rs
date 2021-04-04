@@ -7,7 +7,6 @@ mod schema {
 #[derive(cynic::Enum, Clone, Copy, Debug)]
 #[cynic(
     schema_path = "../../../cynic/src/bin/simple.graphql",
-    query_module = "schema",
     graphql_type = "Desseqt"
 )]
 enum Dessert {

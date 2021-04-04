@@ -75,7 +75,7 @@ pub fn input_object_derive_impl(
     if let darling::ast::Data::Struct(fields) = &input.data {
         let ident = &input.ident;
         let input_marker_ident = Ident::for_type(&input.graphql_type_name());
-        let query_module = Ident::for_module(&input.query_module);
+        let query_module = Ident::for_module(&input.schema_module());
         let input_object_name = ident.to_string();
 
         let pairs = match join_fields(

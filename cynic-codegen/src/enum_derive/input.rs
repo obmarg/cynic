@@ -10,13 +10,31 @@ pub struct EnumDeriveInput {
     pub(super) data: darling::ast::Data<EnumDeriveVariant, ()>,
 
     pub schema_path: SpannedValue<String>,
-    pub query_module: SpannedValue<String>,
+
+    // query_module is deprecated, remove eventually.
+    #[darling(default)]
+    query_module: Option<SpannedValue<String>>,
+    #[darling(default, rename = "schema_module")]
+    schema_module_: Option<SpannedValue<String>>,
 
     #[darling(default)]
     pub graphql_type: Option<SpannedValue<String>>,
 
     #[darling(default)]
     pub(super) rename_all: Option<RenameAll>,
+}
+
+impl EnumDeriveInput {
+    pub fn schema_module(&self) -> SpannedValue<String> {
+        if let Some(schema_module) = &self.schema_module_ {
+            return schema_module.clone();
+        }
+        if let Some(query_module) = &self.query_module {
+            return query_module.clone();
+        }
+
+        SpannedValue::new("schema".into(), Span::call_site())
+    }
 }
 
 #[derive(Debug, darling::FromVariant)]

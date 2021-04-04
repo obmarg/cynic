@@ -20,7 +20,6 @@ struct Job {
 #[derive(cynic::QueryFragment, Debug)]
 #[cynic(
     schema_path = "../schemas/graphql.jobs.graphql",
-    query_module = "schema",
     graphql_type = "Query"
 )]
 struct JobsQuery {

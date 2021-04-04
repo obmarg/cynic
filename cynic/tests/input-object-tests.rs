@@ -14,7 +14,6 @@ fn test_input_object_renames() {
     #[cynic(
         graphql_type = "BlogPostInput",
         schema_path = "tests/test-schema.graphql",
-        query_module = "schema",
         rename_all = "lowercase"
     )]
     struct BlogPost {

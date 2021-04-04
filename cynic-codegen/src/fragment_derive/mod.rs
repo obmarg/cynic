@@ -72,12 +72,12 @@ pub fn fragment_derive_impl(
 
     if let darling::ast::Data::Struct(fields) = &input.data {
         let graphql_name = &(input.graphql_type_name());
-        let query_module = input.query_module;
+        let schema_module = input.schema_module();
         let fragment_impl = FragmentImpl::new_for(
             &fields,
             &input.ident,
             &object,
-            Ident::new_spanned(&*query_module, query_module.span()).into(),
+            Ident::new_spanned(&*schema_module, schema_module.span()).into(),
             graphql_name,
             argument_struct,
         )?;

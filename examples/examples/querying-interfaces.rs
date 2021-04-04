@@ -39,7 +39,6 @@ struct Planet {
 #[derive(cynic::QueryFragment, Debug)]
 #[cynic(
     schema_path = "../schemas/starwars.schema.graphql",
-    query_module = "schema",
     graphql_type = "Node"
 )]
 struct OtherNode {
@@ -54,7 +53,6 @@ struct Arguments {
 #[derive(cynic::QueryFragment, Debug)]
 #[cynic(
     schema_path = "../schemas/starwars.schema.graphql",
-    query_module = "schema",
     graphql_type = "Root",
     argument_struct = "Arguments"
 )]

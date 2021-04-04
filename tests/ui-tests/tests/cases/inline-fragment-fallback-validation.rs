@@ -7,7 +7,6 @@ mod schema {
 #[derive(cynic::InlineFragments)]
 #[cynic(
     schema_path = "../../../cynic/src/bin/simple.graphql",
-    query_module = "schema",
     graphql_type = "MyUnionType"
 )]
 enum MyFailingUnionType {
@@ -30,7 +29,6 @@ struct Nested {
 #[derive(cynic::InlineFragments)]
 #[cynic(
     schema_path = "../../../cynic/src/bin/simple.graphql",
-    query_module = "schema",
     graphql_type = "MyUnionType"
 )]
 enum MyOkUnionTYpe {

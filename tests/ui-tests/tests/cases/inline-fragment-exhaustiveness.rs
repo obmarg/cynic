@@ -27,7 +27,6 @@ struct Nested {
 #[derive(cynic::QueryFragment)]
 #[cynic(
     schema_path = "../../../cynic/src/bin/simple.graphql",
-    query_module = "schema",
     graphql_type = "TestStruct"
 )]
 struct Test {
