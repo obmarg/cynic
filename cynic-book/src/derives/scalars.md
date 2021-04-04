@@ -35,7 +35,7 @@ You can also derive `Scalar` on any newtype structs:
 
 ```rust
 #[derive(cynic::Scalar, serde::Serialize)]
-#[cynic(query_module = "schema")]
+#[cynic(schema_module = "schema")]
 struct MyScalar(String);
 ```
 
@@ -55,6 +55,6 @@ A Scalar derive can be configured with several attributes on the struct itself:
 - `graphql_type = "AType"` can be provided if the type of the struct differs
   from the type of and tells cynic the name of the Scalar in the schema. This
   defaults to the name of the struct if not provided.
-- `query_module` tells cynic where to find the query module - that is a module
+- `schema_module` tells cynic where to find the query module - that is a module
   that has called the `use_schema!` macro. This is required but can also be
   provided by nesting the QueryFragment inside a query module.

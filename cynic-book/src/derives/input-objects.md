@@ -52,6 +52,11 @@ An InputObject can be configured with several attributes on the struct itself:
 - `rename_all="camelCase"` tells cynic to rename all the rust field names with
   a particular rule to match their GraphQL counterparts. If not provided this
   defaults to camelCase to be consistent with GraphQL conventions.
+- `schema_module` tells cynic where to find the schema module - that is a
+  module that has called the `use_schema!` macro. This will default to
+  `schema` if not provided. An override can also be provided by nesting the
+  InputObject inside a module with the `schema_for_derives` attribute
+  macro.
 
 <!-- TODO: list of the rename rules, possibly pulled from codegen docs -->
 

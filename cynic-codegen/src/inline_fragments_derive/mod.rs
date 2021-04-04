@@ -65,11 +65,12 @@ pub(crate) fn inline_fragments_derive_impl(
         exhaustiveness_check(variants, &target_type, &schema)?;
 
         let fallback = check_fallback(variants, &target_type)?;
+        let schema_module = input.schema_module();
 
         let inline_fragments_impl = InlineFragmentsImpl {
             target_struct: input.ident.clone(),
             type_lock: TypePath::concat(&[
-                Ident::new_spanned(&*input.query_module, input.query_module.span()).into(),
+                Ident::new_spanned(&*schema_module, schema_module.span()).into(),
                 Ident::for_type(&input.graphql_type_name()).into(),
             ]),
             argument_struct,

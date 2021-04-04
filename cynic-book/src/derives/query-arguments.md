@@ -25,7 +25,6 @@ attribute on the fields where you wish to pass them.
 #[derive(cynic::QueryFragment, Debug)]
 #[cynic(
     schema_path = "examples/starwars.schema.graphql",
-    query_module = "schema",
     graphql_type = "Root",
     argument_struct = "FilmArguments"
 )]

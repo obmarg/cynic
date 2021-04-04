@@ -1,13 +1,13 @@
 error: Could not find an enum named Desseqt in ../../../cynic/src/bin/simple.graphql. Did you mean Dessert?
-  --> $DIR/enum-guess-validation.rs:11:5
+  --> $DIR/enum-guess-validation.rs:10:5
    |
-11 |     graphql_type = "Desseqt"
+10 |     graphql_type = "Desseqt"
    |     ^^^^^^^^^^^^
 
 warning: variant `ICE_CREAM` should have an upper camel case name
-  --> $DIR/enum-guess-validation.rs:15:5
+  --> $DIR/enum-guess-validation.rs:14:5
    |
-15 |     ICE_CREAM,
+14 |     ICE_CREAM,
    |     ^^^^^^^^^ help: convert the identifier to upper camel case: `IceCream`
    |
    = note: `#[warn(non_camel_case_types)]` on by default

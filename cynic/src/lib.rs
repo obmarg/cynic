@@ -50,10 +50,7 @@
 //! # }
 //!
 //! #[derive(cynic::QueryFragment)]
-//! #[cynic(
-//!     schema_path = "../schemas/starwars.schema.graphql",
-//!     query_module = "schema",
-//! )]
+//! #[cynic(schema_path = "../schemas/starwars.schema.graphql")]
 //! struct Film {
 //!     title: Option<String>,
 //!     director: Option<String>
@@ -68,7 +65,6 @@
 //! #[derive(cynic::QueryFragment)]
 //! #[cynic(
 //!     schema_path = "../schemas/starwars.schema.graphql",
-//!     query_module = "schema",
 //!     graphql_type = "Root"
 //! )]
 //! struct FilmDirectorQuery {
@@ -115,7 +111,6 @@
 //! # #[derive(cynic::QueryFragment)]
 //! # #[cynic(
 //! #    schema_path = "../schemas/starwars.schema.graphql",
-//! #    query_module = "schema",
 //! # )]
 //! # struct Film {
 //! #    title: Option<String>,
@@ -133,7 +128,6 @@
 //! #[derive(cynic::QueryFragment)]
 //! #[cynic(
 //!     schema_path = "../schemas/starwars.schema.graphql",
-//!     query_module = "schema",
 //!     graphql_type = "Root",
 //!     // By adding the `argument_struct` parameter to our `QueryFragment` we've made a variable
 //!     // named `args` avaiable for use in the `arguments` attribute.

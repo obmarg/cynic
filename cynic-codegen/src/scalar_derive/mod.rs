@@ -18,6 +18,8 @@ pub fn scalar_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> 
 pub fn scalar_derive_impl(input: ScalarDeriveInput) -> Result<TokenStream, syn::Error> {
     use quote::quote;
 
+    let schema_module = input.schema_module();
+
     // We're assuming that Darling has already validated this as a newtype enum,
     // so we can get away with panicing here.
     let field = input
@@ -36,7 +38,7 @@ pub fn scalar_derive_impl(input: ScalarDeriveInput) -> Result<TokenStream, syn::
         ident.clone().into()
     };
     let type_lock = TypePath::concat(&[
-        Ident::new(input.query_module.as_ref()).into(),
+        Ident::new(schema_module.as_ref()).into(),
         type_lock_ident.into(),
     ]);
 

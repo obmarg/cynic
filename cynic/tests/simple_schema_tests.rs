@@ -8,7 +8,7 @@ struct TestArgs {}
 #[derive(cynic::QueryFragment, PartialEq, Debug)]
 #[cynic(
     schema_path = "src/bin/simple.graphql",
-    query_module = "schema",
+
     //argument_struct = "TestArgs"
 )]
 struct TestStruct {
@@ -32,7 +32,6 @@ struct Nested {
 #[derive(cynic::QueryFragment, PartialEq, Debug)]
 #[cynic(
     schema_path = "src/bin/simple.graphql",
-    query_module = "schema",
     graphql_type = "Query",
     argument_struct = "TestArgs"
 )]
@@ -43,7 +42,6 @@ struct TestQuery {
 #[derive(cynic::Enum, Clone, Debug, PartialEq)]
 #[cynic(
     schema_path = "src/bin/simple.graphql",
-    query_module = "schema",
     rename_all = "SCREAMING_SNAKE_CASE"
 )]
 pub enum Dessert {

@@ -8,7 +8,12 @@ pub struct InlineFragmentsDeriveInput {
     pub(super) data: darling::ast::Data<SpannedValue<InlineFragmentsDeriveVariant>, ()>,
 
     pub schema_path: SpannedValue<String>,
-    pub query_module: SpannedValue<String>,
+
+    // query_module is deprecated, remove eventually.
+    #[darling(default)]
+    query_module: Option<SpannedValue<String>>,
+    #[darling(default, rename = "schema_module")]
+    schema_module_: Option<SpannedValue<String>>,
 
     #[darling(default)]
     pub graphql_type: Option<SpannedValue<String>>,
@@ -17,6 +22,17 @@ pub struct InlineFragmentsDeriveInput {
 }
 
 impl InlineFragmentsDeriveInput {
+    pub fn schema_module(&self) -> SpannedValue<String> {
+        if let Some(schema_module) = &self.schema_module_ {
+            return schema_module.clone();
+        }
+        if let Some(query_module) = &self.query_module {
+            return query_module.clone();
+        }
+
+        SpannedValue::new("schema".into(), Span::call_site())
+    }
+
     pub fn graphql_type_name(&self) -> String {
         self.graphql_type
             .as_ref()
