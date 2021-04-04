@@ -1,7 +1,7 @@
 fn main() {}
-#[cynic::query_module(
-    schema_path = r#"./../../../schemas/starwars.schema.graphql"#,
-    query_module = "schema"
+#[cynic::schema_for_derives(
+    file = r#"./../../../schemas/starwars.schema.graphql"#,
+    module = "schema"
 )]
 mod queries {
     use super::schema;

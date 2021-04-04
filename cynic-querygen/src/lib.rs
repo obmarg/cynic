@@ -102,9 +102,9 @@ pub fn document_to_fragment_structs(
 
     let mut output = String::new();
 
-    writeln!(output, "#[cynic::query_module(").unwrap();
-    writeln!(output, "    schema_path = r#\"{}\"#,", options.schema_path).unwrap();
-    writeln!(output, "    query_module = \"{}\",", options.query_module).unwrap();
+    writeln!(output, "#[cynic::schema_for_derives(").unwrap();
+    writeln!(output, "    file = r#\"{}\"#,", options.schema_path).unwrap();
+    writeln!(output, "    module = \"{}\",", options.query_module).unwrap();
     writeln!(output, ")]\nmod queries {{").unwrap();
 
     let mod_output = &mut indented(&mut output, 4);

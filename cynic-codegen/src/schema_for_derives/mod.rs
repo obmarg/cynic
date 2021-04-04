@@ -7,24 +7,46 @@ mod utils;
 use utils::Derive;
 
 #[derive(Debug, FromMeta)]
-struct TransformModuleArgs {
-    schema_path: SpannedValue<String>,
-    // TODO: consider getting rid of query_module at some point (or at least making optional)
-    query_module: SpannedValue<String>,
+struct AddSchemaAttrParams {
+    file: SpannedValue<String>,
+
+    #[darling(default)]
+    module: Option<String>,
 }
 
-pub fn transform_query_module(
+pub fn add_schema_attrs_to_derives(
     args: syn::AttributeArgs,
     query_module: syn::ItemMod,
 ) -> Result<TokenStream, syn::Error> {
-    match TransformModuleArgs::from_list(&args) {
-        Ok(args) => Ok(transform_query_module_impl(args, query_module)),
+    match AddSchemaAttrParams::from_list(&args) {
+        Ok(args) => Ok(add_schema_attrs_to_derives_impl(args, query_module)),
         Err(e) => Ok(e.write_errors()),
     }
 }
 
-fn transform_query_module_impl(
-    args: TransformModuleArgs,
+#[derive(Debug, FromMeta)]
+struct QueryModuleParams {
+    schema_path: SpannedValue<String>,
+    // TODO: consider getting rid of query_module at some point (or at least making optional)
+    query_module: Option<String>,
+}
+
+#[deprecated(
+    since = "0.13.0",
+    note = "add_schema_attrs_via_query_module is deprecated in favour of add_schema_attrs_to_derives"
+)]
+pub fn add_schema_attrs_via_query_module(
+    args: syn::AttributeArgs,
+    query_module: syn::ItemMod,
+) -> Result<TokenStream, syn::Error> {
+    match QueryModuleParams::from_list(&args) {
+        Ok(args) => Ok(add_schema_attrs_to_derives_impl(args.into(), query_module)),
+        Err(e) => Ok(e.write_errors()),
+    }
+}
+
+fn add_schema_attrs_to_derives_impl(
+    args: AddSchemaAttrParams,
     query_module: syn::ItemMod,
 ) -> TokenStream {
     use quote::quote;
@@ -51,7 +73,7 @@ fn transform_query_module_impl(
     }
 }
 
-fn insert_cynic_attrs(args: &TransformModuleArgs, item: syn::Item) -> syn::Item {
+fn insert_cynic_attrs(args: &AddSchemaAttrParams, item: syn::Item) -> syn::Item {
     use syn::Item;
 
     let derives = utils::find_derives(&item);
@@ -128,19 +150,30 @@ impl RequiredAttributes {
         self
     }
 
-    fn add_missing_attributes(self, attrs: &mut Vec<syn::Attribute>, args: &TransformModuleArgs) {
+    fn add_missing_attributes(self, attrs: &mut Vec<syn::Attribute>, args: &AddSchemaAttrParams) {
         if self.needs_schema_path {
-            let schema_path = proc_macro2::Literal::string(&args.schema_path);
+            let schema_path = proc_macro2::Literal::string(&args.file);
             attrs.push(syn::parse_quote! {
                 #[cynic(schema_path = #schema_path)]
             })
         }
 
         if self.needs_query_module {
-            let query_module = proc_macro2::Literal::string(&args.query_module);
+            let query_module =
+                proc_macro2::Literal::string(args.module.as_deref().unwrap_or("schema"));
+
             attrs.push(syn::parse_quote! {
                 #[cynic(query_module = #query_module)]
             })
+        }
+    }
+}
+
+impl From<QueryModuleParams> for AddSchemaAttrParams {
+    fn from(params: QueryModuleParams) -> Self {
+        AddSchemaAttrParams {
+            file: params.schema_path,
+            module: params.query_module,
         }
     }
 }
@@ -149,10 +182,10 @@ impl RequiredAttributes {
 mod tests {
     use super::*;
 
-    fn args() -> TransformModuleArgs {
-        TransformModuleArgs {
-            schema_path: "test.graphql".to_string().into(),
-            query_module: "schema".to_string().into(),
+    fn args() -> AddSchemaAttrParams {
+        AddSchemaAttrParams {
+            file: "test.graphql".to_string().into(),
+            module: "schema".to_string().into(),
         }
     }
 

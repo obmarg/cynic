@@ -61,6 +61,8 @@ all APIs might be changed.
 - `query_dsl!` has been deprecated in favour of a similar macro named `use_schema!`
 - It's now recommended that you name your `query_dsl` module `schema` instead.
 - `cynic_codegen::output_query_dsl` is now named `cynic_codegen::output_schema_module`.
+- The `query_module` attribute macro has been deprecated in favour of
+  `schema_for_derives`
 
 ### Bug Fixes
 
@@ -70,6 +72,8 @@ all APIs might be changed.
   the field type.
 - You no longer need to define Scalars you are not using
 - If a server adds a new scalar it will no longer break cynic clients.
+- Fixed a case where InputObject errors were being shown against the
+  `query_module` attr of the module they were defined in.
 
 ### Changes
 
