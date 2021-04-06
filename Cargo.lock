@@ -98,6 +98,16 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "9b34d609dfbaf33d6889b2b7106d3ca345eacad44200913df5ba02bfd31d2ba9"
 
 [[package]]
+name = "async-attributes"
+version = "1.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a3203e79f4dd9bdda415ed03cf14dae5a2bf775c683a00f94e9cd1faf0f596e5"
+dependencies = [
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "async-channel"
 version = "1.6.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -217,15 +227,33 @@ dependencies = [
 ]
 
 [[package]]
+name = "async-process"
+version = "1.0.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ef37b86e2fa961bae5a4d212708ea0154f904ce31d1a4a7f47e1bbc33a0c040b"
+dependencies = [
+ "async-io",
+ "blocking",
+ "cfg-if 1.0.0",
+ "event-listener",
+ "futures-lite",
+ "once_cell",
+ "signal-hook",
+ "winapi 0.3.9",
+]
+
+[[package]]
 name = "async-std"
 version = "1.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d9f06685bad74e0570f5213741bea82158279a4103d988e57bfada11ad230341"
 dependencies = [
+ "async-attributes",
  "async-channel",
  "async-global-executor",
  "async-io",
  "async-lock",
+ "async-process",
  "crossbeam-utils",
  "futures-channel",
  "futures-core",
@@ -258,6 +286,32 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn",
+]
+
+[[package]]
+name = "async-tungstenite"
+version = "0.13.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "07b30ef0ea5c20caaa54baea49514a206308989c68be7ecd86c7f956e4da6378"
+dependencies = [
+ "async-std",
+ "futures-io",
+ "futures-util",
+ "log",
+ "pin-project-lite 0.2.6",
+ "tungstenite",
+]
+
+[[package]]
+name = "async_executors"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fad39ee4b14dd2111eea79e901a8afd4e05bbda31b0e072dc25cfc3cbdcc8663"
+dependencies = [
+ "async-std",
+ "futures-task",
+ "futures-util",
+ "rustc_version 0.3.3",
 ]
 
 [[package]]
@@ -588,7 +642,7 @@ version = "0.13.0"
 dependencies = [
  "assert_matches",
  "chrono",
- "cynic-proc-macros",
+ "cynic-proc-macros 0.13.0",
  "insta",
  "json-decode",
  "maplit",
@@ -596,6 +650,19 @@ dependencies = [
  "serde",
  "serde_json",
  "surf",
+ "thiserror",
+]
+
+[[package]]
+name = "cynic"
+version = "0.13.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "61b3f895dfaadd59d0b0d22193eb0d7fd596c266309163f99fd1d9e49f2ce790"
+dependencies = [
+ "cynic-proc-macros 0.13.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "json-decode",
+ "serde",
+ "serde_json",
  "thiserror",
 ]
 
@@ -618,13 +685,33 @@ dependencies = [
 ]
 
 [[package]]
+name = "cynic-codegen"
+version = "0.13.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d1c8d7c40582dcd146126025928ee1039973c166f40a5dee460444c05629a415"
+dependencies = [
+ "Inflector",
+ "darling",
+ "graphql-parser",
+ "lazy_static",
+ "proc-macro2",
+ "quote",
+ "strsim",
+ "syn",
+]
+
+[[package]]
 name = "cynic-examples"
 version = "0.13.0"
 dependencies = [
  "async-std",
+ "async-tungstenite",
+ "async_executors",
  "chrono",
- "cynic",
- "cynic-codegen",
+ "cynic 0.13.0",
+ "cynic-codegen 0.13.0",
+ "futures",
+ "graphql-ws-client",
  "insta",
  "reqwest 0.11.2",
  "serde_json",
@@ -636,7 +723,17 @@ dependencies = [
 name = "cynic-proc-macros"
 version = "0.13.0"
 dependencies = [
- "cynic-codegen",
+ "cynic-codegen 0.13.0",
+ "syn",
+]
+
+[[package]]
+name = "cynic-proc-macros"
+version = "0.13.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f76aebf33e68453642574cfbb92c0b569ab821248d40014aa6451fa8275c9d44"
+dependencies = [
+ "cynic-codegen 0.13.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "syn",
 ]
 
@@ -1073,6 +1170,22 @@ dependencies = [
 ]
 
 [[package]]
+name = "graphql-ws-client"
+version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "23023204afd599edea7ebf536bd725cb1e7e3be063c7856baf7bacd06c71bc30"
+dependencies = [
+ "async-tungstenite",
+ "async_executors",
+ "cynic 0.13.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "futures",
+ "serde",
+ "serde_json",
+ "thiserror",
+ "uuid",
+]
+
+[[package]]
 name = "h2"
 version = "0.2.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1341,6 +1454,15 @@ name = "infer"
 version = "0.2.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "64e9829a50b42bb782c1df523f78d332fe371b10c661e78b7a3c34b0198e9fac"
+
+[[package]]
+name = "input_buffer"
+version = "0.4.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "f97967975f448f1a7ddb12b0bc41069d09ed6a1c161a92687e057325db35d413"
+dependencies = [
+ "bytes 1.0.1",
+]
 
 [[package]]
 name = "insta"
@@ -1873,7 +1995,7 @@ dependencies = [
 name = "querygen-compile-run"
 version = "0.1.0"
 dependencies = [
- "cynic",
+ "cynic 0.13.0",
  "cynic-querygen",
  "reqwest 0.10.10",
  "trybuild",
@@ -2318,6 +2440,19 @@ dependencies = [
 ]
 
 [[package]]
+name = "sha-1"
+version = "0.9.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "dfebf75d25bd900fd1e7d11501efab59bc846dbc76196839663e6637bba9f25f"
+dependencies = [
+ "block-buffer",
+ "cfg-if 1.0.0",
+ "cpuid-bool 0.1.2",
+ "digest",
+ "opaque-debug",
+]
+
+[[package]]
 name = "sha1"
 version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2334,6 +2469,25 @@ dependencies = [
  "cpuid-bool 0.1.2",
  "digest",
  "opaque-debug",
+]
+
+[[package]]
+name = "signal-hook"
+version = "0.3.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "ef33d6d0cd06e0840fba9985aab098c147e67e05cee14d412d3345ed14ff30ac"
+dependencies = [
+ "libc",
+ "signal-hook-registry",
+]
+
+[[package]]
+name = "signal-hook-registry"
+version = "1.3.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "16f1d0fef1604ba8f7a073c7e701f213e056707210e9020af4528e0101ce11a6"
+dependencies = [
+ "libc",
 ]
 
 [[package]]
@@ -2801,6 +2955,26 @@ dependencies = [
 ]
 
 [[package]]
+name = "tungstenite"
+version = "0.13.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5fe8dada8c1a3aeca77d6b51a4f1314e0f4b8e438b7b1b71e3ddaca8080e4093"
+dependencies = [
+ "base64",
+ "byteorder",
+ "bytes 1.0.1",
+ "http",
+ "httparse",
+ "input_buffer",
+ "log",
+ "rand 0.8.3",
+ "sha-1",
+ "thiserror",
+ "url",
+ "utf-8",
+]
+
+[[package]]
 name = "typenum"
 version = "1.13.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2816,7 +2990,7 @@ checksum = "56dee185309b50d1f11bfedef0fe6d036842e3fb77413abef29f8f8d1c5d4c1c"
 name = "ui-tests"
 version = "0.1.0"
 dependencies = [
- "cynic",
+ "cynic 0.13.0",
  "serde_json",
  "trybuild",
 ]
@@ -2891,6 +3065,12 @@ dependencies = [
  "percent-encoding",
  "serde",
 ]
+
+[[package]]
+name = "utf-8"
+version = "0.7.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "05e42f7c18b8f902290b009cde6d651262f956c98bc51bca4cd1d511c9cd85c7"
 
 [[package]]
 name = "uuid"

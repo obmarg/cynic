@@ -20,7 +20,7 @@ tokio = { version = "1.1", features = ["macros"] }
 
 # Surf example requirements
 surf = "2.1"
-async-std = { "1.8", features = ["attributes"] }
+async-std = { version = "1.8", features = ["attributes"] }
 
 chrono = { version = "0.4", features = ["serde"]}
 
@@ -28,7 +28,7 @@ chrono = { version = "0.4", features = ["serde"]}
 async-tungstenite = { version = "0.13", features = ["async-std-runtime"] }
 async_executors = { version = "0.4", features = ["async_std"] }
 futures = "0.3"
-graphql-ws-client = { git = "https://github.com/obmarg/graphql-ws-client.git", branch = "main", features = ["cynic", "async-tungstenite"] }
+graphql-ws-client = { version = "0.1", features = ["cynic", "async-tungstenite"] }
 
 [dev-dependencies]
 insta = "1.4"

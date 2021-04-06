@@ -3,16 +3,12 @@
 //!
 //! Talks to the the tide subscription example in `async-graphql`
 
-mod query_dsl {
-    cynic::query_dsl!("../schemas/books.graphql");
+mod schema {
+    cynic::use_schema!("../schemas/books.graphql");
 }
 
 #[derive(cynic::QueryFragment, Debug)]
-#[cynic(
-    schema_path = "../schemas/books.graphql",
-    query_module = "query_dsl",
-    graphql_type = "Book"
-)]
+#[cynic(schema_path = "../schemas/books.graphql", graphql_type = "Book")]
 struct Book {
     id: String,
     name: String,
@@ -20,11 +16,7 @@ struct Book {
 }
 
 #[derive(cynic::QueryFragment, Debug)]
-#[cynic(
-    schema_path = "../schemas/books.graphql",
-    query_module = "query_dsl",
-    graphql_type = "BookChanged"
-)]
+#[cynic(schema_path = "../schemas/books.graphql", graphql_type = "BookChanged")]
 struct BookChanged {
     id: cynic::Id,
     book: Option<Book>,
@@ -33,7 +25,6 @@ struct BookChanged {
 #[derive(cynic::QueryFragment, Debug)]
 #[cynic(
     schema_path = "../schemas/books.graphql",
-    query_module = "query_dsl",
     graphql_type = "SubscriptionRoot"
 )]
 struct BooksChangedSubscription {
