@@ -11,6 +11,8 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.13.1 - 2021-04-26
+
 ### Bug Fixes
 
 - Fixes an issue where cynic would incorrectly case module certain names in the
