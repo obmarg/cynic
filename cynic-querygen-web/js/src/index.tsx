@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useState, useEffect, useRef } from "react";
 import ReactiveElements from "terryoy-reactive-elements";
 import GraphiQL from "graphiql";
 import GraphiQLExplorer from "graphiql-explorer";
@@ -34,23 +34,38 @@ const GraphQLEditor = (props: EditorProps) => {
 
   const graphQLFetcher = useCallback(makeFetcher(schemaUrl), [schemaUrl]);
 
+  const graphiQLRef = useRef(null);
+
+  useEffect(() => {
+    setTimeout(() => {
+      if (graphiQLRef) {
+        graphiQLRef.current.refresh();
+      }
+    }, 500)
+  }, [graphiQLRef])
+
   useEffect(() => {
     if (schemaUrl && schemaUrl.length != 0) {
       const handler = async () => {
-        const result = await graphQLFetcher(
-          { query: getIntrospectionQuery(), operationName: null },
-          { shouldPersistHeaders: false, headers: headers }
-        );
-        const clientSchema = buildClientSchema(result.data);
+        try {
+          const result = await graphQLFetcher(
+            { query: getIntrospectionQuery(), operationName: null },
+            { shouldPersistHeaders: false, headers: headers }
+          );
+          const clientSchema = buildClientSchema(result.data);
 
-        setSchema(clientSchema);
+          setSchema(clientSchema);
 
-        container.dispatchEvent(
-          new CustomEvent("schema-loaded", {
-            bubbles: true,
-            detail: printSchema(clientSchema),
-          })
-        );
+          container.dispatchEvent(
+            new CustomEvent("schema-loaded", {
+              bubbles: true,
+              detail: printSchema(clientSchema),
+            })
+          );
+        } catch (e) {
+          console.error(e);
+          return;
+        }
       };
 
       handler();
@@ -99,6 +114,7 @@ const GraphQLEditor = (props: EditorProps) => {
           onToggleExplorer={() => setExplorerOpen(!explorerOpen)}
         />
         <GraphiQL
+          ref={graphiQLRef}
           fetcher={graphQLFetcher}
           schema={schema}
           headerEditorEnabled
@@ -135,6 +151,10 @@ const makeFetcher = (schemaUrl: string) => {
       },
       body: JSON.stringify(graphQLParams),
     });
+
+    if (!response.ok) {
+      throw "Error response from GraphQL server";
+    }
 
     const responseBody = await response.text();
 
