@@ -50,7 +50,7 @@ impl SelectorStruct {
                 Ident::for_module(graphql_name),
                 field.required_arguments(),
                 TypePath::new(vec![
-                    Ident::for_module(&name.rust_name()),
+                    Ident::for_module(graphql_name),
                     selection_builder.name.clone(),
                 ]),
                 type_index,

@@ -11,6 +11,11 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+### Bug Fixes
+
+- Fixes an issue where cynic would incorrectly case module certain names in the
+  `use_schema` output
+
 ## v0.13.0 - 2021-04-04
 
 ### Breaking Changes
