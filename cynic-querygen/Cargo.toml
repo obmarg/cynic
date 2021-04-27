@@ -5,6 +5,8 @@ authors = ["Graeme Coupar <grambo@grambo.me.uk>"]
 edition = "2018"
 homepage = "https://cynic-rs.dev"
 repository = "https://github.com/obmarg/cynic"
+license = "MPL-2.0"
+description = "QueryFragment generation for cynic, a GraphQL query builder & data mapper for Rust"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
