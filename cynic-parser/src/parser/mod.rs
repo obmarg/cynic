@@ -136,11 +136,30 @@ impl<'source> Parser<'source> {
     }
 
     fn skip_ws(&mut self) {
-        // TODO: This probably needs to know how to deal with comments as well
         while self.current() == Some(Token::Whitespace)
             || self.current() == Some(Token::LineTerminator)
             || self.current() == Some(Token::Comma)
+            || self.current() == Some(Token::Hash)
         {
+            if self.current() == Some(Token::Hash) {
+                // Handle comments
+                self.builder.start_node(COMMENT.into());
+                loop {
+                    match self.current() {
+                        Some(Token::LineTerminator) => {
+                            self.bump();
+                            break;
+                        }
+                        None => {
+                            break;
+                        }
+                        _ => {
+                            self.bump_as(COMMENT_CONTENTS);
+                        }
+                    }
+                }
+                self.builder.finish_node();
+            }
             self.bump();
         }
     }
@@ -438,8 +457,6 @@ query {
     #[case::query_float_arguments("tests/queries/query_float_arguments.graphql")]
     #[case::query_list_argument("tests/queries/query_list_argument.graphql")]
     #[case::query_nameless_vars("tests/queries/query_nameless_vars.graphql")]
-    // Commenting this one out because it requires comma ignores & comments
-    //#[case::query_vars("tests/queries/query_nameless_vars_multiple_fields.graphql")]
     #[case::query_nameless_vars_multiple_fields_canonical(
         "tests/queries/query_nameless_vars_multiple_fields_canonical.graphql"
     )]
@@ -451,6 +468,7 @@ query {
     #[case::query_var_default_object("tests/queries/query_var_default_object.graphql")]
     #[case::query_var_default_string("tests/queries/query_var_default_string.graphql")]
     #[case::query_var_defaults("tests/queries/query_var_defaults.graphql")]
+    #[case::query_vars("tests/queries/query_nameless_vars_multiple_fields.graphql")]
     fn test_query_file(#[case] file: String) {
         let mut query = String::new();
         File::open(file)

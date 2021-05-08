@@ -62,6 +62,8 @@ pub enum SyntaxKind {
     FRAGMENT_SPREAD,
     FRAGMENT_NAME,
     INLINE_FRAGMENT,
+    COMMENT,
+    COMMENT_CONTENTS,
     ERROR,
 
     VALUE,
