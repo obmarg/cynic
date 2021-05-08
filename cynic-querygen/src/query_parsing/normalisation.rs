@@ -15,7 +15,7 @@ use super::{
 };
 
 use crate::{
-    schema::{InputFieldType, InputTypeRef, OutputField, OutputType, OutputTypeRef},
+    schema::{InputFieldType, InputTypeRef, OutputField, OutputType, OutputTypeRef, Type},
     Error, GraphPath, TypeIndex,
 };
 
@@ -47,10 +47,8 @@ pub struct SelectionSet<'query, 'schema> {
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum Selection<'query, 'schema> {
-    // For now I just care about fields
-    // Will probably need InlineFragments here sometime
-    // Figure a normal FragmentSpread can be normalised in place.
     Field(FieldSelection<'query, 'schema>),
+    InlineFragment(SelectionSet<'query, 'schema>),
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -99,6 +97,7 @@ type SelectionSetSet<'query, 'schema> = BTreeSet<Rc<SelectionSet<'query, 'schema
 #[derive(Debug, PartialEq)]
 pub struct NormalisedDocument<'query, 'schema> {
     pub selection_sets: SelectionSetSet<'query, 'schema>,
+    // TODO: also need to know what unions we've seen as part of this...
     pub operations: Vec<NormalisedOperation<'query, 'schema>>,
 }
 
@@ -312,25 +311,36 @@ impl<'a, 'query, 'schema, 'doc> Normaliser<'a, 'query, 'schema, 'doc> {
                     .collect())
             }
             parser::Selection::InlineFragment(fragment) => {
-                if let Some(TypeCondition::On(condition)) = fragment.type_condition {
-                    let current_type = self.type_index.type_name_for_path(&current_path)?;
-                    if condition != current_type {
-                        return Err(Error::TypeConditionFailed(
-                            condition.to_string(),
-                            current_type.to_string(),
-                        ));
-                    }
-                }
+                if let Some(TypeCondition::On(target_type_name)) = fragment.type_condition {
+                    let current_type = self.type_index.type_for_path(&current_path)?;
+                    let target_type = self.type_index.lookup_type(target_type_name)?;
 
-                Ok(fragment
-                    .selection_set
-                    .items
-                    .iter()
-                    .map(|item| self.convert_selection(item, current_path))
-                    .collect::<Result<Vec<_>, _>>()?
-                    .into_iter()
-                    .flatten()
-                    .collect())
+                    // TODO: Probably want to handle the case where the target
+                    // is still the current type.
+
+                    current_type.allows_fragment_target_of(&target_type)?;
+
+                    // Ok, so this is where it gets tricky.
+                    // We need an enum with all the types that were provided by the user on
+                    // the current branch.
+                    // Basically we need the sibling selections.
+
+                    // and a fallback.
+                    // But there's no way to know which types were provided.
+                    // Fucking lol god damn.
+                    todo!()
+                } else {
+                    // If there's no type condition we assume this is a normal selection set on the current type
+                    Ok(fragment
+                        .selection_set
+                        .items
+                        .iter()
+                        .map(|item| self.convert_selection(item, current_path))
+                        .collect::<Result<Vec<_>, _>>()?
+                        .into_iter()
+                        .flatten()
+                        .collect())
+                }
             }
         }
     }
@@ -381,11 +391,9 @@ impl<'query, 'schema> SelectionSet<'query, 'schema> {
         self.selections
             .iter()
             .flat_map(|selection| {
-                match selection {
-                    Selection::Field(field) => {
-                        if let Field::Leaf = &field.field {
-                            return Some(field.schema_field.value_type.inner_ref().clone());
-                        }
+                if let Selection::Field(field) = selection {
+                    if let Field::Leaf = &field.field {
+                        return Some(field.schema_field.value_type.inner_ref().clone());
                     }
                 }
                 None
@@ -400,7 +408,9 @@ impl<'query, 'schema> SelectionSet<'query, 'schema> {
                 Selection::Field(sel) => sel
                     .arguments
                     .iter()
-                    .map(|(_, arg)| arg.value_type().inner_ref().clone()),
+                    .map(|(_, arg)| arg.value_type().inner_ref().clone())
+                    .collect(),
+                Selection::InlineFragment(_) => vec![],
             })
             .collect()
     }

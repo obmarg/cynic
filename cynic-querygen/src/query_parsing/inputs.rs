@@ -64,7 +64,7 @@ pub fn extract_input_objects<'query, 'schema>(
 }
 
 fn extract_objects_from_selection_set<'query, 'schema>(
-    selection_set: &Rc<SelectionSet<'query, 'schema>>,
+    selection_set: &SelectionSet<'query, 'schema>,
     input_objects: &mut InputObjectSet<'schema>,
 ) -> Result<(), Error> {
     if selection_set.selections.is_empty() {
@@ -85,6 +85,9 @@ fn extract_objects_from_selection_set<'query, 'schema>(
                         extract_input_objects_from_values(&input_obj, arg_value, input_objects)?;
                     }
                 }
+            }
+            Selection::InlineFragment(selection_set) => {
+                extract_objects_from_selection_set(selection_set, input_objects)?;
             }
         }
     }

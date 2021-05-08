@@ -101,6 +101,11 @@ fn make_query_fragment<'text>(
                             .unwrap(),
                     }
                 }
+                Selection::InlineFragment(selection) => {
+                    // This is the bulk of it isn't it.
+                    // Needs to be an OutputField of whatever the union type/interface is...
+                    todo!()
+                }
             })
             .collect(),
         argument_struct_name: argument_struct_details.argument_name_for_selection(&selection),

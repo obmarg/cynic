@@ -1,0 +1,16 @@
+query {
+  repository(owner: "obmarg", name: "cynic") {
+    issueOrPullRequest(number: 1) {
+      ... on Issue {
+        id
+        title
+        lastEditedAt
+      }
+      ... on PullRequest {
+        id
+        title
+        lastEditedAt
+      }
+    }
+  }
+}

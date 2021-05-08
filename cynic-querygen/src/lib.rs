@@ -49,6 +49,9 @@ pub enum Error {
     #[error("expected an enum, scalar, object, union or interface")]
     ExpectedOutputType,
 
+    #[error("expected an interface")]
+    ExpectedInterfaceType,
+
     #[error("expected a homogenous list of input values")]
     ExpectedHomogenousList,
 
@@ -63,6 +66,15 @@ pub enum Error {
 
     #[error("Tried to apply a fragment for a {0} type on a {1} type")]
     TypeConditionFailed(String, String),
+
+    #[error("Tried to apply an inline fragment on the {0} type which is not a union or interface")]
+    InlineFragmentOnUnsupportedType(String),
+
+    #[error("{0} is not a member of the {1} union type")]
+    TypeNotUnionMember(String, String),
+
+    #[error("{0} does not implement the {1} interface")]
+    TypeDoesNotImplementInterface(String, String),
 
     #[error("Could not find a type named {0}, which we expected to be the root type")]
     CouldntFindRootType(String),

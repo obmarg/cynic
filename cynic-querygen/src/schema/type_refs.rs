@@ -5,7 +5,7 @@ use std::{
 
 use std::{borrow::Cow, convert::TryInto, fmt, rc::Rc};
 
-use super::{InputType, OutputType, Type, TypeIndex};
+use super::{InputType, InterfaceType, OutputType, Type, TypeIndex};
 use crate::Error;
 
 /// A reference to a `Type` in the `TypeIndex`.
@@ -25,6 +25,13 @@ pub struct InputTypeRef<'schema> {
 /// A reference to an `OutputType` in the `TypeIndex`.
 #[derive(Clone)]
 pub struct OutputTypeRef<'schema> {
+    pub(super) type_name: Cow<'schema, str>,
+    type_index: Rc<TypeIndex<'schema>>,
+}
+
+/// A reference to an `Interface` in the `TypeIndex`.
+#[derive(Clone)]
+pub struct InterfaceTypeRef<'schema> {
     pub(super) type_name: Cow<'schema, str>,
     type_index: Rc<TypeIndex<'schema>>,
 }
@@ -107,6 +114,7 @@ macro_rules! impl_type_ref {
 
 impl_type_ref!(InputTypeRef, InputType);
 impl_type_ref!(OutputTypeRef, OutputType);
+impl_type_ref!(InterfaceTypeRef, InterfaceType);
 impl_type_ref!(TypeRef, Type);
 
 /// We need this conversion for the `try_into?` for Type -> Type in TypeRef
