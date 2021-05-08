@@ -5,6 +5,7 @@ members = [
     "cynic-proc-macros",
     "examples",
     "cynic-querygen",
+    "cynic-parser",
     "cynic-querygen-web",
     "tests/querygen-compile-run",
     "tests/ui-tests"
