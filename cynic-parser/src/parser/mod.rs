@@ -1,5 +1,3 @@
-use std::any::Any;
-
 use logos::{Logos, Span};
 use rowan::{GreenNode, GreenNodeBuilder};
 
@@ -10,6 +8,10 @@ use crate::{
         SyntaxNode,
     },
 };
+
+mod fragments;
+
+use fragments::{fragment, fragment_spread, inline_fragment};
 
 /// The parse results are stored as a "green tree".
 /// We'll discuss working with the results later
@@ -419,86 +421,6 @@ fn argument(parser: &mut Parser) {
     assert_eq!(parser.current(), Some(Token::Name));
     todo!()
     // TODO: don't forget to eat a comma if there is one
-}
-
-fn fragment(parser: &mut Parser) {
-    fragment_name(parser);
-
-    type_condition(parser);
-
-    // TODO: Directives
-
-    parser.skip_ws();
-    match parser.current() {
-        Some(Token::OpenCurly) => selection_set(parser),
-        _ => parser.error("expected selection set"),
-    }
-}
-
-fn type_condition(parser: &mut Parser) {
-    parser.skip_ws();
-    match parser.current_pair() {
-        Some((Token::Name, "on")) => {
-            parser.builder.start_node(TYPE_CONDITION.into());
-            parser.bump_as(ON);
-            parser.skip_ws();
-            if let Some(Token::Name) = parser.current() {
-                named_type(parser);
-            } else {
-                parser.error("expected named type");
-            }
-            parser.builder.finish_node();
-        }
-        other => {
-            parser.error("expected a type condition");
-        }
-    }
-}
-
-fn fragment_spread(parser: &mut Parser) {
-    assert_eq!(parser.current(), Some(Token::Spread));
-    parser.builder.start_node(FRAGMENT_SPREAD.into());
-    parser.bump();
-    parser.skip_ws();
-    fragment_name(parser);
-
-    // TODO: directives
-    parser.builder.finish_node();
-}
-
-fn fragment_name(parser: &mut Parser) {
-    parser.skip_ws();
-    match parser.current() {
-        None => parser.error("expected fragment name"),
-        Some(Token::Name) if parser.current_str() != Some("on") => {
-            parser.builder.start_node(FRAGMENT_NAME.into());
-            parser.bump();
-            parser.builder.finish_node();
-        }
-        _ => {
-            parser.error("expected fragment name");
-        }
-    }
-}
-
-fn inline_fragment(parser: &mut Parser) {
-    assert_eq!(parser.current(), Some(Token::Spread));
-    parser.builder.start_node(INLINE_FRAGMENT.into());
-    parser.bump();
-    parser.skip_ws();
-    if let Some((Token::Name, "on")) = parser.current_pair() {
-        type_condition(parser);
-    }
-
-    // TODO: directives
-
-    parser.skip_ws();
-    match parser.current() {
-        Some(Token::OpenCurly) => selection_set(parser),
-        _ => parser.error("expected selection set"),
-    }
-
-    parser.builder.finish_node();
 }
 
 #[cfg(test)]
