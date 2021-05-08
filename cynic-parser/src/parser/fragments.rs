@@ -20,14 +20,21 @@ pub(super) fn fragment_spread(parser: &mut Parser) {
     parser.builder.start_node(FRAGMENT_SPREAD.into());
     parser.bump();
     parser.skip_ws();
-    fragment_name(parser);
+    if let Some(Token::Name) = parser.current() {
+        fragment_name(parser);
+    }
 
     maybe_directives(parser, arguments::Context::NonConstant);
+
+    parser.skip_ws();
+    if parser.current() == Some(Token::OpenCurly) {
+        super::selection_set(parser);
+    }
 
     parser.builder.finish_node();
 }
 
-pub(super) fn fragment_name(parser: &mut Parser) {
+fn fragment_name(parser: &mut Parser) {
     parser.skip_ws();
     match parser.current() {
         None => parser.error("expected fragment name"),
@@ -51,7 +58,7 @@ pub(super) fn inline_fragment(parser: &mut Parser) {
         type_condition(parser);
     }
 
-    // TODO: directives
+    maybe_directives(parser, arguments::Context::NonConstant);
 
     parser.skip_ws();
     match parser.current() {

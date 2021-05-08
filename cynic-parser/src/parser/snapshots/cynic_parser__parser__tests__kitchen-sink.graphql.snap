@@ -1,0 +1,588 @@
+---
+source: cynic-parser/src/parser/mod.rs
+expression: result.syntax()
+
+---
+ROOT@0..1020
+  COMMENT@0..45
+    COMMENT_CONTENTS@0..1 "#"
+    COMMENT_CONTENTS@1..2 " "
+    COMMENT_CONTENTS@2..11 "Copyright"
+    COMMENT_CONTENTS@11..12 " "
+    COMMENT_CONTENTS@12..13 "("
+    COMMENT_CONTENTS@13..14 "c"
+    COMMENT_CONTENTS@14..15 ")"
+    COMMENT_CONTENTS@15..16 " "
+    COMMENT_CONTENTS@16..20 "2015"
+    COMMENT_CONTENTS@20..21 "-"
+    COMMENT_CONTENTS@21..28 "present"
+    COMMENT_CONTENTS@28..29 ","
+    COMMENT_CONTENTS@29..30 " "
+    COMMENT_CONTENTS@30..38 "Facebook"
+    COMMENT_CONTENTS@38..39 ","
+    COMMENT_CONTENTS@39..40 " "
+    COMMENT_CONTENTS@40..43 "Inc"
+    COMMENT_CONTENTS@43..44 "."
+    LINE_TERMINATOR@44..45 "\n"
+  COMMENT@45..47
+    COMMENT_CONTENTS@45..46 "#"
+    LINE_TERMINATOR@46..47 "\n"
+  COMMENT@47..113
+    COMMENT_CONTENTS@47..48 "#"
+    COMMENT_CONTENTS@48..49 " "
+    COMMENT_CONTENTS@49..53 "This"
+    COMMENT_CONTENTS@53..54 " "
+    COMMENT_CONTENTS@54..60 "source"
+    COMMENT_CONTENTS@60..61 " "
+    COMMENT_CONTENTS@61..65 "code"
+    COMMENT_CONTENTS@65..66 " "
+    COMMENT_CONTENTS@66..68 "is"
+    COMMENT_CONTENTS@68..69 " "
+    COMMENT_CONTENTS@69..77 "licensed"
+    COMMENT_CONTENTS@77..78 " "
+    COMMENT_CONTENTS@78..83 "under"
+    COMMENT_CONTENTS@83..84 " "
+    COMMENT_CONTENTS@84..87 "the"
+    COMMENT_CONTENTS@87..88 " "
+    COMMENT_CONTENTS@88..91 "MIT"
+    COMMENT_CONTENTS@91..92 " "
+    COMMENT_CONTENTS@92..99 "license"
+    COMMENT_CONTENTS@99..100 " "
+    COMMENT_CONTENTS@100..105 "found"
+    COMMENT_CONTENTS@105..106 " "
+    COMMENT_CONTENTS@106..108 "in"
+    COMMENT_CONTENTS@108..109 " "
+    COMMENT_CONTENTS@109..112 "the"
+    LINE_TERMINATOR@112..113 "\n"
+  COMMENT@113..171
+    COMMENT_CONTENTS@113..114 "#"
+    COMMENT_CONTENTS@114..115 " "
+    COMMENT_CONTENTS@115..122 "LICENSE"
+    COMMENT_CONTENTS@122..123 " "
+    COMMENT_CONTENTS@123..127 "file"
+    COMMENT_CONTENTS@127..128 " "
+    COMMENT_CONTENTS@128..130 "in"
+    COMMENT_CONTENTS@130..131 " "
+    COMMENT_CONTENTS@131..134 "the"
+    COMMENT_CONTENTS@134..135 " "
+    COMMENT_CONTENTS@135..139 "root"
+    COMMENT_CONTENTS@139..140 " "
+    COMMENT_CONTENTS@140..149 "directory"
+    COMMENT_CONTENTS@149..150 " "
+    COMMENT_CONTENTS@150..152 "of"
+    COMMENT_CONTENTS@152..153 " "
+    COMMENT_CONTENTS@153..157 "this"
+    COMMENT_CONTENTS@157..158 " "
+    COMMENT_CONTENTS@158..164 "source"
+    COMMENT_CONTENTS@164..165 " "
+    COMMENT_CONTENTS@165..169 "tree"
+    COMMENT_CONTENTS@169..170 "."
+    LINE_TERMINATOR@170..171 "\n"
+  LINE_TERMINATOR@171..172 "\n"
+  OPERATION_DEF@172..529
+    QUERY_KEYWORD@172..177 "query"
+    WHITESPACE@177..178 " "
+    NAME@178..187 "queryName"
+    VARIABLE_DEFS@187..228
+      OPEN_PAREN@187..188 "("
+      VARIABLE_DEF@188..207
+        VARIABLE@188..192
+          DOLLAR@188..189 "$"
+          NAME@189..192 "foo"
+        COLON@192..193 ":"
+        WHITESPACE@193..194 " "
+        TYPE@194..205
+          NAMED_TYPE@194..205
+            NAME@194..205 "ComplexType"
+        COMMA@205..206 ","
+        WHITESPACE@206..207 " "
+      VARIABLE_DEF@207..227
+        VARIABLE@207..212
+          DOLLAR@207..208 "$"
+          NAME@208..212 "site"
+        COLON@212..213 ":"
+        WHITESPACE@213..214 " "
+        TYPE@214..218
+          NAMED_TYPE@214..218
+            NAME@214..218 "Site"
+        WHITESPACE@218..219 " "
+        DEFAULT_VALUE@219..227
+          EQUALS@219..220 "="
+          VALUE@220..227
+            WHITESPACE@220..221 " "
+            ENUM_VALUE@221..227
+              NAME@221..227 "MOBILE"
+      CLOSE_PAREN@227..228 ")"
+    WHITESPACE@228..229 " "
+    SELECTION_SET@229..529
+      OPEN_CURLY@229..230 "{"
+      LINE_TERMINATOR@230..231 "\n"
+      WHITESPACE@231..233 "  "
+      SELECTION@233..527
+        FIELD_SELECTION@233..527
+          ALIAS@233..246
+            NAME@233..245 "whoever123is"
+            COLON@245..246 ":"
+          WHITESPACE@246..247 " "
+          NAME@247..251 "node"
+          ARGUMENTS@251..268
+            OPEN_PAREN@251..252 "("
+            ARGUMENT@252..266
+              NAME@252..254 "id"
+              COLON@254..255 ":"
+              VALUE@255..266
+                WHITESPACE@255..256 " "
+                LIST_VALUE@256..266
+                  OPEN_SQUARE@256..257 "["
+                  VALUE@257..262
+                    INTEGER_VALUE@257..260
+                      NUMBER@257..260 "123"
+                    COMMA@260..261 ","
+                    WHITESPACE@261..262 " "
+                  VALUE@262..265
+                    INTEGER_VALUE@262..265
+                      NUMBER@262..265 "456"
+                  CLOSE_SQUARE@265..266 "]"
+            CLOSE_PAREN@266..267 ")"
+            WHITESPACE@267..268 " "
+          SELECTION_SET@268..527
+            OPEN_CURLY@268..269 "{"
+            LINE_TERMINATOR@269..270 "\n"
+            WHITESPACE@270..274 "    "
+            SELECTION@274..283
+              FIELD_SELECTION@274..283
+                NAME@274..276 "id"
+                WHITESPACE@276..277 " "
+                COMMA@277..278 ","
+                LINE_TERMINATOR@278..279 "\n"
+                WHITESPACE@279..283 "    "
+            SELECTION@283..453
+              INLINE_FRAGMENT@283..453
+                SPREAD@283..286 "..."
+                WHITESPACE@286..287 " "
+                TYPE_CONDITION@287..294
+                  ON@287..289 "on"
+                  WHITESPACE@289..290 " "
+                  NAMED_TYPE@290..294
+                    NAME@290..294 "User"
+                WHITESPACE@294..295 " "
+                DIRECTIVES@295..302
+                  DIRECTIVE@295..302
+                    AT@295..296 "@"
+                    NAME@296..301 "defer"
+                    WHITESPACE@301..302 " "
+                SELECTION_SET@302..453
+                  OPEN_CURLY@302..303 "{"
+                  LINE_TERMINATOR@303..304 "\n"
+                  WHITESPACE@304..310 "      "
+                  SELECTION@310..447
+                    FIELD_SELECTION@310..447
+                      NAME@310..316 "field2"
+                      WHITESPACE@316..317 " "
+                      SELECTION_SET@317..447
+                        OPEN_CURLY@317..318 "{"
+                        LINE_TERMINATOR@318..319 "\n"
+                        WHITESPACE@319..327 "        "
+                        SELECTION@327..340
+                          FIELD_SELECTION@327..340
+                            NAME@327..329 "id"
+                            WHITESPACE@329..330 " "
+                            COMMA@330..331 ","
+                            LINE_TERMINATOR@331..332 "\n"
+                            WHITESPACE@332..340 "        "
+                        SELECTION@340..439
+                          FIELD_SELECTION@340..439
+                            ALIAS@340..346
+                              NAME@340..345 "alias"
+                              COLON@345..346 ":"
+                            WHITESPACE@346..347 " "
+                            NAME@347..353 "field1"
+                            ARGUMENTS@353..377
+                              OPEN_PAREN@353..354 "("
+                              ARGUMENT@354..364
+                                NAME@354..359 "first"
+                                COLON@359..360 ":"
+                                VALUE@360..364
+                                  INTEGER_VALUE@360..362
+                                    NUMBER@360..362 "10"
+                                  COMMA@362..363 ","
+                                  WHITESPACE@363..364 " "
+                              ARGUMENT@364..375
+                                NAME@364..369 "after"
+                                COLON@369..370 ":"
+                                VALUE@370..375
+                                  VARIABLE@370..374
+                                    DOLLAR@370..371 "$"
+                                    NAME@371..374 "foo"
+                                  COMMA@374..375 ","
+                              CLOSE_PAREN@375..376 ")"
+                              WHITESPACE@376..377 " "
+                            DIRECTIVES@377..396
+                              DIRECTIVE@377..396
+                                AT@377..378 "@"
+                                NAME@378..385 "include"
+                                ARGUMENTS@385..396
+                                  OPEN_PAREN@385..386 "("
+                                  ARGUMENT@386..394
+                                    NAME@386..388 "if"
+                                    COLON@388..389 ":"
+                                    VALUE@389..394
+                                      WHITESPACE@389..390 " "
+                                      VARIABLE@390..394
+                                        DOLLAR@390..391 "$"
+                                        NAME@391..394 "foo"
+                                  CLOSE_PAREN@394..395 ")"
+                                  WHITESPACE@395..396 " "
+                            SELECTION_SET@396..439
+                              OPEN_CURLY@396..397 "{"
+                              LINE_TERMINATOR@397..398 "\n"
+                              WHITESPACE@398..408 "          "
+                              SELECTION@408..422
+                                FIELD_SELECTION@408..422
+                                  NAME@408..410 "id"
+                                  COMMA@410..411 ","
+                                  LINE_TERMINATOR@411..412 "\n"
+                                  WHITESPACE@412..422 "          "
+                              SELECTION@422..438
+                                FRAGMENT_SPREAD@422..438
+                                  SPREAD@422..425 "..."
+                                  FRAGMENT_NAME@425..429
+                                    NAME@425..429 "frag"
+                                  LINE_TERMINATOR@429..430 "\n"
+                                  WHITESPACE@430..438 "        "
+                              CLOSE_CURLY@438..439 "}"
+                        LINE_TERMINATOR@439..440 "\n"
+                        WHITESPACE@440..446 "      "
+                        CLOSE_CURLY@446..447 "}"
+                  LINE_TERMINATOR@447..448 "\n"
+                  WHITESPACE@448..452 "    "
+                  CLOSE_CURLY@452..453 "}"
+            LINE_TERMINATOR@453..454 "\n"
+            WHITESPACE@454..458 "    "
+            SELECTION@458..498
+              FRAGMENT_SPREAD@458..498
+                SPREAD@458..461 "..."
+                WHITESPACE@461..462 " "
+                DIRECTIVES@462..482
+                  DIRECTIVE@462..482
+                    AT@462..463 "@"
+                    NAME@463..467 "skip"
+                    ARGUMENTS@467..482
+                      OPEN_PAREN@467..468 "("
+                      ARGUMENT@468..480
+                        NAME@468..474 "unless"
+                        COLON@474..475 ":"
+                        VALUE@475..480
+                          WHITESPACE@475..476 " "
+                          VARIABLE@476..480
+                            DOLLAR@476..477 "$"
+                            NAME@477..480 "foo"
+                      CLOSE_PAREN@480..481 ")"
+                      WHITESPACE@481..482 " "
+                SELECTION_SET@482..498
+                  OPEN_CURLY@482..483 "{"
+                  LINE_TERMINATOR@483..484 "\n"
+                  WHITESPACE@484..490 "      "
+                  SELECTION@490..497
+                    FIELD_SELECTION@490..497
+                      NAME@490..492 "id"
+                      LINE_TERMINATOR@492..493 "\n"
+                      WHITESPACE@493..497 "    "
+                  CLOSE_CURLY@497..498 "}"
+            LINE_TERMINATOR@498..499 "\n"
+            WHITESPACE@499..503 "    "
+            SELECTION@503..523
+              FRAGMENT_SPREAD@503..523
+                SPREAD@503..506 "..."
+                WHITESPACE@506..507 " "
+                SELECTION_SET@507..523
+                  OPEN_CURLY@507..508 "{"
+                  LINE_TERMINATOR@508..509 "\n"
+                  WHITESPACE@509..515 "      "
+                  SELECTION@515..522
+                    FIELD_SELECTION@515..522
+                      NAME@515..517 "id"
+                      LINE_TERMINATOR@517..518 "\n"
+                      WHITESPACE@518..522 "    "
+                  CLOSE_CURLY@522..523 "}"
+            LINE_TERMINATOR@523..524 "\n"
+            WHITESPACE@524..526 "  "
+            CLOSE_CURLY@526..527 "}"
+      LINE_TERMINATOR@527..528 "\n"
+      CLOSE_CURLY@528..529 "}"
+  LINE_TERMINATOR@529..530 "\n"
+  LINE_TERMINATOR@530..531 "\n"
+  OPERATION_DEF@531..612
+    MUTATION_KEYWORD@531..539 "mutation"
+    WHITESPACE@539..540 " "
+    NAME@540..549 "likeStory"
+    WHITESPACE@549..550 " "
+    SELECTION_SET@550..612
+      OPEN_CURLY@550..551 "{"
+      LINE_TERMINATOR@551..552 "\n"
+      WHITESPACE@552..554 "  "
+      SELECTION@554..610
+        FIELD_SELECTION@554..610
+          NAME@554..558 "like"
+          ARGUMENTS@558..571
+            OPEN_PAREN@558..559 "("
+            ARGUMENT@559..569
+              NAME@559..564 "story"
+              COLON@564..565 ":"
+              VALUE@565..569
+                WHITESPACE@565..566 " "
+                INTEGER_VALUE@566..569
+                  NUMBER@566..569 "123"
+            CLOSE_PAREN@569..570 ")"
+            WHITESPACE@570..571 " "
+          DIRECTIVES@571..578
+            DIRECTIVE@571..578
+              AT@571..572 "@"
+              NAME@572..577 "defer"
+              WHITESPACE@577..578 " "
+          SELECTION_SET@578..610
+            OPEN_CURLY@578..579 "{"
+            LINE_TERMINATOR@579..580 "\n"
+            WHITESPACE@580..584 "    "
+            SELECTION@584..606
+              FIELD_SELECTION@584..606
+                NAME@584..589 "story"
+                WHITESPACE@589..590 " "
+                SELECTION_SET@590..606
+                  OPEN_CURLY@590..591 "{"
+                  LINE_TERMINATOR@591..592 "\n"
+                  WHITESPACE@592..598 "      "
+                  SELECTION@598..605
+                    FIELD_SELECTION@598..605
+                      NAME@598..600 "id"
+                      LINE_TERMINATOR@600..601 "\n"
+                      WHITESPACE@601..605 "    "
+                  CLOSE_CURLY@605..606 "}"
+            LINE_TERMINATOR@606..607 "\n"
+            WHITESPACE@607..609 "  "
+            CLOSE_CURLY@609..610 "}"
+      LINE_TERMINATOR@610..611 "\n"
+      CLOSE_CURLY@611..612 "}"
+  LINE_TERMINATOR@612..613 "\n"
+  LINE_TERMINATOR@613..614 "\n"
+  OPERATION_DEF@614..824
+    SUBSCRIPTION_KEYWORD@614..626 "subscription"
+    WHITESPACE@626..627 " "
+    NAME@627..648 "StoryLikeSubscription"
+    VARIABLE_DEFS@648..681
+      OPEN_PAREN@648..649 "("
+      VARIABLE_DEF@649..680
+        VARIABLE@649..655
+          DOLLAR@649..650 "$"
+          NAME@650..655 "input"
+        COLON@655..656 ":"
+        WHITESPACE@656..657 " "
+        TYPE@657..680
+          NAMED_TYPE@657..680
+            NAME@657..680 "StoryLikeSubscribeInput"
+      CLOSE_PAREN@680..681 ")"
+    WHITESPACE@681..682 " "
+    SELECTION_SET@682..824
+      OPEN_CURLY@682..683 "{"
+      LINE_TERMINATOR@683..684 "\n"
+      WHITESPACE@684..686 "  "
+      SELECTION@686..822
+        FIELD_SELECTION@686..822
+          NAME@686..704 "storyLikeSubscribe"
+          ARGUMENTS@704..720
+            OPEN_PAREN@704..705 "("
+            ARGUMENT@705..718
+              NAME@705..710 "input"
+              COLON@710..711 ":"
+              VALUE@711..718
+                WHITESPACE@711..712 " "
+                VARIABLE@712..718
+                  DOLLAR@712..713 "$"
+                  NAME@713..718 "input"
+            CLOSE_PAREN@718..719 ")"
+            WHITESPACE@719..720 " "
+          SELECTION_SET@720..822
+            OPEN_CURLY@720..721 "{"
+            LINE_TERMINATOR@721..722 "\n"
+            WHITESPACE@722..726 "    "
+            SELECTION@726..818
+              FIELD_SELECTION@726..818
+                NAME@726..731 "story"
+                WHITESPACE@731..732 " "
+                SELECTION_SET@732..818
+                  OPEN_CURLY@732..733 "{"
+                  LINE_TERMINATOR@733..734 "\n"
+                  WHITESPACE@734..740 "      "
+                  SELECTION@740..770
+                    FIELD_SELECTION@740..770
+                      NAME@740..746 "likers"
+                      WHITESPACE@746..747 " "
+                      SELECTION_SET@747..770
+                        OPEN_CURLY@747..748 "{"
+                        LINE_TERMINATOR@748..749 "\n"
+                        WHITESPACE@749..757 "        "
+                        SELECTION@757..769
+                          FIELD_SELECTION@757..769
+                            NAME@757..762 "count"
+                            LINE_TERMINATOR@762..763 "\n"
+                            WHITESPACE@763..769 "      "
+                        CLOSE_CURLY@769..770 "}"
+                  LINE_TERMINATOR@770..771 "\n"
+                  WHITESPACE@771..777 "      "
+                  SELECTION@777..812
+                    FIELD_SELECTION@777..812
+                      NAME@777..789 "likeSentence"
+                      WHITESPACE@789..790 " "
+                      SELECTION_SET@790..812
+                        OPEN_CURLY@790..791 "{"
+                        LINE_TERMINATOR@791..792 "\n"
+                        WHITESPACE@792..800 "        "
+                        SELECTION@800..811
+                          FIELD_SELECTION@800..811
+                            NAME@800..804 "text"
+                            LINE_TERMINATOR@804..805 "\n"
+                            WHITESPACE@805..811 "      "
+                        CLOSE_CURLY@811..812 "}"
+                  LINE_TERMINATOR@812..813 "\n"
+                  WHITESPACE@813..817 "    "
+                  CLOSE_CURLY@817..818 "}"
+            LINE_TERMINATOR@818..819 "\n"
+            WHITESPACE@819..821 "  "
+            CLOSE_CURLY@821..822 "}"
+      LINE_TERMINATOR@822..823 "\n"
+      CLOSE_CURLY@823..824 "}"
+  LINE_TERMINATOR@824..825 "\n"
+  LINE_TERMINATOR@825..826 "\n"
+  FRAGMENT_DEF@826..951
+    FRAGMENT_KEYWORD@826..834 "fragment"
+    WHITESPACE@834..835 " "
+    FRAGMENT_NAME@835..839
+      NAME@835..839 "frag"
+    WHITESPACE@839..840 " "
+    TYPE_CONDITION@840..849
+      ON@840..842 "on"
+      WHITESPACE@842..843 " "
+      NAMED_TYPE@843..849
+        NAME@843..849 "Friend"
+    WHITESPACE@849..850 " "
+    SELECTION_SET@850..951
+      OPEN_CURLY@850..851 "{"
+      LINE_TERMINATOR@851..852 "\n"
+      WHITESPACE@852..854 "  "
+      SELECTION@854..950
+        FIELD_SELECTION@854..950
+          NAME@854..857 "foo"
+          ARGUMENTS@857..950
+            OPEN_PAREN@857..858 "("
+            ARGUMENT@858..871
+              NAME@858..862 "size"
+              COLON@862..863 ":"
+              VALUE@863..871
+                WHITESPACE@863..864 " "
+                VARIABLE@864..869
+                  DOLLAR@864..865 "$"
+                  NAME@865..869 "size"
+                COMMA@869..870 ","
+                WHITESPACE@870..871 " "
+            ARGUMENT@871..880
+              NAME@871..874 "bar"
+              COLON@874..875 ":"
+              VALUE@875..880
+                WHITESPACE@875..876 " "
+                VARIABLE@876..878
+                  DOLLAR@876..877 "$"
+                  NAME@877..878 "b"
+                COMMA@878..879 ","
+                WHITESPACE@879..880 " "
+            ARGUMENT@880..948
+              NAME@880..883 "obj"
+              COLON@883..884 ":"
+              VALUE@884..948
+                WHITESPACE@884..885 " "
+                OBJECT_VALUE@885..948
+                  OPEN_CURLY@885..886 "{"
+                  OBJECT_FIELD@886..900
+                    NAME@886..889 "key"
+                    COLON@889..890 ":"
+                    VALUE@890..900
+                      WHITESPACE@890..891 " "
+                      STRING_VALUE@891..898
+                        QUOTE@891..892 "\""
+                        STRING_CONTENTS@892..897 "value"
+                        QUOTE@897..898 "\""
+                      COMMA@898..899 ","
+                      WHITESPACE@899..900 " "
+                  OBJECT_FIELD@900..947
+                    NAME@900..905 "block"
+                    COLON@905..906 ":"
+                    VALUE@906..947
+                      WHITESPACE@906..907 " "
+                      STRING_VALUE@907..947
+                        BLOCK_QUOTE@907..910 "\"\"\""
+                        STRING_CONTENTS@910..911 "\n"
+                        STRING_CONTENTS@911..912 "\n"
+                        STRING_CONTENTS@912..918 "      "
+                        STRING_CONTENTS@918..923 "block"
+                        STRING_CONTENTS@923..924 " "
+                        STRING_CONTENTS@924..930 "string"
+                        STRING_CONTENTS@930..931 " "
+                        STRING_CONTENTS@931..935 "uses"
+                        STRING_CONTENTS@935..936 " "
+                        STRING_CONTENTS@936..938 "\\\""
+                        STRING_CONTENTS@938..939 "\""
+                        STRING_CONTENTS@939..940 "\""
+                        STRING_CONTENTS@940..941 "\n"
+                        STRING_CONTENTS@941..942 "\n"
+                        STRING_CONTENTS@942..944 "  "
+                        BLOCK_QUOTE@944..947 "\"\"\""
+                  CLOSE_CURLY@947..948 "}"
+            CLOSE_PAREN@948..949 ")"
+            LINE_TERMINATOR@949..950 "\n"
+      CLOSE_CURLY@950..951 "}"
+  LINE_TERMINATOR@951..952 "\n"
+  LINE_TERMINATOR@952..953 "\n"
+  OPERATION_DEF@953..1019
+    SELECTION_SET@953..1019
+      OPEN_CURLY@953..954 "{"
+      LINE_TERMINATOR@954..955 "\n"
+      WHITESPACE@955..957 "  "
+      SELECTION@957..1012
+        FIELD_SELECTION@957..1012
+          NAME@957..964 "unnamed"
+          ARGUMENTS@964..1012
+            OPEN_PAREN@964..965 "("
+            ARGUMENT@965..979
+              NAME@965..971 "truthy"
+              COLON@971..972 ":"
+              VALUE@972..979
+                WHITESPACE@972..973 " "
+                BOOL_VALUE@973..977
+                  TRUE@973..977 "true"
+                COMMA@977..978 ","
+                WHITESPACE@978..979 " "
+            ARGUMENT@979..994
+              NAME@979..985 "falsey"
+              COLON@985..986 ":"
+              VALUE@986..994
+                WHITESPACE@986..987 " "
+                BOOL_VALUE@987..992
+                  FALSE@987..992 "false"
+                COMMA@992..993 ","
+                WHITESPACE@993..994 " "
+            ARGUMENT@994..1007
+              NAME@994..1001 "nullish"
+              COLON@1001..1002 ":"
+              VALUE@1002..1007
+                WHITESPACE@1002..1003 " "
+                NULL@1003..1007 "null"
+            CLOSE_PAREN@1007..1008 ")"
+            COMMA@1008..1009 ","
+            LINE_TERMINATOR@1009..1010 "\n"
+            WHITESPACE@1010..1012 "  "
+      SELECTION@1012..1018
+        FIELD_SELECTION@1012..1018
+          NAME@1012..1017 "query"
+          LINE_TERMINATOR@1017..1018 "\n"
+      CLOSE_CURLY@1018..1019 "}"
+  LINE_TERMINATOR@1019..1020 "\n"
+

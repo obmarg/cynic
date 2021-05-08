@@ -161,8 +161,9 @@ impl<'source> Parser<'source> {
                     }
                 }
                 self.builder.finish_node();
+            } else {
+                self.bump();
             }
-            self.bump();
         }
     }
 }
@@ -446,6 +447,8 @@ query {
     #[case::fragment("tests/queries/fragment.graphql")]
     #[case::fragment_spread("tests/queries/fragment_spread.graphql")]
     #[case::inline_fragment("tests/queries/inline_fragment.graphql")]
+    #[case::kitchen_sink("tests/queries/kitchen-sink.graphql")]
+    #[case::kitchen_sink_canonical("tests/queries/kitchen-sink_canonical.graphql")]
     #[case::minimal("tests/queries/minimal.graphql")]
     #[case::minimal_mutation("tests/queries/minimal_mutation.graphql")]
     #[case::minimal_query("tests/queries/minimal_query.graphql")]
@@ -487,9 +490,21 @@ query {
             .to_string_lossy()
             .to_string();
 
-        assert_eq!(result.errors, vec![]);
         assert_eq!(result.green_node.to_string(), query);
-        // TODO: Determine the snapshot name from the file - to avoid ordering issues...
+        if !result.errors.is_empty() {
+            for (err, span) in &result.errors {
+                if let Some(span) = span {
+                    println!(
+                        "Error: {}.  Span resolves to: {}",
+                        err,
+                        &query[span.clone()]
+                    )
+                } else {
+                    println!("Error: {}.  No Span", err)
+                }
+            }
+            panic!("Parsing had errors")
+        }
         insta::assert_debug_snapshot!(snapshot_name, result.syntax());
     }
 }

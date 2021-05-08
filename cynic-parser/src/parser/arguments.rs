@@ -135,7 +135,7 @@ fn string(parser: &mut Parser) {
     if parser.current() == Some(Token::Quote) {
         parser.bump();
         loop {
-            match dbg!(parser.current()) {
+            match parser.current() {
                 None => {
                     parser.error("unexpected end of input while parsing string");
                     break;
