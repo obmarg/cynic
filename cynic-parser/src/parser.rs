@@ -175,10 +175,11 @@ fn executable_def(parser: &mut Parser) -> Res {
         Some((Token::Name, "fragment")) => {
             parser.builder.start_node(FRAGMENT_DEF.into());
             parser.bump_as(FRAGMENT_KEYWORD);
-            todo!()
+            fragment(parser);
+            parser.builder.finish_node();
+            return Res::Ok;
         }
         other => {
-            println!("Other: {:?}", other);
             return Res::ExpectedExecutableDef;
         }
     }
@@ -225,6 +226,7 @@ fn variable_defs(parser: &mut Parser) {
                     _ => parser.error("expected :"),
                 }
                 type_(parser);
+                parser.builder.finish_node();
                 // todo: default values
             }
             Some(Token::CloseParen) => {
@@ -249,6 +251,7 @@ fn variable(parser: &mut Parser) {
         Some(Token::Name) => parser.bump(),
         _ => parser.error("expected name"),
     }
+    parser.builder.finish_node();
 }
 
 fn type_(parser: &mut Parser) {
@@ -256,7 +259,7 @@ fn type_(parser: &mut Parser) {
     match parser.current() {
         Some(Token::Name) => {
             parser.builder.start_node(TYPE.into());
-            parser.bump();
+            named_type(parser);
             if let Some(Token::Bang) = parser.current() {
                 parser.bump();
             }
@@ -274,6 +277,10 @@ fn type_(parser: &mut Parser) {
                     parser.error("expected ]");
                 }
             }
+            parser.skip_ws();
+            if let Some(Token::Bang) = parser.current() {
+                parser.bump()
+            }
             parser.builder.finish_node();
         }
         _ => {
@@ -281,6 +288,13 @@ fn type_(parser: &mut Parser) {
         }
     }
     parser.skip_ws();
+}
+
+fn named_type(parser: &mut Parser) {
+    assert_eq!(parser.current(), Some(Token::Name));
+    parser.builder.start_node(NAMED_TYPE.into());
+    parser.bump();
+    parser.builder.finish_node();
 }
 
 fn selection_set(parser: &mut Parser) {
@@ -394,6 +408,47 @@ fn argument(parser: &mut Parser) {
     // TODO: don't forget to eat a comma if there is one
 }
 
+fn fragment(parser: &mut Parser) {
+    parser.skip_ws();
+    match parser.current() {
+        None => parser.error("expected fragment name"),
+        Some(Token::Name) if parser.current_str() != Some("on") => {
+            parser.bump();
+        }
+        _ => {
+            parser.error("expected fragment name");
+        }
+    }
+
+    parser.skip_ws();
+    match parser.current_pair() {
+        Some((Token::Name, "on")) => {
+            parser.builder.start_node(TYPE_CONDITION.into());
+            parser.bump_as(ON);
+            parser.skip_ws();
+            if let Some(Token::Name) = parser.current() {
+                named_type(parser);
+            } else {
+                parser.error("expected named type");
+            }
+            parser.builder.finish_node();
+        }
+        other => {
+            parser.error("expected a type condition");
+        }
+    }
+
+    // TODO: Directives
+
+    parser.skip_ws();
+    if let Some(Token::OpenCurly) = parser.current() {
+        selection_set(parser);
+    } else {
+        todo!()
+        // TODO: Error
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use std::{fs::File, io::Read};
@@ -426,6 +481,7 @@ query {
     #[case::nested_selection("tests/queries/nested_selection.graphql")]
     #[case::query_aliases("tests/queries/query_aliases.graphql")]
     #[case::query_vars("tests/queries/query_vars.graphql")]
+    #[case::fragment("tests/queries/fragment.graphql")]
     fn test_query_file(#[case] file: String) {
         let mut query = String::new();
         File::open(file)

@@ -31,6 +31,7 @@ pub enum SyntaxKind {
     ESCAPED_CHARACTER,
     ESCAPED_UNICODE,
     LINE_TERMINATOR,
+    ON,
     OTHER,
 
     // Keywords that aren't part of our lexing grammar
@@ -45,12 +46,14 @@ pub enum SyntaxKind {
     VARIABLE_DEFS,
     VARIABLE_DEF,
     VARIABLE,
+    NAMED_TYPE,
     TYPE,
     SELECTION_SET,
     SELECTION,
     FIELD_SELECTION,
     ALIAS,
     ARGUMENTS,
+    TYPE_CONDITION,
     ERROR,
 
     // Root node.
