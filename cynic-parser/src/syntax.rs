@@ -22,9 +22,7 @@ pub enum SyntaxKind {
     NEGATIVE_SIGN,
     NUMBER,
     EXPONENT_PART,
-    DECIMAL_PART,
-    TRUE,
-    FALSE,
+    FRACTIONAL_PART,
     QUOTE,
     BLOCK_QUOTE,
     WHITESPACE,
@@ -33,6 +31,11 @@ pub enum SyntaxKind {
     LINE_TERMINATOR,
     ON,
     OTHER,
+
+    // Values
+    NULL,
+    TRUE,
+    FALSE,
 
     // Keywords that aren't part of our lexing grammar
     QUERY_KEYWORD,
@@ -53,11 +56,23 @@ pub enum SyntaxKind {
     FIELD_SELECTION,
     ALIAS,
     ARGUMENTS,
+    ARGUMENT,
     TYPE_CONDITION,
     FRAGMENT_SPREAD,
     FRAGMENT_NAME,
     INLINE_FRAGMENT,
     ERROR,
+
+    VALUE,
+    INTEGER_VALUE,
+    INTEGER_PART,
+    FLOAT_VALUE,
+    ENUM_VALUE,
+    LIST_VALUE,
+    OBJECT_VALUE,
+    OBJECT_FIELD,
+    STRING_VALUE,
+    STRING_CONTENTS,
 
     // Root node.
     // Note that this needs to be last.
@@ -112,11 +127,8 @@ impl From<crate::lexer::Token> for SyntaxKind {
             Token::CloseCurly => CLOSE_CURLY,
             Token::Name => NAME,
             Token::NegativeSign => NEGATIVE_SIGN,
-            Token::Number => NUMBER,
             Token::ExponentPart => EXPONENT_PART,
-            Token::DecimalPart => DECIMAL_PART,
-            Token::True => TRUE,
-            Token::False => FALSE,
+            Token::FractionalPart => FRACTIONAL_PART,
             Token::Quote => QUOTE,
             Token::BlockQuote => BLOCK_QUOTE,
             Token::Whitespace => WHITESPACE,
@@ -126,6 +138,7 @@ impl From<crate::lexer::Token> for SyntaxKind {
 
             // TODO: not sure about this one, but lets seee.
             Token::Other => OTHER,
+            Token::Number => NUMBER,
         }
     }
 }

@@ -9,8 +9,10 @@ use crate::{
     },
 };
 
+mod arguments;
 mod fragments;
 
+use arguments::arguments;
 use fragments::{fragment, fragment_spread, inline_fragment};
 
 /// The parse results are stored as a "green tree".
@@ -18,7 +20,7 @@ use fragments::{fragment, fragment_spread, inline_fragment};
 pub struct Parse {
     green_node: GreenNode,
     #[allow(unused)]
-    errors: Vec<(String, logos::Span)>,
+    errors: Vec<(String, Option<Span>)>,
 }
 
 pub fn parse(text: &str) -> Parse {
@@ -48,7 +50,7 @@ struct Parser<'source> {
     builder: GreenNodeBuilder<'static>,
 
     // TODO: Do I want spanned errors?
-    errors: Vec<(String, Span)>,
+    errors: Vec<(String, Option<Span>)>,
 }
 
 impl<'source> Parser<'source> {
@@ -120,8 +122,7 @@ impl<'source> Parser<'source> {
     }
 
     fn error(&mut self, err: impl Into<String>) {
-        self.errors
-            .push((err.into(), self.current_span().expect("TODO: handle this")));
+        self.errors.push((err.into(), self.current_span()));
     }
 
     fn bump_as(&mut self, kind: SyntaxKind) {
@@ -135,8 +136,10 @@ impl<'source> Parser<'source> {
     }
 
     fn skip_ws(&mut self) {
+        // TODO: This probably needs to know how to deal with comments as well
         while self.current() == Some(Token::Whitespace)
             || self.current() == Some(Token::LineTerminator)
+            || self.current() == Some(Token::Comma)
         {
             self.bump();
         }
@@ -389,40 +392,6 @@ fn field_selection(parser: &mut Parser) {
     parser.builder.finish_node();
 }
 
-fn arguments(parser: &mut Parser) {
-    assert_eq!(parser.current(), Some(Token::OpenParen));
-    parser.builder.start_node(ARGUMENTS.into());
-    parser.bump();
-    // TODO: almost wonder if bump should skip ws automatically...
-    parser.skip_ws();
-
-    loop {
-        match parser.current() {
-            None => {
-                parser.error("expected arguments");
-                break;
-            }
-            Some(Token::Name) => {
-                argument(parser);
-            }
-            Some(Token::CloseParen) => {
-                break;
-            }
-            _ => {
-                // TODO: Is this good?  no idea
-                parser.error("expected a name or )");
-                break;
-            }
-        }
-    }
-}
-
-fn argument(parser: &mut Parser) {
-    assert_eq!(parser.current(), Some(Token::Name));
-    todo!()
-    // TODO: don't forget to eat a comma if there is one
-}
-
 #[cfg(test)]
 mod tests {
     use std::{fs::File, io::Read};
@@ -458,6 +427,18 @@ query {
     #[case::nested_selection("tests/queries/nested_selection.graphql")]
     #[case::query_aliases("tests/queries/query_aliases.graphql")]
     #[case::query_vars("tests/queries/query_vars.graphql")]
+    #[case::query_arguments("tests/queries/query_arguments.graphql")]
+    #[case::query_float_arguments("tests/queries/query_float_arguments.graphql")]
+    #[case::query_list_argument("tests/queries/query_list_argument.graphql")]
+    #[case::query_nameless_vars("tests/queries/query_nameless_vars.graphql")]
+    // Commenting this one out because it requires comma ignores & comments
+    //#[case::query_vars("tests/queries/query_nameless_vars_multiple_fields.graphql")]
+    #[case::query_nameless_vars_multiple_fields_canonical(
+        "tests/queries/query_nameless_vars_multiple_fields_canonical.graphql"
+    )]
+    #[case::query_object_argument("tests/queries/query_object_argument.graphql")]
+    #[case::string_literal("tests/queries/string_literal.graphql")]
+    #[case::triple_quoted_literal("tests/queries/triple_quoted_literal.graphql")]
     fn test_query_file(#[case] file: String) {
         let mut query = String::new();
         File::open(file)
@@ -469,6 +450,7 @@ query {
 
         assert_eq!(result.errors, vec![]);
         assert_eq!(result.green_node.to_string(), query);
+        // TODO: Determine the snapshot name from the file - to avoid ordering issues...
         insta::assert_debug_snapshot!(result.syntax());
     }
 }

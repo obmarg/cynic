@@ -47,13 +47,7 @@ pub enum Token {
     #[regex(r"[eE][+-]?[0-9]+")]
     ExponentPart,
     #[regex(r"\.[0-9]+")]
-    DecimalPart,
-
-    // Literal values
-    #[token("true")]
-    True,
-    #[token("false")]
-    False,
+    FractionalPart,
 
     #[token("\"")]
     Quote,
