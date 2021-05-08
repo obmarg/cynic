@@ -54,6 +54,9 @@ pub enum SyntaxKind {
     ALIAS,
     ARGUMENTS,
     TYPE_CONDITION,
+    FRAGMENT_SPREAD,
+    FRAGMENT_NAME,
+    INLINE_FRAGMENT,
     ERROR,
 
     // Root node.

@@ -1,0 +1,29 @@
+---
+source: cynic-parser/src/parser.rs
+expression: result.syntax()
+
+---
+ROOT@0..35
+  FRAGMENT_DEF@0..34
+    FRAGMENT_KEYWORD@0..8 "fragment"
+    WHITESPACE@8..9 " "
+    FRAGMENT_NAME@9..13
+      NAME@9..13 "frag"
+    WHITESPACE@13..14 " "
+    TYPE_CONDITION@14..23
+      ON@14..16 "on"
+      WHITESPACE@16..17 " "
+      NAMED_TYPE@17..23
+        NAME@17..23 "Friend"
+    WHITESPACE@23..24 " "
+    SELECTION_SET@24..34
+      OPEN_CURLY@24..25 "{"
+      LINE_TERMINATOR@25..26 "\n"
+      WHITESPACE@26..28 "  "
+      SELECTION@28..33
+        FIELD_SELECTION@28..33
+          NAME@28..32 "node"
+          LINE_TERMINATOR@32..33 "\n"
+      CLOSE_CURLY@33..34 "}"
+  LINE_TERMINATOR@34..35 "\n"
+

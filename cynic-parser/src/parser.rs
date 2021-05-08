@@ -96,6 +96,15 @@ impl<'source> Parser<'source> {
             .map(|(t, _, _)| *t)
     }
 
+    fn peek_next_str_non_ws(&self) -> Option<&'source str> {
+        let mut rev_iter = self.tokens.iter().rev();
+        rev_iter.next(); // Skip the first one.
+        rev_iter
+            .skip_while(|(t, _, _)| *t == Token::Whitespace || *t == Token::LineTerminator)
+            .next()
+            .map(|(_, s, _)| *s)
+    }
+
     fn current_str(&self) -> Option<&'source str> {
         self.tokens.last().map(|(_, s, _)| *s)
     }
@@ -320,8 +329,12 @@ fn selection_set(parser: &mut Parser) {
                 break;
             }
             Some(Token::Spread) => {
-                // Fragment or inline fragment
-                todo!()
+                parser.builder.start_node(SELECTION.into());
+                match parser.peek_next_str_non_ws() {
+                    Some("on") => inline_fragment(parser),
+                    _ => fragment_spread(parser),
+                }
+                parser.builder.finish_node();
             }
             _ => {
                 // TODO: is this good? not sure it is..
@@ -409,17 +422,20 @@ fn argument(parser: &mut Parser) {
 }
 
 fn fragment(parser: &mut Parser) {
+    fragment_name(parser);
+
+    type_condition(parser);
+
+    // TODO: Directives
+
     parser.skip_ws();
     match parser.current() {
-        None => parser.error("expected fragment name"),
-        Some(Token::Name) if parser.current_str() != Some("on") => {
-            parser.bump();
-        }
-        _ => {
-            parser.error("expected fragment name");
-        }
+        Some(Token::OpenCurly) => selection_set(parser),
+        _ => parser.error("expected selection set"),
     }
+}
 
+fn type_condition(parser: &mut Parser) {
     parser.skip_ws();
     match parser.current_pair() {
         Some((Token::Name, "on")) => {
@@ -437,16 +453,52 @@ fn fragment(parser: &mut Parser) {
             parser.error("expected a type condition");
         }
     }
+}
 
-    // TODO: Directives
+fn fragment_spread(parser: &mut Parser) {
+    assert_eq!(parser.current(), Some(Token::Spread));
+    parser.builder.start_node(FRAGMENT_SPREAD.into());
+    parser.bump();
+    parser.skip_ws();
+    fragment_name(parser);
+
+    // TODO: directives
+    parser.builder.finish_node();
+}
+
+fn fragment_name(parser: &mut Parser) {
+    parser.skip_ws();
+    match parser.current() {
+        None => parser.error("expected fragment name"),
+        Some(Token::Name) if parser.current_str() != Some("on") => {
+            parser.builder.start_node(FRAGMENT_NAME.into());
+            parser.bump();
+            parser.builder.finish_node();
+        }
+        _ => {
+            parser.error("expected fragment name");
+        }
+    }
+}
+
+fn inline_fragment(parser: &mut Parser) {
+    assert_eq!(parser.current(), Some(Token::Spread));
+    parser.builder.start_node(INLINE_FRAGMENT.into());
+    parser.bump();
+    parser.skip_ws();
+    if let Some((Token::Name, "on")) = parser.current_pair() {
+        type_condition(parser);
+    }
+
+    // TODO: directives
 
     parser.skip_ws();
-    if let Some(Token::OpenCurly) = parser.current() {
-        selection_set(parser);
-    } else {
-        todo!()
-        // TODO: Error
+    match parser.current() {
+        Some(Token::OpenCurly) => selection_set(parser),
+        _ => parser.error("expected selection set"),
     }
+
+    parser.builder.finish_node();
 }
 
 #[cfg(test)]
@@ -474,6 +526,9 @@ query {
     }
 
     #[rstest]
+    #[case::fragment("tests/queries/fragment.graphql")]
+    #[case::fragment_spread("tests/queries/fragment_spread.graphql")]
+    #[case::inline_fragment("tests/queries/inline_fragment.graphql")]
     #[case::minimal("tests/queries/minimal.graphql")]
     #[case::minimal_mutation("tests/queries/minimal_mutation.graphql")]
     #[case::minimal_query("tests/queries/minimal_query.graphql")]
@@ -481,7 +536,6 @@ query {
     #[case::nested_selection("tests/queries/nested_selection.graphql")]
     #[case::query_aliases("tests/queries/query_aliases.graphql")]
     #[case::query_vars("tests/queries/query_vars.graphql")]
-    #[case::fragment("tests/queries/fragment.graphql")]
     fn test_query_file(#[case] file: String) {
         let mut query = String::new();
         File::open(file)
