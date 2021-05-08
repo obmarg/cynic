@@ -1,7 +1,7 @@
 use logos::Logos;
 
-#[derive(Logos, Debug, PartialEq)]
-enum Token {
+#[derive(Logos, Debug, PartialEq, Clone, Copy)]
+pub enum Token {
     #[token(",")]
     Comma,
 
@@ -100,6 +100,28 @@ mod test {
         assert_eq!(
             Token::lexer("-100").collect::<Vec<_>>(),
             vec![Token::NegativeSign, Token::Number]
+        );
+    }
+
+    #[test]
+    fn can_lex_variables() {
+        let res = Token::lexer(r#"$name: String! = "hello""#).collect::<Vec<_>>();
+        assert_eq!(
+            res,
+            vec![
+                Token::Dollar,
+                Token::Name,
+                Token::Colon,
+                Token::Whitespace,
+                Token::Name,
+                Token::Bang,
+                Token::Whitespace,
+                Token::Equals,
+                Token::Whitespace,
+                Token::Quote,
+                Token::Name,
+                Token::Quote
+            ]
         );
     }
 

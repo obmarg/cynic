@@ -8,6 +8,7 @@ edition = "2018"
 
 [dependencies]
 logos = "0.12.0"
+rowan = "0.12.6"
 
 [dev-dependencies]
 insta = "1.5"
