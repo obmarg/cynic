@@ -156,18 +156,21 @@ fn executable_def(parser: &mut Parser) -> Res {
             parser.builder.start_node(OPERATION_DEF.into());
             parser.bump_as(MUTATION_KEYWORD);
             operation(parser);
-            todo!()
+            parser.builder.finish_node();
+            return Res::Ok;
         }
         Some((Token::Name, "subscription")) => {
             parser.builder.start_node(OPERATION_DEF.into());
             parser.bump_as(SUBSCRIPTION_KEYWORD);
             operation(parser);
-            todo!()
+            parser.builder.finish_node();
+            return Res::Ok;
         }
         Some((Token::OpenCurly, _)) => {
             parser.builder.start_node(OPERATION_DEF.into());
             selection_set(parser);
-            todo!()
+            parser.builder.finish_node();
+            return Res::Ok;
         }
         Some((Token::Name, "fragment")) => {
             parser.builder.start_node(FRAGMENT_DEF.into());
@@ -330,7 +333,13 @@ fn field_selection(parser: &mut Parser) {
         parser.builder.finish_node();
     }
 
-    parser.bump();
+    parser.skip_ws();
+    match parser.current() {
+        Some(Token::Name) => {
+            parser.bump();
+        }
+        _ => parser.error("expected name"),
+    }
 
     parser.skip_ws();
     if let Some(Token::OpenParen) = parser.current() {
@@ -387,10 +396,14 @@ fn argument(parser: &mut Parser) {
 
 #[cfg(test)]
 mod tests {
+    use std::{fs::File, io::Read};
+
+    use rstest::rstest;
+
     use super::*;
 
     #[test]
-    pub fn test_simple_parse() {
+    fn test_simple_parse() {
         let query = r#"
 query {
     posts {
@@ -400,6 +413,28 @@ query {
 }
 "#;
         let result = parse(query);
+        assert_eq!(result.errors, vec![]);
+        assert_eq!(result.green_node.to_string(), query);
+        insta::assert_debug_snapshot!(result.syntax());
+    }
+
+    #[rstest]
+    #[case::minimal("tests/queries/minimal.graphql")]
+    #[case::minimal_mutation("tests/queries/minimal_mutation.graphql")]
+    #[case::minimal_query("tests/queries/minimal_query.graphql")]
+    #[case::named_query("tests/queries/named_query.graphql")]
+    #[case::nested_selection("tests/queries/nested_selection.graphql")]
+    #[case::query_aliases("tests/queries/query_aliases.graphql")]
+    #[case::query_vars("tests/queries/query_vars.graphql")]
+    fn test_query_file(#[case] file: String) {
+        let mut query = String::new();
+        File::open(file)
+            .unwrap()
+            .read_to_string(&mut query)
+            .unwrap();
+
+        let result = parse(&query);
+
         assert_eq!(result.errors, vec![]);
         assert_eq!(result.green_node.to_string(), query);
         insta::assert_debug_snapshot!(result.syntax());

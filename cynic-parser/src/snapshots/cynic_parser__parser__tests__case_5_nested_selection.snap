@@ -1,0 +1,31 @@
+---
+source: cynic-parser/src/parser.rs
+expression: result.syntax()
+
+---
+ROOT@0..30
+  OPERATION_DEF@0..29
+    QUERY_KEYWORD@0..5 "query"
+    WHITESPACE@5..6 " "
+    SELECTION_SET@6..29
+      OPEN_CURLY@6..7 "{"
+      LINE_TERMINATOR@7..8 "\n"
+      WHITESPACE@8..10 "  "
+      SELECTION@10..27
+        FIELD_SELECTION@10..27
+          NAME@10..14 "node"
+          WHITESPACE@14..15 " "
+          SELECTION_SET@15..27
+            OPEN_CURLY@15..16 "{"
+            LINE_TERMINATOR@16..17 "\n"
+            WHITESPACE@17..21 "    "
+            SELECTION@21..26
+              FIELD_SELECTION@21..26
+                NAME@21..23 "id"
+                LINE_TERMINATOR@23..24 "\n"
+                WHITESPACE@24..26 "  "
+            CLOSE_CURLY@26..27 "}"
+      LINE_TERMINATOR@27..28 "\n"
+      CLOSE_CURLY@28..29 "}"
+  LINE_TERMINATOR@29..30 "\n"
+

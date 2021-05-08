@@ -12,3 +12,4 @@ rowan = "0.12.6"
 
 [dev-dependencies]
 insta = "1.5"
+rstest = "0.9"

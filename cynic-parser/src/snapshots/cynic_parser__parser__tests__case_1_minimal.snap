@@ -1,0 +1,18 @@
+---
+source: cynic-parser/src/parser.rs
+expression: result.syntax()
+
+---
+ROOT@0..8
+  OPERATION_DEF@0..7
+    SELECTION_SET@0..7
+      OPEN_CURLY@0..1 "{"
+      LINE_TERMINATOR@1..2 "\n"
+      WHITESPACE@2..4 "  "
+      SELECTION@4..6
+        FIELD_SELECTION@4..6
+          NAME@4..5 "a"
+          LINE_TERMINATOR@5..6 "\n"
+      CLOSE_CURLY@6..7 "}"
+  LINE_TERMINATOR@7..8 "\n"
+

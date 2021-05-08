@@ -1,0 +1,22 @@
+---
+source: cynic-parser/src/parser.rs
+expression: result.syntax()
+
+---
+ROOT@0..22
+  OPERATION_DEF@0..21
+    QUERY_KEYWORD@0..5 "query"
+    WHITESPACE@5..6 " "
+    NAME@6..9 "Foo"
+    WHITESPACE@9..10 " "
+    SELECTION_SET@10..21
+      OPEN_CURLY@10..11 "{"
+      LINE_TERMINATOR@11..12 "\n"
+      WHITESPACE@12..14 "  "
+      SELECTION@14..20
+        FIELD_SELECTION@14..20
+          NAME@14..19 "field"
+          LINE_TERMINATOR@19..20 "\n"
+      CLOSE_CURLY@20..21 "}"
+  LINE_TERMINATOR@21..22 "\n"
+
