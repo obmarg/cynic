@@ -12,7 +12,7 @@ use crate::{
 mod arguments;
 mod fragments;
 
-use arguments::arguments;
+use arguments::{arguments, constant_value};
 use fragments::{fragment, fragment_spread, inline_fragment};
 
 /// The parse results are stored as a "green tree".
@@ -56,9 +56,9 @@ struct Parser<'source> {
 impl<'source> Parser<'source> {
     fn parse(mut self) -> Parse {
         self.builder.start_node(ROOT.into());
+        let mut current_error = false;
         loop {
             // Ok, so parsing out definitions here.
-            let mut current_error = false;
             match executable_def(&mut self) {
                 Res::Eof => {
                     break;
@@ -240,6 +240,13 @@ fn variable_defs(parser: &mut Parser) {
                     _ => parser.error("expected :"),
                 }
                 type_(parser);
+                parser.skip_ws();
+                if let Some(Token::Equals) = parser.current() {
+                    parser.builder.start_node(DEFAULT_VALUE.into());
+                    parser.bump();
+                    constant_value(parser);
+                    parser.builder.finish_node();
+                }
                 parser.builder.finish_node();
                 // todo: default values
             }
@@ -439,6 +446,11 @@ query {
     #[case::query_object_argument("tests/queries/query_object_argument.graphql")]
     #[case::string_literal("tests/queries/string_literal.graphql")]
     #[case::triple_quoted_literal("tests/queries/triple_quoted_literal.graphql")]
+    #[case::query_var_default_float("tests/queries/query_var_default_float.graphql")]
+    #[case::query_var_default_list("tests/queries/query_var_default_list.graphql")]
+    #[case::query_var_default_object("tests/queries/query_var_default_object.graphql")]
+    #[case::query_var_default_string("tests/queries/query_var_default_string.graphql")]
+    #[case::query_var_defaults("tests/queries/query_var_defaults.graphql")]
     fn test_query_file(#[case] file: String) {
         let mut query = String::new();
         File::open(file)

@@ -57,6 +57,7 @@ pub enum SyntaxKind {
     ALIAS,
     ARGUMENTS,
     ARGUMENT,
+    DEFAULT_VALUE,
     TYPE_CONDITION,
     FRAGMENT_SPREAD,
     FRAGMENT_NAME,

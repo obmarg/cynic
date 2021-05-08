@@ -1,0 +1,41 @@
+---
+source: cynic-parser/src/parser/mod.rs
+expression: result.syntax()
+
+---
+ROOT@0..44
+  OPERATION_DEF@0..43
+    QUERY_KEYWORD@0..5 "query"
+    WHITESPACE@5..6 " "
+    NAME@6..9 "Foo"
+    VARIABLE_DEFS@9..31
+      OPEN_PAREN@9..10 "("
+      VARIABLE_DEF@10..30
+        VARIABLE@10..15
+          DOLLAR@10..11 "$"
+          NAME@11..15 "site"
+        COLON@15..16 ":"
+        WHITESPACE@16..17 " "
+        TYPE@17..21
+          NAMED_TYPE@17..21
+            NAME@17..21 "Site"
+        WHITESPACE@21..22 " "
+        DEFAULT_VALUE@22..30
+          EQUALS@22..23 "="
+          VALUE@23..30
+            WHITESPACE@23..24 " "
+            ENUM_VALUE@24..30
+              NAME@24..30 "MOBILE"
+      CLOSE_PAREN@30..31 ")"
+    WHITESPACE@31..32 " "
+    SELECTION_SET@32..43
+      OPEN_CURLY@32..33 "{"
+      LINE_TERMINATOR@33..34 "\n"
+      WHITESPACE@34..36 "  "
+      SELECTION@36..42
+        FIELD_SELECTION@36..42
+          NAME@36..41 "field"
+          LINE_TERMINATOR@41..42 "\n"
+      CLOSE_CURLY@42..43 "}"
+  LINE_TERMINATOR@43..44 "\n"
+

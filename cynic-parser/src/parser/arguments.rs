@@ -48,17 +48,27 @@ fn argument(parser: &mut Parser) {
         }
     }
 
-    value(parser);
+    value(parser, false);
     parser.skip_ws();
     parser.builder.finish_node();
 }
 
-fn value(parser: &mut Parser) {
+pub(super) fn constant_value(parser: &mut Parser) {
+    value(parser, true)
+}
+
+fn value(parser: &mut Parser, constant_context: bool) {
     // TODO: Insert a value node here
     parser.builder.start_node(VALUE.into());
     parser.skip_ws();
     match parser.current() {
-        Some(Token::Dollar) => super::variable(parser),
+        Some(Token::Dollar) => {
+            if constant_context {
+                parser.error("Found variable in constant context");
+                // Continue parsing anyway though...
+            }
+            super::variable(parser)
+        }
         Some(Token::NegativeSign) | Some(Token::Number) => number(parser),
         Some(Token::Quote) | Some(Token::BlockQuote) => string(parser),
         Some(Token::Name) => {
@@ -69,8 +79,8 @@ fn value(parser: &mut Parser) {
             }
             // Could be boolean, null, or an enum
         }
-        Some(Token::OpenCurly) => object(parser),
-        Some(Token::OpenSquare) => list(parser),
+        Some(Token::OpenCurly) => object(parser, constant_context),
+        Some(Token::OpenSquare) => list(parser, constant_context),
         _ => parser.error("expected a value"),
     }
     parser.skip_ws();
@@ -166,7 +176,7 @@ fn string(parser: &mut Parser) {
     parser.builder.finish_node();
 }
 
-fn object(parser: &mut Parser) {
+fn object(parser: &mut Parser, constant_context: bool) {
     assert_eq!(parser.current(), Some(Token::OpenCurly));
     parser.builder.start_node(OBJECT_VALUE.into());
     parser.bump();
@@ -182,7 +192,7 @@ fn object(parser: &mut Parser) {
                 break;
             }
             Some(Token::Name) => {
-                object_field(parser);
+                object_field(parser, constant_context);
             }
             _ => {
                 parser.error("expected name");
@@ -194,7 +204,7 @@ fn object(parser: &mut Parser) {
     parser.builder.finish_node();
 }
 
-fn object_field(parser: &mut Parser) {
+fn object_field(parser: &mut Parser, constant_context: bool) {
     assert_eq!(parser.current(), Some(Token::Name));
     parser.builder.start_node(OBJECT_FIELD.into());
     parser.bump();
@@ -206,12 +216,12 @@ fn object_field(parser: &mut Parser) {
         }
         _ => parser.error("expected colon"),
     }
-    value(parser);
+    value(parser, constant_context);
 
     parser.builder.finish_node();
 }
 
-fn list(parser: &mut Parser) {
+fn list(parser: &mut Parser, constant_context: bool) {
     assert_eq!(parser.current(), Some(Token::OpenSquare));
     parser.builder.start_node(LIST_VALUE.into());
     parser.bump();
@@ -228,7 +238,7 @@ fn list(parser: &mut Parser) {
             }
             _ => {}
         }
-        value(parser);
+        value(parser, constant_context);
         parser.skip_ws();
     }
 
