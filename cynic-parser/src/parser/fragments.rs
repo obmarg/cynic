@@ -1,4 +1,4 @@
-use super::{named_type, selection_set, Parser};
+use super::{arguments, directives::maybe_directives, named_type, selection_set, Parser};
 use crate::{lexer::Token, syntax::SyntaxKind::*};
 
 pub(super) fn fragment(parser: &mut Parser) {
@@ -6,7 +6,7 @@ pub(super) fn fragment(parser: &mut Parser) {
 
     type_condition(parser);
 
-    // TODO: Directives
+    maybe_directives(parser, arguments::Context::NonConstant);
 
     parser.skip_ws();
     match parser.current() {
@@ -22,7 +22,8 @@ pub(super) fn fragment_spread(parser: &mut Parser) {
     parser.skip_ws();
     fragment_name(parser);
 
-    // TODO: directives
+    maybe_directives(parser, arguments::Context::NonConstant);
+
     parser.builder.finish_node();
 }
 

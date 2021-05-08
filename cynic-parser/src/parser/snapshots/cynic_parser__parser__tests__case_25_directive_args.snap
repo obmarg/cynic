@@ -1,0 +1,72 @@
+---
+source: cynic-parser/src/parser/mod.rs
+expression: result.syntax()
+
+---
+ROOT@0..64
+  OPERATION_DEF@0..63
+    QUERY_KEYWORD@0..5 "query"
+    WHITESPACE@5..6 " "
+    SELECTION_SET@6..63
+      OPEN_CURLY@6..7 "{"
+      LINE_TERMINATOR@7..8 "\n"
+      WHITESPACE@8..10 "  "
+      SELECTION@10..62
+        FIELD_SELECTION@10..62
+          NAME@10..14 "node"
+          WHITESPACE@14..15 " "
+          DIRECTIVES@15..62
+            DIRECTIVE@15..62
+              AT@15..16 "@"
+              NAME@16..19 "dir"
+              ARGUMENTS@19..62
+                OPEN_PAREN@19..20 "("
+                ARGUMENT@20..26
+                  NAME@20..21 "a"
+                  COLON@21..22 ":"
+                  VALUE@22..26
+                    WHITESPACE@22..23 " "
+                    INTEGER_VALUE@23..24
+                      NUMBER@23..24 "1"
+                    COMMA@24..25 ","
+                    WHITESPACE@25..26 " "
+                ARGUMENT@26..34
+                  NAME@26..27 "b"
+                  COLON@27..28 ":"
+                  VALUE@28..34
+                    WHITESPACE@28..29 " "
+                    STRING_VALUE@29..32
+                      QUOTE@29..30 "\""
+                      STRING_CONTENTS@30..31 "2"
+                      QUOTE@31..32 "\""
+                    COMMA@32..33 ","
+                    WHITESPACE@33..34 " "
+                ARGUMENT@34..43
+                  NAME@34..35 "c"
+                  COLON@35..36 ":"
+                  VALUE@36..43
+                    WHITESPACE@36..37 " "
+                    BOOL_VALUE@37..41
+                      TRUE@37..41 "true"
+                    COMMA@41..42 ","
+                    WHITESPACE@42..43 " "
+                ARGUMENT@43..53
+                  NAME@43..44 "d"
+                  COLON@44..45 ":"
+                  VALUE@45..53
+                    WHITESPACE@45..46 " "
+                    BOOL_VALUE@46..51
+                      FALSE@46..51 "false"
+                    COMMA@51..52 ","
+                    WHITESPACE@52..53 " "
+                ARGUMENT@53..60
+                  NAME@53..54 "e"
+                  COLON@54..55 ":"
+                  VALUE@55..60
+                    WHITESPACE@55..56 " "
+                    NULL@56..60 "null"
+                CLOSE_PAREN@60..61 ")"
+                LINE_TERMINATOR@61..62 "\n"
+      CLOSE_CURLY@62..63 "}"
+  LINE_TERMINATOR@63..64 "\n"
+

@@ -10,9 +10,11 @@ use crate::{
 };
 
 mod arguments;
+mod directives;
 mod fragments;
 
-use arguments::{arguments, constant_value};
+use arguments::{arguments, value};
+use directives::maybe_directives;
 use fragments::{fragment, fragment_spread, inline_fragment};
 
 /// The parse results are stored as a "green tree".
@@ -229,7 +231,8 @@ fn operation(parser: &mut Parser) {
         variable_defs(parser);
     }
 
-    // TODO: directives
+    // TODO: Figure out if this is constant or not?
+    maybe_directives(parser, arguments::Context::NonConstant);
 
     parser.skip_ws();
     if let Some(Token::OpenCurly) = parser.current() {
@@ -263,7 +266,7 @@ fn variable_defs(parser: &mut Parser) {
                 if let Some(Token::Equals) = parser.current() {
                     parser.builder.start_node(DEFAULT_VALUE.into());
                     parser.bump();
-                    constant_value(parser);
+                    value(parser, arguments::Context::Constant);
                     parser.builder.finish_node();
                 }
                 parser.builder.finish_node();
@@ -401,14 +404,10 @@ fn field_selection(parser: &mut Parser) {
 
     parser.skip_ws();
     if let Some(Token::OpenParen) = parser.current() {
-        arguments(parser);
+        arguments(parser, arguments::Context::NonConstant);
     }
 
-    parser.skip_ws();
-    if let Some(Token::At) = parser.current() {
-        todo!()
-        // TODO: parse directives
-    }
+    maybe_directives(parser, arguments::Context::NonConstant);
 
     parser.skip_ws();
     if let Some(Token::OpenCurly) = parser.current() {
@@ -469,6 +468,10 @@ query {
     #[case::query_var_default_string("tests/queries/query_var_default_string.graphql")]
     #[case::query_var_defaults("tests/queries/query_var_defaults.graphql")]
     #[case::query_vars("tests/queries/query_nameless_vars_multiple_fields.graphql")]
+    #[case::directive_args("tests/queries/directive_args.graphql")]
+    #[case::mutation_directive("tests/queries/mutation_directive.graphql")]
+    #[case::query_directive("tests/queries/query_directive.graphql")]
+    #[case::subscription_directive("tests/queries/subscription_directive.graphql")]
     fn test_query_file(#[case] file: String) {
         let mut query = String::new();
         File::open(file)

@@ -1,5 +1,5 @@
 ---
-source: cynic-parser/src/parser.rs
+source: cynic-parser/src/parser/mod.rs
 expression: result.syntax()
 
 ---
@@ -24,13 +24,13 @@ ROOT@0..47
                 NAME@21..23 "id"
                 LINE_TERMINATOR@23..24 "\n"
                 WHITESPACE@24..28 "    "
-            SELECTION@28..40
-              FRAGMENT_SPREAD@28..40
+            SELECTION@28..43
+              FRAGMENT_SPREAD@28..43
                 SPREAD@28..31 "..."
                 FRAGMENT_NAME@31..40
                   NAME@31..40 "something"
-            LINE_TERMINATOR@40..41 "\n"
-            WHITESPACE@41..43 "  "
+                LINE_TERMINATOR@40..41 "\n"
+                WHITESPACE@41..43 "  "
             CLOSE_CURLY@43..44 "}"
       LINE_TERMINATOR@44..45 "\n"
       CLOSE_CURLY@45..46 "}"

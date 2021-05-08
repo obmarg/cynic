@@ -1,7 +1,13 @@
 use super::{named_type, selection_set, Parser};
 use crate::{lexer::Token, syntax::SyntaxKind::*};
 
-pub(super) fn arguments(parser: &mut Parser) {
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
+pub enum Context {
+    Constant,
+    NonConstant,
+}
+
+pub(super) fn arguments(parser: &mut Parser, context: Context) {
     assert_eq!(parser.current(), Some(Token::OpenParen));
     parser.builder.start_node(ARGUMENTS.into());
     parser.bump();
@@ -15,7 +21,7 @@ pub(super) fn arguments(parser: &mut Parser) {
                 break;
             }
             Some(Token::Name) => {
-                argument(parser);
+                argument(parser, context);
             }
             Some(Token::CloseParen) => {
                 parser.bump();
@@ -33,7 +39,7 @@ pub(super) fn arguments(parser: &mut Parser) {
     parser.builder.finish_node();
 }
 
-fn argument(parser: &mut Parser) {
+fn argument(parser: &mut Parser, context: Context) {
     assert_eq!(parser.current(), Some(Token::Name));
     parser.builder.start_node(ARGUMENT.into());
     parser.bump();
@@ -48,22 +54,18 @@ fn argument(parser: &mut Parser) {
         }
     }
 
-    value(parser, false);
+    value(parser, context);
     parser.skip_ws();
     parser.builder.finish_node();
 }
 
-pub(super) fn constant_value(parser: &mut Parser) {
-    value(parser, true)
-}
-
-fn value(parser: &mut Parser, constant_context: bool) {
+pub(super) fn value(parser: &mut Parser, context: Context) {
     // TODO: Insert a value node here
     parser.builder.start_node(VALUE.into());
     parser.skip_ws();
     match parser.current() {
         Some(Token::Dollar) => {
-            if constant_context {
+            if context == Context::Constant {
                 parser.error("Found variable in constant context");
                 // Continue parsing anyway though...
             }
@@ -75,12 +77,12 @@ fn value(parser: &mut Parser, constant_context: bool) {
             match parser.current_str().unwrap() {
                 "true" | "false" => boolean(parser),
                 "null" => null(parser),
-                other => enum_value(parser),
+                _ => enum_value(parser),
             }
             // Could be boolean, null, or an enum
         }
-        Some(Token::OpenCurly) => object(parser, constant_context),
-        Some(Token::OpenSquare) => list(parser, constant_context),
+        Some(Token::OpenCurly) => object(parser, context),
+        Some(Token::OpenSquare) => list(parser, context),
         _ => parser.error("expected a value"),
     }
     parser.skip_ws();
@@ -176,7 +178,7 @@ fn string(parser: &mut Parser) {
     parser.builder.finish_node();
 }
 
-fn object(parser: &mut Parser, constant_context: bool) {
+fn object(parser: &mut Parser, context: Context) {
     assert_eq!(parser.current(), Some(Token::OpenCurly));
     parser.builder.start_node(OBJECT_VALUE.into());
     parser.bump();
@@ -192,7 +194,7 @@ fn object(parser: &mut Parser, constant_context: bool) {
                 break;
             }
             Some(Token::Name) => {
-                object_field(parser, constant_context);
+                object_field(parser, context);
             }
             _ => {
                 parser.error("expected name");
@@ -204,7 +206,7 @@ fn object(parser: &mut Parser, constant_context: bool) {
     parser.builder.finish_node();
 }
 
-fn object_field(parser: &mut Parser, constant_context: bool) {
+fn object_field(parser: &mut Parser, context: Context) {
     assert_eq!(parser.current(), Some(Token::Name));
     parser.builder.start_node(OBJECT_FIELD.into());
     parser.bump();
@@ -216,12 +218,12 @@ fn object_field(parser: &mut Parser, constant_context: bool) {
         }
         _ => parser.error("expected colon"),
     }
-    value(parser, constant_context);
+    value(parser, context);
 
     parser.builder.finish_node();
 }
 
-fn list(parser: &mut Parser, constant_context: bool) {
+fn list(parser: &mut Parser, context: Context) {
     assert_eq!(parser.current(), Some(Token::OpenSquare));
     parser.builder.start_node(LIST_VALUE.into());
     parser.bump();
@@ -238,7 +240,7 @@ fn list(parser: &mut Parser, constant_context: bool) {
             }
             _ => {}
         }
-        value(parser, constant_context);
+        value(parser, context);
         parser.skip_ws();
     }
 
@@ -248,11 +250,15 @@ fn list(parser: &mut Parser, constant_context: bool) {
 fn boolean(parser: &mut Parser) {
     assert_eq!(parser.current(), Some(Token::Name));
 
+    parser.builder.start_node(BOOL_VALUE.into());
+
     match parser.current_str() {
         Some("true") => parser.bump_as(TRUE),
         Some("false") => parser.bump_as(FALSE),
         _ => panic!("boolean pre-condition not met"),
     }
+
+    parser.builder.finish_node();
 }
 
 fn null(parser: &mut Parser) {

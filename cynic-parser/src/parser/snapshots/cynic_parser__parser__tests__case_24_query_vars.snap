@@ -1,0 +1,232 @@
+---
+source: cynic-parser/src/parser/mod.rs
+expression: result.syntax()
+
+---
+ROOT@0..332
+  COMMA@0..1 ","
+  COMMA@1..2 ","
+  COMMA@2..3 ","
+  COMMA@3..4 ","
+  COMMA@4..5 ","
+  COMMA@5..6 ","
+  COMMA@6..7 ","
+  COMMA@7..8 ","
+  COMMA@8..9 ","
+  COMMA@9..10 ","
+  COMMA@10..11 ","
+  COMMA@11..12 ","
+  COMMA@12..13 ","
+  COMMA@13..14 ","
+  COMMA@14..15 ","
+  COMMA@15..16 ","
+  COMMA@16..17 ","
+  LINE_TERMINATOR@17..18 "\n"
+  OPERATION_DEF@18..331
+    QUERY_KEYWORD@18..23 "query"
+    WHITESPACE@23..24 " "
+    COMMA@24..25 ","
+    COMMA@25..26 ","
+    COMMA@26..27 ","
+    COMMA@27..28 ","
+    COMMA@28..29 ","
+    COMMA@29..30 ","
+    COMMA@30..31 ","
+    WHITESPACE@31..32 " "
+    VARIABLE_DEFS@32..72
+      OPEN_PAREN@32..33 "("
+      VARIABLE_DEF@33..52
+        VARIABLE@33..41
+          DOLLAR@33..34 "$"
+          NAME@34..41 "houseId"
+        COLON@41..42 ":"
+        WHITESPACE@42..43 " "
+        TYPE@43..50
+          NAMED_TYPE@43..49
+            NAME@43..49 "String"
+          BANG@49..50 "!"
+        COMMA@50..51 ","
+        WHITESPACE@51..52 " "
+      VARIABLE_DEF@52..71
+        VARIABLE@52..65
+          DOLLAR@52..53 "$"
+          NAME@53..65 "streetNumber"
+        COLON@65..66 ":"
+        WHITESPACE@66..67 " "
+        TYPE@67..71
+          NAMED_TYPE@67..70
+            NAME@67..70 "Int"
+          BANG@70..71 "!"
+      CLOSE_PAREN@71..72 ")"
+    WHITESPACE@72..73 " "
+    COMMA@73..74 ","
+    COMMA@74..75 ","
+    COMMA@75..76 ","
+    COMMA@76..77 ","
+    COMMA@77..78 ","
+    COMMA@78..79 ","
+    COMMA@79..80 ","
+    COMMA@80..81 ","
+    COMMA@81..82 ","
+    COMMA@82..83 ","
+    COMMA@83..84 ","
+    COMMA@84..85 ","
+    WHITESPACE@85..86 " "
+    SELECTION_SET@86..331
+      OPEN_CURLY@86..87 "{"
+      WHITESPACE@87..88 " "
+      COMMENT@88..98
+        COMMENT_CONTENTS@88..89 "#"
+        COMMENT_CONTENTS@89..90 " "
+        COMMENT_CONTENTS@90..97 "comment"
+        LINE_TERMINATOR@97..98 "\n"
+      COMMA@98..99 ","
+      COMMA@99..100 ","
+      COMMA@100..101 ","
+      COMMA@101..102 ","
+      COMMA@102..103 ","
+      COMMA@103..104 ","
+      COMMA@104..105 ","
+      COMMA@105..106 ","
+      COMMA@106..107 ","
+      COMMA@107..108 ","
+      COMMA@108..109 ","
+      COMMA@109..110 ","
+      COMMA@110..111 ","
+      COMMA@111..112 ","
+      COMMA@112..113 ","
+      COMMA@113..114 ","
+      COMMA@114..115 ","
+      COMMA@115..116 ","
+      WHITESPACE@116..117 " "
+      COMMENT@117..141
+        COMMENT_CONTENTS@117..118 "#"
+        COMMENT_CONTENTS@118..119 " "
+        COMMENT_CONTENTS@119..125 "commas"
+        COMMENT_CONTENTS@125..126 " "
+        COMMENT_CONTENTS@126..132 "should"
+        COMMENT_CONTENTS@132..133 " "
+        COMMENT_CONTENTS@133..135 "be"
+        COMMENT_CONTENTS@135..136 " "
+        COMMENT_CONTENTS@136..140 "fine"
+        LINE_TERMINATOR@140..141 "\n"
+      WHITESPACE@141..143 "  "
+      SELECTION@143..200
+        FIELD_SELECTION@143..200
+          NAME@143..148 "house"
+          ARGUMENTS@148..163
+            OPEN_PAREN@148..149 "("
+            ARGUMENT@149..161
+              NAME@149..151 "id"
+              COLON@151..152 ":"
+              VALUE@152..161
+                WHITESPACE@152..153 " "
+                VARIABLE@153..161
+                  DOLLAR@153..154 "$"
+                  NAME@154..161 "houseId"
+            CLOSE_PAREN@161..162 ")"
+            WHITESPACE@162..163 " "
+          SELECTION_SET@163..200
+            OPEN_CURLY@163..164 "{"
+            LINE_TERMINATOR@164..165 "\n"
+            WHITESPACE@165..169 "    "
+            SELECTION@169..176
+              FIELD_SELECTION@169..176
+                NAME@169..171 "id"
+                LINE_TERMINATOR@171..172 "\n"
+                WHITESPACE@172..176 "    "
+            SELECTION@176..185
+              FIELD_SELECTION@176..185
+                NAME@176..180 "name"
+                LINE_TERMINATOR@180..181 "\n"
+                WHITESPACE@181..185 "    "
+            SELECTION@185..193
+              FIELD_SELECTION@185..193
+                NAME@185..188 "lat"
+                LINE_TERMINATOR@188..189 "\n"
+                WHITESPACE@189..193 "    "
+            SELECTION@193..199
+              FIELD_SELECTION@193..199
+                NAME@193..196 "lng"
+                LINE_TERMINATOR@196..197 "\n"
+                WHITESPACE@197..199 "  "
+            CLOSE_CURLY@199..200 "}"
+      LINE_TERMINATOR@200..201 "\n"
+      WHITESPACE@201..203 "  "
+      SELECTION@203..265
+        FIELD_SELECTION@203..265
+          NAME@203..209 "street"
+          ARGUMENTS@209..233
+            OPEN_PAREN@209..210 "("
+            ARGUMENT@210..231
+              NAME@210..216 "number"
+              COLON@216..217 ":"
+              VALUE@217..231
+                WHITESPACE@217..218 " "
+                VARIABLE@218..231
+                  DOLLAR@218..219 "$"
+                  NAME@219..231 "streetNumber"
+            CLOSE_PAREN@231..232 ")"
+            WHITESPACE@232..233 " "
+          SELECTION_SET@233..265
+            OPEN_CURLY@233..234 "{"
+            WHITESPACE@234..235 " "
+            COMMENT@235..255
+              COMMENT_CONTENTS@235..236 "#"
+              COMMENT_CONTENTS@236..237 " "
+              COMMENT_CONTENTS@237..241 "this"
+              COMMENT_CONTENTS@241..242 " "
+              COMMENT_CONTENTS@242..244 "is"
+              COMMENT_CONTENTS@244..245 " "
+              COMMENT_CONTENTS@245..246 "a"
+              COMMENT_CONTENTS@246..247 " "
+              COMMENT_CONTENTS@247..254 "comment"
+              LINE_TERMINATOR@254..255 "\n"
+            WHITESPACE@255..259 "    "
+            SELECTION@259..264
+              FIELD_SELECTION@259..264
+                NAME@259..261 "id"
+                LINE_TERMINATOR@261..262 "\n"
+                WHITESPACE@262..264 "  "
+            CLOSE_CURLY@264..265 "}"
+      LINE_TERMINATOR@265..266 "\n"
+      WHITESPACE@266..268 "  "
+      SELECTION@268..329
+        FIELD_SELECTION@268..329
+          NAME@268..279 "houseStreet"
+          ARGUMENTS@279..317
+            OPEN_PAREN@279..280 "("
+            ARGUMENT@280..294
+              NAME@280..282 "id"
+              COLON@282..283 ":"
+              VALUE@283..294
+                WHITESPACE@283..284 " "
+                VARIABLE@284..292
+                  DOLLAR@284..285 "$"
+                  NAME@285..292 "houseId"
+                COMMA@292..293 ","
+                WHITESPACE@293..294 " "
+            ARGUMENT@294..315
+              NAME@294..300 "number"
+              COLON@300..301 ":"
+              VALUE@301..315
+                WHITESPACE@301..302 " "
+                VARIABLE@302..315
+                  DOLLAR@302..303 "$"
+                  NAME@303..315 "streetNumber"
+            CLOSE_PAREN@315..316 ")"
+            WHITESPACE@316..317 " "
+          SELECTION_SET@317..329
+            OPEN_CURLY@317..318 "{"
+            LINE_TERMINATOR@318..319 "\n"
+            WHITESPACE@319..323 "    "
+            SELECTION@323..328
+              FIELD_SELECTION@323..328
+                NAME@323..325 "id"
+                LINE_TERMINATOR@325..326 "\n"
+                WHITESPACE@326..328 "  "
+            CLOSE_CURLY@328..329 "}"
+      LINE_TERMINATOR@329..330 "\n"
+      CLOSE_CURLY@330..331 "}"
+  LINE_TERMINATOR@331..332 "\n"
+
