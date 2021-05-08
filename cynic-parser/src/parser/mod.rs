@@ -442,17 +442,19 @@ query {
     }
 
     #[rstest]
+    #[case::directive_args("tests/queries/directive_args.graphql")]
     #[case::fragment("tests/queries/fragment.graphql")]
     #[case::fragment_spread("tests/queries/fragment_spread.graphql")]
     #[case::inline_fragment("tests/queries/inline_fragment.graphql")]
     #[case::minimal("tests/queries/minimal.graphql")]
     #[case::minimal_mutation("tests/queries/minimal_mutation.graphql")]
     #[case::minimal_query("tests/queries/minimal_query.graphql")]
+    #[case::mutation_directive("tests/queries/mutation_directive.graphql")]
     #[case::named_query("tests/queries/named_query.graphql")]
     #[case::nested_selection("tests/queries/nested_selection.graphql")]
     #[case::query_aliases("tests/queries/query_aliases.graphql")]
-    #[case::query_vars("tests/queries/query_vars.graphql")]
     #[case::query_arguments("tests/queries/query_arguments.graphql")]
+    #[case::query_directive("tests/queries/query_directive.graphql")]
     #[case::query_float_arguments("tests/queries/query_float_arguments.graphql")]
     #[case::query_list_argument("tests/queries/query_list_argument.graphql")]
     #[case::query_nameless_vars("tests/queries/query_nameless_vars.graphql")]
@@ -460,30 +462,34 @@ query {
         "tests/queries/query_nameless_vars_multiple_fields_canonical.graphql"
     )]
     #[case::query_object_argument("tests/queries/query_object_argument.graphql")]
-    #[case::string_literal("tests/queries/string_literal.graphql")]
-    #[case::triple_quoted_literal("tests/queries/triple_quoted_literal.graphql")]
     #[case::query_var_default_float("tests/queries/query_var_default_float.graphql")]
     #[case::query_var_default_list("tests/queries/query_var_default_list.graphql")]
     #[case::query_var_default_object("tests/queries/query_var_default_object.graphql")]
     #[case::query_var_default_string("tests/queries/query_var_default_string.graphql")]
     #[case::query_var_defaults("tests/queries/query_var_defaults.graphql")]
     #[case::query_vars("tests/queries/query_nameless_vars_multiple_fields.graphql")]
-    #[case::directive_args("tests/queries/directive_args.graphql")]
-    #[case::mutation_directive("tests/queries/mutation_directive.graphql")]
-    #[case::query_directive("tests/queries/query_directive.graphql")]
+    #[case::query_vars("tests/queries/query_vars.graphql")]
+    #[case::string_literal("tests/queries/string_literal.graphql")]
     #[case::subscription_directive("tests/queries/subscription_directive.graphql")]
+    #[case::triple_quoted_literal("tests/queries/triple_quoted_literal.graphql")]
     fn test_query_file(#[case] file: String) {
         let mut query = String::new();
-        File::open(file)
+        File::open(&file)
             .unwrap()
             .read_to_string(&mut query)
             .unwrap();
 
         let result = parse(&query);
 
+        let snapshot_name = std::path::Path::new(&file)
+            .file_name()
+            .unwrap()
+            .to_string_lossy()
+            .to_string();
+
         assert_eq!(result.errors, vec![]);
         assert_eq!(result.green_node.to_string(), query);
         // TODO: Determine the snapshot name from the file - to avoid ordering issues...
-        insta::assert_debug_snapshot!(result.syntax());
+        insta::assert_debug_snapshot!(snapshot_name, result.syntax());
     }
 }

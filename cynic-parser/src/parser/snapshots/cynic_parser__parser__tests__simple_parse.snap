@@ -1,5 +1,5 @@
 ---
-source: cynic-parser/src/parser.rs
+source: cynic-parser/src/parser/mod.rs
 expression: result.syntax()
 
 ---
