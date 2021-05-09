@@ -67,10 +67,7 @@ fn gen_enum_node(en: AstEnumSrc) -> TokenStream {
 
         impl AstNode for #name {
             fn can_cast(kind: SyntaxKind) -> bool {
-                match kind {
-                    #(#kinds)|* => true,
-                    _ => false,
-                }
+                matches!(kind, #(#kinds)|*)
             }
             fn cast(syntax: SyntaxNode) -> Option<Self> {
                 let res = match syntax.kind() {

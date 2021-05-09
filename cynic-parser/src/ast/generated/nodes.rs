@@ -919,10 +919,7 @@ pub enum ExecutableDef {
 }
 impl AstNode for ExecutableDef {
     fn can_cast(kind: SyntaxKind) -> bool {
-        match kind {
-            OPERATION_DEF | FRAGMENT_DEF => true,
-            _ => false,
-        }
+        matches!(kind, OPERATION_DEF | FRAGMENT_DEF)
     }
     fn cast(syntax: SyntaxNode) -> Option<Self> {
         let res = match syntax.kind() {
@@ -954,11 +951,18 @@ pub enum Value {
 }
 impl AstNode for Value {
     fn can_cast(kind: SyntaxKind) -> bool {
-        match kind {
-            VARIABLE | FLOAT_VALUE | INTEGER_VALUE | STRING_VALUE | OBJECT_VALUE | LIST_VALUE
-            | BOOL_VALUE | NULL | ENUM_VALUE => true,
-            _ => false,
-        }
+        matches!(
+            kind,
+            VARIABLE
+                | FLOAT_VALUE
+                | INTEGER_VALUE
+                | STRING_VALUE
+                | OBJECT_VALUE
+                | LIST_VALUE
+                | BOOL_VALUE
+                | NULL
+                | ENUM_VALUE
+        )
     }
     fn cast(syntax: SyntaxNode) -> Option<Self> {
         let res = match syntax.kind() {
@@ -998,10 +1002,7 @@ pub enum Selection {
 }
 impl AstNode for Selection {
     fn can_cast(kind: SyntaxKind) -> bool {
-        match kind {
-            FIELD_SELECTION | INLINE_FRAGMENT | FRAGMENT_SPREAD => true,
-            _ => false,
-        }
+        matches!(kind, FIELD_SELECTION | INLINE_FRAGMENT | FRAGMENT_SPREAD)
     }
     fn cast(syntax: SyntaxNode) -> Option<Self> {
         let res = match syntax.kind() {
