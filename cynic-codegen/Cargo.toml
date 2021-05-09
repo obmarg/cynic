@@ -28,6 +28,7 @@ strsim = "0.10.0"
 
 [dev-dependencies]
 assert_matches = "1.4.0"
+criterion = "0.3"
 insta = "1.4"
 maplit = "1.0.2"
 rstest = "0.9.0"

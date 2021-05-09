@@ -1,0 +1,111 @@
+Document = ExecutableDef*
+
+ExecutableDef
+  = OperationDef
+  | FragmentDef
+
+OperationDef
+  = OperationType 'name'? VariableDefs? Directives? SelectionSet
+  | SelectionSet
+
+FragmentDef
+  = 'fragment_keyword' FragmentName TypeCondition Directives? SelectionSet
+
+OperationType
+  = 'query_keyword' | 'mutation_keyword' | 'subscription_keyword'
+
+VariableDefs
+  = ( VariableDef* )
+
+VariableDef
+  = Variable ':' Type DefaultValue?
+
+Variable
+  = '$' 'name'
+
+Type
+  = 'name' '!'?
+  | '[' Type ']' '!'?
+
+DefaultValue
+  = '=' Value
+
+Directives
+  = Directive*
+
+Directive
+  = '@' 'name' Arguments?
+
+Arguments
+  = '(' Argument* ')'
+
+Argument
+  = 'name' ':' Value ','?
+
+Value
+  = Variable
+  | FloatValue
+  | IntegerValue
+  | StringValue
+  | ObjectValue
+  | ListValue
+  | BoolValue
+  | Null
+  | EnumValue
+
+FloatValue
+  = '-'? 'number' 'fractional_part'? 'exponent_part'?
+
+IntegerValue
+  = '-'? 'number'
+
+StringValue
+  = '"' 'string_contents'* '"'
+  | '"""' 'string_contents'* '"""'
+
+ObjectValue
+  = '{' ObjectField* '}'
+
+ObjectField
+  = 'name' ':' Value
+
+ListValue
+  = '[' Value* ']'
+
+BoolValue
+  = 'true' | 'false'
+
+Null
+  = 'null'
+
+EnumValue
+  = 'name'
+
+SelectionSet
+  = '{' Selection* '}'
+
+Selection
+  = FieldSelection
+  | InlineFragment
+  | FragmentSpread
+
+FieldSelection
+  = Alias? 'name' Arguments? Directives? SelectionSet?
+
+Alias
+  = 'name' ':'
+
+InlineFragment
+  = '...' TypeCondition? Directives? SelectionSet
+
+TypeCondition
+  = 'on' NamedType
+
+NamedType
+  = 'name'
+
+FragmentSpread
+  = '...' FragmentName?  Directives? SelectionSet?
+
+FragmentName
+  = 'name'

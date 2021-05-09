@@ -8,7 +8,8 @@ members = [
     "cynic-parser",
     "cynic-querygen-web",
     "tests/querygen-compile-run",
-    "tests/ui-tests"
+    "tests/ui-tests",
+    "xtask"
 ]
 
 [profile.release]
