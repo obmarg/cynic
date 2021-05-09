@@ -3,18 +3,18 @@ source: cynic-parser/src/parser/mod.rs
 expression: result.syntax()
 
 ---
-ROOT@0..22
+DOCUMENT@0..22
   OPERATION_DEF@0..21
-    MUTATION_KEYWORD@0..8 "mutation"
+    OPERATION_TYPE@0..8
+      MUTATION_KEYWORD@0..8 "mutation"
     WHITESPACE@8..9 " "
     SELECTION_SET@9..21
       OPEN_CURLY@9..10 "{"
       LINE_TERMINATOR@10..11 "\n"
       WHITESPACE@11..13 "  "
-      SELECTION@13..20
-        FIELD_SELECTION@13..20
-          NAME@13..19 "notify"
-          LINE_TERMINATOR@19..20 "\n"
+      FIELD_SELECTION@13..20
+        NAME@13..19 "notify"
+        LINE_TERMINATOR@19..20 "\n"
       CLOSE_CURLY@20..21 "}"
   LINE_TERMINATOR@21..22 "\n"
 

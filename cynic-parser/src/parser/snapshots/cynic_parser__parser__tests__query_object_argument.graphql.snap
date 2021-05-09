@@ -3,54 +3,54 @@ source: cynic-parser/src/parser/mod.rs
 expression: result.syntax()
 
 ---
-ROOT@0..53
+DOCUMENT@0..53
   OPERATION_DEF@0..52
-    QUERY_KEYWORD@0..5 "query"
+    OPERATION_TYPE@0..5
+      QUERY_KEYWORD@0..5 "query"
     WHITESPACE@5..6 " "
     SELECTION_SET@6..52
       OPEN_CURLY@6..7 "{"
       LINE_TERMINATOR@7..8 "\n"
       WHITESPACE@8..10 "  "
-      SELECTION@10..51
-        FIELD_SELECTION@10..51
-          NAME@10..14 "node"
-          ARGUMENTS@14..51
-            OPEN_PAREN@14..15 "("
-            ARGUMENT@15..22
-              NAME@15..17 "id"
-              COLON@17..18 ":"
-              VALUE@18..22
-                WHITESPACE@18..19 " "
-                INTEGER_VALUE@19..20
-                  NUMBER@19..20 "1"
-                COMMA@20..21 ","
-                WHITESPACE@21..22 " "
-            ARGUMENT@22..49
-              NAME@22..25 "obj"
-              COLON@25..26 ":"
-              VALUE@26..49
-                WHITESPACE@26..27 " "
-                OBJECT_VALUE@27..49
-                  OPEN_CURLY@27..28 "{"
-                  OBJECT_FIELD@28..39
-                    NAME@28..32 "key1"
-                    COLON@32..33 ":"
-                    VALUE@33..39
-                      WHITESPACE@33..34 " "
-                      INTEGER_VALUE@34..37
-                        NUMBER@34..37 "123"
-                      COMMA@37..38 ","
-                      WHITESPACE@38..39 " "
-                  OBJECT_FIELD@39..48
-                    NAME@39..43 "key2"
-                    COLON@43..44 ":"
-                    VALUE@44..48
-                      WHITESPACE@44..45 " "
-                      INTEGER_VALUE@45..48
-                        NUMBER@45..48 "456"
-                  CLOSE_CURLY@48..49 "}"
-            CLOSE_PAREN@49..50 ")"
-            LINE_TERMINATOR@50..51 "\n"
+      FIELD_SELECTION@10..51
+        NAME@10..14 "node"
+        ARGUMENTS@14..51
+          OPEN_PAREN@14..15 "("
+          ARGUMENT@15..22
+            NAME@15..17 "id"
+            COLON@17..18 ":"
+            VALUE@18..22
+              WHITESPACE@18..19 " "
+              INTEGER_VALUE@19..20
+                NUMBER@19..20 "1"
+              COMMA@20..21 ","
+              WHITESPACE@21..22 " "
+          ARGUMENT@22..49
+            NAME@22..25 "obj"
+            COLON@25..26 ":"
+            VALUE@26..49
+              WHITESPACE@26..27 " "
+              OBJECT_VALUE@27..49
+                OPEN_CURLY@27..28 "{"
+                OBJECT_FIELD@28..39
+                  NAME@28..32 "key1"
+                  COLON@32..33 ":"
+                  VALUE@33..39
+                    WHITESPACE@33..34 " "
+                    INTEGER_VALUE@34..37
+                      NUMBER@34..37 "123"
+                    COMMA@37..38 ","
+                    WHITESPACE@38..39 " "
+                OBJECT_FIELD@39..48
+                  NAME@39..43 "key2"
+                  COLON@43..44 ":"
+                  VALUE@44..48
+                    WHITESPACE@44..45 " "
+                    INTEGER_VALUE@45..48
+                      NUMBER@45..48 "456"
+                CLOSE_CURLY@48..49 "}"
+          CLOSE_PAREN@49..50 ")"
+          LINE_TERMINATOR@50..51 "\n"
       CLOSE_CURLY@51..52 "}"
   LINE_TERMINATOR@52..53 "\n"
 

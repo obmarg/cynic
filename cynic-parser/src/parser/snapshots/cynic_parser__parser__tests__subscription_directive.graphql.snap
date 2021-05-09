@@ -3,9 +3,10 @@ source: cynic-parser/src/parser/mod.rs
 expression: result.syntax()
 
 ---
-ROOT@0..35
+DOCUMENT@0..35
   OPERATION_DEF@0..34
-    SUBSCRIPTION_KEYWORD@0..12 "subscription"
+    OPERATION_TYPE@0..12
+      SUBSCRIPTION_KEYWORD@0..12 "subscription"
     WHITESPACE@12..13 " "
     DIRECTIVES@13..24
       DIRECTIVE@13..24
@@ -16,10 +17,9 @@ ROOT@0..35
       OPEN_CURLY@24..25 "{"
       LINE_TERMINATOR@25..26 "\n"
       WHITESPACE@26..28 "  "
-      SELECTION@28..33
-        FIELD_SELECTION@28..33
-          NAME@28..32 "node"
-          LINE_TERMINATOR@32..33 "\n"
+      FIELD_SELECTION@28..33
+        NAME@28..32 "node"
+        LINE_TERMINATOR@32..33 "\n"
       CLOSE_CURLY@33..34 "}"
   LINE_TERMINATOR@34..35 "\n"
 

@@ -3,50 +3,47 @@ source: cynic-parser/src/parser/mod.rs
 expression: result.syntax()
 
 ---
-ROOT@0..65
+DOCUMENT@0..65
   OPERATION_DEF@0..64
-    QUERY_KEYWORD@0..5 "query"
+    OPERATION_TYPE@0..5
+      QUERY_KEYWORD@0..5 "query"
     WHITESPACE@5..6 " "
     SELECTION_SET@6..64
       OPEN_CURLY@6..7 "{"
       LINE_TERMINATOR@7..8 "\n"
       WHITESPACE@8..10 "  "
-      SELECTION@10..62
-        FIELD_SELECTION@10..62
-          NAME@10..14 "node"
-          WHITESPACE@14..15 " "
-          SELECTION_SET@15..62
-            OPEN_CURLY@15..16 "{"
-            LINE_TERMINATOR@16..17 "\n"
-            WHITESPACE@17..21 "    "
-            SELECTION@21..28
-              FIELD_SELECTION@21..28
-                NAME@21..23 "id"
-                LINE_TERMINATOR@23..24 "\n"
-                WHITESPACE@24..28 "    "
-            SELECTION@28..58
-              INLINE_FRAGMENT@28..58
-                SPREAD@28..31 "..."
-                WHITESPACE@31..32 " "
-                TYPE_CONDITION@32..39
-                  ON@32..34 "on"
-                  WHITESPACE@34..35 " "
-                  NAMED_TYPE@35..39
-                    NAME@35..39 "User"
-                WHITESPACE@39..40 " "
-                SELECTION_SET@40..58
-                  OPEN_CURLY@40..41 "{"
-                  LINE_TERMINATOR@41..42 "\n"
-                  WHITESPACE@42..48 "      "
-                  SELECTION@48..57
-                    FIELD_SELECTION@48..57
-                      NAME@48..52 "name"
-                      LINE_TERMINATOR@52..53 "\n"
-                      WHITESPACE@53..57 "    "
-                  CLOSE_CURLY@57..58 "}"
-            LINE_TERMINATOR@58..59 "\n"
-            WHITESPACE@59..61 "  "
-            CLOSE_CURLY@61..62 "}"
+      FIELD_SELECTION@10..62
+        NAME@10..14 "node"
+        WHITESPACE@14..15 " "
+        SELECTION_SET@15..62
+          OPEN_CURLY@15..16 "{"
+          LINE_TERMINATOR@16..17 "\n"
+          WHITESPACE@17..21 "    "
+          FIELD_SELECTION@21..28
+            NAME@21..23 "id"
+            LINE_TERMINATOR@23..24 "\n"
+            WHITESPACE@24..28 "    "
+          INLINE_FRAGMENT@28..58
+            SPREAD@28..31 "..."
+            WHITESPACE@31..32 " "
+            TYPE_CONDITION@32..39
+              ON@32..34 "on"
+              WHITESPACE@34..35 " "
+              NAMED_TYPE@35..39
+                NAME@35..39 "User"
+            WHITESPACE@39..40 " "
+            SELECTION_SET@40..58
+              OPEN_CURLY@40..41 "{"
+              LINE_TERMINATOR@41..42 "\n"
+              WHITESPACE@42..48 "      "
+              FIELD_SELECTION@48..57
+                NAME@48..52 "name"
+                LINE_TERMINATOR@52..53 "\n"
+                WHITESPACE@53..57 "    "
+              CLOSE_CURLY@57..58 "}"
+          LINE_TERMINATOR@58..59 "\n"
+          WHITESPACE@59..61 "  "
+          CLOSE_CURLY@61..62 "}"
       LINE_TERMINATOR@62..63 "\n"
       CLOSE_CURLY@63..64 "}"
   LINE_TERMINATOR@64..65 "\n"

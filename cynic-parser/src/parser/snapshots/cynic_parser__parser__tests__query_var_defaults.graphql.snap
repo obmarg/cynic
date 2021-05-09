@@ -3,9 +3,10 @@ source: cynic-parser/src/parser/mod.rs
 expression: result.syntax()
 
 ---
-ROOT@0..44
+DOCUMENT@0..44
   OPERATION_DEF@0..43
-    QUERY_KEYWORD@0..5 "query"
+    OPERATION_TYPE@0..5
+      QUERY_KEYWORD@0..5 "query"
     WHITESPACE@5..6 " "
     NAME@6..9 "Foo"
     VARIABLE_DEFS@9..31
@@ -32,10 +33,9 @@ ROOT@0..44
       OPEN_CURLY@32..33 "{"
       LINE_TERMINATOR@33..34 "\n"
       WHITESPACE@34..36 "  "
-      SELECTION@36..42
-        FIELD_SELECTION@36..42
-          NAME@36..41 "field"
-          LINE_TERMINATOR@41..42 "\n"
+      FIELD_SELECTION@36..42
+        NAME@36..41 "field"
+        LINE_TERMINATOR@41..42 "\n"
       CLOSE_CURLY@42..43 "}"
   LINE_TERMINATOR@43..44 "\n"
 

@@ -917,6 +917,26 @@ pub enum ExecutableDef {
     OperationDef(OperationDef),
     FragmentDef(FragmentDef),
 }
+impl ExecutableDef {
+    pub fn operation_def(&self) -> Option<OperationDef> {
+        match self {
+            Self::OperationDef(inner) => Some(inner.clone()),
+            _ => None,
+        }
+    }
+    pub fn is_operation_def(&self) -> bool {
+        matches!(self, Self::OperationDef(_))
+    }
+    pub fn fragment_def(&self) -> Option<FragmentDef> {
+        match self {
+            Self::FragmentDef(inner) => Some(inner.clone()),
+            _ => None,
+        }
+    }
+    pub fn is_fragment_def(&self) -> bool {
+        matches!(self, Self::FragmentDef(_))
+    }
+}
 impl AstNode for ExecutableDef {
     fn can_cast(kind: SyntaxKind) -> bool {
         matches!(kind, OPERATION_DEF | FRAGMENT_DEF)
@@ -948,6 +968,89 @@ pub enum Value {
     BoolValue(BoolValue),
     Null(Null),
     EnumValue(EnumValue),
+}
+impl Value {
+    pub fn variable(&self) -> Option<Variable> {
+        match self {
+            Self::Variable(inner) => Some(inner.clone()),
+            _ => None,
+        }
+    }
+    pub fn is_variable(&self) -> bool {
+        matches!(self, Self::Variable(_))
+    }
+    pub fn float_value(&self) -> Option<FloatValue> {
+        match self {
+            Self::FloatValue(inner) => Some(inner.clone()),
+            _ => None,
+        }
+    }
+    pub fn is_float_value(&self) -> bool {
+        matches!(self, Self::FloatValue(_))
+    }
+    pub fn integer_value(&self) -> Option<IntegerValue> {
+        match self {
+            Self::IntegerValue(inner) => Some(inner.clone()),
+            _ => None,
+        }
+    }
+    pub fn is_integer_value(&self) -> bool {
+        matches!(self, Self::IntegerValue(_))
+    }
+    pub fn string_value(&self) -> Option<StringValue> {
+        match self {
+            Self::StringValue(inner) => Some(inner.clone()),
+            _ => None,
+        }
+    }
+    pub fn is_string_value(&self) -> bool {
+        matches!(self, Self::StringValue(_))
+    }
+    pub fn object_value(&self) -> Option<ObjectValue> {
+        match self {
+            Self::ObjectValue(inner) => Some(inner.clone()),
+            _ => None,
+        }
+    }
+    pub fn is_object_value(&self) -> bool {
+        matches!(self, Self::ObjectValue(_))
+    }
+    pub fn list_value(&self) -> Option<ListValue> {
+        match self {
+            Self::ListValue(inner) => Some(inner.clone()),
+            _ => None,
+        }
+    }
+    pub fn is_list_value(&self) -> bool {
+        matches!(self, Self::ListValue(_))
+    }
+    pub fn bool_value(&self) -> Option<BoolValue> {
+        match self {
+            Self::BoolValue(inner) => Some(inner.clone()),
+            _ => None,
+        }
+    }
+    pub fn is_bool_value(&self) -> bool {
+        matches!(self, Self::BoolValue(_))
+    }
+    pub fn null(&self) -> Option<Null> {
+        match self {
+            Self::Null(inner) => Some(inner.clone()),
+            _ => None,
+        }
+    }
+    pub fn is_null(&self) -> bool {
+        matches!(self, Self::Null(_))
+    }
+    pub fn enum_value(&self) -> Option<EnumValue> {
+        match self {
+            Self::EnumValue(inner) => Some(inner.clone()),
+            _ => None,
+        }
+    }
+    pub fn is_enum_value(&self) -> bool {
+        matches!(self, Self::EnumValue(_))
+    }
 }
 impl AstNode for Value {
     fn can_cast(kind: SyntaxKind) -> bool {
@@ -999,6 +1102,35 @@ pub enum Selection {
     FieldSelection(FieldSelection),
     InlineFragment(InlineFragment),
     FragmentSpread(FragmentSpread),
+}
+impl Selection {
+    pub fn field_selection(&self) -> Option<FieldSelection> {
+        match self {
+            Self::FieldSelection(inner) => Some(inner.clone()),
+            _ => None,
+        }
+    }
+    pub fn is_field_selection(&self) -> bool {
+        matches!(self, Self::FieldSelection(_))
+    }
+    pub fn inline_fragment(&self) -> Option<InlineFragment> {
+        match self {
+            Self::InlineFragment(inner) => Some(inner.clone()),
+            _ => None,
+        }
+    }
+    pub fn is_inline_fragment(&self) -> bool {
+        matches!(self, Self::InlineFragment(_))
+    }
+    pub fn fragment_spread(&self) -> Option<FragmentSpread> {
+        match self {
+            Self::FragmentSpread(inner) => Some(inner.clone()),
+            _ => None,
+        }
+    }
+    pub fn is_fragment_spread(&self) -> bool {
+        matches!(self, Self::FragmentSpread(_))
+    }
 }
 impl AstNode for Selection {
     fn can_cast(kind: SyntaxKind) -> bool {

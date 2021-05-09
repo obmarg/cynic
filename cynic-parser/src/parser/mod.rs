@@ -22,7 +22,9 @@ use fragments::{fragment, fragment_spread, inline_fragment};
 pub struct Parse {
     green_node: GreenNode,
     #[allow(unused)]
-    errors: Vec<(String, Option<Span>)>,
+    // TODO: Should this be public generally? not sure.
+    // Need to figure out how to expose this stuff...
+    pub(crate) errors: Vec<(String, Option<Span>)>,
 }
 
 pub fn parse(text: &str) -> Parse {
@@ -42,7 +44,7 @@ pub fn parse(text: &str) -> Parse {
 }
 
 impl Parse {
-    fn syntax(&self) -> SyntaxNode {
+    pub fn syntax(&self) -> SyntaxNode {
         SyntaxNode::new_root(self.green_node.clone())
     }
 }
@@ -361,22 +363,16 @@ fn selection_set(parser: &mut Parser) {
                 break;
             }
             Some(Token::Name) => {
-                parser.builder.start_node(SELECTION.into());
                 field_selection(parser);
-                parser.builder.finish_node();
             }
             Some(Token::CloseCurly) => {
                 parser.bump();
                 break;
             }
-            Some(Token::Spread) => {
-                parser.builder.start_node(SELECTION.into());
-                match parser.peek_next_str_non_ws() {
-                    Some("on") => inline_fragment(parser),
-                    _ => fragment_spread(parser),
-                }
-                parser.builder.finish_node();
-            }
+            Some(Token::Spread) => match parser.peek_next_str_non_ws() {
+                Some("on") => inline_fragment(parser),
+                _ => fragment_spread(parser),
+            },
             _ => {
                 // TODO: is this good? not sure it is..
                 parser.error("expected selection");

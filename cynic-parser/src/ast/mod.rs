@@ -3,9 +3,11 @@ use std::marker::PhantomData;
 use crate::syntax::{SyntaxKind, SyntaxNode, SyntaxNodeChildren, SyntaxToken};
 
 mod generated {
-    mod nodes;
-    mod tokens;
+    pub mod nodes;
+    pub mod tokens;
 }
+
+pub use generated::{nodes::*, tokens::*};
 
 pub trait AstToken: Sized {
     fn can_cast(kind: SyntaxKind) -> bool;

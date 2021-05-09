@@ -3,22 +3,22 @@ source: cynic-parser/src/parser/mod.rs
 expression: result.syntax()
 
 ---
-ROOT@0..27
+DOCUMENT@0..27
   OPERATION_DEF@0..26
-    QUERY_KEYWORD@0..5 "query"
+    OPERATION_TYPE@0..5
+      QUERY_KEYWORD@0..5 "query"
     WHITESPACE@5..6 " "
     SELECTION_SET@6..26
       OPEN_CURLY@6..7 "{"
       LINE_TERMINATOR@7..8 "\n"
       WHITESPACE@8..10 "  "
-      SELECTION@10..25
-        FIELD_SELECTION@10..25
-          ALIAS@10..19
-            NAME@10..18 "an_alias"
-            COLON@18..19 ":"
-          WHITESPACE@19..20 " "
-          NAME@20..24 "node"
-          LINE_TERMINATOR@24..25 "\n"
+      FIELD_SELECTION@10..25
+        ALIAS@10..19
+          NAME@10..18 "an_alias"
+          COLON@18..19 ":"
+        WHITESPACE@19..20 " "
+        NAME@20..24 "node"
+        LINE_TERMINATOR@24..25 "\n"
       CLOSE_CURLY@25..26 "}"
   LINE_TERMINATOR@26..27 "\n"
 

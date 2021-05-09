@@ -1,12 +1,12 @@
 use std::{
     fs::{self, File},
-    io::{Read, Write},
+    io::Read,
 };
 
 use anyhow::Result;
 use proc_macro2::TokenStream;
 use quote::{format_ident, quote};
-use ungrammar::{Grammar, Node, Rule, TokenData};
+use ungrammar::{Grammar, Rule, TokenData};
 
 impl crate::flags::Codegen {
     pub fn run(self) -> Result<()> {
@@ -59,10 +59,36 @@ fn gen_enum_node(en: AstEnumSrc) -> TokenStream {
         .map(|name| format_ident!("{}", to_upper_snake_case(&name.to_string())))
         .collect::<Vec<_>>();
 
+    let variants_lower = en
+        .variants
+        .iter()
+        .map(|v| format_ident!("{}", to_lower_snake_case(v)))
+        .collect::<Vec<_>>();
+
+    let is_variants = en
+        .variants
+        .iter()
+        .map(|v| format_ident!("is_{}", to_lower_snake_case(v)))
+        .collect::<Vec<_>>();
+
     quote! {
         #[derive(Debug, Clone, PartialEq, Eq, Hash)]
         pub enum #name {
             #(#variants(#variants),)*
+        }
+        impl #name {
+            #(
+                pub fn #variants_lower(&self) -> Option<#variants> {
+                    match self {
+                        Self::#variants(inner) => Some(inner.clone()),
+                        _ => None
+                    }
+                }
+
+                pub fn #is_variants(&self) -> bool {
+                    matches!(self, Self::#variants(_))
+                }
+            )*
         }
 
         impl AstNode for #name {
@@ -86,6 +112,7 @@ fn gen_enum_node(en: AstEnumSrc) -> TokenStream {
                 }
             }
         }
+
     }
 }
 

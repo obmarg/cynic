@@ -53,7 +53,6 @@ pub enum SyntaxKind {
     NAMED_TYPE,
     TYPE,
     SELECTION_SET,
-    SELECTION,
     FIELD_SELECTION,
     ALIAS,
     ARGUMENTS,

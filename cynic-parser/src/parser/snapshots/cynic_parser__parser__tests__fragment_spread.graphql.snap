@@ -3,35 +3,33 @@ source: cynic-parser/src/parser/mod.rs
 expression: result.syntax()
 
 ---
-ROOT@0..47
+DOCUMENT@0..47
   OPERATION_DEF@0..46
-    QUERY_KEYWORD@0..5 "query"
+    OPERATION_TYPE@0..5
+      QUERY_KEYWORD@0..5 "query"
     WHITESPACE@5..6 " "
     SELECTION_SET@6..46
       OPEN_CURLY@6..7 "{"
       LINE_TERMINATOR@7..8 "\n"
       WHITESPACE@8..10 "  "
-      SELECTION@10..44
-        FIELD_SELECTION@10..44
-          NAME@10..14 "node"
-          WHITESPACE@14..15 " "
-          SELECTION_SET@15..44
-            OPEN_CURLY@15..16 "{"
-            LINE_TERMINATOR@16..17 "\n"
-            WHITESPACE@17..21 "    "
-            SELECTION@21..28
-              FIELD_SELECTION@21..28
-                NAME@21..23 "id"
-                LINE_TERMINATOR@23..24 "\n"
-                WHITESPACE@24..28 "    "
-            SELECTION@28..43
-              FRAGMENT_SPREAD@28..43
-                SPREAD@28..31 "..."
-                FRAGMENT_NAME@31..40
-                  NAME@31..40 "something"
-                LINE_TERMINATOR@40..41 "\n"
-                WHITESPACE@41..43 "  "
-            CLOSE_CURLY@43..44 "}"
+      FIELD_SELECTION@10..44
+        NAME@10..14 "node"
+        WHITESPACE@14..15 " "
+        SELECTION_SET@15..44
+          OPEN_CURLY@15..16 "{"
+          LINE_TERMINATOR@16..17 "\n"
+          WHITESPACE@17..21 "    "
+          FIELD_SELECTION@21..28
+            NAME@21..23 "id"
+            LINE_TERMINATOR@23..24 "\n"
+            WHITESPACE@24..28 "    "
+          FRAGMENT_SPREAD@28..43
+            SPREAD@28..31 "..."
+            FRAGMENT_NAME@31..40
+              NAME@31..40 "something"
+            LINE_TERMINATOR@40..41 "\n"
+            WHITESPACE@41..43 "  "
+          CLOSE_CURLY@43..44 "}"
       LINE_TERMINATOR@44..45 "\n"
       CLOSE_CURLY@45..46 "}"
   LINE_TERMINATOR@46..47 "\n"
