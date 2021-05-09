@@ -57,7 +57,7 @@ struct Parser<'source> {
 
 impl<'source> Parser<'source> {
     fn parse(mut self) -> Parse {
-        self.builder.start_node(ROOT.into());
+        self.builder.start_node(DOCUMENT.into());
         let mut current_error = false;
         loop {
             // Ok, so parsing out definitions here.
@@ -183,21 +183,27 @@ fn executable_def(parser: &mut Parser) -> Res {
         }
         Some((Token::Name, "query")) => {
             parser.builder.start_node(OPERATION_DEF.into());
+            parser.builder.start_node(OPERATION_TYPE.into());
             parser.bump_as(QUERY_KEYWORD);
+            parser.builder.finish_node();
             operation(parser);
             parser.builder.finish_node();
             return Res::Ok;
         }
         Some((Token::Name, "mutation")) => {
             parser.builder.start_node(OPERATION_DEF.into());
+            parser.builder.start_node(OPERATION_TYPE.into());
             parser.bump_as(MUTATION_KEYWORD);
+            parser.builder.finish_node();
             operation(parser);
             parser.builder.finish_node();
             return Res::Ok;
         }
         Some((Token::Name, "subscription")) => {
             parser.builder.start_node(OPERATION_DEF.into());
+            parser.builder.start_node(OPERATION_TYPE.into());
             parser.bump_as(SUBSCRIPTION_KEYWORD);
+            parser.builder.finish_node();
             operation(parser);
             parser.builder.finish_node();
             return Res::Ok;

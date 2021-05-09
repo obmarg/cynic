@@ -45,6 +45,7 @@ pub enum SyntaxKind {
 
     // Compoosite nodes
     OPERATION_DEF,
+    OPERATION_TYPE,
     FRAGMENT_DEF,
     VARIABLE_DEFS,
     VARIABLE_DEF,
@@ -82,7 +83,7 @@ pub enum SyntaxKind {
 
     // Root node.
     // Note that this needs to be last.
-    ROOT,
+    DOCUMENT,
 }
 
 impl From<SyntaxKind> for rowan::SyntaxKind {
@@ -97,7 +98,7 @@ pub enum Lang {}
 impl rowan::Language for Lang {
     type Kind = SyntaxKind;
     fn kind_from_raw(raw: rowan::SyntaxKind) -> Self::Kind {
-        assert!(raw.0 <= SyntaxKind::ROOT as u16);
+        assert!(raw.0 <= SyntaxKind::DOCUMENT as u16);
         unsafe { std::mem::transmute::<u16, SyntaxKind>(raw.0) }
     }
     fn kind_to_raw(kind: Self::Kind) -> rowan::SyntaxKind {
@@ -110,6 +111,8 @@ pub type SyntaxNode = rowan::SyntaxNode<Lang>;
 pub type SyntaxToken = rowan::SyntaxToken<Lang>;
 #[allow(unused)]
 pub type SyntaxElement = rowan::NodeOrToken<SyntaxNode, SyntaxToken>;
+pub type SyntaxNodeChildren = rowan::SyntaxNodeChildren<Lang>;
+pub type SyntaxElementChildren = rowan::SyntaxElementChildren<Lang>;
 
 impl From<crate::lexer::Token> for SyntaxKind {
     fn from(token: crate::lexer::Token) -> Self {
