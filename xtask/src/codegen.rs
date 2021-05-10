@@ -32,7 +32,7 @@ fn gen_nodes(grammar: &Grammar) -> Result<()> {
         &quote! {
             use crate::{
                 syntax::{SyntaxKind::{self, *}, SyntaxToken, SyntaxNode},
-                ast::{AstNode, AstChildren, support},
+                ast::{AstNode, AstChildren, NameOwner, support},
             };
 
             #(#nodes)*
@@ -144,6 +144,11 @@ fn gen_node(node: AstNodeSrc) -> TokenStream {
         }
     });
 
+    let impls = node.impls.iter().map(|imp| {
+        let ident = format_ident!("{}", imp);
+        quote! { impl #ident for #name {} }
+    });
+
     quote! {
         #[derive(Debug, Clone, PartialEq, Eq, Hash)]
         pub struct #name {
@@ -163,6 +168,8 @@ fn gen_node(node: AstNodeSrc) -> TokenStream {
             }
             fn syntax(&self) -> &SyntaxNode { &self.syntax }
         }
+
+        #(#impls)*
     }
 }
 
@@ -175,6 +182,7 @@ struct AstSrc {
 struct AstNodeSrc {
     name: String,
     fields: Vec<AstFieldSrc>,
+    impls: Vec<&'static str>,
 }
 
 enum AstFieldSrc {
@@ -274,8 +282,25 @@ fn grammar_to_ast(grammar: &Grammar) -> AstSrc {
                 extract_fields(&mut fields, grammar, rule, None);
                 fields.sort_by_key(|field| field.name_or_tok().to_string());
                 fields.dedup_by(|lhs, rhs| lhs.is_same(rhs));
-                res.nodes.push(AstNodeSrc { name, fields });
+                res.nodes.push(AstNodeSrc {
+                    name,
+                    fields,
+                    impls: vec![],
+                });
             }
+        }
+    }
+
+    for node in &mut res.nodes {
+        let name_token = node
+            .fields
+            .iter()
+            .enumerate()
+            .find(|(_, f)| matches!(*f, AstFieldSrc::Token(tok) if tok == "name"));
+
+        if let Some((i, _)) = name_token {
+            node.fields.remove(i);
+            node.impls.push("NameOwner");
         }
     }
 

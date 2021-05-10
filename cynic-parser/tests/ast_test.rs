@@ -1,5 +1,5 @@
 use cynic_parser::{
-    ast::{AstNode, ExecutableDef},
+    ast::{AstNode, ExecutableDef, NameOwner},
     parse_query_document,
 };
 
@@ -21,7 +21,7 @@ fn test_query_ast() {
     assert_eq!(executables.len(), 1);
 
     let op = executables.first().unwrap().operation_def().unwrap();
-    assert_eq!(op.name_token().unwrap().to_string(), "MyQuery");
+    assert_eq!(op.name().unwrap().to_string(), "MyQuery");
 
     // Check it's a query
     op.operation_type().unwrap().query_keyword_token().unwrap();
@@ -30,19 +30,13 @@ fn test_query_ast() {
 
     assert_eq!(selections.len(), 1);
     let field_selection = selections.first().unwrap().field_selection().unwrap();
-    assert_eq!(field_selection.name_token().unwrap().to_string(), "posts");
+    assert_eq!(field_selection.name().unwrap().to_string(), "posts");
 
     let inner_selections = field_selection
         .selection_set()
         .unwrap()
         .selection()
-        .map(|m| {
-            m.field_selection()
-                .unwrap()
-                .name_token()
-                .unwrap()
-                .to_string()
-        })
+        .map(|m| m.field_selection().unwrap().name().unwrap().to_string())
         .collect::<Vec<_>>();
 
     assert_eq!(inner_selections, &["title", "content"])

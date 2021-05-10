@@ -1,3 +1,5 @@
+mod node_ext;
+
 use std::marker::PhantomData;
 
 use crate::syntax::{SyntaxKind, SyntaxNode, SyntaxNodeChildren, SyntaxToken};
@@ -19,6 +21,12 @@ pub trait AstNode: Sized {
     fn can_cast(kind: SyntaxKind) -> bool;
     fn cast(syntax: SyntaxNode) -> Option<Self>;
     fn syntax(&self) -> &SyntaxNode;
+}
+
+pub trait NameOwner: AstNode {
+    fn name(&self) -> Option<Name> {
+        support::token(self.syntax(), SyntaxKind::NAME).and_then(Name::cast)
+    }
 }
 
 /// An iterator over `SyntaxNode` children of a particular AST type.

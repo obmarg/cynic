@@ -82,7 +82,7 @@ EnumValue
   = 'name'
 
 SelectionSet
-  = '{' Selection* '}'
+  = '{' selections:Selection* '}'
 
 Selection
   = FieldSelection

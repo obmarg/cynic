@@ -1,5 +1,5 @@
 use crate::{
-    ast::{support, AstChildren, AstNode},
+    ast::{support, AstChildren, AstNode, NameOwner},
     syntax::{
         SyntaxKind::{self, *},
         SyntaxNode, SyntaxToken,
@@ -39,9 +39,6 @@ impl OperationDef {
     pub fn directives(&self) -> Option<Directives> {
         support::child(&self.syntax)
     }
-    pub fn name_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, NAME)
-    }
     pub fn operation_type(&self) -> Option<OperationType> {
         support::child(&self.syntax)
     }
@@ -67,6 +64,7 @@ impl AstNode for OperationDef {
         &self.syntax
     }
 }
+impl NameOwner for OperationDef {}
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct FragmentDef {
@@ -191,7 +189,7 @@ pub struct SelectionSet {
     pub(crate) syntax: SyntaxNode,
 }
 impl SelectionSet {
-    pub fn selection(&self) -> AstChildren<Selection> {
+    pub fn selections(&self) -> AstChildren<Selection> {
         support::children(&self.syntax)
     }
     pub fn open_curly_token(&self) -> Option<SyntaxToken> {
@@ -221,11 +219,7 @@ impl AstNode for SelectionSet {
 pub struct FragmentName {
     pub(crate) syntax: SyntaxNode,
 }
-impl FragmentName {
-    pub fn name_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, NAME)
-    }
-}
+impl FragmentName {}
 impl AstNode for FragmentName {
     fn can_cast(kind: SyntaxKind) -> bool {
         kind == FRAGMENT_NAME
@@ -241,6 +235,7 @@ impl AstNode for FragmentName {
         &self.syntax
     }
 }
+impl NameOwner for FragmentName {}
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct TypeCondition {
@@ -312,9 +307,6 @@ impl Variable {
     pub fn dollar_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, DOLLAR)
     }
-    pub fn name_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, NAME)
-    }
 }
 impl AstNode for Variable {
     fn can_cast(kind: SyntaxKind) -> bool {
@@ -331,6 +323,7 @@ impl AstNode for Variable {
         &self.syntax
     }
 }
+impl NameOwner for Variable {}
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Type {
@@ -345,9 +338,6 @@ impl Type {
     }
     pub fn close_square_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, CLOSE_SQUARE)
-    }
-    pub fn name_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, NAME)
     }
     pub fn ty(&self) -> Option<Type> {
         support::child(&self.syntax)
@@ -368,6 +358,7 @@ impl AstNode for Type {
         &self.syntax
     }
 }
+impl NameOwner for Type {}
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct DefaultValue {
@@ -408,9 +399,6 @@ impl Directive {
     pub fn arguments(&self) -> Option<Arguments> {
         support::child(&self.syntax)
     }
-    pub fn name_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, NAME)
-    }
 }
 impl AstNode for Directive {
     fn can_cast(kind: SyntaxKind) -> bool {
@@ -427,6 +415,7 @@ impl AstNode for Directive {
         &self.syntax
     }
 }
+impl NameOwner for Directive {}
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Arguments {
@@ -470,9 +459,6 @@ impl Argument {
     pub fn colon_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, COLON)
     }
-    pub fn name_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, NAME)
-    }
     pub fn value(&self) -> Option<Value> {
         support::child(&self.syntax)
     }
@@ -492,6 +478,7 @@ impl AstNode for Argument {
         &self.syntax
     }
 }
+impl NameOwner for Argument {}
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct FloatValue {
@@ -702,11 +689,7 @@ impl AstNode for Null {
 pub struct EnumValue {
     pub(crate) syntax: SyntaxNode,
 }
-impl EnumValue {
-    pub fn name_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, NAME)
-    }
-}
+impl EnumValue {}
 impl AstNode for EnumValue {
     fn can_cast(kind: SyntaxKind) -> bool {
         kind == ENUM_VALUE
@@ -722,6 +705,7 @@ impl AstNode for EnumValue {
         &self.syntax
     }
 }
+impl NameOwner for EnumValue {}
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct ObjectField {
@@ -730,9 +714,6 @@ pub struct ObjectField {
 impl ObjectField {
     pub fn colon_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, COLON)
-    }
-    pub fn name_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, NAME)
     }
     pub fn value(&self) -> Option<Value> {
         support::child(&self.syntax)
@@ -753,6 +734,7 @@ impl AstNode for ObjectField {
         &self.syntax
     }
 }
+impl NameOwner for ObjectField {}
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct FieldSelection {
@@ -767,9 +749,6 @@ impl FieldSelection {
     }
     pub fn directives(&self) -> Option<Directives> {
         support::child(&self.syntax)
-    }
-    pub fn name_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, NAME)
     }
     pub fn selection_set(&self) -> Option<SelectionSet> {
         support::child(&self.syntax)
@@ -790,6 +769,7 @@ impl AstNode for FieldSelection {
         &self.syntax
     }
 }
+impl NameOwner for FieldSelection {}
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct InlineFragment {
@@ -867,9 +847,6 @@ impl Alias {
     pub fn colon_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, COLON)
     }
-    pub fn name_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, NAME)
-    }
 }
 impl AstNode for Alias {
     fn can_cast(kind: SyntaxKind) -> bool {
@@ -886,16 +863,13 @@ impl AstNode for Alias {
         &self.syntax
     }
 }
+impl NameOwner for Alias {}
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct NamedType {
     pub(crate) syntax: SyntaxNode,
 }
-impl NamedType {
-    pub fn name_token(&self) -> Option<SyntaxToken> {
-        support::token(&self.syntax, NAME)
-    }
-}
+impl NamedType {}
 impl AstNode for NamedType {
     fn can_cast(kind: SyntaxKind) -> bool {
         kind == NAMED_TYPE
@@ -911,6 +885,7 @@ impl AstNode for NamedType {
         &self.syntax
     }
 }
+impl NameOwner for NamedType {}
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum ExecutableDef {
