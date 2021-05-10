@@ -271,7 +271,7 @@ fn grammar_to_ast(grammar: &Grammar) -> AstSrc {
             Some(variants) => res.enums.push(AstEnumSrc { name, variants }),
             None => {
                 let mut fields = Vec::new();
-                extract_fields(&mut fields, grammar, rule);
+                extract_fields(&mut fields, grammar, rule, None);
                 fields.sort_by_key(|field| field.name_or_tok().to_string());
                 fields.dedup_by(|lhs, rhs| lhs.is_same(rhs));
                 res.nodes.push(AstNodeSrc { name, fields });
@@ -297,7 +297,12 @@ fn extract_enum_variants(grammar: &Grammar, rule: &Rule) -> Option<Vec<String>> 
     Some(variants)
 }
 
-fn extract_fields(fields: &mut Vec<AstFieldSrc>, grammar: &Grammar, rule: &Rule) {
+fn extract_fields(
+    fields: &mut Vec<AstFieldSrc>,
+    grammar: &Grammar,
+    rule: &Rule,
+    label: Option<&str>,
+) {
     match rule {
         Rule::Node(node) => {
             let ty = grammar[*node].name.clone();
@@ -314,9 +319,10 @@ fn extract_fields(fields: &mut Vec<AstFieldSrc>, grammar: &Grammar, rule: &Rule)
         Rule::Rep(inner) => match &**inner {
             Rule::Node(node) => {
                 let ty = grammar[*node].name.clone();
-                let name = to_lower_snake_case(&ty);
                 fields.push(AstFieldSrc::Node {
-                    name,
+                    name: label
+                        .map(|l| l.to_string())
+                        .unwrap_or_else(|| to_lower_snake_case(&ty)),
                     ty,
                     cardinality: Cardinality::Many,
                 });
@@ -328,12 +334,12 @@ fn extract_fields(fields: &mut Vec<AstFieldSrc>, grammar: &Grammar, rule: &Rule)
         },
         Rule::Seq(rules) | Rule::Alt(rules) => {
             for rule in rules {
-                extract_fields(fields, grammar, rule)
+                extract_fields(fields, grammar, rule, None)
             }
         }
-        Rule::Opt(rule) => extract_fields(fields, grammar, rule),
-        _ => {
-            panic!("Unimplemented rule: {:?}", rule)
+        Rule::Opt(rule) => extract_fields(fields, grammar, rule, None),
+        Rule::Labeled { label, rule } => {
+            extract_fields(fields, grammar, rule, Some(label.as_ref()))
         }
     }
 }

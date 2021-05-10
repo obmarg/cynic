@@ -17,7 +17,7 @@ fn test_query_ast() {
     )
     .unwrap();
 
-    let executables = document.executable_def().collect::<Vec<_>>();
+    let executables = document.definitions().collect::<Vec<_>>();
     assert_eq!(executables.len(), 1);
 
     let op = executables.first().unwrap().operation_def().unwrap();

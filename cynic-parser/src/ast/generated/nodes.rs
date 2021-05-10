@@ -11,7 +11,7 @@ pub struct Document {
     pub(crate) syntax: SyntaxNode,
 }
 impl Document {
-    pub fn executable_def(&self) -> AstChildren<ExecutableDef> {
+    pub fn definitions(&self) -> AstChildren<ExecutableDef> {
         support::children(&self.syntax)
     }
 }

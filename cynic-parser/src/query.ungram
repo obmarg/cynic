@@ -1,4 +1,4 @@
-Document = ExecutableDef*
+Document = definitions:ExecutableDef*
 
 ExecutableDef
   = OperationDef
