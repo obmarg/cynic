@@ -339,6 +339,9 @@ impl Type {
     pub fn close_square_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, CLOSE_SQUARE)
     }
+    pub fn named_type(&self) -> Option<NamedType> {
+        support::child(&self.syntax)
+    }
     pub fn ty(&self) -> Option<Type> {
         support::child(&self.syntax)
     }
@@ -358,7 +361,6 @@ impl AstNode for Type {
         &self.syntax
     }
 }
-impl NameOwner for Type {}
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct DefaultValue {
@@ -389,6 +391,28 @@ impl AstNode for DefaultValue {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct NamedType {
+    pub(crate) syntax: SyntaxNode,
+}
+impl NamedType {}
+impl AstNode for NamedType {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == NAMED_TYPE
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
+impl NameOwner for NamedType {}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Directive {
     pub(crate) syntax: SyntaxNode,
 }
@@ -396,7 +420,7 @@ impl Directive {
     pub fn at_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, AT)
     }
-    pub fn arguments(&self) -> Option<Arguments> {
+    pub fn argument_list(&self) -> Option<ArgumentList> {
         support::child(&self.syntax)
     }
 }
@@ -418,23 +442,23 @@ impl AstNode for Directive {
 impl NameOwner for Directive {}
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct Arguments {
+pub struct ArgumentList {
     pub(crate) syntax: SyntaxNode,
 }
-impl Arguments {
+impl ArgumentList {
     pub fn open_paren_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, OPEN_PAREN)
     }
     pub fn close_paren_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, CLOSE_PAREN)
     }
-    pub fn argument(&self) -> AstChildren<Argument> {
+    pub fn arguments(&self) -> AstChildren<Argument> {
         support::children(&self.syntax)
     }
 }
-impl AstNode for Arguments {
+impl AstNode for ArgumentList {
     fn can_cast(kind: SyntaxKind) -> bool {
-        kind == ARGUMENTS
+        kind == ARGUMENT_LIST
     }
     fn cast(syntax: SyntaxNode) -> Option<Self> {
         if Self::can_cast(syntax.kind()) {
@@ -553,6 +577,9 @@ impl StringValue {
     pub fn block_quote_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, BLOCK_QUOTE)
     }
+    pub fn string_contents(&self) -> Option<StringContents> {
+        support::child(&self.syntax)
+    }
 }
 impl AstNode for StringValue {
     fn can_cast(kind: SyntaxKind) -> bool {
@@ -575,7 +602,7 @@ pub struct ObjectValue {
     pub(crate) syntax: SyntaxNode,
 }
 impl ObjectValue {
-    pub fn object_field(&self) -> AstChildren<ObjectField> {
+    pub fn fields(&self) -> AstChildren<ObjectField> {
         support::children(&self.syntax)
     }
     pub fn open_curly_token(&self) -> Option<SyntaxToken> {
@@ -612,7 +639,7 @@ impl ListValue {
     pub fn close_square_token(&self) -> Option<SyntaxToken> {
         support::token(&self.syntax, CLOSE_SQUARE)
     }
-    pub fn value(&self) -> AstChildren<Value> {
+    pub fn values(&self) -> AstChildren<Value> {
         support::children(&self.syntax)
     }
 }
@@ -708,6 +735,27 @@ impl AstNode for EnumValue {
 impl NameOwner for EnumValue {}
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
+pub struct StringContents {
+    pub(crate) syntax: SyntaxNode,
+}
+impl StringContents {}
+impl AstNode for StringContents {
+    fn can_cast(kind: SyntaxKind) -> bool {
+        kind == STRING_CONTENTS
+    }
+    fn cast(syntax: SyntaxNode) -> Option<Self> {
+        if Self::can_cast(syntax.kind()) {
+            Some(Self { syntax })
+        } else {
+            None
+        }
+    }
+    fn syntax(&self) -> &SyntaxNode {
+        &self.syntax
+    }
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct ObjectField {
     pub(crate) syntax: SyntaxNode,
 }
@@ -744,7 +792,7 @@ impl FieldSelection {
     pub fn alias(&self) -> Option<Alias> {
         support::child(&self.syntax)
     }
-    pub fn arguments(&self) -> Option<Arguments> {
+    pub fn argument_list(&self) -> Option<ArgumentList> {
         support::child(&self.syntax)
     }
     pub fn directives(&self) -> Option<Directives> {
@@ -864,28 +912,6 @@ impl AstNode for Alias {
     }
 }
 impl NameOwner for Alias {}
-
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct NamedType {
-    pub(crate) syntax: SyntaxNode,
-}
-impl NamedType {}
-impl AstNode for NamedType {
-    fn can_cast(kind: SyntaxKind) -> bool {
-        kind == NAMED_TYPE
-    }
-    fn cast(syntax: SyntaxNode) -> Option<Self> {
-        if Self::can_cast(syntax.kind()) {
-            Some(Self { syntax })
-        } else {
-            None
-        }
-    }
-    fn syntax(&self) -> &SyntaxNode {
-        &self.syntax
-    }
-}
-impl NameOwner for NamedType {}
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum ExecutableDef {

@@ -3,6 +3,8 @@ mod lexer;
 mod parser;
 mod syntax;
 
+pub use syntax::SyntaxNode;
+
 use parser::parse;
 
 pub fn parse_query_document(text: &str) -> Option<ast::Document> {

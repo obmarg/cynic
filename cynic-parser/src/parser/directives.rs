@@ -1,6 +1,6 @@
 use super::{
     arguments::{arguments, Context},
-    named_type, selection_set, Parser,
+    Parser,
 };
 use crate::{lexer::Token, syntax::SyntaxKind::*};
 

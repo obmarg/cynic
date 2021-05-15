@@ -14,17 +14,17 @@ DOCUMENT@0..30
       WHITESPACE@8..10 "  "
       FIELD_SELECTION@10..28
         NAME@10..14 "node"
-        ARGUMENTS@14..28
+        ARGUMENT_LIST@14..28
           OPEN_PAREN@14..15 "("
           ARGUMENT@15..26
             NAME@15..17 "id"
             COLON@17..18 ":"
-            VALUE@18..26
-              WHITESPACE@18..19 " "
-              STRING_VALUE@19..26
-                QUOTE@19..20 "\""
-                STRING_CONTENTS@20..25 "hello"
-                QUOTE@25..26 "\""
+            WHITESPACE@18..19 " "
+            STRING_VALUE@19..26
+              QUOTE@19..20 "\""
+              STRING_CONTENTS@20..25
+                STRING_PART@20..25 "hello"
+              QUOTE@25..26 "\""
           CLOSE_PAREN@26..27 ")"
           LINE_TERMINATOR@27..28 "\n"
       CLOSE_CURLY@28..29 "}"

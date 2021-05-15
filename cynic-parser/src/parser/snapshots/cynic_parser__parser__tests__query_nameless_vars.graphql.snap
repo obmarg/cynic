@@ -37,31 +37,29 @@ DOCUMENT@0..87
       WHITESPACE@35..37 "  "
       FIELD_SELECTION@37..61
         NAME@37..43 "field1"
-        ARGUMENTS@43..61
+        ARGUMENT_LIST@43..61
           OPEN_PAREN@43..44 "("
           ARGUMENT@44..57
             NAME@44..49 "first"
             COLON@49..50 ":"
-            VALUE@50..57
-              WHITESPACE@50..51 " "
-              VARIABLE@51..57
-                DOLLAR@51..52 "$"
-                NAME@52..57 "first"
+            WHITESPACE@50..51 " "
+            VARIABLE@51..57
+              DOLLAR@51..52 "$"
+              NAME@52..57 "first"
           CLOSE_PAREN@57..58 ")"
           LINE_TERMINATOR@58..59 "\n"
           WHITESPACE@59..61 "  "
       FIELD_SELECTION@61..85
         NAME@61..67 "field2"
-        ARGUMENTS@67..85
+        ARGUMENT_LIST@67..85
           OPEN_PAREN@67..68 "("
           ARGUMENT@68..83
             NAME@68..74 "second"
             COLON@74..75 ":"
-            VALUE@75..83
-              WHITESPACE@75..76 " "
-              VARIABLE@76..83
-                DOLLAR@76..77 "$"
-                NAME@77..83 "second"
+            WHITESPACE@75..76 " "
+            VARIABLE@76..83
+              DOLLAR@76..77 "$"
+              NAME@77..83 "second"
           CLOSE_PAREN@83..84 ")"
           LINE_TERMINATOR@84..85 "\n"
       CLOSE_CURLY@85..86 "}"

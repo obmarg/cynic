@@ -39,16 +39,15 @@ DOCUMENT@0..219
       WHITESPACE@48..50 "  "
       FIELD_SELECTION@50..107
         NAME@50..55 "house"
-        ARGUMENTS@55..70
+        ARGUMENT_LIST@55..70
           OPEN_PAREN@55..56 "("
           ARGUMENT@56..68
             NAME@56..58 "id"
             COLON@58..59 ":"
-            VALUE@59..68
-              WHITESPACE@59..60 " "
-              VARIABLE@60..68
-                DOLLAR@60..61 "$"
-                NAME@61..68 "houseId"
+            WHITESPACE@59..60 " "
+            VARIABLE@60..68
+              DOLLAR@60..61 "$"
+              NAME@61..68 "houseId"
           CLOSE_PAREN@68..69 ")"
           WHITESPACE@69..70 " "
         SELECTION_SET@70..107
@@ -76,16 +75,15 @@ DOCUMENT@0..219
       WHITESPACE@108..110 "  "
       FIELD_SELECTION@110..152
         NAME@110..116 "street"
-        ARGUMENTS@116..140
+        ARGUMENT_LIST@116..140
           OPEN_PAREN@116..117 "("
           ARGUMENT@117..138
             NAME@117..123 "number"
             COLON@123..124 ":"
-            VALUE@124..138
-              WHITESPACE@124..125 " "
-              VARIABLE@125..138
-                DOLLAR@125..126 "$"
-                NAME@126..138 "streetNumber"
+            WHITESPACE@124..125 " "
+            VARIABLE@125..138
+              DOLLAR@125..126 "$"
+              NAME@126..138 "streetNumber"
           CLOSE_PAREN@138..139 ")"
           WHITESPACE@139..140 " "
         SELECTION_SET@140..152
@@ -101,26 +99,24 @@ DOCUMENT@0..219
       WHITESPACE@153..155 "  "
       FIELD_SELECTION@155..216
         NAME@155..166 "houseStreet"
-        ARGUMENTS@166..204
+        ARGUMENT_LIST@166..204
           OPEN_PAREN@166..167 "("
           ARGUMENT@167..181
             NAME@167..169 "id"
             COLON@169..170 ":"
-            VALUE@170..181
-              WHITESPACE@170..171 " "
-              VARIABLE@171..179
-                DOLLAR@171..172 "$"
-                NAME@172..179 "houseId"
-              COMMA@179..180 ","
-              WHITESPACE@180..181 " "
+            WHITESPACE@170..171 " "
+            VARIABLE@171..179
+              DOLLAR@171..172 "$"
+              NAME@172..179 "houseId"
+            COMMA@179..180 ","
+            WHITESPACE@180..181 " "
           ARGUMENT@181..202
             NAME@181..187 "number"
             COLON@187..188 ":"
-            VALUE@188..202
-              WHITESPACE@188..189 " "
-              VARIABLE@189..202
-                DOLLAR@189..190 "$"
-                NAME@190..202 "streetNumber"
+            WHITESPACE@188..189 " "
+            VARIABLE@189..202
+              DOLLAR@189..190 "$"
+              NAME@190..202 "streetNumber"
           CLOSE_PAREN@202..203 ")"
           WHITESPACE@203..204 " "
         SELECTION_SET@204..216

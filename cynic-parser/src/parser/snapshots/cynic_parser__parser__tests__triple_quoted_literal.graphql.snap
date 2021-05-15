@@ -14,26 +14,26 @@ DOCUMENT@0..56
       WHITESPACE@8..10 "  "
       FIELD_SELECTION@10..54
         NAME@10..14 "node"
-        ARGUMENTS@14..54
+        ARGUMENT_LIST@14..54
           OPEN_PAREN@14..15 "("
           ARGUMENT@15..52
             NAME@15..17 "id"
             COLON@17..18 ":"
-            VALUE@18..52
-              WHITESPACE@18..19 " "
-              STRING_VALUE@19..52
-                BLOCK_QUOTE@19..22 "\"\"\""
-                STRING_CONTENTS@22..23 "\n"
-                STRING_CONTENTS@23..27 "    "
-                STRING_CONTENTS@27..32 "Hello"
-                STRING_CONTENTS@32..33 ","
-                STRING_CONTENTS@33..34 "\n"
-                STRING_CONTENTS@34..40 "      "
-                STRING_CONTENTS@40..45 "world"
-                STRING_CONTENTS@45..46 "!"
-                STRING_CONTENTS@46..47 "\n"
-                STRING_CONTENTS@47..49 "  "
-                BLOCK_QUOTE@49..52 "\"\"\""
+            WHITESPACE@18..19 " "
+            STRING_VALUE@19..52
+              BLOCK_QUOTE@19..22 "\"\"\""
+              STRING_CONTENTS@22..49
+                STRING_PART@22..23 "\n"
+                STRING_PART@23..27 "    "
+                STRING_PART@27..32 "Hello"
+                STRING_PART@32..33 ","
+                STRING_PART@33..34 "\n"
+                STRING_PART@34..40 "      "
+                STRING_PART@40..45 "world"
+                STRING_PART@45..46 "!"
+                STRING_PART@46..47 "\n"
+                STRING_PART@47..49 "  "
+              BLOCK_QUOTE@49..52 "\"\"\""
           CLOSE_PAREN@52..53 ")"
           LINE_TERMINATOR@53..54 "\n"
       CLOSE_CURLY@54..55 "}"

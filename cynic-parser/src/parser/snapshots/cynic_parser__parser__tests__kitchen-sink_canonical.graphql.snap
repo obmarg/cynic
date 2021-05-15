@@ -34,10 +34,9 @@ DOCUMENT@0..841
         WHITESPACE@46..47 " "
         DEFAULT_VALUE@47..55
           EQUALS@47..48 "="
-          VALUE@48..55
-            WHITESPACE@48..49 " "
-            ENUM_VALUE@49..55
-              NAME@49..55 "MOBILE"
+          WHITESPACE@48..49 " "
+          ENUM_VALUE@49..55
+            NAME@49..55 "MOBILE"
       CLOSE_PAREN@55..56 ")"
     WHITESPACE@56..57 " "
     SELECTION_SET@57..353
@@ -50,24 +49,21 @@ DOCUMENT@0..841
           COLON@73..74 ":"
         WHITESPACE@74..75 " "
         NAME@75..79 "node"
-        ARGUMENTS@79..96
+        ARGUMENT_LIST@79..96
           OPEN_PAREN@79..80 "("
           ARGUMENT@80..94
             NAME@80..82 "id"
             COLON@82..83 ":"
-            VALUE@83..94
-              WHITESPACE@83..84 " "
-              LIST_VALUE@84..94
-                OPEN_SQUARE@84..85 "["
-                VALUE@85..90
-                  INTEGER_VALUE@85..88
-                    NUMBER@85..88 "123"
-                  COMMA@88..89 ","
-                  WHITESPACE@89..90 " "
-                VALUE@90..93
-                  INTEGER_VALUE@90..93
-                    NUMBER@90..93 "456"
-                CLOSE_SQUARE@93..94 "]"
+            WHITESPACE@83..84 " "
+            LIST_VALUE@84..94
+              OPEN_SQUARE@84..85 "["
+              INTEGER_VALUE@85..88
+                NUMBER@85..88 "123"
+              COMMA@88..89 ","
+              WHITESPACE@89..90 " "
+              INTEGER_VALUE@90..93
+                NUMBER@90..93 "456"
+              CLOSE_SQUARE@93..94 "]"
           CLOSE_PAREN@94..95 ")"
           WHITESPACE@95..96 " "
         SELECTION_SET@96..351
@@ -113,41 +109,38 @@ DOCUMENT@0..841
                       COLON@169..170 ":"
                     WHITESPACE@170..171 " "
                     NAME@171..177 "field1"
-                    ARGUMENTS@177..202
+                    ARGUMENT_LIST@177..202
                       OPEN_PAREN@177..178 "("
                       ARGUMENT@178..189
                         NAME@178..183 "first"
                         COLON@183..184 ":"
-                        VALUE@184..189
-                          WHITESPACE@184..185 " "
-                          INTEGER_VALUE@185..187
-                            NUMBER@185..187 "10"
-                          COMMA@187..188 ","
-                          WHITESPACE@188..189 " "
+                        WHITESPACE@184..185 " "
+                        INTEGER_VALUE@185..187
+                          NUMBER@185..187 "10"
+                        COMMA@187..188 ","
+                        WHITESPACE@188..189 " "
                       ARGUMENT@189..200
                         NAME@189..194 "after"
                         COLON@194..195 ":"
-                        VALUE@195..200
-                          WHITESPACE@195..196 " "
-                          VARIABLE@196..200
-                            DOLLAR@196..197 "$"
-                            NAME@197..200 "foo"
+                        WHITESPACE@195..196 " "
+                        VARIABLE@196..200
+                          DOLLAR@196..197 "$"
+                          NAME@197..200 "foo"
                       CLOSE_PAREN@200..201 ")"
                       WHITESPACE@201..202 " "
                     DIRECTIVES@202..221
                       DIRECTIVE@202..221
                         AT@202..203 "@"
                         NAME@203..210 "include"
-                        ARGUMENTS@210..221
+                        ARGUMENT_LIST@210..221
                           OPEN_PAREN@210..211 "("
                           ARGUMENT@211..219
                             NAME@211..213 "if"
                             COLON@213..214 ":"
-                            VALUE@214..219
-                              WHITESPACE@214..215 " "
-                              VARIABLE@215..219
-                                DOLLAR@215..216 "$"
-                                NAME@216..219 "foo"
+                            WHITESPACE@214..215 " "
+                            VARIABLE@215..219
+                              DOLLAR@215..216 "$"
+                              NAME@216..219 "foo"
                           CLOSE_PAREN@219..220 ")"
                           WHITESPACE@220..221 " "
                     SELECTION_SET@221..263
@@ -180,16 +173,15 @@ DOCUMENT@0..841
               DIRECTIVE@286..306
                 AT@286..287 "@"
                 NAME@287..291 "skip"
-                ARGUMENTS@291..306
+                ARGUMENT_LIST@291..306
                   OPEN_PAREN@291..292 "("
                   ARGUMENT@292..304
                     NAME@292..298 "unless"
                     COLON@298..299 ":"
-                    VALUE@299..304
-                      WHITESPACE@299..300 " "
-                      VARIABLE@300..304
-                        DOLLAR@300..301 "$"
-                        NAME@301..304 "foo"
+                    WHITESPACE@299..300 " "
+                    VARIABLE@300..304
+                      DOLLAR@300..301 "$"
+                      NAME@301..304 "foo"
                   CLOSE_PAREN@304..305 ")"
                   WHITESPACE@305..306 " "
             SELECTION_SET@306..322
@@ -234,15 +226,14 @@ DOCUMENT@0..841
       WHITESPACE@376..378 "  "
       FIELD_SELECTION@378..434
         NAME@378..382 "like"
-        ARGUMENTS@382..395
+        ARGUMENT_LIST@382..395
           OPEN_PAREN@382..383 "("
           ARGUMENT@383..393
             NAME@383..388 "story"
             COLON@388..389 ":"
-            VALUE@389..393
-              WHITESPACE@389..390 " "
-              INTEGER_VALUE@390..393
-                NUMBER@390..393 "123"
+            WHITESPACE@389..390 " "
+            INTEGER_VALUE@390..393
+              NUMBER@390..393 "123"
           CLOSE_PAREN@393..394 ")"
           WHITESPACE@394..395 " "
         DIRECTIVES@395..402
@@ -297,16 +288,15 @@ DOCUMENT@0..841
       WHITESPACE@508..510 "  "
       FIELD_SELECTION@510..646
         NAME@510..528 "storyLikeSubscribe"
-        ARGUMENTS@528..544
+        ARGUMENT_LIST@528..544
           OPEN_PAREN@528..529 "("
           ARGUMENT@529..542
             NAME@529..534 "input"
             COLON@534..535 ":"
-            VALUE@535..542
-              WHITESPACE@535..536 " "
-              VARIABLE@536..542
-                DOLLAR@536..537 "$"
-                NAME@537..542 "input"
+            WHITESPACE@535..536 " "
+            VARIABLE@536..542
+              DOLLAR@536..537 "$"
+              NAME@537..542 "input"
           CLOSE_PAREN@542..543 ")"
           WHITESPACE@543..544 " "
         SELECTION_SET@544..646
@@ -374,70 +364,67 @@ DOCUMENT@0..841
       WHITESPACE@676..678 "  "
       FIELD_SELECTION@678..772
         NAME@678..681 "foo"
-        ARGUMENTS@681..772
+        ARGUMENT_LIST@681..772
           OPEN_PAREN@681..682 "("
           ARGUMENT@682..695
             NAME@682..686 "size"
             COLON@686..687 ":"
-            VALUE@687..695
-              WHITESPACE@687..688 " "
-              VARIABLE@688..693
-                DOLLAR@688..689 "$"
-                NAME@689..693 "size"
-              COMMA@693..694 ","
-              WHITESPACE@694..695 " "
+            WHITESPACE@687..688 " "
+            VARIABLE@688..693
+              DOLLAR@688..689 "$"
+              NAME@689..693 "size"
+            COMMA@693..694 ","
+            WHITESPACE@694..695 " "
           ARGUMENT@695..704
             NAME@695..698 "bar"
             COLON@698..699 ":"
-            VALUE@699..704
-              WHITESPACE@699..700 " "
-              VARIABLE@700..702
-                DOLLAR@700..701 "$"
-                NAME@701..702 "b"
-              COMMA@702..703 ","
-              WHITESPACE@703..704 " "
+            WHITESPACE@699..700 " "
+            VARIABLE@700..702
+              DOLLAR@700..701 "$"
+              NAME@701..702 "b"
+            COMMA@702..703 ","
+            WHITESPACE@703..704 " "
           ARGUMENT@704..770
             NAME@704..707 "obj"
             COLON@707..708 ":"
-            VALUE@708..770
-              WHITESPACE@708..709 " "
-              OBJECT_VALUE@709..770
-                OPEN_CURLY@709..710 "{"
-                OBJECT_FIELD@710..757
-                  NAME@710..715 "block"
-                  COLON@715..716 ":"
-                  VALUE@716..757
-                    WHITESPACE@716..717 " "
-                    STRING_VALUE@717..755
-                      BLOCK_QUOTE@717..720 "\"\"\""
-                      STRING_CONTENTS@720..721 "\n"
-                      STRING_CONTENTS@721..722 "\n"
-                      STRING_CONTENTS@722..726 "    "
-                      STRING_CONTENTS@726..731 "block"
-                      STRING_CONTENTS@731..732 " "
-                      STRING_CONTENTS@732..738 "string"
-                      STRING_CONTENTS@738..739 " "
-                      STRING_CONTENTS@739..743 "uses"
-                      STRING_CONTENTS@743..744 " "
-                      STRING_CONTENTS@744..746 "\\\""
-                      STRING_CONTENTS@746..747 "\""
-                      STRING_CONTENTS@747..748 "\""
-                      STRING_CONTENTS@748..749 "\n"
-                      STRING_CONTENTS@749..750 "\n"
-                      STRING_CONTENTS@750..752 "  "
-                      BLOCK_QUOTE@752..755 "\"\"\""
-                    COMMA@755..756 ","
-                    WHITESPACE@756..757 " "
-                OBJECT_FIELD@757..769
-                  NAME@757..760 "key"
-                  COLON@760..761 ":"
-                  VALUE@761..769
-                    WHITESPACE@761..762 " "
-                    STRING_VALUE@762..769
-                      QUOTE@762..763 "\""
-                      STRING_CONTENTS@763..768 "value"
-                      QUOTE@768..769 "\""
-                CLOSE_CURLY@769..770 "}"
+            WHITESPACE@708..709 " "
+            OBJECT_VALUE@709..770
+              OPEN_CURLY@709..710 "{"
+              OBJECT_FIELD@710..757
+                NAME@710..715 "block"
+                COLON@715..716 ":"
+                WHITESPACE@716..717 " "
+                STRING_VALUE@717..755
+                  BLOCK_QUOTE@717..720 "\"\"\""
+                  STRING_CONTENTS@720..752
+                    STRING_PART@720..721 "\n"
+                    STRING_PART@721..722 "\n"
+                    STRING_PART@722..726 "    "
+                    STRING_PART@726..731 "block"
+                    STRING_PART@731..732 " "
+                    STRING_PART@732..738 "string"
+                    STRING_PART@738..739 " "
+                    STRING_PART@739..743 "uses"
+                    STRING_PART@743..744 " "
+                    STRING_PART@744..746 "\\\""
+                    STRING_PART@746..747 "\""
+                    STRING_PART@747..748 "\""
+                    STRING_PART@748..749 "\n"
+                    STRING_PART@749..750 "\n"
+                    STRING_PART@750..752 "  "
+                  BLOCK_QUOTE@752..755 "\"\"\""
+                COMMA@755..756 ","
+                WHITESPACE@756..757 " "
+              OBJECT_FIELD@757..769
+                NAME@757..760 "key"
+                COLON@760..761 ":"
+                WHITESPACE@761..762 " "
+                STRING_VALUE@762..769
+                  QUOTE@762..763 "\""
+                  STRING_CONTENTS@763..768
+                    STRING_PART@763..768 "value"
+                  QUOTE@768..769 "\""
+              CLOSE_CURLY@769..770 "}"
           CLOSE_PAREN@770..771 ")"
           LINE_TERMINATOR@771..772 "\n"
       CLOSE_CURLY@772..773 "}"
@@ -450,32 +437,29 @@ DOCUMENT@0..841
       WHITESPACE@777..779 "  "
       FIELD_SELECTION@779..833
         NAME@779..786 "unnamed"
-        ARGUMENTS@786..833
+        ARGUMENT_LIST@786..833
           OPEN_PAREN@786..787 "("
           ARGUMENT@787..801
             NAME@787..793 "truthy"
             COLON@793..794 ":"
-            VALUE@794..801
-              WHITESPACE@794..795 " "
-              BOOL_VALUE@795..799
-                TRUE@795..799 "true"
-              COMMA@799..800 ","
-              WHITESPACE@800..801 " "
+            WHITESPACE@794..795 " "
+            BOOL_VALUE@795..799
+              TRUE@795..799 "true"
+            COMMA@799..800 ","
+            WHITESPACE@800..801 " "
           ARGUMENT@801..816
             NAME@801..807 "falsey"
             COLON@807..808 ":"
-            VALUE@808..816
-              WHITESPACE@808..809 " "
-              BOOL_VALUE@809..814
-                FALSE@809..814 "false"
-              COMMA@814..815 ","
-              WHITESPACE@815..816 " "
+            WHITESPACE@808..809 " "
+            BOOL_VALUE@809..814
+              FALSE@809..814 "false"
+            COMMA@814..815 ","
+            WHITESPACE@815..816 " "
           ARGUMENT@816..829
             NAME@816..823 "nullish"
             COLON@823..824 ":"
-            VALUE@824..829
-              WHITESPACE@824..825 " "
-              NULL@825..829 "null"
+            WHITESPACE@824..825 " "
+            NULL@825..829 "null"
           CLOSE_PAREN@829..830 ")"
           LINE_TERMINATOR@830..831 "\n"
           WHITESPACE@831..833 "  "

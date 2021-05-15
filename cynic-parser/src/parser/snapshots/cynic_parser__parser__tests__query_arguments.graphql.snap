@@ -14,15 +14,14 @@ DOCUMENT@0..24
       WHITESPACE@8..10 "  "
       FIELD_SELECTION@10..22
         NAME@10..14 "node"
-        ARGUMENTS@14..22
+        ARGUMENT_LIST@14..22
           OPEN_PAREN@14..15 "("
           ARGUMENT@15..20
             NAME@15..17 "id"
             COLON@17..18 ":"
-            VALUE@18..20
-              WHITESPACE@18..19 " "
-              INTEGER_VALUE@19..20
-                NUMBER@19..20 "1"
+            WHITESPACE@18..19 " "
+            INTEGER_VALUE@19..20
+              NUMBER@19..20 "1"
           CLOSE_PAREN@20..21 ")"
           LINE_TERMINATOR@21..22 "\n"
       CLOSE_CURLY@22..23 "}"

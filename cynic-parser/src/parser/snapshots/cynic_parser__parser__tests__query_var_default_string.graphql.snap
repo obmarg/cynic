@@ -23,12 +23,12 @@ DOCUMENT@0..48
         WHITESPACE@23..24 " "
         DEFAULT_VALUE@24..34
           EQUALS@24..25 "="
-          VALUE@25..34
-            WHITESPACE@25..26 " "
-            STRING_VALUE@26..34
-              QUOTE@26..27 "\""
-              STRING_CONTENTS@27..33 "string"
-              QUOTE@33..34 "\""
+          WHITESPACE@25..26 " "
+          STRING_VALUE@26..34
+            QUOTE@26..27 "\""
+            STRING_CONTENTS@27..33
+              STRING_PART@27..33 "string"
+            QUOTE@33..34 "\""
       CLOSE_PAREN@34..35 ")"
     WHITESPACE@35..36 " "
     SELECTION_SET@36..47

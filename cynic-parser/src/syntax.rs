@@ -55,7 +55,7 @@ pub enum SyntaxKind {
     SELECTION_SET,
     FIELD_SELECTION,
     ALIAS,
-    ARGUMENTS,
+    ARGUMENT_LIST,
     ARGUMENT,
     DEFAULT_VALUE,
     TYPE_CONDITION,
@@ -68,7 +68,6 @@ pub enum SyntaxKind {
     DIRECTIVE,
     ERROR,
 
-    VALUE,
     INTEGER_VALUE,
     INTEGER_PART,
     BOOL_VALUE,
@@ -79,6 +78,7 @@ pub enum SyntaxKind {
     OBJECT_FIELD,
     STRING_VALUE,
     STRING_CONTENTS,
+    STRING_PART,
 
     // Root node.
     // Note that this needs to be last.
@@ -111,6 +111,7 @@ pub type SyntaxToken = rowan::SyntaxToken<Lang>;
 #[allow(unused)]
 pub type SyntaxElement = rowan::NodeOrToken<SyntaxNode, SyntaxToken>;
 pub type SyntaxNodeChildren = rowan::SyntaxNodeChildren<Lang>;
+#[allow(unused)]
 pub type SyntaxElementChildren = rowan::SyntaxElementChildren<Lang>;
 
 impl From<crate::lexer::Token> for SyntaxKind {

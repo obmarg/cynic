@@ -1,7 +1,4 @@
-use cynic_parser::{
-    ast::{AstNode, ExecutableDef, NameOwner},
-    parse_query_document,
-};
+use cynic_parser::{ast::NameOwner, parse_query_document};
 
 #[test]
 fn test_query_ast() {
@@ -26,7 +23,7 @@ fn test_query_ast() {
     // Check it's a query
     op.operation_type().unwrap().query_keyword_token().unwrap();
 
-    let selections = op.selection_set().unwrap().selection().collect::<Vec<_>>();
+    let selections = op.selection_set().unwrap().selections().collect::<Vec<_>>();
 
     assert_eq!(selections.len(), 1);
     let field_selection = selections.first().unwrap().field_selection().unwrap();
@@ -35,7 +32,7 @@ fn test_query_ast() {
     let inner_selections = field_selection
         .selection_set()
         .unwrap()
-        .selection()
+        .selections()
         .map(|m| m.field_selection().unwrap().name().unwrap().to_string())
         .collect::<Vec<_>>();
 

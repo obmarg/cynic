@@ -352,7 +352,7 @@ fn extract_fields(
                     cardinality: Cardinality::Many,
                 });
             }
-            Rule::Token(tok) if grammar[*tok].name == "string_contents" => {}
+            Rule::Token(tok) if grammar[*tok].name == "string_part" => {}
             _ => {
                 panic!("Unimplemented rule: {:?}", rule)
             }

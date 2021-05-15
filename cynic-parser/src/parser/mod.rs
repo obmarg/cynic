@@ -99,8 +99,7 @@ impl<'source> Parser<'source> {
         let mut rev_iter = self.tokens.iter().rev();
         rev_iter.next(); // Skip the first one.
         rev_iter
-            .skip_while(|(t, _, _)| *t == Token::Whitespace || *t == Token::LineTerminator)
-            .next()
+            .find(|(t, _, _)| *t != Token::Whitespace && *t != Token::LineTerminator)
             .map(|(t, _, _)| *t)
     }
 
@@ -108,8 +107,7 @@ impl<'source> Parser<'source> {
         let mut rev_iter = self.tokens.iter().rev();
         rev_iter.next(); // Skip the first one.
         rev_iter
-            .skip_while(|(t, _, _)| *t == Token::Whitespace || *t == Token::LineTerminator)
-            .next()
+            .find(|(t, _, _)| *t != Token::Whitespace && *t != Token::LineTerminator)
             .map(|(_, s, _)| *s)
     }
 
@@ -181,7 +179,7 @@ fn executable_def(parser: &mut Parser) -> Res {
     match parser.current_pair() {
         None => {
             // Return some EOF indicator
-            return Res::Eof;
+            Res::Eof
         }
         Some((Token::Name, "query")) => {
             parser.builder.start_node(OPERATION_DEF.into());
@@ -190,7 +188,7 @@ fn executable_def(parser: &mut Parser) -> Res {
             parser.builder.finish_node();
             operation(parser);
             parser.builder.finish_node();
-            return Res::Ok;
+            Res::Ok
         }
         Some((Token::Name, "mutation")) => {
             parser.builder.start_node(OPERATION_DEF.into());
@@ -199,7 +197,7 @@ fn executable_def(parser: &mut Parser) -> Res {
             parser.builder.finish_node();
             operation(parser);
             parser.builder.finish_node();
-            return Res::Ok;
+            Res::Ok
         }
         Some((Token::Name, "subscription")) => {
             parser.builder.start_node(OPERATION_DEF.into());
@@ -208,24 +206,22 @@ fn executable_def(parser: &mut Parser) -> Res {
             parser.builder.finish_node();
             operation(parser);
             parser.builder.finish_node();
-            return Res::Ok;
+            Res::Ok
         }
         Some((Token::OpenCurly, _)) => {
             parser.builder.start_node(OPERATION_DEF.into());
             selection_set(parser);
             parser.builder.finish_node();
-            return Res::Ok;
+            Res::Ok
         }
         Some((Token::Name, "fragment")) => {
             parser.builder.start_node(FRAGMENT_DEF.into());
             parser.bump_as(FRAGMENT_KEYWORD);
             fragment(parser);
             parser.builder.finish_node();
-            return Res::Ok;
+            Res::Ok
         }
-        other => {
-            return Res::ExpectedExecutableDef;
-        }
+        _ => Res::ExpectedExecutableDef,
     }
 }
 

@@ -507,17 +507,17 @@ impl AstToken for Quote {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct StringContents {
+pub struct BlockQuote {
     pub(crate) syntax: SyntaxToken,
 }
-impl std::fmt::Display for StringContents {
+impl std::fmt::Display for BlockQuote {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(&self.syntax, f)
     }
 }
-impl AstToken for StringContents {
+impl AstToken for BlockQuote {
     fn can_cast(kind: SyntaxKind) -> bool {
-        kind == STRING_CONTENTS
+        kind == BLOCK_QUOTE
     }
     fn cast(syntax: SyntaxToken) -> Option<Self> {
         if Self::can_cast(syntax.kind()) {
@@ -532,17 +532,17 @@ impl AstToken for StringContents {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-pub struct BlockQuote {
+pub struct StringPart {
     pub(crate) syntax: SyntaxToken,
 }
-impl std::fmt::Display for BlockQuote {
+impl std::fmt::Display for StringPart {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         std::fmt::Display::fmt(&self.syntax, f)
     }
 }
-impl AstToken for BlockQuote {
+impl AstToken for StringPart {
     fn can_cast(kind: SyntaxKind) -> bool {
-        kind == BLOCK_QUOTE
+        kind == STRING_PART
     }
     fn cast(syntax: SyntaxToken) -> Option<Self> {
         if Self::can_cast(syntax.kind()) {

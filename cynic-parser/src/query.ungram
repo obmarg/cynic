@@ -12,7 +12,7 @@ FragmentDef
   = 'fragment_keyword' FragmentName TypeCondition Directives? SelectionSet
 
 OperationType
-  = 'query_keyword' | 'mutation_keyword' | 'subscription_keyword'
+  = query:'query_keyword' | mutation:'mutation_keyword' | subscription:'subscription_keyword'
 
 VariableDefs
   = ( VariableDef* )
@@ -24,7 +24,7 @@ Variable
   = '$' 'name'
 
 Type
-  = 'name' '!'?
+  = NamedType '!'?
   | '[' Type ']' '!'?
 
 DefaultValue
@@ -34,10 +34,10 @@ Directives
   = Directive*
 
 Directive
-  = '@' 'name' Arguments?
+  = '@' 'name' ArgumentList?
 
-Arguments
-  = '(' Argument* ')'
+ArgumentList
+  = '(' arguments:Argument* ')'
 
 Argument
   = 'name' ':' Value ','?
@@ -60,17 +60,20 @@ IntegerValue
   = '-'? 'number'
 
 StringValue
-  = '"' 'string_contents'* '"'
-  | '"""' 'string_contents'* '"""'
+  = '"' StringContents '"'
+  | '"""' StringContents '"""'
+
+StringContents
+  = 'string_part'*
 
 ObjectValue
-  = '{' ObjectField* '}'
+  = '{' fields:ObjectField* '}'
 
 ObjectField
   = 'name' ':' Value
 
 ListValue
-  = '[' Value* ']'
+  = '[' values:Value* ']'
 
 BoolValue
   = 'true' | 'false'
@@ -90,7 +93,7 @@ Selection
   | FragmentSpread
 
 FieldSelection
-  = Alias? 'name' Arguments? Directives? SelectionSet?
+  = Alias? 'name' ArgumentList? Directives? SelectionSet?
 
 Alias
   = 'name' ':'

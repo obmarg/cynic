@@ -14,33 +14,29 @@ DOCUMENT@0..42
       WHITESPACE@8..10 "  "
       FIELD_SELECTION@10..40
         NAME@10..14 "node"
-        ARGUMENTS@14..40
+        ARGUMENT_LIST@14..40
           OPEN_PAREN@14..15 "("
           ARGUMENT@15..22
             NAME@15..17 "id"
             COLON@17..18 ":"
-            VALUE@18..22
-              WHITESPACE@18..19 " "
-              INTEGER_VALUE@19..20
-                NUMBER@19..20 "1"
-              COMMA@20..21 ","
-              WHITESPACE@21..22 " "
+            WHITESPACE@18..19 " "
+            INTEGER_VALUE@19..20
+              NUMBER@19..20 "1"
+            COMMA@20..21 ","
+            WHITESPACE@21..22 " "
           ARGUMENT@22..38
             NAME@22..26 "list"
             COLON@26..27 ":"
-            VALUE@27..38
-              WHITESPACE@27..28 " "
-              LIST_VALUE@28..38
-                OPEN_SQUARE@28..29 "["
-                VALUE@29..34
-                  INTEGER_VALUE@29..32
-                    NUMBER@29..32 "123"
-                  COMMA@32..33 ","
-                  WHITESPACE@33..34 " "
-                VALUE@34..37
-                  INTEGER_VALUE@34..37
-                    NUMBER@34..37 "456"
-                CLOSE_SQUARE@37..38 "]"
+            WHITESPACE@27..28 " "
+            LIST_VALUE@28..38
+              OPEN_SQUARE@28..29 "["
+              INTEGER_VALUE@29..32
+                NUMBER@29..32 "123"
+              COMMA@32..33 ","
+              WHITESPACE@33..34 " "
+              INTEGER_VALUE@34..37
+                NUMBER@34..37 "456"
+              CLOSE_SQUARE@37..38 "]"
           CLOSE_PAREN@38..39 ")"
           LINE_TERMINATOR@39..40 "\n"
       CLOSE_CURLY@40..41 "}"

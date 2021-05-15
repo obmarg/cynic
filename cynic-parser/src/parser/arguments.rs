@@ -1,4 +1,4 @@
-use super::{named_type, selection_set, Parser};
+use super::Parser;
 use crate::{lexer::Token, syntax::SyntaxKind::*};
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
@@ -9,7 +9,7 @@ pub enum Context {
 
 pub(super) fn arguments(parser: &mut Parser, context: Context) {
     assert_eq!(parser.current(), Some(Token::OpenParen));
-    parser.builder.start_node(ARGUMENTS.into());
+    parser.builder.start_node(ARGUMENT_LIST.into());
     parser.bump();
     // TODO: almost wonder if bump should skip ws automatically...
     parser.skip_ws();
@@ -60,8 +60,6 @@ fn argument(parser: &mut Parser, context: Context) {
 }
 
 pub(super) fn value(parser: &mut Parser, context: Context) {
-    // TODO: Insert a value node here
-    parser.builder.start_node(VALUE.into());
     parser.skip_ws();
     match parser.current() {
         Some(Token::Dollar) => {
@@ -86,7 +84,6 @@ pub(super) fn value(parser: &mut Parser, context: Context) {
         _ => parser.error("expected a value"),
     }
     parser.skip_ws();
-    parser.builder.finish_node();
 }
 
 fn number(parser: &mut Parser) {
@@ -134,6 +131,7 @@ fn string(parser: &mut Parser) {
 
     if parser.current() == Some(Token::Quote) {
         parser.bump();
+        parser.builder.start_node(STRING_CONTENTS.into());
         loop {
             match parser.current() {
                 None => {
@@ -141,7 +139,6 @@ fn string(parser: &mut Parser) {
                     break;
                 }
                 Some(Token::Quote) => {
-                    parser.bump();
                     break;
                 }
                 Some(Token::LineTerminator) => {
@@ -149,12 +146,17 @@ fn string(parser: &mut Parser) {
                     break;
                 }
                 _ => {
-                    parser.bump_as(STRING_CONTENTS);
+                    parser.bump_as(STRING_PART);
                 }
             }
         }
+        parser.builder.finish_node();
+        if let Some(Token::Quote) = parser.current() {
+            parser.bump();
+        }
     } else {
         parser.bump();
+        parser.builder.start_node(STRING_CONTENTS.into());
         loop {
             // TODO: I'm pretty sure this doesn't treat escape characters
             // correctly (there's also some mention of escaped block quotes that
@@ -165,13 +167,16 @@ fn string(parser: &mut Parser) {
                     break;
                 }
                 Some(Token::BlockQuote) => {
-                    parser.bump();
                     break;
                 }
                 _ => {
-                    parser.bump_as(STRING_CONTENTS);
+                    parser.bump_as(STRING_PART);
                 }
             }
+        }
+        parser.builder.finish_node();
+        if let Some(Token::BlockQuote) = parser.current() {
+            parser.bump();
         }
     }
 

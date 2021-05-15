@@ -14,37 +14,34 @@ DOCUMENT@0..70
       WHITESPACE@8..10 "  "
       FIELD_SELECTION@10..68
         NAME@10..14 "node"
-        ARGUMENTS@14..68
+        ARGUMENT_LIST@14..68
           OPEN_PAREN@14..15 "("
           ARGUMENT@15..34
             NAME@15..25 "fractional"
             COLON@25..26 ":"
-            VALUE@26..34
-              WHITESPACE@26..27 " "
-              FLOAT_VALUE@27..32
-                NUMBER@27..28 "1"
-                FRACTIONAL_PART@28..32 ".053"
-              COMMA@32..33 ","
-              WHITESPACE@33..34 " "
+            WHITESPACE@26..27 " "
+            FLOAT_VALUE@27..32
+              NUMBER@27..28 "1"
+              FRACTIONAL_PART@28..32 ".053"
+            COMMA@32..33 ","
+            WHITESPACE@33..34 " "
           ARGUMENT@34..51
             NAME@34..42 "exponent"
             COLON@42..43 ":"
-            VALUE@43..51
-              WHITESPACE@43..44 " "
-              FLOAT_VALUE@44..49
-                NUMBER@44..45 "1"
-                EXPONENT_PART@45..49 "E100"
-              COMMA@49..50 ","
-              WHITESPACE@50..51 " "
+            WHITESPACE@43..44 " "
+            FLOAT_VALUE@44..49
+              NUMBER@44..45 "1"
+              EXPONENT_PART@45..49 "E100"
+            COMMA@49..50 ","
+            WHITESPACE@50..51 " "
           ARGUMENT@51..66
             NAME@51..55 "both"
             COLON@55..56 ":"
-            VALUE@56..66
-              WHITESPACE@56..57 " "
-              FLOAT_VALUE@57..66
-                NUMBER@57..58 "1"
-                FRACTIONAL_PART@58..62 ".053"
-                EXPONENT_PART@62..66 "E100"
+            WHITESPACE@56..57 " "
+            FLOAT_VALUE@57..66
+              NUMBER@57..58 "1"
+              FRACTIONAL_PART@58..62 ".053"
+              EXPONENT_PART@62..66 "E100"
           CLOSE_PAREN@66..67 ")"
           LINE_TERMINATOR@67..68 "\n"
       CLOSE_CURLY@68..69 "}"

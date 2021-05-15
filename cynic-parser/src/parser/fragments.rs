@@ -83,7 +83,7 @@ fn type_condition(parser: &mut Parser) {
             }
             parser.builder.finish_node();
         }
-        other => {
+        _ => {
             parser.error("expected a type condition");
         }
     }
