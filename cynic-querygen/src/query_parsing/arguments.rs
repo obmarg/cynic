@@ -10,9 +10,9 @@ use uuid::Uuid;
 use super::normalisation::{Field, NormalisedDocument, Selection, SelectionSet, Variable};
 use crate::{naming::Namer, output};
 
-pub fn build_argument_structs<'query, 'schema, 'doc>(
-    doc: &'doc NormalisedDocument<'query, 'schema>,
-) -> ArgumentStructDetails<'query, 'schema, 'doc> {
+pub fn build_argument_structs<'schema, 'doc>(
+    doc: &'doc NormalisedDocument<'schema>,
+) -> ArgumentStructDetails<'schema, 'doc> {
     let operation_argument_roots = doc
         .operations
         .iter()
@@ -39,13 +39,13 @@ pub fn build_argument_structs<'query, 'schema, 'doc>(
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-struct SelectionArguments<'query, 'schema, 'doc> {
-    target_selection: &'doc SelectionSet<'query, 'schema>,
-    fields: Vec<SelectionArgument<'query, 'schema, 'doc>>,
+struct SelectionArguments<'schema, 'doc> {
+    target_selection: &'doc SelectionSet<'schema>,
+    fields: Vec<SelectionArgument<'schema, 'doc>>,
 }
 
-impl<'query, 'schema, 'doc> SelectionArguments<'query, 'schema, 'doc> {
-    fn from_selection_set(selection_set: &'doc SelectionSet<'query, 'schema>) -> Option<Self> {
+impl<'schema, 'doc> SelectionArguments<'schema, 'doc> {
+    fn from_selection_set(selection_set: &'doc SelectionSet<'schema>) -> Option<Self> {
         let mut fields = Vec::new();
         for selection in &selection_set.selections {
             let Selection::Field(field) = selection;
@@ -75,8 +75,8 @@ impl<'query, 'schema, 'doc> SelectionArguments<'query, 'schema, 'doc> {
     fn as_argument_struct(
         &self,
         parent_map: &HashMap<&Self, HashSet<&Self>>,
-        output_mapping: &mut ArgumentStructDetails<'query, 'schema, 'doc>,
-    ) -> Rc<ArgumentStruct<'query, 'schema>> {
+        output_mapping: &mut ArgumentStructDetails<'schema, 'doc>,
+    ) -> Rc<ArgumentStruct<'schema>> {
         let our_id = Uuid::new_v4();
 
         let fields = self
@@ -133,40 +133,40 @@ impl<'query, 'schema, 'doc> SelectionArguments<'query, 'schema, 'doc> {
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-struct ArgumentStruct<'query, 'schema> {
+struct ArgumentStruct<'schema> {
     id: Uuid,
     target_type_name: String,
-    fields: Vec<ArgumentStructField<'query, 'schema>>,
+    fields: Vec<ArgumentStructField<'schema>>,
 }
 
-impl<'query, 'schema> crate::naming::Nameable for Rc<ArgumentStruct<'query, 'schema>> {
+impl<'schema> crate::naming::Nameable for Rc<ArgumentStruct<'schema>> {
     fn requested_name(&self) -> String {
         format!("{}Arguments", self.target_type_name)
     }
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-enum ArgumentStructField<'query, 'schema> {
-    Variable(Variable<'query, 'schema>),
-    NestedStruct(Rc<ArgumentStruct<'query, 'schema>>),
+enum ArgumentStructField<'schema> {
+    Variable(Variable<'schema>),
+    NestedStruct(Rc<ArgumentStruct<'schema>>),
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-enum SelectionArgument<'query, 'schema, 'doc> {
-    VariableArgument(Variable<'query, 'schema>),
-    NestedArguments(SelectionArguments<'query, 'schema, 'doc>),
+enum SelectionArgument<'schema, 'doc> {
+    VariableArgument(Variable<'schema>),
+    NestedArguments(SelectionArguments<'schema, 'doc>),
 }
 
 /// Keeps track of what selection sets use which argument structs
 #[derive(Debug)]
-pub struct ArgumentStructDetails<'query, 'schema, 'doc> {
-    selection_set_map: HashMap<&'doc SelectionSet<'query, 'schema>, Uuid>,
+pub struct ArgumentStructDetails<'schema, 'doc> {
+    selection_set_map: HashMap<&'doc SelectionSet<'schema>, Uuid>,
     remappings: HashMap<Uuid, Uuid>,
-    selection_structs: HashMap<Uuid, Rc<ArgumentStruct<'query, 'schema>>>,
-    namer: RefCell<Namer<Rc<ArgumentStruct<'query, 'schema>>>>,
+    selection_structs: HashMap<Uuid, Rc<ArgumentStruct<'schema>>>,
+    namer: RefCell<Namer<Rc<ArgumentStruct<'schema>>>>,
 }
 
-impl<'query, 'schema, 'doc> ArgumentStructDetails<'query, 'schema, 'doc> {
+impl<'schema, 'doc> ArgumentStructDetails<'schema, 'doc> {
     fn new() -> Self {
         ArgumentStructDetails {
             selection_set_map: HashMap::new(),
@@ -176,7 +176,7 @@ impl<'query, 'schema, 'doc> ArgumentStructDetails<'query, 'schema, 'doc> {
         }
     }
 
-    pub fn argument_structs(self) -> Vec<output::ArgumentStruct<'query, 'schema>> {
+    pub fn argument_structs(self) -> Vec<output::ArgumentStruct<'schema>> {
         self.selection_structs
             .iter()
             .map(|(_, arg_struct)| {
@@ -205,8 +205,8 @@ impl<'query, 'schema, 'doc> ArgumentStructDetails<'query, 'schema, 'doc> {
 
     fn lookup_args_for_selection(
         &self,
-        selection_set: &SelectionSet<'query, 'schema>,
-    ) -> Option<&Rc<ArgumentStruct<'query, 'schema>>> {
+        selection_set: &SelectionSet<'schema>,
+    ) -> Option<&Rc<ArgumentStruct<'schema>>> {
         self.selection_set_map
             .get(selection_set)
             .and_then(|mut id| {
@@ -219,7 +219,7 @@ impl<'query, 'schema, 'doc> ArgumentStructDetails<'query, 'schema, 'doc> {
 
     pub fn argument_name_for_selection(
         &self,
-        selection_set: &SelectionSet<'query, 'schema>,
+        selection_set: &SelectionSet<'schema>,
     ) -> Option<String> {
         self.lookup_args_for_selection(selection_set)
             .map(|arg_struct| self.namer.borrow_mut().name_subject(arg_struct))
@@ -227,7 +227,7 @@ impl<'query, 'schema, 'doc> ArgumentStructDetails<'query, 'schema, 'doc> {
 
     pub fn force_name_argument_struct_for(
         &self,
-        selection_set: &SelectionSet<'query, 'schema>,
+        selection_set: &SelectionSet<'schema>,
         name: String,
     ) {
         self.lookup_args_for_selection(selection_set)

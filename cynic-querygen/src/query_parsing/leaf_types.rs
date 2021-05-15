@@ -8,8 +8,8 @@ use crate::{
     Error,
 };
 
-pub fn extract_leaf_types<'query, 'schema>(
-    doc: &NormalisedDocument<'query, 'schema>,
+pub fn extract_leaf_types<'schema>(
+    doc: &NormalisedDocument<'schema>,
     inputs: &InputObjectSet<'schema>,
 ) -> Result<(Vec<EnumDetails<'schema>>, Vec<Scalar<'schema>>), Error> {
     let mut leaf_types = doc

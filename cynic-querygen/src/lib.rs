@@ -95,10 +95,10 @@ pub fn document_to_fragment_structs(
     use std::fmt::Write;
 
     let schema = graphql_parser::parse_schema::<&str>(schema.as_ref())?;
-    let query = graphql_parser::parse_query::<&str>(query.as_ref())?;
+    let query = cynic_parser::parse_query_document(query.as_ref()).expect("TODO");
 
     let type_index = Rc::new(TypeIndex::from_schema(&schema));
-    let parsed_output = query_parsing::parse_query_document(&query, &type_index)?;
+    let parsed_output = query_parsing::parse_query_document(query, &type_index)?;
 
     let mut output = String::new();
 

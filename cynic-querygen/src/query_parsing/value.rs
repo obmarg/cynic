@@ -1,18 +1,20 @@
-use rust_decimal::{prelude::FromPrimitive, Decimal};
 use std::collections::BTreeMap;
+
+use cynic_parser::ast::{AstNode, Name, NameOwner, Value};
+use rust_decimal::Decimal;
 
 use crate::{
     schema::{InputFieldType, InputType},
     Error,
 };
 
-use super::{normalisation::Variable, parser};
+use super::normalisation::Variable;
 
 /// A literal value from a GraphQL query, along with it's type
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub enum TypedValue<'query, 'schema> {
+pub enum TypedValue<'schema> {
     Variable {
-        name: &'query str,
+        name: String,
         value_type: InputFieldType<'schema>,
         field_type: InputFieldType<'schema>,
     },
@@ -21,26 +23,24 @@ pub enum TypedValue<'query, 'schema> {
     String(String, InputFieldType<'schema>),
     Boolean(bool, InputFieldType<'schema>),
     Null(InputFieldType<'schema>),
-    Enum(&'query str, InputFieldType<'schema>),
-    List(Vec<TypedValue<'query, 'schema>>, InputFieldType<'schema>),
-    Object(
-        BTreeMap<&'query str, TypedValue<'query, 'schema>>,
-        InputFieldType<'schema>,
-    ),
+    Enum(Name, InputFieldType<'schema>),
+    List(Vec<TypedValue<'schema>>, InputFieldType<'schema>),
+    Object(BTreeMap<Name, TypedValue<'schema>>, InputFieldType<'schema>),
 }
 
-impl<'query, 'schema> TypedValue<'query, 'schema> {
+impl<'schema> TypedValue<'schema> {
     pub fn from_query_value(
-        value: &parser::Value<'query>,
+        value: Value,
         field_type: InputFieldType<'schema>,
-        variable_definitions: &[Variable<'query, 'schema>],
+        variable_definitions: &[Variable<'schema>],
     ) -> Result<Self, Error> {
         Ok(match value {
-            parser::Value::Variable(name) => {
+            Value::Variable(variable) => {
+                let name = variable.name().expect("TODO").to_string();
                 // If this is just a variable then we'll take it's type as our value type.
                 let value_type = variable_definitions
                     .iter()
-                    .find(|var| var.name == *name)
+                    .find(|var| var.name == name)
                     .ok_or_else(|| Error::UnknownArgument(name.to_string()))?
                     .value_type
                     .clone();
@@ -51,17 +51,25 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
                     field_type,
                 }
             }
-            parser::Value::Int(num) => TypedValue::Int(num.as_i64().unwrap(), field_type),
-            parser::Value::Float(num) => TypedValue::Float(Decimal::from_f64(*num), field_type),
-            parser::Value::String(s) => TypedValue::String(s.clone(), field_type),
-            parser::Value::Boolean(b) => TypedValue::Boolean(*b, field_type),
-            parser::Value::Null => TypedValue::Null(field_type),
-            parser::Value::Enum(e) => TypedValue::Enum(e, field_type),
-            parser::Value::List(values) => {
+            Value::IntegerValue(value) => TypedValue::Int(
+                value.syntax().to_string().parse().expect("TODO"),
+                field_type,
+            ),
+            Value::FloatValue(value) => {
+                TypedValue::Float(value.syntax().to_string().parse().ok(), field_type)
+            }
+            Value::StringValue(value) => TypedValue::String(
+                value.string_contents().expect("TODO").syntax().to_string(),
+                field_type,
+            ),
+            Value::BoolValue(b) => TypedValue::Boolean(b.true_token().is_some(), field_type),
+            Value::Null(_) => TypedValue::Null(field_type),
+            Value::EnumValue(e) => TypedValue::Enum(e.name().expect("TODO"), field_type),
+            Value::ListValue(value) => {
                 let inner_type = field_type.list_inner_type()?;
                 TypedValue::List(
-                    values
-                        .iter()
+                    value
+                        .values()
                         .map(|val| {
                             TypedValue::from_query_value(
                                 val,
@@ -73,22 +81,23 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
                     field_type,
                 )
             }
-            parser::Value::Object(obj) => {
+            Value::ObjectValue(obj) => {
                 if let InputType::InputObject(obj_type) = field_type.inner_ref().lookup()? {
                     TypedValue::Object(
-                        obj.iter()
-                            .map(|(k, v)| {
-                                let field = obj_type
+                        obj.fields()
+                            .map(|field| {
+                                let field_name = field.name().expect("TODO");
+                                let schema_field = obj_type
                                     .fields
                                     .iter()
-                                    .find(|field| field.name == *k)
-                                    .ok_or_else(|| Error::UnknownType(k.to_string()))?;
+                                    .find(|field| field.name == field_name.text())
+                                    .ok_or_else(|| Error::UnknownType(field_name.to_string()))?;
 
                                 Ok((
-                                    *k,
+                                    field_name,
                                     TypedValue::from_query_value(
-                                        v,
-                                        field.value_type.clone(),
+                                        field.value().expect("TODO"),
+                                        schema_field.value_type.clone(),
                                         variable_definitions,
                                     )?,
                                 ))
@@ -123,12 +132,12 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
         matches!(self, TypedValue::Variable { .. })
     }
 
-    pub fn variables(&self) -> Vec<Variable<'query, 'schema>> {
+    pub fn variables(&self) -> Vec<Variable<'schema>> {
         match &self {
             TypedValue::Variable {
                 name, value_type, ..
             } => vec![Variable {
-                name,
+                name: name.clone(),
                 value_type: value_type.clone(),
             }],
             TypedValue::Object(obj_literal, _) => obj_literal
@@ -196,7 +205,11 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
             TypedValue::Null(_) => "None".into(),
             TypedValue::Enum(v, field_type) => {
                 if let InputType::Enum(en) = field_type.inner_ref().lookup()? {
-                    let literal = format!("{}::{}", en.name.to_pascal_case(), v.to_pascal_case());
+                    let literal = format!(
+                        "{}::{}",
+                        en.name.to_pascal_case(),
+                        v.to_string().to_pascal_case()
+                    );
 
                     coerce_literal(field_type, context, literal)
                 } else {
@@ -219,7 +232,7 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
                         .map(|(name, value)| {
                             Ok(format!(
                                 "{}: {}",
-                                name.to_snake_case(),
+                                name.to_string().to_snake_case(),
                                 value.to_literal(LiteralContext::InputObjectField)?
                             ))
                         })

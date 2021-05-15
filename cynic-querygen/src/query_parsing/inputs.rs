@@ -39,8 +39,8 @@ impl<'schema> Vertex for InputObject<'schema> {
 
 pub type InputObjectSet<'schema> = BTreeSet<Rc<InputObject<'schema>>>;
 
-pub fn extract_input_objects<'query, 'schema>(
-    doc: &NormalisedDocument<'query, 'schema>,
+pub fn extract_input_objects<'schema>(
+    doc: &NormalisedDocument<'schema>,
 ) -> Result<InputObjectSet<'schema>, Error> {
     let mut result = InputObjectSet::new();
 
@@ -63,8 +63,8 @@ pub fn extract_input_objects<'query, 'schema>(
     Ok(result)
 }
 
-fn extract_objects_from_selection_set<'query, 'schema>(
-    selection_set: &Rc<SelectionSet<'query, 'schema>>,
+fn extract_objects_from_selection_set<'schema>(
+    selection_set: &Rc<SelectionSet<'schema>>,
     input_objects: &mut InputObjectSet<'schema>,
 ) -> Result<(), Error> {
     if selection_set.selections.is_empty() {
@@ -96,9 +96,9 @@ fn extract_objects_from_selection_set<'query, 'schema>(
     Ok(())
 }
 
-pub fn extract_input_objects_from_values<'query, 'schema>(
+pub fn extract_input_objects_from_values<'schema>(
     input_object: &schema::InputObjectDetails<'schema>,
-    typed_value: &TypedValue<'query, 'schema>,
+    typed_value: &TypedValue<'schema>,
     input_objects: &mut InputObjectSet<'schema>,
 ) -> Result<Rc<InputObject<'schema>>, Error> {
     if typed_value.is_variable() {
@@ -113,7 +113,7 @@ pub fn extract_input_objects_from_values<'query, 'schema>(
                 let field = input_object
                     .fields
                     .iter()
-                    .find(|f| f.name == *field_name)
+                    .find(|f| f.name == field_name.text())
                     .ok_or_else(|| {
                         Error::UnknownField(field_name.to_string(), input_object.name.to_string())
                     })?;
@@ -226,7 +226,7 @@ mod tests {
     fn extracts_inline_input_types() {
         let schema = load_schema();
         let type_index = Rc::new(TypeIndex::from_schema(&schema));
-        let query = graphql_parser::parse_query::<&str>(
+        let query = cynic_parser::parse_query_document(
             r#"
               query {
                 cynic: repository(owner: "obmarg", name: "cynic") {
@@ -248,7 +248,7 @@ mod tests {
         )
         .unwrap();
 
-        let normalised = normalise(&query, &type_index).unwrap();
+        let normalised = normalise(query, &type_index).unwrap();
         let input_objects = extract_input_objects(&normalised).unwrap();
 
         assert_eq!(input_objects.len(), 2);
@@ -258,7 +258,7 @@ mod tests {
     fn deduplicates_input_types_if_same() {
         let schema = load_schema();
         let type_index = Rc::new(TypeIndex::from_schema(&schema));
-        let query = graphql_parser::parse_query::<&str>(
+        let query = cynic_parser::parse_query_document(
             r#"
               query {
                 cynic: repository(owner: "obmarg", name: "cynic") {
@@ -280,7 +280,7 @@ mod tests {
         )
         .unwrap();
 
-        let normalised = normalise(&query, &type_index).unwrap();
+        let normalised = normalise(query, &type_index).unwrap();
         let input_objects = extract_input_objects(&normalised).unwrap();
 
         assert_eq!(input_objects.len(), 1);
@@ -290,7 +290,7 @@ mod tests {
     fn finds_variable_input_types() {
         let schema = load_schema();
         let type_index = Rc::new(TypeIndex::from_schema(&schema));
-        let query = graphql_parser::parse_query::<&str>(
+        let query = cynic_parser::parse_query_document(
             r#"
               query MyQuery($input: IssueFilters!) {
                 cynic: repository(owner: "obmarg", name: "cynic") {
@@ -312,7 +312,7 @@ mod tests {
         )
         .unwrap();
 
-        let normalised = normalise(&query, &type_index).unwrap();
+        let normalised = normalise(query, &type_index).unwrap();
         let input_objects = extract_input_objects(&normalised).unwrap();
 
         assert_eq!(input_objects.len(), 1);

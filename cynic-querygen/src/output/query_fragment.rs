@@ -6,15 +6,15 @@ use super::indented;
 use crate::{query_parsing::TypedValue, schema::OutputFieldType, Error};
 
 #[derive(Debug, PartialEq)]
-pub struct QueryFragment<'query, 'schema> {
-    pub fields: Vec<OutputField<'query, 'schema>>,
+pub struct QueryFragment<'schema> {
+    pub fields: Vec<OutputField<'schema>>,
     pub target_type: String,
     pub argument_struct_name: Option<String>,
 
     pub name: String,
 }
 
-impl std::fmt::Display for QueryFragment<'_, '_> {
+impl std::fmt::Display for QueryFragment<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         writeln!(f, "#[derive(cynic::QueryFragment, Debug)]")?;
 
@@ -43,14 +43,14 @@ impl std::fmt::Display for QueryFragment<'_, '_> {
 }
 
 #[derive(Debug, PartialEq)]
-pub struct OutputField<'query, 'schema> {
+pub struct OutputField<'schema> {
     pub name: &'schema str,
     pub field_type: RustOutputFieldType,
 
-    pub arguments: Vec<FieldArgument<'query, 'schema>>,
+    pub arguments: Vec<FieldArgument<'schema>>,
 }
 
-impl std::fmt::Display for OutputField<'_, '_> {
+impl std::fmt::Display for OutputField<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         if !self.arguments.is_empty() {
             let arguments_string = self
@@ -142,13 +142,13 @@ impl RustOutputFieldType {
 }
 
 #[derive(Debug, PartialEq)]
-pub struct FieldArgument<'query, 'schema> {
-    pub name: &'schema str,
-    value: TypedValue<'query, 'schema>,
+pub struct FieldArgument<'schema> {
+    pub name: String,
+    value: TypedValue<'schema>,
 }
 
-impl<'query, 'schema> FieldArgument<'query, 'schema> {
-    pub fn new(name: &'schema str, value: TypedValue<'query, 'schema>) -> Self {
+impl<'schema> FieldArgument<'schema> {
+    pub fn new(name: String, value: TypedValue<'schema>) -> Self {
         FieldArgument { name, value }
     }
 

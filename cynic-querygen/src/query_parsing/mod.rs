@@ -4,12 +4,10 @@ mod arguments;
 mod inputs;
 mod leaf_types;
 mod normalisation;
-mod parser;
 mod sorting;
 mod value;
 
 use arguments::ArgumentStructDetails;
-use parser::Document;
 
 pub use normalisation::Variable;
 pub use value::{LiteralContext, TypedValue};
@@ -17,9 +15,9 @@ pub use value::{LiteralContext, TypedValue};
 use crate::{naming::Namer, output::Output, Error, TypeIndex};
 
 pub fn parse_query_document<'text>(
-    doc: &Document<'text>,
+    doc: cynic_parser::ast::Document,
     type_index: &Rc<TypeIndex<'text>>,
-) -> Result<Output<'text, 'text>, Error> {
+) -> Result<Output<'text>, Error> {
     let normalised = normalisation::normalise(doc, type_index)?;
     let input_objects = inputs::extract_input_objects(&normalised)?;
 
@@ -33,7 +31,11 @@ pub fn parse_query_document<'text>(
     let arg_struct_details = arguments::build_argument_structs(&normalised);
 
     for operation in &normalised.operations {
-        let operation_name = operation.name.unwrap_or("UnnamedQuery");
+        let operation_name = operation
+            .name
+            .as_ref()
+            .map(|n| n.text())
+            .unwrap_or("UnnamedQuery");
 
         query_namer.force_name(&operation.root, operation_name);
         arg_struct_details.force_name_argument_struct_for(
@@ -62,10 +64,10 @@ pub fn parse_query_document<'text>(
 }
 
 fn make_query_fragment<'text>(
-    selection: Rc<normalisation::SelectionSet<'text, 'text>>,
-    namer: &mut Namer<Rc<normalisation::SelectionSet<'text, 'text>>>,
-    argument_struct_details: &ArgumentStructDetails<'text, 'text, '_>,
-) -> crate::output::QueryFragment<'text, 'text> {
+    selection: Rc<normalisation::SelectionSet<'text>>,
+    namer: &mut Namer<Rc<normalisation::SelectionSet<'text>>>,
+    argument_struct_details: &ArgumentStructDetails<'text, '_>,
+) -> crate::output::QueryFragment<'text> {
     use crate::output::query_fragment::{
         FieldArgument, OutputField, QueryFragment, RustOutputFieldType,
     };
@@ -94,7 +96,7 @@ fn make_query_fragment<'text>(
                             .arguments
                             .iter()
                             .map(|(name, value)| -> Result<FieldArgument, Error> {
-                                Ok(FieldArgument::new(name, value.clone()))
+                                Ok(FieldArgument::new(name.to_string(), value.clone()))
                             })
                             .collect::<Result<Vec<_>, _>>()
                             .unwrap(),

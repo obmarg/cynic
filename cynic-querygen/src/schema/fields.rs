@@ -1,5 +1,7 @@
 use std::{borrow::Cow, rc::Rc};
 
+use cynic_parser::ast::NameOwner;
+
 use super::{parser, InputType, InputTypeRef, OutputTypeRef, TypeIndex};
 use crate::Error;
 
@@ -76,31 +78,44 @@ impl<'schema> InputField<'schema> {
 }
 
 impl<'schema> InputFieldType<'schema> {
-    pub fn from_variable_definition<'query>(
-        def: &graphql_parser::query::VariableDefinition<'query, &'query str>,
+    pub fn from_variable_definition(
+        def: &cynic_parser::ast::VariableDef,
         type_index: &Rc<TypeIndex<'schema>>,
     ) -> Self {
-        InputFieldType::from_query_type(&def.var_type, type_index)
+        InputFieldType::from_query_type(def.ty().expect("TODO"), type_index)
     }
 
-    fn from_query_type<'query>(
-        query_type: &graphql_parser::query::Type<'query, &'query str>,
+    fn from_query_type(
+        query_type: cynic_parser::ast::Type,
         type_index: &Rc<TypeIndex<'schema>>,
     ) -> Self {
-        use parser::Type;
-
-        match query_type {
-            Type::NamedType(name) => {
-                InputFieldType::NamedType(InputTypeRef::new_owned(name.to_string(), type_index))
-            }
-            Type::ListType(inner) => InputFieldType::ListType(Box::new(Self::from_query_type(
-                inner.as_ref(),
+        // TODO: Would be good to flip this around into `Optional` instead of `NonNull`
+        // Would also be good to move the result on `InputTypeRef` to the point of creation
+        // instead of lookup.
+        if let Some(named_type) = query_type.named_type() {
+            let rv = InputFieldType::NamedType(InputTypeRef::new_owned(
+                named_type.name().expect("TODO").text().to_string(),
                 type_index,
-            ))),
-            Type::NonNullType(inner) => InputFieldType::NonNullType(Box::new(
-                Self::from_query_type(inner.as_ref(), type_index),
-            )),
+            ));
+
+            if query_type.bang_token().is_some() {
+                return InputFieldType::NonNullType(Box::new(rv));
+            }
+
+            return rv;
         }
+
+        if let Some(inner_type) = query_type.ty() {
+            let rv = InputFieldType::ListType(Box::new(InputFieldType::from_query_type(
+                inner_type, type_index,
+            )));
+
+            if query_type.bang_token().is_some() {
+                return InputFieldType::NonNullType(Box::new(rv));
+            }
+        }
+
+        panic!("TODO: error handling")
     }
 
     pub fn inner_name(&self) -> Cow<'schema, str> {

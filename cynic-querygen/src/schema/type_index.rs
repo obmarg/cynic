@@ -1,3 +1,4 @@
+use cynic_parser::ast::{FragmentDef, Name};
 use graphql_parser::schema::{Definition, ScalarType};
 use std::{borrow::Cow, collections::HashMap, rc::Rc};
 
@@ -46,13 +47,14 @@ impl<'schema> TypeIndex<'schema> {
         rv
     }
 
-    pub fn field_for_path<'path>(
+    pub fn field_for_path(
         self: &Rc<TypeIndex<'schema>>,
-        path: &GraphPath<'path>,
+        path: GraphPath,
     ) -> Result<OutputField<'schema>, Error> {
-        let root_name = match path.operation_type {
+        let root_name = match &path.operation_type {
             OperationType::Query => self.query_root.clone(),
             OperationType::Mutation => self.mutation_root.clone(),
+            OperationType::Fragment(name) => name.text().to_string(),
         };
 
         let root = self
@@ -70,13 +72,14 @@ impl<'schema> TypeIndex<'schema> {
     }
 
     // Looks up the name of the type at Path.
-    pub fn type_name_for_path<'path>(
+    pub fn type_name_for_path(
         self: &Rc<Self>,
-        path: &GraphPath<'path>,
+        path: GraphPath,
     ) -> Result<Cow<'schema, str>, Error> {
         match (path.is_root(), &path.operation_type) {
             (true, OperationType::Query) => Ok(Cow::Owned(self.query_root.clone())),
             (true, OperationType::Mutation) => Ok(Cow::Owned(self.mutation_root.clone())),
+            (true, OperationType::Fragment(name)) => Ok(Cow::Owned(name.to_string())),
             (false, _) => Ok(Cow::Owned(
                 self.field_for_path(path)?
                     .value_type
@@ -95,32 +98,29 @@ impl<'schema> TypeIndex<'schema> {
         Ok(Type::from_type_defintion(type_def, &self))
     }
 
-    pub fn type_for_path<'path>(
-        self: &Rc<Self>,
-        path: &GraphPath<'path>,
-    ) -> Result<Type<'schema>, Error> {
+    pub fn type_for_path(self: &Rc<Self>, path: GraphPath) -> Result<Type<'schema>, Error> {
         let type_name = self.type_name_for_path(path)?;
         self.lookup_type(type_name.as_ref())
     }
 
-    fn find_field_recursive<'find, 'path>(
+    fn find_field_recursive<'find>(
         &'find self,
         fields: &'find [Field<'schema>],
         current_type_name: &str,
-        path: &[&'path str],
+        path: &[Name],
     ) -> Result<&'find Field<'schema>, Error> {
         match path {
             [] => panic!("This shouldn't happen"),
             [first] => fields
                 .iter()
-                .find(|field| field.name == *first)
+                .find(|field| field.name == first.text())
                 .ok_or_else(|| {
                     Error::UnknownField(first.to_string(), current_type_name.to_string())
                 }),
             [first, rest @ ..] => {
                 let inner_name = fields
                     .iter()
-                    .find(|field| field.name == *first)
+                    .find(|field| field.name == first.text())
                     .ok_or_else(|| {
                         Error::UnknownField(first.to_string(), current_type_name.to_string())
                     })?
@@ -177,38 +177,60 @@ fn name_for_type<'a>(type_def: &TypeDefinition<'a>) -> &'a str {
 enum OperationType {
     Query,
     Mutation,
+    Fragment(Name),
 }
 
 /// The path to a type within a graphql graph.
 #[derive(Debug, PartialEq, Clone)]
-pub struct GraphPath<'a> {
+pub struct GraphPath {
     operation_type: OperationType,
-    path: Vec<&'a str>,
+    path: Vec<Name>,
 }
 
-impl<'a> GraphPath<'a> {
-    pub fn for_mutation() -> Self {
-        GraphPath {
-            operation_type: OperationType::Mutation,
-            path: Vec::new(),
-        }
-    }
+impl GraphPath {
+    pub fn from_query_node(node: &impl cynic_parser::ast::AstNode) -> Self {
+        use cynic_parser::ast::{AstNode, FieldSelection, NameOwner, OperationDef};
 
-    pub fn for_query() -> Self {
+        let mut path = vec![];
+        let mut operation_type = OperationType::Query;
+
+        for node in node.syntax().ancestors() {
+            if let Some(selection) = FieldSelection::cast(node.clone()) {
+                path.extend(selection.name());
+            }
+            if let Some(op) = OperationDef::cast(node.clone()) {
+                // TODO: a better API in the AST to do this would be nice
+                if op
+                    .operation_type()
+                    .and_then(|o| o.mutation_keyword_token())
+                    .is_some()
+                {
+                    operation_type = OperationType::Mutation;
+                }
+                // TODO: subscription support
+                break;
+            }
+            if let Some(fragment) = FragmentDef::cast(node) {
+                if let Some(name) = fragment
+                    .type_condition()
+                    .and_then(|tc| tc.named_type()?.name())
+                {
+                    operation_type = OperationType::Fragment(name)
+                }
+                break;
+            }
+        }
+        // TODO: Clean up the names etc. in this file.
+        path.reverse();
         GraphPath {
-            operation_type: OperationType::Query,
-            path: Vec::new(),
+            operation_type,
+            path,
         }
     }
 
     pub fn is_root(&self) -> bool {
         self.path.is_empty()
     }
-
-    #[must_use]
-    pub fn push(&self, field: &'a str) -> GraphPath<'a> {
-        let mut rv = self.clone();
-        rv.path.push(field);
-        rv
-    }
 }
+
+// TODO: Test GraphPath::from_query_node above

@@ -3,24 +3,24 @@ use inflector::Inflector;
 use crate::query_parsing::Variable;
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct ArgumentStruct<'query, 'schema> {
+pub struct ArgumentStruct<'schema> {
     name: String,
-    fields: Vec<ArgumentStructField<'query, 'schema>>,
+    fields: Vec<ArgumentStructField<'schema>>,
 }
 
-impl<'query, 'schema> ArgumentStruct<'query, 'schema> {
-    pub fn new(name: String, fields: Vec<ArgumentStructField<'query, 'schema>>) -> Self {
+impl<'schema> ArgumentStruct<'schema> {
+    pub fn new(name: String, fields: Vec<ArgumentStructField<'schema>>) -> Self {
         ArgumentStruct { name, fields }
     }
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub enum ArgumentStructField<'query, 'schema> {
-    Variable(Variable<'query, 'schema>),
+pub enum ArgumentStructField<'schema> {
+    Variable(Variable<'schema>),
     NestedStruct(String),
 }
 
-impl<'query, 'schema> ArgumentStructField<'query, 'schema> {
+impl<'schema> ArgumentStructField<'schema> {
     fn name(&self) -> String {
         match self {
             ArgumentStructField::Variable(var) => var.name.to_string().to_snake_case(),
@@ -36,7 +36,7 @@ impl<'query, 'schema> ArgumentStructField<'query, 'schema> {
     }
 }
 
-impl std::fmt::Display for ArgumentStruct<'_, '_> {
+impl std::fmt::Display for ArgumentStruct<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         use super::indented;
         use std::fmt::Write;
@@ -51,7 +51,7 @@ impl std::fmt::Display for ArgumentStruct<'_, '_> {
     }
 }
 
-impl std::fmt::Display for ArgumentStructField<'_, '_> {
+impl std::fmt::Display for ArgumentStructField<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         writeln!(f, "pub {}: {},", self.name(), self.type_spec())
     }
