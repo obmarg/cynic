@@ -11,6 +11,11 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+### New Features
+
+- You can now `spread` a `QueryFragment` into another `QueryFragment` with the
+  `#[cynic(spread)]` field attribute.
+
 ## v0.13.1 - 2021-04-26
 
 ### Bug Fixes

@@ -1,0 +1,12 @@
+---
+source: examples/examples/spread.rs
+expression: query.query
+
+---
+query Query($_0: ID) {
+  film(id: $_0) {
+    title
+    director
+  }
+}
+

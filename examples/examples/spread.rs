@@ -1,29 +1,44 @@
 //! An example of querying the starwars API using the reqwest-blocking feature
 
 mod schema {
-    cynic::use_schema!("../schemas/graphql.jobs.graphql");
+    cynic::use_schema!("../schemas/starwars.schema.graphql");
 }
-
-type DateTime = chrono::DateTime<chrono::Utc>;
-
-cynic::impl_scalar!(DateTime, schema::DateTime);
 
 #[derive(cynic::QueryFragment, Debug)]
 #[cynic(
-    schema_path = "../schemas/graphql.jobs.graphql",
+    schema_path = "../schemas/starwars.schema.graphql",
+    query_module = "schema",
+    graphql_type = "Film"
+)]
+struct FilmDetails {
+    title: Option<String>,
+    director: Option<String>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(
+    schema_path = "../schemas/starwars.schema.graphql",
     query_module = "schema"
 )]
-struct Job {
-    created_at: DateTime,
+struct Film {
+    #[cynic(spread)]
+    details: FilmDetails,
+}
+
+#[derive(cynic::FragmentArguments)]
+struct FilmArguments {
+    id: Option<cynic::Id>,
 }
 
 #[derive(cynic::QueryFragment, Debug)]
 #[cynic(
-    schema_path = "../schemas/graphql.jobs.graphql",
-    graphql_type = "Query"
+    schema_path = "../schemas/starwars.schema.graphql",
+    graphql_type = "Root",
+    argument_struct = "FilmArguments"
 )]
-struct JobsQuery {
-    jobs: Vec<Job>,
+struct FilmDirectorQuery {
+    #[arguments(id = &args.id)]
+    film: Option<Film>,
 }
 
 fn main() {
@@ -31,21 +46,23 @@ fn main() {
     println!("{:?}", result);
 }
 
-fn run_query() -> cynic::GraphQlResponse<JobsQuery> {
+fn run_query() -> cynic::GraphQlResponse<FilmDirectorQuery> {
     use cynic::http::ReqwestBlockingExt;
 
     let query = build_query();
 
     reqwest::blocking::Client::new()
-        .post("https://api.graphql.jobs")
+        .post("https://swapi-graphql.netlify.app/.netlify/functions/index")
         .run_graphql(query)
         .unwrap()
 }
 
-fn build_query() -> cynic::Operation<'static, JobsQuery> {
+fn build_query() -> cynic::Operation<'static, FilmDirectorQuery> {
     use cynic::QueryBuilder;
 
-    JobsQuery::build(())
+    FilmDirectorQuery::build(&FilmArguments {
+        id: Some("ZmlsbXM6MQ==".into()),
+    })
 }
 
 #[cfg(test)]

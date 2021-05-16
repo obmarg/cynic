@@ -4,7 +4,9 @@ use proc_macro2::{Span, TokenStream};
 use syn::spanned::Spanned;
 
 use crate::{
-    load_schema, type_validation::check_types_are_compatible, Errors, FieldType, Ident, TypePath,
+    load_schema,
+    type_validation::{check_spread_type, check_types_are_compatible, CheckMode},
+    Errors, FieldType, Ident, TypePath,
 };
 
 mod arguments;
@@ -102,9 +104,14 @@ enum FieldTypeSelectorCall {
     Flatten(Box<FieldTypeSelectorCall>),
     Recurse(u8, Box<FieldTypeSelectorCall>, bool),
     Box(Box<FieldTypeSelectorCall>),
+    Spread,
 }
 
 impl FieldTypeSelectorCall {
+    fn for_spread() -> FieldTypeSelectorCall {
+        FieldTypeSelectorCall::Spread
+    }
+
     fn for_field(
         field_type: &FieldType,
         field_constructor: TypePath,
@@ -251,6 +258,9 @@ impl FieldTypeSelectorCall {
                     #inner_call.map(Box::new)
                 }
             }
+            FieldTypeSelectorCall::Spread => {
+                quote! { #inner_selection_tokens }
+            }
         }
     }
 }
@@ -343,8 +353,6 @@ impl FragmentImpl {
         let target_struct = Ident::new_spanned(&name.to_string(), name.span());
         let selector_struct_path =
             TypePath::concat(&[schema_module_path, object.selector_struct.clone().into()]);
-        let mut field_selectors = vec![];
-        let mut constructor_params = vec![];
 
         if fields.style != darling::ast::Style::Struct {
             return Err(syn::Error::new(
@@ -353,65 +361,13 @@ impl FragmentImpl {
             ));
         }
 
-        for field in &fields.fields {
-            if let Some(macro_ident) = &field.ident {
-                let field_name_span = macro_ident.span();
-                let field_name = Ident::from(macro_ident.clone());
-
-                constructor_params.push(ConstructorParameter {
-                    name: field_name.clone(),
-                    type_path: field.ty.clone(),
-                });
-
-                let arguments = arguments_from_field_attrs(&field.attrs)?;
-
-                if let Some(gql_field) = object.fields.get(&field_name) {
-                    check_types_are_compatible(
-                        &gql_field.field_type,
-                        &field.ty,
-                        field.type_check_mode(),
-                    )?;
-
-                    let (required_arguments, optional_arguments) =
-                        validate_and_group_args(arguments, gql_field, field_name_span)?;
-
-                    field_selectors.push(FieldSelectorCall {
-                        selector_function: FieldTypeSelectorCall::for_field(
-                            &gql_field.field_type,
-                            TypePath::concat(&[
-                                selector_struct_path.clone(),
-                                field_name.clone().into(),
-                            ]),
-                            field.flatten,
-                            field.recurse.as_ref().map(|f| **f),
-                        ),
-                        style: if gql_field.field_type.contains_scalar() {
-                            NamedTypeSelectorStyle::Scalar
-                        } else if gql_field.field_type.contains_enum() {
-                            NamedTypeSelectorStyle::Enum(field.ty.inner_type())
-                        } else {
-                            NamedTypeSelectorStyle::QueryFragment(field.ty.inner_type())
-                        },
-                        required_arguments,
-                        optional_arguments,
-                        recurse_limit: field.recurse.as_ref().map(|limit| **limit),
-                        span: field.ty.span(),
-                    })
-                } else {
-                    let candidates = object.fields.keys().map(|k| k.graphql_name());
-                    let guss_value = guess_field(candidates, &(field_name.graphql_name()));
-                    return Err(syn::Error::new(
-                        field_name_span,
-                        format!(
-                            "Field {} does not exist on the GraphQL type {}.{}",
-                            field_name.graphql_name(),
-                            graphql_type_name,
-                            format_guess(guss_value).as_str()
-                        ),
-                    ));
-                }
-            }
-        }
+        let (constructor_params, field_selectors) = fields
+            .fields
+            .iter()
+            .map(|field| process_field(field, object, &selector_struct_path, graphql_type_name))
+            .collect::<Result<Vec<_>, _>>()?
+            .into_iter()
+            .unzip();
 
         Ok(FragmentImpl {
             fields: field_selectors,
@@ -421,6 +377,81 @@ impl FragmentImpl {
             argument_struct,
             graphql_type_name: graphql_type_name.to_string(),
         })
+    }
+}
+
+fn process_field(
+    field: &FragmentDeriveField,
+    object: &Object,
+    selector_struct_path: &TypePath,
+    graphql_type_name: &str,
+) -> Result<(ConstructorParameter, FieldSelectorCall), syn::Error> {
+    // Should be safe to unwrap because we've already checked we have a struct
+    // style input
+    let macro_ident = field.ident.as_ref().unwrap();
+
+    let field_name_span = macro_ident.span();
+    let field_name = Ident::from(macro_ident.clone());
+
+    let constructor_param = ConstructorParameter {
+        name: field_name.clone(),
+        type_path: field.ty.clone(),
+    };
+
+    let arguments = arguments_from_field_attrs(&field.attrs)?;
+
+    if field.type_check_mode() == CheckMode::Spreading {
+        check_spread_type(&field.ty)?;
+
+        let field_selector = FieldSelectorCall {
+            selector_function: FieldTypeSelectorCall::for_spread(),
+            style: NamedTypeSelectorStyle::QueryFragment(field.ty.clone()),
+            required_arguments: vec![],
+            optional_arguments: vec![],
+            recurse_limit: None,
+            span: field.ty.span(),
+        };
+
+        Ok((constructor_param, field_selector))
+    } else if let Some(gql_field) = object.fields.get(&field_name) {
+        check_types_are_compatible(&gql_field.field_type, &field.ty, field.type_check_mode())?;
+
+        let (required_arguments, optional_arguments) =
+            validate_and_group_args(arguments, gql_field, field_name_span)?;
+
+        let field_selector = FieldSelectorCall {
+            selector_function: FieldTypeSelectorCall::for_field(
+                &gql_field.field_type,
+                TypePath::concat(&[selector_struct_path.clone(), field_name.clone().into()]),
+                field.flatten,
+                field.recurse.as_ref().map(|f| **f),
+            ),
+            style: if gql_field.field_type.contains_scalar() {
+                NamedTypeSelectorStyle::Scalar
+            } else if gql_field.field_type.contains_enum() {
+                NamedTypeSelectorStyle::Enum(field.ty.inner_type())
+            } else {
+                NamedTypeSelectorStyle::QueryFragment(field.ty.inner_type())
+            },
+            required_arguments,
+            optional_arguments,
+            recurse_limit: field.recurse.as_ref().map(|limit| **limit),
+            span: field.ty.span(),
+        };
+
+        Ok((constructor_param, field_selector))
+    } else {
+        let candidates = object.fields.keys().map(|k| k.graphql_name());
+        let guss_value = guess_field(candidates, &(field_name.graphql_name()));
+        Err(syn::Error::new(
+            field_name_span,
+            format!(
+                "Field {} does not exist on the GraphQL type {}.{}",
+                field_name.graphql_name(),
+                graphql_type_name,
+                format_guess(guss_value).as_str()
+            ),
+        ))
     }
 }
 
