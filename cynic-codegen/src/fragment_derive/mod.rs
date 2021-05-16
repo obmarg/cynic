@@ -423,7 +423,7 @@ fn process_field(
             selector_function: FieldTypeSelectorCall::for_field(
                 &gql_field.field_type,
                 TypePath::concat(&[selector_struct_path.clone(), field_name.clone().into()]),
-                field.flatten,
+                *field.flatten,
                 field.recurse.as_ref().map(|f| **f),
             ),
             style: if gql_field.field_type.contains_scalar() {

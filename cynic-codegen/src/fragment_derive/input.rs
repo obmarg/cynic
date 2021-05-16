@@ -89,18 +89,18 @@ pub struct FragmentDeriveField {
     pub(super) attrs: Vec<syn::Attribute>,
 
     #[darling(default)]
-    pub(super) flatten: bool,
+    pub(super) flatten: SpannedValue<bool>,
 
     #[darling(default)]
     pub(super) recurse: Option<SpannedValue<u8>>,
 
     #[darling(default)]
-    pub(super) spread: bool,
+    pub(super) spread: SpannedValue<bool>,
 }
 
 impl FragmentDeriveField {
     pub fn validate(&self) -> Result<(), Errors> {
-        if self.flatten && self.recurse.is_some() {
+        if *self.flatten && self.recurse.is_some() {
             return Err(syn::Error::new(
                 self.recurse.as_ref().unwrap().span(),
                 "A field can't be recurse if it's being flattened",
@@ -108,15 +108,15 @@ impl FragmentDeriveField {
             .into());
         }
 
-        if self.flatten && self.spread {
+        if *self.flatten && *self.spread {
             return Err(syn::Error::new(
-                self.recurse.as_ref().unwrap().span(),
+                self.flatten.span(),
                 "A field can't be flattened if it's also being spread",
             )
             .into());
         }
 
-        if self.spread && self.recurse.is_some() {
+        if *self.spread && self.recurse.is_some() {
             return Err(syn::Error::new(
                 self.recurse.as_ref().unwrap().span(),
                 "A field can't be recurse if it's being spread",
@@ -128,11 +128,11 @@ impl FragmentDeriveField {
     }
 
     pub fn type_check_mode(&self) -> CheckMode {
-        if self.flatten {
+        if *self.flatten {
             CheckMode::Flattening
         } else if self.recurse.is_some() {
             CheckMode::Recursing
-        } else if self.spread {
+        } else if *self.spread {
             CheckMode::Spreading
         } else {
             CheckMode::Normal
@@ -158,33 +158,33 @@ mod tests {
                         ident: Some(format_ident!("field_one")),
                         ty: syn::parse_quote! { String },
                         attrs: vec![],
-                        flatten: false,
+                        flatten: false.into(),
                         recurse: None,
-                        spread: false,
+                        spread: false.into(),
                     },
                     FragmentDeriveField {
                         ident: Some(format_ident!("field_two")),
                         ty: syn::parse_quote! { String },
                         attrs: vec![],
-                        flatten: true,
+                        flatten: true.into(),
                         recurse: None,
-                        spread: false,
+                        spread: false.into(),
                     },
                     FragmentDeriveField {
                         ident: Some(format_ident!("field_three")),
                         ty: syn::parse_quote! { String },
                         attrs: vec![],
-                        flatten: false,
+                        flatten: false.into(),
                         recurse: Some(8.into()),
-                        spread: false,
+                        spread: false.into(),
                     },
                     FragmentDeriveField {
                         ident: Some(format_ident!("some_spread")),
                         ty: syn::parse_quote! { String },
                         attrs: vec![],
-                        flatten: false,
+                        flatten: false.into(),
                         recurse: None,
-                        spread: true,
+                        spread: true.into(),
                     },
                 ],
             )),
@@ -209,41 +209,41 @@ mod tests {
                         ident: Some(format_ident!("field_one")),
                         ty: syn::parse_quote! { String },
                         attrs: vec![],
-                        flatten: false,
+                        flatten: false.into(),
                         recurse: None,
-                        spread: false,
+                        spread: false.into(),
                     },
                     FragmentDeriveField {
                         ident: Some(format_ident!("field_two")),
                         ty: syn::parse_quote! { String },
                         attrs: vec![],
-                        flatten: true,
+                        flatten: true.into(),
                         recurse: Some(8.into()),
-                        spread: false,
+                        spread: false.into(),
                     },
                     FragmentDeriveField {
                         ident: Some(format_ident!("field_three")),
                         ty: syn::parse_quote! { String },
                         attrs: vec![],
-                        flatten: true,
+                        flatten: true.into(),
                         recurse: Some(8.into()),
-                        spread: false,
+                        spread: false.into(),
                     },
                     FragmentDeriveField {
                         ident: Some(format_ident!("some_spread")),
                         ty: syn::parse_quote! { String },
                         attrs: vec![],
-                        flatten: true,
+                        flatten: true.into(),
                         recurse: None,
-                        spread: true,
+                        spread: true.into(),
                     },
                     FragmentDeriveField {
                         ident: Some(format_ident!("some_other_spread")),
                         ty: syn::parse_quote! { String },
                         attrs: vec![],
-                        flatten: false,
+                        flatten: false.into(),
                         recurse: Some(8.into()),
-                        spread: true,
+                        spread: true.into(),
                     },
                 ],
             )),
@@ -255,7 +255,7 @@ mod tests {
         };
 
         let errors = input.validate().unwrap_err();
-        assert_eq!(errors.len(), 2);
+        assert_eq!(errors.len(), 4);
     }
 
     #[test]
@@ -291,25 +291,25 @@ mod tests {
                         ident: Some(format_ident!("field_one")),
                         ty: syn::parse_quote! { String },
                         attrs: vec![],
-                        flatten: false,
+                        flatten: false.into(),
                         recurse: None,
-                        spread: false,
+                        spread: false.into(),
                     },
                     FragmentDeriveField {
                         ident: Some(format_ident!("field_two")),
                         ty: syn::parse_quote! { String },
                         attrs: vec![],
-                        flatten: true,
+                        flatten: true.into(),
                         recurse: None,
-                        spread: false,
+                        spread: false.into(),
                     },
                     FragmentDeriveField {
                         ident: Some(format_ident!("field_three")),
                         ty: syn::parse_quote! { String },
                         attrs: vec![],
-                        flatten: false,
+                        flatten: false.into(),
                         recurse: Some(8.into()),
-                        spread: false,
+                        spread: false.into(),
                     },
                 ],
             )),
