@@ -11,6 +11,12 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+### Bug Fixes
+
+- This fixes a problem with JSON decoding that made it extremely inefficient
+  (particularly on larger responses).  In my benchmarking this improves
+  decoding performance 10x.
+
 ## v0.13.1 - 2021-04-26
 
 ### Bug Fixes
