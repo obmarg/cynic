@@ -11,6 +11,10 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.13.2 - 2021-05-16
+
+This release is only of the `cynic` crate - other crates remain at 0.13.1
+
 ### Bug Fixes
 
 - This fixes a problem with JSON decoding that made it extremely inefficient

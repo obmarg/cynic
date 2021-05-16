@@ -584,7 +584,7 @@ dependencies = [
 
 [[package]]
 name = "cynic"
-version = "0.13.1"
+version = "0.13.2"
 dependencies = [
  "assert_matches",
  "chrono",
@@ -1421,9 +1421,9 @@ dependencies = [
 
 [[package]]
 name = "json-decode"
-version = "0.5.0"
+version = "0.6.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0450444ba98be6f4a931b2d256be9da433fa578013d1818bd94fa6ddb2f3d213"
+checksum = "8fd72139ade93da4f8a437afe8654a4a3cf1d858dc195fc6691e6e932fa1b6ee"
 dependencies = [
  "serde",
  "serde_json",

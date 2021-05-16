@@ -1,6 +1,6 @@
 [package]
 name = "cynic"
-version = "0.13.1"
+version = "0.13.2"
 authors = ["Graeme Coupar <graeme@polyandglot.dev>"]
 edition = "2018"
 homepage = "https://cynic-rs.dev"
