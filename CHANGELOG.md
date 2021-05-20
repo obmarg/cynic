@@ -16,6 +16,16 @@ all APIs might be changed.
 - You can now `spread` a `QueryFragment` into another `QueryFragment` with the
   `#[cynic(spread)]` field attribute.
 
+## v0.13.2 - 2021-05-16
+
+This release is only of the `cynic` crate - other crates remain at 0.13.1
+
+### Bug Fixes
+
+- This fixes a problem with JSON decoding that made it extremely inefficient
+  (particularly on larger responses).  In my benchmarking this improves
+  decoding performance 10x.
+
 ## v0.13.1 - 2021-04-26
 
 ### Bug Fixes
