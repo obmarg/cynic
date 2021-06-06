@@ -388,13 +388,12 @@ fn process_field(
 ) -> Result<(ConstructorParameter, FieldSelectorCall), syn::Error> {
     // Should be safe to unwrap because we've already checked we have a struct
     // style input
-    let macro_ident = field.ident.as_ref().unwrap();
+    let (field_ident, graphql_ident) = field.ident.as_ref().zip(field.graphql_ident()).unwrap();
 
-    let field_name_span = macro_ident.span();
-    let field_name = Ident::from(macro_ident.clone());
+    let field_name_span = graphql_ident.span();
 
     let constructor_param = ConstructorParameter {
-        name: field_name.clone(),
+        name: field_ident.clone().into(),
         type_path: field.ty.clone(),
     };
 
@@ -413,7 +412,7 @@ fn process_field(
         };
 
         Ok((constructor_param, field_selector))
-    } else if let Some(gql_field) = object.fields.get(&field_name) {
+    } else if let Some(gql_field) = object.fields.get(&graphql_ident) {
         check_types_are_compatible(&gql_field.field_type, &field.ty, field.type_check_mode())?;
 
         let (required_arguments, optional_arguments) =
@@ -422,7 +421,7 @@ fn process_field(
         let field_selector = FieldSelectorCall {
             selector_function: FieldTypeSelectorCall::for_field(
                 &gql_field.field_type,
-                TypePath::concat(&[selector_struct_path.clone(), field_name.clone().into()]),
+                TypePath::concat(&[selector_struct_path.clone(), graphql_ident.clone().into()]),
                 *field.flatten,
                 field.recurse.as_ref().map(|f| **f),
             ),
@@ -442,14 +441,15 @@ fn process_field(
         Ok((constructor_param, field_selector))
     } else {
         let candidates = object.fields.keys().map(|k| k.graphql_name());
-        let guss_value = guess_field(candidates, &(field_name.graphql_name()));
+        let graphql_name = graphql_ident.graphql_name();
+        let guess_value = guess_field(candidates, &graphql_name);
         Err(syn::Error::new(
             field_name_span,
             format!(
                 "Field {} does not exist on the GraphQL type {}.{}",
-                field_name.graphql_name(),
+                graphql_name,
                 graphql_type_name,
-                format_guess(guss_value).as_str()
+                format_guess(guess_value).as_str()
             ),
         ))
     }

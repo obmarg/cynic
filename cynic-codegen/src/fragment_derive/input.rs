@@ -96,6 +96,9 @@ pub struct FragmentDeriveField {
 
     #[darling(default)]
     pub(super) spread: SpannedValue<bool>,
+
+    #[darling(default)]
+    rename: Option<SpannedValue<String>>,
 }
 
 impl FragmentDeriveField {
@@ -138,6 +141,14 @@ impl FragmentDeriveField {
             CheckMode::Normal
         }
     }
+
+    pub fn graphql_ident(&self) -> Option<crate::Ident> {
+        match (&self.rename, &self.ident) {
+            (Some(rename), _) => Some(crate::Ident::for_field(&**rename).with_span(rename.span())),
+            (_, Some(ident)) => Some(crate::Ident::from_proc_macro2(ident, None)),
+            _ => None,
+        }
+    }
 }
 
 #[cfg(test)]
@@ -161,6 +172,7 @@ mod tests {
                         flatten: false.into(),
                         recurse: None,
                         spread: false.into(),
+                        rename: None,
                     },
                     FragmentDeriveField {
                         ident: Some(format_ident!("field_two")),
@@ -169,6 +181,7 @@ mod tests {
                         flatten: true.into(),
                         recurse: None,
                         spread: false.into(),
+                        rename: None,
                     },
                     FragmentDeriveField {
                         ident: Some(format_ident!("field_three")),
@@ -177,6 +190,7 @@ mod tests {
                         flatten: false.into(),
                         recurse: Some(8.into()),
                         spread: false.into(),
+                        rename: Some("fieldThree".to_string().into()),
                     },
                     FragmentDeriveField {
                         ident: Some(format_ident!("some_spread")),
@@ -185,6 +199,7 @@ mod tests {
                         flatten: false.into(),
                         recurse: None,
                         spread: true.into(),
+                        rename: Some("fieldThree".to_string().into()),
                     },
                 ],
             )),
@@ -212,6 +227,7 @@ mod tests {
                         flatten: false.into(),
                         recurse: None,
                         spread: false.into(),
+                        rename: None,
                     },
                     FragmentDeriveField {
                         ident: Some(format_ident!("field_two")),
@@ -220,6 +236,7 @@ mod tests {
                         flatten: true.into(),
                         recurse: Some(8.into()),
                         spread: false.into(),
+                        rename: None,
                     },
                     FragmentDeriveField {
                         ident: Some(format_ident!("field_three")),
@@ -228,6 +245,7 @@ mod tests {
                         flatten: true.into(),
                         recurse: Some(8.into()),
                         spread: false.into(),
+                        rename: None,
                     },
                     FragmentDeriveField {
                         ident: Some(format_ident!("some_spread")),
@@ -236,6 +254,7 @@ mod tests {
                         flatten: true.into(),
                         recurse: None,
                         spread: true.into(),
+                        rename: None,
                     },
                     FragmentDeriveField {
                         ident: Some(format_ident!("some_other_spread")),
@@ -244,6 +263,7 @@ mod tests {
                         flatten: false.into(),
                         recurse: Some(8.into()),
                         spread: true.into(),
+                        rename: None,
                     },
                 ],
             )),
@@ -294,6 +314,7 @@ mod tests {
                         flatten: false.into(),
                         recurse: None,
                         spread: false.into(),
+                        rename: None,
                     },
                     FragmentDeriveField {
                         ident: Some(format_ident!("field_two")),
@@ -302,6 +323,7 @@ mod tests {
                         flatten: true.into(),
                         recurse: None,
                         spread: false.into(),
+                        rename: None,
                     },
                     FragmentDeriveField {
                         ident: Some(format_ident!("field_three")),
@@ -310,6 +332,7 @@ mod tests {
                         flatten: false.into(),
                         recurse: Some(8.into()),
                         spread: false.into(),
+                        rename: None,
                     },
                 ],
             )),

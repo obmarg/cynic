@@ -15,6 +15,13 @@ all APIs might be changed.
 
 - You can now `spread` a `QueryFragment` into another `QueryFragment` with the
   `#[cynic(spread)]` field attribute.
+- The `QueryFragment` derive now supports renaming fields.
+
+### Bug Fixes
+
+- Underscore field names are now supported in schemas and for querying.
+- Field names with leading underscores will no longer have those leading
+  underscores removed.
 
 ## v0.13.2 - 2021-05-16
 

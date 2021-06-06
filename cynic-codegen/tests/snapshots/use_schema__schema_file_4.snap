@@ -1,0 +1,31 @@
+---
+source: cynic-codegen/tests/use-schema.rs
+expression: "format_code(format!(\"{}\", tokens))"
+
+---
+#[allow(dead_code)]
+pub struct Foo;
+#[allow(dead_code)]
+impl Foo {
+    pub fn __underscore() -> foo::SelectionBuilder {
+        foo::SelectionBuilder::new(vec![])
+    }
+}
+#[allow(dead_code)]
+pub mod foo {
+    pub struct SelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl SelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            SelectionBuilder { args }
+        }
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, bool>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Foo> {
+            ::cynic::selection_set::field("_", self.args, ::cynic::selection_set::option(inner))
+        }
+    }
+}
+
