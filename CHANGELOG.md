@@ -11,6 +11,14 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+### New Features
+
+- The `QueryFragment` derive now supports renaming fields.
+
+### Bug Fixes
+
+- Underscore field names are now supported in schemas and for querying.
+
 ## v0.13.2 - 2021-05-16
 
 This release is only of the `cynic` crate - other crates remain at 0.13.1

@@ -175,6 +175,10 @@ A QueryFragment can be configured with several attributes on the struct itself:
 
 Each field can also have it's own attributes:
 
+- `rename = "someGraphqlName"` can be provided if you want the rust field name
+  to differ from the GraphQL field name.  You should provide the name as it is
+  in the GraphQL schema (although due to implementation details a snake case
+  form of the name may work as well)
 - `recurse = "5"` tells cynic that this field is recursive and should be
   fetched to a maximum depth of 5. See [Recursive Queries][recursive-queries]
   for more info.
