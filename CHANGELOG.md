@@ -18,6 +18,8 @@ all APIs might be changed.
 ### Bug Fixes
 
 - Underscore field names are now supported in schemas and for querying.
+- Field names with leading underscores will no longer have those leading
+  underscores removed.
 
 ## v0.13.2 - 2021-05-16
 
