@@ -188,6 +188,9 @@ Each field can also have it's own attributes:
   a very nice type to work with - applying the `flatten` attribute lets you
   represent this as a `Vec<i32>` in your QueryFragment. Any outer nulls become
   an empty list and inner nulls are dropped.
+- The `spread` attr can be used to spread another `QueryFragment`s into the
+  current `QueryFragment`, if each of the `QueryFragment`s point at the same
+  GraphQL type.
 
 ### Related
 

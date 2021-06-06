@@ -13,6 +13,8 @@ all APIs might be changed.
 
 ### New Features
 
+- You can now `spread` a `QueryFragment` into another `QueryFragment` with the
+  `#[cynic(spread)]` field attribute.
 - The `QueryFragment` derive now supports renaming fields.
 
 ### Bug Fixes

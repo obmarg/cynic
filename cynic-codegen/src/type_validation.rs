@@ -1,3 +1,6 @@
+use quote::quote;
+use syn::spanned::Spanned;
+
 use crate::FieldType;
 
 #[derive(Debug, PartialEq, Eq)]
@@ -5,6 +8,7 @@ pub enum CheckMode {
     Normal,
     Flattening,
     Recursing,
+    Spreading,
 }
 
 pub fn check_types_are_compatible(
@@ -16,6 +20,44 @@ pub fn check_types_are_compatible(
         CheckMode::Flattening => normal_check(gql_type, rust_type, true),
         CheckMode::Normal => normal_check(gql_type, rust_type, false),
         CheckMode::Recursing => recursing_check(gql_type, rust_type),
+        CheckMode::Spreading => {
+            panic!("check_types_are_compatible shouldnt be called with CheckMode::Spreading")
+        }
+    }
+}
+
+pub fn check_spread_type(rust_type: &syn::Type) -> Result<(), syn::Error> {
+    let parsed_type = parse_type(rust_type);
+
+    match parsed_type {
+        ParsedType::Unknown => {
+            Err(syn::Error::new(
+                rust_type.span(),
+                "Cynic does not understand this type. Only un-parameterised types, Vecs, Options & Box are accepted currently.",
+            ))
+        },
+        ParsedType::Box(inner) => {
+            // Box is a transparent container for the purposes of checking compatability
+            // so just recurse
+            check_spread_type(inner)
+        }
+        ParsedType::Optional(_) => {
+            Err(syn::Error::new(
+                rust_type.span(),
+                "You can't spread on an Option type"
+            ))
+        }
+        ParsedType::List(_) => {
+            Err(syn::Error::new(
+                rust_type.span(),
+                "You can't spread on a Vec"
+            ))
+        }
+        ParsedType::SimpleType => {
+            // No way to tell if the given type is actually compatible,
+            // but the rust compiler should help us with that.
+            Ok(())
+        }
     }
 }
 
@@ -24,9 +66,6 @@ fn normal_check(
     rust_type: &syn::Type,
     flattening: bool,
 ) -> Result<(), syn::Error> {
-    use quote::quote;
-    use syn::spanned::Spanned;
-
     let parsed_type = parse_type(rust_type);
 
     match parsed_type {
@@ -92,8 +131,6 @@ fn normal_check(
 }
 
 fn recursing_check(gql_type: &FieldType, rust_type: &syn::Type) -> Result<(), syn::Error> {
-    use syn::spanned::Spanned;
-
     let parsed_type = parse_type(rust_type);
 
     if let ParsedType::Unknown = parsed_type {

@@ -1,0 +1,21 @@
+---
+source: examples/examples/spread.rs
+expression: result.data
+
+---
+Some(
+    FilmDirectorQuery {
+        film: Some(
+            Film {
+                details: FilmDetails {
+                    title: Some(
+                        "A New Hope",
+                    ),
+                    director: Some(
+                        "George Lucas",
+                    ),
+                },
+            },
+        ),
+    },
+)
