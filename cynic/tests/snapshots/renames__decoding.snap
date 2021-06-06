@@ -1,0 +1,10 @@
+---
+source: cynic/tests/renames.rs
+expression: query.decode_response(data).unwrap().data
+
+---
+all_posts:
+  - metadata_present: true
+    metadata:
+      underscore: ~
+

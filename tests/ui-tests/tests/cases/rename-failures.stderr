@@ -1,0 +1,5 @@
+error: Field episode does not exist on the GraphQL type Film. Did you mean created?
+  --> $DIR/rename-failures.rs:10:13
+   |
+10 |     #[cynic(rename = "episode")]
+   |             ^^^^^^

@@ -354,18 +354,17 @@ impl FragmentImpl {
         }
 
         for field in &fields.fields {
-            if let Some(macro_ident) = &field.ident {
-                let field_name_span = macro_ident.span();
-                let field_name = Ident::from(macro_ident.clone());
-
+            let idents = field.ident.as_ref().zip(field.graphql_ident());
+            if let Some((field_ident, graphql_ident)) = idents {
+                let field_name_span = graphql_ident.span();
                 constructor_params.push(ConstructorParameter {
-                    name: field_name.clone(),
+                    name: field_ident.clone().into(),
                     type_path: field.ty.clone(),
                 });
 
                 let arguments = arguments_from_field_attrs(&field.attrs)?;
 
-                if let Some(gql_field) = object.fields.get(&field_name) {
+                if let Some(gql_field) = object.fields.get(&graphql_ident) {
                     check_types_are_compatible(
                         &gql_field.field_type,
                         &field.ty,
@@ -380,7 +379,7 @@ impl FragmentImpl {
                             &gql_field.field_type,
                             TypePath::concat(&[
                                 selector_struct_path.clone(),
-                                field_name.clone().into(),
+                                graphql_ident.clone().into(),
                             ]),
                             field.flatten,
                             field.recurse.as_ref().map(|f| **f),
@@ -399,12 +398,13 @@ impl FragmentImpl {
                     })
                 } else {
                     let candidates = object.fields.keys().map(|k| k.graphql_name());
-                    let guss_value = guess_field(candidates, &(field_name.graphql_name()));
+                    let graphql_name = graphql_ident.graphql_name();
+                    let guss_value = guess_field(candidates, &graphql_name);
                     return Err(syn::Error::new(
                         field_name_span,
                         format!(
                             "Field {} does not exist on the GraphQL type {}.{}",
-                            field_name.graphql_name(),
+                            graphql_name,
                             graphql_type_name,
                             format_guess(guss_value).as_str()
                         ),

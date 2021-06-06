@@ -1,0 +1,14 @@
+---
+source: cynic/tests/renames.rs
+expression: query.query
+
+---
+query Query {
+  allPosts {
+    hasMetadata
+    metadata {
+      _
+    }
+  }
+}
+
