@@ -11,6 +11,8 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.14.0 - 2021-06-06
+
 ### New Features
 
 - You can now `spread` a `QueryFragment` into another `QueryFragment` with the

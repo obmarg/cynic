@@ -1,6 +1,6 @@
 [package]
 name = "cynic-proc-macros"
-version = "0.13.1"
+version = "0.14.0"
 authors = ["Graeme Coupar <graeme@polyandglot.dev>"]
 edition = "2018"
 homepage = "https://cynic-rs.dev"
@@ -15,5 +15,5 @@ documentation = "https://docs.rs/cynic-proc-macros"
 proc-macro = true
 
 [dependencies]
-cynic-codegen = { path = "../cynic-codegen", version = "0.13.1" }
+cynic-codegen = { path = "../cynic-codegen", version = "0.14.0" }
 syn = "1.0.13"
