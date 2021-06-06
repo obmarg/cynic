@@ -6,6 +6,8 @@ input BlogPostInput {
 type BlogPost {
   author: Author!
   comments: [Comment!]!
+  hasMetadata: Boolean
+  metadata: EmptyType
 }
 
 type Comment {
@@ -22,6 +24,10 @@ type Author {
   # A nonsense self referential field
   # Don't think this would make sense usually, but it's useful for testing.
   me: Author!
+}
+
+type EmptyType {
+  _: Boolean
 }
 
 type Query {

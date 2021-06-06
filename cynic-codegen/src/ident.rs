@@ -65,7 +65,16 @@ impl Ident {
     }
 
     pub fn for_field<T: AsRef<str>>(s: T) -> Self {
-        Ident::new(s.as_ref().to_snake_case())
+        let s = s.as_ref();
+        if s == "_" {
+            Ident {
+                rust: format_ident!("__underscore"),
+                graphql: "_".to_string(),
+                span: None,
+            }
+        } else {
+            Ident::new(to_snake_case(s))
+        }
     }
 
     pub fn for_module(s: &str) -> Self {
@@ -78,6 +87,17 @@ impl Ident {
 
     pub fn graphql_name(&self) -> &str {
         &self.graphql
+    }
+
+    pub fn with_span(self, span: Span) -> Self {
+        Self {
+            span: Some(span),
+            ..self
+        }
+    }
+
+    pub fn span(&self) -> Span {
+        self.span.clone().unwrap_or_else(Span::call_site)
     }
 }
 
@@ -270,6 +290,25 @@ fn transform_keywords(s: &str) -> Cow<str> {
     }
 }
 
+fn to_snake_case(s: &str) -> String {
+    let mut buf = String::with_capacity(s.len());
+    // Setting this to true to avoid adding underscores at the beginning
+    let mut prev_is_upper = true;
+    for c in s.chars() {
+        if c.is_uppercase() && !prev_is_upper {
+            buf.push('_');
+            buf.extend(c.to_lowercase());
+            prev_is_upper = true;
+        } else if c.is_uppercase() {
+            buf.extend(c.to_lowercase());
+        } else {
+            prev_is_upper = false;
+            buf.push(c);
+        }
+    }
+    buf
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -300,5 +339,12 @@ mod tests {
     fn test_transform_keywords() {
         assert_eq!(transform_keywords("test"), "test");
         assert_eq!(transform_keywords("type"), "r#type");
+    }
+
+    #[test]
+    fn test_underscore() {
+        assert_eq!(to_snake_case("_hello"), "_hello");
+        assert_eq!(to_snake_case("_"), "_");
+        assert_eq!(Ident::for_field("_"), Ident::new("_"));
     }
 }
