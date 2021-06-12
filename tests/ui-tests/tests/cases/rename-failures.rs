@@ -10,3 +10,10 @@ struct Film {
     #[cynic(rename = "episode")]
     episode_id: Option<i32>,
 }
+
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(schema_path = "../../../schemas/starwars.schema.graphql")]
+struct AliasWithoutRename {
+    #[cynic(alias)]
+    episode_id: Option<i32>,
+}

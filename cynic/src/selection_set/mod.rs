@@ -242,6 +242,28 @@ where
     )
 }
 
+/// Selects an aliased field from a GraphQL object, decoding it with another `SelectionSet`
+pub fn field_alias<'a, DecodesTo, TypeLock, InnerTypeLock>(
+    field_name: &str,
+    alias: &str,
+    arguments: Vec<Argument>,
+    selection_set: SelectionSet<'a, DecodesTo, InnerTypeLock>,
+) -> SelectionSet<'a, DecodesTo, TypeLock>
+where
+    DecodesTo: 'a,
+{
+    let inner_field = if selection_set.fields.is_empty() {
+        Field::Leaf(field_name.to_string(), arguments)
+    } else {
+        Field::Composite(field_name.to_string(), arguments, selection_set.fields)
+    };
+
+    SelectionSet::new(
+        vec![Field::Alias(alias.into(), Box::new(inner_field))],
+        json_decode::field(alias, selection_set.decoder),
+    )
+}
+
 /// Creates a SelectionSet that adds some inline fragments to a query.
 ///
 /// This should be provided a Vec of typenames to the selection set that should
@@ -920,5 +942,16 @@ mod tests {
         let result = decoder.decode(&json!({"__typename": "Other", "other": "hello"}));
 
         assert_eq!(result, Ok("hello".into()));
+    }
+
+    #[test]
+    fn test_decode_field_alias() {
+        let selection_set = field_alias::<_, (), _>("field", "alias", vec![], boolean());
+
+        let (_, _, decoder) = selection_set.query_arguments_and_decoder();
+
+        let result = decoder.decode(&json!({"alias": true}));
+
+        assert_eq!(result, Ok(true));
     }
 }

@@ -45,6 +45,7 @@ impl std::fmt::Display for QueryFragment<'_, '_> {
 #[derive(Debug, PartialEq)]
 pub struct OutputField<'query, 'schema> {
     pub name: &'schema str,
+    pub rename: Option<&'schema str>,
     pub field_type: RustOutputFieldType,
 
     pub arguments: Vec<FieldArgument<'query, 'schema>>,
@@ -69,6 +70,10 @@ impl std::fmt::Display for OutputField<'_, '_> {
                 .join(", ");
 
             writeln!(f, "#[arguments({})]", arguments_string)?;
+        }
+
+        if let Some(rename) = self.rename {
+            writeln!(f, "#[cynic(rename = \"{}\")]", rename)?;
         }
 
         writeln!(

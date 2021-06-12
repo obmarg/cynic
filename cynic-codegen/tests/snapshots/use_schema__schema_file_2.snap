@@ -1,6 +1,7 @@
 ---
-source: cynic-codegen/tests/query-dsl.rs
+source: cynic-codegen/tests/use-schema.rs
 expression: "format_code(format!(\"{}\", tokens))"
+
 ---
 #[allow(dead_code)]
 pub struct Book;
@@ -93,6 +94,13 @@ pub mod book {
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Book> {
             ::cynic::selection_set::field("id", self.args, inner)
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Book> {
+            ::cynic::selection_set::field_alias("id", alias, self.args, inner)
+        }
     }
     pub struct NameSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -107,6 +115,13 @@ pub mod book {
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Book> {
             ::cynic::selection_set::field("name", self.args, inner)
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Book> {
+            ::cynic::selection_set::field_alias("name", alias, self.args, inner)
+        }
     }
     pub struct AuthorSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -120,6 +135,13 @@ pub mod book {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Book> {
             ::cynic::selection_set::field("author", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Book> {
+            ::cynic::selection_set::field_alias("author", alias, self.args, inner)
         }
     }
 }
@@ -138,6 +160,13 @@ pub mod book_changed {
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::BookChanged> {
             ::cynic::selection_set::field("mutationType", self.args, inner)
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, super::MutationType>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::BookChanged> {
+            ::cynic::selection_set::field_alias("mutationType", alias, self.args, inner)
+        }
     }
     pub struct IdSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -152,6 +181,13 @@ pub mod book_changed {
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::BookChanged> {
             ::cynic::selection_set::field("id", self.args, inner)
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::BookChanged> {
+            ::cynic::selection_set::field_alias("id", alias, self.args, inner)
+        }
     }
     pub struct BookSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -165,6 +201,18 @@ pub mod book_changed {
             fields: ::cynic::selection_set::SelectionSet<'a, T, super::Book>,
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::BookChanged> {
             ::cynic::selection_set::field("book", self.args, ::cynic::selection_set::option(fields))
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Book>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::BookChanged> {
+            ::cynic::selection_set::field_alias(
+                "book",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
         }
     }
 }
@@ -183,6 +231,13 @@ pub mod mutation_root {
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::MutationRoot> {
             ::cynic::selection_set::field("createBook", self.args, inner)
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::MutationRoot> {
+            ::cynic::selection_set::field_alias("createBook", alias, self.args, inner)
+        }
     }
     pub struct DeleteBookSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -196,6 +251,13 @@ pub mod mutation_root {
             inner: ::cynic::selection_set::SelectionSet<'a, T, bool>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::MutationRoot> {
             ::cynic::selection_set::field("deleteBook", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, bool>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::MutationRoot> {
+            ::cynic::selection_set::field_alias("deleteBook", alias, self.args, inner)
         }
     }
 }
@@ -214,6 +276,18 @@ pub mod query_root {
         ) -> ::cynic::selection_set::SelectionSet<'a, Vec<T>, super::QueryRoot> {
             ::cynic::selection_set::field("books", self.args, ::cynic::selection_set::vec(fields))
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Book>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Vec<T>, super::QueryRoot> {
+            ::cynic::selection_set::field_alias(
+                "books",
+                alias,
+                self.args,
+                ::cynic::selection_set::vec(fields),
+            )
+        }
     }
 }
 #[allow(dead_code)]
@@ -230,6 +304,13 @@ pub mod subscription_root {
             inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::SubscriptionRoot> {
             ::cynic::selection_set::field("interval", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::SubscriptionRoot> {
+            ::cynic::selection_set::field_alias("interval", alias, self.args, inner)
         }
     }
     pub struct BooksSelectionBuilder {
@@ -258,6 +339,13 @@ pub mod subscription_root {
             fields: ::cynic::selection_set::SelectionSet<'a, T, super::BookChanged>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::SubscriptionRoot> {
             ::cynic::selection_set::field("books", self.args, fields)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::BookChanged>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::SubscriptionRoot> {
+            ::cynic::selection_set::field_alias("books", alias, self.args, fields)
         }
     }
 }

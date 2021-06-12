@@ -3,3 +3,9 @@ error: Field episode does not exist on the GraphQL type Film. Did you mean creat
    |
 10 |     #[cynic(rename = "episode")]
    |             ^^^^^^
+
+error: You can only alias a renamed field.  Try removing `alias` or adding a rename
+  --> $DIR/rename-failures.rs:17:13
+   |
+17 |     #[cynic(alias)]
+   |             ^^^^^

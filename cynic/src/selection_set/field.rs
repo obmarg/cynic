@@ -10,6 +10,7 @@ pub enum Field {
     Root(Vec<Field>, OperationType),
     Leaf(String, Vec<Argument>),
     Composite(String, Vec<Argument>, Vec<Field>),
+    Alias(String, Box<Field>),
     InlineFragment(String, Vec<Field>),
 }
 
@@ -45,6 +46,16 @@ impl Field {
                     child_query = child_query,
                     indent = indent,
                     arguments = arguments
+                )
+            }
+            Field::Alias(alias_name, inner_field) => {
+                let inner_field = inner_field.query(indent, indent_size, arguments_out);
+                format!(
+                    "{0:indent$}{alias_name}: {inner_field}",
+                    "",
+                    alias_name = alias_name,
+                    inner_field = inner_field,
+                    indent = indent
                 )
             }
             Field::InlineFragment(type_name, child_fields) => {
@@ -213,5 +224,34 @@ mod tests {
                 .collect::<Vec<_>>(),
             vec!["Bool!", "Bool!"]
         );
+    }
+
+    #[test]
+    fn test_alias_fields() {
+        let fields = Field::Composite(
+            "hello".into(),
+            vec![],
+            vec![
+                Field::Alias(
+                    "fieldOne".into(),
+                    Box::new(Field::Leaf("anInt".into(), vec![])),
+                ),
+                Field::Alias(
+                    "fieldTwo".into(),
+                    Box::new(Field::Leaf(
+                        "aBool".into(),
+                        vec![Argument::new("myArg", "Bool!", Ok(json!(true)))],
+                    )),
+                ),
+            ],
+        );
+
+        let mut arguments = vec![];
+        insta::assert_snapshot!(fields.query(0, 2, &mut arguments), @r###"
+        hello {
+          fieldOne:   anInt
+          fieldTwo:   aBool(myArg: $_0)
+        }
+        "###);
     }
 }

@@ -11,6 +11,13 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+### New Features
+
+- Cynic now supports GraphQL field aliases.  These can be requested, but will
+  also automatically be added to queries if any QueryFragment requests the same
+  field twice.
+- The generator also now supports field aliases.
+
 ## v0.14.0 - 2021-06-06
 
 ### New Features

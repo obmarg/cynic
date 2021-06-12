@@ -1,6 +1,7 @@
 ---
-source: cynic-codegen/tests/query-dsl.rs
+source: cynic-codegen/tests/use-schema.rs
 expression: "format_code(format!(\"{}\", tokens))"
+
 ---
 #[allow(dead_code)]
 pub struct Node;
@@ -1017,6 +1018,18 @@ pub mod film {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Film> {
             ::cynic::selection_set::field("title", self.args, ::cynic::selection_set::option(inner))
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Film> {
+            ::cynic::selection_set::field_alias(
+                "title",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
     }
     pub struct EpisodeIDSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -1031,6 +1044,18 @@ pub mod film {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Film> {
             ::cynic::selection_set::field(
                 "episodeID",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Film> {
+            ::cynic::selection_set::field_alias(
+                "episodeID",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -1053,6 +1078,18 @@ pub mod film {
                 ::cynic::selection_set::option(inner),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Film> {
+            ::cynic::selection_set::field_alias(
+                "openingCrawl",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
     }
     pub struct DirectorSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -1067,6 +1104,18 @@ pub mod film {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Film> {
             ::cynic::selection_set::field(
                 "director",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Film> {
+            ::cynic::selection_set::field_alias(
+                "director",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -1091,6 +1140,20 @@ pub mod film {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<Option<T>>>, super::Film> {
+            ::cynic::selection_set::field_alias(
+                "producers",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(inner),
+                )),
+            )
+        }
     }
     pub struct ReleaseDateSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -1105,6 +1168,18 @@ pub mod film {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Film> {
             ::cynic::selection_set::field(
                 "releaseDate",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Film> {
+            ::cynic::selection_set::field_alias(
+                "releaseDate",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -1177,6 +1252,18 @@ pub mod film {
                 ::cynic::selection_set::option(fields),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::FilmSpeciesConnection>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Film> {
+            ::cynic::selection_set::field_alias(
+                "speciesConnection",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct StarshipConnectionSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -1241,6 +1328,18 @@ pub mod film {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Film> {
             ::cynic::selection_set::field(
                 "starshipConnection",
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::FilmStarshipsConnection>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Film> {
+            ::cynic::selection_set::field_alias(
+                "starshipConnection",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(fields),
             )
@@ -1313,6 +1412,18 @@ pub mod film {
                 ::cynic::selection_set::option(fields),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::FilmVehiclesConnection>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Film> {
+            ::cynic::selection_set::field_alias(
+                "vehicleConnection",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct CharacterConnectionSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -1377,6 +1488,18 @@ pub mod film {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Film> {
             ::cynic::selection_set::field(
                 "characterConnection",
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::FilmCharactersConnection>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Film> {
+            ::cynic::selection_set::field_alias(
+                "characterConnection",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(fields),
             )
@@ -1449,6 +1572,18 @@ pub mod film {
                 ::cynic::selection_set::option(fields),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::FilmPlanetsConnection>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Film> {
+            ::cynic::selection_set::field_alias(
+                "planetConnection",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct CreatedSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -1463,6 +1598,18 @@ pub mod film {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Film> {
             ::cynic::selection_set::field(
                 "created",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Film> {
+            ::cynic::selection_set::field_alias(
+                "created",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -1485,6 +1632,18 @@ pub mod film {
                 ::cynic::selection_set::option(inner),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Film> {
+            ::cynic::selection_set::field_alias(
+                "edited",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
     }
     pub struct IdSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -1498,6 +1657,13 @@ pub mod film {
             inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Film> {
             ::cynic::selection_set::field("id", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Film> {
+            ::cynic::selection_set::field_alias("id", alias, self.args, inner)
         }
     }
 }
@@ -1515,6 +1681,13 @@ pub mod film_characters_connection {
             fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::FilmCharactersConnection> {
             ::cynic::selection_set::field("pageInfo", self.args, fields)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::FilmCharactersConnection> {
+            ::cynic::selection_set::field_alias("pageInfo", alias, self.args, fields)
         }
     }
     pub struct EdgesSelectionBuilder {
@@ -1540,6 +1713,24 @@ pub mod film_characters_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::FilmCharactersEdge>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::FilmCharactersConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "edges",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
     pub struct TotalCountSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -1555,6 +1746,19 @@ pub mod film_characters_connection {
         {
             ::cynic::selection_set::field(
                 "totalCount",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::FilmCharactersConnection>
+        {
+            ::cynic::selection_set::field_alias(
+                "totalCount",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -1583,6 +1787,24 @@ pub mod film_characters_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Person>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::FilmCharactersConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "characters",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
 }
 #[allow(dead_code)]
@@ -1601,6 +1823,19 @@ pub mod film_characters_edge {
         {
             ::cynic::selection_set::field("node", self.args, ::cynic::selection_set::option(fields))
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Person>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::FilmCharactersEdge>
+        {
+            ::cynic::selection_set::field_alias(
+                "node",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct CursorSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -1614,6 +1849,13 @@ pub mod film_characters_edge {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::FilmCharactersEdge> {
             ::cynic::selection_set::field("cursor", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::FilmCharactersEdge> {
+            ::cynic::selection_set::field_alias("cursor", alias, self.args, inner)
         }
     }
 }
@@ -1631,6 +1873,13 @@ pub mod film_planets_connection {
             fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::FilmPlanetsConnection> {
             ::cynic::selection_set::field("pageInfo", self.args, fields)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::FilmPlanetsConnection> {
+            ::cynic::selection_set::field_alias("pageInfo", alias, self.args, fields)
         }
     }
     pub struct EdgesSelectionBuilder {
@@ -1656,6 +1905,24 @@ pub mod film_planets_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::FilmPlanetsEdge>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::FilmPlanetsConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "edges",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
     pub struct TotalCountSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -1671,6 +1938,19 @@ pub mod film_planets_connection {
         {
             ::cynic::selection_set::field(
                 "totalCount",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::FilmPlanetsConnection>
+        {
+            ::cynic::selection_set::field_alias(
+                "totalCount",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -1699,6 +1979,24 @@ pub mod film_planets_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Planet>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::FilmPlanetsConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "planets",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
 }
 #[allow(dead_code)]
@@ -1716,6 +2014,18 @@ pub mod film_planets_edge {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::FilmPlanetsEdge> {
             ::cynic::selection_set::field("node", self.args, ::cynic::selection_set::option(fields))
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Planet>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::FilmPlanetsEdge> {
+            ::cynic::selection_set::field_alias(
+                "node",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct CursorSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -1729,6 +2039,13 @@ pub mod film_planets_edge {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::FilmPlanetsEdge> {
             ::cynic::selection_set::field("cursor", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::FilmPlanetsEdge> {
+            ::cynic::selection_set::field_alias("cursor", alias, self.args, inner)
         }
     }
 }
@@ -1746,6 +2063,13 @@ pub mod films_connection {
             fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::FilmsConnection> {
             ::cynic::selection_set::field("pageInfo", self.args, fields)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::FilmsConnection> {
+            ::cynic::selection_set::field_alias("pageInfo", alias, self.args, fields)
         }
     }
     pub struct EdgesSelectionBuilder {
@@ -1768,6 +2092,21 @@ pub mod films_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::FilmsEdge>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<Option<T>>>, super::FilmsConnection>
+        {
+            ::cynic::selection_set::field_alias(
+                "edges",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
     pub struct TotalCountSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -1782,6 +2121,18 @@ pub mod films_connection {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::FilmsConnection> {
             ::cynic::selection_set::field(
                 "totalCount",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::FilmsConnection> {
+            ::cynic::selection_set::field_alias(
+                "totalCount",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -1807,6 +2158,21 @@ pub mod films_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Film>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<Option<T>>>, super::FilmsConnection>
+        {
+            ::cynic::selection_set::field_alias(
+                "films",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
 }
 #[allow(dead_code)]
@@ -1824,6 +2190,18 @@ pub mod films_edge {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::FilmsEdge> {
             ::cynic::selection_set::field("node", self.args, ::cynic::selection_set::option(fields))
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Film>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::FilmsEdge> {
+            ::cynic::selection_set::field_alias(
+                "node",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct CursorSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -1837,6 +2215,13 @@ pub mod films_edge {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::FilmsEdge> {
             ::cynic::selection_set::field("cursor", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::FilmsEdge> {
+            ::cynic::selection_set::field_alias("cursor", alias, self.args, inner)
         }
     }
 }
@@ -1854,6 +2239,13 @@ pub mod film_species_connection {
             fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::FilmSpeciesConnection> {
             ::cynic::selection_set::field("pageInfo", self.args, fields)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::FilmSpeciesConnection> {
+            ::cynic::selection_set::field_alias("pageInfo", alias, self.args, fields)
         }
     }
     pub struct EdgesSelectionBuilder {
@@ -1879,6 +2271,24 @@ pub mod film_species_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::FilmSpeciesEdge>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::FilmSpeciesConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "edges",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
     pub struct TotalCountSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -1894,6 +2304,19 @@ pub mod film_species_connection {
         {
             ::cynic::selection_set::field(
                 "totalCount",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::FilmSpeciesConnection>
+        {
+            ::cynic::selection_set::field_alias(
+                "totalCount",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -1922,6 +2345,24 @@ pub mod film_species_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Species>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::FilmSpeciesConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "species",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
 }
 #[allow(dead_code)]
@@ -1939,6 +2380,18 @@ pub mod film_species_edge {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::FilmSpeciesEdge> {
             ::cynic::selection_set::field("node", self.args, ::cynic::selection_set::option(fields))
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Species>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::FilmSpeciesEdge> {
+            ::cynic::selection_set::field_alias(
+                "node",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct CursorSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -1952,6 +2405,13 @@ pub mod film_species_edge {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::FilmSpeciesEdge> {
             ::cynic::selection_set::field("cursor", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::FilmSpeciesEdge> {
+            ::cynic::selection_set::field_alias("cursor", alias, self.args, inner)
         }
     }
 }
@@ -1969,6 +2429,13 @@ pub mod film_starships_connection {
             fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::FilmStarshipsConnection> {
             ::cynic::selection_set::field("pageInfo", self.args, fields)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::FilmStarshipsConnection> {
+            ::cynic::selection_set::field_alias("pageInfo", alias, self.args, fields)
         }
     }
     pub struct EdgesSelectionBuilder {
@@ -1994,6 +2461,24 @@ pub mod film_starships_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::FilmStarshipsEdge>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::FilmStarshipsConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "edges",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
     pub struct TotalCountSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2009,6 +2494,19 @@ pub mod film_starships_connection {
         {
             ::cynic::selection_set::field(
                 "totalCount",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::FilmStarshipsConnection>
+        {
+            ::cynic::selection_set::field_alias(
+                "totalCount",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -2037,6 +2535,24 @@ pub mod film_starships_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Starship>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::FilmStarshipsConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "starships",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
 }
 #[allow(dead_code)]
@@ -2054,6 +2570,18 @@ pub mod film_starships_edge {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::FilmStarshipsEdge> {
             ::cynic::selection_set::field("node", self.args, ::cynic::selection_set::option(fields))
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Starship>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::FilmStarshipsEdge> {
+            ::cynic::selection_set::field_alias(
+                "node",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct CursorSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2067,6 +2595,13 @@ pub mod film_starships_edge {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::FilmStarshipsEdge> {
             ::cynic::selection_set::field("cursor", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::FilmStarshipsEdge> {
+            ::cynic::selection_set::field_alias("cursor", alias, self.args, inner)
         }
     }
 }
@@ -2084,6 +2619,13 @@ pub mod film_vehicles_connection {
             fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::FilmVehiclesConnection> {
             ::cynic::selection_set::field("pageInfo", self.args, fields)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::FilmVehiclesConnection> {
+            ::cynic::selection_set::field_alias("pageInfo", alias, self.args, fields)
         }
     }
     pub struct EdgesSelectionBuilder {
@@ -2109,6 +2651,24 @@ pub mod film_vehicles_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::FilmVehiclesEdge>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::FilmVehiclesConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "edges",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
     pub struct TotalCountSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2124,6 +2684,19 @@ pub mod film_vehicles_connection {
         {
             ::cynic::selection_set::field(
                 "totalCount",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::FilmVehiclesConnection>
+        {
+            ::cynic::selection_set::field_alias(
+                "totalCount",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -2152,6 +2725,24 @@ pub mod film_vehicles_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Vehicle>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::FilmVehiclesConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "vehicles",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
 }
 #[allow(dead_code)]
@@ -2169,6 +2760,18 @@ pub mod film_vehicles_edge {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::FilmVehiclesEdge> {
             ::cynic::selection_set::field("node", self.args, ::cynic::selection_set::option(fields))
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Vehicle>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::FilmVehiclesEdge> {
+            ::cynic::selection_set::field_alias(
+                "node",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct CursorSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2182,6 +2785,13 @@ pub mod film_vehicles_edge {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::FilmVehiclesEdge> {
             ::cynic::selection_set::field("cursor", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::FilmVehiclesEdge> {
+            ::cynic::selection_set::field_alias("cursor", alias, self.args, inner)
         }
     }
 }
@@ -2200,6 +2810,13 @@ pub mod node {
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Node> {
             ::cynic::selection_set::field("id", self.args, inner)
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Node> {
+            ::cynic::selection_set::field_alias("id", alias, self.args, inner)
+        }
     }
 }
 #[allow(dead_code)]
@@ -2217,6 +2834,13 @@ pub mod page_info {
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo> {
             ::cynic::selection_set::field("hasNextPage", self.args, inner)
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, bool>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo> {
+            ::cynic::selection_set::field_alias("hasNextPage", alias, self.args, inner)
+        }
     }
     pub struct HasPreviousPageSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2230,6 +2854,13 @@ pub mod page_info {
             inner: ::cynic::selection_set::SelectionSet<'a, T, bool>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo> {
             ::cynic::selection_set::field("hasPreviousPage", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, bool>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo> {
+            ::cynic::selection_set::field_alias("hasPreviousPage", alias, self.args, inner)
         }
     }
     pub struct StartCursorSelectionBuilder {
@@ -2245,6 +2876,18 @@ pub mod page_info {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::PageInfo> {
             ::cynic::selection_set::field(
                 "startCursor",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::PageInfo> {
+            ::cynic::selection_set::field_alias(
+                "startCursor",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -2267,6 +2910,18 @@ pub mod page_info {
                 ::cynic::selection_set::option(inner),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::PageInfo> {
+            ::cynic::selection_set::field_alias(
+                "endCursor",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
     }
 }
 #[allow(dead_code)]
@@ -2283,6 +2938,13 @@ pub mod people_connection {
             fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PeopleConnection> {
             ::cynic::selection_set::field("pageInfo", self.args, fields)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PeopleConnection> {
+            ::cynic::selection_set::field_alias("pageInfo", alias, self.args, fields)
         }
     }
     pub struct EdgesSelectionBuilder {
@@ -2305,6 +2967,21 @@ pub mod people_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::PeopleEdge>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<Option<T>>>, super::PeopleConnection>
+        {
+            ::cynic::selection_set::field_alias(
+                "edges",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
     pub struct TotalCountSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2319,6 +2996,18 @@ pub mod people_connection {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::PeopleConnection> {
             ::cynic::selection_set::field(
                 "totalCount",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::PeopleConnection> {
+            ::cynic::selection_set::field_alias(
+                "totalCount",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -2344,6 +3033,21 @@ pub mod people_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Person>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<Option<T>>>, super::PeopleConnection>
+        {
+            ::cynic::selection_set::field_alias(
+                "people",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
 }
 #[allow(dead_code)]
@@ -2361,6 +3065,18 @@ pub mod people_edge {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::PeopleEdge> {
             ::cynic::selection_set::field("node", self.args, ::cynic::selection_set::option(fields))
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Person>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::PeopleEdge> {
+            ::cynic::selection_set::field_alias(
+                "node",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct CursorSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2374,6 +3090,13 @@ pub mod people_edge {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PeopleEdge> {
             ::cynic::selection_set::field("cursor", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PeopleEdge> {
+            ::cynic::selection_set::field_alias("cursor", alias, self.args, inner)
         }
     }
 }
@@ -2392,6 +3115,18 @@ pub mod person {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Person> {
             ::cynic::selection_set::field("name", self.args, ::cynic::selection_set::option(inner))
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Person> {
+            ::cynic::selection_set::field_alias(
+                "name",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
     }
     pub struct BirthYearSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2406,6 +3141,18 @@ pub mod person {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Person> {
             ::cynic::selection_set::field(
                 "birthYear",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Person> {
+            ::cynic::selection_set::field_alias(
+                "birthYear",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -2428,6 +3175,18 @@ pub mod person {
                 ::cynic::selection_set::option(inner),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Person> {
+            ::cynic::selection_set::field_alias(
+                "eyeColor",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
     }
     pub struct GenderSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2442,6 +3201,18 @@ pub mod person {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Person> {
             ::cynic::selection_set::field(
                 "gender",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Person> {
+            ::cynic::selection_set::field_alias(
+                "gender",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -2464,6 +3235,18 @@ pub mod person {
                 ::cynic::selection_set::option(inner),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Person> {
+            ::cynic::selection_set::field_alias(
+                "hairColor",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
     }
     pub struct HeightSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2482,6 +3265,18 @@ pub mod person {
                 ::cynic::selection_set::option(inner),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Person> {
+            ::cynic::selection_set::field_alias(
+                "height",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
     }
     pub struct MassSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2495,6 +3290,18 @@ pub mod person {
             inner: ::cynic::selection_set::SelectionSet<'a, T, f64>,
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Person> {
             ::cynic::selection_set::field("mass", self.args, ::cynic::selection_set::option(inner))
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, f64>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Person> {
+            ::cynic::selection_set::field_alias(
+                "mass",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
         }
     }
     pub struct SkinColorSelectionBuilder {
@@ -2514,6 +3321,18 @@ pub mod person {
                 ::cynic::selection_set::option(inner),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Person> {
+            ::cynic::selection_set::field_alias(
+                "skinColor",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
     }
     pub struct HomeworldSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2528,6 +3347,18 @@ pub mod person {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Person> {
             ::cynic::selection_set::field(
                 "homeworld",
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Planet>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Person> {
+            ::cynic::selection_set::field_alias(
+                "homeworld",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(fields),
             )
@@ -2600,6 +3431,18 @@ pub mod person {
                 ::cynic::selection_set::option(fields),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::PersonFilmsConnection>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Person> {
+            ::cynic::selection_set::field_alias(
+                "filmConnection",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct SpeciesSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2614,6 +3457,18 @@ pub mod person {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Person> {
             ::cynic::selection_set::field(
                 "species",
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Species>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Person> {
+            ::cynic::selection_set::field_alias(
+                "species",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(fields),
             )
@@ -2686,6 +3541,18 @@ pub mod person {
                 ::cynic::selection_set::option(fields),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::PersonStarshipsConnection>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Person> {
+            ::cynic::selection_set::field_alias(
+                "starshipConnection",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct VehicleConnectionSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2754,6 +3621,18 @@ pub mod person {
                 ::cynic::selection_set::option(fields),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::PersonVehiclesConnection>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Person> {
+            ::cynic::selection_set::field_alias(
+                "vehicleConnection",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct CreatedSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2768,6 +3647,18 @@ pub mod person {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Person> {
             ::cynic::selection_set::field(
                 "created",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Person> {
+            ::cynic::selection_set::field_alias(
+                "created",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -2790,6 +3681,18 @@ pub mod person {
                 ::cynic::selection_set::option(inner),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Person> {
+            ::cynic::selection_set::field_alias(
+                "edited",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
     }
     pub struct IdSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2803,6 +3706,13 @@ pub mod person {
             inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Person> {
             ::cynic::selection_set::field("id", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Person> {
+            ::cynic::selection_set::field_alias("id", alias, self.args, inner)
         }
     }
 }
@@ -2820,6 +3730,13 @@ pub mod person_films_connection {
             fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PersonFilmsConnection> {
             ::cynic::selection_set::field("pageInfo", self.args, fields)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PersonFilmsConnection> {
+            ::cynic::selection_set::field_alias("pageInfo", alias, self.args, fields)
         }
     }
     pub struct EdgesSelectionBuilder {
@@ -2845,6 +3762,24 @@ pub mod person_films_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::PersonFilmsEdge>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::PersonFilmsConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "edges",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
     pub struct TotalCountSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2860,6 +3795,19 @@ pub mod person_films_connection {
         {
             ::cynic::selection_set::field(
                 "totalCount",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::PersonFilmsConnection>
+        {
+            ::cynic::selection_set::field_alias(
+                "totalCount",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -2888,6 +3836,24 @@ pub mod person_films_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Film>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::PersonFilmsConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "films",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
 }
 #[allow(dead_code)]
@@ -2905,6 +3871,18 @@ pub mod person_films_edge {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::PersonFilmsEdge> {
             ::cynic::selection_set::field("node", self.args, ::cynic::selection_set::option(fields))
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Film>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::PersonFilmsEdge> {
+            ::cynic::selection_set::field_alias(
+                "node",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct CursorSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2918,6 +3896,13 @@ pub mod person_films_edge {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PersonFilmsEdge> {
             ::cynic::selection_set::field("cursor", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PersonFilmsEdge> {
+            ::cynic::selection_set::field_alias("cursor", alias, self.args, inner)
         }
     }
 }
@@ -2935,6 +3920,13 @@ pub mod person_starships_connection {
             fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PersonStarshipsConnection> {
             ::cynic::selection_set::field("pageInfo", self.args, fields)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PersonStarshipsConnection> {
+            ::cynic::selection_set::field_alias("pageInfo", alias, self.args, fields)
         }
     }
     pub struct EdgesSelectionBuilder {
@@ -2960,6 +3952,24 @@ pub mod person_starships_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::PersonStarshipsEdge>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::PersonStarshipsConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "edges",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
     pub struct TotalCountSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2975,6 +3985,19 @@ pub mod person_starships_connection {
         {
             ::cynic::selection_set::field(
                 "totalCount",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::PersonStarshipsConnection>
+        {
+            ::cynic::selection_set::field_alias(
+                "totalCount",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -3003,6 +4026,24 @@ pub mod person_starships_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Starship>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::PersonStarshipsConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "starships",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
 }
 #[allow(dead_code)]
@@ -3021,6 +4062,19 @@ pub mod person_starships_edge {
         {
             ::cynic::selection_set::field("node", self.args, ::cynic::selection_set::option(fields))
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Starship>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::PersonStarshipsEdge>
+        {
+            ::cynic::selection_set::field_alias(
+                "node",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct CursorSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -3034,6 +4088,13 @@ pub mod person_starships_edge {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PersonStarshipsEdge> {
             ::cynic::selection_set::field("cursor", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PersonStarshipsEdge> {
+            ::cynic::selection_set::field_alias("cursor", alias, self.args, inner)
         }
     }
 }
@@ -3051,6 +4112,13 @@ pub mod person_vehicles_connection {
             fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PersonVehiclesConnection> {
             ::cynic::selection_set::field("pageInfo", self.args, fields)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PersonVehiclesConnection> {
+            ::cynic::selection_set::field_alias("pageInfo", alias, self.args, fields)
         }
     }
     pub struct EdgesSelectionBuilder {
@@ -3076,6 +4144,24 @@ pub mod person_vehicles_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::PersonVehiclesEdge>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::PersonVehiclesConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "edges",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
     pub struct TotalCountSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -3091,6 +4177,19 @@ pub mod person_vehicles_connection {
         {
             ::cynic::selection_set::field(
                 "totalCount",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::PersonVehiclesConnection>
+        {
+            ::cynic::selection_set::field_alias(
+                "totalCount",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -3119,6 +4218,24 @@ pub mod person_vehicles_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Vehicle>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::PersonVehiclesConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "vehicles",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
 }
 #[allow(dead_code)]
@@ -3137,6 +4254,19 @@ pub mod person_vehicles_edge {
         {
             ::cynic::selection_set::field("node", self.args, ::cynic::selection_set::option(fields))
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Vehicle>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::PersonVehiclesEdge>
+        {
+            ::cynic::selection_set::field_alias(
+                "node",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct CursorSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -3150,6 +4280,13 @@ pub mod person_vehicles_edge {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PersonVehiclesEdge> {
             ::cynic::selection_set::field("cursor", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PersonVehiclesEdge> {
+            ::cynic::selection_set::field_alias("cursor", alias, self.args, inner)
         }
     }
 }
@@ -3168,6 +4305,18 @@ pub mod planet {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Planet> {
             ::cynic::selection_set::field("name", self.args, ::cynic::selection_set::option(inner))
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Planet> {
+            ::cynic::selection_set::field_alias(
+                "name",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
     }
     pub struct DiameterSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -3182,6 +4331,18 @@ pub mod planet {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Planet> {
             ::cynic::selection_set::field(
                 "diameter",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Planet> {
+            ::cynic::selection_set::field_alias(
+                "diameter",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -3204,6 +4365,18 @@ pub mod planet {
                 ::cynic::selection_set::option(inner),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Planet> {
+            ::cynic::selection_set::field_alias(
+                "rotationPeriod",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
     }
     pub struct OrbitalPeriodSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -3218,6 +4391,18 @@ pub mod planet {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Planet> {
             ::cynic::selection_set::field(
                 "orbitalPeriod",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Planet> {
+            ::cynic::selection_set::field_alias(
+                "orbitalPeriod",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -3240,6 +4425,18 @@ pub mod planet {
                 ::cynic::selection_set::option(inner),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Planet> {
+            ::cynic::selection_set::field_alias(
+                "gravity",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
     }
     pub struct PopulationSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -3254,6 +4451,18 @@ pub mod planet {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Planet> {
             ::cynic::selection_set::field(
                 "population",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, f64>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Planet> {
+            ::cynic::selection_set::field_alias(
+                "population",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -3273,6 +4482,21 @@ pub mod planet {
         {
             ::cynic::selection_set::field(
                 "climates",
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(inner),
+                )),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<Option<T>>>, super::Planet>
+        {
+            ::cynic::selection_set::field_alias(
+                "climates",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(::cynic::selection_set::vec(
                     ::cynic::selection_set::option(inner),
@@ -3300,6 +4524,21 @@ pub mod planet {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<Option<T>>>, super::Planet>
+        {
+            ::cynic::selection_set::field_alias(
+                "terrains",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(inner),
+                )),
+            )
+        }
     }
     pub struct SurfaceWaterSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -3314,6 +4553,18 @@ pub mod planet {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Planet> {
             ::cynic::selection_set::field(
                 "surfaceWater",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, f64>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Planet> {
+            ::cynic::selection_set::field_alias(
+                "surfaceWater",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -3386,6 +4637,18 @@ pub mod planet {
                 ::cynic::selection_set::option(fields),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::PlanetResidentsConnection>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Planet> {
+            ::cynic::selection_set::field_alias(
+                "residentConnection",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct FilmConnectionSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -3454,6 +4717,18 @@ pub mod planet {
                 ::cynic::selection_set::option(fields),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::PlanetFilmsConnection>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Planet> {
+            ::cynic::selection_set::field_alias(
+                "filmConnection",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct CreatedSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -3468,6 +4743,18 @@ pub mod planet {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Planet> {
             ::cynic::selection_set::field(
                 "created",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Planet> {
+            ::cynic::selection_set::field_alias(
+                "created",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -3490,6 +4777,18 @@ pub mod planet {
                 ::cynic::selection_set::option(inner),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Planet> {
+            ::cynic::selection_set::field_alias(
+                "edited",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
     }
     pub struct IdSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -3503,6 +4802,13 @@ pub mod planet {
             inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Planet> {
             ::cynic::selection_set::field("id", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Planet> {
+            ::cynic::selection_set::field_alias("id", alias, self.args, inner)
         }
     }
 }
@@ -3520,6 +4826,13 @@ pub mod planet_films_connection {
             fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PlanetFilmsConnection> {
             ::cynic::selection_set::field("pageInfo", self.args, fields)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PlanetFilmsConnection> {
+            ::cynic::selection_set::field_alias("pageInfo", alias, self.args, fields)
         }
     }
     pub struct EdgesSelectionBuilder {
@@ -3545,6 +4858,24 @@ pub mod planet_films_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::PlanetFilmsEdge>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::PlanetFilmsConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "edges",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
     pub struct TotalCountSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -3560,6 +4891,19 @@ pub mod planet_films_connection {
         {
             ::cynic::selection_set::field(
                 "totalCount",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::PlanetFilmsConnection>
+        {
+            ::cynic::selection_set::field_alias(
+                "totalCount",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -3588,6 +4932,24 @@ pub mod planet_films_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Film>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::PlanetFilmsConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "films",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
 }
 #[allow(dead_code)]
@@ -3605,6 +4967,18 @@ pub mod planet_films_edge {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::PlanetFilmsEdge> {
             ::cynic::selection_set::field("node", self.args, ::cynic::selection_set::option(fields))
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Film>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::PlanetFilmsEdge> {
+            ::cynic::selection_set::field_alias(
+                "node",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct CursorSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -3618,6 +4992,13 @@ pub mod planet_films_edge {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PlanetFilmsEdge> {
             ::cynic::selection_set::field("cursor", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PlanetFilmsEdge> {
+            ::cynic::selection_set::field_alias("cursor", alias, self.args, inner)
         }
     }
 }
@@ -3635,6 +5016,13 @@ pub mod planet_residents_connection {
             fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PlanetResidentsConnection> {
             ::cynic::selection_set::field("pageInfo", self.args, fields)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PlanetResidentsConnection> {
+            ::cynic::selection_set::field_alias("pageInfo", alias, self.args, fields)
         }
     }
     pub struct EdgesSelectionBuilder {
@@ -3660,6 +5048,24 @@ pub mod planet_residents_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::PlanetResidentsEdge>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::PlanetResidentsConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "edges",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
     pub struct TotalCountSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -3675,6 +5081,19 @@ pub mod planet_residents_connection {
         {
             ::cynic::selection_set::field(
                 "totalCount",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::PlanetResidentsConnection>
+        {
+            ::cynic::selection_set::field_alias(
+                "totalCount",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -3703,6 +5122,24 @@ pub mod planet_residents_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Person>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::PlanetResidentsConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "residents",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
 }
 #[allow(dead_code)]
@@ -3721,6 +5158,19 @@ pub mod planet_residents_edge {
         {
             ::cynic::selection_set::field("node", self.args, ::cynic::selection_set::option(fields))
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Person>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::PlanetResidentsEdge>
+        {
+            ::cynic::selection_set::field_alias(
+                "node",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct CursorSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -3734,6 +5184,13 @@ pub mod planet_residents_edge {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PlanetResidentsEdge> {
             ::cynic::selection_set::field("cursor", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PlanetResidentsEdge> {
+            ::cynic::selection_set::field_alias("cursor", alias, self.args, inner)
         }
     }
 }
@@ -3751,6 +5208,13 @@ pub mod planets_connection {
             fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PlanetsConnection> {
             ::cynic::selection_set::field("pageInfo", self.args, fields)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PlanetsConnection> {
+            ::cynic::selection_set::field_alias("pageInfo", alias, self.args, fields)
         }
     }
     pub struct EdgesSelectionBuilder {
@@ -3776,6 +5240,24 @@ pub mod planets_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::PlanetsEdge>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::PlanetsConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "edges",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
     pub struct TotalCountSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -3790,6 +5272,18 @@ pub mod planets_connection {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::PlanetsConnection> {
             ::cynic::selection_set::field(
                 "totalCount",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::PlanetsConnection> {
+            ::cynic::selection_set::field_alias(
+                "totalCount",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -3818,6 +5312,24 @@ pub mod planets_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Planet>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::PlanetsConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "planets",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
 }
 #[allow(dead_code)]
@@ -3835,6 +5347,18 @@ pub mod planets_edge {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::PlanetsEdge> {
             ::cynic::selection_set::field("node", self.args, ::cynic::selection_set::option(fields))
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Planet>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::PlanetsEdge> {
+            ::cynic::selection_set::field_alias(
+                "node",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct CursorSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -3848,6 +5372,13 @@ pub mod planets_edge {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PlanetsEdge> {
             ::cynic::selection_set::field("cursor", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::PlanetsEdge> {
+            ::cynic::selection_set::field_alias("cursor", alias, self.args, inner)
         }
     }
 }
@@ -3920,6 +5451,18 @@ pub mod root {
                 ::cynic::selection_set::option(fields),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::FilmsConnection>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Root> {
+            ::cynic::selection_set::field_alias(
+                "allFilms",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct FilmSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -3961,6 +5504,18 @@ pub mod root {
             fields: ::cynic::selection_set::SelectionSet<'a, T, super::Film>,
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Root> {
             ::cynic::selection_set::field("film", self.args, ::cynic::selection_set::option(fields))
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Film>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Root> {
+            ::cynic::selection_set::field_alias(
+                "film",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
         }
     }
     pub struct AllPeopleSelectionBuilder {
@@ -4030,6 +5585,18 @@ pub mod root {
                 ::cynic::selection_set::option(fields),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::PeopleConnection>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Root> {
+            ::cynic::selection_set::field_alias(
+                "allPeople",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct PersonSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -4072,6 +5639,18 @@ pub mod root {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Root> {
             ::cynic::selection_set::field(
                 "person",
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Person>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Root> {
+            ::cynic::selection_set::field_alias(
+                "person",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(fields),
             )
@@ -4144,6 +5723,18 @@ pub mod root {
                 ::cynic::selection_set::option(fields),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::PlanetsConnection>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Root> {
+            ::cynic::selection_set::field_alias(
+                "allPlanets",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct PlanetSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -4186,6 +5777,18 @@ pub mod root {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Root> {
             ::cynic::selection_set::field(
                 "planet",
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Planet>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Root> {
+            ::cynic::selection_set::field_alias(
+                "planet",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(fields),
             )
@@ -4258,6 +5861,18 @@ pub mod root {
                 ::cynic::selection_set::option(fields),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::SpeciesConnection>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Root> {
+            ::cynic::selection_set::field_alias(
+                "allSpecies",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct SpeciesSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -4300,6 +5915,18 @@ pub mod root {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Root> {
             ::cynic::selection_set::field(
                 "species",
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Species>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Root> {
+            ::cynic::selection_set::field_alias(
+                "species",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(fields),
             )
@@ -4372,6 +5999,18 @@ pub mod root {
                 ::cynic::selection_set::option(fields),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::StarshipsConnection>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Root> {
+            ::cynic::selection_set::field_alias(
+                "allStarships",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct StarshipSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -4414,6 +6053,18 @@ pub mod root {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Root> {
             ::cynic::selection_set::field(
                 "starship",
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Starship>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Root> {
+            ::cynic::selection_set::field_alias(
+                "starship",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(fields),
             )
@@ -4486,6 +6137,18 @@ pub mod root {
                 ::cynic::selection_set::option(fields),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::VehiclesConnection>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Root> {
+            ::cynic::selection_set::field_alias(
+                "allVehicles",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct VehicleSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -4532,6 +6195,18 @@ pub mod root {
                 ::cynic::selection_set::option(fields),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Vehicle>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Root> {
+            ::cynic::selection_set::field_alias(
+                "vehicle",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct NodeSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -4545,6 +6220,18 @@ pub mod root {
             fields: ::cynic::selection_set::SelectionSet<'a, T, super::Node>,
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Root> {
             ::cynic::selection_set::field("node", self.args, ::cynic::selection_set::option(fields))
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Node>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Root> {
+            ::cynic::selection_set::field_alias(
+                "node",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
         }
     }
 }
@@ -4563,6 +6250,18 @@ pub mod species {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Species> {
             ::cynic::selection_set::field("name", self.args, ::cynic::selection_set::option(inner))
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Species> {
+            ::cynic::selection_set::field_alias(
+                "name",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
     }
     pub struct ClassificationSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -4577,6 +6276,18 @@ pub mod species {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Species> {
             ::cynic::selection_set::field(
                 "classification",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Species> {
+            ::cynic::selection_set::field_alias(
+                "classification",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -4599,6 +6310,18 @@ pub mod species {
                 ::cynic::selection_set::option(inner),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Species> {
+            ::cynic::selection_set::field_alias(
+                "designation",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
     }
     pub struct AverageHeightSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -4613,6 +6336,18 @@ pub mod species {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Species> {
             ::cynic::selection_set::field(
                 "averageHeight",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, f64>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Species> {
+            ::cynic::selection_set::field_alias(
+                "averageHeight",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -4635,6 +6370,18 @@ pub mod species {
                 ::cynic::selection_set::option(inner),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Species> {
+            ::cynic::selection_set::field_alias(
+                "averageLifespan",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
     }
     pub struct EyeColorsSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -4650,6 +6397,21 @@ pub mod species {
         {
             ::cynic::selection_set::field(
                 "eyeColors",
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(inner),
+                )),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<Option<T>>>, super::Species>
+        {
+            ::cynic::selection_set::field_alias(
+                "eyeColors",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(::cynic::selection_set::vec(
                     ::cynic::selection_set::option(inner),
@@ -4677,6 +6439,21 @@ pub mod species {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<Option<T>>>, super::Species>
+        {
+            ::cynic::selection_set::field_alias(
+                "hairColors",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(inner),
+                )),
+            )
+        }
     }
     pub struct SkinColorsSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -4692,6 +6469,21 @@ pub mod species {
         {
             ::cynic::selection_set::field(
                 "skinColors",
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(inner),
+                )),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<Option<T>>>, super::Species>
+        {
+            ::cynic::selection_set::field_alias(
+                "skinColors",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(::cynic::selection_set::vec(
                     ::cynic::selection_set::option(inner),
@@ -4716,6 +6508,18 @@ pub mod species {
                 ::cynic::selection_set::option(inner),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Species> {
+            ::cynic::selection_set::field_alias(
+                "language",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
     }
     pub struct HomeworldSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -4730,6 +6534,18 @@ pub mod species {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Species> {
             ::cynic::selection_set::field(
                 "homeworld",
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Planet>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Species> {
+            ::cynic::selection_set::field_alias(
+                "homeworld",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(fields),
             )
@@ -4802,6 +6618,18 @@ pub mod species {
                 ::cynic::selection_set::option(fields),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::SpeciesPeopleConnection>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Species> {
+            ::cynic::selection_set::field_alias(
+                "personConnection",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct FilmConnectionSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -4870,6 +6698,18 @@ pub mod species {
                 ::cynic::selection_set::option(fields),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::SpeciesFilmsConnection>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Species> {
+            ::cynic::selection_set::field_alias(
+                "filmConnection",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct CreatedSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -4884,6 +6724,18 @@ pub mod species {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Species> {
             ::cynic::selection_set::field(
                 "created",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Species> {
+            ::cynic::selection_set::field_alias(
+                "created",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -4906,6 +6758,18 @@ pub mod species {
                 ::cynic::selection_set::option(inner),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Species> {
+            ::cynic::selection_set::field_alias(
+                "edited",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
     }
     pub struct IdSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -4919,6 +6783,13 @@ pub mod species {
             inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Species> {
             ::cynic::selection_set::field("id", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Species> {
+            ::cynic::selection_set::field_alias("id", alias, self.args, inner)
         }
     }
 }
@@ -4936,6 +6807,13 @@ pub mod species_connection {
             fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::SpeciesConnection> {
             ::cynic::selection_set::field("pageInfo", self.args, fields)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::SpeciesConnection> {
+            ::cynic::selection_set::field_alias("pageInfo", alias, self.args, fields)
         }
     }
     pub struct EdgesSelectionBuilder {
@@ -4961,6 +6839,24 @@ pub mod species_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::SpeciesEdge>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::SpeciesConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "edges",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
     pub struct TotalCountSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -4975,6 +6871,18 @@ pub mod species_connection {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::SpeciesConnection> {
             ::cynic::selection_set::field(
                 "totalCount",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::SpeciesConnection> {
+            ::cynic::selection_set::field_alias(
+                "totalCount",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -5003,6 +6911,24 @@ pub mod species_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Species>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::SpeciesConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "species",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
 }
 #[allow(dead_code)]
@@ -5020,6 +6946,18 @@ pub mod species_edge {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::SpeciesEdge> {
             ::cynic::selection_set::field("node", self.args, ::cynic::selection_set::option(fields))
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Species>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::SpeciesEdge> {
+            ::cynic::selection_set::field_alias(
+                "node",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct CursorSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -5033,6 +6971,13 @@ pub mod species_edge {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::SpeciesEdge> {
             ::cynic::selection_set::field("cursor", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::SpeciesEdge> {
+            ::cynic::selection_set::field_alias("cursor", alias, self.args, inner)
         }
     }
 }
@@ -5050,6 +6995,13 @@ pub mod species_films_connection {
             fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::SpeciesFilmsConnection> {
             ::cynic::selection_set::field("pageInfo", self.args, fields)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::SpeciesFilmsConnection> {
+            ::cynic::selection_set::field_alias("pageInfo", alias, self.args, fields)
         }
     }
     pub struct EdgesSelectionBuilder {
@@ -5075,6 +7027,24 @@ pub mod species_films_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::SpeciesFilmsEdge>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::SpeciesFilmsConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "edges",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
     pub struct TotalCountSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -5090,6 +7060,19 @@ pub mod species_films_connection {
         {
             ::cynic::selection_set::field(
                 "totalCount",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::SpeciesFilmsConnection>
+        {
+            ::cynic::selection_set::field_alias(
+                "totalCount",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -5118,6 +7101,24 @@ pub mod species_films_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Film>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::SpeciesFilmsConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "films",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
 }
 #[allow(dead_code)]
@@ -5135,6 +7136,18 @@ pub mod species_films_edge {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::SpeciesFilmsEdge> {
             ::cynic::selection_set::field("node", self.args, ::cynic::selection_set::option(fields))
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Film>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::SpeciesFilmsEdge> {
+            ::cynic::selection_set::field_alias(
+                "node",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct CursorSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -5148,6 +7161,13 @@ pub mod species_films_edge {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::SpeciesFilmsEdge> {
             ::cynic::selection_set::field("cursor", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::SpeciesFilmsEdge> {
+            ::cynic::selection_set::field_alias("cursor", alias, self.args, inner)
         }
     }
 }
@@ -5165,6 +7185,13 @@ pub mod species_people_connection {
             fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::SpeciesPeopleConnection> {
             ::cynic::selection_set::field("pageInfo", self.args, fields)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::SpeciesPeopleConnection> {
+            ::cynic::selection_set::field_alias("pageInfo", alias, self.args, fields)
         }
     }
     pub struct EdgesSelectionBuilder {
@@ -5190,6 +7217,24 @@ pub mod species_people_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::SpeciesPeopleEdge>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::SpeciesPeopleConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "edges",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
     pub struct TotalCountSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -5205,6 +7250,19 @@ pub mod species_people_connection {
         {
             ::cynic::selection_set::field(
                 "totalCount",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::SpeciesPeopleConnection>
+        {
+            ::cynic::selection_set::field_alias(
+                "totalCount",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -5233,6 +7291,24 @@ pub mod species_people_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Person>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::SpeciesPeopleConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "people",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
 }
 #[allow(dead_code)]
@@ -5250,6 +7326,18 @@ pub mod species_people_edge {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::SpeciesPeopleEdge> {
             ::cynic::selection_set::field("node", self.args, ::cynic::selection_set::option(fields))
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Person>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::SpeciesPeopleEdge> {
+            ::cynic::selection_set::field_alias(
+                "node",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct CursorSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -5263,6 +7351,13 @@ pub mod species_people_edge {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::SpeciesPeopleEdge> {
             ::cynic::selection_set::field("cursor", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::SpeciesPeopleEdge> {
+            ::cynic::selection_set::field_alias("cursor", alias, self.args, inner)
         }
     }
 }
@@ -5281,6 +7376,18 @@ pub mod starship {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
             ::cynic::selection_set::field("name", self.args, ::cynic::selection_set::option(inner))
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
+            ::cynic::selection_set::field_alias(
+                "name",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
     }
     pub struct ModelSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -5294,6 +7401,18 @@ pub mod starship {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
             ::cynic::selection_set::field("model", self.args, ::cynic::selection_set::option(inner))
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
+            ::cynic::selection_set::field_alias(
+                "model",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
         }
     }
     pub struct StarshipClassSelectionBuilder {
@@ -5309,6 +7428,18 @@ pub mod starship {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
             ::cynic::selection_set::field(
                 "starshipClass",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
+            ::cynic::selection_set::field_alias(
+                "starshipClass",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -5334,6 +7465,21 @@ pub mod starship {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<Option<T>>>, super::Starship>
+        {
+            ::cynic::selection_set::field_alias(
+                "manufacturers",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(inner),
+                )),
+            )
+        }
     }
     pub struct CostInCreditsSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -5348,6 +7494,18 @@ pub mod starship {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
             ::cynic::selection_set::field(
                 "costInCredits",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, f64>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
+            ::cynic::selection_set::field_alias(
+                "costInCredits",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -5370,6 +7528,18 @@ pub mod starship {
                 ::cynic::selection_set::option(inner),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, f64>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
+            ::cynic::selection_set::field_alias(
+                "length",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
     }
     pub struct CrewSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -5383,6 +7553,18 @@ pub mod starship {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
             ::cynic::selection_set::field("crew", self.args, ::cynic::selection_set::option(inner))
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
+            ::cynic::selection_set::field_alias(
+                "crew",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
         }
     }
     pub struct PassengersSelectionBuilder {
@@ -5398,6 +7580,18 @@ pub mod starship {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
             ::cynic::selection_set::field(
                 "passengers",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
+            ::cynic::selection_set::field_alias(
+                "passengers",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -5420,6 +7614,18 @@ pub mod starship {
                 ::cynic::selection_set::option(inner),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
+            ::cynic::selection_set::field_alias(
+                "maxAtmospheringSpeed",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
     }
     pub struct HyperdriveRatingSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -5438,6 +7644,18 @@ pub mod starship {
                 ::cynic::selection_set::option(inner),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, f64>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
+            ::cynic::selection_set::field_alias(
+                "hyperdriveRating",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
     }
     pub struct MgltselectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -5451,6 +7669,18 @@ pub mod starship {
             inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
             ::cynic::selection_set::field("MGLT", self.args, ::cynic::selection_set::option(inner))
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
+            ::cynic::selection_set::field_alias(
+                "MGLT",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
         }
     }
     pub struct CargoCapacitySelectionBuilder {
@@ -5470,6 +7700,18 @@ pub mod starship {
                 ::cynic::selection_set::option(inner),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, f64>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
+            ::cynic::selection_set::field_alias(
+                "cargoCapacity",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
     }
     pub struct ConsumablesSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -5484,6 +7726,18 @@ pub mod starship {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
             ::cynic::selection_set::field(
                 "consumables",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
+            ::cynic::selection_set::field_alias(
+                "consumables",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -5556,6 +7810,18 @@ pub mod starship {
                 ::cynic::selection_set::option(fields),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::StarshipPilotsConnection>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
+            ::cynic::selection_set::field_alias(
+                "pilotConnection",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct FilmConnectionSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -5624,6 +7890,18 @@ pub mod starship {
                 ::cynic::selection_set::option(fields),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::StarshipFilmsConnection>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
+            ::cynic::selection_set::field_alias(
+                "filmConnection",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct CreatedSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -5638,6 +7916,18 @@ pub mod starship {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
             ::cynic::selection_set::field(
                 "created",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
+            ::cynic::selection_set::field_alias(
+                "created",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -5660,6 +7950,18 @@ pub mod starship {
                 ::cynic::selection_set::option(inner),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Starship> {
+            ::cynic::selection_set::field_alias(
+                "edited",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
     }
     pub struct IdSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -5673,6 +7975,13 @@ pub mod starship {
             inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Starship> {
             ::cynic::selection_set::field("id", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Starship> {
+            ::cynic::selection_set::field_alias("id", alias, self.args, inner)
         }
     }
 }
@@ -5690,6 +7999,13 @@ pub mod starship_films_connection {
             fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::StarshipFilmsConnection> {
             ::cynic::selection_set::field("pageInfo", self.args, fields)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::StarshipFilmsConnection> {
+            ::cynic::selection_set::field_alias("pageInfo", alias, self.args, fields)
         }
     }
     pub struct EdgesSelectionBuilder {
@@ -5715,6 +8031,24 @@ pub mod starship_films_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::StarshipFilmsEdge>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::StarshipFilmsConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "edges",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
     pub struct TotalCountSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -5730,6 +8064,19 @@ pub mod starship_films_connection {
         {
             ::cynic::selection_set::field(
                 "totalCount",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::StarshipFilmsConnection>
+        {
+            ::cynic::selection_set::field_alias(
+                "totalCount",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -5758,6 +8105,24 @@ pub mod starship_films_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Film>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::StarshipFilmsConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "films",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
 }
 #[allow(dead_code)]
@@ -5775,6 +8140,18 @@ pub mod starship_films_edge {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::StarshipFilmsEdge> {
             ::cynic::selection_set::field("node", self.args, ::cynic::selection_set::option(fields))
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Film>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::StarshipFilmsEdge> {
+            ::cynic::selection_set::field_alias(
+                "node",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct CursorSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -5788,6 +8165,13 @@ pub mod starship_films_edge {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::StarshipFilmsEdge> {
             ::cynic::selection_set::field("cursor", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::StarshipFilmsEdge> {
+            ::cynic::selection_set::field_alias("cursor", alias, self.args, inner)
         }
     }
 }
@@ -5805,6 +8189,13 @@ pub mod starship_pilots_connection {
             fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::StarshipPilotsConnection> {
             ::cynic::selection_set::field("pageInfo", self.args, fields)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::StarshipPilotsConnection> {
+            ::cynic::selection_set::field_alias("pageInfo", alias, self.args, fields)
         }
     }
     pub struct EdgesSelectionBuilder {
@@ -5830,6 +8221,24 @@ pub mod starship_pilots_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::StarshipPilotsEdge>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::StarshipPilotsConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "edges",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
     pub struct TotalCountSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -5845,6 +8254,19 @@ pub mod starship_pilots_connection {
         {
             ::cynic::selection_set::field(
                 "totalCount",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::StarshipPilotsConnection>
+        {
+            ::cynic::selection_set::field_alias(
+                "totalCount",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -5873,6 +8295,24 @@ pub mod starship_pilots_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Person>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::StarshipPilotsConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "pilots",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
 }
 #[allow(dead_code)]
@@ -5891,6 +8331,19 @@ pub mod starship_pilots_edge {
         {
             ::cynic::selection_set::field("node", self.args, ::cynic::selection_set::option(fields))
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Person>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::StarshipPilotsEdge>
+        {
+            ::cynic::selection_set::field_alias(
+                "node",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct CursorSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -5904,6 +8357,13 @@ pub mod starship_pilots_edge {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::StarshipPilotsEdge> {
             ::cynic::selection_set::field("cursor", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::StarshipPilotsEdge> {
+            ::cynic::selection_set::field_alias("cursor", alias, self.args, inner)
         }
     }
 }
@@ -5921,6 +8381,13 @@ pub mod starships_connection {
             fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::StarshipsConnection> {
             ::cynic::selection_set::field("pageInfo", self.args, fields)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::StarshipsConnection> {
+            ::cynic::selection_set::field_alias("pageInfo", alias, self.args, fields)
         }
     }
     pub struct EdgesSelectionBuilder {
@@ -5946,6 +8413,24 @@ pub mod starships_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::StarshipsEdge>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::StarshipsConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "edges",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
     pub struct TotalCountSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -5961,6 +8446,19 @@ pub mod starships_connection {
         {
             ::cynic::selection_set::field(
                 "totalCount",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::StarshipsConnection>
+        {
+            ::cynic::selection_set::field_alias(
+                "totalCount",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -5989,6 +8487,24 @@ pub mod starships_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Starship>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::StarshipsConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "starships",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
 }
 #[allow(dead_code)]
@@ -6006,6 +8522,18 @@ pub mod starships_edge {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::StarshipsEdge> {
             ::cynic::selection_set::field("node", self.args, ::cynic::selection_set::option(fields))
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Starship>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::StarshipsEdge> {
+            ::cynic::selection_set::field_alias(
+                "node",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct CursorSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -6019,6 +8547,13 @@ pub mod starships_edge {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::StarshipsEdge> {
             ::cynic::selection_set::field("cursor", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::StarshipsEdge> {
+            ::cynic::selection_set::field_alias("cursor", alias, self.args, inner)
         }
     }
 }
@@ -6037,6 +8572,18 @@ pub mod vehicle {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Vehicle> {
             ::cynic::selection_set::field("name", self.args, ::cynic::selection_set::option(inner))
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Vehicle> {
+            ::cynic::selection_set::field_alias(
+                "name",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
     }
     pub struct ModelSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -6050,6 +8597,18 @@ pub mod vehicle {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Vehicle> {
             ::cynic::selection_set::field("model", self.args, ::cynic::selection_set::option(inner))
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Vehicle> {
+            ::cynic::selection_set::field_alias(
+                "model",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
         }
     }
     pub struct VehicleClassSelectionBuilder {
@@ -6065,6 +8624,18 @@ pub mod vehicle {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Vehicle> {
             ::cynic::selection_set::field(
                 "vehicleClass",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Vehicle> {
+            ::cynic::selection_set::field_alias(
+                "vehicleClass",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -6090,6 +8661,21 @@ pub mod vehicle {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<Option<T>>>, super::Vehicle>
+        {
+            ::cynic::selection_set::field_alias(
+                "manufacturers",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(inner),
+                )),
+            )
+        }
     }
     pub struct CostInCreditsSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -6104,6 +8690,18 @@ pub mod vehicle {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Vehicle> {
             ::cynic::selection_set::field(
                 "costInCredits",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, f64>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Vehicle> {
+            ::cynic::selection_set::field_alias(
+                "costInCredits",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -6126,6 +8724,18 @@ pub mod vehicle {
                 ::cynic::selection_set::option(inner),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, f64>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Vehicle> {
+            ::cynic::selection_set::field_alias(
+                "length",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
     }
     pub struct CrewSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -6139,6 +8749,18 @@ pub mod vehicle {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Vehicle> {
             ::cynic::selection_set::field("crew", self.args, ::cynic::selection_set::option(inner))
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Vehicle> {
+            ::cynic::selection_set::field_alias(
+                "crew",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
         }
     }
     pub struct PassengersSelectionBuilder {
@@ -6154,6 +8776,18 @@ pub mod vehicle {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Vehicle> {
             ::cynic::selection_set::field(
                 "passengers",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Vehicle> {
+            ::cynic::selection_set::field_alias(
+                "passengers",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -6176,6 +8810,18 @@ pub mod vehicle {
                 ::cynic::selection_set::option(inner),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Vehicle> {
+            ::cynic::selection_set::field_alias(
+                "maxAtmospheringSpeed",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
     }
     pub struct CargoCapacitySelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -6194,6 +8840,18 @@ pub mod vehicle {
                 ::cynic::selection_set::option(inner),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, f64>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Vehicle> {
+            ::cynic::selection_set::field_alias(
+                "cargoCapacity",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
     }
     pub struct ConsumablesSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -6208,6 +8866,18 @@ pub mod vehicle {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Vehicle> {
             ::cynic::selection_set::field(
                 "consumables",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Vehicle> {
+            ::cynic::selection_set::field_alias(
+                "consumables",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -6280,6 +8950,18 @@ pub mod vehicle {
                 ::cynic::selection_set::option(fields),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::VehiclePilotsConnection>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Vehicle> {
+            ::cynic::selection_set::field_alias(
+                "pilotConnection",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct FilmConnectionSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -6348,6 +9030,18 @@ pub mod vehicle {
                 ::cynic::selection_set::option(fields),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::VehicleFilmsConnection>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Vehicle> {
+            ::cynic::selection_set::field_alias(
+                "filmConnection",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct CreatedSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -6362,6 +9056,18 @@ pub mod vehicle {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Vehicle> {
             ::cynic::selection_set::field(
                 "created",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Vehicle> {
+            ::cynic::selection_set::field_alias(
+                "created",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -6384,6 +9090,18 @@ pub mod vehicle {
                 ::cynic::selection_set::option(inner),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Vehicle> {
+            ::cynic::selection_set::field_alias(
+                "edited",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
     }
     pub struct IdSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -6397,6 +9115,13 @@ pub mod vehicle {
             inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Vehicle> {
             ::cynic::selection_set::field("id", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Vehicle> {
+            ::cynic::selection_set::field_alias("id", alias, self.args, inner)
         }
     }
 }
@@ -6414,6 +9139,13 @@ pub mod vehicle_films_connection {
             fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::VehicleFilmsConnection> {
             ::cynic::selection_set::field("pageInfo", self.args, fields)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::VehicleFilmsConnection> {
+            ::cynic::selection_set::field_alias("pageInfo", alias, self.args, fields)
         }
     }
     pub struct EdgesSelectionBuilder {
@@ -6439,6 +9171,24 @@ pub mod vehicle_films_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::VehicleFilmsEdge>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::VehicleFilmsConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "edges",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
     pub struct TotalCountSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -6454,6 +9204,19 @@ pub mod vehicle_films_connection {
         {
             ::cynic::selection_set::field(
                 "totalCount",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::VehicleFilmsConnection>
+        {
+            ::cynic::selection_set::field_alias(
+                "totalCount",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -6482,6 +9245,24 @@ pub mod vehicle_films_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Film>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::VehicleFilmsConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "films",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
 }
 #[allow(dead_code)]
@@ -6499,6 +9280,18 @@ pub mod vehicle_films_edge {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::VehicleFilmsEdge> {
             ::cynic::selection_set::field("node", self.args, ::cynic::selection_set::option(fields))
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Film>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::VehicleFilmsEdge> {
+            ::cynic::selection_set::field_alias(
+                "node",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct CursorSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -6512,6 +9305,13 @@ pub mod vehicle_films_edge {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::VehicleFilmsEdge> {
             ::cynic::selection_set::field("cursor", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::VehicleFilmsEdge> {
+            ::cynic::selection_set::field_alias("cursor", alias, self.args, inner)
         }
     }
 }
@@ -6529,6 +9329,13 @@ pub mod vehicle_pilots_connection {
             fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::VehiclePilotsConnection> {
             ::cynic::selection_set::field("pageInfo", self.args, fields)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::VehiclePilotsConnection> {
+            ::cynic::selection_set::field_alias("pageInfo", alias, self.args, fields)
         }
     }
     pub struct EdgesSelectionBuilder {
@@ -6554,6 +9361,24 @@ pub mod vehicle_pilots_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::VehiclePilotsEdge>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::VehiclePilotsConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "edges",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
     pub struct TotalCountSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -6569,6 +9394,19 @@ pub mod vehicle_pilots_connection {
         {
             ::cynic::selection_set::field(
                 "totalCount",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::VehiclePilotsConnection>
+        {
+            ::cynic::selection_set::field_alias(
+                "totalCount",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -6597,6 +9435,24 @@ pub mod vehicle_pilots_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Person>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::VehiclePilotsConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "pilots",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
 }
 #[allow(dead_code)]
@@ -6614,6 +9470,18 @@ pub mod vehicle_pilots_edge {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::VehiclePilotsEdge> {
             ::cynic::selection_set::field("node", self.args, ::cynic::selection_set::option(fields))
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Person>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::VehiclePilotsEdge> {
+            ::cynic::selection_set::field_alias(
+                "node",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct CursorSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -6627,6 +9495,13 @@ pub mod vehicle_pilots_edge {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::VehiclePilotsEdge> {
             ::cynic::selection_set::field("cursor", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::VehiclePilotsEdge> {
+            ::cynic::selection_set::field_alias("cursor", alias, self.args, inner)
         }
     }
 }
@@ -6644,6 +9519,13 @@ pub mod vehicles_connection {
             fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::VehiclesConnection> {
             ::cynic::selection_set::field("pageInfo", self.args, fields)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::PageInfo>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::VehiclesConnection> {
+            ::cynic::selection_set::field_alias("pageInfo", alias, self.args, fields)
         }
     }
     pub struct EdgesSelectionBuilder {
@@ -6669,6 +9551,24 @@ pub mod vehicles_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::VehiclesEdge>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::VehiclesConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "edges",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
     pub struct TotalCountSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -6684,6 +9584,19 @@ pub mod vehicles_connection {
         {
             ::cynic::selection_set::field(
                 "totalCount",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::VehiclesConnection>
+        {
+            ::cynic::selection_set::field_alias(
+                "totalCount",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -6712,6 +9625,24 @@ pub mod vehicles_connection {
                 )),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Vehicle>,
+        ) -> ::cynic::selection_set::SelectionSet<
+            'a,
+            Option<Vec<Option<T>>>,
+            super::VehiclesConnection,
+        > {
+            ::cynic::selection_set::field_alias(
+                "vehicles",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(
+                    ::cynic::selection_set::option(fields),
+                )),
+            )
+        }
     }
 }
 #[allow(dead_code)]
@@ -6729,6 +9660,18 @@ pub mod vehicles_edge {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::VehiclesEdge> {
             ::cynic::selection_set::field("node", self.args, ::cynic::selection_set::option(fields))
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Vehicle>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::VehiclesEdge> {
+            ::cynic::selection_set::field_alias(
+                "node",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
     }
     pub struct CursorSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -6742,6 +9685,13 @@ pub mod vehicles_edge {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::VehiclesEdge> {
             ::cynic::selection_set::field("cursor", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::VehiclesEdge> {
+            ::cynic::selection_set::field_alias("cursor", alias, self.args, inner)
         }
     }
 }
