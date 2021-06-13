@@ -1,5 +1,5 @@
 use std::{
-    collections::{BTreeSet, HashMap},
+    collections::{BTreeSet, HashMap, HashSet},
     convert::TryInto,
     hash::Hash,
     rc::Rc,
@@ -7,8 +7,8 @@ use std::{
 
 use cynic_parser::{
     ast::{
-        self, AstNode, Document, ExecutableDef, FragmentDef, Name, NameOwner, OperationDef,
-        VariableDef,
+        self, AstNode, Document, ExecutableDef, FragmentDef, FragmentSpread, Name, NameOwner,
+        OperationDef, VariableDef,
     },
     SyntaxNode,
 };
@@ -40,6 +40,7 @@ pub enum OperationKind {
     Mutation,
 }
 
+// TODO: under the new scheme maybe this should be QueryFragment...
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct SelectionSet<'schema> {
     pub target_type: OutputType<'schema>,
@@ -198,38 +199,54 @@ impl<'a, 'schema> Normaliser<'a, 'schema> {
         }
     }
 
+    fn add_selection_set(
+        &mut self,
+        set: SelectionSet<'schema>,
+        ast: ast::SelectionSet,
+    ) -> Rc<SelectionSet<'schema>> {
+        let set = Rc::new(set);
+
+        self.selection_sets_out.insert(Rc::clone(&set));
+        let set = self.selection_sets_out.get(&set).unwrap();
+
+        self.selection_set_index
+            .insert(ast.syntax().clone(), Rc::clone(set));
+
+        Rc::clone(set)
+    }
+
     fn normalise_selection_set(
         &mut self,
         selection_set: ast::SelectionSet,
     ) -> Result<Rc<SelectionSet<'schema>>, Error> {
         let mut selections = Vec::new();
 
+        // TODO: Figure out what kind of selection set this is.
+        if selection_set.selections().any(|s| s.is_inline_fragment()) {
+            panic!("Inline fragments not selected yet.  TODO: return an error")
+        }
+
         // TODO: handle empty selection
         for item in selection_set.selections() {
             selections.extend(self.convert_selection(item)?);
         }
 
-        // TODO: current path
-        let rv = Rc::new(SelectionSet {
+        let rv = SelectionSet {
             target_type: self
                 .type_index
                 .type_for_path(GraphPath::from_query_node(&selection_set))?
                 .try_into()?,
             selections,
-        });
+        };
 
-        self.selection_sets_out.insert(Rc::clone(&rv));
-        let rv = self.selection_sets_out.get(&rv).unwrap();
-        self.selection_set_index
-            .insert(selection_set.syntax().clone(), Rc::clone(rv));
-
-        Ok(Rc::clone(rv))
+        Ok(self.add_selection_set(rv, selection_set))
     }
 
     fn convert_selection(
         &mut self,
         selection: ast::Selection,
     ) -> Result<Vec<Selection<'schema>>, Error> {
+        // TODO: Consider just returning option?
         match selection {
             ast::Selection::FieldSelection(field) => {
                 let schema_field = self
@@ -386,17 +403,18 @@ fn extract_fragments(document: &Document) -> FragmentMap {
         .collect()
 }
 
-impl<'schema> Vertex for SelectionSet<'schema> {
-    fn adjacents(self: &Rc<Self>) -> Vec<Rc<Self>> {
+impl<'schema> Vertex for Rc<SelectionSet<'schema>> {
+    fn adjacents(&self) -> Vec<Self> {
         self.selections
             .iter()
             .flat_map(|selection| match selection {
                 Selection::Field(FieldSelection {
                     field: Field::Composite(selection_set),
                     ..
-                }) => Some(Rc::clone(&selection_set)),
+                }) => Some(selection_set),
                 _ => None,
             })
+            .cloned()
             .collect()
     }
 }

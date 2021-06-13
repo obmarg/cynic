@@ -44,12 +44,12 @@ pub fn parse_query_document<'text>(
         );
     }
 
-    let query_fragments = sorting::topological_sort(normalised.selection_sets.iter().cloned())
+    let query_fragments = sorting::topological_sort(normalised.selection_sets.iter())
         .into_iter()
         .map(|selection| make_query_fragment(selection, &mut query_namer, &arg_struct_details))
         .collect::<Vec<_>>();
 
-    let input_objects = sorting::topological_sort(input_objects.into_iter())
+    let input_objects = sorting::topological_sort(input_objects.iter())
         .into_iter()
         .map(make_input_object)
         .collect::<Vec<_>>();

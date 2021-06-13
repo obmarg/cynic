@@ -2,39 +2,39 @@
 
 use std::{collections::HashSet, hash::Hash, rc::Rc};
 
-pub trait Vertex: Hash + Eq {
-    fn adjacents(self: &Rc<Self>) -> Vec<Rc<Self>>;
+pub trait Vertex: Hash + Eq + Sized {
+    fn adjacents(&self) -> Vec<Self>;
 }
 
-pub fn topological_sort<V: Vertex>(vertices: impl Iterator<Item = Rc<V>>) -> Vec<Rc<V>> {
+pub fn topological_sort<'a, V: Vertex + Clone + 'a>(
+    vertices: impl Iterator<Item = &'a V>,
+) -> Vec<V> {
     let mut visited = HashSet::new();
     let mut stack = Vec::new();
 
     for vertex in vertices {
-        if visited.contains(&vertex) {
+        if visited.contains(vertex) {
             continue;
         }
-        sort_impl(&vertex, &mut visited, &mut stack);
+        sort_impl(vertex.clone(), &mut visited, &mut stack);
     }
 
     // Our dependencies always go parent -> child and we want parents
     // printed first so we reverse the final sort before returning.
-    stack.reverse();
-
-    stack
+    stack.into_iter().rev().collect()
 }
 
-fn sort_impl<V: Vertex>(vertex: &Rc<V>, visited: &mut HashSet<Rc<V>>, stack: &mut Vec<Rc<V>>) {
-    visited.insert(Rc::clone(vertex));
+fn sort_impl<'a, V: Vertex + Clone>(vertex: V, visited: &mut HashSet<V>, stack: &mut Vec<V>) {
+    visited.insert(vertex.clone());
 
     for adjacent_vertex in vertex.adjacents() {
         if visited.contains(&adjacent_vertex) {
             continue;
         }
-        sort_impl(&adjacent_vertex, visited, stack)
+        sort_impl(adjacent_vertex, visited, stack)
     }
 
-    stack.push(Rc::clone(vertex))
+    stack.push(vertex)
 }
 
 #[cfg(test)]
@@ -56,9 +56,9 @@ mod tests {
         }
     }
 
-    impl Vertex for TestVertex {
-        fn adjacents(self: &Rc<Self>) -> Vec<Rc<TestVertex>> {
-            self.adjacents.iter().map(Rc::clone).collect()
+    impl Vertex for Rc<TestVertex> {
+        fn adjacents(&self) -> Vec<Rc<TestVertex>> {
+            self.adjacents.clone()
         }
     }
 
@@ -71,9 +71,9 @@ mod tests {
         let d = TestVertex::new("d", &[&c]);
         let e = TestVertex::new("e", &[&d]);
 
-        let array = [&a, &b, &c, &d, &e];
-        let list = array.iter().map(|v| Rc::clone(v));
+        let array = vec![&a, &b, &c, &d, &e];
+        let sorted = topological_sort(array.into_iter());
 
-        assert_eq!(topological_sort(list), vec![e, d, c, b, a]);
+        assert_eq!(sorted, vec![e, d, c, b, a]);
     }
 }

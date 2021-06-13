@@ -31,8 +31,8 @@ impl<'schema> InputObject<'schema> {
     }
 }
 
-impl<'schema> Vertex for InputObject<'schema> {
-    fn adjacents(self: &Rc<InputObject<'schema>>) -> Vec<Rc<InputObject<'schema>>> {
+impl<'schema> Vertex for Rc<InputObject<'schema>> {
+    fn adjacents(&self) -> Vec<Rc<InputObject<'schema>>> {
         self._adjacents.clone()
     }
 }

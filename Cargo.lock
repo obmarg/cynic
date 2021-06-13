@@ -735,6 +735,7 @@ version = "0.13.1"
 dependencies = [
  "assert_matches",
  "chrono",
+ "criterion",
  "cynic-proc-macros",
  "insta",
  "json-decode",
@@ -809,6 +810,7 @@ dependencies = [
  "cynic-parser",
  "graphql-parser",
  "insta",
+ "rowan",
  "rstest",
  "rust_decimal",
  "thiserror",
@@ -1606,9 +1608,7 @@ dependencies = [
 
 [[package]]
 name = "json-decode"
-version = "0.5.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0450444ba98be6f4a931b2d256be9da433fa578013d1818bd94fa6ddb2f3d213"
+version = "0.6.0"
 dependencies = [
  "serde",
  "serde_json",

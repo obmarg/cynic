@@ -17,6 +17,7 @@ rust_decimal = "1.9"
 thiserror = "1.0.13"
 uuid = { version = "0.8", features = ["v4"] }
 cynic-parser = { path = "../cynic-parser" }
+rowan = "0.12.6"
 
 [dev-dependencies]
 assert_matches = "1.4"
