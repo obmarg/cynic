@@ -40,7 +40,7 @@ reqwest = { version = "0.11", optional = true, features = ["json"] }
 [dev-dependencies]
 maplit = "1.0.2"
 assert_matches = "1.4"
-insta = "1.5"
+insta = "1.7"
 
 [package.metadata.docs.rs]
 features = ["all"]

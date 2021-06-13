@@ -1,6 +1,7 @@
 ---
-source: cynic-codegen/tests/query-dsl.rs
+source: cynic-codegen/tests/use-schema.rs
 expression: "format_code(format!(\"{}\", tokens))"
+
 ---
 #[allow(dead_code)]
 pub struct City;
@@ -409,6 +410,13 @@ pub mod city {
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::City> {
             ::cynic::selection_set::field("id", self.args, inner)
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::City> {
+            ::cynic::selection_set::field_alias("id", alias, self.args, inner)
+        }
     }
     pub struct NameSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -422,6 +430,13 @@ pub mod city {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::City> {
             ::cynic::selection_set::field("name", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::City> {
+            ::cynic::selection_set::field_alias("name", alias, self.args, inner)
         }
     }
     pub struct SlugSelectionBuilder {
@@ -437,6 +452,13 @@ pub mod city {
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::City> {
             ::cynic::selection_set::field("slug", self.args, inner)
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::City> {
+            ::cynic::selection_set::field_alias("slug", alias, self.args, inner)
+        }
     }
     pub struct CountrySelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -451,6 +473,13 @@ pub mod city {
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::City> {
             ::cynic::selection_set::field("country", self.args, fields)
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Country>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::City> {
+            ::cynic::selection_set::field_alias("country", alias, self.args, fields)
+        }
     }
     pub struct TypeSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -464,6 +493,13 @@ pub mod city {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::City> {
             ::cynic::selection_set::field("type", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::City> {
+            ::cynic::selection_set::field_alias("type", alias, self.args, inner)
         }
     }
     pub struct JobsSelectionBuilder {
@@ -572,6 +608,18 @@ pub mod city {
                 ::cynic::selection_set::option(::cynic::selection_set::vec(fields)),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Job>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<T>>, super::City> {
+            ::cynic::selection_set::field_alias(
+                "jobs",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(fields)),
+            )
+        }
     }
     pub struct CreatedAtSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -586,6 +634,13 @@ pub mod city {
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::City> {
             ::cynic::selection_set::field("createdAt", self.args, inner)
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::City> {
+            ::cynic::selection_set::field_alias("createdAt", alias, self.args, inner)
+        }
     }
     pub struct UpdatedAtSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -599,6 +654,13 @@ pub mod city {
             inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::City> {
             ::cynic::selection_set::field("updatedAt", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::City> {
+            ::cynic::selection_set::field_alias("updatedAt", alias, self.args, inner)
         }
     }
 }
@@ -617,6 +679,13 @@ pub mod commitment {
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Commitment> {
             ::cynic::selection_set::field("id", self.args, inner)
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Commitment> {
+            ::cynic::selection_set::field_alias("id", alias, self.args, inner)
+        }
     }
     pub struct TitleSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -631,6 +700,13 @@ pub mod commitment {
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Commitment> {
             ::cynic::selection_set::field("title", self.args, inner)
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Commitment> {
+            ::cynic::selection_set::field_alias("title", alias, self.args, inner)
+        }
     }
     pub struct SlugSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -644,6 +720,13 @@ pub mod commitment {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Commitment> {
             ::cynic::selection_set::field("slug", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Commitment> {
+            ::cynic::selection_set::field_alias("slug", alias, self.args, inner)
         }
     }
     pub struct JobsSelectionBuilder {
@@ -752,6 +835,18 @@ pub mod commitment {
                 ::cynic::selection_set::option(::cynic::selection_set::vec(fields)),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Job>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<T>>, super::Commitment> {
+            ::cynic::selection_set::field_alias(
+                "jobs",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(fields)),
+            )
+        }
     }
     pub struct CreatedAtSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -766,6 +861,13 @@ pub mod commitment {
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Commitment> {
             ::cynic::selection_set::field("createdAt", self.args, inner)
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Commitment> {
+            ::cynic::selection_set::field_alias("createdAt", alias, self.args, inner)
+        }
     }
     pub struct UpdatedAtSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -779,6 +881,13 @@ pub mod commitment {
             inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Commitment> {
             ::cynic::selection_set::field("updatedAt", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Commitment> {
+            ::cynic::selection_set::field_alias("updatedAt", alias, self.args, inner)
         }
     }
 }
@@ -797,6 +906,13 @@ pub mod company {
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Company> {
             ::cynic::selection_set::field("id", self.args, inner)
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Company> {
+            ::cynic::selection_set::field_alias("id", alias, self.args, inner)
+        }
     }
     pub struct NameSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -810,6 +926,13 @@ pub mod company {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Company> {
             ::cynic::selection_set::field("name", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Company> {
+            ::cynic::selection_set::field_alias("name", alias, self.args, inner)
         }
     }
     pub struct SlugSelectionBuilder {
@@ -825,6 +948,13 @@ pub mod company {
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Company> {
             ::cynic::selection_set::field("slug", self.args, inner)
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Company> {
+            ::cynic::selection_set::field_alias("slug", alias, self.args, inner)
+        }
     }
     pub struct WebsiteUrlSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -838,6 +968,13 @@ pub mod company {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Company> {
             ::cynic::selection_set::field("websiteUrl", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Company> {
+            ::cynic::selection_set::field_alias("websiteUrl", alias, self.args, inner)
         }
     }
     pub struct LogoUrlSelectionBuilder {
@@ -853,6 +990,18 @@ pub mod company {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Company> {
             ::cynic::selection_set::field(
                 "logoUrl",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Company> {
+            ::cynic::selection_set::field_alias(
+                "logoUrl",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -964,6 +1113,18 @@ pub mod company {
                 ::cynic::selection_set::option(::cynic::selection_set::vec(fields)),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Job>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<T>>, super::Company> {
+            ::cynic::selection_set::field_alias(
+                "jobs",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(fields)),
+            )
+        }
     }
     pub struct TwitterSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -978,6 +1139,18 @@ pub mod company {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Company> {
             ::cynic::selection_set::field(
                 "twitter",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Company> {
+            ::cynic::selection_set::field_alias(
+                "twitter",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -1000,6 +1173,18 @@ pub mod company {
                 ::cynic::selection_set::option(inner),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, bool>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Company> {
+            ::cynic::selection_set::field_alias(
+                "emailed",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
     }
     pub struct CreatedAtSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -1014,6 +1199,13 @@ pub mod company {
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Company> {
             ::cynic::selection_set::field("createdAt", self.args, inner)
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Company> {
+            ::cynic::selection_set::field_alias("createdAt", alias, self.args, inner)
+        }
     }
     pub struct UpdatedAtSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -1027,6 +1219,13 @@ pub mod company {
             inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Company> {
             ::cynic::selection_set::field("updatedAt", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Company> {
+            ::cynic::selection_set::field_alias("updatedAt", alias, self.args, inner)
         }
     }
 }
@@ -1045,6 +1244,13 @@ pub mod country {
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Country> {
             ::cynic::selection_set::field("id", self.args, inner)
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Country> {
+            ::cynic::selection_set::field_alias("id", alias, self.args, inner)
+        }
     }
     pub struct NameSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -1058,6 +1264,13 @@ pub mod country {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Country> {
             ::cynic::selection_set::field("name", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Country> {
+            ::cynic::selection_set::field_alias("name", alias, self.args, inner)
         }
     }
     pub struct SlugSelectionBuilder {
@@ -1073,6 +1286,13 @@ pub mod country {
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Country> {
             ::cynic::selection_set::field("slug", self.args, inner)
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Country> {
+            ::cynic::selection_set::field_alias("slug", alias, self.args, inner)
+        }
     }
     pub struct TypeSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -1086,6 +1306,13 @@ pub mod country {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Country> {
             ::cynic::selection_set::field("type", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Country> {
+            ::cynic::selection_set::field_alias("type", alias, self.args, inner)
         }
     }
     pub struct IsoCodeSelectionBuilder {
@@ -1101,6 +1328,18 @@ pub mod country {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Country> {
             ::cynic::selection_set::field(
                 "isoCode",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Country> {
+            ::cynic::selection_set::field_alias(
+                "isoCode",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -1208,6 +1447,18 @@ pub mod country {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<T>>, super::Country> {
             ::cynic::selection_set::field(
                 "cities",
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(fields)),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::City>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<T>>, super::Country> {
+            ::cynic::selection_set::field_alias(
+                "cities",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(::cynic::selection_set::vec(fields)),
             )
@@ -1319,6 +1570,18 @@ pub mod country {
                 ::cynic::selection_set::option(::cynic::selection_set::vec(fields)),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Job>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<T>>, super::Country> {
+            ::cynic::selection_set::field_alias(
+                "jobs",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(fields)),
+            )
+        }
     }
     pub struct CreatedAtSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -1333,6 +1596,13 @@ pub mod country {
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Country> {
             ::cynic::selection_set::field("createdAt", self.args, inner)
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Country> {
+            ::cynic::selection_set::field_alias("createdAt", alias, self.args, inner)
+        }
     }
     pub struct UpdatedAtSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -1346,6 +1616,13 @@ pub mod country {
             inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Country> {
             ::cynic::selection_set::field("updatedAt", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Country> {
+            ::cynic::selection_set::field_alias("updatedAt", alias, self.args, inner)
         }
     }
 }
@@ -1364,6 +1641,13 @@ pub mod job {
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Job> {
             ::cynic::selection_set::field("id", self.args, inner)
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Job> {
+            ::cynic::selection_set::field_alias("id", alias, self.args, inner)
+        }
     }
     pub struct TitleSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -1377,6 +1661,13 @@ pub mod job {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Job> {
             ::cynic::selection_set::field("title", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Job> {
+            ::cynic::selection_set::field_alias("title", alias, self.args, inner)
         }
     }
     pub struct SlugSelectionBuilder {
@@ -1392,6 +1683,13 @@ pub mod job {
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Job> {
             ::cynic::selection_set::field("slug", self.args, inner)
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Job> {
+            ::cynic::selection_set::field_alias("slug", alias, self.args, inner)
+        }
     }
     pub struct CommitmentSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -1405,6 +1703,13 @@ pub mod job {
             fields: ::cynic::selection_set::SelectionSet<'a, T, super::Commitment>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Job> {
             ::cynic::selection_set::field("commitment", self.args, fields)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Commitment>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Job> {
+            ::cynic::selection_set::field_alias("commitment", alias, self.args, fields)
         }
     }
     pub struct CitiesSelectionBuilder {
@@ -1509,6 +1814,18 @@ pub mod job {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<T>>, super::Job> {
             ::cynic::selection_set::field(
                 "cities",
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(fields)),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::City>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<T>>, super::Job> {
+            ::cynic::selection_set::field_alias(
+                "cities",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(::cynic::selection_set::vec(fields)),
             )
@@ -1620,6 +1937,18 @@ pub mod job {
                 ::cynic::selection_set::option(::cynic::selection_set::vec(fields)),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Country>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<T>>, super::Job> {
+            ::cynic::selection_set::field_alias(
+                "countries",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(fields)),
+            )
+        }
     }
     pub struct RemotesSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -1727,6 +2056,18 @@ pub mod job {
                 ::cynic::selection_set::option(::cynic::selection_set::vec(fields)),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Remote>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<T>>, super::Job> {
+            ::cynic::selection_set::field_alias(
+                "remotes",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(fields)),
+            )
+        }
     }
     pub struct DescriptionSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -1741,6 +2082,18 @@ pub mod job {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Job> {
             ::cynic::selection_set::field(
                 "description",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Job> {
+            ::cynic::selection_set::field_alias(
+                "description",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -1763,6 +2116,18 @@ pub mod job {
                 ::cynic::selection_set::option(inner),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Job> {
+            ::cynic::selection_set::field_alias(
+                "applyUrl",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
     }
     pub struct CompanySelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -1777,6 +2142,18 @@ pub mod job {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Job> {
             ::cynic::selection_set::field(
                 "company",
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Company>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Job> {
+            ::cynic::selection_set::field_alias(
+                "company",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(fields),
             )
@@ -1888,6 +2265,18 @@ pub mod job {
                 ::cynic::selection_set::option(::cynic::selection_set::vec(fields)),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Tag>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<T>>, super::Job> {
+            ::cynic::selection_set::field_alias(
+                "tags",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(fields)),
+            )
+        }
     }
     pub struct IsPublishedSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -1902,6 +2291,18 @@ pub mod job {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Job> {
             ::cynic::selection_set::field(
                 "isPublished",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, bool>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Job> {
+            ::cynic::selection_set::field_alias(
+                "isPublished",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -1924,6 +2325,18 @@ pub mod job {
                 ::cynic::selection_set::option(inner),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, bool>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Job> {
+            ::cynic::selection_set::field_alias(
+                "isFeatured",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
     }
     pub struct LocationNamesSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -1938,6 +2351,18 @@ pub mod job {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Job> {
             ::cynic::selection_set::field(
                 "locationNames",
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Job> {
+            ::cynic::selection_set::field_alias(
+                "locationNames",
+                alias,
                 self.args,
                 ::cynic::selection_set::option(inner),
             )
@@ -1960,6 +2385,18 @@ pub mod job {
                 ::cynic::selection_set::option(inner),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Job> {
+            ::cynic::selection_set::field_alias(
+                "userEmail",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
     }
     pub struct PostedAtSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -1973,6 +2410,13 @@ pub mod job {
             inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Job> {
             ::cynic::selection_set::field("postedAt", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Job> {
+            ::cynic::selection_set::field_alias("postedAt", alias, self.args, inner)
         }
     }
     pub struct CreatedAtSelectionBuilder {
@@ -1988,6 +2432,13 @@ pub mod job {
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Job> {
             ::cynic::selection_set::field("createdAt", self.args, inner)
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Job> {
+            ::cynic::selection_set::field_alias("createdAt", alias, self.args, inner)
+        }
     }
     pub struct UpdatedAtSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2001,6 +2452,13 @@ pub mod job {
             inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Job> {
             ::cynic::selection_set::field("updatedAt", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Job> {
+            ::cynic::selection_set::field_alias("updatedAt", alias, self.args, inner)
         }
     }
 }
@@ -2019,6 +2477,13 @@ pub mod location {
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Location> {
             ::cynic::selection_set::field("id", self.args, inner)
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Location> {
+            ::cynic::selection_set::field_alias("id", alias, self.args, inner)
+        }
     }
     pub struct SlugSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2032,6 +2497,13 @@ pub mod location {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Location> {
             ::cynic::selection_set::field("slug", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Location> {
+            ::cynic::selection_set::field_alias("slug", alias, self.args, inner)
         }
     }
     pub struct NameSelectionBuilder {
@@ -2047,6 +2519,13 @@ pub mod location {
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Location> {
             ::cynic::selection_set::field("name", self.args, inner)
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Location> {
+            ::cynic::selection_set::field_alias("name", alias, self.args, inner)
+        }
     }
     pub struct TypeSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2060,6 +2539,13 @@ pub mod location {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Location> {
             ::cynic::selection_set::field("type", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Location> {
+            ::cynic::selection_set::field_alias("type", alias, self.args, inner)
         }
     }
 }
@@ -2078,6 +2564,13 @@ pub mod mutation {
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Mutation> {
             ::cynic::selection_set::field("subscribe", self.args, fields)
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::User>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Mutation> {
+            ::cynic::selection_set::field_alias("subscribe", alias, self.args, fields)
+        }
     }
     pub struct PostJobSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2091,6 +2584,13 @@ pub mod mutation {
             fields: ::cynic::selection_set::SelectionSet<'a, T, super::Job>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Mutation> {
             ::cynic::selection_set::field("postJob", self.args, fields)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Job>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Mutation> {
+            ::cynic::selection_set::field_alias("postJob", alias, self.args, fields)
         }
     }
     pub struct UpdateJobSelectionBuilder {
@@ -2106,6 +2606,13 @@ pub mod mutation {
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Mutation> {
             ::cynic::selection_set::field("updateJob", self.args, fields)
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Job>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Mutation> {
+            ::cynic::selection_set::field_alias("updateJob", alias, self.args, fields)
+        }
     }
     pub struct UpdateCompanySelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2119,6 +2626,13 @@ pub mod mutation {
             fields: ::cynic::selection_set::SelectionSet<'a, T, super::Company>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Mutation> {
             ::cynic::selection_set::field("updateCompany", self.args, fields)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Company>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Mutation> {
+            ::cynic::selection_set::field_alias("updateCompany", alias, self.args, fields)
         }
     }
 }
@@ -2151,6 +2665,18 @@ pub mod query {
         ) -> ::cynic::selection_set::SelectionSet<'a, Vec<T>, super::Query> {
             ::cynic::selection_set::field("jobs", self.args, ::cynic::selection_set::vec(fields))
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Job>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Vec<T>, super::Query> {
+            ::cynic::selection_set::field_alias(
+                "jobs",
+                alias,
+                self.args,
+                ::cynic::selection_set::vec(fields),
+            )
+        }
     }
     pub struct JobSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2164,6 +2690,13 @@ pub mod query {
             fields: ::cynic::selection_set::SelectionSet<'a, T, super::Job>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Query> {
             ::cynic::selection_set::field("job", self.args, fields)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Job>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Query> {
+            ::cynic::selection_set::field_alias("job", alias, self.args, fields)
         }
     }
     pub struct LocationsSelectionBuilder {
@@ -2183,6 +2716,18 @@ pub mod query {
                 ::cynic::selection_set::vec(fields),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Location>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Vec<T>, super::Query> {
+            ::cynic::selection_set::field_alias(
+                "locations",
+                alias,
+                self.args,
+                ::cynic::selection_set::vec(fields),
+            )
+        }
     }
     pub struct CitySelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2196,6 +2741,13 @@ pub mod query {
             fields: ::cynic::selection_set::SelectionSet<'a, T, super::City>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Query> {
             ::cynic::selection_set::field("city", self.args, fields)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::City>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Query> {
+            ::cynic::selection_set::field_alias("city", alias, self.args, fields)
         }
     }
     pub struct CountrySelectionBuilder {
@@ -2211,6 +2763,13 @@ pub mod query {
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Query> {
             ::cynic::selection_set::field("country", self.args, fields)
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Country>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Query> {
+            ::cynic::selection_set::field_alias("country", alias, self.args, fields)
+        }
     }
     pub struct RemoteSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2224,6 +2783,13 @@ pub mod query {
             fields: ::cynic::selection_set::SelectionSet<'a, T, super::Remote>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Query> {
             ::cynic::selection_set::field("remote", self.args, fields)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Remote>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Query> {
+            ::cynic::selection_set::field_alias("remote", alias, self.args, fields)
         }
     }
     pub struct CommitmentsSelectionBuilder {
@@ -2243,6 +2809,18 @@ pub mod query {
                 ::cynic::selection_set::vec(fields),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Commitment>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Vec<T>, super::Query> {
+            ::cynic::selection_set::field_alias(
+                "commitments",
+                alias,
+                self.args,
+                ::cynic::selection_set::vec(fields),
+            )
+        }
     }
     pub struct CitiesSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2256,6 +2834,18 @@ pub mod query {
             fields: ::cynic::selection_set::SelectionSet<'a, T, super::City>,
         ) -> ::cynic::selection_set::SelectionSet<'a, Vec<T>, super::Query> {
             ::cynic::selection_set::field("cities", self.args, ::cynic::selection_set::vec(fields))
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::City>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Vec<T>, super::Query> {
+            ::cynic::selection_set::field_alias(
+                "cities",
+                alias,
+                self.args,
+                ::cynic::selection_set::vec(fields),
+            )
         }
     }
     pub struct CountriesSelectionBuilder {
@@ -2275,6 +2865,18 @@ pub mod query {
                 ::cynic::selection_set::vec(fields),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Country>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Vec<T>, super::Query> {
+            ::cynic::selection_set::field_alias(
+                "countries",
+                alias,
+                self.args,
+                ::cynic::selection_set::vec(fields),
+            )
+        }
     }
     pub struct RemotesSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2288,6 +2890,18 @@ pub mod query {
             fields: ::cynic::selection_set::SelectionSet<'a, T, super::Remote>,
         ) -> ::cynic::selection_set::SelectionSet<'a, Vec<T>, super::Query> {
             ::cynic::selection_set::field("remotes", self.args, ::cynic::selection_set::vec(fields))
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Remote>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Vec<T>, super::Query> {
+            ::cynic::selection_set::field_alias(
+                "remotes",
+                alias,
+                self.args,
+                ::cynic::selection_set::vec(fields),
+            )
         }
     }
     pub struct CompaniesSelectionBuilder {
@@ -2303,6 +2917,18 @@ pub mod query {
         ) -> ::cynic::selection_set::SelectionSet<'a, Vec<T>, super::Query> {
             ::cynic::selection_set::field(
                 "companies",
+                self.args,
+                ::cynic::selection_set::vec(fields),
+            )
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Company>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Vec<T>, super::Query> {
+            ::cynic::selection_set::field_alias(
+                "companies",
+                alias,
                 self.args,
                 ::cynic::selection_set::vec(fields),
             )
@@ -2324,6 +2950,13 @@ pub mod remote {
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Remote> {
             ::cynic::selection_set::field("id", self.args, inner)
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Remote> {
+            ::cynic::selection_set::field_alias("id", alias, self.args, inner)
+        }
     }
     pub struct NameSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2337,6 +2970,13 @@ pub mod remote {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Remote> {
             ::cynic::selection_set::field("name", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Remote> {
+            ::cynic::selection_set::field_alias("name", alias, self.args, inner)
         }
     }
     pub struct SlugSelectionBuilder {
@@ -2352,6 +2992,13 @@ pub mod remote {
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Remote> {
             ::cynic::selection_set::field("slug", self.args, inner)
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Remote> {
+            ::cynic::selection_set::field_alias("slug", alias, self.args, inner)
+        }
     }
     pub struct TypeSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2365,6 +3012,13 @@ pub mod remote {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Remote> {
             ::cynic::selection_set::field("type", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Remote> {
+            ::cynic::selection_set::field_alias("type", alias, self.args, inner)
         }
     }
     pub struct JobsSelectionBuilder {
@@ -2473,6 +3127,18 @@ pub mod remote {
                 ::cynic::selection_set::option(::cynic::selection_set::vec(fields)),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Job>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<T>>, super::Remote> {
+            ::cynic::selection_set::field_alias(
+                "jobs",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(fields)),
+            )
+        }
     }
     pub struct CreatedAtSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2487,6 +3153,13 @@ pub mod remote {
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Remote> {
             ::cynic::selection_set::field("createdAt", self.args, inner)
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Remote> {
+            ::cynic::selection_set::field_alias("createdAt", alias, self.args, inner)
+        }
     }
     pub struct UpdatedAtSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2500,6 +3173,13 @@ pub mod remote {
             inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Remote> {
             ::cynic::selection_set::field("updatedAt", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Remote> {
+            ::cynic::selection_set::field_alias("updatedAt", alias, self.args, inner)
         }
     }
 }
@@ -2518,6 +3198,13 @@ pub mod tag {
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Tag> {
             ::cynic::selection_set::field("id", self.args, inner)
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Tag> {
+            ::cynic::selection_set::field_alias("id", alias, self.args, inner)
+        }
     }
     pub struct NameSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2532,6 +3219,13 @@ pub mod tag {
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Tag> {
             ::cynic::selection_set::field("name", self.args, inner)
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Tag> {
+            ::cynic::selection_set::field_alias("name", alias, self.args, inner)
+        }
     }
     pub struct SlugSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2545,6 +3239,13 @@ pub mod tag {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Tag> {
             ::cynic::selection_set::field("slug", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Tag> {
+            ::cynic::selection_set::field_alias("slug", alias, self.args, inner)
         }
     }
     pub struct JobsSelectionBuilder {
@@ -2653,6 +3354,18 @@ pub mod tag {
                 ::cynic::selection_set::option(::cynic::selection_set::vec(fields)),
             )
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Job>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<Vec<T>>, super::Tag> {
+            ::cynic::selection_set::field_alias(
+                "jobs",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(::cynic::selection_set::vec(fields)),
+            )
+        }
     }
     pub struct CreatedAtSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2667,6 +3380,13 @@ pub mod tag {
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Tag> {
             ::cynic::selection_set::field("createdAt", self.args, inner)
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Tag> {
+            ::cynic::selection_set::field_alias("createdAt", alias, self.args, inner)
+        }
     }
     pub struct UpdatedAtSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2680,6 +3400,13 @@ pub mod tag {
             inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Tag> {
             ::cynic::selection_set::field("updatedAt", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Tag> {
+            ::cynic::selection_set::field_alias("updatedAt", alias, self.args, inner)
         }
     }
 }
@@ -2698,6 +3425,13 @@ pub mod user {
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::User> {
             ::cynic::selection_set::field("id", self.args, inner)
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::User> {
+            ::cynic::selection_set::field_alias("id", alias, self.args, inner)
+        }
     }
     pub struct NameSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2711,6 +3445,18 @@ pub mod user {
             inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::User> {
             ::cynic::selection_set::field("name", self.args, ::cynic::selection_set::option(inner))
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::User> {
+            ::cynic::selection_set::field_alias(
+                "name",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
         }
     }
     pub struct EmailSelectionBuilder {
@@ -2726,6 +3472,13 @@ pub mod user {
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::User> {
             ::cynic::selection_set::field("email", self.args, inner)
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::User> {
+            ::cynic::selection_set::field_alias("email", alias, self.args, inner)
+        }
     }
     pub struct SubscribeSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2739,6 +3492,13 @@ pub mod user {
             inner: ::cynic::selection_set::SelectionSet<'a, T, bool>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::User> {
             ::cynic::selection_set::field("subscribe", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, bool>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::User> {
+            ::cynic::selection_set::field_alias("subscribe", alias, self.args, inner)
         }
     }
     pub struct CreatedAtSelectionBuilder {
@@ -2754,6 +3514,13 @@ pub mod user {
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::User> {
             ::cynic::selection_set::field("createdAt", self.args, inner)
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::User> {
+            ::cynic::selection_set::field_alias("createdAt", alias, self.args, inner)
+        }
     }
     pub struct UpdatedAtSelectionBuilder {
         args: Vec<::cynic::Argument>,
@@ -2767,6 +3534,13 @@ pub mod user {
             inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
         ) -> ::cynic::selection_set::SelectionSet<'a, T, super::User> {
             ::cynic::selection_set::field("updatedAt", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, super::DateTime>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::User> {
+            ::cynic::selection_set::field_alias("updatedAt", alias, self.args, inner)
         }
     }
 }

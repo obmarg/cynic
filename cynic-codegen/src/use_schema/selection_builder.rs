@@ -64,6 +64,20 @@ impl FieldSelectionBuilder {
                         #selector
                     )
                 }
+
+            pub fn select_aliased<'a, T: 'a + Send + Sync>(
+                self,
+                alias: &str,
+                #arg_name: ::cynic::selection_set::SelectionSet<'a, T, #argument_type_lock>
+            ) -> ::cynic::selection_set::SelectionSet<'a, #decodes_to, super::#type_lock>
+                {
+                    ::cynic::selection_set::field_alias(
+                        #query_field_name,
+                        alias,
+                        self.args,
+                        #selector
+                    )
+                }
         }
     }
 }

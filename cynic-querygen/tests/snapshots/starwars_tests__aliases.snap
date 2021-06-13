@@ -1,0 +1,35 @@
+---
+source: cynic-querygen/tests/starwars-tests.rs
+expression: "document_to_fragment_structs(query, schema,\n                             &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
+
+---
+#[cynic::schema_for_derives(
+    file = r#"schema.graphql"#,
+    module = "schema",
+)]
+mod queries {
+    use super::schema;
+
+    #[derive(cynic::QueryFragment, Debug)]
+    #[cynic(graphql_type = "Root")]
+    pub struct UnnamedQuery {
+        #[arguments(id = cynic::Id::new("ZmlsbXM6MQ=="))]
+        #[cynic(rename = "film")]
+        pub a_new_hope: Option<Film>,
+        #[arguments(id = cynic::Id::new("ZmlsbXM6Mg=="))]
+        #[cynic(rename = "film")]
+        pub empire_strikes_back: Option<Film>,
+    }
+
+    #[derive(cynic::QueryFragment, Debug)]
+    pub struct Film {
+        pub title: Option<String>,
+    }
+
+}
+
+mod schema {
+    cynic::use_schema!(r#"schema.graphql"#);
+}
+
+
