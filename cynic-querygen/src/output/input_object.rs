@@ -22,16 +22,16 @@ impl std::fmt::Display for InputObject<'_> {
         for field in &self.fields {
             let mut f = indented(f, 4);
 
-            if field.name.to_snake_case().to_camel_case() != field.name {
+            if field.name.0.to_snake_case().to_camel_case() != field.name.0 {
                 // If a snake -> camel casing roundtrip is not lossless
                 // we need to explicitly rename this field
-                writeln!(f, "#[cynic(rename = \"{}\")]", field.name)?;
+                writeln!(f, "#[cynic(rename = \"{}\")]", field.name.0)?;
             }
 
             writeln!(
                 f,
                 "pub {}: {},",
-                field.name.to_snake_case(),
+                field.name.0.to_snake_case(),
                 field.type_spec()
             )?;
         }

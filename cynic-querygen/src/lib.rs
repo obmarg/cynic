@@ -6,7 +6,13 @@ mod query_parsing;
 mod schema;
 mod type_ext;
 
-use schema::{GraphPath, TypeIndex};
+use graphql_parser::Pos;
+pub use schema::{GraphPath, TypeIndex};
+
+pub use output::indented;
+pub use query_parsing::inputs::extract_input_objects;
+pub use query_parsing::normalisation::normalise;
+pub use query_parsing::parse_query_document;
 
 #[derive(thiserror::Error, Debug)]
 pub enum Error {
@@ -20,7 +26,7 @@ pub enum Error {
     SchemaParseError(#[from] graphql_parser::schema::ParseError),
 
     #[error("could not find field `{0}` on `{1}`")]
-    UnknownField(String, String),
+    UnknownField(String, String, Pos),
 
     #[error("could not find enum `{0}`")]
     UnknownEnum(String),

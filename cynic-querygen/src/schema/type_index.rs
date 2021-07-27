@@ -1,4 +1,7 @@
-use graphql_parser::schema::{Definition, ScalarType};
+use graphql_parser::{
+    schema::{Definition, ScalarType},
+    Pos,
+};
 use std::{borrow::Cow, collections::HashMap, rc::Rc};
 
 use crate::{
@@ -107,22 +110,26 @@ impl<'schema> TypeIndex<'schema> {
         &'find self,
         fields: &'find [Field<'schema>],
         current_type_name: &str,
-        path: &[&'path str],
+        path: &[(&'path str, Pos)],
     ) -> Result<&'find Field<'schema>, Error> {
         match path {
             [] => panic!("This shouldn't happen"),
             [first] => fields
                 .iter()
-                .find(|field| field.name == *first)
+                .find(|field| field.name == first.0)
                 .ok_or_else(|| {
-                    Error::UnknownField(first.to_string(), current_type_name.to_string())
+                    Error::UnknownField(first.0.to_string(), current_type_name.to_string(), first.1)
                 }),
             [first, rest @ ..] => {
                 let inner_name = fields
                     .iter()
-                    .find(|field| field.name == *first)
+                    .find(|field| field.name == first.0)
                     .ok_or_else(|| {
-                        Error::UnknownField(first.to_string(), current_type_name.to_string())
+                        Error::UnknownField(
+                            first.0.to_string(),
+                            current_type_name.to_string(),
+                            first.1,
+                        )
                     })?
                     .field_type
                     .inner_name();
@@ -183,7 +190,7 @@ enum OperationType {
 #[derive(Debug, PartialEq, Clone)]
 pub struct GraphPath<'a> {
     operation_type: OperationType,
-    path: Vec<&'a str>,
+    path: Vec<(&'a str, Pos)>,
 }
 
 impl<'a> GraphPath<'a> {
@@ -206,7 +213,7 @@ impl<'a> GraphPath<'a> {
     }
 
     #[must_use]
-    pub fn push(&self, field: &'a str) -> GraphPath<'a> {
+    pub fn push(&self, field: (&'a str, Pos)) -> GraphPath<'a> {
         let mut rv = self.clone();
         rv.path.push(field);
         rv

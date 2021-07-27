@@ -1,4 +1,7 @@
-use crate::schema::EnumDetails;
+use crate::{
+    query_parsing::{inputs::InputObjectSet, normalisation::NormalisedDocument},
+    schema::EnumDetails,
+};
 
 mod argument_struct;
 mod enums;
@@ -18,6 +21,8 @@ pub struct Output<'query, 'schema> {
     pub enums: Vec<EnumDetails<'schema>>,
     pub scalars: Vec<Scalar<'schema>>,
     pub argument_structs: Vec<ArgumentStruct<'query, 'schema>>,
+    pub normalised_document: NormalisedDocument<'query, 'schema>,
+    pub input_objects_raw: InputObjectSet<'schema>,
 }
 
 pub struct Scalar<'schema>(pub &'schema str);

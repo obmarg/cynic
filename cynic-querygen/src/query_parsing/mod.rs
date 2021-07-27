@@ -1,9 +1,9 @@
 use std::rc::Rc;
 
 mod arguments;
-mod inputs;
+pub mod inputs;
 mod leaf_types;
-mod normalisation;
+pub mod normalisation;
 mod parser;
 mod sorting;
 mod value;
@@ -21,9 +21,9 @@ pub fn parse_query_document<'text>(
     type_index: &Rc<TypeIndex<'text>>,
 ) -> Result<Output<'text, 'text>, Error> {
     let normalised = normalisation::normalise(doc, type_index)?;
-    let input_objects = inputs::extract_input_objects(&normalised)?;
+    let input_objects_raw = inputs::extract_input_objects(&normalised)?;
 
-    let (mut enums, mut scalars) = leaf_types::extract_leaf_types(&normalised, &input_objects)?;
+    let (mut enums, mut scalars) = leaf_types::extract_leaf_types(&normalised, &input_objects_raw)?;
 
     enums.sort_by_key(|e| e.name);
     scalars.sort_by_key(|s| s.0);
@@ -47,7 +47,7 @@ pub fn parse_query_document<'text>(
         .map(|selection| make_query_fragment(selection, &mut query_namer, &arg_struct_details))
         .collect::<Vec<_>>();
 
-    let input_objects = sorting::topological_sort(input_objects.into_iter())
+    let input_objects = sorting::topological_sort(input_objects_raw.clone().into_iter())
         .into_iter()
         .map(make_input_object)
         .collect::<Vec<_>>();
@@ -58,6 +58,8 @@ pub fn parse_query_document<'text>(
         enums,
         scalars,
         argument_structs: arg_struct_details.argument_structs(),
+        normalised_document: normalised,
+        input_objects_raw,
     })
 }
 
@@ -95,7 +97,7 @@ fn make_query_fragment<'text>(
                             .arguments
                             .iter()
                             .map(|(name, value)| -> Result<FieldArgument, Error> {
-                                Ok(FieldArgument::new(name, value.clone()))
+                                Ok(FieldArgument::new(name.clone(), value.clone()))
                             })
                             .collect::<Result<Vec<_>, _>>()
                             .unwrap(),

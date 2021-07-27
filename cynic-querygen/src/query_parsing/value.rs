@@ -1,3 +1,4 @@
+use graphql_parser::Pos;
 use rust_decimal::{prelude::FromPrimitive, Decimal};
 use std::collections::BTreeMap;
 
@@ -12,7 +13,7 @@ use super::{normalisation::Variable, parser};
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum TypedValue<'query, 'schema> {
     Variable {
-        name: &'query str,
+        name: (&'query str, Pos),
         value_type: InputFieldType<'schema>,
         field_type: InputFieldType<'schema>,
     },
@@ -22,8 +23,13 @@ pub enum TypedValue<'query, 'schema> {
     Boolean(bool, InputFieldType<'schema>),
     Null(InputFieldType<'schema>),
     Enum(&'query str, InputFieldType<'schema>),
-    List(Vec<TypedValue<'query, 'schema>>, InputFieldType<'schema>),
+    List(
+        Pos,
+        Vec<TypedValue<'query, 'schema>>,
+        InputFieldType<'schema>,
+    ),
     Object(
+        Pos,
         BTreeMap<&'query str, TypedValue<'query, 'schema>>,
         InputFieldType<'schema>,
     ),
@@ -31,6 +37,7 @@ pub enum TypedValue<'query, 'schema> {
 
 impl<'query, 'schema> TypedValue<'query, 'schema> {
     pub fn from_query_value(
+        pos: Pos,
         value: &parser::Value<'query>,
         field_type: InputFieldType<'schema>,
         variable_definitions: &[Variable<'query, 'schema>],
@@ -38,16 +45,14 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
         Ok(match value {
             parser::Value::Variable(name) => {
                 // If this is just a variable then we'll take it's type as our value type.
-                let value_type = variable_definitions
+                let variable = variable_definitions
                     .iter()
-                    .find(|var| var.name == *name)
-                    .ok_or_else(|| Error::UnknownArgument(name.to_string()))?
-                    .value_type
-                    .clone();
+                    .find(|var| var.name.0 == *name)
+                    .ok_or_else(|| Error::UnknownArgument(name.to_string()))?;
 
                 TypedValue::Variable {
-                    name,
-                    value_type,
+                    name: (name, variable.name.1),
+                    value_type: variable.value_type.clone(),
                     field_type,
                 }
             }
@@ -60,10 +65,12 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
             parser::Value::List(values) => {
                 let inner_type = field_type.list_inner_type()?;
                 TypedValue::List(
+                    pos,
                     values
                         .iter()
                         .map(|val| {
                             TypedValue::from_query_value(
+                                pos, // TODO: fix this pos!
                                 val,
                                 inner_type.clone(),
                                 variable_definitions,
@@ -76,17 +83,19 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
             parser::Value::Object(obj) => {
                 if let InputType::InputObject(obj_type) = field_type.inner_ref().lookup()? {
                     TypedValue::Object(
+                        pos,
                         obj.iter()
                             .map(|(k, v)| {
                                 let field = obj_type
                                     .fields
                                     .iter()
-                                    .find(|field| field.name == *k)
+                                    .find(|field| field.name.0 == *k)
                                     .ok_or_else(|| Error::UnknownType(k.to_string()))?;
 
                                 Ok((
                                     *k,
                                     TypedValue::from_query_value(
+                                        field.name.1,
                                         v,
                                         field.value_type.clone(),
                                         variable_definitions,
@@ -114,8 +123,8 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
             TypedValue::Boolean(_, ty) => ty,
             TypedValue::Null(ty) => ty,
             TypedValue::Enum(_, ty) => ty,
-            TypedValue::List(_, ty) => ty,
-            TypedValue::Object(_, ty) => ty,
+            TypedValue::List(_, _, ty) => ty,
+            TypedValue::Object(_, _, ty) => ty,
         }
     }
 
@@ -128,14 +137,16 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
             TypedValue::Variable {
                 name, value_type, ..
             } => vec![Variable {
-                name,
+                name: name.clone(),
                 value_type: value_type.clone(),
             }],
-            TypedValue::Object(obj_literal, _) => obj_literal
+            TypedValue::Object(_, obj_literal, _) => obj_literal
                 .iter()
                 .flat_map(|(_, v)| v.variables())
                 .collect(),
-            TypedValue::List(values, _) => values.iter().flat_map(TypedValue::variables).collect(),
+            TypedValue::List(_, values, _) => {
+                values.iter().flat_map(TypedValue::variables).collect()
+            }
             _ => vec![],
         }
     }
@@ -152,20 +163,20 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
                 let schema_type = field_type.inner_ref().lookup()?;
                 if schema_type.is_definitely_copy() {
                     // Copy types will be implicitly copied so we can just put them literally
-                    format!("args.{}", name.to_snake_case())
+                    format!("args.{}", name.0.to_snake_case())
                 } else if context == LiteralContext::Argument {
                     // If we're in argument context then a reference should be OK.
                     // `InputType` usually defines conversions for references.
                     //
                     // There are some cases where this is not true, but can fix
                     // those when they crop up.
-                    format!("&args.{}", name.to_snake_case())
+                    format!("&args.{}", name.0.to_snake_case())
                 } else {
                     // If this is not in argument position we'll probably need a clone.
                     coerce_variable(
                         field_type,
                         value_type,
-                        format!("args.{}.clone()", name.to_snake_case()),
+                        format!("args.{}.clone()", name.0.to_snake_case()),
                     )
                 }
             }
@@ -203,7 +214,7 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
                     return Err(Error::ArgumentNotEnum);
                 }
             }
-            TypedValue::List(values, _) => {
+            TypedValue::List(_, values, _) => {
                 let inner = values
                     .iter()
                     .map(|v| v.to_literal(LiteralContext::ListItem))
@@ -212,7 +223,7 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
 
                 format!("vec![{}]", inner)
             }
-            TypedValue::Object(object_literal, field_type) => {
+            TypedValue::Object(_, object_literal, field_type) => {
                 if let InputType::InputObject(input_object) = field_type.inner_ref().lookup()? {
                     let fields = object_literal
                         .iter()

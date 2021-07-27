@@ -196,7 +196,7 @@ pub use selection_set::SelectionSet;
 pub use result::{GraphQLError, GraphQLResponse, GraphQLResult};
 
 pub use cynic_proc_macros::{
-    query_module, schema_for_derives, use_schema, Enum, FragmentArguments, InlineFragments,
+    gql, query_module, schema_for_derives, use_schema, Enum, FragmentArguments, InlineFragments,
     InputObject, QueryFragment, Scalar,
 };
 

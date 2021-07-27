@@ -5,6 +5,8 @@ use std::{
     rc::Rc,
 };
 
+use graphql_parser::Pos;
+
 use super::{
     parser::{
         self, Definition, Document, FragmentDefinition, OperationDefinition, TypeCondition,
@@ -29,7 +31,7 @@ pub struct NormalisedOperation<'query, 'schema> {
 
 #[derive(Debug, PartialEq, Eq, Clone, PartialOrd, Ord, Hash)]
 pub struct Variable<'query, 'schema> {
-    pub name: &'query str,
+    pub name: (&'query str, Pos),
     pub value_type: InputFieldType<'schema>,
 }
 
@@ -60,7 +62,7 @@ pub struct FieldSelection<'query, 'schema> {
 
     pub schema_field: OutputField<'schema>,
 
-    pub arguments: Vec<(&'schema str, TypedValue<'query, 'schema>)>,
+    pub arguments: Vec<((&'schema str, Pos), TypedValue<'query, 'schema>)>,
 
     pub field: Field<'query, 'schema>,
 }
@@ -78,7 +80,7 @@ impl<'query, 'doc, 'schema> FieldSelection<'query, 'schema> {
     fn new(
         name: &'query str,
         alias: Option<&'query str>,
-        arguments: Vec<(&'schema str, TypedValue<'query, 'schema>)>,
+        arguments: Vec<((&'schema str, Pos), TypedValue<'query, 'schema>)>,
         schema_field: OutputField<'schema>,
         field: Field<'query, 'schema>,
     ) -> FieldSelection<'query, 'schema> {
@@ -246,7 +248,7 @@ impl<'a, 'query, 'schema, 'doc> Normaliser<'a, 'query, 'schema, 'doc> {
     ) -> Result<Vec<Selection<'query, 'schema>>, Error> {
         match selection {
             parser::Selection::Field(field) => {
-                let new_path = current_path.push(field.name);
+                let new_path = current_path.push((field.name, field.position));
 
                 let schema_field = self.type_index.field_for_path(&new_path)?;
 
@@ -265,12 +267,13 @@ impl<'a, 'query, 'schema, 'doc> Normaliser<'a, 'query, 'schema, 'doc> {
                     let schema_arg = schema_field
                         .arguments
                         .iter()
-                        .find(|arg| arg.name == *name)
+                        .find(|arg| arg.name.0 == *name)
                         .ok_or_else(|| Error::UnknownArgument(name.to_string()))?;
 
                     arguments.push((
                         schema_arg.name,
                         TypedValue::from_query_value(
+                            field.position,
                             value,
                             schema_arg.value_type.clone(),
                             &self.variables,
@@ -339,7 +342,7 @@ impl<'a, 'query, 'schema, 'doc> Normaliser<'a, 'query, 'schema, 'doc> {
 impl<'query, 'schema> Variable<'query, 'schema> {
     fn from(def: &VariableDefinition<'query>, type_index: &Rc<TypeIndex<'schema>>) -> Self {
         Variable {
-            name: def.name,
+            name: (def.name, def.position),
             value_type: InputFieldType::from_variable_definition(def, type_index),
         }
     }

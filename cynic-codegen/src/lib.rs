@@ -25,8 +25,8 @@ use error::Errors;
 use field_argument::FieldArgument;
 use field_type::FieldType;
 use ident::Ident;
-use schema::{load_schema, SchemaLoadError};
-use type_index::TypeIndex;
+pub use schema::{load_schema, SchemaLoadError};
+pub use type_index::TypeIndex;
 use type_path::TypePath;
 
 #[deprecated(

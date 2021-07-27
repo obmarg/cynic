@@ -1,5 +1,6 @@
 use std::fmt::Write;
 
+use graphql_parser::Pos;
 use inflector::Inflector;
 
 use super::indented;
@@ -60,7 +61,7 @@ impl std::fmt::Display for OutputField<'_, '_> {
                 .map(|arg| {
                     Ok(format!(
                         "{} = {}",
-                        arg.name.to_snake_case(),
+                        arg.name.0.to_snake_case(),
                         arg.to_literal()?
                     ))
                 })
@@ -148,12 +149,12 @@ impl RustOutputFieldType {
 
 #[derive(Debug, PartialEq)]
 pub struct FieldArgument<'query, 'schema> {
-    pub name: &'schema str,
+    pub name: (&'schema str, Pos),
     value: TypedValue<'query, 'schema>,
 }
 
 impl<'query, 'schema> FieldArgument<'query, 'schema> {
-    pub fn new(name: &'schema str, value: TypedValue<'query, 'schema>) -> Self {
+    pub fn new(name: (&'schema str, Pos), value: TypedValue<'query, 'schema>) -> Self {
         FieldArgument { name, value }
     }
 
