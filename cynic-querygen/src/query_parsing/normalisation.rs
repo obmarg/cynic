@@ -273,7 +273,7 @@ impl<'a, 'query, 'schema, 'doc> Normaliser<'a, 'query, 'schema, 'doc> {
                     arguments.push((
                         schema_arg.name,
                         TypedValue::from_query_value(
-                            field.position,
+                            schema_arg.name.1,
                             value,
                             schema_arg.value_type.clone(),
                             &self.variables,

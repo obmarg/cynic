@@ -1,4 +1,6 @@
-//! An example of querying the starwars API using the reqwest-blocking feature
+//! An example of querying the starwars API using the query autogenerating API.
+
+use cynic::Id;
 
 mod gql_schema {
     cynic::use_schema!("../schemas/starwars.schema.graphql");
@@ -16,40 +18,33 @@ mod gql_schema {
     }
 }
 
-cynic::gql!(
-    "
+cynic::gql! {
     query film_directory_query($id: ID) {
-        films(id: $id) {
-            title,
+        film(id: id) {
+            title, #asdasdasd
             director,
         }
     }
-"
-);
-
-fn main() {
-    // let result = run_query();
-    // println!("{:?}", result);
 }
 
-// fn run_query() -> cynic::GraphQlResponse<FilmDirectorQuery> {
-//     use cynic::http::ReqwestBlockingExt;
+cynic::gql! {
+    query all_films {
+        allFilms {
+            films {
+                id
+                title
+            }
+        }
+    }
+}
 
-//     let query = build_query();
+fn main() {
+    let result = film_directory_query::query(Some(Id::new("ZmlsbXM6Mw==")));
+    println!("{:?}", result);
 
-//     reqwest::blocking::Client::new()
-//         .post("https://swapi-graphql.netlify.app/.netlify/functions/index")
-//         .run_graphql(query)
-//         .unwrap()
-// }
-
-// fn build_query() -> cynic::Operation<'static, FilmDirectorQuery> {
-//     use cynic::QueryBuilder;
-
-//     FilmDirectorQuery::build(&FilmArguments {
-//         id: Some("ZmlsbXM6MQ==".into()),
-//     })
-// }
+    let result = all_films::query();
+    println!("{:?}", result);
+}
 
 #[cfg(test)]
 mod test {

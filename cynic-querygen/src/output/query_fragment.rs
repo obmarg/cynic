@@ -1,4 +1,4 @@
-use std::fmt::Write;
+use core::fmt;
 
 use graphql_parser::Pos;
 use inflector::Inflector;
@@ -15,31 +15,61 @@ pub struct QueryFragment<'query, 'schema> {
     pub name: String,
 }
 
-impl std::fmt::Display for QueryFragment<'_, '_> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        writeln!(f, "#[derive(cynic::QueryFragment, Debug)]")?;
+// impl std::fmt::Display for QueryFragment<'_, '_> {
+//     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+//         writeln!(f, "#[derive(cynic::QueryFragment, Debug)]")?;
+
+//         if self.target_type != self.name || self.argument_struct_name.is_some() {
+//             write!(f, "#[cynic(")?;
+//             if self.target_type != self.name {
+//                 write!(f, "graphql_type = \"{}\"", self.target_type)?;
+//             }
+
+//             if let Some(name) = &self.argument_struct_name {
+//                 if self.target_type != self.name {
+//                     write!(f, ", ")?;
+//                 }
+//                 write!(f, "argument_struct = \"{}\"", name)?;
+//             }
+//             writeln!(f, ")]",)?;
+//         }
+
+//         writeln!(f, "pub struct {} {{", self.name)?;
+//         for field in &self.fields {
+//             write!(indented(f, 4), "{}", field)?;
+//         }
+
+//         writeln!(f, "}}")
+//     }
+// }
+
+impl QueryFragment<'_, '_> {
+    pub fn fmt<F: fmt::Write + ?Sized>(&self, f: &mut F) -> Result<(), Error> {
+        writeln!(f, "#[derive(cynic::QueryFragment, Debug)]").unwrap();
 
         if self.target_type != self.name || self.argument_struct_name.is_some() {
-            write!(f, "#[cynic(")?;
+            write!(f, "#[cynic(").unwrap();
             if self.target_type != self.name {
-                write!(f, "graphql_type = \"{}\"", self.target_type)?;
+                write!(f, "graphql_type = \"{}\"", self.target_type).unwrap();
             }
 
             if let Some(name) = &self.argument_struct_name {
                 if self.target_type != self.name {
-                    write!(f, ", ")?;
+                    write!(f, ", ").unwrap();
                 }
-                write!(f, "argument_struct = \"{}\"", name)?;
+                write!(f, "argument_struct = \"{}\"", name).unwrap();
             }
-            writeln!(f, ")]",)?;
+            writeln!(f, ")]",).unwrap();
         }
 
-        writeln!(f, "pub struct {} {{", self.name)?;
+        writeln!(f, "pub struct {} {{", self.name).unwrap();
         for field in &self.fields {
-            write!(indented(f, 4), "{}", field)?;
+            field.fmt(&mut indented(f, 4))?;
         }
 
-        writeln!(f, "}}")
+        writeln!(f, "}}").unwrap();
+
+        Ok(())
     }
 }
 
@@ -52,8 +82,34 @@ pub struct OutputField<'query, 'schema> {
     pub arguments: Vec<FieldArgument<'query, 'schema>>,
 }
 
-impl std::fmt::Display for OutputField<'_, '_> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+// impl std::fmt::Display for OutputField<'_, '_> {
+//     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+//         if !self.arguments.is_empty() {
+//             let arguments_string = self
+//                 .arguments
+//                 .iter()
+//                 .map(|arg| format!("{} = {}", arg.name.0.to_snake_case(), arg.to_literal()?))
+//                 .collect::<Vec<_>>()
+//                 .join(", ");
+
+//             writeln!(f, "#[arguments({})]", arguments_string)?;
+//         }
+
+//         if let Some(rename) = self.rename {
+//             writeln!(f, "#[cynic(rename = \"{}\")]", rename)?;
+//         }
+
+//         writeln!(
+//             f,
+//             "pub {}: {},",
+//             self.name.to_snake_case(),
+//             self.field_type.type_spec()
+//         )
+//     }
+// }
+
+impl OutputField<'_, '_> {
+    pub fn fmt<F: fmt::Write + ?Sized>(&self, f: &mut F) -> Result<(), Error> {
         if !self.arguments.is_empty() {
             let arguments_string = self
                 .arguments
@@ -65,16 +121,15 @@ impl std::fmt::Display for OutputField<'_, '_> {
                         arg.to_literal()?
                     ))
                 })
-                .collect::<Result<Vec<_>, Error>>()
-                // TODO: This unwrap needs ditched somehow...
-                .unwrap()
+                .collect::<Result<Vec<_>, Error>>()?
                 .join(", ");
 
-            writeln!(f, "#[arguments({})]", arguments_string)?;
+            eprintln!("topkek");
+            writeln!(f, "#[arguments({})]", arguments_string).unwrap();
         }
 
         if let Some(rename) = self.rename {
-            writeln!(f, "#[cynic(rename = \"{}\")]", rename)?;
+            writeln!(f, "#[cynic(rename = \"{}\")]", rename).unwrap();
         }
 
         writeln!(
@@ -83,6 +138,9 @@ impl std::fmt::Display for OutputField<'_, '_> {
             self.name.to_snake_case(),
             self.field_type.type_spec()
         )
+        .unwrap();
+
+        Ok(())
     }
 }
 

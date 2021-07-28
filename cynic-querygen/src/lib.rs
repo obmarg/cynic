@@ -46,8 +46,8 @@ pub enum Error {
     #[error("couldn't find an argument named `{0}`")]
     UnknownArgument(String),
 
-    #[error("an enum-like value was provided to an argument that is not an enum")]
-    ArgumentNotEnum,
+    #[error("enum-like value `{0}` was provided to an argument that is not an enum")]
+    ArgumentNotEnum(String, Pos),
 
     #[error("expected an input object, enum or scalar")]
     ExpectedInputType,
@@ -97,7 +97,6 @@ pub fn document_to_fragment_structs(
     schema: impl AsRef<str>,
     options: &QueryGenOptions,
 ) -> Result<String, Error> {
-    use output::indented;
     use std::fmt::Write;
 
     let schema = graphql_parser::parse_schema::<&str>(schema.as_ref())?;
@@ -122,7 +121,7 @@ pub fn document_to_fragment_structs(
     }
 
     for fragment in parsed_output.query_fragments {
-        writeln!(mod_output, "{}", fragment).unwrap();
+        fragment.fmt(mod_output)?;
     }
 
     for en in parsed_output.enums {

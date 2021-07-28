@@ -22,7 +22,7 @@ pub enum TypedValue<'query, 'schema> {
     String(String, InputFieldType<'schema>),
     Boolean(bool, InputFieldType<'schema>),
     Null(InputFieldType<'schema>),
-    Enum(&'query str, InputFieldType<'schema>),
+    Enum(Pos, &'query str, InputFieldType<'schema>),
     List(
         Pos,
         Vec<TypedValue<'query, 'schema>>,
@@ -61,7 +61,10 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
             parser::Value::String(s) => TypedValue::String(s.clone(), field_type),
             parser::Value::Boolean(b) => TypedValue::Boolean(*b, field_type),
             parser::Value::Null => TypedValue::Null(field_type),
-            parser::Value::Enum(e) => TypedValue::Enum(e, field_type),
+            parser::Value::Enum(e) => {
+                eprintln!("{}{}{:?}", pos, e, field_type);
+                TypedValue::Enum(pos, e, field_type)
+            }
             parser::Value::List(values) => {
                 let inner_type = field_type.list_inner_type()?;
                 TypedValue::List(
@@ -122,7 +125,7 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
             TypedValue::String(_, ty) => ty,
             TypedValue::Boolean(_, ty) => ty,
             TypedValue::Null(ty) => ty,
-            TypedValue::Enum(_, ty) => ty,
+            TypedValue::Enum(_, _, ty) => ty,
             TypedValue::List(_, _, ty) => ty,
             TypedValue::Object(_, _, ty) => ty,
         }
@@ -205,13 +208,13 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
                 coerce_literal(field_type, context, b.to_string())
             }
             TypedValue::Null(_) => "None".into(),
-            TypedValue::Enum(v, field_type) => {
+            TypedValue::Enum(pos, v, field_type) => {
                 if let InputType::Enum(en) = field_type.inner_ref().lookup()? {
                     let literal = format!("{}::{}", en.name.to_pascal_case(), v.to_pascal_case());
 
                     coerce_literal(field_type, context, literal)
                 } else {
-                    return Err(Error::ArgumentNotEnum);
+                    return Err(Error::ArgumentNotEnum(v.to_string(), pos.clone()));
                 }
             }
             TypedValue::List(_, values, _) => {

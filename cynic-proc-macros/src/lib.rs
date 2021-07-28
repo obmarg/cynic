@@ -1,14 +1,15 @@
+#![feature(proc_macro_span)]
+#![feature(proc_macro_diagnostic)]
 #![allow(clippy::let_and_return)]
 
 extern crate proc_macro;
 
 use std::{path::Path, rc::Rc};
 
-use ariadne::{Label, Report, ReportKind, Source};
 use cargo_toml::Manifest;
 use cynic_querygen::{indented, parse_query_document, Error, TypeIndex};
-use proc_macro::TokenStream;
-use proc_macro2::{self, TokenTree};
+use graphql_parser::Pos;
+use proc_macro::{Span, TokenStream};
 use quote::quote;
 use serde::Deserialize;
 
@@ -16,8 +17,6 @@ use cynic_codegen::{
     enum_derive, fragment_arguments_derive, fragment_derive, inline_fragments_derive,
     input_object_derive, scalar_derive, schema_for_derives, use_schema,
 };
-use syn::LitStr;
-use yansi::Paint;
 
 /// Imports a schema for use by cynic.
 ///
@@ -169,20 +168,22 @@ pub fn gql(input: TokenStream) -> TokenStream {
     let schema = std::fs::read_to_string(Path::new(&package_root).join(&path))
         .expect("Schema could not be read.");
 
-    let query_literal = syn::parse_macro_input!(input as LitStr);
-    let query_string = query_literal.value();
+    let input_clone = input.clone();
 
-    let span = format!("{:?}", query_literal.span());
-    let split = span.split_at(9);
-    let mut split = split.1.split("..");
-    let start = split.next().unwrap().parse().unwrap();
-    // let second = split.next().unwrap();
-    // let end = second.split(")").next().unwrap().parse().unwrap();
-    // eprintln!("{:?}", (start, end));
+    let mut iter = input.into_iter();
+    let first = iter.next().unwrap();
+    let first_clone = first.clone();
+    let last = iter.last().unwrap_or_else(|| first_clone);
 
-    // #0 bytes(524..651)
+    let source = first
+        .span()
+        .join(last.span())
+        .map(|s| s.source_text())
+        .flatten()
+        .unwrap();
 
-    let source_pad = std::iter::repeat(" ").take(start).collect::<String>();
+    let query_string = source.clone();
+    eprintln!("{:?}", query_string);
 
     let fragments = document_to_fragment_structs(
         &query_string,
@@ -192,43 +193,106 @@ pub fn gql(input: TokenStream) -> TokenStream {
 
     let fragments = match fragments {
         Ok(fragments) => fragments,
-        Err(error) => {
-            match error {
-                Error::UnknownField(field, object, span) => {
-                    let span_start = query_string
-                        .lines()
-                        .take(span.line - 1)
-                        .fold(0, |c, l| c + l.len())
-                        + span.column
-                        + 1
-                        + start;
-                    let span_end = span_start + field.len();
+        Err(error) => match error {
+            Error::UnknownField(field, object, span) => {
+                eprintln!("{:?}", span);
+                let (span_start, span_end) =
+                    get_span_from_pos(query_string, &first.span(), span, field.len());
 
-                    Report::build(ReportKind::Error, (), 34)
-                        .with_message(format!(
-                            "{} was not found on the {} object.",
-                            Paint::green(&field),
-                            Paint::green(&object)
-                        ))
-                        .with_label(Label::new(span_start..span_end).with_message(format!(
-                            "{} here was not found on the {} object.",
-                            Paint::green(&field),
-                            Paint::green(&object)
-                        )))
-                        .finish()
-                        .eprint(Source::from(source_pad + &query_string))
-                        .unwrap();
-                }
-                _ => {}
+                eprintln!("{:?}, {:?}", span_start, span_end);
+
+                find_full_span_in_stream(input_clone, span_start, span_end).map(|e| {
+                    e.error(format!(
+                        "`{}` here was not found on the `{}` object.",
+                        field, object
+                    ))
+                    .emit()
+                });
+                return quote! {}.into();
             }
+            Error::ArgumentNotEnum(field, span) => {
+                eprintln!("{:?}", span);
+                let (span_start, span_end) =
+                    get_span_from_pos(query_string, &first.span(), span, field.len());
 
-            return quote! { compile_error!("Invalid GQL query."); }.into();
-        }
+                eprintln!("{:?}, {:?}", span_start, span_end);
+
+                find_full_span_in_stream(input_clone, span_start, span_end).map(|e| {
+                    e.error(format!(
+                        "`{}` here was used like an enum but is no enum.",
+                        field
+                    ))
+                    .emit()
+                });
+                return quote! {}.into();
+            }
+            e => {
+                let error = e.to_string();
+                return quote! { compile_error!(#error) }.into();
+            }
+        },
     };
 
     let stream: proc_macro::TokenStream = fragments.parse().unwrap();
 
     stream
+}
+
+fn get_span_from_pos(
+    query_string: impl AsRef<str>,
+    first: &Span,
+    pos: Pos,
+    len: usize,
+) -> (usize, usize) {
+    let span_start = query_string
+        .as_ref()
+        .lines()
+        .take(pos.line - 1)
+        .fold(0, |c, l| c + l.len()) // Add all the characters from the first N full lines.
+        + pos.column // Add the characters from the started line.
+        + (pos.line - 1) // Add all the newlines (one from each full line).
+        + extract_span(&first).0; // Add offset to where the macro content token tree starts in the source code.
+    let span_end = span_start + len - 1;
+    (span_start, span_end)
+}
+
+/// Find the [`Span`] which contains the _Rust token_ at `pos` in the given [`TokenStream`].
+fn find_span_in_stream(input: TokenStream, pos: usize) -> Option<Span> {
+    for token in input {
+        use proc_macro::TokenTree;
+        match token {
+            TokenTree::Group(ref t) => {
+                if let Some(span) = find_span_in_stream(t.stream(), pos) {
+                    return Some(span);
+                }
+            }
+            _ => {}
+        }
+
+        let (start, end) = extract_span(&token.span());
+        if start <= pos && pos <= end {
+            return Some(token.span());
+        }
+    }
+    None
+}
+
+/// Find the span of _Rust tokens_ which contains both `start` and `end` in the given [`TokenStream`].
+fn find_full_span_in_stream(input: TokenStream, start: usize, end: usize) -> Option<Span> {
+    find_span_in_stream(input.clone(), start)
+        .and_then(|s1| find_span_in_stream(input, end).map(|s2| s1.join(s2)))
+        .flatten()
+}
+
+/// Extracts the start and end position of the given [`Span`].
+fn extract_span(span: &Span) -> (usize, usize) {
+    let span = format!("{:?}", span);
+    let split = span.split_at(9);
+    let mut split = split.1.split("..");
+    let start = split.next().unwrap().parse().unwrap();
+    let second = split.next().unwrap();
+    let end = second.split(")").next().unwrap().parse().unwrap();
+    (start, end)
 }
 
 /// Reads the schema path from `Cargo.toml/metadata.cynic.schema`.
@@ -270,15 +334,24 @@ fn document_to_fragment_structs(
     let schema = graphql_parser::parse_schema::<&str>(schema.as_ref())?;
     let query = graphql_parser::parse_query::<&str>(query.as_ref())?;
 
+    eprintln!("{:#?}", query);
+
     let type_index = Rc::new(TypeIndex::from_schema(&schema));
     let parsed_output = parse_query_document(&query, &type_index)?;
 
     let mut output = String::new();
 
+    let operation = parsed_output
+        .normalised_document
+        .operations
+        .first()
+        .unwrap();
+    let name = operation.name.unwrap();
+
     writeln!(output, "#[cynic::schema_for_derives(").unwrap();
     writeln!(output, "    file = r#\"{}\"#,", schema_path.as_ref()).unwrap();
     writeln!(output, "    module = \"gql_schema\",").unwrap();
-    writeln!(output, ")]\nmod queries {{").unwrap();
+    writeln!(output, ")]\nmod {} {{", name).unwrap();
 
     let mod_output = &mut indented(&mut output, 4);
 
@@ -289,7 +362,7 @@ fn document_to_fragment_structs(
     }
 
     for fragment in parsed_output.query_fragments {
-        writeln!(mod_output, "{}", fragment).unwrap();
+        fragment.fmt(mod_output)?;
     }
 
     for en in parsed_output.enums {
@@ -304,13 +377,7 @@ fn document_to_fragment_structs(
         writeln!(mod_output, "{}", scalar).unwrap();
     }
 
-    let operation = parsed_output
-        .normalised_document
-        .operations
-        .first()
-        .unwrap();
-    let name = operation.name.unwrap();
-    write!(mod_output, "fn {}(", name).unwrap();
+    write!(mod_output, "pub fn query(").unwrap();
 
     let arguments = if let Some(argument_struct) = parsed_output.argument_structs.iter().next() {
         let mut output = String::new();
@@ -343,7 +410,7 @@ fn document_to_fragment_structs(
 
     writeln!(output, "}}\n").unwrap();
 
-    eprintln!("{}", output);
+    // eprintln!("{}", output);
 
     Ok(output)
 }
