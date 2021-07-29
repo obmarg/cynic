@@ -117,6 +117,20 @@ impl std::hash::Hash for Ident {
     }
 }
 
+impl std::cmp::PartialOrd for Ident {
+    fn partial_cmp(&self, other: &Self) -> Option<std::cmp::Ordering> {
+        // We only care about the GraphQL ident for ordering purposes.
+        self.graphql.partial_cmp(&other.graphql)
+    }
+}
+
+impl std::cmp::Ord for Ident {
+    fn cmp(&self, other: &Self) -> std::cmp::Ordering {
+        // We only care about the GraphQL ident for ordering purposes.
+        self.graphql.cmp(&other.graphql)
+    }
+}
+
 impl From<proc_macro2::Ident> for Ident {
     fn from(ident: proc_macro2::Ident) -> Ident {
         Ident::from_proc_macro2(&ident, None)

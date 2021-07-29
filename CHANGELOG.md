@@ -18,6 +18,10 @@ all APIs might be changed.
   field twice.
 - The generator also now supports field aliases.
 
+### Bug Fixes
+
+- `InputObject` now serializes fields in a stable order.
+
 ## v0.14.0 - 2021-06-06
 
 ### New Features
