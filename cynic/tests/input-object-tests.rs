@@ -60,3 +60,31 @@ fn test_input_object_skip_serializing() {
 
     assert_eq!(with_author, json!({ "content": "hi", "author": "Me" }));
 }
+
+#[test]
+fn test_input_object_stable_order() {
+    #[derive(cynic::InputObject)]
+    #[cynic(
+        graphql_type = "BlogPostInput",
+        schema_path = "tests/test-schema.graphql",
+        query_module = "schema"
+    )]
+    struct BlogPost {
+        content: String,
+        #[cynic(skip_serializing_if = "Option::is_none")]
+        author: Option<String>,
+    }
+
+    // Using a snapshot to ensure we have a stable order
+    insta::assert_yaml_snapshot!(
+        BlogPost {
+            content: "hi".into(),
+            author: Some("me".into()),
+        },
+        @r###"
+    ---
+    author: me
+    content: hi
+    "###
+    );
+}
