@@ -85,7 +85,8 @@ fn make_query_fragment<'text>(
                     };
 
                     OutputField {
-                        name: schema_field.name,
+                        name: field.alias.unwrap_or(schema_field.name),
+                        rename: field.alias.map(|_| schema_field.name),
                         field_type: RustOutputFieldType::from_schema_type(
                             &schema_field.value_type,
                             inner_type_name,

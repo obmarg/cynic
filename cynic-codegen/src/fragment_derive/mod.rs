@@ -43,7 +43,9 @@ pub fn fragment_derive_impl(
 ) -> Result<TokenStream, Errors> {
     use quote::{quote, quote_spanned};
 
+    let mut input = input;
     input.validate()?;
+    input.detect_aliases();
 
     let schema_path = &input.schema_path;
 
@@ -72,12 +74,13 @@ pub fn fragment_derive_impl(
         syn::parse2(quote! { () })?
     };
 
-    if let darling::ast::Data::Struct(fields) = &input.data {
-        let graphql_name = &(input.graphql_type_name());
-        let schema_module = input.schema_module();
+    let graphql_name = &(input.graphql_type_name());
+    let schema_module = input.schema_module();
+    let ident = input.ident;
+    if let darling::ast::Data::Struct(fields) = input.data {
         let fragment_impl = FragmentImpl::new_for(
             &fields,
-            &input.ident,
+            &ident,
             &object,
             Ident::new_spanned(&*schema_module, schema_module.span()).into(),
             graphql_name,
@@ -99,6 +102,7 @@ pub fn fragment_derive_impl(
 /// references some named schema type.
 enum FieldTypeSelectorCall {
     Field(TypePath),
+    AliasedField(String, TypePath),
     Opt(Box<FieldTypeSelectorCall>),
     Vector(Box<FieldTypeSelectorCall>),
     Flatten(Box<FieldTypeSelectorCall>),
@@ -117,6 +121,7 @@ impl FieldTypeSelectorCall {
         field_constructor: TypePath,
         flatten: bool,
         recurse_limit: Option<u8>,
+        alias: Option<String>,
     ) -> FieldTypeSelectorCall {
         if flatten {
             FieldTypeSelectorCall::Flatten(Box::new(FieldTypeSelectorCall::for_field(
@@ -124,6 +129,7 @@ impl FieldTypeSelectorCall {
                 field_constructor,
                 false,
                 None,
+                alias,
             )))
         } else if let Some(limit) = recurse_limit {
             let inner_selector = Box::new(FieldTypeSelectorCall::for_field(
@@ -131,6 +137,7 @@ impl FieldTypeSelectorCall {
                 field_constructor,
                 false,
                 None,
+                alias,
             ));
 
             if field_type.is_list() {
@@ -159,6 +166,7 @@ impl FieldTypeSelectorCall {
                 field_constructor,
                 false,
                 None,
+                alias,
             )))
         } else if let FieldType::List(inner, _) = field_type {
             FieldTypeSelectorCall::Vector(Box::new(FieldTypeSelectorCall::for_field(
@@ -166,9 +174,13 @@ impl FieldTypeSelectorCall {
                 field_constructor,
                 false,
                 None,
+                alias,
             )))
         } else {
-            FieldTypeSelectorCall::Field(field_constructor)
+            match alias {
+                Some(alias) => FieldTypeSelectorCall::AliasedField(alias, field_constructor),
+                None => FieldTypeSelectorCall::Field(field_constructor),
+            }
         }
     }
 }
@@ -196,6 +208,22 @@ impl FieldTypeSelectorCall {
                         .#optional_arg_names(#optional_arg_exprs)
                     )*
                     .select(#inner_selection_tokens)
+                }
+            }
+            FieldTypeSelectorCall::AliasedField(alias, type_path) => {
+                let required_arguments = required_arguments.iter().map(|arg| &arg.expr);
+                let optional_arg_names = optional_arguments.iter().map(|arg| &arg.argument_name);
+                let optional_arg_exprs = optional_arguments.iter().map(|arg| &arg.expr);
+                let alias = proc_macro2::Literal::string(&alias);
+
+                quote! {
+                    #type_path(
+                        #(#required_arguments, )*
+                    )
+                    #(
+                        .#optional_arg_names(#optional_arg_exprs)
+                    )*
+                    .select_aliased(#alias, #inner_selection_tokens)
                 }
             }
             FieldTypeSelectorCall::Opt(inner) => inner.to_call(
@@ -354,13 +382,6 @@ impl FragmentImpl {
         let selector_struct_path =
             TypePath::concat(&[schema_module_path, object.selector_struct.clone().into()]);
 
-        if fields.style != darling::ast::Style::Struct {
-            return Err(syn::Error::new(
-                name.span(),
-                "QueryFragment derive currently only supports named fields",
-            ));
-        }
-
         let (constructor_params, field_selectors) = fields
             .fields
             .iter()
@@ -424,6 +445,7 @@ fn process_field(
                 TypePath::concat(&[selector_struct_path.clone(), graphql_ident.clone().into()]),
                 *field.flatten,
                 field.recurse.as_ref().map(|f| **f),
+                field.alias(),
             ),
             style: if gql_field.field_type.contains_scalar() {
                 NamedTypeSelectorStyle::Scalar

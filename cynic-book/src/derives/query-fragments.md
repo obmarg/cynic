@@ -179,6 +179,8 @@ Each field can also have it's own attributes:
   to differ from the GraphQL field name.  You should provide the name as it is
   in the GraphQL schema (although due to implementation details a snake case
   form of the name may work as well)
+- `alias` can be provided if you have a renamed field and want to explicitly
+  request a GraphQL alias in the resulting query output.
 - `recurse = "5"` tells cynic that this field is recursive and should be
   fetched to a maximum depth of 5. See [Recursive Queries][recursive-queries]
   for more info.

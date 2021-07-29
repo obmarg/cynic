@@ -1,3 +1,5 @@
+use std::collections::HashSet;
+
 use darling::util::SpannedValue;
 
 use crate::{type_validation::CheckMode, Errors};
@@ -78,6 +80,22 @@ impl FragmentDeriveInput {
 
         Ok(())
     }
+
+    pub fn detect_aliases(&mut self) {
+        let mut names = HashSet::new();
+        if let darling::ast::Data::Struct(fields) = &mut self.data {
+            for field in &mut fields.fields {
+                if let Some(rename) = &mut field.rename {
+                    let name = rename.as_str();
+                    if names.contains(name) {
+                        field.alias = true.into();
+                        continue;
+                    }
+                    names.insert(name);
+                }
+            }
+        }
+    }
 }
 
 #[derive(darling::FromField, Clone)]
@@ -99,6 +117,9 @@ pub struct FragmentDeriveField {
 
     #[darling(default)]
     rename: Option<SpannedValue<String>>,
+
+    #[darling(default)]
+    alias: SpannedValue<bool>,
 }
 
 impl FragmentDeriveField {
@@ -127,10 +148,18 @@ impl FragmentDeriveField {
             .into());
         }
 
+        if *self.alias && self.rename.is_none() {
+            return Err(syn::Error::new(
+                self.alias.span(),
+                "You can only alias a renamed field.  Try removing `alias` or adding a rename",
+            )
+            .into());
+        }
+
         Ok(())
     }
 
-    pub fn type_check_mode(&self) -> CheckMode {
+    pub(super) fn type_check_mode(&self) -> CheckMode {
         if *self.flatten {
             CheckMode::Flattening
         } else if self.recurse.is_some() {
@@ -142,12 +171,17 @@ impl FragmentDeriveField {
         }
     }
 
-    pub fn graphql_ident(&self) -> Option<crate::Ident> {
+    pub(super) fn graphql_ident(&self) -> Option<crate::Ident> {
         match (&self.rename, &self.ident) {
             (Some(rename), _) => Some(crate::Ident::for_field(&**rename).with_span(rename.span())),
             (_, Some(ident)) => Some(crate::Ident::from_proc_macro2(ident, None)),
             _ => None,
         }
+    }
+
+    pub(super) fn alias(&self) -> Option<String> {
+        self.alias
+            .then(|| self.ident.as_ref().expect("ident is required").to_string())
     }
 }
 
@@ -173,6 +207,7 @@ mod tests {
                         recurse: None,
                         spread: false.into(),
                         rename: None,
+                        alias: false.into(),
                     },
                     FragmentDeriveField {
                         ident: Some(format_ident!("field_two")),
@@ -182,6 +217,7 @@ mod tests {
                         recurse: None,
                         spread: false.into(),
                         rename: None,
+                        alias: false.into(),
                     },
                     FragmentDeriveField {
                         ident: Some(format_ident!("field_three")),
@@ -191,6 +227,7 @@ mod tests {
                         recurse: Some(8.into()),
                         spread: false.into(),
                         rename: Some("fieldThree".to_string().into()),
+                        alias: false.into(),
                     },
                     FragmentDeriveField {
                         ident: Some(format_ident!("some_spread")),
@@ -200,6 +237,7 @@ mod tests {
                         recurse: None,
                         spread: true.into(),
                         rename: Some("fieldThree".to_string().into()),
+                        alias: true.into(),
                     },
                 ],
             )),
@@ -228,6 +266,7 @@ mod tests {
                         recurse: None,
                         spread: false.into(),
                         rename: None,
+                        alias: false.into(),
                     },
                     FragmentDeriveField {
                         ident: Some(format_ident!("field_two")),
@@ -237,6 +276,7 @@ mod tests {
                         recurse: Some(8.into()),
                         spread: false.into(),
                         rename: None,
+                        alias: false.into(),
                     },
                     FragmentDeriveField {
                         ident: Some(format_ident!("field_three")),
@@ -246,6 +286,7 @@ mod tests {
                         recurse: Some(8.into()),
                         spread: false.into(),
                         rename: None,
+                        alias: false.into(),
                     },
                     FragmentDeriveField {
                         ident: Some(format_ident!("some_spread")),
@@ -255,6 +296,7 @@ mod tests {
                         recurse: None,
                         spread: true.into(),
                         rename: None,
+                        alias: false.into(),
                     },
                     FragmentDeriveField {
                         ident: Some(format_ident!("some_other_spread")),
@@ -264,6 +306,17 @@ mod tests {
                         recurse: Some(8.into()),
                         spread: true.into(),
                         rename: None,
+                        alias: false.into(),
+                    },
+                    FragmentDeriveField {
+                        ident: Some(format_ident!("some_other_spread")),
+                        ty: syn::parse_quote! { String },
+                        attrs: vec![],
+                        flatten: false.into(),
+                        recurse: Some(8.into()),
+                        spread: true.into(),
+                        rename: None,
+                        alias: true.into(),
                     },
                 ],
             )),
@@ -275,7 +328,7 @@ mod tests {
         };
 
         let errors = input.validate().unwrap_err();
-        assert_eq!(errors.len(), 4);
+        assert_eq!(errors.len(), 5);
     }
 
     #[test]
@@ -315,6 +368,7 @@ mod tests {
                         recurse: None,
                         spread: false.into(),
                         rename: None,
+                        alias: false.into(),
                     },
                     FragmentDeriveField {
                         ident: Some(format_ident!("field_two")),
@@ -324,6 +378,7 @@ mod tests {
                         recurse: None,
                         spread: false.into(),
                         rename: None,
+                        alias: false.into(),
                     },
                     FragmentDeriveField {
                         ident: Some(format_ident!("field_three")),
@@ -333,6 +388,7 @@ mod tests {
                         recurse: Some(8.into()),
                         spread: false.into(),
                         rename: None,
+                        alias: false.into(),
                     },
                 ],
             )),

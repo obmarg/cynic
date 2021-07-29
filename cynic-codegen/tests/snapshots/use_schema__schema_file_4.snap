@@ -26,6 +26,18 @@ pub mod foo {
         ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Foo> {
             ::cynic::selection_set::field("_", self.args, ::cynic::selection_set::option(inner))
         }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, bool>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Foo> {
+            ::cynic::selection_set::field_alias(
+                "_",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
     }
 }
 
