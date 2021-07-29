@@ -11,6 +11,10 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+### Bug Fixes
+
+- `InputObject` now serializes fields in a stable order.
+
 ## v0.14.0 - 2021-06-06
 
 ### New Features

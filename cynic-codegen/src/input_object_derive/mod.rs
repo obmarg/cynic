@@ -1,5 +1,5 @@
 use proc_macro2::{Span, TokenStream};
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 use syn::spanned::Spanned;
 
 use crate::{
@@ -181,7 +181,7 @@ fn join_fields<'a>(
 ) -> Result<Vec<(&'a InputObjectDeriveField, &'a InputValue)>, TokenStream> {
     use crate::schema::TypeExt;
 
-    let mut map = HashMap::new();
+    let mut map = BTreeMap::new();
     for field in fields {
         let transformed_ident = Ident::from_proc_macro2(
             field
