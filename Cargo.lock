@@ -647,6 +647,8 @@ dependencies = [
  "chrono",
  "cynic",
  "cynic-codegen",
+ "cynic-querygen",
+ "graphql-parser",
  "insta",
  "reqwest 0.11.2",
  "serde_json",
@@ -1095,8 +1097,6 @@ dependencies = [
 [[package]]
 name = "graphql-parser"
 version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d1abd4ce5247dfc04a03ccde70f87a048458c9356c7e41d21ad8c407b3dde6f2"
 dependencies = [
  "combine",
  "thiserror",
@@ -2534,9 +2534,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "1.0.68"
+version = "1.0.74"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3ce15dd3ed8aa2f8eeac4716d6ef5ab58b6b9256db41d7e1a0224c2788e8fd87"
+checksum = "1873d832550d4588c3dbc20f01361ab00bfe741048f71e3fecf145a7cc18b29c"
 dependencies = [
  "proc-macro2",
  "quote",

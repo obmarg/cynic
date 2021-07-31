@@ -20,7 +20,7 @@ mod gql_schema {
 
 cynic::gql! {
     query film_directory_query($id: ID) {
-        film(id: id) {
+        film(id: $id) {
             title, #asdasdasd
             director,
         }

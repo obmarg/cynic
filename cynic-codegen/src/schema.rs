@@ -1,3 +1,5 @@
+use graphql_parser::error::BorrowedParseError;
+
 use crate::{FieldArgument, TypeIndex};
 
 // Alias all the graphql_parser schema types so we don't have to specify generic parameters
@@ -36,18 +38,7 @@ pub fn load_schema(filename: impl AsRef<std::path::Path>) -> Result<Document, Sc
 
 pub(crate) fn parse_schema(schema: &str) -> Result<Document, SchemaLoadError> {
     let borrowed_schema = graphql_parser::schema::parse_schema::<String>(&schema)?;
-    Ok(schema_into_static(borrowed_schema))
-}
-
-fn schema_into_static<'a>(
-    doc: graphql_parser::schema::Document<'a, String>,
-) -> graphql_parser::schema::Document<'static, String> {
-    // A workaround until https://github.com/graphql-rust/graphql-parser/pull/33 is
-    // merged upstream.
-
-    // A document that uses Strings for it's data should be safe to cast to 'static lifetime
-    // as there's nothing inside it to reference 'a anyway
-    unsafe { std::mem::transmute::<_, Document>(doc) }
+    Ok(borrowed_schema.into_static())
 }
 
 #[derive(Debug, PartialEq, Clone)]
@@ -69,8 +60,8 @@ impl SchemaLoadError {
     }
 }
 
-impl From<graphql_parser::schema::ParseError> for SchemaLoadError {
-    fn from(e: graphql_parser::schema::ParseError) -> SchemaLoadError {
+impl<'a> From<BorrowedParseError<'a>> for SchemaLoadError {
+    fn from(e: BorrowedParseError) -> SchemaLoadError {
         SchemaLoadError::ParseError(e.to_string())
     }
 }

@@ -23,6 +23,8 @@ surf = "2.1"
 async-std = "1.8"
 
 chrono = { version = "0.4", features = ["serde"]}
+graphql-parser = { path = "../../graphql-parser" }
+cynic-querygen = { path = "../cynic-querygen" }
 
 [dev-dependencies]
 insta = "1.4"

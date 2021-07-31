@@ -42,8 +42,8 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
         field_type: InputFieldType<'schema>,
         variable_definitions: &[Variable<'query, 'schema>],
     ) -> Result<Self, Error> {
-        Ok(match value {
-            parser::Value::Variable(name) => {
+        Ok(match &value.kind {
+            parser::ValueKind::Variable(name) => {
                 // If this is just a variable then we'll take it's type as our value type.
                 let variable = variable_definitions
                     .iter()
@@ -51,21 +51,18 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
                     .ok_or_else(|| Error::UnknownArgument(name.to_string()))?;
 
                 TypedValue::Variable {
-                    name: (name, variable.name.1),
+                    name: (name, value.position),
                     value_type: variable.value_type.clone(),
                     field_type,
                 }
             }
-            parser::Value::Int(num) => TypedValue::Int(num.as_i64().unwrap(), field_type),
-            parser::Value::Float(num) => TypedValue::Float(Decimal::from_f64(*num), field_type),
-            parser::Value::String(s) => TypedValue::String(s.clone(), field_type),
-            parser::Value::Boolean(b) => TypedValue::Boolean(*b, field_type),
-            parser::Value::Null => TypedValue::Null(field_type),
-            parser::Value::Enum(e) => {
-                eprintln!("{}{}{:?}", pos, e, field_type);
-                TypedValue::Enum(pos, e, field_type)
-            }
-            parser::Value::List(values) => {
+            parser::ValueKind::Int(num) => TypedValue::Int(num.as_i64().unwrap(), field_type),
+            parser::ValueKind::Float(num) => TypedValue::Float(Decimal::from_f64(*num), field_type),
+            parser::ValueKind::String(s) => TypedValue::String(s.clone(), field_type),
+            parser::ValueKind::Boolean(b) => TypedValue::Boolean(*b, field_type),
+            parser::ValueKind::Null => TypedValue::Null(field_type),
+            parser::ValueKind::Enum(e) => TypedValue::Enum(value.position, e, field_type),
+            parser::ValueKind::List(values) => {
                 let inner_type = field_type.list_inner_type()?;
                 TypedValue::List(
                     pos,
@@ -83,7 +80,7 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
                     field_type,
                 )
             }
-            parser::Value::Object(obj) => {
+            parser::ValueKind::Object(obj) => {
                 if let InputType::InputObject(obj_type) = field_type.inner_ref().lookup()? {
                     TypedValue::Object(
                         pos,
@@ -98,7 +95,7 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
                                 Ok((
                                     *k,
                                     TypedValue::from_query_value(
-                                        field.name.1,
+                                        value.position,
                                         v,
                                         field.value_type.clone(),
                                         variable_definitions,

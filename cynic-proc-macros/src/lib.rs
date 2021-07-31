@@ -4,11 +4,12 @@
 
 extern crate proc_macro;
 
+use std::fmt::Write;
 use std::{path::Path, rc::Rc};
 
 use cargo_toml::Manifest;
 use cynic_querygen::{indented, parse_query_document, Error, TypeIndex};
-use graphql_parser::Pos;
+use graphql_parser::{error::Error as ConsumeError, Pos};
 use proc_macro::{Span, TokenStream};
 use quote::quote;
 use serde::Deserialize;
@@ -170,7 +171,7 @@ pub fn gql(input: TokenStream) -> TokenStream {
 
     let input_clone = input.clone();
 
-    let mut iter = input.into_iter();
+    let mut iter = input.clone().into_iter();
     let first = iter.next().unwrap();
     let first_clone = first.clone();
     let last = iter.last().unwrap_or_else(|| first_clone);
@@ -183,7 +184,9 @@ pub fn gql(input: TokenStream) -> TokenStream {
         .unwrap();
 
     let query_string = source.clone();
-    eprintln!("{:?}", query_string);
+    // eprintln!("{:?}", query_string);
+
+    // let query_string = input.to_string();
 
     let fragments = document_to_fragment_structs(
         &query_string,
@@ -194,6 +197,40 @@ pub fn gql(input: TokenStream) -> TokenStream {
     let fragments = match fragments {
         Ok(fragments) => fragments,
         Err(error) => match error {
+            Error::ParseError(error) => {
+                let errors = &error.errors;
+                let mut error_message = String::new();
+                let mut iter = errors.iter().peekable();
+                while let Some(error) = iter.next() {
+                    match error {
+                        ConsumeError::Unexpected(token) => {
+                            write!(error_message, "Unexpected `{}`. Expected ", token).unwrap();
+                        }
+                        ConsumeError::Expected(token) => {
+                            write!(error_message, "`{}`", token).unwrap();
+                            if let Some(_peek) = iter.peek() {
+                                write!(error_message, ", ").unwrap();
+                            } else {
+                                write!(error_message, ".").unwrap();
+                            }
+                        }
+                        ConsumeError::Message(_token) => todo!(),
+                        ConsumeError::Other(_other) => todo!(),
+                    }
+                }
+
+                let span = error.position;
+                eprintln!("{:?}", span);
+                let (span_start, span_end) =
+                    get_span_from_pos(&query_string, &first.span(), span, 1);
+
+                eprintln!("{:?}, {:?}", span_start, span_end);
+
+                find_full_span_in_stream(input_clone.clone(), span_start, span_end)
+                    .map(|e| e.error(error_message).emit());
+
+                return quote! {}.into();
+            }
             Error::UnknownField(field, object, span) => {
                 eprintln!("{:?}", span);
                 let (span_start, span_end) =
@@ -329,12 +366,10 @@ fn document_to_fragment_structs(
     schema: impl AsRef<str>,
     schema_path: impl AsRef<str>,
 ) -> Result<String, Error> {
-    use std::fmt::Write;
-
     let schema = graphql_parser::parse_schema::<&str>(schema.as_ref())?;
     let query = graphql_parser::parse_query::<&str>(query.as_ref())?;
 
-    eprintln!("{:#?}", query);
+    // eprintln!("{:#?}", query);
 
     let type_index = Rc::new(TypeIndex::from_schema(&schema));
     let parsed_output = parse_query_document(&query, &type_index)?;
