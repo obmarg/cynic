@@ -4,13 +4,15 @@
 
 extern crate proc_macro;
 
-use std::fmt::Write;
+use std::io::{Read, Write};
+use std::process::{Command, Stdio};
 use std::{path::Path, rc::Rc};
 
 use cargo_toml::Manifest;
-use cynic_querygen::{indented, parse_query_document, Error, TypeIndex};
+use cynic_querygen::{parse_query_document, Error, TypeIndex};
 use graphql_parser::{error::Error as ConsumeError, Pos};
 use proc_macro::{Span, TokenStream};
+use proc_macro2::Ident;
 use quote::quote;
 use serde::Deserialize;
 
@@ -202,6 +204,7 @@ pub fn gql(input: TokenStream) -> TokenStream {
                 let mut error_message = String::new();
                 let mut iter = errors.iter().peekable();
                 while let Some(error) = iter.next() {
+                    use std::fmt::Write;
                     match error {
                         ConsumeError::Unexpected(token) => {
                             write!(error_message, "Unexpected `{}`. Expected ", token).unwrap();
@@ -270,9 +273,31 @@ pub fn gql(input: TokenStream) -> TokenStream {
         },
     };
 
-    let stream: proc_macro::TokenStream = fragments.parse().unwrap();
+    let mut rustfmt = Command::new("rustfmt");
+    let rustfmt = rustfmt
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .arg("--emit")
+        .arg("stdout");
 
-    stream
+    let rustfmt = rustfmt.spawn().expect("Failed to run rustfmt");
+
+    rustfmt
+        .stdin
+        .unwrap()
+        .write_all(fragments.to_string().as_bytes())
+        .unwrap();
+
+    let mut fragment_string = String::new();
+    rustfmt
+        .stdout
+        .unwrap()
+        .read_to_string(&mut fragment_string)
+        .unwrap();
+
+    eprintln!("{}", &fragment_string);
+
+    fragments
 }
 
 fn get_span_from_pos(
@@ -365,7 +390,7 @@ fn document_to_fragment_structs(
     query: impl AsRef<str>,
     schema: impl AsRef<str>,
     schema_path: impl AsRef<str>,
-) -> Result<String, Error> {
+) -> Result<TokenStream, Error> {
     let schema = graphql_parser::parse_schema::<&str>(schema.as_ref())?;
     let query = graphql_parser::parse_query::<&str>(query.as_ref())?;
 
@@ -374,78 +399,69 @@ fn document_to_fragment_structs(
     let type_index = Rc::new(TypeIndex::from_schema(&schema));
     let parsed_output = parse_query_document(&query, &type_index)?;
 
-    let mut output = String::new();
-
     let operation = parsed_output
         .normalised_document
         .operations
         .first()
         .unwrap();
-    let name = operation.name.unwrap();
+    let name = Ident::new(operation.name.unwrap(), proc_macro2::Span::call_site());
 
-    writeln!(output, "#[cynic::schema_for_derives(").unwrap();
-    writeln!(output, "    file = r#\"{}\"#,", schema_path.as_ref()).unwrap();
-    writeln!(output, "    module = \"gql_schema\",").unwrap();
-    writeln!(output, ")]\nmod {} {{", name).unwrap();
+    let argument_structs = &parsed_output.argument_structs;
+    let query_fragments = &parsed_output.query_fragments;
+    let enums = &parsed_output.enums;
+    let input_objects = &parsed_output.input_objects;
+    let scalars = &parsed_output.scalars;
 
-    let mod_output = &mut indented(&mut output, 4);
+    eprintln!("{:#?}", &parsed_output.argument_structs);
 
-    writeln!(mod_output, "use crate::gql_schema;\n").unwrap();
+    let (struct_definition, arguments) =
+        if let Some(argument_struct) = parsed_output.argument_structs.iter().next() {
+            let struct_name = Ident::new(&argument_struct.name, proc_macro2::Span::call_site());
 
-    for argument_struct in &parsed_output.argument_structs {
-        writeln!(mod_output, "{}", argument_struct).unwrap();
-    }
+            let mut field_names = vec![];
+            let mut field_types = vec![];
 
-    for fragment in parsed_output.query_fragments {
-        fragment.fmt(mod_output)?;
-    }
+            for field in &argument_struct.fields {
+                field_names.push(Ident::new(&field.name(), proc_macro2::Span::call_site()));
+                field_types.push(Ident::new(
+                    &field.type_spec(),
+                    proc_macro2::Span::call_site(),
+                ));
+            }
 
-    for en in parsed_output.enums {
-        writeln!(mod_output, "{}", en).unwrap();
-    }
+            (
+                Some(quote! { #struct_name {#(field_names: #field_types,)*}}),
+                Some(quote! { #(field_names: #field_types,)*}),
+            )
+        } else {
+            (Some(quote! {()}), None)
+        };
 
-    for input_object in parsed_output.input_objects {
-        writeln!(mod_output, "{}", input_object).unwrap();
-    }
+    let schema_path = schema_path.as_ref();
 
-    for scalar in parsed_output.scalars {
-        writeln!(mod_output, "{}", scalar).unwrap();
-    }
+    let tokens = quote! {
+        #[cynic::schema_for_derives(
+            file = #schema_path,
+            module = "gql_schema",
+        )]
+        mod #name {
+            use crate::gql_schema;
 
-    write!(mod_output, "pub fn query(").unwrap();
+            #(#argument_structs)*
+            #(#query_fragments)*
+            #(#enums)*
+            #(#input_objects)*
+            #(#scalars)*
 
-    let arguments = if let Some(argument_struct) = parsed_output.argument_structs.iter().next() {
-        let mut output = String::new();
+            pub fn query(#arguments) -> cynic::GraphQlResponse<#name> {
+                use cynic::QueryBuilder;
 
-        write!(output, "{} {{", argument_struct.name).unwrap();
-
-        for field in &argument_struct.fields {
-            write!(mod_output, "{}: {},", field.name(), field.type_spec()).unwrap();
-            write!(output, "{},", field.name()).unwrap();
+                let query = #name::build(&#struct_definition);
+                crate::gql_schema::run_query(query)
+            }
         }
+    }
+    .into();
 
-        write!(output, "}}").unwrap();
-
-        output
-    } else {
-        "()".into()
-    };
-
-    writeln!(mod_output, ") -> cynic::GraphQlResponse<{}> {{", name).unwrap();
-    writeln!(
-        mod_output,
-        r#"    use cynic::QueryBuilder;
-
-    let query = {}::build(&{});
-    crate::gql_schema::run_query(query)"#,
-        name, arguments
-    )
-    .unwrap();
-    writeln!(mod_output, "}}").unwrap();
-
-    writeln!(output, "}}\n").unwrap();
-
-    // eprintln!("{}", output);
-
-    Ok(output)
+    Ok(tokens)
 }

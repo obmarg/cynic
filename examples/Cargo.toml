@@ -30,4 +30,4 @@ cynic-querygen = { path = "../cynic-querygen" }
 insta = "1.4"
 
 [package.metadata.cynic]
-schema = "../schemas/starwars.schema.graphql"
+schema = "../schemas/books.graphql"

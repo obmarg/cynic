@@ -1,4 +1,6 @@
 use inflector::Inflector;
+use proc_macro2::{Ident, Span, TokenStream};
+use quote::{quote, ToTokens};
 use std::fmt::Write;
 
 use super::indented;
@@ -26,5 +28,44 @@ impl std::fmt::Display for EnumDetails<'_> {
             writeln!(f, "{},", variant.to_pascal_case())?;
         }
         writeln!(f, "}}")
+    }
+}
+
+impl ToTokens for EnumDetails<'_> {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
+        let type_name = &self.name.to_pascal_case();
+
+        let rename = if self.name != type_name {
+            Some(quote! {
+                #[cynic(graphql_type = #type_name)]
+            })
+        } else {
+            None
+        };
+
+        let values = self.values.iter().map(|variant| {
+            let renamed = &variant.to_pascal_case().to_screaming_snake_case();
+            let variant_name = Ident::new(&renamed, Span::call_site());
+            let rename = if variant != &renamed {
+                Some(quote! {
+                    #[cynic(rename = #variant_name)]
+                })
+            } else {
+                None
+            };
+            quote! {
+                #rename
+                #variant,
+            }
+        });
+
+        tokens.extend(quote! {
+            #[derive(cynic::Enum, Clone, Copy, Debug)]
+            #rename
+
+            pub enum #type_name {
+                #(#values),*
+            }
+        });
     }
 }

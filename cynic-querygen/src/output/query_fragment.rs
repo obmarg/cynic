@@ -2,6 +2,8 @@ use core::fmt;
 
 use graphql_parser::Pos;
 use inflector::Inflector;
+use proc_macro2::{Ident, Span, TokenStream};
+use quote::{quote, ToTokens};
 
 use super::indented;
 use crate::{query_parsing::TypedValue, schema::OutputFieldType, Error};
@@ -73,6 +75,47 @@ impl QueryFragment<'_, '_> {
     }
 }
 
+impl ToTokens for QueryFragment<'_, '_> {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
+        let description = if self.target_type != self.name || self.argument_struct_name.is_some() {
+            let target_type = if self.target_type != self.name {
+                let target_type = &self.target_type;
+                Some(quote! {graphql_type = #target_type})
+            } else {
+                None
+            };
+
+            let argument_struct = if let Some(name) = &self.argument_struct_name {
+                let comma = if target_type.is_some() {
+                    Some(quote! {,})
+                } else {
+                    None
+                };
+                Some(quote! {#comma argument_struct = #name})
+            } else {
+                None
+            };
+
+            Some(quote! {
+                #[cynic(#target_type #argument_struct)]
+            })
+        } else {
+            None
+        };
+
+        let name = Ident::new(&self.name, Span::call_site());
+        let fields = &self.fields;
+
+        tokens.extend(quote! {
+            #[derive(cynic::QueryFragment, Debug)]
+            #description
+            pub struct #name {
+                #(#fields)*
+            }
+        })
+    }
+}
+
 #[derive(Debug, PartialEq)]
 pub struct OutputField<'query, 'schema> {
     pub name: &'schema str,
@@ -124,7 +167,6 @@ impl OutputField<'_, '_> {
                 .collect::<Result<Vec<_>, Error>>()?
                 .join(", ");
 
-            eprintln!("topkek");
             writeln!(f, "#[arguments({})]", arguments_string).unwrap();
         }
 
@@ -141,6 +183,35 @@ impl OutputField<'_, '_> {
         .unwrap();
 
         Ok(())
+    }
+}
+
+impl ToTokens for OutputField<'_, '_> {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
+        let arguments = self.arguments.iter().map(|arg| {
+            let name = Ident::new(&arg.name.0.to_snake_case(), Span::call_site());
+            let lit = Ident::new(&arg.to_literal().unwrap(), Span::call_site());
+            quote! { #name = #lit, }
+        });
+
+        let arguments = if arguments.clone().count() > 0 {
+            Some(quote! {#[arguments(#(#arguments)*)]})
+        } else {
+            None
+        };
+
+        let rename = self.rename.map(|r| quote! {#[cynic(rename = #r)]});
+
+        let name = Ident::new(&self.name.to_snake_case(), Span::call_site());
+        let typ: TokenStream = self.field_type.type_spec().parse().unwrap();
+
+        tokens.extend(quote! {
+            #arguments
+
+            #rename
+
+            pub #name: #typ,
+        })
     }
 }
 

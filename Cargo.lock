@@ -680,6 +680,8 @@ dependencies = [
  "assert_matches",
  "graphql-parser",
  "insta",
+ "proc-macro2",
+ "quote",
  "rstest 0.7.0",
  "rust_decimal",
  "thiserror",

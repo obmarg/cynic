@@ -1,9 +1,7 @@
 //! An example of querying the starwars API using the query autogenerating API.
 
-use cynic::Id;
-
 mod gql_schema {
-    cynic::use_schema!("../schemas/starwars.schema.graphql");
+    cynic::use_schema!("../schemas/books.graphql");
 
     pub fn run_query<T>(query: cynic::Operation<T>) -> cynic::GraphQlResponse<T>
     where
@@ -19,30 +17,31 @@ mod gql_schema {
 }
 
 cynic::gql! {
-    query film_directory_query($id: ID) {
-        film(id: $id) {
-            title, #asdasdasd
-            director,
+    query books($id: ID) {
+        books {
+            id,
+            name,
+            author,
         }
     }
 }
 
-cynic::gql! {
-    query all_films {
-        allFilms {
-            films {
-                id
-                title
-            }
-        }
-    }
+pub fn query2() -> cynic::GraphQlResponse<crate::books::books> {
+    use cynic::QueryBuilder;
+    crate::gql_schema::run_query(crate::books::books::build(()))
 }
+
+// cynic::gql! {
+//     mutation create {
+//         createBook(name: "hehexd", author: "tyler1")
+//     }
+// }
 
 fn main() {
-    let result = film_directory_query::query(Some(Id::new("ZmlsbXM6Mw==")));
+    let result = books::query();
     println!("{:?}", result);
 
-    let result = all_films::query();
+    let result = create::query();
     println!("{:?}", result);
 }
 

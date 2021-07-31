@@ -1,4 +1,6 @@
 use inflector::Inflector;
+use proc_macro2::{Ident, Span, TokenStream};
+use quote::{quote, ToTokens, TokenStreamExt};
 
 use crate::query_parsing::Variable;
 
@@ -51,8 +53,33 @@ impl std::fmt::Display for ArgumentStruct<'_, '_> {
     }
 }
 
+impl ToTokens for ArgumentStruct<'_, '_> {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
+        let name = Ident::new(&self.name, Span::call_site());
+        let fields = &self.fields;
+
+        tokens.extend(quote! {
+            #[derive(cynic::FragmentArguments, Debug)]
+            pub struct #name {
+                #(#fields)*
+            }
+        })
+    }
+}
+
 impl std::fmt::Display for ArgumentStructField<'_, '_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         writeln!(f, "pub {}: {},", self.name(), self.type_spec())
+    }
+}
+
+impl ToTokens for ArgumentStructField<'_, '_> {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
+        let name = Ident::new(&self.name(), Span::call_site());
+        let typ = Ident::new(&self.type_spec(), Span::call_site());
+
+        tokens.extend(quote! {
+            pub #name: #typ
+        })
     }
 }
