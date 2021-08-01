@@ -190,7 +190,7 @@ impl ToTokens for OutputField<'_, '_> {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         let arguments = self.arguments.iter().map(|arg| {
             let name = Ident::new(&arg.name.0.to_snake_case(), Span::call_site());
-            let lit = Ident::new(&arg.to_literal().unwrap(), Span::call_site());
+            let lit = &arg.to_literal().unwrap().parse::<TokenStream>().unwrap();
             quote! { #name = #lit, }
         });
 

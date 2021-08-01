@@ -10,6 +10,7 @@ use std::{path::Path, rc::Rc};
 
 use cargo_toml::Manifest;
 use cynic_querygen::{parse_query_document, Error, TypeIndex};
+use graphql_parser::query::{Definition, OperationDefinition};
 use graphql_parser::{error::Error as ConsumeError, Pos};
 use proc_macro::{Span, TokenStream};
 use proc_macro2::Ident;
@@ -268,10 +269,12 @@ pub fn gql(input: TokenStream) -> TokenStream {
             }
             e => {
                 let error = e.to_string();
-                return quote! { compile_error!(#error) }.into();
+                return quote! { compile_error!{ #error } }.into();
             }
         },
     };
+
+    eprintln!("{}", &fragments.to_string());
 
     let mut rustfmt = Command::new("rustfmt");
     let rustfmt = rustfmt
@@ -412,8 +415,6 @@ fn document_to_fragment_structs(
     let input_objects = &parsed_output.input_objects;
     let scalars = &parsed_output.scalars;
 
-    eprintln!("{:#?}", &parsed_output.argument_structs);
-
     let (struct_definition, arguments) =
         if let Some(argument_struct) = parsed_output.argument_structs.iter().next() {
             let struct_name = Ident::new(&argument_struct.name, proc_macro2::Span::call_site());
@@ -423,21 +424,36 @@ fn document_to_fragment_structs(
 
             for field in &argument_struct.fields {
                 field_names.push(Ident::new(&field.name(), proc_macro2::Span::call_site()));
-                field_types.push(Ident::new(
-                    &field.type_spec(),
-                    proc_macro2::Span::call_site(),
-                ));
+                field_types.push(
+                    field
+                        .type_spec()
+                        .parse::<proc_macro2::TokenStream>()
+                        .unwrap(),
+                );
             }
 
             (
-                Some(quote! { #struct_name {#(field_names: #field_types,)*}}),
-                Some(quote! { #(field_names: #field_types,)*}),
+                Some(quote! { #struct_name {#(#field_names),*}}),
+                Some(quote! { #(#field_names: #field_types),*}),
             )
         } else {
             (Some(quote! {()}), None)
         };
 
     let schema_path = schema_path.as_ref();
+
+    let import = match &query.definitions[0] {
+        Definition::Operation(OperationDefinition::Query(_)) => quote! {
+            use cynic::QueryBuilder;
+        },
+        Definition::Operation(OperationDefinition::Mutation(_)) => quote! {
+            use cynic::MutationBuilder;
+        },
+        Definition::Operation(OperationDefinition::Subscription(_)) => quote! {
+            use cynic::SubscriptionBuilder;
+        },
+        _ => todo!(),
+    };
 
     let tokens = quote! {
         #[cynic::schema_for_derives(
@@ -454,7 +470,7 @@ fn document_to_fragment_structs(
             #(#scalars)*
 
             pub fn query(#arguments) -> cynic::GraphQlResponse<#name> {
-                use cynic::QueryBuilder;
+                #import
 
                 let query = #name::build(&#struct_definition);
                 crate::gql_schema::run_query(query)

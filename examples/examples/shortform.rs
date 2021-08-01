@@ -16,30 +16,45 @@ mod gql_schema {
     }
 }
 
-cynic::gql! {
-    query books($id: ID) {
-        books {
-            id,
-            name,
-            author,
-        }
-    }
-}
-
-pub fn query2() -> cynic::GraphQlResponse<crate::books::books> {
-    use cynic::QueryBuilder;
-    crate::gql_schema::run_query(crate::books::books::build(()))
-}
-
 // cynic::gql! {
-//     mutation create {
-//         createBook(name: "hehexd", author: "tyler1")
+//     query film_directory_query($id: ID, $filmid: ID) {
+//         film(id: $id, filmID: $filmid) {
+//             title, #asdasdasd
+//             director,
+//         }
 //     }
 // }
 
+// cynic::gql! {
+//     query all_films {
+//         allFilms {
+//             films {
+//                 id
+//                 title
+//             }
+//         }
+//     }
+// }
+
+// cynic::gql! {
+//     query books($id: ID) {
+//         books {
+//             id,
+//             name,
+//             author,
+//         }
+//     }
+// }
+
+cynic::gql! {
+    mutation create {
+        createBook(name: "hehexd", author: "tyler1")
+    }
+}
+
 fn main() {
-    let result = books::query();
-    println!("{:?}", result);
+    // let result = books::query();
+    // println!("{:?}", result);
 
     let result = create::query();
     println!("{:?}", result);

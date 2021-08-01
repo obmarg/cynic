@@ -61,7 +61,7 @@ impl ToTokens for ArgumentStruct<'_, '_> {
         tokens.extend(quote! {
             #[derive(cynic::FragmentArguments, Debug)]
             pub struct #name {
-                #(#fields)*
+                #(#fields),*
             }
         })
     }
@@ -76,7 +76,10 @@ impl std::fmt::Display for ArgumentStructField<'_, '_> {
 impl ToTokens for ArgumentStructField<'_, '_> {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         let name = Ident::new(&self.name(), Span::call_site());
-        let typ = Ident::new(&self.type_spec(), Span::call_site());
+        let typ = self
+            .type_spec()
+            .parse::<proc_macro2::TokenStream>()
+            .unwrap();
 
         tokens.extend(quote! {
             pub #name: #typ
