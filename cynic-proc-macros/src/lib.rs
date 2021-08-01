@@ -274,7 +274,7 @@ pub fn gql(input: TokenStream) -> TokenStream {
         },
     };
 
-    eprintln!("{}", &fragments.to_string());
+    // eprintln!("{}", &fragments.to_string());
 
     let mut rustfmt = Command::new("rustfmt");
     let rustfmt = rustfmt
@@ -298,7 +298,7 @@ pub fn gql(input: TokenStream) -> TokenStream {
         .read_to_string(&mut fragment_string)
         .unwrap();
 
-    eprintln!("{}", &fragment_string);
+    // eprintln!("{}", &fragment_string);
 
     fragments
 }
@@ -442,16 +442,31 @@ fn document_to_fragment_structs(
 
     let schema_path = schema_path.as_ref();
 
-    let import = match &query.definitions[0] {
-        Definition::Operation(OperationDefinition::Query(_)) => quote! {
-            use cynic::QueryBuilder;
-        },
-        Definition::Operation(OperationDefinition::Mutation(_)) => quote! {
-            use cynic::MutationBuilder;
-        },
-        Definition::Operation(OperationDefinition::Subscription(_)) => quote! {
-            use cynic::SubscriptionBuilder;
-        },
+    let (import, call) = match &query.definitions[0] {
+        Definition::Operation(OperationDefinition::Query(_)) => (
+            quote! {
+                use cynic::QueryBuilder;
+            },
+            quote! {
+                crate::gql_schema::run_query(query)
+            },
+        ),
+        Definition::Operation(OperationDefinition::Mutation(_)) => (
+            quote! {
+                use cynic::MutationBuilder;
+            },
+            quote! {
+                crate::gql_schema::run_query(query)
+            },
+        ),
+        Definition::Operation(OperationDefinition::Subscription(_)) => (
+            quote! {
+                use cynic::SubscriptionBuilder;
+            },
+            quote! {
+                crate::gql_schema::subscribe(query)
+            },
+        ),
         _ => todo!(),
     };
 
@@ -473,7 +488,7 @@ fn document_to_fragment_structs(
                 #import
 
                 let query = #name::build(&#struct_definition);
-                crate::gql_schema::run_query(query)
+                #call
             }
         }
     }

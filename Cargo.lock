@@ -628,7 +628,7 @@ dependencies = [
  "Inflector",
  "assert_matches",
  "darling",
- "graphql-parser",
+ "graphql-parser 0.3.0 (git+https://github.com/Yatekii/graphql-parser)",
  "insta",
  "lazy_static",
  "maplit",
@@ -648,7 +648,7 @@ dependencies = [
  "cynic",
  "cynic-codegen",
  "cynic-querygen",
- "graphql-parser",
+ "graphql-parser 0.3.0",
  "insta",
  "reqwest 0.11.2",
  "serde_json",
@@ -664,7 +664,7 @@ dependencies = [
  "cargo_toml",
  "cynic-codegen",
  "cynic-querygen",
- "graphql-parser",
+ "graphql-parser 0.3.0 (git+https://github.com/Yatekii/graphql-parser)",
  "proc-macro2",
  "quote",
  "serde",
@@ -678,7 +678,7 @@ version = "0.14.1"
 dependencies = [
  "Inflector",
  "assert_matches",
- "graphql-parser",
+ "graphql-parser 0.3.0 (git+https://github.com/Yatekii/graphql-parser)",
  "insta",
  "proc-macro2",
  "quote",
@@ -1099,6 +1099,15 @@ dependencies = [
 [[package]]
 name = "graphql-parser"
 version = "0.3.0"
+dependencies = [
+ "combine",
+ "thiserror",
+]
+
+[[package]]
+name = "graphql-parser"
+version = "0.3.0"
+source = "git+https://github.com/Yatekii/graphql-parser#48e181320ea7bf974da9e7b6e28af0c0ef4fe8fc"
 dependencies = [
  "combine",
  "thiserror",

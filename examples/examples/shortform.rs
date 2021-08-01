@@ -3,7 +3,7 @@
 mod gql_schema {
     cynic::use_schema!("../schemas/books.graphql");
 
-    pub fn run_query<T>(query: cynic::Operation<T>) -> cynic::GraphQlResponse<T>
+    pub fn query<T>(query: cynic::Operation<T>) -> cynic::GraphQlResponse<T>
     where
         T: 'static,
     {
@@ -13,6 +13,13 @@ mod gql_schema {
             .post("https://swapi-graphql.netlify.app/.netlify/functions/index")
             .run_graphql(query)
             .unwrap()
+    }
+
+    pub fn subscribe<T>(query: cynic::StreamingOperation<T>) -> cynic::GraphQlResponse<T>
+    where
+        T: 'static,
+    {
+        todo!()
     }
 }
 
@@ -46,9 +53,15 @@ mod gql_schema {
 //     }
 // }
 
+// cynic::gql! {
+//     mutation create {
+//         createBook(name: "hehexd", author: "tyler1")
+//     }
+// }
+
 cynic::gql! {
-    mutation create {
-        createBook(name: "hehexd", author: "tyler1")
+    subscription interval($n: Int!) {
+        interval(n: $n)
     }
 }
 
@@ -56,7 +69,10 @@ fn main() {
     // let result = books::query();
     // println!("{:?}", result);
 
-    let result = create::query();
+    // let result = create::query();
+    // println!("{:?}", result);
+
+    let result = interval::query(42);
     println!("{:?}", result);
 }
 

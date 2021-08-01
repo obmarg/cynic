@@ -39,6 +39,7 @@ pub struct Variable<'query, 'schema> {
 pub enum OperationKind {
     Query,
     Mutation,
+    Subscription,
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -185,9 +186,26 @@ fn normalise_operation<'query, 'doc, 'schema>(
                 variables: normaliser.variables,
             })
         }
-        OperationDefinition::Subscription(_) => Err(Error::UnsupportedQueryDocument(
-            "Subscriptions are not yet supported".into(),
-        )),
+        OperationDefinition::Subscription(subscription) => {
+            let mut normaliser = Normaliser::new(
+                type_index,
+                fragment_map,
+                selection_sets_out,
+                &subscription.variable_definitions,
+            );
+
+            let root = normaliser.normalise_selection_set(
+                &subscription.selection_set,
+                GraphPath::for_subscription(),
+            )?;
+
+            Ok(NormalisedOperation {
+                root,
+                name: subscription.name,
+                kind: OperationKind::Subscription,
+                variables: normaliser.variables,
+            })
+        }
     }
 }
 

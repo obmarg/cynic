@@ -16,7 +16,7 @@ default = ["rustfmt"]
 rustfmt = []
 
 [dependencies]
-graphql-parser = { path = "../../graphql-parser" }
+graphql-parser = { git = "https://github.com/Yatekii/graphql-parser" }
 proc-macro2 = "1.0"
 syn = "1.0"
 quote = "1.0"

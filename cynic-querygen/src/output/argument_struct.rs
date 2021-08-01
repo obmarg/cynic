@@ -1,6 +1,6 @@
 use inflector::Inflector;
 use proc_macro2::{Ident, Span, TokenStream};
-use quote::{quote, ToTokens, TokenStreamExt};
+use quote::{quote, ToTokens};
 
 use crate::query_parsing::Variable;
 

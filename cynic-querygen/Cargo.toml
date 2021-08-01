@@ -12,7 +12,7 @@ description = "QueryFragment generation for cynic, a GraphQL query builder & dat
 
 [dependencies]
 Inflector = "0.11.4"
-graphql-parser = { path = "../../graphql-parser" }
+graphql-parser = { git = "https://github.com/Yatekii/graphql-parser" }
 rust_decimal = "1.9"
 thiserror = "1.0.13"
 uuid = { version = "0.8", features = ["v4"] }

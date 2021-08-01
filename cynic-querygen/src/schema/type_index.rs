@@ -16,6 +16,7 @@ pub struct TypeIndex<'schema> {
     types: HashMap<&'schema str, TypeDefinition<'schema>>,
     query_root: String,
     mutation_root: String,
+    subscription_root: String,
 }
 
 impl<'schema> TypeIndex<'schema> {
@@ -43,6 +44,9 @@ impl<'schema> TypeIndex<'schema> {
                 if let Some(mutation) = schema_def.mutation {
                     rv.mutation_root = mutation.to_string();
                 }
+                if let Some(subscription) = schema_def.subscription {
+                    rv.subscription_root = subscription.to_string();
+                }
             }
         }
 
@@ -56,6 +60,7 @@ impl<'schema> TypeIndex<'schema> {
         let root_name = match path.operation_type {
             OperationType::Query => self.query_root.clone(),
             OperationType::Mutation => self.mutation_root.clone(),
+            OperationType::Subscription => self.subscription_root.clone(),
         };
 
         let root = self
@@ -80,6 +85,7 @@ impl<'schema> TypeIndex<'schema> {
         match (path.is_root(), &path.operation_type) {
             (true, OperationType::Query) => Ok(Cow::Owned(self.query_root.clone())),
             (true, OperationType::Mutation) => Ok(Cow::Owned(self.mutation_root.clone())),
+            (true, OperationType::Subscription) => Ok(Cow::Owned(self.subscription_root.clone())),
             (false, _) => Ok(Cow::Owned(
                 self.field_for_path(path)?
                     .value_type
@@ -165,6 +171,7 @@ impl<'a> Default for TypeIndex<'a> {
         TypeIndex {
             query_root: "Query".into(),
             mutation_root: "Mutation".into(),
+            subscription_root: "Subscription".into(),
             types,
         }
     }
@@ -185,6 +192,7 @@ fn name_for_type<'a>(type_def: &TypeDefinition<'a>) -> &'a str {
 enum OperationType {
     Query,
     Mutation,
+    Subscription,
 }
 
 /// The path to a type within a graphql graph.
@@ -205,6 +213,13 @@ impl<'a> GraphPath<'a> {
     pub fn for_query() -> Self {
         GraphPath {
             operation_type: OperationType::Query,
+            path: Vec::new(),
+        }
+    }
+
+    pub fn for_subscription() -> Self {
+        GraphPath {
+            operation_type: OperationType::Subscription,
             path: Vec::new(),
         }
     }
