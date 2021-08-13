@@ -18,6 +18,12 @@ all APIs might be changed.
   field twice.
 - The generator also now supports field aliases.
 
+### Bug Fixes
+
+- Fixed a case where the generator would not generate `InputObjects` that it
+  should have been generating, if those `InputObjects` were arguments to a leaf
+  field.
+
 ## v0.14.1 - 2021-07-29
 
 ### Bug Fixes
