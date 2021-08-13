@@ -16,6 +16,9 @@ fn main() {
     let github_schema =
         Schema::from_repo_schemas("https://api.github.com/graphql", "github.graphql");
 
+    let raindancer_schema =
+        Schema::from_repo_schemas("https://api.github.com/graphql", "raindancer.graphql");
+
     let cases = &[
         TestCase::query(
             &starwars_schema,
@@ -130,6 +133,16 @@ fn main() {
             r#"queries::PullRequestTitles::build(
                 queries::PullRequestTitlesArguments {
                     pr_order: None
+                },
+            )"#,
+        ),
+        TestCase::mutation(
+            &raindancer_schema,
+            "tests/queries/misc/mutation_with_scalar_result_and_input.graphql",
+            r#"queries::SignIn::build(
+                queries::SignInArguments {
+                    username: "hello".into(),
+                    password: "hello".into()
                 },
             )"#,
         ),
