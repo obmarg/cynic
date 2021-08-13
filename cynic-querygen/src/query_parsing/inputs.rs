@@ -74,13 +74,9 @@ fn extract_objects_from_selection_set<'query, 'schema>(
     for selection in &selection_set.selections {
         match selection {
             Selection::Field(field) => {
-                let selection_set = if let Field::Composite(ss) = &field.field {
-                    ss
-                } else {
-                    continue;
-                };
-
-                extract_objects_from_selection_set(selection_set, input_objects)?;
+                if let Field::Composite(selection_set) = &field.field {
+                    extract_objects_from_selection_set(selection_set, input_objects)?;
+                }
 
                 for (_, arg_value) in &field.arguments {
                     let arg_type = arg_value.value_type().inner_ref().lookup()?;
