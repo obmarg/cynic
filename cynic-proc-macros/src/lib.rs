@@ -280,6 +280,8 @@ pub fn gql(input: TokenStream) -> TokenStream {
     let rustfmt = rustfmt
         .stdin(Stdio::piped())
         .stdout(Stdio::piped())
+        .arg("--edition")
+        .arg("2018")
         .arg("--emit")
         .arg("stdout");
 
@@ -298,7 +300,7 @@ pub fn gql(input: TokenStream) -> TokenStream {
         .read_to_string(&mut fragment_string)
         .unwrap();
 
-    // eprintln!("{}", &fragment_string);
+    eprintln!("{}", &fragment_string);
 
     fragments
 }
@@ -448,7 +450,7 @@ fn document_to_fragment_structs(
                 use cynic::QueryBuilder;
             },
             quote! {
-                crate::gql_schema::run_query(query)
+                crate::gql_schema::run_query(query).await
             },
         ),
         Definition::Operation(OperationDefinition::Mutation(_)) => (
@@ -456,7 +458,7 @@ fn document_to_fragment_structs(
                 use cynic::MutationBuilder;
             },
             quote! {
-                crate::gql_schema::run_query(query)
+                crate::gql_schema::run_query(query).await
             },
         ),
         Definition::Operation(OperationDefinition::Subscription(_)) => (
@@ -464,7 +466,7 @@ fn document_to_fragment_structs(
                 use cynic::SubscriptionBuilder;
             },
             quote! {
-                crate::gql_schema::subscribe(query)
+                crate::gql_schema::subscribe(query).await
             },
         ),
         _ => todo!(),
@@ -476,7 +478,7 @@ fn document_to_fragment_structs(
             module = "gql_schema",
         )]
         mod #name {
-            use crate::gql_schema;
+            use crate::gql_schema::{*, self};
 
             #(#argument_structs)*
             #(#query_fragments)*
@@ -484,7 +486,7 @@ fn document_to_fragment_structs(
             #(#input_objects)*
             #(#scalars)*
 
-            pub fn query(#arguments) -> cynic::GraphQlResponse<#name> {
+            pub async fn query(#arguments) -> Result<cynic::GraphQlResponse<#name>, surf::Error> {
                 #import
 
                 let query = #name::build(&#struct_definition);
