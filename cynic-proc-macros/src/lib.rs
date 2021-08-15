@@ -300,7 +300,7 @@ pub fn gql(input: TokenStream) -> TokenStream {
         .read_to_string(&mut fragment_string)
         .unwrap();
 
-    eprintln!("{}", &fragment_string);
+    // eprintln!("{}", &fragment_string);
 
     fragments
 }
@@ -486,7 +486,7 @@ fn document_to_fragment_structs(
             #(#input_objects)*
             #(#scalars)*
 
-            pub async fn query(#arguments) -> Result<cynic::GraphQlResponse<#name>, surf::Error> {
+            pub async fn query(#arguments) -> Result<cynic::GraphQlResponse<#name>, impl std::error::Error + 'static> {
                 #import
 
                 let query = #name::build(&#struct_definition);

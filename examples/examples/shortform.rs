@@ -1,25 +1,34 @@
 //! An example of querying the starwars API using the query autogenerating API.
 
 mod gql_schema {
+    use std::error::Error;
+
+    use cynic::{http::ReqwestExt, GraphQlResponse};
+
     cynic::use_schema!("../schemas/books.graphql");
 
-    pub fn query<T>(query: cynic::Operation<T>) -> cynic::GraphQlResponse<T>
+    pub async fn query<'a, T>(
+        query: cynic::Operation<'a, T>,
+    ) -> Result<cynic::GraphQlResponse<T>, impl Error + 'static>
     where
         T: 'static,
     {
-        use cynic::http::ReqwestBlockingExt;
-
-        reqwest::blocking::Client::new()
+        reqwest::Client::new()
             .post("https://swapi-graphql.netlify.app/.netlify/functions/index")
             .run_graphql(query)
-            .unwrap()
+            .await
     }
 
-    pub fn subscribe<T>(query: cynic::StreamingOperation<T>) -> cynic::GraphQlResponse<T>
+    pub async fn subscribe<'a, T>(
+        _query: cynic::StreamingOperation<'a, T>,
+    ) -> Result<cynic::GraphQlResponse<T>, impl Error + 'static>
     where
         T: 'static,
     {
-        todo!()
+        Result::<_, cynic::DecodeError>::Ok(GraphQlResponse {
+            data: None,
+            errors: None,
+        })
     }
 }
 
@@ -65,14 +74,15 @@ cynic::gql! {
     }
 }
 
-fn main() {
+#[tokio::main]
+async fn main() {
     // let result = books::query();
     // println!("{:?}", result);
 
     // let result = create::query();
     // println!("{:?}", result);
 
-    let result = interval::query(42);
+    let result = interval::query(42).await;
     println!("{:?}", result);
 }
 

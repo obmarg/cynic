@@ -15,6 +15,10 @@ pub use reqwest_ext::ReqwestExt;
 #[cfg_attr(docsrs, doc(cfg(feature = "reqwest-blocking")))]
 pub use reqwest_blocking_ext::ReqwestBlockingExt;
 
+#[cfg(feature = "reqwasm")]
+#[cfg_attr(docsrs, doc(cfg(feature = "reqwasm")))]
+pub use reqwasm_ext::ReqwasmExt;
+
 #[cfg(feature = "surf")]
 mod surf_ext {
     use serde_json::json;
@@ -281,6 +285,114 @@ mod reqwest_blocking_ext {
                         .decode_response(gql_response)
                         .map_err(CynicReqwestError::DecodeError)
                 })
+        }
+    }
+}
+
+#[cfg(feature = "reqwasm")]
+#[derive(thiserror::Error, Debug)]
+pub enum CynicReqwasmError {
+    #[error("Error making HTTP request: {0}")]
+    ReqwasmError(#[from] reqwasm::Error),
+    #[error("Error decoding GraphQL response: {0}")]
+    DecodeError(#[from] json_decode::DecodeError),
+}
+
+#[cfg(feature = "reqwasm")]
+mod reqwasm_ext {
+    use std::{future::Future, pin::Pin};
+    use wasm_bindgen::JsValue;
+
+    use super::CynicReqwasmError;
+    use crate::{GraphQlResponse, Operation};
+
+    type BoxFuture<'a, T> = Pin<Box<dyn Future<Output = T> + 'a>>;
+
+    /// An extension trait for reqwasm::http::Request.
+    ///
+    /// ```rust,no_run
+    /// # mod schema {
+    /// #   cynic::use_schema!("../schemas/starwars.schema.graphql");
+    /// # }
+    /// #
+    /// # #[derive(cynic::QueryFragment)]
+    /// # #[cynic(
+    /// #    schema_path = "../schemas/starwars.schema.graphql",
+    /// #    schema_module = "schema",
+    /// # )]
+    /// # struct Film {
+    /// #    title: Option<String>,
+    /// #    director: Option<String>
+    /// # }
+    /// #
+    /// # #[derive(cynic::QueryFragment)]
+    /// # #[cynic(
+    /// #     schema_path = "../schemas/starwars.schema.graphql",
+    /// #     schema_module = "schema",
+    /// #     graphql_type = "Root"
+    /// # )]
+    /// # struct FilmDirectorQuery {
+    /// #     #[arguments(id = cynic::Id::new("ZmlsbXM6MQ=="))]
+    /// #     film: Option<Film>,
+    /// # }
+    /// use cynic::{http::ReqwasmExt, QueryBuilder};
+    ///
+    /// # async move {
+    /// let operation = FilmDirectorQuery::build(());
+    ///
+    /// let response = reqwasm::http::Request::post("https://swapi-graphql.netlify.app/.netlify/functions/index")
+    ///     .run_graphql(operation)
+    ///     .await
+    ///     .unwrap();
+    ///
+    /// println!(
+    ///     "The director is {}",
+    ///     response.data
+    ///         .and_then(|d| d.film)
+    ///         .and_then(|f| f.director)
+    ///         .unwrap()
+    /// );
+    /// # };
+    /// ```
+    #[cfg_attr(docsrs, doc(cfg(feature = "reqwasm")))]
+    pub trait ReqwasmExt {
+        /// Runs a GraphQL query with the parameters in RequestBuilder, decodes
+        /// the and returns the result.
+        ///
+        /// If a `json_decode::Error` occurs it can be obtained via downcast_ref on
+        /// the `reqwasm::Error`.
+        fn run_graphql<'a, ResponseData: 'a>(
+            self,
+            operation: Operation<'a, ResponseData>,
+        ) -> BoxFuture<'a, Result<GraphQlResponse<ResponseData>, CynicReqwasmError>>;
+    }
+
+    impl ReqwasmExt for reqwasm::http::Request {
+        fn run_graphql<'a, ResponseData: 'a>(
+            self,
+            operation: Operation<'a, ResponseData>,
+        ) -> BoxFuture<'a, Result<GraphQlResponse<ResponseData>, CynicReqwasmError>> {
+            Box::pin(async move {
+                match self
+                    .body(JsValue::from_str(
+                        &serde_json::to_string(&operation).unwrap(),
+                    ))
+                    .send()
+                    .await
+                {
+                    Ok(response) => {
+                        let response = response.json::<GraphQlResponse<serde_json::Value>>().await;
+                        response
+                            .map_err(CynicReqwasmError::ReqwasmError)
+                            .and_then(|gql_response| {
+                                operation
+                                    .decode_response(gql_response)
+                                    .map_err(CynicReqwasmError::DecodeError)
+                            })
+                    }
+                    Err(error) => Err(CynicReqwasmError::ReqwasmError(error)),
+                }
+            })
         }
     }
 }
