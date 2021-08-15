@@ -188,7 +188,7 @@ pub use fragments::{FragmentArguments, FragmentContext, InlineFragments, QueryFr
 pub use id::Id;
 pub use inputs::InputType;
 pub use operation::{Operation, StreamingOperation};
-pub use result::{GraphQlError, GraphQlResponse, GraphQlResult, PossiblyParsedData};
+pub use result::{CynicError, GraphQlError, GraphQlResponse, GraphQlResult, PossiblyParsedData};
 pub use scalar::Scalar;
 pub use selection_set::SelectionSet;
 

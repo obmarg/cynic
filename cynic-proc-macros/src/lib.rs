@@ -444,31 +444,77 @@ fn document_to_fragment_structs(
 
     let schema_path = schema_path.as_ref();
 
-    let (import, call) = match &query.definitions[0] {
-        Definition::Operation(OperationDefinition::Query(_)) => (
+    let output_type = query_fragments
+        .iter()
+        .next()
+        .and_then(|fragment| {
+            fragment
+                .fields
+                .iter()
+                .map(|field| field.field_type.type_spec())
+                .next()
+        })
+        .unwrap_or_else(|| "()".to_string());
+    let output_type = Ident::new(&output_type, proc_macro2::Span::call_site());
+
+    let function = match &query.definitions[0] {
+        Definition::Operation(OperationDefinition::Query(_)) => {
             quote! {
-                use cynic::QueryBuilder;
-            },
+                use cynic::CynicError;
+                pub async fn query(#arguments) -> Result<#output_type, CynicError<impl std::error::Error + 'static>> {
+                    use cynic::QueryBuilder;
+
+                    let query = #name::build(&#struct_definition);
+                    let result = crate::gql_schema::run_query(query).await;
+
+                    match result {
+                        Ok(result) => {
+                            match (result.data, result.errors) {
+                                (Some(result), None) => Ok(result.#name),
+                                (None, Some(error)) => Err(CynicError::Query(error)),
+                                _ => Err(CynicError::Query(vec![]))
+                            }
+                        },
+                        Err(error) => Err(CynicError::Request(error))
+                    }
+                }
+            }
+        }
+        Definition::Operation(OperationDefinition::Mutation(_)) => {
             quote! {
-                crate::gql_schema::run_query(query).await
-            },
-        ),
-        Definition::Operation(OperationDefinition::Mutation(_)) => (
+                use cynic::CynicError;
+                pub async fn mutate(#arguments) -> Result<#output_type, CynicError<impl std::error::Error + 'static>> {
+                    use cynic::MutationBuilder;
+
+                    let query = #name::build(&#struct_definition);
+                    let result = crate::gql_schema::run_query(query).await;
+
+                    match result {
+                        Ok(result) => {
+                            match (result.data, result.errors) {
+                                (Some(result), None) => Ok(result.#name),
+                                (None, Some(error)) => Err(CynicError::Query(error)),
+                                _ => Err(CynicError::Query(vec![]))
+                            }
+                        },
+                        Err(error) => Err(CynicError::Request(error))
+                    }
+                }
+            }
+        }
+        Definition::Operation(OperationDefinition::Subscription(_)) => {
             quote! {
-                use cynic::MutationBuilder;
-            },
-            quote! {
-                crate::gql_schema::run_query(query).await
-            },
-        ),
-        Definition::Operation(OperationDefinition::Subscription(_)) => (
-            quote! {
-                use cynic::SubscriptionBuilder;
-            },
-            quote! {
-                crate::gql_schema::subscribe(query).await
-            },
-        ),
+                use graphql_ws_client::graphql::Cynic;
+                use graphql_ws_client::SubscriptionStream;
+                use cynic::StreamingOperation;
+                pub async fn subscribe(#arguments) -> Result<SubscriptionStream<Cynic, StreamingOperation<'static, #name>>, impl std::error::Error + 'static> {
+                    use cynic::SubscriptionBuilder;
+
+                    let query = #name::build(&#struct_definition);
+                    crate::gql_schema::subscribe(query).await
+                }
+            }
+        }
         _ => todo!(),
     };
 
@@ -486,12 +532,7 @@ fn document_to_fragment_structs(
             #(#input_objects)*
             #(#scalars)*
 
-            pub async fn query(#arguments) -> Result<cynic::GraphQlResponse<#name>, impl std::error::Error + 'static> {
-                #import
-
-                let query = #name::build(&#struct_definition);
-                #call
-            }
+            #function
         }
     }
     .into();

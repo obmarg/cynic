@@ -10,7 +10,7 @@ use graphql_parser::error::BorrowedParseError;
 use graphql_parser::{ParseError, Pos};
 pub use schema::{GraphPath, TypeIndex};
 
-pub use output::indented;
+pub use output::{indented, query_fragment::OutputField};
 pub use query_parsing::inputs::extract_input_objects;
 pub use query_parsing::normalisation::normalise;
 pub use query_parsing::parse_query_document;

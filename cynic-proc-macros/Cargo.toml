@@ -21,7 +21,7 @@ syn = "1.0.13"
 cargo_toml = "0.9.2"
 serde = { version = "1.0.126", features = ["derive"] }
 graphql-parser = { git = "https://github.com/Yatekii/graphql-parser" }
-ariadne = "0.1.2"
 proc-macro2 = "1.0.28"
 yansi = "0.5.0"
 quote = "1.0.9"
+Inflector = "0.11.4"

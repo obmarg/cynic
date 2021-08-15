@@ -82,15 +82,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "28ae2b3dec75a406790005a200b1bd89785afc02517a00ca99ecfe093ee9e6cf"
 
 [[package]]
-name = "ariadne"
-version = "0.1.2"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ebdeb4a07877a6acf136e528fdecb31df5e0b152d9b091ace3139d0f2fcb7bde"
-dependencies = [
- "yansi",
-]
-
-[[package]]
 name = "arrayvec"
 version = "0.5.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -664,7 +655,7 @@ dependencies = [
 name = "cynic-proc-macros"
 version = "0.14.1"
 dependencies = [
- "ariadne",
+ "Inflector",
  "cargo_toml",
  "cynic-codegen",
  "cynic-querygen",

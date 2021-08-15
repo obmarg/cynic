@@ -18,6 +18,14 @@ pub struct GraphQlResponse<T> {
     pub errors: Option<Vec<GraphQlError>>,
 }
 
+#[derive(Debug, serde::Deserialize, thiserror::Error)]
+pub enum CynicError<E: std::fmt::Debug + std::error::Error> {
+    #[error("Query Error")]
+    Query(Vec<GraphQlError>),
+    #[error("Request Error")]
+    Request(E),
+}
+
 #[deprecated(
     since = "0.13.0",
     note = "GraphQLResponse has been deprecated in favour of GraphQlResponse"
