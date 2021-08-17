@@ -3,10 +3,12 @@
 mod gql_schema {
     use std::error::Error;
 
-    use cynic::{http::ReqwestExt, GraphQlResponse};
+    use cynic::{http::ReqwestExt, StreamingOperation};
+    use graphql_ws_client::{graphql::Cynic, SubscriptionStream};
 
     cynic::use_schema!("../schemas/books.graphql");
 
+    #[allow(dead_code)]
     pub async fn query<'a, T>(
         query: cynic::Operation<'a, T>,
     ) -> Result<cynic::GraphQlResponse<T>, impl Error + 'static>
@@ -21,14 +23,11 @@ mod gql_schema {
 
     pub async fn subscribe<'a, T>(
         _query: cynic::StreamingOperation<'a, T>,
-    ) -> Result<cynic::GraphQlResponse<T>, impl Error + 'static>
+    ) -> Result<SubscriptionStream<Cynic, StreamingOperation<'_, T>>, graphql_ws_client::Error>
     where
         T: 'static,
     {
-        Result::<_, cynic::DecodeError>::Ok(GraphQlResponse {
-            data: None,
-            errors: None,
-        })
+        Result::<_, _>::Err(graphql_ws_client::Error::Unknown("".into()))
     }
 }
 
@@ -82,8 +81,9 @@ async fn main() {
     // let result = create::query();
     // println!("{:?}", result);
 
-    let result = interval::query(42).await;
-    println!("{:?}", result);
+    let mut result = interval::subscribe(42).await.unwrap();
+    use futures_util::StreamExt;
+    println!("{:?}", result.next().await);
 }
 
 #[cfg(test)]

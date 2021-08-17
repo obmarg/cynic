@@ -29,6 +29,8 @@ cynic-querygen = { path = "../cynic-querygen" }
 [dev-dependencies]
 insta = "1.4"
 anyhow = "1.0.43"
+graphql-ws-client = { path = "../../graphql-ws-client" }
+futures-util = "0.3.16"
 
 [package.metadata.cynic]
 schema = "../schemas/books.graphql"
