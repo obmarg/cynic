@@ -13,7 +13,7 @@ pub use argument_struct::{ArgumentStruct, ArgumentStructField};
 pub use indent::indented;
 use inflector::Inflector;
 pub use input_object::InputObject;
-use proc_macro2::TokenStream;
+use proc_macro2::{Ident, Span, TokenStream};
 pub use query_fragment::QueryFragment;
 use quote::{quote, ToTokens};
 
@@ -27,6 +27,7 @@ pub struct Output<'query, 'schema> {
     pub input_objects_raw: InputObjectSet<'schema>,
 }
 
+#[derive(Debug, Clone)]
 pub struct Scalar<'schema>(pub &'schema str);
 
 impl std::fmt::Display for Scalar<'_> {
@@ -38,7 +39,7 @@ impl std::fmt::Display for Scalar<'_> {
 
 impl ToTokens for Scalar<'_> {
     fn to_tokens(&self, tokens: &mut TokenStream) {
-        let pascal_case = &self.0.to_pascal_case();
+        let pascal_case = Ident::new(&self.0.to_pascal_case(), Span::call_site());
         tokens.extend(quote! {
             #[derive(cynic::Scalar, Debug, Clone)]
             pub struct #pascal_case(pub String);

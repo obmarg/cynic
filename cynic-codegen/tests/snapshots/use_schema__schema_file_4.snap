@@ -8,6 +8,7 @@ pub struct Foo;
 #[allow(dead_code)]
 impl Foo {
     pub fn __underscore() -> foo::SelectionBuilder {
+        use cynic::InputType;
         foo::SelectionBuilder::new(vec![])
     }
 }

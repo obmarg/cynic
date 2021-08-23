@@ -300,8 +300,11 @@ pub enum CynicReqwasmError {
 
 #[cfg(feature = "reqwasm")]
 mod reqwasm_ext {
+    use js_sys::Uint8Array;
+    use reqwasm::http::FormData;
     use std::{future::Future, pin::Pin};
     use wasm_bindgen::JsValue;
+    use web_sys::{Blob, File};
 
     use super::CynicReqwasmError;
     use crate::{GraphQlResponse, Operation};
@@ -373,13 +376,23 @@ mod reqwasm_ext {
             operation: Operation<'a, ResponseData>,
         ) -> BoxFuture<'a, Result<GraphQlResponse<ResponseData>, CynicReqwasmError>> {
             Box::pin(async move {
-                match self
-                    .body(JsValue::from_str(
-                        &serde_json::to_string(&operation).unwrap(),
-                    ))
-                    .send()
-                    .await
-                {
+                let mut form_data = FormData::new().unwrap();
+
+                let operations = JsValue::from_str(&serde_json::to_string(&operation).unwrap());
+
+                let map = JsValue::from_str(&serde_json::to_string(&operation.file_map()).unwrap());
+
+                form_data.append_with_blob("operations", &operations.into());
+                form_data.append_with_blob("map", &map.clone().into());
+                for (i, file) in operation.files.iter().enumerate() {
+                    let content = JsValue::from_serde(&file.1.content).unwrap();
+                    let content = Uint8Array::from(&file.1.content[..]);
+                    let content: &JsValue = content.as_ref();
+                    let file = File::new_with_u8_array_sequence(content, &file.1.name).unwrap();
+                    form_data.append_with_blob(&format!("{}", i), &file);
+                }
+
+                match self.body(form_data).send().await {
                     Ok(response) => {
                         let response = response.json::<GraphQlResponse<serde_json::Value>>().await;
                         response

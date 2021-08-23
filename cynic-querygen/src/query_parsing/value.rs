@@ -201,6 +201,7 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
 
                 coerce_literal(field_type, context, literal)
             }
+            // TODO(yatekii): Add Upload
             TypedValue::Boolean(b, field_type) => {
                 coerce_literal(field_type, context, b.to_string())
             }

@@ -46,6 +46,7 @@ impl ToTokens for EnumDetails<'_> {
         let values = self.values.iter().map(|variant| {
             let renamed = &variant.to_pascal_case().to_screaming_snake_case();
             let variant_name = Ident::new(&renamed, Span::call_site());
+            let variant = Ident::new(&variant, Span::call_site());
             let rename = if variant != &renamed {
                 Some(quote! {
                     #[cynic(rename = #variant_name)]
@@ -55,10 +56,11 @@ impl ToTokens for EnumDetails<'_> {
             };
             quote! {
                 #rename
-                #variant,
+                #variant
             }
         });
 
+        let type_name = Ident::new(&type_name, Span::call_site());
         tokens.extend(quote! {
             #[derive(cynic::Enum, Clone, Copy, Debug)]
             #rename

@@ -415,7 +415,24 @@ fn document_to_fragment_structs(
     let query_fragments = &parsed_output.query_fragments;
     let enums = &parsed_output.enums;
     let input_objects = &parsed_output.input_objects;
-    let scalars = &parsed_output.scalars;
+
+    let mut includes = vec![];
+    for argument_struct in argument_structs {
+        for field in &argument_struct.fields {
+            for scalar in &parsed_output.scalars {
+                if scalar.0 == field.type_spec() {
+                    use inflector::Inflector;
+                    includes.push({
+                        let name =
+                            Ident::new(&scalar.0.to_pascal_case(), proc_macro2::Span::call_site());
+                        quote! {
+                            use super::#name;
+                        }
+                    });
+                }
+            }
+        }
+    }
 
     let (struct_definition, arguments) =
         if let Some(argument_struct) = parsed_output.argument_structs.iter().next() {
@@ -455,7 +472,7 @@ fn document_to_fragment_structs(
                 .next()
         })
         .unwrap_or_else(|| "()".to_string());
-    let output_type = Ident::new(&output_type, proc_macro2::Span::call_site());
+    let output_type = output_type.parse::<proc_macro2::TokenStream>().unwrap();
 
     let function = match &query.definitions[0] {
         Definition::Operation(OperationDefinition::Query(_)) => {
@@ -524,13 +541,12 @@ fn document_to_fragment_structs(
             module = "gql_schema",
         )]
         mod #name {
-            use crate::gql_schema::{*, self};
-
+            use crate::gql_schema::{self};
+            #(#includes)*
             #(#argument_structs)*
             #(#query_fragments)*
             #(#enums)*
             #(#input_objects)*
-            #(#scalars)*
 
             #function
         }

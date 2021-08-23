@@ -8,6 +8,7 @@ pub struct Node;
 #[allow(dead_code)]
 impl Node {
     pub fn id() -> node::IdSelectionBuilder {
+        use cynic::InputType;
         node::IdSelectionBuilder::new(vec![])
     }
 }
@@ -16,45 +17,59 @@ pub struct Film;
 #[allow(dead_code)]
 impl Film {
     pub fn title() -> film::TitleSelectionBuilder {
+        use cynic::InputType;
         film::TitleSelectionBuilder::new(vec![])
     }
     pub fn episode_id() -> film::EpisodeIDSelectionBuilder {
+        use cynic::InputType;
         film::EpisodeIDSelectionBuilder::new(vec![])
     }
     pub fn opening_crawl() -> film::OpeningCrawlSelectionBuilder {
+        use cynic::InputType;
         film::OpeningCrawlSelectionBuilder::new(vec![])
     }
     pub fn director() -> film::DirectorSelectionBuilder {
+        use cynic::InputType;
         film::DirectorSelectionBuilder::new(vec![])
     }
     pub fn producers() -> film::ProducersSelectionBuilder {
+        use cynic::InputType;
         film::ProducersSelectionBuilder::new(vec![])
     }
     pub fn release_date() -> film::ReleaseDateSelectionBuilder {
+        use cynic::InputType;
         film::ReleaseDateSelectionBuilder::new(vec![])
     }
     pub fn species_connection() -> film::SpeciesConnectionSelectionBuilder {
+        use cynic::InputType;
         film::SpeciesConnectionSelectionBuilder::new(vec![])
     }
     pub fn starship_connection() -> film::StarshipConnectionSelectionBuilder {
+        use cynic::InputType;
         film::StarshipConnectionSelectionBuilder::new(vec![])
     }
     pub fn vehicle_connection() -> film::VehicleConnectionSelectionBuilder {
+        use cynic::InputType;
         film::VehicleConnectionSelectionBuilder::new(vec![])
     }
     pub fn character_connection() -> film::CharacterConnectionSelectionBuilder {
+        use cynic::InputType;
         film::CharacterConnectionSelectionBuilder::new(vec![])
     }
     pub fn planet_connection() -> film::PlanetConnectionSelectionBuilder {
+        use cynic::InputType;
         film::PlanetConnectionSelectionBuilder::new(vec![])
     }
     pub fn created() -> film::CreatedSelectionBuilder {
+        use cynic::InputType;
         film::CreatedSelectionBuilder::new(vec![])
     }
     pub fn edited() -> film::EditedSelectionBuilder {
+        use cynic::InputType;
         film::EditedSelectionBuilder::new(vec![])
     }
     pub fn id() -> film::IdSelectionBuilder {
+        use cynic::InputType;
         film::IdSelectionBuilder::new(vec![])
     }
 }
@@ -63,15 +78,19 @@ pub struct FilmCharactersConnection;
 #[allow(dead_code)]
 impl FilmCharactersConnection {
     pub fn page_info() -> film_characters_connection::PageInfoSelectionBuilder {
+        use cynic::InputType;
         film_characters_connection::PageInfoSelectionBuilder::new(vec![])
     }
     pub fn edges() -> film_characters_connection::EdgesSelectionBuilder {
+        use cynic::InputType;
         film_characters_connection::EdgesSelectionBuilder::new(vec![])
     }
     pub fn total_count() -> film_characters_connection::TotalCountSelectionBuilder {
+        use cynic::InputType;
         film_characters_connection::TotalCountSelectionBuilder::new(vec![])
     }
     pub fn characters() -> film_characters_connection::CharactersSelectionBuilder {
+        use cynic::InputType;
         film_characters_connection::CharactersSelectionBuilder::new(vec![])
     }
 }
@@ -80,9 +99,11 @@ pub struct FilmCharactersEdge;
 #[allow(dead_code)]
 impl FilmCharactersEdge {
     pub fn node() -> film_characters_edge::NodeSelectionBuilder {
+        use cynic::InputType;
         film_characters_edge::NodeSelectionBuilder::new(vec![])
     }
     pub fn cursor() -> film_characters_edge::CursorSelectionBuilder {
+        use cynic::InputType;
         film_characters_edge::CursorSelectionBuilder::new(vec![])
     }
 }
@@ -91,15 +112,19 @@ pub struct FilmPlanetsConnection;
 #[allow(dead_code)]
 impl FilmPlanetsConnection {
     pub fn page_info() -> film_planets_connection::PageInfoSelectionBuilder {
+        use cynic::InputType;
         film_planets_connection::PageInfoSelectionBuilder::new(vec![])
     }
     pub fn edges() -> film_planets_connection::EdgesSelectionBuilder {
+        use cynic::InputType;
         film_planets_connection::EdgesSelectionBuilder::new(vec![])
     }
     pub fn total_count() -> film_planets_connection::TotalCountSelectionBuilder {
+        use cynic::InputType;
         film_planets_connection::TotalCountSelectionBuilder::new(vec![])
     }
     pub fn planets() -> film_planets_connection::PlanetsSelectionBuilder {
+        use cynic::InputType;
         film_planets_connection::PlanetsSelectionBuilder::new(vec![])
     }
 }
@@ -108,9 +133,11 @@ pub struct FilmPlanetsEdge;
 #[allow(dead_code)]
 impl FilmPlanetsEdge {
     pub fn node() -> film_planets_edge::NodeSelectionBuilder {
+        use cynic::InputType;
         film_planets_edge::NodeSelectionBuilder::new(vec![])
     }
     pub fn cursor() -> film_planets_edge::CursorSelectionBuilder {
+        use cynic::InputType;
         film_planets_edge::CursorSelectionBuilder::new(vec![])
     }
 }
@@ -119,15 +146,19 @@ pub struct FilmsConnection;
 #[allow(dead_code)]
 impl FilmsConnection {
     pub fn page_info() -> films_connection::PageInfoSelectionBuilder {
+        use cynic::InputType;
         films_connection::PageInfoSelectionBuilder::new(vec![])
     }
     pub fn edges() -> films_connection::EdgesSelectionBuilder {
+        use cynic::InputType;
         films_connection::EdgesSelectionBuilder::new(vec![])
     }
     pub fn total_count() -> films_connection::TotalCountSelectionBuilder {
+        use cynic::InputType;
         films_connection::TotalCountSelectionBuilder::new(vec![])
     }
     pub fn films() -> films_connection::FilmsSelectionBuilder {
+        use cynic::InputType;
         films_connection::FilmsSelectionBuilder::new(vec![])
     }
 }
@@ -136,9 +167,11 @@ pub struct FilmsEdge;
 #[allow(dead_code)]
 impl FilmsEdge {
     pub fn node() -> films_edge::NodeSelectionBuilder {
+        use cynic::InputType;
         films_edge::NodeSelectionBuilder::new(vec![])
     }
     pub fn cursor() -> films_edge::CursorSelectionBuilder {
+        use cynic::InputType;
         films_edge::CursorSelectionBuilder::new(vec![])
     }
 }
@@ -147,15 +180,19 @@ pub struct FilmSpeciesConnection;
 #[allow(dead_code)]
 impl FilmSpeciesConnection {
     pub fn page_info() -> film_species_connection::PageInfoSelectionBuilder {
+        use cynic::InputType;
         film_species_connection::PageInfoSelectionBuilder::new(vec![])
     }
     pub fn edges() -> film_species_connection::EdgesSelectionBuilder {
+        use cynic::InputType;
         film_species_connection::EdgesSelectionBuilder::new(vec![])
     }
     pub fn total_count() -> film_species_connection::TotalCountSelectionBuilder {
+        use cynic::InputType;
         film_species_connection::TotalCountSelectionBuilder::new(vec![])
     }
     pub fn species() -> film_species_connection::SpeciesSelectionBuilder {
+        use cynic::InputType;
         film_species_connection::SpeciesSelectionBuilder::new(vec![])
     }
 }
@@ -164,9 +201,11 @@ pub struct FilmSpeciesEdge;
 #[allow(dead_code)]
 impl FilmSpeciesEdge {
     pub fn node() -> film_species_edge::NodeSelectionBuilder {
+        use cynic::InputType;
         film_species_edge::NodeSelectionBuilder::new(vec![])
     }
     pub fn cursor() -> film_species_edge::CursorSelectionBuilder {
+        use cynic::InputType;
         film_species_edge::CursorSelectionBuilder::new(vec![])
     }
 }
@@ -175,15 +214,19 @@ pub struct FilmStarshipsConnection;
 #[allow(dead_code)]
 impl FilmStarshipsConnection {
     pub fn page_info() -> film_starships_connection::PageInfoSelectionBuilder {
+        use cynic::InputType;
         film_starships_connection::PageInfoSelectionBuilder::new(vec![])
     }
     pub fn edges() -> film_starships_connection::EdgesSelectionBuilder {
+        use cynic::InputType;
         film_starships_connection::EdgesSelectionBuilder::new(vec![])
     }
     pub fn total_count() -> film_starships_connection::TotalCountSelectionBuilder {
+        use cynic::InputType;
         film_starships_connection::TotalCountSelectionBuilder::new(vec![])
     }
     pub fn starships() -> film_starships_connection::StarshipsSelectionBuilder {
+        use cynic::InputType;
         film_starships_connection::StarshipsSelectionBuilder::new(vec![])
     }
 }
@@ -192,9 +235,11 @@ pub struct FilmStarshipsEdge;
 #[allow(dead_code)]
 impl FilmStarshipsEdge {
     pub fn node() -> film_starships_edge::NodeSelectionBuilder {
+        use cynic::InputType;
         film_starships_edge::NodeSelectionBuilder::new(vec![])
     }
     pub fn cursor() -> film_starships_edge::CursorSelectionBuilder {
+        use cynic::InputType;
         film_starships_edge::CursorSelectionBuilder::new(vec![])
     }
 }
@@ -203,15 +248,19 @@ pub struct FilmVehiclesConnection;
 #[allow(dead_code)]
 impl FilmVehiclesConnection {
     pub fn page_info() -> film_vehicles_connection::PageInfoSelectionBuilder {
+        use cynic::InputType;
         film_vehicles_connection::PageInfoSelectionBuilder::new(vec![])
     }
     pub fn edges() -> film_vehicles_connection::EdgesSelectionBuilder {
+        use cynic::InputType;
         film_vehicles_connection::EdgesSelectionBuilder::new(vec![])
     }
     pub fn total_count() -> film_vehicles_connection::TotalCountSelectionBuilder {
+        use cynic::InputType;
         film_vehicles_connection::TotalCountSelectionBuilder::new(vec![])
     }
     pub fn vehicles() -> film_vehicles_connection::VehiclesSelectionBuilder {
+        use cynic::InputType;
         film_vehicles_connection::VehiclesSelectionBuilder::new(vec![])
     }
 }
@@ -220,9 +269,11 @@ pub struct FilmVehiclesEdge;
 #[allow(dead_code)]
 impl FilmVehiclesEdge {
     pub fn node() -> film_vehicles_edge::NodeSelectionBuilder {
+        use cynic::InputType;
         film_vehicles_edge::NodeSelectionBuilder::new(vec![])
     }
     pub fn cursor() -> film_vehicles_edge::CursorSelectionBuilder {
+        use cynic::InputType;
         film_vehicles_edge::CursorSelectionBuilder::new(vec![])
     }
 }
@@ -231,15 +282,19 @@ pub struct PageInfo;
 #[allow(dead_code)]
 impl PageInfo {
     pub fn has_next_page() -> page_info::HasNextPageSelectionBuilder {
+        use cynic::InputType;
         page_info::HasNextPageSelectionBuilder::new(vec![])
     }
     pub fn has_previous_page() -> page_info::HasPreviousPageSelectionBuilder {
+        use cynic::InputType;
         page_info::HasPreviousPageSelectionBuilder::new(vec![])
     }
     pub fn start_cursor() -> page_info::StartCursorSelectionBuilder {
+        use cynic::InputType;
         page_info::StartCursorSelectionBuilder::new(vec![])
     }
     pub fn end_cursor() -> page_info::EndCursorSelectionBuilder {
+        use cynic::InputType;
         page_info::EndCursorSelectionBuilder::new(vec![])
     }
 }
@@ -248,15 +303,19 @@ pub struct PeopleConnection;
 #[allow(dead_code)]
 impl PeopleConnection {
     pub fn page_info() -> people_connection::PageInfoSelectionBuilder {
+        use cynic::InputType;
         people_connection::PageInfoSelectionBuilder::new(vec![])
     }
     pub fn edges() -> people_connection::EdgesSelectionBuilder {
+        use cynic::InputType;
         people_connection::EdgesSelectionBuilder::new(vec![])
     }
     pub fn total_count() -> people_connection::TotalCountSelectionBuilder {
+        use cynic::InputType;
         people_connection::TotalCountSelectionBuilder::new(vec![])
     }
     pub fn people() -> people_connection::PeopleSelectionBuilder {
+        use cynic::InputType;
         people_connection::PeopleSelectionBuilder::new(vec![])
     }
 }
@@ -265,9 +324,11 @@ pub struct PeopleEdge;
 #[allow(dead_code)]
 impl PeopleEdge {
     pub fn node() -> people_edge::NodeSelectionBuilder {
+        use cynic::InputType;
         people_edge::NodeSelectionBuilder::new(vec![])
     }
     pub fn cursor() -> people_edge::CursorSelectionBuilder {
+        use cynic::InputType;
         people_edge::CursorSelectionBuilder::new(vec![])
     }
 }
@@ -276,51 +337,67 @@ pub struct Person;
 #[allow(dead_code)]
 impl Person {
     pub fn name() -> person::NameSelectionBuilder {
+        use cynic::InputType;
         person::NameSelectionBuilder::new(vec![])
     }
     pub fn birth_year() -> person::BirthYearSelectionBuilder {
+        use cynic::InputType;
         person::BirthYearSelectionBuilder::new(vec![])
     }
     pub fn eye_color() -> person::EyeColorSelectionBuilder {
+        use cynic::InputType;
         person::EyeColorSelectionBuilder::new(vec![])
     }
     pub fn gender() -> person::GenderSelectionBuilder {
+        use cynic::InputType;
         person::GenderSelectionBuilder::new(vec![])
     }
     pub fn hair_color() -> person::HairColorSelectionBuilder {
+        use cynic::InputType;
         person::HairColorSelectionBuilder::new(vec![])
     }
     pub fn height() -> person::HeightSelectionBuilder {
+        use cynic::InputType;
         person::HeightSelectionBuilder::new(vec![])
     }
     pub fn mass() -> person::MassSelectionBuilder {
+        use cynic::InputType;
         person::MassSelectionBuilder::new(vec![])
     }
     pub fn skin_color() -> person::SkinColorSelectionBuilder {
+        use cynic::InputType;
         person::SkinColorSelectionBuilder::new(vec![])
     }
     pub fn homeworld() -> person::HomeworldSelectionBuilder {
+        use cynic::InputType;
         person::HomeworldSelectionBuilder::new(vec![])
     }
     pub fn film_connection() -> person::FilmConnectionSelectionBuilder {
+        use cynic::InputType;
         person::FilmConnectionSelectionBuilder::new(vec![])
     }
     pub fn species() -> person::SpeciesSelectionBuilder {
+        use cynic::InputType;
         person::SpeciesSelectionBuilder::new(vec![])
     }
     pub fn starship_connection() -> person::StarshipConnectionSelectionBuilder {
+        use cynic::InputType;
         person::StarshipConnectionSelectionBuilder::new(vec![])
     }
     pub fn vehicle_connection() -> person::VehicleConnectionSelectionBuilder {
+        use cynic::InputType;
         person::VehicleConnectionSelectionBuilder::new(vec![])
     }
     pub fn created() -> person::CreatedSelectionBuilder {
+        use cynic::InputType;
         person::CreatedSelectionBuilder::new(vec![])
     }
     pub fn edited() -> person::EditedSelectionBuilder {
+        use cynic::InputType;
         person::EditedSelectionBuilder::new(vec![])
     }
     pub fn id() -> person::IdSelectionBuilder {
+        use cynic::InputType;
         person::IdSelectionBuilder::new(vec![])
     }
 }
@@ -329,15 +406,19 @@ pub struct PersonFilmsConnection;
 #[allow(dead_code)]
 impl PersonFilmsConnection {
     pub fn page_info() -> person_films_connection::PageInfoSelectionBuilder {
+        use cynic::InputType;
         person_films_connection::PageInfoSelectionBuilder::new(vec![])
     }
     pub fn edges() -> person_films_connection::EdgesSelectionBuilder {
+        use cynic::InputType;
         person_films_connection::EdgesSelectionBuilder::new(vec![])
     }
     pub fn total_count() -> person_films_connection::TotalCountSelectionBuilder {
+        use cynic::InputType;
         person_films_connection::TotalCountSelectionBuilder::new(vec![])
     }
     pub fn films() -> person_films_connection::FilmsSelectionBuilder {
+        use cynic::InputType;
         person_films_connection::FilmsSelectionBuilder::new(vec![])
     }
 }
@@ -346,9 +427,11 @@ pub struct PersonFilmsEdge;
 #[allow(dead_code)]
 impl PersonFilmsEdge {
     pub fn node() -> person_films_edge::NodeSelectionBuilder {
+        use cynic::InputType;
         person_films_edge::NodeSelectionBuilder::new(vec![])
     }
     pub fn cursor() -> person_films_edge::CursorSelectionBuilder {
+        use cynic::InputType;
         person_films_edge::CursorSelectionBuilder::new(vec![])
     }
 }
@@ -357,15 +440,19 @@ pub struct PersonStarshipsConnection;
 #[allow(dead_code)]
 impl PersonStarshipsConnection {
     pub fn page_info() -> person_starships_connection::PageInfoSelectionBuilder {
+        use cynic::InputType;
         person_starships_connection::PageInfoSelectionBuilder::new(vec![])
     }
     pub fn edges() -> person_starships_connection::EdgesSelectionBuilder {
+        use cynic::InputType;
         person_starships_connection::EdgesSelectionBuilder::new(vec![])
     }
     pub fn total_count() -> person_starships_connection::TotalCountSelectionBuilder {
+        use cynic::InputType;
         person_starships_connection::TotalCountSelectionBuilder::new(vec![])
     }
     pub fn starships() -> person_starships_connection::StarshipsSelectionBuilder {
+        use cynic::InputType;
         person_starships_connection::StarshipsSelectionBuilder::new(vec![])
     }
 }
@@ -374,9 +461,11 @@ pub struct PersonStarshipsEdge;
 #[allow(dead_code)]
 impl PersonStarshipsEdge {
     pub fn node() -> person_starships_edge::NodeSelectionBuilder {
+        use cynic::InputType;
         person_starships_edge::NodeSelectionBuilder::new(vec![])
     }
     pub fn cursor() -> person_starships_edge::CursorSelectionBuilder {
+        use cynic::InputType;
         person_starships_edge::CursorSelectionBuilder::new(vec![])
     }
 }
@@ -385,15 +474,19 @@ pub struct PersonVehiclesConnection;
 #[allow(dead_code)]
 impl PersonVehiclesConnection {
     pub fn page_info() -> person_vehicles_connection::PageInfoSelectionBuilder {
+        use cynic::InputType;
         person_vehicles_connection::PageInfoSelectionBuilder::new(vec![])
     }
     pub fn edges() -> person_vehicles_connection::EdgesSelectionBuilder {
+        use cynic::InputType;
         person_vehicles_connection::EdgesSelectionBuilder::new(vec![])
     }
     pub fn total_count() -> person_vehicles_connection::TotalCountSelectionBuilder {
+        use cynic::InputType;
         person_vehicles_connection::TotalCountSelectionBuilder::new(vec![])
     }
     pub fn vehicles() -> person_vehicles_connection::VehiclesSelectionBuilder {
+        use cynic::InputType;
         person_vehicles_connection::VehiclesSelectionBuilder::new(vec![])
     }
 }
@@ -402,9 +495,11 @@ pub struct PersonVehiclesEdge;
 #[allow(dead_code)]
 impl PersonVehiclesEdge {
     pub fn node() -> person_vehicles_edge::NodeSelectionBuilder {
+        use cynic::InputType;
         person_vehicles_edge::NodeSelectionBuilder::new(vec![])
     }
     pub fn cursor() -> person_vehicles_edge::CursorSelectionBuilder {
+        use cynic::InputType;
         person_vehicles_edge::CursorSelectionBuilder::new(vec![])
     }
 }
@@ -413,45 +508,59 @@ pub struct Planet;
 #[allow(dead_code)]
 impl Planet {
     pub fn name() -> planet::NameSelectionBuilder {
+        use cynic::InputType;
         planet::NameSelectionBuilder::new(vec![])
     }
     pub fn diameter() -> planet::DiameterSelectionBuilder {
+        use cynic::InputType;
         planet::DiameterSelectionBuilder::new(vec![])
     }
     pub fn rotation_period() -> planet::RotationPeriodSelectionBuilder {
+        use cynic::InputType;
         planet::RotationPeriodSelectionBuilder::new(vec![])
     }
     pub fn orbital_period() -> planet::OrbitalPeriodSelectionBuilder {
+        use cynic::InputType;
         planet::OrbitalPeriodSelectionBuilder::new(vec![])
     }
     pub fn gravity() -> planet::GravitySelectionBuilder {
+        use cynic::InputType;
         planet::GravitySelectionBuilder::new(vec![])
     }
     pub fn population() -> planet::PopulationSelectionBuilder {
+        use cynic::InputType;
         planet::PopulationSelectionBuilder::new(vec![])
     }
     pub fn climates() -> planet::ClimatesSelectionBuilder {
+        use cynic::InputType;
         planet::ClimatesSelectionBuilder::new(vec![])
     }
     pub fn terrains() -> planet::TerrainsSelectionBuilder {
+        use cynic::InputType;
         planet::TerrainsSelectionBuilder::new(vec![])
     }
     pub fn surface_water() -> planet::SurfaceWaterSelectionBuilder {
+        use cynic::InputType;
         planet::SurfaceWaterSelectionBuilder::new(vec![])
     }
     pub fn resident_connection() -> planet::ResidentConnectionSelectionBuilder {
+        use cynic::InputType;
         planet::ResidentConnectionSelectionBuilder::new(vec![])
     }
     pub fn film_connection() -> planet::FilmConnectionSelectionBuilder {
+        use cynic::InputType;
         planet::FilmConnectionSelectionBuilder::new(vec![])
     }
     pub fn created() -> planet::CreatedSelectionBuilder {
+        use cynic::InputType;
         planet::CreatedSelectionBuilder::new(vec![])
     }
     pub fn edited() -> planet::EditedSelectionBuilder {
+        use cynic::InputType;
         planet::EditedSelectionBuilder::new(vec![])
     }
     pub fn id() -> planet::IdSelectionBuilder {
+        use cynic::InputType;
         planet::IdSelectionBuilder::new(vec![])
     }
 }
@@ -460,15 +569,19 @@ pub struct PlanetFilmsConnection;
 #[allow(dead_code)]
 impl PlanetFilmsConnection {
     pub fn page_info() -> planet_films_connection::PageInfoSelectionBuilder {
+        use cynic::InputType;
         planet_films_connection::PageInfoSelectionBuilder::new(vec![])
     }
     pub fn edges() -> planet_films_connection::EdgesSelectionBuilder {
+        use cynic::InputType;
         planet_films_connection::EdgesSelectionBuilder::new(vec![])
     }
     pub fn total_count() -> planet_films_connection::TotalCountSelectionBuilder {
+        use cynic::InputType;
         planet_films_connection::TotalCountSelectionBuilder::new(vec![])
     }
     pub fn films() -> planet_films_connection::FilmsSelectionBuilder {
+        use cynic::InputType;
         planet_films_connection::FilmsSelectionBuilder::new(vec![])
     }
 }
@@ -477,9 +590,11 @@ pub struct PlanetFilmsEdge;
 #[allow(dead_code)]
 impl PlanetFilmsEdge {
     pub fn node() -> planet_films_edge::NodeSelectionBuilder {
+        use cynic::InputType;
         planet_films_edge::NodeSelectionBuilder::new(vec![])
     }
     pub fn cursor() -> planet_films_edge::CursorSelectionBuilder {
+        use cynic::InputType;
         planet_films_edge::CursorSelectionBuilder::new(vec![])
     }
 }
@@ -488,15 +603,19 @@ pub struct PlanetResidentsConnection;
 #[allow(dead_code)]
 impl PlanetResidentsConnection {
     pub fn page_info() -> planet_residents_connection::PageInfoSelectionBuilder {
+        use cynic::InputType;
         planet_residents_connection::PageInfoSelectionBuilder::new(vec![])
     }
     pub fn edges() -> planet_residents_connection::EdgesSelectionBuilder {
+        use cynic::InputType;
         planet_residents_connection::EdgesSelectionBuilder::new(vec![])
     }
     pub fn total_count() -> planet_residents_connection::TotalCountSelectionBuilder {
+        use cynic::InputType;
         planet_residents_connection::TotalCountSelectionBuilder::new(vec![])
     }
     pub fn residents() -> planet_residents_connection::ResidentsSelectionBuilder {
+        use cynic::InputType;
         planet_residents_connection::ResidentsSelectionBuilder::new(vec![])
     }
 }
@@ -505,9 +624,11 @@ pub struct PlanetResidentsEdge;
 #[allow(dead_code)]
 impl PlanetResidentsEdge {
     pub fn node() -> planet_residents_edge::NodeSelectionBuilder {
+        use cynic::InputType;
         planet_residents_edge::NodeSelectionBuilder::new(vec![])
     }
     pub fn cursor() -> planet_residents_edge::CursorSelectionBuilder {
+        use cynic::InputType;
         planet_residents_edge::CursorSelectionBuilder::new(vec![])
     }
 }
@@ -516,15 +637,19 @@ pub struct PlanetsConnection;
 #[allow(dead_code)]
 impl PlanetsConnection {
     pub fn page_info() -> planets_connection::PageInfoSelectionBuilder {
+        use cynic::InputType;
         planets_connection::PageInfoSelectionBuilder::new(vec![])
     }
     pub fn edges() -> planets_connection::EdgesSelectionBuilder {
+        use cynic::InputType;
         planets_connection::EdgesSelectionBuilder::new(vec![])
     }
     pub fn total_count() -> planets_connection::TotalCountSelectionBuilder {
+        use cynic::InputType;
         planets_connection::TotalCountSelectionBuilder::new(vec![])
     }
     pub fn planets() -> planets_connection::PlanetsSelectionBuilder {
+        use cynic::InputType;
         planets_connection::PlanetsSelectionBuilder::new(vec![])
     }
 }
@@ -533,9 +658,11 @@ pub struct PlanetsEdge;
 #[allow(dead_code)]
 impl PlanetsEdge {
     pub fn node() -> planets_edge::NodeSelectionBuilder {
+        use cynic::InputType;
         planets_edge::NodeSelectionBuilder::new(vec![])
     }
     pub fn cursor() -> planets_edge::CursorSelectionBuilder {
+        use cynic::InputType;
         planets_edge::CursorSelectionBuilder::new(vec![])
     }
 }
@@ -544,48 +671,65 @@ pub struct Root;
 #[allow(dead_code)]
 impl Root {
     pub fn all_films() -> root::AllFilmsSelectionBuilder {
+        use cynic::InputType;
         root::AllFilmsSelectionBuilder::new(vec![])
     }
     pub fn film() -> root::FilmSelectionBuilder {
+        use cynic::InputType;
         root::FilmSelectionBuilder::new(vec![])
     }
     pub fn all_people() -> root::AllPeopleSelectionBuilder {
+        use cynic::InputType;
         root::AllPeopleSelectionBuilder::new(vec![])
     }
     pub fn person() -> root::PersonSelectionBuilder {
+        use cynic::InputType;
         root::PersonSelectionBuilder::new(vec![])
     }
     pub fn all_planets() -> root::AllPlanetsSelectionBuilder {
+        use cynic::InputType;
         root::AllPlanetsSelectionBuilder::new(vec![])
     }
     pub fn planet() -> root::PlanetSelectionBuilder {
+        use cynic::InputType;
         root::PlanetSelectionBuilder::new(vec![])
     }
     pub fn all_species() -> root::AllSpeciesSelectionBuilder {
+        use cynic::InputType;
         root::AllSpeciesSelectionBuilder::new(vec![])
     }
     pub fn species() -> root::SpeciesSelectionBuilder {
+        use cynic::InputType;
         root::SpeciesSelectionBuilder::new(vec![])
     }
     pub fn all_starships() -> root::AllStarshipsSelectionBuilder {
+        use cynic::InputType;
         root::AllStarshipsSelectionBuilder::new(vec![])
     }
     pub fn starship() -> root::StarshipSelectionBuilder {
+        use cynic::InputType;
         root::StarshipSelectionBuilder::new(vec![])
     }
     pub fn all_vehicles() -> root::AllVehiclesSelectionBuilder {
+        use cynic::InputType;
         root::AllVehiclesSelectionBuilder::new(vec![])
     }
     pub fn vehicle() -> root::VehicleSelectionBuilder {
+        use cynic::InputType;
         root::VehicleSelectionBuilder::new(vec![])
     }
     pub fn node(
         id: impl ::cynic::InputType<::cynic::Id, ::cynic::inputs::NamedType>,
     ) -> root::NodeSelectionBuilder {
+        use cynic::InputType;
         root::NodeSelectionBuilder::new(vec![::cynic::Argument::new(
             "id",
             "ID!",
-            ::cynic::serde_json::to_value(&id),
+            if let Some(upload) = id.into_upload() {
+                cynic::ArgumentWireFormat::Upload(upload.clone())
+            } else {
+                cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&id))
+            },
         )])
     }
 }
@@ -594,48 +738,63 @@ pub struct Species;
 #[allow(dead_code)]
 impl Species {
     pub fn name() -> species::NameSelectionBuilder {
+        use cynic::InputType;
         species::NameSelectionBuilder::new(vec![])
     }
     pub fn classification() -> species::ClassificationSelectionBuilder {
+        use cynic::InputType;
         species::ClassificationSelectionBuilder::new(vec![])
     }
     pub fn designation() -> species::DesignationSelectionBuilder {
+        use cynic::InputType;
         species::DesignationSelectionBuilder::new(vec![])
     }
     pub fn average_height() -> species::AverageHeightSelectionBuilder {
+        use cynic::InputType;
         species::AverageHeightSelectionBuilder::new(vec![])
     }
     pub fn average_lifespan() -> species::AverageLifespanSelectionBuilder {
+        use cynic::InputType;
         species::AverageLifespanSelectionBuilder::new(vec![])
     }
     pub fn eye_colors() -> species::EyeColorsSelectionBuilder {
+        use cynic::InputType;
         species::EyeColorsSelectionBuilder::new(vec![])
     }
     pub fn hair_colors() -> species::HairColorsSelectionBuilder {
+        use cynic::InputType;
         species::HairColorsSelectionBuilder::new(vec![])
     }
     pub fn skin_colors() -> species::SkinColorsSelectionBuilder {
+        use cynic::InputType;
         species::SkinColorsSelectionBuilder::new(vec![])
     }
     pub fn language() -> species::LanguageSelectionBuilder {
+        use cynic::InputType;
         species::LanguageSelectionBuilder::new(vec![])
     }
     pub fn homeworld() -> species::HomeworldSelectionBuilder {
+        use cynic::InputType;
         species::HomeworldSelectionBuilder::new(vec![])
     }
     pub fn person_connection() -> species::PersonConnectionSelectionBuilder {
+        use cynic::InputType;
         species::PersonConnectionSelectionBuilder::new(vec![])
     }
     pub fn film_connection() -> species::FilmConnectionSelectionBuilder {
+        use cynic::InputType;
         species::FilmConnectionSelectionBuilder::new(vec![])
     }
     pub fn created() -> species::CreatedSelectionBuilder {
+        use cynic::InputType;
         species::CreatedSelectionBuilder::new(vec![])
     }
     pub fn edited() -> species::EditedSelectionBuilder {
+        use cynic::InputType;
         species::EditedSelectionBuilder::new(vec![])
     }
     pub fn id() -> species::IdSelectionBuilder {
+        use cynic::InputType;
         species::IdSelectionBuilder::new(vec![])
     }
 }
@@ -644,15 +803,19 @@ pub struct SpeciesConnection;
 #[allow(dead_code)]
 impl SpeciesConnection {
     pub fn page_info() -> species_connection::PageInfoSelectionBuilder {
+        use cynic::InputType;
         species_connection::PageInfoSelectionBuilder::new(vec![])
     }
     pub fn edges() -> species_connection::EdgesSelectionBuilder {
+        use cynic::InputType;
         species_connection::EdgesSelectionBuilder::new(vec![])
     }
     pub fn total_count() -> species_connection::TotalCountSelectionBuilder {
+        use cynic::InputType;
         species_connection::TotalCountSelectionBuilder::new(vec![])
     }
     pub fn species() -> species_connection::SpeciesSelectionBuilder {
+        use cynic::InputType;
         species_connection::SpeciesSelectionBuilder::new(vec![])
     }
 }
@@ -661,9 +824,11 @@ pub struct SpeciesEdge;
 #[allow(dead_code)]
 impl SpeciesEdge {
     pub fn node() -> species_edge::NodeSelectionBuilder {
+        use cynic::InputType;
         species_edge::NodeSelectionBuilder::new(vec![])
     }
     pub fn cursor() -> species_edge::CursorSelectionBuilder {
+        use cynic::InputType;
         species_edge::CursorSelectionBuilder::new(vec![])
     }
 }
@@ -672,15 +837,19 @@ pub struct SpeciesFilmsConnection;
 #[allow(dead_code)]
 impl SpeciesFilmsConnection {
     pub fn page_info() -> species_films_connection::PageInfoSelectionBuilder {
+        use cynic::InputType;
         species_films_connection::PageInfoSelectionBuilder::new(vec![])
     }
     pub fn edges() -> species_films_connection::EdgesSelectionBuilder {
+        use cynic::InputType;
         species_films_connection::EdgesSelectionBuilder::new(vec![])
     }
     pub fn total_count() -> species_films_connection::TotalCountSelectionBuilder {
+        use cynic::InputType;
         species_films_connection::TotalCountSelectionBuilder::new(vec![])
     }
     pub fn films() -> species_films_connection::FilmsSelectionBuilder {
+        use cynic::InputType;
         species_films_connection::FilmsSelectionBuilder::new(vec![])
     }
 }
@@ -689,9 +858,11 @@ pub struct SpeciesFilmsEdge;
 #[allow(dead_code)]
 impl SpeciesFilmsEdge {
     pub fn node() -> species_films_edge::NodeSelectionBuilder {
+        use cynic::InputType;
         species_films_edge::NodeSelectionBuilder::new(vec![])
     }
     pub fn cursor() -> species_films_edge::CursorSelectionBuilder {
+        use cynic::InputType;
         species_films_edge::CursorSelectionBuilder::new(vec![])
     }
 }
@@ -700,15 +871,19 @@ pub struct SpeciesPeopleConnection;
 #[allow(dead_code)]
 impl SpeciesPeopleConnection {
     pub fn page_info() -> species_people_connection::PageInfoSelectionBuilder {
+        use cynic::InputType;
         species_people_connection::PageInfoSelectionBuilder::new(vec![])
     }
     pub fn edges() -> species_people_connection::EdgesSelectionBuilder {
+        use cynic::InputType;
         species_people_connection::EdgesSelectionBuilder::new(vec![])
     }
     pub fn total_count() -> species_people_connection::TotalCountSelectionBuilder {
+        use cynic::InputType;
         species_people_connection::TotalCountSelectionBuilder::new(vec![])
     }
     pub fn people() -> species_people_connection::PeopleSelectionBuilder {
+        use cynic::InputType;
         species_people_connection::PeopleSelectionBuilder::new(vec![])
     }
 }
@@ -717,9 +892,11 @@ pub struct SpeciesPeopleEdge;
 #[allow(dead_code)]
 impl SpeciesPeopleEdge {
     pub fn node() -> species_people_edge::NodeSelectionBuilder {
+        use cynic::InputType;
         species_people_edge::NodeSelectionBuilder::new(vec![])
     }
     pub fn cursor() -> species_people_edge::CursorSelectionBuilder {
+        use cynic::InputType;
         species_people_edge::CursorSelectionBuilder::new(vec![])
     }
 }
@@ -728,57 +905,75 @@ pub struct Starship;
 #[allow(dead_code)]
 impl Starship {
     pub fn name() -> starship::NameSelectionBuilder {
+        use cynic::InputType;
         starship::NameSelectionBuilder::new(vec![])
     }
     pub fn model() -> starship::ModelSelectionBuilder {
+        use cynic::InputType;
         starship::ModelSelectionBuilder::new(vec![])
     }
     pub fn starship_class() -> starship::StarshipClassSelectionBuilder {
+        use cynic::InputType;
         starship::StarshipClassSelectionBuilder::new(vec![])
     }
     pub fn manufacturers() -> starship::ManufacturersSelectionBuilder {
+        use cynic::InputType;
         starship::ManufacturersSelectionBuilder::new(vec![])
     }
     pub fn cost_in_credits() -> starship::CostInCreditsSelectionBuilder {
+        use cynic::InputType;
         starship::CostInCreditsSelectionBuilder::new(vec![])
     }
     pub fn length() -> starship::LengthSelectionBuilder {
+        use cynic::InputType;
         starship::LengthSelectionBuilder::new(vec![])
     }
     pub fn crew() -> starship::CrewSelectionBuilder {
+        use cynic::InputType;
         starship::CrewSelectionBuilder::new(vec![])
     }
     pub fn passengers() -> starship::PassengersSelectionBuilder {
+        use cynic::InputType;
         starship::PassengersSelectionBuilder::new(vec![])
     }
     pub fn max_atmosphering_speed() -> starship::MaxAtmospheringSpeedSelectionBuilder {
+        use cynic::InputType;
         starship::MaxAtmospheringSpeedSelectionBuilder::new(vec![])
     }
     pub fn hyperdrive_rating() -> starship::HyperdriveRatingSelectionBuilder {
+        use cynic::InputType;
         starship::HyperdriveRatingSelectionBuilder::new(vec![])
     }
     pub fn mglt() -> starship::MgltselectionBuilder {
+        use cynic::InputType;
         starship::MgltselectionBuilder::new(vec![])
     }
     pub fn cargo_capacity() -> starship::CargoCapacitySelectionBuilder {
+        use cynic::InputType;
         starship::CargoCapacitySelectionBuilder::new(vec![])
     }
     pub fn consumables() -> starship::ConsumablesSelectionBuilder {
+        use cynic::InputType;
         starship::ConsumablesSelectionBuilder::new(vec![])
     }
     pub fn pilot_connection() -> starship::PilotConnectionSelectionBuilder {
+        use cynic::InputType;
         starship::PilotConnectionSelectionBuilder::new(vec![])
     }
     pub fn film_connection() -> starship::FilmConnectionSelectionBuilder {
+        use cynic::InputType;
         starship::FilmConnectionSelectionBuilder::new(vec![])
     }
     pub fn created() -> starship::CreatedSelectionBuilder {
+        use cynic::InputType;
         starship::CreatedSelectionBuilder::new(vec![])
     }
     pub fn edited() -> starship::EditedSelectionBuilder {
+        use cynic::InputType;
         starship::EditedSelectionBuilder::new(vec![])
     }
     pub fn id() -> starship::IdSelectionBuilder {
+        use cynic::InputType;
         starship::IdSelectionBuilder::new(vec![])
     }
 }
@@ -787,15 +982,19 @@ pub struct StarshipFilmsConnection;
 #[allow(dead_code)]
 impl StarshipFilmsConnection {
     pub fn page_info() -> starship_films_connection::PageInfoSelectionBuilder {
+        use cynic::InputType;
         starship_films_connection::PageInfoSelectionBuilder::new(vec![])
     }
     pub fn edges() -> starship_films_connection::EdgesSelectionBuilder {
+        use cynic::InputType;
         starship_films_connection::EdgesSelectionBuilder::new(vec![])
     }
     pub fn total_count() -> starship_films_connection::TotalCountSelectionBuilder {
+        use cynic::InputType;
         starship_films_connection::TotalCountSelectionBuilder::new(vec![])
     }
     pub fn films() -> starship_films_connection::FilmsSelectionBuilder {
+        use cynic::InputType;
         starship_films_connection::FilmsSelectionBuilder::new(vec![])
     }
 }
@@ -804,9 +1003,11 @@ pub struct StarshipFilmsEdge;
 #[allow(dead_code)]
 impl StarshipFilmsEdge {
     pub fn node() -> starship_films_edge::NodeSelectionBuilder {
+        use cynic::InputType;
         starship_films_edge::NodeSelectionBuilder::new(vec![])
     }
     pub fn cursor() -> starship_films_edge::CursorSelectionBuilder {
+        use cynic::InputType;
         starship_films_edge::CursorSelectionBuilder::new(vec![])
     }
 }
@@ -815,15 +1016,19 @@ pub struct StarshipPilotsConnection;
 #[allow(dead_code)]
 impl StarshipPilotsConnection {
     pub fn page_info() -> starship_pilots_connection::PageInfoSelectionBuilder {
+        use cynic::InputType;
         starship_pilots_connection::PageInfoSelectionBuilder::new(vec![])
     }
     pub fn edges() -> starship_pilots_connection::EdgesSelectionBuilder {
+        use cynic::InputType;
         starship_pilots_connection::EdgesSelectionBuilder::new(vec![])
     }
     pub fn total_count() -> starship_pilots_connection::TotalCountSelectionBuilder {
+        use cynic::InputType;
         starship_pilots_connection::TotalCountSelectionBuilder::new(vec![])
     }
     pub fn pilots() -> starship_pilots_connection::PilotsSelectionBuilder {
+        use cynic::InputType;
         starship_pilots_connection::PilotsSelectionBuilder::new(vec![])
     }
 }
@@ -832,9 +1037,11 @@ pub struct StarshipPilotsEdge;
 #[allow(dead_code)]
 impl StarshipPilotsEdge {
     pub fn node() -> starship_pilots_edge::NodeSelectionBuilder {
+        use cynic::InputType;
         starship_pilots_edge::NodeSelectionBuilder::new(vec![])
     }
     pub fn cursor() -> starship_pilots_edge::CursorSelectionBuilder {
+        use cynic::InputType;
         starship_pilots_edge::CursorSelectionBuilder::new(vec![])
     }
 }
@@ -843,15 +1050,19 @@ pub struct StarshipsConnection;
 #[allow(dead_code)]
 impl StarshipsConnection {
     pub fn page_info() -> starships_connection::PageInfoSelectionBuilder {
+        use cynic::InputType;
         starships_connection::PageInfoSelectionBuilder::new(vec![])
     }
     pub fn edges() -> starships_connection::EdgesSelectionBuilder {
+        use cynic::InputType;
         starships_connection::EdgesSelectionBuilder::new(vec![])
     }
     pub fn total_count() -> starships_connection::TotalCountSelectionBuilder {
+        use cynic::InputType;
         starships_connection::TotalCountSelectionBuilder::new(vec![])
     }
     pub fn starships() -> starships_connection::StarshipsSelectionBuilder {
+        use cynic::InputType;
         starships_connection::StarshipsSelectionBuilder::new(vec![])
     }
 }
@@ -860,9 +1071,11 @@ pub struct StarshipsEdge;
 #[allow(dead_code)]
 impl StarshipsEdge {
     pub fn node() -> starships_edge::NodeSelectionBuilder {
+        use cynic::InputType;
         starships_edge::NodeSelectionBuilder::new(vec![])
     }
     pub fn cursor() -> starships_edge::CursorSelectionBuilder {
+        use cynic::InputType;
         starships_edge::CursorSelectionBuilder::new(vec![])
     }
 }
@@ -871,51 +1084,67 @@ pub struct Vehicle;
 #[allow(dead_code)]
 impl Vehicle {
     pub fn name() -> vehicle::NameSelectionBuilder {
+        use cynic::InputType;
         vehicle::NameSelectionBuilder::new(vec![])
     }
     pub fn model() -> vehicle::ModelSelectionBuilder {
+        use cynic::InputType;
         vehicle::ModelSelectionBuilder::new(vec![])
     }
     pub fn vehicle_class() -> vehicle::VehicleClassSelectionBuilder {
+        use cynic::InputType;
         vehicle::VehicleClassSelectionBuilder::new(vec![])
     }
     pub fn manufacturers() -> vehicle::ManufacturersSelectionBuilder {
+        use cynic::InputType;
         vehicle::ManufacturersSelectionBuilder::new(vec![])
     }
     pub fn cost_in_credits() -> vehicle::CostInCreditsSelectionBuilder {
+        use cynic::InputType;
         vehicle::CostInCreditsSelectionBuilder::new(vec![])
     }
     pub fn length() -> vehicle::LengthSelectionBuilder {
+        use cynic::InputType;
         vehicle::LengthSelectionBuilder::new(vec![])
     }
     pub fn crew() -> vehicle::CrewSelectionBuilder {
+        use cynic::InputType;
         vehicle::CrewSelectionBuilder::new(vec![])
     }
     pub fn passengers() -> vehicle::PassengersSelectionBuilder {
+        use cynic::InputType;
         vehicle::PassengersSelectionBuilder::new(vec![])
     }
     pub fn max_atmosphering_speed() -> vehicle::MaxAtmospheringSpeedSelectionBuilder {
+        use cynic::InputType;
         vehicle::MaxAtmospheringSpeedSelectionBuilder::new(vec![])
     }
     pub fn cargo_capacity() -> vehicle::CargoCapacitySelectionBuilder {
+        use cynic::InputType;
         vehicle::CargoCapacitySelectionBuilder::new(vec![])
     }
     pub fn consumables() -> vehicle::ConsumablesSelectionBuilder {
+        use cynic::InputType;
         vehicle::ConsumablesSelectionBuilder::new(vec![])
     }
     pub fn pilot_connection() -> vehicle::PilotConnectionSelectionBuilder {
+        use cynic::InputType;
         vehicle::PilotConnectionSelectionBuilder::new(vec![])
     }
     pub fn film_connection() -> vehicle::FilmConnectionSelectionBuilder {
+        use cynic::InputType;
         vehicle::FilmConnectionSelectionBuilder::new(vec![])
     }
     pub fn created() -> vehicle::CreatedSelectionBuilder {
+        use cynic::InputType;
         vehicle::CreatedSelectionBuilder::new(vec![])
     }
     pub fn edited() -> vehicle::EditedSelectionBuilder {
+        use cynic::InputType;
         vehicle::EditedSelectionBuilder::new(vec![])
     }
     pub fn id() -> vehicle::IdSelectionBuilder {
+        use cynic::InputType;
         vehicle::IdSelectionBuilder::new(vec![])
     }
 }
@@ -924,15 +1153,19 @@ pub struct VehicleFilmsConnection;
 #[allow(dead_code)]
 impl VehicleFilmsConnection {
     pub fn page_info() -> vehicle_films_connection::PageInfoSelectionBuilder {
+        use cynic::InputType;
         vehicle_films_connection::PageInfoSelectionBuilder::new(vec![])
     }
     pub fn edges() -> vehicle_films_connection::EdgesSelectionBuilder {
+        use cynic::InputType;
         vehicle_films_connection::EdgesSelectionBuilder::new(vec![])
     }
     pub fn total_count() -> vehicle_films_connection::TotalCountSelectionBuilder {
+        use cynic::InputType;
         vehicle_films_connection::TotalCountSelectionBuilder::new(vec![])
     }
     pub fn films() -> vehicle_films_connection::FilmsSelectionBuilder {
+        use cynic::InputType;
         vehicle_films_connection::FilmsSelectionBuilder::new(vec![])
     }
 }
@@ -941,9 +1174,11 @@ pub struct VehicleFilmsEdge;
 #[allow(dead_code)]
 impl VehicleFilmsEdge {
     pub fn node() -> vehicle_films_edge::NodeSelectionBuilder {
+        use cynic::InputType;
         vehicle_films_edge::NodeSelectionBuilder::new(vec![])
     }
     pub fn cursor() -> vehicle_films_edge::CursorSelectionBuilder {
+        use cynic::InputType;
         vehicle_films_edge::CursorSelectionBuilder::new(vec![])
     }
 }
@@ -952,15 +1187,19 @@ pub struct VehiclePilotsConnection;
 #[allow(dead_code)]
 impl VehiclePilotsConnection {
     pub fn page_info() -> vehicle_pilots_connection::PageInfoSelectionBuilder {
+        use cynic::InputType;
         vehicle_pilots_connection::PageInfoSelectionBuilder::new(vec![])
     }
     pub fn edges() -> vehicle_pilots_connection::EdgesSelectionBuilder {
+        use cynic::InputType;
         vehicle_pilots_connection::EdgesSelectionBuilder::new(vec![])
     }
     pub fn total_count() -> vehicle_pilots_connection::TotalCountSelectionBuilder {
+        use cynic::InputType;
         vehicle_pilots_connection::TotalCountSelectionBuilder::new(vec![])
     }
     pub fn pilots() -> vehicle_pilots_connection::PilotsSelectionBuilder {
+        use cynic::InputType;
         vehicle_pilots_connection::PilotsSelectionBuilder::new(vec![])
     }
 }
@@ -969,9 +1208,11 @@ pub struct VehiclePilotsEdge;
 #[allow(dead_code)]
 impl VehiclePilotsEdge {
     pub fn node() -> vehicle_pilots_edge::NodeSelectionBuilder {
+        use cynic::InputType;
         vehicle_pilots_edge::NodeSelectionBuilder::new(vec![])
     }
     pub fn cursor() -> vehicle_pilots_edge::CursorSelectionBuilder {
+        use cynic::InputType;
         vehicle_pilots_edge::CursorSelectionBuilder::new(vec![])
     }
 }
@@ -980,15 +1221,19 @@ pub struct VehiclesConnection;
 #[allow(dead_code)]
 impl VehiclesConnection {
     pub fn page_info() -> vehicles_connection::PageInfoSelectionBuilder {
+        use cynic::InputType;
         vehicles_connection::PageInfoSelectionBuilder::new(vec![])
     }
     pub fn edges() -> vehicles_connection::EdgesSelectionBuilder {
+        use cynic::InputType;
         vehicles_connection::EdgesSelectionBuilder::new(vec![])
     }
     pub fn total_count() -> vehicles_connection::TotalCountSelectionBuilder {
+        use cynic::InputType;
         vehicles_connection::TotalCountSelectionBuilder::new(vec![])
     }
     pub fn vehicles() -> vehicles_connection::VehiclesSelectionBuilder {
+        use cynic::InputType;
         vehicles_connection::VehiclesSelectionBuilder::new(vec![])
     }
 }
@@ -997,9 +1242,11 @@ pub struct VehiclesEdge;
 #[allow(dead_code)]
 impl VehiclesEdge {
     pub fn node() -> vehicles_edge::NodeSelectionBuilder {
+        use cynic::InputType;
         vehicles_edge::NodeSelectionBuilder::new(vec![])
     }
     pub fn cursor() -> vehicles_edge::CursorSelectionBuilder {
+        use cynic::InputType;
         vehicles_edge::CursorSelectionBuilder::new(vec![])
     }
 }
@@ -1199,10 +1446,15 @@ pub mod film {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                ::cynic::serde_json::to_value(&after),
+                if let Some(upload) = after.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&after))
+                },
             ));
             self
         }
@@ -1210,10 +1462,15 @@ pub mod film {
             mut self,
             first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                ::cynic::serde_json::to_value(&first),
+                if let Some(upload) = first.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&first))
+                },
             ));
             self
         }
@@ -1224,10 +1481,15 @@ pub mod film {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                ::cynic::serde_json::to_value(&before),
+                if let Some(upload) = before.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&before))
+                },
             ));
             self
         }
@@ -1235,10 +1497,15 @@ pub mod film {
             mut self,
             last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                ::cynic::serde_json::to_value(&last),
+                if let Some(upload) = last.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&last))
+                },
             ));
             self
         }
@@ -1279,10 +1546,15 @@ pub mod film {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                ::cynic::serde_json::to_value(&after),
+                if let Some(upload) = after.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&after))
+                },
             ));
             self
         }
@@ -1290,10 +1562,15 @@ pub mod film {
             mut self,
             first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                ::cynic::serde_json::to_value(&first),
+                if let Some(upload) = first.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&first))
+                },
             ));
             self
         }
@@ -1304,10 +1581,15 @@ pub mod film {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                ::cynic::serde_json::to_value(&before),
+                if let Some(upload) = before.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&before))
+                },
             ));
             self
         }
@@ -1315,10 +1597,15 @@ pub mod film {
             mut self,
             last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                ::cynic::serde_json::to_value(&last),
+                if let Some(upload) = last.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&last))
+                },
             ));
             self
         }
@@ -1359,10 +1646,15 @@ pub mod film {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                ::cynic::serde_json::to_value(&after),
+                if let Some(upload) = after.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&after))
+                },
             ));
             self
         }
@@ -1370,10 +1662,15 @@ pub mod film {
             mut self,
             first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                ::cynic::serde_json::to_value(&first),
+                if let Some(upload) = first.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&first))
+                },
             ));
             self
         }
@@ -1384,10 +1681,15 @@ pub mod film {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                ::cynic::serde_json::to_value(&before),
+                if let Some(upload) = before.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&before))
+                },
             ));
             self
         }
@@ -1395,10 +1697,15 @@ pub mod film {
             mut self,
             last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                ::cynic::serde_json::to_value(&last),
+                if let Some(upload) = last.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&last))
+                },
             ));
             self
         }
@@ -1439,10 +1746,15 @@ pub mod film {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                ::cynic::serde_json::to_value(&after),
+                if let Some(upload) = after.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&after))
+                },
             ));
             self
         }
@@ -1450,10 +1762,15 @@ pub mod film {
             mut self,
             first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                ::cynic::serde_json::to_value(&first),
+                if let Some(upload) = first.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&first))
+                },
             ));
             self
         }
@@ -1464,10 +1781,15 @@ pub mod film {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                ::cynic::serde_json::to_value(&before),
+                if let Some(upload) = before.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&before))
+                },
             ));
             self
         }
@@ -1475,10 +1797,15 @@ pub mod film {
             mut self,
             last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                ::cynic::serde_json::to_value(&last),
+                if let Some(upload) = last.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&last))
+                },
             ));
             self
         }
@@ -1519,10 +1846,15 @@ pub mod film {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                ::cynic::serde_json::to_value(&after),
+                if let Some(upload) = after.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&after))
+                },
             ));
             self
         }
@@ -1530,10 +1862,15 @@ pub mod film {
             mut self,
             first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                ::cynic::serde_json::to_value(&first),
+                if let Some(upload) = first.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&first))
+                },
             ));
             self
         }
@@ -1544,10 +1881,15 @@ pub mod film {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                ::cynic::serde_json::to_value(&before),
+                if let Some(upload) = before.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&before))
+                },
             ));
             self
         }
@@ -1555,10 +1897,15 @@ pub mod film {
             mut self,
             last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                ::cynic::serde_json::to_value(&last),
+                if let Some(upload) = last.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&last))
+                },
             ));
             self
         }
@@ -3378,10 +3725,15 @@ pub mod person {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                ::cynic::serde_json::to_value(&after),
+                if let Some(upload) = after.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&after))
+                },
             ));
             self
         }
@@ -3389,10 +3741,15 @@ pub mod person {
             mut self,
             first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                ::cynic::serde_json::to_value(&first),
+                if let Some(upload) = first.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&first))
+                },
             ));
             self
         }
@@ -3403,10 +3760,15 @@ pub mod person {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                ::cynic::serde_json::to_value(&before),
+                if let Some(upload) = before.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&before))
+                },
             ));
             self
         }
@@ -3414,10 +3776,15 @@ pub mod person {
             mut self,
             last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                ::cynic::serde_json::to_value(&last),
+                if let Some(upload) = last.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&last))
+                },
             ));
             self
         }
@@ -3488,10 +3855,15 @@ pub mod person {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                ::cynic::serde_json::to_value(&after),
+                if let Some(upload) = after.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&after))
+                },
             ));
             self
         }
@@ -3499,10 +3871,15 @@ pub mod person {
             mut self,
             first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                ::cynic::serde_json::to_value(&first),
+                if let Some(upload) = first.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&first))
+                },
             ));
             self
         }
@@ -3513,10 +3890,15 @@ pub mod person {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                ::cynic::serde_json::to_value(&before),
+                if let Some(upload) = before.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&before))
+                },
             ));
             self
         }
@@ -3524,10 +3906,15 @@ pub mod person {
             mut self,
             last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                ::cynic::serde_json::to_value(&last),
+                if let Some(upload) = last.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&last))
+                },
             ));
             self
         }
@@ -3568,10 +3955,15 @@ pub mod person {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                ::cynic::serde_json::to_value(&after),
+                if let Some(upload) = after.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&after))
+                },
             ));
             self
         }
@@ -3579,10 +3971,15 @@ pub mod person {
             mut self,
             first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                ::cynic::serde_json::to_value(&first),
+                if let Some(upload) = first.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&first))
+                },
             ));
             self
         }
@@ -3593,10 +3990,15 @@ pub mod person {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                ::cynic::serde_json::to_value(&before),
+                if let Some(upload) = before.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&before))
+                },
             ));
             self
         }
@@ -3604,10 +4006,15 @@ pub mod person {
             mut self,
             last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                ::cynic::serde_json::to_value(&last),
+                if let Some(upload) = last.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&last))
+                },
             ));
             self
         }
@@ -4584,10 +4991,15 @@ pub mod planet {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                ::cynic::serde_json::to_value(&after),
+                if let Some(upload) = after.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&after))
+                },
             ));
             self
         }
@@ -4595,10 +5007,15 @@ pub mod planet {
             mut self,
             first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                ::cynic::serde_json::to_value(&first),
+                if let Some(upload) = first.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&first))
+                },
             ));
             self
         }
@@ -4609,10 +5026,15 @@ pub mod planet {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                ::cynic::serde_json::to_value(&before),
+                if let Some(upload) = before.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&before))
+                },
             ));
             self
         }
@@ -4620,10 +5042,15 @@ pub mod planet {
             mut self,
             last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                ::cynic::serde_json::to_value(&last),
+                if let Some(upload) = last.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&last))
+                },
             ));
             self
         }
@@ -4664,10 +5091,15 @@ pub mod planet {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                ::cynic::serde_json::to_value(&after),
+                if let Some(upload) = after.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&after))
+                },
             ));
             self
         }
@@ -4675,10 +5107,15 @@ pub mod planet {
             mut self,
             first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                ::cynic::serde_json::to_value(&first),
+                if let Some(upload) = first.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&first))
+                },
             ));
             self
         }
@@ -4689,10 +5126,15 @@ pub mod planet {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                ::cynic::serde_json::to_value(&before),
+                if let Some(upload) = before.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&before))
+                },
             ));
             self
         }
@@ -4700,10 +5142,15 @@ pub mod planet {
             mut self,
             last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                ::cynic::serde_json::to_value(&last),
+                if let Some(upload) = last.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&last))
+                },
             ));
             self
         }
@@ -5398,10 +5845,15 @@ pub mod root {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                ::cynic::serde_json::to_value(&after),
+                if let Some(upload) = after.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&after))
+                },
             ));
             self
         }
@@ -5409,10 +5861,15 @@ pub mod root {
             mut self,
             first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                ::cynic::serde_json::to_value(&first),
+                if let Some(upload) = first.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&first))
+                },
             ));
             self
         }
@@ -5423,10 +5880,15 @@ pub mod root {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                ::cynic::serde_json::to_value(&before),
+                if let Some(upload) = before.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&before))
+                },
             ));
             self
         }
@@ -5434,10 +5896,15 @@ pub mod root {
             mut self,
             last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                ::cynic::serde_json::to_value(&last),
+                if let Some(upload) = last.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&last))
+                },
             ));
             self
         }
@@ -5478,10 +5945,15 @@ pub mod root {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "id",
                 "ID",
-                ::cynic::serde_json::to_value(&id),
+                if let Some(upload) = id.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&id))
+                },
             ));
             self
         }
@@ -5492,10 +5964,15 @@ pub mod root {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "filmID",
                 "ID",
-                ::cynic::serde_json::to_value(&film_id),
+                if let Some(upload) = film_id.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&film_id))
+                },
             ));
             self
         }
@@ -5532,10 +6009,15 @@ pub mod root {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                ::cynic::serde_json::to_value(&after),
+                if let Some(upload) = after.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&after))
+                },
             ));
             self
         }
@@ -5543,10 +6025,15 @@ pub mod root {
             mut self,
             first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                ::cynic::serde_json::to_value(&first),
+                if let Some(upload) = first.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&first))
+                },
             ));
             self
         }
@@ -5557,10 +6044,15 @@ pub mod root {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                ::cynic::serde_json::to_value(&before),
+                if let Some(upload) = before.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&before))
+                },
             ));
             self
         }
@@ -5568,10 +6060,15 @@ pub mod root {
             mut self,
             last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                ::cynic::serde_json::to_value(&last),
+                if let Some(upload) = last.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&last))
+                },
             ));
             self
         }
@@ -5612,10 +6109,15 @@ pub mod root {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "id",
                 "ID",
-                ::cynic::serde_json::to_value(&id),
+                if let Some(upload) = id.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&id))
+                },
             ));
             self
         }
@@ -5626,10 +6128,15 @@ pub mod root {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "personID",
                 "ID",
-                ::cynic::serde_json::to_value(&person_id),
+                if let Some(upload) = person_id.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&person_id))
+                },
             ));
             self
         }
@@ -5670,10 +6177,15 @@ pub mod root {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                ::cynic::serde_json::to_value(&after),
+                if let Some(upload) = after.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&after))
+                },
             ));
             self
         }
@@ -5681,10 +6193,15 @@ pub mod root {
             mut self,
             first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                ::cynic::serde_json::to_value(&first),
+                if let Some(upload) = first.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&first))
+                },
             ));
             self
         }
@@ -5695,10 +6212,15 @@ pub mod root {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                ::cynic::serde_json::to_value(&before),
+                if let Some(upload) = before.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&before))
+                },
             ));
             self
         }
@@ -5706,10 +6228,15 @@ pub mod root {
             mut self,
             last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                ::cynic::serde_json::to_value(&last),
+                if let Some(upload) = last.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&last))
+                },
             ));
             self
         }
@@ -5750,10 +6277,15 @@ pub mod root {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "id",
                 "ID",
-                ::cynic::serde_json::to_value(&id),
+                if let Some(upload) = id.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&id))
+                },
             ));
             self
         }
@@ -5764,10 +6296,15 @@ pub mod root {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "planetID",
                 "ID",
-                ::cynic::serde_json::to_value(&planet_id),
+                if let Some(upload) = planet_id.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&planet_id))
+                },
             ));
             self
         }
@@ -5808,10 +6345,15 @@ pub mod root {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                ::cynic::serde_json::to_value(&after),
+                if let Some(upload) = after.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&after))
+                },
             ));
             self
         }
@@ -5819,10 +6361,15 @@ pub mod root {
             mut self,
             first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                ::cynic::serde_json::to_value(&first),
+                if let Some(upload) = first.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&first))
+                },
             ));
             self
         }
@@ -5833,10 +6380,15 @@ pub mod root {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                ::cynic::serde_json::to_value(&before),
+                if let Some(upload) = before.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&before))
+                },
             ));
             self
         }
@@ -5844,10 +6396,15 @@ pub mod root {
             mut self,
             last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                ::cynic::serde_json::to_value(&last),
+                if let Some(upload) = last.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&last))
+                },
             ));
             self
         }
@@ -5888,10 +6445,15 @@ pub mod root {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "id",
                 "ID",
-                ::cynic::serde_json::to_value(&id),
+                if let Some(upload) = id.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&id))
+                },
             ));
             self
         }
@@ -5902,10 +6464,15 @@ pub mod root {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "speciesID",
                 "ID",
-                ::cynic::serde_json::to_value(&species_id),
+                if let Some(upload) = species_id.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&species_id))
+                },
             ));
             self
         }
@@ -5946,10 +6513,15 @@ pub mod root {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                ::cynic::serde_json::to_value(&after),
+                if let Some(upload) = after.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&after))
+                },
             ));
             self
         }
@@ -5957,10 +6529,15 @@ pub mod root {
             mut self,
             first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                ::cynic::serde_json::to_value(&first),
+                if let Some(upload) = first.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&first))
+                },
             ));
             self
         }
@@ -5971,10 +6548,15 @@ pub mod root {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                ::cynic::serde_json::to_value(&before),
+                if let Some(upload) = before.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&before))
+                },
             ));
             self
         }
@@ -5982,10 +6564,15 @@ pub mod root {
             mut self,
             last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                ::cynic::serde_json::to_value(&last),
+                if let Some(upload) = last.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&last))
+                },
             ));
             self
         }
@@ -6026,10 +6613,15 @@ pub mod root {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "id",
                 "ID",
-                ::cynic::serde_json::to_value(&id),
+                if let Some(upload) = id.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&id))
+                },
             ));
             self
         }
@@ -6040,10 +6632,17 @@ pub mod root {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "starshipID",
                 "ID",
-                ::cynic::serde_json::to_value(&starship_id),
+                if let Some(upload) = starship_id.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(
+                        &starship_id,
+                    ))
+                },
             ));
             self
         }
@@ -6084,10 +6683,15 @@ pub mod root {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                ::cynic::serde_json::to_value(&after),
+                if let Some(upload) = after.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&after))
+                },
             ));
             self
         }
@@ -6095,10 +6699,15 @@ pub mod root {
             mut self,
             first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                ::cynic::serde_json::to_value(&first),
+                if let Some(upload) = first.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&first))
+                },
             ));
             self
         }
@@ -6109,10 +6718,15 @@ pub mod root {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                ::cynic::serde_json::to_value(&before),
+                if let Some(upload) = before.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&before))
+                },
             ));
             self
         }
@@ -6120,10 +6734,15 @@ pub mod root {
             mut self,
             last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                ::cynic::serde_json::to_value(&last),
+                if let Some(upload) = last.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&last))
+                },
             ));
             self
         }
@@ -6164,10 +6783,15 @@ pub mod root {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "id",
                 "ID",
-                ::cynic::serde_json::to_value(&id),
+                if let Some(upload) = id.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&id))
+                },
             ));
             self
         }
@@ -6178,10 +6802,15 @@ pub mod root {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "vehicleID",
                 "ID",
-                ::cynic::serde_json::to_value(&vehicle_id),
+                if let Some(upload) = vehicle_id.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&vehicle_id))
+                },
             ));
             self
         }
@@ -6565,10 +7194,15 @@ pub mod species {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                ::cynic::serde_json::to_value(&after),
+                if let Some(upload) = after.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&after))
+                },
             ));
             self
         }
@@ -6576,10 +7210,15 @@ pub mod species {
             mut self,
             first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                ::cynic::serde_json::to_value(&first),
+                if let Some(upload) = first.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&first))
+                },
             ));
             self
         }
@@ -6590,10 +7229,15 @@ pub mod species {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                ::cynic::serde_json::to_value(&before),
+                if let Some(upload) = before.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&before))
+                },
             ));
             self
         }
@@ -6601,10 +7245,15 @@ pub mod species {
             mut self,
             last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                ::cynic::serde_json::to_value(&last),
+                if let Some(upload) = last.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&last))
+                },
             ));
             self
         }
@@ -6645,10 +7294,15 @@ pub mod species {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                ::cynic::serde_json::to_value(&after),
+                if let Some(upload) = after.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&after))
+                },
             ));
             self
         }
@@ -6656,10 +7310,15 @@ pub mod species {
             mut self,
             first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                ::cynic::serde_json::to_value(&first),
+                if let Some(upload) = first.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&first))
+                },
             ));
             self
         }
@@ -6670,10 +7329,15 @@ pub mod species {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                ::cynic::serde_json::to_value(&before),
+                if let Some(upload) = before.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&before))
+                },
             ));
             self
         }
@@ -6681,10 +7345,15 @@ pub mod species {
             mut self,
             last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                ::cynic::serde_json::to_value(&last),
+                if let Some(upload) = last.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&last))
+                },
             ));
             self
         }
@@ -7757,10 +8426,15 @@ pub mod starship {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                ::cynic::serde_json::to_value(&after),
+                if let Some(upload) = after.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&after))
+                },
             ));
             self
         }
@@ -7768,10 +8442,15 @@ pub mod starship {
             mut self,
             first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                ::cynic::serde_json::to_value(&first),
+                if let Some(upload) = first.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&first))
+                },
             ));
             self
         }
@@ -7782,10 +8461,15 @@ pub mod starship {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                ::cynic::serde_json::to_value(&before),
+                if let Some(upload) = before.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&before))
+                },
             ));
             self
         }
@@ -7793,10 +8477,15 @@ pub mod starship {
             mut self,
             last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                ::cynic::serde_json::to_value(&last),
+                if let Some(upload) = last.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&last))
+                },
             ));
             self
         }
@@ -7837,10 +8526,15 @@ pub mod starship {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                ::cynic::serde_json::to_value(&after),
+                if let Some(upload) = after.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&after))
+                },
             ));
             self
         }
@@ -7848,10 +8542,15 @@ pub mod starship {
             mut self,
             first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                ::cynic::serde_json::to_value(&first),
+                if let Some(upload) = first.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&first))
+                },
             ));
             self
         }
@@ -7862,10 +8561,15 @@ pub mod starship {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                ::cynic::serde_json::to_value(&before),
+                if let Some(upload) = before.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&before))
+                },
             ));
             self
         }
@@ -7873,10 +8577,15 @@ pub mod starship {
             mut self,
             last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                ::cynic::serde_json::to_value(&last),
+                if let Some(upload) = last.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&last))
+                },
             ));
             self
         }
@@ -8897,10 +9606,15 @@ pub mod vehicle {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                ::cynic::serde_json::to_value(&after),
+                if let Some(upload) = after.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&after))
+                },
             ));
             self
         }
@@ -8908,10 +9622,15 @@ pub mod vehicle {
             mut self,
             first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                ::cynic::serde_json::to_value(&first),
+                if let Some(upload) = first.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&first))
+                },
             ));
             self
         }
@@ -8922,10 +9641,15 @@ pub mod vehicle {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                ::cynic::serde_json::to_value(&before),
+                if let Some(upload) = before.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&before))
+                },
             ));
             self
         }
@@ -8933,10 +9657,15 @@ pub mod vehicle {
             mut self,
             last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                ::cynic::serde_json::to_value(&last),
+                if let Some(upload) = last.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&last))
+                },
             ));
             self
         }
@@ -8977,10 +9706,15 @@ pub mod vehicle {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                ::cynic::serde_json::to_value(&after),
+                if let Some(upload) = after.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&after))
+                },
             ));
             self
         }
@@ -8988,10 +9722,15 @@ pub mod vehicle {
             mut self,
             first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                ::cynic::serde_json::to_value(&first),
+                if let Some(upload) = first.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&first))
+                },
             ));
             self
         }
@@ -9002,10 +9741,15 @@ pub mod vehicle {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                ::cynic::serde_json::to_value(&before),
+                if let Some(upload) = before.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&before))
+                },
             ));
             self
         }
@@ -9013,10 +9757,15 @@ pub mod vehicle {
             mut self,
             last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                ::cynic::serde_json::to_value(&last),
+                if let Some(upload) = last.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&last))
+                },
             ));
             self
         }

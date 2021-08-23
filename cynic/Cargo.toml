@@ -15,13 +15,14 @@ readme = "../README.md"
 
 [features]
 default = []
-all = ["surf", "reqwest", "reqwest-blocking"]
+all = ["surf", "reqwest", "reqwest-blocking", "web"]
 reqwest-blocking = ["reqwest/blocking"]
 surf-h1-client = ["surf/h1-client"]
 surf-curl-client = ["surf/curl-client"]
 surf-wasm-client = ["surf/wasm-client"]
 surf-middleware-logger = ["surf/middleware-logger"]
 surf-encoding = ["surf/encoding"]
+web = ["reqwasm", "wasm-bindgen", "web-sys", "js-sys"]
 
 [dependencies]
 chrono = { version = "0.4.11", optional = true }
@@ -31,6 +32,7 @@ serde = { version = "1.0.104", features = [ "derive" ] }
 serde_json = "1.0"
 thiserror = "1.0.20"
 anyhow = "1.0.43"
+log = "0.4.14"
 
 # Surf feature deps
 surf = { version = "2.1", default-features = false, optional = true }
@@ -41,6 +43,8 @@ reqwest = { version = "0.11", optional = true, features = ["json"] }
 # Reqwasm feature deps
 reqwasm = { version = "0.2.1", optional = true }
 wasm-bindgen = { version = "0.2.75", optional = true }
+web-sys = { version = "0.3.53", optional = true }
+js-sys = { version = "0.3.53", optional = true }
 
 [dev-dependencies]
 maplit = "1.0.2"

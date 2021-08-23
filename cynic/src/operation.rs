@@ -1,9 +1,11 @@
 use json_decode::BoxDecoder;
+use serde_json::json;
 use std::collections::HashMap;
 
 use crate::{
+    arguments::ArgumentWireFormat,
     selection_set::{mutation_root, query_root, subscription_root},
-    Argument, GraphQlResponse, MutationRoot, QueryRoot, SelectionSet, SubscriptionRoot,
+    Argument, GraphQlResponse, MutationRoot, QueryRoot, SelectionSet, SubscriptionRoot, Upload,
 };
 
 /// An Operation that can be sent to a remote GraphQL server.
@@ -15,6 +17,8 @@ use crate::{
 pub struct Operation<'a, ResponseData> {
     pub query: String,
     pub variables: HashMap<String, Argument>,
+    #[serde(skip)]
+    pub files: Vec<(String, Upload)>,
     #[serde(skip)]
     decoder: BoxDecoder<'a, ResponseData>,
 }
@@ -33,6 +37,7 @@ impl<'a, ResponseData: 'a> Operation<'a, ResponseData> {
         Operation {
             query,
             variables,
+            files: vec![],
             decoder,
         }
     }
@@ -44,15 +49,35 @@ impl<'a, ResponseData: 'a> Operation<'a, ResponseData> {
         let (query, arguments, decoder) =
             mutation_root(selection_set).query_arguments_and_decoder();
 
-        let variables = arguments
-            .into_iter()
-            .enumerate()
-            .map(|(i, a)| (format!("_{}", i), a))
-            .collect();
+        let mut variables = HashMap::new();
+        let mut files = Vec::new();
+
+        for (i, argument) in arguments.into_iter().enumerate() {
+            match argument.wire_format {
+                ArgumentWireFormat::Serialize(_) => {
+                    variables.insert(format!("_{}", i), argument);
+                }
+                ArgumentWireFormat::Upload(upload) => {
+                    let variable_name = format!("_{}", i);
+                    files.push((variable_name.clone(), upload));
+                    variables.insert(
+                        variable_name,
+                        Argument::new(
+                            &argument.name,
+                            "Upload",
+                            ArgumentWireFormat::Serialize(Ok(json! { Option::<()>::None })),
+                        ),
+                    );
+                }
+            }
+        }
+
+        log::debug!("vars: {:#?}", variables);
 
         Operation {
             query,
             variables,
+            files,
             decoder,
         }
     }
@@ -74,6 +99,15 @@ impl<'a, ResponseData: 'a> Operation<'a, ResponseData> {
                 errors: response.errors,
             })
         }
+    }
+
+    pub fn file_map(&self) -> HashMap<String, Vec<String>> {
+        self.files
+            .iter()
+            .enumerate()
+            // TODO: Fix
+            .map(|(i, (name, _))| (i.to_string(), vec![format!("variables.{}", name)]))
+            .collect()
     }
 }
 
@@ -102,6 +136,7 @@ impl<'a, ResponseData: 'a> StreamingOperation<'a, ResponseData> {
             inner: Operation {
                 query,
                 variables,
+                files: vec![],
                 decoder,
             },
         }

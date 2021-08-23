@@ -20,12 +20,10 @@ mod queries {
         #[cynic(rename = "film")]
         pub empire_strikes_back: Option<Film>,
     }
-
     #[derive(cynic::QueryFragment, Debug)]
     pub struct Film {
         pub title: Option<String>,
     }
-
 }
 
 mod schema {

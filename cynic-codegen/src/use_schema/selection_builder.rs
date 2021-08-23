@@ -118,11 +118,16 @@ impl quote::ToTokens for FieldSelectionBuilder {
                     pub fn #argument_names(
                         mut self, #argument_names: #argument_types
                     ) -> Self {
+                        use cynic::InputType;
                         self.args.push(
                             ::cynic::Argument::new(
                                 #argument_strings,
                                 #argument_gql_types,
-                                ::cynic::serde_json::to_value(&#argument_names)
+                                if let Some(upload) = #argument_names.into_upload() {
+                                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                                } else {
+                                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&#argument_names))
+                                }
                             )
                         );
 

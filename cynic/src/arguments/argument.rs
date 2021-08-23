@@ -1,18 +1,17 @@
+use crate::Upload;
+
+#[derive(Debug)]
 pub struct Argument {
     pub(crate) name: String,
-    pub(crate) serialize_result: Result<serde_json::Value, serde_json::Error>,
+    pub(crate) wire_format: ArgumentWireFormat,
     pub(crate) type_: String,
 }
 
 impl Argument {
-    pub fn new(
-        name: &str,
-        gql_type: &str,
-        result: Result<serde_json::Value, serde_json::Error>,
-    ) -> Argument {
+    pub fn new(name: &str, gql_type: &str, result: ArgumentWireFormat) -> Argument {
         Argument {
             name: name.to_string(),
-            serialize_result: result,
+            wire_format: result,
             type_: gql_type.to_string(),
         }
     }
@@ -25,9 +24,25 @@ impl serde::Serialize for Argument {
     {
         use serde::ser::Error;
 
-        match &self.serialize_result {
-            Ok(json_val) => serde::Serialize::serialize(json_val, serializer),
-            Err(e) => Err(S::Error::custom(e.to_string())),
-        }
+        let e = match &self.wire_format {
+            ArgumentWireFormat::Serialize(serialize) => match serialize {
+                Ok(json_val) => serde::Serialize::serialize(json_val, serializer),
+                Err(e) => {
+                    log::debug!("{:?}", e.to_string());
+                    Err(S::Error::custom(e.to_string()))
+                }
+            },
+            ArgumentWireFormat::Upload(_) => Err(S::Error::custom(
+                "Upload must not be serialized but sent as multiplart!",
+            )),
+        };
+
+        e
     }
+}
+
+#[derive(Debug)]
+pub enum ArgumentWireFormat {
+    Serialize(Result<serde_json::Value, serde_json::Error>),
+    Upload(Upload),
 }

@@ -8,27 +8,35 @@ pub struct City;
 #[allow(dead_code)]
 impl City {
     pub fn id() -> city::IdSelectionBuilder {
+        use cynic::InputType;
         city::IdSelectionBuilder::new(vec![])
     }
     pub fn name() -> city::NameSelectionBuilder {
+        use cynic::InputType;
         city::NameSelectionBuilder::new(vec![])
     }
     pub fn slug() -> city::SlugSelectionBuilder {
+        use cynic::InputType;
         city::SlugSelectionBuilder::new(vec![])
     }
     pub fn country() -> city::CountrySelectionBuilder {
+        use cynic::InputType;
         city::CountrySelectionBuilder::new(vec![])
     }
     pub fn r#type() -> city::TypeSelectionBuilder {
+        use cynic::InputType;
         city::TypeSelectionBuilder::new(vec![])
     }
     pub fn jobs() -> city::JobsSelectionBuilder {
+        use cynic::InputType;
         city::JobsSelectionBuilder::new(vec![])
     }
     pub fn created_at() -> city::CreatedAtSelectionBuilder {
+        use cynic::InputType;
         city::CreatedAtSelectionBuilder::new(vec![])
     }
     pub fn updated_at() -> city::UpdatedAtSelectionBuilder {
+        use cynic::InputType;
         city::UpdatedAtSelectionBuilder::new(vec![])
     }
 }
@@ -37,21 +45,27 @@ pub struct Commitment;
 #[allow(dead_code)]
 impl Commitment {
     pub fn id() -> commitment::IdSelectionBuilder {
+        use cynic::InputType;
         commitment::IdSelectionBuilder::new(vec![])
     }
     pub fn title() -> commitment::TitleSelectionBuilder {
+        use cynic::InputType;
         commitment::TitleSelectionBuilder::new(vec![])
     }
     pub fn slug() -> commitment::SlugSelectionBuilder {
+        use cynic::InputType;
         commitment::SlugSelectionBuilder::new(vec![])
     }
     pub fn jobs() -> commitment::JobsSelectionBuilder {
+        use cynic::InputType;
         commitment::JobsSelectionBuilder::new(vec![])
     }
     pub fn created_at() -> commitment::CreatedAtSelectionBuilder {
+        use cynic::InputType;
         commitment::CreatedAtSelectionBuilder::new(vec![])
     }
     pub fn updated_at() -> commitment::UpdatedAtSelectionBuilder {
+        use cynic::InputType;
         commitment::UpdatedAtSelectionBuilder::new(vec![])
     }
 }
@@ -60,33 +74,43 @@ pub struct Company;
 #[allow(dead_code)]
 impl Company {
     pub fn id() -> company::IdSelectionBuilder {
+        use cynic::InputType;
         company::IdSelectionBuilder::new(vec![])
     }
     pub fn name() -> company::NameSelectionBuilder {
+        use cynic::InputType;
         company::NameSelectionBuilder::new(vec![])
     }
     pub fn slug() -> company::SlugSelectionBuilder {
+        use cynic::InputType;
         company::SlugSelectionBuilder::new(vec![])
     }
     pub fn website_url() -> company::WebsiteUrlSelectionBuilder {
+        use cynic::InputType;
         company::WebsiteUrlSelectionBuilder::new(vec![])
     }
     pub fn logo_url() -> company::LogoUrlSelectionBuilder {
+        use cynic::InputType;
         company::LogoUrlSelectionBuilder::new(vec![])
     }
     pub fn jobs() -> company::JobsSelectionBuilder {
+        use cynic::InputType;
         company::JobsSelectionBuilder::new(vec![])
     }
     pub fn twitter() -> company::TwitterSelectionBuilder {
+        use cynic::InputType;
         company::TwitterSelectionBuilder::new(vec![])
     }
     pub fn emailed() -> company::EmailedSelectionBuilder {
+        use cynic::InputType;
         company::EmailedSelectionBuilder::new(vec![])
     }
     pub fn created_at() -> company::CreatedAtSelectionBuilder {
+        use cynic::InputType;
         company::CreatedAtSelectionBuilder::new(vec![])
     }
     pub fn updated_at() -> company::UpdatedAtSelectionBuilder {
+        use cynic::InputType;
         company::UpdatedAtSelectionBuilder::new(vec![])
     }
 }
@@ -95,30 +119,39 @@ pub struct Country;
 #[allow(dead_code)]
 impl Country {
     pub fn id() -> country::IdSelectionBuilder {
+        use cynic::InputType;
         country::IdSelectionBuilder::new(vec![])
     }
     pub fn name() -> country::NameSelectionBuilder {
+        use cynic::InputType;
         country::NameSelectionBuilder::new(vec![])
     }
     pub fn slug() -> country::SlugSelectionBuilder {
+        use cynic::InputType;
         country::SlugSelectionBuilder::new(vec![])
     }
     pub fn r#type() -> country::TypeSelectionBuilder {
+        use cynic::InputType;
         country::TypeSelectionBuilder::new(vec![])
     }
     pub fn iso_code() -> country::IsoCodeSelectionBuilder {
+        use cynic::InputType;
         country::IsoCodeSelectionBuilder::new(vec![])
     }
     pub fn cities() -> country::CitiesSelectionBuilder {
+        use cynic::InputType;
         country::CitiesSelectionBuilder::new(vec![])
     }
     pub fn jobs() -> country::JobsSelectionBuilder {
+        use cynic::InputType;
         country::JobsSelectionBuilder::new(vec![])
     }
     pub fn created_at() -> country::CreatedAtSelectionBuilder {
+        use cynic::InputType;
         country::CreatedAtSelectionBuilder::new(vec![])
     }
     pub fn updated_at() -> country::UpdatedAtSelectionBuilder {
+        use cynic::InputType;
         country::UpdatedAtSelectionBuilder::new(vec![])
     }
 }
@@ -127,57 +160,75 @@ pub struct Job;
 #[allow(dead_code)]
 impl Job {
     pub fn id() -> job::IdSelectionBuilder {
+        use cynic::InputType;
         job::IdSelectionBuilder::new(vec![])
     }
     pub fn title() -> job::TitleSelectionBuilder {
+        use cynic::InputType;
         job::TitleSelectionBuilder::new(vec![])
     }
     pub fn slug() -> job::SlugSelectionBuilder {
+        use cynic::InputType;
         job::SlugSelectionBuilder::new(vec![])
     }
     pub fn commitment() -> job::CommitmentSelectionBuilder {
+        use cynic::InputType;
         job::CommitmentSelectionBuilder::new(vec![])
     }
     pub fn cities() -> job::CitiesSelectionBuilder {
+        use cynic::InputType;
         job::CitiesSelectionBuilder::new(vec![])
     }
     pub fn countries() -> job::CountriesSelectionBuilder {
+        use cynic::InputType;
         job::CountriesSelectionBuilder::new(vec![])
     }
     pub fn remotes() -> job::RemotesSelectionBuilder {
+        use cynic::InputType;
         job::RemotesSelectionBuilder::new(vec![])
     }
     pub fn description() -> job::DescriptionSelectionBuilder {
+        use cynic::InputType;
         job::DescriptionSelectionBuilder::new(vec![])
     }
     pub fn apply_url() -> job::ApplyUrlSelectionBuilder {
+        use cynic::InputType;
         job::ApplyUrlSelectionBuilder::new(vec![])
     }
     pub fn company() -> job::CompanySelectionBuilder {
+        use cynic::InputType;
         job::CompanySelectionBuilder::new(vec![])
     }
     pub fn tags() -> job::TagsSelectionBuilder {
+        use cynic::InputType;
         job::TagsSelectionBuilder::new(vec![])
     }
     pub fn is_published() -> job::IsPublishedSelectionBuilder {
+        use cynic::InputType;
         job::IsPublishedSelectionBuilder::new(vec![])
     }
     pub fn is_featured() -> job::IsFeaturedSelectionBuilder {
+        use cynic::InputType;
         job::IsFeaturedSelectionBuilder::new(vec![])
     }
     pub fn location_names() -> job::LocationNamesSelectionBuilder {
+        use cynic::InputType;
         job::LocationNamesSelectionBuilder::new(vec![])
     }
     pub fn user_email() -> job::UserEmailSelectionBuilder {
+        use cynic::InputType;
         job::UserEmailSelectionBuilder::new(vec![])
     }
     pub fn posted_at() -> job::PostedAtSelectionBuilder {
+        use cynic::InputType;
         job::PostedAtSelectionBuilder::new(vec![])
     }
     pub fn created_at() -> job::CreatedAtSelectionBuilder {
+        use cynic::InputType;
         job::CreatedAtSelectionBuilder::new(vec![])
     }
     pub fn updated_at() -> job::UpdatedAtSelectionBuilder {
+        use cynic::InputType;
         job::UpdatedAtSelectionBuilder::new(vec![])
     }
 }
@@ -186,15 +237,19 @@ pub struct Location;
 #[allow(dead_code)]
 impl Location {
     pub fn id() -> location::IdSelectionBuilder {
+        use cynic::InputType;
         location::IdSelectionBuilder::new(vec![])
     }
     pub fn slug() -> location::SlugSelectionBuilder {
+        use cynic::InputType;
         location::SlugSelectionBuilder::new(vec![])
     }
     pub fn name() -> location::NameSelectionBuilder {
+        use cynic::InputType;
         location::NameSelectionBuilder::new(vec![])
     }
     pub fn r#type() -> location::TypeSelectionBuilder {
+        use cynic::InputType;
         location::TypeSelectionBuilder::new(vec![])
     }
 }
@@ -205,35 +260,56 @@ impl Mutation {
     pub fn subscribe(
         input: impl ::cynic::InputType<SubscribeInput, ::cynic::inputs::NamedType>,
     ) -> mutation::SubscribeSelectionBuilder {
+        use cynic::InputType;
         mutation::SubscribeSelectionBuilder::new(vec![::cynic::Argument::new(
             "input",
             "SubscribeInput!",
-            ::cynic::serde_json::to_value(&input),
+            if let Some(upload) = input.into_upload() {
+                cynic::ArgumentWireFormat::Upload(upload.clone())
+            } else {
+                cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&input))
+            },
         )])
     }
     pub fn post_job(
         input: impl ::cynic::InputType<PostJobInput, ::cynic::inputs::NamedType>,
     ) -> mutation::PostJobSelectionBuilder {
+        use cynic::InputType;
         mutation::PostJobSelectionBuilder::new(vec![::cynic::Argument::new(
             "input",
             "PostJobInput!",
-            ::cynic::serde_json::to_value(&input),
+            if let Some(upload) = input.into_upload() {
+                cynic::ArgumentWireFormat::Upload(upload.clone())
+            } else {
+                cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&input))
+            },
         )])
     }
     pub fn update_job(
         input: impl ::cynic::InputType<UpdateJobInput, ::cynic::inputs::NamedType>,
         admin_secret: impl ::cynic::InputType<String, ::cynic::inputs::NamedType>,
     ) -> mutation::UpdateJobSelectionBuilder {
+        use cynic::InputType;
         mutation::UpdateJobSelectionBuilder::new(vec![
             ::cynic::Argument::new(
                 "input",
                 "UpdateJobInput!",
-                ::cynic::serde_json::to_value(&input),
+                if let Some(upload) = input.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&input))
+                },
             ),
             ::cynic::Argument::new(
                 "adminSecret",
                 "String!",
-                ::cynic::serde_json::to_value(&admin_secret),
+                if let Some(upload) = admin_secret.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(
+                        &admin_secret,
+                    ))
+                },
             ),
         ])
     }
@@ -241,16 +317,27 @@ impl Mutation {
         input: impl ::cynic::InputType<UpdateCompanyInput, ::cynic::inputs::NamedType>,
         admin_secret: impl ::cynic::InputType<String, ::cynic::inputs::NamedType>,
     ) -> mutation::UpdateCompanySelectionBuilder {
+        use cynic::InputType;
         mutation::UpdateCompanySelectionBuilder::new(vec![
             ::cynic::Argument::new(
                 "input",
                 "UpdateCompanyInput!",
-                ::cynic::serde_json::to_value(&input),
+                if let Some(upload) = input.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&input))
+                },
             ),
             ::cynic::Argument::new(
                 "adminSecret",
                 "String!",
-                ::cynic::serde_json::to_value(&admin_secret),
+                if let Some(upload) = admin_secret.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(
+                        &admin_secret,
+                    ))
+                },
             ),
         ])
     }
@@ -260,66 +347,97 @@ pub struct Query;
 #[allow(dead_code)]
 impl Query {
     pub fn jobs() -> query::JobsSelectionBuilder {
+        use cynic::InputType;
         query::JobsSelectionBuilder::new(vec![])
     }
     pub fn job(
         input: impl ::cynic::InputType<JobInput, ::cynic::inputs::NamedType>,
     ) -> query::JobSelectionBuilder {
+        use cynic::InputType;
         query::JobSelectionBuilder::new(vec![::cynic::Argument::new(
             "input",
             "JobInput!",
-            ::cynic::serde_json::to_value(&input),
+            if let Some(upload) = input.into_upload() {
+                cynic::ArgumentWireFormat::Upload(upload.clone())
+            } else {
+                cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&input))
+            },
         )])
     }
     pub fn locations(
         input: impl ::cynic::InputType<LocationsInput, ::cynic::inputs::NamedType>,
     ) -> query::LocationsSelectionBuilder {
+        use cynic::InputType;
         query::LocationsSelectionBuilder::new(vec![::cynic::Argument::new(
             "input",
             "LocationsInput!",
-            ::cynic::serde_json::to_value(&input),
+            if let Some(upload) = input.into_upload() {
+                cynic::ArgumentWireFormat::Upload(upload.clone())
+            } else {
+                cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&input))
+            },
         )])
     }
     pub fn city(
         input: impl ::cynic::InputType<LocationInput, ::cynic::inputs::NamedType>,
     ) -> query::CitySelectionBuilder {
+        use cynic::InputType;
         query::CitySelectionBuilder::new(vec![::cynic::Argument::new(
             "input",
             "LocationInput!",
-            ::cynic::serde_json::to_value(&input),
+            if let Some(upload) = input.into_upload() {
+                cynic::ArgumentWireFormat::Upload(upload.clone())
+            } else {
+                cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&input))
+            },
         )])
     }
     pub fn country(
         input: impl ::cynic::InputType<LocationInput, ::cynic::inputs::NamedType>,
     ) -> query::CountrySelectionBuilder {
+        use cynic::InputType;
         query::CountrySelectionBuilder::new(vec![::cynic::Argument::new(
             "input",
             "LocationInput!",
-            ::cynic::serde_json::to_value(&input),
+            if let Some(upload) = input.into_upload() {
+                cynic::ArgumentWireFormat::Upload(upload.clone())
+            } else {
+                cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&input))
+            },
         )])
     }
     pub fn remote(
         input: impl ::cynic::InputType<LocationInput, ::cynic::inputs::NamedType>,
     ) -> query::RemoteSelectionBuilder {
+        use cynic::InputType;
         query::RemoteSelectionBuilder::new(vec![::cynic::Argument::new(
             "input",
             "LocationInput!",
-            ::cynic::serde_json::to_value(&input),
+            if let Some(upload) = input.into_upload() {
+                cynic::ArgumentWireFormat::Upload(upload.clone())
+            } else {
+                cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&input))
+            },
         )])
     }
     pub fn commitments() -> query::CommitmentsSelectionBuilder {
+        use cynic::InputType;
         query::CommitmentsSelectionBuilder::new(vec![])
     }
     pub fn cities() -> query::CitiesSelectionBuilder {
+        use cynic::InputType;
         query::CitiesSelectionBuilder::new(vec![])
     }
     pub fn countries() -> query::CountriesSelectionBuilder {
+        use cynic::InputType;
         query::CountriesSelectionBuilder::new(vec![])
     }
     pub fn remotes() -> query::RemotesSelectionBuilder {
+        use cynic::InputType;
         query::RemotesSelectionBuilder::new(vec![])
     }
     pub fn companies() -> query::CompaniesSelectionBuilder {
+        use cynic::InputType;
         query::CompaniesSelectionBuilder::new(vec![])
     }
 }
@@ -328,24 +446,31 @@ pub struct Remote;
 #[allow(dead_code)]
 impl Remote {
     pub fn id() -> remote::IdSelectionBuilder {
+        use cynic::InputType;
         remote::IdSelectionBuilder::new(vec![])
     }
     pub fn name() -> remote::NameSelectionBuilder {
+        use cynic::InputType;
         remote::NameSelectionBuilder::new(vec![])
     }
     pub fn slug() -> remote::SlugSelectionBuilder {
+        use cynic::InputType;
         remote::SlugSelectionBuilder::new(vec![])
     }
     pub fn r#type() -> remote::TypeSelectionBuilder {
+        use cynic::InputType;
         remote::TypeSelectionBuilder::new(vec![])
     }
     pub fn jobs() -> remote::JobsSelectionBuilder {
+        use cynic::InputType;
         remote::JobsSelectionBuilder::new(vec![])
     }
     pub fn created_at() -> remote::CreatedAtSelectionBuilder {
+        use cynic::InputType;
         remote::CreatedAtSelectionBuilder::new(vec![])
     }
     pub fn updated_at() -> remote::UpdatedAtSelectionBuilder {
+        use cynic::InputType;
         remote::UpdatedAtSelectionBuilder::new(vec![])
     }
 }
@@ -354,21 +479,27 @@ pub struct Tag;
 #[allow(dead_code)]
 impl Tag {
     pub fn id() -> tag::IdSelectionBuilder {
+        use cynic::InputType;
         tag::IdSelectionBuilder::new(vec![])
     }
     pub fn name() -> tag::NameSelectionBuilder {
+        use cynic::InputType;
         tag::NameSelectionBuilder::new(vec![])
     }
     pub fn slug() -> tag::SlugSelectionBuilder {
+        use cynic::InputType;
         tag::SlugSelectionBuilder::new(vec![])
     }
     pub fn jobs() -> tag::JobsSelectionBuilder {
+        use cynic::InputType;
         tag::JobsSelectionBuilder::new(vec![])
     }
     pub fn created_at() -> tag::CreatedAtSelectionBuilder {
+        use cynic::InputType;
         tag::CreatedAtSelectionBuilder::new(vec![])
     }
     pub fn updated_at() -> tag::UpdatedAtSelectionBuilder {
+        use cynic::InputType;
         tag::UpdatedAtSelectionBuilder::new(vec![])
     }
 }
@@ -377,21 +508,27 @@ pub struct User;
 #[allow(dead_code)]
 impl User {
     pub fn id() -> user::IdSelectionBuilder {
+        use cynic::InputType;
         user::IdSelectionBuilder::new(vec![])
     }
     pub fn name() -> user::NameSelectionBuilder {
+        use cynic::InputType;
         user::NameSelectionBuilder::new(vec![])
     }
     pub fn email() -> user::EmailSelectionBuilder {
+        use cynic::InputType;
         user::EmailSelectionBuilder::new(vec![])
     }
     pub fn subscribe() -> user::SubscribeSelectionBuilder {
+        use cynic::InputType;
         user::SubscribeSelectionBuilder::new(vec![])
     }
     pub fn created_at() -> user::CreatedAtSelectionBuilder {
+        use cynic::InputType;
         user::CreatedAtSelectionBuilder::new(vec![])
     }
     pub fn updated_at() -> user::UpdatedAtSelectionBuilder {
+        use cynic::InputType;
         user::UpdatedAtSelectionBuilder::new(vec![])
     }
 }
@@ -516,10 +653,15 @@ pub mod city {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "where",
                 "JobWhereInput",
-                ::cynic::serde_json::to_value(&r#where),
+                if let Some(upload) = r#where.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&r#where))
+                },
             ));
             self
         }
@@ -530,10 +672,15 @@ pub mod city {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "orderBy",
                 "JobOrderByInput",
-                ::cynic::serde_json::to_value(&order_by),
+                if let Some(upload) = order_by.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&order_by))
+                },
             ));
             self
         }
@@ -541,10 +688,15 @@ pub mod city {
             mut self,
             skip: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "skip",
                 "Int",
-                ::cynic::serde_json::to_value(&skip),
+                if let Some(upload) = skip.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&skip))
+                },
             ));
             self
         }
@@ -555,10 +707,15 @@ pub mod city {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                ::cynic::serde_json::to_value(&after),
+                if let Some(upload) = after.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&after))
+                },
             ));
             self
         }
@@ -569,10 +726,15 @@ pub mod city {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                ::cynic::serde_json::to_value(&before),
+                if let Some(upload) = before.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&before))
+                },
             ));
             self
         }
@@ -580,10 +742,15 @@ pub mod city {
             mut self,
             first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                ::cynic::serde_json::to_value(&first),
+                if let Some(upload) = first.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&first))
+                },
             ));
             self
         }
@@ -591,10 +758,15 @@ pub mod city {
             mut self,
             last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                ::cynic::serde_json::to_value(&last),
+                if let Some(upload) = last.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&last))
+                },
             ));
             self
         }
@@ -743,10 +915,15 @@ pub mod commitment {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "where",
                 "JobWhereInput",
-                ::cynic::serde_json::to_value(&r#where),
+                if let Some(upload) = r#where.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&r#where))
+                },
             ));
             self
         }
@@ -757,10 +934,15 @@ pub mod commitment {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "orderBy",
                 "JobOrderByInput",
-                ::cynic::serde_json::to_value(&order_by),
+                if let Some(upload) = order_by.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&order_by))
+                },
             ));
             self
         }
@@ -768,10 +950,15 @@ pub mod commitment {
             mut self,
             skip: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "skip",
                 "Int",
-                ::cynic::serde_json::to_value(&skip),
+                if let Some(upload) = skip.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&skip))
+                },
             ));
             self
         }
@@ -782,10 +969,15 @@ pub mod commitment {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                ::cynic::serde_json::to_value(&after),
+                if let Some(upload) = after.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&after))
+                },
             ));
             self
         }
@@ -796,10 +988,15 @@ pub mod commitment {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                ::cynic::serde_json::to_value(&before),
+                if let Some(upload) = before.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&before))
+                },
             ));
             self
         }
@@ -807,10 +1004,15 @@ pub mod commitment {
             mut self,
             first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                ::cynic::serde_json::to_value(&first),
+                if let Some(upload) = first.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&first))
+                },
             ));
             self
         }
@@ -818,10 +1020,15 @@ pub mod commitment {
             mut self,
             last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                ::cynic::serde_json::to_value(&last),
+                if let Some(upload) = last.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&last))
+                },
             ));
             self
         }
@@ -1021,10 +1228,15 @@ pub mod company {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "where",
                 "JobWhereInput",
-                ::cynic::serde_json::to_value(&r#where),
+                if let Some(upload) = r#where.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&r#where))
+                },
             ));
             self
         }
@@ -1035,10 +1247,15 @@ pub mod company {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "orderBy",
                 "JobOrderByInput",
-                ::cynic::serde_json::to_value(&order_by),
+                if let Some(upload) = order_by.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&order_by))
+                },
             ));
             self
         }
@@ -1046,10 +1263,15 @@ pub mod company {
             mut self,
             skip: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "skip",
                 "Int",
-                ::cynic::serde_json::to_value(&skip),
+                if let Some(upload) = skip.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&skip))
+                },
             ));
             self
         }
@@ -1060,10 +1282,15 @@ pub mod company {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                ::cynic::serde_json::to_value(&after),
+                if let Some(upload) = after.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&after))
+                },
             ));
             self
         }
@@ -1074,10 +1301,15 @@ pub mod company {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                ::cynic::serde_json::to_value(&before),
+                if let Some(upload) = before.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&before))
+                },
             ));
             self
         }
@@ -1085,10 +1317,15 @@ pub mod company {
             mut self,
             first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                ::cynic::serde_json::to_value(&first),
+                if let Some(upload) = first.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&first))
+                },
             ));
             self
         }
@@ -1096,10 +1333,15 @@ pub mod company {
             mut self,
             last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                ::cynic::serde_json::to_value(&last),
+                if let Some(upload) = last.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&last))
+                },
             ));
             self
         }
@@ -1359,10 +1601,15 @@ pub mod country {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "where",
                 "CityWhereInput",
-                ::cynic::serde_json::to_value(&r#where),
+                if let Some(upload) = r#where.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&r#where))
+                },
             ));
             self
         }
@@ -1373,10 +1620,15 @@ pub mod country {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "orderBy",
                 "CityOrderByInput",
-                ::cynic::serde_json::to_value(&order_by),
+                if let Some(upload) = order_by.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&order_by))
+                },
             ));
             self
         }
@@ -1384,10 +1636,15 @@ pub mod country {
             mut self,
             skip: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "skip",
                 "Int",
-                ::cynic::serde_json::to_value(&skip),
+                if let Some(upload) = skip.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&skip))
+                },
             ));
             self
         }
@@ -1398,10 +1655,15 @@ pub mod country {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                ::cynic::serde_json::to_value(&after),
+                if let Some(upload) = after.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&after))
+                },
             ));
             self
         }
@@ -1412,10 +1674,15 @@ pub mod country {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                ::cynic::serde_json::to_value(&before),
+                if let Some(upload) = before.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&before))
+                },
             ));
             self
         }
@@ -1423,10 +1690,15 @@ pub mod country {
             mut self,
             first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                ::cynic::serde_json::to_value(&first),
+                if let Some(upload) = first.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&first))
+                },
             ));
             self
         }
@@ -1434,10 +1706,15 @@ pub mod country {
             mut self,
             last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                ::cynic::serde_json::to_value(&last),
+                if let Some(upload) = last.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&last))
+                },
             ));
             self
         }
@@ -1478,10 +1755,15 @@ pub mod country {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "where",
                 "JobWhereInput",
-                ::cynic::serde_json::to_value(&r#where),
+                if let Some(upload) = r#where.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&r#where))
+                },
             ));
             self
         }
@@ -1492,10 +1774,15 @@ pub mod country {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "orderBy",
                 "JobOrderByInput",
-                ::cynic::serde_json::to_value(&order_by),
+                if let Some(upload) = order_by.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&order_by))
+                },
             ));
             self
         }
@@ -1503,10 +1790,15 @@ pub mod country {
             mut self,
             skip: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "skip",
                 "Int",
-                ::cynic::serde_json::to_value(&skip),
+                if let Some(upload) = skip.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&skip))
+                },
             ));
             self
         }
@@ -1517,10 +1809,15 @@ pub mod country {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                ::cynic::serde_json::to_value(&after),
+                if let Some(upload) = after.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&after))
+                },
             ));
             self
         }
@@ -1531,10 +1828,15 @@ pub mod country {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                ::cynic::serde_json::to_value(&before),
+                if let Some(upload) = before.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&before))
+                },
             ));
             self
         }
@@ -1542,10 +1844,15 @@ pub mod country {
             mut self,
             first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                ::cynic::serde_json::to_value(&first),
+                if let Some(upload) = first.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&first))
+                },
             ));
             self
         }
@@ -1553,10 +1860,15 @@ pub mod country {
             mut self,
             last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                ::cynic::serde_json::to_value(&last),
+                if let Some(upload) = last.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&last))
+                },
             ));
             self
         }
@@ -1726,10 +2038,15 @@ pub mod job {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "where",
                 "CityWhereInput",
-                ::cynic::serde_json::to_value(&r#where),
+                if let Some(upload) = r#where.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&r#where))
+                },
             ));
             self
         }
@@ -1740,10 +2057,15 @@ pub mod job {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "orderBy",
                 "CityOrderByInput",
-                ::cynic::serde_json::to_value(&order_by),
+                if let Some(upload) = order_by.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&order_by))
+                },
             ));
             self
         }
@@ -1751,10 +2073,15 @@ pub mod job {
             mut self,
             skip: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "skip",
                 "Int",
-                ::cynic::serde_json::to_value(&skip),
+                if let Some(upload) = skip.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&skip))
+                },
             ));
             self
         }
@@ -1765,10 +2092,15 @@ pub mod job {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                ::cynic::serde_json::to_value(&after),
+                if let Some(upload) = after.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&after))
+                },
             ));
             self
         }
@@ -1779,10 +2111,15 @@ pub mod job {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                ::cynic::serde_json::to_value(&before),
+                if let Some(upload) = before.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&before))
+                },
             ));
             self
         }
@@ -1790,10 +2127,15 @@ pub mod job {
             mut self,
             first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                ::cynic::serde_json::to_value(&first),
+                if let Some(upload) = first.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&first))
+                },
             ));
             self
         }
@@ -1801,10 +2143,15 @@ pub mod job {
             mut self,
             last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                ::cynic::serde_json::to_value(&last),
+                if let Some(upload) = last.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&last))
+                },
             ));
             self
         }
@@ -1845,10 +2192,15 @@ pub mod job {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "where",
                 "CountryWhereInput",
-                ::cynic::serde_json::to_value(&r#where),
+                if let Some(upload) = r#where.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&r#where))
+                },
             ));
             self
         }
@@ -1859,10 +2211,15 @@ pub mod job {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "orderBy",
                 "CountryOrderByInput",
-                ::cynic::serde_json::to_value(&order_by),
+                if let Some(upload) = order_by.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&order_by))
+                },
             ));
             self
         }
@@ -1870,10 +2227,15 @@ pub mod job {
             mut self,
             skip: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "skip",
                 "Int",
-                ::cynic::serde_json::to_value(&skip),
+                if let Some(upload) = skip.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&skip))
+                },
             ));
             self
         }
@@ -1884,10 +2246,15 @@ pub mod job {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                ::cynic::serde_json::to_value(&after),
+                if let Some(upload) = after.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&after))
+                },
             ));
             self
         }
@@ -1898,10 +2265,15 @@ pub mod job {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                ::cynic::serde_json::to_value(&before),
+                if let Some(upload) = before.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&before))
+                },
             ));
             self
         }
@@ -1909,10 +2281,15 @@ pub mod job {
             mut self,
             first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                ::cynic::serde_json::to_value(&first),
+                if let Some(upload) = first.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&first))
+                },
             ));
             self
         }
@@ -1920,10 +2297,15 @@ pub mod job {
             mut self,
             last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                ::cynic::serde_json::to_value(&last),
+                if let Some(upload) = last.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&last))
+                },
             ));
             self
         }
@@ -1964,10 +2346,15 @@ pub mod job {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "where",
                 "RemoteWhereInput",
-                ::cynic::serde_json::to_value(&r#where),
+                if let Some(upload) = r#where.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&r#where))
+                },
             ));
             self
         }
@@ -1978,10 +2365,15 @@ pub mod job {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "orderBy",
                 "RemoteOrderByInput",
-                ::cynic::serde_json::to_value(&order_by),
+                if let Some(upload) = order_by.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&order_by))
+                },
             ));
             self
         }
@@ -1989,10 +2381,15 @@ pub mod job {
             mut self,
             skip: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "skip",
                 "Int",
-                ::cynic::serde_json::to_value(&skip),
+                if let Some(upload) = skip.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&skip))
+                },
             ));
             self
         }
@@ -2003,10 +2400,15 @@ pub mod job {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                ::cynic::serde_json::to_value(&after),
+                if let Some(upload) = after.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&after))
+                },
             ));
             self
         }
@@ -2017,10 +2419,15 @@ pub mod job {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                ::cynic::serde_json::to_value(&before),
+                if let Some(upload) = before.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&before))
+                },
             ));
             self
         }
@@ -2028,10 +2435,15 @@ pub mod job {
             mut self,
             first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                ::cynic::serde_json::to_value(&first),
+                if let Some(upload) = first.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&first))
+                },
             ));
             self
         }
@@ -2039,10 +2451,15 @@ pub mod job {
             mut self,
             last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                ::cynic::serde_json::to_value(&last),
+                if let Some(upload) = last.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&last))
+                },
             ));
             self
         }
@@ -2173,10 +2590,15 @@ pub mod job {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "where",
                 "TagWhereInput",
-                ::cynic::serde_json::to_value(&r#where),
+                if let Some(upload) = r#where.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&r#where))
+                },
             ));
             self
         }
@@ -2187,10 +2609,15 @@ pub mod job {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "orderBy",
                 "TagOrderByInput",
-                ::cynic::serde_json::to_value(&order_by),
+                if let Some(upload) = order_by.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&order_by))
+                },
             ));
             self
         }
@@ -2198,10 +2625,15 @@ pub mod job {
             mut self,
             skip: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "skip",
                 "Int",
-                ::cynic::serde_json::to_value(&skip),
+                if let Some(upload) = skip.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&skip))
+                },
             ));
             self
         }
@@ -2212,10 +2644,15 @@ pub mod job {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                ::cynic::serde_json::to_value(&after),
+                if let Some(upload) = after.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&after))
+                },
             ));
             self
         }
@@ -2226,10 +2663,15 @@ pub mod job {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                ::cynic::serde_json::to_value(&before),
+                if let Some(upload) = before.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&before))
+                },
             ));
             self
         }
@@ -2237,10 +2679,15 @@ pub mod job {
             mut self,
             first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                ::cynic::serde_json::to_value(&first),
+                if let Some(upload) = first.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&first))
+                },
             ));
             self
         }
@@ -2248,10 +2695,15 @@ pub mod job {
             mut self,
             last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                ::cynic::serde_json::to_value(&last),
+                if let Some(upload) = last.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&last))
+                },
             ));
             self
         }
@@ -2652,10 +3104,15 @@ pub mod query {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "input",
                 "JobsInput",
-                ::cynic::serde_json::to_value(&input),
+                if let Some(upload) = input.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&input))
+                },
             ));
             self
         }
@@ -3035,10 +3492,15 @@ pub mod remote {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "where",
                 "JobWhereInput",
-                ::cynic::serde_json::to_value(&r#where),
+                if let Some(upload) = r#where.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&r#where))
+                },
             ));
             self
         }
@@ -3049,10 +3511,15 @@ pub mod remote {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "orderBy",
                 "JobOrderByInput",
-                ::cynic::serde_json::to_value(&order_by),
+                if let Some(upload) = order_by.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&order_by))
+                },
             ));
             self
         }
@@ -3060,10 +3527,15 @@ pub mod remote {
             mut self,
             skip: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "skip",
                 "Int",
-                ::cynic::serde_json::to_value(&skip),
+                if let Some(upload) = skip.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&skip))
+                },
             ));
             self
         }
@@ -3074,10 +3546,15 @@ pub mod remote {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                ::cynic::serde_json::to_value(&after),
+                if let Some(upload) = after.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&after))
+                },
             ));
             self
         }
@@ -3088,10 +3565,15 @@ pub mod remote {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                ::cynic::serde_json::to_value(&before),
+                if let Some(upload) = before.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&before))
+                },
             ));
             self
         }
@@ -3099,10 +3581,15 @@ pub mod remote {
             mut self,
             first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                ::cynic::serde_json::to_value(&first),
+                if let Some(upload) = first.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&first))
+                },
             ));
             self
         }
@@ -3110,10 +3597,15 @@ pub mod remote {
             mut self,
             last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                ::cynic::serde_json::to_value(&last),
+                if let Some(upload) = last.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&last))
+                },
             ));
             self
         }
@@ -3262,10 +3754,15 @@ pub mod tag {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "where",
                 "JobWhereInput",
-                ::cynic::serde_json::to_value(&r#where),
+                if let Some(upload) = r#where.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&r#where))
+                },
             ));
             self
         }
@@ -3276,10 +3773,15 @@ pub mod tag {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "orderBy",
                 "JobOrderByInput",
-                ::cynic::serde_json::to_value(&order_by),
+                if let Some(upload) = order_by.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&order_by))
+                },
             ));
             self
         }
@@ -3287,10 +3789,15 @@ pub mod tag {
             mut self,
             skip: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "skip",
                 "Int",
-                ::cynic::serde_json::to_value(&skip),
+                if let Some(upload) = skip.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&skip))
+                },
             ));
             self
         }
@@ -3301,10 +3808,15 @@ pub mod tag {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "after",
                 "String",
-                ::cynic::serde_json::to_value(&after),
+                if let Some(upload) = after.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&after))
+                },
             ));
             self
         }
@@ -3315,10 +3827,15 @@ pub mod tag {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "before",
                 "String",
-                ::cynic::serde_json::to_value(&before),
+                if let Some(upload) = before.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&before))
+                },
             ));
             self
         }
@@ -3326,10 +3843,15 @@ pub mod tag {
             mut self,
             first: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "first",
                 "Int",
-                ::cynic::serde_json::to_value(&first),
+                if let Some(upload) = first.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&first))
+                },
             ));
             self
         }
@@ -3337,10 +3859,15 @@ pub mod tag {
             mut self,
             last: impl ::cynic::InputType<i32, ::cynic::inputs::Nullable<::cynic::inputs::NamedType>>,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "last",
                 "Int",
-                ::cynic::serde_json::to_value(&last),
+                if let Some(upload) = last.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&last))
+                },
             ));
             self
         }

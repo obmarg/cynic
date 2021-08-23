@@ -173,6 +173,7 @@ mod id;
 mod operation;
 mod result;
 mod scalar;
+mod upload;
 
 pub mod http;
 pub mod inputs;
@@ -181,7 +182,7 @@ pub mod utils;
 
 pub use json_decode::DecodeError;
 
-pub use arguments::{Argument, FromArguments};
+pub use arguments::{Argument, ArgumentWireFormat, FromArguments};
 pub use builders::{MutationBuilder, QueryBuilder, SubscriptionBuilder};
 pub use enums::Enum;
 pub use fragments::{FragmentArguments, FragmentContext, InlineFragments, QueryFragment};
@@ -191,6 +192,7 @@ pub use operation::{Operation, StreamingOperation};
 pub use result::{CynicError, GraphQlError, GraphQlResponse, GraphQlResult, PossiblyParsedData};
 pub use scalar::Scalar;
 pub use selection_set::SelectionSet;
+pub use upload::Upload;
 
 #[allow(deprecated)]
 pub use result::{GraphQLError, GraphQLResponse, GraphQLResult};

@@ -148,7 +148,6 @@ impl<'schema> TypeIndex<'schema> {
                 if let TypeDefinition::Object(object) = inner_type {
                     self.find_field_recursive(&object.fields, &inner_name, rest)
                 } else {
-                    eprintln!("tyl0r1");
                     Err(Error::ExpectedObject(inner_name.to_string()))
                 }
             }
