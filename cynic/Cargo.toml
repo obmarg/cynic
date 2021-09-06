@@ -24,7 +24,6 @@ surf-middleware-logger = ["surf/middleware-logger"]
 surf-encoding = ["surf/encoding"]
 
 [dependencies]
-chrono = { version = "0.4.11", optional = true }
 cynic-proc-macros = { path = "../cynic-proc-macros", version = "0.14.1" }
 json-decode = "0.6.0"
 serde = { version = "1.0.104", features = [ "derive" ] }
