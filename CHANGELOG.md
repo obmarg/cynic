@@ -24,6 +24,11 @@ all APIs might be changed.
   should have been generating, if those `InputObjects` were arguments to a leaf
   field.
 
+### Changes
+
+- Disabled the heavyweight feature of inflector, which should make it (and
+  therefore cynic) a lighter dependency.
+
 ## v0.14.1 - 2021-07-29
 
 ### Bug Fixes
