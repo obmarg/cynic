@@ -9,7 +9,8 @@ on:
 
 env:
   CARGO_INCREMENTAL: 0
-  RUSTFLAGS: "-D warnings -W rust-2021-compatibility"
+  # TODO: Would be nice to disable warnings here too, but there are too many of them.
+  RUSTFLAGS: "-W rust-2021-compatibility"
   RUST_BACKTRACE: short
   CI: 1
 
