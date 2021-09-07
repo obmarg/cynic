@@ -9,7 +9,7 @@ on:
 
 env:
   CARGO_INCREMENTAL: 0
-  RUSTFLAGS: "-D warnings -W unreachable-pub -W rust-2021-compatibility"
+  RUSTFLAGS: "-D warnings -W rust-2021-compatibility"
   RUST_BACKTRACE: short
   CI: 1
 
@@ -32,12 +32,12 @@ jobs:
       run: cargo fmt -- --check
 
     - name: Build
-      run: cargo build --verbose
+      run: cargo build
 
     - name: Build tests
       run: cargo test --no-run --all-features
     - name: Run tests
-      run: cargo test --verbose --all-features
+      run: cargo test --all-features
 
     - name: Build example tests
       run: cargo test --no-run --examples
