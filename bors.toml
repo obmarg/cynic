@@ -1,0 +1,6 @@
+status = [
+    "build",
+]
+delete_merged_branches = true
+use_squash_merge = true
+update_base_for_deletes = true

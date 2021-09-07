@@ -1,10 +1,18 @@
 name: Build & Test
 
+
 on:
   push:
-    branches: [ master ]
+    branches: [master, staging, trying]
   pull_request:
-    branches: [ master ]
+    branches: [master]
+
+env:
+  CARGO_INCREMENTAL: 0
+  # TODO: Would be nice to disable warnings here too, but there are too many of them.
+  RUSTFLAGS: "-W rust-2021-compatibility"
+  RUST_BACKTRACE: short
+  CI: 1
 
 jobs:
   build:
@@ -13,13 +21,29 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+
+    - uses: actions-rs/toolchain@v1
+      with:
+        profile: minimal
+        toolchain: stable
+
+    - uses: Swatinem/rust-cache@v1
+
     - name: Check formatting
       run: cargo fmt -- --check
+
     - name: Build
-      run: cargo build --verbose
+      run: cargo build
+
+    - name: Build tests
+      run: cargo test --no-run --all-features
     - name: Run tests
-      run: cargo test --verbose --all-features
-    - name: Test examples
-      run: cargo test --examples
+      run: cargo test --all-features
+
+    - name: Build example tests
+      run: cargo test --no-run --examples
+    - name: Run example tests
+      run: cargo test --no-run --examples
+
     - name: Build GitHub example
       run: cargo check --example github --all-features
