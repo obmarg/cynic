@@ -1,10 +1,17 @@
 name: Build & Test
 
+
 on:
   push:
-    branches: [ master ]
+    branches: [master, staging, trying]
   pull_request:
-    branches: [ master ]
+    branches: [master]
+
+env:
+  CARGO_INCREMENTAL: 0
+  RUSTFLAGS: "-D warnings -W unreachable-pub -W rust-2021-compatibility"
+  RUST_BACKTRACE: short
+  CI: 1
 
 jobs:
   build:
@@ -23,11 +30,19 @@ jobs:
 
     - name: Check formatting
       run: cargo fmt -- --check
+
     - name: Build
       run: cargo build --verbose
+
+    - name: Build tests
+      run: cargo test --no-run --all-features
     - name: Run tests
       run: cargo test --verbose --all-features
-    - name: Test examples
-      run: cargo test --examples
+
+    - name: Build example tests
+      run: cargo test --no-run --examples
+    - name: Run example tests
+      run: cargo test --no-run --examples
+
     - name: Build GitHub example
       run: cargo check --example github --all-features
