@@ -11,6 +11,12 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+### Breaking Changes
+
+- Removed the no longer used `chrono` feature.  It didn't enable any code so
+  downstreams shouldn't really be broken by this (other than a possible
+  `Cargo.toml` tweak)
+
 ### New Features
 
 - Cynic now supports GraphQL field aliases.  These can be requested, but will

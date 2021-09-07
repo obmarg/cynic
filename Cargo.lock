@@ -576,7 +576,6 @@ name = "cynic"
 version = "0.14.1"
 dependencies = [
  "assert_matches",
- "chrono",
  "cynic-proc-macros",
  "insta",
  "json-decode",
