@@ -15,7 +15,7 @@ env:
   CI: 1
 
 jobs:
-  build:
+  build-rust:
 
     runs-on: ubuntu-latest
 
@@ -27,13 +27,16 @@ jobs:
         profile: minimal
         toolchain: stable
 
+
     - uses: Swatinem/rust-cache@v1
 
     - name: Check formatting
       run: cargo fmt -- --check
 
-    - name: Build
-      run: cargo build
+    - uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --release
 
     - name: Build tests
       run: cargo test --no-run --all-features
