@@ -661,6 +661,7 @@ dependencies = [
  "assert_matches",
  "chrono",
  "cynic-proc-macros",
+ "gloo-file",
  "insta",
  "js-sys",
  "json-decode",

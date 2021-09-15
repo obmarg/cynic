@@ -18,6 +18,7 @@ pub use reqwest_blocking_ext::ReqwestBlockingExt;
 #[cfg(feature = "reqwasm")]
 #[cfg_attr(docsrs, doc(cfg(feature = "reqwasm")))]
 pub use reqwasm_ext::ReqwasmExt;
+use wasm_bindgen::JsValue;
 
 #[cfg(feature = "surf")]
 mod surf_ext {
@@ -293,18 +294,20 @@ mod reqwest_blocking_ext {
 #[derive(thiserror::Error, Debug)]
 pub enum CynicReqwasmError {
     #[error("Error making HTTP request: {0}")]
-    ReqwasmError(#[from] reqwasm::Error),
+    Reqwasm(#[from] reqwasm::Error),
     #[error("Error decoding GraphQL response: {0}")]
-    DecodeError(#[from] json_decode::DecodeError),
+    Decode(#[from] json_decode::DecodeError),
+    #[error("Serde error: {0}")]
+    Serde(#[from] serde_json::Error),
+    #[error("Error while interfacing JS")]
+    Js(JsValue),
 }
 
 #[cfg(feature = "reqwasm")]
 mod reqwasm_ext {
-    use js_sys::Uint8Array;
     use reqwasm::http::FormData;
     use std::{future::Future, pin::Pin};
     use wasm_bindgen::JsValue;
-    use web_sys::{Blob, File};
 
     use super::CynicReqwasmError;
     use crate::{GraphQlResponse, Operation};
@@ -376,34 +379,37 @@ mod reqwasm_ext {
             operation: Operation<'a, ResponseData>,
         ) -> BoxFuture<'a, Result<GraphQlResponse<ResponseData>, CynicReqwasmError>> {
             Box::pin(async move {
-                let mut form_data = FormData::new().unwrap();
+                let form_data = FormData::new().map_err(CynicReqwasmError::Js)?;
 
-                let operations = JsValue::from_str(&serde_json::to_string(&operation).unwrap());
+                let operations = JsValue::from_str(&serde_json::to_string(&operation)?);
 
-                let map = JsValue::from_str(&serde_json::to_string(&operation.file_map()).unwrap());
+                let map = JsValue::from_str(&serde_json::to_string(&operation.file_map())?);
 
-                form_data.append_with_blob("operations", &operations.into());
-                form_data.append_with_blob("map", &map.clone().into());
+                form_data
+                    .append_with_blob("operations", &operations.into())
+                    .map_err(CynicReqwasmError::Js)?;
+                form_data
+                    .append_with_blob("map", &map.clone().into())
+                    .map_err(CynicReqwasmError::Js)?;
                 for (i, file) in operation.files.iter().enumerate() {
-                    let content = JsValue::from_serde(&file.1.content).unwrap();
-                    let content = Uint8Array::from(&file.1.content[..]);
-                    let content: &JsValue = content.as_ref();
-                    let file = File::new_with_u8_array_sequence(content, &file.1.name).unwrap();
-                    form_data.append_with_blob(&format!("{}", i), &file);
+                    let file = gloo_file::File::new(&file.1.name, file.1.content.as_slice());
+                    form_data
+                        .append_with_blob(&format!("{}", i), &file.as_ref())
+                        .map_err(CynicReqwasmError::Js)?;
                 }
 
                 match self.body(form_data).send().await {
                     Ok(response) => {
                         let response = response.json::<GraphQlResponse<serde_json::Value>>().await;
                         response
-                            .map_err(CynicReqwasmError::ReqwasmError)
+                            .map_err(CynicReqwasmError::Reqwasm)
                             .and_then(|gql_response| {
                                 operation
                                     .decode_response(gql_response)
-                                    .map_err(CynicReqwasmError::DecodeError)
+                                    .map_err(CynicReqwasmError::Decode)
                             })
                     }
-                    Err(error) => Err(CynicReqwasmError::ReqwasmError(error)),
+                    Err(error) => Err(CynicReqwasmError::Reqwasm(error)),
                 }
             })
         }
