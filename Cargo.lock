@@ -606,7 +606,7 @@ dependencies = [
  "maplit",
  "proc-macro2",
  "quote",
- "rstest 0.6.4",
+ "rstest",
  "strsim",
  "syn",
 ]
@@ -642,7 +642,7 @@ dependencies = [
  "assert_matches",
  "graphql-parser",
  "insta",
- "rstest 0.7.0",
+ "rstest",
  "rust_decimal",
  "thiserror",
  "uuid",
@@ -1890,19 +1890,6 @@ dependencies = [
  "untrusted",
  "web-sys",
  "winapi",
-]
-
-[[package]]
-name = "rstest"
-version = "0.6.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dec448bc157977efdc0a71369cf923915b0c4806b1b2449c3fb011071d6f7c38"
-dependencies = [
- "cfg-if 0.1.10",
- "proc-macro2",
- "quote",
- "rustc_version 0.2.3",
- "syn",
 ]
 
 [[package]]
