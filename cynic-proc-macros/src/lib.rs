@@ -1,18 +1,18 @@
-#![feature(proc_macro_span)]
-#![feature(proc_macro_diagnostic)]
 #![allow(clippy::let_and_return)]
+#![feature(proc_macro_span, proc_macro_diagnostic)]
 
 extern crate proc_macro;
 
 use std::io::{Read, Write};
+use std::ops::Range;
 use std::process::{Command, Stdio};
 use std::{path::Path, rc::Rc};
 
 use cargo_toml::Manifest;
 use cynic_querygen::{parse_query_document, Error, TypeIndex};
+use graphql_parser::error::Error as ConsumeError;
 use graphql_parser::query::{Definition, OperationDefinition};
-use graphql_parser::{error::Error as ConsumeError, Pos};
-use proc_macro::{Span, TokenStream};
+use proc_macro::{Delimiter, Span, TokenStream};
 use proc_macro2::Ident;
 use quote::quote;
 use serde::Deserialize;
@@ -162,6 +162,89 @@ pub fn schema_for_derives(attrs: TokenStream, input: TokenStream) -> TokenStream
     rv
 }
 
+/// Compiles a source string of all input tokens with one space between all tokens while storing the token spans.
+/// This is requires so we can later map error messages to graphql-parser errors with [`span_in_stream`].
+fn catalog_tokens(
+    input: TokenStream,
+    catalog: &mut Vec<(Range<usize>, Span)>,
+    source_string: &mut String,
+) {
+    for token in input {
+        use proc_macro::TokenTree;
+
+        match token {
+            TokenTree::Group(ref t) => {
+                let previous_length = source_string.len();
+                source_string.push_str(match t.delimiter() {
+                    Delimiter::Parenthesis => "( ",
+                    Delimiter::Brace => "{ ",
+                    Delimiter::Bracket => "[ ",
+                    Delimiter::None => " ",
+                });
+                catalog.push((previous_length..source_string.len() - 1, t.span()));
+
+                catalog_tokens(t.stream(), catalog, source_string);
+
+                let previous_length = source_string.len();
+                source_string.push_str(match t.delimiter() {
+                    Delimiter::Parenthesis => ") ",
+                    Delimiter::Brace => "} ",
+                    Delimiter::Bracket => "] ",
+                    Delimiter::None => " ",
+                });
+                catalog.push((previous_length..source_string.len() - 1, t.span()));
+            }
+            _ => {
+                let previous_length = source_string.len();
+                source_string.push_str(&format!("{} ", token));
+                catalog.push((previous_length..source_string.len() - 1, token.span()));
+            }
+        }
+    }
+}
+
+/// Gets the rustc [`Span`] for a given span of the graphql-parser in the form of a position and a length.
+fn full_span_in_stream(
+    catalog: &Vec<(Range<usize>, Span)>,
+    position: usize,
+    len: usize,
+) -> Option<Span> {
+    // The graphql parser starts position numbers at 1 instead of 0.
+    let position = position - 1;
+    let mut start_span = None;
+    let mut end_span = None;
+    for token in catalog {
+        if token.0.contains(&position) {
+            start_span = Some(token.1);
+        }
+
+        if token.0.contains(&(position + len - 1)) {
+            end_span = Some(token.1);
+        }
+    }
+
+    if let (Some(start_span), Some(end_span)) = (start_span, end_span) {
+        start_span.join(end_span)
+    } else {
+        None
+    }
+}
+
+/// Gets the rustc [`Span`] for a given span of the graphql-parser in the form of a position.
+/// This should only be used as a fallback for when run in rust-analyzer where joining Spans does not work yet.
+/// Try using [`full_span_in_stream`] or fall back to this if [`full_span_in_stream`] returns `None`.
+fn span_in_stream(catalog: &Vec<(Range<usize>, Span)>, position: usize) -> Option<Span> {
+    // The graphql parser starts position numbers at 1 instead of 0.
+    let position = position - 1;
+    for token in catalog {
+        if token.0.contains(&position) {
+            return Some(token.1);
+        }
+    }
+
+    None
+}
+
 #[proc_macro]
 pub fn gql(input: TokenStream) -> TokenStream {
     // eprintln!("============================================================");
@@ -172,19 +255,9 @@ pub fn gql(input: TokenStream) -> TokenStream {
     let schema = std::fs::read_to_string(Path::new(&package_root).join(&path))
         .expect("Schema could not be read.");
 
-    let input_clone = input.clone();
-
-    let mut iter = input.clone().into_iter();
-    let first = iter.next().unwrap();
-    let first_clone = first.clone();
-    let last = iter.last().unwrap_or_else(|| first_clone);
-
-    let source = first
-        .span()
-        .join(last.span())
-        .map(|s| s.source_text())
-        .flatten()
-        .unwrap();
+    let mut catalog = vec![];
+    let mut source = String::new();
+    catalog_tokens(input.clone(), &mut catalog, &mut source);
 
     let query_string = source.clone();
     // eprintln!("{:?}", query_string);
@@ -223,48 +296,44 @@ pub fn gql(input: TokenStream) -> TokenStream {
                     }
                 }
 
-                let span = error.position;
-                eprintln!("{:?}", span);
-                let (span_start, span_end) =
-                    get_span_from_pos(&query_string, &first.span(), span, 1);
-
-                eprintln!("{:?}, {:?}", span_start, span_end);
-
-                find_full_span_in_stream(input_clone.clone(), span_start, span_end)
-                    .map(|e| e.error(error_message).emit());
+                if let Some(span) = full_span_in_stream(&catalog, error.position.column, 1) {
+                    span.error(error_message).emit();
+                } else if let Some(_) = span_in_stream(&catalog, error.position.column) {
+                    panic!("{}", error_message);
+                } else {
+                    panic!("Failed to get diagnostics. Get more info with `cargo build`.");
+                }
 
                 return quote! {}.into();
             }
             Error::UnknownField(field, object, span) => {
-                eprintln!("{:?}", span);
-                let (span_start, span_end) =
-                    get_span_from_pos(query_string, &first.span(), span, field.len());
-
-                eprintln!("{:?}, {:?}", span_start, span_end);
-
-                find_full_span_in_stream(input_clone, span_start, span_end).map(|e| {
-                    e.error(format!(
+                if let Some(span) = full_span_in_stream(&catalog, span.column, field.len()) {
+                    span.error(format!(
                         "`{}` here was not found on the `{}` object.",
                         field, object
                     ))
                     .emit()
-                });
+                } else if let Some(_) = span_in_stream(&catalog, span.column) {
+                    panic!("`{}` here was not found on the `{}` object.", field, object);
+                } else {
+                    panic!("Failed to get diagnostics. Get more info with `cargo build`.");
+                }
+
                 return quote! {}.into();
             }
             Error::ArgumentNotEnum(field, span) => {
-                eprintln!("{:?}", span);
-                let (span_start, span_end) =
-                    get_span_from_pos(query_string, &first.span(), span, field.len());
-
-                eprintln!("{:?}, {:?}", span_start, span_end);
-
-                find_full_span_in_stream(input_clone, span_start, span_end).map(|e| {
-                    e.error(format!(
+                if let Some(span) = full_span_in_stream(&catalog, span.column, field.len()) {
+                    span.error(format!(
                         "`{}` here was used like an enum but is no enum.",
                         field
                     ))
                     .emit()
-                });
+                } else if let Some(_) = span_in_stream(&catalog, span.column) {
+                    panic!("`{}` here was used like an enum but is no enum.", field);
+                } else {
+                    panic!("Failed to get diagnostics. Get more info with `cargo build`.");
+                }
+
                 return quote! {}.into();
             }
             e => {
@@ -303,63 +372,6 @@ pub fn gql(input: TokenStream) -> TokenStream {
     // eprintln!("{}", &fragment_string);
 
     fragments
-}
-
-fn get_span_from_pos(
-    query_string: impl AsRef<str>,
-    first: &Span,
-    pos: Pos,
-    len: usize,
-) -> (usize, usize) {
-    let span_start = query_string
-        .as_ref()
-        .lines()
-        .take(pos.line - 1)
-        .fold(0, |c, l| c + l.len()) // Add all the characters from the first N full lines.
-        + pos.column // Add the characters from the started line.
-        + (pos.line - 1) // Add all the newlines (one from each full line).
-        + extract_span(&first).0; // Add offset to where the macro content token tree starts in the source code.
-    let span_end = span_start + len - 1;
-    (span_start, span_end)
-}
-
-/// Find the [`Span`] which contains the _Rust token_ at `pos` in the given [`TokenStream`].
-fn find_span_in_stream(input: TokenStream, pos: usize) -> Option<Span> {
-    for token in input {
-        use proc_macro::TokenTree;
-        match token {
-            TokenTree::Group(ref t) => {
-                if let Some(span) = find_span_in_stream(t.stream(), pos) {
-                    return Some(span);
-                }
-            }
-            _ => {}
-        }
-
-        let (start, end) = extract_span(&token.span());
-        if start <= pos && pos <= end {
-            return Some(token.span());
-        }
-    }
-    None
-}
-
-/// Find the span of _Rust tokens_ which contains both `start` and `end` in the given [`TokenStream`].
-fn find_full_span_in_stream(input: TokenStream, start: usize, end: usize) -> Option<Span> {
-    find_span_in_stream(input.clone(), start)
-        .and_then(|s1| find_span_in_stream(input, end).map(|s2| s1.join(s2)))
-        .flatten()
-}
-
-/// Extracts the start and end position of the given [`Span`].
-fn extract_span(span: &Span) -> (usize, usize) {
-    let span = format!("{:?}", span);
-    let split = span.split_at(9);
-    let mut split = split.1.split("..");
-    let start = split.next().unwrap().parse().unwrap();
-    let second = split.next().unwrap();
-    let end = second.split(")").next().unwrap().parse().unwrap();
-    (start, end)
 }
 
 /// Reads the schema path from `Cargo.toml/metadata.cynic.schema`.
