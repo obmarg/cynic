@@ -11,6 +11,8 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.15.0 - 2021-09-23
+
 ### Breaking Changes
 
 - Removed the no longer used `chrono` feature.  It didn't enable any code so
