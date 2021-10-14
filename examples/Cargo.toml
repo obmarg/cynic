@@ -19,7 +19,7 @@ reqwest = { version = "0.11", features = ["json", "blocking"] }
 tokio = { version = "1.12", features = ["macros"] }
 
 # Surf example requirements
-surf = "2.1"
+surf = "2.3"
 async-std = "1.10"
 
 chrono = { version = "0.4", features = ["serde"]}

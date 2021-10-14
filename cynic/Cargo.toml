@@ -31,7 +31,7 @@ serde_json = "1.0"
 thiserror = "1.0.20"
 
 # Surf feature deps
-surf = { version = "2.1", default-features = false, optional = true }
+surf = { version = "2.3", default-features = false, optional = true }
 
 # Reqwest feature deps
 reqwest = { version = "0.11", optional = true, features = ["json"] }
