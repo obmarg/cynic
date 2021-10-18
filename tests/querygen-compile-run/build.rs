@@ -151,6 +151,15 @@ fn main() {
             "tests/queries/github/inline-fragment-on-union.graphql",
             r#"queries::IssueOrPR::build(())"#,
         ),
+        TestCase::query_norun(
+            &github_schema,
+            "tests/queries/github/inline-fragment-with-arguments.graphql",
+            r#"queries::IssueOrPR::build(
+                queries::IssueOrPRArguments {
+                    assignee_count: 10
+                }
+            )"#,
+        ),
     ];
 
     for case in cases {

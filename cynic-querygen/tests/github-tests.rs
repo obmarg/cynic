@@ -24,3 +24,7 @@ test_query!(input_object_literals, "input-object-literals.graphql");
 test_query!(input_object_arguments, "input-object-arguments.graphql");
 test_query!(add_comment_mutation, "add-comment-mutation.graphql");
 test_query!(inline_fragment_on_union, "inline-fragment-on-union.graphql");
+test_query!(
+    inline_fragment_with_arguments,
+    "inline-fragment-with-arguments.graphql"
+);

@@ -125,7 +125,7 @@ fn make_query_fragment<'text>(
 fn make_inline_fragments<'text>(
     inline_fragments: Rc<normalisation::InlineFragments<'text, 'text>>,
     namers: &mut Namers<'text>,
-    _argument_struct_details: &ArgumentStructDetails<'text, 'text>,
+    argument_struct_details: &ArgumentStructDetails<'text, 'text>,
 ) -> crate::output::InlineFragments {
     crate::output::InlineFragments {
         inner_type_names: inline_fragments
@@ -134,8 +134,16 @@ fn make_inline_fragments<'text>(
             .map(|s| namers.selection_sets.name_subject(s))
             .collect(),
         target_type: inline_fragments.abstract_type.name().to_string(),
-        // TODO: Deal with argument structs
-        argument_struct_name: None,
+        // Note: we just look for the first selection set with an argument struct.
+        // Think it might be possible that there are two different argument structs within
+        // and this will fall over in that case.  But it should be good enough for a first
+        // pass
+        argument_struct_name: inline_fragments
+            .inner_selections
+            .iter()
+            .map(|selection| argument_struct_details.argument_name_for_selection(selection))
+            .flatten()
+            .next(),
         name: namers.inline_fragments.name_subject(&inline_fragments),
     }
 }

@@ -1,7 +1,7 @@
 //! Generation of argument structs
 use std::{
     cell::RefCell,
-    collections::{HashMap, HashSet},
+    collections::{BTreeMap, BTreeSet, HashMap, HashSet},
     rc::Rc,
 };
 
@@ -86,7 +86,9 @@ impl<'query, 'schema> SelectionArguments<'query, 'schema> {
             .iter()
             .flat_map(|field| match field {
                 SelectionArgument::VariableArgument(var) => {
-                    vec![ArgumentStructField::Variable(var.clone())]
+                    let mut rv = BTreeSet::new();
+                    rv.insert(ArgumentStructField::Variable(var.clone()));
+                    rv
                 }
                 SelectionArgument::NestedArguments(nested) => {
                     let nested_struct = nested.as_argument_struct(parent_map, output_mapping);
@@ -99,7 +101,9 @@ impl<'query, 'schema> SelectionArguments<'query, 'schema> {
 
                         Rc::try_unwrap(nested_struct).unwrap().fields
                     } else {
-                        vec![ArgumentStructField::NestedStruct(nested_struct)]
+                        let mut rv = BTreeSet::new();
+                        rv.insert(ArgumentStructField::NestedStruct(nested_struct));
+                        rv
                     }
                 }
             })
@@ -138,7 +142,7 @@ impl<'query, 'schema> SelectionArguments<'query, 'schema> {
 struct ArgumentStruct<'query, 'schema> {
     id: Uuid,
     target_type_name: String,
-    fields: Vec<ArgumentStructField<'query, 'schema>>,
+    fields: BTreeSet<ArgumentStructField<'query, 'schema>>,
 }
 
 impl<'query, 'schema> crate::naming::Nameable for Rc<ArgumentStruct<'query, 'schema>> {

@@ -15,6 +15,11 @@ all APIs might be changed.
 
 - Querygen now supports inline fragments on union types & interfaces.
 
+### Bug Fixes
+
+- Querygen no longer duplicates variable names in generated `ArgumentStruct`s
+  when an argument is used twice in a query.
+
 ## v0.15.0 - 2021-09-23
 
 ### Breaking Changes
