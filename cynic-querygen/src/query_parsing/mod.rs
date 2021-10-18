@@ -9,7 +9,6 @@ mod sorting;
 mod value;
 
 use arguments::ArgumentStructDetails;
-use graphql_parser::query::InlineFragment;
 use parser::Document;
 
 pub use normalisation::Variable;
@@ -127,7 +126,7 @@ fn make_query_fragment<'text>(
 fn make_inline_fragments<'text>(
     inline_fragments: Rc<normalisation::InlineFragments<'text, 'text>>,
     namers: &mut Namers<'text>,
-    argument_struct_details: &ArgumentStructDetails<'text, 'text>,
+    _argument_struct_details: &ArgumentStructDetails<'text, 'text>,
 ) -> crate::output::InlineFragments {
     crate::output::InlineFragments {
         inner_type_names: inline_fragments

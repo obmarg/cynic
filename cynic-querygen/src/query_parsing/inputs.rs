@@ -4,7 +4,7 @@ use std::{
 };
 
 use super::{
-    normalisation::{Field, NormalisedDocument, Selection, SelectionSet},
+    normalisation::{NormalisedDocument, Selection, SelectionSet},
     sorting::Vertex,
     value::TypedValue,
 };

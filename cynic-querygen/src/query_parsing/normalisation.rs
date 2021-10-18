@@ -5,8 +5,6 @@ use std::{
     rc::Rc,
 };
 
-use graphql_parser::query::InlineFragment;
-
 use super::{
     parser::{
         self, Definition, Document, FragmentDefinition, OperationDefinition, TypeCondition,
