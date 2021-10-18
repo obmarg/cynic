@@ -85,34 +85,33 @@ fn make_query_fragment<'text>(
         fields: selection
             .selections
             .iter()
-            .map(|selection| match selection {
-                Selection::Field(field) => {
-                    let schema_field = &field.schema_field;
+            .map(|selection| {
+                let Selection::Field(field) = selection;
+                let schema_field = &field.schema_field;
 
-                    let inner_type_name = match &field.field {
-                        Field::Leaf => schema_field.value_type.inner_name().to_string(),
-                        Field::Composite(ss) => namers.selection_sets.name_subject(ss),
-                        Field::InlineFragments(fragments) => {
-                            namers.inline_fragments.name_subject(fragments)
-                        }
-                    };
-
-                    OutputField {
-                        name: field.alias.unwrap_or(schema_field.name),
-                        rename: field.alias.map(|_| schema_field.name),
-                        field_type: RustOutputFieldType::from_schema_type(
-                            &schema_field.value_type,
-                            inner_type_name,
-                        ),
-                        arguments: field
-                            .arguments
-                            .iter()
-                            .map(|(name, value)| -> Result<FieldArgument, Error> {
-                                Ok(FieldArgument::new(name, value.clone()))
-                            })
-                            .collect::<Result<Vec<_>, _>>()
-                            .unwrap(),
+                let inner_type_name = match &field.field {
+                    Field::Leaf => schema_field.value_type.inner_name().to_string(),
+                    Field::Composite(ss) => namers.selection_sets.name_subject(ss),
+                    Field::InlineFragments(fragments) => {
+                        namers.inline_fragments.name_subject(fragments)
                     }
+                };
+
+                OutputField {
+                    name: field.alias.unwrap_or(schema_field.name),
+                    rename: field.alias.map(|_| schema_field.name),
+                    field_type: RustOutputFieldType::from_schema_type(
+                        &schema_field.value_type,
+                        inner_type_name,
+                    ),
+                    arguments: field
+                        .arguments
+                        .iter()
+                        .map(|(name, value)| -> Result<FieldArgument, Error> {
+                            Ok(FieldArgument::new(name, value.clone()))
+                        })
+                        .collect::<Result<Vec<_>, _>>()
+                        .unwrap(),
                 }
             })
             .collect(),

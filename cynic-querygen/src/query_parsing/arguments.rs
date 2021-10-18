@@ -50,21 +50,16 @@ impl<'query, 'schema> SelectionArguments<'query, 'schema> {
     fn from_selection_set(selection_set: &Rc<SelectionSet<'query, 'schema>>) -> Option<Self> {
         let mut fields = Vec::new();
         for selection in &selection_set.selections {
-            match selection {
-                Selection::Field(field) => {
-                    for (_, value) in &field.arguments {
-                        for variable in value.variables() {
-                            fields.push(SelectionArgument::VariableArgument(variable));
-                        }
-                    }
+            let Selection::Field(field) = selection;
+            for (_, value) in &field.arguments {
+                for variable in value.variables() {
+                    fields.push(SelectionArgument::VariableArgument(variable));
+                }
+            }
 
-                    for inner_select in field.field.selection_sets() {
-                        if let Some(sub_struct) =
-                            SelectionArguments::from_selection_set(&inner_select)
-                        {
-                            fields.push(SelectionArgument::NestedArguments(sub_struct));
-                        }
-                    }
+            for inner_select in field.field.selection_sets() {
+                if let Some(sub_struct) = SelectionArguments::from_selection_set(&inner_select) {
+                    fields.push(SelectionArgument::NestedArguments(sub_struct));
                 }
             }
         }

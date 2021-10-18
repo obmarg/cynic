@@ -72,19 +72,16 @@ fn extract_objects_from_selection_set<'query, 'schema>(
     }
 
     for selection in &selection_set.selections {
-        match selection {
-            Selection::Field(field) => {
-                for selection_set in field.field.selection_sets() {
-                    extract_objects_from_selection_set(selection_set.as_ref(), input_objects)?;
-                }
+        let Selection::Field(field) = selection;
+        for selection_set in field.field.selection_sets() {
+            extract_objects_from_selection_set(selection_set.as_ref(), input_objects)?;
+        }
 
-                for (_, arg_value) in &field.arguments {
-                    let arg_type = arg_value.value_type().inner_ref().lookup()?;
+        for (_, arg_value) in &field.arguments {
+            let arg_type = arg_value.value_type().inner_ref().lookup()?;
 
-                    if let InputType::InputObject(input_obj) = arg_type {
-                        extract_input_objects_from_values(&input_obj, arg_value, input_objects)?;
-                    }
-                }
+            if let InputType::InputObject(input_obj) = arg_type {
+                extract_input_objects_from_values(&input_obj, arg_value, input_objects)?;
             }
         }
     }

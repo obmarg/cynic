@@ -519,12 +519,14 @@ impl<'query, 'schema> SelectionSet<'query, 'schema> {
     pub fn required_input_types(&self) -> Vec<InputTypeRef<'schema>> {
         self.selections
             .iter()
-            .flat_map(|selection| match selection {
-                Selection::Field(sel) => sel
+            .flat_map(|selection| {
+                let Selection::Field(field) = selection;
+
+                field
                     .arguments
                     .iter()
                     .map(|(_, arg)| arg.value_type().inner_ref().clone())
-                    .collect::<Vec<_>>(),
+                    .collect::<Vec<_>>()
             })
             .collect()
     }
