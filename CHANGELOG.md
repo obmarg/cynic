@@ -11,6 +11,10 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+### New Features
+
+- Querygen now supports inline fragments on union types & interfaces.
+
 ## v0.15.0 - 2021-09-23
 
 ### Breaking Changes

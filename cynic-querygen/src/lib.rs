@@ -49,6 +49,9 @@ pub enum Error {
     #[error("expected an enum, scalar, object, union or interface")]
     ExpectedOutputType,
 
+    #[error("expected an interface")]
+    ExpectedInterfaceType,
+
     #[error("expected a homogenous list of input values")]
     ExpectedHomogenousList,
 
@@ -64,11 +67,23 @@ pub enum Error {
     #[error("Tried to apply a fragment for a {0} type on a {1} type")]
     TypeConditionFailed(String, String),
 
+    #[error("{0} is not a member of the {1} union type")]
+    TypeNotUnionMember(String, String),
+
+    #[error("{0} does not implement the {1} interface")]
+    TypeDoesNotImplementInterface(String, String),
+
     #[error("Could not find a type named {0}, which we expected to be the root type")]
     CouldntFindRootType(String),
 
     #[error("At least one field should be selected for `{0}`.")]
     NoFieldSelected(String),
+
+    #[error("You tried to select some fields on the type {0} which is not a composite type")]
+    TriedToSelectFieldsOfNonComposite(String),
+
+    #[error("An inline fragment on a union or interface type must have a type condition")]
+    MissingTypeCondition,
 }
 
 #[derive(Debug)]
@@ -116,6 +131,10 @@ pub fn document_to_fragment_structs(
     }
 
     for fragment in parsed_output.query_fragments {
+        writeln!(mod_output, "{}", fragment).unwrap();
+    }
+
+    for fragment in parsed_output.inline_fragments {
         writeln!(mod_output, "{}", fragment).unwrap();
     }
 

@@ -50,9 +50,10 @@ impl<'schema> TypeIndex<'schema> {
         self: &Rc<TypeIndex<'schema>>,
         path: &GraphPath<'path>,
     ) -> Result<OutputField<'schema>, Error> {
-        let root_name = match path.operation_type {
-            OperationType::Query => self.query_root.clone(),
-            OperationType::Mutation => self.mutation_root.clone(),
+        let root_name = match path.path_base {
+            GraphPathBase::Query => self.query_root.clone(),
+            GraphPathBase::Mutation => self.mutation_root.clone(),
+            GraphPathBase::Absolute(base) => base.to_string(),
         };
 
         let root = self
@@ -74,9 +75,10 @@ impl<'schema> TypeIndex<'schema> {
         self: &Rc<Self>,
         path: &GraphPath<'path>,
     ) -> Result<Cow<'schema, str>, Error> {
-        match (path.is_root(), &path.operation_type) {
-            (true, OperationType::Query) => Ok(Cow::Owned(self.query_root.clone())),
-            (true, OperationType::Mutation) => Ok(Cow::Owned(self.mutation_root.clone())),
+        match (path.has_components(), &path.path_base) {
+            (true, GraphPathBase::Query) => Ok(Cow::Owned(self.query_root.clone())),
+            (true, GraphPathBase::Mutation) => Ok(Cow::Owned(self.mutation_root.clone())),
+            (true, GraphPathBase::Absolute(base)) => Ok(Cow::Owned(base.to_string())),
             (false, _) => Ok(Cow::Owned(
                 self.field_for_path(path)?
                     .value_type
@@ -174,34 +176,42 @@ fn name_for_type<'a>(type_def: &TypeDefinition<'a>) -> &'a str {
 }
 
 #[derive(Debug, PartialEq, Clone)]
-enum OperationType {
+enum GraphPathBase<'a> {
     Query,
     Mutation,
+    Absolute(&'a str),
 }
 
 /// The path to a type within a graphql graph.
 #[derive(Debug, PartialEq, Clone)]
 pub struct GraphPath<'a> {
-    operation_type: OperationType,
+    path_base: GraphPathBase<'a>,
     path: Vec<&'a str>,
 }
 
 impl<'a> GraphPath<'a> {
     pub fn for_mutation() -> Self {
         GraphPath {
-            operation_type: OperationType::Mutation,
+            path_base: GraphPathBase::Mutation,
             path: Vec::new(),
         }
     }
 
     pub fn for_query() -> Self {
         GraphPath {
-            operation_type: OperationType::Query,
+            path_base: GraphPathBase::Query,
             path: Vec::new(),
         }
     }
 
-    pub fn is_root(&self) -> bool {
+    pub fn for_named_type(name: &'a str) -> Self {
+        GraphPath {
+            path_base: GraphPathBase::Absolute(name),
+            path: Vec::new(),
+        }
+    }
+
+    fn has_components(&self) -> bool {
         self.path.is_empty()
     }
 

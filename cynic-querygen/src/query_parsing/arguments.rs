@@ -7,12 +7,14 @@ use std::{
 
 use uuid::Uuid;
 
-use super::normalisation::{Field, NormalisedDocument, Selection, SelectionSet, Variable};
+use super::normalisation::{
+    InlineFragments, NormalisedDocument, Selection, SelectionSet, Variable,
+};
 use crate::{naming::Namer, output};
 
-pub fn build_argument_structs<'query, 'schema, 'doc>(
-    doc: &'doc NormalisedDocument<'query, 'schema>,
-) -> ArgumentStructDetails<'query, 'schema, 'doc> {
+pub fn build_argument_structs<'query, 'schema>(
+    doc: &NormalisedDocument<'query, 'schema>,
+) -> ArgumentStructDetails<'query, 'schema> {
     let operation_argument_roots = doc
         .operations
         .iter()
@@ -39,13 +41,13 @@ pub fn build_argument_structs<'query, 'schema, 'doc>(
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-struct SelectionArguments<'query, 'schema, 'doc> {
-    target_selection: &'doc SelectionSet<'query, 'schema>,
-    fields: Vec<SelectionArgument<'query, 'schema, 'doc>>,
+struct SelectionArguments<'query, 'schema> {
+    target_selection: Rc<SelectionSet<'query, 'schema>>,
+    fields: Vec<SelectionArgument<'query, 'schema>>,
 }
 
-impl<'query, 'schema, 'doc> SelectionArguments<'query, 'schema, 'doc> {
-    fn from_selection_set(selection_set: &'doc SelectionSet<'query, 'schema>) -> Option<Self> {
+impl<'query, 'schema> SelectionArguments<'query, 'schema> {
+    fn from_selection_set(selection_set: &Rc<SelectionSet<'query, 'schema>>) -> Option<Self> {
         let mut fields = Vec::new();
         for selection in &selection_set.selections {
             let Selection::Field(field) = selection;
@@ -55,7 +57,7 @@ impl<'query, 'schema, 'doc> SelectionArguments<'query, 'schema, 'doc> {
                 }
             }
 
-            if let Field::Composite(inner_select) = &field.field {
+            for inner_select in field.field.selection_sets() {
                 if let Some(sub_struct) = SelectionArguments::from_selection_set(&inner_select) {
                     fields.push(SelectionArgument::NestedArguments(sub_struct));
                 }
@@ -67,7 +69,7 @@ impl<'query, 'schema, 'doc> SelectionArguments<'query, 'schema, 'doc> {
         }
 
         Some(SelectionArguments {
-            target_selection: selection_set,
+            target_selection: Rc::clone(selection_set),
             fields,
         })
     }
@@ -75,7 +77,7 @@ impl<'query, 'schema, 'doc> SelectionArguments<'query, 'schema, 'doc> {
     fn as_argument_struct(
         &self,
         parent_map: &HashMap<&Self, HashSet<&Self>>,
-        output_mapping: &mut ArgumentStructDetails<'query, 'schema, 'doc>,
+        output_mapping: &mut ArgumentStructDetails<'query, 'schema>,
     ) -> Rc<ArgumentStruct<'query, 'schema>> {
         let our_id = Uuid::new_v4();
 
@@ -111,7 +113,7 @@ impl<'query, 'schema, 'doc> SelectionArguments<'query, 'schema, 'doc> {
 
         output_mapping
             .selection_set_map
-            .insert(self.target_selection, rv.id);
+            .insert(Rc::clone(&self.target_selection), rv.id);
         output_mapping
             .selection_structs
             .insert(our_id, Rc::clone(&rv));
@@ -152,24 +154,26 @@ enum ArgumentStructField<'query, 'schema> {
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-enum SelectionArgument<'query, 'schema, 'doc> {
+enum SelectionArgument<'query, 'schema> {
     VariableArgument(Variable<'query, 'schema>),
-    NestedArguments(SelectionArguments<'query, 'schema, 'doc>),
+    NestedArguments(SelectionArguments<'query, 'schema>),
 }
 
 /// Keeps track of what selection sets use which argument structs
 #[derive(Debug)]
-pub struct ArgumentStructDetails<'query, 'schema, 'doc> {
-    selection_set_map: HashMap<&'doc SelectionSet<'query, 'schema>, Uuid>,
+pub struct ArgumentStructDetails<'query, 'schema> {
+    selection_set_map: HashMap<Rc<SelectionSet<'query, 'schema>>, Uuid>,
+    inline_fragments_map: HashMap<Rc<InlineFragments<'query, 'schema>>, Uuid>,
     remappings: HashMap<Uuid, Uuid>,
     selection_structs: HashMap<Uuid, Rc<ArgumentStruct<'query, 'schema>>>,
     namer: RefCell<Namer<Rc<ArgumentStruct<'query, 'schema>>>>,
 }
 
-impl<'query, 'schema, 'doc> ArgumentStructDetails<'query, 'schema, 'doc> {
+impl<'query, 'schema> ArgumentStructDetails<'query, 'schema> {
     fn new() -> Self {
         ArgumentStructDetails {
             selection_set_map: HashMap::new(),
+            inline_fragments_map: HashMap::new(),
             remappings: HashMap::new(),
             selection_structs: HashMap::new(),
             namer: RefCell::new(Namer::new()),

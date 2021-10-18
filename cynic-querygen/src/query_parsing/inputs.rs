@@ -4,7 +4,7 @@ use std::{
 };
 
 use super::{
-    normalisation::{Field, NormalisedDocument, Selection, SelectionSet},
+    normalisation::{NormalisedDocument, Selection, SelectionSet},
     sorting::Vertex,
     value::TypedValue,
 };
@@ -64,7 +64,7 @@ pub fn extract_input_objects<'query, 'schema>(
 }
 
 fn extract_objects_from_selection_set<'query, 'schema>(
-    selection_set: &Rc<SelectionSet<'query, 'schema>>,
+    selection_set: &SelectionSet<'query, 'schema>,
     input_objects: &mut InputObjectSet<'schema>,
 ) -> Result<(), Error> {
     if selection_set.selections.is_empty() {
@@ -72,19 +72,16 @@ fn extract_objects_from_selection_set<'query, 'schema>(
     }
 
     for selection in &selection_set.selections {
-        match selection {
-            Selection::Field(field) => {
-                if let Field::Composite(selection_set) = &field.field {
-                    extract_objects_from_selection_set(selection_set, input_objects)?;
-                }
+        let Selection::Field(field) = selection;
+        for selection_set in field.field.selection_sets() {
+            extract_objects_from_selection_set(selection_set.as_ref(), input_objects)?;
+        }
 
-                for (_, arg_value) in &field.arguments {
-                    let arg_type = arg_value.value_type().inner_ref().lookup()?;
+        for (_, arg_value) in &field.arguments {
+            let arg_type = arg_value.value_type().inner_ref().lookup()?;
 
-                    if let InputType::InputObject(input_obj) = arg_type {
-                        extract_input_objects_from_values(&input_obj, arg_value, input_objects)?;
-                    }
-                }
+            if let InputType::InputObject(input_obj) = arg_type {
+                extract_input_objects_from_values(&input_obj, arg_value, input_objects)?;
             }
         }
     }
