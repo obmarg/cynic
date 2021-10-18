@@ -1,6 +1,7 @@
 ---
 source: cynic-querygen/src/query_parsing/normalisation.rs
 expression: normalised
+
 ---
 NormalisedDocument {
     selection_sets: {
@@ -303,6 +304,11 @@ NormalisedDocument {
                                 ),
                             ),
                             arguments: [],
+                        },
+                    ],
+                    implements_interfaces: [
+                        InterfaceTypeRef {
+                            type_name: "Node",
                         },
                     ],
                 },
@@ -647,6 +653,11 @@ NormalisedDocument {
                             arguments: [],
                         },
                     ],
+                    implements_interfaces: [
+                        InterfaceTypeRef {
+                            type_name: "Node",
+                        },
+                    ],
                 },
             ),
             selections: [
@@ -717,6 +728,7 @@ NormalisedDocument {
                             arguments: [],
                         },
                     ],
+                    implements_interfaces: [],
                 },
             ),
             selections: [
@@ -1036,6 +1048,11 @@ NormalisedDocument {
                                                     ),
                                                 ),
                                                 arguments: [],
+                                            },
+                                        ],
+                                        implements_interfaces: [
+                                            InterfaceTypeRef {
+                                                type_name: "Node",
                                             },
                                         ],
                                     },
@@ -1518,6 +1535,7 @@ NormalisedDocument {
                             ],
                         },
                     ],
+                    implements_interfaces: [],
                 },
             ),
             selections: [
@@ -1617,6 +1635,7 @@ NormalisedDocument {
                                                 arguments: [],
                                             },
                                         ],
+                                        implements_interfaces: [],
                                     },
                                 ),
                                 selections: [
@@ -1936,6 +1955,11 @@ NormalisedDocument {
                                                                         ),
                                                                     ),
                                                                     arguments: [],
+                                                                },
+                                                            ],
+                                                            implements_interfaces: [
+                                                                InterfaceTypeRef {
+                                                                    type_name: "Node",
                                                                 },
                                                             ],
                                                         },
@@ -2332,6 +2356,11 @@ NormalisedDocument {
                                                 arguments: [],
                                             },
                                         ],
+                                        implements_interfaces: [
+                                            InterfaceTypeRef {
+                                                type_name: "Node",
+                                            },
+                                        ],
                                     },
                                 ),
                                 selections: [
@@ -2360,6 +2389,7 @@ NormalisedDocument {
             ],
         },
     },
+    inline_fragments: {},
     operations: [
         NormalisedOperation {
             root: SelectionSet {
@@ -2796,6 +2826,7 @@ NormalisedDocument {
                                 ],
                             },
                         ],
+                        implements_interfaces: [],
                     },
                 ),
                 selections: [
@@ -2895,6 +2926,7 @@ NormalisedDocument {
                                                     arguments: [],
                                                 },
                                             ],
+                                            implements_interfaces: [],
                                         },
                                     ),
                                     selections: [
@@ -3214,6 +3246,11 @@ NormalisedDocument {
                                                                             ),
                                                                         ),
                                                                         arguments: [],
+                                                                    },
+                                                                ],
+                                                                implements_interfaces: [
+                                                                    InterfaceTypeRef {
+                                                                        type_name: "Node",
                                                                     },
                                                                 ],
                                                             },
@@ -3608,6 +3645,11 @@ NormalisedDocument {
                                                         ),
                                                     ),
                                                     arguments: [],
+                                                },
+                                            ],
+                                            implements_interfaces: [
+                                                InterfaceTypeRef {
+                                                    type_name: "Node",
                                                 },
                                             ],
                                         },

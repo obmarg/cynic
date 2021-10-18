@@ -1,19 +1,23 @@
+use inflector::Inflector;
+
 use crate::schema::EnumDetails;
 
 mod argument_struct;
 mod enums;
 mod indent;
+mod inline_fragments;
 mod input_object;
 pub mod query_fragment;
 
 pub use argument_struct::{ArgumentStruct, ArgumentStructField};
 pub use indent::indented;
-use inflector::Inflector;
+pub use inline_fragments::InlineFragments;
 pub use input_object::InputObject;
 pub use query_fragment::QueryFragment;
 
 pub struct Output<'query, 'schema> {
     pub query_fragments: Vec<QueryFragment<'query, 'schema>>,
+    pub inline_fragments: Vec<InlineFragments>,
     pub input_objects: Vec<InputObject<'schema>>,
     pub enums: Vec<EnumDetails<'schema>>,
     pub scalars: Vec<Scalar<'schema>>,

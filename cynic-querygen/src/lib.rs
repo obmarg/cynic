@@ -67,9 +67,6 @@ pub enum Error {
     #[error("Tried to apply a fragment for a {0} type on a {1} type")]
     TypeConditionFailed(String, String),
 
-    #[error("Tried to apply an inline fragment on the {0} type which is not a union or interface")]
-    InlineFragmentOnUnsupportedType(String),
-
     #[error("{0} is not a member of the {1} union type")]
     TypeNotUnionMember(String, String),
 
@@ -81,6 +78,12 @@ pub enum Error {
 
     #[error("At least one field should be selected for `{0}`.")]
     NoFieldSelected(String),
+
+    #[error("You tried to select some fields on the type {0} which is not a composite type")]
+    TriedToSelectFieldsOfNonComposite(String),
+
+    #[error("An inline fragment on a union or interface type must have a type condition")]
+    MissingTypeCondition,
 }
 
 #[derive(Debug)]
@@ -128,6 +131,10 @@ pub fn document_to_fragment_structs(
     }
 
     for fragment in parsed_output.query_fragments {
+        writeln!(mod_output, "{}", fragment).unwrap();
+    }
+
+    for fragment in parsed_output.inline_fragments {
         writeln!(mod_output, "{}", fragment).unwrap();
     }
 

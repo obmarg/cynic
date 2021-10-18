@@ -9,7 +9,6 @@ query {
       ... on PullRequest {
         id
         title
-        lastEditedAt
       }
     }
   }

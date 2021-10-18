@@ -140,6 +140,10 @@ impl<'schema> Type<'schema> {
     }
 
     pub fn allows_fragment_target_of(&self, target: &Type<'schema>) -> Result<(), Error> {
+        if self == target {
+            return Ok(());
+        }
+
         match self {
             Type::Interface(iface) => {
                 if let Type::Object(obj) = target {
@@ -162,8 +166,42 @@ impl<'schema> Type<'schema> {
                     self.name().to_string(),
                 ));
             }
+            Type::Object(obj) => {
+                // If current context is an object, we allow spreads of:
+                // The current object, or an interface/union the current object
+                // implements/is a member of.
+                match target {
+                    Type::Interface(iface) => {
+                        if obj.implements_interface(iface) {
+                            return Ok(());
+                        }
+
+                        return Err(Error::TypeDoesNotImplementInterface(
+                            target.name().to_string(),
+                            iface.name.to_string(),
+                        ));
+                    }
+                    Type::Union(union_details) => {
+                        if union_details.has_member(self) {
+                            return Ok(());
+                        }
+
+                        return Err(Error::TypeNotUnionMember(
+                            target.name().to_string(),
+                            self.name().to_string(),
+                        ));
+                    }
+                    _ => {
+                        return Err(Error::TypeConditionFailed(
+                            target.name().to_string(),
+                            self.name().to_string(),
+                        ))
+                    }
+                }
+            }
             _ => {
-                return Err(Error::InlineFragmentOnUnsupportedType(
+                return Err(Error::TypeConditionFailed(
+                    target.name().to_string(),
                     self.name().to_string(),
                 ))
             }

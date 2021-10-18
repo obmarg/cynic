@@ -74,8 +74,8 @@ fn extract_objects_from_selection_set<'query, 'schema>(
     for selection in &selection_set.selections {
         match selection {
             Selection::Field(field) => {
-                if let Field::Composite(selection_set) = &field.field {
-                    extract_objects_from_selection_set(selection_set, input_objects)?;
+                for selection_set in field.field.selection_sets() {
+                    extract_objects_from_selection_set(selection_set.as_ref(), input_objects)?;
                 }
 
                 for (_, arg_value) in &field.arguments {
@@ -85,9 +85,6 @@ fn extract_objects_from_selection_set<'query, 'schema>(
                         extract_input_objects_from_values(&input_obj, arg_value, input_objects)?;
                     }
                 }
-            }
-            Selection::InlineFragment(selection_set) => {
-                extract_objects_from_selection_set(selection_set, input_objects)?;
             }
         }
     }

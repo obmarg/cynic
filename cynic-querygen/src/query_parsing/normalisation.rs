@@ -5,6 +5,8 @@ use std::{
     rc::Rc,
 };
 
+use graphql_parser::query::InlineFragment;
+
 use super::{
     parser::{
         self, Definition, Document, FragmentDefinition, OperationDefinition, TypeCondition,
@@ -15,7 +17,7 @@ use super::{
 };
 
 use crate::{
-    schema::{InputFieldType, InputTypeRef, OutputField, OutputType, OutputTypeRef, Type},
+    schema::{InputFieldType, InputTypeRef, OutputField, OutputType, OutputTypeRef, Type, TypeRef},
     Error, GraphPath, TypeIndex,
 };
 
@@ -48,7 +50,6 @@ pub struct SelectionSet<'query, 'schema> {
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum Selection<'query, 'schema> {
     Field(FieldSelection<'query, 'schema>),
-    InlineFragment(SelectionSet<'query, 'schema>),
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -68,8 +69,27 @@ pub enum Field<'query, 'schema> {
     /// A composite field contains another selection set.
     Composite(Rc<SelectionSet<'query, 'schema>>),
 
+    /// An inline fragments
+    InlineFragments(Rc<InlineFragments<'query, 'schema>>),
+
     /// A leaf field just contains it's type as a string
     Leaf,
+}
+
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct InlineFragments<'query, 'schema> {
+    pub abstract_type: Type<'schema>,
+    pub inner_selections: Vec<Rc<SelectionSet<'query, 'schema>>>,
+}
+
+impl<'query, 'schema> Field<'query, 'schema> {
+    pub fn selection_sets(&self) -> Vec<Rc<SelectionSet<'query, 'schema>>> {
+        match self {
+            Field::Composite(selection_set) => vec![Rc::clone(selection_set)],
+            Field::InlineFragments(fragments) => fragments.inner_selections.clone(),
+            Field::Leaf => vec![],
+        }
+    }
 }
 
 impl<'query, 'doc, 'schema> FieldSelection<'query, 'schema> {
@@ -93,11 +113,12 @@ impl<'query, 'doc, 'schema> FieldSelection<'query, 'schema> {
 // Use a BTreeSet here as we want a deterministic order of output for a
 // given document
 type SelectionSetSet<'query, 'schema> = BTreeSet<Rc<SelectionSet<'query, 'schema>>>;
+pub type InlineFragmentsSet<'query, 'schema> = BTreeSet<Rc<InlineFragments<'query, 'schema>>>;
 
 #[derive(Debug, PartialEq)]
 pub struct NormalisedDocument<'query, 'schema> {
     pub selection_sets: SelectionSetSet<'query, 'schema>,
-    // TODO: also need to know what unions we've seen as part of this...
+    pub inline_fragments: InlineFragmentsSet<'query, 'schema>,
     pub operations: Vec<NormalisedOperation<'query, 'schema>>,
 }
 
@@ -108,6 +129,7 @@ pub fn normalise<'query, 'doc, 'schema>(
     let fragment_map = extract_fragments(&document);
 
     let mut selection_sets: SelectionSetSet<'query, 'schema> = BTreeSet::new();
+    let mut inline_fragments: InlineFragmentsSet<'query, 'schema> = BTreeSet::new();
     let mut operations = Vec::new();
 
     for definition in &document.definitions {
@@ -117,12 +139,14 @@ pub fn normalise<'query, 'doc, 'schema>(
                 &fragment_map,
                 type_index,
                 &mut selection_sets,
+                &mut inline_fragments,
             )?);
         }
     }
 
     Ok(NormalisedDocument {
         selection_sets,
+        inline_fragments,
         operations,
     })
 }
@@ -132,12 +156,19 @@ fn normalise_operation<'query, 'doc, 'schema>(
     fragment_map: &FragmentMap<'query, 'doc>,
     type_index: &'doc Rc<TypeIndex<'schema>>,
     selection_sets_out: &mut SelectionSetSet<'query, 'schema>,
+    inline_fragments_out: &mut InlineFragmentsSet<'query, 'schema>,
 ) -> Result<NormalisedOperation<'query, 'schema>, Error> {
     match operation {
         OperationDefinition::SelectionSet(selection_set) => {
-            let mut normaliser = Normaliser::new(type_index, fragment_map, selection_sets_out, &[]);
-            let root =
-                normaliser.normalise_selection_set(&selection_set, GraphPath::for_query())?;
+            let mut normaliser = Normaliser::new(
+                type_index,
+                fragment_map,
+                selection_sets_out,
+                inline_fragments_out,
+                &[],
+            );
+            let root = normaliser
+                .normalise_object_selection_set(&selection_set, GraphPath::for_query())?;
 
             Ok(NormalisedOperation {
                 root,
@@ -151,11 +182,12 @@ fn normalise_operation<'query, 'doc, 'schema>(
                 type_index,
                 fragment_map,
                 selection_sets_out,
+                inline_fragments_out,
                 &query.variable_definitions,
             );
 
-            let root =
-                normaliser.normalise_selection_set(&query.selection_set, GraphPath::for_query())?;
+            let root = normaliser
+                .normalise_object_selection_set(&query.selection_set, GraphPath::for_query())?;
 
             Ok(NormalisedOperation {
                 root,
@@ -169,11 +201,14 @@ fn normalise_operation<'query, 'doc, 'schema>(
                 type_index,
                 fragment_map,
                 selection_sets_out,
+                inline_fragments_out,
                 &mutation.variable_definitions,
             );
 
-            let root = normaliser
-                .normalise_selection_set(&mutation.selection_set, GraphPath::for_mutation())?;
+            let root = normaliser.normalise_object_selection_set(
+                &mutation.selection_set,
+                GraphPath::for_mutation(),
+            )?;
 
             Ok(NormalisedOperation {
                 root,
@@ -192,6 +227,7 @@ struct Normaliser<'a, 'query, 'schema, 'doc> {
     type_index: &'a Rc<TypeIndex<'schema>>,
     fragment_map: &'a FragmentMap<'query, 'doc>,
     selection_sets_out: &'a mut SelectionSetSet<'query, 'schema>,
+    inline_fragments_out: &'a mut InlineFragmentsSet<'query, 'schema>,
     variables: Vec<Variable<'query, 'schema>>,
 }
 
@@ -200,12 +236,14 @@ impl<'a, 'query, 'schema, 'doc> Normaliser<'a, 'query, 'schema, 'doc> {
         type_index: &'a Rc<TypeIndex<'schema>>,
         fragment_map: &'a FragmentMap<'query, 'doc>,
         selection_sets_out: &'a mut SelectionSetSet<'query, 'schema>,
+        inline_fragments_out: &'a mut InlineFragmentsSet<'query, 'schema>,
         variable_definitions: &'a [parser::VariableDefinition<'query>],
     ) -> Self {
         Normaliser {
             type_index,
             fragment_map,
             selection_sets_out,
+            inline_fragments_out,
             variables: variable_definitions
                 .iter()
                 .map(|var| Variable::from(var, type_index))
@@ -213,11 +251,13 @@ impl<'a, 'query, 'schema, 'doc> Normaliser<'a, 'query, 'schema, 'doc> {
         }
     }
 
-    fn normalise_selection_set(
+    fn normalise_object_selection_set(
         &mut self,
         selection_set: &parser::SelectionSet<'query>,
         current_path: GraphPath<'query>,
     ) -> Result<Rc<SelectionSet<'query, 'schema>>, Error> {
+        let current_type = self.type_index.type_for_path(&current_path)?;
+
         let mut selections = Vec::new();
 
         for item in &selection_set.items {
@@ -225,7 +265,7 @@ impl<'a, 'query, 'schema, 'doc> Normaliser<'a, 'query, 'schema, 'doc> {
         }
 
         let rv = Rc::new(SelectionSet {
-            target_type: self.type_index.type_for_path(&current_path)?.try_into()?,
+            target_type: current_type.try_into()?,
             selections,
         });
 
@@ -249,14 +289,17 @@ impl<'a, 'query, 'schema, 'doc> Normaliser<'a, 'query, 'schema, 'doc> {
 
                 let schema_field = self.type_index.field_for_path(&new_path)?;
 
-                let inner_field = if field.selection_set.items.is_empty() {
-                    if let OutputType::Object(_) = schema_field.value_type.inner_ref().lookup()? {
+                let inner_field = match schema_field.value_type.inner_ref().lookup()? {
+                    OutputType::Object(_) if field.selection_set.items.is_empty() => {
                         return Err(Error::NoFieldSelected(schema_field.name.into()));
-                    } else {
-                        Field::Leaf
                     }
-                } else {
-                    Field::Composite(self.normalise_selection_set(&field.selection_set, new_path)?)
+                    OutputType::Object(_) => Field::Composite(
+                        self.normalise_object_selection_set(&field.selection_set, new_path)?,
+                    ),
+                    OutputType::Interface(_) | OutputType::Union(_) => {
+                        self.normalise_abstract_selection_set(&field.selection_set, new_path)?
+                    }
+                    OutputType::Enum(_) | OutputType::Scalar(_) => Field::Leaf,
                 };
 
                 let mut arguments = Vec::new();
@@ -291,14 +334,11 @@ impl<'a, 'query, 'schema, 'doc> Normaliser<'a, 'query, 'schema, 'doc> {
                     .get(spread.fragment_name)
                     .ok_or_else(|| Error::UnknownFragment(spread.fragment_name.to_string()))?;
 
-                let TypeCondition::On(condition) = fragment.type_condition;
-                let current_type = self.type_index.type_name_for_path(&current_path)?;
-                if condition != current_type {
-                    return Err(Error::TypeConditionFailed(
-                        condition.to_string(),
-                        current_type.to_string(),
-                    ));
-                }
+                let TypeCondition::On(target_type_name) = fragment.type_condition;
+                let current_type = self.type_index.type_for_path(current_path)?;
+                let target_type = self.type_index.lookup_type(target_type_name)?;
+
+                current_type.allows_fragment_target_of(&target_type)?;
 
                 Ok(fragment
                     .selection_set
@@ -312,37 +352,114 @@ impl<'a, 'query, 'schema, 'doc> Normaliser<'a, 'query, 'schema, 'doc> {
             }
             parser::Selection::InlineFragment(fragment) => {
                 if let Some(TypeCondition::On(target_type_name)) = fragment.type_condition {
-                    let current_type = self.type_index.type_for_path(&current_path)?;
+                    let current_type = self.type_index.type_for_path(current_path)?;
                     let target_type = self.type_index.lookup_type(target_type_name)?;
 
-                    // TODO: Probably want to handle the case where the target
-                    // is still the current type.
-
                     current_type.allows_fragment_target_of(&target_type)?;
-
-                    // Ok, so this is where it gets tricky.
-                    // We need an enum with all the types that were provided by the user on
-                    // the current branch.
-                    // Basically we need the sibling selections.
-
-                    // and a fallback.
-                    // But there's no way to know which types were provided.
-                    // Fucking lol god damn.
-                    todo!()
-                } else {
-                    // If there's no type condition we assume this is a normal selection set on the current type
-                    Ok(fragment
-                        .selection_set
-                        .items
-                        .iter()
-                        .map(|item| self.convert_selection(item, current_path))
-                        .collect::<Result<Vec<_>, _>>()?
-                        .into_iter()
-                        .flatten()
-                        .collect())
                 }
+
+                Ok(fragment
+                    .selection_set
+                    .items
+                    .iter()
+                    .map(|item| self.convert_selection(item, current_path))
+                    .collect::<Result<Vec<_>, _>>()?
+                    .into_iter()
+                    .flatten()
+                    .collect())
             }
         }
+    }
+
+    fn normalise_abstract_selection_set(
+        &mut self,
+        selection_set: &parser::SelectionSet<'query>,
+        current_path: GraphPath<'query>,
+    ) -> Result<Field<'query, 'schema>, Error> {
+        let schema_field = self.type_index.field_for_path(&current_path)?;
+
+        let spread_selections = selection_set
+            .items
+            .iter()
+            .filter(|s| !matches!(s, parser::Selection::Field(_)))
+            .collect::<Vec<_>>();
+
+        if spread_selections.is_empty() {
+            // No spreads, so lets just treat this like an object
+            return Ok(Field::Composite(
+                self.normalise_object_selection_set(selection_set, current_path)?,
+            ));
+        }
+
+        let non_spread_selections = selection_set
+            .items
+            .iter()
+            .filter(|s| matches!(s, parser::Selection::Field(_)))
+            .cloned()
+            .collect::<Vec<_>>();
+
+        let mut fragment_selections = vec![];
+
+        let schema_field_type =
+            TypeRef::from(schema_field.value_type.inner_ref().to_owned()).lookup()?;
+
+        for selection in spread_selections {
+            match selection {
+                parser::Selection::FragmentSpread(spread) => {
+                    let fragment = self
+                        .fragment_map
+                        .get(spread.fragment_name)
+                        .ok_or_else(|| Error::UnknownFragment(spread.fragment_name.to_string()))?;
+
+                    let parser::TypeCondition::On(target_type) = fragment.type_condition;
+
+                    schema_field_type
+                        .allows_fragment_target_of(&self.type_index.lookup_type(target_type)?)?;
+
+                    let mut selection_set = fragment.selection_set.clone();
+
+                    selection_set.items.extend(non_spread_selections.clone());
+
+                    fragment_selections.push(self.normalise_object_selection_set(
+                        &selection_set,
+                        GraphPath::for_named_type(target_type),
+                    )?)
+                }
+                parser::Selection::InlineFragment(inline_fragment) => {
+                    let target_type = match inline_fragment.type_condition {
+                        None => return Err(Error::MissingTypeCondition),
+                        Some(parser::TypeCondition::On(target_type)) => target_type,
+                    };
+
+                    schema_field_type
+                        .allows_fragment_target_of(&self.type_index.lookup_type(target_type)?)?;
+
+                    let mut selection_set = inline_fragment.selection_set.clone();
+
+                    selection_set.items.extend(non_spread_selections.clone());
+
+                    fragment_selections.push(self.normalise_object_selection_set(
+                        &selection_set,
+                        GraphPath::for_named_type(target_type),
+                    )?)
+                }
+                parser::Selection::Field(_) => panic!("This should be unreachable"),
+            };
+        }
+
+        let inline_fragments = Rc::new(InlineFragments {
+            abstract_type: schema_field_type,
+            inner_selections: fragment_selections,
+        });
+
+        if let Some(existing_value) = self.inline_fragments_out.get(&inline_fragments) {
+            return Ok(Field::InlineFragments(Rc::clone(existing_value)));
+        }
+
+        self.inline_fragments_out
+            .insert(Rc::clone(&inline_fragments));
+
+        return Ok(Field::InlineFragments(inline_fragments));
     }
 }
 
@@ -391,10 +508,10 @@ impl<'query, 'schema> SelectionSet<'query, 'schema> {
         self.selections
             .iter()
             .flat_map(|selection| {
-                if let Selection::Field(field) = selection {
-                    if let Field::Leaf = &field.field {
-                        return Some(field.schema_field.value_type.inner_ref().clone());
-                    }
+                let Selection::Field(field) = selection;
+
+                if let Field::Leaf = &field.field {
+                    return Some(field.schema_field.value_type.inner_ref().clone());
                 }
                 None
             })
@@ -409,8 +526,7 @@ impl<'query, 'schema> SelectionSet<'query, 'schema> {
                     .arguments
                     .iter()
                     .map(|(_, arg)| arg.value_type().inner_ref().clone())
-                    .collect(),
-                Selection::InlineFragment(_) => vec![],
+                    .collect::<Vec<_>>(),
             })
             .collect()
     }
@@ -419,6 +535,12 @@ impl<'query, 'schema> SelectionSet<'query, 'schema> {
 impl<'query, 'schema> crate::naming::Nameable for Rc<SelectionSet<'query, 'schema>> {
     fn requested_name(&self) -> String {
         self.target_type.name().to_owned()
+    }
+}
+
+impl<'query, 'schema> crate::naming::Nameable for Rc<InlineFragments<'query, 'schema>> {
+    fn requested_name(&self) -> String {
+        self.abstract_type.name().to_owned()
     }
 }
 
