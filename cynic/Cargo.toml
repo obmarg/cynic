@@ -28,7 +28,7 @@ cynic-proc-macros = { path = "../cynic-proc-macros", version = "0.15.0" }
 json-decode = "0.6.0"
 serde = { version = "1.0.130", features = [ "derive" ] }
 serde_json = "1.0"
-thiserror = "1.0.20"
+thiserror = "1.0.30"
 
 # Surf feature deps
 surf = { version = "2.3", default-features = false, optional = true }
