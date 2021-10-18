@@ -19,5 +19,5 @@ uuid = { version = "0.8", features = ["v4"] }
 
 [dev-dependencies]
 assert_matches = "1.4"
-insta = "1.4.0"
+insta = "1.8.0"
 rstest = "0.11"
