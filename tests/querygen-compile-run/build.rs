@@ -15,6 +15,7 @@ fn main() {
         Schema::from_repo_schemas("https://api.graphql.jobs/", "graphql.jobs.graphql");
     let github_schema =
         Schema::from_repo_schemas("https://api.github.com/graphql", "github.graphql");
+    let book_schema = Schema::from_repo_schemas("https://example.com", "books.graphql");
 
     let raindancer_schema =
         Schema::from_repo_schemas("https://api.github.com/graphql", "raindancer.graphql");
@@ -160,6 +161,11 @@ fn main() {
                 }
             )"#,
         ),
+        TestCase::subscription(
+            &book_schema,
+            "tests/queries/books/books.graphql",
+            r#"queries::BookSubscription::build(())"#,
+        ),
     ];
 
     for case in cases {
@@ -172,6 +178,7 @@ struct TestCase {
     query_path: PathBuf,
     operation_construct: String,
     should_run: bool,
+    is_subscription: bool,
 }
 
 impl TestCase {
@@ -185,6 +192,7 @@ impl TestCase {
             schema: schema.clone(),
             operation_construct: operation_construct.into(),
             should_run: true,
+            is_subscription: false,
         }
     }
 
@@ -198,6 +206,7 @@ impl TestCase {
             schema: schema.clone(),
             operation_construct: operation_construct.into(),
             should_run: false,
+            is_subscription: false,
         }
     }
 
@@ -212,6 +221,22 @@ impl TestCase {
             operation_construct: operation_construct.into(),
             // We don't run mutations by default
             should_run: false,
+            is_subscription: false,
+        }
+    }
+
+    fn subscription(
+        schema: &Schema,
+        query_path: impl Into<PathBuf>,
+        operation_construct: impl Into<String>,
+    ) -> Self {
+        TestCase {
+            query_path: query_path.into(),
+            schema: schema.clone(),
+            operation_construct: operation_construct.into(),
+            // We don't run subscriptions by default
+            should_run: false,
+            is_subscription: true,
         }
     }
 
@@ -239,6 +264,16 @@ impl TestCase {
             "#![allow(unreachable_code)] return;"
         };
 
+        let run_code = if self.is_subscription {
+            format!("{};", &self.operation_construct)
+        } else {
+            format!(
+                r#"querygen_compile_run::send("{url}", {operation_construct}).unwrap();"#,
+                url = self.schema.query_url,
+                operation_construct = self.operation_construct
+            )
+        };
+
         write!(
             &mut file,
             r#"
@@ -246,16 +281,15 @@ impl TestCase {
 
             fn main() {{
                 {norun_code}
-                use cynic::{{QueryBuilder, MutationBuilder}};
-                querygen_compile_run::send("{url}", {operation_construct}).unwrap();
+                use cynic::{{QueryBuilder, MutationBuilder, SubscriptionBuilder}};
+                {run_code}
             }}
 
             {query_code}
             "#,
             norun_code = norun_code,
-            url = self.schema.query_url,
             query_code = query_code,
-            operation_construct = self.operation_construct
+            run_code = run_code
         )
         .unwrap();
     }

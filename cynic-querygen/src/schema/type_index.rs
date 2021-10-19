@@ -13,6 +13,7 @@ pub struct TypeIndex<'schema> {
     types: HashMap<&'schema str, TypeDefinition<'schema>>,
     query_root: String,
     mutation_root: String,
+    subscription_root: String,
 }
 
 impl<'schema> TypeIndex<'schema> {
@@ -40,6 +41,9 @@ impl<'schema> TypeIndex<'schema> {
                 if let Some(mutation) = schema_def.mutation {
                     rv.mutation_root = mutation.to_string();
                 }
+                if let Some(subscription) = schema_def.subscription {
+                    rv.subscription_root = subscription.to_string();
+                }
             }
         }
 
@@ -53,6 +57,7 @@ impl<'schema> TypeIndex<'schema> {
         let root_name = match path.path_base {
             GraphPathBase::Query => self.query_root.clone(),
             GraphPathBase::Mutation => self.mutation_root.clone(),
+            GraphPathBase::Subscription => self.subscription_root.clone(),
             GraphPathBase::Absolute(base) => base.to_string(),
         };
 
@@ -78,6 +83,7 @@ impl<'schema> TypeIndex<'schema> {
         match (path.has_components(), &path.path_base) {
             (true, GraphPathBase::Query) => Ok(Cow::Owned(self.query_root.clone())),
             (true, GraphPathBase::Mutation) => Ok(Cow::Owned(self.mutation_root.clone())),
+            (true, GraphPathBase::Subscription) => Ok(Cow::Owned(self.subscription_root.clone())),
             (true, GraphPathBase::Absolute(base)) => Ok(Cow::Owned(base.to_string())),
             (false, _) => Ok(Cow::Owned(
                 self.field_for_path(path)?
@@ -159,6 +165,7 @@ impl<'a> Default for TypeIndex<'a> {
         TypeIndex {
             query_root: "Query".into(),
             mutation_root: "Mutation".into(),
+            subscription_root: "Subscription".into(),
             types,
         }
     }
@@ -179,6 +186,7 @@ fn name_for_type<'a>(type_def: &TypeDefinition<'a>) -> &'a str {
 enum GraphPathBase<'a> {
     Query,
     Mutation,
+    Subscription,
     Absolute(&'a str),
 }
 
@@ -190,6 +198,13 @@ pub struct GraphPath<'a> {
 }
 
 impl<'a> GraphPath<'a> {
+    pub fn for_query() -> Self {
+        GraphPath {
+            path_base: GraphPathBase::Query,
+            path: Vec::new(),
+        }
+    }
+
     pub fn for_mutation() -> Self {
         GraphPath {
             path_base: GraphPathBase::Mutation,
@@ -197,9 +212,9 @@ impl<'a> GraphPath<'a> {
         }
     }
 
-    pub fn for_query() -> Self {
+    pub fn for_subscription() -> Self {
         GraphPath {
-            path_base: GraphPathBase::Query,
+            path_base: GraphPathBase::Subscription,
             path: Vec::new(),
         }
     }

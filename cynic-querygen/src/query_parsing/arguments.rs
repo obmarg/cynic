@@ -1,7 +1,7 @@
 //! Generation of argument structs
 use std::{
     cell::RefCell,
-    collections::{BTreeMap, BTreeSet, HashMap, HashSet},
+    collections::{BTreeSet, HashMap, HashSet},
     rc::Rc,
 };
 
