@@ -211,7 +211,7 @@ impl<'schema> Type<'schema> {
 
 impl<'schema> ScalarDetails<'schema> {
     pub fn is_builtin(&self) -> bool {
-        matches!(self.name, "String" | "Int" | "Boolean" | "ID")
+        matches!(self.name, "String" | "Int" | "Boolean" | "ID" | "Float")
     }
 }
 
