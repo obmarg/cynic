@@ -156,6 +156,7 @@ impl<'a> Default for TypeIndex<'a> {
 
         types.insert("String", TypeDefinition::Scalar(ScalarType::new("String")));
         types.insert("Int", TypeDefinition::Scalar(ScalarType::new("Int")));
+        types.insert("Float", TypeDefinition::Scalar(ScalarType::new("Float")));
         types.insert(
             "Boolean",
             TypeDefinition::Scalar(ScalarType::new("Boolean")),
