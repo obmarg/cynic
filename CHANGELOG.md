@@ -15,6 +15,7 @@ all APIs might be changed.
 
 - Querygen now supports inline fragments on union types & interfaces.
 - Querygen now supports subscriptions
+- The `InlineFragments` derive now supports a rename attribute on variants
 
 ### Bug Fixes
 

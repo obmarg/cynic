@@ -1,10 +1,6 @@
-use cynic::QueryFragment;
+use cynic::{InlineFragments, QueryFragment};
 use serde::Serialize;
 use serde_json::json;
-
-mod schema {
-    cynic::use_schema!("tests/test-schema.graphql");
-}
 
 #[derive(QueryFragment, Serialize)]
 #[cynic(
@@ -14,6 +10,7 @@ mod schema {
 )]
 struct AllPostsQuery {
     all_posts: Vec<Post>,
+    all_data: Vec<PostOrAuthor>,
 }
 
 #[derive(QueryFragment, Serialize)]
@@ -30,10 +27,32 @@ struct Post {
 }
 
 #[derive(QueryFragment, Serialize)]
+#[cynic(
+    graphql_type = "Author",
+    schema_path = "tests/test-schema.graphql",
+    query_module = "schema"
+)]
+struct Author {
+    name: Option<String>,
+}
+
+#[derive(InlineFragments, Serialize)]
+#[cynic(schema_path = "tests/test-schema.graphql")]
+enum PostOrAuthor {
+    #[cynic(rename = "BlogPost")]
+    Post(Post),
+    Author(Author),
+}
+
+#[derive(QueryFragment, Serialize)]
 #[cynic(schema_path = "tests/test-schema.graphql")]
 struct EmptyType {
     #[cynic(rename = "_")]
     underscore: Option<bool>,
+}
+
+mod schema {
+    cynic::use_schema!("tests/test-schema.graphql");
 }
 
 #[test]
@@ -49,8 +68,11 @@ fn test_all_posts_query_output() {
 fn test_decoding() {
     use cynic::{FragmentContext, GraphQlResponse, Operation};
 
+    let mut all_data = posts();
+    all_data[0]["__typename"] = json!("BlogPost");
+
     let data = GraphQlResponse {
-        data: Some(json!({ "allPosts": posts() })),
+        data: Some(json!({ "allPosts": posts(), "allData": all_data })),
         errors: None,
     };
 

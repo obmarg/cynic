@@ -99,7 +99,7 @@ fn exhaustiveness_check(
     let variant_names = variants
         .iter()
         .filter(|v| !*v.fallback)
-        .map(|v| v.ident.to_string())
+        .map(|v| v.graphql_ident())
         .collect::<HashSet<_>>();
 
     let required_variants = match target_type {
@@ -109,7 +109,7 @@ fn exhaustiveness_check(
             .map(|d| match d {
                 Definition::TypeDefinition(TypeDefinition::Object(obj)) => {
                     if obj.implements_interfaces.contains(&iface.name) {
-                        Some(&obj.name)
+                        Some(Ident::for_type(&obj.name))
                     } else {
                         None
                     }
@@ -117,9 +117,12 @@ fn exhaustiveness_check(
                 _ => None,
             })
             .flatten()
-            .cloned()
             .collect::<HashSet<_>>(),
-        InlineFragmentType::Union(union) => union.types.iter().cloned().collect::<HashSet<_>>(),
+        InlineFragmentType::Union(union) => union
+            .types
+            .iter()
+            .map(Ident::for_type)
+            .collect::<HashSet<_>>(),
     };
 
     let has_fallback = variants.iter().any(|v| *v.fallback);
@@ -130,16 +133,16 @@ fn exhaustiveness_check(
         for unexpected_variant_name in variant_names.difference(&required_variants) {
             let variant = variants
                 .iter()
-                .find(|v| v.ident == *unexpected_variant_name)
+                .find(|v| v.graphql_ident() == *unexpected_variant_name)
                 .unwrap();
 
-            let candidates = required_variants.iter().map(|v| v.as_str());
-            let guess_field = guess_field(candidates, variant.ident.to_string().as_str());
+            let candidates = required_variants.iter().map(|v| v.graphql_name());
+            let guess_field = guess_field(candidates, variant.graphql_ident().graphql_name());
             errors.push(syn::Error::new(
                 variant.span(),
                 format!(
                     "Could not find a match for {} in {}.{}",
-                    variant.ident,
+                    variant.graphql_ident().graphql_name(),
                     target_type.name(),
                     format_guess(guess_field)
                 ),
@@ -153,15 +156,15 @@ fn exhaustiveness_check(
         for unexpected_variant_name in variant_names.difference(&required_variants) {
             let variant = variants
                 .iter()
-                .find(|v| v.ident == *unexpected_variant_name)
+                .find(|v| v.graphql_ident() == *unexpected_variant_name)
                 .unwrap();
-            let candidates = required_variants.iter().map(|v| v.as_str());
-            let guess_field = guess_field(candidates, variant.ident.to_string().as_str());
+            let candidates = required_variants.iter().map(|v| v.graphql_name());
+            let guess_field = guess_field(candidates, variant.graphql_ident().graphql_name());
             errors.push(syn::Error::new(
                 variant.span(),
                 format!(
                     "Could not find a match for {} in {}.{}",
-                    variant.ident,
+                    variant.graphql_ident().graphql_name(),
                     target_type.name(),
                     format_guess(guess_field)
                 ),
@@ -173,7 +176,7 @@ fn exhaustiveness_check(
                 Span::call_site(),
                 format!(
                     "This InlineFragment is missing a variant for {}.  Either provide a variant for this type or add a fallback variant.",
-                    missing_variant_name
+                    missing_variant_name.graphql_name()
                 ),
             ));
         }

@@ -51,8 +51,11 @@ impl InlineFragmentsDeriveInput {
 #[derive(darling::FromVariant)]
 #[darling(attributes(cynic))]
 pub(super) struct InlineFragmentsDeriveVariant {
-    pub ident: proc_macro2::Ident,
+    pub(super) ident: proc_macro2::Ident,
     pub fields: darling::ast::Fields<InlineFragmentsDeriveField>,
+
+    #[darling(default)]
+    rename: Option<SpannedValue<String>>,
 
     #[darling(default)]
     pub(super) fallback: SpannedValue<bool>,
@@ -62,4 +65,14 @@ pub(super) struct InlineFragmentsDeriveVariant {
 #[darling(attributes(cynic))]
 pub(super) struct InlineFragmentsDeriveField {
     pub ty: syn::Type,
+}
+
+impl InlineFragmentsDeriveVariant {
+    pub(super) fn graphql_ident(&self) -> crate::Ident {
+        if let Some(rename) = &self.rename {
+            return crate::Ident::for_type(&**rename).with_span(rename.span());
+        }
+
+        crate::Ident::from_proc_macro2(&self.ident, None)
+    }
 }
