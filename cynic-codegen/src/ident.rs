@@ -97,7 +97,7 @@ impl Ident {
     }
 
     pub fn span(&self) -> Span {
-        self.span.clone().unwrap_or_else(Span::call_site)
+        self.span.unwrap_or_else(Span::call_site)
     }
 }
 
@@ -296,7 +296,7 @@ lazy_static! {
 }
 
 fn transform_keywords(s: &str) -> Cow<str> {
-    let s_ref: &str = &s;
+    let s_ref: &str = s;
     if KEYWORDS.contains(s_ref) {
         format!("r#{}", s).into()
     } else {

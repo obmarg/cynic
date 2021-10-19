@@ -35,7 +35,7 @@ pub fn load_schema(filename: impl AsRef<std::path::Path>) -> Result<Document, Sc
 }
 
 pub(crate) fn parse_schema(schema: &str) -> Result<Document, SchemaLoadError> {
-    let borrowed_schema = graphql_parser::schema::parse_schema::<String>(&schema)?;
+    let borrowed_schema = graphql_parser::schema::parse_schema::<String>(schema)?;
     Ok(schema_into_static(borrowed_schema))
 }
 

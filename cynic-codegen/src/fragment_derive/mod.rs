@@ -81,7 +81,7 @@ pub fn fragment_derive_impl(
         let fragment_impl = FragmentImpl::new_for(
             &fields,
             &ident,
-            &object,
+            object,
             Ident::new_spanned(&*schema_module, schema_module.span()).into(),
             graphql_name,
             argument_struct,
@@ -170,7 +170,7 @@ impl FieldTypeSelectorCall {
             )))
         } else if let FieldType::List(inner, _) = field_type {
             FieldTypeSelectorCall::Vector(Box::new(FieldTypeSelectorCall::for_field(
-                &inner,
+                inner,
                 field_constructor,
                 false,
                 None,
@@ -214,7 +214,7 @@ impl FieldTypeSelectorCall {
                 let required_arguments = required_arguments.iter().map(|arg| &arg.expr);
                 let optional_arg_names = optional_arguments.iter().map(|arg| &arg.argument_name);
                 let optional_arg_exprs = optional_arguments.iter().map(|arg| &arg.expr);
-                let alias = proc_macro2::Literal::string(&alias);
+                let alias = proc_macro2::Literal::string(alias);
 
                 quote! {
                     #type_path(
@@ -464,7 +464,7 @@ fn process_field(
     } else {
         let candidates = object.fields.keys().map(|k| k.graphql_name());
         let graphql_name = graphql_ident.graphql_name();
-        let guess_value = guess_field(candidates, &graphql_name);
+        let guess_value = guess_field(candidates, graphql_name);
         Err(syn::Error::new(
             field_name_span,
             format!(

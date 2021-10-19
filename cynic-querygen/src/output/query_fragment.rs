@@ -89,6 +89,7 @@ impl std::fmt::Display for OutputField<'_, '_> {
 /// the fact that there may be several rust structs that refer to the same schema
 /// type.
 #[derive(Debug, PartialEq)]
+#[allow(clippy::enum_variant_names)]
 pub enum RustOutputFieldType {
     NamedType(String),
     ListType(Box<RustOutputFieldType>),

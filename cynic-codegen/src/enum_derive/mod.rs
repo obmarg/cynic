@@ -158,10 +158,9 @@ fn join_variants<'a>(
         match value {
             (None, Some(enum_value)) => missing_variants.push(enum_value.name.as_ref()),
             (Some(variant), None) => {
-                let candidates = map.values().flat_map(|v| match v.1 {
-                    Some(input) => Some(input.name.as_str()),
-                    None => None,
-                });
+                let candidates = map
+                    .values()
+                    .flat_map(|v| v.1.map(|input| input.name.as_str()));
                 let guess_field = guess_field(candidates, &(*(graphql_name)));
                 errors.extend(
                     syn::Error::new(
@@ -231,11 +230,11 @@ mod tests {
     ) {
         let variants = vec![
             EnumDeriveVariant {
-                ident: proc_macro2::Ident::new(&enum_variant_1, Span::call_site()),
+                ident: proc_macro2::Ident::new(enum_variant_1, Span::call_site()),
                 rename: None,
             },
             EnumDeriveVariant {
-                ident: proc_macro2::Ident::new(&enum_variant_2, Span::call_site()),
+                ident: proc_macro2::Ident::new(enum_variant_2, Span::call_site()),
                 rename: None,
             },
         ];

@@ -26,7 +26,7 @@ impl<'a> FieldSerializer<'a> {
         FieldSerializer {
             rust_field,
             graphql_field,
-            graphql_field_type: FieldType::from_schema_type(&graphql_field.value_type, &type_index),
+            graphql_field_type: FieldType::from_schema_type(&graphql_field.value_type, type_index),
             query_module,
         }
     }

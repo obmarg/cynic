@@ -92,7 +92,7 @@ impl From<schema::Document> for SchemaData {
 
                     // Would be nice to restructure this so that the argument structs
                     // are visible at the point we're generating the field_selectors...
-                    let selector = SelectorStruct::from_object(&object, &type_index);
+                    let selector = SelectorStruct::from_object(object, &type_index);
                     if !selector.selection_builders.is_empty() {
                         argument_struct_modules.push(Module::new(
                             &object.name,
@@ -105,16 +105,16 @@ impl From<schema::Document> for SchemaData {
                     selectors.push(selector);
                 }
                 Definition::TypeDefinition(TypeDefinition::InputObject(input_type)) => {
-                    input_objects.push(InputObjectMarker::from_input_object(&input_type));
+                    input_objects.push(InputObjectMarker::from_input_object(input_type));
                 }
                 Definition::TypeDefinition(TypeDefinition::Union(union)) => {
-                    unions.push(UnionStruct::from_union(&union));
+                    unions.push(UnionStruct::from_union(union));
                 }
                 Definition::TypeDefinition(TypeDefinition::Interface(interface_def)) => {
                     interfaces_implementations
                         .push(InterfacesImplementations::from_interface(interface_def));
 
-                    let interface = InterfaceStruct::from_interface(&interface_def, &type_index);
+                    let interface = InterfaceStruct::from_interface(interface_def, &type_index);
 
                     // Could be nice to restructure this so that the argument structs
                     // just live inside the selector_struct or similar?
@@ -128,10 +128,10 @@ impl From<schema::Document> for SchemaData {
                     interfaces.push(interface);
                 }
                 Definition::TypeDefinition(TypeDefinition::Enum(en)) => {
-                    type_lock_markers.push(TypeLockMarker::from_enum(&en));
+                    type_lock_markers.push(TypeLockMarker::from_enum(en));
                 }
                 Definition::TypeDefinition(TypeDefinition::Scalar(scalar)) => {
-                    type_lock_markers.push(TypeLockMarker::from_scalar(&scalar))
+                    type_lock_markers.push(TypeLockMarker::from_scalar(scalar))
                 }
                 _ => {}
             }

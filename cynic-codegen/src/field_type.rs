@@ -321,13 +321,11 @@ impl FieldType {
                 name,
                 constraint: GenericConstraint::Enum(path),
             })
-        } else if let Some(path) = self.inner_input_object_path() {
-            Some(GenericParameter {
+        } else {
+            self.inner_input_object_path().map(|path| GenericParameter {
                 name,
                 constraint: GenericConstraint::InputObject(path),
             })
-        } else {
-            None
         }
     }
 }
