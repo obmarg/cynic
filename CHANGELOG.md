@@ -14,6 +14,7 @@ all APIs might be changed.
 ### New Features
 
 - Querygen now supports inline fragments on union types & interfaces.
+- Querygen now supports subscriptions
 
 ### Bug Fixes
 

@@ -12,3 +12,14 @@ fn mutation_with_scalar_result_and_input() {
             .expect("QueryGen Failed")
     )
 }
+
+#[test]
+fn book_subscription_test() {
+    let schema = include_str!("../../schemas/books.graphql");
+    let query = include_str!("queries/misc/books-subscription.graphql");
+
+    assert_snapshot!(
+        document_to_fragment_structs(query, schema, &QueryGenOptions::default())
+            .expect("QueryGen Failed")
+    )
+}

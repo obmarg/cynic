@@ -1,0 +1,11 @@
+subscription BookSubscription {
+  books(mutationType: CREATED) {
+    mutationType
+    id
+    book {
+      id
+      name
+      author
+    }
+  }
+}
