@@ -7,4 +7,9 @@ all_posts:
   - metadata_present: true
     metadata:
       underscore: ~
+all_data:
+  - Post:
+      metadata_present: true
+      metadata:
+        underscore: ~
 

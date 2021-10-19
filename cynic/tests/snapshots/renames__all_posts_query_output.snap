@@ -10,5 +10,17 @@ query Query {
       _
     }
   }
+  allData {
+    __typename
+    ... on BlogPost {
+      hasMetadata
+      metadata {
+        _
+      }
+    }
+    ... on Author {
+      name
+    }
+  }
 }
 

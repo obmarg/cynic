@@ -33,7 +33,10 @@ type EmptyType {
 type Query {
   allPosts: [BlogPost!]!
   allAuthors: [Author!]!
+  allData: [PostOrAuthor!]!
 }
+
+union PostOrAuthor = BlogPost | Author
 
 schema {
   query: Query

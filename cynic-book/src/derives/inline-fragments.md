@@ -99,3 +99,5 @@ Each variant can also have it's own attributes:
   match one of the other variants. For interfaces this can contain a
   `QueryFragment` type. For union types it must be applied on a unit
   variant.
+- `rename = "SomeOtherName"` can be used to specify the name of the GraphQL
+  type when it doesn't exactly match the name of the variant.
