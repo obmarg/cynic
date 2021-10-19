@@ -125,7 +125,7 @@ pub fn normalise<'query, 'doc, 'schema>(
     document: &'doc Document<'query>,
     type_index: &'doc Rc<TypeIndex<'schema>>,
 ) -> Result<NormalisedDocument<'query, 'schema>, Error> {
-    let fragment_map = extract_fragments(&document);
+    let fragment_map = extract_fragments(document);
 
     let mut selection_sets: SelectionSetSet<'query, 'schema> = BTreeSet::new();
     let mut inline_fragments: InlineFragmentsSet<'query, 'schema> = BTreeSet::new();
@@ -166,8 +166,8 @@ fn normalise_operation<'query, 'doc, 'schema>(
                 inline_fragments_out,
                 &[],
             );
-            let root = normaliser
-                .normalise_object_selection_set(&selection_set, GraphPath::for_query())?;
+            let root =
+                normaliser.normalise_object_selection_set(selection_set, GraphPath::for_query())?;
 
             Ok(NormalisedOperation {
                 root,
@@ -513,7 +513,7 @@ impl<'query, 'schema> Vertex for SelectionSet<'query, 'schema> {
                 Selection::Field(FieldSelection {
                     field: Field::Composite(selection_set),
                     ..
-                }) => Some(Rc::clone(&selection_set)),
+                }) => Some(Rc::clone(selection_set)),
                 _ => None,
             })
             .collect()

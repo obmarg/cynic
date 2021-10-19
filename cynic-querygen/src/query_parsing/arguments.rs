@@ -22,18 +22,14 @@ pub fn build_argument_structs<'query, 'schema>(
         .collect::<Vec<_>>();
 
     let mut parent_map = HashMap::new();
-    for argument_set in &operation_argument_roots {
-        if let Some(argument_set) = argument_set {
-            argument_set.build_parent_map(&mut parent_map);
-        }
+    for argument_set in operation_argument_roots.iter().flatten() {
+        argument_set.build_parent_map(&mut parent_map);
     }
 
     let mut output = ArgumentStructDetails::new();
 
-    for args in &operation_argument_roots {
-        if let Some(args) = args {
-            args.as_argument_struct(&parent_map, &mut output);
-        }
+    for args in operation_argument_roots.iter().flatten() {
+        args.as_argument_struct(&parent_map, &mut output);
         // TODO: implement conversions on nested types?
     }
 
@@ -188,7 +184,7 @@ impl<'query, 'schema> ArgumentStructDetails<'query, 'schema> {
         self.selection_structs
             .iter()
             .map(|(_, arg_struct)| {
-                let name = self.namer.borrow_mut().name_subject(&arg_struct);
+                let name = self.namer.borrow_mut().name_subject(arg_struct);
                 output::ArgumentStruct::new(
                     name,
                     arg_struct

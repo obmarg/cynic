@@ -85,7 +85,7 @@ fn normal_check(
 
     if gql_type.is_nullable() {
         if let ParsedType::Optional(inner) = parsed_type {
-            return normal_check(&gql_type.as_required(), &inner, flattening);
+            return normal_check(&gql_type.as_required(), inner, flattening);
         } else if !flattening {
             // If we're flattening then it's all good.  But otherwise we should return an error.
             return Err(syn::Error::new(
@@ -106,7 +106,7 @@ fn normal_check(
                     ));
     } else if let FieldType::List(item_type, _) = gql_type {
         if let ParsedType::List(inner) = parsed_type {
-            return normal_check(&item_type, &inner, flattening);
+            return normal_check(item_type, inner, flattening);
         } else if !flattening {
             // If we're flattening then it's all good.  But otherwise we should return an error.
             return Err(syn::Error::new(

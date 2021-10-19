@@ -72,7 +72,7 @@ impl<'schema> TypeIndex<'schema> {
             return Err(Error::ExpectedObject(root_name.to_string()));
         };
 
-        Ok(OutputField::from_parser(field, &self))
+        Ok(OutputField::from_parser(field, self))
     }
 
     // Looks up the name of the type at Path.
@@ -100,7 +100,7 @@ impl<'schema> TypeIndex<'schema> {
             .get(name)
             .ok_or_else(|| Error::UnknownType(name.to_string()))?;
 
-        Ok(Type::from_type_defintion(type_def, &self))
+        Ok(Type::from_type_defintion(type_def, self))
     }
 
     pub fn type_for_path<'path>(
@@ -141,7 +141,7 @@ impl<'schema> TypeIndex<'schema> {
                     .ok_or_else(|| Error::UnknownType(inner_name.to_string()))?;
 
                 if let TypeDefinition::Object(object) = inner_type {
-                    self.find_field_recursive(&object.fields, &inner_name, rest)
+                    self.find_field_recursive(&object.fields, inner_name, rest)
                 } else {
                     Err(Error::ExpectedObject(inner_name.to_string()))
                 }
@@ -173,12 +173,12 @@ impl<'a> Default for TypeIndex<'a> {
 
 fn name_for_type<'a>(type_def: &TypeDefinition<'a>) -> &'a str {
     match type_def {
-        TypeDefinition::Scalar(inner) => &inner.name,
-        TypeDefinition::Object(inner) => &inner.name,
-        TypeDefinition::Interface(inner) => &inner.name,
-        TypeDefinition::Union(inner) => &inner.name,
-        TypeDefinition::Enum(inner) => &inner.name,
-        TypeDefinition::InputObject(inner) => &inner.name,
+        TypeDefinition::Scalar(inner) => inner.name,
+        TypeDefinition::Object(inner) => inner.name,
+        TypeDefinition::Interface(inner) => inner.name,
+        TypeDefinition::Union(inner) => inner.name,
+        TypeDefinition::Enum(inner) => inner.name,
+        TypeDefinition::InputObject(inner) => inner.name,
     }
 }
 

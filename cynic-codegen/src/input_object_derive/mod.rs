@@ -68,7 +68,7 @@ pub fn input_object_derive_impl(
     }
     let input_object_def = input_object_def.unwrap();
 
-    let type_index = TypeIndex::for_schema(&schema);
+    let type_index = TypeIndex::for_schema(schema);
 
     let rename_all = input.rename_all.unwrap_or(RenameAll::CamelCase);
 
@@ -208,11 +208,10 @@ fn join_fields<'a>(
             }
             (None, Some(input_value)) => missing_optional_fields.push(input_value.name.as_ref()),
             (Some(field), None) => {
-                let candidates = map.values().flat_map(|v| match v.1 {
-                    Some(input) => Some(input.name.as_str()),
-                    None => None,
-                });
-                let guess_field = guess_field(candidates, &(transformed_ident.graphql_name()));
+                let candidates = map
+                    .values()
+                    .flat_map(|v| v.1.map(|input| input.name.as_str()));
+                let guess_field = guess_field(candidates, transformed_ident.graphql_name());
                 errors.extend(
                     syn::Error::new(
                         field.ident.span(),

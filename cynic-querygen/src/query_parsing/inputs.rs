@@ -46,7 +46,7 @@ pub fn extract_input_objects<'query, 'schema>(
 
     // Walk the selection sets looking for input objects
     for selection_set in &doc.selection_sets {
-        extract_objects_from_selection_set(&selection_set, &mut result)?;
+        extract_objects_from_selection_set(selection_set, &mut result)?;
     }
 
     // Find any query variables that are input objects
@@ -148,7 +148,7 @@ pub fn extract_input_objects_from_values<'query, 'schema>(
             for inner_value in inner_values {
                 output_values.push(extract_input_objects_from_values(
                     input_object,
-                    &inner_value,
+                    inner_value,
                     input_objects,
                 )?);
             }

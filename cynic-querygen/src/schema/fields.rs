@@ -19,6 +19,7 @@ pub struct InputField<'schema> {
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone)]
+#[allow(clippy::enum_variant_names)]
 pub enum InputFieldType<'schema> {
     NamedType(InputTypeRef<'schema>),
     ListType(Box<InputFieldType<'schema>>),
@@ -26,6 +27,7 @@ pub enum InputFieldType<'schema> {
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone)]
+#[allow(clippy::enum_variant_names)]
 pub enum OutputFieldType<'schema> {
     NamedType(OutputTypeRef<'schema>),
     ListType(Box<OutputFieldType<'schema>>),
@@ -129,7 +131,7 @@ impl<'schema> InputFieldType<'schema> {
     }
 
     pub fn type_spec(&self) -> Cow<'schema, str> {
-        input_type_spec_imp(&self, true)
+        input_type_spec_imp(self, true)
     }
 }
 
