@@ -227,9 +227,9 @@ impl darling::FromMeta for RenameAll {
 }
 
 lazy_static! {
-    // A list of keywords in rust,
+    // A list of keywords in rust that can be converted to raw identifiers
     // Taken from https://doc.rust-lang.org/reference/keywords.html
-    static ref KEYWORDS: HashSet<&'static str> = {
+    static ref RAW_KEYWORDS: HashSet<&'static str> = {
         let mut set = HashSet::new();
 
         // Strict Keywords 2015
@@ -237,10 +237,8 @@ lazy_static! {
         set.insert("break");
         set.insert("const");
         set.insert("continue");
-        set.insert("crate");
         set.insert("else");
         set.insert("enum");
-        set.insert("extern");
         set.insert("false");
         set.insert("fn");
         set.insert("for");
@@ -256,11 +254,8 @@ lazy_static! {
         set.insert("pub");
         set.insert("ref");
         set.insert("return");
-        set.insert("self");
-        set.insert("Self");
         set.insert("static");
         set.insert("struct");
-        set.insert("super");
         set.insert("trait");
         set.insert("true");
         set.insert("type");
@@ -295,9 +290,27 @@ lazy_static! {
     };
 }
 
+lazy_static! {
+    // A list of keywords in rust that cannot be converted to raw identifiers
+    // Taken from https://github.com/rust-lang/rust/blob/1.31.1/src/libsyntax_pos/symbol.rs#L456-L460
+    static ref NON_RAW_KEYWORDS: HashSet<&'static str> = {
+        let mut set = HashSet::new();
+
+        set.insert("super");
+        set.insert("self");
+        set.insert("Self");
+        set.insert("extern");
+        set.insert("crate");
+
+        set
+    };
+}
+
 fn transform_keywords(s: &str) -> Cow<str> {
     let s_ref: &str = s;
-    if KEYWORDS.contains(s_ref) {
+    if NON_RAW_KEYWORDS.contains(s_ref) {
+        format!("{}_", s).into()
+    } else if RAW_KEYWORDS.contains(s_ref) {
         format!("r#{}", s).into()
     } else {
         s.into()

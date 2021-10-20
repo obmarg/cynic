@@ -1,3 +1,11 @@
 type Foo {
   _: Boolean
+  self: Boolean
+  super: Boolean
+  crate: Boolean
+  async: Boolean
+}
+
+schema {
+  query: Foo
 }

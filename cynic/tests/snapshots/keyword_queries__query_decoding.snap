@@ -1,0 +1,11 @@
+---
+source: cynic/tests/keyword-queries.rs
+expression: result.data
+
+---
+whatevs: false
+whatevs2: false
+whatevs3: false
+self_: false
+super_: false
+
