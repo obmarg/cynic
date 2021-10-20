@@ -30,7 +30,7 @@ surf = "2.0.0"
 Note that we've added the `surf` feature flag of `cynic` - this pulls in some
 `surf` integration code, which we'll be using. If you're using a different HTTP
 client, you'll need a different feature flag or you may need to see the
-[documentation for making an HTTP request manually](./manual-http-requests.md).
+[documentation for making an HTTP request manually][2].
 
 You may also optionally want to install `insta` - a snapshot testing library
 that can be useful for double checking your GraphQL queries are as expected.
@@ -54,12 +54,12 @@ this tutorial will assume that's where you put the schema.
 
 Cynic allows you to build queries from Rust structs - so you'll need to take
 the query you're wanting to run, and convert it into one or more rust structs.
-This can be quite laborious and error prone for larger queries though so cynic
-provides [`querygen`][1] to help you get started.
+This can be quite laborious and error prone for larger queries so cynic
+provides [`a generator`][1] to help you get started.
 
 Go to [https://generator.cynic-rs.dev][1] and select how you'd like to input
 your schema. If the GraphQL API you wish to use is accessible on the internet
-you can just link directly to it (although it will need to be have CORS headers
+you can just link directly to it (although it will need to have CORS headers
 enabled). Otherwise you can upload your schema to the generator.
 
 Once you've provided the schema, you should be dropped into a GraphiQL
@@ -116,16 +116,17 @@ query outside of cynic.
 
 #### Making your query
 
-Now, you're ready to make a query against a server. Cynic doesn't provide any
-HTTP code for you, so you'll need to reach for your HTTP library of choice for
-this one. We'll use reqwest here, but it should be similar for any others.
+Now, you're ready to make a query against a server. Cynic provides integrations
+for the `surf` & `reqwest` HTTP clients. We'll use `surf` here, but it should
+be similar for reqwest (or if you're using another HTTP library [see here][2]
+for how to use cynic with it).
 
 First, you'll want to build an `Operation` similar to how we did it in the
 snapshot test above (again, swapping `AllFilmsQuery` for the name of your root
 query struct):
 
 ```rust
-use cynic::QueryBuilder;
+use cynic::{QueryBuilder, http::SurfExt};
 
 let operation = AllFilmsQuery::build(());
 ```
@@ -146,3 +147,4 @@ Now, assuming everything went well, you should have the response to your query
 which you can do whatever you want with. And that's the end of the quickstart.
 
 [1]: https://generator.cynic-rs.dev
+[2]: ./manual-http-requests.md
