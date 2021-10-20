@@ -11,7 +11,7 @@ use cynic_codegen::use_schema::{use_schema, QueryDslParams};
     "graphql.jobs.graphql",
     "books.graphql",
     "starwars.schema.graphql",
-    "test_cases.graphql"
+    "test_cases.graphql",
 ])]
 fn snapshot_use_schema(schema_file: &str) {
     let schema_path = PathBuf::from("../schemas/").join(schema_file);
