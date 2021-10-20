@@ -16,7 +16,6 @@ mod module;
 mod schema;
 mod suggestions;
 mod type_index;
-mod type_path;
 mod type_validation;
 
 pub use ident::RenameAll;
@@ -27,7 +26,6 @@ use field_type::FieldType;
 use ident::Ident;
 use schema::{load_schema, SchemaLoadError};
 use type_index::TypeIndex;
-use type_path::TypePath;
 
 #[deprecated(
     since = "0.13.0",

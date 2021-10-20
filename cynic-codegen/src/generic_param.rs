@@ -1,6 +1,6 @@
 use proc_macro2::TokenStream;
 
-use super::{type_path::TypePath, Ident};
+use super::Ident;
 
 /// A GenericParameter, which struct fields may or may not require.
 ///
@@ -14,7 +14,7 @@ pub struct GenericParameter {
 }
 
 impl GenericParameter {
-    pub fn to_tokens(&self, path_to_markers: TypePath) -> TokenStream {
+    pub fn to_tokens(&self, path_to_markers: syn::Path) -> TokenStream {
         use quote::quote;
 
         let name = &self.name;
@@ -33,29 +33,18 @@ pub enum GenericConstraint {
     Enum(Ident),
     /// An input object constraint: `where T: InputObject<SomeInputObjectMarkerStruct>
     InputObject(Ident),
-    /// A scalar object constraint: `where T: Scalar<X>
-    Scalar(TypePath),
 }
 
 impl GenericConstraint {
-    fn to_tokens(&self, path_to_markers: TypePath) -> TokenStream {
+    fn to_tokens(&self, path_to_markers: syn::Path) -> TokenStream {
         use quote::quote;
 
         match self {
             GenericConstraint::Enum(ident) => {
-                let type_path = TypePath::concat(&[path_to_markers, ident.clone().into()]);
-
-                quote! { ::cynic::Enum<#type_path> }
+                quote! { ::cynic::Enum<#path_to_markers::#ident> }
             }
             GenericConstraint::InputObject(ident) => {
-                let type_path = TypePath::concat(&[path_to_markers, ident.clone().into()]);
-
-                quote! { ::cynic::InputObject<#type_path> }
-            }
-            GenericConstraint::Scalar(scalar_path) => {
-                let type_path = TypePath::concat(&[path_to_markers, scalar_path.clone()]);
-
-                quote! { ::cynic::Scalar<#type_path> }
+                quote! { ::cynic::InputObject<#path_to_markers::#ident> }
             }
         }
     }

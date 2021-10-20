@@ -3,12 +3,14 @@ use quote::quote;
 
 use crate::{
     generic_param::{GenericConstraint, GenericParameter},
-    schema, Ident, TypeIndex, TypePath,
+    ident::PathExt,
+    schema, Ident, TypeIndex,
 };
 
 #[derive(Debug, Clone)]
 pub enum FieldType {
-    Scalar(TypePath, bool),
+    Scalar(Ident, bool),
+    BuiltInScalar(syn::Path, bool),
     Enum(Ident, bool),
     InputObject(Ident, bool),
     Other(Ident, bool),
@@ -39,36 +41,21 @@ impl FieldType {
             ),
             Type::NamedType(name) => {
                 if type_index.is_scalar(name) {
-                    FieldType::Scalar(Ident::for_type(name).into(), nullable)
+                    FieldType::Scalar(Ident::for_type(name), nullable)
                 } else if type_index.is_enum(name) {
                     FieldType::Enum(Ident::for_type(name), nullable)
                 } else if type_index.is_input_object(name) {
                     FieldType::InputObject(Ident::for_type(name), nullable)
                 } else if name == "Int" {
-                    FieldType::Scalar(
-                        TypePath::new_builtin(Ident::for_inbuilt_scalar("i32")),
-                        nullable,
-                    )
+                    FieldType::BuiltInScalar(syn::parse_quote! {i32}, nullable)
                 } else if name == "Float" {
-                    FieldType::Scalar(
-                        TypePath::new_builtin(Ident::for_inbuilt_scalar("f64")),
-                        nullable,
-                    )
+                    FieldType::BuiltInScalar(syn::parse_quote! {f64}, nullable)
                 } else if name == "Boolean" {
-                    FieldType::Scalar(
-                        TypePath::new_builtin(Ident::for_inbuilt_scalar("bool")),
-                        nullable,
-                    )
+                    FieldType::BuiltInScalar(syn::parse_quote! {bool}, nullable)
                 } else if name == "String" {
-                    FieldType::Scalar(
-                        TypePath::new_builtin(Ident::for_inbuilt_scalar("String")),
-                        nullable,
-                    )
+                    FieldType::BuiltInScalar(syn::parse_quote! {String}, nullable)
                 } else if name == "ID" {
-                    FieldType::Scalar(
-                        TypePath::new_absolute(vec![Ident::new("cynic"), Ident::new("Id")]),
-                        nullable,
-                    )
+                    FieldType::BuiltInScalar(syn::parse_quote! { ::cynic::Id }, nullable)
                 } else {
                     FieldType::Other(Ident::for_type(name), nullable)
                 }
@@ -80,6 +67,7 @@ impl FieldType {
         match self {
             FieldType::List(inner, _) => inner.contains_scalar(),
             FieldType::Scalar(_, _) => true,
+            FieldType::BuiltInScalar(_, _) => true,
             _ => false,
         }
     }
@@ -108,6 +96,7 @@ impl FieldType {
         match self {
             FieldType::List(inner, _) => inner.contains_scalar(),
             FieldType::Scalar(_, _) => true,
+            FieldType::BuiltInScalar(_, _) => true,
             FieldType::Enum(_, _) => true,
             _ => false,
         }
@@ -135,32 +124,27 @@ impl FieldType {
         match self {
             FieldType::List(_, nullable) => *nullable,
             FieldType::Scalar(_, nullable) => *nullable,
+            FieldType::BuiltInScalar(_, nullable) => *nullable,
             FieldType::Enum(_, nullable) => *nullable,
             FieldType::InputObject(_, nullable) => *nullable,
             FieldType::Other(_, nullable) => *nullable,
         }
     }
 
-    pub fn as_type_lock(&self, path_to_markers: TypePath) -> TypePath {
-        match self {
-            FieldType::List(inner, _) => inner.as_type_lock(path_to_markers),
-            FieldType::Scalar(path, _) => {
-                if path.is_absolute() {
-                    // Probably a built in scalar, so we don't need to put path_to_types
-                    // on the start.
-                    path.clone()
-                } else {
-                    TypePath::concat(&[path_to_markers, path.clone()])
-                }
-            }
-            FieldType::Enum(ident, _) => TypePath::concat(&[path_to_markers, ident.clone().into()]),
-            FieldType::InputObject(ident, _) => {
-                TypePath::concat(&[path_to_markers, ident.clone().into()])
-            }
-            FieldType::Other(ident, _) => {
-                TypePath::concat(&[path_to_markers, ident.clone().into()])
-            }
-        }
+    pub fn as_type_lock(&self, path_to_markers: &syn::Path) -> syn::Path {
+        let ident = match self {
+            FieldType::List(inner, _) => return inner.as_type_lock(path_to_markers),
+            FieldType::BuiltInScalar(path, _) => return path.clone(),
+            FieldType::Scalar(ident, _) => ident,
+
+            FieldType::Enum(ident, _) => ident,
+            FieldType::InputObject(ident, _) => ident,
+            FieldType::Other(ident, _) => ident,
+        };
+
+        let mut path = path_to_markers.clone();
+        path.push(ident);
+        path
     }
 
     /// Returns a wrapper path suitable for use in the second parameter to the `InputType` trait.
@@ -176,6 +160,7 @@ impl FieldType {
                 }
             }
             FieldType::Scalar(_, nullable)
+            | FieldType::BuiltInScalar(_, nullable)
             | FieldType::Enum(_, nullable)
             | FieldType::InputObject(_, nullable) => {
                 if *nullable {
@@ -196,6 +181,7 @@ impl FieldType {
         match self {
             FieldType::List(inner, _) => FieldType::List(inner.clone(), false),
             FieldType::Scalar(type_path, _) => FieldType::Scalar(type_path.clone(), false),
+            FieldType::BuiltInScalar(ident, _) => FieldType::BuiltInScalar(ident.clone(), false),
             FieldType::Enum(type_path, _) => FieldType::Enum(type_path.clone(), false),
             FieldType::InputObject(type_path, _) => {
                 FieldType::InputObject(type_path.clone(), false)
@@ -226,7 +212,10 @@ impl FieldType {
             FieldType::InputObject(_, _) => {
                 panic!("Input objects should never be selected, what's going on here...")
             }
-            FieldType::Enum(_, _) | FieldType::Other(_, _) | FieldType::Scalar(_, _) => {
+            FieldType::Enum(_, _)
+            | FieldType::Other(_, _)
+            | FieldType::Scalar(_, _)
+            | FieldType::BuiltInScalar(_, _) => {
                 quote! { #inner_select }
             }
         }
@@ -253,7 +242,10 @@ impl FieldType {
             FieldType::InputObject(_, _) => {
                 panic!("Input objects should never be selected, what's going on here...")
             }
-            FieldType::Enum(_, _) | FieldType::Other(_, _) | FieldType::Scalar(_, _) => {
+            FieldType::Enum(_, _)
+            | FieldType::Other(_, _)
+            | FieldType::Scalar(_, _)
+            | FieldType::BuiltInScalar(_, _) => {
                 quote! { #inner_token }
             }
         }
@@ -267,7 +259,7 @@ impl FieldType {
     pub fn to_tokens(
         &self,
         generic_inner_type: Option<Ident>,
-        mut path_to_types: TypePath,
+        path_to_types: syn::Path,
     ) -> TokenStream {
         let nullable = self.is_nullable();
         let rust_type = match (self, &generic_inner_type) {
@@ -278,28 +270,20 @@ impl FieldType {
             (_, Some(generic_type)) => {
                 quote! { #generic_type }
             }
-            (FieldType::Scalar(scalar_path, _), _) => {
-                let type_path = if scalar_path.is_absolute() {
-                    scalar_path.clone()
-                } else {
-                    TypePath::concat(&[path_to_types, scalar_path.clone()])
-                };
-                quote! { #type_path }
+            (FieldType::BuiltInScalar(path, _), _) => {
+                quote! { #path }
+            }
+            (FieldType::Scalar(ident, _), _) => {
+                quote! { #path_to_types::#ident }
             }
             (FieldType::Other(typename, _), _) => {
-                path_to_types.push(typename.clone());
-
-                let path_to_types = &path_to_types;
-
-                quote! { #path_to_types }
+                quote! { #path_to_types::#typename }
             }
             (FieldType::Enum(name, _), _) => {
-                let type_lock = TypePath::concat(&[path_to_types, name.clone().into()]);
-                quote! { #type_lock }
+                quote! { #path_to_types::#name }
             }
             (FieldType::InputObject(name, _), _) => {
-                let type_lock = TypePath::concat(&[path_to_types, name.clone().into()]);
-                quote! { #type_lock }
+                quote! { #path_to_types::#name }
             }
         };
 

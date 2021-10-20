@@ -15,7 +15,7 @@ pub struct InputObjectDeriveInput {
     #[darling(default)]
     query_module: Option<SpannedValue<String>>,
     #[darling(default, rename = "schema_module")]
-    schema_module_: Option<SpannedValue<String>>,
+    schema_module_: Option<syn::Path>,
 
     #[darling(default)]
     pub graphql_type: Option<SpannedValue<String>>,
@@ -41,15 +41,14 @@ pub struct InputObjectDeriveField {
 }
 
 impl InputObjectDeriveInput {
-    pub fn schema_module(&self) -> SpannedValue<String> {
+    pub fn schema_module(&self) -> syn::Path {
         if let Some(schema_module) = &self.schema_module_ {
             return schema_module.clone();
         }
         if let Some(query_module) = &self.query_module {
-            return query_module.clone();
+            return syn::parse_str(query_module).unwrap();
         }
-
-        SpannedValue::new("schema".into(), Span::call_site())
+        syn::parse2(quote::quote! { schema }).unwrap()
     }
 
     pub fn graphql_type_name(&self) -> String {

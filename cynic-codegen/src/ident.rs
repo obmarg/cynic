@@ -2,7 +2,10 @@ use inflector::Inflector;
 use lazy_static::lazy_static;
 use proc_macro2::{Span, TokenStream};
 use quote::format_ident;
-use std::{borrow::Cow, collections::HashSet};
+use std::{
+    borrow::{Borrow, Cow},
+    collections::HashSet,
+};
 
 /// A convenience type for working with identifiers we write out in our macros.
 #[derive(Debug, Clone)]
@@ -131,6 +134,12 @@ impl std::cmp::Ord for Ident {
     }
 }
 
+impl AsRef<Ident> for Ident {
+    fn as_ref(&self) -> &Ident {
+        self
+    }
+}
+
 impl From<proc_macro2::Ident> for Ident {
     fn from(ident: proc_macro2::Ident) -> Ident {
         Ident::from_proc_macro2(&ident, None)
@@ -140,6 +149,12 @@ impl From<proc_macro2::Ident> for Ident {
 impl From<&Ident> for proc_macro2::Ident {
     fn from(ident: &Ident) -> proc_macro2::Ident {
         ident.rust.clone()
+    }
+}
+
+impl From<Ident> for proc_macro2::Ident {
+    fn from(ident: Ident) -> proc_macro2::Ident {
+        ident.rust
     }
 }
 
@@ -334,6 +349,23 @@ fn to_snake_case(s: &str) -> String {
         }
     }
     buf
+}
+
+pub trait PathExt {
+    fn push(&mut self, ident: impl Borrow<super::Ident>);
+}
+
+impl PathExt for syn::Path {
+    fn push(&mut self, ident: impl Borrow<crate::Ident>) {
+        self.segments.push(ident.borrow().rust.clone().into())
+    }
+}
+
+pub fn empty_path() -> syn::Path {
+    syn::Path {
+        leading_colon: None,
+        segments: syn::punctuated::Punctuated::new(),
+    }
 }
 
 #[cfg(test)]

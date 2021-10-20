@@ -4,7 +4,7 @@ pub(crate) mod input;
 
 pub use input::ScalarDeriveInput;
 
-use crate::{Ident, TypePath};
+use crate::Ident;
 
 pub fn scalar_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
     use darling::FromDeriveInput;
@@ -37,13 +37,9 @@ pub fn scalar_derive_impl(input: ScalarDeriveInput) -> Result<TokenStream, syn::
     } else {
         ident.clone().into()
     };
-    let type_lock = TypePath::concat(&[
-        Ident::new(schema_module.as_ref()).into(),
-        type_lock_ident.into(),
-    ]);
 
     Ok(quote! {
-        impl ::cynic::Scalar<#type_lock> for #ident {
+        impl ::cynic::Scalar<#schema_module::#type_lock_ident> for #ident {
             type Deserialize = #inner_type;
 
             fn from_deserialize(inner: Self::Deserialize) -> Result<Self, ::cynic::DecodeError> {
@@ -61,6 +57,6 @@ pub fn scalar_derive_impl(input: ScalarDeriveInput) -> Result<TokenStream, syn::
             }
         }
 
-        ::cynic::impl_input_type!(#ident, #type_lock);
+        ::cynic::impl_input_type!(#ident, #schema_module::#type_lock_ident);
     })
 }

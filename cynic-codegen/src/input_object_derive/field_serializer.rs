@@ -6,14 +6,14 @@ use super::InputObjectDeriveField;
 use crate::{
     schema::InputValue,
     type_validation::{check_types_are_compatible, CheckMode},
-    FieldType, Ident, TypeIndex,
+    FieldType, TypeIndex,
 };
 
 pub struct FieldSerializer<'a> {
     rust_field: &'a InputObjectDeriveField,
     graphql_field: &'a InputValue,
     graphql_field_type: FieldType,
-    query_module: &'a Ident,
+    schema_module: &'a syn::Path,
 }
 
 impl<'a> FieldSerializer<'a> {
@@ -21,13 +21,13 @@ impl<'a> FieldSerializer<'a> {
         rust_field: &'a InputObjectDeriveField,
         graphql_field: &'a InputValue,
         type_index: &TypeIndex,
-        query_module: &'a Ident,
+        schema_module: &'a syn::Path,
     ) -> FieldSerializer<'a> {
         FieldSerializer {
             rust_field,
             graphql_field,
             graphql_field_type: FieldType::from_schema_type(&graphql_field.value_type, type_index),
-            query_module,
+            schema_module,
         }
     }
 
@@ -60,9 +60,7 @@ impl<'a> FieldSerializer<'a> {
         // So, we have to construct some functions with constraints
         // in order to make sure the fields are of the right type.
 
-        let type_lock = self
-            .graphql_field_type
-            .as_type_lock(self.query_module.clone().into());
+        let type_lock = self.graphql_field_type.as_type_lock(self.schema_module);
         let wrapper_type = self.graphql_field_type.wrapper_path().unwrap();
 
         let rust_field_name = &self.rust_field.ident;

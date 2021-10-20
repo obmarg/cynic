@@ -1,7 +1,7 @@
 use proc_macro2::TokenStream;
 
 use super::ArgumentParameter;
-use crate::{schema::InputValue, FieldArgument, FieldType, Ident, TypeIndex, TypePath};
+use crate::{schema::InputValue, FieldArgument, FieldType, Ident, TypeIndex};
 
 /// A selection function for a field in our generated DSL
 ///
@@ -17,7 +17,7 @@ pub struct FieldSelector {
     pub type_lock: Ident,
     pub argument_structs_path: Ident,
     pub required_args: Vec<FieldArgument>,
-    pub selection_builder: TypePath,
+    pub selection_builder: syn::Path,
 }
 
 impl FieldSelector {
@@ -27,7 +27,7 @@ impl FieldSelector {
         type_lock: Ident,
         argument_structs_path: Ident,
         required_args: Vec<InputValue>,
-        selection_builder: TypePath,
+        selection_builder: syn::Path,
         type_index: &TypeIndex,
     ) -> FieldSelector {
         FieldSelector {
@@ -52,10 +52,11 @@ impl quote::ToTokens for FieldSelector {
         let rust_field_name = &self.rust_field_name;
 
         let mut argument_defs = Vec::with_capacity(self.required_args.len());
+        let empty_path = crate::ident::empty_path();
         for arg in &self.required_args {
             argument_defs.push(
                 ArgumentParameter::new(arg.name.clone(), arg.argument_type.clone())
-                    .to_tokens(TypePath::empty())
+                    .to_tokens(empty_path.clone())
                     .unwrap(),
             );
         }
