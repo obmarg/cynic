@@ -11,9 +11,21 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+### Breaking Changes
+
+- The `CynicReqwestError` enum (behind the `reqwest` & `reqwest-blocking`
+  feature flags) has a new variant to handle non 2XX responses from servers.
+
 ### New Features
 
 - The `InlineFragments` derive now supports a rename attribute on variants
+
+### Bug Fixes
+
+- The various HTTP client integrations will now return HTTP error details and
+  the full body on non 2XX responses that don't contain a valid GraphQL
+  response.  Previously they would have tried to decode the response as GraphQL
+  and returned the error from that operation.
 
 ## v0.15.1 - xxxx-xx-xx
 
