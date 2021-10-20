@@ -161,16 +161,6 @@ fn main() {
                 }
             )"#,
         ),
-        TestCase::query_norun(
-            &github_schema,
-            "tests/queries/github/input-object-member-mismatch.graphql",
-            r#"queries::InputObjectMemberMismatch::build(
-                queries::InputObjectMemberMismatchArguments {
-                    mutation_id: "hello".into(),
-                    starrable_id: cynic::Id::new("hello")
-                }
-            )"#,
-        ),
         TestCase::subscription(
             &book_schema,
             "tests/queries/books/books.graphql",
