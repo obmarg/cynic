@@ -23,3 +23,14 @@ fn book_subscription_test() {
             .expect("QueryGen Failed")
     )
 }
+
+#[test]
+fn keyword_renames() {
+    let schema = include_str!("../../schemas/test_cases.graphql");
+    let query = include_str!("queries/misc/keyword-renames.graphql");
+
+    assert_snapshot!(
+        document_to_fragment_structs(query, schema, &QueryGenOptions::default())
+            .expect("QueryGen Failed")
+    )
+}

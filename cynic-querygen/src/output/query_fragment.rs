@@ -1,6 +1,6 @@
 use std::fmt::Write;
 
-use inflector::Inflector;
+use crate::casings::CasingExt;
 
 use super::indented;
 use crate::{query_parsing::TypedValue, schema::OutputFieldType, Error};
@@ -72,16 +72,15 @@ impl std::fmt::Display for OutputField<'_, '_> {
             writeln!(f, "#[arguments({})]", arguments_string)?;
         }
 
+        let name = self.name.to_snake_case();
+        let type_spec = self.field_type.type_spec();
+        let mut output = super::Field::new(&name, &type_spec);
+
         if let Some(rename) = self.rename {
-            writeln!(f, "#[cynic(rename = \"{}\")]", rename)?;
+            output.add_rename(rename);
         }
 
-        writeln!(
-            f,
-            "pub {}: {},",
-            self.name.to_snake_case(),
-            self.field_type.type_spec()
-        )
+        write!(f, "{}", output)
     }
 }
 

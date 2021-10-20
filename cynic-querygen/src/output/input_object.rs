@@ -1,6 +1,6 @@
 use std::fmt::Write;
 
-use inflector::Inflector;
+use crate::casings::CasingExt;
 
 use super::indented;
 use crate::schema::InputField;
@@ -22,18 +22,17 @@ impl std::fmt::Display for InputObject<'_> {
         for field in &self.fields {
             let mut f = indented(f, 4);
 
-            if field.name.to_snake_case().to_camel_case() != field.name {
+            let name = field.name.to_snake_case();
+            let type_spec = field.type_spec();
+            let mut output = super::Field::new(&name, &type_spec);
+
+            if name.to_camel_case() != field.name {
                 // If a snake -> camel casing roundtrip is not lossless
                 // we need to explicitly rename this field
-                writeln!(f, "#[cynic(rename = \"{}\")]", field.name)?;
+                output.add_rename(field.name);
             }
 
-            writeln!(
-                f,
-                "pub {}: {},",
-                field.name.to_snake_case(),
-                field.type_spec()
-            )?;
+            write!(f, "{}", output)?;
         }
 
         writeln!(f, "}}")

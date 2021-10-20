@@ -1,4 +1,4 @@
-use inflector::Inflector;
+use crate::casings::CasingExt;
 
 use crate::query_parsing::Variable;
 
@@ -23,7 +23,7 @@ pub enum ArgumentStructField<'query, 'schema> {
 impl<'query, 'schema> ArgumentStructField<'query, 'schema> {
     fn name(&self) -> String {
         match self {
-            ArgumentStructField::Variable(var) => var.name.to_string().to_snake_case(),
+            ArgumentStructField::Variable(var) => var.name.to_snake_case(),
             ArgumentStructField::NestedStruct(type_name) => type_name.to_snake_case(),
         }
     }
@@ -53,6 +53,6 @@ impl std::fmt::Display for ArgumentStruct<'_, '_> {
 
 impl std::fmt::Display for ArgumentStructField<'_, '_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        writeln!(f, "pub {}: {},", self.name(), self.type_spec())
+        write!(f, "{}", super::Field::new(&self.name(), &self.type_spec()))
     }
 }

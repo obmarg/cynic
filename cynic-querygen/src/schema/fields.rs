@@ -136,7 +136,7 @@ impl<'schema> InputFieldType<'schema> {
 }
 
 fn input_type_spec_imp<'schema>(ty: &InputFieldType<'schema>, nullable: bool) -> Cow<'schema, str> {
-    use inflector::Inflector;
+    use crate::casings::CasingExt;
 
     if let InputFieldType::NonNullType(inner) = ty {
         return input_type_spec_imp(inner, false);

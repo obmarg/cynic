@@ -1,4 +1,4 @@
-use inflector::Inflector;
+use crate::casings::CasingExt;
 use std::fmt::Write;
 
 use super::indented;
