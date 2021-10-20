@@ -1,0 +1,13 @@
+---
+source: cynic/tests/keyword-queries.rs
+expression: query.query
+
+---
+query Query {
+  _
+  async
+  crate
+  self
+  super
+}
+

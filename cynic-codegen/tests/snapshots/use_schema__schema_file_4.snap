@@ -10,6 +10,18 @@ impl Foo {
     pub fn __underscore() -> foo::SelectionBuilder {
         foo::SelectionBuilder::new(vec![])
     }
+    pub fn self_() -> foo::SelfSelectionBuilder {
+        foo::SelfSelectionBuilder::new(vec![])
+    }
+    pub fn super_() -> foo::SuperSelectionBuilder {
+        foo::SuperSelectionBuilder::new(vec![])
+    }
+    pub fn crate_() -> foo::CrateSelectionBuilder {
+        foo::CrateSelectionBuilder::new(vec![])
+    }
+    pub fn r#async() -> foo::AsyncSelectionBuilder {
+        foo::AsyncSelectionBuilder::new(vec![])
+    }
 }
 #[allow(dead_code)]
 pub mod foo {
@@ -39,5 +51,110 @@ pub mod foo {
             )
         }
     }
+    pub struct SelfSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl SelfSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            SelfSelectionBuilder { args }
+        }
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, bool>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Foo> {
+            ::cynic::selection_set::field("self", self.args, ::cynic::selection_set::option(inner))
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, bool>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Foo> {
+            ::cynic::selection_set::field_alias(
+                "self",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+    }
+    pub struct SuperSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl SuperSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            SuperSelectionBuilder { args }
+        }
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, bool>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Foo> {
+            ::cynic::selection_set::field("super", self.args, ::cynic::selection_set::option(inner))
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, bool>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Foo> {
+            ::cynic::selection_set::field_alias(
+                "super",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+    }
+    pub struct CrateSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl CrateSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            CrateSelectionBuilder { args }
+        }
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, bool>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Foo> {
+            ::cynic::selection_set::field("crate", self.args, ::cynic::selection_set::option(inner))
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, bool>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Foo> {
+            ::cynic::selection_set::field_alias(
+                "crate",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+    }
+    pub struct AsyncSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl AsyncSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            AsyncSelectionBuilder { args }
+        }
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, bool>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Foo> {
+            ::cynic::selection_set::field("async", self.args, ::cynic::selection_set::option(inner))
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, bool>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Foo> {
+            ::cynic::selection_set::field_alias(
+                "async",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+    }
 }
+impl ::cynic::QueryRoot for Foo {}
 
