@@ -1,5 +1,4 @@
 use darling::util::SpannedValue;
-use proc_macro2::Span;
 
 #[derive(darling::FromDeriveInput)]
 #[darling(attributes(cynic), supports(struct_newtype))]
@@ -8,7 +7,7 @@ pub struct ScalarDeriveInput {
     pub(super) data: darling::ast::Data<(), ScalarDeriveField>,
 
     #[darling(default, rename = "schema_module")]
-    schema_module_: Option<SpannedValue<String>>,
+    schema_module_: Option<syn::Path>,
 
     #[darling(default)]
     pub(super) graphql_type: Option<SpannedValue<String>>,
@@ -21,11 +20,10 @@ pub struct ScalarDeriveField {
 }
 
 impl ScalarDeriveInput {
-    pub fn schema_module(&self) -> SpannedValue<String> {
+    pub fn schema_module(&self) -> syn::Path {
         if let Some(schema_module) = &self.schema_module_ {
             return schema_module.clone();
         }
-
-        SpannedValue::new("schema".into(), Span::call_site())
+        syn::parse2(quote::quote! { schema }).unwrap()
     }
 }

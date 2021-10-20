@@ -75,7 +75,7 @@ pub fn input_object_derive_impl(
     if let darling::ast::Data::Struct(fields) = &input.data {
         let ident = &input.ident;
         let input_marker_ident = Ident::for_type(&input.graphql_type_name());
-        let query_module = Ident::for_module(&input.schema_module());
+        let schema_module = input.schema_module();
         let input_object_name = ident.to_string();
 
         let pairs = match join_fields(
@@ -93,7 +93,7 @@ pub fn input_object_derive_impl(
         let field_serializers = pairs
             .into_iter()
             .map(|(rust_field, graphql_field)| {
-                FieldSerializer::new(rust_field, graphql_field, &type_index, &query_module)
+                FieldSerializer::new(rust_field, graphql_field, &type_index, &schema_module)
             })
             .collect::<Vec<_>>();
 
@@ -123,7 +123,7 @@ pub fn input_object_derive_impl(
 
         Ok(quote! {
             #[automatically_derived]
-            impl ::cynic::InputObject<#query_module::#input_marker_ident> for #ident {}
+            impl ::cynic::InputObject<#schema_module::#input_marker_ident> for #ident {}
 
             #[automatically_derived]
             impl ::cynic::serde::Serialize for #ident {
@@ -161,7 +161,7 @@ pub fn input_object_derive_impl(
             }
             */
 
-            ::cynic::impl_input_type!(#ident, #query_module::#input_marker_ident);
+            ::cynic::impl_input_type!(#ident, #schema_module::#input_marker_ident);
         })
     } else {
         Err(syn::Error::new(

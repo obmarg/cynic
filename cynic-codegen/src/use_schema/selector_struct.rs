@@ -4,8 +4,9 @@ use super::field_selector::FieldSelector;
 use super::selection_builder::FieldSelectionBuilder;
 
 use crate::{
+    ident::PathExt,
     schema::{self, FieldExt},
-    FieldType, Ident, TypeIndex, TypePath,
+    FieldType, Ident, TypeIndex,
 };
 
 /// We generate a SelectorStruct for each queryable object in the schema.
@@ -43,16 +44,17 @@ impl SelectorStruct {
                 type_index,
             );
 
+            let mut selection_builder_path = crate::ident::empty_path();
+            selection_builder_path.push(Ident::for_module(graphql_name));
+            selection_builder_path.push(&selection_builder.name);
+
             processed_fields.push(FieldSelector::for_field(
                 &field.name,
                 field_type,
                 name.clone(),
                 Ident::for_module(graphql_name),
                 field.required_arguments(),
-                TypePath::new(vec![
-                    Ident::for_module(graphql_name),
-                    selection_builder.name.clone(),
-                ]),
+                selection_builder_path,
                 type_index,
             ));
 

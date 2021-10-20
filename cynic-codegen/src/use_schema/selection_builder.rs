@@ -1,7 +1,7 @@
 use proc_macro2::TokenStream;
 
 use super::ArgumentParameterType;
-use crate::{schema::InputValue, FieldArgument, FieldType, Ident, TypeIndex, TypePath};
+use crate::{schema::InputValue, FieldArgument, FieldType, Ident, TypeIndex};
 
 /// A builder struct that is generated for each field in the query, to
 /// allow optional arguments to be provided to that field.
@@ -50,7 +50,7 @@ impl FieldSelectionBuilder {
         };
         let selector = self.field_type.selection_set_call(quote! { #arg_name });
         let decodes_to = self.field_type.decodes_to(quote! { T });
-        let argument_type_lock = self.field_type.as_type_lock(TypePath::new_super());
+        let argument_type_lock = self.field_type.as_type_lock(&syn::parse_quote! { super });
 
         quote! {
             pub fn select<'a, T: 'a + Send + Sync>(
@@ -98,7 +98,7 @@ impl quote::ToTokens for FieldSelectionBuilder {
 
         let argument_types = self.optional_args.iter().map(|a| {
             ArgumentParameterType::from_type(a.argument_type.clone())
-                .to_tokens(TypePath::new_super())
+                .to_tokens(syn::parse_quote! { super })
                 .unwrap()
         });
 

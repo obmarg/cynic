@@ -224,8 +224,8 @@ mod tests {
 
     #[test]
     fn test_required_validation() {
-        let required_field = FieldType::Scalar(Ident::new("test").into(), false);
-        let optional_field = FieldType::Scalar(Ident::new("test").into(), true);
+        let required_field = FieldType::Scalar(Ident::new("test"), false);
+        let optional_field = FieldType::Scalar(Ident::new("test"), true);
 
         assert_matches!(
             check_types_are_compatible(
@@ -264,17 +264,13 @@ mod tests {
     #[test]
     fn test_list_validation() {
         let list = FieldType::List(
-            Box::new(FieldType::Scalar(Ident::new("test").into(), false)),
+            Box::new(FieldType::Scalar(Ident::new("test"), false)),
             false,
         );
-        let optional_list = FieldType::List(
-            Box::new(FieldType::Scalar(Ident::new("test").into(), false)),
-            true,
-        );
-        let option_list_option = FieldType::List(
-            Box::new(FieldType::Scalar(Ident::new("test").into(), true)),
-            true,
-        );
+        let optional_list =
+            FieldType::List(Box::new(FieldType::Scalar(Ident::new("test"), false)), true);
+        let option_list_option =
+            FieldType::List(Box::new(FieldType::Scalar(Ident::new("test"), true)), true);
 
         assert_matches!(
             check_types_are_compatible(
@@ -329,17 +325,13 @@ mod tests {
     #[test]
     fn test_validation_when_flattening() {
         let list = FieldType::List(
-            Box::new(FieldType::Scalar(Ident::new("test").into(), false)),
+            Box::new(FieldType::Scalar(Ident::new("test"), false)),
             false,
         );
-        let optional_list = FieldType::List(
-            Box::new(FieldType::Scalar(Ident::new("test").into(), false)),
-            true,
-        );
-        let option_list_option = FieldType::List(
-            Box::new(FieldType::Scalar(Ident::new("test").into(), true)),
-            true,
-        );
+        let optional_list =
+            FieldType::List(Box::new(FieldType::Scalar(Ident::new("test"), false)), true);
+        let option_list_option =
+            FieldType::List(Box::new(FieldType::Scalar(Ident::new("test"), true)), true);
 
         assert_matches!(
             check_types_are_compatible(
@@ -386,18 +378,18 @@ mod tests {
 
     #[rstest(graphql_field, rust_field,
         case::required_t(
-            FieldType::Scalar(Ident::new("T").into(), false),
+            FieldType::Scalar(Ident::new("T"), false),
             parse_quote! { Option<Box<T>> }
         ),
 
         case::optional_t(
-            FieldType::Scalar(Ident::new("T").into(), true),
+            FieldType::Scalar(Ident::new("T"), true),
             parse_quote! { Option<T> }
         ),
 
         case::option_vec_required_t(
             FieldType::List(
-                Box::new(FieldType::Scalar(Ident::new("T").into(), false)),
+                Box::new(FieldType::Scalar(Ident::new("T"), false)),
                 true
             ),
             parse_quote! { Option<Vec<T>> }
@@ -405,7 +397,7 @@ mod tests {
 
         case::required_vec_required_t(
             FieldType::List(
-                Box::new(FieldType::Scalar(Ident::new("T").into(), false)),
+                Box::new(FieldType::Scalar(Ident::new("T"), false)),
                 false
             ),
             parse_quote! { Option<Vec<T>> }
@@ -420,33 +412,33 @@ mod tests {
 
     #[rstest(graphql_field, rust_field,
         case::required_t_box(
-            FieldType::Scalar(Ident::new("T").into(), false),
+            FieldType::Scalar(Ident::new("T"), false),
             parse_quote! { Box<T> }
         ),
         case::required_t_standalone(
-            FieldType::Scalar(Ident::new("T").into(), false),
+            FieldType::Scalar(Ident::new("T"), false),
             parse_quote! { T }
         ),
 
         case::optional_t_standalone(
-            FieldType::Scalar(Ident::new("T").into(), true),
+            FieldType::Scalar(Ident::new("T"), true),
             parse_quote! { T }
         ),
         case::optional_t_box(
-            FieldType::Scalar(Ident::new("T").into(), true),
+            FieldType::Scalar(Ident::new("T"), true),
             parse_quote! { Box<T> }
         ),
 
         case::option_vec_required_t(
             FieldType::List(
-                Box::new(FieldType::Scalar(Ident::new("T").into(), false)),
+                Box::new(FieldType::Scalar(Ident::new("T"), false)),
                 true
             ),
             parse_quote! { Vec<T> }
         ),
         case::option_vec_required_t(
             FieldType::List(
-                Box::new(FieldType::Scalar(Ident::new("T").into(), false)),
+                Box::new(FieldType::Scalar(Ident::new("T"), false)),
                 true
             ),
             parse_quote! { Vec<Option<T>> }
@@ -454,14 +446,14 @@ mod tests {
 
         case::required_vec_required_t(
             FieldType::List(
-                Box::new(FieldType::Scalar(Ident::new("T").into(), false)),
+                Box::new(FieldType::Scalar(Ident::new("T"), false)),
                 false
             ),
             parse_quote! { Vec<T> }
         ),
         case::required_vec_required_t_no_vec(
             FieldType::List(
-                Box::new(FieldType::Scalar(Ident::new("T").into(), false)),
+                Box::new(FieldType::Scalar(Ident::new("T"), false)),
                 false
             ),
             parse_quote! { T }
@@ -469,14 +461,14 @@ mod tests {
 
         case::required_vec_optional_t_no_vec(
             FieldType::List(
-                Box::new(FieldType::Scalar(Ident::new("T").into(), true)),
+                Box::new(FieldType::Scalar(Ident::new("T"), true)),
                 false
             ),
             parse_quote! { Option<T> }
         ),
         case::required_vec_optional_t_wrong_nesting(
             FieldType::List(
-                Box::new(FieldType::Scalar(Ident::new("T").into(), true)),
+                Box::new(FieldType::Scalar(Ident::new("T"), true)),
                 false
             ),
             parse_quote! { Option<Vec<T>> }

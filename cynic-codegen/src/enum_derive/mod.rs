@@ -88,7 +88,7 @@ pub fn enum_derive_impl(
 
         let variants: Vec<_> = pairs.iter().map(|(variant, _)| &variant.ident).collect();
 
-        let schema_module = Ident::for_module(&input.schema_module());
+        let schema_module = input.schema_module();
         let ident = input.ident;
 
         Ok(quote! {

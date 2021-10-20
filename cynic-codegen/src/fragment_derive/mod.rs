@@ -4,9 +4,10 @@ use proc_macro2::{Span, TokenStream};
 use syn::spanned::Spanned;
 
 use crate::{
+    ident::PathExt,
     load_schema,
     type_validation::{check_spread_type, check_types_are_compatible, CheckMode},
-    Errors, FieldType, Ident, TypePath,
+    Errors, FieldType, Ident,
 };
 
 mod arguments;
@@ -82,7 +83,7 @@ pub fn fragment_derive_impl(
             &fields,
             &ident,
             object,
-            Ident::new_spanned(&*schema_module, schema_module.span()).into(),
+            schema_module,
             graphql_name,
             argument_struct,
         )?;
@@ -101,8 +102,8 @@ pub fn fragment_derive_impl(
 /// Selector for a "field type" - i.e. a nullable/list/required type that
 /// references some named schema type.
 enum FieldTypeSelectorCall {
-    Field(TypePath),
-    AliasedField(String, TypePath),
+    Field(syn::Path),
+    AliasedField(String, syn::Path),
     Opt(Box<FieldTypeSelectorCall>),
     Vector(Box<FieldTypeSelectorCall>),
     Flatten(Box<FieldTypeSelectorCall>),
@@ -118,7 +119,7 @@ impl FieldTypeSelectorCall {
 
     fn for_field(
         field_type: &FieldType,
-        field_constructor: TypePath,
+        field_constructor: syn::Path,
         flatten: bool,
         recurse_limit: Option<u8>,
         alias: Option<String>,
@@ -363,7 +364,7 @@ impl quote::ToTokens for ConstructorParameter {
 struct FragmentImpl {
     target_struct: Ident,
     fields: Vec<FieldSelectorCall>,
-    selector_struct_path: TypePath,
+    selector_struct_path: syn::Path,
     constructor_params: Vec<ConstructorParameter>,
     argument_struct: syn::Type,
     graphql_type_name: String,
@@ -374,13 +375,13 @@ impl FragmentImpl {
         fields: &darling::ast::Fields<FragmentDeriveField>,
         name: &syn::Ident,
         object: &Object,
-        schema_module_path: TypePath,
+        schema_module_path: syn::Path,
         graphql_type_name: &str,
         argument_struct: syn::Type,
     ) -> Result<Self, syn::Error> {
         let target_struct = Ident::new_spanned(&name.to_string(), name.span());
-        let selector_struct_path =
-            TypePath::concat(&[schema_module_path, object.selector_struct.clone().into()]);
+        let mut selector_struct_path = schema_module_path;
+        selector_struct_path.push(&object.selector_struct);
 
         let (constructor_params, field_selectors) = fields
             .fields
@@ -404,12 +405,12 @@ impl FragmentImpl {
 fn process_field(
     field: &FragmentDeriveField,
     object: &Object,
-    selector_struct_path: &TypePath,
+    selector_struct_path: &syn::Path,
     graphql_type_name: &str,
 ) -> Result<(ConstructorParameter, FieldSelectorCall), syn::Error> {
     // Should be safe to unwrap because we've already checked we have a struct
     // style input
-    let (field_ident, graphql_ident) = field.ident.as_ref().zip(field.graphql_ident()).unwrap();
+    let (field_ident, ref graphql_ident) = field.ident.as_ref().zip(field.graphql_ident()).unwrap();
 
     let field_name_span = graphql_ident.span();
 
@@ -433,16 +434,19 @@ fn process_field(
         };
 
         Ok((constructor_param, field_selector))
-    } else if let Some(gql_field) = object.fields.get(&graphql_ident) {
+    } else if let Some(gql_field) = object.fields.get(graphql_ident) {
         check_types_are_compatible(&gql_field.field_type, &field.ty, field.type_check_mode())?;
 
         let (required_arguments, optional_arguments) =
             validate_and_group_args(arguments, gql_field, field_name_span)?;
 
+        let mut field_constructor = selector_struct_path.clone();
+        field_constructor.segments.push(graphql_ident.into());
+
         let field_selector = FieldSelectorCall {
             selector_function: FieldTypeSelectorCall::for_field(
                 &gql_field.field_type,
-                TypePath::concat(&[selector_struct_path.clone(), graphql_ident.clone().into()]),
+                field_constructor,
                 *field.flatten,
                 field.recurse.as_ref().map(|f| **f),
                 field.alias(),

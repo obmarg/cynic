@@ -1,7 +1,7 @@
 use darling::util::SpannedValue;
 use proc_macro2::{Span, TokenStream};
 
-use crate::{load_schema, schema, Errors, Ident, TypePath};
+use crate::{ident::PathExt, load_schema, schema, Errors, Ident};
 
 pub mod input;
 
@@ -65,14 +65,13 @@ pub(crate) fn inline_fragments_derive_impl(
         exhaustiveness_check(variants, &target_type, &schema)?;
 
         let fallback = check_fallback(variants, &target_type)?;
-        let schema_module = input.schema_module();
+
+        let mut type_lock = input.schema_module();
+        type_lock.push(Ident::for_type(input.graphql_type_name()));
 
         let inline_fragments_impl = InlineFragmentsImpl {
             target_struct: input.ident.clone(),
-            type_lock: TypePath::concat(&[
-                Ident::new_spanned(&*schema_module, schema_module.span()).into(),
-                Ident::for_type(&input.graphql_type_name()).into(),
-            ]),
+            type_lock,
             argument_struct,
             possible_types: possible_types_from_variants(variants)?,
             graphql_type_name: input.graphql_type_name(),
@@ -268,7 +267,7 @@ fn check_fallback(
 
 struct InlineFragmentsImpl {
     target_struct: syn::Ident,
-    type_lock: TypePath,
+    type_lock: syn::Path,
     argument_struct: syn::Type,
     possible_types: Vec<(syn::Ident, syn::Type)>,
     graphql_type_name: String,
