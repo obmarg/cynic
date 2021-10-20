@@ -13,9 +13,16 @@ all APIs might be changed.
 
 ### New Features
 
+- The `InlineFragments` derive now supports a rename attribute on variants
+
+## v0.15.1 - xxxx-xx-xx
+
+### New Features
+
+New generator features, so I'm putting them out in a point release:
+
 - Querygen now supports inline fragments on union types & interfaces.
 - Querygen now supports subscriptions
-- The `InlineFragments` derive now supports a rename attribute on variants
 
 ### Bug Fixes
 
