@@ -11,7 +11,11 @@ all APIs might be changed.
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.15.1 - xxxx-xx-xx
+
 ### New Features
+
+New generator features, so I'm putting them out in a point release:
 
 - Querygen now supports inline fragments on union types & interfaces.
 - Querygen now supports subscriptions
