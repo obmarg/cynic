@@ -1,9 +1,10 @@
-use inflector::Inflector;
+use crate::casings::CasingExt;
 
 use crate::schema::EnumDetails;
 
 mod argument_struct;
 mod enums;
+mod field;
 mod indent;
 mod inline_fragments;
 mod input_object;
@@ -14,6 +15,8 @@ pub use indent::indented;
 pub use inline_fragments::InlineFragments;
 pub use input_object::InputObject;
 pub use query_fragment::QueryFragment;
+
+use field::Field;
 
 pub struct Output<'query, 'schema> {
     pub query_fragments: Vec<QueryFragment<'query, 'schema>>,

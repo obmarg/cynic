@@ -1,5 +1,6 @@
 use std::rc::Rc;
 
+mod casings;
 mod naming;
 mod output;
 mod query_parsing;

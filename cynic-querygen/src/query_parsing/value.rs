@@ -141,7 +141,7 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
     }
 
     pub fn to_literal(&self, context: LiteralContext) -> Result<String, Error> {
-        use inflector::Inflector;
+        use crate::casings::CasingExt;
 
         Ok(match self {
             TypedValue::Variable {
