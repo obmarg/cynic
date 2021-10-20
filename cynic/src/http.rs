@@ -89,8 +89,25 @@ mod surf_ext {
             operation: Operation<'a, ResponseData>,
         ) -> BoxFuture<'a, Result<GraphQlResponse<ResponseData>, surf::Error>> {
             Box::pin(async move {
-                self.body(json!(&operation))
-                    .recv_json::<GraphQlResponse<serde_json::Value>>()
+                let mut response = self.body(json!(&operation)).await?;
+
+                if !response.status().is_success() {
+                    let body_string = response.body_string().await?;
+                    match serde_json::from_str::<GraphQlResponse<serde_json::Value>>(&body_string) {
+                        Ok(response) => {
+                            return operation.decode_response(response).map_err(|e| e.into())
+                        }
+                        Err(_) => {
+                            return Err(surf::Error::from_str(
+                                response.status(),
+                                format!("Server returned {}: {}", response.status(), body_string),
+                            ))
+                        }
+                    };
+                }
+
+                response
+                    .body_json::<GraphQlResponse<serde_json::Value>>()
                     .await
                     .and_then(|response| operation.decode_response(response).map_err(|e| e.into()))
             })
@@ -103,6 +120,8 @@ mod surf_ext {
 pub enum CynicReqwestError {
     #[error("Error making HTTP request: {0}")]
     ReqwestError(#[from] reqwest::Error),
+    #[error("Server returned {0}: {1}")]
+    ErrorResponse(reqwest::StatusCode, String),
     #[error("Error decoding GraphQL response: {0}")]
     DecodeError(#[from] json_decode::DecodeError),
 }
@@ -182,21 +201,39 @@ mod reqwest_ext {
             operation: Operation<'a, ResponseData>,
         ) -> BoxFuture<'a, Result<GraphQlResponse<ResponseData>, CynicReqwestError>> {
             Box::pin(async move {
-                match self
-                    .json(&operation)
-                    .send()
-                    //.recv_json::<GraphQlResponse<serde_json::Value>>()
-                    .await
-                {
-                    Ok(response) => response
-                        .json::<GraphQlResponse<serde_json::Value>>()
-                        .await
-                        .map_err(CynicReqwestError::ReqwestError)
-                        .and_then(|gql_response| {
-                            operation
-                                .decode_response(gql_response)
-                                .map_err(CynicReqwestError::DecodeError)
-                        }),
+                match self.json(&operation).send().await {
+                    Ok(response) => {
+                        let status = response.status();
+                        if !status.is_success() {
+                            let body_string = response.text().await?;
+
+                            match serde_json::from_str::<GraphQlResponse<serde_json::Value>>(
+                                &body_string,
+                            ) {
+                                Ok(response) => {
+                                    return operation
+                                        .decode_response(response)
+                                        .map_err(CynicReqwestError::DecodeError)
+                                }
+                                Err(_) => {
+                                    return Err(CynicReqwestError::ErrorResponse(
+                                        status,
+                                        body_string,
+                                    ));
+                                }
+                            };
+                        }
+
+                        response
+                            .json::<GraphQlResponse<serde_json::Value>>()
+                            .await
+                            .map_err(CynicReqwestError::ReqwestError)
+                            .and_then(|gql_response| {
+                                operation
+                                    .decode_response(gql_response)
+                                    .map_err(CynicReqwestError::DecodeError)
+                            })
+                    }
                     Err(e) => Err(CynicReqwestError::ReqwestError(e)),
                 }
             })
@@ -272,15 +309,25 @@ mod reqwest_blocking_ext {
             self,
             operation: Operation<'a, ResponseData>,
         ) -> Result<GraphQlResponse<ResponseData>, CynicReqwestError> {
-            self.json(&operation)
-                .send()
-                .and_then(|response| response.json::<GraphQlResponse<serde_json::Value>>())
-                .map_err(CynicReqwestError::ReqwestError)
-                .and_then(|gql_response| {
-                    operation
-                        .decode_response(gql_response)
-                        .map_err(CynicReqwestError::DecodeError)
-                })
+            let response = self.json(&operation).send()?;
+
+            let status = response.status();
+            if !status.is_success() {
+                let body_string = response.text().map_err(CynicReqwestError::ReqwestError)?;
+
+                match serde_json::from_str::<GraphQlResponse<serde_json::Value>>(&body_string) {
+                    Ok(response) => return Ok(operation.decode_response(response)?),
+                    Err(_) => {
+                        return Err(CynicReqwestError::ErrorResponse(status, body_string));
+                    }
+                };
+            }
+
+            let gql_response = response.json::<GraphQlResponse<serde_json::Value>>()?;
+
+            operation
+                .decode_response(gql_response)
+                .map_err(CynicReqwestError::DecodeError)
         }
     }
 }
