@@ -39,7 +39,7 @@ commonly not supported.
 Cynic takes a different approach - it uses Rust structs to define queries and
 generates GraphQL from them. This gives you freedom to control the structs
 you'll be working with while still enjoying type safe queries, checked against
-the GraphQL schema. When it's built in `derives` don't do exactly what you
+the GraphQL schema. When its built in `derives` don't do exactly what you
 want it provides lower level APIs to hook in and fetch the data you want in the
 format you want to work with it.
 
