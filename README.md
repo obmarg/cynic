@@ -61,6 +61,8 @@ supported:
 - Building dynamic (but still type checked) queries at run time.
 - Query arguments including input objects
 - Interfaces & union types
+- GraphQL Subscriptions via [`graphql-ws-client`](https://github.com/obmarg/graphql-ws-client).
+  (though `graphql-ws-client` is fairly alpha quality)
 
 The following features are not yet supported, though should be soon (if you
 want to help out with the project I'd be happy for someone else to try and
@@ -68,7 +70,6 @@ implement these - if you open an issue I'd be happy to give pointers on how to
 go about implementing any of them)
 
 - Directives
-- GraphQL subscriptions.
 - Potentially other things (please open an issue if you find anything obviously
   missing)
 
