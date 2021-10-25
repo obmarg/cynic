@@ -9,7 +9,7 @@ edition = "2018"
 [dependencies]
 cynic = { path = "../../cynic" }
 serde_json = "1.0"
-ureq = { version = "2.2", features = ["json"] }
+ureq = { version = "2.3", features = ["json"] }
 
 [dev-dependencies]
 trybuild = "1.0"
