@@ -16,4 +16,4 @@ proc-macro = true
 
 [dependencies]
 cynic-codegen = { path = "../cynic-codegen", version = "0.15.1" }
-syn = "1.0.13"
+syn = "1.0.81"
