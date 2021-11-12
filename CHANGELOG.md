@@ -17,6 +17,9 @@ all APIs might be changed.
   feature flags) has a new variant to handle non 2XX responses from servers.
 - Removed the `GraphQlResult` & `PossiblyParsedData` types (which weren't being
   used)
+- Removed the following deprecated things: `query_dsl!`, the `query_module`
+  module attribute, the `GraphQLError`, `GraphQLResponse`,
+  `GraphQLErrorLocation` & `GraphQlErrorPathSegment` type aliases.
 
 ### New Features
 

@@ -27,17 +27,6 @@ use ident::Ident;
 use schema::{load_schema, SchemaLoadError};
 use type_index::TypeIndex;
 
-#[deprecated(
-    since = "0.13.0",
-    note = "output_query_dsl is deprecated, use output_schema_module"
-)]
-pub fn output_query_dsl(
-    schema: impl AsRef<std::path::Path>,
-    output_path: impl AsRef<std::path::Path>,
-) -> Result<(), SchemaLoadError> {
-    output_schema_module(schema, output_path)
-}
-
 pub fn output_schema_module(
     schema: impl AsRef<std::path::Path>,
     output_path: impl AsRef<std::path::Path>,
