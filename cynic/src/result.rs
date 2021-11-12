@@ -1,6 +1,10 @@
+/// The response to a GraphQl operation
 #[derive(Debug, serde::Deserialize)]
 pub struct GraphQlResponse<T> {
+    /// The operation data (if the operation was succesful)
     pub data: Option<T>,
+
+    /// Any errors that occurred as part of this operation
     pub errors: Option<Vec<GraphQlError>>,
 }
 
@@ -31,6 +35,7 @@ pub struct GraphQlError {
     note = "GraphQlError has been deprecated in favour of GraphQlError"
 )]
 #[allow(clippy::upper_case_acronyms)]
+#[doc(hidden)]
 pub type GraphQLError = GraphQlError;
 
 impl GraphQlError {

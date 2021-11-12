@@ -13,7 +13,9 @@ use crate::{
 /// and has a `decode_response` function that knows how to decode a response.
 #[derive(serde::Serialize)]
 pub struct Operation<'a, ResponseData> {
+    /// The graphql query string that will be sent to the server
     pub query: String,
+    /// The variables that will be sent to the server as part of this operation
     pub variables: HashMap<String, Argument>,
     #[serde(skip)]
     decoder: BoxDecoder<'a, ResponseData>,
@@ -107,6 +109,7 @@ impl<'a, ResponseData: 'a> StreamingOperation<'a, ResponseData> {
         }
     }
 
+    /// Decodes a generic `GraphQlResponse` into the output type of this operation.
     pub fn decode_response(
         &self,
         response: GraphQlResponse<serde_json::Value>,

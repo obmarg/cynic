@@ -1,22 +1,44 @@
 use super::SelectionSet;
 
+/// Indicates that a type may be used as part of a graphql query.
+///
+/// This will usually be derived, but can be manually implemented if required.
 pub trait QueryFragment {
+    /// The type of `SelectionSet` that is output by this `QueryFragment`
     type SelectionSet;
+
+    /// The arguments that are required to select this fragment.
     type Arguments: FragmentArguments;
 
+    /// Returns a `SelectionSet` that selects this `QueryFragment` with the arguments provided
+    /// in the `context`
     fn fragment(context: FragmentContext<Self::Arguments>) -> Self::SelectionSet;
+
+    /// The GraphQL type name that this `QueryFragment` selects
     fn graphql_type() -> String;
 }
 
+/// Indicates that a type may be used to select one or more members of an interface/union type.
+///
+/// Similar to a collection of inline fragments in a GraphQL query.
 pub trait InlineFragments: Sized {
+    /// The type lock for the GraphQL interface/union type these fragments are selected on.
     type TypeLock;
+
+    /// The arguments that are required to select these fragments.
     type Arguments: FragmentArguments;
 
+    /// The GraphQL type name that this `InlineFragments` selects
     fn graphql_type() -> String;
+
+    /// Returns a `SelectionSet` that selects the fragments for this type with the arguments provided
+    /// in the `context`
     fn fragments(
         context: FragmentContext<Self::Arguments>,
     ) -> Vec<(String, SelectionSet<'static, Self, Self::TypeLock>)>;
 
+    /// Returns an optional fallback `SelectionSet` for when the returned type does not match
+    /// any of the types supported by this `InlineFragments`
     fn fallback(
         context: FragmentContext<Self::Arguments>,
     ) -> Option<SelectionSet<'static, Self, Self::TypeLock>>;
@@ -57,7 +79,13 @@ impl FragmentArguments for () {}
 /// Should be built with the `new` function to pass in arguments or the
 /// `empty` function if there are no arguments.
 pub struct FragmentContext<'a, Args> {
+    /// The `FragmentArguments` for this part of the query.
     pub args: &'a Args,
+
+    /// The current recurse depth (if any) for building a query
+    ///
+    /// This is used when building a recursive query to make sure we know
+    /// when to stop recursing.
     pub recurse_depth: Option<u8>,
 }
 

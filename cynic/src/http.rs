@@ -115,13 +115,19 @@ mod surf_ext {
     }
 }
 
+/// The error type returned by `ReqwestExt` & `ReqwestBlockingExt`
 #[cfg(any(feature = "reqwest", feature = "reqwest-blocking"))]
 #[derive(thiserror::Error, Debug)]
 pub enum CynicReqwestError {
+    /// An error from reqwest when making an HTTP request.
     #[error("Error making HTTP request: {0}")]
     ReqwestError(#[from] reqwest::Error),
+
+    /// An error resposne from the server with the given status code and body.
     #[error("Server returned {0}: {1}")]
     ErrorResponse(reqwest::StatusCode, String),
+
+    /// An error occurred when decoding the GraphQL response.
     #[error("Error decoding GraphQL response: {0}")]
     DecodeError(#[from] json_decode::DecodeError),
 }
