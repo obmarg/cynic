@@ -31,20 +31,6 @@ struct QueryModuleParams {
     query_module: Option<String>,
 }
 
-#[deprecated(
-    since = "0.13.0",
-    note = "add_schema_attrs_via_query_module is deprecated in favour of add_schema_attrs_to_derives"
-)]
-pub fn add_schema_attrs_via_query_module(
-    args: syn::AttributeArgs,
-    query_module: syn::ItemMod,
-) -> Result<TokenStream, syn::Error> {
-    match QueryModuleParams::from_list(&args) {
-        Ok(args) => Ok(add_schema_attrs_to_derives_impl(args.into(), query_module)),
-        Err(e) => Ok(e.write_errors()),
-    }
-}
-
 fn add_schema_attrs_to_derives_impl(
     args: AddSchemaAttrParams,
     query_module: syn::ItemMod,

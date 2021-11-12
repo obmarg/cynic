@@ -114,27 +114,6 @@ pub fn input_object_derive(input: TokenStream) -> TokenStream {
 }
 
 #[proc_macro_attribute]
-#[deprecated(
-    since = "0.13.0",
-    note = "query_module is deprecated, use schema_for_derives instead"
-)]
-pub fn query_module(attrs: TokenStream, input: TokenStream) -> TokenStream {
-    let module = syn::parse_macro_input!(input as syn::ItemMod);
-    let attrs = syn::parse_macro_input!(attrs as syn::AttributeArgs);
-
-    #[allow(deprecated)]
-    let rv: TokenStream = match schema_for_derives::add_schema_attrs_via_query_module(attrs, module)
-    {
-        Ok(tokens) => tokens.into(),
-        Err(e) => e.to_compile_error().into(),
-    };
-
-    // eprintln!("{}", rv);
-
-    rv
-}
-
-#[proc_macro_attribute]
 pub fn schema_for_derives(attrs: TokenStream, input: TokenStream) -> TokenStream {
     let module = syn::parse_macro_input!(input as syn::ItemMod);
     let attrs = syn::parse_macro_input!(attrs as syn::AttributeArgs);

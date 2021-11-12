@@ -8,14 +8,6 @@ pub struct GraphQlResponse<T> {
     pub errors: Option<Vec<GraphQlError>>,
 }
 
-#[deprecated(
-    since = "0.13.0",
-    note = "GraphQLResponse has been deprecated in favour of GraphQlResponse"
-)]
-#[allow(clippy::upper_case_acronyms)]
-#[doc(hidden)]
-pub type GraphQLResponse<T> = GraphQlResponse<T>;
-
 /// A model describing an error which has taken place during execution.
 #[derive(Clone, Debug, Eq, PartialEq, serde::Deserialize, thiserror::Error)]
 #[error("{message}")]
@@ -29,14 +21,6 @@ pub struct GraphQlError {
     /// Optional arbitrary JSON data describing the error in more detail.
     pub extensions: Option<serde_json::Value>,
 }
-
-#[deprecated(
-    since = "0.13.0",
-    note = "GraphQlError has been deprecated in favour of GraphQlError"
-)]
-#[allow(clippy::upper_case_acronyms)]
-#[doc(hidden)]
-pub type GraphQLError = GraphQlError;
 
 impl GraphQlError {
     /// Construct a new instance.
@@ -64,13 +48,6 @@ pub struct GraphQlErrorLocation {
     pub column: i32,
 }
 
-#[deprecated(
-    since = "0.13.0",
-    note = "GraphQlErrorLocation has been deprecated in favour of GraphQlErrorLocation"
-)]
-#[allow(clippy::upper_case_acronyms, dead_code)]
-pub type GraphQLErrorLocation = GraphQlErrorLocation;
-
 /// A segment of a GraphQL error path.
 #[derive(Clone, Debug, Eq, PartialEq, serde::Deserialize)]
 #[serde(untagged)]
@@ -80,10 +57,3 @@ pub enum GraphQlErrorPathSegment {
     /// A path segment representing an index offset, zero-based.
     Index(i32),
 }
-
-#[deprecated(
-    since = "0.13.0",
-    note = "GraphQlErrorPathSegment has been deprecated in favour of GraphQlErrorPathSegment"
-)]
-#[allow(clippy::upper_case_acronyms, dead_code)]
-pub type GraphQLErrorPathSegment = GraphQlErrorPathSegment;

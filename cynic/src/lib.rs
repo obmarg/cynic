@@ -194,25 +194,10 @@ pub use result::{GraphQlError, GraphQlResponse};
 pub use scalar::Scalar;
 pub use selection_set::SelectionSet;
 
-#[allow(deprecated)]
-pub use result::{GraphQLError, GraphQLResponse};
-
 pub use cynic_proc_macros::{
-    query_module, schema_for_derives, use_schema, Enum, FragmentArguments, InlineFragments,
-    InputObject, QueryFragment, Scalar,
+    schema_for_derives, use_schema, Enum, FragmentArguments, InlineFragments, InputObject,
+    QueryFragment, Scalar,
 };
-
-#[deprecated(
-    since = "0.13.0",
-    note = "query_dsl has been depreacted, please update to use_schema instead"
-)]
-#[macro_export]
-#[doc(hidden)]
-macro_rules! query_dsl {
-    ($lt: literal) => {
-        ::cynic::use_schema!($lt);
-    };
-}
 
 // We re-export serde_json as the output from a lot of our derive macros require it,
 // and this way we can point at our copy rather than forcing users to add it to
