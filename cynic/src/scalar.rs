@@ -1,9 +1,15 @@
 use json_decode::{BoxDecoder, DecodeError, Decoder};
 use std::marker::PhantomData;
 
+/// Indicates that a type can be used as a scalar of `TypeLock` in a graphql query
 pub trait Scalar<TypeLock>: Sized + serde::Serialize {
+    /// The type that this scalar should initially be deserialized as.
+    ///
+    /// Note that this doesn't have to be the actual type of the `Scalar`, though it can be.
+    /// Further conversion can be done in `from_deserialize`
     type Deserialize: serde::de::DeserializeOwned;
 
+    /// Converts `Deserialize` into `Self` (this can just be a no-op if `Deserialize` is `Self`)
     fn from_deserialize(x: Self::Deserialize) -> Result<Self, DecodeError>;
 }
 

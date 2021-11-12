@@ -8,6 +8,7 @@ use crate::FragmentArguments;
 /// type on the inner fragments and use the blanket implementation of FromArguments
 /// to convert to ().
 pub trait FromArguments<T> {
+    /// Converts a `T` into `Self`
     fn from_arguments(args: T) -> Self;
 }
 

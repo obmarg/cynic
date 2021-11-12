@@ -1,6 +1,30 @@
+//! GraphQL has a lot of input coercion rules.
+//!
+//! This module provides a trait `InputType` that helps implement these (as far as possible)
+//! in rust.  Users shouldn't usually need to care about the details of this - the cynic
+//! derives output most implementations of these traits that are required.
+
+/// Marker type for a named `InputType`
+///
+/// Users usually shouldn't need to worry about this - it's used as the inner type of the
+/// `Wrappers` type parameter of the `InputType` trait.  e.g. a `Wrapper` of `NamedType` indicates
+/// a required input, a `Wrapper` of `Nullable<NamedType>` indicates an optional input etc.
 pub enum NamedType {}
 
+/// Marker type for a nullable `InputType`
+///
+/// Users usually shouldn't need to worry about this - it's used as a wrapper for the
+/// `Wrappers` type parameter of the `InputType` trait.
+///
+/// e.g. a `Wrapper` of `Nullable<NamedType>` indicates an optional input.
 pub struct Nullable<T>(std::marker::PhantomData<T>);
+
+/// Marker type for a nullable `InputType`
+///
+/// Users usually shouldn't need to worry about this - it's used as a wrapper for the
+/// `Wrappers` type parameter of the `InputType` trait.
+///
+/// e.g. a `Wrapper` of `List<Nullable<NamedType>>` indicates a list of nullable inputs
 pub struct List<T>(std::marker::PhantomData<T>);
 
 /// A trait for accepting input types.  This is used to determine whether a type is compatible

@@ -164,6 +164,7 @@
 //! targetting web assembly.
 
 #![cfg_attr(docsrs, feature(doc_cfg))]
+#![warn(missing_docs)]
 
 mod arguments;
 mod builders;
@@ -177,6 +178,7 @@ mod scalar;
 pub mod http;
 pub mod inputs;
 pub mod selection_set;
+#[allow(missing_docs)]
 pub mod utils;
 
 pub use json_decode::DecodeError;
@@ -205,6 +207,7 @@ pub use cynic_proc_macros::{
     note = "query_dsl has been depreacted, please update to use_schema instead"
 )]
 #[macro_export]
+#[doc(hidden)]
 macro_rules! query_dsl {
     ($lt: literal) => {
         ::cynic::use_schema!($lt);

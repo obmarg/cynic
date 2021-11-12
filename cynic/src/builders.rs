@@ -7,7 +7,11 @@ use std::borrow::Borrow;
 
 /// Provides a `build` function on `QueryFragment`s that represent a query
 pub trait QueryBuilder<'a> {
+    /// The type that this query takes as arguments.
+    /// May be `()` if no arguments are accepted.
     type Arguments;
+
+    /// The type that this query returns if succesful.
     type ResponseData;
 
     /// Constructs a query operation for this QueryFragment.
@@ -31,7 +35,11 @@ where
 
 /// Provides a `build` function on `QueryFragment`s that represent a mutation
 pub trait MutationBuilder<'a> {
+    /// The type that this mutation takes as arguments.
+    /// May be `()` if no arguments are accepted.
     type Arguments;
+
+    /// The type that this mutation returns if succesful.
     type ResponseData;
 
     /// Constructs a mutation operation for this QueryFragment.
@@ -55,7 +63,11 @@ where
 
 /// Provides a `build` function on `QueryFragment`s that represent a subscription
 pub trait SubscriptionBuilder<'a> {
+    /// The type that this subscription takes as arguments.
+    /// May be `()` if no arguments are accepted.
     type Arguments;
+
+    /// The type of event that will be output in the response stream of this subscription.
     type ResponseData;
 
     /// Constructs a subscription operation for this QueryFragment.

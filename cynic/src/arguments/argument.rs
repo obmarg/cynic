@@ -1,3 +1,7 @@
+/// A single argument to a graphql operation.
+///
+/// Users should only need to use this if they're interacting with the
+/// `selection_set` API directly.
 pub struct Argument {
     pub(crate) name: String,
     pub(crate) serialize_result: Result<serde_json::Value, serde_json::Error>,
@@ -5,6 +9,7 @@ pub struct Argument {
 }
 
 impl Argument {
+    /// Constructs a new `Argument`
     pub fn new(
         name: &str,
         gql_type: &str,
