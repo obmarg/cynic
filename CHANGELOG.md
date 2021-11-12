@@ -15,6 +15,8 @@ all APIs might be changed.
 
 - The `CynicReqwestError` enum (behind the `reqwest` & `reqwest-blocking`
   feature flags) has a new variant to handle non 2XX responses from servers.
+- Removed the `GraphQlResult` & `PossiblyParsedData` types (which weren't being
+  used)
 
 ### New Features
 
