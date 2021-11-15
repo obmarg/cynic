@@ -1,4 +1,7 @@
+//! Procedural macros for cynic
+
 #![allow(clippy::let_and_return)]
+#![warn(missing_docs)]
 
 extern crate proc_macro;
 
@@ -31,6 +34,9 @@ pub fn use_schema(input: TokenStream) -> TokenStream {
     rv
 }
 
+/// Derives `cynic::QueryFragment`
+///
+/// See [the book for usage details](https://cynic-rs.dev/derives/query-fragments.html)
 #[proc_macro_derive(QueryFragment, attributes(cynic, arguments))]
 pub fn query_fragment_derive(input: TokenStream) -> TokenStream {
     let ast = syn::parse_macro_input!(input as syn::DeriveInput);
@@ -45,6 +51,9 @@ pub fn query_fragment_derive(input: TokenStream) -> TokenStream {
     rv
 }
 
+/// Derives `cynic::FragmentArguments`
+///
+/// See [the book for usage details](https://cynic-rs.dev/derives/query-fragments.html#passing-arguments)
 #[proc_macro_derive(FragmentArguments)]
 pub fn fragment_arguments_derive(input: TokenStream) -> TokenStream {
     let ast = syn::parse_macro_input!(input as syn::DeriveInput);
@@ -57,6 +66,9 @@ pub fn fragment_arguments_derive(input: TokenStream) -> TokenStream {
     rv
 }
 
+/// Derives `cynic::InlineFragments`
+///
+/// See [the book for usage details](https://cynic-rs.dev/derives/inline-fragments.html)
 #[proc_macro_derive(InlineFragments, attributes(cynic))]
 pub fn inline_fragments_derive(input: TokenStream) -> TokenStream {
     let ast = syn::parse_macro_input!(input as syn::DeriveInput);
@@ -71,6 +83,9 @@ pub fn inline_fragments_derive(input: TokenStream) -> TokenStream {
     rv
 }
 
+/// Derives `cynic::Enum`
+///
+/// See [the book for usage details](https://cynic-rs.dev/derives/enums.html)
 #[proc_macro_derive(Enum, attributes(cynic))]
 pub fn enum_derive(input: TokenStream) -> TokenStream {
     let ast = syn::parse_macro_input!(input as syn::DeriveInput);
@@ -85,6 +100,9 @@ pub fn enum_derive(input: TokenStream) -> TokenStream {
     rv
 }
 
+/// Derives `cynic::Scalar`
+///
+/// See [the book for usage details](https://cynic-rs.dev/derives/scalars.html)
 #[proc_macro_derive(Scalar, attributes(cynic))]
 pub fn scalar_derive(input: TokenStream) -> TokenStream {
     let ast = syn::parse_macro_input!(input as syn::DeriveInput);
@@ -99,6 +117,9 @@ pub fn scalar_derive(input: TokenStream) -> TokenStream {
     rv
 }
 
+/// Derives `InputObject`
+///
+/// See [the book for usage details](https://cynic-rs.dev/derives/input-objects.html)
 #[proc_macro_derive(InputObject, attributes(cynic))]
 pub fn input_object_derive(input: TokenStream) -> TokenStream {
     let ast = syn::parse_macro_input!(input as syn::DeriveInput);
@@ -113,6 +134,13 @@ pub fn input_object_derive(input: TokenStream) -> TokenStream {
     rv
 }
 
+/// An attribute macro to automatically add schema attributes to cynic derives.
+///
+/// Most cynic derives take `schema_path` & `query_module` parameters and adding each
+/// of these to every derive can be laborious and verbose.  This attribute provides
+/// a way to avoid repeating yourself quite as much.
+///
+/// See [the book for usage details](https://cynic-rs.dev/derives/schema-for-derives.html)
 #[proc_macro_attribute]
 pub fn schema_for_derives(attrs: TokenStream, input: TokenStream) -> TokenStream {
     let module = syn::parse_macro_input!(input as syn::ItemMod);
