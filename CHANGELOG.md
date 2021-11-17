@@ -25,6 +25,12 @@ all APIs might be changed.
 
 - The `InlineFragments` derive now supports a rename attribute on variants
 
+### Changes
+
+- The `QueryFragment` derive now supports fields with types that take generic
+  parameters directly, e.g. `DateTime<Utc>` from chrono.  Previously this would
+  have required a type alias to hide the generic parameters from cynic.
+
 ### Bug Fixes
 
 - The various HTTP client integrations will now return HTTP error details and
