@@ -31,28 +31,23 @@ pub fn check_spread_type(rust_type: &syn::Type) -> Result<(), syn::Error> {
 
     match parsed_type {
         ParsedType::Unknown => {
-            Err(syn::Error::new(
-                rust_type.span(),
-                "Cynic does not understand this type. Only un-parameterised types, Vecs, Options & Box are accepted currently.",
-            ))
-        },
+            // If we can't parse the type just ignore it - the compiler will still tell us if it's
+            // wrong.
+            Ok(())
+        }
         ParsedType::Box(inner) => {
             // Box is a transparent container for the purposes of checking compatability
             // so just recurse
             check_spread_type(inner)
         }
-        ParsedType::Optional(_) => {
-            Err(syn::Error::new(
-                rust_type.span(),
-                "You can't spread on an Option type"
-            ))
-        }
-        ParsedType::List(_) => {
-            Err(syn::Error::new(
-                rust_type.span(),
-                "You can't spread on a Vec"
-            ))
-        }
+        ParsedType::Optional(_) => Err(syn::Error::new(
+            rust_type.span(),
+            "You can't spread on an Option type",
+        )),
+        ParsedType::List(_) => Err(syn::Error::new(
+            rust_type.span(),
+            "You can't spread on a Vec",
+        )),
         ParsedType::SimpleType => {
             // No way to tell if the given type is actually compatible,
             // but the rust compiler should help us with that.
@@ -68,19 +63,10 @@ fn normal_check(
 ) -> Result<(), syn::Error> {
     let parsed_type = parse_type(rust_type);
 
-    match parsed_type {
-        ParsedType::Unknown => {
-            return Err(syn::Error::new(
-                rust_type.span(),
-                "Cynic does not understand this type. Only un-parameterised types, Vecs, Options & Box are accepted currently.",
-            ))
-        },
-        ParsedType::Box(inner) => {
-            // Box is a transparent container for the purposes of checking compatability
-            // so just recurse
-            return normal_check(gql_type, inner, flattening);
-        }
-        _ => {}
+    if let ParsedType::Box(inner) = parsed_type {
+        // Box is a transparent container for the purposes of checking compatability
+        // so just recurse
+        return normal_check(gql_type, inner, flattening);
     }
 
     if gql_type.is_nullable() {
@@ -176,13 +162,16 @@ fn parse_type(ty: &'_ syn::Type) -> ParsedType<'_> {
 
                 return ParsedType::Unknown;
             }
+
             if last_segment.ident.to_string() == "Option" {
                 if let Some(inner_type) = extract_generic_argument(last_segment) {
                     return ParsedType::Optional(inner_type);
                 }
 
                 return ParsedType::Unknown;
-            } else if last_segment.ident.to_string() == "Vec" {
+            }
+
+            if last_segment.ident.to_string() == "Vec" {
                 if let Some(inner_type) = extract_generic_argument(last_segment) {
                     return ParsedType::List(inner_type);
                 }
@@ -190,7 +179,7 @@ fn parse_type(ty: &'_ syn::Type) -> ParsedType<'_> {
                 return ParsedType::Unknown;
             }
 
-            if last_segment.arguments == syn::PathArguments::None {
+            if let syn::PathArguments::None = last_segment.arguments {
                 return ParsedType::SimpleType;
             }
         }
@@ -231,6 +220,14 @@ mod tests {
             check_types_are_compatible(
                 &required_field,
                 &syn::parse2(quote! { i32 }).unwrap(),
+                CheckMode::Normal
+            ),
+            Ok(())
+        );
+        assert_matches!(
+            check_types_are_compatible(
+                &required_field,
+                &syn::parse2(quote! { DateTime<Utc> }).unwrap(),
                 CheckMode::Normal
             ),
             Ok(())
@@ -299,6 +296,30 @@ mod tests {
         assert_matches!(
             check_types_are_compatible(
                 &list,
+                &syn::parse2(quote! { Vec<DateTime<Utc>> }).unwrap(),
+                CheckMode::Normal
+            ),
+            Ok(())
+        );
+        assert_matches!(
+            check_types_are_compatible(
+                &optional_list,
+                &syn::parse2(quote! { Option<Vec<DateTime<Utc>>> }).unwrap(),
+                CheckMode::Normal
+            ),
+            Ok(())
+        );
+        assert_matches!(
+            check_types_are_compatible(
+                &option_list_option,
+                &syn::parse2(quote! { Option<Vec<Option<DateTime<Utc>>>> }).unwrap(),
+                CheckMode::Normal
+            ),
+            Ok(())
+        );
+        assert_matches!(
+            check_types_are_compatible(
+                &list,
                 &syn::parse2(quote! { i32 }).unwrap(),
                 CheckMode::Normal
             ),
@@ -316,6 +337,14 @@ mod tests {
             check_types_are_compatible(
                 &option_list_option,
                 &syn::parse2(quote! { Option<Vec<i32>> }).unwrap(),
+                CheckMode::Normal
+            ),
+            Err(_)
+        );
+        assert_matches!(
+            check_types_are_compatible(
+                &option_list_option,
+                &syn::parse2(quote! { Option<DateTime<Vec<Option<i32>>>> }).unwrap(),
                 CheckMode::Normal
             ),
             Err(_)
