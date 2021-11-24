@@ -57,7 +57,7 @@ impl FragmentDeriveInput {
                 self.ident.span(),
                 format!(
                     "At least one field should be selected for `{}`.",
-                    self.ident.to_string()
+                    self.ident
                 ),
             )
             .into());

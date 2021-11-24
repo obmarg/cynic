@@ -523,7 +523,7 @@ impl quote::ToTokens for FragmentImpl {
                 }
 
                 fn graphql_type() -> String {
-                    #graphql_type.to_string()
+                    #graphql_type.to_owned()
                 }
             }
         })
