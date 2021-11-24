@@ -98,7 +98,7 @@ pub fn enum_derive_impl(
                     ::cynic::selection_set::enum_with(|s| {
                         match s.as_ref() {
                             #(
-                                #string_literals => ::cynic::selection_set::succeed(#ident::#variants),
+                                #string_literals => ::cynic::selection_set::succeed(Self::#variants),
                             )*
                             _ => ::cynic::selection_set::fail(format!("Unknown variant: {}", &s))
                         }
