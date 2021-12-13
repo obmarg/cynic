@@ -17,8 +17,9 @@ fn main() {
         Schema::from_repo_schemas("https://api.github.com/graphql", "github.graphql");
     let book_schema = Schema::from_repo_schemas("https://example.com", "books.graphql");
 
-    let raindancer_schema =
-        Schema::from_repo_schemas("https://api.github.com/graphql", "raindancer.graphql");
+    let raindancer_schema = Schema::from_repo_schemas("https://example.com", "raindancer.graphql");
+
+    let test_schema = Schema::from_repo_schemas("https://example.com", "test_cases.graphql");
 
     let cases = &[
         TestCase::query(
@@ -112,6 +113,15 @@ fn main() {
             &github_schema,
             "../../cynic-querygen/tests/queries/github/input-object-literals.graphql",
             r#"queries::PullRequestTitles::build(())"#,
+        ),
+        TestCase::query_norun(
+            &test_schema,
+            "../../cynic-querygen/tests/queries/misc/scalar-casing.graphql",
+            r#"queries::MyQuery::build(
+                queries::MyQueryArguments {
+                    id: queries::Uuid("not-really-a-uuid-but-whatever".into())
+                }
+            )"#,
         ),
         TestCase::mutation(
             &github_schema,

@@ -34,3 +34,14 @@ fn keyword_renames() {
             .expect("QueryGen Failed")
     )
 }
+
+#[test]
+fn test_scalar_casing() {
+    let schema = include_str!("../../schemas/test_cases.graphql");
+    let query = include_str!("queries/misc/scalar-casing.graphql");
+
+    assert_snapshot!(
+        document_to_fragment_structs(query, schema, &QueryGenOptions::default())
+            .expect("QueryGen Failed")
+    )
+}

@@ -1,0 +1,40 @@
+---
+source: cynic-querygen/tests/misc-tests.rs
+expression: "document_to_fragment_structs(query, schema,\n                             &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
+
+---
+#[cynic::schema_for_derives(
+    file = r#"schema.graphql"#,
+    module = "schema",
+)]
+mod queries {
+    use super::schema;
+
+    #[derive(cynic::FragmentArguments, Debug)]
+    pub struct MyQueryArguments {
+        pub id: Uuid,
+    }
+
+    #[derive(cynic::QueryFragment, Debug)]
+    #[cynic(graphql_type = "Foo", argument_struct = "MyQueryArguments")]
+    pub struct MyQuery {
+        #[arguments(id = &args.id)]
+        pub bar: Option<Bar>,
+    }
+
+    #[derive(cynic::QueryFragment, Debug)]
+    pub struct Bar {
+        pub id: Uuid,
+        pub name: Option<String>,
+    }
+
+    #[derive(cynic::Scalar, Debug, Clone)]
+    pub struct Uuid(pub String);
+
+}
+
+mod schema {
+    cynic::use_schema!(r#"schema.graphql"#);
+}
+
+

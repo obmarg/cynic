@@ -1,11 +1,19 @@
+schema {
+  query: Foo
+}
+
 type Foo {
   _: Boolean
   self: Boolean
   super: Boolean
   crate: Boolean
   async: Boolean
+  bar(id: UUID!): Bar
 }
 
-schema {
-  query: Foo
+type Bar {
+  id: UUID!
+  name: String
 }
+
+scalar UUID

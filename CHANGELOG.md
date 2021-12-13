@@ -9,6 +9,11 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+### Bug Fixes
+
+- Fixed a case where the generator would output the incorrect casing for some
+  occurrences of a custom scalar in the output (#346)
+
 ## v1.0.0 - 2021-12-09
 
 ### Breaking Changes
