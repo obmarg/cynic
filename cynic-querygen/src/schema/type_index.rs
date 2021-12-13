@@ -1,11 +1,8 @@
 use graphql_parser::schema::{Definition, ScalarType};
 use std::{borrow::Cow, collections::HashMap, rc::Rc};
 
-use crate::{
-    schema::{Document, Field, TypeDefinition},
-    type_ext::TypeExt,
-    Error,
-};
+use super::parser::{Document, Field, TypeDefinition};
+use crate::{type_ext::TypeExt, Error};
 
 use super::{OutputField, Type};
 

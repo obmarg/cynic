@@ -89,11 +89,11 @@ fn make_query_fragment<'text>(
                 let Selection::Field(field) = selection;
                 let schema_field = &field.schema_field;
 
-                let inner_type_name = match &field.field {
-                    Field::Leaf => schema_field.value_type.inner_name().to_string(),
-                    Field::Composite(ss) => namers.selection_sets.name_subject(ss),
+                let type_name_override = match &field.field {
+                    Field::Leaf => None,
+                    Field::Composite(ss) => Some(namers.selection_sets.name_subject(ss)),
                     Field::InlineFragments(fragments) => {
-                        namers.inline_fragments.name_subject(fragments)
+                        Some(namers.inline_fragments.name_subject(fragments))
                     }
                 };
 
@@ -102,7 +102,7 @@ fn make_query_fragment<'text>(
                     rename: field.alias.map(|_| schema_field.name),
                     field_type: RustOutputFieldType::from_schema_type(
                         &schema_field.value_type,
-                        inner_type_name,
+                        type_name_override,
                     ),
                     arguments: field
                         .arguments

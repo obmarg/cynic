@@ -4,7 +4,7 @@ mod type_index;
 mod type_refs;
 
 pub use fields::*;
-pub use parser::*;
+pub use parser::Document;
 pub use type_index::{GraphPath, TypeIndex};
 pub use type_refs::{InputTypeRef, InterfaceTypeRef, OutputTypeRef, TypeRef};
 
@@ -79,9 +79,11 @@ pub struct InterfaceType<'schema>(pub InterfaceDetails<'schema>);
 
 impl<'schema> Type<'schema> {
     fn from_type_defintion(
-        type_def: &TypeDefinition<'schema>,
+        type_def: &parser::TypeDefinition<'schema>,
         type_index: &Rc<TypeIndex<'schema>>,
     ) -> Type<'schema> {
+        use parser::TypeDefinition;
+
         match type_def {
             TypeDefinition::Scalar(scalar) => Type::Scalar(ScalarDetails { name: scalar.name }),
             TypeDefinition::Object(obj) => Type::Object(ObjectDetails {

@@ -22,6 +22,26 @@ impl Foo {
     pub fn r#async() -> foo::AsyncSelectionBuilder {
         foo::AsyncSelectionBuilder::new(vec![])
     }
+    pub fn bar(
+        id: impl ::cynic::InputType<Uuid, ::cynic::inputs::NamedType>,
+    ) -> foo::BarSelectionBuilder {
+        foo::BarSelectionBuilder::new(vec![::cynic::Argument::new(
+            "id",
+            "UUID!",
+            ::cynic::serde_json::to_value(&id),
+        )])
+    }
+}
+#[allow(dead_code)]
+pub struct Bar;
+#[allow(dead_code)]
+impl Bar {
+    pub fn id() -> bar::IdSelectionBuilder {
+        bar::IdSelectionBuilder::new(vec![])
+    }
+    pub fn name() -> bar::NameSelectionBuilder {
+        bar::NameSelectionBuilder::new(vec![])
+    }
 }
 #[allow(dead_code)]
 pub mod foo {
@@ -155,6 +175,84 @@ pub mod foo {
             )
         }
     }
+    pub struct BarSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl BarSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            BarSelectionBuilder { args }
+        }
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Bar>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Foo> {
+            ::cynic::selection_set::field("bar", self.args, ::cynic::selection_set::option(fields))
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Bar>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Foo> {
+            ::cynic::selection_set::field_alias(
+                "bar",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(fields),
+            )
+        }
+    }
 }
+#[allow(dead_code)]
+pub mod bar {
+    pub struct IdSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl IdSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            IdSelectionBuilder { args }
+        }
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, super::Uuid>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Bar> {
+            ::cynic::selection_set::field("id", self.args, inner)
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, super::Uuid>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Bar> {
+            ::cynic::selection_set::field_alias("id", alias, self.args, inner)
+        }
+    }
+    pub struct NameSelectionBuilder {
+        args: Vec<::cynic::Argument>,
+    }
+    impl NameSelectionBuilder {
+        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
+            NameSelectionBuilder { args }
+        }
+        pub fn select<'a, T: 'a + Send + Sync>(
+            self,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Bar> {
+            ::cynic::selection_set::field("name", self.args, ::cynic::selection_set::option(inner))
+        }
+        pub fn select_aliased<'a, T: 'a + Send + Sync>(
+            self,
+            alias: &str,
+            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
+        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::Bar> {
+            ::cynic::selection_set::field_alias(
+                "name",
+                alias,
+                self.args,
+                ::cynic::selection_set::option(inner),
+            )
+        }
+    }
+}
+#[allow(dead_code)]
+pub enum Uuid {}
 impl ::cynic::QueryRoot for Foo {}
 

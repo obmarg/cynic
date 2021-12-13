@@ -98,16 +98,23 @@ pub enum RustOutputFieldType {
 impl RustOutputFieldType {
     pub fn from_schema_type(
         schema_type: &OutputFieldType<'_>,
-        inner_name: String,
+        name_override: Option<String>,
     ) -> RustOutputFieldType {
         match schema_type {
             OutputFieldType::NonNullType(inner) => RustOutputFieldType::NonNullType(Box::new(
-                RustOutputFieldType::from_schema_type(inner, inner_name),
+                RustOutputFieldType::from_schema_type(inner, name_override),
             )),
             OutputFieldType::ListType(inner) => RustOutputFieldType::ListType(Box::new(
-                RustOutputFieldType::from_schema_type(inner, inner_name),
+                RustOutputFieldType::from_schema_type(inner, name_override),
             )),
-            OutputFieldType::NamedType(_) => RustOutputFieldType::NamedType(inner_name),
+            OutputFieldType::NamedType(type_ref) => RustOutputFieldType::NamedType(
+                name_override
+                    .or_else(|| {
+                        let ty = type_ref.lookup().ok()?;
+                        Some(ty.name().to_pascal_case())
+                    })
+                    .unwrap_or_else(|| "Unknown".to_string()),
+            ),
         }
     }
 
@@ -136,7 +143,9 @@ impl RustOutputFieldType {
                     "Int" => return "i32".into(),
                     "Float" => return "f64".into(),
                     "Boolean" => return "bool".into(),
-                    "ID" => return "cynic::Id".into(),
+                    // Technically the name is "ID" in graphql, but we've already pascal
+                    // cased it
+                    "Id" => return "cynic::Id".into(),
                     _ => {}
                 }
 

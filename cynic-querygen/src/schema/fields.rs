@@ -1,6 +1,6 @@
 use std::{borrow::Cow, rc::Rc};
 
-use super::{parser, InputType, InputTypeRef, OutputTypeRef, TypeIndex};
+use super::{parser, InputTypeRef, OutputTypeRef, TypeIndex};
 use crate::Error;
 
 /// A field on an output type i.e. an object or interface
@@ -162,11 +162,7 @@ fn input_type_spec_imp<'schema>(ty: &InputFieldType<'schema>, nullable: bool) ->
                 _ => {}
             }
 
-            match s.lookup() {
-                Ok(InputType::Enum(_)) => Cow::Owned(s.type_name.to_pascal_case()),
-                Ok(InputType::InputObject(_)) => Cow::Owned(s.type_name.to_pascal_case()),
-                _ => s.type_name.clone(),
-            }
+            Cow::Owned(s.type_name.to_pascal_case())
         }
     }
 }

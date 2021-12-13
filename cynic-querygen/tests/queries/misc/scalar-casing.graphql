@@ -1,0 +1,6 @@
+query MyQuery($id: UUID!) {
+  bar(id: $id) {
+    id
+    name
+  }
+}
