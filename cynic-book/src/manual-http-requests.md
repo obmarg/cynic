@@ -27,7 +27,7 @@ let response = reqwest::blocking::Client::new()
     .send()
     .unwrap();
 
-let all_films_result = query.decode_response(response.json().unwrap()).unwrap();
+let all_films_result = operation.decode_response(response.json().unwrap()).unwrap();
 ```
 
 Now you can do whatever you want with the result.
