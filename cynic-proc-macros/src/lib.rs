@@ -453,6 +453,8 @@ fn document_to_fragment_structs(
             let mut field_names = vec![];
             let mut field_types = vec![];
 
+            eprintln!("{:?}", argument_struct.fields);
+
             for field in &argument_struct.fields {
                 field_names.push(Ident::new(&field.name(), proc_macro2::Span::call_site()));
                 field_types.push(
