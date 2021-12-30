@@ -1,0 +1,99 @@
+---
+source: cynic-codegen/tests/use-schema.rs
+expression: "format_code(format!(\"{}\", tokens))"
+
+---
+pub struct Book;
+pub mod book_fields {
+    pub struct Id;
+    impl ::cynic::core::FieldName for Id {
+        fn name() -> &'static str {
+            "id"
+        }
+    }
+    impl ::cynic::core::HasField<Id, String> for super::Book {}
+    pub struct Name;
+    impl ::cynic::core::FieldName for Name {
+        fn name() -> &'static str {
+            "name"
+        }
+    }
+    impl ::cynic::core::HasField<Name, String> for super::Book {}
+    pub struct Author;
+    impl ::cynic::core::FieldName for Author {
+        fn name() -> &'static str {
+            "author"
+        }
+    }
+    impl ::cynic::core::HasField<Author, String> for super::Book {}
+}
+pub struct BookChanged;
+pub mod book_changed_fields {
+    pub struct MutationType;
+    impl ::cynic::core::FieldName for MutationType {
+        fn name() -> &'static str {
+            "mutationType"
+        }
+    }
+    impl ::cynic::core::HasField<MutationType, super::MutationType> for super::BookChanged {}
+    pub struct Id;
+    impl ::cynic::core::FieldName for Id {
+        fn name() -> &'static str {
+            "id"
+        }
+    }
+    impl ::cynic::core::HasField<Id, ::cynic::Id> for super::BookChanged {}
+    pub struct Book;
+    impl ::cynic::core::FieldName for Book {
+        fn name() -> &'static str {
+            "book"
+        }
+    }
+    impl ::cynic::core::HasField<Book, Option<super::Book>> for super::BookChanged {}
+}
+pub struct MutationRoot;
+pub mod mutation_root_fields {
+    pub struct CreateBook;
+    impl ::cynic::core::FieldName for CreateBook {
+        fn name() -> &'static str {
+            "createBook"
+        }
+    }
+    impl ::cynic::core::HasField<CreateBook, ::cynic::Id> for super::MutationRoot {}
+    pub struct DeleteBook;
+    impl ::cynic::core::FieldName for DeleteBook {
+        fn name() -> &'static str {
+            "deleteBook"
+        }
+    }
+    impl ::cynic::core::HasField<DeleteBook, bool> for super::MutationRoot {}
+}
+pub struct MutationType {}
+pub struct QueryRoot;
+pub mod query_root_fields {
+    pub struct Books;
+    impl ::cynic::core::FieldName for Books {
+        fn name() -> &'static str {
+            "books"
+        }
+    }
+    impl ::cynic::core::HasField<Books, Vec<super::Book>> for super::QueryRoot {}
+}
+pub struct SubscriptionRoot;
+pub mod subscription_root_fields {
+    pub struct Interval;
+    impl ::cynic::core::FieldName for Interval {
+        fn name() -> &'static str {
+            "interval"
+        }
+    }
+    impl ::cynic::core::HasField<Interval, i32> for super::SubscriptionRoot {}
+    pub struct Books;
+    impl ::cynic::core::FieldName for Books {
+        fn name() -> &'static str {
+            "books"
+        }
+    }
+    impl ::cynic::core::HasField<Books, super::BookChanged> for super::SubscriptionRoot {}
+}
+

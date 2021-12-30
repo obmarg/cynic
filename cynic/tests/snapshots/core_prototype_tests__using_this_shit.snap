@@ -1,0 +1,43 @@
+---
+source: cynic/tests/core-prototype-tests.rs
+expression: fields
+
+---
+[
+    Field {
+        name: "post",
+        children: [
+            Field {
+                name: "hasMetadata",
+                children: [],
+            },
+            Field {
+                name: "author",
+                children: [
+                    Field {
+                        name: "name",
+                        children: [],
+                    },
+                ],
+            },
+        ],
+    },
+    Field {
+        name: "allPosts",
+        children: [
+            Field {
+                name: "hasMetadata",
+                children: [],
+            },
+            Field {
+                name: "author",
+                children: [
+                    Field {
+                        name: "name",
+                        children: [],
+                    },
+                ],
+            },
+        ],
+    },
+]

@@ -96,6 +96,22 @@ impl Ident {
         self.rust.to_string()
     }
 
+    pub fn as_field_module(&self) -> Ident {
+        Ident {
+            rust: format_ident!("{}_fields", to_snake_case(&self.rust_name())),
+            graphql: self.graphql.clone(),
+            span: self.span,
+        }
+    }
+
+    pub fn as_field_marker_type(&self) -> Ident {
+        Ident {
+            rust: format_ident!("{}", self.rust_name().to_pascal_case()),
+            graphql: self.graphql.clone(),
+            span: self.span,
+        }
+    }
+
     pub fn graphql_name(&self) -> &str {
         &self.graphql
     }

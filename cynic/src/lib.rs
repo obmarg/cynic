@@ -168,6 +168,7 @@
 
 mod arguments;
 mod builders;
+pub mod core;
 mod enums;
 mod fragments;
 mod id;
@@ -195,8 +196,8 @@ pub use scalar::Scalar;
 pub use selection_set::SelectionSet;
 
 pub use cynic_proc_macros::{
-    schema_for_derives, use_schema, Enum, FragmentArguments, InlineFragments, InputObject,
-    QueryFragment, Scalar,
+    schema_for_derives, use_schema, use_schema_2, Enum, FragmentArguments, InlineFragments,
+    InputObject, QueryFragment, QueryFragment2, Scalar,
 };
 
 // We re-export serde_json as the output from a lot of our derive macros require it,

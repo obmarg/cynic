@@ -1,0 +1,2034 @@
+---
+source: cynic-codegen/tests/use-schema.rs
+expression: "format_code(format!(\"{}\", tokens))"
+
+---
+pub struct Film;
+pub mod film_fields {
+    pub struct Title;
+    impl ::cynic::core::FieldName for Title {
+        fn name() -> &'static str {
+            "title"
+        }
+    }
+    impl ::cynic::core::HasField<Title, Option<String>> for super::Film {}
+    pub struct EpisodeID;
+    impl ::cynic::core::FieldName for EpisodeID {
+        fn name() -> &'static str {
+            "episodeID"
+        }
+    }
+    impl ::cynic::core::HasField<EpisodeID, Option<i32>> for super::Film {}
+    pub struct OpeningCrawl;
+    impl ::cynic::core::FieldName for OpeningCrawl {
+        fn name() -> &'static str {
+            "openingCrawl"
+        }
+    }
+    impl ::cynic::core::HasField<OpeningCrawl, Option<String>> for super::Film {}
+    pub struct Director;
+    impl ::cynic::core::FieldName for Director {
+        fn name() -> &'static str {
+            "director"
+        }
+    }
+    impl ::cynic::core::HasField<Director, Option<String>> for super::Film {}
+    pub struct Producers;
+    impl ::cynic::core::FieldName for Producers {
+        fn name() -> &'static str {
+            "producers"
+        }
+    }
+    impl ::cynic::core::HasField<Producers, Option<Vec<Option<String>>>> for super::Film {}
+    pub struct ReleaseDate;
+    impl ::cynic::core::FieldName for ReleaseDate {
+        fn name() -> &'static str {
+            "releaseDate"
+        }
+    }
+    impl ::cynic::core::HasField<ReleaseDate, Option<String>> for super::Film {}
+    pub struct SpeciesConnection;
+    impl ::cynic::core::FieldName for SpeciesConnection {
+        fn name() -> &'static str {
+            "speciesConnection"
+        }
+    }
+    impl ::cynic::core::HasField<SpeciesConnection, Option<super::FilmSpeciesConnection>>
+        for super::Film
+    {
+    }
+    pub struct StarshipConnection;
+    impl ::cynic::core::FieldName for StarshipConnection {
+        fn name() -> &'static str {
+            "starshipConnection"
+        }
+    }
+    impl ::cynic::core::HasField<StarshipConnection, Option<super::FilmStarshipsConnection>>
+        for super::Film
+    {
+    }
+    pub struct VehicleConnection;
+    impl ::cynic::core::FieldName for VehicleConnection {
+        fn name() -> &'static str {
+            "vehicleConnection"
+        }
+    }
+    impl ::cynic::core::HasField<VehicleConnection, Option<super::FilmVehiclesConnection>>
+        for super::Film
+    {
+    }
+    pub struct CharacterConnection;
+    impl ::cynic::core::FieldName for CharacterConnection {
+        fn name() -> &'static str {
+            "characterConnection"
+        }
+    }
+    impl ::cynic::core::HasField<CharacterConnection, Option<super::FilmCharactersConnection>>
+        for super::Film
+    {
+    }
+    pub struct PlanetConnection;
+    impl ::cynic::core::FieldName for PlanetConnection {
+        fn name() -> &'static str {
+            "planetConnection"
+        }
+    }
+    impl ::cynic::core::HasField<PlanetConnection, Option<super::FilmPlanetsConnection>>
+        for super::Film
+    {
+    }
+    pub struct Created;
+    impl ::cynic::core::FieldName for Created {
+        fn name() -> &'static str {
+            "created"
+        }
+    }
+    impl ::cynic::core::HasField<Created, Option<String>> for super::Film {}
+    pub struct Edited;
+    impl ::cynic::core::FieldName for Edited {
+        fn name() -> &'static str {
+            "edited"
+        }
+    }
+    impl ::cynic::core::HasField<Edited, Option<String>> for super::Film {}
+    pub struct Id;
+    impl ::cynic::core::FieldName for Id {
+        fn name() -> &'static str {
+            "id"
+        }
+    }
+    impl ::cynic::core::HasField<Id, ::cynic::Id> for super::Film {}
+}
+pub struct FilmCharactersConnection;
+pub mod film_characters_connection_fields {
+    pub struct PageInfo;
+    impl ::cynic::core::FieldName for PageInfo {
+        fn name() -> &'static str {
+            "pageInfo"
+        }
+    }
+    impl ::cynic::core::HasField<PageInfo, super::PageInfo> for super::FilmCharactersConnection {}
+    pub struct Edges;
+    impl ::cynic::core::FieldName for Edges {
+        fn name() -> &'static str {
+            "edges"
+        }
+    }
+    impl ::cynic::core::HasField<Edges, Option<Vec<Option<super::FilmCharactersEdge>>>>
+        for super::FilmCharactersConnection
+    {
+    }
+    pub struct TotalCount;
+    impl ::cynic::core::FieldName for TotalCount {
+        fn name() -> &'static str {
+            "totalCount"
+        }
+    }
+    impl ::cynic::core::HasField<TotalCount, Option<i32>> for super::FilmCharactersConnection {}
+    pub struct Characters;
+    impl ::cynic::core::FieldName for Characters {
+        fn name() -> &'static str {
+            "characters"
+        }
+    }
+    impl ::cynic::core::HasField<Characters, Option<Vec<Option<super::Person>>>>
+        for super::FilmCharactersConnection
+    {
+    }
+}
+pub struct FilmCharactersEdge;
+pub mod film_characters_edge_fields {
+    pub struct Node;
+    impl ::cynic::core::FieldName for Node {
+        fn name() -> &'static str {
+            "node"
+        }
+    }
+    impl ::cynic::core::HasField<Node, Option<super::Person>> for super::FilmCharactersEdge {}
+    pub struct Cursor;
+    impl ::cynic::core::FieldName for Cursor {
+        fn name() -> &'static str {
+            "cursor"
+        }
+    }
+    impl ::cynic::core::HasField<Cursor, String> for super::FilmCharactersEdge {}
+}
+pub struct FilmPlanetsConnection;
+pub mod film_planets_connection_fields {
+    pub struct PageInfo;
+    impl ::cynic::core::FieldName for PageInfo {
+        fn name() -> &'static str {
+            "pageInfo"
+        }
+    }
+    impl ::cynic::core::HasField<PageInfo, super::PageInfo> for super::FilmPlanetsConnection {}
+    pub struct Edges;
+    impl ::cynic::core::FieldName for Edges {
+        fn name() -> &'static str {
+            "edges"
+        }
+    }
+    impl ::cynic::core::HasField<Edges, Option<Vec<Option<super::FilmPlanetsEdge>>>>
+        for super::FilmPlanetsConnection
+    {
+    }
+    pub struct TotalCount;
+    impl ::cynic::core::FieldName for TotalCount {
+        fn name() -> &'static str {
+            "totalCount"
+        }
+    }
+    impl ::cynic::core::HasField<TotalCount, Option<i32>> for super::FilmPlanetsConnection {}
+    pub struct Planets;
+    impl ::cynic::core::FieldName for Planets {
+        fn name() -> &'static str {
+            "planets"
+        }
+    }
+    impl ::cynic::core::HasField<Planets, Option<Vec<Option<super::Planet>>>>
+        for super::FilmPlanetsConnection
+    {
+    }
+}
+pub struct FilmPlanetsEdge;
+pub mod film_planets_edge_fields {
+    pub struct Node;
+    impl ::cynic::core::FieldName for Node {
+        fn name() -> &'static str {
+            "node"
+        }
+    }
+    impl ::cynic::core::HasField<Node, Option<super::Planet>> for super::FilmPlanetsEdge {}
+    pub struct Cursor;
+    impl ::cynic::core::FieldName for Cursor {
+        fn name() -> &'static str {
+            "cursor"
+        }
+    }
+    impl ::cynic::core::HasField<Cursor, String> for super::FilmPlanetsEdge {}
+}
+pub struct FilmsConnection;
+pub mod films_connection_fields {
+    pub struct PageInfo;
+    impl ::cynic::core::FieldName for PageInfo {
+        fn name() -> &'static str {
+            "pageInfo"
+        }
+    }
+    impl ::cynic::core::HasField<PageInfo, super::PageInfo> for super::FilmsConnection {}
+    pub struct Edges;
+    impl ::cynic::core::FieldName for Edges {
+        fn name() -> &'static str {
+            "edges"
+        }
+    }
+    impl ::cynic::core::HasField<Edges, Option<Vec<Option<super::FilmsEdge>>>>
+        for super::FilmsConnection
+    {
+    }
+    pub struct TotalCount;
+    impl ::cynic::core::FieldName for TotalCount {
+        fn name() -> &'static str {
+            "totalCount"
+        }
+    }
+    impl ::cynic::core::HasField<TotalCount, Option<i32>> for super::FilmsConnection {}
+    pub struct Films;
+    impl ::cynic::core::FieldName for Films {
+        fn name() -> &'static str {
+            "films"
+        }
+    }
+    impl ::cynic::core::HasField<Films, Option<Vec<Option<super::Film>>>> for super::FilmsConnection {}
+}
+pub struct FilmsEdge;
+pub mod films_edge_fields {
+    pub struct Node;
+    impl ::cynic::core::FieldName for Node {
+        fn name() -> &'static str {
+            "node"
+        }
+    }
+    impl ::cynic::core::HasField<Node, Option<super::Film>> for super::FilmsEdge {}
+    pub struct Cursor;
+    impl ::cynic::core::FieldName for Cursor {
+        fn name() -> &'static str {
+            "cursor"
+        }
+    }
+    impl ::cynic::core::HasField<Cursor, String> for super::FilmsEdge {}
+}
+pub struct FilmSpeciesConnection;
+pub mod film_species_connection_fields {
+    pub struct PageInfo;
+    impl ::cynic::core::FieldName for PageInfo {
+        fn name() -> &'static str {
+            "pageInfo"
+        }
+    }
+    impl ::cynic::core::HasField<PageInfo, super::PageInfo> for super::FilmSpeciesConnection {}
+    pub struct Edges;
+    impl ::cynic::core::FieldName for Edges {
+        fn name() -> &'static str {
+            "edges"
+        }
+    }
+    impl ::cynic::core::HasField<Edges, Option<Vec<Option<super::FilmSpeciesEdge>>>>
+        for super::FilmSpeciesConnection
+    {
+    }
+    pub struct TotalCount;
+    impl ::cynic::core::FieldName for TotalCount {
+        fn name() -> &'static str {
+            "totalCount"
+        }
+    }
+    impl ::cynic::core::HasField<TotalCount, Option<i32>> for super::FilmSpeciesConnection {}
+    pub struct Species;
+    impl ::cynic::core::FieldName for Species {
+        fn name() -> &'static str {
+            "species"
+        }
+    }
+    impl ::cynic::core::HasField<Species, Option<Vec<Option<super::Species>>>>
+        for super::FilmSpeciesConnection
+    {
+    }
+}
+pub struct FilmSpeciesEdge;
+pub mod film_species_edge_fields {
+    pub struct Node;
+    impl ::cynic::core::FieldName for Node {
+        fn name() -> &'static str {
+            "node"
+        }
+    }
+    impl ::cynic::core::HasField<Node, Option<super::Species>> for super::FilmSpeciesEdge {}
+    pub struct Cursor;
+    impl ::cynic::core::FieldName for Cursor {
+        fn name() -> &'static str {
+            "cursor"
+        }
+    }
+    impl ::cynic::core::HasField<Cursor, String> for super::FilmSpeciesEdge {}
+}
+pub struct FilmStarshipsConnection;
+pub mod film_starships_connection_fields {
+    pub struct PageInfo;
+    impl ::cynic::core::FieldName for PageInfo {
+        fn name() -> &'static str {
+            "pageInfo"
+        }
+    }
+    impl ::cynic::core::HasField<PageInfo, super::PageInfo> for super::FilmStarshipsConnection {}
+    pub struct Edges;
+    impl ::cynic::core::FieldName for Edges {
+        fn name() -> &'static str {
+            "edges"
+        }
+    }
+    impl ::cynic::core::HasField<Edges, Option<Vec<Option<super::FilmStarshipsEdge>>>>
+        for super::FilmStarshipsConnection
+    {
+    }
+    pub struct TotalCount;
+    impl ::cynic::core::FieldName for TotalCount {
+        fn name() -> &'static str {
+            "totalCount"
+        }
+    }
+    impl ::cynic::core::HasField<TotalCount, Option<i32>> for super::FilmStarshipsConnection {}
+    pub struct Starships;
+    impl ::cynic::core::FieldName for Starships {
+        fn name() -> &'static str {
+            "starships"
+        }
+    }
+    impl ::cynic::core::HasField<Starships, Option<Vec<Option<super::Starship>>>>
+        for super::FilmStarshipsConnection
+    {
+    }
+}
+pub struct FilmStarshipsEdge;
+pub mod film_starships_edge_fields {
+    pub struct Node;
+    impl ::cynic::core::FieldName for Node {
+        fn name() -> &'static str {
+            "node"
+        }
+    }
+    impl ::cynic::core::HasField<Node, Option<super::Starship>> for super::FilmStarshipsEdge {}
+    pub struct Cursor;
+    impl ::cynic::core::FieldName for Cursor {
+        fn name() -> &'static str {
+            "cursor"
+        }
+    }
+    impl ::cynic::core::HasField<Cursor, String> for super::FilmStarshipsEdge {}
+}
+pub struct FilmVehiclesConnection;
+pub mod film_vehicles_connection_fields {
+    pub struct PageInfo;
+    impl ::cynic::core::FieldName for PageInfo {
+        fn name() -> &'static str {
+            "pageInfo"
+        }
+    }
+    impl ::cynic::core::HasField<PageInfo, super::PageInfo> for super::FilmVehiclesConnection {}
+    pub struct Edges;
+    impl ::cynic::core::FieldName for Edges {
+        fn name() -> &'static str {
+            "edges"
+        }
+    }
+    impl ::cynic::core::HasField<Edges, Option<Vec<Option<super::FilmVehiclesEdge>>>>
+        for super::FilmVehiclesConnection
+    {
+    }
+    pub struct TotalCount;
+    impl ::cynic::core::FieldName for TotalCount {
+        fn name() -> &'static str {
+            "totalCount"
+        }
+    }
+    impl ::cynic::core::HasField<TotalCount, Option<i32>> for super::FilmVehiclesConnection {}
+    pub struct Vehicles;
+    impl ::cynic::core::FieldName for Vehicles {
+        fn name() -> &'static str {
+            "vehicles"
+        }
+    }
+    impl ::cynic::core::HasField<Vehicles, Option<Vec<Option<super::Vehicle>>>>
+        for super::FilmVehiclesConnection
+    {
+    }
+}
+pub struct FilmVehiclesEdge;
+pub mod film_vehicles_edge_fields {
+    pub struct Node;
+    impl ::cynic::core::FieldName for Node {
+        fn name() -> &'static str {
+            "node"
+        }
+    }
+    impl ::cynic::core::HasField<Node, Option<super::Vehicle>> for super::FilmVehiclesEdge {}
+    pub struct Cursor;
+    impl ::cynic::core::FieldName for Cursor {
+        fn name() -> &'static str {
+            "cursor"
+        }
+    }
+    impl ::cynic::core::HasField<Cursor, String> for super::FilmVehiclesEdge {}
+}
+pub struct Node {}
+pub struct PageInfo;
+pub mod page_info_fields {
+    pub struct HasNextPage;
+    impl ::cynic::core::FieldName for HasNextPage {
+        fn name() -> &'static str {
+            "hasNextPage"
+        }
+    }
+    impl ::cynic::core::HasField<HasNextPage, bool> for super::PageInfo {}
+    pub struct HasPreviousPage;
+    impl ::cynic::core::FieldName for HasPreviousPage {
+        fn name() -> &'static str {
+            "hasPreviousPage"
+        }
+    }
+    impl ::cynic::core::HasField<HasPreviousPage, bool> for super::PageInfo {}
+    pub struct StartCursor;
+    impl ::cynic::core::FieldName for StartCursor {
+        fn name() -> &'static str {
+            "startCursor"
+        }
+    }
+    impl ::cynic::core::HasField<StartCursor, Option<String>> for super::PageInfo {}
+    pub struct EndCursor;
+    impl ::cynic::core::FieldName for EndCursor {
+        fn name() -> &'static str {
+            "endCursor"
+        }
+    }
+    impl ::cynic::core::HasField<EndCursor, Option<String>> for super::PageInfo {}
+}
+pub struct PeopleConnection;
+pub mod people_connection_fields {
+    pub struct PageInfo;
+    impl ::cynic::core::FieldName for PageInfo {
+        fn name() -> &'static str {
+            "pageInfo"
+        }
+    }
+    impl ::cynic::core::HasField<PageInfo, super::PageInfo> for super::PeopleConnection {}
+    pub struct Edges;
+    impl ::cynic::core::FieldName for Edges {
+        fn name() -> &'static str {
+            "edges"
+        }
+    }
+    impl ::cynic::core::HasField<Edges, Option<Vec<Option<super::PeopleEdge>>>>
+        for super::PeopleConnection
+    {
+    }
+    pub struct TotalCount;
+    impl ::cynic::core::FieldName for TotalCount {
+        fn name() -> &'static str {
+            "totalCount"
+        }
+    }
+    impl ::cynic::core::HasField<TotalCount, Option<i32>> for super::PeopleConnection {}
+    pub struct People;
+    impl ::cynic::core::FieldName for People {
+        fn name() -> &'static str {
+            "people"
+        }
+    }
+    impl ::cynic::core::HasField<People, Option<Vec<Option<super::Person>>>>
+        for super::PeopleConnection
+    {
+    }
+}
+pub struct PeopleEdge;
+pub mod people_edge_fields {
+    pub struct Node;
+    impl ::cynic::core::FieldName for Node {
+        fn name() -> &'static str {
+            "node"
+        }
+    }
+    impl ::cynic::core::HasField<Node, Option<super::Person>> for super::PeopleEdge {}
+    pub struct Cursor;
+    impl ::cynic::core::FieldName for Cursor {
+        fn name() -> &'static str {
+            "cursor"
+        }
+    }
+    impl ::cynic::core::HasField<Cursor, String> for super::PeopleEdge {}
+}
+pub struct Person;
+pub mod person_fields {
+    pub struct Name;
+    impl ::cynic::core::FieldName for Name {
+        fn name() -> &'static str {
+            "name"
+        }
+    }
+    impl ::cynic::core::HasField<Name, Option<String>> for super::Person {}
+    pub struct BirthYear;
+    impl ::cynic::core::FieldName for BirthYear {
+        fn name() -> &'static str {
+            "birthYear"
+        }
+    }
+    impl ::cynic::core::HasField<BirthYear, Option<String>> for super::Person {}
+    pub struct EyeColor;
+    impl ::cynic::core::FieldName for EyeColor {
+        fn name() -> &'static str {
+            "eyeColor"
+        }
+    }
+    impl ::cynic::core::HasField<EyeColor, Option<String>> for super::Person {}
+    pub struct Gender;
+    impl ::cynic::core::FieldName for Gender {
+        fn name() -> &'static str {
+            "gender"
+        }
+    }
+    impl ::cynic::core::HasField<Gender, Option<String>> for super::Person {}
+    pub struct HairColor;
+    impl ::cynic::core::FieldName for HairColor {
+        fn name() -> &'static str {
+            "hairColor"
+        }
+    }
+    impl ::cynic::core::HasField<HairColor, Option<String>> for super::Person {}
+    pub struct Height;
+    impl ::cynic::core::FieldName for Height {
+        fn name() -> &'static str {
+            "height"
+        }
+    }
+    impl ::cynic::core::HasField<Height, Option<i32>> for super::Person {}
+    pub struct Mass;
+    impl ::cynic::core::FieldName for Mass {
+        fn name() -> &'static str {
+            "mass"
+        }
+    }
+    impl ::cynic::core::HasField<Mass, Option<f64>> for super::Person {}
+    pub struct SkinColor;
+    impl ::cynic::core::FieldName for SkinColor {
+        fn name() -> &'static str {
+            "skinColor"
+        }
+    }
+    impl ::cynic::core::HasField<SkinColor, Option<String>> for super::Person {}
+    pub struct Homeworld;
+    impl ::cynic::core::FieldName for Homeworld {
+        fn name() -> &'static str {
+            "homeworld"
+        }
+    }
+    impl ::cynic::core::HasField<Homeworld, Option<super::Planet>> for super::Person {}
+    pub struct FilmConnection;
+    impl ::cynic::core::FieldName for FilmConnection {
+        fn name() -> &'static str {
+            "filmConnection"
+        }
+    }
+    impl ::cynic::core::HasField<FilmConnection, Option<super::PersonFilmsConnection>>
+        for super::Person
+    {
+    }
+    pub struct Species;
+    impl ::cynic::core::FieldName for Species {
+        fn name() -> &'static str {
+            "species"
+        }
+    }
+    impl ::cynic::core::HasField<Species, Option<super::Species>> for super::Person {}
+    pub struct StarshipConnection;
+    impl ::cynic::core::FieldName for StarshipConnection {
+        fn name() -> &'static str {
+            "starshipConnection"
+        }
+    }
+    impl ::cynic::core::HasField<StarshipConnection, Option<super::PersonStarshipsConnection>>
+        for super::Person
+    {
+    }
+    pub struct VehicleConnection;
+    impl ::cynic::core::FieldName for VehicleConnection {
+        fn name() -> &'static str {
+            "vehicleConnection"
+        }
+    }
+    impl ::cynic::core::HasField<VehicleConnection, Option<super::PersonVehiclesConnection>>
+        for super::Person
+    {
+    }
+    pub struct Created;
+    impl ::cynic::core::FieldName for Created {
+        fn name() -> &'static str {
+            "created"
+        }
+    }
+    impl ::cynic::core::HasField<Created, Option<String>> for super::Person {}
+    pub struct Edited;
+    impl ::cynic::core::FieldName for Edited {
+        fn name() -> &'static str {
+            "edited"
+        }
+    }
+    impl ::cynic::core::HasField<Edited, Option<String>> for super::Person {}
+    pub struct Id;
+    impl ::cynic::core::FieldName for Id {
+        fn name() -> &'static str {
+            "id"
+        }
+    }
+    impl ::cynic::core::HasField<Id, ::cynic::Id> for super::Person {}
+}
+pub struct PersonFilmsConnection;
+pub mod person_films_connection_fields {
+    pub struct PageInfo;
+    impl ::cynic::core::FieldName for PageInfo {
+        fn name() -> &'static str {
+            "pageInfo"
+        }
+    }
+    impl ::cynic::core::HasField<PageInfo, super::PageInfo> for super::PersonFilmsConnection {}
+    pub struct Edges;
+    impl ::cynic::core::FieldName for Edges {
+        fn name() -> &'static str {
+            "edges"
+        }
+    }
+    impl ::cynic::core::HasField<Edges, Option<Vec<Option<super::PersonFilmsEdge>>>>
+        for super::PersonFilmsConnection
+    {
+    }
+    pub struct TotalCount;
+    impl ::cynic::core::FieldName for TotalCount {
+        fn name() -> &'static str {
+            "totalCount"
+        }
+    }
+    impl ::cynic::core::HasField<TotalCount, Option<i32>> for super::PersonFilmsConnection {}
+    pub struct Films;
+    impl ::cynic::core::FieldName for Films {
+        fn name() -> &'static str {
+            "films"
+        }
+    }
+    impl ::cynic::core::HasField<Films, Option<Vec<Option<super::Film>>>>
+        for super::PersonFilmsConnection
+    {
+    }
+}
+pub struct PersonFilmsEdge;
+pub mod person_films_edge_fields {
+    pub struct Node;
+    impl ::cynic::core::FieldName for Node {
+        fn name() -> &'static str {
+            "node"
+        }
+    }
+    impl ::cynic::core::HasField<Node, Option<super::Film>> for super::PersonFilmsEdge {}
+    pub struct Cursor;
+    impl ::cynic::core::FieldName for Cursor {
+        fn name() -> &'static str {
+            "cursor"
+        }
+    }
+    impl ::cynic::core::HasField<Cursor, String> for super::PersonFilmsEdge {}
+}
+pub struct PersonStarshipsConnection;
+pub mod person_starships_connection_fields {
+    pub struct PageInfo;
+    impl ::cynic::core::FieldName for PageInfo {
+        fn name() -> &'static str {
+            "pageInfo"
+        }
+    }
+    impl ::cynic::core::HasField<PageInfo, super::PageInfo> for super::PersonStarshipsConnection {}
+    pub struct Edges;
+    impl ::cynic::core::FieldName for Edges {
+        fn name() -> &'static str {
+            "edges"
+        }
+    }
+    impl ::cynic::core::HasField<Edges, Option<Vec<Option<super::PersonStarshipsEdge>>>>
+        for super::PersonStarshipsConnection
+    {
+    }
+    pub struct TotalCount;
+    impl ::cynic::core::FieldName for TotalCount {
+        fn name() -> &'static str {
+            "totalCount"
+        }
+    }
+    impl ::cynic::core::HasField<TotalCount, Option<i32>> for super::PersonStarshipsConnection {}
+    pub struct Starships;
+    impl ::cynic::core::FieldName for Starships {
+        fn name() -> &'static str {
+            "starships"
+        }
+    }
+    impl ::cynic::core::HasField<Starships, Option<Vec<Option<super::Starship>>>>
+        for super::PersonStarshipsConnection
+    {
+    }
+}
+pub struct PersonStarshipsEdge;
+pub mod person_starships_edge_fields {
+    pub struct Node;
+    impl ::cynic::core::FieldName for Node {
+        fn name() -> &'static str {
+            "node"
+        }
+    }
+    impl ::cynic::core::HasField<Node, Option<super::Starship>> for super::PersonStarshipsEdge {}
+    pub struct Cursor;
+    impl ::cynic::core::FieldName for Cursor {
+        fn name() -> &'static str {
+            "cursor"
+        }
+    }
+    impl ::cynic::core::HasField<Cursor, String> for super::PersonStarshipsEdge {}
+}
+pub struct PersonVehiclesConnection;
+pub mod person_vehicles_connection_fields {
+    pub struct PageInfo;
+    impl ::cynic::core::FieldName for PageInfo {
+        fn name() -> &'static str {
+            "pageInfo"
+        }
+    }
+    impl ::cynic::core::HasField<PageInfo, super::PageInfo> for super::PersonVehiclesConnection {}
+    pub struct Edges;
+    impl ::cynic::core::FieldName for Edges {
+        fn name() -> &'static str {
+            "edges"
+        }
+    }
+    impl ::cynic::core::HasField<Edges, Option<Vec<Option<super::PersonVehiclesEdge>>>>
+        for super::PersonVehiclesConnection
+    {
+    }
+    pub struct TotalCount;
+    impl ::cynic::core::FieldName for TotalCount {
+        fn name() -> &'static str {
+            "totalCount"
+        }
+    }
+    impl ::cynic::core::HasField<TotalCount, Option<i32>> for super::PersonVehiclesConnection {}
+    pub struct Vehicles;
+    impl ::cynic::core::FieldName for Vehicles {
+        fn name() -> &'static str {
+            "vehicles"
+        }
+    }
+    impl ::cynic::core::HasField<Vehicles, Option<Vec<Option<super::Vehicle>>>>
+        for super::PersonVehiclesConnection
+    {
+    }
+}
+pub struct PersonVehiclesEdge;
+pub mod person_vehicles_edge_fields {
+    pub struct Node;
+    impl ::cynic::core::FieldName for Node {
+        fn name() -> &'static str {
+            "node"
+        }
+    }
+    impl ::cynic::core::HasField<Node, Option<super::Vehicle>> for super::PersonVehiclesEdge {}
+    pub struct Cursor;
+    impl ::cynic::core::FieldName for Cursor {
+        fn name() -> &'static str {
+            "cursor"
+        }
+    }
+    impl ::cynic::core::HasField<Cursor, String> for super::PersonVehiclesEdge {}
+}
+pub struct Planet;
+pub mod planet_fields {
+    pub struct Name;
+    impl ::cynic::core::FieldName for Name {
+        fn name() -> &'static str {
+            "name"
+        }
+    }
+    impl ::cynic::core::HasField<Name, Option<String>> for super::Planet {}
+    pub struct Diameter;
+    impl ::cynic::core::FieldName for Diameter {
+        fn name() -> &'static str {
+            "diameter"
+        }
+    }
+    impl ::cynic::core::HasField<Diameter, Option<i32>> for super::Planet {}
+    pub struct RotationPeriod;
+    impl ::cynic::core::FieldName for RotationPeriod {
+        fn name() -> &'static str {
+            "rotationPeriod"
+        }
+    }
+    impl ::cynic::core::HasField<RotationPeriod, Option<i32>> for super::Planet {}
+    pub struct OrbitalPeriod;
+    impl ::cynic::core::FieldName for OrbitalPeriod {
+        fn name() -> &'static str {
+            "orbitalPeriod"
+        }
+    }
+    impl ::cynic::core::HasField<OrbitalPeriod, Option<i32>> for super::Planet {}
+    pub struct Gravity;
+    impl ::cynic::core::FieldName for Gravity {
+        fn name() -> &'static str {
+            "gravity"
+        }
+    }
+    impl ::cynic::core::HasField<Gravity, Option<String>> for super::Planet {}
+    pub struct Population;
+    impl ::cynic::core::FieldName for Population {
+        fn name() -> &'static str {
+            "population"
+        }
+    }
+    impl ::cynic::core::HasField<Population, Option<f64>> for super::Planet {}
+    pub struct Climates;
+    impl ::cynic::core::FieldName for Climates {
+        fn name() -> &'static str {
+            "climates"
+        }
+    }
+    impl ::cynic::core::HasField<Climates, Option<Vec<Option<String>>>> for super::Planet {}
+    pub struct Terrains;
+    impl ::cynic::core::FieldName for Terrains {
+        fn name() -> &'static str {
+            "terrains"
+        }
+    }
+    impl ::cynic::core::HasField<Terrains, Option<Vec<Option<String>>>> for super::Planet {}
+    pub struct SurfaceWater;
+    impl ::cynic::core::FieldName for SurfaceWater {
+        fn name() -> &'static str {
+            "surfaceWater"
+        }
+    }
+    impl ::cynic::core::HasField<SurfaceWater, Option<f64>> for super::Planet {}
+    pub struct ResidentConnection;
+    impl ::cynic::core::FieldName for ResidentConnection {
+        fn name() -> &'static str {
+            "residentConnection"
+        }
+    }
+    impl ::cynic::core::HasField<ResidentConnection, Option<super::PlanetResidentsConnection>>
+        for super::Planet
+    {
+    }
+    pub struct FilmConnection;
+    impl ::cynic::core::FieldName for FilmConnection {
+        fn name() -> &'static str {
+            "filmConnection"
+        }
+    }
+    impl ::cynic::core::HasField<FilmConnection, Option<super::PlanetFilmsConnection>>
+        for super::Planet
+    {
+    }
+    pub struct Created;
+    impl ::cynic::core::FieldName for Created {
+        fn name() -> &'static str {
+            "created"
+        }
+    }
+    impl ::cynic::core::HasField<Created, Option<String>> for super::Planet {}
+    pub struct Edited;
+    impl ::cynic::core::FieldName for Edited {
+        fn name() -> &'static str {
+            "edited"
+        }
+    }
+    impl ::cynic::core::HasField<Edited, Option<String>> for super::Planet {}
+    pub struct Id;
+    impl ::cynic::core::FieldName for Id {
+        fn name() -> &'static str {
+            "id"
+        }
+    }
+    impl ::cynic::core::HasField<Id, ::cynic::Id> for super::Planet {}
+}
+pub struct PlanetFilmsConnection;
+pub mod planet_films_connection_fields {
+    pub struct PageInfo;
+    impl ::cynic::core::FieldName for PageInfo {
+        fn name() -> &'static str {
+            "pageInfo"
+        }
+    }
+    impl ::cynic::core::HasField<PageInfo, super::PageInfo> for super::PlanetFilmsConnection {}
+    pub struct Edges;
+    impl ::cynic::core::FieldName for Edges {
+        fn name() -> &'static str {
+            "edges"
+        }
+    }
+    impl ::cynic::core::HasField<Edges, Option<Vec<Option<super::PlanetFilmsEdge>>>>
+        for super::PlanetFilmsConnection
+    {
+    }
+    pub struct TotalCount;
+    impl ::cynic::core::FieldName for TotalCount {
+        fn name() -> &'static str {
+            "totalCount"
+        }
+    }
+    impl ::cynic::core::HasField<TotalCount, Option<i32>> for super::PlanetFilmsConnection {}
+    pub struct Films;
+    impl ::cynic::core::FieldName for Films {
+        fn name() -> &'static str {
+            "films"
+        }
+    }
+    impl ::cynic::core::HasField<Films, Option<Vec<Option<super::Film>>>>
+        for super::PlanetFilmsConnection
+    {
+    }
+}
+pub struct PlanetFilmsEdge;
+pub mod planet_films_edge_fields {
+    pub struct Node;
+    impl ::cynic::core::FieldName for Node {
+        fn name() -> &'static str {
+            "node"
+        }
+    }
+    impl ::cynic::core::HasField<Node, Option<super::Film>> for super::PlanetFilmsEdge {}
+    pub struct Cursor;
+    impl ::cynic::core::FieldName for Cursor {
+        fn name() -> &'static str {
+            "cursor"
+        }
+    }
+    impl ::cynic::core::HasField<Cursor, String> for super::PlanetFilmsEdge {}
+}
+pub struct PlanetResidentsConnection;
+pub mod planet_residents_connection_fields {
+    pub struct PageInfo;
+    impl ::cynic::core::FieldName for PageInfo {
+        fn name() -> &'static str {
+            "pageInfo"
+        }
+    }
+    impl ::cynic::core::HasField<PageInfo, super::PageInfo> for super::PlanetResidentsConnection {}
+    pub struct Edges;
+    impl ::cynic::core::FieldName for Edges {
+        fn name() -> &'static str {
+            "edges"
+        }
+    }
+    impl ::cynic::core::HasField<Edges, Option<Vec<Option<super::PlanetResidentsEdge>>>>
+        for super::PlanetResidentsConnection
+    {
+    }
+    pub struct TotalCount;
+    impl ::cynic::core::FieldName for TotalCount {
+        fn name() -> &'static str {
+            "totalCount"
+        }
+    }
+    impl ::cynic::core::HasField<TotalCount, Option<i32>> for super::PlanetResidentsConnection {}
+    pub struct Residents;
+    impl ::cynic::core::FieldName for Residents {
+        fn name() -> &'static str {
+            "residents"
+        }
+    }
+    impl ::cynic::core::HasField<Residents, Option<Vec<Option<super::Person>>>>
+        for super::PlanetResidentsConnection
+    {
+    }
+}
+pub struct PlanetResidentsEdge;
+pub mod planet_residents_edge_fields {
+    pub struct Node;
+    impl ::cynic::core::FieldName for Node {
+        fn name() -> &'static str {
+            "node"
+        }
+    }
+    impl ::cynic::core::HasField<Node, Option<super::Person>> for super::PlanetResidentsEdge {}
+    pub struct Cursor;
+    impl ::cynic::core::FieldName for Cursor {
+        fn name() -> &'static str {
+            "cursor"
+        }
+    }
+    impl ::cynic::core::HasField<Cursor, String> for super::PlanetResidentsEdge {}
+}
+pub struct PlanetsConnection;
+pub mod planets_connection_fields {
+    pub struct PageInfo;
+    impl ::cynic::core::FieldName for PageInfo {
+        fn name() -> &'static str {
+            "pageInfo"
+        }
+    }
+    impl ::cynic::core::HasField<PageInfo, super::PageInfo> for super::PlanetsConnection {}
+    pub struct Edges;
+    impl ::cynic::core::FieldName for Edges {
+        fn name() -> &'static str {
+            "edges"
+        }
+    }
+    impl ::cynic::core::HasField<Edges, Option<Vec<Option<super::PlanetsEdge>>>>
+        for super::PlanetsConnection
+    {
+    }
+    pub struct TotalCount;
+    impl ::cynic::core::FieldName for TotalCount {
+        fn name() -> &'static str {
+            "totalCount"
+        }
+    }
+    impl ::cynic::core::HasField<TotalCount, Option<i32>> for super::PlanetsConnection {}
+    pub struct Planets;
+    impl ::cynic::core::FieldName for Planets {
+        fn name() -> &'static str {
+            "planets"
+        }
+    }
+    impl ::cynic::core::HasField<Planets, Option<Vec<Option<super::Planet>>>>
+        for super::PlanetsConnection
+    {
+    }
+}
+pub struct PlanetsEdge;
+pub mod planets_edge_fields {
+    pub struct Node;
+    impl ::cynic::core::FieldName for Node {
+        fn name() -> &'static str {
+            "node"
+        }
+    }
+    impl ::cynic::core::HasField<Node, Option<super::Planet>> for super::PlanetsEdge {}
+    pub struct Cursor;
+    impl ::cynic::core::FieldName for Cursor {
+        fn name() -> &'static str {
+            "cursor"
+        }
+    }
+    impl ::cynic::core::HasField<Cursor, String> for super::PlanetsEdge {}
+}
+pub struct Root;
+pub mod root_fields {
+    pub struct AllFilms;
+    impl ::cynic::core::FieldName for AllFilms {
+        fn name() -> &'static str {
+            "allFilms"
+        }
+    }
+    impl ::cynic::core::HasField<AllFilms, Option<super::FilmsConnection>> for super::Root {}
+    pub struct Film;
+    impl ::cynic::core::FieldName for Film {
+        fn name() -> &'static str {
+            "film"
+        }
+    }
+    impl ::cynic::core::HasField<Film, Option<super::Film>> for super::Root {}
+    pub struct AllPeople;
+    impl ::cynic::core::FieldName for AllPeople {
+        fn name() -> &'static str {
+            "allPeople"
+        }
+    }
+    impl ::cynic::core::HasField<AllPeople, Option<super::PeopleConnection>> for super::Root {}
+    pub struct Person;
+    impl ::cynic::core::FieldName for Person {
+        fn name() -> &'static str {
+            "person"
+        }
+    }
+    impl ::cynic::core::HasField<Person, Option<super::Person>> for super::Root {}
+    pub struct AllPlanets;
+    impl ::cynic::core::FieldName for AllPlanets {
+        fn name() -> &'static str {
+            "allPlanets"
+        }
+    }
+    impl ::cynic::core::HasField<AllPlanets, Option<super::PlanetsConnection>> for super::Root {}
+    pub struct Planet;
+    impl ::cynic::core::FieldName for Planet {
+        fn name() -> &'static str {
+            "planet"
+        }
+    }
+    impl ::cynic::core::HasField<Planet, Option<super::Planet>> for super::Root {}
+    pub struct AllSpecies;
+    impl ::cynic::core::FieldName for AllSpecies {
+        fn name() -> &'static str {
+            "allSpecies"
+        }
+    }
+    impl ::cynic::core::HasField<AllSpecies, Option<super::SpeciesConnection>> for super::Root {}
+    pub struct Species;
+    impl ::cynic::core::FieldName for Species {
+        fn name() -> &'static str {
+            "species"
+        }
+    }
+    impl ::cynic::core::HasField<Species, Option<super::Species>> for super::Root {}
+    pub struct AllStarships;
+    impl ::cynic::core::FieldName for AllStarships {
+        fn name() -> &'static str {
+            "allStarships"
+        }
+    }
+    impl ::cynic::core::HasField<AllStarships, Option<super::StarshipsConnection>> for super::Root {}
+    pub struct Starship;
+    impl ::cynic::core::FieldName for Starship {
+        fn name() -> &'static str {
+            "starship"
+        }
+    }
+    impl ::cynic::core::HasField<Starship, Option<super::Starship>> for super::Root {}
+    pub struct AllVehicles;
+    impl ::cynic::core::FieldName for AllVehicles {
+        fn name() -> &'static str {
+            "allVehicles"
+        }
+    }
+    impl ::cynic::core::HasField<AllVehicles, Option<super::VehiclesConnection>> for super::Root {}
+    pub struct Vehicle;
+    impl ::cynic::core::FieldName for Vehicle {
+        fn name() -> &'static str {
+            "vehicle"
+        }
+    }
+    impl ::cynic::core::HasField<Vehicle, Option<super::Vehicle>> for super::Root {}
+    pub struct Node;
+    impl ::cynic::core::FieldName for Node {
+        fn name() -> &'static str {
+            "node"
+        }
+    }
+    impl ::cynic::core::HasField<Node, Option<super::Node>> for super::Root {}
+}
+pub struct Species;
+pub mod species_fields {
+    pub struct Name;
+    impl ::cynic::core::FieldName for Name {
+        fn name() -> &'static str {
+            "name"
+        }
+    }
+    impl ::cynic::core::HasField<Name, Option<String>> for super::Species {}
+    pub struct Classification;
+    impl ::cynic::core::FieldName for Classification {
+        fn name() -> &'static str {
+            "classification"
+        }
+    }
+    impl ::cynic::core::HasField<Classification, Option<String>> for super::Species {}
+    pub struct Designation;
+    impl ::cynic::core::FieldName for Designation {
+        fn name() -> &'static str {
+            "designation"
+        }
+    }
+    impl ::cynic::core::HasField<Designation, Option<String>> for super::Species {}
+    pub struct AverageHeight;
+    impl ::cynic::core::FieldName for AverageHeight {
+        fn name() -> &'static str {
+            "averageHeight"
+        }
+    }
+    impl ::cynic::core::HasField<AverageHeight, Option<f64>> for super::Species {}
+    pub struct AverageLifespan;
+    impl ::cynic::core::FieldName for AverageLifespan {
+        fn name() -> &'static str {
+            "averageLifespan"
+        }
+    }
+    impl ::cynic::core::HasField<AverageLifespan, Option<i32>> for super::Species {}
+    pub struct EyeColors;
+    impl ::cynic::core::FieldName for EyeColors {
+        fn name() -> &'static str {
+            "eyeColors"
+        }
+    }
+    impl ::cynic::core::HasField<EyeColors, Option<Vec<Option<String>>>> for super::Species {}
+    pub struct HairColors;
+    impl ::cynic::core::FieldName for HairColors {
+        fn name() -> &'static str {
+            "hairColors"
+        }
+    }
+    impl ::cynic::core::HasField<HairColors, Option<Vec<Option<String>>>> for super::Species {}
+    pub struct SkinColors;
+    impl ::cynic::core::FieldName for SkinColors {
+        fn name() -> &'static str {
+            "skinColors"
+        }
+    }
+    impl ::cynic::core::HasField<SkinColors, Option<Vec<Option<String>>>> for super::Species {}
+    pub struct Language;
+    impl ::cynic::core::FieldName for Language {
+        fn name() -> &'static str {
+            "language"
+        }
+    }
+    impl ::cynic::core::HasField<Language, Option<String>> for super::Species {}
+    pub struct Homeworld;
+    impl ::cynic::core::FieldName for Homeworld {
+        fn name() -> &'static str {
+            "homeworld"
+        }
+    }
+    impl ::cynic::core::HasField<Homeworld, Option<super::Planet>> for super::Species {}
+    pub struct PersonConnection;
+    impl ::cynic::core::FieldName for PersonConnection {
+        fn name() -> &'static str {
+            "personConnection"
+        }
+    }
+    impl ::cynic::core::HasField<PersonConnection, Option<super::SpeciesPeopleConnection>>
+        for super::Species
+    {
+    }
+    pub struct FilmConnection;
+    impl ::cynic::core::FieldName for FilmConnection {
+        fn name() -> &'static str {
+            "filmConnection"
+        }
+    }
+    impl ::cynic::core::HasField<FilmConnection, Option<super::SpeciesFilmsConnection>>
+        for super::Species
+    {
+    }
+    pub struct Created;
+    impl ::cynic::core::FieldName for Created {
+        fn name() -> &'static str {
+            "created"
+        }
+    }
+    impl ::cynic::core::HasField<Created, Option<String>> for super::Species {}
+    pub struct Edited;
+    impl ::cynic::core::FieldName for Edited {
+        fn name() -> &'static str {
+            "edited"
+        }
+    }
+    impl ::cynic::core::HasField<Edited, Option<String>> for super::Species {}
+    pub struct Id;
+    impl ::cynic::core::FieldName for Id {
+        fn name() -> &'static str {
+            "id"
+        }
+    }
+    impl ::cynic::core::HasField<Id, ::cynic::Id> for super::Species {}
+}
+pub struct SpeciesConnection;
+pub mod species_connection_fields {
+    pub struct PageInfo;
+    impl ::cynic::core::FieldName for PageInfo {
+        fn name() -> &'static str {
+            "pageInfo"
+        }
+    }
+    impl ::cynic::core::HasField<PageInfo, super::PageInfo> for super::SpeciesConnection {}
+    pub struct Edges;
+    impl ::cynic::core::FieldName for Edges {
+        fn name() -> &'static str {
+            "edges"
+        }
+    }
+    impl ::cynic::core::HasField<Edges, Option<Vec<Option<super::SpeciesEdge>>>>
+        for super::SpeciesConnection
+    {
+    }
+    pub struct TotalCount;
+    impl ::cynic::core::FieldName for TotalCount {
+        fn name() -> &'static str {
+            "totalCount"
+        }
+    }
+    impl ::cynic::core::HasField<TotalCount, Option<i32>> for super::SpeciesConnection {}
+    pub struct Species;
+    impl ::cynic::core::FieldName for Species {
+        fn name() -> &'static str {
+            "species"
+        }
+    }
+    impl ::cynic::core::HasField<Species, Option<Vec<Option<super::Species>>>>
+        for super::SpeciesConnection
+    {
+    }
+}
+pub struct SpeciesEdge;
+pub mod species_edge_fields {
+    pub struct Node;
+    impl ::cynic::core::FieldName for Node {
+        fn name() -> &'static str {
+            "node"
+        }
+    }
+    impl ::cynic::core::HasField<Node, Option<super::Species>> for super::SpeciesEdge {}
+    pub struct Cursor;
+    impl ::cynic::core::FieldName for Cursor {
+        fn name() -> &'static str {
+            "cursor"
+        }
+    }
+    impl ::cynic::core::HasField<Cursor, String> for super::SpeciesEdge {}
+}
+pub struct SpeciesFilmsConnection;
+pub mod species_films_connection_fields {
+    pub struct PageInfo;
+    impl ::cynic::core::FieldName for PageInfo {
+        fn name() -> &'static str {
+            "pageInfo"
+        }
+    }
+    impl ::cynic::core::HasField<PageInfo, super::PageInfo> for super::SpeciesFilmsConnection {}
+    pub struct Edges;
+    impl ::cynic::core::FieldName for Edges {
+        fn name() -> &'static str {
+            "edges"
+        }
+    }
+    impl ::cynic::core::HasField<Edges, Option<Vec<Option<super::SpeciesFilmsEdge>>>>
+        for super::SpeciesFilmsConnection
+    {
+    }
+    pub struct TotalCount;
+    impl ::cynic::core::FieldName for TotalCount {
+        fn name() -> &'static str {
+            "totalCount"
+        }
+    }
+    impl ::cynic::core::HasField<TotalCount, Option<i32>> for super::SpeciesFilmsConnection {}
+    pub struct Films;
+    impl ::cynic::core::FieldName for Films {
+        fn name() -> &'static str {
+            "films"
+        }
+    }
+    impl ::cynic::core::HasField<Films, Option<Vec<Option<super::Film>>>>
+        for super::SpeciesFilmsConnection
+    {
+    }
+}
+pub struct SpeciesFilmsEdge;
+pub mod species_films_edge_fields {
+    pub struct Node;
+    impl ::cynic::core::FieldName for Node {
+        fn name() -> &'static str {
+            "node"
+        }
+    }
+    impl ::cynic::core::HasField<Node, Option<super::Film>> for super::SpeciesFilmsEdge {}
+    pub struct Cursor;
+    impl ::cynic::core::FieldName for Cursor {
+        fn name() -> &'static str {
+            "cursor"
+        }
+    }
+    impl ::cynic::core::HasField<Cursor, String> for super::SpeciesFilmsEdge {}
+}
+pub struct SpeciesPeopleConnection;
+pub mod species_people_connection_fields {
+    pub struct PageInfo;
+    impl ::cynic::core::FieldName for PageInfo {
+        fn name() -> &'static str {
+            "pageInfo"
+        }
+    }
+    impl ::cynic::core::HasField<PageInfo, super::PageInfo> for super::SpeciesPeopleConnection {}
+    pub struct Edges;
+    impl ::cynic::core::FieldName for Edges {
+        fn name() -> &'static str {
+            "edges"
+        }
+    }
+    impl ::cynic::core::HasField<Edges, Option<Vec<Option<super::SpeciesPeopleEdge>>>>
+        for super::SpeciesPeopleConnection
+    {
+    }
+    pub struct TotalCount;
+    impl ::cynic::core::FieldName for TotalCount {
+        fn name() -> &'static str {
+            "totalCount"
+        }
+    }
+    impl ::cynic::core::HasField<TotalCount, Option<i32>> for super::SpeciesPeopleConnection {}
+    pub struct People;
+    impl ::cynic::core::FieldName for People {
+        fn name() -> &'static str {
+            "people"
+        }
+    }
+    impl ::cynic::core::HasField<People, Option<Vec<Option<super::Person>>>>
+        for super::SpeciesPeopleConnection
+    {
+    }
+}
+pub struct SpeciesPeopleEdge;
+pub mod species_people_edge_fields {
+    pub struct Node;
+    impl ::cynic::core::FieldName for Node {
+        fn name() -> &'static str {
+            "node"
+        }
+    }
+    impl ::cynic::core::HasField<Node, Option<super::Person>> for super::SpeciesPeopleEdge {}
+    pub struct Cursor;
+    impl ::cynic::core::FieldName for Cursor {
+        fn name() -> &'static str {
+            "cursor"
+        }
+    }
+    impl ::cynic::core::HasField<Cursor, String> for super::SpeciesPeopleEdge {}
+}
+pub struct Starship;
+pub mod starship_fields {
+    pub struct Name;
+    impl ::cynic::core::FieldName for Name {
+        fn name() -> &'static str {
+            "name"
+        }
+    }
+    impl ::cynic::core::HasField<Name, Option<String>> for super::Starship {}
+    pub struct Model;
+    impl ::cynic::core::FieldName for Model {
+        fn name() -> &'static str {
+            "model"
+        }
+    }
+    impl ::cynic::core::HasField<Model, Option<String>> for super::Starship {}
+    pub struct StarshipClass;
+    impl ::cynic::core::FieldName for StarshipClass {
+        fn name() -> &'static str {
+            "starshipClass"
+        }
+    }
+    impl ::cynic::core::HasField<StarshipClass, Option<String>> for super::Starship {}
+    pub struct Manufacturers;
+    impl ::cynic::core::FieldName for Manufacturers {
+        fn name() -> &'static str {
+            "manufacturers"
+        }
+    }
+    impl ::cynic::core::HasField<Manufacturers, Option<Vec<Option<String>>>> for super::Starship {}
+    pub struct CostInCredits;
+    impl ::cynic::core::FieldName for CostInCredits {
+        fn name() -> &'static str {
+            "costInCredits"
+        }
+    }
+    impl ::cynic::core::HasField<CostInCredits, Option<f64>> for super::Starship {}
+    pub struct Length;
+    impl ::cynic::core::FieldName for Length {
+        fn name() -> &'static str {
+            "length"
+        }
+    }
+    impl ::cynic::core::HasField<Length, Option<f64>> for super::Starship {}
+    pub struct Crew;
+    impl ::cynic::core::FieldName for Crew {
+        fn name() -> &'static str {
+            "crew"
+        }
+    }
+    impl ::cynic::core::HasField<Crew, Option<String>> for super::Starship {}
+    pub struct Passengers;
+    impl ::cynic::core::FieldName for Passengers {
+        fn name() -> &'static str {
+            "passengers"
+        }
+    }
+    impl ::cynic::core::HasField<Passengers, Option<String>> for super::Starship {}
+    pub struct MaxAtmospheringSpeed;
+    impl ::cynic::core::FieldName for MaxAtmospheringSpeed {
+        fn name() -> &'static str {
+            "maxAtmospheringSpeed"
+        }
+    }
+    impl ::cynic::core::HasField<MaxAtmospheringSpeed, Option<i32>> for super::Starship {}
+    pub struct HyperdriveRating;
+    impl ::cynic::core::FieldName for HyperdriveRating {
+        fn name() -> &'static str {
+            "hyperdriveRating"
+        }
+    }
+    impl ::cynic::core::HasField<HyperdriveRating, Option<f64>> for super::Starship {}
+    pub struct Mglt;
+    impl ::cynic::core::FieldName for Mglt {
+        fn name() -> &'static str {
+            "MGLT"
+        }
+    }
+    impl ::cynic::core::HasField<Mglt, Option<i32>> for super::Starship {}
+    pub struct CargoCapacity;
+    impl ::cynic::core::FieldName for CargoCapacity {
+        fn name() -> &'static str {
+            "cargoCapacity"
+        }
+    }
+    impl ::cynic::core::HasField<CargoCapacity, Option<f64>> for super::Starship {}
+    pub struct Consumables;
+    impl ::cynic::core::FieldName for Consumables {
+        fn name() -> &'static str {
+            "consumables"
+        }
+    }
+    impl ::cynic::core::HasField<Consumables, Option<String>> for super::Starship {}
+    pub struct PilotConnection;
+    impl ::cynic::core::FieldName for PilotConnection {
+        fn name() -> &'static str {
+            "pilotConnection"
+        }
+    }
+    impl ::cynic::core::HasField<PilotConnection, Option<super::StarshipPilotsConnection>>
+        for super::Starship
+    {
+    }
+    pub struct FilmConnection;
+    impl ::cynic::core::FieldName for FilmConnection {
+        fn name() -> &'static str {
+            "filmConnection"
+        }
+    }
+    impl ::cynic::core::HasField<FilmConnection, Option<super::StarshipFilmsConnection>>
+        for super::Starship
+    {
+    }
+    pub struct Created;
+    impl ::cynic::core::FieldName for Created {
+        fn name() -> &'static str {
+            "created"
+        }
+    }
+    impl ::cynic::core::HasField<Created, Option<String>> for super::Starship {}
+    pub struct Edited;
+    impl ::cynic::core::FieldName for Edited {
+        fn name() -> &'static str {
+            "edited"
+        }
+    }
+    impl ::cynic::core::HasField<Edited, Option<String>> for super::Starship {}
+    pub struct Id;
+    impl ::cynic::core::FieldName for Id {
+        fn name() -> &'static str {
+            "id"
+        }
+    }
+    impl ::cynic::core::HasField<Id, ::cynic::Id> for super::Starship {}
+}
+pub struct StarshipFilmsConnection;
+pub mod starship_films_connection_fields {
+    pub struct PageInfo;
+    impl ::cynic::core::FieldName for PageInfo {
+        fn name() -> &'static str {
+            "pageInfo"
+        }
+    }
+    impl ::cynic::core::HasField<PageInfo, super::PageInfo> for super::StarshipFilmsConnection {}
+    pub struct Edges;
+    impl ::cynic::core::FieldName for Edges {
+        fn name() -> &'static str {
+            "edges"
+        }
+    }
+    impl ::cynic::core::HasField<Edges, Option<Vec<Option<super::StarshipFilmsEdge>>>>
+        for super::StarshipFilmsConnection
+    {
+    }
+    pub struct TotalCount;
+    impl ::cynic::core::FieldName for TotalCount {
+        fn name() -> &'static str {
+            "totalCount"
+        }
+    }
+    impl ::cynic::core::HasField<TotalCount, Option<i32>> for super::StarshipFilmsConnection {}
+    pub struct Films;
+    impl ::cynic::core::FieldName for Films {
+        fn name() -> &'static str {
+            "films"
+        }
+    }
+    impl ::cynic::core::HasField<Films, Option<Vec<Option<super::Film>>>>
+        for super::StarshipFilmsConnection
+    {
+    }
+}
+pub struct StarshipFilmsEdge;
+pub mod starship_films_edge_fields {
+    pub struct Node;
+    impl ::cynic::core::FieldName for Node {
+        fn name() -> &'static str {
+            "node"
+        }
+    }
+    impl ::cynic::core::HasField<Node, Option<super::Film>> for super::StarshipFilmsEdge {}
+    pub struct Cursor;
+    impl ::cynic::core::FieldName for Cursor {
+        fn name() -> &'static str {
+            "cursor"
+        }
+    }
+    impl ::cynic::core::HasField<Cursor, String> for super::StarshipFilmsEdge {}
+}
+pub struct StarshipPilotsConnection;
+pub mod starship_pilots_connection_fields {
+    pub struct PageInfo;
+    impl ::cynic::core::FieldName for PageInfo {
+        fn name() -> &'static str {
+            "pageInfo"
+        }
+    }
+    impl ::cynic::core::HasField<PageInfo, super::PageInfo> for super::StarshipPilotsConnection {}
+    pub struct Edges;
+    impl ::cynic::core::FieldName for Edges {
+        fn name() -> &'static str {
+            "edges"
+        }
+    }
+    impl ::cynic::core::HasField<Edges, Option<Vec<Option<super::StarshipPilotsEdge>>>>
+        for super::StarshipPilotsConnection
+    {
+    }
+    pub struct TotalCount;
+    impl ::cynic::core::FieldName for TotalCount {
+        fn name() -> &'static str {
+            "totalCount"
+        }
+    }
+    impl ::cynic::core::HasField<TotalCount, Option<i32>> for super::StarshipPilotsConnection {}
+    pub struct Pilots;
+    impl ::cynic::core::FieldName for Pilots {
+        fn name() -> &'static str {
+            "pilots"
+        }
+    }
+    impl ::cynic::core::HasField<Pilots, Option<Vec<Option<super::Person>>>>
+        for super::StarshipPilotsConnection
+    {
+    }
+}
+pub struct StarshipPilotsEdge;
+pub mod starship_pilots_edge_fields {
+    pub struct Node;
+    impl ::cynic::core::FieldName for Node {
+        fn name() -> &'static str {
+            "node"
+        }
+    }
+    impl ::cynic::core::HasField<Node, Option<super::Person>> for super::StarshipPilotsEdge {}
+    pub struct Cursor;
+    impl ::cynic::core::FieldName for Cursor {
+        fn name() -> &'static str {
+            "cursor"
+        }
+    }
+    impl ::cynic::core::HasField<Cursor, String> for super::StarshipPilotsEdge {}
+}
+pub struct StarshipsConnection;
+pub mod starships_connection_fields {
+    pub struct PageInfo;
+    impl ::cynic::core::FieldName for PageInfo {
+        fn name() -> &'static str {
+            "pageInfo"
+        }
+    }
+    impl ::cynic::core::HasField<PageInfo, super::PageInfo> for super::StarshipsConnection {}
+    pub struct Edges;
+    impl ::cynic::core::FieldName for Edges {
+        fn name() -> &'static str {
+            "edges"
+        }
+    }
+    impl ::cynic::core::HasField<Edges, Option<Vec<Option<super::StarshipsEdge>>>>
+        for super::StarshipsConnection
+    {
+    }
+    pub struct TotalCount;
+    impl ::cynic::core::FieldName for TotalCount {
+        fn name() -> &'static str {
+            "totalCount"
+        }
+    }
+    impl ::cynic::core::HasField<TotalCount, Option<i32>> for super::StarshipsConnection {}
+    pub struct Starships;
+    impl ::cynic::core::FieldName for Starships {
+        fn name() -> &'static str {
+            "starships"
+        }
+    }
+    impl ::cynic::core::HasField<Starships, Option<Vec<Option<super::Starship>>>>
+        for super::StarshipsConnection
+    {
+    }
+}
+pub struct StarshipsEdge;
+pub mod starships_edge_fields {
+    pub struct Node;
+    impl ::cynic::core::FieldName for Node {
+        fn name() -> &'static str {
+            "node"
+        }
+    }
+    impl ::cynic::core::HasField<Node, Option<super::Starship>> for super::StarshipsEdge {}
+    pub struct Cursor;
+    impl ::cynic::core::FieldName for Cursor {
+        fn name() -> &'static str {
+            "cursor"
+        }
+    }
+    impl ::cynic::core::HasField<Cursor, String> for super::StarshipsEdge {}
+}
+pub struct Vehicle;
+pub mod vehicle_fields {
+    pub struct Name;
+    impl ::cynic::core::FieldName for Name {
+        fn name() -> &'static str {
+            "name"
+        }
+    }
+    impl ::cynic::core::HasField<Name, Option<String>> for super::Vehicle {}
+    pub struct Model;
+    impl ::cynic::core::FieldName for Model {
+        fn name() -> &'static str {
+            "model"
+        }
+    }
+    impl ::cynic::core::HasField<Model, Option<String>> for super::Vehicle {}
+    pub struct VehicleClass;
+    impl ::cynic::core::FieldName for VehicleClass {
+        fn name() -> &'static str {
+            "vehicleClass"
+        }
+    }
+    impl ::cynic::core::HasField<VehicleClass, Option<String>> for super::Vehicle {}
+    pub struct Manufacturers;
+    impl ::cynic::core::FieldName for Manufacturers {
+        fn name() -> &'static str {
+            "manufacturers"
+        }
+    }
+    impl ::cynic::core::HasField<Manufacturers, Option<Vec<Option<String>>>> for super::Vehicle {}
+    pub struct CostInCredits;
+    impl ::cynic::core::FieldName for CostInCredits {
+        fn name() -> &'static str {
+            "costInCredits"
+        }
+    }
+    impl ::cynic::core::HasField<CostInCredits, Option<f64>> for super::Vehicle {}
+    pub struct Length;
+    impl ::cynic::core::FieldName for Length {
+        fn name() -> &'static str {
+            "length"
+        }
+    }
+    impl ::cynic::core::HasField<Length, Option<f64>> for super::Vehicle {}
+    pub struct Crew;
+    impl ::cynic::core::FieldName for Crew {
+        fn name() -> &'static str {
+            "crew"
+        }
+    }
+    impl ::cynic::core::HasField<Crew, Option<String>> for super::Vehicle {}
+    pub struct Passengers;
+    impl ::cynic::core::FieldName for Passengers {
+        fn name() -> &'static str {
+            "passengers"
+        }
+    }
+    impl ::cynic::core::HasField<Passengers, Option<String>> for super::Vehicle {}
+    pub struct MaxAtmospheringSpeed;
+    impl ::cynic::core::FieldName for MaxAtmospheringSpeed {
+        fn name() -> &'static str {
+            "maxAtmospheringSpeed"
+        }
+    }
+    impl ::cynic::core::HasField<MaxAtmospheringSpeed, Option<i32>> for super::Vehicle {}
+    pub struct CargoCapacity;
+    impl ::cynic::core::FieldName for CargoCapacity {
+        fn name() -> &'static str {
+            "cargoCapacity"
+        }
+    }
+    impl ::cynic::core::HasField<CargoCapacity, Option<f64>> for super::Vehicle {}
+    pub struct Consumables;
+    impl ::cynic::core::FieldName for Consumables {
+        fn name() -> &'static str {
+            "consumables"
+        }
+    }
+    impl ::cynic::core::HasField<Consumables, Option<String>> for super::Vehicle {}
+    pub struct PilotConnection;
+    impl ::cynic::core::FieldName for PilotConnection {
+        fn name() -> &'static str {
+            "pilotConnection"
+        }
+    }
+    impl ::cynic::core::HasField<PilotConnection, Option<super::VehiclePilotsConnection>>
+        for super::Vehicle
+    {
+    }
+    pub struct FilmConnection;
+    impl ::cynic::core::FieldName for FilmConnection {
+        fn name() -> &'static str {
+            "filmConnection"
+        }
+    }
+    impl ::cynic::core::HasField<FilmConnection, Option<super::VehicleFilmsConnection>>
+        for super::Vehicle
+    {
+    }
+    pub struct Created;
+    impl ::cynic::core::FieldName for Created {
+        fn name() -> &'static str {
+            "created"
+        }
+    }
+    impl ::cynic::core::HasField<Created, Option<String>> for super::Vehicle {}
+    pub struct Edited;
+    impl ::cynic::core::FieldName for Edited {
+        fn name() -> &'static str {
+            "edited"
+        }
+    }
+    impl ::cynic::core::HasField<Edited, Option<String>> for super::Vehicle {}
+    pub struct Id;
+    impl ::cynic::core::FieldName for Id {
+        fn name() -> &'static str {
+            "id"
+        }
+    }
+    impl ::cynic::core::HasField<Id, ::cynic::Id> for super::Vehicle {}
+}
+pub struct VehicleFilmsConnection;
+pub mod vehicle_films_connection_fields {
+    pub struct PageInfo;
+    impl ::cynic::core::FieldName for PageInfo {
+        fn name() -> &'static str {
+            "pageInfo"
+        }
+    }
+    impl ::cynic::core::HasField<PageInfo, super::PageInfo> for super::VehicleFilmsConnection {}
+    pub struct Edges;
+    impl ::cynic::core::FieldName for Edges {
+        fn name() -> &'static str {
+            "edges"
+        }
+    }
+    impl ::cynic::core::HasField<Edges, Option<Vec<Option<super::VehicleFilmsEdge>>>>
+        for super::VehicleFilmsConnection
+    {
+    }
+    pub struct TotalCount;
+    impl ::cynic::core::FieldName for TotalCount {
+        fn name() -> &'static str {
+            "totalCount"
+        }
+    }
+    impl ::cynic::core::HasField<TotalCount, Option<i32>> for super::VehicleFilmsConnection {}
+    pub struct Films;
+    impl ::cynic::core::FieldName for Films {
+        fn name() -> &'static str {
+            "films"
+        }
+    }
+    impl ::cynic::core::HasField<Films, Option<Vec<Option<super::Film>>>>
+        for super::VehicleFilmsConnection
+    {
+    }
+}
+pub struct VehicleFilmsEdge;
+pub mod vehicle_films_edge_fields {
+    pub struct Node;
+    impl ::cynic::core::FieldName for Node {
+        fn name() -> &'static str {
+            "node"
+        }
+    }
+    impl ::cynic::core::HasField<Node, Option<super::Film>> for super::VehicleFilmsEdge {}
+    pub struct Cursor;
+    impl ::cynic::core::FieldName for Cursor {
+        fn name() -> &'static str {
+            "cursor"
+        }
+    }
+    impl ::cynic::core::HasField<Cursor, String> for super::VehicleFilmsEdge {}
+}
+pub struct VehiclePilotsConnection;
+pub mod vehicle_pilots_connection_fields {
+    pub struct PageInfo;
+    impl ::cynic::core::FieldName for PageInfo {
+        fn name() -> &'static str {
+            "pageInfo"
+        }
+    }
+    impl ::cynic::core::HasField<PageInfo, super::PageInfo> for super::VehiclePilotsConnection {}
+    pub struct Edges;
+    impl ::cynic::core::FieldName for Edges {
+        fn name() -> &'static str {
+            "edges"
+        }
+    }
+    impl ::cynic::core::HasField<Edges, Option<Vec<Option<super::VehiclePilotsEdge>>>>
+        for super::VehiclePilotsConnection
+    {
+    }
+    pub struct TotalCount;
+    impl ::cynic::core::FieldName for TotalCount {
+        fn name() -> &'static str {
+            "totalCount"
+        }
+    }
+    impl ::cynic::core::HasField<TotalCount, Option<i32>> for super::VehiclePilotsConnection {}
+    pub struct Pilots;
+    impl ::cynic::core::FieldName for Pilots {
+        fn name() -> &'static str {
+            "pilots"
+        }
+    }
+    impl ::cynic::core::HasField<Pilots, Option<Vec<Option<super::Person>>>>
+        for super::VehiclePilotsConnection
+    {
+    }
+}
+pub struct VehiclePilotsEdge;
+pub mod vehicle_pilots_edge_fields {
+    pub struct Node;
+    impl ::cynic::core::FieldName for Node {
+        fn name() -> &'static str {
+            "node"
+        }
+    }
+    impl ::cynic::core::HasField<Node, Option<super::Person>> for super::VehiclePilotsEdge {}
+    pub struct Cursor;
+    impl ::cynic::core::FieldName for Cursor {
+        fn name() -> &'static str {
+            "cursor"
+        }
+    }
+    impl ::cynic::core::HasField<Cursor, String> for super::VehiclePilotsEdge {}
+}
+pub struct VehiclesConnection;
+pub mod vehicles_connection_fields {
+    pub struct PageInfo;
+    impl ::cynic::core::FieldName for PageInfo {
+        fn name() -> &'static str {
+            "pageInfo"
+        }
+    }
+    impl ::cynic::core::HasField<PageInfo, super::PageInfo> for super::VehiclesConnection {}
+    pub struct Edges;
+    impl ::cynic::core::FieldName for Edges {
+        fn name() -> &'static str {
+            "edges"
+        }
+    }
+    impl ::cynic::core::HasField<Edges, Option<Vec<Option<super::VehiclesEdge>>>>
+        for super::VehiclesConnection
+    {
+    }
+    pub struct TotalCount;
+    impl ::cynic::core::FieldName for TotalCount {
+        fn name() -> &'static str {
+            "totalCount"
+        }
+    }
+    impl ::cynic::core::HasField<TotalCount, Option<i32>> for super::VehiclesConnection {}
+    pub struct Vehicles;
+    impl ::cynic::core::FieldName for Vehicles {
+        fn name() -> &'static str {
+            "vehicles"
+        }
+    }
+    impl ::cynic::core::HasField<Vehicles, Option<Vec<Option<super::Vehicle>>>>
+        for super::VehiclesConnection
+    {
+    }
+}
+pub struct VehiclesEdge;
+pub mod vehicles_edge_fields {
+    pub struct Node;
+    impl ::cynic::core::FieldName for Node {
+        fn name() -> &'static str {
+            "node"
+        }
+    }
+    impl ::cynic::core::HasField<Node, Option<super::Vehicle>> for super::VehiclesEdge {}
+    pub struct Cursor;
+    impl ::cynic::core::FieldName for Cursor {
+        fn name() -> &'static str {
+            "cursor"
+        }
+    }
+    impl ::cynic::core::HasField<Cursor, String> for super::VehiclesEdge {}
+}
+

@@ -1,0 +1,683 @@
+---
+source: cynic-codegen/tests/use-schema.rs
+expression: "format_code(format!(\"{}\", tokens))"
+
+---
+pub struct City;
+pub mod city_fields {
+    pub struct Id;
+    impl ::cynic::core::FieldName for Id {
+        fn name() -> &'static str {
+            "id"
+        }
+    }
+    impl ::cynic::core::HasField<Id, ::cynic::Id> for super::City {}
+    pub struct Name;
+    impl ::cynic::core::FieldName for Name {
+        fn name() -> &'static str {
+            "name"
+        }
+    }
+    impl ::cynic::core::HasField<Name, String> for super::City {}
+    pub struct Slug;
+    impl ::cynic::core::FieldName for Slug {
+        fn name() -> &'static str {
+            "slug"
+        }
+    }
+    impl ::cynic::core::HasField<Slug, String> for super::City {}
+    pub struct Country;
+    impl ::cynic::core::FieldName for Country {
+        fn name() -> &'static str {
+            "country"
+        }
+    }
+    impl ::cynic::core::HasField<Country, super::Country> for super::City {}
+    pub struct Type;
+    impl ::cynic::core::FieldName for Type {
+        fn name() -> &'static str {
+            "type"
+        }
+    }
+    impl ::cynic::core::HasField<Type, String> for super::City {}
+    pub struct Jobs;
+    impl ::cynic::core::FieldName for Jobs {
+        fn name() -> &'static str {
+            "jobs"
+        }
+    }
+    impl ::cynic::core::HasField<Jobs, Option<Vec<super::Job>>> for super::City {}
+    pub struct CreatedAt;
+    impl ::cynic::core::FieldName for CreatedAt {
+        fn name() -> &'static str {
+            "createdAt"
+        }
+    }
+    impl ::cynic::core::HasField<CreatedAt, super::DateTime> for super::City {}
+    pub struct UpdatedAt;
+    impl ::cynic::core::FieldName for UpdatedAt {
+        fn name() -> &'static str {
+            "updatedAt"
+        }
+    }
+    impl ::cynic::core::HasField<UpdatedAt, super::DateTime> for super::City {}
+}
+pub struct CityOrderByInput {}
+pub struct CityWhereInput {}
+pub struct Commitment;
+pub mod commitment_fields {
+    pub struct Id;
+    impl ::cynic::core::FieldName for Id {
+        fn name() -> &'static str {
+            "id"
+        }
+    }
+    impl ::cynic::core::HasField<Id, ::cynic::Id> for super::Commitment {}
+    pub struct Title;
+    impl ::cynic::core::FieldName for Title {
+        fn name() -> &'static str {
+            "title"
+        }
+    }
+    impl ::cynic::core::HasField<Title, String> for super::Commitment {}
+    pub struct Slug;
+    impl ::cynic::core::FieldName for Slug {
+        fn name() -> &'static str {
+            "slug"
+        }
+    }
+    impl ::cynic::core::HasField<Slug, String> for super::Commitment {}
+    pub struct Jobs;
+    impl ::cynic::core::FieldName for Jobs {
+        fn name() -> &'static str {
+            "jobs"
+        }
+    }
+    impl ::cynic::core::HasField<Jobs, Option<Vec<super::Job>>> for super::Commitment {}
+    pub struct CreatedAt;
+    impl ::cynic::core::FieldName for CreatedAt {
+        fn name() -> &'static str {
+            "createdAt"
+        }
+    }
+    impl ::cynic::core::HasField<CreatedAt, super::DateTime> for super::Commitment {}
+    pub struct UpdatedAt;
+    impl ::cynic::core::FieldName for UpdatedAt {
+        fn name() -> &'static str {
+            "updatedAt"
+        }
+    }
+    impl ::cynic::core::HasField<UpdatedAt, super::DateTime> for super::Commitment {}
+}
+pub struct CommitmentWhereInput {}
+pub struct Company;
+pub mod company_fields {
+    pub struct Id;
+    impl ::cynic::core::FieldName for Id {
+        fn name() -> &'static str {
+            "id"
+        }
+    }
+    impl ::cynic::core::HasField<Id, ::cynic::Id> for super::Company {}
+    pub struct Name;
+    impl ::cynic::core::FieldName for Name {
+        fn name() -> &'static str {
+            "name"
+        }
+    }
+    impl ::cynic::core::HasField<Name, String> for super::Company {}
+    pub struct Slug;
+    impl ::cynic::core::FieldName for Slug {
+        fn name() -> &'static str {
+            "slug"
+        }
+    }
+    impl ::cynic::core::HasField<Slug, String> for super::Company {}
+    pub struct WebsiteUrl;
+    impl ::cynic::core::FieldName for WebsiteUrl {
+        fn name() -> &'static str {
+            "websiteUrl"
+        }
+    }
+    impl ::cynic::core::HasField<WebsiteUrl, String> for super::Company {}
+    pub struct LogoUrl;
+    impl ::cynic::core::FieldName for LogoUrl {
+        fn name() -> &'static str {
+            "logoUrl"
+        }
+    }
+    impl ::cynic::core::HasField<LogoUrl, Option<String>> for super::Company {}
+    pub struct Jobs;
+    impl ::cynic::core::FieldName for Jobs {
+        fn name() -> &'static str {
+            "jobs"
+        }
+    }
+    impl ::cynic::core::HasField<Jobs, Option<Vec<super::Job>>> for super::Company {}
+    pub struct Twitter;
+    impl ::cynic::core::FieldName for Twitter {
+        fn name() -> &'static str {
+            "twitter"
+        }
+    }
+    impl ::cynic::core::HasField<Twitter, Option<String>> for super::Company {}
+    pub struct Emailed;
+    impl ::cynic::core::FieldName for Emailed {
+        fn name() -> &'static str {
+            "emailed"
+        }
+    }
+    impl ::cynic::core::HasField<Emailed, Option<bool>> for super::Company {}
+    pub struct CreatedAt;
+    impl ::cynic::core::FieldName for CreatedAt {
+        fn name() -> &'static str {
+            "createdAt"
+        }
+    }
+    impl ::cynic::core::HasField<CreatedAt, super::DateTime> for super::Company {}
+    pub struct UpdatedAt;
+    impl ::cynic::core::FieldName for UpdatedAt {
+        fn name() -> &'static str {
+            "updatedAt"
+        }
+    }
+    impl ::cynic::core::HasField<UpdatedAt, super::DateTime> for super::Company {}
+}
+pub struct CompanyWhereInput {}
+pub struct Country;
+pub mod country_fields {
+    pub struct Id;
+    impl ::cynic::core::FieldName for Id {
+        fn name() -> &'static str {
+            "id"
+        }
+    }
+    impl ::cynic::core::HasField<Id, ::cynic::Id> for super::Country {}
+    pub struct Name;
+    impl ::cynic::core::FieldName for Name {
+        fn name() -> &'static str {
+            "name"
+        }
+    }
+    impl ::cynic::core::HasField<Name, String> for super::Country {}
+    pub struct Slug;
+    impl ::cynic::core::FieldName for Slug {
+        fn name() -> &'static str {
+            "slug"
+        }
+    }
+    impl ::cynic::core::HasField<Slug, String> for super::Country {}
+    pub struct Type;
+    impl ::cynic::core::FieldName for Type {
+        fn name() -> &'static str {
+            "type"
+        }
+    }
+    impl ::cynic::core::HasField<Type, String> for super::Country {}
+    pub struct IsoCode;
+    impl ::cynic::core::FieldName for IsoCode {
+        fn name() -> &'static str {
+            "isoCode"
+        }
+    }
+    impl ::cynic::core::HasField<IsoCode, Option<String>> for super::Country {}
+    pub struct Cities;
+    impl ::cynic::core::FieldName for Cities {
+        fn name() -> &'static str {
+            "cities"
+        }
+    }
+    impl ::cynic::core::HasField<Cities, Option<Vec<super::City>>> for super::Country {}
+    pub struct Jobs;
+    impl ::cynic::core::FieldName for Jobs {
+        fn name() -> &'static str {
+            "jobs"
+        }
+    }
+    impl ::cynic::core::HasField<Jobs, Option<Vec<super::Job>>> for super::Country {}
+    pub struct CreatedAt;
+    impl ::cynic::core::FieldName for CreatedAt {
+        fn name() -> &'static str {
+            "createdAt"
+        }
+    }
+    impl ::cynic::core::HasField<CreatedAt, super::DateTime> for super::Country {}
+    pub struct UpdatedAt;
+    impl ::cynic::core::FieldName for UpdatedAt {
+        fn name() -> &'static str {
+            "updatedAt"
+        }
+    }
+    impl ::cynic::core::HasField<UpdatedAt, super::DateTime> for super::Country {}
+}
+pub struct CountryOrderByInput {}
+pub struct CountryWhereInput {}
+pub struct DateTime {}
+pub struct Job;
+pub mod job_fields {
+    pub struct Id;
+    impl ::cynic::core::FieldName for Id {
+        fn name() -> &'static str {
+            "id"
+        }
+    }
+    impl ::cynic::core::HasField<Id, ::cynic::Id> for super::Job {}
+    pub struct Title;
+    impl ::cynic::core::FieldName for Title {
+        fn name() -> &'static str {
+            "title"
+        }
+    }
+    impl ::cynic::core::HasField<Title, String> for super::Job {}
+    pub struct Slug;
+    impl ::cynic::core::FieldName for Slug {
+        fn name() -> &'static str {
+            "slug"
+        }
+    }
+    impl ::cynic::core::HasField<Slug, String> for super::Job {}
+    pub struct Commitment;
+    impl ::cynic::core::FieldName for Commitment {
+        fn name() -> &'static str {
+            "commitment"
+        }
+    }
+    impl ::cynic::core::HasField<Commitment, super::Commitment> for super::Job {}
+    pub struct Cities;
+    impl ::cynic::core::FieldName for Cities {
+        fn name() -> &'static str {
+            "cities"
+        }
+    }
+    impl ::cynic::core::HasField<Cities, Option<Vec<super::City>>> for super::Job {}
+    pub struct Countries;
+    impl ::cynic::core::FieldName for Countries {
+        fn name() -> &'static str {
+            "countries"
+        }
+    }
+    impl ::cynic::core::HasField<Countries, Option<Vec<super::Country>>> for super::Job {}
+    pub struct Remotes;
+    impl ::cynic::core::FieldName for Remotes {
+        fn name() -> &'static str {
+            "remotes"
+        }
+    }
+    impl ::cynic::core::HasField<Remotes, Option<Vec<super::Remote>>> for super::Job {}
+    pub struct Description;
+    impl ::cynic::core::FieldName for Description {
+        fn name() -> &'static str {
+            "description"
+        }
+    }
+    impl ::cynic::core::HasField<Description, Option<String>> for super::Job {}
+    pub struct ApplyUrl;
+    impl ::cynic::core::FieldName for ApplyUrl {
+        fn name() -> &'static str {
+            "applyUrl"
+        }
+    }
+    impl ::cynic::core::HasField<ApplyUrl, Option<String>> for super::Job {}
+    pub struct Company;
+    impl ::cynic::core::FieldName for Company {
+        fn name() -> &'static str {
+            "company"
+        }
+    }
+    impl ::cynic::core::HasField<Company, Option<super::Company>> for super::Job {}
+    pub struct Tags;
+    impl ::cynic::core::FieldName for Tags {
+        fn name() -> &'static str {
+            "tags"
+        }
+    }
+    impl ::cynic::core::HasField<Tags, Option<Vec<super::Tag>>> for super::Job {}
+    pub struct IsPublished;
+    impl ::cynic::core::FieldName for IsPublished {
+        fn name() -> &'static str {
+            "isPublished"
+        }
+    }
+    impl ::cynic::core::HasField<IsPublished, Option<bool>> for super::Job {}
+    pub struct IsFeatured;
+    impl ::cynic::core::FieldName for IsFeatured {
+        fn name() -> &'static str {
+            "isFeatured"
+        }
+    }
+    impl ::cynic::core::HasField<IsFeatured, Option<bool>> for super::Job {}
+    pub struct LocationNames;
+    impl ::cynic::core::FieldName for LocationNames {
+        fn name() -> &'static str {
+            "locationNames"
+        }
+    }
+    impl ::cynic::core::HasField<LocationNames, Option<String>> for super::Job {}
+    pub struct UserEmail;
+    impl ::cynic::core::FieldName for UserEmail {
+        fn name() -> &'static str {
+            "userEmail"
+        }
+    }
+    impl ::cynic::core::HasField<UserEmail, Option<String>> for super::Job {}
+    pub struct PostedAt;
+    impl ::cynic::core::FieldName for PostedAt {
+        fn name() -> &'static str {
+            "postedAt"
+        }
+    }
+    impl ::cynic::core::HasField<PostedAt, super::DateTime> for super::Job {}
+    pub struct CreatedAt;
+    impl ::cynic::core::FieldName for CreatedAt {
+        fn name() -> &'static str {
+            "createdAt"
+        }
+    }
+    impl ::cynic::core::HasField<CreatedAt, super::DateTime> for super::Job {}
+    pub struct UpdatedAt;
+    impl ::cynic::core::FieldName for UpdatedAt {
+        fn name() -> &'static str {
+            "updatedAt"
+        }
+    }
+    impl ::cynic::core::HasField<UpdatedAt, super::DateTime> for super::Job {}
+}
+pub struct JobInput {}
+pub struct JobOrderByInput {}
+pub struct JobsInput {}
+pub struct JobWhereInput {}
+pub struct Location;
+pub mod location_fields {
+    pub struct Id;
+    impl ::cynic::core::FieldName for Id {
+        fn name() -> &'static str {
+            "id"
+        }
+    }
+    impl ::cynic::core::HasField<Id, ::cynic::Id> for super::Location {}
+    pub struct Slug;
+    impl ::cynic::core::FieldName for Slug {
+        fn name() -> &'static str {
+            "slug"
+        }
+    }
+    impl ::cynic::core::HasField<Slug, String> for super::Location {}
+    pub struct Name;
+    impl ::cynic::core::FieldName for Name {
+        fn name() -> &'static str {
+            "name"
+        }
+    }
+    impl ::cynic::core::HasField<Name, String> for super::Location {}
+    pub struct Type;
+    impl ::cynic::core::FieldName for Type {
+        fn name() -> &'static str {
+            "type"
+        }
+    }
+    impl ::cynic::core::HasField<Type, String> for super::Location {}
+}
+pub struct LocationInput {}
+pub struct LocationsInput {}
+pub struct Mutation;
+pub mod mutation_fields {
+    pub struct Subscribe;
+    impl ::cynic::core::FieldName for Subscribe {
+        fn name() -> &'static str {
+            "subscribe"
+        }
+    }
+    impl ::cynic::core::HasField<Subscribe, super::User> for super::Mutation {}
+    pub struct PostJob;
+    impl ::cynic::core::FieldName for PostJob {
+        fn name() -> &'static str {
+            "postJob"
+        }
+    }
+    impl ::cynic::core::HasField<PostJob, super::Job> for super::Mutation {}
+    pub struct UpdateJob;
+    impl ::cynic::core::FieldName for UpdateJob {
+        fn name() -> &'static str {
+            "updateJob"
+        }
+    }
+    impl ::cynic::core::HasField<UpdateJob, super::Job> for super::Mutation {}
+    pub struct UpdateCompany;
+    impl ::cynic::core::FieldName for UpdateCompany {
+        fn name() -> &'static str {
+            "updateCompany"
+        }
+    }
+    impl ::cynic::core::HasField<UpdateCompany, super::Company> for super::Mutation {}
+}
+pub struct PostJobInput {}
+pub struct Query;
+pub mod query_fields {
+    pub struct Jobs;
+    impl ::cynic::core::FieldName for Jobs {
+        fn name() -> &'static str {
+            "jobs"
+        }
+    }
+    impl ::cynic::core::HasField<Jobs, Vec<super::Job>> for super::Query {}
+    pub struct Job;
+    impl ::cynic::core::FieldName for Job {
+        fn name() -> &'static str {
+            "job"
+        }
+    }
+    impl ::cynic::core::HasField<Job, super::Job> for super::Query {}
+    pub struct Locations;
+    impl ::cynic::core::FieldName for Locations {
+        fn name() -> &'static str {
+            "locations"
+        }
+    }
+    impl ::cynic::core::HasField<Locations, Vec<super::Location>> for super::Query {}
+    pub struct City;
+    impl ::cynic::core::FieldName for City {
+        fn name() -> &'static str {
+            "city"
+        }
+    }
+    impl ::cynic::core::HasField<City, super::City> for super::Query {}
+    pub struct Country;
+    impl ::cynic::core::FieldName for Country {
+        fn name() -> &'static str {
+            "country"
+        }
+    }
+    impl ::cynic::core::HasField<Country, super::Country> for super::Query {}
+    pub struct Remote;
+    impl ::cynic::core::FieldName for Remote {
+        fn name() -> &'static str {
+            "remote"
+        }
+    }
+    impl ::cynic::core::HasField<Remote, super::Remote> for super::Query {}
+    pub struct Commitments;
+    impl ::cynic::core::FieldName for Commitments {
+        fn name() -> &'static str {
+            "commitments"
+        }
+    }
+    impl ::cynic::core::HasField<Commitments, Vec<super::Commitment>> for super::Query {}
+    pub struct Cities;
+    impl ::cynic::core::FieldName for Cities {
+        fn name() -> &'static str {
+            "cities"
+        }
+    }
+    impl ::cynic::core::HasField<Cities, Vec<super::City>> for super::Query {}
+    pub struct Countries;
+    impl ::cynic::core::FieldName for Countries {
+        fn name() -> &'static str {
+            "countries"
+        }
+    }
+    impl ::cynic::core::HasField<Countries, Vec<super::Country>> for super::Query {}
+    pub struct Remotes;
+    impl ::cynic::core::FieldName for Remotes {
+        fn name() -> &'static str {
+            "remotes"
+        }
+    }
+    impl ::cynic::core::HasField<Remotes, Vec<super::Remote>> for super::Query {}
+    pub struct Companies;
+    impl ::cynic::core::FieldName for Companies {
+        fn name() -> &'static str {
+            "companies"
+        }
+    }
+    impl ::cynic::core::HasField<Companies, Vec<super::Company>> for super::Query {}
+}
+pub struct Remote;
+pub mod remote_fields {
+    pub struct Id;
+    impl ::cynic::core::FieldName for Id {
+        fn name() -> &'static str {
+            "id"
+        }
+    }
+    impl ::cynic::core::HasField<Id, ::cynic::Id> for super::Remote {}
+    pub struct Name;
+    impl ::cynic::core::FieldName for Name {
+        fn name() -> &'static str {
+            "name"
+        }
+    }
+    impl ::cynic::core::HasField<Name, String> for super::Remote {}
+    pub struct Slug;
+    impl ::cynic::core::FieldName for Slug {
+        fn name() -> &'static str {
+            "slug"
+        }
+    }
+    impl ::cynic::core::HasField<Slug, String> for super::Remote {}
+    pub struct Type;
+    impl ::cynic::core::FieldName for Type {
+        fn name() -> &'static str {
+            "type"
+        }
+    }
+    impl ::cynic::core::HasField<Type, String> for super::Remote {}
+    pub struct Jobs;
+    impl ::cynic::core::FieldName for Jobs {
+        fn name() -> &'static str {
+            "jobs"
+        }
+    }
+    impl ::cynic::core::HasField<Jobs, Option<Vec<super::Job>>> for super::Remote {}
+    pub struct CreatedAt;
+    impl ::cynic::core::FieldName for CreatedAt {
+        fn name() -> &'static str {
+            "createdAt"
+        }
+    }
+    impl ::cynic::core::HasField<CreatedAt, super::DateTime> for super::Remote {}
+    pub struct UpdatedAt;
+    impl ::cynic::core::FieldName for UpdatedAt {
+        fn name() -> &'static str {
+            "updatedAt"
+        }
+    }
+    impl ::cynic::core::HasField<UpdatedAt, super::DateTime> for super::Remote {}
+}
+pub struct RemoteOrderByInput {}
+pub struct RemoteWhereInput {}
+pub struct SubscribeInput {}
+pub struct Tag;
+pub mod tag_fields {
+    pub struct Id;
+    impl ::cynic::core::FieldName for Id {
+        fn name() -> &'static str {
+            "id"
+        }
+    }
+    impl ::cynic::core::HasField<Id, ::cynic::Id> for super::Tag {}
+    pub struct Name;
+    impl ::cynic::core::FieldName for Name {
+        fn name() -> &'static str {
+            "name"
+        }
+    }
+    impl ::cynic::core::HasField<Name, String> for super::Tag {}
+    pub struct Slug;
+    impl ::cynic::core::FieldName for Slug {
+        fn name() -> &'static str {
+            "slug"
+        }
+    }
+    impl ::cynic::core::HasField<Slug, String> for super::Tag {}
+    pub struct Jobs;
+    impl ::cynic::core::FieldName for Jobs {
+        fn name() -> &'static str {
+            "jobs"
+        }
+    }
+    impl ::cynic::core::HasField<Jobs, Option<Vec<super::Job>>> for super::Tag {}
+    pub struct CreatedAt;
+    impl ::cynic::core::FieldName for CreatedAt {
+        fn name() -> &'static str {
+            "createdAt"
+        }
+    }
+    impl ::cynic::core::HasField<CreatedAt, super::DateTime> for super::Tag {}
+    pub struct UpdatedAt;
+    impl ::cynic::core::FieldName for UpdatedAt {
+        fn name() -> &'static str {
+            "updatedAt"
+        }
+    }
+    impl ::cynic::core::HasField<UpdatedAt, super::DateTime> for super::Tag {}
+}
+pub struct TagOrderByInput {}
+pub struct TagWhereInput {}
+pub struct UpdateCompanyInput {}
+pub struct UpdateJobInput {}
+pub struct User;
+pub mod user_fields {
+    pub struct Id;
+    impl ::cynic::core::FieldName for Id {
+        fn name() -> &'static str {
+            "id"
+        }
+    }
+    impl ::cynic::core::HasField<Id, ::cynic::Id> for super::User {}
+    pub struct Name;
+    impl ::cynic::core::FieldName for Name {
+        fn name() -> &'static str {
+            "name"
+        }
+    }
+    impl ::cynic::core::HasField<Name, Option<String>> for super::User {}
+    pub struct Email;
+    impl ::cynic::core::FieldName for Email {
+        fn name() -> &'static str {
+            "email"
+        }
+    }
+    impl ::cynic::core::HasField<Email, String> for super::User {}
+    pub struct Subscribe;
+    impl ::cynic::core::FieldName for Subscribe {
+        fn name() -> &'static str {
+            "subscribe"
+        }
+    }
+    impl ::cynic::core::HasField<Subscribe, bool> for super::User {}
+    pub struct CreatedAt;
+    impl ::cynic::core::FieldName for CreatedAt {
+        fn name() -> &'static str {
+            "createdAt"
+        }
+    }
+    impl ::cynic::core::HasField<CreatedAt, super::DateTime> for super::User {}
+    pub struct UpdatedAt;
+    impl ::cynic::core::FieldName for UpdatedAt {
+        fn name() -> &'static str {
+            "updatedAt"
+        }
+    }
+    impl ::cynic::core::HasField<UpdatedAt, super::DateTime> for super::User {}
+}
+

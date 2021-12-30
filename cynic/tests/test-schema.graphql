@@ -32,6 +32,7 @@ type EmptyType {
 
 type Query {
   allPosts: [BlogPost!]!
+  post(id: ID!): BlogPost
   allAuthors: [Author!]!
   allData: [PostOrAuthor!]!
 }

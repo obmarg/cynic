@@ -8,8 +8,9 @@ extern crate proc_macro;
 use proc_macro::TokenStream;
 
 use cynic_codegen::{
-    enum_derive, fragment_arguments_derive, fragment_derive, inline_fragments_derive,
-    input_object_derive, scalar_derive, schema_for_derives, use_schema,
+    enum_derive, fragment_arguments_derive, fragment_derive, fragment_derive_2,
+    inline_fragments_derive, input_object_derive, scalar_derive, schema_for_derives, use_schema,
+    use_schema2,
 };
 
 /// Imports a schema for use by cynic.
@@ -34,6 +35,27 @@ pub fn use_schema(input: TokenStream) -> TokenStream {
     rv
 }
 
+/// Imports a schema for use by cynic.
+///
+/// This creates all the required type markers required to use cynic with a given schema.
+/// It should usually be called in a module named schema, as the only statement in that module
+///
+/// ```rust,ignore
+/// mod schema {
+///     cynic::use_schema!("../schemas/starwars.schema.graphql");
+/// }
+/// ```
+#[proc_macro]
+pub fn use_schema_2(input: TokenStream) -> TokenStream {
+    let input = syn::parse_macro_input!(input as use_schema2::UseSchemaParams);
+
+    let rv = use_schema2::use_schema(input).unwrap().into();
+
+    // eprintln!("{}", rv);
+
+    rv
+}
+
 /// Derives `cynic::QueryFragment`
 ///
 /// See [the book for usage details](https://cynic-rs.dev/derives/query-fragments.html)
@@ -42,6 +64,23 @@ pub fn query_fragment_derive(input: TokenStream) -> TokenStream {
     let ast = syn::parse_macro_input!(input as syn::DeriveInput);
 
     let rv = match fragment_derive::fragment_derive(&ast) {
+        Ok(tokens) => tokens.into(),
+        Err(e) => e.to_compile_error().into(),
+    };
+
+    //eprintln!("{}", rv);
+
+    rv
+}
+
+/// Derives `cynic::QueryFragment2`
+///
+/// See [the book for usage details](https://cynic-rs.dev/derives/query-fragments.html)
+#[proc_macro_derive(QueryFragment2, attributes(cynic, arguments))]
+pub fn query_fragment_2_derive(input: TokenStream) -> TokenStream {
+    let ast = syn::parse_macro_input!(input as syn::DeriveInput);
+
+    let rv = match fragment_derive_2::fragment_derive(&ast) {
         Ok(tokens) => tokens.into(),
         Err(e) => e.to_compile_error().into(),
     };

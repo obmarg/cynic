@@ -1,11 +1,13 @@
 pub mod enum_derive;
 pub mod fragment_arguments_derive;
 pub mod fragment_derive;
+pub mod fragment_derive_2;
 pub mod inline_fragments_derive;
 pub mod input_object_derive;
 pub mod scalar_derive;
 pub mod schema_for_derives;
 pub mod use_schema;
+pub mod use_schema2;
 
 mod error;
 mod field_argument;

@@ -1,0 +1,69 @@
+---
+source: cynic-codegen/tests/use-schema.rs
+expression: "format_code(format!(\"{}\", tokens))"
+
+---
+pub struct Foo;
+pub mod foo_fields {
+    pub struct Underscore;
+    impl ::cynic::core::FieldName for Underscore {
+        fn name() -> &'static str {
+            "_"
+        }
+    }
+    impl ::cynic::core::HasField<Underscore, Option<bool>> for super::Foo {}
+    pub struct Self_;
+    impl ::cynic::core::FieldName for Self_ {
+        fn name() -> &'static str {
+            "self"
+        }
+    }
+    impl ::cynic::core::HasField<Self_, Option<bool>> for super::Foo {}
+    pub struct Super;
+    impl ::cynic::core::FieldName for Super {
+        fn name() -> &'static str {
+            "super"
+        }
+    }
+    impl ::cynic::core::HasField<Super, Option<bool>> for super::Foo {}
+    pub struct Crate;
+    impl ::cynic::core::FieldName for Crate {
+        fn name() -> &'static str {
+            "crate"
+        }
+    }
+    impl ::cynic::core::HasField<Crate, Option<bool>> for super::Foo {}
+    pub struct Async;
+    impl ::cynic::core::FieldName for Async {
+        fn name() -> &'static str {
+            "async"
+        }
+    }
+    impl ::cynic::core::HasField<Async, Option<bool>> for super::Foo {}
+    pub struct Bar;
+    impl ::cynic::core::FieldName for Bar {
+        fn name() -> &'static str {
+            "bar"
+        }
+    }
+    impl ::cynic::core::HasField<Bar, Option<super::Bar>> for super::Foo {}
+}
+pub struct Bar;
+pub mod bar_fields {
+    pub struct Id;
+    impl ::cynic::core::FieldName for Id {
+        fn name() -> &'static str {
+            "id"
+        }
+    }
+    impl ::cynic::core::HasField<Id, super::Uuid> for super::Bar {}
+    pub struct Name;
+    impl ::cynic::core::FieldName for Name {
+        fn name() -> &'static str {
+            "name"
+        }
+    }
+    impl ::cynic::core::HasField<Name, Option<String>> for super::Bar {}
+}
+pub struct Uuid {}
+
