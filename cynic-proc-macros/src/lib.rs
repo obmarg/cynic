@@ -24,6 +24,7 @@ use cynic_codegen::{
     enum_derive, fragment_arguments_derive, fragment_derive, inline_fragments_derive,
     input_object_derive, scalar_derive, schema_for_derives, use_schema,
 };
+use cynic_querygen::ArgumentStructField;
 
 /// Imports a schema for use by cynic.
 ///
@@ -385,7 +386,7 @@ pub fn gql(input: TokenStream) -> TokenStream {
         .read_to_string(&mut fragment_string)
         .unwrap();
 
-    eprintln!("{}", &fragment_string);
+    // eprintln!("{}", &fragment_string);
 
     fragments
 }
@@ -469,9 +470,18 @@ fn document_to_fragment_structs(
             let mut field_names = vec![];
             let mut field_types = vec![];
 
-            eprintln!("{:?}", argument_struct.fields);
+            let mut fields = argument_struct.fields.clone();
+            fields.sort_by(|a, b| match (a, b) {
+                (ArgumentStructField::Variable(a), ArgumentStructField::Variable(b)) => a
+                    .name
+                    .1
+                    .line
+                    .cmp(&b.name.1.line)
+                    .then(a.name.1.column.cmp(&b.name.1.column)),
+                _ => unimplemented!(),
+            });
 
-            for field in &argument_struct.fields {
+            for field in &fields {
                 field_names.push(Ident::new(&field.name(), proc_macro2::Span::call_site()));
                 field_types.push(
                     field

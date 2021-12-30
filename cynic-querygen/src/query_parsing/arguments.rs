@@ -163,6 +163,7 @@ enum SelectionArgument<'query, 'schema> {
 #[derive(Debug)]
 pub struct ArgumentStructDetails<'query, 'schema> {
     selection_set_map: HashMap<Rc<SelectionSet<'query, 'schema>>, Uuid>,
+    #[allow(dead_code)]
     inline_fragments_map: HashMap<Rc<InlineFragments<'query, 'schema>>, Uuid>,
     remappings: HashMap<Uuid, Uuid>,
     selection_structs: HashMap<Uuid, Rc<ArgumentStruct<'query, 'schema>>>,

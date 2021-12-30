@@ -2,7 +2,7 @@ use std::{borrow::Cow, rc::Rc};
 
 use graphql_parser::Pos;
 
-use super::{parser, InputType, InputTypeRef, OutputTypeRef, TypeIndex};
+use super::{parser, InputTypeRef, OutputTypeRef, TypeIndex};
 use crate::Error;
 
 /// A field on an output type i.e. an object or interface

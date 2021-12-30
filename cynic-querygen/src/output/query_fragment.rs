@@ -6,7 +6,6 @@ use proc_macro2::{Ident, Span, TokenStream};
 use quote::{quote, ToTokens};
 
 use super::indented;
-use crate::casings::CasingExt;
 use crate::{query_parsing::TypedValue, schema::OutputFieldType, Error};
 
 #[derive(Debug, PartialEq)]

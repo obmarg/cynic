@@ -16,7 +16,7 @@ impl<'query, 'schema> ArgumentStruct<'query, 'schema> {
     }
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone)]
 pub enum ArgumentStructField<'query, 'schema> {
     Variable(Variable<'query, 'schema>),
     NestedStruct(String),
