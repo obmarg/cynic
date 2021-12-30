@@ -99,16 +99,20 @@ pub fn extract_input_objects_from_values<'query, 'schema>(
     }
 
     match &typed_value {
-        TypedValue::Object(obj, _) => {
+        TypedValue::Object(pos, obj, _) => {
             let mut fields = Vec::new();
             let mut adjacents = Vec::new();
             for (field_name, field_val) in obj {
                 let field = input_object
                     .fields
                     .iter()
-                    .find(|f| f.name == *field_name)
+                    .find(|f| f.name.0 == *field_name)
                     .ok_or_else(|| {
-                        Error::UnknownField(field_name.to_string(), input_object.name.to_string())
+                        Error::UnknownField(
+                            field_name.to_string(),
+                            input_object.name.to_string(),
+                            pos.clone(),
+                        )
                     })?;
 
                 let field_type = field.value_type.inner_ref().lookup()?;
@@ -138,7 +142,7 @@ pub fn extract_input_objects_from_values<'query, 'schema>(
 
             Ok(rv)
         }
-        TypedValue::List(inner_values, _) => {
+        TypedValue::List(_, inner_values, _) => {
             if inner_values.is_empty() {
                 // We still need the type in order to type this field...
                 return extract_whole_input_object_tree(input_object, input_objects);

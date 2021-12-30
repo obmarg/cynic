@@ -23,6 +23,14 @@ surf = "2.3"
 async-std = "1.10"
 
 chrono = { version = "0.4", features = ["serde"]}
+graphql-parser = { path = "../../graphql-parser" }
+cynic-querygen = { path = "../cynic-querygen" }
 
 [dev-dependencies]
 insta = "1.8"
+anyhow = "1.0.43"
+graphql-ws-client = { path = "../../graphql-ws-client" }
+futures-util = "0.3.16"
+
+[package.metadata.cynic]
+schema = "../schemas/books.graphql"

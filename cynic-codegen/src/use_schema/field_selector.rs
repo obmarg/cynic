@@ -61,14 +61,7 @@ impl quote::ToTokens for FieldSelector {
             );
         }
 
-        let argument_vals: Vec<_> = self
-            .required_args
-            .iter()
-            .map(|a| {
-                let name = &a.name;
-                quote! { ::cynic::serde_json::to_value(&#name) }
-            })
-            .collect();
+        let argument_vals: Vec<_> = self.required_args.iter().map(|a| a.name.clone()).collect();
         let argument_strings: Vec<_> = self
             .required_args
             .iter()
@@ -86,12 +79,17 @@ impl quote::ToTokens for FieldSelector {
             pub fn #rust_field_name(
                 #(#argument_defs, )*
             ) -> #selection_builder {
+                use cynic::InputType;
                 #selection_builder::new(vec![
                     #(
                         ::cynic::Argument::new(
                             #argument_strings,
                             #argument_gql_types,
-                            #argument_vals
+                            if let Some(upload) = #argument_vals.into_upload() {
+                                cynic::ArgumentWireFormat::Upload(upload.clone())
+                            } else {
+                                cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&#argument_vals))
+                            }
                         ),
                     )*
                 ])

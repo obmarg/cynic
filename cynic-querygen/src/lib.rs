@@ -7,21 +7,25 @@ mod query_parsing;
 mod schema;
 mod type_ext;
 
-use schema::{GraphPath, TypeIndex};
+use graphql_parser::error::BorrowedParseError;
+use graphql_parser::{ParseError, Pos};
+pub use schema::{GraphPath, TypeIndex};
+
+pub use output::{indented, query_fragment::OutputField};
+pub use query_parsing::inputs::extract_input_objects;
+pub use query_parsing::normalisation::normalise;
+pub use query_parsing::parse_query_document;
 
 #[derive(thiserror::Error, Debug)]
 pub enum Error {
     #[error("Query document not supported: {0}")]
     UnsupportedQueryDocument(String),
 
-    #[error("could not parse query document: {0}")]
-    QueryParseError(#[from] graphql_parser::query::ParseError),
-
-    #[error("could not parse schema document: {0}")]
-    SchemaParseError(#[from] graphql_parser::schema::ParseError),
+    #[error("could not parse the document: {0}")]
+    ParseError(#[from] ParseError),
 
     #[error("could not find field `{0}` on `{1}`")]
-    UnknownField(String, String),
+    UnknownField(String, String, Pos),
 
     #[error("could not find enum `{0}`")]
     UnknownEnum(String),
@@ -41,8 +45,8 @@ pub enum Error {
     #[error("couldn't find an argument named `{0}`")]
     UnknownArgument(String),
 
-    #[error("an enum-like value was provided to an argument that is not an enum")]
-    ArgumentNotEnum,
+    #[error("enum-like value `{0}` was provided to an argument that is not an enum")]
+    ArgumentNotEnum(String, Pos),
 
     #[error("expected an input object, enum or scalar")]
     ExpectedInputType,
@@ -87,6 +91,12 @@ pub enum Error {
     MissingTypeCondition,
 }
 
+impl From<BorrowedParseError<'_>> for Error {
+    fn from(error: BorrowedParseError) -> Self {
+        Error::ParseError(error.into())
+    }
+}
+
 #[derive(Debug)]
 pub struct QueryGenOptions {
     pub schema_path: String,
@@ -107,7 +117,6 @@ pub fn document_to_fragment_structs(
     schema: impl AsRef<str>,
     options: &QueryGenOptions,
 ) -> Result<String, Error> {
-    use output::indented;
     use std::fmt::Write;
 
     let schema = graphql_parser::parse_schema::<&str>(schema.as_ref())?;
@@ -132,7 +141,7 @@ pub fn document_to_fragment_structs(
     }
 
     for fragment in parsed_output.query_fragments {
-        writeln!(mod_output, "{}", fragment).unwrap();
+        fragment.fmt(mod_output)?;
     }
 
     for fragment in parsed_output.inline_fragments {
