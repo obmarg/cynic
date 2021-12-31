@@ -1,0 +1,75 @@
+---
+source: cynic-codegen/src/fragment_derive_2/tests.rs
+expression: "format_code(format!(\"{}\", tokens))"
+
+---
+#[automatically_derived]
+impl<'de> ::cynic::core::QueryFragment<'de> for BlogPostOutput {
+    type SchemaType = schema::BlogPost;
+    fn query(mut builder: ::cynic::core::QueryBuilder<Self::SchemaType>) {
+        let mut field_builder = builder . select_field :: < schema :: blog_post_fields :: HasMetadata , < Option < String > as :: cynic :: schema :: IsScalar < < schema :: blog_post_fields :: HasMetadata as :: cynic :: schema :: Field > :: SchemaType >> :: SchemaType > () ;
+        field_builder.done();
+        let mut field_builder = builder . select_field :: < schema :: blog_post_fields :: Author , < AuthorOutput as :: cynic :: core :: QueryFragment > :: SchemaType > () ;
+        <AuthorOutput as ::cynic::core::QueryFragment>::query(field_builder.select_children());
+        field_builder.done();
+    }
+}
+#[automatically_derived]
+impl<'de> ::cynic::serde::Deserialize<'de> for BlogPostOutput {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: ::cynic::serde::Deserializer<'de>,
+    {
+        #[derive(:: cynic :: serde :: Deserialize)]
+        #[serde(field_identifier)]
+        enum Field {
+            #[serde(rename = "hasMetadata")]
+            HasMetadata,
+            #[serde(rename = "author")]
+            Author,
+        }
+        struct Visitor;
+        impl<'de> ::cynic::serde::de::Visitor<'de> for Visitor {
+            type Value = BlogPostOutput;
+            fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                formatter.write_str("struct BlogPostOutput")
+            }
+            fn visit_map<V>(self, mut map: V) -> Result<BlogPostOutput, V::Error>
+            where
+                V: ::cynic::serde::de::MapAccess<'de>,
+            {
+                let mut has_metadata = None;
+                let mut author = None;
+                while let Some(key) = map.next_key()? {
+                    match key {
+                        Field::HasMetadata => {
+                            if has_metadata.is_some() {
+                                return Err(::cynic::serde::de::Error::duplicate_field(
+                                    "hasMetadata",
+                                ));
+                            }
+                            has_metadata = Some(map.next_value()?);
+                        }
+                        Field::Author => {
+                            if author.is_some() {
+                                return Err(::cynic::serde::de::Error::duplicate_field("author"));
+                            }
+                            author = Some(map.next_value()?);
+                        }
+                    }
+                }
+                let has_metadata = has_metadata
+                    .ok_or_else(|| ::cynic::serde::de::Error::missing_field("hasMetadata"))?;
+                let author =
+                    author.ok_or_else(|| ::cynic::serde::de::Error::missing_field("author"))?;
+                Ok(BlogPostOutput {
+                    has_metadata,
+                    author,
+                })
+            }
+        }
+        const FIELDS: &'static [&'static str] = &["hasMetadata", "author"];
+        deserializer.deserialize_struct("BlogPostOutput", FIELDS, Visitor)
+    }
+}
+

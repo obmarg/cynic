@@ -58,13 +58,15 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, SchemaLoadError
                     field_module_contents.push(quote! {
                         pub struct #field_marker_type_name;
 
-                        impl ::cynic::core::FieldName for #field_marker_type_name {
+                        impl ::cynic::schema::Field for #field_marker_type_name {
+                            type SchemaType = #field_type_marker;
+
                             fn name() -> &'static str {
                                 #field_name_literal
                             }
                         }
 
-                        impl ::cynic::core::HasField<#field_marker_type_name, #field_type_marker> for super::#object_marker_type_name {}
+                        impl ::cynic::schema::HasField<#field_marker_type_name, #field_type_marker> for super::#object_marker_type_name {}
 
                         // TODO: implement HasField for all the valid conversions...
                         // assuming that's even possible - implementing the deserialize might be tricky for
@@ -87,7 +89,7 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, SchemaLoadError
                     pub struct #ident {}
                 });
 
-                // TODO: the rest of this.
+                // TODO: the rest of this.  Presumably we need fields & HasSubtype
             }
             graphql_parser::schema::TypeDefinition::Union(def) => {
                 let ident = Ident::for_type(&def.name);
@@ -95,7 +97,7 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, SchemaLoadError
                     pub struct #ident {}
                 });
 
-                // TODO: the rest of this.
+                // TODO: the rest of this.  Presumably we need just HasSubtype
             }
             graphql_parser::schema::TypeDefinition::Enum(def) => {
                 let ident = Ident::for_type(&def.name);

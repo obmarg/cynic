@@ -20,27 +20,31 @@ mod manual_schema {
 
         pub struct Post {}
 
-        impl core::FieldName for AllPosts {
+        impl cynic::schema::Field for AllPosts {
+            type SchemaType = Vec<super::BlogPost>;
+
             fn name() -> &'static str {
                 "allPosts"
             }
         }
 
-        impl core::FieldName for Post {
+        impl cynic::schema::Field for Post {
+            type SchemaType = Option<super::BlogPost>;
+
             fn name() -> &'static str {
                 "post"
             }
         }
 
-        impl core::HasField<AllPosts, Vec<super::BlogPost>> for super::Query {}
-        impl core::HasField<Post, Option<super::BlogPost>> for super::Query {}
+        impl cynic::schema::HasField<AllPosts, Vec<super::BlogPost>> for super::Query {}
+        impl cynic::schema::HasField<Post, Option<super::BlogPost>> for super::Query {}
 
         pub mod post_arguments {
             use cynic::core;
 
             pub struct Id {}
 
-            impl core::HasArgument<Id> for super::Post {
+            impl cynic::schema::HasArgument<Id> for super::Post {
                 type ArgumentSchemaType = cynic::Id;
 
                 fn name() -> &'static str {
@@ -58,13 +62,16 @@ mod manual_schema {
 
         pub struct HasMetadata;
 
-        impl core::FieldName for Author {
+        impl cynic::schema::Field for Author {
+            type SchemaType = Author;
             fn name() -> &'static str {
                 "author"
             }
         }
 
-        impl core::FieldName for HasMetadata {
+        impl cynic::schema::Field for HasMetadata {
+            type SchemaType = Option<bool>;
+
             fn name() -> &'static str {
                 "hasMetadata"
             }
@@ -72,14 +79,9 @@ mod manual_schema {
 
         // Note: The schema module could also (probably) output HasField impls for
         // the various option types that are also valid for the given type?
-        impl core::HasField<Author, super::Author> for super::BlogPost {}
+        impl cynic::schema::HasField<Author, super::Author> for super::BlogPost {}
 
-        impl core::HasField<HasMetadata, Option<bool>> for super::BlogPost {}
-    }
-
-    // Note: this might not be needed..
-    impl core::CompositeFieldType for BlogPost {
-        type InnerNamedType = BlogPost;
+        impl cynic::schema::HasField<HasMetadata, Option<bool>> for super::BlogPost {}
     }
 
     pub struct Author;
@@ -88,18 +90,15 @@ mod manual_schema {
 
         pub struct Name;
 
-        impl core::FieldName for Name {
+        impl cynic::schema::Field for Name {
+            type SchemaType = Option<String>;
+
             fn name() -> &'static str {
                 "name"
             }
         }
 
-        impl core::HasField<Name, Option<String>> for super::Author {}
-    }
-
-    // Note: this might not be needed..
-    impl core::CompositeFieldType for Author {
-        type InnerNamedType = Author;
+        impl cynic::schema::HasField<Name, Option<String>> for super::Author {}
     }
 }
 

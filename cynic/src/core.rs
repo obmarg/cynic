@@ -1,9 +1,12 @@
 #![allow(dead_code, unused_variables, missing_docs)]
+// TODO: Don't allow the above
 
 // TODO: Everything in here is actually typed.  Need an untyped core with this
 // layered on top...
 
 use std::marker::PhantomData;
+
+use crate::schema;
 
 // Annoyingly this means people can't derive Deserialize _as well as_ use cynics derives.
 // But whatever, don't do that people?  I _think_ it's an OK limitation.
@@ -93,8 +96,8 @@ impl<'a, SchemaType> QueryBuilder<'a, SchemaType> {
         &'b mut self,
     ) -> FieldSelectionBuilder<'b, FieldType>
     where
-        FieldMarker: FieldName,
-        SchemaType: HasField<FieldMarker, FieldType>,
+        FieldMarker: schema::Field,
+        SchemaType: schema::HasField<FieldMarker, FieldType>,
     {
         self.fields.push(Field {
             name: FieldMarker::name(),
@@ -140,8 +143,8 @@ impl<'a, FieldSchemaType> FieldSelectionBuilder<'a, FieldSchemaType> {
     // TODO: probably need all the reference nonsense here for value type
     pub fn argument<ArgumentName, ValueType>(&mut self, value: ValueType)
     where
-        FieldSchemaType: HasArgument<ArgumentName>,
-        ValueType: InputValue<FieldSchemaType::ArgumentSchemaType>,
+        FieldSchemaType: schema::HasArgument<ArgumentName>,
+        ValueType: schema::InputValue<FieldSchemaType::ArgumentSchemaType>,
     {
         todo!()
     }
@@ -166,54 +169,4 @@ impl<'a, FieldSchemaType> FieldSelectionBuilder<'a, FieldSchemaType> {
     pub fn done(self) {}
 }
 
-pub trait FieldName {
-    fn name() -> &'static str;
-}
-
-pub trait HasField<FieldMarker, FieldType> {}
-
-pub trait HasArgument<ArgumentName> {
-    type ArgumentSchemaType;
-
-    fn name() -> &'static str;
-}
-
-// TODO: Name of this vs the actual Value type I want to output
-pub trait InputValue<SchemaType> {
-    // TODO: Bet the self type & references are going to be a PITA with this...
-    // fn to_actual_value(&self) -> ();
-}
-
-impl InputValue<crate::Id> for crate::Id {}
-impl InputValue<Option<crate::Id>> for crate::Id {}
-impl InputValue<Option<crate::Id>> for Option<crate::Id> {}
-impl InputValue<Vec<crate::Id>> for crate::Id {}
-impl InputValue<Vec<crate::Id>> for Vec<crate::Id> {}
 // TODO: etc.
-
-// TODO: CompositeFieldType vs CompositeType?
-pub trait CompositeFieldType {
-    // TODO: DO I even need this...
-    type InnerNamedType;
-}
-
-impl<T> CompositeFieldType for Box<T>
-where
-    T: CompositeFieldType,
-{
-    type InnerNamedType = T;
-}
-
-impl<T> CompositeFieldType for Vec<T>
-where
-    T: CompositeFieldType,
-{
-    type InnerNamedType = T;
-}
-
-impl<T> CompositeFieldType for Option<T>
-where
-    T: CompositeFieldType,
-{
-    type InnerNamedType = T;
-}

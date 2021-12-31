@@ -178,6 +178,7 @@ mod scalar;
 
 pub mod http;
 pub mod inputs;
+pub mod schema;
 pub mod selection_set;
 #[allow(missing_docs)]
 pub mod utils;

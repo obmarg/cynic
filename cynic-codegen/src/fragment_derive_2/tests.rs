@@ -9,20 +9,30 @@ use super::fragment_derive;
 // TODO: Rename this file after running snapshots
 
 #[rstest(input => [
-    parse_quote!{
+    parse_quote!(
         #[cynic(
             schema_path = "../cynic/tests/test-schema.graphql",
             schema_module = "schema",
             graphql_type = "Query"
         )]
-        // #[derive(serde::Deserialize)]
         struct MyQuery {
             #[arguments(id = "TODO")]
             post: Option<BlogPostOutput>,
             #[cynic(rename = "allPosts")]
             posts: Vec<BlogPostOutput>,
         }
-    }
+    ),
+    parse_quote!(
+        #[cynic(
+            schema_path = "../cynic/tests/test-schema.graphql",
+            schema_module = "schema",
+            graphql_type = "BlogPost"
+        )]
+        struct BlogPostOutput {
+            has_metadata: Option<bool>,
+            author: AuthorOutput,
+        }
+    )
 ])]
 fn snapshot_fragment_derive(input: syn::DeriveInput) {
     let tokens = fragment_derive(&input).unwrap();

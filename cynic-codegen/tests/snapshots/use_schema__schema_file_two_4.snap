@@ -6,64 +6,72 @@ expression: "format_code(format!(\"{}\", tokens))"
 pub struct Foo;
 pub mod foo_fields {
     pub struct Underscore;
-    impl ::cynic::core::FieldName for Underscore {
+    impl ::cynic::schema::Field for Underscore {
+        type SchemaType = Option<bool>;
         fn name() -> &'static str {
             "_"
         }
     }
-    impl ::cynic::core::HasField<Underscore, Option<bool>> for super::Foo {}
+    impl ::cynic::schema::HasField<Underscore, Option<bool>> for super::Foo {}
     pub struct Self_;
-    impl ::cynic::core::FieldName for Self_ {
+    impl ::cynic::schema::Field for Self_ {
+        type SchemaType = Option<bool>;
         fn name() -> &'static str {
             "self"
         }
     }
-    impl ::cynic::core::HasField<Self_, Option<bool>> for super::Foo {}
+    impl ::cynic::schema::HasField<Self_, Option<bool>> for super::Foo {}
     pub struct Super;
-    impl ::cynic::core::FieldName for Super {
+    impl ::cynic::schema::Field for Super {
+        type SchemaType = Option<bool>;
         fn name() -> &'static str {
             "super"
         }
     }
-    impl ::cynic::core::HasField<Super, Option<bool>> for super::Foo {}
+    impl ::cynic::schema::HasField<Super, Option<bool>> for super::Foo {}
     pub struct Crate;
-    impl ::cynic::core::FieldName for Crate {
+    impl ::cynic::schema::Field for Crate {
+        type SchemaType = Option<bool>;
         fn name() -> &'static str {
             "crate"
         }
     }
-    impl ::cynic::core::HasField<Crate, Option<bool>> for super::Foo {}
+    impl ::cynic::schema::HasField<Crate, Option<bool>> for super::Foo {}
     pub struct Async;
-    impl ::cynic::core::FieldName for Async {
+    impl ::cynic::schema::Field for Async {
+        type SchemaType = Option<bool>;
         fn name() -> &'static str {
             "async"
         }
     }
-    impl ::cynic::core::HasField<Async, Option<bool>> for super::Foo {}
+    impl ::cynic::schema::HasField<Async, Option<bool>> for super::Foo {}
     pub struct Bar;
-    impl ::cynic::core::FieldName for Bar {
+    impl ::cynic::schema::Field for Bar {
+        type SchemaType = Option<super::Bar>;
         fn name() -> &'static str {
             "bar"
         }
     }
-    impl ::cynic::core::HasField<Bar, Option<super::Bar>> for super::Foo {}
+    impl ::cynic::schema::HasField<Bar, Option<super::Bar>> for super::Foo {}
 }
 pub struct Bar;
 pub mod bar_fields {
     pub struct Id;
-    impl ::cynic::core::FieldName for Id {
+    impl ::cynic::schema::Field for Id {
+        type SchemaType = super::Uuid;
         fn name() -> &'static str {
             "id"
         }
     }
-    impl ::cynic::core::HasField<Id, super::Uuid> for super::Bar {}
+    impl ::cynic::schema::HasField<Id, super::Uuid> for super::Bar {}
     pub struct Name;
-    impl ::cynic::core::FieldName for Name {
+    impl ::cynic::schema::Field for Name {
+        type SchemaType = Option<String>;
         fn name() -> &'static str {
             "name"
         }
     }
-    impl ::cynic::core::HasField<Name, Option<String>> for super::Bar {}
+    impl ::cynic::schema::HasField<Name, Option<String>> for super::Bar {}
 }
 pub struct Uuid {}
 

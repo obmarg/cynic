@@ -6,94 +6,105 @@ expression: "format_code(format!(\"{}\", tokens))"
 pub struct Book;
 pub mod book_fields {
     pub struct Id;
-    impl ::cynic::core::FieldName for Id {
+    impl ::cynic::schema::Field for Id {
+        type SchemaType = String;
         fn name() -> &'static str {
             "id"
         }
     }
-    impl ::cynic::core::HasField<Id, String> for super::Book {}
+    impl ::cynic::schema::HasField<Id, String> for super::Book {}
     pub struct Name;
-    impl ::cynic::core::FieldName for Name {
+    impl ::cynic::schema::Field for Name {
+        type SchemaType = String;
         fn name() -> &'static str {
             "name"
         }
     }
-    impl ::cynic::core::HasField<Name, String> for super::Book {}
+    impl ::cynic::schema::HasField<Name, String> for super::Book {}
     pub struct Author;
-    impl ::cynic::core::FieldName for Author {
+    impl ::cynic::schema::Field for Author {
+        type SchemaType = String;
         fn name() -> &'static str {
             "author"
         }
     }
-    impl ::cynic::core::HasField<Author, String> for super::Book {}
+    impl ::cynic::schema::HasField<Author, String> for super::Book {}
 }
 pub struct BookChanged;
 pub mod book_changed_fields {
     pub struct MutationType;
-    impl ::cynic::core::FieldName for MutationType {
+    impl ::cynic::schema::Field for MutationType {
+        type SchemaType = super::MutationType;
         fn name() -> &'static str {
             "mutationType"
         }
     }
-    impl ::cynic::core::HasField<MutationType, super::MutationType> for super::BookChanged {}
+    impl ::cynic::schema::HasField<MutationType, super::MutationType> for super::BookChanged {}
     pub struct Id;
-    impl ::cynic::core::FieldName for Id {
+    impl ::cynic::schema::Field for Id {
+        type SchemaType = ::cynic::Id;
         fn name() -> &'static str {
             "id"
         }
     }
-    impl ::cynic::core::HasField<Id, ::cynic::Id> for super::BookChanged {}
+    impl ::cynic::schema::HasField<Id, ::cynic::Id> for super::BookChanged {}
     pub struct Book;
-    impl ::cynic::core::FieldName for Book {
+    impl ::cynic::schema::Field for Book {
+        type SchemaType = Option<super::Book>;
         fn name() -> &'static str {
             "book"
         }
     }
-    impl ::cynic::core::HasField<Book, Option<super::Book>> for super::BookChanged {}
+    impl ::cynic::schema::HasField<Book, Option<super::Book>> for super::BookChanged {}
 }
 pub struct MutationRoot;
 pub mod mutation_root_fields {
     pub struct CreateBook;
-    impl ::cynic::core::FieldName for CreateBook {
+    impl ::cynic::schema::Field for CreateBook {
+        type SchemaType = ::cynic::Id;
         fn name() -> &'static str {
             "createBook"
         }
     }
-    impl ::cynic::core::HasField<CreateBook, ::cynic::Id> for super::MutationRoot {}
+    impl ::cynic::schema::HasField<CreateBook, ::cynic::Id> for super::MutationRoot {}
     pub struct DeleteBook;
-    impl ::cynic::core::FieldName for DeleteBook {
+    impl ::cynic::schema::Field for DeleteBook {
+        type SchemaType = bool;
         fn name() -> &'static str {
             "deleteBook"
         }
     }
-    impl ::cynic::core::HasField<DeleteBook, bool> for super::MutationRoot {}
+    impl ::cynic::schema::HasField<DeleteBook, bool> for super::MutationRoot {}
 }
 pub struct MutationType {}
 pub struct QueryRoot;
 pub mod query_root_fields {
     pub struct Books;
-    impl ::cynic::core::FieldName for Books {
+    impl ::cynic::schema::Field for Books {
+        type SchemaType = Vec<super::Book>;
         fn name() -> &'static str {
             "books"
         }
     }
-    impl ::cynic::core::HasField<Books, Vec<super::Book>> for super::QueryRoot {}
+    impl ::cynic::schema::HasField<Books, Vec<super::Book>> for super::QueryRoot {}
 }
 pub struct SubscriptionRoot;
 pub mod subscription_root_fields {
     pub struct Interval;
-    impl ::cynic::core::FieldName for Interval {
+    impl ::cynic::schema::Field for Interval {
+        type SchemaType = i32;
         fn name() -> &'static str {
             "interval"
         }
     }
-    impl ::cynic::core::HasField<Interval, i32> for super::SubscriptionRoot {}
+    impl ::cynic::schema::HasField<Interval, i32> for super::SubscriptionRoot {}
     pub struct Books;
-    impl ::cynic::core::FieldName for Books {
+    impl ::cynic::schema::Field for Books {
+        type SchemaType = super::BookChanged;
         fn name() -> &'static str {
             "books"
         }
     }
-    impl ::cynic::core::HasField<Books, super::BookChanged> for super::SubscriptionRoot {}
+    impl ::cynic::schema::HasField<Books, super::BookChanged> for super::SubscriptionRoot {}
 }
 

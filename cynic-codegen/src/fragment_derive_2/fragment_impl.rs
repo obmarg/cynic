@@ -35,9 +35,20 @@ struct FieldSelection {
     rust_field_ident: proc_macro2::Ident,
     rust_field_type: syn::Type,
     field_marker_type_path: syn::Path,
+    graphql_field_kind: FieldKind,
     arguments: Vec<FieldArgument>,
     recurse_limit: Option<u8>,
     span: proc_macro2::Span,
+}
+
+enum FieldKind {
+    Composite,
+    Scalar,
+    Enum,
+
+    // TODO: how to handle these two?  Presumably similar technique to scalars/enums?
+    Interface,
+    Union,
 }
 
 impl FragmentImpl {
@@ -93,6 +104,7 @@ fn process_field(
         let mut field_marker_type_path = field_module_path;
         field_marker_type_path.push(graphql_ident.as_field_marker_type());
 
+        /*
         let field_selection = FieldSelection {
             graphql_field_ident: graphql_ident.clone(),
             rust_field_ident: field_ident.clone(),
@@ -104,6 +116,8 @@ fn process_field(
         };
 
         Ok(field_selection)
+        */
+        todo!()
     } else if let Some(gql_field) = object.fields.get(graphql_ident) {
         check_types_are_compatible(&gql_field.field_type, &field.ty, field.type_check_mode())?;
 
@@ -120,6 +134,7 @@ fn process_field(
             field_marker_type_path,
             recurse_limit: field.recurse.as_ref().map(|f| **f),
             span: field.ty.span(),
+            graphql_field_kind: gql_field.field_type.as_kind(),
         };
         /*
         let field_selector = FieldSelectorCall {
@@ -187,24 +202,74 @@ impl quote::ToTokens for FragmentImpl {
 
 impl quote::ToTokens for FieldSelection {
     fn to_tokens(&self, tokens: &mut TokenStream) {
-        use quote::{quote, TokenStreamExt};
+        use quote::{quote_spanned, TokenStreamExt};
 
         let field_marker_type_path = &self.field_marker_type_path;
         let field_name = &self.rust_field_ident; // TODO: Pascal case this.
         let field_type = &self.rust_field_type;
 
-        // Note: Could switch on composite vs leaf here.
-        // But maybe easier to just have QueryFragment::query on leaf types
-        // magically not add any new composite fields.
-        tokens.append_all(quote! {
-            let mut field_builder = builder.select_field::<#field_marker_type_path, <#field_type as ::cynic::core::QueryFragment>::SchemaType>();
+        tokens.append_all(match self.graphql_field_kind {
+            FieldKind::Composite => {
+                quote_spanned! { self.span =>
+                    let mut field_builder = builder
+                        .select_field::<
+                            #field_marker_type_path,
+                            <#field_type as ::cynic::core::QueryFragment>::SchemaType
+                        >();
 
-            // TODO: Arguments
+                    // TODO: Arguments
 
-            <#field_type as ::cynic::core::QueryFragment>::query(field_builder.select_children());
+                    <#field_type as ::cynic::core::QueryFragment>::query(
+                        field_builder.select_children()
+                    );
 
-            field_builder.done();
+                    field_builder.done();
+                }
+            }
+            FieldKind::Enum => {
+                quote_spanned! { self.span =>
+                    let mut field_builder = builder
+                        .select_field::<
+                            #field_marker_type_path,
+                            <#field_type as ::cynic::schema::IsEnum<
+                                <#field_marker_type_path as ::cynic::schema::Field>::SchemaType
+                            >>::SchemaType
+                        >();
+
+                    field_builder.done();
+                }
+            }
+            FieldKind::Scalar => {
+                quote_spanned! { self.span =>
+                    let mut field_builder = builder
+                        .select_field::<
+                            #field_marker_type_path,
+                            <#field_type as ::cynic::schema::IsScalar<
+                                <#field_marker_type_path as ::cynic::schema::Field>::SchemaType
+                            >>::SchemaType
+                        >();
+
+                    field_builder.done();
+                }
+            }
+            FieldKind::Interface => {
+                todo!()
+            }
+            FieldKind::Union => {
+                todo!()
+            }
         });
+    }
+}
+
+impl FieldType {
+    fn as_kind(&self) -> FieldKind {
+        match self {
+            FieldType::Scalar(_, _) | FieldType::BuiltInScalar(_, _) => FieldKind::Scalar,
+            FieldType::Enum(_, _) => FieldKind::Enum,
+            // TODO: handle the other FieldKind(s)
+            _ => FieldKind::Composite,
+        }
     }
 }
 
