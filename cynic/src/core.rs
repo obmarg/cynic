@@ -51,6 +51,8 @@ impl<'de> QueryFragment<'de> for String {
     fn query(builder: QueryBuilder<Self::SchemaType>) {}
 }
 
+pub trait Enum<'de>: serde::Deserialize<'de> + serde::Serialize {}
+
 // TODO: impl QueryFragment for Option, Box etc.
 
 // TODO: QueryBuilder or SelectionBuilder?

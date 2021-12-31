@@ -17,3 +17,9 @@ type Bar {
 }
 
 scalar UUID
+
+enum States {
+  OPEN
+  CLOSED
+  DELETED
+}

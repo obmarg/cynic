@@ -1,4 +1,5 @@
 pub mod enum_derive;
+pub mod enum_derive_2;
 pub mod fragment_arguments_derive;
 pub mod fragment_derive;
 pub mod fragment_derive_2;
