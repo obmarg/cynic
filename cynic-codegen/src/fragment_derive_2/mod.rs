@@ -368,3 +368,6 @@ impl quote::ToTokens for ConstructorParameter {
         })
     }
 }
+
+#[cfg(test)]
+mod tests;
