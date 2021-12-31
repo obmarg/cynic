@@ -8,12 +8,15 @@ pub struct Book;
 #[allow(dead_code)]
 impl Book {
     pub fn id() -> book::IdSelectionBuilder {
+        use cynic::InputType;
         book::IdSelectionBuilder::new(vec![])
     }
     pub fn name() -> book::NameSelectionBuilder {
+        use cynic::InputType;
         book::NameSelectionBuilder::new(vec![])
     }
     pub fn author() -> book::AuthorSelectionBuilder {
+        use cynic::InputType;
         book::AuthorSelectionBuilder::new(vec![])
     }
 }
@@ -22,12 +25,15 @@ pub struct BookChanged;
 #[allow(dead_code)]
 impl BookChanged {
     pub fn mutation_type() -> book_changed::MutationTypeSelectionBuilder {
+        use cynic::InputType;
         book_changed::MutationTypeSelectionBuilder::new(vec![])
     }
     pub fn id() -> book_changed::IdSelectionBuilder {
+        use cynic::InputType;
         book_changed::IdSelectionBuilder::new(vec![])
     }
     pub fn book() -> book_changed::BookSelectionBuilder {
+        use cynic::InputType;
         book_changed::BookSelectionBuilder::new(vec![])
     }
 }
@@ -39,18 +45,40 @@ impl MutationRoot {
         name: impl ::cynic::InputType<String, ::cynic::inputs::NamedType>,
         author: impl ::cynic::InputType<String, ::cynic::inputs::NamedType>,
     ) -> mutation_root::CreateBookSelectionBuilder {
+        use cynic::InputType;
         mutation_root::CreateBookSelectionBuilder::new(vec![
-            ::cynic::Argument::new("name", "String!", ::cynic::serde_json::to_value(&name)),
-            ::cynic::Argument::new("author", "String!", ::cynic::serde_json::to_value(&author)),
+            ::cynic::Argument::new(
+                "name",
+                "String!",
+                if let Some(upload) = name.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&name))
+                },
+            ),
+            ::cynic::Argument::new(
+                "author",
+                "String!",
+                if let Some(upload) = author.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&author))
+                },
+            ),
         ])
     }
     pub fn delete_book(
         id: impl ::cynic::InputType<::cynic::Id, ::cynic::inputs::NamedType>,
     ) -> mutation_root::DeleteBookSelectionBuilder {
+        use cynic::InputType;
         mutation_root::DeleteBookSelectionBuilder::new(vec![::cynic::Argument::new(
             "id",
             "ID!",
-            ::cynic::serde_json::to_value(&id),
+            if let Some(upload) = id.into_upload() {
+                cynic::ArgumentWireFormat::Upload(upload.clone())
+            } else {
+                cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&id))
+            },
         )])
     }
 }
@@ -59,6 +87,7 @@ pub struct QueryRoot;
 #[allow(dead_code)]
 impl QueryRoot {
     pub fn books() -> query_root::BooksSelectionBuilder {
+        use cynic::InputType;
         query_root::BooksSelectionBuilder::new(vec![])
     }
 }
@@ -69,13 +98,19 @@ impl SubscriptionRoot {
     pub fn interval(
         n: impl ::cynic::InputType<i32, ::cynic::inputs::NamedType>,
     ) -> subscription_root::IntervalSelectionBuilder {
+        use cynic::InputType;
         subscription_root::IntervalSelectionBuilder::new(vec![::cynic::Argument::new(
             "n",
             "Int!",
-            ::cynic::serde_json::to_value(&n),
+            if let Some(upload) = n.into_upload() {
+                cynic::ArgumentWireFormat::Upload(upload.clone())
+            } else {
+                cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(&n))
+            },
         )])
     }
     pub fn books() -> subscription_root::BooksSelectionBuilder {
+        use cynic::InputType;
         subscription_root::BooksSelectionBuilder::new(vec![])
     }
 }
@@ -327,10 +362,17 @@ pub mod subscription_root {
                 ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
             >,
         ) -> Self {
+            use cynic::InputType;
             self.args.push(::cynic::Argument::new(
                 "mutationType",
                 "MutationType",
-                ::cynic::serde_json::to_value(&mutation_type),
+                if let Some(upload) = mutation_type.into_upload() {
+                    cynic::ArgumentWireFormat::Upload(upload.clone())
+                } else {
+                    cynic::ArgumentWireFormat::Serialize(::cynic::serde_json::to_value(
+                        &mutation_type,
+                    ))
+                },
             ));
             self
         }

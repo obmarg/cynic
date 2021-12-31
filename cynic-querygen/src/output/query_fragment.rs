@@ -1,6 +1,9 @@
-use std::fmt::Write;
+use core::fmt;
 
-use crate::casings::CasingExt;
+use graphql_parser::Pos;
+use inflector::Inflector;
+use proc_macro2::{Ident, Span, TokenStream};
+use quote::{quote, ToTokens};
 
 use super::indented;
 use crate::{query_parsing::TypedValue, schema::OutputFieldType, Error};
@@ -14,31 +17,102 @@ pub struct QueryFragment<'query, 'schema> {
     pub name: String,
 }
 
-impl std::fmt::Display for QueryFragment<'_, '_> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        writeln!(f, "#[derive(cynic::QueryFragment, Debug)]")?;
+// impl std::fmt::Display for QueryFragment<'_, '_> {
+//     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+//         writeln!(f, "#[derive(cynic::QueryFragment, Debug)]")?;
+
+//         if self.target_type != self.name || self.argument_struct_name.is_some() {
+//             write!(f, "#[cynic(")?;
+//             if self.target_type != self.name {
+//                 write!(f, "graphql_type = \"{}\"", self.target_type)?;
+//             }
+
+//             if let Some(name) = &self.argument_struct_name {
+//                 if self.target_type != self.name {
+//                     write!(f, ", ")?;
+//                 }
+//                 write!(f, "argument_struct = \"{}\"", name)?;
+//             }
+//             writeln!(f, ")]",)?;
+//         }
+
+//         writeln!(f, "pub struct {} {{", self.name)?;
+//         for field in &self.fields {
+//             write!(indented(f, 4), "{}", field)?;
+//         }
+
+//         writeln!(f, "}}")
+//     }
+// }
+
+impl QueryFragment<'_, '_> {
+    pub fn fmt<F: fmt::Write + ?Sized>(&self, f: &mut F) -> Result<(), Error> {
+        writeln!(f, "#[derive(cynic::QueryFragment, Debug)]").unwrap();
 
         if self.target_type != self.name || self.argument_struct_name.is_some() {
-            write!(f, "#[cynic(")?;
+            write!(f, "#[cynic(").unwrap();
             if self.target_type != self.name {
-                write!(f, "graphql_type = \"{}\"", self.target_type)?;
+                write!(f, "graphql_type = \"{}\"", self.target_type).unwrap();
             }
 
             if let Some(name) = &self.argument_struct_name {
                 if self.target_type != self.name {
-                    write!(f, ", ")?;
+                    write!(f, ", ").unwrap();
                 }
-                write!(f, "argument_struct = \"{}\"", name)?;
+                write!(f, "argument_struct = \"{}\"", name).unwrap();
             }
-            writeln!(f, ")]",)?;
+            writeln!(f, ")]",).unwrap();
         }
 
-        writeln!(f, "pub struct {} {{", self.name)?;
+        writeln!(f, "pub struct {} {{", self.name).unwrap();
         for field in &self.fields {
-            write!(indented(f, 4), "{}", field)?;
+            field.fmt(&mut indented(f, 4))?;
         }
 
-        writeln!(f, "}}")
+        writeln!(f, "}}").unwrap();
+
+        Ok(())
+    }
+}
+
+impl ToTokens for QueryFragment<'_, '_> {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
+        let description = if self.target_type != self.name || self.argument_struct_name.is_some() {
+            let target_type = if self.target_type != self.name {
+                let target_type = &self.target_type;
+                Some(quote! {graphql_type = #target_type})
+            } else {
+                None
+            };
+
+            let argument_struct = if let Some(name) = &self.argument_struct_name {
+                let comma = if target_type.is_some() {
+                    Some(quote! {,})
+                } else {
+                    None
+                };
+                Some(quote! {#comma argument_struct = #name})
+            } else {
+                None
+            };
+
+            Some(quote! {
+                #[cynic(#target_type #argument_struct)]
+            })
+        } else {
+            None
+        };
+
+        let name = Ident::new(&self.name, Span::call_site());
+        let fields = &self.fields;
+
+        tokens.extend(quote! {
+            #[derive(cynic::QueryFragment, Debug)]
+            #description
+            pub struct #name {
+                #(#fields)*
+            }
+        })
     }
 }
 
@@ -51,8 +125,34 @@ pub struct OutputField<'query, 'schema> {
     pub arguments: Vec<FieldArgument<'query, 'schema>>,
 }
 
-impl std::fmt::Display for OutputField<'_, '_> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+// impl std::fmt::Display for OutputField<'_, '_> {
+//     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+//         if !self.arguments.is_empty() {
+//             let arguments_string = self
+//                 .arguments
+//                 .iter()
+//                 .map(|arg| format!("{} = {}", arg.name.0.to_snake_case(), arg.to_literal()?))
+//                 .collect::<Vec<_>>()
+//                 .join(", ");
+
+//             writeln!(f, "#[arguments({})]", arguments_string)?;
+//         }
+
+//         if let Some(rename) = self.rename {
+//             writeln!(f, "#[cynic(rename = \"{}\")]", rename)?;
+//         }
+
+//         writeln!(
+//             f,
+//             "pub {}: {},",
+//             self.name.to_snake_case(),
+//             self.field_type.type_spec()
+//         )
+//     }
+// }
+
+impl OutputField<'_, '_> {
+    pub fn fmt<F: fmt::Write + ?Sized>(&self, f: &mut F) -> Result<(), Error> {
         if !self.arguments.is_empty() {
             let arguments_string = self
                 .arguments
@@ -60,16 +160,14 @@ impl std::fmt::Display for OutputField<'_, '_> {
                 .map(|arg| {
                     Ok(format!(
                         "{} = {}",
-                        arg.name.to_snake_case(),
+                        arg.name.0.to_snake_case(),
                         arg.to_literal()?
                     ))
                 })
-                .collect::<Result<Vec<_>, Error>>()
-                // TODO: This unwrap needs ditched somehow...
-                .unwrap()
+                .collect::<Result<Vec<_>, Error>>()?
                 .join(", ");
 
-            writeln!(f, "#[arguments({})]", arguments_string)?;
+            writeln!(f, "#[arguments({})]", arguments_string).unwrap();
         }
 
         let name = self.name.to_snake_case();
@@ -80,7 +178,38 @@ impl std::fmt::Display for OutputField<'_, '_> {
             output.add_rename(rename);
         }
 
-        write!(f, "{}", output)
+        write!(f, "{}", output).unwrap();
+
+        Ok(())
+    }
+}
+
+impl ToTokens for OutputField<'_, '_> {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
+        let arguments = self.arguments.iter().map(|arg| {
+            let name = Ident::new(&arg.name.0.to_snake_case(), Span::call_site());
+            let lit = &arg.to_literal().unwrap().parse::<TokenStream>().unwrap();
+            quote! { #name = #lit, }
+        });
+
+        let arguments = if arguments.clone().count() > 0 {
+            Some(quote! {#[arguments(#(#arguments)*)]})
+        } else {
+            None
+        };
+
+        let rename = self.rename.map(|r| quote! {#[cynic(rename = #r)]});
+
+        let name = Ident::new(&self.name.to_snake_case(), Span::call_site());
+        let typ: TokenStream = self.field_type.type_spec().parse().unwrap();
+
+        tokens.extend(quote! {
+            #arguments
+
+            #rename
+
+            pub #name: #typ,
+        })
     }
 }
 
@@ -145,7 +274,9 @@ impl RustOutputFieldType {
                     "Boolean" => return "bool".into(),
                     // Technically the name is "ID" in graphql, but we've already pascal
                     // cased it
+                    // TODO: The above statement is wrong apparently. We need to fix this.
                     "Id" => return "cynic::Id".into(),
+                    "ID" => return "cynic::Id".into(),
                     _ => {}
                 }
 
@@ -157,12 +288,12 @@ impl RustOutputFieldType {
 
 #[derive(Debug, PartialEq)]
 pub struct FieldArgument<'query, 'schema> {
-    pub name: &'schema str,
+    pub name: (&'schema str, Pos),
     value: TypedValue<'query, 'schema>,
 }
 
 impl<'query, 'schema> FieldArgument<'query, 'schema> {
-    pub fn new(name: &'schema str, value: TypedValue<'query, 'schema>) -> Self {
+    pub fn new(name: (&'schema str, Pos), value: TypedValue<'query, 'schema>) -> Self {
         FieldArgument { name, value }
     }
 

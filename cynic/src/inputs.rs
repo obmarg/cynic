@@ -40,16 +40,29 @@ pub struct List<T>(std::marker::PhantomData<T>);
 pub trait InputType<NamedType, Wrappers>: serde::Serialize {
     //fn as_serializable(&self) -> Self::Output;
     //fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error>;
+    /// Creates an upload handle out of the given type.
+    /// Implement this for your custom upload type.
+    fn into_upload(&self) -> Option<&crate::Upload> {
+        None
+    }
 }
 
-impl<T: ?Sized, TypeLock, Wrappers> InputType<TypeLock, Wrappers> for &T where
-    T: InputType<TypeLock, Wrappers>
+impl<T: ?Sized, TypeLock, Wrappers> InputType<TypeLock, Wrappers> for &T
+where
+    T: InputType<TypeLock, Wrappers>,
 {
+    fn into_upload(&self) -> Option<&crate::Upload> {
+        (*self).into_upload()
+    }
 }
 
-impl<T: ?Sized, TypeLock, Wrappers> InputType<TypeLock, Wrappers> for Box<T> where
-    T: InputType<TypeLock, Wrappers>
+impl<T: ?Sized, TypeLock, Wrappers> InputType<TypeLock, Wrappers> for Box<T>
+where
+    T: InputType<TypeLock, Wrappers>,
 {
+    fn into_upload(&self) -> Option<&crate::Upload> {
+        (*self.as_ref()).into_upload()
+    }
 }
 
 impl<T: ?Sized, TypeLock, Wrappers> InputType<TypeLock, Wrappers> for std::rc::Rc<T>
@@ -57,6 +70,9 @@ where
     T: InputType<TypeLock, Wrappers>,
     std::rc::Rc<T>: serde::Serialize,
 {
+    fn into_upload(&self) -> Option<&crate::Upload> {
+        (*self.as_ref()).into_upload()
+    }
 }
 
 impl<T: ?Sized, TypeLock, Wrappers> InputType<TypeLock, Wrappers> for std::sync::Arc<T>
@@ -64,6 +80,9 @@ where
     T: InputType<TypeLock, Wrappers>,
     std::sync::Arc<T>: serde::Serialize,
 {
+    fn into_upload(&self) -> Option<&crate::Upload> {
+        (*self.as_ref()).into_upload()
+    }
 }
 
 impl<'a> InputType<String, NamedType> for &'a str {}
@@ -88,21 +107,37 @@ impl<'a> InputType<String, Nullable<NamedType>> for Option<&'a str> {}
 #[macro_export]
 macro_rules! impl_input_type {
     ($type:ty, $type_lock:path) => {
-        impl $crate::InputType<$type_lock, $crate::inputs::NamedType> for $type {}
+        $crate::impl_input_type! {$type, $type_lock, |_me| None}
+    };
+    ($type:ty, $type_lock:path, $converter:expr) => {
+        impl $crate::InputType<$type_lock, $crate::inputs::NamedType> for $type {
+            fn into_upload(&self) -> Option<&$crate::Upload> {
+                $converter(self)
+            }
+        }
 
         impl $crate::InputType<$type_lock, $crate::inputs::Nullable<$crate::inputs::NamedType>>
             for $type
         {
+            fn into_upload(&self) -> Option<&$crate::Upload> {
+                $converter(self)
+            }
         }
 
         impl $crate::InputType<$type_lock, $crate::inputs::Nullable<$crate::inputs::NamedType>>
             for Option<$type>
         {
+            fn into_upload(&self) -> Option<&$crate::Upload> {
+                self.as_ref().and_then($converter)
+            }
         }
 
         impl<'a> $crate::InputType<$type_lock, $crate::inputs::Nullable<$crate::inputs::NamedType>>
             for Option<&'a $type>
         {
+            fn into_upload(&self) -> Option<&$crate::Upload> {
+                self.and_then($converter)
+            }
         }
 
         impl
@@ -111,11 +146,17 @@ macro_rules! impl_input_type {
                 $crate::inputs::Nullable<$crate::inputs::List<$crate::inputs::NamedType>>,
             > for Option<Vec<$type>>
         {
+            fn into_upload(&self) -> Option<&$crate::Upload> {
+                None
+            }
         }
 
         impl $crate::InputType<$type_lock, $crate::inputs::List<$crate::inputs::NamedType>>
             for Vec<$type>
         {
+            fn into_upload(&self) -> Option<&$crate::Upload> {
+                None
+            }
         }
 
         impl
@@ -126,6 +167,9 @@ macro_rules! impl_input_type {
                 >,
             > for Option<Vec<Option<$type>>>
         {
+            fn into_upload(&self) -> Option<&$crate::Upload> {
+                None
+            }
         }
     };
 }

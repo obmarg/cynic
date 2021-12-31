@@ -8,6 +8,5 @@ pub type SelectionSet<'a> = graphql_parser::query::SelectionSet<'a, &'a str>;
 pub type Selection<'a> = graphql_parser::query::Selection<'a, &'a str>;
 pub type TypeCondition<'a> = graphql_parser::query::TypeCondition<'a, &'a str>;
 pub type Value<'a> = graphql_parser::query::Value<'a, &'a str>;
+pub type ValueKind<'a> = graphql_parser::query::ValueKind<'a, &'a str>;
 pub type VariableDefinition<'a> = graphql_parser::query::VariableDefinition<'a, &'a str>;
-
-pub use graphql_parser::query::ParseError;

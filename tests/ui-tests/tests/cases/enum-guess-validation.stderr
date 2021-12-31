@@ -2,7 +2,7 @@ error: Could not find an enum named Desseqt in ../../../cynic/src/bin/simple.gra
   --> $DIR/enum-guess-validation.rs:10:5
    |
 10 |     graphql_type = "Desseqt"
-   |     ^^^^^^^^^^^^
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^
 
 warning: variant `ICE_CREAM` should have an upper camel case name
   --> $DIR/enum-guess-validation.rs:14:5

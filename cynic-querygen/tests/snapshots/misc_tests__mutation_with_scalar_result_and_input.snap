@@ -22,7 +22,6 @@ mod queries {
         #[arguments(input = SignInInput { password: args.password.clone(), username: args.username.clone() })]
         pub sign_in: String,
     }
-
     #[derive(cynic::InputObject, Debug)]
     pub struct SignInInput {
         pub password: String,

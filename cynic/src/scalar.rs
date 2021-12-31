@@ -42,6 +42,9 @@ where
 #[macro_export]
 macro_rules! impl_scalar {
     ($type:path, $type_lock:path) => {
+        $crate::impl_scalar!($type, $type_lock, |_me| None);
+    };
+    ($type:path, $type_lock:path, $converter:expr) => {
         impl $crate::Scalar<$type_lock> for $type {
             type Deserialize = $type;
 
@@ -50,7 +53,7 @@ macro_rules! impl_scalar {
             }
         }
 
-        $crate::impl_input_type!($type, $type_lock);
+        $crate::impl_input_type!($type, $type_lock, $converter);
     };
 }
 

@@ -8,6 +8,17 @@ pub struct GraphQlResponse<T> {
     pub errors: Option<Vec<GraphQlError>>,
 }
 
+/// A general cynic error which can occur.
+#[derive(Debug, serde::Deserialize, thiserror::Error)]
+pub enum CynicError<E: std::fmt::Debug + std::error::Error> {
+    /// Something with the query went wrong.
+    #[error("Query Error")]
+    Query(Vec<GraphQlError>),
+    /// Something with the request went wrong.
+    #[error("Request Error")]
+    Request(E),
+}
+
 /// A model describing an error which has taken place during execution.
 #[derive(Clone, Debug, Eq, PartialEq, serde::Deserialize, thiserror::Error)]
 #[error("{message}")]

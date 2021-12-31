@@ -2,6 +2,7 @@ use std::collections::HashMap;
 
 use crate::schema::{Definition, Document, TypeDefinition};
 
+#[derive(Debug)]
 pub struct TypeIndex<'a> {
     //name_to_kind: HashMap<String, Kind>,
     types: HashMap<&'a str, &'a TypeDefinition>,

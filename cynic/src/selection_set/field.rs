@@ -137,6 +137,8 @@ fn handle_query_arguments(arguments: &[Argument]) -> String {
 
 #[cfg(test)]
 mod tests {
+    use crate::ArgumentWireFormat;
+
     use super::*;
     use serde_json::json;
 
@@ -191,7 +193,11 @@ mod tests {
     fn test_query_with_arguments() {
         let fields = Field::Composite(
             "test_struct".to_string(),
-            vec![Argument::new("an_arg", "Bool!", Ok(json! { false }))],
+            vec![Argument::new(
+                "an_arg",
+                "Bool!",
+                ArgumentWireFormat::Serialize(Ok(json! { false })),
+            )],
             vec![
                 Field::Leaf("field_one".to_string(), vec![]),
                 Field::Composite(
@@ -199,7 +205,11 @@ mod tests {
                     vec![],
                     vec![Field::Leaf(
                         "a_string".to_string(),
-                        vec![Argument::new("another_arg", "Bool!", Ok(json! { true }))],
+                        vec![Argument::new(
+                            "another_arg",
+                            "Bool!",
+                            ArgumentWireFormat::Serialize(Ok(json! { true })),
+                        )],
                     )],
                 ),
             ],
@@ -211,11 +221,17 @@ mod tests {
             "test_struct(an_arg: $_0) {\n  field_one\n  nested {\n    a_string(another_arg: $_1)\n  }\n}\n"
         );
         assert_eq!(
-            arguments
-                .iter()
-                .map(|a| a.serialize_result.as_ref().unwrap())
-                .collect::<Vec<_>>(),
-            vec![&json!(false), &json!(true)]
+            format!(
+                "{:?}",
+                arguments.iter().map(|a| &a.wire_format).collect::<Vec<_>>()
+            ),
+            format!(
+                "{:?}",
+                vec![
+                    &ArgumentWireFormat::Serialize(Ok(json!(false))),
+                    &ArgumentWireFormat::Serialize(Ok(json!(true)))
+                ]
+            )
         );
         assert_eq!(
             arguments
@@ -240,7 +256,11 @@ mod tests {
                     "fieldTwo".into(),
                     Box::new(Field::Leaf(
                         "aBool".into(),
-                        vec![Argument::new("myArg", "Bool!", Ok(json!(true)))],
+                        vec![Argument::new(
+                            "myArg",
+                            "Bool!",
+                            ArgumentWireFormat::Serialize(Ok(json!(true))),
+                        )],
                     )),
                 ),
             ],

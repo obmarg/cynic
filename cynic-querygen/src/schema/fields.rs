@@ -1,5 +1,7 @@
 use std::{borrow::Cow, rc::Rc};
 
+use graphql_parser::Pos;
+
 use super::{parser, InputTypeRef, OutputTypeRef, TypeIndex};
 use crate::Error;
 
@@ -14,7 +16,7 @@ pub struct OutputField<'schema> {
 /// A field on an input object or an argument
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone)]
 pub struct InputField<'schema> {
-    pub name: &'schema str,
+    pub name: (&'schema str, Pos),
     pub value_type: InputFieldType<'schema>,
 }
 
@@ -67,7 +69,7 @@ impl<'schema> InputField<'schema> {
         type_index: &Rc<TypeIndex<'schema>>,
     ) -> InputField<'schema> {
         InputField {
-            name: field.name,
+            name: (field.name, field.position),
             value_type: InputFieldType::from_parser(&field.value_type, type_index),
         }
     }
