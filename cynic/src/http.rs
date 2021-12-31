@@ -343,15 +343,20 @@ mod reqwest_blocking_ext {
     }
 }
 
+/// An error that can happen when using reqwasm.
 #[cfg(feature = "reqwasm")]
 #[derive(thiserror::Error, Debug)]
 pub enum CynicReqwasmError {
+    /// Something with the HTTP request went wrong.
     #[error("Error making HTTP request: {0}")]
     Reqwasm(#[from] reqwasm::Error),
+    /// Something with decoding the GraphQL response went wrong.
     #[error("Error decoding GraphQL response: {0}")]
     Decode(#[from] json_decode::DecodeError),
+    /// Something went wrong while serializing the data.
     #[error("Serde error: {0}")]
     Serde(#[from] serde_json::Error),
+    /// Something with the JS interface went wrong.
     #[error("Error while interfacing JS")]
     Js(JsValue),
 }

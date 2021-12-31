@@ -20,6 +20,7 @@ pub struct Operation<'a, ResponseData> {
     /// The variables that will be sent to the server as part of this operation
     pub variables: HashMap<String, Argument>,
     #[serde(skip)]
+    /// The files that have to be transmitted in in the operation.
     pub files: Vec<(String, Upload)>,
     #[serde(skip)]
     decoder: BoxDecoder<'a, ResponseData>,
@@ -103,6 +104,7 @@ impl<'a, ResponseData: 'a> Operation<'a, ResponseData> {
         }
     }
 
+    /// A map of all the files that have to be transmitted with this operation.
     pub fn file_map(&self) -> HashMap<String, Vec<String>> {
         self.files
             .iter()

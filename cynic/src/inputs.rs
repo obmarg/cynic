@@ -40,6 +40,8 @@ pub struct List<T>(std::marker::PhantomData<T>);
 pub trait InputType<NamedType, Wrappers>: serde::Serialize {
     //fn as_serializable(&self) -> Self::Output;
     //fn serialize<S: serde::Serializer>(&self, serializer: S) -> Result<S::Ok, S::Error>;
+    /// Creates an upload handle out of the given type.
+    /// Implement this for your custom upload type.
     fn into_upload(&self) -> Option<&crate::Upload> {
         None
     }

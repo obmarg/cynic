@@ -1,9 +1,9 @@
+use crate::Upload;
+
 /// A single argument to a graphql operation.
 ///
 /// Users should only need to use this if they're interacting with the
 /// `selection_set` API directly.
-use crate::Upload;
-
 #[derive(Debug)]
 pub struct Argument {
     pub(crate) name: String,
@@ -46,8 +46,13 @@ impl serde::Serialize for Argument {
     }
 }
 
+/// The format an argument should be transmitted with.
+/// Normally this is `Serialize`.
+/// For file uploads that would be detrimental which is why multipart is used. This is denoted by the `Upload` variant.
 #[derive(Debug)]
 pub enum ArgumentWireFormat {
+    /// Serialize the argument and send it as JSON.
     Serialize(Result<serde_json::Value, serde_json::Error>),
+    /// Send the file as multipart request.
     Upload(Upload),
 }
