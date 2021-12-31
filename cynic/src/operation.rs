@@ -74,7 +74,7 @@ impl<'a, ResponseData: 'a> Operation<'a, ResponseData> {
             }
         }
 
-        log::debug!("vars: {:#?}", variables);
+        // log::debug!("vars: {:#?}", variables);
 
         Operation {
             query,
