@@ -3,14 +3,13 @@ mod params;
 
 pub use params::UseSchemaParams;
 
-use inflector::Inflector;
 use proc_macro2::TokenStream;
 use quote::format_ident;
 use syn::parse_quote;
 
 use crate::{
     field_type::FieldType,
-    ident::Ident,
+    ident::{to_snake_case, Ident},
     schema::{self, SchemaLoadError},
     type_index::TypeIndex,
 };
@@ -76,7 +75,7 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, SchemaLoadError
                     // TODO: Handle arguments
                 }
 
-                let field_module_name = format_ident!("{}_fields", def.name.to_snake_case());
+                let field_module_name = format_ident!("{}_fields", to_snake_case(&def.name));
                 output.append_all(quote! {
                     pub mod #field_module_name {
                         #(#field_module_contents)*

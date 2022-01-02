@@ -1,4 +1,3 @@
-use inflector::Inflector;
 use proc_macro2::TokenStream;
 use quote::format_ident;
 
@@ -13,7 +12,7 @@ pub struct DeserializeImpl {
 
 struct Field {
     rust_name: proc_macro2::Ident,
-    field_variant_name: String,
+    field_variant_name: Ident,
     serialized_name: String,
 }
 
@@ -45,7 +44,7 @@ impl quote::ToTokens for DeserializeImpl {
         let field_variant_names = self
             .fields
             .iter()
-            .map(|f| format_ident!("{}", f.field_variant_name))
+            .map(|f| &f.field_variant_name)
             .collect::<Vec<_>>();
         let field_names = self.fields.iter().map(|f| &f.rust_name).collect::<Vec<_>>();
 
@@ -122,9 +121,11 @@ impl quote::ToTokens for DeserializeImpl {
 
 fn process_field(field: &FragmentDeriveField) -> Field {
     // Should be ok to unwrap since we only accept struct style input
-    let rust_name = field.ident.clone().unwrap();
+    let rust_name = field.ident.as_ref().unwrap();
+    let field_variant_name = Ident::from_proc_macro2(rust_name, None).as_field_marker_type();
+
     Field {
-        field_variant_name: rust_name.to_string().to_pascal_case(),
+        field_variant_name,
         serialized_name: field.alias().unwrap_or_else(|| {
             field
                 .new_graphql_ident()
@@ -133,6 +134,6 @@ fn process_field(field: &FragmentDeriveField) -> Field {
                 .graphql_name()
                 .to_string()
         }),
-        rust_name,
+        rust_name: rust_name.clone(),
     }
 }

@@ -106,7 +106,7 @@ impl Ident {
 
     pub fn as_field_marker_type(&self) -> Ident {
         Ident {
-            rust: format_ident!("{}", self.rust_name().to_pascal_case()),
+            rust: format_ident!("{}", to_pascal_case(&self.rust_name())),
             graphql: self.graphql.clone(),
             span: self.span,
         }
@@ -356,7 +356,7 @@ fn transform_keywords(s: &str) -> Cow<str> {
     }
 }
 
-fn to_snake_case(s: &str) -> String {
+pub fn to_snake_case(s: &str) -> String {
     let mut buf = String::with_capacity(s.len());
     // Setting this to true to avoid adding underscores at the beginning
     let mut prev_is_upper = true;

@@ -13,14 +13,14 @@ pub mod film_fields {
         }
     }
     impl ::cynic::schema::HasField<Title, Option<String>> for super::Film {}
-    pub struct EpisodeID;
-    impl ::cynic::schema::Field for EpisodeID {
+    pub struct EpisodeId;
+    impl ::cynic::schema::Field for EpisodeId {
         type SchemaType = Option<i32>;
         fn name() -> &'static str {
             "episodeID"
         }
     }
-    impl ::cynic::schema::HasField<EpisodeID, Option<i32>> for super::Film {}
+    impl ::cynic::schema::HasField<EpisodeId, Option<i32>> for super::Film {}
     pub struct OpeningCrawl;
     impl ::cynic::schema::Field for OpeningCrawl {
         type SchemaType = Option<String>;
