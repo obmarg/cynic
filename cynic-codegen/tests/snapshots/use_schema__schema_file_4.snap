@@ -7,11 +7,11 @@ expression: "format_code(format!(\"{}\", tokens))"
 pub struct Foo;
 #[allow(dead_code)]
 impl Foo {
-    pub fn __underscore() -> foo::SelectionBuilder {
-        foo::SelectionBuilder::new(vec![])
+    pub fn __underscore() -> foo::__underscoreSelectionBuilder {
+        foo::__underscoreSelectionBuilder::new(vec![])
     }
-    pub fn self_() -> foo::SelfSelectionBuilder {
-        foo::SelfSelectionBuilder::new(vec![])
+    pub fn self_() -> foo::Self_SelectionBuilder {
+        foo::Self_SelectionBuilder::new(vec![])
     }
     pub fn super_() -> foo::SuperSelectionBuilder {
         foo::SuperSelectionBuilder::new(vec![])
@@ -45,12 +45,12 @@ impl Bar {
 }
 #[allow(dead_code)]
 pub mod foo {
-    pub struct SelectionBuilder {
+    pub struct __underscoreSelectionBuilder {
         args: Vec<::cynic::Argument>,
     }
-    impl SelectionBuilder {
+    impl __underscoreSelectionBuilder {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
-            SelectionBuilder { args }
+            __underscoreSelectionBuilder { args }
         }
         pub fn select<'a, T: 'a + Send + Sync>(
             self,
@@ -71,12 +71,12 @@ pub mod foo {
             )
         }
     }
-    pub struct SelfSelectionBuilder {
+    pub struct Self_SelectionBuilder {
         args: Vec<::cynic::Argument>,
     }
-    impl SelfSelectionBuilder {
+    impl Self_SelectionBuilder {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
-            SelfSelectionBuilder { args }
+            Self_SelectionBuilder { args }
         }
         pub fn select<'a, T: 'a + Send + Sync>(
             self,

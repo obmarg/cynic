@@ -1,4 +1,3 @@
-use inflector::Inflector;
 use lazy_static::lazy_static;
 use proc_macro2::{Span, TokenStream};
 use quote::format_ident;
@@ -60,11 +59,20 @@ impl Ident {
     }
 
     pub fn for_type<T: AsRef<str>>(s: T) -> Self {
-        Ident::new(s.as_ref().to_pascal_case())
+        let s = s.as_ref();
+        if s == "_" {
+            Ident {
+                rust: format_ident!("__underscore"),
+                graphql: "_".to_string(),
+                span: None,
+            }
+        } else {
+            Ident::new(to_pascal_case(s))
+        }
     }
 
     pub fn for_variant(s: impl AsRef<str>) -> Self {
-        Ident::new(s.as_ref().to_pascal_case())
+        Ident::new(to_pascal_case(s.as_ref()))
     }
 
     pub fn for_field<T: AsRef<str>>(s: T) -> Self {
@@ -81,7 +89,7 @@ impl Ident {
     }
 
     pub fn for_module(s: &str) -> Self {
-        Ident::new(s.to_snake_case())
+        Ident::new(to_snake_case(s))
     }
 
     pub fn rust_name(&self) -> String {
@@ -191,11 +199,11 @@ impl RenameRule {
             RenameRule::RenameTo(s) => s.clone(),
             RenameRule::RenameAll(RenameAll::Lowercase) => string.as_ref().to_lowercase(),
             RenameRule::RenameAll(RenameAll::Uppercase) => string.as_ref().to_uppercase(),
-            RenameRule::RenameAll(RenameAll::PascalCase) => string.as_ref().to_pascal_case(),
-            RenameRule::RenameAll(RenameAll::CamelCase) => string.as_ref().to_camel_case(),
-            RenameRule::RenameAll(RenameAll::SnakeCase) => string.as_ref().to_snake_case(),
+            RenameRule::RenameAll(RenameAll::PascalCase) => to_pascal_case(string.as_ref()),
+            RenameRule::RenameAll(RenameAll::CamelCase) => to_camel_case(string.as_ref()),
+            RenameRule::RenameAll(RenameAll::SnakeCase) => to_snake_case(string.as_ref()),
             RenameRule::RenameAll(RenameAll::ScreamingSnakeCase) => {
-                string.as_ref().to_screaming_snake_case()
+                to_snake_case(string.as_ref()).to_uppercase()
             }
             RenameRule::RenameAll(RenameAll::None) => {
                 panic!("RenameRule::new not filtering out RenameAll::None properly!")
@@ -351,6 +359,65 @@ fn to_snake_case(s: &str) -> String {
     buf
 }
 
+fn to_pascal_case(s: &str) -> String {
+    let mut buf = String::with_capacity(s.len());
+    let mut first_char = true;
+    let mut prev_is_upper = false;
+    let mut prev_is_underscore = false;
+    for c in s.chars() {
+        if first_char {
+            if c == '_' {
+                prev_is_underscore = true;
+            } else if c.is_uppercase() {
+                prev_is_upper = true;
+                buf.push(c);
+            } else {
+                buf.extend(c.to_uppercase());
+            }
+            first_char = false;
+            continue;
+        }
+
+        if c.is_uppercase() {
+            if prev_is_upper {
+                buf.extend(c.to_lowercase());
+            } else {
+                buf.push(c);
+            }
+            prev_is_upper = true;
+        } else if c == '_' {
+            prev_is_underscore = true;
+        } else {
+            if prev_is_upper {
+                buf.extend(c.to_lowercase())
+            } else if prev_is_underscore {
+                buf.extend(c.to_uppercase());
+            } else {
+                buf.push(c);
+            }
+            prev_is_upper = false;
+            prev_is_underscore = false;
+        }
+    }
+
+    buf
+}
+
+fn to_camel_case(s: &str) -> String {
+    let s = to_pascal_case(s);
+
+    let mut buf = String::with_capacity(s.len());
+    let mut chars = s.chars();
+
+    if let Some(first_char) = chars.next() {
+        buf.extend(first_char.to_lowercase());
+    }
+
+    buf.extend(chars);
+
+    buf
+}
+
 pub trait PathExt {
     fn push(&mut self, ident: impl Borrow<super::Ident>);
 }
@@ -405,5 +472,50 @@ mod tests {
         assert_eq!(to_snake_case("_hello"), "_hello");
         assert_eq!(to_snake_case("_"), "_");
         assert_eq!(Ident::for_field("_"), Ident::new("_"));
+    }
+
+    #[test]
+    fn test_to_snake_case() {
+        assert_eq!(to_snake_case("aString"), "a_string");
+        assert_eq!(to_snake_case("MyString"), "my_string");
+        assert_eq!(to_snake_case("my_string"), "my_string");
+        assert_eq!(to_snake_case("_another_one"), "_another_one");
+        assert_eq!(to_snake_case("RepeatedUPPERCASE"), "repeated_uppercase");
+        assert_eq!(to_snake_case("UUID"), "uuid");
+    }
+
+    #[test]
+    fn test_to_camel_case() {
+        assert_eq!(to_camel_case("aString"), "aString");
+        assert_eq!(to_camel_case("MyString"), "myString");
+        assert_eq!(to_camel_case("my_string"), "myString");
+        assert_eq!(to_camel_case("_another_one"), "anotherOne");
+        assert_eq!(to_camel_case("RepeatedUPPERCASE"), "repeatedUppercase");
+        assert_eq!(to_camel_case("UUID"), "uuid");
+    }
+
+    #[test]
+    fn test_to_pascal_case() {
+        assert_eq!(to_pascal_case("aString"), "AString");
+        assert_eq!(to_pascal_case("MyString"), "MyString");
+        assert_eq!(to_pascal_case("my_string"), "MyString");
+        assert_eq!(to_pascal_case("_another_one"), "AnotherOne");
+        assert_eq!(to_pascal_case("RepeatedUPPERCASE"), "RepeatedUppercase");
+        assert_eq!(to_pascal_case("UUID"), "Uuid");
+    }
+
+    #[test]
+    fn casings_are_not_lossy_where_possible() {
+        for s in ["snake_case_thing", "snake"] {
+            assert_eq!(to_snake_case(&to_pascal_case(s)), s);
+        }
+
+        for s in ["PascalCase", "Pascal"] {
+            assert_eq!(to_pascal_case(&to_snake_case(s)), s);
+        }
+
+        for s in ["camelCase", "camel"] {
+            assert_eq!(to_camel_case(&to_snake_case(s)), s);
+        }
     }
 }

@@ -18,8 +18,8 @@ impl Film {
     pub fn title() -> film::TitleSelectionBuilder {
         film::TitleSelectionBuilder::new(vec![])
     }
-    pub fn episode_id() -> film::EpisodeIDSelectionBuilder {
-        film::EpisodeIDSelectionBuilder::new(vec![])
+    pub fn episode_id() -> film::EpisodeIdSelectionBuilder {
+        film::EpisodeIdSelectionBuilder::new(vec![])
     }
     pub fn opening_crawl() -> film::OpeningCrawlSelectionBuilder {
         film::OpeningCrawlSelectionBuilder::new(vec![])
@@ -757,8 +757,8 @@ impl Starship {
     pub fn hyperdrive_rating() -> starship::HyperdriveRatingSelectionBuilder {
         starship::HyperdriveRatingSelectionBuilder::new(vec![])
     }
-    pub fn mglt() -> starship::MgltselectionBuilder {
-        starship::MgltselectionBuilder::new(vec![])
+    pub fn mglt() -> starship::MgltSelectionBuilder {
+        starship::MgltSelectionBuilder::new(vec![])
     }
     pub fn cargo_capacity() -> starship::CargoCapacitySelectionBuilder {
         starship::CargoCapacitySelectionBuilder::new(vec![])
@@ -1031,12 +1031,12 @@ pub mod film {
             )
         }
     }
-    pub struct EpisodeIDSelectionBuilder {
+    pub struct EpisodeIdSelectionBuilder {
         args: Vec<::cynic::Argument>,
     }
-    impl EpisodeIDSelectionBuilder {
+    impl EpisodeIdSelectionBuilder {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
-            EpisodeIDSelectionBuilder { args }
+            EpisodeIdSelectionBuilder { args }
         }
         pub fn select<'a, T: 'a + Send + Sync>(
             self,
@@ -7657,12 +7657,12 @@ pub mod starship {
             )
         }
     }
-    pub struct MgltselectionBuilder {
+    pub struct MgltSelectionBuilder {
         args: Vec<::cynic::Argument>,
     }
-    impl MgltselectionBuilder {
+    impl MgltSelectionBuilder {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
-            MgltselectionBuilder { args }
+            MgltSelectionBuilder { args }
         }
         pub fn select<'a, T: 'a + Send + Sync>(
             self,

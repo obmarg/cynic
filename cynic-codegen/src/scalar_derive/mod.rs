@@ -35,7 +35,7 @@ pub fn scalar_derive_impl(input: ScalarDeriveInput) -> Result<TokenStream, syn::
     let type_lock_ident = if let Some(graphql_type) = input.graphql_type {
         Ident::new_spanned((*graphql_type).clone(), graphql_type.span())
     } else {
-        ident.clone().into()
+        Ident::for_type(ident.to_string()).with_span(ident.span())
     };
 
     Ok(quote! {
