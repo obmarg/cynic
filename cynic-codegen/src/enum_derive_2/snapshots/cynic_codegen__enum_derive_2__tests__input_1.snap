@@ -37,4 +37,7 @@ impl<'de> ::cynic::serde::Deserialize<'de> for States {
         }
     }
 }
+impl ::cynic::schema::IsEnum<schema::States> for States {
+    type SchemaType = schema::States;
+}
 

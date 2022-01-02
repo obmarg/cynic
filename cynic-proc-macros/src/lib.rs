@@ -8,7 +8,7 @@ extern crate proc_macro;
 use proc_macro::TokenStream;
 
 use cynic_codegen::{
-    enum_derive, fragment_arguments_derive, fragment_derive, fragment_derive_2,
+    enum_derive, enum_derive_2, fragment_arguments_derive, fragment_derive, fragment_derive_2,
     inline_fragments_derive, input_object_derive, scalar_derive, schema_for_derives, use_schema,
     use_schema2,
 };
@@ -51,7 +51,7 @@ pub fn use_schema_2(input: TokenStream) -> TokenStream {
 
     let rv = use_schema2::use_schema(input).unwrap().into();
 
-    // eprintln!("{}", rv);
+    eprintln!("{}", rv);
 
     rv
 }
@@ -85,7 +85,7 @@ pub fn query_fragment_2_derive(input: TokenStream) -> TokenStream {
         Err(e) => e.to_compile_error().into(),
     };
 
-    //eprintln!("{}", rv);
+    // eprintln!("{}", rv);
 
     rv
 }
@@ -130,6 +130,23 @@ pub fn enum_derive(input: TokenStream) -> TokenStream {
     let ast = syn::parse_macro_input!(input as syn::DeriveInput);
 
     let rv = match enum_derive::enum_derive(&ast) {
+        Ok(tokens) => tokens.into(),
+        Err(e) => e.to_compile_error().into(),
+    };
+
+    //eprintln!("{}", rv);
+
+    rv
+}
+
+/// Derives `cynic::Enum2`
+///
+/// See [the book for usage details](https://cynic-rs.dev/derives/enums.html)
+#[proc_macro_derive(Enum2, attributes(cynic))]
+pub fn enum_derive_2(input: TokenStream) -> TokenStream {
+    let ast = syn::parse_macro_input!(input as syn::DeriveInput);
+
+    let rv = match enum_derive_2::enum_derive(&ast) {
         Ok(tokens) => tokens.into(),
         Err(e) => e.to_compile_error().into(),
     };

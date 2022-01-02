@@ -254,5 +254,7 @@ pub mod bar {
 }
 #[allow(dead_code)]
 pub enum Uuid {}
+#[allow(dead_code)]
+pub enum States {}
 impl ::cynic::QueryRoot for Foo {}
 

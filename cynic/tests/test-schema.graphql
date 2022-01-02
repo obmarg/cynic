@@ -8,6 +8,7 @@ type BlogPost {
   comments: [Comment!]!
   hasMetadata: Boolean
   metadata: EmptyType
+  state: PostState
 }
 
 type Comment {
@@ -38,6 +39,11 @@ type Query {
 }
 
 union PostOrAuthor = BlogPost | Author
+
+enum PostState {
+  Posted
+  Draft
+}
 
 schema {
   query: Query

@@ -1,5 +1,5 @@
 use proc_macro2::{Span, TokenStream};
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 use crate::{
     ident::{RenameAll, RenameRule},
@@ -93,18 +93,7 @@ pub fn enum_derive_impl(
 
         Ok(quote! {
             #[automatically_derived]
-            impl<'de> ::cynic::core::Enum<'de> for #ident {
-                // fn select() -> cynic::SelectionSet<'static, Self, #schema_module::#enum_marker_ident> {
-                //     ::cynic::selection_set::enum_with(|s| {
-                //         match s.as_ref() {
-                //             #(
-                //                 #string_literals => ::cynic::selection_set::succeed(Self::#variants),
-                //             )*
-                //             _ => ::cynic::selection_set::fail(format!("Unknown variant: {}", &s))
-                //         }
-                //     })
-                // }
-            }
+            impl<'de> ::cynic::core::Enum<'de> for #ident {}
 
             #[automatically_derived]
             impl<'de> ::cynic::serde::Serialize for #ident {
@@ -137,6 +126,10 @@ pub fn enum_derive_impl(
                 }
             }
 
+            impl ::cynic::schema::IsEnum<#schema_module::#enum_marker_ident> for #ident {
+                type SchemaType = #schema_module::#enum_marker_ident;
+            }
+
             // ::cynic::impl_input_type!(#ident, #schema_module::#enum_marker_ident);
         })
     } else {
@@ -154,7 +147,7 @@ fn join_variants<'a>(
     rename_all: RenameAll,
     enum_span: &Span,
 ) -> Result<Vec<(&'a EnumDeriveVariant, &'a EnumValue)>, TokenStream> {
-    let mut map = HashMap::new();
+    let mut map = BTreeMap::new();
     for variant in variants {
         let graphql_name = Ident::from_proc_macro2(
             &variant.ident,
