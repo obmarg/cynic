@@ -597,7 +597,6 @@ dependencies = [
 name = "cynic-codegen"
 version = "1.0.0"
 dependencies = [
- "Inflector",
  "assert_matches",
  "darling",
  "graphql-parser",

@@ -26,7 +26,10 @@ impl FieldSelectionBuilder {
         type_index: &TypeIndex,
     ) -> FieldSelectionBuilder {
         FieldSelectionBuilder {
-            name: Ident::for_type(format!("{}SelectionBuilder", field_name)),
+            name: Ident::new(format!(
+                "{}SelectionBuilder",
+                Ident::for_type(field_name).rust_name()
+            )),
             field_type,
             type_lock,
             optional_args: optional_args

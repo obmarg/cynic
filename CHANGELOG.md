@@ -14,6 +14,11 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 - Fixed a case where the generator would output the incorrect casing for some
   occurrences of a custom scalar in the output (#346)
 
+### Changes
+
+- `cynic` no longer uses `inflector` to re-case things.  Hopefully this won't cause
+  any regressions, but if it does please raise an issue.
+
 ## v1.0.0 - 2021-12-09
 
 ### Breaking Changes
