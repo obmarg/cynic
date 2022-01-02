@@ -1,11 +1,11 @@
 mod schema {
-    cynic::use_schema!("src/bin/simple.graphql");
+    cynic::use_schema_2!("src/bin/simple.graphql");
 }
 
 #[derive(cynic::FragmentArguments)]
 struct TestArgs {}
 
-#[derive(cynic::QueryFragment, PartialEq, Debug)]
+#[derive(cynic::QueryFragment2, PartialEq, Debug)]
 #[cynic(
     schema_path = "src/bin/simple.graphql",
 
@@ -22,14 +22,14 @@ struct TestStruct {
     dessert: Option<Dessert>,
 }
 
-#[derive(cynic::QueryFragment, PartialEq, Debug)]
+#[derive(cynic::QueryFragment2, PartialEq, Debug)]
 #[cynic(schema_path = "src/bin/simple.graphql", query_module = "schema")]
 struct Nested {
     a_string: String,
     opt_string: Option<String>,
 }
 
-#[derive(cynic::QueryFragment, PartialEq, Debug)]
+#[derive(cynic::QueryFragment2, PartialEq, Debug)]
 #[cynic(
     schema_path = "src/bin/simple.graphql",
     graphql_type = "Query",
@@ -39,7 +39,7 @@ struct TestQuery {
     test_struct: Option<TestStruct>,
 }
 
-#[derive(cynic::Enum, Clone, Debug, PartialEq)]
+#[derive(cynic::Enum2, Clone, Debug, PartialEq)]
 #[cynic(
     schema_path = "src/bin/simple.graphql",
     rename_all = "SCREAMING_SNAKE_CASE"
@@ -49,22 +49,16 @@ pub enum Dessert {
     IceCream,
 }
 
-fn run_test(input: serde_json::Value, expected_result: TestQuery) {
-    use cynic::{FragmentContext, QueryFragment};
-
-    let query = cynic::Operation::query(TestQuery::fragment(FragmentContext::new(&TestArgs {})));
-
-    let test_data = cynic::GraphQlResponse {
-        errors: None,
-        data: Some(input),
-    };
-    let data = query.decode_response(test_data).unwrap().data.unwrap();
-    assert_eq!(data, expected_result);
+fn test_decoding(input: serde_json::Value, expected_result: TestQuery) {
+    assert_eq!(
+        serde_json::from_value::<TestQuery>(input).unwrap(),
+        expected_result
+    );
 }
 
 #[test]
 fn test_decoding_entire_struct() {
-    run_test(
+    test_decoding(
         serde_json::json!({
             "testStruct": {
                 "fieldOne": "test",
@@ -99,5 +93,12 @@ fn test_decoding_entire_struct() {
 #[test]
 fn test_decoding_options() {
     let json = serde_json::json!({ "testStruct": null });
-    run_test(json, TestQuery { test_struct: None });
+    test_decoding(json, TestQuery { test_struct: None });
+}
+
+#[test]
+fn test_query_building() {
+    let operation = cynic::Operation2::<TestQuery>::query();
+
+    insta::assert_snapshot!(operation.query);
 }

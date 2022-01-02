@@ -3,6 +3,7 @@ source: cynic-codegen/tests/use-schema.rs
 expression: "format_code(format!(\"{}\", tokens))"
 
 ---
+impl ::cynic::schema::QueryRoot for Foo {}
 pub struct Foo;
 pub mod foo_fields {
     pub struct __underscore;

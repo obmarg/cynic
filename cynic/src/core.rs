@@ -1,11 +1,14 @@
 #![allow(dead_code, unused_variables, missing_docs)]
 // TODO: Don't allow the above
 
+use std::fmt::Write;
+
 // TODO: Everything in here is actually typed.  Need an untyped core with this
 // layered on top...
 
 use std::marker::PhantomData;
 
+use crate::indent::indented;
 use crate::schema;
 
 // Annoyingly this means people can't derive Deserialize _as well as_ use cynics derives.
@@ -85,7 +88,17 @@ pub struct Field {
     children: Vec<Field>,
 }
 
+// TODO: Maybe FieldSelector/SelectionSetBuilder/SelectionSet/SelectionBuilder/Selector?
+// Kinda like SelectionSet actually since we are literally just building up a set of fields?
+// But who knows.  Lets leave naming for later.
 impl<'a, SchemaType> QueryBuilder<'a, SchemaType> {
+    pub(crate) fn new(fields: &'a mut Vec<Field>) -> Self {
+        QueryBuilder {
+            phantom: PhantomData,
+            fields,
+        }
+    }
+
     // TODO: this is just for testing
     pub fn temp_new(fields: &'a mut Vec<Field>) -> Self {
         QueryBuilder {
@@ -171,4 +184,17 @@ impl<'a, FieldSchemaType> FieldSelectionBuilder<'a, FieldSchemaType> {
     pub fn done(self) {}
 }
 
-// TODO: etc.
+// TODO: Move this somewhere else?
+impl std::fmt::Display for Field {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::result::Result<(), std::fmt::Error> {
+        write!(f, "{}", self.name)?;
+        if !self.children.is_empty() {
+            writeln!(f, " {{")?;
+            for child in &self.children {
+                write!(indented(f, 2), "{}", child)?;
+            }
+            write!(f, "}}")?;
+        }
+        writeln!(f)
+    }
+}

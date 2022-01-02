@@ -3,6 +3,7 @@ source: cynic-codegen/tests/use-schema.rs
 expression: "format_code(format!(\"{}\", tokens))"
 
 ---
+impl ::cynic::schema::QueryRoot for Root {}
 pub struct Film;
 pub mod film_fields {
     pub struct Title;

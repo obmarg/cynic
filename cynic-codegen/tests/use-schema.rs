@@ -30,6 +30,7 @@ fn snapshot_use_schema(schema_file: &str) {
     "books.graphql",
     "starwars.schema.graphql",
     "test_cases.graphql",
+    "../cynic/src/bin/simple.graphql"
 ])]
 fn snapshot_use_schema_two(schema_file_two: &str) {
     let schema_path = PathBuf::from("../schemas/").join(schema_file_two);

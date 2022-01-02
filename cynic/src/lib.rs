@@ -173,8 +173,12 @@ mod enums;
 mod fragments;
 mod id;
 mod operation;
+mod operation2;
 mod result;
 mod scalar;
+
+// TODO: is there a better place to put indent?  Not sure.
+mod indent;
 
 pub mod http;
 pub mod inputs;
@@ -192,6 +196,7 @@ pub use fragments::{FragmentArguments, FragmentContext, InlineFragments, QueryFr
 pub use id::Id;
 pub use inputs::InputType;
 pub use operation::{Operation, StreamingOperation};
+pub use operation2::Operation as Operation2;
 pub use result::{GraphQlError, GraphQlResponse};
 pub use scalar::Scalar;
 pub use selection_set::SelectionSet;

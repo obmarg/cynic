@@ -3,6 +3,8 @@ source: cynic-codegen/tests/use-schema.rs
 expression: "format_code(format!(\"{}\", tokens))"
 
 ---
+impl ::cynic::schema::QueryRoot for Query {}
+impl ::cynic::schema::MutationRoot for Mutation {}
 pub struct City;
 pub mod city_fields {
     pub struct Id;

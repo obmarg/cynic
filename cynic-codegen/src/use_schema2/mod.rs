@@ -1,5 +1,6 @@
 //mod model;
 mod params;
+mod schema_roots;
 
 pub use params::UseSchemaParams;
 
@@ -20,6 +21,11 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, SchemaLoadError
     let document = crate::schema::load_schema(input.schema_filename)?;
 
     let mut output = TokenStream::new();
+
+    let root_types = schema_roots::RootTypes::from_definitions(&document.definitions);
+    output.append_all(quote! {
+        #root_types
+    });
 
     // TODO: Refactor this so it's not just one big loop
     for definition in document

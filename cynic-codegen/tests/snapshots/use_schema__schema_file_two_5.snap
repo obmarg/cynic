@@ -1,0 +1,108 @@
+---
+source: cynic-codegen/tests/use-schema.rs
+expression: "format_code(format!(\"{}\", tokens))"
+
+---
+impl ::cynic::schema::QueryRoot for Query {}
+pub struct Json {}
+pub struct Query;
+pub mod query_fields {
+    pub struct TestStruct;
+    impl ::cynic::schema::Field for TestStruct {
+        type SchemaType = Option<super::TestStruct>;
+        fn name() -> &'static str {
+            "testStruct"
+        }
+    }
+    impl ::cynic::schema::HasField<TestStruct, Option<super::TestStruct>> for super::Query {}
+    pub struct MyUnion;
+    impl ::cynic::schema::Field for MyUnion {
+        type SchemaType = Option<super::MyUnionType>;
+        fn name() -> &'static str {
+            "myUnion"
+        }
+    }
+    impl ::cynic::schema::HasField<MyUnion, Option<super::MyUnionType>> for super::Query {}
+}
+pub struct TestStruct;
+pub mod test_struct_fields {
+    pub struct FieldOne;
+    impl ::cynic::schema::Field for FieldOne {
+        type SchemaType = String;
+        fn name() -> &'static str {
+            "fieldOne"
+        }
+    }
+    impl ::cynic::schema::HasField<FieldOne, String> for super::TestStruct {}
+    pub struct TastyCakes;
+    impl ::cynic::schema::Field for TastyCakes {
+        type SchemaType = super::Dessert;
+        fn name() -> &'static str {
+            "tastyCakes"
+        }
+    }
+    impl ::cynic::schema::HasField<TastyCakes, super::Dessert> for super::TestStruct {}
+    pub struct FieldWithInput;
+    impl ::cynic::schema::Field for FieldWithInput {
+        type SchemaType = super::Dessert;
+        fn name() -> &'static str {
+            "fieldWithInput"
+        }
+    }
+    impl ::cynic::schema::HasField<FieldWithInput, super::Dessert> for super::TestStruct {}
+    pub struct Nested;
+    impl ::cynic::schema::Field for Nested {
+        type SchemaType = super::Nested;
+        fn name() -> &'static str {
+            "nested"
+        }
+    }
+    impl ::cynic::schema::HasField<Nested, super::Nested> for super::TestStruct {}
+    pub struct OptNested;
+    impl ::cynic::schema::Field for OptNested {
+        type SchemaType = Option<super::Nested>;
+        fn name() -> &'static str {
+            "optNested"
+        }
+    }
+    impl ::cynic::schema::HasField<OptNested, Option<super::Nested>> for super::TestStruct {}
+    pub struct Dessert;
+    impl ::cynic::schema::Field for Dessert {
+        type SchemaType = Option<super::Dessert>;
+        fn name() -> &'static str {
+            "dessert"
+        }
+    }
+    impl ::cynic::schema::HasField<Dessert, Option<super::Dessert>> for super::TestStruct {}
+    pub struct Json;
+    impl ::cynic::schema::Field for Json {
+        type SchemaType = Option<super::Json>;
+        fn name() -> &'static str {
+            "json"
+        }
+    }
+    impl ::cynic::schema::HasField<Json, Option<super::Json>> for super::TestStruct {}
+}
+pub struct MyUnionType {}
+pub struct Nested;
+pub mod nested_fields {
+    pub struct AString;
+    impl ::cynic::schema::Field for AString {
+        type SchemaType = String;
+        fn name() -> &'static str {
+            "aString"
+        }
+    }
+    impl ::cynic::schema::HasField<AString, String> for super::Nested {}
+    pub struct OptString;
+    impl ::cynic::schema::Field for OptString {
+        type SchemaType = Option<String>;
+        fn name() -> &'static str {
+            "optString"
+        }
+    }
+    impl ::cynic::schema::HasField<OptString, Option<String>> for super::Nested {}
+}
+pub struct Dessert {}
+pub struct AnInputType {}
+
