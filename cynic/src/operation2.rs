@@ -1,7 +1,7 @@
 use std::marker::PhantomData;
 
 use crate::{
-    core::{QueryBuilder, QueryFragment},
+    core::{QueryBuilder, QueryFragment, SelectionSet},
     schema::QueryRoot,
 };
 
@@ -28,21 +28,16 @@ where
 {
     /// Constructs a new Operation from a query `SelectionSet`
     pub fn query() -> Self {
-        use crate::indent::indented;
         use std::fmt::Write;
 
-        let mut fields = Vec::new();
-        let builder = QueryBuilder::new(&mut fields);
+        let mut selection_set = SelectionSet::default();
+        let builder = QueryBuilder::new(&mut selection_set);
         Fragment::query(builder);
 
         // TODO: There has to be a better way to do this/place to structure this.
         // At the least a QueryRoot: std::fmt::Display type.
         let mut query = String::new();
-        writeln!(&mut query, "query {{");
-        for field in fields {
-            write!(indented(&mut query, 2), "{}", field);
-        }
-        writeln!(&mut query, "}}");
+        writeln!(&mut query, "query{}", selection_set);
 
         // TODO: Handle arguments and what not.
 

@@ -61,13 +61,15 @@ pub trait Enum<'de>: serde::Deserialize<'de> + serde::Serialize {}
 // TODO: QueryBuilder or SelectionBuilder?
 pub struct QueryBuilder<'a, SchemaType> {
     phantom: PhantomData<fn() -> SchemaType>,
-    fields: &'a mut Vec<Field>,
+    selection_set: &'a mut SelectionSet,
+    has_typename: bool,
 }
 
 impl<'a, T> QueryBuilder<'a, Vec<T>> {
     fn into_inner(self) -> QueryBuilder<'a, T> {
         QueryBuilder {
-            fields: self.fields,
+            selection_set: self.selection_set,
+            has_typename: self.has_typename,
             phantom: PhantomData,
         }
     }
@@ -76,51 +78,111 @@ impl<'a, T> QueryBuilder<'a, Vec<T>> {
 impl<'a, T> QueryBuilder<'a, Option<T>> {
     fn into_inner(self) -> QueryBuilder<'a, T> {
         QueryBuilder {
-            fields: self.fields,
+            selection_set: self.selection_set,
+            has_typename: self.has_typename,
             phantom: PhantomData,
         }
     }
 }
 
-#[derive(Debug)]
-pub struct Field {
-    name: &'static str,
-    children: Vec<Field>,
+// TODO: move this to selection set module.
+#[derive(Debug, Default)]
+pub struct SelectionSet {
+    selections: Vec<Selection>,
 }
+
+#[derive(Debug)]
+enum Selection {
+    Field(FieldSelection),
+    InlineFragment(InlineFragment),
+    FragmentSpread(FragmentSpread),
+}
+
+#[derive(Debug)]
+pub struct FieldSelection {
+    name: &'static str,
+    children: SelectionSet,
+}
+
+#[derive(Debug, Default)]
+pub struct InlineFragment {
+    on_clause: Option<&'static str>,
+    children: SelectionSet,
+}
+
+#[derive(Debug)]
+pub struct FragmentSpread {}
 
 // TODO: Maybe FieldSelector/SelectionSetBuilder/SelectionSet/SelectionBuilder/Selector?
 // Kinda like SelectionSet actually since we are literally just building up a set of fields?
 // But who knows.  Lets leave naming for later.
 impl<'a, SchemaType> QueryBuilder<'a, SchemaType> {
-    pub(crate) fn new(fields: &'a mut Vec<Field>) -> Self {
+    pub(crate) fn new(selection_set: &'a mut SelectionSet) -> Self {
         QueryBuilder {
             phantom: PhantomData,
-            fields,
+            has_typename: false,
+            selection_set,
         }
     }
 
     // TODO: this is just for testing
-    pub fn temp_new(fields: &'a mut Vec<Field>) -> Self {
+    pub fn temp_new(selection_set: &'a mut SelectionSet) -> Self {
         QueryBuilder {
             phantom: PhantomData,
-            fields,
+            has_typename: false,
+            selection_set,
         }
     }
 
-    pub fn select_field<'b, FieldMarker, FieldType>(
-        &'b mut self,
-    ) -> FieldSelectionBuilder<'b, FieldType>
+    // TODO: reckon add_field might be better for this?
+    // particularly if we name the container selectionset or something.
+    pub fn select_field<FieldMarker, FieldType>(
+        &'_ mut self,
+    ) -> FieldSelectionBuilder<'_, FieldType>
     where
         FieldMarker: schema::Field,
         SchemaType: schema::HasField<FieldMarker, FieldType>,
     {
-        self.fields.push(Field {
-            name: FieldMarker::name(),
-            children: Vec::new(),
-        });
+        self.selection_set
+            .selections
+            .push(Selection::Field(FieldSelection {
+                name: FieldMarker::name(),
+                children: SelectionSet::default(),
+            }));
+
+        let field_selection = match self.selection_set.selections.last_mut() {
+            Some(Selection::Field(field_selection)) => field_selection,
+            _ => panic!("This should not be possible"),
+        };
 
         FieldSelectionBuilder {
-            field: self.fields.last_mut().unwrap(),
+            field: field_selection,
+            phantom: PhantomData,
+        }
+    }
+
+    pub fn inline_fragment(&'_ mut self) -> InlineFragmentBuilder<'_, SchemaType> {
+        if !self.has_typename {
+            self.selection_set
+                .selections
+                .push(Selection::Field(FieldSelection {
+                    name: "__typename",
+                    children: SelectionSet::default(),
+                }));
+            self.has_typename = true;
+        }
+
+        self.selection_set
+            .selections
+            .push(Selection::InlineFragment(InlineFragment::default()));
+
+        let inline_fragment = match self.selection_set.selections.last_mut() {
+            Some(Selection::InlineFragment(inline_fragment)) => inline_fragment,
+            _ => panic!("This should not be possible"),
+        };
+
+        InlineFragmentBuilder {
+            inline_fragment,
             phantom: PhantomData,
         }
     }
@@ -133,7 +195,7 @@ impl<'a, SchemaType> QueryBuilder<'a, SchemaType> {
 
 pub struct FieldSelectionBuilder<'a, SchemaType> {
     phantom: PhantomData<fn() -> SchemaType>,
-    field: &'a mut Field,
+    field: &'a mut FieldSelection,
 }
 
 impl<'a, FieldSchemaType> FieldSelectionBuilder<'a, FieldSchemaType> {
@@ -172,10 +234,7 @@ impl<'a, FieldSchemaType> FieldSelectionBuilder<'a, FieldSchemaType> {
     //     FieldSchemaType: CompositeFieldType,
 
     pub fn select_children<'b>(&'b mut self) -> QueryBuilder<'b, FieldSchemaType> {
-        QueryBuilder {
-            phantom: PhantomData,
-            fields: &mut self.field.children,
-        }
+        QueryBuilder::new(&mut self.field.children)
     }
 
     // TODO: probably need an alias function here that defines an alias.
@@ -184,17 +243,58 @@ impl<'a, FieldSchemaType> FieldSelectionBuilder<'a, FieldSchemaType> {
     pub fn done(self) {}
 }
 
+pub struct InlineFragmentBuilder<'a, SchemaType> {
+    phantom: PhantomData<fn() -> SchemaType>,
+    inline_fragment: &'a mut InlineFragment,
+}
+
+impl<'a, SchemaType> InlineFragmentBuilder<'a, SchemaType> {
+    pub fn on<Subtype>(self) -> InlineFragmentBuilder<'a, Subtype>
+    where
+        Subtype: crate::schema::NamedType,
+        SchemaType: crate::schema::HasSubtype<Subtype>,
+    {
+        self.inline_fragment.on_clause = Some(Subtype::name());
+        InlineFragmentBuilder {
+            inline_fragment: self.inline_fragment,
+            phantom: PhantomData,
+        }
+    }
+
+    pub fn select_children(&'_ mut self) -> QueryBuilder<'_, SchemaType> {
+        QueryBuilder::new(&mut self.inline_fragment.children)
+    }
+}
+
 // TODO: Move this somewhere else?
-impl std::fmt::Display for Field {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::result::Result<(), std::fmt::Error> {
-        write!(f, "{}", self.name)?;
-        if !self.children.is_empty() {
+impl std::fmt::Display for SelectionSet {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        if !self.selections.is_empty() {
             writeln!(f, " {{")?;
-            for child in &self.children {
+            for child in &self.selections {
                 write!(indented(f, 2), "{}", child)?;
             }
             write!(f, "}}")?;
         }
         writeln!(f)
+    }
+}
+
+impl std::fmt::Display for Selection {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Selection::Field(field_selection) => {
+                write!(f, "{}", field_selection.name)?;
+                write!(f, "{}", field_selection.children)
+            }
+            Selection::InlineFragment(inline_fragment) => {
+                write!(f, "...")?;
+                if let Some(on_type) = inline_fragment.on_clause {
+                    write!(f, " on {}", on_type)?;
+                }
+                write!(f, "{}", inline_fragment.children)
+            }
+            Selection::FragmentSpread(_) => todo!(),
+        }
     }
 }

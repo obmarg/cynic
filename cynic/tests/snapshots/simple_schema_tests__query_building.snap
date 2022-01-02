@@ -1,0 +1,20 @@
+---
+source: cynic/tests/simple_schema_tests.rs
+expression: operation.query
+
+---
+query {
+  testStruct {
+    fieldOne
+    nested {
+      aString
+      optString
+    }
+    optNested {
+      aString
+      optString
+    }
+    dessert
+  }
+}
+

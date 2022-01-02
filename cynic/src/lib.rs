@@ -203,7 +203,7 @@ pub use selection_set::SelectionSet;
 
 pub use cynic_proc_macros::{
     schema_for_derives, use_schema, use_schema_2, Enum, Enum2, FragmentArguments, InlineFragments,
-    InputObject, QueryFragment, QueryFragment2, Scalar,
+    InlineFragments2, InputObject, QueryFragment, QueryFragment2, Scalar,
 };
 
 // We re-export serde_json as the output from a lot of our derive macros require it,

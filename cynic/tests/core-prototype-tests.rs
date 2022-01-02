@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 
-use cynic::core::QueryFragment;
+use cynic::core::{QueryFragment, SelectionSet};
 use cynic_proc_macros::QueryFragment2;
 use serde::Deserialize;
 
@@ -197,13 +197,13 @@ struct AuthorOutput {
 fn test_using_this_shit() {
     use cynic::core::{QueryBuilder, QueryFragment};
 
-    let mut fields = Vec::new();
+    let mut selections = SelectionSet::default();
 
-    let builder: QueryBuilder<schema::Query> = QueryBuilder::temp_new(&mut fields);
+    let builder: QueryBuilder<schema::Query> = QueryBuilder::temp_new(&mut selections);
 
     MyQuery::query(builder);
 
-    insta::assert_debug_snapshot!(fields);
+    insta::assert_debug_snapshot!(selections);
 }
 
 #[test]

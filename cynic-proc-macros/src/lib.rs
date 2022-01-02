@@ -9,8 +9,8 @@ use proc_macro::TokenStream;
 
 use cynic_codegen::{
     enum_derive, enum_derive_2, fragment_arguments_derive, fragment_derive, fragment_derive_2,
-    inline_fragments_derive, input_object_derive, scalar_derive, schema_for_derives, use_schema,
-    use_schema2,
+    inline_fragments_derive, inline_fragments_derive_2, input_object_derive, scalar_derive,
+    schema_for_derives, use_schema, use_schema2,
 };
 
 /// Imports a schema for use by cynic.
@@ -113,6 +113,23 @@ pub fn inline_fragments_derive(input: TokenStream) -> TokenStream {
     let ast = syn::parse_macro_input!(input as syn::DeriveInput);
 
     let rv = match inline_fragments_derive::inline_fragments_derive(&ast) {
+        Ok(tokens) => tokens.into(),
+        Err(e) => e.to_compile_errors().into(),
+    };
+
+    //eprintln!("{}", rv);
+
+    rv
+}
+
+/// Derives `cynic::InlineFragments`
+///
+/// See [the book for usage details](https://cynic-rs.dev/derives/inline-fragments.html)
+#[proc_macro_derive(InlineFragments2, attributes(cynic))]
+pub fn inline_fragments_derive_2(input: TokenStream) -> TokenStream {
+    let ast = syn::parse_macro_input!(input as syn::DeriveInput);
+
+    let rv = match inline_fragments_derive_2::inline_fragments_derive(&ast) {
         Ok(tokens) => tokens.into(),
         Err(e) => e.to_compile_errors().into(),
     };

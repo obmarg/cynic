@@ -1,8 +1,8 @@
-use cynic::{InlineFragments, QueryFragment};
+use cynic::{InlineFragments2, QueryFragment2};
 use serde::Serialize;
 use serde_json::json;
 
-#[derive(QueryFragment, Serialize)]
+#[derive(QueryFragment2, Serialize)]
 #[cynic(
     graphql_type = "Query",
     schema_path = "tests/test-schema.graphql",
@@ -13,7 +13,7 @@ struct AllPostsQuery {
     all_data: Vec<PostOrAuthor>,
 }
 
-#[derive(QueryFragment, Serialize)]
+#[derive(QueryFragment2, Serialize)]
 #[cynic(
     graphql_type = "BlogPost",
     schema_path = "tests/test-schema.graphql",
@@ -26,7 +26,7 @@ struct Post {
     metadata: Option<EmptyType>,
 }
 
-#[derive(QueryFragment, Serialize)]
+#[derive(QueryFragment2, Serialize)]
 #[cynic(
     graphql_type = "Author",
     schema_path = "tests/test-schema.graphql",
@@ -36,7 +36,7 @@ struct Author {
     name: Option<String>,
 }
 
-#[derive(InlineFragments, Serialize)]
+#[derive(InlineFragments2, Serialize)]
 #[cynic(schema_path = "tests/test-schema.graphql")]
 enum PostOrAuthor {
     #[cynic(rename = "BlogPost")]
@@ -44,7 +44,7 @@ enum PostOrAuthor {
     Author(Author),
 }
 
-#[derive(QueryFragment, Serialize)]
+#[derive(QueryFragment2, Serialize)]
 #[cynic(schema_path = "tests/test-schema.graphql")]
 struct EmptyType {
     #[cynic(rename = "_")]
@@ -52,33 +52,35 @@ struct EmptyType {
 }
 
 mod schema {
-    cynic::use_schema!("tests/test-schema.graphql");
+    cynic::use_schema_2!("tests/test-schema.graphql");
 }
 
 #[test]
 fn test_all_posts_query_output() {
-    use cynic::{FragmentContext, Operation};
+    use cynic::Operation2;
 
-    let query = Operation::query(AllPostsQuery::fragment(FragmentContext::empty()));
+    let query = Operation2::<AllPostsQuery>::query();
 
     insta::assert_display_snapshot!(query.query);
 }
 
 #[test]
 fn test_decoding() {
-    use cynic::{FragmentContext, GraphQlResponse, Operation};
+    use cynic::GraphQlResponse;
 
     let mut all_data = posts();
     all_data[0]["__typename"] = json!("BlogPost");
 
-    let data = GraphQlResponse {
-        data: Some(json!({ "allPosts": posts(), "allData": all_data })),
-        errors: None,
-    };
+    let data = json!({
+        "data": { "allPosts": posts(), "allData": all_data },
+        "errors": null,
+    });
 
-    let query = Operation::query(AllPostsQuery::fragment(FragmentContext::empty()));
-
-    insta::assert_yaml_snapshot!(query.decode_response(data).unwrap().data)
+    insta::assert_yaml_snapshot!(
+        serde_json::from_value::<GraphQlResponse<AllPostsQuery>>(data)
+            .unwrap()
+            .data
+    );
 }
 
 fn posts() -> serde_json::Value {

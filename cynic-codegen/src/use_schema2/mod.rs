@@ -1,6 +1,8 @@
 //mod model;
+mod named_type;
 mod params;
 mod schema_roots;
+mod subtype_markers;
 
 pub use params::UseSchemaParams;
 
@@ -15,6 +17,8 @@ use crate::{
     type_index::TypeIndex,
 };
 
+use self::{named_type::NamedType, subtype_markers::SubtypeMarkers};
+
 pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, SchemaLoadError> {
     use quote::{quote, TokenStreamExt};
 
@@ -27,12 +31,17 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, SchemaLoadError
         #root_types
     });
 
+    let mut subtype_markers = Vec::new();
+    let mut named_types = Vec::new();
+
     // TODO: Refactor this so it's not just one big loop
     for definition in document
         .definitions
         .into_iter()
         .filter_map(type_def_from_definition)
     {
+        named_types.extend(NamedType::from_def(&definition));
+
         match definition {
             graphql_parser::schema::TypeDefinition::Scalar(def) => {
                 let ident = Ident::for_type(&def.name);
@@ -41,6 +50,8 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, SchemaLoadError
                 });
             }
             graphql_parser::schema::TypeDefinition::Object(def) => {
+                subtype_markers.extend(SubtypeMarkers::from_object(&def));
+
                 let object_marker_type_name = Ident::for_type(&def.name);
                 output.append_all(quote! {
                     pub struct #object_marker_type_name;
@@ -89,6 +100,8 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, SchemaLoadError
                 });
             }
             graphql_parser::schema::TypeDefinition::Interface(def) => {
+                subtype_markers.push(SubtypeMarkers::from_interface(&def));
+
                 let ident = Ident::for_type(&def.name);
                 output.append_all(quote! {
                     pub struct #ident {}
@@ -97,6 +110,8 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, SchemaLoadError
                 // TODO: the rest of this.  Presumably we need fields & HasSubtype
             }
             graphql_parser::schema::TypeDefinition::Union(def) => {
+                subtype_markers.extend(SubtypeMarkers::from_union(&def));
+
                 let ident = Ident::for_type(&def.name);
                 output.append_all(quote! {
                     pub struct #ident {}
@@ -120,6 +135,11 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, SchemaLoadError
             }
         }
     }
+
+    output.append_all(quote! {
+        #(#subtype_markers)*
+        #(#named_types)*
+    });
 
     // TODO: output defs for the built in scalars so we don't have
     // to special case them elsewhere...

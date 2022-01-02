@@ -1,43 +1,77 @@
 ---
 source: cynic/tests/core-prototype-tests.rs
-expression: fields
+expression: selections
 
 ---
-[
-    Field {
-        name: "post",
-        children: [
-            Field {
-                name: "hasMetadata",
-                children: [],
+SelectionSet {
+    selections: [
+        Field(
+            FieldSelection {
+                name: "post",
+                children: SelectionSet {
+                    selections: [
+                        Field(
+                            FieldSelection {
+                                name: "hasMetadata",
+                                children: SelectionSet {
+                                    selections: [],
+                                },
+                            },
+                        ),
+                        Field(
+                            FieldSelection {
+                                name: "author",
+                                children: SelectionSet {
+                                    selections: [
+                                        Field(
+                                            FieldSelection {
+                                                name: "name",
+                                                children: SelectionSet {
+                                                    selections: [],
+                                                },
+                                            },
+                                        ),
+                                    ],
+                                },
+                            },
+                        ),
+                    ],
+                },
             },
-            Field {
-                name: "author",
-                children: [
-                    Field {
-                        name: "name",
-                        children: [],
-                    },
-                ],
+        ),
+        Field(
+            FieldSelection {
+                name: "allPosts",
+                children: SelectionSet {
+                    selections: [
+                        Field(
+                            FieldSelection {
+                                name: "hasMetadata",
+                                children: SelectionSet {
+                                    selections: [],
+                                },
+                            },
+                        ),
+                        Field(
+                            FieldSelection {
+                                name: "author",
+                                children: SelectionSet {
+                                    selections: [
+                                        Field(
+                                            FieldSelection {
+                                                name: "name",
+                                                children: SelectionSet {
+                                                    selections: [],
+                                                },
+                                            },
+                                        ),
+                                    ],
+                                },
+                            },
+                        ),
+                    ],
+                },
             },
-        ],
-    },
-    Field {
-        name: "allPosts",
-        children: [
-            Field {
-                name: "hasMetadata",
-                children: [],
-            },
-            Field {
-                name: "author",
-                children: [
-                    Field {
-                        name: "name",
-                        children: [],
-                    },
-                ],
-            },
-        ],
-    },
-]
+        ),
+    ],
+}

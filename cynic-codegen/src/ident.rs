@@ -62,7 +62,7 @@ impl Ident {
         let s = s.as_ref();
         if s == "_" {
             Ident {
-                rust: format_ident!("__underscore"),
+                rust: format_ident!("Underscore"),
                 graphql: "_".to_string(),
                 span: None,
             }
