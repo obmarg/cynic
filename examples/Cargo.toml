@@ -25,4 +25,4 @@ async-std = "1.10"
 chrono = { version = "0.4", features = ["serde"]}
 
 [dev-dependencies]
-insta = "1.8"
+insta = "1.9"
