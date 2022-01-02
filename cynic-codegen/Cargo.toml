@@ -16,7 +16,7 @@ default = ["rustfmt"]
 rustfmt = []
 
 [dependencies]
-graphql-parser = "0.3.0"
+graphql-parser = "0.4.0"
 proc-macro2 = "1.0"
 syn = "1.0"
 quote = "1.0"
