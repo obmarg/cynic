@@ -1,7 +1,8 @@
 use std::marker::PhantomData;
 
 use crate::{
-    core::{QueryBuilder, QueryFragment, SelectionSet},
+    core::QueryFragment,
+    queries::{QueryBuilder, SelectionSet},
     schema::QueryRoot,
 };
 

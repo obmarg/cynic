@@ -190,7 +190,7 @@ impl quote::ToTokens for FragmentImpl {
             impl<'de> ::cynic::core::QueryFragment<'de> for #target_struct {
                 type SchemaType = #schema_type;
 
-                fn query(mut builder: ::cynic::core::QueryBuilder<Self::SchemaType>) {
+                fn query(mut builder: ::cynic::queries::QueryBuilder<Self::SchemaType>) {
                     #(#field_selections)*
                 }
             }

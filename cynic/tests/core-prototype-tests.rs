@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 
-use cynic::core::{QueryFragment, SelectionSet};
+use cynic::{core::QueryFragment, queries::SelectionSet};
 use cynic_proc_macros::QueryFragment2;
 use serde::Deserialize;
 
@@ -118,7 +118,7 @@ struct MyQuery {
 // impl<'de> cynic::core::QueryFragment<'de> for MyQuery {
 //     type SchemaType = schema::Query;
 
-//     fn query(mut builder: cynic::core::QueryBuilder<Self::SchemaType>) {
+//     fn query(mut builder: cynic::queries::QueryBuilder<Self::SchemaType>) {
 //         let mut post_field_builder =
 //             builder.select_field::<schema::query_fields::Post, <Option<BlogPostOutput> as QueryFragment>::SchemaType>();
 
@@ -153,7 +153,7 @@ struct BlogPostOutput {
 // impl<'de> cynic::core::QueryFragment<'de> for BlogPostOutput {
 //     type SchemaType = schema::BlogPost;
 
-//     fn query(mut builder: cynic::core::QueryBuilder<Self::SchemaType>) {
+//     fn query(mut builder: cynic::queries::QueryBuilder<Self::SchemaType>) {
 //         builder
 //             .select_field::<schema::blog_post_fields::HasMetadata, <Option<bool> as QueryFragment>::SchemaType>()
 //             .done();
@@ -183,7 +183,7 @@ struct AuthorOutput {
 // impl<'de> cynic::core::QueryFragment<'de> for AuthorOutput {
 //     type SchemaType = schema::Author;
 
-//     fn query(mut builder: cynic::core::QueryBuilder<Self::SchemaType>) {
+//     fn query(mut builder: cynic::queries::QueryBuilder<Self::SchemaType>) {
 //         builder
 //             .select_field::<schema::author_fields::Name, Option<String>>()
 //             .done();
@@ -194,7 +194,7 @@ struct AuthorOutput {
 
 #[test]
 fn test_using_this_shit() {
-    use cynic::core::{QueryBuilder, QueryFragment};
+    use cynic::{core::QueryFragment, queries::QueryBuilder};
 
     let mut selections = SelectionSet::default();
 

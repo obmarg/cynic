@@ -168,7 +168,6 @@
 
 mod arguments;
 mod builders;
-pub mod core;
 mod enums;
 mod fragments;
 mod id;
@@ -176,6 +175,10 @@ mod operation;
 mod operation2;
 mod result;
 mod scalar;
+
+// TODO: think about the names of these, maybe don't make them pub?
+pub mod core;
+pub mod queries;
 
 // TODO: is there a better place to put indent?  Not sure.
 mod indent;
