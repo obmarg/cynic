@@ -5,10 +5,6 @@ use cynic_proc_macros::QueryFragment2;
 use serde::Deserialize;
 
 mod schema {
-    cynic::use_schema_2!("tests/test-schema.graphql");
-}
-
-mod manual_schema {
     use cynic::core;
 
     pub struct Query {}
@@ -19,6 +15,8 @@ mod manual_schema {
         pub struct AllPosts {}
 
         pub struct Post {}
+
+        pub struct FilteredPosts {}
 
         impl cynic::schema::Field for AllPosts {
             type SchemaType = Vec<super::BlogPost>;
@@ -36,8 +34,17 @@ mod manual_schema {
             }
         }
 
+        impl cynic::schema::Field for FilteredPosts {
+            type SchemaType = Vec<super::BlogPost>;
+
+            fn name() -> &'static str {
+                "filteredPosts"
+            }
+        }
+
         impl cynic::schema::HasField<AllPosts, Vec<super::BlogPost>> for super::Query {}
         impl cynic::schema::HasField<Post, Option<super::BlogPost>> for super::Query {}
+        impl cynic::schema::HasField<FilteredPosts, Vec<super::BlogPost>> for super::Query {}
 
         pub mod post_arguments {
             use cynic::core;
@@ -52,6 +59,40 @@ mod manual_schema {
                 }
             }
         }
+
+        pub mod filtered_post_arguments {
+            use cynic::core;
+
+            pub struct Filters {}
+
+            impl cynic::schema::HasArgument<Filters> for super::FilteredPosts {
+                type ArgumentSchemaType = Option<super::super::PostFilters>;
+
+                fn name() -> &'static str {
+                    "filters"
+                }
+            }
+        }
+    }
+
+    pub struct PostFilters {}
+
+    impl cynic::schema::InputObjectMarker for PostFilters {}
+
+    pub mod post_filters_fields {
+        use cynic::core;
+
+        pub struct AuthorId;
+
+        impl cynic::schema::Field for AuthorId {
+            type SchemaType = Option<cynic::Id>;
+
+            fn name() -> &'static str {
+                "author"
+            }
+        }
+
+        impl cynic::schema::HasField<AuthorId, Option<cynic::Id>> for super::PostFilters {}
     }
 
     pub struct BlogPost;
@@ -102,42 +143,89 @@ mod manual_schema {
     }
 }
 
-#[derive(cynic::QueryFragment2, Debug)]
-#[cynic(
-    schema_path = "tests/test-schema.graphql",
-    schema_module = "schema",
-    graphql_type = "Query"
-)]
+struct MyArguments {
+    author_id: Option<cynic::Id>,
+}
+
+trait ArgStruct {
+    type Mirror;
+}
+
+impl ArgStruct for MyArguments {
+    type Mirror = MyArgumentsMirror;
+}
+
+struct MyArgumentsMirror {
+    author_id: AuthorIdMirror,
+}
+
+struct AuthorIdMirror;
+
+impl cynic::core::Variable for AuthorIdMirror {
+    type ArgumentStruct = MyArguments;
+
+    // TODO: Figuring this out might require more traits.
+    // Although I can't just do a straight trait lookup because
+    // a given type can have > 1 schema type.
+    // So this is surprisingly tricky.  (Glad i'm typing this out)
+    // _could_ have this as a paramter to the derive, but then
+    // users need to understand the schema module.  not ideal.
+    // Maybe each schema module has a TypeLookup<X> trait?
+    // And each derive generates an impl that this can then use?
+    // needs some thought for sure...
+    type SchemaType = ();
+}
+
+#[derive(serde::Deserialize, Debug)]
 struct MyQuery {
-    #[arguments(id = "TODO")]
     post: Option<BlogPostOutput>,
-    #[cynic(rename = "allPosts")]
     posts: Vec<BlogPostOutput>,
 }
 
-// impl<'de> cynic::core::QueryFragment<'de> for MyQuery {
-//     type SchemaType = schema::Query;
+impl<'de> cynic::core::QueryFragment<'de> for MyQuery {
+    type SchemaType = schema::Query;
 
-//     fn query(mut builder: cynic::core::QueryBuilder<Self::SchemaType>) {
-//         let mut post_field_builder =
-//             builder.select_field::<schema::query_fields::Post, <Option<BlogPostOutput> as QueryFragment>::SchemaType>();
+    fn query(mut builder: cynic::core::QueryBuilder<Self::SchemaType>) {
+        let mut post_field_builder =
+            builder.select_field::<schema::query_fields::Post, <Option<BlogPostOutput> as QueryFragment>::SchemaType>();
 
-//         let post_builder = post_field_builder.select_children();
+        let post_builder = post_field_builder.select_children();
 
-//         <Option<BlogPostOutput> as QueryFragment>::query(post_builder);
+        <Option<BlogPostOutput> as QueryFragment>::query(post_builder);
 
-//         post_field_builder.done();
+        let arg_builder = post_field_builder.argument::<schema::query_fields::post_arguments::Id>();
+        arg_builder.literal(cynic::Id::new("abcd"));
 
-//         let mut post_list_field_builder =
-//             builder.select_field::<schema::query_fields::AllPosts, <Vec<BlogPostOutput> as QueryFragment>::SchemaType>();
+        post_field_builder.done();
 
-//         let post_list_builder = post_list_field_builder.select_children();
+        let mut filtered_post_field_builder =
+            builder.select_field::<
+                schema::query_fields::FilteredPosts,
+                <Vec<BlogPostOutput> as QueryFragment>::SchemaType,
+            >();
 
-//         <Vec<BlogPostOutput> as QueryFragment>::query(post_list_builder);
+        <Vec<BlogPostOutput> as QueryFragment>::query(
+            filtered_post_field_builder.select_children(),
+        );
 
-//         post_list_field_builder.done()
-//     }
-// }
+        let arg_builder = filtered_post_field_builder
+            .argument::<schema::query_fields::filtered_post_arguments::Filters>();
+        arg_builder
+            .value()
+            .field::<schema::post_filters_fields::AuthorId>()
+            .value()
+            .literal(cynic::Id::new("abcd"));
+
+        let mut post_list_field_builder =
+            builder.select_field::<schema::query_fields::AllPosts, <Vec<BlogPostOutput> as QueryFragment>::SchemaType>();
+
+        let post_list_builder = post_list_field_builder.select_children();
+
+        <Vec<BlogPostOutput> as QueryFragment>::query(post_list_builder);
+
+        post_list_field_builder.done()
+    }
+}
 
 #[derive(cynic::QueryFragment2, Debug)]
 #[cynic(

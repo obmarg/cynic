@@ -34,6 +34,7 @@ type EmptyType {
 type Query {
   allPosts: [BlogPost!]!
   post(id: ID!): BlogPost
+  filteredPosts(input: PostFilters): [BlogPost!]!
   allAuthors: [Author!]!
   allData: [PostOrAuthor!]!
 }
@@ -46,6 +47,10 @@ enum PostState {
 }
 
 scalar DateTime
+
+input PostFilters {
+  authorId: Id
+}
 
 schema {
   query: Query
