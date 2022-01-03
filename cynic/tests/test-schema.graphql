@@ -45,6 +45,8 @@ enum PostState {
   Draft
 }
 
+scalar DateTime
+
 schema {
   query: Query
 }

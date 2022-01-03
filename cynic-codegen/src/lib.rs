@@ -7,6 +7,7 @@ pub mod inline_fragments_derive;
 pub mod inline_fragments_derive_2;
 pub mod input_object_derive;
 pub mod scalar_derive;
+pub mod scalar_derive_2;
 pub mod schema_for_derives;
 pub mod use_schema;
 pub mod use_schema2;

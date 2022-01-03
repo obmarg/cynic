@@ -54,9 +54,11 @@ impl<'de> QueryFragment<'de> for String {
     fn query(builder: QueryBuilder<Self::SchemaType>) {}
 }
 
+// TODO: Does this need a TypeLock on it?
 pub trait Enum<'de>: serde::Deserialize<'de> + serde::Serialize {}
 
-// TODO: impl QueryFragment for Option, Box etc.
+// TODO: Does this need a TypeLock on it?
+pub trait Scalar<'de>: serde::Deserialize<'de> + serde::Serialize {}
 
 // TODO: QueryBuilder or SelectionBuilder?
 pub struct QueryBuilder<'a, SchemaType> {
