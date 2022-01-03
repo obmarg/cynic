@@ -6,14 +6,14 @@ expression: "format_code(format!(\"{}\", tokens))"
 impl ::cynic::schema::QueryRoot for Foo {}
 pub struct Foo;
 pub mod foo_fields {
-    pub struct __underscore;
-    impl ::cynic::schema::Field for __underscore {
+    pub struct Underscore;
+    impl ::cynic::schema::Field for Underscore {
         type SchemaType = Option<bool>;
         fn name() -> &'static str {
             "_"
         }
     }
-    impl ::cynic::schema::HasField<__underscore, Option<bool>> for super::Foo {}
+    impl ::cynic::schema::HasField<Underscore, Option<bool>> for super::Foo {}
     pub struct Self_;
     impl ::cynic::schema::Field for Self_ {
         type SchemaType = Option<bool>;
@@ -76,4 +76,14 @@ pub mod bar_fields {
 }
 pub struct Uuid {}
 pub struct States {}
+impl ::cynic::schema::NamedType for Foo {
+    fn name() -> &'static str {
+        "Foo"
+    }
+}
+impl ::cynic::schema::NamedType for Bar {
+    fn name() -> &'static str {
+        "Bar"
+    }
+}
 

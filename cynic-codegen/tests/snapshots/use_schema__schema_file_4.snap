@@ -7,8 +7,8 @@ expression: "format_code(format!(\"{}\", tokens))"
 pub struct Foo;
 #[allow(dead_code)]
 impl Foo {
-    pub fn __underscore() -> foo::__underscoreSelectionBuilder {
-        foo::__underscoreSelectionBuilder::new(vec![])
+    pub fn __underscore() -> foo::UnderscoreSelectionBuilder {
+        foo::UnderscoreSelectionBuilder::new(vec![])
     }
     pub fn self_() -> foo::Self_SelectionBuilder {
         foo::Self_SelectionBuilder::new(vec![])
@@ -45,12 +45,12 @@ impl Bar {
 }
 #[allow(dead_code)]
 pub mod foo {
-    pub struct __underscoreSelectionBuilder {
+    pub struct UnderscoreSelectionBuilder {
         args: Vec<::cynic::Argument>,
     }
-    impl __underscoreSelectionBuilder {
+    impl UnderscoreSelectionBuilder {
         pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
-            __underscoreSelectionBuilder { args }
+            UnderscoreSelectionBuilder { args }
         }
         pub fn select<'a, T: 'a + Send + Sync>(
             self,

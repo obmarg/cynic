@@ -2274,4 +2274,276 @@ pub mod vehicles_edge_fields {
     }
     impl ::cynic::schema::HasField<Cursor, String> for super::VehiclesEdge {}
 }
+impl ::cynic::schema::HasSubtype<Film> for Node {}
+impl ::cynic::schema::HasSubtype<Node> for Node {}
+impl ::cynic::schema::HasSubtype<Person> for Node {}
+impl ::cynic::schema::HasSubtype<Planet> for Node {}
+impl ::cynic::schema::HasSubtype<Species> for Node {}
+impl ::cynic::schema::HasSubtype<Starship> for Node {}
+impl ::cynic::schema::HasSubtype<Vehicle> for Node {}
+impl ::cynic::schema::NamedType for Film {
+    fn name() -> &'static str {
+        "Film"
+    }
+}
+impl ::cynic::schema::NamedType for FilmCharactersConnection {
+    fn name() -> &'static str {
+        "FilmCharactersConnection"
+    }
+}
+impl ::cynic::schema::NamedType for FilmCharactersEdge {
+    fn name() -> &'static str {
+        "FilmCharactersEdge"
+    }
+}
+impl ::cynic::schema::NamedType for FilmPlanetsConnection {
+    fn name() -> &'static str {
+        "FilmPlanetsConnection"
+    }
+}
+impl ::cynic::schema::NamedType for FilmPlanetsEdge {
+    fn name() -> &'static str {
+        "FilmPlanetsEdge"
+    }
+}
+impl ::cynic::schema::NamedType for FilmsConnection {
+    fn name() -> &'static str {
+        "FilmsConnection"
+    }
+}
+impl ::cynic::schema::NamedType for FilmsEdge {
+    fn name() -> &'static str {
+        "FilmsEdge"
+    }
+}
+impl ::cynic::schema::NamedType for FilmSpeciesConnection {
+    fn name() -> &'static str {
+        "FilmSpeciesConnection"
+    }
+}
+impl ::cynic::schema::NamedType for FilmSpeciesEdge {
+    fn name() -> &'static str {
+        "FilmSpeciesEdge"
+    }
+}
+impl ::cynic::schema::NamedType for FilmStarshipsConnection {
+    fn name() -> &'static str {
+        "FilmStarshipsConnection"
+    }
+}
+impl ::cynic::schema::NamedType for FilmStarshipsEdge {
+    fn name() -> &'static str {
+        "FilmStarshipsEdge"
+    }
+}
+impl ::cynic::schema::NamedType for FilmVehiclesConnection {
+    fn name() -> &'static str {
+        "FilmVehiclesConnection"
+    }
+}
+impl ::cynic::schema::NamedType for FilmVehiclesEdge {
+    fn name() -> &'static str {
+        "FilmVehiclesEdge"
+    }
+}
+impl ::cynic::schema::NamedType for Node {
+    fn name() -> &'static str {
+        "Node"
+    }
+}
+impl ::cynic::schema::NamedType for PageInfo {
+    fn name() -> &'static str {
+        "PageInfo"
+    }
+}
+impl ::cynic::schema::NamedType for PeopleConnection {
+    fn name() -> &'static str {
+        "PeopleConnection"
+    }
+}
+impl ::cynic::schema::NamedType for PeopleEdge {
+    fn name() -> &'static str {
+        "PeopleEdge"
+    }
+}
+impl ::cynic::schema::NamedType for Person {
+    fn name() -> &'static str {
+        "Person"
+    }
+}
+impl ::cynic::schema::NamedType for PersonFilmsConnection {
+    fn name() -> &'static str {
+        "PersonFilmsConnection"
+    }
+}
+impl ::cynic::schema::NamedType for PersonFilmsEdge {
+    fn name() -> &'static str {
+        "PersonFilmsEdge"
+    }
+}
+impl ::cynic::schema::NamedType for PersonStarshipsConnection {
+    fn name() -> &'static str {
+        "PersonStarshipsConnection"
+    }
+}
+impl ::cynic::schema::NamedType for PersonStarshipsEdge {
+    fn name() -> &'static str {
+        "PersonStarshipsEdge"
+    }
+}
+impl ::cynic::schema::NamedType for PersonVehiclesConnection {
+    fn name() -> &'static str {
+        "PersonVehiclesConnection"
+    }
+}
+impl ::cynic::schema::NamedType for PersonVehiclesEdge {
+    fn name() -> &'static str {
+        "PersonVehiclesEdge"
+    }
+}
+impl ::cynic::schema::NamedType for Planet {
+    fn name() -> &'static str {
+        "Planet"
+    }
+}
+impl ::cynic::schema::NamedType for PlanetFilmsConnection {
+    fn name() -> &'static str {
+        "PlanetFilmsConnection"
+    }
+}
+impl ::cynic::schema::NamedType for PlanetFilmsEdge {
+    fn name() -> &'static str {
+        "PlanetFilmsEdge"
+    }
+}
+impl ::cynic::schema::NamedType for PlanetResidentsConnection {
+    fn name() -> &'static str {
+        "PlanetResidentsConnection"
+    }
+}
+impl ::cynic::schema::NamedType for PlanetResidentsEdge {
+    fn name() -> &'static str {
+        "PlanetResidentsEdge"
+    }
+}
+impl ::cynic::schema::NamedType for PlanetsConnection {
+    fn name() -> &'static str {
+        "PlanetsConnection"
+    }
+}
+impl ::cynic::schema::NamedType for PlanetsEdge {
+    fn name() -> &'static str {
+        "PlanetsEdge"
+    }
+}
+impl ::cynic::schema::NamedType for Root {
+    fn name() -> &'static str {
+        "Root"
+    }
+}
+impl ::cynic::schema::NamedType for Species {
+    fn name() -> &'static str {
+        "Species"
+    }
+}
+impl ::cynic::schema::NamedType for SpeciesConnection {
+    fn name() -> &'static str {
+        "SpeciesConnection"
+    }
+}
+impl ::cynic::schema::NamedType for SpeciesEdge {
+    fn name() -> &'static str {
+        "SpeciesEdge"
+    }
+}
+impl ::cynic::schema::NamedType for SpeciesFilmsConnection {
+    fn name() -> &'static str {
+        "SpeciesFilmsConnection"
+    }
+}
+impl ::cynic::schema::NamedType for SpeciesFilmsEdge {
+    fn name() -> &'static str {
+        "SpeciesFilmsEdge"
+    }
+}
+impl ::cynic::schema::NamedType for SpeciesPeopleConnection {
+    fn name() -> &'static str {
+        "SpeciesPeopleConnection"
+    }
+}
+impl ::cynic::schema::NamedType for SpeciesPeopleEdge {
+    fn name() -> &'static str {
+        "SpeciesPeopleEdge"
+    }
+}
+impl ::cynic::schema::NamedType for Starship {
+    fn name() -> &'static str {
+        "Starship"
+    }
+}
+impl ::cynic::schema::NamedType for StarshipFilmsConnection {
+    fn name() -> &'static str {
+        "StarshipFilmsConnection"
+    }
+}
+impl ::cynic::schema::NamedType for StarshipFilmsEdge {
+    fn name() -> &'static str {
+        "StarshipFilmsEdge"
+    }
+}
+impl ::cynic::schema::NamedType for StarshipPilotsConnection {
+    fn name() -> &'static str {
+        "StarshipPilotsConnection"
+    }
+}
+impl ::cynic::schema::NamedType for StarshipPilotsEdge {
+    fn name() -> &'static str {
+        "StarshipPilotsEdge"
+    }
+}
+impl ::cynic::schema::NamedType for StarshipsConnection {
+    fn name() -> &'static str {
+        "StarshipsConnection"
+    }
+}
+impl ::cynic::schema::NamedType for StarshipsEdge {
+    fn name() -> &'static str {
+        "StarshipsEdge"
+    }
+}
+impl ::cynic::schema::NamedType for Vehicle {
+    fn name() -> &'static str {
+        "Vehicle"
+    }
+}
+impl ::cynic::schema::NamedType for VehicleFilmsConnection {
+    fn name() -> &'static str {
+        "VehicleFilmsConnection"
+    }
+}
+impl ::cynic::schema::NamedType for VehicleFilmsEdge {
+    fn name() -> &'static str {
+        "VehicleFilmsEdge"
+    }
+}
+impl ::cynic::schema::NamedType for VehiclePilotsConnection {
+    fn name() -> &'static str {
+        "VehiclePilotsConnection"
+    }
+}
+impl ::cynic::schema::NamedType for VehiclePilotsEdge {
+    fn name() -> &'static str {
+        "VehiclePilotsEdge"
+    }
+}
+impl ::cynic::schema::NamedType for VehiclesConnection {
+    fn name() -> &'static str {
+        "VehiclesConnection"
+    }
+}
+impl ::cynic::schema::NamedType for VehiclesEdge {
+    fn name() -> &'static str {
+        "VehiclesEdge"
+    }
+}
 

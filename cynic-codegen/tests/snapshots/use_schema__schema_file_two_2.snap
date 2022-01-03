@@ -110,4 +110,29 @@ pub mod subscription_root_fields {
     }
     impl ::cynic::schema::HasField<Books, super::BookChanged> for super::SubscriptionRoot {}
 }
+impl ::cynic::schema::NamedType for Book {
+    fn name() -> &'static str {
+        "Book"
+    }
+}
+impl ::cynic::schema::NamedType for BookChanged {
+    fn name() -> &'static str {
+        "BookChanged"
+    }
+}
+impl ::cynic::schema::NamedType for MutationRoot {
+    fn name() -> &'static str {
+        "MutationRoot"
+    }
+}
+impl ::cynic::schema::NamedType for QueryRoot {
+    fn name() -> &'static str {
+        "QueryRoot"
+    }
+}
+impl ::cynic::schema::NamedType for SubscriptionRoot {
+    fn name() -> &'static str {
+        "SubscriptionRoot"
+    }
+}
 

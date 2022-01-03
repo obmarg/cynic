@@ -126,6 +126,7 @@ pub fn enum_derive_impl(
                 }
             }
 
+            #[automatically_derived]
             impl ::cynic::schema::IsEnum<#schema_module::#enum_marker_ident> for #ident {
                 type SchemaType = #schema_module::#enum_marker_ident;
             }

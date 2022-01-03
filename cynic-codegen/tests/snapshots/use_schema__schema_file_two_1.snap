@@ -771,4 +771,59 @@ pub mod user_fields {
     }
     impl ::cynic::schema::HasField<UpdatedAt, super::DateTime> for super::User {}
 }
+impl ::cynic::schema::NamedType for City {
+    fn name() -> &'static str {
+        "City"
+    }
+}
+impl ::cynic::schema::NamedType for Commitment {
+    fn name() -> &'static str {
+        "Commitment"
+    }
+}
+impl ::cynic::schema::NamedType for Company {
+    fn name() -> &'static str {
+        "Company"
+    }
+}
+impl ::cynic::schema::NamedType for Country {
+    fn name() -> &'static str {
+        "Country"
+    }
+}
+impl ::cynic::schema::NamedType for Job {
+    fn name() -> &'static str {
+        "Job"
+    }
+}
+impl ::cynic::schema::NamedType for Location {
+    fn name() -> &'static str {
+        "Location"
+    }
+}
+impl ::cynic::schema::NamedType for Mutation {
+    fn name() -> &'static str {
+        "Mutation"
+    }
+}
+impl ::cynic::schema::NamedType for Query {
+    fn name() -> &'static str {
+        "Query"
+    }
+}
+impl ::cynic::schema::NamedType for Remote {
+    fn name() -> &'static str {
+        "Remote"
+    }
+}
+impl ::cynic::schema::NamedType for Tag {
+    fn name() -> &'static str {
+        "Tag"
+    }
+}
+impl ::cynic::schema::NamedType for User {
+    fn name() -> &'static str {
+        "User"
+    }
+}
 

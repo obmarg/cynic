@@ -1,0 +1,40 @@
+---
+source: cynic-codegen/src/inline_fragments_derive_2/tests.rs
+expression: "format_code(format!(\"{}\", tokens))"
+
+---
+#[automatically_derived]
+impl<'de> ::cynic::core::QueryFragment<'de> for PostOrAuthor {
+    type SchemaType = schema::PostOrAuthor;
+    fn query(mut builder: ::cynic::core::QueryBuilder<Self::SchemaType>) {
+        let fragment_builder = builder.inline_fragment();
+        let mut fragment_builder =
+            fragment_builder.on::<<Post as ::cynic::core::QueryFragment>::SchemaType>();
+        <Post as ::cynic::core::QueryFragment>::query(fragment_builder.select_children());
+        let fragment_builder = builder.inline_fragment();
+        let mut fragment_builder =
+            fragment_builder.on::<<Author as ::cynic::core::QueryFragment>::SchemaType>();
+        <Author as ::cynic::core::QueryFragment>::query(fragment_builder.select_children());
+    }
+}
+#[automatically_derived]
+impl<'de> ::cynic::serde::Deserialize<'de> for PostOrAuthor {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: ::cynic::serde::Deserializer<'de>,
+    {
+        #[derive(:: cynic :: serde :: Deserialize)]
+        #[serde(tag = "__typename")]
+        enum Intermediate {
+            #[serde(rename = "BlogPost")]
+            Post(Post),
+            #[serde(rename = "Author")]
+            Author(Author),
+        }
+        Ok(match Intermediate::deserialize(deserializer)? {
+            Intermediate::Post(inner) => PostOrAuthor::Post(inner),
+            Intermediate::Author(inner) => PostOrAuthor::Author(inner),
+        })
+    }
+}
+

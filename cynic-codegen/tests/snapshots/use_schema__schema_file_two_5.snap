@@ -105,4 +105,26 @@ pub mod nested_fields {
 }
 pub struct Dessert {}
 pub struct AnInputType {}
+impl ::cynic::schema::HasSubtype<Nested> for MyUnionType {}
+impl ::cynic::schema::HasSubtype<TestStruct> for MyUnionType {}
+impl ::cynic::schema::NamedType for Query {
+    fn name() -> &'static str {
+        "Query"
+    }
+}
+impl ::cynic::schema::NamedType for TestStruct {
+    fn name() -> &'static str {
+        "TestStruct"
+    }
+}
+impl ::cynic::schema::NamedType for MyUnionType {
+    fn name() -> &'static str {
+        "MyUnionType"
+    }
+}
+impl ::cynic::schema::NamedType for Nested {
+    fn name() -> &'static str {
+        "Nested"
+    }
+}
 

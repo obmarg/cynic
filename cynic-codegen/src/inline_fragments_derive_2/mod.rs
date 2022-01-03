@@ -7,6 +7,9 @@ pub mod input;
 
 mod deserialize_impl;
 
+#[cfg(test)]
+mod tests;
+
 pub use input::InlineFragmentsDeriveInput;
 
 use crate::suggestions::{format_guess, guess_field};
