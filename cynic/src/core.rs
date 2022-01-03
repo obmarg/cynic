@@ -63,6 +63,7 @@ pub trait Variable {
     type ArgumentStruct;
     type SchemaType;
 
+    fn name() -> &'static str;
     // TODO: Do we need a name func in here.  Probably.
 }
 

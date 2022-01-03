@@ -69,10 +69,7 @@ impl<'a, SchemaType> QueryBuilder<'a, SchemaType> {
     {
         self.selection_set
             .selections
-            .push(Selection::Field(FieldSelection {
-                name: FieldMarker::name(),
-                children: SelectionSet::default(),
-            }));
+            .push(Selection::Field(FieldSelection::new(FieldMarker::name())));
 
         let field_selection = match self.selection_set.selections.last_mut() {
             Some(Selection::Field(field_selection)) => field_selection,
@@ -89,10 +86,7 @@ impl<'a, SchemaType> QueryBuilder<'a, SchemaType> {
         if !self.has_typename {
             self.selection_set
                 .selections
-                .push(Selection::Field(FieldSelection {
-                    name: "__typename",
-                    children: SelectionSet::default(),
-                }));
+                .push(Selection::Field(FieldSelection::new("__typename")));
             self.has_typename = true;
         }
 
@@ -161,7 +155,11 @@ impl<'a, Field, FieldSchemaType> FieldSelectionBuilder<'a, Field, FieldSchemaTyp
     where
         Field: schema::HasArgument<ArgumentName>,
     {
-        todo!()
+        ArgumentBuilder {
+            arguments: &mut self.field.arguments,
+            argument_name: Field::name(),
+            phantom: PhantomData,
+        }
     }
 
     // Ok, so we need two ways to pass in arguments.
@@ -211,8 +209,9 @@ impl<'a, SchemaType> InlineFragmentBuilder<'a, SchemaType> {
 // TODO: maybe rename this InputBuilder?
 pub struct ArgumentBuilder<'a, SchemaType> {
     // TODO: Remove the &'a from this phantomdata once it's actually being used.
-    phantom: PhantomData<fn() -> &'a SchemaType>,
-    // TODO: the argument itself
+    argument_name: &'static str,
+    arguments: &'a mut Vec<Argument>,
+    phantom: PhantomData<fn() -> SchemaType>,
 }
 
 /*
@@ -242,7 +241,59 @@ impl<'a, SchemaType> ArgumentBuilder<'a, SchemaType> {
         // TODO: presumably need to constrain on ArgumentStruct somehow.
         VariableDef: core::Variable<SchemaType = SchemaType>,
     {
-        todo!()
+        self.arguments.push(Argument {
+            name: self.argument_name,
+            value: InputLiteral::Variable(VariableDef::name()),
+        });
+    }
+}
+
+impl<'a, SchemaType> ArgumentBuilder<'a, Option<SchemaType>> {
+    pub fn null(self) {
+        self.arguments.push(Argument {
+            name: self.argument_name,
+            value: InputLiteral::Null,
+        });
+    }
+
+    // TODO: name this some maybe?
+    pub fn value(self) -> ArgumentBuilder<'a, SchemaType> {
+        ArgumentBuilder {
+            argument_name: self.argument_name,
+            arguments: self.arguments,
+            phantom: PhantomData,
+        }
+    }
+
+    // TODO: would undefined also be useful?  Not sure.
+}
+
+// TODO: ArgumentBuilder for options, enums, scalars...
+
+impl<'a> ArgumentBuilder<'a, i32> {
+    pub fn literal(self, i: i32) {
+        self.arguments.push(Argument {
+            name: self.argument_name,
+            value: InputLiteral::Int(i),
+        });
+    }
+}
+
+impl<'a> ArgumentBuilder<'a, bool> {
+    pub fn literal(self, i: bool) {
+        self.arguments.push(Argument {
+            name: self.argument_name,
+            value: InputLiteral::Bool(i),
+        });
+    }
+}
+
+impl<'a> ArgumentBuilder<'a, crate::Id> {
+    pub fn literal(self, i: crate::Id) {
+        self.arguments.push(Argument {
+            name: self.argument_name,
+            value: InputLiteral::Id(i.into_inner()),
+        });
     }
 }
 
@@ -252,7 +303,7 @@ where
 {
     // TODO: is FieldType even neccesary here or can we look up via Field?
     //  I think so - I've certainly tried right here...
-    pub fn field<FieldMarker>(&'_ mut self) -> ArgumentBuilder<'a, FieldMarker::SchemaType>
+    pub fn field<FieldMarker>(&'_ mut self) -> ArgumentBuilder<'_, FieldMarker::SchemaType>
     where
         FieldMarker: schema::Field,
 
@@ -260,49 +311,27 @@ where
         // Not sure.
         SchemaType: schema::HasField<FieldMarker, FieldMarker::SchemaType>,
     {
-        todo!()
+        self.arguments.push(Argument {
+            name: self.argument_name,
+            value: InputLiteral::Object(Vec::new()),
+        });
+
+        let arguments = match &mut self.arguments.last_mut().unwrap().value {
+            InputLiteral::Object(arguments) => arguments,
+            _ => panic!("This should be impossible"),
+        };
+
+        ArgumentBuilder {
+            argument_name: FieldMarker::name(),
+            arguments,
+            phantom: PhantomData,
+        }
     }
 }
-
-impl<'a, SchemaType> ArgumentBuilder<'a, Option<SchemaType>> {
-    pub fn null(self) {
-        todo!()
-    }
-
-    // TODO: name this some maybe?
-    pub fn value(self) -> ArgumentBuilder<'a, SchemaType> {
-        todo!()
-    }
-
-    // TODO: would undefined also be useful?  Not sure.
-}
-
-// TODO: ArgumentBuilder for options, enums, scalars...
 
 impl<'a, SchemaType> ArgumentBuilder<'a, Vec<SchemaType>> {
-    // TODO: For now this item function is ok because an ArgumentBuilder<Vec<SchemaType>> should
-    // have no other functions.
-    // Might want an explicit ListBuilder if we ever add other funcs though so we
-    // can make this take an owned self and prevent mis-use.
     pub fn item<InnerType>(&'_ mut self) -> ArgumentBuilder<'_, InnerType> {
-        todo!()
-    }
-}
-
-impl<'a> ArgumentBuilder<'a, i32> {
-    pub fn literal(self, i: i32) {
-        todo!()
-    }
-}
-
-impl<'a> ArgumentBuilder<'a, bool> {
-    pub fn literal(self, i: bool) {
-        todo!()
-    }
-}
-
-impl<'a> ArgumentBuilder<'a, crate::Id> {
-    pub fn literal(self, i: crate::Id) {
+        // TODO: Think we actually need to return a ListBuilder type for this to work...
         todo!()
     }
 }

@@ -1,9 +1,9 @@
 #![allow(dead_code, unused_variables, missing_docs)]
 // TODO: Don't allow the above
 
-use std::fmt::Write;
+use std::{borrow::Cow, fmt::Write};
 
-use crate::indent::indented;
+use crate::{indent::indented, schema::Field};
 
 #[derive(Debug, Default)]
 pub struct SelectionSet {
@@ -20,7 +20,28 @@ pub enum Selection {
 #[derive(Debug)]
 pub struct FieldSelection {
     pub name: &'static str,
+    pub arguments: Vec<Argument>,
     pub children: SelectionSet,
+}
+
+#[derive(Debug)]
+pub struct Argument {
+    pub name: &'static str,
+    pub value: InputLiteral,
+}
+
+#[derive(Debug)]
+pub enum InputLiteral {
+    Int(i32),
+    Float(f64),
+    Bool(bool),
+    String(Cow<'static, str>),
+    Id(String),
+    // TODO: Custom scalars
+    Object(Vec<Argument>),
+    List(Vec<InputLiteral>),
+    Variable(&'static str),
+    Null,
 }
 
 #[derive(Debug, Default)]
@@ -31,6 +52,16 @@ pub struct InlineFragment {
 
 #[derive(Debug)]
 pub struct FragmentSpread {}
+
+impl FieldSelection {
+    pub fn new(name: &'static str) -> FieldSelection {
+        FieldSelection {
+            name,
+            arguments: Vec::new(),
+            children: SelectionSet::default(),
+        }
+    }
+}
 
 impl std::fmt::Display for SelectionSet {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -50,6 +81,13 @@ impl std::fmt::Display for Selection {
         match self {
             Selection::Field(field_selection) => {
                 write!(f, "{}", field_selection.name)?;
+                if !field_selection.arguments.is_empty() {
+                    write!(f, "(")?;
+                    for arg in &field_selection.arguments {
+                        write!(f, "{},", arg)?;
+                    }
+                    write!(f, ")")?;
+                }
                 write!(f, "{}", field_selection.children)
             }
             Selection::InlineFragment(inline_fragment) => {
@@ -60,6 +98,44 @@ impl std::fmt::Display for Selection {
                 write!(f, "{}", inline_fragment.children)
             }
             Selection::FragmentSpread(_) => todo!(),
+        }
+    }
+}
+
+impl std::fmt::Display for Argument {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{}: {}", self.name, self.value)
+    }
+}
+
+impl std::fmt::Display for InputLiteral {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            InputLiteral::Int(val) => write!(f, "{}", val),
+            InputLiteral::Float(val) => write!(f, "{}", val),
+            InputLiteral::Bool(val) => write!(f, "{}", val),
+            InputLiteral::String(val) => write!(f, "\"{}\"", val),
+            InputLiteral::Id(val) => write!(f, "\"{}\"", val),
+            InputLiteral::Object(fields) => {
+                write!(f, "{{")?;
+                for field in fields {
+                    write!(f, "{}: {}, ", field.name, field.value)?;
+                }
+                write!(f, "}}")
+            }
+            InputLiteral::List(vals) => {
+                write!(f, "[")?;
+                for val in vals {
+                    write!(f, "{}, ", val)?;
+                }
+                write!(f, "]")
+            }
+            InputLiteral::Variable(name) => {
+                write!(f, "${}", name)
+            }
+            InputLiteral::Null => {
+                write!(f, "null")
+            }
         }
     }
 }

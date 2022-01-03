@@ -34,7 +34,7 @@ type EmptyType {
 type Query {
   allPosts: [BlogPost!]!
   post(id: ID!): BlogPost
-  filteredPosts(input: PostFilters): [BlogPost!]!
+  filteredPosts(filters: PostFilters): [BlogPost!]!
   allAuthors: [Author!]!
   allData: [PostOrAuthor!]!
 }

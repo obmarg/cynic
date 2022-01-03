@@ -174,6 +174,10 @@ impl cynic::core::Variable for AuthorIdMirror {
     // And each derive generates an impl that this can then use?
     // needs some thought for sure...
     type SchemaType = ();
+
+    fn name() -> &'static str {
+        "authorId"
+    }
 }
 
 #[derive(serde::Deserialize, Debug)]
@@ -297,6 +301,7 @@ fn test_using_this_shit() {
 fn test_deserialize() {
     use serde_json::json;
 
+    // TODO: this needs a big update.
     let data = json!({
         "post": {"hasMetadata": false, "author": {"name": "Not Me"}},
         "allPosts": [{"hasMetadata": true, "author": {"name": "Me"}}]
