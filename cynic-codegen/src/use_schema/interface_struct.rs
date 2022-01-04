@@ -1,6 +1,6 @@
 use proc_macro2::TokenStream;
 
-use crate::{schema, type_index::TypeIndex, Ident};
+use crate::{schema, Ident, TypeIndex};
 
 use super::SelectorStruct;
 
