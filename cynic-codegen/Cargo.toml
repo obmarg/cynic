@@ -2,7 +2,7 @@
 name = "cynic-codegen"
 version = "1.0.0"
 authors = ["Graeme Coupar <graeme@polyandglot.dev>"]
-edition = "2018"
+edition = "2021"
 homepage = "https://cynic-rs.dev"
 repository = "https://github.com/obmarg/cynic"
 description = "Codegen for cynic - a GraphQL query builder & data mapper for Rust"

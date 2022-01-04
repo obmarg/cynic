@@ -1,5 +1,8 @@
 use crate::{FieldArgument, TypeIndex};
 
+// TODO: It would be good to make these use &'str since this is compile time
+// and max speed is best.
+
 // Alias all the graphql_parser schema types so we don't have to specify generic parameters
 // everywhere
 pub type Document = graphql_parser::schema::Document<'static, String>;
