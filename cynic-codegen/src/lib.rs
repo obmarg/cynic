@@ -15,7 +15,6 @@ mod ident;
 mod module;
 mod schema;
 mod suggestions;
-mod type_index;
 mod type_validation;
 
 pub use ident::RenameAll;
@@ -24,8 +23,7 @@ use error::Errors;
 use field_argument::FieldArgument;
 use field_type::FieldType;
 use ident::Ident;
-use schema::{load_schema, SchemaLoadError};
-use type_index::TypeIndex;
+use schema::{load_schema, SchemaLoadError, TypeIndex};
 
 pub fn output_schema_module(
     schema: impl AsRef<std::path::Path>,
