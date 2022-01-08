@@ -3,7 +3,8 @@ use quote::format_ident;
 
 use crate::Ident;
 
-use super::FragmentDeriveField;
+use super::{fragment_derive_type::FragmentDeriveType, FragmentDeriveField};
+use crate::schema::types as schema;
 
 pub struct DeserializeImpl {
     target_struct: Ident,
@@ -18,11 +19,14 @@ struct Field {
 
 impl DeserializeImpl {
     pub fn new(
-        fields: &darling::ast::Fields<FragmentDeriveField>,
+        fields: &[(&FragmentDeriveField, &schema::Field<'_>)],
         name: &syn::Ident,
     ) -> DeserializeImpl {
         let target_struct = Ident::new_spanned(&name.to_string(), name.span());
-        let fields = fields.iter().map(|field| process_field(field)).collect();
+        let fields = fields
+            .iter()
+            .map(|(field, schema_field)| process_field(field, schema_field))
+            .collect();
 
         DeserializeImpl {
             target_struct,
@@ -119,21 +123,16 @@ impl quote::ToTokens for DeserializeImpl {
     }
 }
 
-fn process_field(field: &FragmentDeriveField) -> Field {
+fn process_field(field: &FragmentDeriveField, schema_field: &schema::Field<'_>) -> Field {
     // Should be ok to unwrap since we only accept struct style input
     let rust_name = field.ident.as_ref().unwrap();
     let field_variant_name = Ident::from_proc_macro2(rust_name, None).as_field_marker_type();
 
     Field {
         field_variant_name,
-        serialized_name: field.alias().unwrap_or_else(|| {
-            field
-                .new_graphql_ident()
-                // TODO: figure out if the below can actually happen...
-                .expect("field must have an alias or a graphql_ident")
-                .graphql_name()
-                .to_string()
-        }),
+        serialized_name: field
+            .alias()
+            .unwrap_or_else(|| schema_field.name.as_str().to_string()),
         rust_name: rust_name.clone(),
     }
 }

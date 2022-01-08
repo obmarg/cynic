@@ -52,7 +52,7 @@ impl quote::ToTokens for FieldSelector {
         let rust_field_name = &self.rust_field_name;
 
         let mut argument_defs = Vec::with_capacity(self.required_args.len());
-        let empty_path = crate::ident::empty_path();
+        let empty_path = crate::idents::empty_path();
         for arg in &self.required_args {
             argument_defs.push(
                 ArgumentParameter::new(arg.name.clone(), arg.argument_type.clone())

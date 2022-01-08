@@ -1,6 +1,6 @@
 use proc_macro2::TokenStream;
 
-use crate::{ident::Ident, schema::TypeDefinition};
+use crate::{idents::Ident, schema::TypeDefinition};
 
 pub struct NamedType {
     ident: super::Ident,

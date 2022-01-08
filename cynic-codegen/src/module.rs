@@ -1,7 +1,7 @@
 use proc_macro2::TokenStream;
 use quote::ToTokens;
 
-use crate::ident::Ident;
+use crate::idents::Ident;
 
 #[derive(Debug)]
 pub struct Module<T: ToTokens> {

@@ -4,7 +4,7 @@ use proc_macro2::{Span, TokenStream};
 use syn::spanned::Spanned;
 
 use crate::{
-    ident::PathExt,
+    idents::PathExt,
     load_schema,
     type_validation::{check_spread_type, check_types_are_compatible, CheckMode},
     Errors, FieldType, Ident,

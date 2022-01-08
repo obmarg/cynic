@@ -12,9 +12,8 @@ use syn::parse_quote;
 
 use crate::{
     field_type::FieldType,
-    ident::{to_snake_case, Ident},
-    schema::{self, SchemaLoadError},
-    type_index::TypeIndex,
+    idents::{to_snake_case, Ident},
+    schema::{self, SchemaLoadError, TypeIndex},
 };
 
 use self::{named_type::NamedType, subtype_markers::SubtypeMarkers};
@@ -139,10 +138,13 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, SchemaLoadError
     output.append_all(quote! {
         #(#subtype_markers)*
         #(#named_types)*
-    });
 
-    // TODO: output defs for the built in scalars so we don't have
-    // to special case them elsewhere...
+        type Boolean = bool;
+        type String = std::string::String;
+        type Float = f64;
+        type Int = i32;
+        type Id = cynic::Id;
+    });
 
     Ok(output)
 }

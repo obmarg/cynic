@@ -1,7 +1,7 @@
 use darling::util::SpannedValue;
 use proc_macro2::{Span, TokenStream};
 
-use crate::{ident::PathExt, load_schema, schema, Errors, Ident};
+use crate::{idents::PathExt, load_schema, schema, Errors, Ident};
 
 pub mod input;
 

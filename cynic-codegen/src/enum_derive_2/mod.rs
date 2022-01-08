@@ -2,7 +2,7 @@ use proc_macro2::{Span, TokenStream};
 use std::collections::BTreeMap;
 
 use crate::{
-    ident::{RenameAll, RenameRule},
+    idents::{RenameAll, RenameRule},
     load_schema,
     schema::{Definition, Document, EnumType, EnumValue, TypeDefinition},
     Ident,

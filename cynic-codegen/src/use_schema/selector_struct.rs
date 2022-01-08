@@ -4,7 +4,7 @@ use super::field_selector::FieldSelector;
 use super::selection_builder::FieldSelectionBuilder;
 
 use crate::{
-    ident::PathExt,
+    idents::PathExt,
     schema::{self, FieldExt},
     FieldType, Ident, TypeIndex,
 };
@@ -44,7 +44,7 @@ impl SelectorStruct {
                 type_index,
             );
 
-            let mut selection_builder_path = crate::ident::empty_path();
+            let mut selection_builder_path = crate::idents::empty_path();
             selection_builder_path.push(Ident::for_module(graphql_name));
             selection_builder_path.push(&selection_builder.name);
 

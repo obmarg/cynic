@@ -1,6 +1,6 @@
 use darling::util::SpannedValue;
 
-use crate::ident::RenameAll;
+use crate::idents::RenameAll;
 use proc_macro2::Span;
 
 #[derive(darling::FromDeriveInput)]

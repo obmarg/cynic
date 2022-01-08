@@ -14,3 +14,21 @@ pub fn format_guess(guess_field: Option<&str>) -> String {
         None => "".to_owned(),
     }
 }
+
+pub struct FieldSuggestionError<'a> {
+    pub expected_field: &'a str,
+    pub graphql_type_name: &'a str,
+    pub suggested_field: Option<&'a str>,
+}
+
+impl std::fmt::Display for FieldSuggestionError<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "Field {} does not exist on the GraphQL type {}.{}",
+            self.expected_field,
+            self.graphql_type_name,
+            format_guess(self.suggested_field)
+        )
+    }
+}

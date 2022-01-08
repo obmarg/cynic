@@ -265,6 +265,7 @@ impl darling::FromMeta for RenameAll {
     }
 }
 
+// TODO: Ideally OnceCell this
 lazy_static! {
     // A list of keywords in rust that can be converted to raw identifiers
     // Taken from https://doc.rust-lang.org/reference/keywords.html
@@ -329,6 +330,7 @@ lazy_static! {
     };
 }
 
+// TODO: Ideally OnceCell this
 lazy_static! {
     // A list of keywords in rust that cannot be converted to raw identifiers
     // Taken from https://github.com/rust-lang/rust/blob/1.31.1/src/libsyntax_pos/symbol.rs#L456-L460
@@ -375,7 +377,7 @@ pub fn to_snake_case(s: &str) -> String {
     buf
 }
 
-fn to_pascal_case(s: &str) -> String {
+pub(super) fn to_pascal_case(s: &str) -> String {
     let mut buf = String::with_capacity(s.len());
     let mut first_char = true;
     let mut prev_is_upper = false;
@@ -419,7 +421,7 @@ fn to_pascal_case(s: &str) -> String {
     buf
 }
 
-fn to_camel_case(s: &str) -> String {
+pub(super) fn to_camel_case(s: &str) -> String {
     let s = to_pascal_case(s);
 
     let mut buf = String::with_capacity(s.len());
@@ -441,6 +443,16 @@ pub trait PathExt {
 impl PathExt for syn::Path {
     fn push(&mut self, ident: impl Borrow<crate::Ident>) {
         self.segments.push(ident.borrow().rust.clone().into())
+    }
+}
+
+pub trait PathExt2 {
+    fn push(&mut self, ident: impl Borrow<proc_macro2::Ident>);
+}
+
+impl PathExt2 for syn::Path {
+    fn push(&mut self, ident: impl Borrow<proc_macro2::Ident>) {
+        self.segments.push(ident.borrow().clone().into())
     }
 }
 

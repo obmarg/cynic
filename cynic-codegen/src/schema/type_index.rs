@@ -1,23 +1,44 @@
 use std::{
     collections::{HashMap, HashSet},
     marker::PhantomData,
+    rc::Rc,
 };
 
-use super::types::*;
-use crate::schema::{self, Definition, Document, TypeDefinition, TypeExt};
+use once_cell::sync::Lazy;
 
+use super::{names::FieldName, types::*, SchemaError};
+use crate::schema::{self, parser, Definition, Document, TypeDefinition, TypeExt};
+
+#[derive(Clone)]
 pub struct TypeIndex<'a> {
     //name_to_kind: HashMap<String, Kind>,
-    types: HashMap<&'a str, &'a TypeDefinition>,
+    types: Rc<HashMap<&'a str, &'a TypeDefinition>>,
 }
 
 impl<'a> TypeIndex<'a> {
     pub fn empty() -> Self {
         TypeIndex {
-            types: HashMap::new(),
+            types: Rc::new(HashMap::new()),
         }
     }
 
+    pub(super) fn for_schema_2(document: &'a Document) -> Self {
+        let mut types = HashMap::new();
+        for definition in &document.definitions {
+            if let Definition::TypeDefinition(type_def) = definition {
+                types.insert(name_for_type(type_def), type_def);
+            }
+        }
+        for def in BUILTIN_SCALARS.as_ref() {
+            types.insert(name_for_type(def), def);
+        }
+
+        TypeIndex {
+            types: Rc::new(types),
+        }
+    }
+
+    #[deprecated]
     pub fn for_schema(document: &'a Document) -> Self {
         let mut types = HashMap::new();
         for definition in &document.definitions {
@@ -26,14 +47,36 @@ impl<'a> TypeIndex<'a> {
             }
         }
 
-        TypeIndex { types }
+        TypeIndex {
+            types: Rc::new(types),
+        }
     }
 
-    pub fn lookup_valid_type(&'_ self, name: &str) -> Result<Type<'_>, ()> {
-        let type_def = self.types.get(name).copied().unwrap_or_else(|| todo!());
+    pub fn lookup_valid_type(&self, name: &str) -> Result<Type<'a>, SchemaError> {
+        let type_def =
+            self.types
+                .get(name)
+                .copied()
+                .ok_or_else(|| SchemaError::CouldNotFindType {
+                    name: name.to_string(),
+                })?;
+
         self.validate(type_def)?;
 
-        Ok(match type_def {
+        Ok(self.private_lookup(name).unwrap())
+    }
+
+    fn private_lookup(&self, name: &str) -> Option<Type<'a>> {
+        // Note: This function should absolutely only be called after the heirarchy has
+        // been validated.  The current module privacy settings enforce this, but don't make this
+        // private or call it without being careful.
+        let type_def = self
+            .types
+            .get(name)
+            .copied()
+            .expect("Couldn't find a type - this should be impossible");
+
+        Some(match type_def {
             TypeDefinition::Scalar(def) => Type::Scalar(ScalarType { name: &def.name }),
             TypeDefinition::Object(def) => Type::Object(ObjectType {
                 description: def.description.as_deref(),
@@ -43,7 +86,9 @@ impl<'a> TypeIndex<'a> {
                     .iter()
                     .map(|field| Field {
                         description: field.description.as_deref(),
-                        name: &field.name,
+                        name: FieldName {
+                            graphql_name: &field.name,
+                        },
                         arguments: field
                             .arguments
                             .iter()
@@ -53,10 +98,29 @@ impl<'a> TypeIndex<'a> {
                     })
                     .collect(),
             }),
-            TypeDefinition::Interface(_) => todo!(),
-            TypeDefinition::Union(_) => todo!(),
-            TypeDefinition::Enum(_) => todo!(),
-            TypeDefinition::InputObject(_) => todo!(),
+            TypeDefinition::Interface(_) => todo!("iface lookup not done"),
+            TypeDefinition::Union(def) => Type::Union(UnionType {
+                description: def.description.as_deref(),
+                name: &def.name,
+                types: def
+                    .types
+                    .iter()
+                    .map(|name| ObjectRef(name.as_str(), self.clone()))
+                    .collect(),
+            }),
+            TypeDefinition::Enum(def) => Type::Enum(EnumType {
+                description: def.description.as_deref(),
+                name: &def.name,
+                values: def
+                    .values
+                    .iter()
+                    .map(|val| EnumValue {
+                        description: val.description.as_deref(),
+                        name: &val.name,
+                    })
+                    .collect(),
+            }),
+            TypeDefinition::InputObject(_) => todo!("input lookup not done"),
         })
     }
 
@@ -89,7 +153,7 @@ impl<'a> TypeIndex<'a> {
     /// Validates that all the types contained within the given types do exist.
     ///
     /// So we can just directly use refs to them.
-    fn validate(&self, def: &'a TypeDefinition) -> Result<(), ()> {
+    fn validate(&self, def: &'a TypeDefinition) -> Result<(), SchemaError> {
         let mut validated = HashSet::<&str>::new();
         let mut defs = vec![def];
 
@@ -99,7 +163,8 @@ impl<'a> TypeIndex<'a> {
                     $name,
                     TypeDefinition::InputObject(_)
                         | TypeDefinition::Enum(_)
-                        | TypeDefinition::Scalar(_)
+                        | TypeDefinition::Scalar(_),
+                    "expected to be an input type"
                 );
             };
             ($name:ident, Output) => {
@@ -109,15 +174,19 @@ impl<'a> TypeIndex<'a> {
                         | TypeDefinition::Enum(_)
                         | TypeDefinition::Scalar(_)
                         | TypeDefinition::Union(_)
-                        | TypeDefinition::Interface(_)
+                        | TypeDefinition::Interface(_),
+                    "expected to be an output type"
                 );
             };
-            ($name:ident, $is:pat) => {
+            ($name:ident, $is:pat, $err:literal) => {
                 #[allow(deprecated)]
                 let def = self.lookup_type($name);
                 if !matches!(def, Some($is)) {
                     // TODO: Err
-                    return Err(());
+                    return Err(SchemaError::InvalidTypeInSchema {
+                        name: $name.to_string(),
+                        details: $err.to_string(),
+                    });
                 }
                 if !validated.contains($name) {
                     validated.insert($name);
@@ -147,17 +216,81 @@ impl<'a> TypeIndex<'a> {
                     }
                     for iface in &obj.implements_interfaces {
                         let name = iface.as_ref();
-                        validate!(name, TypeDefinition::Interface(_));
+                        validate!(
+                            name,
+                            TypeDefinition::Interface(_),
+                            "expected to be an interface"
+                        );
                     }
                 }
-                TypeDefinition::Union(_) => {}
+                TypeDefinition::Union(union_def) => {
+                    for member in &union_def.types {
+                        let name = member.as_ref();
+                        validate!(name, TypeDefinition::Object(_), "expected to be an object");
+                    }
+                }
                 TypeDefinition::Interface(_) => {
-                    todo!()
+                    todo!("validating interface")
                 }
             }
         }
 
         Ok(())
+    }
+}
+
+static BUILTIN_SCALARS: Lazy<[TypeDefinition; 5]> = Lazy::new(|| {
+    [
+        TypeDefinition::Scalar(parser::ScalarType {
+            position: graphql_parser::Pos { line: 0, column: 0 },
+            description: None,
+            name: "ID".to_string(),
+            directives: Vec::new(),
+        }),
+        TypeDefinition::Scalar(parser::ScalarType {
+            position: graphql_parser::Pos { line: 0, column: 0 },
+            description: None,
+            name: "String".to_string(),
+            directives: Vec::new(),
+        }),
+        TypeDefinition::Scalar(parser::ScalarType {
+            position: graphql_parser::Pos { line: 0, column: 0 },
+            description: None,
+            name: "Int".to_string(),
+            directives: Vec::new(),
+        }),
+        TypeDefinition::Scalar(parser::ScalarType {
+            position: graphql_parser::Pos { line: 0, column: 0 },
+            description: None,
+            name: "Float".to_string(),
+            directives: Vec::new(),
+        }),
+        TypeDefinition::Scalar(parser::ScalarType {
+            position: graphql_parser::Pos { line: 0, column: 0 },
+            description: None,
+            name: "Boolean".to_string(),
+            directives: Vec::new(),
+        }),
+    ]
+});
+
+impl<'a, T> super::types::TypeRef<'a, T>
+where
+    Type<'a>: TryInto<T>,
+    <Type<'a> as TryInto<T>>::Error: std::fmt::Debug,
+    T: 'a,
+{
+    pub fn inner_type(&self) -> T {
+        match self {
+            TypeRef::Named(name, index, _) => {
+                // Note: we assume that TypeRef is only constructed after validation,
+                // which makes this unwrap ok.
+                // Probably want to enforce this via module heirarchy.
+                index.private_lookup(name).unwrap().try_into().unwrap()
+            }
+            TypeRef::List(inner) => inner.inner_type(),
+            TypeRef::Nullable(inner) => inner.inner_type(),
+        }
     }
 }
 
@@ -178,7 +311,7 @@ fn name_for_type(type_def: &TypeDefinition) -> &str {
 // schema/parser.rs
 
 fn convert_input_value<'a>(
-    type_index: &'a TypeIndex<'a>,
+    type_index: &TypeIndex<'a>,
     val: &'a schema::InputValue,
 ) -> InputValue<'a> {
     InputValue {
@@ -189,10 +322,10 @@ fn convert_input_value<'a>(
 }
 
 // TODO: Definitely test this fucker.
-fn build_type_ref<'a, T>(ty: &'a schema::Type, type_index: &'a TypeIndex) -> TypeRef<'a, T> {
+fn build_type_ref<'a, T>(ty: &'a schema::Type, type_index: &TypeIndex<'a>) -> TypeRef<'a, T> {
     fn inner_fn<'a, T>(
         ty: &'a schema::Type,
-        type_index: &'a TypeIndex,
+        type_index: &TypeIndex<'a>,
         nullable: bool,
     ) -> TypeRef<'a, T> {
         if let schema::Type::NonNullType(inner) = ty {
@@ -204,7 +337,9 @@ fn build_type_ref<'a, T>(ty: &'a schema::Type, type_index: &'a TypeIndex) -> Typ
         }
 
         match ty {
-            schema::Type::NamedType(name) => TypeRef::<T>::Named(name, type_index, PhantomData),
+            schema::Type::NamedType(name) => {
+                TypeRef::<T>::Named(name, type_index.to_owned(), PhantomData)
+            }
             schema::Type::ListType(inner) => {
                 TypeRef::<T>::List(Box::new(inner_fn::<T>(inner, type_index, true)))
             }

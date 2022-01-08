@@ -69,9 +69,9 @@ pub(super) struct InlineFragmentsDeriveField {
 impl InlineFragmentsDeriveVariant {
     pub(super) fn graphql_ident(&self) -> crate::Ident {
         if let Some(rename) = &self.rename {
-            return crate::Ident::for_type(&**rename).with_span(rename.span());
+            return crate::idents::Ident::for_type(&**rename).with_span(rename.span());
         }
 
-        crate::Ident::from_proc_macro2(&self.ident, None)
+        crate::idents::Ident::from_proc_macro2(&self.ident, None)
     }
 }

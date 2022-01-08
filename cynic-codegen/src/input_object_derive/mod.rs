@@ -3,7 +3,7 @@ use std::collections::BTreeMap;
 use syn::spanned::Spanned;
 
 use crate::{
-    ident::{RenameAll, RenameRule},
+    idents::{RenameAll, RenameRule},
     load_schema,
     schema::{Definition, Document, InputObjectType, InputValue, TypeDefinition},
     Ident, TypeIndex,

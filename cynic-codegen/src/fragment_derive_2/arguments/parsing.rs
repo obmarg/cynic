@@ -1,4 +1,4 @@
-use proc_macro2::TokenStream;
+use proc_macro2::{Span, TokenStream};
 use syn::{
     ext::IdentExt,
     parse::{Parse, ParseStream},
@@ -19,7 +19,7 @@ pub fn arguments_from_field_attrs(attrs: &[syn::Attribute]) -> Result<Vec<FieldA
 /// Implements syn::Parse to parse out arguments from the arguments
 /// attribute.
 #[derive(Debug)]
-struct CynicArguments {
+pub struct CynicArguments {
     // TODO: technically we want some kind of MaybePunctuated.
     // Worth looking into that later
     arguments: Punctuated<FieldArgument, Token![,]>,
@@ -56,35 +56,48 @@ impl Parse for FieldArgument {
 #[derive(Debug, Clone)]
 pub enum ArgumentLiteral {
     // True & false are idents aren't they, fuck
-    True,
-    False,
+    True(Span),
+    False(Span),
     Literal(proc_macro2::Literal),
-    Object(Punctuated<FieldArgument, Token![,]>),
-    List(Punctuated<ArgumentLiteral, Token![,]>),
-    Variable(proc_macro2::Ident),
-    Null,
+    Object(Punctuated<FieldArgument, Token![,]>, Span),
+    List(Punctuated<ArgumentLiteral, Token![,]>, Span),
+    Variable(proc_macro2::Ident, Span),
+    Null(Span),
 }
 
 impl Parse for ArgumentLiteral {
     fn parse(input: ParseStream) -> Result<Self> {
         let lookahead = input.lookahead1();
         if lookahead.peek(syn::token::Brace) {
+            let span = input.span();
             let content;
             syn::braced!(content in input);
-            let obj = Punctuated::<FieldArgument, Token![,]>::parse_terminated(&content)?;
 
             // TODO: ideally return something other than punctuated, but need to retain spans.
-            Ok(ArgumentLiteral::Object(obj))
+            Ok(ArgumentLiteral::Object(
+                content.parse_terminated(FieldArgument::parse)?,
+                span,
+            ))
         } else if lookahead.peek(syn::token::Bracket) {
+            let span = input.span();
             let content;
             syn::bracketed!(content in input);
-            let list = Punctuated::<ArgumentLiteral, Token![,]>::parse_terminated(&content)?;
 
-            Ok(ArgumentLiteral::List(list))
+            Ok(ArgumentLiteral::List(
+                content.parse_terminated(ArgumentLiteral::parse)?,
+                span,
+            ))
         } else if lookahead.peek(Token![$]) {
+            let dollar_span = input.span();
             input.parse::<Token![$]>()?;
 
-            Ok(ArgumentLiteral::Variable(input.parse()?))
+            let mut span = input.span();
+            if let Some(joined_span) = dollar_span.join(span) {
+                // This only works on nightly, so fall back to the span of the ident.
+                span = joined_span;
+            }
+
+            Ok(ArgumentLiteral::Variable(input.parse()?, span))
         } else if lookahead.peek(Ident::peek_any) {
             input.parse::<Token![$]>()?;
             let ident = input.call(Ident::parse_any)?;
@@ -98,7 +111,6 @@ impl Parse for ArgumentLiteral {
         }
     }
 }
-
 
 /*
 impl quote::ToTokens for FieldArgument {
@@ -143,7 +155,7 @@ mod test {
         assert_matches!(arguments[0].value, ArgumentLiteral::Literal(_));
 
         assert_eq!(arguments[1].argument_name.to_string(), "y".to_string());
-        assert_matches!(&arguments[1].value, ArgumentLiteral::Variable(name) => {
+        assert_matches!(&arguments[1].value, ArgumentLiteral::Variable(name ,_) => {
             assert_eq!(name.to_string(), "variable");
         });
     }
@@ -155,12 +167,12 @@ mod test {
 
         assert_eq!(arguments.len(), 1);
         assert_eq!(arguments[0].argument_name.to_string(), "x".to_string());
-        assert_matches!(&arguments[0].value, ArgumentLiteral::Object(fields) => {
+        assert_matches!(&arguments[0].value, ArgumentLiteral::Object(fields, _) => {
             let fields = fields.iter().collect::<Vec<_>>();
             assert_eq!(fields.len(), 2);
 
             assert_eq!(fields[0].argument_name.to_string(), "fieldOne");
-            assert_matches!(&fields[0].value, ArgumentLiteral::List(vals) => {
+            assert_matches!(&fields[0].value, ArgumentLiteral::List(vals, _) => {
                 let vals = vals.iter().collect::<Vec<_>>();
                 assert_eq!(vals.len(), 1);
 

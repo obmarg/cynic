@@ -1,7 +1,7 @@
 use darling::util::SpannedValue;
 use proc_macro2::Span;
 
-use crate::ident::RenameAll;
+use crate::idents::RenameAll;
 
 #[derive(darling::FromDeriveInput)]
 #[darling(attributes(cynic), supports(enum_unit))]

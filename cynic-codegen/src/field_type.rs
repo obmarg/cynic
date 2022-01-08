@@ -3,7 +3,7 @@ use quote::quote;
 
 use crate::{
     generic_param::{GenericConstraint, GenericParameter},
-    ident::PathExt,
+    idents::PathExt,
     schema, Ident, TypeIndex,
 };
 

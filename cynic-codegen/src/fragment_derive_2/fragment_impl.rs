@@ -4,15 +4,17 @@ use proc_macro2::{Span, TokenStream};
 use syn::spanned::Spanned;
 
 use crate::{
-    ident::PathExt,
-    load_schema,
-    type_validation::{check_spread_type, check_types_are_compatible, CheckMode},
-    Errors, FieldType, Ident,
+    idents::PathExt,
+    schema::{
+        names::FieldName,
+        types::{Field, OutputType, TypeRef},
+    },
+    type_validation_2::{check_spread_type, check_types_are_compatible, CheckMode},
+    Ident,
 };
 
 use super::arguments::{arguments_from_field_attrs, FieldArgument};
-use super::schema_parsing::{Field, Object};
-use super::type_ext::SynTypeExt;
+use super::fragment_derive_type::FragmentDeriveType;
 
 use super::input::{FragmentDeriveField, FragmentDeriveInput};
 
@@ -21,23 +23,19 @@ use crate::suggestions::{format_guess, guess_field};
 pub struct FragmentImpl {
     target_struct: Ident,
     field_selections: Vec<FieldSelection>,
-    // TODO: Whatever we need to write the deserialize impl
-    // fields: Vec<FieldSelectorCall>,
-    // selector_struct_path: syn::Path,
-    // constructor_params: Vec<ConstructorParameter>,
     argument_struct: syn::Type,
     graphql_type_name: String,
     schema_type_path: syn::Path,
 }
 
 struct FieldSelection {
-    graphql_field_ident: Ident,
+    // graphql_field_ident: Ident,
     rust_field_ident: proc_macro2::Ident,
     rust_field_type: syn::Type,
     field_marker_type_path: syn::Path,
     graphql_field_kind: FieldKind,
     arguments: Vec<FieldArgument>,
-    recurse_limit: Option<u8>,
+    // recurse_limit: Option<u8>,
     span: proc_macro2::Span,
 }
 
@@ -53,25 +51,24 @@ enum FieldKind {
 
 impl FragmentImpl {
     pub fn new_for(
-        fields: &darling::ast::Fields<FragmentDeriveField>,
+        fields: &[(&FragmentDeriveField, &Field<'_>)],
         name: &syn::Ident,
-        object: &Object,
-        schema_module_path: syn::Path,
+        schema_type: &FragmentDeriveType,
+        schema_module_path: &syn::Path,
         graphql_type_name: &str,
         argument_struct: syn::Type,
     ) -> Result<Self, syn::Error> {
         let target_struct = Ident::new_spanned(&name.to_string(), name.span());
 
-        let mut schema_type_path = schema_module_path.clone();
-        schema_type_path.push(&object.rust_type_name);
+        let schema_type_path = schema_type.marker_ident.located_at_path(schema_module_path);
 
-        let mut field_module_path = schema_module_path;
-        field_module_path.push(object.rust_type_name.as_field_module());
+        let field_module_path = schema_type.field_module.located_at_path(schema_module_path);
 
         let field_selections = fields
-            .fields
             .iter()
-            .map(|field| process_field(field, object, field_module_path.clone(), graphql_type_name))
+            .map(|(field, schema_field)| {
+                process_field(field, schema_field, &field_module_path, graphql_type_name)
+            })
             .collect::<Result<Vec<_>, _>>()?;
 
         Ok(FragmentImpl {
@@ -86,13 +83,18 @@ impl FragmentImpl {
 
 fn process_field(
     field: &FragmentDeriveField,
-    object: &Object,
-    field_module_path: syn::Path,
+    schema_field: &Field<'_>,
+    field_module_path: &syn::Path,
     graphql_type_name: &str,
 ) -> Result<FieldSelection, syn::Error> {
     // Should be safe to unwrap because we've already checked we have a struct
     // style input
-    let (field_ident, ref graphql_ident) = field.ident.as_ref().zip(field.graphql_ident()).unwrap();
+    let field_ident = field
+        .ident
+        .as_ref()
+        .expect("Fragment derive only supports named structs");
+
+    let graphql_ident = field.graphql_ident();
 
     let field_name_span = graphql_ident.span();
 
@@ -101,8 +103,8 @@ fn process_field(
     if field.type_check_mode() == CheckMode::Spreading {
         check_spread_type(&field.ty)?;
 
-        let mut field_marker_type_path = field_module_path;
-        field_marker_type_path.push(graphql_ident.as_field_marker_type());
+        // let mut field_marker_type_path = field_module_path;
+        // field_marker_type_path.push(graphql_ident.as_field_marker_type());
 
         /*
         let field_selection = FieldSelection {
@@ -117,62 +119,67 @@ fn process_field(
 
         Ok(field_selection)
         */
-        todo!()
-    } else if let Some(gql_field) = object.fields.get(graphql_ident) {
-        check_types_are_compatible(&gql_field.field_type, &field.ty, field.type_check_mode())?;
-
-        validate_args(&arguments, gql_field, field_name_span)?;
-
-        let mut field_marker_type_path = field_module_path;
-        field_marker_type_path.push(graphql_ident.as_field_marker_type());
-
-        let field_selection = FieldSelection {
-            graphql_field_ident: graphql_ident.clone(),
-            rust_field_ident: field_ident.clone(),
-            rust_field_type: field.ty.clone(),
-            arguments,
-            field_marker_type_path,
-            recurse_limit: field.recurse.as_ref().map(|f| **f),
-            span: field.ty.span(),
-            graphql_field_kind: gql_field.field_type.as_kind(),
-        };
-        /*
-        let field_selector = FieldSelectorCall {
-            selector_function: FieldTypeSelectorCall::for_field(
-                &gql_field.field_type,
-                field_constructor,
-                *field.flatten,
-                field.recurse.as_ref().map(|f| **f),
-                field.alias(),
-            ),
-            style: if gql_field.field_type.contains_scalar() {
-                NamedTypeSelectorStyle::Scalar
-            } else if gql_field.field_type.contains_enum() {
-                NamedTypeSelectorStyle::Enum(field.ty.inner_type())
-            } else {
-                NamedTypeSelectorStyle::QueryFragment(field.ty.inner_type())
-            },
-            required_arguments,
-            optional_arguments,
-            recurse_limit: field.recurse.as_ref().map(|limit| **limit),
-            span: field.ty.span(),
-        }; */
-
-        Ok(field_selection)
-    } else {
-        let candidates = object.fields.keys().map(|k| k.graphql_name());
-        let graphql_name = graphql_ident.graphql_name();
-        let guess_value = guess_field(candidates, graphql_name);
-        Err(syn::Error::new(
-            field_name_span,
-            format!(
-                "Field {} does not exist on the GraphQL type {}.{}",
-                graphql_name,
-                graphql_type_name,
-                format_guess(guess_value).as_str()
-            ),
-        ))
+        todo!("spreading not implemented")
+        // TODO: Return
     }
+
+    check_types_are_compatible(&schema_field.field_type, &field.ty, field.type_check_mode())?;
+
+    validate_args(&arguments, schema_field, field_name_span)?;
+
+    let field_marker_type_path = schema_field
+        .marker_ident()
+        .located_at_path(field_module_path);
+
+    let field_selection = FieldSelection {
+        // graphql_field_ident: graphql_ident.clone(),
+        rust_field_ident: field_ident.clone(),
+        rust_field_type: field.ty.clone(),
+        arguments,
+        field_marker_type_path,
+        // recurse_limit: field.recurse.as_ref().map(|f| **f),
+        span: field.ty.span(),
+        graphql_field_kind: schema_field.field_type.inner_type().as_kind(),
+    };
+    /*
+    let field_selector = FieldSelectorCall {
+        selector_function: FieldTypeSelectorCall::for_field(
+            &gql_field.field_type,
+            field_constructor,
+            *field.flatten,
+            field.recurse.as_ref().map(|f| **f),
+            field.alias(),
+        ),
+        style: if gql_field.field_type.contains_scalar() {
+            NamedTypeSelectorStyle::Scalar
+        } else if gql_field.field_type.contains_enum() {
+            NamedTypeSelectorStyle::Enum(field.ty.inner_type())
+        } else {
+            NamedTypeSelectorStyle::QueryFragment(field.ty.inner_type())
+        },
+        required_arguments,
+        optional_arguments,
+        recurse_limit: field.recurse.as_ref().map(|limit| **limit),
+        span: field.ty.span(),
+    }; */
+
+    Ok(field_selection)
+
+    // TODO: MOve this into pair_fields
+    // } else {
+    //     let candidates = schema_type.fields.iter().map(|f| f.name.as_str());
+    //     let graphql_name = graphql_ident.graphql_name();
+    //     let guess_value = guess_field(candidates, &graphql_name);
+    //     Err(syn::Error::new(
+    //         field_name_span,
+    //         format!(
+    //             "Field {} does not exist on the GraphQL type {}.{}",
+    //             graphql_name,
+    //             graphql_type_name,
+    //             format_guess(guess_value).as_str()
+    //         ),
+    //     ))
+    // }
 }
 
 impl quote::ToTokens for FragmentImpl {
@@ -253,22 +260,37 @@ impl quote::ToTokens for FieldSelection {
                 }
             }
             FieldKind::Interface => {
-                todo!()
+                todo!("need to handle interface type fields")
             }
             FieldKind::Union => {
-                todo!()
+                // TODO: Not sure this is right, but figure it out....
+                // If it is might be able to merge w/ object
+                quote_spanned! { self.span =>
+                    let mut field_builder = builder
+                        .select_field::<
+                            #field_marker_type_path,
+                            <#field_type as ::cynic::core::QueryFragment>::SchemaType
+                        >();
+
+                    // TODO: Arguments
+
+                    <#field_type as ::cynic::core::QueryFragment>::query(
+                        field_builder.select_children()
+                    );
+                }
             }
         });
     }
 }
 
-impl FieldType {
+impl OutputType<'_> {
     fn as_kind(&self) -> FieldKind {
         match self {
-            FieldType::Scalar(_, _) | FieldType::BuiltInScalar(_, _) => FieldKind::Scalar,
-            FieldType::Enum(_, _) => FieldKind::Enum,
-            // TODO: handle the other FieldKind(s)
-            _ => FieldKind::Composite,
+            OutputType::Scalar(_) => FieldKind::Scalar,
+            OutputType::Enum(_) => FieldKind::Enum,
+            OutputType::Object(_) => FieldKind::Composite,
+            OutputType::Interface(_) => FieldKind::Interface,
+            OutputType::Union(_) => FieldKind::Union,
         }
     }
 }
@@ -279,22 +301,23 @@ fn validate_args(
     field: &Field,
     missing_arg_span: Span,
 ) -> Result<(), syn::Error> {
-    let all_required: HashSet<Ident> = field
+    let all_required = field
         .arguments
         .iter()
-        .filter(|arg| arg.required)
-        .map(|arg| arg.name.clone())
-        .collect();
+        .filter(|arg| !matches!(arg.value_type, TypeRef::Nullable(_)))
+        .map(|arg| arg.name.to_string())
+        .collect::<HashSet<_>>();
 
-    let provided_names: HashSet<Ident> = arguments
+    let provided_names = arguments
         .iter()
-        .map(|arg| arg.argument_name.clone().into())
-        .collect();
+        .map(|arg| arg.argument_name.to_string())
+        .collect::<HashSet<_>>();
 
-    let missing_args: Vec<_> = all_required
+    let missing_args = all_required
         .difference(&provided_names)
-        .map(|s| s.graphql_name())
-        .collect();
+        .cloned()
+        .collect::<Vec<_>>();
+
     if !missing_args.is_empty() {
         let missing_args = missing_args.join(", ");
 
@@ -304,13 +327,16 @@ fn validate_args(
         ));
     }
 
-    let all_arg_names: HashSet<Ident> =
-        field.arguments.iter().map(|arg| arg.name.clone()).collect();
+    let all_arg_names = field
+        .arguments
+        .iter()
+        .map(|arg| arg.name.to_string())
+        .collect::<HashSet<_>>();
 
-    let unknown_args: Vec<_> = provided_names
+    let unknown_args = provided_names
         .difference(&all_arg_names)
-        .map(|s| s.graphql_name())
-        .collect();
+        .cloned()
+        .collect::<Vec<_>>();
 
     if !unknown_args.is_empty() {
         let unknown_args = unknown_args.join(", ");

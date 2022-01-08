@@ -49,7 +49,7 @@ enum PostState {
 scalar DateTime
 
 input PostFilters {
-  authorId: Id
+  authorId: ID
 }
 
 schema {
