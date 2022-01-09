@@ -55,8 +55,6 @@ impl Parse for FieldArgument {
 // TODO: Think about spans here...
 #[derive(Debug, Clone)]
 pub enum ArgumentLiteral {
-    // True & false are idents aren't they, fuck
-    Bool(bool, Span),
     Literal(syn::Lit),
     Object(Punctuated<FieldArgument, Token![,]>, Span),
     List(Punctuated<ArgumentLiteral, Token![,]>, Span),
@@ -97,14 +95,13 @@ impl Parse for ArgumentLiteral {
             }
 
             Ok(ArgumentLiteral::Variable(input.parse()?, span))
+        } else if lookahead.peek(syn::Lit) {
+            Ok(ArgumentLiteral::Literal(input.parse()?))
         } else if lookahead.peek(Ident::peek_any) {
-            input.parse::<Token![$]>()?;
             let ident = input.call(Ident::parse_any)?;
 
             // TODO: Could be true, false, null or an error?
             todo!()
-        } else if lookahead.peek(syn::Lit) {
-            Ok(ArgumentLiteral::Literal(input.parse()?))
         } else {
             Err(lookahead.error())
         }

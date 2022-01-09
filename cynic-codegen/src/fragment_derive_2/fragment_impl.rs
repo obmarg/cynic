@@ -4,6 +4,7 @@ use proc_macro2::{Span, TokenStream};
 use syn::spanned::Spanned;
 
 use crate::{
+    error::Errors,
     idents::PathExt,
     schema::{
         names::FieldName,
@@ -13,28 +14,28 @@ use crate::{
     Ident,
 };
 
-use super::arguments::{arguments_from_field_attrs, FieldArgument};
+use super::arguments::{arguments_from_field_attrs, process_arguments, FieldArgument};
 use super::fragment_derive_type::FragmentDeriveType;
 
 use super::input::{FragmentDeriveField, FragmentDeriveInput};
 
 use crate::suggestions::{format_guess, guess_field};
 
-pub struct FragmentImpl {
+pub struct FragmentImpl<'a> {
     target_struct: Ident,
-    field_selections: Vec<FieldSelection>,
+    field_selections: Vec<FieldSelection<'a>>,
     argument_struct: syn::Type,
     graphql_type_name: String,
     schema_type_path: syn::Path,
 }
 
-struct FieldSelection {
+struct FieldSelection<'a> {
     // graphql_field_ident: Ident,
     rust_field_ident: proc_macro2::Ident,
     rust_field_type: syn::Type,
     field_marker_type_path: syn::Path,
     graphql_field_kind: FieldKind,
-    arguments: Vec<FieldArgument>,
+    arguments: super::arguments::Output<'a>,
     // recurse_limit: Option<u8>,
     span: proc_macro2::Span,
 }
@@ -49,15 +50,15 @@ enum FieldKind {
     Union,
 }
 
-impl FragmentImpl {
+impl<'a> FragmentImpl<'a> {
     pub fn new_for(
-        fields: &[(&FragmentDeriveField, &Field<'_>)],
+        fields: &[(&FragmentDeriveField, &Field<'a>)],
         name: &syn::Ident,
         schema_type: &FragmentDeriveType,
         schema_module_path: &syn::Path,
         graphql_type_name: &str,
         argument_struct: syn::Type,
-    ) -> Result<Self, syn::Error> {
+    ) -> Result<Self, Errors> {
         let target_struct = Ident::new_spanned(&name.to_string(), name.span());
 
         let schema_type_path = schema_type.marker_ident.to_path(schema_module_path);
@@ -67,7 +68,13 @@ impl FragmentImpl {
         let field_selections = fields
             .iter()
             .map(|(field, schema_field)| {
-                process_field(field, schema_field, &field_module_path, graphql_type_name)
+                process_field(
+                    field,
+                    schema_field,
+                    &field_module_path,
+                    schema_module_path,
+                    graphql_type_name,
+                )
             })
             .collect::<Result<Vec<_>, _>>()?;
 
@@ -81,12 +88,13 @@ impl FragmentImpl {
     }
 }
 
-fn process_field(
+fn process_field<'a>(
     field: &FragmentDeriveField,
-    schema_field: &Field<'_>,
+    schema_field: &Field<'a>,
     field_module_path: &syn::Path,
+    schema_module_path: &syn::Path,
     graphql_type_name: &str,
-) -> Result<FieldSelection, syn::Error> {
+) -> Result<FieldSelection<'a>, Errors> {
     // Should be safe to unwrap because we've already checked we have a struct
     // style input
     let field_ident = field
@@ -99,6 +107,13 @@ fn process_field(
     let field_name_span = graphql_ident.span();
 
     let arguments = arguments_from_field_attrs(&field.attrs)?;
+    // TODO: need a better span
+    let arguments = process_arguments(
+        arguments,
+        schema_field,
+        schema_module_path.clone(),
+        Span::call_site(),
+    )?;
 
     if field.type_check_mode() == CheckMode::Spreading {
         check_spread_type(&field.ty)?;
@@ -124,8 +139,6 @@ fn process_field(
     }
 
     check_types_are_compatible(&schema_field.field_type, &field.ty, field.type_check_mode())?;
-
-    validate_args(&arguments, schema_field, field_name_span)?;
 
     let field_marker_type_path = schema_field.marker_ident().to_path(field_module_path);
 
@@ -180,7 +193,7 @@ fn process_field(
     // }
 }
 
-impl quote::ToTokens for FragmentImpl {
+impl quote::ToTokens for FragmentImpl<'_> {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         use quote::{quote, TokenStreamExt};
 
@@ -205,13 +218,14 @@ impl quote::ToTokens for FragmentImpl {
     }
 }
 
-impl quote::ToTokens for FieldSelection {
+impl quote::ToTokens for FieldSelection<'_> {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         use quote::{quote_spanned, TokenStreamExt};
 
         let field_marker_type_path = &self.field_marker_type_path;
         let field_name = &self.rust_field_ident; // TODO: Pascal case this.
         let field_type = &self.rust_field_type;
+        let arguments = &self.arguments;
 
         tokens.append_all(match self.graphql_field_kind {
             FieldKind::Composite => {
@@ -222,7 +236,7 @@ impl quote::ToTokens for FieldSelection {
                             <#field_type as ::cynic::core::QueryFragment>::SchemaType
                         >();
 
-                    // TODO: Arguments
+                    #arguments
 
                     <#field_type as ::cynic::core::QueryFragment>::query(
                         field_builder.select_children()
@@ -241,6 +255,8 @@ impl quote::ToTokens for FieldSelection {
                             >>::SchemaType
                         >();
 
+                    #arguments
+
                     field_builder.done();
                 }
             }
@@ -253,6 +269,8 @@ impl quote::ToTokens for FieldSelection {
                                 <#field_marker_type_path as ::cynic::schema::Field>::SchemaType
                             >>::SchemaType
                         >();
+
+                    #arguments
 
                     field_builder.done();
                 }
@@ -270,7 +288,7 @@ impl quote::ToTokens for FieldSelection {
                             <#field_type as ::cynic::core::QueryFragment>::SchemaType
                         >();
 
-                    // TODO: Arguments
+                    #arguments
 
                     <#field_type as ::cynic::core::QueryFragment>::query(
                         field_builder.select_children()
@@ -291,59 +309,4 @@ impl OutputType<'_> {
             OutputType::Union(_) => FieldKind::Union,
         }
     }
-}
-
-/// Validates the FieldArguments against the arguments defined on field in the schema.
-fn validate_args(
-    arguments: &[FieldArgument],
-    field: &Field,
-    missing_arg_span: Span,
-) -> Result<(), syn::Error> {
-    let all_required = field
-        .arguments
-        .iter()
-        .filter(|arg| !matches!(arg.value_type, TypeRef::Nullable(_)))
-        .map(|arg| arg.name.as_str().to_string())
-        .collect::<HashSet<_>>();
-
-    let provided_names = arguments
-        .iter()
-        .map(|arg| arg.argument_name.to_string())
-        .collect::<HashSet<_>>();
-
-    let missing_args = all_required
-        .difference(&provided_names)
-        .cloned()
-        .collect::<Vec<_>>();
-
-    if !missing_args.is_empty() {
-        let missing_args = missing_args.join(", ");
-
-        return Err(syn::Error::new(
-            missing_arg_span,
-            format!("Missing arguments: {}", missing_args),
-        ));
-    }
-
-    let all_arg_names = field
-        .arguments
-        .iter()
-        .map(|arg| arg.name.as_str().to_string())
-        .collect::<HashSet<_>>();
-
-    let unknown_args = provided_names
-        .difference(&all_arg_names)
-        .cloned()
-        .collect::<Vec<_>>();
-
-    if !unknown_args.is_empty() {
-        let unknown_args = unknown_args.join(", ");
-
-        return Err(syn::Error::new(
-            missing_arg_span,
-            format!("Unknown arguments: {}", unknown_args),
-        ));
-    }
-
-    Ok(())
 }

@@ -10,21 +10,21 @@ use crate::{
 };
 
 #[derive(Debug, PartialEq)]
-pub struct Output<'a> {
+pub struct AnalysedArguments<'a> {
     pub schema_field: schema::Field<'a>,
     pub arguments: Vec<Field<'a>>,
 }
 
 #[derive(Debug, PartialEq)]
 pub struct Object<'a> {
-    schema_obj: InputObjectType<'a>,
-    fields: Vec<Field<'a>>,
+    pub schema_obj: InputObjectType<'a>,
+    pub fields: Vec<Field<'a>>,
 }
 
 #[derive(Debug, PartialEq)]
 pub struct Field<'a> {
-    schema_field: InputValue<'a>,
-    value: ArgumentValue<'a>,
+    pub schema_field: InputValue<'a>,
+    pub value: ArgumentValue<'a>,
 }
 
 #[derive(Debug, PartialEq)]
@@ -40,18 +40,18 @@ pub enum ArgumentValue<'a> {
 
 #[derive(Debug, PartialEq)]
 pub struct Variable<'a> {
-    ident: proc_macro2::Ident,
-    value_type: TypeRef<'a, InputType<'a>>,
+    pub ident: proc_macro2::Ident,
+    pub value_type: TypeRef<'a, InputType<'a>>,
 }
 
 pub fn analyse<'a>(
     literals: Vec<parsing::FieldArgument>,
     field: &schema::Field<'a>,
     span: Span,
-) -> Result<Output<'a>, Errors> {
+) -> Result<AnalysedArguments<'a>, Errors> {
     let arguments = analyse_fields(literals, &field.arguments, span)?;
 
-    Ok(Output {
+    Ok(AnalysedArguments {
         schema_field: field.clone(),
         arguments,
     })
@@ -123,12 +123,9 @@ fn analyse_value_type<'a>(
             }
             (InputType::Scalar(_), ArgumentLiteral::List(_, _)) => todo!("error"),
             (InputType::Scalar(_), ArgumentLiteral::Null(_)) => todo!("error"),
-            (InputType::Scalar(def), ArgumentLiteral::Bool(b, _)) => {
-                // TODO: Validate this is a boolean or custom scalar.
-                Ok(ArgumentValue::Bool(b))
-            }
             (InputType::Scalar(_), ArgumentLiteral::Literal(lit)) => {
-                // TODO: validate this is a valid scalar.
+                // TODO: validate this is a valid scalar for the current type
+                // Can probably only do that for built in scalars.
                 Ok(ArgumentValue::Literal(lit))
             }
 
