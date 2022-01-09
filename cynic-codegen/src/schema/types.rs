@@ -48,6 +48,7 @@ pub struct Field<'a> {
     pub name: FieldName<'a>,
     pub arguments: Vec<InputValue<'a>>,
     pub field_type: TypeRef<'a, OutputType<'a>>,
+    pub(super) parent_type_name: &'a str,
 }
 
 #[derive(Debug, Clone, PartialEq)]

@@ -60,9 +60,9 @@ impl FragmentImpl {
     ) -> Result<Self, syn::Error> {
         let target_struct = Ident::new_spanned(&name.to_string(), name.span());
 
-        let schema_type_path = schema_type.marker_ident.located_at_path(schema_module_path);
+        let schema_type_path = schema_type.marker_ident.to_path(schema_module_path);
 
-        let field_module_path = schema_type.field_module.located_at_path(schema_module_path);
+        let field_module_path = schema_type.field_module.to_path(schema_module_path);
 
         let field_selections = fields
             .iter()
@@ -127,9 +127,7 @@ fn process_field(
 
     validate_args(&arguments, schema_field, field_name_span)?;
 
-    let field_marker_type_path = schema_field
-        .marker_ident()
-        .located_at_path(field_module_path);
+    let field_marker_type_path = schema_field.marker_ident().to_path(field_module_path);
 
     let field_selection = FieldSelection {
         // graphql_field_ident: graphql_ident.clone(),

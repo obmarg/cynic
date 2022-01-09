@@ -102,6 +102,7 @@ impl<'a> TypeIndex<'a> {
                             .map(|arg| convert_input_value(self, arg))
                             .collect(),
                         field_type: build_type_ref::<OutputType>(&field.field_type, self),
+                        parent_type_name: &def.name,
                     })
                     .collect(),
                 implements_interfaces: def

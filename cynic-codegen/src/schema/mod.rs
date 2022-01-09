@@ -7,6 +7,7 @@ pub mod types;
 
 pub mod markers;
 
+use std::collections::BTreeSet;
 use std::convert::Infallible;
 use std::marker::PhantomData;
 
@@ -60,9 +61,9 @@ impl<'a> Schema<'a, Unvalidated> {
 
 impl<'a> Schema<'a, Validated> {
     pub fn iter<'b>(&'b self) -> impl Iterator<Item = types::Type<'a>> + 'b {
-        self.type_index
-            .types
-            .keys()
+        let keys = self.type_index.types.keys().collect::<BTreeSet<_>>();
+
+        keys.into_iter()
             .map(|name| self.type_index.private_lookup(name).unwrap())
     }
 
