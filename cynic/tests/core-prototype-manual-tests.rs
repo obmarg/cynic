@@ -301,10 +301,9 @@ fn test_using_this_shit() {
 fn test_deserialize() {
     use serde_json::json;
 
-    // TODO: this needs a big update.
     let data = json!({
         "post": {"hasMetadata": false, "author": {"name": "Not Me"}},
-        "allPosts": [{"hasMetadata": true, "author": {"name": "Me"}}]
+        "posts": [{"hasMetadata": true, "author": {"name": "Me"}}]
     });
 
     insta::assert_debug_snapshot!(serde_json::from_value::<MyQuery>(data).unwrap());

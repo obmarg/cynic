@@ -305,7 +305,7 @@ fn validate_args(
         .arguments
         .iter()
         .filter(|arg| !matches!(arg.value_type, TypeRef::Nullable(_)))
-        .map(|arg| arg.name.to_string())
+        .map(|arg| arg.name.as_str().to_string())
         .collect::<HashSet<_>>();
 
     let provided_names = arguments
@@ -330,7 +330,7 @@ fn validate_args(
     let all_arg_names = field
         .arguments
         .iter()
-        .map(|arg| arg.name.to_string())
+        .map(|arg| arg.name.as_str().to_string())
         .collect::<HashSet<_>>();
 
     let unknown_args = provided_names

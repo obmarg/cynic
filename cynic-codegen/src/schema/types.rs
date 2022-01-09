@@ -31,13 +31,14 @@ pub enum OutputType<'a> {
 #[derive(Debug, Clone, PartialEq)]
 pub struct ScalarType<'a> {
     pub name: &'a str,
+    pub builtin: bool,
 }
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct ObjectType<'a> {
     pub description: Option<&'a str>,
     pub name: &'a str,
-    // pub implements_interfaces: Vec<InterfaceRef>,
+    pub implements_interfaces: Vec<InterfaceRef<'a>>,
     pub fields: Vec<Field<'a>>,
 }
 
@@ -52,7 +53,7 @@ pub struct Field<'a> {
 #[derive(Debug, Clone, PartialEq)]
 pub struct InputValue<'a> {
     pub description: Option<&'a str>,
-    pub name: &'a str,
+    pub name: FieldName<'a>,
     pub value_type: TypeRef<'a, InputType<'a>>,
     // pub default_value: Option<Value<'a>>,
 }
@@ -104,6 +105,34 @@ pub enum Kind {
     ObjectOrInterface,
 }
 
+impl<'a> Type<'a> {
+    pub fn object(&self) -> Option<&ObjectType<'a>> {
+        match self {
+            Type::Object(obj) => Some(obj),
+            _ => None,
+        }
+    }
+}
+
+impl<'a> ObjectType<'a> {
+    pub fn field<N>(&self, name: &N) -> Option<&Field<'a>>
+    where
+        N: ?Sized,
+        for<'b> FieldName<'b>: PartialEq<N>,
+    {
+        self.fields.iter().find(|field| field.name == *name)
+    }
+}
+
+impl<'a> InputObjectType<'a> {
+    pub fn field<N>(&self, name: &N) -> Option<&InputValue<'a>>
+    where
+        for<'b> FieldName<'b>: PartialEq<N>,
+    {
+        self.fields.iter().find(|field| field.name == *name)
+    }
+}
+
 #[derive(Clone)]
 pub struct ObjectRef<'a>(pub(super) &'a str, pub(super) TypeIndex<'a>);
 
@@ -120,13 +149,37 @@ impl<'a> PartialEq for ObjectRef<'a> {
 }
 
 #[derive(Clone)]
+pub struct InterfaceRef<'a>(pub(super) &'a str, pub(super) TypeIndex<'a>);
+
+impl std::fmt::Debug for InterfaceRef<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_tuple("InterfaceRef").field(&self.0).finish()
+    }
+}
+
+impl<'a> PartialEq for InterfaceRef<'a> {
+    fn eq(&self, other: &Self) -> bool {
+        self.0 == other.0
+    }
+}
+
 pub enum TypeRef<'a, T> {
     Named(&'a str, TypeIndex<'a>, PhantomData<fn() -> T>),
     List(Box<TypeRef<'a, T>>),
     Nullable(Box<TypeRef<'a, T>>),
 }
 
-impl<'a, T> PartialEq for TypeRef<'a, T> {
+impl<T> Clone for TypeRef<'_, T> {
+    fn clone(&self) -> Self {
+        match self {
+            Self::Named(arg0, arg1, arg2) => Self::Named(arg0, arg1.clone(), arg2.clone()),
+            Self::List(arg0) => Self::List(arg0.clone()),
+            Self::Nullable(arg0) => Self::Nullable(arg0.clone()),
+        }
+    }
+}
+
+impl<T> PartialEq for TypeRef<'_, T> {
     fn eq(&self, other: &Self) -> bool {
         match (self, other) {
             (Self::Named(l0, _, _), Self::Named(r0, _, _)) => l0 == r0,
@@ -137,10 +190,28 @@ impl<'a, T> PartialEq for TypeRef<'a, T> {
     }
 }
 
+impl<T> Eq for TypeRef<'_, T> {}
+
+impl<T> std::hash::Hash for TypeRef<'_, T> {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        match self {
+            TypeRef::Named(inner, _, _) => inner.hash(state),
+            TypeRef::List(inner) => {
+                1.hash(state);
+                inner.hash(state);
+            }
+            TypeRef::Nullable(inner) => {
+                2.hash(state);
+                inner.hash(state)
+            }
+        }
+    }
+}
+
 impl std::fmt::Debug for TypeRef<'_, InputType<'_>> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::Named(arg0, arg1, _) => f.debug_tuple("NamedInputType").field(arg0).finish(),
+            Self::Named(arg0, _, _) => f.debug_tuple("NamedInputType").field(arg0).finish(),
             Self::List(arg0) => f.debug_tuple("ListType").field(arg0).finish(),
             Self::Nullable(arg0) => f.debug_tuple("NullableType").field(arg0).finish(),
         }

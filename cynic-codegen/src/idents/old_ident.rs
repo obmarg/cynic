@@ -377,7 +377,8 @@ pub fn to_snake_case(s: &str) -> String {
     buf
 }
 
-pub(super) fn to_pascal_case(s: &str) -> String {
+// TODO: move this somewhere else...
+pub fn to_pascal_case(s: &str) -> String {
     let mut buf = String::with_capacity(s.len());
     let mut first_char = true;
     let mut prev_is_upper = false;

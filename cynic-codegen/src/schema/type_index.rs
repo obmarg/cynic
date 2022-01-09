@@ -12,7 +12,7 @@ use crate::schema::{self, parser, Definition, Document, TypeDefinition, TypeExt}
 #[derive(Clone)]
 pub struct TypeIndex<'a> {
     //name_to_kind: HashMap<String, Kind>,
-    types: Rc<HashMap<&'a str, &'a TypeDefinition>>,
+    pub(super) types: Rc<HashMap<&'a str, &'a TypeDefinition>>,
 }
 
 impl<'a> TypeIndex<'a> {
@@ -61,12 +61,16 @@ impl<'a> TypeIndex<'a> {
                     name: name.to_string(),
                 })?;
 
-        self.validate(type_def)?;
+        self.validate(vec![type_def])?;
 
         Ok(self.private_lookup(name).unwrap())
     }
 
-    fn private_lookup(&self, name: &str) -> Option<Type<'a>> {
+    pub(super) fn validate_all(&self) -> Result<(), SchemaError> {
+        self.validate(self.types.values().copied().collect())
+    }
+
+    pub(super) fn private_lookup(&self, name: &str) -> Option<Type<'a>> {
         // Note: This function should absolutely only be called after the heirarchy has
         // been validated.  The current module privacy settings enforce this, but don't make this
         // private or call it without being careful.
@@ -77,7 +81,10 @@ impl<'a> TypeIndex<'a> {
             .expect("Couldn't find a type - this should be impossible");
 
         Some(match type_def {
-            TypeDefinition::Scalar(def) => Type::Scalar(ScalarType { name: &def.name }),
+            TypeDefinition::Scalar(def) => Type::Scalar(ScalarType {
+                name: &def.name,
+                builtin: scalar_is_builtin(&def.name),
+            }),
             TypeDefinition::Object(def) => Type::Object(ObjectType {
                 description: def.description.as_deref(),
                 name: &def.name,
@@ -96,6 +103,11 @@ impl<'a> TypeIndex<'a> {
                             .collect(),
                         field_type: build_type_ref::<OutputType>(&field.field_type, self),
                     })
+                    .collect(),
+                implements_interfaces: def
+                    .implements_interfaces
+                    .iter()
+                    .map(|iface| InterfaceRef(iface.as_ref(), self.clone()))
                     .collect(),
             }),
             TypeDefinition::Interface(_) => todo!("iface lookup not done"),
@@ -120,7 +132,15 @@ impl<'a> TypeIndex<'a> {
                     })
                     .collect(),
             }),
-            TypeDefinition::InputObject(_) => todo!("input lookup not done"),
+            TypeDefinition::InputObject(def) => Type::InputObject(InputObjectType {
+                description: def.description.as_deref(),
+                name: &def.name,
+                fields: def
+                    .fields
+                    .iter()
+                    .map(|field| convert_input_value(self, field))
+                    .collect(),
+            }),
         })
     }
 
@@ -153,9 +173,8 @@ impl<'a> TypeIndex<'a> {
     /// Validates that all the types contained within the given types do exist.
     ///
     /// So we can just directly use refs to them.
-    fn validate(&self, def: &'a TypeDefinition) -> Result<(), SchemaError> {
+    fn validate(&self, mut defs: Vec<&'a TypeDefinition>) -> Result<(), SchemaError> {
         let mut validated = HashSet::<&str>::new();
-        let mut defs = vec![def];
 
         macro_rules! validate {
             ($name:ident, Input) => {
@@ -244,13 +263,13 @@ static BUILTIN_SCALARS: Lazy<[TypeDefinition; 5]> = Lazy::new(|| {
         TypeDefinition::Scalar(parser::ScalarType {
             position: graphql_parser::Pos { line: 0, column: 0 },
             description: None,
-            name: "ID".to_string(),
+            name: "String".to_string(),
             directives: Vec::new(),
         }),
         TypeDefinition::Scalar(parser::ScalarType {
             position: graphql_parser::Pos { line: 0, column: 0 },
             description: None,
-            name: "String".to_string(),
+            name: "ID".to_string(),
             directives: Vec::new(),
         }),
         TypeDefinition::Scalar(parser::ScalarType {
@@ -274,11 +293,17 @@ static BUILTIN_SCALARS: Lazy<[TypeDefinition; 5]> = Lazy::new(|| {
     ]
 });
 
+fn scalar_is_builtin(name: &str) -> bool {
+    BUILTIN_SCALARS
+        .iter()
+        .any(|s| matches!(s, TypeDefinition::Scalar(s) if s.name == name))
+}
+
 impl<'a, T> super::types::TypeRef<'a, T>
 where
     Type<'a>: TryInto<T>,
     <Type<'a> as TryInto<T>>::Error: std::fmt::Debug,
-    T: 'a,
+    // T: 'a,
 {
     pub fn inner_type(&self) -> T {
         match self {
@@ -316,7 +341,9 @@ fn convert_input_value<'a>(
 ) -> InputValue<'a> {
     InputValue {
         description: val.description.as_deref(),
-        name: &val.name,
+        name: FieldName {
+            graphql_name: &val.name,
+        },
         value_type: build_type_ref::<InputType>(&val.value_type, type_index),
     }
 }
@@ -348,3 +375,5 @@ fn build_type_ref<'a, T>(ty: &'a schema::Type, type_index: &TypeIndex<'a>) -> Ty
     }
     inner_fn::<T>(ty, type_index, true)
 }
+
+// TODO: deffo need tests of schema validation

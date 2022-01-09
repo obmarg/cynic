@@ -1,12 +1,10 @@
 use std::borrow::Borrow;
 
-use crate::{
-    idents::{FieldMarkerModule, MarkerIdent},
-    schema::{
-        names::FieldName,
-        types::{Field, Kind, Type},
-        SchemaError,
-    },
+use crate::schema::{
+    markers::{FieldMarkerModule, MarkerIdent},
+    names::FieldName,
+    types::{Field, Kind, Type},
+    SchemaError,
 };
 
 pub struct FragmentDeriveType<'a> {

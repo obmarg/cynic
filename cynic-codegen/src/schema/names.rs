@@ -15,7 +15,13 @@ impl<'a> FieldName<'a> {
 
 impl<'a> PartialEq<proc_macro2::Ident> for FieldName<'a> {
     fn eq(&self, other: &proc_macro2::Ident) -> bool {
-        self.graphql_name == other.to_string()
+        other == self.graphql_name
+    }
+}
+
+impl<'a> PartialEq<str> for FieldName<'a> {
+    fn eq(&self, other: &str) -> bool {
+        self.graphql_name == other
     }
 }
 
@@ -24,6 +30,7 @@ impl<'a> PartialEq<RenableFieldIdent> for FieldName<'a> {
         self.graphql_name == other.graphql_name()
     }
 }
+
 // impl From<&proc_macro2::Ident> for FieldName<'static> {
 //     fn from(ident: &proc_macro2::Ident) -> Self {
 //         FieldName {

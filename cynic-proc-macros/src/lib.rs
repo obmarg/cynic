@@ -51,7 +51,7 @@ pub fn use_schema_2(input: TokenStream) -> TokenStream {
 
     let rv = use_schema2::use_schema(input).unwrap().into();
 
-    eprintln!("{}", rv);
+    // eprintln!("{}", rv);
 
     rv
 }

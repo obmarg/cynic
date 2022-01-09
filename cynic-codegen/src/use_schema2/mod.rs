@@ -11,17 +11,20 @@ use quote::format_ident;
 use syn::parse_quote;
 
 use crate::{
+    error::Errors,
     field_type::FieldType,
     idents::{to_snake_case, Ident},
-    schema::{self, SchemaLoadError, TypeIndex},
+    schema::{self, types::Type, Schema, TypeIndex},
 };
 
 use self::{named_type::NamedType, subtype_markers::SubtypeMarkers};
 
-pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, SchemaLoadError> {
+pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
     use quote::{quote, TokenStreamExt};
 
-    let document = crate::schema::load_schema(input.schema_filename)?;
+    let document = crate::schema::load_schema(input.schema_filename)
+        .map_err(|e| e.into_syn_error(proc_macro2::Span::call_site()))?;
+    let schema = Schema::new(&document).validate()?;
 
     let mut output = TokenStream::new();
 
@@ -33,47 +36,40 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, SchemaLoadError
     let mut subtype_markers = Vec::new();
     let mut named_types = Vec::new();
 
-    // TODO: Refactor this so it's not just one big loop
-    for definition in document
-        .definitions
-        .into_iter()
-        .filter_map(type_def_from_definition)
-    {
+    for definition in schema.iter() {
         named_types.extend(NamedType::from_def(&definition));
 
         match definition {
-            graphql_parser::schema::TypeDefinition::Scalar(def) => {
+            Type::Scalar(def) if !def.builtin => {
                 let ident = Ident::for_type(&def.name);
                 output.append_all(quote! {
                     pub struct #ident {}
                 });
             }
-            graphql_parser::schema::TypeDefinition::Object(def) => {
+            Type::Scalar(_) => {}
+            Type::Object(def) => {
                 subtype_markers.extend(SubtypeMarkers::from_object(&def));
 
-                let object_marker_type_name = Ident::for_type(&def.name);
+                let object_marker = proc_macro2::Ident::from(def.marker_ident());
                 output.append_all(quote! {
-                    pub struct #object_marker_type_name;
+                    pub struct #object_marker;
                 });
 
+                let field_module = proc_macro2::Ident::from(def.field_module());
                 let mut field_module_contents = Vec::new();
                 for field in def.fields {
-                    // TODO: wonder if we need a different Ident func for this.
-                    // Technically field.name is a field, but we're only using it
-                    // as a type.
-                    let field_marker_type_name = Ident::for_type(&field.name);
-                    let field_name_literal = proc_macro2::Literal::string(&field.name);
+                    let field_marker_struct = proc_macro2::Ident::from(field.marker_ident());
+                    let field_name_literal = proc_macro2::Literal::string(field.name.as_str());
 
-                    // Note: See if we can get rid of TypeIndex from this
-                    // call once done.  That'd be nice.
-                    let field_type =
-                        FieldType::from_schema_type(&field.field_type, &TypeIndex::empty());
-                    let field_type_marker = field_type.to_tokens(None, parse_quote! { super });
+                    let field_type_marker = field
+                        .field_type
+                        .marker_type()
+                        .to_path(&parse_quote! { super });
 
                     field_module_contents.push(quote! {
-                        pub struct #field_marker_type_name;
+                        pub struct #field_marker_struct;
 
-                        impl ::cynic::schema::Field for #field_marker_type_name {
+                        impl ::cynic::schema::Field for #field_marker_struct {
                             type SchemaType = #field_type_marker;
 
                             fn name() -> &'static str {
@@ -81,7 +77,7 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, SchemaLoadError
                             }
                         }
 
-                        impl ::cynic::schema::HasField<#field_marker_type_name, #field_type_marker> for super::#object_marker_type_name {}
+                        impl ::cynic::schema::HasField<#field_marker_struct, #field_type_marker> for super::#object_marker {}
 
                         // TODO: implement HasField for all the valid conversions...
                         // assuming that's even possible - implementing the deserialize might be tricky for
@@ -91,14 +87,13 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, SchemaLoadError
                     // TODO: Handle arguments
                 }
 
-                let field_module_name = format_ident!("{}_fields", to_snake_case(&def.name));
                 output.append_all(quote! {
-                    pub mod #field_module_name {
+                    pub mod #field_module {
                         #(#field_module_contents)*
                     }
                 });
             }
-            graphql_parser::schema::TypeDefinition::Interface(def) => {
+            Type::Interface(def) => {
                 subtype_markers.push(SubtypeMarkers::from_interface(&def));
 
                 let ident = Ident::for_type(&def.name);
@@ -108,7 +103,7 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, SchemaLoadError
 
                 // TODO: the rest of this.  Presumably we need fields & HasSubtype
             }
-            graphql_parser::schema::TypeDefinition::Union(def) => {
+            Type::Union(def) => {
                 subtype_markers.extend(SubtypeMarkers::from_union(&def));
 
                 let ident = Ident::for_type(&def.name);
@@ -118,13 +113,13 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, SchemaLoadError
 
                 // TODO: the rest of this.  Presumably we need just HasSubtype
             }
-            graphql_parser::schema::TypeDefinition::Enum(def) => {
+            Type::Enum(def) => {
                 let ident = Ident::for_type(&def.name);
                 output.append_all(quote! {
                     pub struct #ident {}
                 });
             }
-            graphql_parser::schema::TypeDefinition::InputObject(def) => {
+            Type::InputObject(def) => {
                 let ident = Ident::for_type(&def.name);
                 output.append_all(quote! {
                     pub struct #ident {}

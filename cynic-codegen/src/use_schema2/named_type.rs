@@ -1,43 +1,47 @@
 use proc_macro2::TokenStream;
 
-use crate::{idents::Ident, schema::TypeDefinition};
+use crate::{schema::markers::MarkerIdent, schema::types::Type};
 
-pub struct NamedType {
-    ident: super::Ident,
+pub struct NamedType<'a> {
+    graphql_name: &'a str,
+    marker_ident: MarkerIdent<'a>,
 }
 
-impl NamedType {
-    pub fn from_def(def: &TypeDefinition) -> Option<Self> {
+impl<'a> NamedType<'a> {
+    pub fn from_def(def: &Type<'a>) -> Option<Self> {
         match def {
             // Note: Currently we only use the NamedType lookup for members
             // of interfaces & unions - so we specifically don't generate anything for
             // scalars, inputs or enums.
-            TypeDefinition::Scalar(_) => None,
-            TypeDefinition::InputObject(_) => None,
-            TypeDefinition::Enum(_) => None,
+            Type::Scalar(_) => None,
+            Type::InputObject(_) => None,
+            Type::Enum(_) => None,
 
-            TypeDefinition::Object(def) => Some(NamedType {
-                ident: Ident::for_type(&def.name),
+            Type::Object(def) => Some(NamedType {
+                graphql_name: def.name,
+                marker_ident: def.marker_ident(),
             }),
-            TypeDefinition::Interface(def) => Some(NamedType {
-                ident: Ident::for_type(&def.name),
+            Type::Interface(def) => Some(NamedType {
+                graphql_name: def.name,
+                marker_ident: def.marker_ident(),
             }),
-            TypeDefinition::Union(def) => Some(NamedType {
-                ident: Ident::for_type(&def.name),
+            Type::Union(def) => Some(NamedType {
+                graphql_name: def.name,
+                marker_ident: def.marker_ident(),
             }),
         }
     }
 }
 
-impl quote::ToTokens for NamedType {
+impl quote::ToTokens for NamedType<'_> {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         use quote::{quote, TokenStreamExt};
 
-        let rust_name = &self.ident;
-        let graphql_name = proc_macro2::Literal::string(self.ident.graphql_name());
+        let target_struct = proc_macro2::Ident::from(self.marker_ident);
+        let graphql_name = proc_macro2::Literal::string(self.graphql_name);
 
         tokens.append_all(quote! {
-            impl ::cynic::schema::NamedType for #rust_name {
+            impl ::cynic::schema::NamedType for #target_struct {
                 fn name() -> &'static str {
                     #graphql_name
                 }

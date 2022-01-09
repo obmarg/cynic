@@ -9,7 +9,7 @@ use crate::{
     schema::{
         load_schema,
         types::{self as schema, Type},
-        Schema,
+        Schema, Unvalidated,
     },
     suggestions::FieldSuggestionError,
     type_validation::{check_spread_type, check_types_are_compatible, CheckMode},
@@ -51,7 +51,7 @@ pub fn fragment_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error
 
 pub fn fragment_derive_impl(
     input: FragmentDeriveInput,
-    schema: Schema<'_>,
+    schema: Schema<'_, Unvalidated>,
 ) -> Result<TokenStream, Errors> {
     use quote::{quote, quote_spanned};
 

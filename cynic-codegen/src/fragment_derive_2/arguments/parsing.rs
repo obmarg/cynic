@@ -22,7 +22,7 @@ pub fn arguments_from_field_attrs(attrs: &[syn::Attribute]) -> Result<Vec<FieldA
 pub struct CynicArguments {
     // TODO: technically we want some kind of MaybePunctuated.
     // Worth looking into that later
-    arguments: Punctuated<FieldArgument, Token![,]>,
+    pub arguments: Punctuated<FieldArgument, Token![,]>,
 }
 
 impl Parse for CynicArguments {
@@ -56,9 +56,8 @@ impl Parse for FieldArgument {
 #[derive(Debug, Clone)]
 pub enum ArgumentLiteral {
     // True & false are idents aren't they, fuck
-    True(Span),
-    False(Span),
-    Literal(proc_macro2::Literal),
+    Bool(bool, Span),
+    Literal(syn::Lit),
     Object(Punctuated<FieldArgument, Token![,]>, Span),
     List(Punctuated<ArgumentLiteral, Token![,]>, Span),
     Variable(proc_macro2::Ident, Span),

@@ -1,5 +1,6 @@
 ---
 source: cynic/tests/core-prototype-tests.rs
+assertion_line: 205
 expression: selections
 
 ---
@@ -8,11 +9,13 @@ SelectionSet {
         Field(
             FieldSelection {
                 name: "post",
+                arguments: [],
                 children: SelectionSet {
                     selections: [
                         Field(
                             FieldSelection {
                                 name: "hasMetadata",
+                                arguments: [],
                                 children: SelectionSet {
                                     selections: [],
                                 },
@@ -21,11 +24,13 @@ SelectionSet {
                         Field(
                             FieldSelection {
                                 name: "author",
+                                arguments: [],
                                 children: SelectionSet {
                                     selections: [
                                         Field(
                                             FieldSelection {
                                                 name: "name",
+                                                arguments: [],
                                                 children: SelectionSet {
                                                     selections: [],
                                                 },
@@ -42,11 +47,13 @@ SelectionSet {
         Field(
             FieldSelection {
                 name: "allPosts",
+                arguments: [],
                 children: SelectionSet {
                     selections: [
                         Field(
                             FieldSelection {
                                 name: "hasMetadata",
+                                arguments: [],
                                 children: SelectionSet {
                                     selections: [],
                                 },
@@ -55,11 +62,13 @@ SelectionSet {
                         Field(
                             FieldSelection {
                                 name: "author",
+                                arguments: [],
                                 children: SelectionSet {
                                     selections: [
                                         Field(
                                             FieldSelection {
                                                 name: "name",
+                                                arguments: [],
                                                 children: SelectionSet {
                                                     selections: [],
                                                 },
