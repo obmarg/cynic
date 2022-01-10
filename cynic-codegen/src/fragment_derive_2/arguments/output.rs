@@ -47,6 +47,9 @@ impl ToTokens for ArgumentValue<'_> {
                     .literal(#lit)
                 });
             }
+            ArgumentValue::Expression(e) => tokens.append_all(quote! {
+                .literal(#e)
+            }),
             ArgumentValue::Variable(_) => todo!("variable"),
             ArgumentValue::Some(_) => todo!("some"),
             ArgumentValue::Null => todo!("null"),

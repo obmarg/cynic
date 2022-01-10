@@ -1,5 +1,5 @@
 use super::{
-    FragmentContext, MutationRoot, Operation, QueryFragment, QueryRoot, SelectionSet,
+    FragmentContext, MutationRoot, Operation, Operation2, QueryFragment, QueryRoot, SelectionSet,
     StreamingOperation, SubscriptionRoot,
 };
 
@@ -30,6 +30,32 @@ where
 
     fn build(args: impl Borrow<Self::Arguments>) -> Operation<'a, Self::ResponseData> {
         Operation::query(Self::fragment(FragmentContext::new(args.borrow())))
+    }
+}
+
+pub trait QueryBuilder2: Sized {
+    /// The type that this query takes as arguments.
+    /// May be `()` if no arguments are accepted.
+    type Arguments;
+
+    /// The type that this query returns if succesful.
+    /// TODo: Figure out if we even need this...
+    // type ResponseData;
+
+    /// Constructs a query operation for this QueryFragment.
+    fn build(args: impl Borrow<Self::Arguments>) -> Operation2<Self>;
+}
+
+impl<'de, T> QueryBuilder2 for T
+where
+    T: crate::core::QueryFragment<'de>,
+    T::SchemaType: crate::schema::QueryRoot,
+{
+    // TOdO: Arguments
+    type Arguments = ();
+
+    fn build(args: impl Borrow<Self::Arguments>) -> Operation2<T> {
+        Operation2::<T>::query()
     }
 }
 

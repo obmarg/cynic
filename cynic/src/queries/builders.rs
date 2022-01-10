@@ -5,7 +5,7 @@ use std::marker::PhantomData;
 
 use crate::{core, schema};
 
-use super::ast::*;
+use super::{ast::*, IntoInputLiteral};
 
 // TODO: QueryBuilder or SelectionBuilder?
 pub struct QueryBuilder<'a, SchemaType> {
@@ -268,34 +268,46 @@ impl<'a, SchemaType> ArgumentBuilder<'a, Option<SchemaType>> {
     // TODO: would undefined also be useful?  Not sure.
 }
 
+impl<'a, T> ArgumentBuilder<'a, T> {
+    pub fn literal(self, l: impl IntoInputLiteral<T>) {
+        self.arguments.push(Argument {
+            name: self.argument_name,
+            value: l.into_literal(),
+        })
+    }
+}
+
 // TODO: ArgumentBuilder for options, enums, scalars...
 
-impl<'a> ArgumentBuilder<'a, i32> {
-    pub fn literal(self, i: i32) {
-        self.arguments.push(Argument {
-            name: self.argument_name,
-            value: InputLiteral::Int(i),
-        });
-    }
-}
+// impl<'a> ArgumentBuilder<'a, i32> {
+//     pub fn literal(self, i: i32) {
+//         self.arguments.push(Argument {
+//             name: self.argument_name,
+//             value: InputLiteral::Int(i),
+//         });
+//     }
+// }
 
-impl<'a> ArgumentBuilder<'a, bool> {
-    pub fn literal(self, i: bool) {
-        self.arguments.push(Argument {
-            name: self.argument_name,
-            value: InputLiteral::Bool(i),
-        });
-    }
-}
+// impl<'a> ArgumentBuilder<'a, bool> {
+//     pub fn literal(self, i: bool) {
+//         self.arguments.push(Argument {
+//             name: self.argument_name,
+//             value: InputLiteral::Bool(i),
+//         });
+//     }
+// }
 
-impl<'a> ArgumentBuilder<'a, crate::Id> {
-    pub fn literal(self, i: crate::Id) {
-        self.arguments.push(Argument {
-            name: self.argument_name,
-            value: InputLiteral::Id(i.into_inner()),
-        });
-    }
-}
+// impl<'a> ArgumentBuilder<'a, crate::Id> {
+//     // TODO: Could this take an `impl Into` or similar?
+//     // Or maybe the entire ArgumentBuilder just takes
+//     // an `impl IntoLiteral<TypeMarker>`
+//     pub fn literal(self, i: crate::Id) {
+//         self.arguments.push(Argument {
+//             name: self.argument_name,
+//             value: InputLiteral::Id(i.into_inner()),
+//         });
+//     }
+// }
 
 impl<'a, SchemaType> ArgumentBuilder<'a, SchemaType>
 where

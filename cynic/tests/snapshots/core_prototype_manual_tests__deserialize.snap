@@ -1,0 +1,32 @@
+---
+source: cynic/tests/core-prototype-manual-tests.rs
+assertion_line: 311
+expression: "serde_json::from_value::<MyQuery>(data).unwrap()"
+
+---
+MyQuery {
+    post: Some(
+        BlogPostOutput {
+            has_metadata: Some(
+                false,
+            ),
+            author: AuthorOutput {
+                name: Some(
+                    "Not Me",
+                ),
+            },
+        },
+    ),
+    posts: [
+        BlogPostOutput {
+            has_metadata: Some(
+                true,
+            ),
+            author: AuthorOutput {
+                name: Some(
+                    "Me",
+                ),
+            },
+        },
+    ],
+}

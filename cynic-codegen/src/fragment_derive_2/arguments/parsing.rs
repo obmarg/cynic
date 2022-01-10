@@ -36,14 +36,29 @@ impl Parse for CynicArguments {
 #[derive(Debug, Clone)]
 pub struct FieldArgument {
     pub argument_name: Ident,
-    pub value: ArgumentLiteral,
+    pub value: FieldArgumentValue,
+}
+
+#[derive(Debug, Clone)]
+pub enum FieldArgumentValue {
+    Literal(ArgumentLiteral),
+    Expression(syn::Expr),
 }
 
 impl Parse for FieldArgument {
     fn parse(input: ParseStream) -> Result<Self> {
         let argument_name = input.parse()?;
-        input.parse::<Token![:]>()?;
-        let value = input.parse()?;
+        let lookahead = input.lookahead1();
+        let value;
+        if lookahead.peek(Token![:]) {
+            input.parse::<Token![:]>()?;
+            value = FieldArgumentValue::Literal(input.parse()?);
+        } else if lookahead.peek(Token![=]) {
+            input.parse::<Token![=]>()?;
+            value = FieldArgumentValue::Expression(input.parse()?);
+        } else {
+            return Err(lookahead.error());
+        }
 
         Ok(FieldArgument {
             argument_name,
@@ -137,7 +152,10 @@ mod test {
 
         assert_eq!(arguments.len(), 1);
         assert_eq!(arguments[0].argument_name.to_string(), "x".to_string());
-        assert_matches!(arguments[0].value, ArgumentLiteral::Literal(_));
+        assert_matches!(
+            arguments[0].value,
+            FieldArgumentValue::Literal(ArgumentLiteral::Literal(_))
+        );
     }
 
     #[test]
@@ -148,10 +166,13 @@ mod test {
 
         assert_eq!(arguments.len(), 2);
         assert_eq!(arguments[0].argument_name.to_string(), "x".to_string());
-        assert_matches!(arguments[0].value, ArgumentLiteral::Literal(_));
+        assert_matches!(
+            arguments[0].value,
+            FieldArgumentValue::Literal(ArgumentLiteral::Literal(_))
+        );
 
         assert_eq!(arguments[1].argument_name.to_string(), "y".to_string());
-        assert_matches!(&arguments[1].value, ArgumentLiteral::Variable(name ,_) => {
+        assert_matches!(&arguments[1].value, FieldArgumentValue::Literal(ArgumentLiteral::Variable(name ,_)) => {
             assert_eq!(name.to_string(), "variable");
         });
     }
@@ -163,12 +184,13 @@ mod test {
 
         assert_eq!(arguments.len(), 1);
         assert_eq!(arguments[0].argument_name.to_string(), "x".to_string());
-        assert_matches!(&arguments[0].value, ArgumentLiteral::Object(fields, _) => {
+        assert_matches!(&arguments[0].value, FieldArgumentValue::Literal(ArgumentLiteral::Object(fields, _)) => {
             let fields = fields.iter().collect::<Vec<_>>();
             assert_eq!(fields.len(), 2);
 
             assert_eq!(fields[0].argument_name.to_string(), "fieldOne");
-            assert_matches!(&fields[0].value, ArgumentLiteral::List(vals, _) => {
+            assert_matches!(&fields[0].value, FieldArgumentValue::Literal(ArgumentLiteral::List(vals, _)) => {
+
                 let vals = vals.iter().collect::<Vec<_>>();
                 assert_eq!(vals.len(), 1);
 
@@ -176,7 +198,7 @@ mod test {
             });
 
             assert_eq!(fields[1].argument_name.to_string(), "fieldTwo");
-            assert_matches!(fields[1].value, ArgumentLiteral::Literal(_));
+            assert_matches!(fields[1].value, FieldArgumentValue::Literal(ArgumentLiteral::Literal(_)));
         });
     }
 }

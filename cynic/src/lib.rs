@@ -193,7 +193,7 @@ pub mod utils;
 pub use json_decode::DecodeError;
 
 pub use arguments::{Argument, FromArguments};
-pub use builders::{MutationBuilder, QueryBuilder, SubscriptionBuilder};
+pub use builders::{MutationBuilder, QueryBuilder, QueryBuilder2, SubscriptionBuilder};
 pub use enums::Enum;
 pub use fragments::{FragmentArguments, FragmentContext, InlineFragments, QueryFragment};
 pub use id::Id;

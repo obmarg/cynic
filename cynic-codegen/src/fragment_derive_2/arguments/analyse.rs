@@ -35,6 +35,7 @@ pub enum ArgumentValue<'a> {
     Bool(bool),
     Variable(Variable<'a>),
     Some(Box<ArgumentValue<'a>>),
+    Expression(syn::Expr),
     Null,
 }
 
@@ -67,13 +68,13 @@ pub fn analyse_fields<'a>(
     let mut fields = Vec::new();
     let mut errors = Vec::new();
 
-    for literal in literals {
+    for arg in literals {
         let schema_field = arguments
             .iter()
-            .find(|a| a.name == literal.argument_name)
+            .find(|a| a.name == arg.argument_name)
             .unwrap();
 
-        match analyse_argument(literal, schema_field) {
+        match analyse_argument(arg, schema_field) {
             Ok(value) => fields.push(Field {
                 schema_field: schema_field.clone(),
                 value,
@@ -90,10 +91,13 @@ pub fn analyse_fields<'a>(
 }
 
 fn analyse_argument<'a>(
-    literal: parsing::FieldArgument,
+    parsed_arg: parsing::FieldArgument,
     argument: &InputValue<'a>,
 ) -> Result<ArgumentValue<'a>, Errors> {
-    analyse_value_type(literal.value, &argument.value_type)
+    match parsed_arg.value {
+        parsing::FieldArgumentValue::Literal(lit) => analyse_value_type(lit, &argument.value_type),
+        parsing::FieldArgumentValue::Expression(e) => Ok(ArgumentValue::Expression(e)),
+    }
 }
 
 fn analyse_value_type<'a>(

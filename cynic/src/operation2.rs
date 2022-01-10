@@ -22,10 +22,10 @@ pub struct Operation<QueryFragment> {
     // pub variables: HashMap<String, Argument>,
 }
 
-impl<Fragment, Root> Operation<Fragment>
+impl<'de, Fragment> Operation<Fragment>
 where
-    for<'de> Fragment: QueryFragment<'de, SchemaType = Root>,
-    Root: QueryRoot,
+    Fragment: QueryFragment<'de>,
+    Fragment::SchemaType: QueryRoot,
 {
     /// Constructs a new Operation from a query `SelectionSet`
     pub fn query() -> Self {

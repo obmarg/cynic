@@ -91,19 +91,7 @@ impl<'a> TypeIndex<'a> {
                 fields: def
                     .fields
                     .iter()
-                    .map(|field| Field {
-                        description: field.description.as_deref(),
-                        name: FieldName {
-                            graphql_name: &field.name,
-                        },
-                        arguments: field
-                            .arguments
-                            .iter()
-                            .map(|arg| convert_input_value(self, arg))
-                            .collect(),
-                        field_type: build_type_ref::<OutputType>(&field.field_type, self),
-                        parent_type_name: &def.name,
-                    })
+                    .map(|field| build_field(field, &def.name, self))
                     .collect(),
                 implements_interfaces: def
                     .implements_interfaces
@@ -111,7 +99,15 @@ impl<'a> TypeIndex<'a> {
                     .map(|iface| InterfaceRef(iface.as_ref(), self.clone()))
                     .collect(),
             }),
-            TypeDefinition::Interface(_) => todo!("iface lookup not done"),
+            TypeDefinition::Interface(def) => Type::Interface(InterfaceType {
+                description: def.description.as_deref(),
+                name: &def.name,
+                fields: def
+                    .fields
+                    .iter()
+                    .map(|f| build_field(f, &def.name, self))
+                    .collect(),
+            }),
             TypeDefinition::Union(def) => Type::Union(UnionType {
                 description: def.description.as_deref(),
                 name: &def.name,
@@ -249,8 +245,23 @@ impl<'a> TypeIndex<'a> {
                         validate!(name, TypeDefinition::Object(_), "expected to be an object");
                     }
                 }
-                TypeDefinition::Interface(_) => {
-                    todo!("validating interface")
+                TypeDefinition::Interface(iface) => {
+                    for field in &iface.fields {
+                        let name = field.field_type.inner_name();
+                        validate!(name, Output);
+                        for field in &field.arguments {
+                            let name = field.value_type.inner_name();
+                            validate!(name, Input);
+                        }
+                    }
+                    for iface in &iface.implements_interfaces {
+                        let name = iface.as_ref();
+                        validate!(
+                            name,
+                            TypeDefinition::Interface(_),
+                            "expected to be an interface"
+                        );
+                    }
                 }
             }
         }
@@ -375,6 +386,26 @@ fn build_type_ref<'a, T>(ty: &'a schema::Type, type_index: &TypeIndex<'a>) -> Ty
         }
     }
     inner_fn::<T>(ty, type_index, true)
+}
+
+fn build_field<'a>(
+    field: &'a parser::Field,
+    parent_type_name: &'a str,
+    type_index: &TypeIndex<'a>,
+) -> Field<'a> {
+    Field {
+        description: field.description.as_deref(),
+        name: FieldName {
+            graphql_name: &field.name,
+        },
+        arguments: field
+            .arguments
+            .iter()
+            .map(|arg| convert_input_value(type_index, arg))
+            .collect(),
+        field_type: build_type_ref::<OutputType>(&field.field_type, type_index),
+        parent_type_name,
+    }
 }
 
 // TODO: deffo need tests of schema validation

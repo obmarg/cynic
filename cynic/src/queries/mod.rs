@@ -1,5 +1,9 @@
 mod ast;
 mod builders;
+mod into_input_literal;
 
-pub use ast::SelectionSet;
-pub use builders::QueryBuilder;
+pub use self::{
+    ast::{InputLiteral, SelectionSet},
+    builders::QueryBuilder,
+    into_input_literal::IntoInputLiteral,
+};
