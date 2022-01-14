@@ -11,7 +11,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Breaking Changes
 
-- Cynic no longer supports providing variables via the `arg.X` syntax.  Instead
+- Cynic no longer supports providing variables via the `arg.X` syntax. Instead
   you should provide variables similar to how you would do in a GraphQL query:
   `#[arguments(someArg: $my_variable)]`, where `my_variable` is a field on your
   `QueryVariables` struct.
@@ -27,8 +27,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
   - It no longer has a lifetime.
   - It is now generic over the arguments type.
 - The `http` extension traits have had their signatures changed to accomodate
-  the new signature of `Operation`.  Their use should still be the same.
-- An `Enum` can no longer be shared between schemas.  If you were doing this,
+  the new signature of `Operation`. Their use should still be the same.
+- An `Enum` can no longer be shared between schemas. If you were doing this,
   you should define two `Enum`s and provide conversion functions beteween the
   two of them.
 - `QueryBuilder`, `MutationBuilder` and `SubscriptionBuilder` no longer have a
@@ -36,6 +36,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 - `QueryBuilder::build`, `MutationBuilder::build` and
   `SubscriptionBuilder::build` now take their argument by value not by
   reference.
+- The `reqwest` feature no longer uses the `native-tls` feature. Users should
+  enable one of the `tls` features of `reqwest` themselves.
 
 ### Deprecations
 
@@ -48,17 +50,17 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Changes
 
-- Cynic now supports a new syntax for arguments: 
+- Cynic now supports a new syntax for arguments:
   `#[arguments(someArg: {"someField": 1})]`
 - `cynic` no longer uses `inflector` to re-case things. Hopefully this won't
   cause any regressions, but if it does please raise an issue.
 - `InlineFragments` now take their expected typenames from the `QueryFragment`
   inside their variants, rather than from the name of the variants themselves.
 - Queries output by cynic may have more literals in the GraphQL query string
-  than they had in previous versions of cynic.  Though the end result should
+  than they had in previous versions of cynic. Though the end result should
   be the same.
 - `use_schema` output can now live in a separate crate from queries, which
-  should help with large schema support.  (The exception is `impl_scalar` 
+  should help with large schema support. (The exception is `impl_scalar`
   invocations which must live in the same crate as the schema)
 
 ## v1.0.0 - 2021-12-09
