@@ -94,19 +94,12 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
         #(#subtype_markers)*
         #(#named_types)*
 
-        type Boolean = bool;
-        type String = std::string::String;
-        type Float = f64;
-        type Int = i32;
-        type Id = cynic::Id;
+        pub type Boolean = bool;
+        pub type String = std::string::String;
+        pub type Float = f64;
+        pub type Int = i32;
+        pub type Id = cynic::Id;
     });
 
     Ok(output)
-}
-
-fn type_def_from_definition(definition: schema::Definition) -> Option<schema::TypeDefinition> {
-    match definition {
-        graphql_parser::schema::Definition::TypeDefinition(inner) => Some(inner),
-        _ => None,
-    }
 }

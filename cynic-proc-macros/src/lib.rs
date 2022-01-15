@@ -129,7 +129,7 @@ pub fn input_object_derive(input: TokenStream) -> TokenStream {
         Err(e) => e.to_compile_error().into(),
     };
 
-    eprintln!("{}", rv);
+    //eprintln!("{}", rv);
 
     rv
 }

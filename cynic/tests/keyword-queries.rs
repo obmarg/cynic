@@ -13,20 +13,12 @@ fn test_query_output() {
 
 #[test]
 fn test_query_decoding() {
-    use cynic::{GraphQlResponse, QueryBuilder};
+    let data = serde_json::from_value::<queries::KeywordQuery>(
+        json!({"_": false, "async": false, "crate": false, "self": false, "super": false}),
+    )
+    .unwrap();
 
-    let query = queries::KeywordQuery::build(());
-
-    let result = query
-        .decode_response(GraphQlResponse {
-            data: Some(
-                json!({"_": false, "async": false, "crate": false, "self": false, "super": false}),
-            ),
-            errors: None,
-        })
-        .unwrap();
-
-    insta::assert_yaml_snapshot!(result.data);
+    insta::assert_yaml_snapshot!(data);
 }
 
 #[cynic::schema_for_derives(file = r#"../schemas/test_cases.graphql"#, module = "schema")]

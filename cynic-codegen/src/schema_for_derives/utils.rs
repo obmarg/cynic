@@ -53,7 +53,7 @@ fn derive_for_nested_meta(nested: &NestedMeta) -> Option<Derive> {
                 "Scalar" => return Some(Derive::Scalar),
                 "Scalar2" => return Some(Derive::Scalar),
                 "InputObject" => return Some(Derive::InputObject),
-                "InputObject2" => return Some(Derive::InputObject),
+                "InputObject" => return Some(Derive::InputObject),
                 _ => (),
             }
         }

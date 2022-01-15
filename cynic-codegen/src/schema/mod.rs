@@ -1,3 +1,4 @@
+mod keywords;
 mod parser;
 mod type_index;
 

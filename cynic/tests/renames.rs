@@ -36,7 +36,7 @@ struct Author {
     name: Option<String>,
 }
 
-#[derive(inlineFragments, Serialize)]
+#[derive(InlineFragments, Serialize)]
 #[cynic(schema_path = "tests/test-schema.graphql")]
 enum PostOrAuthor {
     #[cynic(rename = "BlogPost")]

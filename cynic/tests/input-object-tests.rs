@@ -10,7 +10,7 @@ mod schema {
 fn test_input_object_renames() {
     #![allow(non_snake_case)]
 
-    #[derive(cynic::InputObject2)]
+    #[derive(cynic::InputObject)]
     #[cynic(
         graphql_type = "BlogPostInput",
         schema_path = "tests/test-schema.graphql",
@@ -33,7 +33,7 @@ fn test_input_object_renames() {
 
 #[test]
 fn test_input_object_skip_serializing() {
-    #[derive(cynic::InputObject2)]
+    #[derive(cynic::InputObject)]
     #[cynic(
         graphql_type = "BlogPostInput",
         schema_path = "tests/test-schema.graphql",
@@ -63,7 +63,7 @@ fn test_input_object_skip_serializing() {
 
 #[test]
 fn test_input_object_stable_order() {
-    #[derive(cynic::InputObject2)]
+    #[derive(cynic::InputObject)]
     #[cynic(
         graphql_type = "BlogPostInput",
         schema_path = "tests/test-schema.graphql",

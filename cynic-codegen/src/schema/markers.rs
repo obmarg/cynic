@@ -4,6 +4,8 @@ use crate::{idents::PathExt2, schema::types::*};
 
 use crate::idents::{to_pascal_case, to_snake_case};
 
+use super::keywords::transform_keywords;
+
 // TODO: Not sure this really lives in the schema module.  Probably doesn't tbh
 // Although it is extending the schema types, so who knows...
 
@@ -75,7 +77,7 @@ impl<'a> MarkerIdent<'a> {
 
 impl From<MarkerIdent<'_>> for proc_macro2::Ident {
     fn from(val: MarkerIdent<'_>) -> Self {
-        format_ident!("{}", to_pascal_case(val.graphql_name))
+        format_ident!("{}", transform_keywords(&to_pascal_case(val.graphql_name)))
     }
 }
 
@@ -105,8 +107,7 @@ impl From<FieldMarkerIdent<'_>> for proc_macro2::Ident {
             return format_ident!("_Underscore");
         }
 
-        // TODO: possibly need the other keyword conversions here
-        format_ident!("{}", to_pascal_case(val.graphql_name))
+        format_ident!("{}", transform_keywords(&to_pascal_case(val.graphql_name)))
     }
 }
 
