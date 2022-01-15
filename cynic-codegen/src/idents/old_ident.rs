@@ -201,6 +201,7 @@ pub enum RenameRule {
     RenameTo(String),
 }
 
+// TODO: not sure I even ened this wrapper now...
 impl RenameRule {
     pub fn new(all: RenameAll, specific: Option<impl AsRef<String>>) -> Option<RenameRule> {
         match (specific, all) {
@@ -210,20 +211,10 @@ impl RenameRule {
         }
     }
 
-    fn apply(&self, string: impl AsRef<str>) -> String {
+    pub(super) fn apply(&self, string: impl AsRef<str>) -> String {
         match self {
             RenameRule::RenameTo(s) => s.clone(),
-            RenameRule::RenameAll(RenameAll::Lowercase) => string.as_ref().to_lowercase(),
-            RenameRule::RenameAll(RenameAll::Uppercase) => string.as_ref().to_uppercase(),
-            RenameRule::RenameAll(RenameAll::PascalCase) => to_pascal_case(string.as_ref()),
-            RenameRule::RenameAll(RenameAll::CamelCase) => to_camel_case(string.as_ref()),
-            RenameRule::RenameAll(RenameAll::SnakeCase) => to_snake_case(string.as_ref()),
-            RenameRule::RenameAll(RenameAll::ScreamingSnakeCase) => {
-                to_snake_case(string.as_ref()).to_uppercase()
-            }
-            RenameRule::RenameAll(RenameAll::None) => {
-                panic!("RenameRule::new not filtering out RenameAll::None properly!")
-            }
+            RenameRule::RenameAll(all) => all.apply(string),
         }
     }
 }
@@ -245,6 +236,20 @@ pub enum RenameAll {
     SnakeCase,
     /// For names that are entirely snake case in GraphQL: `MY_FIELD`
     ScreamingSnakeCase,
+}
+
+impl RenameAll {
+    pub(super) fn apply(&self, string: impl AsRef<str>) -> String {
+        match self {
+            RenameAll::Lowercase => string.as_ref().to_lowercase(),
+            RenameAll::Uppercase => string.as_ref().to_uppercase(),
+            RenameAll::PascalCase => to_pascal_case(string.as_ref()),
+            RenameAll::CamelCase => to_camel_case(string.as_ref()),
+            RenameAll::SnakeCase => to_snake_case(string.as_ref()),
+            RenameAll::ScreamingSnakeCase => to_snake_case(string.as_ref()).to_uppercase(),
+            RenameAll::None => string.as_ref().to_string(),
+        }
+    }
 }
 
 impl darling::FromMeta for RenameAll {

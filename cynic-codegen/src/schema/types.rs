@@ -2,7 +2,7 @@ use std::marker::PhantomData;
 
 use super::{names::FieldName, type_index::TypeIndex, SchemaError};
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum Type<'a> {
     Scalar(ScalarType<'a>),
     Object(ObjectType<'a>),
@@ -12,14 +12,14 @@ pub enum Type<'a> {
     InputObject(InputObjectType<'a>),
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum InputType<'a> {
     Scalar(ScalarType<'a>),
     Enum(EnumType<'a>),
     InputObject(InputObjectType<'a>),
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub enum OutputType<'a> {
     Scalar(ScalarType<'a>),
     Object(ObjectType<'a>),
@@ -28,13 +28,13 @@ pub enum OutputType<'a> {
     Enum(EnumType<'a>),
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct ScalarType<'a> {
     pub name: &'a str,
     pub builtin: bool,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct ObjectType<'a> {
     pub description: Option<&'a str>,
     pub name: &'a str,
@@ -42,7 +42,7 @@ pub struct ObjectType<'a> {
     pub fields: Vec<Field<'a>>,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Field<'a> {
     pub description: Option<&'a str>,
     pub name: FieldName<'a>,
@@ -51,7 +51,7 @@ pub struct Field<'a> {
     pub(super) parent_type_name: &'a str,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct InputValue<'a> {
     pub description: Option<&'a str>,
     pub name: FieldName<'a>,
@@ -59,34 +59,34 @@ pub struct InputValue<'a> {
     // pub default_value: Option<Value<'a>>,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct InterfaceType<'a> {
     pub description: Option<&'a str>,
     pub name: &'a str,
     pub fields: Vec<Field<'a>>,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct UnionType<'a> {
     pub description: Option<&'a str>,
     pub name: &'a str,
     pub types: Vec<ObjectRef<'a>>,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct EnumType<'a> {
     pub description: Option<&'a str>,
     pub name: &'a str,
     pub values: Vec<EnumValue<'a>>,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct EnumValue<'a> {
     pub description: Option<&'a str>,
     pub name: &'a str,
 }
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct InputObjectType<'a> {
     pub description: Option<&'a str>,
     pub name: &'a str,
@@ -149,6 +149,14 @@ impl<'a> PartialEq for ObjectRef<'a> {
     }
 }
 
+impl Eq for ObjectRef<'_> {}
+
+impl<'a> std::hash::Hash for ObjectRef<'a> {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.0.hash(state);
+    }
+}
+
 #[derive(Clone)]
 pub struct InterfaceRef<'a>(pub(super) &'a str, pub(super) TypeIndex<'a>);
 
@@ -161,6 +169,14 @@ impl std::fmt::Debug for InterfaceRef<'_> {
 impl<'a> PartialEq for InterfaceRef<'a> {
     fn eq(&self, other: &Self) -> bool {
         self.0 == other.0
+    }
+}
+
+impl Eq for InterfaceRef<'_> {}
+
+impl<'a> std::hash::Hash for InterfaceRef<'a> {
+    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+        self.0.hash(state);
     }
 }
 
@@ -262,6 +278,17 @@ impl<'a> TryFrom<Type<'a>> for InputType<'a> {
             }),
             Type::Enum(inner) => Ok(InputType::Enum(inner)),
             _ => Err(SchemaError::unexpected_kind(value, Kind::InputType)),
+        }
+    }
+}
+
+impl<'a> TryFrom<Type<'a>> for InputObjectType<'a> {
+    type Error = SchemaError;
+
+    fn try_from(value: Type<'a>) -> Result<Self, Self::Error> {
+        match value {
+            Type::InputObject(inner) => Ok(inner),
+            _ => Err(SchemaError::unexpected_kind(value, Kind::InputObject)),
         }
     }
 }

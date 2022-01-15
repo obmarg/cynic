@@ -133,6 +133,14 @@ where
     type SchemaType = Box<U::SchemaType>;
 }
 
+pub trait IsInputObject<SchemaType> {}
+
+impl<T, U> IsInputObject<Option<T>> for Option<U> where U: IsInputObject<T> {}
+
+impl<T, U> IsInputObject<Vec<T>> for Vec<U> where U: IsInputObject<T> {}
+
+impl<T, U> IsInputObject<Box<T>> for Box<U> where U: IsInputObject<T> {}
+
 /// A marker trait that indicates a particular type is at the root of a GraphQL schemas query
 /// hierarchy.
 pub trait QueryRoot {}

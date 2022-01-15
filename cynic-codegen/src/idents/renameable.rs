@@ -1,4 +1,6 @@
-use super::{to_camel_case, to_pascal_case};
+use crate::RenameAll;
+
+use super::{to_camel_case, to_pascal_case, RenameRule};
 
 /// A wrapper around proc_macro2::Ident for a struct field that keeps
 /// track of whether the given field needs renamed to map to a graphql
@@ -20,6 +22,10 @@ impl From<proc_macro2::Ident> for RenableFieldIdent {
 impl RenableFieldIdent {
     pub fn set_rename(&mut self, rename: String, rename_span: proc_macro2::Span) {
         self.renamed = Some((rename, rename_span));
+    }
+
+    pub fn rename_with(&mut self, rule: RenameAll, rename_span: proc_macro2::Span) {
+        self.renamed = Some((rule.apply(self.ident.to_string()), rename_span))
     }
 
     pub fn graphql_name(&self) -> String {

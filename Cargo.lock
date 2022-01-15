@@ -604,6 +604,7 @@ dependencies = [
  "reqwest",
  "serde",
  "serde_json",
+ "static_assertions",
  "surf",
  "thiserror",
 ]

@@ -2,7 +2,7 @@ use std::borrow::Cow;
 
 use crate::idents::{to_snake_case, RenableFieldIdent};
 
-#[derive(Debug, Clone, PartialEq)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct FieldName<'a> {
     pub(super) graphql_name: &'a str,
 }

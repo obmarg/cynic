@@ -3,14 +3,14 @@
 use serde_json::json;
 
 mod schema {
-    cynic::use_schema!("tests/test-schema.graphql");
+    cynic::use_schema_2!("tests/test-schema.graphql");
 }
 
 #[test]
 fn test_input_object_renames() {
     #![allow(non_snake_case)]
 
-    #[derive(cynic::InputObject)]
+    #[derive(cynic::InputObject2)]
     #[cynic(
         graphql_type = "BlogPostInput",
         schema_path = "tests/test-schema.graphql",
@@ -33,7 +33,7 @@ fn test_input_object_renames() {
 
 #[test]
 fn test_input_object_skip_serializing() {
-    #[derive(cynic::InputObject)]
+    #[derive(cynic::InputObject2)]
     #[cynic(
         graphql_type = "BlogPostInput",
         schema_path = "tests/test-schema.graphql",
@@ -63,7 +63,7 @@ fn test_input_object_skip_serializing() {
 
 #[test]
 fn test_input_object_stable_order() {
-    #[derive(cynic::InputObject)]
+    #[derive(cynic::InputObject2)]
     #[cynic(
         graphql_type = "BlogPostInput",
         schema_path = "tests/test-schema.graphql",
