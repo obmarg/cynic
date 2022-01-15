@@ -3,7 +3,7 @@
 use serde_json::json;
 
 mod schema {
-    cynic::use_schema_2!("tests/test-schema.graphql");
+    cynic::use_schema!("tests/test-schema.graphql");
 }
 
 #[test]

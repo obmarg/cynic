@@ -1,357 +1,187 @@
 ---
 source: cynic-codegen/tests/use-schema.rs
+assertion_line: 43
 expression: "format_code(format!(\"{}\", tokens))"
 
 ---
-#[allow(dead_code)]
+impl ::cynic::schema::QueryRoot for QueryRoot {}
+impl ::cynic::schema::MutationRoot for MutationRoot {}
+impl ::cynic::schema::SuscriptionRoot for SubscriptionRoot {}
 pub struct Book;
-#[allow(dead_code)]
-impl Book {
-    pub fn id() -> book::IdSelectionBuilder {
-        book::IdSelectionBuilder::new(vec![])
+pub mod book_fields {
+    pub struct Id;
+    impl ::cynic::schema::Field for Id {
+        type SchemaType = super::String;
+        fn name() -> &'static str {
+            "id"
+        }
     }
-    pub fn name() -> book::NameSelectionBuilder {
-        book::NameSelectionBuilder::new(vec![])
+    impl ::cynic::schema::HasField<Id, super::String> for super::Book {}
+    pub struct Name;
+    impl ::cynic::schema::Field for Name {
+        type SchemaType = super::String;
+        fn name() -> &'static str {
+            "name"
+        }
     }
-    pub fn author() -> book::AuthorSelectionBuilder {
-        book::AuthorSelectionBuilder::new(vec![])
+    impl ::cynic::schema::HasField<Name, super::String> for super::Book {}
+    pub struct Author;
+    impl ::cynic::schema::Field for Author {
+        type SchemaType = super::String;
+        fn name() -> &'static str {
+            "author"
+        }
     }
+    impl ::cynic::schema::HasField<Author, super::String> for super::Book {}
 }
-#[allow(dead_code)]
 pub struct BookChanged;
-#[allow(dead_code)]
-impl BookChanged {
-    pub fn mutation_type() -> book_changed::MutationTypeSelectionBuilder {
-        book_changed::MutationTypeSelectionBuilder::new(vec![])
+pub mod book_changed_fields {
+    pub struct MutationType;
+    impl ::cynic::schema::Field for MutationType {
+        type SchemaType = super::MutationType;
+        fn name() -> &'static str {
+            "mutationType"
+        }
     }
-    pub fn id() -> book_changed::IdSelectionBuilder {
-        book_changed::IdSelectionBuilder::new(vec![])
+    impl ::cynic::schema::HasField<MutationType, super::MutationType> for super::BookChanged {}
+    pub struct Id;
+    impl ::cynic::schema::Field for Id {
+        type SchemaType = super::Id;
+        fn name() -> &'static str {
+            "id"
+        }
     }
-    pub fn book() -> book_changed::BookSelectionBuilder {
-        book_changed::BookSelectionBuilder::new(vec![])
+    impl ::cynic::schema::HasField<Id, super::Id> for super::BookChanged {}
+    pub struct Book;
+    impl ::cynic::schema::Field for Book {
+        type SchemaType = Option<super::Book>;
+        fn name() -> &'static str {
+            "book"
+        }
     }
+    impl ::cynic::schema::HasField<Book, Option<super::Book>> for super::BookChanged {}
 }
-#[allow(dead_code)]
 pub struct MutationRoot;
-#[allow(dead_code)]
-impl MutationRoot {
-    pub fn create_book(
-        name: impl ::cynic::InputType<String, ::cynic::inputs::NamedType>,
-        author: impl ::cynic::InputType<String, ::cynic::inputs::NamedType>,
-    ) -> mutation_root::CreateBookSelectionBuilder {
-        mutation_root::CreateBookSelectionBuilder::new(vec![
-            ::cynic::Argument::new("name", "String!", ::cynic::serde_json::to_value(&name)),
-            ::cynic::Argument::new("author", "String!", ::cynic::serde_json::to_value(&author)),
-        ])
+pub mod mutation_root_fields {
+    pub struct CreateBook;
+    impl ::cynic::schema::Field for CreateBook {
+        type SchemaType = super::Id;
+        fn name() -> &'static str {
+            "createBook"
+        }
     }
-    pub fn delete_book(
-        id: impl ::cynic::InputType<::cynic::Id, ::cynic::inputs::NamedType>,
-    ) -> mutation_root::DeleteBookSelectionBuilder {
-        mutation_root::DeleteBookSelectionBuilder::new(vec![::cynic::Argument::new(
-            "id",
-            "ID!",
-            ::cynic::serde_json::to_value(&id),
-        )])
+    impl ::cynic::schema::HasField<CreateBook, super::Id> for super::MutationRoot {}
+    pub mod create_book_arguments {
+        pub struct Name;
+        impl ::cynic::schema::HasArgument<Name> for super::CreateBook {
+            type ArgumentSchemaType = super::super::String;
+            fn name() -> &'static str {
+                "name"
+            }
+        }
+        pub struct Author;
+        impl ::cynic::schema::HasArgument<Author> for super::CreateBook {
+            type ArgumentSchemaType = super::super::String;
+            fn name() -> &'static str {
+                "author"
+            }
+        }
+    }
+    pub struct DeleteBook;
+    impl ::cynic::schema::Field for DeleteBook {
+        type SchemaType = super::Boolean;
+        fn name() -> &'static str {
+            "deleteBook"
+        }
+    }
+    impl ::cynic::schema::HasField<DeleteBook, super::Boolean> for super::MutationRoot {}
+    pub mod delete_book_arguments {
+        pub struct Id;
+        impl ::cynic::schema::HasArgument<Id> for super::DeleteBook {
+            type ArgumentSchemaType = super::super::Id;
+            fn name() -> &'static str {
+                "id"
+            }
+        }
     }
 }
-#[allow(dead_code)]
+pub struct MutationType {}
 pub struct QueryRoot;
-#[allow(dead_code)]
-impl QueryRoot {
-    pub fn books() -> query_root::BooksSelectionBuilder {
-        query_root::BooksSelectionBuilder::new(vec![])
+pub mod query_root_fields {
+    pub struct Books;
+    impl ::cynic::schema::Field for Books {
+        type SchemaType = Vec<super::Book>;
+        fn name() -> &'static str {
+            "books"
+        }
     }
+    impl ::cynic::schema::HasField<Books, Vec<super::Book>> for super::QueryRoot {}
 }
-#[allow(dead_code)]
 pub struct SubscriptionRoot;
-#[allow(dead_code)]
-impl SubscriptionRoot {
-    pub fn interval(
-        n: impl ::cynic::InputType<i32, ::cynic::inputs::NamedType>,
-    ) -> subscription_root::IntervalSelectionBuilder {
-        subscription_root::IntervalSelectionBuilder::new(vec![::cynic::Argument::new(
-            "n",
-            "Int!",
-            ::cynic::serde_json::to_value(&n),
-        )])
-    }
-    pub fn books() -> subscription_root::BooksSelectionBuilder {
-        subscription_root::BooksSelectionBuilder::new(vec![])
-    }
-}
-#[allow(dead_code)]
-pub mod book {
-    pub struct IdSelectionBuilder {
-        args: Vec<::cynic::Argument>,
-    }
-    impl IdSelectionBuilder {
-        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
-            IdSelectionBuilder { args }
-        }
-        pub fn select<'a, T: 'a + Send + Sync>(
-            self,
-            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
-        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Book> {
-            ::cynic::selection_set::field("id", self.args, inner)
-        }
-        pub fn select_aliased<'a, T: 'a + Send + Sync>(
-            self,
-            alias: &str,
-            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
-        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Book> {
-            ::cynic::selection_set::field_alias("id", alias, self.args, inner)
+pub mod subscription_root_fields {
+    pub struct Interval;
+    impl ::cynic::schema::Field for Interval {
+        type SchemaType = super::Int;
+        fn name() -> &'static str {
+            "interval"
         }
     }
-    pub struct NameSelectionBuilder {
-        args: Vec<::cynic::Argument>,
-    }
-    impl NameSelectionBuilder {
-        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
-            NameSelectionBuilder { args }
-        }
-        pub fn select<'a, T: 'a + Send + Sync>(
-            self,
-            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
-        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Book> {
-            ::cynic::selection_set::field("name", self.args, inner)
-        }
-        pub fn select_aliased<'a, T: 'a + Send + Sync>(
-            self,
-            alias: &str,
-            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
-        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Book> {
-            ::cynic::selection_set::field_alias("name", alias, self.args, inner)
+    impl ::cynic::schema::HasField<Interval, super::Int> for super::SubscriptionRoot {}
+    pub mod interval_arguments {
+        pub struct N;
+        impl ::cynic::schema::HasArgument<N> for super::Interval {
+            type ArgumentSchemaType = super::super::Int;
+            fn name() -> &'static str {
+                "n"
+            }
         }
     }
-    pub struct AuthorSelectionBuilder {
-        args: Vec<::cynic::Argument>,
+    pub struct Books;
+    impl ::cynic::schema::Field for Books {
+        type SchemaType = super::BookChanged;
+        fn name() -> &'static str {
+            "books"
+        }
     }
-    impl AuthorSelectionBuilder {
-        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
-            AuthorSelectionBuilder { args }
-        }
-        pub fn select<'a, T: 'a + Send + Sync>(
-            self,
-            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
-        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Book> {
-            ::cynic::selection_set::field("author", self.args, inner)
-        }
-        pub fn select_aliased<'a, T: 'a + Send + Sync>(
-            self,
-            alias: &str,
-            inner: ::cynic::selection_set::SelectionSet<'a, T, String>,
-        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::Book> {
-            ::cynic::selection_set::field_alias("author", alias, self.args, inner)
+    impl ::cynic::schema::HasField<Books, super::BookChanged> for super::SubscriptionRoot {}
+    pub mod books_arguments {
+        pub struct MutationType;
+        impl ::cynic::schema::HasArgument<MutationType> for super::Books {
+            type ArgumentSchemaType = Option<super::super::MutationType>;
+            fn name() -> &'static str {
+                "mutationType"
+            }
         }
     }
 }
-#[allow(dead_code)]
-pub mod book_changed {
-    pub struct MutationTypeSelectionBuilder {
-        args: Vec<::cynic::Argument>,
-    }
-    impl MutationTypeSelectionBuilder {
-        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
-            MutationTypeSelectionBuilder { args }
-        }
-        pub fn select<'a, T: 'a + Send + Sync>(
-            self,
-            inner: ::cynic::selection_set::SelectionSet<'a, T, super::MutationType>,
-        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::BookChanged> {
-            ::cynic::selection_set::field("mutationType", self.args, inner)
-        }
-        pub fn select_aliased<'a, T: 'a + Send + Sync>(
-            self,
-            alias: &str,
-            inner: ::cynic::selection_set::SelectionSet<'a, T, super::MutationType>,
-        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::BookChanged> {
-            ::cynic::selection_set::field_alias("mutationType", alias, self.args, inner)
-        }
-    }
-    pub struct IdSelectionBuilder {
-        args: Vec<::cynic::Argument>,
-    }
-    impl IdSelectionBuilder {
-        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
-            IdSelectionBuilder { args }
-        }
-        pub fn select<'a, T: 'a + Send + Sync>(
-            self,
-            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
-        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::BookChanged> {
-            ::cynic::selection_set::field("id", self.args, inner)
-        }
-        pub fn select_aliased<'a, T: 'a + Send + Sync>(
-            self,
-            alias: &str,
-            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
-        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::BookChanged> {
-            ::cynic::selection_set::field_alias("id", alias, self.args, inner)
-        }
-    }
-    pub struct BookSelectionBuilder {
-        args: Vec<::cynic::Argument>,
-    }
-    impl BookSelectionBuilder {
-        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
-            BookSelectionBuilder { args }
-        }
-        pub fn select<'a, T: 'a + Send + Sync>(
-            self,
-            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Book>,
-        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::BookChanged> {
-            ::cynic::selection_set::field("book", self.args, ::cynic::selection_set::option(fields))
-        }
-        pub fn select_aliased<'a, T: 'a + Send + Sync>(
-            self,
-            alias: &str,
-            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Book>,
-        ) -> ::cynic::selection_set::SelectionSet<'a, Option<T>, super::BookChanged> {
-            ::cynic::selection_set::field_alias(
-                "book",
-                alias,
-                self.args,
-                ::cynic::selection_set::option(fields),
-            )
-        }
+impl ::cynic::schema::NamedType for Book {
+    fn name() -> &'static str {
+        "Book"
     }
 }
-#[allow(dead_code)]
-pub mod mutation_root {
-    pub struct CreateBookSelectionBuilder {
-        args: Vec<::cynic::Argument>,
-    }
-    impl CreateBookSelectionBuilder {
-        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
-            CreateBookSelectionBuilder { args }
-        }
-        pub fn select<'a, T: 'a + Send + Sync>(
-            self,
-            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
-        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::MutationRoot> {
-            ::cynic::selection_set::field("createBook", self.args, inner)
-        }
-        pub fn select_aliased<'a, T: 'a + Send + Sync>(
-            self,
-            alias: &str,
-            inner: ::cynic::selection_set::SelectionSet<'a, T, ::cynic::Id>,
-        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::MutationRoot> {
-            ::cynic::selection_set::field_alias("createBook", alias, self.args, inner)
-        }
-    }
-    pub struct DeleteBookSelectionBuilder {
-        args: Vec<::cynic::Argument>,
-    }
-    impl DeleteBookSelectionBuilder {
-        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
-            DeleteBookSelectionBuilder { args }
-        }
-        pub fn select<'a, T: 'a + Send + Sync>(
-            self,
-            inner: ::cynic::selection_set::SelectionSet<'a, T, bool>,
-        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::MutationRoot> {
-            ::cynic::selection_set::field("deleteBook", self.args, inner)
-        }
-        pub fn select_aliased<'a, T: 'a + Send + Sync>(
-            self,
-            alias: &str,
-            inner: ::cynic::selection_set::SelectionSet<'a, T, bool>,
-        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::MutationRoot> {
-            ::cynic::selection_set::field_alias("deleteBook", alias, self.args, inner)
-        }
+impl ::cynic::schema::NamedType for BookChanged {
+    fn name() -> &'static str {
+        "BookChanged"
     }
 }
-#[allow(dead_code)]
-pub mod query_root {
-    pub struct BooksSelectionBuilder {
-        args: Vec<::cynic::Argument>,
-    }
-    impl BooksSelectionBuilder {
-        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
-            BooksSelectionBuilder { args }
-        }
-        pub fn select<'a, T: 'a + Send + Sync>(
-            self,
-            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Book>,
-        ) -> ::cynic::selection_set::SelectionSet<'a, Vec<T>, super::QueryRoot> {
-            ::cynic::selection_set::field("books", self.args, ::cynic::selection_set::vec(fields))
-        }
-        pub fn select_aliased<'a, T: 'a + Send + Sync>(
-            self,
-            alias: &str,
-            fields: ::cynic::selection_set::SelectionSet<'a, T, super::Book>,
-        ) -> ::cynic::selection_set::SelectionSet<'a, Vec<T>, super::QueryRoot> {
-            ::cynic::selection_set::field_alias(
-                "books",
-                alias,
-                self.args,
-                ::cynic::selection_set::vec(fields),
-            )
-        }
+impl ::cynic::schema::NamedType for MutationRoot {
+    fn name() -> &'static str {
+        "MutationRoot"
     }
 }
-#[allow(dead_code)]
-pub mod subscription_root {
-    pub struct IntervalSelectionBuilder {
-        args: Vec<::cynic::Argument>,
-    }
-    impl IntervalSelectionBuilder {
-        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
-            IntervalSelectionBuilder { args }
-        }
-        pub fn select<'a, T: 'a + Send + Sync>(
-            self,
-            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
-        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::SubscriptionRoot> {
-            ::cynic::selection_set::field("interval", self.args, inner)
-        }
-        pub fn select_aliased<'a, T: 'a + Send + Sync>(
-            self,
-            alias: &str,
-            inner: ::cynic::selection_set::SelectionSet<'a, T, i32>,
-        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::SubscriptionRoot> {
-            ::cynic::selection_set::field_alias("interval", alias, self.args, inner)
-        }
-    }
-    pub struct BooksSelectionBuilder {
-        args: Vec<::cynic::Argument>,
-    }
-    impl BooksSelectionBuilder {
-        pub(super) fn new(args: Vec<::cynic::Argument>) -> Self {
-            BooksSelectionBuilder { args }
-        }
-        pub fn mutation_type(
-            mut self,
-            mutation_type: impl ::cynic::InputType<
-                super::MutationType,
-                ::cynic::inputs::Nullable<::cynic::inputs::NamedType>,
-            >,
-        ) -> Self {
-            self.args.push(::cynic::Argument::new(
-                "mutationType",
-                "MutationType",
-                ::cynic::serde_json::to_value(&mutation_type),
-            ));
-            self
-        }
-        pub fn select<'a, T: 'a + Send + Sync>(
-            self,
-            fields: ::cynic::selection_set::SelectionSet<'a, T, super::BookChanged>,
-        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::SubscriptionRoot> {
-            ::cynic::selection_set::field("books", self.args, fields)
-        }
-        pub fn select_aliased<'a, T: 'a + Send + Sync>(
-            self,
-            alias: &str,
-            fields: ::cynic::selection_set::SelectionSet<'a, T, super::BookChanged>,
-        ) -> ::cynic::selection_set::SelectionSet<'a, T, super::SubscriptionRoot> {
-            ::cynic::selection_set::field_alias("books", alias, self.args, fields)
-        }
+impl ::cynic::schema::NamedType for QueryRoot {
+    fn name() -> &'static str {
+        "QueryRoot"
     }
 }
-#[allow(dead_code)]
-pub enum MutationType {}
-impl ::cynic::MutationRoot for MutationRoot {}
-impl ::cynic::QueryRoot for QueryRoot {}
-impl ::cynic::SubscriptionRoot for SubscriptionRoot {}
+impl ::cynic::schema::NamedType for SubscriptionRoot {
+    fn name() -> &'static str {
+        "SubscriptionRoot"
+    }
+}
+type Boolean = bool;
+type String = std::string::String;
+type Float = f64;
+type Int = i32;
+type Id = cynic::Id;
 

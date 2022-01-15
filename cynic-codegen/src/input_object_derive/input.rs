@@ -1,6 +1,7 @@
 use darling::util::SpannedValue;
+use syn::spanned::Spanned;
 
-use crate::idents::RenameAll;
+use crate::idents::{RenableFieldIdent, RenameAll};
 use proc_macro2::Span;
 
 #[derive(darling::FromDeriveInput)]
@@ -63,5 +64,26 @@ impl InputObjectDeriveInput {
             .as_ref()
             .map(|val| val.span())
             .unwrap_or_else(|| self.ident.span())
+    }
+}
+
+impl InputObjectDeriveField {
+    pub fn graphql_ident(&self, rename_rule: RenameAll) -> RenableFieldIdent {
+        let mut ident = RenableFieldIdent::from(
+            self.ident
+                .clone()
+                .expect("InputObject only supports named structs"),
+        );
+        match &self.rename {
+            Some(rename) => {
+                let span = rename.span();
+                let rename = (**rename).clone();
+                ident.set_rename(rename, span)
+            }
+            None => {
+                ident.rename_with(rename_rule, self.ident.span());
+            }
+        }
+        ident
     }
 }

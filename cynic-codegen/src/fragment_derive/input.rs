@@ -2,7 +2,11 @@ use std::collections::HashSet;
 
 use darling::util::SpannedValue;
 
-use crate::{type_validation::CheckMode, Errors};
+use crate::{
+    idents::{RenableFieldIdent, RenameRule},
+    type_validation_2::CheckMode,
+    Errors, RenameAll,
+};
 use proc_macro2::Span;
 
 #[derive(darling::FromDeriveInput)]
@@ -170,12 +174,18 @@ impl FragmentDeriveField {
         }
     }
 
-    pub(super) fn graphql_ident(&self) -> Option<crate::Ident> {
-        match (&self.rename, &self.ident) {
-            (Some(rename), _) => Some(crate::Ident::for_field(&**rename).with_span(rename.span())),
-            (_, Some(ident)) => Some(crate::Ident::from_proc_macro2(ident, None)),
-            _ => None,
+    pub(super) fn graphql_ident(&self) -> RenableFieldIdent {
+        let mut ident = RenableFieldIdent::from(
+            self.ident
+                .clone()
+                .expect("FragmentDerive only supports named structs"),
+        );
+        if let Some(rename) = &self.rename {
+            let span = rename.span();
+            let rename = (**rename).clone();
+            ident.set_rename(rename, span)
         }
+        ident
     }
 
     pub(super) fn alias(&self) -> Option<String> {

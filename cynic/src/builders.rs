@@ -5,35 +5,7 @@ use super::{
 
 use std::borrow::Borrow;
 
-/// Provides a `build` function on `QueryFragment`s that represent a query
-pub trait QueryBuilder<'a> {
-    /// The type that this query takes as arguments.
-    /// May be `()` if no arguments are accepted.
-    type Arguments;
-
-    /// The type that this query returns if succesful.
-    type ResponseData;
-
-    /// Constructs a query operation for this QueryFragment.
-    fn build(args: impl Borrow<Self::Arguments>) -> Operation<'a, Self::ResponseData>;
-}
-
-impl<'a, T, R, Q> QueryBuilder<'a> for T
-where
-    T: QueryFragment<SelectionSet = SelectionSet<'a, R, Q>>,
-    Q: QueryRoot,
-    R: 'a,
-{
-    type Arguments = T::Arguments;
-
-    type ResponseData = R;
-
-    fn build(args: impl Borrow<Self::Arguments>) -> Operation<'a, Self::ResponseData> {
-        Operation::query(Self::fragment(FragmentContext::new(args.borrow())))
-    }
-}
-
-pub trait QueryBuilder2: Sized {
+pub trait QueryBuilder: Sized {
     /// The type that this query takes as arguments.
     /// May be `()` if no arguments are accepted.
     type Arguments;
@@ -46,7 +18,7 @@ pub trait QueryBuilder2: Sized {
     fn build(args: impl Borrow<Self::Arguments>) -> Operation2<Self>;
 }
 
-impl<'de, T> QueryBuilder2 for T
+impl<'de, T> QueryBuilder for T
 where
     T: crate::core::QueryFragment<'de>,
     T::SchemaType: crate::schema::QueryRoot,
@@ -58,6 +30,8 @@ where
         Operation2::<T>::query()
     }
 }
+
+// TODO: update mutation builder to support new query structure stuff...
 
 /// Provides a `build` function on `QueryFragment`s that represent a mutation
 pub trait MutationBuilder<'a> {

@@ -1,11 +1,11 @@
 #![allow(dead_code)]
 
 use cynic::{core::QueryFragment, queries::SelectionSet};
-use cynic_proc_macros::QueryFragment2;
+use cynic_proc_macros::QueryFragment;
 use serde::Deserialize;
 
 mod schema {
-    cynic::use_schema_2!("tests/test-schema.graphql");
+    cynic::use_schema!("tests/test-schema.graphql");
 }
 
 mod manual_schema {
@@ -102,7 +102,7 @@ mod manual_schema {
     }
 }
 
-#[derive(cynic::QueryFragment2, Debug)]
+#[derive(cynic::QueryFragment, Debug)]
 #[cynic(
     schema_path = "tests/test-schema.graphql",
     schema_module = "schema",
@@ -139,7 +139,7 @@ struct MyQuery {
 //     }
 // }
 
-#[derive(cynic::QueryFragment2, Debug)]
+#[derive(cynic::QueryFragment, Debug)]
 #[cynic(
     schema_path = "tests/test-schema.graphql",
     schema_module = "schema",
@@ -170,7 +170,7 @@ struct BlogPostOutput {
 //     }
 // }
 
-#[derive(cynic::QueryFragment2, Debug)]
+#[derive(cynic::QueryFragment, Debug)]
 #[cynic(
     schema_path = "tests/test-schema.graphql",
     schema_module = "schema",

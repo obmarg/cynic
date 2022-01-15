@@ -1,17 +1,11 @@
 pub mod enum_derive;
-pub mod enum_derive_2;
 pub mod fragment_arguments_derive;
 pub mod fragment_derive;
-pub mod fragment_derive_2;
 pub mod inline_fragments_derive;
-pub mod inline_fragments_derive_2;
 pub mod input_object_derive;
-pub mod input_object_derive_2;
 pub mod scalar_derive;
-pub mod scalar_derive_2;
 pub mod schema_for_derives;
 pub mod use_schema;
-pub mod use_schema2;
 
 mod error;
 mod field_argument;
@@ -35,11 +29,11 @@ use schema::{load_schema, SchemaLoadError, TypeIndex};
 pub fn output_schema_module(
     schema: impl AsRef<std::path::Path>,
     output_path: impl AsRef<std::path::Path>,
-) -> Result<(), SchemaLoadError> {
+) -> Result<(), Errors> {
     use std::io::Write;
-    use use_schema::QueryDslParams;
+    use use_schema::UseSchemaParams;
 
-    let tokens = use_schema::use_schema(QueryDslParams {
+    let tokens = use_schema::use_schema(UseSchemaParams {
         schema_filename: schema.as_ref().to_str().unwrap().to_string(),
     })?;
 

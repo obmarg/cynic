@@ -2,6 +2,9 @@ use proc_macro2::TokenStream;
 
 pub(crate) mod input;
 
+#[cfg(test)]
+mod tests;
+
 pub use input::ScalarDeriveInput;
 
 use crate::Ident;
@@ -32,22 +35,17 @@ pub fn scalar_derive_impl(input: ScalarDeriveInput) -> Result<TokenStream, syn::
 
     let ident = input.ident;
     let inner_type = field.ty;
-    let type_lock_ident = if let Some(graphql_type) = input.graphql_type {
+    let scalar_marker_ident = if let Some(graphql_type) = input.graphql_type {
         Ident::new_spanned((*graphql_type).clone(), graphql_type.span())
     } else {
         Ident::for_type(ident.to_string()).with_span(ident.span())
     };
 
     Ok(quote! {
-        impl ::cynic::Scalar<#schema_module::#type_lock_ident> for #ident {
-            type Deserialize = #inner_type;
+        #[automatically_derived]
+        impl<'de> ::cynic::core::Scalar<'de> for #ident {}
 
-            fn from_deserialize(inner: Self::Deserialize) -> Result<Self, ::cynic::DecodeError> {
-                Ok(#ident(inner))
-            }
-
-        }
-
+        #[automatically_derived]
         impl ::cynic::serde::Serialize for #ident {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
@@ -57,6 +55,19 @@ pub fn scalar_derive_impl(input: ScalarDeriveInput) -> Result<TokenStream, syn::
             }
         }
 
-        ::cynic::impl_input_type!(#ident, #schema_module::#type_lock_ident);
+        #[automatically_derived]
+        impl<'de> ::cynic::serde::Deserialize<'de> for #ident {
+            fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+            where
+                D: ::cynic::serde::Deserializer<'de>,
+            {
+                #inner_type::deserialize(deserializer).map(Self)
+            }
+        }
+
+        #[automatically_derived]
+        impl ::cynic::schema::IsScalar<#schema_module::#scalar_marker_ident> for #ident {
+            type SchemaType = #schema_module::#scalar_marker_ident;
+        }
     })
 }

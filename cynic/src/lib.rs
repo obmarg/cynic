@@ -193,7 +193,7 @@ pub mod utils;
 pub use json_decode::DecodeError;
 
 pub use arguments::{Argument, FromArguments};
-pub use builders::{MutationBuilder, QueryBuilder, QueryBuilder2, SubscriptionBuilder};
+pub use builders::{MutationBuilder, QueryBuilder, SubscriptionBuilder};
 pub use enums::Enum;
 pub use fragments::{FragmentArguments, FragmentContext, InlineFragments, QueryFragment};
 pub use id::Id;
@@ -205,8 +205,8 @@ pub use scalar::Scalar;
 pub use selection_set::SelectionSet;
 
 pub use cynic_proc_macros::{
-    schema_for_derives, use_schema, use_schema_2, Enum, Enum2, FragmentArguments, InlineFragments,
-    InlineFragments2, InputObject, InputObject2, QueryFragment, QueryFragment2, Scalar,
+    schema_for_derives, use_schema, Enum, FragmentArguments, InlineFragments, InputObject,
+    QueryFragment, Scalar,
 };
 
 pub use static_assertions::assert_impl_any as assert_impl;

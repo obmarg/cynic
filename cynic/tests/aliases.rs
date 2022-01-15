@@ -1,7 +1,7 @@
-use cynic::QueryBuilder2;
+use cynic::QueryBuilder;
 use serde_json::json;
 
-#[derive(cynic::QueryFragment2, Debug, PartialEq)]
+#[derive(cynic::QueryFragment, Debug, PartialEq)]
 #[cynic(
     schema_path = "../schemas/starwars.schema.graphql",
     graphql_type = "Root"
@@ -16,7 +16,7 @@ struct FilmQueryWithExplicitAlias {
     empire_strikes_back: Option<Film>,
 }
 
-#[derive(cynic::QueryFragment2, Debug, PartialEq)]
+#[derive(cynic::QueryFragment, Debug, PartialEq)]
 #[cynic(
     schema_path = "../schemas/starwars.schema.graphql",
     query_module = "schema"
@@ -26,7 +26,7 @@ struct Film {
 }
 
 mod schema {
-    cynic::use_schema_2!("../schemas/starwars.schema.graphql");
+    cynic::use_schema!("../schemas/starwars.schema.graphql");
 }
 
 #[test]
@@ -65,7 +65,7 @@ fn test_explicit_alias_decoding() {
     );
 }
 
-#[derive(cynic::QueryFragment2, Debug, PartialEq)]
+#[derive(cynic::QueryFragment, Debug, PartialEq)]
 #[cynic(
     schema_path = "../schemas/starwars.schema.graphql",
     graphql_type = "Root"

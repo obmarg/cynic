@@ -3,8 +3,7 @@ use std::{io::Write, path::PathBuf, process::Stdio};
 use insta::assert_snapshot;
 use rstest::rstest;
 
-use cynic_codegen::use_schema::{use_schema, QueryDslParams};
-use cynic_codegen::use_schema2::{use_schema as use_schema_2, UseSchemaParams as UseSchema2Params};
+use cynic_codegen::use_schema::{use_schema, UseSchemaParams};
 
 // TODO: Rename this file after running snapshots
 
@@ -13,29 +12,12 @@ use cynic_codegen::use_schema2::{use_schema as use_schema_2, UseSchemaParams as 
     "books.graphql",
     "starwars.schema.graphql",
     "test_cases.graphql",
-])]
-fn snapshot_use_schema(schema_file: &str) {
-    let schema_path = PathBuf::from("../schemas/").join(schema_file);
-
-    let tokens = use_schema(QueryDslParams {
-        schema_filename: schema_path.to_str().unwrap().to_string(),
-    })
-    .unwrap();
-
-    assert_snapshot!(format_code(format!("{}", tokens)));
-}
-
-#[rstest(schema_file_two => [
-    "graphql.jobs.graphql",
-    "books.graphql",
-    "starwars.schema.graphql",
-    "test_cases.graphql",
     "../cynic/src/bin/simple.graphql"
 ])]
-fn snapshot_use_schema_two(schema_file_two: &str) {
-    let schema_path = PathBuf::from("../schemas/").join(schema_file_two);
+fn snapshot_use_schema_two(schema_file: &str) {
+    let schema_path = PathBuf::from("../schemas/").join(schema_file);
 
-    let tokens = use_schema_2(UseSchema2Params {
+    let tokens = use_schema(UseSchemaParams {
         schema_filename: schema_path.to_str().unwrap().to_string(),
     })
     .unwrap();

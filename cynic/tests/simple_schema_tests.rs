@@ -1,11 +1,11 @@
 mod schema {
-    cynic::use_schema_2!("src/bin/simple.graphql");
+    cynic::use_schema!("src/bin/simple.graphql");
 }
 
 #[derive(cynic::FragmentArguments)]
 struct TestArgs {}
 
-#[derive(cynic::QueryFragment2, PartialEq, Debug)]
+#[derive(cynic::QueryFragment, PartialEq, Debug)]
 #[cynic(
     schema_path = "src/bin/simple.graphql",
 
@@ -22,14 +22,14 @@ struct TestStruct {
     dessert: Option<Dessert>,
 }
 
-#[derive(cynic::QueryFragment2, PartialEq, Debug)]
+#[derive(cynic::QueryFragment, PartialEq, Debug)]
 #[cynic(schema_path = "src/bin/simple.graphql", query_module = "schema")]
 struct Nested {
     a_string: String,
     opt_string: Option<String>,
 }
 
-#[derive(cynic::QueryFragment2, PartialEq, Debug)]
+#[derive(cynic::QueryFragment, PartialEq, Debug)]
 #[cynic(
     schema_path = "src/bin/simple.graphql",
     graphql_type = "Query",

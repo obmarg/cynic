@@ -1,8 +1,8 @@
-use cynic::{InlineFragments2, QueryFragment2};
+use cynic::{InlineFragments, QueryFragment};
 use serde::Serialize;
 use serde_json::json;
 
-#[derive(QueryFragment2, Serialize)]
+#[derive(QueryFragment, Serialize)]
 #[cynic(
     graphql_type = "Query",
     schema_path = "tests/test-schema.graphql",
@@ -13,7 +13,7 @@ struct AllPostsQuery {
     all_data: Vec<PostOrAuthor>,
 }
 
-#[derive(QueryFragment2, Serialize)]
+#[derive(QueryFragment, Serialize)]
 #[cynic(
     graphql_type = "BlogPost",
     schema_path = "tests/test-schema.graphql",
@@ -26,7 +26,7 @@ struct Post {
     metadata: Option<EmptyType>,
 }
 
-#[derive(QueryFragment2, Serialize)]
+#[derive(QueryFragment, Serialize)]
 #[cynic(
     graphql_type = "Author",
     schema_path = "tests/test-schema.graphql",
@@ -36,7 +36,7 @@ struct Author {
     name: Option<String>,
 }
 
-#[derive(InlineFragments2, Serialize)]
+#[derive(inlineFragments, Serialize)]
 #[cynic(schema_path = "tests/test-schema.graphql")]
 enum PostOrAuthor {
     #[cynic(rename = "BlogPost")]
@@ -44,7 +44,7 @@ enum PostOrAuthor {
     Author(Author),
 }
 
-#[derive(QueryFragment2, Serialize)]
+#[derive(QueryFragment, Serialize)]
 #[cynic(schema_path = "tests/test-schema.graphql")]
 struct EmptyType {
     #[cynic(rename = "_")]
@@ -52,7 +52,7 @@ struct EmptyType {
 }
 
 mod schema {
-    cynic::use_schema_2!("tests/test-schema.graphql");
+    cynic::use_schema!("tests/test-schema.graphql");
 }
 
 #[test]

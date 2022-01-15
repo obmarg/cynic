@@ -5,6 +5,11 @@ use crate::{idents::PathExt, load_schema, schema, Errors, Ident};
 
 pub mod input;
 
+mod deserialize_impl;
+
+#[cfg(test)]
+mod tests;
+
 pub use input::InlineFragmentsDeriveInput;
 
 use crate::suggestions::{format_guess, guess_field};
@@ -69,16 +74,27 @@ pub(crate) fn inline_fragments_derive_impl(
         let mut type_lock = input.schema_module();
         type_lock.push(Ident::for_type(input.graphql_type_name()));
 
+        let fragments = fragments_from_variants(variants)?;
+
         let inline_fragments_impl = InlineFragmentsImpl {
-            target_struct: input.ident.clone(),
+            target_enum: input.ident.clone(),
             type_lock,
             argument_struct,
-            possible_types: possible_types_from_variants(variants)?,
+            fragments: &fragments,
             graphql_type_name: input.graphql_type_name(),
+            fallback: fallback.clone(),
+        };
+
+        let deserialize_impl = deserialize_impl::DeserializeImpl {
+            target_enum: input.ident.clone(),
+            fragments: &fragments,
             fallback,
         };
 
-        Ok(quote! { #inline_fragments_impl })
+        Ok(quote! {
+            #inline_fragments_impl
+            #deserialize_impl
+        })
     } else {
         Err(syn::Error::new(
             Span::call_site(),
@@ -98,7 +114,7 @@ fn exhaustiveness_check(
     let variant_names = variants
         .iter()
         .filter(|v| !*v.fallback)
-        .map(|v| v.graphql_ident())
+        .map(|v| Ident::for_type(v.graphql_name()))
         .collect::<HashSet<_>>();
 
     let required_variants = match target_type {
@@ -132,16 +148,16 @@ fn exhaustiveness_check(
         for unexpected_variant_name in variant_names.difference(&required_variants) {
             let variant = variants
                 .iter()
-                .find(|v| v.graphql_ident() == *unexpected_variant_name)
+                .find(|v| Ident::for_type(v.graphql_name()) == *unexpected_variant_name)
                 .unwrap();
 
             let candidates = required_variants.iter().map(|v| v.graphql_name());
-            let guess_field = guess_field(candidates, variant.graphql_ident().graphql_name());
+            let guess_field = guess_field(candidates, &variant.graphql_name());
             errors.push(syn::Error::new(
                 variant.span(),
                 format!(
                     "Could not find a match for {} in {}.{}",
-                    variant.graphql_ident().graphql_name(),
+                    variant.graphql_name(),
                     target_type.name(),
                     format_guess(guess_field)
                 ),
@@ -155,15 +171,15 @@ fn exhaustiveness_check(
         for unexpected_variant_name in variant_names.difference(&required_variants) {
             let variant = variants
                 .iter()
-                .find(|v| v.graphql_ident() == *unexpected_variant_name)
+                .find(|v| Ident::for_type(v.graphql_name()) == *unexpected_variant_name)
                 .unwrap();
             let candidates = required_variants.iter().map(|v| v.graphql_name());
-            let guess_field = guess_field(candidates, variant.graphql_ident().graphql_name());
+            let guess_field = guess_field(candidates, &variant.graphql_name());
             errors.push(syn::Error::new(
                 variant.span(),
                 format!(
                     "Could not find a match for {} in {}.{}",
-                    variant.graphql_ident().graphql_name(),
+                    variant.graphql_name(),
                     target_type.name(),
                     format_guess(guess_field)
                 ),
@@ -186,9 +202,15 @@ fn exhaustiveness_check(
     Ok(())
 }
 
-fn possible_types_from_variants(
+struct Fragment {
+    rust_variant_name: syn::Ident,
+    inner_type: syn::Type,
+    graphql_type: String,
+}
+
+fn fragments_from_variants(
     variants: &[SpannedValue<InlineFragmentsDeriveVariant>],
-) -> Result<Vec<(syn::Ident, syn::Type)>, syn::Error> {
+) -> Result<Vec<Fragment>, syn::Error> {
     let mut result = vec![];
     for variant in variants {
         if *variant.fallback {
@@ -202,7 +224,11 @@ fn possible_types_from_variants(
             ));
         }
         let field = variant.fields.fields.first().unwrap();
-        result.push((variant.ident.clone(), field.ty.clone()));
+        result.push(Fragment {
+            rust_variant_name: variant.ident.clone(),
+            inner_type: field.ty.clone(),
+            graphql_type: variant.graphql_name(),
+        });
     }
     Ok(result)
 }
@@ -265,91 +291,50 @@ fn check_fallback(
     }
 }
 
-struct InlineFragmentsImpl {
-    target_struct: syn::Ident,
+struct InlineFragmentsImpl<'a> {
+    target_enum: syn::Ident,
     type_lock: syn::Path,
     argument_struct: syn::Type,
-    possible_types: Vec<(syn::Ident, syn::Type)>,
+    fragments: &'a [Fragment],
     graphql_type_name: String,
     fallback: Option<(syn::Ident, Option<syn::Type>)>,
 }
 
-impl quote::ToTokens for InlineFragmentsImpl {
+impl quote::ToTokens for InlineFragmentsImpl<'_> {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         use quote::{quote, TokenStreamExt};
 
-        let target_struct = &self.target_struct;
+        let target_struct = &self.target_enum;
         let type_lock = &self.type_lock;
         let arguments = &self.argument_struct;
-        let internal_types: Vec<_> = self.possible_types.iter().map(|(_, ty)| ty).collect();
-        let variants: Vec<_> = self.possible_types.iter().map(|(v, _)| v).collect();
+        let inner_types: Vec<_> = self
+            .fragments
+            .iter()
+            .map(|fragment| &fragment.inner_type)
+            .collect();
+        let variants: Vec<_> = self
+            .fragments
+            .iter()
+            .map(|fragment| &fragment.rust_variant_name)
+            .collect();
         let graphql_type = proc_macro2::Literal::string(&self.graphql_type_name);
-
-        let fallback_selection = if let Some((fallback_variant, fallback_type)) = &self.fallback {
-            if let Some(fallback_type) = fallback_type {
-                quote! {
-                    use ::cynic::QueryFragment;
-                    Some(
-                        #fallback_type
-                            ::fragment(
-                                context.with_args(
-                                    ::cynic::FromArguments::from_arguments(context.args)
-                                )
-                            )
-                            .map(#target_struct::#fallback_variant)
-                            .transform_typelock()
-                    )
-                }
-            } else {
-                quote! {
-                    Some(
-                        ::cynic::selection_set::succeed_using(
-                            || #target_struct::#fallback_variant
-                        )
-                    )
-                }
-            }
-        } else {
-            quote! { None }
-        };
 
         tokens.append_all(quote! {
             #[automatically_derived]
-            impl ::cynic::InlineFragments for #target_struct {
-                type TypeLock = #type_lock;
-                type Arguments = #arguments;
+            impl<'de> ::cynic::core::QueryFragment<'de> for #target_struct {
+                type SchemaType = #type_lock;
 
-                fn fragments(context: ::cynic::FragmentContext<'_, Self::Arguments>) ->
-                    Vec<(String, ::cynic::SelectionSet<'static, Self, Self::TypeLock>)>
-                {
-                    use ::cynic::QueryFragment;
-
-                    let args = context.args;
-
-                    let mut rv = vec![];
+                fn query(mut builder: ::cynic::queries::QueryBuilder<Self::SchemaType>) {
                     #(
-                        rv.push((
-                            #internal_types::graphql_type(),
-                            #internal_types
-                                ::fragment(context.with_args(::cynic::FromArguments::from_arguments(args)))
-                                .map(#target_struct::#variants)
-                                .transform_typelock()
-                        ));
+                        let fragment_builder = builder.inline_fragment();
+                        let mut fragment_builder = fragment_builder.on::<<#inner_types as ::cynic::core::QueryFragment>::SchemaType>();
+                        <#inner_types as ::cynic::core::QueryFragment>::query(
+                            fragment_builder.select_children()
+                        );
                     )*
-                    rv
-                }
-
-                fn graphql_type() -> String {
-                    #graphql_type.to_string()
-                }
-
-                fn fallback(context: ::cynic::FragmentContext<'_, Self::Arguments>) ->
-                  Option<::cynic::SelectionSet<'static, Self, Self::TypeLock>>
-                {
-                    #fallback_selection
                 }
             }
-        });
+        })
     }
 }
 

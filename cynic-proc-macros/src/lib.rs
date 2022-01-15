@@ -8,9 +8,8 @@ extern crate proc_macro;
 use proc_macro::TokenStream;
 
 use cynic_codegen::{
-    enum_derive, enum_derive_2, fragment_arguments_derive, fragment_derive, fragment_derive_2,
-    inline_fragments_derive, inline_fragments_derive_2, input_object_derive, input_object_derive_2,
-    scalar_derive, schema_for_derives, use_schema, use_schema2,
+    enum_derive, fragment_arguments_derive, fragment_derive, inline_fragments_derive,
+    input_object_derive, scalar_derive, schema_for_derives, use_schema,
 };
 
 /// Imports a schema for use by cynic.
@@ -26,32 +25,11 @@ use cynic_codegen::{
 /// ```
 #[proc_macro]
 pub fn use_schema(input: TokenStream) -> TokenStream {
-    let input = syn::parse_macro_input!(input as use_schema::QueryDslParams);
+    let input = syn::parse_macro_input!(input as use_schema::UseSchemaParams);
 
     let rv = use_schema::use_schema(input).unwrap().into();
 
     //eprintln!("{}", rv);
-
-    rv
-}
-
-/// Imports a schema for use by cynic.
-///
-/// This creates all the required type markers required to use cynic with a given schema.
-/// It should usually be called in a module named schema, as the only statement in that module
-///
-/// ```rust,ignore
-/// mod schema {
-///     cynic::use_schema!("../schemas/starwars.schema.graphql");
-/// }
-/// ```
-#[proc_macro]
-pub fn use_schema_2(input: TokenStream) -> TokenStream {
-    let input = syn::parse_macro_input!(input as use_schema2::UseSchemaParams);
-
-    let rv = use_schema2::use_schema(input).unwrap().into();
-
-    // eprintln!("{}", rv);
 
     rv
 }
@@ -69,23 +47,6 @@ pub fn query_fragment_derive(input: TokenStream) -> TokenStream {
     };
 
     //eprintln!("{}", rv);
-
-    rv
-}
-
-/// Derives `cynic::QueryFragment2`
-///
-/// See [the book for usage details](https://cynic-rs.dev/derives/query-fragments.html)
-#[proc_macro_derive(QueryFragment2, attributes(cynic, arguments))]
-pub fn query_fragment_2_derive(input: TokenStream) -> TokenStream {
-    let ast = syn::parse_macro_input!(input as syn::DeriveInput);
-
-    let rv = match fragment_derive_2::fragment_derive(&ast) {
-        Ok(tokens) => tokens.into(),
-        Err(e) => e.to_compile_error().into(),
-    };
-
-    // eprintln!("{}", rv);
 
     rv
 }
@@ -122,23 +83,6 @@ pub fn inline_fragments_derive(input: TokenStream) -> TokenStream {
     rv
 }
 
-/// Derives `cynic::InlineFragments`
-///
-/// See [the book for usage details](https://cynic-rs.dev/derives/inline-fragments.html)
-#[proc_macro_derive(InlineFragments2, attributes(cynic))]
-pub fn inline_fragments_derive_2(input: TokenStream) -> TokenStream {
-    let ast = syn::parse_macro_input!(input as syn::DeriveInput);
-
-    let rv = match inline_fragments_derive_2::inline_fragments_derive(&ast) {
-        Ok(tokens) => tokens.into(),
-        Err(e) => e.to_compile_errors().into(),
-    };
-
-    //eprintln!("{}", rv);
-
-    rv
-}
-
 /// Derives `cynic::Enum`
 ///
 /// See [the book for usage details](https://cynic-rs.dev/derives/enums.html)
@@ -147,23 +91,6 @@ pub fn enum_derive(input: TokenStream) -> TokenStream {
     let ast = syn::parse_macro_input!(input as syn::DeriveInput);
 
     let rv = match enum_derive::enum_derive(&ast) {
-        Ok(tokens) => tokens.into(),
-        Err(e) => e.to_compile_error().into(),
-    };
-
-    //eprintln!("{}", rv);
-
-    rv
-}
-
-/// Derives `cynic::Enum2`
-///
-/// See [the book for usage details](https://cynic-rs.dev/derives/enums.html)
-#[proc_macro_derive(Enum2, attributes(cynic))]
-pub fn enum_derive_2(input: TokenStream) -> TokenStream {
-    let ast = syn::parse_macro_input!(input as syn::DeriveInput);
-
-    let rv = match enum_derive_2::enum_derive(&ast) {
         Ok(tokens) => tokens.into(),
         Err(e) => e.to_compile_error().into(),
     };
@@ -202,24 +129,7 @@ pub fn input_object_derive(input: TokenStream) -> TokenStream {
         Err(e) => e.to_compile_error().into(),
     };
 
-    //eprintln!("{}", rv);
-
-    rv
-}
-
-/// Derives `InputObject2`
-///
-/// See [the book for usage details](https://cynic-rs.dev/derives/input-objects.html)
-#[proc_macro_derive(InputObject2, attributes(cynic))]
-pub fn input_object_derive_2(input: TokenStream) -> TokenStream {
-    let ast = syn::parse_macro_input!(input as syn::DeriveInput);
-
-    let rv = match input_object_derive::input_object_derive(&ast) {
-        Ok(tokens) => tokens.into(),
-        Err(e) => e.to_compile_error().into(),
-    };
-
-    //eprintln!("{}", rv);
+    eprintln!("{}", rv);
 
     rv
 }
