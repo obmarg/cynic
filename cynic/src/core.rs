@@ -44,10 +44,10 @@ impl<'de, T> QueryFragment<'de> for Box<T>
 where
     T: QueryFragment<'de>,
 {
-    type SchemaType = Vec<T::SchemaType>;
+    type SchemaType = T::SchemaType;
 
     fn query(builder: QueryBuilder<Self::SchemaType>) {
-        T::query(builder.into_inner())
+        T::query(builder)
     }
 }
 
