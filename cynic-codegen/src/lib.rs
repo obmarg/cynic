@@ -9,7 +9,6 @@ pub mod use_schema;
 
 mod error;
 mod idents;
-mod module;
 mod schema;
 mod suggestions;
 mod type_validation;
