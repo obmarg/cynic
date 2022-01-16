@@ -51,6 +51,30 @@ where
     }
 }
 
+impl<'de, T> QueryFragment<'de> for std::rc::Rc<T>
+where
+    Self: serde::Deserialize<'de>,
+    T: QueryFragment<'de>,
+{
+    type SchemaType = T::SchemaType;
+
+    fn query(builder: QueryBuilder<Self::SchemaType>) {
+        T::query(builder)
+    }
+}
+
+impl<'de, T> QueryFragment<'de> for std::sync::Arc<T>
+where
+    Self: serde::Deserialize<'de>,
+    T: QueryFragment<'de>,
+{
+    type SchemaType = T::SchemaType;
+
+    fn query(builder: QueryBuilder<Self::SchemaType>) {
+        T::query(builder)
+    }
+}
+
 impl<'de> QueryFragment<'de> for bool {
     type SchemaType = bool;
 
