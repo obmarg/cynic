@@ -1,0 +1,57 @@
+---
+source: cynic-codegen/src/enum_derive/mod.rs
+assertion_line: 394
+expression: "format_code(format!(\"{}\", tokens))"
+
+---
+#[automatically_derived]
+impl<'de> ::cynic::core::Enum<'de> for States {}
+#[automatically_derived]
+impl<'de> ::cynic::serde::Serialize for States {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: ::cynic::serde::Serializer,
+    {
+        match self {
+            States::Closed => serializer.serialize_str("CLOSED"),
+            States::Deleted => serializer.serialize_str("DELETED"),
+            States::Open => serializer.serialize_str("OPEN"),
+        }
+    }
+}
+#[automatically_derived]
+impl<'de> ::cynic::serde::Deserialize<'de> for States {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: ::cynic::serde::Deserializer<'de>,
+    {
+        match <String as ::cynic::serde::Deserialize>::deserialize(deserializer)?.as_ref() {
+            "CLOSED" => Ok(States::Closed),
+            "DELETED" => Ok(States::Deleted),
+            "OPEN" => Ok(States::Open),
+            unknown => {
+                const VARIANTS: &'static [&'static str] = &["CLOSED", "DELETED", "OPEN"];
+                Err(::cynic::serde::de::Error::unknown_variant(
+                    unknown, VARIANTS,
+                ))
+            }
+        }
+    }
+}
+#[automatically_derived]
+impl ::cynic::schema::IsEnum<schema::States> for States {
+    type SchemaType = schema::States;
+}
+#[automatically_derived]
+impl ::cynic::queries::IntoInputLiteral<schema::States> for States {
+    fn into_literal(self) -> ::cynic::queries::InputLiteral {
+        use std::borrow::Cow;
+        ::cynic::queries::InputLiteral::String(Cow::Borrowed(match self {
+            States::Closed => "CLOSED",
+            States::Deleted => "DELETED",
+            States::Open => "OPEN",
+        }))
+    }
+}
+::cynic::impl_into_input_literal_for_wrappers!(States);
+

@@ -131,6 +131,20 @@ pub fn enum_derive_impl(
                 type SchemaType = #schema_module::#enum_marker_ident;
             }
 
+            #[automatically_derived]
+            impl ::cynic::queries::IntoInputLiteral<#schema_module::#enum_marker_ident> for #ident {
+                fn into_literal(self) -> ::cynic::queries::InputLiteral {
+                    use std::borrow::Cow;
+
+                    ::cynic::queries::InputLiteral::String(Cow::Borrowed(match self {
+                        #(
+                            #ident::#variants => #string_literals,
+                        )*
+                    }))
+                }
+            }
+
+            ::cynic::impl_into_input_literal_for_wrappers!(#ident);
             // ::cynic::impl_input_type!(#ident, #schema_module::#enum_marker_ident);
         })
     } else {
