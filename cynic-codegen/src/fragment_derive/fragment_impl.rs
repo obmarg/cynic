@@ -10,7 +10,7 @@ use crate::{
         names::FieldName,
         types::{Field, OutputType, TypeRef},
     },
-    type_validation_2::{check_spread_type, check_types_are_compatible, CheckMode},
+    type_validation::{check_spread_type, check_types_are_compatible, CheckMode},
     Ident,
 };
 

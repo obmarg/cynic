@@ -5,7 +5,7 @@ use syn::spanned::Spanned;
 use super::InputObjectDeriveField;
 use crate::{
     schema::types::{InputType, InputValue, TypeRef},
-    type_validation_2::{check_types_are_compatible, CheckMode},
+    type_validation::{check_types_are_compatible, CheckMode},
 };
 
 pub struct FieldSerializer<'a> {

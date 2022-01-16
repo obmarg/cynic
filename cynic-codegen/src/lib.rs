@@ -12,7 +12,7 @@ mod idents;
 mod module;
 mod schema;
 mod suggestions;
-mod type_validation_2;
+mod type_validation;
 
 pub use idents::RenameAll;
 

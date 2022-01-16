@@ -4,7 +4,7 @@ use darling::util::SpannedValue;
 
 use crate::{
     idents::{RenableFieldIdent, RenameRule},
-    type_validation_2::CheckMode,
+    type_validation::CheckMode,
     Errors, RenameAll,
 };
 use proc_macro2::Span;
