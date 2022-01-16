@@ -1,0 +1,46 @@
+---
+source: cynic-codegen/src/input_object_derive/tests.rs
+assertion_line: 24
+expression: "format_code(format!(\"{}\", tokens))"
+
+---
+#[automatically_derived]
+impl ::cynic::schema::IsInputObject<schema::IssueOrder> for IssueOrder {}
+#[automatically_derived]
+impl ::cynic::serde::Serialize for IssueOrder {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: ::cynic::serde::Serializer,
+    {
+        use cynic::serde::ser::SerializeMap;
+        ::cynic::assert_impl!(OrderDirection: ::cynic::schema::IsEnum<schema::OrderDirection>);
+        ::cynic::assert_impl!(IssueOrderField: ::cynic::schema::IsEnum<schema::IssueOrderField>);
+        let mut map_serializer = serializer.serialize_map(Some(2usize))?;
+        map_serializer.serialize_entry("direction", &self.direction)?;
+        map_serializer.serialize_entry("field", &self.field)?;
+        map_serializer.end()
+    }
+}
+#[automatically_derived]
+impl ::cynic::queries::IntoInputLiteral<schema::IssueOrder> for IssueOrder {
+    fn into_literal(self) -> ::cynic::queries::InputLiteral {
+        let mut vec = Vec::new();
+        vec.push(
+            ::cynic::queries::Argument {
+                name: "direction",
+                value: <OrderDirection as ::cynic::queries::IntoInputLiteral<
+                    schema::OrderDirection,
+                >>::into_literal(self.direction),
+            },
+        );
+        vec.push(::cynic::queries::Argument {
+            name: "field",
+            value: <IssueOrderField as ::cynic::queries::IntoInputLiteral<
+                schema::IssueOrderField,
+            >>::into_literal(self.field),
+        });
+        ::cynic::queries::InputLiteral::Object(vec)
+    }
+}
+::cynic::impl_into_input_literal_for_wrappers!(IssueOrder);
+

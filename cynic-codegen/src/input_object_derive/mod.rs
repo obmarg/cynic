@@ -19,6 +19,9 @@ use field_serializer::FieldSerializer;
 
 pub(crate) mod input;
 
+#[cfg(test)]
+mod tests;
+
 use crate::suggestions::{format_guess, guess_field};
 use input::InputObjectDeriveField;
 pub use input::InputObjectDeriveInput;
@@ -95,6 +98,11 @@ pub fn input_object_derive_impl(
             .iter()
             .map(|fs| fs.field_insert_call(&map_serializer_ident));
 
+        let input_literal_vec_ident = &proc_macro2::Ident::new("vec", Span::call_site());
+        let input_literal_inserts = field_serializers
+            .iter()
+            .map(|fs| fs.input_literal_insert_call(input_literal_vec_ident));
+
         let map_len = field_serializers.len();
 
         Ok(quote! {
@@ -118,7 +126,18 @@ pub fn input_object_derive_impl(
                 }
             }
 
-            // TODO: Output an IntoArgumentLiteral impl
+            #[automatically_derived]
+            impl ::cynic::queries::IntoInputLiteral<#schema_module::#input_marker_ident> for #ident {
+                fn into_literal(self) -> ::cynic::queries::InputLiteral {
+                    let mut #input_literal_vec_ident = Vec::new();
+
+                    #(#input_literal_inserts)*
+
+                    ::cynic::queries::InputLiteral::Object(#input_literal_vec_ident)
+                }
+            }
+
+            ::cynic::impl_into_input_literal_for_wrappers!(#ident);
         })
     } else {
         Err(syn::Error::new(

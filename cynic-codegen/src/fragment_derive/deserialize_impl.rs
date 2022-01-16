@@ -70,6 +70,7 @@ impl quote::ToTokens for DeserializeImpl {
                 {
                     #[derive(::cynic::serde::Deserialize)]
                     #[serde(field_identifier, crate="::cynic::serde")]
+                    #[allow(non_camel_case_types)]
                     enum Field {
                         #(
                             #[serde(rename = #serialized_names)]

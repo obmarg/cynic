@@ -3,7 +3,7 @@ mod builders;
 mod into_input_literal;
 
 pub use self::{
-    ast::{InputLiteral, SelectionSet},
+    ast::{Argument, InputLiteral, SelectionSet},
     builders::QueryBuilder,
     into_input_literal::IntoInputLiteral,
 };

@@ -34,6 +34,16 @@ impl<'a, T> QueryBuilder<'a, Option<T>> {
     }
 }
 
+impl<'a, T> QueryBuilder<'a, Box<T>> {
+    pub(crate) fn into_inner(self) -> QueryBuilder<'a, T> {
+        QueryBuilder {
+            selection_set: self.selection_set,
+            has_typename: self.has_typename,
+            phantom: PhantomData,
+        }
+    }
+}
+
 // TODO: move this to selection set module.
 // TODO: Maybe FieldSelector/SelectionSetBuilder/SelectionSet/SelectionBuilder/Selector?
 // Kinda like SelectionSet actually since we are literally just building up a set of fields?

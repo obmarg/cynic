@@ -93,4 +93,38 @@ impl<'a> FieldSerializer<'a> {
             insert_call
         }
     }
+
+    pub fn input_literal_insert_call(&self, vec_name: &proc_macro2::Ident) -> TokenStream {
+        let rust_field_name = &self.rust_field.ident;
+        let rust_field_type = &self.rust_field.ty;
+        let field_marker_type = self
+            .graphql_field
+            .value_type
+            .marker_type()
+            .to_path(self.schema_module);
+        let graphql_field_name = proc_macro2::Literal::string(self.graphql_field.name.as_str());
+
+        let field_span = self.rust_field.ty.span();
+        let insert_call = quote_spanned! { field_span =>
+            #vec_name.push(
+                ::cynic::queries::Argument {
+                    name: #graphql_field_name,
+                    value: <
+                        #rust_field_type as ::cynic::queries::IntoInputLiteral<#field_marker_type>
+                    >::into_literal(self.#rust_field_name)
+                }
+            );
+        };
+
+        if let Some(skip_check_fn) = &self.rust_field.skip_serializing_if {
+            let skip_check_fn = &**skip_check_fn;
+            quote! {
+                if !#skip_check_fn(&self.#rust_field_name) {
+                    #insert_call
+                }
+            }
+        } else {
+            insert_call
+        }
+    }
 }
