@@ -8,21 +8,15 @@ pub mod schema_for_derives;
 pub mod use_schema;
 
 mod error;
-mod field_argument;
-mod field_type;
-mod generic_param;
 mod idents;
 mod module;
 mod schema;
 mod suggestions;
-mod type_validation;
 mod type_validation_2;
 
 pub use idents::RenameAll;
 
 use error::Errors;
-use field_argument::FieldArgument;
-use field_type::FieldType;
 use idents::Ident;
 use schema::{load_schema, SchemaLoadError, TypeIndex};
 

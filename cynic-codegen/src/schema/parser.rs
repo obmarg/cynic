@@ -1,4 +1,4 @@
-use crate::{FieldArgument, TypeIndex};
+use crate::TypeIndex;
 
 // TODO: It would be good to make these use &'str since this is compile time
 // and max speed is best.
@@ -84,64 +84,18 @@ impl From<std::io::Error> for SchemaLoadError {
     }
 }
 
-/// Extension trait for the schema Field type
-pub trait FieldExt {
-    fn required_arguments(&self) -> Vec<InputValue>;
-    fn optional_arguments(&self) -> Vec<InputValue>;
-}
-
-impl FieldExt for Field {
-    fn required_arguments(&self) -> Vec<InputValue> {
-        self.arguments
-            .iter()
-            .filter(|arg| {
-                // Note: We're passing an empty TypeIndex in here, but that's OK as
-                // we only want to know if things are required
-                FieldArgument::from_input_value(arg, &TypeIndex::empty()).is_required()
-            })
-            .cloned()
-            .collect()
-    }
-
-    fn optional_arguments(&self) -> Vec<InputValue> {
-        self.arguments
-            .iter()
-            .filter(|arg| {
-                // Note: We're passing an empty TypeIndex in here, but that's OK as
-                // we only want to know if things are required
-                !FieldArgument::from_input_value(arg, &TypeIndex::empty()).is_required()
-            })
-            .cloned()
-            .collect()
-    }
-}
-
 /// Extension trait for the schema Type type
 pub trait TypeExt {
-    fn to_graphql_string(&self) -> String;
     fn inner_name(&self) -> &str;
-    fn is_required(&self) -> bool;
 }
 
 impl TypeExt for Type {
-    fn to_graphql_string(&self) -> String {
-        match self {
-            Type::NamedType(name) => name.clone(),
-            Type::ListType(inner) => format!("[{}]", inner.to_graphql_string()),
-            Type::NonNullType(inner) => format!("{}!", inner.to_graphql_string()),
-        }
-    }
-
     fn inner_name(&self) -> &str {
         match self {
             Type::NamedType(s) => s,
             Type::ListType(inner) => inner.inner_name(),
             Type::NonNullType(inner) => inner.inner_name(),
         }
-    }
-
-    fn is_required(&self) -> bool {
-        matches!(self, Type::NonNullType(_))
     }
 }
 

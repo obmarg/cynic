@@ -13,7 +13,6 @@ use syn::parse_quote;
 
 use crate::{
     error::Errors,
-    field_type::FieldType,
     idents::{to_snake_case, Ident},
     schema::{self, types::Type, Schema, TypeIndex},
 };

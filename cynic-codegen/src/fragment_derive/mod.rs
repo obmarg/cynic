@@ -1,18 +1,13 @@
-use std::collections::{HashMap, HashSet};
-
 use proc_macro2::{Span, TokenStream};
-use syn::spanned::Spanned;
 
 use crate::{
-    idents::PathExt,
     schema::{
         load_schema,
-        types::{self as schema, Type},
+        types::{self as schema},
         Schema, Unvalidated,
     },
     suggestions::FieldSuggestionError,
-    type_validation::{check_spread_type, check_types_are_compatible, CheckMode},
-    Errors, FieldType, Ident, TypeIndex,
+    Errors, Ident,
 };
 
 mod arguments;

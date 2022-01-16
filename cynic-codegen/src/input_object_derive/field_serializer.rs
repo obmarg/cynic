@@ -6,7 +6,6 @@ use super::InputObjectDeriveField;
 use crate::{
     schema::types::{InputType, InputValue, TypeRef},
     type_validation_2::{check_types_are_compatible, CheckMode},
-    FieldType, TypeIndex,
 };
 
 pub struct FieldSerializer<'a> {
