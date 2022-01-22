@@ -1,6 +1,8 @@
 use darling::util::SpannedValue;
 use proc_macro2::Span;
 
+use crate::idents::RenamableFieldIdent;
+
 #[derive(darling::FromDeriveInput)]
 #[darling(attributes(cynic), supports(enum_newtype, enum_unit))]
 pub struct InlineFragmentsDeriveInput {
@@ -55,6 +57,7 @@ pub(super) struct InlineFragmentsDeriveVariant {
 
     #[darling(default)]
     rename: Option<SpannedValue<String>>,
+    // TODO: Do I need to check that the fallback is a unit variant?  Probably
     #[darling(default)]
     pub(super) fallback: SpannedValue<bool>,
 }

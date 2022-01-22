@@ -3,7 +3,7 @@ use std::collections::HashSet;
 use darling::util::SpannedValue;
 
 use crate::{
-    idents::{RenableFieldIdent, RenameRule},
+    idents::{RenamableFieldIdent, RenameRule},
     type_validation::CheckMode,
     Errors, RenameAll,
 };
@@ -174,8 +174,8 @@ impl FragmentDeriveField {
         }
     }
 
-    pub(super) fn graphql_ident(&self) -> RenableFieldIdent {
-        let mut ident = RenableFieldIdent::from(
+    pub(super) fn graphql_ident(&self) -> RenamableFieldIdent {
+        let mut ident = RenamableFieldIdent::from(
             self.ident
                 .clone()
                 .expect("FragmentDerive only supports named structs"),

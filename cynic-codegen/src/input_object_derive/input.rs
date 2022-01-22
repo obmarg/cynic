@@ -1,7 +1,7 @@
 use darling::util::SpannedValue;
 use syn::spanned::Spanned;
 
-use crate::idents::{RenableFieldIdent, RenameAll};
+use crate::idents::{RenamableFieldIdent, RenameAll};
 use proc_macro2::Span;
 
 #[derive(darling::FromDeriveInput)]
@@ -68,8 +68,8 @@ impl InputObjectDeriveInput {
 }
 
 impl InputObjectDeriveField {
-    pub fn graphql_ident(&self, rename_rule: RenameAll) -> RenableFieldIdent {
-        let mut ident = RenableFieldIdent::from(
+    pub fn graphql_ident(&self, rename_rule: RenameAll) -> RenamableFieldIdent {
+        let mut ident = RenamableFieldIdent::from(
             self.ident
                 .clone()
                 .expect("InputObject only supports named structs"),

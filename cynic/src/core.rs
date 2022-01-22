@@ -8,6 +8,8 @@ use std::fmt::Write;
 
 use std::marker::PhantomData;
 
+use serde::Deserialize;
+
 use crate::{indent::indented, queries::QueryBuilder, schema};
 
 // Annoyingly this means people can't derive Deserialize _as well as_ use cynics derives.

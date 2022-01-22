@@ -57,6 +57,7 @@ impl<'a> Schema<'a, Unvalidated> {
         Kind: TryFrom<types::Type<'a>, Error = SchemaError> + 'a,
     {
         Kind::try_from(self.type_index.lookup_valid_type(name)?)
+        // TODO: Suggestion logic should probably be implemented here (or in type_index)
     }
 }
 

@@ -5,21 +5,21 @@ use super::{to_camel_case, to_pascal_case, RenameRule};
 /// A wrapper around proc_macro2::Ident for a struct field that keeps
 /// track of whether the given field needs renamed to map to a graphql
 /// field.
-pub struct RenableFieldIdent {
+pub struct RenamableFieldIdent {
     ident: proc_macro2::Ident,
     renamed: Option<(String, proc_macro2::Span)>,
 }
 
-impl From<proc_macro2::Ident> for RenableFieldIdent {
+impl From<proc_macro2::Ident> for RenamableFieldIdent {
     fn from(ident: proc_macro2::Ident) -> Self {
-        RenableFieldIdent {
+        RenamableFieldIdent {
             ident,
             renamed: None,
         }
     }
 }
 
-impl RenableFieldIdent {
+impl RenamableFieldIdent {
     pub fn set_rename(&mut self, rename: String, rename_span: proc_macro2::Span) {
         self.renamed = Some((rename, rename_span));
     }

@@ -16,7 +16,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Changes
 
-- `cynic` no longer uses `inflector` to re-case things.  Hopefully this won't cause
+- `cynic` no longer uses `inflector` to re-case things. Hopefully this won't cause
   any regressions, but if it does please raise an issue.
 
 ## v1.0.0 - 2021-12-09
@@ -38,14 +38,14 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ### Changes
 
 - The `QueryFragment` derive now supports fields with types that take generic
-  parameters directly, e.g. `DateTime<Utc>` from chrono.  Previously this would
+  parameters directly, e.g. `DateTime<Utc>` from chrono. Previously this would
   have required a type alias to hide the generic parameters from cynic.
 
 ### Bug Fixes
 
 - The various HTTP client integrations will now return HTTP error details and
   the full body on non 2XX responses that don't contain a valid GraphQL
-  response.  Previously they would have tried to decode the response as GraphQL
+  response. Previously they would have tried to decode the response as GraphQL
   and returned the error from that operation.
 
 ## v0.15.1 - xxxx-xx-xx
@@ -69,13 +69,13 @@ New generator features, so I'm putting them out in a point release:
 
 ### Breaking Changes
 
-- Removed the no longer used `chrono` feature.  It didn't enable any code so
+- Removed the no longer used `chrono` feature. It didn't enable any code so
   downstreams shouldn't really be broken by this (other than a possible
   `Cargo.toml` tweak)
 
 ### New Features
 
-- Cynic now supports GraphQL field aliases.  These can be requested, but will
+- Cynic now supports GraphQL field aliases. These can be requested, but will
   also automatically be added to queries if any QueryFragment requests the same
   field twice.
 - The generator also now supports field aliases.
@@ -118,7 +118,7 @@ This release is only of the `cynic` crate - other crates remain at 0.13.1
 ### Bug Fixes
 
 - This fixes a problem with JSON decoding that made it extremely inefficient
-  (particularly on larger responses).  In my benchmarking this improves
+  (particularly on larger responses). In my benchmarking this improves
   decoding performance 10x.
 
 ## v0.13.1 - 2021-04-26

@@ -1,6 +1,6 @@
 use std::borrow::Cow;
 
-use crate::idents::{to_snake_case, RenableFieldIdent};
+use crate::idents::{to_snake_case, RenamableFieldIdent};
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct FieldName<'a> {
@@ -25,8 +25,8 @@ impl<'a> PartialEq<str> for FieldName<'a> {
     }
 }
 
-impl<'a> PartialEq<RenableFieldIdent> for FieldName<'a> {
-    fn eq(&self, other: &RenableFieldIdent) -> bool {
+impl<'a> PartialEq<RenamableFieldIdent> for FieldName<'a> {
+    fn eq(&self, other: &RenamableFieldIdent) -> bool {
         self.graphql_name == other.graphql_name()
     }
 }

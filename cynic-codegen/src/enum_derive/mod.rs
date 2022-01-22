@@ -144,7 +144,9 @@ pub fn enum_derive_impl(
                 }
             }
 
-            ::cynic::impl_into_input_literal_for_wrappers!(#ident);
+            ::cynic::impl_into_input_literal_for_wrappers!(#ident, #schema_module::#enum_marker_ident);
+            // TODO: impl IntoObjectLiteral....
+
             // ::cynic::impl_input_type!(#ident, #schema_module::#enum_marker_ident);
         })
     } else {

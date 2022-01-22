@@ -137,7 +137,7 @@ pub fn input_object_derive_impl(
                 }
             }
 
-            ::cynic::impl_into_input_literal_for_wrappers!(#ident);
+            ::cynic::impl_into_input_literal_for_wrappers!(#ident, #schema_module::#input_marker_ident);
         })
     } else {
         Err(syn::Error::new(
