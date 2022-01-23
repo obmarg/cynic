@@ -5,7 +5,9 @@ expression: "format_code(format!(\"{}\", tokens))"
 
 ---
 #[automatically_derived]
-impl ::cynic::schema::IsInputObject<schema::IssueOrder> for IssueOrder {}
+impl ::cynic::core::InputObject for IssueOrder {
+    type SchemaType = schema::IssueOrder;
+}
 #[automatically_derived]
 impl ::cynic::serde::Serialize for IssueOrder {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>

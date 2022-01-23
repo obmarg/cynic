@@ -107,7 +107,9 @@ pub fn input_object_derive_impl(
 
         Ok(quote! {
             #[automatically_derived]
-            impl ::cynic::schema::IsInputObject<#schema_module::#input_marker_ident> for #ident {}
+            impl ::cynic::core::InputObject for #ident {
+                type SchemaType = #schema_module::#input_marker_ident;
+            }
 
             #[automatically_derived]
             impl ::cynic::serde::Serialize for #ident {

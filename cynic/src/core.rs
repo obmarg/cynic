@@ -104,6 +104,31 @@ pub trait Enum<'de>: serde::Deserialize<'de> + serde::Serialize {}
 // TODO: Does this need a TypeLock on it?
 pub trait Scalar<'de>: serde::Deserialize<'de> + serde::Serialize {}
 
+pub trait InputObject: serde::Serialize {
+    type SchemaType;
+}
+
+impl<T> InputObject for Option<T>
+where
+    T: InputObject,
+{
+    type SchemaType = Option<T::SchemaType>;
+}
+
+impl<T> InputObject for Vec<T>
+where
+    T: InputObject,
+{
+    type SchemaType = Vec<T::SchemaType>;
+}
+
+impl<T> InputObject for Box<T>
+where
+    T: InputObject,
+{
+    type SchemaType = T::SchemaType;
+}
+
 pub trait QueryVariables {
     type Fields;
 }
