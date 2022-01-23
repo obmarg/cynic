@@ -16,7 +16,7 @@ use super::fragment_derive;
             graphql_type = "Query"
         )]
         struct MyQuery {
-            #[arguments(id: "TODO")]
+            #[arguments(id: "1234")]
             post: Option<BlogPostOutput>,
             #[cynic(rename = "allPosts")]
             posts: Vec<BlogPostOutput>,

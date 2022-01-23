@@ -1,5 +1,6 @@
 ---
-source: cynic-codegen/src/inline_fragments_derive_2/tests.rs
+source: cynic-codegen/src/inline_fragments_derive/tests.rs
+assertion_line: 28
 expression: "format_code(format!(\"{}\", tokens))"
 
 ---
@@ -24,7 +25,7 @@ impl<'de> ::cynic::serde::Deserialize<'de> for PostOrAuthor {
         D: ::cynic::serde::Deserializer<'de>,
     {
         #[derive(:: cynic :: serde :: Deserialize)]
-        #[serde(tag = "__typename")]
+        #[serde(tag = "__typename", crate = "::cynic::serde")]
         enum Intermediate {
             #[serde(rename = "BlogPost")]
             Post(Post),

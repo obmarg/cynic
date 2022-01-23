@@ -1,5 +1,6 @@
 ---
-source: cynic-codegen/src/fragment_derive_2/tests.rs
+source: cynic-codegen/src/fragment_derive/tests.rs
+assertion_line: 51
 expression: "format_code(format!(\"{}\", tokens))"
 
 ---
@@ -21,12 +22,13 @@ impl<'de> ::cynic::serde::Deserialize<'de> for BlogPostOutput {
         D: ::cynic::serde::Deserializer<'de>,
     {
         #[derive(:: cynic :: serde :: Deserialize)]
-        #[serde(field_identifier)]
+        #[serde(field_identifier, crate = "::cynic::serde")]
+        #[allow(non_camel_case_types)]
         enum Field {
             #[serde(rename = "hasMetadata")]
-            HasMetadata,
+            has_metadata,
             #[serde(rename = "author")]
-            Author,
+            author,
         }
         struct Visitor;
         impl<'de> ::cynic::serde::de::Visitor<'de> for Visitor {
@@ -42,7 +44,7 @@ impl<'de> ::cynic::serde::Deserialize<'de> for BlogPostOutput {
                 let mut author = None;
                 while let Some(key) = map.next_key()? {
                     match key {
-                        Field::HasMetadata => {
+                        Field::has_metadata => {
                             if has_metadata.is_some() {
                                 return Err(::cynic::serde::de::Error::duplicate_field(
                                     "hasMetadata",
@@ -50,7 +52,7 @@ impl<'de> ::cynic::serde::Deserialize<'de> for BlogPostOutput {
                             }
                             has_metadata = Some(map.next_value()?);
                         }
-                        Field::Author => {
+                        Field::author => {
                             if author.is_some() {
                                 return Err(::cynic::serde::de::Error::duplicate_field("author"));
                             }

@@ -1,6 +1,6 @@
 ---
-source: cynic-codegen/src/fragment_derive_2/tests.rs
-assertion_line: 40
+source: cynic-codegen/src/fragment_derive/tests.rs
+assertion_line: 51
 expression: "format_code(format!(\"{}\", tokens))"
 
 ---
@@ -11,7 +11,7 @@ impl<'de> ::cynic::core::QueryFragment<'de> for MyQuery {
         let mut field_builder = builder . select_field :: < schema :: query_fields :: Post , < Option < BlogPostOutput > as :: cynic :: core :: QueryFragment > :: SchemaType > () ;
         field_builder
             .argument::<schema::query_fields::post_arguments::Id>()
-            .literal("TODO");
+            .literal("1234");
         <Option<BlogPostOutput> as ::cynic::core::QueryFragment>::query(
             field_builder.select_children(),
         );
@@ -30,12 +30,13 @@ impl<'de> ::cynic::serde::Deserialize<'de> for MyQuery {
         D: ::cynic::serde::Deserializer<'de>,
     {
         #[derive(:: cynic :: serde :: Deserialize)]
-        #[serde(field_identifier)]
+        #[serde(field_identifier, crate = "::cynic::serde")]
+        #[allow(non_camel_case_types)]
         enum Field {
             #[serde(rename = "post")]
-            Post,
+            post,
             #[serde(rename = "allPosts")]
-            Posts,
+            posts,
         }
         struct Visitor;
         impl<'de> ::cynic::serde::de::Visitor<'de> for Visitor {
@@ -51,13 +52,13 @@ impl<'de> ::cynic::serde::Deserialize<'de> for MyQuery {
                 let mut posts = None;
                 while let Some(key) = map.next_key()? {
                     match key {
-                        Field::Post => {
+                        Field::post => {
                             if post.is_some() {
                                 return Err(::cynic::serde::de::Error::duplicate_field("post"));
                             }
                             post = Some(map.next_value()?);
                         }
-                        Field::Posts => {
+                        Field::posts => {
                             if posts.is_some() {
                                 return Err(::cynic::serde::de::Error::duplicate_field("allPosts"));
                             }
