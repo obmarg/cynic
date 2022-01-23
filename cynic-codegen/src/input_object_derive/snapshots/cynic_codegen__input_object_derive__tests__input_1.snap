@@ -15,8 +15,12 @@ impl ::cynic::serde::Serialize for IssueOrder {
         S: ::cynic::serde::Serializer,
     {
         use cynic::serde::ser::SerializeMap;
-        ::cynic::assert_impl!(OrderDirection: ::cynic::schema::IsEnum<schema::OrderDirection>);
-        ::cynic::assert_impl!(IssueOrderField: ::cynic::schema::IsEnum<schema::IssueOrderField>);
+        ::cynic::assert_impl!(
+            OrderDirection: ::cynic::core::Enum<SchemaType = schema::OrderDirection>
+        );
+        ::cynic::assert_impl!(
+            IssueOrderField: ::cynic::core::Enum<SchemaType = schema::IssueOrderField>
+        );
         let mut map_serializer = serializer.serialize_map(Some(2usize))?;
         map_serializer.serialize_entry("direction", &self.direction)?;
         map_serializer.serialize_entry("field", &self.field)?;

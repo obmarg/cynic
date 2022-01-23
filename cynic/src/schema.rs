@@ -122,31 +122,6 @@ impl IsScalar<crate::Id> for crate::Id {
     type SchemaType = crate::Id;
 }
 
-pub trait IsEnum<SchemaType> {
-    type SchemaType;
-}
-
-impl<T, U> IsEnum<Option<T>> for Option<U>
-where
-    U: IsEnum<T>,
-{
-    type SchemaType = Option<U::SchemaType>;
-}
-
-impl<T, U> IsEnum<Vec<T>> for Vec<U>
-where
-    U: IsEnum<T>,
-{
-    type SchemaType = Vec<U::SchemaType>;
-}
-
-impl<T, U> IsEnum<Box<T>> for Box<U>
-where
-    U: IsEnum<T>,
-{
-    type SchemaType = Box<U::SchemaType>;
-}
-
 /// A marker trait that indicates a particular type is at the root of a GraphQL schemas query
 /// hierarchy.
 pub trait QueryRoot {}

@@ -1,13 +1,15 @@
 ---
 source: cynic-codegen/src/enum_derive/mod.rs
-assertion_line: 394
+assertion_line: 391
 expression: "format_code(format!(\"{}\", tokens))"
 
 ---
 #[automatically_derived]
-impl<'de> ::cynic::core::Enum<'de> for States {}
+impl ::cynic::core::Enum for States {
+    type SchemaType = schema::States;
+}
 #[automatically_derived]
-impl<'de> ::cynic::serde::Serialize for States {
+impl ::cynic::serde::Serialize for States {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: ::cynic::serde::Serializer,
@@ -37,10 +39,6 @@ impl<'de> ::cynic::serde::Deserialize<'de> for States {
             }
         }
     }
-}
-#[automatically_derived]
-impl ::cynic::schema::IsEnum<schema::States> for States {
-    type SchemaType = schema::States;
 }
 #[automatically_derived]
 impl ::cynic::queries::IntoInputLiteral<schema::States> for States {

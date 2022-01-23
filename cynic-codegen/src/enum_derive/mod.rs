@@ -93,10 +93,12 @@ pub fn enum_derive_impl(
 
         Ok(quote! {
             #[automatically_derived]
-            impl<'de> ::cynic::core::Enum<'de> for #ident {}
+            impl ::cynic::core::Enum for #ident {
+                type SchemaType = #schema_module::#enum_marker_ident;
+            }
 
             #[automatically_derived]
-            impl<'de> ::cynic::serde::Serialize for #ident {
+            impl ::cynic::serde::Serialize for #ident {
                 fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
                 where
                     S: ::cynic::serde::Serializer {
@@ -124,11 +126,6 @@ pub fn enum_derive_impl(
                         }
                     }
                 }
-            }
-
-            #[automatically_derived]
-            impl ::cynic::schema::IsEnum<#schema_module::#enum_marker_ident> for #ident {
-                type SchemaType = #schema_module::#enum_marker_ident;
             }
 
             #[automatically_derived]

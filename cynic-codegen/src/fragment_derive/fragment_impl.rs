@@ -264,9 +264,7 @@ impl quote::ToTokens for FieldSelection<'_> {
                     let mut field_builder = builder
                         .select_field::<
                             #field_marker_type_path,
-                            <#field_type as ::cynic::schema::IsEnum<
-                                <#field_marker_type_path as ::cynic::schema::Field>::SchemaType
-                            >>::SchemaType
+                            <#field_type as ::cynic::core::Enum>::SchemaType
                         >();
 
                     #arguments

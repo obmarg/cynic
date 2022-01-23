@@ -1,60 +1,10 @@
 ---
 source: cynic-codegen/tests/use-schema.rs
+assertion_line: 25
 expression: "format_code(format!(\"{}\", tokens))"
 
 ---
 impl ::cynic::schema::QueryRoot for Foo {}
-pub struct Foo;
-pub mod foo_fields {
-    pub struct Underscore;
-    impl ::cynic::schema::Field for Underscore {
-        type SchemaType = Option<bool>;
-        fn name() -> &'static str {
-            "_"
-        }
-    }
-    impl ::cynic::schema::HasField<Underscore, Option<bool>> for super::Foo {}
-    pub struct Self_;
-    impl ::cynic::schema::Field for Self_ {
-        type SchemaType = Option<bool>;
-        fn name() -> &'static str {
-            "self"
-        }
-    }
-    impl ::cynic::schema::HasField<Self_, Option<bool>> for super::Foo {}
-    pub struct Super;
-    impl ::cynic::schema::Field for Super {
-        type SchemaType = Option<bool>;
-        fn name() -> &'static str {
-            "super"
-        }
-    }
-    impl ::cynic::schema::HasField<Super, Option<bool>> for super::Foo {}
-    pub struct Crate;
-    impl ::cynic::schema::Field for Crate {
-        type SchemaType = Option<bool>;
-        fn name() -> &'static str {
-            "crate"
-        }
-    }
-    impl ::cynic::schema::HasField<Crate, Option<bool>> for super::Foo {}
-    pub struct Async;
-    impl ::cynic::schema::Field for Async {
-        type SchemaType = Option<bool>;
-        fn name() -> &'static str {
-            "async"
-        }
-    }
-    impl ::cynic::schema::HasField<Async, Option<bool>> for super::Foo {}
-    pub struct Bar;
-    impl ::cynic::schema::Field for Bar {
-        type SchemaType = Option<super::Bar>;
-        fn name() -> &'static str {
-            "bar"
-        }
-    }
-    impl ::cynic::schema::HasField<Bar, Option<super::Bar>> for super::Foo {}
-}
 pub struct Bar;
 pub mod bar_fields {
     pub struct Id;
@@ -67,23 +17,89 @@ pub mod bar_fields {
     impl ::cynic::schema::HasField<Id, super::Uuid> for super::Bar {}
     pub struct Name;
     impl ::cynic::schema::Field for Name {
-        type SchemaType = Option<String>;
+        type SchemaType = Option<super::String>;
         fn name() -> &'static str {
             "name"
         }
     }
-    impl ::cynic::schema::HasField<Name, Option<String>> for super::Bar {}
+    impl ::cynic::schema::HasField<Name, Option<super::String>> for super::Bar {}
 }
-pub struct Uuid {}
-pub struct States {}
-impl ::cynic::schema::NamedType for Foo {
-    fn name() -> &'static str {
-        "Foo"
+pub struct Foo;
+pub mod foo_fields {
+    pub struct _Underscore;
+    impl ::cynic::schema::Field for _Underscore {
+        type SchemaType = Option<super::Boolean>;
+        fn name() -> &'static str {
+            "_"
+        }
+    }
+    impl ::cynic::schema::HasField<_Underscore, Option<super::Boolean>> for super::Foo {}
+    pub struct Self_;
+    impl ::cynic::schema::Field for Self_ {
+        type SchemaType = Option<super::Boolean>;
+        fn name() -> &'static str {
+            "self"
+        }
+    }
+    impl ::cynic::schema::HasField<Self_, Option<super::Boolean>> for super::Foo {}
+    pub struct Super;
+    impl ::cynic::schema::Field for Super {
+        type SchemaType = Option<super::Boolean>;
+        fn name() -> &'static str {
+            "super"
+        }
+    }
+    impl ::cynic::schema::HasField<Super, Option<super::Boolean>> for super::Foo {}
+    pub struct Crate;
+    impl ::cynic::schema::Field for Crate {
+        type SchemaType = Option<super::Boolean>;
+        fn name() -> &'static str {
+            "crate"
+        }
+    }
+    impl ::cynic::schema::HasField<Crate, Option<super::Boolean>> for super::Foo {}
+    pub struct Async;
+    impl ::cynic::schema::Field for Async {
+        type SchemaType = Option<super::Boolean>;
+        fn name() -> &'static str {
+            "async"
+        }
+    }
+    impl ::cynic::schema::HasField<Async, Option<super::Boolean>> for super::Foo {}
+    pub struct Bar;
+    impl ::cynic::schema::Field for Bar {
+        type SchemaType = Option<super::Bar>;
+        fn name() -> &'static str {
+            "bar"
+        }
+    }
+    impl ::cynic::schema::HasField<Bar, Option<super::Bar>> for super::Foo {}
+    pub mod bar_arguments {
+        pub struct Id;
+        impl ::cynic::schema::HasArgument<Id> for super::Bar {
+            type ArgumentSchemaType = super::super::Uuid;
+            type ArgumentKind = ::cynic::schema::ScalarArgument;
+            fn name() -> &'static str {
+                "id"
+            }
+        }
     }
 }
+pub struct States {}
+pub struct Uuid {}
 impl ::cynic::schema::NamedType for Bar {
     fn name() -> &'static str {
         "Bar"
     }
 }
+impl ::cynic::schema::NamedType for Foo {
+    fn name() -> &'static str {
+        "Foo"
+    }
+}
+pub type Boolean = bool;
+pub type String = std::string::String;
+pub type Float = f64;
+pub type Int = i32;
+pub type Id = cynic::Id;
 

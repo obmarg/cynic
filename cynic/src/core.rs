@@ -98,8 +98,30 @@ impl<'de> QueryFragment<'de> for String {
     fn query(builder: QueryBuilder<Self::SchemaType>) {}
 }
 
-// TODO: Does this need a TypeLock on it?
-pub trait Enum<'de>: serde::Deserialize<'de> + serde::Serialize {}
+pub trait Enum: serde::de::DeserializeOwned + serde::Serialize {
+    type SchemaType;
+}
+
+impl<T> Enum for Option<T>
+where
+    T: Enum,
+{
+    type SchemaType = Option<T::SchemaType>;
+}
+
+impl<T> Enum for Vec<T>
+where
+    T: Enum,
+{
+    type SchemaType = Vec<T::SchemaType>;
+}
+
+impl<T> Enum for Box<T>
+where
+    T: Enum,
+{
+    type SchemaType = T::SchemaType;
+}
 
 // TODO: Does this need a TypeLock on it?
 pub trait Scalar<'de>: serde::Deserialize<'de> + serde::Serialize {}
