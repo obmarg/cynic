@@ -42,24 +42,20 @@ where
 #[macro_export]
 macro_rules! impl_scalar {
     ($type:path, $type_lock:path) => {
-        impl $crate::Scalar<$type_lock> for $type {
-            type Deserialize = $type;
-
-            fn from_deserialize(x: $type) -> Result<$type, $crate::DecodeError> {
-                Ok(x)
-            }
+        impl $crate::schema::IsScalar<$type_lock> for $type {
+            type SchemaType = $type_lock;
         }
-
-        $crate::impl_input_type!($type, $type_lock);
     };
 }
 
-impl_scalar!(i32, i32);
-impl_scalar!(f64, f64);
-impl_scalar!(bool, bool);
-impl_scalar!(String, String);
+// TODO: These are already impled in schema.src
+// Decide where they should live - here, there, somewhere else?
+// impl_scalar!(i32, i32);
+// impl_scalar!(f64, f64);
+// impl_scalar!(bool, bool);
+// impl_scalar!(String, String);
 
-impl_scalar!(serde_json::Value, serde_json::Value);
+// impl_scalar!(serde_json::Value, serde_json::Value);
 
 struct ScalarDecoder<S, T> {
     phantom: PhantomData<(S, T)>,
