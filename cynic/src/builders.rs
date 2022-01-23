@@ -1,6 +1,6 @@
 use super::{
-    FragmentContext, MutationRoot, Operation, Operation2, QueryFragment, QueryRoot, SelectionSet,
-    StreamingOperation, SubscriptionRoot,
+    FragmentContext, MutationRoot, Operation, QueryFragment, QueryRoot, SelectionSet,
+    SubscriptionRoot,
 };
 
 use std::borrow::Borrow;
@@ -10,12 +10,8 @@ pub trait QueryBuilder: Sized {
     /// May be `()` if no arguments are accepted.
     type Arguments;
 
-    /// The type that this query returns if succesful.
-    /// TODo: Figure out if we even need this...
-    // type ResponseData;
-
     /// Constructs a query operation for this QueryFragment.
-    fn build(args: impl Borrow<Self::Arguments>) -> Operation2<Self>;
+    fn build(args: impl Borrow<Self::Arguments>) -> Operation<Self>;
 }
 
 impl<'de, T> QueryBuilder for T
@@ -26,65 +22,64 @@ where
     // TOdO: Arguments
     type Arguments = ();
 
-    fn build(args: impl Borrow<Self::Arguments>) -> Operation2<T> {
-        Operation2::<T>::query()
+    fn build(args: impl Borrow<Self::Arguments>) -> Operation<T> {
+        Operation::<T>::query()
     }
 }
 
 // TODO: update mutation builder to support new query structure stuff...
 
 /// Provides a `build` function on `QueryFragment`s that represent a mutation
-pub trait MutationBuilder<'a> {
+pub trait MutationBuilder: Sized {
     /// The type that this mutation takes as arguments.
     /// May be `()` if no arguments are accepted.
     type Arguments;
 
-    /// The type that this mutation returns if succesful.
-    type ResponseData;
-
     /// Constructs a mutation operation for this QueryFragment.
-    fn build(args: impl Borrow<Self::Arguments>) -> Operation<'a, Self::ResponseData>;
+    fn build(args: impl Borrow<Self::Arguments>) -> Operation<Self>;
 }
 
-impl<'a, T, R, Q> MutationBuilder<'a> for T
+impl<'de, T> MutationBuilder for T
 where
-    T: QueryFragment<SelectionSet = SelectionSet<'a, R, Q>>,
-    Q: MutationRoot,
-    R: 'a,
+    T: crate::core::QueryFragment<'de>,
+    T::SchemaType: crate::schema::MutationRoot,
 {
-    type Arguments = T::Arguments;
+    // TODO: arguments
+    type Arguments = ();
 
-    type ResponseData = R;
-
-    fn build(args: impl Borrow<Self::Arguments>) -> Operation<'a, Self::ResponseData> {
-        Operation::mutation(Self::fragment(FragmentContext::new(args.borrow())))
+    fn build(args: impl Borrow<Self::Arguments>) -> Operation<Self> {
+        // TODO: handle args
+        Operation::<T>::mutation()
     }
 }
 
-/// Provides a `build` function on `QueryFragment`s that represent a subscription
-pub trait SubscriptionBuilder<'a> {
-    /// The type that this subscription takes as arguments.
-    /// May be `()` if no arguments are accepted.
-    type Arguments;
+#[cfg(todo)]
+mod todo {
+    /// Provides a `build` function on `QueryFragment`s that represent a subscription
+    pub trait SubscriptionBuilder<'a> {
+        /// The type that this subscription takes as arguments.
+        /// May be `()` if no arguments are accepted.
+        type Arguments;
 
-    /// The type of event that will be output in the response stream of this subscription.
-    type ResponseData;
+        /// The type of event that will be output in the response stream of this subscription.
+        type ResponseData;
 
-    /// Constructs a subscription operation for this QueryFragment.
-    fn build(args: impl Borrow<Self::Arguments>) -> StreamingOperation<'a, Self::ResponseData>;
-}
+        /// Constructs a subscription operation for this QueryFragment.
+        fn build(args: impl Borrow<Self::Arguments>) -> StreamingOperation<'a, Self::ResponseData>;
+    }
 
-impl<'a, T, R, Q> SubscriptionBuilder<'a> for T
-where
-    T: QueryFragment<SelectionSet = SelectionSet<'a, R, Q>>,
-    Q: SubscriptionRoot,
-    R: 'a,
-{
-    type Arguments = T::Arguments;
+    impl<'a, T, R, Q> SubscriptionBuilder<'a> for T
+    where
+        T: QueryFragment<SelectionSet = SelectionSet<'a, R, Q>>,
+        Q: SubscriptionRoot,
+        R: 'a,
+    {
+        type Arguments = T::Arguments;
 
-    type ResponseData = R;
+        type ResponseData = R;
 
-    fn build(args: impl Borrow<Self::Arguments>) -> StreamingOperation<'a, Self::ResponseData> {
-        StreamingOperation::subscription(Self::fragment(FragmentContext::new(args.borrow())))
+        fn build(args: impl Borrow<Self::Arguments>) -> StreamingOperation<'a, Self::ResponseData> {
+            StreamingOperation::subscription(Self::fragment(FragmentContext::new(args.borrow())))
+        }
     }
 }

@@ -1,9 +1,9 @@
-use json_decode::BoxDecoder;
-use std::collections::HashMap;
+use std::marker::PhantomData;
 
 use crate::{
-    selection_set::{mutation_root, query_root, subscription_root},
-    Argument, GraphQlResponse, MutationRoot, QueryRoot, SelectionSet, SubscriptionRoot,
+    core::QueryFragment,
+    queries::{QueryBuilder, SelectionSet},
+    schema::{MutationRoot, QueryRoot},
 };
 
 /// An Operation that can be sent to a remote GraphQL server.
@@ -12,117 +12,68 @@ use crate::{
 /// serialized into JSON with `serde::Serialize` and sent to a remote server,
 /// and has a `decode_response` function that knows how to decode a response.
 #[derive(serde::Serialize)]
-pub struct Operation<'a, ResponseData> {
+pub struct Operation<QueryFragment> {
     /// The graphql query string that will be sent to the server
     pub query: String,
-    /// The variables that will be sent to the server as part of this operation
-    pub variables: HashMap<String, Argument>,
+
     #[serde(skip)]
-    decoder: BoxDecoder<'a, ResponseData>,
+    phantom: PhantomData<fn() -> QueryFragment>,
+    // The variables that will be sent to the server as part of this operation
+    // pub variables: HashMap<String, Argument>,
 }
 
-impl<'a, ResponseData: 'a> Operation<'a, ResponseData> {
-    /// Constructs a new Operation from a query `SelectionSet`
-    pub fn query<Root: QueryRoot>(selection_set: SelectionSet<'a, ResponseData, Root>) -> Self {
-        let (query, arguments, decoder) = query_root(selection_set).query_arguments_and_decoder();
+impl<'de, Fragment> Operation<Fragment>
+where
+    Fragment: QueryFragment<'de>,
+    Fragment::SchemaType: QueryRoot,
+{
+    /// Constructs a new Operation for a query
+    pub fn query() -> Self {
+        use std::fmt::Write;
 
-        let variables = arguments
-            .into_iter()
-            .enumerate()
-            .map(|(i, a)| (format!("_{}", i), a))
-            .collect();
+        let mut selection_set = SelectionSet::default();
+        let builder = QueryBuilder::new(&mut selection_set);
+        Fragment::query(builder);
+
+        // TODO: There has to be a better way to do this/place to structure this.
+        // At the least a QueryRoot: std::fmt::Display type.
+        let mut query = String::new();
+        writeln!(&mut query, "query{}", selection_set);
+
+        // TODO: Handle arguments and what not.
 
         Operation {
             query,
-            variables,
-            decoder,
+            phantom: PhantomData,
         }
     }
+}
 
-    /// Constructs a new Operation from a mutation `SelectionSet`
-    pub fn mutation<Root: MutationRoot>(
-        selection_set: SelectionSet<'a, ResponseData, Root>,
-    ) -> Self {
-        let (query, arguments, decoder) =
-            mutation_root(selection_set).query_arguments_and_decoder();
+impl<'de, Fragment> Operation<Fragment>
+where
+    Fragment: QueryFragment<'de>,
+    Fragment::SchemaType: MutationRoot,
+{
+    /// Constructs a new Operation for a mutation
+    pub fn mutation() -> Self {
+        use std::fmt::Write;
 
-        let variables = arguments
-            .into_iter()
-            .enumerate()
-            .map(|(i, a)| (format!("_{}", i), a))
-            .collect();
+        let mut selection_set = SelectionSet::default();
+        let builder = QueryBuilder::new(&mut selection_set);
+        Fragment::query(builder);
+
+        // TODO: There has to be a better way to do this/place to structure this.
+        // At the least a QueryRoot: std::fmt::Display type.
+        let mut query = String::new();
+        writeln!(&mut query, "query{}", selection_set);
+
+        // TODO: Handle arguments and what not.
 
         Operation {
             query,
-            variables,
-            decoder,
-        }
-    }
-
-    /// Decodes a response.  Note that you need to decode a GraphQlResponse
-    /// from JSON before passing to this function
-    pub fn decode_response(
-        &self,
-        response: GraphQlResponse<serde_json::Value>,
-    ) -> Result<GraphQlResponse<ResponseData>, json_decode::DecodeError> {
-        if let Some(data) = response.data {
-            Ok(GraphQlResponse {
-                data: Some(self.decoder.decode(&data)?),
-                errors: response.errors,
-            })
-        } else {
-            Ok(GraphQlResponse {
-                data: None,
-                errors: response.errors,
-            })
+            phantom: PhantomData,
         }
     }
 }
 
-/// A StreamingOperation is an Operation that expects a stream of results.
-///
-/// Currently this is means subscriptions.
-pub struct StreamingOperation<'a, ResponseData> {
-    inner: Operation<'a, ResponseData>,
-}
-
-impl<'a, ResponseData: 'a> StreamingOperation<'a, ResponseData> {
-    /// Constructs a new Operation from a query `SelectionSet`
-    pub fn subscription<Root: SubscriptionRoot>(
-        selection_set: SelectionSet<'a, ResponseData, Root>,
-    ) -> Self {
-        let (query, arguments, decoder) =
-            subscription_root(selection_set).query_arguments_and_decoder();
-
-        let variables = arguments
-            .into_iter()
-            .enumerate()
-            .map(|(i, a)| (format!("_{}", i), a))
-            .collect();
-
-        StreamingOperation {
-            inner: Operation {
-                query,
-                variables,
-                decoder,
-            },
-        }
-    }
-
-    /// Decodes a generic `GraphQlResponse` into the output type of this operation.
-    pub fn decode_response(
-        &self,
-        response: GraphQlResponse<serde_json::Value>,
-    ) -> Result<GraphQlResponse<ResponseData>, json_decode::DecodeError> {
-        self.inner.decode_response(response)
-    }
-}
-
-impl<ResponseData> serde::Serialize for StreamingOperation<'_, ResponseData> {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: serde::Serializer,
-    {
-        self.inner.serialize(serializer)
-    }
-}
+// TODO: StreamingOperation etc.

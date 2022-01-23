@@ -98,7 +98,7 @@ fn test_decoding_options() {
 
 #[test]
 fn test_query_building() {
-    let operation = cynic::Operation2::<TestQuery>::query();
+    let operation = cynic::Operation::<TestQuery>::query();
 
     insta::assert_snapshot!(operation.query);
 }

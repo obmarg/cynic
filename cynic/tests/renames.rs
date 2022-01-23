@@ -57,9 +57,9 @@ mod schema {
 
 #[test]
 fn test_all_posts_query_output() {
-    use cynic::Operation2;
+    use cynic::Operation;
 
-    let query = Operation2::<AllPostsQuery>::query();
+    let query = Operation::<AllPostsQuery>::query();
 
     insta::assert_display_snapshot!(query.query);
 }

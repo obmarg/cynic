@@ -42,7 +42,7 @@ fn run_query() -> cynic::GraphQlResponse<JobsQuery> {
         .unwrap()
 }
 
-fn build_query() -> cynic::Operation<'static, JobsQuery> {
+fn build_query() -> cynic::Operation<JobsQuery> {
     use cynic::QueryBuilder;
 
     JobsQuery::build(())

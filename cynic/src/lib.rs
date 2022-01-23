@@ -172,7 +172,6 @@ mod enums;
 mod fragments;
 mod id;
 mod operation;
-mod operation2;
 mod result;
 mod scalar;
 
@@ -193,13 +192,13 @@ pub mod utils;
 pub use json_decode::DecodeError;
 
 pub use arguments::{Argument, FromArguments};
-pub use builders::{MutationBuilder, QueryBuilder, SubscriptionBuilder};
+pub use builders::{MutationBuilder, QueryBuilder};
+// TODO: SubscriptionBuilder
 pub use enums::Enum;
 pub use fragments::{FragmentArguments, FragmentContext, InlineFragments, QueryFragment};
 pub use id::Id;
 pub use inputs::InputType;
-pub use operation::{Operation, StreamingOperation};
-pub use operation2::Operation as Operation2;
+pub use operation::Operation;
 pub use result::{GraphQlError, GraphQlResponse};
 pub use scalar::Scalar;
 pub use selection_set::SelectionSet;

@@ -77,26 +77,29 @@ mod surf_ext {
         ///
         /// If a `json_decode::Error` occurs it can be obtained via downcast_ref on
         /// the `surf::Error`.
-        fn run_graphql<'a, ResponseData: 'a>(
+        fn run_graphql<ResponseData>(
             self,
-            operation: Operation<'a, ResponseData>,
-        ) -> BoxFuture<'a, Result<GraphQlResponse<ResponseData>, surf::Error>>;
+            operation: Operation<ResponseData>,
+        ) -> BoxFuture<'static, Result<GraphQlResponse<ResponseData>, surf::Error>>
+        where
+            ResponseData: serde::de::DeserializeOwned + 'static;
     }
 
     impl SurfExt for surf::RequestBuilder {
-        fn run_graphql<'a, ResponseData: 'a>(
+        fn run_graphql<ResponseData>(
             self,
-            operation: Operation<'a, ResponseData>,
-        ) -> BoxFuture<'a, Result<GraphQlResponse<ResponseData>, surf::Error>> {
+            operation: Operation<ResponseData>,
+        ) -> BoxFuture<'static, Result<GraphQlResponse<ResponseData>, surf::Error>>
+        where
+            ResponseData: serde::de::DeserializeOwned + 'static,
+        {
             Box::pin(async move {
                 let mut response = self.body(json!(&operation)).await?;
 
                 if !response.status().is_success() {
                     let body_string = response.body_string().await?;
-                    match serde_json::from_str::<GraphQlResponse<serde_json::Value>>(&body_string) {
-                        Ok(response) => {
-                            return operation.decode_response(response).map_err(|e| e.into())
-                        }
+                    match serde_json::from_str::<GraphQlResponse<ResponseData>>(&body_string) {
+                        Ok(response) => return Ok(response),
                         Err(_) => {
                             return Err(surf::Error::from_str(
                                 response.status(),
@@ -106,10 +109,7 @@ mod surf_ext {
                     };
                 }
 
-                response
-                    .body_json::<GraphQlResponse<serde_json::Value>>()
-                    .await
-                    .and_then(|response| operation.decode_response(response).map_err(|e| e.into()))
+                response.body_json::<GraphQlResponse<ResponseData>>().await
             })
         }
     }
@@ -195,17 +195,22 @@ mod reqwest_ext {
         ///
         /// If a `json_decode::Error` occurs it can be obtained via downcast_ref on
         /// the `surf::Error`.
-        fn run_graphql<'a, ResponseData: 'a>(
+        fn run_graphql<ResponseData>(
             self,
-            operation: Operation<'a, ResponseData>,
-        ) -> BoxFuture<'a, Result<GraphQlResponse<ResponseData>, CynicReqwestError>>;
+            operation: Operation<ResponseData>,
+        ) -> BoxFuture<'static, Result<GraphQlResponse<ResponseData>, CynicReqwestError>>
+        where
+            ResponseData: serde::de::DeserializeOwned + 'static;
     }
 
     impl ReqwestExt for reqwest::RequestBuilder {
-        fn run_graphql<'a, ResponseData: 'a>(
+        fn run_graphql<ResponseData>(
             self,
-            operation: Operation<'a, ResponseData>,
-        ) -> BoxFuture<'a, Result<GraphQlResponse<ResponseData>, CynicReqwestError>> {
+            operation: Operation<ResponseData>,
+        ) -> BoxFuture<'static, Result<GraphQlResponse<ResponseData>, CynicReqwestError>>
+        where
+            ResponseData: serde::de::DeserializeOwned + 'static,
+        {
             Box::pin(async move {
                 match self.json(&operation).send().await {
                     Ok(response) => {
@@ -213,14 +218,10 @@ mod reqwest_ext {
                         if !status.is_success() {
                             let body_string = response.text().await?;
 
-                            match serde_json::from_str::<GraphQlResponse<serde_json::Value>>(
+                            match serde_json::from_str::<GraphQlResponse<ResponseData>>(
                                 &body_string,
                             ) {
-                                Ok(response) => {
-                                    return operation
-                                        .decode_response(response)
-                                        .map_err(CynicReqwestError::DecodeError)
-                                }
+                                Ok(response) => return Ok(response),
                                 Err(_) => {
                                     return Err(CynicReqwestError::ErrorResponse(
                                         status,
@@ -231,14 +232,9 @@ mod reqwest_ext {
                         }
 
                         response
-                            .json::<GraphQlResponse<serde_json::Value>>()
+                            .json::<GraphQlResponse<ResponseData>>()
                             .await
                             .map_err(CynicReqwestError::ReqwestError)
-                            .and_then(|gql_response| {
-                                operation
-                                    .decode_response(gql_response)
-                                    .map_err(CynicReqwestError::DecodeError)
-                            })
                     }
                     Err(e) => Err(CynicReqwestError::ReqwestError(e)),
                 }
@@ -304,36 +300,37 @@ mod reqwest_blocking_ext {
         ///
         /// If a `json_decode::Error` occurs it can be obtained via downcast_ref on
         /// the `surf::Error`.
-        fn run_graphql<'a, ResponseData: 'a>(
+        fn run_graphql<ResponseData>(
             self,
-            operation: Operation<'a, ResponseData>,
-        ) -> Result<GraphQlResponse<ResponseData>, CynicReqwestError>;
+            operation: Operation<ResponseData>,
+        ) -> Result<GraphQlResponse<ResponseData>, CynicReqwestError>
+        where
+            ResponseData: serde::de::DeserializeOwned + 'static;
     }
 
     impl ReqwestBlockingExt for reqwest::blocking::RequestBuilder {
-        fn run_graphql<'a, ResponseData: 'a>(
+        fn run_graphql<ResponseData>(
             self,
-            operation: Operation<'a, ResponseData>,
-        ) -> Result<GraphQlResponse<ResponseData>, CynicReqwestError> {
+            operation: Operation<ResponseData>,
+        ) -> Result<GraphQlResponse<ResponseData>, CynicReqwestError>
+        where
+            ResponseData: serde::de::DeserializeOwned + 'static,
+        {
             let response = self.json(&operation).send()?;
 
             let status = response.status();
             if !status.is_success() {
                 let body_string = response.text().map_err(CynicReqwestError::ReqwestError)?;
 
-                match serde_json::from_str::<GraphQlResponse<serde_json::Value>>(&body_string) {
-                    Ok(response) => return Ok(operation.decode_response(response)?),
+                match serde_json::from_str::<GraphQlResponse<ResponseData>>(&body_string) {
+                    Ok(response) => return Ok(response),
                     Err(_) => {
                         return Err(CynicReqwestError::ErrorResponse(status, body_string));
                     }
                 };
             }
 
-            let gql_response = response.json::<GraphQlResponse<serde_json::Value>>()?;
-
-            operation
-                .decode_response(gql_response)
-                .map_err(CynicReqwestError::DecodeError)
+            Ok(response.json::<GraphQlResponse<ResponseData>>()?)
         }
     }
 }
