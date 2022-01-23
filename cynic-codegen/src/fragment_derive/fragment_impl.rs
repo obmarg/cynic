@@ -276,7 +276,21 @@ impl quote::ToTokens for FieldSelection<'_> {
                 }
             }
             FieldKind::Interface => {
-                todo!("need to handle interface type fields")
+                // TODO: Not sure this is right, but figure it out....
+                // If it is might be able to merge w/ object
+                quote_spanned! { self.span =>
+                    let mut field_builder = builder
+                        .select_field::<
+                            #field_marker_type_path,
+                            <#field_type as ::cynic::core::QueryFragment>::SchemaType
+                        >();
+
+                    #arguments
+
+                    <#field_type as ::cynic::core::QueryFragment>::query(
+                        field_builder.select_children()
+                    );
+                }
             }
             FieldKind::Union => {
                 // TODO: Not sure this is right, but figure it out....
