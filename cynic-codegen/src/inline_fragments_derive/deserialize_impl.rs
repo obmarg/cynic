@@ -19,7 +19,7 @@ impl quote::ToTokens for DeserializeImpl<'_> {
         let variant_names = self
             .fragments
             .iter()
-            .map(|fragment| &fragment.inner_type)
+            .map(|fragment| &fragment.rust_variant_name)
             .collect::<Vec<_>>();
 
         let (intermediate_fallback_def, fallback_match) = match &self.fallback {
