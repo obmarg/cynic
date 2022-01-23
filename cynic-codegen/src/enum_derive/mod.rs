@@ -79,6 +79,7 @@ pub fn enum_derive_impl(
             Err(error_tokens) => return Ok(error_tokens),
         };
 
+        let graphql_type_name = proc_macro2::Literal::string(&input.graphql_type_name());
         let enum_marker_ident = Ident::for_type(&input.graphql_type_name());
 
         let string_literals: Vec<_> = pairs
@@ -144,7 +145,10 @@ pub fn enum_derive_impl(
             ::cynic::impl_into_input_literal_for_wrappers!(#ident, #schema_module::#enum_marker_ident);
             // TODO: impl IntoObjectLiteral....
 
-            // ::cynic::impl_input_type!(#ident, #schema_module::#enum_marker_ident);
+            #[automatically_derived]
+            impl #schema_module::variable::Variable for #ident {
+                const TYPE: ::cynic::core::VariableType = ::cynic::core::VariableType::Named(#graphql_type_name);
+            }
         })
     } else {
         Err(syn::Error::new(

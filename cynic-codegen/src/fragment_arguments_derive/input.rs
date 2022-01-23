@@ -12,6 +12,9 @@ pub struct FragmentArgumentsDeriveInput {
     pub(super) data: darling::ast::Data<(), FragmentArgumentsField>,
 
     #[darling(default)]
+    schema_module: Option<syn::Path>,
+
+    #[darling(default)]
     pub(super) rename_all: Option<RenameAll>,
 }
 
@@ -23,6 +26,15 @@ pub(super) struct FragmentArgumentsField {
 
     #[darling(default)]
     pub(super) rename: Option<SpannedValue<String>>,
+}
+
+impl FragmentArgumentsDeriveInput {
+    pub fn schema_module(&self) -> syn::Path {
+        if let Some(schema_module) = &self.schema_module {
+            return schema_module.clone();
+        }
+        syn::parse2(quote::quote! { schema }).unwrap()
+    }
 }
 
 impl FragmentArgumentsField {

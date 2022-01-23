@@ -105,6 +105,8 @@ pub fn input_object_derive_impl(
 
         let map_len = field_serializers.len();
 
+        let graphql_type_name = proc_macro2::Literal::string(input_object.name);
+
         Ok(quote! {
             #[automatically_derived]
             impl ::cynic::core::InputObject for #ident {
@@ -140,6 +142,11 @@ pub fn input_object_derive_impl(
             }
 
             ::cynic::impl_into_input_literal_for_wrappers!(#ident, #schema_module::#input_marker_ident);
+
+            #[automatically_derived]
+            impl #schema_module::variable::Variable for #ident {
+                const TYPE: ::cynic::core::VariableType = ::cynic::core::VariableType::Named(#graphql_type_name);
+            }
         })
     } else {
         Err(syn::Error::new(

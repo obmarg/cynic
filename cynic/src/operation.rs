@@ -1,7 +1,7 @@
 use std::marker::PhantomData;
 
 use crate::{
-    core::QueryFragment,
+    core::{QueryFragment, QueryVariables, VariableDefinition, VariableType},
     queries::{QueryBuilder, SelectionSet},
     schema::{MutationRoot, QueryRoot},
 };
@@ -34,6 +34,7 @@ impl<QueryFragment, Variables> serde::Serialize for Operation<QueryFragment, Var
 impl<'de, Fragment, Variables> Operation<Fragment, Variables>
 where
     Fragment: QueryFragment<'de>,
+    Variables: QueryVariables,
 {
     /// Constructs a new Operation for a query
     pub fn query(variables: Variables) -> Self
@@ -46,12 +47,14 @@ where
         let builder = QueryBuilder::new(&mut selection_set);
         Fragment::query(builder);
 
+        let vars = VariableDefinitions::new::<Variables>();
+
         // TODO: Somehow enforce Variable type
 
         // TODO: There has to be a better way to do this/place to structure this.
         // At the least a QueryRoot: std::fmt::Display type.
         let mut query = String::new();
-        writeln!(&mut query, "query{}", selection_set);
+        writeln!(&mut query, "query{vars}{selection_set}");
 
         // TODO: Handle arguments and what not.
 
@@ -73,10 +76,12 @@ where
         let builder = QueryBuilder::new(&mut selection_set);
         Fragment::query(builder);
 
+        let vars = VariableDefinitions::new::<Variables>();
+
         // TODO: There has to be a better way to do this/place to structure this.
         // At the least a QueryRoot: std::fmt::Display type.
         let mut query = String::new();
-        writeln!(&mut query, "query{}", selection_set);
+        writeln!(&mut query, "query{vars}{selection_set}");
 
         // TODO: Handle arguments and what not.
 
@@ -89,3 +94,64 @@ where
 }
 
 // TODO: StreamingOperation etc.
+
+struct VariableDefinitions {
+    vars: &'static [(&'static str, VariableType)],
+}
+
+impl VariableDefinitions {
+    fn new<T: QueryVariables>() -> Self {
+        VariableDefinitions { vars: T::VARIABLES }
+    }
+}
+
+impl std::fmt::Display for VariableDefinitions {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        if self.vars.is_empty() {
+            return Ok(());
+        }
+
+        write!(f, "(")?;
+        for (name, ty) in self.vars {
+            let ty = GraphqlVariableType::new(*ty);
+            write!(f, "${name}: {ty}")?;
+        }
+        write!(f, ")")
+    }
+}
+
+enum GraphqlVariableType {
+    List(Box<GraphqlVariableType>),
+    NotNull(Box<GraphqlVariableType>),
+    Named(&'static str),
+}
+
+impl GraphqlVariableType {
+    fn new(ty: VariableType) -> Self {
+        fn recurse(ty: VariableType, required: bool) -> GraphqlVariableType {
+            match (ty, required) {
+                (VariableType::Nullable(inner), _) => recurse(*inner, false),
+                (any, true) => GraphqlVariableType::NotNull(Box::new(recurse(any, false))),
+                (VariableType::List(inner), _) => {
+                    GraphqlVariableType::List(Box::new(recurse(*inner, true)))
+                }
+                (VariableType::Named(name), false) => GraphqlVariableType::Named(name),
+            }
+        }
+
+        recurse(ty, true)
+    }
+}
+
+impl std::fmt::Display for GraphqlVariableType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            GraphqlVariableType::List(inner) => write!(f, "[{inner}]"),
+            GraphqlVariableType::NotNull(inner) => write!(f, "{inner}!"),
+            GraphqlVariableType::Named(name) => write!(f, "{name}"),
+        }
+    }
+}
+
+// TODO: test the argument conversion/printing stuff...
+// Also test serialization once I've got that written.

@@ -65,18 +65,6 @@ pub struct ScalarArgument;
 //     }
 // }
 
-// TODO: Name of this vs the actual Value type I want to output
-pub trait InputValue<SchemaType> {
-    // TODO: Bet the self type & references are going to be a PITA with this...
-    // fn to_actual_value(&self) -> ();
-}
-
-impl InputValue<crate::Id> for crate::Id {}
-impl InputValue<Option<crate::Id>> for crate::Id {}
-impl InputValue<Option<crate::Id>> for Option<crate::Id> {}
-impl InputValue<Vec<crate::Id>> for crate::Id {}
-impl InputValue<Vec<crate::Id>> for Vec<crate::Id> {}
-
 pub trait IsScalar<SchemaType> {
     type SchemaType;
 }

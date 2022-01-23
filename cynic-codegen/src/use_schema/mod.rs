@@ -101,7 +101,76 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
         pub type String = std::string::String;
         pub type Float = f64;
         pub type Int = i32;
-        pub type Id = cynic::Id;
+        pub type Id = ::cynic::Id;
+
+        pub mod variable {
+            use ::cynic::core::VariableType;
+
+            /// Used to determine the type of a given variable that
+            /// appears in an argument struct.
+            pub trait Variable {
+                const TYPE: VariableType;
+            }
+
+            impl<T> Variable for &T where T: Variable {
+                const TYPE: VariableType = T::TYPE;
+            }
+
+            impl<T> Variable for Option<T>
+            where
+                T: Variable
+            {
+                const TYPE: VariableType = VariableType::Nullable(&T::TYPE);
+            }
+
+            impl<T> Variable for Vec<T>
+            where
+                T: Variable,
+            {
+                const TYPE: VariableType = VariableType::List(&T::TYPE);
+            }
+
+            impl<T> Variable for Box<T>
+            where
+                T: Variable,
+            {
+                const TYPE: VariableType = T::TYPE;
+            }
+
+            impl<T> Variable for std::rc::Rc<T>
+            where
+                T: Variable,
+            {
+                const TYPE: VariableType = T::TYPE;
+            }
+
+            impl<T> Variable for std::sync::Arc<T>
+            where
+                T: Variable,
+            {
+                const TYPE: VariableType = T::TYPE;
+            }
+
+            impl Variable for bool {
+                const TYPE: VariableType = VariableType::Named("Boolean");
+            }
+
+            impl Variable for String {
+                const TYPE: VariableType = VariableType::Named("String");
+            }
+
+            impl Variable for f64 {
+                const TYPE: VariableType = VariableType::Named("Float");
+            }
+
+            impl Variable for i32 {
+                const TYPE: VariableType = VariableType::Named("Int");
+            }
+
+            impl Variable for ::cynic::Id {
+                const TYPE: VariableType = VariableType::Named("ID");
+            }
+        }
     });
 
     Ok(output)

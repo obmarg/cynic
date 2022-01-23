@@ -10,13 +10,21 @@ use std::marker::PhantomData;
 
 use serde::Deserialize;
 
-use crate::{indent::indented, queries::QueryBuilder, schema};
+use crate::{
+    indent::indented,
+    queries::QueryBuilder,
+    schema::{self},
+};
 
 // Annoyingly this means people can't derive Deserialize _as well as_ use cynics derives.
 // But whatever, don't do that people?  I _think_ it's an OK limitation.
+// TODO: See if we could actually just expose a `deserialize` function on `QueryFragment` itself.
+// That would work around this.
+// We always control what's calling deserialize on a QueryFragment (either another QueryFramgent
+// or a GraphQLResponse so it might actually be fine)
 pub trait QueryFragment<'de>: serde::Deserialize<'de> {
     type SchemaType;
-    type Variables;
+    type Variables: QueryVariables;
 
     fn query(builder: QueryBuilder<Self::SchemaType>);
 }
@@ -151,8 +159,24 @@ where
     type SchemaType = T::SchemaType;
 }
 
+#[derive(Debug, Clone, Copy)]
+pub enum VariableType {
+    List(&'static VariableType),
+    Nullable(&'static VariableType),
+    Named(&'static str),
+}
+
 pub trait QueryVariables {
     type Fields;
+
+    const VARIABLES: &'static [(&'static str, VariableType)];
+}
+
+// TODO: Figure out if this makes sense.
+impl QueryVariables for () {
+    type Fields = ();
+
+    const VARIABLES: &'static [(&'static str, VariableType)] = &[];
 }
 
 // TODO: Think about this name & where we should put it
