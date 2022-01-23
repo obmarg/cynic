@@ -83,8 +83,13 @@ impl std::fmt::Display for Selection {
                 write!(f, "{}", field_selection.name)?;
                 if !field_selection.arguments.is_empty() {
                     write!(f, "(")?;
+                    let mut first = true;
                     for arg in &field_selection.arguments {
-                        write!(f, "{},", arg)?;
+                        if !first {
+                            write!(f, ", ")?;
+                        }
+                        first = false;
+                        write!(f, "{}", arg)?;
                     }
                     write!(f, ")")?;
                 }

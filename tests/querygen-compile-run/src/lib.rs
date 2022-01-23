@@ -1,8 +1,8 @@
 use serde_json::json;
 
-pub fn send<'a, ResponseData: 'a>(
+pub fn send<ResponseData, Vars>(
     url: &str,
-    operation: cynic::Operation<'a, ResponseData>,
+    operation: cynic::Operation<ResponseData, Vars>,
 ) -> Result<ResponseData, Box<dyn std::error::Error>> {
     let response = ureq::post(url)
         .set("User-Agent", "obmarg/cynic")

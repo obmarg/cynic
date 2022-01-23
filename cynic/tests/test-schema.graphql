@@ -42,14 +42,15 @@ type Query {
 union PostOrAuthor = BlogPost | Author
 
 enum PostState {
-  Posted
-  Draft
+  POSTED
+  DRAFT
 }
 
 scalar DateTime
 
 input PostFilters {
   authorId: ID
+  states: [PostState!]
 }
 
 schema {

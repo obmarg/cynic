@@ -3,19 +3,17 @@ mod schema {
 }
 
 #[derive(cynic::FragmentArguments)]
-struct TestArgs {}
+struct TestArgs {
+    anInt: Option<i32>,
+}
 
 #[derive(cynic::QueryFragment, PartialEq, Debug)]
-#[cynic(
-    schema_path = "src/bin/simple.graphql",
-
-    //argument_struct = "TestArgs"
-)]
+#[cynic(schema_path = "src/bin/simple.graphql", argument_struct = "TestArgs")]
 struct TestStruct {
     // TODO: Could automatically add Some here, though
     // honestly not sure, as what if the argument itself is some optional in a struct.
     // for now this doesn't seem like the worst decision.
-    //#[arguments(x = Some(1), y = Some("1".to_string()))]
+    #[arguments(x: $anInt, y = Some("1".to_string()))]
     field_one: String,
     nested: Nested,
     opt_nested: Option<Nested>,
@@ -98,7 +96,9 @@ fn test_decoding_options() {
 
 #[test]
 fn test_query_building() {
-    let operation = cynic::Operation::<TestQuery>::query();
+    use cynic::QueryBuilder;
+
+    let operation = TestQuery::build(TestArgs { anInt: Some(1) });
 
     insta::assert_snapshot!(operation.query);
 }

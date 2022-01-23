@@ -1,7 +1,7 @@
 ---
-source: cynic-codegen/src/fragment_derive_2/arguments/tests.rs
-assertion_line: 30
-expression: "analyse(literals, field, Span::call_site()).map(|o| o.arguments)"
+source: cynic-codegen/src/fragment_derive/arguments/tests.rs
+assertion_line: 32
+expression: "analyse(literals, field, Some(&format_ident!(\"MyArguments\")),\n        Span::call_site()).map(|o| o.arguments)"
 
 ---
 Ok(
@@ -70,6 +70,9 @@ Ok(
                                         NamedInputType(
                                             "BookState",
                                         ),
+                                    ),
+                                    argument_struct: Ident(
+                                        MyArguments,
                                     ),
                                 },
                             ),

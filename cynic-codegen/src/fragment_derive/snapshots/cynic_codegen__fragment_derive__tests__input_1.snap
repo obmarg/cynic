@@ -1,16 +1,17 @@
 ---
 source: cynic-codegen/src/fragment_derive/tests.rs
-assertion_line: 51
+assertion_line: 62
 expression: "format_code(format!(\"{}\", tokens))"
 
 ---
 #[automatically_derived]
 impl<'de> ::cynic::core::QueryFragment<'de> for MyQuery {
     type SchemaType = schema::Query;
+    type Variables = ();
     fn query(mut builder: ::cynic::queries::QueryBuilder<Self::SchemaType>) {
         let mut field_builder = builder . select_field :: < schema :: query_fields :: Post , < Option < BlogPostOutput > as :: cynic :: core :: QueryFragment > :: SchemaType > () ;
         field_builder
-            .argument::<schema::query_fields::post_arguments::Id>()
+            .argument::<schema::query_fields::post_arguments::Id, ()>()
             .literal("1234");
         <Option<BlogPostOutput> as ::cynic::core::QueryFragment>::query(
             field_builder.select_children(),

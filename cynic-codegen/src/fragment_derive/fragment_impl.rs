@@ -1,6 +1,7 @@
 use std::collections::{HashMap, HashSet};
 
 use proc_macro2::{Span, TokenStream};
+use quote::{quote, quote_spanned};
 use syn::spanned::Spanned;
 
 use crate::{
@@ -57,7 +58,7 @@ impl<'a> FragmentImpl<'a> {
         schema_type: &FragmentDeriveType,
         schema_module_path: &syn::Path,
         graphql_type_name: &str,
-        argument_struct: syn::Type,
+        argument_struct: Option<&syn::Ident>,
     ) -> Result<Self, Errors> {
         let target_struct = Ident::new_spanned(&name.to_string(), name.span());
 
@@ -73,10 +74,20 @@ impl<'a> FragmentImpl<'a> {
                     schema_field,
                     &field_module_path,
                     schema_module_path,
+                    argument_struct,
                     graphql_type_name,
                 )
             })
             .collect::<Result<Vec<_>, _>>()?;
+
+        let argument_struct = if let Some(arg_struct) = argument_struct {
+            let span = arg_struct.span();
+
+            let argument_struct = quote_spanned! { span => #arg_struct };
+            syn::parse2(argument_struct)?
+        } else {
+            syn::parse2(quote! { () })?
+        };
 
         Ok(FragmentImpl {
             field_selections,
@@ -93,6 +104,7 @@ fn process_field<'a>(
     schema_field: &Field<'a>,
     field_module_path: &syn::Path,
     schema_module_path: &syn::Path,
+    argument_struct: Option<&syn::Ident>,
     graphql_type_name: &str,
 ) -> Result<FieldSelection<'a>, Errors> {
     // Should be safe to unwrap because we've already checked we have a struct
@@ -112,6 +124,7 @@ fn process_field<'a>(
         arguments,
         schema_field,
         schema_module_path.clone(),
+        argument_struct,
         Span::call_site(),
     )?;
 
@@ -207,6 +220,7 @@ impl quote::ToTokens for FragmentImpl<'_> {
             #[automatically_derived]
             impl<'de> ::cynic::core::QueryFragment<'de> for #target_struct {
                 type SchemaType = #schema_type;
+                type Variables = #argument_struct;
 
                 fn query(mut builder: ::cynic::queries::QueryBuilder<Self::SchemaType>) {
                     #(#field_selections)*

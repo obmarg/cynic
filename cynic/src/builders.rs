@@ -5,51 +5,49 @@ use super::{
 
 use std::borrow::Borrow;
 
-pub trait QueryBuilder: Sized {
+pub trait QueryBuilder<'de>: Sized {
     /// The type that this query takes as arguments.
     /// May be `()` if no arguments are accepted.
-    type Arguments;
+    type Variables;
 
     /// Constructs a query operation for this QueryFragment.
-    fn build(args: impl Borrow<Self::Arguments>) -> Operation<Self>;
+    fn build(vars: Self::Variables) -> Operation<Self, Self::Variables>;
 }
 
-impl<'de, T> QueryBuilder for T
+impl<'de, T> QueryBuilder<'de> for T
 where
     T: crate::core::QueryFragment<'de>,
     T::SchemaType: crate::schema::QueryRoot,
 {
-    // TOdO: Arguments
-    type Arguments = ();
+    type Variables = T::Variables;
 
-    fn build(args: impl Borrow<Self::Arguments>) -> Operation<T> {
-        Operation::<T>::query()
+    fn build(vars: Self::Variables) -> Operation<T, T::Variables> {
+        Operation::<T, T::Variables>::query(vars)
     }
 }
 
 // TODO: update mutation builder to support new query structure stuff...
 
 /// Provides a `build` function on `QueryFragment`s that represent a mutation
-pub trait MutationBuilder: Sized {
+pub trait MutationBuilder<'de>: Sized {
     /// The type that this mutation takes as arguments.
     /// May be `()` if no arguments are accepted.
-    type Arguments;
+    type Variables;
 
     /// Constructs a mutation operation for this QueryFragment.
-    fn build(args: impl Borrow<Self::Arguments>) -> Operation<Self>;
+    fn build(args: Self::Variables) -> Operation<Self, Self::Variables>;
 }
 
-impl<'de, T> MutationBuilder for T
+impl<'de, T> MutationBuilder<'de> for T
 where
     T: crate::core::QueryFragment<'de>,
     T::SchemaType: crate::schema::MutationRoot,
 {
-    // TODO: arguments
-    type Arguments = ();
+    type Variables = T::Variables;
 
-    fn build(args: impl Borrow<Self::Arguments>) -> Operation<Self> {
+    fn build(vars: Self::Variables) -> Operation<Self, T::Variables> {
         // TODO: handle args
-        Operation::<T>::mutation()
+        Operation::<T, T::Variables>::mutation(vars)
     }
 }
 

@@ -43,14 +43,16 @@ pub enum ArgumentValue<'a> {
 pub struct Variable<'a> {
     pub ident: proc_macro2::Ident,
     pub value_type: TypeRef<'a, InputType<'a>>,
+    pub argument_struct: syn::Ident,
 }
 
 pub fn analyse<'a>(
     literals: Vec<parsing::FieldArgument>,
     field: &schema::Field<'a>,
+    argument_struct: Option<&syn::Ident>,
     span: Span,
 ) -> Result<AnalysedArguments<'a>, Errors> {
-    let arguments = analyse_fields(literals, &field.arguments, span)?;
+    let arguments = analyse_fields(literals, &field.arguments, argument_struct, span)?;
 
     Ok(AnalysedArguments {
         schema_field: field.clone(),
@@ -61,6 +63,7 @@ pub fn analyse<'a>(
 pub fn analyse_fields<'a>(
     literals: Vec<parsing::FieldArgument>,
     arguments: &[InputValue<'a>],
+    argument_struct: Option<&syn::Ident>,
     span: Span,
 ) -> Result<Vec<Field<'a>>, Errors> {
     validate(&literals, arguments, span)?;
@@ -74,7 +77,7 @@ pub fn analyse_fields<'a>(
             .find(|a| a.name == arg.argument_name)
             .unwrap();
 
-        match analyse_argument(arg, schema_field) {
+        match analyse_argument(arg, schema_field, argument_struct) {
             Ok(value) => fields.push(Field {
                 schema_field: schema_field.clone(),
                 value,
@@ -93,9 +96,12 @@ pub fn analyse_fields<'a>(
 fn analyse_argument<'a>(
     parsed_arg: parsing::FieldArgument,
     argument: &InputValue<'a>,
+    argument_struct: Option<&syn::Ident>,
 ) -> Result<ArgumentValue<'a>, Errors> {
     match parsed_arg.value {
-        parsing::FieldArgumentValue::Literal(lit) => analyse_value_type(lit, &argument.value_type),
+        parsing::FieldArgumentValue::Literal(lit) => {
+            analyse_value_type(lit, &argument.value_type, argument_struct)
+        }
         parsing::FieldArgumentValue::Expression(e) => Ok(ArgumentValue::Expression(e)),
     }
 }
@@ -103,15 +109,24 @@ fn analyse_argument<'a>(
 fn analyse_value_type<'a>(
     literal: parsing::ArgumentLiteral,
     value_type: &TypeRef<'a, InputType<'a>>,
+    argument_struct: Option<&syn::Ident>,
 ) -> Result<ArgumentValue<'a>, Errors> {
     use parsing::ArgumentLiteral;
 
     if let ArgumentLiteral::Variable(ident, _) = literal {
+        if argument_struct.is_none() {
+            return Err(syn::Error::new(
+                ident.span(),
+                "You've provided a variable here, but this QueryFragment does not have an argument_struct.  Please add an argument_struct attribute to the struct."
+            ).into());
+        }
+
         // We don't ever want to recurse through value_type if we have a variable,
         // as we need the outermost TypeRef to correctly check types.
         return Ok(ArgumentValue::Variable(Variable {
             ident,
             value_type: value_type.clone(),
+            argument_struct: argument_struct.unwrap().clone(),
         }));
     }
 
@@ -141,7 +156,7 @@ fn analyse_value_type<'a>(
 
             (InputType::InputObject(def), ArgumentLiteral::Object(fields, span)) => {
                 let literals = fields.into_iter().collect::<Vec<_>>();
-                let fields = analyse_fields(literals, &def.fields, span)?;
+                let fields = analyse_fields(literals, &def.fields, argument_struct, span)?;
 
                 Ok(ArgumentValue::Object(Object {
                     schema_obj: def,
@@ -155,7 +170,7 @@ fn analyse_value_type<'a>(
                 let mut output_values = Vec::new();
                 let mut errors = Vec::new();
                 for value in values {
-                    match analyse_value_type(value, element_type.as_ref()) {
+                    match analyse_value_type(value, element_type.as_ref(), argument_struct) {
                         Ok(v) => output_values.push(v),
                         Err(e) => errors.push(e),
                     }
@@ -171,6 +186,7 @@ fn analyse_value_type<'a>(
                 Ok(ArgumentValue::List(vec![analyse_value_type(
                     other,
                     element_type.as_ref(),
+                    argument_struct,
                 )?]))
             }
         },
@@ -179,6 +195,7 @@ fn analyse_value_type<'a>(
             other => Ok(ArgumentValue::Some(Box::new(analyse_value_type(
                 other,
                 inner_typeref.as_ref(),
+                argument_struct,
             )?))),
         },
     }

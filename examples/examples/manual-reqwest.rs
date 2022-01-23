@@ -27,7 +27,7 @@ struct FilmArguments {
     argument_struct = "FilmArguments"
 )]
 struct FilmDirectorQuery {
-    #[arguments(id = &args.id)]
+    #[arguments(id: $id)]
     film: Option<Film>,
 }
 
@@ -50,10 +50,10 @@ fn run_query() -> cynic::GraphQlResponse<FilmDirectorQuery> {
     query.decode_response(response.json().unwrap()).unwrap()
 }
 
-fn build_query() -> cynic::Operation<'static, FilmDirectorQuery> {
+fn build_query() -> cynic::Operation<FilmDirectorQuery, FilmArguments> {
     use cynic::QueryBuilder;
 
-    FilmDirectorQuery::build(&FilmArguments {
+    FilmDirectorQuery::build(FilmArguments {
         id: Some("ZmlsbXM6MQ==".into()),
     })
 }

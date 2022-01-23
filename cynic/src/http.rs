@@ -77,24 +77,25 @@ mod surf_ext {
         ///
         /// If a `json_decode::Error` occurs it can be obtained via downcast_ref on
         /// the `surf::Error`.
-        fn run_graphql<ResponseData>(
+        fn run_graphql<ResponseData, Vars>(
             self,
-            operation: Operation<ResponseData>,
+            operation: Operation<ResponseData, Vars>,
         ) -> BoxFuture<'static, Result<GraphQlResponse<ResponseData>, surf::Error>>
         where
             ResponseData: serde::de::DeserializeOwned + 'static;
     }
 
     impl SurfExt for surf::RequestBuilder {
-        fn run_graphql<ResponseData>(
+        fn run_graphql<ResponseData, Vars>(
             self,
-            operation: Operation<ResponseData>,
+            operation: Operation<ResponseData, Vars>,
         ) -> BoxFuture<'static, Result<GraphQlResponse<ResponseData>, surf::Error>>
         where
             ResponseData: serde::de::DeserializeOwned + 'static,
         {
+            let operation = json!(&operation);
             Box::pin(async move {
-                let mut response = self.body(json!(&operation)).await?;
+                let mut response = self.body(operation).await?;
 
                 if !response.status().is_success() {
                     let body_string = response.body_string().await?;
@@ -195,24 +196,25 @@ mod reqwest_ext {
         ///
         /// If a `json_decode::Error` occurs it can be obtained via downcast_ref on
         /// the `surf::Error`.
-        fn run_graphql<ResponseData>(
+        fn run_graphql<ResponseData, Vars>(
             self,
-            operation: Operation<ResponseData>,
+            operation: Operation<ResponseData, Vars>,
         ) -> BoxFuture<'static, Result<GraphQlResponse<ResponseData>, CynicReqwestError>>
         where
             ResponseData: serde::de::DeserializeOwned + 'static;
     }
 
     impl ReqwestExt for reqwest::RequestBuilder {
-        fn run_graphql<ResponseData>(
+        fn run_graphql<ResponseData, Vars>(
             self,
-            operation: Operation<ResponseData>,
+            operation: Operation<ResponseData, Vars>,
         ) -> BoxFuture<'static, Result<GraphQlResponse<ResponseData>, CynicReqwestError>>
         where
             ResponseData: serde::de::DeserializeOwned + 'static,
         {
+            let builder = self.json(&operation);
             Box::pin(async move {
-                match self.json(&operation).send().await {
+                match builder.send().await {
                     Ok(response) => {
                         let status = response.status();
                         if !status.is_success() {
@@ -300,18 +302,18 @@ mod reqwest_blocking_ext {
         ///
         /// If a `json_decode::Error` occurs it can be obtained via downcast_ref on
         /// the `surf::Error`.
-        fn run_graphql<ResponseData>(
+        fn run_graphql<ResponseData, Vars>(
             self,
-            operation: Operation<ResponseData>,
+            operation: Operation<ResponseData, Vars>,
         ) -> Result<GraphQlResponse<ResponseData>, CynicReqwestError>
         where
             ResponseData: serde::de::DeserializeOwned + 'static;
     }
 
     impl ReqwestBlockingExt for reqwest::blocking::RequestBuilder {
-        fn run_graphql<ResponseData>(
+        fn run_graphql<ResponseData, Vars>(
             self,
-            operation: Operation<ResponseData>,
+            operation: Operation<ResponseData, Vars>,
         ) -> Result<GraphQlResponse<ResponseData>, CynicReqwestError>
         where
             ResponseData: serde::de::DeserializeOwned + 'static,

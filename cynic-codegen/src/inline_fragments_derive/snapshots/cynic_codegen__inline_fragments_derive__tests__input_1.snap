@@ -7,6 +7,7 @@ expression: "format_code(format!(\"{}\", tokens))"
 #[automatically_derived]
 impl<'de> ::cynic::core::QueryFragment<'de> for PostOrAuthor {
     type SchemaType = schema::PostOrAuthor;
+    type Variables = ();
     fn query(mut builder: ::cynic::queries::QueryBuilder<Self::SchemaType>) {
         let fragment_builder = builder.inline_fragment();
         let mut fragment_builder =

@@ -323,6 +323,7 @@ impl quote::ToTokens for InlineFragmentsImpl<'_> {
             #[automatically_derived]
             impl<'de> ::cynic::core::QueryFragment<'de> for #target_struct {
                 type SchemaType = #type_lock;
+                type Variables = #arguments;
 
                 fn query(mut builder: ::cynic::queries::QueryBuilder<Self::SchemaType>) {
                     #(

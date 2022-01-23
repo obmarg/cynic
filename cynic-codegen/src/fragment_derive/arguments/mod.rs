@@ -15,13 +15,15 @@ pub fn process_arguments<'a>(
     literals: Vec<parsing::FieldArgument>,
     field: &crate::schema::types::Field<'a>,
     schema_module: syn::Path,
+    argument_struct: Option<&syn::Ident>,
     span: Span,
 ) -> Result<Output<'a>, Errors> {
-    let analysed = analyse::analyse(literals, field, span)?;
+    let analysed = analyse::analyse(literals, field, argument_struct, span)?;
 
     Ok(Output {
         analysed,
         schema_module,
+        argument_struct: argument_struct.cloned(),
     })
 }
 

@@ -1,4 +1,4 @@
-//mod model;
+mod input_object;
 mod named_type;
 mod object;
 mod params;
@@ -8,13 +8,17 @@ mod subtype_markers;
 pub use params::UseSchemaParams;
 
 use proc_macro2::TokenStream;
-use quote::{format_ident, ToTokens};
+use quote::{format_ident, quote, ToTokens};
 use syn::parse_quote;
 
 use crate::{
     error::Errors,
     idents::{to_snake_case, Ident},
-    schema::{self, types::Type, Schema, TypeIndex},
+    schema::{
+        self,
+        types::{InputType, Type, TypeRef},
+        Schema, TypeIndex,
+    },
 };
 
 use self::{named_type::NamedType, object::ObjectOutput, subtype_markers::SubtypeMarkers};
@@ -101,4 +105,24 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
     });
 
     Ok(output)
+}
+
+impl TypeRef<'_, InputType<'_>> {
+    fn argument_kind(&self) -> proc_macro2::TokenStream {
+        match self.inner_type() {
+            InputType::Scalar(_) => {
+                quote! {
+                    ::cynic::schema::ScalarArgument
+                }
+            }
+            InputType::Enum(_) => {
+                quote! {
+                    ::cynic::schema::EnumArgument
+                }
+            }
+            InputType::InputObject(_) => quote! {
+                ::cynic::schema::InputObjectArgument
+            },
+        }
+    }
 }

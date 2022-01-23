@@ -46,6 +46,7 @@ mod manual_schema {
 
             impl cynic::schema::HasArgument<Id> for super::Post {
                 type ArgumentSchemaType = cynic::Id;
+                type ArgumentKind = ::cynic::schema::ScalarArgument;
 
                 fn name() -> &'static str {
                     "id"

@@ -51,7 +51,7 @@ async fn run_query() -> cynic::GraphQlResponse<FilmDirectorQuery> {
         .unwrap()
 }
 
-fn build_query() -> cynic::Operation<'static, FilmDirectorQuery> {
+fn build_query() -> cynic::Operation<FilmDirectorQuery, FilmArguments> {
     use cynic::QueryBuilder;
 
     FilmDirectorQuery::build(&FilmArguments {

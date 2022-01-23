@@ -1,7 +1,7 @@
 use quote::{quote, ToTokens, TokenStreamExt};
 use syn::parse_quote;
 
-use crate::schema::types::{Field, InputValue, ObjectType};
+use crate::schema::types::{Field, InputType, InputValue, ObjectType};
 
 pub struct ObjectOutput<'a> {
     object: ObjectType<'a>,
@@ -99,11 +99,14 @@ impl ToTokens for ArgumentOutput<'_> {
             .marker_type()
             .to_path(&parse_quote! { super::super });
 
+        let argument_kind = self.argument.value_type.argument_kind();
+
         tokens.append_all(quote! {
             pub struct #argument_ident;
 
             impl ::cynic::schema::HasArgument<#argument_ident> for super::#field_marker {
                 type ArgumentSchemaType = #schema_type;
+                type ArgumentKind = #argument_kind;
 
                 fn name() -> &'static str {
                     #name

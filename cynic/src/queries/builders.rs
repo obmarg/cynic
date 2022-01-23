@@ -3,7 +3,10 @@
 
 use std::marker::PhantomData;
 
-use crate::{core, schema};
+use crate::{
+    core::{self, VariableDefinition},
+    schema,
+};
 
 use super::{ast::*, IntoInputLiteral};
 
@@ -149,9 +152,9 @@ impl<'a, Field, FieldSchemaType> FieldSelectionBuilder<'a, Field, FieldSchemaTyp
     //     todo!()
     // }
 
-    pub fn argument<ArgumentName>(
+    pub fn argument<ArgumentName, ArgumentStruct>(
         &'_ mut self,
-    ) -> ArgumentBuilder<'_, <Field as schema::HasArgument<ArgumentName>>::ArgumentSchemaType>
+    ) -> ArgumentBuilder<'_, Field::ArgumentSchemaType, Field::ArgumentKind, ArgumentStruct>
     where
         Field: schema::HasArgument<ArgumentName>,
     {
@@ -207,11 +210,11 @@ impl<'a, SchemaType> InlineFragmentBuilder<'a, SchemaType> {
 }
 
 // TODO: maybe rename this InputBuilder?
-pub struct ArgumentBuilder<'a, SchemaType> {
+pub struct ArgumentBuilder<'a, SchemaType, ArgumentKind, ArgumentStruct> {
     // TODO: Remove the &'a from this phantomdata once it's actually being used.
     argument_name: &'static str,
     arguments: &'a mut Vec<Argument>,
-    phantom: PhantomData<fn() -> SchemaType>,
+    phantom: PhantomData<fn() -> (SchemaType, ArgumentKind, ArgumentStruct)>,
 }
 
 /*
@@ -235,20 +238,55 @@ impl<'a, SchemaType> ArgumentBuilder<'a, SchemaType> {
 }
 */
 
-impl<'a, SchemaType> ArgumentBuilder<'a, SchemaType> {
-    pub fn variable<VariableDef>(self, def: VariableDef)
+impl<'a, SchemaType, ArgumentStruct>
+    ArgumentBuilder<'a, SchemaType, schema::ScalarArgument, ArgumentStruct>
+{
+    pub fn variable<Type>(self, def: VariableDefinition<ArgumentStruct, Type>)
     where
-        // TODO: presumably need to constrain on ArgumentStruct somehow.
-        VariableDef: core::Variable<SchemaType = SchemaType>,
+        // TODO: Think we need to do the whole unwrapping dance to make this work nice...
+        // with auto Option wrapping and what not :sigh:
+        Type: schema::IsScalar<SchemaType>,
     {
         self.arguments.push(Argument {
             name: self.argument_name,
-            value: InputLiteral::Variable(VariableDef::name()),
+            value: InputLiteral::Variable(def.name),
         });
     }
 }
 
-impl<'a, SchemaType> ArgumentBuilder<'a, Option<SchemaType>> {
+// TODO: reinstate & correct these two
+
+// impl<'a, SchemaType> ArgumentBuilder<'a, SchemaType, schema::EnumArgument> {
+//     pub fn variable<VariableDef>(self, def: VariableDef)
+//     where
+//         // TODO: presumably need to constrain on ArgumentStruct somehow.
+//         VariableDef: core::Variable,
+//         VariableDef::Type: schema::IsEnum<SchemaType>,
+//     {
+//         self.arguments.push(Argument {
+//             name: self.argument_name,
+//             value: InputLiteral::Variable(VariableDef::name()),
+//         });
+//     }
+// }
+
+// impl<'a, SchemaType> ArgumentBuilder<'a, SchemaType, schema::InputObjectArgument> {
+//     pub fn variable<VariableDef>(self, def: VariableDef)
+//     where
+//         // TODO: presumably need to constrain on ArgumentStruct somehow.
+//         VariableDef: core::Variable,
+//         VariableDef::Type: schema::IsInputObject<SchemaType>,
+//     {
+//         self.arguments.push(Argument {
+//             name: self.argument_name,
+//             value: InputLiteral::Variable(VariableDef::name()),
+//         });
+//     }
+// }
+
+impl<'a, SchemaType, ArgKind, ArgumentStruct>
+    ArgumentBuilder<'a, Option<SchemaType>, ArgKind, ArgumentStruct>
+{
     pub fn null(self) {
         self.arguments.push(Argument {
             name: self.argument_name,
@@ -257,7 +295,7 @@ impl<'a, SchemaType> ArgumentBuilder<'a, Option<SchemaType>> {
     }
 
     // TODO: name this some maybe?
-    pub fn value(self) -> ArgumentBuilder<'a, SchemaType> {
+    pub fn value(self) -> ArgumentBuilder<'a, SchemaType, ArgKind, ArgumentStruct> {
         ArgumentBuilder {
             argument_name: self.argument_name,
             arguments: self.arguments,
@@ -268,7 +306,7 @@ impl<'a, SchemaType> ArgumentBuilder<'a, Option<SchemaType>> {
     // TODO: would undefined also be useful?  Not sure.
 }
 
-impl<'a, T> ArgumentBuilder<'a, T> {
+impl<'a, T, K, ArgStruct> ArgumentBuilder<'a, T, K, ArgStruct> {
     pub fn literal(self, l: impl IntoInputLiteral<T>) {
         self.arguments.push(Argument {
             name: self.argument_name,
@@ -309,19 +347,18 @@ impl<'a, T> ArgumentBuilder<'a, T> {
 //     }
 // }
 
-impl<'a, SchemaType> ArgumentBuilder<'a, SchemaType>
+impl<'a, SchemaType, Kind, ArgStruct> ArgumentBuilder<'a, SchemaType, Kind, ArgStruct>
 where
     SchemaType: schema::InputObjectMarker,
 {
     // TODO: is FieldType even neccesary here or can we look up via Field?
     //  I think so - I've certainly tried right here...
-    pub fn field<FieldMarker>(&'_ mut self) -> ArgumentBuilder<'_, FieldMarker::SchemaType>
+    pub fn field<FieldMarker>(
+        &'_ mut self,
+    ) -> ArgumentBuilder<'_, FieldMarker::SchemaType, SchemaType::ArgumentKind, ArgStruct>
     where
         FieldMarker: schema::Field,
-
-        // TODO: Would HasArgument be more suitable here I wonder?
-        // Not sure.
-        SchemaType: schema::HasField<FieldMarker, FieldMarker::SchemaType>,
+        SchemaType: schema::HasInputField<FieldMarker, FieldMarker::SchemaType>,
     {
         self.arguments.push(Argument {
             name: self.argument_name,
@@ -341,8 +378,8 @@ where
     }
 }
 
-impl<'a, SchemaType> ArgumentBuilder<'a, Vec<SchemaType>> {
-    pub fn item<InnerType>(&'_ mut self) -> ArgumentBuilder<'_, InnerType> {
+impl<'a, SchemaType, ArgKind, ArgStruct> ArgumentBuilder<'a, Vec<SchemaType>, ArgKind, ArgStruct> {
+    pub fn item<InnerType>(&'_ mut self) -> ArgumentBuilder<'_, InnerType, ArgKind, ArgStruct> {
         // TODO: Think we actually need to return a ListBuilder type for this to work...
         todo!()
     }

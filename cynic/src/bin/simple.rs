@@ -3,7 +3,7 @@
 fn main() {
     use cynic::QueryBuilder;
 
-    println!("{}", TestStruct::build(&TestArgs {}).query);
+    println!("{}", TestStruct::build(TestArgs {}).query);
 }
 
 mod schema {

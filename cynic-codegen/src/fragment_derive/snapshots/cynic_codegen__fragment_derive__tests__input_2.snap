@@ -1,12 +1,13 @@
 ---
 source: cynic-codegen/src/fragment_derive/tests.rs
-assertion_line: 51
+assertion_line: 62
 expression: "format_code(format!(\"{}\", tokens))"
 
 ---
 #[automatically_derived]
 impl<'de> ::cynic::core::QueryFragment<'de> for BlogPostOutput {
     type SchemaType = schema::BlogPost;
+    type Variables = ();
     fn query(mut builder: ::cynic::queries::QueryBuilder<Self::SchemaType>) {
         let mut field_builder = builder . select_field :: < schema :: blog_post_fields :: HasMetadata , < Option < bool > as :: cynic :: schema :: IsScalar < < schema :: blog_post_fields :: HasMetadata as :: cynic :: schema :: Field > :: SchemaType >> :: SchemaType > () ;
         field_builder.done();

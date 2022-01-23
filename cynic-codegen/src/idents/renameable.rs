@@ -41,6 +41,6 @@ impl RenamableFieldIdent {
             return *span;
         }
 
-        return self.ident.span();
+        self.ident.span()
     }
 }

@@ -32,6 +32,29 @@ use super::fragment_derive;
             has_metadata: Option<bool>,
             author: AuthorOutput,
         }
+    ),
+    parse_quote!(
+        #[cynic(
+            schema_path = "../cynic/tests/test-schema.graphql",
+            schema_module = "schema",
+            graphql_type = "Query"
+        )]
+        struct MyQuery {
+            #[arguments(filters: {states: ["POSTED", "DRAFT"]})]
+            filteredPosts: Vec<BlogPostOutput>,
+        }
+    ),
+    parse_quote!(
+        #[cynic(
+            schema_path = "../cynic/tests/test-schema.graphql",
+            schema_module = "schema",
+            graphql_type = "Query",
+            argument_struct = "AnArgumentStruct"
+        )]
+        struct MyQuery {
+            #[arguments(filters: $filters)]
+            filteredPosts: Vec<BlogPostOutput>,
+        }
     )
 ])]
 fn snapshot_fragment_derive(input: syn::DeriveInput) {

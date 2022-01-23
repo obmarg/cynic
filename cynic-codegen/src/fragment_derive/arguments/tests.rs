@@ -20,6 +20,8 @@ use super::{analyse::analyse, parsing::CynicArguments};
 #[case::missing_parameter("filteredBooks", parse_quote! {})]
 #[case::unknown_parameter("someNullableScalarParams", parse_quote! { unknown: "hello" })]
 fn test_analyse(#[case] field: &str, #[case] literals: CynicArguments) {
+    use quote::format_ident;
+
     let schema_doc = parse_schema(SCHEMA).unwrap();
     let schema = Schema::new(&schema_doc).validate().unwrap();
     let ty = schema.lookup::<Type>("Query").ok().unwrap();
@@ -27,7 +29,29 @@ fn test_analyse(#[case] field: &str, #[case] literals: CynicArguments) {
 
     let literals = literals.arguments.into_iter().collect::<Vec<_>>();
 
-    insta::assert_debug_snapshot!(analyse(literals, field, Span::call_site()).map(|o| o.arguments))
+    insta::assert_debug_snapshot!(analyse(
+        literals,
+        field,
+        Some(&format_ident!("MyArguments")),
+        Span::call_site()
+    )
+    .map(|o| o.arguments))
+}
+
+#[test]
+fn test_analyse_errors_without_argument_struct() {
+    let schema_doc = parse_schema(SCHEMA).unwrap();
+    let schema = Schema::new(&schema_doc).validate().unwrap();
+    let ty = schema.lookup::<Type>("Query").ok().unwrap();
+    let field = &ty.object().unwrap().field("filteredBooks").unwrap();
+
+    let literals: CynicArguments =
+        parse_quote! { filters: $aVaraible, optionalFilters: $anotherVar };
+    let literals = literals.arguments.into_iter().collect::<Vec<_>>();
+
+    insta::assert_debug_snapshot!(
+        analyse(literals, field, None, Span::call_site()).map(|o| o.arguments)
+    )
 }
 
 const SCHEMA: &str = r#"

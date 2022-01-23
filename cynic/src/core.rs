@@ -16,6 +16,7 @@ use crate::{indent::indented, queries::QueryBuilder, schema};
 // But whatever, don't do that people?  I _think_ it's an OK limitation.
 pub trait QueryFragment<'de>: serde::Deserialize<'de> {
     type SchemaType;
+    type Variables;
 
     fn query(builder: QueryBuilder<Self::SchemaType>);
 }
@@ -25,6 +26,7 @@ where
     T: QueryFragment<'de>,
 {
     type SchemaType = Option<T::SchemaType>;
+    type Variables = T::Variables;
 
     fn query(builder: QueryBuilder<Self::SchemaType>) {
         T::query(builder.into_inner())
@@ -36,6 +38,7 @@ where
     T: QueryFragment<'de>,
 {
     type SchemaType = Vec<T::SchemaType>;
+    type Variables = T::Variables;
 
     fn query(builder: QueryBuilder<Self::SchemaType>) {
         T::query(builder.into_inner())
@@ -47,6 +50,7 @@ where
     T: QueryFragment<'de>,
 {
     type SchemaType = T::SchemaType;
+    type Variables = T::Variables;
 
     fn query(builder: QueryBuilder<Self::SchemaType>) {
         T::query(builder)
@@ -59,6 +63,7 @@ where
     T: QueryFragment<'de>,
 {
     type SchemaType = T::SchemaType;
+    type Variables = T::Variables;
 
     fn query(builder: QueryBuilder<Self::SchemaType>) {
         T::query(builder)
@@ -71,6 +76,7 @@ where
     T: QueryFragment<'de>,
 {
     type SchemaType = T::SchemaType;
+    type Variables = T::Variables;
 
     fn query(builder: QueryBuilder<Self::SchemaType>) {
         T::query(builder)
@@ -79,6 +85,7 @@ where
 
 impl<'de> QueryFragment<'de> for bool {
     type SchemaType = bool;
+    type Variables = ();
 
     fn query(builder: QueryBuilder<Self::SchemaType>) {}
 }
@@ -86,6 +93,7 @@ impl<'de> QueryFragment<'de> for bool {
 // TODO: Can I also impl this for &'static str?
 impl<'de> QueryFragment<'de> for String {
     type SchemaType = String;
+    type Variables = ();
 
     fn query(builder: QueryBuilder<Self::SchemaType>) {}
 }
@@ -96,12 +104,23 @@ pub trait Enum<'de>: serde::Deserialize<'de> + serde::Serialize {}
 // TODO: Does this need a TypeLock on it?
 pub trait Scalar<'de>: serde::Deserialize<'de> + serde::Serialize {}
 
-pub trait Variable {
-    type ArgumentStruct;
-    type SchemaType;
+pub trait QueryVariables {
+    type Fields;
+}
 
-    fn name() -> &'static str;
-    // TODO: Do we need a name func in here.  Probably.
+// TODO: Think about this name & where we should put it
+pub struct VariableDefinition<ArgumentStruct, Type> {
+    pub name: &'static str,
+    phantom: PhantomData<fn() -> (ArgumentStruct, Type)>,
+}
+
+impl<ArgumentStruct, Type> VariableDefinition<ArgumentStruct, Type> {
+    pub fn new(name: &'static str) -> Self {
+        VariableDefinition {
+            name,
+            phantom: PhantomData,
+        }
+    }
 }
 
 // TODO: Might want recursive impls of Variable for Vec & Option?

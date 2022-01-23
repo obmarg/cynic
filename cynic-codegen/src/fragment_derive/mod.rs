@@ -62,17 +62,6 @@ pub fn fragment_derive_impl(
         .lookup::<FragmentDeriveType>(&input.graphql_type_name())
         .map_err(|e| syn::Error::new(input.graphql_type_span(), e))?;
 
-    let input_argument_struct = (&input.argument_struct).clone();
-    let argument_struct = if let Some(arg_struct) = input_argument_struct {
-        let span = arg_struct.span();
-
-        let arg_struct_val: Ident = arg_struct.into();
-        let argument_struct = quote_spanned! { span => #arg_struct_val };
-        syn::parse2(argument_struct)?
-    } else {
-        syn::parse2(quote! { () })?
-    };
-
     let graphql_name = &(input.graphql_type_name());
     let schema_module = input.schema_module();
     let ident = input.ident;
@@ -87,7 +76,7 @@ pub fn fragment_derive_impl(
             &schema_type,
             &schema_module,
             graphql_name,
-            argument_struct,
+            input.argument_struct.as_ref(),
         )?;
 
         let deserialize_impl = DeserializeImpl::new(&fields, &ident);

@@ -57,11 +57,11 @@ mod schema {
 
 #[test]
 fn test_all_posts_query_output() {
-    use cynic::Operation;
+    use cynic::QueryBuilder;
 
-    let query = Operation::<AllPostsQuery>::query();
+    let operation = AllPostsQuery::build(());
 
-    insta::assert_display_snapshot!(query.query);
+    insta::assert_display_snapshot!(operation.query);
 }
 
 #[test]
