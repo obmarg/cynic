@@ -4,6 +4,7 @@
 use std::marker::PhantomData;
 
 use crate::{
+    coercions::CoercesTo,
     core::{self, VariableDefinition},
     schema,
 };
@@ -243,9 +244,7 @@ impl<'a, SchemaType, ArgumentStruct>
 {
     pub fn variable<Type>(self, def: VariableDefinition<ArgumentStruct, Type>)
     where
-        // TODO: Think we need to do the whole unwrapping dance to make this work nice...
-        // with auto Option wrapping and what not :sigh:
-        Type: schema::IsScalar<SchemaType>,
+        Type: CoercesTo<SchemaType>,
     {
         self.arguments.push(Argument {
             name: self.argument_name,
@@ -307,7 +306,7 @@ impl<'a, SchemaType, ArgKind, ArgumentStruct>
 }
 
 impl<'a, T, K, ArgStruct> ArgumentBuilder<'a, T, K, ArgStruct> {
-    pub fn literal(self, l: impl IntoInputLiteral<T>) {
+    pub fn literal(self, l: impl IntoInputLiteral + CoercesTo<T>) {
         self.arguments.push(Argument {
             name: self.argument_name,
             value: l.into_literal(),

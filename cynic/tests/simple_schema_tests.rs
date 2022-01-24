@@ -98,7 +98,7 @@ fn test_decoding_options() {
 fn test_query_building() {
     use cynic::QueryBuilder;
 
-    let operation = TestQuery::build(TestArgs { anInt: Some(1) });
+    let operation = TestQuery::build(TestArgs { anInt: 1 });
 
     insta::assert_snapshot!(operation.query);
 }

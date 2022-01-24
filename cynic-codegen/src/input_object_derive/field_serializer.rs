@@ -107,11 +107,12 @@ impl<'a> FieldSerializer<'a> {
 
         let field_span = self.rust_field.ty.span();
         let insert_call = quote_spanned! { field_span =>
+            ::cynic::assert_impl!(#rust_field_type: ::cynic::coercions::CoercesTo<#field_marker_type>);
             #vec_name.push(
                 ::cynic::queries::Argument {
                     name: #graphql_field_name,
                     value: <
-                        #rust_field_type as ::cynic::queries::IntoInputLiteral<#field_marker_type>
+                        #rust_field_type as ::cynic::queries::IntoInputLiteral
                     >::into_literal(self.#rust_field_name)
                 }
             );

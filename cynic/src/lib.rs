@@ -176,6 +176,7 @@ mod result;
 mod scalar;
 
 // TODO: think about the names of these, maybe don't make them pub?
+pub mod coercions;
 pub mod core;
 pub mod queries;
 
@@ -208,7 +209,7 @@ pub use cynic_proc_macros::{
     QueryFragment, Scalar,
 };
 
-pub use static_assertions::assert_impl_any as assert_impl;
+pub use static_assertions::assert_impl_all as assert_impl;
 
 // We re-export serde_json as the output from a lot of our derive macros require it,
 // and this way we can point at our copy rather than forcing users to add it to

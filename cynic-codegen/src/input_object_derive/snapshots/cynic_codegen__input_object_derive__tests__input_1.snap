@@ -28,25 +28,33 @@ impl ::cynic::serde::Serialize for IssueOrder {
     }
 }
 #[automatically_derived]
-impl ::cynic::queries::IntoInputLiteral<schema::IssueOrder> for IssueOrder {
+impl ::cynic::queries::IntoInputLiteral for IssueOrder {
     fn into_literal(self) -> ::cynic::queries::InputLiteral {
         let mut vec = Vec::new();
-        vec.push(
-            ::cynic::queries::Argument {
-                name: "direction",
-                value: <OrderDirection as ::cynic::queries::IntoInputLiteral<
-                    schema::OrderDirection,
-                >>::into_literal(self.direction),
-            },
+        ::cynic::assert_impl!(
+            OrderDirection: ::cynic::coercions::CoercesTo<schema::OrderDirection>
+        );
+        vec.push(::cynic::queries::Argument {
+            name: "direction",
+            value: <OrderDirection as ::cynic::queries::IntoInputLiteral>::into_literal(
+                self.direction,
+            ),
+        });
+        ::cynic::assert_impl!(
+            IssueOrderField: ::cynic::coercions::CoercesTo<schema::IssueOrderField>
         );
         vec.push(::cynic::queries::Argument {
             name: "field",
-            value: <IssueOrderField as ::cynic::queries::IntoInputLiteral<
-                schema::IssueOrderField,
-            >>::into_literal(self.field),
+            value: <IssueOrderField as ::cynic::queries::IntoInputLiteral>::into_literal(
+                self.field,
+            ),
         });
         ::cynic::queries::InputLiteral::Object(vec)
     }
 }
-::cynic::impl_into_input_literal_for_wrappers!(IssueOrder, schema::IssueOrder);
+::cynic::impl_coercions!(IssueOrder, schema::IssueOrder);
+#[automatically_derived]
+impl schema::variable::Variable for IssueOrder {
+    const TYPE: ::cynic::core::VariableType = ::cynic::core::VariableType::Named("IssueOrder");
+}
 

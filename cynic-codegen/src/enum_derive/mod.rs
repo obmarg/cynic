@@ -130,7 +130,7 @@ pub fn enum_derive_impl(
             }
 
             #[automatically_derived]
-            impl ::cynic::queries::IntoInputLiteral<#schema_module::#enum_marker_ident> for #ident {
+            impl ::cynic::queries::IntoInputLiteral for #ident {
                 fn into_literal(self) -> ::cynic::queries::InputLiteral {
                     use std::borrow::Cow;
 
@@ -142,7 +142,7 @@ pub fn enum_derive_impl(
                 }
             }
 
-            ::cynic::impl_into_input_literal_for_wrappers!(#ident, #schema_module::#enum_marker_ident);
+            ::cynic::impl_coercions!(#ident, #schema_module::#enum_marker_ident);
             // TODO: impl IntoObjectLiteral....
 
             #[automatically_derived]

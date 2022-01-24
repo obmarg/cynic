@@ -131,7 +131,7 @@ pub fn input_object_derive_impl(
             }
 
             #[automatically_derived]
-            impl ::cynic::queries::IntoInputLiteral<#schema_module::#input_marker_ident> for #ident {
+            impl ::cynic::queries::IntoInputLiteral for #ident {
                 fn into_literal(self) -> ::cynic::queries::InputLiteral {
                     let mut #input_literal_vec_ident = Vec::new();
 
@@ -141,7 +141,7 @@ pub fn input_object_derive_impl(
                 }
             }
 
-            ::cynic::impl_into_input_literal_for_wrappers!(#ident, #schema_module::#input_marker_ident);
+            ::cynic::impl_coercions!(#ident, #schema_module::#input_marker_ident);
 
             #[automatically_derived]
             impl #schema_module::variable::Variable for #ident {

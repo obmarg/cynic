@@ -1,6 +1,6 @@
 ---
 source: cynic-codegen/src/enum_derive/mod.rs
-assertion_line: 391
+assertion_line: 395
 expression: "format_code(format!(\"{}\", tokens))"
 
 ---
@@ -41,7 +41,7 @@ impl<'de> ::cynic::serde::Deserialize<'de> for States {
     }
 }
 #[automatically_derived]
-impl ::cynic::queries::IntoInputLiteral<schema::States> for States {
+impl ::cynic::queries::IntoInputLiteral for States {
     fn into_literal(self) -> ::cynic::queries::InputLiteral {
         use std::borrow::Cow;
         ::cynic::queries::InputLiteral::String(Cow::Borrowed(match self {
@@ -51,5 +51,9 @@ impl ::cynic::queries::IntoInputLiteral<schema::States> for States {
         }))
     }
 }
-::cynic::impl_into_input_literal_for_wrappers!(States, schema::States);
+::cynic::impl_coercions!(States, schema::States);
+#[automatically_derived]
+impl schema::variable::Variable for States {
+    const TYPE: ::cynic::core::VariableType = ::cynic::core::VariableType::Named("States");
+}
 
