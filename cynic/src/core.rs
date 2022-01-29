@@ -26,7 +26,7 @@ pub trait QueryFragment<'de>: serde::Deserialize<'de> {
     type SchemaType;
     type Variables: QueryVariables;
 
-    fn query(builder: QueryBuilder<Self::SchemaType>);
+    fn query(builder: QueryBuilder<Self::SchemaType, Self::Variables>);
 }
 
 impl<'de, T> QueryFragment<'de> for Option<T>
@@ -36,7 +36,7 @@ where
     type SchemaType = Option<T::SchemaType>;
     type Variables = T::Variables;
 
-    fn query(builder: QueryBuilder<Self::SchemaType>) {
+    fn query(builder: QueryBuilder<Self::SchemaType, Self::Variables>) {
         T::query(builder.into_inner())
     }
 }
@@ -48,7 +48,7 @@ where
     type SchemaType = Vec<T::SchemaType>;
     type Variables = T::Variables;
 
-    fn query(builder: QueryBuilder<Self::SchemaType>) {
+    fn query(builder: QueryBuilder<Self::SchemaType, Self::Variables>) {
         T::query(builder.into_inner())
     }
 }
@@ -60,7 +60,7 @@ where
     type SchemaType = T::SchemaType;
     type Variables = T::Variables;
 
-    fn query(builder: QueryBuilder<Self::SchemaType>) {
+    fn query(builder: QueryBuilder<Self::SchemaType, Self::Variables>) {
         T::query(builder)
     }
 }
@@ -73,7 +73,7 @@ where
     type SchemaType = T::SchemaType;
     type Variables = T::Variables;
 
-    fn query(builder: QueryBuilder<Self::SchemaType>) {
+    fn query(builder: QueryBuilder<Self::SchemaType, Self::Variables>) {
         T::query(builder)
     }
 }
@@ -86,7 +86,7 @@ where
     type SchemaType = T::SchemaType;
     type Variables = T::Variables;
 
-    fn query(builder: QueryBuilder<Self::SchemaType>) {
+    fn query(builder: QueryBuilder<Self::SchemaType, Self::Variables>) {
         T::query(builder)
     }
 }
@@ -95,7 +95,7 @@ impl<'de> QueryFragment<'de> for bool {
     type SchemaType = bool;
     type Variables = ();
 
-    fn query(builder: QueryBuilder<Self::SchemaType>) {}
+    fn query(builder: QueryBuilder<Self::SchemaType, Self::Variables>) {}
 }
 
 // TODO: Can I also impl this for &'static str?
@@ -103,7 +103,7 @@ impl<'de> QueryFragment<'de> for String {
     type SchemaType = String;
     type Variables = ();
 
-    fn query(builder: QueryBuilder<Self::SchemaType>) {}
+    fn query(builder: QueryBuilder<Self::SchemaType, Self::Variables>) {}
 }
 
 pub trait Enum: serde::de::DeserializeOwned + serde::Serialize {
@@ -180,12 +180,12 @@ impl QueryVariables for () {
 }
 
 // TODO: Think about this name & where we should put it
-pub struct VariableDefinition<ArgumentStruct, Type> {
+pub struct VariableDefinition<Variables, Type> {
     pub name: &'static str,
-    phantom: PhantomData<fn() -> (ArgumentStruct, Type)>,
+    phantom: PhantomData<fn() -> (Variables, Type)>,
 }
 
-impl<ArgumentStruct, Type> VariableDefinition<ArgumentStruct, Type> {
+impl<Variables, Type> VariableDefinition<Variables, Type> {
     pub fn new(name: &'static str) -> Self {
         VariableDefinition {
             name,

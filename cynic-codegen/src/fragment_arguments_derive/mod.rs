@@ -54,6 +54,8 @@ pub fn fragment_arguments_derive_impl(
                 = &[#(#variables),*];
         }
 
+        impl ::cynic::queries::VariableMatch<#ident> for #ident {}
+
         #vis struct #fields_struct_ident;
 
         impl #fields_struct_ident {

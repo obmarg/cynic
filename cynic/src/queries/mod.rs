@@ -4,6 +4,6 @@ mod into_input_literal;
 
 pub use self::{
     ast::{Argument, InputLiteral, SelectionSet},
-    builders::QueryBuilder,
+    builders::{QueryBuilder, VariableMatch},
     into_input_literal::IntoInputLiteral,
 };

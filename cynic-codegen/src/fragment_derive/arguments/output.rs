@@ -22,17 +22,12 @@ impl ToTokens for Output<'_> {
             .argument_module()
             .to_path(&self.schema_module);
 
-        let argument_struct = match &self.argument_struct {
-            Some(ident) => quote! { #ident },
-            None => quote! { () },
-        };
-
         for arg in &self.analysed.arguments {
             let arg_marker = proc_macro2::Ident::from(arg.schema_field.marker_ident());
             let value = &arg.value;
 
             tokens.append_all(quote! {
-                field_builder.argument::<#argument_module::#arg_marker, #argument_struct>()
+                field_builder.argument::<#argument_module::#arg_marker>()
                 #value;
             });
         }

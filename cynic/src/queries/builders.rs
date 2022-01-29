@@ -5,21 +5,21 @@ use std::marker::PhantomData;
 
 use crate::{
     coercions::CoercesTo,
-    core::{self, VariableDefinition},
+    core::{self, VariableDefinition, VariableType},
     schema,
 };
 
 use super::{ast::*, IntoInputLiteral};
 
 // TODO: QueryBuilder or SelectionBuilder?
-pub struct QueryBuilder<'a, SchemaType> {
-    phantom: PhantomData<fn() -> SchemaType>,
+pub struct QueryBuilder<'a, SchemaType, Variables> {
+    phantom: PhantomData<fn() -> (SchemaType, Variables)>,
     selection_set: &'a mut SelectionSet,
     has_typename: bool,
 }
 
-impl<'a, T> QueryBuilder<'a, Vec<T>> {
-    pub(crate) fn into_inner(self) -> QueryBuilder<'a, T> {
+impl<'a, T, U> QueryBuilder<'a, Vec<T>, U> {
+    pub(crate) fn into_inner(self) -> QueryBuilder<'a, T, U> {
         QueryBuilder {
             selection_set: self.selection_set,
             has_typename: self.has_typename,
@@ -28,8 +28,8 @@ impl<'a, T> QueryBuilder<'a, Vec<T>> {
     }
 }
 
-impl<'a, T> QueryBuilder<'a, Option<T>> {
-    pub(crate) fn into_inner(self) -> QueryBuilder<'a, T> {
+impl<'a, T, U> QueryBuilder<'a, Option<T>, U> {
+    pub(crate) fn into_inner(self) -> QueryBuilder<'a, T, U> {
         QueryBuilder {
             selection_set: self.selection_set,
             has_typename: self.has_typename,
@@ -42,7 +42,7 @@ impl<'a, T> QueryBuilder<'a, Option<T>> {
 // TODO: Maybe FieldSelector/SelectionSetBuilder/SelectionSet/SelectionBuilder/Selector?
 // Kinda like SelectionSet actually since we are literally just building up a set of fields?
 // But who knows.  Lets leave naming for later.
-impl<'a, SchemaType> QueryBuilder<'a, SchemaType> {
+impl<'a, SchemaType, Variables> QueryBuilder<'a, SchemaType, Variables> {
     pub(crate) fn new(selection_set: &'a mut SelectionSet) -> Self {
         QueryBuilder {
             phantom: PhantomData,
@@ -66,7 +66,7 @@ impl<'a, SchemaType> QueryBuilder<'a, SchemaType> {
     // field type sig?
     pub fn select_field<FieldMarker, FieldType>(
         &'_ mut self,
-    ) -> FieldSelectionBuilder<'_, FieldMarker, FieldType>
+    ) -> FieldSelectionBuilder<'_, FieldMarker, FieldType, Variables>
     where
         FieldMarker: schema::Field,
         SchemaType: schema::HasField<FieldMarker, FieldType>,
@@ -86,7 +86,7 @@ impl<'a, SchemaType> QueryBuilder<'a, SchemaType> {
         }
     }
 
-    pub fn inline_fragment(&'_ mut self) -> InlineFragmentBuilder<'_, SchemaType> {
+    pub fn inline_fragment(&'_ mut self) -> InlineFragmentBuilder<'_, SchemaType, Variables> {
         if !self.has_typename {
             self.selection_set
                 .selections
@@ -116,12 +116,14 @@ impl<'a, SchemaType> QueryBuilder<'a, SchemaType> {
 }
 
 // TODO: do we even need SchemaType here or can we do a lookup through Field
-pub struct FieldSelectionBuilder<'a, Field, SchemaType> {
-    phantom: PhantomData<fn() -> (Field, SchemaType)>,
+pub struct FieldSelectionBuilder<'a, Field, SchemaType, Variables> {
+    phantom: PhantomData<fn() -> (Field, SchemaType, Variables)>,
     field: &'a mut FieldSelection,
 }
 
-impl<'a, Field, FieldSchemaType> FieldSelectionBuilder<'a, Field, FieldSchemaType> {
+impl<'a, Field, FieldSchemaType, Variables>
+    FieldSelectionBuilder<'a, Field, FieldSchemaType, Variables>
+{
     // Note: I'm assuming that the DSL will use $whatever for variables
     // which provides a name and a way to do magic on that name to make
     // it work in all the contexts I need.
@@ -153,9 +155,9 @@ impl<'a, Field, FieldSchemaType> FieldSelectionBuilder<'a, Field, FieldSchemaTyp
     //     todo!()
     // }
 
-    pub fn argument<ArgumentName, ArgumentStruct>(
+    pub fn argument<ArgumentName>(
         &'_ mut self,
-    ) -> ArgumentBuilder<'_, Field::ArgumentSchemaType, Field::ArgumentKind, ArgumentStruct>
+    ) -> ArgumentBuilder<'_, Field::ArgumentSchemaType, Field::ArgumentKind, Variables>
     where
         Field: schema::HasArgument<ArgumentName>,
     {
@@ -177,7 +179,12 @@ impl<'a, Field, FieldSchemaType> FieldSelectionBuilder<'a, Field, FieldSchemaTyp
     // where
     //     FieldSchemaType: CompositeFieldType,
 
-    pub fn select_children<'b>(&'b mut self) -> QueryBuilder<'b, FieldSchemaType> {
+    pub fn select_children<InnerVariables>(
+        &'_ mut self,
+    ) -> QueryBuilder<'_, FieldSchemaType, InnerVariables>
+    where
+        Variables: VariableMatch<InnerVariables>,
+    {
         QueryBuilder::new(&mut self.field.children)
     }
 
@@ -187,13 +194,13 @@ impl<'a, Field, FieldSchemaType> FieldSelectionBuilder<'a, Field, FieldSchemaTyp
     pub fn done(self) {}
 }
 
-pub struct InlineFragmentBuilder<'a, SchemaType> {
-    phantom: PhantomData<fn() -> SchemaType>,
+pub struct InlineFragmentBuilder<'a, SchemaType, Variables> {
+    phantom: PhantomData<fn() -> (SchemaType, Variables)>,
     inline_fragment: &'a mut InlineFragment,
 }
 
-impl<'a, SchemaType> InlineFragmentBuilder<'a, SchemaType> {
-    pub fn on<Subtype>(self) -> InlineFragmentBuilder<'a, Subtype>
+impl<'a, SchemaType, Variables> InlineFragmentBuilder<'a, SchemaType, Variables> {
+    pub fn on<Subtype>(self) -> InlineFragmentBuilder<'a, Subtype, Variables>
     where
         Subtype: crate::schema::NamedType,
         SchemaType: crate::schema::HasSubtype<Subtype>,
@@ -205,17 +212,22 @@ impl<'a, SchemaType> InlineFragmentBuilder<'a, SchemaType> {
         }
     }
 
-    pub fn select_children(&'_ mut self) -> QueryBuilder<'_, SchemaType> {
+    pub fn select_children<InnerVariables>(
+        &'_ mut self,
+    ) -> QueryBuilder<'_, SchemaType, InnerVariables>
+    where
+        Variables: VariableMatch<InnerVariables>,
+    {
+        // static_assertions::assert_impl_one!(InnerVariables: VariableMatch<SchemaType>, IsVoid);
         QueryBuilder::new(&mut self.inline_fragment.children)
     }
 }
 
-// TODO: maybe rename this InputBuilder?
-pub struct ArgumentBuilder<'a, SchemaType, ArgumentKind, ArgumentStruct> {
+pub struct ArgumentBuilder<'a, SchemaType, ArgumentKind, Variables> {
     // TODO: Remove the &'a from this phantomdata once it's actually being used.
     argument_name: &'static str,
     arguments: &'a mut Vec<Argument>,
-    phantom: PhantomData<fn() -> (SchemaType, ArgumentKind, ArgumentStruct)>,
+    phantom: PhantomData<fn() -> (SchemaType, ArgumentKind, Variables)>,
 }
 
 /*
@@ -239,10 +251,8 @@ impl<'a, SchemaType> ArgumentBuilder<'a, SchemaType> {
 }
 */
 
-impl<'a, SchemaType, ArgumentStruct>
-    ArgumentBuilder<'a, SchemaType, schema::ScalarArgument, ArgumentStruct>
-{
-    pub fn variable<Type>(self, def: VariableDefinition<ArgumentStruct, Type>)
+impl<'a, SchemaType, Variables> ArgumentBuilder<'a, SchemaType, schema::ScalarArgument, Variables> {
+    pub fn variable<Type>(self, def: VariableDefinition<Variables, Type>)
     where
         Type: CoercesTo<SchemaType>,
     {
@@ -383,6 +393,10 @@ impl<'a, SchemaType, ArgKind, ArgStruct> ArgumentBuilder<'a, Vec<SchemaType>, Ar
         todo!()
     }
 }
+
+// TODO: Think about the name and location of this trait.
+pub trait VariableMatch<T> {}
+impl<T> VariableMatch<()> for T where T: crate::core::QueryVariables {}
 
 // Handle custom scalars somehow.  I can only assume they'll need to support all the literals,
 // with no real type checking.

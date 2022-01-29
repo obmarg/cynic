@@ -222,7 +222,7 @@ impl quote::ToTokens for FragmentImpl<'_> {
                 type SchemaType = #schema_type;
                 type Variables = #argument_struct;
 
-                fn query(mut builder: ::cynic::queries::QueryBuilder<Self::SchemaType>) {
+                fn query(mut builder: ::cynic::queries::QueryBuilder<Self::SchemaType, Self::Variables>) {
                     #(#field_selections)*
                 }
             }
