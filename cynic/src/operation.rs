@@ -14,20 +14,26 @@ pub struct Operation<QueryFragment, Variables = ()> {
     /// The graphql query string that will be sent to the server
     pub query: String,
 
+    // The variables that will be sent to the server as part of this operation
     pub variables: Variables,
 
     phantom: PhantomData<fn() -> QueryFragment>,
-    // The variables that will be sent to the server as part of this operation
-    // pub variables: HashMap<String, Argument>,
 }
 
-impl<QueryFragment, Variables> serde::Serialize for Operation<QueryFragment, Variables> {
+impl<QueryFragment, Variables> serde::Serialize for Operation<QueryFragment, Variables>
+where
+    Variables: serde::Serialize,
+{
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
     {
-        // TODO: impl this.  Think about how best to serialize variables
-        todo!()
+        use serde::ser::SerializeMap;
+
+        let mut map_serializer = serializer.serialize_map(Some(2))?;
+        map_serializer.serialize_entry("query", &self.query)?;
+        map_serializer.serialize_entry("variables", &self.variables)?;
+        map_serializer.end()
     }
 }
 

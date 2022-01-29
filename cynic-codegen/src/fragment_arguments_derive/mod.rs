@@ -28,6 +28,7 @@ pub fn fragment_arguments_derive_impl(
 
     let mut field_funcs = Vec::new();
     let mut variables = Vec::new();
+    let mut field_inserts = Vec::new();
 
     for f in input_fields {
         let name = f.ident.as_ref().unwrap();
@@ -44,14 +45,38 @@ pub fn fragment_arguments_derive_impl(
         variables.push(quote! {
             (#name_str, <#ty as #schema_module::variable::Variable>::TYPE)
         });
+
+        field_inserts.push(quote! {
+            map_serializer.serialize_entry(#name_str, &self.#name);
+        })
     }
 
+    let map_len = field_inserts.len();
+
     Ok(quote! {
+
+        #[automatically_derived]
         impl ::cynic::core::QueryVariables for #ident {
             type Fields = #fields_struct_ident;
 
             const VARIABLES: &'static [(&'static str, ::cynic::core::VariableType)]
                 = &[#(#variables),*];
+        }
+
+        #[automatically_derived]
+        impl ::cynic::serde::Serialize for #ident {
+            fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+            where
+                S: ::cynic::serde::Serializer,
+            {
+                use ::cynic::serde::ser::SerializeMap;
+
+                let mut map_serializer = serializer.serialize_map(Some(#map_len))?;
+
+                #(#field_inserts)*
+
+                map_serializer.end()
+            }
         }
 
         impl ::cynic::queries::VariableMatch<#ident> for #ident {}

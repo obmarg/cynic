@@ -82,6 +82,7 @@ mod surf_ext {
             operation: Operation<ResponseData, Vars>,
         ) -> BoxFuture<'static, Result<GraphQlResponse<ResponseData>, surf::Error>>
         where
+            Vars: serde::Serialize,
             ResponseData: serde::de::DeserializeOwned + 'static;
     }
 
@@ -91,6 +92,7 @@ mod surf_ext {
             operation: Operation<ResponseData, Vars>,
         ) -> BoxFuture<'static, Result<GraphQlResponse<ResponseData>, surf::Error>>
         where
+            Vars: serde::Serialize,
             ResponseData: serde::de::DeserializeOwned + 'static,
         {
             let operation = json!(&operation);
@@ -201,6 +203,7 @@ mod reqwest_ext {
             operation: Operation<ResponseData, Vars>,
         ) -> BoxFuture<'static, Result<GraphQlResponse<ResponseData>, CynicReqwestError>>
         where
+            Vars: serde::Serialize,
             ResponseData: serde::de::DeserializeOwned + 'static;
     }
 
@@ -210,6 +213,7 @@ mod reqwest_ext {
             operation: Operation<ResponseData, Vars>,
         ) -> BoxFuture<'static, Result<GraphQlResponse<ResponseData>, CynicReqwestError>>
         where
+            Vars: serde::Serialize,
             ResponseData: serde::de::DeserializeOwned + 'static,
         {
             let builder = self.json(&operation);
@@ -307,6 +311,7 @@ mod reqwest_blocking_ext {
             operation: Operation<ResponseData, Vars>,
         ) -> Result<GraphQlResponse<ResponseData>, CynicReqwestError>
         where
+            Vars: serde::Serialize,
             ResponseData: serde::de::DeserializeOwned + 'static;
     }
 
@@ -316,6 +321,7 @@ mod reqwest_blocking_ext {
             operation: Operation<ResponseData, Vars>,
         ) -> Result<GraphQlResponse<ResponseData>, CynicReqwestError>
         where
+            Vars: serde::Serialize,
             ResponseData: serde::de::DeserializeOwned + 'static,
         {
             let response = self.json(&operation).send()?;

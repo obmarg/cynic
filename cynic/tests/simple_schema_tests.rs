@@ -4,7 +4,7 @@ mod schema {
 
 #[derive(cynic::FragmentArguments)]
 struct TestArgs {
-    anInt: Option<i32>,
+    anInt: i32,
 }
 
 #[derive(cynic::QueryFragment, PartialEq, Debug)]

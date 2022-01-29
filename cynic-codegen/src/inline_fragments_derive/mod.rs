@@ -325,7 +325,7 @@ impl quote::ToTokens for InlineFragmentsImpl<'_> {
                 type SchemaType = #type_lock;
                 type Variables = #arguments;
 
-                fn query(mut builder: ::cynic::queries::QueryBuilder<Self::SchemaType>) {
+                fn query(mut builder: ::cynic::queries::QueryBuilder<Self::SchemaType, Self::Variables>) {
                     #(
                         let fragment_builder = builder.inline_fragment();
                         let mut fragment_builder = fragment_builder.on::<<#inner_types as ::cynic::core::QueryFragment>::SchemaType>();

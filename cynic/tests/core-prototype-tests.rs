@@ -199,7 +199,7 @@ fn test_using_this_shit() {
 
     let mut selections = SelectionSet::default();
 
-    let builder: QueryBuilder<schema::Query> = QueryBuilder::temp_new(&mut selections);
+    let builder: QueryBuilder<schema::Query, ()> = QueryBuilder::temp_new(&mut selections);
 
     MyQuery::query(builder);
 
