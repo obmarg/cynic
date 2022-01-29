@@ -3,21 +3,21 @@ use quote::{format_ident, quote};
 
 mod input;
 
-use self::input::FragmentArgumentsDeriveInput;
+use self::input::QueryVariablesDeriveInput;
 
 // TODO: Rename this derive to QueryVariables and provide deprecation
 // warnings if the old one is used...
-pub fn fragment_arguments_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
+pub fn query_variables_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
     use darling::FromDeriveInput;
 
-    match FragmentArgumentsDeriveInput::from_derive_input(ast) {
-        Ok(input) => fragment_arguments_derive_impl(input),
+    match QueryVariablesDeriveInput::from_derive_input(ast) {
+        Ok(input) => query_variables_derive_impl(input),
         Err(e) => Ok(e.write_errors()),
     }
 }
 
-pub fn fragment_arguments_derive_impl(
-    input: FragmentArgumentsDeriveInput,
+pub fn query_variables_derive_impl(
+    input: QueryVariablesDeriveInput,
 ) -> Result<TokenStream, syn::Error> {
     let ident = &input.ident;
     let vis = &input.vis;

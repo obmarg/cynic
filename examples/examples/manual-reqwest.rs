@@ -47,7 +47,7 @@ fn run_query() -> cynic::GraphQlResponse<FilmDirectorQuery> {
 
     println!("{:?}", response);
 
-    query.decode_response(response.json().unwrap()).unwrap()
+    response.json().unwrap()
 }
 
 fn build_query() -> cynic::Operation<FilmDirectorQuery, FilmArguments> {

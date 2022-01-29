@@ -6,10 +6,10 @@ use proc_macro2::Span;
 
 #[derive(darling::FromDeriveInput)]
 #[darling(attributes(cynic), supports(struct_named))]
-pub struct FragmentArgumentsDeriveInput {
+pub struct QueryVariablesDeriveInput {
     pub(super) ident: proc_macro2::Ident,
     pub(super) vis: syn::Visibility,
-    pub(super) data: darling::ast::Data<(), FragmentArgumentsField>,
+    pub(super) data: darling::ast::Data<(), QueryVariableField>,
 
     #[darling(default)]
     schema_module: Option<syn::Path>,
@@ -20,7 +20,7 @@ pub struct FragmentArgumentsDeriveInput {
 
 #[derive(Debug, darling::FromField)]
 #[darling(attributes(cynic))]
-pub(super) struct FragmentArgumentsField {
+pub(super) struct QueryVariableField {
     pub(super) ident: Option<proc_macro2::Ident>,
     pub(super) ty: syn::Type,
 
@@ -28,7 +28,7 @@ pub(super) struct FragmentArgumentsField {
     pub(super) rename: Option<SpannedValue<String>>,
 }
 
-impl FragmentArgumentsDeriveInput {
+impl QueryVariablesDeriveInput {
     pub fn schema_module(&self) -> syn::Path {
         if let Some(schema_module) = &self.schema_module {
             return schema_module.clone();
@@ -37,7 +37,7 @@ impl FragmentArgumentsDeriveInput {
     }
 }
 
-impl FragmentArgumentsField {
+impl QueryVariableField {
     pub fn graphql_ident(&self, rename_all: Option<RenameAll>) -> RenamableFieldIdent {
         let mut ident = RenamableFieldIdent::from(
             self.ident

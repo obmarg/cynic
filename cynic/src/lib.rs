@@ -206,7 +206,7 @@ pub use selection_set::SelectionSet;
 
 pub use cynic_proc_macros::{
     schema_for_derives, use_schema, Enum, FragmentArguments, InlineFragments, InputObject,
-    QueryFragment, Scalar,
+    QueryFragment, QueryVariables, Scalar,
 };
 
 pub use static_assertions::assert_impl_all as assert_impl;
