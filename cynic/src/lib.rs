@@ -190,6 +190,9 @@ pub mod selection_set;
 #[allow(missing_docs)]
 pub mod utils;
 
+#[path = "private/mod.rs"]
+pub mod __private;
+
 pub use json_decode::DecodeError;
 
 pub use arguments::{Argument, FromArguments};

@@ -26,6 +26,8 @@ pub trait QueryFragment<'de>: serde::Deserialize<'de> {
     type SchemaType;
     type Variables: QueryVariables;
 
+    const TYPE: Option<&'static str> = None;
+
     fn query(builder: QueryBuilder<Self::SchemaType, Self::Variables>);
 }
 
@@ -104,6 +106,12 @@ impl<'de> QueryFragment<'de> for String {
     type Variables = ();
 
     fn query(builder: QueryBuilder<Self::SchemaType, Self::Variables>) {}
+}
+
+pub trait InlineFragments<'de>: QueryFragment<'de> {
+    fn deserialize_variant<D>(typename: &str, deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>;
 }
 
 pub trait Enum: serde::de::DeserializeOwned + serde::Serialize {

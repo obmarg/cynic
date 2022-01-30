@@ -5,7 +5,7 @@ use crate::{idents::PathExt, load_schema, schema, Errors, Ident};
 
 pub mod input;
 
-mod deserialize_impl;
+mod inline_fragments_impl;
 
 #[cfg(test)]
 mod tests;
@@ -76,7 +76,7 @@ pub(crate) fn inline_fragments_derive_impl(
 
         let fragments = fragments_from_variants(variants)?;
 
-        let inline_fragments_impl = InlineFragmentsImpl {
+        let query_fragment_impl = QueryFragmentImpl {
             target_enum: input.ident.clone(),
             type_lock,
             argument_struct,
@@ -85,7 +85,7 @@ pub(crate) fn inline_fragments_derive_impl(
             fallback: fallback.clone(),
         };
 
-        let deserialize_impl = deserialize_impl::DeserializeImpl {
+        let inline_fragments_impl = inline_fragments_impl::InlineFragmentsImpl {
             target_enum: input.ident.clone(),
             fragments: &fragments,
             fallback,
@@ -93,7 +93,7 @@ pub(crate) fn inline_fragments_derive_impl(
 
         Ok(quote! {
             #inline_fragments_impl
-            #deserialize_impl
+            #query_fragment_impl
         })
     } else {
         Err(syn::Error::new(
@@ -291,7 +291,7 @@ fn check_fallback(
     }
 }
 
-struct InlineFragmentsImpl<'a> {
+struct QueryFragmentImpl<'a> {
     target_enum: syn::Ident,
     type_lock: syn::Path,
     argument_struct: syn::Type,
@@ -300,7 +300,7 @@ struct InlineFragmentsImpl<'a> {
     fallback: Option<(syn::Ident, Option<syn::Type>)>,
 }
 
-impl quote::ToTokens for InlineFragmentsImpl<'_> {
+impl quote::ToTokens for QueryFragmentImpl<'_> {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         use quote::{quote, TokenStreamExt};
 

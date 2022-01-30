@@ -10,9 +10,6 @@ struct TestArgs {
 #[derive(cynic::QueryFragment, PartialEq, Debug)]
 #[cynic(schema_path = "src/bin/simple.graphql", argument_struct = "TestArgs")]
 struct TestStruct {
-    // TODO: Could automatically add Some here, though
-    // honestly not sure, as what if the argument itself is some optional in a struct.
-    // for now this doesn't seem like the worst decision.
     #[arguments(x: $anInt, y = Some("1".to_string()))]
     field_one: String,
     nested: Nested,

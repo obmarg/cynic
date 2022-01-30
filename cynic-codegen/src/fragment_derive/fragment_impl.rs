@@ -222,6 +222,8 @@ impl quote::ToTokens for FragmentImpl<'_> {
                 type SchemaType = #schema_type;
                 type Variables = #argument_struct;
 
+                const TYPE: Option<&'static str> = Some(#graphql_type);
+
                 fn query(mut builder: ::cynic::queries::QueryBuilder<Self::SchemaType, Self::Variables>) {
                     #(#field_selections)*
                 }
