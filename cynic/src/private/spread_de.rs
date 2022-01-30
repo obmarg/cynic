@@ -40,8 +40,8 @@ where
         Err(E::missing_field(field))
     }
 
-    pub fn spread_deserializer(&'_ self) -> SpreadDeserializer<'_, 'de, E> {
-        SpreadDeserializer {
+    pub fn spread_deserializer(&'_ self) -> impl Deserializer<'de> + '_ {
+        SpreadDeserializer::<E> {
             iter: self.fields.iter(),
             next_content: None,
             error: PhantomData,
@@ -49,7 +49,7 @@ where
     }
 }
 
-pub struct SpreadDeserializer<'a, 'de, E> {
+struct SpreadDeserializer<'a, 'de, E> {
     iter: std::collections::hash_map::Iter<'a, &'de str, Content<'de>>,
     next_content: Option<&'a Content<'de>>,
     error: PhantomData<fn() -> E>,

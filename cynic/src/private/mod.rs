@@ -9,4 +9,4 @@ mod key_de;
 mod spread_de;
 
 pub use inline_fragment_de::InlineFragmentVisitor;
-pub use spread_de::{SpreadDeserializer, Spreadable};
+pub use spread_de::Spreadable;
