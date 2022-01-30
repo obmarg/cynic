@@ -97,14 +97,15 @@ pub fn fragment_derive_impl(
 fn pair_fields<'a, 'b>(
     rust_fields: impl IntoIterator<Item = &'b FragmentDeriveField>,
     schema_type: &'b FragmentDeriveType<'a>,
-) -> Result<Vec<(&'b FragmentDeriveField, &'b schema::Field<'a>)>, Errors> {
+) -> Result<Vec<(&'b FragmentDeriveField, Option<&'b schema::Field<'a>>)>, Errors> {
     let mut result = Vec::new();
     let mut unknown_fields = Vec::new();
     for field in rust_fields {
         let ident = field.graphql_ident();
-        match schema_type.field(&ident) {
-            Some(schema_field) => result.push((field, schema_field)),
-            None => unknown_fields.push(ident),
+        match (schema_type.field(&ident), *field.spread) {
+            (Some(schema_field), _) => result.push((field, Some(schema_field))),
+            (None, false) => unknown_fields.push(ident),
+            (None, true) => result.push((field, None)),
         }
     }
 

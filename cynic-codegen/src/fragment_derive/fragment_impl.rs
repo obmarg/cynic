@@ -24,10 +24,15 @@ use crate::suggestions::{format_guess, guess_field};
 
 pub struct FragmentImpl<'a> {
     target_struct: Ident,
-    field_selections: Vec<FieldSelection<'a>>,
+    selections: Vec<Selection<'a>>,
     argument_struct: syn::Type,
     graphql_type_name: String,
     schema_type_path: syn::Path,
+}
+
+enum Selection<'a> {
+    Field(FieldSelection<'a>),
+    Spread(SpreadSelection),
 }
 
 struct FieldSelection<'a> {
@@ -38,6 +43,12 @@ struct FieldSelection<'a> {
     graphql_field_kind: FieldKind,
     arguments: super::arguments::Output<'a>,
     // recurse_limit: Option<u8>,
+    span: proc_macro2::Span,
+}
+
+struct SpreadSelection {
+    rust_field_ident: proc_macro2::Ident,
+    rust_field_type: syn::Type,
     span: proc_macro2::Span,
 }
 
@@ -53,7 +64,7 @@ enum FieldKind {
 
 impl<'a> FragmentImpl<'a> {
     pub fn new_for(
-        fields: &[(&FragmentDeriveField, &Field<'a>)],
+        fields: &[(&FragmentDeriveField, Option<&Field<'a>>)],
         name: &syn::Ident,
         schema_type: &FragmentDeriveType,
         schema_module_path: &syn::Path,
@@ -66,12 +77,12 @@ impl<'a> FragmentImpl<'a> {
 
         let field_module_path = schema_type.field_module.to_path(schema_module_path);
 
-        let field_selections = fields
+        let selections = fields
             .iter()
             .map(|(field, schema_field)| {
                 process_field(
                     field,
-                    schema_field,
+                    schema_field.clone(),
                     &field_module_path,
                     schema_module_path,
                     argument_struct,
@@ -90,7 +101,7 @@ impl<'a> FragmentImpl<'a> {
         };
 
         Ok(FragmentImpl {
-            field_selections,
+            selections,
             target_struct,
             argument_struct,
             graphql_type_name: graphql_type_name.to_string(),
@@ -101,12 +112,12 @@ impl<'a> FragmentImpl<'a> {
 
 fn process_field<'a>(
     field: &FragmentDeriveField,
-    schema_field: &Field<'a>,
+    schema_field: Option<&Field<'a>>,
     field_module_path: &syn::Path,
     schema_module_path: &syn::Path,
     argument_struct: Option<&syn::Ident>,
     graphql_type_name: &str,
-) -> Result<FieldSelection<'a>, Errors> {
+) -> Result<Selection<'a>, Errors> {
     // Should be safe to unwrap because we've already checked we have a struct
     // style input
     let field_ident = field
@@ -118,6 +129,18 @@ fn process_field<'a>(
 
     let field_name_span = graphql_ident.span();
 
+    if field.type_check_mode() == CheckMode::Spreading {
+        check_spread_type(&field.ty)?;
+
+        return Ok(Selection::Spread(SpreadSelection {
+            rust_field_ident: field_ident.clone(),
+            rust_field_type: field.ty.clone(),
+            span: field.ty.span(),
+        }));
+    }
+
+    let schema_field = schema_field.expect("only spread fields should have schema_field == None");
+
     let arguments = arguments_from_field_attrs(&field.attrs)?;
     // TODO: need a better span
     let arguments = process_arguments(
@@ -128,34 +151,11 @@ fn process_field<'a>(
         Span::call_site(),
     )?;
 
-    if field.type_check_mode() == CheckMode::Spreading {
-        check_spread_type(&field.ty)?;
-
-        // let mut field_marker_type_path = field_module_path;
-        // field_marker_type_path.push(graphql_ident.as_field_marker_type());
-
-        /*
-        let field_selection = FieldSelection {
-            graphql_field_ident: graphql_ident.clone(),
-            rust_field_ident: field_ident.clone(),
-            rust_field_type: field.ty.clone(),
-            arguments,
-            field_marker_type_path,
-            recurse_limit: None,
-            span: field.ty.span(),
-        };
-
-        Ok(field_selection)
-        */
-        todo!("spreading not implemented")
-        // TODO: Return
-    }
-
     check_types_are_compatible(&schema_field.field_type, &field.ty, field.type_check_mode())?;
 
     let field_marker_type_path = schema_field.marker_ident().to_path(field_module_path);
 
-    let field_selection = FieldSelection {
+    Ok(Selection::Field(FieldSelection {
         // graphql_field_ident: graphql_ident.clone(),
         rust_field_ident: field_ident.clone(),
         rust_field_type: field.ty.clone(),
@@ -164,30 +164,7 @@ fn process_field<'a>(
         // recurse_limit: field.recurse.as_ref().map(|f| **f),
         span: field.ty.span(),
         graphql_field_kind: schema_field.field_type.inner_type().as_kind(),
-    };
-    /*
-    let field_selector = FieldSelectorCall {
-        selector_function: FieldTypeSelectorCall::for_field(
-            &gql_field.field_type,
-            field_constructor,
-            *field.flatten,
-            field.recurse.as_ref().map(|f| **f),
-            field.alias(),
-        ),
-        style: if gql_field.field_type.contains_scalar() {
-            NamedTypeSelectorStyle::Scalar
-        } else if gql_field.field_type.contains_enum() {
-            NamedTypeSelectorStyle::Enum(field.ty.inner_type())
-        } else {
-            NamedTypeSelectorStyle::QueryFragment(field.ty.inner_type())
-        },
-        required_arguments,
-        optional_arguments,
-        recurse_limit: field.recurse.as_ref().map(|limit| **limit),
-        span: field.ty.span(),
-    }; */
-
-    Ok(field_selection)
+    }))
 
     // TODO: MOve this into pair_fields
     // } else {
@@ -212,7 +189,7 @@ impl quote::ToTokens for FragmentImpl<'_> {
 
         let argument_struct = &self.argument_struct;
         let target_struct = &self.target_struct;
-        let field_selections = &self.field_selections;
+        let selections = &self.selections;
         let graphql_type = proc_macro2::Literal::string(&self.graphql_type_name);
         let schema_type = &self.schema_type_path;
 
@@ -227,12 +204,19 @@ impl quote::ToTokens for FragmentImpl<'_> {
                 fn query(mut builder: ::cynic::queries::QueryBuilder<Self::SchemaType, Self::Variables>) {
                     #![allow(unused_mut)]
 
-                    #(#field_selections)*
+                    #(#selections)*
                 }
             }
-
-            // TODO: The deserialize impl
         })
+    }
+}
+
+impl quote::ToTokens for Selection<'_> {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
+        match self {
+            Selection::Field(inner) => inner.to_tokens(tokens),
+            Selection::Spread(inner) => inner.to_tokens(tokens),
+        }
     }
 }
 
@@ -326,6 +310,19 @@ impl quote::ToTokens for FieldSelection<'_> {
                 }
             }
         });
+    }
+}
+
+impl quote::ToTokens for SpreadSelection {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
+        use quote::TokenStreamExt;
+        let field_type = &self.rust_field_type;
+
+        tokens.append_all(quote_spanned! { self.span =>
+            <#field_type as ::cynic::core::QueryFragment>::query(
+                builder
+            )
+        })
     }
 }
 

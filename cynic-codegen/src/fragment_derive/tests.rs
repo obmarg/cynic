@@ -55,6 +55,17 @@ use super::fragment_derive;
             #[arguments(filters: $filters)]
             filteredPosts: Vec<BlogPostOutput>,
         }
+    ),
+    parse_quote!(
+        #[derive(cynic::QueryFragment, Debug)]
+        #[cynic(
+            schema_path = "../schemas/starwars.schema.graphql",
+            query_module = "schema"
+        )]
+        struct Film {
+            #[cynic(spread)]
+            details: FilmDetails,
+        }
     )
 ])]
 fn snapshot_fragment_derive(input: syn::DeriveInput) {

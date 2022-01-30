@@ -34,13 +34,14 @@ fn run_query() -> cynic::GraphQlResponse<queries::PullRequestTitles> {
 }
 
 #[cfg(feature = "github")]
-fn build_query() -> cynic::Operation<'static, queries::PullRequestTitles> {
+fn build_query() -> cynic::Operation<queries::PullRequestTitles, queries::PullRequestTitlesArguments>
+{
     use cynic::QueryBuilder;
     use queries::{
         IssueOrder, IssueOrderField, OrderDirection, PullRequestTitles, PullRequestTitlesArguments,
     };
 
-    PullRequestTitles::build(&PullRequestTitlesArguments {
+    PullRequestTitles::build(PullRequestTitlesArguments {
         pr_order: IssueOrder {
             direction: OrderDirection::Asc,
             field: IssueOrderField::CreatedAt,
@@ -94,7 +95,7 @@ mod queries {
     #[derive(cynic::QueryFragment, Debug)]
     #[cynic(argument_struct = "PullRequestTitlesArguments")]
     pub struct Repository {
-        #[arguments(order_by = &args.pr_order, first = 10)]
+        #[arguments(orderBy: $pr_order, first: 10)]
         pub pull_requests: PullRequestConnection,
     }
 
