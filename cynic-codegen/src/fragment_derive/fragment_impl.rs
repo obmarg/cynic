@@ -225,6 +225,8 @@ impl quote::ToTokens for FragmentImpl<'_> {
                 const TYPE: Option<&'static str> = Some(#graphql_type);
 
                 fn query(mut builder: ::cynic::queries::QueryBuilder<Self::SchemaType, Self::Variables>) {
+                    #![allow(unused_mut)]
+
                     #(#field_selections)*
                 }
             }

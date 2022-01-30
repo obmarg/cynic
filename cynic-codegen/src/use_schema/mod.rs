@@ -1,4 +1,6 @@
+mod fields;
 mod input_object;
+mod interface;
 mod named_type;
 mod object;
 mod params;
@@ -21,7 +23,10 @@ use crate::{
     },
 };
 
-use self::{named_type::NamedType, object::ObjectOutput, subtype_markers::SubtypeMarkers};
+use self::{
+    interface::InterfaceOutput, named_type::NamedType, object::ObjectOutput,
+    subtype_markers::SubtypeMarkers,
+};
 
 pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
     use quote::{quote, TokenStreamExt};
@@ -59,12 +64,7 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
             Type::Interface(def) => {
                 subtype_markers.push(SubtypeMarkers::from_interface(&def));
 
-                let ident = Ident::for_type(&def.name);
-                output.append_all(quote! {
-                    pub struct #ident {}
-                });
-
-                // TODO: the rest of this.  Presumably we need fields & HasSubtype
+                InterfaceOutput::new(def).to_tokens(&mut output);
             }
             Type::Union(def) => {
                 subtype_markers.extend(SubtypeMarkers::from_union(&def));
@@ -73,8 +73,6 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
                 output.append_all(quote! {
                     pub struct #ident {}
                 });
-
-                // TODO: the rest of this.  Presumably we need just HasSubtype
             }
             Type::Enum(def) => {
                 let ident = Ident::for_type(&def.name);

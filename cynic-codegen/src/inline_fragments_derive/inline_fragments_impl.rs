@@ -23,7 +23,10 @@ impl quote::ToTokens for InlineFragmentsImpl<'_> {
             .collect::<Vec<_>>();
 
         let fallback = match &self.fallback {
-            Some((variant, ty)) => quote! {
+            Some((variant, None)) => quote! {
+                Ok(#target_enum::#variant)
+            },
+            Some((variant, Some(ty))) => quote! {
                 <#ty as ::cynic::serde::Deserialize<'de>>::deserialize(deserializer).map(
                     #target_enum::#variant
                 )

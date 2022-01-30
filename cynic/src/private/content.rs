@@ -293,8 +293,7 @@ impl<'de> Visitor<'de> for ContentVisitor<'de> {
         V: EnumAccess<'de>,
     {
         Err(de::Error::custom(
-            // TODO: This error is not great...
-            "untagged and internally tagged enums do not support enum input",
+            "fragment deserialization doesn't support enum input",
         ))
     }
 }

@@ -76,6 +76,8 @@ impl quote::ToTokens for DeserializeImpl {
                             #[serde(rename = #serialized_names)]
                             #field_variant_names,
                         )*
+                        #[serde(other)]
+                        __Other
                     }
 
                     struct Visitor;
@@ -104,6 +106,9 @@ impl quote::ToTokens for DeserializeImpl {
                                             #field_names = Some(map.next_value()?);
                                         }
                                     )*
+                                    Field::__Other => {
+                                        map.next_value::<::cynic::serde::de::IgnoredAny>()?;
+                                    }
                                 }
                             }
                             #(

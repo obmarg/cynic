@@ -318,12 +318,20 @@ impl quote::ToTokens for QueryFragmentImpl<'_> {
             .map(|fragment| &fragment.rust_variant_name)
             .collect();
         let graphql_type = proc_macro2::Literal::string(&self.graphql_type_name);
+        let fallback_selection = match &self.fallback {
+            Some((_, Some(fallback_fragment))) => quote! {
+                <#fallback_fragment>::query(builder);
+            },
+            _ => quote! {},
+        };
 
         tokens.append_all(quote! {
             #[automatically_derived]
             impl<'de> ::cynic::core::QueryFragment<'de> for #target_struct {
                 type SchemaType = #type_lock;
                 type Variables = #arguments;
+
+                const TYPE: Option<&'static str> = Some(#graphql_type);
 
                 fn query(mut builder: ::cynic::queries::QueryBuilder<Self::SchemaType, Self::Variables>) {
                     #(
@@ -333,6 +341,8 @@ impl quote::ToTokens for QueryFragmentImpl<'_> {
                             fragment_builder.select_children()
                         );
                     )*
+
+                    #fallback_selection
                 }
             }
         })
