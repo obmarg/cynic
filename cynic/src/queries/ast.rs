@@ -3,11 +3,11 @@
 
 use std::{borrow::Cow, fmt::Write};
 
-use crate::{indent::indented, schema::Field};
+use crate::indent::indented;
 
 #[derive(Debug, Default)]
 pub struct SelectionSet {
-    pub selections: Vec<Selection>,
+    pub(super) selections: Vec<Selection>,
 }
 
 #[derive(Debug)]
@@ -19,15 +19,21 @@ pub enum Selection {
 
 #[derive(Debug)]
 pub struct FieldSelection {
-    pub name: &'static str,
-    pub arguments: Vec<Argument>,
-    pub children: SelectionSet,
+    pub(super) name: &'static str,
+    pub(super) arguments: Vec<Argument>,
+    pub(super) children: SelectionSet,
 }
 
 #[derive(Debug)]
 pub struct Argument {
-    pub name: &'static str,
-    pub value: InputLiteral,
+    pub(super) name: &'static str,
+    pub(super) value: InputLiteral,
+}
+
+impl Argument {
+    pub fn new(name: &'static str, value: InputLiteral) -> Self {
+        Argument { name, value }
+    }
 }
 
 #[derive(Debug)]
@@ -46,8 +52,8 @@ pub enum InputLiteral {
 
 #[derive(Debug, Default)]
 pub struct InlineFragment {
-    pub on_clause: Option<&'static str>,
-    pub children: SelectionSet,
+    pub(super) on_clause: Option<&'static str>,
+    pub(super) children: SelectionSet,
 }
 
 #[derive(Debug)]
