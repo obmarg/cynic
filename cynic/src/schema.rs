@@ -11,26 +11,14 @@ pub trait Field {
 
 pub trait HasField<FieldMarker, FieldType> {}
 
-pub trait HasInputField<FieldMarker, FieldType> {
-    type ArgumentKind;
-}
+pub trait HasInputField<FieldMarker, FieldType> {}
 
 pub trait HasArgument<ArgumentName> {
     type ArgumentSchemaType;
 
-    // TODO: Constrain this to the InputKind trait below?
-    type ArgumentKind;
-
     // TODO: Maybe move the name to that named trait def?
     fn name() -> &'static str;
 }
-
-// TODO: Make this sealed, make the things below impl it.
-trait ArgumentKind {}
-
-pub struct InputObjectArgument;
-pub struct EnumArgument;
-pub struct ScalarArgument;
 
 // impl<T, U> HasArgument<Option<T>> for Option<U>
 // where

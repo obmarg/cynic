@@ -66,7 +66,6 @@ impl ToTokens for FieldOutput<'_> {
             }
 
             impl ::cynic::schema::HasInputField<#field_marker, #field_type_marker> for super::#object_marker {
-                type ArgumentKind = #argument_kind;
             }
         });
     }

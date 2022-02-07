@@ -1,6 +1,6 @@
 ---
 source: cynic-codegen/src/fragment_derive/tests.rs
-assertion_line: 63
+assertion_line: 85
 expression: "format_code(format!(\"{}\", tokens))"
 
 ---
@@ -8,10 +8,12 @@ expression: "format_code(format!(\"{}\", tokens))"
 impl<'de> ::cynic::core::QueryFragment<'de> for MyQuery {
     type SchemaType = schema::Query;
     type Variables = AnArgumentStruct;
-    fn query(mut builder: ::cynic::queries::QueryBuilder<Self::SchemaType>) {
+    const TYPE: Option<&'static str> = Some("Query");
+    fn query(mut builder: ::cynic::queries::QueryBuilder<Self::SchemaType, Self::Variables>) {
+        #![allow(unused_mut)]
         let mut field_builder = builder . select_field :: < schema :: query_fields :: FilteredPosts , < Vec < BlogPostOutput > as :: cynic :: core :: QueryFragment > :: SchemaType > () ;
         field_builder
-            .argument::<schema::query_fields::filtered_posts_arguments::Filters, AnArgumentStruct>()
+            .argument::<schema::query_fields::filtered_posts_arguments::Filters>()
             .variable(<AnArgumentStruct as ::cynic::core::QueryVariables>::Fields::filters());
         <Vec<BlogPostOutput> as ::cynic::core::QueryFragment>::query(
             field_builder.select_children(),
@@ -31,6 +33,8 @@ impl<'de> ::cynic::serde::Deserialize<'de> for MyQuery {
         enum Field {
             #[serde(rename = "filteredPosts")]
             filteredPosts,
+            #[serde(other)]
+            __Other,
         }
         struct Visitor;
         impl<'de> ::cynic::serde::de::Visitor<'de> for Visitor {
@@ -52,6 +56,9 @@ impl<'de> ::cynic::serde::Deserialize<'de> for MyQuery {
                                 ));
                             }
                             filteredPosts = Some(map.next_value()?);
+                        }
+                        Field::__Other => {
+                            map.next_value::<::cynic::serde::de::IgnoredAny>()?;
                         }
                     }
                 }

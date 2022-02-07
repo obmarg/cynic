@@ -9,7 +9,7 @@ use crate::{
     schema,
 };
 
-use super::{ast::*, IntoInputLiteral};
+use super::{ast::*, FlattensInto, IntoInputLiteral};
 
 // TODO: QueryBuilder or SelectionBuilder?
 pub struct QueryBuilder<'a, SchemaType, Variables> {
@@ -60,6 +60,20 @@ impl<'a, SchemaType, Variables> QueryBuilder<'a, SchemaType, Variables> {
         }
     }
 
+    pub fn select_flattened_field<FieldMarker, Flattened, FieldType>(
+        &'_ mut self,
+    ) -> FieldSelectionBuilder<'_, FieldMarker, Flattened, Variables>
+    where
+        FieldMarker: schema::Field,
+        FieldType: FlattensInto<Flattened>,
+        SchemaType: schema::HasField<FieldMarker, FieldType>,
+    {
+        FieldSelectionBuilder {
+            field: self.push_selection(FieldMarker::name()),
+            phantom: PhantomData,
+        }
+    }
+
     // TODO: reckon add_field might be better for this?
     // particularly if we name the container selectionset or something.
     // TODO: also see if we can simplify the type sig similar to the argument
@@ -71,18 +85,20 @@ impl<'a, SchemaType, Variables> QueryBuilder<'a, SchemaType, Variables> {
         FieldMarker: schema::Field,
         SchemaType: schema::HasField<FieldMarker, FieldType>,
     {
+        FieldSelectionBuilder {
+            field: self.push_selection(FieldMarker::name()),
+            phantom: PhantomData,
+        }
+    }
+
+    fn push_selection(&'_ mut self, name: &'static str) -> &mut FieldSelection {
         self.selection_set
             .selections
-            .push(Selection::Field(FieldSelection::new(FieldMarker::name())));
+            .push(Selection::Field(FieldSelection::new(name)));
 
-        let field_selection = match self.selection_set.selections.last_mut() {
+        match self.selection_set.selections.last_mut() {
             Some(Selection::Field(field_selection)) => field_selection,
             _ => panic!("This should not be possible"),
-        };
-
-        FieldSelectionBuilder {
-            field: field_selection,
-            phantom: PhantomData,
         }
     }
 
@@ -124,40 +140,9 @@ pub struct FieldSelectionBuilder<'a, Field, SchemaType, Variables> {
 impl<'a, Field, FieldSchemaType, Variables>
     FieldSelectionBuilder<'a, Field, FieldSchemaType, Variables>
 {
-    // Note: I'm assuming that the DSL will use $whatever for variables
-    // which provides a name and a way to do magic on that name to make
-    // it work in all the contexts I need.
-    //
-    // Although the way I've ended up writing this - I may actually
-    // keep the existing behaviour for arguments where each arg ends up in
-    // a variable in the eventual query even if they _could_ be coded into the
-    // document. Think it's easier, and not aware of any downsides.  Although
-    // could possibly look into $whatever magic later...
-    //
-    // Though that's technically not possible is it.  Because we can't
-    // serialize values at this point without knowing the destination format,
-    // unless we do some serde transcoding type thing.
-    // Maybe that's the only option?
-
-    // TODO: Need to work on typesafety here...
-    //pub fn argument(&mut self, name: &'static str, value: InputValue) {}
-
-    // TODO: re-instate and implement this.
-    // Probably want a schema::ArgumentLiteral<TypeLock> trait?
-    // or maybe schema::IntoLiteral or IntoArgumentLiteral
-    // Argument literal can be the name of the enum it outputs?
-    //
-    // pub fn argument<ArgumentName, ValueType>(&mut self, value: ValueType)
-    // where
-    //     FieldSchemaType: schema::HasArgument<ArgumentName>,
-    //     ValueType: schema::InputValue<FieldSchemaType::ArgumentSchemaType>,
-    // {
-    //     todo!()
-    // }
-
     pub fn argument<ArgumentName>(
         &'_ mut self,
-    ) -> ArgumentBuilder<'_, Field::ArgumentSchemaType, Field::ArgumentKind, Variables>
+    ) -> ArgumentBuilder<'_, Field::ArgumentSchemaType, Variables>
     where
         Field: schema::HasArgument<ArgumentName>,
     {
@@ -167,17 +152,6 @@ impl<'a, Field, FieldSchemaType, Variables>
             phantom: PhantomData,
         }
     }
-
-    // Ok, so we need two ways to pass in arguments.
-    // 1. Something similar to the above, for passing in rust types.
-    // 2. A builder approachfor building up values.
-
-    // Note: this is old code - actually I don't want field unwrapping because I care about
-    // the options & vecs
-    //
-    // pub fn select_children<'b>(&'b mut self) -> QueryBuilder<'b, FieldSchemaType::InnerNamedType>
-    // where
-    //     FieldSchemaType: CompositeFieldType,
 
     pub fn select_children<InnerVariables>(
         &'_ mut self,
@@ -223,11 +197,11 @@ impl<'a, SchemaType, Variables> InlineFragmentBuilder<'a, SchemaType, Variables>
     }
 }
 
-pub struct ArgumentBuilder<'a, SchemaType, ArgumentKind, Variables> {
+pub struct ArgumentBuilder<'a, SchemaType, Variables> {
     // TODO: Remove the &'a from this phantomdata once it's actually being used.
     argument_name: &'static str,
     arguments: &'a mut Vec<Argument>,
-    phantom: PhantomData<fn() -> (SchemaType, ArgumentKind, Variables)>,
+    phantom: PhantomData<fn() -> (SchemaType, Variables)>,
 }
 
 /*
@@ -251,7 +225,7 @@ impl<'a, SchemaType> ArgumentBuilder<'a, SchemaType> {
 }
 */
 
-impl<'a, SchemaType, Variables> ArgumentBuilder<'a, SchemaType, schema::ScalarArgument, Variables> {
+impl<'a, SchemaType, Variables> ArgumentBuilder<'a, SchemaType, Variables> {
     pub fn variable<Type>(self, def: VariableDefinition<Variables, Type>)
     where
         Type: CoercesTo<SchemaType>,
@@ -293,9 +267,7 @@ impl<'a, SchemaType, Variables> ArgumentBuilder<'a, SchemaType, schema::ScalarAr
 //     }
 // }
 
-impl<'a, SchemaType, ArgKind, ArgumentStruct>
-    ArgumentBuilder<'a, Option<SchemaType>, ArgKind, ArgumentStruct>
-{
+impl<'a, SchemaType, ArgumentStruct> ArgumentBuilder<'a, Option<SchemaType>, ArgumentStruct> {
     pub fn null(self) {
         self.arguments.push(Argument {
             name: self.argument_name,
@@ -304,7 +276,7 @@ impl<'a, SchemaType, ArgKind, ArgumentStruct>
     }
 
     // TODO: name this some maybe?
-    pub fn value(self) -> ArgumentBuilder<'a, SchemaType, ArgKind, ArgumentStruct> {
+    pub fn value(self) -> ArgumentBuilder<'a, SchemaType, ArgumentStruct> {
         ArgumentBuilder {
             argument_name: self.argument_name,
             arguments: self.arguments,
@@ -315,7 +287,7 @@ impl<'a, SchemaType, ArgKind, ArgumentStruct>
     // TODO: would undefined also be useful?  Not sure.
 }
 
-impl<'a, T, K, ArgStruct> ArgumentBuilder<'a, T, K, ArgStruct> {
+impl<'a, T, ArgStruct> ArgumentBuilder<'a, T, ArgStruct> {
     pub fn literal(self, l: impl IntoInputLiteral + CoercesTo<T>) {
         self.arguments.push(Argument {
             name: self.argument_name,
@@ -356,7 +328,7 @@ impl<'a, T, K, ArgStruct> ArgumentBuilder<'a, T, K, ArgStruct> {
 //     }
 // }
 
-impl<'a, SchemaType, Kind, ArgStruct> ArgumentBuilder<'a, SchemaType, Kind, ArgStruct>
+impl<'a, SchemaType, ArgStruct> ArgumentBuilder<'a, SchemaType, ArgStruct>
 where
     SchemaType: schema::InputObjectMarker,
 {
@@ -364,7 +336,7 @@ where
     //  I think so - I've certainly tried right here...
     pub fn field<FieldMarker>(
         &'_ mut self,
-    ) -> ArgumentBuilder<'_, FieldMarker::SchemaType, SchemaType::ArgumentKind, ArgStruct>
+    ) -> ArgumentBuilder<'_, FieldMarker::SchemaType, ArgStruct>
     where
         FieldMarker: schema::Field,
         SchemaType: schema::HasInputField<FieldMarker, FieldMarker::SchemaType>,
@@ -387,8 +359,8 @@ where
     }
 }
 
-impl<'a, SchemaType, ArgKind, ArgStruct> ArgumentBuilder<'a, Vec<SchemaType>, ArgKind, ArgStruct> {
-    pub fn item<InnerType>(&'_ mut self) -> ArgumentBuilder<'_, InnerType, ArgKind, ArgStruct> {
+impl<'a, SchemaType, ArgStruct> ArgumentBuilder<'a, Vec<SchemaType>, ArgStruct> {
+    pub fn item<InnerType>(&'_ mut self) -> ArgumentBuilder<'_, InnerType, ArgStruct> {
         // TODO: Think we actually need to return a ListBuilder type for this to work...
         todo!()
     }

@@ -42,6 +42,7 @@ struct FieldSelection<'a> {
     field_marker_type_path: syn::Path,
     graphql_field_kind: FieldKind,
     arguments: super::arguments::Output<'a>,
+    flatten: bool,
     // recurse_limit: Option<u8>,
     span: proc_macro2::Span,
 }
@@ -164,6 +165,7 @@ fn process_field<'a>(
         // recurse_limit: field.recurse.as_ref().map(|f| **f),
         span: field.ty.span(),
         graphql_field_kind: schema_field.field_type.inner_type().as_kind(),
+        flatten: *field.flatten,
     }))
 
     // TODO: MOve this into pair_fields
@@ -229,13 +231,22 @@ impl quote::ToTokens for FieldSelection<'_> {
         let field_type = &self.rust_field_type;
         let arguments = &self.arguments;
 
+        let (select_field_fn, third_generic_arg) = match self.flatten {
+            true => (
+                quote! { select_flattened_field },
+                quote! { <#field_marker_type_path as ::cynic::schema::Field>::SchemaType },
+            ),
+            false => (quote! { select_field }, quote! {}),
+        };
+
         tokens.append_all(match self.graphql_field_kind {
             FieldKind::Composite => {
                 quote_spanned! { self.span =>
                     let mut field_builder = builder
-                        .select_field::<
+                        .#select_field_fn::<
                             #field_marker_type_path,
-                            <#field_type as ::cynic::core::QueryFragment>::SchemaType
+                            <#field_type as ::cynic::core::QueryFragment>::SchemaType,
+                            #third_generic_arg
                         >();
 
                     #arguments
@@ -250,9 +261,10 @@ impl quote::ToTokens for FieldSelection<'_> {
             FieldKind::Enum => {
                 quote_spanned! { self.span =>
                     let mut field_builder = builder
-                        .select_field::<
+                        .#select_field_fn::<
                             #field_marker_type_path,
-                            <#field_type as ::cynic::core::Enum>::SchemaType
+                            <#field_type as ::cynic::core::Enum>::SchemaType,
+                            #third_generic_arg
                         >();
 
                     #arguments
@@ -263,11 +275,12 @@ impl quote::ToTokens for FieldSelection<'_> {
             FieldKind::Scalar => {
                 quote_spanned! { self.span =>
                     let mut field_builder = builder
-                        .select_field::<
+                        .#select_field_fn::<
                             #field_marker_type_path,
                             <#field_type as ::cynic::schema::IsScalar<
                                 <#field_marker_type_path as ::cynic::schema::Field>::SchemaType
-                            >>::SchemaType
+                            >>::SchemaType,
+                            #third_generic_arg
                         >();
 
                     #arguments
@@ -280,9 +293,10 @@ impl quote::ToTokens for FieldSelection<'_> {
                 // If it is might be able to merge w/ object
                 quote_spanned! { self.span =>
                     let mut field_builder = builder
-                        .select_field::<
+                        .#select_field_fn::<
                             #field_marker_type_path,
-                            <#field_type as ::cynic::core::QueryFragment>::SchemaType
+                            <#field_type as ::cynic::core::QueryFragment>::SchemaType,
+                            #third_generic_arg
                         >();
 
                     #arguments
@@ -297,9 +311,10 @@ impl quote::ToTokens for FieldSelection<'_> {
                 // If it is might be able to merge w/ object
                 quote_spanned! { self.span =>
                     let mut field_builder = builder
-                        .select_field::<
+                        .#select_field_fn::<
                             #field_marker_type_path,
-                            <#field_type as ::cynic::core::QueryFragment>::SchemaType
+                            <#field_type as ::cynic::core::QueryFragment>::SchemaType,
+                            #third_generic_arg
                         >();
 
                     #arguments

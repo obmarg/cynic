@@ -74,7 +74,6 @@ impl ToTokens for ArgumentOutput<'_> {
 
             impl ::cynic::schema::HasArgument<#argument_ident> for super::#field_marker {
                 type ArgumentSchemaType = #schema_type;
-                type ArgumentKind = #argument_kind;
 
                 fn name() -> &'static str {
                     #name

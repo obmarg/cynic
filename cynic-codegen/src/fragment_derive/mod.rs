@@ -136,7 +136,7 @@ fn pair_fields<'a, 'b>(
         .map(Errors::from)
         .collect();
 
-    return Err(errors);
+    Err(errors)
 }
 
 #[cfg(test)]

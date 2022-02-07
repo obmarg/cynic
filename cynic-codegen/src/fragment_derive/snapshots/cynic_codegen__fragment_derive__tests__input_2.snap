@@ -1,6 +1,6 @@
 ---
 source: cynic-codegen/src/fragment_derive/tests.rs
-assertion_line: 62
+assertion_line: 85
 expression: "format_code(format!(\"{}\", tokens))"
 
 ---
@@ -8,7 +8,9 @@ expression: "format_code(format!(\"{}\", tokens))"
 impl<'de> ::cynic::core::QueryFragment<'de> for BlogPostOutput {
     type SchemaType = schema::BlogPost;
     type Variables = ();
-    fn query(mut builder: ::cynic::queries::QueryBuilder<Self::SchemaType>) {
+    const TYPE: Option<&'static str> = Some("BlogPost");
+    fn query(mut builder: ::cynic::queries::QueryBuilder<Self::SchemaType, Self::Variables>) {
+        #![allow(unused_mut)]
         let mut field_builder = builder . select_field :: < schema :: blog_post_fields :: HasMetadata , < Option < bool > as :: cynic :: schema :: IsScalar < < schema :: blog_post_fields :: HasMetadata as :: cynic :: schema :: Field > :: SchemaType >> :: SchemaType > () ;
         field_builder.done();
         let mut field_builder = builder . select_field :: < schema :: blog_post_fields :: Author , < AuthorOutput as :: cynic :: core :: QueryFragment > :: SchemaType > () ;
@@ -30,6 +32,8 @@ impl<'de> ::cynic::serde::Deserialize<'de> for BlogPostOutput {
             has_metadata,
             #[serde(rename = "author")]
             author,
+            #[serde(other)]
+            __Other,
         }
         struct Visitor;
         impl<'de> ::cynic::serde::de::Visitor<'de> for Visitor {
@@ -58,6 +62,9 @@ impl<'de> ::cynic::serde::Deserialize<'de> for BlogPostOutput {
                                 return Err(::cynic::serde::de::Error::duplicate_field("author"));
                             }
                             author = Some(map.next_value()?);
+                        }
+                        Field::__Other => {
+                            map.next_value::<::cynic::serde::de::IgnoredAny>()?;
                         }
                     }
                 }

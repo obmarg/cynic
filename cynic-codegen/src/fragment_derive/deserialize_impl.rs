@@ -27,6 +27,7 @@ struct Field {
     field_variant_name: proc_macro2::Ident,
     serialized_name: Option<String>,
     is_spread: bool,
+    is_flattened: bool,
 }
 
 impl DeserializeImpl {
@@ -86,15 +87,24 @@ impl quote::ToTokens for StandardDeserializeImpl {
             .map(|f| &f.field_variant_name)
             .collect::<Vec<_>>();
         let field_names = self.fields.iter().map(|f| &f.rust_name).collect::<Vec<_>>();
+        let field_decodes = self.fields.iter().map(|f| {
+            let field_name = &f.rust_name;
+            let ty = &f.ty;
+            if f.is_flattened {
+                quote! {
+                    #field_name = Some(map.next_value::<::cynic::__private::Flattened<#ty>>()?.into_inner());
+                }
+            } else {
+                quote! {
+                    #field_name = Some(map.next_value()?);
+                }
+            }
+        });
 
         let expecting_str =
             proc_macro2::Literal::string(&format!("struct {}", self.target_struct.rust_name()));
 
         let struct_name = proc_macro2::Literal::string(&self.target_struct.rust_name());
-
-        // Note: I've typed this all out already but I _could_ just
-        // generate a struct with the write serde attrs and this impl just becomes a case
-        // of converting it...?
 
         tokens.append_all(quote! {
             #[automatically_derived]
@@ -138,7 +148,7 @@ impl quote::ToTokens for StandardDeserializeImpl {
                                             if #field_names.is_some() {
                                                 return Err(::cynic::serde::de::Error::duplicate_field(#serialized_names));
                                             }
-                                            #field_names = Some(map.next_value()?);
+                                            #field_decodes
                                         }
                                     )*
                                     Field::__Other => {
@@ -178,6 +188,17 @@ impl quote::ToTokens for SpreadingDeserializeImpl {
                     #field_name: <#field_ty as ::cynic::serde::Deserialize<'de>>::deserialize(
                         spreadable.spread_deserializer()
                     )?,
+                }
+            } else if f.is_flattened {
+                let serialized_name = proc_macro2::Literal::string(
+                    f.serialized_name
+                        .as_deref()
+                        .expect("non spread fields must have a serialized_name"),
+                );
+                quote! {
+                    #field_name: spreadable.deserialize_field::<
+                        ::cynic::__private::Flattened<#field_ty>
+                    >(#serialized_name)?.into_inner()
                 }
             } else {
                 let serialized_name = proc_macro2::Literal::string(
@@ -222,5 +243,6 @@ fn process_field(field: &FragmentDeriveField, schema_field: Option<&schema::Fiel
         rust_name: rust_name.clone(),
         ty: field.ty.clone(),
         is_spread: *field.spread,
+        is_flattened: *field.flatten,
     }
 }

@@ -1,6 +1,6 @@
 ---
 source: cynic-codegen/src/fragment_derive/tests.rs
-assertion_line: 62
+assertion_line: 85
 expression: "format_code(format!(\"{}\", tokens))"
 
 ---
@@ -8,10 +8,12 @@ expression: "format_code(format!(\"{}\", tokens))"
 impl<'de> ::cynic::core::QueryFragment<'de> for MyQuery {
     type SchemaType = schema::Query;
     type Variables = ();
-    fn query(mut builder: ::cynic::queries::QueryBuilder<Self::SchemaType>) {
+    const TYPE: Option<&'static str> = Some("Query");
+    fn query(mut builder: ::cynic::queries::QueryBuilder<Self::SchemaType, Self::Variables>) {
+        #![allow(unused_mut)]
         let mut field_builder = builder . select_field :: < schema :: query_fields :: Post , < Option < BlogPostOutput > as :: cynic :: core :: QueryFragment > :: SchemaType > () ;
         field_builder
-            .argument::<schema::query_fields::post_arguments::Id, ()>()
+            .argument::<schema::query_fields::post_arguments::Id>()
             .literal("1234");
         <Option<BlogPostOutput> as ::cynic::core::QueryFragment>::query(
             field_builder.select_children(),
@@ -38,6 +40,8 @@ impl<'de> ::cynic::serde::Deserialize<'de> for MyQuery {
             post,
             #[serde(rename = "allPosts")]
             posts,
+            #[serde(other)]
+            __Other,
         }
         struct Visitor;
         impl<'de> ::cynic::serde::de::Visitor<'de> for Visitor {
@@ -64,6 +68,9 @@ impl<'de> ::cynic::serde::Deserialize<'de> for MyQuery {
                                 return Err(::cynic::serde::de::Error::duplicate_field("allPosts"));
                             }
                             posts = Some(map.next_value()?);
+                        }
+                        Field::__Other => {
+                            map.next_value::<::cynic::serde::de::IgnoredAny>()?;
                         }
                     }
                 }
