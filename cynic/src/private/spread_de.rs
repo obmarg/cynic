@@ -40,7 +40,7 @@ where
         Err(E::missing_field(field))
     }
 
-    pub fn spread_deserializer(&'_ self) -> impl Deserializer<'de> + '_ {
+    pub fn spread_deserializer(&'_ self) -> impl Deserializer<'de, Error = E> + '_ {
         SpreadDeserializer::<E> {
             iter: self.fields.iter(),
             next_content: None,

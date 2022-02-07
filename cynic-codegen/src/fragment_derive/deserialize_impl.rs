@@ -219,7 +219,7 @@ impl quote::ToTokens for SpreadingDeserializeImpl {
                 where
                     D: ::cynic::serde::Deserializer<'de>,
                 {
-                    let spreadable = ::cynic::__private::Spreadable::deserialize(deserializer)?;
+                    let spreadable = ::cynic::__private::Spreadable::<D::Error>::deserialize(deserializer)?;
 
                     Ok(#target_struct {
                         #(#field_inserts)*
