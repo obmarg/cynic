@@ -35,10 +35,10 @@ fn test_explicit_alias_query_output() {
 
     insta::assert_display_snapshot!(operation.query, @r###"
     query {
-      film(id: "ZmlsbXM6MQ==",) {
+      a_new_hope: film(id: "ZmlsbXM6MQ==") {
         title
       }
-      film(id: "ZmlsbXM6Mg==",) {
+      empire_strikes_back: film(id: "ZmlsbXM6Mg==") {
         title
       }
     }
@@ -86,10 +86,10 @@ fn test_implicit_alias_query_output() {
 
     insta::assert_display_snapshot!(operation.query, @r###"
     query {
-      film(id: "ZmlsbXM6MQ==",) {
+      film(id: "ZmlsbXM6MQ==") {
         title
       }
-      film(id: "ZmlsbXM6Mg==",) {
+      empire_strikes_back: film(id: "ZmlsbXM6Mg==") {
         title
       }
     }
@@ -101,7 +101,7 @@ fn test_implicit_alias_query_output() {
 fn test_implicit_alias_decoding() {
     assert_eq!(
         serde_json::from_value::<FilmQueryWithImplicitAlias>(json!({
-            "a_new_hope": {"title": "A New Hope"},
+            "film": {"title": "A New Hope"},
             "empire_strikes_back": {"title": "The Empire Strikes Back"}
         }))
         .unwrap(),

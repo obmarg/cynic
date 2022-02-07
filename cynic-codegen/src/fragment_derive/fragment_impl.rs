@@ -43,6 +43,7 @@ struct FieldSelection<'a> {
     graphql_field_kind: FieldKind,
     arguments: super::arguments::Output<'a>,
     flatten: bool,
+    alias: Option<String>,
     // recurse_limit: Option<u8>,
     span: proc_macro2::Span,
 }
@@ -164,6 +165,7 @@ fn process_field<'a>(
         field_marker_type_path,
         // recurse_limit: field.recurse.as_ref().map(|f| **f),
         span: field.ty.span(),
+        alias: field.alias(),
         graphql_field_kind: schema_field.field_type.inner_type().as_kind(),
         flatten: *field.flatten,
     }))
@@ -239,6 +241,13 @@ impl quote::ToTokens for FieldSelection<'_> {
             false => (quote! { select_field }, quote! {}),
         };
 
+        let alias = self.alias.as_deref().map(|alias| {
+            let alias = proc_macro2::Literal::string(alias);
+            quote! {
+                field_builder.alias(#alias);
+            }
+        });
+
         tokens.append_all(match self.graphql_field_kind {
             FieldKind::Composite => {
                 quote_spanned! { self.span =>
@@ -249,6 +258,7 @@ impl quote::ToTokens for FieldSelection<'_> {
                             #third_generic_arg
                         >();
 
+                    #alias
                     #arguments
 
                     <#field_type as ::cynic::core::QueryFragment>::query(
@@ -267,6 +277,7 @@ impl quote::ToTokens for FieldSelection<'_> {
                             #third_generic_arg
                         >();
 
+                    #alias
                     #arguments
 
                     field_builder.done();
@@ -283,6 +294,7 @@ impl quote::ToTokens for FieldSelection<'_> {
                             #third_generic_arg
                         >();
 
+                    #alias
                     #arguments
 
                     field_builder.done();
@@ -299,6 +311,7 @@ impl quote::ToTokens for FieldSelection<'_> {
                             #third_generic_arg
                         >();
 
+                    #alias
                     #arguments
 
                     <#field_type as ::cynic::core::QueryFragment>::query(
@@ -317,6 +330,7 @@ impl quote::ToTokens for FieldSelection<'_> {
                             #third_generic_arg
                         >();
 
+                    #alias
                     #arguments
 
                     <#field_type as ::cynic::core::QueryFragment>::query(

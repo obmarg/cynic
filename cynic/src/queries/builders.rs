@@ -1,7 +1,7 @@
 #![allow(dead_code, unused_variables, missing_docs)]
 // TODO: Don't allow the above
 
-use std::marker::PhantomData;
+use std::{borrow::Cow, marker::PhantomData};
 
 use crate::{
     coercions::CoercesTo,
@@ -140,6 +140,12 @@ pub struct FieldSelectionBuilder<'a, Field, SchemaType, Variables> {
 impl<'a, Field, FieldSchemaType, Variables>
     FieldSelectionBuilder<'a, Field, FieldSchemaType, Variables>
 {
+    // TODO: be sure to document (and test) that this supports owned _and_ static
+    // strings.
+    pub fn alias(&mut self, alias: impl Into<Cow<'static, str>>) {
+        self.field.alias = Some(alias.into())
+    }
+
     pub fn argument<ArgumentName>(
         &'_ mut self,
     ) -> ArgumentBuilder<'_, Field::ArgumentSchemaType, Variables>

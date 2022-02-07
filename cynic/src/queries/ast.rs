@@ -20,6 +20,7 @@ pub enum Selection {
 #[derive(Debug)]
 pub struct FieldSelection {
     pub(super) name: &'static str,
+    pub(super) alias: Option<Cow<'static, str>>,
     pub(super) arguments: Vec<Argument>,
     pub(super) children: SelectionSet,
 }
@@ -63,6 +64,7 @@ impl FieldSelection {
     pub fn new(name: &'static str) -> FieldSelection {
         FieldSelection {
             name,
+            alias: None,
             arguments: Vec::new(),
             children: SelectionSet::default(),
         }
@@ -86,7 +88,12 @@ impl std::fmt::Display for Selection {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Selection::Field(field_selection) => {
+                if let Some(alias) = &field_selection.alias {
+                    write!(f, "{}: ", alias)?;
+                }
+
                 write!(f, "{}", field_selection.name)?;
+
                 if !field_selection.arguments.is_empty() {
                     write!(f, "(")?;
                     let mut first = true;
