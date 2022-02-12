@@ -1,14 +1,15 @@
-use std::{collections::HashMap, marker::PhantomData, rc::Rc};
+use std::{borrow::Cow, collections::HashMap, marker::PhantomData, rc::Rc};
 
 use serde::de::{self, Deserialize, Deserializer, MapAccess};
 
 use super::{
     content::{Content, ContentRefDeserializer},
+    cow_str::CowStr,
     key_de::KeyDeserializer,
 };
 
 pub struct Spreadable<'de, E> {
-    fields: HashMap<&'de str, Content<'de>>,
+    fields: HashMap<Cow<'de, str>, Content<'de>>,
     error: PhantomData<fn() -> E>,
 }
 
@@ -17,7 +18,11 @@ impl<'de, E> Deserialize<'de> for Spreadable<'de, E> {
     where
         D: Deserializer<'de>,
     {
-        let fields = HashMap::deserialize(deserializer)?;
+        let fields = HashMap::<CowStr<'de>, Content<'de>>::deserialize(deserializer)?
+            .into_iter()
+            .map(|(k, v)| (k.into_inner(), v))
+            .collect();
+
         Ok(Spreadable {
             fields,
             error: PhantomData,
@@ -50,7 +55,7 @@ where
 }
 
 struct SpreadDeserializer<'a, 'de, E> {
-    iter: std::collections::hash_map::Iter<'a, &'de str, Content<'de>>,
+    iter: std::collections::hash_map::Iter<'a, Cow<'de, str>, Content<'de>>,
     next_content: Option<&'a Content<'de>>,
     error: PhantomData<fn() -> E>,
 }
@@ -87,7 +92,9 @@ where
     {
         if let Some((key, content)) = self.iter.next() {
             self.next_content = Some(content);
-            return seed.deserialize(KeyDeserializer::new(key)).map(Some);
+            return seed
+                .deserialize(KeyDeserializer::new(key.clone()))
+                .map(Some);
         }
 
         Ok(None)

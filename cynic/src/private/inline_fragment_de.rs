@@ -1,9 +1,10 @@
-use std::marker::PhantomData;
+use std::{borrow::Cow, marker::PhantomData};
 
 use serde::de::{Error, MapAccess, Visitor};
 
 use super::{
     content::{Content, ContentDeserializer},
+    cow_str::CowStr,
     key_de::KeyDeserializer,
 };
 
@@ -36,10 +37,14 @@ where
     {
         let mut buffer = Vec::new();
 
-        while let Some(key) = access.next_key::<&str>()? {
+        while let Some(key) = access.next_key::<CowStr>()? {
+            let key = key.into_inner();
             if key == "__typename" {
-                let typename = access.next_value::<&str>()?;
-                return T::deserialize_variant(typename, BufferDeserializer { access, buffer });
+                let typename = access.next_value::<CowStr>()?.into_inner();
+                return T::deserialize_variant(
+                    typename.as_ref(),
+                    BufferDeserializer { access, buffer },
+                );
             }
             buffer.push((key, access.next_value::<Content>()?))
         }
@@ -50,7 +55,7 @@ where
 
 struct BufferDeserializer<'de, M: MapAccess<'de>> {
     access: M,
-    buffer: Vec<(&'de str, Content<'de>)>,
+    buffer: Vec<(Cow<'de, str>, Content<'de>)>,
 }
 
 impl<'de, M> serde::de::Deserializer<'de> for BufferDeserializer<'de, M>
@@ -80,7 +85,7 @@ where
 
 struct BufferMapAccess<'de, M: MapAccess<'de>> {
     access: M,
-    buffer: Vec<(&'de str, Content<'de>)>,
+    buffer: Vec<(Cow<'de, str>, Content<'de>)>,
     next_content: Option<Content<'de>>,
 }
 

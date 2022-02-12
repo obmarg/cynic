@@ -2,7 +2,7 @@
 //! This module contains private code used by the derives.
 //!
 //! The API in here is absolutely unstable and should not be used by user code.
-use std::{fmt, marker::PhantomData};
+use std::{borrow::Cow, fmt, marker::PhantomData};
 
 use serde::{
     de::{self, EnumAccess, Expected, MapAccess, SeqAccess, Unexpected, Visitor},
@@ -44,7 +44,7 @@ pub enum Content<'de> {
     Unit,
     Newtype(Box<Content<'de>>),
     Seq(Vec<Content<'de>>),
-    Map(Vec<(&'de str, Content<'de>)>),
+    Map(Vec<(Cow<'de, str>, Content<'de>)>),
 }
 
 impl<'de> Content<'de> {
@@ -370,7 +370,7 @@ where
 }
 
 fn visit_content_map<'de, V, E>(
-    content: Vec<(&'de str, Content<'de>)>,
+    content: Vec<(Cow<'de, str>, Content<'de>)>,
     visitor: V,
 ) -> Result<V::Value, E>
 where
@@ -784,16 +784,19 @@ where
 }
 
 fn visit_content_map_ref<'a, 'de, V, E>(
-    content: &'a [(&'de str, Content<'de>)],
+    content: &'a [(Cow<'de, str>, Content<'de>)],
     visitor: V,
 ) -> Result<V::Value, E>
 where
     V: Visitor<'de>,
     E: de::Error,
 {
-    let map = content
-        .iter()
-        .map(|&(ref k, ref v)| (KeyDeserializer::new(k), ContentRefDeserializer::new(v)));
+    let map = content.iter().map(|&(ref k, ref v)| {
+        (
+            KeyDeserializer::new(k.clone()),
+            ContentRefDeserializer::new(v),
+        )
+    });
     let mut map_visitor = de::value::MapDeserializer::new(map);
     let value = visitor.visit_map(&mut map_visitor)?;
     map_visitor.end()?;

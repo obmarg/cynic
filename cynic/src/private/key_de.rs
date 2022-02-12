@@ -1,14 +1,14 @@
-use std::marker::PhantomData;
+use std::{borrow::Cow, marker::PhantomData};
 
 use serde::de::Visitor;
 
 pub struct KeyDeserializer<'de, E> {
-    key: &'de str,
+    key: Cow<'de, str>,
     phantom: PhantomData<fn() -> E>,
 }
 
 impl<'de, E> KeyDeserializer<'de, E> {
-    pub fn new(key: &'de str) -> Self {
+    pub fn new(key: Cow<'de, str>) -> Self {
         KeyDeserializer {
             key,
             phantom: PhantomData,
@@ -37,7 +37,10 @@ where
     where
         V: Visitor<'de>,
     {
-        visitor.visit_str(self.key)
+        match self.key {
+            Cow::Borrowed(x) => visitor.visit_borrowed_str(x),
+            Cow::Owned(s) => visitor.visit_string(s),
+        }
     }
 
     serde::forward_to_deserialize_any! {

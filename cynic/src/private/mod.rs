@@ -4,6 +4,7 @@
 //! The API in here is absolutely unstable and should not be used by user code.
 
 mod content;
+mod cow_str;
 mod flatten_de;
 mod inline_fragment_de;
 mod key_de;
