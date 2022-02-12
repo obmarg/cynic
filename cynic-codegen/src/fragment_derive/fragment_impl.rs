@@ -44,7 +44,7 @@ struct FieldSelection<'a> {
     arguments: super::arguments::Output<'a>,
     flatten: bool,
     alias: Option<String>,
-    // recurse_limit: Option<u8>,
+    recurse_limit: Option<u8>,
     span: proc_macro2::Span,
 }
 
@@ -163,7 +163,7 @@ fn process_field<'a>(
         rust_field_type: field.ty.clone(),
         arguments,
         field_marker_type_path,
-        // recurse_limit: field.recurse.as_ref().map(|f| **f),
+        recurse_limit: field.recurse.as_ref().map(|f| **f),
         span: field.ty.span(),
         alias: field.alias(),
         graphql_field_kind: schema_field.field_type.inner_type().as_kind(),
@@ -224,6 +224,13 @@ impl quote::ToTokens for Selection<'_> {
     }
 }
 
+enum SelectionMode {
+    Composite,
+    Flatten,
+    Recurse(u8),
+    Leaf,
+}
+
 impl quote::ToTokens for FieldSelection<'_> {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         use quote::{quote_spanned, TokenStreamExt};
@@ -233,14 +240,6 @@ impl quote::ToTokens for FieldSelection<'_> {
         let field_type = &self.rust_field_type;
         let arguments = &self.arguments;
 
-        let (select_field_fn, third_generic_arg) = match self.flatten {
-            true => (
-                quote! { select_flattened_field },
-                quote! { <#field_marker_type_path as ::cynic::schema::Field>::SchemaType },
-            ),
-            false => (quote! { select_field }, quote! {}),
-        };
-
         let alias = self.alias.as_deref().map(|alias| {
             let alias = proc_macro2::Literal::string(alias);
             quote! {
@@ -248,14 +247,37 @@ impl quote::ToTokens for FieldSelection<'_> {
             }
         });
 
-        tokens.append_all(match self.graphql_field_kind {
-            FieldKind::Composite => {
+        let schema_type_lookup = match self.graphql_field_kind {
+            FieldKind::Interface | FieldKind::Composite | FieldKind::Union => {
+                quote_spanned! { self.span =>
+                    <#field_type as ::cynic::core::QueryFragment>::SchemaType
+                }
+            }
+            FieldKind::Scalar => quote_spanned! { self.span =>
+                <#field_type as ::cynic::schema::IsScalar<
+                    <#field_marker_type_path as ::cynic::schema::Field>::SchemaType
+                >>::SchemaType
+            },
+            FieldKind::Enum => quote_spanned! { self.span =>
+                <#field_type as ::cynic::core::Enum>::SchemaType
+            },
+        };
+
+        let selection_mode = match (&self.graphql_field_kind, self.flatten, self.recurse_limit) {
+            (FieldKind::Enum | FieldKind::Scalar, _, _) => SelectionMode::Leaf,
+            (_, false, None) => SelectionMode::Composite,
+            (_, true, None) => SelectionMode::Flatten,
+            (_, false, Some(limit)) => SelectionMode::Recurse(limit),
+            _ => panic!("Uncertain how to select for this field."),
+        };
+
+        tokens.append_all(match selection_mode {
+            SelectionMode::Composite => {
                 quote_spanned! { self.span =>
                     let mut field_builder = builder
-                        .#select_field_fn::<
+                        .select_field::<
                             #field_marker_type_path,
-                            <#field_type as ::cynic::core::QueryFragment>::SchemaType,
-                            #third_generic_arg
+                            #schema_type_lookup
                         >();
 
                     #alias
@@ -268,47 +290,13 @@ impl quote::ToTokens for FieldSelection<'_> {
                     field_builder.done();
                 }
             }
-            FieldKind::Enum => {
+            SelectionMode::Flatten => {
                 quote_spanned! { self.span =>
                     let mut field_builder = builder
-                        .#select_field_fn::<
+                        .select_flattened_field::<
                             #field_marker_type_path,
-                            <#field_type as ::cynic::core::Enum>::SchemaType,
-                            #third_generic_arg
-                        >();
-
-                    #alias
-                    #arguments
-
-                    field_builder.done();
-                }
-            }
-            FieldKind::Scalar => {
-                quote_spanned! { self.span =>
-                    let mut field_builder = builder
-                        .#select_field_fn::<
-                            #field_marker_type_path,
-                            <#field_type as ::cynic::schema::IsScalar<
-                                <#field_marker_type_path as ::cynic::schema::Field>::SchemaType
-                            >>::SchemaType,
-                            #third_generic_arg
-                        >();
-
-                    #alias
-                    #arguments
-
-                    field_builder.done();
-                }
-            }
-            FieldKind::Interface => {
-                // TODO: Not sure this is right, but figure it out....
-                // If it is might be able to merge w/ object
-                quote_spanned! { self.span =>
-                    let mut field_builder = builder
-                        .#select_field_fn::<
-                            #field_marker_type_path,
-                            <#field_type as ::cynic::core::QueryFragment>::SchemaType,
-                            #third_generic_arg
+                            #schema_type_lookup,
+                            <#field_marker_type_path as ::cynic::schema::Field>::SchemaType,
                         >();
 
                     #alias
@@ -317,25 +305,41 @@ impl quote::ToTokens for FieldSelection<'_> {
                     <#field_type as ::cynic::core::QueryFragment>::query(
                         field_builder.select_children()
                     );
+
+                    field_builder.done();
                 }
             }
-            FieldKind::Union => {
-                // TODO: Not sure this is right, but figure it out....
-                // If it is might be able to merge w/ object
+            SelectionMode::Recurse(limit) => {
+                quote_spanned! { self.span =>
+                    if let Some(mut field_builder) = builder
+                        .recurse::<
+                            #field_marker_type_path,
+                            #schema_type_lookup
+                        >(#limit)
+                    {
+                        #alias
+                        #arguments
+
+                        <#field_type as ::cynic::core::QueryFragment>::query(
+                            field_builder.select_children()
+                        );
+
+                        field_builder.done();
+                    }
+                }
+            }
+            SelectionMode::Leaf => {
                 quote_spanned! { self.span =>
                     let mut field_builder = builder
-                        .#select_field_fn::<
+                        .select_field::<
                             #field_marker_type_path,
-                            <#field_type as ::cynic::core::QueryFragment>::SchemaType,
-                            #third_generic_arg
+                            #schema_type_lookup
                         >();
 
                     #alias
                     #arguments
 
-                    <#field_type as ::cynic::core::QueryFragment>::query(
-                        field_builder.select_children()
-                    );
+                    field_builder.done();
                 }
             }
         });

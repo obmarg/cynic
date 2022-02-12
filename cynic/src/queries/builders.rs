@@ -9,13 +9,14 @@ use crate::{
     schema,
 };
 
-use super::{ast::*, FlattensInto, IntoInputLiteral};
+use super::{ast::*, FlattensInto, IntoInputLiteral, Recursable};
 
 // TODO: QueryBuilder or SelectionBuilder?
 pub struct QueryBuilder<'a, SchemaType, Variables> {
     phantom: PhantomData<fn() -> (SchemaType, Variables)>,
     selection_set: &'a mut SelectionSet,
     has_typename: bool,
+    recurse_depth: Option<u8>,
 }
 
 impl<'a, T, U> QueryBuilder<'a, Vec<T>, U> {
@@ -24,6 +25,7 @@ impl<'a, T, U> QueryBuilder<'a, Vec<T>, U> {
             selection_set: self.selection_set,
             has_typename: self.has_typename,
             phantom: PhantomData,
+            recurse_depth: self.recurse_depth,
         }
     }
 }
@@ -34,6 +36,7 @@ impl<'a, T, U> QueryBuilder<'a, Option<T>, U> {
             selection_set: self.selection_set,
             has_typename: self.has_typename,
             phantom: PhantomData,
+            recurse_depth: self.recurse_depth,
         }
     }
 }
@@ -48,6 +51,7 @@ impl<'a, SchemaType, Variables> QueryBuilder<'a, SchemaType, Variables> {
             phantom: PhantomData,
             has_typename: false,
             selection_set,
+            recurse_depth: None,
         }
     }
 
@@ -57,6 +61,7 @@ impl<'a, SchemaType, Variables> QueryBuilder<'a, SchemaType, Variables> {
             phantom: PhantomData,
             has_typename: false,
             selection_set,
+            recurse_depth: None,
         }
     }
 
@@ -69,6 +74,7 @@ impl<'a, SchemaType, Variables> QueryBuilder<'a, SchemaType, Variables> {
         SchemaType: schema::HasField<FieldMarker, FieldType>,
     {
         FieldSelectionBuilder {
+            recurse_depth: self.recurse_depth,
             field: self.push_selection(FieldMarker::name()),
             phantom: PhantomData,
         }
@@ -86,9 +92,31 @@ impl<'a, SchemaType, Variables> QueryBuilder<'a, SchemaType, Variables> {
         SchemaType: schema::HasField<FieldMarker, FieldType>,
     {
         FieldSelectionBuilder {
+            recurse_depth: self.recurse_depth,
             field: self.push_selection(FieldMarker::name()),
             phantom: PhantomData,
         }
+    }
+
+    pub fn recurse<FieldMarker, FieldType>(
+        &'_ mut self,
+        max_depth: u8,
+    ) -> Option<FieldSelectionBuilder<'_, FieldMarker, FieldType, Variables>>
+    where
+        FieldMarker: schema::Field,
+        SchemaType: schema::HasField<FieldMarker, FieldMarker::SchemaType>,
+        FieldType: Recursable<FieldMarker::SchemaType>,
+    {
+        let new_depth = self.recurse_depth.map(|d| d + 1).unwrap_or(0);
+        if new_depth >= max_depth {
+            return None;
+        }
+
+        Some(FieldSelectionBuilder {
+            recurse_depth: Some(new_depth),
+            field: self.push_selection(FieldMarker::name()),
+            phantom: PhantomData,
+        })
     }
 
     fn push_selection(&'_ mut self, name: &'static str) -> &mut FieldSelection {
@@ -135,6 +163,7 @@ impl<'a, SchemaType, Variables> QueryBuilder<'a, SchemaType, Variables> {
 pub struct FieldSelectionBuilder<'a, Field, SchemaType, Variables> {
     phantom: PhantomData<fn() -> (Field, SchemaType, Variables)>,
     field: &'a mut FieldSelection,
+    recurse_depth: Option<u8>,
 }
 
 impl<'a, Field, FieldSchemaType, Variables>
@@ -165,7 +194,10 @@ impl<'a, Field, FieldSchemaType, Variables>
     where
         Variables: VariableMatch<InnerVariables>,
     {
-        QueryBuilder::new(&mut self.field.children)
+        QueryBuilder {
+            recurse_depth: self.recurse_depth,
+            ..QueryBuilder::new(&mut self.field.children)
+        }
     }
 
     // TODO: probably need an alias function here that defines an alias.

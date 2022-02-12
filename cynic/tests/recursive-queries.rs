@@ -43,41 +43,18 @@ mod recursive_lists {
 
     #[test]
     fn test_all_posts_query_output() {
-        use cynic::{FragmentContext, Operation};
+        use cynic::QueryBuilder;
 
-        let query = Operation::query(AllPostsQuery::fragment(FragmentContext::empty()));
+        let operation = AllPostsQuery::build(());
 
-        insta::assert_display_snapshot!(query.query);
+        insta::assert_display_snapshot!(operation.query);
     }
 
     #[test]
     fn test_decoding_with_matching_depth() {
-        use cynic::{FragmentContext, GraphQlResponse, Operation};
+        let data = json!({ "allPosts": posts(posts(posts(json!(null)))) });
 
-        let data = GraphQlResponse {
-            data: Some(json!({ "allPosts": posts(posts(posts(json!(null)))) })),
-            errors: None,
-        };
-
-        let query = Operation::query(AllPostsQuery::fragment(FragmentContext::empty()));
-
-        insta::assert_yaml_snapshot!(query.decode_response(data).unwrap().data)
-    }
-
-    #[test]
-    fn test_decoding_with_extra_depth() {
-        use cynic::{FragmentContext, GraphQlResponse, Operation};
-
-        let data = GraphQlResponse {
-            data: Some(json!({
-                "allPosts": posts(posts(posts(posts(json!(null)))))
-            })),
-            errors: None,
-        };
-
-        let query = Operation::query(AllPostsQuery::fragment(FragmentContext::empty()));
-
-        insta::assert_yaml_snapshot!(query.decode_response(data).unwrap().data)
+        insta::assert_yaml_snapshot!(serde_json::from_value::<AllPostsQuery>(data).unwrap());
     }
 
     fn posts(inner_posts: serde_json::Value) -> serde_json::Value {
@@ -118,11 +95,11 @@ mod optional_recursive_types {
 
     #[test]
     fn test_friends_query_output() {
-        use cynic::{FragmentContext, Operation};
+        use cynic::QueryBuilder;
 
-        let query = Operation::query(FriendsQuery::fragment(FragmentContext::empty()));
+        let operation = FriendsQuery::build(());
 
-        insta::assert_display_snapshot!(query.query);
+        insta::assert_display_snapshot!(operation.query);
     }
 
     macro_rules! null {
@@ -133,56 +110,23 @@ mod optional_recursive_types {
 
     #[test]
     fn test_friends_decoding_with_matching_depth() {
-        use cynic::{FragmentContext, GraphQlResponse, Operation};
-
-        let data = GraphQlResponse {
-            data: Some(json!({
-                "allAuthors":
-                    authors(
-                        authors(authors(null!(), null!()), author(null!(), null!())),
-                        author(authors(null!(), null!()), author(null!(), null!())),
-                    )
-            })),
-            errors: None,
-        };
-
-        let query = Operation::query(FriendsQuery::fragment(FragmentContext::empty()));
-
-        insta::assert_yaml_snapshot!(query.decode_response(data).unwrap().data)
+        let data = json!({
+            "allAuthors":
+                authors(
+                    authors(authors(null!(), null!()), author(null!(), null!())),
+                    author(authors(null!(), null!()), author(null!(), null!())),
+                )
+        });
+        insta::assert_yaml_snapshot!(serde_json::from_value::<FriendsQuery>(data).unwrap());
     }
 
     #[test]
     fn test_friends_decoding_with_less_depth() {
         // This is only a valid test for optional fields.
-        use cynic::{FragmentContext, GraphQlResponse, Operation};
+        let data =
+            json!({ "allAuthors": authors(authors(null!(), null!()), author(null!(), null!())) });
 
-        let data = GraphQlResponse {
-            data: Some(json!({
-                "allAuthors": authors(authors(null!(), null!()), author(null!(), null!()))
-            })),
-            errors: None,
-        };
-
-        let query = Operation::query(FriendsQuery::fragment(FragmentContext::empty()));
-
-        insta::assert_yaml_snapshot!(query.decode_response(data).unwrap().data)
-    }
-
-    #[test]
-    fn test_friends_decoding_with_extra_depth() {
-        use cynic::{FragmentContext, GraphQlResponse, Operation};
-
-        let data = GraphQlResponse {
-            data: Some(json!({
-                "allAuthors":
-                    authors(authors(authors(authors(null!(), null!()), null!()), null!()), null!())
-            })),
-            errors: None,
-        };
-
-        let query = Operation::query(FriendsQuery::fragment(FragmentContext::empty()));
-
-        insta::assert_yaml_snapshot!(query.decode_response(data).unwrap().data)
+        insta::assert_yaml_snapshot!(serde_json::from_value::<FriendsQuery>(data).unwrap());
     }
 
     fn authors(
@@ -223,11 +167,11 @@ mod required_recursive_types {
 
     #[test]
     fn test_friends_query_output() {
-        use cynic::{FragmentContext, Operation};
+        use cynic::QueryBuilder;
 
-        let query = Operation::query(FriendsQuery::fragment(FragmentContext::empty()));
+        let operation = FriendsQuery::build(());
 
-        insta::assert_display_snapshot!(query.query);
+        insta::assert_display_snapshot!(operation.query);
     }
 
     macro_rules! null {
@@ -238,47 +182,18 @@ mod required_recursive_types {
 
     #[test]
     fn test_friends_decoding_with_matching_depth() {
-        use cynic::{FragmentContext, GraphQlResponse, Operation};
+        let data = json!({ "allAuthors": authors(author(author(null!()))) });
 
-        let data = GraphQlResponse {
-            data: Some(json!({ "allAuthors": authors(author(author(null!()))) })),
-            errors: None,
-        };
-
-        let query = Operation::query(FriendsQuery::fragment(FragmentContext::empty()));
-
-        insta::assert_yaml_snapshot!(query.decode_response(data).unwrap().data)
+        insta::assert_yaml_snapshot!(serde_json::from_value::<FriendsQuery>(data).unwrap());
     }
 
     #[test]
     fn test_friends_decoding_with_less_depth() {
         // This is only a valid test for optional fields.
-        use cynic::{FragmentContext, GraphQlResponse, Operation};
 
-        let data = GraphQlResponse {
-            data: Some(json!({ "allAuthors": authors(author(null!())) })),
-            errors: None,
-        };
+        let data = json!({ "allAuthors": authors(author(null!())) });
 
-        let query = Operation::query(FriendsQuery::fragment(FragmentContext::empty()));
-
-        insta::assert_yaml_snapshot!(query.decode_response(data).unwrap().data)
-    }
-
-    #[test]
-    fn test_friends_decoding_with_extra_depth() {
-        use cynic::{FragmentContext, GraphQlResponse, Operation};
-
-        let data = GraphQlResponse {
-            data: Some(json!({
-                "allAuthors": authors(author(author(author(null!()))))
-            })),
-            errors: None,
-        };
-
-        let query = Operation::query(FriendsQuery::fragment(FragmentContext::empty()));
-
-        insta::assert_yaml_snapshot!(query.decode_response(data).unwrap().data)
+        insta::assert_yaml_snapshot!(serde_json::from_value::<FriendsQuery>(data).unwrap());
     }
 
     fn authors(me: serde_json::Value) -> serde_json::Value {

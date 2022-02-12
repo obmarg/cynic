@@ -1,8 +1,10 @@
 ---
 source: cynic/tests/recursive-queries.rs
-expression: query.query
+assertion_line: 50
+expression: operation.query
+
 ---
-query Query {
+query {
   allPosts {
     comments {
       author {
@@ -21,4 +23,5 @@ query Query {
     }
   }
 }
+
 
