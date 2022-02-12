@@ -9,12 +9,21 @@ SelectionSet {
         Field(
             FieldSelection {
                 name: "post",
-                arguments: [],
+                alias: None,
+                arguments: [
+                    Argument {
+                        name: "id",
+                        value: String(
+                            "TODO",
+                        ),
+                    },
+                ],
                 children: SelectionSet {
                     selections: [
                         Field(
                             FieldSelection {
                                 name: "hasMetadata",
+                                alias: None,
                                 arguments: [],
                                 children: SelectionSet {
                                     selections: [],
@@ -24,12 +33,14 @@ SelectionSet {
                         Field(
                             FieldSelection {
                                 name: "author",
+                                alias: None,
                                 arguments: [],
                                 children: SelectionSet {
                                     selections: [
                                         Field(
                                             FieldSelection {
                                                 name: "name",
+                                                alias: None,
                                                 arguments: [],
                                                 children: SelectionSet {
                                                     selections: [],
@@ -47,12 +58,14 @@ SelectionSet {
         Field(
             FieldSelection {
                 name: "allPosts",
+                alias: None,
                 arguments: [],
                 children: SelectionSet {
                     selections: [
                         Field(
                             FieldSelection {
                                 name: "hasMetadata",
+                                alias: None,
                                 arguments: [],
                                 children: SelectionSet {
                                     selections: [],
@@ -62,12 +75,14 @@ SelectionSet {
                         Field(
                             FieldSelection {
                                 name: "author",
+                                alias: None,
                                 arguments: [],
                                 children: SelectionSet {
                                     selections: [
                                         Field(
                                             FieldSelection {
                                                 name: "name",
+                                                alias: None,
                                                 arguments: [],
                                                 children: SelectionSet {
                                                     selections: [],

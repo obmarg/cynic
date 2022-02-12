@@ -1,13 +1,15 @@
 ---
 source: cynic/tests/keyword-queries.rs
+assertion_line: 11
 expression: query.query
 
 ---
-query Query {
+query {
   _
   async
   crate
   self
   super
 }
+
 
