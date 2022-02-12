@@ -1,6 +1,6 @@
 ---
 source: cynic-codegen/src/fragment_derive/tests.rs
-assertion_line: 74
+assertion_line: 85
 expression: "format_code(format!(\"{}\", tokens))"
 
 ---
@@ -20,7 +20,7 @@ impl<'de> ::cynic::serde::Deserialize<'de> for Film {
     where
         D: ::cynic::serde::Deserializer<'de>,
     {
-        let spreadable = ::cynic::__private::Spreadable::deserialize(deserializer)?;
+        let spreadable = ::cynic::__private::Spreadable::<D::Error>::deserialize(deserializer)?;
         Ok(Film {
             details: <FilmDetails as ::cynic::serde::Deserialize<'de>>::deserialize(
                 spreadable.spread_deserializer(),

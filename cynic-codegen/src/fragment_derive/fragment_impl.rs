@@ -226,7 +226,8 @@ impl quote::ToTokens for Selection<'_> {
 
 enum SelectionMode {
     Composite,
-    Flatten,
+    FlattenComposite,
+    FlattenLeaf,
     Recurse(u8),
     Leaf,
 }
@@ -264,9 +265,10 @@ impl quote::ToTokens for FieldSelection<'_> {
         };
 
         let selection_mode = match (&self.graphql_field_kind, self.flatten, self.recurse_limit) {
-            (FieldKind::Enum | FieldKind::Scalar, _, _) => SelectionMode::Leaf,
+            (FieldKind::Enum | FieldKind::Scalar, true, _) => SelectionMode::FlattenLeaf,
+            (FieldKind::Enum | FieldKind::Scalar, false, _) => SelectionMode::Leaf,
+            (_, true, None) => SelectionMode::FlattenComposite,
             (_, false, None) => SelectionMode::Composite,
-            (_, true, None) => SelectionMode::Flatten,
             (_, false, Some(limit)) => SelectionMode::Recurse(limit),
             _ => panic!("Uncertain how to select for this field."),
         };
@@ -290,7 +292,7 @@ impl quote::ToTokens for FieldSelection<'_> {
                     field_builder.done();
                 }
             }
-            SelectionMode::Flatten => {
+            SelectionMode::FlattenComposite => {
                 quote_spanned! { self.span =>
                     let mut field_builder = builder
                         .select_flattened_field::<
@@ -305,6 +307,21 @@ impl quote::ToTokens for FieldSelection<'_> {
                     <#field_type as ::cynic::core::QueryFragment>::query(
                         field_builder.select_children()
                     );
+
+                    field_builder.done();
+                }
+            }
+            SelectionMode::FlattenLeaf => {
+                quote_spanned! { self.span =>
+                    let mut field_builder = builder
+                        .select_flattened_field::<
+                            #field_marker_type_path,
+                            #schema_type_lookup,
+                            <#field_marker_type_path as ::cynic::schema::Field>::SchemaType,
+                        >();
+
+                    #alias
+                    #arguments
 
                     field_builder.done();
                 }

@@ -34,21 +34,17 @@ impl ::cynic::queries::IntoInputLiteral for IssueOrder {
         ::cynic::assert_impl!(
             OrderDirection: ::cynic::coercions::CoercesTo<schema::OrderDirection>
         );
-        vec.push(::cynic::queries::Argument {
-            name: "direction",
-            value: <OrderDirection as ::cynic::queries::IntoInputLiteral>::into_literal(
-                self.direction,
-            ),
-        });
+        vec.push(::cynic::queries::Argument::new(
+            "direction",
+            <OrderDirection as ::cynic::queries::IntoInputLiteral>::into_literal(self.direction),
+        ));
         ::cynic::assert_impl!(
             IssueOrderField: ::cynic::coercions::CoercesTo<schema::IssueOrderField>
         );
-        vec.push(::cynic::queries::Argument {
-            name: "field",
-            value: <IssueOrderField as ::cynic::queries::IntoInputLiteral>::into_literal(
-                self.field,
-            ),
-        });
+        vec.push(::cynic::queries::Argument::new(
+            "field",
+            <IssueOrderField as ::cynic::queries::IntoInputLiteral>::into_literal(self.field),
+        ));
         ::cynic::queries::InputLiteral::Object(vec)
     }
 }

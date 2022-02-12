@@ -5,10 +5,38 @@ expression: "format_code(format!(\"{}\", tokens))"
 
 ---
 #[automatically_derived]
+impl<'de> ::cynic::serde::Deserialize<'de> for PostOrAuthor {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: ::cynic::serde::Deserializer<'de>,
+    {
+        deserializer.deserialize_map(::cynic::__private::InlineFragmentVisitor::<Self>::new())
+    }
+}
+#[automatically_derived]
+impl<'de> ::cynic::core::InlineFragments<'de> for PostOrAuthor {
+    fn deserialize_variant<D>(typename: &str, deserializer: D) -> Result<Self, D::Error>
+    where
+        D: ::cynic::serde::Deserializer<'de>,
+    {
+        if Some(typename) == <Post as ::cynic::core::QueryFragment<'de>>::TYPE {
+            return <Post as ::cynic::serde::Deserialize<'de>>::deserialize(deserializer)
+                .map(PostOrAuthor::Post);
+        }
+        if Some(typename) == <Author as ::cynic::core::QueryFragment<'de>>::TYPE {
+            return <Author as ::cynic::serde::Deserialize<'de>>::deserialize(deserializer)
+                .map(PostOrAuthor::Author);
+        }
+        use cynic::serde::de::Error;
+        Err(D::Error::custom(format!("Unknown type: {}", typename)))
+    }
+}
+#[automatically_derived]
 impl<'de> ::cynic::core::QueryFragment<'de> for PostOrAuthor {
     type SchemaType = schema::PostOrAuthor;
     type Variables = ();
-    fn query(mut builder: ::cynic::queries::QueryBuilder<Self::SchemaType>) {
+    const TYPE: Option<&'static str> = Some("PostOrAuthor");
+    fn query(mut builder: ::cynic::queries::QueryBuilder<Self::SchemaType, Self::Variables>) {
         let fragment_builder = builder.inline_fragment();
         let mut fragment_builder =
             fragment_builder.on::<<Post as ::cynic::core::QueryFragment>::SchemaType>();
@@ -17,26 +45,6 @@ impl<'de> ::cynic::core::QueryFragment<'de> for PostOrAuthor {
         let mut fragment_builder =
             fragment_builder.on::<<Author as ::cynic::core::QueryFragment>::SchemaType>();
         <Author as ::cynic::core::QueryFragment>::query(fragment_builder.select_children());
-    }
-}
-#[automatically_derived]
-impl<'de> ::cynic::serde::Deserialize<'de> for PostOrAuthor {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: ::cynic::serde::Deserializer<'de>,
-    {
-        #[derive(:: cynic :: serde :: Deserialize)]
-        #[serde(tag = "__typename", crate = "::cynic::serde")]
-        enum Intermediate {
-            #[serde(rename = "BlogPost")]
-            Post(Post),
-            #[serde(rename = "Author")]
-            Author(Author),
-        }
-        Ok(match Intermediate::deserialize(deserializer)? {
-            Intermediate::Post(inner) => PostOrAuthor::Post(inner),
-            Intermediate::Author(inner) => PostOrAuthor::Author(inner),
-        })
     }
 }
 
