@@ -15,10 +15,7 @@ use quote::{quote, ToTokens};
 use crate::{
     error::Errors,
     idents::Ident,
-    schema::{
-        types::{InputType, Type, TypeRef},
-        Schema,
-    },
+    schema::{types::Type, Schema},
 };
 
 use self::{

@@ -59,7 +59,7 @@ impl ToTokens for ArgumentValueTokens<'_> {
                     let field_marker = field.schema_field.marker_ident().to_path(&field_module);
 
                     tokens.append_all(quote! {
-                        .field::<#field_marker>(|builder| {
+                        .field::<#field_marker, _>(|builder| {
                             builder #inner;
                         })
                     })

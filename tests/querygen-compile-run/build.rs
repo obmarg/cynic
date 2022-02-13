@@ -26,7 +26,7 @@ fn main() {
             &starwars_schema,
             "../../cynic-querygen/tests/queries/starwars/sanity.graphql",
             r#"queries::SanityCheckQuery::build(
-                &queries::SanityCheckQueryArguments {
+                queries::SanityCheckQueryArguments {
                     film_id: Some("ZmlsbXM6MQ==".into())
                 }
             )"#,
@@ -35,7 +35,7 @@ fn main() {
             &starwars_schema,
             "../../cynic-querygen/tests/queries/starwars/nested-arguments.graphql",
             r#"queries::NestedArgsQuery::build(
-                &queries::NestedArgsQueryArguments {
+                queries::NestedArgsQueryArguments {
                     film_id: "ZmlsbXM6MQ==".into(),
                     planet_cursor: None,
                     resident_connection: None
@@ -66,7 +66,7 @@ fn main() {
             &jobs_schema,
             "tests/queries/graphql.jobs/jobs.graphql",
             r#"queries::Jobs::build(
-                &queries::JobsArguments {
+                queries::JobsArguments {
                     input: queries::LocationInput {
                         slug: "london".into()
                     }
@@ -127,7 +127,7 @@ fn main() {
             &github_schema,
             "tests/queries/github/scalar-inside-input-object.graphql",
             r#"queries::AddPRComment::build(
-                &queries::AddPRCommentArguments{
+                queries::AddPRCommentArguments{
                     body: "hello!".into(),
                     commit: queries::GitObjectID("abcd".into())
                 }

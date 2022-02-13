@@ -78,5 +78,7 @@ pub fn scalar_derive_impl(input: ScalarDeriveInput) -> Result<TokenStream, syn::
         impl #schema_module::variable::Variable for #ident {
             const TYPE: ::cynic::variables::VariableType = ::cynic::variables::VariableType::Named(#graphql_type_name);
         }
+
+        ::cynic::impl_coercions!(#ident, #schema_module::#scalar_marker_ident);
     })
 }

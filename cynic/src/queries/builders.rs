@@ -293,13 +293,11 @@ pub struct ObjectArgumentBuilder<'a, ItemType, Variables> {
 }
 
 impl<'a, SchemaType, ArgStruct> ObjectArgumentBuilder<'a, SchemaType, ArgStruct> {
-    pub fn field<FieldMarker>(
-        self,
-        field_fn: impl FnOnce(ArgumentBuilder<'_, FieldMarker::SchemaType, ArgStruct>),
-    ) -> Self
+    pub fn field<FieldMarker, F>(self, field_fn: F) -> Self
     where
         FieldMarker: schema::Field,
         SchemaType: schema::HasInputField<FieldMarker, FieldMarker::SchemaType>,
+        F: FnOnce(ArgumentBuilder<'_, FieldMarker::SchemaType, ArgStruct>),
     {
         field_fn(ArgumentBuilder {
             destination: InputLiteralContainer::object(FieldMarker::name(), self.fields),

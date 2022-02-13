@@ -62,7 +62,7 @@ where
         // TODO: There has to be a better way to do this/place to structure this.
         // At the least a QueryRoot: std::fmt::Display type.
         let mut query = String::new();
-        writeln!(&mut query, "query{vars}{selection_set}");
+        writeln!(&mut query, "query{vars}{selection_set}").expect("Couldn't stringify query");
 
         // TODO: Handle arguments and what not.
 
@@ -89,7 +89,7 @@ where
         // TODO: There has to be a better way to do this/place to structure this.
         // At the least a QueryRoot: std::fmt::Display type.
         let mut query = String::new();
-        writeln!(&mut query, "query{vars}{selection_set}");
+        writeln!(&mut query, "query{vars}{selection_set}").expect("Couldn't stringify query");
 
         // TODO: Handle arguments and what not.
 
@@ -129,7 +129,7 @@ where
         // TODO: There has to be a better way to do this/place to structure this.
         // At the least a QueryRoot: std::fmt::Display type.
         let mut query = String::new();
-        writeln!(&mut query, "query{vars}{selection_set}");
+        writeln!(&mut query, "query{vars}{selection_set}").expect("Couldn't stringify query");
 
         // TODO: Handle arguments and what not.
 

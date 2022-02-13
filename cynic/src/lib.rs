@@ -228,5 +228,6 @@ macro_rules! impl_scalar {
         impl $crate::schema::IsScalar<$type_lock> for $type {
             type SchemaType = $type_lock;
         }
+        impl $crate::coercions::CoercesTo<$type_lock> for $type {}
     };
 }
