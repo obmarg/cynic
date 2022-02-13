@@ -4,7 +4,7 @@ use crate::{
     core::QueryFragment,
     queries::{QueryBuilder, SelectionSet},
     schema::{MutationRoot, QueryRoot, SubscriptionRoot},
-    variables::{VariableDefinition, VariableType},
+    variables::VariableType,
     QueryVariables,
 };
 

@@ -205,7 +205,6 @@ fn exhaustiveness_check(
 struct Fragment {
     rust_variant_name: syn::Ident,
     inner_type: syn::Type,
-    graphql_type: String,
 }
 
 fn fragments_from_variants(
@@ -227,7 +226,6 @@ fn fragments_from_variants(
         result.push(Fragment {
             rust_variant_name: variant.ident.clone(),
             inner_type: field.ty.clone(),
-            graphql_type: variant.graphql_name(),
         });
     }
     Ok(result)
@@ -311,11 +309,6 @@ impl quote::ToTokens for QueryFragmentImpl<'_> {
             .fragments
             .iter()
             .map(|fragment| &fragment.inner_type)
-            .collect();
-        let variants: Vec<_> = self
-            .fragments
-            .iter()
-            .map(|fragment| &fragment.rust_variant_name)
             .collect();
         let graphql_type = proc_macro2::Literal::string(&self.graphql_type_name);
         let fallback_selection = match &self.fallback {

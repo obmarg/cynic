@@ -1,4 +1,4 @@
-use std::{borrow::Cow, collections::HashMap, marker::PhantomData, rc::Rc};
+use std::{borrow::Cow, collections::HashMap, marker::PhantomData};
 
 use serde::de::{self, Deserialize, Deserializer, MapAccess};
 

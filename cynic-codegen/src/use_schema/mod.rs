@@ -27,7 +27,7 @@ use self::{
 };
 
 pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
-    use quote::{TokenStreamExt};
+    use quote::TokenStreamExt;
 
     let document = crate::schema::load_schema(input.schema_filename)
         .map_err(|e| e.into_syn_error(proc_macro2::Span::call_site()))?;
@@ -165,24 +165,4 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
     });
 
     Ok(output)
-}
-
-impl TypeRef<'_, InputType<'_>> {
-    fn argument_kind(&self) -> proc_macro2::TokenStream {
-        match self.inner_type() {
-            InputType::Scalar(_) => {
-                quote! {
-                    ::cynic::schema::ScalarArgument
-                }
-            }
-            InputType::Enum(_) => {
-                quote! {
-                    ::cynic::schema::EnumArgument
-                }
-            }
-            InputType::InputObject(_) => quote! {
-                ::cynic::schema::InputObjectArgument
-            },
-        }
-    }
 }

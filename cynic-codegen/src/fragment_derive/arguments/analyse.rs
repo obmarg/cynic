@@ -101,7 +101,7 @@ fn analyse_argument<'a>(
         parsing::FieldArgumentValue::Literal(lit) => {
             analyse_value_type(lit, &argument.value_type, argument_struct)
         }
-        parsing::FieldArgumentValue::Expression(e) => Ok(ArgumentValue::Expression(e)),
+        parsing::FieldArgumentValue::Expression(e) => Ok(ArgumentValue::Expression(*e)),
     }
 }
 

@@ -12,10 +12,6 @@ impl quote::ToTokens for InlineFragmentsImpl<'_> {
 
         let target_enum = &self.target_enum;
         let inner_types = self.fragments.iter().map(|fragment| &fragment.inner_type);
-        let graphql_types = self
-            .fragments
-            .iter()
-            .map(|fragment| proc_macro2::Literal::string(&fragment.graphql_type));
         let variant_names = self
             .fragments
             .iter()

@@ -13,7 +13,7 @@ pub trait QueryBuilder<'de>: Sized {
 
 impl<'de, T> QueryBuilder<'de> for T
 where
-    T: crate::core::QueryFragment<'de>,
+    T: QueryFragment<'de>,
     T::SchemaType: crate::schema::QueryRoot,
 {
     type Variables = T::Variables;
@@ -37,7 +37,7 @@ pub trait MutationBuilder<'de>: Sized {
 
 impl<'de, T> MutationBuilder<'de> for T
 where
-    T: crate::core::QueryFragment<'de>,
+    T: QueryFragment<'de>,
     T::SchemaType: crate::schema::MutationRoot,
 {
     type Variables = T::Variables;
@@ -59,7 +59,7 @@ pub trait SubscriptionBuilder<'a>: Sized {
 
 impl<'de, T> SubscriptionBuilder<'de> for T
 where
-    T: crate::core::QueryFragment<'de>,
+    T: QueryFragment<'de>,
     T::SchemaType: crate::schema::SubscriptionRoot,
 {
     type Variables = T::Variables;

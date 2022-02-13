@@ -1,6 +1,4 @@
-use std::borrow::Cow;
-
-use crate::idents::{to_snake_case, RenamableFieldIdent};
+use crate::idents::RenamableFieldIdent;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct FieldName<'a> {

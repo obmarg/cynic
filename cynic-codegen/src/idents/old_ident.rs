@@ -462,13 +462,6 @@ impl PathExt2 for syn::Path {
     }
 }
 
-pub fn empty_path() -> syn::Path {
-    syn::Path {
-        leading_colon: None,
-        segments: syn::punctuated::Punctuated::new(),
-    }
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;

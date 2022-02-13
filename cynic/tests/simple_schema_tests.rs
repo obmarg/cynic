@@ -2,7 +2,7 @@ mod schema {
     cynic::use_schema!("src/bin/simple.graphql");
 }
 
-#[derive(cynic::FragmentArguments)]
+#[derive(cynic::QueryVariables)]
 struct TestArgs {
     anInt: i32,
 }

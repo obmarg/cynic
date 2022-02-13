@@ -3,11 +3,7 @@
 
 use std::{borrow::Cow, marker::PhantomData};
 
-use crate::{
-    coercions::CoercesTo,
-    core, schema,
-    variables::{VariableDefinition, VariableType},
-};
+use crate::{coercions::CoercesTo, schema, variables::VariableDefinition};
 
 use super::{ast::*, FlattensInto, IntoInputLiteral, Recursable};
 

@@ -1,8 +1,6 @@
 use darling::util::SpannedValue;
 use proc_macro2::Span;
 
-use crate::idents::RenamableFieldIdent;
-
 #[derive(darling::FromDeriveInput)]
 #[darling(attributes(cynic), supports(enum_newtype, enum_unit))]
 pub struct InlineFragmentsDeriveInput {

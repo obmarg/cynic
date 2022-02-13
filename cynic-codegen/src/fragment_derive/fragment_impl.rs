@@ -28,8 +28,6 @@ enum Selection<'a> {
 }
 
 struct FieldSelection<'a> {
-    // graphql_field_ident: Ident,
-    rust_field_ident: proc_macro2::Ident,
     rust_field_type: syn::Type,
     field_marker_type_path: syn::Path,
     graphql_field_kind: FieldKind,
@@ -41,7 +39,6 @@ struct FieldSelection<'a> {
 }
 
 struct SpreadSelection {
-    rust_field_ident: proc_macro2::Ident,
     rust_field_type: syn::Type,
     span: proc_macro2::Span,
 }
@@ -76,11 +73,10 @@ impl<'a> FragmentImpl<'a> {
             .map(|(field, schema_field)| {
                 process_field(
                     field,
-                    schema_field.clone(),
+                    *schema_field,
                     &field_module_path,
                     schema_module_path,
                     argument_struct,
-                    graphql_type_name,
                 )
             })
             .collect::<Result<Vec<_>, _>>()?;
@@ -110,24 +106,11 @@ fn process_field<'a>(
     field_module_path: &syn::Path,
     schema_module_path: &syn::Path,
     argument_struct: Option<&syn::Ident>,
-    graphql_type_name: &str,
 ) -> Result<Selection<'a>, Errors> {
-    // Should be safe to unwrap because we've already checked we have a struct
-    // style input
-    let field_ident = field
-        .ident
-        .as_ref()
-        .expect("Fragment derive only supports named structs");
-
-    let graphql_ident = field.graphql_ident();
-
-    let field_name_span = graphql_ident.span();
-
     if field.type_check_mode() == CheckMode::Spreading {
         check_spread_type(&field.ty)?;
 
         return Ok(Selection::Spread(SpreadSelection {
-            rust_field_ident: field_ident.clone(),
             rust_field_type: field.ty.clone(),
             span: field.ty.span(),
         }));
@@ -150,8 +133,6 @@ fn process_field<'a>(
     let field_marker_type_path = schema_field.marker_ident().to_path(field_module_path);
 
     Ok(Selection::Field(FieldSelection {
-        // graphql_field_ident: graphql_ident.clone(),
-        rust_field_ident: field_ident.clone(),
         rust_field_type: field.ty.clone(),
         arguments,
         field_marker_type_path,
@@ -181,7 +162,7 @@ fn process_field<'a>(
 
 impl quote::ToTokens for FragmentImpl<'_> {
     fn to_tokens(&self, tokens: &mut TokenStream) {
-        use quote::{quote, TokenStreamExt};
+        use quote::TokenStreamExt;
 
         let argument_struct = &self.argument_struct;
         let target_struct = &self.target_struct;
@@ -226,10 +207,9 @@ enum SelectionMode {
 
 impl quote::ToTokens for FieldSelection<'_> {
     fn to_tokens(&self, tokens: &mut TokenStream) {
-        use quote::{quote_spanned, TokenStreamExt};
+        use quote::TokenStreamExt;
 
         let field_marker_type_path = &self.field_marker_type_path;
-        let field_name = &self.rust_field_ident; // TODO: Pascal case this.
         let field_type = &self.rust_field_type;
         let arguments = &self.arguments;
 

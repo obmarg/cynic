@@ -1,5 +1,3 @@
-use std::borrow::Cow;
-
 use crate::Id;
 
 pub trait CoercesTo<T> {}

@@ -1,7 +1,7 @@
 use proc_macro2::TokenStream;
 
 use crate::{
-    schema::{self, Definition, TypeDefinition},
+    schema::{Definition, TypeDefinition},
     Ident,
 };
 

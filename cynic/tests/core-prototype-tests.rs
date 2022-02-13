@@ -1,7 +1,6 @@
 #![allow(dead_code)]
 
-use cynic::{queries::SelectionSet, QueryFragment};
-use serde::Deserialize;
+use cynic::queries::SelectionSet;
 
 mod schema {
     cynic::use_schema!("tests/test-schema.graphql");

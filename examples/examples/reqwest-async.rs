@@ -3,8 +3,6 @@
 //!
 //! This example requires the `reqwest` feature to be active
 
-use cynic::QueryVariables;
-
 mod schema {
     cynic::use_schema!("../schemas/starwars.schema.graphql");
 }

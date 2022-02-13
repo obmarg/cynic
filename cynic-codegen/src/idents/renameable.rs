@@ -1,6 +1,6 @@
 use crate::RenameAll;
 
-use super::{to_camel_case, to_pascal_case, RenameRule};
+use super::to_camel_case;
 
 /// A wrapper around proc_macro2::Ident for a struct field that keeps
 /// track of whether the given field needs renamed to map to a graphql

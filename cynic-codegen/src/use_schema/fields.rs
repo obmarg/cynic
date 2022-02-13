@@ -1,7 +1,7 @@
 use quote::{quote, ToTokens, TokenStreamExt};
 use syn::parse_quote;
 
-use crate::schema::types::{Field, InputType, InputValue, ObjectType};
+use crate::schema::types::{Field, InputValue};
 
 pub struct FieldOutput<'a> {
     pub(super) field: &'a Field<'a>,
@@ -66,8 +66,6 @@ impl ToTokens for ArgumentOutput<'_> {
             .value_type
             .marker_type()
             .to_path(&parse_quote! { super::super });
-
-        let argument_kind = self.argument.value_type.argument_kind();
 
         tokens.append_all(quote! {
             pub struct #argument_ident;

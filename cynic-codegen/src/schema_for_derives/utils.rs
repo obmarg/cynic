@@ -45,14 +45,9 @@ fn derive_for_nested_meta(nested: &NestedMeta) -> Option<Derive> {
         if let Some(last) = path.segments.last() {
             match last.ident.to_string().as_ref() {
                 "QueryFragment" => return Some(Derive::QueryFragment),
-                "QueryFragment" => return Some(Derive::QueryFragment),
                 "InlineFragments" => return Some(Derive::InlineFragments),
-                "inlineFragments" => return Some(Derive::InlineFragments),
                 "Enum" => return Some(Derive::Enum),
-                "Enum2" => return Some(Derive::Enum),
                 "Scalar" => return Some(Derive::Scalar),
-                "Scalar2" => return Some(Derive::Scalar),
-                "InputObject" => return Some(Derive::InputObject),
                 "InputObject" => return Some(Derive::InputObject),
                 _ => (),
             }

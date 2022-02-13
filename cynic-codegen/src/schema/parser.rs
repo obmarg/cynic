@@ -1,5 +1,3 @@
-use crate::TypeIndex;
-
 // TODO: It would be good to make these use &'str since this is compile time
 // and max speed is best.
 
@@ -10,10 +8,8 @@ pub type Type = graphql_parser::schema::Type<'static, String>;
 pub type Field = graphql_parser::schema::Field<'static, String>;
 pub type Definition = graphql_parser::schema::Definition<'static, String>;
 pub type TypeDefinition = graphql_parser::schema::TypeDefinition<'static, String>;
-pub type ObjectType = graphql_parser::schema::ObjectType<'static, String>;
 pub type EnumType = graphql_parser::schema::EnumType<'static, String>;
 pub type InterfaceType = graphql_parser::schema::InterfaceType<'static, String>;
-pub type InputObjectType = graphql_parser::schema::InputObjectType<'static, String>;
 pub type ScalarType = graphql_parser::schema::ScalarType<'static, String>;
 pub type UnionType = graphql_parser::schema::UnionType<'static, String>;
 pub type InputValue = graphql_parser::schema::InputValue<'static, String>;

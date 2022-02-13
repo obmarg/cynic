@@ -1,21 +1,10 @@
 #![allow(dead_code, unused_variables, missing_docs)]
 // TODO: Don't allow the above
 
-use std::fmt::Write;
-
 // TODO: Everything in here is actually typed.  Need an untyped core with this
 // layered on top...
 
-use std::marker::PhantomData;
-
-use serde::Deserialize;
-
-use crate::{
-    indent::indented,
-    queries::QueryBuilder,
-    schema::{self},
-    QueryVariables,
-};
+use crate::{queries::QueryBuilder, QueryVariables};
 
 // Annoyingly this means people can't derive Deserialize _as well as_ use cynics derives.
 // But whatever, don't do that people?  I _think_ it's an OK limitation.

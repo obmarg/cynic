@@ -1,9 +1,6 @@
 use proc_macro2::TokenStream;
 
-use crate::{
-    schema::{markers::MarkerIdent, types as schema},
-    Ident,
-};
+use crate::schema::{markers::MarkerIdent, types as schema};
 
 /// Outputs `HasSubtype` implementations for the given types.
 #[derive(Debug)]

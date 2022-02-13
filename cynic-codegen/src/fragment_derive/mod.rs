@@ -7,7 +7,7 @@ use crate::{
         Schema, Unvalidated,
     },
     suggestions::FieldSuggestionError,
-    Errors, Ident,
+    Errors,
 };
 
 mod arguments;
@@ -50,8 +50,6 @@ pub fn fragment_derive_impl(
     let mut input = input;
     input.validate()?;
     input.detect_aliases();
-
-    let schema_path = &input.schema_path;
 
     let schema_type = schema
         .lookup::<FragmentDeriveType>(&input.graphql_type_name())

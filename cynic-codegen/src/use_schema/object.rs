@@ -1,7 +1,6 @@
 use quote::{quote, ToTokens, TokenStreamExt};
-use syn::parse_quote;
 
-use crate::schema::types::{Field, InputType, InputValue, ObjectType};
+use crate::schema::types::ObjectType;
 
 use super::fields::FieldOutput;
 

@@ -1,6 +1,4 @@
-use std::marker::PhantomData;
-
-use serde::{de::Visitor, Deserialize};
+use serde::Deserialize;
 
 pub struct Flattened<T> {
     inner: T,
@@ -11,18 +9,6 @@ impl<T> Flattened<T> {
         self.inner
     }
 }
-
-// impl<'de, T> Deserialize<'de> for Flattened<Option<T>>
-// where
-//     T: Deserialize<'de>,
-//     Option<Flattened<T>>: Deserialize<'de>,
-// {
-//     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-//     where
-//         D: serde::Deserializer<'de>,
-//     {
-//     }
-// }
 
 impl<'de, T> Deserialize<'de> for Flattened<Vec<T>>
 where

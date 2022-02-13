@@ -1,7 +1,5 @@
 //! An example of querying the starwars API using the reqwest-blocking feature
 
-use cynic::QueryVariables;
-
 mod schema {
     cynic::use_schema!("../schemas/starwars.schema.graphql");
 }

@@ -189,7 +189,7 @@ pub enum TypeRef<'a, T> {
 impl<T> Clone for TypeRef<'_, T> {
     fn clone(&self) -> Self {
         match self {
-            Self::Named(arg0, arg1, arg2) => Self::Named(arg0, arg1.clone(), arg2.clone()),
+            Self::Named(arg0, arg1, arg2) => Self::Named(arg0, arg1.clone(), *arg2),
             Self::List(arg0) => Self::List(arg0.clone()),
             Self::Nullable(arg0) => Self::Nullable(arg0.clone()),
         }
@@ -296,12 +296,12 @@ impl<'a> TryFrom<Type<'a>> for InputObjectType<'a> {
 impl<'a> Type<'a> {
     pub fn name(&self) -> &'a str {
         match self {
-            Type::Scalar(inner) => &inner.name,
-            Type::Object(inner) => &inner.name,
-            Type::Interface(inner) => &inner.name,
-            Type::Union(inner) => &inner.name,
-            Type::Enum(inner) => &inner.name,
-            Type::InputObject(inner) => &inner.name,
+            Type::Scalar(inner) => inner.name,
+            Type::Object(inner) => inner.name,
+            Type::Interface(inner) => inner.name,
+            Type::Union(inner) => inner.name,
+            Type::Enum(inner) => inner.name,
+            Type::InputObject(inner) => inner.name,
         }
     }
 

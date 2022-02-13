@@ -42,7 +42,7 @@ pub struct FieldArgument {
 #[derive(Debug, Clone)]
 pub enum FieldArgumentValue {
     Literal(ArgumentLiteral),
-    Expression(syn::Expr),
+    Expression(Box<syn::Expr>),
 }
 
 impl Parse for FieldArgument {

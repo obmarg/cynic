@@ -1,4 +1,4 @@
-use std::{io::Write, path::PathBuf, process::Stdio};
+use std::{io::Write, process::Stdio};
 
 use insta::assert_snapshot;
 use rstest::rstest;

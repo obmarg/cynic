@@ -1,17 +1,16 @@
 use proc_macro2::{Span, TokenStream};
-use std::collections::{BTreeMap, HashSet};
-use syn::spanned::Spanned;
+use std::collections::HashSet;
 
 use crate::{
     error::Errors,
-    idents::{RenameAll, RenameRule},
+    idents::RenameAll,
     load_schema,
     schema::{
         types::{InputObjectType, InputValue, TypeRef},
-        Definition, Document, Schema, TypeDefinition, Unvalidated,
+        Schema, Unvalidated,
     },
     suggestions::FieldSuggestionError,
-    Ident, TypeIndex,
+    Ident,
 };
 
 mod field_serializer;
@@ -22,7 +21,7 @@ pub(crate) mod input;
 #[cfg(test)]
 mod tests;
 
-use crate::suggestions::{format_guess, guess_field};
+use crate::suggestions::guess_field;
 use input::InputObjectDeriveField;
 pub use input::InputObjectDeriveInput;
 
@@ -64,12 +63,10 @@ pub fn input_object_derive_impl(
         let ident = &input.ident;
         let input_marker_ident = Ident::for_type(&input.graphql_type_name());
         let schema_module = input.schema_module();
-        let input_object_name = ident.to_string();
 
         let pairs = pair_fields(
             &fields.fields,
             &input_object,
-            &input_object_name,
             rename_all,
             input.require_all_fields,
             &struct_span,
@@ -160,7 +157,6 @@ pub fn input_object_derive_impl(
 fn pair_fields<'a>(
     fields: &'a [InputObjectDeriveField],
     input_object_def: &'a InputObjectType<'a>,
-    input_object_name: &str,
     rename_all: RenameAll,
     require_all_fields: bool,
     struct_span: &Span,
@@ -242,7 +238,7 @@ fn pair_fields<'a>(
         ))
     }
 
-    return Err(errors);
+    Err(errors)
 }
 
 #[cfg(test)]
@@ -250,7 +246,6 @@ mod test {
     use assert_matches::assert_matches;
 
     use super::*;
-    use crate::schema::{Definition, InputObjectType, TypeDefinition};
 
     static SCHEMA: &str = r#"
         input TestType {
@@ -275,7 +270,6 @@ mod test {
         let result = pair_fields(
             &fields,
             &input_object,
-            "MyInputObject",
             RenameAll::None,
             true,
             &Span::call_site(),
@@ -300,7 +294,6 @@ mod test {
         let result = pair_fields(
             &fields,
             &input_object,
-            "MyInputObject",
             RenameAll::None,
             false,
             &Span::call_site(),
@@ -325,7 +318,6 @@ mod test {
         let result = pair_fields(
             &fields,
             &input_object,
-            "MyInputObject",
             RenameAll::None,
             false,
             &Span::call_site(),
