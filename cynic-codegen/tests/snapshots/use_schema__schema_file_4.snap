@@ -78,7 +78,6 @@ pub mod foo_fields {
         pub struct Id;
         impl ::cynic::schema::HasArgument<Id> for super::Bar {
             type ArgumentSchemaType = super::super::Uuid;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "id"
             }

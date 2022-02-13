@@ -61,7 +61,6 @@ pub mod test_struct_fields {
         pub struct X;
         impl ::cynic::schema::HasArgument<X> for super::FieldOne {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "x"
             }
@@ -69,7 +68,6 @@ pub mod test_struct_fields {
         pub struct Y;
         impl ::cynic::schema::HasArgument<Y> for super::FieldOne {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "y"
             }
@@ -87,7 +85,6 @@ pub mod test_struct_fields {
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::TastyCakes {
             type ArgumentSchemaType = super::super::Dessert;
-            type ArgumentKind = ::cynic::schema::EnumArgument;
             fn name() -> &'static str {
                 "first"
             }
@@ -95,7 +92,6 @@ pub mod test_struct_fields {
         pub struct Second;
         impl ::cynic::schema::HasArgument<Second> for super::TastyCakes {
             type ArgumentSchemaType = Option<super::super::Dessert>;
-            type ArgumentKind = ::cynic::schema::EnumArgument;
             fn name() -> &'static str {
                 "second"
             }
@@ -113,7 +109,6 @@ pub mod test_struct_fields {
         pub struct Input;
         impl ::cynic::schema::HasArgument<Input> for super::FieldWithInput {
             type ArgumentSchemaType = super::super::AnInputType;
-            type ArgumentKind = ::cynic::schema::InputObjectArgument;
             fn name() -> &'static str {
                 "input"
             }

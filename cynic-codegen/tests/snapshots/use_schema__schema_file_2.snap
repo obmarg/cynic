@@ -75,7 +75,6 @@ pub mod mutation_root_fields {
         pub struct Name;
         impl ::cynic::schema::HasArgument<Name> for super::CreateBook {
             type ArgumentSchemaType = super::super::String;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "name"
             }
@@ -83,7 +82,6 @@ pub mod mutation_root_fields {
         pub struct Author;
         impl ::cynic::schema::HasArgument<Author> for super::CreateBook {
             type ArgumentSchemaType = super::super::String;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "author"
             }
@@ -101,7 +99,6 @@ pub mod mutation_root_fields {
         pub struct Id;
         impl ::cynic::schema::HasArgument<Id> for super::DeleteBook {
             type ArgumentSchemaType = super::super::Id;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "id"
             }
@@ -134,7 +131,6 @@ pub mod subscription_root_fields {
         pub struct N;
         impl ::cynic::schema::HasArgument<N> for super::Interval {
             type ArgumentSchemaType = super::super::Int;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "n"
             }
@@ -152,7 +148,6 @@ pub mod subscription_root_fields {
         pub struct MutationType;
         impl ::cynic::schema::HasArgument<MutationType> for super::Books {
             type ArgumentSchemaType = Option<super::super::MutationType>;
-            type ArgumentKind = ::cynic::schema::EnumArgument;
             fn name() -> &'static str {
                 "mutationType"
             }

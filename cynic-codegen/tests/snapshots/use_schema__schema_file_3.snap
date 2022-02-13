@@ -70,7 +70,6 @@ pub mod film_fields {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::SpeciesConnection {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "after"
             }
@@ -78,7 +77,6 @@ pub mod film_fields {
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::SpeciesConnection {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "first"
             }
@@ -86,7 +84,6 @@ pub mod film_fields {
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::SpeciesConnection {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "before"
             }
@@ -94,7 +91,6 @@ pub mod film_fields {
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::SpeciesConnection {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "last"
             }
@@ -115,7 +111,6 @@ pub mod film_fields {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::StarshipConnection {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "after"
             }
@@ -123,7 +118,6 @@ pub mod film_fields {
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::StarshipConnection {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "first"
             }
@@ -131,7 +125,6 @@ pub mod film_fields {
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::StarshipConnection {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "before"
             }
@@ -139,7 +132,6 @@ pub mod film_fields {
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::StarshipConnection {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "last"
             }
@@ -160,7 +152,6 @@ pub mod film_fields {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::VehicleConnection {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "after"
             }
@@ -168,7 +159,6 @@ pub mod film_fields {
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::VehicleConnection {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "first"
             }
@@ -176,7 +166,6 @@ pub mod film_fields {
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::VehicleConnection {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "before"
             }
@@ -184,7 +173,6 @@ pub mod film_fields {
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::VehicleConnection {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "last"
             }
@@ -205,7 +193,6 @@ pub mod film_fields {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::CharacterConnection {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "after"
             }
@@ -213,7 +200,6 @@ pub mod film_fields {
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::CharacterConnection {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "first"
             }
@@ -221,7 +207,6 @@ pub mod film_fields {
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::CharacterConnection {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "before"
             }
@@ -229,7 +214,6 @@ pub mod film_fields {
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::CharacterConnection {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "last"
             }
@@ -250,7 +234,6 @@ pub mod film_fields {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::PlanetConnection {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "after"
             }
@@ -258,7 +241,6 @@ pub mod film_fields {
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::PlanetConnection {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "first"
             }
@@ -266,7 +248,6 @@ pub mod film_fields {
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::PlanetConnection {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "before"
             }
@@ -274,7 +255,6 @@ pub mod film_fields {
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::PlanetConnection {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "last"
             }
@@ -662,7 +642,17 @@ pub mod films_edge_fields {
     }
     impl ::cynic::schema::HasField<Cursor, super::String> for super::FilmsEdge {}
 }
-pub struct Node {}
+pub struct Node;
+pub mod node_fields {
+    pub struct Id;
+    impl ::cynic::schema::Field for Id {
+        type SchemaType = super::Id;
+        fn name() -> &'static str {
+            "id"
+        }
+    }
+    impl ::cynic::schema::HasField<Id, super::Id> for super::Node {}
+}
 pub struct PageInfo;
 pub mod page_info_fields {
     pub struct HasNextPage;
@@ -847,7 +837,6 @@ pub mod person_fields {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::FilmConnection {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "after"
             }
@@ -855,7 +844,6 @@ pub mod person_fields {
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::FilmConnection {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "first"
             }
@@ -863,7 +851,6 @@ pub mod person_fields {
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::FilmConnection {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "before"
             }
@@ -871,7 +858,6 @@ pub mod person_fields {
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::FilmConnection {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "last"
             }
@@ -900,7 +886,6 @@ pub mod person_fields {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::StarshipConnection {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "after"
             }
@@ -908,7 +893,6 @@ pub mod person_fields {
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::StarshipConnection {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "first"
             }
@@ -916,7 +900,6 @@ pub mod person_fields {
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::StarshipConnection {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "before"
             }
@@ -924,7 +907,6 @@ pub mod person_fields {
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::StarshipConnection {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "last"
             }
@@ -945,7 +927,6 @@ pub mod person_fields {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::VehicleConnection {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "after"
             }
@@ -953,7 +934,6 @@ pub mod person_fields {
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::VehicleConnection {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "first"
             }
@@ -961,7 +941,6 @@ pub mod person_fields {
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::VehicleConnection {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "before"
             }
@@ -969,7 +948,6 @@ pub mod person_fields {
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::VehicleConnection {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "last"
             }
@@ -1272,7 +1250,6 @@ pub mod planet_fields {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::ResidentConnection {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "after"
             }
@@ -1280,7 +1257,6 @@ pub mod planet_fields {
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::ResidentConnection {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "first"
             }
@@ -1288,7 +1264,6 @@ pub mod planet_fields {
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::ResidentConnection {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "before"
             }
@@ -1296,7 +1271,6 @@ pub mod planet_fields {
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::ResidentConnection {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "last"
             }
@@ -1317,7 +1291,6 @@ pub mod planet_fields {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::FilmConnection {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "after"
             }
@@ -1325,7 +1298,6 @@ pub mod planet_fields {
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::FilmConnection {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "first"
             }
@@ -1333,7 +1305,6 @@ pub mod planet_fields {
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::FilmConnection {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "before"
             }
@@ -1341,7 +1312,6 @@ pub mod planet_fields {
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::FilmConnection {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "last"
             }
@@ -1569,7 +1539,6 @@ pub mod root_fields {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::AllFilms {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "after"
             }
@@ -1577,7 +1546,6 @@ pub mod root_fields {
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::AllFilms {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "first"
             }
@@ -1585,7 +1553,6 @@ pub mod root_fields {
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::AllFilms {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "before"
             }
@@ -1593,7 +1560,6 @@ pub mod root_fields {
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::AllFilms {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "last"
             }
@@ -1611,7 +1577,6 @@ pub mod root_fields {
         pub struct Id;
         impl ::cynic::schema::HasArgument<Id> for super::Film {
             type ArgumentSchemaType = Option<super::super::Id>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "id"
             }
@@ -1619,7 +1584,6 @@ pub mod root_fields {
         pub struct FilmId;
         impl ::cynic::schema::HasArgument<FilmId> for super::Film {
             type ArgumentSchemaType = Option<super::super::Id>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "filmID"
             }
@@ -1637,7 +1601,6 @@ pub mod root_fields {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::AllPeople {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "after"
             }
@@ -1645,7 +1608,6 @@ pub mod root_fields {
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::AllPeople {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "first"
             }
@@ -1653,7 +1615,6 @@ pub mod root_fields {
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::AllPeople {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "before"
             }
@@ -1661,7 +1622,6 @@ pub mod root_fields {
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::AllPeople {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "last"
             }
@@ -1679,7 +1639,6 @@ pub mod root_fields {
         pub struct Id;
         impl ::cynic::schema::HasArgument<Id> for super::Person {
             type ArgumentSchemaType = Option<super::super::Id>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "id"
             }
@@ -1687,7 +1646,6 @@ pub mod root_fields {
         pub struct PersonId;
         impl ::cynic::schema::HasArgument<PersonId> for super::Person {
             type ArgumentSchemaType = Option<super::super::Id>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "personID"
             }
@@ -1705,7 +1663,6 @@ pub mod root_fields {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::AllPlanets {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "after"
             }
@@ -1713,7 +1670,6 @@ pub mod root_fields {
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::AllPlanets {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "first"
             }
@@ -1721,7 +1677,6 @@ pub mod root_fields {
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::AllPlanets {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "before"
             }
@@ -1729,7 +1684,6 @@ pub mod root_fields {
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::AllPlanets {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "last"
             }
@@ -1747,7 +1701,6 @@ pub mod root_fields {
         pub struct Id;
         impl ::cynic::schema::HasArgument<Id> for super::Planet {
             type ArgumentSchemaType = Option<super::super::Id>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "id"
             }
@@ -1755,7 +1708,6 @@ pub mod root_fields {
         pub struct PlanetId;
         impl ::cynic::schema::HasArgument<PlanetId> for super::Planet {
             type ArgumentSchemaType = Option<super::super::Id>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "planetID"
             }
@@ -1773,7 +1725,6 @@ pub mod root_fields {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::AllSpecies {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "after"
             }
@@ -1781,7 +1732,6 @@ pub mod root_fields {
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::AllSpecies {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "first"
             }
@@ -1789,7 +1739,6 @@ pub mod root_fields {
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::AllSpecies {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "before"
             }
@@ -1797,7 +1746,6 @@ pub mod root_fields {
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::AllSpecies {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "last"
             }
@@ -1815,7 +1763,6 @@ pub mod root_fields {
         pub struct Id;
         impl ::cynic::schema::HasArgument<Id> for super::Species {
             type ArgumentSchemaType = Option<super::super::Id>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "id"
             }
@@ -1823,7 +1770,6 @@ pub mod root_fields {
         pub struct SpeciesId;
         impl ::cynic::schema::HasArgument<SpeciesId> for super::Species {
             type ArgumentSchemaType = Option<super::super::Id>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "speciesID"
             }
@@ -1841,7 +1787,6 @@ pub mod root_fields {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::AllStarships {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "after"
             }
@@ -1849,7 +1794,6 @@ pub mod root_fields {
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::AllStarships {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "first"
             }
@@ -1857,7 +1801,6 @@ pub mod root_fields {
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::AllStarships {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "before"
             }
@@ -1865,7 +1808,6 @@ pub mod root_fields {
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::AllStarships {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "last"
             }
@@ -1883,7 +1825,6 @@ pub mod root_fields {
         pub struct Id;
         impl ::cynic::schema::HasArgument<Id> for super::Starship {
             type ArgumentSchemaType = Option<super::super::Id>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "id"
             }
@@ -1891,7 +1832,6 @@ pub mod root_fields {
         pub struct StarshipId;
         impl ::cynic::schema::HasArgument<StarshipId> for super::Starship {
             type ArgumentSchemaType = Option<super::super::Id>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "starshipID"
             }
@@ -1909,7 +1849,6 @@ pub mod root_fields {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::AllVehicles {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "after"
             }
@@ -1917,7 +1856,6 @@ pub mod root_fields {
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::AllVehicles {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "first"
             }
@@ -1925,7 +1863,6 @@ pub mod root_fields {
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::AllVehicles {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "before"
             }
@@ -1933,7 +1870,6 @@ pub mod root_fields {
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::AllVehicles {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "last"
             }
@@ -1951,7 +1887,6 @@ pub mod root_fields {
         pub struct Id;
         impl ::cynic::schema::HasArgument<Id> for super::Vehicle {
             type ArgumentSchemaType = Option<super::super::Id>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "id"
             }
@@ -1959,7 +1894,6 @@ pub mod root_fields {
         pub struct VehicleId;
         impl ::cynic::schema::HasArgument<VehicleId> for super::Vehicle {
             type ArgumentSchemaType = Option<super::super::Id>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "vehicleID"
             }
@@ -1977,7 +1911,6 @@ pub mod root_fields {
         pub struct Id;
         impl ::cynic::schema::HasArgument<Id> for super::Node {
             type ArgumentSchemaType = super::super::Id;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "id"
             }
@@ -2081,7 +2014,6 @@ pub mod species_fields {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::PersonConnection {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "after"
             }
@@ -2089,7 +2021,6 @@ pub mod species_fields {
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::PersonConnection {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "first"
             }
@@ -2097,7 +2028,6 @@ pub mod species_fields {
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::PersonConnection {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "before"
             }
@@ -2105,7 +2035,6 @@ pub mod species_fields {
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::PersonConnection {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "last"
             }
@@ -2126,7 +2055,6 @@ pub mod species_fields {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::FilmConnection {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "after"
             }
@@ -2134,7 +2062,6 @@ pub mod species_fields {
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::FilmConnection {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "first"
             }
@@ -2142,7 +2069,6 @@ pub mod species_fields {
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::FilmConnection {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "before"
             }
@@ -2150,7 +2076,6 @@ pub mod species_fields {
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::FilmConnection {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "last"
             }
@@ -2485,7 +2410,6 @@ pub mod starship_fields {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::PilotConnection {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "after"
             }
@@ -2493,7 +2417,6 @@ pub mod starship_fields {
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::PilotConnection {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "first"
             }
@@ -2501,7 +2424,6 @@ pub mod starship_fields {
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::PilotConnection {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "before"
             }
@@ -2509,7 +2431,6 @@ pub mod starship_fields {
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::PilotConnection {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "last"
             }
@@ -2530,7 +2451,6 @@ pub mod starship_fields {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::FilmConnection {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "after"
             }
@@ -2538,7 +2458,6 @@ pub mod starship_fields {
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::FilmConnection {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "first"
             }
@@ -2546,7 +2465,6 @@ pub mod starship_fields {
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::FilmConnection {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "before"
             }
@@ -2554,7 +2472,6 @@ pub mod starship_fields {
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::FilmConnection {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "last"
             }
@@ -2873,7 +2790,6 @@ pub mod vehicle_fields {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::PilotConnection {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "after"
             }
@@ -2881,7 +2797,6 @@ pub mod vehicle_fields {
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::PilotConnection {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "first"
             }
@@ -2889,7 +2804,6 @@ pub mod vehicle_fields {
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::PilotConnection {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "before"
             }
@@ -2897,7 +2811,6 @@ pub mod vehicle_fields {
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::PilotConnection {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "last"
             }
@@ -2918,7 +2831,6 @@ pub mod vehicle_fields {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::FilmConnection {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "after"
             }
@@ -2926,7 +2838,6 @@ pub mod vehicle_fields {
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::FilmConnection {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "first"
             }
@@ -2934,7 +2845,6 @@ pub mod vehicle_fields {
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::FilmConnection {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "before"
             }
@@ -2942,7 +2852,6 @@ pub mod vehicle_fields {
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::FilmConnection {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "last"
             }

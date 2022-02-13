@@ -60,7 +60,6 @@ pub mod city_fields {
         pub struct Where;
         impl ::cynic::schema::HasArgument<Where> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::JobWhereInput>;
-            type ArgumentKind = ::cynic::schema::InputObjectArgument;
             fn name() -> &'static str {
                 "where"
             }
@@ -68,7 +67,6 @@ pub mod city_fields {
         pub struct OrderBy;
         impl ::cynic::schema::HasArgument<OrderBy> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::JobOrderByInput>;
-            type ArgumentKind = ::cynic::schema::EnumArgument;
             fn name() -> &'static str {
                 "orderBy"
             }
@@ -76,7 +74,6 @@ pub mod city_fields {
         pub struct Skip;
         impl ::cynic::schema::HasArgument<Skip> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "skip"
             }
@@ -84,7 +81,6 @@ pub mod city_fields {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "after"
             }
@@ -92,7 +88,6 @@ pub mod city_fields {
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "before"
             }
@@ -100,7 +95,6 @@ pub mod city_fields {
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "first"
             }
@@ -108,7 +102,6 @@ pub mod city_fields {
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "last"
             }
@@ -171,7 +164,6 @@ pub mod commitment_fields {
         pub struct Where;
         impl ::cynic::schema::HasArgument<Where> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::JobWhereInput>;
-            type ArgumentKind = ::cynic::schema::InputObjectArgument;
             fn name() -> &'static str {
                 "where"
             }
@@ -179,7 +171,6 @@ pub mod commitment_fields {
         pub struct OrderBy;
         impl ::cynic::schema::HasArgument<OrderBy> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::JobOrderByInput>;
-            type ArgumentKind = ::cynic::schema::EnumArgument;
             fn name() -> &'static str {
                 "orderBy"
             }
@@ -187,7 +178,6 @@ pub mod commitment_fields {
         pub struct Skip;
         impl ::cynic::schema::HasArgument<Skip> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "skip"
             }
@@ -195,7 +185,6 @@ pub mod commitment_fields {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "after"
             }
@@ -203,7 +192,6 @@ pub mod commitment_fields {
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "before"
             }
@@ -211,7 +199,6 @@ pub mod commitment_fields {
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "first"
             }
@@ -219,7 +206,6 @@ pub mod commitment_fields {
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "last"
             }
@@ -297,7 +283,6 @@ pub mod company_fields {
         pub struct Where;
         impl ::cynic::schema::HasArgument<Where> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::JobWhereInput>;
-            type ArgumentKind = ::cynic::schema::InputObjectArgument;
             fn name() -> &'static str {
                 "where"
             }
@@ -305,7 +290,6 @@ pub mod company_fields {
         pub struct OrderBy;
         impl ::cynic::schema::HasArgument<OrderBy> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::JobOrderByInput>;
-            type ArgumentKind = ::cynic::schema::EnumArgument;
             fn name() -> &'static str {
                 "orderBy"
             }
@@ -313,7 +297,6 @@ pub mod company_fields {
         pub struct Skip;
         impl ::cynic::schema::HasArgument<Skip> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "skip"
             }
@@ -321,7 +304,6 @@ pub mod company_fields {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "after"
             }
@@ -329,7 +311,6 @@ pub mod company_fields {
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "before"
             }
@@ -337,7 +318,6 @@ pub mod company_fields {
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "first"
             }
@@ -345,7 +325,6 @@ pub mod company_fields {
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "last"
             }
@@ -439,7 +418,6 @@ pub mod country_fields {
         pub struct Where;
         impl ::cynic::schema::HasArgument<Where> for super::Cities {
             type ArgumentSchemaType = Option<super::super::CityWhereInput>;
-            type ArgumentKind = ::cynic::schema::InputObjectArgument;
             fn name() -> &'static str {
                 "where"
             }
@@ -447,7 +425,6 @@ pub mod country_fields {
         pub struct OrderBy;
         impl ::cynic::schema::HasArgument<OrderBy> for super::Cities {
             type ArgumentSchemaType = Option<super::super::CityOrderByInput>;
-            type ArgumentKind = ::cynic::schema::EnumArgument;
             fn name() -> &'static str {
                 "orderBy"
             }
@@ -455,7 +432,6 @@ pub mod country_fields {
         pub struct Skip;
         impl ::cynic::schema::HasArgument<Skip> for super::Cities {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "skip"
             }
@@ -463,7 +439,6 @@ pub mod country_fields {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::Cities {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "after"
             }
@@ -471,7 +446,6 @@ pub mod country_fields {
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::Cities {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "before"
             }
@@ -479,7 +453,6 @@ pub mod country_fields {
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::Cities {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "first"
             }
@@ -487,7 +460,6 @@ pub mod country_fields {
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::Cities {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "last"
             }
@@ -505,7 +477,6 @@ pub mod country_fields {
         pub struct Where;
         impl ::cynic::schema::HasArgument<Where> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::JobWhereInput>;
-            type ArgumentKind = ::cynic::schema::InputObjectArgument;
             fn name() -> &'static str {
                 "where"
             }
@@ -513,7 +484,6 @@ pub mod country_fields {
         pub struct OrderBy;
         impl ::cynic::schema::HasArgument<OrderBy> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::JobOrderByInput>;
-            type ArgumentKind = ::cynic::schema::EnumArgument;
             fn name() -> &'static str {
                 "orderBy"
             }
@@ -521,7 +491,6 @@ pub mod country_fields {
         pub struct Skip;
         impl ::cynic::schema::HasArgument<Skip> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "skip"
             }
@@ -529,7 +498,6 @@ pub mod country_fields {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "after"
             }
@@ -537,7 +505,6 @@ pub mod country_fields {
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "before"
             }
@@ -545,7 +512,6 @@ pub mod country_fields {
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "first"
             }
@@ -553,7 +519,6 @@ pub mod country_fields {
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "last"
             }
@@ -625,7 +590,6 @@ pub mod job_fields {
         pub struct Where;
         impl ::cynic::schema::HasArgument<Where> for super::Cities {
             type ArgumentSchemaType = Option<super::super::CityWhereInput>;
-            type ArgumentKind = ::cynic::schema::InputObjectArgument;
             fn name() -> &'static str {
                 "where"
             }
@@ -633,7 +597,6 @@ pub mod job_fields {
         pub struct OrderBy;
         impl ::cynic::schema::HasArgument<OrderBy> for super::Cities {
             type ArgumentSchemaType = Option<super::super::CityOrderByInput>;
-            type ArgumentKind = ::cynic::schema::EnumArgument;
             fn name() -> &'static str {
                 "orderBy"
             }
@@ -641,7 +604,6 @@ pub mod job_fields {
         pub struct Skip;
         impl ::cynic::schema::HasArgument<Skip> for super::Cities {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "skip"
             }
@@ -649,7 +611,6 @@ pub mod job_fields {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::Cities {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "after"
             }
@@ -657,7 +618,6 @@ pub mod job_fields {
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::Cities {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "before"
             }
@@ -665,7 +625,6 @@ pub mod job_fields {
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::Cities {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "first"
             }
@@ -673,7 +632,6 @@ pub mod job_fields {
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::Cities {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "last"
             }
@@ -691,7 +649,6 @@ pub mod job_fields {
         pub struct Where;
         impl ::cynic::schema::HasArgument<Where> for super::Countries {
             type ArgumentSchemaType = Option<super::super::CountryWhereInput>;
-            type ArgumentKind = ::cynic::schema::InputObjectArgument;
             fn name() -> &'static str {
                 "where"
             }
@@ -699,7 +656,6 @@ pub mod job_fields {
         pub struct OrderBy;
         impl ::cynic::schema::HasArgument<OrderBy> for super::Countries {
             type ArgumentSchemaType = Option<super::super::CountryOrderByInput>;
-            type ArgumentKind = ::cynic::schema::EnumArgument;
             fn name() -> &'static str {
                 "orderBy"
             }
@@ -707,7 +663,6 @@ pub mod job_fields {
         pub struct Skip;
         impl ::cynic::schema::HasArgument<Skip> for super::Countries {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "skip"
             }
@@ -715,7 +670,6 @@ pub mod job_fields {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::Countries {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "after"
             }
@@ -723,7 +677,6 @@ pub mod job_fields {
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::Countries {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "before"
             }
@@ -731,7 +684,6 @@ pub mod job_fields {
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::Countries {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "first"
             }
@@ -739,7 +691,6 @@ pub mod job_fields {
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::Countries {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "last"
             }
@@ -757,7 +708,6 @@ pub mod job_fields {
         pub struct Where;
         impl ::cynic::schema::HasArgument<Where> for super::Remotes {
             type ArgumentSchemaType = Option<super::super::RemoteWhereInput>;
-            type ArgumentKind = ::cynic::schema::InputObjectArgument;
             fn name() -> &'static str {
                 "where"
             }
@@ -765,7 +715,6 @@ pub mod job_fields {
         pub struct OrderBy;
         impl ::cynic::schema::HasArgument<OrderBy> for super::Remotes {
             type ArgumentSchemaType = Option<super::super::RemoteOrderByInput>;
-            type ArgumentKind = ::cynic::schema::EnumArgument;
             fn name() -> &'static str {
                 "orderBy"
             }
@@ -773,7 +722,6 @@ pub mod job_fields {
         pub struct Skip;
         impl ::cynic::schema::HasArgument<Skip> for super::Remotes {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "skip"
             }
@@ -781,7 +729,6 @@ pub mod job_fields {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::Remotes {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "after"
             }
@@ -789,7 +736,6 @@ pub mod job_fields {
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::Remotes {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "before"
             }
@@ -797,7 +743,6 @@ pub mod job_fields {
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::Remotes {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "first"
             }
@@ -805,7 +750,6 @@ pub mod job_fields {
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::Remotes {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "last"
             }
@@ -847,7 +791,6 @@ pub mod job_fields {
         pub struct Where;
         impl ::cynic::schema::HasArgument<Where> for super::Tags {
             type ArgumentSchemaType = Option<super::super::TagWhereInput>;
-            type ArgumentKind = ::cynic::schema::InputObjectArgument;
             fn name() -> &'static str {
                 "where"
             }
@@ -855,7 +798,6 @@ pub mod job_fields {
         pub struct OrderBy;
         impl ::cynic::schema::HasArgument<OrderBy> for super::Tags {
             type ArgumentSchemaType = Option<super::super::TagOrderByInput>;
-            type ArgumentKind = ::cynic::schema::EnumArgument;
             fn name() -> &'static str {
                 "orderBy"
             }
@@ -863,7 +805,6 @@ pub mod job_fields {
         pub struct Skip;
         impl ::cynic::schema::HasArgument<Skip> for super::Tags {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "skip"
             }
@@ -871,7 +812,6 @@ pub mod job_fields {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::Tags {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "after"
             }
@@ -879,7 +819,6 @@ pub mod job_fields {
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::Tags {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "before"
             }
@@ -887,7 +826,6 @@ pub mod job_fields {
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::Tags {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "first"
             }
@@ -895,7 +833,6 @@ pub mod job_fields {
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::Tags {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "last"
             }
@@ -1013,7 +950,6 @@ pub mod mutation_fields {
         pub struct Input;
         impl ::cynic::schema::HasArgument<Input> for super::Subscribe {
             type ArgumentSchemaType = super::super::SubscribeInput;
-            type ArgumentKind = ::cynic::schema::InputObjectArgument;
             fn name() -> &'static str {
                 "input"
             }
@@ -1031,7 +967,6 @@ pub mod mutation_fields {
         pub struct Input;
         impl ::cynic::schema::HasArgument<Input> for super::PostJob {
             type ArgumentSchemaType = super::super::PostJobInput;
-            type ArgumentKind = ::cynic::schema::InputObjectArgument;
             fn name() -> &'static str {
                 "input"
             }
@@ -1049,7 +984,6 @@ pub mod mutation_fields {
         pub struct Input;
         impl ::cynic::schema::HasArgument<Input> for super::UpdateJob {
             type ArgumentSchemaType = super::super::UpdateJobInput;
-            type ArgumentKind = ::cynic::schema::InputObjectArgument;
             fn name() -> &'static str {
                 "input"
             }
@@ -1057,7 +991,6 @@ pub mod mutation_fields {
         pub struct AdminSecret;
         impl ::cynic::schema::HasArgument<AdminSecret> for super::UpdateJob {
             type ArgumentSchemaType = super::super::String;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "adminSecret"
             }
@@ -1075,7 +1008,6 @@ pub mod mutation_fields {
         pub struct Input;
         impl ::cynic::schema::HasArgument<Input> for super::UpdateCompany {
             type ArgumentSchemaType = super::super::UpdateCompanyInput;
-            type ArgumentKind = ::cynic::schema::InputObjectArgument;
             fn name() -> &'static str {
                 "input"
             }
@@ -1083,7 +1015,6 @@ pub mod mutation_fields {
         pub struct AdminSecret;
         impl ::cynic::schema::HasArgument<AdminSecret> for super::UpdateCompany {
             type ArgumentSchemaType = super::super::String;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "adminSecret"
             }
@@ -1105,7 +1036,6 @@ pub mod query_fields {
         pub struct Input;
         impl ::cynic::schema::HasArgument<Input> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::JobsInput>;
-            type ArgumentKind = ::cynic::schema::InputObjectArgument;
             fn name() -> &'static str {
                 "input"
             }
@@ -1123,7 +1053,6 @@ pub mod query_fields {
         pub struct Input;
         impl ::cynic::schema::HasArgument<Input> for super::Job {
             type ArgumentSchemaType = super::super::JobInput;
-            type ArgumentKind = ::cynic::schema::InputObjectArgument;
             fn name() -> &'static str {
                 "input"
             }
@@ -1141,7 +1070,6 @@ pub mod query_fields {
         pub struct Input;
         impl ::cynic::schema::HasArgument<Input> for super::Locations {
             type ArgumentSchemaType = super::super::LocationsInput;
-            type ArgumentKind = ::cynic::schema::InputObjectArgument;
             fn name() -> &'static str {
                 "input"
             }
@@ -1159,7 +1087,6 @@ pub mod query_fields {
         pub struct Input;
         impl ::cynic::schema::HasArgument<Input> for super::City {
             type ArgumentSchemaType = super::super::LocationInput;
-            type ArgumentKind = ::cynic::schema::InputObjectArgument;
             fn name() -> &'static str {
                 "input"
             }
@@ -1177,7 +1104,6 @@ pub mod query_fields {
         pub struct Input;
         impl ::cynic::schema::HasArgument<Input> for super::Country {
             type ArgumentSchemaType = super::super::LocationInput;
-            type ArgumentKind = ::cynic::schema::InputObjectArgument;
             fn name() -> &'static str {
                 "input"
             }
@@ -1195,7 +1121,6 @@ pub mod query_fields {
         pub struct Input;
         impl ::cynic::schema::HasArgument<Input> for super::Remote {
             type ArgumentSchemaType = super::super::LocationInput;
-            type ArgumentKind = ::cynic::schema::InputObjectArgument;
             fn name() -> &'static str {
                 "input"
             }
@@ -1288,7 +1213,6 @@ pub mod remote_fields {
         pub struct Where;
         impl ::cynic::schema::HasArgument<Where> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::JobWhereInput>;
-            type ArgumentKind = ::cynic::schema::InputObjectArgument;
             fn name() -> &'static str {
                 "where"
             }
@@ -1296,7 +1220,6 @@ pub mod remote_fields {
         pub struct OrderBy;
         impl ::cynic::schema::HasArgument<OrderBy> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::JobOrderByInput>;
-            type ArgumentKind = ::cynic::schema::EnumArgument;
             fn name() -> &'static str {
                 "orderBy"
             }
@@ -1304,7 +1227,6 @@ pub mod remote_fields {
         pub struct Skip;
         impl ::cynic::schema::HasArgument<Skip> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "skip"
             }
@@ -1312,7 +1234,6 @@ pub mod remote_fields {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "after"
             }
@@ -1320,7 +1241,6 @@ pub mod remote_fields {
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "before"
             }
@@ -1328,7 +1248,6 @@ pub mod remote_fields {
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "first"
             }
@@ -1336,7 +1255,6 @@ pub mod remote_fields {
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "last"
             }
@@ -1400,7 +1318,6 @@ pub mod tag_fields {
         pub struct Where;
         impl ::cynic::schema::HasArgument<Where> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::JobWhereInput>;
-            type ArgumentKind = ::cynic::schema::InputObjectArgument;
             fn name() -> &'static str {
                 "where"
             }
@@ -1408,7 +1325,6 @@ pub mod tag_fields {
         pub struct OrderBy;
         impl ::cynic::schema::HasArgument<OrderBy> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::JobOrderByInput>;
-            type ArgumentKind = ::cynic::schema::EnumArgument;
             fn name() -> &'static str {
                 "orderBy"
             }
@@ -1416,7 +1332,6 @@ pub mod tag_fields {
         pub struct Skip;
         impl ::cynic::schema::HasArgument<Skip> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "skip"
             }
@@ -1424,7 +1339,6 @@ pub mod tag_fields {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "after"
             }
@@ -1432,7 +1346,6 @@ pub mod tag_fields {
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::String>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "before"
             }
@@ -1440,7 +1353,6 @@ pub mod tag_fields {
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "first"
             }
@@ -1448,7 +1360,6 @@ pub mod tag_fields {
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::Jobs {
             type ArgumentSchemaType = Option<super::super::Int>;
-            type ArgumentKind = ::cynic::schema::ScalarArgument;
             fn name() -> &'static str {
                 "last"
             }

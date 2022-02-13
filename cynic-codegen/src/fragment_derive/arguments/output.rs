@@ -16,7 +16,7 @@ impl ToTokens for Output<'_> {
             return;
         }
 
-        let argument_module = self
+        let argument_module = &self
             .analysed
             .schema_field
             .argument_module()
@@ -24,7 +24,10 @@ impl ToTokens for Output<'_> {
 
         for arg in &self.analysed.arguments {
             let arg_marker = proc_macro2::Ident::from(arg.schema_field.marker_ident());
-            let value = &arg.value;
+            let value = ArgumentValueTokens {
+                value: &arg.value,
+                argument_module,
+            };
 
             tokens.append_all(quote! {
                 field_builder.argument::<#argument_module::#arg_marker>()
@@ -34,11 +37,48 @@ impl ToTokens for Output<'_> {
     }
 }
 
-impl ToTokens for ArgumentValue<'_> {
+struct ArgumentValueTokens<'a> {
+    value: &'a ArgumentValue<'a>,
+    argument_module: &'a syn::Path,
+}
+
+impl<'a> ArgumentValueTokens<'a> {
+    fn wrap_value(&self, value: &'a ArgumentValue<'a>) -> Self {
+        ArgumentValueTokens {
+            value,
+            argument_module: self.argument_module,
+        }
+    }
+}
+
+impl ToTokens for ArgumentValueTokens<'_> {
     fn to_tokens(&self, tokens: &mut proc_macro2::TokenStream) {
-        match self {
-            ArgumentValue::Object(_) => todo!("obj"),
-            ArgumentValue::List(_) => todo!("list"),
+        match self.value {
+            ArgumentValue::Object(obj) => {
+                tokens.append_all(quote! { .object() });
+                for field in &obj.fields {
+                    let inner = self.wrap_value(&field.value);
+                    let field_marker = field
+                        .schema_field
+                        .marker_ident()
+                        .to_path(self.argument_module);
+
+                    tokens.append_all(quote! {
+                        .field::<#field_marker>(|builder| {
+                            builder #inner;
+                        })
+                    })
+                }
+            }
+            ArgumentValue::List(items) => {
+                tokens.append_all(quote! { .list() });
+                for item in items {
+                    let inner = self.wrap_value(item);
+                    tokens.append_all(quote! {
+                        .item(|builder| { builder #inner })
+                    })
+                }
+            }
             ArgumentValue::Literal(lit) => tokens.append_all(quote! {
                 .literal(#lit)
             }),
@@ -67,7 +107,7 @@ impl ToTokens for ArgumentValue<'_> {
                 tokens.append_all(quote! {
                     .value()
                 });
-                inner.to_tokens(tokens);
+                self.wrap_value(inner).to_tokens(tokens);
             }
             ArgumentValue::Null => tokens.append_all(quote! {
                 .null()

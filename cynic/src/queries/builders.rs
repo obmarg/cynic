@@ -182,8 +182,7 @@ impl<'a, Field, FieldSchemaType, Variables>
         Field: schema::HasArgument<ArgumentName>,
     {
         ArgumentBuilder {
-            arguments: &mut self.field.arguments,
-            argument_name: Field::name(),
+            destination: InputLiteralContainer::object(Field::name(), &mut self.field.arguments),
             phantom: PhantomData,
         }
     }
@@ -235,89 +234,33 @@ impl<'a, SchemaType, Variables> InlineFragmentBuilder<'a, SchemaType, Variables>
     }
 }
 
+// TODO: maybe rename this to InputBuilder?
+// TODO: Check if we can actually get rid of the ArgumentKind parameter
+// here.  And if so see if we can get rid of IsScalar/IsInputObject etc.
 pub struct ArgumentBuilder<'a, SchemaType, Variables> {
-    // TODO: Remove the &'a from this phantomdata once it's actually being used.
-    argument_name: &'static str,
-    arguments: &'a mut Vec<Argument>,
+    destination: InputLiteralContainer<'a>,
+
     phantom: PhantomData<fn() -> (SchemaType, Variables)>,
 }
-
-/*
-
-TODO: Think about these two...
-
-impl<'a, SchemaType> ArgumentBuilder<'a, SchemaType> {
-    fn scalar_literal<T>(self, val: T)
-    where
-        T: schema::IsScalar<SchemaType>,
-    {
-        todo!()
-    }
-
-    fn enum_literal<T>(self, val: T)
-    where
-        T: schema::IsEnum<SchemaType>,
-    {
-        todo!()
-    }
-}
-*/
 
 impl<'a, SchemaType, Variables> ArgumentBuilder<'a, SchemaType, Variables> {
     pub fn variable<Type>(self, def: VariableDefinition<Variables, Type>)
     where
         Type: CoercesTo<SchemaType>,
     {
-        self.arguments.push(Argument {
-            name: self.argument_name,
-            value: InputLiteral::Variable(def.name),
-        });
+        self.destination.push(InputLiteral::Variable(def.name));
     }
 }
 
-// TODO: reinstate & correct these two
-
-// impl<'a, SchemaType> ArgumentBuilder<'a, SchemaType, schema::EnumArgument> {
-//     pub fn variable<VariableDef>(self, def: VariableDef)
-//     where
-//         // TODO: presumably need to constrain on ArgumentStruct somehow.
-//         VariableDef: core::Variable,
-//         VariableDef::Type: schema::IsEnum<SchemaType>,
-//     {
-//         self.arguments.push(Argument {
-//             name: self.argument_name,
-//             value: InputLiteral::Variable(VariableDef::name()),
-//         });
-//     }
-// }
-
-// impl<'a, SchemaType> ArgumentBuilder<'a, SchemaType, schema::InputObjectArgument> {
-//     pub fn variable<VariableDef>(self, def: VariableDef)
-//     where
-//         // TODO: presumably need to constrain on ArgumentStruct somehow.
-//         VariableDef: core::Variable,
-//         VariableDef::Type: schema::IsInputObject<SchemaType>,
-//     {
-//         self.arguments.push(Argument {
-//             name: self.argument_name,
-//             value: InputLiteral::Variable(VariableDef::name()),
-//         });
-//     }
-// }
-
 impl<'a, SchemaType, ArgumentStruct> ArgumentBuilder<'a, Option<SchemaType>, ArgumentStruct> {
     pub fn null(self) {
-        self.arguments.push(Argument {
-            name: self.argument_name,
-            value: InputLiteral::Null,
-        });
+        self.destination.push(InputLiteral::Null);
     }
 
     // TODO: name this some maybe?
     pub fn value(self) -> ArgumentBuilder<'a, SchemaType, ArgumentStruct> {
         ArgumentBuilder {
-            argument_name: self.argument_name,
-            arguments: self.arguments,
+            destination: self.destination,
             phantom: PhantomData,
         }
     }
@@ -327,80 +270,119 @@ impl<'a, SchemaType, ArgumentStruct> ArgumentBuilder<'a, Option<SchemaType>, Arg
 
 impl<'a, T, ArgStruct> ArgumentBuilder<'a, T, ArgStruct> {
     pub fn literal(self, l: impl IntoInputLiteral + CoercesTo<T>) {
-        self.arguments.push(Argument {
-            name: self.argument_name,
-            value: l.into_literal(),
-        })
+        self.destination.push(l.into_literal());
     }
 }
 
-// TODO: ArgumentBuilder for options, enums, scalars...
-
-// impl<'a> ArgumentBuilder<'a, i32> {
-//     pub fn literal(self, i: i32) {
-//         self.arguments.push(Argument {
-//             name: self.argument_name,
-//             value: InputLiteral::Int(i),
-//         });
-//     }
-// }
-
-// impl<'a> ArgumentBuilder<'a, bool> {
-//     pub fn literal(self, i: bool) {
-//         self.arguments.push(Argument {
-//             name: self.argument_name,
-//             value: InputLiteral::Bool(i),
-//         });
-//     }
-// }
-
-// impl<'a> ArgumentBuilder<'a, crate::Id> {
-//     // TODO: Could this take an `impl Into` or similar?
-//     // Or maybe the entire ArgumentBuilder just takes
-//     // an `impl IntoLiteral<TypeMarker>`
-//     pub fn literal(self, i: crate::Id) {
-//         self.arguments.push(Argument {
-//             name: self.argument_name,
-//             value: InputLiteral::Id(i.into_inner()),
-//         });
-//     }
-// }
-
-impl<'a, SchemaType, ArgStruct> ArgumentBuilder<'a, SchemaType, ArgStruct>
+impl<'a, SchemaType, Variables> ArgumentBuilder<'a, SchemaType, Variables>
 where
     SchemaType: schema::InputObjectMarker,
 {
-    // TODO: is FieldType even neccesary here or can we look up via Field?
-    //  I think so - I've certainly tried right here...
-    pub fn field<FieldMarker>(
-        &'_ mut self,
-    ) -> ArgumentBuilder<'_, FieldMarker::SchemaType, ArgStruct>
-    where
-        FieldMarker: schema::Field,
-        SchemaType: schema::HasInputField<FieldMarker, FieldMarker::SchemaType>,
-    {
-        self.arguments.push(Argument {
-            name: self.argument_name,
-            value: InputLiteral::Object(Vec::new()),
-        });
-
-        let arguments = match &mut self.arguments.last_mut().unwrap().value {
-            InputLiteral::Object(arguments) => arguments,
+    pub fn object(self) -> ObjectArgumentBuilder<'a, SchemaType, Variables> {
+        let fields = match self.destination.push(InputLiteral::Object(Vec::new())) {
+            InputLiteral::Object(fields) => fields,
             _ => panic!("This should be impossible"),
         };
 
-        ArgumentBuilder {
-            argument_name: FieldMarker::name(),
-            arguments,
+        ObjectArgumentBuilder {
+            fields,
             phantom: PhantomData,
         }
     }
 }
 
-impl<'a, SchemaType, ArgStruct> ArgumentBuilder<'a, Vec<SchemaType>, ArgStruct> {
-    pub fn item<InnerType>(&'_ mut self) -> ArgumentBuilder<'_, InnerType, ArgStruct> {
-        // TODO: Think we actually need to return a ListBuilder type for this to work...
-        todo!()
+pub struct ObjectArgumentBuilder<'a, ItemType, Variables> {
+    fields: &'a mut Vec<Argument>,
+    phantom: PhantomData<fn() -> (ItemType, Variables)>,
+}
+
+impl<'a, SchemaType, ArgStruct> ObjectArgumentBuilder<'a, SchemaType, ArgStruct> {
+    pub fn field<FieldMarker>(
+        self,
+        field_fn: impl FnOnce(ArgumentBuilder<'_, FieldMarker::SchemaType, ArgStruct>),
+    ) -> Self
+    where
+        FieldMarker: schema::Field,
+        SchemaType: schema::HasInputField<FieldMarker, FieldMarker::SchemaType>,
+    {
+        field_fn(ArgumentBuilder {
+            destination: InputLiteralContainer::object(FieldMarker::name(), self.fields),
+            phantom: PhantomData,
+        });
+
+        self
+    }
+}
+
+impl<'a, SchemaType, Variables> ArgumentBuilder<'a, Vec<SchemaType>, Variables> {
+    pub fn list(self) -> ListArgumentBuilder<'a, SchemaType, Variables> {
+        let items = match self.destination.push(InputLiteral::List(Vec::new())) {
+            InputLiteral::List(items) => items,
+            _ => panic!("This should be impossible"),
+        };
+
+        ListArgumentBuilder {
+            items,
+            phantom: PhantomData,
+        }
+    }
+}
+
+pub struct ListArgumentBuilder<'a, ItemType, Variables> {
+    items: &'a mut Vec<InputLiteral>,
+    phantom: PhantomData<fn() -> (ItemType, Variables)>,
+}
+
+impl<'a, ItemType, Variables> ListArgumentBuilder<'a, ItemType, Variables> {
+    pub fn item(self, item_fn: impl FnOnce(ArgumentBuilder<'_, ItemType, Variables>)) -> Self {
+        item_fn(ArgumentBuilder {
+            destination: InputLiteralContainer::list(self.items),
+            phantom: PhantomData,
+        });
+
+        self
+    }
+}
+
+enum InputLiteralContainer<'a> {
+    Object {
+        // The name of the field we're inserting
+        argument_name: &'static str,
+
+        // The list to insert into once we're done
+        arguments: &'a mut Vec<Argument>,
+    },
+    List(&'a mut Vec<InputLiteral>),
+}
+
+impl<'a> InputLiteralContainer<'a> {
+    fn list(list: &'a mut Vec<InputLiteral>) -> Self {
+        InputLiteralContainer::List(list)
+    }
+
+    fn object(argument_name: &'static str, arguments: &'a mut Vec<Argument>) -> Self {
+        InputLiteralContainer::Object {
+            argument_name,
+            arguments,
+        }
+    }
+
+    fn push(self, value: InputLiteral) -> &'a mut InputLiteral {
+        match self {
+            InputLiteralContainer::Object {
+                argument_name: name,
+                arguments,
+            } => {
+                arguments.push(Argument { name, value });
+
+                &mut arguments.last_mut().unwrap().value
+            }
+            InputLiteralContainer::List(arguments) => {
+                arguments.push(value);
+
+                arguments.last_mut().unwrap()
+            }
+        }
     }
 }
 
