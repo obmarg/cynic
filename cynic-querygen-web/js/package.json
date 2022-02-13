@@ -5,8 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "esbuild --bundle --outdir=dist --watch --sourcemap src/index.tsx",
-    "build": "esbuild --bundle --outdir=dist --minify src/index.tsx"
+    "start": "esbuild --bundle --outfile=dist/gql.js --watch --sourcemap src/index.tsx",
+    "build": "esbuild --bundle --outfile=dist/gql.js --minify src/index.tsx"
   },
   "keywords": [],
   "author": "",
@@ -22,6 +22,7 @@
     "graphiql": "^1.0.3",
     "graphiql-explorer": "^0.6.2",
     "graphql": "^15.2.0",
+    "punycode": "^2.1.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
     "terryoy-reactive-elements": "1.0.0-alpha.0"

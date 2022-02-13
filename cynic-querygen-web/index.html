@@ -11,6 +11,7 @@
         Which prevents a codemirror issue when rendered before it's CSS is loaded
     -->
     <link href="https://unpkg.com/graphiql/graphiql.min.css" rel="stylesheet" />
+    <link data-trunk rel="copy-file" href="js/dist/gql.js" />
     <style>
       #loaderContainer {
         margin-top: 100px;
@@ -41,11 +42,7 @@
         <div class="loader" />
       </div>
     </section>
-    <script type="module">
-        import init from '/pkg/package.js';
-        init('/pkg/package_bg.wasm');
-    </script>
-    <script async type="application/javascript" src="/pkg/gql.js"></script>
+    <script async type="application/javascript" src="gql.js"></script>
 </body>
 
 </html>
