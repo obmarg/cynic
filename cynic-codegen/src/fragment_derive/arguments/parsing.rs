@@ -112,30 +112,22 @@ impl Parse for ArgumentLiteral {
             Ok(ArgumentLiteral::Variable(input.parse()?, span))
         } else if lookahead.peek(syn::Lit) {
             Ok(ArgumentLiteral::Literal(input.parse()?))
-        } else if lookahead.peek(Ident::peek_any) {
+        } else if lookahead.peek(Ident) {
             let ident = input.call(Ident::parse_any)?;
 
-            // TODO: Could be true, false, null or an error?
-            todo!()
+            if ident == "null" {
+                return Ok(ArgumentLiteral::Null(ident.span()));
+            }
+
+            Err(syn::Error::new(
+                ident.span(),
+                format!("Unknown token: {ident}"),
+            ))
         } else {
             Err(lookahead.error())
         }
     }
 }
-
-/*
-impl quote::ToTokens for FieldArgument {
-    fn to_tokens(&self, tokens: &mut TokenStream) {
-        use quote::{quote, TokenStreamExt};
-
-        let argument_name = &self.argument_name;
-        let expr = &self.expr;
-
-        tokens.append_all(quote! {
-            #argument_name: #expr
-        });
-    }
-} */
 
 #[cfg(test)]
 mod test {
@@ -155,6 +147,46 @@ mod test {
         assert_matches!(
             arguments[0].value,
             FieldArgumentValue::Literal(ArgumentLiteral::Literal(_))
+        );
+    }
+
+    #[test]
+    fn test_parsing_boolean_literal() {
+        let parsed: CynicArguments = parse_quote! { x: true, y: false };
+
+        let arguments = parsed.arguments.iter().collect::<Vec<_>>();
+
+        assert_eq!(arguments.len(), 2);
+        assert_eq!(arguments[0].argument_name.to_string(), "x".to_string());
+        assert_matches!(
+            &arguments[0].value,
+            FieldArgumentValue::Literal(ArgumentLiteral::Literal(lit)) => {
+                let expected: syn::Lit = parse_quote!{ true };
+                assert_eq!(lit, &expected);
+            }
+        );
+
+        assert_eq!(arguments[1].argument_name.to_string(), "y".to_string());
+        assert_matches!(
+            &arguments[1].value,
+            FieldArgumentValue::Literal(ArgumentLiteral::Literal(lit)) => {
+                let expected: syn::Lit = parse_quote!{ false };
+                assert_eq!(lit, &expected);
+            }
+        );
+    }
+
+    #[test]
+    fn test_parsing_null() {
+        let parsed: CynicArguments = parse_quote! { x: null };
+
+        let arguments = parsed.arguments.iter().collect::<Vec<_>>();
+
+        assert_eq!(arguments.len(), 1);
+        assert_eq!(arguments[0].argument_name.to_string(), "x".to_string());
+        assert_matches!(
+            &arguments[0].value,
+            FieldArgumentValue::Literal(ArgumentLiteral::Null(_))
         );
     }
 
