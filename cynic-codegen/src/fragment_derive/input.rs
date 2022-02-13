@@ -2,11 +2,7 @@ use std::collections::HashSet;
 
 use darling::util::SpannedValue;
 
-use crate::{
-    idents::{RenamableFieldIdent, RenameRule},
-    type_validation::CheckMode,
-    Errors, RenameAll,
-};
+use crate::{idents::RenamableFieldIdent, type_validation::CheckMode, Errors};
 use proc_macro2::Span;
 
 #[derive(darling::FromDeriveInput)]

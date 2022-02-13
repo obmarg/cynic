@@ -19,16 +19,13 @@ mod type_ext;
 pub(crate) mod input;
 
 use self::{
-    arguments::{arguments_from_field_attrs, FieldArgument},
-    deserialize_impl::DeserializeImpl,
-    fragment_derive_type::FragmentDeriveType,
+    deserialize_impl::DeserializeImpl, fragment_derive_type::FragmentDeriveType,
     fragment_impl::FragmentImpl,
-    type_ext::SynTypeExt,
 };
 
 pub use input::{FragmentDeriveField, FragmentDeriveInput};
 
-use crate::suggestions::{format_guess, guess_field};
+use crate::suggestions::guess_field;
 
 pub fn fragment_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
     use darling::FromDeriveInput;
@@ -50,8 +47,6 @@ pub fn fragment_derive_impl(
     input: FragmentDeriveInput,
     schema: Schema<'_, Unvalidated>,
 ) -> Result<TokenStream, Errors> {
-    use quote::{quote, quote_spanned};
-
     let mut input = input;
     input.validate()?;
     input.detect_aliases();

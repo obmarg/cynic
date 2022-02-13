@@ -1,8 +1,10 @@
+use crate::operation::StreamingOperation;
+
 use super::{Operation, QueryFragment};
 
 pub trait QueryBuilder<'de>: Sized {
-    /// The type that this query takes as arguments.
-    /// May be `()` if no arguments are accepted.
+    /// The type that this query takes as variables.
+    /// May be `()` if no variables are accepted.
     type Variables;
 
     /// Constructs a query operation for this QueryFragment.
@@ -16,7 +18,7 @@ where
 {
     type Variables = T::Variables;
 
-    fn build(vars: Self::Variables) -> Operation<T, T::Variables> {
+    fn build(vars: Self::Variables) -> Operation<T, Self::Variables> {
         Operation::<T, T::Variables>::query(vars)
     }
 }
@@ -25,8 +27,8 @@ where
 
 /// Provides a `build` function on `QueryFragment`s that represent a mutation
 pub trait MutationBuilder<'de>: Sized {
-    /// The type that this mutation takes as arguments.
-    /// May be `()` if no arguments are accepted.
+    /// The type that this mutation takes as variables.
+    /// May be `()` if no variables are accepted.
     type Variables;
 
     /// Constructs a mutation operation for this QueryFragment.
@@ -40,39 +42,30 @@ where
 {
     type Variables = T::Variables;
 
-    fn build(vars: Self::Variables) -> Operation<Self, T::Variables> {
-        // TODO: handle args
+    fn build(vars: Self::Variables) -> Operation<Self, Self::Variables> {
         Operation::<T, T::Variables>::mutation(vars)
     }
 }
 
-#[cfg(todo)]
-mod todo {
-    /// Provides a `build` function on `QueryFragment`s that represent a subscription
-    pub trait SubscriptionBuilder<'a> {
-        /// The type that this subscription takes as arguments.
-        /// May be `()` if no arguments are accepted.
-        type Arguments;
+/// Provides a `build` function on `QueryFragment`s that represent a subscription
+pub trait SubscriptionBuilder<'a>: Sized {
+    /// The type that this subscription takes as variables.
+    /// May be `()` if no variables are accepted.
+    type Variables;
 
-        /// The type of event that will be output in the response stream of this subscription.
-        type ResponseData;
+    /// Constructs a subscription operation for this QueryFragment.
+    fn build(vars: Self::Variables) -> StreamingOperation<Self, Self::Variables>;
+}
 
-        /// Constructs a subscription operation for this QueryFragment.
-        fn build(args: impl Borrow<Self::Arguments>) -> StreamingOperation<'a, Self::ResponseData>;
-    }
+impl<'de, T> SubscriptionBuilder<'de> for T
+where
+    T: crate::core::QueryFragment<'de>,
+    T::SchemaType: crate::schema::SubscriptionRoot,
+{
+    type Variables = T::Variables;
 
-    impl<'a, T, R, Q> SubscriptionBuilder<'a> for T
-    where
-        T: QueryFragment<SelectionSet = SelectionSet<'a, R, Q>>,
-        Q: SubscriptionRoot,
-        R: 'a,
-    {
-        type Arguments = T::Arguments;
-
-        type ResponseData = R;
-
-        fn build(args: impl Borrow<Self::Arguments>) -> StreamingOperation<'a, Self::ResponseData> {
-            StreamingOperation::subscription(Self::fragment(FragmentContext::new(args.borrow())))
-        }
+    /// Constructs a subscription operation for this QueryFragment.
+    fn build(vars: Self::Variables) -> StreamingOperation<Self, T::Variables> {
+        StreamingOperation::<T, T::Variables>::subscription(vars)
     }
 }

@@ -9,7 +9,7 @@ use crate::{
     Ident,
 };
 
-use super::arguments::{arguments_from_field_attrs, process_arguments, FieldArgument};
+use super::arguments::{arguments_from_field_attrs, process_arguments};
 use super::fragment_derive_type::FragmentDeriveType;
 
 use super::input::FragmentDeriveField;

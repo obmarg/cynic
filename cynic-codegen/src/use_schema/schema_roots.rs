@@ -68,7 +68,7 @@ impl quote::ToTokens for RootTypes {
         if let Some(subscription) = &self.subscription {
             let name = Ident::for_type(subscription);
             tokens.append_all(quote! {
-                impl ::cynic::schema::SuscriptionRoot for #name {}
+                impl ::cynic::schema::SubscriptionRoot for #name {}
             });
         }
     }

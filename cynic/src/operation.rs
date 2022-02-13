@@ -3,7 +3,7 @@ use std::marker::PhantomData;
 use crate::{
     core::QueryFragment,
     queries::{QueryBuilder, SelectionSet},
-    schema::{MutationRoot, QueryRoot},
+    schema::{MutationRoot, QueryRoot, SubscriptionRoot},
     variables::{VariableDefinition, VariableType},
     QueryVariables,
 };
@@ -101,7 +101,59 @@ where
     }
 }
 
-// TODO: StreamingOperation etc.
+/// A StreamingOperation is an Operation that expects a stream of results.
+///
+/// Currently this is means subscriptions.
+pub struct StreamingOperation<ResponseData, Variables = ()> {
+    inner: Operation<ResponseData, Variables>,
+}
+
+impl<'de, Fragment, Variables> StreamingOperation<Fragment, Variables>
+where
+    Fragment: QueryFragment<'de>,
+    Variables: QueryVariables,
+{
+    /// Constructs a new Operation for a subscription
+    pub fn subscription(variables: Variables) -> Self
+    where
+        Fragment::SchemaType: SubscriptionRoot,
+    {
+        use std::fmt::Write;
+
+        let mut selection_set = SelectionSet::default();
+        let builder = QueryBuilder::new(&mut selection_set);
+        Fragment::query(builder);
+
+        let vars = VariableDefinitions::new::<Variables>();
+
+        // TODO: There has to be a better way to do this/place to structure this.
+        // At the least a QueryRoot: std::fmt::Display type.
+        let mut query = String::new();
+        writeln!(&mut query, "query{vars}{selection_set}");
+
+        // TODO: Handle arguments and what not.
+
+        StreamingOperation {
+            inner: Operation {
+                query,
+                variables,
+                phantom: PhantomData,
+            },
+        }
+    }
+}
+
+impl<ResponseData, Variables> serde::Serialize for StreamingOperation<ResponseData, Variables>
+where
+    Variables: serde::Serialize,
+{
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: serde::Serializer,
+    {
+        self.inner.serialize(serializer)
+    }
+}
 
 struct VariableDefinitions {
     vars: &'static [(&'static str, VariableType)],

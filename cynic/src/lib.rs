@@ -186,9 +186,8 @@ pub mod schema;
 #[path = "private/mod.rs"]
 pub mod __private;
 
-pub use builders::{MutationBuilder, QueryBuilder};
-// TODO: SubscriptionBuilder
 pub use self::core::{Enum, InlineFragments, InputObject, QueryFragment};
+pub use builders::{MutationBuilder, QueryBuilder, SubscriptionBuilder};
 pub use id::Id;
 pub use operation::Operation;
 pub use result::{GraphQlError, GraphQlResponse};

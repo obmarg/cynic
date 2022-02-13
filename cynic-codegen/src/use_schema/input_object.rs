@@ -23,6 +23,8 @@ impl ToTokens for InputObjectOutput<'_> {
         let object_marker = proc_macro2::Ident::from(self.object.marker_ident());
         tokens.append_all(quote! {
             pub struct #object_marker;
+
+            impl ::cynic::schema::InputObjectMarker for #object_marker {}
         });
 
         if !self.object.fields.is_empty() {
