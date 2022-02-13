@@ -1,5 +1,6 @@
 ---
 source: cynic-querygen/tests/starwars-tests.rs
+assertion_line: 27
 expression: "document_to_fragment_structs(query, schema,\n                             &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
 
 ---
@@ -13,10 +14,10 @@ mod queries {
     #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "Root")]
     pub struct UnnamedQuery {
-        #[arguments(id = cynic::Id::new("ZmlsbXM6MQ=="))]
+        #[arguments(id: "ZmlsbXM6MQ==")]
         #[cynic(rename = "film")]
         pub a_new_hope: Option<Film>,
-        #[arguments(id = cynic::Id::new("ZmlsbXM6Mg=="))]
+        #[arguments(id: "ZmlsbXM6Mg==")]
         #[cynic(rename = "film")]
         pub empire_strikes_back: Option<Film>,
     }

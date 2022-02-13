@@ -5,7 +5,20 @@ expression: "format_code(format!(\"{}\", tokens))"
 
 ---
 impl ::cynic::schema::QueryRoot for Query {}
-pub struct AnInputType {}
+pub struct AnInputType;
+pub mod an_input_type_fields {
+    pub struct FavouriteDessert;
+    impl ::cynic::schema::Field for FavouriteDessert {
+        type SchemaType = Option<super::Dessert>;
+        fn name() -> &'static str {
+            "favouriteDessert"
+        }
+    }
+    impl ::cynic::schema::HasInputField<FavouriteDessert, Option<super::Dessert>>
+        for super::AnInputType
+    {
+    }
+}
 pub struct Dessert {}
 pub struct Json {}
 pub struct MyUnionType {}

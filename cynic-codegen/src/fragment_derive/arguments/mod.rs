@@ -23,7 +23,6 @@ pub fn process_arguments<'a>(
     Ok(Output {
         analysed,
         schema_module,
-        argument_struct: argument_struct.cloned(),
     })
 }
 

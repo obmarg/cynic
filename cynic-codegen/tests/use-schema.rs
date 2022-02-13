@@ -12,7 +12,7 @@ use cynic_codegen::use_schema::{use_schema, UseSchemaParams};
     "books.graphql",
     "starwars.schema.graphql",
     "test_cases.graphql",
-    "../cynic/src/bin/simple.graphql"
+    "../cynic/src/bin/simple.graphql",
 ])]
 fn snapshot_use_schema_two(schema_file: &str) {
     let schema_path = PathBuf::from("../schemas/").join(schema_file);

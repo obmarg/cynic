@@ -5,7 +5,6 @@ use super::analyse::{AnalysedArguments, ArgumentValue};
 pub struct Output<'a> {
     pub(super) analysed: AnalysedArguments<'a>,
     pub(super) schema_module: syn::Path,
-    pub(super) argument_struct: Option<syn::Ident>,
 }
 
 impl ToTokens for Output<'_> {
@@ -24,7 +23,7 @@ impl ToTokens for Output<'_> {
             let arg_marker = proc_macro2::Ident::from(arg.schema_field.marker_ident());
             let value = ArgumentValueTokens {
                 value: &arg.value,
-                argument_module,
+                schema_module: &self.schema_module,
             };
 
             tokens.append_all(quote! {
@@ -37,14 +36,14 @@ impl ToTokens for Output<'_> {
 
 struct ArgumentValueTokens<'a> {
     value: &'a ArgumentValue<'a>,
-    argument_module: &'a syn::Path,
+    schema_module: &'a syn::Path,
 }
 
 impl<'a> ArgumentValueTokens<'a> {
     fn wrap_value(&self, value: &'a ArgumentValue<'a>) -> Self {
         ArgumentValueTokens {
             value,
-            argument_module: self.argument_module,
+            schema_module: self.schema_module,
         }
     }
 }
@@ -56,10 +55,8 @@ impl ToTokens for ArgumentValueTokens<'_> {
                 tokens.append_all(quote! { .object() });
                 for field in &obj.fields {
                     let inner = self.wrap_value(&field.value);
-                    let field_marker = field
-                        .schema_field
-                        .marker_ident()
-                        .to_path(self.argument_module);
+                    let field_module = obj.schema_obj.field_module().to_path(self.schema_module);
+                    let field_marker = field.schema_field.marker_ident().to_path(&field_module);
 
                     tokens.append_all(quote! {
                         .field::<#field_marker>(|builder| {

@@ -10,26 +10,24 @@ mod subtype_markers;
 pub use params::UseSchemaParams;
 
 use proc_macro2::TokenStream;
-use quote::{format_ident, quote, ToTokens};
-use syn::parse_quote;
+use quote::{quote, ToTokens};
 
 use crate::{
     error::Errors,
-    idents::{to_snake_case, Ident},
+    idents::Ident,
     schema::{
-        self,
         types::{InputType, Type, TypeRef},
-        Schema, TypeIndex,
+        Schema,
     },
 };
 
 use self::{
-    interface::InterfaceOutput, named_type::NamedType, object::ObjectOutput,
-    subtype_markers::SubtypeMarkers,
+    input_object::InputObjectOutput, interface::InterfaceOutput, named_type::NamedType,
+    object::ObjectOutput, subtype_markers::SubtypeMarkers,
 };
 
 pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
-    use quote::{quote, TokenStreamExt};
+    use quote::{TokenStreamExt};
 
     let document = crate::schema::load_schema(input.schema_filename)
         .map_err(|e| e.into_syn_error(proc_macro2::Span::call_site()))?;
@@ -81,12 +79,7 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
                 });
             }
             Type::InputObject(def) => {
-                let ident = Ident::for_type(&def.name);
-                output.append_all(quote! {
-                    pub struct #ident {}
-                });
-
-                // TODO: Handle fields
+                InputObjectOutput::new(def).to_tokens(&mut output);
             }
         }
     }

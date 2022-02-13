@@ -1,9 +1,9 @@
-use proc_macro2::{Span, TokenStream};
+use proc_macro2::Span;
 use syn::{
     ext::IdentExt,
     parse::{Parse, ParseStream},
     punctuated::Punctuated,
-    Expr, Ident, Result, Token,
+    Ident, Result, Token,
 };
 
 pub fn arguments_from_field_attrs(attrs: &[syn::Attribute]) -> Result<Vec<FieldArgument>> {

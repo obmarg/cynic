@@ -1,6 +1,8 @@
 ---
 source: cynic-querygen/tests/starwars-tests.rs
+assertion_line: 26
 expression: "document_to_fragment_structs(query, schema,\n                             &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
+
 ---
 #[cynic::schema_for_derives(
     file = r#"schema.graphql"#,
@@ -13,7 +15,7 @@ mod queries {
     #[cynic(graphql_type = "Root")]
     pub struct AllFilms {
         pub all_films: Option<FilmsConnection>,
-        #[arguments(id = cynic::Id::new("ZmlsbXM6MQ=="))]
+        #[arguments(id: "ZmlsbXM6MQ==")]
         pub film: Option<Film>,
     }
 

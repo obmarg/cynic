@@ -1,5 +1,3 @@
-use std::borrow::Borrow;
-
 use crate::schema::{
     markers::{FieldMarkerModule, MarkerIdent},
     names::FieldName,

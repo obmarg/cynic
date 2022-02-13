@@ -1,5 +1,6 @@
 ---
 source: cynic-querygen/tests/github-tests.rs
+assertion_line: 27
 expression: "document_to_fragment_structs(query, schema,\n                             &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
 
 ---
@@ -10,7 +11,7 @@ expression: "document_to_fragment_structs(query, schema,\n                      
 mod queries {
     use super::schema;
 
-    #[derive(cynic::FragmentArguments, Debug)]
+    #[derive(cynic::QueryVariables, Debug)]
     pub struct IssueOrPRArguments {
         pub assignee_count: i32,
     }
@@ -18,14 +19,14 @@ mod queries {
     #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "Query", argument_struct = "IssueOrPRArguments")]
     pub struct IssueOrPR {
-        #[arguments(owner = "obmarg", name = "cynic")]
+        #[arguments(owner: "obmarg", name: "cynic")]
         pub repository: Option<Repository>,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
     #[cynic(argument_struct = "IssueOrPRArguments")]
     pub struct Repository {
-        #[arguments(number = 1)]
+        #[arguments(number: 1)]
         pub issue_or_pull_request: Option<IssueOrPullRequest>,
     }
 
@@ -34,7 +35,7 @@ mod queries {
     pub struct PullRequest {
         pub id: cynic::Id,
         pub title: String,
-        #[arguments(first = args.assignee_count)]
+        #[arguments(first: $assignee_count)]
         pub assignees: UserConnection,
     }
 
@@ -43,7 +44,7 @@ mod queries {
     pub struct Issue {
         pub id: cynic::Id,
         pub title: String,
-        #[arguments(first = args.assignee_count)]
+        #[arguments(first: $assignee_count)]
         pub assignees: UserConnection,
     }
 

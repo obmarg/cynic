@@ -16,7 +16,7 @@ impl<'de> ::cynic::QueryFragment<'de> for MyQuery {
             .argument::<schema::query_fields::filtered_posts_arguments::Filters>()
             .value()
             .object()
-            .field::<schema::query_fields::filtered_posts_arguments::States>(|builder| {
+            .field::<schema::post_filters_fields::States>(|builder| {
                 builder
                     .value()
                     .list()

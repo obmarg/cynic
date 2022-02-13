@@ -1,5 +1,6 @@
 ---
 source: cynic-querygen/tests/misc-tests.rs
+assertion_line: 10
 expression: "document_to_fragment_structs(query, schema,\n                             &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
 
 ---
@@ -10,7 +11,7 @@ expression: "document_to_fragment_structs(query, schema,\n                      
 mod queries {
     use super::schema;
 
-    #[derive(cynic::FragmentArguments, Debug)]
+    #[derive(cynic::QueryVariables, Debug)]
     pub struct SignInArguments {
         pub password: String,
         pub username: String,
@@ -19,7 +20,7 @@ mod queries {
     #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "MutationRoot", argument_struct = "SignInArguments")]
     pub struct SignIn {
-        #[arguments(input = SignInInput { password: args.password.clone(), username: args.username.clone() })]
+        #[arguments(input: { password: $password, username: $username })]
         pub sign_in: String,
     }
 

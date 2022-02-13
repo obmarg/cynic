@@ -1,5 +1,4 @@
 use proc_macro2::TokenStream;
-use quote::format_ident;
 
 use crate::Ident;
 
@@ -40,7 +39,7 @@ impl DeserializeImpl {
         let target_struct = Ident::new_spanned(&name.to_string(), name.span());
         let fields = fields
             .iter()
-            .map(|(field, schema_field)| process_field(field, schema_field.clone()))
+            .map(|(field, schema_field)| process_field(field, *schema_field))
             .collect();
 
         match spreading {

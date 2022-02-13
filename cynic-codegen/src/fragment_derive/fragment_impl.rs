@@ -1,16 +1,10 @@
-use std::collections::{HashMap, HashSet};
-
 use proc_macro2::{Span, TokenStream};
 use quote::{quote, quote_spanned};
 use syn::spanned::Spanned;
 
 use crate::{
     error::Errors,
-    idents::PathExt,
-    schema::{
-        names::FieldName,
-        types::{Field, OutputType, TypeRef},
-    },
+    schema::types::{Field, OutputType},
     type_validation::{check_spread_type, check_types_are_compatible, CheckMode},
     Ident,
 };
@@ -18,9 +12,7 @@ use crate::{
 use super::arguments::{arguments_from_field_attrs, process_arguments, FieldArgument};
 use super::fragment_derive_type::FragmentDeriveType;
 
-use super::input::{FragmentDeriveField, FragmentDeriveInput};
-
-use crate::suggestions::{format_guess, guess_field};
+use super::input::FragmentDeriveField;
 
 pub struct FragmentImpl<'a> {
     target_struct: Ident,

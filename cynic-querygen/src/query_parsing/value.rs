@@ -149,56 +149,21 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
                 field_type,
                 value_type,
             } => {
-                let schema_type = field_type.inner_ref().lookup()?;
-                if schema_type.is_definitely_copy() {
-                    // Copy types will be implicitly copied so we can just put them literally
-                    format!("args.{}", name.to_snake_case())
-                } else if context == LiteralContext::Argument {
-                    // If we're in argument context then a reference should be OK.
-                    // `InputType` usually defines conversions for references.
-                    //
-                    // There are some cases where this is not true, but can fix
-                    // those when they crop up.
-                    format!("&args.{}", name.to_snake_case())
-                } else {
-                    // If this is not in argument position we'll probably need a clone.
-                    coerce_variable(
-                        field_type,
-                        value_type,
-                        format!("args.{}.clone()", name.to_snake_case()),
-                    )
-                }
+                let name = name.to_snake_case();
+                format!("${name}")
             }
-            TypedValue::Int(num, field_type) => {
-                let literal = num.to_string();
-                coerce_literal(field_type, context, literal)
-            }
+            TypedValue::Int(num, field_type) => num.to_string(),
             TypedValue::Float(num, field_type) => num
-                .map(|d| coerce_literal(field_type, context, d.to_string()))
+                .map(|d| d.to_string())
                 .unwrap_or_else(|| "null".to_string()),
             TypedValue::String(s, field_type) => {
-                let literal = if field_type.inner_name() == "ID" {
-                    format!("cynic::Id::new(\"{}\")", s)
-                } else if context == LiteralContext::Argument {
-                    // If we're in argument context then InputType gives
-                    // us leeway to pass in a string directly.
-                    format!("\"{}\"", s)
-                } else {
-                    // In object or list position we explicitly need to convert to a String
-                    format!("\"{}\".to_string()", s)
-                };
-
-                coerce_literal(field_type, context, literal)
+                format!("\"{s}\"")
             }
-            TypedValue::Boolean(b, field_type) => {
-                coerce_literal(field_type, context, b.to_string())
-            }
-            TypedValue::Null(_) => "None".into(),
+            TypedValue::Boolean(b, field_type) => b.to_string(),
+            TypedValue::Null(_) => "null".into(),
             TypedValue::Enum(v, field_type) => {
                 if let InputType::Enum(en) = field_type.inner_ref().lookup()? {
-                    let literal = format!("{}::{}", en.name.to_pascal_case(), v.to_pascal_case());
-
-                    coerce_literal(field_type, context, literal)
+                    format!("\"{v}\"")
                 } else {
                     return Err(Error::ArgumentNotEnum);
                 }
@@ -210,7 +175,7 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
                     .collect::<Result<Vec<_>, Error>>()?
                     .join(", ");
 
-                format!("vec![{}]", inner)
+                format!("[{inner}]")
             }
             TypedValue::Object(object_literal, field_type) => {
                 if let InputType::InputObject(input_object) = field_type.inner_ref().lookup()? {
@@ -219,7 +184,7 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
                         .map(|(name, value)| {
                             Ok(format!(
                                 "{}: {}",
-                                name.to_snake_case(),
+                                name,
                                 value.to_literal(LiteralContext::InputObjectField)?
                             ))
                         })
@@ -227,10 +192,7 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
 
                     let fields = fields.join(", ");
 
-                    let literal =
-                        format!("{} {{ {} }}", input_object.name.to_pascal_case(), fields);
-
-                    coerce_literal(field_type, context, literal)
+                    format!("{{ {fields} }}")
                 } else {
                     return Err(Error::ArgumentNotInputObject);
                 }

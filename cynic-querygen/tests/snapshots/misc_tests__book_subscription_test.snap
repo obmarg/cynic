@@ -1,5 +1,6 @@
 ---
 source: cynic-querygen/tests/misc-tests.rs
+assertion_line: 21
 expression: "document_to_fragment_structs(query, schema,\n                             &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
 
 ---
@@ -13,7 +14,7 @@ mod queries {
     #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "SubscriptionRoot")]
     pub struct BookSubscription {
-        #[arguments(mutation_type = MutationType::Created)]
+        #[arguments(mutation_type: "CREATED")]
         pub books: BookChanged,
     }
 

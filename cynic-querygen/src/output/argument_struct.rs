@@ -41,7 +41,7 @@ impl std::fmt::Display for ArgumentStruct<'_, '_> {
         use super::indented;
         use std::fmt::Write;
 
-        writeln!(f, "#[derive(cynic::FragmentArguments, Debug)]")?;
+        writeln!(f, "#[derive(cynic::QueryVariables, Debug)]")?;
         writeln!(f, "pub struct {} {{", self.name)?;
 
         for field in &self.fields {
