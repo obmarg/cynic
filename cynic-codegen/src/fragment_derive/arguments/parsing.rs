@@ -77,6 +77,18 @@ pub enum ArgumentLiteral {
     Null(Span),
 }
 
+impl ArgumentLiteral {
+    pub(super) fn span(&self) -> Span {
+        match self {
+            ArgumentLiteral::Literal(lit) => lit.span(),
+            ArgumentLiteral::Object(_, span) => *span,
+            ArgumentLiteral::List(_, span) => *span,
+            ArgumentLiteral::Variable(_, span) => *span,
+            ArgumentLiteral::Null(span) => *span,
+        }
+    }
+}
+
 impl Parse for ArgumentLiteral {
     fn parse(input: ParseStream) -> Result<Self> {
         let lookahead = input.lookahead1();

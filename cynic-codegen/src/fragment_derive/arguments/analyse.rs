@@ -137,11 +137,15 @@ fn analyse_value_type<'a>(
                 panic!("This should not happen");
             }
 
-            (InputType::Scalar(_), ArgumentLiteral::Object(_, _)) => {
-                todo!("error")
+            (InputType::Scalar(_), ArgumentLiteral::Object(_, span)) => {
+                Err(syn::Error::new(span, "Expected a scalar here but found an object").into())
             }
-            (InputType::Scalar(_), ArgumentLiteral::List(_, _)) => todo!("error"),
-            (InputType::Scalar(_), ArgumentLiteral::Null(_)) => todo!("error"),
+            (InputType::Scalar(_), ArgumentLiteral::List(_, span)) => {
+                Err(syn::Error::new(span, "Expected a scalar here but found a list").into())
+            }
+            (InputType::Scalar(_), ArgumentLiteral::Null(span)) => {
+                Err(syn::Error::new(span, "Expected a scalar here but found a null").into())
+            }
             (InputType::Scalar(_), ArgumentLiteral::Literal(lit)) => {
                 // TODO: validate this is a valid scalar for the current type
                 // Can probably only do that for built in scalars.
@@ -152,7 +156,9 @@ fn analyse_value_type<'a>(
                 // TODO: Check that the string is actually a member of the enum
                 Ok(ArgumentValue::Literal(lit))
             }
-            (InputType::Enum(_), _) => todo!("error"),
+            (InputType::Enum(_), lit) => {
+                Err(syn::Error::new(lit.span(), "Expected an enum variant here").into())
+            }
 
             (InputType::InputObject(def), ArgumentLiteral::Object(fields, span)) => {
                 let literals = fields.into_iter().collect::<Vec<_>>();
@@ -163,7 +169,9 @@ fn analyse_value_type<'a>(
                     fields,
                 }))
             }
-            (InputType::InputObject(_), _) => todo!("error"),
+            (InputType::InputObject(_), lit) => {
+                Err(syn::Error::new(lit.span(), "Expected an object here").into())
+            }
         },
         TypeRef::List(element_type) => match literal {
             ArgumentLiteral::List(values, _) => {

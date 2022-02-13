@@ -14,7 +14,6 @@ pub struct SelectionSet {
 pub enum Selection {
     Field(FieldSelection),
     InlineFragment(InlineFragment),
-    FragmentSpread(FragmentSpread),
 }
 
 #[derive(Debug)]
@@ -56,9 +55,6 @@ pub struct InlineFragment {
     pub(super) on_clause: Option<&'static str>,
     pub(super) children: SelectionSet,
 }
-
-#[derive(Debug)]
-pub struct FragmentSpread {}
 
 impl FieldSelection {
     pub fn new(name: &'static str) -> FieldSelection {
@@ -115,7 +111,6 @@ impl std::fmt::Display for Selection {
                 }
                 write!(f, "{}", inline_fragment.children)
             }
-            Selection::FragmentSpread(_) => todo!(),
         }
     }
 }

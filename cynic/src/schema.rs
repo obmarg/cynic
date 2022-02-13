@@ -20,39 +20,6 @@ pub trait HasArgument<ArgumentName> {
     fn name() -> &'static str;
 }
 
-// impl<T, U> HasArgument<Option<T>> for Option<U>
-// where
-//     U: HasArgument<T>,
-// {
-//     type ArgumentSchemaType = Option<U::ArgumentSchemaType>;
-
-//     fn name() -> &'static str {
-//         todo!()
-//     }
-// }
-
-// impl<T, U> HasArgument<Vec<T>> for Vec<U>
-// where
-//     U: HasArgument<T>,
-// {
-//     type ArgumentSchemaType = Vec<U::ArgumentSchemaType>;
-
-//     fn name() -> &'static str {
-//         todo!()
-//     }
-// }
-
-// impl<T, U> HasArgument<Box<T>> for Box<U>
-// where
-//     U: HasArgument<T>,
-// {
-//     type ArgumentSchemaType = Box<U::ArgumentSchemaType>;
-
-//     fn name() -> &'static str {
-//         todo!()
-//     }
-// }
-
 pub trait IsScalar<SchemaType> {
     type SchemaType;
 }
