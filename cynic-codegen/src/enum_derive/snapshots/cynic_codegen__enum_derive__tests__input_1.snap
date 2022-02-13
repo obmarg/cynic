@@ -5,7 +5,7 @@ expression: "format_code(format!(\"{}\", tokens))"
 
 ---
 #[automatically_derived]
-impl ::cynic::core::Enum for States {
+impl ::cynic::Enum for States {
     type SchemaType = schema::States;
 }
 #[automatically_derived]
@@ -54,6 +54,7 @@ impl ::cynic::queries::IntoInputLiteral for States {
 ::cynic::impl_coercions!(States, schema::States);
 #[automatically_derived]
 impl schema::variable::Variable for States {
-    const TYPE: ::cynic::core::VariableType = ::cynic::core::VariableType::Named("States");
+    const TYPE: ::cynic::variables::VariableType =
+        ::cynic::variables::VariableType::Named("States");
 }
 

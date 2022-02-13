@@ -1,9 +1,4 @@
-use super::{
-    FragmentContext, MutationRoot, Operation, QueryFragment, QueryRoot, SelectionSet,
-    SubscriptionRoot,
-};
-
-use std::borrow::Borrow;
+use super::{Operation, QueryFragment};
 
 pub trait QueryBuilder<'de>: Sized {
     /// The type that this query takes as arguments.

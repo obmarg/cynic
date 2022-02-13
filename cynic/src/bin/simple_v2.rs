@@ -53,4 +53,4 @@ mod queries {
     }
 }
 
-impl cynic::QueryRoot for schema::TestStruct {}
+impl cynic::schema::QueryRoot for schema::TestStruct {}

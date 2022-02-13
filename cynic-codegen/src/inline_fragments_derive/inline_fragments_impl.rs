@@ -51,13 +51,13 @@ impl quote::ToTokens for InlineFragmentsImpl<'_> {
             }
 
             #[automatically_derived]
-            impl<'de> ::cynic::core::InlineFragments<'de> for #target_enum {
+            impl<'de> ::cynic::InlineFragments<'de> for #target_enum {
                 fn deserialize_variant<D>(typename: &str, deserializer: D) -> Result<Self, D::Error>
                 where
                     D: ::cynic::serde::Deserializer<'de>
                 {
                     #(
-                        if Some(typename) == <#inner_types as ::cynic::core::QueryFragment<'de>>::TYPE {
+                        if Some(typename) == <#inner_types as ::cynic::QueryFragment<'de>>::TYPE {
                             return <#inner_types as ::cynic::serde::Deserialize<'de>>::deserialize(deserializer).map(
                                 #target_enum::#variant_names
                             )

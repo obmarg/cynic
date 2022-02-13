@@ -5,7 +5,7 @@ expression: "format_code(format!(\"{}\", tokens))"
 
 ---
 #[automatically_derived]
-impl<'de> ::cynic::core::QueryFragment<'de> for BlogPostOutput {
+impl<'de> ::cynic::QueryFragment<'de> for BlogPostOutput {
     type SchemaType = schema::BlogPost;
     type Variables = ();
     const TYPE: Option<&'static str> = Some("BlogPost");
@@ -13,8 +13,8 @@ impl<'de> ::cynic::core::QueryFragment<'de> for BlogPostOutput {
         #![allow(unused_mut)]
         let mut field_builder = builder . select_field :: < schema :: blog_post_fields :: HasMetadata , < Option < bool > as :: cynic :: schema :: IsScalar < < schema :: blog_post_fields :: HasMetadata as :: cynic :: schema :: Field > :: SchemaType >> :: SchemaType > () ;
         field_builder.done();
-        let mut field_builder = builder . select_field :: < schema :: blog_post_fields :: Author , < AuthorOutput as :: cynic :: core :: QueryFragment > :: SchemaType > () ;
-        <AuthorOutput as ::cynic::core::QueryFragment>::query(field_builder.select_children());
+        let mut field_builder = builder . select_field :: < schema :: blog_post_fields :: Author , < AuthorOutput as :: cynic :: QueryFragment > :: SchemaType > () ;
+        <AuthorOutput as ::cynic::QueryFragment>::query(field_builder.select_children());
         field_builder.done();
     }
 }

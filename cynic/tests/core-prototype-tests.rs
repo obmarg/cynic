@@ -1,7 +1,6 @@
 #![allow(dead_code)]
 
-use cynic::{core::QueryFragment, queries::SelectionSet};
-use cynic_proc_macros::QueryFragment;
+use cynic::{queries::SelectionSet, QueryFragment};
 use serde::Deserialize;
 
 mod schema {
@@ -9,13 +8,9 @@ mod schema {
 }
 
 mod manual_schema {
-    use cynic::core;
-
     pub struct Query {}
 
     pub mod query_fields {
-        use cynic::core;
-
         pub struct AllPosts {}
 
         pub struct Post {}
@@ -40,8 +35,6 @@ mod manual_schema {
         impl cynic::schema::HasField<Post, Option<super::BlogPost>> for super::Query {}
 
         pub mod post_arguments {
-            use cynic::core;
-
             pub struct Id {}
 
             impl cynic::schema::HasArgument<Id> for super::Post {
@@ -56,8 +49,6 @@ mod manual_schema {
 
     pub struct BlogPost;
     pub mod blog_post_fields {
-        use cynic::core;
-
         pub struct Author;
 
         pub struct HasMetadata;
@@ -86,8 +77,6 @@ mod manual_schema {
 
     pub struct Author;
     pub mod author_fields {
-        use cynic::core;
-
         pub struct Name;
 
         impl cynic::schema::Field for Name {
@@ -194,7 +183,7 @@ struct AuthorOutput {
 
 #[test]
 fn test_using_this_shit() {
-    use cynic::{core::QueryFragment, queries::QueryBuilder};
+    use cynic::{queries::QueryBuilder, QueryFragment};
 
     let mut selections = SelectionSet::default();
 

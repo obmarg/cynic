@@ -166,46 +166,33 @@
 #![cfg_attr(docsrs, feature(doc_cfg))]
 #![warn(missing_docs)]
 
-mod arguments;
 mod builders;
-mod enums;
-mod fragments;
+mod core;
 mod id;
 mod operation;
 mod result;
-mod scalar;
 
 // TODO: think about the names of these, maybe don't make them pub?
 pub mod coercions;
-pub mod core;
 pub mod queries;
+pub mod variables;
 
 // TODO: is there a better place to put indent?  Not sure.
 mod indent;
 
 pub mod http;
-pub mod inputs;
 pub mod schema;
-pub mod selection_set;
-#[allow(missing_docs)]
-pub mod utils;
 
 #[path = "private/mod.rs"]
 pub mod __private;
 
-pub use json_decode::DecodeError;
-
-pub use arguments::{Argument, FromArguments};
 pub use builders::{MutationBuilder, QueryBuilder};
 // TODO: SubscriptionBuilder
-pub use enums::Enum;
-pub use fragments::{FragmentArguments, FragmentContext, InlineFragments, QueryFragment};
+pub use self::core::{Enum, InlineFragments, InputObject, QueryFragment};
 pub use id::Id;
-pub use inputs::InputType;
 pub use operation::Operation;
 pub use result::{GraphQlError, GraphQlResponse};
-pub use scalar::Scalar;
-pub use selection_set::SelectionSet;
+pub use variables::QueryVariables;
 
 pub use cynic_proc_macros::{
     schema_for_derives, use_schema, Enum, FragmentArguments, InlineFragments, InputObject,
@@ -220,28 +207,27 @@ pub use static_assertions::assert_impl_all as assert_impl;
 pub use serde;
 pub use serde_json;
 
-/// A trait for GraphQL input objects.
+/// Implements [`cynic::Scalar`] for a given type & type lock.
 ///
-/// This trait is generic over some TypeLock which is used to tie an InputType
-/// back into it's GraphQL input object.  Generally this will be some type
-/// generated in the GQL code.
+/// For example, to use `uuid::Uuid` for a `Uuid` type defined in a schema:
 ///
-/// It's recommended to derive this trait with the [InputObject](derive.InputObject.html)
-/// derive.  You can also implement it yourself, but you'll be responsible
-/// for implementing the `SerializableArgument` trait if you want to use it.
-pub trait InputObject<TypeLock>: serde::Serialize {}
-
-impl<TypeLock, T> InputObject<TypeLock> for &T where T: InputObject<TypeLock> {}
-impl<TypeLock, T> InputObject<TypeLock> for Box<T> where T: InputObject<TypeLock> {}
-
-/// A marker trait that indicates a particular type is at the root of a GraphQL schemas query
-/// hierarchy.
-pub trait QueryRoot {}
-
-/// A marker trait that indicates a particular type is at the root of a GraphQL schemas
-/// mutation hierarchy.
-pub trait MutationRoot {}
-
-/// A marker trait that indicates a particular type is at the root of a GraphQL schemas
-/// subscription hierarchy.
-pub trait SubscriptionRoot {}
+/// ```rust
+/// # #[macro_use] extern crate cynic;
+/// # // Faking the schema & chrono module here because it's easier than
+/// # // actually defining them
+/// #
+/// # mod schema { pub struct Uuid {} }
+/// # mod uuid { pub type Uuid = String; }
+/// impl_scalar!(uuid::Uuid, schema::Uuid);
+/// ```
+///
+/// This macro can be used on any type that implements `serde::Serialize`,
+/// provided the `schema` is defined in the current crate
+#[macro_export]
+macro_rules! impl_scalar {
+    ($type:path, $type_lock:path) => {
+        impl $crate::schema::IsScalar<$type_lock> for $type {
+            type SchemaType = $type_lock;
+        }
+    };
+}

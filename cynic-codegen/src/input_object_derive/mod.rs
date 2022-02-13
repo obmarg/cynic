@@ -109,7 +109,7 @@ pub fn input_object_derive_impl(
 
         Ok(quote! {
             #[automatically_derived]
-            impl ::cynic::core::InputObject for #ident {
+            impl ::cynic::InputObject for #ident {
                 type SchemaType = #schema_module::#input_marker_ident;
             }
 
@@ -145,7 +145,7 @@ pub fn input_object_derive_impl(
 
             #[automatically_derived]
             impl #schema_module::variable::Variable for #ident {
-                const TYPE: ::cynic::core::VariableType = ::cynic::core::VariableType::Named(#graphql_type_name);
+                const TYPE: ::cynic::variables::VariableType = ::cynic::variables::VariableType::Named(#graphql_type_name);
             }
         })
     } else {

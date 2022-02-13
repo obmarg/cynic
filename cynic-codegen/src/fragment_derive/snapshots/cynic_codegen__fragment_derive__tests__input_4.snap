@@ -5,19 +5,17 @@ expression: "format_code(format!(\"{}\", tokens))"
 
 ---
 #[automatically_derived]
-impl<'de> ::cynic::core::QueryFragment<'de> for MyQuery {
+impl<'de> ::cynic::QueryFragment<'de> for MyQuery {
     type SchemaType = schema::Query;
     type Variables = AnArgumentStruct;
     const TYPE: Option<&'static str> = Some("Query");
     fn query(mut builder: ::cynic::queries::QueryBuilder<Self::SchemaType, Self::Variables>) {
         #![allow(unused_mut)]
-        let mut field_builder = builder . select_field :: < schema :: query_fields :: FilteredPosts , < Vec < BlogPostOutput > as :: cynic :: core :: QueryFragment > :: SchemaType > () ;
+        let mut field_builder = builder . select_field :: < schema :: query_fields :: FilteredPosts , < Vec < BlogPostOutput > as :: cynic :: QueryFragment > :: SchemaType > () ;
         field_builder
             .argument::<schema::query_fields::filtered_posts_arguments::Filters>()
-            .variable(<AnArgumentStruct as ::cynic::core::QueryVariables>::Fields::filters());
-        <Vec<BlogPostOutput> as ::cynic::core::QueryFragment>::query(
-            field_builder.select_children(),
-        );
+            .variable(<AnArgumentStruct as ::cynic::QueryVariables>::Fields::filters());
+        <Vec<BlogPostOutput> as ::cynic::QueryFragment>::query(field_builder.select_children());
         field_builder.done();
     }
 }

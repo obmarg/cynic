@@ -60,9 +60,9 @@ impl<'a> FieldSerializer<'a> {
 
         let trait_bound = match self.graphql_field.value_type.inner_type() {
             InputType::Scalar(_) => quote! { ::cynic::schema::IsScalar<#marker_type> },
-            InputType::Enum(_) => quote! { ::cynic::core::Enum<SchemaType = #marker_type> },
+            InputType::Enum(_) => quote! { ::cynic::Enum<SchemaType = #marker_type> },
             InputType::InputObject(_) => {
-                quote! { ::cynic::core::InputObject<SchemaType = #marker_type> }
+                quote! { ::cynic::InputObject<SchemaType = #marker_type> }
             }
         };
 

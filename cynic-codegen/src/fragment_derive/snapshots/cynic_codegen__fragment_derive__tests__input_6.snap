@@ -5,7 +5,7 @@ expression: "format_code(format!(\"{}\", tokens))"
 
 ---
 #[automatically_derived]
-impl<'de> ::cynic::core::QueryFragment<'de> for Film {
+impl<'de> ::cynic::QueryFragment<'de> for Film {
     type SchemaType = schema::Film;
     type Variables = ();
     const TYPE: Option<&'static str> = Some("Film");

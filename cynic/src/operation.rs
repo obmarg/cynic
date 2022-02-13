@@ -1,9 +1,11 @@
 use std::marker::PhantomData;
 
 use crate::{
-    core::{QueryFragment, QueryVariables, VariableDefinition, VariableType},
+    core::QueryFragment,
     queries::{QueryBuilder, SelectionSet},
     schema::{MutationRoot, QueryRoot},
+    variables::{VariableDefinition, VariableType},
+    QueryVariables,
 };
 
 /// An Operation that can be sent to a remote GraphQL server.

@@ -1498,7 +1498,7 @@ pub type Float = f64;
 pub type Int = i32;
 pub type Id = ::cynic::Id;
 pub mod variable {
-    use cynic::core::VariableType;
+    use cynic::variables::VariableType;
     #[doc = r" Used to determine the type of a given variable that"]
     #[doc = r" appears in an argument struct."]
     pub trait Variable {

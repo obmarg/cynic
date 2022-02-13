@@ -37,8 +37,8 @@ pub fn query_variables_derive_impl(
             proc_macro2::Literal::string(&f.graphql_ident(input.rename_all).graphql_name());
 
         field_funcs.push(quote! {
-            #vis fn #name() -> ::cynic::core::VariableDefinition<#ident, #ty> {
-                ::cynic::core::VariableDefinition::new(#name_str)
+            #vis fn #name() -> ::cynic::variables::VariableDefinition<#ident, #ty> {
+                ::cynic::variables::VariableDefinition::new(#name_str)
             }
         });
 
@@ -56,10 +56,10 @@ pub fn query_variables_derive_impl(
     Ok(quote! {
 
         #[automatically_derived]
-        impl ::cynic::core::QueryVariables for #ident {
+        impl ::cynic::QueryVariables for #ident {
             type Fields = #fields_struct_ident;
 
-            const VARIABLES: &'static [(&'static str, ::cynic::core::VariableType)]
+            const VARIABLES: &'static [(&'static str, ::cynic::variables::VariableType)]
                 = &[#(#variables),*];
         }
 

@@ -102,7 +102,7 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
         pub type Id = ::cynic::Id;
 
         pub mod variable {
-            use ::cynic::core::VariableType;
+            use ::cynic::variables::VariableType;
 
             /// Used to determine the type of a given variable that
             /// appears in an argument struct.

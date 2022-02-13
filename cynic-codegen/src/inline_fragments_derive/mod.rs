@@ -327,7 +327,7 @@ impl quote::ToTokens for QueryFragmentImpl<'_> {
 
         tokens.append_all(quote! {
             #[automatically_derived]
-            impl<'de> ::cynic::core::QueryFragment<'de> for #target_struct {
+            impl<'de> ::cynic::QueryFragment<'de> for #target_struct {
                 type SchemaType = #type_lock;
                 type Variables = #arguments;
 
@@ -336,8 +336,8 @@ impl quote::ToTokens for QueryFragmentImpl<'_> {
                 fn query(mut builder: ::cynic::queries::QueryBuilder<Self::SchemaType, Self::Variables>) {
                     #(
                         let fragment_builder = builder.inline_fragment();
-                        let mut fragment_builder = fragment_builder.on::<<#inner_types as ::cynic::core::QueryFragment>::SchemaType>();
-                        <#inner_types as ::cynic::core::QueryFragment>::query(
+                        let mut fragment_builder = fragment_builder.on::<<#inner_types as ::cynic::QueryFragment>::SchemaType>();
+                        <#inner_types as ::cynic::QueryFragment>::query(
                             fragment_builder.select_children()
                         );
                     )*

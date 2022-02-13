@@ -129,10 +129,6 @@ pub enum CynicReqwestError {
     /// An error resposne from the server with the given status code and body.
     #[error("Server returned {0}: {1}")]
     ErrorResponse(reqwest::StatusCode, String),
-
-    /// An error occurred when decoding the GraphQL response.
-    #[error("Error decoding GraphQL response: {0}")]
-    DecodeError(#[from] json_decode::DecodeError),
 }
 
 #[cfg(feature = "reqwest")]

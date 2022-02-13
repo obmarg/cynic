@@ -14,6 +14,7 @@ use crate::{
     indent::indented,
     queries::QueryBuilder,
     schema::{self},
+    QueryVariables,
 };
 
 // Annoyingly this means people can't derive Deserialize _as well as_ use cynics derives.
@@ -139,9 +140,6 @@ where
     type SchemaType = T::SchemaType;
 }
 
-// TODO: Does this need a TypeLock on it?
-pub trait Scalar<'de>: serde::Deserialize<'de> + serde::Serialize {}
-
 pub trait InputObject: serde::Serialize {
     type SchemaType;
 }
@@ -165,41 +163,6 @@ where
     T: InputObject,
 {
     type SchemaType = T::SchemaType;
-}
-
-#[derive(Debug, Clone, Copy)]
-pub enum VariableType {
-    List(&'static VariableType),
-    Nullable(&'static VariableType),
-    Named(&'static str),
-}
-
-pub trait QueryVariables {
-    type Fields;
-
-    const VARIABLES: &'static [(&'static str, VariableType)];
-}
-
-// TODO: Figure out if this makes sense.
-impl QueryVariables for () {
-    type Fields = ();
-
-    const VARIABLES: &'static [(&'static str, VariableType)] = &[];
-}
-
-// TODO: Think about this name & where we should put it
-pub struct VariableDefinition<Variables, Type> {
-    pub name: &'static str,
-    phantom: PhantomData<fn() -> (Variables, Type)>,
-}
-
-impl<Variables, Type> VariableDefinition<Variables, Type> {
-    pub fn new(name: &'static str) -> Self {
-        VariableDefinition {
-            name,
-            phantom: PhantomData,
-        }
-    }
 }
 
 // TODO: Might want recursive impls of Variable for Vec & Option?

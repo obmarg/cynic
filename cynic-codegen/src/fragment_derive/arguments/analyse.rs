@@ -32,7 +32,6 @@ pub enum ArgumentValue<'a> {
     Object(Object<'a>),
     List(Vec<ArgumentValue<'a>>),
     Literal(syn::Lit),
-    Bool(bool),
     Variable(Variable<'a>),
     Some(Box<ArgumentValue<'a>>),
     Expression(syn::Expr),
@@ -152,7 +151,7 @@ fn analyse_value_type<'a>(
                 Ok(ArgumentValue::Literal(lit))
             }
 
-            (InputType::Enum(def), ArgumentLiteral::Literal(lit @ Lit::Str(_))) => {
+            (InputType::Enum(_), ArgumentLiteral::Literal(lit @ Lit::Str(_))) => {
                 // TODO: Check that the string is actually a member of the enum
                 Ok(ArgumentValue::Literal(lit))
             }

@@ -5,8 +5,8 @@ use std::{borrow::Cow, marker::PhantomData};
 
 use crate::{
     coercions::CoercesTo,
-    core::{self, VariableDefinition, VariableType},
-    schema,
+    core, schema,
+    variables::{VariableDefinition, VariableType},
 };
 
 use super::{ast::*, FlattensInto, IntoInputLiteral, Recursable};
@@ -388,7 +388,7 @@ impl<'a> InputLiteralContainer<'a> {
 
 // TODO: Think about the name and location of this trait.
 pub trait VariableMatch<T> {}
-impl<T> VariableMatch<()> for T where T: crate::core::QueryVariables {}
+impl<T> VariableMatch<()> for T where T: crate::QueryVariables {}
 
 // Handle custom scalars somehow.  I can only assume they'll need to support all the literals,
 // with no real type checking.

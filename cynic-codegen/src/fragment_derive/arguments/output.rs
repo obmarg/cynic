@@ -1,6 +1,4 @@
-use proc_macro2::Span;
 use quote::{quote, ToTokens, TokenStreamExt};
-use syn::Token;
 
 use super::analyse::{AnalysedArguments, ArgumentValue};
 
@@ -82,12 +80,6 @@ impl ToTokens for ArgumentValueTokens<'_> {
             ArgumentValue::Literal(lit) => tokens.append_all(quote! {
                 .literal(#lit)
             }),
-            ArgumentValue::Bool(b) => {
-                let lit = syn::LitBool::new(*b, Span::call_site());
-                tokens.append_all(quote! {
-                    .literal(#lit)
-                });
-            }
             ArgumentValue::Expression(e) => tokens.append_all(quote! {
                 .literal(#e)
             }),
@@ -100,7 +92,7 @@ impl ToTokens for ArgumentValueTokens<'_> {
                 // Though might be tricky because it's in the middle
                 // of a big chain...
                 tokens.append_all(quote! {
-                    .variable(<#argument_struct as ::cynic::core::QueryVariables>::Fields::#var_ident())
+                    .variable(<#argument_struct as ::cynic::QueryVariables>::Fields::#var_ident())
                 });
             }
             ArgumentValue::Some(inner) => {
