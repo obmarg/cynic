@@ -74,8 +74,8 @@ fn entry_page_view(model: &Model) -> Node<Msg> {
                     C!["notification is-warning is-light"],
                     "⚠️ This is the generator for v1 of cynic. For v2 please visit ",
                     a![
-                        attrs! {At::Href => "https://generator.cynic-rs.org/"},
-                        "https://generator.cynic-rs.org/"
+                        attrs! {At::Href => "https://generator.cynic-rs.dev/"},
+                        "https://generator.cynic-rs.dev/"
                     ]
                 ]
             ],
