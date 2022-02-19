@@ -68,6 +68,17 @@ fn entry_page_view(model: &Model) -> Node<Msg> {
         C!["section"],
         div![
             C!["container", "has-text-centered"],
+            div![
+                C!["is-flex" "is-justify-content-center" "mb-6"],
+                div![
+                    C!["notification is-warning is-light"],
+                    "⚠️ This is the generator for v2 of cynic. For v1 please visit ",
+                    a![
+                        attrs! {At::Href => "https://v1.generator.cynic-rs.dev/"},
+                        "https://v1.generator.cynic-rs.dev/"
+                    ]
+                ]
+            ],
             p![h4![
                 C!["subtitle", "is-4"],
                 "Where should we get your GraphQL schema?"

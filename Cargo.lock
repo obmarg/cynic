@@ -594,7 +594,7 @@ dependencies = [
 
 [[package]]
 name = "cynic"
-version = "1.0.0"
+version = "2.0.0-dev"
 dependencies = [
  "assert_matches",
  "cynic-proc-macros",
@@ -611,7 +611,7 @@ dependencies = [
 
 [[package]]
 name = "cynic-codegen"
-version = "1.0.0"
+version = "2.0.0-dev"
 dependencies = [
  "assert_matches",
  "darling",
@@ -629,7 +629,7 @@ dependencies = [
 
 [[package]]
 name = "cynic-examples"
-version = "1.0.0"
+version = "2.0.0-dev"
 dependencies = [
  "async-std",
  "chrono",
@@ -644,7 +644,7 @@ dependencies = [
 
 [[package]]
 name = "cynic-proc-macros"
-version = "1.0.0"
+version = "2.0.0-dev"
 dependencies = [
  "cynic-codegen",
  "syn",
@@ -652,7 +652,7 @@ dependencies = [
 
 [[package]]
 name = "cynic-querygen"
-version = "1.0.0"
+version = "2.0.0-dev"
 dependencies = [
  "Inflector",
  "assert_matches",
@@ -667,7 +667,7 @@ dependencies = [
 
 [[package]]
 name = "cynic-querygen-web"
-version = "1.0.0"
+version = "2.0.0-dev"
 dependencies = [
  "cynic-querygen",
  "seed",

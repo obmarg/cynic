@@ -73,7 +73,7 @@ mod surf_ext {
     #[cfg_attr(docsrs, doc(cfg(feature = "surf")))]
     pub trait SurfExt {
         /// Runs a GraphQL query with the parameters in RequestBuilder, decodes
-        /// the and returns the result.
+        /// the response and returns the result.
         ///
         /// If a `json_decode::Error` occurs it can be obtained via downcast_ref on
         /// the `surf::Error`.
