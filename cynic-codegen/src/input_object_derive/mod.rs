@@ -95,11 +95,6 @@ pub fn input_object_derive_impl(
             .iter()
             .map(|fs| fs.field_insert_call(&map_serializer_ident));
 
-        let input_literal_vec_ident = &proc_macro2::Ident::new("vec", Span::call_site());
-        let input_literal_inserts = field_serializers
-            .iter()
-            .map(|fs| fs.input_literal_insert_call(input_literal_vec_ident));
-
         let map_len = field_serializers.len();
 
         let graphql_type_name = proc_macro2::Literal::string(input_object.name);

@@ -1,5 +1,5 @@
 use quote::{format_ident, quote, ToTokens, TokenStreamExt};
-use syn::Token;
+
 
 use crate::idents::to_pascal_case;
 
@@ -152,7 +152,7 @@ impl<'a> quote::ToTokens for VariantDetailsTokens<'a> {
     fn to_tokens(&self, tokens: &mut proc_macro2::TokenStream) {
         let ident = self.details.ident();
         let variant_str = proc_macro2::Literal::string(&self.details.variant);
-        let enum_marker_ident = self.details.en.marker_ident().to_path(&self.schema_module);
+        let enum_marker_ident = self.details.en.marker_ident().to_path(self.schema_module);
         tokens.append_all(quote! {
             struct #ident;
 
