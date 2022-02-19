@@ -34,11 +34,14 @@ fn run_query() -> cynic::GraphQlResponse<queries::CommentOnMutationSupportIssue>
 }
 
 #[cfg(feature = "github")]
-fn build_query() -> cynic::Operation<'static, queries::CommentOnMutationSupportIssue> {
+fn build_query() -> cynic::Operation<
+    queries::CommentOnMutationSupportIssue,
+    queries::CommentOnMutationSupportIssueArguments,
+> {
     use cynic::MutationBuilder;
     use queries::{CommentOnMutationSupportIssue, CommentOnMutationSupportIssueArguments};
 
-    CommentOnMutationSupportIssue::build(&CommentOnMutationSupportIssueArguments {
+    CommentOnMutationSupportIssue::build(CommentOnMutationSupportIssueArguments {
         comment_body: "Testing".into(),
     })
 }
@@ -59,10 +62,10 @@ mod queries {
         argument_struct = "CommentOnMutationSupportIssueArguments"
     )]
     pub struct CommentOnMutationSupportIssue {
-        #[arguments(input = AddCommentInput {
-            body: args.comment_body.clone(),
-            subject_id: "MDU6SXNzdWU2ODU4NzUxMzQ=".into(),
-            client_mutation_id: None
+        #[arguments(input: {
+            body: $comment_body,
+            subjectId: "MDU6SXNzdWU2ODU4NzUxMzQ=",
+            clientMutationId: null,
         })]
         pub add_comment: Option<AddCommentPayload>,
     }
