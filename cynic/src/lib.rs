@@ -116,9 +116,9 @@
 //! #    title: Option<String>,
 //! #    director: Option<String>
 //! # }
-//! // Deriving `FragmentArguments` allows this struct to be used as arguments to a
-//! // `QueryFragment` fragment, whether it represents part of a query or a whole query.
-//! #[derive(cynic::FragmentArguments)]
+//! // Deriving `QueryVariables` allows this struct to be used as variables in a
+//! // `QueryFragment`, whether it represents part of a query or a whole query.
+//! #[derive(cynic::QueryVariables)]
 //! struct FilmArguments {
 //!     id: Option<cynic::Id>
 //! }
@@ -135,7 +135,7 @@
 //! )]
 //! struct FilmDirectorQueryWithArgs {
 //!     // Here we use `args`, which we've declared above to be an instance of `FilmArguments`
-//!     #[arguments(id = &args.id)]
+//!     #[arguments(id: $id)]
 //!     film: Option<Film>,
 //! }
 //!
