@@ -77,7 +77,18 @@ use super::fragment_derive;
             #[cynic(flatten)]
             producers: String,
         }
-    )
+    ),
+    parse_quote!(
+        #[cynic(
+            schema_path = "../cynic/tests/test-schema.graphql",
+            schema_module = "schema",
+            graphql_type = "Query"
+        )]
+        struct MyQuery {
+            #[arguments(filters: {states: ["POSTED", "POSTED"]})]
+            filteredPosts: Vec<BlogPostOutput>,
+        }
+    ),
 ])]
 fn snapshot_fragment_derive(input: syn::DeriveInput) {
     let tokens = fragment_derive(&input).unwrap();

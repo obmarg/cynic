@@ -1,4 +1,4 @@
-use std::collections::HashSet;
+use std::{collections::HashSet, rc::Rc};
 
 use proc_macro2::Span;
 use syn::Lit;
@@ -6,13 +6,14 @@ use syn::Lit;
 use super::parsing;
 use crate::{
     error::Errors,
-    schema::types::{self as schema, InputObjectType, InputType, InputValue, TypeRef},
+    schema::types::{self as schema, EnumType, InputObjectType, InputType, InputValue, TypeRef},
 };
 
 #[derive(Debug, PartialEq)]
 pub struct AnalysedArguments<'a> {
     pub schema_field: schema::Field<'a>,
     pub arguments: Vec<Field<'a>>,
+    pub variants: Vec<Rc<VariantDetails<'a>>>,
 }
 
 #[derive(Debug, PartialEq)]
@@ -32,6 +33,7 @@ pub enum ArgumentValue<'a> {
     Object(Object<'a>),
     List(Vec<ArgumentValue<'a>>),
     Literal(syn::Lit),
+    Variant(Rc<VariantDetails<'a>>),
     Variable(Variable<'a>),
     Some(Box<ArgumentValue<'a>>),
     Expression(syn::Expr),
@@ -45,24 +47,72 @@ pub struct Variable<'a> {
     pub argument_struct: syn::Ident,
 }
 
+#[derive(Debug, PartialEq, Eq, Hash)]
+pub struct VariantDetails<'a> {
+    pub(super) en: EnumType<'a>,
+    pub(super) variant: String,
+}
+
 pub fn analyse<'a>(
     literals: Vec<parsing::FieldArgument>,
     field: &schema::Field<'a>,
     argument_struct: Option<&syn::Ident>,
     span: Span,
 ) -> Result<AnalysedArguments<'a>, Errors> {
-    let arguments = analyse_fields(literals, &field.arguments, argument_struct, span)?;
+    let mut analysis = Analysis {
+        argument_struct,
+        variants: HashSet::new(),
+    };
+    let arguments = analyse_fields(&mut analysis, literals, &field.arguments, span)?;
+
+    let mut variants = analysis.variants.into_iter().collect::<Vec<_>>();
+    variants.sort_by_key(|v| (v.en.name, v.variant.clone()));
 
     Ok(AnalysedArguments {
         schema_field: field.clone(),
         arguments,
+        variants,
     })
 }
 
-pub fn analyse_fields<'a>(
+struct Analysis<'schema, 'a> {
+    argument_struct: Option<&'a syn::Ident>,
+    variants: HashSet<Rc<VariantDetails<'schema>>>,
+}
+
+impl<'schema, 'a> Analysis<'schema, 'a> {
+    fn enum_variant(
+        &mut self,
+        en: schema::EnumType<'schema>,
+        variant: String,
+        span: Span,
+    ) -> Result<Rc<VariantDetails<'schema>>, Errors> {
+        en.values
+            .iter()
+            .find(|v| v.name == variant)
+            .ok_or_else(|| {
+                syn::Error::new(
+                    span,
+                    format!("{} does not have a variant {variant}", en.name),
+                )
+            })?;
+
+        let variant = Rc::new(VariantDetails { en, variant });
+
+        if let Some(variant) = self.variants.get(&variant) {
+            return Ok(Rc::clone(variant));
+        }
+
+        self.variants.insert(Rc::clone(&variant));
+
+        Ok(variant)
+    }
+}
+
+fn analyse_fields<'a>(
+    analysis: &mut Analysis<'a, '_>,
     literals: Vec<parsing::FieldArgument>,
     arguments: &[InputValue<'a>],
-    argument_struct: Option<&syn::Ident>,
     span: Span,
 ) -> Result<Vec<Field<'a>>, Errors> {
     validate(&literals, arguments, span)?;
@@ -76,7 +126,7 @@ pub fn analyse_fields<'a>(
             .find(|a| a.name == arg.argument_name)
             .unwrap();
 
-        match analyse_argument(arg, schema_field, argument_struct) {
+        match analyse_argument(analysis, arg, schema_field) {
             Ok(value) => fields.push(Field {
                 schema_field: schema_field.clone(),
                 value,
@@ -93,27 +143,27 @@ pub fn analyse_fields<'a>(
 }
 
 fn analyse_argument<'a>(
+    analysis: &mut Analysis<'a, '_>,
     parsed_arg: parsing::FieldArgument,
     argument: &InputValue<'a>,
-    argument_struct: Option<&syn::Ident>,
 ) -> Result<ArgumentValue<'a>, Errors> {
     match parsed_arg.value {
         parsing::FieldArgumentValue::Literal(lit) => {
-            analyse_value_type(lit, &argument.value_type, argument_struct)
+            analyse_value_type(analysis, lit, &argument.value_type)
         }
         parsing::FieldArgumentValue::Expression(e) => Ok(ArgumentValue::Expression(*e)),
     }
 }
 
 fn analyse_value_type<'a>(
+    analysis: &mut Analysis<'a, '_>,
     literal: parsing::ArgumentLiteral,
     value_type: &TypeRef<'a, InputType<'a>>,
-    argument_struct: Option<&syn::Ident>,
 ) -> Result<ArgumentValue<'a>, Errors> {
     use parsing::ArgumentLiteral;
 
     if let ArgumentLiteral::Variable(ident, _) = literal {
-        if argument_struct.is_none() {
+        if analysis.argument_struct.is_none() {
             return Err(syn::Error::new(
                 ident.span(),
                 "You've provided a variable here, but this QueryFragment does not have an argument_struct.  Please add an argument_struct attribute to the struct."
@@ -125,7 +175,7 @@ fn analyse_value_type<'a>(
         return Ok(ArgumentValue::Variable(Variable {
             ident,
             value_type: value_type.clone(),
-            argument_struct: argument_struct.unwrap().clone(),
+            argument_struct: analysis.argument_struct.unwrap().clone(),
         }));
     }
 
@@ -151,17 +201,16 @@ fn analyse_value_type<'a>(
                 Ok(ArgumentValue::Literal(lit))
             }
 
-            (InputType::Enum(_), ArgumentLiteral::Literal(lit @ Lit::Str(_))) => {
-                // TODO: Check that the string is actually a member of the enum
-                Ok(ArgumentValue::Literal(lit))
-            }
+            (InputType::Enum(en), ArgumentLiteral::Literal(Lit::Str(s))) => Ok(
+                ArgumentValue::Variant(analysis.enum_variant(en, s.value(), s.span())?),
+            ),
             (InputType::Enum(_), lit) => {
                 Err(syn::Error::new(lit.span(), "Expected an enum variant here").into())
             }
 
             (InputType::InputObject(def), ArgumentLiteral::Object(fields, span)) => {
                 let literals = fields.into_iter().collect::<Vec<_>>();
-                let fields = analyse_fields(literals, &def.fields, argument_struct, span)?;
+                let fields = analyse_fields(analysis, literals, &def.fields, span)?;
 
                 Ok(ArgumentValue::Object(Object {
                     schema_obj: def,
@@ -177,7 +226,7 @@ fn analyse_value_type<'a>(
                 let mut output_values = Vec::new();
                 let mut errors = Vec::new();
                 for value in values {
-                    match analyse_value_type(value, element_type.as_ref(), argument_struct) {
+                    match analyse_value_type(analysis, value, element_type.as_ref()) {
                         Ok(v) => output_values.push(v),
                         Err(e) => errors.push(e),
                     }
@@ -191,18 +240,18 @@ fn analyse_value_type<'a>(
             other => {
                 // Automatically wrap the value in a list per the graphql rules.
                 Ok(ArgumentValue::List(vec![analyse_value_type(
+                    analysis,
                     other,
                     element_type.as_ref(),
-                    argument_struct,
                 )?]))
             }
         },
         TypeRef::Nullable(inner_typeref) => match literal {
             ArgumentLiteral::Null(_) => Ok(ArgumentValue::Null),
             other => Ok(ArgumentValue::Some(Box::new(analyse_value_type(
+                analysis,
                 other,
                 inner_typeref.as_ref(),
-                argument_struct,
             )?))),
         },
     }

@@ -12,9 +12,11 @@ impl<'de> ::cynic::QueryFragment<'de> for MyQuery {
     fn query(mut builder: ::cynic::queries::QueryBuilder<Self::SchemaType, Self::Variables>) {
         #![allow(unused_mut)]
         let mut field_builder = builder . select_field :: < schema :: query_fields :: Post , < Option < BlogPostOutput > as :: cynic :: QueryFragment > :: SchemaType > () ;
-        field_builder
-            .argument::<schema::query_fields::post_arguments::Id>()
-            .literal("1234");
+        {
+            field_builder
+                .argument::<schema::query_fields::post_arguments::Id>()
+                .literal("1234");
+        }
         <Option<BlogPostOutput> as ::cynic::QueryFragment>::query(field_builder.select_children());
         field_builder.done();
         let mut field_builder = builder . select_field :: < schema :: query_fields :: AllPosts , < Vec < BlogPostOutput > as :: cynic :: QueryFragment > :: SchemaType > () ;

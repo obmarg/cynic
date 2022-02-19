@@ -1,21 +1,39 @@
 ---
 source: cynic-codegen/src/fragment_derive/tests.rs
-assertion_line: 85
+assertion_line: 96
 expression: "format_code(format!(\"{}\", tokens))"
 
 ---
 #[automatically_derived]
 impl<'de> ::cynic::QueryFragment<'de> for MyQuery {
     type SchemaType = schema::Query;
-    type Variables = AnArgumentStruct;
+    type Variables = ();
     const TYPE: Option<&'static str> = Some("Query");
     fn query(mut builder: ::cynic::queries::QueryBuilder<Self::SchemaType, Self::Variables>) {
         #![allow(unused_mut)]
         let mut field_builder = builder . select_field :: < schema :: query_fields :: FilteredPosts , < Vec < BlogPostOutput > as :: cynic :: QueryFragment > :: SchemaType > () ;
         {
+            struct PostStatePosted;
+            impl ::cynic::serde::Serialize for PostStatePosted {
+                fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                where
+                    S: ::cynic::serde::Serializer,
+                {
+                    serializer.serialize_unit_variant("", 0, "POSTED")
+                }
+            }
+            impl ::cynic::coercions::CoercesTo<schema::PostState> for PostStatePosted {};
             field_builder
                 .argument::<schema::query_fields::filtered_posts_arguments::Filters>()
-                .variable(<AnArgumentStruct as ::cynic::QueryVariables>::Fields::filters());
+                .value()
+                .object()
+                .field::<schema::post_filters_fields::States, _>(|builder| {
+                    builder
+                        .value()
+                        .list()
+                        .item(|builder| builder.literal(PostStatePosted))
+                        .item(|builder| builder.literal(PostStatePosted));
+                });
         }
         <Vec<BlogPostOutput> as ::cynic::QueryFragment>::query(field_builder.select_children());
         field_builder.done();

@@ -38,9 +38,9 @@ impl Argument {
         }
     }
 
-    pub fn with_owned_name(name: String, value: InputLiteral) -> Self {
+    pub fn from_cow_name(name: Cow<'static, str>, value: InputLiteral) -> Self {
         Argument {
-            name: Cow::Owned(name),
+            name,
             value,
         }
     }

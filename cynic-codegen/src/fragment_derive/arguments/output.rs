@@ -1,6 +1,9 @@
-use quote::{quote, ToTokens, TokenStreamExt};
+use quote::{format_ident, quote, ToTokens, TokenStreamExt};
+use syn::Token;
 
-use super::analyse::{AnalysedArguments, ArgumentValue};
+use crate::idents::to_pascal_case;
+
+use super::analyse::{AnalysedArguments, ArgumentValue, VariantDetails};
 
 pub struct Output<'a> {
     pub(super) analysed: AnalysedArguments<'a>,
@@ -13,24 +16,47 @@ impl ToTokens for Output<'_> {
             return;
         }
 
+        let schema_module = &self.schema_module;
+
         let argument_module = &self
             .analysed
             .schema_field
             .argument_module()
-            .to_path(&self.schema_module);
+            .to_path(schema_module);
 
-        for arg in &self.analysed.arguments {
-            let arg_marker = proc_macro2::Ident::from(arg.schema_field.marker_ident());
-            let value = ArgumentValueTokens {
-                value: &arg.value,
-                schema_module: &self.schema_module,
-            };
-
-            tokens.append_all(quote! {
-                field_builder.argument::<#argument_module::#arg_marker>()
-                #value;
+        let variant_structs = self
+            .analysed
+            .variants
+            .iter()
+            .map(|details| VariantDetailsTokens {
+                details,
+                schema_module,
             });
-        }
+
+        let arg_markers = self
+            .analysed
+            .arguments
+            .iter()
+            .map(|arg| proc_macro2::Ident::from(arg.schema_field.marker_ident()));
+
+        let arg_values = self
+            .analysed
+            .arguments
+            .iter()
+            .map(|arg| ArgumentValueTokens {
+                value: &arg.value,
+                schema_module,
+            });
+
+        tokens.append_all(quote! {
+            {
+                #(#variant_structs)*
+                #(
+                    field_builder.argument::<#argument_module::#arg_markers>()
+                    #arg_values;
+                )*
+            }
+        })
     }
 }
 
@@ -101,6 +127,45 @@ impl ToTokens for ArgumentValueTokens<'_> {
             ArgumentValue::Null => tokens.append_all(quote! {
                 .null()
             }),
+            ArgumentValue::Variant(var) => {
+                let variant_struct = var.ident();
+                tokens.append_all(quote! {
+                    .literal(#variant_struct)
+                })
+            }
         }
+    }
+}
+
+impl<'a> VariantDetails<'a> {
+    fn ident(&self) -> syn::Ident {
+        format_ident!("{}{}", self.en.name, to_pascal_case(&self.variant))
+    }
+}
+
+struct VariantDetailsTokens<'a> {
+    details: &'a VariantDetails<'a>,
+    schema_module: &'a syn::Path,
+}
+
+impl<'a> quote::ToTokens for VariantDetailsTokens<'a> {
+    fn to_tokens(&self, tokens: &mut proc_macro2::TokenStream) {
+        let ident = self.details.ident();
+        let variant_str = proc_macro2::Literal::string(&self.details.variant);
+        let enum_marker_ident = self.details.en.marker_ident().to_path(&self.schema_module);
+        tokens.append_all(quote! {
+            struct #ident;
+
+            impl ::cynic::serde::Serialize for #ident {
+                fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                where
+                    S: ::cynic::serde::Serializer
+                {
+                    serializer.serialize_unit_variant("", 0, #variant_str)
+                }
+            }
+
+            impl ::cynic::coercions::CoercesTo<#enum_marker_ident> for #ident {};
+        })
     }
 }

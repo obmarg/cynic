@@ -1,3 +1,5 @@
+use std::borrow::Cow;
+
 use serde::{
     ser::{self, Error as _},
     Serialize,
@@ -118,11 +120,11 @@ impl<'a> ser::Serializer for InputLiteralSerializer {
 
     fn serialize_unit_variant(
         self,
-        name: &'static str,
+        _name: &'static str,
         _variant_index: u32,
-        _variant: &'static str,
+        variant: &'static str,
     ) -> Result<Self::Ok, Self::Error> {
-        Ok(InputLiteral::String(name.into()))
+        Ok(InputLiteral::String(Cow::Borrowed(variant)))
     }
 
     fn serialize_newtype_struct<T: ?Sized>(
@@ -261,7 +263,7 @@ impl<'a> ser::SerializeTuple for ListSerializer {
 
 struct MapSerializer {
     entries: Vec<Argument>,
-    next_key: Option<String>,
+    next_key: Option<Cow<'static, str>>,
 }
 
 impl<'a> ser::SerializeMap for MapSerializer {
@@ -281,7 +283,7 @@ impl<'a> ser::SerializeMap for MapSerializer {
     where
         T: Serialize,
     {
-        self.entries.push(Argument::with_owned_name(
+        self.entries.push(Argument::from_cow_name(
             self.next_key.take().unwrap(),
             to_input_literal(value)?,
         ));
@@ -319,26 +321,26 @@ impl<'a> ser::SerializeStruct for MapSerializer {
 struct KeySerializer;
 
 impl ser::Serializer for KeySerializer {
-    type Ok = String;
+    type Ok = Cow<'static, str>;
 
     type Error = Error;
 
-    type SerializeSeq = ser::Impossible<String, Error>;
+    type SerializeSeq = ser::Impossible<Cow<'static, str>, Error>;
 
-    type SerializeTuple = ser::Impossible<String, Error>;
+    type SerializeTuple = ser::Impossible<Cow<'static, str>, Error>;
 
-    type SerializeTupleStruct = ser::Impossible<String, Error>;
+    type SerializeTupleStruct = ser::Impossible<Cow<'static, str>, Error>;
 
-    type SerializeTupleVariant = ser::Impossible<String, Error>;
+    type SerializeTupleVariant = ser::Impossible<Cow<'static, str>, Error>;
 
-    type SerializeMap = ser::Impossible<String, Error>;
+    type SerializeMap = ser::Impossible<Cow<'static, str>, Error>;
 
-    type SerializeStruct = ser::Impossible<String, Error>;
+    type SerializeStruct = ser::Impossible<Cow<'static, str>, Error>;
 
-    type SerializeStructVariant = ser::Impossible<String, Error>;
+    type SerializeStructVariant = ser::Impossible<Cow<'static, str>, Error>;
 
     fn serialize_bool(self, v: bool) -> Result<Self::Ok, Self::Error> {
-        Ok(v.to_string())
+        Ok(v.to_string().into())
     }
 
     fn serialize_i8(self, v: i8) -> Result<Self::Ok, Self::Error> {
@@ -402,11 +404,11 @@ impl ser::Serializer for KeySerializer {
     }
 
     fn serialize_char(self, v: char) -> Result<Self::Ok, Self::Error> {
-        Ok(v.to_string())
+        Ok(v.to_string().into())
     }
 
     fn serialize_str(self, v: &str) -> Result<Self::Ok, Self::Error> {
-        Ok(v.to_string())
+        Ok(v.to_string().into())
     }
 
     fn serialize_bytes(self, _v: &[u8]) -> Result<Self::Ok, Self::Error> {
@@ -446,7 +448,7 @@ impl ser::Serializer for KeySerializer {
         _variant_index: u32,
         variant: &'static str,
     ) -> Result<Self::Ok, Self::Error> {
-        Ok(variant.to_string())
+        Ok(Cow::Borrowed(variant))
     }
 
     fn serialize_newtype_struct<T: ?Sized>(

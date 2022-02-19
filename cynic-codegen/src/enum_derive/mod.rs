@@ -130,7 +130,6 @@ pub fn enum_derive_impl(
             }
 
             ::cynic::impl_coercions!(#ident, #schema_module::#enum_marker_ident);
-            // TODO: impl IntoObjectLiteral....
 
             #[automatically_derived]
             impl #schema_module::variable::Variable for #ident {
