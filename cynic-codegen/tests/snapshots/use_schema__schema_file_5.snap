@@ -6,6 +6,7 @@ expression: "format_code(format!(\"{}\", tokens))"
 ---
 impl ::cynic::schema::QueryRoot for Query {}
 pub struct AnInputType;
+impl ::cynic::schema::InputObjectMarker for AnInputType {}
 pub mod an_input_type_fields {
     pub struct FavouriteDessert;
     impl ::cynic::schema::Field for FavouriteDessert {

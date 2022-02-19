@@ -26,7 +26,7 @@ mod queries {
     #[derive(cynic::QueryFragment, Debug)]
     #[cynic(argument_struct = "PullRequestTitlesArguments")]
     pub struct Repository {
-        #[arguments(order_by: $pr_order)]
+        #[arguments(orderBy: $pr_order)]
         pub pull_requests: PullRequestConnection,
     }
 

@@ -6,7 +6,7 @@ expression: "format_code(format!(\"{}\", tokens))"
 ---
 impl ::cynic::schema::QueryRoot for QueryRoot {}
 impl ::cynic::schema::MutationRoot for MutationRoot {}
-impl ::cynic::schema::SuscriptionRoot for SubscriptionRoot {}
+impl ::cynic::schema::SubscriptionRoot for SubscriptionRoot {}
 pub struct Book;
 pub mod book_fields {
     pub struct Id;

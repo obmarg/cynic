@@ -31,4 +31,5 @@ impl schema::variable::Variable for DateTime {
     const TYPE: ::cynic::variables::VariableType =
         ::cynic::variables::VariableType::Named("DateTime");
 }
+::cynic::impl_coercions!(DateTime, schema::DateTime);
 

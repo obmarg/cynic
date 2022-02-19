@@ -24,19 +24,29 @@ pub struct FieldSelection {
     pub(super) children: SelectionSet,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct Argument {
-    pub(super) name: &'static str,
+    pub(super) name: Cow<'static, str>,
     pub(super) value: InputLiteral,
 }
 
 impl Argument {
     pub fn new(name: &'static str, value: InputLiteral) -> Self {
-        Argument { name, value }
+        Argument {
+            name: Cow::Borrowed(name),
+            value,
+        }
+    }
+
+    pub fn with_owned_name(name: String, value: InputLiteral) -> Self {
+        Argument {
+            name: Cow::Owned(name),
+            value,
+        }
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum InputLiteral {
     Int(i32),
     Float(f64),

@@ -126,6 +126,7 @@ pub mod city_fields {
 }
 pub struct CityOrderByInput {}
 pub struct CityWhereInput;
+impl ::cynic::schema::InputObjectMarker for CityWhereInput {}
 pub mod city_where_input_fields {
     pub struct Id;
     impl ::cynic::schema::Field for Id {
@@ -971,6 +972,7 @@ pub mod commitment_fields {
     impl ::cynic::schema::HasField<UpdatedAt, super::DateTime> for super::Commitment {}
 }
 pub struct CommitmentWhereInput;
+impl ::cynic::schema::InputObjectMarker for CommitmentWhereInput {}
 pub mod commitment_where_input_fields {
     pub struct Id;
     impl ::cynic::schema::Field for Id {
@@ -1773,6 +1775,7 @@ pub mod company_fields {
     impl ::cynic::schema::HasField<UpdatedAt, super::DateTime> for super::Company {}
 }
 pub struct CompanyWhereInput;
+impl ::cynic::schema::InputObjectMarker for CompanyWhereInput {}
 pub mod company_where_input_fields {
     pub struct Id;
     impl ::cynic::schema::Field for Id {
@@ -3046,6 +3049,7 @@ pub mod country_fields {
 }
 pub struct CountryOrderByInput {}
 pub struct CountryWhereInput;
+impl ::cynic::schema::InputObjectMarker for CountryWhereInput {}
 pub mod country_where_input_fields {
     pub struct Id;
     impl ::cynic::schema::Field for Id {
@@ -4344,6 +4348,7 @@ pub mod job_fields {
     impl ::cynic::schema::HasField<UpdatedAt, super::DateTime> for super::Job {}
 }
 pub struct JobInput;
+impl ::cynic::schema::InputObjectMarker for JobInput {}
 pub mod job_input_fields {
     pub struct CompanySlug;
     impl ::cynic::schema::Field for CompanySlug {
@@ -4364,6 +4369,7 @@ pub mod job_input_fields {
 }
 pub struct JobOrderByInput {}
 pub struct JobWhereInput;
+impl ::cynic::schema::InputObjectMarker for JobWhereInput {}
 pub mod job_where_input_fields {
     pub struct Id;
     impl ::cynic::schema::Field for Id {
@@ -5754,6 +5760,7 @@ pub mod job_where_input_fields {
     }
 }
 pub struct JobsInput;
+impl ::cynic::schema::InputObjectMarker for JobsInput {}
 pub mod jobs_input_fields {
     pub struct Type;
     impl ::cynic::schema::Field for Type {
@@ -5808,6 +5815,7 @@ pub mod location_fields {
     impl ::cynic::schema::HasField<Type, super::String> for super::Location {}
 }
 pub struct LocationInput;
+impl ::cynic::schema::InputObjectMarker for LocationInput {}
 pub mod location_input_fields {
     pub struct Slug;
     impl ::cynic::schema::Field for Slug {
@@ -5819,6 +5827,7 @@ pub mod location_input_fields {
     impl ::cynic::schema::HasInputField<Slug, super::String> for super::LocationInput {}
 }
 pub struct LocationsInput;
+impl ::cynic::schema::InputObjectMarker for LocationsInput {}
 pub mod locations_input_fields {
     pub struct Value;
     impl ::cynic::schema::Field for Value {
@@ -5915,6 +5924,7 @@ pub mod mutation_fields {
     }
 }
 pub struct PostJobInput;
+impl ::cynic::schema::InputObjectMarker for PostJobInput {}
 pub mod post_job_input_fields {
     pub struct Title;
     impl ::cynic::schema::Field for Title {
@@ -6230,6 +6240,7 @@ pub mod remote_fields {
 }
 pub struct RemoteOrderByInput {}
 pub struct RemoteWhereInput;
+impl ::cynic::schema::InputObjectMarker for RemoteWhereInput {}
 pub mod remote_where_input_fields {
     pub struct Id;
     impl ::cynic::schema::Field for Id {
@@ -6998,6 +7009,7 @@ pub mod remote_where_input_fields {
     }
 }
 pub struct SubscribeInput;
+impl ::cynic::schema::InputObjectMarker for SubscribeInput {}
 pub mod subscribe_input_fields {
     pub struct Name;
     impl ::cynic::schema::Field for Name {
@@ -7120,6 +7132,7 @@ pub mod tag_fields {
 }
 pub struct TagOrderByInput {}
 pub struct TagWhereInput;
+impl ::cynic::schema::InputObjectMarker for TagWhereInput {}
 pub mod tag_where_input_fields {
     pub struct Id;
     impl ::cynic::schema::Field for Id {
@@ -7713,6 +7726,7 @@ pub mod tag_where_input_fields {
     }
 }
 pub struct UpdateCompanyInput;
+impl ::cynic::schema::InputObjectMarker for UpdateCompanyInput {}
 pub mod update_company_input_fields {
     pub struct Id;
     impl ::cynic::schema::Field for Id {
@@ -7732,6 +7746,7 @@ pub mod update_company_input_fields {
     impl ::cynic::schema::HasInputField<LogoUrl, super::String> for super::UpdateCompanyInput {}
 }
 pub struct UpdateJobInput;
+impl ::cynic::schema::InputObjectMarker for UpdateJobInput {}
 pub mod update_job_input_fields {
     pub struct Id;
     impl ::cynic::schema::Field for Id {

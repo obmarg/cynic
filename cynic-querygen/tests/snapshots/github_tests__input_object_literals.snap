@@ -20,7 +20,7 @@ mod queries {
 
     #[derive(cynic::QueryFragment, Debug)]
     pub struct Repository {
-        #[arguments(order_by: { direction: "ASC", field: "CREATED_AT" })]
+        #[arguments(orderBy: { direction: "ASC", field: "CREATED_AT" })]
         pub pull_requests: PullRequestConnection,
     }
 

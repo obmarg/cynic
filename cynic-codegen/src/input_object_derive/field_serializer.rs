@@ -111,9 +111,7 @@ impl<'a> FieldSerializer<'a> {
             #vec_name.push(
                 ::cynic::queries::Argument::new(
                     #graphql_field_name,
-                    <
-                        #rust_field_type as ::cynic::queries::IntoInputLiteral
-                    >::into_literal(self.#rust_field_name)
+                    ::cynic::queries::to_input_literal(&self.#rust_field_name)
                 )
             );
         };

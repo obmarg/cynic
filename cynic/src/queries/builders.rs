@@ -5,7 +5,7 @@ use std::{borrow::Cow, marker::PhantomData};
 
 use crate::{coercions::CoercesTo, schema, variables::VariableDefinition};
 
-use super::{ast::*, FlattensInto, IntoInputLiteral, Recursable};
+use super::{ast::*, to_input_literal, FlattensInto, Recursable};
 
 // TODO: QueryBuilder or SelectionBuilder?
 pub struct QueryBuilder<'a, SchemaType, Variables> {
@@ -265,8 +265,9 @@ impl<'a, SchemaType, ArgumentStruct> ArgumentBuilder<'a, Option<SchemaType>, Arg
 }
 
 impl<'a, T, ArgStruct> ArgumentBuilder<'a, T, ArgStruct> {
-    pub fn literal(self, l: impl IntoInputLiteral + CoercesTo<T>) {
-        self.destination.push(l.into_literal());
+    pub fn literal(self, l: impl serde::Serialize + CoercesTo<T>) {
+        self.destination
+            .push(to_input_literal(&l).expect("could not convert to InputLiteral"));
     }
 }
 
@@ -367,7 +368,7 @@ impl<'a> InputLiteralContainer<'a> {
                 argument_name: name,
                 arguments,
             } => {
-                arguments.push(Argument { name, value });
+                arguments.push(Argument::new(name, value));
 
                 &mut arguments.last_mut().unwrap().value
             }

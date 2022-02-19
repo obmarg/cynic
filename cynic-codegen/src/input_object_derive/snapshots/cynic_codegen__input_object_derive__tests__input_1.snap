@@ -23,27 +23,6 @@ impl ::cynic::serde::Serialize for IssueOrder {
         map_serializer.end()
     }
 }
-#[automatically_derived]
-impl ::cynic::queries::IntoInputLiteral for IssueOrder {
-    fn into_literal(self) -> ::cynic::queries::InputLiteral {
-        let mut vec = Vec::new();
-        ::cynic::assert_impl!(
-            OrderDirection: ::cynic::coercions::CoercesTo<schema::OrderDirection>
-        );
-        vec.push(::cynic::queries::Argument::new(
-            "direction",
-            <OrderDirection as ::cynic::queries::IntoInputLiteral>::into_literal(self.direction),
-        ));
-        ::cynic::assert_impl!(
-            IssueOrderField: ::cynic::coercions::CoercesTo<schema::IssueOrderField>
-        );
-        vec.push(::cynic::queries::Argument::new(
-            "field",
-            <IssueOrderField as ::cynic::queries::IntoInputLiteral>::into_literal(self.field),
-        ));
-        ::cynic::queries::InputLiteral::Object(vec)
-    }
-}
 ::cynic::impl_coercions!(IssueOrder, schema::IssueOrder);
 #[automatically_derived]
 impl schema::variable::Variable for IssueOrder {

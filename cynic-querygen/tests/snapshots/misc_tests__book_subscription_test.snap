@@ -14,7 +14,7 @@ mod queries {
     #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "SubscriptionRoot")]
     pub struct BookSubscription {
-        #[arguments(mutation_type: "CREATED")]
+        #[arguments(mutationType: "CREATED")]
         pub books: BookChanged,
     }
 

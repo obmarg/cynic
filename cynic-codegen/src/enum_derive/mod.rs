@@ -129,19 +129,6 @@ pub fn enum_derive_impl(
                 }
             }
 
-            #[automatically_derived]
-            impl ::cynic::queries::IntoInputLiteral for #ident {
-                fn into_literal(self) -> ::cynic::queries::InputLiteral {
-                    use std::borrow::Cow;
-
-                    ::cynic::queries::InputLiteral::String(Cow::Borrowed(match self {
-                        #(
-                            #ident::#variants => #string_literals,
-                        )*
-                    }))
-                }
-            }
-
             ::cynic::impl_coercions!(#ident, #schema_module::#enum_marker_ident);
             // TODO: impl IntoObjectLiteral....
 
