@@ -1,3 +1,7 @@
+/// Encodes the rules for what types can be flattened into other types
+/// via the `#[cynic(flatten)]` attribute.
+///
+/// This trait is sealed and can't be implemented by users of cynic.
 pub trait FlattensInto<T>: private::Sealed<T> {}
 
 impl<T> FlattensInto<Vec<T>> for Vec<Option<T>> {}

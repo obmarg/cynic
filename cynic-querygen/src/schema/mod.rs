@@ -245,20 +245,6 @@ impl<'schema> OutputType<'schema> {
     }
 }
 
-impl<'schema> InputType<'schema> {
-    /// Checks whether it's safe to assume an InputType is Copy
-    ///
-    /// This might give false negatives for user defined scalars,
-    /// but not much that can be done about that...
-    pub fn is_definitely_copy(&self) -> bool {
-        match self {
-            InputType::InputObject(_) => false,
-            InputType::Enum(_) => true,
-            InputType::Scalar(details) => details.name == "Int" || details.name == "Boolean",
-        }
-    }
-}
-
 impl<'schema> TryFrom<Type<'schema>> for InputType<'schema> {
     type Error = Error;
 

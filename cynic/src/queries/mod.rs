@@ -1,3 +1,5 @@
+//! Tools for building GraphQL queries in cynic
+
 mod ast;
 mod builders;
 mod flatten;

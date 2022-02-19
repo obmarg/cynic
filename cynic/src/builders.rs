@@ -2,6 +2,7 @@ use crate::operation::StreamingOperation;
 
 use super::{Operation, QueryFragment};
 
+/// Provides a `build` function on `QueryFragment`s that represent a query
 pub trait QueryBuilder<'de>: Sized {
     /// The type that this query takes as variables.
     /// May be `()` if no variables are accepted.

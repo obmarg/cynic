@@ -22,6 +22,7 @@ pub struct FragmentImpl<'a> {
     schema_type_path: syn::Path,
 }
 
+#[allow(clippy::large_enum_variant)]
 enum Selection<'a> {
     Field(FieldSelection<'a>),
     Spread(SpreadSelection),

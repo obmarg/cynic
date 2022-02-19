@@ -4,13 +4,13 @@ mod schema {
 
 #[derive(cynic::QueryVariables)]
 struct TestArgs {
-    anInt: i32,
+    an_int: i32,
 }
 
 #[derive(cynic::QueryFragment, PartialEq, Debug)]
 #[cynic(schema_path = "src/bin/simple.graphql", argument_struct = "TestArgs")]
 struct TestStruct {
-    #[arguments(x: $anInt, y = Some("1".to_string()))]
+    #[arguments(x: $an_int, y = Some("1".to_string()))]
     field_one: String,
     nested: Nested,
     opt_nested: Option<Nested>,
@@ -95,7 +95,7 @@ fn test_decoding_options() {
 fn test_query_building() {
     use cynic::QueryBuilder;
 
-    let operation = TestQuery::build(TestArgs { anInt: 1 });
+    let operation = TestQuery::build(TestArgs { an_int: 1 });
 
     insta::assert_snapshot!(operation.query);
 }

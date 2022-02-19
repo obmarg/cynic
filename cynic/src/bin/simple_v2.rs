@@ -13,7 +13,7 @@ mod schema {
 mod queries {
     use super::schema;
 
-    #[derive(cynic::FragmentArguments)]
+    #[derive(cynic::QueryVariables)]
     pub struct TestArgs {}
 
     #[derive(cynic::QueryFragment)]

@@ -99,12 +99,6 @@ struct ContentVisitor<'de> {
     value: PhantomData<Content<'de>>,
 }
 
-impl<'de> ContentVisitor<'de> {
-    fn new() -> Self {
-        ContentVisitor { value: PhantomData }
-    }
-}
-
 impl<'de> Visitor<'de> for ContentVisitor<'de> {
     type Value = Content<'de>;
 

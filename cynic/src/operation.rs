@@ -16,7 +16,7 @@ pub struct Operation<QueryFragment, Variables = ()> {
     /// The graphql query string that will be sent to the server
     pub query: String,
 
-    // The variables that will be sent to the server as part of this operation
+    /// The variables that will be sent to the server as part of this operation
     pub variables: Variables,
 
     phantom: PhantomData<fn() -> QueryFragment>,

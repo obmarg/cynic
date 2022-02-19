@@ -122,14 +122,6 @@ impl<'schema> InputFieldType<'schema> {
         }
     }
 
-    pub fn contains_list(&self) -> bool {
-        match self {
-            InputFieldType::NonNullType(inner) => inner.contains_list(),
-            InputFieldType::NamedType(_) => false,
-            InputFieldType::ListType(_) => true,
-        }
-    }
-
     pub fn type_spec(&self) -> Cow<'schema, str> {
         input_type_spec_imp(self, true)
     }

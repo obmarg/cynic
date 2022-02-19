@@ -157,6 +157,7 @@ impl<'a, SchemaType, Variables> QueryBuilder<'a, SchemaType, Variables> {
 
 // TODO: do we even need SchemaType here or can we do a lookup through Field
 pub struct FieldSelectionBuilder<'a, Field, SchemaType, Variables> {
+    #[allow(clippy::type_complexity)]
     phantom: PhantomData<fn() -> (Field, SchemaType, Variables)>,
     field: &'a mut FieldSelection,
     recurse_depth: Option<u8>,

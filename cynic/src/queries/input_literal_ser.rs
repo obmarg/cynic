@@ -7,6 +7,7 @@ use serde::{
 
 use crate::queries::{Argument, InputLiteral};
 
+/// Serializes a type into an `InputLiteral`
 pub fn to_input_literal<T>(value: &T) -> Result<InputLiteral, Error>
 where
     T: Serialize + ?Sized,

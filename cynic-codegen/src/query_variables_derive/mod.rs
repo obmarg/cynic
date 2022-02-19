@@ -47,7 +47,7 @@ pub fn query_variables_derive_impl(
         });
 
         field_inserts.push(quote! {
-            map_serializer.serialize_entry(#name_str, &self.#name);
+            map_serializer.serialize_entry(#name_str, &self.#name)?;
         })
     }
 

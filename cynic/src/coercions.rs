@@ -1,16 +1,24 @@
+//! GraphQL has a number of coercion rules that make it easier to use and allow
+//! certain changes to be made in a backwards compatible way.
+//!
+//! This module contains some traits & macros that are used to implement these
+//! rules in cynic.
+
 use crate::Id;
 
+/// Determines whether a type can be coerced into a given schema type.
+///
+/// Users should not usually need to implement this, it's handled automatically
+/// by the various derives.
 pub trait CoercesTo<T> {}
 
 impl<T, TypeLock> CoercesTo<Option<TypeLock>> for Option<T> where T: CoercesTo<TypeLock> {}
 impl<T, TypeLock> CoercesTo<Vec<TypeLock>> for Vec<T> where T: CoercesTo<TypeLock> {}
 
-// TODO: Mostly putting this particular impl here to shut up the compiler temporarily.
-// Should probably remove it once i've updated the argument literal code to
-// construct IDs.
 impl CoercesTo<Id> for &str {}
 
 #[macro_export]
+/// Implements the default GraphQL list & option coercion rules for a type.
 macro_rules! impl_coercions {
     ($target:ty, $typelock:ty) => {
         impl $crate::coercions::CoercesTo<$typelock> for $target {}
