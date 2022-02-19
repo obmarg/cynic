@@ -10,7 +10,7 @@ pub fn guess_field<'a>(
 
 pub fn format_guess(guess_field: Option<&str>) -> String {
     match guess_field {
-        Some(v) => format!(" Did you mean {}?", v),
+        Some(v) => format!(" Did you mean `{v}`?"),
         None => "".to_owned(),
     }
 }
@@ -25,7 +25,7 @@ impl std::fmt::Display for FieldSuggestionError<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(
             f,
-            "Field {} does not exist on the GraphQL type {}.{}",
+            "no field `{}` on the GraphQL type `{}`. {}",
             self.expected_field,
             self.graphql_type_name,
             format_guess(self.suggested_field)
