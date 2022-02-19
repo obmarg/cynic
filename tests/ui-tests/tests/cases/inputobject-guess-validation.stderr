@@ -1,11 +1,11 @@
-error: Could not find a field fieid in the GraphQL input object IssueOrder. Did you mean field?
-  --> $DIR/inputobject-guess-validation.rs:25:13
+error: no field `fieid` on the GraphQL type `IssueOrder`.  Did you mean `field`?
+  --> tests/cases/inputobject-guess-validation.rs:25:13
    |
 25 |         pub fieid: IssueOrderField,
    |             ^^^^^
 
-error: This InputObject is missing these required fields: field
-  --> $DIR/inputobject-guess-validation.rs:23:16
+error: This InputObject is missing these fields: field
+  --> tests/cases/inputobject-guess-validation.rs:23:16
    |
 23 |     pub struct IssueOrder {
    |                ^^^^^^^^^^

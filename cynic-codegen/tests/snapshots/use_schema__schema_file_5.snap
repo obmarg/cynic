@@ -32,7 +32,9 @@ pub mod nested_fields {
             "aString"
         }
     }
-    impl ::cynic::schema::HasField<AString, super::String> for super::Nested {}
+    impl ::cynic::schema::HasField<AString> for super::Nested {
+        type Type = super::String;
+    }
     pub struct OptString;
     impl ::cynic::schema::Field for OptString {
         type SchemaType = Option<super::String>;
@@ -40,7 +42,9 @@ pub mod nested_fields {
             "optString"
         }
     }
-    impl ::cynic::schema::HasField<OptString, Option<super::String>> for super::Nested {}
+    impl ::cynic::schema::HasField<OptString> for super::Nested {
+        type Type = Option<super::String>;
+    }
 }
 pub struct Query;
 pub mod query_fields {
@@ -51,7 +55,9 @@ pub mod query_fields {
             "testStruct"
         }
     }
-    impl ::cynic::schema::HasField<TestStruct, Option<super::TestStruct>> for super::Query {}
+    impl ::cynic::schema::HasField<TestStruct> for super::Query {
+        type Type = Option<super::TestStruct>;
+    }
     pub struct MyUnion;
     impl ::cynic::schema::Field for MyUnion {
         type SchemaType = Option<super::MyUnionType>;
@@ -59,7 +65,9 @@ pub mod query_fields {
             "myUnion"
         }
     }
-    impl ::cynic::schema::HasField<MyUnion, Option<super::MyUnionType>> for super::Query {}
+    impl ::cynic::schema::HasField<MyUnion> for super::Query {
+        type Type = Option<super::MyUnionType>;
+    }
 }
 pub struct TestStruct;
 pub mod test_struct_fields {
@@ -70,7 +78,9 @@ pub mod test_struct_fields {
             "fieldOne"
         }
     }
-    impl ::cynic::schema::HasField<FieldOne, super::String> for super::TestStruct {}
+    impl ::cynic::schema::HasField<FieldOne> for super::TestStruct {
+        type Type = super::String;
+    }
     pub mod field_one_arguments {
         pub struct X;
         impl ::cynic::schema::HasArgument<X> for super::FieldOne {
@@ -94,7 +104,9 @@ pub mod test_struct_fields {
             "tastyCakes"
         }
     }
-    impl ::cynic::schema::HasField<TastyCakes, super::Dessert> for super::TestStruct {}
+    impl ::cynic::schema::HasField<TastyCakes> for super::TestStruct {
+        type Type = super::Dessert;
+    }
     pub mod tasty_cakes_arguments {
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::TastyCakes {
@@ -118,7 +130,9 @@ pub mod test_struct_fields {
             "fieldWithInput"
         }
     }
-    impl ::cynic::schema::HasField<FieldWithInput, super::Dessert> for super::TestStruct {}
+    impl ::cynic::schema::HasField<FieldWithInput> for super::TestStruct {
+        type Type = super::Dessert;
+    }
     pub mod field_with_input_arguments {
         pub struct Input;
         impl ::cynic::schema::HasArgument<Input> for super::FieldWithInput {
@@ -135,7 +149,9 @@ pub mod test_struct_fields {
             "nested"
         }
     }
-    impl ::cynic::schema::HasField<Nested, super::Nested> for super::TestStruct {}
+    impl ::cynic::schema::HasField<Nested> for super::TestStruct {
+        type Type = super::Nested;
+    }
     pub struct OptNested;
     impl ::cynic::schema::Field for OptNested {
         type SchemaType = Option<super::Nested>;
@@ -143,7 +159,9 @@ pub mod test_struct_fields {
             "optNested"
         }
     }
-    impl ::cynic::schema::HasField<OptNested, Option<super::Nested>> for super::TestStruct {}
+    impl ::cynic::schema::HasField<OptNested> for super::TestStruct {
+        type Type = Option<super::Nested>;
+    }
     pub struct Dessert;
     impl ::cynic::schema::Field for Dessert {
         type SchemaType = Option<super::Dessert>;
@@ -151,7 +169,9 @@ pub mod test_struct_fields {
             "dessert"
         }
     }
-    impl ::cynic::schema::HasField<Dessert, Option<super::Dessert>> for super::TestStruct {}
+    impl ::cynic::schema::HasField<Dessert> for super::TestStruct {
+        type Type = Option<super::Dessert>;
+    }
     pub struct Json;
     impl ::cynic::schema::Field for Json {
         type SchemaType = Option<super::Json>;
@@ -159,7 +179,9 @@ pub mod test_struct_fields {
             "json"
         }
     }
-    impl ::cynic::schema::HasField<Json, Option<super::Json>> for super::TestStruct {}
+    impl ::cynic::schema::HasField<Json> for super::TestStruct {
+        type Type = Option<super::Json>;
+    }
 }
 impl ::cynic::schema::HasSubtype<Nested> for MyUnionType {}
 impl ::cynic::schema::HasSubtype<TestStruct> for MyUnionType {}

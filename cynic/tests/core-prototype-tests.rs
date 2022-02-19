@@ -30,8 +30,12 @@ mod manual_schema {
             }
         }
 
-        impl cynic::schema::HasField<AllPosts, Vec<super::BlogPost>> for super::Query {}
-        impl cynic::schema::HasField<Post, Option<super::BlogPost>> for super::Query {}
+        impl cynic::schema::HasField<AllPosts> for super::Query {
+            type Type = Vec<super::BlogPost>;
+        }
+        impl cynic::schema::HasField<Post> for super::Query {
+            type Type = Option<super::BlogPost>;
+        }
 
         pub mod post_arguments {
             pub struct Id {}
@@ -69,9 +73,13 @@ mod manual_schema {
 
         // Note: The schema module could also (probably) output HasField impls for
         // the various option types that are also valid for the given type?
-        impl cynic::schema::HasField<Author, super::Author> for super::BlogPost {}
+        impl cynic::schema::HasField<Author> for super::BlogPost {
+            type Type = super::Author;
+        }
 
-        impl cynic::schema::HasField<HasMetadata, Option<bool>> for super::BlogPost {}
+        impl cynic::schema::HasField<HasMetadata> for super::BlogPost {
+            type Type = Option<bool>;
+        }
     }
 
     pub struct Author;
@@ -86,7 +94,9 @@ mod manual_schema {
             }
         }
 
-        impl cynic::schema::HasField<Name, Option<String>> for super::Author {}
+        impl cynic::schema::HasField<Name> for super::Author {
+            type Type = Option<String>;
+        }
     }
 }
 

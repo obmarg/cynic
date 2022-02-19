@@ -36,7 +36,9 @@ impl ToTokens for FieldOutput<'_> {
                 }
             }
 
-            impl ::cynic::schema::HasField<#field_marker, #field_type_marker> for super::#parent_marker {}
+            impl ::cynic::schema::HasField<#field_marker> for super::#parent_marker {
+                type Type = #field_type_marker;
+            }
         });
 
         if !self.field.arguments.is_empty() {

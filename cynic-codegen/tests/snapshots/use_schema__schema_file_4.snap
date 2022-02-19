@@ -14,7 +14,9 @@ pub mod bar_fields {
             "id"
         }
     }
-    impl ::cynic::schema::HasField<Id, super::Uuid> for super::Bar {}
+    impl ::cynic::schema::HasField<Id> for super::Bar {
+        type Type = super::Uuid;
+    }
     pub struct Name;
     impl ::cynic::schema::Field for Name {
         type SchemaType = Option<super::String>;
@@ -22,7 +24,9 @@ pub mod bar_fields {
             "name"
         }
     }
-    impl ::cynic::schema::HasField<Name, Option<super::String>> for super::Bar {}
+    impl ::cynic::schema::HasField<Name> for super::Bar {
+        type Type = Option<super::String>;
+    }
 }
 pub struct Foo;
 pub mod foo_fields {
@@ -33,7 +37,9 @@ pub mod foo_fields {
             "_"
         }
     }
-    impl ::cynic::schema::HasField<_Underscore, Option<super::Boolean>> for super::Foo {}
+    impl ::cynic::schema::HasField<_Underscore> for super::Foo {
+        type Type = Option<super::Boolean>;
+    }
     pub struct Self_;
     impl ::cynic::schema::Field for Self_ {
         type SchemaType = Option<super::Boolean>;
@@ -41,7 +47,9 @@ pub mod foo_fields {
             "self"
         }
     }
-    impl ::cynic::schema::HasField<Self_, Option<super::Boolean>> for super::Foo {}
+    impl ::cynic::schema::HasField<Self_> for super::Foo {
+        type Type = Option<super::Boolean>;
+    }
     pub struct Super;
     impl ::cynic::schema::Field for Super {
         type SchemaType = Option<super::Boolean>;
@@ -49,7 +57,9 @@ pub mod foo_fields {
             "super"
         }
     }
-    impl ::cynic::schema::HasField<Super, Option<super::Boolean>> for super::Foo {}
+    impl ::cynic::schema::HasField<Super> for super::Foo {
+        type Type = Option<super::Boolean>;
+    }
     pub struct Crate;
     impl ::cynic::schema::Field for Crate {
         type SchemaType = Option<super::Boolean>;
@@ -57,7 +67,9 @@ pub mod foo_fields {
             "crate"
         }
     }
-    impl ::cynic::schema::HasField<Crate, Option<super::Boolean>> for super::Foo {}
+    impl ::cynic::schema::HasField<Crate> for super::Foo {
+        type Type = Option<super::Boolean>;
+    }
     pub struct Async;
     impl ::cynic::schema::Field for Async {
         type SchemaType = Option<super::Boolean>;
@@ -65,7 +77,9 @@ pub mod foo_fields {
             "async"
         }
     }
-    impl ::cynic::schema::HasField<Async, Option<super::Boolean>> for super::Foo {}
+    impl ::cynic::schema::HasField<Async> for super::Foo {
+        type Type = Option<super::Boolean>;
+    }
     pub struct Bar;
     impl ::cynic::schema::Field for Bar {
         type SchemaType = Option<super::Bar>;
@@ -73,7 +87,9 @@ pub mod foo_fields {
             "bar"
         }
     }
-    impl ::cynic::schema::HasField<Bar, Option<super::Bar>> for super::Foo {}
+    impl ::cynic::schema::HasField<Bar> for super::Foo {
+        type Type = Option<super::Bar>;
+    }
     pub mod bar_arguments {
         pub struct Id;
         impl ::cynic::schema::HasArgument<Id> for super::Bar {

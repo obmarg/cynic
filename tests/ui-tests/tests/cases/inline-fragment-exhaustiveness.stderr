@@ -1,11 +1,11 @@
-error: Could not find a match for Nestde in MyUnionType. Did you mean Nested?
-  --> $DIR/inline-fragment-exhaustiveness.rs:14:5
+error: Could not find a match for Nestde in MyUnionType. Did you mean `Nested`?
+  --> tests/cases/inline-fragment-exhaustiveness.rs:14:5
    |
 14 |     Nestde(Nested),
    |     ^^^^^^
 
 error: This InlineFragment is missing a variant for Nested.  Either provide a variant for this type or add a fallback variant.
- --> $DIR/inline-fragment-exhaustiveness.rs:7:10
+ --> tests/cases/inline-fragment-exhaustiveness.rs:7:10
   |
 7 | #[derive(cynic::InlineFragments)]
   |          ^^^^^^^^^^^^^^^^^^^^^^

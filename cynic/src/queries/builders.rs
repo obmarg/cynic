@@ -5,7 +5,7 @@ use std::{borrow::Cow, marker::PhantomData};
 
 use crate::{coercions::CoercesTo, schema, variables::VariableDefinition};
 
-use super::{ast::*, to_input_literal, FlattensInto, Recursable};
+use super::{ast::*, to_input_literal, FlattensInto, IsFieldType, Recursable};
 
 // TODO: QueryBuilder or SelectionBuilder?
 pub struct QueryBuilder<'a, SchemaType, Variables> {
@@ -67,7 +67,8 @@ impl<'a, SchemaType, Variables> QueryBuilder<'a, SchemaType, Variables> {
     where
         FieldMarker: schema::Field,
         FieldType: FlattensInto<Flattened>,
-        SchemaType: schema::HasField<FieldMarker, FieldType>,
+        SchemaType: schema::HasField<FieldMarker>,
+        FieldType: IsFieldType<SchemaType::Type>,
     {
         FieldSelectionBuilder {
             recurse_depth: self.recurse_depth,
@@ -85,7 +86,8 @@ impl<'a, SchemaType, Variables> QueryBuilder<'a, SchemaType, Variables> {
     ) -> FieldSelectionBuilder<'_, FieldMarker, FieldType, Variables>
     where
         FieldMarker: schema::Field,
-        SchemaType: schema::HasField<FieldMarker, FieldType>,
+        SchemaType: schema::HasField<FieldMarker>,
+        FieldType: IsFieldType<SchemaType::Type>,
     {
         FieldSelectionBuilder {
             recurse_depth: self.recurse_depth,
@@ -100,7 +102,7 @@ impl<'a, SchemaType, Variables> QueryBuilder<'a, SchemaType, Variables> {
     ) -> Option<FieldSelectionBuilder<'_, FieldMarker, FieldType, Variables>>
     where
         FieldMarker: schema::Field,
-        SchemaType: schema::HasField<FieldMarker, FieldMarker::SchemaType>,
+        SchemaType: schema::HasField<FieldMarker>,
         FieldType: Recursable<FieldMarker::SchemaType>,
     {
         let new_depth = self.recurse_depth.map(|d| d + 1).unwrap_or(0);

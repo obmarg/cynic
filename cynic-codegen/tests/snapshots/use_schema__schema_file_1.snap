@@ -15,7 +15,9 @@ pub mod city_fields {
             "id"
         }
     }
-    impl ::cynic::schema::HasField<Id, super::Id> for super::City {}
+    impl ::cynic::schema::HasField<Id> for super::City {
+        type Type = super::Id;
+    }
     pub struct Name;
     impl ::cynic::schema::Field for Name {
         type SchemaType = super::String;
@@ -23,7 +25,9 @@ pub mod city_fields {
             "name"
         }
     }
-    impl ::cynic::schema::HasField<Name, super::String> for super::City {}
+    impl ::cynic::schema::HasField<Name> for super::City {
+        type Type = super::String;
+    }
     pub struct Slug;
     impl ::cynic::schema::Field for Slug {
         type SchemaType = super::String;
@@ -31,7 +35,9 @@ pub mod city_fields {
             "slug"
         }
     }
-    impl ::cynic::schema::HasField<Slug, super::String> for super::City {}
+    impl ::cynic::schema::HasField<Slug> for super::City {
+        type Type = super::String;
+    }
     pub struct Country;
     impl ::cynic::schema::Field for Country {
         type SchemaType = super::Country;
@@ -39,7 +45,9 @@ pub mod city_fields {
             "country"
         }
     }
-    impl ::cynic::schema::HasField<Country, super::Country> for super::City {}
+    impl ::cynic::schema::HasField<Country> for super::City {
+        type Type = super::Country;
+    }
     pub struct Type;
     impl ::cynic::schema::Field for Type {
         type SchemaType = super::String;
@@ -47,7 +55,9 @@ pub mod city_fields {
             "type"
         }
     }
-    impl ::cynic::schema::HasField<Type, super::String> for super::City {}
+    impl ::cynic::schema::HasField<Type> for super::City {
+        type Type = super::String;
+    }
     pub struct Jobs;
     impl ::cynic::schema::Field for Jobs {
         type SchemaType = Option<Vec<super::Job>>;
@@ -55,7 +65,9 @@ pub mod city_fields {
             "jobs"
         }
     }
-    impl ::cynic::schema::HasField<Jobs, Option<Vec<super::Job>>> for super::City {}
+    impl ::cynic::schema::HasField<Jobs> for super::City {
+        type Type = Option<Vec<super::Job>>;
+    }
     pub mod jobs_arguments {
         pub struct Where;
         impl ::cynic::schema::HasArgument<Where> for super::Jobs {
@@ -114,7 +126,9 @@ pub mod city_fields {
             "createdAt"
         }
     }
-    impl ::cynic::schema::HasField<CreatedAt, super::DateTime> for super::City {}
+    impl ::cynic::schema::HasField<CreatedAt> for super::City {
+        type Type = super::DateTime;
+    }
     pub struct UpdatedAt;
     impl ::cynic::schema::Field for UpdatedAt {
         type SchemaType = super::DateTime;
@@ -122,7 +136,9 @@ pub mod city_fields {
             "updatedAt"
         }
     }
-    impl ::cynic::schema::HasField<UpdatedAt, super::DateTime> for super::City {}
+    impl ::cynic::schema::HasField<UpdatedAt> for super::City {
+        type Type = super::DateTime;
+    }
 }
 pub struct CityOrderByInput {}
 pub struct CityWhereInput;
@@ -878,7 +894,9 @@ pub mod commitment_fields {
             "id"
         }
     }
-    impl ::cynic::schema::HasField<Id, super::Id> for super::Commitment {}
+    impl ::cynic::schema::HasField<Id> for super::Commitment {
+        type Type = super::Id;
+    }
     pub struct Title;
     impl ::cynic::schema::Field for Title {
         type SchemaType = super::String;
@@ -886,7 +904,9 @@ pub mod commitment_fields {
             "title"
         }
     }
-    impl ::cynic::schema::HasField<Title, super::String> for super::Commitment {}
+    impl ::cynic::schema::HasField<Title> for super::Commitment {
+        type Type = super::String;
+    }
     pub struct Slug;
     impl ::cynic::schema::Field for Slug {
         type SchemaType = super::String;
@@ -894,7 +914,9 @@ pub mod commitment_fields {
             "slug"
         }
     }
-    impl ::cynic::schema::HasField<Slug, super::String> for super::Commitment {}
+    impl ::cynic::schema::HasField<Slug> for super::Commitment {
+        type Type = super::String;
+    }
     pub struct Jobs;
     impl ::cynic::schema::Field for Jobs {
         type SchemaType = Option<Vec<super::Job>>;
@@ -902,7 +924,9 @@ pub mod commitment_fields {
             "jobs"
         }
     }
-    impl ::cynic::schema::HasField<Jobs, Option<Vec<super::Job>>> for super::Commitment {}
+    impl ::cynic::schema::HasField<Jobs> for super::Commitment {
+        type Type = Option<Vec<super::Job>>;
+    }
     pub mod jobs_arguments {
         pub struct Where;
         impl ::cynic::schema::HasArgument<Where> for super::Jobs {
@@ -961,7 +985,9 @@ pub mod commitment_fields {
             "createdAt"
         }
     }
-    impl ::cynic::schema::HasField<CreatedAt, super::DateTime> for super::Commitment {}
+    impl ::cynic::schema::HasField<CreatedAt> for super::Commitment {
+        type Type = super::DateTime;
+    }
     pub struct UpdatedAt;
     impl ::cynic::schema::Field for UpdatedAt {
         type SchemaType = super::DateTime;
@@ -969,7 +995,9 @@ pub mod commitment_fields {
             "updatedAt"
         }
     }
-    impl ::cynic::schema::HasField<UpdatedAt, super::DateTime> for super::Commitment {}
+    impl ::cynic::schema::HasField<UpdatedAt> for super::Commitment {
+        type Type = super::DateTime;
+    }
 }
 pub struct CommitmentWhereInput;
 impl ::cynic::schema::InputObjectMarker for CommitmentWhereInput {}
@@ -1649,7 +1677,9 @@ pub mod company_fields {
             "id"
         }
     }
-    impl ::cynic::schema::HasField<Id, super::Id> for super::Company {}
+    impl ::cynic::schema::HasField<Id> for super::Company {
+        type Type = super::Id;
+    }
     pub struct Name;
     impl ::cynic::schema::Field for Name {
         type SchemaType = super::String;
@@ -1657,7 +1687,9 @@ pub mod company_fields {
             "name"
         }
     }
-    impl ::cynic::schema::HasField<Name, super::String> for super::Company {}
+    impl ::cynic::schema::HasField<Name> for super::Company {
+        type Type = super::String;
+    }
     pub struct Slug;
     impl ::cynic::schema::Field for Slug {
         type SchemaType = super::String;
@@ -1665,7 +1697,9 @@ pub mod company_fields {
             "slug"
         }
     }
-    impl ::cynic::schema::HasField<Slug, super::String> for super::Company {}
+    impl ::cynic::schema::HasField<Slug> for super::Company {
+        type Type = super::String;
+    }
     pub struct WebsiteUrl;
     impl ::cynic::schema::Field for WebsiteUrl {
         type SchemaType = super::String;
@@ -1673,7 +1707,9 @@ pub mod company_fields {
             "websiteUrl"
         }
     }
-    impl ::cynic::schema::HasField<WebsiteUrl, super::String> for super::Company {}
+    impl ::cynic::schema::HasField<WebsiteUrl> for super::Company {
+        type Type = super::String;
+    }
     pub struct LogoUrl;
     impl ::cynic::schema::Field for LogoUrl {
         type SchemaType = Option<super::String>;
@@ -1681,7 +1717,9 @@ pub mod company_fields {
             "logoUrl"
         }
     }
-    impl ::cynic::schema::HasField<LogoUrl, Option<super::String>> for super::Company {}
+    impl ::cynic::schema::HasField<LogoUrl> for super::Company {
+        type Type = Option<super::String>;
+    }
     pub struct Jobs;
     impl ::cynic::schema::Field for Jobs {
         type SchemaType = Option<Vec<super::Job>>;
@@ -1689,7 +1727,9 @@ pub mod company_fields {
             "jobs"
         }
     }
-    impl ::cynic::schema::HasField<Jobs, Option<Vec<super::Job>>> for super::Company {}
+    impl ::cynic::schema::HasField<Jobs> for super::Company {
+        type Type = Option<Vec<super::Job>>;
+    }
     pub mod jobs_arguments {
         pub struct Where;
         impl ::cynic::schema::HasArgument<Where> for super::Jobs {
@@ -1748,7 +1788,9 @@ pub mod company_fields {
             "twitter"
         }
     }
-    impl ::cynic::schema::HasField<Twitter, Option<super::String>> for super::Company {}
+    impl ::cynic::schema::HasField<Twitter> for super::Company {
+        type Type = Option<super::String>;
+    }
     pub struct Emailed;
     impl ::cynic::schema::Field for Emailed {
         type SchemaType = Option<super::Boolean>;
@@ -1756,7 +1798,9 @@ pub mod company_fields {
             "emailed"
         }
     }
-    impl ::cynic::schema::HasField<Emailed, Option<super::Boolean>> for super::Company {}
+    impl ::cynic::schema::HasField<Emailed> for super::Company {
+        type Type = Option<super::Boolean>;
+    }
     pub struct CreatedAt;
     impl ::cynic::schema::Field for CreatedAt {
         type SchemaType = super::DateTime;
@@ -1764,7 +1808,9 @@ pub mod company_fields {
             "createdAt"
         }
     }
-    impl ::cynic::schema::HasField<CreatedAt, super::DateTime> for super::Company {}
+    impl ::cynic::schema::HasField<CreatedAt> for super::Company {
+        type Type = super::DateTime;
+    }
     pub struct UpdatedAt;
     impl ::cynic::schema::Field for UpdatedAt {
         type SchemaType = super::DateTime;
@@ -1772,7 +1818,9 @@ pub mod company_fields {
             "updatedAt"
         }
     }
-    impl ::cynic::schema::HasField<UpdatedAt, super::DateTime> for super::Company {}
+    impl ::cynic::schema::HasField<UpdatedAt> for super::Company {
+        type Type = super::DateTime;
+    }
 }
 pub struct CompanyWhereInput;
 impl ::cynic::schema::InputObjectMarker for CompanyWhereInput {}
@@ -2879,7 +2927,9 @@ pub mod country_fields {
             "id"
         }
     }
-    impl ::cynic::schema::HasField<Id, super::Id> for super::Country {}
+    impl ::cynic::schema::HasField<Id> for super::Country {
+        type Type = super::Id;
+    }
     pub struct Name;
     impl ::cynic::schema::Field for Name {
         type SchemaType = super::String;
@@ -2887,7 +2937,9 @@ pub mod country_fields {
             "name"
         }
     }
-    impl ::cynic::schema::HasField<Name, super::String> for super::Country {}
+    impl ::cynic::schema::HasField<Name> for super::Country {
+        type Type = super::String;
+    }
     pub struct Slug;
     impl ::cynic::schema::Field for Slug {
         type SchemaType = super::String;
@@ -2895,7 +2947,9 @@ pub mod country_fields {
             "slug"
         }
     }
-    impl ::cynic::schema::HasField<Slug, super::String> for super::Country {}
+    impl ::cynic::schema::HasField<Slug> for super::Country {
+        type Type = super::String;
+    }
     pub struct Type;
     impl ::cynic::schema::Field for Type {
         type SchemaType = super::String;
@@ -2903,7 +2957,9 @@ pub mod country_fields {
             "type"
         }
     }
-    impl ::cynic::schema::HasField<Type, super::String> for super::Country {}
+    impl ::cynic::schema::HasField<Type> for super::Country {
+        type Type = super::String;
+    }
     pub struct IsoCode;
     impl ::cynic::schema::Field for IsoCode {
         type SchemaType = Option<super::String>;
@@ -2911,7 +2967,9 @@ pub mod country_fields {
             "isoCode"
         }
     }
-    impl ::cynic::schema::HasField<IsoCode, Option<super::String>> for super::Country {}
+    impl ::cynic::schema::HasField<IsoCode> for super::Country {
+        type Type = Option<super::String>;
+    }
     pub struct Cities;
     impl ::cynic::schema::Field for Cities {
         type SchemaType = Option<Vec<super::City>>;
@@ -2919,7 +2977,9 @@ pub mod country_fields {
             "cities"
         }
     }
-    impl ::cynic::schema::HasField<Cities, Option<Vec<super::City>>> for super::Country {}
+    impl ::cynic::schema::HasField<Cities> for super::Country {
+        type Type = Option<Vec<super::City>>;
+    }
     pub mod cities_arguments {
         pub struct Where;
         impl ::cynic::schema::HasArgument<Where> for super::Cities {
@@ -2978,7 +3038,9 @@ pub mod country_fields {
             "jobs"
         }
     }
-    impl ::cynic::schema::HasField<Jobs, Option<Vec<super::Job>>> for super::Country {}
+    impl ::cynic::schema::HasField<Jobs> for super::Country {
+        type Type = Option<Vec<super::Job>>;
+    }
     pub mod jobs_arguments {
         pub struct Where;
         impl ::cynic::schema::HasArgument<Where> for super::Jobs {
@@ -3037,7 +3099,9 @@ pub mod country_fields {
             "createdAt"
         }
     }
-    impl ::cynic::schema::HasField<CreatedAt, super::DateTime> for super::Country {}
+    impl ::cynic::schema::HasField<CreatedAt> for super::Country {
+        type Type = super::DateTime;
+    }
     pub struct UpdatedAt;
     impl ::cynic::schema::Field for UpdatedAt {
         type SchemaType = super::DateTime;
@@ -3045,7 +3109,9 @@ pub mod country_fields {
             "updatedAt"
         }
     }
-    impl ::cynic::schema::HasField<UpdatedAt, super::DateTime> for super::Country {}
+    impl ::cynic::schema::HasField<UpdatedAt> for super::Country {
+        type Type = super::DateTime;
+    }
 }
 pub struct CountryOrderByInput {}
 pub struct CountryWhereInput;
@@ -4005,7 +4071,9 @@ pub mod job_fields {
             "id"
         }
     }
-    impl ::cynic::schema::HasField<Id, super::Id> for super::Job {}
+    impl ::cynic::schema::HasField<Id> for super::Job {
+        type Type = super::Id;
+    }
     pub struct Title;
     impl ::cynic::schema::Field for Title {
         type SchemaType = super::String;
@@ -4013,7 +4081,9 @@ pub mod job_fields {
             "title"
         }
     }
-    impl ::cynic::schema::HasField<Title, super::String> for super::Job {}
+    impl ::cynic::schema::HasField<Title> for super::Job {
+        type Type = super::String;
+    }
     pub struct Slug;
     impl ::cynic::schema::Field for Slug {
         type SchemaType = super::String;
@@ -4021,7 +4091,9 @@ pub mod job_fields {
             "slug"
         }
     }
-    impl ::cynic::schema::HasField<Slug, super::String> for super::Job {}
+    impl ::cynic::schema::HasField<Slug> for super::Job {
+        type Type = super::String;
+    }
     pub struct Commitment;
     impl ::cynic::schema::Field for Commitment {
         type SchemaType = super::Commitment;
@@ -4029,7 +4101,9 @@ pub mod job_fields {
             "commitment"
         }
     }
-    impl ::cynic::schema::HasField<Commitment, super::Commitment> for super::Job {}
+    impl ::cynic::schema::HasField<Commitment> for super::Job {
+        type Type = super::Commitment;
+    }
     pub struct Cities;
     impl ::cynic::schema::Field for Cities {
         type SchemaType = Option<Vec<super::City>>;
@@ -4037,7 +4111,9 @@ pub mod job_fields {
             "cities"
         }
     }
-    impl ::cynic::schema::HasField<Cities, Option<Vec<super::City>>> for super::Job {}
+    impl ::cynic::schema::HasField<Cities> for super::Job {
+        type Type = Option<Vec<super::City>>;
+    }
     pub mod cities_arguments {
         pub struct Where;
         impl ::cynic::schema::HasArgument<Where> for super::Cities {
@@ -4096,7 +4172,9 @@ pub mod job_fields {
             "countries"
         }
     }
-    impl ::cynic::schema::HasField<Countries, Option<Vec<super::Country>>> for super::Job {}
+    impl ::cynic::schema::HasField<Countries> for super::Job {
+        type Type = Option<Vec<super::Country>>;
+    }
     pub mod countries_arguments {
         pub struct Where;
         impl ::cynic::schema::HasArgument<Where> for super::Countries {
@@ -4155,7 +4233,9 @@ pub mod job_fields {
             "remotes"
         }
     }
-    impl ::cynic::schema::HasField<Remotes, Option<Vec<super::Remote>>> for super::Job {}
+    impl ::cynic::schema::HasField<Remotes> for super::Job {
+        type Type = Option<Vec<super::Remote>>;
+    }
     pub mod remotes_arguments {
         pub struct Where;
         impl ::cynic::schema::HasArgument<Where> for super::Remotes {
@@ -4214,7 +4294,9 @@ pub mod job_fields {
             "description"
         }
     }
-    impl ::cynic::schema::HasField<Description, Option<super::String>> for super::Job {}
+    impl ::cynic::schema::HasField<Description> for super::Job {
+        type Type = Option<super::String>;
+    }
     pub struct ApplyUrl;
     impl ::cynic::schema::Field for ApplyUrl {
         type SchemaType = Option<super::String>;
@@ -4222,7 +4304,9 @@ pub mod job_fields {
             "applyUrl"
         }
     }
-    impl ::cynic::schema::HasField<ApplyUrl, Option<super::String>> for super::Job {}
+    impl ::cynic::schema::HasField<ApplyUrl> for super::Job {
+        type Type = Option<super::String>;
+    }
     pub struct Company;
     impl ::cynic::schema::Field for Company {
         type SchemaType = Option<super::Company>;
@@ -4230,7 +4314,9 @@ pub mod job_fields {
             "company"
         }
     }
-    impl ::cynic::schema::HasField<Company, Option<super::Company>> for super::Job {}
+    impl ::cynic::schema::HasField<Company> for super::Job {
+        type Type = Option<super::Company>;
+    }
     pub struct Tags;
     impl ::cynic::schema::Field for Tags {
         type SchemaType = Option<Vec<super::Tag>>;
@@ -4238,7 +4324,9 @@ pub mod job_fields {
             "tags"
         }
     }
-    impl ::cynic::schema::HasField<Tags, Option<Vec<super::Tag>>> for super::Job {}
+    impl ::cynic::schema::HasField<Tags> for super::Job {
+        type Type = Option<Vec<super::Tag>>;
+    }
     pub mod tags_arguments {
         pub struct Where;
         impl ::cynic::schema::HasArgument<Where> for super::Tags {
@@ -4297,7 +4385,9 @@ pub mod job_fields {
             "isPublished"
         }
     }
-    impl ::cynic::schema::HasField<IsPublished, Option<super::Boolean>> for super::Job {}
+    impl ::cynic::schema::HasField<IsPublished> for super::Job {
+        type Type = Option<super::Boolean>;
+    }
     pub struct IsFeatured;
     impl ::cynic::schema::Field for IsFeatured {
         type SchemaType = Option<super::Boolean>;
@@ -4305,7 +4395,9 @@ pub mod job_fields {
             "isFeatured"
         }
     }
-    impl ::cynic::schema::HasField<IsFeatured, Option<super::Boolean>> for super::Job {}
+    impl ::cynic::schema::HasField<IsFeatured> for super::Job {
+        type Type = Option<super::Boolean>;
+    }
     pub struct LocationNames;
     impl ::cynic::schema::Field for LocationNames {
         type SchemaType = Option<super::String>;
@@ -4313,7 +4405,9 @@ pub mod job_fields {
             "locationNames"
         }
     }
-    impl ::cynic::schema::HasField<LocationNames, Option<super::String>> for super::Job {}
+    impl ::cynic::schema::HasField<LocationNames> for super::Job {
+        type Type = Option<super::String>;
+    }
     pub struct UserEmail;
     impl ::cynic::schema::Field for UserEmail {
         type SchemaType = Option<super::String>;
@@ -4321,7 +4415,9 @@ pub mod job_fields {
             "userEmail"
         }
     }
-    impl ::cynic::schema::HasField<UserEmail, Option<super::String>> for super::Job {}
+    impl ::cynic::schema::HasField<UserEmail> for super::Job {
+        type Type = Option<super::String>;
+    }
     pub struct PostedAt;
     impl ::cynic::schema::Field for PostedAt {
         type SchemaType = super::DateTime;
@@ -4329,7 +4425,9 @@ pub mod job_fields {
             "postedAt"
         }
     }
-    impl ::cynic::schema::HasField<PostedAt, super::DateTime> for super::Job {}
+    impl ::cynic::schema::HasField<PostedAt> for super::Job {
+        type Type = super::DateTime;
+    }
     pub struct CreatedAt;
     impl ::cynic::schema::Field for CreatedAt {
         type SchemaType = super::DateTime;
@@ -4337,7 +4435,9 @@ pub mod job_fields {
             "createdAt"
         }
     }
-    impl ::cynic::schema::HasField<CreatedAt, super::DateTime> for super::Job {}
+    impl ::cynic::schema::HasField<CreatedAt> for super::Job {
+        type Type = super::DateTime;
+    }
     pub struct UpdatedAt;
     impl ::cynic::schema::Field for UpdatedAt {
         type SchemaType = super::DateTime;
@@ -4345,7 +4445,9 @@ pub mod job_fields {
             "updatedAt"
         }
     }
-    impl ::cynic::schema::HasField<UpdatedAt, super::DateTime> for super::Job {}
+    impl ::cynic::schema::HasField<UpdatedAt> for super::Job {
+        type Type = super::DateTime;
+    }
 }
 pub struct JobInput;
 impl ::cynic::schema::InputObjectMarker for JobInput {}
@@ -5788,7 +5890,9 @@ pub mod location_fields {
             "id"
         }
     }
-    impl ::cynic::schema::HasField<Id, super::Id> for super::Location {}
+    impl ::cynic::schema::HasField<Id> for super::Location {
+        type Type = super::Id;
+    }
     pub struct Slug;
     impl ::cynic::schema::Field for Slug {
         type SchemaType = super::String;
@@ -5796,7 +5900,9 @@ pub mod location_fields {
             "slug"
         }
     }
-    impl ::cynic::schema::HasField<Slug, super::String> for super::Location {}
+    impl ::cynic::schema::HasField<Slug> for super::Location {
+        type Type = super::String;
+    }
     pub struct Name;
     impl ::cynic::schema::Field for Name {
         type SchemaType = super::String;
@@ -5804,7 +5910,9 @@ pub mod location_fields {
             "name"
         }
     }
-    impl ::cynic::schema::HasField<Name, super::String> for super::Location {}
+    impl ::cynic::schema::HasField<Name> for super::Location {
+        type Type = super::String;
+    }
     pub struct Type;
     impl ::cynic::schema::Field for Type {
         type SchemaType = super::String;
@@ -5812,7 +5920,9 @@ pub mod location_fields {
             "type"
         }
     }
-    impl ::cynic::schema::HasField<Type, super::String> for super::Location {}
+    impl ::cynic::schema::HasField<Type> for super::Location {
+        type Type = super::String;
+    }
 }
 pub struct LocationInput;
 impl ::cynic::schema::InputObjectMarker for LocationInput {}
@@ -5847,7 +5957,9 @@ pub mod mutation_fields {
             "subscribe"
         }
     }
-    impl ::cynic::schema::HasField<Subscribe, super::User> for super::Mutation {}
+    impl ::cynic::schema::HasField<Subscribe> for super::Mutation {
+        type Type = super::User;
+    }
     pub mod subscribe_arguments {
         pub struct Input;
         impl ::cynic::schema::HasArgument<Input> for super::Subscribe {
@@ -5864,7 +5976,9 @@ pub mod mutation_fields {
             "postJob"
         }
     }
-    impl ::cynic::schema::HasField<PostJob, super::Job> for super::Mutation {}
+    impl ::cynic::schema::HasField<PostJob> for super::Mutation {
+        type Type = super::Job;
+    }
     pub mod post_job_arguments {
         pub struct Input;
         impl ::cynic::schema::HasArgument<Input> for super::PostJob {
@@ -5881,7 +5995,9 @@ pub mod mutation_fields {
             "updateJob"
         }
     }
-    impl ::cynic::schema::HasField<UpdateJob, super::Job> for super::Mutation {}
+    impl ::cynic::schema::HasField<UpdateJob> for super::Mutation {
+        type Type = super::Job;
+    }
     pub mod update_job_arguments {
         pub struct Input;
         impl ::cynic::schema::HasArgument<Input> for super::UpdateJob {
@@ -5905,7 +6021,9 @@ pub mod mutation_fields {
             "updateCompany"
         }
     }
-    impl ::cynic::schema::HasField<UpdateCompany, super::Company> for super::Mutation {}
+    impl ::cynic::schema::HasField<UpdateCompany> for super::Mutation {
+        type Type = super::Company;
+    }
     pub mod update_company_arguments {
         pub struct Input;
         impl ::cynic::schema::HasArgument<Input> for super::UpdateCompany {
@@ -5992,7 +6110,9 @@ pub mod query_fields {
             "jobs"
         }
     }
-    impl ::cynic::schema::HasField<Jobs, Vec<super::Job>> for super::Query {}
+    impl ::cynic::schema::HasField<Jobs> for super::Query {
+        type Type = Vec<super::Job>;
+    }
     pub mod jobs_arguments {
         pub struct Input;
         impl ::cynic::schema::HasArgument<Input> for super::Jobs {
@@ -6009,7 +6129,9 @@ pub mod query_fields {
             "job"
         }
     }
-    impl ::cynic::schema::HasField<Job, super::Job> for super::Query {}
+    impl ::cynic::schema::HasField<Job> for super::Query {
+        type Type = super::Job;
+    }
     pub mod job_arguments {
         pub struct Input;
         impl ::cynic::schema::HasArgument<Input> for super::Job {
@@ -6026,7 +6148,9 @@ pub mod query_fields {
             "locations"
         }
     }
-    impl ::cynic::schema::HasField<Locations, Vec<super::Location>> for super::Query {}
+    impl ::cynic::schema::HasField<Locations> for super::Query {
+        type Type = Vec<super::Location>;
+    }
     pub mod locations_arguments {
         pub struct Input;
         impl ::cynic::schema::HasArgument<Input> for super::Locations {
@@ -6043,7 +6167,9 @@ pub mod query_fields {
             "city"
         }
     }
-    impl ::cynic::schema::HasField<City, super::City> for super::Query {}
+    impl ::cynic::schema::HasField<City> for super::Query {
+        type Type = super::City;
+    }
     pub mod city_arguments {
         pub struct Input;
         impl ::cynic::schema::HasArgument<Input> for super::City {
@@ -6060,7 +6186,9 @@ pub mod query_fields {
             "country"
         }
     }
-    impl ::cynic::schema::HasField<Country, super::Country> for super::Query {}
+    impl ::cynic::schema::HasField<Country> for super::Query {
+        type Type = super::Country;
+    }
     pub mod country_arguments {
         pub struct Input;
         impl ::cynic::schema::HasArgument<Input> for super::Country {
@@ -6077,7 +6205,9 @@ pub mod query_fields {
             "remote"
         }
     }
-    impl ::cynic::schema::HasField<Remote, super::Remote> for super::Query {}
+    impl ::cynic::schema::HasField<Remote> for super::Query {
+        type Type = super::Remote;
+    }
     pub mod remote_arguments {
         pub struct Input;
         impl ::cynic::schema::HasArgument<Input> for super::Remote {
@@ -6094,7 +6224,9 @@ pub mod query_fields {
             "commitments"
         }
     }
-    impl ::cynic::schema::HasField<Commitments, Vec<super::Commitment>> for super::Query {}
+    impl ::cynic::schema::HasField<Commitments> for super::Query {
+        type Type = Vec<super::Commitment>;
+    }
     pub struct Cities;
     impl ::cynic::schema::Field for Cities {
         type SchemaType = Vec<super::City>;
@@ -6102,7 +6234,9 @@ pub mod query_fields {
             "cities"
         }
     }
-    impl ::cynic::schema::HasField<Cities, Vec<super::City>> for super::Query {}
+    impl ::cynic::schema::HasField<Cities> for super::Query {
+        type Type = Vec<super::City>;
+    }
     pub struct Countries;
     impl ::cynic::schema::Field for Countries {
         type SchemaType = Vec<super::Country>;
@@ -6110,7 +6244,9 @@ pub mod query_fields {
             "countries"
         }
     }
-    impl ::cynic::schema::HasField<Countries, Vec<super::Country>> for super::Query {}
+    impl ::cynic::schema::HasField<Countries> for super::Query {
+        type Type = Vec<super::Country>;
+    }
     pub struct Remotes;
     impl ::cynic::schema::Field for Remotes {
         type SchemaType = Vec<super::Remote>;
@@ -6118,7 +6254,9 @@ pub mod query_fields {
             "remotes"
         }
     }
-    impl ::cynic::schema::HasField<Remotes, Vec<super::Remote>> for super::Query {}
+    impl ::cynic::schema::HasField<Remotes> for super::Query {
+        type Type = Vec<super::Remote>;
+    }
     pub struct Companies;
     impl ::cynic::schema::Field for Companies {
         type SchemaType = Vec<super::Company>;
@@ -6126,7 +6264,9 @@ pub mod query_fields {
             "companies"
         }
     }
-    impl ::cynic::schema::HasField<Companies, Vec<super::Company>> for super::Query {}
+    impl ::cynic::schema::HasField<Companies> for super::Query {
+        type Type = Vec<super::Company>;
+    }
 }
 pub struct Remote;
 pub mod remote_fields {
@@ -6137,7 +6277,9 @@ pub mod remote_fields {
             "id"
         }
     }
-    impl ::cynic::schema::HasField<Id, super::Id> for super::Remote {}
+    impl ::cynic::schema::HasField<Id> for super::Remote {
+        type Type = super::Id;
+    }
     pub struct Name;
     impl ::cynic::schema::Field for Name {
         type SchemaType = super::String;
@@ -6145,7 +6287,9 @@ pub mod remote_fields {
             "name"
         }
     }
-    impl ::cynic::schema::HasField<Name, super::String> for super::Remote {}
+    impl ::cynic::schema::HasField<Name> for super::Remote {
+        type Type = super::String;
+    }
     pub struct Slug;
     impl ::cynic::schema::Field for Slug {
         type SchemaType = super::String;
@@ -6153,7 +6297,9 @@ pub mod remote_fields {
             "slug"
         }
     }
-    impl ::cynic::schema::HasField<Slug, super::String> for super::Remote {}
+    impl ::cynic::schema::HasField<Slug> for super::Remote {
+        type Type = super::String;
+    }
     pub struct Type;
     impl ::cynic::schema::Field for Type {
         type SchemaType = super::String;
@@ -6161,7 +6307,9 @@ pub mod remote_fields {
             "type"
         }
     }
-    impl ::cynic::schema::HasField<Type, super::String> for super::Remote {}
+    impl ::cynic::schema::HasField<Type> for super::Remote {
+        type Type = super::String;
+    }
     pub struct Jobs;
     impl ::cynic::schema::Field for Jobs {
         type SchemaType = Option<Vec<super::Job>>;
@@ -6169,7 +6317,9 @@ pub mod remote_fields {
             "jobs"
         }
     }
-    impl ::cynic::schema::HasField<Jobs, Option<Vec<super::Job>>> for super::Remote {}
+    impl ::cynic::schema::HasField<Jobs> for super::Remote {
+        type Type = Option<Vec<super::Job>>;
+    }
     pub mod jobs_arguments {
         pub struct Where;
         impl ::cynic::schema::HasArgument<Where> for super::Jobs {
@@ -6228,7 +6378,9 @@ pub mod remote_fields {
             "createdAt"
         }
     }
-    impl ::cynic::schema::HasField<CreatedAt, super::DateTime> for super::Remote {}
+    impl ::cynic::schema::HasField<CreatedAt> for super::Remote {
+        type Type = super::DateTime;
+    }
     pub struct UpdatedAt;
     impl ::cynic::schema::Field for UpdatedAt {
         type SchemaType = super::DateTime;
@@ -6236,7 +6388,9 @@ pub mod remote_fields {
             "updatedAt"
         }
     }
-    impl ::cynic::schema::HasField<UpdatedAt, super::DateTime> for super::Remote {}
+    impl ::cynic::schema::HasField<UpdatedAt> for super::Remote {
+        type Type = super::DateTime;
+    }
 }
 pub struct RemoteOrderByInput {}
 pub struct RemoteWhereInput;
@@ -7037,7 +7191,9 @@ pub mod tag_fields {
             "id"
         }
     }
-    impl ::cynic::schema::HasField<Id, super::Id> for super::Tag {}
+    impl ::cynic::schema::HasField<Id> for super::Tag {
+        type Type = super::Id;
+    }
     pub struct Name;
     impl ::cynic::schema::Field for Name {
         type SchemaType = super::String;
@@ -7045,7 +7201,9 @@ pub mod tag_fields {
             "name"
         }
     }
-    impl ::cynic::schema::HasField<Name, super::String> for super::Tag {}
+    impl ::cynic::schema::HasField<Name> for super::Tag {
+        type Type = super::String;
+    }
     pub struct Slug;
     impl ::cynic::schema::Field for Slug {
         type SchemaType = super::String;
@@ -7053,7 +7211,9 @@ pub mod tag_fields {
             "slug"
         }
     }
-    impl ::cynic::schema::HasField<Slug, super::String> for super::Tag {}
+    impl ::cynic::schema::HasField<Slug> for super::Tag {
+        type Type = super::String;
+    }
     pub struct Jobs;
     impl ::cynic::schema::Field for Jobs {
         type SchemaType = Option<Vec<super::Job>>;
@@ -7061,7 +7221,9 @@ pub mod tag_fields {
             "jobs"
         }
     }
-    impl ::cynic::schema::HasField<Jobs, Option<Vec<super::Job>>> for super::Tag {}
+    impl ::cynic::schema::HasField<Jobs> for super::Tag {
+        type Type = Option<Vec<super::Job>>;
+    }
     pub mod jobs_arguments {
         pub struct Where;
         impl ::cynic::schema::HasArgument<Where> for super::Jobs {
@@ -7120,7 +7282,9 @@ pub mod tag_fields {
             "createdAt"
         }
     }
-    impl ::cynic::schema::HasField<CreatedAt, super::DateTime> for super::Tag {}
+    impl ::cynic::schema::HasField<CreatedAt> for super::Tag {
+        type Type = super::DateTime;
+    }
     pub struct UpdatedAt;
     impl ::cynic::schema::Field for UpdatedAt {
         type SchemaType = super::DateTime;
@@ -7128,7 +7292,9 @@ pub mod tag_fields {
             "updatedAt"
         }
     }
-    impl ::cynic::schema::HasField<UpdatedAt, super::DateTime> for super::Tag {}
+    impl ::cynic::schema::HasField<UpdatedAt> for super::Tag {
+        type Type = super::DateTime;
+    }
 }
 pub struct TagOrderByInput {}
 pub struct TagWhereInput;
@@ -7774,7 +7940,9 @@ pub mod user_fields {
             "id"
         }
     }
-    impl ::cynic::schema::HasField<Id, super::Id> for super::User {}
+    impl ::cynic::schema::HasField<Id> for super::User {
+        type Type = super::Id;
+    }
     pub struct Name;
     impl ::cynic::schema::Field for Name {
         type SchemaType = Option<super::String>;
@@ -7782,7 +7950,9 @@ pub mod user_fields {
             "name"
         }
     }
-    impl ::cynic::schema::HasField<Name, Option<super::String>> for super::User {}
+    impl ::cynic::schema::HasField<Name> for super::User {
+        type Type = Option<super::String>;
+    }
     pub struct Email;
     impl ::cynic::schema::Field for Email {
         type SchemaType = super::String;
@@ -7790,7 +7960,9 @@ pub mod user_fields {
             "email"
         }
     }
-    impl ::cynic::schema::HasField<Email, super::String> for super::User {}
+    impl ::cynic::schema::HasField<Email> for super::User {
+        type Type = super::String;
+    }
     pub struct Subscribe;
     impl ::cynic::schema::Field for Subscribe {
         type SchemaType = super::Boolean;
@@ -7798,7 +7970,9 @@ pub mod user_fields {
             "subscribe"
         }
     }
-    impl ::cynic::schema::HasField<Subscribe, super::Boolean> for super::User {}
+    impl ::cynic::schema::HasField<Subscribe> for super::User {
+        type Type = super::Boolean;
+    }
     pub struct CreatedAt;
     impl ::cynic::schema::Field for CreatedAt {
         type SchemaType = super::DateTime;
@@ -7806,7 +7980,9 @@ pub mod user_fields {
             "createdAt"
         }
     }
-    impl ::cynic::schema::HasField<CreatedAt, super::DateTime> for super::User {}
+    impl ::cynic::schema::HasField<CreatedAt> for super::User {
+        type Type = super::DateTime;
+    }
     pub struct UpdatedAt;
     impl ::cynic::schema::Field for UpdatedAt {
         type SchemaType = super::DateTime;
@@ -7814,7 +7990,9 @@ pub mod user_fields {
             "updatedAt"
         }
     }
-    impl ::cynic::schema::HasField<UpdatedAt, super::DateTime> for super::User {}
+    impl ::cynic::schema::HasField<UpdatedAt> for super::User {
+        type Type = super::DateTime;
+    }
 }
 impl ::cynic::schema::NamedType for City {
     fn name() -> &'static str {

@@ -9,7 +9,9 @@ pub trait Field {
 
 // TODO: Get the terminology straight in this file, it's a mess.
 
-pub trait HasField<FieldMarker, FieldType> {}
+pub trait HasField<FieldMarker> {
+    type Type;
+}
 
 pub trait HasInputField<FieldMarker, FieldType> {}
 
