@@ -1,6 +1,5 @@
 use quote::{format_ident, quote, ToTokens, TokenStreamExt};
 
-
 use crate::idents::to_pascal_case;
 
 use super::analyse::{AnalysedArguments, ArgumentValue, VariantDetails};

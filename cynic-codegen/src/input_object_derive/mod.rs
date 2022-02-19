@@ -55,8 +55,6 @@ pub fn input_object_derive_impl(
         .lookup::<InputObjectType>(&input.graphql_type_name())
         .map_err(|e| syn::Error::new(input.graphql_type_span(), e))?;
 
-    // TODO: re-instate suggestions here maybe?
-
     let rename_all = input.rename_all.unwrap_or(RenameAll::CamelCase);
 
     if let darling::ast::Data::Struct(fields) = &input.data {

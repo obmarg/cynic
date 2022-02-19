@@ -6,8 +6,6 @@ use syn::parse_quote;
 
 use super::fragment_derive;
 
-// TODO: Rename this file after running snapshots
-
 #[rstest(input => [
     parse_quote!(
         #[cynic(

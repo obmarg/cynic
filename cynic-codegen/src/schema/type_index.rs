@@ -11,7 +11,6 @@ use crate::schema::{self, parser, Definition, Document, TypeDefinition, TypeExt}
 
 #[derive(Clone)]
 pub struct TypeIndex<'a> {
-    //name_to_kind: HashMap<String, Kind>,
     pub(super) types: Rc<HashMap<&'a str, &'a TypeDefinition>>,
 }
 
@@ -341,11 +340,6 @@ fn name_for_type(type_def: &TypeDefinition) -> &str {
         TypeDefinition::InputObject(inner) => &inner.name,
     }
 }
-
-// Todo; move these ValidTypes somewhere better - maybe
-// schema/type_index.rs
-// schema/validated.rs
-// schema/parser.rs
 
 fn convert_input_value<'a>(
     type_index: &TypeIndex<'a>,

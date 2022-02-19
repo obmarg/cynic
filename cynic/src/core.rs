@@ -1,17 +1,5 @@
-#![allow(dead_code, unused_variables, missing_docs)]
-// TODO: Don't allow the above
-
-// TODO: Everything in here is actually typed.  Need an untyped core with this
-// layered on top...
-
 use crate::{queries::QueryBuilder, QueryVariables};
 
-// Annoyingly this means people can't derive Deserialize _as well as_ use cynics derives.
-// But whatever, don't do that people?  I _think_ it's an OK limitation.
-// TODO: See if we could actually just expose a `deserialize` function on `QueryFragment` itself.
-// That would work around this.
-// We always control what's calling deserialize on a QueryFragment (either another QueryFramgent
-// or a GraphQLResponse so it might actually be fine)
 pub trait QueryFragment<'de>: serde::Deserialize<'de> {
     type SchemaType;
     type Variables: QueryVariables;
@@ -87,15 +75,14 @@ impl<'de> QueryFragment<'de> for bool {
     type SchemaType = bool;
     type Variables = ();
 
-    fn query(builder: QueryBuilder<Self::SchemaType, Self::Variables>) {}
+    fn query(_builder: QueryBuilder<Self::SchemaType, Self::Variables>) {}
 }
 
-// TODO: Can I also impl this for &'static str?
 impl<'de> QueryFragment<'de> for String {
     type SchemaType = String;
     type Variables = ();
 
-    fn query(builder: QueryBuilder<Self::SchemaType, Self::Variables>) {}
+    fn query(_builder: QueryBuilder<Self::SchemaType, Self::Variables>) {}
 }
 
 pub trait InlineFragments<'de>: QueryFragment<'de> {
@@ -153,6 +140,3 @@ where
 {
     type SchemaType = T::SchemaType;
 }
-
-// TODO: Might want recursive impls of Variable for Vec & Option?
-// Such that a T is valid for an Option<T> variable or a Vec<T>

@@ -68,7 +68,6 @@ where
     where
         V: Visitor<'de>,
     {
-        // TODO: We know we have a map here so lets just go straigh to that.
         visitor.visit_map(BufferMapAccess {
             access: self.access,
             buffer: self.buffer,

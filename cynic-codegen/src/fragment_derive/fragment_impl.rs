@@ -48,8 +48,6 @@ enum FieldKind {
     Composite,
     Scalar,
     Enum,
-
-    // TODO: how to handle these two?  Presumably similar technique to scalars/enums?
     Interface,
     Union,
 }
@@ -119,14 +117,15 @@ fn process_field<'a>(
 
     let schema_field = schema_field.expect("only spread fields should have schema_field == None");
 
-    let arguments = arguments_from_field_attrs(&field.attrs)?;
-    // TODO: need a better span
+    let (arguments, argument_span) =
+        arguments_from_field_attrs(&field.attrs)?.unwrap_or_else(|| (vec![], Span::call_site()));
+
     let arguments = process_arguments(
         arguments,
         schema_field,
         schema_module_path.clone(),
         argument_struct,
-        Span::call_site(),
+        argument_span,
     )?;
 
     check_types_are_compatible(&schema_field.field_type, &field.ty, field.type_check_mode())?;
@@ -143,22 +142,6 @@ fn process_field<'a>(
         graphql_field_kind: schema_field.field_type.inner_type().as_kind(),
         flatten: *field.flatten,
     }))
-
-    // TODO: MOve this into pair_fields
-    // } else {
-    //     let candidates = schema_type.fields.iter().map(|f| f.name.as_str());
-    //     let graphql_name = graphql_ident.graphql_name();
-    //     let guess_value = guess_field(candidates, &graphql_name);
-    //     Err(syn::Error::new(
-    //         field_name_span,
-    //         format!(
-    //             "Field {} does not exist on the GraphQL type {}.{}",
-    //             graphql_name,
-    //             graphql_type_name,
-    //             format_guess(guess_value).as_str()
-    //         ),
-    //     ))
-    // }
 }
 
 impl quote::ToTokens for FragmentImpl<'_> {

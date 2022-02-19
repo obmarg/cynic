@@ -61,8 +61,6 @@ pub fn fragment_derive_impl(
     if let darling::ast::Data::Struct(fields) = input.data {
         let fields = pair_fields(fields.iter(), &schema_type)?;
 
-        // TODO: Pair up fields & schema fields here?
-        // or do it in FragmentIMpl and expose it?
         let fragment_impl = FragmentImpl::new_for(
             &fields,
             &ident,

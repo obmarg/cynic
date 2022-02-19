@@ -3,25 +3,26 @@ use syn::{
     ext::IdentExt,
     parse::{Parse, ParseStream},
     punctuated::Punctuated,
+    spanned::Spanned,
     Ident, Result, Token,
 };
 
-pub fn arguments_from_field_attrs(attrs: &[syn::Attribute]) -> Result<Vec<FieldArgument>> {
+pub fn arguments_from_field_attrs(
+    attrs: &[syn::Attribute],
+) -> Result<Option<(Vec<FieldArgument>, proc_macro2::Span)>> {
     for attr in attrs {
         if attr.path.is_ident("arguments") {
             let parsed: CynicArguments = attr.parse_args()?;
-            return Ok(parsed.arguments.into_iter().collect());
+            return Ok(Some((parsed.arguments.into_iter().collect(), attr.span())));
         }
     }
-    Ok(vec![])
+    Ok(None)
 }
 
 /// Implements syn::Parse to parse out arguments from the arguments
 /// attribute.
 #[derive(Debug)]
 pub struct CynicArguments {
-    // TODO: technically we want some kind of MaybePunctuated.
-    // Worth looking into that later
     pub arguments: Punctuated<FieldArgument, Token![,]>,
 }
 
@@ -67,7 +68,6 @@ impl Parse for FieldArgument {
     }
 }
 
-// TODO: Think about spans here...
 #[derive(Debug, Clone)]
 pub enum ArgumentLiteral {
     Literal(syn::Lit),
@@ -97,7 +97,6 @@ impl Parse for ArgumentLiteral {
             let content;
             syn::braced!(content in input);
 
-            // TODO: ideally return something other than punctuated, but need to retain spans.
             Ok(ArgumentLiteral::Object(
                 content.parse_terminated(FieldArgument::parse)?,
                 span,

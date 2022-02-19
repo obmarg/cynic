@@ -55,7 +55,7 @@ pub(super) struct InlineFragmentsDeriveVariant {
 
     #[darling(default)]
     rename: Option<SpannedValue<String>>,
-    // TODO: Do I need to check that the fallback is a unit variant?  Probably
+
     #[darling(default)]
     pub(super) fallback: SpannedValue<bool>,
 }

@@ -1,8 +1,7 @@
 use crate::schema::{
     markers::{FieldMarkerModule, MarkerIdent},
-    names::FieldName,
     types::{Field, Kind, Type},
-    SchemaError,
+    FieldName, SchemaError,
 };
 
 pub struct FragmentDeriveType<'a> {

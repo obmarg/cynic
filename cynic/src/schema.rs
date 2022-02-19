@@ -1,6 +1,3 @@
-#![allow(dead_code, unused_variables, missing_docs)]
-// TODO: Don't allow the above
-
 pub trait Field {
     type SchemaType;
 

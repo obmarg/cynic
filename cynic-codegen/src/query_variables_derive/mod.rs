@@ -5,8 +5,6 @@ mod input;
 
 use self::input::QueryVariablesDeriveInput;
 
-// TODO: Rename this derive to QueryVariables and provide deprecation
-// warnings if the old one is used...
 pub fn query_variables_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
     use darling::FromDeriveInput;
 

@@ -1,6 +1,3 @@
-#![allow(dead_code, unused_variables, missing_docs)]
-// TODO: Don't allow the above
-
 use std::{borrow::Cow, fmt::Write};
 
 use crate::indent::indented;
@@ -39,10 +36,7 @@ impl Argument {
     }
 
     pub fn from_cow_name(name: Cow<'static, str>, value: InputLiteral) -> Self {
-        Argument {
-            name,
-            value,
-        }
+        Argument { name, value }
     }
 }
 
@@ -53,7 +47,6 @@ pub enum InputLiteral {
     Bool(bool),
     String(Cow<'static, str>),
     Id(String),
-    // TODO: Custom scalars
     Object(Vec<Argument>),
     List(Vec<InputLiteral>),
     Variable(&'static str),

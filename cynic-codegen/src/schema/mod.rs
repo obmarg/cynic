@@ -1,9 +1,9 @@
 mod keywords;
+mod names;
 mod parser;
 mod type_index;
 
-// TOOD: Should I just re-export from these?
-pub mod names;
+// TOOD: Should I just re-export from here?
 pub mod types;
 
 pub mod markers;
@@ -12,7 +12,10 @@ use std::collections::BTreeSet;
 use std::convert::Infallible;
 use std::marker::PhantomData;
 
-pub use self::parser::{load_schema, Document};
+pub use self::{
+    names::FieldName,
+    parser::{load_schema, Document},
+};
 
 // TODO: Remove these once we've stopped using the parser types directly.
 pub use self::{parser::*, type_index::TypeIndex};

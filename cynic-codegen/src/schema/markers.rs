@@ -6,9 +6,6 @@ use crate::idents::{to_pascal_case, to_snake_case};
 
 use super::keywords::transform_keywords;
 
-// TODO: Not sure this really lives in the schema module.  Probably doesn't tbh
-// Although it is extending the schema types, so who knows...
-
 #[derive(Clone, Copy, Debug)]
 pub struct MarkerIdent<'a> {
     graphql_name: &'a str,
@@ -224,7 +221,3 @@ impl<'a, T> TypeRef<'a, T> {
         TypeRefMarker { type_ref: self }
     }
 }
-
-// TODO: Probably need some kind of wrapper type like
-// IdentTokens(schema_path, MarkerIdent)
-// Maybe Ident could become a trait?

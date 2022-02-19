@@ -28,11 +28,3 @@ impl<'a> PartialEq<RenamableFieldIdent> for FieldName<'a> {
         self.graphql_name == other.graphql_name()
     }
 }
-
-// impl From<&proc_macro2::Ident> for FieldName<'static> {
-//     fn from(ident: &proc_macro2::Ident) -> Self {
-//         FieldName {
-//             graphql_name: Cow::Owned(to_snake_case(&ident.to_string())),
-//         }
-//     }
-// }

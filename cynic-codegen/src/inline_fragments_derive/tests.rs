@@ -6,12 +6,10 @@ use syn::parse_quote;
 
 use super::inline_fragments_derive;
 
-// TODO: Rename this file after running snapshots
-
 #[rstest(input => [
     // Test of a union type.
     parse_quote!(
-        #[derive(inlineFragments, Serialize)]
+        #[derive(InlineFragments, Serialize)]
         #[cynic(schema_path = "../cynic/tests/test-schema.graphql")]
         enum PostOrAuthor {
             #[cynic(rename = "BlogPost")]
