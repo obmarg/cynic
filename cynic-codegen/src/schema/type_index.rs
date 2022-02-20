@@ -7,7 +7,10 @@ use std::{
 use once_cell::sync::Lazy;
 
 use super::{names::FieldName, types::*, SchemaError};
-use crate::schema::{self, parser, Definition, Document, TypeDefinition, TypeExt};
+use crate::schema::{
+    parser::{self, Definition, Document, TypeDefinition},
+    TypeExt,
+};
 
 #[derive(Clone)]
 pub struct TypeIndex<'a> {
@@ -343,7 +346,7 @@ fn name_for_type(type_def: &TypeDefinition) -> &str {
 
 fn convert_input_value<'a>(
     type_index: &TypeIndex<'a>,
-    val: &'a schema::InputValue,
+    val: &'a parser::InputValue,
 ) -> InputValue<'a> {
     InputValue {
         description: val.description.as_deref(),
@@ -355,13 +358,13 @@ fn convert_input_value<'a>(
 }
 
 // TODO: Definitely test this fucker.
-fn build_type_ref<'a, T>(ty: &'a schema::Type, type_index: &TypeIndex<'a>) -> TypeRef<'a, T> {
+fn build_type_ref<'a, T>(ty: &'a parser::Type, type_index: &TypeIndex<'a>) -> TypeRef<'a, T> {
     fn inner_fn<'a, T>(
-        ty: &'a schema::Type,
+        ty: &'a parser::Type,
         type_index: &TypeIndex<'a>,
         nullable: bool,
     ) -> TypeRef<'a, T> {
-        if let schema::Type::NonNullType(inner) = ty {
+        if let parser::Type::NonNullType(inner) = ty {
             return inner_fn::<T>(inner, type_index, false);
         }
 
@@ -370,10 +373,10 @@ fn build_type_ref<'a, T>(ty: &'a schema::Type, type_index: &TypeIndex<'a>) -> Ty
         }
 
         match ty {
-            schema::Type::NamedType(name) => {
+            parser::Type::NamedType(name) => {
                 TypeRef::<T>::Named(name, type_index.to_owned(), PhantomData)
             }
-            schema::Type::ListType(inner) => {
+            parser::Type::ListType(inner) => {
                 TypeRef::<T>::List(Box::new(inner_fn::<T>(inner, type_index, true)))
             }
             _ => panic!("This should be impossible"),
@@ -403,3 +406,83 @@ fn build_field<'a>(
 }
 
 // TODO: deffo need tests of schema validation
+
+#[cfg(test)]
+mod tests {
+    use assert_matches::assert_matches;
+    use rstest::rstest;
+    use std::{fs, path::PathBuf};
+
+    use super::*;
+
+    #[rstest]
+    #[case::starwars("starwars.schema.graphql")]
+    #[case::github("github.graphql")]
+    fn test_schema_validation_on_good_schemas(#[case] schema_file: &'static str) {
+        let schema = fs::read_to_string(PathBuf::from("../schemas/").join(schema_file)).unwrap();
+        let document = parser::parse_schema(&schema).unwrap();
+        let index = TypeIndex::for_schema_2(&document);
+        index.validate_all().unwrap();
+    }
+
+    #[test]
+    fn test_build_type_ref_non_null_type() {
+        let index = &TypeIndex::empty();
+        let non_null_type =
+            parser::Type::NonNullType(Box::new(parser::Type::NamedType("User".to_string())));
+
+        assert_matches!(
+            build_type_ref::<InputType>(&non_null_type, index),
+            TypeRef::Named("User", _, _)
+        );
+    }
+
+    #[test]
+    fn test_build_type_ref_null_type() {
+        let index = &TypeIndex::empty();
+
+        let nullable_type = parser::Type::NamedType("User".to_string());
+
+        assert_matches!(
+            build_type_ref::<InputType>(&nullable_type, index),
+            TypeRef::Nullable(inner) => {
+                assert_matches!(*inner, TypeRef::Named("User", _, _))
+            }
+        );
+    }
+
+    #[test]
+    fn test_build_type_ref_required_list_type() {
+        let index = &TypeIndex::empty();
+
+        let required_list = parser::Type::NonNullType(Box::new(parser::Type::ListType(Box::new(
+            parser::Type::NonNullType(Box::new(parser::Type::NamedType("User".to_string()))),
+        ))));
+
+        assert_matches!(
+            build_type_ref::<InputType>(&required_list, index),
+            TypeRef::List(inner) => {
+                assert_matches!(*inner, TypeRef::Named("User", _, _))
+            }
+        );
+    }
+
+    #[test]
+    fn test_build_type_ref_option_list_type() {
+        let index = &TypeIndex::empty();
+
+        let optional_list =
+            parser::Type::ListType(Box::new(parser::Type::NamedType("User".to_string())));
+
+        assert_matches!(
+            build_type_ref::<InputType>(&optional_list, index),
+            TypeRef::Nullable(inner) => {
+                assert_matches!(*inner, TypeRef::List(inner) => {
+                    assert_matches!(*inner, TypeRef::Nullable(inner) => {
+                        assert_matches!(*inner, TypeRef::Named("User", _, _))
+                    })
+                })
+            }
+        );
+    }
+}
