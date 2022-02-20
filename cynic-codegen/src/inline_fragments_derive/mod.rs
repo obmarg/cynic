@@ -326,7 +326,7 @@ impl quote::ToTokens for QueryFragmentImpl<'_> {
 
                 const TYPE: Option<&'static str> = Some(#graphql_type);
 
-                fn query(mut builder: ::cynic::queries::QueryBuilder<Self::SchemaType, Self::Variables>) {
+                fn query(mut builder: ::cynic::queries::SelectionBuilder<Self::SchemaType, Self::Variables>) {
                     #(
                         let fragment_builder = builder.inline_fragment();
                         let mut fragment_builder = fragment_builder.on::<<#inner_types as ::cynic::QueryFragment>::SchemaType>();

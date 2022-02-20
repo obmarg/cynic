@@ -2,7 +2,7 @@ use std::marker::PhantomData;
 
 use crate::{
     core::QueryFragment,
-    queries::{QueryBuilder, SelectionSet},
+    queries::{SelectionBuilder, SelectionSet},
     schema::{MutationRoot, QueryRoot, SubscriptionRoot},
     variables::VariableType,
     QueryVariables,
@@ -52,7 +52,7 @@ where
         use std::fmt::Write;
 
         let mut selection_set = SelectionSet::default();
-        let builder = QueryBuilder::new(&mut selection_set);
+        let builder = SelectionBuilder::new(&mut selection_set);
         Fragment::query(builder);
 
         let vars = VariableDefinitions::new::<Variables>();
@@ -75,7 +75,7 @@ where
         use std::fmt::Write;
 
         let mut selection_set = SelectionSet::default();
-        let builder = QueryBuilder::new(&mut selection_set);
+        let builder = SelectionBuilder::new(&mut selection_set);
         Fragment::query(builder);
 
         let vars = VariableDefinitions::new::<Variables>();
@@ -111,7 +111,7 @@ where
         use std::fmt::Write;
 
         let mut selection_set = SelectionSet::default();
-        let builder = QueryBuilder::new(&mut selection_set);
+        let builder = SelectionBuilder::new(&mut selection_set);
         Fragment::query(builder);
 
         let vars = VariableDefinitions::new::<Variables>();

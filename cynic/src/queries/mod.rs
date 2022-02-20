@@ -10,7 +10,7 @@ mod type_eq;
 
 pub use self::{
     ast::{Argument, InputLiteral, SelectionSet},
-    builders::{QueryBuilder, VariableMatch},
+    builders::{SelectionBuilder, VariableMatch},
     flatten::FlattensInto,
     input_literal_ser::to_input_literal,
     recurse::Recursable,

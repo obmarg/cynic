@@ -162,7 +162,7 @@ impl quote::ToTokens for FragmentImpl<'_> {
 
                 const TYPE: Option<&'static str> = Some(#graphql_type);
 
-                fn query(mut builder: ::cynic::queries::QueryBuilder<Self::SchemaType, Self::Variables>) {
+                fn query(mut builder: ::cynic::queries::SelectionBuilder<Self::SchemaType, Self::Variables>) {
                     #![allow(unused_mut)]
 
                     #(#selections)*
@@ -244,8 +244,6 @@ impl quote::ToTokens for FieldSelection<'_> {
                     <#field_type as ::cynic::QueryFragment>::query(
                         field_builder.select_children()
                     );
-
-                    field_builder.done();
                 }
             }
             SelectionMode::FlattenComposite => {
@@ -263,8 +261,6 @@ impl quote::ToTokens for FieldSelection<'_> {
                     <#field_type as ::cynic::QueryFragment>::query(
                         field_builder.select_children()
                     );
-
-                    field_builder.done();
                 }
             }
             SelectionMode::FlattenLeaf => {
@@ -278,8 +274,6 @@ impl quote::ToTokens for FieldSelection<'_> {
 
                     #alias
                     #arguments
-
-                    field_builder.done();
                 }
             }
             SelectionMode::Recurse(limit) => {
@@ -296,8 +290,6 @@ impl quote::ToTokens for FieldSelection<'_> {
                         <#field_type as ::cynic::QueryFragment>::query(
                             field_builder.select_children()
                         );
-
-                        field_builder.done();
                     }
                 }
             }
@@ -311,8 +303,6 @@ impl quote::ToTokens for FieldSelection<'_> {
 
                     #alias
                     #arguments
-
-                    field_builder.done();
                 }
             }
         });

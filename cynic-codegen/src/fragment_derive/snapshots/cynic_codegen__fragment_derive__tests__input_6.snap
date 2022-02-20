@@ -9,10 +9,9 @@ impl<'de> ::cynic::QueryFragment<'de> for Film {
     type SchemaType = schema::Film;
     type Variables = ();
     const TYPE: Option<&'static str> = Some("Film");
-    fn query(mut builder: ::cynic::queries::QueryBuilder<Self::SchemaType, Self::Variables>) {
+    fn query(mut builder: ::cynic::queries::SelectionBuilder<Self::SchemaType, Self::Variables>) {
         #![allow(unused_mut)]
         let mut field_builder = builder . select_flattened_field :: < schema :: film_fields :: Producers , < String as :: cynic :: schema :: IsScalar < < schema :: film_fields :: Producers as :: cynic :: schema :: Field > :: SchemaType >> :: SchemaType , < schema :: film_fields :: Producers as :: cynic :: schema :: Field > :: SchemaType , > () ;
-        field_builder.done();
     }
 }
 #[automatically_derived]

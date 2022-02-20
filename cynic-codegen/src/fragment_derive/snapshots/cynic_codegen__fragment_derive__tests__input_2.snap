@@ -9,13 +9,11 @@ impl<'de> ::cynic::QueryFragment<'de> for BlogPostOutput {
     type SchemaType = schema::BlogPost;
     type Variables = ();
     const TYPE: Option<&'static str> = Some("BlogPost");
-    fn query(mut builder: ::cynic::queries::QueryBuilder<Self::SchemaType, Self::Variables>) {
+    fn query(mut builder: ::cynic::queries::SelectionBuilder<Self::SchemaType, Self::Variables>) {
         #![allow(unused_mut)]
         let mut field_builder = builder . select_field :: < schema :: blog_post_fields :: HasMetadata , < Option < bool > as :: cynic :: schema :: IsScalar < < schema :: blog_post_fields :: HasMetadata as :: cynic :: schema :: Field > :: SchemaType >> :: SchemaType > () ;
-        field_builder.done();
         let mut field_builder = builder . select_field :: < schema :: blog_post_fields :: Author , < AuthorOutput as :: cynic :: QueryFragment > :: SchemaType > () ;
         <AuthorOutput as ::cynic::QueryFragment>::query(field_builder.select_children());
-        field_builder.done();
     }
 }
 #[automatically_derived]

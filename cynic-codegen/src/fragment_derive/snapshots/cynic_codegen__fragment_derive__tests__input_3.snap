@@ -9,7 +9,7 @@ impl<'de> ::cynic::QueryFragment<'de> for MyQuery {
     type SchemaType = schema::Query;
     type Variables = ();
     const TYPE: Option<&'static str> = Some("Query");
-    fn query(mut builder: ::cynic::queries::QueryBuilder<Self::SchemaType, Self::Variables>) {
+    fn query(mut builder: ::cynic::queries::SelectionBuilder<Self::SchemaType, Self::Variables>) {
         #![allow(unused_mut)]
         let mut field_builder = builder . select_field :: < schema :: query_fields :: FilteredPosts , < Vec < BlogPostOutput > as :: cynic :: QueryFragment > :: SchemaType > () ;
         {
@@ -46,7 +46,6 @@ impl<'de> ::cynic::QueryFragment<'de> for MyQuery {
                 });
         }
         <Vec<BlogPostOutput> as ::cynic::QueryFragment>::query(field_builder.select_children());
-        field_builder.done();
     }
 }
 #[automatically_derived]

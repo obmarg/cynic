@@ -1,23 +1,20 @@
-#![allow(dead_code, unused_variables, missing_docs)]
-// TODO: Don't allow the above
-
 use std::{borrow::Cow, marker::PhantomData};
 
 use crate::{coercions::CoercesTo, schema, variables::VariableDefinition};
 
 use super::{ast::*, to_input_literal, FlattensInto, IsFieldType, Recursable};
 
-// TODO: QueryBuilder or SelectionBuilder?
-pub struct QueryBuilder<'a, SchemaType, Variables> {
+/// Builds a SelectionSet for the given `SchemaType` and `Variables`
+pub struct SelectionBuilder<'a, SchemaType, Variables> {
     phantom: PhantomData<fn() -> (SchemaType, Variables)>,
     selection_set: &'a mut SelectionSet,
     has_typename: bool,
     recurse_depth: Option<u8>,
 }
 
-impl<'a, T, U> QueryBuilder<'a, Vec<T>, U> {
-    pub(crate) fn into_inner(self) -> QueryBuilder<'a, T, U> {
-        QueryBuilder {
+impl<'a, T, U> SelectionBuilder<'a, Vec<T>, U> {
+    pub(crate) fn into_inner(self) -> SelectionBuilder<'a, T, U> {
+        SelectionBuilder {
             selection_set: self.selection_set,
             has_typename: self.has_typename,
             phantom: PhantomData,
@@ -26,9 +23,9 @@ impl<'a, T, U> QueryBuilder<'a, Vec<T>, U> {
     }
 }
 
-impl<'a, T, U> QueryBuilder<'a, Option<T>, U> {
-    pub(crate) fn into_inner(self) -> QueryBuilder<'a, T, U> {
-        QueryBuilder {
+impl<'a, T, U> SelectionBuilder<'a, Option<T>, U> {
+    pub(crate) fn into_inner(self) -> SelectionBuilder<'a, T, U> {
+        SelectionBuilder {
             selection_set: self.selection_set,
             has_typename: self.has_typename,
             phantom: PhantomData,
@@ -37,13 +34,9 @@ impl<'a, T, U> QueryBuilder<'a, Option<T>, U> {
     }
 }
 
-// TODO: move this to selection set module.
-// TODO: Maybe FieldSelector/SelectionSetBuilder/SelectionSet/SelectionBuilder/Selector?
-// Kinda like SelectionSet actually since we are literally just building up a set of fields?
-// But who knows.  Lets leave naming for later.
-impl<'a, SchemaType, Variables> QueryBuilder<'a, SchemaType, Variables> {
+impl<'a, SchemaType, Variables> SelectionBuilder<'a, SchemaType, Variables> {
     pub(crate) fn new(selection_set: &'a mut SelectionSet) -> Self {
-        QueryBuilder {
+        SelectionBuilder {
             phantom: PhantomData,
             has_typename: false,
             selection_set,
@@ -51,16 +44,10 @@ impl<'a, SchemaType, Variables> QueryBuilder<'a, SchemaType, Variables> {
         }
     }
 
-    // TODO: this is just for testing
-    pub fn temp_new(selection_set: &'a mut SelectionSet) -> Self {
-        QueryBuilder {
-            phantom: PhantomData,
-            has_typename: false,
-            selection_set,
-            recurse_depth: None,
-        }
-    }
-
+    /// Selects a field applying the flattening rules to its type.
+    ///
+    /// Note that the deserialization for this query must also
+    /// implement these rules if calling this function.
     pub fn select_flattened_field<FieldMarker, Flattened, FieldType>(
         &'_ mut self,
     ) -> FieldSelectionBuilder<'_, FieldMarker, Flattened, Variables>
@@ -77,10 +64,12 @@ impl<'a, SchemaType, Variables> QueryBuilder<'a, SchemaType, Variables> {
         }
     }
 
-    // TODO: reckon add_field might be better for this?
-    // particularly if we name the container selectionset or something.
-    // TODO: also see if we can simplify the type sig similar to the argument
-    // field type sig?
+    /// Adds the `FieldMarker` field into this selection, with the given
+    /// `FieldType`.  Will type error if the field is not applicable or is
+    /// not of this type.
+    ///
+    /// This returns a `FieldSelectionBuilder` that can be used to apply
+    /// arguments, aliases, and to build an inner selection.
     pub fn select_field<FieldMarker, FieldType>(
         &'_ mut self,
     ) -> FieldSelectionBuilder<'_, FieldMarker, FieldType, Variables>
@@ -96,6 +85,10 @@ impl<'a, SchemaType, Variables> QueryBuilder<'a, SchemaType, Variables> {
         }
     }
 
+    /// Recursively selects a field into this selection, with the given
+    /// `FieldMarker` and `FieldType`, up to the given `max_depth`.
+    ///
+    /// This will return a `None` if we have reached the max_depth.
     pub fn recurse<FieldMarker, FieldType>(
         &'_ mut self,
         max_depth: u8,
@@ -128,6 +121,7 @@ impl<'a, SchemaType, Variables> QueryBuilder<'a, SchemaType, Variables> {
         }
     }
 
+    /// Adds an inline fragment to the SelectionSet
     pub fn inline_fragment(&'_ mut self) -> InlineFragmentBuilder<'_, SchemaType, Variables> {
         if !self.has_typename {
             self.selection_set
@@ -150,14 +144,9 @@ impl<'a, SchemaType, Variables> QueryBuilder<'a, SchemaType, Variables> {
             phantom: PhantomData,
         }
     }
-
-    // TODO: FragmentSpread & InlineFragment go here...
-
-    // TODO: Could done be done via drop?  Maybe.
-    pub fn done(self) {}
 }
 
-// TODO: do we even need SchemaType here or can we do a lookup through Field
+/// Builds the selection of a field
 pub struct FieldSelectionBuilder<'a, Field, SchemaType, Variables> {
     #[allow(clippy::type_complexity)]
     phantom: PhantomData<fn() -> (Field, SchemaType, Variables)>,
@@ -168,48 +157,54 @@ pub struct FieldSelectionBuilder<'a, Field, SchemaType, Variables> {
 impl<'a, Field, FieldSchemaType, Variables>
     FieldSelectionBuilder<'a, Field, FieldSchemaType, Variables>
 {
-    // TODO: be sure to document (and test) that this supports owned _and_ static
-    // strings.
+    /// Adds an alias to this field.
+    ///
+    /// Should accept static strs or owned Stringsk
     pub fn alias(&mut self, alias: impl Into<Cow<'static, str>>) {
         self.field.alias = Some(alias.into())
     }
 
+    /// Adds an argument to this field.
+    ///
+    /// Accepts `ArgumentName` - the schema marker struct for the argument you wish to add.
     pub fn argument<ArgumentName>(
         &'_ mut self,
-    ) -> ArgumentBuilder<'_, Field::ArgumentSchemaType, Variables>
+    ) -> InputBuilder<'_, Field::ArgumentSchemaType, Variables>
     where
         Field: schema::HasArgument<ArgumentName>,
     {
-        ArgumentBuilder {
+        InputBuilder {
             destination: InputLiteralContainer::object(Field::name(), &mut self.field.arguments),
             phantom: PhantomData,
         }
     }
 
+    /// Returns a SelectionBuilder that can be used to select fields
+    /// within this field.
     pub fn select_children<InnerVariables>(
         &'_ mut self,
-    ) -> QueryBuilder<'_, FieldSchemaType, InnerVariables>
+    ) -> SelectionBuilder<'_, FieldSchemaType, InnerVariables>
     where
         Variables: VariableMatch<InnerVariables>,
     {
-        QueryBuilder {
+        SelectionBuilder {
             recurse_depth: self.recurse_depth,
-            ..QueryBuilder::new(&mut self.field.children)
+            ..SelectionBuilder::new(&mut self.field.children)
         }
     }
-
-    // TODO: probably need an alias function here that defines an alias.
-
-    // TODO: Could done be done via drop?  Maybe.
-    pub fn done(self) {}
 }
 
+/// Builds an inline fragment in a selection
 pub struct InlineFragmentBuilder<'a, SchemaType, Variables> {
     phantom: PhantomData<fn() -> (SchemaType, Variables)>,
     inline_fragment: &'a mut InlineFragment,
 }
 
 impl<'a, SchemaType, Variables> InlineFragmentBuilder<'a, SchemaType, Variables> {
+    /// Adds an on clause for the given `Subtype` to the inline fragment.
+    ///
+    /// `Subtype` should be the schema marker type for the type you wish this fragment
+    /// to match.
     pub fn on<Subtype>(self) -> InlineFragmentBuilder<'a, Subtype, Variables>
     where
         Subtype: crate::schema::NamedType,
@@ -222,27 +217,26 @@ impl<'a, SchemaType, Variables> InlineFragmentBuilder<'a, SchemaType, Variables>
         }
     }
 
+    /// Returns a SelectionBuilder that can be used to select the fields
+    /// of this fragment.
     pub fn select_children<InnerVariables>(
         &'_ mut self,
-    ) -> QueryBuilder<'_, SchemaType, InnerVariables>
+    ) -> SelectionBuilder<'_, SchemaType, InnerVariables>
     where
         Variables: VariableMatch<InnerVariables>,
     {
-        // static_assertions::assert_impl_one!(InnerVariables: VariableMatch<SchemaType>, IsVoid);
-        QueryBuilder::new(&mut self.inline_fragment.children)
+        SelectionBuilder::new(&mut self.inline_fragment.children)
     }
 }
 
-// TODO: maybe rename this to InputBuilder?
-// TODO: Check if we can actually get rid of the ArgumentKind parameter
-// here.  And if so see if we can get rid of IsScalar/IsInputObject etc.
-pub struct ArgumentBuilder<'a, SchemaType, Variables> {
+pub struct InputBuilder<'a, SchemaType, Variables> {
     destination: InputLiteralContainer<'a>,
 
     phantom: PhantomData<fn() -> (SchemaType, Variables)>,
 }
 
-impl<'a, SchemaType, Variables> ArgumentBuilder<'a, SchemaType, Variables> {
+impl<'a, SchemaType, Variables> InputBuilder<'a, SchemaType, Variables> {
+    /// Puts a variable into the input.
     pub fn variable<Type>(self, def: VariableDefinition<Variables, Type>)
     where
         Type: CoercesTo<SchemaType>,
@@ -251,33 +245,34 @@ impl<'a, SchemaType, Variables> ArgumentBuilder<'a, SchemaType, Variables> {
     }
 }
 
-impl<'a, SchemaType, ArgumentStruct> ArgumentBuilder<'a, Option<SchemaType>, ArgumentStruct> {
+impl<'a, SchemaType, ArgumentStruct> InputBuilder<'a, Option<SchemaType>, ArgumentStruct> {
+    /// Puts null into the input.
     pub fn null(self) {
         self.destination.push(InputLiteral::Null);
     }
 
-    // TODO: name this some maybe?
-    pub fn value(self) -> ArgumentBuilder<'a, SchemaType, ArgumentStruct> {
-        ArgumentBuilder {
+    /// Returns a builder that can put input into a nullable input position.
+    pub fn value(self) -> InputBuilder<'a, SchemaType, ArgumentStruct> {
+        InputBuilder {
             destination: self.destination,
             phantom: PhantomData,
         }
     }
-
-    // TODO: would undefined also be useful?  Not sure.
 }
 
-impl<'a, T, ArgStruct> ArgumentBuilder<'a, T, ArgStruct> {
+impl<'a, T, ArgStruct> InputBuilder<'a, T, ArgStruct> {
+    /// Puts a literal input type into the input.
     pub fn literal(self, l: impl serde::Serialize + CoercesTo<T>) {
         self.destination
             .push(to_input_literal(&l).expect("could not convert to InputLiteral"));
     }
 }
 
-impl<'a, SchemaType, Variables> ArgumentBuilder<'a, SchemaType, Variables>
+impl<'a, SchemaType, Variables> InputBuilder<'a, SchemaType, Variables>
 where
     SchemaType: schema::InputObjectMarker,
 {
+    /// Puts an object literal into the input
     pub fn object(self) -> ObjectArgumentBuilder<'a, SchemaType, Variables> {
         let fields = match self.destination.push(InputLiteral::Object(Vec::new())) {
             InputLiteral::Object(fields) => fields,
@@ -291,19 +286,22 @@ where
     }
 }
 
+/// Builds an object literal into some input.
 pub struct ObjectArgumentBuilder<'a, ItemType, Variables> {
     fields: &'a mut Vec<Argument>,
     phantom: PhantomData<fn() -> (ItemType, Variables)>,
 }
 
 impl<'a, SchemaType, ArgStruct> ObjectArgumentBuilder<'a, SchemaType, ArgStruct> {
+    /// Adds a field to the object literal, using the field_fn to determine the contents
+    /// of that field.
     pub fn field<FieldMarker, F>(self, field_fn: F) -> Self
     where
         FieldMarker: schema::Field,
         SchemaType: schema::HasInputField<FieldMarker, FieldMarker::SchemaType>,
-        F: FnOnce(ArgumentBuilder<'_, FieldMarker::SchemaType, ArgStruct>),
+        F: FnOnce(InputBuilder<'_, FieldMarker::SchemaType, ArgStruct>),
     {
-        field_fn(ArgumentBuilder {
+        field_fn(InputBuilder {
             destination: InputLiteralContainer::object(FieldMarker::name(), self.fields),
             phantom: PhantomData,
         });
@@ -312,7 +310,8 @@ impl<'a, SchemaType, ArgStruct> ObjectArgumentBuilder<'a, SchemaType, ArgStruct>
     }
 }
 
-impl<'a, SchemaType, Variables> ArgumentBuilder<'a, Vec<SchemaType>, Variables> {
+impl<'a, SchemaType, Variables> InputBuilder<'a, Vec<SchemaType>, Variables> {
+    /// Adds a list literal into some input
     pub fn list(self) -> ListArgumentBuilder<'a, SchemaType, Variables> {
         let items = match self.destination.push(InputLiteral::List(Vec::new())) {
             InputLiteral::List(items) => items,
@@ -332,8 +331,10 @@ pub struct ListArgumentBuilder<'a, ItemType, Variables> {
 }
 
 impl<'a, ItemType, Variables> ListArgumentBuilder<'a, ItemType, Variables> {
-    pub fn item(self, item_fn: impl FnOnce(ArgumentBuilder<'_, ItemType, Variables>)) -> Self {
-        item_fn(ArgumentBuilder {
+    /// Adds an item to the list literal, using the item_fn to determine the contents
+    /// of that item.
+    pub fn item(self, item_fn: impl FnOnce(InputBuilder<'_, ItemType, Variables>)) -> Self {
+        item_fn(InputBuilder {
             destination: InputLiteralContainer::list(self.items),
             phantom: PhantomData,
         });
@@ -384,11 +385,10 @@ impl<'a> InputLiteralContainer<'a> {
     }
 }
 
-// TODO: Think about the name and location of this trait.
+/// Enforces type equality on a Variable struct.
+///
+/// Each `crate::QueryVariables` implementaiton should also implement this for `()` for
+/// compatability with QueryFragments that don't need variables.
 pub trait VariableMatch<T> {}
+
 impl<T> VariableMatch<()> for T where T: crate::QueryVariables {}
-
-// Handle custom scalars somehow.  I can only assume they'll need to support all the literals,
-// with no real type checking.
-
-// TODO: Move this somewhere else?

@@ -9,7 +9,7 @@ impl<'de> ::cynic::QueryFragment<'de> for Film {
     type SchemaType = schema::Film;
     type Variables = ();
     const TYPE: Option<&'static str> = Some("Film");
-    fn query(mut builder: ::cynic::queries::QueryBuilder<Self::SchemaType, Self::Variables>) {
+    fn query(mut builder: ::cynic::queries::SelectionBuilder<Self::SchemaType, Self::Variables>) {
         #![allow(unused_mut)]
         <FilmDetails as ::cynic::QueryFragment>::query(builder)
     }

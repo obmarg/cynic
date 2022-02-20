@@ -10,9 +10,9 @@ error[E0277]: the trait bound `i32: CoercesTo<std::option::Option<cynic::Id>>` i
               <i32 as CoercesTo<i32>>
               <i32 as CoercesTo<std::option::Option<Vec<i32>>>>
             and 3 others
-note: required by a bound in `cynic::queries::builders::ArgumentBuilder::<'a, SchemaType, Variables>::variable`
+note: required by a bound in `cynic::queries::builders::InputBuilder::<'a, SchemaType, Variables>::variable`
    --> $WORKSPACE/cynic/src/queries/builders.rs
     |
     |         Type: CoercesTo<SchemaType>,
-    |               ^^^^^^^^^^^^^^^^^^^^^ required by this bound in `cynic::queries::builders::ArgumentBuilder::<'a, SchemaType, Variables>::variable`
+    |               ^^^^^^^^^^^^^^^^^^^^^ required by this bound in `cynic::queries::builders::InputBuilder::<'a, SchemaType, Variables>::variable`
     = note: this error originates in the derive macro `cynic::QueryFragment` (in Nightly builds, run with -Z macro-backtrace for more info)
