@@ -81,6 +81,12 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "23b62fc65de8e4e7f52534fb52b0f3ed04746ae267519eef2a83941e8085068b"
 
 [[package]]
+name = "arrayvec"
+version = "0.7.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "8da52d66c7071e2e3fa2a1e5c6d088fec47b593032b254f5e980de8ea54454d6"
+
+[[package]]
 name = "ascii"
 version = "0.9.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -491,6 +497,15 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "ea221b5284a47e40033bf9b66f35f984ec0ea2931eb03505246cd27a963f981b"
 
 [[package]]
+name = "counter"
+version = "0.5.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "878793089e7b461e0f316f45eb6d12ef73c0e5ec5194d372617eb47bb61a85ed"
+dependencies = [
+ "num-traits",
+]
+
+[[package]]
 name = "cpuid-bool"
 version = "0.1.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -599,11 +614,12 @@ dependencies = [
  "assert_matches",
  "cynic-proc-macros",
  "insta",
- "json-decode",
  "maplit",
  "reqwest",
+ "rstest 0.12.0",
  "serde",
  "serde_json",
+ "static_assertions",
  "surf",
  "thiserror",
 ]
@@ -613,14 +629,16 @@ name = "cynic-codegen"
 version = "2.0.0-dev"
 dependencies = [
  "assert_matches",
+ "counter",
  "darling",
  "graphql-parser",
  "insta",
  "lazy_static",
  "maplit",
+ "once_cell",
  "proc-macro2",
  "quote",
- "rstest",
+ "rstest 0.11.0",
  "strsim",
  "syn",
 ]
@@ -657,7 +675,7 @@ dependencies = [
  "graphql-parser",
  "insta",
  "once_cell",
- "rstest",
+ "rstest 0.11.0",
  "rust_decimal",
  "thiserror",
  "uuid",
@@ -1355,17 +1373,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "json-decode"
-version = "0.6.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8fd72139ade93da4f8a437afe8654a4a3cf1d858dc195fc6691e6e932fa1b6ee"
-dependencies = [
- "serde",
- "serde_json",
- "thiserror",
-]
-
-[[package]]
 name = "kv-log-macro"
 version = "1.0.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1386,7 +1393,7 @@ version = "0.7.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "21f866863575d0e1d654fbeeabdc927292fdf862873dc3c96c6f753357e13374"
 dependencies = [
- "arrayvec",
+ "arrayvec 0.5.2",
  "bitflags",
  "cfg-if 1.0.0",
  "ryu",
@@ -1940,12 +1947,25 @@ dependencies = [
 ]
 
 [[package]]
-name = "rust_decimal"
-version = "1.17.0"
+name = "rstest"
+version = "0.12.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "353775f96a1f400edcca737f843cb201af3645912e741e64456a257c770173e8"
+checksum = "d912f35156a3f99a66ee3e11ac2e0b3f34ac85a07e05263d05a7e2c8810d616f"
 dependencies = [
- "arrayvec",
+ "cfg-if 1.0.0",
+ "proc-macro2",
+ "quote",
+ "rustc_version 0.4.0",
+ "syn",
+]
+
+[[package]]
+name = "rust_decimal"
+version = "1.22.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "d37baa70cf8662d2ba1c1868c5983dda16ef32b105cce41fb5c47e72936a90b3"
+dependencies = [
+ "arrayvec 0.7.2",
  "num-traits",
  "serde",
 ]
