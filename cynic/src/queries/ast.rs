@@ -3,17 +3,22 @@ use std::{borrow::Cow, fmt::Write};
 use crate::indent::indented;
 
 #[derive(Debug, Default)]
+/// A set of field selections that form part of a graphql query.
 pub struct SelectionSet {
     pub(super) selections: Vec<Selection>,
 }
 
 #[derive(Debug)]
+/// An individual selection
 pub enum Selection {
+    /// Selects a field
     Field(FieldSelection),
+    /// Selects an inline fragment
     InlineFragment(InlineFragment),
 }
 
 #[derive(Debug)]
+/// The details of a particular field selection
 pub struct FieldSelection {
     pub(super) name: &'static str,
     pub(super) alias: Option<Cow<'static, str>>,
@@ -22,12 +27,14 @@ pub struct FieldSelection {
 }
 
 #[derive(Debug, PartialEq)]
+/// An argument
 pub struct Argument {
     pub(super) name: Cow<'static, str>,
     pub(super) value: InputLiteral,
 }
 
 impl Argument {
+    /// Constructs an `Argument`
     pub fn new(name: &'static str, value: InputLiteral) -> Self {
         Argument {
             name: Cow::Borrowed(name),
@@ -35,31 +42,46 @@ impl Argument {
         }
     }
 
+    /// Constructs an `Argument` with a `Cow` as its name
     pub fn from_cow_name(name: Cow<'static, str>, value: InputLiteral) -> Self {
         Argument { name, value }
     }
 }
 
 #[derive(Debug, PartialEq)]
+/// An `InputLiteral` is an argument that will be output in the GraphQL
+/// query text (as opposed to a variable that will go in the variables
+/// field)
 pub enum InputLiteral {
+    /// An integer
     Int(i32),
+    /// A float
     Float(f64),
+    /// A boolean
     Bool(bool),
+    /// A string
     String(Cow<'static, str>),
+    /// An ID
     Id(String),
+    /// An object
     Object(Vec<Argument>),
+    /// A list
     List(Vec<InputLiteral>),
+    /// A variable
     Variable(&'static str),
+    /// A null
     Null,
 }
 
 #[derive(Debug, Default)]
+/// An inline fragment that selects fields from one possible type
 pub struct InlineFragment {
     pub(super) on_clause: Option<&'static str>,
     pub(super) children: SelectionSet,
 }
 
 impl FieldSelection {
+    /// Creates a new FieldSelection
     pub fn new(name: &'static str) -> FieldSelection {
         FieldSelection {
             name,

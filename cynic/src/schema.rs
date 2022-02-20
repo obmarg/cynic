@@ -1,25 +1,61 @@
+//! Types for describing a GraphQL schema in Rust.
+//!
+//! The `use_schema` macro will mostly output types that make use of the
+//! traits in this module to describe the schema.  The derives then combine
+//! these types with the `QueryBuilder` type to enforce the restrictions
+//! of the schema.
+//!
+//! Note that this module is mostly concerned with the marker types output
+//! by `use_schema`, _not_ the actual types users work with.  The traits
+//! will usually be implemented on marker types, the geneirc parameters will
+//! usually be marker types and the associated types will also usually be
+//! markers.
+
+/// Indicates that a struct represents a Field in a graphql schema.
 pub trait Field {
+    /// The schema marker type of this field.
     type SchemaType;
 
+    /// Returns the name of this field
     fn name() -> &'static str;
 }
 
 // TODO: Get the terminology straight in this file, it's a mess.
 
+/// Indicates that a type has a given field
+///
+/// This should be implemented several times for any given type,
+/// once per field. `FieldMarker` should be the marker type for
+/// the field,
 pub trait HasField<FieldMarker> {
+    /// The schema marker type of this field.
     type Type;
 }
 
+/// Indicates that an input object has a given field
+///
+/// This should be implemented several times for any given input object,
+/// once per field. `FieldMarker` should be the marker type for the field,
+/// and `FieldType` should be the schema marker type of the field.
 pub trait HasInputField<FieldMarker, FieldType> {}
 
+/// Indicates that a field has an argument
+///
+/// This should be implemented on the field marker type for each argument
+/// that field has.  `ArgumentName` should be the marker type for the argument.
 pub trait HasArgument<ArgumentName> {
+    /// The schema marker type of this argument.
     type ArgumentSchemaType;
 
-    // TODO: Maybe move the name to that named trait def?
+    /// Returns the name of this field
     fn name() -> &'static str;
 }
 
+/// Indicates that a type is a scalar that maps to the given schema scalar.
+///
+/// Note that this type is actually implemented on the users types.
 pub trait IsScalar<SchemaType> {
+    /// The schema marker type this scalar represents.
     type SchemaType;
 }
 
@@ -76,10 +112,14 @@ pub trait MutationRoot {}
 /// subscription hierarchy.
 pub trait SubscriptionRoot {}
 
+/// Indicates that a type has a subtype relationship with another type
 pub trait HasSubtype<Type> {}
 
+/// A marker type with a name.
 pub trait NamedType {
+    /// Gets the name of the marker
     fn name() -> &'static str;
 }
 
+/// Indicates that a type is an `InputObject`
 pub trait InputObjectMarker {}
