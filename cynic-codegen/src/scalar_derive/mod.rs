@@ -65,7 +65,7 @@ pub fn scalar_derive_impl(input: ScalarDeriveInput) -> Result<TokenStream, syn::
             where
                 D: ::cynic::serde::Deserializer<'de>,
             {
-                #inner_type::deserialize(deserializer).map(Self)
+                <#inner_type as ::cynic::serde::Deserialize<'de>>::deserialize(deserializer).map(Self)
             }
         }
 
