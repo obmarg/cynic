@@ -212,7 +212,7 @@ impl quote::ToTokens for FieldSelection<'_> {
             }
             FieldKind::Scalar => quote_spanned! { self.span =>
                 <#field_type as ::cynic::schema::IsScalar<
-                    <#field_marker_type_path as ::cynic::schema::Field>::SchemaType
+                    <#field_marker_type_path as ::cynic::schema::Field>::Type
                 >>::SchemaType
             },
             FieldKind::Enum => quote_spanned! { self.span =>
@@ -252,7 +252,7 @@ impl quote::ToTokens for FieldSelection<'_> {
                         .select_flattened_field::<
                             #field_marker_type_path,
                             #schema_type_lookup,
-                            <#field_marker_type_path as ::cynic::schema::Field>::SchemaType,
+                            <#field_marker_type_path as ::cynic::schema::Field>::Type,
                         >();
 
                     #alias
@@ -269,7 +269,7 @@ impl quote::ToTokens for FieldSelection<'_> {
                         .select_flattened_field::<
                             #field_marker_type_path,
                             #schema_type_lookup,
-                            <#field_marker_type_path as ::cynic::schema::Field>::SchemaType,
+                            <#field_marker_type_path as ::cynic::schema::Field>::Type,
                         >();
 
                     #alias

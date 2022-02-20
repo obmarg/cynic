@@ -29,7 +29,7 @@ impl ToTokens for FieldOutput<'_> {
             pub struct #field_marker;
 
             impl ::cynic::schema::Field for #field_marker{
-                type SchemaType = #field_type_marker;
+                type Type = #field_type_marker;
 
                 fn name() -> &'static str {
                     #field_name_literal
@@ -73,7 +73,7 @@ impl ToTokens for ArgumentOutput<'_> {
             pub struct #argument_ident;
 
             impl ::cynic::schema::HasArgument<#argument_ident> for super::#field_marker {
-                type ArgumentSchemaType = #schema_type;
+                type ArgumentType = #schema_type;
 
                 fn name() -> &'static str {
                     #name

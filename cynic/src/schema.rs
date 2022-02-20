@@ -14,7 +14,7 @@
 /// Indicates that a struct represents a Field in a graphql schema.
 pub trait Field {
     /// The schema marker type of this field.
-    type SchemaType;
+    type Type;
 
     /// Returns the name of this field
     fn name() -> &'static str;
@@ -42,10 +42,10 @@ pub trait HasInputField<FieldMarker, FieldType> {}
 /// Indicates that a field has an argument
 ///
 /// This should be implemented on the field marker type for each argument
-/// that field has.  `ArgumentName` should be the marker type for the argument.
-pub trait HasArgument<ArgumentName> {
+/// that field has.  `ArgumentMarker` should be the marker type for the argument.
+pub trait HasArgument<ArgumentMarker> {
     /// The schema marker type of this argument.
-    type ArgumentSchemaType;
+    type ArgumentType;
 
     /// Returns the name of this field
     fn name() -> &'static str;

@@ -96,7 +96,7 @@ impl<'a, SchemaType, Variables> SelectionBuilder<'a, SchemaType, Variables> {
     where
         FieldMarker: schema::Field,
         SchemaType: schema::HasField<FieldMarker>,
-        FieldType: Recursable<FieldMarker::SchemaType>,
+        FieldType: Recursable<FieldMarker::Type>,
     {
         let new_depth = self.recurse_depth.map(|d| d + 1).unwrap_or(0);
         if new_depth >= max_depth {
@@ -167,9 +167,7 @@ impl<'a, Field, FieldSchemaType, Variables>
     /// Adds an argument to this field.
     ///
     /// Accepts `ArgumentName` - the schema marker struct for the argument you wish to add.
-    pub fn argument<ArgumentName>(
-        &'_ mut self,
-    ) -> InputBuilder<'_, Field::ArgumentSchemaType, Variables>
+    pub fn argument<ArgumentName>(&'_ mut self) -> InputBuilder<'_, Field::ArgumentType, Variables>
     where
         Field: schema::HasArgument<ArgumentName>,
     {
@@ -298,8 +296,8 @@ impl<'a, SchemaType, ArgStruct> ObjectArgumentBuilder<'a, SchemaType, ArgStruct>
     pub fn field<FieldMarker, F>(self, field_fn: F) -> Self
     where
         FieldMarker: schema::Field,
-        SchemaType: schema::HasInputField<FieldMarker, FieldMarker::SchemaType>,
-        F: FnOnce(InputBuilder<'_, FieldMarker::SchemaType, ArgStruct>),
+        SchemaType: schema::HasInputField<FieldMarker, FieldMarker::Type>,
+        F: FnOnce(InputBuilder<'_, FieldMarker::Type, ArgStruct>),
     {
         field_fn(InputBuilder {
             destination: InputLiteralContainer::object(FieldMarker::name(), self.fields),

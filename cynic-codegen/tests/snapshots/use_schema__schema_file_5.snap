@@ -10,7 +10,7 @@ impl ::cynic::schema::InputObjectMarker for AnInputType {}
 pub mod an_input_type_fields {
     pub struct FavouriteDessert;
     impl ::cynic::schema::Field for FavouriteDessert {
-        type SchemaType = Option<super::Dessert>;
+        type Type = Option<super::Dessert>;
         fn name() -> &'static str {
             "favouriteDessert"
         }
@@ -27,7 +27,7 @@ pub struct Nested;
 pub mod nested_fields {
     pub struct AString;
     impl ::cynic::schema::Field for AString {
-        type SchemaType = super::String;
+        type Type = super::String;
         fn name() -> &'static str {
             "aString"
         }
@@ -37,7 +37,7 @@ pub mod nested_fields {
     }
     pub struct OptString;
     impl ::cynic::schema::Field for OptString {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "optString"
         }
@@ -50,7 +50,7 @@ pub struct Query;
 pub mod query_fields {
     pub struct TestStruct;
     impl ::cynic::schema::Field for TestStruct {
-        type SchemaType = Option<super::TestStruct>;
+        type Type = Option<super::TestStruct>;
         fn name() -> &'static str {
             "testStruct"
         }
@@ -60,7 +60,7 @@ pub mod query_fields {
     }
     pub struct MyUnion;
     impl ::cynic::schema::Field for MyUnion {
-        type SchemaType = Option<super::MyUnionType>;
+        type Type = Option<super::MyUnionType>;
         fn name() -> &'static str {
             "myUnion"
         }
@@ -73,7 +73,7 @@ pub struct TestStruct;
 pub mod test_struct_fields {
     pub struct FieldOne;
     impl ::cynic::schema::Field for FieldOne {
-        type SchemaType = super::String;
+        type Type = super::String;
         fn name() -> &'static str {
             "fieldOne"
         }
@@ -84,14 +84,14 @@ pub mod test_struct_fields {
     pub mod field_one_arguments {
         pub struct X;
         impl ::cynic::schema::HasArgument<X> for super::FieldOne {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "x"
             }
         }
         pub struct Y;
         impl ::cynic::schema::HasArgument<Y> for super::FieldOne {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "y"
             }
@@ -99,7 +99,7 @@ pub mod test_struct_fields {
     }
     pub struct TastyCakes;
     impl ::cynic::schema::Field for TastyCakes {
-        type SchemaType = super::Dessert;
+        type Type = super::Dessert;
         fn name() -> &'static str {
             "tastyCakes"
         }
@@ -110,14 +110,14 @@ pub mod test_struct_fields {
     pub mod tasty_cakes_arguments {
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::TastyCakes {
-            type ArgumentSchemaType = super::super::Dessert;
+            type ArgumentType = super::super::Dessert;
             fn name() -> &'static str {
                 "first"
             }
         }
         pub struct Second;
         impl ::cynic::schema::HasArgument<Second> for super::TastyCakes {
-            type ArgumentSchemaType = Option<super::super::Dessert>;
+            type ArgumentType = Option<super::super::Dessert>;
             fn name() -> &'static str {
                 "second"
             }
@@ -125,7 +125,7 @@ pub mod test_struct_fields {
     }
     pub struct FieldWithInput;
     impl ::cynic::schema::Field for FieldWithInput {
-        type SchemaType = super::Dessert;
+        type Type = super::Dessert;
         fn name() -> &'static str {
             "fieldWithInput"
         }
@@ -136,7 +136,7 @@ pub mod test_struct_fields {
     pub mod field_with_input_arguments {
         pub struct Input;
         impl ::cynic::schema::HasArgument<Input> for super::FieldWithInput {
-            type ArgumentSchemaType = super::super::AnInputType;
+            type ArgumentType = super::super::AnInputType;
             fn name() -> &'static str {
                 "input"
             }
@@ -144,7 +144,7 @@ pub mod test_struct_fields {
     }
     pub struct Nested;
     impl ::cynic::schema::Field for Nested {
-        type SchemaType = super::Nested;
+        type Type = super::Nested;
         fn name() -> &'static str {
             "nested"
         }
@@ -154,7 +154,7 @@ pub mod test_struct_fields {
     }
     pub struct OptNested;
     impl ::cynic::schema::Field for OptNested {
-        type SchemaType = Option<super::Nested>;
+        type Type = Option<super::Nested>;
         fn name() -> &'static str {
             "optNested"
         }
@@ -164,7 +164,7 @@ pub mod test_struct_fields {
     }
     pub struct Dessert;
     impl ::cynic::schema::Field for Dessert {
-        type SchemaType = Option<super::Dessert>;
+        type Type = Option<super::Dessert>;
         fn name() -> &'static str {
             "dessert"
         }
@@ -174,7 +174,7 @@ pub mod test_struct_fields {
     }
     pub struct Json;
     impl ::cynic::schema::Field for Json {
-        type SchemaType = Option<super::Json>;
+        type Type = Option<super::Json>;
         fn name() -> &'static str {
             "json"
         }

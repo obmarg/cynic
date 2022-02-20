@@ -9,7 +9,7 @@ pub struct Film;
 pub mod film_fields {
     pub struct Title;
     impl ::cynic::schema::Field for Title {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "title"
         }
@@ -19,7 +19,7 @@ pub mod film_fields {
     }
     pub struct EpisodeId;
     impl ::cynic::schema::Field for EpisodeId {
-        type SchemaType = Option<super::Int>;
+        type Type = Option<super::Int>;
         fn name() -> &'static str {
             "episodeID"
         }
@@ -29,7 +29,7 @@ pub mod film_fields {
     }
     pub struct OpeningCrawl;
     impl ::cynic::schema::Field for OpeningCrawl {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "openingCrawl"
         }
@@ -39,7 +39,7 @@ pub mod film_fields {
     }
     pub struct Director;
     impl ::cynic::schema::Field for Director {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "director"
         }
@@ -49,7 +49,7 @@ pub mod film_fields {
     }
     pub struct Producers;
     impl ::cynic::schema::Field for Producers {
-        type SchemaType = Option<Vec<Option<super::String>>>;
+        type Type = Option<Vec<Option<super::String>>>;
         fn name() -> &'static str {
             "producers"
         }
@@ -59,7 +59,7 @@ pub mod film_fields {
     }
     pub struct ReleaseDate;
     impl ::cynic::schema::Field for ReleaseDate {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "releaseDate"
         }
@@ -69,7 +69,7 @@ pub mod film_fields {
     }
     pub struct SpeciesConnection;
     impl ::cynic::schema::Field for SpeciesConnection {
-        type SchemaType = Option<super::FilmSpeciesConnection>;
+        type Type = Option<super::FilmSpeciesConnection>;
         fn name() -> &'static str {
             "speciesConnection"
         }
@@ -80,28 +80,28 @@ pub mod film_fields {
     pub mod species_connection_arguments {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::SpeciesConnection {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "after"
             }
         }
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::SpeciesConnection {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "first"
             }
         }
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::SpeciesConnection {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "before"
             }
         }
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::SpeciesConnection {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "last"
             }
@@ -109,7 +109,7 @@ pub mod film_fields {
     }
     pub struct StarshipConnection;
     impl ::cynic::schema::Field for StarshipConnection {
-        type SchemaType = Option<super::FilmStarshipsConnection>;
+        type Type = Option<super::FilmStarshipsConnection>;
         fn name() -> &'static str {
             "starshipConnection"
         }
@@ -120,28 +120,28 @@ pub mod film_fields {
     pub mod starship_connection_arguments {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::StarshipConnection {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "after"
             }
         }
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::StarshipConnection {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "first"
             }
         }
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::StarshipConnection {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "before"
             }
         }
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::StarshipConnection {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "last"
             }
@@ -149,7 +149,7 @@ pub mod film_fields {
     }
     pub struct VehicleConnection;
     impl ::cynic::schema::Field for VehicleConnection {
-        type SchemaType = Option<super::FilmVehiclesConnection>;
+        type Type = Option<super::FilmVehiclesConnection>;
         fn name() -> &'static str {
             "vehicleConnection"
         }
@@ -160,28 +160,28 @@ pub mod film_fields {
     pub mod vehicle_connection_arguments {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::VehicleConnection {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "after"
             }
         }
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::VehicleConnection {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "first"
             }
         }
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::VehicleConnection {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "before"
             }
         }
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::VehicleConnection {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "last"
             }
@@ -189,7 +189,7 @@ pub mod film_fields {
     }
     pub struct CharacterConnection;
     impl ::cynic::schema::Field for CharacterConnection {
-        type SchemaType = Option<super::FilmCharactersConnection>;
+        type Type = Option<super::FilmCharactersConnection>;
         fn name() -> &'static str {
             "characterConnection"
         }
@@ -200,28 +200,28 @@ pub mod film_fields {
     pub mod character_connection_arguments {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::CharacterConnection {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "after"
             }
         }
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::CharacterConnection {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "first"
             }
         }
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::CharacterConnection {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "before"
             }
         }
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::CharacterConnection {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "last"
             }
@@ -229,7 +229,7 @@ pub mod film_fields {
     }
     pub struct PlanetConnection;
     impl ::cynic::schema::Field for PlanetConnection {
-        type SchemaType = Option<super::FilmPlanetsConnection>;
+        type Type = Option<super::FilmPlanetsConnection>;
         fn name() -> &'static str {
             "planetConnection"
         }
@@ -240,28 +240,28 @@ pub mod film_fields {
     pub mod planet_connection_arguments {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::PlanetConnection {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "after"
             }
         }
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::PlanetConnection {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "first"
             }
         }
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::PlanetConnection {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "before"
             }
         }
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::PlanetConnection {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "last"
             }
@@ -269,7 +269,7 @@ pub mod film_fields {
     }
     pub struct Created;
     impl ::cynic::schema::Field for Created {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "created"
         }
@@ -279,7 +279,7 @@ pub mod film_fields {
     }
     pub struct Edited;
     impl ::cynic::schema::Field for Edited {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "edited"
         }
@@ -289,7 +289,7 @@ pub mod film_fields {
     }
     pub struct Id;
     impl ::cynic::schema::Field for Id {
-        type SchemaType = super::Id;
+        type Type = super::Id;
         fn name() -> &'static str {
             "id"
         }
@@ -302,7 +302,7 @@ pub struct FilmCharactersConnection;
 pub mod film_characters_connection_fields {
     pub struct PageInfo;
     impl ::cynic::schema::Field for PageInfo {
-        type SchemaType = super::PageInfo;
+        type Type = super::PageInfo;
         fn name() -> &'static str {
             "pageInfo"
         }
@@ -312,7 +312,7 @@ pub mod film_characters_connection_fields {
     }
     pub struct Edges;
     impl ::cynic::schema::Field for Edges {
-        type SchemaType = Option<Vec<Option<super::FilmCharactersEdge>>>;
+        type Type = Option<Vec<Option<super::FilmCharactersEdge>>>;
         fn name() -> &'static str {
             "edges"
         }
@@ -322,7 +322,7 @@ pub mod film_characters_connection_fields {
     }
     pub struct TotalCount;
     impl ::cynic::schema::Field for TotalCount {
-        type SchemaType = Option<super::Int>;
+        type Type = Option<super::Int>;
         fn name() -> &'static str {
             "totalCount"
         }
@@ -332,7 +332,7 @@ pub mod film_characters_connection_fields {
     }
     pub struct Characters;
     impl ::cynic::schema::Field for Characters {
-        type SchemaType = Option<Vec<Option<super::Person>>>;
+        type Type = Option<Vec<Option<super::Person>>>;
         fn name() -> &'static str {
             "characters"
         }
@@ -345,7 +345,7 @@ pub struct FilmCharactersEdge;
 pub mod film_characters_edge_fields {
     pub struct Node;
     impl ::cynic::schema::Field for Node {
-        type SchemaType = Option<super::Person>;
+        type Type = Option<super::Person>;
         fn name() -> &'static str {
             "node"
         }
@@ -355,7 +355,7 @@ pub mod film_characters_edge_fields {
     }
     pub struct Cursor;
     impl ::cynic::schema::Field for Cursor {
-        type SchemaType = super::String;
+        type Type = super::String;
         fn name() -> &'static str {
             "cursor"
         }
@@ -368,7 +368,7 @@ pub struct FilmPlanetsConnection;
 pub mod film_planets_connection_fields {
     pub struct PageInfo;
     impl ::cynic::schema::Field for PageInfo {
-        type SchemaType = super::PageInfo;
+        type Type = super::PageInfo;
         fn name() -> &'static str {
             "pageInfo"
         }
@@ -378,7 +378,7 @@ pub mod film_planets_connection_fields {
     }
     pub struct Edges;
     impl ::cynic::schema::Field for Edges {
-        type SchemaType = Option<Vec<Option<super::FilmPlanetsEdge>>>;
+        type Type = Option<Vec<Option<super::FilmPlanetsEdge>>>;
         fn name() -> &'static str {
             "edges"
         }
@@ -388,7 +388,7 @@ pub mod film_planets_connection_fields {
     }
     pub struct TotalCount;
     impl ::cynic::schema::Field for TotalCount {
-        type SchemaType = Option<super::Int>;
+        type Type = Option<super::Int>;
         fn name() -> &'static str {
             "totalCount"
         }
@@ -398,7 +398,7 @@ pub mod film_planets_connection_fields {
     }
     pub struct Planets;
     impl ::cynic::schema::Field for Planets {
-        type SchemaType = Option<Vec<Option<super::Planet>>>;
+        type Type = Option<Vec<Option<super::Planet>>>;
         fn name() -> &'static str {
             "planets"
         }
@@ -411,7 +411,7 @@ pub struct FilmPlanetsEdge;
 pub mod film_planets_edge_fields {
     pub struct Node;
     impl ::cynic::schema::Field for Node {
-        type SchemaType = Option<super::Planet>;
+        type Type = Option<super::Planet>;
         fn name() -> &'static str {
             "node"
         }
@@ -421,7 +421,7 @@ pub mod film_planets_edge_fields {
     }
     pub struct Cursor;
     impl ::cynic::schema::Field for Cursor {
-        type SchemaType = super::String;
+        type Type = super::String;
         fn name() -> &'static str {
             "cursor"
         }
@@ -434,7 +434,7 @@ pub struct FilmSpeciesConnection;
 pub mod film_species_connection_fields {
     pub struct PageInfo;
     impl ::cynic::schema::Field for PageInfo {
-        type SchemaType = super::PageInfo;
+        type Type = super::PageInfo;
         fn name() -> &'static str {
             "pageInfo"
         }
@@ -444,7 +444,7 @@ pub mod film_species_connection_fields {
     }
     pub struct Edges;
     impl ::cynic::schema::Field for Edges {
-        type SchemaType = Option<Vec<Option<super::FilmSpeciesEdge>>>;
+        type Type = Option<Vec<Option<super::FilmSpeciesEdge>>>;
         fn name() -> &'static str {
             "edges"
         }
@@ -454,7 +454,7 @@ pub mod film_species_connection_fields {
     }
     pub struct TotalCount;
     impl ::cynic::schema::Field for TotalCount {
-        type SchemaType = Option<super::Int>;
+        type Type = Option<super::Int>;
         fn name() -> &'static str {
             "totalCount"
         }
@@ -464,7 +464,7 @@ pub mod film_species_connection_fields {
     }
     pub struct Species;
     impl ::cynic::schema::Field for Species {
-        type SchemaType = Option<Vec<Option<super::Species>>>;
+        type Type = Option<Vec<Option<super::Species>>>;
         fn name() -> &'static str {
             "species"
         }
@@ -477,7 +477,7 @@ pub struct FilmSpeciesEdge;
 pub mod film_species_edge_fields {
     pub struct Node;
     impl ::cynic::schema::Field for Node {
-        type SchemaType = Option<super::Species>;
+        type Type = Option<super::Species>;
         fn name() -> &'static str {
             "node"
         }
@@ -487,7 +487,7 @@ pub mod film_species_edge_fields {
     }
     pub struct Cursor;
     impl ::cynic::schema::Field for Cursor {
-        type SchemaType = super::String;
+        type Type = super::String;
         fn name() -> &'static str {
             "cursor"
         }
@@ -500,7 +500,7 @@ pub struct FilmStarshipsConnection;
 pub mod film_starships_connection_fields {
     pub struct PageInfo;
     impl ::cynic::schema::Field for PageInfo {
-        type SchemaType = super::PageInfo;
+        type Type = super::PageInfo;
         fn name() -> &'static str {
             "pageInfo"
         }
@@ -510,7 +510,7 @@ pub mod film_starships_connection_fields {
     }
     pub struct Edges;
     impl ::cynic::schema::Field for Edges {
-        type SchemaType = Option<Vec<Option<super::FilmStarshipsEdge>>>;
+        type Type = Option<Vec<Option<super::FilmStarshipsEdge>>>;
         fn name() -> &'static str {
             "edges"
         }
@@ -520,7 +520,7 @@ pub mod film_starships_connection_fields {
     }
     pub struct TotalCount;
     impl ::cynic::schema::Field for TotalCount {
-        type SchemaType = Option<super::Int>;
+        type Type = Option<super::Int>;
         fn name() -> &'static str {
             "totalCount"
         }
@@ -530,7 +530,7 @@ pub mod film_starships_connection_fields {
     }
     pub struct Starships;
     impl ::cynic::schema::Field for Starships {
-        type SchemaType = Option<Vec<Option<super::Starship>>>;
+        type Type = Option<Vec<Option<super::Starship>>>;
         fn name() -> &'static str {
             "starships"
         }
@@ -543,7 +543,7 @@ pub struct FilmStarshipsEdge;
 pub mod film_starships_edge_fields {
     pub struct Node;
     impl ::cynic::schema::Field for Node {
-        type SchemaType = Option<super::Starship>;
+        type Type = Option<super::Starship>;
         fn name() -> &'static str {
             "node"
         }
@@ -553,7 +553,7 @@ pub mod film_starships_edge_fields {
     }
     pub struct Cursor;
     impl ::cynic::schema::Field for Cursor {
-        type SchemaType = super::String;
+        type Type = super::String;
         fn name() -> &'static str {
             "cursor"
         }
@@ -566,7 +566,7 @@ pub struct FilmVehiclesConnection;
 pub mod film_vehicles_connection_fields {
     pub struct PageInfo;
     impl ::cynic::schema::Field for PageInfo {
-        type SchemaType = super::PageInfo;
+        type Type = super::PageInfo;
         fn name() -> &'static str {
             "pageInfo"
         }
@@ -576,7 +576,7 @@ pub mod film_vehicles_connection_fields {
     }
     pub struct Edges;
     impl ::cynic::schema::Field for Edges {
-        type SchemaType = Option<Vec<Option<super::FilmVehiclesEdge>>>;
+        type Type = Option<Vec<Option<super::FilmVehiclesEdge>>>;
         fn name() -> &'static str {
             "edges"
         }
@@ -586,7 +586,7 @@ pub mod film_vehicles_connection_fields {
     }
     pub struct TotalCount;
     impl ::cynic::schema::Field for TotalCount {
-        type SchemaType = Option<super::Int>;
+        type Type = Option<super::Int>;
         fn name() -> &'static str {
             "totalCount"
         }
@@ -596,7 +596,7 @@ pub mod film_vehicles_connection_fields {
     }
     pub struct Vehicles;
     impl ::cynic::schema::Field for Vehicles {
-        type SchemaType = Option<Vec<Option<super::Vehicle>>>;
+        type Type = Option<Vec<Option<super::Vehicle>>>;
         fn name() -> &'static str {
             "vehicles"
         }
@@ -609,7 +609,7 @@ pub struct FilmVehiclesEdge;
 pub mod film_vehicles_edge_fields {
     pub struct Node;
     impl ::cynic::schema::Field for Node {
-        type SchemaType = Option<super::Vehicle>;
+        type Type = Option<super::Vehicle>;
         fn name() -> &'static str {
             "node"
         }
@@ -619,7 +619,7 @@ pub mod film_vehicles_edge_fields {
     }
     pub struct Cursor;
     impl ::cynic::schema::Field for Cursor {
-        type SchemaType = super::String;
+        type Type = super::String;
         fn name() -> &'static str {
             "cursor"
         }
@@ -632,7 +632,7 @@ pub struct FilmsConnection;
 pub mod films_connection_fields {
     pub struct PageInfo;
     impl ::cynic::schema::Field for PageInfo {
-        type SchemaType = super::PageInfo;
+        type Type = super::PageInfo;
         fn name() -> &'static str {
             "pageInfo"
         }
@@ -642,7 +642,7 @@ pub mod films_connection_fields {
     }
     pub struct Edges;
     impl ::cynic::schema::Field for Edges {
-        type SchemaType = Option<Vec<Option<super::FilmsEdge>>>;
+        type Type = Option<Vec<Option<super::FilmsEdge>>>;
         fn name() -> &'static str {
             "edges"
         }
@@ -652,7 +652,7 @@ pub mod films_connection_fields {
     }
     pub struct TotalCount;
     impl ::cynic::schema::Field for TotalCount {
-        type SchemaType = Option<super::Int>;
+        type Type = Option<super::Int>;
         fn name() -> &'static str {
             "totalCount"
         }
@@ -662,7 +662,7 @@ pub mod films_connection_fields {
     }
     pub struct Films;
     impl ::cynic::schema::Field for Films {
-        type SchemaType = Option<Vec<Option<super::Film>>>;
+        type Type = Option<Vec<Option<super::Film>>>;
         fn name() -> &'static str {
             "films"
         }
@@ -675,7 +675,7 @@ pub struct FilmsEdge;
 pub mod films_edge_fields {
     pub struct Node;
     impl ::cynic::schema::Field for Node {
-        type SchemaType = Option<super::Film>;
+        type Type = Option<super::Film>;
         fn name() -> &'static str {
             "node"
         }
@@ -685,7 +685,7 @@ pub mod films_edge_fields {
     }
     pub struct Cursor;
     impl ::cynic::schema::Field for Cursor {
-        type SchemaType = super::String;
+        type Type = super::String;
         fn name() -> &'static str {
             "cursor"
         }
@@ -698,7 +698,7 @@ pub struct Node;
 pub mod node_fields {
     pub struct Id;
     impl ::cynic::schema::Field for Id {
-        type SchemaType = super::Id;
+        type Type = super::Id;
         fn name() -> &'static str {
             "id"
         }
@@ -711,7 +711,7 @@ pub struct PageInfo;
 pub mod page_info_fields {
     pub struct HasNextPage;
     impl ::cynic::schema::Field for HasNextPage {
-        type SchemaType = super::Boolean;
+        type Type = super::Boolean;
         fn name() -> &'static str {
             "hasNextPage"
         }
@@ -721,7 +721,7 @@ pub mod page_info_fields {
     }
     pub struct HasPreviousPage;
     impl ::cynic::schema::Field for HasPreviousPage {
-        type SchemaType = super::Boolean;
+        type Type = super::Boolean;
         fn name() -> &'static str {
             "hasPreviousPage"
         }
@@ -731,7 +731,7 @@ pub mod page_info_fields {
     }
     pub struct StartCursor;
     impl ::cynic::schema::Field for StartCursor {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "startCursor"
         }
@@ -741,7 +741,7 @@ pub mod page_info_fields {
     }
     pub struct EndCursor;
     impl ::cynic::schema::Field for EndCursor {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "endCursor"
         }
@@ -754,7 +754,7 @@ pub struct PeopleConnection;
 pub mod people_connection_fields {
     pub struct PageInfo;
     impl ::cynic::schema::Field for PageInfo {
-        type SchemaType = super::PageInfo;
+        type Type = super::PageInfo;
         fn name() -> &'static str {
             "pageInfo"
         }
@@ -764,7 +764,7 @@ pub mod people_connection_fields {
     }
     pub struct Edges;
     impl ::cynic::schema::Field for Edges {
-        type SchemaType = Option<Vec<Option<super::PeopleEdge>>>;
+        type Type = Option<Vec<Option<super::PeopleEdge>>>;
         fn name() -> &'static str {
             "edges"
         }
@@ -774,7 +774,7 @@ pub mod people_connection_fields {
     }
     pub struct TotalCount;
     impl ::cynic::schema::Field for TotalCount {
-        type SchemaType = Option<super::Int>;
+        type Type = Option<super::Int>;
         fn name() -> &'static str {
             "totalCount"
         }
@@ -784,7 +784,7 @@ pub mod people_connection_fields {
     }
     pub struct People;
     impl ::cynic::schema::Field for People {
-        type SchemaType = Option<Vec<Option<super::Person>>>;
+        type Type = Option<Vec<Option<super::Person>>>;
         fn name() -> &'static str {
             "people"
         }
@@ -797,7 +797,7 @@ pub struct PeopleEdge;
 pub mod people_edge_fields {
     pub struct Node;
     impl ::cynic::schema::Field for Node {
-        type SchemaType = Option<super::Person>;
+        type Type = Option<super::Person>;
         fn name() -> &'static str {
             "node"
         }
@@ -807,7 +807,7 @@ pub mod people_edge_fields {
     }
     pub struct Cursor;
     impl ::cynic::schema::Field for Cursor {
-        type SchemaType = super::String;
+        type Type = super::String;
         fn name() -> &'static str {
             "cursor"
         }
@@ -820,7 +820,7 @@ pub struct Person;
 pub mod person_fields {
     pub struct Name;
     impl ::cynic::schema::Field for Name {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "name"
         }
@@ -830,7 +830,7 @@ pub mod person_fields {
     }
     pub struct BirthYear;
     impl ::cynic::schema::Field for BirthYear {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "birthYear"
         }
@@ -840,7 +840,7 @@ pub mod person_fields {
     }
     pub struct EyeColor;
     impl ::cynic::schema::Field for EyeColor {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "eyeColor"
         }
@@ -850,7 +850,7 @@ pub mod person_fields {
     }
     pub struct Gender;
     impl ::cynic::schema::Field for Gender {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "gender"
         }
@@ -860,7 +860,7 @@ pub mod person_fields {
     }
     pub struct HairColor;
     impl ::cynic::schema::Field for HairColor {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "hairColor"
         }
@@ -870,7 +870,7 @@ pub mod person_fields {
     }
     pub struct Height;
     impl ::cynic::schema::Field for Height {
-        type SchemaType = Option<super::Int>;
+        type Type = Option<super::Int>;
         fn name() -> &'static str {
             "height"
         }
@@ -880,7 +880,7 @@ pub mod person_fields {
     }
     pub struct Mass;
     impl ::cynic::schema::Field for Mass {
-        type SchemaType = Option<super::Float>;
+        type Type = Option<super::Float>;
         fn name() -> &'static str {
             "mass"
         }
@@ -890,7 +890,7 @@ pub mod person_fields {
     }
     pub struct SkinColor;
     impl ::cynic::schema::Field for SkinColor {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "skinColor"
         }
@@ -900,7 +900,7 @@ pub mod person_fields {
     }
     pub struct Homeworld;
     impl ::cynic::schema::Field for Homeworld {
-        type SchemaType = Option<super::Planet>;
+        type Type = Option<super::Planet>;
         fn name() -> &'static str {
             "homeworld"
         }
@@ -910,7 +910,7 @@ pub mod person_fields {
     }
     pub struct FilmConnection;
     impl ::cynic::schema::Field for FilmConnection {
-        type SchemaType = Option<super::PersonFilmsConnection>;
+        type Type = Option<super::PersonFilmsConnection>;
         fn name() -> &'static str {
             "filmConnection"
         }
@@ -921,28 +921,28 @@ pub mod person_fields {
     pub mod film_connection_arguments {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::FilmConnection {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "after"
             }
         }
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::FilmConnection {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "first"
             }
         }
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::FilmConnection {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "before"
             }
         }
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::FilmConnection {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "last"
             }
@@ -950,7 +950,7 @@ pub mod person_fields {
     }
     pub struct Species;
     impl ::cynic::schema::Field for Species {
-        type SchemaType = Option<super::Species>;
+        type Type = Option<super::Species>;
         fn name() -> &'static str {
             "species"
         }
@@ -960,7 +960,7 @@ pub mod person_fields {
     }
     pub struct StarshipConnection;
     impl ::cynic::schema::Field for StarshipConnection {
-        type SchemaType = Option<super::PersonStarshipsConnection>;
+        type Type = Option<super::PersonStarshipsConnection>;
         fn name() -> &'static str {
             "starshipConnection"
         }
@@ -971,28 +971,28 @@ pub mod person_fields {
     pub mod starship_connection_arguments {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::StarshipConnection {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "after"
             }
         }
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::StarshipConnection {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "first"
             }
         }
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::StarshipConnection {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "before"
             }
         }
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::StarshipConnection {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "last"
             }
@@ -1000,7 +1000,7 @@ pub mod person_fields {
     }
     pub struct VehicleConnection;
     impl ::cynic::schema::Field for VehicleConnection {
-        type SchemaType = Option<super::PersonVehiclesConnection>;
+        type Type = Option<super::PersonVehiclesConnection>;
         fn name() -> &'static str {
             "vehicleConnection"
         }
@@ -1011,28 +1011,28 @@ pub mod person_fields {
     pub mod vehicle_connection_arguments {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::VehicleConnection {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "after"
             }
         }
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::VehicleConnection {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "first"
             }
         }
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::VehicleConnection {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "before"
             }
         }
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::VehicleConnection {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "last"
             }
@@ -1040,7 +1040,7 @@ pub mod person_fields {
     }
     pub struct Created;
     impl ::cynic::schema::Field for Created {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "created"
         }
@@ -1050,7 +1050,7 @@ pub mod person_fields {
     }
     pub struct Edited;
     impl ::cynic::schema::Field for Edited {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "edited"
         }
@@ -1060,7 +1060,7 @@ pub mod person_fields {
     }
     pub struct Id;
     impl ::cynic::schema::Field for Id {
-        type SchemaType = super::Id;
+        type Type = super::Id;
         fn name() -> &'static str {
             "id"
         }
@@ -1073,7 +1073,7 @@ pub struct PersonFilmsConnection;
 pub mod person_films_connection_fields {
     pub struct PageInfo;
     impl ::cynic::schema::Field for PageInfo {
-        type SchemaType = super::PageInfo;
+        type Type = super::PageInfo;
         fn name() -> &'static str {
             "pageInfo"
         }
@@ -1083,7 +1083,7 @@ pub mod person_films_connection_fields {
     }
     pub struct Edges;
     impl ::cynic::schema::Field for Edges {
-        type SchemaType = Option<Vec<Option<super::PersonFilmsEdge>>>;
+        type Type = Option<Vec<Option<super::PersonFilmsEdge>>>;
         fn name() -> &'static str {
             "edges"
         }
@@ -1093,7 +1093,7 @@ pub mod person_films_connection_fields {
     }
     pub struct TotalCount;
     impl ::cynic::schema::Field for TotalCount {
-        type SchemaType = Option<super::Int>;
+        type Type = Option<super::Int>;
         fn name() -> &'static str {
             "totalCount"
         }
@@ -1103,7 +1103,7 @@ pub mod person_films_connection_fields {
     }
     pub struct Films;
     impl ::cynic::schema::Field for Films {
-        type SchemaType = Option<Vec<Option<super::Film>>>;
+        type Type = Option<Vec<Option<super::Film>>>;
         fn name() -> &'static str {
             "films"
         }
@@ -1116,7 +1116,7 @@ pub struct PersonFilmsEdge;
 pub mod person_films_edge_fields {
     pub struct Node;
     impl ::cynic::schema::Field for Node {
-        type SchemaType = Option<super::Film>;
+        type Type = Option<super::Film>;
         fn name() -> &'static str {
             "node"
         }
@@ -1126,7 +1126,7 @@ pub mod person_films_edge_fields {
     }
     pub struct Cursor;
     impl ::cynic::schema::Field for Cursor {
-        type SchemaType = super::String;
+        type Type = super::String;
         fn name() -> &'static str {
             "cursor"
         }
@@ -1139,7 +1139,7 @@ pub struct PersonStarshipsConnection;
 pub mod person_starships_connection_fields {
     pub struct PageInfo;
     impl ::cynic::schema::Field for PageInfo {
-        type SchemaType = super::PageInfo;
+        type Type = super::PageInfo;
         fn name() -> &'static str {
             "pageInfo"
         }
@@ -1149,7 +1149,7 @@ pub mod person_starships_connection_fields {
     }
     pub struct Edges;
     impl ::cynic::schema::Field for Edges {
-        type SchemaType = Option<Vec<Option<super::PersonStarshipsEdge>>>;
+        type Type = Option<Vec<Option<super::PersonStarshipsEdge>>>;
         fn name() -> &'static str {
             "edges"
         }
@@ -1159,7 +1159,7 @@ pub mod person_starships_connection_fields {
     }
     pub struct TotalCount;
     impl ::cynic::schema::Field for TotalCount {
-        type SchemaType = Option<super::Int>;
+        type Type = Option<super::Int>;
         fn name() -> &'static str {
             "totalCount"
         }
@@ -1169,7 +1169,7 @@ pub mod person_starships_connection_fields {
     }
     pub struct Starships;
     impl ::cynic::schema::Field for Starships {
-        type SchemaType = Option<Vec<Option<super::Starship>>>;
+        type Type = Option<Vec<Option<super::Starship>>>;
         fn name() -> &'static str {
             "starships"
         }
@@ -1182,7 +1182,7 @@ pub struct PersonStarshipsEdge;
 pub mod person_starships_edge_fields {
     pub struct Node;
     impl ::cynic::schema::Field for Node {
-        type SchemaType = Option<super::Starship>;
+        type Type = Option<super::Starship>;
         fn name() -> &'static str {
             "node"
         }
@@ -1192,7 +1192,7 @@ pub mod person_starships_edge_fields {
     }
     pub struct Cursor;
     impl ::cynic::schema::Field for Cursor {
-        type SchemaType = super::String;
+        type Type = super::String;
         fn name() -> &'static str {
             "cursor"
         }
@@ -1205,7 +1205,7 @@ pub struct PersonVehiclesConnection;
 pub mod person_vehicles_connection_fields {
     pub struct PageInfo;
     impl ::cynic::schema::Field for PageInfo {
-        type SchemaType = super::PageInfo;
+        type Type = super::PageInfo;
         fn name() -> &'static str {
             "pageInfo"
         }
@@ -1215,7 +1215,7 @@ pub mod person_vehicles_connection_fields {
     }
     pub struct Edges;
     impl ::cynic::schema::Field for Edges {
-        type SchemaType = Option<Vec<Option<super::PersonVehiclesEdge>>>;
+        type Type = Option<Vec<Option<super::PersonVehiclesEdge>>>;
         fn name() -> &'static str {
             "edges"
         }
@@ -1225,7 +1225,7 @@ pub mod person_vehicles_connection_fields {
     }
     pub struct TotalCount;
     impl ::cynic::schema::Field for TotalCount {
-        type SchemaType = Option<super::Int>;
+        type Type = Option<super::Int>;
         fn name() -> &'static str {
             "totalCount"
         }
@@ -1235,7 +1235,7 @@ pub mod person_vehicles_connection_fields {
     }
     pub struct Vehicles;
     impl ::cynic::schema::Field for Vehicles {
-        type SchemaType = Option<Vec<Option<super::Vehicle>>>;
+        type Type = Option<Vec<Option<super::Vehicle>>>;
         fn name() -> &'static str {
             "vehicles"
         }
@@ -1248,7 +1248,7 @@ pub struct PersonVehiclesEdge;
 pub mod person_vehicles_edge_fields {
     pub struct Node;
     impl ::cynic::schema::Field for Node {
-        type SchemaType = Option<super::Vehicle>;
+        type Type = Option<super::Vehicle>;
         fn name() -> &'static str {
             "node"
         }
@@ -1258,7 +1258,7 @@ pub mod person_vehicles_edge_fields {
     }
     pub struct Cursor;
     impl ::cynic::schema::Field for Cursor {
-        type SchemaType = super::String;
+        type Type = super::String;
         fn name() -> &'static str {
             "cursor"
         }
@@ -1271,7 +1271,7 @@ pub struct Planet;
 pub mod planet_fields {
     pub struct Name;
     impl ::cynic::schema::Field for Name {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "name"
         }
@@ -1281,7 +1281,7 @@ pub mod planet_fields {
     }
     pub struct Diameter;
     impl ::cynic::schema::Field for Diameter {
-        type SchemaType = Option<super::Int>;
+        type Type = Option<super::Int>;
         fn name() -> &'static str {
             "diameter"
         }
@@ -1291,7 +1291,7 @@ pub mod planet_fields {
     }
     pub struct RotationPeriod;
     impl ::cynic::schema::Field for RotationPeriod {
-        type SchemaType = Option<super::Int>;
+        type Type = Option<super::Int>;
         fn name() -> &'static str {
             "rotationPeriod"
         }
@@ -1301,7 +1301,7 @@ pub mod planet_fields {
     }
     pub struct OrbitalPeriod;
     impl ::cynic::schema::Field for OrbitalPeriod {
-        type SchemaType = Option<super::Int>;
+        type Type = Option<super::Int>;
         fn name() -> &'static str {
             "orbitalPeriod"
         }
@@ -1311,7 +1311,7 @@ pub mod planet_fields {
     }
     pub struct Gravity;
     impl ::cynic::schema::Field for Gravity {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "gravity"
         }
@@ -1321,7 +1321,7 @@ pub mod planet_fields {
     }
     pub struct Population;
     impl ::cynic::schema::Field for Population {
-        type SchemaType = Option<super::Float>;
+        type Type = Option<super::Float>;
         fn name() -> &'static str {
             "population"
         }
@@ -1331,7 +1331,7 @@ pub mod planet_fields {
     }
     pub struct Climates;
     impl ::cynic::schema::Field for Climates {
-        type SchemaType = Option<Vec<Option<super::String>>>;
+        type Type = Option<Vec<Option<super::String>>>;
         fn name() -> &'static str {
             "climates"
         }
@@ -1341,7 +1341,7 @@ pub mod planet_fields {
     }
     pub struct Terrains;
     impl ::cynic::schema::Field for Terrains {
-        type SchemaType = Option<Vec<Option<super::String>>>;
+        type Type = Option<Vec<Option<super::String>>>;
         fn name() -> &'static str {
             "terrains"
         }
@@ -1351,7 +1351,7 @@ pub mod planet_fields {
     }
     pub struct SurfaceWater;
     impl ::cynic::schema::Field for SurfaceWater {
-        type SchemaType = Option<super::Float>;
+        type Type = Option<super::Float>;
         fn name() -> &'static str {
             "surfaceWater"
         }
@@ -1361,7 +1361,7 @@ pub mod planet_fields {
     }
     pub struct ResidentConnection;
     impl ::cynic::schema::Field for ResidentConnection {
-        type SchemaType = Option<super::PlanetResidentsConnection>;
+        type Type = Option<super::PlanetResidentsConnection>;
         fn name() -> &'static str {
             "residentConnection"
         }
@@ -1372,28 +1372,28 @@ pub mod planet_fields {
     pub mod resident_connection_arguments {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::ResidentConnection {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "after"
             }
         }
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::ResidentConnection {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "first"
             }
         }
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::ResidentConnection {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "before"
             }
         }
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::ResidentConnection {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "last"
             }
@@ -1401,7 +1401,7 @@ pub mod planet_fields {
     }
     pub struct FilmConnection;
     impl ::cynic::schema::Field for FilmConnection {
-        type SchemaType = Option<super::PlanetFilmsConnection>;
+        type Type = Option<super::PlanetFilmsConnection>;
         fn name() -> &'static str {
             "filmConnection"
         }
@@ -1412,28 +1412,28 @@ pub mod planet_fields {
     pub mod film_connection_arguments {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::FilmConnection {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "after"
             }
         }
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::FilmConnection {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "first"
             }
         }
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::FilmConnection {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "before"
             }
         }
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::FilmConnection {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "last"
             }
@@ -1441,7 +1441,7 @@ pub mod planet_fields {
     }
     pub struct Created;
     impl ::cynic::schema::Field for Created {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "created"
         }
@@ -1451,7 +1451,7 @@ pub mod planet_fields {
     }
     pub struct Edited;
     impl ::cynic::schema::Field for Edited {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "edited"
         }
@@ -1461,7 +1461,7 @@ pub mod planet_fields {
     }
     pub struct Id;
     impl ::cynic::schema::Field for Id {
-        type SchemaType = super::Id;
+        type Type = super::Id;
         fn name() -> &'static str {
             "id"
         }
@@ -1474,7 +1474,7 @@ pub struct PlanetFilmsConnection;
 pub mod planet_films_connection_fields {
     pub struct PageInfo;
     impl ::cynic::schema::Field for PageInfo {
-        type SchemaType = super::PageInfo;
+        type Type = super::PageInfo;
         fn name() -> &'static str {
             "pageInfo"
         }
@@ -1484,7 +1484,7 @@ pub mod planet_films_connection_fields {
     }
     pub struct Edges;
     impl ::cynic::schema::Field for Edges {
-        type SchemaType = Option<Vec<Option<super::PlanetFilmsEdge>>>;
+        type Type = Option<Vec<Option<super::PlanetFilmsEdge>>>;
         fn name() -> &'static str {
             "edges"
         }
@@ -1494,7 +1494,7 @@ pub mod planet_films_connection_fields {
     }
     pub struct TotalCount;
     impl ::cynic::schema::Field for TotalCount {
-        type SchemaType = Option<super::Int>;
+        type Type = Option<super::Int>;
         fn name() -> &'static str {
             "totalCount"
         }
@@ -1504,7 +1504,7 @@ pub mod planet_films_connection_fields {
     }
     pub struct Films;
     impl ::cynic::schema::Field for Films {
-        type SchemaType = Option<Vec<Option<super::Film>>>;
+        type Type = Option<Vec<Option<super::Film>>>;
         fn name() -> &'static str {
             "films"
         }
@@ -1517,7 +1517,7 @@ pub struct PlanetFilmsEdge;
 pub mod planet_films_edge_fields {
     pub struct Node;
     impl ::cynic::schema::Field for Node {
-        type SchemaType = Option<super::Film>;
+        type Type = Option<super::Film>;
         fn name() -> &'static str {
             "node"
         }
@@ -1527,7 +1527,7 @@ pub mod planet_films_edge_fields {
     }
     pub struct Cursor;
     impl ::cynic::schema::Field for Cursor {
-        type SchemaType = super::String;
+        type Type = super::String;
         fn name() -> &'static str {
             "cursor"
         }
@@ -1540,7 +1540,7 @@ pub struct PlanetResidentsConnection;
 pub mod planet_residents_connection_fields {
     pub struct PageInfo;
     impl ::cynic::schema::Field for PageInfo {
-        type SchemaType = super::PageInfo;
+        type Type = super::PageInfo;
         fn name() -> &'static str {
             "pageInfo"
         }
@@ -1550,7 +1550,7 @@ pub mod planet_residents_connection_fields {
     }
     pub struct Edges;
     impl ::cynic::schema::Field for Edges {
-        type SchemaType = Option<Vec<Option<super::PlanetResidentsEdge>>>;
+        type Type = Option<Vec<Option<super::PlanetResidentsEdge>>>;
         fn name() -> &'static str {
             "edges"
         }
@@ -1560,7 +1560,7 @@ pub mod planet_residents_connection_fields {
     }
     pub struct TotalCount;
     impl ::cynic::schema::Field for TotalCount {
-        type SchemaType = Option<super::Int>;
+        type Type = Option<super::Int>;
         fn name() -> &'static str {
             "totalCount"
         }
@@ -1570,7 +1570,7 @@ pub mod planet_residents_connection_fields {
     }
     pub struct Residents;
     impl ::cynic::schema::Field for Residents {
-        type SchemaType = Option<Vec<Option<super::Person>>>;
+        type Type = Option<Vec<Option<super::Person>>>;
         fn name() -> &'static str {
             "residents"
         }
@@ -1583,7 +1583,7 @@ pub struct PlanetResidentsEdge;
 pub mod planet_residents_edge_fields {
     pub struct Node;
     impl ::cynic::schema::Field for Node {
-        type SchemaType = Option<super::Person>;
+        type Type = Option<super::Person>;
         fn name() -> &'static str {
             "node"
         }
@@ -1593,7 +1593,7 @@ pub mod planet_residents_edge_fields {
     }
     pub struct Cursor;
     impl ::cynic::schema::Field for Cursor {
-        type SchemaType = super::String;
+        type Type = super::String;
         fn name() -> &'static str {
             "cursor"
         }
@@ -1606,7 +1606,7 @@ pub struct PlanetsConnection;
 pub mod planets_connection_fields {
     pub struct PageInfo;
     impl ::cynic::schema::Field for PageInfo {
-        type SchemaType = super::PageInfo;
+        type Type = super::PageInfo;
         fn name() -> &'static str {
             "pageInfo"
         }
@@ -1616,7 +1616,7 @@ pub mod planets_connection_fields {
     }
     pub struct Edges;
     impl ::cynic::schema::Field for Edges {
-        type SchemaType = Option<Vec<Option<super::PlanetsEdge>>>;
+        type Type = Option<Vec<Option<super::PlanetsEdge>>>;
         fn name() -> &'static str {
             "edges"
         }
@@ -1626,7 +1626,7 @@ pub mod planets_connection_fields {
     }
     pub struct TotalCount;
     impl ::cynic::schema::Field for TotalCount {
-        type SchemaType = Option<super::Int>;
+        type Type = Option<super::Int>;
         fn name() -> &'static str {
             "totalCount"
         }
@@ -1636,7 +1636,7 @@ pub mod planets_connection_fields {
     }
     pub struct Planets;
     impl ::cynic::schema::Field for Planets {
-        type SchemaType = Option<Vec<Option<super::Planet>>>;
+        type Type = Option<Vec<Option<super::Planet>>>;
         fn name() -> &'static str {
             "planets"
         }
@@ -1649,7 +1649,7 @@ pub struct PlanetsEdge;
 pub mod planets_edge_fields {
     pub struct Node;
     impl ::cynic::schema::Field for Node {
-        type SchemaType = Option<super::Planet>;
+        type Type = Option<super::Planet>;
         fn name() -> &'static str {
             "node"
         }
@@ -1659,7 +1659,7 @@ pub mod planets_edge_fields {
     }
     pub struct Cursor;
     impl ::cynic::schema::Field for Cursor {
-        type SchemaType = super::String;
+        type Type = super::String;
         fn name() -> &'static str {
             "cursor"
         }
@@ -1672,7 +1672,7 @@ pub struct Root;
 pub mod root_fields {
     pub struct AllFilms;
     impl ::cynic::schema::Field for AllFilms {
-        type SchemaType = Option<super::FilmsConnection>;
+        type Type = Option<super::FilmsConnection>;
         fn name() -> &'static str {
             "allFilms"
         }
@@ -1683,28 +1683,28 @@ pub mod root_fields {
     pub mod all_films_arguments {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::AllFilms {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "after"
             }
         }
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::AllFilms {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "first"
             }
         }
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::AllFilms {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "before"
             }
         }
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::AllFilms {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "last"
             }
@@ -1712,7 +1712,7 @@ pub mod root_fields {
     }
     pub struct Film;
     impl ::cynic::schema::Field for Film {
-        type SchemaType = Option<super::Film>;
+        type Type = Option<super::Film>;
         fn name() -> &'static str {
             "film"
         }
@@ -1723,14 +1723,14 @@ pub mod root_fields {
     pub mod film_arguments {
         pub struct Id;
         impl ::cynic::schema::HasArgument<Id> for super::Film {
-            type ArgumentSchemaType = Option<super::super::Id>;
+            type ArgumentType = Option<super::super::Id>;
             fn name() -> &'static str {
                 "id"
             }
         }
         pub struct FilmId;
         impl ::cynic::schema::HasArgument<FilmId> for super::Film {
-            type ArgumentSchemaType = Option<super::super::Id>;
+            type ArgumentType = Option<super::super::Id>;
             fn name() -> &'static str {
                 "filmID"
             }
@@ -1738,7 +1738,7 @@ pub mod root_fields {
     }
     pub struct AllPeople;
     impl ::cynic::schema::Field for AllPeople {
-        type SchemaType = Option<super::PeopleConnection>;
+        type Type = Option<super::PeopleConnection>;
         fn name() -> &'static str {
             "allPeople"
         }
@@ -1749,28 +1749,28 @@ pub mod root_fields {
     pub mod all_people_arguments {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::AllPeople {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "after"
             }
         }
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::AllPeople {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "first"
             }
         }
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::AllPeople {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "before"
             }
         }
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::AllPeople {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "last"
             }
@@ -1778,7 +1778,7 @@ pub mod root_fields {
     }
     pub struct Person;
     impl ::cynic::schema::Field for Person {
-        type SchemaType = Option<super::Person>;
+        type Type = Option<super::Person>;
         fn name() -> &'static str {
             "person"
         }
@@ -1789,14 +1789,14 @@ pub mod root_fields {
     pub mod person_arguments {
         pub struct Id;
         impl ::cynic::schema::HasArgument<Id> for super::Person {
-            type ArgumentSchemaType = Option<super::super::Id>;
+            type ArgumentType = Option<super::super::Id>;
             fn name() -> &'static str {
                 "id"
             }
         }
         pub struct PersonId;
         impl ::cynic::schema::HasArgument<PersonId> for super::Person {
-            type ArgumentSchemaType = Option<super::super::Id>;
+            type ArgumentType = Option<super::super::Id>;
             fn name() -> &'static str {
                 "personID"
             }
@@ -1804,7 +1804,7 @@ pub mod root_fields {
     }
     pub struct AllPlanets;
     impl ::cynic::schema::Field for AllPlanets {
-        type SchemaType = Option<super::PlanetsConnection>;
+        type Type = Option<super::PlanetsConnection>;
         fn name() -> &'static str {
             "allPlanets"
         }
@@ -1815,28 +1815,28 @@ pub mod root_fields {
     pub mod all_planets_arguments {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::AllPlanets {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "after"
             }
         }
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::AllPlanets {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "first"
             }
         }
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::AllPlanets {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "before"
             }
         }
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::AllPlanets {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "last"
             }
@@ -1844,7 +1844,7 @@ pub mod root_fields {
     }
     pub struct Planet;
     impl ::cynic::schema::Field for Planet {
-        type SchemaType = Option<super::Planet>;
+        type Type = Option<super::Planet>;
         fn name() -> &'static str {
             "planet"
         }
@@ -1855,14 +1855,14 @@ pub mod root_fields {
     pub mod planet_arguments {
         pub struct Id;
         impl ::cynic::schema::HasArgument<Id> for super::Planet {
-            type ArgumentSchemaType = Option<super::super::Id>;
+            type ArgumentType = Option<super::super::Id>;
             fn name() -> &'static str {
                 "id"
             }
         }
         pub struct PlanetId;
         impl ::cynic::schema::HasArgument<PlanetId> for super::Planet {
-            type ArgumentSchemaType = Option<super::super::Id>;
+            type ArgumentType = Option<super::super::Id>;
             fn name() -> &'static str {
                 "planetID"
             }
@@ -1870,7 +1870,7 @@ pub mod root_fields {
     }
     pub struct AllSpecies;
     impl ::cynic::schema::Field for AllSpecies {
-        type SchemaType = Option<super::SpeciesConnection>;
+        type Type = Option<super::SpeciesConnection>;
         fn name() -> &'static str {
             "allSpecies"
         }
@@ -1881,28 +1881,28 @@ pub mod root_fields {
     pub mod all_species_arguments {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::AllSpecies {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "after"
             }
         }
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::AllSpecies {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "first"
             }
         }
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::AllSpecies {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "before"
             }
         }
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::AllSpecies {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "last"
             }
@@ -1910,7 +1910,7 @@ pub mod root_fields {
     }
     pub struct Species;
     impl ::cynic::schema::Field for Species {
-        type SchemaType = Option<super::Species>;
+        type Type = Option<super::Species>;
         fn name() -> &'static str {
             "species"
         }
@@ -1921,14 +1921,14 @@ pub mod root_fields {
     pub mod species_arguments {
         pub struct Id;
         impl ::cynic::schema::HasArgument<Id> for super::Species {
-            type ArgumentSchemaType = Option<super::super::Id>;
+            type ArgumentType = Option<super::super::Id>;
             fn name() -> &'static str {
                 "id"
             }
         }
         pub struct SpeciesId;
         impl ::cynic::schema::HasArgument<SpeciesId> for super::Species {
-            type ArgumentSchemaType = Option<super::super::Id>;
+            type ArgumentType = Option<super::super::Id>;
             fn name() -> &'static str {
                 "speciesID"
             }
@@ -1936,7 +1936,7 @@ pub mod root_fields {
     }
     pub struct AllStarships;
     impl ::cynic::schema::Field for AllStarships {
-        type SchemaType = Option<super::StarshipsConnection>;
+        type Type = Option<super::StarshipsConnection>;
         fn name() -> &'static str {
             "allStarships"
         }
@@ -1947,28 +1947,28 @@ pub mod root_fields {
     pub mod all_starships_arguments {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::AllStarships {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "after"
             }
         }
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::AllStarships {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "first"
             }
         }
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::AllStarships {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "before"
             }
         }
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::AllStarships {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "last"
             }
@@ -1976,7 +1976,7 @@ pub mod root_fields {
     }
     pub struct Starship;
     impl ::cynic::schema::Field for Starship {
-        type SchemaType = Option<super::Starship>;
+        type Type = Option<super::Starship>;
         fn name() -> &'static str {
             "starship"
         }
@@ -1987,14 +1987,14 @@ pub mod root_fields {
     pub mod starship_arguments {
         pub struct Id;
         impl ::cynic::schema::HasArgument<Id> for super::Starship {
-            type ArgumentSchemaType = Option<super::super::Id>;
+            type ArgumentType = Option<super::super::Id>;
             fn name() -> &'static str {
                 "id"
             }
         }
         pub struct StarshipId;
         impl ::cynic::schema::HasArgument<StarshipId> for super::Starship {
-            type ArgumentSchemaType = Option<super::super::Id>;
+            type ArgumentType = Option<super::super::Id>;
             fn name() -> &'static str {
                 "starshipID"
             }
@@ -2002,7 +2002,7 @@ pub mod root_fields {
     }
     pub struct AllVehicles;
     impl ::cynic::schema::Field for AllVehicles {
-        type SchemaType = Option<super::VehiclesConnection>;
+        type Type = Option<super::VehiclesConnection>;
         fn name() -> &'static str {
             "allVehicles"
         }
@@ -2013,28 +2013,28 @@ pub mod root_fields {
     pub mod all_vehicles_arguments {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::AllVehicles {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "after"
             }
         }
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::AllVehicles {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "first"
             }
         }
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::AllVehicles {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "before"
             }
         }
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::AllVehicles {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "last"
             }
@@ -2042,7 +2042,7 @@ pub mod root_fields {
     }
     pub struct Vehicle;
     impl ::cynic::schema::Field for Vehicle {
-        type SchemaType = Option<super::Vehicle>;
+        type Type = Option<super::Vehicle>;
         fn name() -> &'static str {
             "vehicle"
         }
@@ -2053,14 +2053,14 @@ pub mod root_fields {
     pub mod vehicle_arguments {
         pub struct Id;
         impl ::cynic::schema::HasArgument<Id> for super::Vehicle {
-            type ArgumentSchemaType = Option<super::super::Id>;
+            type ArgumentType = Option<super::super::Id>;
             fn name() -> &'static str {
                 "id"
             }
         }
         pub struct VehicleId;
         impl ::cynic::schema::HasArgument<VehicleId> for super::Vehicle {
-            type ArgumentSchemaType = Option<super::super::Id>;
+            type ArgumentType = Option<super::super::Id>;
             fn name() -> &'static str {
                 "vehicleID"
             }
@@ -2068,7 +2068,7 @@ pub mod root_fields {
     }
     pub struct Node;
     impl ::cynic::schema::Field for Node {
-        type SchemaType = Option<super::Node>;
+        type Type = Option<super::Node>;
         fn name() -> &'static str {
             "node"
         }
@@ -2079,7 +2079,7 @@ pub mod root_fields {
     pub mod node_arguments {
         pub struct Id;
         impl ::cynic::schema::HasArgument<Id> for super::Node {
-            type ArgumentSchemaType = super::super::Id;
+            type ArgumentType = super::super::Id;
             fn name() -> &'static str {
                 "id"
             }
@@ -2090,7 +2090,7 @@ pub struct Species;
 pub mod species_fields {
     pub struct Name;
     impl ::cynic::schema::Field for Name {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "name"
         }
@@ -2100,7 +2100,7 @@ pub mod species_fields {
     }
     pub struct Classification;
     impl ::cynic::schema::Field for Classification {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "classification"
         }
@@ -2110,7 +2110,7 @@ pub mod species_fields {
     }
     pub struct Designation;
     impl ::cynic::schema::Field for Designation {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "designation"
         }
@@ -2120,7 +2120,7 @@ pub mod species_fields {
     }
     pub struct AverageHeight;
     impl ::cynic::schema::Field for AverageHeight {
-        type SchemaType = Option<super::Float>;
+        type Type = Option<super::Float>;
         fn name() -> &'static str {
             "averageHeight"
         }
@@ -2130,7 +2130,7 @@ pub mod species_fields {
     }
     pub struct AverageLifespan;
     impl ::cynic::schema::Field for AverageLifespan {
-        type SchemaType = Option<super::Int>;
+        type Type = Option<super::Int>;
         fn name() -> &'static str {
             "averageLifespan"
         }
@@ -2140,7 +2140,7 @@ pub mod species_fields {
     }
     pub struct EyeColors;
     impl ::cynic::schema::Field for EyeColors {
-        type SchemaType = Option<Vec<Option<super::String>>>;
+        type Type = Option<Vec<Option<super::String>>>;
         fn name() -> &'static str {
             "eyeColors"
         }
@@ -2150,7 +2150,7 @@ pub mod species_fields {
     }
     pub struct HairColors;
     impl ::cynic::schema::Field for HairColors {
-        type SchemaType = Option<Vec<Option<super::String>>>;
+        type Type = Option<Vec<Option<super::String>>>;
         fn name() -> &'static str {
             "hairColors"
         }
@@ -2160,7 +2160,7 @@ pub mod species_fields {
     }
     pub struct SkinColors;
     impl ::cynic::schema::Field for SkinColors {
-        type SchemaType = Option<Vec<Option<super::String>>>;
+        type Type = Option<Vec<Option<super::String>>>;
         fn name() -> &'static str {
             "skinColors"
         }
@@ -2170,7 +2170,7 @@ pub mod species_fields {
     }
     pub struct Language;
     impl ::cynic::schema::Field for Language {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "language"
         }
@@ -2180,7 +2180,7 @@ pub mod species_fields {
     }
     pub struct Homeworld;
     impl ::cynic::schema::Field for Homeworld {
-        type SchemaType = Option<super::Planet>;
+        type Type = Option<super::Planet>;
         fn name() -> &'static str {
             "homeworld"
         }
@@ -2190,7 +2190,7 @@ pub mod species_fields {
     }
     pub struct PersonConnection;
     impl ::cynic::schema::Field for PersonConnection {
-        type SchemaType = Option<super::SpeciesPeopleConnection>;
+        type Type = Option<super::SpeciesPeopleConnection>;
         fn name() -> &'static str {
             "personConnection"
         }
@@ -2201,28 +2201,28 @@ pub mod species_fields {
     pub mod person_connection_arguments {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::PersonConnection {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "after"
             }
         }
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::PersonConnection {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "first"
             }
         }
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::PersonConnection {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "before"
             }
         }
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::PersonConnection {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "last"
             }
@@ -2230,7 +2230,7 @@ pub mod species_fields {
     }
     pub struct FilmConnection;
     impl ::cynic::schema::Field for FilmConnection {
-        type SchemaType = Option<super::SpeciesFilmsConnection>;
+        type Type = Option<super::SpeciesFilmsConnection>;
         fn name() -> &'static str {
             "filmConnection"
         }
@@ -2241,28 +2241,28 @@ pub mod species_fields {
     pub mod film_connection_arguments {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::FilmConnection {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "after"
             }
         }
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::FilmConnection {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "first"
             }
         }
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::FilmConnection {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "before"
             }
         }
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::FilmConnection {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "last"
             }
@@ -2270,7 +2270,7 @@ pub mod species_fields {
     }
     pub struct Created;
     impl ::cynic::schema::Field for Created {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "created"
         }
@@ -2280,7 +2280,7 @@ pub mod species_fields {
     }
     pub struct Edited;
     impl ::cynic::schema::Field for Edited {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "edited"
         }
@@ -2290,7 +2290,7 @@ pub mod species_fields {
     }
     pub struct Id;
     impl ::cynic::schema::Field for Id {
-        type SchemaType = super::Id;
+        type Type = super::Id;
         fn name() -> &'static str {
             "id"
         }
@@ -2303,7 +2303,7 @@ pub struct SpeciesConnection;
 pub mod species_connection_fields {
     pub struct PageInfo;
     impl ::cynic::schema::Field for PageInfo {
-        type SchemaType = super::PageInfo;
+        type Type = super::PageInfo;
         fn name() -> &'static str {
             "pageInfo"
         }
@@ -2313,7 +2313,7 @@ pub mod species_connection_fields {
     }
     pub struct Edges;
     impl ::cynic::schema::Field for Edges {
-        type SchemaType = Option<Vec<Option<super::SpeciesEdge>>>;
+        type Type = Option<Vec<Option<super::SpeciesEdge>>>;
         fn name() -> &'static str {
             "edges"
         }
@@ -2323,7 +2323,7 @@ pub mod species_connection_fields {
     }
     pub struct TotalCount;
     impl ::cynic::schema::Field for TotalCount {
-        type SchemaType = Option<super::Int>;
+        type Type = Option<super::Int>;
         fn name() -> &'static str {
             "totalCount"
         }
@@ -2333,7 +2333,7 @@ pub mod species_connection_fields {
     }
     pub struct Species;
     impl ::cynic::schema::Field for Species {
-        type SchemaType = Option<Vec<Option<super::Species>>>;
+        type Type = Option<Vec<Option<super::Species>>>;
         fn name() -> &'static str {
             "species"
         }
@@ -2346,7 +2346,7 @@ pub struct SpeciesEdge;
 pub mod species_edge_fields {
     pub struct Node;
     impl ::cynic::schema::Field for Node {
-        type SchemaType = Option<super::Species>;
+        type Type = Option<super::Species>;
         fn name() -> &'static str {
             "node"
         }
@@ -2356,7 +2356,7 @@ pub mod species_edge_fields {
     }
     pub struct Cursor;
     impl ::cynic::schema::Field for Cursor {
-        type SchemaType = super::String;
+        type Type = super::String;
         fn name() -> &'static str {
             "cursor"
         }
@@ -2369,7 +2369,7 @@ pub struct SpeciesFilmsConnection;
 pub mod species_films_connection_fields {
     pub struct PageInfo;
     impl ::cynic::schema::Field for PageInfo {
-        type SchemaType = super::PageInfo;
+        type Type = super::PageInfo;
         fn name() -> &'static str {
             "pageInfo"
         }
@@ -2379,7 +2379,7 @@ pub mod species_films_connection_fields {
     }
     pub struct Edges;
     impl ::cynic::schema::Field for Edges {
-        type SchemaType = Option<Vec<Option<super::SpeciesFilmsEdge>>>;
+        type Type = Option<Vec<Option<super::SpeciesFilmsEdge>>>;
         fn name() -> &'static str {
             "edges"
         }
@@ -2389,7 +2389,7 @@ pub mod species_films_connection_fields {
     }
     pub struct TotalCount;
     impl ::cynic::schema::Field for TotalCount {
-        type SchemaType = Option<super::Int>;
+        type Type = Option<super::Int>;
         fn name() -> &'static str {
             "totalCount"
         }
@@ -2399,7 +2399,7 @@ pub mod species_films_connection_fields {
     }
     pub struct Films;
     impl ::cynic::schema::Field for Films {
-        type SchemaType = Option<Vec<Option<super::Film>>>;
+        type Type = Option<Vec<Option<super::Film>>>;
         fn name() -> &'static str {
             "films"
         }
@@ -2412,7 +2412,7 @@ pub struct SpeciesFilmsEdge;
 pub mod species_films_edge_fields {
     pub struct Node;
     impl ::cynic::schema::Field for Node {
-        type SchemaType = Option<super::Film>;
+        type Type = Option<super::Film>;
         fn name() -> &'static str {
             "node"
         }
@@ -2422,7 +2422,7 @@ pub mod species_films_edge_fields {
     }
     pub struct Cursor;
     impl ::cynic::schema::Field for Cursor {
-        type SchemaType = super::String;
+        type Type = super::String;
         fn name() -> &'static str {
             "cursor"
         }
@@ -2435,7 +2435,7 @@ pub struct SpeciesPeopleConnection;
 pub mod species_people_connection_fields {
     pub struct PageInfo;
     impl ::cynic::schema::Field for PageInfo {
-        type SchemaType = super::PageInfo;
+        type Type = super::PageInfo;
         fn name() -> &'static str {
             "pageInfo"
         }
@@ -2445,7 +2445,7 @@ pub mod species_people_connection_fields {
     }
     pub struct Edges;
     impl ::cynic::schema::Field for Edges {
-        type SchemaType = Option<Vec<Option<super::SpeciesPeopleEdge>>>;
+        type Type = Option<Vec<Option<super::SpeciesPeopleEdge>>>;
         fn name() -> &'static str {
             "edges"
         }
@@ -2455,7 +2455,7 @@ pub mod species_people_connection_fields {
     }
     pub struct TotalCount;
     impl ::cynic::schema::Field for TotalCount {
-        type SchemaType = Option<super::Int>;
+        type Type = Option<super::Int>;
         fn name() -> &'static str {
             "totalCount"
         }
@@ -2465,7 +2465,7 @@ pub mod species_people_connection_fields {
     }
     pub struct People;
     impl ::cynic::schema::Field for People {
-        type SchemaType = Option<Vec<Option<super::Person>>>;
+        type Type = Option<Vec<Option<super::Person>>>;
         fn name() -> &'static str {
             "people"
         }
@@ -2478,7 +2478,7 @@ pub struct SpeciesPeopleEdge;
 pub mod species_people_edge_fields {
     pub struct Node;
     impl ::cynic::schema::Field for Node {
-        type SchemaType = Option<super::Person>;
+        type Type = Option<super::Person>;
         fn name() -> &'static str {
             "node"
         }
@@ -2488,7 +2488,7 @@ pub mod species_people_edge_fields {
     }
     pub struct Cursor;
     impl ::cynic::schema::Field for Cursor {
-        type SchemaType = super::String;
+        type Type = super::String;
         fn name() -> &'static str {
             "cursor"
         }
@@ -2501,7 +2501,7 @@ pub struct Starship;
 pub mod starship_fields {
     pub struct Name;
     impl ::cynic::schema::Field for Name {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "name"
         }
@@ -2511,7 +2511,7 @@ pub mod starship_fields {
     }
     pub struct Model;
     impl ::cynic::schema::Field for Model {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "model"
         }
@@ -2521,7 +2521,7 @@ pub mod starship_fields {
     }
     pub struct StarshipClass;
     impl ::cynic::schema::Field for StarshipClass {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "starshipClass"
         }
@@ -2531,7 +2531,7 @@ pub mod starship_fields {
     }
     pub struct Manufacturers;
     impl ::cynic::schema::Field for Manufacturers {
-        type SchemaType = Option<Vec<Option<super::String>>>;
+        type Type = Option<Vec<Option<super::String>>>;
         fn name() -> &'static str {
             "manufacturers"
         }
@@ -2541,7 +2541,7 @@ pub mod starship_fields {
     }
     pub struct CostInCredits;
     impl ::cynic::schema::Field for CostInCredits {
-        type SchemaType = Option<super::Float>;
+        type Type = Option<super::Float>;
         fn name() -> &'static str {
             "costInCredits"
         }
@@ -2551,7 +2551,7 @@ pub mod starship_fields {
     }
     pub struct Length;
     impl ::cynic::schema::Field for Length {
-        type SchemaType = Option<super::Float>;
+        type Type = Option<super::Float>;
         fn name() -> &'static str {
             "length"
         }
@@ -2561,7 +2561,7 @@ pub mod starship_fields {
     }
     pub struct Crew;
     impl ::cynic::schema::Field for Crew {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "crew"
         }
@@ -2571,7 +2571,7 @@ pub mod starship_fields {
     }
     pub struct Passengers;
     impl ::cynic::schema::Field for Passengers {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "passengers"
         }
@@ -2581,7 +2581,7 @@ pub mod starship_fields {
     }
     pub struct MaxAtmospheringSpeed;
     impl ::cynic::schema::Field for MaxAtmospheringSpeed {
-        type SchemaType = Option<super::Int>;
+        type Type = Option<super::Int>;
         fn name() -> &'static str {
             "maxAtmospheringSpeed"
         }
@@ -2591,7 +2591,7 @@ pub mod starship_fields {
     }
     pub struct HyperdriveRating;
     impl ::cynic::schema::Field for HyperdriveRating {
-        type SchemaType = Option<super::Float>;
+        type Type = Option<super::Float>;
         fn name() -> &'static str {
             "hyperdriveRating"
         }
@@ -2601,7 +2601,7 @@ pub mod starship_fields {
     }
     pub struct Mglt;
     impl ::cynic::schema::Field for Mglt {
-        type SchemaType = Option<super::Int>;
+        type Type = Option<super::Int>;
         fn name() -> &'static str {
             "MGLT"
         }
@@ -2611,7 +2611,7 @@ pub mod starship_fields {
     }
     pub struct CargoCapacity;
     impl ::cynic::schema::Field for CargoCapacity {
-        type SchemaType = Option<super::Float>;
+        type Type = Option<super::Float>;
         fn name() -> &'static str {
             "cargoCapacity"
         }
@@ -2621,7 +2621,7 @@ pub mod starship_fields {
     }
     pub struct Consumables;
     impl ::cynic::schema::Field for Consumables {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "consumables"
         }
@@ -2631,7 +2631,7 @@ pub mod starship_fields {
     }
     pub struct PilotConnection;
     impl ::cynic::schema::Field for PilotConnection {
-        type SchemaType = Option<super::StarshipPilotsConnection>;
+        type Type = Option<super::StarshipPilotsConnection>;
         fn name() -> &'static str {
             "pilotConnection"
         }
@@ -2642,28 +2642,28 @@ pub mod starship_fields {
     pub mod pilot_connection_arguments {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::PilotConnection {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "after"
             }
         }
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::PilotConnection {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "first"
             }
         }
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::PilotConnection {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "before"
             }
         }
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::PilotConnection {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "last"
             }
@@ -2671,7 +2671,7 @@ pub mod starship_fields {
     }
     pub struct FilmConnection;
     impl ::cynic::schema::Field for FilmConnection {
-        type SchemaType = Option<super::StarshipFilmsConnection>;
+        type Type = Option<super::StarshipFilmsConnection>;
         fn name() -> &'static str {
             "filmConnection"
         }
@@ -2682,28 +2682,28 @@ pub mod starship_fields {
     pub mod film_connection_arguments {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::FilmConnection {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "after"
             }
         }
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::FilmConnection {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "first"
             }
         }
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::FilmConnection {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "before"
             }
         }
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::FilmConnection {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "last"
             }
@@ -2711,7 +2711,7 @@ pub mod starship_fields {
     }
     pub struct Created;
     impl ::cynic::schema::Field for Created {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "created"
         }
@@ -2721,7 +2721,7 @@ pub mod starship_fields {
     }
     pub struct Edited;
     impl ::cynic::schema::Field for Edited {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "edited"
         }
@@ -2731,7 +2731,7 @@ pub mod starship_fields {
     }
     pub struct Id;
     impl ::cynic::schema::Field for Id {
-        type SchemaType = super::Id;
+        type Type = super::Id;
         fn name() -> &'static str {
             "id"
         }
@@ -2744,7 +2744,7 @@ pub struct StarshipFilmsConnection;
 pub mod starship_films_connection_fields {
     pub struct PageInfo;
     impl ::cynic::schema::Field for PageInfo {
-        type SchemaType = super::PageInfo;
+        type Type = super::PageInfo;
         fn name() -> &'static str {
             "pageInfo"
         }
@@ -2754,7 +2754,7 @@ pub mod starship_films_connection_fields {
     }
     pub struct Edges;
     impl ::cynic::schema::Field for Edges {
-        type SchemaType = Option<Vec<Option<super::StarshipFilmsEdge>>>;
+        type Type = Option<Vec<Option<super::StarshipFilmsEdge>>>;
         fn name() -> &'static str {
             "edges"
         }
@@ -2764,7 +2764,7 @@ pub mod starship_films_connection_fields {
     }
     pub struct TotalCount;
     impl ::cynic::schema::Field for TotalCount {
-        type SchemaType = Option<super::Int>;
+        type Type = Option<super::Int>;
         fn name() -> &'static str {
             "totalCount"
         }
@@ -2774,7 +2774,7 @@ pub mod starship_films_connection_fields {
     }
     pub struct Films;
     impl ::cynic::schema::Field for Films {
-        type SchemaType = Option<Vec<Option<super::Film>>>;
+        type Type = Option<Vec<Option<super::Film>>>;
         fn name() -> &'static str {
             "films"
         }
@@ -2787,7 +2787,7 @@ pub struct StarshipFilmsEdge;
 pub mod starship_films_edge_fields {
     pub struct Node;
     impl ::cynic::schema::Field for Node {
-        type SchemaType = Option<super::Film>;
+        type Type = Option<super::Film>;
         fn name() -> &'static str {
             "node"
         }
@@ -2797,7 +2797,7 @@ pub mod starship_films_edge_fields {
     }
     pub struct Cursor;
     impl ::cynic::schema::Field for Cursor {
-        type SchemaType = super::String;
+        type Type = super::String;
         fn name() -> &'static str {
             "cursor"
         }
@@ -2810,7 +2810,7 @@ pub struct StarshipPilotsConnection;
 pub mod starship_pilots_connection_fields {
     pub struct PageInfo;
     impl ::cynic::schema::Field for PageInfo {
-        type SchemaType = super::PageInfo;
+        type Type = super::PageInfo;
         fn name() -> &'static str {
             "pageInfo"
         }
@@ -2820,7 +2820,7 @@ pub mod starship_pilots_connection_fields {
     }
     pub struct Edges;
     impl ::cynic::schema::Field for Edges {
-        type SchemaType = Option<Vec<Option<super::StarshipPilotsEdge>>>;
+        type Type = Option<Vec<Option<super::StarshipPilotsEdge>>>;
         fn name() -> &'static str {
             "edges"
         }
@@ -2830,7 +2830,7 @@ pub mod starship_pilots_connection_fields {
     }
     pub struct TotalCount;
     impl ::cynic::schema::Field for TotalCount {
-        type SchemaType = Option<super::Int>;
+        type Type = Option<super::Int>;
         fn name() -> &'static str {
             "totalCount"
         }
@@ -2840,7 +2840,7 @@ pub mod starship_pilots_connection_fields {
     }
     pub struct Pilots;
     impl ::cynic::schema::Field for Pilots {
-        type SchemaType = Option<Vec<Option<super::Person>>>;
+        type Type = Option<Vec<Option<super::Person>>>;
         fn name() -> &'static str {
             "pilots"
         }
@@ -2853,7 +2853,7 @@ pub struct StarshipPilotsEdge;
 pub mod starship_pilots_edge_fields {
     pub struct Node;
     impl ::cynic::schema::Field for Node {
-        type SchemaType = Option<super::Person>;
+        type Type = Option<super::Person>;
         fn name() -> &'static str {
             "node"
         }
@@ -2863,7 +2863,7 @@ pub mod starship_pilots_edge_fields {
     }
     pub struct Cursor;
     impl ::cynic::schema::Field for Cursor {
-        type SchemaType = super::String;
+        type Type = super::String;
         fn name() -> &'static str {
             "cursor"
         }
@@ -2876,7 +2876,7 @@ pub struct StarshipsConnection;
 pub mod starships_connection_fields {
     pub struct PageInfo;
     impl ::cynic::schema::Field for PageInfo {
-        type SchemaType = super::PageInfo;
+        type Type = super::PageInfo;
         fn name() -> &'static str {
             "pageInfo"
         }
@@ -2886,7 +2886,7 @@ pub mod starships_connection_fields {
     }
     pub struct Edges;
     impl ::cynic::schema::Field for Edges {
-        type SchemaType = Option<Vec<Option<super::StarshipsEdge>>>;
+        type Type = Option<Vec<Option<super::StarshipsEdge>>>;
         fn name() -> &'static str {
             "edges"
         }
@@ -2896,7 +2896,7 @@ pub mod starships_connection_fields {
     }
     pub struct TotalCount;
     impl ::cynic::schema::Field for TotalCount {
-        type SchemaType = Option<super::Int>;
+        type Type = Option<super::Int>;
         fn name() -> &'static str {
             "totalCount"
         }
@@ -2906,7 +2906,7 @@ pub mod starships_connection_fields {
     }
     pub struct Starships;
     impl ::cynic::schema::Field for Starships {
-        type SchemaType = Option<Vec<Option<super::Starship>>>;
+        type Type = Option<Vec<Option<super::Starship>>>;
         fn name() -> &'static str {
             "starships"
         }
@@ -2919,7 +2919,7 @@ pub struct StarshipsEdge;
 pub mod starships_edge_fields {
     pub struct Node;
     impl ::cynic::schema::Field for Node {
-        type SchemaType = Option<super::Starship>;
+        type Type = Option<super::Starship>;
         fn name() -> &'static str {
             "node"
         }
@@ -2929,7 +2929,7 @@ pub mod starships_edge_fields {
     }
     pub struct Cursor;
     impl ::cynic::schema::Field for Cursor {
-        type SchemaType = super::String;
+        type Type = super::String;
         fn name() -> &'static str {
             "cursor"
         }
@@ -2942,7 +2942,7 @@ pub struct Vehicle;
 pub mod vehicle_fields {
     pub struct Name;
     impl ::cynic::schema::Field for Name {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "name"
         }
@@ -2952,7 +2952,7 @@ pub mod vehicle_fields {
     }
     pub struct Model;
     impl ::cynic::schema::Field for Model {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "model"
         }
@@ -2962,7 +2962,7 @@ pub mod vehicle_fields {
     }
     pub struct VehicleClass;
     impl ::cynic::schema::Field for VehicleClass {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "vehicleClass"
         }
@@ -2972,7 +2972,7 @@ pub mod vehicle_fields {
     }
     pub struct Manufacturers;
     impl ::cynic::schema::Field for Manufacturers {
-        type SchemaType = Option<Vec<Option<super::String>>>;
+        type Type = Option<Vec<Option<super::String>>>;
         fn name() -> &'static str {
             "manufacturers"
         }
@@ -2982,7 +2982,7 @@ pub mod vehicle_fields {
     }
     pub struct CostInCredits;
     impl ::cynic::schema::Field for CostInCredits {
-        type SchemaType = Option<super::Float>;
+        type Type = Option<super::Float>;
         fn name() -> &'static str {
             "costInCredits"
         }
@@ -2992,7 +2992,7 @@ pub mod vehicle_fields {
     }
     pub struct Length;
     impl ::cynic::schema::Field for Length {
-        type SchemaType = Option<super::Float>;
+        type Type = Option<super::Float>;
         fn name() -> &'static str {
             "length"
         }
@@ -3002,7 +3002,7 @@ pub mod vehicle_fields {
     }
     pub struct Crew;
     impl ::cynic::schema::Field for Crew {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "crew"
         }
@@ -3012,7 +3012,7 @@ pub mod vehicle_fields {
     }
     pub struct Passengers;
     impl ::cynic::schema::Field for Passengers {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "passengers"
         }
@@ -3022,7 +3022,7 @@ pub mod vehicle_fields {
     }
     pub struct MaxAtmospheringSpeed;
     impl ::cynic::schema::Field for MaxAtmospheringSpeed {
-        type SchemaType = Option<super::Int>;
+        type Type = Option<super::Int>;
         fn name() -> &'static str {
             "maxAtmospheringSpeed"
         }
@@ -3032,7 +3032,7 @@ pub mod vehicle_fields {
     }
     pub struct CargoCapacity;
     impl ::cynic::schema::Field for CargoCapacity {
-        type SchemaType = Option<super::Float>;
+        type Type = Option<super::Float>;
         fn name() -> &'static str {
             "cargoCapacity"
         }
@@ -3042,7 +3042,7 @@ pub mod vehicle_fields {
     }
     pub struct Consumables;
     impl ::cynic::schema::Field for Consumables {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "consumables"
         }
@@ -3052,7 +3052,7 @@ pub mod vehicle_fields {
     }
     pub struct PilotConnection;
     impl ::cynic::schema::Field for PilotConnection {
-        type SchemaType = Option<super::VehiclePilotsConnection>;
+        type Type = Option<super::VehiclePilotsConnection>;
         fn name() -> &'static str {
             "pilotConnection"
         }
@@ -3063,28 +3063,28 @@ pub mod vehicle_fields {
     pub mod pilot_connection_arguments {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::PilotConnection {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "after"
             }
         }
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::PilotConnection {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "first"
             }
         }
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::PilotConnection {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "before"
             }
         }
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::PilotConnection {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "last"
             }
@@ -3092,7 +3092,7 @@ pub mod vehicle_fields {
     }
     pub struct FilmConnection;
     impl ::cynic::schema::Field for FilmConnection {
-        type SchemaType = Option<super::VehicleFilmsConnection>;
+        type Type = Option<super::VehicleFilmsConnection>;
         fn name() -> &'static str {
             "filmConnection"
         }
@@ -3103,28 +3103,28 @@ pub mod vehicle_fields {
     pub mod film_connection_arguments {
         pub struct After;
         impl ::cynic::schema::HasArgument<After> for super::FilmConnection {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "after"
             }
         }
         pub struct First;
         impl ::cynic::schema::HasArgument<First> for super::FilmConnection {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "first"
             }
         }
         pub struct Before;
         impl ::cynic::schema::HasArgument<Before> for super::FilmConnection {
-            type ArgumentSchemaType = Option<super::super::String>;
+            type ArgumentType = Option<super::super::String>;
             fn name() -> &'static str {
                 "before"
             }
         }
         pub struct Last;
         impl ::cynic::schema::HasArgument<Last> for super::FilmConnection {
-            type ArgumentSchemaType = Option<super::super::Int>;
+            type ArgumentType = Option<super::super::Int>;
             fn name() -> &'static str {
                 "last"
             }
@@ -3132,7 +3132,7 @@ pub mod vehicle_fields {
     }
     pub struct Created;
     impl ::cynic::schema::Field for Created {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "created"
         }
@@ -3142,7 +3142,7 @@ pub mod vehicle_fields {
     }
     pub struct Edited;
     impl ::cynic::schema::Field for Edited {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "edited"
         }
@@ -3152,7 +3152,7 @@ pub mod vehicle_fields {
     }
     pub struct Id;
     impl ::cynic::schema::Field for Id {
-        type SchemaType = super::Id;
+        type Type = super::Id;
         fn name() -> &'static str {
             "id"
         }
@@ -3165,7 +3165,7 @@ pub struct VehicleFilmsConnection;
 pub mod vehicle_films_connection_fields {
     pub struct PageInfo;
     impl ::cynic::schema::Field for PageInfo {
-        type SchemaType = super::PageInfo;
+        type Type = super::PageInfo;
         fn name() -> &'static str {
             "pageInfo"
         }
@@ -3175,7 +3175,7 @@ pub mod vehicle_films_connection_fields {
     }
     pub struct Edges;
     impl ::cynic::schema::Field for Edges {
-        type SchemaType = Option<Vec<Option<super::VehicleFilmsEdge>>>;
+        type Type = Option<Vec<Option<super::VehicleFilmsEdge>>>;
         fn name() -> &'static str {
             "edges"
         }
@@ -3185,7 +3185,7 @@ pub mod vehicle_films_connection_fields {
     }
     pub struct TotalCount;
     impl ::cynic::schema::Field for TotalCount {
-        type SchemaType = Option<super::Int>;
+        type Type = Option<super::Int>;
         fn name() -> &'static str {
             "totalCount"
         }
@@ -3195,7 +3195,7 @@ pub mod vehicle_films_connection_fields {
     }
     pub struct Films;
     impl ::cynic::schema::Field for Films {
-        type SchemaType = Option<Vec<Option<super::Film>>>;
+        type Type = Option<Vec<Option<super::Film>>>;
         fn name() -> &'static str {
             "films"
         }
@@ -3208,7 +3208,7 @@ pub struct VehicleFilmsEdge;
 pub mod vehicle_films_edge_fields {
     pub struct Node;
     impl ::cynic::schema::Field for Node {
-        type SchemaType = Option<super::Film>;
+        type Type = Option<super::Film>;
         fn name() -> &'static str {
             "node"
         }
@@ -3218,7 +3218,7 @@ pub mod vehicle_films_edge_fields {
     }
     pub struct Cursor;
     impl ::cynic::schema::Field for Cursor {
-        type SchemaType = super::String;
+        type Type = super::String;
         fn name() -> &'static str {
             "cursor"
         }
@@ -3231,7 +3231,7 @@ pub struct VehiclePilotsConnection;
 pub mod vehicle_pilots_connection_fields {
     pub struct PageInfo;
     impl ::cynic::schema::Field for PageInfo {
-        type SchemaType = super::PageInfo;
+        type Type = super::PageInfo;
         fn name() -> &'static str {
             "pageInfo"
         }
@@ -3241,7 +3241,7 @@ pub mod vehicle_pilots_connection_fields {
     }
     pub struct Edges;
     impl ::cynic::schema::Field for Edges {
-        type SchemaType = Option<Vec<Option<super::VehiclePilotsEdge>>>;
+        type Type = Option<Vec<Option<super::VehiclePilotsEdge>>>;
         fn name() -> &'static str {
             "edges"
         }
@@ -3251,7 +3251,7 @@ pub mod vehicle_pilots_connection_fields {
     }
     pub struct TotalCount;
     impl ::cynic::schema::Field for TotalCount {
-        type SchemaType = Option<super::Int>;
+        type Type = Option<super::Int>;
         fn name() -> &'static str {
             "totalCount"
         }
@@ -3261,7 +3261,7 @@ pub mod vehicle_pilots_connection_fields {
     }
     pub struct Pilots;
     impl ::cynic::schema::Field for Pilots {
-        type SchemaType = Option<Vec<Option<super::Person>>>;
+        type Type = Option<Vec<Option<super::Person>>>;
         fn name() -> &'static str {
             "pilots"
         }
@@ -3274,7 +3274,7 @@ pub struct VehiclePilotsEdge;
 pub mod vehicle_pilots_edge_fields {
     pub struct Node;
     impl ::cynic::schema::Field for Node {
-        type SchemaType = Option<super::Person>;
+        type Type = Option<super::Person>;
         fn name() -> &'static str {
             "node"
         }
@@ -3284,7 +3284,7 @@ pub mod vehicle_pilots_edge_fields {
     }
     pub struct Cursor;
     impl ::cynic::schema::Field for Cursor {
-        type SchemaType = super::String;
+        type Type = super::String;
         fn name() -> &'static str {
             "cursor"
         }
@@ -3297,7 +3297,7 @@ pub struct VehiclesConnection;
 pub mod vehicles_connection_fields {
     pub struct PageInfo;
     impl ::cynic::schema::Field for PageInfo {
-        type SchemaType = super::PageInfo;
+        type Type = super::PageInfo;
         fn name() -> &'static str {
             "pageInfo"
         }
@@ -3307,7 +3307,7 @@ pub mod vehicles_connection_fields {
     }
     pub struct Edges;
     impl ::cynic::schema::Field for Edges {
-        type SchemaType = Option<Vec<Option<super::VehiclesEdge>>>;
+        type Type = Option<Vec<Option<super::VehiclesEdge>>>;
         fn name() -> &'static str {
             "edges"
         }
@@ -3317,7 +3317,7 @@ pub mod vehicles_connection_fields {
     }
     pub struct TotalCount;
     impl ::cynic::schema::Field for TotalCount {
-        type SchemaType = Option<super::Int>;
+        type Type = Option<super::Int>;
         fn name() -> &'static str {
             "totalCount"
         }
@@ -3327,7 +3327,7 @@ pub mod vehicles_connection_fields {
     }
     pub struct Vehicles;
     impl ::cynic::schema::Field for Vehicles {
-        type SchemaType = Option<Vec<Option<super::Vehicle>>>;
+        type Type = Option<Vec<Option<super::Vehicle>>>;
         fn name() -> &'static str {
             "vehicles"
         }
@@ -3340,7 +3340,7 @@ pub struct VehiclesEdge;
 pub mod vehicles_edge_fields {
     pub struct Node;
     impl ::cynic::schema::Field for Node {
-        type SchemaType = Option<super::Vehicle>;
+        type Type = Option<super::Vehicle>;
         fn name() -> &'static str {
             "node"
         }
@@ -3350,7 +3350,7 @@ pub mod vehicles_edge_fields {
     }
     pub struct Cursor;
     impl ::cynic::schema::Field for Cursor {
-        type SchemaType = super::String;
+        type Type = super::String;
         fn name() -> &'static str {
             "cursor"
         }

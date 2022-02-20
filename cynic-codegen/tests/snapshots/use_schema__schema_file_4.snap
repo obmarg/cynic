@@ -9,7 +9,7 @@ pub struct Bar;
 pub mod bar_fields {
     pub struct Id;
     impl ::cynic::schema::Field for Id {
-        type SchemaType = super::Uuid;
+        type Type = super::Uuid;
         fn name() -> &'static str {
             "id"
         }
@@ -19,7 +19,7 @@ pub mod bar_fields {
     }
     pub struct Name;
     impl ::cynic::schema::Field for Name {
-        type SchemaType = Option<super::String>;
+        type Type = Option<super::String>;
         fn name() -> &'static str {
             "name"
         }
@@ -32,7 +32,7 @@ pub struct Foo;
 pub mod foo_fields {
     pub struct _Underscore;
     impl ::cynic::schema::Field for _Underscore {
-        type SchemaType = Option<super::Boolean>;
+        type Type = Option<super::Boolean>;
         fn name() -> &'static str {
             "_"
         }
@@ -42,7 +42,7 @@ pub mod foo_fields {
     }
     pub struct Self_;
     impl ::cynic::schema::Field for Self_ {
-        type SchemaType = Option<super::Boolean>;
+        type Type = Option<super::Boolean>;
         fn name() -> &'static str {
             "self"
         }
@@ -52,7 +52,7 @@ pub mod foo_fields {
     }
     pub struct Super;
     impl ::cynic::schema::Field for Super {
-        type SchemaType = Option<super::Boolean>;
+        type Type = Option<super::Boolean>;
         fn name() -> &'static str {
             "super"
         }
@@ -62,7 +62,7 @@ pub mod foo_fields {
     }
     pub struct Crate;
     impl ::cynic::schema::Field for Crate {
-        type SchemaType = Option<super::Boolean>;
+        type Type = Option<super::Boolean>;
         fn name() -> &'static str {
             "crate"
         }
@@ -72,7 +72,7 @@ pub mod foo_fields {
     }
     pub struct Async;
     impl ::cynic::schema::Field for Async {
-        type SchemaType = Option<super::Boolean>;
+        type Type = Option<super::Boolean>;
         fn name() -> &'static str {
             "async"
         }
@@ -82,7 +82,7 @@ pub mod foo_fields {
     }
     pub struct Bar;
     impl ::cynic::schema::Field for Bar {
-        type SchemaType = Option<super::Bar>;
+        type Type = Option<super::Bar>;
         fn name() -> &'static str {
             "bar"
         }
@@ -93,7 +93,7 @@ pub mod foo_fields {
     pub mod bar_arguments {
         pub struct Id;
         impl ::cynic::schema::HasArgument<Id> for super::Bar {
-            type ArgumentSchemaType = super::super::Uuid;
+            type ArgumentType = super::super::Uuid;
             fn name() -> &'static str {
                 "id"
             }
