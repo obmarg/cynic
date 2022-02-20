@@ -17,8 +17,30 @@ use super::inline_fragments_derive;
             Author(Author),
         }
     ),
-
-    // TODO: A test of an interface would be good
+    // Union type with a fallback
+    parse_quote!(
+        #[derive(InlineFragments, Serialize)]
+        #[cynic(schema_path = "../cynic/tests/test-schema.graphql")]
+        enum PostOrAuthor {
+            #[cynic(rename = "BlogPost")]
+            Post(Post),
+            Author(Author),
+            #[cynic(fallback)]
+            Other
+        }
+    ),
+    // Interface
+    parse_quote!(
+        #[derive(InlineFragments, Serialize)]
+        #[cynic(schema_path = "../cynic/tests/test-schema.graphql")]
+        enum Node {
+            #[cynic(rename = "BlogPost")]
+            Post(Post),
+            Author(Author),
+            #[cynic(fallback)]
+            Other
+        }
+    ),
 ])]
 fn snapshot_inline_fragments_derive(input: syn::DeriveInput) {
     let tokens = inline_fragments_derive(&input).unwrap();

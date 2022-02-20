@@ -1,0 +1,49 @@
+---
+source: cynic-codegen/src/inline_fragments_derive/tests.rs
+assertion_line: 56
+expression: "format_code(format!(\"{}\", tokens))"
+
+---
+#[automatically_derived]
+impl<'de> ::cynic::serde::Deserialize<'de> for PostOrAuthor {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: ::cynic::serde::Deserializer<'de>,
+    {
+        deserializer.deserialize_map(::cynic::__private::InlineFragmentVisitor::<Self>::new())
+    }
+}
+#[automatically_derived]
+impl<'de> ::cynic::InlineFragments<'de> for PostOrAuthor {
+    fn deserialize_variant<D>(typename: &str, deserializer: D) -> Result<Self, D::Error>
+    where
+        D: ::cynic::serde::Deserializer<'de>,
+    {
+        if Some(typename) == <Post as ::cynic::QueryFragment<'de>>::TYPE {
+            return <Post as ::cynic::serde::Deserialize<'de>>::deserialize(deserializer)
+                .map(PostOrAuthor::Post);
+        }
+        if Some(typename) == <Author as ::cynic::QueryFragment<'de>>::TYPE {
+            return <Author as ::cynic::serde::Deserialize<'de>>::deserialize(deserializer)
+                .map(PostOrAuthor::Author);
+        }
+        Ok(PostOrAuthor::Other)
+    }
+}
+#[automatically_derived]
+impl<'de> ::cynic::QueryFragment<'de> for PostOrAuthor {
+    type SchemaType = schema::PostOrAuthor;
+    type Variables = ();
+    const TYPE: Option<&'static str> = Some("PostOrAuthor");
+    fn query(mut builder: ::cynic::queries::QueryBuilder<Self::SchemaType, Self::Variables>) {
+        let fragment_builder = builder.inline_fragment();
+        let mut fragment_builder =
+            fragment_builder.on::<<Post as ::cynic::QueryFragment>::SchemaType>();
+        <Post as ::cynic::QueryFragment>::query(fragment_builder.select_children());
+        let fragment_builder = builder.inline_fragment();
+        let mut fragment_builder =
+            fragment_builder.on::<<Author as ::cynic::QueryFragment>::SchemaType>();
+        <Author as ::cynic::QueryFragment>::query(fragment_builder.select_children());
+    }
+}
+

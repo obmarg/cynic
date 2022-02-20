@@ -3,7 +3,8 @@ input BlogPostInput {
   content: String!
 }
 
-type BlogPost {
+type BlogPost implements Node {
+  id: ID
   author: Author!
   comments: [Comment!]!
   hasMetadata: Boolean
@@ -11,11 +12,13 @@ type BlogPost {
   state: PostState
 }
 
-type Comment {
+type Comment implements Node {
+  id: ID
   author: Author!
 }
 
-type Author {
+type Author implements Node {
+  id: ID
   name: String
   posts: [BlogPost!]!
   comments: [Comment!]!
@@ -37,6 +40,7 @@ type Query {
   filteredPosts(filters: PostFilters): [BlogPost!]!
   allAuthors: [Author!]!
   allData: [PostOrAuthor!]!
+  node(id: ID!): Node
 }
 
 union PostOrAuthor = BlogPost | Author
@@ -51,6 +55,10 @@ scalar DateTime
 input PostFilters {
   authorId: ID
   states: [PostState!]
+}
+
+interface Node {
+  id: ID
 }
 
 schema {
