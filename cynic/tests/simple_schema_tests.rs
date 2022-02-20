@@ -2,20 +2,15 @@ mod schema {
     cynic::use_schema!("src/bin/simple.graphql");
 }
 
-#[derive(cynic::FragmentArguments)]
-struct TestArgs {}
+#[derive(cynic::QueryVariables)]
+struct TestArgs {
+    an_int: i32,
+}
 
 #[derive(cynic::QueryFragment, PartialEq, Debug)]
-#[cynic(
-    schema_path = "src/bin/simple.graphql",
-
-    //argument_struct = "TestArgs"
-)]
+#[cynic(schema_path = "src/bin/simple.graphql", argument_struct = "TestArgs")]
 struct TestStruct {
-    // TODO: Could automatically add Some here, though
-    // honestly not sure, as what if the argument itself is some optional in a struct.
-    // for now this doesn't seem like the worst decision.
-    //#[arguments(x = Some(1), y = Some("1".to_string()))]
+    #[arguments(x: $an_int, y = Some("1".to_string()))]
     field_one: String,
     nested: Nested,
     opt_nested: Option<Nested>,
@@ -49,22 +44,16 @@ pub enum Dessert {
     IceCream,
 }
 
-fn run_test(input: serde_json::Value, expected_result: TestQuery) {
-    use cynic::{FragmentContext, QueryFragment};
-
-    let query = cynic::Operation::query(TestQuery::fragment(FragmentContext::new(&TestArgs {})));
-
-    let test_data = cynic::GraphQlResponse {
-        errors: None,
-        data: Some(input),
-    };
-    let data = query.decode_response(test_data).unwrap().data.unwrap();
-    assert_eq!(data, expected_result);
+fn test_decoding(input: serde_json::Value, expected_result: TestQuery) {
+    assert_eq!(
+        serde_json::from_value::<TestQuery>(input).unwrap(),
+        expected_result
+    );
 }
 
 #[test]
 fn test_decoding_entire_struct() {
-    run_test(
+    test_decoding(
         serde_json::json!({
             "testStruct": {
                 "fieldOne": "test",
@@ -99,5 +88,14 @@ fn test_decoding_entire_struct() {
 #[test]
 fn test_decoding_options() {
     let json = serde_json::json!({ "testStruct": null });
-    run_test(json, TestQuery { test_struct: None });
+    test_decoding(json, TestQuery { test_struct: None });
+}
+
+#[test]
+fn test_query_building() {
+    use cynic::QueryBuilder;
+
+    let operation = TestQuery::build(TestArgs { an_int: 1 });
+
+    insta::assert_snapshot!(operation.query);
 }

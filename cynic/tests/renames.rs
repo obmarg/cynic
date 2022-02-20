@@ -57,28 +57,30 @@ mod schema {
 
 #[test]
 fn test_all_posts_query_output() {
-    use cynic::{FragmentContext, Operation};
+    use cynic::QueryBuilder;
 
-    let query = Operation::query(AllPostsQuery::fragment(FragmentContext::empty()));
+    let operation = AllPostsQuery::build(());
 
-    insta::assert_display_snapshot!(query.query);
+    insta::assert_display_snapshot!(operation.query);
 }
 
 #[test]
 fn test_decoding() {
-    use cynic::{FragmentContext, GraphQlResponse, Operation};
+    use cynic::GraphQlResponse;
 
     let mut all_data = posts();
     all_data[0]["__typename"] = json!("BlogPost");
 
-    let data = GraphQlResponse {
-        data: Some(json!({ "allPosts": posts(), "allData": all_data })),
-        errors: None,
-    };
+    let data = json!({
+        "data": { "allPosts": posts(), "allData": all_data },
+        "errors": null,
+    });
 
-    let query = Operation::query(AllPostsQuery::fragment(FragmentContext::empty()));
-
-    insta::assert_yaml_snapshot!(query.decode_response(data).unwrap().data)
+    insta::assert_yaml_snapshot!(
+        serde_json::from_value::<GraphQlResponse<AllPostsQuery>>(data)
+            .unwrap()
+            .data
+    );
 }
 
 fn posts() -> serde_json::Value {

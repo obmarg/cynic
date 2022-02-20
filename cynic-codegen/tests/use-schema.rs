@@ -3,7 +3,7 @@ use std::{io::Write, path::PathBuf, process::Stdio};
 use insta::assert_snapshot;
 use rstest::rstest;
 
-use cynic_codegen::use_schema::{use_schema, QueryDslParams};
+use cynic_codegen::use_schema::{use_schema, UseSchemaParams};
 
 // TODO: Rename this file after running snapshots
 
@@ -12,11 +12,12 @@ use cynic_codegen::use_schema::{use_schema, QueryDslParams};
     "books.graphql",
     "starwars.schema.graphql",
     "test_cases.graphql",
+    "../cynic/src/bin/simple.graphql",
 ])]
-fn snapshot_use_schema(schema_file: &str) {
+fn snapshot_use_schema_two(schema_file: &str) {
     let schema_path = PathBuf::from("../schemas/").join(schema_file);
 
-    let tokens = use_schema(QueryDslParams {
+    let tokens = use_schema(UseSchemaParams {
         schema_filename: schema_path.to_str().unwrap().to_string(),
     })
     .unwrap();

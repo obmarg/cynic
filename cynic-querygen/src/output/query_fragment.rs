@@ -57,13 +57,7 @@ impl std::fmt::Display for OutputField<'_, '_> {
             let arguments_string = self
                 .arguments
                 .iter()
-                .map(|arg| {
-                    Ok(format!(
-                        "{} = {}",
-                        arg.name.to_snake_case(),
-                        arg.to_literal()?
-                    ))
-                })
+                .map(|arg| Ok(format!("{}: {}", arg.name, arg.to_literal()?)))
                 .collect::<Result<Vec<_>, Error>>()
                 // TODO: This unwrap needs ditched somehow...
                 .unwrap()

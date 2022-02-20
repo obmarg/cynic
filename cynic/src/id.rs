@@ -33,13 +33,3 @@ impl<T: Into<String>> From<T> for Id {
         Id(s.into())
     }
 }
-
-impl crate::Scalar<Id> for Id {
-    type Deserialize = String;
-
-    fn from_deserialize(s: String) -> Result<Self, json_decode::DecodeError> {
-        Ok(s.into())
-    }
-}
-
-crate::impl_input_type!(Id, Id);

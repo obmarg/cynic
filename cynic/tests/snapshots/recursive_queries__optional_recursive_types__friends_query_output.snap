@@ -1,8 +1,10 @@
 ---
 source: cynic/tests/recursive-queries.rs
-expression: query.query
+assertion_line: 102
+expression: operation.query
+
 ---
-query Query {
+query {
   allAuthors {
     friends {
       friends
@@ -14,4 +16,5 @@ query Query {
     }
   }
 }
+
 

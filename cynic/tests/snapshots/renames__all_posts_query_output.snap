@@ -3,7 +3,7 @@ source: cynic/tests/renames.rs
 expression: query.query
 
 ---
-query Query {
+query {
   allPosts {
     hasMetadata
     metadata {
@@ -23,4 +23,5 @@ query Query {
     }
   }
 }
+
 

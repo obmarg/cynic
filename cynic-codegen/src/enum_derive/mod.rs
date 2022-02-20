@@ -1,8 +1,8 @@
 use proc_macro2::{Span, TokenStream};
-use std::collections::HashMap;
+use std::collections::BTreeMap;
 
 use crate::{
-    ident::{RenameAll, RenameRule},
+    idents::{RenameAll, RenameRule},
     load_schema,
     schema::{Definition, Document, EnumType, EnumValue, TypeDefinition},
     Ident,
@@ -79,6 +79,7 @@ pub fn enum_derive_impl(
             Err(error_tokens) => return Ok(error_tokens),
         };
 
+        let graphql_type_name = proc_macro2::Literal::string(&input.graphql_type_name());
         let enum_marker_ident = Ident::for_type(&input.graphql_type_name());
 
         let string_literals: Vec<_> = pairs
@@ -93,17 +94,8 @@ pub fn enum_derive_impl(
 
         Ok(quote! {
             #[automatically_derived]
-            impl ::cynic::Enum<#schema_module::#enum_marker_ident> for #ident {
-                fn select() -> cynic::SelectionSet<'static, Self, #schema_module::#enum_marker_ident> {
-                    ::cynic::selection_set::enum_with(|s| {
-                        match s.as_ref() {
-                            #(
-                                #string_literals => ::cynic::selection_set::succeed(Self::#variants),
-                            )*
-                            _ => ::cynic::selection_set::fail(format!("Unknown variant: {}", &s))
-                        }
-                    })
-                }
+            impl ::cynic::Enum for #ident {
+                type SchemaType = #schema_module::#enum_marker_ident;
             }
 
             #[automatically_derived]
@@ -119,7 +111,30 @@ pub fn enum_derive_impl(
                     }
             }
 
-            ::cynic::impl_input_type!(#ident, #schema_module::#enum_marker_ident);
+            #[automatically_derived]
+            impl<'de> ::cynic::serde::Deserialize<'de> for #ident {
+                fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+                where
+                    D: ::cynic::serde::Deserializer<'de>,
+                {
+                    match <String as ::cynic::serde::Deserialize>::deserialize(deserializer)?.as_ref() {
+                        #(
+                            #string_literals => Ok(#ident::#variants),
+                        )*
+                        unknown => {
+                            const VARIANTS: &'static [&'static str] = &[#(#string_literals),*];
+                            Err(::cynic::serde::de::Error::unknown_variant(unknown, VARIANTS))
+                        }
+                    }
+                }
+            }
+
+            ::cynic::impl_coercions!(#ident, #schema_module::#enum_marker_ident);
+
+            #[automatically_derived]
+            impl #schema_module::variable::Variable for #ident {
+                const TYPE: ::cynic::variables::VariableType = ::cynic::variables::VariableType::Named(#graphql_type_name);
+            }
         })
     } else {
         Err(syn::Error::new(
@@ -136,7 +151,7 @@ fn join_variants<'a>(
     rename_all: RenameAll,
     enum_span: &Span,
 ) -> Result<Vec<(&'a EnumDeriveVariant, &'a EnumValue)>, TokenStream> {
-    let mut map = HashMap::new();
+    let mut map = BTreeMap::new();
     for variant in variants {
         let graphql_name = Ident::from_proc_macro2(
             &variant.ident,
@@ -205,6 +220,7 @@ mod tests {
     use darling::util::SpannedValue;
     use rstest::rstest;
     use std::collections::HashSet;
+    use syn::parse_quote;
 
     #[rstest(
         enum_variant_1,
@@ -345,5 +361,40 @@ mod tests {
         );
 
         assert_matches!(result, Err(_));
+    }
+
+    #[rstest(input => [
+        parse_quote!(
+            #[cynic(
+                schema_path = "../schemas/test_cases.graphql",
+            )]
+            enum States {
+                Open,
+                Closed,
+                Deleted
+            }
+        ),
+    ])]
+    fn snapshot_enum_derive(input: syn::DeriveInput) {
+        let tokens = enum_derive(&input).unwrap();
+
+        insta::assert_snapshot!(format_code(format!("{}", tokens)));
+    }
+
+    fn format_code(input: String) -> String {
+        use std::io::Write;
+
+        let mut cmd = std::process::Command::new("rustfmt")
+            .stdin(std::process::Stdio::piped())
+            .stdout(std::process::Stdio::piped())
+            .stderr(std::process::Stdio::inherit())
+            .spawn()
+            .expect("failed to execute rustfmt");
+
+        write!(cmd.stdin.as_mut().unwrap(), "{}", input).unwrap();
+
+        std::str::from_utf8(&cmd.wait_with_output().unwrap().stdout)
+            .unwrap()
+            .to_owned()
     }
 }

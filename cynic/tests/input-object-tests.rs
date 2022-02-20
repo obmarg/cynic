@@ -83,8 +83,8 @@ fn test_input_object_stable_order() {
         },
         @r###"
     ---
-    author: me
     content: hi
+    author: me
     "###
     );
 }

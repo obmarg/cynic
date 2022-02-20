@@ -1,193 +1,165 @@
-use proc_macro2::TokenStream;
-
-mod argument_parameter;
-mod field_selector;
-mod input_object_marker;
-mod interface_struct;
-mod interfaces_implementations;
+mod fields;
+mod input_object;
+mod interface;
+mod named_type;
+mod object;
+mod params;
 mod schema_roots;
-mod selection_builder;
-mod selector_struct;
-mod type_lock_marker;
-mod union_struct;
+mod subtype_markers;
 
-pub use field_selector::FieldSelector;
-pub use selector_struct::SelectorStruct;
+pub use params::UseSchemaParams;
 
-use super::module::Module;
-use crate::{load_schema, schema, SchemaLoadError, TypeIndex};
-use argument_parameter::{ArgumentParameter, ArgumentParameterType};
-use input_object_marker::InputObjectMarker;
-use interface_struct::InterfaceStruct;
-use interfaces_implementations::InterfacesImplementations;
-use schema_roots::{RootTypes, SchemaRoot};
-use selection_builder::FieldSelectionBuilder;
-use type_lock_marker::TypeLockMarker;
-use union_struct::UnionStruct;
+use proc_macro2::TokenStream;
+use quote::{quote, ToTokens};
 
-#[derive(Debug)]
-pub struct QueryDslParams {
-    pub schema_filename: String,
-}
+use crate::{
+    error::Errors,
+    idents::Ident,
+    schema::{types::Type, Schema},
+};
 
-impl QueryDslParams {
-    fn new(schema_filename: String) -> Self {
-        QueryDslParams { schema_filename }
-    }
-}
+use self::{
+    input_object::InputObjectOutput, interface::InterfaceOutput, named_type::NamedType,
+    object::ObjectOutput, subtype_markers::SubtypeMarkers,
+};
 
-impl syn::parse::Parse for QueryDslParams {
-    fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
-        input
-            .parse::<syn::LitStr>()
-            .map(|lit_str| QueryDslParams::new(lit_str.value()))
-    }
-}
+pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
+    use quote::TokenStreamExt;
 
-pub fn use_schema(input: QueryDslParams) -> Result<TokenStream, SchemaLoadError> {
-    use quote::quote;
+    let document = crate::schema::load_schema(input.schema_filename)
+        .map_err(|e| e.into_syn_error(proc_macro2::Span::call_site()))?;
+    let schema = Schema::new(&document).validate()?;
 
-    let schema_data: SchemaData = load_schema(input.schema_filename)?.into();
+    let mut output = TokenStream::new();
 
-    Ok(quote! {
-        #schema_data
-    })
-}
+    let root_types = schema_roots::RootTypes::from_definitions(&document.definitions);
+    output.append_all(quote! {
+        #root_types
+    });
 
-#[derive(Debug)]
-pub struct SchemaData {
-    pub selectors: Vec<SelectorStruct>,
-    pub argument_struct_modules: Vec<Module<FieldSelectionBuilder>>,
-    pub unions: Vec<UnionStruct>,
-    pub interfaces: Vec<InterfaceStruct>,
-    pub type_lock_markers: Vec<TypeLockMarker>,
-    pub input_objects: Vec<InputObjectMarker>,
-    pub schema_roots: Vec<SchemaRoot>,
-    pub interfaces_implementations: Vec<InterfacesImplementations>,
-}
+    let mut subtype_markers = Vec::new();
+    let mut named_types = Vec::new();
 
-impl From<schema::Document> for SchemaData {
-    fn from(document: schema::Document) -> Self {
-        use schema::{Definition, TypeDefinition};
+    for definition in schema.iter() {
+        named_types.extend(NamedType::from_def(&definition));
 
-        let type_index = TypeIndex::for_schema(&document);
+        match definition {
+            Type::Scalar(def) if !def.builtin => {
+                let ident = Ident::for_type(&def.name);
+                output.append_all(quote! {
+                    pub struct #ident {}
+                });
+            }
+            Type::Scalar(_) => {}
+            Type::Object(def) => {
+                subtype_markers.extend(SubtypeMarkers::from_object(&def));
 
-        let mut selectors = vec![];
-        let mut argument_struct_modules = vec![];
-        let mut input_objects = vec![];
-        let mut unions = vec![];
-        let mut interfaces = vec![];
-        let mut type_lock_markers = vec![];
-        let mut schema_roots = vec![];
-        let mut interfaces_implementations = vec![];
+                ObjectOutput::new(def).to_tokens(&mut output);
+            }
+            Type::Interface(def) => {
+                subtype_markers.push(SubtypeMarkers::from_interface(&def));
 
-        let root_types = RootTypes::from_definitions(&document.definitions);
+                InterfaceOutput::new(def).to_tokens(&mut output);
+            }
+            Type::Union(def) => {
+                subtype_markers.extend(SubtypeMarkers::from_union(&def));
 
-        for definition in &document.definitions {
-            match definition {
-                Definition::TypeDefinition(TypeDefinition::Object(object)) => {
-                    if let Some(impls) = InterfacesImplementations::from_object(object) {
-                        interfaces_implementations.push(impls);
-                    }
-
-                    // Would be nice to restructure this so that the argument structs
-                    // are visible at the point we're generating the field_selectors...
-                    let selector = SelectorStruct::from_object(object, &type_index);
-                    if !selector.selection_builders.is_empty() {
-                        argument_struct_modules.push(Module::new(
-                            &object.name,
-                            selector.selection_builders.clone(),
-                        ));
-                    }
-
-                    schema_roots.extend(root_types.root_from_selector_struct(&selector));
-
-                    selectors.push(selector);
-                }
-                Definition::TypeDefinition(TypeDefinition::InputObject(input_type)) => {
-                    input_objects.push(InputObjectMarker::from_input_object(input_type));
-                }
-                Definition::TypeDefinition(TypeDefinition::Union(union)) => {
-                    unions.push(UnionStruct::from_union(union));
-                }
-                Definition::TypeDefinition(TypeDefinition::Interface(interface_def)) => {
-                    interfaces_implementations
-                        .push(InterfacesImplementations::from_interface(interface_def));
-
-                    let interface = InterfaceStruct::from_interface(interface_def, &type_index);
-
-                    // Could be nice to restructure this so that the argument structs
-                    // just live inside the selector_struct or similar?
-                    if !interface.selector_struct.selection_builders.is_empty() {
-                        argument_struct_modules.push(Module::new(
-                            &interface_def.name,
-                            interface.selector_struct.selection_builders.clone(),
-                        ));
-                    }
-
-                    interfaces.push(interface);
-                }
-                Definition::TypeDefinition(TypeDefinition::Enum(en)) => {
-                    type_lock_markers.push(TypeLockMarker::from_enum(en));
-                }
-                Definition::TypeDefinition(TypeDefinition::Scalar(scalar)) => {
-                    type_lock_markers.push(TypeLockMarker::from_scalar(scalar))
-                }
-                _ => {}
+                let ident = Ident::for_type(&def.name);
+                output.append_all(quote! {
+                    pub struct #ident {}
+                });
+            }
+            Type::Enum(def) => {
+                let ident = Ident::for_type(&def.name);
+                output.append_all(quote! {
+                    pub struct #ident {}
+                });
+            }
+            Type::InputObject(def) => {
+                InputObjectOutput::new(def).to_tokens(&mut output);
             }
         }
+    }
 
-        SchemaData {
-            selectors,
-            argument_struct_modules,
-            input_objects,
-            unions,
-            interfaces,
-            type_lock_markers,
-            schema_roots,
-            interfaces_implementations,
+    output.append_all(quote! {
+        #(#subtype_markers)*
+        #(#named_types)*
+
+        pub type Boolean = bool;
+        pub type String = std::string::String;
+        pub type Float = f64;
+        pub type Int = i32;
+        pub type Id = ::cynic::Id;
+
+        pub mod variable {
+            use ::cynic::variables::VariableType;
+
+            /// Used to determine the type of a given variable that
+            /// appears in an argument struct.
+            pub trait Variable {
+                const TYPE: VariableType;
+            }
+
+            impl<T> Variable for &T where T: Variable {
+                const TYPE: VariableType = T::TYPE;
+            }
+
+            impl<T> Variable for Option<T>
+            where
+                T: Variable
+            {
+                const TYPE: VariableType = VariableType::Nullable(&T::TYPE);
+            }
+
+            impl<T> Variable for Vec<T>
+            where
+                T: Variable,
+            {
+                const TYPE: VariableType = VariableType::List(&T::TYPE);
+            }
+
+            impl<T> Variable for Box<T>
+            where
+                T: Variable,
+            {
+                const TYPE: VariableType = T::TYPE;
+            }
+
+            impl<T> Variable for std::rc::Rc<T>
+            where
+                T: Variable,
+            {
+                const TYPE: VariableType = T::TYPE;
+            }
+
+            impl<T> Variable for std::sync::Arc<T>
+            where
+                T: Variable,
+            {
+                const TYPE: VariableType = T::TYPE;
+            }
+
+            impl Variable for bool {
+                const TYPE: VariableType = VariableType::Named("Boolean");
+            }
+
+            impl Variable for String {
+                const TYPE: VariableType = VariableType::Named("String");
+            }
+
+            impl Variable for f64 {
+                const TYPE: VariableType = VariableType::Named("Float");
+            }
+
+            impl Variable for i32 {
+                const TYPE: VariableType = VariableType::Named("Int");
+            }
+
+            impl Variable for ::cynic::Id {
+                const TYPE: VariableType = VariableType::Named("ID");
+            }
         }
-    }
-}
+    });
 
-impl quote::ToTokens for SchemaData {
-    fn to_tokens(&self, tokens: &mut TokenStream) {
-        use quote::{quote, TokenStreamExt};
-
-        let selectors = &self.selectors;
-        let argument_struct_modules = &self.argument_struct_modules;
-        let input_objects = &self.input_objects;
-        let unions = &self.unions;
-        let interfaces = &self.interfaces;
-        let type_lock_markers = &self.type_lock_markers;
-        let schema_roots = &self.schema_roots;
-        let interfaces_implementations = &self.interfaces_implementations;
-
-        tokens.append_all(quote! {
-            #(
-                #unions
-            )*
-            #(
-                #interfaces
-            )*
-            #(
-                #selectors
-            )*
-            #(
-                #argument_struct_modules
-            )*
-            #(
-                #input_objects
-            )*
-            #(
-                #type_lock_markers
-            )*
-            #(
-                #schema_roots
-            )*
-            #(
-                #interfaces_implementations
-            )*
-        })
-    }
+    Ok(output)
 }

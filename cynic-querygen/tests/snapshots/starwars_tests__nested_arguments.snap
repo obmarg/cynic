@@ -1,6 +1,8 @@
 ---
 source: cynic-querygen/tests/starwars-tests.rs
+assertion_line: 23
 expression: "document_to_fragment_structs(query, schema,\n                             &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
+
 ---
 #[cynic::schema_for_derives(
     file = r#"schema.graphql"#,
@@ -9,7 +11,7 @@ expression: "document_to_fragment_structs(query, schema,\n                      
 mod queries {
     use super::schema;
 
-    #[derive(cynic::FragmentArguments, Debug)]
+    #[derive(cynic::QueryVariables, Debug)]
     pub struct NestedArgsQueryArguments {
         pub film_id: cynic::Id,
         pub planet_cursor: Option<String>,
@@ -19,7 +21,7 @@ mod queries {
     #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "Root", argument_struct = "NestedArgsQueryArguments")]
     pub struct NestedArgsQuery {
-        #[arguments(id = &args.film_id)]
+        #[arguments(id: $film_id)]
         pub film: Option<Film>,
     }
 
@@ -28,7 +30,7 @@ mod queries {
     pub struct Film {
         pub title: Option<String>,
         pub director: Option<String>,
-        #[arguments(after = &args.planet_cursor)]
+        #[arguments(after: $planet_cursor)]
         pub planet_connection: Option<FilmPlanetsConnection>,
     }
 
@@ -41,7 +43,7 @@ mod queries {
     #[derive(cynic::QueryFragment, Debug)]
     #[cynic(argument_struct = "NestedArgsQueryArguments")]
     pub struct Planet {
-        #[arguments(after = &args.resident_connection)]
+        #[arguments(after: $resident_connection)]
         pub resident_connection: Option<PlanetResidentsConnection>,
     }
 

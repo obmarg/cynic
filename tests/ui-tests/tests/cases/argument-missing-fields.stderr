@@ -1,0 +1,5 @@
+error: no such field
+  --> tests/cases/argument-missing-fields.rs:12:21
+   |
+12 |         #[arguments(order_by: "COMMENTS", first: 10)]
+   |                     ^^^^^^^^

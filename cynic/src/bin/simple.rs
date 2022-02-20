@@ -3,14 +3,14 @@
 fn main() {
     use cynic::QueryBuilder;
 
-    println!("{}", TestStruct::build(&TestArgs {}).query);
+    println!("{}", TestStruct::build(TestArgs {}).query);
 }
 
 mod schema {
     cynic::use_schema!("src/bin/simple.graphql");
 }
 
-#[derive(cynic::FragmentArguments)]
+#[derive(cynic::QueryVariables)]
 struct TestArgs {}
 
 #[derive(cynic::QueryFragment)]
@@ -76,7 +76,7 @@ fn query() {
     ));
 }*/
 
-impl cynic::QueryRoot for schema::TestStruct {}
+impl cynic::schema::QueryRoot for schema::TestStruct {}
 
 // TODO: Some sort of ToQuery trait
 // That's only implemented when QueryFragment::SelectionSet::TypeLock == RootQuery

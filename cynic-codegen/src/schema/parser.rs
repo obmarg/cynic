@@ -1,4 +1,5 @@
-use crate::{FieldArgument, TypeIndex};
+// TODO: It would be good to make these use &'str since this is compile time
+// and max speed is best.
 
 // TODO: It would be good to make these use &'str since this is compile time
 // and max speed is best.
@@ -10,10 +11,8 @@ pub type Type = graphql_parser::schema::Type<'static, String>;
 pub type Field = graphql_parser::schema::Field<'static, String>;
 pub type Definition = graphql_parser::schema::Definition<'static, String>;
 pub type TypeDefinition = graphql_parser::schema::TypeDefinition<'static, String>;
-pub type ObjectType = graphql_parser::schema::ObjectType<'static, String>;
 pub type EnumType = graphql_parser::schema::EnumType<'static, String>;
 pub type InterfaceType = graphql_parser::schema::InterfaceType<'static, String>;
-pub type InputObjectType = graphql_parser::schema::InputObjectType<'static, String>;
 pub type ScalarType = graphql_parser::schema::ScalarType<'static, String>;
 pub type UnionType = graphql_parser::schema::UnionType<'static, String>;
 pub type InputValue = graphql_parser::schema::InputValue<'static, String>;
@@ -84,64 +83,18 @@ impl From<std::io::Error> for SchemaLoadError {
     }
 }
 
-/// Extension trait for the schema Field type
-pub trait FieldExt {
-    fn required_arguments(&self) -> Vec<InputValue>;
-    fn optional_arguments(&self) -> Vec<InputValue>;
-}
-
-impl FieldExt for Field {
-    fn required_arguments(&self) -> Vec<InputValue> {
-        self.arguments
-            .iter()
-            .filter(|arg| {
-                // Note: We're passing an empty TypeIndex in here, but that's OK as
-                // we only want to know if things are required
-                FieldArgument::from_input_value(arg, &TypeIndex::empty()).is_required()
-            })
-            .cloned()
-            .collect()
-    }
-
-    fn optional_arguments(&self) -> Vec<InputValue> {
-        self.arguments
-            .iter()
-            .filter(|arg| {
-                // Note: We're passing an empty TypeIndex in here, but that's OK as
-                // we only want to know if things are required
-                !FieldArgument::from_input_value(arg, &TypeIndex::empty()).is_required()
-            })
-            .cloned()
-            .collect()
-    }
-}
-
 /// Extension trait for the schema Type type
 pub trait TypeExt {
-    fn to_graphql_string(&self) -> String;
     fn inner_name(&self) -> &str;
-    fn is_required(&self) -> bool;
 }
 
 impl TypeExt for Type {
-    fn to_graphql_string(&self) -> String {
-        match self {
-            Type::NamedType(name) => name.clone(),
-            Type::ListType(inner) => format!("[{}]", inner.to_graphql_string()),
-            Type::NonNullType(inner) => format!("{}!", inner.to_graphql_string()),
-        }
-    }
-
     fn inner_name(&self) -> &str {
         match self {
             Type::NamedType(s) => s,
             Type::ListType(inner) => inner.inner_name(),
             Type::NonNullType(inner) => inner.inner_name(),
         }
-    }
-
-    fn is_required(&self) -> bool {
-        matches!(self, Type::NonNullType(_))
     }
 }
 

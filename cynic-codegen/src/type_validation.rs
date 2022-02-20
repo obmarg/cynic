@@ -1,7 +1,7 @@
 use quote::quote;
 use syn::spanned::Spanned;
 
-use crate::FieldType;
+use crate::schema::types::TypeRef;
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum CheckMode {
@@ -11,8 +11,8 @@ pub enum CheckMode {
     Spreading,
 }
 
-pub fn check_types_are_compatible(
-    gql_type: &FieldType,
+pub fn check_types_are_compatible<'a, T>(
+    gql_type: &TypeRef<'a, T>,
     rust_type: &syn::Type,
     mode: CheckMode,
 ) -> Result<(), syn::Error> {
@@ -56,8 +56,8 @@ pub fn check_spread_type(rust_type: &syn::Type) -> Result<(), syn::Error> {
     }
 }
 
-fn normal_check(
-    gql_type: &FieldType,
+fn normal_check<'a, T>(
+    gql_type: &TypeRef<'a, T>,
     rust_type: &syn::Type,
     flattening: bool,
 ) -> Result<(), syn::Error> {
@@ -69,9 +69,9 @@ fn normal_check(
         return normal_check(gql_type, inner, flattening);
     }
 
-    if gql_type.is_nullable() {
+    if let TypeRef::Nullable(inner_gql) = &gql_type {
         if let ParsedType::Optional(inner) = parsed_type {
-            return normal_check(&gql_type.as_required(), inner, flattening);
+            return normal_check(inner_gql, inner, flattening);
         } else if !flattening {
             // If we're flattening then it's all good.  But otherwise we should return an error.
             return Err(syn::Error::new(
@@ -90,9 +90,9 @@ fn normal_check(
                             quote! { #inner }
                         )
                     ));
-    } else if let FieldType::List(item_type, _) = gql_type {
+    } else if let TypeRef::List(item_type) = &gql_type {
         if let ParsedType::List(inner) = parsed_type {
-            return normal_check(item_type, inner, flattening);
+            return normal_check(item_type.as_ref(), inner, flattening);
         } else if !flattening {
             // If we're flattening then it's all good.  But otherwise we should return an error.
             return Err(syn::Error::new(
@@ -116,7 +116,10 @@ fn normal_check(
     Ok(())
 }
 
-fn recursing_check(gql_type: &FieldType, rust_type: &syn::Type) -> Result<(), syn::Error> {
+fn recursing_check<'a, T>(
+    gql_type: &TypeRef<'a, T>,
+    rust_type: &syn::Type,
+) -> Result<(), syn::Error> {
     let parsed_type = parse_type(rust_type);
 
     if let ParsedType::Unknown = parsed_type {
@@ -126,7 +129,7 @@ fn recursing_check(gql_type: &FieldType, rust_type: &syn::Type) -> Result<(), sy
             ));
     };
 
-    if gql_type.is_nullable() {
+    if let TypeRef::Nullable(_) = gql_type {
         // If the field is nullable then we just defer to the normal checks.
         return normal_check(gql_type, rust_type, false);
     };
@@ -203,18 +206,22 @@ fn extract_generic_argument(segment: &syn::PathSegment) -> Option<&syn::Type> {
 
 #[cfg(test)]
 mod tests {
+    use std::marker::PhantomData;
+
     use super::*;
-    use crate::{FieldType, Ident};
+    use crate::schema::TypeIndex;
 
     use assert_matches::assert_matches;
     use quote::quote;
     use rstest::rstest;
     use syn::parse_quote;
 
+    type TypeRef<'a> = super::TypeRef<'a, ()>;
+
     #[test]
     fn test_required_validation() {
-        let required_field = FieldType::Scalar(Ident::new("test"), false);
-        let optional_field = FieldType::Scalar(Ident::new("test"), true);
+        let required_field = TypeRef::Named("test", TypeIndex::empty(), PhantomData);
+        let optional_field = TypeRef::Nullable(Box::new(required_field.clone()));
 
         assert_matches!(
             check_types_are_compatible(
@@ -260,14 +267,12 @@ mod tests {
 
     #[test]
     fn test_list_validation() {
-        let list = FieldType::List(
-            Box::new(FieldType::Scalar(Ident::new("test"), false)),
-            false,
-        );
-        let optional_list =
-            FieldType::List(Box::new(FieldType::Scalar(Ident::new("test"), false)), true);
-        let option_list_option =
-            FieldType::List(Box::new(FieldType::Scalar(Ident::new("test"), true)), true);
+        let named = TypeRef::Named("test", TypeIndex::empty(), PhantomData);
+        let list = TypeRef::List(Box::new(named.clone()));
+        let optional_list = TypeRef::Nullable(Box::new(TypeRef::List(Box::new(named.clone()))));
+        let option_list_option = TypeRef::Nullable(Box::new(TypeRef::List(Box::new(
+            TypeRef::Nullable(Box::new(named.clone())),
+        ))));
 
         assert_matches!(
             check_types_are_compatible(
@@ -353,14 +358,12 @@ mod tests {
 
     #[test]
     fn test_validation_when_flattening() {
-        let list = FieldType::List(
-            Box::new(FieldType::Scalar(Ident::new("test"), false)),
-            false,
-        );
-        let optional_list =
-            FieldType::List(Box::new(FieldType::Scalar(Ident::new("test"), false)), true);
-        let option_list_option =
-            FieldType::List(Box::new(FieldType::Scalar(Ident::new("test"), true)), true);
+        let named = TypeRef::Named("test", TypeIndex::empty(), PhantomData);
+        let list = TypeRef::List(Box::new(named.clone()));
+        let optional_list = TypeRef::Nullable(Box::new(TypeRef::List(Box::new(named.clone()))));
+        let option_list_option = TypeRef::Nullable(Box::new(TypeRef::List(Box::new(
+            TypeRef::Nullable(Box::new(named.clone())),
+        ))));
 
         assert_matches!(
             check_types_are_compatible(
@@ -407,32 +410,28 @@ mod tests {
 
     #[rstest(graphql_field, rust_field,
         case::required_t(
-            FieldType::Scalar(Ident::new("T"), false),
+            TypeRef::Named("T", TypeIndex::empty(), PhantomData),
             parse_quote! { Option<Box<T>> }
         ),
 
         case::optional_t(
-            FieldType::Scalar(Ident::new("T"), true),
+            TypeRef::Nullable(Box::new(TypeRef::Named("T", TypeIndex::empty(), PhantomData))),
             parse_quote! { Option<T> }
         ),
 
         case::option_vec_required_t(
-            FieldType::List(
-                Box::new(FieldType::Scalar(Ident::new("T"), false)),
-                true
-            ),
+            TypeRef::Nullable(Box::new(
+                TypeRef::List(Box::new(TypeRef::Named("T", TypeIndex::empty(), PhantomData)))
+            )),
             parse_quote! { Option<Vec<T>> }
         ),
 
         case::required_vec_required_t(
-            FieldType::List(
-                Box::new(FieldType::Scalar(Ident::new("T"), false)),
-                false
-            ),
+            TypeRef::List(Box::new(TypeRef::Named("T", TypeIndex::empty(), PhantomData))),
             parse_quote! { Option<Vec<T>> }
         ),
     )]
-    fn test_recurse_validation_ok(graphql_field: FieldType, rust_field: syn::Type) {
+    fn test_recurse_validation_ok(graphql_field: TypeRef<'_>, rust_field: syn::Type) {
         assert_matches!(
             check_types_are_compatible(&graphql_field, &rust_field, CheckMode::Recursing),
             Ok(())
@@ -441,69 +440,59 @@ mod tests {
 
     #[rstest(graphql_field, rust_field,
         case::required_t_box(
-            FieldType::Scalar(Ident::new("T"), false),
+            TypeRef::Named("T", TypeIndex::empty(), PhantomData),
             parse_quote! { Box<T> }
         ),
         case::required_t_standalone(
-            FieldType::Scalar(Ident::new("T"), false),
+            TypeRef::Named("T", TypeIndex::empty(), PhantomData),
             parse_quote! { T }
         ),
 
         case::optional_t_standalone(
-            FieldType::Scalar(Ident::new("T"), true),
+            TypeRef::Nullable(Box::new(TypeRef::Named("T", TypeIndex::empty(), PhantomData))),
             parse_quote! { T }
         ),
         case::optional_t_box(
-            FieldType::Scalar(Ident::new("T"), true),
+            TypeRef::Nullable(Box::new(TypeRef::Named("T", TypeIndex::empty(), PhantomData))),
             parse_quote! { Box<T> }
         ),
 
         case::option_vec_required_t(
-            FieldType::List(
-                Box::new(FieldType::Scalar(Ident::new("T"), false)),
-                true
-            ),
+            TypeRef::Nullable(Box::new(
+                TypeRef::List(Box::new(TypeRef::Named("T", TypeIndex::empty(), PhantomData)))
+            )),
             parse_quote! { Vec<T> }
         ),
         case::option_vec_required_t(
-            FieldType::List(
-                Box::new(FieldType::Scalar(Ident::new("T"), false)),
-                true
-            ),
+            TypeRef::Nullable(Box::new(
+                TypeRef::List(Box::new(TypeRef::Named("T", TypeIndex::empty(), PhantomData)))
+            )),
             parse_quote! { Vec<Option<T>> }
         ),
 
         case::required_vec_required_t(
-            FieldType::List(
-                Box::new(FieldType::Scalar(Ident::new("T"), false)),
-                false
-            ),
+            TypeRef::List(Box::new(TypeRef::Named("T", TypeIndex::empty(), PhantomData))),
             parse_quote! { Vec<T> }
         ),
         case::required_vec_required_t_no_vec(
-            FieldType::List(
-                Box::new(FieldType::Scalar(Ident::new("T"), false)),
-                false
-            ),
+            TypeRef::List(Box::new(TypeRef::Named("T", TypeIndex::empty(), PhantomData))),
             parse_quote! { T }
         ),
 
         case::required_vec_optional_t_no_vec(
-            FieldType::List(
-                Box::new(FieldType::Scalar(Ident::new("T"), true)),
-                false
-            ),
+            TypeRef::List(Box::new(
+                TypeRef::Nullable(Box::new(TypeRef::Named("T", TypeIndex::empty(), PhantomData)))
+            )),
             parse_quote! { Option<T> }
         ),
         case::required_vec_optional_t_wrong_nesting(
-            FieldType::List(
-                Box::new(FieldType::Scalar(Ident::new("T"), true)),
-                false
-            ),
+            TypeRef::List(Box::new(
+                TypeRef::Nullable(Box::new(TypeRef::Named("T", TypeIndex::empty(), PhantomData)))
+            )),
             parse_quote! { Option<Vec<T>> }
         ),
     )]
-    fn test_recurse_validation_fail(graphql_field: FieldType, rust_field: syn::Type) {
+    fn test_recurse_validation_fail(graphql_field: TypeRef<'_>, rust_field: syn::Type) {
         assert_matches!(
             check_types_are_compatible(&graphql_field, &rust_field, CheckMode::Recursing),
             Err(_)

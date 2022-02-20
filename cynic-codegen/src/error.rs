@@ -40,6 +40,14 @@ impl std::iter::FromIterator<Errors> for Errors {
     }
 }
 
+impl std::iter::FromIterator<syn::Error> for Errors {
+    fn from_iter<T: IntoIterator<Item = syn::Error>>(iter: T) -> Self {
+        let mut rv = Errors { errors: vec![] };
+        rv.extend(iter.into_iter().map(Into::into));
+        rv
+    }
+}
+
 impl From<syn::Error> for Errors {
     fn from(err: syn::Error) -> Errors {
         Errors { errors: vec![err] }

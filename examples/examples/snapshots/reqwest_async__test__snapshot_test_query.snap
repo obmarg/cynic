@@ -1,11 +1,14 @@
 ---
 source: examples/examples/reqwest-async.rs
+assertion_line: 74
 expression: query.query
+
 ---
-query Query($_0: ID) {
-  film(id: $_0) {
+query($id: ID) {
+  film(id: $id) {
     title
     director
   }
 }
+
 

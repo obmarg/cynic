@@ -1,0 +1,34 @@
+---
+source: cynic-codegen/src/fragment_derive/arguments/tests.rs
+assertion_line: 32
+expression: "analyse(literals, field, Some(&format_ident!(\"MyArguments\")),\n        Span::call_site()).map(|o| o.arguments)"
+
+---
+Ok(
+    [
+        Field {
+            schema_field: InputValue {
+                description: None,
+                name: FieldName {
+                    graphql_name: "filters",
+                },
+                value_type: NamedInputType(
+                    "BookFilters",
+                ),
+            },
+            value: Variable(
+                Variable {
+                    ident: Ident(
+                        aVaraible,
+                    ),
+                    value_type: NamedInputType(
+                        "BookFilters",
+                    ),
+                    argument_struct: Ident(
+                        MyArguments,
+                    ),
+                },
+            ),
+        },
+    ],
+)

@@ -34,33 +34,26 @@ fn test_explicit_alias_query_output() {
     let operation = FilmQueryWithExplicitAlias::build(());
 
     insta::assert_display_snapshot!(operation.query, @r###"
-    query Query($_0: ID, $_1: ID) {
-      a_new_hope:   film(id: $_0) {
+    query {
+      a_new_hope: film(id: "ZmlsbXM6MQ==") {
         title
       }
-      empire_strikes_back:   film(id: $_1) {
+      empire_strikes_back: film(id: "ZmlsbXM6Mg==") {
         title
       }
     }
+
     "###);
 }
 
 #[test]
 fn test_explicit_alias_decoding() {
-    let operation = FilmQueryWithExplicitAlias::build(());
-
     assert_eq!(
-        operation
-            .decode_response(cynic::GraphQlResponse {
-                errors: None,
-                data: Some(json!({
-                    "a_new_hope": {"title": "A New Hope"},
-                    "empire_strikes_back": {"title": "The Empire Strikes Back"}
-                }))
-            })
-            .unwrap()
-            .data
-            .unwrap(),
+        serde_json::from_value::<FilmQueryWithExplicitAlias>(json!({
+            "a_new_hope": {"title": "A New Hope"},
+            "empire_strikes_back": {"title": "The Empire Strikes Back"}
+        }))
+        .unwrap(),
         FilmQueryWithExplicitAlias {
             a_new_hope: Some(Film {
                 title: Some("A New Hope".into()),
@@ -92,33 +85,26 @@ fn test_implicit_alias_query_output() {
     let operation = FilmQueryWithImplicitAlias::build(());
 
     insta::assert_display_snapshot!(operation.query, @r###"
-    query Query($_0: ID, $_1: ID) {
-      film(id: $_0) {
+    query {
+      film(id: "ZmlsbXM6MQ==") {
         title
       }
-      empire_strikes_back:   film(id: $_1) {
+      empire_strikes_back: film(id: "ZmlsbXM6Mg==") {
         title
       }
     }
+
     "###);
 }
 
 #[test]
 fn test_implicit_alias_decoding() {
-    let operation = FilmQueryWithImplicitAlias::build(());
-
     assert_eq!(
-        operation
-            .decode_response(cynic::GraphQlResponse {
-                errors: None,
-                data: Some(json!({
-                    "film": {"title": "A New Hope"},
-                    "empire_strikes_back": {"title": "The Empire Strikes Back"}
-                }))
-            })
-            .unwrap()
-            .data
-            .unwrap(),
+        serde_json::from_value::<FilmQueryWithImplicitAlias>(json!({
+            "film": {"title": "A New Hope"},
+            "empire_strikes_back": {"title": "The Empire Strikes Back"}
+        }))
+        .unwrap(),
         FilmQueryWithImplicitAlias {
             a_new_hope: Some(Film {
                 title: Some("A New Hope".into()),

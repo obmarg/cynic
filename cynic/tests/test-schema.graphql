@@ -3,18 +3,22 @@ input BlogPostInput {
   content: String!
 }
 
-type BlogPost {
+type BlogPost implements Node {
+  id: ID
   author: Author!
   comments: [Comment!]!
   hasMetadata: Boolean
   metadata: EmptyType
+  state: PostState
 }
 
-type Comment {
+type Comment implements Node {
+  id: ID
   author: Author!
 }
 
-type Author {
+type Author implements Node {
+  id: ID
   name: String
   posts: [BlogPost!]!
   comments: [Comment!]!
@@ -32,11 +36,30 @@ type EmptyType {
 
 type Query {
   allPosts: [BlogPost!]!
+  post(id: ID!): BlogPost
+  filteredPosts(filters: PostFilters): [BlogPost!]!
   allAuthors: [Author!]!
   allData: [PostOrAuthor!]!
+  node(id: ID!): Node
 }
 
 union PostOrAuthor = BlogPost | Author
+
+enum PostState {
+  POSTED
+  DRAFT
+}
+
+scalar DateTime
+
+input PostFilters {
+  authorId: ID
+  states: [PostState!]
+}
+
+interface Node {
+  id: ID
+}
 
 schema {
   query: Query

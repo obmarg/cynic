@@ -9,6 +9,38 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+### Breaking Changes
+
+- Cynic no longer supports providing variables via the `arg.X` syntax.  Instead
+  you should provide variables similar to how you would do in a GraphQL query:
+  `#[arguments(someArg: $my_variable)]`, where `my_variable` is a field on your
+  `QueryVariables` struct.
+- Arguments should be provided with the casing of the GraphQL schema rather
+  than `snake_casing` them.
+- Cynic now derives `serde::Serialize` and `serde::Deserialize` where
+  appropriate so you can no longer do this yourself on structs you are using
+  with cynic.
+- Decoding GraphQLResponses should now be done directly with serde using a
+  `decode_response` function on the operation (unless you're using an `http`
+  extension trait, which will deal with this for you).
+- `Operation` has changed:
+  - It no longer has a lifetime.
+  - It is now generic over the arguments type.
+- The `http` extension traits have had their signatures changed to accomodate
+  the new signature of `Operation`.  Their use should still be the same.
+- An `Enum` can no longer be shared between schemas.  If you were doing this,
+  you should define two `Enum`s and provide conversion functions beteween the
+  two of them.
+- `QueryBuilder`, `MutationBuilder` and `SubscriptionBuilder` no longer have a
+  `ResponseData` associated type.
+- `QueryBuilder::build`, `MutationBuilder::build` and
+  `SubscriptionBuilder::build` now take their argument by value not by
+  reference.
+
+### Deprecations
+
+- The `FragmentArguments` trait & derive has been renamed to `QueryVariables`
+
 ### Bug Fixes
 
 - Fixed a case where the generator would output the incorrect casing for some
@@ -16,8 +48,15 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Changes
 
-- `cynic` no longer uses `inflector` to re-case things.  Hopefully this won't cause
-  any regressions, but if it does please raise an issue.
+- Cynic now supports a new syntax for arguments: 
+  `#[arguments(someArg: {"someField": 1})]`
+- `cynic` no longer uses `inflector` to re-case things. Hopefully this won't
+  cause any regressions, but if it does please raise an issue.
+- `InlineFragments` now take their expected typenames from the `QueryFragment`
+  inside their variants, rather than from the name of the variants themselves.
+- Queries output by cynic may have more literals in the GraphQL query string
+  than they had in previous versions of cynic.  Though the end result should
+  be the same.
 
 ## v1.0.0 - 2021-12-09
 
@@ -38,14 +77,14 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ### Changes
 
 - The `QueryFragment` derive now supports fields with types that take generic
-  parameters directly, e.g. `DateTime<Utc>` from chrono.  Previously this would
+  parameters directly, e.g. `DateTime<Utc>` from chrono. Previously this would
   have required a type alias to hide the generic parameters from cynic.
 
 ### Bug Fixes
 
 - The various HTTP client integrations will now return HTTP error details and
   the full body on non 2XX responses that don't contain a valid GraphQL
-  response.  Previously they would have tried to decode the response as GraphQL
+  response. Previously they would have tried to decode the response as GraphQL
   and returned the error from that operation.
 
 ## v0.15.1 - xxxx-xx-xx
@@ -69,13 +108,13 @@ New generator features, so I'm putting them out in a point release:
 
 ### Breaking Changes
 
-- Removed the no longer used `chrono` feature.  It didn't enable any code so
+- Removed the no longer used `chrono` feature. It didn't enable any code so
   downstreams shouldn't really be broken by this (other than a possible
   `Cargo.toml` tweak)
 
 ### New Features
 
-- Cynic now supports GraphQL field aliases.  These can be requested, but will
+- Cynic now supports GraphQL field aliases. These can be requested, but will
   also automatically be added to queries if any QueryFragment requests the same
   field twice.
 - The generator also now supports field aliases.
@@ -118,7 +157,7 @@ This release is only of the `cynic` crate - other crates remain at 0.13.1
 ### Bug Fixes
 
 - This fixes a problem with JSON decoding that made it extremely inefficient
-  (particularly on larger responses).  In my benchmarking this improves
+  (particularly on larger responses). In my benchmarking this improves
   decoding performance 10x.
 
 ## v0.13.1 - 2021-04-26

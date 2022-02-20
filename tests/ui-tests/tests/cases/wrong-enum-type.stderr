@@ -1,8 +1,11 @@
-error[E0308]: mismatched types
-  --> $DIR/wrong-enum-type.rs:13:21
+error[E0277]: the trait bound `schema::CheckConclusionState: IsFieldType<CheckStatusState>` is not satisfied
+  --> tests/cases/wrong-enum-type.rs:13:21
    |
 13 |         pub status: CheckConclusionState,
-   |                     ^^^^^^^^^^^^^^^^^^^^ expected enum `CheckStatusState`, found enum `schema::CheckConclusionState`
+   |                     ^^^^^^^^^^^^^^^^^^^^ the trait `IsFieldType<CheckStatusState>` is not implemented for `schema::CheckConclusionState`
    |
-   = note: expected struct `SelectionSet<'_, _, CheckStatusState>`
-              found struct `SelectionSet<'static, _, schema::CheckConclusionState>`
+note: required by a bound in `SelectionBuilder::<'a, SchemaType, Variables>::select_field`
+  --> $WORKSPACE/cynic/src/queries/builders.rs
+   |
+   |         FieldType: IsFieldType<SchemaType::Type>,
+   |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `SelectionBuilder::<'a, SchemaType, Variables>::select_field`

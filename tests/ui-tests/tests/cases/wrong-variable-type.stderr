@@ -1,0 +1,18 @@
+error[E0277]: the trait bound `i32: CoercesTo<std::option::Option<cynic::Id>>` is not satisfied
+   --> tests/cases/wrong-variable-type.rs:15:14
+    |
+15  |     #[derive(cynic::QueryFragment, Debug)]
+    |              ^^^^^^^^^^^^^^^^^^^^ the trait `CoercesTo<std::option::Option<cynic::Id>>` is not implemented for `i32`
+    |
+    = help: the following implementations were found:
+              <i32 as CoercesTo<Vec<Vec<i32>>>>
+              <i32 as CoercesTo<Vec<i32>>>
+              <i32 as CoercesTo<i32>>
+              <i32 as CoercesTo<std::option::Option<Vec<i32>>>>
+            and 3 others
+note: required by a bound in `cynic::queries::builders::InputBuilder::<'a, SchemaType, Variables>::variable`
+   --> $WORKSPACE/cynic/src/queries/builders.rs
+    |
+    |         Type: CoercesTo<SchemaType>,
+    |               ^^^^^^^^^^^^^^^^^^^^^ required by this bound in `cynic::queries::builders::InputBuilder::<'a, SchemaType, Variables>::variable`
+    = note: this error originates in the derive macro `cynic::QueryFragment` (in Nightly builds, run with -Z macro-backtrace for more info)

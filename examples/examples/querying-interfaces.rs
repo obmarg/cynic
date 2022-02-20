@@ -57,7 +57,7 @@ struct Arguments {
     argument_struct = "Arguments"
 )]
 struct FilmDirectorQuery {
-    #[arguments(id = args.id.clone())]
+    #[arguments(id: $id)]
     node: Option<Node>,
 }
 
@@ -77,10 +77,10 @@ fn run_query(id: cynic::Id) -> cynic::GraphQlResponse<FilmDirectorQuery> {
         .unwrap()
 }
 
-fn build_query(id: cynic::Id) -> cynic::Operation<'static, FilmDirectorQuery> {
+fn build_query(id: cynic::Id) -> cynic::Operation<FilmDirectorQuery, Arguments> {
     use cynic::QueryBuilder;
 
-    FilmDirectorQuery::build(&Arguments { id })
+    FilmDirectorQuery::build(Arguments { id })
 }
 
 #[cfg(test)]

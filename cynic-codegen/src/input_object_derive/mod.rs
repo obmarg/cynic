@@ -1,12 +1,16 @@
 use proc_macro2::{Span, TokenStream};
-use std::collections::BTreeMap;
-use syn::spanned::Spanned;
+use std::collections::HashSet;
 
 use crate::{
-    ident::{RenameAll, RenameRule},
+    error::Errors,
+    idents::RenameAll,
     load_schema,
-    schema::{Definition, Document, InputObjectType, InputValue, TypeDefinition},
-    Ident, TypeIndex,
+    schema::{
+        types::{InputObjectType, InputValue, TypeRef},
+        Schema, Unvalidated,
+    },
+    suggestions::FieldSuggestionError,
+    Ident,
 };
 
 mod field_serializer;
@@ -14,7 +18,10 @@ use field_serializer::FieldSerializer;
 
 pub(crate) mod input;
 
-use crate::suggestions::{format_guess, guess_field};
+#[cfg(test)]
+mod tests;
+
+use crate::suggestions::guess_field;
 use input::InputObjectDeriveField;
 pub use input::InputObjectDeriveInput;
 
@@ -24,51 +31,29 @@ pub fn input_object_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::E
     let struct_span = ast.ident.span();
 
     match InputObjectDeriveInput::from_derive_input(ast) {
-        Ok(input) => load_schema(&*input.schema_path)
-            .map_err(|e| e.into_syn_error(input.schema_path.span()))
-            .and_then(|schema| input_object_derive_impl(input, &schema, struct_span))
-            .or_else(|e| Ok(e.to_compile_error())),
+        Ok(input) => {
+            let schema_doc = load_schema(&*input.schema_path)
+                .map_err(|e| e.into_syn_error(input.schema_path.span()))?;
+
+            let schema = Schema::new(&schema_doc);
+
+            input_object_derive_impl(input, &schema, struct_span)
+                .or_else(|e| Ok(e.to_compile_errors()))
+        }
         Err(e) => Ok(e.write_errors()),
     }
 }
 
 pub fn input_object_derive_impl(
     input: InputObjectDeriveInput,
-    schema: &Document,
+    schema: &Schema<'_, Unvalidated>,
     struct_span: Span,
-) -> Result<TokenStream, syn::Error> {
+) -> Result<TokenStream, Errors> {
     use quote::quote;
 
-    let input_object_def = schema.definitions.iter().find_map(|def| {
-        if let Definition::TypeDefinition(TypeDefinition::InputObject(obj)) = def {
-            if obj.name == input.graphql_type_name() {
-                return Some(obj);
-            }
-        }
-        None
-    });
-    if input_object_def.is_none() {
-        let candidates = schema.definitions.iter().flat_map(|def| {
-            if let Definition::TypeDefinition(TypeDefinition::InputObject(obj)) = def {
-                Some(obj.name.as_str())
-            } else {
-                None
-            }
-        });
-        let guess_field = guess_field(candidates, &input.graphql_type_name());
-        return Err(syn::Error::new(
-            input.graphql_type_span(),
-            format!(
-                "Could not find an input object named {} in {}.{}",
-                input.graphql_type_name(),
-                *input.schema_path,
-                format_guess(guess_field)
-            ),
-        ));
-    }
-    let input_object_def = input_object_def.unwrap();
-
-    let type_index = TypeIndex::for_schema(schema);
+    let input_object = schema
+        .lookup::<InputObjectType>(&input.graphql_type_name())
+        .map_err(|e| syn::Error::new(input.graphql_type_span(), e))?;
 
     let rename_all = input.rename_all.unwrap_or(RenameAll::CamelCase);
 
@@ -76,24 +61,19 @@ pub fn input_object_derive_impl(
         let ident = &input.ident;
         let input_marker_ident = Ident::for_type(&input.graphql_type_name());
         let schema_module = input.schema_module();
-        let input_object_name = ident.to_string();
 
-        let pairs = match join_fields(
+        let pairs = pair_fields(
             &fields.fields,
-            input_object_def,
-            &input_object_name,
+            &input_object,
             rename_all,
             input.require_all_fields,
             &struct_span,
-        ) {
-            Ok(pairs) => pairs,
-            Err(error_tokens) => return Ok(error_tokens),
-        };
+        )?;
 
         let field_serializers = pairs
             .into_iter()
             .map(|(rust_field, graphql_field)| {
-                FieldSerializer::new(rust_field, graphql_field, &type_index, &schema_module)
+                FieldSerializer::new(rust_field, graphql_field, &schema_module)
             })
             .collect::<Vec<_>>();
 
@@ -101,19 +81,13 @@ pub fn input_object_derive_impl(
             .iter()
             .map(|fs| fs.validate())
             .flatten()
-            .collect::<Vec<_>>();
+            .collect::<Errors>();
 
         if !errors.is_empty() {
-            return Ok(errors.into_iter().map(|e| e.to_compile_error()).fold(
-                TokenStream::new(),
-                |mut a, b| {
-                    a.extend(b);
-                    a
-                },
-            ));
+            return Ok(errors.to_compile_errors());
         }
 
-        let typecheck_funcs = field_serializers.iter().map(|fs| fs.type_check_fn());
+        let typechecks = field_serializers.iter().map(|fs| fs.type_check());
         let map_serializer_ident = proc_macro2::Ident::new("map_serializer", Span::call_site());
         let field_inserts = field_serializers
             .iter()
@@ -121,9 +95,13 @@ pub fn input_object_derive_impl(
 
         let map_len = field_serializers.len();
 
+        let graphql_type_name = proc_macro2::Literal::string(input_object.name);
+
         Ok(quote! {
             #[automatically_derived]
-            impl ::cynic::InputObject<#schema_module::#input_marker_ident> for #ident {}
+            impl ::cynic::InputObject for #ident {
+                type SchemaType = #schema_module::#input_marker_ident;
+            }
 
             #[automatically_derived]
             impl ::cynic::serde::Serialize for #ident {
@@ -132,9 +110,7 @@ pub fn input_object_derive_impl(
                     S: ::cynic::serde::Serializer,
                 {
                     use ::cynic::serde::ser::SerializeMap;
-                    #(
-                        #typecheck_funcs
-                    )*
+                    #(#typechecks)*
 
                     let mut map_serializer = serializer.serialize_map(Some(#map_len))?;
 
@@ -144,128 +120,107 @@ pub fn input_object_derive_impl(
                 }
             }
 
-            /*
-            impl ::cynic::SerializableArgument for #ident {
-                fn serialize(&self) -> Result<::cynic::serde_json::Value, ::cynic::SerializeError> {
-                    use ::cynic::{Scalar, Enum, SerializableArgument};
-                    #(
-                        #typecheck_funcs
-                    )*
+            ::cynic::impl_coercions!(#ident, #schema_module::#input_marker_ident);
 
-                    let mut output = ::cynic::serde_json::map::Map::with_capacity(#map_len);
-
-                    #(#field_inserts)*
-
-                    Ok(::cynic::serde_json::Value::Object(output))
-                }
+            #[automatically_derived]
+            impl #schema_module::variable::Variable for #ident {
+                const TYPE: ::cynic::variables::VariableType = ::cynic::variables::VariableType::Named(#graphql_type_name);
             }
-            */
-
-            ::cynic::impl_input_type!(#ident, #schema_module::#input_marker_ident);
         })
     } else {
         Err(syn::Error::new(
             struct_span,
             "InputObject can only be derived on a struct".to_string(),
-        ))
+        )
+        .into())
     }
 }
 
-fn join_fields<'a>(
+fn pair_fields<'a>(
     fields: &'a [InputObjectDeriveField],
-    input_object_def: &'a InputObjectType,
-    input_object_name: &str,
+    input_object_def: &'a InputObjectType<'a>,
     rename_all: RenameAll,
     require_all_fields: bool,
     struct_span: &Span,
-) -> Result<Vec<(&'a InputObjectDeriveField, &'a InputValue)>, TokenStream> {
-    use crate::schema::TypeExt;
+) -> Result<Vec<(&'a InputObjectDeriveField, &'a InputValue<'a>)>, Errors> {
+    let mut result = Vec::new();
+    let mut unknown_fields = Vec::new();
 
-    let mut map = BTreeMap::new();
     for field in fields {
-        let transformed_ident = Ident::from_proc_macro2(
-            field
-                .ident
-                .as_ref()
-                .expect("InputObject derive was passed a tuple struct or similar"),
-            RenameRule::new(rename_all, field.rename.as_ref()),
-        );
-        map.insert(transformed_ident, (Some(field), None));
-    }
-
-    for value in &input_object_def.fields {
-        let mut entry = map.entry(Ident::new(&value.name)).or_insert((None, None));
-        entry.1 = Some(value);
-    }
-
-    let mut missing_required_fields = vec![];
-    let mut missing_optional_fields = vec![];
-    let mut errors = TokenStream::new();
-    for (transformed_ident, value) in map.iter() {
-        match value {
-            (None, Some(input_value)) if input_value.value_type.is_required() => {
-                missing_required_fields.push(input_value.name.as_ref())
-            }
-            (None, Some(input_value)) => missing_optional_fields.push(input_value.name.as_ref()),
-            (Some(field), None) => {
-                let candidates = map
-                    .values()
-                    .flat_map(|v| v.1.map(|input| input.name.as_str()));
-                let guess_field = guess_field(candidates, transformed_ident.graphql_name());
-                errors.extend(
-                    syn::Error::new(
-                        field.ident.span(),
-                        format!(
-                            "Could not find a field {} in the GraphQL input object {}.{}",
-                            transformed_ident.graphql_name(),
-                            input_object_name,
-                            format_guess(guess_field)
-                        ),
-                    )
-                    .to_compile_error(),
-                )
-            }
-            _ => (),
+        let ident = field.graphql_ident(rename_all);
+        match input_object_def.field(&ident) {
+            Some(schema_field) => result.push((field, schema_field)),
+            None => unknown_fields.push(field),
         }
     }
 
-    if !missing_required_fields.is_empty() {
-        let missing_fields_string = missing_required_fields.join(", ");
-        errors.extend(
-            syn::Error::new(
-                *struct_span,
-                format!(
-                    "This InputObject is missing these required fields: {}",
-                    missing_fields_string
-                ),
-            )
-            .to_compile_error(),
-        )
+    let required_fields: HashSet<_>;
+    if require_all_fields {
+        required_fields = input_object_def.fields.iter().collect();
+    } else {
+        required_fields = input_object_def
+            .fields
+            .iter()
+            .filter(|f| !matches!(f.value_type, TypeRef::Nullable(_)))
+            .collect();
     }
 
-    if require_all_fields && !missing_optional_fields.is_empty() {
-        let missing_fields_string = missing_optional_fields.join(", ");
-        errors.extend(
-            syn::Error::new(
-                *struct_span,
-                format!(
-                    "This InputObject is missing these optional fields: {}.  If you wish to omit them you can remove the `require_all_fields` attribute from the InputObject",
-                    missing_fields_string
-                ),
-            )
-            .to_compile_error(),
-        )
+    let provided_fields = result
+        .iter()
+        .map(|(_, field)| field)
+        .copied()
+        .collect::<HashSet<_>>();
+
+    let missing_fields = required_fields
+        .difference(&provided_fields)
+        .collect::<Vec<_>>();
+
+    if missing_fields.is_empty() && unknown_fields.is_empty() {
+        return Ok(result);
     }
 
-    if !errors.is_empty() {
-        return Err(errors);
-    }
+    let field_candidates = input_object_def
+        .fields
+        .iter()
+        .map(|f| f.name.as_str())
+        .collect::<Vec<_>>();
 
-    Ok(map
+    let mut errors = unknown_fields
         .into_iter()
-        .filter(|(_, (rust_field, _))| rust_field.is_some())
-        .map(|(_, (a, b))| (a.unwrap(), b.unwrap()))
-        .collect())
+        .map(|field| {
+            let field_name = &field.graphql_ident(rename_all);
+            let graphql_name = field_name.graphql_name();
+            let expected_field = graphql_name.as_str();
+            let suggested_field = guess_field(field_candidates.iter().copied(), expected_field);
+            syn::Error::new(
+                field_name.span(),
+                FieldSuggestionError {
+                    expected_field,
+                    graphql_type_name: input_object_def.name,
+                    suggested_field,
+                },
+            )
+        })
+        .map(Errors::from)
+        .collect::<Errors>();
+
+    if !missing_fields.is_empty() {
+        let missing_fields_string = missing_fields
+            .into_iter()
+            .map(|f| f.name.as_str().to_string())
+            .collect::<Vec<_>>()
+            .join(", ");
+
+        errors.push(syn::Error::new(
+            *struct_span,
+            format!(
+                "This InputObject is missing these fields: {}",
+                missing_fields_string
+            ),
+        ))
+    }
+
+    Err(errors)
 }
 
 #[cfg(test)]
@@ -273,44 +228,30 @@ mod test {
     use assert_matches::assert_matches;
 
     use super::*;
-    use crate::schema::{Definition, InputObjectType, TypeDefinition};
 
-    fn test_input_object() -> InputObjectType {
-        let schema = r#"
+    static SCHEMA: &str = r#"
         input TestType {
             field_one: String!,
             field_two: String
         }
         "#;
 
-        if let Definition::TypeDefinition(TypeDefinition::InputObject(rv)) =
-            crate::schema::parse_schema(schema)
-                .unwrap()
-                .definitions
-                .into_iter()
-                .next()
-                .unwrap()
-        {
-            rv
-        } else {
-            panic!("Parsing failed")
-        }
-    }
-
     #[test]
     fn test_join_fields_when_all_required() {
+        let document = crate::schema::parse_schema(SCHEMA).unwrap();
+        let schema = crate::schema::Schema::new(&document);
+        let input_object = schema.lookup("TestType").unwrap();
+
         let fields = vec![InputObjectDeriveField {
             ident: Some(proc_macro2::Ident::new("field_one", Span::call_site())),
             ty: syn::parse_quote! { String },
             rename: None,
             skip_serializing_if: None,
         }];
-        let input_object = test_input_object();
 
-        let result = join_fields(
+        let result = pair_fields(
             &fields,
             &input_object,
-            "MyInputObject",
             RenameAll::None,
             true,
             &Span::call_site(),
@@ -321,18 +262,20 @@ mod test {
 
     #[test]
     fn test_join_fields_when_required_field_missing() {
+        let document = crate::schema::parse_schema(SCHEMA).unwrap();
+        let schema = crate::schema::Schema::new(&document);
+        let input_object = schema.lookup("TestType").unwrap();
+
         let fields = vec![InputObjectDeriveField {
             ident: Some(proc_macro2::Ident::new("field_two", Span::call_site())),
             ty: syn::parse_quote! { String },
             rename: None,
             skip_serializing_if: None,
         }];
-        let input_object = test_input_object();
 
-        let result = join_fields(
+        let result = pair_fields(
             &fields,
             &input_object,
-            "MyInputObject",
             RenameAll::None,
             false,
             &Span::call_site(),
@@ -343,18 +286,20 @@ mod test {
 
     #[test]
     fn test_join_fields_when_not_required() {
+        let document = crate::schema::parse_schema(SCHEMA).unwrap();
+        let schema = crate::schema::Schema::new(&document);
+        let input_object = schema.lookup("TestType").unwrap();
+
         let fields = vec![InputObjectDeriveField {
             ident: Some(proc_macro2::Ident::new("field_one", Span::call_site())),
             ty: syn::parse_quote! { String },
             rename: None,
             skip_serializing_if: None,
         }];
-        let input_object = test_input_object();
 
-        let result = join_fields(
+        let result = pair_fields(
             &fields,
             &input_object,
-            "MyInputObject",
             RenameAll::None,
             false,
             &Span::call_site(),

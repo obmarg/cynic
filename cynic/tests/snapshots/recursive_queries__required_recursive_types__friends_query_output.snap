@@ -1,12 +1,15 @@
 ---
 source: cynic/tests/recursive-queries.rs
-expression: query.query
+assertion_line: 174
+expression: operation.query
+
 ---
-query Query {
+query {
   allAuthors {
     me {
       me
     }
   }
 }
+
 

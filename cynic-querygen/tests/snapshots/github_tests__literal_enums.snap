@@ -1,6 +1,8 @@
 ---
 source: cynic-querygen/tests/github-tests.rs
+assertion_line: 22
 expression: "document_to_fragment_structs(query, schema,\n                             &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
+
 ---
 #[cynic::schema_for_derives(
     file = r#"schema.graphql"#,
@@ -12,13 +14,13 @@ mod queries {
     #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "Query")]
     pub struct RepoIssues {
-        #[arguments(owner = "obmarg", name = "cynic")]
+        #[arguments(owner: "obmarg", name: "cynic")]
         pub repository: Option<Repository>,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
     pub struct Repository {
-        #[arguments(states = Some(vec![IssueState::Open]), first = 10)]
+        #[arguments(states: "OPEN", first: 10)]
         pub issues: IssueConnection,
     }
 

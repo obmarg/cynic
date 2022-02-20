@@ -1,9 +1,11 @@
 ---
 source: examples/examples/querying-interfaces.rs
+assertion_line: 98
 expression: query.query
+
 ---
-query Query($_0: ID!) {
-  node(id: $_0) {
+query($id: ID!) {
+  node(id: $id) {
     __typename
     ... on Film {
       title
@@ -15,4 +17,5 @@ query Query($_0: ID!) {
     id
   }
 }
+
 
