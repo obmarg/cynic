@@ -172,7 +172,6 @@ mod id;
 mod operation;
 mod result;
 
-// TODO: think about the names of these, maybe don't make them pub?
 pub mod coercions;
 pub mod queries;
 pub mod variables;

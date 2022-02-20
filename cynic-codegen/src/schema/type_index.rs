@@ -200,7 +200,6 @@ impl<'a> TypeIndex<'a> {
                 #[allow(deprecated)]
                 let def = self.lookup_type($name);
                 if !matches!(def, Some($is)) {
-                    // TODO: Err
                     return Err(SchemaError::InvalidTypeInSchema {
                         name: $name.to_string(),
                         details: $err.to_string(),
@@ -357,7 +356,6 @@ fn convert_input_value<'a>(
     }
 }
 
-// TODO: Definitely test this fucker.
 fn build_type_ref<'a, T>(ty: &'a parser::Type, type_index: &TypeIndex<'a>) -> TypeRef<'a, T> {
     fn inner_fn<'a, T>(
         ty: &'a parser::Type,
@@ -404,8 +402,6 @@ fn build_field<'a>(
         parent_type_name,
     }
 }
-
-// TODO: deffo need tests of schema validation
 
 #[cfg(test)]
 mod tests {
