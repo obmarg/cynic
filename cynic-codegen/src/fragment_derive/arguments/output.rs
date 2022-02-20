@@ -109,10 +109,6 @@ impl ToTokens for ArgumentValueTokens<'_> {
                 let var_ident = &var.ident;
                 let argument_struct = &var.argument_struct;
 
-                // TODO: Can I do a static_assertions::assert_fields!(xyz) here?
-                // Gives a slightly better error on failure if nothing else...
-                // Though might be tricky because it's in the middle
-                // of a big chain...
                 tokens.append_all(quote! {
                     .variable(<#argument_struct as ::cynic::QueryVariables>::Fields::#var_ident())
                 });
