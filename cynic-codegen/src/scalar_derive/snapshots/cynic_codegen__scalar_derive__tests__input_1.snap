@@ -19,7 +19,7 @@ impl<'de> ::cynic::serde::Deserialize<'de> for DateTime {
     where
         D: ::cynic::serde::Deserializer<'de>,
     {
-        String::deserialize(deserializer).map(Self)
+        <String as ::cynic::serde::Deserialize<'de>>::deserialize(deserializer).map(Self)
     }
 }
 #[automatically_derived]
