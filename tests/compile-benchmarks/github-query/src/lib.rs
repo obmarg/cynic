@@ -5,7 +5,7 @@ pub use team_query::*;
 mod pr_query {
     use super::{schema, User};
 
-    #[derive(cynic::FragmentArguments, Debug)]
+    #[derive(cynic::QueryVariables, Debug)]
     pub struct PRsArguments {
         pub repo_name: String,
         pub repo_owner: String,
@@ -56,14 +56,14 @@ mod pr_query {
     #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "Query", argument_struct = "PRsArguments")]
     pub struct PRs {
-        #[arguments(name = args.repo_name.clone(), owner = args.repo_owner.clone())]
+        #[arguments(name: $repo_name, owner: $repo_owner)]
         pub repository: Option<Repository>,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "Repository", argument_struct = "PRsArguments")]
     pub struct Repository {
-        #[arguments(first = args.page_size, states = Some(vec![PullRequestState::Merged]), after = &args.pr_cursor)]
+        #[arguments(first: $page_size, states = Some(vec![PullRequestState::Merged]), after: $pr_cursor)]
         pub pull_requests: PullRequestConnection,
     }
 
@@ -216,7 +216,7 @@ mod pr_query {
 mod team_query {
     use super::{schema, User};
 
-    #[derive(cynic::FragmentArguments, Debug)]
+    #[derive(cynic::QueryVariables, Debug)]
     pub struct TeamMembersArguments {
         pub org: String,
         pub team: String,
@@ -225,7 +225,7 @@ mod team_query {
     #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "Query", argument_struct = "TeamMembersArguments")]
     pub struct TeamMembers {
-        #[arguments(login = args.org.clone())]
+        #[arguments(login: $org)]
         pub organization: Option<Organization>,
     }
 
@@ -235,14 +235,14 @@ mod team_query {
         argument_struct = "TeamMembersArguments"
     )]
     pub struct Organization {
-        #[arguments(slug = args.team.clone())]
+        #[arguments(slug: $team)]
         pub team: Option<Team>,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "Team")]
     pub struct Team {
-        #[arguments(first = 100)]
+        #[arguments(first: 100)]
         pub members: TeamMemberConnection,
     }
 
