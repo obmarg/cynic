@@ -3,6 +3,7 @@
 mod ast;
 mod builders;
 mod flatten;
+mod indent;
 mod input_literal_ser;
 mod recurse;
 mod type_eq;

@@ -177,9 +177,6 @@ pub mod coercions;
 pub mod queries;
 pub mod variables;
 
-// TODO: is there a better place to put indent?  Not sure.
-mod indent;
-
 pub mod http;
 pub mod schema;
 

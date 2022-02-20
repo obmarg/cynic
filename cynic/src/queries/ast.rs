@@ -1,6 +1,6 @@
 use std::{borrow::Cow, fmt::Write};
 
-use crate::indent::indented;
+use super::indent::indented;
 
 #[derive(Debug, Default)]
 /// A set of field selections that form part of a graphql query.
