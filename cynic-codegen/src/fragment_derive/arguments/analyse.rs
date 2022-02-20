@@ -1,5 +1,6 @@
 use std::{collections::HashSet, rc::Rc};
 
+use counter::Counter;
 use proc_macro2::Span;
 use syn::Lit;
 
@@ -196,8 +197,6 @@ fn analyse_value_type<'a>(
                 Err(syn::Error::new(span, "Expected a scalar here but found a null").into())
             }
             (InputType::Scalar(_), ArgumentLiteral::Literal(lit)) => {
-                // TODO: validate this is a valid scalar for the current type
-                // Can probably only do that for built in scalars.
                 Ok(ArgumentValue::Literal(lit))
             }
 
@@ -284,7 +283,10 @@ fn validate(
         .collect::<Vec<_>>();
     let unknown_args = provided_args.difference(&all_args).collect::<Vec<_>>();
 
-    // TODO: Look for duplicates as well?
+    let counts = literals
+        .iter()
+        .map(|lit| &lit.argument_name)
+        .collect::<Counter<_>>();
 
     let mut errors = Vec::new();
     if !missing_args.is_empty() {
@@ -301,12 +303,19 @@ fn validate(
             .find(|a| a.argument_name == unknown_arg)
             .unwrap();
 
-        // TODO: Ideally I want the span of the name _and_ the value.
-        // to match up with what rust does.
         errors.push(syn::Error::new(
             literal.argument_name.span(),
             "no such field",
         ));
+    }
+
+    for (ident, count) in counts {
+        if count > 1 {
+            errors.push(syn::Error::new(
+                ident.span(),
+                format!("duplicate field: {ident}"),
+            ))
+        }
     }
 
     if errors.is_empty() {
