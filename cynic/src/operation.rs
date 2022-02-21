@@ -81,7 +81,7 @@ where
         let vars = VariableDefinitions::new::<Variables>();
 
         let mut query = String::new();
-        writeln!(&mut query, "query{vars}{selection_set}").expect("Couldn't stringify query");
+        writeln!(&mut query, "mutation{vars}{selection_set}").expect("Couldn't stringify query");
 
         Operation {
             query,
@@ -117,7 +117,8 @@ where
         let vars = VariableDefinitions::new::<Variables>();
 
         let mut query = String::new();
-        writeln!(&mut query, "query{vars}{selection_set}").expect("Couldn't stringify query");
+        writeln!(&mut query, "subscription{vars}{selection_set}")
+            .expect("Couldn't stringify query");
 
         StreamingOperation {
             inner: Operation {
