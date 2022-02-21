@@ -6,13 +6,9 @@ edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
-[features]
-github = ["serde_json"]
-
 [dependencies]
 cynic = { path = "../cynic", features = ["surf", "reqwest-blocking"] }
 cynic-codegen = { path = "../cynic-codegen" }
-serde_json = { version = "1.0", optional = true }
 
 # Reqwest example requirements
 reqwest = { version = "0.11", features = ["json", "blocking"] }
@@ -22,7 +18,11 @@ tokio = { version = "1.15", features = ["macros"] }
 surf = "2.3"
 async-std = "1.10"
 
-chrono = { version = "0.4", features = ["serde"]}
+chrono = { version = "0.4", features = ["serde"] }
+
+# We pull the github schema from a separate crate so we don't
+# have to recompile it as often.
+github-schema = { path = "../schemas/github" }
 
 [dev-dependencies]
 insta = "1.9"

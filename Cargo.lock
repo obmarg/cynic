@@ -652,9 +652,9 @@ dependencies = [
  "chrono",
  "cynic",
  "cynic-codegen",
+ "github-schema",
  "insta",
  "reqwest",
- "serde_json",
  "surf",
  "tokio",
 ]
@@ -1042,6 +1042,14 @@ checksum = "97304e4cd182c3846f7575ced3890c53012ce534ad9114046b0a9e00bb30a375"
 dependencies = [
  "opaque-debug",
  "polyval",
+]
+
+[[package]]
+name = "github-schema"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "cynic",
 ]
 
 [[package]]

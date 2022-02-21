@@ -1,23 +1,21 @@
 //! An example using the GitHub API
 //!
-//! Note that a lot of this example is feature flagged: this is because rust-analyzer
-//! wants to build it as part of the cynic package when I'm working on cynic.  It
-//! builds quite slow because of the size of the GitHub API (the schema output is
-//! around 100k lines of rust), and it's too much for normal development.
+//! Note that this example pulls a schema from the `github_schema` crate.
+//! This is because the github schema is massive and compiling the output
+//! of `use_schema` is quite slow.  Moving this into a separate crate
+//! means we won't have to recompile it every time this file changes
+//! and we'll only need to do so once per full build of cynic.
 //!
-//! If you want to use this example be sure to remove all the feature flagging.
+//! You may want to do similar if you're also working with cynic & the
+//! github API.
 //!
-//! This example also requires the `reqwest-blocking` feature to be active.
+//! This example requires the `reqwest-blocking` feature to be active.
 
 fn main() {
-    #[cfg(feature = "github")]
-    {
-        let result = run_query();
-        println!("{:?}", result);
-    }
+    let result = run_query();
+    println!("{:?}", result);
 }
 
-#[cfg(feature = "github")]
 fn run_query() -> cynic::GraphQlResponse<queries::PullRequestTitles> {
     use cynic::http::ReqwestBlockingExt;
 
@@ -33,7 +31,6 @@ fn run_query() -> cynic::GraphQlResponse<queries::PullRequestTitles> {
         .unwrap()
 }
 
-#[cfg(feature = "github")]
 fn build_query() -> cynic::Operation<queries::PullRequestTitles, queries::PullRequestTitlesArguments>
 {
     use cynic::QueryBuilder;
@@ -49,16 +46,13 @@ fn build_query() -> cynic::Operation<queries::PullRequestTitles, queries::PullRe
     })
 }
 
-#[cfg(feature = "github")]
 #[cynic::schema_for_derives(file = "../schemas/github.graphql", module = "schema")]
 mod queries {
-    use super::schema;
+    use github_schema as schema;
 
     pub type DateTime = chrono::DateTime<chrono::Utc>;
 
-    cynic::impl_scalar!(DateTime, schema::DateTime);
-
-    #[derive(cynic::FragmentArguments, Debug)]
+    #[derive(cynic::QueryVariables, Debug)]
     pub struct PullRequestTitlesArguments {
         pub pr_order: IssueOrder,
     }
@@ -112,12 +106,7 @@ mod queries {
     }
 }
 
-#[cfg(feature = "github")]
-mod schema {
-    cynic::use_schema!("../schemas/github.graphql");
-}
-
-#[cfg(all(test, feature = "github"))]
+#[cfg(test)]
 mod test {
     use super::*;
 
@@ -133,6 +122,7 @@ mod test {
     }
 
     #[test]
+    #[ignore]
     fn test_running_query() {
         let result = run_query();
         if result.errors.is_some() {
