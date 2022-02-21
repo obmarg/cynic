@@ -42,8 +42,17 @@ struct FilmDirectorQuery {
 }
 
 fn main() {
-    let result = run_query();
-    println!("{:?}", result);
+    match run_query().data {
+        Some(FilmDirectorQuery { film: Some(film) }) => {
+            println!(
+                "{:?} was directed by {:?}",
+                film.details.title, film.details.director
+            )
+        }
+        _ => {
+            println!("No film found");
+        }
+    }
 }
 
 fn run_query() -> cynic::GraphQlResponse<FilmDirectorQuery> {

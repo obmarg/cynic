@@ -14,7 +14,7 @@ struct Film {
     director: Option<String>,
 }
 
-#[derive(cynic::FragmentArguments)]
+#[derive(cynic::QueryVariables)]
 struct FilmArguments {
     id: Option<cynic::Id>,
 }
@@ -31,8 +31,14 @@ struct FilmDirectorQuery {
 }
 
 fn main() {
-    let result = run_query();
-    println!("{:?}", result);
+    match run_query().data {
+        Some(FilmDirectorQuery { film: Some(film) }) => {
+            println!("{:?} was directed by {:?}", film.title, film.director)
+        }
+        _ => {
+            println!("No film found");
+        }
+    }
 }
 
 fn run_query() -> cynic::GraphQlResponse<FilmDirectorQuery> {

@@ -28,7 +28,9 @@ struct JobsQuery {
 
 fn main() {
     let result = run_query();
-    println!("{:?}", result);
+    for job in result.data.unwrap().jobs {
+        println!("{}", job.created_at);
+    }
 }
 
 fn run_query() -> cynic::GraphQlResponse<JobsQuery> {
