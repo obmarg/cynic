@@ -24,7 +24,6 @@ enum Node {
 )]
 struct Film {
     title: Option<String>,
-    director: Option<String>,
 }
 
 #[derive(cynic::QueryFragment, Debug)]
@@ -45,7 +44,7 @@ struct OtherNode {
     id: cynic::Id,
 }
 
-#[derive(cynic::FragmentArguments)]
+#[derive(cynic::QueryVariables)]
 struct Arguments {
     id: cynic::Id,
 }
@@ -56,17 +55,35 @@ struct Arguments {
     graphql_type = "Root",
     argument_struct = "Arguments"
 )]
-struct FilmDirectorQuery {
+struct Query {
     #[arguments(id: $id)]
     node: Option<Node>,
 }
 
 fn main() {
-    let result = run_query("ZmlsbXM6MQ==".into());
-    println!("{:?}", result);
+    match run_query("ZmlsbXM6MQ==".into()).data {
+        Some(Query {
+            node: Some(Node::Planet(planet)),
+        }) => {
+            println!("Found a planet: {:?}", planet.name);
+        }
+        Some(Query {
+            node: Some(Node::Film(film)),
+        }) => {
+            println!("Found a film: {:?}", film.title);
+        }
+        Some(Query {
+            node: Some(Node::Other(node)),
+        }) => {
+            println!("Found something else with the ID {:?}", node.id);
+        }
+        _ => {
+            println!("No node found");
+        }
+    }
 }
 
-fn run_query(id: cynic::Id) -> cynic::GraphQlResponse<FilmDirectorQuery> {
+fn run_query(id: cynic::Id) -> cynic::GraphQlResponse<Query> {
     use cynic::http::ReqwestBlockingExt;
 
     let query = build_query(id);
@@ -77,10 +94,10 @@ fn run_query(id: cynic::Id) -> cynic::GraphQlResponse<FilmDirectorQuery> {
         .unwrap()
 }
 
-fn build_query(id: cynic::Id) -> cynic::Operation<FilmDirectorQuery, Arguments> {
+fn build_query(id: cynic::Id) -> cynic::Operation<Query, Arguments> {
     use cynic::QueryBuilder;
 
-    FilmDirectorQuery::build(Arguments { id })
+    Query::build(Arguments { id })
 }
 
 #[cfg(test)]

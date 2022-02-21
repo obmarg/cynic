@@ -1,9 +1,11 @@
 ---
 source: examples/examples/querying-interfaces.rs
+assertion_line: 133
 expression: result.data
+
 ---
 Some(
-    FilmDirectorQuery {
+    Query {
         node: Some(
             Planet(
                 Planet {

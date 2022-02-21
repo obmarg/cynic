@@ -35,8 +35,14 @@ struct FilmDirectorQuery {
 
 #[tokio::main]
 async fn main() {
-    let result = run_query().await;
-    println!("{:?}", result);
+    match run_query().await.data {
+        Some(FilmDirectorQuery { film: Some(film) }) => {
+            println!("{:?} was directed by {:?}", film.title, film.director)
+        }
+        _ => {
+            println!("No film found");
+        }
+    }
 }
 
 async fn run_query() -> cynic::GraphQlResponse<FilmDirectorQuery> {

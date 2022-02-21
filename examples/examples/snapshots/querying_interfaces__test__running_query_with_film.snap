@@ -1,17 +1,16 @@
 ---
 source: examples/examples/querying-interfaces.rs
+assertion_line: 124
 expression: result.data
+
 ---
 Some(
-    FilmDirectorQuery {
+    Query {
         node: Some(
             Film(
                 Film {
                     title: Some(
                         "A New Hope",
-                    ),
-                    director: Some(
-                        "George Lucas",
                     ),
                 },
             ),
