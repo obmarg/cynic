@@ -57,6 +57,9 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 - Queries output by cynic may have more literals in the GraphQL query string
   than they had in previous versions of cynic.  Though the end result should
   be the same.
+- `use_schema` output can now live in a separate crate from queries, which
+  should help with large schema support.  (The exception is `impl_scalar` 
+  invocations which must live in the same crate as the schema)
 
 ## v1.0.0 - 2021-12-09
 
