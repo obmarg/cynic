@@ -15,57 +15,50 @@ env:
 
 jobs:
   build-rust:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v2
 
-    - uses: actions-rs/toolchain@v1
-      with:
-        profile: minimal
-        toolchain: stable
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
 
-    - uses: Swatinem/rust-cache@v1
+      - uses: Swatinem/rust-cache@v1
 
-    - name: Check formatting
-      uses: actions-rs/cargo@v1
-      with:
-        command: fmt
-        args: -- --check
+      - name: Check formatting
+        uses: actions-rs/cargo@v1
+        with:
+          command: fmt
+          args: --all -- --check
 
-    - name: Build cynic
-      uses: actions-rs/cargo@v1
-      with:
-        command: build
+      - name: Build cynic
+        uses: actions-rs/cargo@v1
+        with:
+          command: build
+          args: --workspace
 
-    - name: Build tests
-      uses: actions-rs/cargo@v1
-      with:
-        command: test
-        args: --no-run --all-features
+      - name: Build tests
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --workspace --no-run --all-features
 
-    - name: Run tests
-      uses: actions-rs/cargo@v1
-      with:
-        command: test
-        args: --all-features
+      - name: Run tests
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --workspace --all-features
 
-    - name: Build example tests
-      uses: actions-rs/cargo@v1
-      with:
-        command: test
-        args: --no-run --examples
+      - name: Build example tests
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --workspace --no-run --examples
 
-    - name: Run example tests
-      uses: actions-rs/cargo@v1
-      with:
-        command: test
-        args: --examples
-
-    - name: Build GitHub example
-      uses: actions-rs/cargo@v1
-      with:
-        command: check
-        args: --example github --all-features
-
+      - name: Run example tests
+        uses: actions-rs/cargo@v1
+        with:
+          command: test
+          args: --workspace --examples

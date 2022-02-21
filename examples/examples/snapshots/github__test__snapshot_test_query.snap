@@ -1,10 +1,12 @@
 ---
 source: examples/examples/github.rs
+assertion_line: 121
 expression: query.query
+
 ---
-query Query($_0: String!, $_1: String!, $_2: Int, $_3: IssueOrder) {
-  repository(name: $_0, owner: $_1) {
-    pullRequests(first: $_2, orderBy: $_3) {
+query($prOrder: IssueOrder!) {
+  repository(name: "cynic", owner: "obmarg") {
+    pullRequests(orderBy: $prOrder, first: 10) {
       nodes {
         title
         createdAt
@@ -12,4 +14,5 @@ query Query($_0: String!, $_1: String!, $_2: Int, $_3: IssueOrder) {
     }
   }
 }
+
 

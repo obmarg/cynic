@@ -1,9 +1,11 @@
 ---
 source: examples/examples/github-mutation.rs
+assertion_line: 105
 expression: query.query
+
 ---
-mutation Mutation($_0: AddCommentInput!) {
-  addComment(input: $_0) {
+mutation($commentBody: String!) {
+  addComment(input: {body: $commentBody, subjectId: "MDU6SXNzdWU2ODU4NzUxMzQ=", clientMutationId: null, }) {
     commentEdge {
       node {
         id
@@ -11,4 +13,5 @@ mutation Mutation($_0: AddCommentInput!) {
     }
   }
 }
+
 

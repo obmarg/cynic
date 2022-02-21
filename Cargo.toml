@@ -7,7 +7,12 @@ members = [
     "cynic-querygen",
     "cynic-querygen-web",
     "tests/querygen-compile-run",
-    "tests/ui-tests"
+    "tests/ui-tests",
+    "schemas/github"
+]
+
+default-members = [
+    "cynic", "cynic-codegen", "cynic-proc-macros"
 ]
 
 [profile.dev]

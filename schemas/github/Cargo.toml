@@ -1,0 +1,10 @@
+[package]
+name = "github-schema"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+chrono = { version = "0.4", features = ["serde"] }
+cynic = { path = "../../cynic", version = "2.0.0-dev" }
