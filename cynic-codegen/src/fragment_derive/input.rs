@@ -1,6 +1,7 @@
 use std::collections::HashSet;
 
 use darling::util::SpannedValue;
+use quote::quote_spanned;
 
 use crate::{idents::RenamableFieldIdent, type_validation::CheckMode, Errors};
 use proc_macro2::Span;
@@ -16,13 +17,19 @@ pub struct FragmentDeriveInput {
     // query_module is deprecated, remove eventually.
     #[darling(default)]
     query_module: Option<SpannedValue<String>>,
+
     #[darling(default, rename = "schema_module")]
     schema_module_: Option<syn::Path>,
 
     #[darling(default)]
     pub graphql_type: Option<SpannedValue<String>>,
+
+    // argument_struct is deprecated, remove eventually.
     #[darling(default)]
-    pub argument_struct: Option<syn::Ident>,
+    argument_struct: Option<syn::Ident>,
+
+    #[darling(default)]
+    variables: Option<syn::Path>,
 }
 
 impl FragmentDeriveInput {
@@ -94,6 +101,28 @@ impl FragmentDeriveInput {
                 }
             }
         }
+    }
+
+    pub fn variables(&self) -> Option<syn::Path> {
+        self.variables
+            .clone()
+            .or_else(|| self.argument_struct.clone().map(Into::into))
+    }
+
+    pub fn deprecations(&self) -> proc_macro2::TokenStream {
+        if self.variables.is_none() && self.argument_struct.is_some() {
+            let span = self.argument_struct.as_ref().map(|x| x.span()).unwrap();
+            return quote_spanned! { span =>
+                #[allow(clippy::no_effect, non_camel_case_types)]
+                const _: fn() = || {
+                    #[deprecated(note = "the argument_struct attribute is deprecated.  use the variables attribute instead", since = "2.0.0")]
+                    struct argument_struct {}
+                    argument_struct {};
+                };
+            };
+        }
+
+        proc_macro2::TokenStream::new()
     }
 }
 
@@ -251,6 +280,7 @@ mod tests {
             schema_module_: None,
             graphql_type: Some("abcd".to_string().into()),
             argument_struct: None,
+            variables: None,
         };
 
         assert_matches!(input.validate(), Ok(()));
@@ -330,6 +360,7 @@ mod tests {
             schema_module_: Some(syn::parse2(quote::quote! { abcd }).unwrap()),
             graphql_type: Some("abcd".to_string().into()),
             argument_struct: None,
+            variables: None,
         };
 
         let errors = input.validate().unwrap_err();
@@ -349,6 +380,7 @@ mod tests {
             schema_module_: Some(syn::parse2(quote::quote! { abcd }).unwrap()),
             graphql_type: Some("abcd".to_string().into()),
             argument_struct: None,
+            variables: None,
         };
         let errors = input.validate().unwrap_err();
         assert_eq!(
@@ -402,6 +434,7 @@ mod tests {
             schema_module_: Some(syn::parse2(quote::quote! { abcd }).unwrap()),
             graphql_type: None,
             argument_struct: None,
+            variables: None,
         };
 
         assert_matches!(input.validate(), Ok(()));

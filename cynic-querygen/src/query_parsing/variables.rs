@@ -1,4 +1,4 @@
-//! Generation of argument structs
+//! Generation of variable structs
 use std::{
     cell::RefCell,
     collections::{BTreeSet, HashMap, HashSet},
@@ -12,9 +12,9 @@ use super::normalisation::{
 };
 use crate::{naming::Namer, output};
 
-pub fn build_argument_structs<'query, 'schema>(
+pub fn build_variable_structs<'query, 'schema>(
     doc: &NormalisedDocument<'query, 'schema>,
-) -> ArgumentStructDetails<'query, 'schema> {
+) -> VariableStructDetails<'query, 'schema> {
     let operation_argument_roots = doc
         .operations
         .iter()
@@ -26,10 +26,10 @@ pub fn build_argument_structs<'query, 'schema>(
         argument_set.build_parent_map(&mut parent_map);
     }
 
-    let mut output = ArgumentStructDetails::new();
+    let mut output = VariableStructDetails::new();
 
     for args in operation_argument_roots.iter().flatten() {
-        args.as_argument_struct(&parent_map, &mut output);
+        args.as_variable_struct(&parent_map, &mut output);
         // TODO: implement conversions on nested types?
     }
 
@@ -70,11 +70,11 @@ impl<'query, 'schema> SelectionArguments<'query, 'schema> {
         })
     }
 
-    fn as_argument_struct(
+    fn as_variable_struct(
         &self,
         parent_map: &HashMap<&Self, HashSet<&Self>>,
-        output_mapping: &mut ArgumentStructDetails<'query, 'schema>,
-    ) -> Rc<ArgumentStruct<'query, 'schema>> {
+        output_mapping: &mut VariableStructDetails<'query, 'schema>,
+    ) -> Rc<VariableStruct<'query, 'schema>> {
         let our_id = Uuid::new_v4();
 
         let fields = self
@@ -83,11 +83,11 @@ impl<'query, 'schema> SelectionArguments<'query, 'schema> {
             .flat_map(|field| match field {
                 SelectionArgument::VariableArgument(var) => {
                     let mut rv = BTreeSet::new();
-                    rv.insert(ArgumentStructField::Variable(var.clone()));
+                    rv.insert(VariableStructField::Variable(var.clone()));
                     rv
                 }
                 SelectionArgument::NestedArguments(nested) => {
-                    let nested_struct = nested.as_argument_struct(parent_map, output_mapping);
+                    let nested_struct = nested.as_variable_struct(parent_map, output_mapping);
 
                     if parent_map.get(&nested).map(|hs| hs.len()).unwrap_or(0) <= 1 {
                         // This particular childs arguments are only used by it,
@@ -98,14 +98,14 @@ impl<'query, 'schema> SelectionArguments<'query, 'schema> {
                         Rc::try_unwrap(nested_struct).unwrap().fields
                     } else {
                         let mut rv = BTreeSet::new();
-                        rv.insert(ArgumentStructField::NestedStruct(nested_struct));
+                        rv.insert(VariableStructField::NestedStruct(nested_struct));
                         rv
                     }
                 }
             })
             .collect();
 
-        let rv = Rc::new(ArgumentStruct {
+        let rv = Rc::new(VariableStruct {
             id: our_id,
             target_type_name: self.target_selection.target_type.name().to_string(),
             fields,
@@ -135,22 +135,22 @@ impl<'query, 'schema> SelectionArguments<'query, 'schema> {
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-struct ArgumentStruct<'query, 'schema> {
+struct VariableStruct<'query, 'schema> {
     id: Uuid,
     target_type_name: String,
-    fields: BTreeSet<ArgumentStructField<'query, 'schema>>,
+    fields: BTreeSet<VariableStructField<'query, 'schema>>,
 }
 
-impl<'query, 'schema> crate::naming::Nameable for Rc<ArgumentStruct<'query, 'schema>> {
+impl<'query, 'schema> crate::naming::Nameable for Rc<VariableStruct<'query, 'schema>> {
     fn requested_name(&self) -> String {
-        format!("{}Arguments", self.target_type_name)
+        format!("{}Variables", self.target_type_name)
     }
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-enum ArgumentStructField<'query, 'schema> {
+enum VariableStructField<'query, 'schema> {
     Variable(Variable<'query, 'schema>),
-    NestedStruct(Rc<ArgumentStruct<'query, 'schema>>),
+    NestedStruct(Rc<VariableStruct<'query, 'schema>>),
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -161,18 +161,18 @@ enum SelectionArgument<'query, 'schema> {
 
 /// Keeps track of what selection sets use which argument structs
 #[derive(Debug)]
-pub struct ArgumentStructDetails<'query, 'schema> {
+pub struct VariableStructDetails<'query, 'schema> {
     selection_set_map: HashMap<Rc<SelectionSet<'query, 'schema>>, Uuid>,
     #[allow(dead_code)]
     inline_fragments_map: HashMap<Rc<InlineFragments<'query, 'schema>>, Uuid>,
     remappings: HashMap<Uuid, Uuid>,
-    selection_structs: HashMap<Uuid, Rc<ArgumentStruct<'query, 'schema>>>,
-    namer: RefCell<Namer<Rc<ArgumentStruct<'query, 'schema>>>>,
+    selection_structs: HashMap<Uuid, Rc<VariableStruct<'query, 'schema>>>,
+    namer: RefCell<Namer<Rc<VariableStruct<'query, 'schema>>>>,
 }
 
-impl<'query, 'schema> ArgumentStructDetails<'query, 'schema> {
+impl<'query, 'schema> VariableStructDetails<'query, 'schema> {
     fn new() -> Self {
-        ArgumentStructDetails {
+        VariableStructDetails {
             selection_set_map: HashMap::new(),
             inline_fragments_map: HashMap::new(),
             remappings: HashMap::new(),
@@ -181,25 +181,25 @@ impl<'query, 'schema> ArgumentStructDetails<'query, 'schema> {
         }
     }
 
-    pub fn argument_structs(self) -> Vec<output::ArgumentStruct<'query, 'schema>> {
+    pub fn variables_structs(self) -> Vec<output::VariablesStruct<'query, 'schema>> {
         self.selection_structs
             .iter()
             .map(|(_, arg_struct)| {
                 let name = self.namer.borrow_mut().name_subject(arg_struct);
-                output::ArgumentStruct::new(
+                output::VariablesStruct::new(
                     name,
                     arg_struct
                         .fields
                         .iter()
                         .map(|field| match field {
-                            ArgumentStructField::Variable(var) => {
-                                output::ArgumentStructField::Variable(var.clone())
+                            VariableStructField::Variable(var) => {
+                                output::VariablesStructField::Variable(var.clone())
                             }
-                            ArgumentStructField::NestedStruct(nested_struct) => {
+                            VariableStructField::NestedStruct(nested_struct) => {
                                 let nested_name =
                                     self.namer.borrow_mut().name_subject(nested_struct);
 
-                                output::ArgumentStructField::NestedStruct(nested_name)
+                                output::VariablesStructField::NestedStruct(nested_name)
                             }
                         })
                         .collect(),
@@ -211,7 +211,7 @@ impl<'query, 'schema> ArgumentStructDetails<'query, 'schema> {
     fn lookup_args_for_selection(
         &self,
         selection_set: &SelectionSet<'query, 'schema>,
-    ) -> Option<&Rc<ArgumentStruct<'query, 'schema>>> {
+    ) -> Option<&Rc<VariableStruct<'query, 'schema>>> {
         self.selection_set_map
             .get(selection_set)
             .and_then(|mut id| {
@@ -222,7 +222,7 @@ impl<'query, 'schema> ArgumentStructDetails<'query, 'schema> {
             })
     }
 
-    pub fn argument_name_for_selection(
+    pub fn variables_name_for_selection(
         &self,
         selection_set: &SelectionSet<'query, 'schema>,
     ) -> Option<String> {
@@ -230,7 +230,7 @@ impl<'query, 'schema> ArgumentStructDetails<'query, 'schema> {
             .map(|arg_struct| self.namer.borrow_mut().name_subject(arg_struct))
     }
 
-    pub fn force_name_argument_struct_for(
+    pub fn force_name_variables_for(
         &self,
         selection_set: &SelectionSet<'query, 'schema>,
         name: String,

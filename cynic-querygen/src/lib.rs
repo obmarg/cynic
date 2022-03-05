@@ -127,8 +127,8 @@ pub fn document_to_fragment_structs(
 
     writeln!(mod_output, "use super::{};\n", options.query_module).unwrap();
 
-    for argument_struct in parsed_output.argument_structs {
-        writeln!(mod_output, "{}", argument_struct).unwrap();
+    for variables in parsed_output.variables_structs {
+        writeln!(mod_output, "{}", variables).unwrap();
     }
 
     for fragment in parsed_output.query_fragments {

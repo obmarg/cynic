@@ -129,9 +129,9 @@
 //! #[cynic(
 //!     schema_path = "../schemas/starwars.schema.graphql",
 //!     graphql_type = "Root",
-//!     // By adding the `argument_struct` parameter to our `QueryFragment` we've made a variable
+//!     // By adding the `variables` parameter to our `QueryFragment` we've made a variable
 //!     // named `args` avaiable for use in the `arguments` attribute.
-//!     argument_struct = "FilmArguments"
+//!     variables = "FilmArguments"
 //! )]
 //! struct FilmDirectorQueryWithArgs {
 //!     // Here we use `args`, which we've declared above to be an instance of `FilmArguments`

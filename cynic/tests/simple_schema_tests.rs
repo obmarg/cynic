@@ -8,7 +8,7 @@ struct TestArgs {
 }
 
 #[derive(cynic::QueryFragment, PartialEq, Debug)]
-#[cynic(schema_path = "src/bin/simple.graphql", argument_struct = "TestArgs")]
+#[cynic(schema_path = "src/bin/simple.graphql", variables = "TestArgs")]
 struct TestStruct {
     #[arguments(x: $an_int, y = Some("1".to_string()))]
     field_one: String,
@@ -28,7 +28,7 @@ struct Nested {
 #[cynic(
     schema_path = "src/bin/simple.graphql",
     graphql_type = "Query",
-    argument_struct = "TestArgs"
+    variables = "TestArgs"
 )]
 struct TestQuery {
     test_struct: Option<TestStruct>,

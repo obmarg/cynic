@@ -17,7 +17,7 @@ mod queries {
     pub struct TestArgs {}
 
     #[derive(cynic::QueryFragment)]
-    #[cynic(argument_struct = "TestArgs")]
+    #[cynic(variables = "TestArgs")]
     pub struct TestStruct {
         #[arguments(x = 1, y = "1")]
         pub field_one: String,

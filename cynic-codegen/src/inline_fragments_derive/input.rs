@@ -1,5 +1,6 @@
 use darling::util::SpannedValue;
 use proc_macro2::Span;
+use quote::quote_spanned;
 
 #[derive(darling::FromDeriveInput)]
 #[darling(attributes(cynic), supports(enum_newtype, enum_unit))]
@@ -17,8 +18,12 @@ pub struct InlineFragmentsDeriveInput {
 
     #[darling(default)]
     pub graphql_type: Option<SpannedValue<String>>,
+
+    // argument_struct is deprecated, remove eventually.
     #[darling(default)]
-    pub argument_struct: Option<syn::Ident>,
+    argument_struct: Option<syn::Ident>,
+    #[darling(default)]
+    variables: Option<syn::Path>,
 }
 
 impl InlineFragmentsDeriveInput {
@@ -44,6 +49,28 @@ impl InlineFragmentsDeriveInput {
             .as_ref()
             .map(|val| val.span())
             .unwrap_or_else(|| self.ident.span())
+    }
+
+    pub fn variables(&self) -> Option<syn::Path> {
+        self.variables
+            .clone()
+            .or_else(|| self.argument_struct.clone().map(Into::into))
+    }
+
+    pub fn deprecations(&self) -> proc_macro2::TokenStream {
+        if self.variables.is_none() && self.argument_struct.is_some() {
+            let span = self.argument_struct.as_ref().map(|x| x.span()).unwrap();
+            return quote_spanned! { span =>
+                #[allow(clippy::no_effect, non_camel_case_types)]
+                const _: fn() = || {
+                    #[deprecated(note = "the argument_struct attribute is deprecated.  use the variables attribute instead", since = "2.0.0")]
+                    struct argument_struct {}
+                    argument_struct {};
+                };
+            };
+        }
+
+        proc_macro2::TokenStream::new()
     }
 }
 

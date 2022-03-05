@@ -12,21 +12,21 @@ mod queries {
     use super::schema;
 
     #[derive(cynic::QueryVariables, Debug)]
-    pub struct NestedArgsQueryArguments {
+    pub struct NestedArgsQueryVariables {
         pub film_id: cynic::Id,
         pub planet_cursor: Option<String>,
         pub resident_connection: Option<String>,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "Root", argument_struct = "NestedArgsQueryArguments")]
+    #[cynic(graphql_type = "Root", variables = "NestedArgsQueryVariables")]
     pub struct NestedArgsQuery {
         #[arguments(id: $film_id)]
         pub film: Option<Film>,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(argument_struct = "NestedArgsQueryArguments")]
+    #[cynic(variables = "NestedArgsQueryVariables")]
     pub struct Film {
         pub title: Option<String>,
         pub director: Option<String>,
@@ -35,13 +35,13 @@ mod queries {
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(argument_struct = "NestedArgsQueryArguments")]
+    #[cynic(variables = "NestedArgsQueryVariables")]
     pub struct FilmPlanetsConnection {
         pub planets: Option<Vec<Option<Planet>>>,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(argument_struct = "NestedArgsQueryArguments")]
+    #[cynic(variables = "NestedArgsQueryVariables")]
     pub struct Planet {
         #[arguments(after: $resident_connection)]
         pub resident_connection: Option<PlanetResidentsConnection>,

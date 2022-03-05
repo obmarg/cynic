@@ -54,14 +54,14 @@ mod pr_query {
     /// }
     /// ```
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "Query", argument_struct = "PRsArguments")]
+    #[cynic(graphql_type = "Query", variables = "PRsArguments")]
     pub struct PRs {
         #[arguments(name: $repo_name, owner: $repo_owner)]
         pub repository: Option<Repository>,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "Repository", argument_struct = "PRsArguments")]
+    #[cynic(graphql_type = "Repository", variables = "PRsArguments")]
     pub struct Repository {
         #[arguments(first: $page_size, states = Some(vec![PullRequestState::Merged]), after: $pr_cursor)]
         pub pull_requests: PullRequestConnection,
@@ -223,17 +223,14 @@ mod team_query {
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "Query", argument_struct = "TeamMembersArguments")]
+    #[cynic(graphql_type = "Query", variables = "TeamMembersArguments")]
     pub struct TeamMembers {
         #[arguments(login: $org)]
         pub organization: Option<Organization>,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(
-        graphql_type = "Organization",
-        argument_struct = "TeamMembersArguments"
-    )]
+    #[cynic(graphql_type = "Organization", variables = "TeamMembersArguments")]
     pub struct Organization {
         #[arguments(slug: $team)]
         pub team: Option<Team>,

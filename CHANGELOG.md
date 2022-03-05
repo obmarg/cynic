@@ -42,6 +42,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ### Deprecations
 
 - The `FragmentArguments` trait & derive has been renamed to `QueryVariables`
+- The `argument_struct` attribute for `QueryFragment` and `InlineFragments` has
+  been deprecated in favour of `variables`
 
 ### Bug Fixes
 

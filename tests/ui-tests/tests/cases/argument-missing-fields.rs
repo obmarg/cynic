@@ -7,7 +7,7 @@ mod queries {
     use super::schema;
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(argument_struct = "PullRequestTitlesArguments")]
+    #[cynic(variables = "PullRequestTitlesArguments")]
     pub struct Repository {
         #[arguments(order_by: "COMMENTS", first: 10)]
         pub pull_requests: PullRequestConnection,

@@ -2,19 +2,19 @@ use crate::casings::CasingExt;
 
 use crate::schema::EnumDetails;
 
-mod argument_struct;
 mod enums;
 mod field;
 mod indent;
 mod inline_fragments;
 mod input_object;
 pub mod query_fragment;
+mod variables_struct;
 
-pub use argument_struct::{ArgumentStruct, ArgumentStructField};
 pub use indent::indented;
 pub use inline_fragments::InlineFragments;
 pub use input_object::InputObject;
 pub use query_fragment::QueryFragment;
+pub use variables_struct::{VariablesStruct, VariablesStructField};
 
 use field::Field;
 
@@ -24,7 +24,7 @@ pub struct Output<'query, 'schema> {
     pub input_objects: Vec<InputObject<'schema>>,
     pub enums: Vec<EnumDetails<'schema>>,
     pub scalars: Vec<Scalar<'schema>>,
-    pub argument_structs: Vec<ArgumentStruct<'query, 'schema>>,
+    pub variables_structs: Vec<VariablesStruct<'query, 'schema>>,
 }
 
 pub struct Scalar<'schema>(pub &'schema str);

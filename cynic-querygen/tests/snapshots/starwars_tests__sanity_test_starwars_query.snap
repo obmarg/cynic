@@ -12,12 +12,12 @@ mod queries {
     use super::schema;
 
     #[derive(cynic::QueryVariables, Debug)]
-    pub struct SanityCheckQueryArguments {
+    pub struct SanityCheckQueryVariables {
         pub film_id: Option<cynic::Id>,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "Root", argument_struct = "SanityCheckQueryArguments")]
+    #[cynic(graphql_type = "Root", variables = "SanityCheckQueryVariables")]
     pub struct SanityCheckQuery {
         #[arguments(id: $film_id)]
         pub film: Option<Film>,

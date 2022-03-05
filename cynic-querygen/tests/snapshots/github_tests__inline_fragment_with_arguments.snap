@@ -12,26 +12,26 @@ mod queries {
     use super::schema;
 
     #[derive(cynic::QueryVariables, Debug)]
-    pub struct IssueOrPRArguments {
+    pub struct IssueOrPRVariables {
         pub assignee_count: i32,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "Query", argument_struct = "IssueOrPRArguments")]
+    #[cynic(graphql_type = "Query", variables = "IssueOrPRVariables")]
     pub struct IssueOrPR {
         #[arguments(owner: "obmarg", name: "cynic")]
         pub repository: Option<Repository>,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(argument_struct = "IssueOrPRArguments")]
+    #[cynic(variables = "IssueOrPRVariables")]
     pub struct Repository {
         #[arguments(number: 1)]
         pub issue_or_pull_request: Option<IssueOrPullRequest>,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(argument_struct = "IssueOrPRArguments")]
+    #[cynic(variables = "IssueOrPRVariables")]
     pub struct PullRequest {
         pub id: cynic::Id,
         pub title: String,
@@ -40,7 +40,7 @@ mod queries {
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(argument_struct = "IssueOrPRArguments")]
+    #[cynic(variables = "IssueOrPRVariables")]
     pub struct Issue {
         pub id: cynic::Id,
         pub title: String,
@@ -54,7 +54,7 @@ mod queries {
     }
 
     #[derive(cynic::InlineFragments, Debug)]
-    #[cynic(argument_struct = "IssueOrPRArguments")]
+    #[cynic(variables = "IssueOrPRVariables")]
     pub enum IssueOrPullRequest {
         Issue(Issue),
         PullRequest(PullRequest),

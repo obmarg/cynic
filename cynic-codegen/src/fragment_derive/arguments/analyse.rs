@@ -45,7 +45,7 @@ pub enum ArgumentValue<'a> {
 pub struct Variable<'a> {
     pub ident: proc_macro2::Ident,
     pub value_type: TypeRef<'a, InputType<'a>>,
-    pub argument_struct: syn::Ident,
+    pub variable_struct: syn::Path,
 }
 
 #[derive(Debug, PartialEq, Eq, Hash)]
@@ -57,11 +57,11 @@ pub struct VariantDetails<'a> {
 pub fn analyse<'a>(
     literals: Vec<parsing::FieldArgument>,
     field: &schema::Field<'a>,
-    argument_struct: Option<&syn::Ident>,
+    variables: Option<&syn::Path>,
     span: Span,
 ) -> Result<AnalysedArguments<'a>, Errors> {
     let mut analysis = Analysis {
-        argument_struct,
+        variables,
         variants: HashSet::new(),
     };
     let arguments = analyse_fields(&mut analysis, literals, &field.arguments, span)?;
@@ -77,7 +77,7 @@ pub fn analyse<'a>(
 }
 
 struct Analysis<'schema, 'a> {
-    argument_struct: Option<&'a syn::Ident>,
+    variables: Option<&'a syn::Path>,
     variants: HashSet<Rc<VariantDetails<'schema>>>,
 }
 
@@ -164,10 +164,10 @@ fn analyse_value_type<'a>(
     use parsing::ArgumentLiteral;
 
     if let ArgumentLiteral::Variable(ident, _) = literal {
-        if analysis.argument_struct.is_none() {
+        if analysis.variables.is_none() {
             return Err(syn::Error::new(
                 ident.span(),
-                "You've provided a variable here, but this QueryFragment does not have an argument_struct.  Please add an argument_struct attribute to the struct."
+                "You've provided a variable here, but this QueryFragment does not take any variables.  Please add the variables attribute to the struct."
             ).into());
         }
 
@@ -176,7 +176,7 @@ fn analyse_value_type<'a>(
         return Ok(ArgumentValue::Variable(Variable {
             ident,
             value_type: value_type.clone(),
-            argument_struct: analysis.argument_struct.unwrap().clone(),
+            variable_struct: analysis.variables.unwrap().clone(),
         }));
     }
 

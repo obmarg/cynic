@@ -1,11 +1,11 @@
 # Query Arguments
 
 A hierarchy of QueryFragments can take a struct of arguments. This struct must
-implement `FragmentArguments` which can be derived:
+implement `QueryVariables` which can be derived:
 
 ```rust
-#[derive(cynic::FragmentArguments)]
-struct FilmArguments {
+#[derive(cynic::QueryVariables)]
+struct FilmVariables {
     id: Option<cynic::Id>,
 }
 ```
@@ -14,11 +14,11 @@ This derive can be used on any struct containing any fields - the fields do not
 need to be specifically related to GraphQL or used in a query, though if you
 don't use them at all you should get dead code warnings from Rust.
 
-### Using FragmentArguments
+### Using QueryVariables
 
 To use any fields of this struct as an argument to a QueryFragment, the struct
-must provide an `argument_struct` parameter that points to the `FilmArguments`
-struct. This allows arguments to be passed in using the `arguments`
+must provide a `variables` parameter that points to the `FilmArguments`
+struct. This allows variables to be passed in using the `arguments`
 attribute on the fields where you wish to pass them.
 
 ```rust
@@ -26,22 +26,22 @@ attribute on the fields where you wish to pass them.
 #[cynic(
     schema_path = "examples/starwars.schema.graphql",
     graphql_type = "Root",
-    argument_struct = "FilmArguments"
+    variables = "FilmVariables"
 )]
 struct FilmQuery {
-    #[arguments(id = &args.id)]
+    #[arguments(id: $id)]
     film: Option<Film>,
 }
 ```
 
-This example uses our `FilmArguments` at the root of the query to specify which
+This example uses our `FilmVariables` at the root of the query to specify which
 film we want to fetch.
 
-It's also possible to pass arguments down to lower levels of the query using
+It's also possible to pass variables down to lower levels of the query using
 the same technique. Though it's worth noting that all the QueryFragments from
 the Root to the point that requires arguments must define the same
-`argument_struct` in their cynic attribute. If no nested QueryFragments
-require any arguments then it's OK to omit `argument_struct`.
+`variables` in their cynic attribute. If no nested QueryFragments
+require any variables then it's OK to omit `variables`.
 
 ### InputType
 

@@ -15,7 +15,7 @@ mod queries {
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "Root", argument_struct = "Variables")]
+    #[cynic(graphql_type = "Root", variables = "Variables")]
     pub struct AllFilms {
         #[arguments(id: $missing_var)]
         pub film: Option<Film>,

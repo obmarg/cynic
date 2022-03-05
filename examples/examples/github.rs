@@ -80,14 +80,14 @@ mod queries {
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "Query", argument_struct = "PullRequestTitlesArguments")]
+    #[cynic(graphql_type = "Query", variables = "PullRequestTitlesArguments")]
     pub struct PullRequestTitles {
         #[arguments(name = "cynic".to_string(), owner = "obmarg".to_string())]
         pub repository: Option<Repository>,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(argument_struct = "PullRequestTitlesArguments")]
+    #[cynic(variables = "PullRequestTitlesArguments")]
     pub struct Repository {
         #[arguments(orderBy: $pr_order, first: 10)]
         pub pull_requests: PullRequestConnection,

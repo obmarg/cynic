@@ -17,7 +17,7 @@ use super::input::FragmentDeriveField;
 pub struct FragmentImpl<'a> {
     target_struct: Ident,
     selections: Vec<Selection<'a>>,
-    argument_struct: syn::Type,
+    variables: syn::Type,
     graphql_type_name: String,
     schema_type_path: syn::Path,
 }
@@ -59,7 +59,7 @@ impl<'a> FragmentImpl<'a> {
         schema_type: &FragmentDeriveType,
         schema_module_path: &syn::Path,
         graphql_type_name: &str,
-        argument_struct: Option<&syn::Ident>,
+        variables: Option<&syn::Path>,
     ) -> Result<Self, Errors> {
         let target_struct = Ident::new_spanned(&name.to_string(), name.span());
 
@@ -75,16 +75,16 @@ impl<'a> FragmentImpl<'a> {
                     *schema_field,
                     &field_module_path,
                     schema_module_path,
-                    argument_struct,
+                    variables,
                 )
             })
             .collect::<Result<Vec<_>, _>>()?;
 
-        let argument_struct = if let Some(arg_struct) = argument_struct {
-            let span = arg_struct.span();
+        let variables = if let Some(vars) = variables {
+            let span = vars.span();
 
-            let argument_struct = quote_spanned! { span => #arg_struct };
-            syn::parse2(argument_struct)?
+            let variables = quote_spanned! { span => #vars };
+            syn::parse2(variables)?
         } else {
             syn::parse2(quote! { () })?
         };
@@ -92,7 +92,7 @@ impl<'a> FragmentImpl<'a> {
         Ok(FragmentImpl {
             selections,
             target_struct,
-            argument_struct,
+            variables,
             graphql_type_name: graphql_type_name.to_string(),
             schema_type_path,
         })
@@ -104,7 +104,7 @@ fn process_field<'a>(
     schema_field: Option<&Field<'a>>,
     field_module_path: &syn::Path,
     schema_module_path: &syn::Path,
-    argument_struct: Option<&syn::Ident>,
+    variables: Option<&syn::Path>,
 ) -> Result<Selection<'a>, Errors> {
     if field.type_check_mode() == CheckMode::Spreading {
         check_spread_type(&field.ty)?;
@@ -124,7 +124,7 @@ fn process_field<'a>(
         arguments,
         schema_field,
         schema_module_path.clone(),
-        argument_struct,
+        variables,
         argument_span,
     )?;
 
@@ -148,7 +148,7 @@ impl quote::ToTokens for FragmentImpl<'_> {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         use quote::TokenStreamExt;
 
-        let argument_struct = &self.argument_struct;
+        let variables = &self.variables;
         let target_struct = &self.target_struct;
         let selections = &self.selections;
         let graphql_type = proc_macro2::Literal::string(&self.graphql_type_name);
@@ -158,7 +158,7 @@ impl quote::ToTokens for FragmentImpl<'_> {
             #[automatically_derived]
             impl<'de> ::cynic::QueryFragment<'de> for #target_struct {
                 type SchemaType = #schema_type;
-                type Variables = #argument_struct;
+                type Variables = #variables;
 
                 const TYPE: Option<&'static str> = Some(#graphql_type);
 

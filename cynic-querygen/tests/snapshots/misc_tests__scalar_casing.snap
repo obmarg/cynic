@@ -12,12 +12,12 @@ mod queries {
     use super::schema;
 
     #[derive(cynic::QueryVariables, Debug)]
-    pub struct MyQueryArguments {
+    pub struct MyQueryVariables {
         pub id: Uuid,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "Foo", argument_struct = "MyQueryArguments")]
+    #[cynic(graphql_type = "Foo", variables = "MyQueryVariables")]
     pub struct MyQuery {
         #[arguments(id: $id)]
         pub bar: Option<Bar>,

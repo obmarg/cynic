@@ -1,15 +1,15 @@
 use std::rc::Rc;
 
-mod arguments;
 mod inputs;
 mod leaf_types;
 mod normalisation;
 mod parser;
 mod sorting;
 mod value;
+mod variables;
 
-use arguments::ArgumentStructDetails;
 use parser::Document;
+use variables::VariableStructDetails;
 
 pub use normalisation::Variable;
 pub use value::{LiteralContext, TypedValue};
@@ -30,7 +30,7 @@ pub fn parse_query_document<'text>(
 
     let mut namers = Namers::new();
 
-    let arg_struct_details = arguments::build_argument_structs(&normalised);
+    let variable_struct_details = variables::build_variable_structs(&normalised);
 
     for operation in &normalised.operations {
         let operation_name = operation.name.unwrap_or("UnnamedQuery");
@@ -39,21 +39,19 @@ pub fn parse_query_document<'text>(
             .selection_sets
             .force_name(&operation.root, operation_name);
 
-        arg_struct_details.force_name_argument_struct_for(
-            &operation.root,
-            format!("{}Arguments", operation_name),
-        );
+        variable_struct_details
+            .force_name_variables_for(&operation.root, format!("{}Variables", operation_name));
     }
 
     let query_fragments = sorting::topological_sort(normalised.selection_sets.iter().cloned())
         .into_iter()
-        .map(|selection| make_query_fragment(selection, &mut namers, &arg_struct_details))
+        .map(|selection| make_query_fragment(selection, &mut namers, &variable_struct_details))
         .collect::<Vec<_>>();
 
     let inline_fragments = normalised
         .inline_fragments
         .into_iter()
-        .map(|fragment| make_inline_fragments(fragment, &mut namers, &arg_struct_details))
+        .map(|fragment| make_inline_fragments(fragment, &mut namers, &variable_struct_details))
         .collect::<Vec<_>>();
 
     let input_objects = sorting::topological_sort(input_objects.into_iter())
@@ -67,14 +65,14 @@ pub fn parse_query_document<'text>(
         input_objects,
         enums,
         scalars,
-        argument_structs: arg_struct_details.argument_structs(),
+        variables_structs: variable_struct_details.variables_structs(),
     })
 }
 
 fn make_query_fragment<'text>(
     selection: Rc<normalisation::SelectionSet<'text, 'text>>,
     namers: &mut Namers<'text>,
-    argument_struct_details: &ArgumentStructDetails<'text, 'text>,
+    variable_struct_details: &VariableStructDetails<'text, 'text>,
 ) -> crate::output::QueryFragment<'text, 'text> {
     use crate::output::query_fragment::{
         FieldArgument, OutputField, QueryFragment, RustOutputFieldType,
@@ -115,7 +113,7 @@ fn make_query_fragment<'text>(
                 }
             })
             .collect(),
-        argument_struct_name: argument_struct_details.argument_name_for_selection(&selection),
+        variable_struct_name: variable_struct_details.variables_name_for_selection(&selection),
 
         name: namers.selection_sets.name_subject(&selection),
         target_type: selection.target_type.name().to_string(),
@@ -125,7 +123,7 @@ fn make_query_fragment<'text>(
 fn make_inline_fragments<'text>(
     inline_fragments: Rc<normalisation::InlineFragments<'text, 'text>>,
     namers: &mut Namers<'text>,
-    argument_struct_details: &ArgumentStructDetails<'text, 'text>,
+    variable_struct_details: &VariableStructDetails<'text, 'text>,
 ) -> crate::output::InlineFragments {
     crate::output::InlineFragments {
         inner_type_names: inline_fragments
@@ -138,10 +136,10 @@ fn make_inline_fragments<'text>(
         // Think it might be possible that there are two different argument structs within
         // and this will fall over in that case.  But it should be good enough for a first
         // pass
-        argument_struct_name: inline_fragments
+        variable_struct_name: inline_fragments
             .inner_selections
             .iter()
-            .map(|selection| argument_struct_details.argument_name_for_selection(selection))
+            .map(|selection| variable_struct_details.variables_name_for_selection(selection))
             .flatten()
             .next(),
         name: namers.inline_fragments.name_subject(&inline_fragments),
