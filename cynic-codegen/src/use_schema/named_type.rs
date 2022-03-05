@@ -42,9 +42,7 @@ impl quote::ToTokens for NamedType<'_> {
 
         tokens.append_all(quote! {
             impl ::cynic::schema::NamedType for #target_struct {
-                fn name() -> &'static str {
-                    #graphql_name
-                }
+                const NAME: &'static str = #graphql_name;
             }
         });
     }

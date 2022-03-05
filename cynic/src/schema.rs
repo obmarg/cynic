@@ -16,8 +16,8 @@ pub trait Field {
     /// The schema marker type of this field.
     type Type;
 
-    /// Returns the name of this field
-    fn name() -> &'static str;
+    /// the name of this field
+    const NAME: &'static str;
 }
 
 // TODO: Get the terminology straight in this file, it's a mess.
@@ -47,8 +47,8 @@ pub trait HasArgument<ArgumentMarker> {
     /// The schema marker type of this argument.
     type ArgumentType;
 
-    /// Returns the name of this field
-    fn name() -> &'static str;
+    /// The name of this argument
+    const NAME: &'static str;
 }
 
 /// Indicates that a type is a scalar that maps to the given schema scalar.
@@ -117,8 +117,8 @@ pub trait HasSubtype<Type> {}
 
 /// A marker type with a name.
 pub trait NamedType {
-    /// Gets the name of the marker
-    fn name() -> &'static str;
+    /// The name of this type
+    const NAME: &'static str;
 }
 
 /// Indicates that a type is an `InputObject`
