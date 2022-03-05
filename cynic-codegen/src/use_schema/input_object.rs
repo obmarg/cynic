@@ -60,9 +60,7 @@ impl ToTokens for FieldOutput<'_> {
             impl ::cynic::schema::Field for #field_marker{
                 type Type = #field_type_marker;
 
-                fn name() -> &'static str {
-                    #field_name_literal
-                }
+                const NAME: &'static str = #field_name_literal;
             }
 
             impl ::cynic::schema::HasInputField<#field_marker, #field_type_marker> for super::#object_marker {

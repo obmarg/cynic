@@ -59,7 +59,7 @@ impl<'a, SchemaType, Variables> SelectionBuilder<'a, SchemaType, Variables> {
     {
         FieldSelectionBuilder {
             recurse_depth: self.recurse_depth,
-            field: self.push_selection(FieldMarker::name()),
+            field: self.push_selection(FieldMarker::NAME),
             phantom: PhantomData,
         }
     }
@@ -80,7 +80,7 @@ impl<'a, SchemaType, Variables> SelectionBuilder<'a, SchemaType, Variables> {
     {
         FieldSelectionBuilder {
             recurse_depth: self.recurse_depth,
-            field: self.push_selection(FieldMarker::name()),
+            field: self.push_selection(FieldMarker::NAME),
             phantom: PhantomData,
         }
     }
@@ -105,7 +105,7 @@ impl<'a, SchemaType, Variables> SelectionBuilder<'a, SchemaType, Variables> {
 
         Some(FieldSelectionBuilder {
             recurse_depth: Some(new_depth),
-            field: self.push_selection(FieldMarker::name()),
+            field: self.push_selection(FieldMarker::NAME),
             phantom: PhantomData,
         })
     }
@@ -172,7 +172,7 @@ impl<'a, Field, FieldSchemaType, Variables>
         Field: schema::HasArgument<ArgumentName>,
     {
         InputBuilder {
-            destination: InputLiteralContainer::object(Field::name(), &mut self.field.arguments),
+            destination: InputLiteralContainer::object(Field::NAME, &mut self.field.arguments),
             phantom: PhantomData,
         }
     }
@@ -208,7 +208,7 @@ impl<'a, SchemaType, Variables> InlineFragmentBuilder<'a, SchemaType, Variables>
         Subtype: crate::schema::NamedType,
         SchemaType: crate::schema::HasSubtype<Subtype>,
     {
-        self.inline_fragment.on_clause = Some(Subtype::name());
+        self.inline_fragment.on_clause = Some(Subtype::NAME);
         InlineFragmentBuilder {
             inline_fragment: self.inline_fragment,
             phantom: PhantomData,
@@ -300,7 +300,7 @@ impl<'a, SchemaType, ArgStruct> ObjectArgumentBuilder<'a, SchemaType, ArgStruct>
         F: FnOnce(InputBuilder<'_, FieldMarker::Type, ArgStruct>),
     {
         field_fn(InputBuilder {
-            destination: InputLiteralContainer::object(FieldMarker::name(), self.fields),
+            destination: InputLiteralContainer::object(FieldMarker::NAME, self.fields),
             phantom: PhantomData,
         });
 
