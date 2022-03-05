@@ -32,7 +32,7 @@ fn test_analyse(#[case] field: &str, #[case] literals: CynicArguments) {
     insta::assert_debug_snapshot!(analyse(
         literals,
         field,
-        Some(&format_ident!("MyArguments")),
+        Some(&format_ident!("MyArguments").into()),
         Span::call_site()
     )
     .map(|o| o.arguments))

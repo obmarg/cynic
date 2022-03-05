@@ -12,13 +12,13 @@ mod queries {
     use super::schema;
 
     #[derive(cynic::QueryVariables, Debug)]
-    pub struct SignInArguments {
+    pub struct SignInVariables {
         pub password: String,
         pub username: String,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "MutationRoot", argument_struct = "SignInArguments")]
+    #[cynic(graphql_type = "MutationRoot", variables = "SignInVariables")]
     pub struct SignIn {
         #[arguments(input: { password: $password, username: $username })]
         pub sign_in: String,

@@ -57,6 +57,8 @@ pub fn fragment_derive_impl(
 
     let graphql_name = &(input.graphql_type_name());
     let schema_module = input.schema_module();
+    let variables = input.variables();
+    let deprecations = input.deprecations();
     let ident = input.ident;
     if let darling::ast::Data::Struct(fields) = input.data {
         let fields = pair_fields(fields.iter(), &schema_type)?;
@@ -67,7 +69,7 @@ pub fn fragment_derive_impl(
             &schema_type,
             &schema_module,
             graphql_name,
-            input.argument_struct.as_ref(),
+            variables.as_ref(),
         )?;
 
         let deserialize_impl = DeserializeImpl::new(&fields, &ident);
@@ -75,6 +77,7 @@ pub fn fragment_derive_impl(
         Ok(quote::quote! {
             #fragment_impl
             #deserialize_impl
+            #deprecations
         })
     } else {
         Err(syn::Error::new(

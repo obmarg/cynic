@@ -26,7 +26,7 @@ fn main() {
             &starwars_schema,
             "../../cynic-querygen/tests/queries/starwars/sanity.graphql",
             r#"queries::SanityCheckQuery::build(
-                queries::SanityCheckQueryArguments {
+                queries::SanityCheckQueryVariables {
                     film_id: Some("ZmlsbXM6MQ==".into())
                 }
             )"#,
@@ -35,7 +35,7 @@ fn main() {
             &starwars_schema,
             "../../cynic-querygen/tests/queries/starwars/nested-arguments.graphql",
             r#"queries::NestedArgsQuery::build(
-                queries::NestedArgsQueryArguments {
+                queries::NestedArgsQueryVariables {
                     film_id: "ZmlsbXM6MQ==".into(),
                     planet_cursor: None,
                     resident_connection: None
@@ -66,7 +66,7 @@ fn main() {
             &jobs_schema,
             "tests/queries/graphql.jobs/jobs.graphql",
             r#"queries::Jobs::build(
-                queries::JobsArguments {
+                queries::JobsVariables {
                     input: queries::LocationInput {
                         slug: "london".into()
                     }
@@ -77,7 +77,7 @@ fn main() {
             &github_schema,
             "../../cynic-querygen/tests/queries/github/add-comment-mutation.graphql",
             r#"queries::CommentOnMutationSupportIssue::build(
-                queries::CommentOnMutationSupportIssueArguments {
+                queries::CommentOnMutationSupportIssueVariables {
                     comment_body: "This is a test comment, posted by the new cynic mutation support"
                         .into(),
                 },
@@ -87,7 +87,7 @@ fn main() {
             &github_schema,
             "../../cynic-querygen/tests/queries/github/input-object-arguments.graphql",
             r#"queries::PullRequestTitles::build(
-                queries::PullRequestTitlesArguments {
+                queries::PullRequestTitlesVariables {
                     pr_order: queries::IssueOrder {
                         direction: queries::OrderDirection::Asc,
                         field: queries::IssueOrderField::CreatedAt,
@@ -99,7 +99,7 @@ fn main() {
             &github_schema,
             "tests/queries/github/nested-arguments.graphql",
             r#"queries::PullRequestTitles::build(
-                queries::PullRequestTitlesArguments {
+                queries::PullRequestTitlesVariables {
                     owner: "obmarg".into(),
                     repo: "cynic".into(),
                     pr_order: queries::IssueOrder {
@@ -118,7 +118,7 @@ fn main() {
             &test_schema,
             "../../cynic-querygen/tests/queries/misc/scalar-casing.graphql",
             r#"queries::MyQuery::build(
-                queries::MyQueryArguments {
+                queries::MyQueryVariables {
                     id: queries::Uuid("not-really-a-uuid-but-whatever".into())
                 }
             )"#,
@@ -127,7 +127,7 @@ fn main() {
             &github_schema,
             "tests/queries/github/scalar-inside-input-object.graphql",
             r#"queries::AddPRComment::build(
-                queries::AddPRCommentArguments{
+                queries::AddPRCommentVariables {
                     body: "hello!".into(),
                     commit: queries::GitObjectID("abcd".into())
                 }
@@ -142,7 +142,7 @@ fn main() {
             &github_schema,
             "tests/queries/github/optional-input-object-argument.graphql",
             r#"queries::PullRequestTitles::build(
-                queries::PullRequestTitlesArguments {
+                queries::PullRequestTitlesVariables {
                     pr_order: None
                 },
             )"#,
@@ -151,7 +151,7 @@ fn main() {
             &raindancer_schema,
             "tests/queries/misc/mutation_with_scalar_result_and_input.graphql",
             r#"queries::SignIn::build(
-                queries::SignInArguments {
+                queries::SignInVariables {
                     username: "hello".into(),
                     password: "hello".into()
                 },
@@ -166,7 +166,7 @@ fn main() {
             &github_schema,
             "tests/queries/github/inline-fragment-with-arguments.graphql",
             r#"queries::IssueOrPR::build(
-                queries::IssueOrPRArguments {
+                queries::IssueOrPRVariables {
                     assignee_count: 10
                 }
             )"#,

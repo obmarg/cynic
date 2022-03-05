@@ -28,7 +28,7 @@ pub fn inline_fragments_derive(ast: &syn::DeriveInput) -> Result<TokenStream, Er
 pub(crate) fn inline_fragments_derive_impl(
     input: InlineFragmentsDeriveInput,
 ) -> Result<TokenStream, Errors> {
-    use quote::{quote, quote_spanned};
+    use quote::quote;
 
     let schema =
         load_schema(&*input.schema_path).map_err(|e| e.into_syn_error(input.schema_path.span()))?;
@@ -56,15 +56,7 @@ pub(crate) fn inline_fragments_derive_impl(
     }
     let target_type = target_type.unwrap();
 
-    let input_argument_struct = (&input.argument_struct).clone();
-    let argument_struct = if let Some(arg_struct) = input_argument_struct {
-        let span = arg_struct.span();
-        let arg_struct_val: Ident = arg_struct.into();
-        let argument_struct = quote_spanned! { span => #arg_struct_val };
-        syn::parse2(argument_struct)?
-    } else {
-        syn::parse2(quote! { () })?
-    };
+    let variables = input.variables();
 
     if let darling::ast::Data::Enum(variants) = &input.data {
         exhaustiveness_check(variants, &target_type, &schema)?;
@@ -79,7 +71,7 @@ pub(crate) fn inline_fragments_derive_impl(
         let query_fragment_impl = QueryFragmentImpl {
             target_enum: input.ident.clone(),
             type_lock,
-            argument_struct,
+            variables,
             fragments: &fragments,
             graphql_type_name: input.graphql_type_name(),
             fallback: fallback.clone(),
@@ -91,9 +83,12 @@ pub(crate) fn inline_fragments_derive_impl(
             fallback,
         };
 
+        let deprecations = input.deprecations();
+
         Ok(quote! {
             #inline_fragments_impl
             #query_fragment_impl
+            #deprecations
         })
     } else {
         Err(syn::Error::new(
@@ -292,7 +287,7 @@ fn check_fallback(
 struct QueryFragmentImpl<'a> {
     target_enum: syn::Ident,
     type_lock: syn::Path,
-    argument_struct: syn::Type,
+    variables: Option<syn::Path>,
     fragments: &'a [Fragment],
     graphql_type_name: String,
     fallback: Option<(syn::Ident, Option<syn::Type>)>,
@@ -304,7 +299,10 @@ impl quote::ToTokens for QueryFragmentImpl<'_> {
 
         let target_struct = &self.target_enum;
         let type_lock = &self.type_lock;
-        let arguments = &self.argument_struct;
+        let variables = match &self.variables {
+            Some(path) => quote! { #path },
+            None => quote! { () },
+        };
         let inner_types: Vec<_> = self
             .fragments
             .iter()
@@ -322,7 +320,7 @@ impl quote::ToTokens for QueryFragmentImpl<'_> {
             #[automatically_derived]
             impl<'de> ::cynic::QueryFragment<'de> for #target_struct {
                 type SchemaType = #type_lock;
-                type Variables = #arguments;
+                type Variables = #variables;
 
                 const TYPE: Option<&'static str> = Some(#graphql_type);
 

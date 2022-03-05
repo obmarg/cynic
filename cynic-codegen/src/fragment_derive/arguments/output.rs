@@ -107,10 +107,10 @@ impl ToTokens for ArgumentValueTokens<'_> {
             }),
             ArgumentValue::Variable(var) => {
                 let var_ident = &var.ident;
-                let argument_struct = &var.argument_struct;
+                let variables = &var.variable_struct;
 
                 tokens.append_all(quote! {
-                    .variable(<#argument_struct as ::cynic::QueryVariables>::Fields::#var_ident())
+                    .variable(<#variables as ::cynic::QueryVariables>::Fields::#var_ident())
                 });
             }
             ArgumentValue::Some(inner) => {

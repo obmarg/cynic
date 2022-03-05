@@ -12,19 +12,19 @@ mod queries {
     use super::schema;
 
     #[derive(cynic::QueryVariables, Debug)]
-    pub struct PullRequestTitlesArguments {
+    pub struct PullRequestTitlesVariables {
         pub pr_order: IssueOrder,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "Query", argument_struct = "PullRequestTitlesArguments")]
+    #[cynic(graphql_type = "Query", variables = "PullRequestTitlesVariables")]
     pub struct PullRequestTitles {
         #[arguments(name: "cynic", owner: "obmarg")]
         pub repository: Option<Repository>,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(argument_struct = "PullRequestTitlesArguments")]
+    #[cynic(variables = "PullRequestTitlesVariables")]
     pub struct Repository {
         #[arguments(orderBy: $pr_order)]
         pub pull_requests: PullRequestConnection,

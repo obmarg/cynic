@@ -12,12 +12,12 @@ mod queries {
     use super::schema;
 
     #[derive(cynic::QueryVariables, Debug)]
-    pub struct SingleFilmArguments {
+    pub struct SingleFilmVariables {
         pub id: cynic::Id,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "Root", argument_struct = "SingleFilmArguments")]
+    #[cynic(graphql_type = "Root", variables = "SingleFilmVariables")]
     pub struct SingleFilm {
         #[arguments(id: $id)]
         pub film: Option<Film>,

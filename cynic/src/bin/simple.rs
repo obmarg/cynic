@@ -14,7 +14,7 @@ mod schema {
 struct TestArgs {}
 
 #[derive(cynic::QueryFragment)]
-#[cynic(schema_path = "src/bin/simple.graphql", argument_struct = "TestArgs")]
+#[cynic(schema_path = "src/bin/simple.graphql", variables = "TestArgs")]
 struct TestStruct {
     #[arguments(x = Some(1), y = "1")]
     pub field_one: String,

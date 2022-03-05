@@ -47,7 +47,7 @@ use super::fragment_derive;
             schema_path = "../cynic/tests/test-schema.graphql",
             schema_module = "schema",
             graphql_type = "Query",
-            argument_struct = "AnArgumentStruct"
+            variables = "AnArgumentStruct"
         )]
         struct MyQuery {
             #[arguments(filters: $filters)]

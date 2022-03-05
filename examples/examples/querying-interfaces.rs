@@ -53,7 +53,7 @@ struct Arguments {
 #[cynic(
     schema_path = "../schemas/starwars.schema.graphql",
     graphql_type = "Root",
-    argument_struct = "Arguments"
+    variables = "Arguments"
 )]
 struct Query {
     #[arguments(id: $id)]

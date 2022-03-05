@@ -9,7 +9,7 @@ use crate::{query_parsing::TypedValue, schema::OutputFieldType, Error};
 pub struct QueryFragment<'query, 'schema> {
     pub fields: Vec<OutputField<'query, 'schema>>,
     pub target_type: String,
-    pub argument_struct_name: Option<String>,
+    pub variable_struct_name: Option<String>,
 
     pub name: String,
 }
@@ -18,17 +18,17 @@ impl std::fmt::Display for QueryFragment<'_, '_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         writeln!(f, "#[derive(cynic::QueryFragment, Debug)]")?;
 
-        if self.target_type != self.name || self.argument_struct_name.is_some() {
+        if self.target_type != self.name || self.variable_struct_name.is_some() {
             write!(f, "#[cynic(")?;
             if self.target_type != self.name {
                 write!(f, "graphql_type = \"{}\"", self.target_type)?;
             }
 
-            if let Some(name) = &self.argument_struct_name {
+            if let Some(name) = &self.variable_struct_name {
                 if self.target_type != self.name {
                     write!(f, ", ")?;
                 }
-                write!(f, "argument_struct = \"{}\"", name)?;
+                write!(f, "variables = \"{}\"", name)?;
             }
             writeln!(f, ")]",)?;
         }

@@ -12,12 +12,12 @@ mod queries {
     use super::schema;
 
     #[derive(cynic::QueryVariables, Debug)]
-    pub struct CommentOnMutationSupportIssueArguments {
+    pub struct CommentOnMutationSupportIssueVariables {
         pub comment_body: String,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "Mutation", argument_struct = "CommentOnMutationSupportIssueArguments")]
+    #[cynic(graphql_type = "Mutation", variables = "CommentOnMutationSupportIssueVariables")]
     pub struct CommentOnMutationSupportIssue {
         #[arguments(input: { body: $comment_body, subjectId: "MDU6SXNzdWU2ODU4NzUxMzQ=" })]
         pub add_comment: Option<AddCommentPayload>,

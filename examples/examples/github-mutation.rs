@@ -55,7 +55,7 @@ mod queries {
     #[derive(cynic::QueryFragment, Debug)]
     #[cynic(
         graphql_type = "Mutation",
-        argument_struct = "CommentOnMutationSupportIssueArguments"
+        variables = "CommentOnMutationSupportIssueArguments"
     )]
     pub struct CommentOnMutationSupportIssue {
         #[arguments(input: {
