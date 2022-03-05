@@ -7,7 +7,7 @@ edition = "2018"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-cynic = { path = "../cynic", features = ["surf", "reqwest-blocking"] }
+cynic = { path = "../cynic", features = ["http-surf", "http-reqwest-blocking"] }
 cynic-codegen = { path = "../cynic-codegen" }
 
 # Reqwest example requirements
