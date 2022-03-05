@@ -15,18 +15,15 @@ readme = "../README.md"
 
 [features]
 default = []
-all = ["surf", "reqwest", "reqwest-blocking"]
-reqwest-blocking = ["reqwest/blocking"]
-surf-h1-client = ["surf/h1-client"]
-surf-curl-client = ["surf/curl-client"]
-surf-wasm-client = ["surf/wasm-client"]
-surf-middleware-logger = ["surf/middleware-logger"]
-surf-encoding = ["surf/encoding"]
+all = ["http-surf", "http-reqwest", "http-reqwest-blocking"]
+http-surf = ["surf", "serde_json"]
+http-reqwest = ["reqwest"]
+http-reqwest-blocking = ["http-reqwest", "reqwest/blocking"]
 
 [dependencies]
 cynic-proc-macros = { path = "../cynic-proc-macros", version = "2.0.0-dev" }
 serde = { version = "1.0.130", features = [ "derive" ] }
-serde_json = "1.0"
+serde_json = { version = "1.0", optional = true }
 static_assertions = "1"
 thiserror = "1.0.30"
 
@@ -42,6 +39,7 @@ chrono = { version = "0.4.19", features = ["serde"] }
 insta = "1.9"
 maplit = "1.0.2"
 rstest = "0.12.0"
+serde_json = { version = "1.0" }
 
 [package.metadata.docs.rs]
 features = ["all"]

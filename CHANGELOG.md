@@ -36,8 +36,19 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 - `QueryBuilder::build`, `MutationBuilder::build` and
   `SubscriptionBuilder::build` now take their argument by value not by
   reference.
-- The `reqwest` feature no longer uses the `native-tls` feature. Users should
-  enable one of the `tls` features of `reqwest` themselves.
+- The `surf`, `reqwest` & `reqwest-blocking` features have been renamed to
+  `http-surf`, `http-reqwest` & `http-reqwest-blocking` respectively.
+- The `http-reqwest` feature no longer uses the `native-tls` feature. Users
+  should enable one of the `tls` features of `reqwest` themselves.
+- The `surf-h1-client`, `surf-curl-client`, `surf-wasm-client`,
+  `surf-middleware-logger` & `surf-encoding` features have been removed. If
+  users want to enable these features in surf they should do it in their own
+  `Cargo.toml`.
+- `cynic` no longer re-exports `serde_json`
+- The `GraphQlError` & `GraphQlResponse` structs no longer contain a
+  `serde_json::Value` for extensions.  They now have generic parameters that you
+  should provide if you care about error extensions.
+
 
 ### Deprecations
 

@@ -3,19 +3,19 @@
 //! These are hidden behind feature flags by default as HTTP clients are quite
 //! heavy dependencies, and there's several options to choose from.
 
-#[cfg(feature = "surf")]
+#[cfg(feature = "http-surf")]
 #[cfg_attr(docsrs, doc(cfg(feature = "surf")))]
 pub use self::surf_ext::SurfExt;
 
-#[cfg(feature = "reqwest")]
+#[cfg(feature = "http-reqwest")]
 #[cfg_attr(docsrs, doc(cfg(feature = "reqwest")))]
 pub use reqwest_ext::ReqwestExt;
 
-#[cfg(feature = "reqwest-blocking")]
+#[cfg(feature = "http-reqwest-blocking")]
 #[cfg_attr(docsrs, doc(cfg(feature = "reqwest-blocking")))]
 pub use reqwest_blocking_ext::ReqwestBlockingExt;
 
-#[cfg(feature = "surf")]
+#[cfg(feature = "http-surf")]
 mod surf_ext {
     use serde_json::json;
     use std::{future::Future, pin::Pin};
@@ -70,7 +70,7 @@ mod surf_ext {
     /// );
     /// # };
     /// ```
-    #[cfg_attr(docsrs, doc(cfg(feature = "surf")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "http-surf")))]
     pub trait SurfExt {
         /// Runs a GraphQL query with the parameters in RequestBuilder, decodes
         /// the response and returns the result.
@@ -119,7 +119,7 @@ mod surf_ext {
 }
 
 /// The error type returned by `ReqwestExt` & `ReqwestBlockingExt`
-#[cfg(any(feature = "reqwest", feature = "reqwest-blocking"))]
+#[cfg(any(feature = "http-reqwest", feature = "http-reqwest-blocking"))]
 #[derive(thiserror::Error, Debug)]
 pub enum CynicReqwestError {
     /// An error from reqwest when making an HTTP request.
@@ -131,7 +131,7 @@ pub enum CynicReqwestError {
     ErrorResponse(reqwest::StatusCode, String),
 }
 
-#[cfg(feature = "reqwest")]
+#[cfg(feature = "http-reqwest")]
 mod reqwest_ext {
     use super::CynicReqwestError;
     use std::{future::Future, pin::Pin};
@@ -187,7 +187,7 @@ mod reqwest_ext {
     /// );
     /// # };
     /// ```
-    #[cfg_attr(docsrs, doc(cfg(feature = "reqwest")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "http-reqwest")))]
     pub trait ReqwestExt {
         /// Runs a GraphQL query with the parameters in RequestBuilder, decodes
         /// the and returns the result.
@@ -245,7 +245,7 @@ mod reqwest_ext {
     }
 }
 
-#[cfg(feature = "reqwest-blocking")]
+#[cfg(feature = "http-reqwest-blocking")]
 mod reqwest_blocking_ext {
     use super::CynicReqwestError;
 
@@ -295,7 +295,7 @@ mod reqwest_blocking_ext {
     ///         .unwrap()
     /// );
     /// ```
-    #[cfg_attr(docsrs, doc(cfg(feature = "reqwest-blocking")))]
+    #[cfg_attr(docsrs, doc(cfg(feature = "http-reqwest-blocking")))]
     pub trait ReqwestBlockingExt {
         /// Runs a GraphQL query with the parameters in RequestBuilder, decodes
         /// the and returns the result.

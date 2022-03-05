@@ -196,11 +196,10 @@ pub use cynic_proc_macros::{
 
 pub use static_assertions::assert_impl_all as assert_impl;
 
-// We re-export serde_json as the output from a lot of our derive macros require it,
+// We re-export serde as the output from a lot of our derive macros require it,
 // and this way we can point at our copy rather than forcing users to add it to
 // their Cargo.toml
 pub use serde;
-pub use serde_json;
 
 /// Implements [`cynic::Scalar`] for a given type & type lock.
 ///
