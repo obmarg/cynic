@@ -18,6 +18,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - uses: kvrhdn/gha-buildevents@v1
+        with:
+          apikey: ${{ secrets.BUILDEVENTS_APIKEY }}
+          dataset: github-action-buildevents
+
+          # The job status, this will be used in the post section and sent
+          # as status of the trace. Must always be ${{ job.status }}.
+          job-status: ${{ job.status }}
+
+          # Optional: this should only be used in combination with matrix builds. Set
+          # this to a value uniquely describing each matrix configuration.
+          # matrix-key: ${{ matrix.value }}
+
       - uses: actions/checkout@v2
 
       - uses: actions-rs/toolchain@v1
