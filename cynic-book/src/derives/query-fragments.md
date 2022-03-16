@@ -1,8 +1,9 @@
 # Query Fragments
 
-QueryFragments are the main tool for building queries & mutations in cynic. A
-QueryFragment tells cynic what fields to select from a GraphQL object, and how
-to decode those fields into a struct.
+QueryFragments are the main tool for building queries & mutations in cynic.
+Cynic builds up a GraphQL query document from the fields on a `QueryFragment`
+and any `QueryFragments` nested inside it.  And after executing an operation it
+decodes the result into the `QueryFragment` struct.
 
 Generally you'll use a derive to create query fragments, like this:
 
@@ -54,7 +55,7 @@ must be a `Vec`.
 ### Making a Query with QueryFragments
 
 QueryFragments that apply to the Query type (otherwise known as the Root type)
-of a schema can be used to build a `cynic::Query`. This is the type that can
+of a schema can be used to build a `cynic::Operation`. This is the type that can
 be sent to a server and used to decode the response.
 
 If we wanted to use our FilmConnection to get all the films from the star wars
@@ -89,32 +90,83 @@ itself. An example of this is in the [Quickstart][quickstart].
 
 ### Passing Arguments
 
-To pass arguments into queries you must pass an `argument_struct` parameter
-to the `cynic` attribute, and then add `arguments` attributes to the
-fields for which you want to provide arugments. The `argument_struct`
-parameter must name a struct that implements `cynic::FragmentArguments`, which
-can also be derived. (See [query arguments][1] for more details)
+GraphQL allows a server to define arguments that a field can accept.  Cynic
+provides support for passing in these arguments via its `arguments` attribute.
 
 Here, we define a query that fetches a film by a particular ID:
 
 ```rust
-#[derive(cynic::FragmentArguments)]
-struct FilmArguments {
-    id: Option<cynic::Id>,
-}
-
 #[derive(cynic::QueryFragment, Debug)]
 #[cynic(
     schema_path = "examples/starwars.schema.graphql",
     schema_module = "schema",
     graphql_type = "Root",
-    argument_struct = "FilmArguments"
 )]
 struct FilmQuery {
-    #[arguments(id = &args.id)]
+    #[arguments(id: "ZmlsbXM6MQ==")]
     film: Option<Film>,
 }
 ```
+
+Note the `#[arguments: id: "ZmlsbXM6MQ=="]` attribute on the `film` field.  The
+GraphQL generated for this query will provide a hard coded `id` argument to the
+`film` field, like this:
+
+```graphql
+film(id: "ZmlsbXM6MQ==") {
+  title
+  director
+}
+```
+
+The syntax of the inside of arguments is very similar to [the syntax expected
+for arguments in GraphQL itself][gql-arguments].  Some examples:
+
+| GraphQL                        | Cynic                          |
+| ------------------------------ | ------------------------------ |
+| `input: { filters: "ACTIVE" }` | `input: { filters: "ACTIVE" }` |
+| `values: ["Hello"]`            | `values: ["Hello"]`            |
+| `values: ["Hello"]`            | `values: ["Hello"]`            |
+| `arg1: "Foo", arg2: "Bar"`     | `arg1: "Foo", arg2: "Bar"`     |
+| `arg1: null                    | `arg1: null`                   |
+
+### Variables
+
+If you don't want to hard code the value of an argument, you can parameterise
+your query with some variables.  These variables must be defined on a struct:
+
+```rust
+#[derive(cynic::QueryVariables)]
+struct FilmQueryVariables {
+    id: Option<cynic::Id>,
+}
+```
+
+The fields of this struct can be any `Enum`, `InputObject`, or `Scalar`.
+
+To use this struct you need to tell your `QueryFragment` that it takes variables
+using the `variables` parameter to to the `cynic` attribute, and then you can
+use variables much like you would in GraphQL.
+
+Here, we update our `FilmQuery` struct to make use of our `FilmQueryVariables`
+to provide the `id` argument.
+
+```rust
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(
+    schema_path = "examples/starwars.schema.graphql",
+    schema_module = "schema",
+    graphql_type = "Root",
+    variables = "FilmQueryVariables"
+)]
+struct FilmQuery {
+    #[arguments(id: $id)]
+    film: Option<Film>,
+}
+```
+
+Any field of the variables struct may be used by prefixing the name of the
+field with `$`.
 
 This can be converted into a query in a similar way we just need to provide
 some `FilmArguments`:
@@ -129,16 +181,19 @@ let operation = FilmQuery::build(
 );
 ```
 
-#### Nested Arguments
+See [query variables][1] for more details.
 
-The example above showed how to pass arguments to the top level of a query. If
-you want to pass arguments to a nested QueryFragment then all it's parent
-`QueryFragment`s must specify the same `argument_struct` in their `cynic`
-attribute. This is neccesary so that the `FragmentArgument` struct gets passed
+
+#### Nested Variables
+
+The example above showed how to pass variables to the top level of a query. If
+you want to pass variables to a nested QueryFragment then all it's parent
+`QueryFragment`s must specify the same `variables` in their `cynic`
+attribute. This is neccesary so that the `QueryVariables` struct gets passed
 down to that level of a query.
 
-If no nested QueryFragments require arguments, you can omit the
-`argument_struct` attr.
+If no nested `QueryFragments` require arguments, you can omit the
+`variables` attr from those `QueryFragments`
 
 ### Mutations
 
@@ -170,6 +225,8 @@ A QueryFragment can be configured with several attributes on the struct itself:
   module that has called the `use_schema!` macro. This will default to
   `schema` if not provided. An override can also be provided by nesting the
   QueryFragment inside a module with the `schema_for_derives` attribute macro.
+- `variables` defines the `QueryVariables` struct that is available to
+  `arguments` attributes on fields of the given struct.
 
 #### Field Attributes
 
@@ -196,12 +253,10 @@ Each field can also have it's own attributes:
 
 ### Related
 
-- [FragmentArguments][1] are used to provide arguments to the fields of a
-  QueryFragment.
-- [Struct Level Attributes][2] can be added to a QueryFragment.
+- [QueryVariables][1] are used to provide variables to a QueryFragment.
 - [Recursive queries][recursive-queries] are supported by QueryFragments.
 
-[1]: ./query-arguments.html
-[2]: ../struct-attributes.html
+[1]: ./query-variables.html
 [recursive-queries]: ./recursive-queries.html
 [quickstart]: ../quickstart.html
+[gql-arguments]: https://graphql.org/learn/queries/#arguments

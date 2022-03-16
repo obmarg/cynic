@@ -9,6 +9,6 @@ There are a number of different derives which this section details:
 - [Query Fragments](./query-fragments.html)
 - [Enums](./enums.html)
 - [Scalars](./scalars.html)
-- [Query Arguments](./query-arguments.html)
+- [Variables](./query-variables.html)
 - [Input Objects](./input-objects.html)
 - [Inline Fragments](./inline-fragments.html)

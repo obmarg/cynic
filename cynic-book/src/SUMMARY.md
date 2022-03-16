@@ -7,7 +7,7 @@
   - [Query Fragments](./derives/query-fragments.md)
   - [Enums](./derives/enums.md)
   - [Scalars](./derives/scalars.md)
-  - [Query Arguments](./derives/query-arguments.md)
+  - [Variables](./derives/query-variables.md)
   - [Input Objects](./derives/input-objects.md)
   - [Inline Fragments](./derives/inline-fragments.md)
   - [Recursive Queries](./derives/recursive-queries.md)

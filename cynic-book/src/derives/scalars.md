@@ -29,6 +29,9 @@ This `DateTime` type alias can now be used anywhere that the schema expects a
 `DateTime`. Note that the type alias is currently required due to limitations
 in some of the cynic macros (though this may not always be the case).
 
+Note that this `impl_scalar` call must live in either the crate that defines
+the type or the crate that contains the `schema` module.
+
 ### `#[derive(Scalar)]`
 
 You can also derive `Scalar` on any newtype structs:

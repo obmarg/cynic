@@ -1,3 +1,7 @@
+<!--
+
+TODO: Fix up this stuff, it's all wrong/old now.
+
 # Selection Sets
 
 Selection sets are involved in almost everything cynic does.  A selection set
@@ -129,3 +133,4 @@ query {
   }
 }
 ```
+-->
