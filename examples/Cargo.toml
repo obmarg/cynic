@@ -25,4 +25,4 @@ chrono = { version = "0.4", features = ["serde"] }
 github-schema = { path = "../schemas/github" }
 
 [dev-dependencies]
-insta = "1.9"
+insta = "1.14"
