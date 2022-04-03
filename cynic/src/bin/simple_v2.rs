@@ -50,6 +50,8 @@ mod queries {
     pub enum MyUnionType {
         TestStruct(Test),
         Nested(Nested),
+        #[cynic(fallback)]
+        Other,
     }
 }
 

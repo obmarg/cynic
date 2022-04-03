@@ -58,6 +58,8 @@ mod queries {
     pub enum IssueOrPullRequest {
         Issue(Issue),
         PullRequest(PullRequest),
+        #[cynic(fallback)]
+        Unknown
     }
 
 }

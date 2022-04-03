@@ -7,21 +7,22 @@ use syn::parse_quote;
 use super::inline_fragments_derive;
 
 #[rstest(input => [
-    // Test of a union type.
+    // A union type
     parse_quote!(
         #[derive(InlineFragments, Serialize)]
         #[cynic(schema_path = "../cynic/tests/test-schema.graphql")]
         enum PostOrAuthor {
-            #[cynic(rename = "BlogPost")]
             Post(Post),
             Author(Author),
+            #[cynic(fallback)]
+            Other
         }
     ),
-    // Union type with a fallback
+    // An interface
     parse_quote!(
         #[derive(InlineFragments, Serialize)]
         #[cynic(schema_path = "../cynic/tests/test-schema.graphql")]
-        enum PostOrAuthor {
+        enum Node {
             #[cynic(rename = "BlogPost")]
             Post(Post),
             Author(Author),
@@ -29,11 +30,11 @@ use super::inline_fragments_derive;
             Other
         }
     ),
-    // Interface
+    // A union that has rename
     parse_quote!(
         #[derive(InlineFragments, Serialize)]
         #[cynic(schema_path = "../cynic/tests/test-schema.graphql")]
-        enum Node {
+        enum PostOrAuthor {
             #[cynic(rename = "BlogPost")]
             Post(Post),
             Author(Author),

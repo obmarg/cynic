@@ -31,6 +31,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 - An `Enum` can no longer be shared between schemas. If you were doing this,
   you should define two `Enum`s and provide conversion functions beteween the
   two of them.
+- `InlineFragments` now always require a fallback and no longer perform
+  exhaustiveness checking.
 - `QueryBuilder`, `MutationBuilder` and `SubscriptionBuilder` no longer have a
   `ResponseData` associated type.
 - `QueryBuilder::build`, `MutationBuilder::build` and

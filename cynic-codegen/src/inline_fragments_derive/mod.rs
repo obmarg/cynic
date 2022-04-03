@@ -1,7 +1,10 @@
 use darling::util::SpannedValue;
 use proc_macro2::{Span, TokenStream};
 
-use crate::{idents::PathExt, load_schema, schema, Errors, Ident};
+use crate::{
+    idents::PathExt, inline_fragments_derive::input::ValidationMode, load_schema, schema, Errors,
+    Ident,
+};
 
 pub mod input;
 
@@ -14,7 +17,6 @@ pub use input::InlineFragmentsDeriveInput;
 
 use crate::suggestions::{format_guess, guess_field};
 use input::InlineFragmentsDeriveVariant;
-use std::collections::HashSet;
 
 pub fn inline_fragments_derive(ast: &syn::DeriveInput) -> Result<TokenStream, Errors> {
     use darling::FromDeriveInput;
@@ -56,11 +58,14 @@ pub(crate) fn inline_fragments_derive_impl(
     }
     let target_type = target_type.unwrap();
 
+    input.validate(match target_type {
+        InlineFragmentType::Union(_) => ValidationMode::Union,
+        InlineFragmentType::Interface(_) => ValidationMode::Interface,
+    })?;
+
     let variables = input.variables();
 
     if let darling::ast::Data::Enum(variants) = &input.data {
-        exhaustiveness_check(variants, &target_type, &schema)?;
-
         let fallback = check_fallback(variants, &target_type)?;
 
         let mut type_lock = input.schema_module();
@@ -97,104 +102,6 @@ pub(crate) fn inline_fragments_derive_impl(
         )
         .into())
     }
-}
-
-fn exhaustiveness_check(
-    variants: &[SpannedValue<InlineFragmentsDeriveVariant>],
-    target_type: &InlineFragmentType,
-    schema: &schema::Document,
-) -> Result<(), Errors> {
-    use schema::{Definition, TypeDefinition};
-
-    let variant_names = variants
-        .iter()
-        .filter(|v| !*v.fallback)
-        .map(|v| Ident::for_type(v.graphql_name()))
-        .collect::<HashSet<_>>();
-
-    let required_variants = match target_type {
-        InlineFragmentType::Interface(iface) => schema
-            .definitions
-            .iter()
-            .map(|d| match d {
-                Definition::TypeDefinition(TypeDefinition::Object(obj)) => {
-                    if obj.implements_interfaces.contains(&iface.name) {
-                        Some(Ident::for_type(&obj.name))
-                    } else {
-                        None
-                    }
-                }
-                _ => None,
-            })
-            .flatten()
-            .collect::<HashSet<_>>(),
-        InlineFragmentType::Union(union) => union
-            .types
-            .iter()
-            .map(Ident::for_type)
-            .collect::<HashSet<_>>(),
-    };
-
-    let has_fallback = variants.iter().any(|v| *v.fallback);
-
-    if has_fallback && !variant_names.is_subset(&required_variants) {
-        let mut errors = Errors::default();
-
-        for unexpected_variant_name in variant_names.difference(&required_variants) {
-            let variant = variants
-                .iter()
-                .find(|v| Ident::for_type(v.graphql_name()) == *unexpected_variant_name)
-                .unwrap();
-
-            let candidates = required_variants.iter().map(|v| v.graphql_name());
-            let guess_field = guess_field(candidates, &variant.graphql_name());
-            errors.push(syn::Error::new(
-                variant.span(),
-                format!(
-                    "Could not find a match for {} in {}.{}",
-                    variant.graphql_name(),
-                    target_type.name(),
-                    format_guess(guess_field)
-                ),
-            ))
-        }
-
-        return Err(errors);
-    } else if !has_fallback && variant_names != required_variants {
-        let mut errors = Errors::default();
-
-        for unexpected_variant_name in variant_names.difference(&required_variants) {
-            let variant = variants
-                .iter()
-                .find(|v| Ident::for_type(v.graphql_name()) == *unexpected_variant_name)
-                .unwrap();
-            let candidates = required_variants.iter().map(|v| v.graphql_name());
-            let guess_field = guess_field(candidates, &variant.graphql_name());
-            errors.push(syn::Error::new(
-                variant.span(),
-                format!(
-                    "Could not find a match for {} in {}.{}",
-                    variant.graphql_name(),
-                    target_type.name(),
-                    format_guess(guess_field)
-                ),
-            ));
-        }
-
-        for missing_variant_name in required_variants.difference(&variant_names) {
-            errors.push(syn::Error::new(
-                Span::call_site(),
-                format!(
-                    "This InlineFragment is missing a variant for {}.  Either provide a variant for this type or add a fallback variant.",
-                    missing_variant_name.graphql_name()
-                ),
-            ));
-        }
-
-        return Err(errors);
-    }
-
-    Ok(())
 }
 
 struct Fragment {
@@ -367,13 +274,4 @@ fn find_union_or_interface_type<'a>(
 enum InlineFragmentType<'a> {
     Union(&'a schema::UnionType),
     Interface(&'a schema::InterfaceType),
-}
-
-impl<'a> InlineFragmentType<'a> {
-    pub fn name(&self) -> &str {
-        match self {
-            InlineFragmentType::Interface(iface) => &iface.name,
-            InlineFragmentType::Union(union) => &union.name,
-        }
-    }
 }

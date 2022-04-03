@@ -1,5 +1,5 @@
-error: The fallback for a union type must be a unit variant
-  --> $DIR/inline-fragment-fallback-validation.rs:15:5
+error: InlineFragments fallbacks on a union must be a unit variant
+  --> tests/cases/inline-fragment-fallback-validation.rs:15:5
    |
 15 |     #[cynic(fallback)]
    |     ^

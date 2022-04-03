@@ -39,9 +39,10 @@ struct Author {
 #[derive(InlineFragments, Serialize)]
 #[cynic(schema_path = "tests/test-schema.graphql")]
 enum PostOrAuthor {
-    #[cynic(rename = "BlogPost")]
     Post(Post),
     Author(Author),
+    #[cynic(fallback)]
+    Other,
 }
 
 #[derive(QueryFragment, Serialize)]
