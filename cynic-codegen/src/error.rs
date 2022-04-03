@@ -16,6 +16,13 @@ impl Errors {
         self.errors.is_empty()
     }
 
+    pub fn into_result<T>(self, ok: T) -> Result<T, Self> {
+        match self.is_empty() {
+            true => Ok(ok),
+            false => Err(self),
+        }
+    }
+
     pub fn to_compile_errors(&self) -> proc_macro2::TokenStream {
         let mut rv = proc_macro2::TokenStream::new();
         for err in &self.errors {
@@ -32,6 +39,12 @@ impl Extend<Errors> for Errors {
     }
 }
 
+impl Extend<syn::Error> for Errors {
+    fn extend<T: IntoIterator<Item = syn::Error>>(&mut self, iter: T) {
+        self.errors.extend(iter)
+    }
+}
+
 impl std::iter::FromIterator<Errors> for Errors {
     fn from_iter<T: IntoIterator<Item = Errors>>(iter: T) -> Self {
         let mut rv = Errors { errors: vec![] };
@@ -43,7 +56,7 @@ impl std::iter::FromIterator<Errors> for Errors {
 impl std::iter::FromIterator<syn::Error> for Errors {
     fn from_iter<T: IntoIterator<Item = syn::Error>>(iter: T) -> Self {
         let mut rv = Errors { errors: vec![] };
-        rv.extend(iter.into_iter().map(Into::into));
+        rv.extend(iter);
         rv
     }
 }
@@ -51,5 +64,15 @@ impl std::iter::FromIterator<syn::Error> for Errors {
 impl From<syn::Error> for Errors {
     fn from(err: syn::Error) -> Errors {
         Errors { errors: vec![err] }
+    }
+}
+
+#[cfg(test)]
+impl std::fmt::Display for Errors {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        for err in &self.errors {
+            writeln!(f, "{}", err)?;
+        }
+        Ok(())
     }
 }

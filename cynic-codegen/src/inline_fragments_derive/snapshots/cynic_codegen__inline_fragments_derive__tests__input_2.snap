@@ -1,11 +1,11 @@
 ---
 source: cynic-codegen/src/inline_fragments_derive/tests.rs
-assertion_line: 56
+assertion_line: 49
 expression: "format_code(format!(\"{}\", tokens))"
 
 ---
 #[automatically_derived]
-impl<'de> ::cynic::serde::Deserialize<'de> for PostOrAuthor {
+impl<'de> ::cynic::serde::Deserialize<'de> for Node {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: ::cynic::serde::Deserializer<'de>,
@@ -14,27 +14,27 @@ impl<'de> ::cynic::serde::Deserialize<'de> for PostOrAuthor {
     }
 }
 #[automatically_derived]
-impl<'de> ::cynic::InlineFragments<'de> for PostOrAuthor {
+impl<'de> ::cynic::InlineFragments<'de> for Node {
     fn deserialize_variant<D>(typename: &str, deserializer: D) -> Result<Self, D::Error>
     where
         D: ::cynic::serde::Deserializer<'de>,
     {
         if Some(typename) == <Post as ::cynic::QueryFragment<'de>>::TYPE {
             return <Post as ::cynic::serde::Deserialize<'de>>::deserialize(deserializer)
-                .map(PostOrAuthor::Post);
+                .map(Node::Post);
         }
         if Some(typename) == <Author as ::cynic::QueryFragment<'de>>::TYPE {
             return <Author as ::cynic::serde::Deserialize<'de>>::deserialize(deserializer)
-                .map(PostOrAuthor::Author);
+                .map(Node::Author);
         }
-        Ok(PostOrAuthor::Other)
+        Ok(Node::Other)
     }
 }
 #[automatically_derived]
-impl<'de> ::cynic::QueryFragment<'de> for PostOrAuthor {
-    type SchemaType = schema::PostOrAuthor;
+impl<'de> ::cynic::QueryFragment<'de> for Node {
+    type SchemaType = schema::Node;
     type Variables = ();
-    const TYPE: Option<&'static str> = Some("PostOrAuthor");
+    const TYPE: Option<&'static str> = Some("Node");
     fn query(mut builder: ::cynic::queries::SelectionBuilder<Self::SchemaType, Self::Variables>) {
         let fragment_builder = builder.inline_fragment();
         let mut fragment_builder =
@@ -46,4 +46,13 @@ impl<'de> ::cynic::QueryFragment<'de> for PostOrAuthor {
         <Author as ::cynic::QueryFragment>::query(fragment_builder.select_children());
     }
 }
+#[allow(clippy::no_effect, non_camel_case_types)]
+const _: fn() = || {
+    #[deprecated(
+        note = "the rename attribute on InlineFragments is deprecated and should be removed.  InlineFragments variants now get their type name from their inner QueryFragment.",
+        since = "2.0.0"
+    )]
+    struct rename {}
+    rename {};
+};
 

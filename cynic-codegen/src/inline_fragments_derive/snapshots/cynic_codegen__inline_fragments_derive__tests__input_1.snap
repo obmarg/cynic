@@ -1,6 +1,6 @@
 ---
 source: cynic-codegen/src/inline_fragments_derive/tests.rs
-assertion_line: 28
+assertion_line: 49
 expression: "format_code(format!(\"{}\", tokens))"
 
 ---
@@ -27,8 +27,7 @@ impl<'de> ::cynic::InlineFragments<'de> for PostOrAuthor {
             return <Author as ::cynic::serde::Deserialize<'de>>::deserialize(deserializer)
                 .map(PostOrAuthor::Author);
         }
-        use cynic::serde::de::Error;
-        Err(D::Error::custom(format!("Unknown type: {}", typename)))
+        Ok(PostOrAuthor::Other)
     }
 }
 #[automatically_derived]

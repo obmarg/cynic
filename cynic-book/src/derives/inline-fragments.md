@@ -19,6 +19,9 @@ enum Assignee {
     Mannequin(Mannequin)
     Organization(Organization),
     User(User)
+
+    #[cynic(fallback)]
+    Other
 }
 ```
 
@@ -27,10 +30,10 @@ implement `QueryFragment` for the respective GraphQL types.
 
 #### Fallbacks
 
-By default cynic will error you if you leave out any possible type for a given
-union type of interface. If you don't want to provide cases for each of the
-possible types you can provide the `fallback` attribute on a variant. That
-variant will be output whenever an unhandled type is returned.
+Cynic requires a fallback variant on each `InlineFragments` that will be
+matched when the server returns a type other than the ones you provide.  This
+allows your code to continue compiling & running in the face of additions to
+the server, similar to the usual GraphQL backwards compatability guarantees.
 
 ```rust
 #[derive(cynic::InlineFragments)]
@@ -43,9 +46,6 @@ enum Assignee {
     Other
 }
 ```
-
-A fallback can also be provided when you have handled all cases - this will
-allow your code to continue to compile even in the face of server changes.
 
 ##### Fallbacks for interfaces
 
@@ -99,5 +99,3 @@ Each variant can also have it's own attributes:
   match one of the other variants. For interfaces this can contain a
   `QueryFragment` type. For union types it must be applied on a unit
   variant.
-- `rename = "SomeOtherName"` can be used to specify the name of the GraphQL
-  type when it doesn't exactly match the name of the variant.

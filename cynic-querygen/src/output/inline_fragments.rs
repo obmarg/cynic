@@ -35,6 +35,8 @@ impl std::fmt::Display for InlineFragments {
             writeln!(indented(f, 4), "{}({}),", inner_type, inner_type)?;
         }
 
+        writeln!(indented(f, 4), "#[cynic(fallback)]\nUnknown")?;
+
         writeln!(f, "}}")
     }
 }

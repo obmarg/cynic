@@ -4,7 +4,6 @@ fn ui_test_inlinefragments() {
     t.compile_fail("tests/cases/argument-missing-fields.rs");
     t.compile_fail("tests/cases/enum-guess-validation.rs");
     t.compile_fail("tests/cases/fragment-guess-validation.rs");
-    t.compile_fail("tests/cases/inline-fragment-exhaustiveness.rs");
     t.compile_fail("tests/cases/inline-fragment-fallback-validation.rs");
     t.compile_fail("tests/cases/inputobject-guess-validation.rs");
     t.compile_fail("tests/cases/missing-variable.rs");

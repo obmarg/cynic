@@ -62,6 +62,8 @@ enum Dessert {
 enum MyUnionType {
     TestStruct(Test),
     Nested(Nested),
+    #[cynic(fallback)]
+    Other,
 }
 
 /*
