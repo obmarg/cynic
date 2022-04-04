@@ -14,6 +14,7 @@ tar xvzf mdbook-v0.4.15-x86_64-unknown-linux-gnu.tar.gz
   # export PATH=$PWD:$PATH && \
   # cd ..
 
+rustup default stable
 cargo install mdbook-linkcheck
 
 ./mdbook build
