@@ -16,4 +16,6 @@
   - [Selection Sets](./building-queries/selection-sets.md)
   - [The Query DSL](./building-queries/query-dsl.md)
   - [Writing Query Fragments](./building-queries/query-fragments.md)
+- [Upgrading Cynic](./upgrading/index.md)
+  - [v1 to v2](./upgrading/v1-v2.md)
 - [Sending HTTP Requests Manually](./manual-http-requests.md)

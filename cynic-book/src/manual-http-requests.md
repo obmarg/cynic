@@ -10,14 +10,13 @@ It's simple to make an HTTP query manually with `cynic`:
 - `cynic::Operation` implements `serde::Serialize` to build the body of a
   GraphQL request. This can be used with whatever JSON encoding functionality
   your HTTP client provides.
-- Once you've made the request, you should decode a
-  `cynic::GraphQlResponse<serde_json::Value>` from the response, and then pass
-  that to the `decode_response` function of your `cynic::Operation`.
+- The `cynic::QueryFragment` derive generates a `serde::Deserialize` impl that
+  you can use to deserialize a `cynic::GraphQlResponse<YourQueryFragment>`
 
 For instance, to make a request with the `reqwest::blocking` client:
 
 ```rust
-use cynic::QueryBuilder;
+use cynic::{QueryBuilder, GraphQlResponse};
 
 let operation = AllFilmsQuery::build(());
 
@@ -27,7 +26,7 @@ let response = reqwest::blocking::Client::new()
     .send()
     .unwrap();
 
-let all_films_result = operation.decode_response(response.json().unwrap()).unwrap();
+let all_films_result = response.json::<GraphQlResponse<AllFilmsQuery>>.unwrap();
 ```
 
 Now you can do whatever you want with the result.

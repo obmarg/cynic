@@ -1,7 +1,7 @@
-//! An example that shows how to make & decode a GraphQL operation using
-//! the reqwest async integration
+//! An example that shows how to send a GraphQL operation and deserialize
+//! a GraphQL response using the cynic reqwest integration
 //!
-//! This example requires the `reqwest` feature to be active
+//! This example requires the `http-reqwest` feature to be active
 
 mod schema {
     cynic::use_schema!("../schemas/starwars.schema.graphql");
