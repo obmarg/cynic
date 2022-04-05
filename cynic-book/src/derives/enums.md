@@ -49,4 +49,4 @@ Each variant can also have it's own attributes:
 
 <!-- TODO: example of the above?  Better wording -->
 
-1: https://spec.graphql.org/June2018/#sec-Enum-Value
+[1]: https://spec.graphql.org/June2018/#sec-Enum-Value
