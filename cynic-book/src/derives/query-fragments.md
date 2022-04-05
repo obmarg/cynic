@@ -2,8 +2,8 @@
 
 QueryFragments are the main tool for building queries & mutations in cynic.
 Cynic builds up a GraphQL query document from the fields on a `QueryFragment`
-and any `QueryFragments` nested inside it.  And after executing an operation it
-decodes the result into the `QueryFragment` struct.
+and any `QueryFragments` nested inside it. And after executing an operation it
+deserializes the result into the `QueryFragment` struct.
 
 Generally you'll use a derive to create query fragments, like this:
 
@@ -55,8 +55,8 @@ must be a `Vec`.
 ### Making a Query with QueryFragments
 
 QueryFragments that apply to the Query type (otherwise known as the Root type)
-of a schema can be used to build a `cynic::Operation`. This is the type that can
-be sent to a server and used to decode the response.
+of a schema can be used to build a `cynic::Operation`. This `Operation` is the
+type that should be serialized and sent to the server.
 
 If we wanted to use our FilmConnection to get all the films from the star wars
 API we need a QueryFragment like this:
@@ -84,13 +84,13 @@ let operation = AllFilmsQuery::build(());
 This particular query has no arguments so we provide the unit type `()` in place
 of actual arguments.
 
-This `Operation` can be converted into JSON using `serde`, sent to a server, and
-then then it's `decode_response` function can be used to decode the response
-itself. An example of this is in the [Quickstart][quickstart].
+This `Operation` can be serialized into JSON using `serde`, sent to a server,
+and then then a `cynic::GraphQlResponse<AllFilmsQuery>` can be deserialized
+from the response. An example of this is in the [Quickstart][quickstart].
 
 ### Passing Arguments
 
-GraphQL allows a server to define arguments that a field can accept.  Cynic
+GraphQL allows a server to define arguments that a field can accept. Cynic
 provides support for passing in these arguments via its `arguments` attribute.
 
 Here, we define a query that fetches a film by a particular ID:
@@ -108,7 +108,7 @@ struct FilmQuery {
 }
 ```
 
-Note the `#[arguments: id: "ZmlsbXM6MQ=="]` attribute on the `film` field.  The
+Note the `#[arguments: id: "ZmlsbXM6MQ=="]` attribute on the `film` field. The
 GraphQL generated for this query will provide a hard coded `id` argument to the
 `film` field, like this:
 
@@ -120,7 +120,7 @@ film(id: "ZmlsbXM6MQ==") {
 ```
 
 The syntax of the inside of arguments is very similar to [the syntax expected
-for arguments in GraphQL itself][gql-arguments].  Some examples:
+for arguments in GraphQL itself][gql-arguments]. Some examples:
 
 | GraphQL                        | Cynic                          |
 | ------------------------------ | ------------------------------ |
@@ -133,7 +133,7 @@ for arguments in GraphQL itself][gql-arguments].  Some examples:
 ### Variables
 
 If you don't want to hard code the value of an argument, you can parameterise
-your query with some variables.  These variables must be defined on a struct:
+your query with some variables. These variables must be defined on a struct:
 
 ```rust
 #[derive(cynic::QueryVariables)]
@@ -182,7 +182,6 @@ let operation = FilmQuery::build(
 ```
 
 See [query variables][1] for more details.
-
 
 #### Nested Variables
 
@@ -233,7 +232,7 @@ A QueryFragment can be configured with several attributes on the struct itself:
 Each field can also have it's own attributes:
 
 - `rename = "someGraphqlName"` can be provided if you want the rust field name
-  to differ from the GraphQL field name.  You should provide the name as it is
+  to differ from the GraphQL field name. You should provide the name as it is
   in the GraphQL schema (although due to implementation details a snake case
   form of the name may work as well)
 - `alias` can be provided if you have a renamed field and want to explicitly

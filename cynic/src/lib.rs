@@ -91,10 +91,10 @@
 //!                     .post("a_url")
 //!                     .json(&operation)
 //!                     .send()?;
-//! let result = query.decode_response(response.json()?)?;
+//! let result = response.json::<GraphQlResponse<FilmDirectorQuery>>()?;
 //! ```
 //!
-//! After this code has run, result will be an instance of `FilmDirectorQuery`
+//! After this code has run, result will be an instance of `GraphQlResponse<FilmDirectorQuery>`
 //! with the film populated appropriately.
 //!
 //! ### Dynamic Query Arguments

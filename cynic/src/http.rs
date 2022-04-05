@@ -72,11 +72,8 @@ mod surf_ext {
     /// ```
     #[cfg_attr(docsrs, doc(cfg(feature = "http-surf")))]
     pub trait SurfExt {
-        /// Runs a GraphQL query with the parameters in RequestBuilder, decodes
+        /// Runs a GraphQL query with the parameters in RequestBuilder, deserializes
         /// the response and returns the result.
-        ///
-        /// If a `json_decode::Error` occurs it can be obtained via downcast_ref on
-        /// the `surf::Error`.
         fn run_graphql<ResponseData, Vars>(
             self,
             operation: Operation<ResponseData, Vars>,
@@ -189,11 +186,8 @@ mod reqwest_ext {
     /// ```
     #[cfg_attr(docsrs, doc(cfg(feature = "http-reqwest")))]
     pub trait ReqwestExt {
-        /// Runs a GraphQL query with the parameters in RequestBuilder, decodes
+        /// Runs a GraphQL query with the parameters in RequestBuilder, deserializes
         /// the and returns the result.
-        ///
-        /// If a `json_decode::Error` occurs it can be obtained via downcast_ref on
-        /// the `surf::Error`.
         fn run_graphql<ResponseData, Vars>(
             self,
             operation: Operation<ResponseData, Vars>,
@@ -297,11 +291,8 @@ mod reqwest_blocking_ext {
     /// ```
     #[cfg_attr(docsrs, doc(cfg(feature = "http-reqwest-blocking")))]
     pub trait ReqwestBlockingExt {
-        /// Runs a GraphQL query with the parameters in RequestBuilder, decodes
+        /// Runs a GraphQL query with the parameters in RequestBuilder, deserializes
         /// the and returns the result.
-        ///
-        /// If a `json_decode::Error` occurs it can be obtained via downcast_ref on
-        /// the `surf::Error`.
         fn run_graphql<ResponseData, Vars>(
             self,
             operation: Operation<ResponseData, Vars>,

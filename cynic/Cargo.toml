@@ -17,8 +17,8 @@ readme = "../README.md"
 default = []
 all = ["http-surf", "http-reqwest", "http-reqwest-blocking"]
 http-surf = ["surf", "serde_json"]
-http-reqwest = ["reqwest"]
-http-reqwest-blocking = ["http-reqwest", "reqwest/blocking"]
+http-reqwest = ["reqwest", "serde_json"]
+http-reqwest-blocking = ["http-reqwest", "reqwest/blocking", "serde_json"]
 
 [dependencies]
 cynic-proc-macros = { path = "../cynic-proc-macros", version = "2.0.0-dev" }
