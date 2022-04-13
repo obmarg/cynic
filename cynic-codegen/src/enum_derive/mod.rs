@@ -5,7 +5,6 @@ use crate::{
     idents::{RenameAll, RenameRule},
     load_schema,
     schema::{Definition, Document, EnumType, EnumValue, TypeDefinition},
-    Ident,
 };
 
 pub(crate) mod input;
