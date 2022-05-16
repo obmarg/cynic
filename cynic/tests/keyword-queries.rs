@@ -13,9 +13,14 @@ fn test_query_output() {
 
 #[test]
 fn test_query_decoding() {
-    let data = serde_json::from_value::<queries::KeywordQuery>(
-        json!({"_": false, "async": false, "crate": false, "self": false, "super": false}),
-    )
+    let data = serde_json::from_value::<queries::KeywordQuery>(json!({
+        "_": false,
+        "async": false,
+        "crate": false,
+        "self": false,
+        "super": false,
+        "fieldWithKeywordArg": []
+    }))
     .unwrap();
 
     insta::assert_yaml_snapshot!(data);
