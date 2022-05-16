@@ -10,6 +10,7 @@ query {
   crate
   self
   super
+  fieldWithKeywordArg(where: 10)
 }
 
 

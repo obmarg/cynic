@@ -38,6 +38,9 @@ mod queries {
         pub self_: Option<bool>,
         #[cynic(rename = "super")]
         pub super_: Option<bool>,
+
+        #[arguments(where: 10)]
+        pub field_with_keyword_arg: Vec<i32>,
     }
 }
 

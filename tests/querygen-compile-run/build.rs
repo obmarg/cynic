@@ -176,6 +176,11 @@ fn main() {
             "tests/queries/books/books.graphql",
             r#"queries::BookSubscription::build(())"#,
         ),
+        TestCase::query_norun(
+            &test_schema,
+            "tests/queries/misc/keyword-argument.graphql",
+            r#"queries::KeywordArgumentQuery::build(())"#,
+        ),
     ];
 
     for case in cases {
