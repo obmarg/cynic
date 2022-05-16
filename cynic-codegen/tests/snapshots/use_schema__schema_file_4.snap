@@ -81,6 +81,21 @@ pub mod foo_fields {
             const NAME: &'static str = "id";
         }
     }
+    pub struct FieldWithKeywordArg;
+    impl ::cynic::schema::Field for FieldWithKeywordArg {
+        type Type = Vec<super::Int>;
+        const NAME: &'static str = "fieldWithKeywordArg";
+    }
+    impl ::cynic::schema::HasField<FieldWithKeywordArg> for super::Foo {
+        type Type = Vec<super::Int>;
+    }
+    pub mod field_with_keyword_arg_arguments {
+        pub struct Where;
+        impl ::cynic::schema::HasArgument<Where> for super::FieldWithKeywordArg {
+            type ArgumentType = Option<super::super::Int>;
+            const NAME: &'static str = "where";
+        }
+    }
 }
 pub struct States {}
 pub struct Uuid {}

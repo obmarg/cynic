@@ -48,7 +48,7 @@ pub enum FieldArgumentValue {
 
 impl Parse for FieldArgument {
     fn parse(input: ParseStream) -> Result<Self> {
-        let argument_name = input.parse()?;
+        let argument_name = input.call(Ident::parse_any)?;
         let lookahead = input.lookahead1();
         let value;
         if lookahead.peek(Token![:]) {

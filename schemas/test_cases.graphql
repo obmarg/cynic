@@ -9,6 +9,8 @@ type Foo {
   crate: Boolean
   async: Boolean
   bar(id: UUID!): Bar
+
+  fieldWithKeywordArg(where: Int): [Int!]!
 }
 
 type Bar {

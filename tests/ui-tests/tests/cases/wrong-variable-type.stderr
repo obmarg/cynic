@@ -9,7 +9,7 @@ error[E0277]: the trait bound `i32: CoercesTo<std::option::Option<cynic::Id>>` i
               <i32 as CoercesTo<Vec<i32>>>
               <i32 as CoercesTo<i32>>
               <i32 as CoercesTo<std::option::Option<Vec<i32>>>>
-            and 3 others
+            and 10 others
 note: required by a bound in `cynic::queries::builders::InputBuilder::<'a, SchemaType, Variables>::variable`
    --> $WORKSPACE/cynic/src/queries/builders.rs
     |
