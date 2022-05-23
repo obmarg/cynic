@@ -1484,9 +1484,9 @@ dependencies = [
 
 [[package]]
 name = "once_cell"
-version = "1.9.0"
+version = "1.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "da32515d9f6e6e489d7bc9d84c71b060db7247dc035bbe44eac88cf87486d8d5"
+checksum = "7b10983b38c53aebdf33f542c6275b0f58a238129d00c4ae0e6fb59738d783ca"
 
 [[package]]
 name = "opaque-debug"
