@@ -152,9 +152,9 @@
 //!
 //! - `surf` adds integration with the [`surf`](https://github.com/http-rs/surf)
 //!   http client.
-//! - `rewest` adds async integration with the
+//! - `reqwest` adds async integration with the
 //!   [`reqwest`](https://github.com/seanmonstar/reqwest) http client.
-//! - `rewest-blocking` adds blocking integration with the
+//! - `reqwest-blocking` adds blocking integration with the
 //!   [`reqwest`](https://github.com/seanmonstar/reqwest) http client.
 //!
 //! It's worth noting that each of these features pulls in extra
