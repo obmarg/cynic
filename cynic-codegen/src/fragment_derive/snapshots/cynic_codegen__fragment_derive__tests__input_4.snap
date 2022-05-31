@@ -1,6 +1,6 @@
 ---
 source: cynic-codegen/src/fragment_derive/tests.rs
-assertion_line: 85
+assertion_line: 94
 expression: "format_code(format!(\"{}\", tokens))"
 
 ---
@@ -11,10 +11,10 @@ impl<'de> ::cynic::QueryFragment<'de> for MyQuery {
     const TYPE: Option<&'static str> = Some("Query");
     fn query(mut builder: ::cynic::queries::SelectionBuilder<Self::SchemaType, Self::Variables>) {
         #![allow(unused_mut)]
-        let mut field_builder = builder . select_field :: < schema :: query_fields :: FilteredPosts , < Vec < BlogPostOutput > as :: cynic :: QueryFragment > :: SchemaType > () ;
+        let mut field_builder = builder . select_field :: < schema :: query_fields :: filteredPosts , < Vec < BlogPostOutput > as :: cynic :: QueryFragment > :: SchemaType > () ;
         {
             field_builder
-                .argument::<schema::query_fields::filtered_posts_arguments::Filters>()
+                .argument::<schema::query_fields::filtered_posts_arguments::filters>()
                 .variable(<AnArgumentStruct as ::cynic::QueryVariables>::Fields::filters());
         }
         <Vec<BlogPostOutput> as ::cynic::QueryFragment>::query(field_builder.select_children());
