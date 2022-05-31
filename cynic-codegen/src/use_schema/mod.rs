@@ -45,7 +45,7 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
 
         match definition {
             Type::Scalar(def) if !def.builtin => {
-                let ident = Ident::for_type(&def.name);
+                let ident = proc_macro2::Ident::from(def.marker_ident());
                 output.append_all(quote! {
                     pub struct #ident {}
                 });
@@ -70,7 +70,7 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
                 });
             }
             Type::Enum(def) => {
-                let ident = Ident::for_type(&def.name);
+                let ident = proc_macro2::Ident::from(def.marker_ident());
                 output.append_all(quote! {
                     pub struct #ident {}
                 });
@@ -89,7 +89,7 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
         pub type String = std::string::String;
         pub type Float = f64;
         pub type Int = i32;
-        pub type Id = ::cynic::Id;
+        pub type ID = ::cynic::Id;
 
         pub mod variable {
             use ::cynic::variables::VariableType;

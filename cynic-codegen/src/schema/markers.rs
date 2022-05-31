@@ -2,31 +2,37 @@ use quote::format_ident;
 
 use crate::{idents::PathExt2, schema::types::*};
 
-use crate::idents::{to_pascal_case, to_snake_case};
+use crate::idents::to_snake_case;
 
 use super::keywords::transform_keywords;
 
+/// Ident for a type
 #[derive(Clone, Copy, Debug)]
-pub struct MarkerIdent<'a> {
+pub struct TypeMarkerIdent<'a> {
     graphql_name: &'a str,
 }
 
+/// Ident for a field of a type
 #[derive(Clone, Copy, Debug)]
 pub struct FieldMarkerIdent<'a> {
     graphql_name: &'a str,
 }
 
+/// A module that contains everything associated with a field.
 #[derive(Clone, Copy, Debug)]
 pub struct FieldMarkerModule<'a> {
     type_name: &'a str,
 }
 
+/// A module that contains everything associated with an argument to a field
 #[derive(Clone, Copy, Debug)]
 pub struct ArgumentMarkerModule<'a> {
     type_name: &'a str,
     field_name: &'a str,
 }
 
+/// Marker to the type of a field - handles options & vecs and whatever the inner
+/// type is
 #[derive(Clone)]
 pub struct TypeRefMarker<'a, T> {
     type_ref: &'a TypeRef<'a, T>,
@@ -38,7 +44,7 @@ impl<T> TypeRefMarker<'_, T> {
 
         match &self.type_ref {
             TypeRef::Named(name, _, _) => {
-                MarkerIdent { graphql_name: name }.to_path(path_to_markers)
+                TypeMarkerIdent { graphql_name: name }.to_path(path_to_markers)
             }
             TypeRef::List(inner) => {
                 let inner_path = TypeRefMarker {
@@ -64,7 +70,7 @@ impl<T> TypeRefMarker<'_, T> {
     }
 }
 
-impl<'a> MarkerIdent<'a> {
+impl<'a> TypeMarkerIdent<'a> {
     pub fn to_path(self, path_to_markers: &syn::Path) -> syn::Path {
         let mut path = path_to_markers.clone();
         path.push(proc_macro2::Ident::from(self));
@@ -72,9 +78,9 @@ impl<'a> MarkerIdent<'a> {
     }
 }
 
-impl From<MarkerIdent<'_>> for proc_macro2::Ident {
-    fn from(val: MarkerIdent<'_>) -> Self {
-        format_ident!("{}", transform_keywords(&to_pascal_case(val.graphql_name)))
+impl From<TypeMarkerIdent<'_>> for proc_macro2::Ident {
+    fn from(val: TypeMarkerIdent<'_>) -> Self {
+        format_ident!("{}", transform_keywords(val.graphql_name))
     }
 }
 
@@ -104,7 +110,7 @@ impl From<FieldMarkerIdent<'_>> for proc_macro2::Ident {
             return format_ident!("_Underscore");
         }
 
-        format_ident!("{}", transform_keywords(&to_pascal_case(val.graphql_name)))
+        format_ident!("{}", transform_keywords(val.graphql_name))
     }
 }
 
@@ -130,8 +136,8 @@ macro_rules! marker_ident_for_named {
     () => {};
     ($kind:ident) => {
         impl<'a> $kind<'a> {
-            pub fn marker_ident(&self) -> MarkerIdent<'a> {
-                MarkerIdent {
+            pub fn marker_ident(&self) -> TypeMarkerIdent<'a> {
+                TypeMarkerIdent {
                     graphql_name: self.name
                 }
             }
@@ -148,7 +154,8 @@ marker_ident_for_named!(
     EnumType,
     InterfaceType,
     UnionType,
-    InputObjectType
+    InputObjectType,
+    ScalarType
 );
 
 impl<'a> Field<'a> {
@@ -201,16 +208,16 @@ impl<'a> Field<'a> {
 }
 
 impl<'a> ObjectRef<'a> {
-    pub fn marker_ident(&self) -> MarkerIdent<'a> {
-        MarkerIdent {
+    pub fn marker_ident(&self) -> TypeMarkerIdent<'a> {
+        TypeMarkerIdent {
             graphql_name: self.0,
         }
     }
 }
 
 impl<'a> InterfaceRef<'a> {
-    pub fn marker_ident(&self) -> MarkerIdent<'a> {
-        MarkerIdent {
+    pub fn marker_ident(&self) -> TypeMarkerIdent<'a> {
+        TypeMarkerIdent {
             graphql_name: self.0,
         }
     }
