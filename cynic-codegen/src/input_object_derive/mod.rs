@@ -79,8 +79,7 @@ pub fn input_object_derive_impl(
 
         let errors = field_serializers
             .iter()
-            .map(|fs| fs.validate())
-            .flatten()
+            .filter_map(|fs| fs.validate())
             .collect::<Errors>();
 
         if !errors.is_empty() {
@@ -154,16 +153,15 @@ fn pair_fields<'a>(
         }
     }
 
-    let required_fields: HashSet<_>;
-    if require_all_fields {
-        required_fields = input_object_def.fields.iter().collect();
+    let required_fields = if require_all_fields {
+        input_object_def.fields.iter().collect::<HashSet<_>>()
     } else {
-        required_fields = input_object_def
+        input_object_def
             .fields
             .iter()
             .filter(|f| !matches!(f.value_type, TypeRef::Nullable(_)))
-            .collect();
-    }
+            .collect::<HashSet<_>>()
+    };
 
     let provided_fields = result
         .iter()

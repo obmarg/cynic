@@ -18,13 +18,12 @@ impl<'schema> TypeIndex<'schema> {
         let types = schema
             .definitions
             .iter()
-            .map(|definition| match definition {
+            .filter_map(|definition| match definition {
                 Definition::TypeDefinition(type_def) => {
                     Some((name_for_type(type_def), type_def.clone()))
                 }
                 _ => None,
             })
-            .flatten()
             .collect::<HashMap<_, _>>();
 
         let mut rv = TypeIndex::default();

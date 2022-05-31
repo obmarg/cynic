@@ -35,8 +35,7 @@ fn derive_from_attributes(attrs: &[Attribute]) -> Vec<Derive> {
     return meta_list
         .nested
         .iter()
-        .map(derive_for_nested_meta)
-        .flatten()
+        .filter_map(derive_for_nested_meta)
         .collect();
 }
 
