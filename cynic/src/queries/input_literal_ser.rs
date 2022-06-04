@@ -125,7 +125,7 @@ impl<'a> ser::Serializer for InputLiteralSerializer {
         _variant_index: u32,
         variant: &'static str,
     ) -> Result<Self::Ok, Self::Error> {
-        Ok(InputLiteral::String(Cow::Borrowed(variant)))
+        Ok(InputLiteral::EnumValue(variant))
     }
 
     fn serialize_newtype_struct<T: ?Sized>(

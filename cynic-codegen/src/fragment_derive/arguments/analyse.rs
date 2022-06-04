@@ -196,15 +196,23 @@ fn analyse_value_type<'a>(
             (InputType::Scalar(_), ArgumentLiteral::Null(span)) => {
                 Err(syn::Error::new(span, "Expected a scalar here but found a null").into())
             }
+            (InputType::Scalar(_), ArgumentLiteral::Enum(i)) => Err(syn::Error::new(
+                i.span(),
+                "Expected a scalar here but found an unquoted string",
+            )
+            .into()),
             (InputType::Scalar(_), ArgumentLiteral::Literal(lit)) => {
                 Ok(ArgumentValue::Literal(lit))
             }
 
+            (InputType::Enum(en), ArgumentLiteral::Enum(i)) => Ok(ArgumentValue::Variant(
+                analysis.enum_variant(en, i.to_string(), i.span())?,
+            )),
             (InputType::Enum(en), ArgumentLiteral::Literal(Lit::Str(s))) => Ok(
                 ArgumentValue::Variant(analysis.enum_variant(en, s.value(), s.span())?),
             ),
             (InputType::Enum(_), lit) => {
-                Err(syn::Error::new(lit.span(), "Expected an enum variant here").into())
+                Err(syn::Error::new(lit.span(), "Expected an enum here").into())
             }
 
             (InputType::InputObject(def), ArgumentLiteral::Object(fields, span)) => {

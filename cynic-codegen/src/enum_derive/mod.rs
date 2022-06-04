@@ -88,6 +88,15 @@ pub fn enum_derive_impl(
             .collect();
 
         let variants: Vec<_> = pairs.iter().map(|(variant, _)| &variant.ident).collect();
+        let variant_indexes: Vec<_> = pairs
+            .iter()
+            .enumerate()
+            .map(|(i, _)| {
+                proc_macro2::Literal::u32_suffixed(
+                    i.try_into().expect("an enum with less than 2^32 variants"),
+                )
+            })
+            .collect();
 
         let schema_module = input.schema_module();
         let ident = input.ident;
@@ -105,7 +114,7 @@ pub fn enum_derive_impl(
                     S: ::cynic::serde::Serializer {
                         match self {
                             #(
-                                #ident::#variants => serializer.serialize_str(#string_literals),
+                                #ident::#variants => serializer.serialize_unit_variant(#graphql_type_name, #variant_indexes, #string_literals),
                             )*
                         }
                     }
