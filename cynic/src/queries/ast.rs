@@ -71,6 +71,8 @@ pub enum InputLiteral {
     Variable(&'static str),
     /// A null
     Null,
+    /// One of the values of an enum
+    EnumValue(&'static str),
 }
 
 #[derive(Debug, Default)]
@@ -173,6 +175,9 @@ impl std::fmt::Display for InputLiteral {
             }
             InputLiteral::Null => {
                 write!(f, "null")
+            }
+            InputLiteral::EnumValue(name) => {
+                write!(f, "{name}")
             }
         }
     }

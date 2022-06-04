@@ -71,6 +71,7 @@ impl Parse for FieldArgument {
 #[derive(Debug, Clone)]
 pub enum ArgumentLiteral {
     Literal(syn::Lit),
+    Enum(proc_macro2::Ident),
     Object(Punctuated<FieldArgument, Token![,]>, Span),
     List(Punctuated<ArgumentLiteral, Token![,]>, Span),
     Variable(proc_macro2::Ident, Span),
@@ -81,6 +82,7 @@ impl ArgumentLiteral {
     pub(super) fn span(&self) -> Span {
         match self {
             ArgumentLiteral::Literal(lit) => lit.span(),
+            ArgumentLiteral::Enum(ident) => ident.span(),
             ArgumentLiteral::Object(_, span) => *span,
             ArgumentLiteral::List(_, span) => *span,
             ArgumentLiteral::Variable(_, span) => *span,
@@ -130,10 +132,7 @@ impl Parse for ArgumentLiteral {
                 return Ok(ArgumentLiteral::Null(ident.span()));
             }
 
-            Err(syn::Error::new(
-                ident.span(),
-                format!("Unknown token: {ident}"),
-            ))
+            return Ok(ArgumentLiteral::Enum(ident));
         } else {
             Err(lookahead.error())
         }

@@ -1,6 +1,6 @@
 ---
 source: cynic-codegen/src/enum_derive/mod.rs
-assertion_line: 382
+assertion_line: 390
 expression: "format_code(format!(\"{}\", tokens))"
 
 ---
@@ -15,9 +15,9 @@ impl ::cynic::serde::Serialize for States {
         S: ::cynic::serde::Serializer,
     {
         match self {
-            States::Closed => serializer.serialize_str("CLOSED"),
-            States::Deleted => serializer.serialize_str("DELETED"),
-            States::Open => serializer.serialize_str("OPEN"),
+            States::Closed => serializer.serialize_unit_variant("States", 0u32, "CLOSED"),
+            States::Deleted => serializer.serialize_unit_variant("States", 1u32, "DELETED"),
+            States::Open => serializer.serialize_unit_variant("States", 2u32, "OPEN"),
         }
     }
 }
