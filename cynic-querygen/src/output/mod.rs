@@ -31,7 +31,15 @@ pub struct Scalar<'schema>(pub &'schema str);
 
 impl std::fmt::Display for Scalar<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let graphql_name = self.0;
+        let rust_name = self.0.to_pascal_case();
+
         writeln!(f, "#[derive(cynic::Scalar, Debug, Clone)]")?;
-        writeln!(f, "pub struct {}(pub String);", self.0.to_pascal_case())
+
+        if graphql_name != rust_name {
+            writeln!(f, "#[cynic(graphql_type = \"{}\")]", graphql_name)?;
+        }
+
+        writeln!(f, "pub struct {}(pub String);", rust_name)
     }
 }

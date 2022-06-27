@@ -132,7 +132,7 @@ impl Parse for ArgumentLiteral {
                 return Ok(ArgumentLiteral::Null(ident.span()));
             }
 
-            return Ok(ArgumentLiteral::Enum(ident));
+            Ok(ArgumentLiteral::Enum(ident))
         } else {
             Err(lookahead.error())
         }

@@ -71,6 +71,10 @@ impl<T> TypeRefMarker<'_, T> {
 }
 
 impl<'a> TypeMarkerIdent<'a> {
+    pub fn with_graphql_name(graphql_name: &'a str) -> Self {
+        TypeMarkerIdent { graphql_name }
+    }
+
     pub fn to_path(self, path_to_markers: &syn::Path) -> syn::Path {
         let mut path = path_to_markers.clone();
         path.push(proc_macro2::Ident::from(self));
