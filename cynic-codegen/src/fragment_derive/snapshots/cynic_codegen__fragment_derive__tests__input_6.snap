@@ -11,7 +11,7 @@ impl<'de> ::cynic::QueryFragment<'de> for Film {
     const TYPE: Option<&'static str> = Some("Film");
     fn query(mut builder: ::cynic::queries::SelectionBuilder<Self::SchemaType, Self::Variables>) {
         #![allow(unused_mut)]
-        let mut field_builder = builder . select_flattened_field :: < schema :: film_fields :: Producers , < String as :: cynic :: schema :: IsScalar < < schema :: film_fields :: Producers as :: cynic :: schema :: Field > :: Type >> :: SchemaType , < schema :: film_fields :: Producers as :: cynic :: schema :: Field > :: Type , > () ;
+        let mut field_builder = builder . select_flattened_field :: < schema :: film_fields :: producers , < String as :: cynic :: schema :: IsScalar < < schema :: film_fields :: producers as :: cynic :: schema :: Field > :: Type >> :: SchemaType , < schema :: film_fields :: producers as :: cynic :: schema :: Field > :: Type , > () ;
     }
 }
 #[automatically_derived]

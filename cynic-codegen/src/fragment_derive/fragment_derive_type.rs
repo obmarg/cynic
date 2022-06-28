@@ -1,5 +1,5 @@
 use crate::schema::{
-    markers::{FieldMarkerModule, MarkerIdent},
+    markers::{FieldMarkerModule, TypeMarkerIdent},
     types::{Field, Kind, Type},
     FieldName, SchemaError,
 };
@@ -7,7 +7,7 @@ use crate::schema::{
 pub struct FragmentDeriveType<'a> {
     pub fields: Vec<Field<'a>>,
     pub name: &'a str,
-    pub marker_ident: MarkerIdent<'a>,
+    pub marker_ident: TypeMarkerIdent<'a>,
     pub field_module: FieldMarkerModule<'a>,
 }
 

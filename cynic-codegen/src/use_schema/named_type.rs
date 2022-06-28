@@ -1,10 +1,10 @@
 use proc_macro2::TokenStream;
 
-use crate::{schema::markers::MarkerIdent, schema::types::Type};
+use crate::{schema::markers::TypeMarkerIdent, schema::types::Type};
 
 pub struct NamedType<'a> {
     graphql_name: &'a str,
-    marker_ident: MarkerIdent<'a>,
+    marker_ident: TypeMarkerIdent<'a>,
 }
 
 impl<'a> NamedType<'a> {

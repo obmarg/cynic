@@ -1,12 +1,12 @@
 use proc_macro2::TokenStream;
 
-use crate::schema::{markers::MarkerIdent, types as schema};
+use crate::schema::{markers::TypeMarkerIdent, types as schema};
 
 /// Outputs `HasSubtype` implementations for the given types.
 #[derive(Debug)]
 pub struct SubtypeMarkers<'a> {
-    pub subtype: MarkerIdent<'a>,
-    pub supertypes: Vec<MarkerIdent<'a>>,
+    pub subtype: TypeMarkerIdent<'a>,
+    pub supertypes: Vec<TypeMarkerIdent<'a>>,
 }
 
 impl<'a> SubtypeMarkers<'a> {

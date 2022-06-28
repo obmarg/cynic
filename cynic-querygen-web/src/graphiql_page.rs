@@ -119,8 +119,8 @@ fn gql_editor(schema_url: &str, schema: Option<&str>, generated_code: &str) -> N
             }),
             attrs! {
                 "schema-url" => schema_url
-                "schema" => schema.unwrap_or("").replace("\n", "&NL;")
-                "generated-code" => generated_code.replace("\n", "&NL;")
+                "schema" => schema.unwrap_or("").replace('\n', "&NL;")
+                "generated-code" => generated_code.replace('\n', "&NL;")
             },
             Tag::from("gql-editor"),
         ]

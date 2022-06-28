@@ -6,8 +6,9 @@ pub(crate) mod input;
 mod tests;
 
 pub use input::ScalarDeriveInput;
+use quote::quote_spanned;
 
-use crate::Ident;
+use crate::schema::markers::TypeMarkerIdent;
 
 pub fn scalar_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
     use darling::FromDeriveInput;
@@ -35,18 +36,23 @@ pub fn scalar_derive_impl(input: ScalarDeriveInput) -> Result<TokenStream, syn::
 
     let ident = input.ident;
     let inner_type = field.ty;
-    let scalar_marker_ident = if let Some(graphql_type) = &input.graphql_type {
-        Ident::new_spanned((**graphql_type).clone(), graphql_type.span())
-    } else {
-        Ident::for_type(ident.to_string()).with_span(ident.span())
-    };
-    let graphql_type_name = proc_macro2::Literal::string(
-        &input
-            .graphql_type
-            .as_ref()
-            .map(|s| (**s).clone())
-            .unwrap_or_else(|| ident.to_string()),
-    );
+
+    let scalar_name;
+    let scalar_span;
+    match input.graphql_type {
+        Some(graphql_type) => {
+            scalar_span = graphql_type.span();
+            scalar_name = graphql_type.to_string();
+        }
+        None => {
+            scalar_span = ident.span();
+            scalar_name = ident.to_string();
+        }
+    }
+
+    let graphql_type_name = proc_macro2::Literal::string(&scalar_name);
+    let marker_ident = TypeMarkerIdent::with_graphql_name(&scalar_name).to_path(&schema_module);
+    let marker_ident = quote_spanned! { scalar_span => #marker_ident };
 
     Ok(quote! {
         #[automatically_derived]
@@ -70,8 +76,8 @@ pub fn scalar_derive_impl(input: ScalarDeriveInput) -> Result<TokenStream, syn::
         }
 
         #[automatically_derived]
-        impl ::cynic::schema::IsScalar<#schema_module::#scalar_marker_ident> for #ident {
-            type SchemaType = #schema_module::#scalar_marker_ident;
+        impl ::cynic::schema::IsScalar<#marker_ident> for #ident {
+            type SchemaType = #marker_ident;
         }
 
         #[automatically_derived]
@@ -79,6 +85,6 @@ pub fn scalar_derive_impl(input: ScalarDeriveInput) -> Result<TokenStream, syn::
             const TYPE: ::cynic::variables::VariableType = ::cynic::variables::VariableType::Named(#graphql_type_name);
         }
 
-        ::cynic::impl_coercions!(#ident, #schema_module::#scalar_marker_ident);
+        ::cynic::impl_coercions!(#ident, #marker_ident);
     })
 }

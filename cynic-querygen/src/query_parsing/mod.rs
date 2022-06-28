@@ -139,8 +139,7 @@ fn make_inline_fragments<'text>(
         variable_struct_name: inline_fragments
             .inner_selections
             .iter()
-            .map(|selection| variable_struct_details.variables_name_for_selection(selection))
-            .flatten()
+            .filter_map(|selection| variable_struct_details.variables_name_for_selection(selection))
             .next(),
         name: namers.inline_fragments.name_subject(&inline_fragments),
     }

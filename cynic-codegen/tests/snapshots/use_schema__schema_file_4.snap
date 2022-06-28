@@ -7,20 +7,20 @@ expression: "format_code(format!(\"{}\", tokens))"
 impl ::cynic::schema::QueryRoot for Foo {}
 pub struct Bar;
 pub mod bar_fields {
-    pub struct Id;
-    impl ::cynic::schema::Field for Id {
-        type Type = super::Uuid;
+    pub struct id;
+    impl ::cynic::schema::Field for id {
+        type Type = super::UUID;
         const NAME: &'static str = "id";
     }
-    impl ::cynic::schema::HasField<Id> for super::Bar {
-        type Type = super::Uuid;
+    impl ::cynic::schema::HasField<id> for super::Bar {
+        type Type = super::UUID;
     }
-    pub struct Name;
-    impl ::cynic::schema::Field for Name {
+    pub struct name;
+    impl ::cynic::schema::Field for name {
         type Type = Option<super::String>;
         const NAME: &'static str = "name";
     }
-    impl ::cynic::schema::HasField<Name> for super::Bar {
+    impl ::cynic::schema::HasField<name> for super::Bar {
         type Type = Option<super::String>;
     }
 }
@@ -34,71 +34,71 @@ pub mod foo_fields {
     impl ::cynic::schema::HasField<_Underscore> for super::Foo {
         type Type = Option<super::Boolean>;
     }
-    pub struct Self_;
-    impl ::cynic::schema::Field for Self_ {
+    pub struct self_;
+    impl ::cynic::schema::Field for self_ {
         type Type = Option<super::Boolean>;
         const NAME: &'static str = "self";
     }
-    impl ::cynic::schema::HasField<Self_> for super::Foo {
+    impl ::cynic::schema::HasField<self_> for super::Foo {
         type Type = Option<super::Boolean>;
     }
-    pub struct Super;
-    impl ::cynic::schema::Field for Super {
+    pub struct super_;
+    impl ::cynic::schema::Field for super_ {
         type Type = Option<super::Boolean>;
         const NAME: &'static str = "super";
     }
-    impl ::cynic::schema::HasField<Super> for super::Foo {
+    impl ::cynic::schema::HasField<super_> for super::Foo {
         type Type = Option<super::Boolean>;
     }
-    pub struct Crate;
-    impl ::cynic::schema::Field for Crate {
+    pub struct crate_;
+    impl ::cynic::schema::Field for crate_ {
         type Type = Option<super::Boolean>;
         const NAME: &'static str = "crate";
     }
-    impl ::cynic::schema::HasField<Crate> for super::Foo {
+    impl ::cynic::schema::HasField<crate_> for super::Foo {
         type Type = Option<super::Boolean>;
     }
-    pub struct Async;
-    impl ::cynic::schema::Field for Async {
+    pub struct r#async;
+    impl ::cynic::schema::Field for r#async {
         type Type = Option<super::Boolean>;
         const NAME: &'static str = "async";
     }
-    impl ::cynic::schema::HasField<Async> for super::Foo {
+    impl ::cynic::schema::HasField<r#async> for super::Foo {
         type Type = Option<super::Boolean>;
     }
-    pub struct Bar;
-    impl ::cynic::schema::Field for Bar {
+    pub struct bar;
+    impl ::cynic::schema::Field for bar {
         type Type = Option<super::Bar>;
         const NAME: &'static str = "bar";
     }
-    impl ::cynic::schema::HasField<Bar> for super::Foo {
+    impl ::cynic::schema::HasField<bar> for super::Foo {
         type Type = Option<super::Bar>;
     }
     pub mod bar_arguments {
-        pub struct Id;
-        impl ::cynic::schema::HasArgument<Id> for super::Bar {
-            type ArgumentType = super::super::Uuid;
+        pub struct id;
+        impl ::cynic::schema::HasArgument<id> for super::bar {
+            type ArgumentType = super::super::UUID;
             const NAME: &'static str = "id";
         }
     }
-    pub struct FieldWithKeywordArg;
-    impl ::cynic::schema::Field for FieldWithKeywordArg {
+    pub struct fieldWithKeywordArg;
+    impl ::cynic::schema::Field for fieldWithKeywordArg {
         type Type = Vec<super::Int>;
         const NAME: &'static str = "fieldWithKeywordArg";
     }
-    impl ::cynic::schema::HasField<FieldWithKeywordArg> for super::Foo {
+    impl ::cynic::schema::HasField<fieldWithKeywordArg> for super::Foo {
         type Type = Vec<super::Int>;
     }
     pub mod field_with_keyword_arg_arguments {
-        pub struct Where;
-        impl ::cynic::schema::HasArgument<Where> for super::FieldWithKeywordArg {
+        pub struct r#where;
+        impl ::cynic::schema::HasArgument<r#where> for super::fieldWithKeywordArg {
             type ArgumentType = Option<super::super::Int>;
             const NAME: &'static str = "where";
         }
     }
 }
 pub struct States {}
-pub struct Uuid {}
+pub struct UUID {}
 impl ::cynic::schema::NamedType for Bar {
     const NAME: &'static str = "Bar";
 }
@@ -109,7 +109,7 @@ pub type Boolean = bool;
 pub type String = std::string::String;
 pub type Float = f64;
 pub type Int = i32;
-pub type Id = ::cynic::Id;
+pub type ID = ::cynic::Id;
 pub mod variable {
     use cynic::variables::VariableType;
     #[doc = r" Used to determine the type of a given variable that"]

@@ -8,145 +8,145 @@ impl ::cynic::schema::QueryRoot for Query {}
 pub struct AnInputType;
 impl ::cynic::schema::InputObjectMarker for AnInputType {}
 pub mod an_input_type_fields {
-    pub struct FavouriteDessert;
-    impl ::cynic::schema::Field for FavouriteDessert {
+    pub struct favouriteDessert;
+    impl ::cynic::schema::Field for favouriteDessert {
         type Type = Option<super::Dessert>;
         const NAME: &'static str = "favouriteDessert";
     }
-    impl ::cynic::schema::HasInputField<FavouriteDessert, Option<super::Dessert>>
+    impl ::cynic::schema::HasInputField<favouriteDessert, Option<super::Dessert>>
         for super::AnInputType
     {
     }
 }
 pub struct Dessert {}
-pub struct Json {}
+pub struct JSON {}
 pub struct MyUnionType {}
 pub struct Nested;
 pub mod nested_fields {
-    pub struct AString;
-    impl ::cynic::schema::Field for AString {
+    pub struct aString;
+    impl ::cynic::schema::Field for aString {
         type Type = super::String;
         const NAME: &'static str = "aString";
     }
-    impl ::cynic::schema::HasField<AString> for super::Nested {
+    impl ::cynic::schema::HasField<aString> for super::Nested {
         type Type = super::String;
     }
-    pub struct OptString;
-    impl ::cynic::schema::Field for OptString {
+    pub struct optString;
+    impl ::cynic::schema::Field for optString {
         type Type = Option<super::String>;
         const NAME: &'static str = "optString";
     }
-    impl ::cynic::schema::HasField<OptString> for super::Nested {
+    impl ::cynic::schema::HasField<optString> for super::Nested {
         type Type = Option<super::String>;
     }
 }
 pub struct Query;
 pub mod query_fields {
-    pub struct TestStruct;
-    impl ::cynic::schema::Field for TestStruct {
+    pub struct testStruct;
+    impl ::cynic::schema::Field for testStruct {
         type Type = Option<super::TestStruct>;
         const NAME: &'static str = "testStruct";
     }
-    impl ::cynic::schema::HasField<TestStruct> for super::Query {
+    impl ::cynic::schema::HasField<testStruct> for super::Query {
         type Type = Option<super::TestStruct>;
     }
-    pub struct MyUnion;
-    impl ::cynic::schema::Field for MyUnion {
+    pub struct myUnion;
+    impl ::cynic::schema::Field for myUnion {
         type Type = Option<super::MyUnionType>;
         const NAME: &'static str = "myUnion";
     }
-    impl ::cynic::schema::HasField<MyUnion> for super::Query {
+    impl ::cynic::schema::HasField<myUnion> for super::Query {
         type Type = Option<super::MyUnionType>;
     }
 }
 pub struct TestStruct;
 pub mod test_struct_fields {
-    pub struct FieldOne;
-    impl ::cynic::schema::Field for FieldOne {
+    pub struct fieldOne;
+    impl ::cynic::schema::Field for fieldOne {
         type Type = super::String;
         const NAME: &'static str = "fieldOne";
     }
-    impl ::cynic::schema::HasField<FieldOne> for super::TestStruct {
+    impl ::cynic::schema::HasField<fieldOne> for super::TestStruct {
         type Type = super::String;
     }
     pub mod field_one_arguments {
-        pub struct X;
-        impl ::cynic::schema::HasArgument<X> for super::FieldOne {
+        pub struct x;
+        impl ::cynic::schema::HasArgument<x> for super::fieldOne {
             type ArgumentType = Option<super::super::Int>;
             const NAME: &'static str = "x";
         }
-        pub struct Y;
-        impl ::cynic::schema::HasArgument<Y> for super::FieldOne {
+        pub struct y;
+        impl ::cynic::schema::HasArgument<y> for super::fieldOne {
             type ArgumentType = Option<super::super::String>;
             const NAME: &'static str = "y";
         }
     }
-    pub struct TastyCakes;
-    impl ::cynic::schema::Field for TastyCakes {
+    pub struct tastyCakes;
+    impl ::cynic::schema::Field for tastyCakes {
         type Type = super::Dessert;
         const NAME: &'static str = "tastyCakes";
     }
-    impl ::cynic::schema::HasField<TastyCakes> for super::TestStruct {
+    impl ::cynic::schema::HasField<tastyCakes> for super::TestStruct {
         type Type = super::Dessert;
     }
     pub mod tasty_cakes_arguments {
-        pub struct First;
-        impl ::cynic::schema::HasArgument<First> for super::TastyCakes {
+        pub struct first;
+        impl ::cynic::schema::HasArgument<first> for super::tastyCakes {
             type ArgumentType = super::super::Dessert;
             const NAME: &'static str = "first";
         }
-        pub struct Second;
-        impl ::cynic::schema::HasArgument<Second> for super::TastyCakes {
+        pub struct second;
+        impl ::cynic::schema::HasArgument<second> for super::tastyCakes {
             type ArgumentType = Option<super::super::Dessert>;
             const NAME: &'static str = "second";
         }
     }
-    pub struct FieldWithInput;
-    impl ::cynic::schema::Field for FieldWithInput {
+    pub struct fieldWithInput;
+    impl ::cynic::schema::Field for fieldWithInput {
         type Type = super::Dessert;
         const NAME: &'static str = "fieldWithInput";
     }
-    impl ::cynic::schema::HasField<FieldWithInput> for super::TestStruct {
+    impl ::cynic::schema::HasField<fieldWithInput> for super::TestStruct {
         type Type = super::Dessert;
     }
     pub mod field_with_input_arguments {
-        pub struct Input;
-        impl ::cynic::schema::HasArgument<Input> for super::FieldWithInput {
+        pub struct input;
+        impl ::cynic::schema::HasArgument<input> for super::fieldWithInput {
             type ArgumentType = super::super::AnInputType;
             const NAME: &'static str = "input";
         }
     }
-    pub struct Nested;
-    impl ::cynic::schema::Field for Nested {
+    pub struct nested;
+    impl ::cynic::schema::Field for nested {
         type Type = super::Nested;
         const NAME: &'static str = "nested";
     }
-    impl ::cynic::schema::HasField<Nested> for super::TestStruct {
+    impl ::cynic::schema::HasField<nested> for super::TestStruct {
         type Type = super::Nested;
     }
-    pub struct OptNested;
-    impl ::cynic::schema::Field for OptNested {
+    pub struct optNested;
+    impl ::cynic::schema::Field for optNested {
         type Type = Option<super::Nested>;
         const NAME: &'static str = "optNested";
     }
-    impl ::cynic::schema::HasField<OptNested> for super::TestStruct {
+    impl ::cynic::schema::HasField<optNested> for super::TestStruct {
         type Type = Option<super::Nested>;
     }
-    pub struct Dessert;
-    impl ::cynic::schema::Field for Dessert {
+    pub struct dessert;
+    impl ::cynic::schema::Field for dessert {
         type Type = Option<super::Dessert>;
         const NAME: &'static str = "dessert";
     }
-    impl ::cynic::schema::HasField<Dessert> for super::TestStruct {
+    impl ::cynic::schema::HasField<dessert> for super::TestStruct {
         type Type = Option<super::Dessert>;
     }
-    pub struct Json;
-    impl ::cynic::schema::Field for Json {
-        type Type = Option<super::Json>;
+    pub struct json;
+    impl ::cynic::schema::Field for json {
+        type Type = Option<super::JSON>;
         const NAME: &'static str = "json";
     }
-    impl ::cynic::schema::HasField<Json> for super::TestStruct {
-        type Type = Option<super::Json>;
+    impl ::cynic::schema::HasField<json> for super::TestStruct {
+        type Type = Option<super::JSON>;
     }
 }
 impl ::cynic::schema::HasSubtype<Nested> for MyUnionType {}
@@ -167,7 +167,7 @@ pub type Boolean = bool;
 pub type String = std::string::String;
 pub type Float = f64;
 pub type Int = i32;
-pub type Id = ::cynic::Id;
+pub type ID = ::cynic::Id;
 pub mod variable {
     use cynic::variables::VariableType;
     #[doc = r" Used to determine the type of a given variable that"]
