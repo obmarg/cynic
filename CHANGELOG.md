@@ -50,6 +50,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 - The `GraphQlError` & `GraphQlResponse` structs no longer contain a
   `serde_json::Value` for extensions.  They now have generic parameters that you
   should provide if you care about error extensions.
+- The output of the `use_schema` macro is no longer re-cased.
 
 
 ### Deprecations
@@ -62,6 +63,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 - Fixed a case where the generator would output the incorrect casing for some
   occurrences of a custom scalar in the output (#346)
+- Cynic should now support schemas which have 2 similarly named but differently
+  cased scalars.
 
 ### Changes
 
