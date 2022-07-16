@@ -73,7 +73,7 @@ use super::fragment_derive;
         )]
         struct Film {
             #[cynic(flatten)]
-            producers: String,
+            producers: Vec<String>,
         }
     ),
     parse_quote!(

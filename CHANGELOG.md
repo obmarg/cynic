@@ -65,6 +65,10 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
   occurrences of a custom scalar in the output (#346)
 - Cynic should now support schemas which have 2 similarly named but differently
   cased scalars.
+- Cynic should no longer fail to compile in the face of various non-breaking
+  schema changes.
+- `#[cynic(flatten)]` no longer allows you to omit a list type on output fields.
+  Previously this would compile but probably fail to deserialize.
 
 ### Changes
 
@@ -80,6 +84,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 - `use_schema` output can now live in a separate crate from queries, which
   should help with large schema support. (The exception is `impl_scalar`
   invocations which must live in the same crate as the schema)
+- Cynic now allows fields to be `Arc` or `Rc`
 
 ## v1.0.0 - 2021-12-09
 

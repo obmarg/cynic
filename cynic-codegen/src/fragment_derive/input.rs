@@ -195,7 +195,7 @@ impl FragmentDeriveField {
         } else if *self.spread {
             CheckMode::Spreading
         } else {
-            CheckMode::Normal
+            CheckMode::OutputTypes
         }
     }
 

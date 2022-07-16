@@ -33,7 +33,7 @@ impl<'a> FieldSerializer<'a> {
         if let Err(e) = check_types_are_compatible(
             &self.graphql_field.value_type,
             &self.rust_field.ty,
-            CheckMode::Normal,
+            CheckMode::InputTypes,
         ) {
             return Some(e);
         }
@@ -43,7 +43,7 @@ impl<'a> FieldSerializer<'a> {
         if self.rust_field.skip_serializing_if.is_some() && !nullable {
             return Some(syn::Error::new(
                 self.rust_field.skip_serializing_if.as_ref().unwrap().span(),
-                "You can't specify skip_serializing_if on a required field".to_string(),
+                "You can't specify skip_serializing_if on a non nullable field".to_string(),
             ));
         }
 
