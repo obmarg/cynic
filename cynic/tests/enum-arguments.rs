@@ -1,7 +1,6 @@
 //! Tests of the generated serialization code for InputObjects
 
 use serde::Serialize;
-use serde_json::json;
 
 mod schema {
     cynic::use_schema!("tests/test-schema.graphql");
@@ -24,6 +23,7 @@ fn test_enum_argument_literal() {
     #[derive(cynic::QueryFragment)]
     #[cynic(schema_path = "tests/test-schema.graphql", query_module = "schema")]
     struct Query {
+        #[allow(dead_code)]
         #[arguments(filters: { states: DRAFT })]
         filtered_posts: Vec<BlogPost>,
     }
@@ -60,6 +60,7 @@ fn test_enum_argument() {
     #[derive(cynic::QueryFragment)]
     #[cynic(schema_path = "tests/test-schema.graphql", query_module = "schema")]
     struct Query {
+        #[allow(dead_code)]
         #[arguments(filters = PostFilters { states: Some(vec![PostState::Posted]) })]
         filtered_posts: Vec<BlogPost>,
     }
