@@ -3,22 +3,14 @@ use serde::Serialize;
 use serde_json::json;
 
 #[derive(QueryFragment, Serialize)]
-#[cynic(
-    graphql_type = "Query",
-    schema_path = "tests/test-schema.graphql",
-    query_module = "schema"
-)]
+#[cynic(graphql_type = "Query", schema_path = "tests/test-schema.graphql")]
 struct AllPostsQuery {
     all_posts: Vec<Post>,
     all_data: Vec<PostOrAuthor>,
 }
 
 #[derive(QueryFragment, Serialize)]
-#[cynic(
-    graphql_type = "BlogPost",
-    schema_path = "tests/test-schema.graphql",
-    query_module = "schema"
-)]
+#[cynic(graphql_type = "BlogPost", schema_path = "tests/test-schema.graphql")]
 struct Post {
     // TODO: UI tests of failure on renames
     #[cynic(rename = "hasMetadata")]
@@ -27,11 +19,7 @@ struct Post {
 }
 
 #[derive(QueryFragment, Serialize)]
-#[cynic(
-    graphql_type = "Author",
-    schema_path = "tests/test-schema.graphql",
-    query_module = "schema"
-)]
+#[cynic(graphql_type = "Author", schema_path = "tests/test-schema.graphql")]
 struct Author {
     name: Option<String>,
 }

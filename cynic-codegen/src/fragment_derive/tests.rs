@@ -58,7 +58,7 @@ use super::fragment_derive;
         #[derive(cynic::QueryFragment, Debug)]
         #[cynic(
             schema_path = "../schemas/starwars.schema.graphql",
-            query_module = "schema"
+            schema_module = "schema"
         )]
         struct Film {
             #[cynic(spread)]
@@ -69,7 +69,7 @@ use super::fragment_derive;
         #[derive(cynic::QueryFragment, Debug)]
         #[cynic(
             schema_path = "../schemas/starwars.schema.graphql",
-            query_module = "schema"
+            schema_module = "schema"
         )]
         struct Film {
             #[cynic(flatten)]

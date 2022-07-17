@@ -14,10 +14,6 @@ pub struct FragmentDeriveInput {
 
     pub schema_path: SpannedValue<String>,
 
-    // query_module is deprecated, remove eventually.
-    #[darling(default)]
-    query_module: Option<SpannedValue<String>>,
-
     #[darling(default, rename = "schema_module")]
     schema_module_: Option<syn::Path>,
 
@@ -36,9 +32,6 @@ impl FragmentDeriveInput {
     pub fn schema_module(&self) -> syn::Path {
         if let Some(schema_module) = &self.schema_module_ {
             return schema_module.clone();
-        }
-        if let Some(query_module) = &self.query_module {
-            return syn::parse_str(query_module).unwrap();
         }
         syn::parse2(quote::quote! { schema }).unwrap()
     }
@@ -276,7 +269,6 @@ mod tests {
                 ],
             )),
             schema_path: "abcd".to_string().into(),
-            query_module: None,
             schema_module_: None,
             graphql_type: Some("abcd".to_string().into()),
             argument_struct: None,
@@ -356,7 +348,6 @@ mod tests {
                 ],
             )),
             schema_path: "abcd".to_string().into(),
-            query_module: None,
             schema_module_: Some(syn::parse2(quote::quote! { abcd }).unwrap()),
             graphql_type: Some("abcd".to_string().into()),
             argument_struct: None,
@@ -376,7 +367,6 @@ mod tests {
                 vec![],
             )),
             schema_path: "abcd".to_string().into(),
-            query_module: None,
             schema_module_: Some(syn::parse2(quote::quote! { abcd }).unwrap()),
             graphql_type: Some("abcd".to_string().into()),
             argument_struct: None,
@@ -430,7 +420,6 @@ mod tests {
                 ],
             )),
             schema_path: "abcd".to_string().into(),
-            query_module: None,
             schema_module_: Some(syn::parse2(quote::quote! { abcd }).unwrap()),
             graphql_type: None,
             argument_struct: None,

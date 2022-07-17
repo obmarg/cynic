@@ -17,10 +17,7 @@ struct FilmQueryWithExplicitAlias {
 }
 
 #[derive(cynic::QueryFragment, Debug, PartialEq)]
-#[cynic(
-    schema_path = "../schemas/starwars.schema.graphql",
-    query_module = "schema"
-)]
+#[cynic(schema_path = "../schemas/starwars.schema.graphql")]
 struct Film {
     title: Option<String>,
 }

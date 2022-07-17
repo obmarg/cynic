@@ -36,8 +36,7 @@ fn test_input_object_skip_serializing() {
     #[derive(cynic::InputObject)]
     #[cynic(
         graphql_type = "BlogPostInput",
-        schema_path = "tests/test-schema.graphql",
-        query_module = "schema"
+        schema_path = "tests/test-schema.graphql"
     )]
     struct BlogPost {
         content: String,
@@ -66,8 +65,7 @@ fn test_input_object_stable_order() {
     #[derive(cynic::InputObject)]
     #[cynic(
         graphql_type = "BlogPostInput",
-        schema_path = "tests/test-schema.graphql",
-        query_module = "schema"
+        schema_path = "tests/test-schema.graphql"
     )]
     struct BlogPost {
         content: String,

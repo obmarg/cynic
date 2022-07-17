@@ -44,14 +44,14 @@ pub fn check_spread_type(rust_type: &syn::Type) -> Result<(), syn::Error> {
             // so just recurse
             check_spread_type(inner)
         }
-        ParsedType::Optional(_) => Err(syn::Error::new(
-            rust_type.span(),
-            "You can't spread on an Option type",
-        )),
-        ParsedType::List(_) => Err(syn::Error::new(
-            rust_type.span(),
-            "You can't spread on a Vec",
-        )),
+        ParsedType::Optional(_) => Err(TypeValidationError::SpreadOnOption {
+            span: rust_type.span(),
+        }
+        .into()),
+        ParsedType::List(_) => Err(TypeValidationError::SpreadOnVec {
+            span: rust_type.span(),
+        }
+        .into()),
         ParsedType::SimpleType => {
             // No way to tell if the given type is actually compatible,
             // but the rust compiler should help us with that.
@@ -249,7 +249,7 @@ fn extract_generic_argument(segment: &syn::PathSegment) -> Option<&syn::Type> {
 }
 
 #[derive(Debug)]
-pub enum TypeValidationError {
+enum TypeValidationError {
     FieldIsOptional { provided_type: String, span: Span },
     FieldIsRequired { provided_type: String, span: Span },
     FieldIsList { provided_type: String, span: Span },
@@ -285,6 +285,12 @@ impl From<TypeValidationError> for syn::Error {
         };
 
         syn::Error::new(span, message)
+    }
+}
+
+impl From<TypeValidationError> for crate::Errors {
+    fn from(err: TypeValidationError) -> Self {
+        crate::Errors::from(syn::Error::from(err))
     }
 }
 
