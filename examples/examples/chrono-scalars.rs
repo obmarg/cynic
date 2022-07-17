@@ -9,10 +9,7 @@ type DateTime = chrono::DateTime<chrono::Utc>;
 cynic::impl_scalar!(DateTime, schema::DateTime);
 
 #[derive(cynic::QueryFragment, Debug)]
-#[cynic(
-    schema_path = "../schemas/graphql.jobs.graphql",
-    query_module = "schema"
-)]
+#[cynic(schema_path = "../schemas/graphql.jobs.graphql")]
 struct Job {
     created_at: DateTime,
 }

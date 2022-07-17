@@ -12,9 +12,6 @@ pub struct InputObjectDeriveInput {
 
     pub schema_path: SpannedValue<String>,
 
-    // query_module is deprecated, remove eventually.
-    #[darling(default)]
-    query_module: Option<SpannedValue<String>>,
     #[darling(default, rename = "schema_module")]
     schema_module_: Option<syn::Path>,
 
@@ -45,9 +42,6 @@ impl InputObjectDeriveInput {
     pub fn schema_module(&self) -> syn::Path {
         if let Some(schema_module) = &self.schema_module_ {
             return schema_module.clone();
-        }
-        if let Some(query_module) = &self.query_module {
-            return syn::parse_str(query_module).unwrap();
         }
         syn::parse2(quote::quote! { schema }).unwrap()
     }

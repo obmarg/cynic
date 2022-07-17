@@ -5,11 +5,7 @@ use serde_json::json;
 use cynic::{InlineFragments, QueryFragment};
 
 #[derive(QueryFragment, Serialize)]
-#[cynic(
-    graphql_type = "Query",
-    schema_path = "tests/test-schema.graphql",
-    query_module = "schema"
-)]
+#[cynic(graphql_type = "Query", schema_path = "tests/test-schema.graphql")]
 struct AllPostsQuery {
     all_data: Vec<PostOrAuthor>,
     #[arguments(id: "123")]
@@ -17,21 +13,13 @@ struct AllPostsQuery {
 }
 
 #[derive(QueryFragment, Serialize, PartialEq, Debug)]
-#[cynic(
-    graphql_type = "BlogPost",
-    schema_path = "tests/test-schema.graphql",
-    query_module = "schema"
-)]
+#[cynic(graphql_type = "BlogPost", schema_path = "tests/test-schema.graphql")]
 struct Post {
     id: Option<cynic::Id>,
 }
 
 #[derive(QueryFragment, Serialize, PartialEq, Debug)]
-#[cynic(
-    graphql_type = "Author",
-    schema_path = "tests/test-schema.graphql",
-    query_module = "schema"
-)]
+#[cynic(graphql_type = "Author", schema_path = "tests/test-schema.graphql")]
 struct Author {
     name: Option<String>,
 }

@@ -6,10 +6,7 @@ mod schema {
 }
 
 #[derive(cynic::QueryFragment, Debug)]
-#[cynic(
-    schema_path = "../schemas/starwars.schema.graphql",
-    query_module = "schema"
-)]
+#[cynic(schema_path = "../schemas/starwars.schema.graphql")]
 struct Film {
     title: Option<String>,
     director: Option<String>,

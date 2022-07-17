@@ -18,7 +18,7 @@ struct TestStruct {
 }
 
 #[derive(cynic::QueryFragment, PartialEq, Debug)]
-#[cynic(schema_path = "src/bin/simple.graphql", query_module = "schema")]
+#[cynic(schema_path = "src/bin/simple.graphql")]
 struct Nested {
     a_string: String,
     opt_string: Option<String>,

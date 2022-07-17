@@ -9,33 +9,25 @@ mod schema {
 mod recursive_lists {
     use super::*;
     #[derive(QueryFragment, Serialize)]
-    #[cynic(
-        graphql_type = "Query",
-        schema_path = "tests/test-schema.graphql",
-        query_module = "schema"
-    )]
+    #[cynic(graphql_type = "Query", schema_path = "tests/test-schema.graphql")]
     struct AllPostsQuery {
         all_posts: Vec<Post>,
     }
 
     #[derive(QueryFragment, Serialize)]
-    #[cynic(
-        graphql_type = "BlogPost",
-        schema_path = "tests/test-schema.graphql",
-        query_module = "schema"
-    )]
+    #[cynic(graphql_type = "BlogPost", schema_path = "tests/test-schema.graphql")]
     struct Post {
         comments: Vec<Comment>,
     }
 
     #[derive(QueryFragment, Serialize)]
-    #[cynic(schema_path = "tests/test-schema.graphql", query_module = "schema")]
+    #[cynic(schema_path = "tests/test-schema.graphql")]
     struct Comment {
         author: Author,
     }
 
     #[derive(QueryFragment, Serialize)]
-    #[cynic(schema_path = "tests/test-schema.graphql", query_module = "schema")]
+    #[cynic(schema_path = "tests/test-schema.graphql")]
     struct Author {
         #[cynic(recurse = "2")]
         posts: Option<Vec<Post>>,
@@ -74,17 +66,13 @@ mod optional_recursive_types {
     use super::*;
 
     #[derive(QueryFragment, Serialize)]
-    #[cynic(
-        graphql_type = "Query",
-        schema_path = "tests/test-schema.graphql",
-        query_module = "schema"
-    )]
+    #[cynic(graphql_type = "Query", schema_path = "tests/test-schema.graphql")]
     struct FriendsQuery {
         all_authors: Vec<Author>,
     }
 
     #[derive(QueryFragment, Serialize)]
-    #[cynic(schema_path = "tests/test-schema.graphql", query_module = "schema")]
+    #[cynic(schema_path = "tests/test-schema.graphql")]
     struct Author {
         #[cynic(recurse = "2")]
         friends: Option<Vec<Author>>,
@@ -149,17 +137,13 @@ mod required_recursive_types {
     use super::*;
 
     #[derive(QueryFragment, Serialize)]
-    #[cynic(
-        graphql_type = "Query",
-        schema_path = "tests/test-schema.graphql",
-        query_module = "schema"
-    )]
+    #[cynic(graphql_type = "Query", schema_path = "tests/test-schema.graphql")]
     struct FriendsQuery {
         all_authors: Vec<Author>,
     }
 
     #[derive(QueryFragment, Serialize)]
-    #[cynic(schema_path = "tests/test-schema.graphql", query_module = "schema")]
+    #[cynic(schema_path = "tests/test-schema.graphql")]
     struct Author {
         #[cynic(recurse = "2")]
         me: Option<Box<Author>>,

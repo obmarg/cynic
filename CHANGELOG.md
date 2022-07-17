@@ -51,6 +51,9 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
   `serde_json::Value` for extensions.  They now have generic parameters that you
   should provide if you care about error extensions.
 - The output of the `use_schema` macro is no longer re-cased.
+- The deprecated `query_module` attribute for the various derive/attribute
+  macros has been removed - if you're using it you should update to
+  `schema_module` which behaves the same.
 
 
 ### Deprecations
