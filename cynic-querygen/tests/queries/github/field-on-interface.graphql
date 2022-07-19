@@ -1,0 +1,13 @@
+query FieldOnInterface {
+  repository(owner: "obmarg", name: "cynic") {
+    issues(first: 1) {
+      edges {
+        node {
+          author {
+            login
+          }
+        }
+      }
+    }
+  }
+}

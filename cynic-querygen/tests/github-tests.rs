@@ -28,3 +28,4 @@ test_query!(
     inline_fragment_with_arguments,
     "inline-fragment-with-arguments.graphql"
 );
+test_query!(field_on_interface, "field-on-interface.graphql");
