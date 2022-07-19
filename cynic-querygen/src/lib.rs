@@ -32,6 +32,9 @@ pub enum Error {
     #[error("expected type `{0}` to be an object")]
     ExpectedObject(String),
 
+    #[error("expected type `{0}` to be an object or an interface")]
+    ExpectedObjectOrInterface(String),
+
     #[error("expected type `{0}` to be an input object")]
     ExpectedInputObject(String),
 

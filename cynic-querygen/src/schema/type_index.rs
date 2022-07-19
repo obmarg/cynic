@@ -136,10 +136,14 @@ impl<'schema> TypeIndex<'schema> {
                     .get(inner_name)
                     .ok_or_else(|| Error::UnknownType(inner_name.to_string()))?;
 
-                if let TypeDefinition::Object(object) = inner_type {
-                    self.find_field_recursive(&object.fields, inner_name, rest)
-                } else {
-                    Err(Error::ExpectedObject(inner_name.to_string()))
+                match inner_type {
+                    TypeDefinition::Object(object) => {
+                        self.find_field_recursive(&object.fields, inner_name, rest)
+                    }
+                    TypeDefinition::Interface(iface) => {
+                        self.find_field_recursive(&iface.fields, inner_name, rest)
+                    }
+                    _ => Err(Error::ExpectedObjectOrInterface(inner_name.to_string())),
                 }
             }
         }
