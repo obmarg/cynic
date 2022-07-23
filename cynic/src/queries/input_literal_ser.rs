@@ -17,7 +17,7 @@ where
 
 struct InputLiteralSerializer;
 
-impl<'a> ser::Serializer for InputLiteralSerializer {
+impl ser::Serializer for InputLiteralSerializer {
     type Ok = InputLiteral;
 
     type Error = Error;
@@ -226,7 +226,7 @@ struct ListSerializer {
     items: Vec<InputLiteral>,
 }
 
-impl<'a> ser::SerializeSeq for ListSerializer {
+impl ser::SerializeSeq for ListSerializer {
     type Ok = InputLiteral;
 
     type Error = Error;
@@ -244,7 +244,7 @@ impl<'a> ser::SerializeSeq for ListSerializer {
     }
 }
 
-impl<'a> ser::SerializeTuple for ListSerializer {
+impl ser::SerializeTuple for ListSerializer {
     type Ok = InputLiteral;
 
     type Error = Error;
@@ -267,7 +267,7 @@ struct MapSerializer {
     next_key: Option<Cow<'static, str>>,
 }
 
-impl<'a> ser::SerializeMap for MapSerializer {
+impl ser::SerializeMap for MapSerializer {
     type Ok = InputLiteral;
 
     type Error = Error;
@@ -296,7 +296,7 @@ impl<'a> ser::SerializeMap for MapSerializer {
     }
 }
 
-impl<'a> ser::SerializeStruct for MapSerializer {
+impl ser::SerializeStruct for MapSerializer {
     type Ok = InputLiteral;
 
     type Error = Error;

@@ -91,7 +91,7 @@ impl<'query, 'schema> Field<'query, 'schema> {
     }
 }
 
-impl<'query, 'doc, 'schema> FieldSelection<'query, 'schema> {
+impl<'query, 'schema> FieldSelection<'query, 'schema> {
     fn new(
         name: &'query str,
         alias: Option<&'query str>,
