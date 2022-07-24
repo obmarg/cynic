@@ -60,11 +60,10 @@ impl<'a> FieldSerializer<'a> {
         };
 
         let aligned_type = align_input_type(
-            &types::parsing2::parse_rust_type(&self.rust_field.ty),
+            &self.rust_field.ty,
             &self.graphql_field.value_type,
             self.graphql_field.has_default,
-        )
-        .to_syn();
+        );
 
         quote! {
             ::cynic::assert_impl!(#aligned_type: #trait_bound);

@@ -9,9 +9,13 @@ use syn::parse_quote;
 
 use crate::schema::types::{InputType, OutputType, TypeRef};
 
-use super::parsing2::{parse_rust_type, RustType};
+use super::parsing::{parse_rust_type, RustType};
 
-pub fn align_output_type<'a>(
+pub fn align_output_type(ty: &syn::Type, gql_ty: &TypeRef<'_, OutputType<'_>>) -> syn::Type {
+    align_output_type_impl(&parse_rust_type(ty), gql_ty).to_syn()
+}
+
+fn align_output_type_impl<'a>(
     ty: &RustType<'a>,
     gql_ty: &TypeRef<'_, OutputType<'_>>,
 ) -> RustType<'a> {
@@ -20,17 +24,17 @@ pub fn align_output_type<'a>(
         (RustType::Optional { inner, .. }, TypeRef::Named(_, _, _) | TypeRef::List(_)) => {
             // If the rust type is optional but the schema type isn't
             // then we just ignore the `Option<_>` and recurse
-            align_output_type(inner.as_ref(), gql_ty)
+            align_output_type_impl(inner.as_ref(), gql_ty)
         }
         (RustType::Optional { inner, .. }, crate::schema::types::TypeRef::Nullable(inner_gql)) => {
             // This is fine, but we may still need to align the inner types.
-            let new_inner = align_output_type(inner.as_ref(), inner_gql.as_ref());
+            let new_inner = align_output_type_impl(inner.as_ref(), inner_gql.as_ref());
             ty.clone().replace_inner(new_inner)
         }
 
         (RustType::List { inner, .. }, crate::schema::types::TypeRef::List(inner_gql)) => {
             // This is fine, but we may still need to align the inner types.
-            let new_inner = align_output_type(inner.as_ref(), inner_gql.as_ref());
+            let new_inner = align_output_type_impl(inner.as_ref(), inner_gql.as_ref());
             ty.clone().replace_inner(new_inner)
         }
         (RustType::List { .. }, _) => {
@@ -39,13 +43,21 @@ pub fn align_output_type<'a>(
         }
         (RustType::Box { inner, .. }, _) => {
             // This is fine, but we may still need to align the inner types.
-            let new_inner = align_output_type(inner.as_ref(), gql_ty);
+            let new_inner = align_output_type_impl(inner.as_ref(), gql_ty);
             ty.clone().replace_inner(new_inner)
         }
     }
 }
 
-pub fn align_input_type<'a>(
+pub fn align_input_type(
+    ty: &syn::Type,
+    gql_ty: &TypeRef<'_, InputType<'_>>,
+    gql_field_has_default: bool,
+) -> syn::Type {
+    align_input_type_impl(&parse_rust_type(ty), gql_ty, gql_field_has_default).to_syn()
+}
+
+fn align_input_type_impl<'a>(
     ty: &RustType<'a>,
     gql_ty: &TypeRef<'_, InputType<'_>>,
     gql_field_has_default: bool,
@@ -53,34 +65,34 @@ pub fn align_input_type<'a>(
     match (&ty, &gql_ty) {
         (RustType::Box { inner, .. }, _) => {
             // Transform the inner types
-            let new_inner = align_input_type(inner.as_ref(), gql_ty, gql_field_has_default);
+            let new_inner = align_input_type_impl(inner.as_ref(), gql_ty, gql_field_has_default);
             ty.clone().replace_inner(new_inner)
         }
         (RustType::List { inner, .. }, TypeRef::List(inner_gql)) => {
             // Transform the inner types
-            let new_inner = align_input_type(inner.as_ref(), inner_gql, false);
+            let new_inner = align_input_type_impl(inner.as_ref(), inner_gql, false);
             ty.clone().replace_inner(new_inner)
         }
         (RustType::Optional { inner, .. }, TypeRef::Nullable(inner_gql)) => {
             // Transform the inner types
-            let new_inner = align_input_type(inner.as_ref(), inner_gql, false);
+            let new_inner = align_input_type_impl(inner.as_ref(), inner_gql, false);
             ty.clone().replace_inner(new_inner)
         }
         (RustType::Optional { inner, .. }, _) if gql_field_has_default => {
             // If GQL field has default then we ignore the Option
-            align_input_type(inner.as_ref(), gql_ty, false)
+            align_input_type_impl(inner.as_ref(), gql_ty, false)
         }
         (other, TypeRef::List(_)) => {
             // Wrap our rust type in a vec, then recurse
             let syn = other.to_syn();
             let parsed = parse_quote! { ::std::vec::Vec<#syn> };
-            align_input_type(&parse_rust_type(&parsed), gql_ty, false).convert_lifetime()
+            align_input_type_impl(&parse_rust_type(&parsed), gql_ty, false).convert_lifetime()
         }
         (other, TypeRef::Nullable(_)) => {
             // Wrap our rust named type in an option, then recurse
             let syn = other.to_syn();
             let parsed = parse_quote! { ::core::option::Option<#syn> };
-            align_input_type(&parse_rust_type(&parsed), gql_ty, false).convert_lifetime()
+            align_input_type_impl(&parse_rust_type(&parsed), gql_ty, false).convert_lifetime()
         }
         (RustType::Unknown { .. } | RustType::SimpleType { .. }, _) => ty.clone(),
         (RustType::Optional { .. } | RustType::List { .. }, _) => {
@@ -99,10 +111,7 @@ mod tests {
     use rstest::rstest;
     use syn::parse2;
 
-    use crate::{
-        schema::{types::TypeRef, TypeIndex},
-        types::parsing2::parse_rust_type,
-    };
+    use crate::schema::{types::TypeRef, TypeIndex};
 
     use super::*;
 
@@ -140,9 +149,7 @@ mod tests {
         let rust_type = parse2(rust_type).unwrap();
         let expected = parse2::<syn::Type>(aligned_type).unwrap();
 
-        let rust_type = parse_rust_type(&rust_type);
-
-        let result = align_output_type(&rust_type, &graphql_type).to_syn();
+        let result = align_output_type(&rust_type, &graphql_type);
 
         let expected_quote = quote! { #expected };
         let result_quote = quote! { #result };
@@ -182,10 +189,9 @@ mod tests {
         #[case] rust_type: TokenStream,
         #[case] graphql_type: TypeRef<'_, OutputType>,
     ) {
-        let input = parse2(rust_type).unwrap();
-        let rust_type = parse_rust_type(&input);
+        let input = parse2::<syn::Type>(rust_type).unwrap();
 
-        let result = align_output_type(&rust_type, &graphql_type).to_syn();
+        let result = align_output_type(&input, &graphql_type);
 
         let input_quote = quote! { #input };
         let result_quote = quote! { #result };
@@ -257,9 +263,7 @@ mod tests {
         let rust_type = parse2(rust_type).unwrap();
         let expected = parse2::<syn::Type>(aligned_type).unwrap();
 
-        let rust_type = parse_rust_type(&rust_type);
-
-        let result = align_input_type(&rust_type, &graphql_type, graphql_type_is_optional).to_syn();
+        let result = align_input_type(&rust_type, &graphql_type, graphql_type_is_optional);
 
         let expected_quote = quote! { #expected };
         let result_quote = quote! { #result };
@@ -337,9 +341,8 @@ mod tests {
         #[case] graphql_type_is_optional: bool,
     ) {
         let input = parse2(rust_type).unwrap();
-        let rust_type = parse_rust_type(&input);
 
-        let result = align_input_type(&rust_type, &graphql_type, graphql_type_is_optional).to_syn();
+        let result = align_input_type(&input, &graphql_type, graphql_type_is_optional);
 
         let input_quote = quote! { #input };
         let result_quote = quote! { #result };

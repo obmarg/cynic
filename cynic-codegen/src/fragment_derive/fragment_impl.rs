@@ -218,11 +218,7 @@ impl quote::ToTokens for FieldSelection<'_> {
         let aligned_type = match selection_mode {
             SelectionMode::Composite | SelectionMode::Leaf => {
                 // If we're doing a normal select we need to align types.
-                types::align_output_type(
-                    &types::parsing2::parse_rust_type(field_type),
-                    &self.graphql_field.field_type,
-                )
-                .to_syn()
+                types::align_output_type(field_type, &self.graphql_field.field_type)
             }
             _ => {
                 // Recursive & flatten selections don't need types aligned
