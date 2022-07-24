@@ -1,7 +1,7 @@
 ---
 source: cynic-codegen/src/fragment_derive/arguments/tests.rs
 assertion_line: 32
-expression: "analyse(literals, field, Some(&format_ident!(\"MyArguments\")),\n        Span::call_site()).map(|o| o.arguments)"
+expression: "analyse(literals, field, Some(&format_ident!(\"MyArguments\").into()),\n        Span::call_site()).map(|o| o.arguments)"
 
 ---
 Ok(
@@ -15,6 +15,7 @@ Ok(
                 value_type: NamedInputType(
                     "BookFilters",
                 ),
+                has_default: false,
             },
             value: Object(
                 Object {
@@ -34,6 +35,7 @@ Ok(
                                         ),
                                     ),
                                 ),
+                                has_default: false,
                             },
                             InputValue {
                                 description: None,
@@ -45,6 +47,7 @@ Ok(
                                         "BookState",
                                     ),
                                 ),
+                                has_default: false,
                             },
                         ],
                     },
@@ -60,6 +63,7 @@ Ok(
                                         "BookState",
                                     ),
                                 ),
+                                has_default: false,
                             },
                             value: Some(
                                 Variant(

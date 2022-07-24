@@ -4,8 +4,8 @@ use syn::spanned::Spanned;
 
 use super::InputObjectDeriveField;
 use crate::{
-    schema::types::{InputType, InputValue, TypeRef},
-    type_validation::{check_types_are_compatible, CheckMode},
+    schema::types::{InputType, InputValue},
+    type_validation::{self, check_input_types_are_compatible},
 };
 
 pub struct FieldSerializer<'a> {
@@ -30,20 +30,14 @@ impl<'a> FieldSerializer<'a> {
     /// Validates the FieldSerializer definition, returning errors if there are any.
     pub fn validate(&self) -> Option<syn::Error> {
         // First, check for type errors
-        if let Err(e) = check_types_are_compatible(
-            &self.graphql_field.value_type,
-            &self.rust_field.ty,
-            CheckMode::InputTypes,
-        ) {
+        if let Err(e) = check_input_types_are_compatible(self.graphql_field, &self.rust_field.ty) {
             return Some(e);
         }
 
-        let nullable = matches!(self.graphql_field.value_type, TypeRef::Nullable(_));
-
-        if self.rust_field.skip_serializing_if.is_some() && !nullable {
+        if self.rust_field.skip_serializing_if.is_some() && self.graphql_field.is_required() {
             return Some(syn::Error::new(
                 self.rust_field.skip_serializing_if.as_ref().unwrap().span(),
-                "You can't specify skip_serializing_if on a non nullable field".to_string(),
+                "You can't specify skip_serializing_if on a required field".to_string(),
             ));
         }
 
@@ -51,7 +45,6 @@ impl<'a> FieldSerializer<'a> {
     }
 
     pub fn type_check(&self) -> TokenStream {
-        let ty = &self.rust_field.ty;
         let marker_type = self
             .graphql_field
             .value_type
@@ -65,6 +58,13 @@ impl<'a> FieldSerializer<'a> {
                 quote! { ::cynic::InputObject<SchemaType = #marker_type> }
             }
         };
+
+        let mut ty = &self.rust_field.ty;
+        if self.should_auto_skip_serializing() {
+            ty = type_validation::outer_type_is_option(ty).expect(
+                "should_auto_skip_serializing is returning true when outer type is not option",
+            )
+        }
 
         quote! {
             ::cynic::assert_impl!(#ty: #trait_bound);
@@ -83,15 +83,32 @@ impl<'a> FieldSerializer<'a> {
             )?;
         };
 
-        if let Some(skip_check_fn) = &self.rust_field.skip_serializing_if {
-            let skip_check_fn = &**skip_check_fn;
-            quote! {
-                if !#skip_check_fn(&self.#rust_field_name) {
-                    #insert_call
+        match (
+            &self.rust_field.skip_serializing_if,
+            self.should_auto_skip_serializing(),
+        ) {
+            (Some(skip_check_fn), _) => {
+                let skip_check_fn = &**skip_check_fn;
+                quote! {
+                    if !#skip_check_fn(&self.#rust_field_name) {
+                        #insert_call
+                    }
                 }
             }
-        } else {
-            insert_call
+            (_, true) => {
+                quote! {
+                    if Option::is_some(&self.#rust_field_name) {
+                        #insert_call
+                    }
+                }
+            }
+            _ => insert_call,
         }
+    }
+
+    fn should_auto_skip_serializing(&self) -> bool {
+        self.graphql_field.has_default
+            && !self.graphql_field.is_nullable()
+            && type_validation::outer_type_is_option(&self.rust_field.ty).is_some()
     }
 }

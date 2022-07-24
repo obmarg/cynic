@@ -41,6 +41,12 @@ type Query {
   allAuthors: [Author!]!
   allData: [PostOrAuthor!]!
   node(id: ID!): Node
+
+  fieldWithDefaults(
+    anInt: Int! = 1
+    anOptionalInt: Int = 1
+    input: InputWithDefaults
+  ): Int!
 }
 
 union PostOrAuthor = BlogPost | Author
@@ -55,6 +61,11 @@ scalar DateTime
 input PostFilters {
   authorId: ID
   states: [PostState!]
+}
+
+input InputWithDefaults {
+  optionalInt: Int = 1
+  requiredWithDefault: Int! = 1
 }
 
 interface Node {

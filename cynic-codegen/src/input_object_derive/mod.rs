@@ -6,7 +6,7 @@ use crate::{
     idents::RenameAll,
     load_schema,
     schema::{
-        types::{InputObjectType, InputValue, TypeRef},
+        types::{InputObjectType, InputValue},
         Schema, Unvalidated,
     },
     suggestions::FieldSuggestionError,
@@ -159,7 +159,7 @@ fn pair_fields<'a>(
         input_object_def
             .fields
             .iter()
-            .filter(|f| !matches!(f.value_type, TypeRef::Nullable(_)))
+            .filter(|f| f.is_required())
             .collect::<HashSet<_>>()
     };
 
