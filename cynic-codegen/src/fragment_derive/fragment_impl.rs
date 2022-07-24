@@ -5,7 +5,7 @@ use syn::spanned::Spanned;
 use crate::{
     error::Errors,
     schema::types::{Field, OutputType},
-    type_validation::{check_spread_type, check_types_are_compatible, CheckMode},
+    types::{check_spread_type, check_types_are_compatible, CheckMode},
     Ident,
 };
 

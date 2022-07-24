@@ -11,7 +11,7 @@ mod error;
 mod idents;
 mod schema;
 mod suggestions;
-mod type_validation;
+mod types;
 
 pub use idents::RenameAll;
 

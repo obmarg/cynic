@@ -3,7 +3,7 @@ use std::collections::HashSet;
 use darling::util::SpannedValue;
 use quote::quote_spanned;
 
-use crate::{idents::RenamableFieldIdent, type_validation::CheckMode, Errors};
+use crate::{idents::RenamableFieldIdent, types::CheckMode, Errors};
 use proc_macro2::Span;
 
 #[derive(darling::FromDeriveInput)]

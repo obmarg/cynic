@@ -5,7 +5,7 @@ use syn::spanned::Spanned;
 use super::InputObjectDeriveField;
 use crate::{
     schema::types::{InputType, InputValue},
-    type_validation::{self, check_input_types_are_compatible},
+    types::{self, check_input_types_are_compatible},
 };
 
 pub struct FieldSerializer<'a> {
@@ -61,7 +61,7 @@ impl<'a> FieldSerializer<'a> {
 
         let mut ty = &self.rust_field.ty;
         if self.should_auto_skip_serializing() {
-            ty = type_validation::outer_type_is_option(ty).expect(
+            ty = types::outer_type_is_option(ty).expect(
                 "should_auto_skip_serializing is returning true when outer type is not option",
             )
         }
@@ -109,6 +109,6 @@ impl<'a> FieldSerializer<'a> {
     fn should_auto_skip_serializing(&self) -> bool {
         self.graphql_field.has_default
             && !self.graphql_field.is_nullable()
-            && type_validation::outer_type_is_option(&self.rust_field.ty).is_some()
+            && types::outer_type_is_option(&self.rust_field.ty).is_some()
     }
 }
