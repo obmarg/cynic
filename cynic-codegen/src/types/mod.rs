@@ -9,7 +9,7 @@ mod validation;
 pub mod parsing2;
 
 pub use self::{
-    alignment::align_output_type,
+    alignment::{align_input_type, align_output_type},
     parsing::{parse_rust_type, RustType},
     validation::{
         check_input_types_are_compatible, check_spread_type, check_types_are_compatible,

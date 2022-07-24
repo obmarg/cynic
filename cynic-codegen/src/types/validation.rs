@@ -70,13 +70,13 @@ pub fn check_spread_type(rust_type: &syn::Type) -> Result<(), syn::Error> {
 
 /// Returns the type inside `Option` if the type is `Option`.
 /// Otherwise returns None
-pub fn outer_type_is_option(rust_type: &syn::Type) -> Option<&syn::Type> {
+pub fn outer_type_is_option(rust_type: &syn::Type) -> bool {
     match parse_rust_type(rust_type) {
-        RustType::Optional(inner) => Some(inner),
-        RustType::List(_) => None,
+        RustType::Optional(_) => true,
+        RustType::List(_) => false,
         RustType::Box(inner) => outer_type_is_option(inner),
-        RustType::SimpleType => None,
-        RustType::Unknown => None,
+        RustType::SimpleType => false,
+        RustType::Unknown => false,
     }
 }
 

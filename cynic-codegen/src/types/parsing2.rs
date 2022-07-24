@@ -1,6 +1,6 @@
 use std::borrow::Cow;
 
-use syn::{GenericArgument, PathSegment, TypePath};
+use syn::{GenericArgument, TypePath};
 
 /// A simplified rust type structure
 #[derive(Debug, PartialEq, Clone)]
@@ -23,6 +23,31 @@ pub enum RustType<'a> {
     Unknown {
         syn: Cow<'a, syn::Type>,
     },
+}
+
+impl<'a> RustType<'a> {
+    pub fn convert_lifetime<'b>(self) -> RustType<'b> {
+        match self {
+            RustType::Optional { syn, inner } => RustType::Optional {
+                syn: Cow::Owned(syn.into_owned()),
+                inner: Box::new(inner.convert_lifetime()),
+            },
+            RustType::List { syn, inner } => RustType::List {
+                syn: Cow::Owned(syn.into_owned()),
+                inner: Box::new(inner.convert_lifetime()),
+            },
+            RustType::Box { syn, inner } => RustType::Box {
+                syn: Cow::Owned(syn.into_owned()),
+                inner: Box::new(inner.convert_lifetime()),
+            },
+            RustType::SimpleType { syn } => RustType::SimpleType {
+                syn: Cow::Owned(syn.into_owned()),
+            },
+            RustType::Unknown { syn } => RustType::Unknown {
+                syn: Cow::Owned(syn.into_owned()),
+            },
+        }
+    }
 }
 
 #[allow(clippy::cmp_owned)]
@@ -156,7 +181,6 @@ mod tests {
     use proc_macro2::TokenStream;
     use quote::quote;
     use rstest::rstest;
-    use syn::parse_quote;
 
     use super::*;
 

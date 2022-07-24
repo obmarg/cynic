@@ -206,11 +206,30 @@ impl quote::ToTokens for FieldSelection<'_> {
             }
         });
 
-        let aligned_type = types::align_output_type(
-            &types::parsing2::parse_rust_type(field_type),
-            &self.graphql_field.field_type,
-        )
-        .to_syn();
+        let selection_mode = match (&self.graphql_field_kind, self.flatten, self.recurse_limit) {
+            (FieldKind::Enum | FieldKind::Scalar, true, _) => SelectionMode::FlattenLeaf,
+            (FieldKind::Enum | FieldKind::Scalar, false, _) => SelectionMode::Leaf,
+            (_, true, None) => SelectionMode::FlattenComposite,
+            (_, false, None) => SelectionMode::Composite,
+            (_, false, Some(limit)) => SelectionMode::Recurse(limit),
+            _ => panic!("Uncertain how to select for this field."),
+        };
+
+        let aligned_type = match selection_mode {
+            SelectionMode::Composite | SelectionMode::Leaf => {
+                // If we're doing a normal select we need to align types.
+                types::align_output_type(
+                    &types::parsing2::parse_rust_type(field_type),
+                    &self.graphql_field.field_type,
+                )
+                .to_syn()
+            }
+            _ => {
+                // Recursive & flatten selections don't need types aligned
+                // according to the graphql rules as they have special rules.
+                field_type.clone()
+            }
+        };
 
         let schema_type_lookup = match self.graphql_field_kind {
             FieldKind::Interface | FieldKind::Composite | FieldKind::Union => {
@@ -226,15 +245,6 @@ impl quote::ToTokens for FieldSelection<'_> {
             FieldKind::Enum => quote_spanned! { self.span =>
                 <#aligned_type as ::cynic::Enum>::SchemaType
             },
-        };
-
-        let selection_mode = match (&self.graphql_field_kind, self.flatten, self.recurse_limit) {
-            (FieldKind::Enum | FieldKind::Scalar, true, _) => SelectionMode::FlattenLeaf,
-            (FieldKind::Enum | FieldKind::Scalar, false, _) => SelectionMode::Leaf,
-            (_, true, None) => SelectionMode::FlattenComposite,
-            (_, false, None) => SelectionMode::Composite,
-            (_, false, Some(limit)) => SelectionMode::Recurse(limit),
-            _ => panic!("Uncertain how to select for this field."),
         };
 
         tokens.append_all(match selection_mode {
