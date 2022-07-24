@@ -1,6 +1,7 @@
 use proc_macro2::Span;
 use syn::spanned::Spanned;
 
+use super::{parse_rust_type, RustType};
 use crate::schema::{types::InputValue, types::TypeRef};
 
 #[derive(Debug, PartialEq, Eq)]
@@ -38,28 +39,28 @@ pub fn check_input_types_are_compatible<'a>(
 }
 
 pub fn check_spread_type(rust_type: &syn::Type) -> Result<(), syn::Error> {
-    let parsed_type = parse_type(rust_type);
+    let parsed_type = parse_rust_type(rust_type);
 
     match parsed_type {
-        ParsedType::Unknown => {
+        RustType::Unknown => {
             // If we can't parse the type just ignore it - the compiler will still tell us if it's
             // wrong.
             Ok(())
         }
-        ParsedType::Box(inner) => {
+        RustType::Box(inner) => {
             // Box is a transparent container for the purposes of checking compatability
             // so just recurse
             check_spread_type(inner)
         }
-        ParsedType::Optional(_) => Err(TypeValidationError::SpreadOnOption {
+        RustType::Optional(_) => Err(TypeValidationError::SpreadOnOption {
             span: rust_type.span(),
         }
         .into()),
-        ParsedType::List(_) => Err(TypeValidationError::SpreadOnVec {
+        RustType::List(_) => Err(TypeValidationError::SpreadOnVec {
             span: rust_type.span(),
         }
         .into()),
-        ParsedType::SimpleType => {
+        RustType::SimpleType => {
             // No way to tell if the given type is actually compatible,
             // but the rust compiler should help us with that.
             Ok(())
@@ -70,12 +71,12 @@ pub fn check_spread_type(rust_type: &syn::Type) -> Result<(), syn::Error> {
 /// Returns the type inside `Option` if the type is `Option`.
 /// Otherwise returns None
 pub fn outer_type_is_option(rust_type: &syn::Type) -> Option<&syn::Type> {
-    match parse_type(rust_type) {
-        ParsedType::Optional(inner) => Some(inner),
-        ParsedType::List(_) => None,
-        ParsedType::Box(inner) => outer_type_is_option(inner),
-        ParsedType::SimpleType => None,
-        ParsedType::Unknown => None,
+    match parse_rust_type(rust_type) {
+        RustType::Optional(inner) => Some(inner),
+        RustType::List(_) => None,
+        RustType::Box(inner) => outer_type_is_option(inner),
+        RustType::SimpleType => None,
+        RustType::Unknown => None,
     }
 }
 
@@ -84,16 +85,16 @@ fn output_type_check<'a, T>(
     rust_type: &syn::Type,
     flattening: bool,
 ) -> Result<(), TypeValidationError> {
-    match (&gql_type, parse_type(rust_type)) {
-        (_, ParsedType::Box(inner)) => {
+    match (&gql_type, parse_rust_type(rust_type)) {
+        (_, RustType::Box(inner)) => {
             // Box is a transparent container for the purposes of checking compatability
             // so just recurse
             output_type_check(gql_type, inner, flattening)
         }
-        (TypeRef::Nullable(inner_gql), ParsedType::Optional(inner)) => {
+        (TypeRef::Nullable(inner_gql), RustType::Optional(inner)) => {
             output_type_check(inner_gql, inner, flattening)
         }
-        (TypeRef::Nullable(_), ParsedType::Unknown) => Err(TypeValidationError::UnknownType {
+        (TypeRef::Nullable(_), RustType::Unknown) => Err(TypeValidationError::UnknownType {
             span: rust_type.span(),
         }),
         (TypeRef::Nullable(inner_gql), _) if flattening => {
@@ -105,13 +106,13 @@ fn output_type_check<'a, T>(
 
             span: rust_type.span(),
         }),
-        (gql_type, ParsedType::Optional(inner)) => {
+        (gql_type, RustType::Optional(inner)) => {
             // It should be fine for an output field to be `Option` if the schema
             // type isn't nullable.  it's pointless, but won't crash so
             // we just need to check the inner types
             output_type_check(gql_type, inner, flattening)
         }
-        (TypeRef::List(item_type), ParsedType::List(inner)) => {
+        (TypeRef::List(item_type), RustType::List(inner)) => {
             output_type_check(item_type.as_ref(), inner, flattening)
         }
         (TypeRef::List(_), _) => {
@@ -121,12 +122,12 @@ fn output_type_check<'a, T>(
                 span: rust_type.span(),
             })
         }
-        (_, ParsedType::List(inner)) => Err(TypeValidationError::FieldIsNotList {
+        (_, RustType::List(inner)) => Err(TypeValidationError::FieldIsNotList {
             provided_type: inner.to_string(),
             span: rust_type.span(),
         }),
-        (TypeRef::Named(_, _, _), ParsedType::SimpleType) => Ok(()),
-        (TypeRef::Named(_, _, _), ParsedType::Unknown) => {
+        (TypeRef::Named(_, _, _), RustType::SimpleType) => Ok(()),
+        (TypeRef::Named(_, _, _), RustType::Unknown) => {
             // This is probably some type with generic params.
             // But we've satisfied any list/nullable requirements by here
             // so should probably just allow it
@@ -140,18 +141,18 @@ fn input_type_check<'a, T>(
     has_default: bool,
     rust_type: &syn::Type,
 ) -> Result<(), TypeValidationError> {
-    let parsed_type = parse_type(rust_type);
+    let parsed_type = parse_rust_type(rust_type);
 
     match (&gql_type, parsed_type) {
-        (gql_type, ParsedType::Box(inner)) => {
+        (gql_type, RustType::Box(inner)) => {
             // Box is a transparent container for the purposes of checking compatability
             // so just recurse
             input_type_check(gql_type, has_default, inner)
         }
-        (TypeRef::Nullable(inner_gql), ParsedType::Optional(inner)) => {
+        (TypeRef::Nullable(inner_gql), RustType::Optional(inner)) => {
             input_type_check(inner_gql, false, inner)
         }
-        (TypeRef::Nullable(_), ParsedType::Unknown) => Err(TypeValidationError::UnknownType {
+        (TypeRef::Nullable(_), RustType::Unknown) => Err(TypeValidationError::UnknownType {
             span: rust_type.span(),
         }),
         (TypeRef::Nullable(inner_gql), _) => {
@@ -159,16 +160,16 @@ fn input_type_check<'a, T>(
             // We just need to check that the inner types line up.
             input_type_check(inner_gql, false, rust_type)
         }
-        (_, ParsedType::Optional(inner)) if has_default => {
+        (_, RustType::Optional(inner)) if has_default => {
             // If an input type is required but has a default then
             // it's ok for it to be wrapped in option.
             input_type_check(gql_type, false, inner)
         }
-        (_, ParsedType::Optional(inner)) => Err(TypeValidationError::FieldIsRequired {
+        (_, RustType::Optional(inner)) => Err(TypeValidationError::FieldIsRequired {
             provided_type: inner.to_string(),
             span: rust_type.span(),
         }),
-        (TypeRef::List(item_type), ParsedType::List(inner)) => {
+        (TypeRef::List(item_type), RustType::List(inner)) => {
             input_type_check(item_type.as_ref(), false, inner)
         }
         (TypeRef::List(item_type), _) => {
@@ -176,12 +177,12 @@ fn input_type_check<'a, T>(
             // We just need to check that the inner types line up.
             input_type_check(item_type, false, rust_type)
         }
-        (_, ParsedType::List(inner)) => Err(TypeValidationError::FieldIsNotList {
+        (_, RustType::List(inner)) => Err(TypeValidationError::FieldIsNotList {
             provided_type: inner.to_string(),
             span: rust_type.span(),
         }),
-        (TypeRef::Named(_, _, _), ParsedType::SimpleType) => Ok(()),
-        (TypeRef::Named(_, _, _), ParsedType::Unknown) => {
+        (TypeRef::Named(_, _, _), RustType::SimpleType) => Ok(()),
+        (TypeRef::Named(_, _, _), RustType::Unknown) => {
             // This is probably some type with generic params.
             // But we've satisfied any list/nullable requirements by here
             // so should probably just allow it
@@ -194,9 +195,9 @@ fn recursing_check<'a, T>(
     gql_type: &TypeRef<'a, T>,
     rust_type: &syn::Type,
 ) -> Result<(), TypeValidationError> {
-    let parsed_type = parse_type(rust_type);
+    let parsed_type = parse_rust_type(rust_type);
 
-    if let ParsedType::Unknown = parsed_type {
+    if let RustType::Unknown = parsed_type {
         return Err(TypeValidationError::UnknownType {
             span: rust_type.span(),
         });
@@ -207,7 +208,7 @@ fn recursing_check<'a, T>(
         return output_type_check(gql_type, rust_type, false);
     };
 
-    if let ParsedType::Optional(inner_rust_type) = parsed_type {
+    if let RustType::Optional(inner_rust_type) = parsed_type {
         output_type_check(gql_type, inner_rust_type, false)
     } else {
         Err(TypeValidationError::RecursiveFieldWithoutOption {
@@ -215,62 +216,6 @@ fn recursing_check<'a, T>(
             span: rust_type.span(),
         })
     }
-}
-
-/// A simplified rust type structure
-#[derive(Debug, PartialEq)]
-enum ParsedType<'a> {
-    Optional(&'a syn::Type),
-    List(&'a syn::Type),
-    Box(&'a syn::Type),
-    SimpleType,
-    Unknown,
-}
-
-#[allow(clippy::cmp_owned)]
-fn parse_type(ty: &'_ syn::Type) -> ParsedType<'_> {
-    if let syn::Type::Path(type_path) = ty {
-        if let Some(last_segment) = type_path.path.segments.last() {
-            if let syn::PathArguments::None = last_segment.arguments {
-                return ParsedType::SimpleType;
-            }
-
-            match last_segment.ident.to_string().as_ref() {
-                "Box" | "Arc" | "Rc" => {
-                    if let Some(inner_type) = extract_generic_argument(last_segment) {
-                        return ParsedType::Box(inner_type);
-                    }
-                }
-                "Option" => {
-                    if let Some(inner_type) = extract_generic_argument(last_segment) {
-                        return ParsedType::Optional(inner_type);
-                    }
-                }
-                "Vec" => {
-                    if let Some(inner_type) = extract_generic_argument(last_segment) {
-                        return ParsedType::List(inner_type);
-                    }
-                }
-                _ => {}
-            }
-            return ParsedType::Unknown;
-        }
-    }
-
-    ParsedType::Unknown
-}
-
-/// Takes a PathSegment like `Vec<T>` and extracts the `T`
-fn extract_generic_argument(segment: &syn::PathSegment) -> Option<&syn::Type> {
-    if let syn::PathArguments::AngleBracketed(angle_bracketed) = &segment.arguments {
-        for arg in &angle_bracketed.args {
-            if let syn::GenericArgument::Type(inner_type) = arg {
-                return Some(inner_type);
-            }
-        }
-    }
-
-    None
 }
 
 #[derive(Debug)]
