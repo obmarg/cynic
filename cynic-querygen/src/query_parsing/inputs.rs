@@ -6,7 +6,6 @@ use std::{
 use super::{
     normalisation::{NormalisedDocument, Selection, SelectionSet},
     sorting::Vertex,
-    value::TypedValue,
 };
 use crate::{
     schema::{self, InputType, InputTypeRef},
@@ -76,93 +75,9 @@ fn extract_objects_from_selection_set<'query, 'schema>(
         for selection_set in field.field.selection_sets() {
             extract_objects_from_selection_set(selection_set.as_ref(), input_objects)?;
         }
-
-        for (_, arg_value) in &field.arguments {
-            let arg_type = arg_value.value_type().inner_ref().lookup()?;
-
-            if let InputType::InputObject(input_obj) = arg_type {
-                extract_input_objects_from_values(&input_obj, arg_value, input_objects)?;
-            }
-        }
     }
 
     Ok(())
-}
-
-pub fn extract_input_objects_from_values<'query, 'schema>(
-    input_object: &schema::InputObjectDetails<'schema>,
-    typed_value: &TypedValue<'query, 'schema>,
-    input_objects: &mut InputObjectSet<'schema>,
-) -> Result<Rc<InputObject<'schema>>, Error> {
-    if typed_value.is_variable() {
-        return extract_whole_input_object_tree(input_object, input_objects);
-    }
-
-    match &typed_value {
-        TypedValue::Object(obj, _) => {
-            let mut fields = Vec::new();
-            let mut adjacents = Vec::new();
-            for (field_name, field_val) in obj {
-                let field = input_object
-                    .fields
-                    .iter()
-                    .find(|f| f.name == *field_name)
-                    .ok_or_else(|| {
-                        Error::UnknownField(field_name.to_string(), input_object.name.to_string())
-                    })?;
-
-                let field_type = field.value_type.inner_ref().lookup()?;
-
-                if let InputType::InputObject(inner_obj) = field_type {
-                    adjacents.push(extract_input_objects_from_values(
-                        &inner_obj,
-                        field_val,
-                        input_objects,
-                    )?);
-                }
-
-                fields.push(field.clone());
-            }
-
-            let rv = Rc::new(InputObject {
-                schema_type: input_object.clone(),
-                _adjacents: adjacents,
-                fields,
-            });
-
-            if let Some(existing_obj) = input_objects.get(&rv) {
-                return Ok(Rc::clone(existing_obj));
-            }
-
-            input_objects.insert(Rc::clone(&rv));
-
-            Ok(rv)
-        }
-        TypedValue::List(inner_values, _) => {
-            if inner_values.is_empty() {
-                // We still need the type in order to type this field...
-                return extract_whole_input_object_tree(input_object, input_objects);
-            }
-
-            let mut output_values = Vec::with_capacity(inner_values.len());
-            for inner_value in inner_values {
-                output_values.push(extract_input_objects_from_values(
-                    input_object,
-                    inner_value,
-                    input_objects,
-                )?);
-            }
-
-            let mut output_iter = output_values.into_iter();
-            let rv = output_iter.next().unwrap();
-            if output_iter.any(|v| v != rv) {
-                return Err(Error::ExpectedHomogenousList);
-            }
-
-            Ok(rv)
-        }
-        _ => Err(Error::ExpectedInputObjectValue),
-    }
 }
 
 pub fn extract_whole_input_object_tree<'schema>(
