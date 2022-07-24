@@ -5,7 +5,7 @@ use syn::spanned::Spanned;
 use crate::{
     error::Errors,
     schema::types::{Field, OutputType},
-    types::{check_spread_type, check_types_are_compatible, CheckMode},
+    types::{self, check_spread_type, check_types_are_compatible, CheckMode},
     Ident,
 };
 
@@ -32,6 +32,7 @@ struct FieldSelection<'a> {
     rust_field_type: syn::Type,
     field_marker_type_path: syn::Path,
     graphql_field_kind: FieldKind,
+    graphql_field: &'a Field<'a>,
     arguments: super::arguments::Output<'a>,
     flatten: bool,
     alias: Option<String>,
@@ -54,7 +55,7 @@ enum FieldKind {
 
 impl<'a> FragmentImpl<'a> {
     pub fn new_for(
-        fields: &[(&FragmentDeriveField, Option<&Field<'a>>)],
+        fields: &[(&FragmentDeriveField, Option<&'a Field<'a>>)],
         name: &syn::Ident,
         schema_type: &FragmentDeriveType,
         schema_module_path: &syn::Path,
@@ -101,7 +102,7 @@ impl<'a> FragmentImpl<'a> {
 
 fn process_field<'a>(
     field: &FragmentDeriveField,
-    schema_field: Option<&Field<'a>>,
+    schema_field: Option<&'a Field<'a>>,
     field_module_path: &syn::Path,
     schema_module_path: &syn::Path,
     variables: Option<&syn::Path>,
@@ -136,6 +137,7 @@ fn process_field<'a>(
         rust_field_type: field.ty.clone(),
         arguments,
         field_marker_type_path,
+        graphql_field: schema_field,
         recurse_limit: field.recurse.as_ref().map(|f| **f),
         span: field.ty.span(),
         alias: field.alias(),
@@ -204,19 +206,25 @@ impl quote::ToTokens for FieldSelection<'_> {
             }
         });
 
+        let aligned_type = types::align_output_type(
+            &types::parsing2::parse_rust_type(field_type),
+            &self.graphql_field.field_type,
+        )
+        .to_syn();
+
         let schema_type_lookup = match self.graphql_field_kind {
             FieldKind::Interface | FieldKind::Composite | FieldKind::Union => {
                 quote_spanned! { self.span =>
-                    <#field_type as ::cynic::QueryFragment>::SchemaType
+                    <#aligned_type as ::cynic::QueryFragment>::SchemaType
                 }
             }
             FieldKind::Scalar => quote_spanned! { self.span =>
-                <#field_type as ::cynic::schema::IsScalar<
+                <#aligned_type as ::cynic::schema::IsScalar<
                     <#field_marker_type_path as ::cynic::schema::Field>::Type
                 >>::SchemaType
             },
             FieldKind::Enum => quote_spanned! { self.span =>
-                <#field_type as ::cynic::Enum>::SchemaType
+                <#aligned_type as ::cynic::Enum>::SchemaType
             },
         };
 
@@ -241,7 +249,7 @@ impl quote::ToTokens for FieldSelection<'_> {
                     #alias
                     #arguments
 
-                    <#field_type as ::cynic::QueryFragment>::query(
+                    <#aligned_type as ::cynic::QueryFragment>::query(
                         field_builder.select_children()
                     );
                 }
@@ -258,7 +266,7 @@ impl quote::ToTokens for FieldSelection<'_> {
                     #alias
                     #arguments
 
-                    <#field_type as ::cynic::QueryFragment>::query(
+                    <#aligned_type as ::cynic::QueryFragment>::query(
                         field_builder.select_children()
                     );
                 }
@@ -287,7 +295,7 @@ impl quote::ToTokens for FieldSelection<'_> {
                         #alias
                         #arguments
 
-                        <#field_type as ::cynic::QueryFragment>::query(
+                        <#aligned_type as ::cynic::QueryFragment>::query(
                             field_builder.select_children()
                         );
                     }

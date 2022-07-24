@@ -3,6 +3,11 @@ input BlogPostInput {
   content: String!
 }
 
+input SeriesOfBlogs {
+  blogs: [BlogPostInput!]!
+  authors: [String!]
+}
+
 type BlogPost implements Node {
   id: ID
   author: Author!
