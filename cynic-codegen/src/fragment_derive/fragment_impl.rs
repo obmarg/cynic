@@ -5,7 +5,7 @@ use syn::spanned::Spanned;
 use crate::{
     error::Errors,
     schema::types::{Field, OutputType},
-    types::{check_spread_type, check_types_are_compatible, CheckMode},
+    types::{self, check_spread_type, check_types_are_compatible, CheckMode},
     Ident,
 };
 
@@ -32,6 +32,7 @@ struct FieldSelection<'a> {
     rust_field_type: syn::Type,
     field_marker_type_path: syn::Path,
     graphql_field_kind: FieldKind,
+    graphql_field: &'a Field<'a>,
     arguments: super::arguments::Output<'a>,
     flatten: bool,
     alias: Option<String>,
@@ -54,7 +55,7 @@ enum FieldKind {
 
 impl<'a> FragmentImpl<'a> {
     pub fn new_for(
-        fields: &[(&FragmentDeriveField, Option<&Field<'a>>)],
+        fields: &[(&FragmentDeriveField, Option<&'a Field<'a>>)],
         name: &syn::Ident,
         schema_type: &FragmentDeriveType,
         schema_module_path: &syn::Path,
@@ -101,7 +102,7 @@ impl<'a> FragmentImpl<'a> {
 
 fn process_field<'a>(
     field: &FragmentDeriveField,
-    schema_field: Option<&Field<'a>>,
+    schema_field: Option<&'a Field<'a>>,
     field_module_path: &syn::Path,
     schema_module_path: &syn::Path,
     variables: Option<&syn::Path>,
@@ -136,6 +137,7 @@ fn process_field<'a>(
         rust_field_type: field.ty.clone(),
         arguments,
         field_marker_type_path,
+        graphql_field: schema_field,
         recurse_limit: field.recurse.as_ref().map(|f| **f),
         span: field.ty.span(),
         alias: field.alias(),
@@ -204,22 +206,6 @@ impl quote::ToTokens for FieldSelection<'_> {
             }
         });
 
-        let schema_type_lookup = match self.graphql_field_kind {
-            FieldKind::Interface | FieldKind::Composite | FieldKind::Union => {
-                quote_spanned! { self.span =>
-                    <#field_type as ::cynic::QueryFragment>::SchemaType
-                }
-            }
-            FieldKind::Scalar => quote_spanned! { self.span =>
-                <#field_type as ::cynic::schema::IsScalar<
-                    <#field_marker_type_path as ::cynic::schema::Field>::Type
-                >>::SchemaType
-            },
-            FieldKind::Enum => quote_spanned! { self.span =>
-                <#field_type as ::cynic::Enum>::SchemaType
-            },
-        };
-
         let selection_mode = match (&self.graphql_field_kind, self.flatten, self.recurse_limit) {
             (FieldKind::Enum | FieldKind::Scalar, true, _) => SelectionMode::FlattenLeaf,
             (FieldKind::Enum | FieldKind::Scalar, false, _) => SelectionMode::Leaf,
@@ -227,6 +213,34 @@ impl quote::ToTokens for FieldSelection<'_> {
             (_, false, None) => SelectionMode::Composite,
             (_, false, Some(limit)) => SelectionMode::Recurse(limit),
             _ => panic!("Uncertain how to select for this field."),
+        };
+
+        let aligned_type = match selection_mode {
+            SelectionMode::Composite | SelectionMode::Leaf => {
+                // If we're doing a normal select we need to align types.
+                types::align_output_type(field_type, &self.graphql_field.field_type)
+            }
+            _ => {
+                // Recursive & flatten selections don't need types aligned
+                // according to the graphql rules as they have special rules.
+                field_type.clone()
+            }
+        };
+
+        let schema_type_lookup = match self.graphql_field_kind {
+            FieldKind::Interface | FieldKind::Composite | FieldKind::Union => {
+                quote_spanned! { self.span =>
+                    <#aligned_type as ::cynic::QueryFragment>::SchemaType
+                }
+            }
+            FieldKind::Scalar => quote_spanned! { self.span =>
+                <#aligned_type as ::cynic::schema::IsScalar<
+                    <#field_marker_type_path as ::cynic::schema::Field>::Type
+                >>::SchemaType
+            },
+            FieldKind::Enum => quote_spanned! { self.span =>
+                <#aligned_type as ::cynic::Enum>::SchemaType
+            },
         };
 
         tokens.append_all(match selection_mode {
@@ -241,7 +255,7 @@ impl quote::ToTokens for FieldSelection<'_> {
                     #alias
                     #arguments
 
-                    <#field_type as ::cynic::QueryFragment>::query(
+                    <#aligned_type as ::cynic::QueryFragment>::query(
                         field_builder.select_children()
                     );
                 }
@@ -258,7 +272,7 @@ impl quote::ToTokens for FieldSelection<'_> {
                     #alias
                     #arguments
 
-                    <#field_type as ::cynic::QueryFragment>::query(
+                    <#aligned_type as ::cynic::QueryFragment>::query(
                         field_builder.select_children()
                     );
                 }
@@ -287,7 +301,7 @@ impl quote::ToTokens for FieldSelection<'_> {
                         #alias
                         #arguments
 
-                        <#field_type as ::cynic::QueryFragment>::query(
+                        <#aligned_type as ::cynic::QueryFragment>::query(
                             field_builder.select_children()
                         );
                     }

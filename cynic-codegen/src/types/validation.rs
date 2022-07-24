@@ -1,8 +1,10 @@
 use proc_macro2::Span;
-use syn::spanned::Spanned;
 
-use super::{parse_rust_type, RustType};
-use crate::schema::{types::InputValue, types::TypeRef};
+use super::parsing::{parse_rust_type, RustType};
+use crate::schema::{
+    types::InputValue,
+    types::{InputType, OutputType, TypeRef},
+};
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum CheckMode {
@@ -12,15 +14,16 @@ pub enum CheckMode {
     Spreading,
 }
 
-pub fn check_types_are_compatible<'a, T>(
-    gql_type: &TypeRef<'a, T>,
+pub fn check_types_are_compatible<'a>(
+    gql_type: &TypeRef<'a, OutputType>,
     rust_type: &syn::Type,
     mode: CheckMode,
 ) -> Result<(), syn::Error> {
+    let rust_type = parse_rust_type(rust_type);
     match mode {
-        CheckMode::Flattening => output_type_check(gql_type, rust_type, true)?,
-        CheckMode::OutputTypes => output_type_check(gql_type, rust_type, false)?,
-        CheckMode::Recursing => recursing_check(gql_type, rust_type)?,
+        CheckMode::Flattening => output_type_check(gql_type, &rust_type, true)?,
+        CheckMode::OutputTypes => output_type_check(gql_type, &rust_type, false)?,
+        CheckMode::Recursing => recursing_check(gql_type, &rust_type)?,
         CheckMode::Spreading => {
             panic!("check_types_are_compatible shouldnt be called with CheckMode::Spreading")
         }
@@ -33,68 +36,76 @@ pub fn check_input_types_are_compatible<'a>(
     gql_type: &InputValue<'a>,
     rust_type: &syn::Type,
 ) -> Result<(), syn::Error> {
-    input_type_check(&gql_type.value_type, gql_type.has_default, rust_type)?;
+    let parsed_type = parse_rust_type(rust_type);
+
+    input_type_check(&gql_type.value_type, gql_type.has_default, &parsed_type)?;
 
     Ok(())
 }
 
 pub fn check_spread_type(rust_type: &syn::Type) -> Result<(), syn::Error> {
-    let parsed_type = parse_rust_type(rust_type);
-
-    match parsed_type {
-        RustType::Unknown => {
-            // If we can't parse the type just ignore it - the compiler will still tell us if it's
-            // wrong.
-            Ok(())
-        }
-        RustType::Box(inner) => {
-            // Box is a transparent container for the purposes of checking compatability
-            // so just recurse
-            check_spread_type(inner)
-        }
-        RustType::Optional(_) => Err(TypeValidationError::SpreadOnOption {
-            span: rust_type.span(),
-        }
-        .into()),
-        RustType::List(_) => Err(TypeValidationError::SpreadOnVec {
-            span: rust_type.span(),
-        }
-        .into()),
-        RustType::SimpleType => {
-            // No way to tell if the given type is actually compatible,
-            // but the rust compiler should help us with that.
-            Ok(())
+    fn inner_fn(rust_type: &RustType) -> Result<(), syn::Error> {
+        match rust_type {
+            RustType::Unknown { .. } => {
+                // If we can't parse the type just ignore it - the compiler will still tell us if it's
+                // wrong.
+                Ok(())
+            }
+            RustType::Box { inner, .. } => {
+                // Box is a transparent container for the purposes of checking compatability
+                // so just recurse
+                inner_fn(inner.as_ref())
+            }
+            RustType::Optional { .. } => Err(TypeValidationError::SpreadOnOption {
+                span: rust_type.span(),
+            }
+            .into()),
+            RustType::List { .. } => Err(TypeValidationError::SpreadOnVec {
+                span: rust_type.span(),
+            }
+            .into()),
+            RustType::SimpleType { .. } => {
+                // No way to tell if the given type is actually compatible,
+                // but the rust compiler should help us with that.
+                Ok(())
+            }
         }
     }
+
+    inner_fn(&parse_rust_type(rust_type))
 }
 
 /// Returns the type inside `Option` if the type is `Option`.
 /// Otherwise returns None
-pub fn outer_type_is_option(rust_type: &syn::Type) -> Option<&syn::Type> {
-    match parse_rust_type(rust_type) {
-        RustType::Optional(inner) => Some(inner),
-        RustType::List(_) => None,
-        RustType::Box(inner) => outer_type_is_option(inner),
-        RustType::SimpleType => None,
-        RustType::Unknown => None,
+pub fn outer_type_is_option(rust_type: &syn::Type) -> bool {
+    fn inner_fn(rust_type: &RustType) -> bool {
+        match rust_type {
+            RustType::Optional { .. } => true,
+            RustType::List { .. } => false,
+            RustType::Box { inner, .. } => inner_fn(inner.as_ref()),
+            RustType::SimpleType { .. } => false,
+            RustType::Unknown { .. } => false,
+        }
     }
+
+    inner_fn(&parse_rust_type(rust_type))
 }
 
-fn output_type_check<'a, T>(
-    gql_type: &TypeRef<'a, T>,
-    rust_type: &syn::Type,
+fn output_type_check<'a>(
+    gql_type: &TypeRef<'a, OutputType<'a>>,
+    rust_type: &RustType<'a>,
     flattening: bool,
 ) -> Result<(), TypeValidationError> {
-    match (&gql_type, parse_rust_type(rust_type)) {
-        (_, RustType::Box(inner)) => {
+    match (&gql_type, rust_type) {
+        (_, RustType::Box { inner, .. }) => {
             // Box is a transparent container for the purposes of checking compatability
             // so just recurse
-            output_type_check(gql_type, inner, flattening)
+            output_type_check(gql_type, inner.as_ref(), flattening)
         }
-        (TypeRef::Nullable(inner_gql), RustType::Optional(inner)) => {
-            output_type_check(inner_gql, inner, flattening)
+        (TypeRef::Nullable(inner_gql), RustType::Optional { inner, .. }) => {
+            output_type_check(inner_gql, inner.as_ref(), flattening)
         }
-        (TypeRef::Nullable(_), RustType::Unknown) => Err(TypeValidationError::UnknownType {
+        (TypeRef::Nullable(_), RustType::Unknown { .. }) => Err(TypeValidationError::UnknownType {
             span: rust_type.span(),
         }),
         (TypeRef::Nullable(inner_gql), _) if flattening => {
@@ -102,32 +113,32 @@ fn output_type_check<'a, T>(
             output_type_check(inner_gql, rust_type, flattening)
         }
         (TypeRef::Nullable(_), _) => Err(TypeValidationError::FieldIsOptional {
-            provided_type: rust_type.to_string(),
+            provided_type: rust_type.to_syn().to_string(),
 
             span: rust_type.span(),
         }),
-        (gql_type, RustType::Optional(inner)) => {
+        (gql_type, RustType::Optional { inner, .. }) => {
             // It should be fine for an output field to be `Option` if the schema
             // type isn't nullable.  it's pointless, but won't crash so
             // we just need to check the inner types
-            output_type_check(gql_type, inner, flattening)
+            output_type_check(gql_type, inner.as_ref(), flattening)
         }
-        (TypeRef::List(item_type), RustType::List(inner)) => {
-            output_type_check(item_type.as_ref(), inner, flattening)
+        (TypeRef::List(item_type), RustType::List { inner, .. }) => {
+            output_type_check(item_type.as_ref(), inner.as_ref(), flattening)
         }
         (TypeRef::List(_), _) => {
             // If the server is going to return a list we can't not have a Vec here...
             Err(TypeValidationError::FieldIsList {
-                provided_type: rust_type.to_string(),
+                provided_type: rust_type.to_syn().to_string(),
                 span: rust_type.span(),
             })
         }
-        (_, RustType::List(inner)) => Err(TypeValidationError::FieldIsNotList {
-            provided_type: inner.to_string(),
+        (_, RustType::List { inner, .. }) => Err(TypeValidationError::FieldIsNotList {
+            provided_type: inner.to_syn().to_string(),
             span: rust_type.span(),
         }),
-        (TypeRef::Named(_, _, _), RustType::SimpleType) => Ok(()),
-        (TypeRef::Named(_, _, _), RustType::Unknown) => {
+        (TypeRef::Named(_, _, _), RustType::SimpleType { .. }) => Ok(()),
+        (TypeRef::Named(_, _, _), RustType::Unknown { .. }) => {
             // This is probably some type with generic params.
             // But we've satisfied any list/nullable requirements by here
             // so should probably just allow it
@@ -136,23 +147,21 @@ fn output_type_check<'a, T>(
     }
 }
 
-fn input_type_check<'a, T>(
-    gql_type: &TypeRef<'a, T>,
+fn input_type_check<'a>(
+    gql_type: &TypeRef<'a, InputType<'a>>,
     has_default: bool,
-    rust_type: &syn::Type,
+    rust_type: &RustType,
 ) -> Result<(), TypeValidationError> {
-    let parsed_type = parse_rust_type(rust_type);
-
-    match (&gql_type, parsed_type) {
-        (gql_type, RustType::Box(inner)) => {
+    match (&gql_type, rust_type) {
+        (gql_type, RustType::Box { inner, .. }) => {
             // Box is a transparent container for the purposes of checking compatability
             // so just recurse
-            input_type_check(gql_type, has_default, inner)
+            input_type_check(gql_type, has_default, inner.as_ref())
         }
-        (TypeRef::Nullable(inner_gql), RustType::Optional(inner)) => {
-            input_type_check(inner_gql, false, inner)
+        (TypeRef::Nullable(inner_gql), RustType::Optional { inner, .. }) => {
+            input_type_check(inner_gql, false, inner.as_ref())
         }
-        (TypeRef::Nullable(_), RustType::Unknown) => Err(TypeValidationError::UnknownType {
+        (TypeRef::Nullable(_), RustType::Unknown { .. }) => Err(TypeValidationError::UnknownType {
             span: rust_type.span(),
         }),
         (TypeRef::Nullable(inner_gql), _) => {
@@ -160,16 +169,16 @@ fn input_type_check<'a, T>(
             // We just need to check that the inner types line up.
             input_type_check(inner_gql, false, rust_type)
         }
-        (_, RustType::Optional(inner)) if has_default => {
+        (_, RustType::Optional { inner, .. }) if has_default => {
             // If an input type is required but has a default then
             // it's ok for it to be wrapped in option.
             input_type_check(gql_type, false, inner)
         }
-        (_, RustType::Optional(inner)) => Err(TypeValidationError::FieldIsRequired {
-            provided_type: inner.to_string(),
+        (_, RustType::Optional { inner, .. }) => Err(TypeValidationError::FieldIsRequired {
+            provided_type: inner.to_syn().to_string(),
             span: rust_type.span(),
         }),
-        (TypeRef::List(item_type), RustType::List(inner)) => {
+        (TypeRef::List(item_type), RustType::List { inner, .. }) => {
             input_type_check(item_type.as_ref(), false, inner)
         }
         (TypeRef::List(item_type), _) => {
@@ -177,12 +186,12 @@ fn input_type_check<'a, T>(
             // We just need to check that the inner types line up.
             input_type_check(item_type, false, rust_type)
         }
-        (_, RustType::List(inner)) => Err(TypeValidationError::FieldIsNotList {
-            provided_type: inner.to_string(),
+        (_, RustType::List { inner, .. }) => Err(TypeValidationError::FieldIsNotList {
+            provided_type: inner.to_syn().to_string(),
             span: rust_type.span(),
         }),
-        (TypeRef::Named(_, _, _), RustType::SimpleType) => Ok(()),
-        (TypeRef::Named(_, _, _), RustType::Unknown) => {
+        (TypeRef::Named(_, _, _), RustType::SimpleType { .. }) => Ok(()),
+        (TypeRef::Named(_, _, _), RustType::Unknown { .. }) => {
             // This is probably some type with generic params.
             // But we've satisfied any list/nullable requirements by here
             // so should probably just allow it
@@ -191,13 +200,11 @@ fn input_type_check<'a, T>(
     }
 }
 
-fn recursing_check<'a, T>(
-    gql_type: &TypeRef<'a, T>,
-    rust_type: &syn::Type,
+fn recursing_check<'a>(
+    gql_type: &TypeRef<'a, OutputType>,
+    rust_type: &RustType,
 ) -> Result<(), TypeValidationError> {
-    let parsed_type = parse_rust_type(rust_type);
-
-    if let RustType::Unknown = parsed_type {
+    if let RustType::Unknown { .. } = rust_type {
         return Err(TypeValidationError::UnknownType {
             span: rust_type.span(),
         });
@@ -208,11 +215,11 @@ fn recursing_check<'a, T>(
         return output_type_check(gql_type, rust_type, false);
     };
 
-    if let RustType::Optional(inner_rust_type) = parsed_type {
-        output_type_check(gql_type, inner_rust_type, false)
+    if let RustType::Optional { inner, .. } = rust_type {
+        output_type_check(gql_type, inner.as_ref(), false)
     } else {
         Err(TypeValidationError::RecursiveFieldWithoutOption {
-            provided_type: rust_type.to_string(),
+            provided_type: rust_type.to_syn().to_string(),
             span: rust_type.span(),
         })
     }
@@ -294,14 +301,26 @@ mod tests {
     use std::marker::PhantomData;
 
     use super::*;
-    use crate::schema::TypeIndex;
+    use crate::schema::{
+        types::{InputType, OutputType},
+        TypeIndex,
+    };
 
     use assert_matches::assert_matches;
     use quote::quote;
     use rstest::rstest;
     use syn::parse_quote;
 
-    type TypeRef<'a> = super::TypeRef<'a, ()>;
+    type OutputTypeRef<'a> = super::TypeRef<'a, OutputType<'a>>;
+    type InputTypeRef<'a> = super::TypeRef<'a, InputType<'a>>;
+
+    fn call_output_type_check<'a>(
+        gql_type: &OutputTypeRef<'a>,
+        rust_type: &syn::Type,
+        flattening: bool,
+    ) -> Result<(), TypeValidationError> {
+        output_type_check(gql_type, &parse_rust_type(rust_type), flattening)
+    }
 
     #[test]
     fn test_output_type_check() {
@@ -309,7 +328,7 @@ mod tests {
         let optional_field = TypeRef::Nullable(Box::new(required_field.clone()));
 
         assert_matches!(
-            output_type_check(
+            call_output_type_check(
                 &required_field,
                 &syn::parse2(quote! { i32 }).unwrap(),
                 false
@@ -317,7 +336,7 @@ mod tests {
             Ok(())
         );
         assert_matches!(
-            output_type_check(
+            call_output_type_check(
                 &required_field,
                 &syn::parse2(quote! { DateTime<Utc> }).unwrap(),
                 false
@@ -325,7 +344,7 @@ mod tests {
             Ok(())
         );
         assert_matches!(
-            output_type_check(
+            call_output_type_check(
                 &optional_field,
                 &syn::parse2(quote! { Option<i32> }).unwrap(),
                 false
@@ -333,7 +352,7 @@ mod tests {
             Ok(())
         );
         assert_matches!(
-            output_type_check(
+            call_output_type_check(
                 &optional_field,
                 &syn::parse2(quote! { i32 }).unwrap(),
                 false
@@ -346,7 +365,7 @@ mod tests {
             }
         );
         assert_matches!(
-            output_type_check(
+            call_output_type_check(
                 &required_field,
                 &syn::parse2(quote! { Option<i32> }).unwrap(),
                 false
@@ -365,11 +384,11 @@ mod tests {
         ))));
 
         assert_matches!(
-            output_type_check(&list, &syn::parse2(quote! { Vec<i32> }).unwrap(), false),
+            call_output_type_check(&list, &syn::parse2(quote! { Vec<i32> }).unwrap(), false),
             Ok(())
         );
         assert_matches!(
-            output_type_check(
+            call_output_type_check(
                 &optional_list,
                 &syn::parse2(quote! { Option<Vec<i32>> }).unwrap(),
                 false
@@ -377,7 +396,7 @@ mod tests {
             Ok(())
         );
         assert_matches!(
-            output_type_check(
+            call_output_type_check(
                 &option_list_option,
                 &syn::parse2(quote! { Option<Vec<Option<i32>>> }).unwrap(),
                 false
@@ -385,7 +404,7 @@ mod tests {
             Ok(())
         );
         assert_matches!(
-            output_type_check(
+            call_output_type_check(
                 &list,
                 &syn::parse2(quote! { Vec<DateTime<Utc>> }).unwrap(),
                 false
@@ -393,7 +412,7 @@ mod tests {
             Ok(())
         );
         assert_matches!(
-            output_type_check(
+            call_output_type_check(
                 &optional_list,
                 &syn::parse2(quote! { Option<Vec<DateTime<Utc>>> }).unwrap(),
                 false
@@ -401,7 +420,7 @@ mod tests {
             Ok(())
         );
         assert_matches!(
-            output_type_check(
+            call_output_type_check(
                 &option_list_option,
                 &syn::parse2(quote! { Option<Vec<Option<DateTime<Utc>>>> }).unwrap(),
                 false
@@ -409,7 +428,7 @@ mod tests {
             Ok(())
         );
         assert_matches!(
-            output_type_check(
+            call_output_type_check(
                 &list,
                 &syn::parse2(quote! { Option<Vec<i32>> }).unwrap(),
                 false
@@ -417,13 +436,13 @@ mod tests {
             Ok(())
         );
         assert_matches!(
-            output_type_check(&list, &syn::parse2(quote! { i32 }).unwrap(), false),
+            call_output_type_check(&list, &syn::parse2(quote! { i32 }).unwrap(), false),
             Err(TypeValidationError::FieldIsList { provided_type, .. }) => {
                 assert_eq!(provided_type, "i32")
             }
         );
         assert_matches!(
-            output_type_check(
+            call_output_type_check(
                 &optional_list,
                 &syn::parse2(quote! { Vec<i32> }).unwrap(),
                 false
@@ -433,7 +452,7 @@ mod tests {
             }
         );
         assert_matches!(
-            output_type_check(
+            call_output_type_check(
                 &option_list_option,
                 &syn::parse2(quote! { Option<Vec<i32>> }).unwrap(),
                 false
@@ -443,7 +462,7 @@ mod tests {
             }
         );
         assert_matches!(
-            output_type_check(
+            call_output_type_check(
                 &option_list_option,
                 &syn::parse2(quote! { Option<DateTime<Vec<Option<i32>>>> }).unwrap(),
                 false
@@ -462,7 +481,7 @@ mod tests {
         ))));
 
         assert_matches!(
-            output_type_check(
+            call_output_type_check(
                 &option_list_option,
                 &syn::parse2(quote! { Vec<i32> }).unwrap(),
                 true
@@ -470,7 +489,7 @@ mod tests {
             Ok(())
         );
         assert_matches!(
-            output_type_check(
+            call_output_type_check(
                 &option_list_option,
                 &syn::parse2(quote! { Option<Vec<i32>> }).unwrap(),
                 true
@@ -478,7 +497,7 @@ mod tests {
             Ok(())
         );
         assert_matches!(
-            output_type_check(
+            call_output_type_check(
                 &optional_list,
                 &syn::parse2(quote! { Vec<i32> }).unwrap(),
                 true
@@ -486,7 +505,7 @@ mod tests {
             Ok(())
         );
         assert_matches!(
-            output_type_check(
+            call_output_type_check(
                 &list,
                 &syn::parse2(quote! { Vec<Option<i32>> }).unwrap(),
                 true
@@ -494,7 +513,7 @@ mod tests {
             Ok(())
         );
         assert_matches!(
-            output_type_check(
+            call_output_type_check(
                 &list,
                 &syn::parse2(quote! { Option<Vec<i32>> }).unwrap(),
                 true
@@ -502,13 +521,13 @@ mod tests {
             Ok(())
         );
         assert_matches!(
-            output_type_check(&list, &syn::parse2(quote! { Option<i32> }).unwrap(), true),
+            call_output_type_check(&list, &syn::parse2(quote! { Option<i32> }).unwrap(), true),
             Err(TypeValidationError::FieldIsList { provided_type, .. }) => {
                 assert_eq!(provided_type, "i32")
             }
         );
         assert_matches!(
-            output_type_check(
+            call_output_type_check(
                 &optional_list,
                 &syn::parse2(quote! { DateTime<Vec<i32>> }).unwrap(),
                 true
@@ -517,13 +536,21 @@ mod tests {
         );
     }
 
+    fn call_input_type_check<'a>(
+        gql_type: &InputTypeRef<'a>,
+        has_default: bool,
+        rust_type: &syn::Type,
+    ) -> Result<(), TypeValidationError> {
+        input_type_check(gql_type, has_default, &parse_rust_type(rust_type))
+    }
+
     #[test]
     fn test_input_type_validation() {
         let required_field = TypeRef::Named("test", TypeIndex::empty(), PhantomData);
         let optional_field = TypeRef::Nullable(Box::new(required_field.clone()));
 
         assert_matches!(
-            input_type_check(
+            call_input_type_check(
                 &required_field,
                 false,
                 &syn::parse2(quote! { i32 }).unwrap(),
@@ -531,7 +558,7 @@ mod tests {
             Ok(())
         );
         assert_matches!(
-            input_type_check(
+            call_input_type_check(
                 &required_field,
                 false,
                 &syn::parse2(quote! { DateTime<Utc> }).unwrap(),
@@ -539,7 +566,7 @@ mod tests {
             Ok(())
         );
         assert_matches!(
-            input_type_check(
+            call_input_type_check(
                 &optional_field,
                 false,
                 &syn::parse2(quote! { Option<i32> }).unwrap(),
@@ -547,7 +574,7 @@ mod tests {
             Ok(())
         );
         assert_matches!(
-            input_type_check(
+            call_input_type_check(
                 &optional_field,
                 false,
                 &syn::parse2(quote! { i32 }).unwrap(),
@@ -555,7 +582,7 @@ mod tests {
             Ok(())
         );
         assert_matches!(
-            input_type_check(
+            call_input_type_check(
                 &required_field,
                 false,
                 &syn::parse2(quote! { Option<i32> }).unwrap(),
@@ -572,11 +599,11 @@ mod tests {
         let optional_field = TypeRef::Nullable(Box::new(required_field.clone()));
 
         assert_matches!(
-            input_type_check(&required_field, true, &syn::parse2(quote! { i32 }).unwrap(),),
+            call_input_type_check(&required_field, true, &syn::parse2(quote! { i32 }).unwrap(),),
             Ok(())
         );
         assert_matches!(
-            input_type_check(
+            call_input_type_check(
                 &required_field,
                 true,
                 &syn::parse2(quote! { DateTime<Utc> }).unwrap(),
@@ -584,7 +611,7 @@ mod tests {
             Ok(())
         );
         assert_matches!(
-            input_type_check(
+            call_input_type_check(
                 &optional_field,
                 true,
                 &syn::parse2(quote! { Option<i32> }).unwrap(),
@@ -592,11 +619,11 @@ mod tests {
             Ok(())
         );
         assert_matches!(
-            input_type_check(&optional_field, true, &syn::parse2(quote! { i32 }).unwrap(),),
+            call_input_type_check(&optional_field, true, &syn::parse2(quote! { i32 }).unwrap(),),
             Ok(())
         );
         assert_matches!(
-            input_type_check(
+            call_input_type_check(
                 &required_field,
                 true,
                 &syn::parse2(quote! { Option<i32> }).unwrap(),
@@ -615,11 +642,11 @@ mod tests {
         ))));
 
         assert_matches!(
-            input_type_check(&list, false, &syn::parse2(quote! { Vec<i32> }).unwrap(),),
+            call_input_type_check(&list, false, &syn::parse2(quote! { Vec<i32> }).unwrap(),),
             Ok(())
         );
         assert_matches!(
-            input_type_check(
+            call_input_type_check(
                 &optional_list,
                 false,
                 &syn::parse2(quote! { Option<Vec<i32>> }).unwrap(),
@@ -627,7 +654,7 @@ mod tests {
             Ok(())
         );
         assert_matches!(
-            input_type_check(
+            call_input_type_check(
                 &option_list_option,
                 false,
                 &syn::parse2(quote! { Option<Vec<Option<i32>>> }).unwrap(),
@@ -635,7 +662,7 @@ mod tests {
             Ok(())
         );
         assert_matches!(
-            input_type_check(
+            call_input_type_check(
                 &list,
                 false,
                 &syn::parse2(quote! { Vec<DateTime<Utc>> }).unwrap(),
@@ -643,7 +670,7 @@ mod tests {
             Ok(())
         );
         assert_matches!(
-            input_type_check(
+            call_input_type_check(
                 &optional_list,
                 false,
                 &syn::parse2(quote! { Option<Vec<DateTime<Utc>>> }).unwrap(),
@@ -651,7 +678,7 @@ mod tests {
             Ok(())
         );
         assert_matches!(
-            input_type_check(
+            call_input_type_check(
                 &option_list_option,
                 false,
                 &syn::parse2(quote! { Option<Vec<Option<DateTime<Utc>>>> }).unwrap(),
@@ -659,15 +686,15 @@ mod tests {
             Ok(())
         );
         assert_matches!(
-            input_type_check(&list, false, &syn::parse2(quote! { i32 }).unwrap(),),
+            call_input_type_check(&list, false, &syn::parse2(quote! { i32 }).unwrap(),),
             Ok(())
         );
         assert_matches!(
-            input_type_check(&optional_list, false, &syn::parse2(quote! { i32 }).unwrap(),),
+            call_input_type_check(&optional_list, false, &syn::parse2(quote! { i32 }).unwrap(),),
             Ok(())
         );
         assert_matches!(
-            input_type_check(
+            call_input_type_check(
                 &optional_list,
                 false,
                 &syn::parse2(quote! { Vec<i32> }).unwrap(),
@@ -675,7 +702,7 @@ mod tests {
             Ok(())
         );
         assert_matches!(
-            input_type_check(
+            call_input_type_check(
                 &option_list_option,
                 false,
                 &syn::parse2(quote! { Option<Vec<i32>> }).unwrap(),
@@ -683,7 +710,7 @@ mod tests {
             Ok(())
         );
         assert_matches!(
-            input_type_check(
+            call_input_type_check(
                 &option_list_option,
                 false,
                 &syn::parse2(quote! { Option<DateTime<Vec<Option<i32>>>> }).unwrap(),
@@ -715,7 +742,7 @@ mod tests {
             parse_quote! { Option<Vec<T>> }
         ),
     )]
-    fn test_recurse_validation_ok(graphql_field: TypeRef<'_>, rust_field: syn::Type) {
+    fn test_recurse_validation_ok(graphql_field: OutputTypeRef<'_>, rust_field: syn::Type) {
         assert_matches!(
             check_types_are_compatible(&graphql_field, &rust_field, CheckMode::Recursing),
             Ok(())
@@ -776,7 +803,7 @@ mod tests {
             parse_quote! { Option<Vec<T>> }
         ),
     )]
-    fn test_recurse_validation_fail(graphql_field: TypeRef<'_>, rust_field: syn::Type) {
+    fn test_recurse_validation_fail(graphql_field: OutputTypeRef<'_>, rust_field: syn::Type) {
         assert_matches!(
             check_types_are_compatible(&graphql_field, &rust_field, CheckMode::Recursing),
             Err(_)
