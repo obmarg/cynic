@@ -276,7 +276,7 @@ fn validate(
 
     let required_args = arguments
         .iter()
-        .filter(|a| !matches!(a.value_type, TypeRef::Nullable(_)))
+        .filter(|v| v.is_required())
         .map(|a| a.name.as_str().to_string())
         .collect::<HashSet<_>>();
 

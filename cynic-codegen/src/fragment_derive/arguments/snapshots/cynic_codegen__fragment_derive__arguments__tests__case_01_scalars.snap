@@ -1,7 +1,7 @@
 ---
-source: cynic-codegen/src/fragment_derive_2/arguments/tests.rs
-assertion_line: 30
-expression: "analyse(literals, field, Span::call_site()).map(|o| o.arguments)"
+source: cynic-codegen/src/fragment_derive/arguments/tests.rs
+assertion_line: 32
+expression: "analyse(literals, field, Some(&format_ident!(\"MyArguments\").into()),\n        Span::call_site()).map(|o| o.arguments)"
 
 ---
 Ok(
@@ -15,6 +15,7 @@ Ok(
                 value_type: NamedInputType(
                     "Int",
                 ),
+                has_default: false,
             },
             value: Literal(
                 Int(
@@ -33,6 +34,7 @@ Ok(
                 value_type: NamedInputType(
                     "Float",
                 ),
+                has_default: false,
             },
             value: Literal(
                 Int(
@@ -51,6 +53,7 @@ Ok(
                 value_type: NamedInputType(
                     "ID",
                 ),
+                has_default: false,
             },
             value: Literal(
                 Str(

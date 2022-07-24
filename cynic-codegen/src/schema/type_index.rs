@@ -353,6 +353,7 @@ fn convert_input_value<'a>(
             graphql_name: &val.name,
         },
         value_type: build_type_ref::<InputType>(&val.value_type, type_index),
+        has_default: val.default_value.is_some(),
     }
 }
 

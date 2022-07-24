@@ -48,13 +48,12 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
   `Cargo.toml`.
 - `cynic` no longer re-exports `serde_json`
 - The `GraphQlError` & `GraphQlResponse` structs no longer contain a
-  `serde_json::Value` for extensions.  They now have generic parameters that you
+  `serde_json::Value` for extensions. They now have generic parameters that you
   should provide if you care about error extensions.
 - The output of the `use_schema` macro is no longer re-cased.
 - The deprecated `query_module` attribute for the various derive/attribute
   macros has been removed - if you're using it you should update to
   `schema_module` which behaves the same.
-
 
 ### Deprecations
 
@@ -72,6 +71,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
   schema changes.
 - `#[cynic(flatten)]` no longer allows you to omit a list type on output fields.
   Previously this would compile but probably fail to deserialize.
+- Non-nullable arguments & input object fields with defaults are no longer
+  considered required
 
 ### Changes
 

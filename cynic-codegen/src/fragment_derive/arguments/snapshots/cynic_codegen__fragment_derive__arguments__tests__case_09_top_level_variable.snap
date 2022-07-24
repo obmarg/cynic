@@ -15,6 +15,7 @@ Ok(
                 value_type: NamedInputType(
                     "BookFilters",
                 ),
+                has_default: false,
             },
             value: Variable(
                 Variable {
@@ -49,6 +50,7 @@ Ok(
                         "BookFilters",
                     ),
                 ),
+                has_default: false,
             },
             value: Variable(
                 Variable {

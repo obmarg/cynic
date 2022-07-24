@@ -56,7 +56,17 @@ pub struct InputValue<'a> {
     pub description: Option<&'a str>,
     pub name: FieldName<'a>,
     pub value_type: TypeRef<'a, InputType<'a>>,
-    // pub default_value: Option<Value<'a>>,
+    pub has_default: bool,
+}
+
+impl InputValue<'_> {
+    pub fn is_nullable(&self) -> bool {
+        matches!(self.value_type, TypeRef::Nullable(_))
+    }
+
+    pub fn is_required(&self) -> bool {
+        !(self.has_default || matches!(self.value_type, TypeRef::Nullable(_)))
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
