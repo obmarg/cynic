@@ -2,7 +2,6 @@
 source: cynic-codegen/src/scalar_derive/tests.rs
 assertion_line: 20
 expression: "format_code(format!(\"{}\", tokens))"
-
 ---
 #[automatically_derived]
 impl ::cynic::serde::Serialize for DateTime {

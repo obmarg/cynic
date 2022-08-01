@@ -1,7 +1,7 @@
 ---
 source: cynic-querygen/src/query_parsing/normalisation.rs
+assertion_line: 663
 expression: normalised
-
 ---
 NormalisedDocument {
     selection_sets: {
