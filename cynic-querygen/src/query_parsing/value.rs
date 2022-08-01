@@ -119,10 +119,6 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
         }
     }
 
-    pub fn is_variable(&self) -> bool {
-        matches!(self, TypedValue::Variable { .. })
-    }
-
     pub fn variables(&self) -> Vec<Variable<'query, 'schema>> {
         match &self {
             TypedValue::Variable {

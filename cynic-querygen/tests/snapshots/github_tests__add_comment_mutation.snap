@@ -1,7 +1,7 @@
 ---
 source: cynic-querygen/tests/github-tests.rs
 assertion_line: 25
-expression: "document_to_fragment_structs(query, schema,\n                             &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
+expression: "document_to_fragment_structs(query, schema,\n        &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
 
 ---
 #[cynic::schema_for_derives(
@@ -36,12 +36,6 @@ mod queries {
     #[derive(cynic::QueryFragment, Debug)]
     pub struct IssueComment {
         pub id: cynic::Id,
-    }
-
-    #[derive(cynic::InputObject, Debug)]
-    pub struct AddCommentInput {
-        pub body: String,
-        pub subject_id: cynic::Id,
     }
 
 }
