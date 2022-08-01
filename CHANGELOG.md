@@ -89,6 +89,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
   should help with large schema support. (The exception is `impl_scalar`
   invocations which must live in the same crate as the schema)
 - Cynic now allows fields to be `Arc` or `Rc`
+- The generator no longer outputs input types that are provided in argument
+  literals, as these are no longer used in the generated code.
 
 ## v1.0.0 - 2021-12-09
 
