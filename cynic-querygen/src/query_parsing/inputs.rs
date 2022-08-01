@@ -131,53 +131,21 @@ mod tests {
     use crate::{query_parsing::normalisation::normalise, TypeIndex};
 
     #[test]
-    fn extracts_inline_input_types() {
-        let schema = load_schema();
-        let type_index = Rc::new(TypeIndex::from_schema(&schema));
-        let query = graphql_parser::parse_query::<&str>(
-            r#"
-              query {
-                cynic: repository(owner: "obmarg", name: "cynic") {
-                  issues(filterBy: {labels: ["good first issue"]}) {
-                    nodes {
-                      title
-                    }
-                  }
-                }
-              	kazan: repository(owner: "obmarg", name: "kazan") {
-                  issues(filterBy: {labels: ["good first issue"], mentioned: "obmarg"}) {
-                    nodes {
-                      title
-                   }
-                  }
-                }
-              }
-            "#,
-        )
-        .unwrap();
-
-        let normalised = normalise(&query, &type_index).unwrap();
-        let input_objects = extract_input_objects(&normalised).unwrap();
-
-        assert_eq!(input_objects.len(), 2);
-    }
-
-    #[test]
     fn deduplicates_input_types_if_same() {
         let schema = load_schema();
         let type_index = Rc::new(TypeIndex::from_schema(&schema));
         let query = graphql_parser::parse_query::<&str>(
             r#"
-              query {
+              query ($filterOne: IssueFilters!, $filterTwo: IssueFilters!) {
                 cynic: repository(owner: "obmarg", name: "cynic") {
-                  issues(filterBy: {labels: ["good first issue"]}) {
+                  issues(filterBy: $filterOne) {
                     nodes {
                       title
                     }
                   }
                 }
               	kazan: repository(owner: "obmarg", name: "kazan") {
-                  issues(filterBy: {labels: ["good first issue"]}) {
+                  issues(filterBy: $filterTwo) {
                     nodes {
                       title
                    }
