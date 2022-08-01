@@ -37,12 +37,6 @@ mod queries {
         pub id: cynic::Id,
     }
 
-    #[derive(cynic::InputObject, Debug)]
-    pub struct AddCommentInput {
-        pub body: String,
-        pub subject_id: cynic::Id,
-    }
-
 }
 
 mod schema {

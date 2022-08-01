@@ -20,6 +20,14 @@ pub fn extract_leaf_types<'query, 'schema>(
         .collect::<HashSet<_>>();
 
     leaf_types.extend(
+        doc.operations
+            .iter()
+            .flat_map(|o| &o.variables)
+            .map(|variables| variables.value_type.inner_ref().clone())
+            .map(TypeRef::from),
+    );
+
+    leaf_types.extend(
         doc.selection_sets
             .iter()
             .flat_map(|selection_set| selection_set.required_input_types())
