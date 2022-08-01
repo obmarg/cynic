@@ -1,0 +1,13 @@
+---
+source: examples/examples/spread.rs
+assertion_line: 85
+expression: query.query
+---
+query($id: ID) {
+  film(id: $id) {
+    title
+    director
+  }
+}
+
+

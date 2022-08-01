@@ -1,0 +1,66 @@
+---
+source: cynic-codegen/src/fragment_derive/arguments/tests.rs
+assertion_line: 32
+expression: "analyse(literals, field, Some(&format_ident!(\"MyArguments\").into()),\n        Span::call_site()).map(|o| o.arguments)"
+---
+Ok(
+    [
+        Field {
+            schema_field: InputValue {
+                description: None,
+                name: FieldName {
+                    graphql_name: "anInt",
+                },
+                value_type: NamedInputType(
+                    "Int",
+                ),
+                has_default: false,
+            },
+            value: Literal(
+                Int(
+                    LitInt {
+                        token: 1,
+                    },
+                ),
+            ),
+        },
+        Field {
+            schema_field: InputValue {
+                description: None,
+                name: FieldName {
+                    graphql_name: "aFloat",
+                },
+                value_type: NamedInputType(
+                    "Float",
+                ),
+                has_default: false,
+            },
+            value: Literal(
+                Int(
+                    LitInt {
+                        token: 3,
+                    },
+                ),
+            ),
+        },
+        Field {
+            schema_field: InputValue {
+                description: None,
+                name: FieldName {
+                    graphql_name: "anId",
+                },
+                value_type: NamedInputType(
+                    "ID",
+                ),
+                has_default: false,
+            },
+            value: Literal(
+                Str(
+                    LitStr {
+                        token: "hello",
+                    },
+                ),
+            ),
+        },
+    ],
+)

@@ -10,14 +10,30 @@ impl<'de> ::cynic::QueryFragment<'de> for MyQuery {
     const TYPE: Option<&'static str> = Some("Query");
     fn query(mut builder: ::cynic::queries::SelectionBuilder<Self::SchemaType, Self::Variables>) {
         #![allow(unused_mut)]
-        let mut field_builder = builder . select_field :: < schema :: query_fields :: post , < Option < BlogPostOutput > as :: cynic :: QueryFragment > :: SchemaType > () ;
+        let mut field_builder = builder . select_field :: < schema :: query_fields :: filteredPosts , < Vec < BlogPostOutput > as :: cynic :: QueryFragment > :: SchemaType > () ;
         {
+            struct PostStatePosted;
+            impl ::cynic::serde::Serialize for PostStatePosted {
+                fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                where
+                    S: ::cynic::serde::Serializer,
+                {
+                    serializer.serialize_unit_variant("", 0, "POSTED")
+                }
+            }
+            impl ::cynic::coercions::CoercesTo<schema::PostState> for PostStatePosted {};
             field_builder
-                .argument::<schema::query_fields::post_arguments::id>()
-                .literal("1234");
+                .argument::<schema::query_fields::filtered_posts_arguments::filters>()
+                .value()
+                .object()
+                .field::<schema::post_filters_fields::states, _>(|builder| {
+                    builder
+                        .value()
+                        .list()
+                        .item(|builder| builder.literal(PostStatePosted))
+                        .item(|builder| builder.literal(PostStatePosted));
+                });
         }
-        <Option<BlogPostOutput> as ::cynic::QueryFragment>::query(field_builder.select_children());
-        let mut field_builder = builder . select_field :: < schema :: query_fields :: allPosts , < Vec < BlogPostOutput > as :: cynic :: QueryFragment > :: SchemaType > () ;
         <Vec<BlogPostOutput> as ::cynic::QueryFragment>::query(field_builder.select_children());
     }
 }
@@ -31,10 +47,8 @@ impl<'de> ::cynic::serde::Deserialize<'de> for MyQuery {
         #[serde(field_identifier, crate = "::cynic::serde")]
         #[allow(non_camel_case_types)]
         enum Field {
-            #[serde(rename = "post")]
-            post,
-            #[serde(rename = "allPosts")]
-            posts,
+            #[serde(rename = "filteredPosts")]
+            filteredPosts,
             #[serde(other)]
             __Other,
         }
@@ -48,34 +62,28 @@ impl<'de> ::cynic::serde::Deserialize<'de> for MyQuery {
             where
                 V: ::cynic::serde::de::MapAccess<'de>,
             {
-                let mut post = None;
-                let mut posts = None;
+                let mut filteredPosts = None;
                 while let Some(key) = map.next_key()? {
                     match key {
-                        Field::post => {
-                            if post.is_some() {
-                                return Err(::cynic::serde::de::Error::duplicate_field("post"));
+                        Field::filteredPosts => {
+                            if filteredPosts.is_some() {
+                                return Err(::cynic::serde::de::Error::duplicate_field(
+                                    "filteredPosts",
+                                ));
                             }
-                            post = Some(map.next_value()?);
-                        }
-                        Field::posts => {
-                            if posts.is_some() {
-                                return Err(::cynic::serde::de::Error::duplicate_field("allPosts"));
-                            }
-                            posts = Some(map.next_value()?);
+                            filteredPosts = Some(map.next_value()?);
                         }
                         Field::__Other => {
                             map.next_value::<::cynic::serde::de::IgnoredAny>()?;
                         }
                     }
                 }
-                let post = post.ok_or_else(|| ::cynic::serde::de::Error::missing_field("post"))?;
-                let posts =
-                    posts.ok_or_else(|| ::cynic::serde::de::Error::missing_field("allPosts"))?;
-                Ok(MyQuery { post, posts })
+                let filteredPosts = filteredPosts
+                    .ok_or_else(|| ::cynic::serde::de::Error::missing_field("filteredPosts"))?;
+                Ok(MyQuery { filteredPosts })
             }
         }
-        const FIELDS: &'static [&'static str] = &["post", "allPosts"];
+        const FIELDS: &'static [&'static str] = &["filteredPosts"];
         deserializer.deserialize_struct("MyQuery", FIELDS, Visitor)
     }
 }

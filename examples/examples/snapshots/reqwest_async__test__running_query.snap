@@ -1,0 +1,19 @@
+---
+source: examples/examples/reqwest-async.rs
+assertion_line: 86
+expression: result.data
+---
+Some(
+    FilmDirectorQuery {
+        film: Some(
+            Film {
+                title: Some(
+                    "A New Hope",
+                ),
+                director: Some(
+                    "George Lucas",
+                ),
+            },
+        ),
+    },
+)

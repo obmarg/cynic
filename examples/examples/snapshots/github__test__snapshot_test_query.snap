@@ -1,0 +1,17 @@
+---
+source: examples/examples/github.rs
+assertion_line: 121
+expression: query.query
+---
+query($prOrder: IssueOrder!) {
+  repository(name: "cynic", owner: "obmarg") {
+    pullRequests(orderBy: $prOrder, first: 10) {
+      nodes {
+        title
+        createdAt
+      }
+    }
+  }
+}
+
+

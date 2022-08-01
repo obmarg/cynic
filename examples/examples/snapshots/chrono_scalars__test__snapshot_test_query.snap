@@ -1,0 +1,12 @@
+---
+source: examples/examples/chrono-scalars.rs
+assertion_line: 62
+expression: query.query
+---
+query {
+  jobs {
+    createdAt
+  }
+}
+
+

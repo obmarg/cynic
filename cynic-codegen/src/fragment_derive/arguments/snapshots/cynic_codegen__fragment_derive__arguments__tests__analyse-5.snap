@@ -1,0 +1,94 @@
+---
+source: cynic-codegen/src/fragment_derive/arguments/tests.rs
+assertion_line: 32
+expression: "analyse(literals, field, Some(&format_ident!(\"MyArguments\").into()),\n        Span::call_site()).map(|o| o.arguments)"
+---
+Ok(
+    [
+        Field {
+            schema_field: InputValue {
+                description: None,
+                name: FieldName {
+                    graphql_name: "filters",
+                },
+                value_type: NamedInputType(
+                    "BookFilters",
+                ),
+                has_default: false,
+            },
+            value: Object(
+                Object {
+                    schema_obj: InputObjectType {
+                        description: None,
+                        name: "BookFilters",
+                        fields: [
+                            InputValue {
+                                description: None,
+                                name: FieldName {
+                                    graphql_name: "authors",
+                                },
+                                value_type: NullableType(
+                                    ListType(
+                                        NamedInputType(
+                                            "String",
+                                        ),
+                                    ),
+                                ),
+                                has_default: false,
+                            },
+                            InputValue {
+                                description: None,
+                                name: FieldName {
+                                    graphql_name: "state",
+                                },
+                                value_type: NullableType(
+                                    NamedInputType(
+                                        "BookState",
+                                    ),
+                                ),
+                                has_default: false,
+                            },
+                        ],
+                    },
+                    fields: [
+                        Field {
+                            schema_field: InputValue {
+                                description: None,
+                                name: FieldName {
+                                    graphql_name: "state",
+                                },
+                                value_type: NullableType(
+                                    NamedInputType(
+                                        "BookState",
+                                    ),
+                                ),
+                                has_default: false,
+                            },
+                            value: Some(
+                                Variant(
+                                    VariantDetails {
+                                        en: EnumType {
+                                            description: None,
+                                            name: "BookState",
+                                            values: [
+                                                EnumValue {
+                                                    description: None,
+                                                    name: "PUBLISHED",
+                                                },
+                                                EnumValue {
+                                                    description: None,
+                                                    name: "OUT_OF_PRINT",
+                                                },
+                                            ],
+                                        },
+                                        variant: "PUBLISHED",
+                                    },
+                                ),
+                            ),
+                        },
+                    ],
+                },
+            ),
+        },
+    ],
+)
