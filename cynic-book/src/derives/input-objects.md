@@ -37,8 +37,8 @@ sent as `null`.
 
 It's a common GraphQL convention for fields to be named in `camelCase`. To
 handle this smoothly, Cynic matches rust fields up to their equivalent
-`SCREAMING_SNAKE_CASE` GraphQL fields. This behaviour can be disabled by
-specifying a `rename_all = "None"` attribute, or customised alternative
+`camelCase` GraphQL fields. This behaviour can be disabled by
+specifying a `rename_all = "None"` attribute, or customised via alternative
 `rename_all` values or individual `rename` attributes on the fields.
 
 #### Struct Attributes
