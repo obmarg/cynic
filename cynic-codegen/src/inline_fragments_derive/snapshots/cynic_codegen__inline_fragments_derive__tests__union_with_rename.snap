@@ -1,10 +1,10 @@
 ---
 source: cynic-codegen/src/inline_fragments_derive/tests.rs
-assertion_line: 49
+assertion_line: 55
 expression: "format_code(format!(\"{}\", tokens))"
 ---
 #[automatically_derived]
-impl<'de> ::cynic::serde::Deserialize<'de> for Node {
+impl<'de> ::cynic::serde::Deserialize<'de> for PostOrAuthor {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: ::cynic::serde::Deserializer<'de>,
@@ -13,27 +13,27 @@ impl<'de> ::cynic::serde::Deserialize<'de> for Node {
     }
 }
 #[automatically_derived]
-impl<'de> ::cynic::InlineFragments<'de> for Node {
+impl<'de> ::cynic::InlineFragments<'de> for PostOrAuthor {
     fn deserialize_variant<D>(typename: &str, deserializer: D) -> Result<Self, D::Error>
     where
         D: ::cynic::serde::Deserializer<'de>,
     {
         if Some(typename) == <Post as ::cynic::QueryFragment<'de>>::TYPE {
             return <Post as ::cynic::serde::Deserialize<'de>>::deserialize(deserializer)
-                .map(Node::Post);
+                .map(PostOrAuthor::Post);
         }
         if Some(typename) == <Author as ::cynic::QueryFragment<'de>>::TYPE {
             return <Author as ::cynic::serde::Deserialize<'de>>::deserialize(deserializer)
-                .map(Node::Author);
+                .map(PostOrAuthor::Author);
         }
-        Ok(Node::Other)
+        Ok(PostOrAuthor::Other)
     }
 }
 #[automatically_derived]
-impl<'de> ::cynic::QueryFragment<'de> for Node {
-    type SchemaType = schema::Node;
+impl<'de> ::cynic::QueryFragment<'de> for PostOrAuthor {
+    type SchemaType = schema::PostOrAuthor;
     type Variables = ();
-    const TYPE: Option<&'static str> = Some("Node");
+    const TYPE: Option<&'static str> = Some("PostOrAuthor");
     fn query(mut builder: ::cynic::queries::SelectionBuilder<Self::SchemaType, Self::Variables>) {
         let fragment_builder = builder.inline_fragment();
         let mut fragment_builder =

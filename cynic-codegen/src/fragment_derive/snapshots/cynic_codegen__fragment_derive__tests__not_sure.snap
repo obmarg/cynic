@@ -1,6 +1,6 @@
 ---
 source: cynic-codegen/src/fragment_derive/tests.rs
-assertion_line: 94
+assertion_line: 114
 expression: "format_code(format!(\"{}\", tokens))"
 ---
 #[automatically_derived]

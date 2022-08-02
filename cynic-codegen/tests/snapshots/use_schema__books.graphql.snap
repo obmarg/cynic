@@ -1,6 +1,6 @@
 ---
 source: cynic-codegen/tests/use-schema.rs
-assertion_line: 25
+assertion_line: 30
 expression: "format_code(format!(\"{}\", tokens))"
 ---
 impl ::cynic::schema::QueryRoot for QueryRoot {}

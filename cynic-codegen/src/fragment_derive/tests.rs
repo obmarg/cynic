@@ -6,7 +6,9 @@ use syn::parse_quote;
 
 use super::fragment_derive;
 
-#[rstest(input => [
+#[rstest]
+#[case::argument_and_rename(
+    "argument_and_rename",
     parse_quote!(
         #[cynic(
             schema_path = "../cynic/tests/test-schema.graphql",
@@ -19,7 +21,10 @@ use super::fragment_derive;
             #[cynic(rename = "allPosts")]
             posts: Vec<BlogPostOutput>,
         }
-    ),
+    )
+)]
+#[case::simple_struct(
+    "simple_struct",
     parse_quote!(
         #[cynic(
             schema_path = "../cynic/tests/test-schema.graphql",
@@ -30,7 +35,10 @@ use super::fragment_derive;
             has_metadata: Option<bool>,
             author: AuthorOutput,
         }
-    ),
+    )
+)]
+#[case::not_sure(
+    "not_sure",
     parse_quote!(
         #[cynic(
             schema_path = "../cynic/tests/test-schema.graphql",
@@ -41,7 +49,10 @@ use super::fragment_derive;
             #[arguments(filters: {states: ["POSTED", "DRAFT"]})]
             filteredPosts: Vec<BlogPostOutput>,
         }
-    ),
+    )
+)]
+#[case::variable_in_argument(
+    "variable_in_argument",
     parse_quote!(
         #[cynic(
             schema_path = "../cynic/tests/test-schema.graphql",
@@ -53,7 +64,10 @@ use super::fragment_derive;
             #[arguments(filters: $filters)]
             filteredPosts: Vec<BlogPostOutput>,
         }
-    ),
+    )
+)]
+#[case::spread_attr(
+    "spread_attr",
     parse_quote!(
         #[derive(cynic::QueryFragment, Debug)]
         #[cynic(
@@ -64,7 +78,10 @@ use super::fragment_derive;
             #[cynic(spread)]
             details: FilmDetails,
         }
-    ),
+    )
+)]
+#[case::flatten_attr(
+    "flatten_attr",
     parse_quote!(
         #[derive(cynic::QueryFragment, Debug)]
         #[cynic(
@@ -75,7 +92,10 @@ use super::fragment_derive;
             #[cynic(flatten)]
             producers: Vec<String>,
         }
-    ),
+    )
+)]
+#[case::argument_literals(
+    "argument_literals",
     parse_quote!(
         #[cynic(
             schema_path = "../cynic/tests/test-schema.graphql",
@@ -87,11 +107,11 @@ use super::fragment_derive;
             filteredPosts: Vec<BlogPostOutput>,
         }
     ),
-])]
-fn snapshot_fragment_derive(input: syn::DeriveInput) {
+)]
+fn snapshot_fragment_derive(#[case] snapshot_name: &str, #[case] input: syn::DeriveInput) {
     let tokens = fragment_derive(&input).unwrap();
 
-    assert_snapshot!(format_code(format!("{}", tokens)));
+    assert_snapshot!(snapshot_name, format_code(format!("{}", tokens)));
 }
 
 fn format_code(input: String) -> String {

@@ -22,7 +22,12 @@ fn snapshot_use_schema_two(schema_file: &str) {
     })
     .unwrap();
 
-    assert_snapshot!(format_code(format!("{}", tokens)));
+    let snapshot_name = std::path::Path::new(schema_file)
+        .file_name()
+        .and_then(|s| s.to_str())
+        .unwrap();
+
+    assert_snapshot!(snapshot_name, format_code(format!("{}", tokens)));
 }
 
 fn format_code(input: String) -> String {
