@@ -45,13 +45,4 @@ impl<'de> ::cynic::QueryFragment<'de> for PostOrAuthor {
         <Author as ::cynic::QueryFragment>::query(fragment_builder.select_children());
     }
 }
-#[allow(clippy::no_effect, non_camel_case_types)]
-const _: fn() = || {
-    #[deprecated(
-        note = "the rename attribute on InlineFragments is deprecated and should be removed.  InlineFragments variants now get their type name from their inner QueryFragment.",
-        since = "2.0.0"
-    )]
-    struct rename {}
-    rename {};
-};
 

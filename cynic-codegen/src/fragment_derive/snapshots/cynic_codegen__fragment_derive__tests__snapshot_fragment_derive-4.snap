@@ -4,17 +4,23 @@ assertion_line: 94
 expression: "format_code(format!(\"{}\", tokens))"
 ---
 #[automatically_derived]
-impl<'de> ::cynic::QueryFragment<'de> for Film {
-    type SchemaType = schema::Film;
-    type Variables = ();
-    const TYPE: Option<&'static str> = Some("Film");
+impl<'de> ::cynic::QueryFragment<'de> for MyQuery {
+    type SchemaType = schema::Query;
+    type Variables = AnArgumentStruct;
+    const TYPE: Option<&'static str> = Some("Query");
     fn query(mut builder: ::cynic::queries::SelectionBuilder<Self::SchemaType, Self::Variables>) {
         #![allow(unused_mut)]
-        let mut field_builder = builder . select_flattened_field :: < schema :: film_fields :: producers , < Vec < String > as :: cynic :: schema :: IsScalar < < schema :: film_fields :: producers as :: cynic :: schema :: Field > :: Type >> :: SchemaType , < schema :: film_fields :: producers as :: cynic :: schema :: Field > :: Type , > () ;
+        let mut field_builder = builder . select_field :: < schema :: query_fields :: filteredPosts , < Vec < BlogPostOutput > as :: cynic :: QueryFragment > :: SchemaType > () ;
+        {
+            field_builder
+                .argument::<schema::query_fields::filtered_posts_arguments::filters>()
+                .variable(<AnArgumentStruct as ::cynic::QueryVariables>::Fields::filters());
+        }
+        <Vec<BlogPostOutput> as ::cynic::QueryFragment>::query(field_builder.select_children());
     }
 }
 #[automatically_derived]
-impl<'de> ::cynic::serde::Deserialize<'de> for Film {
+impl<'de> ::cynic::serde::Deserialize<'de> for MyQuery {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: ::cynic::serde::Deserializer<'de>,
@@ -23,47 +29,44 @@ impl<'de> ::cynic::serde::Deserialize<'de> for Film {
         #[serde(field_identifier, crate = "::cynic::serde")]
         #[allow(non_camel_case_types)]
         enum Field {
-            #[serde(rename = "producers")]
-            producers,
+            #[serde(rename = "filteredPosts")]
+            filteredPosts,
             #[serde(other)]
             __Other,
         }
         struct Visitor;
         impl<'de> ::cynic::serde::de::Visitor<'de> for Visitor {
-            type Value = Film;
+            type Value = MyQuery;
             fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-                formatter.write_str("struct Film")
+                formatter.write_str("struct MyQuery")
             }
-            fn visit_map<V>(self, mut map: V) -> Result<Film, V::Error>
+            fn visit_map<V>(self, mut map: V) -> Result<MyQuery, V::Error>
             where
                 V: ::cynic::serde::de::MapAccess<'de>,
             {
-                let mut producers = None;
+                let mut filteredPosts = None;
                 while let Some(key) = map.next_key()? {
                     match key {
-                        Field::producers => {
-                            if producers.is_some() {
+                        Field::filteredPosts => {
+                            if filteredPosts.is_some() {
                                 return Err(::cynic::serde::de::Error::duplicate_field(
-                                    "producers",
+                                    "filteredPosts",
                                 ));
                             }
-                            producers = Some(
-                                map.next_value::<::cynic::__private::Flattened<Vec<String>>>()?
-                                    .into_inner(),
-                            );
+                            filteredPosts = Some(map.next_value()?);
                         }
                         Field::__Other => {
                             map.next_value::<::cynic::serde::de::IgnoredAny>()?;
                         }
                     }
                 }
-                let producers = producers
-                    .ok_or_else(|| ::cynic::serde::de::Error::missing_field("producers"))?;
-                Ok(Film { producers })
+                let filteredPosts = filteredPosts
+                    .ok_or_else(|| ::cynic::serde::de::Error::missing_field("filteredPosts"))?;
+                Ok(MyQuery { filteredPosts })
             }
         }
-        const FIELDS: &'static [&'static str] = &["producers"];
-        deserializer.deserialize_struct("Film", FIELDS, Visitor)
+        const FIELDS: &'static [&'static str] = &["filteredPosts"];
+        deserializer.deserialize_struct("MyQuery", FIELDS, Visitor)
     }
 }
 

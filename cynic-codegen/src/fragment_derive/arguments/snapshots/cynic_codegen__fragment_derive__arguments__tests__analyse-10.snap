@@ -72,13 +72,6 @@ Ok(
                                         Literal(
                                             Str(
                                                 LitStr {
-                                                    token: "Charles Stross",
-                                                },
-                                            ),
-                                        ),
-                                        Literal(
-                                            Str(
-                                                LitStr {
                                                     token: "Ann Leckie",
                                                 },
                                             ),
