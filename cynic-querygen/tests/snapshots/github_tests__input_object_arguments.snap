@@ -1,8 +1,7 @@
 ---
 source: cynic-querygen/tests/github-tests.rs
 assertion_line: 24
-expression: "document_to_fragment_structs(query, schema,\n                             &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
-
+expression: "document_to_fragment_structs(query, schema,\n        &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
 ---
 #[cynic::schema_for_derives(
     file = r#"schema.graphql"#,

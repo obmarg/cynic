@@ -2,7 +2,6 @@
 source: cynic-codegen/src/enum_derive/mod.rs
 assertion_line: 390
 expression: "format_code(format!(\"{}\", tokens))"
-
 ---
 #[automatically_derived]
 impl ::cynic::Enum for States {

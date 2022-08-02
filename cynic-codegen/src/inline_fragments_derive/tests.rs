@@ -6,8 +6,9 @@ use syn::parse_quote;
 
 use super::inline_fragments_derive;
 
-#[rstest(input => [
-    // A union type
+#[rstest]
+#[case::union_type(
+    "union_type",
     parse_quote!(
         #[derive(InlineFragments, Serialize)]
         #[cynic(schema_path = "../cynic/tests/test-schema.graphql")]
@@ -17,8 +18,10 @@ use super::inline_fragments_derive;
             #[cynic(fallback)]
             Other
         }
-    ),
-    // An interface
+    )
+)]
+#[case::interface(
+    "interface",
     parse_quote!(
         #[derive(InlineFragments, Serialize)]
         #[cynic(schema_path = "../cynic/tests/test-schema.graphql")]
@@ -30,6 +33,9 @@ use super::inline_fragments_derive;
             Other
         }
     ),
+)]
+#[case::union_with_rename(
+    "union_with_rename",
     // A union that has rename
     parse_quote!(
         #[derive(InlineFragments, Serialize)]
@@ -41,12 +47,12 @@ use super::inline_fragments_derive;
             #[cynic(fallback)]
             Other
         }
-    ),
-])]
-fn snapshot_inline_fragments_derive(input: syn::DeriveInput) {
+    )
+)]
+fn snapshot_inline_fragments_derive(#[case] snapshot_name: &str, #[case] input: syn::DeriveInput) {
     let tokens = inline_fragments_derive(&input).unwrap();
 
-    assert_snapshot!(format_code(format!("{}", tokens)));
+    assert_snapshot!(snapshot_name, format_code(format!("{}", tokens)));
 }
 
 fn format_code(input: String) -> String {

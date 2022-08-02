@@ -1,5 +1,6 @@
 ---
 source: examples/examples/reqwest-async.rs
+assertion_line: 86
 expression: result.data
 ---
 Some(

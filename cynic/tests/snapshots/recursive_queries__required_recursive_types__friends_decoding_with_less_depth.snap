@@ -1,8 +1,7 @@
 ---
 source: cynic/tests/recursive-queries.rs
-assertion_line: 196
+assertion_line: 180
 expression: "serde_json::from_value::<FriendsQuery>(data).unwrap()"
-
 ---
 all_authors:
   - me:

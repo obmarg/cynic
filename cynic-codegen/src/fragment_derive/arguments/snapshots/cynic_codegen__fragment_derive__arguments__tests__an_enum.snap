@@ -1,8 +1,7 @@
 ---
 source: cynic-codegen/src/fragment_derive/arguments/tests.rs
-assertion_line: 32
+assertion_line: 36
 expression: "analyse(literals, field, Some(&format_ident!(\"MyArguments\").into()),\n        Span::call_site()).map(|o| o.arguments)"
-
 ---
 Ok(
     [
@@ -56,35 +55,34 @@ Ok(
                             schema_field: InputValue {
                                 description: None,
                                 name: FieldName {
-                                    graphql_name: "authors",
+                                    graphql_name: "state",
                                 },
                                 value_type: NullableType(
-                                    ListType(
-                                        NamedInputType(
-                                            "String",
-                                        ),
+                                    NamedInputType(
+                                        "BookState",
                                     ),
                                 ),
                                 has_default: false,
                             },
                             value: Some(
-                                List(
-                                    [
-                                        Literal(
-                                            Str(
-                                                LitStr {
-                                                    token: "Charles Stross",
+                                Variant(
+                                    VariantDetails {
+                                        en: EnumType {
+                                            description: None,
+                                            name: "BookState",
+                                            values: [
+                                                EnumValue {
+                                                    description: None,
+                                                    name: "PUBLISHED",
                                                 },
-                                            ),
-                                        ),
-                                        Literal(
-                                            Str(
-                                                LitStr {
-                                                    token: "Ann Leckie",
+                                                EnumValue {
+                                                    description: None,
+                                                    name: "OUT_OF_PRINT",
                                                 },
-                                            ),
-                                        ),
-                                    ],
+                                            ],
+                                        },
+                                        variant: "PUBLISHED",
+                                    },
                                 ),
                             ),
                         },

@@ -1,8 +1,7 @@
 ---
 source: examples/examples/querying-interfaces.rs
-assertion_line: 115
+assertion_line: 106
 expression: query.query
-
 ---
 query($id: ID!) {
   node(id: $id) {

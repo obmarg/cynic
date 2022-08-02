@@ -1,8 +1,7 @@
 ---
 source: cynic-codegen/src/fragment_derive/arguments/tests.rs
-assertion_line: 52
+assertion_line: 59
 expression: "analyse(literals, field, None, Span::call_site()).map(|o| o.arguments)"
-
 ---
 Err(
     Errors {

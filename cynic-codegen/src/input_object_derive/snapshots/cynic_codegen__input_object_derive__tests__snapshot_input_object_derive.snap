@@ -2,7 +2,6 @@
 source: cynic-codegen/src/input_object_derive/tests.rs
 assertion_line: 24
 expression: "format_code(format!(\"{}\", tokens))"
-
 ---
 #[automatically_derived]
 impl ::cynic::InputObject for IssueOrder {

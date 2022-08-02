@@ -1,8 +1,7 @@
 ---
 source: examples/examples/querying-interfaces.rs
-assertion_line: 142
+assertion_line: 133
 expression: result.data
-
 ---
 Some(
     Query {

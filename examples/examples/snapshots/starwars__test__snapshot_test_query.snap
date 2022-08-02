@@ -1,8 +1,7 @@
 ---
 source: examples/examples/starwars.rs
-assertion_line: 69
+assertion_line: 72
 expression: query.query
-
 ---
 query($id: ID) {
   film(id: $id) {

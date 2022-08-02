@@ -1,8 +1,7 @@
 ---
 source: examples/examples/manual-reqwest.rs
-assertion_line: 73
+assertion_line: 74
 expression: query.query
-
 ---
 query($id: ID) {
   film(id: $id) {

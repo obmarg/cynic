@@ -1,8 +1,7 @@
 ---
 source: cynic/tests/recursive-queries.rs
-assertion_line: 50
+assertion_line: 42
 expression: operation.query
-
 ---
 query {
   allPosts {

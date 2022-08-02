@@ -7,19 +7,23 @@ use crate::schema::{parse_schema, types::Type, Schema};
 use super::{analyse::analyse, parsing::CynicArguments};
 
 #[rstest]
-#[case::scalars("someScalarParams", parse_quote! { anInt: 1, aFloat: 3, anId: "hello" })]
-#[case::missing_nullable_scalars("someNullableScalarParams", parse_quote! { anInt: 1 })]
-#[case::empty_nullable_args("someNullableScalarParams", parse_quote! {})]
-#[case::a_list_of_strings("filteredBooks", parse_quote! { filters: { authors: ["Charles Stross", "Ann Leckie"] } })]
-#[case::list_wrapping("filteredBooks", parse_quote! { filters: { authors: "Ann Leckie" } })]
-#[case::an_enum("filteredBooks", parse_quote! { filters: { state: "PUBLISHED" } })]
-#[case::variable_in_object("filteredBooks", parse_quote! { filters: { state: $aVariable } })]
-#[case::top_level_variable("filteredBooks", parse_quote! { filters: $aVaraible })]
-#[case::top_level_variable("filteredBooks", parse_quote! { filters: $aVaraible, optionalFilters: $anotherVar })]
-#[case::boolean_scalar("someNullableScalarParams", parse_quote! { aBool: true })]
-#[case::missing_parameter("filteredBooks", parse_quote! {})]
-#[case::unknown_parameter("someNullableScalarParams", parse_quote! { unknown: "hello" })]
-fn test_analyse(#[case] field: &str, #[case] literals: CynicArguments) {
+#[case::scalars("scalars", "someScalarParams", parse_quote! { anInt: 1, aFloat: 3, anId: "hello" })]
+#[case::missing_nullable_scalars("missing_nullable_scalars", "someNullableScalarParams", parse_quote! { anInt: 1 })]
+#[case::empty_nullable_args("empty_nullable_args", "someNullableScalarParams", parse_quote! {})]
+#[case::a_list_of_strings("a_list_of_strings", "filteredBooks", parse_quote! { filters: { authors: ["Charles Stross", "Ann Leckie"] } })]
+#[case::list_wrapping("list_wrapping", "filteredBooks", parse_quote! { filters: { authors: "Ann Leckie" } })]
+#[case::an_enum("an_enum", "filteredBooks", parse_quote! { filters: { state: "PUBLISHED" } })]
+#[case::variable_in_object("variable_in_object", "filteredBooks", parse_quote! { filters: { state: $aVariable } })]
+#[case::top_level_variable("top_level_variable", "filteredBooks", parse_quote! { filters: $aVaraible })]
+#[case::top_level_variables("top_level_variables", "filteredBooks", parse_quote! { filters: $aVaraible, optionalFilters: $anotherVar })]
+#[case::boolean_scalar("boolean_scalar", "someNullableScalarParams", parse_quote! { aBool: true })]
+#[case::missing_parameter("missing_parameter", "filteredBooks", parse_quote! {})]
+#[case::unknown_parameter("unknown_parameter", "someNullableScalarParams", parse_quote! { unknown: "hello" })]
+fn test_analyse(
+    #[case] snapshot_name: &str,
+    #[case] field: &str,
+    #[case] literals: CynicArguments,
+) {
     use quote::format_ident;
 
     let schema_doc = parse_schema(SCHEMA).unwrap();
@@ -29,13 +33,16 @@ fn test_analyse(#[case] field: &str, #[case] literals: CynicArguments) {
 
     let literals = literals.arguments.into_iter().collect::<Vec<_>>();
 
-    insta::assert_debug_snapshot!(analyse(
-        literals,
-        field,
-        Some(&format_ident!("MyArguments").into()),
-        Span::call_site()
+    insta::assert_debug_snapshot!(
+        snapshot_name,
+        analyse(
+            literals,
+            field,
+            Some(&format_ident!("MyArguments").into()),
+            Span::call_site()
+        )
+        .map(|o| o.arguments)
     )
-    .map(|o| o.arguments))
 }
 
 #[test]

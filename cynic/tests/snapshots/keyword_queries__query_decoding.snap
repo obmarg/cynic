@@ -2,7 +2,6 @@
 source: cynic/tests/keyword-queries.rs
 assertion_line: 26
 expression: data
-
 ---
 whatevs: false
 whatevs2: false

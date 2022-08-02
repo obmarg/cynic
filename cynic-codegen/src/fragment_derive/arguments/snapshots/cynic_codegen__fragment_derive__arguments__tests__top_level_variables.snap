@@ -1,8 +1,7 @@
 ---
 source: cynic-codegen/src/fragment_derive/arguments/tests.rs
-assertion_line: 32
+assertion_line: 36
 expression: "analyse(literals, field, Some(&format_ident!(\"MyArguments\").into()),\n        Span::call_site()).map(|o| o.arguments)"
-
 ---
 Ok(
     [
@@ -24,6 +23,43 @@ Ok(
                     ),
                     value_type: NamedInputType(
                         "BookFilters",
+                    ),
+                    variable_struct: Path {
+                        leading_colon: None,
+                        segments: [
+                            PathSegment {
+                                ident: Ident(
+                                    MyArguments,
+                                ),
+                                arguments: None,
+                            },
+                        ],
+                    },
+                },
+            ),
+        },
+        Field {
+            schema_field: InputValue {
+                description: None,
+                name: FieldName {
+                    graphql_name: "optionalFilters",
+                },
+                value_type: NullableType(
+                    NamedInputType(
+                        "BookFilters",
+                    ),
+                ),
+                has_default: false,
+            },
+            value: Variable(
+                Variable {
+                    ident: Ident(
+                        anotherVar,
+                    ),
+                    value_type: NullableType(
+                        NamedInputType(
+                            "BookFilters",
+                        ),
                     ),
                     variable_struct: Path {
                         leading_colon: None,

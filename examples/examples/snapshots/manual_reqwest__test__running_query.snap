@@ -1,5 +1,6 @@
 ---
 source: examples/examples/manual-reqwest.rs
+assertion_line: 83
 expression: result.data
 ---
 Some(

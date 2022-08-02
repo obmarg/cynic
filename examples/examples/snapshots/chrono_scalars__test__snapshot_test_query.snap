@@ -1,8 +1,7 @@
 ---
 source: examples/examples/chrono-scalars.rs
-assertion_line: 63
+assertion_line: 62
 expression: query.query
-
 ---
 query {
   jobs {

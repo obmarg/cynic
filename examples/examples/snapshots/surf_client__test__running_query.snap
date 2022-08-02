@@ -1,5 +1,6 @@
 ---
 source: examples/examples/surf-client.rs
+assertion_line: 87
 expression: result.data
 ---
 Some(

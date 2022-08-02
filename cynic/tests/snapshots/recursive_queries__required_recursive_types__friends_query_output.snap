@@ -1,8 +1,7 @@
 ---
 source: cynic/tests/recursive-queries.rs
-assertion_line: 174
+assertion_line: 158
 expression: operation.query
-
 ---
 query {
   allAuthors {

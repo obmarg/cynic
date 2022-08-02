@@ -1,8 +1,7 @@
 ---
 source: cynic-codegen/src/fragment_derive/tests.rs
-assertion_line: 85
+assertion_line: 114
 expression: "format_code(format!(\"{}\", tokens))"
-
 ---
 #[automatically_derived]
 impl<'de> ::cynic::QueryFragment<'de> for Film {

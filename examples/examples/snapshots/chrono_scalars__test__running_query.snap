@@ -1,5 +1,6 @@
 ---
 source: examples/examples/chrono-scalars.rs
+assertion_line: 71
 expression: result.data
 ---
 Some(

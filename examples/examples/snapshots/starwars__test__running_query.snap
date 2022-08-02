@@ -1,5 +1,6 @@
 ---
 source: examples/examples/starwars.rs
+assertion_line: 81
 expression: result.data
 ---
 Some(

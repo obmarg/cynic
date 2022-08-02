@@ -1,8 +1,7 @@
 ---
 source: examples/examples/reqwest-async.rs
-assertion_line: 74
+assertion_line: 77
 expression: query.query
-
 ---
 query($id: ID) {
   film(id: $id) {
