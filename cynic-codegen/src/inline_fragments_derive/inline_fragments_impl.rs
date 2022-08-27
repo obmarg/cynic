@@ -1,9 +1,16 @@
 use proc_macro2::TokenStream;
 
+#[derive(Clone)]
+pub enum Fallback {
+    UnionUnitVariant(syn::Ident),
+    UnionVariantWithTypename(syn::Ident),
+    InterfaceVariant(syn::Ident, syn::Type),
+}
+
 pub struct InlineFragmentsImpl<'a> {
     pub(super) target_enum: syn::Ident,
     pub(super) fragments: &'a [super::Fragment],
-    pub(super) fallback: Option<(syn::Ident, Option<syn::Type>)>,
+    pub(super) fallback: Option<Fallback>,
 }
 
 impl quote::ToTokens for InlineFragmentsImpl<'_> {
@@ -19,10 +26,13 @@ impl quote::ToTokens for InlineFragmentsImpl<'_> {
             .collect::<Vec<_>>();
 
         let fallback = match &self.fallback {
-            Some((variant, None)) => quote! {
+            Some(Fallback::UnionUnitVariant(variant)) => quote! {
                 Ok(#target_enum::#variant)
             },
-            Some((variant, Some(ty))) => quote! {
+            Some(Fallback::UnionVariantWithTypename(variant)) => quote! {
+                Ok(#target_enum::#variant(typename.to_string()))
+            },
+            Some(Fallback::InterfaceVariant(variant, ty)) => quote! {
                 <#ty as ::cynic::serde::Deserialize<'de>>::deserialize(deserializer).map(
                     #target_enum::#variant
                 )
