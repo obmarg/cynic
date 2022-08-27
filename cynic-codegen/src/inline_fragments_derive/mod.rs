@@ -23,6 +23,8 @@ pub use input::InlineFragmentsDeriveInput;
 
 use input::InlineFragmentsDeriveVariant;
 
+use self::inline_fragments_impl::Fallback;
+
 pub fn inline_fragments_derive(ast: &syn::DeriveInput) -> Result<TokenStream, Errors> {
     use darling::FromDeriveInput;
 
@@ -121,7 +123,7 @@ fn fragments_from_variants(
 fn check_fallback(
     variants: &[SpannedValue<InlineFragmentsDeriveVariant>],
     target_type: &InlineFragmentType,
-) -> Result<Option<(syn::Ident, Option<syn::Type>)>, Errors> {
+) -> Result<Option<Fallback>, Errors> {
     let fallbacks = variants.iter().filter(|v| *v.fallback).collect::<Vec<_>>();
 
     if fallbacks.is_empty() {
@@ -141,38 +143,32 @@ fn check_fallback(
     }
 
     let fallback = fallbacks[0];
-    match target_type {
-        InlineFragmentType::Interface(_) => match fallback.fields.style {
-            darling::ast::Style::Struct => Err(syn::Error::new(
-                fallback.span(),
-                "InlineFragment fallbacks don't currently support struct variants",
-            )
-            .into()),
-            darling::ast::Style::Tuple => {
-                if fallback.fields.len() != 1 {
-                    return Err(syn::Error::new(
-                        fallback.span(),
-                        "InlineFragments require variants to have one unnamed field",
-                    )
-                    .into());
-                }
-                Ok(Some((
-                    fallback.ident.clone(),
-                    Some(fallback.fields.fields[0].ty.clone()),
-                )))
-            }
-            darling::ast::Style::Unit => Ok(Some((fallback.ident.clone(), None))),
-        },
-        InlineFragmentType::Union(_) => {
-            if fallback.fields.style != darling::ast::Style::Unit {
+
+    match fallback.fields.style {
+        darling::ast::Style::Struct => Err(syn::Error::new(
+            fallback.span(),
+            "InlineFragment fallbacks don't currently support struct variants",
+        )
+        .into()),
+        darling::ast::Style::Tuple => {
+            if fallback.fields.len() != 1 {
                 return Err(syn::Error::new(
                     fallback.span(),
-                    "The fallback for a union type must be a unit variant",
+                    "InlineFragments require variants to have one unnamed field",
                 )
                 .into());
             }
-            Ok(Some((fallback.ident.clone(), None)))
+            Ok(Some(match target_type {
+                InlineFragmentType::Interface(_) => Fallback::InterfaceVariant(
+                    fallback.ident.clone(),
+                    fallback.fields.fields[0].ty.clone(),
+                ),
+                InlineFragmentType::Union(_) => {
+                    Fallback::UnionVariantWithTypename(fallback.ident.clone())
+                }
+            }))
         }
+        darling::ast::Style::Unit => Ok(Some(Fallback::UnionUnitVariant(fallback.ident.clone()))),
     }
 }
 
@@ -182,7 +178,7 @@ struct QueryFragmentImpl<'a> {
     variables: Option<syn::Path>,
     fragments: &'a [Fragment],
     graphql_type_name: String,
-    fallback: Option<(syn::Ident, Option<syn::Type>)>,
+    fallback: Option<Fallback>,
 }
 
 impl quote::ToTokens for QueryFragmentImpl<'_> {
@@ -202,7 +198,7 @@ impl quote::ToTokens for QueryFragmentImpl<'_> {
             .collect();
         let graphql_type = proc_macro2::Literal::string(&self.graphql_type_name);
         let fallback_selection = match &self.fallback {
-            Some((_, Some(fallback_fragment))) => quote! {
+            Some(Fallback::InterfaceVariant(_, fallback_fragment)) => quote! {
                 <#fallback_fragment>::query(builder);
             },
             _ => quote! {},
