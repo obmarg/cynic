@@ -102,7 +102,7 @@ const GraphQLEditor = (props: EditorProps) => {
       </style>
 
       <link
-        href="https://unpkg.com/graphiql/graphiql.min.css"
+        href="https://unpkg.com/graphiql@1.0.3/graphiql.min.css"
         rel="stylesheet"
       />
       <div className="graphiql-container">
