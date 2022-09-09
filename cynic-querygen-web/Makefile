@@ -5,7 +5,7 @@ rustup:
 	
 .PHONY: trunk
 trunk:
-	cargo install --locked trunk@0.16.0
+	cargo install --locked trunk@0.16.0 || true
 
 .PHONY: js
 js:
