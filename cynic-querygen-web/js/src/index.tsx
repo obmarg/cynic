@@ -101,10 +101,6 @@ const GraphQLEditor = (props: EditorProps) => {
       `}
       </style>
 
-      <link
-        href="https://unpkg.com/graphiql/graphiql.min.css"
-        rel="stylesheet"
-      />
       <div className="graphiql-container">
         <GraphiQLExplorer
           query={query}
