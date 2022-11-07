@@ -11,6 +11,11 @@ type Foo {
   bar(id: UUID!): Bar
 
   fieldWithKeywordArg(where: Int): [Int!]!
+
+  recursiveInputField(
+    recursive: SelfRecursiveInput
+    recursive2: RecursiveInputParent
+  ): Boolean
 }
 
 type Bar {
@@ -24,4 +29,16 @@ enum States {
   OPEN
   CLOSED
   DELETED
+}
+
+input SelfRecursiveInput {
+  recurse: SelfRecursiveInput
+}
+
+input RecursiveInputParent {
+  recurse: RecursiveInputChild
+}
+
+input RecursiveInputChild {
+  recurse: RecursiveInputParent
 }

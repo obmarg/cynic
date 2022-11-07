@@ -48,7 +48,7 @@ async fn run_query() -> cynic::GraphQlResponse<FilmDirectorQuery> {
 
     let operation = build_query();
 
-    surf::post("http://swapi-graphql.netlify.app/.netlify/functions/index")
+    surf::post("https://swapi-graphql.netlify.app/.netlify/functions/index")
         .run_graphql(operation)
         .await
         .unwrap()

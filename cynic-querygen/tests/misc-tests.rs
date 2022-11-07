@@ -45,3 +45,18 @@ fn test_scalar_casing() {
             .expect("QueryGen Failed")
     )
 }
+
+#[test]
+fn test_recursive_inputs() {
+    let schema = include_str!("../../schemas/test_cases.graphql");
+    let query = r#"
+      query MyQuery($input: SelfRecursiveInput!, $input2: RecursiveInputParent!) {
+        recursiveInputField(recursive: $input, recursive2: $input2)
+      }
+    "#;
+
+    assert_snapshot!(
+        document_to_fragment_structs(query, schema, &QueryGenOptions::default())
+            .expect("QueryGen Failed")
+    )
+}

@@ -30,7 +30,7 @@ impl<'query, 'schema> VariablesStructField<'query, 'schema> {
 
     fn type_spec(&self) -> String {
         match self {
-            VariablesStructField::Variable(var) => var.value_type.type_spec().to_string(),
+            VariablesStructField::Variable(var) => var.value_type.type_spec(false).to_string(),
             VariablesStructField::NestedStruct(type_name) => type_name.clone(),
         }
     }

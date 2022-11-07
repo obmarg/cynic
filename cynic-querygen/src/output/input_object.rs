@@ -1,14 +1,25 @@
-use std::fmt::Write;
+use std::{borrow::Cow, fmt::Write};
 
-use crate::casings::CasingExt;
+use crate::{casings::CasingExt, schema};
 
 use super::indented;
-use crate::schema::InputField;
 
 #[derive(Debug, PartialEq)]
 pub struct InputObject<'schema> {
     pub name: String,
-    pub fields: Vec<InputField<'schema>>,
+    pub fields: Vec<InputObjectField<'schema>>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct InputObjectField<'schema> {
+    pub schema_field: schema::InputField<'schema>,
+    pub needs_boxed: bool,
+}
+
+impl<'schema> InputObjectField<'schema> {
+    pub fn type_spec(&self) -> Cow<'schema, str> {
+        self.schema_field.value_type.type_spec(self.needs_boxed)
+    }
 }
 
 impl std::fmt::Display for InputObject<'_> {
@@ -22,14 +33,14 @@ impl std::fmt::Display for InputObject<'_> {
         for field in &self.fields {
             let mut f = indented(f, 4);
 
-            let name = field.name.to_snake_case();
+            let name = field.schema_field.name.to_snake_case();
             let type_spec = field.type_spec();
             let mut output = super::Field::new(&name, &type_spec);
 
-            if name.to_camel_case() != field.name {
+            if name.to_camel_case() != field.schema_field.name {
                 // If a snake -> camel casing roundtrip is not lossless
                 // we need to explicitly rename this field
-                output.add_rename(field.name);
+                output.add_rename(field.schema_field.name);
             }
 
             write!(f, "{}", output)?;
