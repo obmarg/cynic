@@ -71,10 +71,6 @@ impl<'schema> InputField<'schema> {
             value_type: InputFieldType::from_parser(&field.value_type, type_index),
         }
     }
-
-    pub fn type_spec(&self) -> Cow<'schema, str> {
-        self.value_type.type_spec()
-    }
 }
 
 impl<'schema> InputFieldType<'schema> {
@@ -122,39 +118,50 @@ impl<'schema> InputFieldType<'schema> {
         }
     }
 
-    pub fn type_spec(&self) -> Cow<'schema, str> {
-        input_type_spec_imp(self, true)
+    pub fn type_spec(&self, needs_boxed: bool) -> Cow<'schema, str> {
+        input_type_spec_imp(self, true, needs_boxed)
     }
 }
 
-fn input_type_spec_imp<'schema>(ty: &InputFieldType<'schema>, nullable: bool) -> Cow<'schema, str> {
+fn input_type_spec_imp<'schema>(
+    ty: &InputFieldType<'schema>,
+    nullable: bool,
+    needs_boxed: bool,
+) -> Cow<'schema, str> {
     use crate::casings::CasingExt;
 
     if let InputFieldType::NonNullType(inner) = ty {
-        return input_type_spec_imp(inner, false);
+        return input_type_spec_imp(inner, false, needs_boxed);
     }
 
     if nullable {
-        return Cow::Owned(format!("Option<{}>", input_type_spec_imp(ty, false)));
+        return Cow::Owned(format!(
+            "Option<{}>",
+            input_type_spec_imp(ty, false, needs_boxed)
+        ));
     }
 
     match ty {
         InputFieldType::ListType(inner) => {
-            Cow::Owned(format!("Vec<{}>", input_type_spec_imp(inner, true)))
+            Cow::Owned(format!("Vec<{}>", input_type_spec_imp(inner, true, false)))
         }
 
         InputFieldType::NonNullType(_) => panic!("NonNullType somehow got past an if let"),
 
         InputFieldType::NamedType(s) => {
-            match s.type_name.as_ref() {
-                "Int" => return Cow::Borrowed("i32"),
-                "Float" => return Cow::Borrowed("f64"),
-                "Boolean" => return Cow::Borrowed("bool"),
-                "ID" => return Cow::Borrowed("cynic::Id"),
-                _ => {}
+            let name = match s.type_name.as_ref() {
+                "Int" => Cow::Borrowed("i32"),
+                "Float" => Cow::Borrowed("f64"),
+                "Boolean" => Cow::Borrowed("bool"),
+                "ID" => Cow::Borrowed("cynic::Id"),
+                _ => Cow::Owned(s.type_name.to_pascal_case()),
+            };
+
+            if needs_boxed {
+                return Cow::Owned(format!("Box<{}>", name));
             }
 
-            Cow::Owned(s.type_name.to_pascal_case())
+            return name;
         }
     }
 }

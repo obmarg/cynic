@@ -12,7 +12,7 @@ mod variables_struct;
 
 pub use indent::indented;
 pub use inline_fragments::InlineFragments;
-pub use input_object::InputObject;
+pub use input_object::{InputObject, InputObjectField};
 pub use query_fragment::QueryFragment;
 pub use variables_struct::{VariablesStruct, VariablesStructField};
 

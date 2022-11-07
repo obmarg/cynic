@@ -1,6 +1,5 @@
 ---
 source: cynic-codegen/tests/use-schema.rs
-assertion_line: 30
 expression: "format_code(format!(\"{}\", tokens))"
 ---
 impl ::cynic::schema::QueryRoot for Foo {}
@@ -94,6 +93,65 @@ pub mod foo_fields {
             type ArgumentType = Option<super::super::Int>;
             const NAME: &'static str = "where";
         }
+    }
+    pub struct recursiveInputField;
+    impl ::cynic::schema::Field for recursiveInputField {
+        type Type = Option<super::Boolean>;
+        const NAME: &'static str = "recursiveInputField";
+    }
+    impl ::cynic::schema::HasField<recursiveInputField> for super::Foo {
+        type Type = Option<super::Boolean>;
+    }
+    pub mod recursive_input_field_arguments {
+        pub struct recursive;
+        impl ::cynic::schema::HasArgument<recursive> for super::recursiveInputField {
+            type ArgumentType = Option<super::super::SelfRecursiveInput>;
+            const NAME: &'static str = "recursive";
+        }
+        pub struct recursive2;
+        impl ::cynic::schema::HasArgument<recursive2> for super::recursiveInputField {
+            type ArgumentType = Option<super::super::RecursiveInputParent>;
+            const NAME: &'static str = "recursive2";
+        }
+    }
+}
+pub struct RecursiveInputChild;
+impl ::cynic::schema::InputObjectMarker for RecursiveInputChild {}
+pub mod recursive_input_child_fields {
+    pub struct recurse;
+    impl ::cynic::schema::Field for recurse {
+        type Type = Option<super::RecursiveInputParent>;
+        const NAME: &'static str = "recurse";
+    }
+    impl ::cynic::schema::HasInputField<recurse, Option<super::RecursiveInputParent>>
+        for super::RecursiveInputChild
+    {
+    }
+}
+pub struct RecursiveInputParent;
+impl ::cynic::schema::InputObjectMarker for RecursiveInputParent {}
+pub mod recursive_input_parent_fields {
+    pub struct recurse;
+    impl ::cynic::schema::Field for recurse {
+        type Type = Option<super::RecursiveInputChild>;
+        const NAME: &'static str = "recurse";
+    }
+    impl ::cynic::schema::HasInputField<recurse, Option<super::RecursiveInputChild>>
+        for super::RecursiveInputParent
+    {
+    }
+}
+pub struct SelfRecursiveInput;
+impl ::cynic::schema::InputObjectMarker for SelfRecursiveInput {}
+pub mod self_recursive_input_fields {
+    pub struct recurse;
+    impl ::cynic::schema::Field for recurse {
+        type Type = Option<super::SelfRecursiveInput>;
+        const NAME: &'static str = "recurse";
+    }
+    impl ::cynic::schema::HasInputField<recurse, Option<super::SelfRecursiveInput>>
+        for super::SelfRecursiveInput
+    {
     }
 }
 pub struct States {}

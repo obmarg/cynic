@@ -181,6 +181,14 @@ fn main() {
             "tests/queries/misc/keyword-argument.graphql",
             r#"queries::KeywordArgumentQuery::build(())"#,
         ),
+        TestCase::query_norun(
+            &test_schema,
+            "tests/queries/misc/recursive-inputs.graphql",
+            r#"queries::RecursiveInputQuery::build(queries::RecursiveInputQueryVariables {
+                input: None,
+                input2: None
+            })"#,
+        ),
     ];
 
     for case in cases {
