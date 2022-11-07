@@ -11,6 +11,10 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## v2.0.0 - 2022-11-07
 
+This release contains a lot of breaking changes.
+
+[See the upgrade guide for help](https://cynic-rs.dev/upgrading/v1-v2.html)
+
 ### Breaking Changes
 
 - Cynic no longer supports providing variables via the `arg.X` syntax. Instead
