@@ -2,7 +2,7 @@ use std::fmt::Write;
 
 use super::indented;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct InlineFragments {
     // TODO: Should this be a string?
     pub inner_type_names: Vec<String>,

@@ -103,7 +103,7 @@ pub struct InputObjectType<'a> {
     pub fields: Vec<InputValue<'a>>,
 }
 
-#[derive(Debug, PartialEq, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum Kind {
     InputType,
     OutputType,

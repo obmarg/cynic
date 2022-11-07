@@ -44,7 +44,7 @@ fn format_code(filename: &std::path::Path) {
     #[cfg(feature = "rustfmt")]
     {
         std::process::Command::new("cargo")
-            .args(&["fmt", "--", filename.to_str().unwrap()])
+            .args(["fmt", "--", filename.to_str().unwrap()])
             .spawn()
             .expect("failed to execute process");
     }

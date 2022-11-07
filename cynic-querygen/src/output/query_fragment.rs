@@ -149,7 +149,7 @@ impl RustOutputFieldType {
     }
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct FieldArgument<'query, 'schema> {
     pub name: &'schema str,
     value: TypedValue<'query, 'schema>,

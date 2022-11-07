@@ -34,7 +34,7 @@ struct TestQuery {
     test_struct: Option<TestStruct>,
 }
 
-#[derive(cynic::Enum, Clone, Debug, PartialEq)]
+#[derive(cynic::Enum, Clone, Debug, PartialEq, Eq)]
 #[cynic(
     schema_path = "src/bin/simple.graphql",
     rename_all = "SCREAMING_SNAKE_CASE"

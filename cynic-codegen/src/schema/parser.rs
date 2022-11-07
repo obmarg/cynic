@@ -48,7 +48,7 @@ fn schema_into_static<'a>(
     unsafe { std::mem::transmute::<_, Document>(doc) }
 }
 
-#[derive(Debug, PartialEq, Clone)]
+#[derive(Debug, PartialEq, Eq, Clone)]
 pub enum SchemaLoadError {
     IoError(String),
     ParseError(String),

@@ -19,7 +19,7 @@ use crate::{
     Error, GraphPath, TypeIndex,
 };
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct NormalisedOperation<'query, 'schema> {
     pub root: Rc<SelectionSet<'query, 'schema>>,
     pub name: Option<&'query str>,
@@ -33,7 +33,7 @@ pub struct Variable<'query, 'schema> {
     pub value_type: InputFieldType<'schema>,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum OperationKind {
     Query,
     Mutation,
@@ -114,7 +114,7 @@ impl<'query, 'schema> FieldSelection<'query, 'schema> {
 type SelectionSetSet<'query, 'schema> = BTreeSet<Rc<SelectionSet<'query, 'schema>>>;
 pub type InlineFragmentsSet<'query, 'schema> = BTreeSet<Rc<InlineFragments<'query, 'schema>>>;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct NormalisedDocument<'query, 'schema> {
     pub selection_sets: SelectionSetSet<'query, 'schema>,
     pub inline_fragments: InlineFragmentsSet<'query, 'schema>,
