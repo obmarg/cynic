@@ -219,10 +219,31 @@ pub use serde;
 /// provided the `schema` is defined in the current crate
 #[macro_export]
 macro_rules! impl_scalar {
-    ($type:path, $type_lock:path) => {
-        impl $crate::schema::IsScalar<$type_lock> for $type {
-            type SchemaType = $type_lock;
+    ($type:path, $type_lock:ident) => {
+        $crate::impl_scalar!($type, $type_lock, self);
+    };
+    ($type:path, $type_lock_segment:ident $(:: $type_lock_rest :ident)::+) => {
+        $crate::impl_scalar!($type, $($type_lock_rest)::*, $type_lock_segment);
+    };
+    ($type:path, $type_lock_segment:ident $(:: $type_lock_rest :ident)::+, $schema_module:ident $(:: $schema_module_rest : ident)*) => {
+        $crate::impl_scalar!($type, $($type_lock_rest)::*, $schema_module(::$schema_module_rest)*::$type_lock_segment)
+    };
+    ($type:path, $type_lock:ident, $schema_module:ident $(:: $schema_module_rest : ident)*) => {
+        #[automatically_derived]
+        impl $crate::schema::IsScalar<$schema_module$(::$schema_module_rest)*::$type_lock> for $type {
+            type SchemaType = $schema_module$(::$schema_module_rest)*::$type_lock;
         }
-        impl $crate::coercions::CoercesTo<$type_lock> for $type {}
+
+        // We derive a simple CoercesTo here, but since we don't own $type we can't
+        // impl any of the more advanced coercions.
+        #[automatically_derived]
+        impl $crate::coercions::CoercesTo<$schema_module$(::$schema_module_rest)*::$type_lock> for $type {}
+
+        #[automatically_derived]
+        impl $schema_module$(::$schema_module_rest)*::variable::Variable for $type {
+            const TYPE: ::cynic::variables::VariableType = ::cynic::variables::VariableType::Named(
+                <$schema_module$(::$schema_module_rest)*::$type_lock as $crate::schema::NamedType>::NAME,
+            );
+        }
     };
 }
