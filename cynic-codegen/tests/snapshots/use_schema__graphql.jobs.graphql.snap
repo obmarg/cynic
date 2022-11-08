@@ -1,6 +1,5 @@
 ---
 source: cynic-codegen/tests/use-schema.rs
-assertion_line: 30
 expression: "format_code(format!(\"{}\", tokens))"
 ---
 impl ::cynic::schema::QueryRoot for Query {}
@@ -3308,6 +3307,9 @@ pub mod country_where_input_fields {
     }
 }
 pub struct DateTime {}
+impl ::cynic::schema::NamedType for DateTime {
+    const NAME: &'static str = "DateTime";
+}
 pub struct Job;
 pub mod job_fields {
     pub struct id;
