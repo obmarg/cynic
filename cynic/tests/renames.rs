@@ -1,4 +1,4 @@
-use cynic::{InlineFragments, QueryFragment};
+use cynic::{Enum, InlineFragments, InputObject, QueryFragment};
 use serde::Serialize;
 use serde_json::json;
 
@@ -81,4 +81,28 @@ fn posts() -> serde_json::Value {
             }
         }
     ])
+}
+
+// This struct isn't actually used, we just want to make sure it compiles
+#[allow(unused)]
+#[derive(QueryFragment, Serialize)]
+#[cynic(schema_path = "tests/test-schema.graphql", graphql_type = "WeirdNAME")]
+struct WeirdName {
+    subfield: String,
+}
+
+// This struct isn't actually used, we just want to make sure it compiles
+#[allow(unused)]
+#[derive(InputObject)]
+#[cynic(schema_path = "tests/test-schema.graphql", graphql_type = "WeirdINPUT")]
+struct WeirdInput {
+    subfield: String,
+}
+
+// This enum isn't actually used, we just want to make sure it compiles
+#[allow(unused)]
+#[derive(Enum)]
+#[cynic(schema_path = "tests/test-schema.graphql", graphql_type = "WeirdENUM")]
+enum WeirdEnum {
+    AVariant,
 }

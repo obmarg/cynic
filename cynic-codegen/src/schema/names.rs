@@ -6,8 +6,16 @@ pub struct FieldName<'a> {
 }
 
 impl<'a> FieldName<'a> {
+    pub fn new(graphql_name: &'a str) -> Self {
+        FieldName { graphql_name }
+    }
+
     pub fn as_str(&self) -> &'a str {
         self.graphql_name
+    }
+
+    pub fn to_literal(&self) -> proc_macro2::Literal {
+        proc_macro2::Literal::string(self.graphql_name)
     }
 }
 
@@ -19,6 +27,12 @@ impl<'a> PartialEq<proc_macro2::Ident> for FieldName<'a> {
 
 impl<'a> PartialEq<str> for FieldName<'a> {
     fn eq(&self, other: &str) -> bool {
+        self.graphql_name == other
+    }
+}
+
+impl<'a> PartialEq<String> for FieldName<'a> {
+    fn eq(&self, other: &String) -> bool {
         self.graphql_name == other
     }
 }

@@ -1,6 +1,8 @@
+use std::borrow::Borrow;
+
 use quote::format_ident;
 
-use crate::{idents::PathExt2, schema::types::*};
+use crate::schema::types::*;
 
 use crate::idents::to_snake_case;
 
@@ -230,5 +232,15 @@ impl<'a> InterfaceRef<'a> {
 impl<'a, T> TypeRef<'a, T> {
     pub fn marker_type(&'a self) -> TypeRefMarker<'a, T> {
         TypeRefMarker { type_ref: self }
+    }
+}
+
+trait PathExt {
+    fn push(&mut self, ident: impl Borrow<proc_macro2::Ident>);
+}
+
+impl PathExt for syn::Path {
+    fn push(&mut self, ident: impl Borrow<proc_macro2::Ident>) {
+        self.segments.push(ident.borrow().clone().into())
     }
 }

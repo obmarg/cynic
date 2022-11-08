@@ -9,6 +9,11 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+### Bug Fixes
+
+- Some of the derives weren't recasing GraphQL types/fields correctly, leading
+  to weird errors.
+
 ## v2.0.0 - 2022-11-07
 
 This release contains a lot of breaking changes.

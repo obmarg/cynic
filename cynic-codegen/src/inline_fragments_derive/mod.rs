@@ -2,8 +2,14 @@ use darling::util::SpannedValue;
 use proc_macro2::{Span, TokenStream};
 
 use crate::{
-    idents::PathExt, inline_fragments_derive::input::ValidationMode, load_schema, schema, Errors,
-    Ident,
+    inline_fragments_derive::input::ValidationMode,
+    load_schema,
+    schema::{
+        markers::TypeMarkerIdent,
+        types::{InterfaceType, Kind, Type, UnionType},
+        Schema, SchemaError,
+    },
+    Errors,
 };
 
 pub mod input;
@@ -15,7 +21,6 @@ mod tests;
 
 pub use input::InlineFragmentsDeriveInput;
 
-use crate::suggestions::{format_guess, guess_field};
 use input::InlineFragmentsDeriveVariant;
 
 pub fn inline_fragments_derive(ast: &syn::DeriveInput) -> Result<TokenStream, Errors> {
@@ -35,28 +40,9 @@ pub(crate) fn inline_fragments_derive_impl(
     let schema =
         load_schema(&*input.schema_path).map_err(|e| e.into_syn_error(input.schema_path.span()))?;
 
-    let target_type = find_union_or_interface_type(&input.graphql_type_name(), &schema);
-    if target_type.is_none() {
-        use graphql_parser::schema::{Definition, TypeDefinition};
-        let candidates = schema.definitions.iter().flat_map(|def| match def {
-            Definition::TypeDefinition(TypeDefinition::Union(union)) => Some(union.name.as_str()),
-            Definition::TypeDefinition(TypeDefinition::Interface(interface)) => {
-                Some(interface.name.as_str())
-            }
-            _ => None,
-        });
-        let guess_field = guess_field(candidates, &(input.graphql_type_name()));
-        return Err(syn::Error::new(
-            input.graphql_type_span(),
-            format!(
-                "Could not find a Union type or Interface named {}.{}",
-                &input.graphql_type_name(),
-                format_guess(guess_field)
-            ),
-        )
-        .into());
-    }
-    let target_type = target_type.unwrap();
+    let schema = Schema::new(&schema);
+
+    let target_type = schema.lookup::<InlineFragmentType>(&input.graphql_type_name())?;
 
     input.validate(match target_type {
         InlineFragmentType::Union(_) => ValidationMode::Union,
@@ -68,8 +54,7 @@ pub(crate) fn inline_fragments_derive_impl(
     if let darling::ast::Data::Enum(variants) = &input.data {
         let fallback = check_fallback(variants, &target_type)?;
 
-        let mut type_lock = input.schema_module();
-        type_lock.push(Ident::for_type(input.graphql_type_name()));
+        let type_lock = target_type.marker_ident().to_path(&input.schema_module());
 
         let fragments = fragments_from_variants(variants)?;
 
@@ -247,31 +232,28 @@ impl quote::ToTokens for QueryFragmentImpl<'_> {
     }
 }
 
-fn find_union_or_interface_type<'a>(
-    name: &str,
-    schema: &'a schema::Document,
-) -> Option<InlineFragmentType<'a>> {
-    for definition in &schema.definitions {
-        use graphql_parser::schema::{Definition, TypeDefinition};
-        match definition {
-            Definition::TypeDefinition(TypeDefinition::Union(union)) => {
-                if union.name == name {
-                    return Some(InlineFragmentType::Union(union));
-                }
-            }
-            Definition::TypeDefinition(TypeDefinition::Interface(interface)) => {
-                if interface.name == name {
-                    return Some(InlineFragmentType::Interface(interface));
-                }
-            }
-            _ => {}
-        }
-    }
-
-    None
+enum InlineFragmentType<'a> {
+    Union(UnionType<'a>),
+    Interface(InterfaceType<'a>),
 }
 
-enum InlineFragmentType<'a> {
-    Union(&'a schema::UnionType),
-    Interface(&'a schema::InterfaceType),
+impl<'a> InlineFragmentType<'a> {
+    pub fn marker_ident(&self) -> TypeMarkerIdent<'a> {
+        match self {
+            InlineFragmentType::Union(inner) => inner.marker_ident(),
+            InlineFragmentType::Interface(inner) => inner.marker_ident(),
+        }
+    }
+}
+
+impl<'a> TryFrom<Type<'a>> for InlineFragmentType<'a> {
+    type Error = SchemaError;
+
+    fn try_from(value: Type<'a>) -> Result<Self, Self::Error> {
+        match value {
+            Type::Interface(inner) => Ok(InlineFragmentType::Interface(inner)),
+            Type::Union(inner) => Ok(InlineFragmentType::Union(inner)),
+            _ => Err(SchemaError::unexpected_kind(value, Kind::UnionOrInterface)),
+        }
+    }
 }

@@ -72,6 +72,15 @@ impl<'a> Schema<'a, Validated> {
             .map(|name| self.type_index.private_lookup(name).unwrap())
     }
 
+    // Looks up a kind that we're not certain is in the validated schema.
+    pub fn try_lookup<Kind>(&self, name: &str) -> Result<Kind, SchemaError>
+    where
+        Kind: TryFrom<types::Type<'a>, Error = SchemaError> + 'a,
+    {
+        Kind::try_from(self.type_index.lookup_valid_type(name)?)
+        // TODO: Suggestion logic should probably be implemented here (or in type_index)
+    }
+
     pub fn lookup<Kind>(&self, name: &str) -> Result<Kind, SchemaError>
     where
         Kind: TryFrom<types::Type<'a>> + 'a,

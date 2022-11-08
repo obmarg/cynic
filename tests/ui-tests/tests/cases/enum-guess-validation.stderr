@@ -1,4 +1,4 @@
-error: Could not find an enum named Desseqt in ../../../cynic/src/bin/simple.graphql. Did you mean `Dessert`?
+error: Could not find a type named `Desseqt` in the schema
   --> tests/cases/enum-guess-validation.rs:10:5
    |
 10 |     graphql_type = "Desseqt"

@@ -93,7 +93,7 @@ pub struct EnumType<'a> {
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct EnumValue<'a> {
     pub description: Option<&'a str>,
-    pub name: &'a str,
+    pub name: FieldName<'a>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
@@ -114,6 +114,7 @@ pub enum Kind {
     Enum,
     InputObject,
     ObjectOrInterface,
+    UnionOrInterface,
 }
 
 impl<'a> Type<'a> {
@@ -141,6 +142,16 @@ impl<'a> InputObjectType<'a> {
         for<'b> FieldName<'b>: PartialEq<N>,
     {
         self.fields.iter().find(|field| field.name == *name)
+    }
+}
+
+impl<'a> EnumType<'a> {
+    pub fn value<N>(&self, name: &N) -> Option<&EnumValue<'a>>
+    where
+        N: ?Sized,
+        for<'b> FieldName<'b>: PartialEq<N>,
+    {
+        self.values.iter().find(|value| value.name == *name)
     }
 }
 
@@ -292,6 +303,17 @@ impl<'a> TryFrom<Type<'a>> for InputType<'a> {
     }
 }
 
+impl<'a> TryFrom<Type<'a>> for ObjectType<'a> {
+    type Error = SchemaError;
+
+    fn try_from(value: Type<'a>) -> Result<Self, Self::Error> {
+        match value {
+            Type::Object(inner) => Ok(inner),
+            _ => Err(SchemaError::unexpected_kind(value, Kind::Object)),
+        }
+    }
+}
+
 impl<'a> TryFrom<Type<'a>> for InputObjectType<'a> {
     type Error = SchemaError;
 
@@ -299,6 +321,17 @@ impl<'a> TryFrom<Type<'a>> for InputObjectType<'a> {
         match value {
             Type::InputObject(inner) => Ok(inner),
             _ => Err(SchemaError::unexpected_kind(value, Kind::InputObject)),
+        }
+    }
+}
+
+impl<'a> TryFrom<Type<'a>> for EnumType<'a> {
+    type Error = SchemaError;
+
+    fn try_from(value: Type<'a>) -> Result<Self, Self::Error> {
+        match value {
+            Type::Enum(inner) => Ok(inner),
+            _ => Err(SchemaError::unexpected_kind(value, Kind::Enum)),
         }
     }
 }
@@ -339,6 +372,7 @@ impl std::fmt::Display for Kind {
             Kind::Enum => "enum",
             Kind::InputObject => "input object",
             Kind::ObjectOrInterface => "object or interface",
+            Kind::UnionOrInterface => "union or interface",
         };
         write!(f, "{}", s)
     }

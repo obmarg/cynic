@@ -16,7 +16,6 @@ mod types;
 pub use idents::RenameAll;
 
 use error::Errors;
-use idents::Ident;
 use schema::load_schema;
 
 pub fn output_schema_module(

@@ -1,85 +1,64 @@
 use proc_macro2::TokenStream;
 
-use crate::{
-    schema::{Definition, TypeDefinition},
-    Ident,
-};
+use crate::schema::{types::ObjectType, Definition, Schema, SchemaError, Validated};
 
-pub struct RootTypes {
-    query: String,
-    mutation: Option<String>,
-    subscription: Option<String>,
+pub struct RootTypes<'a> {
+    query: ObjectType<'a>,
+    mutation: Option<ObjectType<'a>>,
+    subscription: Option<ObjectType<'a>>,
 }
 
-impl RootTypes {
-    pub fn from_definitions(definitions: &[Definition]) -> RootTypes {
-        let mut expected_names = RootTypes::default();
+impl<'a> RootTypes<'a> {
+    pub fn from_definitions(
+        definitions: &[Definition],
+        schema: &Schema<'a, Validated>,
+    ) -> Result<RootTypes<'a>, SchemaError> {
+        let mut query_name = "Query".to_owned();
+        let mut mutation_name = Some("Mutation".to_owned());
+        let mut subscription_name = Some("Subscription".to_owned());
 
         for definition in definitions {
             if let Definition::SchemaDefinition(schema) = definition {
                 if let Some(query_type) = &schema.query {
-                    expected_names.query = query_type.clone();
+                    query_name = query_type.clone();
                 }
-                expected_names.mutation = schema.mutation.clone();
-                expected_names.subscription = schema.subscription.clone();
+                mutation_name = schema.mutation.clone();
+                subscription_name = schema.subscription.clone();
                 break;
             }
         }
 
-        let mut rv = RootTypes {
-            query: expected_names.query,
-            mutation: None,
-            subscription: None,
-        };
-
-        // Now we check that the provided names are present.
-        for definition in definitions {
-            if let Definition::TypeDefinition(TypeDefinition::Object(obj)) = definition {
-                if Some(&obj.name) == expected_names.mutation.as_ref() {
-                    rv.mutation = expected_names.mutation.clone();
-                }
-                if Some(&obj.name) == expected_names.subscription.as_ref() {
-                    rv.subscription = expected_names.subscription.clone();
-                }
-            }
-        }
-
-        rv
+        Ok(RootTypes {
+            query: schema.lookup::<ObjectType>(&query_name)?,
+            mutation: mutation_name.and_then(|name| schema.try_lookup::<ObjectType>(&name).ok()),
+            subscription: subscription_name
+                .and_then(|name| schema.try_lookup::<ObjectType>(&name).ok()),
+        })
     }
 }
 
-impl quote::ToTokens for RootTypes {
+impl quote::ToTokens for RootTypes<'_> {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         use quote::{quote, TokenStreamExt};
 
-        let name = Ident::for_type(&self.query);
+        let name = proc_macro2::Ident::from(self.query.marker_ident());
 
         tokens.append_all(quote! {
             impl ::cynic::schema::QueryRoot for #name {}
         });
 
         if let Some(mutation) = &self.mutation {
-            let name = Ident::for_type(mutation);
+            let name = proc_macro2::Ident::from(mutation.marker_ident());
             tokens.append_all(quote! {
                 impl ::cynic::schema::MutationRoot for #name {}
             });
         }
 
         if let Some(subscription) = &self.subscription {
-            let name = Ident::for_type(subscription);
+            let name = proc_macro2::Ident::from(subscription.marker_ident());
             tokens.append_all(quote! {
                 impl ::cynic::schema::SubscriptionRoot for #name {}
             });
-        }
-    }
-}
-
-impl Default for RootTypes {
-    fn default() -> RootTypes {
-        RootTypes {
-            query: "Query".to_string(),
-            mutation: Some("Mutation".to_string()),
-            subscription: Some("Subscription".to_string()),
         }
     }
 }
