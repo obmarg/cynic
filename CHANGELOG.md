@@ -13,6 +13,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 - Some of the derives weren't recasing GraphQL types/fields correctly, leading
   to weird errors.
+- Scalars defined using `impl_scalar!` couldn't be used as variables.  Now they
+  can.
 
 ## v2.0.0 - 2022-11-07
 
