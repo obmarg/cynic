@@ -149,6 +149,12 @@ fn join_variants<'a>(
         );
     }
 
+    for value in &enum_def.values {
+        if !map.contains_key(value.name.as_str()) {
+            map.insert(value.name.as_str().to_owned(), (None, Some(value)));
+        }
+    }
+
     let mut missing_variants = vec![];
     let mut errors = TokenStream::new();
     for (graphql_name, value) in map.iter() {
