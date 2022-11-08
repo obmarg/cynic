@@ -1,7 +1,5 @@
 use proc_macro2::TokenStream;
 
-use crate::Ident;
-
 use super::FragmentDeriveField;
 use crate::schema::types as schema;
 
@@ -11,12 +9,12 @@ pub enum DeserializeImpl {
 }
 
 pub struct StandardDeserializeImpl {
-    target_struct: Ident,
+    target_struct: syn::Ident,
     fields: Vec<Field>,
 }
 
 pub struct SpreadingDeserializeImpl {
-    target_struct: Ident,
+    target_struct: syn::Ident,
     fields: Vec<Field>,
 }
 
@@ -36,7 +34,7 @@ impl DeserializeImpl {
     ) -> DeserializeImpl {
         let spreading = fields.iter().any(|f| *f.0.spread);
 
-        let target_struct = Ident::new_spanned(&name.to_string(), name.span());
+        let target_struct = name.clone();
         let fields = fields
             .iter()
             .map(|(field, schema_field)| process_field(field, *schema_field))
@@ -100,10 +98,9 @@ impl quote::ToTokens for StandardDeserializeImpl {
             }
         });
 
-        let expecting_str =
-            proc_macro2::Literal::string(&format!("struct {}", self.target_struct.rust_name()));
-
-        let struct_name = proc_macro2::Literal::string(&self.target_struct.rust_name());
+        let struct_name = self.target_struct.to_string();
+        let expecting_str = proc_macro2::Literal::string(&format!("struct {}", &struct_name));
+        let struct_name = proc_macro2::Literal::string(&struct_name);
 
         tokens.append_all(quote! {
             #[automatically_derived]

@@ -14,7 +14,6 @@ use quote::{quote, ToTokens};
 
 use crate::{
     error::Errors,
-    idents::Ident,
     schema::{types::Type, Schema},
 };
 
@@ -32,7 +31,7 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
 
     let mut output = TokenStream::new();
 
-    let root_types = schema_roots::RootTypes::from_definitions(&document.definitions);
+    let root_types = schema_roots::RootTypes::from_definitions(&document.definitions, &schema)?;
     output.append_all(quote! {
         #root_types
     });
@@ -64,7 +63,7 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
             Type::Union(def) => {
                 subtype_markers.extend(SubtypeMarkers::from_union(&def));
 
-                let ident = Ident::for_type(&def.name);
+                let ident = proc_macro2::Ident::from(def.marker_ident());
                 output.append_all(quote! {
                     pub struct #ident {}
                 });

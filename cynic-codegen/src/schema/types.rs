@@ -302,6 +302,17 @@ impl<'a> TryFrom<Type<'a>> for InputType<'a> {
     }
 }
 
+impl<'a> TryFrom<Type<'a>> for ObjectType<'a> {
+    type Error = SchemaError;
+
+    fn try_from(value: Type<'a>) -> Result<Self, Self::Error> {
+        match value {
+            Type::Object(inner) => Ok(inner),
+            _ => Err(SchemaError::unexpected_kind(value, Kind::Object)),
+        }
+    }
+}
+
 impl<'a> TryFrom<Type<'a>> for InputObjectType<'a> {
     type Error = SchemaError;
 

@@ -2,8 +2,8 @@ use darling::util::SpannedValue;
 use proc_macro2::{Span, TokenStream};
 
 use crate::{
-    idents::PathExt, inline_fragments_derive::input::ValidationMode, load_schema, schema, Errors,
-    Ident,
+    idents::Ident, idents::PathExt, inline_fragments_derive::input::ValidationMode, load_schema,
+    schema, Errors,
 };
 
 pub mod input;

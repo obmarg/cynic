@@ -6,7 +6,6 @@ use crate::{
     error::Errors,
     schema::types::{Field, OutputType},
     types::{self, check_spread_type, check_types_are_compatible, CheckMode},
-    Ident,
 };
 
 use super::arguments::{arguments_from_field_attrs, process_arguments};
@@ -15,7 +14,7 @@ use super::fragment_derive_type::FragmentDeriveType;
 use super::input::FragmentDeriveField;
 
 pub struct FragmentImpl<'a> {
-    target_struct: Ident,
+    target_struct: proc_macro2::Ident,
     selections: Vec<Selection<'a>>,
     variables: syn::Type,
     graphql_type_name: String,
@@ -62,7 +61,7 @@ impl<'a> FragmentImpl<'a> {
         graphql_type_name: &str,
         variables: Option<&syn::Path>,
     ) -> Result<Self, Errors> {
-        let target_struct = Ident::new_spanned(&name.to_string(), name.span());
+        let target_struct = name.clone();
 
         let schema_type_path = schema_type.marker_ident.to_path(schema_module_path);
 

@@ -447,7 +447,7 @@ pub trait PathExt {
 }
 
 impl PathExt for syn::Path {
-    fn push(&mut self, ident: impl Borrow<crate::Ident>) {
+    fn push(&mut self, ident: impl Borrow<Ident>) {
         self.segments.push(ident.borrow().rust.clone().into())
     }
 }
