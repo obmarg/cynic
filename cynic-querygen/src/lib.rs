@@ -156,6 +156,7 @@ pub fn document_to_fragment_structs(
 
     writeln!(output, "}}\n").unwrap();
 
+    writeln!(output, "#[allow(non_snake_case, non_camel_case_types)]").unwrap();
     writeln!(output, "mod {} {{", options.query_module).unwrap();
 
     writeln!(

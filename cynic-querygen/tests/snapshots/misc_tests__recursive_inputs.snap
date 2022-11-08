@@ -39,6 +39,7 @@ mod queries {
 
 }
 
+#[allow(non_snake_case, non_camel_case_types)]
 mod schema {
     cynic::use_schema!(r#"schema.graphql"#);
 }

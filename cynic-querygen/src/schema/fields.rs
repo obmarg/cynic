@@ -161,7 +161,7 @@ fn input_type_spec_imp<'schema>(
                 return Cow::Owned(format!("Box<{}>", name));
             }
 
-            return name;
+            name
         }
     }
 }

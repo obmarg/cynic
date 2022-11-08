@@ -4,7 +4,7 @@ use crate::{casings::CasingExt, schema};
 
 use super::indented;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct InputObject<'schema> {
     pub name: String,
     pub fields: Vec<InputObjectField<'schema>>,

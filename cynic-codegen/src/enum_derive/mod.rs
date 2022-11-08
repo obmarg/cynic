@@ -164,7 +164,7 @@ fn join_variants<'a>(
                 let candidates = map
                     .values()
                     .flat_map(|v| v.1.map(|input| input.name.as_str()));
-                let guess_field = guess_field(candidates, &(*(graphql_name)));
+                let guess_field = guess_field(candidates, graphql_name);
                 errors.extend(
                     syn::Error::new(
                         variant.ident.span(),

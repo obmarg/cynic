@@ -41,7 +41,7 @@ pub enum ArgumentValue<'a> {
     Null,
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub struct Variable<'a> {
     pub ident: proc_macro2::Ident,
     pub value_type: TypeRef<'a, InputType<'a>>,

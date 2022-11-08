@@ -1,6 +1,6 @@
 use syn::{Attribute, Item, Meta, NestedMeta};
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq)]
 pub enum Derive {
     QueryFragment,
     InlineFragments,
