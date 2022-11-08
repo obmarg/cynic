@@ -77,6 +77,18 @@ interface Node {
   id: ID
 }
 
+type WeirdNAME {
+  subfield: String!
+}
+
+input WeirdINPUT {
+  subfield: String!
+}
+
+enum WeirdENUM {
+  AVARIANT
+}
+
 schema {
   query: Query
 }

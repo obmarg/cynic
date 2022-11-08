@@ -127,7 +127,7 @@ impl<'a> TypeIndex<'a> {
                     .iter()
                     .map(|val| EnumValue {
                         description: val.description.as_deref(),
-                        name: &val.name,
+                        name: FieldName::new(&val.name),
                     })
                     .collect(),
             }),

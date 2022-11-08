@@ -1,7 +1,7 @@
 use darling::util::SpannedValue;
 use proc_macro2::Span;
 
-use crate::idents::RenameAll;
+use crate::idents::{RenamableFieldIdent, RenameAll};
 
 #[derive(darling::FromDeriveInput)]
 #[darling(attributes(cynic), supports(enum_unit))]
@@ -36,7 +36,7 @@ pub struct EnumDeriveVariant {
     pub(super) ident: proc_macro2::Ident,
 
     #[darling(default)]
-    pub(super) rename: Option<SpannedValue<String>>,
+    rename: Option<SpannedValue<String>>,
 }
 
 impl EnumDeriveInput {
@@ -52,5 +52,22 @@ impl EnumDeriveInput {
             .as_ref()
             .map(|val| val.span())
             .unwrap_or_else(|| self.ident.span())
+    }
+}
+
+impl EnumDeriveVariant {
+    pub(super) fn graphql_ident(&self, rename_rule: RenameAll) -> RenamableFieldIdent {
+        let mut ident = RenamableFieldIdent::from(self.ident.clone());
+        match &self.rename {
+            Some(rename) => {
+                let span = rename.span();
+                let rename = (**rename).clone();
+                ident.set_rename(rename, span)
+            }
+            None => {
+                ident.rename_with(rename_rule, self.ident.span());
+            }
+        }
+        ident
     }
 }

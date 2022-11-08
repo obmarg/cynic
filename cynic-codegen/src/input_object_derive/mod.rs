@@ -10,7 +10,6 @@ use crate::{
         Schema, Unvalidated,
     },
     suggestions::FieldSuggestionError,
-    Ident,
 };
 
 mod field_serializer;
@@ -59,7 +58,7 @@ pub fn input_object_derive_impl(
 
     if let darling::ast::Data::Struct(fields) = &input.data {
         let ident = &input.ident;
-        let input_marker_ident = Ident::for_type(&input.graphql_type_name());
+        let input_marker_ident = proc_macro2::Ident::from(input_object.marker_ident());
         let schema_module = input.schema_module();
 
         let pairs = pair_fields(
