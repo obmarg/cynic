@@ -7,10 +7,7 @@ use std::{
 use once_cell::sync::Lazy;
 
 use super::{names::FieldName, types::*, SchemaError};
-use crate::schema::{
-    parser::{self, Definition, Document, TypeDefinition},
-    TypeExt,
-};
+use crate::schema::parser::{self, Definition, Document, TypeDefinition, TypeExt};
 
 #[derive(Clone)]
 pub struct TypeIndex<'a> {

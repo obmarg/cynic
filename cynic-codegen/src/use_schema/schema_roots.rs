@@ -1,6 +1,6 @@
 use proc_macro2::TokenStream;
 
-use crate::schema::{types::ObjectType, Definition, Schema, SchemaError, Validated};
+use crate::schema::{parser::Definition, types::ObjectType, Schema, SchemaError, Validated};
 
 pub struct RootTypes<'a> {
     query: ObjectType<'a>,

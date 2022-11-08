@@ -1,9 +1,8 @@
 mod keywords;
 mod names;
-mod parser;
 mod type_index;
 
-// TOOD: Should I just re-export from here?
+pub mod parser;
 pub mod types;
 
 pub mod markers;
@@ -17,8 +16,8 @@ pub use self::{
     parser::{load_schema, Document},
 };
 
-// TODO: Remove these once we've stopped using the parser types directly.
-pub use self::{parser::*, type_index::TypeIndex};
+#[cfg(test)]
+pub(crate) use self::{parser::parse_schema, type_index::TypeIndex};
 
 // TODO: Uncomment this
 // pub use self::{types::*},
