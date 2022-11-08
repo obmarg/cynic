@@ -1,6 +1,5 @@
 ---
 source: cynic-querygen/tests/github-tests.rs
-assertion_line: 24
 expression: "document_to_fragment_structs(query, schema,\n        &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
 ---
 #[cynic::schema_for_derives(
@@ -60,6 +59,7 @@ mod queries {
 
 }
 
+#[allow(non_snake_case, non_camel_case_types)]
 mod schema {
     cynic::use_schema!(r#"schema.graphql"#);
 }
