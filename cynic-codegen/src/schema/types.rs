@@ -114,6 +114,7 @@ pub enum Kind {
     Enum,
     InputObject,
     ObjectOrInterface,
+    UnionOrInterface,
 }
 
 impl<'a> Type<'a> {
@@ -371,6 +372,7 @@ impl std::fmt::Display for Kind {
             Kind::Enum => "enum",
             Kind::InputObject => "input object",
             Kind::ObjectOrInterface => "object or interface",
+            Kind::UnionOrInterface => "union or interface",
         };
         write!(f, "{}", s)
     }

@@ -556,7 +556,6 @@ dependencies = [
  "darling",
  "graphql-parser",
  "insta",
- "lazy_static",
  "maplit",
  "once_cell",
  "proc-macro2",

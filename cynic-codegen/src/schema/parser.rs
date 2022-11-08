@@ -11,12 +11,8 @@ pub type Type = graphql_parser::schema::Type<'static, String>;
 pub type Field = graphql_parser::schema::Field<'static, String>;
 pub type Definition = graphql_parser::schema::Definition<'static, String>;
 pub type TypeDefinition = graphql_parser::schema::TypeDefinition<'static, String>;
-pub type EnumType = graphql_parser::schema::EnumType<'static, String>;
-pub type InterfaceType = graphql_parser::schema::InterfaceType<'static, String>;
 pub type ScalarType = graphql_parser::schema::ScalarType<'static, String>;
-pub type UnionType = graphql_parser::schema::UnionType<'static, String>;
 pub type InputValue = graphql_parser::schema::InputValue<'static, String>;
-pub type EnumValue = graphql_parser::schema::EnumValue<'static, String>;
 
 /// Loads a schema from a filename, relative to CARGO_MANIFEST_DIR if it's set.
 pub fn load_schema(filename: impl AsRef<std::path::Path>) -> Result<Document, SchemaLoadError> {

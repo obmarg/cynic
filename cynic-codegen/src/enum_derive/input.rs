@@ -36,7 +36,7 @@ pub struct EnumDeriveVariant {
     pub(super) ident: proc_macro2::Ident,
 
     #[darling(default)]
-    rename: Option<SpannedValue<String>>,
+    pub(super) rename: Option<SpannedValue<String>>,
 }
 
 impl EnumDeriveInput {

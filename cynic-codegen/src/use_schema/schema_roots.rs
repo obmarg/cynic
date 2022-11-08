@@ -13,9 +13,9 @@ impl<'a> RootTypes<'a> {
         definitions: &[Definition],
         schema: &Schema<'a, Validated>,
     ) -> Result<RootTypes<'a>, SchemaError> {
-        let query_name = "Query".to_owned();
-        let mutation_name = None;
-        let subscription_name = None;
+        let mut query_name = "Query".to_owned();
+        let mut mutation_name = Some("Mutation".to_owned());
+        let mut subscription_name = Some("Subscription".to_owned());
 
         for definition in definitions {
             if let Definition::SchemaDefinition(schema) = definition {
@@ -30,12 +30,9 @@ impl<'a> RootTypes<'a> {
 
         Ok(RootTypes {
             query: schema.lookup::<ObjectType>(&query_name)?,
-            mutation: mutation_name
-                .map(|name| schema.lookup::<ObjectType>(&name))
-                .transpose()?,
+            mutation: mutation_name.and_then(|name| schema.try_lookup::<ObjectType>(&name).ok()),
             subscription: subscription_name
-                .map(|name| schema.lookup::<ObjectType>(&name))
-                .transpose()?,
+                .and_then(|name| schema.try_lookup::<ObjectType>(&name).ok()),
         })
     }
 }
