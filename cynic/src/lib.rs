@@ -207,12 +207,12 @@ pub use serde;
 ///
 /// ```rust
 /// # #[macro_use] extern crate cynic;
-/// # // Faking the schema & chrono module here because it's easier than
-/// # // actually defining them
+/// # // Faking the uuid module here because it's easier than
+/// # // actually pulling it in
 /// #
-/// # mod schema { pub struct Uuid {} }
-/// # mod uuid { pub type Uuid = String; }
-/// impl_scalar!(uuid::Uuid, schema::Uuid);
+/// # mod schema { cynic::use_schema!("../schemas/test_cases.graphql"); }
+/// # mod uuid { pub struct Uuid(String); }
+/// impl_scalar!(uuid::Uuid, schema::UUID);
 /// ```
 ///
 /// This macro can be used on any type that implements `serde::Serialize`,

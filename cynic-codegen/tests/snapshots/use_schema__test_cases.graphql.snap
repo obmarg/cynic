@@ -156,6 +156,9 @@ pub mod self_recursive_input_fields {
 }
 pub struct States {}
 pub struct UUID {}
+impl ::cynic::schema::NamedType for UUID {
+    const NAME: &'static str = "UUID";
+}
 impl ::cynic::schema::NamedType for Bar {
     const NAME: &'static str = "Bar";
 }

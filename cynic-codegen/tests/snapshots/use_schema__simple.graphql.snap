@@ -1,6 +1,5 @@
 ---
 source: cynic-codegen/tests/use-schema.rs
-assertion_line: 30
 expression: "format_code(format!(\"{}\", tokens))"
 ---
 impl ::cynic::schema::QueryRoot for Query {}
@@ -19,6 +18,9 @@ pub mod an_input_type_fields {
 }
 pub struct Dessert {}
 pub struct JSON {}
+impl ::cynic::schema::NamedType for JSON {
+    const NAME: &'static str = "JSON";
+}
 pub struct MyUnionType {}
 pub struct Nested;
 pub mod nested_fields {
