@@ -194,7 +194,7 @@ pub use cynic_proc_macros::{
     QueryFragment, QueryVariables, Scalar,
 };
 
-pub use static_assertions::assert_impl_all as assert_impl;
+pub use static_assertions::{assert_impl_all as assert_impl, assert_type_eq_all};
 
 // We re-export serde as the output from a lot of our derive macros require it,
 // and this way we can point at our copy rather than forcing users to add it to

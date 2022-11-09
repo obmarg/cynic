@@ -149,7 +149,7 @@ impl InlineFragmentsDeriveVariant {
         if *self.fallback {
             match (mode, self.fields.style, self.fields.len()) {
                 (_, Unit, _) => Ok(()),
-                (Interface, Tuple, 1) => Ok(()),
+                (Interface | Union, Tuple, 1) => Ok(()),
                 (_, Struct, _) => Err(syn::Error::new(
                     span,
                     "The InlineFragments derive doesn't currently support struct variants",
@@ -162,7 +162,7 @@ impl InlineFragmentsDeriveVariant {
                 .into()),
                 (Union, Tuple, _) => Err(syn::Error::new(
                     span,
-                    "InlineFragments fallbacks on a union must be a unit variant",
+                    "InlineFragments fallbacks on a union must be a unit or newtype variant",
                 )
                 .into()),
             }
@@ -309,12 +309,11 @@ mod tests {
             #[cynic(schema_path = "whatever")]
             enum TestStruct {
                 #[cynic(fallback)]
-                FirstFallback(SomeStruct),
+                FirstFallback(String),
             }
         })
         .unwrap();
 
-        insta::assert_display_snapshot!(input.validate(ValidationMode::Union).unwrap_err(), @"InlineFragments fallbacks on a union must be a unit variant
-");
+        input.validate(ValidationMode::Union).unwrap();
     }
 }

@@ -9,6 +9,11 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+### New Features
+
+- `InlineFragments` derives for union types now allow a fallback that receives
+  the `__typename`
+
 ### Bug Fixes
 
 - `schema_for_derives` no longer ignores `QueryVariables` structs.
