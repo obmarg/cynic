@@ -9,6 +9,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v2.1.0 - 2022-11-09
+
 ### New Features
 
 - `InlineFragments` derives for union types now allow a fallback that receives
