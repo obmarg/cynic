@@ -1,5 +1,26 @@
-error: InlineFragments fallbacks on a union must be a unit variant
-  --> tests/cases/inline-fragment-fallback-validation.rs:15:5
+error[E0271]: type mismatch resolving `<Nested as <MyFailingUnionType as InlineFragments<'de>>::deserialize_variant::_::{closure#0}::TypeEq>::This == std::string::String`
+  --> tests/cases/inline-fragment-fallback-validation.rs:17:11
    |
-15 |     #[cynic(fallback)]
-   |     ^
+17 |     Other(Nested),
+   |           ^^^^^^ type mismatch resolving `<Nested as <MyFailingUnionType as InlineFragments<'de>>::deserialize_variant::_::{closure#0}::TypeEq>::This == std::string::String`
+   |
+note: expected this to be `std::string::String`
+  --> tests/cases/inline-fragment-fallback-validation.rs:17:11
+   |
+17 |     Other(Nested),
+   |           ^^^^^^
+note: required by a bound in `<MyFailingUnionType as InlineFragments<'de>>::deserialize_variant::_::{closure#0}::assert_type_eq_all`
+  --> tests/cases/inline-fragment-fallback-validation.rs:17:11
+   |
+17 |     Other(Nested),
+   |           ^^^^^^
+   |           |
+   |           required by a bound in this
+   |           required by this bound in `<MyFailingUnionType as InlineFragments<'de>>::deserialize_variant::_::{closure#0}::assert_type_eq_all`
+   = note: this error originates in the macro `::cynic::assert_type_eq_all` (in Nightly builds, run with -Z macro-backtrace for more info)
+
+error[E0308]: mismatched types
+  --> tests/cases/inline-fragment-fallback-validation.rs:17:11
+   |
+17 |     Other(Nested),
+   |           ^^^^^^ expected struct `Nested`, found struct `std::string::String`
