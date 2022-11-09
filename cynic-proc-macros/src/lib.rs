@@ -73,7 +73,7 @@ pub fn fragment_arguments_derive(input: TokenStream) -> TokenStream {
 /// Derives `cynic::QueryVariables`
 ///
 /// See [the book for usage details](https://cynic-rs.dev/derives/query-fragments.html#passing-arguments)
-#[proc_macro_derive(QueryVariables)]
+#[proc_macro_derive(QueryVariables, attributes(cynic))]
 pub fn query_variables_derive(input: TokenStream) -> TokenStream {
     let ast = syn::parse_macro_input!(input as syn::DeriveInput);
 
