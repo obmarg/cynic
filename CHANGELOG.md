@@ -9,6 +9,10 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+### Bug Fixes
+
+- `schema_for_derives` no longer ignores `QueryVariables` structs.
+
 ## v2.0.1 - 2022-11-08
 
 ### Bug Fixes
