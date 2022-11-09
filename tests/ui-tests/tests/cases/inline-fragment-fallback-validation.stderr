@@ -22,5 +22,19 @@ note: required by a bound in `<MyFailingUnionType as InlineFragments<'de>>::dese
 error[E0308]: mismatched types
   --> tests/cases/inline-fragment-fallback-validation.rs:17:11
    |
+12 |   enum MyFailingUnionType {
+   |  ______-
+13 | |     Nested(Nested),
+14 | |
+15 | |     // This is allowed, but needs to be a string to work.
+16 | |     #[cynic(fallback)]
+17 | |     Other(Nested),
+   | |         - ^^^^^^ expected struct `Nested`, found struct `std::string::String`
+   | |_________|
+   |           arguments to this enum variant are incorrect
+   |
+note: tuple variant defined here
+  --> tests/cases/inline-fragment-fallback-validation.rs:17:5
+   |
 17 |     Other(Nested),
-   |           ^^^^^^ expected struct `Nested`, found struct `std::string::String`
+   |     ^^^^^
