@@ -72,6 +72,28 @@ enum ActorFallback {
 This functionality is only available for interfaces as union types have no
 concept of shared fields.
 
+##### Fallbacks for unions
+
+If your `InlineFragments` is querying a union your fallback variant can receive
+the `__typename` of the type that was received.  In the case below, if the
+`Assignee` is not a `Bot` or a `User`, the `String` field of `Other` will be
+populated with the name of the type (the `__typename`) that was actually
+received from the server.
+
+```rust
+#[derive(cynic::InlineFragments)]
+#[cynic(schema_path = "github.graphql")]
+enum Assignee {
+    Bot(Bot),
+    User(User)
+
+    #[cynic(fallback)]
+    Other(String)
+}
+```
+
+This functionality is currently only available for unions.
+
 #### Struct Attributes
 
 An `InlineFragments` can be configured with several attributes on the
