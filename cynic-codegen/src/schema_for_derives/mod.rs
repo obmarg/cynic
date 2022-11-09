@@ -82,7 +82,7 @@ fn insert_cynic_attrs(args: &AddSchemaAttrParams, item: syn::Item) -> syn::Item 
                 item
             }
         }
-        Derive::QueryFragment | Derive::InputObject | Derive::Scalar => {
+        Derive::QueryFragment | Derive::QueryVariables | Derive::InputObject | Derive::Scalar => {
             if let Item::Struct(mut st) = item {
                 let attrs = required_attrs.with_current_attrs(&st.attrs);
                 attrs.add_missing_attributes(&mut st.attrs, args);
@@ -103,7 +103,7 @@ struct RequiredAttributes {
 impl RequiredAttributes {
     fn for_derive(d: &Derive) -> RequiredAttributes {
         match d {
-            Derive::Scalar => RequiredAttributes {
+            Derive::QueryVariables | Derive::Scalar => RequiredAttributes {
                 needs_schema_path: false,
                 needs_schema_module: true,
             },

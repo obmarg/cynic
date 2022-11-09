@@ -3,6 +3,7 @@ use syn::{Attribute, Item, Meta, NestedMeta};
 #[derive(Debug, PartialEq, Eq)]
 pub enum Derive {
     QueryFragment,
+    QueryVariables,
     InlineFragments,
     Enum,
     Scalar,
@@ -44,6 +45,7 @@ fn derive_for_nested_meta(nested: &NestedMeta) -> Option<Derive> {
         if let Some(last) = path.segments.last() {
             match last.ident.to_string().as_ref() {
                 "QueryFragment" => return Some(Derive::QueryFragment),
+                "QueryVariables" => return Some(Derive::QueryVariables),
                 "InlineFragments" => return Some(Derive::InlineFragments),
                 "Enum" => return Some(Derive::Enum),
                 "Scalar" => return Some(Derive::Scalar),
