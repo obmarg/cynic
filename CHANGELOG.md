@@ -12,6 +12,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ### Bug Fixes
 
 - `schema_for_derives` no longer ignores `QueryVariables` structs.
+- A slight improvement on the error spans if you refer to a missing variable
+  in some QueryFragment arguments.
 
 ## v2.0.1 - 2022-11-08
 
