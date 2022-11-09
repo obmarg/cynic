@@ -163,9 +163,10 @@ fn check_fallback(
                     fallback.ident.clone(),
                     fallback.fields.fields[0].ty.clone(),
                 ),
-                InlineFragmentType::Union(_) => {
-                    Fallback::UnionVariantWithTypename(fallback.ident.clone())
-                }
+                InlineFragmentType::Union(_) => Fallback::UnionVariantWithTypename(
+                    fallback.ident.clone(),
+                    fallback.fields.fields[0].ty.clone(),
+                ),
             }))
         }
         darling::ast::Style::Unit => Ok(Some(Fallback::UnionUnitVariant(fallback.ident.clone()))),

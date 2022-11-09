@@ -309,12 +309,11 @@ mod tests {
             #[cynic(schema_path = "whatever")]
             enum TestStruct {
                 #[cynic(fallback)]
-                FirstFallback(SomeStruct),
+                FirstFallback(String),
             }
         })
         .unwrap();
 
-        insta::assert_display_snapshot!(input.validate(ValidationMode::Union).unwrap_err(), @"InlineFragments fallbacks on a union must be a unit variant
-");
+        input.validate(ValidationMode::Union).unwrap();
     }
 }
