@@ -44,7 +44,7 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
 
         match definition {
             Type::Scalar(def) if !def.builtin => {
-                let name = proc_macro2::Literal::string(&def.name);
+                let name = proc_macro2::Literal::string(def.name);
                 let ident = proc_macro2::Ident::from(def.marker_ident());
                 output.append_all(quote! {
                     pub struct #ident {}

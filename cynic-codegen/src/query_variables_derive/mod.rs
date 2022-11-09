@@ -1,5 +1,5 @@
 use proc_macro2::TokenStream;
-use quote::{format_ident, quote};
+use quote::{format_ident, quote, quote_spanned};
 
 mod input;
 
@@ -51,6 +51,17 @@ pub fn query_variables_derive_impl(
 
     let map_len = field_inserts.len();
 
+    let ident_span = ident.span();
+    let fields_struct = quote_spanned! { ident_span =>
+        #vis struct #fields_struct_ident;
+
+        impl #fields_struct_ident {
+            #(
+                #field_funcs
+            )*
+        }
+    };
+
     Ok(quote! {
 
         #[automatically_derived]
@@ -79,12 +90,6 @@ pub fn query_variables_derive_impl(
 
         impl ::cynic::queries::VariableMatch<#ident> for #ident {}
 
-        #vis struct #fields_struct_ident;
-
-        impl #fields_struct_ident {
-            #(
-                #field_funcs
-            )*
-        }
+        #fields_struct
     })
 }
