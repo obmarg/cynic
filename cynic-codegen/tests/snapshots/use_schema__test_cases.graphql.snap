@@ -4,156 +4,13 @@ expression: "format_code(format!(\"{}\", tokens))"
 ---
 impl ::cynic::schema::QueryRoot for Foo {}
 pub struct Bar;
-pub mod bar_fields {
-    pub struct id;
-    impl ::cynic::schema::Field for id {
-        type Type = super::UUID;
-        const NAME: &'static str = "id";
-    }
-    impl ::cynic::schema::HasField<id> for super::Bar {
-        type Type = super::UUID;
-    }
-    pub struct name;
-    impl ::cynic::schema::Field for name {
-        type Type = Option<super::String>;
-        const NAME: &'static str = "name";
-    }
-    impl ::cynic::schema::HasField<name> for super::Bar {
-        type Type = Option<super::String>;
-    }
-}
 pub struct Foo;
-pub mod foo_fields {
-    pub struct _Underscore;
-    impl ::cynic::schema::Field for _Underscore {
-        type Type = Option<super::Boolean>;
-        const NAME: &'static str = "_";
-    }
-    impl ::cynic::schema::HasField<_Underscore> for super::Foo {
-        type Type = Option<super::Boolean>;
-    }
-    pub struct self_;
-    impl ::cynic::schema::Field for self_ {
-        type Type = Option<super::Boolean>;
-        const NAME: &'static str = "self";
-    }
-    impl ::cynic::schema::HasField<self_> for super::Foo {
-        type Type = Option<super::Boolean>;
-    }
-    pub struct super_;
-    impl ::cynic::schema::Field for super_ {
-        type Type = Option<super::Boolean>;
-        const NAME: &'static str = "super";
-    }
-    impl ::cynic::schema::HasField<super_> for super::Foo {
-        type Type = Option<super::Boolean>;
-    }
-    pub struct crate_;
-    impl ::cynic::schema::Field for crate_ {
-        type Type = Option<super::Boolean>;
-        const NAME: &'static str = "crate";
-    }
-    impl ::cynic::schema::HasField<crate_> for super::Foo {
-        type Type = Option<super::Boolean>;
-    }
-    pub struct r#async;
-    impl ::cynic::schema::Field for r#async {
-        type Type = Option<super::Boolean>;
-        const NAME: &'static str = "async";
-    }
-    impl ::cynic::schema::HasField<r#async> for super::Foo {
-        type Type = Option<super::Boolean>;
-    }
-    pub struct bar;
-    impl ::cynic::schema::Field for bar {
-        type Type = Option<super::Bar>;
-        const NAME: &'static str = "bar";
-    }
-    impl ::cynic::schema::HasField<bar> for super::Foo {
-        type Type = Option<super::Bar>;
-    }
-    pub mod bar_arguments {
-        pub struct id;
-        impl ::cynic::schema::HasArgument<id> for super::bar {
-            type ArgumentType = super::super::UUID;
-            const NAME: &'static str = "id";
-        }
-    }
-    pub struct fieldWithKeywordArg;
-    impl ::cynic::schema::Field for fieldWithKeywordArg {
-        type Type = Vec<super::Int>;
-        const NAME: &'static str = "fieldWithKeywordArg";
-    }
-    impl ::cynic::schema::HasField<fieldWithKeywordArg> for super::Foo {
-        type Type = Vec<super::Int>;
-    }
-    pub mod field_with_keyword_arg_arguments {
-        pub struct r#where;
-        impl ::cynic::schema::HasArgument<r#where> for super::fieldWithKeywordArg {
-            type ArgumentType = Option<super::super::Int>;
-            const NAME: &'static str = "where";
-        }
-    }
-    pub struct recursiveInputField;
-    impl ::cynic::schema::Field for recursiveInputField {
-        type Type = Option<super::Boolean>;
-        const NAME: &'static str = "recursiveInputField";
-    }
-    impl ::cynic::schema::HasField<recursiveInputField> for super::Foo {
-        type Type = Option<super::Boolean>;
-    }
-    pub mod recursive_input_field_arguments {
-        pub struct recursive;
-        impl ::cynic::schema::HasArgument<recursive> for super::recursiveInputField {
-            type ArgumentType = Option<super::super::SelfRecursiveInput>;
-            const NAME: &'static str = "recursive";
-        }
-        pub struct recursive2;
-        impl ::cynic::schema::HasArgument<recursive2> for super::recursiveInputField {
-            type ArgumentType = Option<super::super::RecursiveInputParent>;
-            const NAME: &'static str = "recursive2";
-        }
-    }
-}
 pub struct RecursiveInputChild;
 impl ::cynic::schema::InputObjectMarker for RecursiveInputChild {}
-pub mod recursive_input_child_fields {
-    pub struct recurse;
-    impl ::cynic::schema::Field for recurse {
-        type Type = Option<super::RecursiveInputParent>;
-        const NAME: &'static str = "recurse";
-    }
-    impl ::cynic::schema::HasInputField<recurse, Option<super::RecursiveInputParent>>
-        for super::RecursiveInputChild
-    {
-    }
-}
 pub struct RecursiveInputParent;
 impl ::cynic::schema::InputObjectMarker for RecursiveInputParent {}
-pub mod recursive_input_parent_fields {
-    pub struct recurse;
-    impl ::cynic::schema::Field for recurse {
-        type Type = Option<super::RecursiveInputChild>;
-        const NAME: &'static str = "recurse";
-    }
-    impl ::cynic::schema::HasInputField<recurse, Option<super::RecursiveInputChild>>
-        for super::RecursiveInputParent
-    {
-    }
-}
 pub struct SelfRecursiveInput;
 impl ::cynic::schema::InputObjectMarker for SelfRecursiveInput {}
-pub mod self_recursive_input_fields {
-    pub struct recurse;
-    impl ::cynic::schema::Field for recurse {
-        type Type = Option<super::SelfRecursiveInput>;
-        const NAME: &'static str = "recurse";
-    }
-    impl ::cynic::schema::HasInputField<recurse, Option<super::SelfRecursiveInput>>
-        for super::SelfRecursiveInput
-    {
-    }
-}
 pub struct States {}
 pub struct UUID {}
 impl ::cynic::schema::NamedType for UUID {
@@ -164,6 +21,152 @@ impl ::cynic::schema::NamedType for Bar {
 }
 impl ::cynic::schema::NamedType for Foo {
     const NAME: &'static str = "Foo";
+}
+#[allow(non_snake_case, non_camel_case_types)]
+pub mod __fields {
+    pub mod Bar {
+        pub struct id;
+        impl ::cynic::schema::Field for id {
+            type Type = super::super::UUID;
+            const NAME: &'static str = "id";
+        }
+        impl ::cynic::schema::HasField<id> for super::super::Bar {
+            type Type = super::super::UUID;
+        }
+        pub struct name;
+        impl ::cynic::schema::Field for name {
+            type Type = Option<super::super::String>;
+            const NAME: &'static str = "name";
+        }
+        impl ::cynic::schema::HasField<name> for super::super::Bar {
+            type Type = Option<super::super::String>;
+        }
+    }
+    pub mod Foo {
+        pub struct _Underscore;
+        impl ::cynic::schema::Field for _Underscore {
+            type Type = Option<super::super::Boolean>;
+            const NAME: &'static str = "_";
+        }
+        impl ::cynic::schema::HasField<_Underscore> for super::super::Foo {
+            type Type = Option<super::super::Boolean>;
+        }
+        pub struct self_;
+        impl ::cynic::schema::Field for self_ {
+            type Type = Option<super::super::Boolean>;
+            const NAME: &'static str = "self";
+        }
+        impl ::cynic::schema::HasField<self_> for super::super::Foo {
+            type Type = Option<super::super::Boolean>;
+        }
+        pub struct super_;
+        impl ::cynic::schema::Field for super_ {
+            type Type = Option<super::super::Boolean>;
+            const NAME: &'static str = "super";
+        }
+        impl ::cynic::schema::HasField<super_> for super::super::Foo {
+            type Type = Option<super::super::Boolean>;
+        }
+        pub struct crate_;
+        impl ::cynic::schema::Field for crate_ {
+            type Type = Option<super::super::Boolean>;
+            const NAME: &'static str = "crate";
+        }
+        impl ::cynic::schema::HasField<crate_> for super::super::Foo {
+            type Type = Option<super::super::Boolean>;
+        }
+        pub struct r#async;
+        impl ::cynic::schema::Field for r#async {
+            type Type = Option<super::super::Boolean>;
+            const NAME: &'static str = "async";
+        }
+        impl ::cynic::schema::HasField<r#async> for super::super::Foo {
+            type Type = Option<super::super::Boolean>;
+        }
+        pub struct bar;
+        impl ::cynic::schema::Field for bar {
+            type Type = Option<super::super::Bar>;
+            const NAME: &'static str = "bar";
+        }
+        impl ::cynic::schema::HasField<bar> for super::super::Foo {
+            type Type = Option<super::super::Bar>;
+        }
+        pub mod _bar_arguments {
+            pub struct id;
+            impl ::cynic::schema::HasArgument<id> for super::bar {
+                type ArgumentType = super::super::super::UUID;
+                const NAME: &'static str = "id";
+            }
+        }
+        pub struct fieldWithKeywordArg;
+        impl ::cynic::schema::Field for fieldWithKeywordArg {
+            type Type = Vec<super::super::Int>;
+            const NAME: &'static str = "fieldWithKeywordArg";
+        }
+        impl ::cynic::schema::HasField<fieldWithKeywordArg> for super::super::Foo {
+            type Type = Vec<super::super::Int>;
+        }
+        pub mod _field_with_keyword_arg_arguments {
+            pub struct r#where;
+            impl ::cynic::schema::HasArgument<r#where> for super::fieldWithKeywordArg {
+                type ArgumentType = Option<super::super::super::Int>;
+                const NAME: &'static str = "where";
+            }
+        }
+        pub struct recursiveInputField;
+        impl ::cynic::schema::Field for recursiveInputField {
+            type Type = Option<super::super::Boolean>;
+            const NAME: &'static str = "recursiveInputField";
+        }
+        impl ::cynic::schema::HasField<recursiveInputField> for super::super::Foo {
+            type Type = Option<super::super::Boolean>;
+        }
+        pub mod _recursive_input_field_arguments {
+            pub struct recursive;
+            impl ::cynic::schema::HasArgument<recursive> for super::recursiveInputField {
+                type ArgumentType = Option<super::super::super::SelfRecursiveInput>;
+                const NAME: &'static str = "recursive";
+            }
+            pub struct recursive2;
+            impl ::cynic::schema::HasArgument<recursive2> for super::recursiveInputField {
+                type ArgumentType = Option<super::super::super::RecursiveInputParent>;
+                const NAME: &'static str = "recursive2";
+            }
+        }
+    }
+    pub mod RecursiveInputChild {
+        pub struct recurse;
+        impl ::cynic::schema::Field for recurse {
+            type Type = Option<super::super::RecursiveInputParent>;
+            const NAME: &'static str = "recurse";
+        }
+        impl ::cynic::schema::HasInputField<recurse, Option<super::super::RecursiveInputParent>>
+            for super::super::RecursiveInputChild
+        {
+        }
+    }
+    pub mod RecursiveInputParent {
+        pub struct recurse;
+        impl ::cynic::schema::Field for recurse {
+            type Type = Option<super::super::RecursiveInputChild>;
+            const NAME: &'static str = "recurse";
+        }
+        impl ::cynic::schema::HasInputField<recurse, Option<super::super::RecursiveInputChild>>
+            for super::super::RecursiveInputParent
+        {
+        }
+    }
+    pub mod SelfRecursiveInput {
+        pub struct recurse;
+        impl ::cynic::schema::Field for recurse {
+            type Type = Option<super::super::SelfRecursiveInput>;
+            const NAME: &'static str = "recurse";
+        }
+        impl ::cynic::schema::HasInputField<recurse, Option<super::super::SelfRecursiveInput>>
+            for super::super::SelfRecursiveInput
+        {
+        }
+    }
 }
 pub type Boolean = bool;
 pub type String = std::string::String;

@@ -23,7 +23,7 @@ impl ToTokens for FieldOutput<'_> {
             .field
             .field_type
             .marker_type()
-            .to_path(&parse_quote! { super });
+            .to_path(&parse_quote! { super::super });
 
         tokens.append_all(quote! {
             pub struct #field_marker;
@@ -34,7 +34,7 @@ impl ToTokens for FieldOutput<'_> {
                 const NAME: &'static str = #field_name_literal;
             }
 
-            impl ::cynic::schema::HasField<#field_marker> for super::#parent_marker {
+            impl ::cynic::schema::HasField<#field_marker> for super::super::#parent_marker {
                 type Type = #field_type_marker;
             }
         });
@@ -65,7 +65,7 @@ impl ToTokens for ArgumentOutput<'_> {
             .argument
             .value_type
             .marker_type()
-            .to_path(&parse_quote! { super::super });
+            .to_path(&parse_quote! { super::super::super  });
 
         tokens.append_all(quote! {
             pub struct #argument_ident;

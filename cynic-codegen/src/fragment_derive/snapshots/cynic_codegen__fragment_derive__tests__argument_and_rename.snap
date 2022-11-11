@@ -1,6 +1,5 @@
 ---
 source: cynic-codegen/src/fragment_derive/tests.rs
-assertion_line: 114
 expression: "format_code(format!(\"{}\", tokens))"
 ---
 #[automatically_derived]
@@ -10,14 +9,14 @@ impl<'de> ::cynic::QueryFragment<'de> for MyQuery {
     const TYPE: Option<&'static str> = Some("Query");
     fn query(mut builder: ::cynic::queries::SelectionBuilder<Self::SchemaType, Self::Variables>) {
         #![allow(unused_mut)]
-        let mut field_builder = builder . select_field :: < schema :: query_fields :: post , < Option < BlogPostOutput > as :: cynic :: QueryFragment > :: SchemaType > () ;
+        let mut field_builder = builder . select_field :: < schema :: __fields :: Query :: post , < Option < BlogPostOutput > as :: cynic :: QueryFragment > :: SchemaType > () ;
         {
             field_builder
-                .argument::<schema::query_fields::post_arguments::id>()
+                .argument::<schema::__fields::Query::_post_arguments::id>()
                 .literal("1234");
         }
         <Option<BlogPostOutput> as ::cynic::QueryFragment>::query(field_builder.select_children());
-        let mut field_builder = builder . select_field :: < schema :: query_fields :: allPosts , < Vec < BlogPostOutput > as :: cynic :: QueryFragment > :: SchemaType > () ;
+        let mut field_builder = builder . select_field :: < schema :: __fields :: Query :: allPosts , < Vec < BlogPostOutput > as :: cynic :: QueryFragment > :: SchemaType > () ;
         <Vec<BlogPostOutput> as ::cynic::QueryFragment>::query(field_builder.select_children());
     }
 }

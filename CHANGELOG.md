@@ -9,6 +9,12 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+### Changes
+
+- The `use_schema` output has been re-organised to reduce the chances of
+  clashes.  This is technically a breaking change, but only if you're writing
+  queries by hand rather than using the derives.
+
 ## v2.1.0 - 2022-11-09
 
 ### New Features
