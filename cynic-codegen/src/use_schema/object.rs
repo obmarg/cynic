@@ -12,6 +12,22 @@ impl<'a> ObjectOutput<'a> {
     pub fn new(object: ObjectType<'a>) -> Self {
         ObjectOutput { object }
     }
+
+    pub fn append_fields(&self, field_module: &mut proc_macro2::TokenStream) {
+        if !self.object.fields.is_empty() {
+            let object_marker = proc_macro2::Ident::from(self.object.marker_ident());
+            let field_module_ident = self.object.field_module().ident();
+            let fields = self.object.fields.iter().map(|f| FieldOutput {
+                field: f,
+                parent_marker: &object_marker,
+            });
+            field_module.append_all(quote! {
+                pub mod #field_module_ident {
+                    #(#fields)*
+                }
+            });
+        }
+    }
 }
 
 impl ToTokens for ObjectOutput<'_> {
@@ -20,18 +36,5 @@ impl ToTokens for ObjectOutput<'_> {
         tokens.append_all(quote! {
             pub struct #object_marker;
         });
-
-        if !self.object.fields.is_empty() {
-            let field_module = self.object.field_module().ident();
-            let fields = self.object.fields.iter().map(|f| FieldOutput {
-                field: f,
-                parent_marker: &object_marker,
-            });
-            tokens.append_all(quote! {
-                pub mod #field_module {
-                    #(#fields)*
-                }
-            });
-        }
     }
 }

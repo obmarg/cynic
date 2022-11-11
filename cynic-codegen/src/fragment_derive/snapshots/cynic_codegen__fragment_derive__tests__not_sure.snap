@@ -1,6 +1,5 @@
 ---
 source: cynic-codegen/src/fragment_derive/tests.rs
-assertion_line: 114
 expression: "format_code(format!(\"{}\", tokens))"
 ---
 #[automatically_derived]
@@ -10,7 +9,7 @@ impl<'de> ::cynic::QueryFragment<'de> for MyQuery {
     const TYPE: Option<&'static str> = Some("Query");
     fn query(mut builder: ::cynic::queries::SelectionBuilder<Self::SchemaType, Self::Variables>) {
         #![allow(unused_mut)]
-        let mut field_builder = builder . select_field :: < schema :: query_fields :: filteredPosts , < Vec < BlogPostOutput > as :: cynic :: QueryFragment > :: SchemaType > () ;
+        let mut field_builder = builder . select_field :: < schema :: __fields :: Query :: filteredPosts , < Vec < BlogPostOutput > as :: cynic :: QueryFragment > :: SchemaType > () ;
         {
             struct PostStateDraft;
             impl ::cynic::serde::Serialize for PostStateDraft {
@@ -33,10 +32,10 @@ impl<'de> ::cynic::QueryFragment<'de> for MyQuery {
             }
             impl ::cynic::coercions::CoercesTo<schema::PostState> for PostStatePosted {};
             field_builder
-                .argument::<schema::query_fields::filtered_posts_arguments::filters>()
+                .argument::<schema::__fields::Query::filtered_posts_arguments::filters>()
                 .value()
                 .object()
-                .field::<schema::post_filters_fields::states, _>(|builder| {
+                .field::<schema::__fields::PostFilters::states, _>(|builder| {
                     builder
                         .value()
                         .list()

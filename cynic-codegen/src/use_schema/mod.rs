@@ -30,6 +30,7 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
     let schema = Schema::new(&document).validate()?;
 
     let mut output = TokenStream::new();
+    let mut field_module = TokenStream::new();
 
     let root_types = schema_roots::RootTypes::from_definitions(&document.definitions, &schema)?;
     output.append_all(quote! {
@@ -57,12 +58,16 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
             Type::Object(def) => {
                 subtype_markers.extend(SubtypeMarkers::from_object(&def));
 
-                ObjectOutput::new(def).to_tokens(&mut output);
+                let object = ObjectOutput::new(def);
+                object.to_tokens(&mut output);
+                object.append_fields(&mut field_module);
             }
             Type::Interface(def) => {
                 subtype_markers.push(SubtypeMarkers::from_interface(&def));
 
-                InterfaceOutput::new(def).to_tokens(&mut output);
+                let iface = InterfaceOutput::new(def);
+                iface.to_tokens(&mut output);
+                iface.append_fields(&mut field_module);
             }
             Type::Union(def) => {
                 subtype_markers.extend(SubtypeMarkers::from_union(&def));
@@ -79,7 +84,9 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
                 });
             }
             Type::InputObject(def) => {
-                InputObjectOutput::new(def).to_tokens(&mut output);
+                let object = InputObjectOutput::new(def);
+                object.to_tokens(&mut output);
+                object.append_fields(&mut field_module);
             }
         }
     }
@@ -87,6 +94,11 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
     output.append_all(quote! {
         #(#subtype_markers)*
         #(#named_types)*
+
+        #[allow(non_snake_case, non_camel_case_types)]
+        pub mod __fields {
+            #field_module
+        }
 
         pub type Boolean = bool;
         pub type String = std::string::String;

@@ -5,6 +5,7 @@ use crate::schema::types::{InputObjectType, InputValue};
 
 pub struct InputObjectOutput<'a> {
     object: InputObjectType<'a>,
+    object_marker: proc_macro2::Ident,
 }
 
 struct FieldOutput<'a> {
@@ -14,31 +15,36 @@ struct FieldOutput<'a> {
 
 impl<'a> InputObjectOutput<'a> {
     pub fn new(object: InputObjectType<'a>) -> Self {
-        InputObjectOutput { object }
+        InputObjectOutput {
+            object_marker: proc_macro2::Ident::from(object.marker_ident()),
+            object,
+        }
+    }
+
+    pub fn append_fields(&self, field_module: &mut proc_macro2::TokenStream) {
+        if !self.object.fields.is_empty() {
+            let field_module_ident = self.object.field_module().ident();
+            let fields = self.object.fields.iter().map(|f| FieldOutput {
+                field: f,
+                object_marker: &self.object_marker,
+            });
+            field_module.append_all(quote! {
+                pub mod #field_module_ident {
+                    #(#fields)*
+                }
+            });
+        }
     }
 }
 
 impl ToTokens for InputObjectOutput<'_> {
     fn to_tokens(&self, tokens: &mut proc_macro2::TokenStream) {
-        let object_marker = proc_macro2::Ident::from(self.object.marker_ident());
+        let object_marker = &self.object_marker;
         tokens.append_all(quote! {
             pub struct #object_marker;
 
             impl ::cynic::schema::InputObjectMarker for #object_marker {}
         });
-
-        if !self.object.fields.is_empty() {
-            let field_module = self.object.field_module().ident();
-            let fields = self.object.fields.iter().map(|f| FieldOutput {
-                field: f,
-                object_marker: &object_marker,
-            });
-            tokens.append_all(quote! {
-                pub mod #field_module {
-                    #(#fields)*
-                }
-            });
-        }
     }
 }
 
@@ -52,18 +58,18 @@ impl ToTokens for FieldOutput<'_> {
             .field
             .value_type
             .marker_type()
-            .to_path(&parse_quote! { super });
+            .to_path(&parse_quote! { super::super });
 
         tokens.append_all(quote! {
             pub struct #field_marker;
 
-            impl ::cynic::schema::Field for #field_marker{
+            impl ::cynic::schema::Field for #field_marker {
                 type Type = #field_type_marker;
 
                 const NAME: &'static str = #field_name_literal;
             }
 
-            impl ::cynic::schema::HasInputField<#field_marker, #field_type_marker> for super::#object_marker {
+            impl ::cynic::schema::HasInputField<#field_marker, #field_type_marker> for super::super::#object_marker {
             }
         });
     }

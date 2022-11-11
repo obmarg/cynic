@@ -1,6 +1,7 @@
 use std::borrow::Borrow;
 
 use quote::format_ident;
+use syn::spanned::Spanned;
 
 use crate::schema::types::*;
 
@@ -41,18 +42,18 @@ pub struct TypeRefMarker<'a, T> {
 }
 
 impl<T> TypeRefMarker<'_, T> {
-    pub fn to_path(&self, path_to_markers: &syn::Path) -> syn::Path {
+    pub fn to_path(&self, schema_module_path: &syn::Path) -> syn::Path {
         use syn::parse_quote;
 
         match &self.type_ref {
             TypeRef::Named(name, _, _) => {
-                TypeMarkerIdent { graphql_name: name }.to_path(path_to_markers)
+                TypeMarkerIdent { graphql_name: name }.to_path(schema_module_path)
             }
             TypeRef::List(inner) => {
                 let inner_path = TypeRefMarker {
                     type_ref: inner.as_ref(),
                 }
-                .to_path(path_to_markers);
+                .to_path(schema_module_path);
 
                 parse_quote! {
                     Vec<#inner_path>
@@ -62,7 +63,7 @@ impl<T> TypeRefMarker<'_, T> {
                 let inner_path = TypeRefMarker {
                     type_ref: inner.as_ref(),
                 }
-                .to_path(path_to_markers);
+                .to_path(schema_module_path);
 
                 parse_quote! {
                     Option<#inner_path>
@@ -77,8 +78,8 @@ impl<'a> TypeMarkerIdent<'a> {
         TypeMarkerIdent { graphql_name }
     }
 
-    pub fn to_path(self, path_to_markers: &syn::Path) -> syn::Path {
-        let mut path = path_to_markers.clone();
+    pub fn to_path(self, schema_module_path: &syn::Path) -> syn::Path {
+        let mut path = schema_module_path.clone();
         path.push(proc_macro2::Ident::from(self));
         path
     }
@@ -92,19 +93,23 @@ impl From<TypeMarkerIdent<'_>> for proc_macro2::Ident {
 
 impl<'a> FieldMarkerModule<'a> {
     pub fn ident(&self) -> proc_macro2::Ident {
-        format_ident!("{}_fields", to_snake_case(self.type_name))
+        format_ident!("{}", transform_keywords(self.type_name))
     }
 
-    pub fn to_path(self, path_to_markers: &syn::Path) -> syn::Path {
-        let mut path = path_to_markers.clone();
+    pub fn to_path(self, schema_module_path: &syn::Path) -> syn::Path {
+        let mut path = schema_module_path.clone();
+        path.push(proc_macro2::Ident::new(
+            "__fields",
+            schema_module_path.span(),
+        ));
         path.push(self.ident());
         path
     }
 }
 
 impl<'a> FieldMarkerIdent<'a> {
-    pub fn to_path(self, path_to_markers: &syn::Path) -> syn::Path {
-        let mut path = path_to_markers.clone();
+    pub fn to_path(self, schema_module_path: &syn::Path) -> syn::Path {
+        let mut path = schema_module_path.clone();
         path.push(proc_macro2::Ident::from(self));
         path
     }
@@ -122,17 +127,14 @@ impl From<FieldMarkerIdent<'_>> for proc_macro2::Ident {
 
 impl ArgumentMarkerModule<'_> {
     pub fn ident(&self) -> proc_macro2::Ident {
-        format_ident!("{}_arguments", to_snake_case(self.field_name))
+        format_ident!("_{}_arguments", to_snake_case(self.field_name))
     }
 
-    pub fn to_path(self, path_to_markers: &syn::Path) -> syn::Path {
-        let mut path = path_to_markers.clone();
-        path.push(
-            FieldMarkerModule {
-                type_name: self.type_name,
-            }
-            .ident(),
-        );
+    pub fn to_path(self, schema_module_path: &syn::Path) -> syn::Path {
+        let mut path = FieldMarkerModule {
+            type_name: self.type_name,
+        }
+        .to_path(schema_module_path);
         path.push(self.ident());
         path
     }
