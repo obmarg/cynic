@@ -32,7 +32,7 @@ impl<'de> ::cynic::QueryFragment<'de> for MyQuery {
             }
             impl ::cynic::coercions::CoercesTo<schema::PostState> for PostStatePosted {};
             field_builder
-                .argument::<schema::__fields::Query::filtered_posts_arguments::filters>()
+                .argument::<schema::__fields::Query::_filtered_posts_arguments::filters>()
                 .value()
                 .object()
                 .field::<schema::__fields::PostFilters::states, _>(|builder| {

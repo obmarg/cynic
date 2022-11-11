@@ -12,7 +12,7 @@ impl<'de> ::cynic::QueryFragment<'de> for MyQuery {
         let mut field_builder = builder . select_field :: < schema :: __fields :: Query :: post , < Option < BlogPostOutput > as :: cynic :: QueryFragment > :: SchemaType > () ;
         {
             field_builder
-                .argument::<schema::__fields::Query::post_arguments::id>()
+                .argument::<schema::__fields::Query::_post_arguments::id>()
                 .literal("1234");
         }
         <Option<BlogPostOutput> as ::cynic::QueryFragment>::query(field_builder.select_children());

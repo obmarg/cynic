@@ -89,7 +89,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<createBook> for super::super::MutationRoot {
             type Type = super::super::ID;
         }
-        pub mod create_book_arguments {
+        pub mod _create_book_arguments {
             pub struct name;
             impl ::cynic::schema::HasArgument<name> for super::createBook {
                 type ArgumentType = super::super::super::String;
@@ -109,7 +109,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<deleteBook> for super::super::MutationRoot {
             type Type = super::super::Boolean;
         }
-        pub mod delete_book_arguments {
+        pub mod _delete_book_arguments {
             pub struct id;
             impl ::cynic::schema::HasArgument<id> for super::deleteBook {
                 type ArgumentType = super::super::super::ID;
@@ -136,7 +136,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<interval> for super::super::SubscriptionRoot {
             type Type = super::super::Int;
         }
-        pub mod interval_arguments {
+        pub mod _interval_arguments {
             pub struct n;
             impl ::cynic::schema::HasArgument<n> for super::interval {
                 type ArgumentType = super::super::super::Int;
@@ -151,7 +151,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<books> for super::super::SubscriptionRoot {
             type Type = super::super::BookChanged;
         }
-        pub mod books_arguments {
+        pub mod _books_arguments {
             pub struct mutationType;
             impl ::cynic::schema::HasArgument<mutationType> for super::books {
                 type ArgumentType = Option<super::super::super::MutationType>;

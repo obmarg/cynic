@@ -86,7 +86,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<fieldOne> for super::super::TestStruct {
             type Type = super::super::String;
         }
-        pub mod field_one_arguments {
+        pub mod _field_one_arguments {
             pub struct x;
             impl ::cynic::schema::HasArgument<x> for super::fieldOne {
                 type ArgumentType = Option<super::super::super::Int>;
@@ -106,7 +106,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<tastyCakes> for super::super::TestStruct {
             type Type = super::super::Dessert;
         }
-        pub mod tasty_cakes_arguments {
+        pub mod _tasty_cakes_arguments {
             pub struct first;
             impl ::cynic::schema::HasArgument<first> for super::tastyCakes {
                 type ArgumentType = super::super::super::Dessert;
@@ -126,7 +126,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<fieldWithInput> for super::super::TestStruct {
             type Type = super::super::Dessert;
         }
-        pub mod field_with_input_arguments {
+        pub mod _field_with_input_arguments {
             pub struct input;
             impl ::cynic::schema::HasArgument<input> for super::fieldWithInput {
                 type ArgumentType = super::super::super::AnInputType;

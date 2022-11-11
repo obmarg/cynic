@@ -281,7 +281,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<speciesConnection> for super::super::Film {
             type Type = Option<super::super::FilmSpeciesConnection>;
         }
-        pub mod species_connection_arguments {
+        pub mod _species_connection_arguments {
             pub struct after;
             impl ::cynic::schema::HasArgument<after> for super::speciesConnection {
                 type ArgumentType = Option<super::super::super::String>;
@@ -311,7 +311,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<starshipConnection> for super::super::Film {
             type Type = Option<super::super::FilmStarshipsConnection>;
         }
-        pub mod starship_connection_arguments {
+        pub mod _starship_connection_arguments {
             pub struct after;
             impl ::cynic::schema::HasArgument<after> for super::starshipConnection {
                 type ArgumentType = Option<super::super::super::String>;
@@ -341,7 +341,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<vehicleConnection> for super::super::Film {
             type Type = Option<super::super::FilmVehiclesConnection>;
         }
-        pub mod vehicle_connection_arguments {
+        pub mod _vehicle_connection_arguments {
             pub struct after;
             impl ::cynic::schema::HasArgument<after> for super::vehicleConnection {
                 type ArgumentType = Option<super::super::super::String>;
@@ -371,7 +371,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<characterConnection> for super::super::Film {
             type Type = Option<super::super::FilmCharactersConnection>;
         }
-        pub mod character_connection_arguments {
+        pub mod _character_connection_arguments {
             pub struct after;
             impl ::cynic::schema::HasArgument<after> for super::characterConnection {
                 type ArgumentType = Option<super::super::super::String>;
@@ -401,7 +401,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<planetConnection> for super::super::Film {
             type Type = Option<super::super::FilmPlanetsConnection>;
         }
-        pub mod planet_connection_arguments {
+        pub mod _planet_connection_arguments {
             pub struct after;
             impl ::cynic::schema::HasArgument<after> for super::planetConnection {
                 type ArgumentType = Option<super::super::super::String>;
@@ -937,7 +937,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<filmConnection> for super::super::Person {
             type Type = Option<super::super::PersonFilmsConnection>;
         }
-        pub mod film_connection_arguments {
+        pub mod _film_connection_arguments {
             pub struct after;
             impl ::cynic::schema::HasArgument<after> for super::filmConnection {
                 type ArgumentType = Option<super::super::super::String>;
@@ -975,7 +975,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<starshipConnection> for super::super::Person {
             type Type = Option<super::super::PersonStarshipsConnection>;
         }
-        pub mod starship_connection_arguments {
+        pub mod _starship_connection_arguments {
             pub struct after;
             impl ::cynic::schema::HasArgument<after> for super::starshipConnection {
                 type ArgumentType = Option<super::super::super::String>;
@@ -1005,7 +1005,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<vehicleConnection> for super::super::Person {
             type Type = Option<super::super::PersonVehiclesConnection>;
         }
-        pub mod vehicle_connection_arguments {
+        pub mod _vehicle_connection_arguments {
             pub struct after;
             impl ::cynic::schema::HasArgument<after> for super::vehicleConnection {
                 type ArgumentType = Option<super::super::super::String>;
@@ -1289,7 +1289,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<residentConnection> for super::super::Planet {
             type Type = Option<super::super::PlanetResidentsConnection>;
         }
-        pub mod resident_connection_arguments {
+        pub mod _resident_connection_arguments {
             pub struct after;
             impl ::cynic::schema::HasArgument<after> for super::residentConnection {
                 type ArgumentType = Option<super::super::super::String>;
@@ -1319,7 +1319,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<filmConnection> for super::super::Planet {
             type Type = Option<super::super::PlanetFilmsConnection>;
         }
-        pub mod film_connection_arguments {
+        pub mod _film_connection_arguments {
             pub struct after;
             impl ::cynic::schema::HasArgument<after> for super::filmConnection {
                 type ArgumentType = Option<super::super::super::String>;
@@ -1531,7 +1531,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<allFilms> for super::super::Root {
             type Type = Option<super::super::FilmsConnection>;
         }
-        pub mod all_films_arguments {
+        pub mod _all_films_arguments {
             pub struct after;
             impl ::cynic::schema::HasArgument<after> for super::allFilms {
                 type ArgumentType = Option<super::super::super::String>;
@@ -1561,7 +1561,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<film> for super::super::Root {
             type Type = Option<super::super::Film>;
         }
-        pub mod film_arguments {
+        pub mod _film_arguments {
             pub struct id;
             impl ::cynic::schema::HasArgument<id> for super::film {
                 type ArgumentType = Option<super::super::super::ID>;
@@ -1581,7 +1581,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<allPeople> for super::super::Root {
             type Type = Option<super::super::PeopleConnection>;
         }
-        pub mod all_people_arguments {
+        pub mod _all_people_arguments {
             pub struct after;
             impl ::cynic::schema::HasArgument<after> for super::allPeople {
                 type ArgumentType = Option<super::super::super::String>;
@@ -1611,7 +1611,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<person> for super::super::Root {
             type Type = Option<super::super::Person>;
         }
-        pub mod person_arguments {
+        pub mod _person_arguments {
             pub struct id;
             impl ::cynic::schema::HasArgument<id> for super::person {
                 type ArgumentType = Option<super::super::super::ID>;
@@ -1631,7 +1631,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<allPlanets> for super::super::Root {
             type Type = Option<super::super::PlanetsConnection>;
         }
-        pub mod all_planets_arguments {
+        pub mod _all_planets_arguments {
             pub struct after;
             impl ::cynic::schema::HasArgument<after> for super::allPlanets {
                 type ArgumentType = Option<super::super::super::String>;
@@ -1661,7 +1661,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<planet> for super::super::Root {
             type Type = Option<super::super::Planet>;
         }
-        pub mod planet_arguments {
+        pub mod _planet_arguments {
             pub struct id;
             impl ::cynic::schema::HasArgument<id> for super::planet {
                 type ArgumentType = Option<super::super::super::ID>;
@@ -1681,7 +1681,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<allSpecies> for super::super::Root {
             type Type = Option<super::super::SpeciesConnection>;
         }
-        pub mod all_species_arguments {
+        pub mod _all_species_arguments {
             pub struct after;
             impl ::cynic::schema::HasArgument<after> for super::allSpecies {
                 type ArgumentType = Option<super::super::super::String>;
@@ -1711,7 +1711,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<species> for super::super::Root {
             type Type = Option<super::super::Species>;
         }
-        pub mod species_arguments {
+        pub mod _species_arguments {
             pub struct id;
             impl ::cynic::schema::HasArgument<id> for super::species {
                 type ArgumentType = Option<super::super::super::ID>;
@@ -1731,7 +1731,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<allStarships> for super::super::Root {
             type Type = Option<super::super::StarshipsConnection>;
         }
-        pub mod all_starships_arguments {
+        pub mod _all_starships_arguments {
             pub struct after;
             impl ::cynic::schema::HasArgument<after> for super::allStarships {
                 type ArgumentType = Option<super::super::super::String>;
@@ -1761,7 +1761,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<starship> for super::super::Root {
             type Type = Option<super::super::Starship>;
         }
-        pub mod starship_arguments {
+        pub mod _starship_arguments {
             pub struct id;
             impl ::cynic::schema::HasArgument<id> for super::starship {
                 type ArgumentType = Option<super::super::super::ID>;
@@ -1781,7 +1781,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<allVehicles> for super::super::Root {
             type Type = Option<super::super::VehiclesConnection>;
         }
-        pub mod all_vehicles_arguments {
+        pub mod _all_vehicles_arguments {
             pub struct after;
             impl ::cynic::schema::HasArgument<after> for super::allVehicles {
                 type ArgumentType = Option<super::super::super::String>;
@@ -1811,7 +1811,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<vehicle> for super::super::Root {
             type Type = Option<super::super::Vehicle>;
         }
-        pub mod vehicle_arguments {
+        pub mod _vehicle_arguments {
             pub struct id;
             impl ::cynic::schema::HasArgument<id> for super::vehicle {
                 type ArgumentType = Option<super::super::super::ID>;
@@ -1831,7 +1831,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<node> for super::super::Root {
             type Type = Option<super::super::Node>;
         }
-        pub mod node_arguments {
+        pub mod _node_arguments {
             pub struct id;
             impl ::cynic::schema::HasArgument<id> for super::node {
                 type ArgumentType = super::super::super::ID;
@@ -1928,7 +1928,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<personConnection> for super::super::Species {
             type Type = Option<super::super::SpeciesPeopleConnection>;
         }
-        pub mod person_connection_arguments {
+        pub mod _person_connection_arguments {
             pub struct after;
             impl ::cynic::schema::HasArgument<after> for super::personConnection {
                 type ArgumentType = Option<super::super::super::String>;
@@ -1958,7 +1958,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<filmConnection> for super::super::Species {
             type Type = Option<super::super::SpeciesFilmsConnection>;
         }
-        pub mod film_connection_arguments {
+        pub mod _film_connection_arguments {
             pub struct after;
             impl ::cynic::schema::HasArgument<after> for super::filmConnection {
                 type ArgumentType = Option<super::super::super::String>;
@@ -2274,7 +2274,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<pilotConnection> for super::super::Starship {
             type Type = Option<super::super::StarshipPilotsConnection>;
         }
-        pub mod pilot_connection_arguments {
+        pub mod _pilot_connection_arguments {
             pub struct after;
             impl ::cynic::schema::HasArgument<after> for super::pilotConnection {
                 type ArgumentType = Option<super::super::super::String>;
@@ -2304,7 +2304,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<filmConnection> for super::super::Starship {
             type Type = Option<super::super::StarshipFilmsConnection>;
         }
-        pub mod film_connection_arguments {
+        pub mod _film_connection_arguments {
             pub struct after;
             impl ::cynic::schema::HasArgument<after> for super::filmConnection {
                 type ArgumentType = Option<super::super::super::String>;
@@ -2604,7 +2604,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<pilotConnection> for super::super::Vehicle {
             type Type = Option<super::super::VehiclePilotsConnection>;
         }
-        pub mod pilot_connection_arguments {
+        pub mod _pilot_connection_arguments {
             pub struct after;
             impl ::cynic::schema::HasArgument<after> for super::pilotConnection {
                 type ArgumentType = Option<super::super::super::String>;
@@ -2634,7 +2634,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<filmConnection> for super::super::Vehicle {
             type Type = Option<super::super::VehicleFilmsConnection>;
         }
-        pub mod film_connection_arguments {
+        pub mod _film_connection_arguments {
             pub struct after;
             impl ::cynic::schema::HasArgument<after> for super::filmConnection {
                 type ArgumentType = Option<super::super::super::String>;

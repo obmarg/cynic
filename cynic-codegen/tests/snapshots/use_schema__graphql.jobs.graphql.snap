@@ -138,7 +138,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<jobs> for super::super::City {
             type Type = Option<Vec<super::super::Job>>;
         }
-        pub mod jobs_arguments {
+        pub mod _jobs_arguments {
             pub struct r#where;
             impl ::cynic::schema::HasArgument<r#where> for super::jobs {
                 type ArgumentType = Option<super::super::super::JobWhereInput>;
@@ -935,7 +935,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<jobs> for super::super::Commitment {
             type Type = Option<Vec<super::super::Job>>;
         }
-        pub mod jobs_arguments {
+        pub mod _jobs_arguments {
             pub struct r#where;
             impl ::cynic::schema::HasArgument<r#where> for super::jobs {
                 type ArgumentType = Option<super::super::super::JobWhereInput>;
@@ -1616,7 +1616,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<jobs> for super::super::Company {
             type Type = Option<Vec<super::super::Job>>;
         }
-        pub mod jobs_arguments {
+        pub mod _jobs_arguments {
             pub struct r#where;
             impl ::cynic::schema::HasArgument<r#where> for super::jobs {
                 type ArgumentType = Option<super::super::super::JobWhereInput>;
@@ -2710,7 +2710,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<cities> for super::super::Country {
             type Type = Option<Vec<super::super::City>>;
         }
-        pub mod cities_arguments {
+        pub mod _cities_arguments {
             pub struct r#where;
             impl ::cynic::schema::HasArgument<r#where> for super::cities {
                 type ArgumentType = Option<super::super::super::CityWhereInput>;
@@ -2755,7 +2755,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<jobs> for super::super::Country {
             type Type = Option<Vec<super::super::Job>>;
         }
-        pub mod jobs_arguments {
+        pub mod _jobs_arguments {
             pub struct r#where;
             impl ::cynic::schema::HasArgument<r#where> for super::jobs {
                 type ArgumentType = Option<super::super::super::JobWhereInput>;
@@ -3707,7 +3707,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<cities> for super::super::Job {
             type Type = Option<Vec<super::super::City>>;
         }
-        pub mod cities_arguments {
+        pub mod _cities_arguments {
             pub struct r#where;
             impl ::cynic::schema::HasArgument<r#where> for super::cities {
                 type ArgumentType = Option<super::super::super::CityWhereInput>;
@@ -3752,7 +3752,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<countries> for super::super::Job {
             type Type = Option<Vec<super::super::Country>>;
         }
-        pub mod countries_arguments {
+        pub mod _countries_arguments {
             pub struct r#where;
             impl ::cynic::schema::HasArgument<r#where> for super::countries {
                 type ArgumentType = Option<super::super::super::CountryWhereInput>;
@@ -3797,7 +3797,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<remotes> for super::super::Job {
             type Type = Option<Vec<super::super::Remote>>;
         }
-        pub mod remotes_arguments {
+        pub mod _remotes_arguments {
             pub struct r#where;
             impl ::cynic::schema::HasArgument<r#where> for super::remotes {
                 type ArgumentType = Option<super::super::super::RemoteWhereInput>;
@@ -3866,7 +3866,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<tags> for super::super::Job {
             type Type = Option<Vec<super::super::Tag>>;
         }
-        pub mod tags_arguments {
+        pub mod _tags_arguments {
             pub struct r#where;
             impl ::cynic::schema::HasArgument<r#where> for super::tags {
                 type ArgumentType = Option<super::super::super::TagWhereInput>;
@@ -5350,7 +5350,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<subscribe> for super::super::Mutation {
             type Type = super::super::User;
         }
-        pub mod subscribe_arguments {
+        pub mod _subscribe_arguments {
             pub struct input;
             impl ::cynic::schema::HasArgument<input> for super::subscribe {
                 type ArgumentType = super::super::super::SubscribeInput;
@@ -5365,7 +5365,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<postJob> for super::super::Mutation {
             type Type = super::super::Job;
         }
-        pub mod post_job_arguments {
+        pub mod _post_job_arguments {
             pub struct input;
             impl ::cynic::schema::HasArgument<input> for super::postJob {
                 type ArgumentType = super::super::super::PostJobInput;
@@ -5380,7 +5380,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<updateJob> for super::super::Mutation {
             type Type = super::super::Job;
         }
-        pub mod update_job_arguments {
+        pub mod _update_job_arguments {
             pub struct input;
             impl ::cynic::schema::HasArgument<input> for super::updateJob {
                 type ArgumentType = super::super::super::UpdateJobInput;
@@ -5400,7 +5400,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<updateCompany> for super::super::Mutation {
             type Type = super::super::Company;
         }
-        pub mod update_company_arguments {
+        pub mod _update_company_arguments {
             pub struct input;
             impl ::cynic::schema::HasArgument<input> for super::updateCompany {
                 type ArgumentType = super::super::super::UpdateCompanyInput;
@@ -5478,7 +5478,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<jobs> for super::super::Query {
             type Type = Vec<super::super::Job>;
         }
-        pub mod jobs_arguments {
+        pub mod _jobs_arguments {
             pub struct input;
             impl ::cynic::schema::HasArgument<input> for super::jobs {
                 type ArgumentType = Option<super::super::super::JobsInput>;
@@ -5493,7 +5493,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<job> for super::super::Query {
             type Type = super::super::Job;
         }
-        pub mod job_arguments {
+        pub mod _job_arguments {
             pub struct input;
             impl ::cynic::schema::HasArgument<input> for super::job {
                 type ArgumentType = super::super::super::JobInput;
@@ -5508,7 +5508,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<locations> for super::super::Query {
             type Type = Vec<super::super::Location>;
         }
-        pub mod locations_arguments {
+        pub mod _locations_arguments {
             pub struct input;
             impl ::cynic::schema::HasArgument<input> for super::locations {
                 type ArgumentType = super::super::super::LocationsInput;
@@ -5523,7 +5523,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<city> for super::super::Query {
             type Type = super::super::City;
         }
-        pub mod city_arguments {
+        pub mod _city_arguments {
             pub struct input;
             impl ::cynic::schema::HasArgument<input> for super::city {
                 type ArgumentType = super::super::super::LocationInput;
@@ -5538,7 +5538,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<country> for super::super::Query {
             type Type = super::super::Country;
         }
-        pub mod country_arguments {
+        pub mod _country_arguments {
             pub struct input;
             impl ::cynic::schema::HasArgument<input> for super::country {
                 type ArgumentType = super::super::super::LocationInput;
@@ -5553,7 +5553,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<remote> for super::super::Query {
             type Type = super::super::Remote;
         }
-        pub mod remote_arguments {
+        pub mod _remote_arguments {
             pub struct input;
             impl ::cynic::schema::HasArgument<input> for super::remote {
                 type ArgumentType = super::super::super::LocationInput;
@@ -5642,7 +5642,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<jobs> for super::super::Remote {
             type Type = Option<Vec<super::super::Job>>;
         }
-        pub mod jobs_arguments {
+        pub mod _jobs_arguments {
             pub struct r#where;
             impl ::cynic::schema::HasArgument<r#where> for super::jobs {
                 type ArgumentType = Option<super::super::super::JobWhereInput>;
@@ -6447,7 +6447,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<jobs> for super::super::Tag {
             type Type = Option<Vec<super::super::Job>>;
         }
-        pub mod jobs_arguments {
+        pub mod _jobs_arguments {
             pub struct r#where;
             impl ::cynic::schema::HasArgument<r#where> for super::jobs {
                 type ArgumentType = Option<super::super::super::JobWhereInput>;

@@ -91,7 +91,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<bar> for super::super::Foo {
             type Type = Option<super::super::Bar>;
         }
-        pub mod bar_arguments {
+        pub mod _bar_arguments {
             pub struct id;
             impl ::cynic::schema::HasArgument<id> for super::bar {
                 type ArgumentType = super::super::super::UUID;
@@ -106,7 +106,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<fieldWithKeywordArg> for super::super::Foo {
             type Type = Vec<super::super::Int>;
         }
-        pub mod field_with_keyword_arg_arguments {
+        pub mod _field_with_keyword_arg_arguments {
             pub struct r#where;
             impl ::cynic::schema::HasArgument<r#where> for super::fieldWithKeywordArg {
                 type ArgumentType = Option<super::super::super::Int>;
@@ -121,7 +121,7 @@ pub mod __fields {
         impl ::cynic::schema::HasField<recursiveInputField> for super::super::Foo {
             type Type = Option<super::super::Boolean>;
         }
-        pub mod recursive_input_field_arguments {
+        pub mod _recursive_input_field_arguments {
             pub struct recursive;
             impl ::cynic::schema::HasArgument<recursive> for super::recursiveInputField {
                 type ArgumentType = Option<super::super::super::SelfRecursiveInput>;
