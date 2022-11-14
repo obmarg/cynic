@@ -9,6 +9,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v2.2.0 - 2022-11-14
+
 ### Changes
 
 - The `use_schema` output has been re-organised to reduce the chances of
