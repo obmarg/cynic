@@ -1,6 +1,4 @@
-use crate::operation::StreamingOperation;
-
-use super::{Operation, QueryFragment};
+use super::{Operation, QueryFragment, StreamingOperation};
 
 /// Provides a `build` function on `QueryFragment`s that represent a query
 pub trait QueryBuilder<'de>: Sized {
