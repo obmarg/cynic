@@ -185,7 +185,7 @@ pub mod __private;
 pub use self::core::{Enum, InlineFragments, InputObject, QueryFragment};
 pub use builders::{MutationBuilder, QueryBuilder, SubscriptionBuilder};
 pub use id::Id;
-pub use operation::Operation;
+pub use operation::{Operation, StreamingOperation};
 pub use result::{GraphQlError, GraphQlResponse};
 pub use variables::QueryVariables;
 
