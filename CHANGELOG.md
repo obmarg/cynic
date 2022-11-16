@@ -9,6 +9,11 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+### Bug Fixes
+
+- Exposed the `StreamingOperation` type which was accidentally not exported in
+  the move to `v2.0`.
+
 ## v2.2.0 - 2022-11-14
 
 ### Changes
