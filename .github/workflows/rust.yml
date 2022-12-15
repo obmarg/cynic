@@ -11,6 +11,7 @@ env:
   # TODO: Would be nice to disable warnings here too, but there are too many of them.
   RUSTFLAGS: "-W rust-2021-compatibility"
   RUST_BACKTRACE: short
+  NEXTEST_PROFILE: ci
   CI: 1
 
 jobs:
@@ -38,26 +39,32 @@ jobs:
           command: build
           args: --workspace
 
+      - name: Install nextest
+        shell: bash
+        run: |
+          curl -LsSf https://get.nexte.st/0.9/linux | tar zxf - -C ${CARGO_HOME:-~/.cargo}/bin
+
       - name: Build tests
-        uses: actions-rs/cargo@v1
-        with:
-          command: test
-          args: --workspace --no-run --all-features
+        shell: bash
+        run: |
+          cargo nextest run --workspace --all-features --no-run 
 
       - name: Run tests
-        uses: actions-rs/cargo@v1
-        with:
-          command: test
-          args: --workspace --all-features
+        shell: bash
+        run: |
+          cargo nextest run --workspace --all-features
 
       - name: Build example tests
-        uses: actions-rs/cargo@v1
-        with:
-          command: test
-          args: --workspace --no-run --examples
+        shell: bash
+        run: |
+          cargo nextest run --workspace --examples --no-run 
 
       - name: Run example tests
-        uses: actions-rs/cargo@v1
-        with:
-          command: test
-          args: --workspace --examples
+        shell: bash
+        run: |
+          cargo nextest run --workspace --examples
+
+      - name: Build & run doctests
+        shell: bash
+        run: |
+          cargo test --doc --workspace
