@@ -11,6 +11,7 @@ env:
   # TODO: Would be nice to disable warnings here too, but there are too many of them.
   RUSTFLAGS: "-W rust-2021-compatibility"
   RUST_BACKTRACE: short
+  NEXTEST_PROFILE: ci
   CI: 1
 
 jobs:
