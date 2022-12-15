@@ -23,11 +23,11 @@ surf but you can use any library you want. Open up your `Cargo.toml` and
 add the following under the `[dependencies]` section:
 
 ```toml
-cynic = { version = "2", features = ["client-surf"] }
+cynic = { version = "2", features = ["http-surf"] }
 surf = "2"
 ```
 
-Note that we've added the `client-surf` feature flag of `cynic` - this pulls in
+Note that we've added the `http-surf` feature flag of `cynic` - this pulls in
 some `surf` integration code, which we'll be using. If you're using a different
 HTTP client, you'll need a different feature flag or you may need to see the
 [documentation for making an HTTP request manually][2].
