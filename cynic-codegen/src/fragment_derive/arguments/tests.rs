@@ -14,7 +14,7 @@ use super::{analyse::analyse, parsing::CynicArguments};
 #[case::list_wrapping("list_wrapping", "filteredBooks", parse_quote! { filters: { authors: "Ann Leckie" } })]
 #[case::an_enum("an_enum", "filteredBooks", parse_quote! { filters: { state: "PUBLISHED" } })]
 #[case::variable_in_object("variable_in_object", "filteredBooks", parse_quote! { filters: { state: $aVariable } })]
-#[case::top_level_variable("top_level_variable", "filteredBooks", parse_quote! { filters: $aVaraible })]
+#[case::top_level_variable("top_level_variable", "filteredBooks", parse_quote! { filters: $aVariable })]
 #[case::top_level_variables("top_level_variables", "filteredBooks", parse_quote! { filters: $aVaraible, optionalFilters: $anotherVar })]
 #[case::boolean_scalar("boolean_scalar", "someNullableScalarParams", parse_quote! { aBool: true })]
 #[case::missing_parameter("missing_parameter", "filteredBooks", parse_quote! {})]

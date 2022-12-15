@@ -2,7 +2,7 @@
 
 The previous section of the book showed how to use the various derive macros
 cynic provides to build out GraphQL queries. If you've got a more complex use
-case, these might not always provide the functonality you're looking for.
+case, these might not always provide the functionality you're looking for.
 Cynic provides lower level functionality for building queries without these
 derives, and that's what we'll go into in this chapter.
 

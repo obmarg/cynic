@@ -25,7 +25,7 @@
 //!
 //! 1. Some structs to represent the Input types the underlying schema.
 //!    You may need to use these to build mutations or as parameters to queries.
-//! 2. Definitons of all the Enums in the provided schema.  You'll need these if
+//! 2. Definitions of all the Enums in the provided schema.  You'll need these if
 //!    you want to use any enum types.
 //! 3. Type safe selection set functions.  These can be used to build up a query
 //!    manually, though it's usually easier to use the `QueryFragment` derive
@@ -130,7 +130,7 @@
 //!     schema_path = "../schemas/starwars.schema.graphql",
 //!     graphql_type = "Root",
 //!     // By adding the `variables` parameter to our `QueryFragment` we've made a variable
-//!     // named `args` avaiable for use in the `arguments` attribute.
+//!     // named `args` available for use in the `arguments` attribute.
 //!     variables = "FilmArguments"
 //! )]
 //! struct FilmDirectorQueryWithArgs {
@@ -159,9 +159,9 @@
 //!
 //! It's worth noting that each of these features pulls in extra
 //! dependencies, which may impact your build size.  Particularly
-//! if you're targetting WASM.  In particular the `url` crate has
+//! if you're targeting WASM.  In particular the `url` crate has
 //! [known issues](https://github.com/servo/rust-url/issues/557) when
-//! targetting web assembly.
+//! targeting web assembly.
 
 #![cfg_attr(docsrs, feature(doc_cfg))]
 #![warn(missing_docs)]

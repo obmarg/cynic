@@ -70,7 +70,7 @@ impl<'a> TypeIndex<'a> {
     }
 
     pub(super) fn private_lookup(&self, name: &str) -> Option<Type<'a>> {
-        // Note: This function should absolutely only be called after the heirarchy has
+        // Note: This function should absolutely only be called after the hierarchy has
         // been validated.  The current module privacy settings enforce this, but don't make this
         // private or call it without being careful.
         let type_def = self
@@ -320,7 +320,7 @@ where
             TypeRef::Named(name, index, _) => {
                 // Note: we assume that TypeRef is only constructed after validation,
                 // which makes this unwrap ok.
-                // Probably want to enforce this via module heirarchy.
+                // Probably want to enforce this via module hierarchy.
                 index.private_lookup(name).unwrap().try_into().unwrap()
             }
             TypeRef::List(inner) => inner.inner_type(),

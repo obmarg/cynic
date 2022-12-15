@@ -25,7 +25,7 @@ pub fn check_types_are_compatible<'a>(
         CheckMode::OutputTypes => output_type_check(gql_type, &rust_type, false)?,
         CheckMode::Recursing => recursing_check(gql_type, &rust_type)?,
         CheckMode::Spreading => {
-            panic!("check_types_are_compatible shouldnt be called with CheckMode::Spreading")
+            panic!("check_types_are_compatible shouldn't be called with CheckMode::Spreading")
         }
     }
 
@@ -52,7 +52,7 @@ pub fn check_spread_type(rust_type: &syn::Type) -> Result<(), syn::Error> {
                 Ok(())
             }
             RustType::Box { inner, .. } => {
-                // Box is a transparent container for the purposes of checking compatability
+                // Box is a transparent container for the purposes of checking compatibility
                 // so just recurse
                 inner_fn(inner.as_ref())
             }
@@ -98,7 +98,7 @@ fn output_type_check<'a>(
 ) -> Result<(), TypeValidationError> {
     match (&gql_type, rust_type) {
         (_, RustType::Box { inner, .. }) => {
-            // Box is a transparent container for the purposes of checking compatability
+            // Box is a transparent container for the purposes of checking compatibility
             // so just recurse
             output_type_check(gql_type, inner.as_ref(), flattening)
         }
@@ -154,7 +154,7 @@ fn input_type_check<'a>(
 ) -> Result<(), TypeValidationError> {
     match (&gql_type, rust_type) {
         (gql_type, RustType::Box { inner, .. }) => {
-            // Box is a transparent container for the purposes of checking compatability
+            // Box is a transparent container for the purposes of checking compatibility
             // so just recurse
             input_type_check(gql_type, has_default, inner.as_ref())
         }

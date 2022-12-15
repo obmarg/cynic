@@ -78,7 +78,7 @@ pub enum OutputType<'schema> {
 pub struct InterfaceType<'schema>(pub InterfaceDetails<'schema>);
 
 impl<'schema> Type<'schema> {
-    fn from_type_defintion(
+    fn from_type_definition(
         type_def: &parser::TypeDefinition<'schema>,
         type_index: &Rc<TypeIndex<'schema>>,
     ) -> Type<'schema> {

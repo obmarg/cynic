@@ -69,10 +69,10 @@ This release contains a lot of breaking changes.
 - `Operation` has changed:
   - It no longer has a lifetime.
   - It is now generic over the arguments type.
-- The `http` extension traits have had their signatures changed to accomodate
+- The `http` extension traits have had their signatures changed to accommodate
   the new signature of `Operation`. Their use should still be the same.
 - An `Enum` can no longer be shared between schemas. If you were doing this,
-  you should define two `Enum`s and provide conversion functions beteween the
+  you should define two `Enum`s and provide conversion functions between the
   two of them.
 - `InlineFragments` now always require a fallback and no longer perform
   exhaustiveness checking.
@@ -391,7 +391,7 @@ much work for users to update. An example of an upgrade can be found
 ### Breaking Changes
 
 - `QueryFragment::fragment` now accepts a `FragmentContext` rather than
-  arguments. This change was neccesary to support recursive queries.
+  arguments. This change was necessary to support recursive queries.
 - It is no longer recommended to use `QueryFragment::fragment` directly -
   instead an Operation should be constructed with `QueryBuilder::build` or
   `MutationBuilder::build`. Note that these return an `Operation` so you no
@@ -444,7 +444,7 @@ much work for users to update. An example of an upgrade can be found
   - Supports multiple queries, sharing structs between all the generated queries
     as appropriate.
   - Generates unique names for each struct it creates, even when faced with
-    different structs targetting the same type.
+    different structs targeting the same type.
   - Generates partial InputObjects when faced with literals with missing fields
     (previously it would generate all fields even when unused)
   - Correctly generates different argument structs if a single type with
@@ -529,7 +529,7 @@ much work for users to update. An example of an upgrade can be found
 
 ### Removed Features
 
-- Removed the `optimised_query_modules` feature from codegen, as it invovled
+- Removed the `optimised_query_modules` feature from codegen, as it involved
   more code than it was worth to keep it around. Functionally this should make
   no difference, though it may change performance characteristics of compiling
   cynic code. Didn't seem to make a significant difference when I was using it
@@ -634,7 +634,7 @@ much work for users to update. An example of an upgrade can be found
 
 ### Breaking Changes
 
-- `schema_path` parameters are now relative to `CARGO_MANFIEST_DIR` rather than
+- `schema_path` parameters are now relative to `CARGO_MANIFIEST_DIR` rather than
   the current working directory. This fixes an issue with cargo workspace
   projects where doc-tests would be relative to the sub-crate but cargo builds
   were relative to the workspace root. For projects not using workspaces this
@@ -730,7 +730,7 @@ much work for users to update. An example of an upgrade can be found
 ### Changed
 
 - Split the procedural macros out into their own cynic-proc-macros crate.
-  cynic-codegen now exists as a re-usable library for programatically
+  cynic-codegen now exists as a re-usable library for programmatically
   doing the codegen.
 - The IntoArguments trait is now named FromArguments and has had it's
   parameters switched up.
