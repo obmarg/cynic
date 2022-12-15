@@ -62,6 +62,8 @@ mod test {
         insta::assert_snapshot!(query.query);
     }
 
+    // Disabling this for now as the graphql jobs API doesn't actually work anymore :(
+    #[cfg(nope)]
     #[test]
     fn test_running_query() {
         let result = run_query();

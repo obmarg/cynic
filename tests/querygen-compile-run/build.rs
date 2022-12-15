@@ -57,12 +57,12 @@ fn main() {
             "../../cynic-querygen/tests/queries/starwars/fragment-spreads.graphql",
             r#"queries::AllFilms::build(())"#,
         ),
-        TestCase::query(
+        TestCase::query_norun(
             &jobs_schema,
             "tests/queries/graphql.jobs/london-jobs.graphql",
             r#"queries::Jobs::build(())"#,
         ),
-        TestCase::query(
+        TestCase::query_norun(
             &jobs_schema,
             "tests/queries/graphql.jobs/jobs.graphql",
             r#"queries::Jobs::build(
