@@ -64,12 +64,7 @@ jobs:
         run: |
           cargo nextest run --workspace --examples
 
-      - name: Build doctests
-        shell: bash
-        run: |
-          cargo test --doc --workspace --no-run
-
-      - name: Run doctests
+      - name: Build & run doctests
         shell: bash
         run: |
           cargo test --doc --workspace
