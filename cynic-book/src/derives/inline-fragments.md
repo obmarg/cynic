@@ -33,7 +33,7 @@ implement `QueryFragment` for the respective GraphQL types.
 Cynic requires a fallback variant on each `InlineFragments` that will be
 matched when the server returns a type other than the ones you provide.  This
 allows your code to continue compiling & running in the face of additions to
-the server, similar to the usual GraphQL backwards compatability guarantees.
+the server, similar to the usual GraphQL backwards compatibility guarantees.
 
 ```rust
 #[derive(cynic::InlineFragments)]
@@ -117,7 +117,7 @@ enum itself:
 Each variant can also have it's own attributes:
 
 - `fallback` can be applied on a single variant to indicate that it
-  should be used whenver cynic encounters a `__typename` that doesn't
+  should be used whenever cynic encounters a `__typename` that doesn't
   match one of the other variants. For interfaces this can contain a
   `QueryFragment` type. For union types it must be applied on a unit
   variant.

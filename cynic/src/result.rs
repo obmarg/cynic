@@ -1,7 +1,7 @@
 /// The response to a GraphQl operation
 #[derive(Debug, serde::Deserialize)]
 pub struct GraphQlResponse<T, ErrorExtensions = serde::de::IgnoredAny> {
-    /// The operation data (if the operation was succesful)
+    /// The operation data (if the operation was successful)
     pub data: Option<T>,
 
     /// Any errors that occurred as part of this operation

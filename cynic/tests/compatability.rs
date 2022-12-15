@@ -1,9 +1,9 @@
-//! Some tests of cynics implementation of backwards/forwards compatability
+//! Some tests of cynics implementation of backwards/forwards compatibility
 
 use cynic::{InputObject, QueryFragment};
 
 #[test]
-fn query_fields_may_be_unnecesarily_option() {
+fn query_fields_may_be_unnecessarily_option() {
     // Fields in a query can be wrapped in `Option` when the underlying field
     // is required
 
@@ -45,7 +45,7 @@ fn input_fields_may_be_required_when_nullable() {
 
 #[test]
 fn input_fields_may_be_singular_when_should_be_list() {
-    // Input fields can be singlular when the underlying type is a list.
+    // Input fields can be singular when the underlying type is a list.
 
     #[allow(dead_code)]
     #[derive(InputObject)]

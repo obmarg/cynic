@@ -90,7 +90,7 @@ impl<'query, 'schema> SelectionArguments<'query, 'schema> {
                     let nested_struct = nested.as_variable_struct(parent_map, output_mapping);
 
                     if parent_map.get(&nested).map(|hs| hs.len()).unwrap_or(0) <= 1 {
-                        // This particular childs arguments are only used by it,
+                        // This particular child's arguments are only used by it,
                         // so we can safely lift them up into our argument struct
                         output_mapping.selection_structs.remove(&nested_struct.id);
                         output_mapping.remappings.insert(nested_struct.id, our_id);

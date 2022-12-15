@@ -96,7 +96,7 @@ impl<'schema> TypeIndex<'schema> {
             .get(name)
             .ok_or_else(|| Error::UnknownType(name.to_string()))?;
 
-        Ok(Type::from_type_defintion(type_def, self))
+        Ok(Type::from_type_definition(type_def, self))
     }
 
     pub fn type_for_path<'path>(

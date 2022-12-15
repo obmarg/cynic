@@ -123,7 +123,7 @@ pub enum CynicReqwestError {
     #[error("Error making HTTP request: {0}")]
     ReqwestError(#[from] reqwest::Error),
 
-    /// An error resposne from the server with the given status code and body.
+    /// An error response from the server with the given status code and body.
     #[error("Server returned {0}: {1}")]
     ErrorResponse(reqwest::StatusCode, String),
 }

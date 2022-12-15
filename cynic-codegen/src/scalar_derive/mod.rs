@@ -25,7 +25,7 @@ pub fn scalar_derive_impl(input: ScalarDeriveInput) -> Result<TokenStream, syn::
     let schema_module = input.schema_module();
 
     // We're assuming that Darling has already validated this as a newtype enum,
-    // so we can get away with panicing here.
+    // so we can get away with panicking here.
     let field = input
         .data
         .take_struct()

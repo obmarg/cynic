@@ -23,7 +23,7 @@ attribute or the rename attribute on individual fields.
 If there are any fields in the struct that are not on the GraphQL input type
 the derive will emit errors. Any required fields that are on the GraphQL input
 type but not the rust struct will also error. Optional fields may be omitted
-without error. This maintains the same backwards compatability guarantees as
+without error. This maintains the same backwards compatibility guarantees as
 most GraphQL clients: adding a required field is a breaking change, but adding
 an optional field is not.
 

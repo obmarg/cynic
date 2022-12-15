@@ -56,7 +56,7 @@ pub enum Error {
     #[error("expected an interface")]
     ExpectedInterfaceType,
 
-    #[error("expected a homogenous list of input values")]
+    #[error("expected a homogeneous list of input values")]
     ExpectedHomogenousList,
 
     #[error("expected field to be a list")]

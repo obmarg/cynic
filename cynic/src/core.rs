@@ -96,7 +96,7 @@ impl<'de> QueryFragment<'de> for String {
 /// A QueryFragment that contains a set of inline fragments
 ///
 /// This should be derived on an enum with newtype variants where each
-/// inner type is a `QueryFragment` for an apppropriate type.
+/// inner type is a `QueryFragment` for an appropriate type.
 pub trait InlineFragments<'de>: QueryFragment<'de> {
     /// Attempts to deserialize a variant with the given typename.
     fn deserialize_variant<D>(typename: &str, deserializer: D) -> Result<Self, D::Error>

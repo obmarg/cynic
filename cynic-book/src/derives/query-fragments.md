@@ -188,7 +188,7 @@ See [query variables][1] for more details.
 The example above showed how to pass variables to the top level of a query. If
 you want to pass variables to a nested QueryFragment then all it's parent
 `QueryFragment`s must specify the same `variables` in their `cynic`
-attribute. This is neccesary so that the `QueryVariables` struct gets passed
+attribute. This is necessary so that the `QueryVariables` struct gets passed
 down to that level of a query.
 
 If no nested `QueryFragments` require arguments, you can omit the
