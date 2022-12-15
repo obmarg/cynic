@@ -32,7 +32,7 @@ fn main() {
               display_name
               currency
               description
-              Fulfillment {
+              Fulfilment {
                 delivery
                 collection
                 eat_in
