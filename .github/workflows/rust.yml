@@ -47,7 +47,7 @@ jobs:
       - name: Build tests
         shell: bash
         run: |
-          cargo nextest run --no-run --workspace --all-features
+          cargo nextest run --workspace --all-features --no-run 
 
       - name: Run tests
         shell: bash
@@ -57,9 +57,19 @@ jobs:
       - name: Build example tests
         shell: bash
         run: |
-          cargo nextest run --no-run --workspace --examples
+          cargo nextest run --workspace --examples --no-run 
 
       - name: Run example tests
         shell: bash
         run: |
           cargo nextest run --workspace --examples
+
+      - name: Build doctests
+        shell: bash
+        run: |
+          cargo test --doc --workspace --no-run
+
+      - name: Run doctests
+        shell: bash
+        run: |
+          cargo test --doc --workspace
