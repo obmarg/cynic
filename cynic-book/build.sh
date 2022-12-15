@@ -15,7 +15,11 @@ tar xvzf mdbook-v0.4.15-x86_64-unknown-linux-gnu.tar.gz
   # cd ..
 
 rustup default stable
-cargo install mdbook-linkcheck
+
+
+if ! command -v mdbook-linkcheck &> /dev/null
+then
+	cargo install mdbook-linkcheck
+fi
 
 ./mdbook build
-
