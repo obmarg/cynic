@@ -14,6 +14,9 @@ jobs:
         uses: katyo/publish-crates@v1
         with:
             registry-token: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+      - name: Install markdown-extract
+        shell: bash
+        run: cargo install markdown-extract
       - name: Generate changelog
         shell: bash
         run: markdown-extract --no-print-matched-heading "${{ github.ref_name }}" CHANGELOG.md > release-text.md
