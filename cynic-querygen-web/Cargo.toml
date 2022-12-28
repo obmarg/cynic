@@ -5,6 +5,7 @@ repository = "https://github.com/obmarg/cynic"
 authors = ["Graeme Coupar<graeme@polyandglot.dev>"]
 description = "Web interface for generating cynic query structures from graphql"
 edition = "2018"
+publish = false
 
 [lib]
 crate-type = ["cdylib"]
