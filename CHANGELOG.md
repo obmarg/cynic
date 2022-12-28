@@ -9,6 +9,11 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+### Bug Fixes
+
+- Fixed a compilation error when targeting wasm with the `http-reqwest` feature
+  enabled.
+
 ## v2.2.1 - 2022-11-16
 
 ### Bug Fixes
