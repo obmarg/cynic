@@ -9,6 +9,14 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+### Bug Fixes
+
+- The generator and derive macros are now aware of the implicit `__typename`
+  that every object & interface type gets.
+- Fixed support for support fields with one or more leading underscores in the
+  derives. This would have been possible before but only by using a rename
+  attribute.
+
 ## v2.2.2 - 2022-12-28
 
 ### Bug Fixes

@@ -1,7 +1,7 @@
 use graphql_parser::schema::{Definition, ScalarType};
 use std::{borrow::Cow, collections::HashMap, rc::Rc};
 
-use super::parser::{Document, Field, TypeDefinition};
+use super::parser::{typename_field, Document, Field, TypeDefinition};
 use crate::{type_ext::TypeExt, Error};
 
 use super::{OutputField, Type};
@@ -68,7 +68,7 @@ impl<'schema> TypeIndex<'schema> {
             return Err(Error::ExpectedObject(root_name.to_string()));
         };
 
-        Ok(OutputField::from_parser(field, self))
+        Ok(OutputField::from_parser(&field, self))
     }
 
     // Looks up the name of the type at Path.
@@ -112,12 +112,17 @@ impl<'schema> TypeIndex<'schema> {
         fields: &'find [Field<'schema>],
         current_type_name: &str,
         path: &[&'path str],
-    ) -> Result<&'find Field<'schema>, Error> {
+    ) -> Result<Field<'schema>, Error> {
         match path {
             [] => panic!("This shouldn't happen"),
+            ["__typename"] => Ok(typename_field()),
+            ["__typename", _rest @ ..] => {
+                Err(Error::TriedToSelectFieldsOfNonComposite("String".into()))
+            }
             [first] => fields
                 .iter()
                 .find(|field| field.name == *first)
+                .cloned()
                 .ok_or_else(|| {
                     Error::UnknownField(first.to_string(), current_type_name.to_string())
                 }),

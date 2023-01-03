@@ -1,6 +1,5 @@
 ---
 source: cynic-querygen/src/query_parsing/normalisation.rs
-assertion_line: 663
 expression: normalised
 ---
 NormalisedDocument {
@@ -300,6 +299,17 @@ NormalisedDocument {
                                 NamedType(
                                     OutputTypeRef {
                                         type_name: "ID",
+                                    },
+                                ),
+                            ),
+                            arguments: [],
+                        },
+                        OutputField {
+                            name: "__typename",
+                            value_type: NonNullType(
+                                NamedType(
+                                    OutputTypeRef {
+                                        type_name: "String",
                                     },
                                 ),
                             ),
@@ -652,6 +662,17 @@ NormalisedDocument {
                             ),
                             arguments: [],
                         },
+                        OutputField {
+                            name: "__typename",
+                            value_type: NonNullType(
+                                NamedType(
+                                    OutputTypeRef {
+                                        type_name: "String",
+                                    },
+                                ),
+                            ),
+                            arguments: [],
+                        },
                     ],
                     implements_interfaces: [
                         InterfaceTypeRef {
@@ -722,6 +743,17 @@ NormalisedDocument {
                                 NamedType(
                                     OutputTypeRef {
                                         type_name: "Film",
+                                    },
+                                ),
+                            ),
+                            arguments: [],
+                        },
+                        OutputField {
+                            name: "__typename",
+                            value_type: NonNullType(
+                                NamedType(
+                                    OutputTypeRef {
+                                        type_name: "String",
                                     },
                                 ),
                             ),
@@ -1044,6 +1076,17 @@ NormalisedDocument {
                                                     NamedType(
                                                         OutputTypeRef {
                                                             type_name: "ID",
+                                                        },
+                                                    ),
+                                                ),
+                                                arguments: [],
+                                            },
+                                            OutputField {
+                                                name: "__typename",
+                                                value_type: NonNullType(
+                                                    NamedType(
+                                                        OutputTypeRef {
+                                                            type_name: "String",
                                                         },
                                                     ),
                                                 ),
@@ -1534,6 +1577,17 @@ NormalisedDocument {
                                 },
                             ],
                         },
+                        OutputField {
+                            name: "__typename",
+                            value_type: NonNullType(
+                                NamedType(
+                                    OutputTypeRef {
+                                        type_name: "String",
+                                    },
+                                ),
+                            ),
+                            arguments: [],
+                        },
                     ],
                     implements_interfaces: [],
                 },
@@ -1629,6 +1683,17 @@ NormalisedDocument {
                                                     NamedType(
                                                         OutputTypeRef {
                                                             type_name: "Film",
+                                                        },
+                                                    ),
+                                                ),
+                                                arguments: [],
+                                            },
+                                            OutputField {
+                                                name: "__typename",
+                                                value_type: NonNullType(
+                                                    NamedType(
+                                                        OutputTypeRef {
+                                                            type_name: "String",
                                                         },
                                                     ),
                                                 ),
@@ -1951,6 +2016,17 @@ NormalisedDocument {
                                                                         NamedType(
                                                                             OutputTypeRef {
                                                                                 type_name: "ID",
+                                                                            },
+                                                                        ),
+                                                                    ),
+                                                                    arguments: [],
+                                                                },
+                                                                OutputField {
+                                                                    name: "__typename",
+                                                                    value_type: NonNullType(
+                                                                        NamedType(
+                                                                            OutputTypeRef {
+                                                                                type_name: "String",
                                                                             },
                                                                         ),
                                                                     ),
@@ -2350,6 +2426,17 @@ NormalisedDocument {
                                                     NamedType(
                                                         OutputTypeRef {
                                                             type_name: "ID",
+                                                        },
+                                                    ),
+                                                ),
+                                                arguments: [],
+                                            },
+                                            OutputField {
+                                                name: "__typename",
+                                                value_type: NonNullType(
+                                                    NamedType(
+                                                        OutputTypeRef {
+                                                            type_name: "String",
                                                         },
                                                     ),
                                                 ),
@@ -2825,6 +2912,17 @@ NormalisedDocument {
                                     },
                                 ],
                             },
+                            OutputField {
+                                name: "__typename",
+                                value_type: NonNullType(
+                                    NamedType(
+                                        OutputTypeRef {
+                                            type_name: "String",
+                                        },
+                                    ),
+                                ),
+                                arguments: [],
+                            },
                         ],
                         implements_interfaces: [],
                     },
@@ -2920,6 +3018,17 @@ NormalisedDocument {
                                                         NamedType(
                                                             OutputTypeRef {
                                                                 type_name: "Film",
+                                                            },
+                                                        ),
+                                                    ),
+                                                    arguments: [],
+                                                },
+                                                OutputField {
+                                                    name: "__typename",
+                                                    value_type: NonNullType(
+                                                        NamedType(
+                                                            OutputTypeRef {
+                                                                type_name: "String",
                                                             },
                                                         ),
                                                     ),
@@ -3242,6 +3351,17 @@ NormalisedDocument {
                                                                             NamedType(
                                                                                 OutputTypeRef {
                                                                                     type_name: "ID",
+                                                                                },
+                                                                            ),
+                                                                        ),
+                                                                        arguments: [],
+                                                                    },
+                                                                    OutputField {
+                                                                        name: "__typename",
+                                                                        value_type: NonNullType(
+                                                                            NamedType(
+                                                                                OutputTypeRef {
+                                                                                    type_name: "String",
                                                                                 },
                                                                             ),
                                                                         ),
@@ -3641,6 +3761,17 @@ NormalisedDocument {
                                                         NamedType(
                                                             OutputTypeRef {
                                                                 type_name: "ID",
+                                                            },
+                                                        ),
+                                                    ),
+                                                    arguments: [],
+                                                },
+                                                OutputField {
+                                                    name: "__typename",
+                                                    value_type: NonNullType(
+                                                        NamedType(
+                                                            OutputTypeRef {
+                                                                type_name: "String",
                                                             },
                                                         ),
                                                     ),

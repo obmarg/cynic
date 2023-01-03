@@ -53,6 +53,14 @@ pub mod __fields {
         impl ::cynic::schema::HasField<author> for super::super::Book {
             type Type = super::super::String;
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::Book {
+            type Type = super::super::String;
+        }
     }
     pub mod BookChanged {
         pub struct mutationType;
@@ -78,6 +86,14 @@ pub mod __fields {
         }
         impl ::cynic::schema::HasField<book> for super::super::BookChanged {
             type Type = Option<super::super::Book>;
+        }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::BookChanged {
+            type Type = super::super::String;
         }
     }
     pub mod MutationRoot {
@@ -116,6 +132,14 @@ pub mod __fields {
                 const NAME: &'static str = "id";
             }
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::MutationRoot {
+            type Type = super::super::String;
+        }
     }
     pub mod QueryRoot {
         pub struct books;
@@ -125,6 +149,14 @@ pub mod __fields {
         }
         impl ::cynic::schema::HasField<books> for super::super::QueryRoot {
             type Type = Vec<super::super::Book>;
+        }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::QueryRoot {
+            type Type = super::super::String;
         }
     }
     pub mod SubscriptionRoot {
@@ -157,6 +189,14 @@ pub mod __fields {
                 type ArgumentType = Option<super::super::super::MutationType>;
                 const NAME: &'static str = "mutationType";
             }
+        }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::SubscriptionRoot {
+            type Type = super::super::String;
         }
     }
 }

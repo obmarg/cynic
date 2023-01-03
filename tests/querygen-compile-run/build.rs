@@ -123,6 +123,11 @@ fn main() {
                 }
             )"#,
         ),
+        TestCase::query_norun(
+            &github_schema,
+            "../../cynic-querygen/tests/queries/github/queries-with-typename.graphql",
+            r#"queries::UnnamedQuery::build(())"#,
+        ),
         TestCase::mutation(
             &github_schema,
             "tests/queries/github/scalar-inside-input-object.graphql",
@@ -271,7 +276,7 @@ impl TestCase {
             schema_path: self.schema.path_for_generated_code.to_str().unwrap().into(),
             ..QueryGenOptions::default()
         };
-        let query_code = document_to_fragment_structs(&query, &schema, &options).unwrap();
+        let query_code = document_to_fragment_structs(query, schema, &options).unwrap();
 
         let test_filename = {
             let mut path = self.query_path.clone();

@@ -191,6 +191,14 @@ pub mod __fields {
         impl ::cynic::schema::HasField<updatedAt> for super::super::City {
             type Type = super::super::DateTime;
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::City {
+            type Type = super::super::String;
+        }
     }
     pub mod CityWhereInput {
         pub struct id;
@@ -988,6 +996,14 @@ pub mod __fields {
         impl ::cynic::schema::HasField<updatedAt> for super::super::Commitment {
             type Type = super::super::DateTime;
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::Commitment {
+            type Type = super::super::String;
+        }
     }
     pub mod CommitmentWhereInput {
         pub struct id;
@@ -1684,6 +1700,14 @@ pub mod __fields {
         }
         impl ::cynic::schema::HasField<updatedAt> for super::super::Company {
             type Type = super::super::DateTime;
+        }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::Company {
+            type Type = super::super::String;
         }
     }
     pub mod CompanyWhereInput {
@@ -2807,6 +2831,14 @@ pub mod __fields {
         }
         impl ::cynic::schema::HasField<updatedAt> for super::super::Country {
             type Type = super::super::DateTime;
+        }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::Country {
+            type Type = super::super::String;
         }
     }
     pub mod CountryWhereInput {
@@ -3958,6 +3990,14 @@ pub mod __fields {
         }
         impl ::cynic::schema::HasField<updatedAt> for super::super::Job {
             type Type = super::super::DateTime;
+        }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::Job {
+            type Type = super::super::String;
         }
     }
     pub mod JobInput {
@@ -5324,6 +5364,14 @@ pub mod __fields {
         impl ::cynic::schema::HasField<r#type> for super::super::Location {
             type Type = super::super::String;
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::Location {
+            type Type = super::super::String;
+        }
     }
     pub mod LocationInput {
         pub struct slug;
@@ -5411,6 +5459,14 @@ pub mod __fields {
                 type ArgumentType = super::super::super::String;
                 const NAME: &'static str = "adminSecret";
             }
+        }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::Mutation {
+            type Type = super::super::String;
         }
     }
     pub mod PostJobInput {
@@ -5600,6 +5656,14 @@ pub mod __fields {
         impl ::cynic::schema::HasField<companies> for super::super::Query {
             type Type = Vec<super::super::Company>;
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::Query {
+            type Type = super::super::String;
+        }
     }
     pub mod Remote {
         pub struct id;
@@ -5694,6 +5758,14 @@ pub mod __fields {
         }
         impl ::cynic::schema::HasField<updatedAt> for super::super::Remote {
             type Type = super::super::DateTime;
+        }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::Remote {
+            type Type = super::super::String;
         }
     }
     pub mod RemoteWhereInput {
@@ -6500,6 +6572,14 @@ pub mod __fields {
         impl ::cynic::schema::HasField<updatedAt> for super::super::Tag {
             type Type = super::super::DateTime;
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::Tag {
+            type Type = super::super::String;
+        }
     }
     pub mod TagWhereInput {
         pub struct id;
@@ -7158,6 +7238,14 @@ pub mod __fields {
         }
         impl ::cynic::schema::HasField<updatedAt> for super::super::User {
             type Type = super::super::DateTime;
+        }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::User {
+            type Type = super::super::String;
         }
     }
 }

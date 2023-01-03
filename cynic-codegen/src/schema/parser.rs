@@ -29,7 +29,22 @@ pub fn load_schema(filename: impl AsRef<std::path::Path>) -> Result<Document, Sc
     let schema = std::fs::read_to_string(&pathbuf)
         .map_err(|_| SchemaLoadError::FileNotFound(pathbuf.to_str().unwrap().to_string()))?;
 
-    parse_schema(&schema)
+    Ok(add_typenames(parse_schema(&schema)?))
+}
+
+fn add_typenames(mut schema: Document) -> Document {
+    for definition in &mut schema.definitions {
+        match definition {
+            Definition::TypeDefinition(TypeDefinition::Object(def)) => {
+                def.fields.push(typename_field());
+            }
+            Definition::TypeDefinition(TypeDefinition::Interface(def)) => {
+                def.fields.push(typename_field());
+            }
+            _ => {}
+        }
+    }
+    schema
 }
 
 pub(crate) fn parse_schema(schema: &str) -> Result<Document, SchemaLoadError> {
@@ -101,5 +116,16 @@ pub trait ScalarTypeExt {
 impl ScalarTypeExt for ScalarType {
     fn is_builtin(&self) -> bool {
         matches!(self.name.as_ref(), "String" | "Int" | "Boolean" | "ID")
+    }
+}
+
+fn typename_field() -> Field {
+    Field {
+        position: graphql_parser::Pos { line: 0, column: 0 },
+        description: None,
+        name: "__typename".into(),
+        arguments: vec![],
+        field_type: Type::NonNullType(Box::new(Type::NamedType("String".into()))),
+        directives: vec![],
     }
 }

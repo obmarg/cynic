@@ -447,6 +447,14 @@ pub mod __fields {
         impl ::cynic::schema::HasField<id> for super::super::Film {
             type Type = super::super::ID;
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::Film {
+            type Type = super::super::String;
+        }
     }
     pub mod FilmCharactersConnection {
         pub struct pageInfo;
@@ -481,6 +489,14 @@ pub mod __fields {
         impl ::cynic::schema::HasField<characters> for super::super::FilmCharactersConnection {
             type Type = Option<Vec<Option<super::super::Person>>>;
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::FilmCharactersConnection {
+            type Type = super::super::String;
+        }
     }
     pub mod FilmCharactersEdge {
         pub struct node;
@@ -497,6 +513,14 @@ pub mod __fields {
             const NAME: &'static str = "cursor";
         }
         impl ::cynic::schema::HasField<cursor> for super::super::FilmCharactersEdge {
+            type Type = super::super::String;
+        }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::FilmCharactersEdge {
             type Type = super::super::String;
         }
     }
@@ -533,6 +557,14 @@ pub mod __fields {
         impl ::cynic::schema::HasField<planets> for super::super::FilmPlanetsConnection {
             type Type = Option<Vec<Option<super::super::Planet>>>;
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::FilmPlanetsConnection {
+            type Type = super::super::String;
+        }
     }
     pub mod FilmPlanetsEdge {
         pub struct node;
@@ -549,6 +581,14 @@ pub mod __fields {
             const NAME: &'static str = "cursor";
         }
         impl ::cynic::schema::HasField<cursor> for super::super::FilmPlanetsEdge {
+            type Type = super::super::String;
+        }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::FilmPlanetsEdge {
             type Type = super::super::String;
         }
     }
@@ -585,6 +625,14 @@ pub mod __fields {
         impl ::cynic::schema::HasField<species> for super::super::FilmSpeciesConnection {
             type Type = Option<Vec<Option<super::super::Species>>>;
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::FilmSpeciesConnection {
+            type Type = super::super::String;
+        }
     }
     pub mod FilmSpeciesEdge {
         pub struct node;
@@ -601,6 +649,14 @@ pub mod __fields {
             const NAME: &'static str = "cursor";
         }
         impl ::cynic::schema::HasField<cursor> for super::super::FilmSpeciesEdge {
+            type Type = super::super::String;
+        }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::FilmSpeciesEdge {
             type Type = super::super::String;
         }
     }
@@ -637,6 +693,14 @@ pub mod __fields {
         impl ::cynic::schema::HasField<starships> for super::super::FilmStarshipsConnection {
             type Type = Option<Vec<Option<super::super::Starship>>>;
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::FilmStarshipsConnection {
+            type Type = super::super::String;
+        }
     }
     pub mod FilmStarshipsEdge {
         pub struct node;
@@ -653,6 +717,14 @@ pub mod __fields {
             const NAME: &'static str = "cursor";
         }
         impl ::cynic::schema::HasField<cursor> for super::super::FilmStarshipsEdge {
+            type Type = super::super::String;
+        }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::FilmStarshipsEdge {
             type Type = super::super::String;
         }
     }
@@ -689,6 +761,14 @@ pub mod __fields {
         impl ::cynic::schema::HasField<vehicles> for super::super::FilmVehiclesConnection {
             type Type = Option<Vec<Option<super::super::Vehicle>>>;
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::FilmVehiclesConnection {
+            type Type = super::super::String;
+        }
     }
     pub mod FilmVehiclesEdge {
         pub struct node;
@@ -705,6 +785,14 @@ pub mod __fields {
             const NAME: &'static str = "cursor";
         }
         impl ::cynic::schema::HasField<cursor> for super::super::FilmVehiclesEdge {
+            type Type = super::super::String;
+        }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::FilmVehiclesEdge {
             type Type = super::super::String;
         }
     }
@@ -741,6 +829,14 @@ pub mod __fields {
         impl ::cynic::schema::HasField<films> for super::super::FilmsConnection {
             type Type = Option<Vec<Option<super::super::Film>>>;
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::FilmsConnection {
+            type Type = super::super::String;
+        }
     }
     pub mod FilmsEdge {
         pub struct node;
@@ -759,6 +855,14 @@ pub mod __fields {
         impl ::cynic::schema::HasField<cursor> for super::super::FilmsEdge {
             type Type = super::super::String;
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::FilmsEdge {
+            type Type = super::super::String;
+        }
     }
     pub mod Node {
         pub struct id;
@@ -768,6 +872,14 @@ pub mod __fields {
         }
         impl ::cynic::schema::HasField<id> for super::super::Node {
             type Type = super::super::ID;
+        }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::Node {
+            type Type = super::super::String;
         }
     }
     pub mod PageInfo {
@@ -803,6 +915,14 @@ pub mod __fields {
         impl ::cynic::schema::HasField<endCursor> for super::super::PageInfo {
             type Type = Option<super::super::String>;
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::PageInfo {
+            type Type = super::super::String;
+        }
     }
     pub mod PeopleConnection {
         pub struct pageInfo;
@@ -837,6 +957,14 @@ pub mod __fields {
         impl ::cynic::schema::HasField<people> for super::super::PeopleConnection {
             type Type = Option<Vec<Option<super::super::Person>>>;
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::PeopleConnection {
+            type Type = super::super::String;
+        }
     }
     pub mod PeopleEdge {
         pub struct node;
@@ -853,6 +981,14 @@ pub mod __fields {
             const NAME: &'static str = "cursor";
         }
         impl ::cynic::schema::HasField<cursor> for super::super::PeopleEdge {
+            type Type = super::super::String;
+        }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::PeopleEdge {
             type Type = super::super::String;
         }
     }
@@ -1051,6 +1187,14 @@ pub mod __fields {
         impl ::cynic::schema::HasField<id> for super::super::Person {
             type Type = super::super::ID;
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::Person {
+            type Type = super::super::String;
+        }
     }
     pub mod PersonFilmsConnection {
         pub struct pageInfo;
@@ -1085,6 +1229,14 @@ pub mod __fields {
         impl ::cynic::schema::HasField<films> for super::super::PersonFilmsConnection {
             type Type = Option<Vec<Option<super::super::Film>>>;
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::PersonFilmsConnection {
+            type Type = super::super::String;
+        }
     }
     pub mod PersonFilmsEdge {
         pub struct node;
@@ -1101,6 +1253,14 @@ pub mod __fields {
             const NAME: &'static str = "cursor";
         }
         impl ::cynic::schema::HasField<cursor> for super::super::PersonFilmsEdge {
+            type Type = super::super::String;
+        }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::PersonFilmsEdge {
             type Type = super::super::String;
         }
     }
@@ -1137,6 +1297,14 @@ pub mod __fields {
         impl ::cynic::schema::HasField<starships> for super::super::PersonStarshipsConnection {
             type Type = Option<Vec<Option<super::super::Starship>>>;
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::PersonStarshipsConnection {
+            type Type = super::super::String;
+        }
     }
     pub mod PersonStarshipsEdge {
         pub struct node;
@@ -1153,6 +1321,14 @@ pub mod __fields {
             const NAME: &'static str = "cursor";
         }
         impl ::cynic::schema::HasField<cursor> for super::super::PersonStarshipsEdge {
+            type Type = super::super::String;
+        }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::PersonStarshipsEdge {
             type Type = super::super::String;
         }
     }
@@ -1189,6 +1365,14 @@ pub mod __fields {
         impl ::cynic::schema::HasField<vehicles> for super::super::PersonVehiclesConnection {
             type Type = Option<Vec<Option<super::super::Vehicle>>>;
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::PersonVehiclesConnection {
+            type Type = super::super::String;
+        }
     }
     pub mod PersonVehiclesEdge {
         pub struct node;
@@ -1205,6 +1389,14 @@ pub mod __fields {
             const NAME: &'static str = "cursor";
         }
         impl ::cynic::schema::HasField<cursor> for super::super::PersonVehiclesEdge {
+            type Type = super::super::String;
+        }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::PersonVehiclesEdge {
             type Type = super::super::String;
         }
     }
@@ -1365,6 +1557,14 @@ pub mod __fields {
         impl ::cynic::schema::HasField<id> for super::super::Planet {
             type Type = super::super::ID;
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::Planet {
+            type Type = super::super::String;
+        }
     }
     pub mod PlanetFilmsConnection {
         pub struct pageInfo;
@@ -1399,6 +1599,14 @@ pub mod __fields {
         impl ::cynic::schema::HasField<films> for super::super::PlanetFilmsConnection {
             type Type = Option<Vec<Option<super::super::Film>>>;
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::PlanetFilmsConnection {
+            type Type = super::super::String;
+        }
     }
     pub mod PlanetFilmsEdge {
         pub struct node;
@@ -1415,6 +1623,14 @@ pub mod __fields {
             const NAME: &'static str = "cursor";
         }
         impl ::cynic::schema::HasField<cursor> for super::super::PlanetFilmsEdge {
+            type Type = super::super::String;
+        }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::PlanetFilmsEdge {
             type Type = super::super::String;
         }
     }
@@ -1451,6 +1667,14 @@ pub mod __fields {
         impl ::cynic::schema::HasField<residents> for super::super::PlanetResidentsConnection {
             type Type = Option<Vec<Option<super::super::Person>>>;
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::PlanetResidentsConnection {
+            type Type = super::super::String;
+        }
     }
     pub mod PlanetResidentsEdge {
         pub struct node;
@@ -1467,6 +1691,14 @@ pub mod __fields {
             const NAME: &'static str = "cursor";
         }
         impl ::cynic::schema::HasField<cursor> for super::super::PlanetResidentsEdge {
+            type Type = super::super::String;
+        }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::PlanetResidentsEdge {
             type Type = super::super::String;
         }
     }
@@ -1503,6 +1735,14 @@ pub mod __fields {
         impl ::cynic::schema::HasField<planets> for super::super::PlanetsConnection {
             type Type = Option<Vec<Option<super::super::Planet>>>;
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::PlanetsConnection {
+            type Type = super::super::String;
+        }
     }
     pub mod PlanetsEdge {
         pub struct node;
@@ -1519,6 +1759,14 @@ pub mod __fields {
             const NAME: &'static str = "cursor";
         }
         impl ::cynic::schema::HasField<cursor> for super::super::PlanetsEdge {
+            type Type = super::super::String;
+        }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::PlanetsEdge {
             type Type = super::super::String;
         }
     }
@@ -1838,6 +2086,14 @@ pub mod __fields {
                 const NAME: &'static str = "id";
             }
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::Root {
+            type Type = super::super::String;
+        }
     }
     pub mod Species {
         pub struct name;
@@ -2004,6 +2260,14 @@ pub mod __fields {
         impl ::cynic::schema::HasField<id> for super::super::Species {
             type Type = super::super::ID;
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::Species {
+            type Type = super::super::String;
+        }
     }
     pub mod SpeciesConnection {
         pub struct pageInfo;
@@ -2038,6 +2302,14 @@ pub mod __fields {
         impl ::cynic::schema::HasField<species> for super::super::SpeciesConnection {
             type Type = Option<Vec<Option<super::super::Species>>>;
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::SpeciesConnection {
+            type Type = super::super::String;
+        }
     }
     pub mod SpeciesEdge {
         pub struct node;
@@ -2054,6 +2326,14 @@ pub mod __fields {
             const NAME: &'static str = "cursor";
         }
         impl ::cynic::schema::HasField<cursor> for super::super::SpeciesEdge {
+            type Type = super::super::String;
+        }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::SpeciesEdge {
             type Type = super::super::String;
         }
     }
@@ -2090,6 +2370,14 @@ pub mod __fields {
         impl ::cynic::schema::HasField<films> for super::super::SpeciesFilmsConnection {
             type Type = Option<Vec<Option<super::super::Film>>>;
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::SpeciesFilmsConnection {
+            type Type = super::super::String;
+        }
     }
     pub mod SpeciesFilmsEdge {
         pub struct node;
@@ -2106,6 +2394,14 @@ pub mod __fields {
             const NAME: &'static str = "cursor";
         }
         impl ::cynic::schema::HasField<cursor> for super::super::SpeciesFilmsEdge {
+            type Type = super::super::String;
+        }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::SpeciesFilmsEdge {
             type Type = super::super::String;
         }
     }
@@ -2142,6 +2438,14 @@ pub mod __fields {
         impl ::cynic::schema::HasField<people> for super::super::SpeciesPeopleConnection {
             type Type = Option<Vec<Option<super::super::Person>>>;
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::SpeciesPeopleConnection {
+            type Type = super::super::String;
+        }
     }
     pub mod SpeciesPeopleEdge {
         pub struct node;
@@ -2158,6 +2462,14 @@ pub mod __fields {
             const NAME: &'static str = "cursor";
         }
         impl ::cynic::schema::HasField<cursor> for super::super::SpeciesPeopleEdge {
+            type Type = super::super::String;
+        }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::SpeciesPeopleEdge {
             type Type = super::super::String;
         }
     }
@@ -2350,6 +2662,14 @@ pub mod __fields {
         impl ::cynic::schema::HasField<id> for super::super::Starship {
             type Type = super::super::ID;
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::Starship {
+            type Type = super::super::String;
+        }
     }
     pub mod StarshipFilmsConnection {
         pub struct pageInfo;
@@ -2384,6 +2704,14 @@ pub mod __fields {
         impl ::cynic::schema::HasField<films> for super::super::StarshipFilmsConnection {
             type Type = Option<Vec<Option<super::super::Film>>>;
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::StarshipFilmsConnection {
+            type Type = super::super::String;
+        }
     }
     pub mod StarshipFilmsEdge {
         pub struct node;
@@ -2400,6 +2728,14 @@ pub mod __fields {
             const NAME: &'static str = "cursor";
         }
         impl ::cynic::schema::HasField<cursor> for super::super::StarshipFilmsEdge {
+            type Type = super::super::String;
+        }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::StarshipFilmsEdge {
             type Type = super::super::String;
         }
     }
@@ -2436,6 +2772,14 @@ pub mod __fields {
         impl ::cynic::schema::HasField<pilots> for super::super::StarshipPilotsConnection {
             type Type = Option<Vec<Option<super::super::Person>>>;
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::StarshipPilotsConnection {
+            type Type = super::super::String;
+        }
     }
     pub mod StarshipPilotsEdge {
         pub struct node;
@@ -2452,6 +2796,14 @@ pub mod __fields {
             const NAME: &'static str = "cursor";
         }
         impl ::cynic::schema::HasField<cursor> for super::super::StarshipPilotsEdge {
+            type Type = super::super::String;
+        }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::StarshipPilotsEdge {
             type Type = super::super::String;
         }
     }
@@ -2488,6 +2840,14 @@ pub mod __fields {
         impl ::cynic::schema::HasField<starships> for super::super::StarshipsConnection {
             type Type = Option<Vec<Option<super::super::Starship>>>;
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::StarshipsConnection {
+            type Type = super::super::String;
+        }
     }
     pub mod StarshipsEdge {
         pub struct node;
@@ -2504,6 +2864,14 @@ pub mod __fields {
             const NAME: &'static str = "cursor";
         }
         impl ::cynic::schema::HasField<cursor> for super::super::StarshipsEdge {
+            type Type = super::super::String;
+        }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::StarshipsEdge {
             type Type = super::super::String;
         }
     }
@@ -2680,6 +3048,14 @@ pub mod __fields {
         impl ::cynic::schema::HasField<id> for super::super::Vehicle {
             type Type = super::super::ID;
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::Vehicle {
+            type Type = super::super::String;
+        }
     }
     pub mod VehicleFilmsConnection {
         pub struct pageInfo;
@@ -2714,6 +3090,14 @@ pub mod __fields {
         impl ::cynic::schema::HasField<films> for super::super::VehicleFilmsConnection {
             type Type = Option<Vec<Option<super::super::Film>>>;
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::VehicleFilmsConnection {
+            type Type = super::super::String;
+        }
     }
     pub mod VehicleFilmsEdge {
         pub struct node;
@@ -2730,6 +3114,14 @@ pub mod __fields {
             const NAME: &'static str = "cursor";
         }
         impl ::cynic::schema::HasField<cursor> for super::super::VehicleFilmsEdge {
+            type Type = super::super::String;
+        }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::VehicleFilmsEdge {
             type Type = super::super::String;
         }
     }
@@ -2766,6 +3158,14 @@ pub mod __fields {
         impl ::cynic::schema::HasField<pilots> for super::super::VehiclePilotsConnection {
             type Type = Option<Vec<Option<super::super::Person>>>;
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::VehiclePilotsConnection {
+            type Type = super::super::String;
+        }
     }
     pub mod VehiclePilotsEdge {
         pub struct node;
@@ -2782,6 +3182,14 @@ pub mod __fields {
             const NAME: &'static str = "cursor";
         }
         impl ::cynic::schema::HasField<cursor> for super::super::VehiclePilotsEdge {
+            type Type = super::super::String;
+        }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::VehiclePilotsEdge {
             type Type = super::super::String;
         }
     }
@@ -2818,6 +3226,14 @@ pub mod __fields {
         impl ::cynic::schema::HasField<vehicles> for super::super::VehiclesConnection {
             type Type = Option<Vec<Option<super::super::Vehicle>>>;
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::VehiclesConnection {
+            type Type = super::super::String;
+        }
     }
     pub mod VehiclesEdge {
         pub struct node;
@@ -2834,6 +3250,14 @@ pub mod __fields {
             const NAME: &'static str = "cursor";
         }
         impl ::cynic::schema::HasField<cursor> for super::super::VehiclesEdge {
+            type Type = super::super::String;
+        }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::VehiclesEdge {
             type Type = super::super::String;
         }
     }

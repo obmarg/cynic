@@ -8,9 +8,9 @@ pub use parser::Document;
 pub use type_index::{GraphPath, TypeIndex};
 pub use type_refs::{InputTypeRef, InterfaceTypeRef, OutputTypeRef, TypeRef};
 
-use std::{convert::TryFrom, rc::Rc};
+use std::{convert::TryFrom, iter, rc::Rc};
 
-use crate::Error;
+use crate::{schema::parser::typename_field, Error};
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum Type<'schema> {
@@ -83,6 +83,7 @@ impl<'schema> Type<'schema> {
         type_index: &Rc<TypeIndex<'schema>>,
     ) -> Type<'schema> {
         use parser::TypeDefinition;
+        let typename_field = typename_field();
 
         match type_def {
             TypeDefinition::Scalar(scalar) => Type::Scalar(ScalarDetails { name: scalar.name }),
@@ -91,6 +92,7 @@ impl<'schema> Type<'schema> {
                 fields: obj
                     .fields
                     .iter()
+                    .chain(iter::once(&typename_field))
                     .map(|field| OutputField::from_parser(field, type_index))
                     .collect(),
                 implements_interfaces: obj
@@ -104,6 +106,7 @@ impl<'schema> Type<'schema> {
                 fields: iface
                     .fields
                     .iter()
+                    .chain(iter::once(&typename_field))
                     .map(|field| OutputField::from_parser(field, type_index))
                     .collect(),
             }),
