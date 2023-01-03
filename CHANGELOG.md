@@ -9,6 +9,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v2.2.3 - 2023-01-03
+
 ### Bug Fixes
 
 - The generator and derive macros are now aware of the implicit `__typename`
