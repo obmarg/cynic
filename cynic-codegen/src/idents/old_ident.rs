@@ -74,10 +74,20 @@ pub fn to_pascal_case(s: &str) -> String {
     let mut first_char = true;
     let mut prev_is_upper = false;
     let mut prev_is_underscore = false;
-    for c in s.chars() {
+    let mut chars = s.chars().peekable();
+    loop {
+        let c = chars.next();
+        if c.is_none() {
+            break;
+        }
+        let c = c.unwrap();
         if first_char {
             if c == '_' {
-                prev_is_underscore = true;
+                // keep leading underscores
+                buf.push('_');
+                while let Some('_') = chars.peek() {
+                    buf.push(chars.next().unwrap());
+                }
             } else if c.is_uppercase() {
                 prev_is_upper = true;
                 buf.push(c);
@@ -153,9 +163,10 @@ mod tests {
         assert_eq!(to_camel_case("aString"), "aString");
         assert_eq!(to_camel_case("MyString"), "myString");
         assert_eq!(to_camel_case("my_string"), "myString");
-        assert_eq!(to_camel_case("_another_one"), "anotherOne");
+        assert_eq!(to_camel_case("_another_one"), "_anotherOne");
         assert_eq!(to_camel_case("RepeatedUPPERCASE"), "repeatedUppercase");
         assert_eq!(to_camel_case("UUID"), "uuid");
+        assert_eq!(to_camel_case("__typename"), "__typename");
     }
 
     #[test]
@@ -163,9 +174,10 @@ mod tests {
         assert_eq!(to_pascal_case("aString"), "AString");
         assert_eq!(to_pascal_case("MyString"), "MyString");
         assert_eq!(to_pascal_case("my_string"), "MyString");
-        assert_eq!(to_pascal_case("_another_one"), "AnotherOne");
+        assert_eq!(to_pascal_case("_another_one"), "_anotherOne");
         assert_eq!(to_pascal_case("RepeatedUPPERCASE"), "RepeatedUppercase");
         assert_eq!(to_pascal_case("UUID"), "Uuid");
+        assert_eq!(to_pascal_case("__typename"), "__typename");
     }
 
     #[test]

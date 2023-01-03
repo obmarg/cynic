@@ -64,7 +64,7 @@ pub fn extract_whole_input_object_tree<'schema>(
 
     let rv = extract_whole_input_object(input_object, &mut object_map, &mut seen_objects)?;
 
-    input_objects.extend(object_map.into_iter().map(|(_, obj)| obj));
+    input_objects.extend(object_map.into_values());
 
     Ok(rv)
 }

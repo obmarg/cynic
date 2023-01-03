@@ -41,6 +41,14 @@ pub mod __fields {
         impl ::cynic::schema::HasField<name> for super::super::Bar {
             type Type = Option<super::super::String>;
         }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::Bar {
+            type Type = super::super::String;
+        }
     }
     pub mod Foo {
         pub struct _Underscore;
@@ -132,6 +140,14 @@ pub mod __fields {
                 type ArgumentType = Option<super::super::super::RecursiveInputParent>;
                 const NAME: &'static str = "recursive2";
             }
+        }
+        pub struct __typename;
+        impl ::cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl ::cynic::schema::HasField<__typename> for super::super::Foo {
+            type Type = super::super::String;
         }
     }
     pub mod RecursiveInputChild {

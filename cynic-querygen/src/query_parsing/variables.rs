@@ -183,8 +183,8 @@ impl<'query, 'schema> VariableStructDetails<'query, 'schema> {
 
     pub fn variables_structs(self) -> Vec<output::VariablesStruct<'query, 'schema>> {
         self.selection_structs
-            .iter()
-            .map(|(_, arg_struct)| {
+            .values()
+            .map(|arg_struct| {
                 let name = self.namer.borrow_mut().name_subject(arg_struct);
                 output::VariablesStruct::new(
                     name,

@@ -1,7 +1,7 @@
 use std::{
-    collections::{BTreeSet, HashMap},
+    collections::{hash_map::DefaultHasher, BTreeSet, HashMap, HashSet},
     convert::TryInto,
-    hash::Hash,
+    hash::{Hash, Hasher},
     rc::Rc,
 };
 
@@ -275,10 +275,23 @@ impl<'a, 'query, 'schema, 'doc> Normaliser<'a, 'query, 'schema, 'doc> {
     ) -> Result<Rc<SelectionSet<'query, 'schema>>, Error> {
         let current_type = self.type_index.type_for_path(&current_path)?;
 
+        // Awkwardly using a set of hashes & to dedup so we don't fuck
+        // up the order of the selections using a BTreeset or Vec.dedup
+        let mut seen_selections = HashSet::new();
         let mut selections = Vec::new();
 
         for item in &selection_set.items {
-            selections.extend(self.convert_selection(item, &current_path)?);
+            let new_selections = self.convert_selection(item, &current_path)?;
+            for selection in new_selections {
+                let mut hasher = DefaultHasher::new();
+                selection.hash(&mut hasher);
+                let hash = hasher.finish();
+                if seen_selections.contains(&hash) {
+                    continue;
+                }
+                seen_selections.insert(hash);
+                selections.push(selection);
+            }
         }
 
         let rv = Rc::new(SelectionSet {
