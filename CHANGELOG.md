@@ -9,6 +9,11 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+### Bug Fixes
+
+- Fix an issue where you'd get extremely weird compiler errors if your
+  `QueryFragment` had fields named `key` or `map`.
+
 ## v2.2.3 - 2023-01-03
 
 ### Bug Fixes

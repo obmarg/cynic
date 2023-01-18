@@ -89,11 +89,11 @@ impl quote::ToTokens for StandardDeserializeImpl {
             let ty = &f.ty;
             if f.is_flattened {
                 quote! {
-                    #field_name = Some(map.next_value::<::cynic::__private::Flattened<#ty>>()?.into_inner());
+                    #field_name = Some(__map.next_value::<::cynic::__private::Flattened<#ty>>()?.into_inner());
                 }
             } else {
                 quote! {
-                    #field_name = Some(map.next_value()?);
+                    #field_name = Some(__map.next_value()?);
                 }
             }
         });
@@ -130,15 +130,15 @@ impl quote::ToTokens for StandardDeserializeImpl {
                             formatter.write_str(#expecting_str)
                         }
 
-                        fn visit_map<V>(self, mut map: V) -> Result<#target_struct, V::Error>
+                        fn visit_map<V>(self, mut __map: V) -> Result<#target_struct, V::Error>
                         where
                             V: ::cynic::serde::de::MapAccess<'de>,
                         {
                             #(
                                 let mut #field_names = None;
                             )*
-                            while let Some(key) = map.next_key()? {
-                                match key {
+                            while let Some(__key) = __map.next_key()? {
+                                match __key {
                                     #(
                                         Field::#field_variant_names => {
                                             if #field_names.is_some() {
@@ -148,7 +148,7 @@ impl quote::ToTokens for StandardDeserializeImpl {
                                         }
                                     )*
                                     Field::__Other => {
-                                        map.next_value::<::cynic::serde::de::IgnoredAny>()?;
+                                        __map.next_value::<::cynic::serde::de::IgnoredAny>()?;
                                     }
                                 }
                             }
