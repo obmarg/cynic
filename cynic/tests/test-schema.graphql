@@ -39,6 +39,10 @@ type EmptyType {
   _: Boolean
 }
 
+type TypeWithKey {
+  key: String!
+}
+
 type Query {
   allPosts: [BlogPost!]!
   post(id: ID!): BlogPost

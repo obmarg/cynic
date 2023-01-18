@@ -33,13 +33,13 @@ impl<'de> ::cynic::serde::Deserialize<'de> for Film {
             fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
                 formatter.write_str("struct Film")
             }
-            fn visit_map<V>(self, mut map: V) -> Result<Film, V::Error>
+            fn visit_map<V>(self, mut __map: V) -> Result<Film, V::Error>
             where
                 V: ::cynic::serde::de::MapAccess<'de>,
             {
                 let mut producers = None;
-                while let Some(key) = map.next_key()? {
-                    match key {
+                while let Some(__key) = __map.next_key()? {
+                    match __key {
                         Field::producers => {
                             if producers.is_some() {
                                 return Err(::cynic::serde::de::Error::duplicate_field(
@@ -47,12 +47,13 @@ impl<'de> ::cynic::serde::Deserialize<'de> for Film {
                                 ));
                             }
                             producers = Some(
-                                map.next_value::<::cynic::__private::Flattened<Vec<String>>>()?
+                                __map
+                                    .next_value::<::cynic::__private::Flattened<Vec<String>>>()?
                                     .into_inner(),
                             );
                         }
                         Field::__Other => {
-                            map.next_value::<::cynic::serde::de::IgnoredAny>()?;
+                            __map.next_value::<::cynic::serde::de::IgnoredAny>()?;
                         }
                     }
                 }

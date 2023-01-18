@@ -67,23 +67,23 @@ impl<'de> ::cynic::serde::Deserialize<'de> for MyQuery {
             fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
                 formatter.write_str("struct MyQuery")
             }
-            fn visit_map<V>(self, mut map: V) -> Result<MyQuery, V::Error>
+            fn visit_map<V>(self, mut __map: V) -> Result<MyQuery, V::Error>
             where
                 V: ::cynic::serde::de::MapAccess<'de>,
             {
                 let mut filteredPosts = None;
-                while let Some(key) = map.next_key()? {
-                    match key {
+                while let Some(__key) = __map.next_key()? {
+                    match __key {
                         Field::filteredPosts => {
                             if filteredPosts.is_some() {
                                 return Err(::cynic::serde::de::Error::duplicate_field(
                                     "filteredPosts",
                                 ));
                             }
-                            filteredPosts = Some(map.next_value()?);
+                            filteredPosts = Some(__map.next_value()?);
                         }
                         Field::__Other => {
-                            map.next_value::<::cynic::serde::de::IgnoredAny>()?;
+                            __map.next_value::<::cynic::serde::de::IgnoredAny>()?;
                         }
                     }
                 }
