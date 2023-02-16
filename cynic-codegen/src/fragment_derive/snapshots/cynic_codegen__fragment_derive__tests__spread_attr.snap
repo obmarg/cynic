@@ -1,6 +1,5 @@
 ---
 source: cynic-codegen/src/fragment_derive/tests.rs
-assertion_line: 114
 expression: "format_code(format!(\"{}\", tokens))"
 ---
 #[automatically_derived]
@@ -8,9 +7,11 @@ impl<'de> ::cynic::QueryFragment<'de> for Film {
     type SchemaType = schema::Film;
     type Variables = ();
     const TYPE: Option<&'static str> = Some("Film");
-    fn query(mut builder: ::cynic::queries::SelectionBuilder<Self::SchemaType, Self::Variables>) {
+    fn query(
+        mut builder: ::cynic::queries::SelectionBuilder<'_, Self::SchemaType, Self::Variables>,
+    ) {
         #![allow(unused_mut)]
-        <FilmDetails as ::cynic::QueryFragment>::query(builder)
+        <FilmDetails as ::cynic::QueryFragment<'_>>::query(builder)
     }
 }
 #[automatically_derived]

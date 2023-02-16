@@ -9,6 +9,10 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+### Bug Fixes
+
+- The macro generated code now compiles under `-D rust-2018-idioms`
+
 ## v2.2.4 - 2023-01-18
 
 ### Bug Fixes

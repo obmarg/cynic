@@ -7,7 +7,9 @@ impl<'de> ::cynic::QueryFragment<'de> for Film {
     type SchemaType = schema::Film;
     type Variables = ();
     const TYPE: Option<&'static str> = Some("Film");
-    fn query(mut builder: ::cynic::queries::SelectionBuilder<Self::SchemaType, Self::Variables>) {
+    fn query(
+        mut builder: ::cynic::queries::SelectionBuilder<'_, Self::SchemaType, Self::Variables>,
+    ) {
         #![allow(unused_mut)]
         let mut field_builder = builder . select_flattened_field :: < schema :: __fields :: Film :: producers , < Vec < String > as :: cynic :: schema :: IsScalar < < schema :: __fields :: Film :: producers as :: cynic :: schema :: Field > :: Type >> :: SchemaType , < schema :: __fields :: Film :: producers as :: cynic :: schema :: Field > :: Type , > () ;
     }
@@ -62,7 +64,7 @@ impl<'de> ::cynic::serde::Deserialize<'de> for Film {
                 Ok(Film { producers })
             }
         }
-        const FIELDS: &'static [&'static str] = &["producers"];
+        const FIELDS: &'static [&str] = &["producers"];
         deserializer.deserialize_struct("Film", FIELDS, Visitor)
     }
 }

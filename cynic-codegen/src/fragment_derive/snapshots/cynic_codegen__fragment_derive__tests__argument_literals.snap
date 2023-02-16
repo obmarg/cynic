@@ -7,9 +7,11 @@ impl<'de> ::cynic::QueryFragment<'de> for MyQuery {
     type SchemaType = schema::Query;
     type Variables = ();
     const TYPE: Option<&'static str> = Some("Query");
-    fn query(mut builder: ::cynic::queries::SelectionBuilder<Self::SchemaType, Self::Variables>) {
+    fn query(
+        mut builder: ::cynic::queries::SelectionBuilder<'_, Self::SchemaType, Self::Variables>,
+    ) {
         #![allow(unused_mut)]
-        let mut field_builder = builder . select_field :: < schema :: __fields :: Query :: filteredPosts , < Vec < BlogPostOutput > as :: cynic :: QueryFragment > :: SchemaType > () ;
+        let mut field_builder = builder . select_field :: < schema :: __fields :: Query :: filteredPosts , < Vec < BlogPostOutput > as :: cynic :: QueryFragment < '_ >> :: SchemaType > () ;
         {
             struct PostStatePosted;
             impl ::cynic::serde::Serialize for PostStatePosted {
@@ -33,7 +35,7 @@ impl<'de> ::cynic::QueryFragment<'de> for MyQuery {
                         .item(|builder| builder.literal(PostStatePosted));
                 });
         }
-        <Vec<BlogPostOutput> as ::cynic::QueryFragment>::query(field_builder.select_children());
+        <Vec<BlogPostOutput> as ::cynic::QueryFragment<'_>>::query(field_builder.select_children());
     }
 }
 #[automatically_derived]
@@ -82,7 +84,7 @@ impl<'de> ::cynic::serde::Deserialize<'de> for MyQuery {
                 Ok(MyQuery { filteredPosts })
             }
         }
-        const FIELDS: &'static [&'static str] = &["filteredPosts"];
+        const FIELDS: &'static [&str] = &["filteredPosts"];
         deserializer.deserialize_struct("MyQuery", FIELDS, Visitor)
     }
 }
