@@ -28,7 +28,7 @@ fn test_analyse(
 
     let schema_doc = parse_schema(SCHEMA).unwrap();
     let schema = Schema::new(&schema_doc).validate().unwrap();
-    let ty = schema.lookup::<Type>("Query").ok().unwrap();
+    let ty = schema.lookup::<Type<'_>>("Query").ok().unwrap();
     let field = &ty.object().unwrap().field(field).unwrap();
 
     let literals = literals.arguments.into_iter().collect::<Vec<_>>();
@@ -49,7 +49,7 @@ fn test_analyse(
 fn test_analyse_errors_without_argument_struct() {
     let schema_doc = parse_schema(SCHEMA).unwrap();
     let schema = Schema::new(&schema_doc).validate().unwrap();
-    let ty = schema.lookup::<Type>("Query").ok().unwrap();
+    let ty = schema.lookup::<Type<'_>>("Query").ok().unwrap();
     let field = &ty.object().unwrap().field("filteredBooks").unwrap();
 
     let literals: CynicArguments =

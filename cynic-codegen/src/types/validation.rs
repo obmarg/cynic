@@ -14,8 +14,8 @@ pub enum CheckMode {
     Spreading,
 }
 
-pub fn check_types_are_compatible<'a>(
-    gql_type: &TypeRef<'a, OutputType>,
+pub fn check_types_are_compatible(
+    gql_type: &TypeRef<'_, OutputType<'_>>,
     rust_type: &syn::Type,
     mode: CheckMode,
 ) -> Result<(), syn::Error> {
@@ -32,8 +32,8 @@ pub fn check_types_are_compatible<'a>(
     Ok(())
 }
 
-pub fn check_input_types_are_compatible<'a>(
-    gql_type: &InputValue<'a>,
+pub fn check_input_types_are_compatible(
+    gql_type: &InputValue<'_>,
     rust_type: &syn::Type,
 ) -> Result<(), syn::Error> {
     let parsed_type = parse_rust_type(rust_type);
@@ -44,7 +44,7 @@ pub fn check_input_types_are_compatible<'a>(
 }
 
 pub fn check_spread_type(rust_type: &syn::Type) -> Result<(), syn::Error> {
-    fn inner_fn(rust_type: &RustType) -> Result<(), syn::Error> {
+    fn inner_fn(rust_type: &RustType<'_>) -> Result<(), syn::Error> {
         match rust_type {
             RustType::Unknown { .. } => {
                 // If we can't parse the type just ignore it - the compiler will still tell us if it's
@@ -78,7 +78,7 @@ pub fn check_spread_type(rust_type: &syn::Type) -> Result<(), syn::Error> {
 /// Returns the type inside `Option` if the type is `Option`.
 /// Otherwise returns None
 pub fn outer_type_is_option(rust_type: &syn::Type) -> bool {
-    fn inner_fn(rust_type: &RustType) -> bool {
+    fn inner_fn(rust_type: &RustType<'_>) -> bool {
         match rust_type {
             RustType::Optional { .. } => true,
             RustType::List { .. } => false,
@@ -150,7 +150,7 @@ fn output_type_check<'a>(
 fn input_type_check<'a>(
     gql_type: &TypeRef<'a, InputType<'a>>,
     has_default: bool,
-    rust_type: &RustType,
+    rust_type: &RustType<'_>,
 ) -> Result<(), TypeValidationError> {
     match (&gql_type, rust_type) {
         (gql_type, RustType::Box { inner, .. }) => {
@@ -200,9 +200,9 @@ fn input_type_check<'a>(
     }
 }
 
-fn recursing_check<'a>(
-    gql_type: &TypeRef<'a, OutputType>,
-    rust_type: &RustType,
+fn recursing_check(
+    gql_type: &TypeRef<'_, OutputType<'_>>,
+    rust_type: &RustType<'_>,
 ) -> Result<(), TypeValidationError> {
     if let RustType::Unknown { .. } = rust_type {
         return Err(TypeValidationError::UnknownType {
@@ -314,8 +314,8 @@ mod tests {
     type OutputTypeRef<'a> = super::TypeRef<'a, OutputType<'a>>;
     type InputTypeRef<'a> = super::TypeRef<'a, InputType<'a>>;
 
-    fn call_output_type_check<'a>(
-        gql_type: &OutputTypeRef<'a>,
+    fn call_output_type_check(
+        gql_type: &OutputTypeRef<'_>,
         rust_type: &syn::Type,
         flattening: bool,
     ) -> Result<(), TypeValidationError> {
@@ -536,8 +536,8 @@ mod tests {
         );
     }
 
-    fn call_input_type_check<'a>(
-        gql_type: &InputTypeRef<'a>,
+    fn call_input_type_check(
+        gql_type: &InputTypeRef<'_>,
         has_default: bool,
         rust_type: &syn::Type,
     ) -> Result<(), TypeValidationError> {

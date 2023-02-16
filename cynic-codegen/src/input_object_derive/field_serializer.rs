@@ -17,7 +17,7 @@ pub struct FieldSerializer<'a> {
 impl<'a> FieldSerializer<'a> {
     pub fn new(
         rust_field: &'a InputObjectDeriveField,
-        graphql_field: &'a InputValue,
+        graphql_field: &'a InputValue<'_>,
         schema_module: &'a syn::Path,
     ) -> FieldSerializer<'a> {
         FieldSerializer {

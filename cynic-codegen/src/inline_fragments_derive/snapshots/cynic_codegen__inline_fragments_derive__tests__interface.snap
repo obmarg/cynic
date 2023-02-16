@@ -1,6 +1,5 @@
 ---
 source: cynic-codegen/src/inline_fragments_derive/tests.rs
-assertion_line: 55
 expression: "format_code(format!(\"{}\", tokens))"
 ---
 #[automatically_derived]
@@ -34,15 +33,17 @@ impl<'de> ::cynic::QueryFragment<'de> for Node {
     type SchemaType = schema::Node;
     type Variables = ();
     const TYPE: Option<&'static str> = Some("Node");
-    fn query(mut builder: ::cynic::queries::SelectionBuilder<Self::SchemaType, Self::Variables>) {
+    fn query(
+        mut builder: ::cynic::queries::SelectionBuilder<'_, Self::SchemaType, Self::Variables>,
+    ) {
         let fragment_builder = builder.inline_fragment();
         let mut fragment_builder =
-            fragment_builder.on::<<Post as ::cynic::QueryFragment>::SchemaType>();
-        <Post as ::cynic::QueryFragment>::query(fragment_builder.select_children());
+            fragment_builder.on::<<Post as ::cynic::QueryFragment<'_>>::SchemaType>();
+        <Post as ::cynic::QueryFragment<'_>>::query(fragment_builder.select_children());
         let fragment_builder = builder.inline_fragment();
         let mut fragment_builder =
-            fragment_builder.on::<<Author as ::cynic::QueryFragment>::SchemaType>();
-        <Author as ::cynic::QueryFragment>::query(fragment_builder.select_children());
+            fragment_builder.on::<<Author as ::cynic::QueryFragment<'_>>::SchemaType>();
+        <Author as ::cynic::QueryFragment<'_>>::query(fragment_builder.select_children());
     }
 }
 #[allow(clippy::no_effect, non_camel_case_types)]

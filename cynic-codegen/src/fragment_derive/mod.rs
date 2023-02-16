@@ -52,7 +52,7 @@ pub fn fragment_derive_impl(
     input.detect_aliases();
 
     let schema_type = schema
-        .lookup::<FragmentDeriveType>(&input.graphql_type_name())
+        .lookup::<FragmentDeriveType<'_>>(&input.graphql_type_name())
         .map_err(|e| syn::Error::new(input.graphql_type_span(), e))?;
 
     let graphql_name = &(input.graphql_type_name());

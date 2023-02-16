@@ -27,7 +27,7 @@ where
 {
     type Value = T;
 
-    fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+    fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         formatter.write_str("a map")
     }
 
@@ -37,16 +37,16 @@ where
     {
         let mut buffer = Vec::new();
 
-        while let Some(key) = access.next_key::<CowStr>()? {
+        while let Some(key) = access.next_key::<CowStr<'_>>()? {
             let key = key.into_inner();
             if key == "__typename" {
-                let typename = access.next_value::<CowStr>()?.into_inner();
+                let typename = access.next_value::<CowStr<'_>>()?.into_inner();
                 return T::deserialize_variant(
                     typename.as_ref(),
                     BufferDeserializer { access, buffer },
                 );
             }
-            buffer.push((key, access.next_value::<Content>()?))
+            buffer.push((key, access.next_value::<Content<'_>>()?))
         }
 
         Err(M::Error::missing_field("__typename"))

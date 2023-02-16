@@ -42,7 +42,7 @@ pub fn enum_derive_impl(
     use quote::quote;
 
     let enum_def = schema
-        .lookup::<EnumType>(&input.graphql_type_name())
+        .lookup::<EnumType<'_>>(&input.graphql_type_name())
         .map_err(|e| syn::Error::new(input.graphql_type_span(), e))?;
 
     let rename_all = input.rename_all.unwrap_or(RenameAll::ScreamingSnakeCase);

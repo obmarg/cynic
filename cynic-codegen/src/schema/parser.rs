@@ -52,8 +52,8 @@ pub(crate) fn parse_schema(schema: &str) -> Result<Document, SchemaLoadError> {
     Ok(schema_into_static(borrowed_schema))
 }
 
-fn schema_into_static<'a>(
-    doc: graphql_parser::schema::Document<'a, String>,
+fn schema_into_static(
+    doc: graphql_parser::schema::Document<'_, String>,
 ) -> graphql_parser::schema::Document<'static, String> {
     // A workaround until https://github.com/graphql-rust/graphql-parser/pull/33 is
     // merged upstream.

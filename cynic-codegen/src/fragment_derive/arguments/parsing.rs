@@ -27,7 +27,7 @@ pub struct CynicArguments {
 }
 
 impl Parse for CynicArguments {
-    fn parse(input: ParseStream) -> Result<Self> {
+    fn parse(input: ParseStream<'_>) -> Result<Self> {
         Ok(CynicArguments {
             arguments: Punctuated::parse_terminated(input)?,
         })
@@ -47,7 +47,7 @@ pub enum FieldArgumentValue {
 }
 
 impl Parse for FieldArgument {
-    fn parse(input: ParseStream) -> Result<Self> {
+    fn parse(input: ParseStream<'_>) -> Result<Self> {
         let argument_name = input.call(Ident::parse_any)?;
         let lookahead = input.lookahead1();
         let value;
@@ -92,7 +92,7 @@ impl ArgumentLiteral {
 }
 
 impl Parse for ArgumentLiteral {
-    fn parse(input: ParseStream) -> Result<Self> {
+    fn parse(input: ParseStream<'_>) -> Result<Self> {
         let lookahead = input.lookahead1();
         if lookahead.peek(syn::token::Brace) {
             let span = input.span();

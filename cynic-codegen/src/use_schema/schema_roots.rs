@@ -29,10 +29,11 @@ impl<'a> RootTypes<'a> {
         }
 
         Ok(RootTypes {
-            query: schema.lookup::<ObjectType>(&query_name)?,
-            mutation: mutation_name.and_then(|name| schema.try_lookup::<ObjectType>(&name).ok()),
+            query: schema.lookup::<ObjectType<'_>>(&query_name)?,
+            mutation: mutation_name
+                .and_then(|name| schema.try_lookup::<ObjectType<'_>>(&name).ok()),
             subscription: subscription_name
-                .and_then(|name| schema.try_lookup::<ObjectType>(&name).ok()),
+                .and_then(|name| schema.try_lookup::<ObjectType<'_>>(&name).ok()),
         })
     }
 }

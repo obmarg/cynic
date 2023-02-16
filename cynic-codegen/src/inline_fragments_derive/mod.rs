@@ -44,7 +44,7 @@ pub(crate) fn inline_fragments_derive_impl(
 
     let schema = Schema::new(&schema);
 
-    let target_type = schema.lookup::<InlineFragmentType>(&input.graphql_type_name())?;
+    let target_type = schema.lookup::<InlineFragmentType<'_>>(&input.graphql_type_name())?;
 
     input.validate(match target_type {
         InlineFragmentType::Union(_) => ValidationMode::Union,
@@ -122,7 +122,7 @@ fn fragments_from_variants(
 
 fn check_fallback(
     variants: &[SpannedValue<InlineFragmentsDeriveVariant>],
-    target_type: &InlineFragmentType,
+    target_type: &InlineFragmentType<'_>,
 ) -> Result<Option<Fallback>, Errors> {
     let fallbacks = variants.iter().filter(|v| *v.fallback).collect::<Vec<_>>();
 
@@ -213,11 +213,11 @@ impl quote::ToTokens for QueryFragmentImpl<'_> {
 
                 const TYPE: Option<&'static str> = Some(#graphql_type);
 
-                fn query(mut builder: ::cynic::queries::SelectionBuilder<Self::SchemaType, Self::Variables>) {
+                fn query(mut builder: ::cynic::queries::SelectionBuilder<'_, Self::SchemaType, Self::Variables>) {
                     #(
                         let fragment_builder = builder.inline_fragment();
-                        let mut fragment_builder = fragment_builder.on::<<#inner_types as ::cynic::QueryFragment>::SchemaType>();
-                        <#inner_types as ::cynic::QueryFragment>::query(
+                        let mut fragment_builder = fragment_builder.on::<<#inner_types as ::cynic::QueryFragment<'_>>::SchemaType>();
+                        <#inner_types as ::cynic::QueryFragment<'_>>::query(
                             fragment_builder.select_children()
                         );
                     )*

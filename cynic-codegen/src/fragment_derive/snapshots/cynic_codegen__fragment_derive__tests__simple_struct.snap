@@ -7,11 +7,13 @@ impl<'de> ::cynic::QueryFragment<'de> for BlogPostOutput {
     type SchemaType = schema::BlogPost;
     type Variables = ();
     const TYPE: Option<&'static str> = Some("BlogPost");
-    fn query(mut builder: ::cynic::queries::SelectionBuilder<Self::SchemaType, Self::Variables>) {
+    fn query(
+        mut builder: ::cynic::queries::SelectionBuilder<'_, Self::SchemaType, Self::Variables>,
+    ) {
         #![allow(unused_mut)]
         let mut field_builder = builder . select_field :: < schema :: __fields :: BlogPost :: hasMetadata , < Option < bool > as :: cynic :: schema :: IsScalar < < schema :: __fields :: BlogPost :: hasMetadata as :: cynic :: schema :: Field > :: Type >> :: SchemaType > () ;
-        let mut field_builder = builder . select_field :: < schema :: __fields :: BlogPost :: author , < AuthorOutput as :: cynic :: QueryFragment > :: SchemaType > () ;
-        <AuthorOutput as ::cynic::QueryFragment>::query(field_builder.select_children());
+        let mut field_builder = builder . select_field :: < schema :: __fields :: BlogPost :: author , < AuthorOutput as :: cynic :: QueryFragment < '_ >> :: SchemaType > () ;
+        <AuthorOutput as ::cynic::QueryFragment<'_>>::query(field_builder.select_children());
     }
 }
 #[automatically_derived]
@@ -34,7 +36,7 @@ impl<'de> ::cynic::serde::Deserialize<'de> for BlogPostOutput {
         struct Visitor;
         impl<'de> ::cynic::serde::de::Visitor<'de> for Visitor {
             type Value = BlogPostOutput;
-            fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+            fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
                 formatter.write_str("struct BlogPostOutput")
             }
             fn visit_map<V>(self, mut __map: V) -> Result<BlogPostOutput, V::Error>
@@ -74,7 +76,7 @@ impl<'de> ::cynic::serde::Deserialize<'de> for BlogPostOutput {
                 })
             }
         }
-        const FIELDS: &'static [&'static str] = &["hasMetadata", "author"];
+        const FIELDS: &'static [&str] = &["hasMetadata", "author"];
         deserializer.deserialize_struct("BlogPostOutput", FIELDS, Visitor)
     }
 }

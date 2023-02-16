@@ -232,11 +232,11 @@ impl<'a> RustType<'a> {
 }
 
 trait TypePathExt {
-    fn replace_generic_param(&mut self, replacement: &RustType);
+    fn replace_generic_param(&mut self, replacement: &RustType<'_>);
 }
 
 impl TypePathExt for syn::TypePath {
-    fn replace_generic_param(&mut self, replacement: &RustType) {
+    fn replace_generic_param(&mut self, replacement: &RustType<'_>) {
         fn get_generic_argument(type_path: &mut syn::TypePath) -> Option<&mut GenericArgument> {
             let segment = type_path.path.segments.last_mut()?;
 
