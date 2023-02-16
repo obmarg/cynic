@@ -126,7 +126,7 @@ impl quote::ToTokens for StandardDeserializeImpl {
                     impl <'de> ::cynic::serde::de::Visitor<'de> for Visitor {
                         type Value = #target_struct;
 
-                        fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                        fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
                             formatter.write_str(#expecting_str)
                         }
 
@@ -161,7 +161,7 @@ impl quote::ToTokens for StandardDeserializeImpl {
                         }
                     }
 
-                    const FIELDS: &'static [&'static str] = &[#(#serialized_names),*];
+                    const FIELDS: &'static [&str] = &[#(#serialized_names),*];
 
                     deserializer.deserialize_struct(#struct_name, FIELDS, Visitor)
                 }

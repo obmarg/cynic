@@ -29,7 +29,7 @@ struct CowStrVisitor;
 impl<'de> Visitor<'de> for CowStrVisitor {
     type Value = CowStr<'de>;
 
-    fn expecting(&self, formatter: &mut fmt::Formatter) -> fmt::Result {
+    fn expecting(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         formatter.write_str("a string")
     }
 

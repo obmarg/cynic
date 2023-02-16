@@ -143,7 +143,7 @@ mod tests {
     )]
     fn test_align_output_type(
         #[case] rust_type: TokenStream,
-        #[case] graphql_type: TypeRef<'_, OutputType>,
+        #[case] graphql_type: TypeRef<'_, OutputType<'_>>,
         #[case] aligned_type: TokenStream,
     ) {
         let rust_type = parse2(rust_type).unwrap();
@@ -187,7 +187,7 @@ mod tests {
     )]
     fn test_align_output_type_with_no_changes(
         #[case] rust_type: TokenStream,
-        #[case] graphql_type: TypeRef<'_, OutputType>,
+        #[case] graphql_type: TypeRef<'_, OutputType<'_>>,
     ) {
         let input = parse2::<syn::Type>(rust_type).unwrap();
 
@@ -256,7 +256,7 @@ mod tests {
     )]
     fn test_align_input_type(
         #[case] rust_type: TokenStream,
-        #[case] graphql_type: TypeRef<'_, InputType>,
+        #[case] graphql_type: TypeRef<'_, InputType<'_>>,
         #[case] graphql_type_is_optional: bool,
         #[case] aligned_type: TokenStream,
     ) {
@@ -337,7 +337,7 @@ mod tests {
     )]
     fn test_align_input_type_with_no_changes(
         #[case] rust_type: TokenStream,
-        #[case] graphql_type: TypeRef<'_, InputType>,
+        #[case] graphql_type: TypeRef<'_, InputType<'_>>,
         #[case] graphql_type_is_optional: bool,
     ) {
         let input = parse2(rust_type).unwrap();

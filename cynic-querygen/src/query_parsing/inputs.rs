@@ -36,8 +36,8 @@ impl<'schema> Vertex for InputObject<'schema> {
 
 pub type InputObjectSet<'schema> = BTreeSet<Rc<InputObject<'schema>>>;
 
-pub fn extract_input_objects<'query, 'schema>(
-    doc: &NormalisedDocument<'query, 'schema>,
+pub fn extract_input_objects<'schema>(
+    doc: &NormalisedDocument<'_, 'schema>,
 ) -> Result<InputObjectSet<'schema>, Error> {
     let mut result = InputObjectSet::new();
 

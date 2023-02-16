@@ -1,3 +1,4 @@
+#![deny(rust_2018_idioms)]
 //! # Cynic
 //!
 //! Cynic is a GraphQL query builder & data mapper for Rust.

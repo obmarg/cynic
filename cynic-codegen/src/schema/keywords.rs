@@ -78,7 +78,7 @@ static NON_RAW_KEYWORDS: Lazy<HashSet<&'static str>> = Lazy::new(|| {
     set
 });
 
-pub fn transform_keywords(s: &str) -> Cow<str> {
+pub fn transform_keywords(s: &str) -> Cow<'_, str> {
     let s_ref: &str = s;
     if NON_RAW_KEYWORDS.contains(s_ref) {
         format!("{}_", s).into()

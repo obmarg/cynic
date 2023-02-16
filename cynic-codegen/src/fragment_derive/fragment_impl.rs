@@ -56,7 +56,7 @@ impl<'a> FragmentImpl<'a> {
     pub fn new_for(
         fields: &[(&FragmentDeriveField, Option<&'a Field<'a>>)],
         name: &syn::Ident,
-        schema_type: &FragmentDeriveType,
+        schema_type: &FragmentDeriveType<'_>,
         schema_module_path: &syn::Path,
         graphql_type_name: &str,
         variables: Option<&syn::Path>,
@@ -163,7 +163,7 @@ impl quote::ToTokens for FragmentImpl<'_> {
 
                 const TYPE: Option<&'static str> = Some(#graphql_type);
 
-                fn query(mut builder: ::cynic::queries::SelectionBuilder<Self::SchemaType, Self::Variables>) {
+                fn query(mut builder: ::cynic::queries::SelectionBuilder<'_, Self::SchemaType, Self::Variables>) {
                     #![allow(unused_mut)]
 
                     #(#selections)*
@@ -229,7 +229,7 @@ impl quote::ToTokens for FieldSelection<'_> {
         let schema_type_lookup = match self.graphql_field_kind {
             FieldKind::Interface | FieldKind::Composite | FieldKind::Union => {
                 quote_spanned! { self.span =>
-                    <#aligned_type as ::cynic::QueryFragment>::SchemaType
+                    <#aligned_type as ::cynic::QueryFragment<'_>>::SchemaType
                 }
             }
             FieldKind::Scalar => quote_spanned! { self.span =>
@@ -254,7 +254,7 @@ impl quote::ToTokens for FieldSelection<'_> {
                     #alias
                     #arguments
 
-                    <#aligned_type as ::cynic::QueryFragment>::query(
+                    <#aligned_type as ::cynic::QueryFragment<'_>>::query(
                         field_builder.select_children()
                     );
                 }
@@ -271,7 +271,7 @@ impl quote::ToTokens for FieldSelection<'_> {
                     #alias
                     #arguments
 
-                    <#aligned_type as ::cynic::QueryFragment>::query(
+                    <#aligned_type as ::cynic::QueryFragment<'_>>::query(
                         field_builder.select_children()
                     );
                 }
@@ -300,7 +300,7 @@ impl quote::ToTokens for FieldSelection<'_> {
                         #alias
                         #arguments
 
-                        <#aligned_type as ::cynic::QueryFragment>::query(
+                        <#aligned_type as ::cynic::QueryFragment<'_>>::query(
                             field_builder.select_children()
                         );
                     }
@@ -328,7 +328,7 @@ impl quote::ToTokens for SpreadSelection {
         let field_type = &self.rust_field_type;
 
         tokens.append_all(quote_spanned! { self.span =>
-            <#field_type as ::cynic::QueryFragment>::query(
+            <#field_type as ::cynic::QueryFragment<'_>>::query(
                 builder
             )
         })

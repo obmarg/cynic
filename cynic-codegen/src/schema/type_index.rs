@@ -349,7 +349,7 @@ fn convert_input_value<'a>(
         name: FieldName {
             graphql_name: &val.name,
         },
-        value_type: build_type_ref::<InputType>(&val.value_type, type_index),
+        value_type: build_type_ref::<InputType<'_>>(&val.value_type, type_index),
         has_default: val.default_value.is_some(),
     }
 }
@@ -396,7 +396,7 @@ fn build_field<'a>(
             .iter()
             .map(|arg| convert_input_value(type_index, arg))
             .collect(),
-        field_type: build_type_ref::<OutputType>(&field.field_type, type_index),
+        field_type: build_type_ref::<OutputType<'_>>(&field.field_type, type_index),
         parent_type_name,
     }
 }
@@ -426,7 +426,7 @@ mod tests {
             parser::Type::NonNullType(Box::new(parser::Type::NamedType("User".to_string())));
 
         assert_matches!(
-            build_type_ref::<InputType>(&non_null_type, index),
+            build_type_ref::<InputType<'_>>(&non_null_type, index),
             TypeRef::Named("User", _, _)
         );
     }
@@ -438,7 +438,7 @@ mod tests {
         let nullable_type = parser::Type::NamedType("User".to_string());
 
         assert_matches!(
-            build_type_ref::<InputType>(&nullable_type, index),
+            build_type_ref::<InputType<'_>>(&nullable_type, index),
             TypeRef::Nullable(inner) => {
                 assert_matches!(*inner, TypeRef::Named("User", _, _))
             }
@@ -454,7 +454,7 @@ mod tests {
         ))));
 
         assert_matches!(
-            build_type_ref::<InputType>(&required_list, index),
+            build_type_ref::<InputType<'_>>(&required_list, index),
             TypeRef::List(inner) => {
                 assert_matches!(*inner, TypeRef::Named("User", _, _))
             }
@@ -469,7 +469,7 @@ mod tests {
             parser::Type::ListType(Box::new(parser::Type::NamedType("User".to_string())));
 
         assert_matches!(
-            build_type_ref::<InputType>(&optional_list, index),
+            build_type_ref::<InputType<'_>>(&optional_list, index),
             TypeRef::Nullable(inner) => {
                 assert_matches!(*inner, TypeRef::List(inner) => {
                     assert_matches!(*inner, TypeRef::Nullable(inner) => {

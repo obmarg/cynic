@@ -14,7 +14,7 @@ pub trait QueryFragment<'de>: serde::Deserialize<'de> {
     const TYPE: Option<&'static str> = None;
 
     /// Adds this fragment to the query being built by `builder`
-    fn query(builder: SelectionBuilder<Self::SchemaType, Self::Variables>);
+    fn query(builder: SelectionBuilder<'_, Self::SchemaType, Self::Variables>);
 }
 
 impl<'de, T> QueryFragment<'de> for Option<T>
@@ -24,7 +24,7 @@ where
     type SchemaType = Option<T::SchemaType>;
     type Variables = T::Variables;
 
-    fn query(builder: SelectionBuilder<Self::SchemaType, Self::Variables>) {
+    fn query(builder: SelectionBuilder<'_, Self::SchemaType, Self::Variables>) {
         T::query(builder.into_inner())
     }
 }
@@ -36,7 +36,7 @@ where
     type SchemaType = Vec<T::SchemaType>;
     type Variables = T::Variables;
 
-    fn query(builder: SelectionBuilder<Self::SchemaType, Self::Variables>) {
+    fn query(builder: SelectionBuilder<'_, Self::SchemaType, Self::Variables>) {
         T::query(builder.into_inner())
     }
 }
@@ -48,7 +48,7 @@ where
     type SchemaType = T::SchemaType;
     type Variables = T::Variables;
 
-    fn query(builder: SelectionBuilder<Self::SchemaType, Self::Variables>) {
+    fn query(builder: SelectionBuilder<'_, Self::SchemaType, Self::Variables>) {
         T::query(builder)
     }
 }
@@ -61,7 +61,7 @@ where
     type SchemaType = T::SchemaType;
     type Variables = T::Variables;
 
-    fn query(builder: SelectionBuilder<Self::SchemaType, Self::Variables>) {
+    fn query(builder: SelectionBuilder<'_, Self::SchemaType, Self::Variables>) {
         T::query(builder)
     }
 }
@@ -74,7 +74,7 @@ where
     type SchemaType = T::SchemaType;
     type Variables = T::Variables;
 
-    fn query(builder: SelectionBuilder<Self::SchemaType, Self::Variables>) {
+    fn query(builder: SelectionBuilder<'_, Self::SchemaType, Self::Variables>) {
         T::query(builder)
     }
 }
@@ -83,14 +83,14 @@ impl<'de> QueryFragment<'de> for bool {
     type SchemaType = bool;
     type Variables = ();
 
-    fn query(_builder: SelectionBuilder<Self::SchemaType, Self::Variables>) {}
+    fn query(_builder: SelectionBuilder<'_, Self::SchemaType, Self::Variables>) {}
 }
 
 impl<'de> QueryFragment<'de> for String {
     type SchemaType = String;
     type Variables = ();
 
-    fn query(_builder: SelectionBuilder<Self::SchemaType, Self::Variables>) {}
+    fn query(_builder: SelectionBuilder<'_, Self::SchemaType, Self::Variables>) {}
 }
 
 /// A QueryFragment that contains a set of inline fragments

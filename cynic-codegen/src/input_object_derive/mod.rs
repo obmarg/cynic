@@ -51,7 +51,7 @@ pub fn input_object_derive_impl(
     use quote::quote;
 
     let input_object = schema
-        .lookup::<InputObjectType>(&input.graphql_type_name())
+        .lookup::<InputObjectType<'_>>(&input.graphql_type_name())
         .map_err(|e| syn::Error::new(input.graphql_type_span(), e))?;
 
     let rename_all = input.rename_all.unwrap_or(RenameAll::CamelCase);

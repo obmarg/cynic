@@ -4,7 +4,7 @@ pub struct UseSchemaParams {
 }
 
 impl syn::parse::Parse for UseSchemaParams {
-    fn parse(input: syn::parse::ParseStream) -> syn::Result<Self> {
+    fn parse(input: syn::parse::ParseStream<'_>) -> syn::Result<Self> {
         let lit_str = input.parse::<syn::LitStr>()?;
 
         Ok(UseSchemaParams {

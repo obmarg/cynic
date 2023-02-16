@@ -1,3 +1,4 @@
+#![deny(rust_2018_idioms)]
 pub mod enum_derive;
 pub mod fragment_derive;
 pub mod inline_fragments_derive;

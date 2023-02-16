@@ -49,7 +49,7 @@ pub enum Content<'de> {
 
 impl<'de> Content<'de> {
     #[cold]
-    fn unexpected(&self) -> Unexpected {
+    fn unexpected(&self) -> Unexpected<'_> {
         match *self {
             Content::Bool(b) => Unexpected::Bool(b),
             Content::U8(n) => Unexpected::Unsigned(n as u64),
@@ -92,7 +92,7 @@ struct ContentVisitor<'de> {
 impl<'de> Visitor<'de> for ContentVisitor<'de> {
     type Value = Content<'de>;
 
-    fn expecting(&self, fmt: &mut fmt::Formatter) -> fmt::Result {
+    fn expecting(&self, fmt: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt.write_str("any value")
     }
 
@@ -695,7 +695,7 @@ where
     }
 }
 
-pub struct ContentRefDeserializer<'a, 'de: 'a, E> {
+pub struct ContentRefDeserializer<'a, 'de, E> {
     content: &'a Content<'de>,
     err: PhantomData<E>,
 }
@@ -775,7 +775,7 @@ where
     V: Visitor<'de>,
     E: de::Error,
 {
-    let map = content.iter().map(|&(ref k, ref v)| {
+    let map = content.iter().map(|(k, v)| {
         (
             KeyDeserializer::new(k.clone()),
             ContentRefDeserializer::new(v),

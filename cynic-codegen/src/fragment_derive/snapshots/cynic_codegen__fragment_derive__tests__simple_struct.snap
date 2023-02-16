@@ -34,7 +34,7 @@ impl<'de> ::cynic::serde::Deserialize<'de> for BlogPostOutput {
         struct Visitor;
         impl<'de> ::cynic::serde::de::Visitor<'de> for Visitor {
             type Value = BlogPostOutput;
-            fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+            fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
                 formatter.write_str("struct BlogPostOutput")
             }
             fn visit_map<V>(self, mut __map: V) -> Result<BlogPostOutput, V::Error>
