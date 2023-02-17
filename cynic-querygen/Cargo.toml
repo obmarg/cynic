@@ -1,6 +1,6 @@
 [package]
 name = "cynic-querygen"
-version = "2.2.5"
+version = "2.2.6"
 authors = ["Graeme Coupar <grambo@grambo.me.uk>"]
 edition = "2018"
 homepage = "https://cynic-rs.dev"

@@ -9,6 +9,13 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v2.2.6 - 2023-02-16
+
+### Bug Fixes
+
+- A QueryFragment used inside an InlineFragment can now have a `__typename`
+  field.
+
 ## v2.2.5 - 2023-02-16
 
 ### Bug Fixes
