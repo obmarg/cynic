@@ -1,6 +1,5 @@
 ---
 source: examples/examples/querying-interfaces.rs
-assertion_line: 115
 expression: result.data
 ---
 Some(
@@ -8,6 +7,7 @@ Some(
         node: Some(
             Film(
                 Film {
+                    __typename: "Film",
                     title: Some(
                         "A New Hope",
                     ),
