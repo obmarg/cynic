@@ -41,6 +41,13 @@ where
             let key = key.into_inner();
             if key == "__typename" {
                 let typename = access.next_value::<CowStr<'_>>()?.into_inner();
+
+                // Put __typename into the buffer incase it's needed by the inner decoder
+                buffer.push((
+                    Cow::Borrowed("__typename"),
+                    Content::String(typename.as_ref().to_string()),
+                ));
+
                 return T::deserialize_variant(
                     typename.as_ref(),
                     BufferDeserializer { access, buffer },

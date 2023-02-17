@@ -17,6 +17,7 @@ enum Node {
 #[derive(cynic::QueryFragment, Debug)]
 #[cynic(schema_path = "../schemas/starwars.schema.graphql")]
 struct Film {
+    __typename: String,
     title: Option<String>,
 }
 
