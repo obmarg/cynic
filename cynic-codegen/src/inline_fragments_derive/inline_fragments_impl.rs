@@ -1,6 +1,4 @@
-use proc_macro2::TokenStream;
-use quote::quote_spanned;
-use syn::spanned::Spanned;
+use {proc_macro2::TokenStream, quote::quote_spanned, syn::spanned::Spanned};
 
 #[derive(Clone)]
 pub enum Fallback {
@@ -70,7 +68,7 @@ impl quote::ToTokens for InlineFragmentsImpl<'_> {
                     D: ::cynic::serde::Deserializer<'de>
                 {
                     #(
-                        if Some(typename) == <#inner_types as ::cynic::QueryFragment<'de>>::TYPE {
+                        if Some(typename) == <#inner_types as ::cynic::QueryFragment>::TYPE {
                             return <#inner_types as ::cynic::serde::Deserialize<'de>>::deserialize(deserializer).map(
                                 #target_enum::#variant_names
                             )

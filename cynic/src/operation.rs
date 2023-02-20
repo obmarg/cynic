@@ -5,7 +5,7 @@ use crate::{
     queries::{SelectionBuilder, SelectionSet},
     schema::{MutationRoot, QueryRoot, SubscriptionRoot},
     variables::VariableType,
-    QueryVariables,
+    QueryVariables, QueryVariablesFields,
 };
 
 /// An Operation that can be sent to a remote GraphQL server.
@@ -41,7 +41,7 @@ where
 
 impl<'de, Fragment, Variables> Operation<Fragment, Variables>
 where
-    Fragment: QueryFragment<'de>,
+    Fragment: QueryFragment,
     Variables: QueryVariables,
 {
     /// Constructs a new Operation for a query
@@ -52,7 +52,7 @@ where
         use std::fmt::Write;
 
         let mut selection_set = SelectionSet::default();
-        let builder = SelectionBuilder::new(&mut selection_set);
+        let builder = SelectionBuilder::<_, Fragment::VariablesFields>::new(&mut selection_set);
         Fragment::query(builder);
 
         let vars = VariableDefinitions::new::<Variables>();
@@ -75,7 +75,7 @@ where
         use std::fmt::Write;
 
         let mut selection_set = SelectionSet::default();
-        let builder = SelectionBuilder::new(&mut selection_set);
+        let builder = SelectionBuilder::<_, Fragment::VariablesFields>::new(&mut selection_set);
         Fragment::query(builder);
 
         let vars = VariableDefinitions::new::<Variables>();
@@ -100,7 +100,7 @@ pub struct StreamingOperation<ResponseData, Variables = ()> {
 
 impl<'de, Fragment, Variables> StreamingOperation<Fragment, Variables>
 where
-    Fragment: QueryFragment<'de>,
+    Fragment: QueryFragment,
     Variables: QueryVariables,
 {
     /// Constructs a new Operation for a subscription
@@ -111,7 +111,7 @@ where
         use std::fmt::Write;
 
         let mut selection_set = SelectionSet::default();
-        let builder = SelectionBuilder::new(&mut selection_set);
+        let builder = SelectionBuilder::<_, Fragment::VariablesFields>::new(&mut selection_set);
         Fragment::query(builder);
 
         let vars = VariableDefinitions::new::<Variables>();
@@ -148,7 +148,9 @@ struct VariableDefinitions {
 
 impl VariableDefinitions {
     fn new<T: QueryVariables>() -> Self {
-        VariableDefinitions { vars: T::VARIABLES }
+        VariableDefinitions {
+            vars: <T::Fields as QueryVariablesFields>::VARIABLES,
+        }
     }
 }
 

@@ -3,13 +3,13 @@
 //!
 //! Cynic is a GraphQL query builder & data mapper for Rust.
 //!
-//! This documentation is primarily intended to be a reference for specific functions,
-//! for a guide to using `Cynic` see the website: [cynic-rs.dev](https://cynic-rs.dev).
+//! This documentation is primarily intended to be a reference for specific
+//! functions, for a guide to using `Cynic` see the website: [cynic-rs.dev](https://cynic-rs.dev).
 //!
 //! ## Overview
 //!
-//! To get started with Cynic you'll need a GraphQL schema for the API you wish to
-//! query.  The examples will be using the star wars API.
+//! To get started with Cynic you'll need a GraphQL schema for the API you wish
+//! to query.  The examples will be using the star wars API.
 //!
 //! ### Generating a Query DSL
 //!
@@ -26,24 +26,25 @@
 //!
 //! 1. Some structs to represent the Input types the underlying schema.
 //!    You may need to use these to build mutations or as parameters to queries.
-//! 2. Definitions of all the Enums in the provided schema.  You'll need these if
-//!    you want to use any enum types.
+//! 2. Definitions of all the Enums in the provided schema.  You'll need these
+//! if    you want to use any enum types.
 //! 3. Type safe selection set functions.  These can be used to build up a query
 //!    manually, though it's usually easier to use the `QueryFragment` derive
 //!    functionality explained below.  Hopefully you'll not need to use these
 //!    directly too often.
 //!
-//! Though using macros to generate these is convenient, it does leave a lot of code
-//! to the imagination.  You can get a glimpse of the things this defines by running
-//! `cargo doc --document-private-items` and having a look in the `schema` module.
-//! It's not ideal, but at least provides some visibility into the various enum types.
+//! Though using macros to generate these is convenient, it does leave a lot of
+//! code to the imagination.  You can get a glimpse of the things this defines
+//! by running `cargo doc --document-private-items` and having a look in the
+//! `schema` module. It's not ideal, but at least provides some visibility into
+//! the various enum types.
 //!
 //! ### Creating QueryFragments
 //!
 //! Now that you have a schema defined, you can start building some queries.
-//! Cynic lets you do this by deriving `QueryFragment` for a struct.  For example,
-//! if we wanted to know what director title & director a Star Wars film had, we
-//! could define this `QueryFragment`:
+//! Cynic lets you do this by deriving `QueryFragment` for a struct.  For
+//! example, if we wanted to know what director title & director a Star Wars
+//! film had, we could define this `QueryFragment`:
 //!
 //! ```rust
 //! # mod schema {
@@ -54,7 +55,7 @@
 //! #[cynic(schema_path = "../schemas/starwars.schema.graphql")]
 //! struct Film {
 //!     title: Option<String>,
-//!     director: Option<String>
+//!     director: Option<String>,
 //! }
 //!
 //! // This `Film` struct can now be used as the type of a field on any other
@@ -78,14 +79,14 @@
 //! }
 //!
 //! // You can then build a `cynic::Operation` from this fragment
-//! use cynic::{QueryBuilder};
+//! use cynic::QueryBuilder;
 //! let operation = FilmDirectorQuery::build(());
-//!
 //! ```
 //!
 //! `operation` above implements `serde::Serialize` so can be used with any HTTP
 //! client.  A selection of HTTP client integrations are provided in
-//! `cynic::http` - see the docs there for examples of using a `cynic::Operation`
+//! `cynic::http` - see the docs there for examples of using a
+//! `cynic::Operation`
 //!
 //! ```rust,ignore
 //! let response = reqwest::blocking::Client::new()
@@ -95,14 +96,14 @@
 //! let result = response.json::<GraphQlResponse<FilmDirectorQuery>>()?;
 //! ```
 //!
-//! After this code has run, result will be an instance of `GraphQlResponse<FilmDirectorQuery>`
-//! with the film populated appropriately.
+//! After this code has run, result will be an instance of
+//! `GraphQlResponse<FilmDirectorQuery>` with the film populated appropriately.
 //!
 //! ### Dynamic Query Arguments
 //!
-//! The query above was useful for demonstration, but you'll usually want to be able to
-//! provide parameters to your query.  To do this, you should define a struct that contains
-//! all of the parameters you want to provide:
+//! The query above was useful for demonstration, but you'll usually want to be
+//! able to provide parameters to your query.  To do this, you should define a
+//! struct that contains all of the parameters you want to provide:
 //!
 //! ```rust
 //! # mod schema {
@@ -121,7 +122,7 @@
 //! // `QueryFragment`, whether it represents part of a query or a whole query.
 //! #[derive(cynic::QueryVariables)]
 //! struct FilmArguments {
-//!     id: Option<cynic::Id>
+//!     id: Option<cynic::Id>,
 //! }
 //!
 //! // You can now define a query to use these arguments on.  For example, to make
@@ -142,9 +143,9 @@
 //!
 //! // Then we can build a query using this new struct;
 //! use cynic::QueryBuilder;
-//! let operation = FilmDirectorQueryWithArgs::build(
-//!     FilmArguments{ id: Some("ZmlsbXM6MQ==".into()) }
-//! );
+//! let operation = FilmDirectorQueryWithArgs::build(FilmArguments {
+//!     id: Some("ZmlsbXM6MQ==".into()),
+//! });
 //! ```
 //!
 //! ## Feature Flags
@@ -153,10 +154,10 @@
 //!
 //! - `surf` adds integration with the [`surf`](https://github.com/http-rs/surf)
 //!   http client.
-//! - `reqwest` adds async integration with the
-//!   [`reqwest`](https://github.com/seanmonstar/reqwest) http client.
-//! - `reqwest-blocking` adds blocking integration with the
-//!   [`reqwest`](https://github.com/seanmonstar/reqwest) http client.
+//! - `reqwest` adds async integration with the [`reqwest`](https://github.com/seanmonstar/reqwest)
+//!   http client.
+//! - `reqwest-blocking` adds blocking integration with the [`reqwest`](https://github.com/seanmonstar/reqwest)
+//!   http client.
 //!
 //! It's worth noting that each of these features pulls in extra
 //! dependencies, which may impact your build size.  Particularly
@@ -183,12 +184,14 @@ pub mod schema;
 #[path = "private/mod.rs"]
 pub mod __private;
 
-pub use self::core::{Enum, InlineFragments, InputObject, QueryFragment};
-pub use builders::{MutationBuilder, QueryBuilder, SubscriptionBuilder};
-pub use id::Id;
-pub use operation::{Operation, StreamingOperation};
-pub use result::{GraphQlError, GraphQlResponse};
-pub use variables::QueryVariables;
+pub use {
+    self::core::{Enum, InlineFragments, InputObject, QueryFragment},
+    builders::{MutationBuilder, QueryBuilder, SubscriptionBuilder},
+    id::Id,
+    operation::{Operation, StreamingOperation},
+    result::{GraphQlError, GraphQlResponse},
+    variables::{QueryVariables, QueryVariablesFields},
+};
 
 pub use cynic_proc_macros::{
     schema_for_derives, use_schema, Enum, FragmentArguments, InlineFragments, InputObject,

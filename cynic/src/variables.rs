@@ -15,13 +15,20 @@ pub enum VariableType {
 
 /// Allows a struct to be used as variables in a GraphQL query.
 ///
-/// Users should not implement this themselves, and should use the `QueryVariables`
-/// derive.  All the fields on a `QueryVariables` struct should be available as
-/// variables in the query, using `$variable_name` notation.
+/// Users should not implement this themselves, and should use the
+/// `QueryVariables` derive.  All the fields on a `QueryVariables` struct should
+/// be available as variables in the query, using `$variable_name` notation.
 pub trait QueryVariables {
-    /// A struct that determines which variables are available when using this struct.
-    type Fields;
+    /// A struct that determines which variables are available when using this
+    /// struct.
+    type Fields: QueryVariablesFields;
+}
 
+/// Represents a set of named fields that are required for a query
+///
+/// These types also hold general type information, (something that tells to ~
+/// what it serializes)
+pub trait QueryVariablesFields {
     /// An associated constant that contains the variable names & their types.
     ///
     /// This is used to construct the query string we send to a server.
@@ -30,7 +37,8 @@ pub trait QueryVariables {
 
 impl QueryVariables for () {
     type Fields = ();
-
+}
+impl QueryVariablesFields for () {
     const VARIABLES: &'static [(&'static str, VariableType)] = &[];
 }
 

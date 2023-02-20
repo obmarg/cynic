@@ -383,10 +383,10 @@ impl<'a> InputLiteralContainer<'a> {
     }
 }
 
-/// Enforces type equality on a Variable struct.
+/// Enforces type equality on a VariableFields struct.
 ///
-/// Each `crate::QueryVariables` implementation should also implement this for `()` for
+/// Each `crate::QueryVariablesFields` implementation should also implement this for `()` for
 /// compatibility with QueryFragments that don't need variables.
 pub trait VariableMatch<T> {}
 
-impl<T> VariableMatch<()> for T where T: crate::QueryVariables {}
+impl<T> VariableMatch<()> for T where T: crate::QueryVariablesFields {}

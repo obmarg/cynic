@@ -1,13 +1,15 @@
 use std::{collections::HashSet, rc::Rc};
 
-use counter::Counter;
-use proc_macro2::Span;
-use syn::Lit;
+use {counter::Counter, proc_macro2::Span, syn::Lit};
 
-use super::parsing;
-use crate::{
-    error::Errors,
-    schema::types::{self as schema, EnumType, InputObjectType, InputType, InputValue, TypeRef},
+use {
+    super::parsing,
+    crate::{
+        error::Errors,
+        schema::types::{
+            self as schema, EnumType, InputObjectType, InputType, InputValue, TypeRef,
+        },
+    },
 };
 
 #[derive(Debug, PartialEq)]
@@ -45,7 +47,7 @@ pub enum ArgumentValue<'a> {
 pub struct Variable<'a> {
     pub ident: proc_macro2::Ident,
     pub value_type: TypeRef<'a, InputType<'a>>,
-    pub variable_struct: syn::Path,
+    pub variables_fields_struct: syn::Path,
 }
 
 #[derive(Debug, PartialEq, Eq, Hash)]
@@ -57,11 +59,11 @@ pub struct VariantDetails<'a> {
 pub fn analyse<'a>(
     literals: Vec<parsing::FieldArgument>,
     field: &schema::Field<'a>,
-    variables: Option<&syn::Path>,
+    variables_fields: Option<&syn::Path>,
     span: Span,
 ) -> Result<AnalysedArguments<'a>, Errors> {
     let mut analysis = Analysis {
-        variables,
+        variables_fields,
         variants: HashSet::new(),
     };
     let arguments = analyse_fields(&mut analysis, literals, &field.arguments, span)?;
@@ -77,7 +79,7 @@ pub fn analyse<'a>(
 }
 
 struct Analysis<'schema, 'a> {
-    variables: Option<&'a syn::Path>,
+    variables_fields: Option<&'a syn::Path>,
     variants: HashSet<Rc<VariantDetails<'schema>>>,
 }
 
@@ -164,7 +166,7 @@ fn analyse_value_type<'a>(
     use parsing::ArgumentLiteral;
 
     if let ArgumentLiteral::Variable(ident, _) = literal {
-        if analysis.variables.is_none() {
+        if analysis.variables_fields.is_none() {
             return Err(syn::Error::new(
                 ident.span(),
                 "You've provided a variable here, but this QueryFragment does not take any variables.  Please add the variables attribute to the struct."
@@ -176,7 +178,7 @@ fn analyse_value_type<'a>(
         return Ok(ArgumentValue::Variable(Variable {
             ident,
             value_type: value_type.clone(),
-            variable_struct: analysis.variables.unwrap().clone(),
+            variables_fields_struct: analysis.variables_fields.unwrap().clone(),
         }));
     }
 

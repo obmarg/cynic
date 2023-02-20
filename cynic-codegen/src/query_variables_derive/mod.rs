@@ -1,5 +1,7 @@
-use proc_macro2::TokenStream;
-use quote::{format_ident, quote, quote_spanned};
+use {
+    proc_macro2::TokenStream,
+    quote::{format_ident, quote, quote_spanned},
+};
 
 mod input;
 
@@ -35,7 +37,7 @@ pub fn query_variables_derive_impl(
             proc_macro2::Literal::string(&f.graphql_ident(input.rename_all).graphql_name());
 
         field_funcs.push(quote! {
-            #vis fn #name() -> ::cynic::variables::VariableDefinition<#ident, #ty> {
+            #vis fn #name() -> ::cynic::variables::VariableDefinition<Self, #ty> {
                 ::cynic::variables::VariableDefinition::new(#name_str)
             }
         });
@@ -55,6 +57,13 @@ pub fn query_variables_derive_impl(
     let fields_struct = quote_spanned! { ident_span =>
         #vis struct #fields_struct_ident;
 
+        impl ::cynic::QueryVariablesFields for #fields_struct_ident {
+            const VARIABLES: &'static [(&'static str, ::cynic::variables::VariableType)]
+                = &[#(#variables),*];
+        }
+
+        impl ::cynic::queries::VariableMatch<#fields_struct_ident> for #fields_struct_ident {}
+
         impl #fields_struct_ident {
             #(
                 #field_funcs
@@ -67,9 +76,6 @@ pub fn query_variables_derive_impl(
         #[automatically_derived]
         impl ::cynic::QueryVariables for #ident {
             type Fields = #fields_struct_ident;
-
-            const VARIABLES: &'static [(&'static str, ::cynic::variables::VariableType)]
-                = &[#(#variables),*];
         }
 
         #[automatically_derived]
@@ -87,8 +93,6 @@ pub fn query_variables_derive_impl(
                 map_serializer.end()
             }
         }
-
-        impl ::cynic::queries::VariableMatch<#ident> for #ident {}
 
         #fields_struct
     })

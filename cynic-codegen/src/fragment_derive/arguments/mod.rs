@@ -15,10 +15,10 @@ pub fn process_arguments<'a>(
     literals: Vec<parsing::FieldArgument>,
     field: &crate::schema::types::Field<'a>,
     schema_module: syn::Path,
-    variables: Option<&syn::Path>,
+    variables_fields: Option<&syn::Path>,
     span: Span,
 ) -> Result<Output<'a>, Errors> {
-    let analysed = analyse::analyse(literals, field, variables, span)?;
+    let analysed = analyse::analyse(literals, field, variables_fields, span)?;
 
     Ok(Output {
         analysed,

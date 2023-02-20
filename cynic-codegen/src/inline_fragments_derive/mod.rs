@@ -1,5 +1,7 @@
-use darling::util::SpannedValue;
-use proc_macro2::{Span, TokenStream};
+use {
+    darling::util::SpannedValue,
+    proc_macro2::{Span, TokenStream},
+};
 
 use crate::{
     inline_fragments_derive::input::ValidationMode,
@@ -9,7 +11,7 @@ use crate::{
         types::{InterfaceType, Kind, Type, UnionType},
         Schema, SchemaError,
     },
-    Errors,
+    variables_fields_path, Errors,
 };
 
 pub mod input;
@@ -188,7 +190,8 @@ impl quote::ToTokens for QueryFragmentImpl<'_> {
 
         let target_struct = &self.target_enum;
         let type_lock = &self.type_lock;
-        let variables = match &self.variables {
+        let variables_fields = variables_fields_path(self.variables.as_ref());
+        let variables_fields = match &variables_fields {
             Some(path) => quote! { #path },
             None => quote! { () },
         };
@@ -207,17 +210,17 @@ impl quote::ToTokens for QueryFragmentImpl<'_> {
 
         tokens.append_all(quote! {
             #[automatically_derived]
-            impl<'de> ::cynic::QueryFragment<'de> for #target_struct {
+            impl ::cynic::QueryFragment for #target_struct {
                 type SchemaType = #type_lock;
-                type Variables = #variables;
+                type VariablesFields = #variables_fields;
 
                 const TYPE: Option<&'static str> = Some(#graphql_type);
 
-                fn query(mut builder: ::cynic::queries::SelectionBuilder<'_, Self::SchemaType, Self::Variables>) {
+                fn query(mut builder: ::cynic::queries::SelectionBuilder<'_, Self::SchemaType, Self::VariablesFields>) {
                     #(
                         let fragment_builder = builder.inline_fragment();
-                        let mut fragment_builder = fragment_builder.on::<<#inner_types as ::cynic::QueryFragment<'_>>::SchemaType>();
-                        <#inner_types as ::cynic::QueryFragment<'_>>::query(
+                        let mut fragment_builder = fragment_builder.on::<<#inner_types as ::cynic::QueryFragment>::SchemaType>();
+                        <#inner_types as ::cynic::QueryFragment>::query(
                             fragment_builder.select_children()
                         );
                     )*
