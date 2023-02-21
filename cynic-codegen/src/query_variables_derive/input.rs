@@ -1,5 +1,4 @@
-use darling::util::SpannedValue;
-use syn::spanned::Spanned;
+use {darling::util::SpannedValue, syn::spanned::Spanned};
 
 use crate::idents::{RenamableFieldIdent, RenameAll};
 
@@ -8,6 +7,7 @@ use crate::idents::{RenamableFieldIdent, RenameAll};
 pub struct QueryVariablesDeriveInput {
     pub(super) ident: proc_macro2::Ident,
     pub(super) vis: syn::Visibility,
+    pub(super) generics: syn::Generics,
     pub(super) data: darling::ast::Data<(), QueryVariableField>,
 
     #[darling(default)]

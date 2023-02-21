@@ -53,9 +53,12 @@ fn variables_fields_path(variables: Option<&syn::Path>) -> Option<syn::Path> {
     variables.cloned().map(|mut variables| {
         // Find VariablesField struct name from Variables struct name
         if let Some(last) = variables.segments.last_mut() {
-            last.ident =
-                proc_macro2::Ident::new(&format!("{}Fields", last.ident), last.ident.span());
+            last.ident = variables_fields_ident(&last.ident);
         }
         variables
     })
+}
+
+fn variables_fields_ident(ident: &syn::Ident) -> syn::Ident {
+    proc_macro2::Ident::new(&format!("{}Fields", ident), ident.span())
 }

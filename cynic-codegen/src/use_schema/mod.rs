@@ -9,8 +9,10 @@ mod subtype_markers;
 
 pub use params::UseSchemaParams;
 
-use proc_macro2::TokenStream;
-use quote::{quote, ToTokens};
+use {
+    proc_macro2::TokenStream,
+    quote::{quote, ToTokens},
+};
 
 use crate::{
     error::Errors,
@@ -115,7 +117,10 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
                 const TYPE: VariableType;
             }
 
-            impl<T> Variable for &T where T: Variable {
+            impl<T> Variable for &T
+            where
+                T: ?::core::marker::Sized + Variable,
+            {
                 const TYPE: VariableType = T::TYPE;
             }
 
@@ -126,11 +131,18 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
                 const TYPE: VariableType = VariableType::Nullable(&T::TYPE);
             }
 
-            impl<T> Variable for Vec<T>
+            impl<T> Variable for [T]
             where
                 T: Variable,
             {
                 const TYPE: VariableType = VariableType::List(&T::TYPE);
+            }
+
+            impl<T> Variable for Vec<T>
+            where
+                T: Variable,
+            {
+                const TYPE: VariableType = <Vec<T> as Variable>::TYPE;
             }
 
             impl<T> Variable for Box<T>
@@ -158,8 +170,12 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
                 const TYPE: VariableType = VariableType::Named("Boolean");
             }
 
-            impl Variable for String {
+            impl Variable for str {
                 const TYPE: VariableType = VariableType::Named("String");
+            }
+
+            impl Variable for String {
+                const TYPE: VariableType = <str as Variable>::TYPE;
             }
 
             impl Variable for f64 {

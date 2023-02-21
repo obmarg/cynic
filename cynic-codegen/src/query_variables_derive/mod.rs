@@ -1,9 +1,12 @@
 use {
     proc_macro2::TokenStream,
     quote::{format_ident, quote, quote_spanned},
+    syn::visit_mut::{self, VisitMut},
 };
 
 mod input;
+
+use crate::variables_fields_ident;
 
 use self::input::QueryVariablesDeriveInput;
 
@@ -20,9 +23,10 @@ pub fn query_variables_derive_impl(
     input: QueryVariablesDeriveInput,
 ) -> Result<TokenStream, syn::Error> {
     let ident = &input.ident;
+    let (impl_generics, ty_generics, where_clause) = input.generics.split_for_impl();
     let vis = &input.vis;
     let schema_module = &input.schema_module();
-    let fields_struct_ident = format_ident!("{}Fields", ident);
+    let fields_struct_ident = variables_fields_ident(ident);
 
     let input_fields = input.data.take_struct().unwrap().fields;
 
@@ -32,7 +36,8 @@ pub fn query_variables_derive_impl(
 
     for f in input_fields {
         let name = f.ident.as_ref().unwrap();
-        let ty = &f.ty;
+        let mut ty = f.ty.clone();
+        TurnLifetimesToStatic.visit_type_mut(&mut ty);
         let name_str =
             proc_macro2::Literal::string(&f.graphql_ident(input.rename_all).graphql_name());
 
@@ -74,12 +79,12 @@ pub fn query_variables_derive_impl(
     Ok(quote! {
 
         #[automatically_derived]
-        impl ::cynic::QueryVariables for #ident {
+        impl #impl_generics ::cynic::QueryVariables for #ident #ty_generics #where_clause {
             type Fields = #fields_struct_ident;
         }
 
         #[automatically_derived]
-        impl ::cynic::serde::Serialize for #ident {
+        impl #impl_generics ::cynic::serde::Serialize for #ident #ty_generics #where_clause {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
                 S: ::cynic::serde::Serializer,
@@ -96,4 +101,12 @@ pub fn query_variables_derive_impl(
 
         #fields_struct
     })
+}
+
+struct TurnLifetimesToStatic;
+impl VisitMut for TurnLifetimesToStatic {
+    fn visit_lifetime_mut(&mut self, i: &mut syn::Lifetime) {
+        i.ident = format_ident!("static");
+        visit_mut::visit_lifetime_mut(self, i)
+    }
 }

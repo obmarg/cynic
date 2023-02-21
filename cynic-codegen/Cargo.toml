@@ -19,7 +19,7 @@ rustfmt = []
 counter = "0.5"
 graphql-parser = "0.4.0"
 proc-macro2 = "1.0"
-syn = "1.0"
+syn = { version = "1.0", features = ["visit-mut"] }
 quote = "1.0"
 darling = "0.13"
 strsim = "0.10.0"
