@@ -5,14 +5,14 @@ mod schema {
 
 #[derive(cynic::QueryVariables, Debug)]
 pub struct SignInVariables<'a> {
-    pub input: SignInInput<'a>,
+    pub input: SignInInput<'a, String>,
 }
 
 #[derive(cynic::InputObject, Debug)]
 #[cynic(schema_path = "../schemas/raindancer.graphql")]
-pub struct SignInInput<'a> {
+pub struct SignInInput<'a, Username: serde::Serialize + cynic::schema::IsScalar<String>> {
     pub password: &'a str,
-    pub username: String,
+    pub username: Username,
 }
 
 #[derive(cynic::QueryFragment, Debug)]

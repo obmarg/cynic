@@ -1,10 +1,7 @@
 use {
     proc_macro2::TokenStream,
-    quote::{format_ident, quote, quote_spanned},
-    syn::{
-        spanned::Spanned,
-        visit_mut::{self, VisitMut},
-    },
+    quote::{quote, quote_spanned},
+    syn::spanned::Spanned,
 };
 
 use {
@@ -52,7 +49,11 @@ impl<'a> FieldSerializer<'a> {
         None
     }
 
-    pub fn type_check(&self) -> TokenStream {
+    pub fn type_check(
+        &self,
+        impl_generics: &syn::ImplGenerics<'_>,
+        where_clause: Option<&syn::WhereClause>,
+    ) -> TokenStream {
         let marker_type = self
             .graphql_field
             .value_type
@@ -67,16 +68,14 @@ impl<'a> FieldSerializer<'a> {
             }
         };
 
-        let mut aligned_type = align_input_type(
+        let aligned_type = align_input_type(
             &self.rust_field.ty,
             &self.graphql_field.value_type,
             self.graphql_field.has_default,
         );
 
-        TurnLifetimesToAnonymous.visit_type_mut(&mut aligned_type);
-
         quote! {
-            ::cynic::assert_impl!(#aligned_type: #trait_bound);
+            ::cynic::assert_impl!(#aligned_type [#impl_generics] [#where_clause]: #trait_bound);
         }
     }
 
@@ -119,13 +118,5 @@ impl<'a> FieldSerializer<'a> {
         self.graphql_field.has_default
             && !self.graphql_field.is_nullable()
             && types::outer_type_is_option(&self.rust_field.ty)
-    }
-}
-
-struct TurnLifetimesToAnonymous;
-impl VisitMut for TurnLifetimesToAnonymous {
-    fn visit_lifetime_mut(&mut self, i: &mut syn::Lifetime) {
-        i.ident = format_ident!("_");
-        visit_mut::visit_lifetime_mut(self, i)
     }
 }

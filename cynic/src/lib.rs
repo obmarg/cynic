@@ -198,7 +198,7 @@ pub use cynic_proc_macros::{
     QueryFragment, QueryVariables, Scalar,
 };
 
-pub use static_assertions::{assert_impl_all as assert_impl, assert_type_eq_all};
+pub use static_assertions::assert_type_eq_all;
 
 // We re-export serde as the output from a lot of our derive macros require it,
 // and this way we can point at our copy rather than forcing users to add it to
@@ -249,5 +249,19 @@ macro_rules! impl_scalar {
                 <$schema_module$(::$schema_module_rest)*::$type_lock as $crate::schema::NamedType>::NAME,
             );
         }
+    };
+}
+
+#[macro_export(local_inner_macros)]
+/// Asserts that the type implements _all_ of the given traits.
+macro_rules! assert_impl {
+    ($type:ty [$($impl_generics: tt)*] [$($where_clause: tt)*]: $($trait:path),+ $(,)?) => {
+        const _: () = {
+            // Only callable when `$type` implements all traits in `$($trait)+`.
+            fn assert_impl_all<T: ?Sized $(+ $trait)+>() {}
+            fn do_assert $($impl_generics)* () $($where_clause)* {
+                assert_impl_all::<$type>();
+            }
+        };
     };
 }

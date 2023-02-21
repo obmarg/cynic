@@ -87,7 +87,9 @@ pub fn input_object_derive_impl(
             return Ok(errors.to_compile_errors());
         }
 
-        let typechecks = field_serializers.iter().map(|fs| fs.type_check());
+        let typechecks = field_serializers
+            .iter()
+            .map(|fs| fs.type_check(&impl_generics, where_clause));
         let map_serializer_ident = proc_macro2::Ident::new("map_serializer", Span::call_site());
         let field_inserts = field_serializers
             .iter()
