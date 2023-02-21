@@ -1,5 +1,7 @@
-use proc_macro2::{Span, TokenStream};
-use std::collections::HashSet;
+use {
+    proc_macro2::{Span, TokenStream},
+    std::collections::HashSet,
+};
 
 use crate::{
     error::Errors,
@@ -20,9 +22,8 @@ pub(crate) mod input;
 #[cfg(test)]
 mod tests;
 
-use crate::suggestions::guess_field;
-use input::InputObjectDeriveField;
 pub use input::InputObjectDeriveInput;
+use {crate::suggestions::guess_field, input::InputObjectDeriveField};
 
 pub fn input_object_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
     use darling::FromDeriveInput;
@@ -58,6 +59,7 @@ pub fn input_object_derive_impl(
 
     if let darling::ast::Data::Struct(fields) = &input.data {
         let ident = &input.ident;
+        let (impl_generics, ty_generics, where_clause) = input.generics.split_for_impl();
         let input_marker_ident = proc_macro2::Ident::from(input_object.marker_ident());
         let schema_module = input.schema_module();
 
@@ -97,12 +99,12 @@ pub fn input_object_derive_impl(
 
         Ok(quote! {
             #[automatically_derived]
-            impl ::cynic::InputObject for #ident {
+            impl #impl_generics ::cynic::InputObject for #ident #ty_generics #where_clause {
                 type SchemaType = #schema_module::#input_marker_ident;
             }
 
             #[automatically_derived]
-            impl ::cynic::serde::Serialize for #ident {
+            impl #impl_generics ::cynic::serde::Serialize for #ident #ty_generics #where_clause {
                 fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
                 where
                     S: ::cynic::serde::Serializer,
@@ -118,10 +120,10 @@ pub fn input_object_derive_impl(
                 }
             }
 
-            ::cynic::impl_coercions!(#ident, #schema_module::#input_marker_ident);
+            ::cynic::impl_coercions!(#ident #ty_generics [#impl_generics] [#where_clause], #schema_module::#input_marker_ident);
 
             #[automatically_derived]
-            impl #schema_module::variable::Variable for #ident {
+            impl #impl_generics #schema_module::variable::Variable for #ident #ty_generics #where_clause {
                 const TYPE: ::cynic::variables::VariableType = ::cynic::variables::VariableType::Named(#graphql_type_name);
             }
         })

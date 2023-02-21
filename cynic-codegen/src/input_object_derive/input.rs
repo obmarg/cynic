@@ -1,13 +1,15 @@
-use darling::util::SpannedValue;
-use syn::spanned::Spanned;
+use {darling::util::SpannedValue, syn::spanned::Spanned};
 
-use crate::idents::{RenamableFieldIdent, RenameAll};
-use proc_macro2::Span;
+use {
+    crate::idents::{RenamableFieldIdent, RenameAll},
+    proc_macro2::Span,
+};
 
 #[derive(darling::FromDeriveInput)]
 #[darling(attributes(cynic), supports(struct_named))]
 pub struct InputObjectDeriveInput {
     pub(super) ident: proc_macro2::Ident,
+    pub(super) generics: syn::Generics,
     pub(super) data: darling::ast::Data<(), InputObjectDeriveField>,
 
     pub schema_path: SpannedValue<String>,

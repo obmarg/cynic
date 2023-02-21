@@ -1,11 +1,18 @@
-use proc_macro2::TokenStream;
-use quote::{quote, quote_spanned};
-use syn::spanned::Spanned;
+use {
+    proc_macro2::TokenStream,
+    quote::{format_ident, quote, quote_spanned},
+    syn::{
+        spanned::Spanned,
+        visit_mut::{self, VisitMut},
+    },
+};
 
-use super::InputObjectDeriveField;
-use crate::{
-    schema::types::{InputType, InputValue},
-    types::{self, align_input_type, check_input_types_are_compatible},
+use {
+    super::InputObjectDeriveField,
+    crate::{
+        schema::types::{InputType, InputValue},
+        types::{self, align_input_type, check_input_types_are_compatible},
+    },
 };
 
 pub struct FieldSerializer<'a> {
@@ -27,7 +34,8 @@ impl<'a> FieldSerializer<'a> {
         }
     }
 
-    /// Validates the FieldSerializer definition, returning errors if there are any.
+    /// Validates the FieldSerializer definition, returning errors if there are
+    /// any.
     pub fn validate(&self) -> Option<syn::Error> {
         // First, check for type errors
         if let Err(e) = check_input_types_are_compatible(self.graphql_field, &self.rust_field.ty) {
@@ -59,11 +67,13 @@ impl<'a> FieldSerializer<'a> {
             }
         };
 
-        let aligned_type = align_input_type(
+        let mut aligned_type = align_input_type(
             &self.rust_field.ty,
             &self.graphql_field.value_type,
             self.graphql_field.has_default,
         );
+
+        TurnLifetimesToAnonymous.visit_type_mut(&mut aligned_type);
 
         quote! {
             ::cynic::assert_impl!(#aligned_type: #trait_bound);
@@ -109,5 +119,13 @@ impl<'a> FieldSerializer<'a> {
         self.graphql_field.has_default
             && !self.graphql_field.is_nullable()
             && types::outer_type_is_option(&self.rust_field.ty)
+    }
+}
+
+struct TurnLifetimesToAnonymous;
+impl VisitMut for TurnLifetimesToAnonymous {
+    fn visit_lifetime_mut(&mut self, i: &mut syn::Lifetime) {
+        i.ident = format_ident!("_");
+        visit_mut::visit_lifetime_mut(self, i)
     }
 }
