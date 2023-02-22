@@ -22,25 +22,20 @@ pub trait QueryVariables {
     /// A struct that determines which variables are available when using this
     /// struct.
     type Fields: QueryVariablesFields;
-}
-
-/// Represents a set of named fields that are required for a query
-///
-/// These types also hold general type information, (something that tells to ~
-/// what it serializes)
-pub trait QueryVariablesFields {
     /// An associated constant that contains the variable names & their types.
     ///
     /// This is used to construct the query string we send to a server.
     const VARIABLES: &'static [(&'static str, VariableType)];
 }
 
+/// Represents a set of named fields that are required for a query
+pub trait QueryVariablesFields {}
+
 impl QueryVariables for () {
     type Fields = ();
-}
-impl QueryVariablesFields for () {
     const VARIABLES: &'static [(&'static str, VariableType)] = &[];
 }
+impl QueryVariablesFields for () {}
 
 #[doc(hidden)]
 /// A VariableDefinition.

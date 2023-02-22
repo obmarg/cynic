@@ -5,7 +5,7 @@ use crate::{
     queries::{SelectionBuilder, SelectionSet},
     schema::{MutationRoot, QueryRoot, SubscriptionRoot},
     variables::VariableType,
-    QueryVariables, QueryVariablesFields,
+    QueryVariables,
 };
 
 /// An Operation that can be sent to a remote GraphQL server.
@@ -148,9 +148,7 @@ struct VariableDefinitions {
 
 impl VariableDefinitions {
     fn new<T: QueryVariables>() -> Self {
-        VariableDefinitions {
-            vars: <T::Fields as QueryVariablesFields>::VARIABLES,
-        }
+        VariableDefinitions { vars: T::VARIABLES }
     }
 }
 

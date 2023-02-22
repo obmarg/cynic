@@ -24,6 +24,9 @@ pub(super) struct QueryVariableField {
     pub(super) ty: syn::Type,
 
     #[darling(default)]
+    pub(super) graphql_type: Option<syn::Ident>,
+
+    #[darling(default)]
     pub(super) rename: Option<SpannedValue<String>>,
 }
 

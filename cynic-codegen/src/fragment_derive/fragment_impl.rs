@@ -89,9 +89,7 @@ impl<'a> FragmentImpl<'a> {
 
         let variables_fields = if let Some(vars) = variables_fields {
             let span = vars.span();
-
-            let variables_fields = quote_spanned! { span => #vars };
-            syn::parse2(variables_fields)?
+            syn::parse2(quote_spanned! { span => #vars })?
         } else {
             syn::parse2(quote! { () })?
         };

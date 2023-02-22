@@ -8,6 +8,15 @@ pub struct SignInVariables<'a> {
     pub input: SignInInput<'a, String>,
 }
 
+#[derive(cynic::QueryVariables, Debug)]
+pub struct SignInVariablesMoreGeneric<
+    'a,
+    Username: serde::Serialize + cynic::schema::IsScalar<String>,
+> {
+    #[cynic(graphql_type = "SignInInput")]
+    pub input: SignInInput<'a, Username>,
+}
+
 #[derive(cynic::InputObject, Debug)]
 #[cynic(schema_path = "../schemas/raindancer.graphql")]
 pub struct SignInInput<'a, Username: serde::Serialize + cynic::schema::IsScalar<String>> {
@@ -26,6 +35,17 @@ pub struct SignIn {
     pub sign_in: String,
 }
 
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(
+    graphql_type = "MutationRoot",
+    variables = "SignInVariablesMoreGeneric",
+    schema_path = "../schemas/raindancer.graphql"
+)]
+pub struct SignInMoreGeneric {
+    #[arguments(input: $input)]
+    pub sign_in: String,
+}
+
 #[test]
 fn test_query_building() {
     use cynic::MutationBuilder;
@@ -34,6 +54,20 @@ fn test_query_building() {
         input: SignInInput {
             password: "password?",
             username: "username".to_owned(),
+        },
+    });
+
+    insta::assert_snapshot!(operation.query);
+}
+
+#[test]
+fn test_query_building_more_generic() {
+    use cynic::MutationBuilder;
+
+    let operation = SignInMoreGeneric::build(SignInVariablesMoreGeneric {
+        input: SignInInput {
+            password: "password!",
+            username: &&&"username",
         },
     });
 

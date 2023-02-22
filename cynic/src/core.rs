@@ -104,7 +104,8 @@ pub trait InlineFragments<'de>: QueryFragment + serde::de::Deserialize<'de> {
 
 /// A GraphQL Enum.
 ///
-/// Note that in GraphQL these can't contain data - they are just a set of strings.
+/// Note that in GraphQL these can't contain data - they are just a set of
+/// strings.
 ///
 /// This should be be derived on an enum with unit variants.
 pub trait Enum: serde::de::DeserializeOwned + serde::Serialize {
