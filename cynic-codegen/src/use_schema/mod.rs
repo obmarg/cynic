@@ -166,6 +166,13 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
                 const TYPE: VariableType = T::TYPE;
             }
 
+            impl<T> Variable for std::borrow::Cow<'_, T>
+            where
+                T: ?::core::marker::Sized + Variable + ToOwned,
+            {
+                const TYPE: VariableType = T::TYPE;
+            }
+
             impl Variable for bool {
                 const TYPE: VariableType = VariableType::Named("Boolean");
             }

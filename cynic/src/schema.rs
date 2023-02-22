@@ -95,6 +95,13 @@ where
     type SchemaType = Box<U::SchemaType>;
 }
 
+impl<T, U: ?Sized> IsScalar<T> for std::borrow::Cow<'_, U>
+where
+    U: IsScalar<T> + ToOwned,
+{
+    type SchemaType = U::SchemaType;
+}
+
 impl IsScalar<bool> for bool {
     type SchemaType = bool;
 }

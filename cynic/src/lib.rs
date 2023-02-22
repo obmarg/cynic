@@ -27,7 +27,7 @@
 //! 1. Some structs to represent the Input types the underlying schema.
 //!    You may need to use these to build mutations or as parameters to queries.
 //! 2. Definitions of all the Enums in the provided schema.  You'll need these
-//! if    you want to use any enum types.
+//!    if you want to use any enum types.
 //! 3. Type safe selection set functions.  These can be used to build up a query
 //!    manually, though it's usually easier to use the `QueryFragment` derive
 //!    functionality explained below.  Hopefully you'll not need to use these

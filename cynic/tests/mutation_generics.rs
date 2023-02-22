@@ -1,3 +1,5 @@
+use std::borrow::Cow;
+
 #[allow(non_snake_case, non_camel_case_types)]
 mod schema {
     cynic::use_schema!("../schemas/raindancer.graphql");
@@ -5,7 +7,7 @@ mod schema {
 
 #[derive(cynic::QueryVariables, Debug)]
 pub struct SignInVariables<'a> {
-    pub input: SignInInput<'a, String>,
+    pub input: SignInInput<'a, Cow<'a, str>>,
 }
 
 #[derive(cynic::QueryVariables, Debug)]
@@ -53,7 +55,7 @@ fn test_query_building() {
     let operation = SignIn::build(SignInVariables {
         input: SignInInput {
             password: "password?",
-            username: "username".to_owned(),
+            username: Cow::Borrowed("username"),
         },
     });
 
