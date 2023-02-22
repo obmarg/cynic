@@ -18,7 +18,8 @@ use super::{
 use super::input::FragmentDeriveField;
 
 pub struct FragmentImpl<'a> {
-    target_struct: proc_macro2::Ident,
+    target_struct: &'a proc_macro2::Ident,
+    generics: &'a syn::Generics,
     selections: Vec<Selection<'a>>,
     variables_fields: syn::Type,
     graphql_type_name: String,
@@ -59,13 +60,14 @@ enum FieldKind {
 impl<'a> FragmentImpl<'a> {
     pub fn new_for(
         fields: &[(&FragmentDeriveField, Option<&'a Field<'a>>)],
-        name: &syn::Ident,
+        name: &'a syn::Ident,
+        generics: &'a syn::Generics,
         schema_type: &FragmentDeriveType<'_>,
         schema_module_path: &syn::Path,
         graphql_type_name: &str,
         variables: Option<&syn::Path>,
     ) -> Result<Self, Errors> {
-        let target_struct = name.clone();
+        let target_struct = name;
 
         let schema_type_path = schema_type.marker_ident.to_path(schema_module_path);
 
@@ -97,6 +99,7 @@ impl<'a> FragmentImpl<'a> {
         Ok(FragmentImpl {
             selections,
             target_struct,
+            generics,
             variables_fields,
             graphql_type_name: graphql_type_name.to_string(),
             schema_type_path,
@@ -159,10 +162,11 @@ impl quote::ToTokens for FragmentImpl<'_> {
         let selections = &self.selections;
         let graphql_type = proc_macro2::Literal::string(&self.graphql_type_name);
         let schema_type = &self.schema_type_path;
+        let (impl_generics, ty_generics, where_clause) = self.generics.split_for_impl();
 
         tokens.append_all(quote! {
             #[automatically_derived]
-            impl ::cynic::QueryFragment for #target_struct {
+            impl #impl_generics ::cynic::QueryFragment for #target_struct #ty_generics #where_clause {
                 type SchemaType = #schema_type;
                 type VariablesFields = #variables_fields;
 

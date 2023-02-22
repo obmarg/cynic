@@ -43,9 +43,12 @@ pub struct SignIn {
     variables = "SignInVariablesMoreGeneric",
     schema_path = "../schemas/raindancer.graphql"
 )]
-pub struct SignInMoreGeneric {
+pub struct SignInMoreGeneric<SI: cynic::schema::IsScalar<String>>
+where
+    <SI as cynic::schema::IsScalar<String>>::SchemaType: cynic::queries::IsFieldType<String>,
+{
     #[arguments(input: $input)]
-    pub sign_in: String,
+    pub sign_in: SI,
 }
 
 #[test]
@@ -66,7 +69,7 @@ fn test_query_building() {
 fn test_query_building_more_generic() {
     use cynic::MutationBuilder;
 
-    let operation = SignInMoreGeneric::build(SignInVariablesMoreGeneric {
+    let operation = SignInMoreGeneric::<Cow<'static, str>>::build(SignInVariablesMoreGeneric {
         input: SignInInput {
             password: "password!",
             username: &&&"username",
