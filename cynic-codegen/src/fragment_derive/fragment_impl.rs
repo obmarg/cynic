@@ -7,7 +7,8 @@ use {
 use crate::{
     error::Errors,
     schema::types::{Field, OutputType},
-    types::{self, check_spread_type, check_types_are_compatible, CheckMode}, variables_fields_path,
+    types::{self, check_spread_type, check_types_are_compatible, CheckMode},
+    variables_fields_path,
 };
 
 use super::{
@@ -173,7 +174,7 @@ impl quote::ToTokens for FragmentImpl<'_> {
                 const TYPE: Option<&'static str> = Some(#graphql_type);
 
                 fn query(mut builder: ::cynic::queries::SelectionBuilder<'_, Self::SchemaType, Self::VariablesFields>)
-                where 
+                where
                 {
                     #![allow(unused_mut)]
 

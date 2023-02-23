@@ -3,21 +3,25 @@ source: cynic-codegen/src/fragment_derive/tests.rs
 expression: "format_code(format!(\"{}\", tokens))"
 ---
 #[automatically_derived]
-impl<'de> ::cynic::QueryFragment<'de> for MyQuery {
+impl ::cynic::QueryFragment for MyQuery {
     type SchemaType = schema::Query;
-    type Variables = AnArgumentStruct;
+    type VariablesFields = AnArgumentStructFields;
     const TYPE: Option<&'static str> = Some("Query");
     fn query(
-        mut builder: ::cynic::queries::SelectionBuilder<'_, Self::SchemaType, Self::Variables>,
+        mut builder: ::cynic::queries::SelectionBuilder<
+            '_,
+            Self::SchemaType,
+            Self::VariablesFields,
+        >,
     ) {
         #![allow(unused_mut)]
-        let mut field_builder = builder . select_field :: < schema :: __fields :: Query :: filteredPosts , < Vec < BlogPostOutput > as :: cynic :: QueryFragment < '_ >> :: SchemaType > () ;
+        let mut field_builder = builder . select_field :: < schema :: __fields :: Query :: filteredPosts , < Vec < BlogPostOutput > as :: cynic :: QueryFragment > :: SchemaType > () ;
         {
             field_builder
                 .argument::<schema::__fields::Query::_filtered_posts_arguments::filters>()
-                .variable(<AnArgumentStruct as ::cynic::QueryVariables>::Fields::filters());
+                .variable(AnArgumentStructFields::filters());
         }
-        <Vec<BlogPostOutput> as ::cynic::QueryFragment<'_>>::query(field_builder.select_children());
+        <Vec<BlogPostOutput> as ::cynic::QueryFragment>::query(field_builder.select_children());
     }
 }
 #[automatically_derived]
@@ -35,13 +39,16 @@ impl<'de> ::cynic::serde::Deserialize<'de> for MyQuery {
             #[serde(other)]
             __Other,
         }
-        struct Visitor;
-        impl<'de> ::cynic::serde::de::Visitor<'de> for Visitor {
+        struct Visitor<'de> {
+            marker: ::core::marker::PhantomData<MyQuery>,
+            lifetime: ::core::marker::PhantomData<&'de ()>,
+        }
+        impl<'de> ::cynic::serde::de::Visitor<'de> for Visitor<'de> {
             type Value = MyQuery;
             fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
                 formatter.write_str("struct MyQuery")
             }
-            fn visit_map<V>(self, mut __map: V) -> Result<MyQuery, V::Error>
+            fn visit_map<V>(self, mut __map: V) -> Result<Self::Value, V::Error>
             where
                 V: ::cynic::serde::de::MapAccess<'de>,
             {
@@ -67,7 +74,14 @@ impl<'de> ::cynic::serde::Deserialize<'de> for MyQuery {
             }
         }
         const FIELDS: &'static [&str] = &["filteredPosts"];
-        deserializer.deserialize_struct("MyQuery", FIELDS, Visitor)
+        deserializer.deserialize_struct(
+            "MyQuery",
+            FIELDS,
+            Visitor {
+                marker: ::core::marker::PhantomData,
+                lifetime: ::core::marker::PhantomData,
+            },
+        )
     }
 }
 

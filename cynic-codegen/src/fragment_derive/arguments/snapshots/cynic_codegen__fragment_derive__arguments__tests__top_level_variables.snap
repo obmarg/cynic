@@ -1,6 +1,5 @@
 ---
 source: cynic-codegen/src/fragment_derive/arguments/tests.rs
-assertion_line: 36
 expression: "analyse(literals, field, Some(&format_ident!(\"MyArguments\").into()),\n        Span::call_site()).map(|o| o.arguments)"
 ---
 Ok(
@@ -24,7 +23,7 @@ Ok(
                     value_type: NamedInputType(
                         "BookFilters",
                     ),
-                    variable_struct: Path {
+                    variables_fields_struct: Path {
                         leading_colon: None,
                         segments: [
                             PathSegment {
@@ -61,7 +60,7 @@ Ok(
                             "BookFilters",
                         ),
                     ),
-                    variable_struct: Path {
+                    variables_fields_struct: Path {
                         leading_colon: None,
                         segments: [
                             PathSegment {

@@ -17,11 +17,11 @@ impl<'de> ::cynic::InlineFragments<'de> for PostOrAuthor {
     where
         D: ::cynic::serde::Deserializer<'de>,
     {
-        if Some(typename) == <Post as ::cynic::QueryFragment<'de>>::TYPE {
+        if Some(typename) == <Post as ::cynic::QueryFragment>::TYPE {
             return <Post as ::cynic::serde::Deserialize<'de>>::deserialize(deserializer)
                 .map(PostOrAuthor::Post);
         }
-        if Some(typename) == <Author as ::cynic::QueryFragment<'de>>::TYPE {
+        if Some(typename) == <Author as ::cynic::QueryFragment>::TYPE {
             return <Author as ::cynic::serde::Deserialize<'de>>::deserialize(deserializer)
                 .map(PostOrAuthor::Author);
         }
@@ -29,21 +29,25 @@ impl<'de> ::cynic::InlineFragments<'de> for PostOrAuthor {
     }
 }
 #[automatically_derived]
-impl<'de> ::cynic::QueryFragment<'de> for PostOrAuthor {
+impl ::cynic::QueryFragment for PostOrAuthor {
     type SchemaType = schema::PostOrAuthor;
-    type Variables = ();
+    type VariablesFields = ();
     const TYPE: Option<&'static str> = Some("PostOrAuthor");
     fn query(
-        mut builder: ::cynic::queries::SelectionBuilder<'_, Self::SchemaType, Self::Variables>,
+        mut builder: ::cynic::queries::SelectionBuilder<
+            '_,
+            Self::SchemaType,
+            Self::VariablesFields,
+        >,
     ) {
         let fragment_builder = builder.inline_fragment();
         let mut fragment_builder =
-            fragment_builder.on::<<Post as ::cynic::QueryFragment<'_>>::SchemaType>();
-        <Post as ::cynic::QueryFragment<'_>>::query(fragment_builder.select_children());
+            fragment_builder.on::<<Post as ::cynic::QueryFragment>::SchemaType>();
+        <Post as ::cynic::QueryFragment>::query(fragment_builder.select_children());
         let fragment_builder = builder.inline_fragment();
         let mut fragment_builder =
-            fragment_builder.on::<<Author as ::cynic::QueryFragment<'_>>::SchemaType>();
-        <Author as ::cynic::QueryFragment<'_>>::query(fragment_builder.select_children());
+            fragment_builder.on::<<Author as ::cynic::QueryFragment>::SchemaType>();
+        <Author as ::cynic::QueryFragment>::query(fragment_builder.select_children());
     }
 }
 

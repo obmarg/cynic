@@ -3276,7 +3276,7 @@ pub mod variable {
     }
     impl<T> Variable for &T
     where
-        T: Variable,
+        T: ?::core::marker::Sized + Variable,
     {
         const TYPE: VariableType = T::TYPE;
     }
@@ -3286,11 +3286,17 @@ pub mod variable {
     {
         const TYPE: VariableType = VariableType::Nullable(&T::TYPE);
     }
-    impl<T> Variable for Vec<T>
+    impl<T> Variable for [T]
     where
         T: Variable,
     {
         const TYPE: VariableType = VariableType::List(&T::TYPE);
+    }
+    impl<T> Variable for Vec<T>
+    where
+        T: Variable,
+    {
+        const TYPE: VariableType = <Vec<T> as Variable>::TYPE;
     }
     impl<T> Variable for Box<T>
     where
@@ -3310,11 +3316,20 @@ pub mod variable {
     {
         const TYPE: VariableType = T::TYPE;
     }
+    impl<T> Variable for std::borrow::Cow<'_, T>
+    where
+        T: ?::core::marker::Sized + Variable + ToOwned,
+    {
+        const TYPE: VariableType = T::TYPE;
+    }
     impl Variable for bool {
         const TYPE: VariableType = VariableType::Named("Boolean");
     }
-    impl Variable for String {
+    impl Variable for str {
         const TYPE: VariableType = VariableType::Named("String");
+    }
+    impl Variable for String {
+        const TYPE: VariableType = <str as Variable>::TYPE;
     }
     impl Variable for f64 {
         const TYPE: VariableType = VariableType::Named("Float");

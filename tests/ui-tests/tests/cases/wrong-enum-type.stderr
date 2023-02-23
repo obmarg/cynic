@@ -4,8 +4,8 @@ error[E0277]: the trait bound `schema::CheckConclusionState: IsFieldType<CheckSt
 14 |         pub status: CheckConclusionState,
    |                     ^^^^^^^^^^^^^^^^^^^^ the trait `IsFieldType<CheckStatusState>` is not implemented for `schema::CheckConclusionState`
    |
-note: required by a bound in `SelectionBuilder::<'a, SchemaType, Variables>::select_field`
+note: required by a bound in `SelectionBuilder::<'a, SchemaType, VariablesFields>::select_field`
   --> $WORKSPACE/cynic/src/queries/builders.rs
    |
    |         FieldType: IsFieldType<SchemaType::Type>,
-   |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `SelectionBuilder::<'a, SchemaType, Variables>::select_field`
+   |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `SelectionBuilder::<'a, SchemaType, VariablesFields>::select_field`

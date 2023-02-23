@@ -3,15 +3,19 @@ source: cynic-codegen/src/fragment_derive/tests.rs
 expression: "format_code(format!(\"{}\", tokens))"
 ---
 #[automatically_derived]
-impl<'de> ::cynic::QueryFragment<'de> for Film {
+impl ::cynic::QueryFragment for Film {
     type SchemaType = schema::Film;
-    type Variables = ();
+    type VariablesFields = ();
     const TYPE: Option<&'static str> = Some("Film");
     fn query(
-        mut builder: ::cynic::queries::SelectionBuilder<'_, Self::SchemaType, Self::Variables>,
+        mut builder: ::cynic::queries::SelectionBuilder<
+            '_,
+            Self::SchemaType,
+            Self::VariablesFields,
+        >,
     ) {
         #![allow(unused_mut)]
-        <FilmDetails as ::cynic::QueryFragment<'_>>::query(builder)
+        <FilmDetails as ::cynic::QueryFragment>::query(builder)
     }
 }
 #[automatically_derived]
