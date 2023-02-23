@@ -5,6 +5,7 @@ use darling::util::SpannedValue;
 pub struct ScalarDeriveInput {
     pub(super) ident: proc_macro2::Ident,
     pub(super) data: darling::ast::Data<(), ScalarDeriveField>,
+    pub(super) generics: syn::Generics,
 
     #[darling(default, rename = "schema_module")]
     schema_module_: Option<syn::Path>,

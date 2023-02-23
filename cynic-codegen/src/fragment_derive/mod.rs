@@ -1,7 +1,4 @@
-use {
-    proc_macro2::{Span, TokenStream},
-    syn::parse_quote,
-};
+use proc_macro2::{Span, TokenStream};
 
 use crate::{
     schema::{
@@ -62,21 +59,20 @@ pub fn fragment_derive_impl(
     let schema_module = input.schema_module();
     let variables = input.variables();
     let deprecations = input.deprecations();
-    let generics = Generics::new(&input.generics);
     if let darling::ast::Data::Struct(fields) = input.data {
         let fields = pair_fields(fields.iter(), &schema_type)?;
 
         let fragment_impl = FragmentImpl::new_for(
             &fields,
             &input.ident,
-            generics.generics,
+            &input.generics,
             &schema_type,
             &schema_module,
             graphql_name,
             variables.as_ref(),
         )?;
 
-        let deserialize_impl = DeserializeImpl::new(&fields, &input.ident, &generics);
+        let deserialize_impl = DeserializeImpl::new(&fields, &input.ident, &input.generics);
 
         Ok(quote::quote! {
             #fragment_impl
@@ -135,36 +131,6 @@ fn pair_fields<'a, 'b>(
         .collect();
 
     Err(errors)
-}
-
-pub struct Generics<'a> {
-    generics: &'a syn::Generics,
-    generics_with_de_and_deserialize_bounds: syn::Generics,
-}
-
-impl<'a> Generics<'a> {
-    fn new(generics: &'a syn::Generics) -> Self {
-        let mut generics_with_de_and_deserialize_bounds = generics.clone();
-        generics_with_de_and_deserialize_bounds
-            .params
-            .push(parse_quote!('de));
-        for generic in &generics.params {
-            match generic {
-                syn::GenericParam::Type(type_) => {
-                    let ident = &type_.ident;
-                    generics_with_de_and_deserialize_bounds
-                        .make_where_clause()
-                        .predicates
-                        .push(parse_quote! { #ident: ::cynic::serde::Deserialize<'de> })
-                }
-                syn::GenericParam::Lifetime(_) | syn::GenericParam::Const(_) => {}
-            }
-        }
-        Self {
-            generics,
-            generics_with_de_and_deserialize_bounds,
-        }
-    }
 }
 
 #[cfg(test)]

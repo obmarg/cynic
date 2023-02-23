@@ -1,8 +1,8 @@
 use proc_macro2::TokenStream;
 
 use {
-    super::{FragmentDeriveField, Generics},
-    crate::schema::types as schema,
+    super::FragmentDeriveField,
+    crate::{generics_for_serde, schema::types as schema},
 };
 
 pub enum DeserializeImpl<'a> {
@@ -13,13 +13,13 @@ pub enum DeserializeImpl<'a> {
 pub struct StandardDeserializeImpl<'a> {
     target_struct: &'a syn::Ident,
     fields: Vec<Field>,
-    generics: &'a Generics<'a>,
+    generics: &'a syn::Generics,
 }
 
 pub struct SpreadingDeserializeImpl<'a> {
     target_struct: &'a syn::Ident,
     fields: Vec<Field>,
-    generics: &'a Generics<'a>,
+    generics: &'a syn::Generics,
 }
 
 struct Field {
@@ -35,7 +35,7 @@ impl<'a> DeserializeImpl<'a> {
     pub fn new(
         fields: &[(&FragmentDeriveField, Option<&schema::Field<'_>>)],
         name: &'a syn::Ident,
-        generics: &'a Generics<'a>,
+        generics: &'a syn::Generics,
     ) -> Self {
         let spreading = fields.iter().any(|f| *f.0.spread);
 
@@ -109,8 +109,8 @@ impl quote::ToTokens for StandardDeserializeImpl<'_> {
         let expecting_str = proc_macro2::Literal::string(&format!("struct {}", &struct_name));
         let struct_name = proc_macro2::Literal::string(&struct_name);
 
-        let (_, ty_generics, _) = self.generics.generics.split_for_impl();
-        let generics_with_de = &self.generics.generics_with_de_and_deserialize_bounds;
+        let (_, ty_generics, _) = self.generics.split_for_impl();
+        let generics_with_de = generics_for_serde::with_de_and_deserialize_bounds(&self.generics);
         let (impl_generics, ty_generics_with_de, where_clause) = generics_with_de.split_for_impl();
 
         tokens.append_all(quote! {
@@ -229,11 +229,9 @@ impl quote::ToTokens for SpreadingDeserializeImpl<'_> {
             }
         });
 
-        let (_, ty_generics, where_clause) = self.generics.generics.split_for_impl();
-        let (impl_generics, _, _) = self
-            .generics
-            .generics_with_de_and_deserialize_bounds
-            .split_for_impl();
+        let (_, ty_generics, where_clause) = self.generics.split_for_impl();
+        let generics_with_de = generics_for_serde::with_de_and_deserialize_bounds(&self.generics);
+        let (impl_generics, _, _) = generics_with_de.split_for_impl();
 
         tokens.append_all(quote! {
             #[automatically_derived]

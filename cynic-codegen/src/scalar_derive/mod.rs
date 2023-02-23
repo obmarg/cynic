@@ -8,7 +8,7 @@ mod tests;
 pub use input::ScalarDeriveInput;
 use quote::quote_spanned;
 
-use crate::schema::markers::TypeMarkerIdent;
+use crate::{generics_for_serde, schema::markers::TypeMarkerIdent};
 
 pub fn scalar_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
     use darling::FromDeriveInput;
@@ -54,9 +54,15 @@ pub fn scalar_derive_impl(input: ScalarDeriveInput) -> Result<TokenStream, syn::
     let marker_ident = TypeMarkerIdent::with_graphql_name(&scalar_name).to_path(&schema_module);
     let marker_ident = quote_spanned! { scalar_span => #marker_ident };
 
+    let (impl_generics, ty_generics, where_clause) = input.generics.split_for_impl();
+    let generics_with_de = generics_for_serde::with_de_and_deserialize_bounds(&input.generics);
+    let (impl_generics_with_de, _, where_clause_with_de) = generics_with_de.split_for_impl();
+    let generics_with_ser = generics_for_serde::with_serialize_bounds(&input.generics);
+    let (impl_generics_with_ser, _, where_clause_with_ser) = generics_with_ser.split_for_impl();
+
     Ok(quote! {
         #[automatically_derived]
-        impl ::cynic::serde::Serialize for #ident {
+        impl #impl_generics_with_ser ::cynic::serde::Serialize for #ident #ty_generics #where_clause_with_ser {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
                 S: ::cynic::serde::Serializer,
@@ -66,7 +72,7 @@ pub fn scalar_derive_impl(input: ScalarDeriveInput) -> Result<TokenStream, syn::
         }
 
         #[automatically_derived]
-        impl<'de> ::cynic::serde::Deserialize<'de> for #ident {
+        impl #impl_generics_with_de ::cynic::serde::Deserialize<'de> for #ident #ty_generics #where_clause_with_de {
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
             where
                 D: ::cynic::serde::Deserializer<'de>,
@@ -76,15 +82,15 @@ pub fn scalar_derive_impl(input: ScalarDeriveInput) -> Result<TokenStream, syn::
         }
 
         #[automatically_derived]
-        impl ::cynic::schema::IsScalar<#marker_ident> for #ident {
+        impl #impl_generics ::cynic::schema::IsScalar<#marker_ident> for #ident #ty_generics #where_clause {
             type SchemaType = #marker_ident;
         }
 
         #[automatically_derived]
-        impl #schema_module::variable::Variable for #ident {
+        impl #impl_generics #schema_module::variable::Variable for #ident #ty_generics #where_clause {
             const TYPE: ::cynic::variables::VariableType = ::cynic::variables::VariableType::Named(#graphql_type_name);
         }
 
-        ::cynic::impl_coercions!(#ident, #marker_ident);
+        ::cynic::impl_coercions!(#ident #ty_generics [#impl_generics] [#where_clause], #marker_ident);
     })
 }

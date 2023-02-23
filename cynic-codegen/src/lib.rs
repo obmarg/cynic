@@ -1,6 +1,7 @@
 #![deny(rust_2018_idioms)]
 pub mod enum_derive;
 pub mod fragment_derive;
+pub mod generics_for_serde;
 pub mod inline_fragments_derive;
 pub mod input_object_derive;
 pub mod query_variables_derive;
