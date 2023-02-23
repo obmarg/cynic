@@ -9,7 +9,8 @@ There's a few things you'll need before you get started:
 
 1. An existing rust project (though you can just run `cargo new` if you don't
    have one).
-2. A GraphQL API that you'd like to query, and a copy of it's schema.
+2. A GraphQL API that you'd like to query, and
+   [a copy of its schema](https://github.com/prisma-labs/get-graphql-schema).
 3. A GraphQL query that you'd like to run against the API. If you don't have
    one of these, you should probably use graphiql or graphql playground to get
    started, or you can use the one I provide below. For this quickstart I'll be
