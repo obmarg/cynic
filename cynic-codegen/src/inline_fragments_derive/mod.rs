@@ -64,6 +64,7 @@ pub(crate) fn inline_fragments_derive_impl(
 
         let query_fragment_impl = QueryFragmentImpl {
             target_enum: input.ident.clone(),
+            generics: &input.generics,
             type_lock,
             variables,
             fragments: &fragments,
@@ -73,6 +74,7 @@ pub(crate) fn inline_fragments_derive_impl(
 
         let inline_fragments_impl = inline_fragments_impl::InlineFragmentsImpl {
             target_enum: input.ident.clone(),
+            generics: &input.generics,
             fragments: &fragments,
             fallback,
         };
@@ -177,6 +179,7 @@ fn check_fallback(
 
 struct QueryFragmentImpl<'a> {
     target_enum: syn::Ident,
+    generics: &'a syn::Generics,
     type_lock: syn::Path,
     variables: Option<syn::Path>,
     fragments: &'a [Fragment],
@@ -208,9 +211,11 @@ impl quote::ToTokens for QueryFragmentImpl<'_> {
             _ => quote! {},
         };
 
+        let (impl_generics, ty_generics, where_clause) = self.generics.split_for_impl();
+
         tokens.append_all(quote! {
             #[automatically_derived]
-            impl ::cynic::QueryFragment for #target_struct {
+            impl #impl_generics ::cynic::QueryFragment for #target_struct #ty_generics #where_clause {
                 type SchemaType = #type_lock;
                 type VariablesFields = #variables_fields;
 

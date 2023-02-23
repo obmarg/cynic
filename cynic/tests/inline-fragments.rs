@@ -1,6 +1,4 @@
-use rstest::rstest;
-use serde::Serialize;
-use serde_json::json;
+use {rstest::rstest, serde::Serialize, serde_json::json};
 
 use cynic::{InlineFragments, QueryFragment};
 
@@ -38,6 +36,18 @@ enum PostOrAuthor {
 enum Node {
     Post(Post),
     Author(Author),
+    #[cynic(fallback)]
+    Other,
+}
+
+#[derive(InlineFragments, Serialize, PartialEq, Debug)]
+#[cynic(
+    schema_path = "tests/test-schema.graphql",
+    graphql_type = "PostOrAuthor"
+)]
+enum PostOrAuthorGeneric<A: QueryFragment<SchemaType = schema::Author, VariablesFields = ()>> {
+    Post(Post),
+    Author(A),
     #[cynic(fallback)]
     Other,
 }
