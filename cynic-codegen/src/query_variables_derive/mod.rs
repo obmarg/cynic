@@ -6,7 +6,7 @@ use {
 
 mod input;
 
-use crate::variables_fields_ident;
+use crate::{generics_for_serde, variables_fields_ident};
 
 use self::input::QueryVariablesDeriveInput;
 
@@ -23,7 +23,11 @@ pub fn query_variables_derive_impl(
     input: QueryVariablesDeriveInput,
 ) -> Result<TokenStream, syn::Error> {
     let ident = &input.ident;
+
     let (impl_generics, ty_generics, where_clause) = input.generics.split_for_impl();
+    let generics_with_ser = generics_for_serde::with_serialize_bounds(&input.generics);
+    let (impl_generics_with_ser, _, where_clause_with_ser) = generics_with_ser.split_for_impl();
+
     let vis = &input.vis;
     let schema_module = &input.schema_module();
     let fields_struct_ident = variables_fields_ident(ident);
@@ -129,7 +133,7 @@ pub fn query_variables_derive_impl(
         }
 
         #[automatically_derived]
-        impl #impl_generics ::cynic::serde::Serialize for #ident #ty_generics #where_clause {
+        impl #impl_generics_with_ser ::cynic::serde::Serialize for #ident #ty_generics #where_clause_with_ser {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
                 S: ::cynic::serde::Serializer,
