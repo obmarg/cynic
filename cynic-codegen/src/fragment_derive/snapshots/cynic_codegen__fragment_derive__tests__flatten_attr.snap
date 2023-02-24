@@ -3,29 +3,25 @@ source: cynic-codegen/src/fragment_derive/tests.rs
 expression: "format_code(format!(\"{}\", tokens))"
 ---
 #[automatically_derived]
-impl ::cynic::QueryFragment for Film {
+impl cynic::QueryFragment for Film {
     type SchemaType = schema::Film;
     type VariablesFields = ();
     const TYPE: Option<&'static str> = Some("Film");
     fn query(
-        mut builder: ::cynic::queries::SelectionBuilder<
-            '_,
-            Self::SchemaType,
-            Self::VariablesFields,
-        >,
+        mut builder: cynic::queries::SelectionBuilder<'_, Self::SchemaType, Self::VariablesFields>,
     ) {
         #![allow(unused_mut)]
-        let mut field_builder = builder . select_flattened_field :: < schema :: __fields :: Film :: producers , < Vec < String > as :: cynic :: schema :: IsScalar < < schema :: __fields :: Film :: producers as :: cynic :: schema :: Field > :: Type >> :: SchemaType , < schema :: __fields :: Film :: producers as :: cynic :: schema :: Field > :: Type , > () ;
+        let mut field_builder = builder . select_flattened_field :: < schema :: __fields :: Film :: producers , < Vec < String > as cynic :: schema :: IsScalar < < schema :: __fields :: Film :: producers as cynic :: schema :: Field > :: Type >> :: SchemaType , < schema :: __fields :: Film :: producers as cynic :: schema :: Field > :: Type , > () ;
     }
 }
 #[automatically_derived]
-impl<'de> ::cynic::serde::Deserialize<'de> for Film {
+impl<'de> cynic::serde::Deserialize<'de> for Film {
     fn deserialize<__D>(deserializer: __D) -> Result<Self, __D::Error>
     where
-        __D: ::cynic::serde::Deserializer<'de>,
+        __D: cynic::serde::Deserializer<'de>,
     {
-        #[derive(:: cynic :: serde :: Deserialize)]
-        #[serde(field_identifier, crate = "::cynic::serde")]
+        #[derive(cynic :: serde :: Deserialize)]
+        #[serde(field_identifier, crate = "cynic::serde")]
         #[allow(non_camel_case_types)]
         enum Field {
             #[serde(rename = "producers")]
@@ -37,37 +33,35 @@ impl<'de> ::cynic::serde::Deserialize<'de> for Film {
             marker: ::core::marker::PhantomData<Film>,
             lifetime: ::core::marker::PhantomData<&'de ()>,
         }
-        impl<'de> ::cynic::serde::de::Visitor<'de> for Visitor<'de> {
+        impl<'de> cynic::serde::de::Visitor<'de> for Visitor<'de> {
             type Value = Film;
             fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
                 formatter.write_str("struct Film")
             }
             fn visit_map<V>(self, mut __map: V) -> Result<Self::Value, V::Error>
             where
-                V: ::cynic::serde::de::MapAccess<'de>,
+                V: cynic::serde::de::MapAccess<'de>,
             {
                 let mut producers = None;
                 while let Some(__key) = __map.next_key()? {
                     match __key {
                         Field::producers => {
                             if producers.is_some() {
-                                return Err(::cynic::serde::de::Error::duplicate_field(
-                                    "producers",
-                                ));
+                                return Err(cynic::serde::de::Error::duplicate_field("producers"));
                             }
                             producers = Some(
                                 __map
-                                    .next_value::<::cynic::__private::Flattened<Vec<String>>>()?
+                                    .next_value::<cynic::__private::Flattened<Vec<String>>>()?
                                     .into_inner(),
                             );
                         }
                         Field::__Other => {
-                            __map.next_value::<::cynic::serde::de::IgnoredAny>()?;
+                            __map.next_value::<cynic::serde::de::IgnoredAny>()?;
                         }
                     }
                 }
-                let producers = producers
-                    .ok_or_else(|| ::cynic::serde::de::Error::missing_field("producers"))?;
+                let producers =
+                    producers.ok_or_else(|| cynic::serde::de::Error::missing_field("producers"))?;
                 Ok(Film { producers })
             }
         }

@@ -17,7 +17,7 @@ note: required by a bound in `<MyFailingUnionType as InlineFragments<'de>>::dese
    |           |
    |           required by a bound in this
    |           required by this bound in `<MyFailingUnionType as InlineFragments<'de>>::deserialize_variant::_::{closure#0}::assert_type_eq_all`
-   = note: this error originates in the macro `::cynic::assert_type_eq_all` (in Nightly builds, run with -Z macro-backtrace for more info)
+   = note: this error originates in the macro `cynic::assert_type_eq_all` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0308]: mismatched types
   --> tests/cases/inline-fragment-fallback-validation.rs:17:11
