@@ -110,9 +110,9 @@ pub fn input_object_derive_impl(
 
             #[automatically_derived]
             impl #impl_generics_with_ser ::cynic::serde::Serialize for #ident #ty_generics #where_clause_with_ser {
-                fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                fn serialize<__S>(&self, serializer: __S) -> Result<__S::Ok, __S::Error>
                 where
-                    S: ::cynic::serde::Serializer,
+                    __S: ::cynic::serde::Serializer,
                 {
                     use ::cynic::serde::ser::SerializeMap;
                     #(#typechecks)*

@@ -116,9 +116,9 @@ impl quote::ToTokens for StandardDeserializeImpl<'_> {
         tokens.append_all(quote! {
             #[automatically_derived]
             impl #impl_generics ::cynic::serde::Deserialize<'de> for #target_struct #ty_generics #where_clause {
-                fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+                fn deserialize<__D>(deserializer: __D) -> Result<Self, __D::Error>
                 where
-                    D: ::cynic::serde::Deserializer<'de>,
+                    __D: ::cynic::serde::Deserializer<'de>,
                 {
                     #[derive(::cynic::serde::Deserialize)]
                     #[serde(field_identifier, crate="::cynic::serde")]
@@ -236,11 +236,11 @@ impl quote::ToTokens for SpreadingDeserializeImpl<'_> {
         tokens.append_all(quote! {
             #[automatically_derived]
             impl #impl_generics ::cynic::serde::Deserialize<'de> for #target_struct #ty_generics #where_clause {
-                fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+                fn deserialize<__D>(deserializer: __D) -> Result<Self, __D::Error>
                 where
-                    D: ::cynic::serde::Deserializer<'de>,
+                    __D: ::cynic::serde::Deserializer<'de>,
                 {
-                    let spreadable = ::cynic::__private::Spreadable::<D::Error>::deserialize(deserializer)?;
+                    let spreadable = ::cynic::__private::Spreadable::<__D::Error>::deserialize(deserializer)?;
 
                     Ok(#target_struct {
                         #(#field_inserts)*

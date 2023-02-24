@@ -1,5 +1,7 @@
-use proc_macro2::{Span, TokenStream};
-use std::collections::BTreeMap;
+use {
+    proc_macro2::{Span, TokenStream},
+    std::collections::BTreeMap,
+};
 
 use crate::{
     idents::RenameAll,
@@ -11,13 +13,14 @@ use crate::{
 };
 
 pub(crate) mod input;
-use crate::suggestions::{format_guess, guess_field};
 pub use input::EnumDeriveInput;
-use input::EnumDeriveVariant;
+use {
+    crate::suggestions::{format_guess, guess_field},
+    input::EnumDeriveVariant,
+};
 
 pub fn enum_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
-    use darling::FromDeriveInput;
-    use syn::spanned::Spanned;
+    use {darling::FromDeriveInput, syn::spanned::Spanned};
 
     let enum_span = ast.span();
 
@@ -89,9 +92,9 @@ pub fn enum_derive_impl(
 
             #[automatically_derived]
             impl ::cynic::serde::Serialize for #ident {
-                fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                fn serialize<__S>(&self, serializer: __S) -> Result<__S::Ok, __S::Error>
                 where
-                    S: ::cynic::serde::Serializer {
+                    __S: ::cynic::serde::Serializer {
                         match self {
                             #(
                                 #ident::#variants => serializer.serialize_unit_variant(#graphql_type_name, #variant_indexes, #string_literals),
@@ -102,9 +105,9 @@ pub fn enum_derive_impl(
 
             #[automatically_derived]
             impl<'de> ::cynic::serde::Deserialize<'de> for #ident {
-                fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+                fn deserialize<__D>(deserializer: __D) -> Result<Self, __D::Error>
                 where
-                    D: ::cynic::serde::Deserializer<'de>,
+                    __D: ::cynic::serde::Deserializer<'de>,
                 {
                     match <String as ::cynic::serde::Deserialize>::deserialize(deserializer)?.as_ref() {
                         #(
@@ -203,14 +206,12 @@ fn join_variants<'a>(
 
 #[cfg(test)]
 mod tests {
-    use assert_matches::assert_matches;
-    use darling::util::SpannedValue;
-    use rstest::rstest;
-    use std::collections::HashSet;
-    use syn::parse_quote;
+    use {
+        assert_matches::assert_matches, darling::util::SpannedValue, rstest::rstest,
+        std::collections::HashSet, syn::parse_quote,
+    };
 
-    use super::*;
-    use crate::schema::FieldName;
+    use {super::*, crate::schema::FieldName};
 
     #[rstest(
         enum_variant_1,

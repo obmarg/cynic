@@ -63,9 +63,9 @@ pub fn scalar_derive_impl(input: ScalarDeriveInput) -> Result<TokenStream, syn::
     Ok(quote! {
         #[automatically_derived]
         impl #impl_generics_with_ser ::cynic::serde::Serialize for #ident #ty_generics #where_clause_with_ser {
-            fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+            fn serialize<__S>(&self, serializer: __S) -> Result<__S::Ok, __S::Error>
             where
-                S: ::cynic::serde::Serializer,
+                __S: ::cynic::serde::Serializer,
             {
                 self.0.serialize(serializer)
             }
@@ -73,9 +73,9 @@ pub fn scalar_derive_impl(input: ScalarDeriveInput) -> Result<TokenStream, syn::
 
         #[automatically_derived]
         impl #impl_generics_with_de ::cynic::serde::Deserialize<'de> for #ident #ty_generics #where_clause_with_de {
-            fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+            fn deserialize<__D>(deserializer: __D) -> Result<Self, __D::Error>
             where
-                D: ::cynic::serde::Deserializer<'de>,
+                __D: ::cynic::serde::Deserializer<'de>,
             {
                 <#inner_type as ::cynic::serde::Deserialize<'de>>::deserialize(deserializer).map(Self)
             }

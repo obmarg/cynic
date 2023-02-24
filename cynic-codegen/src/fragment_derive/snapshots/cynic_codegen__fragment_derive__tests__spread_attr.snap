@@ -20,11 +20,11 @@ impl ::cynic::QueryFragment for Film {
 }
 #[automatically_derived]
 impl<'de> ::cynic::serde::Deserialize<'de> for Film {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    fn deserialize<__D>(deserializer: __D) -> Result<Self, __D::Error>
     where
-        D: ::cynic::serde::Deserializer<'de>,
+        __D: ::cynic::serde::Deserializer<'de>,
     {
-        let spreadable = ::cynic::__private::Spreadable::<D::Error>::deserialize(deserializer)?;
+        let spreadable = ::cynic::__private::Spreadable::<__D::Error>::deserialize(deserializer)?;
         Ok(Film {
             details: <FilmDetails as ::cynic::serde::Deserialize<'de>>::deserialize(
                 spreadable.spread_deserializer(),

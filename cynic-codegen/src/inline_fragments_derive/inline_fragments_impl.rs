@@ -60,9 +60,9 @@ impl quote::ToTokens for InlineFragmentsImpl<'_> {
         tokens.append_all(quote! {
             #[automatically_derived]
             impl #impl_generics_with_de ::cynic::serde::Deserialize<'de> for #target_enum #ty_generics #where_clause_with_de {
-                fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+                fn deserialize<__D>(deserializer: __D) -> Result<Self, __D::Error>
                 where
-                    D: ::cynic::serde::Deserializer<'de>,
+                    __D: ::cynic::serde::Deserializer<'de>,
                 {
                     deserializer.deserialize_map(::cynic::__private::InlineFragmentVisitor::<Self>::new())
                 }
@@ -70,9 +70,9 @@ impl quote::ToTokens for InlineFragmentsImpl<'_> {
 
             #[automatically_derived]
             impl #impl_generics_with_de ::cynic::InlineFragments<'de> for #target_enum #ty_generics #where_clause_with_de {
-                fn deserialize_variant<D>(typename: &str, deserializer: D) -> Result<Self, D::Error>
+                fn deserialize_variant<__D>(typename: &str, deserializer: __D) -> Result<Self, __D::Error>
                 where
-                    D: ::cynic::serde::Deserializer<'de>
+                    __D: ::cynic::serde::Deserializer<'de>
                 {
                     #(
                         if Some(typename) == <#inner_types as ::cynic::QueryFragment>::TYPE {

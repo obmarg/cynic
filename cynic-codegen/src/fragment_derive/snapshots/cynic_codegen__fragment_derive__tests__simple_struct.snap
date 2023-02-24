@@ -22,9 +22,9 @@ impl ::cynic::QueryFragment for BlogPostOutput {
 }
 #[automatically_derived]
 impl<'de> ::cynic::serde::Deserialize<'de> for BlogPostOutput {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    fn deserialize<__D>(deserializer: __D) -> Result<Self, __D::Error>
     where
-        D: ::cynic::serde::Deserializer<'de>,
+        __D: ::cynic::serde::Deserializer<'de>,
     {
         #[derive(:: cynic :: serde :: Deserialize)]
         #[serde(field_identifier, crate = "::cynic::serde")]

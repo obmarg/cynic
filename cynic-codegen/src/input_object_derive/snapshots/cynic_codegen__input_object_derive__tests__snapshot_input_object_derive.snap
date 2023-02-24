@@ -8,9 +8,9 @@ impl ::cynic::InputObject for IssueOrder {
 }
 #[automatically_derived]
 impl ::cynic::serde::Serialize for IssueOrder {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    fn serialize<__S>(&self, serializer: __S) -> Result<__S::Ok, __S::Error>
     where
-        S: ::cynic::serde::Serializer,
+        __S: ::cynic::serde::Serializer,
     {
         use cynic::serde::ser::SerializeMap;
         :: cynic :: assert_impl ! (OrderDirection [] [] : :: cynic :: Enum < SchemaType = schema :: OrderDirection >);

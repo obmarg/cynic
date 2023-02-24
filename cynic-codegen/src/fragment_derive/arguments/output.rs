@@ -152,9 +152,9 @@ impl<'a> quote::ToTokens for VariantDetailsTokens<'a> {
             struct #ident;
 
             impl ::cynic::serde::Serialize for #ident {
-                fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                fn serialize<__S>(&self, serializer: __S) -> Result<__S::Ok, __S::Error>
                 where
-                    S: ::cynic::serde::Serializer
+                    __S: ::cynic::serde::Serializer
                 {
                     serializer.serialize_unit_variant("", 0, #variant_str)
                 }
