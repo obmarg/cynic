@@ -1,6 +1,8 @@
+use std::borrow::Cow;
+
 use crate::casings::CasingExt;
 
-use crate::query_parsing::Variable;
+use crate::{query_parsing::Variable, schema::TypeSpec};
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct VariablesStruct<'query, 'schema> {
@@ -28,31 +30,37 @@ impl<'query, 'schema> VariablesStructField<'query, 'schema> {
         }
     }
 
-    fn type_spec(&self) -> String {
+    fn type_spec(&self) -> TypeSpec<'_> {
         match self {
-            VariablesStructField::Variable(var) => var.value_type.type_spec(false).to_string(),
-            VariablesStructField::NestedStruct(type_name) => type_name.clone(),
+            VariablesStructField::Variable(var) => var.value_type.type_spec(false, false),
+            VariablesStructField::NestedStruct(type_name) => TypeSpec {
+                name: Cow::Borrowed(type_name),
+                contains_lifetime_a: false,
+            },
         }
     }
 }
 
 impl std::fmt::Display for VariablesStruct<'_, '_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        use super::indented;
-        use std::fmt::Write;
+        use {super::indented, std::fmt::Write};
 
         writeln!(f, "#[derive(cynic::QueryVariables, Debug)]")?;
-        writeln!(f, "pub struct {} {{", self.name)?;
+        let type_specs: Vec<_> = self.fields.iter().map(|f| f.type_spec()).collect();
+        writeln!(
+            f,
+            "pub struct {}{} {{",
+            self.name,
+            TypeSpec::lifetime(&type_specs)
+        )?;
 
-        for field in &self.fields {
-            write!(indented(f, 4), "{}", field)?;
+        for (field, type_spec) in self.fields.iter().zip(type_specs) {
+            write!(
+                indented(f, 4),
+                "{}",
+                super::Field::new(&field.name(), &type_spec.name)
+            )?;
         }
         writeln!(f, "}}")
-    }
-}
-
-impl std::fmt::Display for VariablesStructField<'_, '_> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "{}", super::Field::new(&self.name(), &self.type_spec()))
     }
 }

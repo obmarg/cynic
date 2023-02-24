@@ -1,4 +1,4 @@
-use std::{borrow::Cow, fmt::Write};
+use std::fmt::Write;
 
 use crate::{casings::CasingExt, schema};
 
@@ -17,8 +17,10 @@ pub struct InputObjectField<'schema> {
 }
 
 impl<'schema> InputObjectField<'schema> {
-    pub fn type_spec(&self) -> Cow<'schema, str> {
-        self.schema_field.value_type.type_spec(self.needs_boxed)
+    pub fn type_spec(&self) -> schema::TypeSpec {
+        self.schema_field
+            .value_type
+            .type_spec(self.needs_boxed, false)
     }
 }
 
@@ -28,14 +30,19 @@ impl std::fmt::Display for InputObject<'_> {
         if self.name != self.name.to_pascal_case() {
             writeln!(f, "#[cynic(graphql_type = \"{}\")]", self.name)?;
         }
-        writeln!(f, "pub struct {} {{", self.name.to_pascal_case())?;
+        let type_specs: Vec<_> = self.fields.iter().map(|f| f.type_spec()).collect();
+        writeln!(
+            f,
+            "pub struct {}{} {{",
+            self.name.to_pascal_case(),
+            schema::TypeSpec::lifetime(&type_specs)
+        )?;
 
-        for field in &self.fields {
+        for (field, type_spec) in self.fields.iter().zip(type_specs) {
             let mut f = indented(f, 4);
 
             let name = field.schema_field.name.to_snake_case();
-            let type_spec = field.type_spec();
-            let mut output = super::Field::new(&name, &type_spec);
+            let mut output = super::Field::new(&name, &type_spec.name);
 
             if name.to_camel_case() != field.schema_field.name {
                 // If a snake -> camel casing roundtrip is not lossless
