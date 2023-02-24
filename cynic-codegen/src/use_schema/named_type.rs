@@ -1,6 +1,6 @@
 use proc_macro2::TokenStream;
 
-use crate::{schema::markers::TypeMarkerIdent, schema::types::Type};
+use crate::schema::{markers::TypeMarkerIdent, types::Type};
 
 pub struct NamedType<'a> {
     graphql_name: &'a str,
@@ -41,7 +41,7 @@ impl quote::ToTokens for NamedType<'_> {
         let graphql_name = proc_macro2::Literal::string(self.graphql_name);
 
         tokens.append_all(quote! {
-            impl ::cynic::schema::NamedType for #target_struct {
+            impl cynic::schema::NamedType for #target_struct {
                 const NAME: &'static str = #graphql_name;
             }
         });

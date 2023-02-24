@@ -39,19 +39,19 @@ impl quote::ToTokens for InlineFragmentsImpl<'_> {
             Some(Fallback::UnionVariantWithTypename(variant, ty)) => {
                 let ty_span = ty.span();
                 quote_spanned! { ty_span => {
-                        ::cynic::assert_type_eq_all!(#ty, String);
+                        cynic::assert_type_eq_all!(#ty, String);
                         Ok(#target_enum::#variant(typename.to_string()))
                     }
                 }
             }
             Some(Fallback::InterfaceVariant(variant, ty)) => quote! {
-                <#ty as ::cynic::serde::Deserialize<'de>>::deserialize(deserializer).map(
+                <#ty as cynic::serde::Deserialize<'de>>::deserialize(deserializer).map(
                     #target_enum::#variant
                 )
             },
             None => {
                 quote! {
-                    use ::cynic::serde::de::Error;
+                    use cynic::serde::de::Error;
                     Err(D::Error::custom(format!("Unknown type: {}", typename)))
                 }
             }
@@ -59,24 +59,24 @@ impl quote::ToTokens for InlineFragmentsImpl<'_> {
 
         tokens.append_all(quote! {
             #[automatically_derived]
-            impl #impl_generics_with_de ::cynic::serde::Deserialize<'de> for #target_enum #ty_generics #where_clause_with_de {
+            impl #impl_generics_with_de cynic::serde::Deserialize<'de> for #target_enum #ty_generics #where_clause_with_de {
                 fn deserialize<__D>(deserializer: __D) -> Result<Self, __D::Error>
                 where
-                    __D: ::cynic::serde::Deserializer<'de>,
+                    __D: cynic::serde::Deserializer<'de>,
                 {
-                    deserializer.deserialize_map(::cynic::__private::InlineFragmentVisitor::<Self>::new())
+                    deserializer.deserialize_map(cynic::__private::InlineFragmentVisitor::<Self>::new())
                 }
             }
 
             #[automatically_derived]
-            impl #impl_generics_with_de ::cynic::InlineFragments<'de> for #target_enum #ty_generics #where_clause_with_de {
+            impl #impl_generics_with_de cynic::InlineFragments<'de> for #target_enum #ty_generics #where_clause_with_de {
                 fn deserialize_variant<__D>(typename: &str, deserializer: __D) -> Result<Self, __D::Error>
                 where
-                    __D: ::cynic::serde::Deserializer<'de>
+                    __D: cynic::serde::Deserializer<'de>
                 {
                     #(
-                        if Some(typename) == <#inner_types as ::cynic::QueryFragment>::TYPE {
-                            return <#inner_types as ::cynic::serde::Deserialize<'de>>::deserialize(deserializer).map(
+                        if Some(typename) == <#inner_types as cynic::QueryFragment>::TYPE {
+                            return <#inner_types as cynic::serde::Deserialize<'de>>::deserialize(deserializer).map(
                                 #target_enum::#variant_names
                             )
                         }

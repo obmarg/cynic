@@ -245,7 +245,7 @@ macro_rules! impl_scalar {
 
         #[automatically_derived]
         impl $schema_module$(::$schema_module_rest)*::variable::Variable for $type {
-            const TYPE: ::cynic::variables::VariableType = ::cynic::variables::VariableType::Named(
+            const TYPE: cynic::variables::VariableType = cynic::variables::VariableType::Named(
                 <$schema_module$(::$schema_module_rest)*::$type_lock as $crate::schema::NamedType>::NAME,
             );
         }

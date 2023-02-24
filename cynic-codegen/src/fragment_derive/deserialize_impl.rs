@@ -96,7 +96,7 @@ impl quote::ToTokens for StandardDeserializeImpl<'_> {
             let ty = &f.ty;
             if f.is_flattened {
                 quote! {
-                    #field_name = Some(__map.next_value::<::cynic::__private::Flattened<#ty>>()?.into_inner());
+                    #field_name = Some(__map.next_value::<cynic::__private::Flattened<#ty>>()?.into_inner());
                 }
             } else {
                 quote! {
@@ -115,13 +115,13 @@ impl quote::ToTokens for StandardDeserializeImpl<'_> {
 
         tokens.append_all(quote! {
             #[automatically_derived]
-            impl #impl_generics ::cynic::serde::Deserialize<'de> for #target_struct #ty_generics #where_clause {
+            impl #impl_generics cynic::serde::Deserialize<'de> for #target_struct #ty_generics #where_clause {
                 fn deserialize<__D>(deserializer: __D) -> Result<Self, __D::Error>
                 where
-                    __D: ::cynic::serde::Deserializer<'de>,
+                    __D: cynic::serde::Deserializer<'de>,
                 {
-                    #[derive(::cynic::serde::Deserialize)]
-                    #[serde(field_identifier, crate="::cynic::serde")]
+                    #[derive(cynic::serde::Deserialize)]
+                    #[serde(field_identifier, crate="cynic::serde")]
                     #[allow(non_camel_case_types)]
                     enum Field {
                         #(
@@ -137,7 +137,7 @@ impl quote::ToTokens for StandardDeserializeImpl<'_> {
                         lifetime: ::core::marker::PhantomData<&'de ()>,
                     }
 
-                    impl #impl_generics ::cynic::serde::de::Visitor<'de> for Visitor #ty_generics_with_de #where_clause {
+                    impl #impl_generics cynic::serde::de::Visitor<'de> for Visitor #ty_generics_with_de #where_clause {
                         type Value = #target_struct #ty_generics;
 
                         fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -146,7 +146,7 @@ impl quote::ToTokens for StandardDeserializeImpl<'_> {
 
                         fn visit_map<V>(self, mut __map: V) -> Result<Self::Value, V::Error>
                         where
-                            V: ::cynic::serde::de::MapAccess<'de>,
+                            V: cynic::serde::de::MapAccess<'de>,
                         {
                             #(
                                 let mut #field_names = None;
@@ -156,18 +156,18 @@ impl quote::ToTokens for StandardDeserializeImpl<'_> {
                                     #(
                                         Field::#field_variant_names => {
                                             if #field_names.is_some() {
-                                                return Err(::cynic::serde::de::Error::duplicate_field(#serialized_names));
+                                                return Err(cynic::serde::de::Error::duplicate_field(#serialized_names));
                                             }
                                             #field_decodes
                                         }
                                     )*
                                     Field::__Other => {
-                                        __map.next_value::<::cynic::serde::de::IgnoredAny>()?;
+                                        __map.next_value::<cynic::serde::de::IgnoredAny>()?;
                                     }
                                 }
                             }
                             #(
-                                let #field_names = #field_names.ok_or_else(|| ::cynic::serde::de::Error::missing_field(#serialized_names))?;
+                                let #field_names = #field_names.ok_or_else(|| cynic::serde::de::Error::missing_field(#serialized_names))?;
                             )*
                             Ok(#target_struct {
                                 #(#field_names),*
@@ -202,7 +202,7 @@ impl quote::ToTokens for SpreadingDeserializeImpl<'_> {
             let field_ty = &f.ty;
             if f.is_spread {
                 quote! {
-                    #field_name: <#field_ty as ::cynic::serde::Deserialize<'de>>::deserialize(
+                    #field_name: <#field_ty as cynic::serde::Deserialize<'de>>::deserialize(
                         spreadable.spread_deserializer()
                     )?,
                 }
@@ -214,7 +214,7 @@ impl quote::ToTokens for SpreadingDeserializeImpl<'_> {
                 );
                 quote! {
                     #field_name: spreadable.deserialize_field::<
-                        ::cynic::__private::Flattened<#field_ty>
+                        cynic::__private::Flattened<#field_ty>
                     >(#serialized_name)?.into_inner()
                 }
             } else {
@@ -235,10 +235,10 @@ impl quote::ToTokens for SpreadingDeserializeImpl<'_> {
 
         tokens.append_all(quote! {
             #[automatically_derived]
-            impl #impl_generics ::cynic::serde::Deserialize<'de> for #target_struct #ty_generics #where_clause {
+            impl #impl_generics cynic::serde::Deserialize<'de> for #target_struct #ty_generics #where_clause {
                 fn deserialize<__D>(deserializer: __D) -> Result<Self, __D::Error>
                 where
-                    __D: ::cynic::serde::Deserializer<'de>,
+                    __D: cynic::serde::Deserializer<'de>,
                 {
                     let spreadable = ::cynic::__private::Spreadable::<__D::Error>::deserialize(deserializer)?;
 

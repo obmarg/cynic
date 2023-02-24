@@ -86,15 +86,15 @@ pub fn enum_derive_impl(
 
         Ok(quote! {
             #[automatically_derived]
-            impl ::cynic::Enum for #ident {
+            impl cynic::Enum for #ident {
                 type SchemaType = #schema_module::#enum_marker_ident;
             }
 
             #[automatically_derived]
-            impl ::cynic::serde::Serialize for #ident {
+            impl cynic::serde::Serialize for #ident {
                 fn serialize<__S>(&self, serializer: __S) -> Result<__S::Ok, __S::Error>
                 where
-                    __S: ::cynic::serde::Serializer {
+                    __S: cynic::serde::Serializer {
                         match self {
                             #(
                                 #ident::#variants => serializer.serialize_unit_variant(#graphql_type_name, #variant_indexes, #string_literals),
@@ -104,28 +104,28 @@ pub fn enum_derive_impl(
             }
 
             #[automatically_derived]
-            impl<'de> ::cynic::serde::Deserialize<'de> for #ident {
+            impl<'de> cynic::serde::Deserialize<'de> for #ident {
                 fn deserialize<__D>(deserializer: __D) -> Result<Self, __D::Error>
                 where
-                    __D: ::cynic::serde::Deserializer<'de>,
+                    __D: cynic::serde::Deserializer<'de>,
                 {
-                    match <String as ::cynic::serde::Deserialize>::deserialize(deserializer)?.as_ref() {
+                    match <String as cynic::serde::Deserialize>::deserialize(deserializer)?.as_ref() {
                         #(
                             #string_literals => Ok(#ident::#variants),
                         )*
                         unknown => {
                             const VARIANTS: &'static [&'static str] = &[#(#string_literals),*];
-                            Err(::cynic::serde::de::Error::unknown_variant(unknown, VARIANTS))
+                            Err(cynic::serde::de::Error::unknown_variant(unknown, VARIANTS))
                         }
                     }
                 }
             }
 
-            ::cynic::impl_coercions!(#ident, #schema_module::#enum_marker_ident);
+            cynic::impl_coercions!(#ident, #schema_module::#enum_marker_ident);
 
             #[automatically_derived]
             impl #schema_module::variable::Variable for #ident {
-                const TYPE: ::cynic::variables::VariableType = ::cynic::variables::VariableType::Named(#graphql_type_name);
+                const TYPE: cynic::variables::VariableType = cynic::variables::VariableType::Named(#graphql_type_name);
             }
         })
     } else {

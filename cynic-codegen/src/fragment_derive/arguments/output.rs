@@ -151,16 +151,16 @@ impl<'a> quote::ToTokens for VariantDetailsTokens<'a> {
         tokens.append_all(quote! {
             struct #ident;
 
-            impl ::cynic::serde::Serialize for #ident {
+            impl cynic::serde::Serialize for #ident {
                 fn serialize<__S>(&self, serializer: __S) -> Result<__S::Ok, __S::Error>
                 where
-                    __S: ::cynic::serde::Serializer
+                    __S: cynic::serde::Serializer
                 {
                     serializer.serialize_unit_variant("", 0, #variant_str)
                 }
             }
 
-            impl ::cynic::coercions::CoercesTo<#enum_marker_ident> for #ident {};
+            impl cynic::coercions::CoercesTo<#enum_marker_ident> for #ident {};
         })
     }
 }

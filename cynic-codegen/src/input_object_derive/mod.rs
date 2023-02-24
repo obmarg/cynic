@@ -104,17 +104,17 @@ pub fn input_object_derive_impl(
 
         Ok(quote! {
             #[automatically_derived]
-            impl #impl_generics ::cynic::InputObject for #ident #ty_generics #where_clause_with_ser {
+            impl #impl_generics cynic::InputObject for #ident #ty_generics #where_clause_with_ser {
                 type SchemaType = #schema_module::#input_marker_ident;
             }
 
             #[automatically_derived]
-            impl #impl_generics_with_ser ::cynic::serde::Serialize for #ident #ty_generics #where_clause_with_ser {
+            impl #impl_generics_with_ser cynic::serde::Serialize for #ident #ty_generics #where_clause_with_ser {
                 fn serialize<__S>(&self, serializer: __S) -> Result<__S::Ok, __S::Error>
                 where
-                    __S: ::cynic::serde::Serializer,
+                    __S: cynic::serde::Serializer,
                 {
-                    use ::cynic::serde::ser::SerializeMap;
+                    use cynic::serde::ser::SerializeMap;
                     #(#typechecks)*
 
                     let mut map_serializer = serializer.serialize_map(Some(#map_len))?;
@@ -125,11 +125,11 @@ pub fn input_object_derive_impl(
                 }
             }
 
-            ::cynic::impl_coercions!(#ident #ty_generics [#impl_generics] [#where_clause], #schema_module::#input_marker_ident);
+            cynic::impl_coercions!(#ident #ty_generics [#impl_generics] [#where_clause], #schema_module::#input_marker_ident);
 
             #[automatically_derived]
             impl #impl_generics #schema_module::variable::Variable for #ident #ty_generics #where_clause {
-                const TYPE: ::cynic::variables::VariableType = ::cynic::variables::VariableType::Named(#graphql_type_name);
+                const TYPE: cynic::variables::VariableType = cynic::variables::VariableType::Named(#graphql_type_name);
             }
         })
     } else {

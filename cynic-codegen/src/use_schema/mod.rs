@@ -51,7 +51,7 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
                 let ident = proc_macro2::Ident::from(def.marker_ident());
                 output.append_all(quote! {
                     pub struct #ident {}
-                    impl ::cynic::schema::NamedType for #ident {
+                    impl cynic::schema::NamedType for #ident {
                         const NAME: &'static str = #name;
                     }
                 });
@@ -106,10 +106,10 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
         pub type String = std::string::String;
         pub type Float = f64;
         pub type Int = i32;
-        pub type ID = ::cynic::Id;
+        pub type ID = cynic::Id;
 
         pub mod variable {
-            use ::cynic::variables::VariableType;
+            use cynic::variables::VariableType;
 
             /// Used to determine the type of a given variable that
             /// appears in an argument struct.
@@ -193,7 +193,7 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
                 const TYPE: VariableType = VariableType::Named("Int");
             }
 
-            impl Variable for ::cynic::Id {
+            impl Variable for cynic::Id {
                 const TYPE: VariableType = VariableType::Named("ID");
             }
         }
