@@ -9,6 +9,11 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+### Bug Fixes 
+
+- You no longer have to specify the `Extensions` parameter on `GraphQLError` if
+  you don't have any extensions.
+
 ## v2.2.6 - 2023-02-16
 
 ### Bug Fixes

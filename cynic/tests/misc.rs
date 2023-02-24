@@ -12,3 +12,8 @@ mod schema {
 struct TypeWithKey {
     key: String,
 }
+
+// This one is just a test that you can use the GraphQlErrors type without
+// _having_ to specify an Extensions type.
+#[allow(dead_code)]
+type Error = cynic::GraphQlError;
