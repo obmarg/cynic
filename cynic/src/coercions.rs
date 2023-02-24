@@ -15,7 +15,7 @@ pub trait CoercesTo<T> {}
 impl<T, TypeLock> CoercesTo<Option<TypeLock>> for Option<T> where T: CoercesTo<TypeLock> {}
 impl<T, TypeLock> CoercesTo<Vec<TypeLock>> for Vec<T> where T: CoercesTo<TypeLock> {}
 
-impl CoercesTo<Id> for &str {}
+impl<Target: ?Sized, Typelock> CoercesTo<Typelock> for &'_ Target where Target: CoercesTo<Typelock> {}
 
 #[macro_export(local_inner_macros)]
 /// Implements the default GraphQL list & option coercion rules for a type.
@@ -48,7 +48,8 @@ mod scalars {
     impl_coercions_for_scalar!(bool);
     impl_coercions_for_scalar!(Id);
     impl_coercions_for_scalar!(String);
-    impl_coercions!(&str, String);
+    impl_coercions!(str, String);
+    impl_coercions!(str, Id);
 }
 
 #[cfg(test)]
