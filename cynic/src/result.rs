@@ -11,7 +11,7 @@ pub struct GraphQlResponse<T, ErrorExtensions = serde::de::IgnoredAny> {
 /// A model describing an error which has taken place during execution.
 #[derive(Clone, Debug, Eq, PartialEq, serde::Deserialize, thiserror::Error)]
 #[error("{message}")]
-pub struct GraphQlError<Extensions> {
+pub struct GraphQlError<Extensions = serde::de::IgnoredAny> {
     /// A description of the error which has taken place.
     pub message: String,
     /// Optional description of the locations where the errors have taken place.
