@@ -1,6 +1,5 @@
 ---
 source: cynic-codegen/src/input_object_derive/tests.rs
-assertion_line: 24
 expression: "format_code(format!(\"{}\", tokens))"
 ---
 #[automatically_derived]
@@ -9,20 +8,20 @@ impl ::cynic::InputObject for IssueOrder {
 }
 #[automatically_derived]
 impl ::cynic::serde::Serialize for IssueOrder {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    fn serialize<__S>(&self, serializer: __S) -> Result<__S::Ok, __S::Error>
     where
-        S: ::cynic::serde::Serializer,
+        __S: ::cynic::serde::Serializer,
     {
         use cynic::serde::ser::SerializeMap;
-        ::cynic::assert_impl!(OrderDirection: ::cynic::Enum<SchemaType = schema::OrderDirection>);
-        ::cynic::assert_impl!(IssueOrderField: ::cynic::Enum<SchemaType = schema::IssueOrderField>);
+        :: cynic :: assert_impl ! (OrderDirection [] [] : :: cynic :: Enum < SchemaType = schema :: OrderDirection >);
+        :: cynic :: assert_impl ! (IssueOrderField [] [] : :: cynic :: Enum < SchemaType = schema :: IssueOrderField >);
         let mut map_serializer = serializer.serialize_map(Some(2usize))?;
         map_serializer.serialize_entry("direction", &self.direction)?;
         map_serializer.serialize_entry("field", &self.field)?;
         map_serializer.end()
     }
 }
-::cynic::impl_coercions!(IssueOrder, schema::IssueOrder);
+:: cynic :: impl_coercions ! (IssueOrder [] [] , schema :: IssueOrder);
 #[automatically_derived]
 impl schema::variable::Variable for IssueOrder {
     const TYPE: ::cynic::variables::VariableType =

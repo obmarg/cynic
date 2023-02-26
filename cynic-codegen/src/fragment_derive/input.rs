@@ -1,16 +1,15 @@
-use std::collections::HashSet;
-
-use darling::util::SpannedValue;
-use quote::quote_spanned;
+use {
+    darling::util::SpannedValue, proc_macro2::Span, quote::quote_spanned, std::collections::HashSet,
+};
 
 use crate::{idents::RenamableFieldIdent, types::CheckMode, Errors};
-use proc_macro2::Span;
 
 #[derive(darling::FromDeriveInput)]
 #[darling(attributes(cynic), supports(struct_named))]
 pub struct FragmentDeriveInput {
     pub(super) ident: proc_macro2::Ident,
     pub(super) data: darling::ast::Data<(), FragmentDeriveField>,
+    pub(super) generics: syn::Generics,
 
     pub schema_path: SpannedValue<String>,
 
@@ -216,8 +215,7 @@ impl FragmentDeriveField {
 mod tests {
     use super::*;
 
-    use assert_matches::assert_matches;
-    use quote::format_ident;
+    use {assert_matches::assert_matches, quote::format_ident};
 
     #[test]
     fn test_fragment_derive_validate_pass() {
@@ -268,6 +266,7 @@ mod tests {
                     },
                 ],
             )),
+            generics: Default::default(),
             schema_path: "abcd".to_string().into(),
             schema_module_: None,
             graphql_type: Some("abcd".to_string().into()),
@@ -347,6 +346,7 @@ mod tests {
                     },
                 ],
             )),
+            generics: Default::default(),
             schema_path: "abcd".to_string().into(),
             schema_module_: Some(syn::parse2(quote::quote! { abcd }).unwrap()),
             graphql_type: Some("abcd".to_string().into()),
@@ -366,6 +366,7 @@ mod tests {
                 darling::ast::Style::Struct,
                 vec![],
             )),
+            generics: Default::default(),
             schema_path: "abcd".to_string().into(),
             schema_module_: Some(syn::parse2(quote::quote! { abcd }).unwrap()),
             graphql_type: Some("abcd".to_string().into()),
@@ -419,6 +420,7 @@ mod tests {
                     },
                 ],
             )),
+            generics: Default::default(),
             schema_path: "abcd".to_string().into(),
             schema_module_: Some(syn::parse2(quote::quote! { abcd }).unwrap()),
             graphql_type: None,

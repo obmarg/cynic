@@ -1,11 +1,15 @@
-use proc_macro2::TokenStream;
-use quote::{quote, quote_spanned};
-use syn::spanned::Spanned;
+use {
+    proc_macro2::TokenStream,
+    quote::{quote, quote_spanned},
+    syn::spanned::Spanned,
+};
 
-use super::InputObjectDeriveField;
-use crate::{
-    schema::types::{InputType, InputValue},
-    types::{self, align_input_type, check_input_types_are_compatible},
+use {
+    super::InputObjectDeriveField,
+    crate::{
+        schema::types::{InputType, InputValue},
+        types::{self, align_input_type, check_input_types_are_compatible},
+    },
 };
 
 pub struct FieldSerializer<'a> {
@@ -27,7 +31,8 @@ impl<'a> FieldSerializer<'a> {
         }
     }
 
-    /// Validates the FieldSerializer definition, returning errors if there are any.
+    /// Validates the FieldSerializer definition, returning errors if there are
+    /// any.
     pub fn validate(&self) -> Option<syn::Error> {
         // First, check for type errors
         if let Err(e) = check_input_types_are_compatible(self.graphql_field, &self.rust_field.ty) {
@@ -44,7 +49,11 @@ impl<'a> FieldSerializer<'a> {
         None
     }
 
-    pub fn type_check(&self) -> TokenStream {
+    pub fn type_check(
+        &self,
+        impl_generics: &syn::ImplGenerics<'_>,
+        where_clause: Option<&syn::WhereClause>,
+    ) -> TokenStream {
         let marker_type = self
             .graphql_field
             .value_type
@@ -66,7 +75,7 @@ impl<'a> FieldSerializer<'a> {
         );
 
         quote! {
-            ::cynic::assert_impl!(#aligned_type: #trait_bound);
+            ::cynic::assert_impl!(#aligned_type [#impl_generics] [#where_clause]: #trait_bound);
         }
     }
 

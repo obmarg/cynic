@@ -1,0 +1,10 @@
+---
+source: cynic/tests/mutation_generics.rs
+assertion_line: 40
+expression: operation.query
+---
+mutation($input: SignInInput!) {
+  signIn(input: $input)
+}
+
+

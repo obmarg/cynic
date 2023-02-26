@@ -4,9 +4,9 @@ use crate::{coercions::CoercesTo, schema, variables::VariableDefinition};
 
 use super::{ast::*, to_input_literal, FlattensInto, IsFieldType, Recursable};
 
-/// Builds a SelectionSet for the given `SchemaType` and `Variables`
-pub struct SelectionBuilder<'a, SchemaType, Variables> {
-    phantom: PhantomData<fn() -> (SchemaType, Variables)>,
+/// Builds a SelectionSet for the given `SchemaType` and `VariablesFields`
+pub struct SelectionBuilder<'a, SchemaType, VariablesFields> {
+    phantom: PhantomData<fn() -> (SchemaType, VariablesFields)>,
     selection_set: &'a mut SelectionSet,
     has_typename: bool,
     recurse_depth: Option<u8>,
@@ -34,7 +34,7 @@ impl<'a, T, U> SelectionBuilder<'a, Option<T>, U> {
     }
 }
 
-impl<'a, SchemaType, Variables> SelectionBuilder<'a, SchemaType, Variables> {
+impl<'a, SchemaType, VariablesFields> SelectionBuilder<'a, SchemaType, VariablesFields> {
     pub(crate) fn new(selection_set: &'a mut SelectionSet) -> Self {
         SelectionBuilder {
             phantom: PhantomData,
@@ -50,7 +50,7 @@ impl<'a, SchemaType, Variables> SelectionBuilder<'a, SchemaType, Variables> {
     /// implement these rules if calling this function.
     pub fn select_flattened_field<FieldMarker, Flattened, FieldType>(
         &'_ mut self,
-    ) -> FieldSelectionBuilder<'_, FieldMarker, Flattened, Variables>
+    ) -> FieldSelectionBuilder<'_, FieldMarker, Flattened, VariablesFields>
     where
         FieldMarker: schema::Field,
         FieldType: FlattensInto<Flattened>,
@@ -72,7 +72,7 @@ impl<'a, SchemaType, Variables> SelectionBuilder<'a, SchemaType, Variables> {
     /// arguments, aliases, and to build an inner selection.
     pub fn select_field<FieldMarker, FieldType>(
         &'_ mut self,
-    ) -> FieldSelectionBuilder<'_, FieldMarker, FieldType, Variables>
+    ) -> FieldSelectionBuilder<'_, FieldMarker, FieldType, VariablesFields>
     where
         FieldMarker: schema::Field,
         SchemaType: schema::HasField<FieldMarker>,
@@ -92,7 +92,7 @@ impl<'a, SchemaType, Variables> SelectionBuilder<'a, SchemaType, Variables> {
     pub fn recurse<FieldMarker, FieldType>(
         &'_ mut self,
         max_depth: u8,
-    ) -> Option<FieldSelectionBuilder<'_, FieldMarker, FieldType, Variables>>
+    ) -> Option<FieldSelectionBuilder<'_, FieldMarker, FieldType, VariablesFields>>
     where
         FieldMarker: schema::Field,
         SchemaType: schema::HasField<FieldMarker>,
@@ -122,7 +122,7 @@ impl<'a, SchemaType, Variables> SelectionBuilder<'a, SchemaType, Variables> {
     }
 
     /// Adds an inline fragment to the SelectionSet
-    pub fn inline_fragment(&'_ mut self) -> InlineFragmentBuilder<'_, SchemaType, Variables> {
+    pub fn inline_fragment(&'_ mut self) -> InlineFragmentBuilder<'_, SchemaType, VariablesFields> {
         if !self.has_typename {
             self.selection_set
                 .selections
@@ -147,15 +147,15 @@ impl<'a, SchemaType, Variables> SelectionBuilder<'a, SchemaType, Variables> {
 }
 
 /// Builds the selection of a field
-pub struct FieldSelectionBuilder<'a, Field, SchemaType, Variables> {
+pub struct FieldSelectionBuilder<'a, Field, SchemaType, VariablesFields> {
     #[allow(clippy::type_complexity)]
-    phantom: PhantomData<fn() -> (Field, SchemaType, Variables)>,
+    phantom: PhantomData<fn() -> (Field, SchemaType, VariablesFields)>,
     field: &'a mut FieldSelection,
     recurse_depth: Option<u8>,
 }
 
-impl<'a, Field, FieldSchemaType, Variables>
-    FieldSelectionBuilder<'a, Field, FieldSchemaType, Variables>
+impl<'a, Field, FieldSchemaType, VariablesFields>
+    FieldSelectionBuilder<'a, Field, FieldSchemaType, VariablesFields>
 {
     /// Adds an alias to this field.
     ///
@@ -166,8 +166,11 @@ impl<'a, Field, FieldSchemaType, Variables>
 
     /// Adds an argument to this field.
     ///
-    /// Accepts `ArgumentName` - the schema marker struct for the argument you wish to add.
-    pub fn argument<ArgumentName>(&'_ mut self) -> InputBuilder<'_, Field::ArgumentType, Variables>
+    /// Accepts `ArgumentName` - the schema marker struct for the argument you
+    /// wish to add.
+    pub fn argument<ArgumentName>(
+        &'_ mut self,
+    ) -> InputBuilder<'_, Field::ArgumentType, VariablesFields>
     where
         Field: schema::HasArgument<ArgumentName>,
     {
@@ -183,7 +186,7 @@ impl<'a, Field, FieldSchemaType, Variables>
         &'_ mut self,
     ) -> SelectionBuilder<'_, FieldSchemaType, InnerVariables>
     where
-        Variables: VariableMatch<InnerVariables>,
+        VariablesFields: VariableMatch<InnerVariables>,
     {
         SelectionBuilder {
             recurse_depth: self.recurse_depth,
@@ -193,17 +196,17 @@ impl<'a, Field, FieldSchemaType, Variables>
 }
 
 /// Builds an inline fragment in a selection
-pub struct InlineFragmentBuilder<'a, SchemaType, Variables> {
-    phantom: PhantomData<fn() -> (SchemaType, Variables)>,
+pub struct InlineFragmentBuilder<'a, SchemaType, VariablesFields> {
+    phantom: PhantomData<fn() -> (SchemaType, VariablesFields)>,
     inline_fragment: &'a mut InlineFragment,
 }
 
-impl<'a, SchemaType, Variables> InlineFragmentBuilder<'a, SchemaType, Variables> {
+impl<'a, SchemaType, VariablesFields> InlineFragmentBuilder<'a, SchemaType, VariablesFields> {
     /// Adds an on clause for the given `Subtype` to the inline fragment.
     ///
-    /// `Subtype` should be the schema marker type for the type you wish this fragment
-    /// to match.
-    pub fn on<Subtype>(self) -> InlineFragmentBuilder<'a, Subtype, Variables>
+    /// `Subtype` should be the schema marker type for the type you wish this
+    /// fragment to match.
+    pub fn on<Subtype>(self) -> InlineFragmentBuilder<'a, Subtype, VariablesFields>
     where
         Subtype: crate::schema::NamedType,
         SchemaType: crate::schema::HasSubtype<Subtype>,
@@ -217,25 +220,25 @@ impl<'a, SchemaType, Variables> InlineFragmentBuilder<'a, SchemaType, Variables>
 
     /// Returns a SelectionBuilder that can be used to select the fields
     /// of this fragment.
-    pub fn select_children<InnerVariables>(
+    pub fn select_children<InnerVariablesFields>(
         &'_ mut self,
-    ) -> SelectionBuilder<'_, SchemaType, InnerVariables>
+    ) -> SelectionBuilder<'_, SchemaType, InnerVariablesFields>
     where
-        Variables: VariableMatch<InnerVariables>,
+        VariablesFields: VariableMatch<InnerVariablesFields>,
     {
         SelectionBuilder::new(&mut self.inline_fragment.children)
     }
 }
 
-pub struct InputBuilder<'a, SchemaType, Variables> {
+pub struct InputBuilder<'a, SchemaType, VariablesFields> {
     destination: InputLiteralContainer<'a>,
 
-    phantom: PhantomData<fn() -> (SchemaType, Variables)>,
+    phantom: PhantomData<fn() -> (SchemaType, VariablesFields)>,
 }
 
-impl<'a, SchemaType, Variables> InputBuilder<'a, SchemaType, Variables> {
+impl<'a, SchemaType, VariablesFields> InputBuilder<'a, SchemaType, VariablesFields> {
     /// Puts a variable into the input.
-    pub fn variable<Type>(self, def: VariableDefinition<Variables, Type>)
+    pub fn variable<Type>(self, def: VariableDefinition<VariablesFields, Type>)
     where
         Type: CoercesTo<SchemaType>,
     {
@@ -266,12 +269,12 @@ impl<'a, T, ArgStruct> InputBuilder<'a, T, ArgStruct> {
     }
 }
 
-impl<'a, SchemaType, Variables> InputBuilder<'a, SchemaType, Variables>
+impl<'a, SchemaType, VariablesFields> InputBuilder<'a, SchemaType, VariablesFields>
 where
     SchemaType: schema::InputObjectMarker,
 {
     /// Puts an object literal into the input
-    pub fn object(self) -> ObjectArgumentBuilder<'a, SchemaType, Variables> {
+    pub fn object(self) -> ObjectArgumentBuilder<'a, SchemaType, VariablesFields> {
         let fields = match self.destination.push(InputLiteral::Object(Vec::new())) {
             InputLiteral::Object(fields) => fields,
             _ => panic!("This should be impossible"),
@@ -285,14 +288,14 @@ where
 }
 
 /// Builds an object literal into some input.
-pub struct ObjectArgumentBuilder<'a, ItemType, Variables> {
+pub struct ObjectArgumentBuilder<'a, ItemType, VariablesFields> {
     fields: &'a mut Vec<Argument>,
-    phantom: PhantomData<fn() -> (ItemType, Variables)>,
+    phantom: PhantomData<fn() -> (ItemType, VariablesFields)>,
 }
 
 impl<'a, SchemaType, ArgStruct> ObjectArgumentBuilder<'a, SchemaType, ArgStruct> {
-    /// Adds a field to the object literal, using the field_fn to determine the contents
-    /// of that field.
+    /// Adds a field to the object literal, using the field_fn to determine the
+    /// contents of that field.
     pub fn field<FieldMarker, F>(self, field_fn: F) -> Self
     where
         FieldMarker: schema::Field,
@@ -308,9 +311,9 @@ impl<'a, SchemaType, ArgStruct> ObjectArgumentBuilder<'a, SchemaType, ArgStruct>
     }
 }
 
-impl<'a, SchemaType, Variables> InputBuilder<'a, Vec<SchemaType>, Variables> {
+impl<'a, SchemaType, VariablesFields> InputBuilder<'a, Vec<SchemaType>, VariablesFields> {
     /// Adds a list literal into some input
-    pub fn list(self) -> ListArgumentBuilder<'a, SchemaType, Variables> {
+    pub fn list(self) -> ListArgumentBuilder<'a, SchemaType, VariablesFields> {
         let items = match self.destination.push(InputLiteral::List(Vec::new())) {
             InputLiteral::List(items) => items,
             _ => panic!("This should be impossible"),
@@ -323,15 +326,15 @@ impl<'a, SchemaType, Variables> InputBuilder<'a, Vec<SchemaType>, Variables> {
     }
 }
 
-pub struct ListArgumentBuilder<'a, ItemType, Variables> {
+pub struct ListArgumentBuilder<'a, ItemType, VariablesFields> {
     items: &'a mut Vec<InputLiteral>,
-    phantom: PhantomData<fn() -> (ItemType, Variables)>,
+    phantom: PhantomData<fn() -> (ItemType, VariablesFields)>,
 }
 
-impl<'a, ItemType, Variables> ListArgumentBuilder<'a, ItemType, Variables> {
-    /// Adds an item to the list literal, using the item_fn to determine the contents
-    /// of that item.
-    pub fn item(self, item_fn: impl FnOnce(InputBuilder<'_, ItemType, Variables>)) -> Self {
+impl<'a, ItemType, VariablesFields> ListArgumentBuilder<'a, ItemType, VariablesFields> {
+    /// Adds an item to the list literal, using the item_fn to determine the
+    /// contents of that item.
+    pub fn item(self, item_fn: impl FnOnce(InputBuilder<'_, ItemType, VariablesFields>)) -> Self {
         item_fn(InputBuilder {
             destination: InputLiteralContainer::list(self.items),
             phantom: PhantomData,
@@ -383,10 +386,10 @@ impl<'a> InputLiteralContainer<'a> {
     }
 }
 
-/// Enforces type equality on a Variable struct.
+/// Enforces type equality on a VariablesFields struct.
 ///
-/// Each `crate::QueryVariables` implementation should also implement this for `()` for
-/// compatibility with QueryFragments that don't need variables.
+/// Each `crate::QueryVariablesFields` implementation should also implement this
+/// for `()` for compatibility with QueryFragments that don't need variables.
 pub trait VariableMatch<T> {}
 
-impl<T> VariableMatch<()> for T where T: crate::QueryVariables {}
+impl<T> VariableMatch<()> for T where T: crate::QueryVariablesFields {}

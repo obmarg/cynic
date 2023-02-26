@@ -1,6 +1,6 @@
-use proc_macro2::TokenStream;
-use quote::quote_spanned;
-use syn::spanned::Spanned;
+use {proc_macro2::TokenStream, quote::quote_spanned, syn::spanned::Spanned};
+
+use crate::generics_for_serde;
 
 #[derive(Clone)]
 pub enum Fallback {
@@ -13,6 +13,7 @@ pub struct InlineFragmentsImpl<'a> {
     pub(super) target_enum: syn::Ident,
     pub(super) fragments: &'a [super::Fragment],
     pub(super) fallback: Option<Fallback>,
+    pub(super) generics: &'a syn::Generics,
 }
 
 impl quote::ToTokens for InlineFragmentsImpl<'_> {
@@ -26,6 +27,10 @@ impl quote::ToTokens for InlineFragmentsImpl<'_> {
             .iter()
             .map(|fragment| &fragment.rust_variant_name)
             .collect::<Vec<_>>();
+
+        let (_, ty_generics, _) = self.generics.split_for_impl();
+        let generics_with_de = generics_for_serde::with_de_and_deserialize_bounds(&self.generics);
+        let (impl_generics_with_de, _, where_clause_with_de) = generics_with_de.split_for_impl();
 
         let fallback = match &self.fallback {
             Some(Fallback::UnionUnitVariant(variant)) => quote! {
@@ -54,23 +59,23 @@ impl quote::ToTokens for InlineFragmentsImpl<'_> {
 
         tokens.append_all(quote! {
             #[automatically_derived]
-            impl<'de> ::cynic::serde::Deserialize<'de> for #target_enum {
-                fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+            impl #impl_generics_with_de ::cynic::serde::Deserialize<'de> for #target_enum #ty_generics #where_clause_with_de {
+                fn deserialize<__D>(deserializer: __D) -> Result<Self, __D::Error>
                 where
-                    D: ::cynic::serde::Deserializer<'de>,
+                    __D: ::cynic::serde::Deserializer<'de>,
                 {
                     deserializer.deserialize_map(::cynic::__private::InlineFragmentVisitor::<Self>::new())
                 }
             }
 
             #[automatically_derived]
-            impl<'de> ::cynic::InlineFragments<'de> for #target_enum {
-                fn deserialize_variant<D>(typename: &str, deserializer: D) -> Result<Self, D::Error>
+            impl #impl_generics_with_de ::cynic::InlineFragments<'de> for #target_enum #ty_generics #where_clause_with_de {
+                fn deserialize_variant<__D>(typename: &str, deserializer: __D) -> Result<Self, __D::Error>
                 where
-                    D: ::cynic::serde::Deserializer<'de>
+                    __D: ::cynic::serde::Deserializer<'de>
                 {
                     #(
-                        if Some(typename) == <#inner_types as ::cynic::QueryFragment<'de>>::TYPE {
+                        if Some(typename) == <#inner_types as ::cynic::QueryFragment>::TYPE {
                             return <#inner_types as ::cynic::serde::Deserialize<'de>>::deserialize(deserializer).map(
                                 #target_enum::#variant_names
                             )

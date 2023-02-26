@@ -23,7 +23,7 @@ Ok(
                     value_type: NamedInputType(
                         "BookFilters",
                     ),
-                    variable_struct: Path {
+                    variables_fields_struct: Path {
                         leading_colon: None,
                         segments: [
                             PathSegment {

@@ -42,7 +42,8 @@ pub trait HasInputField<FieldMarker, FieldType> {}
 /// Indicates that a field has an argument
 ///
 /// This should be implemented on the field marker type for each argument
-/// that field has.  `ArgumentMarker` should be the marker type for the argument.
+/// that field has.  `ArgumentMarker` should be the marker type for the
+/// argument.
 pub trait HasArgument<ArgumentMarker> {
     /// The schema marker type of this argument.
     type ArgumentType;
@@ -59,6 +60,13 @@ pub trait IsScalar<SchemaType> {
     type SchemaType;
 }
 
+impl<T, U: ?Sized> IsScalar<T> for &U
+where
+    U: IsScalar<T>,
+{
+    type SchemaType = U::SchemaType;
+}
+
 impl<T, U> IsScalar<Option<T>> for Option<U>
 where
     U: IsScalar<T>,
@@ -73,11 +81,25 @@ where
     type SchemaType = Vec<U::SchemaType>;
 }
 
-impl<T, U> IsScalar<Box<T>> for Box<U>
+impl<T, U> IsScalar<Vec<T>> for [U]
+where
+    U: IsScalar<T>,
+{
+    type SchemaType = Vec<U::SchemaType>;
+}
+
+impl<T, U: ?Sized> IsScalar<Box<T>> for Box<U>
 where
     U: IsScalar<T>,
 {
     type SchemaType = Box<U::SchemaType>;
+}
+
+impl<T, U: ?Sized> IsScalar<T> for std::borrow::Cow<'_, U>
+where
+    U: IsScalar<T> + ToOwned,
+{
+    type SchemaType = U::SchemaType;
 }
 
 impl IsScalar<bool> for bool {
@@ -85,6 +107,10 @@ impl IsScalar<bool> for bool {
 }
 
 impl IsScalar<String> for String {
+    type SchemaType = String;
+}
+
+impl IsScalar<String> for str {
     type SchemaType = String;
 }
 
@@ -100,16 +126,16 @@ impl IsScalar<crate::Id> for crate::Id {
     type SchemaType = crate::Id;
 }
 
-/// A marker trait that indicates a particular type is at the root of a GraphQL schemas query
-/// hierarchy.
+/// A marker trait that indicates a particular type is at the root of a GraphQL
+/// schemas query hierarchy.
 pub trait QueryRoot {}
 
-/// A marker trait that indicates a particular type is at the root of a GraphQL schemas
-/// mutation hierarchy.
+/// A marker trait that indicates a particular type is at the root of a GraphQL
+/// schemas mutation hierarchy.
 pub trait MutationRoot {}
 
-/// A marker trait that indicates a particular type is at the root of a GraphQL schemas
-/// subscription hierarchy.
+/// A marker trait that indicates a particular type is at the root of a GraphQL
+/// schemas subscription hierarchy.
 pub trait SubscriptionRoot {}
 
 /// Indicates that a type has a subtype relationship with another type

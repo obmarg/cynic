@@ -1,21 +1,25 @@
 use proc_macro2::TokenStream;
 
-use super::FragmentDeriveField;
-use crate::schema::types as schema;
+use {
+    super::FragmentDeriveField,
+    crate::{generics_for_serde, schema::types as schema},
+};
 
-pub enum DeserializeImpl {
-    Standard(StandardDeserializeImpl),
-    Spreading(SpreadingDeserializeImpl),
+pub enum DeserializeImpl<'a> {
+    Standard(StandardDeserializeImpl<'a>),
+    Spreading(SpreadingDeserializeImpl<'a>),
 }
 
-pub struct StandardDeserializeImpl {
-    target_struct: syn::Ident,
+pub struct StandardDeserializeImpl<'a> {
+    target_struct: &'a syn::Ident,
     fields: Vec<Field>,
+    generics: &'a syn::Generics,
 }
 
-pub struct SpreadingDeserializeImpl {
-    target_struct: syn::Ident,
+pub struct SpreadingDeserializeImpl<'a> {
+    target_struct: &'a syn::Ident,
     fields: Vec<Field>,
+    generics: &'a syn::Generics,
 }
 
 struct Field {
@@ -27,14 +31,15 @@ struct Field {
     is_flattened: bool,
 }
 
-impl DeserializeImpl {
+impl<'a> DeserializeImpl<'a> {
     pub fn new(
         fields: &[(&FragmentDeriveField, Option<&schema::Field<'_>>)],
-        name: &syn::Ident,
-    ) -> DeserializeImpl {
+        name: &'a syn::Ident,
+        generics: &'a syn::Generics,
+    ) -> Self {
         let spreading = fields.iter().any(|f| *f.0.spread);
 
-        let target_struct = name.clone();
+        let target_struct = name;
         let fields = fields
             .iter()
             .map(|(field, schema_field)| process_field(field, *schema_field))
@@ -44,16 +49,18 @@ impl DeserializeImpl {
             true => DeserializeImpl::Spreading(SpreadingDeserializeImpl {
                 target_struct,
                 fields,
+                generics,
             }),
             false => DeserializeImpl::Standard(StandardDeserializeImpl {
                 target_struct,
                 fields,
+                generics,
             }),
         }
     }
 }
 
-impl quote::ToTokens for DeserializeImpl {
+impl quote::ToTokens for DeserializeImpl<'_> {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         match self {
             DeserializeImpl::Standard(inner) => inner.to_tokens(tokens),
@@ -62,7 +69,7 @@ impl quote::ToTokens for DeserializeImpl {
     }
 }
 
-impl quote::ToTokens for StandardDeserializeImpl {
+impl quote::ToTokens for StandardDeserializeImpl<'_> {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         use quote::{quote, TokenStreamExt};
 
@@ -102,12 +109,16 @@ impl quote::ToTokens for StandardDeserializeImpl {
         let expecting_str = proc_macro2::Literal::string(&format!("struct {}", &struct_name));
         let struct_name = proc_macro2::Literal::string(&struct_name);
 
+        let (_, ty_generics, _) = self.generics.split_for_impl();
+        let generics_with_de = generics_for_serde::with_de_and_deserialize_bounds(&self.generics);
+        let (impl_generics, ty_generics_with_de, where_clause) = generics_with_de.split_for_impl();
+
         tokens.append_all(quote! {
             #[automatically_derived]
-            impl<'de> ::cynic::serde::Deserialize<'de> for #target_struct {
-                fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+            impl #impl_generics ::cynic::serde::Deserialize<'de> for #target_struct #ty_generics #where_clause {
+                fn deserialize<__D>(deserializer: __D) -> Result<Self, __D::Error>
                 where
-                    D: ::cynic::serde::Deserializer<'de>,
+                    __D: ::cynic::serde::Deserializer<'de>,
                 {
                     #[derive(::cynic::serde::Deserialize)]
                     #[serde(field_identifier, crate="::cynic::serde")]
@@ -121,16 +132,19 @@ impl quote::ToTokens for StandardDeserializeImpl {
                         __Other
                     }
 
-                    struct Visitor;
+                    struct Visitor #generics_with_de #where_clause {
+                        marker: ::core::marker::PhantomData<#target_struct #ty_generics>,
+                        lifetime: ::core::marker::PhantomData<&'de ()>,
+                    }
 
-                    impl <'de> ::cynic::serde::de::Visitor<'de> for Visitor {
-                        type Value = #target_struct;
+                    impl #impl_generics ::cynic::serde::de::Visitor<'de> for Visitor #ty_generics_with_de #where_clause {
+                        type Value = #target_struct #ty_generics;
 
                         fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
                             formatter.write_str(#expecting_str)
                         }
 
-                        fn visit_map<V>(self, mut __map: V) -> Result<#target_struct, V::Error>
+                        fn visit_map<V>(self, mut __map: V) -> Result<Self::Value, V::Error>
                         where
                             V: ::cynic::serde::de::MapAccess<'de>,
                         {
@@ -163,14 +177,21 @@ impl quote::ToTokens for StandardDeserializeImpl {
 
                     const FIELDS: &'static [&str] = &[#(#serialized_names),*];
 
-                    deserializer.deserialize_struct(#struct_name, FIELDS, Visitor)
+                    deserializer.deserialize_struct(
+                        #struct_name,
+                        FIELDS,
+                        Visitor {
+                            marker: ::core::marker::PhantomData,
+                            lifetime: ::core::marker::PhantomData,
+                        },
+                    )
                 }
             }
         });
     }
 }
 
-impl quote::ToTokens for SpreadingDeserializeImpl {
+impl quote::ToTokens for SpreadingDeserializeImpl<'_> {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         use quote::{quote, TokenStreamExt};
 
@@ -208,14 +229,18 @@ impl quote::ToTokens for SpreadingDeserializeImpl {
             }
         });
 
+        let (_, ty_generics, where_clause) = self.generics.split_for_impl();
+        let generics_with_de = generics_for_serde::with_de_and_deserialize_bounds(&self.generics);
+        let (impl_generics, _, _) = generics_with_de.split_for_impl();
+
         tokens.append_all(quote! {
             #[automatically_derived]
-            impl<'de> ::cynic::serde::Deserialize<'de> for #target_struct {
-                fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+            impl #impl_generics ::cynic::serde::Deserialize<'de> for #target_struct #ty_generics #where_clause {
+                fn deserialize<__D>(deserializer: __D) -> Result<Self, __D::Error>
                 where
-                    D: ::cynic::serde::Deserializer<'de>,
+                    __D: ::cynic::serde::Deserializer<'de>,
                 {
-                    let spreadable = ::cynic::__private::Spreadable::<D::Error>::deserialize(deserializer)?;
+                    let spreadable = ::cynic::__private::Spreadable::<__D::Error>::deserialize(deserializer)?;
 
                     Ok(#target_struct {
                         #(#field_inserts)*

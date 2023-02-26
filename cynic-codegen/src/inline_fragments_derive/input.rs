@@ -1,6 +1,4 @@
-use darling::util::SpannedValue;
-use proc_macro2::Span;
-use quote::quote_spanned;
+use {darling::util::SpannedValue, proc_macro2::Span, quote::quote_spanned};
 
 use crate::error::Errors;
 
@@ -9,6 +7,7 @@ use crate::error::Errors;
 pub struct InlineFragmentsDeriveInput {
     pub(super) ident: proc_macro2::Ident,
     pub(super) data: darling::ast::Data<SpannedValue<InlineFragmentsDeriveVariant>, ()>,
+    pub(super) generics: syn::Generics,
 
     pub schema_path: SpannedValue<String>,
 
@@ -141,8 +140,10 @@ pub(super) enum ValidationMode {
 
 impl InlineFragmentsDeriveVariant {
     fn validate(&self, mode: ValidationMode, span: proc_macro2::Span) -> Result<(), Errors> {
-        use darling::ast::Style::{Struct, Tuple, Unit};
-        use ValidationMode::{Interface, Union};
+        use {
+            darling::ast::Style::{Struct, Tuple, Unit},
+            ValidationMode::{Interface, Union},
+        };
 
         if let Struct = self.fields.style {}
 
@@ -206,8 +207,7 @@ impl InlineFragmentsDeriveVariant {
 
 #[cfg(test)]
 mod tests {
-    use darling::FromDeriveInput;
-    use syn::parse_quote;
+    use {darling::FromDeriveInput, syn::parse_quote};
 
     use super::*;
 

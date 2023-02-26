@@ -15,19 +15,22 @@ pub trait CoercesTo<T> {}
 impl<T, TypeLock> CoercesTo<Option<TypeLock>> for Option<T> where T: CoercesTo<TypeLock> {}
 impl<T, TypeLock> CoercesTo<Vec<TypeLock>> for Vec<T> where T: CoercesTo<TypeLock> {}
 
-impl CoercesTo<Id> for &str {}
+impl<Target: ?Sized, Typelock> CoercesTo<Typelock> for &'_ Target where Target: CoercesTo<Typelock> {}
 
-#[macro_export]
+#[macro_export(local_inner_macros)]
 /// Implements the default GraphQL list & option coercion rules for a type.
 macro_rules! impl_coercions {
     ($target:ty, $typelock:ty) => {
-        impl $crate::coercions::CoercesTo<$typelock> for $target {}
-        impl $crate::coercions::CoercesTo<Option<$typelock>> for $target {}
-        impl $crate::coercions::CoercesTo<Vec<$typelock>> for $target {}
-        impl $crate::coercions::CoercesTo<Option<Vec<$typelock>>> for $target {}
-        impl $crate::coercions::CoercesTo<Option<Vec<Option<$typelock>>>> for $target {}
-        impl $crate::coercions::CoercesTo<Option<Option<$typelock>>> for $target {}
-        impl $crate::coercions::CoercesTo<Vec<Vec<$typelock>>> for $target {}
+        impl_coercions!($target[][], $typelock);
+    };
+    ($target:ty [$($impl_generics: tt)*] [$($where_clause: tt)*], $typelock:ty) => {
+        impl $($impl_generics)* $crate::coercions::CoercesTo<$typelock> for $target $($where_clause)* {}
+        impl $($impl_generics)* $crate::coercions::CoercesTo<Option<$typelock>> for $target $($where_clause)* {}
+        impl $($impl_generics)* $crate::coercions::CoercesTo<Vec<$typelock>> for $target $($where_clause)* {}
+        impl $($impl_generics)* $crate::coercions::CoercesTo<Option<Vec<$typelock>>> for $target $($where_clause)* {}
+        impl $($impl_generics)* $crate::coercions::CoercesTo<Option<Vec<Option<$typelock>>>> for $target $($where_clause)* {}
+        impl $($impl_generics)* $crate::coercions::CoercesTo<Option<Option<$typelock>>> for $target $($where_clause)* {}
+        impl $($impl_generics)* $crate::coercions::CoercesTo<Vec<Vec<$typelock>>> for $target $($where_clause)* {}
     };
 }
 
@@ -45,7 +48,8 @@ mod scalars {
     impl_coercions_for_scalar!(bool);
     impl_coercions_for_scalar!(Id);
     impl_coercions_for_scalar!(String);
-    impl_coercions!(&str, String);
+    impl_coercions!(str, String);
+    impl_coercions!(str, Id);
 }
 
 #[cfg(test)]

@@ -1,6 +1,7 @@
 #![deny(rust_2018_idioms)]
 pub mod enum_derive;
 pub mod fragment_derive;
+pub mod generics_for_serde;
 pub mod inline_fragments_derive;
 pub mod input_object_derive;
 pub mod query_variables_derive;
@@ -16,15 +17,13 @@ mod types;
 
 pub use idents::RenameAll;
 
-use error::Errors;
-use schema::load_schema;
+use {error::Errors, schema::load_schema};
 
 pub fn output_schema_module(
     schema: impl AsRef<std::path::Path>,
     output_path: impl AsRef<std::path::Path>,
 ) -> Result<(), Errors> {
-    use std::io::Write;
-    use use_schema::UseSchemaParams;
+    use {std::io::Write, use_schema::UseSchemaParams};
 
     let tokens = use_schema::use_schema(UseSchemaParams {
         schema_filename: schema.as_ref().to_str().unwrap().to_string(),
@@ -49,4 +48,18 @@ fn format_code(filename: &std::path::Path) {
             .spawn()
             .expect("failed to execute process");
     }
+}
+
+fn variables_fields_path(variables: Option<&syn::Path>) -> Option<syn::Path> {
+    variables.cloned().map(|mut variables| {
+        // Find VariablesField struct name from Variables struct name
+        if let Some(last) = variables.segments.last_mut() {
+            last.ident = variables_fields_ident(&last.ident);
+        }
+        variables
+    })
+}
+
+fn variables_fields_ident(ident: &syn::Ident) -> syn::Ident {
+    proc_macro2::Ident::new(&format!("{}Fields", ident), ident.span())
 }

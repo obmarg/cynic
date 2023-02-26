@@ -1,22 +1,21 @@
 ---
 source: cynic-codegen/src/scalar_derive/tests.rs
-assertion_line: 20
 expression: "format_code(format!(\"{}\", tokens))"
 ---
 #[automatically_derived]
 impl ::cynic::serde::Serialize for DateTime {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    fn serialize<__S>(&self, serializer: __S) -> Result<__S::Ok, __S::Error>
     where
-        S: ::cynic::serde::Serializer,
+        __S: ::cynic::serde::Serializer,
     {
         self.0.serialize(serializer)
     }
 }
 #[automatically_derived]
 impl<'de> ::cynic::serde::Deserialize<'de> for DateTime {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    fn deserialize<__D>(deserializer: __D) -> Result<Self, __D::Error>
     where
-        D: ::cynic::serde::Deserializer<'de>,
+        __D: ::cynic::serde::Deserializer<'de>,
     {
         <String as ::cynic::serde::Deserialize<'de>>::deserialize(deserializer).map(Self)
     }
@@ -30,5 +29,5 @@ impl schema::variable::Variable for DateTime {
     const TYPE: ::cynic::variables::VariableType =
         ::cynic::variables::VariableType::Named("DateTime");
 }
-::cynic::impl_coercions!(DateTime, schema::DateTime);
+:: cynic :: impl_coercions ! (DateTime [] [] , schema :: DateTime);
 

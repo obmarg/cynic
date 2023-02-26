@@ -1,6 +1,5 @@
 ---
 source: cynic-codegen/src/enum_derive/mod.rs
-assertion_line: 390
 expression: "format_code(format!(\"{}\", tokens))"
 ---
 #[automatically_derived]
@@ -9,9 +8,9 @@ impl ::cynic::Enum for States {
 }
 #[automatically_derived]
 impl ::cynic::serde::Serialize for States {
-    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    fn serialize<__S>(&self, serializer: __S) -> Result<__S::Ok, __S::Error>
     where
-        S: ::cynic::serde::Serializer,
+        __S: ::cynic::serde::Serializer,
     {
         match self {
             States::Closed => serializer.serialize_unit_variant("States", 0u32, "CLOSED"),
@@ -22,9 +21,9 @@ impl ::cynic::serde::Serialize for States {
 }
 #[automatically_derived]
 impl<'de> ::cynic::serde::Deserialize<'de> for States {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    fn deserialize<__D>(deserializer: __D) -> Result<Self, __D::Error>
     where
-        D: ::cynic::serde::Deserializer<'de>,
+        __D: ::cynic::serde::Deserializer<'de>,
     {
         match <String as ::cynic::serde::Deserialize>::deserialize(deserializer)?.as_ref() {
             "CLOSED" => Ok(States::Closed),

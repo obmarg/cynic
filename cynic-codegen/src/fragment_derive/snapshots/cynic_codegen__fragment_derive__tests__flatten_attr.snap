@@ -3,12 +3,16 @@ source: cynic-codegen/src/fragment_derive/tests.rs
 expression: "format_code(format!(\"{}\", tokens))"
 ---
 #[automatically_derived]
-impl<'de> ::cynic::QueryFragment<'de> for Film {
+impl ::cynic::QueryFragment for Film {
     type SchemaType = schema::Film;
-    type Variables = ();
+    type VariablesFields = ();
     const TYPE: Option<&'static str> = Some("Film");
     fn query(
-        mut builder: ::cynic::queries::SelectionBuilder<'_, Self::SchemaType, Self::Variables>,
+        mut builder: ::cynic::queries::SelectionBuilder<
+            '_,
+            Self::SchemaType,
+            Self::VariablesFields,
+        >,
     ) {
         #![allow(unused_mut)]
         let mut field_builder = builder . select_flattened_field :: < schema :: __fields :: Film :: producers , < Vec < String > as :: cynic :: schema :: IsScalar < < schema :: __fields :: Film :: producers as :: cynic :: schema :: Field > :: Type >> :: SchemaType , < schema :: __fields :: Film :: producers as :: cynic :: schema :: Field > :: Type , > () ;
@@ -16,9 +20,9 @@ impl<'de> ::cynic::QueryFragment<'de> for Film {
 }
 #[automatically_derived]
 impl<'de> ::cynic::serde::Deserialize<'de> for Film {
-    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    fn deserialize<__D>(deserializer: __D) -> Result<Self, __D::Error>
     where
-        D: ::cynic::serde::Deserializer<'de>,
+        __D: ::cynic::serde::Deserializer<'de>,
     {
         #[derive(:: cynic :: serde :: Deserialize)]
         #[serde(field_identifier, crate = "::cynic::serde")]
@@ -29,13 +33,16 @@ impl<'de> ::cynic::serde::Deserialize<'de> for Film {
             #[serde(other)]
             __Other,
         }
-        struct Visitor;
-        impl<'de> ::cynic::serde::de::Visitor<'de> for Visitor {
+        struct Visitor<'de> {
+            marker: ::core::marker::PhantomData<Film>,
+            lifetime: ::core::marker::PhantomData<&'de ()>,
+        }
+        impl<'de> ::cynic::serde::de::Visitor<'de> for Visitor<'de> {
             type Value = Film;
             fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
                 formatter.write_str("struct Film")
             }
-            fn visit_map<V>(self, mut __map: V) -> Result<Film, V::Error>
+            fn visit_map<V>(self, mut __map: V) -> Result<Self::Value, V::Error>
             where
                 V: ::cynic::serde::de::MapAccess<'de>,
             {
@@ -65,7 +72,14 @@ impl<'de> ::cynic::serde::Deserialize<'de> for Film {
             }
         }
         const FIELDS: &'static [&str] = &["producers"];
-        deserializer.deserialize_struct("Film", FIELDS, Visitor)
+        deserializer.deserialize_struct(
+            "Film",
+            FIELDS,
+            Visitor {
+                marker: ::core::marker::PhantomData,
+                lifetime: ::core::marker::PhantomData,
+            },
+        )
     }
 }
 

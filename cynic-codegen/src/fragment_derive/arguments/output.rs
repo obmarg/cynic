@@ -107,10 +107,10 @@ impl ToTokens for ArgumentValueTokens<'_> {
             }),
             ArgumentValue::Variable(var) => {
                 let var_ident = &var.ident;
-                let variables = &var.variable_struct;
+                let variables_fields = &var.variables_fields_struct;
 
                 tokens.append_all(quote! {
-                    .variable(<#variables as ::cynic::QueryVariables>::Fields::#var_ident())
+                    .variable(#variables_fields::#var_ident())
                 });
             }
             ArgumentValue::Some(inner) => {
@@ -152,9 +152,9 @@ impl<'a> quote::ToTokens for VariantDetailsTokens<'a> {
             struct #ident;
 
             impl ::cynic::serde::Serialize for #ident {
-                fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                fn serialize<__S>(&self, serializer: __S) -> Result<__S::Ok, __S::Error>
                 where
-                    S: ::cynic::serde::Serializer
+                    __S: ::cynic::serde::Serializer
                 {
                     serializer.serialize_unit_variant("", 0, #variant_str)
                 }

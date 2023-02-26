@@ -1,103 +1,101 @@
-use crate::{queries::SelectionBuilder, QueryVariables};
+use crate::{queries::SelectionBuilder, QueryVariablesFields};
 
 /// Indicates that a type may be used as part of a graphql query.
 ///
 /// This will usually be derived, but can be manually implemented if required.
-pub trait QueryFragment<'de>: serde::Deserialize<'de> {
+pub trait QueryFragment: Sized {
     /// The type in a schema that this `QueryFragment` represents
     type SchemaType;
 
     /// The variables that are required to execute this `QueryFragment`
-    type Variables: QueryVariables;
+    type VariablesFields: QueryVariablesFields;
 
     /// The name of the type in the GraphQL schema
     const TYPE: Option<&'static str> = None;
 
     /// Adds this fragment to the query being built by `builder`
-    fn query(builder: SelectionBuilder<'_, Self::SchemaType, Self::Variables>);
+    fn query(builder: SelectionBuilder<'_, Self::SchemaType, Self::VariablesFields>);
 }
 
-impl<'de, T> QueryFragment<'de> for Option<T>
+impl<T> QueryFragment for Option<T>
 where
-    T: QueryFragment<'de>,
+    T: QueryFragment,
 {
     type SchemaType = Option<T::SchemaType>;
-    type Variables = T::Variables;
+    type VariablesFields = T::VariablesFields;
 
-    fn query(builder: SelectionBuilder<'_, Self::SchemaType, Self::Variables>) {
+    fn query(builder: SelectionBuilder<'_, Self::SchemaType, Self::VariablesFields>) {
         T::query(builder.into_inner())
     }
 }
 
-impl<'de, T> QueryFragment<'de> for Vec<T>
+impl<T> QueryFragment for Vec<T>
 where
-    T: QueryFragment<'de>,
+    T: QueryFragment,
 {
     type SchemaType = Vec<T::SchemaType>;
-    type Variables = T::Variables;
+    type VariablesFields = T::VariablesFields;
 
-    fn query(builder: SelectionBuilder<'_, Self::SchemaType, Self::Variables>) {
+    fn query(builder: SelectionBuilder<'_, Self::SchemaType, Self::VariablesFields>) {
         T::query(builder.into_inner())
     }
 }
 
-impl<'de, T> QueryFragment<'de> for Box<T>
+impl<T> QueryFragment for Box<T>
 where
-    T: QueryFragment<'de>,
+    T: QueryFragment,
 {
     type SchemaType = T::SchemaType;
-    type Variables = T::Variables;
+    type VariablesFields = T::VariablesFields;
 
-    fn query(builder: SelectionBuilder<'_, Self::SchemaType, Self::Variables>) {
+    fn query(builder: SelectionBuilder<'_, Self::SchemaType, Self::VariablesFields>) {
         T::query(builder)
     }
 }
 
-impl<'de, T> QueryFragment<'de> for std::rc::Rc<T>
+impl<T> QueryFragment for std::rc::Rc<T>
 where
-    Self: serde::Deserialize<'de>,
-    T: QueryFragment<'de>,
+    T: QueryFragment,
 {
     type SchemaType = T::SchemaType;
-    type Variables = T::Variables;
+    type VariablesFields = T::VariablesFields;
 
-    fn query(builder: SelectionBuilder<'_, Self::SchemaType, Self::Variables>) {
+    fn query(builder: SelectionBuilder<'_, Self::SchemaType, Self::VariablesFields>) {
         T::query(builder)
     }
 }
 
-impl<'de, T> QueryFragment<'de> for std::sync::Arc<T>
+impl<T> QueryFragment for std::sync::Arc<T>
 where
-    Self: serde::Deserialize<'de>,
-    T: QueryFragment<'de>,
+    T: QueryFragment,
 {
     type SchemaType = T::SchemaType;
-    type Variables = T::Variables;
+    type VariablesFields = T::VariablesFields;
 
-    fn query(builder: SelectionBuilder<'_, Self::SchemaType, Self::Variables>) {
+    fn query(builder: SelectionBuilder<'_, Self::SchemaType, Self::VariablesFields>) {
         T::query(builder)
     }
 }
 
-impl<'de> QueryFragment<'de> for bool {
+impl QueryFragment for bool {
     type SchemaType = bool;
-    type Variables = ();
+    type VariablesFields = ();
 
-    fn query(_builder: SelectionBuilder<'_, Self::SchemaType, Self::Variables>) {}
+    fn query(_builder: SelectionBuilder<'_, Self::SchemaType, Self::VariablesFields>) {}
 }
 
-impl<'de> QueryFragment<'de> for String {
+impl QueryFragment for String {
     type SchemaType = String;
-    type Variables = ();
+    type VariablesFields = ();
 
-    fn query(_builder: SelectionBuilder<'_, Self::SchemaType, Self::Variables>) {}
+    fn query(_builder: SelectionBuilder<'_, Self::SchemaType, Self::VariablesFields>) {}
 }
 
 /// A QueryFragment that contains a set of inline fragments
 ///
 /// This should be derived on an enum with newtype variants where each
 /// inner type is a `QueryFragment` for an appropriate type.
-pub trait InlineFragments<'de>: QueryFragment<'de> {
+pub trait InlineFragments<'de>: QueryFragment + serde::de::Deserialize<'de> {
     /// Attempts to deserialize a variant with the given typename.
     fn deserialize_variant<D>(typename: &str, deserializer: D) -> Result<Self, D::Error>
     where
@@ -106,7 +104,8 @@ pub trait InlineFragments<'de>: QueryFragment<'de> {
 
 /// A GraphQL Enum.
 ///
-/// Note that in GraphQL these can't contain data - they are just a set of strings.
+/// Note that in GraphQL these can't contain data - they are just a set of
+/// strings.
 ///
 /// This should be be derived on an enum with unit variants.
 pub trait Enum: serde::de::DeserializeOwned + serde::Serialize {

@@ -1,8 +1,11 @@
-use proc_macro2::{Span, TokenStream};
-use std::collections::HashSet;
+use {
+    proc_macro2::{Span, TokenStream},
+    std::collections::HashSet,
+};
 
 use crate::{
     error::Errors,
+    generics_for_serde,
     idents::RenameAll,
     load_schema,
     schema::{
@@ -20,9 +23,8 @@ pub(crate) mod input;
 #[cfg(test)]
 mod tests;
 
-use crate::suggestions::guess_field;
-use input::InputObjectDeriveField;
 pub use input::InputObjectDeriveInput;
+use {crate::suggestions::guess_field, input::InputObjectDeriveField};
 
 pub fn input_object_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
     use darling::FromDeriveInput;
@@ -58,6 +60,9 @@ pub fn input_object_derive_impl(
 
     if let darling::ast::Data::Struct(fields) = &input.data {
         let ident = &input.ident;
+        let (impl_generics, ty_generics, where_clause) = input.generics.split_for_impl();
+        let generics_with_ser = generics_for_serde::with_serialize_bounds(&input.generics);
+        let (impl_generics_with_ser, _, where_clause_with_ser) = generics_with_ser.split_for_impl();
         let input_marker_ident = proc_macro2::Ident::from(input_object.marker_ident());
         let schema_module = input.schema_module();
 
@@ -85,7 +90,9 @@ pub fn input_object_derive_impl(
             return Ok(errors.to_compile_errors());
         }
 
-        let typechecks = field_serializers.iter().map(|fs| fs.type_check());
+        let typechecks = field_serializers
+            .iter()
+            .map(|fs| fs.type_check(&impl_generics, where_clause));
         let map_serializer_ident = proc_macro2::Ident::new("map_serializer", Span::call_site());
         let field_inserts = field_serializers
             .iter()
@@ -97,15 +104,15 @@ pub fn input_object_derive_impl(
 
         Ok(quote! {
             #[automatically_derived]
-            impl ::cynic::InputObject for #ident {
+            impl #impl_generics ::cynic::InputObject for #ident #ty_generics #where_clause_with_ser {
                 type SchemaType = #schema_module::#input_marker_ident;
             }
 
             #[automatically_derived]
-            impl ::cynic::serde::Serialize for #ident {
-                fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+            impl #impl_generics_with_ser ::cynic::serde::Serialize for #ident #ty_generics #where_clause_with_ser {
+                fn serialize<__S>(&self, serializer: __S) -> Result<__S::Ok, __S::Error>
                 where
-                    S: ::cynic::serde::Serializer,
+                    __S: ::cynic::serde::Serializer,
                 {
                     use ::cynic::serde::ser::SerializeMap;
                     #(#typechecks)*
@@ -118,10 +125,10 @@ pub fn input_object_derive_impl(
                 }
             }
 
-            ::cynic::impl_coercions!(#ident, #schema_module::#input_marker_ident);
+            ::cynic::impl_coercions!(#ident #ty_generics [#impl_generics] [#where_clause], #schema_module::#input_marker_ident);
 
             #[automatically_derived]
-            impl #schema_module::variable::Variable for #ident {
+            impl #impl_generics #schema_module::variable::Variable for #ident #ty_generics #where_clause {
                 const TYPE: ::cynic::variables::VariableType = ::cynic::variables::VariableType::Named(#graphql_type_name);
             }
         })
