@@ -189,7 +189,7 @@ pub use {
     builders::{MutationBuilder, QueryBuilder, SubscriptionBuilder},
     id::Id,
     operation::{Operation, StreamingOperation},
-    result::{GraphQlError, GraphQlResponse},
+    result::*,
     variables::{QueryVariables, QueryVariablesFields},
 };
 
