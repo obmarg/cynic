@@ -9,6 +9,10 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+### Bug Fixes
+
+- `GraphQlErrorLocation` & `GraphQlErrorPathSegment` are no longer accidentally private.
+
 ## v2.2.7 - 2023-02-27
 
 ### Bug Fixes 
