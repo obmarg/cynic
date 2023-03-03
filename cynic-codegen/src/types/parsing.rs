@@ -1,9 +1,10 @@
 use std::borrow::Cow;
 
-use proc_macro2::Span;
-use syn::{spanned::Spanned, GenericArgument, TypePath};
+use {
+    proc_macro2::Span,
+    syn::{spanned::Spanned, GenericArgument, TypePath},
+};
 
-/// A simplified rust type structure
 #[derive(Debug, Clone)]
 pub enum RustType<'a> {
     Optional {
@@ -12,12 +13,12 @@ pub enum RustType<'a> {
         span: Span,
     },
     List {
-        syn: Cow<'a, TypePath>,
+        syn: Cow<'a, syn::Type>,
         inner: Box<RustType<'a>>,
         span: Span,
     },
-    Box {
-        syn: Cow<'a, TypePath>,
+    Ref {
+        syn: Cow<'a, syn::Type>,
         inner: Box<RustType<'a>>,
         span: Span,
     },
@@ -31,70 +32,22 @@ pub enum RustType<'a> {
     },
 }
 
-impl<'a> PartialEq for RustType<'a> {
-    fn eq(&self, other: &Self) -> bool {
-        match (self, other) {
-            (
-                Self::Optional {
-                    syn: l_syn,
-                    inner: l_inner,
-                    ..
-                },
-                Self::Optional {
-                    syn: r_syn,
-                    inner: r_inner,
-                    ..
-                },
-            ) => l_syn == r_syn && l_inner == r_inner,
-            (
-                Self::List {
-                    syn: l_syn,
-                    inner: l_inner,
-                    ..
-                },
-                Self::List {
-                    syn: r_syn,
-                    inner: r_inner,
-                    ..
-                },
-            ) => l_syn == r_syn && l_inner == r_inner,
-            (
-                Self::Box {
-                    syn: l_syn,
-                    inner: l_inner,
-                    ..
-                },
-                Self::Box {
-                    syn: r_syn,
-                    inner: r_inner,
-                    ..
-                },
-            ) => l_syn == r_syn && l_inner == r_inner,
-            (Self::SimpleType { syn: l_syn, .. }, Self::SimpleType { syn: r_syn, .. }) => {
-                l_syn == r_syn
-            }
-            (Self::Unknown { syn: l_syn, .. }, Self::Unknown { syn: r_syn, .. }) => l_syn == r_syn,
-            _ => false,
-        }
-    }
-}
-
 impl<'a> RustType<'a> {
-    pub fn convert_lifetime<'b>(self) -> RustType<'b> {
+    pub fn into_owned(self) -> RustType<'static> {
         match self {
             RustType::Optional { syn, inner, span } => RustType::Optional {
                 syn: Cow::Owned(syn.into_owned()),
-                inner: Box::new(inner.convert_lifetime()),
+                inner: Box::new(inner.into_owned()),
                 span,
             },
             RustType::List { syn, inner, span } => RustType::List {
                 syn: Cow::Owned(syn.into_owned()),
-                inner: Box::new(inner.convert_lifetime()),
+                inner: Box::new(inner.into_owned()),
                 span,
             },
-            RustType::Box { syn, inner, span } => RustType::Box {
+            RustType::Ref { syn, inner, span } => RustType::Ref {
                 syn: Cow::Owned(syn.into_owned()),
-                inner: Box::new(inner.convert_lifetime()),
+                inner: Box::new(inner.into_owned()),
                 span,
             },
             RustType::SimpleType { syn, span } => RustType::SimpleType {
@@ -112,60 +65,89 @@ impl<'a> RustType<'a> {
         match self {
             RustType::Optional { span, .. } => *span,
             RustType::List { span, .. } => *span,
-            RustType::Box { span, .. } => *span,
+            RustType::Ref { span, .. } => *span,
             RustType::SimpleType { span, .. } => *span,
             RustType::Unknown { span, .. } => *span,
         }
     }
 }
 
-#[allow(clippy::cmp_owned)]
-pub fn parse_rust_type(ty: &'_ syn::Type) -> RustType<'_> {
+pub fn parse_rust_type<'t>(ty: &'t syn::Type) -> RustType<'t> {
     let span = ty.span();
-    if let syn::Type::Path(type_path) = ty {
-        if let Some(last_segment) = type_path.path.segments.last() {
-            if let syn::PathArguments::None = last_segment.arguments {
-                return RustType::SimpleType {
-                    syn: Cow::Borrowed(ty),
-                    span,
-                };
-            }
+    match ty {
+        syn::Type::Path(type_path) => {
+            if let Some(last_segment) = type_path.path.segments.last() {
+                if let syn::PathArguments::None = last_segment.arguments {
+                    return RustType::SimpleType {
+                        syn: Cow::Borrowed(ty),
+                        span,
+                    };
+                }
 
-            match last_segment.ident.to_string().as_ref() {
-                "Box" | "Arc" | "Rc" => {
-                    if let Some(inner_type) = extract_generic_argument(last_segment) {
-                        return RustType::Box {
-                            syn: Cow::Borrowed(type_path),
-                            inner: Box::new(parse_rust_type(inner_type)),
-                            span,
-                        };
+                match last_segment.ident.to_string().as_str() {
+                    "Box" | "Arc" | "Rc" => {
+                        if let Some(inner_type) = extract_generic_argument(last_segment) {
+                            return RustType::Ref {
+                                syn: Cow::Borrowed(ty),
+                                inner: Box::new(parse_rust_type(inner_type)),
+                                span,
+                            };
+                        }
                     }
-                }
-                "Option" => {
-                    if let Some(inner_type) = extract_generic_argument(last_segment) {
-                        return RustType::Optional {
-                            syn: Cow::Borrowed(type_path),
-                            inner: Box::new(parse_rust_type(inner_type)),
-                            span,
-                        };
+                    "Option" => {
+                        if let Some(inner_type) = extract_generic_argument(last_segment) {
+                            return RustType::Optional {
+                                syn: Cow::Borrowed(type_path),
+                                inner: Box::new(parse_rust_type(inner_type)),
+                                span,
+                            };
+                        }
                     }
-                }
-                "Vec" => {
-                    if let Some(inner_type) = extract_generic_argument(last_segment) {
-                        return RustType::List {
-                            syn: Cow::Borrowed(type_path),
-                            inner: Box::new(parse_rust_type(inner_type)),
-                            span,
-                        };
+                    "Vec" => {
+                        if let Some(inner_type) = extract_generic_argument(last_segment) {
+                            return RustType::List {
+                                syn: Cow::Borrowed(ty),
+                                inner: Box::new(parse_rust_type(inner_type)),
+                                span,
+                            };
+                        }
                     }
+                    _ => {}
                 }
-                _ => {}
             }
-            return RustType::Unknown {
+        }
+        syn::Type::Reference(syn::TypeReference { elem, .. })
+            if matches!(**elem, syn::Type::Slice(_)) =>
+        {
+            let syn::Type::Slice(array) = &**elem else { unreachable!() };
+            return RustType::List {
                 syn: Cow::Borrowed(ty),
+                inner: Box::new(parse_rust_type(&array.elem)),
                 span,
             };
         }
+        syn::Type::Reference(reference) => {
+            return RustType::Ref {
+                syn: Cow::Borrowed(ty),
+                inner: Box::new(parse_rust_type(&reference.elem)),
+                span,
+            }
+        }
+        syn::Type::Array(array) => {
+            return RustType::List {
+                syn: Cow::Borrowed(ty),
+                inner: Box::new(parse_rust_type(&array.elem)),
+                span,
+            }
+        }
+        syn::Type::Slice(slice) => {
+            return RustType::List {
+                syn: Cow::Borrowed(ty),
+                inner: Box::new(parse_rust_type(&slice.elem)),
+                span,
+            }
+        }
+        _ => {}
     }
 
     RustType::Unknown {
@@ -191,8 +173,8 @@ impl<'a> RustType<'a> {
     pub fn to_syn(&self) -> syn::Type {
         match self {
             RustType::Optional { syn, .. } => syn::Type::Path(syn.clone().into_owned()),
-            RustType::List { syn, .. } => syn::Type::Path(syn.clone().into_owned()),
-            RustType::Box { syn, .. } => syn::Type::Path(syn.clone().into_owned()),
+            RustType::List { syn, .. } => syn.clone().into_owned(),
+            RustType::Ref { syn, .. } => syn.clone().into_owned(),
             RustType::SimpleType { syn, .. } => syn.clone().into_owned(),
             RustType::Unknown { syn, .. } => syn.clone().into_owned(),
         }
@@ -211,16 +193,31 @@ impl<'a> RustType<'a> {
                     span,
                 }
             }
-            RustType::Box { mut syn, span, .. } => {
-                syn.to_mut().replace_generic_param(&new_inner);
-                RustType::Box {
+            RustType::Ref { mut syn, span, .. } => {
+                match syn.to_mut() {
+                    syn::Type::Path(path) => path.replace_generic_param(&new_inner),
+                    syn::Type::Reference(reference) => reference.elem = Box::new(new_inner.to_syn()),
+                    _ => panic!("We shouldn't have constructed RustType::Ref for anything else than these types")
+                }
+                RustType::Ref {
                     syn,
                     inner: Box::new(new_inner),
                     span,
                 }
             }
             RustType::List { mut syn, span, .. } => {
-                syn.to_mut().replace_generic_param(&new_inner);
+                match syn.to_mut() {
+                    syn::Type::Path(path) => path.replace_generic_param(&new_inner),
+                    syn::Type::Array(array) => array.elem = Box::new(new_inner.to_syn()),
+                    syn::Type::Slice(slice) => slice.elem = Box::new(new_inner.to_syn()),
+                    syn::Type::Reference(ref_to_slice) => {
+                        let syn::Type::Slice(slice) = &mut *ref_to_slice.elem
+                            else { panic!("We shouldn't have constructed RustType::List for a Ref unless the type beneath is a Slice") };
+                        slice.elem = Box::new(new_inner.to_syn());
+                    }
+                    _ => panic!("We shouldn't have constructed RustType::List for anything else than these types")
+                }
+
                 RustType::List {
                     syn,
                     inner: Box::new(new_inner),
@@ -257,9 +254,7 @@ impl TypePathExt for syn::TypePath {
 
 #[cfg(test)]
 mod tests {
-    use proc_macro2::TokenStream;
-    use quote::quote;
-    use rstest::rstest;
+    use {proc_macro2::TokenStream, quote::quote, rstest::rstest};
 
     use super::*;
 

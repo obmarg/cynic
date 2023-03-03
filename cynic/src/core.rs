@@ -156,7 +156,29 @@ where
     type SchemaType = Vec<T::SchemaType>;
 }
 
+impl<T> InputObject for [T]
+where
+    T: InputObject,
+{
+    type SchemaType = Vec<T::SchemaType>;
+}
+
+impl<T, const SIZE: usize> InputObject for [T; SIZE]
+where
+    T: InputObject,
+    Self: serde::Serialize,
+{
+    type SchemaType = Vec<T::SchemaType>;
+}
+
 impl<T> InputObject for Box<T>
+where
+    T: InputObject,
+{
+    type SchemaType = T::SchemaType;
+}
+
+impl<T: ?Sized> InputObject for &T
 where
     T: InputObject,
 {

@@ -1,9 +1,8 @@
 use proc_macro2::Span;
 
-use super::parsing::{parse_rust_type, RustType};
-use crate::schema::{
-    types::InputValue,
-    types::{InputType, OutputType, TypeRef},
+use {
+    super::parsing::{parse_rust_type, RustType},
+    crate::schema::types::{InputType, InputValue, OutputType, TypeRef},
 };
 
 #[derive(Debug, PartialEq, Eq)]
@@ -47,11 +46,11 @@ pub fn check_spread_type(rust_type: &syn::Type) -> Result<(), syn::Error> {
     fn inner_fn(rust_type: &RustType<'_>) -> Result<(), syn::Error> {
         match rust_type {
             RustType::Unknown { .. } => {
-                // If we can't parse the type just ignore it - the compiler will still tell us if it's
-                // wrong.
+                // If we can't parse the type just ignore it - the compiler will still tell us
+                // if it's wrong.
                 Ok(())
             }
-            RustType::Box { inner, .. } => {
+            RustType::Ref { inner, .. } => {
                 // Box is a transparent container for the purposes of checking compatibility
                 // so just recurse
                 inner_fn(inner.as_ref())
@@ -82,7 +81,7 @@ pub fn outer_type_is_option(rust_type: &syn::Type) -> bool {
         match rust_type {
             RustType::Optional { .. } => true,
             RustType::List { .. } => false,
-            RustType::Box { inner, .. } => inner_fn(inner.as_ref()),
+            RustType::Ref { inner, .. } => inner_fn(inner.as_ref()),
             RustType::SimpleType { .. } => false,
             RustType::Unknown { .. } => false,
         }
@@ -97,7 +96,7 @@ fn output_type_check<'a>(
     flattening: bool,
 ) -> Result<(), TypeValidationError> {
     match (&gql_type, rust_type) {
-        (_, RustType::Box { inner, .. }) => {
+        (_, RustType::Ref { inner, .. }) => {
             // Box is a transparent container for the purposes of checking compatibility
             // so just recurse
             output_type_check(gql_type, inner.as_ref(), flattening)
@@ -153,7 +152,7 @@ fn input_type_check<'a>(
     rust_type: &RustType<'_>,
 ) -> Result<(), TypeValidationError> {
     match (&gql_type, rust_type) {
-        (gql_type, RustType::Box { inner, .. }) => {
+        (gql_type, RustType::Ref { inner, .. }) => {
             // Box is a transparent container for the purposes of checking compatibility
             // so just recurse
             input_type_check(gql_type, has_default, inner.as_ref())
@@ -300,16 +299,15 @@ impl SynTypeExt for syn::Type {
 mod tests {
     use std::marker::PhantomData;
 
-    use super::*;
-    use crate::schema::{
-        types::{InputType, OutputType},
-        TypeIndex,
+    use {
+        super::*,
+        crate::schema::{
+            types::{InputType, OutputType},
+            TypeIndex,
+        },
     };
 
-    use assert_matches::assert_matches;
-    use quote::quote;
-    use rstest::rstest;
-    use syn::parse_quote;
+    use {assert_matches::assert_matches, quote::quote, rstest::rstest, syn::parse_quote};
 
     type OutputTypeRef<'a> = super::TypeRef<'a, OutputType<'a>>;
     type InputTypeRef<'a> = super::TypeRef<'a, InputType<'a>>;
