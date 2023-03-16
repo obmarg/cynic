@@ -3,19 +3,22 @@ use std::{
     rc::Rc,
 };
 
-use super::{normalisation::NormalisedDocument, sorting::Vertex};
-use crate::{
-    output::InputObjectField,
-    schema::{self, InputType, InputTypeRef},
-    Error,
+use {
+    super::{normalisation::NormalisedDocument, sorting::Vertex},
+    crate::{
+        output::InputObjectField,
+        schema::{self, InputType, InputTypeRef},
+        Error,
+    },
 };
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct InputObject<'schema> {
     pub schema_type: schema::InputObjectDetails<'schema>,
     pub fields: Vec<InputObjectField<'schema>>,
-    // Named adjacents_ so as not to clash with the adjacents func in the Vertex trait
-    adjacents_: Vec<Rc<InputObject<'schema>>>,
+    // Named children_ so as not to clash with the children func in the Vertex trait
+    children_: Vec<Rc<InputObject<'schema>>>,
+    needs_lifetime_a: bool,
 }
 
 impl<'schema> InputObject<'schema> {
@@ -29,8 +32,8 @@ impl<'schema> InputObject<'schema> {
 }
 
 impl<'schema> Vertex for InputObject<'schema> {
-    fn adjacents(self: &Rc<InputObject<'schema>>) -> Vec<Rc<InputObject<'schema>>> {
-        self.adjacents_.clone()
+    fn children(self: &Rc<InputObject<'schema>>) -> Vec<Rc<InputObject<'schema>>> {
+        self.children_.clone()
     }
 }
 
@@ -75,7 +78,13 @@ fn extract_whole_input_object<'schema>(
     seen_objects: &mut HashSet<schema::InputObjectDetails<'schema>>,
 ) -> Result<Rc<InputObject<'schema>>, Error> {
     let mut fields = Vec::new();
-    let mut adjacents = Vec::new();
+    let mut children = Vec::new();
+    let mut push_child = |child: Rc<InputObject<'schema>>| {
+        let this_one_needs_lifetime_a = child.needs_lifetime_a;
+        children.push(child);
+        this_one_needs_lifetime_a
+    };
+    let mut needs_lifetime_a = false;
 
     seen_objects.insert(input_object.clone());
 
@@ -83,36 +92,52 @@ fn extract_whole_input_object<'schema>(
         let field_type = field.value_type.inner_ref().lookup()?;
         let mut needs_boxed = false;
 
-        if let InputType::InputObject(inner_obj) = field_type {
+        let is_sub_object_with_lifetime = if let InputType::InputObject(inner_obj) = field_type {
             if let Some(existing_obj) = input_objects.get(&inner_obj) {
-                adjacents.push(Rc::clone(existing_obj));
+                push_child(Rc::clone(existing_obj))
             } else if seen_objects.contains(&inner_obj) {
                 // If we hit this path we've got a recursive object.
-                // going to skip pushing into adjacents in that case.
-                // technically it'll end up with a bad "graph" but we just use it topsort the output
-                // order so it should be fine...
+                // going to skip pushing into children in that case.
+                // technically it'll end up with a bad "graph" but good enough for topological
+                // sort which is precisely the exact only thing we're doing afterwards.
 
                 // We do however need to mark this field as recursive.
                 needs_boxed = true;
+
+                // This is correct because we are iterating in DFS
+                // post-order, so this means
+                // we will always have processed all children before self
+                // (except in case of cycle).
+                // In case of cycle if we have done all objects except cyclic ones and we found
+                // no field that needs a lifetime, this means we don't actually need a lifetime
+                // on the whole recursive type
+                false
             } else {
-                adjacents.push(extract_whole_input_object(
+                push_child(extract_whole_input_object(
                     &inner_obj,
                     input_objects,
                     seen_objects,
-                )?);
+                )?)
             }
-        }
+        } else {
+            false
+        };
 
+        let type_spec = field
+            .value_type
+            .type_spec(needs_boxed, false, is_sub_object_with_lifetime);
+        needs_lifetime_a |= type_spec.contains_lifetime_a;
         fields.push(InputObjectField {
+            type_spec: type_spec,
             schema_field: field.clone(),
-            needs_boxed,
         });
     }
 
     let rv = Rc::new(InputObject {
         schema_type: input_object.clone(),
-        adjacents_: adjacents,
+        children_: children,
         fields,
+        needs_lifetime_a,
     });
 
     input_objects.insert(input_object.clone(), Rc::clone(&rv));
@@ -122,8 +147,10 @@ fn extract_whole_input_object<'schema>(
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use crate::{query_parsing::normalisation::normalise, TypeIndex};
+    use {
+        super::*,
+        crate::{query_parsing::normalisation::normalise, TypeIndex},
+    };
 
     #[test]
     fn deduplicates_input_types_if_same() {

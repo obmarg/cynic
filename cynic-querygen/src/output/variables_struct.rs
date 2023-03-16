@@ -58,7 +58,7 @@ impl std::fmt::Display for VariablesStruct<'_, '_> {
             write!(
                 indented(f, 4),
                 "{}",
-                super::Field::new(&field.name(), &type_spec.name)
+                super::Field::new(&field.name(), &type_spec)
             )?;
         }
         writeln!(f, "}}")

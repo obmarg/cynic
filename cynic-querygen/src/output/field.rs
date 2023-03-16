@@ -2,14 +2,16 @@ use std::{borrow::Cow, collections::HashSet};
 
 use once_cell::sync::Lazy;
 
+use crate::schema::TypeSpec;
+
 pub struct Field<'a> {
     name: &'a str,
     rename: Option<&'a str>,
-    type_spec: &'a str,
+    type_spec: &'a TypeSpec<'a>,
 }
 
 impl<'a> Field<'a> {
-    pub fn new(name: &'a str, type_spec: &'a str) -> Self {
+    pub fn new(name: &'a str, type_spec: &'a TypeSpec<'a>) -> Self {
         Field {
             name,
             type_spec,
@@ -50,7 +52,13 @@ impl std::fmt::Display for Field<'_> {
         if let Some(rename) = self.rename() {
             writeln!(f, r#"#[cynic(rename = "{}")]"#, rename)?;
         }
-        writeln!(f, "pub {}: {},", self.name(), self.type_spec)
+        writeln!(
+            f,
+            "pub {}: {}{},",
+            self.name(),
+            self.type_spec.name,
+            TypeSpec::lifetime([self.type_spec])
+        )
     }
 }
 

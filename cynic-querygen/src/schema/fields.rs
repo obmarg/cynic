@@ -122,11 +122,23 @@ impl<'schema> InputFieldType<'schema> {
 
     /// Second returned type is whether we should generate a `'a` lifetime on
     /// the struct
-    pub fn type_spec(&self, needs_boxed: bool, needs_owned: bool) -> TypeSpec {
-        input_type_spec_imp(self, true, needs_boxed, needs_owned)
+    pub fn type_spec(
+        &self,
+        needs_boxed: bool,
+        needs_owned: bool,
+        is_subobject_with_lifetime: bool,
+    ) -> TypeSpec {
+        input_type_spec_imp(
+            self,
+            true,
+            needs_boxed,
+            needs_owned,
+            is_subobject_with_lifetime,
+        )
     }
 }
 
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub struct TypeSpec<'a> {
     pub(crate) name: Cow<'a, str>,
     pub(crate) contains_lifetime_a: bool,
@@ -163,21 +175,36 @@ fn input_type_spec_imp(
     nullable: bool,
     needs_boxed: bool,
     needs_owned: bool,
+    is_subobject_with_lifetime: bool,
 ) -> TypeSpec<'static> {
     use crate::casings::CasingExt;
 
     if let InputFieldType::NonNullType(inner) = ty {
-        return input_type_spec_imp(inner, false, needs_boxed, needs_owned);
+        return input_type_spec_imp(
+            inner,
+            false,
+            needs_boxed,
+            needs_owned,
+            is_subobject_with_lifetime,
+        );
     }
 
     if nullable {
-        return input_type_spec_imp(ty, false, needs_boxed, needs_owned)
-            .map(|type_spec| format!("Option<{type_spec}>",));
+        return input_type_spec_imp(
+            ty,
+            false,
+            needs_boxed,
+            needs_owned,
+            is_subobject_with_lifetime,
+        )
+        .map(|type_spec| format!("Option<{type_spec}>",));
     }
 
     match ty {
-        InputFieldType::ListType(inner) => input_type_spec_imp(inner, true, false, needs_owned)
-            .map(|type_spec| format!("Vec<{type_spec}>",)),
+        InputFieldType::ListType(inner) => {
+            input_type_spec_imp(inner, true, false, needs_owned, is_subobject_with_lifetime)
+                .map(|type_spec| format!("Vec<{type_spec}>",))
+        }
 
         InputFieldType::NonNullType(_) => panic!("NonNullType somehow got past an if let"),
 
@@ -196,7 +223,14 @@ fn input_type_spec_imp(
                     contains_lifetime_a = true;
                     Cow::Borrowed("&'a str")
                 }
-                _ => Cow::Owned(s.type_name.to_pascal_case()),
+                _ => Cow::Owned({
+                    let mut type_ = s.type_name.to_pascal_case();
+                    if is_subobject_with_lifetime {
+                        type_ += "<'a>";
+                        contains_lifetime_a = true;
+                    }
+                    type_
+                }),
             };
 
             if needs_boxed {

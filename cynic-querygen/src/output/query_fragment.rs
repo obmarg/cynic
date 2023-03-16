@@ -1,9 +1,11 @@
 use std::fmt::Write;
 
-use crate::casings::CasingExt;
+use crate::{casings::CasingExt, schema::TypeSpec};
 
-use super::indented;
-use crate::{query_parsing::TypedValue, schema::OutputFieldType, Error};
+use {
+    super::indented,
+    crate::{query_parsing::TypedValue, schema::OutputFieldType, Error},
+};
 
 #[derive(Debug, PartialEq)]
 pub struct QueryFragment<'query, 'schema> {
@@ -67,7 +69,10 @@ impl std::fmt::Display for OutputField<'_, '_> {
         }
 
         let name = self.name.to_snake_case();
-        let type_spec = self.field_type.type_spec();
+        let type_spec = TypeSpec {
+            name: self.field_type.type_spec().into(),
+            contains_lifetime_a: false,
+        };
         let mut output = super::Field::new(&name, &type_spec);
 
         if let Some(rename) = self.rename {
@@ -79,8 +84,8 @@ impl std::fmt::Display for OutputField<'_, '_> {
 }
 
 /// An OutputFieldType that has been given a rust-land name.  Allows for
-/// the fact that there may be several rust structs that refer to the same schema
-/// type.
+/// the fact that there may be several rust structs that refer to the same
+/// schema type.
 #[derive(Debug, PartialEq)]
 #[allow(clippy::enum_variant_names)]
 pub enum RustOutputFieldType {
