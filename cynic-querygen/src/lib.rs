@@ -110,8 +110,7 @@ pub fn document_to_fragment_structs(
     schema: impl AsRef<str>,
     options: &QueryGenOptions,
 ) -> Result<String, Error> {
-    use output::indented;
-    use std::fmt::Write;
+    use {output::indented, std::fmt::Write};
 
     let schema = graphql_parser::parse_schema::<&str>(schema.as_ref())?;
     let query = graphql_parser::parse_query::<&str>(query.as_ref())?;
@@ -130,8 +129,26 @@ pub fn document_to_fragment_structs(
 
     writeln!(mod_output, "use super::{};\n", options.query_module).unwrap();
 
-    for variables in parsed_output.variables_structs {
-        writeln!(mod_output, "{}", variables).unwrap();
+    let input_objects_need_lifetime = parsed_output
+        .input_objects
+        .iter()
+        .map(|io| {
+            (
+                io.name.as_str(),
+                io.fields.iter().any(|f| f.type_spec.contains_lifetime_a),
+            )
+        })
+        .collect();
+    for variables_struct in parsed_output.variables_structs {
+        writeln!(
+            mod_output,
+            "{}",
+            output::VariablesStructForDisplay {
+                variables_struct: &variables_struct,
+                input_objects_need_lifetime: &input_objects_need_lifetime
+            }
+        )
+        .unwrap();
     }
 
     for fragment in parsed_output.query_fragments {

@@ -10,11 +10,13 @@ mod input_object;
 pub mod query_fragment;
 mod variables_struct;
 
-pub use indent::indented;
-pub use inline_fragments::InlineFragments;
-pub use input_object::{InputObject, InputObjectField};
-pub use query_fragment::QueryFragment;
-pub use variables_struct::{VariablesStruct, VariablesStructField};
+pub use {
+    indent::indented,
+    inline_fragments::InlineFragments,
+    input_object::{InputObject, InputObjectField},
+    query_fragment::QueryFragment,
+    variables_struct::{VariablesStruct, VariablesStructField, VariablesStructForDisplay},
+};
 
 use field::Field;
 

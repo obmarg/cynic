@@ -127,7 +127,7 @@ impl<'schema> InputFieldType<'schema> {
         needs_boxed: bool,
         needs_owned: bool,
         is_subobject_with_lifetime: bool,
-    ) -> TypeSpec {
+    ) -> TypeSpec<'static> {
         input_type_spec_imp(
             self,
             true,

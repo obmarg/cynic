@@ -1,4 +1,4 @@
-use std::borrow::Cow;
+use std::{borrow::Cow, collections::HashMap};
 
 use crate::casings::CasingExt;
 
@@ -30,31 +30,51 @@ impl<'query, 'schema> VariablesStructField<'query, 'schema> {
         }
     }
 
-    fn type_spec(&self) -> TypeSpec<'_> {
+    fn type_spec(&self, input_objects_need_lifetime: &HashMap<&str, bool>) -> TypeSpec<'_> {
         match self {
-            VariablesStructField::Variable(var) => var.value_type.type_spec(false, false),
+            VariablesStructField::Variable(var) => var.value_type.type_spec(
+                false,
+                false,
+                input_objects_need_lifetime
+                    .get(&*var.value_type.inner_name())
+                    .copied()
+                    .unwrap_or(false),
+            ),
             VariablesStructField::NestedStruct(type_name) => TypeSpec {
                 name: Cow::Borrowed(type_name),
-                contains_lifetime_a: false,
+                contains_lifetime_a: input_objects_need_lifetime
+                    .get(type_name.as_str())
+                    .copied()
+                    .unwrap_or(false),
             },
         }
     }
 }
 
-impl std::fmt::Display for VariablesStruct<'_, '_> {
+pub struct VariablesStructForDisplay<'v, 'i, 'q, 's> {
+    pub variables_struct: &'v VariablesStruct<'q, 's>,
+    pub input_objects_need_lifetime: &'i HashMap<&'i str, bool>,
+}
+
+impl std::fmt::Display for VariablesStructForDisplay<'_, '_, '_, '_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         use {super::indented, std::fmt::Write};
 
         writeln!(f, "#[derive(cynic::QueryVariables, Debug)]")?;
-        let type_specs: Vec<_> = self.fields.iter().map(|f| f.type_spec()).collect();
+        let type_specs: Vec<_> = self
+            .variables_struct
+            .fields
+            .iter()
+            .map(|f| f.type_spec(self.input_objects_need_lifetime))
+            .collect();
         writeln!(
             f,
             "pub struct {}{} {{",
-            self.name,
+            self.variables_struct.name,
             TypeSpec::lifetime(&type_specs)
         )?;
 
-        for (field, type_spec) in self.fields.iter().zip(type_specs) {
+        for (field, type_spec) in self.variables_struct.fields.iter().zip(type_specs) {
             write!(
                 indented(f, 4),
                 "{}",
