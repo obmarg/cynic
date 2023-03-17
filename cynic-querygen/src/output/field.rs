@@ -52,13 +52,7 @@ impl std::fmt::Display for Field<'_> {
         if let Some(rename) = self.rename() {
             writeln!(f, r#"#[cynic(rename = "{}")]"#, rename)?;
         }
-        writeln!(
-            f,
-            "pub {}: {}{},",
-            self.name(),
-            self.type_spec.name,
-            TypeSpec::lifetime([self.type_spec])
-        )
+        writeln!(f, "pub {}: {},", self.name(), self.type_spec.name)
     }
 }
 
