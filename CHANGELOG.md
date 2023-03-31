@@ -9,6 +9,11 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+### New Features
+
+- Added `cynic-introspection` for running an introspection query against a
+  remote server.
+
 ## v2.2.8 - 2023-03-01
 
 ### Bug Fixes
