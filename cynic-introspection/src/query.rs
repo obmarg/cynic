@@ -14,9 +14,9 @@ mod queries {
     #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "__Schema")]
     pub struct Schema {
-        pub query_type: SimpleType,
-        pub mutation_type: Option<SimpleType>,
-        pub subscription_type: Option<SimpleType>,
+        pub query_type: NamedType,
+        pub mutation_type: Option<NamedType>,
+        pub subscription_type: Option<NamedType>,
         pub types: Vec<Type>,
         pub directives: Vec<Directive>,
     }
@@ -39,10 +39,10 @@ mod queries {
         #[arguments(includeDeprecated: true)]
         pub fields: Option<Vec<Field>>,
         pub input_fields: Option<Vec<InputValue>>,
-        pub interfaces: Option<Vec<NestedType>>,
+        pub interfaces: Option<Vec<NamedType>>,
         #[arguments(includeDeprecated: true)]
         pub enum_values: Option<Vec<EnumValue>>,
-        pub possible_types: Option<Vec<NestedType>>,
+        pub possible_types: Option<Vec<NamedType>>,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
@@ -61,7 +61,7 @@ mod queries {
         pub description: Option<String>,
         pub args: Vec<InputValue>,
         #[cynic(rename = "type")]
-        pub ty: NestedType,
+        pub ty: FieldType,
         pub is_deprecated: bool,
         pub deprecation_reason: Option<String>,
     }
@@ -73,49 +73,26 @@ mod queries {
         pub name: String,
         pub description: Option<String>,
         #[cynic(rename = "type")]
-        pub ty: NestedType,
+        pub ty: FieldType,
         pub default_value: Option<String>,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "__Type")]
-    pub struct NestedType {
+    pub struct FieldType {
         pub kind: TypeKind,
         pub name: Option<String>,
         #[cynic(recurse = 5)]
-        pub of_type: Option<Box<NestedType>>,
+        pub of_type: Option<Box<FieldType>>,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "__Type")]
-    pub struct __Type4 {
-        pub kind: TypeKind,
-        pub name: Option<String>,
-        pub of_type: Option<__Type5>,
-    }
-
-    #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "__Type")]
-    pub struct __Type5 {
-        pub kind: TypeKind,
-        pub name: Option<String>,
-        pub of_type: Option<__Type6>,
-    }
-
-    #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "__Type")]
-    pub struct __Type6 {
-        pub kind: TypeKind,
+    pub struct NamedType {
         pub name: Option<String>,
     }
 
-    #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "__Type")]
-    pub struct SimpleType {
-        pub name: Option<String>,
-    }
-
-    #[derive(cynic::Enum, Clone, Copy, Debug)]
+    #[derive(cynic::Enum, Clone, Copy, Debug, PartialEq, Eq)]
     #[cynic(graphql_type = "__DirectiveLocation")]
     pub enum DirectiveLocation {
         Query,
