@@ -132,8 +132,14 @@ pub struct FieldType {
     pub name: String,
 }
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Clone, Copy, PartialEq, Eq)]
 pub struct FieldWrapping([u8; 8]);
+
+impl std::fmt::Debug for FieldWrapping {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:?}", self.into_iter().collect::<Vec<_>>())
+    }
+}
 
 impl IntoIterator for FieldWrapping {
     type Item = WrappingType;
@@ -148,6 +154,7 @@ impl IntoIterator for FieldWrapping {
                 .flat_map(|item| match item {
                     1 => std::iter::once(WrappingType::List),
                     2 => std::iter::once(WrappingType::NonNull),
+                    _ => unreachable!(),
                 }),
         )
     }
@@ -160,7 +167,7 @@ pub enum WrappingType {
 }
 
 #[derive(thiserror::Error, Debug, Eq, PartialEq)]
-enum SchemaError {
+pub enum SchemaError {
     #[error("A type in the introspection output was missing a name")]
     TypeMissingName,
     #[error("Found a list wrapper type in a position that should contain a named type")]
@@ -305,7 +312,7 @@ impl TryFrom<crate::query::FieldType> for FieldType {
     fn try_from(field_type: crate::query::FieldType) -> Result<Self, Self::Error> {
         let mut wrapping = [0; 8];
         let mut wrapping_pos = 0;
-        let current_ty = field_type;
+        let mut current_ty = field_type;
         loop {
             if wrapping_pos >= wrapping.len() {
                 return Err(SchemaError::TooMuchWrapping);

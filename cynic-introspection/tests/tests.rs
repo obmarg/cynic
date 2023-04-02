@@ -1,4 +1,4 @@
-use cynic_introspection::IntrospectionQuery;
+use cynic_introspection::{query::IntrospectionQuery, Schema};
 
 #[test]
 fn test_introspection_query() {
@@ -26,4 +26,21 @@ fn test_running_query() {
         assert_eq!(result.errors.unwrap().len(), 0);
     }
     insta::assert_debug_snapshot!(result.data);
+}
+
+#[test]
+fn test_schema_conversion() {
+    use cynic::http::ReqwestBlockingExt;
+
+    let query = build_query();
+
+    let result = reqwest::blocking::Client::new()
+        .post("https://swapi-graphql.netlify.app/.netlify/functions/index")
+        .run_graphql(query)
+        .unwrap();
+
+    if result.errors.is_some() {
+        assert_eq!(result.errors.unwrap().len(), 0);
+    }
+    insta::assert_debug_snapshot!(Schema::try_from(result.data.unwrap().schema).unwrap());
 }
