@@ -29,7 +29,7 @@ impl quote::ToTokens for InlineFragmentsImpl<'_> {
             .collect::<Vec<_>>();
 
         let (_, ty_generics, _) = self.generics.split_for_impl();
-        let generics_with_de = generics_for_serde::with_de_and_deserialize_bounds(&self.generics);
+        let generics_with_de = generics_for_serde::with_de_and_deserialize_bounds(self.generics);
         let (impl_generics_with_de, _, where_clause_with_de) = generics_with_de.split_for_impl();
 
         let fallback = match &self.fallback {

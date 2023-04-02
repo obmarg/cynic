@@ -110,7 +110,7 @@ impl quote::ToTokens for StandardDeserializeImpl<'_> {
         let struct_name = proc_macro2::Literal::string(&struct_name);
 
         let (_, ty_generics, _) = self.generics.split_for_impl();
-        let generics_with_de = generics_for_serde::with_de_and_deserialize_bounds(&self.generics);
+        let generics_with_de = generics_for_serde::with_de_and_deserialize_bounds(self.generics);
         let (impl_generics, ty_generics_with_de, where_clause) = generics_with_de.split_for_impl();
 
         tokens.append_all(quote! {
@@ -230,7 +230,7 @@ impl quote::ToTokens for SpreadingDeserializeImpl<'_> {
         });
 
         let (_, ty_generics, where_clause) = self.generics.split_for_impl();
-        let generics_with_de = generics_for_serde::with_de_and_deserialize_bounds(&self.generics);
+        let generics_with_de = generics_for_serde::with_de_and_deserialize_bounds(self.generics);
         let (impl_generics, _, _) = generics_with_de.split_for_impl();
 
         tokens.append_all(quote! {

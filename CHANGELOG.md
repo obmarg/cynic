@@ -9,10 +9,20 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+### Breaking Changes
+
+- `QueryBuilder`, `MutationBuidler` & `SubscriptionBuilder` no longer have lifetimes.
+- `QueryFragment` no longer has a lifetime.
+- `QueryVariables::Fields` must now implement the `QueryVariablesFields` trait.
+- The workings of `derive(QueryVariables)` has been changed quite
+  significantly, but shouldn't affect anyone who is using the macro.
+
 ### New Features
 
 - Added `cynic-introspection` for running an introspection query against a
   remote server.
+- The derive macros now support structs that are generic on lifetimes _and_ types.
+- The derive macros now fields that are references.
 
 ## v2.2.8 - 2023-03-01
 
