@@ -21,6 +21,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 - Added `cynic-introspection` for running an introspection query against a
   remote server.
+- Added `cynic-introspection::Schema` which converts the introspection output
+  into a friendlier format for working with.
 - The derive macros now support structs that are generic on lifetimes _and_ types.
 - The derive macros now fields that are references.
 

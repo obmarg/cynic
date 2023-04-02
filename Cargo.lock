@@ -661,6 +661,7 @@ dependencies = [
  "insta",
  "maplit",
  "reqwest",
+ "thiserror",
 ]
 
 [[package]]

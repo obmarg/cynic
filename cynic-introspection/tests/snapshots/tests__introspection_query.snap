@@ -106,28 +106,7 @@ query {
         defaultValue
       }
       interfaces {
-        kind
         name
-        ofType {
-          kind
-          name
-          ofType {
-            kind
-            name
-            ofType {
-              kind
-              name
-              ofType {
-                kind
-                name
-                ofType {
-                  kind
-                  name
-                }
-              }
-            }
-          }
-        }
       }
       enumValues(includeDeprecated: true) {
         name
@@ -136,28 +115,7 @@ query {
         deprecationReason
       }
       possibleTypes {
-        kind
         name
-        ofType {
-          kind
-          name
-          ofType {
-            kind
-            name
-            ofType {
-              kind
-              name
-              ofType {
-                kind
-                name
-                ofType {
-                  kind
-                  name
-                }
-              }
-            }
-          }
-        }
       }
     }
     directives {
