@@ -91,16 +91,14 @@ pub struct EnumValue {
 #[non_exhaustive]
 pub enum Deprecated {
     No,
-    Yes,
-    YesWithReason(String),
+    Yes(Option<String>),
 }
 
 impl Deprecated {
     fn new(is_deprecated: bool, deprecation_reason: Option<String>) -> Deprecated {
         match (is_deprecated, deprecation_reason) {
             (false, _) => Deprecated::No,
-            (true, None) => Deprecated::Yes,
-            (true, Some(reason)) => Deprecated::YesWithReason(reason),
+            (true, reason) => Deprecated::Yes(reason),
         }
     }
 }
