@@ -2,7 +2,10 @@ use std::fmt::{self, Display, Write};
 
 use cynic::InputObject;
 
-use crate::{EnumType, InputObjectType, InterfaceType, ObjectType, ScalarType, Type, UnionType};
+use crate::{
+    EnumType, Field, FieldType, InputObjectType, InterfaceType, ObjectType, ScalarType, Type,
+    UnionType, WrappingType,
+};
 
 use super::Schema;
 
@@ -55,7 +58,7 @@ impl std::fmt::Display for TypeDisplay<'_> {
 
         match ty {
             Type::Scalar(ScalarType { name, description }) => {
-                writeln!(f, "{}", DescriptionOutput(description.as_deref()))?;
+                writeln!(f, "{}", DescriptionDisplay(description.as_deref()))?;
                 writeln!(f, "scalar {name}")
             }
             Type::Object(ObjectType {
@@ -63,7 +66,14 @@ impl std::fmt::Display for TypeDisplay<'_> {
                 description,
                 fields,
                 interfaces,
-            }) => todo!(),
+            }) => {
+                writeln!(f, "{}", DescriptionDisplay(description.as_deref()))?;
+                writeln!(f, "type {name} {{")?;
+                for field in fields {
+                    writeln!(f, "{}", FieldDisplay(field))?;
+                }
+                writeln!(f, "}}")
+            }
             Type::InputObject(InputObjectType {
                 name,
                 description,
@@ -90,14 +100,53 @@ impl std::fmt::Display for TypeDisplay<'_> {
     }
 }
 
-struct DescriptionOutput<'a>(Option<&'a str>);
+struct DescriptionDisplay<'a>(Option<&'a str>);
 
-impl Display for DescriptionOutput<'_> {
+impl Display for DescriptionDisplay<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if let Some(description) = self.0 {
             writeln!(f, r#"""""#)?;
             writeln!(f, "{description}")?;
             writeln!(f, r#"""""#)?;
+        }
+
+        Ok(())
+    }
+}
+
+struct FieldDisplay<'a>(&'a Field);
+
+impl Display for FieldDisplay<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let Field {
+            name,
+            description,
+            args,
+            ty,
+            deprecated,
+        } = self.0;
+        writeln!(f, "{name}: {}", FieldTypeDisplay(ty))
+    }
+}
+
+struct FieldTypeDisplay<'a>(&'a FieldType);
+
+impl Display for FieldTypeDisplay<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let FieldType { wrapping, name } = self.0;
+        let wrapping_types = wrapping.into_iter().collect::<Vec<_>>();
+        for wrapping_type in &wrapping_types {
+            match wrapping_type {
+                WrappingType::List => write!(f, "[")?,
+                WrappingType::NonNull => {}
+            }
+        }
+        writeln!(f, "{name}")?;
+        for wrapping_type in wrapping_types.iter().rev() {
+            match wrapping_type {
+                WrappingType::List => write!(f, "]")?,
+                WrappingType::NonNull => write!(f, "?")?,
+            }
         }
 
         Ok(())
