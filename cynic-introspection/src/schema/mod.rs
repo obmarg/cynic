@@ -1,5 +1,7 @@
 use crate::query2018::DirectiveLocation;
 
+mod sdl;
+
 impl crate::query2018::IntrospectionQuery {
     /// Converts the results of an IntrospectionQuery into a `Schema`,
     /// which has some stronger types than those offered by the introspection query

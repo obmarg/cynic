@@ -33,8 +33,6 @@
 pub mod query2018;
 pub mod query2021;
 mod schema;
-#[cfg(feature = "sdl")]
-mod sdl;
 
 pub use query2018 as query;
 #[doc(inline)]

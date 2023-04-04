@@ -69,7 +69,3 @@ impl fmt::Display for Type {
         }
     }
 }
-
-pub fn indented<D>(f: &mut D) -> indenter::Indented<'_, D> {
-    indenter::indented(f).with_str("  ")
-}
