@@ -20,7 +20,7 @@ impl<'de> cynic::serde::Deserialize<'de> for Film {
     where
         __D: cynic::serde::Deserializer<'de>,
     {
-        let spreadable = ::cynic::__private::Spreadable::<__D::Error>::deserialize(deserializer)?;
+        let spreadable = cynic::__private::Spreadable::<__D::Error>::deserialize(deserializer)?;
         Ok(Film {
             details: <FilmDetails as cynic::serde::Deserialize<'de>>::deserialize(
                 spreadable.spread_deserializer(),
@@ -28,4 +28,3 @@ impl<'de> cynic::serde::Deserialize<'de> for Film {
         })
     }
 }
-
