@@ -10,8 +10,8 @@ mod queries {
     use super::schema;
 
     #[derive(cynic::QueryVariables, Debug)]
-    pub struct SingleFilmVariables {
-        pub id: cynic::Id,
+    pub struct SingleFilmVariables<'a> {
+        pub id: &'a cynic::Id,
     }
 
     #[derive(cynic::QueryFragment, Debug)]

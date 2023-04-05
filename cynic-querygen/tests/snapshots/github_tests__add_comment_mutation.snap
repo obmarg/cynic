@@ -10,8 +10,8 @@ mod queries {
     use super::schema;
 
     #[derive(cynic::QueryVariables, Debug)]
-    pub struct CommentOnMutationSupportIssueVariables {
-        pub comment_body: String,
+    pub struct CommentOnMutationSupportIssueVariables<'a> {
+        pub comment_body: &'a str,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
