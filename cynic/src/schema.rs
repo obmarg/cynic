@@ -88,6 +88,13 @@ where
     type SchemaType = Vec<U::SchemaType>;
 }
 
+impl<T, U, const SIZE: usize> IsScalar<Vec<T>> for [U; SIZE]
+where
+    U: IsScalar<T>,
+{
+    type SchemaType = Vec<U::SchemaType>;
+}
+
 impl<T, U: ?Sized> IsScalar<Box<T>> for Box<U>
 where
     U: IsScalar<T>,

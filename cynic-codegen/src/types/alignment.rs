@@ -41,7 +41,7 @@ fn align_output_type_impl<'a>(
             // Something weird is up if we hit this path so don't mess with anything.
             ty.clone()
         }
-        (RustType::Box { inner, .. }, _) => {
+        (RustType::Ref { inner, .. }, _) => {
             // This is fine, but we may still need to align the inner types.
             let new_inner = align_output_type_impl(inner.as_ref(), gql_ty);
             ty.clone().replace_inner(new_inner)
@@ -63,7 +63,7 @@ fn align_input_type_impl<'a>(
     gql_field_has_default: bool,
 ) -> RustType<'a> {
     match (&ty, &gql_ty) {
-        (RustType::Box { inner, .. }, _) => {
+        (RustType::Ref { inner, .. }, _) => {
             // Transform the inner types
             let new_inner = align_input_type_impl(inner.as_ref(), gql_ty, gql_field_has_default);
             ty.clone().replace_inner(new_inner)
@@ -86,13 +86,13 @@ fn align_input_type_impl<'a>(
             // Wrap our rust type in a vec, then recurse
             let syn = other.to_syn();
             let parsed = parse_quote! { ::std::vec::Vec<#syn> };
-            align_input_type_impl(&parse_rust_type(&parsed), gql_ty, false).convert_lifetime()
+            align_input_type_impl(&parse_rust_type(&parsed), gql_ty, false).into_owned()
         }
         (other, TypeRef::Nullable(_)) => {
             // Wrap our rust named type in an option, then recurse
             let syn = other.to_syn();
             let parsed = parse_quote! { ::core::option::Option<#syn> };
-            align_input_type_impl(&parse_rust_type(&parsed), gql_ty, false).convert_lifetime()
+            align_input_type_impl(&parse_rust_type(&parsed), gql_ty, false).into_owned()
         }
         (RustType::Unknown { .. } | RustType::SimpleType { .. }, _) => ty.clone(),
         (RustType::Optional { .. } | RustType::List { .. }, _) => {
@@ -106,10 +106,7 @@ fn align_input_type_impl<'a>(
 mod tests {
     use std::marker::PhantomData;
 
-    use proc_macro2::TokenStream;
-    use quote::quote;
-    use rstest::rstest;
-    use syn::parse2;
+    use {proc_macro2::TokenStream, quote::quote, rstest::rstest, syn::parse2};
 
     use crate::schema::{types::TypeRef, TypeIndex};
 
