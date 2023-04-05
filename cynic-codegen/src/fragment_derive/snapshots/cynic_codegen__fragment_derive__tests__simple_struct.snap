@@ -25,7 +25,7 @@ impl<'de> cynic::serde::Deserialize<'de> for BlogPostOutput {
         #[derive(cynic :: serde :: Deserialize)]
         #[serde(field_identifier, crate = "cynic::serde")]
         #[allow(non_camel_case_types)]
-        enum Field {
+        enum __FragmentDeriveField {
             #[serde(rename = "hasMetadata")]
             has_metadata,
             #[serde(rename = "author")]
@@ -50,7 +50,7 @@ impl<'de> cynic::serde::Deserialize<'de> for BlogPostOutput {
                 let mut author = None;
                 while let Some(__key) = __map.next_key()? {
                     match __key {
-                        Field::has_metadata => {
+                        __FragmentDeriveField::has_metadata => {
                             if has_metadata.is_some() {
                                 return Err(cynic::serde::de::Error::duplicate_field(
                                     "hasMetadata",
@@ -58,13 +58,13 @@ impl<'de> cynic::serde::Deserialize<'de> for BlogPostOutput {
                             }
                             has_metadata = Some(__map.next_value()?);
                         }
-                        Field::author => {
+                        __FragmentDeriveField::author => {
                             if author.is_some() {
                                 return Err(cynic::serde::de::Error::duplicate_field("author"));
                             }
                             author = Some(__map.next_value()?);
                         }
-                        Field::__Other => {
+                        __FragmentDeriveField::__Other => {
                             __map.next_value::<cynic::serde::de::IgnoredAny>()?;
                         }
                     }

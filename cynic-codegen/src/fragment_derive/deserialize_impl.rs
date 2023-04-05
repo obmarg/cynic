@@ -110,7 +110,7 @@ impl quote::ToTokens for StandardDeserializeImpl<'_> {
         let struct_name = proc_macro2::Literal::string(&struct_name);
 
         let (_, ty_generics, _) = self.generics.split_for_impl();
-        let generics_with_de = generics_for_serde::with_de_and_deserialize_bounds(&self.generics);
+        let generics_with_de = generics_for_serde::with_de_and_deserialize_bounds(self.generics);
         let (impl_generics, ty_generics_with_de, where_clause) = generics_with_de.split_for_impl();
 
         tokens.append_all(quote! {
@@ -123,7 +123,7 @@ impl quote::ToTokens for StandardDeserializeImpl<'_> {
                     #[derive(cynic::serde::Deserialize)]
                     #[serde(field_identifier, crate="cynic::serde")]
                     #[allow(non_camel_case_types)]
-                    enum Field {
+                    enum __FragmentDeriveField {
                         #(
                             #[serde(rename = #serialized_names)]
                             #field_variant_names,
@@ -154,14 +154,14 @@ impl quote::ToTokens for StandardDeserializeImpl<'_> {
                             while let Some(__key) = __map.next_key()? {
                                 match __key {
                                     #(
-                                        Field::#field_variant_names => {
+                                        __FragmentDeriveField::#field_variant_names => {
                                             if #field_names.is_some() {
                                                 return Err(cynic::serde::de::Error::duplicate_field(#serialized_names));
                                             }
                                             #field_decodes
                                         }
                                     )*
-                                    Field::__Other => {
+                                    __FragmentDeriveField::__Other => {
                                         __map.next_value::<cynic::serde::de::IgnoredAny>()?;
                                     }
                                 }
@@ -230,7 +230,7 @@ impl quote::ToTokens for SpreadingDeserializeImpl<'_> {
         });
 
         let (_, ty_generics, where_clause) = self.generics.split_for_impl();
-        let generics_with_de = generics_for_serde::with_de_and_deserialize_bounds(&self.generics);
+        let generics_with_de = generics_for_serde::with_de_and_deserialize_bounds(self.generics);
         let (impl_generics, _, _) = generics_with_de.split_for_impl();
 
         tokens.append_all(quote! {

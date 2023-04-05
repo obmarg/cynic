@@ -31,7 +31,7 @@ impl<'de> cynic::serde::Deserialize<'de> for MyQuery {
         #[derive(cynic :: serde :: Deserialize)]
         #[serde(field_identifier, crate = "cynic::serde")]
         #[allow(non_camel_case_types)]
-        enum Field {
+        enum __FragmentDeriveField {
             #[serde(rename = "post")]
             post,
             #[serde(rename = "allPosts")]
@@ -56,19 +56,19 @@ impl<'de> cynic::serde::Deserialize<'de> for MyQuery {
                 let mut posts = None;
                 while let Some(__key) = __map.next_key()? {
                     match __key {
-                        Field::post => {
+                        __FragmentDeriveField::post => {
                             if post.is_some() {
                                 return Err(cynic::serde::de::Error::duplicate_field("post"));
                             }
                             post = Some(__map.next_value()?);
                         }
-                        Field::posts => {
+                        __FragmentDeriveField::posts => {
                             if posts.is_some() {
                                 return Err(cynic::serde::de::Error::duplicate_field("allPosts"));
                             }
                             posts = Some(__map.next_value()?);
                         }
-                        Field::__Other => {
+                        __FragmentDeriveField::__Other => {
                             __map.next_value::<cynic::serde::de::IgnoredAny>()?;
                         }
                     }

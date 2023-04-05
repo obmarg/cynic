@@ -653,6 +653,18 @@ dependencies = [
 ]
 
 [[package]]
+name = "cynic-introspection"
+version = "0.1.0"
+dependencies = [
+ "assert_matches",
+ "cynic",
+ "insta",
+ "maplit",
+ "reqwest",
+ "thiserror",
+]
+
+[[package]]
 name = "cynic-proc-macros"
 version = "2.2.8"
 dependencies = [

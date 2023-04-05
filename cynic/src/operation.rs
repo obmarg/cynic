@@ -39,7 +39,7 @@ where
     }
 }
 
-impl<'de, Fragment, Variables> Operation<Fragment, Variables>
+impl<Fragment, Variables> Operation<Fragment, Variables>
 where
     Fragment: QueryFragment,
     Variables: QueryVariables,
@@ -98,7 +98,7 @@ pub struct StreamingOperation<ResponseData, Variables = ()> {
     inner: Operation<ResponseData, Variables>,
 }
 
-impl<'de, Fragment, Variables> StreamingOperation<Fragment, Variables>
+impl<Fragment, Variables> StreamingOperation<Fragment, Variables>
 where
     Fragment: QueryFragment,
     Variables: QueryVariables,

@@ -23,7 +23,7 @@ impl<'de> cynic::serde::Deserialize<'de> for Film {
         #[derive(cynic :: serde :: Deserialize)]
         #[serde(field_identifier, crate = "cynic::serde")]
         #[allow(non_camel_case_types)]
-        enum Field {
+        enum __FragmentDeriveField {
             #[serde(rename = "producers")]
             producers,
             #[serde(other)]
@@ -45,7 +45,7 @@ impl<'de> cynic::serde::Deserialize<'de> for Film {
                 let mut producers = None;
                 while let Some(__key) = __map.next_key()? {
                     match __key {
-                        Field::producers => {
+                        __FragmentDeriveField::producers => {
                             if producers.is_some() {
                                 return Err(cynic::serde::de::Error::duplicate_field("producers"));
                             }
@@ -55,7 +55,7 @@ impl<'de> cynic::serde::Deserialize<'de> for Film {
                                     .into_inner(),
                             );
                         }
-                        Field::__Other => {
+                        __FragmentDeriveField::__Other => {
                             __map.next_value::<cynic::serde::de::IgnoredAny>()?;
                         }
                     }
