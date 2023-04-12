@@ -1,5 +1,13 @@
 pub use crate::query::DirectiveLocation;
 
+impl crate::query::IntrospectionQuery {
+    /// Converts the results of an IntrospectionQuery into a `Schema`,
+    /// which has some stronger types than those offered by the introspection query
+    pub fn into_schema(self) -> Result<Schema, SchemaError> {
+        Schema::try_from(self.introspected_schema)
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[non_exhaustive]
 pub struct Schema {
@@ -178,10 +186,10 @@ pub enum SchemaError {
     TooMuchWrapping,
 }
 
-impl TryFrom<crate::query::Schema> for Schema {
+impl TryFrom<crate::query::IntrospectedSchema> for Schema {
     type Error = SchemaError;
 
-    fn try_from(schema: crate::query::Schema) -> Result<Self, Self::Error> {
+    fn try_from(schema: crate::query::IntrospectedSchema) -> Result<Self, Self::Error> {
         Ok(Schema {
             query_type: schema.query_type.into_name()?,
             mutation_type: schema.mutation_type.map(|ty| ty.into_name()).transpose()?,

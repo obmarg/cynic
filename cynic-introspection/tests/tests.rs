@@ -42,5 +42,5 @@ fn test_schema_conversion() {
     if result.errors.is_some() {
         assert_eq!(result.errors.unwrap().len(), 0);
     }
-    insta::assert_debug_snapshot!(Schema::try_from(result.data.unwrap().schema).unwrap());
+    insta::assert_debug_snapshot!(result.data.unwrap().into_schema().unwrap());
 }

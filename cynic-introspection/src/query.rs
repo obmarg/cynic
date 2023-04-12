@@ -8,12 +8,12 @@ mod queries {
     #[cynic(graphql_type = "Query")]
     pub struct IntrospectionQuery {
         #[cynic(rename = "__schema")]
-        pub schema: Schema,
+        pub introspected_schema: IntrospectedSchema,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
     #[cynic(graphql_type = "__Schema")]
-    pub struct Schema {
+    pub struct IntrospectedSchema {
         pub query_type: NamedType,
         pub mutation_type: Option<NamedType>,
         pub subscription_type: Option<NamedType>,
