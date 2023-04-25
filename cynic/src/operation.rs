@@ -44,6 +44,15 @@ where
     Fragment: QueryFragment,
     Variables: QueryVariables,
 {
+    /// Constructs a new Operation from a predetermined query (e.g., for test code)
+    pub fn new(query: String, variables: Variables) -> Self {
+        Operation {
+            query,
+            variables,
+            phantom: PhantomData,
+        }
+    }
+
     /// Constructs a new Operation for a query
     pub fn query(variables: Variables) -> Self
     where

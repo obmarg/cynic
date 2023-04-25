@@ -25,6 +25,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
   into a friendlier format for working with.
 - The derive macros now support structs that are generic on lifetimes _and_ types.
 - The derive macros now fields that are references.
+- Added `Operation::new` for predetermined queries, such as in test code.
 
 ## v2.2.8 - 2023-03-01
 
