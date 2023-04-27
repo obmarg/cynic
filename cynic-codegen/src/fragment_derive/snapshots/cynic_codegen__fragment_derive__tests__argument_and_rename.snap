@@ -25,6 +25,9 @@ impl ::cynic::QueryFragment for MyQuery {
         let mut field_builder = builder . select_field :: < schema :: __fields :: Query :: allPosts , < Vec < BlogPostOutput > as :: cynic :: QueryFragment > :: SchemaType > () ;
         <Vec<BlogPostOutput> as ::cynic::QueryFragment>::query(field_builder.select_children());
     }
+    fn name() -> Option<std::borrow::Cow<'static, str>> {
+        Some(std::borrow::Cow::Borrowed("MyQuery"))
+    }
 }
 #[automatically_derived]
 impl<'de> ::cynic::serde::Deserialize<'de> for MyQuery {

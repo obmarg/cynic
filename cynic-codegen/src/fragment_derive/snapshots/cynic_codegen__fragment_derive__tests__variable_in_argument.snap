@@ -23,6 +23,9 @@ impl ::cynic::QueryFragment for MyQuery {
         }
         <Vec<BlogPostOutput> as ::cynic::QueryFragment>::query(field_builder.select_children());
     }
+    fn name() -> Option<std::borrow::Cow<'static, str>> {
+        Some(std::borrow::Cow::Borrowed("MyQuery"))
+    }
 }
 #[automatically_derived]
 impl<'de> ::cynic::serde::Deserialize<'de> for MyQuery {

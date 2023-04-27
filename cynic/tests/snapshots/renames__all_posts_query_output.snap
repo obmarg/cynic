@@ -1,9 +1,8 @@
 ---
 source: cynic/tests/renames.rs
-assertion_line: 53
 expression: operation.query
 ---
-query {
+query AllPostsQuery {
   allPosts {
     hasMetadata
     metadata {

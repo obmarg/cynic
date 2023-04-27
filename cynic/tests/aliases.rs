@@ -31,7 +31,7 @@ fn test_explicit_alias_query_output() {
     let operation = FilmQueryWithExplicitAlias::build(());
 
     insta::assert_display_snapshot!(operation.query, @r###"
-    query {
+    query FilmQueryWithExplicitAlias {
       a_new_hope: film(id: "ZmlsbXM6MQ==") {
         title
       }
@@ -82,7 +82,7 @@ fn test_implicit_alias_query_output() {
     let operation = FilmQueryWithImplicitAlias::build(());
 
     insta::assert_display_snapshot!(operation.query, @r###"
-    query {
+    query FilmQueryWithImplicitAlias {
       film(id: "ZmlsbXM6MQ==") {
         title
       }
