@@ -1,5 +1,7 @@
-use quote::{quote, ToTokens, TokenStreamExt};
-use syn::parse_quote;
+use {
+    quote::{quote, ToTokens, TokenStreamExt},
+    syn::parse_quote,
+};
 
 use crate::schema::types::{Field, InputValue};
 
@@ -28,13 +30,13 @@ impl ToTokens for FieldOutput<'_> {
         tokens.append_all(quote! {
             pub struct #field_marker;
 
-            impl ::cynic::schema::Field for #field_marker{
+            impl cynic::schema::Field for #field_marker{
                 type Type = #field_type_marker;
 
                 const NAME: &'static str = #field_name_literal;
             }
 
-            impl ::cynic::schema::HasField<#field_marker> for super::super::#parent_marker {
+            impl cynic::schema::HasField<#field_marker> for super::super::#parent_marker {
                 type Type = #field_type_marker;
             }
         });
@@ -70,7 +72,7 @@ impl ToTokens for ArgumentOutput<'_> {
         tokens.append_all(quote! {
             pub struct #argument_ident;
 
-            impl ::cynic::schema::HasArgument<#argument_ident> for super::#field_marker {
+            impl cynic::schema::HasArgument<#argument_ident> for super::#field_marker {
                 type ArgumentType = #schema_type;
 
                 const NAME: &'static str = #name;

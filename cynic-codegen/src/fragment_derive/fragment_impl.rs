@@ -168,13 +168,13 @@ impl quote::ToTokens for FragmentImpl<'_> {
 
         tokens.append_all(quote! {
             #[automatically_derived]
-            impl #impl_generics ::cynic::QueryFragment for #target_struct #ty_generics #where_clause {
+            impl #impl_generics cynic::QueryFragment for #target_struct #ty_generics #where_clause {
                 type SchemaType = #schema_type;
                 type VariablesFields = #variables_fields;
 
                 const TYPE: Option<&'static str> = Some(#graphql_type);
 
-                fn query(mut builder: ::cynic::queries::SelectionBuilder<'_, Self::SchemaType, Self::VariablesFields>)
+                fn query(mut builder: cynic::queries::SelectionBuilder<'_, Self::SchemaType, Self::VariablesFields>)
                 where
                 {
                     #![allow(unused_mut)]
@@ -246,16 +246,16 @@ impl quote::ToTokens for FieldSelection<'_> {
         let schema_type_lookup = match self.graphql_field_kind {
             FieldKind::Interface | FieldKind::Composite | FieldKind::Union => {
                 quote_spanned! { self.span =>
-                    <#aligned_type as ::cynic::QueryFragment>::SchemaType
+                    <#aligned_type as cynic::QueryFragment>::SchemaType
                 }
             }
             FieldKind::Scalar => quote_spanned! { self.span =>
-                <#aligned_type as ::cynic::schema::IsScalar<
-                    <#field_marker_type_path as ::cynic::schema::Field>::Type
+                <#aligned_type as cynic::schema::IsScalar<
+                    <#field_marker_type_path as cynic::schema::Field>::Type
                 >>::SchemaType
             },
             FieldKind::Enum => quote_spanned! { self.span =>
-                <#aligned_type as ::cynic::Enum>::SchemaType
+                <#aligned_type as cynic::Enum>::SchemaType
             },
         };
 
@@ -271,7 +271,7 @@ impl quote::ToTokens for FieldSelection<'_> {
                     #alias
                     #arguments
 
-                    <#aligned_type as ::cynic::QueryFragment>::query(
+                    <#aligned_type as cynic::QueryFragment>::query(
                         field_builder.select_children()
                     );
                 }
@@ -282,13 +282,13 @@ impl quote::ToTokens for FieldSelection<'_> {
                         .select_flattened_field::<
                             #field_marker_type_path,
                             #schema_type_lookup,
-                            <#field_marker_type_path as ::cynic::schema::Field>::Type,
+                            <#field_marker_type_path as cynic::schema::Field>::Type,
                         >();
 
                     #alias
                     #arguments
 
-                    <#aligned_type as ::cynic::QueryFragment>::query(
+                    <#aligned_type as cynic::QueryFragment>::query(
                         field_builder.select_children()
                     );
                 }
@@ -299,7 +299,7 @@ impl quote::ToTokens for FieldSelection<'_> {
                         .select_flattened_field::<
                             #field_marker_type_path,
                             #schema_type_lookup,
-                            <#field_marker_type_path as ::cynic::schema::Field>::Type,
+                            <#field_marker_type_path as cynic::schema::Field>::Type,
                         >();
 
                     #alias
@@ -317,7 +317,7 @@ impl quote::ToTokens for FieldSelection<'_> {
                         #alias
                         #arguments
 
-                        <#aligned_type as ::cynic::QueryFragment>::query(
+                        <#aligned_type as cynic::QueryFragment>::query(
                             field_builder.select_children()
                         );
                     }
@@ -345,7 +345,7 @@ impl quote::ToTokens for SpreadSelection {
         let field_type = &self.rust_field_type;
 
         tokens.append_all(quote_spanned! { self.span =>
-            <#field_type as ::cynic::QueryFragment>::query(
+            <#field_type as cynic::QueryFragment>::query(
                 builder
             )
         })

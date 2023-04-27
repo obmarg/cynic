@@ -60,7 +60,7 @@ impl quote::ToTokens for SubtypeMarkers<'_> {
 
         tokens.append_all(quote! {
             #(
-                impl ::cynic::schema::HasSubtype<#subtype> for #supertypes {}
+                impl cynic::schema::HasSubtype<#subtype> for #supertypes {}
             )*
         });
     }

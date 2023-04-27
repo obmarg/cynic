@@ -215,17 +215,17 @@ impl quote::ToTokens for QueryFragmentImpl<'_> {
 
         tokens.append_all(quote! {
             #[automatically_derived]
-            impl #impl_generics ::cynic::QueryFragment for #target_struct #ty_generics #where_clause {
+            impl #impl_generics cynic::QueryFragment for #target_struct #ty_generics #where_clause {
                 type SchemaType = #type_lock;
                 type VariablesFields = #variables_fields;
 
                 const TYPE: Option<&'static str> = Some(#graphql_type);
 
-                fn query(mut builder: ::cynic::queries::SelectionBuilder<'_, Self::SchemaType, Self::VariablesFields>) {
+                fn query(mut builder: cynic::queries::SelectionBuilder<'_, Self::SchemaType, Self::VariablesFields>) {
                     #(
                         let fragment_builder = builder.inline_fragment();
-                        let mut fragment_builder = fragment_builder.on::<<#inner_types as ::cynic::QueryFragment>::SchemaType>();
-                        <#inner_types as ::cynic::QueryFragment>::query(
+                        let mut fragment_builder = fragment_builder.on::<<#inner_types as cynic::QueryFragment>::SchemaType>();
+                        <#inner_types as cynic::QueryFragment>::query(
                             fragment_builder.select_children()
                         );
                     )*

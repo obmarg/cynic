@@ -62,35 +62,35 @@ pub fn scalar_derive_impl(input: ScalarDeriveInput) -> Result<TokenStream, syn::
 
     Ok(quote! {
         #[automatically_derived]
-        impl #impl_generics_with_ser ::cynic::serde::Serialize for #ident #ty_generics #where_clause_with_ser {
+        impl #impl_generics_with_ser cynic::serde::Serialize for #ident #ty_generics #where_clause_with_ser {
             fn serialize<__S>(&self, serializer: __S) -> Result<__S::Ok, __S::Error>
             where
-                __S: ::cynic::serde::Serializer,
+                __S: cynic::serde::Serializer,
             {
                 self.0.serialize(serializer)
             }
         }
 
         #[automatically_derived]
-        impl #impl_generics_with_de ::cynic::serde::Deserialize<'de> for #ident #ty_generics #where_clause_with_de {
+        impl #impl_generics_with_de cynic::serde::Deserialize<'de> for #ident #ty_generics #where_clause_with_de {
             fn deserialize<__D>(deserializer: __D) -> Result<Self, __D::Error>
             where
-                __D: ::cynic::serde::Deserializer<'de>,
+                __D: cynic::serde::Deserializer<'de>,
             {
-                <#inner_type as ::cynic::serde::Deserialize<'de>>::deserialize(deserializer).map(Self)
+                <#inner_type as cynic::serde::Deserialize<'de>>::deserialize(deserializer).map(Self)
             }
         }
 
         #[automatically_derived]
-        impl #impl_generics ::cynic::schema::IsScalar<#marker_ident> for #ident #ty_generics #where_clause {
+        impl #impl_generics cynic::schema::IsScalar<#marker_ident> for #ident #ty_generics #where_clause {
             type SchemaType = #marker_ident;
         }
 
         #[automatically_derived]
         impl #impl_generics #schema_module::variable::Variable for #ident #ty_generics #where_clause {
-            const TYPE: ::cynic::variables::VariableType = ::cynic::variables::VariableType::Named(#graphql_type_name);
+            const TYPE: cynic::variables::VariableType = cynic::variables::VariableType::Named(#graphql_type_name);
         }
 
-        ::cynic::impl_coercions!(#ident #ty_generics [#impl_generics] [#where_clause], #marker_ident);
+        cynic::impl_coercions!(#ident #ty_generics [#impl_generics] [#where_clause], #marker_ident);
     })
 }

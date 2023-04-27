@@ -1,5 +1,7 @@
-use quote::{quote, ToTokens, TokenStreamExt};
-use syn::parse_quote;
+use {
+    quote::{quote, ToTokens, TokenStreamExt},
+    syn::parse_quote,
+};
 
 use crate::schema::types::{InputObjectType, InputValue};
 
@@ -43,7 +45,7 @@ impl ToTokens for InputObjectOutput<'_> {
         tokens.append_all(quote! {
             pub struct #object_marker;
 
-            impl ::cynic::schema::InputObjectMarker for #object_marker {}
+            impl cynic::schema::InputObjectMarker for #object_marker {}
         });
     }
 }
@@ -63,13 +65,13 @@ impl ToTokens for FieldOutput<'_> {
         tokens.append_all(quote! {
             pub struct #field_marker;
 
-            impl ::cynic::schema::Field for #field_marker {
+            impl cynic::schema::Field for #field_marker {
                 type Type = #field_type_marker;
 
                 const NAME: &'static str = #field_name_literal;
             }
 
-            impl ::cynic::schema::HasInputField<#field_marker, #field_type_marker> for super::super::#object_marker {
+            impl cynic::schema::HasInputField<#field_marker, #field_type_marker> for super::super::#object_marker {
             }
         });
     }
