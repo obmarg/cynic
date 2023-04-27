@@ -1,3 +1,5 @@
+use std::borrow::Cow;
+
 use crate::{queries::SelectionBuilder, QueryVariablesFields};
 
 /// Indicates that a type may be used as part of a graphql query.
@@ -15,6 +17,12 @@ pub trait QueryFragment: Sized {
 
     /// Adds this fragment to the query being built by `builder`
     fn query(builder: SelectionBuilder<'_, Self::SchemaType, Self::VariablesFields>);
+
+    /// The name of this fragment, useful for operations, maybe fragments if we ever support them...
+    fn name() -> Option<Cow<'static, str>> {
+        // Most QueryFragments don't need a name so return None
+        None
+    }
 }
 
 impl<T> QueryFragment for Option<T>
