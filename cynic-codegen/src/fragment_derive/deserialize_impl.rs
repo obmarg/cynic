@@ -29,6 +29,7 @@ struct Field {
     serialized_name: Option<String>,
     is_spread: bool,
     is_flattened: bool,
+    is_recurse: bool,
 }
 
 impl<'a> DeserializeImpl<'a> {
@@ -113,6 +114,20 @@ impl quote::ToTokens for StandardDeserializeImpl<'_> {
         let generics_with_de = generics_for_serde::with_de_and_deserialize_bounds(self.generics);
         let (impl_generics, ty_generics_with_de, where_clause) = generics_with_de.split_for_impl();
 
+        let field_unwraps = self.fields.iter().zip(&serialized_names).map(|(field, serialized_name)| {
+            let rust_name = &field.rust_name;
+            if field.is_recurse {
+                quote! {
+                    let #rust_name = #rust_name.unwrap_or_default();
+                }
+            } else {
+                quote! {
+                    let #rust_name = #rust_name.ok_or_else(|| cynic::serde::de::Error::missing_field(#serialized_name))?;
+                }
+
+            }
+        }).collect::<Vec<_>>();
+
         tokens.append_all(quote! {
             #[automatically_derived]
             impl #impl_generics cynic::serde::Deserialize<'de> for #target_struct #ty_generics #where_clause {
@@ -166,9 +181,7 @@ impl quote::ToTokens for StandardDeserializeImpl<'_> {
                                     }
                                 }
                             }
-                            #(
-                                let #field_names = #field_names.ok_or_else(|| cynic::serde::de::Error::missing_field(#serialized_names))?;
-                            )*
+                            #(#field_unwraps)*
                             Ok(#target_struct {
                                 #(#field_names),*
                             })
@@ -265,5 +278,6 @@ fn process_field(field: &FragmentDeriveField, schema_field: Option<&schema::Fiel
         ty: field.ty.clone(),
         is_spread: *field.spread,
         is_flattened: *field.flatten,
+        is_recurse: field.recurse.is_some(),
     }
 }
