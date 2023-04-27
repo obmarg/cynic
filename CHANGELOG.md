@@ -31,6 +31,10 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 - Cynic now uses operationName when one is provided by the top-level QueryFragment
 - QueryFragments now provide the name of the struct to use as operationName
 
+### Bug Fixes
+
+- Fixed an issue deserializing recursive fields that hit their recurse depth.
+
 ## v2.2.8 - 2023-03-01
 
 ### Bug Fixes
