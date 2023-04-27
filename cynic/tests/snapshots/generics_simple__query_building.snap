@@ -1,9 +1,8 @@
 ---
-source: cynic/tests/generics.rs
-assertion_line: 33
+source: cynic/tests/generics_simple.rs
 expression: operation.query
 ---
-query($aStr: String) {
+query TestQuery($aStr: String) {
   testStruct {
     fieldOne(x: 1, y: $aStr)
   }

@@ -17,6 +17,9 @@ impl ::cynic::QueryFragment for Film {
         #![allow(unused_mut)]
         <FilmDetails as ::cynic::QueryFragment>::query(builder)
     }
+    fn name() -> Option<std::borrow::Cow<'static, str>> {
+        Some(std::borrow::Cow::Borrowed("Film"))
+    }
 }
 #[automatically_derived]
 impl<'de> ::cynic::serde::Deserialize<'de> for Film {

@@ -19,6 +19,9 @@ impl ::cynic::QueryFragment for BlogPostOutput {
         let mut field_builder = builder . select_field :: < schema :: __fields :: BlogPost :: author , < AuthorOutput as :: cynic :: QueryFragment > :: SchemaType > () ;
         <AuthorOutput as ::cynic::QueryFragment>::query(field_builder.select_children());
     }
+    fn name() -> Option<std::borrow::Cow<'static, str>> {
+        Some(std::borrow::Cow::Borrowed("BlogPostOutput"))
+    }
 }
 #[automatically_derived]
 impl<'de> ::cynic::serde::Deserialize<'de> for BlogPostOutput {

@@ -1,9 +1,8 @@
 ---
 source: cynic/tests/keyword-queries.rs
-assertion_line: 11
 expression: query.query
 ---
-query {
+query KeywordQuery {
   _
   async
   crate

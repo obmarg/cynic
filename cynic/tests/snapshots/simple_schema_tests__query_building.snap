@@ -1,9 +1,8 @@
 ---
 source: cynic/tests/simple_schema_tests.rs
-assertion_line: 100
 expression: operation.query
 ---
-query($anInt: Int!) {
+query TestQuery($anInt: Int!) {
   testStruct {
     fieldOne(x: $anInt, y: "1")
     nested {

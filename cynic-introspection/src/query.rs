@@ -82,7 +82,7 @@ mod queries {
     pub struct FieldType {
         pub kind: TypeKind,
         pub name: Option<String>,
-        #[cynic(recurse = 5)]
+        #[cynic(recurse = 4)]
         pub of_type: Option<Box<FieldType>>,
     }
 

@@ -1,9 +1,8 @@
 ---
 source: cynic/tests/mutation_generics.rs
-assertion_line: 75
 expression: operation.query
 ---
-mutation($input: SignInInput!) {
+mutation SignInMoreGeneric($input: SignInInput!) {
   signIn(input: $input)
 }
 

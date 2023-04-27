@@ -163,6 +163,7 @@ impl quote::ToTokens for FragmentImpl<'_> {
         let selections = &self.selections;
         let graphql_type = proc_macro2::Literal::string(&self.graphql_type_name);
         let schema_type = &self.schema_type_path;
+        let fragment_name = proc_macro2::Literal::string(&target_struct.to_string());
         let (impl_generics, ty_generics, where_clause) = self.generics.split_for_impl();
 
         tokens.append_all(quote! {
@@ -179,6 +180,10 @@ impl quote::ToTokens for FragmentImpl<'_> {
                     #![allow(unused_mut)]
 
                     #(#selections)*
+                }
+
+                fn name() -> Option<std::borrow::Cow<'static, str>> {
+                    Some(std::borrow::Cow::Borrowed(#fragment_name))
                 }
             }
         })

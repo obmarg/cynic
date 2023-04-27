@@ -26,6 +26,11 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 - The derive macros now support structs that are generic on lifetimes _and_ types.
 - The derive macros now fields that are references.
 
+### Changes
+
+- Cynic now uses operationName when one is provided by the top-level QueryFragment
+- QueryFragments now provide the name of the struct to use as operationName
+
 ## v2.2.8 - 2023-03-01
 
 ### Bug Fixes

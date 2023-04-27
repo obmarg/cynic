@@ -1,9 +1,8 @@
 ---
 source: examples/examples/github-mutation.rs
-assertion_line: 105
 expression: query.query
 ---
-mutation($commentBody: String!) {
+mutation CommentOnMutationSupportIssue($commentBody: String!) {
   addComment(input: {body: $commentBody, subjectId: "MDU6SXNzdWU2ODU4NzUxMzQ=", clientMutationId: null, }) {
     commentEdge {
       node {
