@@ -9,6 +9,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v3.0.0-beta.1 - 2023-04-27
+
 ### Breaking Changes
 
 - `QueryBuilder`, `MutationBuidler` & `SubscriptionBuilder` no longer have lifetimes.
@@ -16,6 +18,9 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 - `QueryVariables::Fields` must now implement the `QueryVariablesFields` trait.
 - The workings of `derive(QueryVariables)` has been changed quite
   significantly, but shouldn't affect anyone who is using the macro.
+- The various cynic derives now expect the crate to be in scope under the name
+  `cynic`.  This hopefully shouldn't affect most users but may do so if you
+  were doing something unusual.
 
 ### New Features
 
