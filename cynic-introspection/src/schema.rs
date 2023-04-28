@@ -138,6 +138,27 @@ pub struct FieldType {
     pub name: String,
 }
 
+impl std::fmt::Display for FieldType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        let FieldType { wrapping, name } = self;
+        let wrapping_types = wrapping.into_iter().collect::<Vec<_>>();
+        for wrapping_type in &wrapping_types {
+            match wrapping_type {
+                WrappingType::List => write!(f, "[")?,
+                WrappingType::NonNull => {}
+            }
+        }
+        writeln!(f, "{name}")?;
+        for wrapping_type in wrapping_types.iter().rev() {
+            match wrapping_type {
+                WrappingType::List => write!(f, "]")?,
+                WrappingType::NonNull => write!(f, "?")?,
+            }
+        }
+        Ok(())
+    }
+}
+
 #[derive(Clone, Copy, PartialEq, Eq)]
 pub struct FieldWrapping([u8; 8]);
 
