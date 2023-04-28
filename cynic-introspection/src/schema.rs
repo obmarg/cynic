@@ -148,11 +148,11 @@ impl std::fmt::Display for FieldType {
                 WrappingType::NonNull => {}
             }
         }
-        writeln!(f, "{name}")?;
+        write!(f, "{name}")?;
         for wrapping_type in wrapping_types.iter().rev() {
             match wrapping_type {
                 WrappingType::List => write!(f, "]")?,
-                WrappingType::NonNull => write!(f, "?")?,
+                WrappingType::NonNull => write!(f, "!")?,
             }
         }
         Ok(())
@@ -413,5 +413,40 @@ impl TryFrom<crate::query::Directive> for Directive {
 impl crate::query::NamedType {
     fn into_name(self) -> Result<String, SchemaError> {
         self.name.ok_or(SchemaError::TypeMissingName)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::query;
+
+    #[test]
+    fn test_field_type_to_string() {
+        let ty = FieldType::try_from(query::FieldType {
+            kind: query::TypeKind::NonNull,
+            name: None,
+            of_type: Some(Box::new(query::FieldType {
+                kind: query::TypeKind::List,
+                name: None,
+                of_type: Some(Box::new(query::FieldType {
+                    kind: query::TypeKind::Scalar,
+                    name: Some("Int".into()),
+                    of_type: None,
+                })),
+            })),
+        })
+        .unwrap();
+
+        assert_eq!(ty.to_string(), "[Int]!");
+
+        let ty = FieldType::try_from(query::FieldType {
+            kind: query::TypeKind::Object,
+            name: Some("MyObject".into()),
+            of_type: None,
+        })
+        .unwrap();
+
+        assert_eq!(ty.to_string(), "MyObject");
     }
 }
