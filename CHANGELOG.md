@@ -34,6 +34,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ### Bug Fixes
 
 - Fixed an issue deserializing recursive fields that hit their recurse depth.
+- Response deserialization will no longer work on random blobs of JSON that
+  aren't in GraphQLResponse format.
 
 ## v2.2.8 - 2023-03-01
 
