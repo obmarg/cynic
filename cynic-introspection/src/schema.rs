@@ -28,7 +28,6 @@ pub struct Directive {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-#[non_exhaustive]
 pub enum Type {
     Object(ObjectType),
     InputObject(InputObjectType),
@@ -96,7 +95,6 @@ pub struct EnumValue {
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
-#[non_exhaustive]
 pub enum Deprecated {
     No,
     Yes(Option<String>),
