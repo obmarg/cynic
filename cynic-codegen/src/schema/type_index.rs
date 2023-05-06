@@ -1,4 +1,5 @@
 use std::{
+    borrow::Cow,
     collections::{HashMap, HashSet},
     marker::PhantomData,
     rc::Rc,
@@ -81,12 +82,11 @@ impl<'a> TypeIndex<'a> {
 
         Some(match type_def {
             TypeDefinition::Scalar(def) => Type::Scalar(ScalarType {
-                name: &def.name,
+                name: Cow::Borrowed(&def.name),
                 builtin: scalar_is_builtin(&def.name),
             }),
             TypeDefinition::Object(def) => Type::Object(ObjectType {
-                description: def.description.as_deref(),
-                name: &def.name,
+                name: Cow::Borrowed(&def.name),
                 fields: def
                     .fields
                     .iter()
@@ -95,12 +95,11 @@ impl<'a> TypeIndex<'a> {
                 implements_interfaces: def
                     .implements_interfaces
                     .iter()
-                    .map(|iface| InterfaceRef(iface.as_ref(), self.clone()))
+                    .map(|iface| InterfaceRef(Cow::Borrowed(iface.as_ref()), self.clone()))
                     .collect(),
             }),
             TypeDefinition::Interface(def) => Type::Interface(InterfaceType {
-                description: def.description.as_deref(),
-                name: &def.name,
+                name: Cow::Borrowed(&def.name),
                 fields: def
                     .fields
                     .iter()
@@ -108,29 +107,25 @@ impl<'a> TypeIndex<'a> {
                     .collect(),
             }),
             TypeDefinition::Union(def) => Type::Union(UnionType {
-                description: def.description.as_deref(),
-                name: &def.name,
+                name: Cow::Borrowed(&def.name),
                 types: def
                     .types
                     .iter()
-                    .map(|name| ObjectRef(name.as_str(), self.clone()))
+                    .map(|name| ObjectRef(Cow::Borrowed(name.as_str()), self.clone()))
                     .collect(),
             }),
             TypeDefinition::Enum(def) => Type::Enum(EnumType {
-                description: def.description.as_deref(),
-                name: &def.name,
+                name: Cow::Borrowed(&def.name),
                 values: def
                     .values
                     .iter()
                     .map(|val| EnumValue {
-                        description: val.description.as_deref(),
                         name: FieldName::new(&val.name),
                     })
                     .collect(),
             }),
             TypeDefinition::InputObject(def) => Type::InputObject(InputObjectType {
-                description: def.description.as_deref(),
-                name: &def.name,
+                name: Cow::Borrowed(&def.name),
                 fields: def
                     .fields
                     .iter()
@@ -313,7 +308,6 @@ impl<'a, T> super::types::TypeRef<'a, T>
 where
     Type<'a>: TryInto<T>,
     <Type<'a> as TryInto<T>>::Error: std::fmt::Debug,
-    // T: 'a,
 {
     pub fn inner_type(&self) -> T {
         match self {
@@ -345,9 +339,8 @@ fn convert_input_value<'a>(
     val: &'a parser::InputValue,
 ) -> InputValue<'a> {
     InputValue {
-        description: val.description.as_deref(),
         name: FieldName {
-            graphql_name: &val.name,
+            graphql_name: Cow::Borrowed(&val.name),
         },
         value_type: build_type_ref::<InputType<'_>>(&val.value_type, type_index),
         has_default: val.default_value.is_some(),
@@ -370,7 +363,7 @@ fn build_type_ref<'a, T>(ty: &'a parser::Type, type_index: &TypeIndex<'a>) -> Ty
 
         match ty {
             parser::Type::NamedType(name) => {
-                TypeRef::<T>::Named(name, type_index.to_owned(), PhantomData)
+                TypeRef::<T>::Named(Cow::Borrowed(name), type_index.clone(), PhantomData)
             }
             parser::Type::ListType(inner) => {
                 TypeRef::<T>::List(Box::new(inner_fn::<T>(inner, type_index, true)))
@@ -387,9 +380,8 @@ fn build_field<'a>(
     type_index: &TypeIndex<'a>,
 ) -> Field<'a> {
     Field {
-        description: field.description.as_deref(),
         name: FieldName {
-            graphql_name: &field.name,
+            graphql_name: Cow::Borrowed(&field.name),
         },
         arguments: field
             .arguments
@@ -397,7 +389,7 @@ fn build_field<'a>(
             .map(|arg| convert_input_value(type_index, arg))
             .collect(),
         field_type: build_type_ref::<OutputType<'_>>(&field.field_type, type_index),
-        parent_type_name,
+        parent_type_name: Cow::Borrowed(parent_type_name),
     }
 }
 
@@ -427,7 +419,9 @@ mod tests {
 
         assert_matches!(
             build_type_ref::<InputType<'_>>(&non_null_type, index),
-            TypeRef::Named("User", _, _)
+            TypeRef::Named(name, _, _) => {
+                assert_eq!(name, "User");
+            }
         );
     }
 
@@ -440,7 +434,9 @@ mod tests {
         assert_matches!(
             build_type_ref::<InputType<'_>>(&nullable_type, index),
             TypeRef::Nullable(inner) => {
-                assert_matches!(*inner, TypeRef::Named("User", _, _))
+                assert_matches!(*inner, TypeRef::Named(name, _, _) => {
+                    assert_eq!(name, "User")
+                })
             }
         );
     }
@@ -456,7 +452,9 @@ mod tests {
         assert_matches!(
             build_type_ref::<InputType<'_>>(&required_list, index),
             TypeRef::List(inner) => {
-                assert_matches!(*inner, TypeRef::Named("User", _, _))
+                assert_matches!(*inner, TypeRef::Named(name, _, _) => {
+                    assert_eq!(name, "User")
+                })
             }
         );
     }
@@ -473,7 +471,9 @@ mod tests {
             TypeRef::Nullable(inner) => {
                 assert_matches!(*inner, TypeRef::List(inner) => {
                     assert_matches!(*inner, TypeRef::Nullable(inner) => {
-                        assert_matches!(*inner, TypeRef::Named("User", _, _))
+                        assert_matches!(*inner, TypeRef::Named(name, _, _) => {
+                            assert_eq!(name, "User")
+                        })
                     })
                 })
             }

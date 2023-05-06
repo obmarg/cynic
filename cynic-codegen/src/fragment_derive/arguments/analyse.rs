@@ -69,7 +69,7 @@ pub fn analyse<'a>(
     let arguments = analyse_fields(&mut analysis, literals, &field.arguments, span)?;
 
     let mut variants = analysis.variants.into_iter().collect::<Vec<_>>();
-    variants.sort_by_key(|v| (v.en.name, v.variant.clone()));
+    variants.sort_by_key(|v| (v.en.name.clone(), v.variant.clone()));
 
     Ok(AnalysedArguments {
         schema_field: field.clone(),

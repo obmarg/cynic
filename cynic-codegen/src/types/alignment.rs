@@ -348,7 +348,7 @@ mod tests {
     }
 
     fn integer<'a, Kind>() -> TypeRef<'a, Kind> {
-        TypeRef::Named("Int", TypeIndex::empty(), PhantomData)
+        TypeRef::Named("Int".into(), TypeIndex::empty(), PhantomData)
     }
 
     fn list<Kind>(inner: TypeRef<'_, Kind>) -> TypeRef<'_, Kind> {

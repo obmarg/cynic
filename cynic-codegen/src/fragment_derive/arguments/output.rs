@@ -36,7 +36,7 @@ impl ToTokens for Output<'_> {
             .analysed
             .arguments
             .iter()
-            .map(|arg| proc_macro2::Ident::from(arg.schema_field.marker_ident()));
+            .map(|arg| arg.schema_field.marker_ident().to_rust_ident());
 
         let arg_values = self
             .analysed

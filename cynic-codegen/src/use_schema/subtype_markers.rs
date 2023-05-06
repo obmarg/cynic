@@ -14,7 +14,7 @@ impl<'a> SubtypeMarkers<'a> {
         let marker = iface.marker_ident();
 
         Self {
-            subtype: marker,
+            subtype: marker.clone(),
             supertypes: vec![marker],
         }
     }
@@ -26,7 +26,7 @@ impl<'a> SubtypeMarkers<'a> {
             .iter()
             .map(|ty| SubtypeMarkers {
                 subtype: ty.marker_ident(),
-                supertypes: vec![supertype],
+                supertypes: vec![supertype.clone()],
             })
             .collect()
     }
@@ -51,12 +51,8 @@ impl quote::ToTokens for SubtypeMarkers<'_> {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         use quote::{quote, TokenStreamExt};
 
-        let subtype = proc_macro2::Ident::from(self.subtype);
-        let supertypes = self
-            .supertypes
-            .iter()
-            .copied()
-            .map(proc_macro2::Ident::from);
+        let subtype = self.subtype.to_rust_ident();
+        let supertypes = self.supertypes.iter().map(|marker| marker.to_rust_ident());
 
         tokens.append_all(quote! {
             #(

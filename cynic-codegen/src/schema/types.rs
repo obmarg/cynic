@@ -1,4 +1,4 @@
-use std::marker::PhantomData;
+use std::{borrow::Cow, marker::PhantomData};
 
 use super::{names::FieldName, type_index::TypeIndex, SchemaError};
 
@@ -30,30 +30,28 @@ pub enum OutputType<'a> {
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct ScalarType<'a> {
-    pub name: &'a str,
+    pub name: Cow<'a, str>,
     pub builtin: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct ObjectType<'a> {
     pub description: Option<&'a str>,
-    pub name: &'a str,
+    pub name: Cow<'a, str>,
     pub implements_interfaces: Vec<InterfaceRef<'a>>,
     pub fields: Vec<Field<'a>>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct Field<'a> {
-    pub description: Option<&'a str>,
     pub name: FieldName<'a>,
     pub arguments: Vec<InputValue<'a>>,
     pub field_type: TypeRef<'a, OutputType<'a>>,
-    pub(super) parent_type_name: &'a str,
+    pub(super) parent_type_name: Cow<'a, str>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct InputValue<'a> {
-    pub description: Option<&'a str>,
     pub name: FieldName<'a>,
     pub value_type: TypeRef<'a, InputType<'a>>,
     pub has_default: bool,
@@ -71,35 +69,30 @@ impl InputValue<'_> {
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct InterfaceType<'a> {
-    pub description: Option<&'a str>,
-    pub name: &'a str,
+    pub name: Cow<'a, str>,
     pub fields: Vec<Field<'a>>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct UnionType<'a> {
-    pub description: Option<&'a str>,
-    pub name: &'a str,
+    pub name: Cow<'a, str>,
     pub types: Vec<ObjectRef<'a>>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct EnumType<'a> {
-    pub description: Option<&'a str>,
-    pub name: &'a str,
+    pub name: Cow<'a, str>,
     pub values: Vec<EnumValue<'a>>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct EnumValue<'a> {
-    pub description: Option<&'a str>,
     pub name: FieldName<'a>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct InputObjectType<'a> {
-    pub description: Option<&'a str>,
-    pub name: &'a str,
+    pub name: Cow<'a, str>,
     pub fields: Vec<InputValue<'a>>,
 }
 
@@ -156,7 +149,7 @@ impl<'a> EnumType<'a> {
 }
 
 #[derive(Clone)]
-pub struct ObjectRef<'a>(pub(super) &'a str, pub(super) TypeIndex<'a>);
+pub struct ObjectRef<'a>(pub(super) Cow<'a, str>, pub(super) TypeIndex<'a>);
 
 impl std::fmt::Debug for ObjectRef<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -179,7 +172,7 @@ impl<'a> std::hash::Hash for ObjectRef<'a> {
 }
 
 #[derive(Clone)]
-pub struct InterfaceRef<'a>(pub(super) &'a str, pub(super) TypeIndex<'a>);
+pub struct InterfaceRef<'a>(pub(super) Cow<'a, str>, pub(super) TypeIndex<'a>);
 
 impl std::fmt::Debug for InterfaceRef<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -201,21 +194,13 @@ impl<'a> std::hash::Hash for InterfaceRef<'a> {
     }
 }
 
+#[derive(Clone)]
 pub enum TypeRef<'a, T> {
-    Named(&'a str, TypeIndex<'a>, PhantomData<fn() -> T>),
+    Named(Cow<'a, str>, TypeIndex<'a>, PhantomData<fn() -> T>),
     List(Box<TypeRef<'a, T>>),
     Nullable(Box<TypeRef<'a, T>>),
 }
 
-impl<T> Clone for TypeRef<'_, T> {
-    fn clone(&self) -> Self {
-        match self {
-            Self::Named(arg0, arg1, arg2) => Self::Named(arg0, arg1.clone(), *arg2),
-            Self::List(arg0) => Self::List(arg0.clone()),
-            Self::Nullable(arg0) => Self::Nullable(arg0.clone()),
-        }
-    }
-}
 
 impl<T> PartialEq for TypeRef<'_, T> {
     fn eq(&self, other: &Self) -> bool {
@@ -337,14 +322,14 @@ impl<'a> TryFrom<Type<'a>> for EnumType<'a> {
 }
 
 impl<'a> Type<'a> {
-    pub fn name(&self) -> &'a str {
+    pub fn name(&'a self) -> &'a str {
         match self {
-            Type::Scalar(inner) => inner.name,
-            Type::Object(inner) => inner.name,
-            Type::Interface(inner) => inner.name,
-            Type::Union(inner) => inner.name,
-            Type::Enum(inner) => inner.name,
-            Type::InputObject(inner) => inner.name,
+            Type::Scalar(inner) => inner.name.as_ref(),
+            Type::Object(inner) => inner.name.as_ref(),
+            Type::Interface(inner) => inner.name.as_ref(),
+            Type::Union(inner) => inner.name.as_ref(),
+            Type::Enum(inner) => inner.name.as_ref(),
+            Type::InputObject(inner) => inner.name.as_ref(),
         }
     }
 

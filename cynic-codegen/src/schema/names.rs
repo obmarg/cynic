@@ -1,27 +1,31 @@
+use std::borrow::Cow;
+
 use crate::idents::RenamableFieldIdent;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 pub struct FieldName<'a> {
-    pub(super) graphql_name: &'a str,
+    pub(super) graphql_name: Cow<'a, str>,
 }
 
 impl<'a> FieldName<'a> {
     pub fn new(graphql_name: &'a str) -> Self {
-        FieldName { graphql_name }
+        FieldName {
+            graphql_name: Cow::Borrowed(graphql_name),
+        }
     }
 
-    pub fn as_str(&self) -> &'a str {
-        self.graphql_name
+    pub fn as_str(&'a self) -> &'a str {
+        self.graphql_name.as_ref()
     }
 
     pub fn to_literal(&self) -> proc_macro2::Literal {
-        proc_macro2::Literal::string(self.graphql_name)
+        proc_macro2::Literal::string(self.graphql_name.as_ref())
     }
 }
 
 impl<'a> PartialEq<proc_macro2::Ident> for FieldName<'a> {
     fn eq(&self, other: &proc_macro2::Ident) -> bool {
-        other == self.graphql_name
+        other == self.graphql_name.as_ref()
     }
 }
 
@@ -33,7 +37,7 @@ impl<'a> PartialEq<str> for FieldName<'a> {
 
 impl<'a> PartialEq<String> for FieldName<'a> {
     fn eq(&self, other: &String) -> bool {
-        self.graphql_name == other
+        self.graphql_name.as_ref() == other
     }
 }
 

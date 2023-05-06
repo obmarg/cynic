@@ -53,8 +53,8 @@ pub(crate) fn use_schema_impl(
 
         match definition {
             Type::Scalar(def) if !def.builtin => {
-                let name = proc_macro2::Literal::string(def.name);
-                let ident = proc_macro2::Ident::from(def.marker_ident());
+                let name = proc_macro2::Literal::string(def.name.as_ref());
+                let ident = def.marker_ident().to_rust_ident();
                 output.append_all(quote! {
                     pub struct #ident {}
                     impl cynic::schema::NamedType for #ident {
@@ -80,13 +80,13 @@ pub(crate) fn use_schema_impl(
             Type::Union(def) => {
                 subtype_markers.extend(SubtypeMarkers::from_union(&def));
 
-                let ident = proc_macro2::Ident::from(def.marker_ident());
+                let ident = def.marker_ident().to_rust_ident();
                 output.append_all(quote! {
                     pub struct #ident {}
                 });
             }
             Type::Enum(def) => {
-                let ident = proc_macro2::Ident::from(def.marker_ident());
+                let ident = def.marker_ident().to_rust_ident();
                 output.append_all(quote! {
                     pub struct #ident {}
                 });

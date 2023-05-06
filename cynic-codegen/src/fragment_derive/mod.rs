@@ -122,7 +122,7 @@ fn pair_fields<'a, 'b>(
                 field.span(),
                 FieldSuggestionError {
                     expected_field,
-                    graphql_type_name: schema_type.name,
+                    graphql_type_name: schema_type.name.as_ref(),
                     suggested_field,
                 },
             )

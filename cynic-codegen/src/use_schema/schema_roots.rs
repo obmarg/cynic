@@ -42,21 +42,21 @@ impl quote::ToTokens for RootTypes<'_> {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         use quote::{quote, TokenStreamExt};
 
-        let name = proc_macro2::Ident::from(self.query.marker_ident());
+        let name = self.query.marker_ident().to_rust_ident();
 
         tokens.append_all(quote! {
             impl cynic::schema::QueryRoot for #name {}
         });
 
         if let Some(mutation) = &self.mutation {
-            let name = proc_macro2::Ident::from(mutation.marker_ident());
+            let name = mutation.marker_ident().to_rust_ident();
             tokens.append_all(quote! {
                 impl cynic::schema::MutationRoot for #name {}
             });
         }
 
         if let Some(subscription) = &self.subscription {
-            let name = proc_macro2::Ident::from(subscription.marker_ident());
+            let name = subscription.marker_ident().to_rust_ident();
             tokens.append_all(quote! {
                 impl cynic::schema::SubscriptionRoot for #name {}
             });

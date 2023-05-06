@@ -63,7 +63,7 @@ pub fn enum_derive_impl(
         };
 
         let graphql_type_name = proc_macro2::Literal::string(&input.graphql_type_name());
-        let enum_marker_ident = proc_macro2::Ident::from(enum_def.marker_ident());
+        let enum_marker_ident = enum_def.marker_ident().to_rust_ident();
 
         let string_literals: Vec<_> = pairs
             .iter()
@@ -246,17 +246,14 @@ mod tests {
             },
         ];
         let mut gql_enum = EnumType {
-            description: None,
-            name: "Desserts",
+            name: "Desserts".into(),
             values: vec![],
         };
         gql_enum.values.push(EnumValue {
             name: FieldName::new(enum_value_1),
-            description: None,
         });
         gql_enum.values.push(EnumValue {
             name: FieldName::new(enum_value_2),
-            description: None,
         });
 
         let result = join_variants(
@@ -296,17 +293,14 @@ mod tests {
             },
         ];
         let mut gql_enum = EnumType {
-            description: None,
-            name: "Desserts",
+            name: "Desserts".into(),
             values: vec![],
         };
         gql_enum.values.push(EnumValue {
             name: FieldName::new("CHEESECAKE"),
-            description: None,
         });
         gql_enum.values.push(EnumValue {
             name: FieldName::new("iced-goodness"),
-            description: None,
         });
 
         let result = join_variants(
@@ -340,17 +334,14 @@ mod tests {
             rename: None,
         }];
         let mut gql_enum = EnumType {
-            description: None,
-            name: "Desserts",
+            name: "Desserts".into(),
             values: vec![],
         };
         gql_enum.values.push(EnumValue {
             name: FieldName::new("CHEESECAKE"),
-            description: None,
         });
         gql_enum.values.push(EnumValue {
             name: FieldName::new("ICE_CREAM"),
-            description: None,
         });
 
         let result = join_variants(
@@ -371,13 +362,11 @@ mod tests {
             rename: None,
         }];
         let mut gql_enum = EnumType {
-            description: None,
-            name: "Desserts",
+            name: "Desserts".into(),
             values: vec![],
         };
         gql_enum.values.push(EnumValue {
             name: FieldName::new("ICE_CREAM"),
-            description: None,
         });
 
         let result = join_variants(

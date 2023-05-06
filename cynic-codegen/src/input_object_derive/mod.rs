@@ -63,7 +63,7 @@ pub fn input_object_derive_impl(
         let (impl_generics, ty_generics, where_clause) = input.generics.split_for_impl();
         let generics_with_ser = generics_for_serde::with_serialize_bounds(&input.generics);
         let (impl_generics_with_ser, _, where_clause_with_ser) = generics_with_ser.split_for_impl();
-        let input_marker_ident = proc_macro2::Ident::from(input_object.marker_ident());
+        let input_marker_ident = input_object.marker_ident().to_rust_ident();
         let schema_module = input.schema_module();
 
         let pairs = pair_fields(
@@ -100,7 +100,7 @@ pub fn input_object_derive_impl(
 
         let map_len = field_serializers.len();
 
-        let graphql_type_name = proc_macro2::Literal::string(input_object.name);
+        let graphql_type_name = proc_macro2::Literal::string(input_object.name.as_ref());
 
         Ok(quote! {
             #[automatically_derived]
@@ -200,7 +200,7 @@ fn pair_fields<'a>(
                 field_name.span(),
                 FieldSuggestionError {
                     expected_field,
-                    graphql_type_name: input_object_def.name,
+                    graphql_type_name: input_object_def.name.as_ref(),
                     suggested_field,
                 },
             )

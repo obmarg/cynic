@@ -18,7 +18,7 @@ struct ArgumentOutput<'a> {
 impl ToTokens for FieldOutput<'_> {
     fn to_tokens(&self, tokens: &mut proc_macro2::TokenStream) {
         let parent_marker = self.parent_marker;
-        let field_marker = &proc_macro2::Ident::from(self.field.marker_ident());
+        let field_marker = &self.field.marker_ident().to_rust_ident();
         let field_name_literal = proc_macro2::Literal::string(self.field.name.as_str());
 
         let field_type_marker = self
@@ -60,7 +60,7 @@ impl ToTokens for FieldOutput<'_> {
 impl ToTokens for ArgumentOutput<'_> {
     fn to_tokens(&self, tokens: &mut proc_macro2::TokenStream) {
         let name = proc_macro2::Literal::string(self.argument.name.as_str());
-        let argument_ident = proc_macro2::Ident::from(self.argument.marker_ident());
+        let argument_ident = self.argument.marker_ident().to_rust_ident();
         let field_marker = self.field_marker;
 
         let schema_type = self
