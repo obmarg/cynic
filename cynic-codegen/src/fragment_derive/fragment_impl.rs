@@ -6,7 +6,10 @@ use {
 
 use crate::{
     error::Errors,
-    schema::types::{Field, OutputType},
+    schema::{
+        types::{Field, OutputType},
+        Schema, Unvalidated,
+    },
     types::{self, check_spread_type, check_types_are_compatible, CheckMode},
     variables_fields_path,
 };
@@ -60,6 +63,7 @@ enum FieldKind {
 
 impl<'a> FragmentImpl<'a> {
     pub fn new_for(
+        schema: &Schema<'a, Unvalidated>,
         fields: &[(&FragmentDeriveField, Option<&'a Field<'a>>)],
         name: &'a syn::Ident,
         generics: &'a syn::Generics,
@@ -81,6 +85,7 @@ impl<'a> FragmentImpl<'a> {
             .iter()
             .map(|(field, schema_field)| {
                 process_field(
+                    schema,
                     field,
                     *schema_field,
                     &field_module_path,
@@ -109,6 +114,7 @@ impl<'a> FragmentImpl<'a> {
 }
 
 fn process_field<'a>(
+    schema: &Schema<'a, Unvalidated>,
     field: &FragmentDeriveField,
     schema_field: Option<&'a Field<'a>>,
     field_module_path: &syn::Path,
@@ -130,6 +136,7 @@ fn process_field<'a>(
         arguments_from_field_attrs(&field.attrs)?.unwrap_or_else(|| (vec![], Span::call_site()));
 
     let arguments = process_arguments(
+        schema,
         arguments,
         schema_field,
         schema_module_path.clone(),
@@ -149,7 +156,7 @@ fn process_field<'a>(
         recurse_limit: field.recurse.as_ref().map(|f| **f),
         span: field.ty.span(),
         alias: field.alias(),
-        graphql_field_kind: schema_field.field_type.inner_type().as_kind(),
+        graphql_field_kind: schema_field.field_type.inner_type(schema).as_kind(),
         flatten: *field.flatten,
     }))
 }

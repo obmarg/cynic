@@ -149,7 +149,7 @@ impl<'a> EnumType<'a> {
 }
 
 #[derive(Clone)]
-pub struct ObjectRef<'a>(pub(super) Cow<'a, str>, pub(super) TypeIndex<'a>);
+pub struct ObjectRef<'a>(pub(super) Cow<'a, str>);
 
 impl std::fmt::Debug for ObjectRef<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -172,7 +172,7 @@ impl<'a> std::hash::Hash for ObjectRef<'a> {
 }
 
 #[derive(Clone)]
-pub struct InterfaceRef<'a>(pub(super) Cow<'a, str>, pub(super) TypeIndex<'a>);
+pub struct InterfaceRef<'a>(pub(super) Cow<'a, str>);
 
 impl std::fmt::Debug for InterfaceRef<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -194,39 +194,33 @@ impl<'a> std::hash::Hash for InterfaceRef<'a> {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, PartialEq, Eq, Hash)]
 pub enum TypeRef<'a, T> {
-    Named(Cow<'a, str>, TypeIndex<'a>, PhantomData<fn() -> T>),
+    Named(Cow<'a, str>, PhantomData<fn() -> T>),
     List(Box<TypeRef<'a, T>>),
     Nullable(Box<TypeRef<'a, T>>),
 }
 
-
-impl<T> PartialEq for TypeRef<'_, T> {
-    fn eq(&self, other: &Self) -> bool {
-        match (self, other) {
-            (Self::Named(l0, _, _), Self::Named(r0, _, _)) => l0 == r0,
-            (Self::List(l0), Self::List(r0)) => l0 == r0,
-            (Self::Nullable(l0), Self::Nullable(r0)) => l0 == r0,
-            _ => false,
-        }
-    }
-}
-
-impl<T> Eq for TypeRef<'_, T> {}
-
-impl<T> std::hash::Hash for TypeRef<'_, T> {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+impl<'a, T> TypeRef<'a, T>
+where
+    Type<'a>: TryInto<T>,
+    <Type<'a> as TryInto<T>>::Error: std::fmt::Debug,
+{
+    pub fn inner_type<SchemaState>(&self, schema: &super::Schema<'a, SchemaState>) -> T {
         match self {
-            TypeRef::Named(inner, _, _) => inner.hash(state),
-            TypeRef::List(inner) => {
-                1.hash(state);
-                inner.hash(state);
+            TypeRef::Named(name, _) => {
+                // Note: we assume that TypeRef is only constructed after validation,
+                // which makes this unwrap ok.
+                // Probably want to enforce this via module hierarchy.
+                schema
+                    .type_index
+                    .private_lookup(name)
+                    .unwrap()
+                    .try_into()
+                    .unwrap()
             }
-            TypeRef::Nullable(inner) => {
-                2.hash(state);
-                inner.hash(state)
-            }
+            TypeRef::List(inner) => inner.inner_type(schema),
+            TypeRef::Nullable(inner) => inner.inner_type(schema),
         }
     }
 }
@@ -234,7 +228,7 @@ impl<T> std::hash::Hash for TypeRef<'_, T> {
 impl std::fmt::Debug for TypeRef<'_, InputType<'_>> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::Named(arg0, _, _) => f.debug_tuple("NamedInputType").field(arg0).finish(),
+            Self::Named(arg0, _) => f.debug_tuple("NamedInputType").field(arg0).finish(),
             Self::List(arg0) => f.debug_tuple("ListType").field(arg0).finish(),
             Self::Nullable(arg0) => f.debug_tuple("NullableType").field(arg0).finish(),
         }
@@ -244,7 +238,7 @@ impl std::fmt::Debug for TypeRef<'_, InputType<'_>> {
 impl std::fmt::Debug for TypeRef<'_, OutputType<'_>> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
-            Self::Named(arg0, _, _) => f.debug_tuple("NamedOutputType").field(arg0).finish(),
+            Self::Named(arg0, _) => f.debug_tuple("NamedOutputType").field(arg0).finish(),
             Self::List(arg0) => f.debug_tuple("ListType").field(arg0).finish(),
             Self::Nullable(arg0) => f.debug_tuple("NullableType").field(arg0).finish(),
         }

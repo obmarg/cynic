@@ -17,7 +17,7 @@ pub use self::{
 };
 
 #[cfg(test)]
-pub(crate) use self::{parser::parse_schema, type_index::TypeIndex};
+pub(crate) use self::parser::parse_schema;
 
 // TODO: Uncomment this
 // pub use self::{types::*},
@@ -56,9 +56,10 @@ impl<'a> Schema<'a, Unvalidated> {
 
     pub fn lookup<Kind>(&self, name: &str) -> Result<Kind, SchemaError>
     where
-        Kind: TryFrom<types::Type<'a>, Error = SchemaError> + 'a,
+        Kind: TryFrom<types::Type<'a>> + 'a,
+        Kind::Error: Into<SchemaError>,
     {
-        Kind::try_from(self.type_index.lookup_valid_type(name)?)
+        Kind::try_from(self.type_index.lookup_valid_type(name)?).map_err(Into::into)
         // TODO: Suggestion logic should probably be implemented here (or in type_index)
     }
 }

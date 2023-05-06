@@ -63,6 +63,7 @@ pub fn fragment_derive_impl(
         let fields = pair_fields(fields.iter(), &schema_type)?;
 
         let fragment_impl = FragmentImpl::new_for(
+            &schema,
             &fields,
             &input.ident,
             &input.generics,

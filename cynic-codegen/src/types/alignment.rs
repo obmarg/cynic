@@ -21,7 +21,7 @@ fn align_output_type_impl<'a>(
 ) -> RustType<'a> {
     match (&ty, &gql_ty) {
         (RustType::Unknown { .. } | RustType::SimpleType { .. }, _) => ty.clone(),
-        (RustType::Optional { inner, .. }, TypeRef::Named(_, _, _) | TypeRef::List(_)) => {
+        (RustType::Optional { inner, .. }, TypeRef::Named(_, _) | TypeRef::List(_)) => {
             // If the rust type is optional but the schema type isn't
             // then we just ignore the `Option<_>` and recurse
             align_output_type_impl(inner.as_ref(), gql_ty)
@@ -108,7 +108,7 @@ mod tests {
 
     use {proc_macro2::TokenStream, quote::quote, rstest::rstest, syn::parse2};
 
-    use crate::schema::{types::TypeRef, TypeIndex};
+    use crate::schema::types::TypeRef;
 
     use super::*;
 
@@ -348,7 +348,7 @@ mod tests {
     }
 
     fn integer<'a, Kind>() -> TypeRef<'a, Kind> {
-        TypeRef::Named("Int".into(), TypeIndex::empty(), PhantomData)
+        TypeRef::Named("Int".into(), PhantomData)
     }
 
     fn list<Kind>(inner: TypeRef<'_, Kind>) -> TypeRef<'_, Kind> {

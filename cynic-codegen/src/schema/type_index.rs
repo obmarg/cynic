@@ -90,12 +90,12 @@ impl<'a> TypeIndex<'a> {
                 fields: def
                     .fields
                     .iter()
-                    .map(|field| build_field(field, &def.name, self))
+                    .map(|field| build_field(field, &def.name))
                     .collect(),
                 implements_interfaces: def
                     .implements_interfaces
                     .iter()
-                    .map(|iface| InterfaceRef(Cow::Borrowed(iface.as_ref()), self.clone()))
+                    .map(|iface| InterfaceRef(Cow::Borrowed(iface.as_ref())))
                     .collect(),
             }),
             TypeDefinition::Interface(def) => Type::Interface(InterfaceType {
@@ -103,7 +103,7 @@ impl<'a> TypeIndex<'a> {
                 fields: def
                     .fields
                     .iter()
-                    .map(|f| build_field(f, &def.name, self))
+                    .map(|f| build_field(f, &def.name))
                     .collect(),
             }),
             TypeDefinition::Union(def) => Type::Union(UnionType {
@@ -111,7 +111,7 @@ impl<'a> TypeIndex<'a> {
                 types: def
                     .types
                     .iter()
-                    .map(|name| ObjectRef(Cow::Borrowed(name.as_str()), self.clone()))
+                    .map(|name| ObjectRef(Cow::Borrowed(name.as_str())))
                     .collect(),
             }),
             TypeDefinition::Enum(def) => Type::Enum(EnumType {
@@ -129,7 +129,7 @@ impl<'a> TypeIndex<'a> {
                 fields: def
                     .fields
                     .iter()
-                    .map(|field| convert_input_value(self, field))
+                    .map(|field| convert_input_value(field))
                     .collect(),
             }),
         })
@@ -304,25 +304,6 @@ fn scalar_is_builtin(name: &str) -> bool {
         .any(|s| matches!(s, TypeDefinition::Scalar(s) if s.name == name))
 }
 
-impl<'a, T> super::types::TypeRef<'a, T>
-where
-    Type<'a>: TryInto<T>,
-    <Type<'a> as TryInto<T>>::Error: std::fmt::Debug,
-{
-    pub fn inner_type(&self) -> T {
-        match self {
-            TypeRef::Named(name, index, _) => {
-                // Note: we assume that TypeRef is only constructed after validation,
-                // which makes this unwrap ok.
-                // Probably want to enforce this via module hierarchy.
-                index.private_lookup(name).unwrap().try_into().unwrap()
-            }
-            TypeRef::List(inner) => inner.inner_type(),
-            TypeRef::Nullable(inner) => inner.inner_type(),
-        }
-    }
-}
-
 fn name_for_type(type_def: &TypeDefinition) -> &str {
     match type_def {
         TypeDefinition::Scalar(inner) => &inner.name,
@@ -334,51 +315,38 @@ fn name_for_type(type_def: &TypeDefinition) -> &str {
     }
 }
 
-fn convert_input_value<'a>(
-    type_index: &TypeIndex<'a>,
-    val: &'a parser::InputValue,
-) -> InputValue<'a> {
+fn convert_input_value<'a>(val: &'a parser::InputValue) -> InputValue<'a> {
     InputValue {
         name: FieldName {
             graphql_name: Cow::Borrowed(&val.name),
         },
-        value_type: build_type_ref::<InputType<'_>>(&val.value_type, type_index),
+        value_type: build_type_ref::<InputType<'_>>(&val.value_type),
         has_default: val.default_value.is_some(),
     }
 }
 
-fn build_type_ref<'a, T>(ty: &'a parser::Type, type_index: &TypeIndex<'a>) -> TypeRef<'a, T> {
-    fn inner_fn<'a, T>(
-        ty: &'a parser::Type,
-        type_index: &TypeIndex<'a>,
-        nullable: bool,
-    ) -> TypeRef<'a, T> {
+fn build_type_ref<'a, T>(ty: &'a parser::Type) -> TypeRef<'a, T> {
+    fn inner_fn<'a, T>(ty: &'a parser::Type, nullable: bool) -> TypeRef<'a, T> {
         if let parser::Type::NonNullType(inner) = ty {
-            return inner_fn::<T>(inner, type_index, false);
+            return inner_fn::<T>(inner, false);
         }
 
         if nullable {
-            return TypeRef::<T>::Nullable(Box::new(inner_fn::<T>(ty, type_index, false)));
+            return TypeRef::<T>::Nullable(Box::new(inner_fn::<T>(ty, false)));
         }
 
         match ty {
-            parser::Type::NamedType(name) => {
-                TypeRef::<T>::Named(Cow::Borrowed(name), type_index.clone(), PhantomData)
-            }
+            parser::Type::NamedType(name) => TypeRef::<T>::Named(Cow::Borrowed(name), PhantomData),
             parser::Type::ListType(inner) => {
-                TypeRef::<T>::List(Box::new(inner_fn::<T>(inner, type_index, true)))
+                TypeRef::<T>::List(Box::new(inner_fn::<T>(inner, true)))
             }
             _ => panic!("This should be impossible"),
         }
     }
-    inner_fn::<T>(ty, type_index, true)
+    inner_fn::<T>(ty, true)
 }
 
-fn build_field<'a>(
-    field: &'a parser::Field,
-    parent_type_name: &'a str,
-    type_index: &TypeIndex<'a>,
-) -> Field<'a> {
+fn build_field<'a>(field: &'a parser::Field, parent_type_name: &'a str) -> Field<'a> {
     Field {
         name: FieldName {
             graphql_name: Cow::Borrowed(&field.name),
@@ -386,9 +354,9 @@ fn build_field<'a>(
         arguments: field
             .arguments
             .iter()
-            .map(|arg| convert_input_value(type_index, arg))
+            .map(|arg| convert_input_value(arg))
             .collect(),
-        field_type: build_type_ref::<OutputType<'_>>(&field.field_type, type_index),
+        field_type: build_type_ref::<OutputType<'_>>(&field.field_type),
         parent_type_name: Cow::Borrowed(parent_type_name),
     }
 }
@@ -418,8 +386,8 @@ mod tests {
             parser::Type::NonNullType(Box::new(parser::Type::NamedType("User".to_string())));
 
         assert_matches!(
-            build_type_ref::<InputType<'_>>(&non_null_type, index),
-            TypeRef::Named(name, _, _) => {
+            build_type_ref::<InputType<'_>>(&non_null_type),
+            TypeRef::Named(name, _) => {
                 assert_eq!(name, "User");
             }
         );
@@ -427,14 +395,12 @@ mod tests {
 
     #[test]
     fn test_build_type_ref_null_type() {
-        let index = &TypeIndex::empty();
-
         let nullable_type = parser::Type::NamedType("User".to_string());
 
         assert_matches!(
-            build_type_ref::<InputType<'_>>(&nullable_type, index),
+            build_type_ref::<InputType<'_>>(&nullable_type),
             TypeRef::Nullable(inner) => {
-                assert_matches!(*inner, TypeRef::Named(name, _, _) => {
+                assert_matches!(*inner, TypeRef::Named(name, _) => {
                     assert_eq!(name, "User")
                 })
             }
@@ -443,16 +409,14 @@ mod tests {
 
     #[test]
     fn test_build_type_ref_required_list_type() {
-        let index = &TypeIndex::empty();
-
         let required_list = parser::Type::NonNullType(Box::new(parser::Type::ListType(Box::new(
             parser::Type::NonNullType(Box::new(parser::Type::NamedType("User".to_string()))),
         ))));
 
         assert_matches!(
-            build_type_ref::<InputType<'_>>(&required_list, index),
+            build_type_ref::<InputType<'_>>(&required_list),
             TypeRef::List(inner) => {
-                assert_matches!(*inner, TypeRef::Named(name, _, _) => {
+                assert_matches!(*inner, TypeRef::Named(name, _) => {
                     assert_eq!(name, "User")
                 })
             }
@@ -461,17 +425,15 @@ mod tests {
 
     #[test]
     fn test_build_type_ref_option_list_type() {
-        let index = &TypeIndex::empty();
-
         let optional_list =
             parser::Type::ListType(Box::new(parser::Type::NamedType("User".to_string())));
 
         assert_matches!(
-            build_type_ref::<InputType<'_>>(&optional_list, index),
+            build_type_ref::<InputType<'_>>(&optional_list),
             TypeRef::Nullable(inner) => {
                 assert_matches!(*inner, TypeRef::List(inner) => {
                     assert_matches!(*inner, TypeRef::Nullable(inner) => {
-                        assert_matches!(*inner, TypeRef::Named(name, _, _) => {
+                        assert_matches!(*inner, TypeRef::Named(name, _) => {
                             assert_eq!(name, "User")
                         })
                     })

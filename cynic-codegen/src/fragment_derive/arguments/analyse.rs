@@ -1,5 +1,7 @@
 use std::{collections::HashSet, rc::Rc};
 
+use crate::schema::{Schema, Unvalidated};
+
 use {counter::Counter, proc_macro2::Span, syn::Lit};
 
 use {
@@ -57,12 +59,14 @@ pub struct VariantDetails<'a> {
 }
 
 pub fn analyse<'a>(
+    schema: &Schema<'a, Unvalidated>,
     literals: Vec<parsing::FieldArgument>,
     field: &schema::Field<'a>,
     variables_fields: Option<&syn::Path>,
     span: Span,
 ) -> Result<AnalysedArguments<'a>, Errors> {
     let mut analysis = Analysis {
+        schema,
         variables_fields,
         variants: HashSet::new(),
     };
@@ -79,6 +83,7 @@ pub fn analyse<'a>(
 }
 
 struct Analysis<'schema, 'a> {
+    schema: &'a Schema<'schema, Unvalidated>,
     variables_fields: Option<&'a syn::Path>,
     variants: HashSet<Rc<VariantDetails<'schema>>>,
 }
@@ -183,7 +188,7 @@ fn analyse_value_type<'a>(
     }
 
     match &value_type {
-        TypeRef::Named(_, _, _) => match (value_type.inner_type(), literal) {
+        TypeRef::Named(_, _) => match (value_type.inner_type(analysis.schema), literal) {
             (_, ArgumentLiteral::Variable(_, _)) => {
                 // Variable is handled above.
                 panic!("This should not happen");

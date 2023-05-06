@@ -46,7 +46,7 @@ impl<T> TypeRefMarker<'_, T> {
         use syn::parse_quote;
 
         match &self.type_ref {
-            TypeRef::Named(name, _, _) => TypeMarkerIdent {
+            TypeRef::Named(name, _) => TypeMarkerIdent {
                 graphql_name: name.clone(),
             }
             .to_path(schema_module_path),
