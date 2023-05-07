@@ -2,7 +2,6 @@ use std::{
     borrow::Cow,
     collections::{BTreeSet, HashMap, HashSet},
     marker::PhantomData,
-    rc::Rc,
 };
 
 use once_cell::sync::Lazy;
@@ -14,47 +13,45 @@ use crate::schema::{
     SchemaError,
 };
 
-#[derive(Clone)]
-pub struct SchemaBackedTypeIndex<'a> {
+#[ouroboros::self_referencing]
+pub struct SchemaBackedTypeIndex {
+    document: Document,
     // TODO: this should maybe just own the type defs?
     // might be easier...
-    pub(super) types: Rc<HashMap<&'a str, &'a TypeDefinition>>,
+    #[borrows(document)]
+    #[covariant]
+    types: HashMap<&'this str, &'this TypeDefinition>,
 }
 
-impl<'a> SchemaBackedTypeIndex<'a> {
+impl SchemaBackedTypeIndex {
     #[cfg(test)]
     pub fn empty() -> Self {
-        SchemaBackedTypeIndex {
-            types: Rc::new(HashMap::new()),
-        }
+        SchemaBackedTypeIndex::new(Document::default(), |_| HashMap::new())
     }
 
-    pub fn for_schema(document: &'a Document) -> Self {
-        let mut types = HashMap::new();
-        for definition in &document.definitions {
-            if let Definition::TypeDefinition(type_def) = definition {
-                types.insert(name_for_type(type_def), type_def);
+    pub fn for_schema(document: Document) -> Self {
+        SchemaBackedTypeIndex::new(document, |doc| {
+            let mut types = HashMap::new();
+            for definition in &document.definitions {
+                if let Definition::TypeDefinition(type_def) = definition {
+                    types.insert(name_for_type(type_def), type_def);
+                }
             }
-        }
-        for def in BUILTIN_SCALARS.as_ref() {
-            types.insert(name_for_type(def), def);
-        }
-
-        SchemaBackedTypeIndex {
-            types: Rc::new(types),
-        }
+            for def in BUILTIN_SCALARS.as_ref() {
+                types.insert(name_for_type(def), def);
+            }
+            types
+        })
     }
 }
 
-impl<'a> super::TypeIndex for SchemaBackedTypeIndex<'a> {
+impl super::TypeIndex for SchemaBackedTypeIndex {
     fn lookup_valid_type<'b>(&'b self, name: &str) -> Result<Type<'b>, SchemaError> {
-        let type_def =
-            self.types
-                .get(name)
-                .copied()
-                .ok_or_else(|| SchemaError::CouldNotFindType {
-                    name: name.to_string(),
-                })?;
+        let type_def = self.borrow_types().get(name).copied().ok_or_else(|| {
+            SchemaError::CouldNotFindType {
+                name: name.to_string(),
+            }
+        })?;
 
         self.validate(vec![type_def])?;
 
@@ -63,7 +60,7 @@ impl<'a> super::TypeIndex for SchemaBackedTypeIndex<'a> {
     }
 
     fn validate_all(&self) -> Result<(), SchemaError> {
-        self.validate(self.types.values().copied().collect())
+        self.validate(self.borrow_types().values().copied().collect())
     }
 
     fn unsafe_lookup<'b>(&'b self, name: &str) -> Option<Type<'b>> {
@@ -71,7 +68,7 @@ impl<'a> super::TypeIndex for SchemaBackedTypeIndex<'a> {
         // been validated.  The current module privacy settings enforce this, but don't make this
         // private or call it without being careful.
         let type_def = self
-            .types
+            .borrow_types()
             .get(name)
             .copied()
             .expect("Couldn't find a type - this should be impossible");
@@ -128,7 +125,7 @@ impl<'a> super::TypeIndex for SchemaBackedTypeIndex<'a> {
     }
 
     fn unsafe_iter<'b>(&'b self) -> Box<dyn Iterator<Item = Type<'b>> + 'b> {
-        let keys = self.types.keys().collect::<BTreeSet<_>>();
+        let keys = self.borrow_types().keys().collect::<BTreeSet<_>>();
 
         Box::new(
             keys.into_iter()
@@ -137,16 +134,16 @@ impl<'a> super::TypeIndex for SchemaBackedTypeIndex<'a> {
     }
 }
 
-impl<'a> SchemaBackedTypeIndex<'a> {
-    fn lookup_type(&self, name: &str) -> Option<&'a TypeDefinition> {
+impl SchemaBackedTypeIndex {
+    fn lookup_type<'a>(&'a self, name: &str) -> Option<&'a TypeDefinition> {
         #[allow(clippy::map_clone)]
-        self.types.get(name).map(|d| *d)
+        self.borrow_types().get(name).map(|d| *d)
     }
 
     /// Validates that all the types contained within the given types do exist.
     ///
     /// So we can just directly use refs to them.
-    fn validate(&self, mut defs: Vec<&'a TypeDefinition>) -> Result<(), SchemaError> {
+    fn validate(&self, mut defs: Vec<&TypeDefinition>) -> Result<(), SchemaError> {
         let mut validated = HashSet::<&str>::new();
 
         macro_rules! validate {
@@ -358,7 +355,7 @@ mod tests {
     fn test_schema_validation_on_good_schemas(#[case] schema_file: &'static str) {
         let schema = fs::read_to_string(PathBuf::from("../schemas/").join(schema_file)).unwrap();
         let document = parser::parse_schema(&schema).unwrap();
-        let index = SchemaBackedTypeIndex::for_schema(&document);
+        let index = SchemaBackedTypeIndex::for_schema(document);
         index.validate_all().unwrap();
     }
 
