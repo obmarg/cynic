@@ -1,5 +1,6 @@
 use super::{types::Type, SchemaError};
 
+mod optimised;
 mod schema_backed;
 
 pub use schema_backed::SchemaBackedTypeIndex;

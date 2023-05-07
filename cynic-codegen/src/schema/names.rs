@@ -2,8 +2,10 @@ use std::borrow::Cow;
 
 use crate::idents::RenamableFieldIdent;
 
-#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash, rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)]
+#[archive(check_bytes)]
 pub struct FieldName<'a> {
+    #[with(rkyv::with::AsOwned)]
     pub(super) graphql_name: Cow<'a, str>,
 }
 
