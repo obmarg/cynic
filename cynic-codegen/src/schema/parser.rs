@@ -48,19 +48,7 @@ fn add_typenames(mut schema: Document) -> Document {
 }
 
 pub(crate) fn parse_schema(schema: &str) -> Result<Document, SchemaLoadError> {
-    let borrowed_schema = graphql_parser::schema::parse_schema::<String>(schema)?;
-    Ok(schema_into_static(borrowed_schema))
-}
-
-fn schema_into_static(
-    doc: graphql_parser::schema::Document<'_, String>,
-) -> graphql_parser::schema::Document<'static, String> {
-    // A workaround until https://github.com/graphql-rust/graphql-parser/pull/33 is
-    // merged upstream.
-
-    // A document that uses Strings for it's data should be safe to cast to 'static lifetime
-    // as there's nothing inside it to reference 'a anyway
-    unsafe { std::mem::transmute::<_, Document>(doc) }
+    Ok(graphql_parser::schema::parse_schema::<String>(schema)?.into_static())
 }
 
 #[derive(Debug, PartialEq, Eq, Clone)]
