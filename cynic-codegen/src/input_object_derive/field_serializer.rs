@@ -16,14 +16,14 @@ use {
 
 pub struct FieldSerializer<'a> {
     rust_field: &'a InputObjectDeriveField,
-    graphql_field: &'a InputValue<'a>,
+    graphql_field: InputValue<'a>,
     schema_module: &'a syn::Path,
 }
 
 impl<'a> FieldSerializer<'a> {
     pub fn new(
         rust_field: &'a InputObjectDeriveField,
-        graphql_field: &'a InputValue<'_>,
+        graphql_field: InputValue<'a>,
         schema_module: &'a syn::Path,
     ) -> FieldSerializer<'a> {
         FieldSerializer {
@@ -37,7 +37,7 @@ impl<'a> FieldSerializer<'a> {
     /// any.
     pub fn validate(&self) -> Option<syn::Error> {
         // First, check for type errors
-        if let Err(e) = check_input_types_are_compatible(self.graphql_field, &self.rust_field.ty) {
+        if let Err(e) = check_input_types_are_compatible(&self.graphql_field, &self.rust_field.ty) {
             return Some(e);
         }
 

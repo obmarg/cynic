@@ -1,28 +1,33 @@
 use std::{
     borrow::Cow,
-    collections::{HashMap, HashSet},
+    collections::{BTreeSet, HashMap, HashSet},
     marker::PhantomData,
     rc::Rc,
 };
 
 use once_cell::sync::Lazy;
 
-use super::{names::FieldName, types::*, SchemaError};
-use crate::schema::parser::{self, Definition, Document, TypeDefinition, TypeExt};
+use crate::schema::{
+    names::FieldName,
+    parser::{self, Definition, Document, TypeDefinition, TypeExt},
+    types::*,
+    SchemaError,
+};
 
 #[derive(Clone)]
-pub struct TypeIndex<'a> {
+pub struct SchemaBackedTypeIndex<'a> {
     pub(super) types: Rc<HashMap<&'a str, &'a TypeDefinition>>,
 }
 
-impl<'a> TypeIndex<'a> {
+impl<'a> SchemaBackedTypeIndex<'a> {
+    #[cfg(test)]
     pub fn empty() -> Self {
-        TypeIndex {
+        SchemaBackedTypeIndex {
             types: Rc::new(HashMap::new()),
         }
     }
 
-    pub(super) fn for_schema_2(document: &'a Document) -> Self {
+    pub fn for_schema(document: &'a Document) -> Self {
         let mut types = HashMap::new();
         for definition in &document.definitions {
             if let Definition::TypeDefinition(type_def) = definition {
@@ -33,26 +38,14 @@ impl<'a> TypeIndex<'a> {
             types.insert(name_for_type(def), def);
         }
 
-        TypeIndex {
+        SchemaBackedTypeIndex {
             types: Rc::new(types),
         }
     }
+}
 
-    #[deprecated]
-    pub fn for_schema(document: &'a Document) -> Self {
-        let mut types = HashMap::new();
-        for definition in &document.definitions {
-            if let Definition::TypeDefinition(type_def) = definition {
-                types.insert(name_for_type(type_def), type_def);
-            }
-        }
-
-        TypeIndex {
-            types: Rc::new(types),
-        }
-    }
-
-    pub fn lookup_valid_type(&self, name: &str) -> Result<Type<'a>, SchemaError> {
+impl<'a> super::TypeIndex for SchemaBackedTypeIndex<'a> {
+    fn lookup_valid_type<'b>(&'b self, name: &str) -> Result<Type<'b>, SchemaError> {
         let type_def =
             self.types
                 .get(name)
@@ -63,14 +56,15 @@ impl<'a> TypeIndex<'a> {
 
         self.validate(vec![type_def])?;
 
-        Ok(self.private_lookup(name).unwrap())
+        // Safe because we validated
+        Ok(self.unsafe_lookup(name).unwrap())
     }
 
-    pub(super) fn validate_all(&self) -> Result<(), SchemaError> {
+    fn validate_all(&self) -> Result<(), SchemaError> {
         self.validate(self.types.values().copied().collect())
     }
 
-    pub(super) fn private_lookup(&self, name: &str) -> Option<Type<'a>> {
+    fn unsafe_lookup<'b>(&'b self, name: &str) -> Option<Type<'b>> {
         // Note: This function should absolutely only be called after the hierarchy has
         // been validated.  The current module privacy settings enforce this, but don't make this
         // private or call it without being careful.
@@ -126,39 +120,25 @@ impl<'a> TypeIndex<'a> {
             }),
             TypeDefinition::InputObject(def) => Type::InputObject(InputObjectType {
                 name: Cow::Borrowed(&def.name),
-                fields: def
-                    .fields
-                    .iter()
-                    .map(|field| convert_input_value(field))
-                    .collect(),
+                fields: def.fields.iter().map(convert_input_value).collect(),
             }),
         })
     }
 
+    fn unsafe_iter<'b>(&'b self) -> Box<dyn Iterator<Item = Type<'b>> + 'b> {
+        let keys = self.types.keys().collect::<BTreeSet<_>>();
+
+        Box::new(
+            keys.into_iter()
+                .map(|name| self.unsafe_lookup(name).unwrap()),
+        )
+    }
+}
+
+impl<'a> SchemaBackedTypeIndex<'a> {
     fn lookup_type(&self, name: &str) -> Option<&'a TypeDefinition> {
         #[allow(clippy::map_clone)]
         self.types.get(name).map(|d| *d)
-    }
-
-    pub fn is_scalar(&self, name: &str) -> bool {
-        self.types
-            .get(name)
-            .map(|def| matches!(def, TypeDefinition::Scalar(_)))
-            .unwrap_or(false)
-    }
-
-    pub fn is_enum(&self, name: &str) -> bool {
-        self.types
-            .get(name)
-            .map(|def| matches!(def, TypeDefinition::Enum(_)))
-            .unwrap_or(false)
-    }
-
-    pub fn is_input_object(&self, name: &str) -> bool {
-        self.types
-            .get(name)
-            .map(|def| matches!(def, TypeDefinition::InputObject(_)))
-            .unwrap_or(false)
     }
 
     /// Validates that all the types contained within the given types do exist.
@@ -315,7 +295,7 @@ fn name_for_type(type_def: &TypeDefinition) -> &str {
     }
 }
 
-fn convert_input_value<'a>(val: &'a parser::InputValue) -> InputValue<'a> {
+fn convert_input_value(val: &parser::InputValue) -> InputValue<'_> {
     InputValue {
         name: FieldName {
             graphql_name: Cow::Borrowed(&val.name),
@@ -368,6 +348,7 @@ mod tests {
     use std::{fs, path::PathBuf};
 
     use super::*;
+    use crate::schema::type_index::TypeIndex;
 
     #[rstest]
     #[case::starwars("starwars.schema.graphql")]
@@ -375,13 +356,13 @@ mod tests {
     fn test_schema_validation_on_good_schemas(#[case] schema_file: &'static str) {
         let schema = fs::read_to_string(PathBuf::from("../schemas/").join(schema_file)).unwrap();
         let document = parser::parse_schema(&schema).unwrap();
-        let index = TypeIndex::for_schema_2(&document);
+        let index = SchemaBackedTypeIndex::for_schema(&document);
         index.validate_all().unwrap();
     }
 
     #[test]
     fn test_build_type_ref_non_null_type() {
-        let index = &TypeIndex::empty();
+        let index = &SchemaBackedTypeIndex::empty();
         let non_null_type =
             parser::Type::NonNullType(Box::new(parser::Type::NamedType("User".to_string())));
 

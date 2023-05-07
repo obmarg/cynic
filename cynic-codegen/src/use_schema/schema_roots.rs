@@ -11,7 +11,7 @@ pub struct RootTypes<'a> {
 impl<'a> RootTypes<'a> {
     pub fn from_definitions(
         definitions: &[Definition],
-        schema: &Schema<'a, Validated>,
+        schema: &'a Schema<'a, Validated>,
     ) -> Result<RootTypes<'a>, SchemaError> {
         let mut query_name = "Query".to_owned();
         let mut mutation_name = Some("Mutation".to_owned());

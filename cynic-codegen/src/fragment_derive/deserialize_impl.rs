@@ -34,7 +34,7 @@ struct Field {
 
 impl<'a> DeserializeImpl<'a> {
     pub fn new(
-        fields: &[(&FragmentDeriveField, Option<&schema::Field<'_>>)],
+        fields: &[(FragmentDeriveField, Option<schema::Field<'_>>)],
         name: &'a syn::Ident,
         generics: &'a syn::Generics,
     ) -> Self {
@@ -43,7 +43,7 @@ impl<'a> DeserializeImpl<'a> {
         let target_struct = name;
         let fields = fields
             .iter()
-            .map(|(field, schema_field)| process_field(field, *schema_field))
+            .map(|(field, schema_field)| process_field(field, schema_field.as_ref()))
             .collect();
 
         match spreading {

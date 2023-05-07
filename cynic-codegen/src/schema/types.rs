@@ -206,15 +206,15 @@ where
     Type<'a>: TryInto<T>,
     <Type<'a> as TryInto<T>>::Error: std::fmt::Debug,
 {
-    pub fn inner_type<SchemaState>(&self, schema: &super::Schema<'a, SchemaState>) -> T {
+    pub fn inner_type<SchemaState>(&self, schema: &'a super::Schema<'a, SchemaState>) -> T {
         match self {
             TypeRef::Named(name, _) => {
-                // Note: we assume that TypeRef is only constructed after validation,
-                // which makes this unwrap ok.
-                // Probably want to enforce this via module hierarchy.
+                // Note: We validate types prior to constructing a TypeRef
+                // for them so the unsafe_lookup and unwrap here should
+                // be safe.
                 schema
                     .type_index
-                    .private_lookup(name)
+                    .unsafe_lookup(name)
                     .unwrap()
                     .try_into()
                     .unwrap()

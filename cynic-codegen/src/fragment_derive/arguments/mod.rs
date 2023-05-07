@@ -15,7 +15,7 @@ pub use self::{
 };
 
 pub fn process_arguments<'a>(
-    schema: &Schema<'a, Unvalidated>,
+    schema: &'a Schema<'a, Unvalidated>,
     literals: Vec<parsing::FieldArgument>,
     field: &crate::schema::types::Field<'a>,
     schema_module: syn::Path,
