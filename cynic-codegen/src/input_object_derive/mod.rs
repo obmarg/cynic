@@ -306,9 +306,6 @@ mod test {
 
         let (rust_field_ref, input_field_ref) = result.unwrap().into_iter().next().unwrap();
         assert!(std::ptr::eq(rust_field_ref, fields.first().unwrap()));
-        assert!(std::ptr::eq(
-            &input_field_ref,
-            input_object.fields.first().unwrap()
-        ));
+        assert_eq!(&input_field_ref, input_object.fields.first().unwrap());
     }
 }

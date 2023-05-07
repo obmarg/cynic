@@ -27,13 +27,6 @@ pub struct SchemaBackedTypeIndex {
 }
 
 impl SchemaBackedTypeIndex {
-    #[cfg(test)]
-    pub fn empty() -> Self {
-        SchemaBackedTypeIndex::new(Document::default(), "Query".into(), None, None, |_| {
-            HashMap::new()
-        })
-    }
-
     pub fn for_schema(document: Document) -> Self {
         let mut query_root = "Query".to_string();
         let mut mutation_root = None;
@@ -405,7 +398,6 @@ mod tests {
 
     #[test]
     fn test_build_type_ref_non_null_type() {
-        let index = &SchemaBackedTypeIndex::empty();
         let non_null_type =
             parser::Type::NonNullType(Box::new(parser::Type::NamedType("User".to_string())));
 
