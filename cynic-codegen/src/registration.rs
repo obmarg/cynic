@@ -3,7 +3,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use crate::schema::Schema;
+use crate::schema::{Schema, SchemaInput};
 
 /// Registers a schema with cynic-codegen with the given name
 ///
@@ -96,11 +96,11 @@ impl SchemaRegistration<'_> {
         use crate::use_schema::use_schema_impl;
 
         let document_string = String::from_utf8(self.data.clone()).expect("schema to be utf8");
-        let document = crate::schema::schema_from_string(document_string)
+        let document = crate::schema::load_schema(&document_string)
             .map_err(|error| SchemaRegistrationError::SchemaErrors(error.to_string()))?
             .into_static();
 
-        let schema = Schema::new(&document)
+        let schema = Schema::new(SchemaInput::Document(document.clone()))
             .validate()
             .map_err(|errors| SchemaRegistrationError::SchemaErrors(errors.to_string()))?;
 

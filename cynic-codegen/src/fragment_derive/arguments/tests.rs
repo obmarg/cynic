@@ -2,7 +2,7 @@ use proc_macro2::Span;
 use rstest::rstest;
 use syn::parse_quote;
 
-use crate::schema::{parse_schema, types::Type, Schema};
+use crate::schema::{types::Type, Schema, SchemaInput};
 
 use super::{analyse::analyse, parsing::CynicArguments};
 
@@ -26,8 +26,7 @@ fn test_analyse(
 ) {
     use quote::format_ident;
 
-    let schema_doc = parse_schema(SCHEMA).unwrap();
-    let schema = Schema::new(&schema_doc);
+    let schema = Schema::new(SchemaInput::from_sdl(SCHEMA).unwrap());
     let ty = schema.lookup::<Type<'_>>("Query").ok().unwrap();
     let field = &ty.object().unwrap().field(field).unwrap();
 
@@ -48,8 +47,7 @@ fn test_analyse(
 
 #[test]
 fn test_analyse_errors_without_argument_struct() {
-    let schema_doc = parse_schema(SCHEMA).unwrap();
-    let schema = Schema::new(&schema_doc);
+    let schema = Schema::new(SchemaInput::from_sdl(SCHEMA).unwrap());
     let ty = schema.lookup::<Type<'_>>("Query").ok().unwrap();
     let field = &ty.object().unwrap().field("filteredBooks").unwrap();
 

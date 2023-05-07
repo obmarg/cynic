@@ -370,7 +370,7 @@ checksum = "e31225543cb46f81a7e224762764f4a6a0f097b1db0b175f69e8065efaa42de5"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 1.0.87",
+ "syn",
 ]
 
 [[package]]
@@ -1731,7 +1731,7 @@ dependencies = [
  "proc-macro-error",
  "proc-macro2",
  "quote",
- "syn 1.0.87",
+ "syn",
 ]
 
 [[package]]
@@ -1823,7 +1823,7 @@ dependencies = [
  "proc-macro-error-attr",
  "proc-macro2",
  "quote",
- "syn 1.0.87",
+ "syn",
  "version_check 0.9.3",
 ]
 
@@ -1876,7 +1876,7 @@ checksum = "16b845dbfca988fa33db069c0e230574d15a3088f147a87b64c7589eb662c9ac"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 1.0.87",
+ "syn",
 ]
 
 [[package]]
@@ -2102,7 +2102,7 @@ checksum = "ac1c672430eb41556291981f45ca900a0239ad007242d1cb4b4167af842db666"
 dependencies = [
  "proc-macro2",
  "quote",
- "syn 1.0.87",
+ "syn",
 ]
 
 [[package]]

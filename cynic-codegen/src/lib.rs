@@ -19,7 +19,7 @@ mod types;
 
 pub use self::{idents::RenameAll, registration::register_schema};
 
-use {error::Errors, schema::load_schema};
+use error::Errors;
 
 #[deprecated(
     since = "3.0.0",

@@ -1,13 +1,17 @@
-use super::{types::Type, SchemaError};
+use super::{
+    types::{SchemaRoots, Type},
+    SchemaError,
+};
 
-mod optimised;
+pub mod optimised;
 mod schema_backed;
 
-pub use schema_backed::SchemaBackedTypeIndex;
+pub use self::schema_backed::SchemaBackedTypeIndex;
 
 pub trait TypeIndex {
     fn validate_all(&self) -> Result<(), SchemaError>;
     fn lookup_valid_type<'a>(&'a self, name: &str) -> Result<Type<'a>, SchemaError>;
+    fn root_types<'a>(&'a self) -> Result<SchemaRoots<'a>, SchemaError>;
 
     // These are only safe to call if the TypeIndex has been validated.
     // The Schema should make sure that's the case...

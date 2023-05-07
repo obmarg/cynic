@@ -23,15 +23,16 @@ impl Schema<'_, schema::Validated> {
 mod tests {
     use rkyv::Deserialize;
 
+    use crate::schema::SchemaInput;
+
     use super::*;
 
     #[test]
     fn test_rkyv_roundtrip() {
         let schema_string = std::fs::read_to_string("../schemas/github.graphql").unwrap();
-        let document = graphql_parser::parse_schema(&schema_string)
-            .unwrap()
-            .into_static();
-        let schema = Schema::new(&document).validate().unwrap();
+        let schema = Schema::new(SchemaInput::from_sdl(&schema_string).unwrap())
+            .validate()
+            .unwrap();
 
         let optimised = schema.optimise();
 

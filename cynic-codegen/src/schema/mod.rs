@@ -5,14 +5,17 @@ mod type_index;
 pub mod parser;
 pub mod types;
 
+mod input;
 pub mod markers;
 
 use std::convert::Infallible;
 use std::marker::PhantomData;
 
+use self::types::SchemaRoots;
 pub use self::{
+    input::SchemaInput,
     names::FieldName,
-    parser::{load_schema, schema_from_string, Document},
+    parser::{load_schema, Document},
 };
 
 #[cfg(test)]
@@ -30,8 +33,13 @@ pub struct Schema<'a, State> {
 }
 
 impl<'a> Schema<'a, Unvalidated> {
-    pub fn new(document: &'a Document) -> Self {
-        let type_index = Box::new(type_index::SchemaBackedTypeIndex::for_schema(document));
+    pub fn new(input: SchemaInput) -> Self {
+        let type_index = Box::new(match input {
+            SchemaInput::Document(document) => {
+                type_index::SchemaBackedTypeIndex::for_schema(document)
+            }
+            SchemaInput::Archive(archive) => todo!(),
+        });
 
         Schema {
             phantom: PhantomData,
@@ -62,6 +70,10 @@ impl<'a> Schema<'a, Unvalidated> {
 }
 
 impl<'a> Schema<'a, Validated> {
+    pub fn root_types<'b>(&'b self) -> Result<SchemaRoots<'b>, SchemaError> {
+        self.type_index.root_types()
+    }
+
     pub fn iter(&self) -> impl Iterator<Item = types::Type<'_>> {
         // unsafe_iter is safe because we're in a validated schema
         self.type_index.unsafe_iter()

@@ -14,26 +14,9 @@ pub type TypeDefinition = graphql_parser::schema::TypeDefinition<'static, String
 pub type ScalarType = graphql_parser::schema::ScalarType<'static, String>;
 pub type InputValue = graphql_parser::schema::InputValue<'static, String>;
 
-/// Loads a schema from a filename, relative to CARGO_MANIFEST_DIR if it's set.
-pub fn load_schema(filename: impl AsRef<std::path::Path>) -> Result<Document, SchemaLoadError> {
-    use std::path::PathBuf;
-    let mut pathbuf = PathBuf::new();
-
-    if let Ok(manifest_dir) = std::env::var("CARGO_MANIFEST_DIR") {
-        pathbuf.push(manifest_dir);
-    } else {
-        pathbuf.push(std::env::current_dir()?);
-    }
-    pathbuf.push(filename);
-
-    let schema = std::fs::read_to_string(&pathbuf)
-        .map_err(|_| SchemaLoadError::FileNotFound(pathbuf.to_str().unwrap().to_string()))?;
-
-    schema_from_string(schema)
-}
-
-pub fn schema_from_string(schema: String) -> Result<Document, SchemaLoadError> {
-    Ok(add_typenames(parse_schema(&schema)?))
+/// Loads a schema from a string
+pub fn load_schema(sdl: &str) -> Result<Document, SchemaLoadError> {
+    Ok(add_typenames(parse_schema(&sdl)?))
 }
 
 fn add_typenames(mut schema: Document) -> Document {

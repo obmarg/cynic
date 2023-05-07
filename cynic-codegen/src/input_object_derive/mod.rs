@@ -7,10 +7,9 @@ use crate::{
     error::Errors,
     generics_for_serde,
     idents::RenameAll,
-    load_schema,
     schema::{
         types::{InputObjectType, InputValue},
-        Schema,
+        Schema, SchemaInput,
     },
     suggestions::FieldSuggestionError,
 };
@@ -45,10 +44,10 @@ pub fn input_object_derive_impl(
 ) -> Result<TokenStream, Errors> {
     use quote::quote;
 
-    let schema_doc =
-        load_schema(&*input.schema_path).map_err(|e| e.into_syn_error(input.schema_path.span()))?;
+    let schema_input = SchemaInput::from_macro_attr_string(&*input.schema_path)
+        .map_err(|e| e.into_syn_error(input.schema_path.span()))?;
 
-    let schema = Schema::new(&schema_doc);
+    let schema = Schema::new(schema_input);
 
     let input_object = schema
         .lookup::<InputObjectType<'_>>(&input.graphql_type_name())
@@ -239,8 +238,7 @@ mod test {
 
     #[test]
     fn test_join_fields_when_all_required() {
-        let document = crate::schema::parse_schema(SCHEMA).unwrap();
-        let schema = crate::schema::Schema::new(&document);
+        let schema = Schema::new(SchemaInput::from_sdl(SCHEMA).unwrap());
         let input_object = schema.lookup("TestType").unwrap();
 
         let fields = vec![InputObjectDeriveField {
@@ -263,8 +261,7 @@ mod test {
 
     #[test]
     fn test_join_fields_when_required_field_missing() {
-        let document = crate::schema::parse_schema(SCHEMA).unwrap();
-        let schema = crate::schema::Schema::new(&document);
+        let schema = Schema::new(SchemaInput::from_sdl(SCHEMA).unwrap());
         let input_object = schema.lookup("TestType").unwrap();
 
         let fields = vec![InputObjectDeriveField {
@@ -287,8 +284,7 @@ mod test {
 
     #[test]
     fn test_join_fields_when_not_required() {
-        let document = crate::schema::parse_schema(SCHEMA).unwrap();
-        let schema = crate::schema::Schema::new(&document);
+        let schema = Schema::new(SchemaInput::from_sdl(SCHEMA).unwrap());
         let input_object = schema.lookup::<InputObjectType<'_>>("TestType").unwrap();
 
         let fields = vec![InputObjectDeriveField {

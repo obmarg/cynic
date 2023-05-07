@@ -16,6 +16,9 @@ use crate::schema::{
 #[ouroboros::self_referencing]
 pub struct SchemaBackedTypeIndex {
     document: Document,
+    query_root: String,
+    mutation_root: Option<String>,
+    subscription_root: Option<String>,
     // TODO: this should maybe just own the type defs?
     // might be easier...
     #[borrows(document)]
@@ -26,22 +29,45 @@ pub struct SchemaBackedTypeIndex {
 impl SchemaBackedTypeIndex {
     #[cfg(test)]
     pub fn empty() -> Self {
-        SchemaBackedTypeIndex::new(Document::default(), |_| HashMap::new())
+        SchemaBackedTypeIndex::new(Document::default(), "Query".into(), None, None, |_| {
+            HashMap::new()
+        })
     }
 
     pub fn for_schema(document: Document) -> Self {
-        SchemaBackedTypeIndex::new(document, |doc| {
-            let mut types = HashMap::new();
-            for definition in &document.definitions {
-                if let Definition::TypeDefinition(type_def) = definition {
-                    types.insert(name_for_type(type_def), type_def);
+        let mut query_root = "Query".to_string();
+        let mut mutation_root = None;
+        let mut subscription_root = None;
+
+        for definition in &document.definitions {
+            if let Definition::SchemaDefinition(schema) = definition {
+                if let Some(query_type) = &schema.query {
+                    query_root = query_type.clone();
                 }
+                mutation_root = schema.mutation.clone();
+                subscription_root = schema.subscription.clone();
+                break;
             }
-            for def in BUILTIN_SCALARS.as_ref() {
-                types.insert(name_for_type(def), def);
-            }
-            types
-        })
+        }
+
+        SchemaBackedTypeIndex::new(
+            document,
+            query_root,
+            mutation_root,
+            subscription_root,
+            |document| {
+                let mut types = HashMap::new();
+                for definition in &document.definitions {
+                    if let Definition::TypeDefinition(type_def) = definition {
+                        types.insert(name_for_type(type_def), type_def);
+                    }
+                }
+                for def in BUILTIN_SCALARS.as_ref() {
+                    types.insert(name_for_type(def), def);
+                }
+                types
+            },
+        )
     }
 }
 
@@ -61,6 +87,28 @@ impl super::TypeIndex for SchemaBackedTypeIndex {
 
     fn validate_all(&self) -> Result<(), SchemaError> {
         self.validate(self.borrow_types().values().copied().collect())
+    }
+
+    fn root_types(&self) -> Result<SchemaRoots<'_>, SchemaError> {
+        Ok(SchemaRoots {
+            query: self
+                .lookup_valid_type(self.borrow_query_root())?
+                .try_into()?,
+            mutation: self
+                .borrow_mutation_root()
+                .as_ref()
+                .map(|name| ObjectType::try_from(self.lookup_valid_type(name)?))
+                .transpose()?
+                .or_else(|| ObjectType::try_from(self.lookup_valid_type("Mutation").ok()?).ok()),
+            subscription: self
+                .borrow_subscription_root()
+                .as_ref()
+                .map(|name| ObjectType::try_from(self.lookup_valid_type(name)?))
+                .transpose()?
+                .or_else(|| {
+                    ObjectType::try_from(self.lookup_valid_type("Subscription").ok()?).ok()
+                }),
+        })
     }
 
     fn unsafe_lookup<'b>(&'b self, name: &str) -> Option<Type<'b>> {
@@ -143,7 +191,7 @@ impl SchemaBackedTypeIndex {
     /// Validates that all the types contained within the given types do exist.
     ///
     /// So we can just directly use refs to them.
-    fn validate(&self, mut defs: Vec<&TypeDefinition>) -> Result<(), SchemaError> {
+    fn validate<'a>(&'a self, mut defs: Vec<&'a TypeDefinition>) -> Result<(), SchemaError> {
         let mut validated = HashSet::<&str>::new();
 
         macro_rules! validate {

@@ -1,6 +1,14 @@
 use std::{borrow::Cow, marker::PhantomData};
 
-use super::{names::FieldName, type_index::TypeIndex, SchemaError};
+use super::{names::FieldName, SchemaError};
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash, rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)]
+#[archive(check_bytes)]
+pub struct SchemaRoots<'a> {
+    pub query: ObjectType<'a>,
+    pub mutation: Option<ObjectType<'a>>,
+    pub subscription: Option<ObjectType<'a>>,
+}
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash, rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)]
 #[archive(check_bytes)]
