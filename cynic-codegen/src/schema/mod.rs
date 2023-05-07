@@ -11,12 +11,12 @@ pub mod markers;
 use std::convert::Infallible;
 use std::marker::PhantomData;
 
-use self::types::SchemaRoots;
 pub use self::{
     input::SchemaInput,
     names::FieldName,
     parser::{load_schema, Document},
 };
+use self::{type_index::TypeIndex, types::SchemaRoots};
 
 #[cfg(test)]
 pub(crate) use self::parser::parse_schema;
@@ -34,12 +34,14 @@ pub struct Schema<'a, State> {
 
 impl<'a> Schema<'a, Unvalidated> {
     pub fn new(input: SchemaInput) -> Self {
-        let type_index = Box::new(match input {
+        let type_index: Box<dyn TypeIndex> = match input {
             SchemaInput::Document(document) => {
-                type_index::SchemaBackedTypeIndex::for_schema(document)
+                Box::new(type_index::SchemaBackedTypeIndex::for_schema(document))
             }
-            SchemaInput::Archive(archive) => todo!(),
-        });
+            SchemaInput::Archive(data) => Box::new(
+                type_index::optimised::ArchiveBacked::from_checked_data(data),
+            ),
+        };
 
         Schema {
             phantom: PhantomData,
