@@ -62,6 +62,7 @@ enum FieldKind {
 }
 
 impl<'schema, 'a: 'schema> FragmentImpl<'schema, 'a> {
+    #[allow(clippy::too_many_arguments)]
     pub fn new_for(
         schema: &'a Schema<'schema, Unvalidated>,
         fields: &'a [(FragmentDeriveField, Option<Field<'schema>>)],

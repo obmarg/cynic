@@ -18,9 +18,6 @@ pub use self::{
 };
 use self::{type_index::TypeIndex, types::SchemaRoots};
 
-#[cfg(test)]
-pub(crate) use self::parser::parse_schema;
-
 // TODO: Uncomment this
 // pub use self::{types::*},
 
@@ -72,7 +69,7 @@ impl<'a> Schema<'a, Unvalidated> {
 }
 
 impl<'a> Schema<'a, Validated> {
-    pub fn root_types<'b>(&'b self) -> Result<SchemaRoots<'b>, SchemaError> {
+    pub fn root_types(&self) -> Result<SchemaRoots<'_>, SchemaError> {
         self.type_index.root_types()
     }
 

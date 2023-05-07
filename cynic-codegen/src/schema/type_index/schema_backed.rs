@@ -352,8 +352,8 @@ fn convert_input_value(val: &parser::InputValue) -> InputValue<'_> {
     }
 }
 
-fn build_type_ref<'a, T>(ty: &'a parser::Type) -> TypeRef<'a, T> {
-    fn inner_fn<'a, T>(ty: &'a parser::Type, nullable: bool) -> TypeRef<'a, T> {
+fn build_type_ref<T>(ty: &parser::Type) -> TypeRef<'_, T> {
+    fn inner_fn<T>(ty: &parser::Type, nullable: bool) -> TypeRef<'_, T> {
         if let parser::Type::NonNullType(inner) = ty {
             return inner_fn::<T>(inner, false);
         }
@@ -378,11 +378,7 @@ fn build_field<'a>(field: &'a parser::Field, parent_type_name: &'a str) -> Field
         name: FieldName {
             graphql_name: Cow::Borrowed(&field.name),
         },
-        arguments: field
-            .arguments
-            .iter()
-            .map(|arg| convert_input_value(arg))
-            .collect(),
+        arguments: field.arguments.iter().map(convert_input_value).collect(),
         field_type: build_type_ref::<OutputType<'_>>(&field.field_type),
         parent_type_name: Cow::Borrowed(parent_type_name),
     }

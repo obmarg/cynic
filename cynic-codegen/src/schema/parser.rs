@@ -16,7 +16,7 @@ pub type InputValue = graphql_parser::schema::InputValue<'static, String>;
 
 /// Loads a schema from a string
 pub fn load_schema(sdl: &str) -> Result<Document, SchemaLoadError> {
-    Ok(add_typenames(parse_schema(&sdl)?))
+    Ok(add_typenames(parse_schema(sdl)?))
 }
 
 fn add_typenames(mut schema: Document) -> Document {
