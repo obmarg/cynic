@@ -173,18 +173,6 @@ mod required_recursive_types {
         "###);
     }
 
-    macro_rules! null {
-        () => {
-            json!(null)
-        };
-    }
-
-    macro_rules! empty_object {
-        () => {
-            json!(null)
-        };
-    }
-
     #[test]
     fn test_friends_decoding_with_matching_depth() {
         let data = json!({ "allAuthors": [{"me": {"me": {}}}]});
@@ -197,14 +185,5 @@ mod required_recursive_types {
         let data = json!({ "allAuthors": [{"me": null}]});
 
         insta::assert_yaml_snapshot!(serde_json::from_value::<FriendsQuery>(data).unwrap());
-    }
-
-    fn authors(me: serde_json::Value) -> serde_json::Value {
-        let a = author(me);
-        json!([a])
-    }
-
-    fn author(me: serde_json::Value) -> serde_json::Value {
-        json!({ "me": me })
     }
 }

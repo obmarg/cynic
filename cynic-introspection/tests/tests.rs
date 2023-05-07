@@ -1,4 +1,4 @@
-use cynic_introspection::{query::IntrospectionQuery, Schema};
+use cynic_introspection::query::IntrospectionQuery;
 
 #[test]
 fn test_introspection_query() {

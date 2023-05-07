@@ -1,15 +1,11 @@
 use seed::{prelude::*, *};
 
+#[derive(Default)]
 pub enum Model {
+    #[default]
     New,
     Url(String),
     Pasted(String),
-}
-
-impl Default for Model {
-    fn default() -> Self {
-        Model::New
-    }
 }
 
 #[derive(Clone)]
