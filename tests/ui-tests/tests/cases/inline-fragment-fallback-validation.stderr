@@ -1,8 +1,8 @@
-error[E0271]: type mismatch resolving `<Nested as <MyFailingUnionType as InlineFragments<'de>>::deserialize_variant::_::{closure#0}::TypeEq>::This == std::string::String`
+error[E0271]: type mismatch resolving `<Nested as TypeEq>::This == String`
   --> tests/cases/inline-fragment-fallback-validation.rs:17:11
    |
 17 |     Other(Nested),
-   |           ^^^^^^ type mismatch resolving `<Nested as <MyFailingUnionType as InlineFragments<'de>>::deserialize_variant::_::{closure#0}::TypeEq>::This == std::string::String`
+   |           ^^^^^^ type mismatch resolving `<Nested as TypeEq>::This == String`
    |
 note: expected this to be `std::string::String`
   --> tests/cases/inline-fragment-fallback-validation.rs:17:11
@@ -15,8 +15,8 @@ note: required by a bound in `<MyFailingUnionType as InlineFragments<'de>>::dese
 17 |     Other(Nested),
    |           ^^^^^^
    |           |
-   |           required by a bound in this
-   |           required by this bound in `<MyFailingUnionType as InlineFragments<'de>>::deserialize_variant::_::{closure#0}::assert_type_eq_all`
+   |           required by a bound in this function
+   |           required by this bound in `assert_type_eq_all`
    = note: this error originates in the macro `cynic::assert_type_eq_all` (in Nightly builds, run with -Z macro-backtrace for more info)
 
 error[E0308]: mismatched types
@@ -29,7 +29,7 @@ error[E0308]: mismatched types
 15 | |     // This is allowed, but needs to be a string to work.
 16 | |     #[cynic(fallback)]
 17 | |     Other(Nested),
-   | |         - ^^^^^^ expected struct `Nested`, found struct `std::string::String`
+   | |         - ^^^^^^ expected `Nested`, found `String`
    | |_________|
    |           arguments to this enum variant are incorrect
    |
