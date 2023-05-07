@@ -16,6 +16,8 @@ use crate::schema::{
 
 #[derive(Clone)]
 pub struct SchemaBackedTypeIndex<'a> {
+    // TODO: this should maybe just own the type defs?
+    // might be easier...
     pub(super) types: Rc<HashMap<&'a str, &'a TypeDefinition>>,
 }
 
