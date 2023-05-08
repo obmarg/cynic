@@ -16,7 +16,7 @@ fn main() {
     println!("{:?}", result);
 }
 
-fn run_query() -> cynic::GraphQlResponse<queries::PullRequestTitles> {
+fn run_query() -> cynic::GraphQlResponse<PullRequestTitles> {
     use cynic::http::ReqwestBlockingExt;
 
     let query = build_query();
@@ -31,12 +31,8 @@ fn run_query() -> cynic::GraphQlResponse<queries::PullRequestTitles> {
         .unwrap()
 }
 
-fn build_query() -> cynic::Operation<queries::PullRequestTitles, queries::PullRequestTitlesArguments>
-{
+fn build_query() -> cynic::Operation<PullRequestTitles, PullRequestTitlesArguments> {
     use cynic::QueryBuilder;
-    use queries::{
-        IssueOrder, IssueOrderField, OrderDirection, PullRequestTitles, PullRequestTitlesArguments,
-    };
 
     PullRequestTitles::build(PullRequestTitlesArguments {
         pr_order: IssueOrder {
@@ -46,64 +42,67 @@ fn build_query() -> cynic::Operation<queries::PullRequestTitles, queries::PullRe
     })
 }
 
-#[cynic::schema_for_derives(file = "../schemas/github.graphql", module = "schema")]
-mod queries {
-    use github_schema as schema;
+use github_schema as schema;
 
-    pub type DateTime = chrono::DateTime<chrono::Utc>;
+pub type DateTime = chrono::DateTime<chrono::Utc>;
 
-    #[derive(cynic::QueryVariables, Debug)]
-    pub struct PullRequestTitlesArguments {
-        pub pr_order: IssueOrder,
-    }
+#[derive(cynic::QueryVariables, Debug)]
+pub struct PullRequestTitlesArguments {
+    pub pr_order: IssueOrder,
+}
 
-    #[derive(cynic::InputObject, Clone, Debug)]
-    #[cynic(rename_all = "camelCase")]
-    pub struct IssueOrder {
-        pub direction: OrderDirection,
-        pub field: IssueOrderField,
-    }
+#[derive(cynic::InputObject, Clone, Debug)]
+#[cynic(schema = "github", rename_all = "camelCase")]
+pub struct IssueOrder {
+    pub direction: OrderDirection,
+    pub field: IssueOrderField,
+}
 
-    #[derive(cynic::Enum, Clone, Copy, Debug)]
-    #[cynic(rename_all = "SCREAMING_SNAKE_CASE")]
-    pub enum OrderDirection {
-        Asc,
-        Desc,
-    }
+#[derive(cynic::Enum, Clone, Copy, Debug)]
+#[cynic(schema = "github", rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum OrderDirection {
+    Asc,
+    Desc,
+}
 
-    #[derive(cynic::Enum, Clone, Copy, Debug)]
-    #[cynic(rename_all = "SCREAMING_SNAKE_CASE")]
-    pub enum IssueOrderField {
-        Comments,
-        CreatedAt,
-        UpdatedAt,
-    }
+#[derive(cynic::Enum, Clone, Copy, Debug)]
+#[cynic(schema = "github", rename_all = "SCREAMING_SNAKE_CASE")]
+pub enum IssueOrderField {
+    Comments,
+    CreatedAt,
+    UpdatedAt,
+}
 
-    #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "Query", variables = "PullRequestTitlesArguments")]
-    pub struct PullRequestTitles {
-        #[arguments(name = "cynic".to_string(), owner = "obmarg".to_string())]
-        pub repository: Option<Repository>,
-    }
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(
+    graphql_type = "Query",
+    schema = "github",
+    variables = "PullRequestTitlesArguments"
+)]
+pub struct PullRequestTitles {
+    #[arguments(name = "cynic".to_string(), owner = "obmarg".to_string())]
+    pub repository: Option<Repository>,
+}
 
-    #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(variables = "PullRequestTitlesArguments")]
-    pub struct Repository {
-        #[arguments(orderBy: $pr_order, first: 10)]
-        pub pull_requests: PullRequestConnection,
-    }
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(schema = "github", variables = "PullRequestTitlesArguments")]
+pub struct Repository {
+    #[arguments(orderBy: $pr_order, first: 10)]
+    pub pull_requests: PullRequestConnection,
+}
 
-    #[derive(cynic::QueryFragment, Debug)]
-    pub struct PullRequestConnection {
-        #[cynic(flatten)]
-        pub nodes: Vec<PullRequest>,
-    }
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(schema = "github")]
+pub struct PullRequestConnection {
+    #[cynic(flatten)]
+    pub nodes: Vec<PullRequest>,
+}
 
-    #[derive(cynic::QueryFragment, Debug)]
-    pub struct PullRequest {
-        pub title: String,
-        pub created_at: DateTime,
-    }
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(schema = "github")]
+pub struct PullRequest {
+    pub title: String,
+    pub created_at: DateTime,
 }
 
 #[cfg(test)]

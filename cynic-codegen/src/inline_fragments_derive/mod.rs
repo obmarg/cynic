@@ -8,7 +8,7 @@ use crate::{
     schema::{
         markers::TypeMarkerIdent,
         types::{InterfaceType, Kind, Type, UnionType},
-        Schema, SchemaError, SchemaInput,
+        Schema, SchemaError,
     },
     variables_fields_path, Errors,
 };
@@ -40,10 +40,7 @@ pub(crate) fn inline_fragments_derive_impl(
 ) -> Result<TokenStream, Errors> {
     use quote::quote;
 
-    let schema_input = SchemaInput::from_schema_path(&*input.schema_path)
-        .map_err(|e| e.into_syn_error(input.schema_path.span()))?;
-
-    let schema = Schema::new(schema_input);
+    let schema = Schema::new(input.schema_input()?);
 
     let target_type = schema.lookup::<InlineFragmentType<'_>>(&input.graphql_type_name())?;
 

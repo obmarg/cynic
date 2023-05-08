@@ -1,7 +1,10 @@
 use darling::util::SpannedValue;
 use proc_macro2::Span;
 
-use crate::idents::{RenamableFieldIdent, RenameAll};
+use crate::{
+    idents::{RenamableFieldIdent, RenameAll},
+    schema::SchemaInput,
+};
 
 #[derive(darling::FromDeriveInput)]
 #[darling(attributes(cynic), supports(enum_unit))]
@@ -9,7 +12,10 @@ pub struct EnumDeriveInput {
     pub(super) ident: proc_macro2::Ident,
     pub(super) data: darling::ast::Data<EnumDeriveVariant, ()>,
 
-    pub schema_path: SpannedValue<String>,
+    #[darling(default)]
+    schema: Option<SpannedValue<String>>,
+    #[darling(default)]
+    schema_path: Option<SpannedValue<String>>,
 
     #[darling(default, rename = "schema_module")]
     schema_module_: Option<syn::Path>,
@@ -52,6 +58,20 @@ impl EnumDeriveInput {
             .as_ref()
             .map(|val| val.span())
             .unwrap_or_else(|| self.ident.span())
+    }
+
+    pub fn schema_input(&self) -> Result<SchemaInput, syn::Error> {
+        match (&self.schema, &self.schema_path) {
+            (None, None) => SchemaInput::default().map_err(|e| e.into_syn_error(Span::call_site())),
+            (None, Some(path)) => SchemaInput::from_schema_path(path.as_ref())
+                .map_err(|e| e.into_syn_error(path.span())),
+            (Some(name), None) => SchemaInput::from_schema_name(name.as_ref())
+                .map_err(|e| e.into_syn_error(name.span())),
+            (Some(_), Some(path)) => Err(syn::Error::new(
+                path.span(),
+                "Only one of schema_path & schema can be provided",
+            )),
+        }
     }
 }
 

@@ -5,7 +5,6 @@
 mod schema {}
 
 #[derive(cynic::InlineFragments, Debug)]
-#[cynic(schema_path = "../schemas/starwars.schema.graphql")]
 enum Node {
     Film(Film),
     Planet(Planet),
@@ -15,23 +14,18 @@ enum Node {
 }
 
 #[derive(cynic::QueryFragment, Debug)]
-#[cynic(schema_path = "../schemas/starwars.schema.graphql")]
 struct Film {
     __typename: String,
     title: Option<String>,
 }
 
 #[derive(cynic::QueryFragment, Debug)]
-#[cynic(schema_path = "../schemas/starwars.schema.graphql")]
 struct Planet {
     name: Option<String>,
 }
 
 #[derive(cynic::QueryFragment, Debug)]
-#[cynic(
-    schema_path = "../schemas/starwars.schema.graphql",
-    graphql_type = "Node"
-)]
+#[cynic(graphql_type = "Node")]
 struct OtherNode {
     id: cynic::Id,
 }
@@ -42,11 +36,7 @@ struct Arguments {
 }
 
 #[derive(cynic::QueryFragment, Debug)]
-#[cynic(
-    schema_path = "../schemas/starwars.schema.graphql",
-    graphql_type = "Root",
-    variables = "Arguments"
-)]
+#[cynic(graphql_type = "Root", variables = "Arguments")]
 struct Query {
     #[arguments(id: $id)]
     node: Option<Node>,

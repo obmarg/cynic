@@ -1,8 +1,8 @@
 error: Could not find a type named `Desseqt` in the schema
-  --> tests/cases/enum-guess-validation.rs:10:5
+  --> tests/cases/enum-guess-validation.rs:10:20
    |
 10 |     graphql_type = "Desseqt"
-   |     ^^^^^^^^^^^^
+   |                    ^^^^^^^^^
 
 warning: variant `ICE_CREAM` should have an upper camel case name
   --> tests/cases/enum-guess-validation.rs:14:5

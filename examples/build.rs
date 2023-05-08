@@ -4,4 +4,7 @@ fn main() {
         .unwrap()
         .as_default()
         .unwrap();
+    cynic_codegen::register_schema("github")
+        .from_sdl_file("../schemas/github.graphql")
+        .unwrap();
 }

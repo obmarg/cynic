@@ -1,3 +1,5 @@
+use crate::schema::SchemaInput;
+
 use {darling::util::SpannedValue, syn::spanned::Spanned};
 
 use {
@@ -12,7 +14,10 @@ pub struct InputObjectDeriveInput {
     pub(super) generics: syn::Generics,
     pub(super) data: darling::ast::Data<(), InputObjectDeriveField>,
 
-    pub schema_path: SpannedValue<String>,
+    #[darling(default)]
+    schema: Option<SpannedValue<String>>,
+    #[darling(default)]
+    schema_path: Option<SpannedValue<String>>,
 
     #[darling(default, rename = "schema_module")]
     schema_module_: Option<syn::Path>,
@@ -60,6 +65,20 @@ impl InputObjectDeriveInput {
             .as_ref()
             .map(|val| val.span())
             .unwrap_or_else(|| self.ident.span())
+    }
+
+    pub fn schema_input(&self) -> Result<SchemaInput, syn::Error> {
+        match (&self.schema, &self.schema_path) {
+            (None, None) => SchemaInput::default().map_err(|e| e.into_syn_error(Span::call_site())),
+            (None, Some(path)) => SchemaInput::from_schema_path(path.as_ref())
+                .map_err(|e| e.into_syn_error(path.span())),
+            (Some(name), None) => SchemaInput::from_schema_name(name.as_ref())
+                .map_err(|e| e.into_syn_error(name.span())),
+            (Some(_), Some(path)) => Err(syn::Error::new(
+                path.span(),
+                "Only one of schema_path & schema can be provided",
+            )),
+        }
     }
 }
 

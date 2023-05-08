@@ -86,7 +86,7 @@ impl SchemaRegistration<'_> {
         std::fs::create_dir_all(filename.parent().expect("filename to have a parent"))?;
         #[cfg(feature = "rkyv")]
         {
-            filename.set_extension("graphql");
+            filename.set_extension("rkyv");
             let document_string = String::from_utf8(self.data.clone()).expect("schema to be utf8");
             let document = crate::schema::load_schema(&document_string)
                 .map_err(|error| SchemaRegistrationError::SchemaErrors(error.to_string()))?
@@ -96,11 +96,11 @@ impl SchemaRegistration<'_> {
                 .map_err(|errors| SchemaRegistrationError::SchemaErrors(errors.to_string()))?;
             let optimised = schema.optimise();
             let bytes = rkyv::to_bytes::<_, 4096>(&optimised).unwrap();
-            Ok(std::fs::write(filename, &self.data)?)
+            Ok(std::fs::write(filename, &bytes)?)
         }
         #[cfg(not(feature = "rkyv"))]
         {
-            filename.set_extension("rkyv");
+            filename.set_extension("graphql");
             Ok(std::fs::write(filename, &self.data)?)
         }
     }
