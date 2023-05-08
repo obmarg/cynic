@@ -176,6 +176,15 @@ pub fn schema_for_derives(attrs: TokenStream, input: TokenStream) -> TokenStream
 }
 
 #[proc_macro_attribute]
+/// Imports a registered schema into a schema module.
+///
+/// If you have registered a schema in your build.rs, then you can apply
+/// this attribute to a module to import that schema:
+///
+/// ```rust,ignore
+/// #[cynic::schema("starwars")]
+/// mod schema {}
+/// ```
 pub fn schema(attrs: TokenStream, input: TokenStream) -> TokenStream {
     let schema_name = syn::parse_macro_input!(attrs as syn::LitStr);
     let module = syn::parse_macro_input!(input as syn::ItemMod);
