@@ -96,7 +96,7 @@ impl SchemaRegistration<'_> {
                 .map_err(|errors| SchemaRegistrationError::SchemaErrors(errors.to_string()))?;
             let optimised = schema.optimise();
             let bytes = rkyv::to_bytes::<_, 4096>(&optimised).unwrap();
-            Ok(std::fs::write(filename, &self.data)?)
+            Ok(std::fs::write(filename, &bytes)?)
         }
         #[cfg(not(feature = "rkyv"))]
         {
