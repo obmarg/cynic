@@ -1,5 +1,7 @@
 use std::{collections::HashSet, rc::Rc};
 
+use crate::schema::{Schema, Unvalidated};
+
 use {counter::Counter, proc_macro2::Span, syn::Lit};
 
 use {
@@ -57,6 +59,7 @@ pub struct VariantDetails<'a> {
 }
 
 pub fn analyse<'a>(
+    schema: &'a Schema<'a, Unvalidated>,
     literals: Vec<parsing::FieldArgument>,
     field: &schema::Field<'a>,
     variables_fields: Option<&syn::Path>,
@@ -66,10 +69,11 @@ pub fn analyse<'a>(
         variables_fields,
         variants: HashSet::new(),
     };
-    let arguments = analyse_fields(&mut analysis, literals, &field.arguments, span)?;
+
+    let arguments = analyse_fields(&mut analysis, literals, &field.arguments, span, schema)?;
 
     let mut variants = analysis.variants.into_iter().collect::<Vec<_>>();
-    variants.sort_by_key(|v| (v.en.name, v.variant.clone()));
+    variants.sort_by_key(|v| (v.en.name.clone(), v.variant.clone()));
 
     Ok(AnalysedArguments {
         schema_field: field.clone(),
@@ -117,6 +121,7 @@ fn analyse_fields<'a>(
     literals: Vec<parsing::FieldArgument>,
     arguments: &[InputValue<'a>],
     span: Span,
+    schema: &'a Schema<'a, Unvalidated>,
 ) -> Result<Vec<Field<'a>>, Errors> {
     validate(&literals, arguments, span)?;
 
@@ -129,7 +134,7 @@ fn analyse_fields<'a>(
             .find(|a| a.name == arg.argument_name)
             .unwrap();
 
-        match analyse_argument(analysis, arg, schema_field) {
+        match analyse_argument(analysis, arg, schema_field, schema) {
             Ok(value) => fields.push(Field {
                 schema_field: schema_field.clone(),
                 value,
@@ -149,10 +154,11 @@ fn analyse_argument<'a>(
     analysis: &mut Analysis<'a, '_>,
     parsed_arg: parsing::FieldArgument,
     argument: &InputValue<'a>,
+    schema: &'a Schema<'a, Unvalidated>,
 ) -> Result<ArgumentValue<'a>, Errors> {
     match parsed_arg.value {
         parsing::FieldArgumentValue::Literal(lit) => {
-            analyse_value_type(analysis, lit, &argument.value_type)
+            analyse_value_type(analysis, lit, &argument.value_type, schema)
         }
         parsing::FieldArgumentValue::Expression(e) => Ok(ArgumentValue::Expression(*e)),
     }
@@ -162,6 +168,7 @@ fn analyse_value_type<'a>(
     analysis: &mut Analysis<'a, '_>,
     literal: parsing::ArgumentLiteral,
     value_type: &TypeRef<'a, InputType<'a>>,
+    schema: &'a Schema<'a, Unvalidated>,
 ) -> Result<ArgumentValue<'a>, Errors> {
     use parsing::ArgumentLiteral;
 
@@ -183,7 +190,7 @@ fn analyse_value_type<'a>(
     }
 
     match &value_type {
-        TypeRef::Named(_, _, _) => match (value_type.inner_type(), literal) {
+        TypeRef::Named(_, _) => match (value_type.inner_type(schema), literal) {
             (_, ArgumentLiteral::Variable(_, _)) => {
                 // Variable is handled above.
                 panic!("This should not happen");
@@ -219,7 +226,7 @@ fn analyse_value_type<'a>(
 
             (InputType::InputObject(def), ArgumentLiteral::Object(fields, span)) => {
                 let literals = fields.into_iter().collect::<Vec<_>>();
-                let fields = analyse_fields(analysis, literals, &def.fields, span)?;
+                let fields = analyse_fields(analysis, literals, &def.fields, span, schema)?;
 
                 Ok(ArgumentValue::Object(Object {
                     schema_obj: def,
@@ -235,7 +242,7 @@ fn analyse_value_type<'a>(
                 let mut output_values = Vec::new();
                 let mut errors = Vec::new();
                 for value in values {
-                    match analyse_value_type(analysis, value, element_type.as_ref()) {
+                    match analyse_value_type(analysis, value, element_type.as_ref(), schema) {
                         Ok(v) => output_values.push(v),
                         Err(e) => errors.push(e),
                     }
@@ -252,6 +259,7 @@ fn analyse_value_type<'a>(
                     analysis,
                     other,
                     element_type.as_ref(),
+                    schema,
                 )?]))
             }
         },
@@ -261,6 +269,7 @@ fn analyse_value_type<'a>(
                 analysis,
                 other,
                 inner_typeref.as_ref(),
+                schema,
             )?))),
         },
     }

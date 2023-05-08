@@ -29,6 +29,9 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
   with cynic.
 - Added a `schema` attribute macro to declare the schema module for
   pre-registered schemas.
+- Added the `rkyv` feature flag which optimises the pre-registered schemas with
+  the `rkyv` library. This makes cynic much more efficient when working with
+  large schemas.
 
 ### Changes
 

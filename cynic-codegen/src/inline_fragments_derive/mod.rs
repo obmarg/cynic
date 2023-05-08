@@ -5,11 +5,10 @@ use {
 
 use crate::{
     inline_fragments_derive::input::ValidationMode,
-    load_schema,
     schema::{
         markers::TypeMarkerIdent,
         types::{InterfaceType, Kind, Type, UnionType},
-        Schema, SchemaError,
+        Schema, SchemaError, SchemaInput,
     },
     variables_fields_path, Errors,
 };
@@ -41,10 +40,10 @@ pub(crate) fn inline_fragments_derive_impl(
 ) -> Result<TokenStream, Errors> {
     use quote::quote;
 
-    let schema =
-        load_schema(&*input.schema_path).map_err(|e| e.into_syn_error(input.schema_path.span()))?;
+    let schema_input = SchemaInput::from_schema_path(&*input.schema_path)
+        .map_err(|e| e.into_syn_error(input.schema_path.span()))?;
 
-    let schema = Schema::new(&schema);
+    let schema = Schema::new(schema_input);
 
     let target_type = schema.lookup::<InlineFragmentType<'_>>(&input.graphql_type_name())?;
 

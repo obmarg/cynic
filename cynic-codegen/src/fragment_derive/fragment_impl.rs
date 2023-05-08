@@ -6,7 +6,10 @@ use {
 
 use crate::{
     error::Errors,
-    schema::types::{Field, OutputType},
+    schema::{
+        types::{Field, OutputType},
+        Schema, Unvalidated,
+    },
     types::{self, check_spread_type, check_types_are_compatible, CheckMode},
     variables_fields_path,
 };
@@ -18,10 +21,10 @@ use super::{
 
 use super::input::FragmentDeriveField;
 
-pub struct FragmentImpl<'a> {
+pub struct FragmentImpl<'schema, 'a> {
     target_struct: &'a proc_macro2::Ident,
     generics: &'a syn::Generics,
-    selections: Vec<Selection<'a>>,
+    selections: Vec<Selection<'schema>>,
     variables_fields: syn::Type,
     graphql_type_name: String,
     schema_type_path: syn::Path,
@@ -58,12 +61,14 @@ enum FieldKind {
     Union,
 }
 
-impl<'a> FragmentImpl<'a> {
+impl<'schema, 'a: 'schema> FragmentImpl<'schema, 'a> {
+    #[allow(clippy::too_many_arguments)]
     pub fn new_for(
-        fields: &[(&FragmentDeriveField, Option<&'a Field<'a>>)],
+        schema: &'a Schema<'schema, Unvalidated>,
+        fields: &'a [(FragmentDeriveField, Option<Field<'schema>>)],
         name: &'a syn::Ident,
         generics: &'a syn::Generics,
-        schema_type: &FragmentDeriveType<'_>,
+        schema_type: &FragmentDeriveType<'schema>,
         schema_module_path: &syn::Path,
         graphql_type_name: &str,
         variables: Option<&syn::Path>,
@@ -81,8 +86,9 @@ impl<'a> FragmentImpl<'a> {
             .iter()
             .map(|(field, schema_field)| {
                 process_field(
+                    schema,
                     field,
-                    *schema_field,
+                    schema_field.as_ref(),
                     &field_module_path,
                     schema_module_path,
                     variables_fields,
@@ -109,6 +115,7 @@ impl<'a> FragmentImpl<'a> {
 }
 
 fn process_field<'a>(
+    schema: &'a Schema<'a, Unvalidated>,
     field: &FragmentDeriveField,
     schema_field: Option<&'a Field<'a>>,
     field_module_path: &syn::Path,
@@ -130,6 +137,7 @@ fn process_field<'a>(
         arguments_from_field_attrs(&field.attrs)?.unwrap_or_else(|| (vec![], Span::call_site()));
 
     let arguments = process_arguments(
+        schema,
         arguments,
         schema_field,
         schema_module_path.clone(),
@@ -149,12 +157,12 @@ fn process_field<'a>(
         recurse_limit: field.recurse.as_ref().map(|f| **f),
         span: field.ty.span(),
         alias: field.alias(),
-        graphql_field_kind: schema_field.field_type.inner_type().as_kind(),
+        graphql_field_kind: schema_field.field_type.inner_type(schema).as_kind(),
         flatten: *field.flatten,
     }))
 }
 
-impl quote::ToTokens for FragmentImpl<'_> {
+impl quote::ToTokens for FragmentImpl<'_, '_> {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         use quote::TokenStreamExt;
 

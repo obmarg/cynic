@@ -136,8 +136,8 @@ fn output_type_check<'a>(
             provided_type: inner.to_syn().to_string(),
             span: rust_type.span(),
         }),
-        (TypeRef::Named(_, _, _), RustType::SimpleType { .. }) => Ok(()),
-        (TypeRef::Named(_, _, _), RustType::Unknown { .. }) => {
+        (TypeRef::Named(_, _), RustType::SimpleType { .. }) => Ok(()),
+        (TypeRef::Named(_, _), RustType::Unknown { .. }) => {
             // This is probably some type with generic params.
             // But we've satisfied any list/nullable requirements by here
             // so should probably just allow it
@@ -189,8 +189,8 @@ fn input_type_check<'a>(
             provided_type: inner.to_syn().to_string(),
             span: rust_type.span(),
         }),
-        (TypeRef::Named(_, _, _), RustType::SimpleType { .. }) => Ok(()),
-        (TypeRef::Named(_, _, _), RustType::Unknown { .. }) => {
+        (TypeRef::Named(_, _), RustType::SimpleType { .. }) => Ok(()),
+        (TypeRef::Named(_, _), RustType::Unknown { .. }) => {
             // This is probably some type with generic params.
             // But we've satisfied any list/nullable requirements by here
             // so should probably just allow it
@@ -301,10 +301,7 @@ mod tests {
 
     use {
         super::*,
-        crate::schema::{
-            types::{InputType, OutputType},
-            TypeIndex,
-        },
+        crate::schema::types::{InputType, OutputType},
     };
 
     use {assert_matches::assert_matches, quote::quote, rstest::rstest, syn::parse_quote};
@@ -322,7 +319,7 @@ mod tests {
 
     #[test]
     fn test_output_type_check() {
-        let required_field = TypeRef::Named("test", TypeIndex::empty(), PhantomData);
+        let required_field = TypeRef::Named("test".into(), PhantomData);
         let optional_field = TypeRef::Nullable(Box::new(required_field.clone()));
 
         assert_matches!(
@@ -374,7 +371,7 @@ mod tests {
 
     #[test]
     fn test_output_type_list_validation() {
-        let named = TypeRef::Named("test", TypeIndex::empty(), PhantomData);
+        let named = TypeRef::Named("test".into(), PhantomData);
         let list = TypeRef::List(Box::new(named.clone()));
         let optional_list = TypeRef::Nullable(Box::new(TypeRef::List(Box::new(named.clone()))));
         let option_list_option = TypeRef::Nullable(Box::new(TypeRef::List(Box::new(
@@ -471,7 +468,7 @@ mod tests {
 
     #[test]
     fn test_validation_when_flattening() {
-        let named = TypeRef::Named("test", TypeIndex::empty(), PhantomData);
+        let named = TypeRef::Named("test".into(), PhantomData);
         let list = TypeRef::List(Box::new(named.clone()));
         let optional_list = TypeRef::Nullable(Box::new(TypeRef::List(Box::new(named.clone()))));
         let option_list_option = TypeRef::Nullable(Box::new(TypeRef::List(Box::new(
@@ -544,7 +541,7 @@ mod tests {
 
     #[test]
     fn test_input_type_validation() {
-        let required_field = TypeRef::Named("test", TypeIndex::empty(), PhantomData);
+        let required_field = TypeRef::Named("test".into(), PhantomData);
         let optional_field = TypeRef::Nullable(Box::new(required_field.clone()));
 
         assert_matches!(
@@ -593,7 +590,7 @@ mod tests {
 
     #[test]
     fn test_input_type_validation_with_default() {
-        let required_field = TypeRef::Named("test", TypeIndex::empty(), PhantomData);
+        let required_field = TypeRef::Named("test".into(), PhantomData);
         let optional_field = TypeRef::Nullable(Box::new(required_field.clone()));
 
         assert_matches!(
@@ -632,7 +629,7 @@ mod tests {
 
     #[test]
     fn test_input_type_list_validation() {
-        let named = TypeRef::Named("test", TypeIndex::empty(), PhantomData);
+        let named = TypeRef::Named("test".into(), PhantomData);
         let list = TypeRef::List(Box::new(named.clone()));
         let optional_list = TypeRef::Nullable(Box::new(TypeRef::List(Box::new(named.clone()))));
         let option_list_option = TypeRef::Nullable(Box::new(TypeRef::List(Box::new(
@@ -719,24 +716,24 @@ mod tests {
 
     #[rstest(graphql_field, rust_field,
         case::required_t(
-            TypeRef::Named("T", TypeIndex::empty(), PhantomData),
+            TypeRef::Named("T".into(), PhantomData),
             parse_quote! { Option<Box<T>> }
         ),
 
         case::optional_t(
-            TypeRef::Nullable(Box::new(TypeRef::Named("T", TypeIndex::empty(), PhantomData))),
+            TypeRef::Nullable(Box::new(TypeRef::Named("T".into(), PhantomData))),
             parse_quote! { Option<T> }
         ),
 
         case::option_vec_required_t(
             TypeRef::Nullable(Box::new(
-                TypeRef::List(Box::new(TypeRef::Named("T", TypeIndex::empty(), PhantomData)))
+                TypeRef::List(Box::new(TypeRef::Named("T".into(), PhantomData)))
             )),
             parse_quote! { Option<Vec<T>> }
         ),
 
         case::required_vec_required_t(
-            TypeRef::List(Box::new(TypeRef::Named("T", TypeIndex::empty(), PhantomData))),
+            TypeRef::List(Box::new(TypeRef::Named("T".into(), PhantomData))),
             parse_quote! { Option<Vec<T>> }
         ),
     )]
@@ -749,54 +746,54 @@ mod tests {
 
     #[rstest(graphql_field, rust_field,
         case::required_t_box(
-            TypeRef::Named("T", TypeIndex::empty(), PhantomData),
+            TypeRef::Named("T".into(), PhantomData),
             parse_quote! { Box<T> }
         ),
         case::required_t_standalone(
-            TypeRef::Named("T", TypeIndex::empty(), PhantomData),
+            TypeRef::Named("T".into(), PhantomData),
             parse_quote! { T }
         ),
 
         case::optional_t_standalone(
-            TypeRef::Nullable(Box::new(TypeRef::Named("T", TypeIndex::empty(), PhantomData))),
+            TypeRef::Nullable(Box::new(TypeRef::Named("T".into(), PhantomData))),
             parse_quote! { T }
         ),
         case::optional_t_box(
-            TypeRef::Nullable(Box::new(TypeRef::Named("T", TypeIndex::empty(), PhantomData))),
+            TypeRef::Nullable(Box::new(TypeRef::Named("T".into(), PhantomData))),
             parse_quote! { Box<T> }
         ),
 
         case::option_vec_required_t(
             TypeRef::Nullable(Box::new(
-                TypeRef::List(Box::new(TypeRef::Named("T", TypeIndex::empty(), PhantomData)))
+                TypeRef::List(Box::new(TypeRef::Named("T".into(), PhantomData)))
             )),
             parse_quote! { Vec<T> }
         ),
         case::option_vec_required_t(
             TypeRef::Nullable(Box::new(
-                TypeRef::List(Box::new(TypeRef::Named("T", TypeIndex::empty(), PhantomData)))
+                TypeRef::List(Box::new(TypeRef::Named("T".into(), PhantomData)))
             )),
             parse_quote! { Vec<Option<T>> }
         ),
 
         case::required_vec_required_t(
-            TypeRef::List(Box::new(TypeRef::Named("T", TypeIndex::empty(), PhantomData))),
+            TypeRef::List(Box::new(TypeRef::Named("T".into(), PhantomData))),
             parse_quote! { Vec<T> }
         ),
         case::required_vec_required_t_no_vec(
-            TypeRef::List(Box::new(TypeRef::Named("T", TypeIndex::empty(), PhantomData))),
+            TypeRef::List(Box::new(TypeRef::Named("T".into(), PhantomData))),
             parse_quote! { T }
         ),
 
         case::required_vec_optional_t_no_vec(
             TypeRef::List(Box::new(
-                TypeRef::Nullable(Box::new(TypeRef::Named("T", TypeIndex::empty(), PhantomData)))
+                TypeRef::Nullable(Box::new(TypeRef::Named("T".into(), PhantomData)))
             )),
             parse_quote! { Option<T> }
         ),
         case::required_vec_optional_t_wrong_nesting(
             TypeRef::List(Box::new(
-                TypeRef::Nullable(Box::new(TypeRef::Named("T", TypeIndex::empty(), PhantomData)))
+                TypeRef::Nullable(Box::new(TypeRef::Named("T".into(), PhantomData)))
             )),
             parse_quote! { Option<Vec<T>> }
         ),

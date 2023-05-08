@@ -16,7 +16,7 @@ use {
 
 use crate::{
     error::Errors,
-    schema::{types::Type, Document, Schema, Validated},
+    schema::{types::Type, Schema, SchemaInput, Validated},
 };
 
 use self::{
@@ -25,22 +25,20 @@ use self::{
 };
 
 pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
-    let document = crate::schema::load_schema(input.schema_filename)
+    let input = SchemaInput::from_schema_path(input.schema_filename)
         .map_err(|e| e.into_syn_error(proc_macro2::Span::call_site()))?;
-    let schema = Schema::new(&document).validate()?;
-    use_schema_impl(&document, schema)
+
+    let schema = Schema::new(input).validate()?;
+    use_schema_impl(schema)
 }
 
-pub(crate) fn use_schema_impl(
-    document: &Document,
-    schema: Schema<'_, Validated>,
-) -> Result<TokenStream, Errors> {
+pub(crate) fn use_schema_impl(schema: Schema<'_, Validated>) -> Result<TokenStream, Errors> {
     use quote::TokenStreamExt;
 
     let mut output = TokenStream::new();
     let mut field_module = TokenStream::new();
 
-    let root_types = schema_roots::RootTypes::from_definitions(&document.definitions, &schema)?;
+    let root_types = schema.root_types()?;
     output.append_all(quote! {
         #root_types
     });
@@ -53,8 +51,8 @@ pub(crate) fn use_schema_impl(
 
         match definition {
             Type::Scalar(def) if !def.builtin => {
-                let name = proc_macro2::Literal::string(def.name);
-                let ident = proc_macro2::Ident::from(def.marker_ident());
+                let name = proc_macro2::Literal::string(def.name.as_ref());
+                let ident = def.marker_ident().to_rust_ident();
                 output.append_all(quote! {
                     pub struct #ident {}
                     impl cynic::schema::NamedType for #ident {
@@ -80,13 +78,13 @@ pub(crate) fn use_schema_impl(
             Type::Union(def) => {
                 subtype_markers.extend(SubtypeMarkers::from_union(&def));
 
-                let ident = proc_macro2::Ident::from(def.marker_ident());
+                let ident = def.marker_ident().to_rust_ident();
                 output.append_all(quote! {
                     pub struct #ident {}
                 });
             }
             Type::Enum(def) => {
-                let ident = proc_macro2::Ident::from(def.marker_ident());
+                let ident = def.marker_ident().to_rust_ident();
                 output.append_all(quote! {
                     pub struct #ident {}
                 });

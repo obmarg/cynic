@@ -5,19 +5,18 @@ mod type_index;
 pub mod parser;
 pub mod types;
 
+mod input;
 pub mod markers;
 
-use std::collections::BTreeSet;
 use std::convert::Infallible;
 use std::marker::PhantomData;
 
 pub use self::{
+    input::SchemaInput,
     names::FieldName,
-    parser::{load_schema, schema_from_string, Document},
+    parser::{load_schema, Document},
 };
-
-#[cfg(test)]
-pub(crate) use self::{parser::parse_schema, type_index::TypeIndex};
+use self::{type_index::TypeIndex, types::SchemaRoots};
 
 // TODO: Uncomment this
 // pub use self::{types::*},
@@ -26,17 +25,23 @@ pub struct Unvalidated;
 pub struct Validated;
 
 pub struct Schema<'a, State> {
-    doc: &'a Document,
-    type_index: type_index::TypeIndex<'a>,
+    type_index: Box<dyn type_index::TypeIndex + 'a>,
     phantom: PhantomData<State>,
 }
 
 impl<'a> Schema<'a, Unvalidated> {
-    pub fn new(document: &'a Document) -> Self {
-        let type_index = type_index::TypeIndex::for_schema_2(document);
+    pub fn new(input: SchemaInput) -> Self {
+        let type_index: Box<dyn TypeIndex> = match input {
+            SchemaInput::Document(document) => {
+                Box::new(type_index::SchemaBackedTypeIndex::for_schema(document))
+            }
+            #[cfg(feature = "rkyv")]
+            SchemaInput::Archive(data) => Box::new(
+                type_index::optimised::ArchiveBacked::from_checked_data(data),
+            ),
+        };
 
         Schema {
-            doc: document,
             phantom: PhantomData,
             type_index,
         }
@@ -48,44 +53,48 @@ impl<'a> Schema<'a, Unvalidated> {
         self.type_index.validate_all()?;
 
         Ok(Schema {
-            doc: self.doc,
+            // doc: self.doc,
             type_index: self.type_index,
             phantom: PhantomData,
         })
     }
 
-    pub fn lookup<Kind>(&self, name: &str) -> Result<Kind, SchemaError>
+    pub fn lookup<'b, Kind>(&'b self, name: &str) -> Result<Kind, SchemaError>
     where
-        Kind: TryFrom<types::Type<'a>, Error = SchemaError> + 'a,
+        Kind: TryFrom<types::Type<'b>> + 'b,
+        Kind::Error: Into<SchemaError>,
     {
-        Kind::try_from(self.type_index.lookup_valid_type(name)?)
+        Kind::try_from(self.type_index.lookup_valid_type(name)?).map_err(Into::into)
         // TODO: Suggestion logic should probably be implemented here (or in type_index)
     }
 }
 
 impl<'a> Schema<'a, Validated> {
-    pub fn iter<'b>(&'b self) -> impl Iterator<Item = types::Type<'a>> + 'b {
-        let keys = self.type_index.types.keys().collect::<BTreeSet<_>>();
+    pub fn root_types(&self) -> Result<SchemaRoots<'_>, SchemaError> {
+        self.type_index.root_types()
+    }
 
-        keys.into_iter()
-            .map(|name| self.type_index.private_lookup(name).unwrap())
+    pub fn iter(&self) -> impl Iterator<Item = types::Type<'_>> {
+        // unsafe_iter is safe because we're in a validated schema
+        self.type_index.unsafe_iter()
     }
 
     // Looks up a kind that we're not certain is in the validated schema.
-    pub fn try_lookup<Kind>(&self, name: &str) -> Result<Kind, SchemaError>
+    pub fn try_lookup<'b, Kind>(&'b self, name: &str) -> Result<Kind, SchemaError>
     where
-        Kind: TryFrom<types::Type<'a>, Error = SchemaError> + 'a,
+        Kind: TryFrom<types::Type<'b>, Error = SchemaError>,
     {
         Kind::try_from(self.type_index.lookup_valid_type(name)?)
         // TODO: Suggestion logic should probably be implemented here (or in type_index)
     }
 
-    pub fn lookup<Kind>(&self, name: &str) -> Result<Kind, SchemaError>
+    pub fn lookup<'b, Kind>(&'b self, name: &str) -> Result<Kind, SchemaError>
     where
-        Kind: TryFrom<types::Type<'a>> + 'a,
+        Kind: TryFrom<types::Type<'b>>,
         Kind::Error: Into<SchemaError>,
     {
-        Kind::try_from(self.type_index.private_lookup(name).ok_or_else(|| {
+        // unsafe_lookup is safe because we're validated
+        Kind::try_from(self.type_index.unsafe_lookup(name).ok_or_else(|| {
             SchemaError::CouldNotFindType {
                 name: name.to_string(),
             }

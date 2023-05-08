@@ -1,13 +1,11 @@
 ---
 source: cynic-codegen/src/fragment_derive/arguments/tests.rs
-assertion_line: 36
 expression: "analyse(literals, field, Some(&format_ident!(\"MyArguments\").into()),\n        Span::call_site()).map(|o| o.arguments)"
 ---
 Ok(
     [
         Field {
             schema_field: InputValue {
-                description: None,
                 name: FieldName {
                     graphql_name: "filters",
                 },
@@ -19,11 +17,9 @@ Ok(
             value: Object(
                 Object {
                     schema_obj: InputObjectType {
-                        description: None,
                         name: "BookFilters",
                         fields: [
                             InputValue {
-                                description: None,
                                 name: FieldName {
                                     graphql_name: "authors",
                                 },
@@ -37,7 +33,6 @@ Ok(
                                 has_default: false,
                             },
                             InputValue {
-                                description: None,
                                 name: FieldName {
                                     graphql_name: "state",
                                 },
@@ -53,7 +48,6 @@ Ok(
                     fields: [
                         Field {
                             schema_field: InputValue {
-                                description: None,
                                 name: FieldName {
                                     graphql_name: "authors",
                                 },

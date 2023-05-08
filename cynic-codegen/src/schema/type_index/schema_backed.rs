@@ -1,175 +1,188 @@
 use std::{
-    collections::{HashMap, HashSet},
+    borrow::Cow,
+    collections::{BTreeSet, HashMap, HashSet},
     marker::PhantomData,
-    rc::Rc,
 };
 
 use once_cell::sync::Lazy;
 
-use super::{names::FieldName, types::*, SchemaError};
-use crate::schema::parser::{self, Definition, Document, TypeDefinition, TypeExt};
+use crate::schema::{
+    names::FieldName,
+    parser::{self, Definition, Document, TypeDefinition, TypeExt},
+    types::*,
+    SchemaError,
+};
 
-#[derive(Clone)]
-pub struct TypeIndex<'a> {
-    pub(super) types: Rc<HashMap<&'a str, &'a TypeDefinition>>,
+#[ouroboros::self_referencing]
+pub struct SchemaBackedTypeIndex {
+    document: Document,
+    query_root: String,
+    mutation_root: Option<String>,
+    subscription_root: Option<String>,
+    #[borrows(document)]
+    #[covariant]
+    types: HashMap<&'this str, &'this TypeDefinition>,
 }
 
-impl<'a> TypeIndex<'a> {
-    pub fn empty() -> Self {
-        TypeIndex {
-            types: Rc::new(HashMap::new()),
-        }
-    }
+impl SchemaBackedTypeIndex {
+    pub fn for_schema(document: Document) -> Self {
+        let mut query_root = "Query".to_string();
+        let mut mutation_root = None;
+        let mut subscription_root = None;
 
-    pub(super) fn for_schema_2(document: &'a Document) -> Self {
-        let mut types = HashMap::new();
         for definition in &document.definitions {
-            if let Definition::TypeDefinition(type_def) = definition {
-                types.insert(name_for_type(type_def), type_def);
-            }
-        }
-        for def in BUILTIN_SCALARS.as_ref() {
-            types.insert(name_for_type(def), def);
-        }
-
-        TypeIndex {
-            types: Rc::new(types),
-        }
-    }
-
-    #[deprecated]
-    pub fn for_schema(document: &'a Document) -> Self {
-        let mut types = HashMap::new();
-        for definition in &document.definitions {
-            if let Definition::TypeDefinition(type_def) = definition {
-                types.insert(name_for_type(type_def), type_def);
+            if let Definition::SchemaDefinition(schema) = definition {
+                if let Some(query_type) = &schema.query {
+                    query_root = query_type.clone();
+                }
+                mutation_root = schema.mutation.clone();
+                subscription_root = schema.subscription.clone();
+                break;
             }
         }
 
-        TypeIndex {
-            types: Rc::new(types),
-        }
+        SchemaBackedTypeIndex::new(
+            document,
+            query_root,
+            mutation_root,
+            subscription_root,
+            |document| {
+                let mut types = HashMap::new();
+                for definition in &document.definitions {
+                    if let Definition::TypeDefinition(type_def) = definition {
+                        types.insert(name_for_type(type_def), type_def);
+                    }
+                }
+                for def in BUILTIN_SCALARS.as_ref() {
+                    types.insert(name_for_type(def), def);
+                }
+                types
+            },
+        )
     }
+}
 
-    pub fn lookup_valid_type(&self, name: &str) -> Result<Type<'a>, SchemaError> {
-        let type_def =
-            self.types
-                .get(name)
-                .copied()
-                .ok_or_else(|| SchemaError::CouldNotFindType {
-                    name: name.to_string(),
-                })?;
+impl super::TypeIndex for SchemaBackedTypeIndex {
+    fn lookup_valid_type<'b>(&'b self, name: &str) -> Result<Type<'b>, SchemaError> {
+        let type_def = self.borrow_types().get(name).copied().ok_or_else(|| {
+            SchemaError::CouldNotFindType {
+                name: name.to_string(),
+            }
+        })?;
 
         self.validate(vec![type_def])?;
 
-        Ok(self.private_lookup(name).unwrap())
+        // Safe because we validated
+        Ok(self.unsafe_lookup(name).unwrap())
     }
 
-    pub(super) fn validate_all(&self) -> Result<(), SchemaError> {
-        self.validate(self.types.values().copied().collect())
+    fn validate_all(&self) -> Result<(), SchemaError> {
+        self.validate(self.borrow_types().values().copied().collect())
     }
 
-    pub(super) fn private_lookup(&self, name: &str) -> Option<Type<'a>> {
+    fn root_types(&self) -> Result<SchemaRoots<'_>, SchemaError> {
+        Ok(SchemaRoots {
+            query: self
+                .lookup_valid_type(self.borrow_query_root())?
+                .try_into()?,
+            mutation: self
+                .borrow_mutation_root()
+                .as_ref()
+                .map(|name| ObjectType::try_from(self.lookup_valid_type(name)?))
+                .transpose()?
+                .or_else(|| ObjectType::try_from(self.lookup_valid_type("Mutation").ok()?).ok()),
+            subscription: self
+                .borrow_subscription_root()
+                .as_ref()
+                .map(|name| ObjectType::try_from(self.lookup_valid_type(name)?))
+                .transpose()?
+                .or_else(|| {
+                    ObjectType::try_from(self.lookup_valid_type("Subscription").ok()?).ok()
+                }),
+        })
+    }
+
+    fn unsafe_lookup<'b>(&'b self, name: &str) -> Option<Type<'b>> {
         // Note: This function should absolutely only be called after the hierarchy has
         // been validated.  The current module privacy settings enforce this, but don't make this
         // private or call it without being careful.
         let type_def = self
-            .types
+            .borrow_types()
             .get(name)
             .copied()
             .expect("Couldn't find a type - this should be impossible");
 
         Some(match type_def {
             TypeDefinition::Scalar(def) => Type::Scalar(ScalarType {
-                name: &def.name,
+                name: Cow::Borrowed(&def.name),
                 builtin: scalar_is_builtin(&def.name),
             }),
             TypeDefinition::Object(def) => Type::Object(ObjectType {
-                description: def.description.as_deref(),
-                name: &def.name,
+                name: Cow::Borrowed(&def.name),
                 fields: def
                     .fields
                     .iter()
-                    .map(|field| build_field(field, &def.name, self))
+                    .map(|field| build_field(field, &def.name))
                     .collect(),
                 implements_interfaces: def
                     .implements_interfaces
                     .iter()
-                    .map(|iface| InterfaceRef(iface.as_ref(), self.clone()))
+                    .map(|iface| InterfaceRef(Cow::Borrowed(iface.as_ref())))
                     .collect(),
             }),
             TypeDefinition::Interface(def) => Type::Interface(InterfaceType {
-                description: def.description.as_deref(),
-                name: &def.name,
+                name: Cow::Borrowed(&def.name),
                 fields: def
                     .fields
                     .iter()
-                    .map(|f| build_field(f, &def.name, self))
+                    .map(|f| build_field(f, &def.name))
                     .collect(),
             }),
             TypeDefinition::Union(def) => Type::Union(UnionType {
-                description: def.description.as_deref(),
-                name: &def.name,
+                name: Cow::Borrowed(&def.name),
                 types: def
                     .types
                     .iter()
-                    .map(|name| ObjectRef(name.as_str(), self.clone()))
+                    .map(|name| ObjectRef(Cow::Borrowed(name.as_str())))
                     .collect(),
             }),
             TypeDefinition::Enum(def) => Type::Enum(EnumType {
-                description: def.description.as_deref(),
-                name: &def.name,
+                name: Cow::Borrowed(&def.name),
                 values: def
                     .values
                     .iter()
                     .map(|val| EnumValue {
-                        description: val.description.as_deref(),
                         name: FieldName::new(&val.name),
                     })
                     .collect(),
             }),
             TypeDefinition::InputObject(def) => Type::InputObject(InputObjectType {
-                description: def.description.as_deref(),
-                name: &def.name,
-                fields: def
-                    .fields
-                    .iter()
-                    .map(|field| convert_input_value(self, field))
-                    .collect(),
+                name: Cow::Borrowed(&def.name),
+                fields: def.fields.iter().map(convert_input_value).collect(),
             }),
         })
     }
 
-    fn lookup_type(&self, name: &str) -> Option<&'a TypeDefinition> {
+    fn unsafe_iter<'b>(&'b self) -> Box<dyn Iterator<Item = Type<'b>> + 'b> {
+        let keys = self.borrow_types().keys().collect::<BTreeSet<_>>();
+
+        Box::new(
+            keys.into_iter()
+                .map(|name| self.unsafe_lookup(name).unwrap()),
+        )
+    }
+}
+
+impl SchemaBackedTypeIndex {
+    fn lookup_type<'a>(&'a self, name: &str) -> Option<&'a TypeDefinition> {
         #[allow(clippy::map_clone)]
-        self.types.get(name).map(|d| *d)
-    }
-
-    pub fn is_scalar(&self, name: &str) -> bool {
-        self.types
-            .get(name)
-            .map(|def| matches!(def, TypeDefinition::Scalar(_)))
-            .unwrap_or(false)
-    }
-
-    pub fn is_enum(&self, name: &str) -> bool {
-        self.types
-            .get(name)
-            .map(|def| matches!(def, TypeDefinition::Enum(_)))
-            .unwrap_or(false)
-    }
-
-    pub fn is_input_object(&self, name: &str) -> bool {
-        self.types
-            .get(name)
-            .map(|def| matches!(def, TypeDefinition::InputObject(_)))
-            .unwrap_or(false)
+        self.borrow_types().get(name).map(|d| *d)
     }
 
     /// Validates that all the types contained within the given types do exist.
     ///
     /// So we can just directly use refs to them.
-    fn validate(&self, mut defs: Vec<&'a TypeDefinition>) -> Result<(), SchemaError> {
+    fn validate<'a>(&'a self, mut defs: Vec<&'a TypeDefinition>) -> Result<(), SchemaError> {
         let mut validated = HashSet::<&str>::new();
 
         macro_rules! validate {
@@ -309,26 +322,6 @@ fn scalar_is_builtin(name: &str) -> bool {
         .any(|s| matches!(s, TypeDefinition::Scalar(s) if s.name == name))
 }
 
-impl<'a, T> super::types::TypeRef<'a, T>
-where
-    Type<'a>: TryInto<T>,
-    <Type<'a> as TryInto<T>>::Error: std::fmt::Debug,
-    // T: 'a,
-{
-    pub fn inner_type(&self) -> T {
-        match self {
-            TypeRef::Named(name, index, _) => {
-                // Note: we assume that TypeRef is only constructed after validation,
-                // which makes this unwrap ok.
-                // Probably want to enforce this via module hierarchy.
-                index.private_lookup(name).unwrap().try_into().unwrap()
-            }
-            TypeRef::List(inner) => inner.inner_type(),
-            TypeRef::Nullable(inner) => inner.inner_type(),
-        }
-    }
-}
-
 fn name_for_type(type_def: &TypeDefinition) -> &str {
     match type_def {
         TypeDefinition::Scalar(inner) => &inner.name,
@@ -340,64 +333,45 @@ fn name_for_type(type_def: &TypeDefinition) -> &str {
     }
 }
 
-fn convert_input_value<'a>(
-    type_index: &TypeIndex<'a>,
-    val: &'a parser::InputValue,
-) -> InputValue<'a> {
+fn convert_input_value(val: &parser::InputValue) -> InputValue<'_> {
     InputValue {
-        description: val.description.as_deref(),
         name: FieldName {
-            graphql_name: &val.name,
+            graphql_name: Cow::Borrowed(&val.name),
         },
-        value_type: build_type_ref::<InputType<'_>>(&val.value_type, type_index),
+        value_type: build_type_ref::<InputType<'_>>(&val.value_type),
         has_default: val.default_value.is_some(),
     }
 }
 
-fn build_type_ref<'a, T>(ty: &'a parser::Type, type_index: &TypeIndex<'a>) -> TypeRef<'a, T> {
-    fn inner_fn<'a, T>(
-        ty: &'a parser::Type,
-        type_index: &TypeIndex<'a>,
-        nullable: bool,
-    ) -> TypeRef<'a, T> {
+fn build_type_ref<T>(ty: &parser::Type) -> TypeRef<'_, T> {
+    fn inner_fn<T>(ty: &parser::Type, nullable: bool) -> TypeRef<'_, T> {
         if let parser::Type::NonNullType(inner) = ty {
-            return inner_fn::<T>(inner, type_index, false);
+            return inner_fn::<T>(inner, false);
         }
 
         if nullable {
-            return TypeRef::<T>::Nullable(Box::new(inner_fn::<T>(ty, type_index, false)));
+            return TypeRef::<T>::Nullable(Box::new(inner_fn::<T>(ty, false)));
         }
 
         match ty {
-            parser::Type::NamedType(name) => {
-                TypeRef::<T>::Named(name, type_index.to_owned(), PhantomData)
-            }
+            parser::Type::NamedType(name) => TypeRef::<T>::Named(Cow::Borrowed(name), PhantomData),
             parser::Type::ListType(inner) => {
-                TypeRef::<T>::List(Box::new(inner_fn::<T>(inner, type_index, true)))
+                TypeRef::<T>::List(Box::new(inner_fn::<T>(inner, true)))
             }
             _ => panic!("This should be impossible"),
         }
     }
-    inner_fn::<T>(ty, type_index, true)
+    inner_fn::<T>(ty, true)
 }
 
-fn build_field<'a>(
-    field: &'a parser::Field,
-    parent_type_name: &'a str,
-    type_index: &TypeIndex<'a>,
-) -> Field<'a> {
+fn build_field<'a>(field: &'a parser::Field, parent_type_name: &'a str) -> Field<'a> {
     Field {
-        description: field.description.as_deref(),
         name: FieldName {
-            graphql_name: &field.name,
+            graphql_name: Cow::Borrowed(&field.name),
         },
-        arguments: field
-            .arguments
-            .iter()
-            .map(|arg| convert_input_value(type_index, arg))
-            .collect(),
-        field_type: build_type_ref::<OutputType<'_>>(&field.field_type, type_index),
-        parent_type_name,
+        arguments: field.arguments.iter().map(convert_input_value).collect(),
+        field_type: build_type_ref::<OutputType<'_>>(&field.field_type),
+        parent_type_name: Cow::Borrowed(parent_type_name),
     }
 }
 
@@ -408,6 +382,7 @@ mod tests {
     use std::{fs, path::PathBuf};
 
     use super::*;
+    use crate::schema::type_index::TypeIndex;
 
     #[rstest]
     #[case::starwars("starwars.schema.graphql")]
@@ -415,65 +390,66 @@ mod tests {
     fn test_schema_validation_on_good_schemas(#[case] schema_file: &'static str) {
         let schema = fs::read_to_string(PathBuf::from("../schemas/").join(schema_file)).unwrap();
         let document = parser::parse_schema(&schema).unwrap();
-        let index = TypeIndex::for_schema_2(&document);
+        let index = SchemaBackedTypeIndex::for_schema(document);
         index.validate_all().unwrap();
     }
 
     #[test]
     fn test_build_type_ref_non_null_type() {
-        let index = &TypeIndex::empty();
         let non_null_type =
             parser::Type::NonNullType(Box::new(parser::Type::NamedType("User".to_string())));
 
         assert_matches!(
-            build_type_ref::<InputType<'_>>(&non_null_type, index),
-            TypeRef::Named("User", _, _)
+            build_type_ref::<InputType<'_>>(&non_null_type),
+            TypeRef::Named(name, _) => {
+                assert_eq!(name, "User");
+            }
         );
     }
 
     #[test]
     fn test_build_type_ref_null_type() {
-        let index = &TypeIndex::empty();
-
         let nullable_type = parser::Type::NamedType("User".to_string());
 
         assert_matches!(
-            build_type_ref::<InputType<'_>>(&nullable_type, index),
+            build_type_ref::<InputType<'_>>(&nullable_type),
             TypeRef::Nullable(inner) => {
-                assert_matches!(*inner, TypeRef::Named("User", _, _))
+                assert_matches!(*inner, TypeRef::Named(name, _) => {
+                    assert_eq!(name, "User")
+                })
             }
         );
     }
 
     #[test]
     fn test_build_type_ref_required_list_type() {
-        let index = &TypeIndex::empty();
-
         let required_list = parser::Type::NonNullType(Box::new(parser::Type::ListType(Box::new(
             parser::Type::NonNullType(Box::new(parser::Type::NamedType("User".to_string()))),
         ))));
 
         assert_matches!(
-            build_type_ref::<InputType<'_>>(&required_list, index),
+            build_type_ref::<InputType<'_>>(&required_list),
             TypeRef::List(inner) => {
-                assert_matches!(*inner, TypeRef::Named("User", _, _))
+                assert_matches!(*inner, TypeRef::Named(name, _) => {
+                    assert_eq!(name, "User")
+                })
             }
         );
     }
 
     #[test]
     fn test_build_type_ref_option_list_type() {
-        let index = &TypeIndex::empty();
-
         let optional_list =
             parser::Type::ListType(Box::new(parser::Type::NamedType("User".to_string())));
 
         assert_matches!(
-            build_type_ref::<InputType<'_>>(&optional_list, index),
+            build_type_ref::<InputType<'_>>(&optional_list),
             TypeRef::Nullable(inner) => {
                 assert_matches!(*inner, TypeRef::List(inner) => {
                     assert_matches!(*inner, TypeRef::Nullable(inner) => {
-                        assert_matches!(*inner, TypeRef::Named("User", _, _))
+                        assert_matches!(*inner, TypeRef::Named(name, _) => {
+                            assert_eq!(name, "User")
+                        })
                     })
                 })
             }
