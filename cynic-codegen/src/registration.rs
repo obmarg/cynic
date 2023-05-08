@@ -96,7 +96,7 @@ impl SchemaRegistration<'_> {
         use crate::use_schema::use_schema_impl;
 
         let document_string = String::from_utf8(self.data.clone()).expect("schema to be utf8");
-        let document = graphql_parser::parse_schema(&document_string)
+        let document = crate::schema::schema_from_string(document_string)
             .map_err(|error| SchemaRegistrationError::SchemaErrors(error.to_string()))?
             .into_static();
 

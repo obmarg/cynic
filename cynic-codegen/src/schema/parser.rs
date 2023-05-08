@@ -29,6 +29,10 @@ pub fn load_schema(filename: impl AsRef<std::path::Path>) -> Result<Document, Sc
     let schema = std::fs::read_to_string(&pathbuf)
         .map_err(|_| SchemaLoadError::FileNotFound(pathbuf.to_str().unwrap().to_string()))?;
 
+    schema_from_string(schema)
+}
+
+pub fn schema_from_string(schema: String) -> Result<Document, SchemaLoadError> {
     Ok(add_typenames(parse_schema(&schema)?))
 }
 
@@ -60,13 +64,17 @@ pub enum SchemaLoadError {
 
 impl SchemaLoadError {
     pub fn into_syn_error(self, schema_span: proc_macro2::Span) -> syn::Error {
-        let message = match self {
-            SchemaLoadError::IoError(e) => format!("Could not load schema file: {}", e),
-            SchemaLoadError::ParseError(e) => format!("Could not parse schema file: {}", e),
-            SchemaLoadError::FileNotFound(e) => format!("Could not find file: {}", e),
-        };
+        syn::Error::new(schema_span, self.to_string())
+    }
+}
 
-        syn::Error::new(schema_span, message)
+impl std::fmt::Display for SchemaLoadError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            SchemaLoadError::IoError(e) => write!(f, "Could not load schema file: {}", e),
+            SchemaLoadError::ParseError(e) => write!(f, "Could not parse schema file: {}", e),
+            SchemaLoadError::FileNotFound(e) => write!(f, "Could not find file: {}", e),
+        }
     }
 }
 
