@@ -43,6 +43,8 @@ pub enum SchemaLoadError {
     IoError(String),
     ParseError(String),
     FileNotFound(String),
+    NamedSchemaNotFound(String),
+    DefaultSchemaNotFound,
 }
 
 impl SchemaLoadError {
@@ -57,6 +59,14 @@ impl std::fmt::Display for SchemaLoadError {
             SchemaLoadError::IoError(e) => write!(f, "Could not load schema file: {}", e),
             SchemaLoadError::ParseError(e) => write!(f, "Could not parse schema file: {}", e),
             SchemaLoadError::FileNotFound(e) => write!(f, "Could not find file: {}", e),
+            SchemaLoadError::NamedSchemaNotFound(e) => write!(
+                f,
+                "Could not find a schema named {}\n\n Have you registered it in build.rs?",
+                e
+            ),
+            SchemaLoadError::DefaultSchemaNotFound => {
+                write!(f, "Couldn't determine which schema to use.  Please provide the `schema` argument or set a default schema in build.rs")
+            }
         }
     }
 }

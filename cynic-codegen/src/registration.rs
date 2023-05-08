@@ -100,11 +100,11 @@ impl SchemaRegistration<'_> {
             .map_err(|error| SchemaRegistrationError::SchemaErrors(error.to_string()))?
             .into_static();
 
-        let schema = Schema::new(SchemaInput::Document(document.clone()))
+        let schema = Schema::new(SchemaInput::Document(document))
             .validate()
             .map_err(|errors| SchemaRegistrationError::SchemaErrors(errors.to_string()))?;
 
-        let tokens = use_schema_impl(&document, schema)
+        let tokens = use_schema_impl(schema)
             .map_err(|errors| SchemaRegistrationError::SchemaErrors(errors.to_string()))?;
 
         let schema_module_filename = schema_module_filename(self.name, &out_dir()?);

@@ -25,7 +25,7 @@ pub fn enum_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
 
     match EnumDeriveInput::from_derive_input(ast) {
         Ok(input) => {
-            let schema_input = SchemaInput::from_macro_attr_string(&*input.schema_path)
+            let schema_input = SchemaInput::from_schema_path(&*input.schema_path)
                 .map_err(|e| e.into_syn_error(input.schema_path.span()))?;
 
             let schema = Schema::new(schema_input);

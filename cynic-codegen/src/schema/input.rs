@@ -10,24 +10,15 @@ pub enum SchemaInput {
 // Public API
 impl SchemaInput {
     /// Parses a SchemaInput from a filename passed to a macro
-    ///
-    /// This will look for either:
-    /// - An rkyv file relative to OUT_DIR/cynic/ if set
-    /// - SDL relative to CARGO_MANIFEST_DIR if set (or CWD if not)
-    pub(crate) fn from_macro_attr_string(
-        filename: impl AsRef<std::path::Path>,
+    pub(crate) fn from_schema_path(
+        path: impl AsRef<std::path::Path>,
     ) -> Result<SchemaInput, SchemaLoadError> {
-        let filename = filename.as_ref();
-        if let Ok(out_dir) = std::env::var("OUT_DIR") {
-            if let Some(bytes) = rkyv_from_outdir(filename, out_dir)? {
-                return Ok(SchemaInput::Archive(bytes));
-            }
-        }
-        if let Some(document) = document_from_path(filename)? {
+        let path = path.as_ref();
+        if let Some(document) = document_from_path(path)? {
             return Ok(SchemaInput::Document(document));
         }
         return Err(SchemaLoadError::FileNotFound(
-            filename.to_string_lossy().to_string(),
+            path.to_string_lossy().to_string(),
         ));
     }
 
@@ -45,24 +36,24 @@ impl SchemaInput {
 }
 
 // Private API
-fn rkyv_from_outdir(
-    filename: &std::path::Path,
-    outdir: String,
-) -> Result<Option<Vec<u8>>, SchemaLoadError> {
-    if filename.components().count() != 1 {
-        // We take a schema name for arkyvs, not a path
-        return Ok(None);
-    }
-    let mut path = std::path::PathBuf::from(outdir);
-    path.push("cynic");
-    path.push(format!("{}.rkyv", filename.to_string_lossy()));
-    if !path.exists() {
-        return Ok(None);
-    }
-    let bytes = std::fs::read(path)?;
+// fn rkyv_from_outdir(
+//     filename: &std::path::Path,
+//     outdir: String,
+// ) -> Result<Option<Vec<u8>>, SchemaLoadError> {
+//     if filename.components().count() != 1 {
+//         // We take a schema name for arkyvs, not a path
+//         return Ok(None);
+//     }
+//     let mut path = std::path::PathBuf::from(outdir);
+//     path.push("cynic");
+//     path.push(format!("{}.rkyv", filename.to_string_lossy()));
+//     if !path.exists() {
+//         return Ok(None);
+//     }
+//     let bytes = std::fs::read(path)?;
 
-    Ok(Some(bytes))
-}
+//     Ok(Some(bytes))
+// }
 
 fn document_from_path(
     filename: impl AsRef<std::path::Path>,
