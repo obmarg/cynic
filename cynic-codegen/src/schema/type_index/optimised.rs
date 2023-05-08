@@ -18,7 +18,7 @@ pub struct OptimisedTypes<'a> {
 }
 
 impl Schema<'_, schema::Validated> {
-    fn optimise(&self) -> OptimisedTypes<'_> {
+    pub(crate) fn optimise(&self) -> OptimisedTypes<'_> {
         OptimisedTypes {
             types: self
                 .type_index

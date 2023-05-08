@@ -1,9 +1,10 @@
 use crate::schema::load_schema;
 
-use super::{parser::SchemaLoadError, type_index::optimised::OptimisedTypes, Document};
+use super::{parser::SchemaLoadError, Document};
 
 pub enum SchemaInput {
     Document(Document),
+    #[cfg(feature = "rkyv")]
     Archive(Vec<u8>),
 }
 

@@ -47,12 +47,8 @@ impl<'a> SchemaRegistrationBuilder<'a> {
             path: &Path,
         ) -> Result<SchemaRegistration<'a>, SchemaRegistrationError> {
             let data = std::fs::read(path)?;
-            let registration = SchemaRegistration {
-                name,
-                data,
-                format: Format::Sdl,
-            };
-            registration.write(&registration.filename()?)?;
+            let registration = SchemaRegistration { name, data };
+            registration.write(registration.filename()?)?;
             registration.write_schema_module()?;
             cargo_rerun_if_changed(path.as_os_str().to_str().expect("utf8 paths"));
             Ok(registration)
@@ -66,7 +62,6 @@ impl<'a> SchemaRegistrationBuilder<'a> {
 /// Additional methods can be called on this to
 pub struct SchemaRegistration<'a> {
     name: &'a str,
-    format: Format,
     data: Vec<u8>,
 }
 
@@ -80,16 +75,34 @@ impl SchemaRegistration<'_> {
     /// You should only call this once per crate - any subsequent calls will overwrite
     /// the default.
     pub fn as_default(self) -> Result<Self, SchemaRegistrationError> {
-        self.write(&default_filename(self.format, &out_dir()?))?;
+        self.write(default_filename(&out_dir()?))?;
         Ok(self)
     }
 }
 
 // Private API
 impl SchemaRegistration<'_> {
-    fn write(&self, filename: &Path) -> Result<(), SchemaRegistrationError> {
+    fn write(&self, mut filename: PathBuf) -> Result<(), SchemaRegistrationError> {
         std::fs::create_dir_all(filename.parent().expect("filename to have a parent"))?;
-        Ok(std::fs::write(filename, &self.data)?)
+        #[cfg(feature = "rkyv")]
+        {
+            filename.set_extension("graphql");
+            let document_string = String::from_utf8(self.data.clone()).expect("schema to be utf8");
+            let document = crate::schema::load_schema(&document_string)
+                .map_err(|error| SchemaRegistrationError::SchemaErrors(error.to_string()))?
+                .into_static();
+            let schema = Schema::new(SchemaInput::Document(document))
+                .validate()
+                .map_err(|errors| SchemaRegistrationError::SchemaErrors(errors.to_string()))?;
+            let optimised = schema.optimise();
+            let bytes = rkyv::to_bytes::<_, 4096>(&optimised).unwrap();
+            Ok(std::fs::write(filename, &self.data)?)
+        }
+        #[cfg(not(feature = "rkyv"))]
+        {
+            filename.set_extension("rkyv");
+            Ok(std::fs::write(filename, &self.data)?)
+        }
     }
 
     fn write_schema_module(&self) -> Result<(), SchemaRegistrationError> {
@@ -122,7 +135,7 @@ impl SchemaRegistration<'_> {
 
     fn filename(&self) -> Result<PathBuf, SchemaRegistrationError> {
         let out_dir = out_dir()?;
-        Ok(registration_filename(self.name, self.format, &out_dir))
+        Ok(registration_filename(self.name, &out_dir))
     }
 }
 
@@ -143,29 +156,18 @@ pub(super) fn schema_module_filename(name: &str, out_dir: &str) -> PathBuf {
     path
 }
 
-fn registration_filename(name: &str, format: Format, out_dir: &str) -> PathBuf {
-    let extension = match format {
-        Format::Sdl => "graphql",
-    };
+fn registration_filename(name: &str, out_dir: &str) -> PathBuf {
     let mut path = PathBuf::from(out_dir);
     path.push("cynic-schemas");
-    path.push(format!("{name}.{extension}",));
+    path.push(format!("{name}.graphql",));
 
     path
 }
 
-fn default_filename(format: Format, out_dir: &str) -> PathBuf {
-    let extension = match format {
-        Format::Sdl => "graphql",
-    };
+fn default_filename(out_dir: &str) -> PathBuf {
     let mut path = PathBuf::from(out_dir);
     path.push("cynic-schemas");
-    path.push(format!("default.{extension}",));
+    path.push("default.graphql");
 
     path
-}
-
-#[derive(Clone, Copy)]
-enum Format {
-    Sdl,
 }
