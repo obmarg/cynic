@@ -7,7 +7,7 @@ use crate::{
     idents::RenameAll,
     schema::{
         types::{EnumType, EnumValue},
-        Schema, SchemaInput, Unvalidated,
+        Schema, Unvalidated,
     },
 };
 
@@ -25,10 +25,7 @@ pub fn enum_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
 
     match EnumDeriveInput::from_derive_input(ast) {
         Ok(input) => {
-            let schema_input = SchemaInput::from_schema_path(&*input.schema_path)
-                .map_err(|e| e.into_syn_error(input.schema_path.span()))?;
-
-            let schema = Schema::new(schema_input);
+            let schema = Schema::new(input.schema_input()?);
 
             enum_derive_impl(input, &schema, enum_span).or_else(|e| Ok(e.to_compile_error()))
         }

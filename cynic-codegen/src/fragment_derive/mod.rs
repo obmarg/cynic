@@ -3,7 +3,7 @@ use proc_macro2::{Span, TokenStream};
 use crate::{
     schema::{
         types::{self as schema},
-        Schema, SchemaInput,
+        Schema,
     },
     suggestions::FieldSuggestionError,
     Errors,
@@ -40,10 +40,7 @@ pub fn fragment_derive_impl(input: FragmentDeriveInput) -> Result<TokenStream, E
     input.validate()?;
     input.detect_aliases();
 
-    let schema_input = SchemaInput::from_schema_path(&*input.schema_path)
-        .map_err(|e| e.into_syn_error(input.schema_path.span()))?;
-
-    let schema = Schema::new(schema_input);
+    let schema = Schema::new(input.schema_input()?);
 
     let schema_type = schema
         .lookup::<FragmentDeriveType<'_>>(&input.graphql_type_name())

@@ -11,6 +11,40 @@ pub enum SchemaInput {
 // Public API
 impl SchemaInput {
     /// Parses a SchemaInput from a filename passed to a macro
+    pub(crate) fn default() -> Result<SchemaInput, SchemaLoadError> {
+        Self::from_schema_name("default").map_err(|error| match error {
+            SchemaLoadError::NamedSchemaNotFound(_) => SchemaLoadError::DefaultSchemaNotFound,
+            _ => error,
+        })
+    }
+
+    /// Parses a SchemaInput from a filename passed to a macro
+    pub(crate) fn from_schema_name(name: &str) -> Result<SchemaInput, SchemaLoadError> {
+        let out_dir = std::env::var("OUT_DIR").map_err(|_| SchemaLoadError::UnknownOutDir)?;
+
+        let mut path = std::path::PathBuf::from(out_dir);
+        path.push("cynic-schemas");
+        #[cfg(feature = "rkyv")]
+        let extension = "rkyv";
+        #[cfg(not(feature = "rkyv"))]
+        let extension = "graphql";
+        path.push(format!("{name}.{extension}"));
+        if !path.exists() {
+            return Err(SchemaLoadError::NamedSchemaNotFound(name.to_string()));
+        }
+
+        #[cfg(feature = "rkyv")]
+        {
+            Self::from_rkyv_bytes(std::fs::read(path)?)
+        }
+        #[cfg(not(feature = "rkyv"))]
+        {
+            let string = std::fs::read_to_string(path)?;
+            Self::from_sdl(&string)
+        }
+    }
+
+    /// Parses a SchemaInput from a filename passed to a macro
     pub(crate) fn from_schema_path(
         path: impl AsRef<std::path::Path>,
     ) -> Result<SchemaInput, SchemaLoadError> {

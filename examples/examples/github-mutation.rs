@@ -16,7 +16,7 @@ fn main() {
     println!("{:?}", result);
 }
 
-fn run_query() -> cynic::GraphQlResponse<queries::CommentOnMutationSupportIssue> {
+fn run_query() -> cynic::GraphQlResponse<CommentOnMutationSupportIssue> {
     use cynic::http::ReqwestBlockingExt;
 
     let query = build_query();
@@ -31,63 +31,61 @@ fn run_query() -> cynic::GraphQlResponse<queries::CommentOnMutationSupportIssue>
         .unwrap()
 }
 
-fn build_query() -> cynic::Operation<
-    queries::CommentOnMutationSupportIssue,
-    queries::CommentOnMutationSupportIssueArguments,
-> {
+fn build_query(
+) -> cynic::Operation<CommentOnMutationSupportIssue, CommentOnMutationSupportIssueArguments> {
     use cynic::MutationBuilder;
-    use queries::{CommentOnMutationSupportIssue, CommentOnMutationSupportIssueArguments};
 
     CommentOnMutationSupportIssue::build(CommentOnMutationSupportIssueArguments {
         comment_body: "Testing".into(),
     })
 }
 
-#[cynic::schema_for_derives(file = "../schemas/github.graphql", module = "schema")]
-mod queries {
-    use github_schema as schema;
+use github_schema as schema;
 
-    #[derive(cynic::QueryVariables, Debug)]
-    pub struct CommentOnMutationSupportIssueArguments {
-        pub comment_body: String,
-    }
+#[derive(cynic::QueryVariables, Debug)]
+pub struct CommentOnMutationSupportIssueArguments {
+    pub comment_body: String,
+}
 
-    #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(
-        graphql_type = "Mutation",
-        variables = "CommentOnMutationSupportIssueArguments"
-    )]
-    pub struct CommentOnMutationSupportIssue {
-        #[arguments(input: {
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(
+    schema = "github",
+    graphql_type = "Mutation",
+    variables = "CommentOnMutationSupportIssueArguments"
+)]
+pub struct CommentOnMutationSupportIssue {
+    #[arguments(input: {
             body: $comment_body,
             subjectId: "MDU6SXNzdWU2ODU4NzUxMzQ=",
             clientMutationId: null,
         })]
-        pub add_comment: Option<AddCommentPayload>,
-    }
+    pub add_comment: Option<AddCommentPayload>,
+}
 
-    #[derive(cynic::QueryFragment, Debug)]
-    pub struct AddCommentPayload {
-        pub comment_edge: Option<IssueCommentEdge>,
-    }
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(schema = "github")]
+pub struct AddCommentPayload {
+    pub comment_edge: Option<IssueCommentEdge>,
+}
 
-    #[derive(cynic::QueryFragment, Debug)]
-    pub struct IssueCommentEdge {
-        pub node: Option<IssueComment>,
-    }
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(schema = "github")]
+pub struct IssueCommentEdge {
+    pub node: Option<IssueComment>,
+}
 
-    #[derive(cynic::QueryFragment, Debug)]
-    pub struct IssueComment {
-        pub id: cynic::Id,
-    }
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(schema = "github")]
+pub struct IssueComment {
+    pub id: cynic::Id,
+}
 
-    #[derive(cynic::InputObject, Clone, Debug)]
-    #[cynic(rename_all = "camelCase")]
-    pub struct AddCommentInput {
-        pub body: String,
-        pub client_mutation_id: Option<String>,
-        pub subject_id: cynic::Id,
-    }
+#[derive(cynic::InputObject, Clone, Debug)]
+#[cynic(schema = "github", rename_all = "camelCase")]
+pub struct AddCommentInput {
+    pub body: String,
+    pub client_mutation_id: Option<String>,
+    pub subject_id: cynic::Id,
 }
 
 #[cfg(test)]

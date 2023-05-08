@@ -9,7 +9,7 @@ use crate::{
     idents::RenameAll,
     schema::{
         types::{InputObjectType, InputValue},
-        Schema, SchemaInput,
+        Schema,
     },
     suggestions::FieldSuggestionError,
 };
@@ -44,10 +44,7 @@ pub fn input_object_derive_impl(
 ) -> Result<TokenStream, Errors> {
     use quote::quote;
 
-    let schema_input = SchemaInput::from_schema_path(&*input.schema_path)
-        .map_err(|e| e.into_syn_error(input.schema_path.span()))?;
-
-    let schema = Schema::new(schema_input);
+    let schema = Schema::new(input.schema_input()?);
 
     let input_object = schema
         .lookup::<InputObjectType<'_>>(&input.graphql_type_name())
@@ -226,6 +223,8 @@ fn pair_fields<'a>(
 #[cfg(test)]
 mod test {
     use assert_matches::assert_matches;
+
+    use crate::schema::SchemaInput;
 
     use super::*;
 

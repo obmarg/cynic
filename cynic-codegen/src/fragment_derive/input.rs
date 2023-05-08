@@ -2,7 +2,7 @@ use {
     darling::util::SpannedValue, proc_macro2::Span, quote::quote_spanned, std::collections::HashSet,
 };
 
-use crate::{idents::RenamableFieldIdent, types::CheckMode, Errors};
+use crate::{idents::RenamableFieldIdent, schema::SchemaInput, types::CheckMode, Errors};
 
 #[derive(darling::FromDeriveInput)]
 #[darling(attributes(cynic), supports(struct_named))]
@@ -11,7 +11,10 @@ pub struct FragmentDeriveInput {
     pub(super) data: darling::ast::Data<(), FragmentDeriveField>,
     pub(super) generics: syn::Generics,
 
-    pub schema_path: SpannedValue<String>,
+    #[darling(default)]
+    schema: Option<SpannedValue<String>>,
+    #[darling(default)]
+    schema_path: Option<SpannedValue<String>>,
 
     #[darling(default, rename = "schema_module")]
     schema_module_: Option<syn::Path>,
@@ -115,6 +118,20 @@ impl FragmentDeriveInput {
         }
 
         proc_macro2::TokenStream::new()
+    }
+
+    pub fn schema_input(&self) -> Result<SchemaInput, syn::Error> {
+        match (&self.schema, &self.schema_path) {
+            (None, None) => SchemaInput::default().map_err(|e| e.into_syn_error(Span::call_site())),
+            (None, Some(path)) => SchemaInput::from_schema_path(path.as_ref())
+                .map_err(|e| e.into_syn_error(path.span())),
+            (Some(name), None) => SchemaInput::from_schema_name(name.as_ref())
+                .map_err(|e| e.into_syn_error(name.span())),
+            (Some(_), Some(path)) => Err(syn::Error::new(
+                path.span(),
+                "Only one of schema_path & schema can be provided",
+            )),
+        }
     }
 }
 
@@ -267,7 +284,8 @@ mod tests {
                 ],
             )),
             generics: Default::default(),
-            schema_path: "abcd".to_string().into(),
+            schema: None,
+            schema_path: Some("abcd".to_string().into()),
             schema_module_: None,
             graphql_type: Some("abcd".to_string().into()),
             argument_struct: None,
@@ -347,7 +365,8 @@ mod tests {
                 ],
             )),
             generics: Default::default(),
-            schema_path: "abcd".to_string().into(),
+            schema: None,
+            schema_path: Some("abcd".to_string().into()),
             schema_module_: Some(syn::parse2(quote::quote! { abcd }).unwrap()),
             graphql_type: Some("abcd".to_string().into()),
             argument_struct: None,
@@ -367,7 +386,8 @@ mod tests {
                 vec![],
             )),
             generics: Default::default(),
-            schema_path: "abcd".to_string().into(),
+            schema: None,
+            schema_path: Some("abcd".to_string().into()),
             schema_module_: Some(syn::parse2(quote::quote! { abcd }).unwrap()),
             graphql_type: Some("abcd".to_string().into()),
             argument_struct: None,
@@ -421,7 +441,8 @@ mod tests {
                 ],
             )),
             generics: Default::default(),
-            schema_path: "abcd".to_string().into(),
+            schema: None,
+            schema_path: Some("abcd".to_string().into()),
             schema_module_: Some(syn::parse2(quote::quote! { abcd }).unwrap()),
             graphql_type: None,
             argument_struct: None,
