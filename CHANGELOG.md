@@ -27,6 +27,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 - The derive macros now support fields that are references.
 - Added `cynic_codegen::register_schema`, a mechanism for pre-registering schemas
   with cynic.
+- Added a `schema` attribute macro to declare the schema module for
+  pre-registered schemas.
 
 ### Changes
 

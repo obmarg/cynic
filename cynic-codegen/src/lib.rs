@@ -8,6 +8,7 @@ pub mod query_variables_derive;
 pub mod registration;
 pub mod scalar_derive;
 pub mod schema_for_derives;
+pub mod schema_module_attr;
 pub mod use_schema;
 
 mod error;

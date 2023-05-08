@@ -88,6 +88,7 @@ impl SchemaRegistration<'_> {
 // Private API
 impl SchemaRegistration<'_> {
     fn write(&self, filename: &Path) -> Result<(), SchemaRegistrationError> {
+        std::fs::create_dir_all(filename.parent().expect("filename to have a parent"))?;
         Ok(std::fs::write(filename, &self.data)?)
     }
 
@@ -106,7 +107,14 @@ impl SchemaRegistration<'_> {
         let tokens = use_schema_impl(&document, schema)
             .map_err(|errors| SchemaRegistrationError::SchemaErrors(errors.to_string()))?;
 
-        let mut out = std::fs::File::create(schema_module_filename(self.name, &out_dir()?))?;
+        let schema_module_filename = schema_module_filename(self.name, &out_dir()?);
+        std::fs::create_dir_all(
+            schema_module_filename
+                .parent()
+                .expect("filename to have a parent"),
+        )?;
+
+        let mut out = std::fs::File::create(&schema_module_filename)?;
         write!(&mut out, "{}", tokens)?;
 
         Ok(())
@@ -122,12 +130,12 @@ fn cargo_rerun_if_changed(name: &str) {
     println!("cargo:rerun-if-changed={name}");
 }
 
-fn out_dir() -> Result<String, SchemaRegistrationError> {
+pub(super) fn out_dir() -> Result<String, SchemaRegistrationError> {
     let out_dir = std::env::var("OUT_DIR").map_err(|_| SchemaRegistrationError::OutDirNotSet)?;
     Ok(out_dir)
 }
 
-fn schema_module_filename(name: &str, out_dir: &str) -> PathBuf {
+pub(super) fn schema_module_filename(name: &str, out_dir: &str) -> PathBuf {
     let mut path = PathBuf::from(out_dir);
     path.push("cynic-schemas");
     path.push(format!("{name}.rs",));

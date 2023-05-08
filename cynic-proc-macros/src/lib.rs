@@ -9,7 +9,7 @@ use proc_macro::TokenStream;
 
 use cynic_codegen::{
     enum_derive, fragment_derive, inline_fragments_derive, input_object_derive,
-    query_variables_derive, scalar_derive, schema_for_derives, use_schema,
+    query_variables_derive, scalar_derive, schema_for_derives, schema_module_attr, use_schema,
 };
 
 /// Imports a schema for use by cynic.
@@ -168,6 +168,21 @@ pub fn schema_for_derives(attrs: TokenStream, input: TokenStream) -> TokenStream
     let rv: TokenStream = match schema_for_derives::add_schema_attrs_to_derives(attrs, module) {
         Ok(tokens) => tokens.into(),
         Err(e) => e.to_compile_error().into(),
+    };
+
+    // eprintln!("{}", rv);
+
+    rv
+}
+
+#[proc_macro_attribute]
+pub fn schema(attrs: TokenStream, input: TokenStream) -> TokenStream {
+    let schema_name = syn::parse_macro_input!(attrs as syn::LitStr);
+    let module = syn::parse_macro_input!(input as syn::ItemMod);
+
+    let rv: TokenStream = match schema_module_attr::attribute_impl(schema_name, module) {
+        Ok(tokens) => tokens.into(),
+        Err(e) => e.to_compile_errors().into(),
     };
 
     // eprintln!("{}", rv);
