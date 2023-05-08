@@ -10,4 +10,4 @@ publish = false
 [dev-dependencies]
 cynic = { path = "../../cynic" }
 serde_json = "1.0"
-trybuild = "1.0"
+trybuild = "1.0.80"
