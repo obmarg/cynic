@@ -31,6 +31,11 @@ pub fn attribute_impl(
         }
     }
 
+    // Silence a bunch of warnings inside this module
+    module.attrs.push(parse_quote! {
+        #[allow(clippy::all, non_snake_case, non_camel_case_types)]
+    });
+
     let include: Item = parse_quote! {
         include!(concat!(env!("OUT_DIR"), #filename_str));
     };
