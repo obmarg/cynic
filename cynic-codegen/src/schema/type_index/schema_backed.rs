@@ -19,8 +19,6 @@ pub struct SchemaBackedTypeIndex {
     query_root: String,
     mutation_root: Option<String>,
     subscription_root: Option<String>,
-    // TODO: this should maybe just own the type defs?
-    // might be easier...
     #[borrows(document)]
     #[covariant]
     types: HashMap<&'this str, &'this TypeDefinition>,

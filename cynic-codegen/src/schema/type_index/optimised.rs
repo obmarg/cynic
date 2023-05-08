@@ -11,7 +11,8 @@ use crate::schema::{
 
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, PartialEq, Eq, Debug)]
 #[archive(check_bytes)]
-/// TODO: Doc string
+/// A collection of types that can be saved in an optimised rkyv format
+/// for quicker re-loading.
 pub struct OptimisedTypes<'a> {
     types: HashMap<String, Type<'a>>,
     schema_roots: SchemaRoots<'a>,

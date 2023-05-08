@@ -188,16 +188,6 @@ impl<'a, Field, FieldSchemaType, VariablesFields>
     where
         VariablesFields: VariableMatch<InnerVariables>,
     {
-        // Ok, so theoretically this could be the point that does fragment
-        // magic?
-        //
-        // Or we could be explicit about it and move it to the QueryFragment
-        // HMM?
-        //
-        // Or a hybrid approach?  Add a way to name particular selection
-        // sets to the builder, _and then_ add an optimisation phase
-        // that detects identical selection sets and extracts them as
-        // fragments?
         SelectionBuilder {
             recurse_depth: self.recurse_depth,
             ..SelectionBuilder::new(&mut self.field.children)
