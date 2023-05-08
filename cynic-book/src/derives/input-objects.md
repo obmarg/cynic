@@ -52,11 +52,15 @@ An InputObject can be configured with several attributes on the struct itself:
 - `rename_all="camelCase"` tells cynic to rename all the rust field names with
   a particular rule to match their GraphQL counterparts. If not provided this
   defaults to camelCase to be consistent with GraphQL conventions.
-- `schema_module` tells cynic where to find the schema module - that is a
-  module that has called the `use_schema!` macro. This will default to
-  `schema` if not provided. An override can also be provided by nesting the
-  InputObject inside a module with the `schema_for_derives` attribute
-  macro.
+- `schema` tells cynic which schema to use to validate your InlineFragments.
+  The schema you provide should have been registered in your `build.rs`.  This
+  is optional if you're using the schema that was registered as default, or if
+  you're using `schema_path` instead.
+- `schema_path` sets a path to the GraphQL schema. This is only required
+  if you're using a schema that wasn't registered in `build.rs`.
+- `schema_module` tells cynic where to find your schema module.  This is
+  optional and should only be needed if your schema module is not in scope or
+  named `schema`.
 
 <!-- TODO: list of the rename rules, possibly pulled from codegen docs -->
 
