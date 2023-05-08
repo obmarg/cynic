@@ -635,6 +635,7 @@ dependencies = [
  "rstest 0.11.0",
  "strsim",
  "syn",
+ "thiserror",
 ]
 
 [[package]]

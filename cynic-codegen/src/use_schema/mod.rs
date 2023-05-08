@@ -16,7 +16,7 @@ use {
 
 use crate::{
     error::Errors,
-    schema::{types::Type, Schema},
+    schema::{types::Type, Document, Schema, Validated},
 };
 
 use self::{
@@ -25,11 +25,17 @@ use self::{
 };
 
 pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
-    use quote::TokenStreamExt;
-
     let document = crate::schema::load_schema(input.schema_filename)
         .map_err(|e| e.into_syn_error(proc_macro2::Span::call_site()))?;
     let schema = Schema::new(&document).validate()?;
+    use_schema_impl(&document, schema)
+}
+
+pub(crate) fn use_schema_impl(
+    document: &Document,
+    schema: Schema<'_, Validated>,
+) -> Result<TokenStream, Errors> {
+    use quote::TokenStreamExt;
 
     let mut output = TokenStream::new();
     let mut field_module = TokenStream::new();

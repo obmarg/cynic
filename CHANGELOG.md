@@ -24,7 +24,9 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 - Added `cynic-introspection::Schema` which converts the introspection output
   into a friendlier format for working with.
 - The derive macros now support structs that are generic on lifetimes _and_ types.
-- The derive macros now fields that are references.
+- The derive macros now support fields that are references.
+- Added `cynic_codegen::register_schema`, a mechanism for pre-registering schemas
+  with cynic.
 
 ### Changes
 
@@ -37,6 +39,10 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 - Response deserialization will no longer work on random blobs of JSON that
   aren't in GraphQLResponse format.
 
+### Deprecations
+
+- `cynic_codegen::output_schema_module` is now deprecated in favour of `register_schema`.
+
 ## v2.2.8 - 2023-03-01
 
 ### Bug Fixes
@@ -45,7 +51,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## v2.2.7 - 2023-02-27
 
-### Bug Fixes 
+### Bug Fixes
 
 - You no longer have to specify the `Extensions` parameter on `GraphQLError` if
   you don't have any extensions.
@@ -99,7 +105,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ### Changes
 
 - The `use_schema` output has been re-organised to reduce the chances of
-  clashes.  This is technically a breaking change, but only if you're writing
+  clashes. This is technically a breaking change, but only if you're writing
   queries by hand rather than using the derives.
 
 ## v2.1.0 - 2022-11-09
@@ -121,7 +127,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 - Some of the derives weren't recasing GraphQL types/fields correctly, leading
   to weird errors.
-- Scalars defined using `impl_scalar!` couldn't be used as variables.  Now they
+- Scalars defined using `impl_scalar!` couldn't be used as variables. Now they
   can.
 
 ## v2.0.0 - 2022-11-07
