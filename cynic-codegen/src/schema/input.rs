@@ -26,7 +26,9 @@ impl SchemaInput {
         load_schema(sdl).map(SchemaInput::Document)
     }
 
+    #[cfg(feature = "rkyv")]
     pub fn from_rkyv_bytes(bytes: Vec<u8>) -> Result<SchemaInput, SchemaLoadError> {
+        use crate::schema::type_index::optimised::OptimisedTypes;
         // Typecheck here so we can be sure it's safe later on
         rkyv::check_archived_root::<OptimisedTypes<'_>>(&bytes)
             .map_err(|e| SchemaLoadError::ParseError(e.to_string()))?;

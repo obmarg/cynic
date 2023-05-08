@@ -35,6 +35,7 @@ impl<'a> Schema<'a, Unvalidated> {
             SchemaInput::Document(document) => {
                 Box::new(type_index::SchemaBackedTypeIndex::for_schema(document))
             }
+            #[cfg(feature = "rkyv")]
             SchemaInput::Archive(data) => Box::new(
                 type_index::optimised::ArchiveBacked::from_checked_data(data),
             ),

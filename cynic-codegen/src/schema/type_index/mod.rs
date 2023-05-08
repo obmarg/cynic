@@ -3,7 +3,9 @@ use super::{
     SchemaError,
 };
 
+#[cfg(feature = "rkyv")]
 pub mod optimised;
+
 mod schema_backed;
 
 pub use self::schema_backed::SchemaBackedTypeIndex;
