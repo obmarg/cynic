@@ -13,7 +13,7 @@ use std::marker::PhantomData;
 
 pub use self::{
     names::FieldName,
-    parser::{load_schema, Document},
+    parser::{load_schema, schema_from_string, Document},
 };
 
 #[cfg(test)]

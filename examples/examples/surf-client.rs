@@ -3,9 +3,9 @@
 //!
 //! This example requires the `surf` feature to be active.
 
-mod schema {
-    cynic::use_schema!("../schemas/starwars.schema.graphql");
-}
+// Pull in the Star Wars schema we registered in build.rs
+#[cynic::schema("starwars")]
+mod schema {}
 
 #[derive(cynic::QueryFragment, Debug)]
 #[cynic(schema_path = "../schemas/starwars.schema.graphql")]

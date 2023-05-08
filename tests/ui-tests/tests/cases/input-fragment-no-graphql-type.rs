@@ -1,6 +1,6 @@
 fn main() {}
 #[cynic::schema_for_derives(
-    file = r#"./../../../schemas/starwars.schema.graphql"#,
+    file = r#"./../../../../schemas/starwars.schema.graphql"#,
     module = "schema"
 )]
 mod queries {
@@ -46,5 +46,5 @@ mod queries {
 }
 
 mod schema {
-    cynic::use_schema!("./../../../schemas/starwars.schema.graphql");
+    cynic::use_schema!("./../../../../schemas/starwars.schema.graphql");
 }

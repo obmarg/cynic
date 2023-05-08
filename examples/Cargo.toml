@@ -27,3 +27,6 @@ github-schema = { path = "../schemas/github" }
 
 [dev-dependencies]
 insta = "1.17"
+
+[build-dependencies]
+cynic-codegen = { path = "../cynic-codegen" }

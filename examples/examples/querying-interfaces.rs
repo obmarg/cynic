@@ -1,8 +1,8 @@
 //! An example of querying for interfaces with an InlineFragment
 
-mod schema {
-    cynic::use_schema!("../schemas/starwars.schema.graphql");
-}
+// Pull in the Star Wars schema we registered in build.rs
+#[cynic::schema("starwars")]
+mod schema {}
 
 #[derive(cynic::InlineFragments, Debug)]
 #[cynic(schema_path = "../schemas/starwars.schema.graphql")]
