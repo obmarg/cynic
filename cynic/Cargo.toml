@@ -15,10 +15,11 @@ readme = "../README.md"
 
 [features]
 default = []
-all = ["http-surf", "http-reqwest", "http-reqwest-blocking"]
+all = ["http-surf", "http-reqwest", "http-reqwest-blocking", "rkyv"]
 http-surf = ["surf", "serde_json"]
 http-reqwest = ["reqwest", "serde_json"]
 http-reqwest-blocking = ["http-reqwest", "reqwest/blocking", "serde_json"]
+rkyv = ["cynic-proc-macros/rkyv"]
 
 [dependencies]
 cynic-proc-macros = { path = "../cynic-proc-macros", version = "2.2.8" }

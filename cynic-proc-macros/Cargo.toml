@@ -11,6 +11,10 @@ documentation = "https://docs.rs/cynic-proc-macros"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[features]
+default = []
+rkyv = ["cynic-codegen/rkyv"]
+
 [lib]
 proc-macro = true
 
