@@ -12,13 +12,17 @@ thiserror = "1"
 [dependencies.cynic]
 path = "../cynic"
 version = "2.2.8"
-features = ["http-reqwest-blocking"]
 
 [dev-dependencies]
 assert_matches = "1.4"
 insta = "1.4"
 maplit = "1.0.2"
 reqwest = "0.11"
+
+[dev-dependencies.cynic]
+path = "../cynic"
+version = "2.2.8"
+features = ["http-reqwest-blocking"]
 
 [build-dependencies.cynic-codegen]
 path = "../cynic-codegen"
