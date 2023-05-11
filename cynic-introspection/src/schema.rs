@@ -37,6 +37,19 @@ pub enum Type {
     Scalar(ScalarType),
 }
 
+impl Type {
+    pub fn name(&self) -> &str {
+        match self {
+            Type::Object(inner) => &inner.name,
+            Type::InputObject(inner) => &inner.name,
+            Type::Enum(inner) => &inner.name,
+            Type::Interface(inner) => &inner.name,
+            Type::Union(inner) => &inner.name,
+            Type::Scalar(inner) => &inner.name,
+        }
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ObjectType {
     pub name: String,
