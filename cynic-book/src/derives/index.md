@@ -12,4 +12,4 @@ There are a number of different derives which this section details:
 - [Variables](./query-variables.html)
 - [Input Objects](./input-objects.html)
 - [Inline Fragments](./inline-fragments.html)
-- [Recursive Queries](./derives/recursive-queries.md)
+- [Recursive Queries](./recursive-queries.md)
