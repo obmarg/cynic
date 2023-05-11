@@ -10,11 +10,11 @@ The easiest way to provide schemas to the cynic derives is to register them in
 your `build.rs`, with some code similar to the following:
 
 ```rust
-    cynic_codegen::register_schema("github")
-        .from_sdl_file("schemas/github.graphql")
-        .unwrap()
-        .as_default()
-        .unwrap();
+cynic_codegen::register_schema("github")
+   .from_sdl_file("schemas/github.graphql")
+   .unwrap()
+   .as_default()
+   .unwrap();
 ```
 
 This will register a schema called `github` as well as registering it as the
