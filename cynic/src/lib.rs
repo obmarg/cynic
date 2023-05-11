@@ -158,6 +158,7 @@
 //!   http client.
 //! - `reqwest-blocking` adds blocking integration with the [`reqwest`](https://github.com/seanmonstar/reqwest)
 //!   http client.
+//! - `rkyv` can be used to speed up compiles when working with large schemas.
 //!
 //! It's worth noting that each of these features pulls in extra
 //! dependencies, which may impact your build size.  Particularly

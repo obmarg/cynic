@@ -83,10 +83,6 @@ If you're new to Cynic the [quickstart](./quickstart.html) is a good place to
 start. Afterwards you might want to read the [derives](./derives/index.html)
 chapter, for more details about how to do common things with Cynic.
 
-The [Building Queries](./building-queries/index.html) section is for more
-advanced users - either you've run into a case that the built in derives
-don't cover, or you're just curious how things work under the hood.
-
 ### Inspiration
 
 - [graphql-client][2], the original Rust GraphQL client. This is a great

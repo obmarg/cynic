@@ -13,7 +13,6 @@ For example, the GitHub API has an `Assignee` union type which could be queried 
 
 ```rust
 #[derive(cynic::InlineFragments)]
-#[cynic(schema_path = "github.graphql")]
 enum Assignee {
     Bot(Bot),
     Mannequin(Mannequin)
@@ -37,7 +36,6 @@ the server, similar to the usual GraphQL backwards compatibility guarantees.
 
 ```rust
 #[derive(cynic::InlineFragments)]
-#[cynic(schema_path = "github.graphql")]
 enum Assignee {
     Bot(Bot),
     User(User)
@@ -54,7 +52,6 @@ also select some fields from the interface:
 
 ```rust
 #[derive(cynic::InlineFragments, Debug)]
-#[cynic(schema_path = "github.graphql")]
 pub enum Actor {
     User(User),
 
@@ -63,7 +60,6 @@ pub enum Actor {
 }
 
 #[derive(cynic::QueryFragment)]
-#[cynic(schema_path = "github.graphql")]
 enum ActorFallback {
     pub login: String
 }
@@ -102,15 +98,15 @@ enum itself:
 - `graphql_type = "AType"` tells cynic which interface or union type
   in the GraphQL schema this enum represents. The name of the enum is
   used if it is omitted.
-- `schema_path` sets the path to the GraphQL schema. This is required,
-  but
-  can be provided by nesting the InlineFragments inside a query module
-  with this attr.
-- `schema_module` tells cynic where to find the schema module - that is a
-  module that has called the `use_schema!` macro. This will default to
-  `schema` if not provided. An override can also be provided by nesting the
-  InlineFragments inside a module with the `schema_for_derives` attribute
-  macro.
+- `schema` tells cynic which schema to use to validate your InlineFragments.
+  The schema you provide should have been registered in your `build.rs`.  This
+  is optional if you're using the schema that was registered as default, or if
+  you're using `schema_path` instead.
+- `schema_path` sets a path to the GraphQL schema. This is only required
+  if you're using a schema that wasn't registered in `build.rs`.
+- `schema_module` tells cynic where to find your schema module.  This is
+  optional and should only be needed if your schema module is not in scope or
+  named `schema`.
 
 #### Variant Attributes
 
