@@ -141,6 +141,21 @@ pub mod __fields {
                 const NAME: &'static str = "recursive2";
             }
         }
+        pub struct fieldWithStringArg;
+        impl cynic::schema::Field for fieldWithStringArg {
+            type Type = Option<super::super::Int>;
+            const NAME: &'static str = "fieldWithStringArg";
+        }
+        impl cynic::schema::HasField<fieldWithStringArg> for super::super::Foo {
+            type Type = Option<super::super::Int>;
+        }
+        pub mod _field_with_string_arg_arguments {
+            pub struct input;
+            impl cynic::schema::HasArgument<input> for super::fieldWithStringArg {
+                type ArgumentType = super::super::super::String;
+                const NAME: &'static str = "input";
+            }
+        }
         pub struct __typename;
         impl cynic::schema::Field for __typename {
             type Type = super::super::String;
