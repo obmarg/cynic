@@ -9,6 +9,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v3.0.0-beta.3 - 2023-05-13
+
 ### New Features
 
 - Added `from_sdl` method to schema registration.
