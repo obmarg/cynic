@@ -9,7 +9,6 @@ description = "GraphQL API introspection for cynic"
 homepage = "https://cynic-rs.dev"
 repository = "https://github.com/obmarg/cynic"
 documentation = "https://docs.rs/cynic-introspection"
-repository = "https://github.com/obmarg/cynic"
 keywords = ["graphql", "client", "introspection"]
 readme = "README.md"
 
