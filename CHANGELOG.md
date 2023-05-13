@@ -9,11 +9,13 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v3.0.0-beta.2 - 2023-05-13
+
 ### Bug Fixes
 
 - Schema file should no longer cause clippy warnings if `clippy::pedantic` is on.
 
-## v3.0.0-beta.1 - 2023-04-27
+## v3.0.0-beta.1 - 2023-05-13
 
 ### Breaking Changes
 
