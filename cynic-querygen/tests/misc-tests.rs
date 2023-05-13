@@ -60,3 +60,19 @@ fn test_recursive_inputs() {
             .expect("QueryGen Failed")
     )
 }
+
+#[test]
+fn test_string_escaping() {
+    let schema = include_str!("../../schemas/test_cases.graphql");
+    let query = r#"
+      query {
+        one: fieldWithStringArg(input: "Hello\n There")
+        two: fieldWithStringArg(input: "Hello \" I am a string with quotes")
+      }
+    "#;
+
+    assert_snapshot!(
+        document_to_fragment_structs(query, schema, &QueryGenOptions::default())
+            .expect("QueryGen Failed")
+    )
+}

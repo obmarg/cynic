@@ -154,7 +154,14 @@ impl std::fmt::Display for InputLiteral {
             InputLiteral::Int(val) => write!(f, "{}", val),
             InputLiteral::Float(val) => write!(f, "{}", val),
             InputLiteral::Bool(val) => write!(f, "{}", val),
-            InputLiteral::String(val) => write!(f, "\"{}\"", val),
+            InputLiteral::String(val) if requires_block_string(val) => {
+                write!(f, "\"\"\"")?;
+                write!(f, "{val}")?;
+                write!(f, "\"\"\"")
+            }
+            InputLiteral::String(val) => {
+                write!(f, "\"{val}\"")
+            }
             InputLiteral::Id(val) => write!(f, "\"{}\"", val),
             InputLiteral::Object(fields) => {
                 write!(f, "{{")?;
@@ -181,4 +188,10 @@ impl std::fmt::Display for InputLiteral {
             }
         }
     }
+}
+
+fn requires_block_string(string: &str) -> bool {
+    string
+        .chars()
+        .any(|c| !c.is_ascii() || c.is_ascii_control() || c == '"')
 }
