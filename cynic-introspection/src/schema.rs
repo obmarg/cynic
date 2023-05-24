@@ -1,4 +1,4 @@
-pub use crate::query::DirectiveLocation;
+use crate::query::DirectiveLocation;
 
 impl crate::query::IntrospectionQuery {
     /// Converts the results of an IntrospectionQuery into a `Schema`,
