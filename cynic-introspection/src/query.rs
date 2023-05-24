@@ -52,7 +52,7 @@ pub struct Type {
     /// This is an `Option` but the use of this struct means it should never
     /// be `None`.
     pub name: Option<String>,
-    /// A description of the directive
+    /// A description of the type
     pub description: Option<String>,
     /// The fields of the type, if it is an object or interface
     #[arguments(includeDeprecated: true)]

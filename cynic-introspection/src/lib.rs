@@ -1,4 +1,4 @@
-#![warn(missing_docs)]
+#![deny(missing_docs)]
 //! `cynic-introspection` defines a [GraphQL introspection query][1] that can be
 //! run using [`cynic`][2], a rust GraphQL client.
 //!
