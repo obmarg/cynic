@@ -1,6 +1,14 @@
-use crate::query::DirectiveLocation;
+use crate::query2018::DirectiveLocation;
 
-impl crate::query::IntrospectionQuery {
+impl crate::query2018::IntrospectionQuery {
+    /// Converts the results of an IntrospectionQuery into a `Schema`,
+    /// which has some stronger types than those offered by the introspection query
+    pub fn into_schema(self) -> Result<Schema, SchemaError> {
+        Schema::try_from(self.introspected_schema)
+    }
+}
+
+impl crate::query2021::IntrospectionQuery {
     /// Converts the results of an IntrospectionQuery into a `Schema`,
     /// which has some stronger types than those offered by the introspection query
     pub fn into_schema(self) -> Result<Schema, SchemaError> {
@@ -149,6 +157,8 @@ pub struct ScalarType {
     pub name: String,
     /// A description of the scalar
     pub description: Option<String>,
+    /// A URL pointing to a specification for this scalar, if there is one
+    pub specified_by_url: Option<String>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -306,10 +316,10 @@ pub enum SchemaError {
     TooMuchWrapping,
 }
 
-impl TryFrom<crate::query::IntrospectedSchema> for Schema {
+impl TryFrom<crate::query2018::IntrospectedSchema> for Schema {
     type Error = SchemaError;
 
-    fn try_from(schema: crate::query::IntrospectedSchema) -> Result<Self, Self::Error> {
+    fn try_from(schema: crate::query2018::IntrospectedSchema) -> Result<Self, Self::Error> {
         Ok(Schema {
             query_type: schema.query_type.into_name()?,
             mutation_type: schema.mutation_type.map(|ty| ty.into_name()).transpose()?,
@@ -331,16 +341,17 @@ impl TryFrom<crate::query::IntrospectedSchema> for Schema {
     }
 }
 
-impl TryFrom<crate::query::Type> for Type {
+impl TryFrom<crate::query2018::Type> for Type {
     type Error = SchemaError;
 
-    fn try_from(ty: crate::query::Type) -> Result<Self, Self::Error> {
+    fn try_from(ty: crate::query2018::Type) -> Result<Self, Self::Error> {
         match ty.kind {
-            crate::query::TypeKind::Scalar => Ok(Type::Scalar(ScalarType {
+            crate::query2018::TypeKind::Scalar => Ok(Type::Scalar(ScalarType {
                 name: ty.name.ok_or(SchemaError::TypeMissingName)?,
                 description: ty.description,
+                specified_by_url: None,
             })),
-            crate::query::TypeKind::Object => Ok(Type::Object(ObjectType {
+            crate::query2018::TypeKind::Object => Ok(Type::Object(ObjectType {
                 name: ty.name.ok_or(SchemaError::TypeMissingName)?,
                 fields: ty
                     .fields
@@ -356,7 +367,7 @@ impl TryFrom<crate::query::Type> for Type {
                     .map(|ty| ty.into_name())
                     .collect::<Result<Vec<_>, _>>()?,
             })),
-            crate::query::TypeKind::Interface => Ok(Type::Interface(InterfaceType {
+            crate::query2018::TypeKind::Interface => Ok(Type::Interface(InterfaceType {
                 name: ty.name.ok_or(SchemaError::TypeMissingName)?,
                 description: ty.description,
                 fields: ty
@@ -378,7 +389,7 @@ impl TryFrom<crate::query::Type> for Type {
                     .map(|ty| ty.into_name())
                     .collect::<Result<Vec<_>, _>>()?,
             })),
-            crate::query::TypeKind::Union => Ok(Type::Union(UnionType {
+            crate::query2018::TypeKind::Union => Ok(Type::Union(UnionType {
                 name: ty.name.ok_or(SchemaError::TypeMissingName)?,
                 description: ty.description,
                 possible_types: ty
@@ -388,7 +399,7 @@ impl TryFrom<crate::query::Type> for Type {
                     .map(|ty| ty.into_name())
                     .collect::<Result<Vec<_>, _>>()?,
             })),
-            crate::query::TypeKind::Enum => Ok(Type::Enum(EnumType {
+            crate::query2018::TypeKind::Enum => Ok(Type::Enum(EnumType {
                 name: ty.name.ok_or(SchemaError::TypeMissingName)?,
                 description: ty.description,
                 values: ty
@@ -398,7 +409,7 @@ impl TryFrom<crate::query::Type> for Type {
                     .map(Into::into)
                     .collect(),
             })),
-            crate::query::TypeKind::InputObject => Ok(Type::InputObject(InputObjectType {
+            crate::query2018::TypeKind::InputObject => Ok(Type::InputObject(InputObjectType {
                 name: ty.name.ok_or(SchemaError::TypeMissingName)?,
                 description: ty.description,
                 fields: ty
@@ -408,16 +419,125 @@ impl TryFrom<crate::query::Type> for Type {
                     .map(InputValue::try_from)
                     .collect::<Result<Vec<_>, _>>()?,
             })),
-            crate::query::TypeKind::List => Err(SchemaError::UnexpectedList),
-            crate::query::TypeKind::NonNull => Err(SchemaError::UnexpectedNonNull),
+            crate::query2018::TypeKind::List => Err(SchemaError::UnexpectedList),
+            crate::query2018::TypeKind::NonNull => Err(SchemaError::UnexpectedNonNull),
         }
     }
 }
 
-impl TryFrom<crate::query::Field> for Field {
+impl TryFrom<crate::query2021::IntrospectedSchema> for Schema {
     type Error = SchemaError;
 
-    fn try_from(field: crate::query::Field) -> Result<Self, Self::Error> {
+    fn try_from(schema: crate::query2021::IntrospectedSchema) -> Result<Self, Self::Error> {
+        Ok(Schema {
+            query_type: schema.query_type.into_name()?,
+            mutation_type: schema.mutation_type.map(|ty| ty.into_name()).transpose()?,
+            subscription_type: schema
+                .subscription_type
+                .map(|ty| ty.into_name())
+                .transpose()?,
+            types: schema
+                .types
+                .into_iter()
+                .map(TryInto::try_into)
+                .collect::<Result<Vec<_>, _>>()?,
+            directives: schema
+                .directives
+                .into_iter()
+                .map(TryInto::try_into)
+                .collect::<Result<Vec<_>, _>>()?,
+        })
+    }
+}
+
+impl TryFrom<crate::query2021::Type> for Type {
+    type Error = SchemaError;
+
+    fn try_from(ty: crate::query2021::Type) -> Result<Self, Self::Error> {
+        match ty.kind {
+            crate::query2018::TypeKind::Scalar => Ok(Type::Scalar(ScalarType {
+                name: ty.name.ok_or(SchemaError::TypeMissingName)?,
+                description: ty.description,
+                specified_by_url: ty.specified_by_url,
+            })),
+            crate::query2018::TypeKind::Object => Ok(Type::Object(ObjectType {
+                name: ty.name.ok_or(SchemaError::TypeMissingName)?,
+                fields: ty
+                    .fields
+                    .unwrap_or_default()
+                    .into_iter()
+                    .map(TryInto::try_into)
+                    .collect::<Result<Vec<_>, _>>()?,
+                description: ty.description,
+                interfaces: ty
+                    .interfaces
+                    .unwrap_or_default()
+                    .into_iter()
+                    .map(|ty| ty.into_name())
+                    .collect::<Result<Vec<_>, _>>()?,
+            })),
+            crate::query2018::TypeKind::Interface => Ok(Type::Interface(InterfaceType {
+                name: ty.name.ok_or(SchemaError::TypeMissingName)?,
+                description: ty.description,
+                fields: ty
+                    .fields
+                    .unwrap_or_default()
+                    .into_iter()
+                    .map(TryInto::try_into)
+                    .collect::<Result<Vec<_>, _>>()?,
+                interfaces: ty
+                    .interfaces
+                    .unwrap_or_default()
+                    .into_iter()
+                    .map(|ty| ty.into_name())
+                    .collect::<Result<Vec<_>, _>>()?,
+                possible_types: ty
+                    .possible_types
+                    .unwrap_or_default()
+                    .into_iter()
+                    .map(|ty| ty.into_name())
+                    .collect::<Result<Vec<_>, _>>()?,
+            })),
+            crate::query2018::TypeKind::Union => Ok(Type::Union(UnionType {
+                name: ty.name.ok_or(SchemaError::TypeMissingName)?,
+                description: ty.description,
+                possible_types: ty
+                    .possible_types
+                    .unwrap_or_default()
+                    .into_iter()
+                    .map(|ty| ty.into_name())
+                    .collect::<Result<Vec<_>, _>>()?,
+            })),
+            crate::query2018::TypeKind::Enum => Ok(Type::Enum(EnumType {
+                name: ty.name.ok_or(SchemaError::TypeMissingName)?,
+                description: ty.description,
+                values: ty
+                    .enum_values
+                    .unwrap_or_default()
+                    .into_iter()
+                    .map(Into::into)
+                    .collect(),
+            })),
+            crate::query2018::TypeKind::InputObject => Ok(Type::InputObject(InputObjectType {
+                name: ty.name.ok_or(SchemaError::TypeMissingName)?,
+                description: ty.description,
+                fields: ty
+                    .input_fields
+                    .unwrap_or_default()
+                    .into_iter()
+                    .map(InputValue::try_from)
+                    .collect::<Result<Vec<_>, _>>()?,
+            })),
+            crate::query2018::TypeKind::List => Err(SchemaError::UnexpectedList),
+            crate::query2018::TypeKind::NonNull => Err(SchemaError::UnexpectedNonNull),
+        }
+    }
+}
+
+impl TryFrom<crate::query2018::Field> for Field {
+    type Error = SchemaError;
+
+    fn try_from(field: crate::query2018::Field) -> Result<Self, Self::Error> {
         Ok(Field {
             name: field.name,
             description: field.description,
@@ -432,10 +552,10 @@ impl TryFrom<crate::query::Field> for Field {
     }
 }
 
-impl TryFrom<crate::query::FieldType> for FieldType {
+impl TryFrom<crate::query2018::FieldType> for FieldType {
     type Error = SchemaError;
 
-    fn try_from(field_type: crate::query::FieldType) -> Result<Self, Self::Error> {
+    fn try_from(field_type: crate::query2018::FieldType) -> Result<Self, Self::Error> {
         let mut wrapping = [0; 8];
         let mut wrapping_pos = 0;
         let mut current_ty = field_type;
@@ -444,14 +564,14 @@ impl TryFrom<crate::query::FieldType> for FieldType {
                 return Err(SchemaError::TooMuchWrapping);
             }
             match current_ty.kind {
-                crate::query::TypeKind::List => {
+                crate::query2018::TypeKind::List => {
                     wrapping[wrapping_pos] = 1;
                     wrapping_pos += 1;
                     current_ty = *current_ty
                         .of_type
                         .ok_or(SchemaError::WrappingTypeWithNoInner)?;
                 }
-                crate::query::TypeKind::NonNull => {
+                crate::query2018::TypeKind::NonNull => {
                     wrapping[wrapping_pos] = 2;
                     wrapping_pos += 1;
                     current_ty = *current_ty
@@ -469,10 +589,10 @@ impl TryFrom<crate::query::FieldType> for FieldType {
     }
 }
 
-impl TryFrom<crate::query::InputValue> for InputValue {
+impl TryFrom<crate::query2018::InputValue> for InputValue {
     type Error = SchemaError;
 
-    fn try_from(value: crate::query::InputValue) -> Result<Self, Self::Error> {
+    fn try_from(value: crate::query2018::InputValue) -> Result<Self, Self::Error> {
         Ok(InputValue {
             name: value.name,
             description: value.description,
@@ -482,8 +602,8 @@ impl TryFrom<crate::query::InputValue> for InputValue {
     }
 }
 
-impl From<crate::query::EnumValue> for EnumValue {
-    fn from(value: crate::query::EnumValue) -> Self {
+impl From<crate::query2018::EnumValue> for EnumValue {
+    fn from(value: crate::query2018::EnumValue) -> Self {
         EnumValue {
             name: value.name,
             description: value.description,
@@ -492,10 +612,10 @@ impl From<crate::query::EnumValue> for EnumValue {
     }
 }
 
-impl TryFrom<crate::query::Directive> for Directive {
+impl TryFrom<crate::query2018::Directive> for Directive {
     type Error = SchemaError;
 
-    fn try_from(value: crate::query::Directive) -> Result<Self, Self::Error> {
+    fn try_from(value: crate::query2018::Directive) -> Result<Self, Self::Error> {
         Ok(Directive {
             name: value.name,
             description: value.description,
@@ -509,7 +629,7 @@ impl TryFrom<crate::query::Directive> for Directive {
     }
 }
 
-impl crate::query::NamedType {
+impl crate::query2018::NamedType {
     fn into_name(self) -> Result<String, SchemaError> {
         self.name.ok_or(SchemaError::TypeMissingName)
     }
@@ -518,18 +638,18 @@ impl crate::query::NamedType {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::query;
+    use crate::query2018;
 
     #[test]
     fn test_field_type_to_string() {
-        let ty = FieldType::try_from(query::FieldType {
-            kind: query::TypeKind::NonNull,
+        let ty = FieldType::try_from(query2018::FieldType {
+            kind: query2018::TypeKind::NonNull,
             name: None,
-            of_type: Some(Box::new(query::FieldType {
-                kind: query::TypeKind::List,
+            of_type: Some(Box::new(query2018::FieldType {
+                kind: query2018::TypeKind::List,
                 name: None,
-                of_type: Some(Box::new(query::FieldType {
-                    kind: query::TypeKind::Scalar,
+                of_type: Some(Box::new(query2018::FieldType {
+                    kind: query2018::TypeKind::Scalar,
                     name: Some("Int".into()),
                     of_type: None,
                 })),
@@ -539,8 +659,8 @@ mod tests {
 
         assert_eq!(ty.to_string(), "[Int]!");
 
-        let ty = FieldType::try_from(query::FieldType {
-            kind: query::TypeKind::Object,
+        let ty = FieldType::try_from(query2018::FieldType {
+            kind: query2018::TypeKind::Object,
             name: Some("MyObject".into()),
             of_type: None,
         })
