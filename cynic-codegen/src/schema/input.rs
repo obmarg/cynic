@@ -18,7 +18,7 @@ impl SchemaInput {
         })
     }
 
-    /// Parses a SchemaInput from a filename passed to a macro
+    /// Parses a SchemaInput from a name passed to a macro
     pub(crate) fn from_schema_name(name: &str) -> Result<SchemaInput, SchemaLoadError> {
         let out_dir = std::env::var("OUT_DIR").map_err(|_| SchemaLoadError::UnknownOutDir)?;
 

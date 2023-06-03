@@ -206,7 +206,7 @@ pub use static_assertions::assert_type_eq_all;
 // their Cargo.toml
 pub use serde;
 
-/// Implements [`cynic::Scalar`] for a given type & type lock.
+/// Implements a set of scalar traits for the given type & type lock.
 ///
 /// For example, to use `uuid::Uuid` for a `Uuid` type defined in a schema:
 ///
