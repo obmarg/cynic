@@ -98,8 +98,8 @@ pub struct InputObjectType {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[non_exhaustive]
-/// GraphQL Enum types, like Scalar types, also represent leaf values in a GraphQL
-/// type system. However Enum types describe the set of possible values.
+/// GraphQL Enum types represent leaf values in a GraphQL type system which
+/// can have one of a set of possible values.
 pub struct EnumType {
     /// The name of the enum
     pub name: String,
@@ -127,8 +127,8 @@ pub struct InterfaceType {
 
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[non_exhaustive]
-/// GraphQL Unions represent an object that could be one of a list of GraphQL
-/// Object types, but provides for no guaranteed fields between those types
+/// GraphQL Unions represent objects that could be any of a list of GraphQL
+/// Object types.
 pub struct UnionType {
     /// The name of the union
     pub name: String,

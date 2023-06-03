@@ -5,7 +5,7 @@
 //! This can be used for any reason you'd want to introspect a GraphQL server -
 //! including when you're using cynic as a library in your own project.
 //!
-//! It also provides a `Schema` abstraction on top of the introspection query
+//! It also provides a [Schema] abstraction on top of the introspection query
 //! results, which provides some stronger typing than using the introspection
 //! results directly.
 //!
