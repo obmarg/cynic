@@ -6,12 +6,12 @@ use proc_macro2::TokenStream;
 use quote::quote;
 use syn::{self, parse_quote, Item, LitStr};
 
-use crate::error::Errors;
+use crate::schema::parser::SchemaLoadError;
 
 pub fn attribute_impl(
     schema_literal: LitStr,
-    mut module: syn::ItemMod,
-) -> Result<TokenStream, Errors> {
+    module: &mut syn::ItemMod,
+) -> Result<TokenStream, syn::Error> {
     let schema_name = schema_literal.value();
 
     let filename_str = LitStr::new(
@@ -19,16 +19,17 @@ pub fn attribute_impl(
         schema_literal.span(),
     );
 
-    if let Ok(out_dir) = std::env::var("OUT_DIR") {
-        let mut path = PathBuf::from(&out_dir);
-        path.push("cynic-schemas");
-        path.push(format!("{schema_name}.rs"));
-        if !path.exists() {
-            return Err(syn::Error::new(
-                schema_literal.span(),
-                format!("Couldn't find a schema named {schema_name} in {out_dir}\n\nHave you registered it in your build.rs?")
-            ).into());
-        }
+    let Ok(out_dir) = std::env::var("OUT_DIR") else {
+        return Err(SchemaLoadError::UnknownOutDirWithNamedSchema(schema_name).into_syn_error(schema_literal.span()));
+    };
+
+    let mut path = PathBuf::from(&out_dir);
+    path.push("cynic-schemas");
+    path.push(format!("{schema_name}.rs"));
+    if !path.exists() {
+        return Err(
+            SchemaLoadError::NamedSchemaNotFound(schema_name).into_syn_error(schema_literal.span())
+        );
     }
 
     // Silence a bunch of warnings inside this module

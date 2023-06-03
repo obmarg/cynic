@@ -187,11 +187,18 @@ pub fn schema_for_derives(attrs: TokenStream, input: TokenStream) -> TokenStream
 /// ```
 pub fn schema(attrs: TokenStream, input: TokenStream) -> TokenStream {
     let schema_name = syn::parse_macro_input!(attrs as syn::LitStr);
-    let module = syn::parse_macro_input!(input as syn::ItemMod);
+    let mut module = syn::parse_macro_input!(input as syn::ItemMod);
 
-    let rv: TokenStream = match schema_module_attr::attribute_impl(schema_name, module) {
+    let rv: TokenStream = match schema_module_attr::attribute_impl(schema_name, &mut module) {
         Ok(tokens) => tokens.into(),
-        Err(e) => e.to_compile_errors().into(),
+        Err(error) => {
+            let error = error.to_compile_error();
+            quote::quote! {
+                #error
+                #module
+            }
+            .into()
+        }
     };
 
     // eprintln!("{}", rv);

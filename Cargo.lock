@@ -721,6 +721,8 @@ name = "cynic-proc-macros"
 version = "3.0.0-beta.3"
 dependencies = [
  "cynic-codegen",
+ "proc-macro2",
+ "quote",
  "syn",
 ]
 
