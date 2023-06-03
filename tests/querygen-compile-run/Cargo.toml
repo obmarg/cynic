@@ -18,3 +18,4 @@ trybuild = "1.0.80"
 [build-dependencies]
 cynic-codegen = { path = "../../cynic-codegen" }
 cynic-querygen = { path = "../../cynic-querygen" }
+indoc = "2"

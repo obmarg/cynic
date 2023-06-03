@@ -4,6 +4,8 @@ use std::{
     path::{Path, PathBuf},
 };
 
+use indoc::writedoc;
+
 use cynic_querygen::{document_to_fragment_structs, QueryGenOptions};
 
 fn main() {
@@ -74,7 +76,7 @@ fn main() {
             r#"Jobs::build(
                 JobsVariables {
                     input: LocationInput {
-                        slug: "london".into()
+                        slug: "london"
                     }
                 }
             )"#,
@@ -85,7 +87,6 @@ fn main() {
             r#"CommentOnMutationSupportIssue::build(
                 CommentOnMutationSupportIssueVariables {
                     comment_body: "This is a test comment, posted by the new cynic mutation support"
-                        .into(),
                 },
             )"#,
         ),
@@ -163,8 +164,8 @@ fn main() {
             "tests/queries/misc/mutation_with_scalar_result_and_input.graphql",
             r#"SignIn::build(
                 SignInVariables {
-                    username: "hello".into(),
-                    password: "hello".into()
+                    username: "hello",
+                    password: "hello"
                 },
             )"#,
         ),
@@ -290,7 +291,7 @@ impl TestCase {
             path.file_name().unwrap().to_str().unwrap().to_owned()
         };
 
-        let mut file = File::create(format!("tests/generated/{}", test_filename)).unwrap();
+        let mut file = File::create(format!("tests/{}", test_filename)).unwrap();
 
         let norun_code = if self.should_run {
             ""
@@ -308,12 +309,13 @@ impl TestCase {
             )
         };
 
-        write!(
+        writedoc!(
             &mut file,
             r#"
             #![allow(unused_imports)]
 
-            fn main() {{
+            #[test]
+            fn generated_test() {{
                 {norun_code}
                 use cynic::{{QueryBuilder, MutationBuilder, SubscriptionBuilder}};
                 {run_code}
