@@ -16,9 +16,9 @@
 <h4>
   <a href="https://github.com/obmarg/cynic">Repository</a>
   <span> | </span>
-  <a href="https://github.com/obmarg/cynic/tree/master/examples/examples">Examples</a>
+  <a href="https://github.com/obmarg/cynic/tree/main/examples/examples">Examples</a>
   <span> | </span>
-  <a href="https://github.com/obmarg/cynic/blob/master/CHANGELOG.md">Changelog</a>
+  <a href="https://github.com/obmarg/cynic/blob/main/CHANGELOG.md">Changelog</a>
 </h4>
 
 # Overview
