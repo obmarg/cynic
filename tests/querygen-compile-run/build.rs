@@ -27,7 +27,7 @@ fn main() {
             "../../cynic-querygen/tests/queries/starwars/sanity.graphql",
             r#"queries::SanityCheckQuery::build(
                 queries::SanityCheckQueryVariables {
-                    film_id: Some("ZmlsbXM6MQ==".into())
+                    film_id: Some((&String::from("ZmlsbXM6MQ==")).into())
                 }
             )"#,
         ),
@@ -36,7 +36,7 @@ fn main() {
             "../../cynic-querygen/tests/queries/starwars/nested-arguments.graphql",
             r#"queries::NestedArgsQuery::build(
                 queries::NestedArgsQueryVariables {
-                    film_id: "ZmlsbXM6MQ==".into(),
+                    film_id: &"ZmlsbXM6MQ==".into(),
                     planet_cursor: None,
                     resident_connection: None
                 }

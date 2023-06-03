@@ -68,7 +68,7 @@ fn entry_page_view(model: &Model) -> Node<Msg> {
                 C!["is-flex" "is-justify-content-center" "mb-6"],
                 div![
                     C!["notification is-warning is-light"],
-                    "⚠️ This is the generator for v2 of cynic.",
+                    "⚠️ This is the generator for v3 of cynic.",
                     ul![
                         C!["pt-2"],
                         li![
@@ -80,10 +80,10 @@ fn entry_page_view(model: &Model) -> Node<Msg> {
                             ]
                         ],
                         li![
-                            "For v3 please visit ",
+                            "For v2 please visit ",
                             a![
-                                attrs! {At::Href => "https://generator.cynic-rs.dev/"},
-                                "https://generator.cynic-rs.dev/"
+                                attrs! {At::Href => "https://v2.generator.cynic-rs.dev/"},
+                                "https://v2.generator.cynic-rs.dev/"
                             ]
                         ]
                     ]

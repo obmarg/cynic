@@ -519,7 +519,7 @@ fn extract_fragments<'query, 'doc>(document: &'doc Document<'query>) -> Fragment
 }
 
 impl<'query, 'schema> Vertex for SelectionSet<'query, 'schema> {
-    fn adjacents(self: &Rc<Self>) -> Vec<Rc<Self>> {
+    fn children(self: &Rc<Self>) -> Vec<Rc<Self>> {
         self.selections
             .iter()
             .flat_map(|selection| match selection {
@@ -578,8 +578,7 @@ impl<'query, 'schema> crate::naming::Nameable for Rc<InlineFragments<'query, 'sc
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use crate::schema;
+    use {super::*, crate::schema};
 
     use assert_matches::assert_matches;
 

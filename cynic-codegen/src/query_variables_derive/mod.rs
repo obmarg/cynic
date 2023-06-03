@@ -57,7 +57,7 @@ pub fn query_variables_derive_impl(
                 // - Normally we use the type of the fields of the XxxVariables directly in
                 //   these return types of the functions of XxxVariablesFields, and that type
                 //   implements `CoercesTo<schema::CorrespondingType>` (as derived by
-                //   `InputObject`, or specified by cynic if it's a litteral)
+                //   `InputObject`, or specified by cynic if it's a literal)
                 // - Now we want to still typecheck that our concrete (specialized) types have
                 //   all their fields implement `CoercesTo` the correct schema type, but we also
                 //   want to not be generic in the `Fields` struct. This is achieved by:

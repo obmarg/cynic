@@ -10,10 +10,10 @@ mod queries {
     use super::schema;
 
     #[derive(cynic::QueryVariables, Debug)]
-    pub struct NestedArgsQueryVariables {
-        pub film_id: cynic::Id,
-        pub planet_cursor: Option<String>,
-        pub resident_connection: Option<String>,
+    pub struct NestedArgsQueryVariables<'a> {
+        pub film_id: &'a cynic::Id,
+        pub planet_cursor: Option<&'a str>,
+        pub resident_connection: Option<&'a str>,
     }
 
     #[derive(cynic::QueryFragment, Debug)]

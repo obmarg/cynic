@@ -10,9 +10,9 @@ mod queries {
     use super::schema;
 
     #[derive(cynic::QueryVariables, Debug)]
-    pub struct SignInVariables {
-        pub password: String,
-        pub username: String,
+    pub struct SignInVariables<'a> {
+        pub password: &'a str,
+        pub username: &'a str,
     }
 
     #[derive(cynic::QueryFragment, Debug)]
