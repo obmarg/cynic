@@ -13,7 +13,7 @@ serde_json = "1.0"
 ureq = { version = "2.4", features = ["json"] }
 
 [dev-dependencies]
-trybuild = "1.0"
+trybuild = "1.0.80"
 
 [build-dependencies]
 cynic-querygen = { path = "../../cynic-querygen" }

@@ -96,13 +96,19 @@ mod optional_recursive_types {
         };
     }
 
+    macro_rules! empty_object {
+        () => {
+            json!(null)
+        };
+    }
+
     #[test]
     fn test_friends_decoding_with_matching_depth() {
         let data = json!({
             "allAuthors":
                 authors(
-                    authors(authors(null!(), null!()), author(null!(), null!())),
-                    author(authors(null!(), null!()), author(null!(), null!())),
+                    authors(authors(null!(), null!()), author(empty_object!(), empty_object!())),
+                    author(authors(null!(), null!()), author(empty_object!(), empty_object!())),
                 )
         });
         insta::assert_yaml_snapshot!(serde_json::from_value::<FriendsQuery>(data).unwrap());
@@ -155,37 +161,29 @@ mod required_recursive_types {
 
         let operation = FriendsQuery::build(());
 
-        insta::assert_display_snapshot!(operation.query);
-    }
+        insta::assert_display_snapshot!(operation.query, @r###"
+        query FriendsQuery {
+          allAuthors {
+            me {
+              me
+            }
+          }
+        }
 
-    macro_rules! null {
-        () => {
-            json!(null)
-        };
+        "###);
     }
 
     #[test]
     fn test_friends_decoding_with_matching_depth() {
-        let data = json!({ "allAuthors": authors(author(author(null!()))) });
+        let data = json!({ "allAuthors": [{"me": {"me": {}}}]});
 
         insta::assert_yaml_snapshot!(serde_json::from_value::<FriendsQuery>(data).unwrap());
     }
 
     #[test]
     fn test_friends_decoding_with_less_depth() {
-        // This is only a valid test for optional fields.
-
-        let data = json!({ "allAuthors": authors(author(null!())) });
+        let data = json!({ "allAuthors": [{"me": null}]});
 
         insta::assert_yaml_snapshot!(serde_json::from_value::<FriendsQuery>(data).unwrap());
-    }
-
-    fn authors(me: serde_json::Value) -> serde_json::Value {
-        let a = author(me);
-        json!([a])
-    }
-
-    fn author(me: serde_json::Value) -> serde_json::Value {
-        json!({ "me": me })
     }
 }

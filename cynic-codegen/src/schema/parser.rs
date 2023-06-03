@@ -14,22 +14,9 @@ pub type TypeDefinition = graphql_parser::schema::TypeDefinition<'static, String
 pub type ScalarType = graphql_parser::schema::ScalarType<'static, String>;
 pub type InputValue = graphql_parser::schema::InputValue<'static, String>;
 
-/// Loads a schema from a filename, relative to CARGO_MANIFEST_DIR if it's set.
-pub fn load_schema(filename: impl AsRef<std::path::Path>) -> Result<Document, SchemaLoadError> {
-    use std::path::PathBuf;
-    let mut pathbuf = PathBuf::new();
-
-    if let Ok(manifest_dir) = std::env::var("CARGO_MANIFEST_DIR") {
-        pathbuf.push(manifest_dir);
-    } else {
-        pathbuf.push(std::env::current_dir()?);
-    }
-    pathbuf.push(filename);
-
-    let schema = std::fs::read_to_string(&pathbuf)
-        .map_err(|_| SchemaLoadError::FileNotFound(pathbuf.to_str().unwrap().to_string()))?;
-
-    Ok(add_typenames(parse_schema(&schema)?))
+/// Loads a schema from a string
+pub fn load_schema(sdl: &str) -> Result<Document, SchemaLoadError> {
+    Ok(add_typenames(parse_schema(sdl)?))
 }
 
 fn add_typenames(mut schema: Document) -> Document {
@@ -48,19 +35,7 @@ fn add_typenames(mut schema: Document) -> Document {
 }
 
 pub(crate) fn parse_schema(schema: &str) -> Result<Document, SchemaLoadError> {
-    let borrowed_schema = graphql_parser::schema::parse_schema::<String>(schema)?;
-    Ok(schema_into_static(borrowed_schema))
-}
-
-fn schema_into_static(
-    doc: graphql_parser::schema::Document<'_, String>,
-) -> graphql_parser::schema::Document<'static, String> {
-    // A workaround until https://github.com/graphql-rust/graphql-parser/pull/33 is
-    // merged upstream.
-
-    // A document that uses Strings for it's data should be safe to cast to 'static lifetime
-    // as there's nothing inside it to reference 'a anyway
-    unsafe { std::mem::transmute::<_, Document>(doc) }
+    Ok(graphql_parser::schema::parse_schema::<String>(schema)?.into_static())
 }
 
 #[derive(Debug, PartialEq, Eq, Clone)]
@@ -68,19 +43,46 @@ pub enum SchemaLoadError {
     IoError(String),
     ParseError(String),
     FileNotFound(String),
+    NamedSchemaNotFound(String),
+    DefaultSchemaNotFound,
+    UnknownOutDirWithNamedSchema(String),
+    UnknownOutDirWithDefaultSchema,
 }
 
 impl SchemaLoadError {
     pub fn into_syn_error(self, schema_span: proc_macro2::Span) -> syn::Error {
-        let message = match self {
-            SchemaLoadError::IoError(e) => format!("Could not load schema file: {}", e),
-            SchemaLoadError::ParseError(e) => format!("Could not parse schema file: {}", e),
-            SchemaLoadError::FileNotFound(e) => format!("Could not find file: {}", e),
-        };
-
-        syn::Error::new(schema_span, message)
+        syn::Error::new(schema_span, self.to_string())
     }
 }
+
+impl std::fmt::Display for SchemaLoadError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            SchemaLoadError::IoError(e) => write!(f, "Could not load schema file: {}", e),
+            SchemaLoadError::ParseError(e) => write!(f, "Could not parse schema file: {}", e),
+            SchemaLoadError::FileNotFound(e) => write!(f, "Could not find file: {}", e),
+            SchemaLoadError::NamedSchemaNotFound(_) => write!(
+                f,
+                "Could not find a schema with this name.  Have you registered it in build.rs?  {SCHEMA_DOCUMENTATION_TEXT}",
+            ),
+            SchemaLoadError::DefaultSchemaNotFound => {
+                write!(f, "This derive is trying to use the default schema but it doesn't look like you've registered a default.  Please provide the `schema` argument or set a default in your build.rs.  {SCHEMA_DOCUMENTATION_TEXT}")
+            }
+            SchemaLoadError::UnknownOutDirWithNamedSchema(name) => {
+                write!(f, "You requested a schema named {name} but it doesn't look like you've registered any schemas.  {SCHEMA_DOCUMENTATION_TEXT}")
+            }
+            SchemaLoadError::UnknownOutDirWithDefaultSchema => {
+                write!(
+                    f,
+                    "This derive is trying to use the default schema, but it doesn't look like you've registered any schemas.  {SCHEMA_DOCUMENTATION_TEXT}"
+                )
+            }
+        }
+    }
+}
+
+const SCHEMA_DOCUMENTATION_TEXT: &str =
+    "See the cynic documentation on regsistering schemas if you need help.";
 
 impl From<graphql_parser::schema::ParseError> for SchemaLoadError {
     fn from(e: graphql_parser::schema::ParseError) -> SchemaLoadError {

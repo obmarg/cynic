@@ -9,6 +9,62 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v3.0.0-beta.3 - 2023-05-13
+
+### New Features
+
+- Added `from_sdl` method to schema registration.
+
+## v3.0.0-beta.2 - 2023-05-13
+
+### Bug Fixes
+
+- Schema file should no longer cause clippy warnings if `clippy::pedantic` is on.
+
+## v3.0.0-beta.1 - 2023-05-13
+
+### Breaking Changes
+
+- `QueryBuilder`, `MutationBuidler` & `SubscriptionBuilder` no longer have lifetimes.
+- `QueryFragment` no longer has a lifetime.
+- `QueryVariables::Fields` must now implement the `QueryVariablesFields` trait.
+- The workings of `derive(QueryVariables)` has been changed quite
+  significantly, but shouldn't affect anyone who is using the macro.
+- The various cynic derives now expect the crate to be in scope under the name
+  `cynic`. This hopefully shouldn't affect most users but may do so if you
+  were doing something unusual.
+
+### New Features
+
+- Added `cynic-introspection` for running an introspection query against a
+  remote server.
+- Added `cynic-introspection::Schema` which converts the introspection output
+  into a friendlier format for working with.
+- The derive macros now support structs that are generic on lifetimes _and_ types.
+- The derive macros now support fields that are references.
+- Added `cynic_codegen::register_schema`, a mechanism for pre-registering schemas
+  with cynic.
+- Added a `schema` attribute macro to declare the schema module for
+  pre-registered schemas.
+- Added the `rkyv` feature flag which optimises the pre-registered schemas with
+  the `rkyv` library. This makes cynic much more efficient when working with
+  large schemas.
+
+### Changes
+
+- Cynic now uses operationName when one is provided by the top-level QueryFragment
+- QueryFragments now provide the name of the struct to use as operationName
+
+### Bug Fixes
+
+- Fixed an issue deserializing recursive fields that hit their recurse depth.
+- Response deserialization will no longer work on random blobs of JSON that
+  aren't in GraphQLResponse format.
+
+### Deprecations
+
+- `cynic_codegen::output_schema_module` is now deprecated in favour of `register_schema`.
+
 ## v2.2.8 - 2023-03-01
 
 ### Bug Fixes
@@ -17,7 +73,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## v2.2.7 - 2023-02-27
 
-### Bug Fixes 
+### Bug Fixes
 
 - You no longer have to specify the `Extensions` parameter on `GraphQLError` if
   you don't have any extensions.
@@ -71,7 +127,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ### Changes
 
 - The `use_schema` output has been re-organised to reduce the chances of
-  clashes.  This is technically a breaking change, but only if you're writing
+  clashes. This is technically a breaking change, but only if you're writing
   queries by hand rather than using the derives.
 
 ## v2.1.0 - 2022-11-09
@@ -93,7 +149,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 - Some of the derives weren't recasing GraphQL types/fields correctly, leading
   to weird errors.
-- Scalars defined using `impl_scalar!` couldn't be used as variables.  Now they
+- Scalars defined using `impl_scalar!` couldn't be used as variables. Now they
   can.
 
 ## v2.0.0 - 2022-11-07

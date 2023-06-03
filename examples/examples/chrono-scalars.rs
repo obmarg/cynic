@@ -1,6 +1,8 @@
 //! An example of querying the starwars API using the reqwest-blocking feature
 
 mod schema {
+    // We didn't register the graphql.jobs schema in our build.rs
+    // so we bring it in here with `use_schema!`
     cynic::use_schema!("../schemas/graphql.jobs.graphql");
 }
 

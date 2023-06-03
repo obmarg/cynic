@@ -1,5 +1,5 @@
 /// The response to a GraphQl operation
-#[derive(Debug, serde::Deserialize)]
+#[derive(Debug)]
 pub struct GraphQlResponse<T, ErrorExtensions = serde::de::IgnoredAny> {
     /// The operation data (if the operation was successful)
     pub data: Option<T>,
@@ -58,6 +58,38 @@ pub enum GraphQlErrorPathSegment {
     Index(i32),
 }
 
+impl<'de, T, ErrorExtensions> serde::Deserialize<'de> for GraphQlResponse<T, ErrorExtensions>
+where
+    T: serde::Deserialize<'de>,
+    ErrorExtensions: serde::Deserialize<'de>,
+{
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: serde::Deserializer<'de>,
+    {
+        use serde::de::Error;
+
+        #[derive(serde::Deserialize)]
+        struct ResponseDeser<T, ErrorExtensions> {
+            /// The operation data (if the operation was successful)
+            data: Option<T>,
+
+            /// Any errors that occurred as part of this operation
+            errors: Option<Vec<GraphQlError<ErrorExtensions>>>,
+        }
+
+        let ResponseDeser { data, errors } = ResponseDeser::deserialize(deserializer)?;
+
+        if data.is_none() && errors.is_none() {
+            return Err(D::Error::custom(
+                "Either data or errors must be present in a GraphQL response",
+            ));
+        }
+
+        Ok(GraphQlResponse { data, errors })
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use serde_json::json;
@@ -92,5 +124,13 @@ mod tests {
             ),
         }
         "###);
+    }
+
+    #[test]
+    fn test_graphql_response_fails_on_completely_invalid_response() {
+        let response = json!({
+            "message": "This endpoint requires you to be authenticated.",
+        });
+        serde_json::from_value::<GraphQlResponse<()>>(response).unwrap_err();
     }
 }

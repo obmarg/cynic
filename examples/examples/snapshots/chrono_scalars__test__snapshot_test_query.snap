@@ -1,9 +1,8 @@
 ---
 source: examples/examples/chrono-scalars.rs
-assertion_line: 62
 expression: query.query
 ---
-query {
+query JobsQuery {
   jobs {
     createdAt
   }

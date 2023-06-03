@@ -2,7 +2,7 @@
 
 fn main() {}
 
-#[cynic::schema_for_derives(file = r#"./../../../schemas/github.graphql"#, module = "schema")]
+#[cynic::schema_for_derives(file = r#"./../../../../schemas/github.graphql"#, module = "schema")]
 mod queries {
     use super::schema;
 
@@ -26,5 +26,5 @@ mod queries {
 }
 
 mod schema {
-    cynic::use_schema!(r#"./../../../schemas/github.graphql"#);
+    cynic::use_schema!(r#"./../../../../schemas/github.graphql"#);
 }

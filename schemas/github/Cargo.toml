@@ -8,4 +8,4 @@ publish = false
 
 [dependencies]
 chrono = { version = "0.4", features = ["serde"] }
-cynic = { path = "../../cynic", version = "2.0.0-dev" }
+cynic = { path = "../../cynic", version = "3.0.0-beta.1" }

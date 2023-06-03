@@ -2,9 +2,8 @@ use proc_macro2::{Span, TokenStream};
 
 use crate::{
     schema::{
-        load_schema,
         types::{self as schema},
-        Schema, Unvalidated,
+        Schema,
     },
     suggestions::FieldSuggestionError,
     Errors,
@@ -31,25 +30,17 @@ pub fn fragment_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error
     use darling::FromDeriveInput;
 
     match FragmentDeriveInput::from_derive_input(ast) {
-        Ok(input) => {
-            let schema_doc = load_schema(&*input.schema_path)
-                .map_err(|e| e.into_syn_error(input.schema_path.span()))?;
-
-            let schema = crate::schema::Schema::new(&schema_doc);
-
-            fragment_derive_impl(input, schema).or_else(|e| Ok(e.to_compile_errors()))
-        }
+        Ok(input) => fragment_derive_impl(input).or_else(|e| Ok(e.to_compile_errors())),
         Err(e) => Ok(e.write_errors()),
     }
 }
 
-pub fn fragment_derive_impl(
-    input: FragmentDeriveInput,
-    schema: Schema<'_, Unvalidated>,
-) -> Result<TokenStream, Errors> {
+pub fn fragment_derive_impl(input: FragmentDeriveInput) -> Result<TokenStream, Errors> {
     let mut input = input;
     input.validate()?;
     input.detect_aliases();
+
+    let schema = Schema::new(input.schema_input()?);
 
     let schema_type = schema
         .lookup::<FragmentDeriveType<'_>>(&input.graphql_type_name())
@@ -60,9 +51,10 @@ pub fn fragment_derive_impl(
     let variables = input.variables();
     let deprecations = input.deprecations();
     if let darling::ast::Data::Struct(fields) = input.data {
-        let fields = pair_fields(fields.iter(), &schema_type)?;
+        let fields = pair_fields(fields.into_iter(), &schema_type)?;
 
         let fragment_impl = FragmentImpl::new_for(
+            &schema,
             &fields,
             &input.ident,
             &input.generics,
@@ -88,16 +80,16 @@ pub fn fragment_derive_impl(
     }
 }
 
-fn pair_fields<'a, 'b>(
-    rust_fields: impl IntoIterator<Item = &'b FragmentDeriveField>,
-    schema_type: &'b FragmentDeriveType<'a>,
-) -> Result<Vec<(&'b FragmentDeriveField, Option<&'b schema::Field<'a>>)>, Errors> {
+fn pair_fields<'a>(
+    rust_fields: impl IntoIterator<Item = FragmentDeriveField>,
+    schema_type: &FragmentDeriveType<'a>,
+) -> Result<Vec<(FragmentDeriveField, Option<schema::Field<'a>>)>, Errors> {
     let mut result = Vec::new();
     let mut unknown_fields = Vec::new();
     for field in rust_fields {
         let ident = field.graphql_ident();
         match (schema_type.field(&ident), *field.spread) {
-            (Some(schema_field), _) => result.push((field, Some(schema_field))),
+            (Some(schema_field), _) => result.push((field, Some(schema_field.clone()))),
             (None, false) => unknown_fields.push(ident),
             (None, true) => result.push((field, None)),
         }
@@ -122,7 +114,7 @@ fn pair_fields<'a, 'b>(
                 field.span(),
                 FieldSuggestionError {
                     expected_field,
-                    graphql_type_name: schema_type.name,
+                    graphql_type_name: schema_type.name.as_ref(),
                     suggested_field,
                 },
             )

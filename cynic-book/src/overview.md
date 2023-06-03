@@ -16,9 +16,9 @@
 <h4>
   <a href="https://github.com/obmarg/cynic">Repository</a>
   <span> | </span>
-  <a href="https://github.com/obmarg/cynic/tree/master/examples/examples">Examples</a>
+  <a href="https://github.com/obmarg/cynic/tree/main/examples/examples">Examples</a>
   <span> | </span>
-  <a href="https://github.com/obmarg/cynic/blob/master/CHANGELOG.md">Changelog</a>
+  <a href="https://github.com/obmarg/cynic/blob/main/CHANGELOG.md">Changelog</a>
 </h4>
 
 # Overview
@@ -82,10 +82,6 @@ Cynic is documented in a few places:
 If you're new to Cynic the [quickstart](./quickstart.html) is a good place to
 start. Afterwards you might want to read the [derives](./derives/index.html)
 chapter, for more details about how to do common things with Cynic.
-
-The [Building Queries](./building-queries/index.html) section is for more
-advanced users - either you've run into a case that the built in derives
-don't cover, or you're just curious how things work under the hood.
 
 ### Inspiration
 

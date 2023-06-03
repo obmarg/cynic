@@ -1,5 +1,7 @@
-use quote::{quote, ToTokens, TokenStreamExt};
-use syn::parse_quote;
+use {
+    quote::{quote, ToTokens, TokenStreamExt},
+    syn::parse_quote,
+};
 
 use crate::schema::types::{Field, InputValue};
 
@@ -16,7 +18,7 @@ struct ArgumentOutput<'a> {
 impl ToTokens for FieldOutput<'_> {
     fn to_tokens(&self, tokens: &mut proc_macro2::TokenStream) {
         let parent_marker = self.parent_marker;
-        let field_marker = &proc_macro2::Ident::from(self.field.marker_ident());
+        let field_marker = &self.field.marker_ident().to_rust_ident();
         let field_name_literal = proc_macro2::Literal::string(self.field.name.as_str());
 
         let field_type_marker = self
@@ -28,13 +30,13 @@ impl ToTokens for FieldOutput<'_> {
         tokens.append_all(quote! {
             pub struct #field_marker;
 
-            impl ::cynic::schema::Field for #field_marker{
+            impl cynic::schema::Field for #field_marker{
                 type Type = #field_type_marker;
 
                 const NAME: &'static str = #field_name_literal;
             }
 
-            impl ::cynic::schema::HasField<#field_marker> for super::super::#parent_marker {
+            impl cynic::schema::HasField<#field_marker> for super::super::#parent_marker {
                 type Type = #field_type_marker;
             }
         });
@@ -58,7 +60,7 @@ impl ToTokens for FieldOutput<'_> {
 impl ToTokens for ArgumentOutput<'_> {
     fn to_tokens(&self, tokens: &mut proc_macro2::TokenStream) {
         let name = proc_macro2::Literal::string(self.argument.name.as_str());
-        let argument_ident = proc_macro2::Ident::from(self.argument.marker_ident());
+        let argument_ident = self.argument.marker_ident().to_rust_ident();
         let field_marker = self.field_marker;
 
         let schema_type = self
@@ -70,7 +72,7 @@ impl ToTokens for ArgumentOutput<'_> {
         tokens.append_all(quote! {
             pub struct #argument_ident;
 
-            impl ::cynic::schema::HasArgument<#argument_ident> for super::#field_marker {
+            impl cynic::schema::HasArgument<#argument_ident> for super::#field_marker {
                 type ArgumentType = #schema_type;
 
                 const NAME: &'static str = #name;

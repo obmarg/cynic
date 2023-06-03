@@ -5,7 +5,6 @@ use {
 
 use crate::{
     idents::RenameAll,
-    load_schema,
     schema::{
         types::{EnumType, EnumValue},
         Schema, Unvalidated,
@@ -26,10 +25,7 @@ pub fn enum_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
 
     match EnumDeriveInput::from_derive_input(ast) {
         Ok(input) => {
-            let schema_doc = load_schema(&*input.schema_path)
-                .map_err(|e| e.into_syn_error(input.schema_path.span()))?;
-
-            let schema = Schema::new(&schema_doc);
+            let schema = Schema::new(input.schema_input()?);
 
             enum_derive_impl(input, &schema, enum_span).or_else(|e| Ok(e.to_compile_error()))
         }
@@ -63,7 +59,7 @@ pub fn enum_derive_impl(
         };
 
         let graphql_type_name = proc_macro2::Literal::string(&input.graphql_type_name());
-        let enum_marker_ident = proc_macro2::Ident::from(enum_def.marker_ident());
+        let enum_marker_ident = enum_def.marker_ident().to_rust_ident();
 
         let string_literals: Vec<_> = pairs
             .iter()
@@ -86,15 +82,15 @@ pub fn enum_derive_impl(
 
         Ok(quote! {
             #[automatically_derived]
-            impl ::cynic::Enum for #ident {
+            impl cynic::Enum for #ident {
                 type SchemaType = #schema_module::#enum_marker_ident;
             }
 
             #[automatically_derived]
-            impl ::cynic::serde::Serialize for #ident {
+            impl cynic::serde::Serialize for #ident {
                 fn serialize<__S>(&self, serializer: __S) -> Result<__S::Ok, __S::Error>
                 where
-                    __S: ::cynic::serde::Serializer {
+                    __S: cynic::serde::Serializer {
                         match self {
                             #(
                                 #ident::#variants => serializer.serialize_unit_variant(#graphql_type_name, #variant_indexes, #string_literals),
@@ -104,28 +100,28 @@ pub fn enum_derive_impl(
             }
 
             #[automatically_derived]
-            impl<'de> ::cynic::serde::Deserialize<'de> for #ident {
+            impl<'de> cynic::serde::Deserialize<'de> for #ident {
                 fn deserialize<__D>(deserializer: __D) -> Result<Self, __D::Error>
                 where
-                    __D: ::cynic::serde::Deserializer<'de>,
+                    __D: cynic::serde::Deserializer<'de>,
                 {
-                    match <String as ::cynic::serde::Deserialize>::deserialize(deserializer)?.as_ref() {
+                    match <String as cynic::serde::Deserialize>::deserialize(deserializer)?.as_ref() {
                         #(
                             #string_literals => Ok(#ident::#variants),
                         )*
                         unknown => {
                             const VARIANTS: &'static [&'static str] = &[#(#string_literals),*];
-                            Err(::cynic::serde::de::Error::unknown_variant(unknown, VARIANTS))
+                            Err(cynic::serde::de::Error::unknown_variant(unknown, VARIANTS))
                         }
                     }
                 }
             }
 
-            ::cynic::impl_coercions!(#ident, #schema_module::#enum_marker_ident);
+            cynic::impl_coercions!(#ident, #schema_module::#enum_marker_ident);
 
             #[automatically_derived]
             impl #schema_module::variable::Variable for #ident {
-                const TYPE: ::cynic::variables::VariableType = ::cynic::variables::VariableType::Named(#graphql_type_name);
+                const TYPE: cynic::variables::VariableType = cynic::variables::VariableType::Named(#graphql_type_name);
             }
         })
     } else {
@@ -246,17 +242,14 @@ mod tests {
             },
         ];
         let mut gql_enum = EnumType {
-            description: None,
-            name: "Desserts",
+            name: "Desserts".into(),
             values: vec![],
         };
         gql_enum.values.push(EnumValue {
             name: FieldName::new(enum_value_1),
-            description: None,
         });
         gql_enum.values.push(EnumValue {
             name: FieldName::new(enum_value_2),
-            description: None,
         });
 
         let result = join_variants(
@@ -296,17 +289,14 @@ mod tests {
             },
         ];
         let mut gql_enum = EnumType {
-            description: None,
-            name: "Desserts",
+            name: "Desserts".into(),
             values: vec![],
         };
         gql_enum.values.push(EnumValue {
             name: FieldName::new("CHEESECAKE"),
-            description: None,
         });
         gql_enum.values.push(EnumValue {
             name: FieldName::new("iced-goodness"),
-            description: None,
         });
 
         let result = join_variants(
@@ -340,17 +330,14 @@ mod tests {
             rename: None,
         }];
         let mut gql_enum = EnumType {
-            description: None,
-            name: "Desserts",
+            name: "Desserts".into(),
             values: vec![],
         };
         gql_enum.values.push(EnumValue {
             name: FieldName::new("CHEESECAKE"),
-            description: None,
         });
         gql_enum.values.push(EnumValue {
             name: FieldName::new("ICE_CREAM"),
-            description: None,
         });
 
         let result = join_variants(
@@ -371,13 +358,11 @@ mod tests {
             rename: None,
         }];
         let mut gql_enum = EnumType {
-            description: None,
-            name: "Desserts",
+            name: "Desserts".into(),
             values: vec![],
         };
         gql_enum.values.push(EnumValue {
             name: FieldName::new("ICE_CREAM"),
-            description: None,
         });
 
         let result = join_variants(

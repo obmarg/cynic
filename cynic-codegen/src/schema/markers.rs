@@ -1,4 +1,4 @@
-use std::borrow::Borrow;
+use std::borrow::{Borrow, Cow};
 
 use quote::format_ident;
 use syn::spanned::Spanned;
@@ -10,28 +10,28 @@ use crate::idents::to_snake_case;
 use super::keywords::transform_keywords;
 
 /// Ident for a type
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Debug)]
 pub struct TypeMarkerIdent<'a> {
-    graphql_name: &'a str,
+    graphql_name: Cow<'a, str>,
 }
 
 /// Ident for a field of a type
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Debug)]
 pub struct FieldMarkerIdent<'a> {
     graphql_name: &'a str,
 }
 
 /// A module that contains everything associated with a field.
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Debug)]
 pub struct FieldMarkerModule<'a> {
-    type_name: &'a str,
+    type_name: Cow<'a, str>,
 }
 
 /// A module that contains everything associated with an argument to a field
-#[derive(Clone, Copy, Debug)]
+#[derive(Debug)]
 pub struct ArgumentMarkerModule<'a> {
-    type_name: &'a str,
-    field_name: &'a str,
+    type_name: Cow<'a, str>,
+    field_name: Cow<'a, str>,
 }
 
 /// Marker to the type of a field - handles options & vecs and whatever the inner
@@ -46,9 +46,10 @@ impl<T> TypeRefMarker<'_, T> {
         use syn::parse_quote;
 
         match &self.type_ref {
-            TypeRef::Named(name, _, _) => {
-                TypeMarkerIdent { graphql_name: name }.to_path(schema_module_path)
+            TypeRef::Named(name, _) => TypeMarkerIdent {
+                graphql_name: name.clone(),
             }
+            .to_path(schema_module_path),
             TypeRef::List(inner) => {
                 let inner_path = TypeRefMarker {
                     type_ref: inner.as_ref(),
@@ -75,28 +76,28 @@ impl<T> TypeRefMarker<'_, T> {
 
 impl<'a> TypeMarkerIdent<'a> {
     pub fn with_graphql_name(graphql_name: &'a str) -> Self {
-        TypeMarkerIdent { graphql_name }
+        TypeMarkerIdent {
+            graphql_name: Cow::Borrowed(graphql_name),
+        }
     }
 
-    pub fn to_path(self, schema_module_path: &syn::Path) -> syn::Path {
+    pub fn to_path(&self, schema_module_path: &syn::Path) -> syn::Path {
         let mut path = schema_module_path.clone();
-        path.push(proc_macro2::Ident::from(self));
+        path.push(self.to_rust_ident());
         path
     }
-}
 
-impl From<TypeMarkerIdent<'_>> for proc_macro2::Ident {
-    fn from(val: TypeMarkerIdent<'_>) -> Self {
-        format_ident!("{}", transform_keywords(val.graphql_name))
+    pub fn to_rust_ident(&self) -> proc_macro2::Ident {
+        format_ident!("{}", transform_keywords(self.graphql_name.as_ref()))
     }
 }
 
 impl<'a> FieldMarkerModule<'a> {
     pub fn ident(&self) -> proc_macro2::Ident {
-        format_ident!("{}", transform_keywords(self.type_name))
+        format_ident!("{}", transform_keywords(self.type_name.as_ref()))
     }
 
-    pub fn to_path(self, schema_module_path: &syn::Path) -> syn::Path {
+    pub fn to_path(&self, schema_module_path: &syn::Path) -> syn::Path {
         let mut path = schema_module_path.clone();
         path.push(proc_macro2::Ident::new(
             "__fields",
@@ -108,31 +109,29 @@ impl<'a> FieldMarkerModule<'a> {
 }
 
 impl<'a> FieldMarkerIdent<'a> {
-    pub fn to_path(self, schema_module_path: &syn::Path) -> syn::Path {
+    pub fn to_path(&self, schema_module_path: &syn::Path) -> syn::Path {
         let mut path = schema_module_path.clone();
-        path.push(proc_macro2::Ident::from(self));
+        path.push(self.to_rust_ident());
         path
     }
-}
 
-impl From<FieldMarkerIdent<'_>> for proc_macro2::Ident {
-    fn from(val: FieldMarkerIdent<'_>) -> Self {
-        if val.graphql_name == "_" {
+    pub fn to_rust_ident(&self) -> proc_macro2::Ident {
+        if self.graphql_name == "_" {
             return format_ident!("_Underscore");
         }
 
-        format_ident!("{}", transform_keywords(val.graphql_name))
+        format_ident!("{}", transform_keywords(self.graphql_name))
     }
 }
 
 impl ArgumentMarkerModule<'_> {
     pub fn ident(&self) -> proc_macro2::Ident {
-        format_ident!("_{}_arguments", to_snake_case(self.field_name))
+        format_ident!("_{}_arguments", to_snake_case(self.field_name.as_ref()))
     }
 
-    pub fn to_path(self, schema_module_path: &syn::Path) -> syn::Path {
+    pub fn to_path(&self, schema_module_path: &syn::Path) -> syn::Path {
         let mut path = FieldMarkerModule {
-            type_name: self.type_name,
+            type_name: self.type_name.clone(),
         }
         .to_path(schema_module_path);
         path.push(self.ident());
@@ -146,7 +145,7 @@ macro_rules! marker_ident_for_named {
         impl<'a> $kind<'a> {
             pub fn marker_ident(&self) -> TypeMarkerIdent<'a> {
                 TypeMarkerIdent {
-                    graphql_name: self.name
+                    graphql_name: self.name.clone()
                 }
             }
         }
@@ -167,7 +166,7 @@ marker_ident_for_named!(
 );
 
 impl<'a> Field<'a> {
-    pub fn marker_ident(&self) -> FieldMarkerIdent<'a> {
+    pub fn marker_ident(&'a self) -> FieldMarkerIdent<'a> {
         FieldMarkerIdent {
             graphql_name: self.name.as_str(),
         }
@@ -175,7 +174,7 @@ impl<'a> Field<'a> {
 }
 
 impl<'a> InputValue<'a> {
-    pub fn marker_ident(&self) -> FieldMarkerIdent<'a> {
+    pub fn marker_ident(&'a self) -> FieldMarkerIdent<'a> {
         FieldMarkerIdent {
             graphql_name: self.name.as_str(),
         }
@@ -185,7 +184,7 @@ impl<'a> InputValue<'a> {
 impl<'a> ObjectType<'a> {
     pub fn field_module(&self) -> FieldMarkerModule<'a> {
         FieldMarkerModule {
-            type_name: self.name,
+            type_name: self.name.clone(),
         }
     }
 }
@@ -193,15 +192,15 @@ impl<'a> ObjectType<'a> {
 impl<'a> InterfaceType<'a> {
     pub fn field_module(&self) -> FieldMarkerModule<'a> {
         FieldMarkerModule {
-            type_name: self.name,
+            type_name: self.name.clone(),
         }
     }
 }
 
 impl<'a> InputObjectType<'a> {
-    pub fn field_module(&self) -> FieldMarkerModule<'a> {
+    pub fn field_module(&'a self) -> FieldMarkerModule<'a> {
         FieldMarkerModule {
-            type_name: self.name,
+            type_name: self.name.clone(),
         }
     }
 }
@@ -209,8 +208,8 @@ impl<'a> InputObjectType<'a> {
 impl<'a> Field<'a> {
     pub fn argument_module(&self) -> ArgumentMarkerModule<'a> {
         ArgumentMarkerModule {
-            type_name: self.parent_type_name,
-            field_name: self.name.graphql_name,
+            type_name: self.parent_type_name.clone(),
+            field_name: self.name.graphql_name.clone(),
         }
     }
 }
@@ -218,7 +217,7 @@ impl<'a> Field<'a> {
 impl<'a> ObjectRef<'a> {
     pub fn marker_ident(&self) -> TypeMarkerIdent<'a> {
         TypeMarkerIdent {
-            graphql_name: self.0,
+            graphql_name: self.0.clone(),
         }
     }
 }
@@ -226,7 +225,7 @@ impl<'a> ObjectRef<'a> {
 impl<'a> InterfaceRef<'a> {
     pub fn marker_ident(&self) -> TypeMarkerIdent<'a> {
         TypeMarkerIdent {
-            graphql_name: self.0,
+            graphql_name: self.0.clone(),
         }
     }
 }

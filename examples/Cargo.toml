@@ -1,6 +1,6 @@
 [package]
 name = "cynic-examples"
-version = "2.2.8"
+version = "3.0.0-beta.3"
 authors = ["Graeme Coupar <grambo@grambo.me.uk>"]
 edition = "2018"
 publish = false
@@ -27,3 +27,6 @@ github-schema = { path = "../schemas/github" }
 
 [dev-dependencies]
 insta = "1.17"
+
+[build-dependencies]
+cynic-codegen = { path = "../cynic-codegen" }

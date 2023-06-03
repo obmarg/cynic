@@ -333,12 +333,12 @@ struct Schema {
 impl Schema {
     /// Constructs a SchemaPath from the examples package
     fn from_repo_schemas(query_url: impl Into<String>, path: impl Into<PathBuf>) -> Schema {
-        let example_path = PathBuf::from("../../schemas/");
-        let path = example_path.join(path.into());
+        let schema_dir = PathBuf::from("../../schemas/");
+        let path = schema_dir.join(path.into());
         Schema {
             query_url: query_url.into(),
             path_for_loading: path.clone(),
-            path_for_generated_code: PathBuf::from("./..").join(path),
+            path_for_generated_code: PathBuf::from("./../..").join(path),
         }
     }
 }

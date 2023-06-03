@@ -72,7 +72,7 @@ impl<'a> RustType<'a> {
     }
 }
 
-pub fn parse_rust_type<'t>(ty: &'t syn::Type) -> RustType<'t> {
+pub fn parse_rust_type(ty: &syn::Type) -> RustType<'_> {
     let span = ty.span();
     match ty {
         syn::Type::Path(type_path) => {

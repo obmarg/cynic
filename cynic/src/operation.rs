@@ -1,4 +1,4 @@
-use std::marker::PhantomData;
+use std::{borrow::Cow, marker::PhantomData};
 
 use crate::{
     core::QueryFragment,
@@ -19,6 +19,9 @@ pub struct Operation<QueryFragment, Variables = ()> {
     /// The variables that will be sent to the server as part of this operation
     pub variables: Variables,
 
+    /// The name of the operation in query that we should run
+    pub operation_name: Option<Cow<'static, str>>,
+
     phantom: PhantomData<fn() -> QueryFragment>,
 }
 
@@ -35,11 +38,14 @@ where
         let mut map_serializer = serializer.serialize_map(Some(2))?;
         map_serializer.serialize_entry("query", &self.query)?;
         map_serializer.serialize_entry("variables", &self.variables)?;
+        if let Some(operation_name) = &self.operation_name {
+            map_serializer.serialize_entry("operationName", &operation_name)?;
+        }
         map_serializer.end()
     }
 }
 
-impl<'de, Fragment, Variables> Operation<Fragment, Variables>
+impl<Fragment, Variables> Operation<Fragment, Variables>
 where
     Fragment: QueryFragment,
     Variables: QueryVariables,
@@ -57,12 +63,17 @@ where
 
         let vars = VariableDefinitions::new::<Variables>();
 
+        let operation_name = Fragment::name();
+        let name_str = operation_name.as_deref().unwrap_or("");
+
         let mut query = String::new();
-        writeln!(&mut query, "query{vars}{selection_set}").expect("Couldn't stringify query");
+        writeln!(&mut query, "query {name_str}{vars}{selection_set}")
+            .expect("Couldn't stringify query");
 
         Operation {
             query,
             variables,
+            operation_name,
             phantom: PhantomData,
         }
     }
@@ -80,12 +91,17 @@ where
 
         let vars = VariableDefinitions::new::<Variables>();
 
+        let operation_name = Fragment::name();
+        let name_str = operation_name.as_deref().unwrap_or("");
+
         let mut query = String::new();
-        writeln!(&mut query, "mutation{vars}{selection_set}").expect("Couldn't stringify query");
+        writeln!(&mut query, "mutation {name_str}{vars}{selection_set}")
+            .expect("Couldn't stringify query");
 
         Operation {
             query,
             variables,
+            operation_name,
             phantom: PhantomData,
         }
     }
@@ -98,7 +114,7 @@ pub struct StreamingOperation<ResponseData, Variables = ()> {
     inner: Operation<ResponseData, Variables>,
 }
 
-impl<'de, Fragment, Variables> StreamingOperation<Fragment, Variables>
+impl<Fragment, Variables> StreamingOperation<Fragment, Variables>
 where
     Fragment: QueryFragment,
     Variables: QueryVariables,
@@ -116,14 +132,18 @@ where
 
         let vars = VariableDefinitions::new::<Variables>();
 
+        let operation_name = Fragment::name();
+        let name_str = operation_name.as_deref().unwrap_or("");
+
         let mut query = String::new();
-        writeln!(&mut query, "subscription{vars}{selection_set}")
+        writeln!(&mut query, "subscription {name_str}{vars}{selection_set}")
             .expect("Couldn't stringify query");
 
         StreamingOperation {
             inner: Operation {
                 query,
                 variables,
+                operation_name,
                 phantom: PhantomData,
             },
         }

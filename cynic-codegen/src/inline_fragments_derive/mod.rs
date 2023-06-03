@@ -5,7 +5,6 @@ use {
 
 use crate::{
     inline_fragments_derive::input::ValidationMode,
-    load_schema,
     schema::{
         markers::TypeMarkerIdent,
         types::{InterfaceType, Kind, Type, UnionType},
@@ -41,10 +40,7 @@ pub(crate) fn inline_fragments_derive_impl(
 ) -> Result<TokenStream, Errors> {
     use quote::quote;
 
-    let schema =
-        load_schema(&*input.schema_path).map_err(|e| e.into_syn_error(input.schema_path.span()))?;
-
-    let schema = Schema::new(&schema);
+    let schema = Schema::new(input.schema_input()?);
 
     let target_type = schema.lookup::<InlineFragmentType<'_>>(&input.graphql_type_name())?;
 
@@ -215,17 +211,17 @@ impl quote::ToTokens for QueryFragmentImpl<'_> {
 
         tokens.append_all(quote! {
             #[automatically_derived]
-            impl #impl_generics ::cynic::QueryFragment for #target_struct #ty_generics #where_clause {
+            impl #impl_generics cynic::QueryFragment for #target_struct #ty_generics #where_clause {
                 type SchemaType = #type_lock;
                 type VariablesFields = #variables_fields;
 
                 const TYPE: Option<&'static str> = Some(#graphql_type);
 
-                fn query(mut builder: ::cynic::queries::SelectionBuilder<'_, Self::SchemaType, Self::VariablesFields>) {
+                fn query(mut builder: cynic::queries::SelectionBuilder<'_, Self::SchemaType, Self::VariablesFields>) {
                     #(
                         let fragment_builder = builder.inline_fragment();
-                        let mut fragment_builder = fragment_builder.on::<<#inner_types as ::cynic::QueryFragment>::SchemaType>();
-                        <#inner_types as ::cynic::QueryFragment>::query(
+                        let mut fragment_builder = fragment_builder.on::<<#inner_types as cynic::QueryFragment>::SchemaType>();
+                        <#inner_types as cynic::QueryFragment>::query(
                             fragment_builder.select_children()
                         );
                     )*

@@ -7,10 +7,9 @@ use crate::{
     error::Errors,
     generics_for_serde,
     idents::RenameAll,
-    load_schema,
     schema::{
         types::{InputObjectType, InputValue},
-        Schema, Unvalidated,
+        Schema,
     },
     suggestions::FieldSuggestionError,
 };
@@ -33,13 +32,7 @@ pub fn input_object_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::E
 
     match InputObjectDeriveInput::from_derive_input(ast) {
         Ok(input) => {
-            let schema_doc = load_schema(&*input.schema_path)
-                .map_err(|e| e.into_syn_error(input.schema_path.span()))?;
-
-            let schema = Schema::new(&schema_doc);
-
-            input_object_derive_impl(input, &schema, struct_span)
-                .or_else(|e| Ok(e.to_compile_errors()))
+            input_object_derive_impl(input, struct_span).or_else(|e| Ok(e.to_compile_errors()))
         }
         Err(e) => Ok(e.write_errors()),
     }
@@ -47,10 +40,11 @@ pub fn input_object_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::E
 
 pub fn input_object_derive_impl(
     input: InputObjectDeriveInput,
-    schema: &Schema<'_, Unvalidated>,
     struct_span: Span,
 ) -> Result<TokenStream, Errors> {
     use quote::quote;
+
+    let schema = Schema::new(input.schema_input()?);
 
     let input_object = schema
         .lookup::<InputObjectType<'_>>(&input.graphql_type_name())
@@ -63,12 +57,13 @@ pub fn input_object_derive_impl(
         let (impl_generics, ty_generics, where_clause) = input.generics.split_for_impl();
         let generics_with_ser = generics_for_serde::with_serialize_bounds(&input.generics);
         let (impl_generics_with_ser, _, where_clause_with_ser) = generics_with_ser.split_for_impl();
-        let input_marker_ident = proc_macro2::Ident::from(input_object.marker_ident());
+        let input_marker_ident = input_object.marker_ident().to_rust_ident();
         let schema_module = input.schema_module();
+        let graphql_type_name = proc_macro2::Literal::string(input_object.name.as_ref());
 
         let pairs = pair_fields(
             &fields.fields,
-            &input_object,
+            input_object,
             rename_all,
             input.require_all_fields,
             &struct_span,
@@ -92,7 +87,7 @@ pub fn input_object_derive_impl(
 
         let typechecks = field_serializers
             .iter()
-            .map(|fs| fs.type_check(&impl_generics, where_clause));
+            .map(|fs| fs.type_check(&impl_generics, where_clause, &schema));
         let map_serializer_ident = proc_macro2::Ident::new("map_serializer", Span::call_site());
         let field_inserts = field_serializers
             .iter()
@@ -100,21 +95,19 @@ pub fn input_object_derive_impl(
 
         let map_len = field_serializers.len();
 
-        let graphql_type_name = proc_macro2::Literal::string(input_object.name);
-
         Ok(quote! {
             #[automatically_derived]
-            impl #impl_generics ::cynic::InputObject for #ident #ty_generics #where_clause_with_ser {
+            impl #impl_generics cynic::InputObject for #ident #ty_generics #where_clause_with_ser {
                 type SchemaType = #schema_module::#input_marker_ident;
             }
 
             #[automatically_derived]
-            impl #impl_generics_with_ser ::cynic::serde::Serialize for #ident #ty_generics #where_clause_with_ser {
+            impl #impl_generics_with_ser cynic::serde::Serialize for #ident #ty_generics #where_clause_with_ser {
                 fn serialize<__S>(&self, serializer: __S) -> Result<__S::Ok, __S::Error>
                 where
-                    __S: ::cynic::serde::Serializer,
+                    __S: cynic::serde::Serializer,
                 {
-                    use ::cynic::serde::ser::SerializeMap;
+                    use cynic::serde::ser::SerializeMap;
                     #(#typechecks)*
 
                     let mut map_serializer = serializer.serialize_map(Some(#map_len))?;
@@ -125,11 +118,11 @@ pub fn input_object_derive_impl(
                 }
             }
 
-            ::cynic::impl_coercions!(#ident #ty_generics [#impl_generics] [#where_clause], #schema_module::#input_marker_ident);
+            cynic::impl_coercions!(#ident #ty_generics [#impl_generics] [#where_clause], #schema_module::#input_marker_ident);
 
             #[automatically_derived]
             impl #impl_generics #schema_module::variable::Variable for #ident #ty_generics #where_clause {
-                const TYPE: ::cynic::variables::VariableType = ::cynic::variables::VariableType::Named(#graphql_type_name);
+                const TYPE: cynic::variables::VariableType = cynic::variables::VariableType::Named(#graphql_type_name);
             }
         })
     } else {
@@ -143,11 +136,11 @@ pub fn input_object_derive_impl(
 
 fn pair_fields<'a>(
     fields: &'a [InputObjectDeriveField],
-    input_object_def: &'a InputObjectType<'a>,
+    input_object_def: InputObjectType<'a>,
     rename_all: RenameAll,
     require_all_fields: bool,
     struct_span: &Span,
-) -> Result<Vec<(&'a InputObjectDeriveField, &'a InputValue<'a>)>, Errors> {
+) -> Result<Vec<(&'a InputObjectDeriveField, InputValue<'a>)>, Errors> {
     let mut result = Vec::new();
     let mut unknown_fields = Vec::new();
 
@@ -172,7 +165,7 @@ fn pair_fields<'a>(
     let provided_fields = result
         .iter()
         .map(|(_, field)| field)
-        .copied()
+        .cloned()
         .collect::<HashSet<_>>();
 
     let missing_fields = required_fields
@@ -180,7 +173,7 @@ fn pair_fields<'a>(
         .collect::<Vec<_>>();
 
     if missing_fields.is_empty() && unknown_fields.is_empty() {
-        return Ok(result);
+        return Ok(result.into_iter().map(|(l, r)| (l, r.clone())).collect());
     }
 
     let field_candidates = input_object_def
@@ -200,7 +193,7 @@ fn pair_fields<'a>(
                 field_name.span(),
                 FieldSuggestionError {
                     expected_field,
-                    graphql_type_name: input_object_def.name,
+                    graphql_type_name: input_object_def.name.as_ref(),
                     suggested_field,
                 },
             )
@@ -231,6 +224,8 @@ fn pair_fields<'a>(
 mod test {
     use assert_matches::assert_matches;
 
+    use crate::schema::SchemaInput;
+
     use super::*;
 
     static SCHEMA: &str = r#"
@@ -242,8 +237,7 @@ mod test {
 
     #[test]
     fn test_join_fields_when_all_required() {
-        let document = crate::schema::parse_schema(SCHEMA).unwrap();
-        let schema = crate::schema::Schema::new(&document);
+        let schema = Schema::new(SchemaInput::from_sdl(SCHEMA).unwrap());
         let input_object = schema.lookup("TestType").unwrap();
 
         let fields = vec![InputObjectDeriveField {
@@ -255,7 +249,7 @@ mod test {
 
         let result = pair_fields(
             &fields,
-            &input_object,
+            input_object,
             RenameAll::None,
             true,
             &Span::call_site(),
@@ -266,8 +260,7 @@ mod test {
 
     #[test]
     fn test_join_fields_when_required_field_missing() {
-        let document = crate::schema::parse_schema(SCHEMA).unwrap();
-        let schema = crate::schema::Schema::new(&document);
+        let schema = Schema::new(SchemaInput::from_sdl(SCHEMA).unwrap());
         let input_object = schema.lookup("TestType").unwrap();
 
         let fields = vec![InputObjectDeriveField {
@@ -279,7 +272,7 @@ mod test {
 
         let result = pair_fields(
             &fields,
-            &input_object,
+            input_object,
             RenameAll::None,
             false,
             &Span::call_site(),
@@ -290,9 +283,8 @@ mod test {
 
     #[test]
     fn test_join_fields_when_not_required() {
-        let document = crate::schema::parse_schema(SCHEMA).unwrap();
-        let schema = crate::schema::Schema::new(&document);
-        let input_object = schema.lookup("TestType").unwrap();
+        let schema = Schema::new(SchemaInput::from_sdl(SCHEMA).unwrap());
+        let input_object = schema.lookup::<InputObjectType<'_>>("TestType").unwrap();
 
         let fields = vec![InputObjectDeriveField {
             ident: Some(proc_macro2::Ident::new("field_one", Span::call_site())),
@@ -303,7 +295,7 @@ mod test {
 
         let result = pair_fields(
             &fields,
-            &input_object,
+            input_object.clone(),
             RenameAll::None,
             false,
             &Span::call_site(),
@@ -313,9 +305,6 @@ mod test {
 
         let (rust_field_ref, input_field_ref) = result.unwrap().into_iter().next().unwrap();
         assert!(std::ptr::eq(rust_field_ref, fields.first().unwrap()));
-        assert!(std::ptr::eq(
-            input_field_ref,
-            input_object.fields.first().unwrap()
-        ));
+        assert_eq!(&input_field_ref, input_object.fields.first().unwrap());
     }
 }

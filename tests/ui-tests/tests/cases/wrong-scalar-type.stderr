@@ -1,0 +1,10 @@
+error[E0277]: the trait bound `u64: IsScalar<i32>` is not satisfied
+  --> tests/cases/wrong-scalar-type.rs:15:21
+   |
+15 |         episode_id: Option<u64>,
+   |                     ^^^^^^ the trait `IsScalar<i32>` is not implemented for `u64`
+   |
+   = help: the following other types implement trait `IsScalar<SchemaType>`:
+             <f64 as IsScalar<f64>>
+             <i32 as IsScalar<i32>>
+   = note: required for `std::option::Option<u64>` to implement `IsScalar<std::option::Option<i32>>`

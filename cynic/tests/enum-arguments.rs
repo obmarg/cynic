@@ -27,7 +27,7 @@ fn test_enum_argument_literal() {
     let query = Query::build(());
 
     insta::assert_display_snapshot!(query.query, @r###"
-    query {
+    query Query {
       filteredPosts(filters: {states: [DRAFT, ], }) {
         hasMetadata
       }
@@ -64,7 +64,7 @@ fn test_enum_argument() {
     let query = Query::build(());
 
     insta::assert_display_snapshot!(query.query, @r###"
-    query {
+    query Query {
       filteredPosts(filters: {states: [POSTED, ], }) {
         hasMetadata
       }

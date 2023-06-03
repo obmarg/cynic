@@ -1,6 +1,6 @@
 [package]
 name = "cynic-proc-macros"
-version = "2.2.8"
+version = "3.0.0-beta.3"
 authors = ["Graeme Coupar <graeme@polyandglot.dev>"]
 edition = "2018"
 homepage = "https://cynic-rs.dev"
@@ -11,9 +11,15 @@ documentation = "https://docs.rs/cynic-proc-macros"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[features]
+default = []
+rkyv = ["cynic-codegen/rkyv"]
+
 [lib]
 proc-macro = true
 
 [dependencies]
-cynic-codegen = { path = "../cynic-codegen", version = "2.2.8" }
+cynic-codegen = { path = "../cynic-codegen", version = "3.0.0-beta.3" }
+quote = "1"
 syn = "1.0.87"
+proc-macro2 = "1"

@@ -21,11 +21,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - uses: dtolnay/rust-toolchain@1.65.0
+      - uses: dtolnay/rust-toolchain@1.69.0
         with:
           components: rustfmt
 
-      - uses: Swatinem/rust-cache@v1
+      - uses: Swatinem/rust-cache@v2
 
       - name: Check formatting
         uses: actions-rs/cargo@v1

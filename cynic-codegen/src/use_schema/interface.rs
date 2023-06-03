@@ -12,7 +12,7 @@ pub struct InterfaceOutput<'a> {
 impl<'a> InterfaceOutput<'a> {
     pub fn new(iface: InterfaceType<'a>) -> Self {
         InterfaceOutput {
-            marker_ident: proc_macro2::Ident::from(iface.marker_ident()),
+            marker_ident: iface.marker_ident().to_rust_ident(),
             iface,
         }
     }

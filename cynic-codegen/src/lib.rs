@@ -5,8 +5,10 @@ pub mod generics_for_serde;
 pub mod inline_fragments_derive;
 pub mod input_object_derive;
 pub mod query_variables_derive;
+pub mod registration;
 pub mod scalar_derive;
 pub mod schema_for_derives;
+pub mod schema_module_attr;
 pub mod use_schema;
 
 mod error;
@@ -15,10 +17,14 @@ mod schema;
 mod suggestions;
 mod types;
 
-pub use idents::RenameAll;
+pub use self::{idents::RenameAll, registration::register_schema};
 
-use {error::Errors, schema::load_schema};
+use error::Errors;
 
+#[deprecated(
+    since = "3.0.0",
+    note = "output_schema_module is deprecated.  See `register_schema` instead"
+)]
 pub fn output_schema_module(
     schema: impl AsRef<std::path::Path>,
     output_path: impl AsRef<std::path::Path>,
@@ -34,20 +40,20 @@ pub fn output_schema_module(
         write!(&mut out, "{}", tokens).unwrap();
     }
 
-    format_code(output_path.as_ref());
+    format_code(output_path.as_ref()).ok();
 
     Ok(())
 }
 
 #[allow(unused_variables)]
-fn format_code(filename: &std::path::Path) {
+fn format_code(filename: &std::path::Path) -> std::io::Result<()> {
     #[cfg(feature = "rustfmt")]
     {
         std::process::Command::new("cargo")
             .args(["fmt", "--", filename.to_str().unwrap()])
-            .spawn()
-            .expect("failed to execute process");
+            .spawn()?;
     }
+    Ok(())
 }
 
 fn variables_fields_path(variables: Option<&syn::Path>) -> Option<syn::Path> {
