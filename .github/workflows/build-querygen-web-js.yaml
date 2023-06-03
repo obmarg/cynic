@@ -4,7 +4,7 @@ on:
   push:
     branches: [staging, trying]
   pull_request:
-    branches: [master]
+    branches: [main]
 
 jobs:
   build-ts:

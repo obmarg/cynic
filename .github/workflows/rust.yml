@@ -2,9 +2,9 @@ name: Build & Test Rust
 
 on:
   push:
-    branches: [master, staging, trying]
+    branches: [main, staging, trying]
   pull_request:
-    branches: [master]
+    branches: [main]
 
 env:
   CARGO_INCREMENTAL: 0
