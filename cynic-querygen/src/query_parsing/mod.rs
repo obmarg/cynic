@@ -37,14 +37,14 @@ pub fn parse_query_document<'text>(
     let variable_struct_details = variables::build_variable_structs(&normalised);
 
     for operation in &normalised.operations {
-        let operation_name = operation.name.unwrap_or("UnnamedQuery");
+        let operation_name = operation.name.clone().unwrap_or("UnnamedQuery".into());
 
         namers
             .selection_sets
-            .force_name(&operation.root, operation_name);
+            .force_name(&operation.root, &operation_name);
 
         variable_struct_details
-            .force_name_variables_for(&operation.root, format!("{}Variables", operation_name));
+            .force_name_variables_for(&operation.root, format!("{operation_name}Variables"));
     }
 
     let query_fragments = sorting::topological_sort(normalised.selection_sets.iter().cloned())

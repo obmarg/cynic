@@ -92,3 +92,43 @@ fn test_with_named_schema() {
     )
     .expect("QueryGen Failed"))
 }
+
+#[test]
+fn pascal_type_renaming() {
+    let schema = r#"
+    type my_query {
+        field(in: input_type): nested_type
+    }
+
+    type nested_type {
+        scalar: my_scalar
+    }
+
+    input input_type {
+        en: an_enum
+    }
+
+    enum an_enum {
+        value
+    }
+
+    schema {
+        query: my_query
+    }
+
+    scalar my_scalar
+    "#;
+
+    let query = r#"
+    query my_query($input: input_type) {
+        field(in: $input) {
+            scalar
+        }
+    }
+    "#;
+
+    assert_snapshot!(
+        document_to_fragment_structs(query, schema, &QueryGenOptions::default())
+            .expect("QueryGen Failed")
+    )
+}
