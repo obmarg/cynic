@@ -14,13 +14,17 @@ impl SchemaInput {
     pub(crate) fn default() -> Result<SchemaInput, SchemaLoadError> {
         Self::from_schema_name("default").map_err(|error| match error {
             SchemaLoadError::NamedSchemaNotFound(_) => SchemaLoadError::DefaultSchemaNotFound,
+            SchemaLoadError::UnknownOutDirWithNamedSchema(_) => {
+                SchemaLoadError::UnknownOutDirWithDefaultSchema
+            }
             _ => error,
         })
     }
 
     /// Parses a SchemaInput from a name passed to a macro
     pub(crate) fn from_schema_name(name: &str) -> Result<SchemaInput, SchemaLoadError> {
-        let out_dir = std::env::var("OUT_DIR").map_err(|_| SchemaLoadError::UnknownOutDir)?;
+        let out_dir = std::env::var("OUT_DIR")
+            .map_err(|_| SchemaLoadError::UnknownOutDirWithNamedSchema(name.to_string()))?;
 
         let mut path = std::path::PathBuf::from(out_dir);
         path.push("cynic-schemas");

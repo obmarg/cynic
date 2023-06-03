@@ -45,7 +45,8 @@ pub enum SchemaLoadError {
     FileNotFound(String),
     NamedSchemaNotFound(String),
     DefaultSchemaNotFound,
-    UnknownOutDir,
+    UnknownOutDirWithNamedSchema(String),
+    UnknownOutDirWithDefaultSchema,
 }
 
 impl SchemaLoadError {
@@ -62,20 +63,26 @@ impl std::fmt::Display for SchemaLoadError {
             SchemaLoadError::FileNotFound(e) => write!(f, "Could not find file: {}", e),
             SchemaLoadError::NamedSchemaNotFound(_) => write!(
                 f,
-                "Could not find a schema with this name.  Have you registered it in build.rs?",
+                "Could not find a schema with this name.  Have you registered it in build.rs?  {SCHEMA_DOCUMENTATION_TEXT}",
             ),
             SchemaLoadError::DefaultSchemaNotFound => {
-                write!(f, "Couldn't determine which schema to use.  Please provide the `schema` argument or set a default schema in build.rs")
+                write!(f, "This derive is trying to use the default schema but it doesn't look like you've registered a default.  Please provide the `schema` argument or set a default in your build.rs.  {SCHEMA_DOCUMENTATION_TEXT}")
             }
-            SchemaLoadError::UnknownOutDir => {
+            SchemaLoadError::UnknownOutDirWithNamedSchema(name) => {
+                write!(f, "You requested a schema named {name} but it doesn't look like you've registered any schemas.  {SCHEMA_DOCUMENTATION_TEXT}")
+            }
+            SchemaLoadError::UnknownOutDirWithDefaultSchema => {
                 write!(
                     f,
-                    "OUT_DIR was not defined.  Have you set up your build.rs correctly?"
+                    "This derive is trying to use the default schema, but it doesn't look like you've registered any schemas.  {SCHEMA_DOCUMENTATION_TEXT}"
                 )
             }
         }
     }
 }
+
+const SCHEMA_DOCUMENTATION_TEXT: &str =
+    "See the cynic documentation on regsistering schemas if you need help.";
 
 impl From<graphql_parser::schema::ParseError> for SchemaLoadError {
     fn from(e: graphql_parser::schema::ParseError) -> SchemaLoadError {
