@@ -76,3 +76,19 @@ fn test_string_escaping() {
             .expect("QueryGen Failed")
     )
 }
+
+#[test]
+fn test_with_named_schema() {
+    let schema = include_str!("../../schemas/github.graphql");
+    let query = include_str!("queries/github/query-with-all-derives.graphql");
+
+    assert_snapshot!(document_to_fragment_structs(
+        query,
+        schema,
+        &QueryGenOptions {
+            schema_name: Some("my-schema".into()),
+            ..QueryGenOptions::default()
+        }
+    )
+    .expect("QueryGen Failed"))
+}

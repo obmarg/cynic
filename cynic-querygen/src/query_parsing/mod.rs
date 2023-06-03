@@ -14,7 +14,11 @@ use variables::VariableStructDetails;
 pub use normalisation::Variable;
 pub use value::{LiteralContext, TypedValue};
 
-use crate::{naming::Namer, output::Output, Error, TypeIndex};
+use crate::{
+    naming::Namer,
+    output::{self, Output},
+    Error, TypeIndex,
+};
 
 pub fn parse_query_document<'text>(
     doc: &Document<'text>,
@@ -26,7 +30,7 @@ pub fn parse_query_document<'text>(
     let (mut enums, mut scalars) = leaf_types::extract_leaf_types(&normalised, &input_objects)?;
 
     enums.sort_by_key(|e| e.name);
-    scalars.sort_by_key(|s| s.0);
+    scalars.sort_by_key(|s| s.name);
 
     let mut namers = Namers::new();
 
@@ -58,6 +62,14 @@ pub fn parse_query_document<'text>(
         .into_iter()
         .map(make_input_object)
         .collect::<Vec<_>>();
+
+    let enums = enums
+        .into_iter()
+        .map(|en| output::Enum {
+            details: en,
+            schema_name: None,
+        })
+        .collect();
 
     Ok(Output {
         query_fragments,
@@ -117,6 +129,7 @@ fn make_query_fragment<'text>(
 
         name: namers.selection_sets.name_subject(&selection),
         target_type: selection.target_type.name().to_string(),
+        schema_name: None,
     }
 }
 
@@ -142,6 +155,7 @@ fn make_inline_fragments<'text>(
             .filter_map(|selection| variable_struct_details.variables_name_for_selection(selection))
             .next(),
         name: namers.inline_fragments.name_subject(&inline_fragments),
+        schema_name: None,
     }
 }
 
@@ -149,6 +163,7 @@ fn make_input_object(input: Rc<inputs::InputObject>) -> crate::output::InputObje
     crate::output::InputObject {
         name: input.schema_type.name.to_string(),
         fields: input.fields.clone(),
+        schema_name: None,
     }
 }
 

@@ -22,7 +22,6 @@ use crate::{
 #[derive(Debug, PartialEq, Eq)]
 pub struct NormalisedOperation<'query, 'schema> {
     pub root: Rc<SelectionSet<'query, 'schema>>,
-    pub name: Option<&'query str>,
     pub variables: Vec<Variable<'query, 'schema>>,
     pub kind: OperationKind,
 }
@@ -190,7 +189,6 @@ fn normalise_operation<'query, 'doc, 'schema>(
 
             Ok(NormalisedOperation {
                 root,
-                name: query.name,
                 kind: OperationKind::Query,
                 variables: normaliser.variables,
             })
@@ -211,7 +209,6 @@ fn normalise_operation<'query, 'doc, 'schema>(
 
             Ok(NormalisedOperation {
                 root,
-                name: mutation.name,
                 kind: OperationKind::Mutation,
                 variables: normaliser.variables,
             })
@@ -232,7 +229,6 @@ fn normalise_operation<'query, 'doc, 'schema>(
 
             Ok(NormalisedOperation {
                 root,
-                name: subscription.name,
                 kind: OperationKind::Subscription,
                 variables: normaliser.variables,
             })
@@ -565,15 +561,11 @@ impl<'query, 'schema> SelectionSet<'query, 'schema> {
 }
 
 impl<'query, 'schema> crate::naming::Nameable for Rc<SelectionSet<'query, 'schema>> {
-    fn requested_name(&self) -> String {
-        self.target_type.name().to_owned()
-    }
+    fn requested_name(&self) -> String {}
 }
 
 impl<'query, 'schema> crate::naming::Nameable for Rc<InlineFragments<'query, 'schema>> {
-    fn requested_name(&self) -> String {
-        self.abstract_type.name().to_owned()
-    }
+    fn requested_name(&self) -> String {}
 }
 
 #[cfg(test)]

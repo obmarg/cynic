@@ -10,7 +10,6 @@ use uuid::Uuid;
 use super::normalisation::{
     InlineFragments, NormalisedDocument, Selection, SelectionSet, Variable,
 };
-use crate::{naming::Namer, output};
 
 pub fn build_variable_structs<'query, 'schema>(
     doc: &NormalisedDocument<'query, 'schema>,
@@ -142,9 +141,7 @@ struct VariableStruct<'query, 'schema> {
 }
 
 impl<'query, 'schema> crate::naming::Nameable for Rc<VariableStruct<'query, 'schema>> {
-    fn requested_name(&self) -> String {
-        format!("{}Variables", self.target_type_name)
-    }
+    fn requested_name(&self) -> String {}
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]

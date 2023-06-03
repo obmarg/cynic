@@ -49,7 +49,10 @@ pub fn extract_leaf_types<'schema>(
                 if s.is_builtin() {
                     continue;
                 }
-                scalars.push(Scalar(s.name));
+                scalars.push(Scalar {
+                    name: s.name,
+                    schema_name: None,
+                });
             }
             Type::Enum(en) => {
                 enums.push(en.clone());

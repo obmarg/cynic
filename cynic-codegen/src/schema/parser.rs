@@ -81,6 +81,7 @@ impl std::fmt::Display for SchemaLoadError {
     }
 }
 
+// TODO: I could put a link in this
 const SCHEMA_DOCUMENTATION_TEXT: &str =
     "See the cynic documentation on regsistering schemas if you need help.";
 

@@ -128,7 +128,7 @@ fn extract_whole_input_object<'schema>(
             .type_spec(needs_boxed, false, is_sub_object_with_lifetime);
         needs_lifetime_a |= type_spec.contains_lifetime_a;
         fields.push(InputObjectField {
-            type_spec: type_spec,
+            type_spec,
             schema_field: field.clone(),
         });
     }

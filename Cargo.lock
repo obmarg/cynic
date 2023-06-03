@@ -1900,6 +1900,7 @@ name = "querygen-compile-run"
 version = "0.1.0"
 dependencies = [
  "cynic",
+ "cynic-codegen",
  "cynic-querygen",
  "serde_json",
  "trybuild",
