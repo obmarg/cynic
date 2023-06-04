@@ -9,31 +9,12 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
-## v3.0.0-beta.4 - 2023-06-04
+## v3.0.0 - 2023-06-04
+
+See the [upgrade guide in the book](https://cynic-rs.dev/upgrading/v2-v3.html)
+for help upgrading.
 
 ### New Features
-
-- The `Enum` derive now supports fallback variants
-- Added `Operation::new` to allow `Operation` to be used in tests.
-
-### Removed
-
-- Removed the deprecated `FragmentArguments` derive.
-- Removed the deprecated `arugment_struct` attribute.
-
-## v3.0.0-beta.3 - 2023-05-13
-
-### New Features
-
-- Added `from_sdl` method to schema registration.
-
-## v3.0.0-beta.2 - 2023-05-13
-
-### Bug Fixes
-
-- Schema file should no longer cause clippy warnings if `clippy::pedantic` is on.
-
-## v3.0.0-beta.1 - 2023-05-13
 
 ### Breaking Changes
 
@@ -62,6 +43,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 - Added the `rkyv` feature flag which optimises the pre-registered schemas with
   the `rkyv` library. This makes cynic much more efficient when working with
   large schemas.
+- The `Enum` derive now supports fallback variants
+- Added `Operation::new` to allow `Operation` to be used in tests.
 
 ### Changes
 
@@ -77,6 +60,12 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ### Deprecations
 
 - `cynic_codegen::output_schema_module` is now deprecated in favour of `register_schema`.
+
+### Removed
+
+- Removed the deprecated `FragmentArguments` derive.
+- Removed the deprecated `arugment_struct` attribute.
+
 
 ## v2.2.8 - 2023-03-01
 

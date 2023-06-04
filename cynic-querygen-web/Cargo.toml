@@ -1,5 +1,5 @@
 [package]
-version = "3.0.0-beta.4"
+version = "3.0.0"
 name = "cynic-querygen-web"
 repository = "https://github.com/obmarg/cynic"
 authors = ["Graeme Coupar<graeme@polyandglot.dev>"]
