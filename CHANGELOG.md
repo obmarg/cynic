@@ -9,9 +9,10 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
-### New Features 
+### New Features
 
 - The `Enum` derive now supports fallback variants
+- Added `Operation::new` to allow `Operation` to be used in tests.
 
 ## v3.0.0-beta.3 - 2023-05-13
 
@@ -45,6 +46,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 - Added `cynic-introspection::Schema` which converts the introspection output
   into a friendlier format for working with.
 - The derive macros now support structs that are generic on lifetimes _and_ types.
+- The derive macros now fields that are references.
 - The derive macros now support fields that are references.
 - Added `cynic_codegen::register_schema`, a mechanism for pre-registering schemas
   with cynic.
