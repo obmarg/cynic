@@ -1,6 +1,4 @@
-use {
-    darling::util::SpannedValue, proc_macro2::Span, quote::quote_spanned, std::collections::HashSet,
-};
+use {darling::util::SpannedValue, proc_macro2::Span, std::collections::HashSet};
 
 use crate::{idents::RenamableFieldIdent, schema::SchemaInput, types::CheckMode, Errors};
 
@@ -21,10 +19,6 @@ pub struct FragmentDeriveInput {
 
     #[darling(default)]
     pub graphql_type: Option<SpannedValue<String>>,
-
-    // argument_struct is deprecated, remove eventually.
-    #[darling(default)]
-    argument_struct: Option<syn::Ident>,
 
     #[darling(default)]
     variables: Option<syn::Path>,
@@ -99,25 +93,7 @@ impl FragmentDeriveInput {
     }
 
     pub fn variables(&self) -> Option<syn::Path> {
-        self.variables
-            .clone()
-            .or_else(|| self.argument_struct.clone().map(Into::into))
-    }
-
-    pub fn deprecations(&self) -> proc_macro2::TokenStream {
-        if self.variables.is_none() && self.argument_struct.is_some() {
-            let span = self.argument_struct.as_ref().map(|x| x.span()).unwrap();
-            return quote_spanned! { span =>
-                #[allow(clippy::no_effect, non_camel_case_types)]
-                const _: fn() = || {
-                    #[deprecated(note = "the argument_struct attribute is deprecated.  use the variables attribute instead", since = "2.0.0")]
-                    struct argument_struct {}
-                    argument_struct {};
-                };
-            };
-        }
-
-        proc_macro2::TokenStream::new()
+        self.variables.clone()
     }
 
     pub fn schema_input(&self) -> Result<SchemaInput, syn::Error> {
@@ -288,7 +264,6 @@ mod tests {
             schema_path: Some("abcd".to_string().into()),
             schema_module_: None,
             graphql_type: Some("abcd".to_string().into()),
-            argument_struct: None,
             variables: None,
         };
 
@@ -369,7 +344,6 @@ mod tests {
             schema_path: Some("abcd".to_string().into()),
             schema_module_: Some(syn::parse2(quote::quote! { abcd }).unwrap()),
             graphql_type: Some("abcd".to_string().into()),
-            argument_struct: None,
             variables: None,
         };
 
@@ -390,7 +364,6 @@ mod tests {
             schema_path: Some("abcd".to_string().into()),
             schema_module_: Some(syn::parse2(quote::quote! { abcd }).unwrap()),
             graphql_type: Some("abcd".to_string().into()),
-            argument_struct: None,
             variables: None,
         };
         let errors = input.validate().unwrap_err();
@@ -445,7 +418,6 @@ mod tests {
             schema_path: Some("abcd".to_string().into()),
             schema_module_: Some(syn::parse2(quote::quote! { abcd }).unwrap()),
             graphql_type: None,
-            argument_struct: None,
             variables: None,
         };
 
