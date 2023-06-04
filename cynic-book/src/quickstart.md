@@ -24,7 +24,7 @@ surf but you can use any library you want. Open up your `Cargo.toml` and
 add the following under the `[dependencies]` section:
 
 ```toml
-cynic = { version = "2", features = ["http-surf"] }
+cynic = { version = "3", features = ["http-surf"] }
 surf = "2"
 ```
 
@@ -37,7 +37,7 @@ You'll also want to add a `[build-dependency]`:
 
 ```toml
 [build-dependency]
-cynic_codegen = { version = "2" }
+cynic_codegen = { version = "3" }
 ```
 
 You may also optionally want to install `insta` - a snapshot testing library
