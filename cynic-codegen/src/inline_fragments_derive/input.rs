@@ -1,5 +1,4 @@
-#![allow(deprecated)] // Until we remove deprecated stuff...
-use {darling::util::SpannedValue, proc_macro2::Span, quote::quote_spanned};
+use {darling::util::SpannedValue, proc_macro2::Span};
 
 use crate::{error::Errors, schema::SchemaInput};
 
@@ -21,9 +20,6 @@ pub struct InlineFragmentsDeriveInput {
     #[darling(default)]
     pub graphql_type: Option<SpannedValue<String>>,
 
-    // argument_struct is deprecated, remove eventually.
-    #[darling(default)]
-    argument_struct: Option<syn::Ident>,
     #[darling(default)]
     variables: Option<syn::Path>,
 }
@@ -51,9 +47,7 @@ impl InlineFragmentsDeriveInput {
     }
 
     pub fn variables(&self) -> Option<syn::Path> {
-        self.variables
-            .clone()
-            .or_else(|| self.argument_struct.clone().map(Into::into))
+        self.variables.clone()
     }
 
     pub(super) fn validate(&self, mode: ValidationMode) -> Result<(), Errors> {
@@ -89,29 +83,6 @@ impl InlineFragmentsDeriveInput {
         errors.into_result(())
     }
 
-    pub fn deprecations(&self) -> proc_macro2::TokenStream {
-        let mut rv = proc_macro2::TokenStream::new();
-
-        if self.variables.is_none() && self.argument_struct.is_some() {
-            let span = self.argument_struct.as_ref().map(|x| x.span()).unwrap();
-            rv.extend(quote_spanned! { span =>
-                #[allow(clippy::no_effect, non_camel_case_types)]
-                const _: fn() = || {
-                    #[deprecated(note = "the argument_struct attribute is deprecated.  use the variables attribute instead", since = "2.0.0")]
-                    struct argument_struct {}
-                    argument_struct {};
-                };
-            });
-        }
-
-        let data_ref = self.data.as_ref().take_enum().unwrap();
-        for variant in data_ref {
-            rv.extend(variant.deprecations());
-        }
-
-        rv
-    }
-
     pub fn schema_input(&self) -> Result<SchemaInput, syn::Error> {
         match (&self.schema, &self.schema_path) {
             (None, None) => SchemaInput::default().map_err(|e| e.into_syn_error(Span::call_site())),
@@ -132,13 +103,6 @@ impl InlineFragmentsDeriveInput {
 pub(super) struct InlineFragmentsDeriveVariant {
     pub(super) ident: proc_macro2::Ident,
     pub fields: darling::ast::Fields<InlineFragmentsDeriveField>,
-
-    #[deprecated(
-        note = "rename on an InlineFragments variant is deprecated",
-        since = "2.0.0"
-    )]
-    #[darling(default)]
-    rename: Option<SpannedValue<String>>,
 
     #[darling(default)]
     pub(super) fallback: SpannedValue<bool>,
@@ -200,26 +164,6 @@ impl InlineFragmentsDeriveVariant {
                 .into()),
             }
         }
-    }
-
-    pub fn deprecations(&self) -> proc_macro2::TokenStream {
-        #[allow(deprecated)]
-        if self.rename.is_some() {
-            let span = self.rename.as_ref().unwrap().span();
-            return quote_spanned! { span =>
-                #[allow(clippy::no_effect, non_camel_case_types)]
-                const _: fn() = || {
-                    #[deprecated(
-                        note = "the rename attribute on InlineFragments is deprecated and should be removed.  InlineFragments variants now get their type name from their inner QueryFragment.",
-                        since = "2.0.0"
-                    )]
-                    struct rename {}
-                    rename {};
-                };
-            };
-        }
-
-        proc_macro2::TokenStream::new()
     }
 }
 

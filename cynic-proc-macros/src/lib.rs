@@ -51,25 +51,6 @@ pub fn query_fragment_derive(input: TokenStream) -> TokenStream {
     rv
 }
 
-/// Derives `cynic::FragmentArguments`
-///
-/// See [the book for usage details](https://cynic-rs.dev/derives/query-fragments.html#passing-arguments)
-#[deprecated(
-    since = "2.0.0",
-    note = "FragmentArguments has been renamed to QueryVariables"
-)]
-#[proc_macro_derive(FragmentArguments)]
-pub fn fragment_arguments_derive(input: TokenStream) -> TokenStream {
-    let ast = syn::parse_macro_input!(input as syn::DeriveInput);
-
-    let rv = match query_variables_derive::query_variables_derive(&ast) {
-        Ok(tokens) => tokens.into(),
-        Err(e) => e.to_compile_error().into(),
-    };
-
-    rv
-}
-
 /// Derives `cynic::QueryVariables`
 ///
 /// See [the book for usage details](https://cynic-rs.dev/derives/query-fragments.html#passing-arguments)

@@ -207,7 +207,6 @@ impl SchemaBackedTypeIndex {
                 );
             };
             ($name:ident, $is:pat, $err:literal) => {
-                #[allow(deprecated)]
                 let def = self.lookup_type($name);
                 if !matches!(def, Some($is)) {
                     return Err(SchemaError::InvalidTypeInSchema {

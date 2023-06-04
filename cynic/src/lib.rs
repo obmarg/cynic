@@ -195,8 +195,8 @@ pub use {
 };
 
 pub use cynic_proc_macros::{
-    schema, schema_for_derives, use_schema, Enum, FragmentArguments, InlineFragments, InputObject,
-    QueryFragment, QueryVariables, Scalar,
+    schema, schema_for_derives, use_schema, Enum, InlineFragments, InputObject, QueryFragment,
+    QueryVariables, Scalar,
 };
 
 pub use static_assertions::assert_type_eq_all;

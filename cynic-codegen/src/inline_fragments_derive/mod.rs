@@ -75,12 +75,9 @@ pub(crate) fn inline_fragments_derive_impl(
             fallback,
         };
 
-        let deprecations = input.deprecations();
-
         Ok(quote! {
             #inline_fragments_impl
             #query_fragment_impl
-            #deprecations
         })
     } else {
         Err(syn::Error::new(

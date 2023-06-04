@@ -49,7 +49,6 @@ pub fn fragment_derive_impl(input: FragmentDeriveInput) -> Result<TokenStream, E
     let graphql_name = &(input.graphql_type_name());
     let schema_module = input.schema_module();
     let variables = input.variables();
-    let deprecations = input.deprecations();
     if let darling::ast::Data::Struct(fields) = input.data {
         let fields = pair_fields(fields.into_iter(), &schema_type)?;
 
@@ -69,7 +68,6 @@ pub fn fragment_derive_impl(input: FragmentDeriveInput) -> Result<TokenStream, E
         Ok(quote::quote! {
             #fragment_impl
             #deserialize_impl
-            #deprecations
         })
     } else {
         Err(syn::Error::new(
