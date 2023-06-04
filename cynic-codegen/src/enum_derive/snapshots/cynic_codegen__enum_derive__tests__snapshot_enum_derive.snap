@@ -25,7 +25,8 @@ impl<'de> cynic::serde::Deserialize<'de> for States {
     where
         __D: cynic::serde::Deserializer<'de>,
     {
-        match <String as cynic::serde::Deserialize>::deserialize(deserializer)?.as_ref() {
+        let desered_string = <String as cynic::serde::Deserialize>::deserialize(deserializer)?;
+        match desered_string.as_ref() {
             "CLOSED" => Ok(States::Closed),
             "DELETED" => Ok(States::Deleted),
             "OPEN" => Ok(States::Open),

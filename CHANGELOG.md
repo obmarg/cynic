@@ -11,6 +11,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### New Features
 
+- The `Enum` derive now supports fallback variants
 - Added `Operation::new` to allow `Operation` to be used in tests.
 
 ## v3.0.0-beta.3 - 2023-05-13

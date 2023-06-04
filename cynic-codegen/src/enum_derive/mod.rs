@@ -4,6 +4,7 @@ use {
 };
 
 use crate::{
+    error::Errors,
     idents::RenameAll,
     schema::{
         types::{EnumType, EnumValue},
@@ -12,6 +13,7 @@ use crate::{
 };
 
 pub(crate) mod input;
+
 pub use input::EnumDeriveInput;
 use {
     crate::suggestions::{format_guess, guess_field},
@@ -27,7 +29,7 @@ pub fn enum_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
         Ok(input) => {
             let schema = Schema::new(input.schema_input()?);
 
-            enum_derive_impl(input, &schema, enum_span).or_else(|e| Ok(e.to_compile_error()))
+            enum_derive_impl(input, &schema, enum_span).or_else(|e| Ok(e.to_compile_errors()))
         }
         Err(e) => Ok(e.write_errors()),
     }
@@ -37,7 +39,7 @@ pub fn enum_derive_impl(
     input: EnumDeriveInput,
     schema: &Schema<'_, Unvalidated>,
     enum_span: Span,
-) -> Result<TokenStream, syn::Error> {
+) -> Result<TokenStream, Errors> {
     use quote::quote;
 
     let enum_def = schema
@@ -46,9 +48,13 @@ pub fn enum_derive_impl(
 
     let rename_all = input.rename_all.unwrap_or(RenameAll::ScreamingSnakeCase);
 
+    input.validate()?;
+
     if let darling::ast::Data::Enum(variants) = &input.data {
+        let fallback = variants.iter().find(|variant| *variant.fallback);
+
         let pairs = match join_variants(
-            variants,
+            variants.iter().map(|variant| variant.as_ref()),
             &enum_def,
             &input.ident.to_string(),
             rename_all,
@@ -80,6 +86,52 @@ pub fn enum_derive_impl(
         let schema_module = input.schema_module();
         let ident = input.ident;
 
+        let fallback_ser_branch = match fallback {
+            None => quote! {},
+            Some(fallback) if fallback.fields.fields.is_empty() => {
+                let fallback_ident = &fallback.ident;
+                quote! {
+                    #ident::#fallback_ident => {
+                        use cynic::serde::ser::Error;
+                        Err(__S::Error::custom("cynic can't serialize the fallback variant of an enum unless it has a field"))
+                    }
+                }
+            }
+            Some(fallback) => {
+                let fallback_ident = &fallback.ident;
+                quote! {
+                    #ident::#fallback_ident(value) => {
+                        serializer.serialize_str(value)
+                    }
+                }
+            }
+        };
+
+        let fallback_deser_branch = match fallback {
+            None => quote! {
+                unknown => {
+                    const VARIANTS: &'static [&'static str] = &[#(#string_literals),*];
+                    Err(cynic::serde::de::Error::unknown_variant(unknown, VARIANTS))
+                }
+            },
+            Some(fallback) if fallback.fields.fields.is_empty() => {
+                let fallback_ident = &fallback.ident;
+                quote! {
+                     _ => {
+                        Ok(#ident::#fallback_ident)
+                     }
+                }
+            }
+            Some(fallback) => {
+                let fallback_ident = &fallback.ident;
+                quote! {
+                     _ => {
+                        Ok(#ident::#fallback_ident(desered_string))
+                     }
+                }
+            }
+        };
+
         Ok(quote! {
             #[automatically_derived]
             impl cynic::Enum for #ident {
@@ -95,6 +147,7 @@ pub fn enum_derive_impl(
                             #(
                                 #ident::#variants => serializer.serialize_unit_variant(#graphql_type_name, #variant_indexes, #string_literals),
                             )*
+                            #fallback_ser_branch
                         }
                     }
             }
@@ -105,14 +158,12 @@ pub fn enum_derive_impl(
                 where
                     __D: cynic::serde::Deserializer<'de>,
                 {
-                    match <String as cynic::serde::Deserialize>::deserialize(deserializer)?.as_ref() {
+                    let desered_string = <String as cynic::serde::Deserialize>::deserialize(deserializer)?;
+                    match desered_string.as_ref() {
                         #(
                             #string_literals => Ok(#ident::#variants),
                         )*
-                        unknown => {
-                            const VARIANTS: &'static [&'static str] = &[#(#string_literals),*];
-                            Err(cynic::serde::de::Error::unknown_variant(unknown, VARIANTS))
-                        }
+                        #fallback_deser_branch
                     }
                 }
             }
@@ -128,12 +179,13 @@ pub fn enum_derive_impl(
         Err(syn::Error::new(
             enum_span,
             "Enum can only be derived from an enum".to_string(),
-        ))
+        )
+        .into())
     }
 }
 
 fn join_variants<'a>(
-    variants: &'a [EnumDeriveVariant],
+    variants: impl IntoIterator<Item = &'a EnumDeriveVariant>,
     enum_def: &'a EnumType<'a>,
     enum_name: &str,
     rename_all: RenameAll,
@@ -141,6 +193,11 @@ fn join_variants<'a>(
 ) -> Result<Vec<(&'a EnumDeriveVariant, &'a EnumValue<'a>)>, TokenStream> {
     let mut map = BTreeMap::new();
     for variant in variants {
+        if *variant.fallback {
+            // We can't join up a fallback as it has no corresponding GQL value.
+            // We handle them separately.
+            continue;
+        }
         let graphql_ident = variant.graphql_ident(rename_all);
         map.insert(
             graphql_ident.graphql_name(),
@@ -235,10 +292,14 @@ mod tests {
             EnumDeriveVariant {
                 ident: proc_macro2::Ident::new(enum_variant_1, Span::call_site()),
                 rename: None,
+                fallback: Default::default(),
+                fields: darling::ast::Style::Unit.into(),
             },
             EnumDeriveVariant {
                 ident: proc_macro2::Ident::new(enum_variant_2, Span::call_site()),
                 rename: None,
+                fallback: Default::default(),
+                fields: darling::ast::Style::Unit.into(),
             },
         ];
         let mut gql_enum = EnumType {
@@ -282,10 +343,14 @@ mod tests {
             EnumDeriveVariant {
                 ident: proc_macro2::Ident::new("Cheesecake", Span::call_site()),
                 rename: None,
+                fallback: Default::default(),
+                fields: darling::ast::Style::Unit.into(),
             },
             EnumDeriveVariant {
                 ident: proc_macro2::Ident::new("IceCream", Span::call_site()),
                 rename: Some(SpannedValue::new("iced-goodness".into(), Span::call_site())),
+                fallback: Default::default(),
+                fields: darling::ast::Style::Unit.into(),
             },
         ];
         let mut gql_enum = EnumType {
@@ -328,6 +393,8 @@ mod tests {
         let variants = vec![EnumDeriveVariant {
             ident: proc_macro2::Ident::new("CHEESECAKE", Span::call_site()),
             rename: None,
+            fallback: Default::default(),
+            fields: darling::ast::Style::Unit.into(),
         }];
         let mut gql_enum = EnumType {
             name: "Desserts".into(),
@@ -356,6 +423,8 @@ mod tests {
         let variants = vec![EnumDeriveVariant {
             ident: proc_macro2::Ident::new("CHEESECAKE", Span::call_site()),
             rename: None,
+            fallback: Default::default(),
+            fields: darling::ast::Style::Unit.into(),
         }];
         let mut gql_enum = EnumType {
             name: "Desserts".into(),
