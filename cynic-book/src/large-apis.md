@@ -9,7 +9,7 @@ There's several tricks to help with this though:
 
 ### Registering Schemas with rkyv
 
-If you're not already you should be [pre-registering your schema](./schemas).
+If you're not already you should be [pre-registering your schema](./schemas.md).
 
 You should also enable the `rkyv` feature flag in `cynic_codegen`.  This allows
 the pre-registration to store schemas in an optimised format, which avoids a

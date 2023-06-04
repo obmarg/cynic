@@ -15,4 +15,5 @@
 - [Working with Large APIs](./large-apis.md)
 - [Upgrading Cynic](./upgrading/index.md)
   - [v1 to v2](./upgrading/v1-v2.md)
+  - [v2 to v3](./upgrading/v2-v3.md)
 - [Sending HTTP Requests Manually](./manual-http-requests.md)
