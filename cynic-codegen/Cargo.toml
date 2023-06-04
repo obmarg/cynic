@@ -1,13 +1,14 @@
 [package]
 name = "cynic-codegen"
-version = "3.0.0"
-authors = ["Graeme Coupar <graeme@polyandglot.dev>"]
-edition = "2021"
-homepage = "https://cynic-rs.dev"
-repository = "https://github.com/obmarg/cynic"
-description = "Codegen for cynic - a GraphQL query builder & data mapper for Rust"
-license = "MPL-2.0"
+description = "Procedural macro code generation for cynic - a code first GraphQL client for Rust"
 documentation = "https://docs.rs/cynic-codegen"
+
+authors = { workspace = true }
+edition = { workspace = true }
+homepage = { workspace = true }
+license = { workspace = true }
+repository = { workspace = true }
+version = { workspace = true }
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

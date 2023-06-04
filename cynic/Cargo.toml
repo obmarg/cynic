@@ -1,15 +1,16 @@
 [package]
 name = "cynic"
-version = "3.0.0"
-authors = ["Graeme Coupar <graeme@polyandglot.dev>"]
-edition = "2021"
-homepage = "https://cynic-rs.dev"
-repository = "https://github.com/obmarg/cynic"
-description = "A GraphQL query builder & data mapper for Rust"
+description = "A code first GraphQL client for Rust"
 keywords = ["graphql", "client", "api"]
-license = "MPL-2.0"
 documentation = "https://docs.rs/cynic"
 readme = "../README.md"
+
+authors = { workspace = true }
+edition = { workspace = true }
+homepage = { workspace = true }
+license = { workspace = true }
+repository = { workspace = true }
+version = { workspace = true }
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

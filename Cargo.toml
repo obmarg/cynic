@@ -16,6 +16,14 @@ default-members = [
     "cynic", "cynic-codegen", "cynic-proc-macros"
 ]
 
+[workspace.package]
+authors = ["Graeme Coupar <graeme@polyandglot.dev>"]
+edition = "2021"
+homepage = "https://cynic-rs.dev"
+repository = "https://github.com/obmarg/cynic"
+license = "MPL-2.0"
+version = "3.0.0"
+
 [profile.dev]
 # Disabling debug info speeds up builds a bunch,
 # and we don't rely on it for debugging that much.
