@@ -2,7 +2,7 @@
 
 Much like with query structs cynic expects you to own any enums you want to
 query for, or provide as arguments. The `cynic::Enum` trait is used to define
-an enum, and the easiest way to define that trait is to derive it:
+an enum. The easiest way to define that trait is to derive it:
 
 ```rust
 #[derive(cynic::Enum, Clone, Copy, Debug)]
@@ -34,12 +34,12 @@ An Enum can be configured with several attributes on the enum itself:
   a particular rule to match their GraphQL counterparts. If not provided this
   defaults to `SCREAMING_SNAKE_CASE` to be consistent with GraphQL conventions.
 - `schema` tells cynic which schema to use to validate this Enum.
-  The schema you provide should have been registered in your `build.rs`.  This
+  The schema you provide should have been registered in your `build.rs`. This
   is optional if you're using the schema that was registered as default, or if
   you're using `schema_path` instead.
 - `schema_path` provides a path to some GraphQL schema SDL. This is only
   required if you're using a schema that wasn't registered in `build.rs`.
-- `schema_module` tells cynic where to find your schema module.  This is
+- `schema_module` tells cynic where to find your schema module. This is
   optional and should only be needed if your schema module is not in scope or
   is named something other than `schema`.
 
@@ -51,6 +51,11 @@ Each variant can also have it's own attributes:
 
 - `rename="SOME_VARIANT"` can be used to map a variant to a completely
   different GraphQL variant name.
+- The `fallback` attribute can be provided on a single variant. This variant
+  will be used when we receive a value we didn't expect from the server - such
+  as when the server has added a new variant since we last pulled its schema.
+  This variant can optionally have a single string field, which will receive
+  the value we received from the server.
 
 <!-- TODO: example of the above?  Better wording -->
 

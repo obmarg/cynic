@@ -107,8 +107,8 @@ fn main() {
             "tests/queries/github/nested-arguments.graphql",
             r#"PullRequestTitles::build(
                 PullRequestTitlesVariables {
-                    owner: "obmarg".into(),
-                    repo: "cynic".into(),
+                    owner: "obmarg",
+                    repo: "cynic",
                     pr_order: IssueOrder {
                         direction: OrderDirection::Asc,
                         field: IssueOrderField::CreatedAt,
@@ -140,7 +140,7 @@ fn main() {
             "tests/queries/github/scalar-inside-input-object.graphql",
             r#"AddPRComment::build(
                 AddPRCommentVariables {
-                    body: "hello!".into(),
+                    body: "hello!",
                     commit: GitObjectID("abcd".into())
                 }
             )"#,
