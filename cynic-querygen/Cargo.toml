@@ -16,7 +16,7 @@ graphql-parser = "0.4"
 once_cell = "1.9"
 rust_decimal = "1.22"
 thiserror = "1.0.30"
-uuid = { version = "0.8", features = ["v4"] }
+uuid = { version = "1", features = ["v4"] }
 
 [dev-dependencies]
 assert_matches = "1.4"

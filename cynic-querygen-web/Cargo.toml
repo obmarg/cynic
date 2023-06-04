@@ -14,7 +14,8 @@ crate-type = ["cdylib"]
 wasm-bindgen-test = "0.3.28"
 
 [dependencies]
-seed = "0.8.0"
+seed = "0.10.0"
+gloo-console = "0.2"
 
 cynic-querygen = { path = "../cynic-querygen" }
 

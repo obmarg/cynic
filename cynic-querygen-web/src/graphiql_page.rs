@@ -57,12 +57,12 @@ pub enum Msg {
 pub fn update(msg: Msg, model: &mut Model, _orders: &mut impl Orders<Msg>) {
     match msg {
         Msg::QueryChange(query) => {
-            seed::log!("Got query: {}", &query);
+            gloo_console::log!("Got query: {}", &query);
             model.query = query;
             model.generate_code();
         }
         Msg::SchemaLoaded(schema) => {
-            seed::log!("Got schema: {}", &schema);
+            gloo_console::log!("Got schema: {}", &schema);
             model.schema_data = Some(schema);
             model.generate_code();
         }
