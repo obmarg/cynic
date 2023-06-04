@@ -1,0 +1,67 @@
+---
+source: cynic-querygen/tests/misc-tests.rs
+expression: "document_to_fragment_structs(query, schema,\n        &QueryGenOptions {\n                schema_name: Some(\"my-schema\".into()),\n                ..QueryGenOptions::default()\n            }).expect(\"QueryGen Failed\")"
+---
+#[derive(cynic::QueryVariables, Debug)]
+pub struct IssueOrPRVariables {
+    pub assignee_count: i32,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(graphql_type = "Query", variables = "IssueOrPRVariables", schema = "my-schema")]
+pub struct IssueOrPR {
+    #[arguments(owner: "obmarg", name: "cynic")]
+    pub repository: Option<Repository>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(variables = "IssueOrPRVariables", schema = "my-schema")]
+pub struct Repository {
+    #[arguments(number: 1)]
+    pub issue_or_pull_request: Option<IssueOrPullRequest>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(variables = "IssueOrPRVariables", schema = "my-schema")]
+pub struct PullRequest {
+    pub id: cynic::Id,
+    pub title: String,
+    #[arguments(first: $assignee_count)]
+    pub assignees: UserConnection,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(variables = "IssueOrPRVariables", schema = "my-schema")]
+pub struct Issue {
+    pub id: cynic::Id,
+    pub title: String,
+    pub state: IssueState,
+    #[arguments(first: $assignee_count)]
+    pub assignees: UserConnection,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(schema = "my-schema")]
+pub struct UserConnection {
+    pub total_count: i32,
+}
+
+#[derive(cynic::InlineFragments, Debug)]
+#[cynic(variables = "IssueOrPRVariables", schema = "my-schema")]
+pub enum IssueOrPullRequest {
+    Issue(Issue),
+    PullRequest(PullRequest),
+    #[cynic(fallback)]
+    Unknown
+}
+
+#[derive(cynic::Enum, Clone, Copy, Debug)]
+#[cynic(schema = "my-schema")]
+pub enum IssueState {
+    Closed,
+    Open,
+}
+
+#[cynic::schema("my-schema")]
+mod schema {}
+

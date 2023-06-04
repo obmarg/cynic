@@ -1,9 +1,8 @@
 ---
 source: cynic/tests/recursive-queries.rs
-assertion_line: 42
 expression: operation.query
 ---
-query {
+query AllPostsQuery {
   allPosts {
     comments {
       author {

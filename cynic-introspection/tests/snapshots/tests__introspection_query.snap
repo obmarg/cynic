@@ -2,7 +2,7 @@
 source: cynic-introspection/tests/tests.rs
 expression: build_query().query
 ---
-query {
+query IntrospectionQuery {
   __schema {
     queryType {
       name
@@ -41,6 +41,10 @@ query {
                     ofType {
                       kind
                       name
+                      ofType {
+                        kind
+                        name
+                      }
                     }
                   }
                 }
@@ -67,6 +71,10 @@ query {
                   ofType {
                     kind
                     name
+                    ofType {
+                      kind
+                      name
+                    }
                   }
                 }
               }
@@ -97,6 +105,10 @@ query {
                   ofType {
                     kind
                     name
+                    ofType {
+                      kind
+                      name
+                    }
                   }
                 }
               }
@@ -142,6 +154,10 @@ query {
                   ofType {
                     kind
                     name
+                    ofType {
+                      kind
+                      name
+                    }
                   }
                 }
               }

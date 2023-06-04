@@ -5,6 +5,8 @@ use std::{
     rc::Rc,
 };
 
+use inflector::Inflector;
+
 use super::{
     parser::{
         self, Definition, Document, FragmentDefinition, OperationDefinition, TypeCondition,
@@ -22,7 +24,7 @@ use crate::{
 #[derive(Debug, PartialEq, Eq)]
 pub struct NormalisedOperation<'query, 'schema> {
     pub root: Rc<SelectionSet<'query, 'schema>>,
-    pub name: Option<&'query str>,
+    pub name: Option<String>,
     pub variables: Vec<Variable<'query, 'schema>>,
     pub kind: OperationKind,
 }
@@ -190,7 +192,7 @@ fn normalise_operation<'query, 'doc, 'schema>(
 
             Ok(NormalisedOperation {
                 root,
-                name: query.name,
+                name: query.name.map(Inflector::to_pascal_case),
                 kind: OperationKind::Query,
                 variables: normaliser.variables,
             })
@@ -211,7 +213,7 @@ fn normalise_operation<'query, 'doc, 'schema>(
 
             Ok(NormalisedOperation {
                 root,
-                name: mutation.name,
+                name: mutation.name.map(Inflector::to_pascal_case),
                 kind: OperationKind::Mutation,
                 variables: normaliser.variables,
             })
@@ -232,7 +234,7 @@ fn normalise_operation<'query, 'doc, 'schema>(
 
             Ok(NormalisedOperation {
                 root,
-                name: subscription.name,
+                name: subscription.name.map(Inflector::to_pascal_case),
                 kind: OperationKind::Subscription,
                 variables: normaliser.variables,
             })
@@ -519,7 +521,7 @@ fn extract_fragments<'query, 'doc>(document: &'doc Document<'query>) -> Fragment
 }
 
 impl<'query, 'schema> Vertex for SelectionSet<'query, 'schema> {
-    fn adjacents(self: &Rc<Self>) -> Vec<Rc<Self>> {
+    fn children(self: &Rc<Self>) -> Vec<Rc<Self>> {
         self.selections
             .iter()
             .flat_map(|selection| match selection {
@@ -566,20 +568,19 @@ impl<'query, 'schema> SelectionSet<'query, 'schema> {
 
 impl<'query, 'schema> crate::naming::Nameable for Rc<SelectionSet<'query, 'schema>> {
     fn requested_name(&self) -> String {
-        self.target_type.name().to_owned()
+        self.target_type.name().to_pascal_case()
     }
 }
 
 impl<'query, 'schema> crate::naming::Nameable for Rc<InlineFragments<'query, 'schema>> {
     fn requested_name(&self) -> String {
-        self.abstract_type.name().to_owned()
+        self.abstract_type.name().to_pascal_case()
     }
 }
 
 #[cfg(test)]
 mod tests {
-    use super::*;
-    use crate::schema;
+    use {super::*, crate::schema};
 
     use assert_matches::assert_matches;
 

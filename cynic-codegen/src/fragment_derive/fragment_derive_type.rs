@@ -1,3 +1,5 @@
+use std::borrow::Cow;
+
 use crate::schema::{
     markers::{FieldMarkerModule, TypeMarkerIdent},
     types::{Field, Kind, Type},
@@ -6,7 +8,7 @@ use crate::schema::{
 
 pub struct FragmentDeriveType<'a> {
     pub fields: Vec<Field<'a>>,
-    pub name: &'a str,
+    pub name: Cow<'a, str>,
     pub marker_ident: TypeMarkerIdent<'a>,
     pub field_module: FieldMarkerModule<'a>,
 }

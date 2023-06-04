@@ -3,7 +3,7 @@
 use std::{collections::HashSet, hash::Hash, rc::Rc};
 
 pub trait Vertex: Hash + Eq {
-    fn adjacents(self: &Rc<Self>) -> Vec<Rc<Self>>;
+    fn children(self: &Rc<Self>) -> Vec<Rc<Self>>;
 }
 
 pub fn topological_sort<V: Vertex>(vertices: impl Iterator<Item = Rc<V>>) -> Vec<Rc<V>> {
@@ -27,7 +27,7 @@ pub fn topological_sort<V: Vertex>(vertices: impl Iterator<Item = Rc<V>>) -> Vec
 fn sort_impl<V: Vertex>(vertex: &Rc<V>, visited: &mut HashSet<Rc<V>>, stack: &mut Vec<Rc<V>>) {
     visited.insert(Rc::clone(vertex));
 
-    for adjacent_vertex in vertex.adjacents() {
+    for adjacent_vertex in vertex.children() {
         if visited.contains(&adjacent_vertex) {
             continue;
         }
@@ -44,21 +44,21 @@ mod tests {
     #[derive(Hash, PartialEq, Eq, Debug)]
     struct TestVertex {
         name: &'static str,
-        adjacents: Vec<Rc<TestVertex>>,
+        children: Vec<Rc<TestVertex>>,
     }
 
     impl TestVertex {
         fn new(name: &'static str, others: &[&Rc<TestVertex>]) -> Rc<TestVertex> {
             Rc::new(TestVertex {
                 name,
-                adjacents: others.iter().map(|v| Rc::clone(v)).collect(),
+                children: others.iter().map(|v| Rc::clone(v)).collect(),
             })
         }
     }
 
     impl Vertex for TestVertex {
-        fn adjacents(self: &Rc<Self>) -> Vec<Rc<TestVertex>> {
-            self.adjacents.iter().map(Rc::clone).collect()
+        fn children(self: &Rc<Self>) -> Vec<Rc<TestVertex>> {
+            self.children.iter().map(Rc::clone).collect()
         }
     }
 

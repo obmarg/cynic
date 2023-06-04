@@ -1,6 +1,6 @@
 [package]
 name = "cynic"
-version = "2.2.8"
+version = "3.0.0-beta.3"
 authors = ["Graeme Coupar <graeme@polyandglot.dev>"]
 edition = "2021"
 homepage = "https://cynic-rs.dev"
@@ -15,13 +15,15 @@ readme = "../README.md"
 
 [features]
 default = []
-all = ["http-surf", "http-reqwest", "http-reqwest-blocking"]
+all = ["http-surf", "http-reqwest", "http-reqwest-blocking", "rkyv"]
 http-surf = ["surf", "serde_json"]
 http-reqwest = ["reqwest", "serde_json"]
 http-reqwest-blocking = ["http-reqwest", "reqwest/blocking", "serde_json"]
+rkyv = ["cynic-proc-macros/rkyv"]
 
 [dependencies]
-cynic-proc-macros = { path = "../cynic-proc-macros", version = "2.2.8" }
+cynic-proc-macros = { path = "../cynic-proc-macros", version = "3.0.0-beta.3" }
+ref-cast = "1.0.15"
 serde = { version = "1.0.136", features = [ "derive" ] }
 serde_json = { version = "1.0", optional = true }
 static_assertions = "1"

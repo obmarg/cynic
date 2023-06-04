@@ -2,33 +2,21 @@
 source: cynic-querygen/tests/misc-tests.rs
 expression: "document_to_fragment_structs(query, schema,\n        &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
 ---
-#[cynic::schema_for_derives(
-    file = r#"schema.graphql"#,
-    module = "schema",
-)]
-mod queries {
-    use super::schema;
-
-    #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "Foo")]
-    pub struct KeywordRenames {
-        #[cynic(rename = "_")]
-        pub __underscore: Option<bool>,
-        #[cynic(rename = "self")]
-        pub self_: Option<bool>,
-        #[cynic(rename = "super")]
-        pub super_: Option<bool>,
-        #[cynic(rename = "crate")]
-        pub crate_: Option<bool>,
-        #[cynic(rename = "async")]
-        pub async_: Option<bool>,
-    }
-
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(graphql_type = "Foo")]
+pub struct KeywordRenames {
+    #[cynic(rename = "_")]
+    pub __underscore: Option<bool>,
+    #[cynic(rename = "self")]
+    pub self_: Option<bool>,
+    #[cynic(rename = "super")]
+    pub super_: Option<bool>,
+    #[cynic(rename = "crate")]
+    pub crate_: Option<bool>,
+    #[cynic(rename = "async")]
+    pub async_: Option<bool>,
 }
 
-#[allow(non_snake_case, non_camel_case_types)]
-mod schema {
-    cynic::use_schema!(r#"schema.graphql"#);
-}
-
+#[cynic::schema]
+mod schema {}
 

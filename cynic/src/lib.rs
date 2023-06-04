@@ -158,6 +158,7 @@
 //!   http client.
 //! - `reqwest-blocking` adds blocking integration with the [`reqwest`](https://github.com/seanmonstar/reqwest)
 //!   http client.
+//! - `rkyv` can be used to speed up compiles when working with large schemas.
 //!
 //! It's worth noting that each of these features pulls in extra
 //! dependencies, which may impact your build size.  Particularly
@@ -194,7 +195,7 @@ pub use {
 };
 
 pub use cynic_proc_macros::{
-    schema_for_derives, use_schema, Enum, FragmentArguments, InlineFragments, InputObject,
+    schema, schema_for_derives, use_schema, Enum, FragmentArguments, InlineFragments, InputObject,
     QueryFragment, QueryVariables, Scalar,
 };
 
@@ -205,7 +206,7 @@ pub use static_assertions::assert_type_eq_all;
 // their Cargo.toml
 pub use serde;
 
-/// Implements [`cynic::Scalar`] for a given type & type lock.
+/// Implements a set of scalar traits for the given type & type lock.
 ///
 /// For example, to use `uuid::Uuid` for a `Uuid` type defined in a schema:
 ///
@@ -245,7 +246,7 @@ macro_rules! impl_scalar {
 
         #[automatically_derived]
         impl $schema_module$(::$schema_module_rest)*::variable::Variable for $type {
-            const TYPE: ::cynic::variables::VariableType = ::cynic::variables::VariableType::Named(
+            const TYPE: cynic::variables::VariableType = cynic::variables::VariableType::Named(
                 <$schema_module$(::$schema_module_rest)*::$type_lock as $crate::schema::NamedType>::NAME,
             );
         }

@@ -1,15 +1,18 @@
 use std::fmt::Write;
 
-use crate::casings::CasingExt;
+use crate::{casings::CasingExt, output::attr_output::Attributes, schema::TypeSpec};
 
-use super::indented;
-use crate::{query_parsing::TypedValue, schema::OutputFieldType, Error};
+use {
+    super::indented,
+    crate::{query_parsing::TypedValue, schema::OutputFieldType, Error},
+};
 
 #[derive(Debug, PartialEq)]
 pub struct QueryFragment<'query, 'schema> {
     pub fields: Vec<OutputField<'query, 'schema>>,
     pub target_type: String,
     pub variable_struct_name: Option<String>,
+    pub schema_name: Option<String>,
 
     pub name: String,
 }
@@ -18,21 +21,20 @@ impl std::fmt::Display for QueryFragment<'_, '_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         writeln!(f, "#[derive(cynic::QueryFragment, Debug)]")?;
 
-        if self.target_type != self.name || self.variable_struct_name.is_some() {
-            write!(f, "#[cynic(")?;
-            if self.target_type != self.name {
-                write!(f, "graphql_type = \"{}\"", self.target_type)?;
-            }
-
-            if let Some(name) = &self.variable_struct_name {
-                if self.target_type != self.name {
-                    write!(f, ", ")?;
-                }
-                write!(f, "variables = \"{}\"", name)?;
-            }
-            writeln!(f, ")]",)?;
+        let mut attributes = Attributes::new("cynic");
+        if self.target_type != self.name {
+            attributes.push(format!("graphql_type = \"{}\"", self.target_type));
         }
 
+        if let Some(name) = &self.variable_struct_name {
+            attributes.push(format!("variables = \"{name}\""));
+        }
+
+        if let Some(schema_name) = &self.schema_name {
+            attributes.push(format!("schema = \"{schema_name}\""))
+        }
+
+        write!(f, "{attributes}")?;
         writeln!(f, "pub struct {} {{", self.name)?;
         for field in &self.fields {
             write!(indented(f, 4), "{}", field)?;
@@ -67,7 +69,10 @@ impl std::fmt::Display for OutputField<'_, '_> {
         }
 
         let name = self.name.to_snake_case();
-        let type_spec = self.field_type.type_spec();
+        let type_spec = TypeSpec {
+            name: self.field_type.type_spec().into(),
+            contains_lifetime_a: false,
+        };
         let mut output = super::Field::new(&name, &type_spec);
 
         if let Some(rename) = self.rename {
@@ -79,8 +84,8 @@ impl std::fmt::Display for OutputField<'_, '_> {
 }
 
 /// An OutputFieldType that has been given a rust-land name.  Allows for
-/// the fact that there may be several rust structs that refer to the same schema
-/// type.
+/// the fact that there may be several rust structs that refer to the same
+/// schema type.
 #[derive(Debug, PartialEq)]
 #[allow(clippy::enum_variant_names)]
 pub enum RustOutputFieldType {

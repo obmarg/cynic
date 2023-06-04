@@ -16,7 +16,7 @@ use {
 
 use crate::{
     error::Errors,
-    schema::{types::Type, Schema},
+    schema::{types::Type, Schema, SchemaInput, Validated},
 };
 
 use self::{
@@ -25,16 +25,20 @@ use self::{
 };
 
 pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
-    use quote::TokenStreamExt;
-
-    let document = crate::schema::load_schema(input.schema_filename)
+    let input = SchemaInput::from_schema_path(input.schema_filename)
         .map_err(|e| e.into_syn_error(proc_macro2::Span::call_site()))?;
-    let schema = Schema::new(&document).validate()?;
+
+    let schema = Schema::new(input).validate()?;
+    use_schema_impl(schema)
+}
+
+pub(crate) fn use_schema_impl(schema: Schema<'_, Validated>) -> Result<TokenStream, Errors> {
+    use quote::TokenStreamExt;
 
     let mut output = TokenStream::new();
     let mut field_module = TokenStream::new();
 
-    let root_types = schema_roots::RootTypes::from_definitions(&document.definitions, &schema)?;
+    let root_types = schema.root_types()?;
     output.append_all(quote! {
         #root_types
     });
@@ -47,11 +51,11 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
 
         match definition {
             Type::Scalar(def) if !def.builtin => {
-                let name = proc_macro2::Literal::string(def.name);
-                let ident = proc_macro2::Ident::from(def.marker_ident());
+                let name = proc_macro2::Literal::string(def.name.as_ref());
+                let ident = def.marker_ident().to_rust_ident();
                 output.append_all(quote! {
                     pub struct #ident {}
-                    impl ::cynic::schema::NamedType for #ident {
+                    impl cynic::schema::NamedType for #ident {
                         const NAME: &'static str = #name;
                     }
                 });
@@ -74,13 +78,13 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
             Type::Union(def) => {
                 subtype_markers.extend(SubtypeMarkers::from_union(&def));
 
-                let ident = proc_macro2::Ident::from(def.marker_ident());
+                let ident = def.marker_ident().to_rust_ident();
                 output.append_all(quote! {
                     pub struct #ident {}
                 });
             }
             Type::Enum(def) => {
-                let ident = proc_macro2::Ident::from(def.marker_ident());
+                let ident = def.marker_ident().to_rust_ident();
                 output.append_all(quote! {
                     pub struct #ident {}
                 });
@@ -106,10 +110,10 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
         pub type String = std::string::String;
         pub type Float = f64;
         pub type Int = i32;
-        pub type ID = ::cynic::Id;
+        pub type ID = cynic::Id;
 
         pub mod variable {
-            use ::cynic::variables::VariableType;
+            use cynic::variables::VariableType;
 
             /// Used to determine the type of a given variable that
             /// appears in an argument struct.
@@ -193,7 +197,7 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
                 const TYPE: VariableType = VariableType::Named("Int");
             }
 
-            impl Variable for ::cynic::Id {
+            impl Variable for cynic::Id {
                 const TYPE: VariableType = VariableType::Named("ID");
             }
         }

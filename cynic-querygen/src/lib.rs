@@ -7,6 +7,7 @@ mod query_parsing;
 mod schema;
 mod type_ext;
 
+use output::Output;
 use schema::{GraphPath, TypeIndex};
 
 #[derive(thiserror::Error, Debug)]
@@ -92,15 +93,15 @@ pub enum Error {
 
 #[derive(Debug)]
 pub struct QueryGenOptions {
-    pub schema_path: String,
-    pub query_module: String,
+    pub schema_module_name: String,
+    pub schema_name: Option<String>,
 }
 
 impl Default for QueryGenOptions {
     fn default() -> QueryGenOptions {
         QueryGenOptions {
-            schema_path: "schema.graphql".into(),
-            query_module: "schema".into(),
+            schema_module_name: "schema".into(),
+            schema_name: None,
         }
     }
 }
@@ -110,62 +111,94 @@ pub fn document_to_fragment_structs(
     schema: impl AsRef<str>,
     options: &QueryGenOptions,
 ) -> Result<String, Error> {
-    use output::indented;
     use std::fmt::Write;
 
     let schema = graphql_parser::parse_schema::<&str>(schema.as_ref())?;
     let query = graphql_parser::parse_query::<&str>(query.as_ref())?;
 
     let type_index = Rc::new(TypeIndex::from_schema(&schema));
-    let parsed_output = query_parsing::parse_query_document(&query, &type_index)?;
+    let mut parsed_output = query_parsing::parse_query_document(&query, &type_index)?;
+
+    add_schema_name(&mut parsed_output, options.schema_name.as_deref());
 
     let mut output = String::new();
 
-    writeln!(output, "#[cynic::schema_for_derives(").unwrap();
-    writeln!(output, "    file = r#\"{}\"#,", options.schema_path).unwrap();
-    writeln!(output, "    module = \"{}\",", options.query_module).unwrap();
-    writeln!(output, ")]\nmod queries {{").unwrap();
-
-    let mod_output = &mut indented(&mut output, 4);
-
-    writeln!(mod_output, "use super::{};\n", options.query_module).unwrap();
-
-    for variables in parsed_output.variables_structs {
-        writeln!(mod_output, "{}", variables).unwrap();
+    let input_objects_need_lifetime = parsed_output
+        .input_objects
+        .iter()
+        .map(|io| {
+            (
+                io.name.as_str(),
+                io.fields.iter().any(|f| f.type_spec.contains_lifetime_a),
+            )
+        })
+        .collect();
+    for variables_struct in parsed_output.variables_structs {
+        writeln!(
+            output,
+            "{}",
+            output::VariablesStructForDisplay {
+                variables_struct: &variables_struct,
+                input_objects_need_lifetime: &input_objects_need_lifetime
+            }
+        )
+        .unwrap();
     }
 
     for fragment in parsed_output.query_fragments {
-        writeln!(mod_output, "{}", fragment).unwrap();
+        writeln!(output, "{}", fragment).unwrap();
     }
 
     for fragment in parsed_output.inline_fragments {
-        writeln!(mod_output, "{}", fragment).unwrap();
+        writeln!(output, "{}", fragment).unwrap();
     }
 
     for en in parsed_output.enums {
-        writeln!(mod_output, "{}", en).unwrap();
+        writeln!(output, "{}", en).unwrap();
     }
 
     for input_object in parsed_output.input_objects {
-        writeln!(mod_output, "{}", input_object).unwrap();
+        writeln!(output, "{}", input_object).unwrap();
     }
 
     for scalar in parsed_output.scalars {
-        writeln!(mod_output, "{}", scalar).unwrap();
+        writeln!(output, "{}", scalar).unwrap();
     }
 
-    writeln!(output, "}}\n").unwrap();
+    let schema_module_name = &options.schema_module_name;
 
-    writeln!(output, "#[allow(non_snake_case, non_camel_case_types)]").unwrap();
-    writeln!(output, "mod {} {{", options.query_module).unwrap();
-
-    writeln!(
-        output,
-        "    cynic::use_schema!(r#\"{}\"#);",
-        options.schema_path
-    )
-    .unwrap();
-    writeln!(output, "}}\n").unwrap();
+    write!(output, "#[cynic::schema").unwrap();
+    if let Some(name) = &options.schema_name {
+        write!(output, r#"("{name}")"#).unwrap();
+    }
+    writeln!(output, "]").unwrap();
+    writeln!(output, "mod {schema_module_name} {{}}").unwrap();
 
     Ok(output)
+}
+
+fn add_schema_name(output: &mut Output, schema_name: Option<&str>) {
+    let Some(schema_name) = schema_name else {
+        return;
+    };
+
+    for fragment in &mut output.query_fragments {
+        fragment.schema_name = Some(schema_name.to_string());
+    }
+
+    for fragment in &mut output.inline_fragments {
+        fragment.schema_name = Some(schema_name.to_string());
+    }
+
+    for en in &mut output.enums {
+        en.schema_name = Some(schema_name.to_string());
+    }
+
+    for input_object in &mut output.input_objects {
+        input_object.schema_name = Some(schema_name.to_string());
+    }
+
+    for scalar in &mut output.scalars {
+        scalar.schema_name = Some(schema_name.to_string());
+    }
 }

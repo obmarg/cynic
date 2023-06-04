@@ -6,7 +6,10 @@ use {
 
 use crate::{
     error::Errors,
-    schema::types::{Field, OutputType},
+    schema::{
+        types::{Field, OutputType},
+        Schema, Unvalidated,
+    },
     types::{self, check_spread_type, check_types_are_compatible, CheckMode},
     variables_fields_path,
 };
@@ -18,10 +21,10 @@ use super::{
 
 use super::input::FragmentDeriveField;
 
-pub struct FragmentImpl<'a> {
+pub struct FragmentImpl<'schema, 'a> {
     target_struct: &'a proc_macro2::Ident,
     generics: &'a syn::Generics,
-    selections: Vec<Selection<'a>>,
+    selections: Vec<Selection<'schema>>,
     variables_fields: syn::Type,
     graphql_type_name: String,
     schema_type_path: syn::Path,
@@ -58,12 +61,14 @@ enum FieldKind {
     Union,
 }
 
-impl<'a> FragmentImpl<'a> {
+impl<'schema, 'a: 'schema> FragmentImpl<'schema, 'a> {
+    #[allow(clippy::too_many_arguments)]
     pub fn new_for(
-        fields: &[(&FragmentDeriveField, Option<&'a Field<'a>>)],
+        schema: &'a Schema<'schema, Unvalidated>,
+        fields: &'a [(FragmentDeriveField, Option<Field<'schema>>)],
         name: &'a syn::Ident,
         generics: &'a syn::Generics,
-        schema_type: &FragmentDeriveType<'_>,
+        schema_type: &FragmentDeriveType<'schema>,
         schema_module_path: &syn::Path,
         graphql_type_name: &str,
         variables: Option<&syn::Path>,
@@ -81,8 +86,9 @@ impl<'a> FragmentImpl<'a> {
             .iter()
             .map(|(field, schema_field)| {
                 process_field(
+                    schema,
                     field,
-                    *schema_field,
+                    schema_field.as_ref(),
                     &field_module_path,
                     schema_module_path,
                     variables_fields,
@@ -109,6 +115,7 @@ impl<'a> FragmentImpl<'a> {
 }
 
 fn process_field<'a>(
+    schema: &'a Schema<'a, Unvalidated>,
     field: &FragmentDeriveField,
     schema_field: Option<&'a Field<'a>>,
     field_module_path: &syn::Path,
@@ -130,6 +137,7 @@ fn process_field<'a>(
         arguments_from_field_attrs(&field.attrs)?.unwrap_or_else(|| (vec![], Span::call_site()));
 
     let arguments = process_arguments(
+        schema,
         arguments,
         schema_field,
         schema_module_path.clone(),
@@ -149,12 +157,12 @@ fn process_field<'a>(
         recurse_limit: field.recurse.as_ref().map(|f| **f),
         span: field.ty.span(),
         alias: field.alias(),
-        graphql_field_kind: schema_field.field_type.inner_type().as_kind(),
+        graphql_field_kind: schema_field.field_type.inner_type(schema).as_kind(),
         flatten: *field.flatten,
     }))
 }
 
-impl quote::ToTokens for FragmentImpl<'_> {
+impl quote::ToTokens for FragmentImpl<'_, '_> {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         use quote::TokenStreamExt;
 
@@ -163,22 +171,27 @@ impl quote::ToTokens for FragmentImpl<'_> {
         let selections = &self.selections;
         let graphql_type = proc_macro2::Literal::string(&self.graphql_type_name);
         let schema_type = &self.schema_type_path;
+        let fragment_name = proc_macro2::Literal::string(&target_struct.to_string());
         let (impl_generics, ty_generics, where_clause) = self.generics.split_for_impl();
 
         tokens.append_all(quote! {
             #[automatically_derived]
-            impl #impl_generics ::cynic::QueryFragment for #target_struct #ty_generics #where_clause {
+            impl #impl_generics cynic::QueryFragment for #target_struct #ty_generics #where_clause {
                 type SchemaType = #schema_type;
                 type VariablesFields = #variables_fields;
 
                 const TYPE: Option<&'static str> = Some(#graphql_type);
 
-                fn query(mut builder: ::cynic::queries::SelectionBuilder<'_, Self::SchemaType, Self::VariablesFields>)
+                fn query(mut builder: cynic::queries::SelectionBuilder<'_, Self::SchemaType, Self::VariablesFields>)
                 where
                 {
                     #![allow(unused_mut)]
 
                     #(#selections)*
+                }
+
+                fn name() -> Option<std::borrow::Cow<'static, str>> {
+                    Some(std::borrow::Cow::Borrowed(#fragment_name))
                 }
             }
         })
@@ -241,16 +254,16 @@ impl quote::ToTokens for FieldSelection<'_> {
         let schema_type_lookup = match self.graphql_field_kind {
             FieldKind::Interface | FieldKind::Composite | FieldKind::Union => {
                 quote_spanned! { self.span =>
-                    <#aligned_type as ::cynic::QueryFragment>::SchemaType
+                    <#aligned_type as cynic::QueryFragment>::SchemaType
                 }
             }
             FieldKind::Scalar => quote_spanned! { self.span =>
-                <#aligned_type as ::cynic::schema::IsScalar<
-                    <#field_marker_type_path as ::cynic::schema::Field>::Type
+                <#aligned_type as cynic::schema::IsScalar<
+                    <#field_marker_type_path as cynic::schema::Field>::Type
                 >>::SchemaType
             },
             FieldKind::Enum => quote_spanned! { self.span =>
-                <#aligned_type as ::cynic::Enum>::SchemaType
+                <#aligned_type as cynic::Enum>::SchemaType
             },
         };
 
@@ -266,7 +279,7 @@ impl quote::ToTokens for FieldSelection<'_> {
                     #alias
                     #arguments
 
-                    <#aligned_type as ::cynic::QueryFragment>::query(
+                    <#aligned_type as cynic::QueryFragment>::query(
                         field_builder.select_children()
                     );
                 }
@@ -277,13 +290,13 @@ impl quote::ToTokens for FieldSelection<'_> {
                         .select_flattened_field::<
                             #field_marker_type_path,
                             #schema_type_lookup,
-                            <#field_marker_type_path as ::cynic::schema::Field>::Type,
+                            <#field_marker_type_path as cynic::schema::Field>::Type,
                         >();
 
                     #alias
                     #arguments
 
-                    <#aligned_type as ::cynic::QueryFragment>::query(
+                    <#aligned_type as cynic::QueryFragment>::query(
                         field_builder.select_children()
                     );
                 }
@@ -294,7 +307,7 @@ impl quote::ToTokens for FieldSelection<'_> {
                         .select_flattened_field::<
                             #field_marker_type_path,
                             #schema_type_lookup,
-                            <#field_marker_type_path as ::cynic::schema::Field>::Type,
+                            <#field_marker_type_path as cynic::schema::Field>::Type,
                         >();
 
                     #alias
@@ -312,7 +325,7 @@ impl quote::ToTokens for FieldSelection<'_> {
                         #alias
                         #arguments
 
-                        <#aligned_type as ::cynic::QueryFragment>::query(
+                        <#aligned_type as cynic::QueryFragment>::query(
                             field_builder.select_children()
                         );
                     }
@@ -340,7 +353,7 @@ impl quote::ToTokens for SpreadSelection {
         let field_type = &self.rust_field_type;
 
         tokens.append_all(quote_spanned! { self.span =>
-            <#field_type as ::cynic::QueryFragment>::query(
+            <#field_type as cynic::QueryFragment>::query(
                 builder
             )
         })

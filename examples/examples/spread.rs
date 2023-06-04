@@ -1,21 +1,17 @@
 //! An example of querying the starwars API using the reqwest-blocking feature
 
-mod schema {
-    cynic::use_schema!("../schemas/starwars.schema.graphql");
-}
+// Pull in the Star Wars schema we registered in build.rs
+#[cynic::schema("starwars")]
+mod schema {}
 
 #[derive(cynic::QueryFragment, Debug)]
-#[cynic(
-    schema_path = "../schemas/starwars.schema.graphql",
-    graphql_type = "Film"
-)]
+#[cynic(graphql_type = "Film")]
 struct FilmDetails {
     title: Option<String>,
     director: Option<String>,
 }
 
 #[derive(cynic::QueryFragment, Debug)]
-#[cynic(schema_path = "../schemas/starwars.schema.graphql")]
 struct Film {
     #[cynic(spread)]
     details: FilmDetails,
@@ -27,11 +23,7 @@ struct FilmArguments {
 }
 
 #[derive(cynic::QueryFragment, Debug)]
-#[cynic(
-    schema_path = "../schemas/starwars.schema.graphql",
-    graphql_type = "Root",
-    variables = "FilmArguments"
-)]
+#[cynic(graphql_type = "Root", variables = "FilmArguments")]
 struct FilmDirectorQuery {
     #[arguments(id: $id)]
     film: Option<Film>,

@@ -2,36 +2,24 @@
 source: cynic-querygen/tests/starwars-tests.rs
 expression: "document_to_fragment_structs(query, schema,\n        &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
 ---
-#[cynic::schema_for_derives(
-    file = r#"schema.graphql"#,
-    module = "schema",
-)]
-mod queries {
-    use super::schema;
-
-    #[derive(cynic::QueryVariables, Debug)]
-    pub struct SanityCheckQueryVariables {
-        pub film_id: Option<cynic::Id>,
-    }
-
-    #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "Root", variables = "SanityCheckQueryVariables")]
-    pub struct SanityCheckQuery {
-        #[arguments(id: $film_id)]
-        pub film: Option<Film>,
-    }
-
-    #[derive(cynic::QueryFragment, Debug)]
-    pub struct Film {
-        pub title: Option<String>,
-        pub director: Option<String>,
-    }
-
+#[derive(cynic::QueryVariables, Debug)]
+pub struct SanityCheckQueryVariables<'a> {
+    pub film_id: Option<&'a cynic::Id>,
 }
 
-#[allow(non_snake_case, non_camel_case_types)]
-mod schema {
-    cynic::use_schema!(r#"schema.graphql"#);
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(graphql_type = "Root", variables = "SanityCheckQueryVariables")]
+pub struct SanityCheckQuery {
+    #[arguments(id: $film_id)]
+    pub film: Option<Film>,
 }
 
+#[derive(cynic::QueryFragment, Debug)]
+pub struct Film {
+    pub title: Option<String>,
+    pub director: Option<String>,
+}
+
+#[cynic::schema]
+mod schema {}
 

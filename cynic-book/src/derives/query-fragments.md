@@ -217,15 +217,17 @@ A QueryFragment can be configured with several attributes on the struct itself:
 
 - `graphql_type = "AType"` tells cynic which object in the GraphQL schema this
   struct represents. The name of the struct is used if it is omitted.
-- `schema_path` sets the path to the GraphQL schema. This is required, but
-  can be provided by nesting the QueryFragment inside a query module with this
-  attr.
-- `schema_module` tells cynic where to find the schema module - that is a module
-  module that has called the `use_schema!` macro. This will default to
-  `schema` if not provided. An override can also be provided by nesting the
-  QueryFragment inside a module with the `schema_for_derives` attribute macro.
 - `variables` defines the `QueryVariables` struct that is available to
   `arguments` attributes on fields of the given struct.
+- `schema` tells cynic which schema to use to validate your InlineFragments.
+  The schema you provide should have been registered in your `build.rs`.  This
+  is optional if you're using the schema that was registered as default, or if
+  you're using `schema_path` instead.
+- `schema_path` sets a path to the GraphQL schema. This is only required
+  if you're using a schema that wasn't registered in `build.rs`.
+- `schema_module` tells cynic where to find your schema module.  This is
+  optional and should only be needed if your schema module is not in scope or
+  named `schema`.
 
 #### Field Attributes
 

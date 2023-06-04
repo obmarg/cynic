@@ -1,7 +1,9 @@
 use std::{borrow::Cow, rc::Rc};
 
-use super::{parser, InputTypeRef, OutputTypeRef, TypeIndex};
-use crate::Error;
+use {
+    super::{parser, InputTypeRef, OutputTypeRef, TypeIndex},
+    crate::Error,
+};
 
 /// A field on an output type i.e. an object or interface
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone)]
@@ -118,50 +120,127 @@ impl<'schema> InputFieldType<'schema> {
         }
     }
 
-    pub fn type_spec(&self, needs_boxed: bool) -> Cow<'schema, str> {
-        input_type_spec_imp(self, true, needs_boxed)
+    /// Second returned type is whether we should generate a `'a` lifetime on
+    /// the struct
+    pub fn type_spec(
+        &self,
+        needs_boxed: bool,
+        needs_owned: bool,
+        is_subobject_with_lifetime: bool,
+    ) -> TypeSpec<'static> {
+        input_type_spec_imp(
+            self,
+            true,
+            needs_boxed,
+            needs_owned,
+            is_subobject_with_lifetime,
+        )
     }
 }
 
-fn input_type_spec_imp<'schema>(
-    ty: &InputFieldType<'schema>,
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct TypeSpec<'a> {
+    pub(crate) name: Cow<'a, str>,
+    pub(crate) contains_lifetime_a: bool,
+}
+
+impl<'a> TypeSpec<'a> {
+    fn map(self, f: impl FnOnce(&str) -> String) -> TypeSpec<'static> {
+        TypeSpec {
+            name: Cow::Owned(f(&self.name)),
+            contains_lifetime_a: self.contains_lifetime_a,
+        }
+    }
+    pub(crate) fn lifetime<'b>(
+        struct_type_specs: impl IntoIterator<Item = &'b Self>,
+    ) -> &'static str
+    where
+        'a: 'b,
+    {
+        if struct_type_specs
+            .into_iter()
+            .any(|ts| ts.contains_lifetime_a)
+        {
+            "<'a>"
+        } else {
+            ""
+        }
+    }
+}
+
+/// Second returned type is whether we should generate a `'a` lifetime on the
+/// struct
+fn input_type_spec_imp(
+    ty: &InputFieldType<'_>,
     nullable: bool,
     needs_boxed: bool,
-) -> Cow<'schema, str> {
+    needs_owned: bool,
+    is_subobject_with_lifetime: bool,
+) -> TypeSpec<'static> {
     use crate::casings::CasingExt;
 
     if let InputFieldType::NonNullType(inner) = ty {
-        return input_type_spec_imp(inner, false, needs_boxed);
+        return input_type_spec_imp(
+            inner,
+            false,
+            needs_boxed,
+            needs_owned,
+            is_subobject_with_lifetime,
+        );
     }
 
     if nullable {
-        return Cow::Owned(format!(
-            "Option<{}>",
-            input_type_spec_imp(ty, false, needs_boxed)
-        ));
+        return input_type_spec_imp(
+            ty,
+            false,
+            needs_boxed,
+            needs_owned,
+            is_subobject_with_lifetime,
+        )
+        .map(|type_spec| format!("Option<{type_spec}>",));
     }
 
     match ty {
         InputFieldType::ListType(inner) => {
-            Cow::Owned(format!("Vec<{}>", input_type_spec_imp(inner, true, false)))
+            input_type_spec_imp(inner, true, false, needs_owned, is_subobject_with_lifetime)
+                .map(|type_spec| format!("Vec<{type_spec}>",))
         }
 
         InputFieldType::NonNullType(_) => panic!("NonNullType somehow got past an if let"),
 
         InputFieldType::NamedType(s) => {
-            let name = match s.type_name.as_ref() {
-                "Int" => Cow::Borrowed("i32"),
-                "Float" => Cow::Borrowed("f64"),
-                "Boolean" => Cow::Borrowed("bool"),
-                "ID" => Cow::Borrowed("cynic::Id"),
-                _ => Cow::Owned(s.type_name.to_pascal_case()),
+            let mut contains_lifetime_a = false;
+            let mut name = match (s.type_name.as_ref(), needs_owned) {
+                ("Int", _) => Cow::Borrowed("i32"),
+                ("Float", _) => Cow::Borrowed("f64"),
+                ("Boolean", _) => Cow::Borrowed("bool"),
+                ("ID", true) => Cow::Borrowed("cynic::Id"),
+                ("ID", false) => {
+                    contains_lifetime_a = true;
+                    Cow::Borrowed("&'a cynic::Id")
+                }
+                ("String", false) => {
+                    contains_lifetime_a = true;
+                    Cow::Borrowed("&'a str")
+                }
+                _ => Cow::Owned({
+                    let mut type_ = s.type_name.to_pascal_case();
+                    if is_subobject_with_lifetime {
+                        type_ += "<'a>";
+                        contains_lifetime_a = true;
+                    }
+                    type_
+                }),
             };
 
             if needs_boxed {
-                return Cow::Owned(format!("Box<{}>", name));
+                name = Cow::Owned(format!("Box<{}>", name));
             }
 
-            name
+            TypeSpec {
+                name,
+                contains_lifetime_a,
+            }
         }
     }
 }

@@ -57,7 +57,7 @@ pub fn query_variables_derive_impl(
                 // - Normally we use the type of the fields of the XxxVariables directly in
                 //   these return types of the functions of XxxVariablesFields, and that type
                 //   implements `CoercesTo<schema::CorrespondingType>` (as derived by
-                //   `InputObject`, or specified by cynic if it's a litteral)
+                //   `InputObject`, or specified by cynic if it's a literal)
                 // - Now we want to still typecheck that our concrete (specialized) types have
                 //   all their fields implement `CoercesTo` the correct schema type, but we also
                 //   want to not be generic in the `Fields` struct. This is achieved by:
@@ -71,10 +71,10 @@ pub fn query_variables_derive_impl(
                     format_ident!("CoercionProxyForField{field_idx}");
                 field_output_types.push(quote! {
                     #vis struct #new_type_that_coerces_to_schema_type;
-                    ::cynic::impl_coercions!(#new_type_that_coerces_to_schema_type [] [], #schema_module::#graphql_type);
+                    cynic::impl_coercions!(#new_type_that_coerces_to_schema_type [] [], #schema_module::#graphql_type);
                 });
                 coercion_checks.push(quote! {
-                    ::cynic::assert_impl!(#ty [#impl_generics] [#where_clause]: ::cynic::coercions::CoercesTo<#schema_module::#graphql_type>);
+                    cynic::assert_impl!(#ty [#impl_generics] [#where_clause]: cynic::coercions::CoercesTo<#schema_module::#graphql_type>);
                 });
 
                 // Turn that from an ident into a type
@@ -86,8 +86,8 @@ pub fn query_variables_derive_impl(
             proc_macro2::Literal::string(&f.graphql_ident(input.rename_all).graphql_name());
 
         field_funcs.push(quote! {
-            #vis fn #name() -> ::cynic::variables::VariableDefinition<Self, #ty_for_fields_struct> {
-                ::cynic::variables::VariableDefinition::new(#name_str)
+            #vis fn #name() -> cynic::variables::VariableDefinition<Self, #ty_for_fields_struct> {
+                cynic::variables::VariableDefinition::new(#name_str)
             }
         });
 
@@ -106,9 +106,9 @@ pub fn query_variables_derive_impl(
     let fields_struct = quote_spanned! { ident_span =>
         #vis struct #fields_struct_ident;
 
-        impl ::cynic::QueryVariablesFields for #fields_struct_ident {}
+        impl cynic::QueryVariablesFields for #fields_struct_ident {}
 
-        impl ::cynic::queries::VariableMatch<#fields_struct_ident> for #fields_struct_ident {}
+        impl cynic::queries::VariableMatch<#fields_struct_ident> for #fields_struct_ident {}
 
         const _: () = {
             #(
@@ -126,19 +126,19 @@ pub fn query_variables_derive_impl(
     Ok(quote! {
 
         #[automatically_derived]
-        impl #impl_generics ::cynic::QueryVariables for #ident #ty_generics #where_clause {
+        impl #impl_generics cynic::QueryVariables for #ident #ty_generics #where_clause {
             type Fields = #fields_struct_ident;
-            const VARIABLES: &'static [(&'static str, ::cynic::variables::VariableType)]
+            const VARIABLES: &'static [(&'static str, cynic::variables::VariableType)]
                 = &[#(#variables),*];
         }
 
         #[automatically_derived]
-        impl #impl_generics_with_ser ::cynic::serde::Serialize for #ident #ty_generics #where_clause_with_ser {
+        impl #impl_generics_with_ser cynic::serde::Serialize for #ident #ty_generics #where_clause_with_ser {
             fn serialize<__S>(&self, serializer: __S) -> Result<__S::Ok, __S::Error>
             where
-                __S: ::cynic::serde::Serializer,
+                __S: cynic::serde::Serializer,
             {
-                use ::cynic::serde::ser::SerializeMap;
+                use cynic::serde::ser::SerializeMap;
                 #(#coercion_checks)*
 
                 let mut map_serializer = serializer.serialize_map(Some(#map_len))?;

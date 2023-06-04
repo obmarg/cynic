@@ -153,7 +153,11 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
                 .map(|d| d.to_string())
                 .unwrap_or_else(|| "null".to_string()),
             TypedValue::String(s, _) => {
-                format!("\"{s}\"")
+                if string_needs_raw_literal(s) {
+                    format!("r#\"{s}\"#")
+                } else {
+                    format!("\"{s}\"")
+                }
             }
             TypedValue::Boolean(b, _) => b.to_string(),
             TypedValue::Null(_) => "null".into(),
@@ -195,6 +199,10 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
             }
         })
     }
+}
+
+fn string_needs_raw_literal(s: &str) -> bool {
+    s.chars().any(|c| c.is_ascii_control() || c == '"')
 }
 
 /// The contexts in which a Value literal can appear in generated code.

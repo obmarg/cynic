@@ -63,7 +63,7 @@ fn test_inline_fragment_query_output() {
     let operation = AllPostsQuery::build(());
 
     insta::assert_display_snapshot!(operation.query, @r###"
-    query {
+    query AllPostsQuery {
       allData {
         __typename
         ... on BlogPost {

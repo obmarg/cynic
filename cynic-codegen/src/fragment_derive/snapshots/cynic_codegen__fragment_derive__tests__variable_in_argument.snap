@@ -3,35 +3,34 @@ source: cynic-codegen/src/fragment_derive/tests.rs
 expression: "format_code(format!(\"{}\", tokens))"
 ---
 #[automatically_derived]
-impl ::cynic::QueryFragment for MyQuery {
+impl cynic::QueryFragment for MyQuery {
     type SchemaType = schema::Query;
     type VariablesFields = AnArgumentStructFields;
     const TYPE: Option<&'static str> = Some("Query");
     fn query(
-        mut builder: ::cynic::queries::SelectionBuilder<
-            '_,
-            Self::SchemaType,
-            Self::VariablesFields,
-        >,
+        mut builder: cynic::queries::SelectionBuilder<'_, Self::SchemaType, Self::VariablesFields>,
     ) {
         #![allow(unused_mut)]
-        let mut field_builder = builder . select_field :: < schema :: __fields :: Query :: filteredPosts , < Vec < BlogPostOutput > as :: cynic :: QueryFragment > :: SchemaType > () ;
+        let mut field_builder = builder . select_field :: < schema :: __fields :: Query :: filteredPosts , < Vec < BlogPostOutput > as cynic :: QueryFragment > :: SchemaType > () ;
         {
             field_builder
                 .argument::<schema::__fields::Query::_filtered_posts_arguments::filters>()
                 .variable(AnArgumentStructFields::filters());
         }
-        <Vec<BlogPostOutput> as ::cynic::QueryFragment>::query(field_builder.select_children());
+        <Vec<BlogPostOutput> as cynic::QueryFragment>::query(field_builder.select_children());
+    }
+    fn name() -> Option<std::borrow::Cow<'static, str>> {
+        Some(std::borrow::Cow::Borrowed("MyQuery"))
     }
 }
 #[automatically_derived]
-impl<'de> ::cynic::serde::Deserialize<'de> for MyQuery {
+impl<'de> cynic::serde::Deserialize<'de> for MyQuery {
     fn deserialize<__D>(deserializer: __D) -> Result<Self, __D::Error>
     where
-        __D: ::cynic::serde::Deserializer<'de>,
+        __D: cynic::serde::Deserializer<'de>,
     {
-        #[derive(:: cynic :: serde :: Deserialize)]
-        #[serde(field_identifier, crate = "::cynic::serde")]
+        #[derive(cynic :: serde :: Deserialize)]
+        #[serde(field_identifier, crate = "cynic::serde")]
         #[allow(non_camel_case_types)]
         enum __FragmentDeriveField {
             #[serde(rename = "filteredPosts")]
@@ -43,33 +42,33 @@ impl<'de> ::cynic::serde::Deserialize<'de> for MyQuery {
             marker: ::core::marker::PhantomData<MyQuery>,
             lifetime: ::core::marker::PhantomData<&'de ()>,
         }
-        impl<'de> ::cynic::serde::de::Visitor<'de> for Visitor<'de> {
+        impl<'de> cynic::serde::de::Visitor<'de> for Visitor<'de> {
             type Value = MyQuery;
             fn expecting(&self, formatter: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
                 formatter.write_str("struct MyQuery")
             }
             fn visit_map<V>(self, mut __map: V) -> Result<Self::Value, V::Error>
             where
-                V: ::cynic::serde::de::MapAccess<'de>,
+                V: cynic::serde::de::MapAccess<'de>,
             {
                 let mut filteredPosts = None;
                 while let Some(__key) = __map.next_key()? {
                     match __key {
                         __FragmentDeriveField::filteredPosts => {
                             if filteredPosts.is_some() {
-                                return Err(::cynic::serde::de::Error::duplicate_field(
+                                return Err(cynic::serde::de::Error::duplicate_field(
                                     "filteredPosts",
                                 ));
                             }
                             filteredPosts = Some(__map.next_value()?);
                         }
                         __FragmentDeriveField::__Other => {
-                            __map.next_value::<::cynic::serde::de::IgnoredAny>()?;
+                            __map.next_value::<cynic::serde::de::IgnoredAny>()?;
                         }
                     }
                 }
                 let filteredPosts = filteredPosts
-                    .ok_or_else(|| ::cynic::serde::de::Error::missing_field("filteredPosts"))?;
+                    .ok_or_else(|| cynic::serde::de::Error::missing_field("filteredPosts"))?;
                 Ok(MyQuery { filteredPosts })
             }
         }

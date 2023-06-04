@@ -1,9 +1,8 @@
 ---
 source: cynic/tests/recursive-queries.rs
-assertion_line: 158
 expression: operation.query
 ---
-query {
+query FriendsQuery {
   allAuthors {
     me {
       me

@@ -1,15 +1,11 @@
 use seed::{prelude::*, *};
 
+#[derive(Default)]
 pub enum Model {
+    #[default]
     New,
     Url(String),
     Pasted(String),
-}
-
-impl Default for Model {
-    fn default() -> Self {
-        Model::New
-    }
 }
 
 #[derive(Clone)]
@@ -72,10 +68,24 @@ fn entry_page_view(model: &Model) -> Node<Msg> {
                 C!["is-flex" "is-justify-content-center" "mb-6"],
                 div![
                     C!["notification is-warning is-light"],
-                    "⚠️ This is the generator for v2 of cynic. For v1 please visit ",
-                    a![
-                        attrs! {At::Href => "https://v1.generator.cynic-rs.dev/"},
-                        "https://v1.generator.cynic-rs.dev/"
+                    "⚠️ This is the generator for v3 of cynic.",
+                    ul![
+                        C!["pt-2"],
+                        li![
+                            C!["pb-1"],
+                            "For v1 please visit ",
+                            a![
+                                attrs! {At::Href => "https://v1.generator.cynic-rs.dev/"},
+                                "https://v1.generator.cynic-rs.dev/"
+                            ]
+                        ],
+                        li![
+                            "For v2 please visit ",
+                            a![
+                                attrs! {At::Href => "https://v2.generator.cynic-rs.dev/"},
+                                "https://v2.generator.cynic-rs.dev/"
+                            ]
+                        ]
                     ]
                 ]
             ],

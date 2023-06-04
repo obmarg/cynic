@@ -2,46 +2,34 @@
 source: cynic-querygen/tests/misc-tests.rs
 expression: "document_to_fragment_structs(query, schema,\n        &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
 ---
-#[cynic::schema_for_derives(
-    file = r#"schema.graphql"#,
-    module = "schema",
-)]
-mod queries {
-    use super::schema;
-
-    #[derive(cynic::QueryVariables, Debug)]
-    pub struct MyQueryVariables {
-        pub input: SelfRecursiveInput,
-        pub input2: RecursiveInputParent,
-    }
-
-    #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "Foo", variables = "MyQueryVariables")]
-    pub struct MyQuery {
-        #[arguments(recursive: $input, recursive2: $input2)]
-        pub recursive_input_field: Option<bool>,
-    }
-
-    #[derive(cynic::InputObject, Debug)]
-    pub struct SelfRecursiveInput {
-        pub recurse: Option<Box<SelfRecursiveInput>>,
-    }
-
-    #[derive(cynic::InputObject, Debug)]
-    pub struct RecursiveInputParent {
-        pub recurse: Option<RecursiveInputChild>,
-    }
-
-    #[derive(cynic::InputObject, Debug)]
-    pub struct RecursiveInputChild {
-        pub recurse: Option<Box<RecursiveInputParent>>,
-    }
-
+#[derive(cynic::QueryVariables, Debug)]
+pub struct MyQueryVariables {
+    pub input: SelfRecursiveInput,
+    pub input2: RecursiveInputParent,
 }
 
-#[allow(non_snake_case, non_camel_case_types)]
-mod schema {
-    cynic::use_schema!(r#"schema.graphql"#);
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(graphql_type = "Foo", variables = "MyQueryVariables")]
+pub struct MyQuery {
+    #[arguments(recursive: $input, recursive2: $input2)]
+    pub recursive_input_field: Option<bool>,
 }
 
+#[derive(cynic::InputObject, Debug)]
+pub struct SelfRecursiveInput {
+    pub recurse: Option<Box<SelfRecursiveInput>>,
+}
+
+#[derive(cynic::InputObject, Debug)]
+pub struct RecursiveInputParent {
+    pub recurse: Option<RecursiveInputChild>,
+}
+
+#[derive(cynic::InputObject, Debug)]
+pub struct RecursiveInputChild {
+    pub recurse: Option<Box<RecursiveInputParent>>,
+}
+
+#[cynic::schema]
+mod schema {}
 

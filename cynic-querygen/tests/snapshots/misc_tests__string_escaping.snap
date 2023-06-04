@@ -1,0 +1,19 @@
+---
+source: cynic-querygen/tests/misc-tests.rs
+expression: "document_to_fragment_structs(query, schema,\n        &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
+---
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(graphql_type = "Foo")]
+pub struct UnnamedQuery {
+    #[arguments(input: r#"Hello
+     There"#)]
+    #[cynic(rename = "fieldWithStringArg")]
+    pub one: Option<i32>,
+    #[arguments(input: r#"Hello " I am a string with quotes"#)]
+    #[cynic(rename = "fieldWithStringArg")]
+    pub two: Option<i32>,
+}
+
+#[cynic::schema]
+mod schema {}
+

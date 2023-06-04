@@ -1,12 +1,12 @@
 fn main() {}
 
 mod schema {
-    cynic::use_schema!("../../../cynic/src/bin/simple.graphql");
+    cynic::use_schema!("../../../../cynic/src/bin/simple.graphql");
 }
 
 #[derive(cynic::InlineFragments)]
 #[cynic(
-    schema_path = "../../../cynic/src/bin/simple.graphql",
+    schema_path = "../../../../cynic/src/bin/simple.graphql",
     graphql_type = "MyUnionType"
 )]
 enum MyFailingUnionType {
@@ -18,7 +18,7 @@ enum MyFailingUnionType {
 }
 
 #[derive(cynic::QueryFragment)]
-#[cynic(schema_path = "../../../cynic/src/bin/simple.graphql")]
+#[cynic(schema_path = "../../../../cynic/src/bin/simple.graphql")]
 struct Nested {
     pub a_string: String,
     pub opt_string: Option<String>,
@@ -26,7 +26,7 @@ struct Nested {
 
 #[derive(cynic::InlineFragments)]
 #[cynic(
-    schema_path = "../../../cynic/src/bin/simple.graphql",
+    schema_path = "../../../../cynic/src/bin/simple.graphql",
     graphql_type = "MyUnionType"
 )]
 enum MyOkUnionTYpe {
@@ -38,7 +38,7 @@ enum MyOkUnionTYpe {
 
 #[derive(cynic::InlineFragments)]
 #[cynic(
-    schema_path = "../../../cynic/src/bin/simple.graphql",
+    schema_path = "../../../../cynic/src/bin/simple.graphql",
     graphql_type = "MyUnionType"
 )]
 enum UnionTypeWithStringFallback {

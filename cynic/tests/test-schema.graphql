@@ -56,6 +56,8 @@ type Query {
     anOptionalInt: Int = 1
     input: InputWithDefaults
   ): Int!
+
+  fieldWithString(input: String!): Int!
 }
 
 union PostOrAuthor = BlogPost | Author

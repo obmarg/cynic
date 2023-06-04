@@ -2,64 +2,52 @@
 source: cynic-querygen/tests/starwars-tests.rs
 expression: "document_to_fragment_structs(query, schema,\n        &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
 ---
-#[cynic::schema_for_derives(
-    file = r#"schema.graphql"#,
-    module = "schema",
-)]
-mod queries {
-    use super::schema;
-
-    #[derive(cynic::QueryVariables, Debug)]
-    pub struct NestedArgsQueryVariables {
-        pub film_id: cynic::Id,
-        pub planet_cursor: Option<String>,
-        pub resident_connection: Option<String>,
-    }
-
-    #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "Root", variables = "NestedArgsQueryVariables")]
-    pub struct NestedArgsQuery {
-        #[arguments(id: $film_id)]
-        pub film: Option<Film>,
-    }
-
-    #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(variables = "NestedArgsQueryVariables")]
-    pub struct Film {
-        pub title: Option<String>,
-        pub director: Option<String>,
-        #[arguments(after: $planet_cursor)]
-        pub planet_connection: Option<FilmPlanetsConnection>,
-    }
-
-    #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(variables = "NestedArgsQueryVariables")]
-    pub struct FilmPlanetsConnection {
-        pub planets: Option<Vec<Option<Planet>>>,
-    }
-
-    #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(variables = "NestedArgsQueryVariables")]
-    pub struct Planet {
-        #[arguments(after: $resident_connection)]
-        pub resident_connection: Option<PlanetResidentsConnection>,
-    }
-
-    #[derive(cynic::QueryFragment, Debug)]
-    pub struct PlanetResidentsConnection {
-        pub residents: Option<Vec<Option<Person>>>,
-    }
-
-    #[derive(cynic::QueryFragment, Debug)]
-    pub struct Person {
-        pub name: Option<String>,
-    }
-
+#[derive(cynic::QueryVariables, Debug)]
+pub struct NestedArgsQueryVariables<'a> {
+    pub film_id: &'a cynic::Id,
+    pub planet_cursor: Option<&'a str>,
+    pub resident_connection: Option<&'a str>,
 }
 
-#[allow(non_snake_case, non_camel_case_types)]
-mod schema {
-    cynic::use_schema!(r#"schema.graphql"#);
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(graphql_type = "Root", variables = "NestedArgsQueryVariables")]
+pub struct NestedArgsQuery {
+    #[arguments(id: $film_id)]
+    pub film: Option<Film>,
 }
 
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(variables = "NestedArgsQueryVariables")]
+pub struct Film {
+    pub title: Option<String>,
+    pub director: Option<String>,
+    #[arguments(after: $planet_cursor)]
+    pub planet_connection: Option<FilmPlanetsConnection>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(variables = "NestedArgsQueryVariables")]
+pub struct FilmPlanetsConnection {
+    pub planets: Option<Vec<Option<Planet>>>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(variables = "NestedArgsQueryVariables")]
+pub struct Planet {
+    #[arguments(after: $resident_connection)]
+    pub resident_connection: Option<PlanetResidentsConnection>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+pub struct PlanetResidentsConnection {
+    pub residents: Option<Vec<Option<Person>>>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+pub struct Person {
+    pub name: Option<String>,
+}
+
+#[cynic::schema]
+mod schema {}
 

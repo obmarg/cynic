@@ -16,6 +16,8 @@ type Foo {
     recursive: SelfRecursiveInput
     recursive2: RecursiveInputParent
   ): Boolean
+
+  fieldWithStringArg(input: String!): Int
 }
 
 type Bar {

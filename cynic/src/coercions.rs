@@ -14,6 +14,7 @@ pub trait CoercesTo<T> {}
 
 impl<T, TypeLock> CoercesTo<Option<TypeLock>> for Option<T> where T: CoercesTo<TypeLock> {}
 impl<T, TypeLock> CoercesTo<Vec<TypeLock>> for Vec<T> where T: CoercesTo<TypeLock> {}
+impl<T, TypeLock> CoercesTo<Vec<TypeLock>> for [T] where T: CoercesTo<TypeLock> {}
 
 impl<Target: ?Sized, Typelock> CoercesTo<Typelock> for &'_ Target where Target: CoercesTo<Typelock> {}
 

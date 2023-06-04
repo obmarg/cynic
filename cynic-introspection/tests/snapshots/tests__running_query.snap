@@ -4,7 +4,7 @@ expression: result.data
 ---
 Some(
     IntrospectionQuery {
-        schema: Schema {
+        introspected_schema: IntrospectedSchema {
             query_type: NamedType {
                 name: Some(
                     "Root",
