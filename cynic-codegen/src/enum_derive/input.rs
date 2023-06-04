@@ -2,15 +2,16 @@ use darling::util::SpannedValue;
 use proc_macro2::Span;
 
 use crate::{
+    error::Errors,
     idents::{RenamableFieldIdent, RenameAll},
     schema::SchemaInput,
 };
 
 #[derive(darling::FromDeriveInput)]
-#[darling(attributes(cynic), supports(enum_unit))]
+#[darling(attributes(cynic), supports(enum_unit, enum_newtype))]
 pub struct EnumDeriveInput {
     pub(super) ident: proc_macro2::Ident,
-    pub(super) data: darling::ast::Data<EnumDeriveVariant, ()>,
+    pub(super) data: darling::ast::Data<SpannedValue<EnumDeriveVariant>, ()>,
 
     #[darling(default)]
     schema: Option<SpannedValue<String>>,
@@ -43,6 +44,11 @@ pub struct EnumDeriveVariant {
 
     #[darling(default)]
     pub(super) rename: Option<SpannedValue<String>>,
+
+    #[darling(default)]
+    pub(super) fallback: SpannedValue<bool>,
+
+    pub(super) fields: darling::ast::Fields<()>,
 }
 
 impl EnumDeriveInput {
@@ -73,6 +79,30 @@ impl EnumDeriveInput {
             )),
         }
     }
+
+    pub(super) fn validate(&self) -> Result<(), Errors> {
+        let data_ref = self.data.as_ref().take_enum().unwrap();
+        let fallbacks = data_ref.iter().filter(|v| *v.fallback).collect::<Vec<_>>();
+        let mut errors = Errors::default();
+
+        if fallbacks.len() > 1 {
+            errors.extend(
+                fallbacks
+                    .into_iter()
+                    .map(|f| {
+                        syn::Error::new(
+                            f.span(),
+                            "Enums only support a single fallback, but this enum has many",
+                        )
+                    })
+                    .collect::<Vec<_>>(),
+            );
+        }
+
+        errors.extend(data_ref.iter().filter_map(|v| v.validate(v.span()).err()));
+
+        errors.into_result(())
+    }
 }
 
 impl EnumDeriveVariant {
@@ -89,5 +119,81 @@ impl EnumDeriveVariant {
             }
         }
         ident
+    }
+
+    fn validate(&self, span: proc_macro2::Span) -> Result<(), Errors> {
+        use darling::ast::Style::*;
+
+        if *self.fallback {
+            match (self.fields.style, self.fields.len()) {
+                (Unit, _) => Ok(()),
+                (Struct, _) => Err(syn::Error::new(
+                    span,
+                    "Enum derive doesn't support struct variants as a fallback",
+                )
+                .into()),
+                (Tuple, 1) => Ok(()),
+                (Tuple, _) => Err(syn::Error::new(
+                    span,
+                    "Enum derive fallbacks can only have a single field",
+                )
+                .into()),
+            }
+            // TODO: make sure we only have a string somewhere
+        } else {
+            match self.fields.style {
+                Unit => Ok(()),
+                _ => Err(syn::Error::new(span, "GraphQL Enums can't have fields").into()),
+            }
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use darling::FromDeriveInput;
+    use syn::parse_quote;
+
+    use super::*;
+
+    #[test]
+    fn test_enum_with_no_fallbacks() {
+        let input = EnumDeriveInput::from_derive_input(&parse_quote! {
+            enum TestEnum {
+                Foo,
+                Bar
+            }
+        })
+        .unwrap();
+
+        input.validate().expect("no errors");
+    }
+
+    #[test]
+    fn test_enum_with_empty_fallback() {
+        let input = EnumDeriveInput::from_derive_input(&parse_quote! {
+            enum TestEnum {
+                Foo,
+                #[cynic(fallback)]
+                Bar
+            }
+        })
+        .unwrap();
+
+        input.validate().expect("no errors");
+    }
+
+    #[test]
+    fn test_enum_with_string_fallback() {
+        let input = EnumDeriveInput::from_derive_input(&parse_quote! {
+            enum TestEnum {
+                Foo,
+                #[cynic(fallback)]
+                Bar(String)
+            }
+        })
+        .unwrap();
+
+        input.validate().expect("no errors");
     }
 }
