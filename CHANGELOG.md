@@ -9,6 +9,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v3.0.0-beta.4 - 2023-06-04
+
 ### New Features
 
 - The `Enum` derive now supports fallback variants
