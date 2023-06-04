@@ -66,9 +66,9 @@ impl InlineFragmentsDeriveInput {
                     .into_iter()
                     .map(|f| {
                         syn::Error::new(
-                    f.span(),
-                    "InlineFragments only support a single fallback, but this enum has many",
-                )
+                            f.span(),
+                            "InlineFragments only support a single fallback, but this enum has many",
+                        )
                     })
                     .collect::<Vec<_>>(),
             );
@@ -126,8 +126,6 @@ impl InlineFragmentsDeriveVariant {
             darling::ast::Style::{Struct, Tuple, Unit},
             ValidationMode::{Interface, Union},
         };
-
-        if let Struct = self.fields.style {}
 
         if *self.fallback {
             match (mode, self.fields.style, self.fields.len()) {

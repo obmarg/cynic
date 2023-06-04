@@ -50,6 +50,20 @@ where
     Fragment: QueryFragment,
     Variables: QueryVariables,
 {
+    /// Constructs a new operation from a String & some variables.
+    ///
+    /// This is useful for certain testing cirumstances, but offers no typesafety.
+    /// [crate::QueryBuilder], [crate::MutationBuilder] and [crate::SubscriptionBuilder]
+    /// should be preferered.
+    pub fn new(query: String, variables: Variables) -> Self {
+        Operation {
+            query,
+            variables,
+            operation_name: None,
+            phantom: PhantomData,
+        }
+    }
+
     /// Constructs a new Operation for a query
     pub fn query(variables: Variables) -> Self
     where

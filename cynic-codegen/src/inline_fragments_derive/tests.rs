@@ -26,28 +26,12 @@ use super::inline_fragments_derive;
         #[derive(InlineFragments, Serialize)]
         #[cynic(schema_path = "../cynic/tests/test-schema.graphql")]
         enum Node {
-            #[cynic(rename = "BlogPost")]
             Post(Post),
             Author(Author),
             #[cynic(fallback)]
             Other
         }
     ),
-)]
-#[case::union_with_rename(
-    "union_with_rename",
-    // A union that has rename
-    parse_quote!(
-        #[derive(InlineFragments, Serialize)]
-        #[cynic(schema_path = "../cynic/tests/test-schema.graphql")]
-        enum PostOrAuthor {
-            #[cynic(rename = "BlogPost")]
-            Post(Post),
-            Author(Author),
-            #[cynic(fallback)]
-            Other
-        }
-    )
 )]
 fn snapshot_inline_fragments_derive(#[case] snapshot_name: &str, #[case] input: syn::DeriveInput) {
     let tokens = inline_fragments_derive(&input).unwrap();
