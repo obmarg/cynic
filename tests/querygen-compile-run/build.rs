@@ -4,29 +4,37 @@ use std::{
     path::{Path, PathBuf},
 };
 
+use indoc::writedoc;
+
 use cynic_querygen::{document_to_fragment_structs, QueryGenOptions};
 
 fn main() {
     let starwars_schema = Schema::from_repo_schemas(
+        "starwars",
         "https://swapi-graphql.netlify.app/.netlify/functions/index",
         "starwars.schema.graphql",
     );
-    let jobs_schema =
-        Schema::from_repo_schemas("https://api.graphql.jobs/", "graphql.jobs.graphql");
+    let jobs_schema = Schema::from_repo_schemas(
+        "graphql.jobs",
+        "https://api.graphql.jobs/",
+        "graphql.jobs.graphql",
+    );
     let github_schema =
-        Schema::from_repo_schemas("https://api.github.com/graphql", "github.graphql");
-    let book_schema = Schema::from_repo_schemas("https://example.com", "books.graphql");
+        Schema::from_repo_schemas("github", "https://api.github.com/graphql", "github.graphql");
+    let book_schema = Schema::from_repo_schemas("book", "https://example.com", "books.graphql");
 
-    let raindancer_schema = Schema::from_repo_schemas("https://example.com", "raindancer.graphql");
+    let raindancer_schema =
+        Schema::from_repo_schemas("raindancer", "https://example.com", "raindancer.graphql");
 
-    let test_schema = Schema::from_repo_schemas("https://example.com", "test_cases.graphql");
+    let test_schema =
+        Schema::from_repo_schemas("test-schema", "https://example.com", "test_cases.graphql");
 
     let cases = &[
         TestCase::query(
             &starwars_schema,
             "../../cynic-querygen/tests/queries/starwars/sanity.graphql",
-            r#"queries::SanityCheckQuery::build(
-                queries::SanityCheckQueryVariables {
+            r#"SanityCheckQuery::build(
+                SanityCheckQueryVariables {
                     film_id: Some((&String::from("ZmlsbXM6MQ==")).into())
                 }
             )"#,
@@ -34,8 +42,8 @@ fn main() {
         TestCase::query(
             &starwars_schema,
             "../../cynic-querygen/tests/queries/starwars/nested-arguments.graphql",
-            r#"queries::NestedArgsQuery::build(
-                queries::NestedArgsQueryVariables {
+            r#"NestedArgsQuery::build(
+                NestedArgsQueryVariables {
                     film_id: &"ZmlsbXM6MQ==".into(),
                     planet_cursor: None,
                     resident_connection: None
@@ -45,30 +53,30 @@ fn main() {
         TestCase::query(
             &starwars_schema,
             "../../cynic-querygen/tests/queries/starwars/bare-selection-set.graphql",
-            r#"queries::UnnamedQuery::build(())"#,
+            r#"UnnamedQuery::build(())"#,
         ),
         TestCase::query(
             &starwars_schema,
             "../../cynic-querygen/tests/queries/starwars/multiple-queries.graphql",
-            r#"queries::AllFilms::build(())"#,
+            r#"AllFilms::build(())"#,
         ),
         TestCase::query(
             &starwars_schema,
             "../../cynic-querygen/tests/queries/starwars/fragment-spreads.graphql",
-            r#"queries::AllFilms::build(())"#,
+            r#"AllFilms::build(())"#,
         ),
         TestCase::query_norun(
             &jobs_schema,
             "tests/queries/graphql.jobs/london-jobs.graphql",
-            r#"queries::Jobs::build(())"#,
+            r#"Jobs::build(())"#,
         ),
         TestCase::query_norun(
             &jobs_schema,
             "tests/queries/graphql.jobs/jobs.graphql",
-            r#"queries::Jobs::build(
-                queries::JobsVariables {
-                    input: queries::LocationInput {
-                        slug: "london".into()
+            r#"Jobs::build(
+                JobsVariables {
+                    input: LocationInput {
+                        slug: "london"
                     }
                 }
             )"#,
@@ -76,21 +84,20 @@ fn main() {
         TestCase::mutation(
             &github_schema,
             "../../cynic-querygen/tests/queries/github/add-comment-mutation.graphql",
-            r#"queries::CommentOnMutationSupportIssue::build(
-                queries::CommentOnMutationSupportIssueVariables {
+            r#"CommentOnMutationSupportIssue::build(
+                CommentOnMutationSupportIssueVariables {
                     comment_body: "This is a test comment, posted by the new cynic mutation support"
-                        .into(),
                 },
             )"#,
         ),
         TestCase::query_norun(
             &github_schema,
             "../../cynic-querygen/tests/queries/github/input-object-arguments.graphql",
-            r#"queries::PullRequestTitles::build(
-                queries::PullRequestTitlesVariables {
-                    pr_order: queries::IssueOrder {
-                        direction: queries::OrderDirection::Asc,
-                        field: queries::IssueOrderField::CreatedAt,
+            r#"PullRequestTitles::build(
+                PullRequestTitlesVariables {
+                    pr_order: IssueOrder {
+                        direction: OrderDirection::Asc,
+                        field: IssueOrderField::CreatedAt,
                     }
                 },
             )"#,
@@ -98,13 +105,13 @@ fn main() {
         TestCase::query_norun(
             &github_schema,
             "tests/queries/github/nested-arguments.graphql",
-            r#"queries::PullRequestTitles::build(
-                queries::PullRequestTitlesVariables {
+            r#"PullRequestTitles::build(
+                PullRequestTitlesVariables {
                     owner: "obmarg".into(),
                     repo: "cynic".into(),
-                    pr_order: queries::IssueOrder {
-                        direction: queries::OrderDirection::Asc,
-                        field: queries::IssueOrderField::CreatedAt,
+                    pr_order: IssueOrder {
+                        direction: OrderDirection::Asc,
+                        field: IssueOrderField::CreatedAt,
                     }
                 },
             )"#,
@@ -112,42 +119,42 @@ fn main() {
         TestCase::query_norun(
             &github_schema,
             "../../cynic-querygen/tests/queries/github/input-object-literals.graphql",
-            r#"queries::PullRequestTitles::build(())"#,
+            r#"PullRequestTitles::build(())"#,
         ),
         TestCase::query_norun(
             &test_schema,
             "../../cynic-querygen/tests/queries/misc/scalar-casing.graphql",
-            r#"queries::MyQuery::build(
-                queries::MyQueryVariables {
-                    id: queries::Uuid("not-really-a-uuid-but-whatever".into())
+            r#"MyQuery::build(
+                MyQueryVariables {
+                    id: Uuid("not-really-a-uuid-but-whatever".into())
                 }
             )"#,
         ),
         TestCase::query_norun(
             &github_schema,
             "../../cynic-querygen/tests/queries/github/queries-with-typename.graphql",
-            r#"queries::UnnamedQuery::build(())"#,
+            r#"UnnamedQuery::build(())"#,
         ),
         TestCase::mutation(
             &github_schema,
             "tests/queries/github/scalar-inside-input-object.graphql",
-            r#"queries::AddPRComment::build(
-                queries::AddPRCommentVariables {
+            r#"AddPRComment::build(
+                AddPRCommentVariables {
                     body: "hello!".into(),
-                    commit: queries::GitObjectID("abcd".into())
+                    commit: GitObjectID("abcd".into())
                 }
             )"#,
         ),
         TestCase::query_norun(
             &github_schema,
             "../../cynic-querygen/tests/queries/github/literal-enums.graphql",
-            r#"queries::RepoIssues::build(())"#,
+            r#"RepoIssues::build(())"#,
         ),
         TestCase::query_norun(
             &github_schema,
             "tests/queries/github/optional-input-object-argument.graphql",
-            r#"queries::PullRequestTitles::build(
-                queries::PullRequestTitlesVariables {
+            r#"PullRequestTitles::build(
+                PullRequestTitlesVariables {
                     pr_order: None
                 },
             )"#,
@@ -155,23 +162,23 @@ fn main() {
         TestCase::mutation(
             &raindancer_schema,
             "tests/queries/misc/mutation_with_scalar_result_and_input.graphql",
-            r#"queries::SignIn::build(
-                queries::SignInVariables {
-                    username: "hello".into(),
-                    password: "hello".into()
+            r#"SignIn::build(
+                SignInVariables {
+                    username: "hello",
+                    password: "hello"
                 },
             )"#,
         ),
         TestCase::query_norun(
             &github_schema,
             "tests/queries/github/inline-fragment-on-union.graphql",
-            r#"queries::IssueOrPR::build(())"#,
+            r#"IssueOrPR::build(())"#,
         ),
         TestCase::query_norun(
             &github_schema,
             "tests/queries/github/inline-fragment-with-arguments.graphql",
-            r#"queries::IssueOrPR::build(
-                queries::IssueOrPRVariables {
+            r#"IssueOrPR::build(
+                IssueOrPRVariables {
                     assignee_count: 10
                 }
             )"#,
@@ -179,17 +186,17 @@ fn main() {
         TestCase::subscription(
             &book_schema,
             "tests/queries/books/books.graphql",
-            r#"queries::BookSubscription::build(())"#,
+            r#"BookSubscription::build(())"#,
         ),
         TestCase::query_norun(
             &test_schema,
             "tests/queries/misc/keyword-argument.graphql",
-            r#"queries::KeywordArgumentQuery::build(())"#,
+            r#"KeywordArgumentQuery::build(())"#,
         ),
         TestCase::query_norun(
             &test_schema,
             "tests/queries/misc/recursive-inputs.graphql",
-            r#"queries::RecursiveInputQuery::build(queries::RecursiveInputQueryVariables {
+            r#"RecursiveInputQuery::build(RecursiveInputQueryVariables {
                 input: None,
                 input2: None
             })"#,
@@ -273,7 +280,7 @@ impl TestCase {
         let query = load_file(&self.query_path);
 
         let options = QueryGenOptions {
-            schema_path: self.schema.path_for_generated_code.to_str().unwrap().into(),
+            schema_name: Some(self.schema.schema_name.clone()),
             ..QueryGenOptions::default()
         };
         let query_code = document_to_fragment_structs(query, schema, &options).unwrap();
@@ -284,7 +291,7 @@ impl TestCase {
             path.file_name().unwrap().to_str().unwrap().to_owned()
         };
 
-        let mut file = File::create(format!("tests/generated/{}", test_filename)).unwrap();
+        let mut file = File::create(format!("tests/{}", test_filename)).unwrap();
 
         let norun_code = if self.should_run {
             ""
@@ -302,12 +309,13 @@ impl TestCase {
             )
         };
 
-        write!(
+        writedoc!(
             &mut file,
             r#"
             #![allow(unused_imports)]
 
-            fn main() {{
+            #[test]
+            fn generated_test() {{
                 {norun_code}
                 use cynic::{{QueryBuilder, MutationBuilder, SubscriptionBuilder}};
                 {run_code}
@@ -326,19 +334,29 @@ impl TestCase {
 #[derive(Clone, Debug)]
 struct Schema {
     query_url: String,
-    path_for_generated_code: PathBuf,
+    schema_name: String,
     path_for_loading: PathBuf,
 }
 
 impl Schema {
     /// Constructs a SchemaPath from the examples package
-    fn from_repo_schemas(query_url: impl Into<String>, path: impl Into<PathBuf>) -> Schema {
+    fn from_repo_schemas(
+        schema_name: impl Into<String>,
+        query_url: impl Into<String>,
+        path: impl Into<PathBuf>,
+    ) -> Schema {
         let schema_dir = PathBuf::from("../../schemas/");
         let path = schema_dir.join(path.into());
+        let schema_name = schema_name.into();
+
+        cynic_codegen::register_schema(&schema_name)
+            .from_sdl_file(&path)
+            .unwrap();
+
         Schema {
             query_url: query_url.into(),
-            path_for_loading: path.clone(),
-            path_for_generated_code: PathBuf::from("./../..").join(path),
+            path_for_loading: path,
+            schema_name,
         }
     }
 }

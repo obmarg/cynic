@@ -2,35 +2,23 @@
 source: cynic-querygen/tests/starwars-tests.rs
 expression: "document_to_fragment_structs(query, schema,\n        &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
 ---
-#[cynic::schema_for_derives(
-    file = r#"schema.graphql"#,
-    module = "schema",
-)]
-mod queries {
-    use super::schema;
-
-    #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "Root")]
-    pub struct UnnamedQuery {
-        pub all_films: Option<FilmsConnection>,
-    }
-
-    #[derive(cynic::QueryFragment, Debug)]
-    pub struct FilmsConnection {
-        pub films: Option<Vec<Option<Film>>>,
-    }
-
-    #[derive(cynic::QueryFragment, Debug)]
-    pub struct Film {
-        pub id: cynic::Id,
-        pub title: Option<String>,
-    }
-
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(graphql_type = "Root")]
+pub struct UnnamedQuery {
+    pub all_films: Option<FilmsConnection>,
 }
 
-#[allow(non_snake_case, non_camel_case_types)]
-mod schema {
-    cynic::use_schema!(r#"schema.graphql"#);
+#[derive(cynic::QueryFragment, Debug)]
+pub struct FilmsConnection {
+    pub films: Option<Vec<Option<Film>>>,
 }
 
+#[derive(cynic::QueryFragment, Debug)]
+pub struct Film {
+    pub id: cynic::Id,
+    pub title: Option<String>,
+}
+
+#[cynic::schema]
+mod schema {}
 

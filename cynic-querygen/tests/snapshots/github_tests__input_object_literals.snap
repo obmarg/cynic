@@ -2,41 +2,29 @@
 source: cynic-querygen/tests/github-tests.rs
 expression: "document_to_fragment_structs(query, schema,\n        &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
 ---
-#[cynic::schema_for_derives(
-    file = r#"schema.graphql"#,
-    module = "schema",
-)]
-mod queries {
-    use super::schema;
-
-    #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "Query")]
-    pub struct PullRequestTitles {
-        #[arguments(name: "cynic", owner: "obmarg")]
-        pub repository: Option<Repository>,
-    }
-
-    #[derive(cynic::QueryFragment, Debug)]
-    pub struct Repository {
-        #[arguments(orderBy: { direction: "ASC", field: "CREATED_AT" })]
-        pub pull_requests: PullRequestConnection,
-    }
-
-    #[derive(cynic::QueryFragment, Debug)]
-    pub struct PullRequestConnection {
-        pub nodes: Option<Vec<Option<PullRequest>>>,
-    }
-
-    #[derive(cynic::QueryFragment, Debug)]
-    pub struct PullRequest {
-        pub title: String,
-    }
-
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(graphql_type = "Query")]
+pub struct PullRequestTitles {
+    #[arguments(name: "cynic", owner: "obmarg")]
+    pub repository: Option<Repository>,
 }
 
-#[allow(non_snake_case, non_camel_case_types)]
-mod schema {
-    cynic::use_schema!(r#"schema.graphql"#);
+#[derive(cynic::QueryFragment, Debug)]
+pub struct Repository {
+    #[arguments(orderBy: { direction: "ASC", field: "CREATED_AT" })]
+    pub pull_requests: PullRequestConnection,
 }
 
+#[derive(cynic::QueryFragment, Debug)]
+pub struct PullRequestConnection {
+    pub nodes: Option<Vec<Option<PullRequest>>>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+pub struct PullRequest {
+    pub title: String,
+}
+
+#[cynic::schema]
+mod schema {}
 

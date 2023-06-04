@@ -36,6 +36,7 @@ impl Id {
     /// If you don't have a `String` at hand but only an `&str`, you should know
     /// that these can be used directly in `InputObject`s as well when the
     /// target GraphQL type is an `Id`.
+    #[allow(clippy::ptr_arg)]
     pub fn from_ref(s: &String) -> &Self {
         // Unfortunately this won't work with `&str`
 

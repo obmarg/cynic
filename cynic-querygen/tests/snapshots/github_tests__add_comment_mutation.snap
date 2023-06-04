@@ -2,45 +2,33 @@
 source: cynic-querygen/tests/github-tests.rs
 expression: "document_to_fragment_structs(query, schema,\n        &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
 ---
-#[cynic::schema_for_derives(
-    file = r#"schema.graphql"#,
-    module = "schema",
-)]
-mod queries {
-    use super::schema;
-
-    #[derive(cynic::QueryVariables, Debug)]
-    pub struct CommentOnMutationSupportIssueVariables<'a> {
-        pub comment_body: &'a str,
-    }
-
-    #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "Mutation", variables = "CommentOnMutationSupportIssueVariables")]
-    pub struct CommentOnMutationSupportIssue {
-        #[arguments(input: { body: $comment_body, subjectId: "MDU6SXNzdWU2ODU4NzUxMzQ=" })]
-        pub add_comment: Option<AddCommentPayload>,
-    }
-
-    #[derive(cynic::QueryFragment, Debug)]
-    pub struct AddCommentPayload {
-        pub comment_edge: Option<IssueCommentEdge>,
-    }
-
-    #[derive(cynic::QueryFragment, Debug)]
-    pub struct IssueCommentEdge {
-        pub node: Option<IssueComment>,
-    }
-
-    #[derive(cynic::QueryFragment, Debug)]
-    pub struct IssueComment {
-        pub id: cynic::Id,
-    }
-
+#[derive(cynic::QueryVariables, Debug)]
+pub struct CommentOnMutationSupportIssueVariables<'a> {
+    pub comment_body: &'a str,
 }
 
-#[allow(non_snake_case, non_camel_case_types)]
-mod schema {
-    cynic::use_schema!(r#"schema.graphql"#);
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(graphql_type = "Mutation", variables = "CommentOnMutationSupportIssueVariables")]
+pub struct CommentOnMutationSupportIssue {
+    #[arguments(input: { body: $comment_body, subjectId: "MDU6SXNzdWU2ODU4NzUxMzQ=" })]
+    pub add_comment: Option<AddCommentPayload>,
 }
 
+#[derive(cynic::QueryFragment, Debug)]
+pub struct AddCommentPayload {
+    pub comment_edge: Option<IssueCommentEdge>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+pub struct IssueCommentEdge {
+    pub node: Option<IssueComment>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+pub struct IssueComment {
+    pub id: cynic::Id,
+}
+
+#[cynic::schema]
+mod schema {}
 

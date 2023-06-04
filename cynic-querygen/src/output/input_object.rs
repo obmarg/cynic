@@ -1,6 +1,6 @@
 use std::fmt::Write;
 
-use crate::{casings::CasingExt, schema};
+use crate::{casings::CasingExt, output::attr_output::Attributes, schema};
 
 use super::indented;
 
@@ -8,6 +8,7 @@ use super::indented;
 pub struct InputObject<'schema> {
     pub name: String,
     pub fields: Vec<InputObjectField<'schema>>,
+    pub schema_name: Option<String>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -19,9 +20,18 @@ pub struct InputObjectField<'schema> {
 impl std::fmt::Display for InputObject<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         writeln!(f, "#[derive(cynic::InputObject, Debug)]")?;
-        if self.name != self.name.to_pascal_case() {
-            writeln!(f, "#[cynic(graphql_type = \"{}\")]", self.name)?;
+
+        let type_name = &self.name;
+
+        let mut attributes = Attributes::new("cynic");
+        if *type_name != type_name.to_pascal_case() {
+            attributes.push(format!("graphql_type = \"{type_name}\""));
         }
+        if let Some(schema_name) = &self.schema_name {
+            attributes.push(format!("schema = \"{schema_name}\""));
+        }
+
+        write!(f, "{attributes}")?;
         writeln!(
             f,
             "pub struct {}{} {{",

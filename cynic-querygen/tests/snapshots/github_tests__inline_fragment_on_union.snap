@@ -2,55 +2,43 @@
 source: cynic-querygen/tests/github-tests.rs
 expression: "document_to_fragment_structs(query, schema,\n        &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
 ---
-#[cynic::schema_for_derives(
-    file = r#"schema.graphql"#,
-    module = "schema",
-)]
-mod queries {
-    use super::schema;
-
-    #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "Query")]
-    pub struct UnnamedQuery {
-        #[arguments(owner: "obmarg", name: "cynic")]
-        pub repository: Option<Repository>,
-    }
-
-    #[derive(cynic::QueryFragment, Debug)]
-    pub struct Repository {
-        #[arguments(number: 1)]
-        pub issue_or_pull_request: Option<IssueOrPullRequest>,
-    }
-
-    #[derive(cynic::QueryFragment, Debug)]
-    pub struct PullRequest {
-        pub id: cynic::Id,
-        pub title: String,
-    }
-
-    #[derive(cynic::QueryFragment, Debug)]
-    pub struct Issue {
-        pub id: cynic::Id,
-        pub title: String,
-        pub last_edited_at: Option<DateTime>,
-    }
-
-    #[derive(cynic::InlineFragments, Debug)]
-    pub enum IssueOrPullRequest {
-        Issue(Issue),
-        PullRequest(PullRequest),
-        #[cynic(fallback)]
-        Unknown
-    }
-
-    #[derive(cynic::Scalar, Debug, Clone)]
-    pub struct DateTime(pub String);
-
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(graphql_type = "Query")]
+pub struct UnnamedQuery {
+    #[arguments(owner: "obmarg", name: "cynic")]
+    pub repository: Option<Repository>,
 }
 
-#[allow(non_snake_case, non_camel_case_types)]
-mod schema {
-    cynic::use_schema!(r#"schema.graphql"#);
+#[derive(cynic::QueryFragment, Debug)]
+pub struct Repository {
+    #[arguments(number: 1)]
+    pub issue_or_pull_request: Option<IssueOrPullRequest>,
 }
 
+#[derive(cynic::QueryFragment, Debug)]
+pub struct PullRequest {
+    pub id: cynic::Id,
+    pub title: String,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+pub struct Issue {
+    pub id: cynic::Id,
+    pub title: String,
+    pub last_edited_at: Option<DateTime>,
+}
+
+#[derive(cynic::InlineFragments, Debug)]
+pub enum IssueOrPullRequest {
+    Issue(Issue),
+    PullRequest(PullRequest),
+    #[cynic(fallback)]
+    Unknown
+}
+
+#[derive(cynic::Scalar, Debug, Clone)]
+pub struct DateTime(pub String);
+
+#[cynic::schema]
+mod schema {}
 

@@ -2,30 +2,18 @@
 source: cynic-querygen/tests/misc-tests.rs
 expression: "document_to_fragment_structs(query, schema,\n        &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
 ---
-#[cynic::schema_for_derives(
-    file = r#"schema.graphql"#,
-    module = "schema",
-)]
-mod queries {
-    use super::schema;
-
-    #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "Foo")]
-    pub struct UnnamedQuery {
-        #[arguments(input: r#"Hello
-         There"#)]
-        #[cynic(rename = "fieldWithStringArg")]
-        pub one: Option<i32>,
-        #[arguments(input: r#"Hello " I am a string with quotes"#)]
-        #[cynic(rename = "fieldWithStringArg")]
-        pub two: Option<i32>,
-    }
-
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(graphql_type = "Foo")]
+pub struct UnnamedQuery {
+    #[arguments(input: r#"Hello
+     There"#)]
+    #[cynic(rename = "fieldWithStringArg")]
+    pub one: Option<i32>,
+    #[arguments(input: r#"Hello " I am a string with quotes"#)]
+    #[cynic(rename = "fieldWithStringArg")]
+    pub two: Option<i32>,
 }
 
-#[allow(non_snake_case, non_camel_case_types)]
-mod schema {
-    cynic::use_schema!(r#"schema.graphql"#);
-}
-
+#[cynic::schema]
+mod schema {}
 

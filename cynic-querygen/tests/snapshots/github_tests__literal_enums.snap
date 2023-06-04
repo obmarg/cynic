@@ -2,48 +2,36 @@
 source: cynic-querygen/tests/github-tests.rs
 expression: "document_to_fragment_structs(query, schema,\n        &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
 ---
-#[cynic::schema_for_derives(
-    file = r#"schema.graphql"#,
-    module = "schema",
-)]
-mod queries {
-    use super::schema;
-
-    #[derive(cynic::QueryFragment, Debug)]
-    #[cynic(graphql_type = "Query")]
-    pub struct RepoIssues {
-        #[arguments(owner: "obmarg", name: "cynic")]
-        pub repository: Option<Repository>,
-    }
-
-    #[derive(cynic::QueryFragment, Debug)]
-    pub struct Repository {
-        #[arguments(states: "OPEN", first: 10)]
-        pub issues: IssueConnection,
-    }
-
-    #[derive(cynic::QueryFragment, Debug)]
-    pub struct IssueConnection {
-        pub nodes: Option<Vec<Option<Issue>>>,
-    }
-
-    #[derive(cynic::QueryFragment, Debug)]
-    pub struct Issue {
-        pub title: String,
-        pub state: IssueState,
-    }
-
-    #[derive(cynic::Enum, Clone, Copy, Debug)]
-    pub enum IssueState {
-        Closed,
-        Open,
-    }
-
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(graphql_type = "Query")]
+pub struct RepoIssues {
+    #[arguments(owner: "obmarg", name: "cynic")]
+    pub repository: Option<Repository>,
 }
 
-#[allow(non_snake_case, non_camel_case_types)]
-mod schema {
-    cynic::use_schema!(r#"schema.graphql"#);
+#[derive(cynic::QueryFragment, Debug)]
+pub struct Repository {
+    #[arguments(states: "OPEN", first: 10)]
+    pub issues: IssueConnection,
 }
 
+#[derive(cynic::QueryFragment, Debug)]
+pub struct IssueConnection {
+    pub nodes: Option<Vec<Option<Issue>>>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+pub struct Issue {
+    pub title: String,
+    pub state: IssueState,
+}
+
+#[derive(cynic::Enum, Clone, Copy, Debug)]
+pub enum IssueState {
+    Closed,
+    Open,
+}
+
+#[cynic::schema]
+mod schema {}
 
