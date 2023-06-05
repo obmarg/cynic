@@ -710,6 +710,7 @@ dependencies = [
  "assert_matches",
  "chrono",
  "cynic-proc-macros",
+ "graphql-parser",
  "insta",
  "maplit",
  "ref-cast",

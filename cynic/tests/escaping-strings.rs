@@ -17,11 +17,13 @@ fn test_quotes_in_string() {
         field_with_string: i32,
     }
 
-    let query = Query::build(());
+    let operation = Query::build(());
 
-    insta::assert_display_snapshot!(query.query, @r###"
+    graphql_parser::parse_query::<'_, String>(&operation.query).expect("a parsable query");
+
+    insta::assert_display_snapshot!(operation.query, @r###"
     query Query {
-      fieldWithString(input: """Hello "Graeme"""")
+      fieldWithString(input: "Hello \"Graeme\"")
     }
 
     "###);
@@ -35,17 +37,17 @@ fn test_newlines_in_string() {
     #[cynic(schema_path = "tests/test-schema.graphql")]
     struct Query {
         #[allow(dead_code)]
-        #[arguments(input: "I am a string with \nnew\nlines")]
+        #[arguments(input: "I am a string with \nnew\nlines\r\tand tabs")]
         field_with_string: i32,
     }
 
-    let query = Query::build(());
+    let operation = Query::build(());
 
-    insta::assert_display_snapshot!(query.query, @r###"
+    graphql_parser::parse_query::<'_, String>(&operation.query).expect("a parsable query");
+
+    insta::assert_display_snapshot!(operation.query, @r###"
     query Query {
-      fieldWithString(input: """I am a string with 
-      new
-      lines""")
+      fieldWithString(input: "I am a string with \nnew\nlines\r\tand tabs")
     }
 
     "###);
@@ -63,11 +65,37 @@ fn test_unicode_in_string() {
         field_with_string: i32,
     }
 
-    let query = Query::build(());
+    let operation = Query::build(());
 
-    insta::assert_display_snapshot!(query.query, @r###"
+    graphql_parser::parse_query::<'_, String>(&operation.query).expect("a parsable query");
+
+    insta::assert_display_snapshot!(operation.query, @r###"
     query Query {
-      fieldWithString(input: """I am a 😎 string""")
+      fieldWithString(input: "I am a 😎 string")
+    }
+
+    "###);
+}
+
+#[test]
+fn test_adverserial_block_strings() {
+    use cynic::QueryBuilder;
+
+    #[derive(cynic::QueryFragment)]
+    #[cynic(schema_path = "tests/test-schema.graphql")]
+    struct Query {
+        #[allow(dead_code)]
+        #[arguments(input: r#"I am a 😎 string""#)]
+        field_with_string: i32,
+    }
+
+    let operation = Query::build(());
+
+    graphql_parser::parse_query::<'_, String>(&operation.query).expect("a parsable query");
+
+    insta::assert_display_snapshot!(operation.query, @r###"
+    query Query {
+      fieldWithString(input: "I am a 😎 string\"")
     }
 
     "###);

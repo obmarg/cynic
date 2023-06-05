@@ -9,6 +9,10 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+### Bug Fixes
+
+- Fixed some more corner cases in string literal escaping
+
 ## v3.0.0 - 2023-06-04
 
 See the [upgrade guide in the book](https://cynic-rs.dev/upgrading/v2-v3.html)

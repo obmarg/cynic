@@ -154,12 +154,8 @@ impl std::fmt::Display for InputLiteral {
             InputLiteral::Int(val) => write!(f, "{}", val),
             InputLiteral::Float(val) => write!(f, "{}", val),
             InputLiteral::Bool(val) => write!(f, "{}", val),
-            InputLiteral::String(val) if requires_block_string(val) => {
-                write!(f, "\"\"\"")?;
-                write!(f, "{val}")?;
-                write!(f, "\"\"\"")
-            }
             InputLiteral::String(val) => {
+                let val = escape_string(val);
                 write!(f, "\"{val}\"")
             }
             InputLiteral::Id(val) => write!(f, "\"{}\"", val),
@@ -190,8 +186,20 @@ impl std::fmt::Display for InputLiteral {
     }
 }
 
-fn requires_block_string(string: &str) -> bool {
-    string
-        .chars()
-        .any(|c| !c.is_ascii() || c.is_ascii_control() || c == '"')
+fn escape_string(src: &str) -> String {
+    let mut dest = String::with_capacity(src.len());
+
+    for character in src.chars() {
+        match character {
+            '"' | '\\' | '\n' | '\r' | '\t' => {
+                dest.extend(character.escape_default());
+            }
+            other if other.is_control() => {
+                dest.extend(character.escape_default());
+            }
+            _ => dest.push(character),
+        }
+    }
+
+    dest
 }
