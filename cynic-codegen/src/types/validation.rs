@@ -160,9 +160,6 @@ fn input_type_check<'a>(
         (TypeRef::Nullable(inner_gql), RustType::Optional { inner, .. }) => {
             input_type_check(inner_gql, false, inner.as_ref())
         }
-        (TypeRef::Nullable(_), RustType::Unknown { .. }) => Err(TypeValidationError::UnknownType {
-            span: rust_type.span(),
-        }),
         (TypeRef::Nullable(inner_gql), _) => {
             // For input types its fine if a field isn't actually optional.
             // We just need to check that the inner types line up.
@@ -708,9 +705,9 @@ mod tests {
             call_input_type_check(
                 &option_list_option,
                 false,
-                &syn::parse2(quote! { Option<DateTime<Vec<Option<i32>>>> }).unwrap(),
+                &syn::parse2(quote! { Option<Vec<Inner<'a>>> }).unwrap(),
             ),
-            Err(TypeValidationError::UnknownType { .. })
+            Ok(())
         );
     }
 

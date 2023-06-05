@@ -23,4 +23,3 @@ proc-macro = true
 cynic-codegen = { path = "../cynic-codegen", version = "3.0.0" }
 quote = "1"
 syn = "1.0.87"
-proc-macro2 = "1"
