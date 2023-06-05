@@ -29,10 +29,10 @@ pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
         .map_err(|e| e.into_syn_error(proc_macro2::Span::call_site()))?;
 
     let schema = Schema::new(input).validate()?;
-    use_schema_impl(schema)
+    use_schema_impl(&schema)
 }
 
-pub(crate) fn use_schema_impl(schema: Schema<'_, Validated>) -> Result<TokenStream, Errors> {
+pub(crate) fn use_schema_impl(schema: &Schema<'_, Validated>) -> Result<TokenStream, Errors> {
     use quote::TokenStreamExt;
 
     let mut output = TokenStream::new();
