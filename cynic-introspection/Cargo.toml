@@ -19,7 +19,7 @@ thiserror = "1"
 
 [dependencies.cynic]
 path = "../cynic"
-version = "3.0.0"
+version = "3"
 
 [dev-dependencies]
 assert_matches = "1.4"
@@ -29,9 +29,9 @@ reqwest = "0.11"
 
 [dev-dependencies.cynic]
 path = "../cynic"
-version = "3.0.0"
+version = "3"
 features = ["http-reqwest-blocking"]
 
 [build-dependencies.cynic-codegen]
 path = "../cynic-codegen"
-version = "3.0.0"
+version = "3"

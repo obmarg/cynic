@@ -9,6 +9,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v3.0.1 - 2023-06-06
+
 ### Bug Fixes
 
 - Fixed some more corner cases in string literal escaping
