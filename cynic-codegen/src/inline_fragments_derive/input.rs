@@ -14,6 +14,9 @@ pub struct InlineFragmentsDeriveInput {
     #[darling(default)]
     schema_path: Option<SpannedValue<String>>,
 
+    #[darling(default)]
+    pub(super) exhaustive: Option<SpannedValue<bool>>,
+
     #[darling(default, rename = "schema_module")]
     schema_module_: Option<syn::Path>,
 
@@ -79,6 +82,16 @@ impl InlineFragmentsDeriveInput {
                 .iter()
                 .filter_map(|v| v.validate(mode, v.span()).err()),
         );
+
+        match (mode, &self.exhaustive) {
+            (ValidationMode::Interface, Some(exhaustive)) if **exhaustive => {
+                errors.push(syn::Error::new(
+                    exhaustive.span(),
+                    "exhaustiveness checking is only supported on graphql unions",
+                ));
+            }
+            _ => {}
+        }
 
         errors.into_result(())
     }

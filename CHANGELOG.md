@@ -9,6 +9,12 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+### New Features
+
+- Added an `exhaustive` attribute for `InlineFragments` on union types. If
+  present this attribute will cause compile errors if the enum is missing a
+  variant for any union member.
+
 ### Bug Fixes
 
 - The generator no longer outputs a broken `#[cynic::schema]` module.
@@ -20,6 +26,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ### Bug Fixes
 
 - Fix `Variable` definition for `Vec<T>` in `#[cynic::schema]` output.
+
 
 ## v3.0.1 - 2023-06-06
 
@@ -85,7 +92,6 @@ for help upgrading.
 
 - Removed the deprecated `FragmentArguments` derive.
 - Removed the deprecated `arugment_struct` attribute.
-
 
 ## v2.2.8 - 2023-03-01
 
