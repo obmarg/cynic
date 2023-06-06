@@ -4,7 +4,9 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use crate::schema::{Schema, SchemaInput};
+use once_cell::unsync::OnceCell;
+
+use crate::schema::{self, Schema, SchemaInput};
 
 /// Registers a schema with cynic-codegen with the given name
 ///
@@ -51,6 +53,7 @@ impl<'a> SchemaRegistrationBuilder<'a> {
             let registration = SchemaRegistration {
                 name,
                 data: Cow::Owned(data),
+                schema: OnceCell::default(),
             };
             registration.write(registration.filename()?)?;
             registration.write_schema_module()?;
@@ -66,6 +69,7 @@ impl<'a> SchemaRegistrationBuilder<'a> {
         let registration = SchemaRegistration {
             name,
             data: Cow::Borrowed(sdl),
+            schema: OnceCell::default(),
         };
         registration.write(registration.filename()?)?;
         registration.write_schema_module()?;
@@ -79,6 +83,7 @@ impl<'a> SchemaRegistrationBuilder<'a> {
 pub struct SchemaRegistration<'a> {
     name: &'a str,
     data: Cow<'a, str>,
+    schema: OnceCell<Schema<'a, schema::Validated>>,
 }
 
 // Public API
@@ -104,15 +109,7 @@ impl SchemaRegistration<'_> {
         {
             filename.set_extension("rkyv");
 
-            let document = crate::schema::load_schema(self.data.as_ref())
-                .map_err(|error| SchemaRegistrationError::SchemaErrors(error.to_string()))?
-                .into_static();
-
-            let schema = Schema::new(SchemaInput::Document(document))
-                .validate()
-                .map_err(|errors| SchemaRegistrationError::SchemaErrors(errors.to_string()))?;
-
-            let optimised = schema.optimise();
+            let optimised = self.schema()?.optimise();
             let bytes = rkyv::to_bytes::<_, 4096>(&optimised).unwrap();
 
             Ok(std::fs::write(filename, &bytes)?)
@@ -127,15 +124,7 @@ impl SchemaRegistration<'_> {
     fn write_schema_module(&self) -> Result<(), SchemaRegistrationError> {
         use crate::use_schema::use_schema_impl;
 
-        let document = crate::schema::load_schema(self.data.as_ref())
-            .map_err(|error| SchemaRegistrationError::SchemaErrors(error.to_string()))?
-            .into_static();
-
-        let schema = Schema::new(SchemaInput::Document(document))
-            .validate()
-            .map_err(|errors| SchemaRegistrationError::SchemaErrors(errors.to_string()))?;
-
-        let tokens = use_schema_impl(schema)
+        let tokens = use_schema_impl(self.schema()?)
             .map_err(|errors| SchemaRegistrationError::SchemaErrors(errors.to_string()))?;
 
         let schema_module_filename = schema_module_filename(self.name, &out_dir()?);
@@ -154,6 +143,20 @@ impl SchemaRegistration<'_> {
     fn filename(&self) -> Result<PathBuf, SchemaRegistrationError> {
         let out_dir = out_dir()?;
         Ok(registration_filename(self.name, &out_dir))
+    }
+
+    fn schema(&self) -> Result<&Schema<'_, schema::Validated>, SchemaRegistrationError> {
+        self.schema.get_or_try_init(|| {
+            let document = crate::schema::load_schema(self.data.as_ref())
+                .map_err(|error| SchemaRegistrationError::SchemaErrors(error.to_string()))?
+                .into_static();
+
+            let schema = Schema::new(SchemaInput::Document(document))
+                .validate()
+                .map_err(|errors| SchemaRegistrationError::SchemaErrors(errors.to_string()))?;
+
+            Ok(schema)
+        })
     }
 }
 

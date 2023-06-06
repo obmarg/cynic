@@ -12,6 +12,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ### Bug Fixes
 
 - Fixed some more corner cases in string literal escaping
+- Schema registration no longer parses schemas twice when rkyv is enabled.
 
 ## v3.0.0 - 2023-06-04
 
