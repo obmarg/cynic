@@ -18,6 +18,4 @@ pub struct Person {
     pub mass: Option<f64>,
 }
 
-#[cynic::schema]
-mod schema {}
 

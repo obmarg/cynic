@@ -50,6 +50,4 @@ pub struct IssueOrder {
     pub field: IssueOrderField,
 }
 
-#[cynic::schema]
-mod schema {}
 

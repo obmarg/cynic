@@ -62,6 +62,4 @@ pub enum IssueState {
     Open,
 }
 
-#[cynic::schema("my-schema")]
-mod schema {}
 

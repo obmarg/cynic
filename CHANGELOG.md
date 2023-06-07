@@ -9,6 +9,10 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+### Bug Fixes
+
+- The generator no longer outputs a broken `#[cynic::schema]` module.
+
 ## v3.0.2 - 2023-06-07
 
 ### Bug Fixes

@@ -165,15 +165,6 @@ pub fn document_to_fragment_structs(
         writeln!(output, "{}", scalar).unwrap();
     }
 
-    let schema_module_name = &options.schema_module_name;
-
-    write!(output, "#[cynic::schema").unwrap();
-    if let Some(name) = &options.schema_name {
-        write!(output, r#"("{name}")"#).unwrap();
-    }
-    writeln!(output, "]").unwrap();
-    writeln!(output, "mod {schema_module_name} {{}}").unwrap();
-
     Ok(output)
 }
 

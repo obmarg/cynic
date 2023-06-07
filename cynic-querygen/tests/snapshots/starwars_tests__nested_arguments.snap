@@ -48,6 +48,4 @@ pub struct Person {
     pub name: Option<String>,
 }
 
-#[cynic::schema]
-mod schema {}
 

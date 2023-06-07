@@ -25,6 +25,4 @@ pub struct PullRequest {
     pub title: String,
 }
 
-#[cynic::schema]
-mod schema {}
 

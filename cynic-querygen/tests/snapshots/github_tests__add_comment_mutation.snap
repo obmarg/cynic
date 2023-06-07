@@ -29,6 +29,4 @@ pub struct IssueComment {
     pub id: cynic::Id,
 }
 
-#[cynic::schema]
-mod schema {}
 

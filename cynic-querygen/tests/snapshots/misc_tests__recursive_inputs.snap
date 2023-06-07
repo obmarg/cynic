@@ -30,6 +30,4 @@ pub struct RecursiveInputChild {
     pub recurse: Option<Box<RecursiveInputParent>>,
 }
 
-#[cynic::schema]
-mod schema {}
 

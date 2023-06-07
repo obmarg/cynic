@@ -29,6 +29,4 @@ pub enum MutationType {
     Deleted,
 }
 
-#[cynic::schema]
-mod schema {}
 
