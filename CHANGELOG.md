@@ -9,6 +9,10 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+### Bug Fixes
+
+- Fix `Variable` definition for `Vec<T>` in `#[cynic::schema]` output.
+
 ## v3.0.1 - 2023-06-06
 
 ### Bug Fixes

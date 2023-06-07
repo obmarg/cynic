@@ -146,7 +146,7 @@ pub(crate) fn use_schema_impl(schema: &Schema<'_, Validated>) -> Result<TokenStr
             where
                 T: Variable,
             {
-                const TYPE: VariableType = <Vec<T> as Variable>::TYPE;
+                const TYPE: VariableType = VariableType::List(&T::TYPE);
             }
 
             impl<T> Variable for Box<T>

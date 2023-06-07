@@ -225,7 +225,7 @@ pub mod variable {
     where
         T: Variable,
     {
-        const TYPE: VariableType = <Vec<T> as Variable>::TYPE;
+        const TYPE: VariableType = VariableType::List(&T::TYPE);
     }
     impl<T> Variable for Box<T>
     where
