@@ -322,10 +322,14 @@ impl TestCase {
             }}
 
             {query_code}
+
+            #[cynic::schema("{schema_name}")]
+            mod schema {{}}
             "#,
             norun_code = norun_code,
             query_code = query_code,
-            run_code = run_code
+            run_code = run_code,
+            schema_name = self.schema.schema_name
         )
         .unwrap();
     }

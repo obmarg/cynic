@@ -15,6 +15,4 @@ pub struct SignIn {
     pub sign_in: String,
 }
 
-#[cynic::schema]
-mod schema {}
 

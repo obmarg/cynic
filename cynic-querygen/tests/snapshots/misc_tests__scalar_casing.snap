@@ -24,6 +24,4 @@ pub struct Bar {
 #[cynic(graphql_type = "UUID")]
 pub struct Uuid(pub String);
 
-#[cynic::schema]
-mod schema {}
 

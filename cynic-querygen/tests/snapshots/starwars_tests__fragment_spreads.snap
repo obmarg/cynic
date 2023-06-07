@@ -21,6 +21,4 @@ pub struct Film {
     pub title: Option<String>,
 }
 
-#[cynic::schema]
-mod schema {}
 

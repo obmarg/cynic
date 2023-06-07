@@ -37,6 +37,4 @@ pub struct InputType {
 #[cynic(graphql_type = "my_scalar")]
 pub struct MyScalar(pub String);
 
-#[cynic::schema]
-mod schema {}
 

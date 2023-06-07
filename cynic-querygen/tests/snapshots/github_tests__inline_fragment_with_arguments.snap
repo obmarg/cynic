@@ -53,6 +53,4 @@ pub enum IssueOrPullRequest {
     Unknown
 }
 
-#[cynic::schema]
-mod schema {}
 

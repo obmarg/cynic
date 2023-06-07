@@ -39,6 +39,4 @@ pub enum IssueOrPullRequest {
 #[derive(cynic::Scalar, Debug, Clone)]
 pub struct DateTime(pub String);
 
-#[cynic::schema]
-mod schema {}
 

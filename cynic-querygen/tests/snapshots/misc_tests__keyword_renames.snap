@@ -17,6 +17,4 @@ pub struct KeywordRenames {
     pub async_: Option<bool>,
 }
 
-#[cynic::schema]
-mod schema {}
 

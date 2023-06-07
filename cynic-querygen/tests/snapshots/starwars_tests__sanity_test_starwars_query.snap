@@ -20,6 +20,4 @@ pub struct Film {
     pub director: Option<String>,
 }
 
-#[cynic::schema]
-mod schema {}
 
