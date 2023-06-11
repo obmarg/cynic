@@ -16,7 +16,10 @@ use crate::schema::{self, Schema, SchemaInput};
 ///
 /// This is designed to be called from `build.rs`
 pub fn register_schema(name: &str) -> SchemaRegistrationBuilder<'_> {
-    SchemaRegistrationBuilder { name }
+    SchemaRegistrationBuilder {
+        name,
+        dry_run: false,
+    }
 }
 
 #[derive(thiserror::Error, Debug)]
@@ -36,6 +39,7 @@ pub enum SchemaRegistrationError {
 /// Call one of the methods on this type to provide the schema details
 pub struct SchemaRegistrationBuilder<'a> {
     name: &'a str,
+    dry_run: bool,
 }
 
 impl<'a> SchemaRegistrationBuilder<'a> {
@@ -44,36 +48,47 @@ impl<'a> SchemaRegistrationBuilder<'a> {
         self,
         path: impl AsRef<std::path::Path>,
     ) -> Result<SchemaRegistration<'a>, SchemaRegistrationError> {
-        let SchemaRegistrationBuilder { name } = self;
+        let SchemaRegistrationBuilder { name, dry_run } = self;
         fn inner<'a>(
             name: &'a str,
             path: &Path,
+            dry_run: bool,
         ) -> Result<SchemaRegistration<'a>, SchemaRegistrationError> {
             let data = std::fs::read_to_string(path)?;
             let registration = SchemaRegistration {
                 name,
                 data: Cow::Owned(data),
                 schema: OnceCell::default(),
+                dry_run,
             };
             registration.write(registration.filename()?)?;
             registration.write_schema_module()?;
             cargo_rerun_if_changed(path.as_os_str().to_str().expect("utf8 paths"));
             Ok(registration)
         }
-        inner(name, path.as_ref())
+
+        inner(name, path.as_ref(), dry_run)
     }
 
     /// Registers a schema from a string of SDL
     pub fn from_sdl(self, sdl: &'a str) -> Result<SchemaRegistration<'a>, SchemaRegistrationError> {
-        let SchemaRegistrationBuilder { name } = self;
+        let SchemaRegistrationBuilder { name, dry_run } = self;
         let registration = SchemaRegistration {
             name,
             data: Cow::Borrowed(sdl),
             schema: OnceCell::default(),
+            dry_run,
         };
         registration.write(registration.filename()?)?;
         registration.write_schema_module()?;
         Ok(registration)
+    }
+
+    #[doc(hidden)]
+    /// Function for benchmarks that prevents files being written
+    pub fn dry_run(mut self) -> Self {
+        self.dry_run = true;
+        self
     }
 }
 
@@ -84,6 +99,7 @@ pub struct SchemaRegistration<'a> {
     name: &'a str,
     data: Cow<'a, str>,
     schema: OnceCell<Schema<'a, schema::Validated>>,
+    dry_run: bool,
 }
 
 // Public API
@@ -96,6 +112,9 @@ impl SchemaRegistration<'_> {
     /// You should only call this once per crate - any subsequent calls will overwrite
     /// the default.
     pub fn as_default(self) -> Result<Self, SchemaRegistrationError> {
+        if self.dry_run {
+            return Ok(self);
+        }
         self.write(default_filename(&out_dir()?))?;
         Ok(self)
     }
@@ -104,6 +123,9 @@ impl SchemaRegistration<'_> {
 // Private API
 impl SchemaRegistration<'_> {
     fn write(&self, mut filename: PathBuf) -> Result<(), SchemaRegistrationError> {
+        if self.dry_run {
+            return Ok(());
+        }
         std::fs::create_dir_all(filename.parent().expect("filename to have a parent"))?;
         #[cfg(feature = "rkyv")]
         {
@@ -127,6 +149,12 @@ impl SchemaRegistration<'_> {
         let tokens = use_schema_impl(self.schema()?)
             .map_err(|errors| SchemaRegistrationError::SchemaErrors(errors.to_string()))?;
 
+        if self.dry_run {
+            // This skips the token writing part which is a shame, as I'd like
+            // to benchmark that. But lets see where we get to without it
+            return Ok(());
+        }
+
         let schema_module_filename = schema_module_filename(self.name, &out_dir()?);
         std::fs::create_dir_all(
             schema_module_filename
@@ -141,6 +169,9 @@ impl SchemaRegistration<'_> {
     }
 
     fn filename(&self) -> Result<PathBuf, SchemaRegistrationError> {
+        if self.dry_run {
+            return Ok(PathBuf::from(""));
+        }
         let out_dir = out_dir()?;
         Ok(registration_filename(self.name, &out_dir))
     }

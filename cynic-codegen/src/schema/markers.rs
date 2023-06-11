@@ -1,7 +1,9 @@
 use std::borrow::{Borrow, Cow};
 
+use proc_macro2::Span;
 use quote::format_ident;
 use syn::spanned::Spanned;
+use syn::{GenericArgument, PathArguments, PathSegment, Token};
 
 use crate::schema::types::*;
 
@@ -43,8 +45,6 @@ pub struct TypeRefMarker<'a, T> {
 
 impl<T> TypeRefMarker<'_, T> {
     pub fn to_path(&self, schema_module_path: &syn::Path) -> syn::Path {
-        use syn::parse_quote;
-
         match &self.type_ref {
             TypeRef::Named(name, _) => TypeMarkerIdent {
                 graphql_name: name.clone(),
@@ -56,9 +56,24 @@ impl<T> TypeRefMarker<'_, T> {
                 }
                 .to_path(schema_module_path);
 
-                parse_quote! {
-                    Vec<#inner_path>
-                }
+                // TODO: probably want a better span on these
+                let span = Span::call_site();
+
+                let mut segment = PathSegment::from(syn::Ident::new("Vec", Span::call_site()));
+                segment.arguments =
+                    PathArguments::AngleBracketed(syn::AngleBracketedGenericArguments {
+                        colon2_token: None,
+                        lt_token: Token![<](span),
+                        args: [GenericArgument::Type(syn::Type::Path(syn::TypePath {
+                            qself: None,
+                            path: inner_path,
+                        }))]
+                        .into_iter()
+                        .collect(),
+                        gt_token: Token![>](span),
+                    });
+
+                segment.into()
             }
             TypeRef::Nullable(inner) => {
                 let inner_path = TypeRefMarker {
@@ -66,9 +81,24 @@ impl<T> TypeRefMarker<'_, T> {
                 }
                 .to_path(schema_module_path);
 
-                parse_quote! {
-                    Option<#inner_path>
-                }
+                // TODO: probably want a better span on these
+                let span = Span::call_site();
+
+                let mut segment = PathSegment::from(syn::Ident::new("Option", Span::call_site()));
+                segment.arguments =
+                    PathArguments::AngleBracketed(syn::AngleBracketedGenericArguments {
+                        colon2_token: None,
+                        lt_token: Token![<](span),
+                        args: [GenericArgument::Type(syn::Type::Path(syn::TypePath {
+                            qself: None,
+                            path: inner_path,
+                        }))]
+                        .into_iter()
+                        .collect(),
+                        gt_token: Token![>](span),
+                    });
+
+                segment.into()
             }
         }
     }
