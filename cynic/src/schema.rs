@@ -154,5 +154,25 @@ pub trait NamedType {
     const NAME: &'static str;
 }
 
+impl NamedType for i32 {
+    const NAME: &'static str = "Int";
+}
+
+impl NamedType for f64 {
+    const NAME: &'static str = "Float";
+}
+
+impl NamedType for String {
+    const NAME: &'static str = "String";
+}
+
+impl NamedType for bool {
+    const NAME: &'static str = "Boolean";
+}
+
+impl NamedType for crate::Id {
+    const NAME: &'static str = "ID";
+}
+
 /// Indicates that a type is an `InputObject`
 pub trait InputObjectMarker {}
