@@ -231,7 +231,7 @@ impl<'a> EnumType<'a> {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 #[cfg_attr(
     feature = "rkyv",
     derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize),
@@ -241,27 +241,13 @@ pub struct ObjectRef<'a>(
     #[cfg_attr(feature = "rkyv", with(rkyv::with::AsOwned))] pub(super) Cow<'a, str>,
 );
 
-impl std::fmt::Debug for ObjectRef<'_> {
+impl std::fmt::Display for ObjectRef<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.debug_tuple("ObjectRef").field(&self.0).finish()
+        write!(f, "{}", self.0)
     }
 }
 
-impl<'a> PartialEq for ObjectRef<'a> {
-    fn eq(&self, other: &Self) -> bool {
-        self.0 == other.0
-    }
-}
-
-impl Eq for ObjectRef<'_> {}
-
-impl<'a> std::hash::Hash for ObjectRef<'a> {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.0.hash(state);
-    }
-}
-
-#[derive(Clone)]
+#[derive(Clone, Debug, PartialEq, Eq, Hash)]
 #[cfg_attr(
     feature = "rkyv",
     derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize),
@@ -270,26 +256,6 @@ impl<'a> std::hash::Hash for ObjectRef<'a> {
 pub struct InterfaceRef<'a>(
     #[cfg_attr(feature = "rkyv", with(rkyv::with::AsOwned))] pub(super) Cow<'a, str>,
 );
-
-impl std::fmt::Debug for InterfaceRef<'_> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        f.debug_tuple("InterfaceRef").field(&self.0).finish()
-    }
-}
-
-impl<'a> PartialEq for InterfaceRef<'a> {
-    fn eq(&self, other: &Self) -> bool {
-        self.0 == other.0
-    }
-}
-
-impl Eq for InterfaceRef<'_> {}
-
-impl<'a> std::hash::Hash for InterfaceRef<'a> {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
-        self.0.hash(state);
-    }
-}
 
 #[derive(Clone, PartialEq, Eq, Hash)]
 #[cfg_attr(

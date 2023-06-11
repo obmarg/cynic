@@ -15,6 +15,7 @@ use crate::{
 
 pub mod input;
 
+mod exhaustiveness;
 mod inline_fragments_impl;
 
 #[cfg(test)]
@@ -52,6 +53,10 @@ pub(crate) fn inline_fragments_derive_impl(
     let variables = input.variables();
 
     if let darling::ast::Data::Enum(variants) = &input.data {
+        if input.exhaustive.map(|e| *e).unwrap_or_default() {
+            exhaustiveness::exhaustiveness_check(variants, &target_type)?;
+        }
+
         let fallback = check_fallback(variants, &target_type)?;
 
         let type_lock = target_type.marker_ident().to_path(&input.schema_module());
@@ -233,6 +238,15 @@ impl quote::ToTokens for QueryFragmentImpl<'_> {
 enum InlineFragmentType<'a> {
     Union(UnionType<'a>),
     Interface(InterfaceType<'a>),
+}
+
+impl InlineFragmentType<'_> {
+    pub fn name(&self) -> &str {
+        match self {
+            InlineFragmentType::Union(union_type) => &union_type.name,
+            InlineFragmentType::Interface(interface) => &interface.name,
+        }
+    }
 }
 
 impl<'a> InlineFragmentType<'a> {

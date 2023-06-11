@@ -43,6 +43,19 @@ enum Node {
 #[derive(InlineFragments, Serialize, PartialEq, Debug)]
 #[cynic(
     schema_path = "tests/test-schema.graphql",
+    graphql_type = "PostOrAuthor",
+    exhaustive
+)]
+enum ExhaustivePostOrAuthor {
+    BlogPost(Post),
+    Author(Author),
+    #[cynic(fallback)]
+    Other,
+}
+
+#[derive(InlineFragments, Serialize, PartialEq, Debug)]
+#[cynic(
+    schema_path = "tests/test-schema.graphql",
     graphql_type = "PostOrAuthor"
 )]
 enum PostOrAuthorGeneric<A: QueryFragment<SchemaType = schema::Author, VariablesFields = ()>> {

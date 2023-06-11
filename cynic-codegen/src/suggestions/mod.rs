@@ -1,11 +1,22 @@
-use strsim::hamming;
+use strsim::jaro_winkler;
 
 /// Using Hamming algorithm to guess possible similar fields.
 pub fn guess_field<'a>(
     candidates: impl Iterator<Item = &'a str>,
-    field_name: &str,
+    provided_name: &str,
 ) -> Option<&'a str> {
-    candidates.min_by_key(|candidate| hamming(candidate, field_name).unwrap_or(usize::max_value()))
+    let (chosen_candidate, _) = candidates
+        .map(|candidate| (candidate, jaro_winkler(candidate, provided_name)))
+        .filter(|(_, distance)| *distance > 0.6)
+        .reduce(|lhs @ (_, distance_lhs), rhs @ (_, distance_rhs)| {
+            if distance_lhs > distance_rhs {
+                lhs
+            } else {
+                rhs
+            }
+        })?;
+
+    Some(chosen_candidate)
 }
 
 pub fn format_guess(guess_field: Option<&str>) -> String {
