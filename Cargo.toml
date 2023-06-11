@@ -23,6 +23,7 @@ homepage = "https://cynic-rs.dev"
 repository = "https://github.com/obmarg/cynic"
 license = "MPL-2.0"
 version = "3.0.2"
+rust-version = "1.69"
 
 [profile.dev]
 # Disabling debug info speeds up builds a bunch,
