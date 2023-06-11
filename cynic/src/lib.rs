@@ -152,11 +152,11 @@
 //!
 //! Cynic has a few features that are controlled by feature flags.
 //!
-//! - `surf` adds integration with the [`surf`](https://github.com/http-rs/surf)
+//! - `http-surf` adds integration with the [`surf`](https://github.com/http-rs/surf)
 //!   http client.
-//! - `reqwest` adds async integration with the [`reqwest`](https://github.com/seanmonstar/reqwest)
+//! - `http-reqwest` adds async integration with the [`reqwest`](https://github.com/seanmonstar/reqwest)
 //!   http client.
-//! - `reqwest-blocking` adds blocking integration with the [`reqwest`](https://github.com/seanmonstar/reqwest)
+//! - `http-reqwest-blocking` adds blocking integration with the [`reqwest`](https://github.com/seanmonstar/reqwest)
 //!   http client.
 //! - `rkyv` can be used to speed up compiles when working with large schemas.
 //!
