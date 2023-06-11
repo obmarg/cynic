@@ -9,6 +9,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v3.1.0 - 2023-06-11
+
 ### New Features
 
 - Added an `exhaustive` attribute for `InlineFragments` on union types. If
@@ -21,6 +23,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 - `impl_scalar!` and `derive(Scalar)` can now be used on built in scalars.
 - GitHub schema registration is now slightly faster
 - Fixed a bug where suggestions in errors were non-deterministic.
+- Fixed the names of some features in docs.rs output.
+- Added MSRV to `Cargo.toml`
 
 ## v3.0.2 - 2023-06-07
 
