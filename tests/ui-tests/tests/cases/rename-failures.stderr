@@ -1,4 +1,4 @@
-error: no field `episode` on the GraphQL type `Film`.  Did you mean `created`?
+error: no field `episode` on the GraphQL type `Film`.  Did you mean `episodeID`?
   --> tests/cases/rename-failures.rs:10:22
    |
 10 |     #[cynic(rename = "episode")]

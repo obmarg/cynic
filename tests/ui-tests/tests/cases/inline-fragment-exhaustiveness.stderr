@@ -6,7 +6,7 @@ error: This InlineFragment is missing a variant for TestStruct.  Either provide 
   |
   = note: this error originates in the derive macro `cynic::InlineFragments` (in Nightly builds, run with -Z macro-backtrace for more info)
 
-error: Could not find a member named RandomOtherThing in the union MyUnionType.  Did you mean `Nested`?
+error: Could not find a member named RandomOtherThing in the union MyUnionType.
   --> tests/cases/inline-fragment-exhaustiveness.rs:29:5
    |
 29 |     RandomOtherThing(Dummy),
