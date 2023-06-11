@@ -12,6 +12,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ### Bug Fixes
 
 - The generator no longer outputs a broken `#[cynic::schema]` module.
+- `impl_scalar!` and `derive(Scalar)` can now be used on built in scalars.
 
 ## v3.0.2 - 2023-06-07
 
