@@ -78,7 +78,6 @@ received from the server.
 
 ```rust
 #[derive(cynic::InlineFragments)]
-#[cynic(schema_path = "github.graphql")]
 enum Assignee {
     Bot(Bot),
     User(User)

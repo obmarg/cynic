@@ -9,10 +9,6 @@ Generally you'll use a derive to create query fragments, like this:
 
 ```rust
 #[derive(cynic::QueryFragment, Debug)]
-#[cynic(
-    schema_path = "examples/starwars.schema.graphql",
-    schema_module = "schema",
-)]
 struct Film {
     title: Option<String>,
     director: Option<String>,
@@ -25,11 +21,6 @@ be nested inside each other, like so:
 
 ```rust
 #[derive(cynic::QueryFragment, Debug)]
-#[cynic(
-    schema_path = "examples/starwars.schema.graphql",
-    schema_module = "schema",
-    graphql_type = "Root",
-)]
 struct FilmsConnection {
     films: Vec<Film>,
 }
@@ -63,11 +54,7 @@ API we need a QueryFragment like this:
 
 ```rust
 #[derive(cynic::QueryFragment, Debug)]
-#[cynic(
-    schema_path = "examples/starwars.schema.graphql",
-    schema_module = "schema",
-    graphql_type = "Root",
-)]
+#[cynic(graphql_type = "Root")]
 struct AllFilmsQuery {
     all_films: Option<FilmConnection>,
 }
@@ -97,11 +84,7 @@ Here, we define a query that fetches a film by a particular ID:
 
 ```rust
 #[derive(cynic::QueryFragment, Debug)]
-#[cynic(
-    schema_path = "examples/starwars.schema.graphql",
-    schema_module = "schema",
-    graphql_type = "Root",
-)]
+#[cynic(graphql_type = "Root")]
 struct FilmQuery {
     #[arguments(id: "ZmlsbXM6MQ==")]
     film: Option<Film>,
@@ -154,8 +137,6 @@ to provide the `id` argument.
 ```rust
 #[derive(cynic::QueryFragment, Debug)]
 #[cynic(
-    schema_path = "examples/starwars.schema.graphql",
-    schema_module = "schema",
     graphql_type = "Root",
     variables = "FilmQueryVariables"
 )]

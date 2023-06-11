@@ -28,7 +28,6 @@ struct is in scope.  You do this by providing a a `variables` parameter to the
 ```rust
 #[derive(cynic::QueryFragment, Debug)]
 #[cynic(
-    schema_path = "examples/starwars.schema.graphql",
     graphql_type = "Root",
     variables = "FilmVariables"
 )]

@@ -38,7 +38,6 @@ You can also derive `Scalar` on any newtype structs:
 
 ```rust
 #[derive(cynic::Scalar, serde::Serialize)]
-#[cynic(schema_module = "schema")]
 struct MyScalar(String);
 ```
 
@@ -58,6 +57,6 @@ A Scalar derive can be configured with several attributes on the struct itself:
 - `graphql_type = "AType"` can be provided if the type of the struct differs
   from the type of and tells cynic the name of the Scalar in the schema. This
   defaults to the name of the struct if not provided.
-- `schema_module` tells cynic where to find your schema module.  This is
+- `schema_module` tells cynic where to find your schema module. This is
   optional and should only be needed if your schema module is not in scope or
   named `schema`.
