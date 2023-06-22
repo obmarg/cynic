@@ -65,7 +65,7 @@ fn test_running_2021_query() {
     let query = build_2021_query();
 
     let result = reqwest::blocking::Client::new()
-        .post("https://swapi-graphql.netlify.app/.netlify/functions/index")
+        .post("https://spacex-production.up.railway.app/")
         .run_graphql(query)
         .unwrap();
 
@@ -83,7 +83,7 @@ fn test_2021_schema_conversion() {
     let query = build_2021_query();
 
     let result = reqwest::blocking::Client::new()
-        .post("https://swapi-graphql.netlify.app/.netlify/functions/index")
+        .post("https://spacex-production.up.railway.app/")
         .run_graphql(query)
         .unwrap();
 

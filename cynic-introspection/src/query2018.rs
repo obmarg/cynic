@@ -9,7 +9,7 @@
 ///
 /// Can be used with cynic to run an introspection query.
 ///
-/// [1]: https://spec.graphql.org/October2021/
+/// [1]: https://spec.graphql.org/June2018/
 pub struct IntrospectionQuery {
     #[cynic(rename = "__schema")]
     /// The schema returned from the query
@@ -72,7 +72,6 @@ pub struct Type {
     /// A list of types that can be represented by this type if it is a union,
     /// or the set of types that implement this interface if it is an interface
     pub possible_types: Option<Vec<NamedType>>,
-    // TODO: Probably want specifiedByURL here _if_ we're doing a 2021 introspection
 }
 
 #[derive(cynic::QueryFragment, Debug)]
