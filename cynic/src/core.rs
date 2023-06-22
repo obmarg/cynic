@@ -56,6 +56,8 @@ where
     type SchemaType = T::SchemaType;
     type VariablesFields = T::VariablesFields;
 
+    const TYPE: Option<&'static str> = T::TYPE;
+
     fn query(builder: SelectionBuilder<'_, Self::SchemaType, Self::VariablesFields>) {
         T::query(builder)
     }
@@ -68,6 +70,8 @@ where
     type SchemaType = T::SchemaType;
     type VariablesFields = T::VariablesFields;
 
+    const TYPE: Option<&'static str> = T::TYPE;
+
     fn query(builder: SelectionBuilder<'_, Self::SchemaType, Self::VariablesFields>) {
         T::query(builder)
     }
@@ -79,6 +83,8 @@ where
 {
     type SchemaType = T::SchemaType;
     type VariablesFields = T::VariablesFields;
+
+    const TYPE: Option<&'static str> = T::TYPE;
 
     fn query(builder: SelectionBuilder<'_, Self::SchemaType, Self::VariablesFields>) {
         T::query(builder)
