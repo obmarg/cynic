@@ -9,6 +9,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v3.1.1 - 2023-06-22
+
 ### Bug Fixes
 
 - Fixed an issue where `InlineFragments` fallbacks would fail to decode if the
