@@ -11,6 +11,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Bug Fixes
 
+- Fixed an issue where `InlineFragments` fallbacks would fail to decode if the
+  data contained anything other than just the `__typename`.
 - Inline fragment variants containing smart pointers should now decode
   correctly.
 

@@ -34,13 +34,19 @@ impl quote::ToTokens for InlineFragmentsImpl<'_> {
 
         let fallback = match &self.fallback {
             Some(Fallback::UnionUnitVariant(variant)) => quote! {
-                Ok(#target_enum::#variant)
+                <cynic::serde::de::IgnoredAny as cynic::serde::Deserialize<'de>>
+                    ::deserialize(deserializer).map(|_|
+                        #target_enum::#variant
+                    )
             },
             Some(Fallback::UnionVariantWithTypename(variant, ty)) => {
                 let ty_span = ty.span();
                 quote_spanned! { ty_span => {
                         cynic::assert_type_eq_all!(#ty, String);
-                        Ok(#target_enum::#variant(typename.to_string()))
+                        <cynic::serde::de::IgnoredAny as cynic::serde::Deserialize<'de>>
+                            ::deserialize(deserializer).map(|_|
+                                #target_enum::#variant(typename.to_string())
+                            )
                     }
                 }
             }

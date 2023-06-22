@@ -25,7 +25,8 @@ impl<'de> cynic::InlineFragments<'de> for Node {
             return <Author as cynic::serde::Deserialize<'de>>::deserialize(deserializer)
                 .map(Node::Author);
         }
-        Ok(Node::Other)
+        <cynic::serde::de::IgnoredAny as cynic::serde::Deserialize<'de>>::deserialize(deserializer)
+            .map(|_| Node::Other)
     }
 }
 #[automatically_derived]
