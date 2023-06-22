@@ -118,3 +118,27 @@ fn test_post_or_author_decoding(#[case] input: serde_json::Value, #[case] expect
 fn test_node_decoding(#[case] input: serde_json::Value, #[case] expected: Node) {
     assert_eq!(serde_json::from_value::<Node>(input).unwrap(), expected);
 }
+
+#[derive(InlineFragments, Serialize, PartialEq, Debug)]
+#[cynic(
+    schema_path = "tests/test-schema.graphql",
+    graphql_type = "PostOrAuthor"
+)]
+enum PostOrAuthorBox {
+    Post(Box<Post>),
+    Author(Author),
+    #[cynic(fallback)]
+    Other,
+}
+
+#[test]
+fn test_decoding_boxed_variant() {
+    let data = r#"{"__typename":"BlogPost","id":"4"}"#;
+
+    assert_eq!(
+        serde_json::from_str::<PostOrAuthorBox>(data).unwrap(),
+        PostOrAuthorBox::Post(Box::new(Post {
+            id: Some("4".into())
+        }))
+    );
+}

@@ -9,6 +9,11 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+### Bug Fixes
+
+- Inline fragment variants containing smart pointers should now decode
+  correctly.
+
 ## v3.1.0 - 2023-06-11
 
 ### New Features
