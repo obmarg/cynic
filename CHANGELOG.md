@@ -9,6 +9,11 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+### New Features
+
+- Added support for introspecting a scalars `@specifiedBy` field on servers
+  supporting GraphQL 2021
+
 ## v3.1.1 - 2023-06-22
 
 ### Bug Fixes
@@ -40,7 +45,6 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ### Bug Fixes
 
 - Fix `Variable` definition for `Vec<T>` in `#[cynic::schema]` output.
-
 
 ## v3.0.1 - 2023-06-06
 

@@ -30,10 +30,12 @@
 //! [1]: http://spec.graphql.org/October2021/#sec-Introspection
 //! [2]: https://cynic-rs.dev
 
-pub mod query;
+pub mod query2018;
+pub mod query2021;
 mod schema;
 
+pub use query2018 as query;
 #[doc(inline)]
-pub use query::{DirectiveLocation, IntrospectionQuery};
+pub use query2018::{DirectiveLocation, IntrospectionQuery};
 
 pub use schema::*;

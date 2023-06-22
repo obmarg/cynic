@@ -1,10 +1,15 @@
-//! Defines the types & results for running an introspection query
+//! Defines the types & results for running an introspection query against a server
+//! supporting the [2018 GraphQL Specification][1]
+//!
+//! [1]: https://spec.graphql.org/June2018/
 
 #[derive(cynic::QueryFragment, Debug)]
 #[cynic(graphql_type = "Query")]
-/// The results of an introspection query.
+/// The results of a [2018 GraphQL Specification][1] introspection query
 ///
 /// Can be used with cynic to run an introspection query.
+///
+/// [1]: https://spec.graphql.org/June2018/
 pub struct IntrospectionQuery {
     #[cynic(rename = "__schema")]
     /// The schema returned from the query
@@ -198,4 +203,4 @@ pub enum TypeKind {
 }
 
 #[cynic::schema("introspection")]
-mod schema {}
+pub(super) mod schema {}
