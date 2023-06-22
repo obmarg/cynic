@@ -119,6 +119,42 @@ fn test_node_decoding(#[case] input: serde_json::Value, #[case] expected: Node) 
     assert_eq!(serde_json::from_value::<Node>(input).unwrap(), expected);
 }
 
+#[test]
+fn test_decoding_fallback_with_extra_data_and_unit_fallback() {
+    // This has a typename that doesn't exist _and_ some associated data.
+    // Make sure we decode succesfully
+    let data = r#"{"__typename":"Image","id":"4"}"#;
+
+    assert_eq!(
+        serde_json::from_str::<PostOrAuthor>(data).unwrap(),
+        PostOrAuthor::Other
+    );
+}
+
+#[derive(InlineFragments, Serialize, PartialEq, Debug)]
+#[cynic(
+    schema_path = "tests/test-schema.graphql",
+    graphql_type = "PostOrAuthor"
+)]
+enum PostOrAuthorStringFallback {
+    Post(Post),
+    Author(Author),
+    #[cynic(fallback)]
+    Other(String),
+}
+
+#[test]
+fn test_decoding_fallback_with_extra_data_and_string_fallback() {
+    // This has a typename that doesn't exist _and_ some associated data.
+    // Make sure we decode succesfully
+    let data = r#"{"__typename":"Image","id":"4"}"#;
+
+    assert_eq!(
+        serde_json::from_str::<PostOrAuthorStringFallback>(data).unwrap(),
+        PostOrAuthorStringFallback::Other("Image".into())
+    );
+}
+
 #[derive(InlineFragments, Serialize, PartialEq, Debug)]
 #[cynic(
     schema_path = "tests/test-schema.graphql",

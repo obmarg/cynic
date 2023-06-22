@@ -25,7 +25,8 @@ impl<'de> cynic::InlineFragments<'de> for PostOrAuthor {
             return <Author as cynic::serde::Deserialize<'de>>::deserialize(deserializer)
                 .map(PostOrAuthor::Author);
         }
-        Ok(PostOrAuthor::Other)
+        <cynic::serde::de::IgnoredAny as cynic::serde::Deserialize<'de>>::deserialize(deserializer)
+            .map(|_| PostOrAuthor::Other)
     }
 }
 #[automatically_derived]
