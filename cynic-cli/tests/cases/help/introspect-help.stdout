@@ -1,0 +1,33 @@
+Runs an introspection query against a GraphQL server and outputs the servers schema
+
+Usage: cynic introspect [OPTIONS] <URL>
+
+Arguments:
+  <URL>
+          The URL of the GraphQL schema that we should introspect
+
+Options:
+  -H, --header <HEADERS>
+          Any headers to send with the introspection request
+
+  -o, --output <OUTPUT>
+          The name of a file we should output the schema into.
+          
+          By default we print to stdout.
+
+      --server-verison <SERVER_VERISON>
+          The version of the GraphQL specificaiton that the remote GraphQL server implements
+          
+          Different versions of GraphQL expose different fields via introspection, so we need to know which set of fields to ask for.
+          
+          By default we run an additional query to figure out what the server we're talking to supports.
+          
+          [default: auto]
+
+          Possible values:
+          - 2018: Run an introspection query compatible with the 2018 GraphQL specification
+          - 2021: Run an introspection query compatible with the 2021 GraphQL specification
+          - auto: Run an additional query to determine what the GraphQL server supports
+
+  -h, --help
+          Print help (see a summary with '-h')
