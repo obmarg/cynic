@@ -72,7 +72,7 @@
 //! use cynic::{QueryBuilder, http::ReqwestBlockingExt};
 //! use cynic_introspection::{CapabilitiesQuery, IntrospectionQuery};
 //!
-//! // We can run an introspection query and unwrap the data contained within
+//! // First we run a capabilites query to check what the server supports
 //! let capabilities = reqwest::blocking::Client::new()
 //!     .post("https://swapi-graphql.netlify.app/.netlify/functions/index")
 //!     .run_graphql(CapabilitiesQuery::build(()))

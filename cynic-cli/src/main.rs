@@ -1,4 +1,7 @@
 use clap::{Args, Parser, Subcommand, ValueEnum};
+use colored::Colorize;
+
+mod introspect;
 
 fn main() {
     let cli = Cli::parse();
@@ -6,7 +9,10 @@ fn main() {
     #[allow(clippy::single_match)]
     match cli.command {
         Some(Commands::Introspect(args)) => {
-            todo!("Implement introspection")
+            if let Err(error) = introspect::introspect(args) {
+                let output = format!("Error during introspection: {error}").red();
+                eprintln!("{output}");
+            }
         }
         None => {}
     }
@@ -32,6 +38,8 @@ struct IntrospectArgs {
     /// The URL of the GraphQL schema that we should introspect
     url: String,
     /// Any headers to send with the introspection request
+    ///
+    /// These should be in HTTP format e.g. `-H "Authorization: Bearer a_token_123"`
     #[arg(short = 'H', long = "header")]
     headers: Vec<String>,
     /// The name of a file we should output the schema into.
@@ -47,7 +55,7 @@ struct IntrospectArgs {
     /// By default we run an additional query to figure out what the server we're talking to
     /// supports.
     #[arg(long, default_value_t = GraphQlVersion::AutoDetect)]
-    server_verison: GraphQlVersion,
+    server_version: GraphQlVersion,
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, ValueEnum, Default)]

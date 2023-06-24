@@ -18,6 +18,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
   which version of the GraphQL specification a server supports.
 - `QueryFragment` now allows users to specify features for parts of the query,
   allowing the same query to be used on servers with differing capabilities.
+- Added `cynic-cli`, a CLI for cynic that can introspect remote servers.
 
 ## v3.1.1 - 2023-06-22
 
