@@ -1,5 +1,8 @@
 use crate::query2018::DirectiveLocation;
 
+#[cfg(feature = "sdl")]
+mod sdl;
+
 impl crate::query2018::IntrospectionQuery {
     /// Converts the results of an IntrospectionQuery into a `Schema`,
     /// which has some stronger types than those offered by the introspection query
@@ -159,6 +162,18 @@ pub struct ScalarType {
     pub description: Option<String>,
     /// A URL pointing to a specification for this scalar, if there is one
     pub specified_by_url: Option<String>,
+}
+
+impl ScalarType {
+    /// Returns true if this scalar represents one of the [built in scalars][1].
+    ///
+    /// [1]: http://spec.graphql.org/October2021/#sec-Scalars.Built-in-Scalars
+    pub fn is_builtin(&self) -> bool {
+        matches!(
+            self.name.as_str(),
+            "String" | "Bool" | "Int" | "ID" | "Float"
+        )
+    }
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
