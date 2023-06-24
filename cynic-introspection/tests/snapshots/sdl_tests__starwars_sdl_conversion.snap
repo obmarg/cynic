@@ -1,6 +1,5 @@
 ---
 source: cynic-introspection/tests/sdl_tests.rs
-assertion_line: 19
 expression: result.data.unwrap().into_schema().unwrap().to_sdl()
 ---
 schema {
@@ -9,99 +8,63 @@ schema {
 type Root {
   allFilms(
     after: String
-
     first: Int
-
     before: String
-
     last: Int
-
   ): FilmsConnection 
   film(
     id: ID
-
     filmID: ID
-
   ): Film 
   allPeople(
     after: String
-
     first: Int
-
     before: String
-
     last: Int
-
   ): PeopleConnection 
   person(
     id: ID
-
     personID: ID
-
   ): Person 
   allPlanets(
     after: String
-
     first: Int
-
     before: String
-
     last: Int
-
   ): PlanetsConnection 
   planet(
     id: ID
-
     planetID: ID
-
   ): Planet 
   allSpecies(
     after: String
-
     first: Int
-
     before: String
-
     last: Int
-
   ): SpeciesConnection 
   species(
     id: ID
-
     speciesID: ID
-
   ): Species 
   allStarships(
     after: String
-
     first: Int
-
     before: String
-
     last: Int
-
   ): StarshipsConnection 
   starship(
     id: ID
-
     starshipID: ID
-
   ): Starship 
   allVehicles(
     after: String
-
     first: Int
-
     before: String
-
     last: Int
-
   ): VehiclesConnection 
   vehicle(
     id: ID
-
     vehicleID: ID
-
   ): Vehicle 
   """
   Fetches an object given its ID
@@ -111,19 +74,8 @@ type Root {
     The ID of an object
     """
     id: ID?
-
   ): Node 
 }
-
-"""
-The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.
-"""
-scalar String
-
-"""
-The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.
-"""
-scalar Int
 
 """
 A connection to a list of items.
@@ -226,53 +178,33 @@ type Film implements Node {
   releaseDate: String 
   speciesConnection(
     after: String
-
     first: Int
-
     before: String
-
     last: Int
-
   ): FilmSpeciesConnection 
   starshipConnection(
     after: String
-
     first: Int
-
     before: String
-
     last: Int
-
   ): FilmStarshipsConnection 
   vehicleConnection(
     after: String
-
     first: Int
-
     before: String
-
     last: Int
-
   ): FilmVehiclesConnection 
   characterConnection(
     after: String
-
     first: Int
-
     before: String
-
     last: Int
-
   ): FilmCharactersConnection 
   planetConnection(
     after: String
-
     first: Int
-
     before: String
-
     last: Int
-
   ): FilmPlanetsConnection 
   """
   The ISO 8601 date format of the time that this resource was created.
@@ -297,11 +229,6 @@ interface Node {
   """
   id: ID? 
 }
-
-"""
-The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"4"`) or integer (such as `4`) input value will be accepted as an ID.
-"""
-scalar ID
 
 """
 A connection to a list of items.
@@ -396,23 +323,15 @@ type Species implements Node {
   homeworld: Planet 
   personConnection(
     after: String
-
     first: Int
-
     before: String
-
     last: Int
-
   ): SpeciesPeopleConnection 
   filmConnection(
     after: String
-
     first: Int
-
     before: String
-
     last: Int
-
   ): SpeciesFilmsConnection 
   """
   The ISO 8601 date format of the time that this resource was created.
@@ -427,11 +346,6 @@ type Species implements Node {
   """
   id: ID? 
 }
-
-"""
-The `Float` scalar type represents signed double-precision fractional values as specified by [IEEE 754](https://en.wikipedia.org/wiki/IEEE_floating_point).
-"""
-scalar Float
 
 """
 A large mass, planet or planetoid in the Star Wars Universe, at the time of
@@ -480,23 +394,15 @@ type Planet implements Node {
   surfaceWater: Float 
   residentConnection(
     after: String
-
     first: Int
-
     before: String
-
     last: Int
-
   ): PlanetResidentsConnection 
   filmConnection(
     after: String
-
     first: Int
-
     before: String
-
     last: Int
-
   ): PlanetFilmsConnection 
   """
   The ISO 8601 date format of the time that this resource was created.
@@ -603,13 +509,9 @@ type Person implements Node {
   homeworld: Planet 
   filmConnection(
     after: String
-
     first: Int
-
     before: String
-
     last: Int
-
   ): PersonFilmsConnection 
   """
   The species that this person belongs to, or null if unknown.
@@ -617,23 +519,15 @@ type Person implements Node {
   species: Species 
   starshipConnection(
     after: String
-
     first: Int
-
     before: String
-
     last: Int
-
   ): PersonStarshipsConnection 
   vehicleConnection(
     after: String
-
     first: Int
-
     before: String
-
     last: Int
-
   ): PersonVehiclesConnection 
   """
   The ISO 8601 date format of the time that this resource was created.
@@ -803,23 +697,15 @@ type Starship implements Node {
   consumables: String 
   pilotConnection(
     after: String
-
     first: Int
-
     before: String
-
     last: Int
-
   ): StarshipPilotsConnection 
   filmConnection(
     after: String
-
     first: Int
-
     before: String
-
     last: Int
-
   ): StarshipFilmsConnection 
   """
   The ISO 8601 date format of the time that this resource was created.
@@ -1020,23 +906,15 @@ type Vehicle implements Node {
   consumables: String 
   pilotConnection(
     after: String
-
     first: Int
-
     before: String
-
     last: Int
-
   ): VehiclePilotsConnection 
   filmConnection(
     after: String
-
     first: Int
-
     before: String
-
     last: Int
-
   ): VehicleFilmsConnection 
   """
   The ISO 8601 date format of the time that this resource was created.
@@ -1667,13 +1545,5 @@ type VehiclesEdge {
   """
   cursor: String? 
 }
-
-
-
-
-
-
-
-
 
 

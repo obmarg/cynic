@@ -43,7 +43,7 @@ impl Display for SchemaDisplay<'_> {
 
         for ty in &schema.types {
             let ty = TypeDisplay(ty);
-            writeln!(f, "{ty}")?;
+            write!(f, "{ty}")?;
         }
 
         Ok(())
@@ -62,16 +62,21 @@ impl std::fmt::Display for TypeDisplay<'_> {
         }
 
         match ty {
-            Type::Scalar(ScalarType {
-                name,
-                description,
-                specified_by_url,
-            }) => {
-                // TODO: probably skip builtins here...
+            Type::Scalar(
+                scalar @ ScalarType {
+                    name,
+                    description,
+                    specified_by_url,
+                },
+            ) => {
+                if scalar.is_builtin() {
+                    // Don't render built in scalars
+                    return Ok(());
+                }
                 write!(f, "{}", DescriptionDisplay(description.as_deref()))?;
                 writeln!(
                     f,
-                    "scalar {name}{}",
+                    "scalar {name}{}\n",
                     SpecifiedByDisplay(specified_by_url.as_deref())
                 )
             }
@@ -86,7 +91,7 @@ impl std::fmt::Display for TypeDisplay<'_> {
                 for field in fields {
                     writeln!(indented(f), "{}", FieldDisplay(field))?;
                 }
-                writeln!(f, "}}")
+                writeln!(f, "}}\n")
             }
             Type::InputObject(InputObjectType {
                 name,
@@ -98,7 +103,7 @@ impl std::fmt::Display for TypeDisplay<'_> {
                 for field in fields {
                     writeln!(indented(f), "{}", InputValueDisplay(field))?;
                 }
-                writeln!(f, "}}")
+                writeln!(f, "}}\n")
             }
             Type::Enum(EnumType {
                 name,
@@ -110,7 +115,7 @@ impl std::fmt::Display for TypeDisplay<'_> {
                 for value in values {
                     writeln!(indented(f), "{}", EnumValueDisplay(value))?;
                 }
-                writeln!(f, "}}")
+                writeln!(f, "}}\n")
             }
             Type::Interface(InterfaceType {
                 name,
@@ -124,7 +129,7 @@ impl std::fmt::Display for TypeDisplay<'_> {
                 for field in fields {
                     writeln!(indented(f), "{}", FieldDisplay(field))?;
                 }
-                writeln!(f, "}}")
+                writeln!(f, "}}\n")
             }
             Type::Union(UnionType {
                 name,
@@ -139,7 +144,7 @@ impl std::fmt::Display for TypeDisplay<'_> {
                     }
                     write!(f, "{ty}")?;
                 }
-                Ok(())
+                writeln!(f, "\n")
             }
         }
     }
@@ -233,7 +238,7 @@ impl Display for InputValueDisplay<'_> {
         if let Some(default_value) = default_value {
             write!(f, " = {}", default_value)?;
         }
-        writeln!(f)
+        Ok(())
     }
 }
 

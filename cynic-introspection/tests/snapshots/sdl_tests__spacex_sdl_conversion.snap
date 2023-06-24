@@ -1,6 +1,5 @@
 ---
 source: cynic-introspection/tests/sdl_tests.rs
-assertion_line: 38
 expression: result.data.unwrap().into_schema().unwrap().to_sdl()
 ---
 schema {
@@ -14,11 +13,6 @@ type Address {
   state: String 
 }
 
-"""
-The `String` scalar type represents textual data, represented as UTF-8 character sequences. The String type is most often used by GraphQL to represent free-form human-readable text.
-"""
-scalar String
-
 type Capsule {
   dragon: Dragon @deprecated(reason: This is not available in the REST API after MongoDB has been deprecated)
   id: ID 
@@ -30,16 +24,6 @@ type Capsule {
   type: String 
 }
 
-"""
-The `ID` scalar type represents a unique identifier, often used to refetch an object or as key for a cache. The ID type appears in a JSON response as a String; however, it is not intended to be human-readable. When expected as an input type, any string (such as `"4"`) or integer (such as `4`) input value will be accepted as an ID.
-"""
-scalar ID
-
-"""
-The `Int` scalar type represents non-fractional signed whole numeric values. Int can represent values between -(2^31) and 2^31 - 1.
-"""
-scalar Int
-
 type CapsuleMission {
   flight: Int 
   name: String 
@@ -47,19 +31,12 @@ type CapsuleMission {
 
 input CapsulesFind {
   id: ID
-
   landings: Int
-
   mission: String
-
   original_launch: Date
-
   reuse_count: Int
-
   status: String
-
   type: String
-
 }
 
 type Core {
@@ -88,27 +65,16 @@ type CoreMission {
 
 input CoresFind {
   asds_attempts: Int
-
   asds_landings: Int
-
   block: Int
-
   id: String
-
   missions: String
-
   original_launch: Date
-
   reuse_count: Int
-
   rtls_attempts: Int
-
   rtls_landings: Int
-
   status: String
-
   water_landing: Boolean
-
 }
 
 scalar Date
@@ -117,11 +83,6 @@ type Distance {
   feet: Float 
   meters: Float 
 }
-
-"""
-The `Float` scalar type represents signed double-precision fractional values as specified by [IEEE 754](https://en.wikipedia.org/wiki/IEEE_floating_point).
-"""
-scalar Float
 
 type Dragon {
   active: Boolean 
@@ -200,13 +161,9 @@ type History {
 
 input HistoryFind {
   end: Date
-
   flight_number: Int
-
   id: ID
-
   start: Date
-
 }
 
 type Info {
@@ -270,125 +227,65 @@ type Launch {
 
 input LaunchFind {
   apoapsis_km: Float
-
   block: Int
-
   cap_serial: String
-
   capsule_reuse: String
-
   core_flight: Int
-
   core_reuse: String
-
   core_serial: String
-
   customer: String
-
   eccentricity: Float
-
   end: Date
-
   epoch: Date
-
   fairings_recovered: String
-
   fairings_recovery_attempt: String
-
   fairings_reuse: String
-
   fairings_reused: String
-
   fairings_ship: String
-
   gridfins: String
-
   id: ID
-
   inclination_deg: Float
-
   land_success: String
-
   landing_intent: String
-
   landing_type: String
-
   landing_vehicle: String
-
   launch_date_local: Date
-
   launch_date_utc: Date
-
   launch_success: String
-
   launch_year: String
-
   legs: String
-
   lifespan_years: Float
-
   longitude: Float
-
   manufacturer: String
-
   mean_motion: Float
-
   mission_id: String
-
   mission_name: String
-
   nationality: String
-
   norad_id: Int
-
   orbit: String
-
   payload_id: String
-
   payload_type: String
-
   periapsis_km: Float
-
   period_min: Float
-
   raan: Float
-
   reference_system: String
-
   regime: String
-
   reused: String
-
   rocket_id: String
-
   rocket_name: String
-
   rocket_type: String
-
   second_stage_block: String
-
   semi_major_axis_km: Float
-
   ship: String
-
   side_core1_reuse: String
-
   side_core2_reuse: String
-
   site_id: String
-
   site_name_long: String
-
   site_name: String
-
   start: Date
-
   tbd: String
-
   tentative_max_precision: String
-
   tentative: String
-
 }
 
 type LaunchLinks {
@@ -506,13 +403,9 @@ type MissionResult {
 
 input MissionsFind {
   id: ID
-
   manufacturer: String
-
   name: String
-
   payload_id: String
-
 }
 
 type Mutation {
@@ -524,7 +417,6 @@ type Mutation {
     filter the rows which have to be deleted
     """
     where: users_bool_exp?
-
   ): users_mutation_response 
   """
   insert data into the table: "users"
@@ -534,12 +426,10 @@ type Mutation {
     the rows to be inserted
     """
     objects: [users_insert_input?]?
-
     """
     on conflict condition
     """
     on_conflict: users_on_conflict
-
   ): users_mutation_response 
   """
   update data of the table: "users"
@@ -549,12 +439,10 @@ type Mutation {
     sets the columns of the filtered rows to the given values
     """
     _set: users_set_input
-
     """
     filter the rows which have to be updated
     """
     where: users_bool_exp?
-
   ): users_mutation_response 
 }
 
@@ -594,329 +482,204 @@ type PayloadOrbitParams {
 
 input PayloadsFind {
   apoapsis_km: Float
-
   customer: String
-
   eccentricity: Float
-
   epoch: Date
-
   inclination_deg: Float
-
   lifespan_years: Float
-
   longitude: Float
-
   manufacturer: String
-
   mean_motion: Float
-
   nationality: String
-
   norad_id: Int
-
   orbit: String
-
   payload_id: ID
-
   payload_type: String
-
   periapsis_km: Float
-
   period_min: Float
-
   raan: Float
-
   reference_system: String
-
   regime: String
-
   reused: Boolean
-
   semi_major_axis_km: Float
-
 }
 
 type Query {
   capsule(
     id: ID?
-
   ): Capsule 
   capsules(
     find: CapsulesFind
-
     limit: Int
-
     offset: Int
-
     order: String
-
     sort: String
-
   ): [Capsule] 
   capsulesPast(
     find: CapsulesFind
-
     limit: Int
-
     offset: Int
-
     order: String
-
     sort: String
-
   ): [Capsule] 
   capsulesUpcoming(
     find: CapsulesFind
-
     limit: Int
-
     offset: Int
-
     order: String
-
     sort: String
-
   ): [Capsule] 
   company: Info 
   core(
     id: ID?
-
   ): Core 
   cores(
     find: CoresFind
-
     limit: Int
-
     offset: Int
-
     order: String
-
     sort: String
-
   ): [Core] 
   coresPast(
     find: CoresFind
-
     limit: Int
-
     offset: Int
-
     order: String
-
     sort: String
-
   ): [Core] 
   coresUpcoming(
     find: CoresFind
-
     limit: Int
-
     offset: Int
-
     order: String
-
     sort: String
-
   ): [Core] 
   dragon(
     id: ID?
-
   ): Dragon 
   dragons(
     limit: Int
-
     offset: Int
-
   ): [Dragon] 
   histories(
     find: HistoryFind
-
     limit: Int
-
     offset: Int
-
     order: String
-
     sort: String
-
   ): [History] 
   historiesResult(
     find: HistoryFind
-
     limit: Int
-
     offset: Int
-
     order: String
-
     sort: String
-
   ): HistoriesResult 
   history(
     id: ID?
-
   ): History 
   landpad(
     id: ID?
-
   ): Landpad 
   landpads(
     limit: Int
-
     offset: Int
-
   ): [Landpad] 
   launch(
     id: ID?
-
   ): Launch 
   launchLatest(
     offset: Int
-
   ): Launch 
   launchNext(
     offset: Int
-
   ): Launch 
   launches(
     find: LaunchFind
-
     limit: Int
-
     offset: Int
-
     order: String
-
     sort: String
-
   ): [Launch] 
   launchesPast(
     find: LaunchFind
-
     limit: Int
-
     offset: Int
-
     order: String
-
     sort: String
-
   ): [Launch] 
   launchesPastResult(
     find: LaunchFind
-
     limit: Int
-
     offset: Int
-
     order: String
-
     sort: String
-
   ): LaunchesPastResult 
   launchesUpcoming(
     find: LaunchFind
-
     limit: Int
-
     offset: Int
-
     order: String
-
     sort: String
-
   ): [Launch] 
   launchpad(
     id: ID?
-
   ): Launchpad 
   launchpads(
     limit: Int
-
     offset: Int
-
   ): [Launchpad] 
   mission(
     id: ID?
-
   ): Mission @deprecated(reason: Mission is not available on REST API after MongoDB deprecation)
   missions(
     find: MissionsFind
-
     limit: Int
-
     offset: Int
-
   ): [Mission] @deprecated(reason: Mission is not available on REST API after MongoDB deprecation)
   missionsResult(
     find: MissionsFind
-
     limit: Int
-
     offset: Int
-
   ): MissionResult @deprecated(reason: Mission is not available on REST API after MongoDB deprecation)
   payload(
     id: ID?
-
   ): Payload 
   payloads(
     find: PayloadsFind
-
     limit: Int
-
     offset: Int
-
     order: String
-
     sort: String
-
   ): [Payload] 
   roadster: Roadster 
   rocket(
     id: ID?
-
   ): Rocket 
   rockets(
     limit: Int
-
     offset: Int
-
   ): [Rocket] 
   rocketsResult(
     limit: Int
-
     offset: Int
-
   ): RocketsResult 
   ship(
     id: ID?
-
   ): Ship 
   ships(
     find: ShipsFind
-
     limit: Int
-
     offset: Int
-
     order: String
-
     sort: String
-
   ): [Ship] 
   shipsResult(
     find: ShipsFind
-
     limit: Int
-
     offset: Int
-
     order: String
-
     sort: String
-
   ): ShipsResult 
   """
   fetch data from the table: "users"
@@ -926,27 +689,22 @@ type Query {
     distinct select on columns
     """
     distinct_on: [users_select_column?]
-
     """
     limit the nuber of rows returned
     """
     limit: Int
-
     """
     skip the first n rows. Use only with order_by
     """
     offset: Int
-
     """
     sort the rows by one or more columns
     """
     order_by: [users_order_by?]
-
     """
     filter the rows returned
     """
     where: users_bool_exp
-
   ): [users?]? 
   """
   fetch aggregated fields from the table: "users"
@@ -956,34 +714,28 @@ type Query {
     distinct select on columns
     """
     distinct_on: [users_select_column?]
-
     """
     limit the nuber of rows returned
     """
     limit: Int
-
     """
     skip the first n rows. Use only with order_by
     """
     offset: Int
-
     """
     sort the rows by one or more columns
     """
     order_by: [users_order_by?]
-
     """
     filter the rows returned
     """
     where: users_bool_exp
-
   ): users_aggregate? 
   """
   fetch data from the table: "users" using primary key columns
   """
   users_by_pk(
     id: uuid?
-
   ): users 
 }
 
@@ -1137,49 +889,27 @@ type ShipMission {
 
 input ShipsFind {
   id: ID
-
   name: String
-
   model: String
-
   type: String
-
   role: String
-
   active: Boolean
-
   imo: Int
-
   mmsi: Int
-
   abs: Int
-
   class: Int
-
   weight_lbs: Int
-
   weight_kg: Int
-
   year_built: Int
-
   home_port: String
-
   status: String
-
   speed_kn: Int
-
   course_deg: Int
-
   latitude: Float
-
   longitude: Float
-
   successful_landings: Int
-
   attempted_landings: Int
-
   mission: String
-
 }
 
 type ShipsResult {
@@ -1192,35 +922,20 @@ expression to compare columns of type String. All fields are combined with logic
 """
 input String_comparison_exp {
   _eq: String
-
   _gt: String
-
   _gte: String
-
   _ilike: String
-
   _in: [String?]
-
   _is_null: Boolean
-
   _like: String
-
   _lt: String
-
   _lte: String
-
   _neq: String
-
   _nilike: String
-
   _nin: [String?]
-
   _nlike: String
-
   _nsimilar: String
-
   _similar: String
-
 }
 
 type Subscription {
@@ -1232,27 +947,22 @@ type Subscription {
     distinct select on columns
     """
     distinct_on: [users_select_column?]
-
     """
     limit the nuber of rows returned
     """
     limit: Int
-
     """
     skip the first n rows. Use only with order_by
     """
     offset: Int
-
     """
     sort the rows by one or more columns
     """
     order_by: [users_order_by?]
-
     """
     filter the rows returned
     """
     where: users_bool_exp
-
   ): [users?]? 
   """
   fetch aggregated fields from the table: "users"
@@ -1262,34 +972,28 @@ type Subscription {
     distinct select on columns
     """
     distinct_on: [users_select_column?]
-
     """
     limit the nuber of rows returned
     """
     limit: Int
-
     """
     skip the first n rows. Use only with order_by
     """
     offset: Int
-
     """
     sort the rows by one or more columns
     """
     order_by: [users_order_by?]
-
     """
     filter the rows returned
     """
     where: users_bool_exp
-
   ): users_aggregate? 
   """
   fetch data from the table: "users" using primary key columns
   """
   users_by_pk(
     id: uuid?
-
   ): users 
 }
 
@@ -1357,23 +1061,14 @@ expression to compare columns of type timestamptz. All fields are combined with 
 """
 input timestamptz_comparison_exp {
   _eq: timestamptz
-
   _gt: timestamptz
-
   _gte: timestamptz
-
   _in: [timestamptz?]
-
   _is_null: Boolean
-
   _lt: timestamptz
-
   _lte: timestamptz
-
   _neq: timestamptz
-
   _nin: [timestamptz?]
-
 }
 
 """
@@ -1401,9 +1096,7 @@ aggregate fields of "users"
 type users_aggregate_fields {
   count(
     columns: [users_select_column?]
-
     distinct: Boolean
-
   ): Int 
   max: users_max_fields 
   min: users_min_fields 
@@ -1414,11 +1107,8 @@ order by aggregate values of table "users"
 """
 input users_aggregate_order_by {
   count: order_by
-
   max: users_max_order_by
-
   min: users_min_order_by
-
 }
 
 """
@@ -1426,9 +1116,7 @@ input type for inserting array relation for remote table "users"
 """
 input users_arr_rel_insert_input {
   data: [users_insert_input?]?
-
   on_conflict: users_on_conflict
-
 }
 
 """
@@ -1436,21 +1124,13 @@ Boolean expression to filter rows from the table "users". All fields are combine
 """
 input users_bool_exp {
   _and: [users_bool_exp]
-
   _not: users_bool_exp
-
   _or: [users_bool_exp]
-
   id: uuid_comparison_exp
-
   name: String_comparison_exp
-
   rocket: String_comparison_exp
-
   timestamp: timestamptz_comparison_exp
-
   twitter: String_comparison_exp
-
 }
 
 """
@@ -1476,15 +1156,10 @@ input type for inserting data into table "users"
 """
 input users_insert_input {
   id: uuid
-
   name: String
-
   rocket: String
-
   timestamp: timestamptz
-
   twitter: String
-
 }
 
 """
@@ -1502,13 +1177,9 @@ order by max() on columns of table "users"
 """
 input users_max_order_by {
   name: order_by
-
   rocket: order_by
-
   timestamp: order_by
-
   twitter: order_by
-
 }
 
 """
@@ -1526,13 +1197,9 @@ order by min() on columns of table "users"
 """
 input users_min_order_by {
   name: order_by
-
   rocket: order_by
-
   timestamp: order_by
-
   twitter: order_by
-
 }
 
 """
@@ -1554,9 +1221,7 @@ input type for inserting object relation for remote table "users"
 """
 input users_obj_rel_insert_input {
   data: users_insert_input?
-
   on_conflict: users_on_conflict
-
 }
 
 """
@@ -1564,9 +1229,7 @@ on conflict condition type for table "users"
 """
 input users_on_conflict {
   constraint: users_constraint?
-
   update_columns: [users_update_column?]?
-
 }
 
 """
@@ -1574,15 +1237,10 @@ ordering options when selecting data from "users"
 """
 input users_order_by {
   id: order_by
-
   name: order_by
-
   rocket: order_by
-
   timestamp: order_by
-
   twitter: order_by
-
 }
 
 """
@@ -1608,15 +1266,10 @@ input type for updating data in table "users"
 """
 input users_set_input {
   id: uuid
-
   name: String
-
   rocket: String
-
   timestamp: timestamptz
-
   twitter: String
-
 }
 
 """
@@ -1644,31 +1297,14 @@ expression to compare columns of type uuid. All fields are combined with logical
 """
 input uuid_comparison_exp {
   _eq: uuid
-
   _gt: uuid
-
   _gte: uuid
-
   _in: [uuid?]
-
   _is_null: Boolean
-
   _lt: uuid
-
   _lte: uuid
-
   _neq: uuid
-
   _nin: [uuid?]
-
 }
-
-
-
-
-
-
-
-
 
 

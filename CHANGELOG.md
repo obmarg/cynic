@@ -13,6 +13,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 - Added support for introspecting a scalars `@specifiedBy` field on servers
   supporting GraphQL 2021
+- `cynic-introspection` can now output SDL
 
 ## v3.1.1 - 2023-06-22
 
