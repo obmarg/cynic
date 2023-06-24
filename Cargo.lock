@@ -912,6 +912,7 @@ dependencies = [
  "insta",
  "maplit",
  "reqwest",
+ "serde_json",
  "thiserror",
 ]
 

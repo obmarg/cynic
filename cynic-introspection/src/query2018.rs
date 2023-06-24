@@ -92,7 +92,7 @@ pub struct EnumValue {
 #[cynic(graphql_type = "__Field")]
 /// Represents one of the fields of an object or interface type
 pub struct Field {
-    /// The name of the value
+    /// The name of the field
     pub name: String,
     /// A description of the field
     pub description: Option<String>,
