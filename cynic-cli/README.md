@@ -28,8 +28,8 @@ specifically and GraphQL in general.
 ## Features
 
 - Can introspect a remote server and dump it's schema.
-- Detects GraphQL features the server supports and tailors introspection
-  queries appropriately.
+- Intelligent feature detection for introspection - checks which features a 
+  server supports and only introspects for those.
 
 ## Usage
 
