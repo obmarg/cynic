@@ -1,6 +1,6 @@
 [package]
 name = "cynic-cli"
-description = "A CLI for cynic, a code first GraphQL client for rust"
+description = "A CLI for cynic, a code first GraphQL client for Rust"
 keywords = ["graphql", "client", "introspection", "cli"]
 readme = "README.md"
 

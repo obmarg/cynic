@@ -35,7 +35,7 @@ specifically and GraphQL in general.
 
 ```console
 $ cynic help
-CLI for the cynic, the Rust GraphQL client library
+A CLI for cynic, a code first GraphQL client for Rust
 
 Usage: cynic [COMMAND]
 
