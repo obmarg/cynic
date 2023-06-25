@@ -39,7 +39,7 @@
 //! provides two different introspection queries in the modules [query2018] and [query2021]
 //! respectively.
 //!
-//! It also provides [CapabilityDetectionQuery], a query which can determine which version
+//! It also provides [CapabilitiesQuery], a query which can determine which version
 //! of the specification a GraphQL server supports.
 //!
 //! [1]: http://spec.graphql.org/October2021/#sec-Introspection
@@ -53,7 +53,7 @@ pub mod query2021;
 mod schema;
 
 #[doc(inline)]
-pub use detection::{CapabilityDetectionQuery, SpecificationVersion};
+pub use detection::{CapabilitiesQuery, SpecificationVersion};
 pub use query2018 as query;
 #[doc(inline)]
 pub use query2018::{DirectiveLocation, IntrospectionQuery};
