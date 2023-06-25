@@ -37,7 +37,7 @@ You'll also want to add a `[build-dependency]`:
 
 ```toml
 [build-dependency]
-cynic_codegen = { version = "3" }
+cynic-codegen = { version = "3" }
 ```
 
 You may also optionally want to install `insta` - a snapshot testing library
