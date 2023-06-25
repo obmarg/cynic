@@ -49,3 +49,6 @@ serde_json = { version = "1.0" }
 [package.metadata.docs.rs]
 features = ["all"]
 rustdoc-args = ["--cfg", "docsrs"]
+
+[package.metadata.dist]
+dist = false

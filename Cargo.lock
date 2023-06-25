@@ -983,7 +983,7 @@ dependencies = [
 
 [[package]]
 name = "cynic-cli"
-version = "0.1.0"
+version = "3.1.1"
 dependencies = [
  "clap 4.3.8",
  "colored",
