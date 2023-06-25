@@ -25,7 +25,11 @@ fn detection_query_with_2018_response() {
     .unwrap();
 
     assert_eq!(
-        capabilities.data.unwrap().version_supported(),
+        capabilities
+            .data
+            .unwrap()
+            .capabilities()
+            .version_supported(),
         SpecificationVersion::June2018
     );
 }
@@ -38,7 +42,7 @@ fn detection_query_with_2021_response() {
     .unwrap();
 
     assert_eq!(
-        response.data.unwrap().version_supported(),
+        response.data.unwrap().capabilities().version_supported(),
         SpecificationVersion::October2021
     );
 }

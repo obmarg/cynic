@@ -1,15 +1,15 @@
-//! Defines the types & results for running an introspection query against a server
-//! supporting the [2018 GraphQL Specification][1]
-//!
-//! [1]: https://spec.graphql.org/June2018/
+//! Defines the types & results for running an introspection query against
+//! a GraphQL server.
 
 #[derive(cynic::QueryFragment, Debug)]
 #[cynic(graphql_type = "Query")]
-/// The results of a [2018 GraphQL Specification][1] introspection query
+/// A [GraphQL Introspection Query][1] for Cynic.
 ///
-/// Can be used with cynic to run an introspection query.
+/// By default this runs a query compatible with the
+/// [June 2018 version of the GraphQL specification][2].
 ///
-/// [1]: https://spec.graphql.org/June2018/
+/// [1]: http://spec.graphql.org/October2021/#sec-Introspection
+/// [2]: https://spec.graphql.org/June2018/
 pub struct IntrospectionQuery {
     #[cynic(rename = "__schema")]
     /// The schema returned from the query
@@ -72,6 +72,9 @@ pub struct Type {
     /// A list of types that can be represented by this type if it is a union,
     /// or the set of types that implement this interface if it is an interface
     pub possible_types: Option<Vec<NamedType>>,
+    /// A URL pointing to a specification for this scalar, if there is one
+    #[cynic(rename = "specifiedByURL", feature = "2021")]
+    pub specified_by_url: Option<String>,
 }
 
 #[derive(cynic::QueryFragment, Debug)]
@@ -203,4 +206,4 @@ pub enum TypeKind {
 }
 
 #[cynic::schema("introspection")]
-pub(super) mod schema {}
+pub(crate) mod schema {}

@@ -1,11 +1,11 @@
-use cynic_introspection::{query2018, query2021};
+use cynic_introspection::{IntrospectionQuery, SpecificationVersion};
 
 #[test]
 fn test_starwars_sdl_conversion() {
     use cynic::http::ReqwestBlockingExt;
-    use cynic::QueryBuilder;
 
-    let query = query2018::IntrospectionQuery::build(());
+    let query =
+        IntrospectionQuery::with_capabilities(SpecificationVersion::June2018.capabilities());
 
     let result = reqwest::blocking::Client::new()
         .post("https://swapi-graphql.netlify.app/.netlify/functions/index")
@@ -22,9 +22,9 @@ fn test_starwars_sdl_conversion() {
 #[test]
 fn test_spacex_sdl_conversion() {
     use cynic::http::ReqwestBlockingExt;
-    use cynic::QueryBuilder;
 
-    let query = query2021::IntrospectionQuery::build(());
+    let query =
+        IntrospectionQuery::with_capabilities(SpecificationVersion::October2021.capabilities());
 
     let result = reqwest::blocking::Client::new()
         .post("https://spacex-production.up.railway.app/")

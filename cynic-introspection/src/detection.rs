@@ -1,7 +1,9 @@
 //! Defines types for an introspection query that can tell what a GraphQL server
 //! supports.
 
-use super::query2018::schema;
+use crate::capabilities::CapabilitySet;
+
+use super::query::schema;
 
 #[derive(cynic::QueryFragment, Debug)]
 #[cynic(graphql_type = "Query")]
@@ -16,16 +18,15 @@ use super::query2018::schema;
 /// use cynic::{QueryBuilder, http::ReqwestBlockingExt};
 /// use cynic_introspection::CapabilitiesQuery;
 ///
-/// // We can run an introspection query and unwrap the data contained within
-/// let capabilities = reqwest::blocking::Client::new()
+/// let data = reqwest::blocking::Client::new()
 ///     .post("https://swapi-graphql.netlify.app/.netlify/functions/index")
 ///     .run_graphql(CapabilitiesQuery::build(()))
 ///     .unwrap()
 ///     .data
 ///     .unwrap();
 ///
-/// let version_supported = capabilities.version_supported();
-/// println!("This server supports GraphQL {version_supported:?}");
+/// let capabilities = data.capabilities();
+/// println!("This server supports {capabilities:?}");
 /// ```
 pub struct CapabilitiesQuery {
     #[cynic(rename = "__type")]
@@ -34,8 +35,14 @@ pub struct CapabilitiesQuery {
 }
 
 impl CapabilitiesQuery {
-    /// The version of the GraphQL specification this server supports
-    pub fn version_supported(&self) -> SpecificationVersion {
+    /// The capabilities that were detected by this query
+    pub fn capabilities(&self) -> CapabilitySet {
+        CapabilitySet {
+            specification_version: self.version_supported(),
+        }
+    }
+
+    fn version_supported(&self) -> SpecificationVersion {
         let Some(type_type) = &self.type_type else {
             return SpecificationVersion::Unknown
         };
@@ -53,13 +60,14 @@ impl CapabilitiesQuery {
 }
 
 /// Versions of the GraphQL specification that the CapabilitiesQuery can detect.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 #[non_exhaustive]
 pub enum SpecificationVersion {
     /// We were unable to determine which version of the GraphQL specification
     /// this server supports.
     Unknown,
     /// The GraphQL specification published in June 2018
+    #[default]
     June2018,
     /// The GraphQL specification published in October 2021
     October2021,

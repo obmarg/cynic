@@ -1,4 +1,4 @@
-use cynic_introspection::{query2018::IntrospectionQuery, query2021};
+use cynic_introspection::{query::IntrospectionQuery, SpecificationVersion};
 
 #[test]
 fn test_2018_introspection_query() {
@@ -47,10 +47,8 @@ fn test_2018_schema_conversion() {
     insta::assert_debug_snapshot!(result.data.unwrap().into_schema().unwrap());
 }
 
-fn build_2021_query() -> cynic::Operation<query2021::IntrospectionQuery, ()> {
-    use cynic::QueryBuilder;
-
-    query2021::IntrospectionQuery::build(())
+fn build_2021_query() -> cynic::Operation<IntrospectionQuery, ()> {
+    IntrospectionQuery::with_capabilities(SpecificationVersion::October2021.capabilities())
 }
 
 #[test]
