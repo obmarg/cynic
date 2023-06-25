@@ -1,0 +1,14 @@
+---
+source: cynic/tests/features.rs
+expression: operation.query
+---
+query QueryWithFeatures {
+  a_new_hope: film(id: "ZmlsbXM6MQ==") {
+    title
+  }
+  empire_strikes_back: film(id: "ZmlsbXM6Mg==") {
+    title
+  }
+}
+
+

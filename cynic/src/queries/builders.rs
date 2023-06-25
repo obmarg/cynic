@@ -1,4 +1,4 @@
-use std::{borrow::Cow, marker::PhantomData};
+use std::{borrow::Cow, collections::HashSet, marker::PhantomData, rc::Rc};
 
 use crate::{coercions::CoercesTo, schema, variables::VariableDefinition};
 
@@ -10,6 +10,7 @@ pub struct SelectionBuilder<'a, SchemaType, VariablesFields> {
     selection_set: &'a mut SelectionSet,
     has_typename: bool,
     recurse_depth: Option<u8>,
+    features_enabled: Rc<HashSet<String>>,
 }
 
 impl<'a, T, U> SelectionBuilder<'a, Vec<T>, U> {
@@ -19,6 +20,7 @@ impl<'a, T, U> SelectionBuilder<'a, Vec<T>, U> {
             has_typename: self.has_typename,
             phantom: PhantomData,
             recurse_depth: self.recurse_depth,
+            features_enabled: self.features_enabled,
         }
     }
 }
@@ -30,17 +32,22 @@ impl<'a, T, U> SelectionBuilder<'a, Option<T>, U> {
             has_typename: self.has_typename,
             phantom: PhantomData,
             recurse_depth: self.recurse_depth,
+            features_enabled: self.features_enabled,
         }
     }
 }
 
 impl<'a, SchemaType, VariablesFields> SelectionBuilder<'a, SchemaType, VariablesFields> {
-    pub(crate) fn new(selection_set: &'a mut SelectionSet) -> Self {
+    pub(crate) fn new(
+        selection_set: &'a mut SelectionSet,
+        features_enabled: &Rc<HashSet<String>>,
+    ) -> Self {
         SelectionBuilder {
             phantom: PhantomData,
             has_typename: false,
             selection_set,
             recurse_depth: None,
+            features_enabled: Rc::clone(features_enabled),
         }
     }
 
@@ -59,6 +66,7 @@ impl<'a, SchemaType, VariablesFields> SelectionBuilder<'a, SchemaType, Variables
     {
         FieldSelectionBuilder {
             recurse_depth: self.recurse_depth,
+            features_enabled: Rc::clone(&self.features_enabled),
             field: self.push_selection(FieldMarker::NAME),
             phantom: PhantomData,
         }
@@ -80,6 +88,7 @@ impl<'a, SchemaType, VariablesFields> SelectionBuilder<'a, SchemaType, Variables
     {
         FieldSelectionBuilder {
             recurse_depth: self.recurse_depth,
+            features_enabled: Rc::clone(&self.features_enabled),
             field: self.push_selection(FieldMarker::NAME),
             phantom: PhantomData,
         }
@@ -105,6 +114,7 @@ impl<'a, SchemaType, VariablesFields> SelectionBuilder<'a, SchemaType, Variables
 
         Some(FieldSelectionBuilder {
             recurse_depth: Some(new_depth),
+            features_enabled: Rc::clone(&self.features_enabled),
             field: self.push_selection(FieldMarker::NAME),
             phantom: PhantomData,
         })
@@ -142,7 +152,16 @@ impl<'a, SchemaType, VariablesFields> SelectionBuilder<'a, SchemaType, Variables
         InlineFragmentBuilder {
             inline_fragment,
             phantom: PhantomData,
+            features_enabled: Rc::clone(&self.features_enabled),
         }
+    }
+
+    /// Checks if a feature has been enabled for this operation.
+    ///
+    /// QueryFragment implementations can use this to avoid sending parts of
+    /// queries to servers that aren't going to understand them.
+    pub fn is_feature_enabled(&self, feature: &str) -> bool {
+        self.features_enabled.contains(feature)
     }
 }
 
@@ -152,6 +171,7 @@ pub struct FieldSelectionBuilder<'a, Field, SchemaType, VariablesFields> {
     phantom: PhantomData<fn() -> (Field, SchemaType, VariablesFields)>,
     field: &'a mut FieldSelection,
     recurse_depth: Option<u8>,
+    features_enabled: Rc<HashSet<String>>,
 }
 
 impl<'a, Field, FieldSchemaType, VariablesFields>
@@ -190,7 +210,7 @@ impl<'a, Field, FieldSchemaType, VariablesFields>
     {
         SelectionBuilder {
             recurse_depth: self.recurse_depth,
-            ..SelectionBuilder::new(&mut self.field.children)
+            ..SelectionBuilder::new(&mut self.field.children, &self.features_enabled)
         }
     }
 }
@@ -199,6 +219,7 @@ impl<'a, Field, FieldSchemaType, VariablesFields>
 pub struct InlineFragmentBuilder<'a, SchemaType, VariablesFields> {
     phantom: PhantomData<fn() -> (SchemaType, VariablesFields)>,
     inline_fragment: &'a mut InlineFragment,
+    features_enabled: Rc<HashSet<String>>,
 }
 
 impl<'a, SchemaType, VariablesFields> InlineFragmentBuilder<'a, SchemaType, VariablesFields> {
@@ -215,6 +236,7 @@ impl<'a, SchemaType, VariablesFields> InlineFragmentBuilder<'a, SchemaType, Vari
         InlineFragmentBuilder {
             inline_fragment: self.inline_fragment,
             phantom: PhantomData,
+            features_enabled: self.features_enabled,
         }
     }
 
@@ -226,7 +248,7 @@ impl<'a, SchemaType, VariablesFields> InlineFragmentBuilder<'a, SchemaType, Vari
     where
         VariablesFields: VariableMatch<InnerVariablesFields>,
     {
-        SelectionBuilder::new(&mut self.inline_fragment.children)
+        SelectionBuilder::new(&mut self.inline_fragment.children, &self.features_enabled)
     }
 }
 

@@ -189,7 +189,7 @@ pub use {
     self::core::{Enum, InlineFragments, InputObject, QueryFragment},
     builders::{MutationBuilder, QueryBuilder, SubscriptionBuilder},
     id::Id,
-    operation::{Operation, StreamingOperation},
+    operation::{Operation, OperationBuildError, OperationBuilder, StreamingOperation},
     result::*,
     variables::{QueryVariables, QueryVariablesFields},
 };

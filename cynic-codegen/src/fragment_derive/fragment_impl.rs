@@ -46,6 +46,7 @@ struct FieldSelection<'a> {
     alias: Option<String>,
     recurse_limit: Option<u8>,
     span: proc_macro2::Span,
+    requires_feature: Option<String>,
 }
 
 struct SpreadSelection {
@@ -159,6 +160,10 @@ fn process_field<'a>(
         alias: field.alias(),
         graphql_field_kind: schema_field.field_type.inner_type(schema).as_kind(),
         flatten: *field.flatten,
+        requires_feature: field
+            .feature
+            .as_ref()
+            .map(|feature| feature.as_ref().clone()),
     }))
 }
 
@@ -267,7 +272,7 @@ impl quote::ToTokens for FieldSelection<'_> {
             },
         };
 
-        tokens.append_all(match selection_mode {
+        let select_tokens = match selection_mode {
             SelectionMode::Composite => {
                 quote_spanned! { self.span =>
                     let mut field_builder = builder
@@ -343,7 +348,19 @@ impl quote::ToTokens for FieldSelection<'_> {
                     #arguments
                 }
             }
-        });
+        };
+
+        match &self.requires_feature {
+            Some(required_feature) => {
+                let string_lit = proc_macro2::Literal::string(required_feature);
+                tokens.append_all(quote! {
+                    if builder.is_feature_enabled(#string_lit) {
+                        #select_tokens
+                    }
+                })
+            }
+            _ => tokens.append_all(select_tokens),
+        }
     }
 }
 

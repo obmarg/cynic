@@ -1,0 +1,11 @@
+---
+source: cynic/tests/features.rs
+expression: operation.query
+---
+query QueryWithFeatures {
+  empire_strikes_back: film(id: "ZmlsbXM6Mg==") {
+    title
+  }
+}
+
+

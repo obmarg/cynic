@@ -108,6 +108,21 @@ use super::fragment_derive;
         }
     ),
 )]
+#[case::feature_flagging(
+    "feature_flagging",
+    parse_quote!(
+        #[cynic(
+            schema_path = "../cynic/tests/test-schema.graphql",
+            schema_module = "schema",
+            graphql_type = "Query"
+        )]
+        struct MyQuery {
+            __typename: String,
+            #[cynic(feature = "2018")]
+            filteredPosts: Vec<BlogPostOutput>,
+        }
+    ),
+)]
 fn snapshot_fragment_derive(#[case] snapshot_name: &str, #[case] input: syn::DeriveInput) {
     let tokens = fragment_derive(&input).unwrap();
 
