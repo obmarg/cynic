@@ -14,7 +14,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 - Added support for introspecting a scalars `@specifiedBy` field on servers
   supporting GraphQL 2021
 - `cynic-introspection` can now output SDL
-- Added `CapabilityDetectionQuery` to `cynic-introspection`, which can detect
+- Added `CapabilitiesQuery` to `cynic-introspection`, which can detect
   which version of the GraphQL specification a server supports.
 
 ## v3.1.1 - 2023-06-22

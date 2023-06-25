@@ -14,12 +14,12 @@ use super::query2018::schema;
 ///
 /// ```rust
 /// use cynic::{QueryBuilder, http::ReqwestBlockingExt};
-/// use cynic_introspection::CapabilityDetectionQuery;
+/// use cynic_introspection::CapabilitiesQuery;
 ///
 /// // We can run an introspection query and unwrap the data contained within
 /// let capabilities = reqwest::blocking::Client::new()
 ///     .post("https://swapi-graphql.netlify.app/.netlify/functions/index")
-///     .run_graphql(CapabilityDetectionQuery::build(()))
+///     .run_graphql(CapabilitiesQuery::build(()))
 ///     .unwrap()
 ///     .data
 ///     .unwrap();
@@ -27,13 +27,13 @@ use super::query2018::schema;
 /// let version_supported = capabilities.version_supported();
 /// println!("This server supports GraphQL {version_supported:?}");
 /// ```
-pub struct CapabilityDetectionQuery {
+pub struct CapabilitiesQuery {
     #[cynic(rename = "__type")]
     #[arguments(name: "__Type")]
     type_type: Option<Type>,
 }
 
-impl CapabilityDetectionQuery {
+impl CapabilitiesQuery {
     /// The version of the GraphQL specification this server supports
     pub fn version_supported(&self) -> SpecificationVersion {
         let Some(type_type) = &self.type_type else {
@@ -52,7 +52,7 @@ impl CapabilityDetectionQuery {
     }
 }
 
-/// Versions of the GraphQL specification that the CapabilityDetectionQuery can detect.
+/// Versions of the GraphQL specification that the CapabilitiesQuery can detect.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, PartialOrd, Ord)]
 #[non_exhaustive]
 pub enum SpecificationVersion {
