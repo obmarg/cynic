@@ -1,0 +1,3 @@
+bin.name = "cynic"
+status = "success"
+args = "help introspect"

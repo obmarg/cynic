@@ -1,15 +1,16 @@
 [workspace]
 members = [
     "cynic",
+    "cynic-cli",
     "cynic-codegen",
+    "cynic-introspection",
     "cynic-proc-macros",
-    "examples",
     "cynic-querygen",
     "cynic-querygen-web",
-    "cynic-introspection",
+    "examples",
+    "schemas/github",
     "tests/querygen-compile-run",
-    "tests/ui-tests",
-    "schemas/github"
+    "tests/ui-tests"
 ]
 
 default-members = [

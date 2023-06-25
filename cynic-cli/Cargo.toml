@@ -1,0 +1,21 @@
+[package]
+name = "cynic-cli"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[[bin]]
+name = "cynic"
+path = "src/main.rs"
+
+[dependencies]
+clap = { version = "4", features = ["derive"] }
+colored = "2"
+cynic = { path = "../cynic", version = "3.1.1", features = ["http-reqwest-blocking"] }
+cynic-introspection = { path = "../cynic-introspection", version = "3.1.1" }
+reqwest = { version = "0.11", features = ["blocking"] }
+thiserror = "1"
+
+[dev-dependencies]
+trycmd = "0.14"
