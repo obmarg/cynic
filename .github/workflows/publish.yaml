@@ -28,6 +28,7 @@ jobs:
 
   # cargo-dist stuff follows
   create-release:
+    needs: publish
     runs-on: ubuntu-latest
     permissions:
       contents: write
