@@ -2,7 +2,7 @@ use std::borrow::Cow;
 
 use crate::{queries::SelectionBuilder, QueryVariablesFields};
 
-/// Indicates that a type may be used as part of a graphql query.
+/// A trait that marks a type as part of a GraphQL query.
 ///
 /// This will usually be derived, but can be manually implemented if required.
 pub trait QueryFragment: Sized {

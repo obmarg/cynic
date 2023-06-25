@@ -133,6 +133,9 @@ pub struct FragmentDeriveField {
 
     #[darling(default)]
     alias: SpannedValue<bool>,
+
+    #[darling(default)]
+    pub(super) feature: Option<SpannedValue<String>>,
 }
 
 impl FragmentDeriveField {
@@ -226,6 +229,7 @@ mod tests {
                         spread: false.into(),
                         rename: None,
                         alias: false.into(),
+                        feature: None,
                     },
                     FragmentDeriveField {
                         ident: Some(format_ident!("field_two")),
@@ -236,6 +240,7 @@ mod tests {
                         spread: false.into(),
                         rename: None,
                         alias: false.into(),
+                        feature: None,
                     },
                     FragmentDeriveField {
                         ident: Some(format_ident!("field_three")),
@@ -246,6 +251,7 @@ mod tests {
                         spread: false.into(),
                         rename: Some("fieldThree".to_string().into()),
                         alias: false.into(),
+                        feature: None,
                     },
                     FragmentDeriveField {
                         ident: Some(format_ident!("some_spread")),
@@ -256,6 +262,7 @@ mod tests {
                         spread: true.into(),
                         rename: Some("fieldThree".to_string().into()),
                         alias: true.into(),
+                        feature: None,
                     },
                 ],
             )),
@@ -286,6 +293,7 @@ mod tests {
                         spread: false.into(),
                         rename: None,
                         alias: false.into(),
+                        feature: None,
                     },
                     FragmentDeriveField {
                         ident: Some(format_ident!("field_two")),
@@ -296,6 +304,7 @@ mod tests {
                         spread: false.into(),
                         rename: None,
                         alias: false.into(),
+                        feature: None,
                     },
                     FragmentDeriveField {
                         ident: Some(format_ident!("field_three")),
@@ -306,6 +315,7 @@ mod tests {
                         spread: false.into(),
                         rename: None,
                         alias: false.into(),
+                        feature: None,
                     },
                     FragmentDeriveField {
                         ident: Some(format_ident!("some_spread")),
@@ -316,6 +326,7 @@ mod tests {
                         spread: true.into(),
                         rename: None,
                         alias: false.into(),
+                        feature: None,
                     },
                     FragmentDeriveField {
                         ident: Some(format_ident!("some_other_spread")),
@@ -326,6 +337,7 @@ mod tests {
                         spread: true.into(),
                         rename: None,
                         alias: false.into(),
+                        feature: None,
                     },
                     FragmentDeriveField {
                         ident: Some(format_ident!("some_other_spread")),
@@ -336,6 +348,7 @@ mod tests {
                         spread: true.into(),
                         rename: None,
                         alias: true.into(),
+                        feature: None,
                     },
                 ],
             )),
@@ -390,6 +403,7 @@ mod tests {
                         spread: false.into(),
                         rename: None,
                         alias: false.into(),
+                        feature: None,
                     },
                     FragmentDeriveField {
                         ident: Some(format_ident!("field_two")),
@@ -400,6 +414,7 @@ mod tests {
                         spread: false.into(),
                         rename: None,
                         alias: false.into(),
+                        feature: None,
                     },
                     FragmentDeriveField {
                         ident: Some(format_ident!("field_three")),
@@ -410,6 +425,7 @@ mod tests {
                         spread: false.into(),
                         rename: None,
                         alias: false.into(),
+                        feature: None,
                     },
                 ],
             )),

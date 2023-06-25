@@ -1,4 +1,5 @@
 use proc_macro2::TokenStream;
+use quote::quote_spanned;
 
 use {
     super::FragmentDeriveField,
@@ -30,6 +31,7 @@ struct Field {
     is_spread: bool,
     is_flattened: bool,
     is_recurse: bool,
+    is_feature_flagged: bool,
 }
 
 impl<'a> DeserializeImpl<'a> {
@@ -116,8 +118,9 @@ impl quote::ToTokens for StandardDeserializeImpl<'_> {
 
         let field_unwraps = self.fields.iter().zip(&serialized_names).map(|(field, serialized_name)| {
             let rust_name = &field.rust_name;
-            if field.is_recurse {
-                quote! {
+            if field.is_recurse || field.is_feature_flagged {
+                let span = rust_name.span();
+                quote_spanned!{ span =>
                     let #rust_name = #rust_name.unwrap_or_default();
                 }
             } else {
@@ -279,5 +282,6 @@ fn process_field(field: &FragmentDeriveField, schema_field: Option<&schema::Fiel
         is_spread: *field.spread,
         is_flattened: *field.flatten,
         is_recurse: field.recurse.is_some(),
+        is_feature_flagged: field.feature.is_some(),
     }
 }

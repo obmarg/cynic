@@ -232,6 +232,9 @@ Each field can also have it's own attributes:
 - The `spread` attr can be used to spread another `QueryFragment`s into the
   current `QueryFragment`, if each of the `QueryFragment`s point at the same
   GraphQL type.
+- The `feature` attribute can be used to feature flag parts of a query,
+  allowing cynic to support different versions of a schema with the same
+  `QueryFragments`.  See [feature flagging queries][2] for more details.
 
 ### Related
 
@@ -242,3 +245,4 @@ Each field can also have it's own attributes:
 [recursive-queries]: ./recursive-queries.html
 [quickstart]: ../quickstart.html
 [gql-arguments]: https://graphql.org/learn/queries/#arguments
+[2]: ../advanced/feature-flags.md

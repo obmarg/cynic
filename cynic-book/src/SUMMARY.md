@@ -17,3 +17,5 @@
   - [v1 to v2](./upgrading/v1-v2.md)
   - [v2 to v3](./upgrading/v2-v3.md)
 - [Sending HTTP Requests Manually](./manual-http-requests.md)
+- [Advanced Use Cases](./advanced/index.md)
+  - [Feature Flagged Queries](./advanced/feature-flags.md)
