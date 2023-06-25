@@ -9,6 +9,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v3.2.0 - 2023-06-25
+
 ### New Features
 
 - Added support for introspecting the `specifiedByUrl` field of scalars on
