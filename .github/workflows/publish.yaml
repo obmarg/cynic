@@ -27,7 +27,7 @@ jobs:
           body_path: ${{ github.workspace }}/release-text.md
 
   upload-assets:
-    needs: publish
+    needs: publish-crates
     strategy:
       matrix:
         os:
