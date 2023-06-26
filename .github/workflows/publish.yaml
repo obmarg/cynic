@@ -26,7 +26,7 @@ jobs:
           draft: true
           body_path: ${{ github.workspace }}/release-text.md
 
-  upload-assets:
+  upload-artifacts:
     needs: publish-crates
     strategy:
       matrix:
