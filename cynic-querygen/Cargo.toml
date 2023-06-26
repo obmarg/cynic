@@ -24,6 +24,3 @@ uuid = { version = "1", features = ["v4"] }
 assert_matches = "1.4"
 insta = "1.17.1"
 rstest = "0.11"
-
-[package.metadata.dist]
-dist = false
