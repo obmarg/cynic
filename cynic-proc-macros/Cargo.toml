@@ -21,6 +21,6 @@ rkyv = ["cynic-codegen/rkyv"]
 proc-macro = true
 
 [dependencies]
-cynic-codegen = { path = "../cynic-codegen", version = "3.2.0" }
+cynic-codegen = { path = "../cynic-codegen", version = "3.2.1" }
 quote = "1"
 syn = "1.0.87"
