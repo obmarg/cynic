@@ -5,7 +5,7 @@ on:
     tags: ["v*"]
 
 jobs:
-  publish:
+  publish-crates:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -41,3 +41,16 @@ jobs:
         with:
           bin: cynic
           token: ${{ secrets.GITHUB_TOKEN }}
+
+  publish-release:
+     needs: [upload-artifacts]
+     permissions:
+       contents: write
+     runs-on: ubuntu-latest
+     env:
+       GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+     steps:
+       - uses: actions/checkout@v3
+       - name: mark release as non-draft
+         run: |
+           gh release edit ${{ github.ref_name }} --draft=false
