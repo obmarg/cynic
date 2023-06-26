@@ -1,8 +1,8 @@
 use std::fmt::{self, Display, Write};
 
 use crate::{
-    Deprecated, EnumType, EnumValue, Field, FieldType, FieldWrapping, InputObjectType, InputValue,
-    InterfaceType, ObjectType, ScalarType, Type, UnionType, WrappingType,
+    Deprecated, EnumType, EnumValue, Field, FieldType, InputObjectType, InputValue, InterfaceType,
+    ObjectType, ScalarType, Type, UnionType,
 };
 
 use super::Schema;
@@ -27,19 +27,18 @@ struct SchemaDisplay<'a>(&'a Schema);
 impl Display for SchemaDisplay<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let schema = &self.0;
-        writeln!(f, "schema {{")?;
-        {
-            let f = &mut indented(f);
-            writeln!(f, "query: {}", schema.query_type)?;
+        if self.should_should_schema_definition() {
+            writeln!(f, "schema {{")?;
+            let f2 = &mut indented(f);
+            writeln!(f2, "query: {}", schema.query_type)?;
             if let Some(mutation_type) = &schema.mutation_type {
-                writeln!(f, "mutation: {}", mutation_type)?;
+                writeln!(f2, "mutation: {}", mutation_type)?;
             }
-
             if let Some(subscription_type) = &schema.subscription_type {
-                writeln!(f, "subscription: {}", subscription_type)?;
+                writeln!(f2, "subscription: {}", subscription_type)?;
             }
+            writeln!(f, "}}")?;
         }
-        writeln!(f, "}}")?;
 
         for ty in &schema.types {
             let ty = TypeDisplay(ty);
@@ -47,6 +46,24 @@ impl Display for SchemaDisplay<'_> {
         }
 
         Ok(())
+    }
+}
+
+impl SchemaDisplay<'_> {
+    fn should_should_schema_definition(&self) -> bool {
+        self.0.query_type != "Query"
+            || self
+                .0
+                .mutation_type
+                .as_ref()
+                .map(|mutation_type| mutation_type != "Mutation")
+                .unwrap_or_default()
+            || self
+                .0
+                .subscription_type
+                .as_ref()
+                .map(|subscription_type| subscription_type != "Subscription")
+                .unwrap_or_default()
     }
 }
 
@@ -113,7 +130,7 @@ impl std::fmt::Display for TypeDisplay<'_> {
                 write!(f, "{}", DescriptionDisplay(description.as_deref()))?;
                 writeln!(f, "enum {name} {{")?;
                 for value in values {
-                    writeln!(indented(f), "{}", EnumValueDisplay(value))?;
+                    write!(indented(f), "{}", EnumValueDisplay(value))?;
                 }
                 writeln!(f, "}}\n")
             }
@@ -131,22 +148,39 @@ impl std::fmt::Display for TypeDisplay<'_> {
                 }
                 writeln!(f, "}}\n")
             }
-            Type::Union(UnionType {
-                name,
-                description,
-                possible_types,
-            }) => {
-                write!(f, "{}", DescriptionDisplay(description.as_deref()))?;
-                write!(f, "union {name} = ")?;
-                for (i, ty) in possible_types.iter().enumerate() {
-                    if i != 0 {
-                        write!(f, " | ")?;
-                    }
-                    write!(f, "{ty}")?;
-                }
-                writeln!(f, "\n")
+            Type::Union(union) => {
+                write!(f, "{}", UnionDisplay(union))
             }
         }
+    }
+}
+
+struct UnionDisplay<'a>(&'a UnionType);
+
+impl Display for UnionDisplay<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let UnionType {
+            name,
+            description,
+            possible_types,
+        } = self.0;
+        write!(f, "{}", DescriptionDisplay(description.as_deref()))?;
+        let wrap = possible_types.iter().map(String::len).sum::<usize>() > 80;
+
+        write!(f, "union {name} =")?;
+        if wrap {
+            write!(f, "\n   ")?;
+        }
+        for (i, ty) in possible_types.iter().enumerate() {
+            if i != 0 {
+                if wrap {
+                    write!(f, "\n ")?;
+                }
+                write!(f, " |")?;
+            }
+            write!(f, " {ty}")?;
+        }
+        writeln!(f, "\n")
     }
 }
 
@@ -178,20 +212,51 @@ impl Display for FieldDisplay<'_> {
         write!(f, "{}", DescriptionDisplay(description.as_deref()))?;
         write!(f, "{name}")?;
         if !args.is_empty() {
-            writeln!(f, "(")?;
-            for arg in args {
-                writeln!(indented(f), "{}", InputValueDisplay(arg))?;
+            let wrap = self.should_wrap_arguments();
+            if wrap {
+                writeln!(f, "(")?;
+                for (i, arg) in args.iter().enumerate() {
+                    if i != 0 {
+                        writeln!(f)?;
+                    }
+                    write!(indented(f), "{}", InputValueDisplay(arg))?;
+                }
+                write!(f, "\n)")?;
+            } else {
+                write!(f, "(")?;
+                for (i, arg) in args.iter().enumerate() {
+                    if i != 0 {
+                        write!(f, ", ")?;
+                    }
+                    write!(f, "{}", InputValueDisplay(arg))?;
+                }
+                write!(f, ")")?;
             }
-            write!(f, ")")?;
         }
         write!(
             f,
-            ": {} {}",
+            ": {}{}",
             FieldTypeDisplay(ty),
             DeprecatedDisplay(deprecated)
         )?;
 
         Ok(())
+    }
+}
+
+impl FieldDisplay<'_> {
+    /// Hacky heuristic for whether we should wrap the field arguments
+    fn should_wrap_arguments(&self) -> bool {
+        if self.0.args.iter().any(|arg| arg.description.is_some()) {
+            return true;
+        }
+        let arg_len = self
+            .0
+            .args
+            .iter()
+            .map(|arg| arg.name.len() + arg.ty.name.len())
+            .sum::<usize>();
+        arg_len + self.0.ty.name.len() > 80
     }
 }
 
@@ -218,8 +283,7 @@ struct FieldTypeDisplay<'a>(&'a FieldType);
 
 impl Display for FieldTypeDisplay<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let FieldType { wrapping, name } = self.0;
-        write!(f, "{}", WrappingDisplay(wrapping, name))
+        write!(f, "{}", self.0)
     }
 }
 
@@ -263,8 +327,8 @@ impl Display for DeprecatedDisplay<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self.0 {
             Deprecated::No => {}
-            Deprecated::Yes(None) => write!(f, "@deprecated")?,
-            Deprecated::Yes(Some(reason)) => write!(f, "@deprecated(reason: {reason})")?,
+            Deprecated::Yes(None) => write!(f, " @deprecated")?,
+            Deprecated::Yes(Some(reason)) => write!(f, " @deprecated(reason: \"{reason}\")")?,
         }
         Ok(())
     }
@@ -277,29 +341,6 @@ impl Display for SpecifiedByDisplay<'_> {
         match self.0 {
             None => {}
             Some(url) => write!(f, " @specifiedBy(url: {url})")?,
-        }
-        Ok(())
-    }
-}
-
-struct WrappingDisplay<'a>(&'a FieldWrapping, &'a str);
-
-impl Display for WrappingDisplay<'_> {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        let WrappingDisplay(wrapping, inner_text) = self;
-        let wrapping_types = wrapping.into_iter().collect::<Vec<_>>();
-        for wrapping_type in &wrapping_types {
-            match wrapping_type {
-                WrappingType::List => write!(f, "[")?,
-                WrappingType::NonNull => {}
-            }
-        }
-        write!(f, "{inner_text}")?;
-        for wrapping_type in wrapping_types.iter().rev() {
-            match wrapping_type {
-                WrappingType::List => write!(f, "]")?,
-                WrappingType::NonNull => write!(f, "?")?,
-            }
         }
         Ok(())
     }
