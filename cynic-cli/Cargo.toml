@@ -4,9 +4,7 @@ description = "A CLI for cynic, a code first GraphQL client for Rust"
 keywords = ["graphql", "client", "introspection", "cli"]
 readme = "README.md"
 
-version = "3.2.1"
-#version = { workspace = true }
-
+version = { workspace = true }
 authors = { workspace = true }
 edition = { workspace = true }
 homepage = { workspace = true }

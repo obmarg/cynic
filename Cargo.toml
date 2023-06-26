@@ -14,7 +14,12 @@ members = [
 ]
 
 default-members = [
-    "cynic", "cynic-codegen", "cynic-proc-macros"
+    "cynic", 
+    "cynic-cli",
+    "cynic-codegen", 
+    "cynic-introspection",
+    "cynic-proc-macros",
+    "cynic-querygen"
 ]
 
 [workspace.package]
