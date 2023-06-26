@@ -9,6 +9,18 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+### Bug Fixes
+
+- Various SDL output fixes in `cynic-introspection`:
+  - It no longer prints `?` where it means `!`
+  - It omits the schema definition if all the root operation types are using
+    default names
+  - Enum values no longer have empty lines between them
+  - We no longer erronously print the `Boolean` scalar
+  - Fields now have a hacky heuristic that decides when to wrap them
+  - Unions also have a wrapping heuristic
+  - Deprecation reasons will now correclty be wrapped in strings
+
 ## v3.2.1 - 2023-06-26
 
 ### Changes

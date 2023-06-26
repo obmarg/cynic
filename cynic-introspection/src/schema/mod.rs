@@ -163,7 +163,7 @@ impl ScalarType {
     pub fn is_builtin(&self) -> bool {
         matches!(
             self.name.as_str(),
-            "String" | "Bool" | "Int" | "ID" | "Float"
+            "String" | "Boolean" | "Int" | "ID" | "Float"
         )
     }
 }
