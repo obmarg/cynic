@@ -9,6 +9,12 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v3.2.1 - 2023-06-26
+
+### Changes
+
+- Building binaries with different GitHub action
+
 ## v3.2.0 - 2023-06-25
 
 ### New Features
