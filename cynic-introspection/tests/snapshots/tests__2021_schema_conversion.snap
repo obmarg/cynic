@@ -5198,6 +5198,16 @@ Schema {
                         },
                         deprecated: No,
                     },
+                    Field {
+                        name: "_service",
+                        description: None,
+                        args: [],
+                        ty: FieldType {
+                            wrapping: [NonNull],
+                            name: "_Service",
+                        },
+                        deprecated: No,
+                    },
                 ],
                 interfaces: [],
             },
@@ -8105,6 +8115,68 @@ Schema {
                 ],
             },
         ),
+        Enum(
+            EnumType {
+                name: "link__Purpose",
+                description: None,
+                values: [
+                    EnumValue {
+                        name: "SECURITY",
+                        description: Some(
+                            "`SECURITY` features provide metadata necessary to securely resolve fields.",
+                        ),
+                        deprecated: No,
+                    },
+                    EnumValue {
+                        name: "EXECUTION",
+                        description: Some(
+                            "`EXECUTION` features provide metadata necessary for operation execution.",
+                        ),
+                        deprecated: No,
+                    },
+                ],
+            },
+        ),
+        Scalar(
+            ScalarType {
+                name: "link__Import",
+                description: None,
+                specified_by_url: None,
+            },
+        ),
+        Scalar(
+            ScalarType {
+                name: "federation__FieldSet",
+                description: None,
+                specified_by_url: None,
+            },
+        ),
+        Scalar(
+            ScalarType {
+                name: "_Any",
+                description: None,
+                specified_by_url: None,
+            },
+        ),
+        Object(
+            ObjectType {
+                name: "_Service",
+                description: None,
+                fields: [
+                    Field {
+                        name: "sdl",
+                        description: None,
+                        args: [],
+                        ty: FieldType {
+                            wrapping: [],
+                            name: "String",
+                        },
+                        deprecated: No,
+                    },
+                ],
+                interfaces: [],
+            },
+        ),
         Object(
             ObjectType {
                 name: "__Schema",
@@ -8864,6 +8936,243 @@ Schema {
             ],
             locations: [
                 Schema,
+            ],
+        },
+        Directive {
+            name: "link",
+            description: None,
+            args: [
+                InputValue {
+                    name: "url",
+                    description: None,
+                    ty: FieldType {
+                        wrapping: [],
+                        name: "String",
+                    },
+                    default_value: None,
+                },
+                InputValue {
+                    name: "as",
+                    description: None,
+                    ty: FieldType {
+                        wrapping: [],
+                        name: "String",
+                    },
+                    default_value: None,
+                },
+                InputValue {
+                    name: "for",
+                    description: None,
+                    ty: FieldType {
+                        wrapping: [],
+                        name: "link__Purpose",
+                    },
+                    default_value: None,
+                },
+                InputValue {
+                    name: "import",
+                    description: None,
+                    ty: FieldType {
+                        wrapping: [List],
+                        name: "link__Import",
+                    },
+                    default_value: None,
+                },
+            ],
+            locations: [
+                Schema,
+            ],
+        },
+        Directive {
+            name: "key",
+            description: None,
+            args: [
+                InputValue {
+                    name: "fields",
+                    description: None,
+                    ty: FieldType {
+                        wrapping: [NonNull],
+                        name: "federation__FieldSet",
+                    },
+                    default_value: None,
+                },
+                InputValue {
+                    name: "resolvable",
+                    description: None,
+                    ty: FieldType {
+                        wrapping: [],
+                        name: "Boolean",
+                    },
+                    default_value: Some(
+                        "true",
+                    ),
+                },
+            ],
+            locations: [
+                Object,
+                Interface,
+            ],
+        },
+        Directive {
+            name: "federation__requires",
+            description: None,
+            args: [
+                InputValue {
+                    name: "fields",
+                    description: None,
+                    ty: FieldType {
+                        wrapping: [NonNull],
+                        name: "federation__FieldSet",
+                    },
+                    default_value: None,
+                },
+            ],
+            locations: [
+                FieldDefinition,
+            ],
+        },
+        Directive {
+            name: "federation__provides",
+            description: None,
+            args: [
+                InputValue {
+                    name: "fields",
+                    description: None,
+                    ty: FieldType {
+                        wrapping: [NonNull],
+                        name: "federation__FieldSet",
+                    },
+                    default_value: None,
+                },
+            ],
+            locations: [
+                FieldDefinition,
+            ],
+        },
+        Directive {
+            name: "federation__external",
+            description: None,
+            args: [
+                InputValue {
+                    name: "reason",
+                    description: None,
+                    ty: FieldType {
+                        wrapping: [],
+                        name: "String",
+                    },
+                    default_value: None,
+                },
+            ],
+            locations: [
+                Object,
+                FieldDefinition,
+            ],
+        },
+        Directive {
+            name: "federation__tag",
+            description: None,
+            args: [
+                InputValue {
+                    name: "name",
+                    description: None,
+                    ty: FieldType {
+                        wrapping: [NonNull],
+                        name: "String",
+                    },
+                    default_value: None,
+                },
+            ],
+            locations: [
+                FieldDefinition,
+                Object,
+                Interface,
+                Union,
+                ArgumentDefinition,
+                Scalar,
+                Enum,
+                EnumValue,
+                InputObject,
+                InputFieldDefinition,
+                Schema,
+            ],
+        },
+        Directive {
+            name: "federation__extends",
+            description: None,
+            args: [],
+            locations: [
+                Object,
+                Interface,
+            ],
+        },
+        Directive {
+            name: "federation__shareable",
+            description: None,
+            args: [],
+            locations: [
+                Object,
+                FieldDefinition,
+            ],
+        },
+        Directive {
+            name: "federation__inaccessible",
+            description: None,
+            args: [],
+            locations: [
+                FieldDefinition,
+                Object,
+                Interface,
+                Union,
+                ArgumentDefinition,
+                Scalar,
+                Enum,
+                EnumValue,
+                InputObject,
+                InputFieldDefinition,
+            ],
+        },
+        Directive {
+            name: "federation__override",
+            description: None,
+            args: [
+                InputValue {
+                    name: "from",
+                    description: None,
+                    ty: FieldType {
+                        wrapping: [NonNull],
+                        name: "String",
+                    },
+                    default_value: None,
+                },
+            ],
+            locations: [
+                FieldDefinition,
+            ],
+        },
+        Directive {
+            name: "federation__composeDirective",
+            description: None,
+            args: [
+                InputValue {
+                    name: "name",
+                    description: None,
+                    ty: FieldType {
+                        wrapping: [],
+                        name: "String",
+                    },
+                    default_value: None,
+                },
+            ],
+            locations: [
+                Schema,
+            ],
+        },
+        Directive {
+            name: "federation__interfaceObject",
+            description: None,
+            args: [],
+            locations: [
+                Object,
             ],
         },
         Directive {
