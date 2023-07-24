@@ -586,6 +586,7 @@ type Query {
   fetch data from the table: "users" using primary key columns
   """
   users_by_pk(id: uuid!): users
+  _service: _Service!
 }
 
 type Result {
@@ -1123,6 +1124,27 @@ input uuid_comparison_exp {
   _lte: uuid
   _neq: uuid
   _nin: [uuid!]
+}
+
+enum link__Purpose {
+  """
+  `SECURITY` features provide metadata necessary to securely resolve fields.
+  """
+  SECURITY
+  """
+  `EXECUTION` features provide metadata necessary for operation execution.
+  """
+  EXECUTION
+}
+
+scalar link__Import
+
+scalar federation__FieldSet
+
+scalar _Any
+
+type _Service {
+  sdl: String
 }
 
 

@@ -7723,6 +7723,26 @@ Some(
                                 is_deprecated: false,
                                 deprecation_reason: None,
                             },
+                            Field {
+                                name: "_service",
+                                description: None,
+                                args: [],
+                                ty: FieldType {
+                                    kind: NonNull,
+                                    name: None,
+                                    of_type: Some(
+                                        FieldType {
+                                            kind: Object,
+                                            name: Some(
+                                                "_Service",
+                                            ),
+                                            of_type: None,
+                                        },
+                                    ),
+                                },
+                                is_deprecated: false,
+                                deprecation_reason: None,
+                            },
                         ],
                     ),
                     input_fields: None,
@@ -12196,6 +12216,109 @@ Some(
                     specified_by_url: None,
                 },
                 Type {
+                    kind: Enum,
+                    name: Some(
+                        "link__Purpose",
+                    ),
+                    description: None,
+                    fields: None,
+                    input_fields: None,
+                    interfaces: None,
+                    enum_values: Some(
+                        [
+                            EnumValue {
+                                name: "SECURITY",
+                                description: Some(
+                                    "`SECURITY` features provide metadata necessary to securely resolve fields.",
+                                ),
+                                is_deprecated: false,
+                                deprecation_reason: None,
+                            },
+                            EnumValue {
+                                name: "EXECUTION",
+                                description: Some(
+                                    "`EXECUTION` features provide metadata necessary for operation execution.",
+                                ),
+                                is_deprecated: false,
+                                deprecation_reason: None,
+                            },
+                        ],
+                    ),
+                    possible_types: None,
+                    specified_by_url: None,
+                },
+                Type {
+                    kind: Scalar,
+                    name: Some(
+                        "link__Import",
+                    ),
+                    description: None,
+                    fields: None,
+                    input_fields: None,
+                    interfaces: None,
+                    enum_values: None,
+                    possible_types: None,
+                    specified_by_url: None,
+                },
+                Type {
+                    kind: Scalar,
+                    name: Some(
+                        "federation__FieldSet",
+                    ),
+                    description: None,
+                    fields: None,
+                    input_fields: None,
+                    interfaces: None,
+                    enum_values: None,
+                    possible_types: None,
+                    specified_by_url: None,
+                },
+                Type {
+                    kind: Scalar,
+                    name: Some(
+                        "_Any",
+                    ),
+                    description: None,
+                    fields: None,
+                    input_fields: None,
+                    interfaces: None,
+                    enum_values: None,
+                    possible_types: None,
+                    specified_by_url: None,
+                },
+                Type {
+                    kind: Object,
+                    name: Some(
+                        "_Service",
+                    ),
+                    description: None,
+                    fields: Some(
+                        [
+                            Field {
+                                name: "sdl",
+                                description: None,
+                                args: [],
+                                ty: FieldType {
+                                    kind: Scalar,
+                                    name: Some(
+                                        "String",
+                                    ),
+                                    of_type: None,
+                                },
+                                is_deprecated: false,
+                                deprecation_reason: None,
+                            },
+                        ],
+                    ),
+                    input_fields: None,
+                    interfaces: Some(
+                        [],
+                    ),
+                    enum_values: None,
+                    possible_types: None,
+                    specified_by_url: None,
+                },
+                Type {
                     kind: Object,
                     name: Some(
                         "__Schema",
@@ -13451,6 +13574,315 @@ Some(
                     ],
                     locations: [
                         Schema,
+                    ],
+                },
+                Directive {
+                    name: "link",
+                    description: None,
+                    args: [
+                        InputValue {
+                            name: "url",
+                            description: None,
+                            ty: FieldType {
+                                kind: Scalar,
+                                name: Some(
+                                    "String",
+                                ),
+                                of_type: None,
+                            },
+                            default_value: None,
+                        },
+                        InputValue {
+                            name: "as",
+                            description: None,
+                            ty: FieldType {
+                                kind: Scalar,
+                                name: Some(
+                                    "String",
+                                ),
+                                of_type: None,
+                            },
+                            default_value: None,
+                        },
+                        InputValue {
+                            name: "for",
+                            description: None,
+                            ty: FieldType {
+                                kind: Enum,
+                                name: Some(
+                                    "link__Purpose",
+                                ),
+                                of_type: None,
+                            },
+                            default_value: None,
+                        },
+                        InputValue {
+                            name: "import",
+                            description: None,
+                            ty: FieldType {
+                                kind: List,
+                                name: None,
+                                of_type: Some(
+                                    FieldType {
+                                        kind: Scalar,
+                                        name: Some(
+                                            "link__Import",
+                                        ),
+                                        of_type: None,
+                                    },
+                                ),
+                            },
+                            default_value: None,
+                        },
+                    ],
+                    locations: [
+                        Schema,
+                    ],
+                },
+                Directive {
+                    name: "key",
+                    description: None,
+                    args: [
+                        InputValue {
+                            name: "fields",
+                            description: None,
+                            ty: FieldType {
+                                kind: NonNull,
+                                name: None,
+                                of_type: Some(
+                                    FieldType {
+                                        kind: Scalar,
+                                        name: Some(
+                                            "federation__FieldSet",
+                                        ),
+                                        of_type: None,
+                                    },
+                                ),
+                            },
+                            default_value: None,
+                        },
+                        InputValue {
+                            name: "resolvable",
+                            description: None,
+                            ty: FieldType {
+                                kind: Scalar,
+                                name: Some(
+                                    "Boolean",
+                                ),
+                                of_type: None,
+                            },
+                            default_value: Some(
+                                "true",
+                            ),
+                        },
+                    ],
+                    locations: [
+                        Object,
+                        Interface,
+                    ],
+                },
+                Directive {
+                    name: "federation__requires",
+                    description: None,
+                    args: [
+                        InputValue {
+                            name: "fields",
+                            description: None,
+                            ty: FieldType {
+                                kind: NonNull,
+                                name: None,
+                                of_type: Some(
+                                    FieldType {
+                                        kind: Scalar,
+                                        name: Some(
+                                            "federation__FieldSet",
+                                        ),
+                                        of_type: None,
+                                    },
+                                ),
+                            },
+                            default_value: None,
+                        },
+                    ],
+                    locations: [
+                        FieldDefinition,
+                    ],
+                },
+                Directive {
+                    name: "federation__provides",
+                    description: None,
+                    args: [
+                        InputValue {
+                            name: "fields",
+                            description: None,
+                            ty: FieldType {
+                                kind: NonNull,
+                                name: None,
+                                of_type: Some(
+                                    FieldType {
+                                        kind: Scalar,
+                                        name: Some(
+                                            "federation__FieldSet",
+                                        ),
+                                        of_type: None,
+                                    },
+                                ),
+                            },
+                            default_value: None,
+                        },
+                    ],
+                    locations: [
+                        FieldDefinition,
+                    ],
+                },
+                Directive {
+                    name: "federation__external",
+                    description: None,
+                    args: [
+                        InputValue {
+                            name: "reason",
+                            description: None,
+                            ty: FieldType {
+                                kind: Scalar,
+                                name: Some(
+                                    "String",
+                                ),
+                                of_type: None,
+                            },
+                            default_value: None,
+                        },
+                    ],
+                    locations: [
+                        Object,
+                        FieldDefinition,
+                    ],
+                },
+                Directive {
+                    name: "federation__tag",
+                    description: None,
+                    args: [
+                        InputValue {
+                            name: "name",
+                            description: None,
+                            ty: FieldType {
+                                kind: NonNull,
+                                name: None,
+                                of_type: Some(
+                                    FieldType {
+                                        kind: Scalar,
+                                        name: Some(
+                                            "String",
+                                        ),
+                                        of_type: None,
+                                    },
+                                ),
+                            },
+                            default_value: None,
+                        },
+                    ],
+                    locations: [
+                        FieldDefinition,
+                        Object,
+                        Interface,
+                        Union,
+                        ArgumentDefinition,
+                        Scalar,
+                        Enum,
+                        EnumValue,
+                        InputObject,
+                        InputFieldDefinition,
+                        Schema,
+                    ],
+                },
+                Directive {
+                    name: "federation__extends",
+                    description: None,
+                    args: [],
+                    locations: [
+                        Object,
+                        Interface,
+                    ],
+                },
+                Directive {
+                    name: "federation__shareable",
+                    description: None,
+                    args: [],
+                    locations: [
+                        Object,
+                        FieldDefinition,
+                    ],
+                },
+                Directive {
+                    name: "federation__inaccessible",
+                    description: None,
+                    args: [],
+                    locations: [
+                        FieldDefinition,
+                        Object,
+                        Interface,
+                        Union,
+                        ArgumentDefinition,
+                        Scalar,
+                        Enum,
+                        EnumValue,
+                        InputObject,
+                        InputFieldDefinition,
+                    ],
+                },
+                Directive {
+                    name: "federation__override",
+                    description: None,
+                    args: [
+                        InputValue {
+                            name: "from",
+                            description: None,
+                            ty: FieldType {
+                                kind: NonNull,
+                                name: None,
+                                of_type: Some(
+                                    FieldType {
+                                        kind: Scalar,
+                                        name: Some(
+                                            "String",
+                                        ),
+                                        of_type: None,
+                                    },
+                                ),
+                            },
+                            default_value: None,
+                        },
+                    ],
+                    locations: [
+                        FieldDefinition,
+                    ],
+                },
+                Directive {
+                    name: "federation__composeDirective",
+                    description: None,
+                    args: [
+                        InputValue {
+                            name: "name",
+                            description: None,
+                            ty: FieldType {
+                                kind: Scalar,
+                                name: Some(
+                                    "String",
+                                ),
+                                of_type: None,
+                            },
+                            default_value: None,
+                        },
+                    ],
+                    locations: [
+                        Schema,
+                    ],
+                },
+                Directive {
+                    name: "federation__interfaceObject",
+                    description: None,
+                    args: [],
+                    locations: [
+                        Object,
                     ],
                 },
                 Directive {
