@@ -95,9 +95,19 @@ pub fn query_variables_derive_impl(
             (#name_str, <#ty as #schema_module::variable::Variable>::TYPE)
         });
 
-        field_inserts.push(quote! {
-            map_serializer.serialize_entry(#name_str, &self.#name)?;
-        })
+        match f.skip_serializing_if {
+            Some(skip_check_fn) => {
+                let skip_check_fn = &*skip_check_fn;
+                field_inserts.push(quote! {
+                    if !#skip_check_fn(&self.#name) {
+                        map_serializer.serialize_entry(#name_str, &self.#name)?;
+                    }
+                })
+            }
+            None => field_inserts.push(quote! {
+                map_serializer.serialize_entry(#name_str, &self.#name)?;
+            }),
+        }
     }
 
     let map_len = field_inserts.len();

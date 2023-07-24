@@ -45,3 +45,22 @@ the same technique. Though it's worth noting that all the QueryFragments from
 the Root to the point that requires arguments must define the same
 `variables` in their cynic attribute. If no nested QueryFragments
 require any variables then it's OK to omit `variables`.
+
+#### Struct Attributes
+
+QueryVariables can be configured via attributes at the struct level:
+
+- `rename_all="camelCase"` tells cynic to rename all the rust field names with
+  a particular rule to match their GraphQL counterparts. If not provided this
+  defaults to camelCase to be consistent with GraphQL conventions.
+
+#### Field Attributes
+
+Each field can also have attributes:
+
+- `rename="someFieldName"` can be used to map a field to a completely
+  different GraphQL field name.
+- `skip_serializing_if="path"` can be used on optional fields to skip
+  serializing them. By default an `Option` field will be sent as `null` to
+  servers, but if you provide `skip_serializing_if="Option::is_none"` then the
+  field will not be provided at all.
