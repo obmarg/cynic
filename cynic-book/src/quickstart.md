@@ -33,10 +33,10 @@ some `surf` integration code, which we'll be using. If you're using a different
 HTTP client, you'll need a different feature flag or you may need to see the
 [documentation for making an HTTP request manually][2].
 
-You'll also want to add a `[build-dependency]`:
+You'll also want to add a `[build-dependencies]`:
 
 ```toml
-[build-dependency]
+[build-dependencies]
 cynic-codegen = { version = "3" }
 ```
 
