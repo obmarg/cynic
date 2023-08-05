@@ -111,6 +111,10 @@ html :is(.admonition-title, summary.admonition-title):last-child {
   display: initial;
 }
 
+details.admonition > summary.admonition-title::-webkit-details-marker {
+  display: none;
+}
+
 details.admonition > summary.admonition-title::after {
   position: absolute;
   top: 0.625em;

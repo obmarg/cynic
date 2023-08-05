@@ -9,12 +9,7 @@ There's a few things you'll need before you get started:
 
 1. An existing rust project (though you can just run `cargo new` if you don't
    have one).
-2. A GraphQL API that you'd like to query, and
-   [a copy of its schema](https://github.com/prisma-labs/get-graphql-schema).
-3. A GraphQL query that you'd like to run against the API. If you don't have
-   one of these, you should probably use graphiql or graphql playground to get
-   started, or you can use the one I provide below. For this quickstart I'll be
-   assuming you're using a query without any arguments.
+2. A GraphQL API that you'd like to query.
 
 #### Setting up dependencies.
 
@@ -51,6 +46,22 @@ insta = "1"
 ```
 
 Run a `cargo check` to make sure this builds and you're good to go.
+
+#### Fetching the GraphQL schema
+
+Each GraphQL server has a schema that describes the information it can provide.
+Cynic needs a local copy of this schema for any APIs that it needs to talk to.
+We'll fetch this schema using `cynic-cli`.  Run the following in the root of
+your project:
+
+```sh
+# First, install cynic-cli if you don't already have it:
+cargo install --locked cynic-cli
+
+# Next, we'll introspect the schema.  
+# I'm using the StarWars schema in this guide but you can use any API you want
+cynic introspect https://swapi-graphql.netlify.app/.netlify/functions/index -o schemas/starwars.graphql
+```
 
 #### Adding your schema to the build.
 
