@@ -7,6 +7,13 @@ title = "Cynic - A GraphQL Client For Rust"
 
 [output.html]
 git-repository-url = "https://github.com/obmarg/cynic"
+additional-css = ["./css/mdbook-admonish.css"]
 
 [output.linkcheck]  
 # Enable link checking
+
+[preprocessor]
+
+[preprocessor.admonish]
+command = "mdbook-admonish"
+assets_version = "2.0.2" # do not edit: managed by `mdbook-admonish install`
