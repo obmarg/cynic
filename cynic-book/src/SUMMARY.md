@@ -4,6 +4,7 @@
 
 - [Quickstart](./quickstart.md)
 - [Schemas](./schemas.md)
+  - [Introspecting an API](./schemas/introspection.md)
 - [Deriving GraphQL Queries](./derives/index.md)
   - [Query Fragments](./derives/query-fragments.md)
   - [Enums](./derives/enums.md)

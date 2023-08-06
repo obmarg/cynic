@@ -58,6 +58,7 @@ supported:
 - Building dynamic (but still type checked) queries at run time.
 - Query arguments including input objects
 - Interfaces & union types
+- Introspection via [`cynic-cli`][6] or [`cynic-introspection`][7]
 - GraphQL Subscriptions via [`graphql-ws-client`](https://github.com/obmarg/graphql-ws-client).
   (though `graphql-ws-client` is fairly alpha quality)
 
@@ -93,3 +94,5 @@ Cynic is documented in a few places:
 [3]: https://github.com/dillonkearns/elm-graphql
 [4]: https://package.elm-lang.org/packages/elm/json/latest/Json.Decode
 [5]: https://serde.rs
+[6]: https://crates.io/crates/cynic-cli
+[7]: https://crates.io/crates/cynic-introspection

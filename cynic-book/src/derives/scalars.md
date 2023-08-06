@@ -21,16 +21,16 @@ If you have an existing type (including 3rd party types) that has a
 `chrono::DateTime<chrono::Utc>` as a `DateTime` scalar:
 
 ```rust
-type DateTime = chrono::DateTime<chrono::Utc>;
-impl_scalar!(DateTime, schema::DateTime);
+use chrono::{DateTime, Utc};
+impl_scalar!(DateTime<Utc>, schema::DateTime);
 ```
 
-This `DateTime` type alias can now be used anywhere that the schema expects a
-`DateTime`. Note that the type alias is currently required due to limitations
-in some of the cynic macros (though this may not always be the case).
+You can now use a `DateTime<Utc>` type for any `DateTime` in your scheam.
 
-Note that this `impl_scalar` call must live in either the crate that defines
-the type or the crate that contains the `schema` module.
+```admonish info
+This `impl_scalar` call should be placed in the crate that defines the the
+`schema` module.
+```
 
 ### `#[derive(Scalar)]`
 
@@ -47,8 +47,10 @@ Any types that derive `cynic::Scalar` must also derive (or otherwise implement)
 `serde::Serialize`. You can change the inner type that's used to deserialize
 the scalar by changing the type inside the struct.
 
-Note that this derive only works on newtype structs - for any more complex
-datatype you'll have to implement cynic::Scalar yourself.
+```admonish info
+This derive only works on newtype structs - for any more complex datatype
+you'll have to implement cynic::Scalar yourself, or use `impl_scalar` above
+```
 
 #### Struct Attributes
 

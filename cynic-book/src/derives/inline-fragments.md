@@ -113,9 +113,11 @@ enum Assignee {
 
 If the a new type is to this union then cynic will fail to compile.  
 
-Note that this uses the name of the variants to perform its checks, which is
-not fool proof.  There's no guarantee that the `Bot` type actually queries for
-the `Bot` type in the server.  But it is better than nothing.
+```admonish warning
+This check uses the name of the variants to perform its checks, which is not
+fool proof.  There's no guarantee that the `Bot` type actually queries for the
+`Bot` type in the server.  So be careful when using this.
+```
 
 #### Struct Attributes
 

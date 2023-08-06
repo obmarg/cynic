@@ -4,10 +4,17 @@ GraphQL APIs have a schema that defines the data they can provide.  Cynic uses
 this schema to verify that the queries & mutations you're writing are valid and
 typesafe.
 
+```admonish
+The rest of this page assumes you have a copy of the schema for the remote API
+checked in to your repository.  If that's not the case, see [Introspecting an
+API][1].
+```
+
 ## Pre-registering Schemas
 
-The easiest way to provide schemas to the cynic derives is to register them in
-your `build.rs`, with some code similar to the following:
+Most of cynics macros need access to a copy of the GraphQL schema.  The easiest
+way to provide this is to register the schema in your `build.rs`, with some
+code similar to this:
 
 ```rust
 fn main() {
@@ -60,3 +67,5 @@ struct Film {
 You'll also need to make sure you define a schema module for each of your
 schemas, and make it available as `schema` in the files where you're defining
 your queries.
+
+[1]: ./schemas/introspection.md
