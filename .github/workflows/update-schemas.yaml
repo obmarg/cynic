@@ -1,5 +1,6 @@
 name: Update local copy of GraphQL schemas
-on: 
+on:
+  workflow_dispatch:
   schedule:
     - cron: 0 9 * * 1
 jobs:
