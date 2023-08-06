@@ -1,0 +1,24 @@
+name: Update local copy of GraphQL schemas
+on: 
+  schedule:
+    - cron: 0 9 * * 1
+jobs:
+  update-schema:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+    - uses: actions/checkout@v3
+    - name: Run introspection
+      uses: obmarg/action-graphql-introspect@main
+      with:
+       server-url: https://swapi-graphql.netlify.app/.netlify/functions/index
+       output-file: schemas/starwars.schema.graphql
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v5
+      with:
+       commit-message: "Update StarWars GraphQL Schema"
+       branch: graphql-schema-updates
+       title: "Update StarWars GraphQL Schema"
+       message: "This is an automated pull request to update our local schema cache"
