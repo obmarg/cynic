@@ -1,16 +1,21 @@
 use crate::{variables::VariableType, QueryVariables};
 
-pub struct VariableDefinitions {
-    vars: &'static [(&'static str, VariableType)],
+pub struct VariableDefinitions<'a> {
+    vars: Vec<&'a (&'static str, VariableType)>,
 }
 
-impl VariableDefinitions {
-    pub fn new<T: QueryVariables>() -> Self {
-        VariableDefinitions { vars: T::VARIABLES }
+impl<'a> VariableDefinitions<'a> {
+    pub fn new<T: QueryVariables>(used_variables: Vec<&str>) -> Self {
+        let vars = T::VARIABLES
+            .iter()
+            .filter(|(name, _)| used_variables.contains(name))
+            .collect();
+
+        VariableDefinitions { vars }
     }
 }
 
-impl std::fmt::Display for VariableDefinitions {
+impl std::fmt::Display for VariableDefinitions<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         if self.vars.is_empty() {
             return Ok(());
@@ -18,7 +23,7 @@ impl std::fmt::Display for VariableDefinitions {
 
         write!(f, "(")?;
         let mut first = true;
-        for (name, ty) in self.vars {
+        for (name, ty) in &self.vars {
             if !first {
                 write!(f, ", ")?;
             }
@@ -71,15 +76,15 @@ mod tests {
     #[test]
     fn test_variable_printing() {
         insta::assert_display_snapshot!(VariableDefinitions {
-            vars: &[
-                ("foo", VariableType::List(&VariableType::Named("Foo"))),
-                ("bar", VariableType::Named("Bar")),
-                ("nullable_bar", VariableType::Nullable(&VariableType::Named("Bar"))),
-                (
+            vars: vec![
+                &("foo", VariableType::List(&VariableType::Named("Foo"))),
+                &("bar", VariableType::Named("Bar")),
+                &("nullable_bar", VariableType::Nullable(&VariableType::Named("Bar"))),
+                &(
                     "nullable_list_foo",
                     VariableType::Nullable(&(VariableType::List(&VariableType::Named("Foo"))))
                 ),
-                (
+                &(
                     "nullable_list_nullable_foo",
                     VariableType::Nullable(&VariableType::List(&VariableType::Nullable(
                         &VariableType::Named("Foo")

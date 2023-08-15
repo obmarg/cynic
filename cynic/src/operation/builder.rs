@@ -1,4 +1,4 @@
-use std::{borrow::Cow, collections::HashSet, marker::PhantomData, rc::Rc};
+use std::{borrow::Cow, collections::HashSet, marker::PhantomData, rc::Rc, sync::mpsc};
 
 use crate::{
     queries::{SelectionBuilder, SelectionSet},
@@ -103,13 +103,16 @@ where
 
         let features_enabled = Rc::new(self.features);
         let mut selection_set = SelectionSet::default();
+        let (variable_tx, variable_rx) = mpsc::channel();
         let builder = SelectionBuilder::<_, Fragment::VariablesFields>::new(
             &mut selection_set,
+            &variable_tx,
             &features_enabled,
         );
+
         Fragment::query(builder);
 
-        let vars = VariableDefinitions::new::<Variables>();
+        let vars = VariableDefinitions::new::<Variables>(variable_rx.try_iter().collect());
 
         let name_str = self.operation_name.as_deref().unwrap_or("");
 
