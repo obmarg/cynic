@@ -1,4 +1,4 @@
-use std::{borrow::Cow, collections::HashSet, marker::PhantomData, rc::Rc};
+use std::{borrow::Cow, collections::HashSet, marker::PhantomData, sync::mpsc::Sender};
 
 use crate::{coercions::CoercesTo, schema, variables::VariableDefinition};
 
@@ -10,7 +10,7 @@ pub struct SelectionBuilder<'a, SchemaType, VariablesFields> {
     selection_set: &'a mut SelectionSet,
     has_typename: bool,
     recurse_depth: Option<u8>,
-    features_enabled: Rc<HashSet<String>>,
+    context: BuilderContext<'a>,
 }
 
 impl<'a, T, U> SelectionBuilder<'a, Vec<T>, U> {
@@ -20,7 +20,7 @@ impl<'a, T, U> SelectionBuilder<'a, Vec<T>, U> {
             has_typename: self.has_typename,
             phantom: PhantomData,
             recurse_depth: self.recurse_depth,
-            features_enabled: self.features_enabled,
+            context: self.context,
         }
     }
 }
@@ -32,7 +32,7 @@ impl<'a, T, U> SelectionBuilder<'a, Option<T>, U> {
             has_typename: self.has_typename,
             phantom: PhantomData,
             recurse_depth: self.recurse_depth,
-            features_enabled: self.features_enabled,
+            context: self.context,
         }
     }
 }
@@ -40,14 +40,25 @@ impl<'a, T, U> SelectionBuilder<'a, Option<T>, U> {
 impl<'a, SchemaType, VariablesFields> SelectionBuilder<'a, SchemaType, VariablesFields> {
     pub(crate) fn new(
         selection_set: &'a mut SelectionSet,
-        features_enabled: &Rc<HashSet<String>>,
+        variables_used: &'a Sender<&'static str>,
+        features_enabled: &'a HashSet<String>,
     ) -> Self {
+        SelectionBuilder::private_new(
+            selection_set,
+            BuilderContext {
+                features_enabled,
+                variables_used,
+            },
+        )
+    }
+
+    fn private_new(selection_set: &'a mut SelectionSet, context: BuilderContext<'a>) -> Self {
         SelectionBuilder {
             phantom: PhantomData,
             has_typename: false,
             selection_set,
             recurse_depth: None,
-            features_enabled: Rc::clone(features_enabled),
+            context,
         }
     }
 
@@ -66,7 +77,7 @@ impl<'a, SchemaType, VariablesFields> SelectionBuilder<'a, SchemaType, Variables
     {
         FieldSelectionBuilder {
             recurse_depth: self.recurse_depth,
-            features_enabled: Rc::clone(&self.features_enabled),
+            context: self.context,
             field: self.push_selection(FieldMarker::NAME),
             phantom: PhantomData,
         }
@@ -88,7 +99,7 @@ impl<'a, SchemaType, VariablesFields> SelectionBuilder<'a, SchemaType, Variables
     {
         FieldSelectionBuilder {
             recurse_depth: self.recurse_depth,
-            features_enabled: Rc::clone(&self.features_enabled),
+            context: self.context,
             field: self.push_selection(FieldMarker::NAME),
             phantom: PhantomData,
         }
@@ -114,7 +125,7 @@ impl<'a, SchemaType, VariablesFields> SelectionBuilder<'a, SchemaType, Variables
 
         Some(FieldSelectionBuilder {
             recurse_depth: Some(new_depth),
-            features_enabled: Rc::clone(&self.features_enabled),
+            context: self.context,
             field: self.push_selection(FieldMarker::NAME),
             phantom: PhantomData,
         })
@@ -152,7 +163,7 @@ impl<'a, SchemaType, VariablesFields> SelectionBuilder<'a, SchemaType, Variables
         InlineFragmentBuilder {
             inline_fragment,
             phantom: PhantomData,
-            features_enabled: Rc::clone(&self.features_enabled),
+            context: self.context,
         }
     }
 
@@ -161,7 +172,7 @@ impl<'a, SchemaType, VariablesFields> SelectionBuilder<'a, SchemaType, Variables
     /// QueryFragment implementations can use this to avoid sending parts of
     /// queries to servers that aren't going to understand them.
     pub fn is_feature_enabled(&self, feature: &str) -> bool {
-        self.features_enabled.contains(feature)
+        self.context.features_enabled.contains(feature)
     }
 }
 
@@ -171,7 +182,7 @@ pub struct FieldSelectionBuilder<'a, Field, SchemaType, VariablesFields> {
     phantom: PhantomData<fn() -> (Field, SchemaType, VariablesFields)>,
     field: &'a mut FieldSelection,
     recurse_depth: Option<u8>,
-    features_enabled: Rc<HashSet<String>>,
+    context: BuilderContext<'a>,
 }
 
 impl<'a, Field, FieldSchemaType, VariablesFields>
@@ -196,6 +207,7 @@ impl<'a, Field, FieldSchemaType, VariablesFields>
     {
         InputBuilder {
             destination: InputLiteralContainer::object(Field::NAME, &mut self.field.arguments),
+            context: self.context,
             phantom: PhantomData,
         }
     }
@@ -210,7 +222,7 @@ impl<'a, Field, FieldSchemaType, VariablesFields>
     {
         SelectionBuilder {
             recurse_depth: self.recurse_depth,
-            ..SelectionBuilder::new(&mut self.field.children, &self.features_enabled)
+            ..SelectionBuilder::private_new(&mut self.field.children, self.context)
         }
     }
 }
@@ -219,7 +231,7 @@ impl<'a, Field, FieldSchemaType, VariablesFields>
 pub struct InlineFragmentBuilder<'a, SchemaType, VariablesFields> {
     phantom: PhantomData<fn() -> (SchemaType, VariablesFields)>,
     inline_fragment: &'a mut InlineFragment,
-    features_enabled: Rc<HashSet<String>>,
+    context: BuilderContext<'a>,
 }
 
 impl<'a, SchemaType, VariablesFields> InlineFragmentBuilder<'a, SchemaType, VariablesFields> {
@@ -236,7 +248,7 @@ impl<'a, SchemaType, VariablesFields> InlineFragmentBuilder<'a, SchemaType, Vari
         InlineFragmentBuilder {
             inline_fragment: self.inline_fragment,
             phantom: PhantomData,
-            features_enabled: self.features_enabled,
+            context: self.context,
         }
     }
 
@@ -248,12 +260,13 @@ impl<'a, SchemaType, VariablesFields> InlineFragmentBuilder<'a, SchemaType, Vari
     where
         VariablesFields: VariableMatch<InnerVariablesFields>,
     {
-        SelectionBuilder::new(&mut self.inline_fragment.children, &self.features_enabled)
+        SelectionBuilder::private_new(&mut self.inline_fragment.children, self.context)
     }
 }
 
 pub struct InputBuilder<'a, SchemaType, VariablesFields> {
     destination: InputLiteralContainer<'a>,
+    context: BuilderContext<'a>,
 
     phantom: PhantomData<fn() -> (SchemaType, VariablesFields)>,
 }
@@ -264,6 +277,11 @@ impl<'a, SchemaType, VariablesFields> InputBuilder<'a, SchemaType, VariablesFiel
     where
         Type: CoercesTo<SchemaType>,
     {
+        self.context
+            .variables_used
+            .send(def.name)
+            .expect("the variables_used channel to be open");
+
         self.destination.push(InputLiteral::Variable(def.name));
     }
 }
@@ -278,6 +296,7 @@ impl<'a, SchemaType, ArgumentStruct> InputBuilder<'a, Option<SchemaType>, Argume
     pub fn value(self) -> InputBuilder<'a, SchemaType, ArgumentStruct> {
         InputBuilder {
             destination: self.destination,
+            context: self.context,
             phantom: PhantomData,
         }
     }
@@ -304,6 +323,7 @@ where
 
         ObjectArgumentBuilder {
             fields,
+            context: self.context,
             phantom: PhantomData,
         }
     }
@@ -312,6 +332,7 @@ where
 /// Builds an object literal into some input.
 pub struct ObjectArgumentBuilder<'a, ItemType, VariablesFields> {
     fields: &'a mut Vec<Argument>,
+    context: BuilderContext<'a>,
     phantom: PhantomData<fn() -> (ItemType, VariablesFields)>,
 }
 
@@ -326,6 +347,7 @@ impl<'a, SchemaType, ArgStruct> ObjectArgumentBuilder<'a, SchemaType, ArgStruct>
     {
         field_fn(InputBuilder {
             destination: InputLiteralContainer::object(FieldMarker::NAME, self.fields),
+            context: self.context,
             phantom: PhantomData,
         });
 
@@ -343,6 +365,7 @@ impl<'a, SchemaType, VariablesFields> InputBuilder<'a, Vec<SchemaType>, Variable
 
         ListArgumentBuilder {
             items,
+            context: self.context,
             phantom: PhantomData,
         }
     }
@@ -350,6 +373,7 @@ impl<'a, SchemaType, VariablesFields> InputBuilder<'a, Vec<SchemaType>, Variable
 
 pub struct ListArgumentBuilder<'a, ItemType, VariablesFields> {
     items: &'a mut Vec<InputLiteral>,
+    context: BuilderContext<'a>,
     phantom: PhantomData<fn() -> (ItemType, VariablesFields)>,
 }
 
@@ -359,6 +383,7 @@ impl<'a, ItemType, VariablesFields> ListArgumentBuilder<'a, ItemType, VariablesF
     pub fn item(self, item_fn: impl FnOnce(InputBuilder<'_, ItemType, VariablesFields>)) -> Self {
         item_fn(InputBuilder {
             destination: InputLiteralContainer::list(self.items),
+            context: self.context,
             phantom: PhantomData,
         });
 
@@ -415,3 +440,9 @@ impl<'a> InputLiteralContainer<'a> {
 pub trait VariableMatch<T> {}
 
 impl<T> VariableMatch<()> for T where T: crate::QueryVariablesFields {}
+
+#[derive(Clone, Copy)]
+struct BuilderContext<'a> {
+    features_enabled: &'a HashSet<String>,
+    variables_used: &'a Sender<&'static str>,
+}

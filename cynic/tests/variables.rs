@@ -21,6 +21,39 @@ fn test_skip_serializing_if_none() {
     );
 }
 
+#[derive(cynic::QueryFragment, PartialEq, Debug)]
+#[cynic(schema_path = "src/bin/simple.graphql", variables = "TestArgs")]
+struct TestStruct {
+    #[arguments(x: 1, y: "hello")]
+    field_one: String,
+}
+
+#[derive(cynic::QueryFragment, PartialEq, Debug)]
+#[cynic(
+    schema_path = "src/bin/simple.graphql",
+    graphql_type = "Query",
+    variables = "TestArgs"
+)]
+struct QueryWithUnusedVariables {
+    test_struct: Option<TestStruct>,
+}
+
+#[test]
+fn test_unused_variables_not_rendered() {
+    use cynic::QueryBuilder;
+
+    let operation = QueryWithUnusedVariables::build(TestArgs { a_str: None });
+
+    insta::assert_snapshot!(operation.query, @r###"
+    query QueryWithUnusedVariables {
+      testStruct {
+        fieldOne(x: 1, y: "hello")
+      }
+    }
+
+    "###);
+}
+
 mod schema {
     cynic::use_schema!("src/bin/simple.graphql");
 }
