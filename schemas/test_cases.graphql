@@ -44,3 +44,7 @@ input RecursiveInputParent {
 input RecursiveInputChild {
   recurse: RecursiveInputParent
 }
+
+type FlattenableEnums {
+  states: [States]
+}
