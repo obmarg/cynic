@@ -11,7 +11,11 @@ impl cynic::QueryFragment for Film {
         mut builder: cynic::queries::SelectionBuilder<'_, Self::SchemaType, Self::VariablesFields>,
     ) {
         #![allow(unused_mut)]
-        <FilmDetails as cynic::QueryFragment>::query(builder);
+        <FilmDetails as cynic::QueryFragment>::query(
+            builder
+                .inline_fragment()
+                .select_children::<<FilmDetails as cynic::QueryFragment>::VariablesFields>(),
+        );
         let mut field_builder = builder . select_field :: < schema :: __fields :: Film :: releaseDate , < Option < String > as cynic :: schema :: IsScalar < < schema :: __fields :: Film :: releaseDate as cynic :: schema :: Field > :: Type >> :: SchemaType > () ;
     }
     fn name() -> Option<std::borrow::Cow<'static, str>> {

@@ -11,7 +11,11 @@ impl cynic::QueryFragment for Film {
         mut builder: cynic::queries::SelectionBuilder<'_, Self::SchemaType, Self::VariablesFields>,
     ) {
         #![allow(unused_mut)]
-        <FilmDetails as cynic::QueryFragment>::query(builder);
+        <FilmDetails as cynic::QueryFragment>::query(
+            builder
+                .inline_fragment()
+                .select_children::<<FilmDetails as cynic::QueryFragment>::VariablesFields>(),
+        );
     }
     fn name() -> Option<std::borrow::Cow<'static, str>> {
         Some(std::borrow::Cow::Borrowed("Film"))

@@ -6,8 +6,8 @@ Some(
     FilmDirectorQuery {
         film: Some(
             Film {
-                release_date: Some(
-                    "1977-05-25",
+                id: Id(
+                    "ZmlsbXM6MQ==",
                 ),
                 details: FilmDetails {
                     title: Some(
@@ -17,6 +17,21 @@ Some(
                         "George Lucas",
                     ),
                 },
+                more_details: FilmMoreDetails {
+                    release_date: Some(
+                        "1977-05-25",
+                    ),
+                },
+                producers: Some(
+                    [
+                        Some(
+                            "Gary Kurtz",
+                        ),
+                        Some(
+                            "Rick McCallum",
+                        ),
+                    ],
+                ),
             },
         ),
     },

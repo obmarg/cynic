@@ -12,10 +12,19 @@ struct FilmDetails {
 }
 
 #[derive(cynic::QueryFragment, Debug)]
-struct Film {
+#[cynic(graphql_type = "Film")]
+struct FilmMoreDetails {
     release_date: Option<String>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+struct Film {
+    id: cynic::Id,
     #[cynic(spread)]
     details: FilmDetails,
+    #[cynic(spread)]
+    more_details: FilmMoreDetails,
+    producers: Option<Vec<Option<String>>>,
 }
 
 #[derive(cynic::QueryVariables)]
@@ -33,10 +42,13 @@ struct FilmDirectorQuery {
 fn main() {
     match run_query().data {
         Some(FilmDirectorQuery { film: Some(film) }) => {
+            println!("Id: {:?}", film.id);
             println!(
-                "{:?} was directed by {:?} and released on {:?}",
-                film.details.title, film.details.director, film.release_date
-            )
+                "{:?} was directed by {:?}",
+                film.details.title, film.details.director
+            );
+            println!("Released on: {:?}", film.more_details.release_date);
+            println!("Producers: {:?}", film.producers);
         }
         _ => {
             println!("No film found");

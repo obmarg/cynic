@@ -4,9 +4,16 @@ expression: query.query
 ---
 query FilmDirectorQuery($id: ID) {
   film(id: $id) {
-    releaseDate
-    title
-    director
+    id
+    __typename
+    ... {
+      title
+      director
+    }
+    ... {
+      releaseDate
+    }
+    producers
   }
 }
 
