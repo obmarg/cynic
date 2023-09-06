@@ -12,6 +12,7 @@ impl cynic::QueryFragment for Film {
     ) {
         #![allow(unused_mut)]
         <FilmDetails as cynic::QueryFragment>::query(builder);
+        let mut field_builder = builder . select_field :: < schema :: __fields :: Film :: releaseDate , < Option < String > as cynic :: schema :: IsScalar < < schema :: __fields :: Film :: releaseDate as cynic :: schema :: Field > :: Type >> :: SchemaType > () ;
     }
     fn name() -> Option<std::borrow::Cow<'static, str>> {
         Some(std::borrow::Cow::Borrowed("Film"))
@@ -28,6 +29,7 @@ impl<'de> cynic::serde::Deserialize<'de> for Film {
             details: <FilmDetails as cynic::serde::Deserialize<'de>>::deserialize(
                 spreadable.spread_deserializer(),
             )?,
+            release_date: spreadable.deserialize_field("releaseDate")?,
         })
     }
 }

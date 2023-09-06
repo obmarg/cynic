@@ -1,12 +1,14 @@
 ---
 source: examples/examples/spread.rs
-assertion_line: 94
 expression: result.data
 ---
 Some(
     FilmDirectorQuery {
         film: Some(
             Film {
+                release_date: Some(
+                    "1977-05-25",
+                ),
                 details: FilmDetails {
                     title: Some(
                         "A New Hope",

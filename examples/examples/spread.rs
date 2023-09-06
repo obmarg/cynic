@@ -13,6 +13,7 @@ struct FilmDetails {
 
 #[derive(cynic::QueryFragment, Debug)]
 struct Film {
+    release_date: Option<String>,
     #[cynic(spread)]
     details: FilmDetails,
 }
@@ -33,8 +34,8 @@ fn main() {
     match run_query().data {
         Some(FilmDirectorQuery { film: Some(film) }) => {
             println!(
-                "{:?} was directed by {:?}",
-                film.details.title, film.details.director
+                "{:?} was directed by {:?} and released on {:?}",
+                film.details.title, film.details.director, film.release_date
             )
         }
         _ => {
