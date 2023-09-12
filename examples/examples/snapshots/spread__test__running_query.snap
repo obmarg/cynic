@@ -1,12 +1,14 @@
 ---
 source: examples/examples/spread.rs
-assertion_line: 94
 expression: result.data
 ---
 Some(
     FilmDirectorQuery {
         film: Some(
             Film {
+                id: Id(
+                    "ZmlsbXM6MQ==",
+                ),
                 details: FilmDetails {
                     title: Some(
                         "A New Hope",
@@ -15,6 +17,21 @@ Some(
                         "George Lucas",
                     ),
                 },
+                more_details: FilmMoreDetails {
+                    release_date: Some(
+                        "1977-05-25",
+                    ),
+                },
+                producers: Some(
+                    [
+                        Some(
+                            "Gary Kurtz",
+                        ),
+                        Some(
+                            "Rick McCallum",
+                        ),
+                    ],
+                ),
             },
         ),
     },

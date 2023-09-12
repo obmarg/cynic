@@ -220,7 +220,7 @@ impl quote::ToTokens for SpreadingDeserializeImpl<'_> {
                 quote! {
                     #field_name: <#field_ty as cynic::serde::Deserialize<'de>>::deserialize(
                         spreadable.spread_deserializer()
-                    )?,
+                    )?
                 }
             } else if f.is_flattened {
                 let serialized_name = proc_macro2::Literal::string(
@@ -259,7 +259,7 @@ impl quote::ToTokens for SpreadingDeserializeImpl<'_> {
                     let spreadable = cynic::__private::Spreadable::<__D::Error>::deserialize(deserializer)?;
 
                     Ok(#target_struct {
-                        #(#field_inserts)*
+                        #(#field_inserts,)*
                     })
                 }
             }

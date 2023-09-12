@@ -80,6 +80,36 @@ use super::fragment_derive;
         }
     )
 )]
+#[case::spread_attr_multi_field1(
+    "spread_attr_multi_field1",
+    parse_quote!(
+        #[derive(cynic::QueryFragment, Debug)]
+        #[cynic(
+            schema_path = "../schemas/starwars.schema.graphql",
+            schema_module = "schema"
+        )]
+        struct Film {
+            release_date: Option<String>,
+            #[cynic(spread)]
+            details: FilmDetails,
+        }
+    )
+)]
+#[case::spread_attr_multi_field2(
+    "spread_attr_multi_field2",
+    parse_quote!(
+        #[derive(cynic::QueryFragment, Debug)]
+        #[cynic(
+            schema_path = "../schemas/starwars.schema.graphql",
+            schema_module = "schema"
+        )]
+        struct Film {
+            #[cynic(spread)]
+            details: FilmDetails,
+            release_date: Option<String>,
+        }
+    )
+)]
 #[case::flatten_attr(
     "flatten_attr",
     parse_quote!(

@@ -372,7 +372,9 @@ impl quote::ToTokens for SpreadSelection {
         tokens.append_all(quote_spanned! { self.span =>
             <#field_type as cynic::QueryFragment>::query(
                 builder
-            )
+                    .inline_fragment()
+                    .select_children::<<#field_type as cynic::QueryFragment>::VariablesFields>()
+            );
         })
     }
 }
