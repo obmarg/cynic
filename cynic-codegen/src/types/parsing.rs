@@ -119,7 +119,9 @@ pub fn parse_rust_type(ty: &syn::Type) -> RustType<'_> {
         syn::Type::Reference(syn::TypeReference { elem, .. })
             if matches!(**elem, syn::Type::Slice(_)) =>
         {
-            let syn::Type::Slice(array) = &**elem else { unreachable!() };
+            let syn::Type::Slice(array) = &**elem else {
+                unreachable!()
+            };
             return RustType::List {
                 syn: Cow::Borrowed(ty),
                 inner: Box::new(parse_rust_type(&array.elem)),
