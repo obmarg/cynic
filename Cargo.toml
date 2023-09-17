@@ -12,6 +12,7 @@ members = [
     "tests/querygen-compile-run",
     "tests/ui-tests"
 ]
+resolver = "2"
 
 default-members = [
     "cynic",

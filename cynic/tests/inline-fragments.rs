@@ -1,3 +1,5 @@
+#![allow(clippy::items_after_test_module)]
+
 use {rstest::rstest, serde::Serialize, serde_json::json};
 
 use cynic::{InlineFragments, QueryFragment};

@@ -5,6 +5,6 @@ error[E0277]: the trait bound `u64: IsScalar<i32>` is not satisfied
    |                     ^^^^^^ the trait `IsScalar<i32>` is not implemented for `u64`
    |
    = help: the following other types implement trait `IsScalar<SchemaType>`:
-             <f64 as IsScalar<f64>>
              <i32 as IsScalar<i32>>
+             <f64 as IsScalar<f64>>
    = note: required for `std::option::Option<u64>` to implement `IsScalar<std::option::Option<i32>>`
