@@ -23,4 +23,4 @@ uuid = { version = "1", features = ["v4"] }
 [dev-dependencies]
 assert_matches = "1.4"
 insta = "1.17.1"
-rstest = "0.11"
+rstest.workspace = true
