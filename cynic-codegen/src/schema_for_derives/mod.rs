@@ -121,8 +121,8 @@ impl RequiredAttributes {
         for attr in attrs {
             if attr.path().is_ident("cynic") {
                 if let Meta::List(meta_list) = &attr.meta {
-                    for nested in NestedMeta::parse_meta_list(meta_list.tokens.clone())
-                        .expect("TODO: deal with this ")
+                    for nested in
+                        NestedMeta::parse_meta_list(meta_list.tokens.clone()).unwrap_or_default()
                     {
                         if let NestedMeta::Meta(Meta::NameValue(name_val)) = nested {
                             if name_val.path.is_ident("schema_path") {

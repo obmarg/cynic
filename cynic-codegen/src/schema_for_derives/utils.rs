@@ -34,9 +34,8 @@ fn derive_from_attributes(attrs: &[Attribute]) -> Vec<Derive> {
         }
     };
 
-    // TODO: see about this clone
     return NestedMeta::parse_meta_list(meta_list.tokens.clone())
-        .expect("todo: errors")
+        .unwrap_or_default()
         .iter()
         .filter_map(derive_for_nested_meta)
         .collect();
