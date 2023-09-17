@@ -2,6 +2,7 @@
 use std::collections::HashMap;
 
 use rkyv::Deserialize;
+use self_cell::self_cell;
 
 use crate::schema::{
     self,
@@ -31,19 +32,35 @@ impl Schema<'_, schema::Validated> {
     }
 }
 
-#[ouroboros::self_referencing]
+self_cell! {
+    struct AstCell {
+        owner: Vec<u8>,
+
+        #[covariant]
+        dependent: ArchiveRef,
+    }
+}
+
+type ArchiveRef<'a> = &'a ArchivedOptimisedTypes<'static>;
+
 pub struct ArchiveBacked {
-    data: Vec<u8>,
-    #[borrows(data)]
-    archived: &'this ArchivedOptimisedTypes<'static>,
+    data: AstCell,
 }
 
 impl ArchiveBacked {
     pub fn from_checked_data(data: Vec<u8>) -> Self {
-        ArchiveBacked::new(data, |data| unsafe {
-            // This is safe so long as we've already verified data
-            rkyv::archived_root::<OptimisedTypes<'_>>(&data[..])
-        })
+        ArchiveBacked {
+            data: AstCell::new(data, |data| {
+                unsafe {
+                    // This is safe so long as we've already verified data
+                    rkyv::archived_root::<OptimisedTypes<'_>>(&data[..])
+                }
+            }),
+        }
+    }
+
+    fn archive(&self) -> ArchiveRef<'_> {
+        self.data.borrow_dependent()
     }
 }
 
@@ -55,7 +72,7 @@ impl super::TypeIndex for ArchiveBacked {
 
     fn lookup_valid_type<'a>(&'a self, name: &str) -> Result<Type<'a>, SchemaError> {
         Ok(self
-            .borrow_archived()
+            .archive()
             .types
             .get(name)
             .ok_or_else(|| SchemaError::CouldNotFindType {
@@ -67,7 +84,7 @@ impl super::TypeIndex for ArchiveBacked {
 
     fn root_types(&self) -> Result<schema::types::SchemaRoots<'_>, SchemaError> {
         Ok(self
-            .borrow_archived()
+            .archive()
             .schema_roots
             .deserialize(&mut rkyv::Infallible)
             .expect("infallible"))
@@ -75,7 +92,7 @@ impl super::TypeIndex for ArchiveBacked {
 
     fn unsafe_lookup<'a>(&'a self, name: &str) -> Option<Type<'a>> {
         Some(
-            self.borrow_archived()
+            self.archive()
                 .types
                 .get(name)
                 .unwrap()
@@ -85,7 +102,7 @@ impl super::TypeIndex for ArchiveBacked {
     }
 
     fn unsafe_iter<'a>(&'a self) -> Box<dyn Iterator<Item = Type<'a>> + 'a> {
-        Box::new(self.borrow_archived().types.values().map(|archived_type| {
+        Box::new(self.archive().types.values().map(|archived_type| {
             archived_type
                 .deserialize(&mut rkyv::Infallible)
                 .expect("infallible")

@@ -5,6 +5,7 @@ use std::{
 };
 
 use once_cell::sync::Lazy;
+use self_cell::self_cell;
 
 use crate::schema::{
     names::FieldName,
@@ -13,15 +14,22 @@ use crate::schema::{
     SchemaError,
 };
 
-#[ouroboros::self_referencing]
+type TypeMap<'a> = HashMap<&'a str, &'a TypeDefinition>;
+
+self_cell! {
+    struct DocumentCell {
+        owner: Document,
+
+        #[covariant]
+        dependent: TypeMap,
+    }
+}
+
 pub struct SchemaBackedTypeIndex {
-    document: Document,
     query_root: String,
     mutation_root: Option<String>,
     subscription_root: Option<String>,
-    #[borrows(document)]
-    #[covariant]
-    types: HashMap<&'this str, &'this TypeDefinition>,
+    data: DocumentCell,
 }
 
 impl SchemaBackedTypeIndex {
@@ -41,12 +49,11 @@ impl SchemaBackedTypeIndex {
             }
         }
 
-        SchemaBackedTypeIndex::new(
-            document,
+        SchemaBackedTypeIndex {
             query_root,
             mutation_root,
             subscription_root,
-            |document| {
+            data: DocumentCell::new(document, |document| {
                 let mut types = HashMap::new();
                 for definition in &document.definitions {
                     if let Definition::TypeDefinition(type_def) = definition {
@@ -57,8 +64,12 @@ impl SchemaBackedTypeIndex {
                     types.insert(name_for_type(def), def);
                 }
                 types
-            },
-        )
+            }),
+        }
+    }
+
+    fn borrow_types(&self) -> &HashMap<&str, &TypeDefinition> {
+        self.data.borrow_dependent()
     }
 }
 
@@ -82,17 +93,15 @@ impl super::TypeIndex for SchemaBackedTypeIndex {
 
     fn root_types(&self) -> Result<SchemaRoots<'_>, SchemaError> {
         Ok(SchemaRoots {
-            query: self
-                .lookup_valid_type(self.borrow_query_root())?
-                .try_into()?,
+            query: self.lookup_valid_type(&self.query_root)?.try_into()?,
             mutation: self
-                .borrow_mutation_root()
+                .mutation_root
                 .as_ref()
                 .map(|name| ObjectType::try_from(self.lookup_valid_type(name)?))
                 .transpose()?
                 .or_else(|| ObjectType::try_from(self.lookup_valid_type("Mutation").ok()?).ok()),
             subscription: self
-                .borrow_subscription_root()
+                .subscription_root
                 .as_ref()
                 .map(|name| ObjectType::try_from(self.lookup_valid_type(name)?))
                 .transpose()?
