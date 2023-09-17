@@ -33,6 +33,7 @@ version = "3.2.2"
 rust-version = "1.69"
 
 [workspace.dependencies]
+darling = "0.20"
 rstest = "0.18"
 syn = "2"
 

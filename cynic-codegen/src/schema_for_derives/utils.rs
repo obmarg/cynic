@@ -1,4 +1,5 @@
-use syn::{Attribute, Item, Meta, NestedMeta};
+use darling::ast::NestedMeta;
+use syn::{Attribute, Item, Meta};
 
 #[derive(Debug, PartialEq, Eq)]
 pub enum Derive {
@@ -19,22 +20,23 @@ pub fn find_derives(item: &Item) -> Vec<Derive> {
 }
 
 fn derive_from_attributes(attrs: &[Attribute]) -> Vec<Derive> {
-    let attr = attrs.iter().find(|attr| attr.path.is_ident("derive"));
+    let attr = attrs.iter().find(|attr| attr.path().is_ident("derive"));
 
     if attr.is_none() {
         return vec![];
     }
     let attr = attr.unwrap();
 
-    let meta_list = match attr.parse_meta() {
-        Ok(Meta::List(list)) => list,
+    let meta_list = match &attr.meta {
+        Meta::List(list) => list,
         _ => {
             return vec![];
         }
     };
 
-    return meta_list
-        .nested
+    // TODO: see about this clone
+    return NestedMeta::parse_meta_list(meta_list.tokens.clone())
+        .expect("todo: errors")
         .iter()
         .filter_map(derive_for_nested_meta)
         .collect();

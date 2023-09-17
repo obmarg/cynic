@@ -1,6 +1,6 @@
 ---
 source: cynic-codegen/src/fragment_derive/arguments/tests.rs
-expression: "analyse(literals, field, Some(&format_ident!(\"MyArguments\").into()),\n        Span::call_site()).map(|o| o.arguments)"
+expression: "analyse(&schema, literals, field, Some(&format_ident!(\"MyArguments\").into()),\n        Span::call_site()).map(|o| o.arguments)"
 ---
 Ok(
     [
@@ -64,18 +64,14 @@ Ok(
                                 List(
                                     [
                                         Literal(
-                                            Str(
-                                                LitStr {
-                                                    token: "Charles Stross",
-                                                },
-                                            ),
+                                            Lit::Str {
+                                                token: "Charles Stross",
+                                            },
                                         ),
                                         Literal(
-                                            Str(
-                                                LitStr {
-                                                    token: "Ann Leckie",
-                                                },
-                                            ),
+                                            Lit::Str {
+                                                token: "Ann Leckie",
+                                            },
                                         ),
                                     ],
                                 ),

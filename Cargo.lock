@@ -1089,6 +1089,7 @@ name = "cynic-proc-macros"
 version = "3.2.2"
 dependencies = [
  "cynic-codegen",
+ "darling",
  "quote",
  "syn 2.0.36",
 ]

@@ -380,11 +380,7 @@ mod tests {
             variables: None,
         };
         let errors = input.validate().unwrap_err();
-        assert_eq!(
-            errors.to_compile_errors().to_string(),
-            r#"compile_error ! { "At least one field should be selected for `TestInput`." }"#
-                .to_string()
-        );
+        insta::assert_snapshot!(errors.to_compile_errors().to_string(), @r###":: core :: compile_error ! { "At least one field should be selected for `TestInput`." }"###);
     }
 
     #[test]

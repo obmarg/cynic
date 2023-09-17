@@ -11,7 +11,7 @@ pub fn arguments_from_field_attrs(
     attrs: &[syn::Attribute],
 ) -> Result<Option<(Vec<FieldArgument>, proc_macro2::Span)>> {
     for attr in attrs {
-        if attr.path.is_ident("arguments") {
+        if attr.path().is_ident("arguments") {
             let parsed: CynicArguments = attr.parse_args()?;
             return Ok(Some((parsed.arguments.into_iter().collect(), attr.span())));
         }
@@ -100,7 +100,7 @@ impl Parse for ArgumentLiteral {
             syn::braced!(content in input);
 
             Ok(ArgumentLiteral::Object(
-                content.parse_terminated(FieldArgument::parse)?,
+                content.parse_terminated(FieldArgument::parse, Token![,])?,
                 span,
             ))
         } else if lookahead.peek(syn::token::Bracket) {
@@ -109,7 +109,7 @@ impl Parse for ArgumentLiteral {
             syn::bracketed!(content in input);
 
             Ok(ArgumentLiteral::List(
-                content.parse_terminated(ArgumentLiteral::parse)?,
+                content.parse_terminated(ArgumentLiteral::parse, Token![,])?,
                 span,
             ))
         } else if lookahead.peek(Token![$]) {

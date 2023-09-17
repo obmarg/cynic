@@ -22,5 +22,6 @@ proc-macro = true
 
 [dependencies]
 cynic-codegen = { path = "../cynic-codegen", version = "3.2.2" }
+darling.workspace = true
 quote = "1"
 syn.workspace = true

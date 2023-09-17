@@ -5,6 +5,7 @@
 
 // extern crate proc_macro;
 
+use darling::{ast::NestedMeta, Error};
 use proc_macro::TokenStream;
 
 use cynic_codegen::{
@@ -144,7 +145,13 @@ pub fn input_object_derive(input: TokenStream) -> TokenStream {
 #[proc_macro_attribute]
 pub fn schema_for_derives(attrs: TokenStream, input: TokenStream) -> TokenStream {
     let module = syn::parse_macro_input!(input as syn::ItemMod);
-    let attrs = syn::parse_macro_input!(attrs as syn::AttributeArgs);
+    let attrs = match NestedMeta::parse_meta_list(attrs.into()) {
+        Ok(v) => v,
+        Err(e) => {
+            return TokenStream::from(Error::from(e).write_errors());
+        }
+    };
+    // let attrs = syn::parse_macro_input!(attrs as syn::AttributeArgs);
 
     let rv: TokenStream = match schema_for_derives::add_schema_attrs_to_derives(attrs, module) {
         Ok(tokens) => tokens.into(),
