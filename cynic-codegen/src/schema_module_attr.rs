@@ -20,7 +20,8 @@ pub fn attribute_impl(
     );
 
     let Ok(out_dir) = std::env::var("OUT_DIR") else {
-        return Err(SchemaLoadError::UnknownOutDirWithNamedSchema(schema_name).into_syn_error(schema_literal.span()));
+        return Err(SchemaLoadError::UnknownOutDirWithNamedSchema(schema_name)
+            .into_syn_error(schema_literal.span()));
     };
 
     let mut path = PathBuf::from(&out_dir);

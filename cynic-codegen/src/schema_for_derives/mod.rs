@@ -15,7 +15,7 @@ struct AddSchemaAttrParams {
 }
 
 pub fn add_schema_attrs_to_derives(
-    args: syn::AttributeArgs,
+    args: Vec<darling::ast::NestedMeta>,
     query_module: syn::ItemMod,
 ) -> Result<TokenStream, syn::Error> {
     match AddSchemaAttrParams::from_list(&args) {
@@ -115,12 +115,15 @@ impl RequiredAttributes {
     }
 
     fn with_current_attrs(mut self, attrs: &[syn::Attribute]) -> Self {
-        use syn::{Meta, NestedMeta};
+        use darling::ast::NestedMeta;
+        use syn::Meta;
 
         for attr in attrs {
-            if attr.path.is_ident("cynic") {
-                if let Ok(Meta::List(meta_list)) = attr.parse_meta() {
-                    for nested in meta_list.nested {
+            if attr.path().is_ident("cynic") {
+                if let Meta::List(meta_list) = &attr.meta {
+                    for nested in
+                        NestedMeta::parse_meta_list(meta_list.tokens.clone()).unwrap_or_default()
+                    {
                         if let NestedMeta::Meta(Meta::NameValue(name_val)) = nested {
                             if name_val.path.is_ident("schema_path") {
                                 self.needs_schema_path = false;

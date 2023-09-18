@@ -44,7 +44,7 @@ impl CapabilitiesQuery {
 
     fn version_supported(&self) -> SpecificationVersion {
         let Some(type_type) = &self.type_type else {
-            return SpecificationVersion::Unknown
+            return SpecificationVersion::Unknown;
         };
 
         let specified_by_field = type_type

@@ -5,7 +5,20 @@ use rstest::rstest;
 
 use cynic_codegen::use_schema::{use_schema, UseSchemaParams};
 
-// TODO: Rename this file after running snapshots
+fn format_code(input: String) -> String {
+    let mut cmd = std::process::Command::new("rustfmt")
+        .stdin(Stdio::piped())
+        .stdout(Stdio::piped())
+        .stderr(Stdio::inherit())
+        .spawn()
+        .expect("failed to execute rustfmt");
+
+    write!(cmd.stdin.as_mut().unwrap(), "{}", input).unwrap();
+
+    std::str::from_utf8(&cmd.wait_with_output().unwrap().stdout)
+        .unwrap()
+        .to_owned()
+}
 
 #[rstest(schema_file => [
     "graphql.jobs.graphql",
@@ -28,19 +41,4 @@ fn snapshot_use_schema_two(schema_file: &str) {
         .unwrap();
 
     assert_snapshot!(snapshot_name, format_code(format!("{}", tokens)));
-}
-
-fn format_code(input: String) -> String {
-    let mut cmd = std::process::Command::new("rustfmt")
-        .stdin(Stdio::piped())
-        .stdout(Stdio::piped())
-        .stderr(Stdio::inherit())
-        .spawn()
-        .expect("failed to execute rustfmt");
-
-    write!(cmd.stdin.as_mut().unwrap(), "{}", input).unwrap();
-
-    std::str::from_utf8(&cmd.wait_with_output().unwrap().stdout)
-        .unwrap()
-        .to_owned()
 }

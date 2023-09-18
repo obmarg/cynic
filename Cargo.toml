@@ -12,11 +12,12 @@ members = [
     "tests/querygen-compile-run",
     "tests/ui-tests"
 ]
+resolver = "2"
 
 default-members = [
-    "cynic", 
+    "cynic",
     "cynic-cli",
-    "cynic-codegen", 
+    "cynic-codegen",
     "cynic-introspection",
     "cynic-proc-macros",
     "cynic-querygen"
@@ -30,6 +31,11 @@ repository = "https://github.com/obmarg/cynic"
 license = "MPL-2.0"
 version = "3.2.2"
 rust-version = "1.69"
+
+[workspace.dependencies]
+darling = "0.20"
+rstest = "0.18"
+syn = "2"
 
 [profile.dev]
 # Disabling debug info speeds up builds a bunch,

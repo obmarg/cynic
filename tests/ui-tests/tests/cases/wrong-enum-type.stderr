@@ -7,5 +7,8 @@ error[E0277]: the trait bound `schema::CheckConclusionState: IsFieldType<CheckSt
 note: required by a bound in `SelectionBuilder::<'a, SchemaType, VariablesFields>::select_field`
   --> $WORKSPACE/cynic/src/queries/builders.rs
    |
+   |     pub fn select_field<FieldMarker, FieldType>(
+   |            ------------ required by a bound in this associated function
+...
    |         FieldType: IsFieldType<SchemaType::Type>,
    |                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^ required by this bound in `SelectionBuilder::<'a, SchemaType, VariablesFields>::select_field`
