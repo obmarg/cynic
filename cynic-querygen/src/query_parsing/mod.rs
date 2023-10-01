@@ -15,6 +15,7 @@ pub use normalisation::Variable;
 pub use value::{LiteralContext, TypedValue};
 
 use crate::{
+    casings::CasingExt,
     naming::Namer,
     output::{self, Output},
     Error, TypeIndex,
@@ -109,7 +110,10 @@ fn make_query_fragment<'text>(
 
                 OutputField {
                     name: field.alias.unwrap_or(schema_field.name),
-                    rename: field.alias.map(|_| schema_field.name),
+                    rename: field.alias.map(|_| schema_field.name).or_else(|| {
+                        (schema_field.name.to_snake_case().to_camel_case() != schema_field.name)
+                            .then_some(schema_field.name)
+                    }),
                     field_type: RustOutputFieldType::from_schema_type(
                         &schema_field.value_type,
                         type_name_override,

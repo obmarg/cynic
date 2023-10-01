@@ -25,6 +25,7 @@ mod queries {
         Stale,
         Success,
         TimedOut,
+        StartupFailure,
     }
 }
 

@@ -28,5 +28,11 @@ test_query!(
     inline_fragment_with_arguments,
     "inline-fragment-with-arguments.graphql"
 );
+test_query!(
+    inline_fragment_with_renames,
+    "inline-fragment-with-renames.graphql"
+);
 test_query!(field_on_interface, "field-on-interface.graphql");
 test_query!(queries_with_typename, "queries-with-typename.graphql");
+
+test_query!(issue_786, "issue-786.graphql");

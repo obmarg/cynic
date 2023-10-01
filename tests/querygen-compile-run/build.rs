@@ -135,13 +135,22 @@ fn main() {
             "../../cynic-querygen/tests/queries/github/queries-with-typename.graphql",
             r#"UnnamedQuery::build(())"#,
         ),
+        TestCase::query_norun(
+            &github_schema,
+            "../../cynic-querygen/tests/queries/github/issue-786.graphql",
+            r#"ProjectMetadataQuery::build(
+                ProjectMetadataQueryVariables {
+                    id: &cynic::Id::new("123"),
+                }
+            )"#,
+        ),
         TestCase::mutation(
             &github_schema,
             "tests/queries/github/scalar-inside-input-object.graphql",
             r#"AddPRComment::build(
                 AddPRCommentVariables {
                     body: "hello!",
-                    commit: GitObjectID("abcd".into())
+                    commit: GitObjectId("abcd".into())
                 }
             )"#,
         ),
@@ -180,6 +189,15 @@ fn main() {
             r#"IssueOrPR::build(
                 IssueOrPRVariables {
                     assignee_count: 10
+                }
+            )"#,
+        ),
+        TestCase::query_norun(
+            &github_schema,
+            "tests/queries/github/inline-fragment-with-renames.graphql",
+            r#"RepoIssues::build(
+                RepoIssuesVariables {
+                    first: 10
                 }
             )"#,
         ),

@@ -1,0 +1,45 @@
+query ProjectMetadataQuery($id: ID!) {
+  node(id: $id) {
+    ... on ProjectV2 {
+      id
+      title
+      number
+      public
+      readme
+      shortDescription
+      url
+      fields(first: 100) {
+        totalCount
+        pageInfo {
+          hasNextPage
+          endCursor
+          hasPreviousPage
+          startCursor
+        }
+        nodes {
+          ... on ProjectV2SingleSelectField {
+            name
+            dataType
+            options {
+              id
+              name
+              nameHTML
+            }
+          }
+          ... on ProjectV2Field {
+            name
+            dataType
+          }
+          ... on ProjectV2IterationField {
+            name
+            dataType
+            configuration {
+              duration
+              startDay
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -34,13 +34,73 @@ impl CasingExt for &str {
     }
 
     fn to_camel_case(&self) -> String {
-        // Might be nice to not use inflector for this but cba writing it just now
-        inflector::cases::camelcase::to_camel_case(self)
+        let s = self.to_pascal_case();
+
+        let mut buf = String::with_capacity(s.len());
+        let mut chars = s.chars();
+
+        if let Some(first_char) = chars.next() {
+            buf.extend(first_char.to_lowercase());
+        }
+
+        buf.extend(chars);
+
+        buf
     }
 
     fn to_pascal_case(&self) -> std::string::String {
-        // Might be nice to not use inflector for this but cba writing it just now
-        inflector::cases::pascalcase::to_pascal_case(self)
+        let mut buf = String::with_capacity(self.len());
+        let mut first_char = true;
+        let mut prev_is_upper = false;
+        let mut prev_is_underscore = false;
+        let mut chars = self.chars().peekable();
+        loop {
+            let c = chars.next();
+            if c.is_none() {
+                break;
+            }
+            let c = c.unwrap();
+            if first_char {
+                if c == '_' {
+                    // keep leading underscores
+                    buf.push('_');
+                    while let Some('_') = chars.peek() {
+                        buf.push(chars.next().unwrap());
+                    }
+                } else if c.is_uppercase() {
+                    prev_is_upper = true;
+                    buf.push(c);
+                } else {
+                    buf.extend(c.to_uppercase());
+                }
+                first_char = false;
+                continue;
+            }
+
+            if c.is_uppercase() {
+                if prev_is_upper {
+                    buf.extend(c.to_lowercase());
+                } else {
+                    buf.push(c);
+                }
+                prev_is_upper = true;
+            } else if c == '_' {
+                prev_is_underscore = true;
+                prev_is_upper = false;
+            } else {
+                if prev_is_upper {
+                    buf.extend(c.to_lowercase())
+                } else if prev_is_underscore {
+                    buf.extend(c.to_uppercase());
+                } else {
+                    buf.push(c);
+                }
+                prev_is_upper = false;
+                prev_is_underscore = false;
+            }
+        }
+
+        buf
     }
 }
 
