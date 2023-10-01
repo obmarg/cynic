@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
-      - uses: dtolnay/rust-toolchain@1.69.0
+      - uses: dtolnay/rust-toolchain@1.72.1
       - name: Publish crate
         uses: katyo/publish-crates@v2
         with:
