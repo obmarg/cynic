@@ -22,6 +22,10 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 - Using `#[cynic(spread)]` more than once no longer results in rust compile
   errors.
+- The generator won't output an incorrect comma in between attributes in
+  certain circumstances.
+- The generator now uses the same re-casing as codegen - leading to less bugs.
+- The generator will now rename more QueryFragment fields that require it.
 
 ## v3.2.2 - 2023-06-26
 

@@ -107,6 +107,7 @@ pub fn to_pascal_case(s: &str) -> String {
             prev_is_upper = true;
         } else if c == '_' {
             prev_is_underscore = true;
+            prev_is_upper = false;
         } else {
             if prev_is_upper {
                 buf.extend(c.to_lowercase())
@@ -177,6 +178,7 @@ mod tests {
         assert_eq!(to_pascal_case("_another_one"), "_anotherOne");
         assert_eq!(to_pascal_case("RepeatedUPPERCASE"), "RepeatedUppercase");
         assert_eq!(to_pascal_case("UUID"), "Uuid");
+        assert_eq!(to_pascal_case("CREATED_AT"), "CreatedAt");
         assert_eq!(to_pascal_case("__typename"), "__typename");
     }
 

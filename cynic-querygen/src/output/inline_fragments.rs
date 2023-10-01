@@ -25,9 +25,6 @@ impl std::fmt::Display for InlineFragments {
         }
 
         if let Some(name) = &self.variable_struct_name {
-            if self.target_type != self.name {
-                write!(f, ", ")?;
-            }
             attributes.push(format!("variables = \"{name}\""));
         }
 
