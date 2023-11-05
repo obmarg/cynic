@@ -1027,6 +1027,7 @@ dependencies = [
  "colored",
  "cynic",
  "cynic-introspection",
+ "cynic-querygen",
  "reqwest",
  "thiserror",
  "trycmd",

@@ -1,3 +1,5 @@
+use std::path::PathBuf;
+
 use clap::{Args, Parser, Subcommand, ValueEnum};
 use colored::Colorize;
 
@@ -13,6 +15,20 @@ fn main() {
                 let output = format!("Error during introspection: {error}").red();
                 eprintln!("{output}");
             }
+        }
+        Some(Commands::Querygen(args)) => {
+            let schema = std::fs::read_to_string(&args.schema).unwrap();
+            let query = std::fs::read_to_string(&args.query).unwrap();
+
+            println!(
+                "{}",
+                cynic_querygen::document_to_fragment_structs(
+                    &query,
+                    &schema,
+                    &cynic_querygen::QueryGenOptions::default()
+                )
+                .unwrap()
+            );
         }
         None => {}
     }
@@ -31,6 +47,9 @@ struct Cli {
 enum Commands {
     /// Runs an introspection query against a GraphQL server and outputs the servers schema
     Introspect(IntrospectArgs),
+
+    /// Runs querygen that allows you to generate Rust code from a schema and for a query
+    Querygen(QuerygenArgs),
 }
 
 #[derive(Args)]
@@ -56,6 +75,17 @@ struct IntrospectArgs {
     /// supports.
     #[arg(long, default_value_t = GraphQlVersion::AutoDetect)]
     server_version: GraphQlVersion,
+}
+
+#[derive(clap::Parser)]
+struct QuerygenArgs {
+    /// The path to a GraphQL schema file.
+    #[arg(long)]
+    schema: PathBuf,
+
+    /// The path to a GraphQL query file.
+    #[arg(long)]
+    query: PathBuf,
 }
 
 #[derive(Copy, Clone, Debug, PartialEq, Eq, ValueEnum, Default)]

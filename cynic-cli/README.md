@@ -41,6 +41,7 @@ Usage: cynic [COMMAND]
 
 Commands:
   introspect  Runs an introspection query against a GraphQL server and outputs the servers schema
+  querygen    Runs querygen that allows you to generate Rust code from a schema and for a query
   help        Print this message or the help of the given subcommand(s)
 
 Options:
