@@ -111,7 +111,7 @@ for arguments in GraphQL itself][gql-arguments]. Some examples:
 | `values: ["Hello"]`            | `values: ["Hello"]`            |
 | `values: ["Hello"]`            | `values: ["Hello"]`            |
 | `arg1: "Foo", arg2: "Bar"`     | `arg1: "Foo", arg2: "Bar"`     |
-| `arg1: null                    | `arg1: null`                   |
+| `arg1: null`                   | `arg1: null`                   |
 
 ### Variables
 
