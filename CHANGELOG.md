@@ -26,6 +26,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
   certain circumstances.
 - The generator now uses the same re-casing as codegen - leading to less bugs.
 - The generator will now rename more QueryFragment fields that require it.
+- `cynic-introspection` now escapes deprecated strings that require it in SDL.
 
 ## v3.2.2 - 2023-06-26
 

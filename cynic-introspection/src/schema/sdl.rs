@@ -328,7 +328,9 @@ impl Display for DeprecatedDisplay<'_> {
         match self.0 {
             Deprecated::No => {}
             Deprecated::Yes(None) => write!(f, " @deprecated")?,
-            Deprecated::Yes(Some(reason)) => write!(f, " @deprecated(reason: \"{reason}\")")?,
+            Deprecated::Yes(Some(reason)) => {
+                write!(f, " @deprecated(reason: \"{}\")", escape_string(reason))?
+            }
         }
         Ok(())
     }
@@ -348,4 +350,19 @@ impl Display for SpecifiedByDisplay<'_> {
 
 pub fn indented<D>(f: &mut D) -> indenter::Indented<'_, D> {
     indenter::indented(f).with_str("  ")
+}
+
+fn escape_string(src: &str) -> String {
+    let mut dest = String::with_capacity(src.len());
+
+    for character in src.chars() {
+        match character {
+            '"' | '\\' | '\n' | '\r' | '\t' => {
+                dest.extend(character.escape_default());
+            }
+            _ => dest.push(character),
+        }
+    }
+
+    dest
 }
