@@ -9,6 +9,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v3.3.0 - 2023-11-14
+
 ### New Features
 
 - The `QueryVariables` derive now supports `skip_serializing_if`
