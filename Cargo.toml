@@ -29,7 +29,7 @@ edition = "2021"
 homepage = "https://cynic-rs.dev"
 repository = "https://github.com/obmarg/cynic"
 license = "MPL-2.0"
-version = "3.2.2"
+version = "3.3.0"
 rust-version = "1.69"
 
 [workspace.dependencies]
