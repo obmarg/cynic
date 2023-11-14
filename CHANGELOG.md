@@ -14,6 +14,10 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ### New Features
 
 - The `QueryVariables` derive now supports `skip_serializing_if`
+- `cynic-cli` has a new `querygen` command as an alternative to the 
+   web-based generator (Note: this is experimental and may be subject
+   to change)
+
 
 ### Changes
 
