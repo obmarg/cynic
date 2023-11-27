@@ -191,9 +191,11 @@ fn join_variants<'a>(
     rename_all: RenameAll,
     enum_span: &Span,
 ) -> Result<Vec<(&'a EnumDeriveVariant, &'a EnumValue<'a>)>, TokenStream> {
+    let mut has_fallback = false;
     let mut map = BTreeMap::new();
     for variant in variants {
         if *variant.fallback {
+            has_fallback = true;
             // We can't join up a fallback as it has no corresponding GQL value.
             // We handle them separately.
             continue;
@@ -237,7 +239,7 @@ fn join_variants<'a>(
             _ => (),
         }
     }
-    if !missing_variants.is_empty() {
+    if !has_fallback && !missing_variants.is_empty() {
         let missing_variants_string = missing_variants.join(", ");
         errors.extend(
             syn::Error::new(
@@ -253,7 +255,7 @@ fn join_variants<'a>(
 
     Ok(map
         .into_iter()
-        .map(|(_, (a, b))| (a.unwrap(), b.unwrap()))
+        .filter_map(|(_, (a, b))| Some((a?, b.unwrap())))
         .collect())
 }
 
