@@ -38,7 +38,14 @@ pub fn use_schema(input: TokenStream) -> TokenStream {
 /// Derives `cynic::QueryFragment`
 ///
 /// See [the book for usage details](https://cynic-rs.dev/derives/query-fragments.html)
-#[proc_macro_derive(QueryFragment, attributes(cynic, arguments))]
+#[cfg_attr(
+    feature = "directives",
+    proc_macro_derive(QueryFragment, attributes(cynic, arguments, directives))
+)]
+#[cfg_attr(
+    not(feature = "directives"),
+    proc_macro_derive(QueryFragment, attributes(cynic, arguments))
+)]
 pub fn query_fragment_derive(input: TokenStream) -> TokenStream {
     let ast = syn::parse_macro_input!(input as syn::DeriveInput);
 

@@ -11,6 +11,7 @@ use crate::{
 
 mod arguments;
 mod deserialize_impl;
+mod directives;
 mod fragment_derive_type;
 mod fragment_impl;
 mod type_ext;

@@ -16,6 +16,7 @@ use crate::{
 
 use super::{
     arguments::{arguments_from_field_attrs, process_arguments},
+    directives::{directives_from_field_attrs, FieldDirective},
     fragment_derive_type::FragmentDeriveType,
 };
 
@@ -47,6 +48,7 @@ struct FieldSelection<'a> {
     recurse_limit: Option<u8>,
     span: proc_macro2::Span,
     requires_feature: Option<String>,
+    directives: Vec<FieldDirective>,
 }
 
 struct SpreadSelection {
@@ -137,6 +139,8 @@ fn process_field<'a>(
     let (arguments, argument_span) =
         arguments_from_field_attrs(&field.attrs)?.unwrap_or_else(|| (vec![], Span::call_site()));
 
+    let directives = directives_from_field_attrs(&field.attrs)?;
+
     let arguments = process_arguments(
         schema,
         arguments,
@@ -164,6 +168,7 @@ fn process_field<'a>(
             .feature
             .as_ref()
             .map(|feature| feature.as_ref().clone()),
+        directives,
     }))
 }
 

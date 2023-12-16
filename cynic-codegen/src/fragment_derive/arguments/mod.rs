@@ -9,7 +9,12 @@ use crate::{
     schema::{Schema, Unvalidated},
 };
 
-pub use self::{output::Output, parsing::arguments_from_field_attrs};
+pub use self::{
+    output::Output,
+    parsing::{arguments_from_field_attrs, CynicArguments, FieldArgument, FieldArgumentValue},
+};
+
+pub(super) use self::parsing::ArgumentLiteral;
 
 pub fn process_arguments<'a>(
     schema: &'a Schema<'a, Unvalidated>,

@@ -22,6 +22,7 @@ http-surf = ["surf", "serde_json"]
 http-reqwest = ["reqwest", "serde_json"]
 http-reqwest-blocking = ["http-reqwest", "reqwest/blocking", "serde_json"]
 rkyv = ["cynic-proc-macros/rkyv"]
+directives = ["cynic-proc-macros/directives"]
 
 [dependencies]
 cynic-proc-macros = { path = "../cynic-proc-macros", version = "3.7.3" }

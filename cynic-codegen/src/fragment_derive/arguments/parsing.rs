@@ -4,7 +4,7 @@ use syn::{
     parse::{Parse, ParseStream},
     punctuated::Punctuated,
     spanned::Spanned,
-    Ident, Result, Token,
+    Field, Ident, Result, Token,
 };
 
 pub fn arguments_from_field_attrs(
@@ -31,6 +31,12 @@ impl Parse for CynicArguments {
         Ok(CynicArguments {
             arguments: Punctuated::parse_terminated(input)?,
         })
+    }
+}
+
+impl CynicArguments {
+    pub fn into_inner(self) -> Vec<FieldArgument> {
+        self.arguments.into_iter().collect()
     }
 }
 
@@ -79,7 +85,7 @@ pub enum ArgumentLiteral {
 }
 
 impl ArgumentLiteral {
-    pub(super) fn span(&self) -> Span {
+    pub fn span(&self) -> Span {
         match self {
             ArgumentLiteral::Literal(lit) => lit.span(),
             ArgumentLiteral::Enum(ident) => ident.span(),
