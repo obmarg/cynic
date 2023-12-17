@@ -25,7 +25,7 @@ fn format_code(input: String) -> String {
     "books.graphql",
     "starwars.schema.graphql",
     "test_cases.graphql",
-    "../cynic/src/bin/simple.graphql",
+    "../schemas/simple.graphql",
 ])]
 fn snapshot_use_schema_two(schema_file: &str) {
     let schema_path = PathBuf::from("../schemas/").join(schema_file);

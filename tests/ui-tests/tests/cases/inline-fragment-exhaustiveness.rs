@@ -1,12 +1,12 @@
 fn main() {}
 
 mod schema {
-    cynic::use_schema!("../../../../cynic/src/bin/simple.graphql");
+    cynic::use_schema!("../../../../schemas/simple.graphql");
 }
 
 #[derive(cynic::InlineFragments)]
 #[cynic(
-    schema_path = "../../../../cynic/src/bin/simple.graphql",
+    schema_path = "../../../../schemas/simple.graphql",
     graphql_type = "MyUnionType",
     exhaustive
 )]
@@ -19,7 +19,7 @@ enum MyFailingUnionType {
 
 #[derive(cynic::InlineFragments)]
 #[cynic(
-    schema_path = "../../../../cynic/src/bin/simple.graphql",
+    schema_path = "../../../../schemas/simple.graphql",
     graphql_type = "MyUnionType",
     exhaustive
 )]
