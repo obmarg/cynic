@@ -22,7 +22,7 @@ fn test_skip_serializing_if_none() {
 }
 
 #[derive(cynic::QueryFragment, PartialEq, Debug)]
-#[cynic(schema_path = "src/bin/simple.graphql", variables = "TestArgs")]
+#[cynic(schema_path = "../schemas/simple.graphql", variables = "TestArgs")]
 struct TestStruct {
     #[arguments(x: 1, y: "hello")]
     field_one: String,
@@ -30,7 +30,7 @@ struct TestStruct {
 
 #[derive(cynic::QueryFragment, PartialEq, Debug)]
 #[cynic(
-    schema_path = "src/bin/simple.graphql",
+    schema_path = "../schemas/simple.graphql",
     graphql_type = "Query",
     variables = "TestArgs"
 )]
@@ -55,5 +55,5 @@ fn test_unused_variables_not_rendered() {
 }
 
 mod schema {
-    cynic::use_schema!("src/bin/simple.graphql");
+    cynic::use_schema!("../schemas/simple.graphql");
 }

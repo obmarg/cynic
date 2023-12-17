@@ -1,5 +1,5 @@
 mod schema {
-    cynic::use_schema!("src/bin/simple.graphql");
+    cynic::use_schema!("../schemas/simple.graphql");
 }
 
 #[derive(cynic::QueryVariables)]
@@ -8,7 +8,7 @@ struct TestArgs<'a> {
 }
 
 #[derive(cynic::QueryFragment, PartialEq, Debug)]
-#[cynic(schema_path = "src/bin/simple.graphql", variables = "TestArgs")]
+#[cynic(schema_path = "../schemas/simple.graphql", variables = "TestArgs")]
 struct TestStruct {
     #[arguments(x: 1, y: $a_str)]
     field_one: String,
@@ -16,7 +16,7 @@ struct TestStruct {
 
 #[derive(cynic::QueryFragment, PartialEq, Debug)]
 #[cynic(
-    schema_path = "src/bin/simple.graphql",
+    schema_path = "../schemas/simple.graphql",
     graphql_type = "Query",
     variables = "TestArgs"
 )]
@@ -35,7 +35,7 @@ fn test_query_building() {
 
 #[derive(cynic::QueryFragment, PartialEq, Debug)]
 #[cynic(
-    schema_path = "src/bin/simple.graphql",
+    schema_path = "../schemas/simple.graphql",
     graphql_type = "Query",
     variables = "TestArgs"
 )]
