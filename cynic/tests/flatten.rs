@@ -58,5 +58,3 @@ mod schema {
 mod schema_2 {
     cynic::use_schema!("../schemas/test_cases.graphql");
 }
-
-// TODO: Write some decoding tests (either here or next to the flatten_de stuff)
