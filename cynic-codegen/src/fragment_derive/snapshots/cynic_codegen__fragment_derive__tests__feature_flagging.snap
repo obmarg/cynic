@@ -13,8 +13,8 @@ impl cynic::QueryFragment for MyQuery {
         #![allow(unused_mut)]
         let mut field_builder = builder
             .select_field::<schema::__fields::Query::__typename, <String as cynic::schema::IsScalar<
-                <schema::__fields::Query::__typename as cynic::schema::Field>::Type,
-            >>::SchemaType>();
+            <schema::Query as cynic::schema::HasField<schema::__fields::Query::__typename>>::Type,
+        >>::SchemaType>();
         if builder.is_feature_enabled("2018") {
             let mut field_builder = builder . select_field :: < schema :: __fields :: Query :: filteredPosts , < Vec < BlogPostOutput > as cynic :: QueryFragment > :: SchemaType > () ;
             <Vec<BlogPostOutput> as cynic::QueryFragment>::query(field_builder.select_children());

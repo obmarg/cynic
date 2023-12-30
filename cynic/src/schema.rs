@@ -11,15 +11,6 @@
 //! usually be marker types and the associated types will also usually be
 //! markers.
 
-/// Indicates that a struct represents a Field in a graphql schema.
-pub trait Field {
-    /// The schema marker type of this field.
-    type Type;
-
-    /// the name of this field
-    const NAME: &'static str;
-}
-
 // TODO: Get the terminology straight in this file, it's a mess.
 
 /// Indicates that a type has a given field
@@ -30,6 +21,9 @@ pub trait Field {
 pub trait HasField<FieldMarker> {
     /// The schema marker type of this field.
     type Type;
+
+    /// the name of this field
+    const NAME: &'static str;
 }
 
 /// Indicates that an input object has a given field
@@ -37,7 +31,13 @@ pub trait HasField<FieldMarker> {
 /// This should be implemented several times for any given input object,
 /// once per field. `FieldMarker` should be the marker type for the field,
 /// and `FieldType` should be the schema marker type of the field.
-pub trait HasInputField<FieldMarker, FieldType> {}
+pub trait HasInputField<FieldMarker> {
+    /// The schema marker type of this input field.
+    type Type;
+
+    /// the name of this field
+    const NAME: &'static str;
+}
 
 /// Indicates that a field has an argument
 ///

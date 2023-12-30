@@ -37,6 +37,7 @@ enum Selection<'a> {
 }
 
 struct FieldSelection<'a> {
+    object_marker_type: syn::Path,
     rust_field_type: syn::Type,
     field_marker_type_path: syn::Path,
     graphql_field_kind: FieldKind,
@@ -90,6 +91,7 @@ impl<'schema, 'a: 'schema> FragmentImpl<'schema, 'a> {
                     schema,
                     field,
                     schema_field.as_ref(),
+                    &schema_type_path,
                     &field_module_path,
                     schema_module_path,
                     variables_fields,
@@ -119,6 +121,7 @@ fn process_field<'a>(
     schema: &'a Schema<'a, Unvalidated>,
     field: &FragmentDeriveField,
     schema_field: Option<&'a Field<'a>>,
+    object_marker_type: &syn::Path,
     field_module_path: &syn::Path,
     schema_module_path: &syn::Path,
     variables_fields: Option<&syn::Path>,
@@ -151,6 +154,7 @@ fn process_field<'a>(
     let field_marker_type_path = schema_field.marker_ident().to_path(field_module_path);
 
     Ok(Selection::Field(FieldSelection {
+        object_marker_type: object_marker_type.clone(),
         rust_field_type: field.ty.clone(),
         arguments,
         field_marker_type_path,
@@ -224,6 +228,7 @@ impl quote::ToTokens for FieldSelection<'_> {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         use quote::TokenStreamExt;
 
+        let object_marker_type = &self.object_marker_type;
         let field_marker_type_path = &self.field_marker_type_path;
         let field_type = &self.rust_field_type;
         let arguments = &self.arguments;
@@ -264,7 +269,7 @@ impl quote::ToTokens for FieldSelection<'_> {
             }
             FieldKind::Scalar => quote_spanned! { self.span =>
                 <#aligned_type as cynic::schema::IsScalar<
-                    <#field_marker_type_path as cynic::schema::Field>::Type
+                    <#object_marker_type as cynic::schema::HasField<#field_marker_type_path>>::Type
                 >>::SchemaType
             },
             FieldKind::Enum => quote_spanned! { self.span =>
@@ -295,7 +300,7 @@ impl quote::ToTokens for FieldSelection<'_> {
                         .select_flattened_field::<
                             #field_marker_type_path,
                             #schema_type_lookup,
-                            <#field_marker_type_path as cynic::schema::Field>::Type,
+                            <#object_marker_type as cynic::schema::HasField<#field_marker_type_path>>::Type
                         >();
 
                     #alias
@@ -312,7 +317,7 @@ impl quote::ToTokens for FieldSelection<'_> {
                         .select_flattened_field::<
                             #field_marker_type_path,
                             #schema_type_lookup,
-                            <#field_marker_type_path as cynic::schema::Field>::Type,
+                            <#object_marker_type as cynic::schema::HasField<#field_marker_type_path>>::Type
                         >();
 
                     #alias
