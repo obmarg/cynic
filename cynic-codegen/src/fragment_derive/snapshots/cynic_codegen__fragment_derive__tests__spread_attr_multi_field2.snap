@@ -16,7 +16,7 @@ impl cynic::QueryFragment for Film {
                 .inline_fragment()
                 .select_children::<<FilmDetails as cynic::QueryFragment>::VariablesFields>(),
         );
-        let mut field_builder = builder . select_field :: < schema :: __fields :: Film :: releaseDate , < Option < String > as cynic :: schema :: IsScalar < < schema :: __fields :: Film :: releaseDate as cynic :: schema :: Field > :: Type >> :: SchemaType > () ;
+        let mut field_builder = builder . select_field :: < schema :: __fields :: Film :: releaseDate , < Option < String > as cynic :: schema :: IsScalar < < schema :: Film as cynic :: schema :: HasField < schema :: __fields :: Film :: releaseDate >> :: Type >> :: SchemaType > () ;
     }
     fn name() -> Option<std::borrow::Cow<'static, str>> {
         Some(std::borrow::Cow::Borrowed("Film"))

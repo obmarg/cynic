@@ -30,14 +30,10 @@ impl ToTokens for FieldOutput<'_> {
         tokens.append_all(quote! {
             pub struct #field_marker;
 
-            impl cynic::schema::Field for #field_marker{
+            impl cynic::schema::HasField<#field_marker> for super::super::#parent_marker {
                 type Type = #field_type_marker;
 
                 const NAME: &'static str = #field_name_literal;
-            }
-
-            impl cynic::schema::HasField<#field_marker> for super::super::#parent_marker {
-                type Type = #field_type_marker;
             }
         });
 

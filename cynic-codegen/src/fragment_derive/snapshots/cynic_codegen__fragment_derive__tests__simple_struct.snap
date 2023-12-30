@@ -11,7 +11,7 @@ impl cynic::QueryFragment for BlogPostOutput {
         mut builder: cynic::queries::SelectionBuilder<'_, Self::SchemaType, Self::VariablesFields>,
     ) {
         #![allow(unused_mut)]
-        let mut field_builder = builder . select_field :: < schema :: __fields :: BlogPost :: hasMetadata , < Option < bool > as cynic :: schema :: IsScalar < < schema :: __fields :: BlogPost :: hasMetadata as cynic :: schema :: Field > :: Type >> :: SchemaType > () ;
+        let mut field_builder = builder . select_field :: < schema :: __fields :: BlogPost :: hasMetadata , < Option < bool > as cynic :: schema :: IsScalar < < schema :: BlogPost as cynic :: schema :: HasField < schema :: __fields :: BlogPost :: hasMetadata >> :: Type >> :: SchemaType > () ;
         let mut field_builder = builder . select_field :: < schema :: __fields :: BlogPost :: author , < AuthorOutput as cynic :: QueryFragment > :: SchemaType > () ;
         <AuthorOutput as cynic::QueryFragment>::query(field_builder.select_children());
     }

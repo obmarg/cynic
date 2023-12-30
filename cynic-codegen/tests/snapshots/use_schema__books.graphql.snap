@@ -30,80 +30,53 @@ impl cynic::schema::NamedType for SubscriptionRoot {
 pub mod __fields {
     pub mod Book {
         pub struct id;
-        impl cynic::schema::Field for id {
+        impl cynic::schema::HasField<id> for super::super::Book {
             type Type = super::super::String;
             const NAME: &'static str = "id";
         }
-        impl cynic::schema::HasField<id> for super::super::Book {
-            type Type = super::super::String;
-        }
         pub struct name;
-        impl cynic::schema::Field for name {
+        impl cynic::schema::HasField<name> for super::super::Book {
             type Type = super::super::String;
             const NAME: &'static str = "name";
         }
-        impl cynic::schema::HasField<name> for super::super::Book {
-            type Type = super::super::String;
-        }
         pub struct author;
-        impl cynic::schema::Field for author {
+        impl cynic::schema::HasField<author> for super::super::Book {
             type Type = super::super::String;
             const NAME: &'static str = "author";
         }
-        impl cynic::schema::HasField<author> for super::super::Book {
-            type Type = super::super::String;
-        }
         pub struct __typename;
-        impl cynic::schema::Field for __typename {
-            type Type = super::super::String;
-            const NAME: &'static str = "__typename";
-        }
         impl cynic::schema::HasField<__typename> for super::super::Book {
             type Type = super::super::String;
+            const NAME: &'static str = "__typename";
         }
     }
     pub mod BookChanged {
         pub struct mutationType;
-        impl cynic::schema::Field for mutationType {
+        impl cynic::schema::HasField<mutationType> for super::super::BookChanged {
             type Type = super::super::MutationType;
             const NAME: &'static str = "mutationType";
         }
-        impl cynic::schema::HasField<mutationType> for super::super::BookChanged {
-            type Type = super::super::MutationType;
-        }
         pub struct id;
-        impl cynic::schema::Field for id {
+        impl cynic::schema::HasField<id> for super::super::BookChanged {
             type Type = super::super::ID;
             const NAME: &'static str = "id";
         }
-        impl cynic::schema::HasField<id> for super::super::BookChanged {
-            type Type = super::super::ID;
-        }
         pub struct book;
-        impl cynic::schema::Field for book {
+        impl cynic::schema::HasField<book> for super::super::BookChanged {
             type Type = Option<super::super::Book>;
             const NAME: &'static str = "book";
         }
-        impl cynic::schema::HasField<book> for super::super::BookChanged {
-            type Type = Option<super::super::Book>;
-        }
         pub struct __typename;
-        impl cynic::schema::Field for __typename {
-            type Type = super::super::String;
-            const NAME: &'static str = "__typename";
-        }
         impl cynic::schema::HasField<__typename> for super::super::BookChanged {
             type Type = super::super::String;
+            const NAME: &'static str = "__typename";
         }
     }
     pub mod MutationRoot {
         pub struct createBook;
-        impl cynic::schema::Field for createBook {
-            type Type = super::super::ID;
-            const NAME: &'static str = "createBook";
-        }
         impl cynic::schema::HasField<createBook> for super::super::MutationRoot {
             type Type = super::super::ID;
+            const NAME: &'static str = "createBook";
         }
         pub mod _create_book_arguments {
             pub struct name;
@@ -118,12 +91,9 @@ pub mod __fields {
             }
         }
         pub struct deleteBook;
-        impl cynic::schema::Field for deleteBook {
-            type Type = super::super::Boolean;
-            const NAME: &'static str = "deleteBook";
-        }
         impl cynic::schema::HasField<deleteBook> for super::super::MutationRoot {
             type Type = super::super::Boolean;
+            const NAME: &'static str = "deleteBook";
         }
         pub mod _delete_book_arguments {
             pub struct id;
@@ -133,40 +103,28 @@ pub mod __fields {
             }
         }
         pub struct __typename;
-        impl cynic::schema::Field for __typename {
-            type Type = super::super::String;
-            const NAME: &'static str = "__typename";
-        }
         impl cynic::schema::HasField<__typename> for super::super::MutationRoot {
             type Type = super::super::String;
+            const NAME: &'static str = "__typename";
         }
     }
     pub mod QueryRoot {
         pub struct books;
-        impl cynic::schema::Field for books {
+        impl cynic::schema::HasField<books> for super::super::QueryRoot {
             type Type = Vec<super::super::Book>;
             const NAME: &'static str = "books";
         }
-        impl cynic::schema::HasField<books> for super::super::QueryRoot {
-            type Type = Vec<super::super::Book>;
-        }
         pub struct __typename;
-        impl cynic::schema::Field for __typename {
-            type Type = super::super::String;
-            const NAME: &'static str = "__typename";
-        }
         impl cynic::schema::HasField<__typename> for super::super::QueryRoot {
             type Type = super::super::String;
+            const NAME: &'static str = "__typename";
         }
     }
     pub mod SubscriptionRoot {
         pub struct interval;
-        impl cynic::schema::Field for interval {
-            type Type = super::super::Int;
-            const NAME: &'static str = "interval";
-        }
         impl cynic::schema::HasField<interval> for super::super::SubscriptionRoot {
             type Type = super::super::Int;
+            const NAME: &'static str = "interval";
         }
         pub mod _interval_arguments {
             pub struct n;
@@ -176,12 +134,9 @@ pub mod __fields {
             }
         }
         pub struct books;
-        impl cynic::schema::Field for books {
-            type Type = super::super::BookChanged;
-            const NAME: &'static str = "books";
-        }
         impl cynic::schema::HasField<books> for super::super::SubscriptionRoot {
             type Type = super::super::BookChanged;
+            const NAME: &'static str = "books";
         }
         pub mod _books_arguments {
             pub struct mutationType;
@@ -191,12 +146,9 @@ pub mod __fields {
             }
         }
         pub struct __typename;
-        impl cynic::schema::Field for __typename {
-            type Type = super::super::String;
-            const NAME: &'static str = "__typename";
-        }
         impl cynic::schema::HasField<__typename> for super::super::SubscriptionRoot {
             type Type = super::super::String;
+            const NAME: &'static str = "__typename";
         }
     }
 }

@@ -70,7 +70,6 @@ impl<'a, SchemaType, VariablesFields> SelectionBuilder<'a, SchemaType, Variables
         &'_ mut self,
     ) -> FieldSelectionBuilder<'_, FieldMarker, Flattened, VariablesFields>
     where
-        FieldMarker: schema::Field,
         FieldType: FlattensInto<Flattened>,
         SchemaType: schema::HasField<FieldMarker>,
         FieldType: IsFieldType<SchemaType::Type>,
@@ -78,7 +77,7 @@ impl<'a, SchemaType, VariablesFields> SelectionBuilder<'a, SchemaType, Variables
         FieldSelectionBuilder {
             recurse_depth: self.recurse_depth,
             context: self.context,
-            field: self.push_selection(FieldMarker::NAME),
+            field: self.push_selection(SchemaType::NAME),
             phantom: PhantomData,
         }
     }
@@ -93,14 +92,13 @@ impl<'a, SchemaType, VariablesFields> SelectionBuilder<'a, SchemaType, Variables
         &'_ mut self,
     ) -> FieldSelectionBuilder<'_, FieldMarker, FieldType, VariablesFields>
     where
-        FieldMarker: schema::Field,
         SchemaType: schema::HasField<FieldMarker>,
         FieldType: IsFieldType<SchemaType::Type>,
     {
         FieldSelectionBuilder {
             recurse_depth: self.recurse_depth,
             context: self.context,
-            field: self.push_selection(FieldMarker::NAME),
+            field: self.push_selection(SchemaType::NAME),
             phantom: PhantomData,
         }
     }
@@ -114,9 +112,8 @@ impl<'a, SchemaType, VariablesFields> SelectionBuilder<'a, SchemaType, Variables
         max_depth: u8,
     ) -> Option<FieldSelectionBuilder<'_, FieldMarker, FieldType, VariablesFields>>
     where
-        FieldMarker: schema::Field,
         SchemaType: schema::HasField<FieldMarker>,
-        FieldType: Recursable<FieldMarker::Type>,
+        FieldType: Recursable<SchemaType::Type>,
     {
         let new_depth = self.recurse_depth.map(|d| d + 1).unwrap_or(0);
         if new_depth >= max_depth {
@@ -126,7 +123,7 @@ impl<'a, SchemaType, VariablesFields> SelectionBuilder<'a, SchemaType, Variables
         Some(FieldSelectionBuilder {
             recurse_depth: Some(new_depth),
             context: self.context,
-            field: self.push_selection(FieldMarker::NAME),
+            field: self.push_selection(SchemaType::NAME),
             phantom: PhantomData,
         })
     }
@@ -341,12 +338,11 @@ impl<'a, SchemaType, ArgStruct> ObjectArgumentBuilder<'a, SchemaType, ArgStruct>
     /// contents of that field.
     pub fn field<FieldMarker, F>(self, field_fn: F) -> Self
     where
-        FieldMarker: schema::Field,
-        SchemaType: schema::HasInputField<FieldMarker, FieldMarker::Type>,
-        F: FnOnce(InputBuilder<'_, FieldMarker::Type, ArgStruct>),
+        SchemaType: schema::HasInputField<FieldMarker>,
+        F: FnOnce(InputBuilder<'_, SchemaType::Type, ArgStruct>),
     {
         field_fn(InputBuilder {
-            destination: InputLiteralContainer::object(FieldMarker::NAME, self.fields),
+            destination: InputLiteralContainer::object(SchemaType::NAME, self.fields),
             context: self.context,
             phantom: PhantomData,
         });
