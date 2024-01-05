@@ -6,8 +6,6 @@ use syn::parse_quote;
 
 use super::fragment_derive;
 
-// TODO: Don't forget to write a ui test of this and make sure spans are nice...
-
 #[rstest]
 #[case::argument_and_rename(
     "argument_and_rename",
