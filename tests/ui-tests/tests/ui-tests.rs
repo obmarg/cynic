@@ -5,6 +5,7 @@ fn ui_test_inlinefragments() {
     t.compile_fail("tests/cases/enum-guess-validation.rs");
     #[cfg(target_os = "macos")] // For some reason this is giving different errors on CI :(
     t.compile_fail("tests/cases/feature-flag-on-non-default.rs");
+    t.compile_fail("tests/cases/flatten-fail.rs");
     t.compile_fail("tests/cases/fragment-guess-validation.rs");
     t.compile_fail("tests/cases/inline-fragment-exhaustiveness.rs");
     t.compile_fail("tests/cases/inline-fragment-fallback-validation.rs");

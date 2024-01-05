@@ -11,7 +11,7 @@ impl cynic::QueryFragment for Film {
         mut builder: cynic::queries::SelectionBuilder<'_, Self::SchemaType, Self::VariablesFields>,
     ) {
         #![allow(unused_mut)]
-        let mut field_builder = builder . select_flattened_field :: < schema :: __fields :: Film :: producers , < Vec < String > as cynic :: schema :: IsScalar < < schema :: __fields :: Film :: producers as cynic :: schema :: Field > :: Type >> :: SchemaType , < schema :: __fields :: Film :: producers as cynic :: schema :: Field > :: Type , > () ;
+        let mut field_builder = builder . select_flattened_field :: < schema :: __fields :: Film :: producers , < Vec < String > as cynic :: schema :: IsScalar < Vec < String > >> :: SchemaType , < schema :: __fields :: Film :: producers as cynic :: schema :: Field > :: Type , > () ;
     }
     fn name() -> Option<std::borrow::Cow<'static, str>> {
         Some(std::borrow::Cow::Borrowed("Film"))

@@ -4,6 +4,7 @@ expression: "format_code(format!(\"{}\", tokens))"
 ---
 impl cynic::schema::QueryRoot for Foo {}
 pub struct Bar;
+pub struct FlattenableEnums;
 pub struct Foo;
 pub struct RecursiveInputChild;
 impl cynic::schema::InputObjectMarker for RecursiveInputChild {}
@@ -18,6 +19,9 @@ impl cynic::schema::NamedType for UUID {
 }
 impl cynic::schema::NamedType for Bar {
     const NAME: &'static str = "Bar";
+}
+impl cynic::schema::NamedType for FlattenableEnums {
+    const NAME: &'static str = "FlattenableEnums";
 }
 impl cynic::schema::NamedType for Foo {
     const NAME: &'static str = "Foo";
@@ -47,6 +51,24 @@ pub mod __fields {
             const NAME: &'static str = "__typename";
         }
         impl cynic::schema::HasField<__typename> for super::super::Bar {
+            type Type = super::super::String;
+        }
+    }
+    pub mod FlattenableEnums {
+        pub struct states;
+        impl cynic::schema::Field for states {
+            type Type = Option<Vec<Option<super::super::States>>>;
+            const NAME: &'static str = "states";
+        }
+        impl cynic::schema::HasField<states> for super::super::FlattenableEnums {
+            type Type = Option<Vec<Option<super::super::States>>>;
+        }
+        pub struct __typename;
+        impl cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static str = "__typename";
+        }
+        impl cynic::schema::HasField<__typename> for super::super::FlattenableEnums {
             type Type = super::super::String;
         }
     }
