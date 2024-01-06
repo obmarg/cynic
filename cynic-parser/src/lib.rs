@@ -72,4 +72,26 @@ mod tests {
         }
         "###)
     }
+
+    #[test]
+    fn test_input() {
+        // Use a keyword as a field name and make sure it's fine
+        let input = r#"
+        "I am a description"
+        type MyType { query: String }
+        "#;
+        let lexer = lexer::Lexer::new(input);
+        let mut builder = Ast::new();
+        insta::assert_debug_snapshot!(schema::TypeSystemDocumentParser::new().parse(input, &mut builder, lexer).unwrap(), @r###"
+        Object {
+            name: "MyType",
+            fields: [
+                Field {
+                    name: "query",
+                    ty: "String",
+                },
+            ],
+        }
+        "###)
+    }
 }

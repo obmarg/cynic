@@ -2,20 +2,22 @@ use std::str::FromStr;
 
 use crate::lexer;
 
-use crate::ast::{
-    RootOperationTypeDefinition, OperationType, Ast, NodeId, SchemaDefinition,
-    ObjectDefinition, FieldDefinition, InputValueDefinition
-};
+use crate::ast::*;
 
 grammar<'input>(input: &'input str, ast: &mut Ast);
 
 pub TypeSystemDocument: () = {
-    <defs:TypeSystemDefinition+> => ast.definitions(defs),
+    <defs:DefinitionAndDescription+> => ast.definitions(defs),
+}
+
+pub DefinitionAndDescription: (Option<NodeId>, NodeId) = {
+    <description:StringValue?> <def:TypeSystemDefinition> => (description, def)
 }
 
 pub TypeSystemDefinition: NodeId = {
     <def:SchemaDefinition> => ast.schema_definition(def),
-    <def:ObjectDefinition> => ast.object_definition(def)
+    <def:ObjectDefinition> => ast.object_definition(def),
+    <def:InputObjectDefinition> => ast.input_object_definition(def)
 }
 
 pub SchemaDefinition: SchemaDefinition = {
@@ -30,20 +32,38 @@ pub RootOperationTypeDefinition: RootOperationTypeDefinition = {
 }
 
 pub ObjectDefinition: ObjectDefinition = {
-    ty <name:Name> "{" <fields:FieldDefinitions> "}" => ObjectDefinition { <> }
+    ty <name:Name> <fields:FieldsDefinition?> => ObjectDefinition {
+        name,
+        fields: fields.unwrap_or_default ()
+    }
 };
 
-FieldDefinitions: Vec<NodeId> = {
-    (FieldDefinition+)
+FieldsDefinition: Vec<NodeId> = {
+    "{" <fields:FieldDefinition+> "}" => fields
 };
 
 // TODO: add description & directives in a minute
 FieldDefinition: NodeId = {
-    <name:Name> <arguments:ArgumentsDefinition?> ":" <ty:NamedType> => ast.field_definition(FieldDefinition { <> })
+    <name:Name> <arguments:ArgumentsDefinition?> ":" <ty:NamedType> => ast.field_definition(FieldDefinition {
+        name,
+        ty,
+        arguments: arguments.unwrap_or_default()
+    })
 };
 
 ArgumentsDefinition: Vec<NodeId> = {
     "(" <arguments:InputValueDefinition+> ")" => arguments,
+};
+
+pub InputObjectDefinition: InputObjectDefinition = {
+    input <name:Name> <fields:InputFieldsDefinition?> => InputObjectDefinition {
+        name,
+        fields: fields.unwrap_or_default()
+    }
+};
+
+InputFieldsDefinition: Vec<NodeId> = {
+    "{" <fields:InputValueDefinition+> "}" => fields
 };
 
 // TODO: Add description, default value, directives
@@ -57,12 +77,24 @@ NamedType: NodeId = <s:Ident> => ast.ident(s);
 // TODO: This needs to support wrappers - do that sometime...
 Type: NodeId = <s:Ident> => ast.ident(s);
 
+StringValue: NodeId = {
+    <s:StringLiteral> => {
+        let id = ast.intern_string(s);
+        ast.string_literal(StringLiteral::Normal(id))
+    },
+    <s:BlockStringLiteral> => {
+        let id = ast.intern_string(s);
+        ast.string_literal(StringLiteral::Block(id))
+    },
+}
+
 // TODO: Make this NodeId probably...
 Ident: &'input str = {
     <s:RawIdent> => s,
     schema => "schema",
     query => "query",
     ty => "type",
+    input => "input",
 }
 
 extern {
@@ -82,10 +114,14 @@ extern {
 
         RawIdent => lexer::Token::Identifier(<&'input str>),
 
+        StringLiteral => lexer::Token::StringLiteral(<&'input str>),
+        BlockStringLiteral => lexer::Token::BlockStringLiteral(<&'input str>),
+
         // Would be nice if these could just be aliases of `Identifier` but LARLPOP doesn't
         // seem to support this well: https://github.com/lalrpop/lalrpop/issues/671
         schema => lexer::Token::Schema,
         query => lexer::Token::Query,
         ty => lexer::Token::Type,
+        input => lexer::Token::Input,
     }
 }

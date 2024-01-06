@@ -10,13 +10,18 @@ pub struct Ast {
 
     schema_definitions: Vec<SchemaDefinition>,
     object_definitions: Vec<ObjectDefinition>,
+    input_object_definitions: Vec<InputObjectDefinition>,
 
     field_definitions: Vec<FieldDefinition>,
     input_value_definitions: Vec<InputValueDefinition>,
+
+    string_literals: Vec<StringLiteral>,
+
+    definition_descriptions: HashMap<NodeId, NodeId>,
 }
 
 // TODO: NonZeroUsize these?
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub struct NodeId(usize);
 
 #[derive(Clone, Copy)]
@@ -29,10 +34,16 @@ pub struct SchemaDefinitionId(usize);
 pub struct ObjectDefinitionId(usize);
 
 #[derive(Clone, Copy)]
+pub struct InputObjectDefinitionId(usize);
+
+#[derive(Clone, Copy)]
 pub struct FieldDefinitionId(usize);
 
 #[derive(Clone, Copy)]
 pub struct InputValueDefinitionId(usize);
+
+#[derive(Clone, Copy)]
+pub struct StringLiteralId(usize);
 
 pub struct Node {
     contents: NodeContents,
@@ -44,7 +55,9 @@ pub enum NodeContents {
     SchemaDefinition(SchemaDefinitionId),
     ObjectDefiniton(ObjectDefinitionId),
     FieldDefinition(FieldDefinitionId),
+    InputObjectDefiniton(InputObjectDefinitionId),
     InputValueDefinition(InputValueDefinitionId),
+    StringLiteral(StringLiteralId),
 }
 
 #[derive(Debug)]
@@ -61,7 +74,13 @@ pub struct ObjectDefinition {
 pub struct FieldDefinition {
     pub name: NodeId,
     pub ty: NodeId,
-    pub arguments: Option<Vec<NodeId>>,
+    pub arguments: Vec<NodeId>,
+}
+
+#[derive(Debug)]
+pub struct InputObjectDefinition {
+    pub name: NodeId,
+    pub fields: Vec<NodeId>,
 }
 
 pub struct InputValueDefinition {
@@ -82,6 +101,11 @@ pub enum OperationType {
     Subscription,
 }
 
+pub enum StringLiteral {
+    Normal(StringId),
+    Block(StringId),
+}
+
 // TODO: Don't forget the spans etc.
 
 impl Ast {
@@ -89,8 +113,13 @@ impl Ast {
         Ast::default()
     }
 
-    pub fn definitions(&mut self, ids: Vec<NodeId>) {
-        self.definition_nodes.extend(ids)
+    pub fn definitions(&mut self, ids: Vec<(Option<NodeId>, NodeId)>) {
+        for (description, definition) in ids {
+            if let Some(description) = description {
+                self.definition_descriptions.insert(definition, description);
+            }
+            self.definition_nodes.push(definition);
+        }
     }
 
     pub fn schema_definition(&mut self, definition: SchemaDefinition) -> NodeId {
@@ -129,12 +158,35 @@ impl Ast {
         node_id
     }
 
+    pub fn input_object_definition(&mut self, definition: InputObjectDefinition) -> NodeId {
+        let definition_id = InputObjectDefinitionId(self.input_object_definitions.len());
+        self.input_object_definitions.push(definition);
+
+        let node_id = NodeId(self.nodes.len());
+        let contents = NodeContents::InputObjectDefiniton(definition_id);
+
+        self.nodes.push(Node { contents });
+
+        node_id
+    }
+
     pub fn input_value_definition(&mut self, definition: InputValueDefinition) -> NodeId {
         let definition_id = InputValueDefinitionId(self.input_value_definitions.len());
         self.input_value_definitions.push(definition);
 
         let node_id = NodeId(self.nodes.len());
         let contents = NodeContents::InputValueDefinition(definition_id);
+        self.nodes.push(Node { contents });
+
+        node_id
+    }
+
+    pub fn string_literal(&mut self, literal: StringLiteral) -> NodeId {
+        let literal_id = StringLiteralId(self.string_literals.len());
+        self.string_literals.push(literal);
+
+        let node_id = NodeId(self.nodes.len());
+        let contents = NodeContents::StringLiteral(literal_id);
         self.nodes.push(Node { contents });
 
         node_id
@@ -149,7 +201,8 @@ impl Ast {
         id
     }
 
-    fn intern_string(&mut self, string: &str) -> StringId {
+    // TOOD: should this be pub? not sure...
+    pub fn intern_string(&mut self, string: &str) -> StringId {
         if let Some(id) = self.strings.get(string) {
             return *id;
         }

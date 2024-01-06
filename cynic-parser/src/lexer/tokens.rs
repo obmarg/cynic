@@ -86,6 +86,9 @@ pub enum Token<'a> {
     #[token("type")]
     Type,
 
+    #[token("input")]
+    Input,
+
     // IntegerPart:    -?(0|[1-9][0-9]*)
     // FractionalPart: \\.[0-9]+
     // ExponentPart:   [eE][+-]?[0-9]+
@@ -129,10 +132,10 @@ pub enum Token<'a> {
     Spread,
 
     #[token("\"", lex_string)]
-    StringLiteral,
+    StringLiteral(&'a str),
 
     #[token("\"\"\"", lex_block_string)]
-    BlockStringLiteral,
+    BlockStringLiteral(&'a str),
 }
 
 #[derive(Logos, Debug)]
@@ -153,19 +156,19 @@ pub enum StringToken {
     StringCharacters,
 }
 
-fn lex_string<'a>(lexer: &mut Lexer<'a, Token<'a>>) -> bool {
+fn lex_string<'a>(lexer: &mut Lexer<'a, Token<'a>>) -> Option<&'a str> {
     let remainder = lexer.remainder();
     let mut string_lexer = StringToken::lexer(remainder);
     while let Some(string_token) = string_lexer.next() {
         match string_token {
             Ok(StringToken::Quote) => {
                 lexer.bump(string_lexer.span().end);
-                return true;
+                return Some(lexer.slice());
             }
             Ok(StringToken::LineTerminator) => {
                 lexer.bump(string_lexer.span().start);
                 lexer.extras.error_token = Some(Token::ErrorUnterminatedString);
-                return false;
+                return None;
             }
             Ok(
                 StringToken::EscapedCharacter
@@ -174,29 +177,29 @@ fn lex_string<'a>(lexer: &mut Lexer<'a, Token<'a>>) -> bool {
             ) => {}
             Err(_) => {
                 lexer.extras.error_token = Some(Token::ErrorUnsupportedStringCharacter);
-                return false;
+                return None;
             }
         }
     }
     lexer.extras.error_token = Some(Token::ErrorUnterminatedString);
-    false
+    None
 }
 
-fn lex_block_string<'a>(lexer: &mut Lexer<'a, Token<'a>>) -> bool {
+fn lex_block_string<'a>(lexer: &mut Lexer<'a, Token<'a>>) -> Option<&'a str> {
     let remainder = lexer.remainder();
     let mut string_lexer = BlockStringToken::lexer(remainder);
     while let Some(string_token) = string_lexer.next() {
         match string_token {
             Ok(BlockStringToken::TripleQuote) => {
                 lexer.bump(string_lexer.span().end);
-                return true;
+                return Some(lexer.slice());
             }
             Ok(BlockStringToken::EscapedTripleQuote | BlockStringToken::Other) => {}
             Err(_) => unreachable!(),
         }
     }
     lexer.extras.error_token = Some(Token::ErrorUnterminatedBlockString);
-    false
+    None
 }
 
 #[derive(Logos, Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
@@ -234,11 +237,11 @@ impl fmt::Display for Token<'_> {
             Token::PeriodPeriod => "double period ('..')",
             Token::Pipe => "pipe ('|')",
             Token::Spread => "spread ('...')",
-            Token::BlockStringLiteral => "block string (e.g. '\"\"\"hi\"\"\"')",
+            Token::BlockStringLiteral(_) => "block string (e.g. '\"\"\"hi\"\"\"')",
             Token::ErrorFloatLiteralMissingZero => "unsupported number (int or float) literal",
             Token::ErrorNumberLiteralLeadingZero => "unsupported number (int or float) literal",
             Token::ErrorNumberLiteralTrailingInvalid => "unsupported number (int or float) literal",
-            Token::StringLiteral => "string literal (e.g. '\"...\"')",
+            Token::StringLiteral(_) => "string literal (e.g. '\"...\"')",
             Token::ErrorUnterminatedString => "unterminated string",
             Token::ErrorUnsupportedStringCharacter => "unsupported character in string",
             Token::ErrorUnterminatedBlockString => "unterminated block string",
@@ -246,6 +249,7 @@ impl fmt::Display for Token<'_> {
             Token::Schema => "schema",
             Token::Query => "query",
             Token::Type => "type",
+            Token::Input => "input",
         };
         f.write_str(message)
     }
@@ -347,7 +351,7 @@ mod tests {
          ";
         let mut lexer = Token::lexer(input);
 
-        assert_eq!(lexer.next(), Some(Ok(Token::Identifier("query"))));
+        assert_eq!(lexer.next(), Some(Ok(Token::Query)));
         assert_eq!(lexer.slice(), "query");
 
         assert_eq!(lexer.next(), Some(Ok(Token::Identifier("EmptyQuery"))));
@@ -450,10 +454,13 @@ mod tests {
          "#;
         let mut lexer = Token::lexer(input);
 
-        assert_eq!(lexer.next(), Some(Ok(Token::StringLiteral)));
+        assert_eq!(lexer.next(), Some(Ok(Token::StringLiteral("\"test\""))));
         assert_eq!(lexer.slice(), "\"test\"");
 
-        assert_eq!(lexer.next(), Some(Ok(Token::StringLiteral)));
+        assert_eq!(
+            lexer.next(),
+            Some(Ok(Token::StringLiteral(r#""escaped \" quote""#)))
+        );
         assert_eq!(lexer.slice(), r#""escaped \" quote""#);
 
         assert_eq!(lexer.next(), Some(Err(())));
@@ -516,16 +523,33 @@ mod tests {
          "#;
         let mut lexer = Token::lexer(input);
 
-        assert_eq!(lexer.next(), Some(Ok(Token::BlockStringLiteral)));
+        assert_eq!(
+            lexer.next(),
+            Some(Ok(Token::BlockStringLiteral(r#""""tes\"""t""""#)))
+        );
         assert_eq!(lexer.slice(), r#""""tes\"""t""""#);
 
-        assert_eq!(lexer.next(), Some(Ok(Token::BlockStringLiteral)));
+        assert_eq!(
+            lexer.next(),
+            Some(Ok(Token::BlockStringLiteral(r#""""""""#)))
+        );
         assert_eq!(lexer.slice(), r#""""""""#);
 
-        assert_eq!(lexer.next(), Some(Ok(Token::BlockStringLiteral)));
+        assert_eq!(
+            lexer.next(),
+            Some(Ok(Token::BlockStringLiteral(r#"""""" """"#)))
+        );
         assert_eq!(lexer.slice(), r#"""""" """"#);
 
-        assert_eq!(lexer.next(), Some(Ok(Token::BlockStringLiteral)));
+        assert_eq!(
+            lexer.next(),
+            Some(Ok(Token::BlockStringLiteral(
+                r#""""
+                 multi-
+                 line
+             """"#
+            )))
+        );
         assert_eq!(
             lexer.slice(),
             r#""""
