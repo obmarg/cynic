@@ -75,6 +75,7 @@ pub struct FieldDefinition {
     pub name: NodeId,
     pub ty: NodeId,
     pub arguments: Vec<NodeId>,
+    pub description: Option<NodeId>,
 }
 
 #[derive(Debug)]
@@ -86,6 +87,7 @@ pub struct InputObjectDefinition {
 pub struct InputValueDefinition {
     pub name: NodeId,
     pub ty: NodeId,
+    pub description: Option<NodeId>,
 }
 
 #[derive(Debug)]

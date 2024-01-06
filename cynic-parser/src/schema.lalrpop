@@ -44,10 +44,11 @@ FieldsDefinition: Vec<NodeId> = {
 
 // TODO: add description & directives in a minute
 FieldDefinition: NodeId = {
-    <name:Name> <arguments:ArgumentsDefinition?> ":" <ty:NamedType> => ast.field_definition(FieldDefinition {
+    <description:StringValue?> <name:Name> <arguments:ArgumentsDefinition?> ":" <ty:NamedType> => ast.field_definition(FieldDefinition {
         name,
         ty,
-        arguments: arguments.unwrap_or_default()
+        arguments: arguments.unwrap_or_default(),
+        description,
     })
 };
 
@@ -66,9 +67,9 @@ InputFieldsDefinition: Vec<NodeId> = {
     "{" <fields:InputValueDefinition+> "}" => fields
 };
 
-// TODO: Add description, default value, directives
+// TODO: Add default value, directives
 InputValueDefinition: NodeId =
-    <name:Name> ":" <ty:Type> => ast.input_value_definition(InputValueDefinition { <> });
+    <description:StringValue?> <name:Name> ":" <ty:Type> => ast.input_value_definition(InputValueDefinition { <> });
 
 Name: NodeId = <s:Ident> => ast.ident(s);
 
