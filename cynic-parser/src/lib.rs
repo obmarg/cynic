@@ -7,6 +7,9 @@ mod lexer;
 pub use lexer::Lexer;
 pub use schema::ObjectParser;
 
+// TODO: Make this more senseible
+pub use builder::AstBuilder;
+
 lalrpop_mod!(pub schema);
 
 // TODO: Wonder if the parser should intern strings?
