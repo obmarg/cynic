@@ -1,8 +1,16 @@
-use std::collections::HashMap;
+use std::{collections::HashMap, ops::Index};
+
+use ids::*;
+use indexmap::IndexSet;
+
+pub(crate) mod ids;
+mod reader;
+
+pub use reader::{AstReader, Definition};
 
 #[derive(Default)]
 pub struct Ast {
-    strings: HashMap<Box<str>, StringId>,
+    strings: IndexSet<Box<str>>,
 
     nodes: Vec<Node>,
 
@@ -21,30 +29,6 @@ pub struct Ast {
 }
 
 // TODO: NonZeroUsize these?
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-pub struct NodeId(usize);
-
-#[derive(Clone, Copy)]
-pub struct StringId(usize);
-
-#[derive(Clone, Copy)]
-pub struct SchemaDefinitionId(usize);
-
-#[derive(Clone, Copy)]
-pub struct ObjectDefinitionId(usize);
-
-#[derive(Clone, Copy)]
-pub struct InputObjectDefinitionId(usize);
-
-#[derive(Clone, Copy)]
-pub struct FieldDefinitionId(usize);
-
-#[derive(Clone, Copy)]
-pub struct InputValueDefinitionId(usize);
-
-#[derive(Clone, Copy)]
-pub struct StringLiteralId(usize);
-
 pub struct Node {
     contents: NodeContents,
     // span: Span
@@ -109,7 +93,6 @@ pub enum StringLiteral {
 }
 
 // TODO: Don't forget the spans etc.
-
 impl Ast {
     pub fn new() -> Self {
         Ast::default()
@@ -205,12 +188,7 @@ impl Ast {
 
     // TOOD: should this be pub? not sure...
     pub fn intern_string(&mut self, string: &str) -> StringId {
-        if let Some(id) = self.strings.get(string) {
-            return *id;
-        }
-
-        let id = StringId(self.strings.len());
-        self.strings.insert(string.into(), id);
-        id
+        let (id, _) = self.strings.insert_full(string.into());
+        StringId(id)
     }
 }

@@ -2,6 +2,7 @@ use lalrpop_util::lalrpop_mod;
 
 mod ast;
 mod lexer;
+mod printer;
 
 pub use lexer::Lexer;
 pub use schema::ObjectDefinitionParser;
