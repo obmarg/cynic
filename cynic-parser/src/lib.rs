@@ -4,7 +4,7 @@ mod ast;
 mod lexer;
 
 pub use lexer::Lexer;
-pub use schema::ObjectParser;
+pub use schema::ObjectDefinitionParser;
 
 // TODO: Make this more senseible
 pub use ast::Ast;
@@ -37,7 +37,7 @@ mod tests {
         let input = "type MyType { field: Whatever, field: Whatever }";
         let lexer = lexer::Lexer::new(input);
         let mut builder = Ast::new();
-        insta::assert_debug_snapshot!(schema::ObjectParser::new().parse(input, &mut builder, lexer).unwrap(), @r###"
+        insta::assert_debug_snapshot!(schema::ObjectDefinitionParser::new().parse(input, &mut builder, lexer).unwrap(), @r###"
         Object {
             name: "MyType",
             fields: [
@@ -60,7 +60,7 @@ mod tests {
         let input = "type MyType { query: String }";
         let lexer = lexer::Lexer::new(input);
         let mut builder = Ast::new();
-        insta::assert_debug_snapshot!(schema::ObjectParser::new().parse(input, &mut builder, lexer).unwrap(), @r###"
+        insta::assert_debug_snapshot!(schema::ObjectDefinitionParser::new().parse(input, &mut builder, lexer).unwrap(), @r###"
         Object {
             name: "MyType",
             fields: [

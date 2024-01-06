@@ -1,13 +1,18 @@
 use std::collections::HashMap;
 
+#[derive(Default)]
 pub struct Ast {
     strings: HashMap<Box<str>, StringId>,
 
     nodes: Vec<Node>,
+
+    definition_nodes: Vec<NodeId>,
+
     schema_definitions: Vec<SchemaDefinition>,
     object_definitions: Vec<ObjectDefinition>,
 
     field_definitions: Vec<FieldDefinition>,
+    input_value_definitions: Vec<InputValueDefinition>,
 }
 
 // TODO: NonZeroUsize these?
@@ -21,7 +26,13 @@ pub struct StringId(usize);
 pub struct SchemaDefinitionId(usize);
 
 #[derive(Clone, Copy)]
+pub struct ObjectDefinitionId(usize);
+
+#[derive(Clone, Copy)]
 pub struct FieldDefinitionId(usize);
+
+#[derive(Clone, Copy)]
+pub struct InputValueDefinitionId(usize);
 
 pub struct Node {
     contents: NodeContents,
@@ -31,7 +42,9 @@ pub struct Node {
 pub enum NodeContents {
     Ident(StringId),
     SchemaDefinition(SchemaDefinitionId),
+    ObjectDefiniton(ObjectDefinitionId),
     FieldDefinition(FieldDefinitionId),
+    InputValueDefinition(InputValueDefinitionId),
 }
 
 #[derive(Debug)]
@@ -46,6 +59,12 @@ pub struct ObjectDefinition {
 }
 
 pub struct FieldDefinition {
+    pub name: NodeId,
+    pub ty: NodeId,
+    pub arguments: Option<Vec<NodeId>>,
+}
+
+pub struct InputValueDefinition {
     pub name: NodeId,
     pub ty: NodeId,
 }
@@ -67,21 +86,31 @@ pub enum OperationType {
 
 impl Ast {
     pub fn new() -> Self {
-        Ast {
-            strings: Default::default(),
-            nodes: Default::default(),
-            schema_definitions: Default::default(),
-            object_definitions: Default::default(),
-            field_definitions: Default::default(),
-        }
+        Ast::default()
     }
 
-    pub fn schema_definition(&mut self, roots: Vec<RootOperationTypeDefinition>) -> NodeId {
+    pub fn definitions(&mut self, ids: Vec<NodeId>) {
+        self.definition_nodes.extend(ids)
+    }
+
+    pub fn schema_definition(&mut self, definition: SchemaDefinition) -> NodeId {
         let definition_id = SchemaDefinitionId(self.schema_definitions.len());
-        self.schema_definitions.push(SchemaDefinition { roots });
+        self.schema_definitions.push(definition);
 
         let node_id = NodeId(self.nodes.len());
         let contents = NodeContents::SchemaDefinition(definition_id);
+
+        self.nodes.push(Node { contents });
+
+        node_id
+    }
+
+    pub fn object_definition(&mut self, definition: ObjectDefinition) -> NodeId {
+        let definition_id = ObjectDefinitionId(self.object_definitions.len());
+        self.object_definitions.push(definition);
+
+        let node_id = NodeId(self.nodes.len());
+        let contents = NodeContents::ObjectDefiniton(definition_id);
 
         self.nodes.push(Node { contents });
 
@@ -95,6 +124,17 @@ impl Ast {
         let node_id = NodeId(self.nodes.len());
         let contents = NodeContents::FieldDefinition(definition_id);
 
+        self.nodes.push(Node { contents });
+
+        node_id
+    }
+
+    pub fn input_value_definition(&mut self, definition: InputValueDefinition) -> NodeId {
+        let definition_id = InputValueDefinitionId(self.input_value_definitions.len());
+        self.input_value_definitions.push(definition);
+
+        let node_id = NodeId(self.nodes.len());
+        let contents = NodeContents::InputValueDefinition(definition_id);
         self.nodes.push(Node { contents });
 
         node_id

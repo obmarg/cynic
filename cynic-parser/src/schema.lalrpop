@@ -4,10 +4,19 @@ use crate::lexer;
 
 use crate::ast::{
     RootOperationTypeDefinition, OperationType, Ast, NodeId, SchemaDefinition,
-    ObjectDefinition, FieldDefinition
+    ObjectDefinition, FieldDefinition, InputValueDefinition
 };
 
 grammar<'input>(input: &'input str, ast: &mut Ast);
+
+pub TypeSystemDocument: () = {
+    <defs:TypeSystemDefinition+> => ast.definitions(defs),
+}
+
+pub TypeSystemDefinition: NodeId = {
+    <def:SchemaDefinition> => ast.schema_definition(def),
+    <def:ObjectDefinition> => ast.object_definition(def)
+}
 
 pub SchemaDefinition: SchemaDefinition = {
     schema "{" <roots:RootOperationTypeDefinition*> "}" => SchemaDefinition { <> }
@@ -20,7 +29,7 @@ pub RootOperationTypeDefinition: RootOperationTypeDefinition = {
     }
 }
 
-pub Object: ObjectDefinition = {
+pub ObjectDefinition: ObjectDefinition = {
     ty <name:Name> "{" <fields:FieldDefinitions> "}" => ObjectDefinition { <> }
 };
 
@@ -28,12 +37,25 @@ FieldDefinitions: Vec<NodeId> = {
     (FieldDefinition+)
 };
 
-FieldDefinition: NodeId = <name:Name> ":" <ty:NamedType> =>
-    ast.field_definition(FieldDefinition { <> });
+// TODO: add description & directives in a minute
+FieldDefinition: NodeId = {
+    <name:Name> <arguments:ArgumentsDefinition?> ":" <ty:NamedType> => ast.field_definition(FieldDefinition { <> })
+};
+
+ArgumentsDefinition: Vec<NodeId> = {
+    "(" <arguments:InputValueDefinition+> ")" => arguments,
+};
+
+// TODO: Add description, default value, directives
+InputValueDefinition: NodeId =
+    <name:Name> ":" <ty:Type> => ast.input_value_definition(InputValueDefinition { <> });
 
 Name: NodeId = <s:Ident> => ast.ident(s);
 
 NamedType: NodeId = <s:Ident> => ast.ident(s);
+
+// TODO: This needs to support wrappers - do that sometime...
+Type: NodeId = <s:Ident> => ast.ident(s);
 
 // TODO: Make this NodeId probably...
 Ident: &'input str = {
@@ -54,6 +76,9 @@ extern {
 
         "{" => lexer::Token::OpenBrace,
         "}" => lexer::Token::CloseBrace,
+
+        "(" => lexer::Token::OpenParen,
+        ")" => lexer::Token::CloseParen,
 
         RawIdent => lexer::Token::Identifier(<&'input str>),
 
