@@ -33,10 +33,10 @@ extern {
         "{" => lexer::Token::OpenBrace,
         "}" => lexer::Token::CloseBrace,
 
-        Ident => lexer::Token::Identifier(<&'input str>),
+        schema => lexer::Token::Identifier("schema"),
+        query => lexer::Token::Identifier("query"),
+        ty => lexer::Token::Identifier("type"),
 
-        schema => lexer::Token::Schema,
-        query => lexer::Token::Query,
-        ty => lexer::Token::Type,
+        Ident => lexer::Token::Identifier(<&'input str>),
     }
 }

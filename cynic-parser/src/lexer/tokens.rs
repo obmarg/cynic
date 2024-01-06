@@ -31,17 +31,17 @@ use logos::Lexer;
 use logos::Logos;
 
 #[derive(Default, Eq, PartialEq)]
-pub struct TokenKindExtras {
+pub struct TokenExtras {
     /// Token callbacks might store an error token kind in here before failing.
     /// This is then picked up in the parser to turn the `Error` token into a
     /// more specific variant.
-    pub error_token: Option<TokenKind>,
+    pub error_token: Option<Token<'static>>,
 }
 
 /// Lexer for the GraphQL specification: http://spec.graphql.org/
 #[derive(Logos, Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
-#[logos(extras = TokenKindExtras, skip r"[ \t\r\n\f,\ufeff]+|#[^\n\r]*")]
-pub enum TokenKind {
+#[logos(extras = TokenExtras, skip r"[ \t\r\n\f,\ufeff]+|#[^\n\r]*")]
+pub enum Token<'a> {
     Error,
 
     ErrorUnterminatedString,
@@ -85,8 +85,8 @@ pub enum TokenKind {
     #[regex("-?(0|[1-9][0-9]*)(\\.[0-9]+[eE][+-]?[0-9]+|\\.[0-9]+|[eE][+-]?[0-9]+)")]
     FloatLiteral,
 
-    #[regex("[a-zA-Z_][a-zA-Z0-9_]*")]
-    Identifier,
+    #[regex("[a-zA-Z_][a-zA-Z0-9_]*", |lex| lex.slice())]
+    Identifier(&'a str),
 
     #[regex("-?(0|[1-9][0-9]*)")]
     IntegerLiteral,
@@ -146,7 +146,7 @@ pub enum StringToken {
     StringCharacters,
 }
 
-fn lex_string(lexer: &mut Lexer<'_, TokenKind>) -> bool {
+fn lex_string<'a>(lexer: &mut Lexer<'a, Token<'a>>) -> bool {
     let remainder = lexer.remainder();
     let mut string_lexer = StringToken::lexer(remainder);
     while let Some(string_token) = string_lexer.next() {
@@ -157,7 +157,7 @@ fn lex_string(lexer: &mut Lexer<'_, TokenKind>) -> bool {
             }
             Ok(StringToken::LineTerminator) => {
                 lexer.bump(string_lexer.span().start);
-                lexer.extras.error_token = Some(TokenKind::ErrorUnterminatedString);
+                lexer.extras.error_token = Some(Token::ErrorUnterminatedString);
                 return false;
             }
             Ok(
@@ -166,16 +166,16 @@ fn lex_string(lexer: &mut Lexer<'_, TokenKind>) -> bool {
                 | StringToken::StringCharacters,
             ) => {}
             Err(_) => {
-                lexer.extras.error_token = Some(TokenKind::ErrorUnsupportedStringCharacter);
+                lexer.extras.error_token = Some(Token::ErrorUnsupportedStringCharacter);
                 return false;
             }
         }
     }
-    lexer.extras.error_token = Some(TokenKind::ErrorUnterminatedString);
+    lexer.extras.error_token = Some(Token::ErrorUnterminatedString);
     false
 }
 
-fn lex_block_string(lexer: &mut Lexer<'_, TokenKind>) -> bool {
+fn lex_block_string<'a>(lexer: &mut Lexer<'a, Token<'a>>) -> bool {
     let remainder = lexer.remainder();
     let mut string_lexer = BlockStringToken::lexer(remainder);
     while let Some(string_token) = string_lexer.next() {
@@ -188,7 +188,7 @@ fn lex_block_string(lexer: &mut Lexer<'_, TokenKind>) -> bool {
             Err(_) => unreachable!(),
         }
     }
-    lexer.extras.error_token = Some(TokenKind::ErrorUnterminatedBlockString);
+    lexer.extras.error_token = Some(Token::ErrorUnterminatedBlockString);
     false
 }
 
@@ -204,41 +204,39 @@ pub enum BlockStringToken {
     Other,
 }
 
-impl fmt::Display for TokenKind {
+impl fmt::Display for Token<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let message = match self {
-            TokenKind::Ampersand => "ampersand ('&')",
-            TokenKind::At => "at ('@')",
-            TokenKind::CloseBrace => "closing brace ('}')",
-            TokenKind::CloseBracket => "closing bracket (']')",
-            TokenKind::CloseParen => "closing paren (')')",
-            TokenKind::Colon => "colon (':')",
-            TokenKind::Dollar => "dollar ('$')",
-            TokenKind::EndOfFile => "end of file",
-            TokenKind::Equals => "equals ('=')",
-            TokenKind::Exclamation => "exclamation mark ('!')",
-            TokenKind::FloatLiteral => "floating point value (e.g. '3.14')",
-            TokenKind::Identifier => "non-variable identifier (e.g. 'x' or 'Foo')",
-            TokenKind::IntegerLiteral => "integer value (e.g. '0' or '42')",
-            TokenKind::OpenBrace => "open brace ('{')",
-            TokenKind::OpenBracket => "open bracket ('[')",
-            TokenKind::OpenParen => "open parenthesis ('(')",
-            TokenKind::Period => "period ('.')",
-            TokenKind::PeriodPeriod => "double period ('..')",
-            TokenKind::Pipe => "pipe ('|')",
-            TokenKind::Spread => "spread ('...')",
-            TokenKind::BlockStringLiteral => "block string (e.g. '\"\"\"hi\"\"\"')",
-            TokenKind::Error => "error",
-            TokenKind::ErrorFloatLiteralMissingZero => "unsupported number (int or float) literal",
-            TokenKind::ErrorNumberLiteralLeadingZero => "unsupported number (int or float) literal",
-            TokenKind::ErrorNumberLiteralTrailingInvalid => {
-                "unsupported number (int or float) literal"
-            }
-            TokenKind::StringLiteral => "string literal (e.g. '\"...\"')",
-            TokenKind::ErrorUnterminatedString => "unterminated string",
-            TokenKind::ErrorUnsupportedStringCharacter => "unsupported character in string",
-            TokenKind::ErrorUnterminatedBlockString => "unterminated block string",
-            TokenKind::Empty => "missing expected kind",
+            Token::Ampersand => "ampersand ('&')",
+            Token::At => "at ('@')",
+            Token::CloseBrace => "closing brace ('}')",
+            Token::CloseBracket => "closing bracket (']')",
+            Token::CloseParen => "closing paren (')')",
+            Token::Colon => "colon (':')",
+            Token::Dollar => "dollar ('$')",
+            Token::EndOfFile => "end of file",
+            Token::Equals => "equals ('=')",
+            Token::Exclamation => "exclamation mark ('!')",
+            Token::FloatLiteral => "floating point value (e.g. '3.14')",
+            Token::Identifier(_) => "non-variable identifier (e.g. 'x' or 'Foo')",
+            Token::IntegerLiteral => "integer value (e.g. '0' or '42')",
+            Token::OpenBrace => "open brace ('{')",
+            Token::OpenBracket => "open bracket ('[')",
+            Token::OpenParen => "open parenthesis ('(')",
+            Token::Period => "period ('.')",
+            Token::PeriodPeriod => "double period ('..')",
+            Token::Pipe => "pipe ('|')",
+            Token::Spread => "spread ('...')",
+            Token::BlockStringLiteral => "block string (e.g. '\"\"\"hi\"\"\"')",
+            Token::Error => "error",
+            Token::ErrorFloatLiteralMissingZero => "unsupported number (int or float) literal",
+            Token::ErrorNumberLiteralLeadingZero => "unsupported number (int or float) literal",
+            Token::ErrorNumberLiteralTrailingInvalid => "unsupported number (int or float) literal",
+            Token::StringLiteral => "string literal (e.g. '\"...\"')",
+            Token::ErrorUnterminatedString => "unterminated string",
+            Token::ErrorUnsupportedStringCharacter => "unsupported character in string",
+            Token::ErrorUnterminatedBlockString => "unterminated block string",
+            Token::Empty => "missing expected kind",
         };
         f.write_str(message)
     }
@@ -248,8 +246,8 @@ impl fmt::Display for TokenKind {
 mod tests {
     use super::*;
 
-    fn assert_token(source: &str, kind: TokenKind, length: usize) {
-        let mut lexer = TokenKind::lexer(source);
+    fn assert_token(source: &str, kind: Token, length: usize) {
+        let mut lexer = Token::lexer(source);
         assert_eq!(
             lexer.next(),
             Some(Ok(kind)),
@@ -266,54 +264,50 @@ mod tests {
 
     #[test]
     fn test_number_successes() {
-        assert_token("4", TokenKind::IntegerLiteral, 1);
-        assert_token("4.123", TokenKind::FloatLiteral, 5);
-        assert_token("-4", TokenKind::IntegerLiteral, 2);
-        assert_token("9", TokenKind::IntegerLiteral, 1);
-        assert_token("0", TokenKind::IntegerLiteral, 1);
-        assert_token("-4.123", TokenKind::FloatLiteral, 6);
-        assert_token("0.123", TokenKind::FloatLiteral, 5);
-        assert_token("123e4", TokenKind::FloatLiteral, 5);
-        assert_token("123E4", TokenKind::FloatLiteral, 5);
-        assert_token("123e-4", TokenKind::FloatLiteral, 6);
-        assert_token("123e+4", TokenKind::FloatLiteral, 6);
-        assert_token("-1.123e4", TokenKind::FloatLiteral, 8);
-        assert_token("-1.123E4", TokenKind::FloatLiteral, 8);
-        assert_token("-1.123e-4", TokenKind::FloatLiteral, 9);
-        assert_token("-1.123e+4", TokenKind::FloatLiteral, 9);
-        assert_token("-1.123e4567", TokenKind::FloatLiteral, 11);
-        assert_token("-0", TokenKind::IntegerLiteral, 2);
+        assert_token("4", Token::IntegerLiteral, 1);
+        assert_token("4.123", Token::FloatLiteral, 5);
+        assert_token("-4", Token::IntegerLiteral, 2);
+        assert_token("9", Token::IntegerLiteral, 1);
+        assert_token("0", Token::IntegerLiteral, 1);
+        assert_token("-4.123", Token::FloatLiteral, 6);
+        assert_token("0.123", Token::FloatLiteral, 5);
+        assert_token("123e4", Token::FloatLiteral, 5);
+        assert_token("123E4", Token::FloatLiteral, 5);
+        assert_token("123e-4", Token::FloatLiteral, 6);
+        assert_token("123e+4", Token::FloatLiteral, 6);
+        assert_token("-1.123e4", Token::FloatLiteral, 8);
+        assert_token("-1.123E4", Token::FloatLiteral, 8);
+        assert_token("-1.123e-4", Token::FloatLiteral, 9);
+        assert_token("-1.123e+4", Token::FloatLiteral, 9);
+        assert_token("-1.123e4567", Token::FloatLiteral, 11);
+        assert_token("-0", Token::IntegerLiteral, 2);
     }
 
     #[test]
     fn test_number_failures() {
-        assert_token("00", TokenKind::ErrorNumberLiteralLeadingZero, 2);
-        assert_token("01", TokenKind::ErrorNumberLiteralLeadingZero, 2);
-        assert_token("-01", TokenKind::ErrorNumberLiteralLeadingZero, 3);
-        assert_token("+1", TokenKind::Error, 1);
-        assert_token("01.23", TokenKind::ErrorNumberLiteralLeadingZero, 5);
-        assert_token("1.", TokenKind::ErrorNumberLiteralTrailingInvalid, 2);
-        assert_token("1e", TokenKind::ErrorNumberLiteralTrailingInvalid, 2);
-        assert_token("1.e1", TokenKind::ErrorNumberLiteralTrailingInvalid, 2);
-        assert_token("1.A", TokenKind::ErrorNumberLiteralTrailingInvalid, 2);
-        assert_token("-A", TokenKind::Error, 1);
-        assert_token("1.0e", TokenKind::ErrorNumberLiteralTrailingInvalid, 4);
-        assert_token("1.0eA", TokenKind::ErrorNumberLiteralTrailingInvalid, 4);
-        assert_token("1.2e3e", TokenKind::ErrorNumberLiteralTrailingInvalid, 6);
-        assert_token("1.2e3.4", TokenKind::ErrorNumberLiteralTrailingInvalid, 6);
-        assert_token("1.23.4", TokenKind::ErrorNumberLiteralTrailingInvalid, 5);
-        assert_token(".123", TokenKind::ErrorFloatLiteralMissingZero, 4);
+        assert_token("00", Token::ErrorNumberLiteralLeadingZero, 2);
+        assert_token("01", Token::ErrorNumberLiteralLeadingZero, 2);
+        assert_token("-01", Token::ErrorNumberLiteralLeadingZero, 3);
+        assert_token("+1", Token::Error, 1);
+        assert_token("01.23", Token::ErrorNumberLiteralLeadingZero, 5);
+        assert_token("1.", Token::ErrorNumberLiteralTrailingInvalid, 2);
+        assert_token("1e", Token::ErrorNumberLiteralTrailingInvalid, 2);
+        assert_token("1.e1", Token::ErrorNumberLiteralTrailingInvalid, 2);
+        assert_token("1.A", Token::ErrorNumberLiteralTrailingInvalid, 2);
+        assert_token("-A", Token::Error, 1);
+        assert_token("1.0e", Token::ErrorNumberLiteralTrailingInvalid, 4);
+        assert_token("1.0eA", Token::ErrorNumberLiteralTrailingInvalid, 4);
+        assert_token("1.2e3e", Token::ErrorNumberLiteralTrailingInvalid, 6);
+        assert_token("1.2e3.4", Token::ErrorNumberLiteralTrailingInvalid, 6);
+        assert_token("1.23.4", Token::ErrorNumberLiteralTrailingInvalid, 5);
+        assert_token(".123", Token::ErrorFloatLiteralMissingZero, 4);
 
         // check that we don't consume trailing valid items
-        assert_token("1.23.{}", TokenKind::ErrorNumberLiteralTrailingInvalid, 5);
-        assert_token("1.23. {}", TokenKind::ErrorNumberLiteralTrailingInvalid, 5);
-        assert_token("1.23. []", TokenKind::ErrorNumberLiteralTrailingInvalid, 5);
-        assert_token("1.23. foo", TokenKind::ErrorNumberLiteralTrailingInvalid, 5);
-        assert_token(
-            "1.23. $foo",
-            TokenKind::ErrorNumberLiteralTrailingInvalid,
-            5,
-        );
+        assert_token("1.23.{}", Token::ErrorNumberLiteralTrailingInvalid, 5);
+        assert_token("1.23. {}", Token::ErrorNumberLiteralTrailingInvalid, 5);
+        assert_token("1.23. []", Token::ErrorNumberLiteralTrailingInvalid, 5);
+        assert_token("1.23. foo", Token::ErrorNumberLiteralTrailingInvalid, 5);
+        assert_token("1.23. $foo", Token::ErrorNumberLiteralTrailingInvalid, 5);
     }
 
     #[test]
@@ -326,96 +320,96 @@ mod tests {
              }
            }
          ";
-        let mut lexer = TokenKind::lexer(input);
+        let mut lexer = Token::lexer(input);
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::Identifier)));
+        assert_eq!(lexer.next(), Some(Ok(Token::Identifier("query"))));
         assert_eq!(lexer.slice(), "query");
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::Identifier)));
+        assert_eq!(lexer.next(), Some(Ok(Token::Identifier("EmptyQuery"))));
         assert_eq!(lexer.slice(), "EmptyQuery");
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::OpenParen)));
+        assert_eq!(lexer.next(), Some(Ok(Token::OpenParen)));
         assert_eq!(lexer.slice(), "(");
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::Dollar)));
+        assert_eq!(lexer.next(), Some(Ok(Token::Dollar)));
         assert_eq!(lexer.slice(), "$");
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::Identifier)));
+        assert_eq!(lexer.next(), Some(Ok(Token::Identifier("id"))));
         assert_eq!(lexer.slice(), "id");
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::Colon)));
+        assert_eq!(lexer.next(), Some(Ok(Token::Colon)));
         assert_eq!(lexer.slice(), ":");
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::Identifier)));
+        assert_eq!(lexer.next(), Some(Ok(Token::Identifier("ID"))));
         assert_eq!(lexer.slice(), "ID");
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::Exclamation)));
+        assert_eq!(lexer.next(), Some(Ok(Token::Exclamation)));
         assert_eq!(lexer.slice(), "!");
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::CloseParen)));
+        assert_eq!(lexer.next(), Some(Ok(Token::CloseParen)));
         assert_eq!(lexer.slice(), ")");
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::OpenBrace)));
+        assert_eq!(lexer.next(), Some(Ok(Token::OpenBrace)));
         assert_eq!(lexer.slice(), "{");
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::Identifier)));
+        assert_eq!(lexer.next(), Some(Ok(Token::Identifier("node"))));
         assert_eq!(lexer.slice(), "node");
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::OpenParen)));
+        assert_eq!(lexer.next(), Some(Ok(Token::OpenParen)));
         assert_eq!(lexer.slice(), "(");
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::Identifier)));
+        assert_eq!(lexer.next(), Some(Ok(Token::Identifier("id"))));
         assert_eq!(lexer.slice(), "id");
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::Colon)));
+        assert_eq!(lexer.next(), Some(Ok(Token::Colon)));
         assert_eq!(lexer.slice(), ":");
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::Dollar)));
+        assert_eq!(lexer.next(), Some(Ok(Token::Dollar)));
         assert_eq!(lexer.slice(), "$");
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::Identifier)));
+        assert_eq!(lexer.next(), Some(Ok(Token::Identifier("id"))));
         assert_eq!(lexer.slice(), "id");
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::CloseParen)));
+        assert_eq!(lexer.next(), Some(Ok(Token::CloseParen)));
         assert_eq!(lexer.slice(), ")");
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::OpenBrace)));
+        assert_eq!(lexer.next(), Some(Ok(Token::OpenBrace)));
         assert_eq!(lexer.slice(), "{");
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::Identifier)));
+        assert_eq!(lexer.next(), Some(Ok(Token::Identifier("id"))));
         assert_eq!(lexer.slice(), "id");
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::At)));
+        assert_eq!(lexer.next(), Some(Ok(Token::At)));
         assert_eq!(lexer.slice(), "@");
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::Identifier)));
+        assert_eq!(lexer.next(), Some(Ok(Token::Identifier("skip"))));
         assert_eq!(lexer.slice(), "skip");
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::OpenParen)));
+        assert_eq!(lexer.next(), Some(Ok(Token::OpenParen)));
         assert_eq!(lexer.slice(), "(");
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::Identifier)));
+        assert_eq!(lexer.next(), Some(Ok(Token::Identifier("if"))));
         assert_eq!(lexer.slice(), "if");
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::Colon)));
+        assert_eq!(lexer.next(), Some(Ok(Token::Colon)));
         assert_eq!(lexer.slice(), ":");
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::Identifier)));
+        assert_eq!(lexer.next(), Some(Ok(Token::Identifier("false"))));
         assert_eq!(lexer.slice(), "false");
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::CloseParen)));
+        assert_eq!(lexer.next(), Some(Ok(Token::CloseParen)));
         assert_eq!(lexer.slice(), ")");
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::Spread)));
+        assert_eq!(lexer.next(), Some(Ok(Token::Spread)));
         assert_eq!(lexer.slice(), "...");
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::Identifier)));
+        assert_eq!(lexer.next(), Some(Ok(Token::Identifier("E1"))));
         assert_eq!(lexer.slice(), "E1");
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::CloseBrace)));
+        assert_eq!(lexer.next(), Some(Ok(Token::CloseBrace)));
         assert_eq!(lexer.slice(), "}");
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::CloseBrace)));
+        assert_eq!(lexer.next(), Some(Ok(Token::CloseBrace)));
         assert_eq!(lexer.slice(), "}");
 
         assert_eq!(lexer.next(), None);
@@ -429,18 +423,18 @@ mod tests {
              "unterminated
              "
          "#;
-        let mut lexer = TokenKind::lexer(input);
+        let mut lexer = Token::lexer(input);
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::StringLiteral)));
+        assert_eq!(lexer.next(), Some(Ok(Token::StringLiteral)));
         assert_eq!(lexer.slice(), "\"test\"");
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::StringLiteral)));
+        assert_eq!(lexer.next(), Some(Ok(Token::StringLiteral)));
         assert_eq!(lexer.slice(), r#""escaped \" quote""#);
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::Error)));
+        assert_eq!(lexer.next(), Some(Ok(Token::Error)));
         assert_eq!(
             lexer.extras.error_token,
-            Some(TokenKind::ErrorUnterminatedString)
+            Some(Token::ErrorUnterminatedString)
         );
         assert_eq!(lexer.slice(), "\"unterminated");
     }
@@ -454,27 +448,27 @@ mod tests {
                  *
              }
          "#;
-        let mut lexer = TokenKind::lexer(input);
+        let mut lexer = Token::lexer(input);
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::OpenBrace)));
+        assert_eq!(lexer.next(), Some(Ok(Token::OpenBrace)));
         assert_eq!(lexer.slice(), "{");
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::Error)));
+        assert_eq!(lexer.next(), Some(Ok(Token::Error)));
         assert_eq!(lexer.slice(), "%");
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::Error)));
+        assert_eq!(lexer.next(), Some(Ok(Token::Error)));
         assert_eq!(lexer.slice(), "%");
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::Error)));
+        assert_eq!(lexer.next(), Some(Ok(Token::Error)));
         assert_eq!(lexer.slice(), "%");
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::Identifier)));
+        assert_eq!(lexer.next(), Some(Ok(Token::Identifier("__typename"))));
         assert_eq!(lexer.slice(), "__typename");
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::Error)));
+        assert_eq!(lexer.next(), Some(Ok(Token::Error)));
         assert_eq!(lexer.slice(), "*");
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::CloseBrace)));
+        assert_eq!(lexer.next(), Some(Ok(Token::CloseBrace)));
         assert_eq!(lexer.slice(), "}");
 
         assert_eq!(lexer.next(), None);
@@ -495,18 +489,18 @@ mod tests {
              """
              """unterminated
          "#;
-        let mut lexer = TokenKind::lexer(input);
+        let mut lexer = Token::lexer(input);
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::BlockStringLiteral)));
+        assert_eq!(lexer.next(), Some(Ok(Token::BlockStringLiteral)));
         assert_eq!(lexer.slice(), r#""""tes\"""t""""#);
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::BlockStringLiteral)));
+        assert_eq!(lexer.next(), Some(Ok(Token::BlockStringLiteral)));
         assert_eq!(lexer.slice(), r#""""""""#);
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::BlockStringLiteral)));
+        assert_eq!(lexer.next(), Some(Ok(Token::BlockStringLiteral)));
         assert_eq!(lexer.slice(), r#"""""" """"#);
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::BlockStringLiteral)));
+        assert_eq!(lexer.next(), Some(Ok(Token::BlockStringLiteral)));
         assert_eq!(
             lexer.slice(),
             r#""""
@@ -515,10 +509,10 @@ mod tests {
              """"#
         );
 
-        assert_eq!(lexer.next(), Some(Ok(TokenKind::Error)));
+        assert_eq!(lexer.next(), Some(Ok(Token::Error)));
         assert_eq!(
             lexer.extras.error_token,
-            Some(TokenKind::ErrorUnterminatedBlockString)
+            Some(Token::ErrorUnterminatedBlockString)
         );
         // Unterminated string just consumes the starting quotes
         assert_eq!(lexer.slice(), r#"""""#);
@@ -528,7 +522,7 @@ mod tests {
     fn test_bom_lexing() {
         let input = "\u{feff}";
 
-        let mut lexer = TokenKind::lexer(input);
+        let mut lexer = Token::lexer(input);
 
         assert_eq!(lexer.next(), None);
     }
