@@ -2,9 +2,6 @@ use logos::{Logos, SpannedIter};
 
 #[derive(Logos, Debug, PartialEq, Clone, Copy)]
 pub enum Token<'a> {
-    #[token(",")]
-    Comma,
-
     #[token("#")]
     Hash,
 
@@ -57,6 +54,7 @@ pub enum Token<'a> {
     #[regex(r"\.[0-9]+")]
     FractionalPart,
 
+    // TODO: Need to do a better job of string tokenizing in here...
     #[token("\"")]
     Quote,
 

@@ -21,12 +21,18 @@ Field: Field = <name:TypeName> ":" <ty:TypeName> => Field { <> };
 
 TypeName: String = <s:Name> => String::from_str(s).unwrap();
 
+Name: String = {
+    <name:RawName> => String::from_str(name).unwrap(),
+    schema => String::from_str("schema").unwrap(),
+    query => String::from_str("query").unwrap(),
+    type => String::from_str("type").unwrap(),
+}
+
 extern {
     type Location = usize;
     type Error = lexer::LexicalError;
 
     enum lexer::Token<'input> {
-        "," => lexer::Token::Comma,
         "#" => lexer::Token::Hash,
         "$" => lexer::Token::Dollar,
 
@@ -35,7 +41,7 @@ extern {
         "{" => lexer::Token::OpenCurly,
         "}" => lexer::Token::CloseCurly,
 
-        Name => lexer::Token::Name(<&'input str>),
+        RawName => lexer::Token::Name(<&'input str>),
 
         schema => lexer::Token::Schema,
         query => lexer::Token::Query,
