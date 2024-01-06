@@ -19,29 +19,21 @@ Fields: Vec<Field> = {
 
 Field: Field = <name:TypeName> ":" <ty:TypeName> => Field { <> };
 
-TypeName: String = <s:Name> => String::from_str(s).unwrap();
-
-Name: String = {
-    <name:RawName> => String::from_str(name).unwrap(),
-    schema => String::from_str("schema").unwrap(),
-    query => String::from_str("query").unwrap(),
-    type => String::from_str("type").unwrap(),
-}
+TypeName: String = <s:Ident> => String::from_str(s).unwrap();
 
 extern {
     type Location = usize;
     type Error = lexer::LexicalError;
 
     enum lexer::Token<'input> {
-        "#" => lexer::Token::Hash,
         "$" => lexer::Token::Dollar,
 
         ":" => lexer::Token::Colon,
 
-        "{" => lexer::Token::OpenCurly,
-        "}" => lexer::Token::CloseCurly,
+        "{" => lexer::Token::OpenBrace,
+        "}" => lexer::Token::CloseBrace,
 
-        RawName => lexer::Token::Name(<&'input str>),
+        Ident => lexer::Token::Identifier(<&'input str>),
 
         schema => lexer::Token::Schema,
         query => lexer::Token::Query,
