@@ -1,176 +1,539 @@
-use logos::{Logos, SpannedIter};
+/*
+* The code in this file is taken from
+* https://github.com/facebook/relay/blob/main/compiler/crates/graphql-syntax/src/lexer.rs
+*
+* Licensed under the MIT license:
+*
+* Copyright (c) Meta Platforms, Inc. and affiliates.
+*
+* Permission is hereby granted, free of charge, to any person obtaining a copy
+* of this software and associated documentation files (the "Software"), to deal
+* in the Software without restriction, including without limitation the rights
+* to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+* copies of the Software, and to permit persons to whom the Software is
+* furnished to do so, subject to the following conditions:
+*
+* The above copyright notice and this permission notice shall be included in all
+* copies or substantial portions of the Software.
+*
+* THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+* IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+* FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+* AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+* LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+* OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+* SOFTWARE.
+*/
 
-#[derive(Logos, Debug, PartialEq, Clone, Copy)]
-pub enum Token<'a> {
-    #[token("#")]
-    Hash,
+use std::fmt;
 
-    // Punctuators
-    #[token("!")]
-    Bang,
-    #[token("$")]
-    Dollar,
-    #[token("(")]
-    OpenParen,
-    #[token(")")]
-    CloseParen,
-    #[token("...")]
-    Spread,
-    #[token(":")]
-    Colon,
-    #[token("=")]
-    Equals,
+use logos::Lexer;
+use logos::Logos;
+
+#[derive(Default, Eq, PartialEq)]
+pub struct TokenKindExtras {
+    /// Token callbacks might store an error token kind in here before failing.
+    /// This is then picked up in the parser to turn the `Error` token into a
+    /// more specific variant.
+    pub error_token: Option<TokenKind>,
+}
+
+/// Lexer for the GraphQL specification: http://spec.graphql.org/
+#[derive(Logos, Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+#[logos(extras = TokenKindExtras)]
+pub enum TokenKind {
+    Error,
+
+    ErrorUnterminatedString,
+    ErrorUnsupportedStringCharacter,
+    ErrorUnterminatedBlockString,
+    Empty,
+
+    // Valid tokens
+    #[token("&")]
+    Ampersand,
+
     #[token("@")]
     At,
-    #[token("[")]
-    OpenSquare,
-    #[token("]")]
-    CloseSquare,
-    #[token("{")]
-    OpenCurly,
+
     #[token("}")]
-    CloseCurly,
+    CloseBrace,
+
+    #[token("]")]
+    CloseBracket,
+
+    #[token(")")]
+    CloseParen,
+
+    #[token(":")]
+    Colon,
+
+    #[token("$")]
+    Dollar,
+
+    EndOfFile,
+
+    #[token("=")]
+    Equals,
+
+    #[token("!")]
+    Exclamation,
+
+    // IntegerPart:    -?(0|[1-9][0-9]*)
+    // FractionalPart: \\.[0-9]+
+    // ExponentPart:   [eE][+-]?[0-9]+
+    #[regex("-?(0|[1-9][0-9]*)(\\.[0-9]+[eE][+-]?[0-9]+|\\.[0-9]+|[eE][+-]?[0-9]+)")]
+    FloatLiteral,
+
+    #[regex("[a-zA-Z_][a-zA-Z0-9_]*")]
+    Identifier,
+
+    #[regex("-?(0|[1-9][0-9]*)")]
+    IntegerLiteral,
+
+    #[regex("-?0[0-9]+(\\.[0-9]+[eE][+-]?[0-9]+|\\.[0-9]+|[eE][+-]?[0-9]+)?")]
+    ErrorNumberLiteralLeadingZero,
+
+    #[regex("-?(0|[1-9][0-9]*)(\\.[0-9]+[eE][+-]?[0-9]+|\\.[0-9]+|[eE][+-]?[0-9]+)?[.a-zA-Z_]")]
+    ErrorNumberLiteralTrailingInvalid,
+
+    #[regex("-?(\\.[0-9]+[eE][+-]?[0-9]+|\\.[0-9]+)")]
+    ErrorFloatLiteralMissingZero,
+
+    #[token("{")]
+    OpenBrace,
+
+    #[token("[")]
+    OpenBracket,
+
+    #[token("(")]
+    OpenParen,
+
+    #[token(".")]
+    Period,
+
+    #[token("..")]
+    PeriodPeriod,
+
     #[token("|")]
     Pipe,
 
-    // TODO: These might be temporary, not sure
-    #[token("schema")]
-    Schema,
-    #[token("query")]
-    Query,
-    #[token("type")]
-    Type,
+    #[token("...")]
+    Spread,
 
-    #[regex(r"[_A-Za-z][_0-9A-Za-z]*", |lex| lex.slice())]
-    Name(&'a str),
+    #[token("\"", lex_string)]
+    StringLiteral,
 
-    // Numbers
-    #[token("-")]
-    NegativeSign,
-    #[regex(r"(0)|([1-9][0-9]*)")]
-    Number,
-    #[regex(r"[eE][+-]?[0-9]+")]
-    ExponentPart,
-    #[regex(r"\.[0-9]+")]
-    FractionalPart,
+    #[token("\"\"\"", lex_block_string)]
+    BlockStringLiteral,
+}
 
-    // TODO: Need to do a better job of string tokenizing in here...
-    #[token("\"")]
-    Quote,
-
-    #[token("\"\"\"")]
-    BlockQuote,
-
-    #[regex(r"[ \t\f]+")]
-    Whitespace,
-
-    #[regex(r"\\u[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f]/")]
-    EscapedUnicode,
+#[derive(Logos, Debug)]
+pub enum StringToken {
+    #[error]
+    Error,
 
     #[regex(r#"\\["\\/bfnrt]"#)]
     EscapedCharacter,
 
-    #[regex(r"\n|(\r[^\n])|\r\n")]
+    #[regex(r#"\\u[0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f][0-9A-Fa-f]"#)]
+    EscapedUnicode,
+
+    #[token("\"")]
+    Quote,
+
+    #[regex(r#"\n|\r|\r\n"#)]
     LineTerminator,
+
+    #[regex(r#"[\u0009\u0020\u0021\u0023-\u005B\u005D-\uFFFF]+"#)]
+    StringCharacters,
 }
 
-pub type Spanned<Tok, Loc, Error> = Result<(Loc, Tok, Loc), Error>;
-
-#[derive(Debug)]
-pub enum LexicalError {
-    InvalidToken,
-}
-
-pub struct Lexer<'input> {
-    // instead of an iterator over characters, we have a token iterator
-    token_stream: SpannedIter<'input, Token<'input>>,
-}
-
-impl<'input> Lexer<'input> {
-    pub fn new(input: &'input str) -> Self {
-        Self {
-            token_stream: Token::lexer(input).spanned(),
-        }
-    }
-}
-
-impl<'input> Iterator for Lexer<'input> {
-    type Item = Spanned<Token<'input>, usize, LexicalError>;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        loop {
-            match self.token_stream.next() {
-                None => return None,
-                Some((Ok(Token::Whitespace | Token::Comma), _)) => continue,
-                Some((Ok(token), span)) => return Some(Ok((span.start, token, span.end))),
-                Some((Err(_), _)) => return Some(Err(LexicalError::InvalidToken)),
+fn lex_string(lexer: &mut Lexer<'_, TokenKind>) -> bool {
+    let remainder = lexer.remainder();
+    let mut string_lexer = StringToken::lexer(remainder);
+    while let Some(string_token) = string_lexer.next() {
+        match string_token {
+            StringToken::Quote => {
+                lexer.bump(string_lexer.span().end);
+                return true;
+            }
+            StringToken::LineTerminator => {
+                lexer.bump(string_lexer.span().start);
+                lexer.extras.error_token = Some(TokenKind::ErrorUnterminatedString);
+                return false;
+            }
+            StringToken::EscapedCharacter
+            | StringToken::EscapedUnicode
+            | StringToken::StringCharacters => {}
+            StringToken::Error => {
+                lexer.extras.error_token = Some(TokenKind::ErrorUnsupportedStringCharacter);
+                return false;
             }
         }
+    }
+    lexer.extras.error_token = Some(TokenKind::ErrorUnterminatedString);
+    false
+}
+
+fn lex_block_string(lexer: &mut Lexer<'_, TokenKind>) -> bool {
+    let remainder = lexer.remainder();
+    let mut string_lexer = BlockStringToken::lexer(remainder);
+    while let Some(string_token) = string_lexer.next() {
+        match string_token {
+            BlockStringToken::TripleQuote => {
+                lexer.bump(string_lexer.span().end);
+                return true;
+            }
+            BlockStringToken::EscapedTripleQuote | BlockStringToken::Other => {}
+            BlockStringToken::Error => unreachable!(),
+        }
+    }
+    lexer.extras.error_token = Some(TokenKind::ErrorUnterminatedBlockString);
+    false
+}
+
+#[derive(Logos, Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
+pub enum BlockStringToken {
+    #[error]
+    Error,
+
+    #[token("\\\"\"\"")]
+    EscapedTripleQuote,
+
+    #[token("\"\"\"")]
+    TripleQuote,
+
+    #[regex(r#"[\u0009\u000A\u000D\u0020-\uFFFF]"#)]
+    Other,
+}
+
+impl fmt::Display for TokenKind {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let message = match self {
+            TokenKind::Ampersand => "ampersand ('&')",
+            TokenKind::At => "at ('@')",
+            TokenKind::CloseBrace => "closing brace ('}')",
+            TokenKind::CloseBracket => "closing bracket (']')",
+            TokenKind::CloseParen => "closing paren (')')",
+            TokenKind::Colon => "colon (':')",
+            TokenKind::Dollar => "dollar ('$')",
+            TokenKind::EndOfFile => "end of file",
+            TokenKind::Equals => "equals ('=')",
+            TokenKind::Exclamation => "exclamation mark ('!')",
+            TokenKind::FloatLiteral => "floating point value (e.g. '3.14')",
+            TokenKind::Identifier => "non-variable identifier (e.g. 'x' or 'Foo')",
+            TokenKind::IntegerLiteral => "integer value (e.g. '0' or '42')",
+            TokenKind::OpenBrace => "open brace ('{')",
+            TokenKind::OpenBracket => "open bracket ('[')",
+            TokenKind::OpenParen => "open parenthesis ('(')",
+            TokenKind::Period => "period ('.')",
+            TokenKind::PeriodPeriod => "double period ('..')",
+            TokenKind::Pipe => "pipe ('|')",
+            TokenKind::Spread => "spread ('...')",
+            TokenKind::BlockStringLiteral => "block string (e.g. '\"\"\"hi\"\"\"')",
+            TokenKind::Error => "error",
+            TokenKind::ErrorFloatLiteralMissingZero => "unsupported number (int or float) literal",
+            TokenKind::ErrorNumberLiteralLeadingZero => "unsupported number (int or float) literal",
+            TokenKind::ErrorNumberLiteralTrailingInvalid => {
+                "unsupported number (int or float) literal"
+            }
+            TokenKind::StringLiteral => "string literal (e.g. '\"...\"')",
+            TokenKind::ErrorUnterminatedString => "unterminated string",
+            TokenKind::ErrorUnsupportedStringCharacter => "unsupported character in string",
+            TokenKind::ErrorUnterminatedBlockString => "unterminated block string",
+            TokenKind::Empty => "missing expected kind",
+        };
+        f.write_str(message)
     }
 }
 
 #[cfg(test)]
-mod test {
+mod tests {
     use super::*;
 
-    #[test]
-    fn can_lex_ints() {
-        assert_eq!(lex("1"), vec![Token::Number]);
-        assert_eq!(lex("-1"), vec![Token::NegativeSign, Token::Number]);
-        assert_eq!(lex("-0"), vec![Token::NegativeSign, Token::Number]);
-        assert_eq!(lex("100"), vec![Token::Number]);
-        assert_eq!(lex("-100"), vec![Token::NegativeSign, Token::Number]);
-    }
-
-    #[test]
-    fn can_lex_variables() {
-        let res = lex(r#"$name: String! = "hello""#);
+    fn assert_token(source: &str, kind: TokenKind, length: usize) {
+        let mut lexer = TokenKind::lexer(source);
         assert_eq!(
-            res,
-            vec![
-                Token::Dollar,
-                Token::Name("name"),
-                Token::Colon,
-                Token::Whitespace,
-                Token::Name("String"),
-                Token::Bang,
-                Token::Whitespace,
-                Token::Equals,
-                Token::Whitespace,
-                // TODO: this is a bad tokenization, i should work on that.
-                Token::Quote,
-                Token::Name("hello"),
-                Token::Quote
-            ]
+            lexer.next(),
+            Some(kind),
+            "Testing the lexing of string '{}'",
+            source
+        );
+        assert_eq!(
+            lexer.span(),
+            0..length,
+            "Testing the lexing of string '{}'",
+            source
         );
     }
 
     #[test]
-    fn can_lex_graphql_queries() {
-        let tokens = lex(r#"
-        query {
-            repository(owner: "obmarg", name: "cynic") {
-              issueOrPullRequest(number: 1) {
-                ... on Issue {
-                  id
-                  title
-                  lastEditedAt
-                }
-                ... on PullRequest {
-                  id
-                  title
-                  lastEditedAt
-                }
-              }
-            }
-          }
-
-        "#);
-
-        insta::assert_debug_snapshot!(tokens);
+    fn test_number_successes() {
+        assert_token("4", TokenKind::IntegerLiteral, 1);
+        assert_token("4.123", TokenKind::FloatLiteral, 5);
+        assert_token("-4", TokenKind::IntegerLiteral, 2);
+        assert_token("9", TokenKind::IntegerLiteral, 1);
+        assert_token("0", TokenKind::IntegerLiteral, 1);
+        assert_token("-4.123", TokenKind::FloatLiteral, 6);
+        assert_token("0.123", TokenKind::FloatLiteral, 5);
+        assert_token("123e4", TokenKind::FloatLiteral, 5);
+        assert_token("123E4", TokenKind::FloatLiteral, 5);
+        assert_token("123e-4", TokenKind::FloatLiteral, 6);
+        assert_token("123e+4", TokenKind::FloatLiteral, 6);
+        assert_token("-1.123e4", TokenKind::FloatLiteral, 8);
+        assert_token("-1.123E4", TokenKind::FloatLiteral, 8);
+        assert_token("-1.123e-4", TokenKind::FloatLiteral, 9);
+        assert_token("-1.123e+4", TokenKind::FloatLiteral, 9);
+        assert_token("-1.123e4567", TokenKind::FloatLiteral, 11);
+        assert_token("-0", TokenKind::IntegerLiteral, 2);
     }
 
-    fn lex(input: &str) -> Vec<Token> {
-        Token::lexer(input).map(|result| result.unwrap()).collect()
+    #[test]
+    fn test_number_failures() {
+        assert_token("00", TokenKind::ErrorNumberLiteralLeadingZero, 2);
+        assert_token("01", TokenKind::ErrorNumberLiteralLeadingZero, 2);
+        assert_token("-01", TokenKind::ErrorNumberLiteralLeadingZero, 3);
+        assert_token("+1", TokenKind::Error, 1);
+        assert_token("01.23", TokenKind::ErrorNumberLiteralLeadingZero, 5);
+        assert_token("1.", TokenKind::ErrorNumberLiteralTrailingInvalid, 2);
+        assert_token("1e", TokenKind::ErrorNumberLiteralTrailingInvalid, 2);
+        assert_token("1.e1", TokenKind::ErrorNumberLiteralTrailingInvalid, 2);
+        assert_token("1.A", TokenKind::ErrorNumberLiteralTrailingInvalid, 2);
+        assert_token("-A", TokenKind::Error, 1);
+        assert_token("1.0e", TokenKind::ErrorNumberLiteralTrailingInvalid, 4);
+        assert_token("1.0eA", TokenKind::ErrorNumberLiteralTrailingInvalid, 4);
+        assert_token("1.2e3e", TokenKind::ErrorNumberLiteralTrailingInvalid, 6);
+        assert_token("1.2e3.4", TokenKind::ErrorNumberLiteralTrailingInvalid, 6);
+        assert_token("1.23.4", TokenKind::ErrorNumberLiteralTrailingInvalid, 5);
+        assert_token(".123", TokenKind::ErrorFloatLiteralMissingZero, 4);
+
+        // check that we don't consume trailing valid items
+        assert_token("1.23.{}", TokenKind::ErrorNumberLiteralTrailingInvalid, 5);
+        assert_token("1.23. {}", TokenKind::ErrorNumberLiteralTrailingInvalid, 5);
+        assert_token("1.23. []", TokenKind::ErrorNumberLiteralTrailingInvalid, 5);
+        assert_token("1.23. foo", TokenKind::ErrorNumberLiteralTrailingInvalid, 5);
+        assert_token(
+            "1.23. $foo",
+            TokenKind::ErrorNumberLiteralTrailingInvalid,
+            5,
+        );
+    }
+
+    #[test]
+    fn test_lexing() {
+        let input = "
+           query EmptyQuery($id: ID!) {
+             node(id: $id) {
+               id @skip(if: false)
+               ...E1
+             }
+           }
+         ";
+        let mut lexer = TokenKind::lexer(input);
+
+        assert_eq!(lexer.next(), Some(TokenKind::Identifier));
+        assert_eq!(lexer.slice(), "query");
+
+        assert_eq!(lexer.next(), Some(TokenKind::Identifier));
+        assert_eq!(lexer.slice(), "EmptyQuery");
+
+        assert_eq!(lexer.next(), Some(TokenKind::OpenParen));
+        assert_eq!(lexer.slice(), "(");
+
+        assert_eq!(lexer.next(), Some(TokenKind::Dollar));
+        assert_eq!(lexer.slice(), "$");
+
+        assert_eq!(lexer.next(), Some(TokenKind::Identifier));
+        assert_eq!(lexer.slice(), "id");
+
+        assert_eq!(lexer.next(), Some(TokenKind::Colon));
+        assert_eq!(lexer.slice(), ":");
+
+        assert_eq!(lexer.next(), Some(TokenKind::Identifier));
+        assert_eq!(lexer.slice(), "ID");
+
+        assert_eq!(lexer.next(), Some(TokenKind::Exclamation));
+        assert_eq!(lexer.slice(), "!");
+
+        assert_eq!(lexer.next(), Some(TokenKind::CloseParen));
+        assert_eq!(lexer.slice(), ")");
+
+        assert_eq!(lexer.next(), Some(TokenKind::OpenBrace));
+        assert_eq!(lexer.slice(), "{");
+
+        assert_eq!(lexer.next(), Some(TokenKind::Identifier));
+        assert_eq!(lexer.slice(), "node");
+
+        assert_eq!(lexer.next(), Some(TokenKind::OpenParen));
+        assert_eq!(lexer.slice(), "(");
+
+        assert_eq!(lexer.next(), Some(TokenKind::Identifier));
+        assert_eq!(lexer.slice(), "id");
+
+        assert_eq!(lexer.next(), Some(TokenKind::Colon));
+        assert_eq!(lexer.slice(), ":");
+
+        assert_eq!(lexer.next(), Some(TokenKind::Dollar));
+        assert_eq!(lexer.slice(), "$");
+
+        assert_eq!(lexer.next(), Some(TokenKind::Identifier));
+        assert_eq!(lexer.slice(), "id");
+
+        assert_eq!(lexer.next(), Some(TokenKind::CloseParen));
+        assert_eq!(lexer.slice(), ")");
+
+        assert_eq!(lexer.next(), Some(TokenKind::OpenBrace));
+        assert_eq!(lexer.slice(), "{");
+
+        assert_eq!(lexer.next(), Some(TokenKind::Identifier));
+        assert_eq!(lexer.slice(), "id");
+
+        assert_eq!(lexer.next(), Some(TokenKind::At));
+        assert_eq!(lexer.slice(), "@");
+
+        assert_eq!(lexer.next(), Some(TokenKind::Identifier));
+        assert_eq!(lexer.slice(), "skip");
+
+        assert_eq!(lexer.next(), Some(TokenKind::OpenParen));
+        assert_eq!(lexer.slice(), "(");
+
+        assert_eq!(lexer.next(), Some(TokenKind::Identifier));
+        assert_eq!(lexer.slice(), "if");
+
+        assert_eq!(lexer.next(), Some(TokenKind::Colon));
+        assert_eq!(lexer.slice(), ":");
+
+        assert_eq!(lexer.next(), Some(TokenKind::Identifier));
+        assert_eq!(lexer.slice(), "false");
+
+        assert_eq!(lexer.next(), Some(TokenKind::CloseParen));
+        assert_eq!(lexer.slice(), ")");
+
+        assert_eq!(lexer.next(), Some(TokenKind::Spread));
+        assert_eq!(lexer.slice(), "...");
+
+        assert_eq!(lexer.next(), Some(TokenKind::Identifier));
+        assert_eq!(lexer.slice(), "E1");
+
+        assert_eq!(lexer.next(), Some(TokenKind::CloseBrace));
+        assert_eq!(lexer.slice(), "}");
+
+        assert_eq!(lexer.next(), Some(TokenKind::CloseBrace));
+        assert_eq!(lexer.slice(), "}");
+
+        assert_eq!(lexer.next(), None);
+    }
+
+    #[test]
+    fn test_string_lexing() {
+        let input = r#"
+             "test"
+             "escaped \" quote"
+             "unterminated
+             "
+         "#;
+        let mut lexer = TokenKind::lexer(input);
+
+        assert_eq!(lexer.next(), Some(TokenKind::StringLiteral));
+        assert_eq!(lexer.slice(), "\"test\"");
+
+        assert_eq!(lexer.next(), Some(TokenKind::StringLiteral));
+        assert_eq!(lexer.slice(), r#""escaped \" quote""#);
+
+        assert_eq!(lexer.next(), Some(TokenKind::Error));
+        assert_eq!(
+            lexer.extras.error_token,
+            Some(TokenKind::ErrorUnterminatedString)
+        );
+        assert_eq!(lexer.slice(), "\"unterminated");
+    }
+
+    #[test]
+    fn test_invalid_character_lexing() {
+        let input = r#"
+             {
+                 %%%
+                 __typename
+                 *
+             }
+         "#;
+        let mut lexer = TokenKind::lexer(input);
+
+        assert_eq!(lexer.next(), Some(TokenKind::OpenBrace));
+        assert_eq!(lexer.slice(), "{");
+
+        assert_eq!(lexer.next(), Some(TokenKind::Error));
+        assert_eq!(lexer.slice(), "%");
+
+        assert_eq!(lexer.next(), Some(TokenKind::Error));
+        assert_eq!(lexer.slice(), "%");
+
+        assert_eq!(lexer.next(), Some(TokenKind::Error));
+        assert_eq!(lexer.slice(), "%");
+
+        assert_eq!(lexer.next(), Some(TokenKind::Identifier));
+        assert_eq!(lexer.slice(), "__typename");
+
+        assert_eq!(lexer.next(), Some(TokenKind::Error));
+        assert_eq!(lexer.slice(), "*");
+
+        assert_eq!(lexer.next(), Some(TokenKind::CloseBrace));
+        assert_eq!(lexer.slice(), "}");
+
+        assert_eq!(lexer.next(), None);
+    }
+
+    #[test]
+    fn test_block_string_lexing() {
+        let input = r#"
+             # escaped
+             """tes\"""t"""
+             # empty
+             """"""
+             # 2 quotes in a string
+             """"" """
+             """
+                 multi-
+                 line
+             """
+             """unterminated
+         "#;
+        let mut lexer = TokenKind::lexer(input);
+
+        assert_eq!(lexer.next(), Some(TokenKind::BlockStringLiteral));
+        assert_eq!(lexer.slice(), r#""""tes\"""t""""#);
+
+        assert_eq!(lexer.next(), Some(TokenKind::BlockStringLiteral));
+        assert_eq!(lexer.slice(), r#""""""""#);
+
+        assert_eq!(lexer.next(), Some(TokenKind::BlockStringLiteral));
+        assert_eq!(lexer.slice(), r#"""""" """"#);
+
+        assert_eq!(lexer.next(), Some(TokenKind::BlockStringLiteral));
+        assert_eq!(
+            lexer.slice(),
+            r#""""
+                 multi-
+                 line
+             """"#
+        );
+
+        assert_eq!(lexer.next(), Some(TokenKind::Error));
+        assert_eq!(
+            lexer.extras.error_token,
+            Some(TokenKind::ErrorUnterminatedBlockString)
+        );
+        // Unterminated string just consumes the starting quotes
+        assert_eq!(lexer.slice(), r#"""""#);
+    }
+
+    #[test]
+    fn test_bom_lexing() {
+        let input = "\u{feff}";
+
+        let mut lexer = TokenKind::lexer(input);
+
+        assert_eq!(lexer.next(), None);
     }
 }
