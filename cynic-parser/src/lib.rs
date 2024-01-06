@@ -19,7 +19,11 @@ mod tests {
     fn it_works() {
         let input = "schema { query:Query }";
         let lexer = lexer::Lexer::new(input);
-        insta::assert_debug_snapshot!(schema::SchemaParser::new().parse(input, lexer).unwrap())
+        insta::assert_debug_snapshot!(schema::SchemaParser::new().parse(input, lexer).unwrap(), @r###"
+        Schema {
+            query: "Query",
+        }
+        "###)
     }
 
     #[test]
@@ -37,6 +41,24 @@ mod tests {
                 Field {
                     name: "field",
                     ty: "Whatever",
+                },
+            ],
+        }
+        "###)
+    }
+
+    #[test]
+    fn test_schema_field() {
+        // Use a keyword as a field name and make sure it's fine
+        let input = "type MyType { query: String }";
+        let lexer = lexer::Lexer::new(input);
+        insta::assert_debug_snapshot!(schema::ObjectParser::new().parse(input, lexer).unwrap(), @r###"
+        Object {
+            name: "MyType",
+            fields: [
+                Field {
+                    name: "query",
+                    ty: "String",
                 },
             ],
         }

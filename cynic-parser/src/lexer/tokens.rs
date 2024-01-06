@@ -77,6 +77,15 @@ pub enum Token<'a> {
     #[token("!")]
     Exclamation,
 
+    #[token("schema")]
+    Schema,
+
+    #[token("query")]
+    Query,
+
+    #[token("type")]
+    Type,
+
     // IntegerPart:    -?(0|[1-9][0-9]*)
     // FractionalPart: \\.[0-9]+
     // ExponentPart:   [eE][+-]?[0-9]+
@@ -234,6 +243,9 @@ impl fmt::Display for Token<'_> {
             Token::ErrorUnsupportedStringCharacter => "unsupported character in string",
             Token::ErrorUnterminatedBlockString => "unterminated block string",
             Token::Empty => "missing expected kind",
+            Token::Schema => "schema",
+            Token::Query => "query",
+            Token::Type => "type",
         };
         f.write_str(message)
     }

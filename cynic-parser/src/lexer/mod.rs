@@ -28,9 +28,9 @@ impl<'input> Iterator for Lexer<'input> {
 
     fn next(&mut self) -> Option<Self::Item> {
         match self.token_stream.next() {
-            None => return None,
-            Some((Ok(token), span)) => return Some(Ok((span.start, token, span.end))),
-            Some((Err(_), _)) => return Some(Err(LexicalError::InvalidToken)),
+            None => None,
+            Some((Ok(token), span)) => Some(Ok((span.start, token, span.end))),
+            Some((Err(_), _)) => Some(Err(LexicalError::InvalidToken)),
         }
     }
 }

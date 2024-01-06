@@ -21,6 +21,13 @@ Field: Field = <name:TypeName> ":" <ty:TypeName> => Field { <> };
 
 TypeName: String = <s:Ident> => String::from_str(s).unwrap();
 
+Ident: &'input str = {
+    <s:RawIdent> => s,
+    schema => "schema",
+    query => "query",
+    ty => "type",
+}
+
 extern {
     type Location = usize;
     type Error = lexer::LexicalError;
@@ -33,10 +40,12 @@ extern {
         "{" => lexer::Token::OpenBrace,
         "}" => lexer::Token::CloseBrace,
 
-        schema => lexer::Token::Identifier("schema"),
-        query => lexer::Token::Identifier("query"),
-        ty => lexer::Token::Identifier("type"),
+        RawIdent => lexer::Token::Identifier(<&'input str>),
 
-        Ident => lexer::Token::Identifier(<&'input str>),
+        // Would be nice if these could just be aliases of `Identifier` but LARLPOP doesn't
+        // seem to support this well: https://github.com/lalrpop/lalrpop/issues/671
+        schema => lexer::Token::Schema,
+        query => lexer::Token::Query,
+        ty => lexer::Token::Type,
     }
 }
