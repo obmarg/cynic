@@ -3,6 +3,9 @@ use lalrpop_util::lalrpop_mod;
 mod ast;
 mod lexer;
 
+pub use lexer::Lexer;
+pub use schema::ObjectParser;
+
 lalrpop_mod!(pub schema);
 
 // TODO: Wonder if the parser should intern strings?
