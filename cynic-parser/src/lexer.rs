@@ -40,7 +40,7 @@ pub struct TokenKindExtras {
 
 /// Lexer for the GraphQL specification: http://spec.graphql.org/
 #[derive(Logos, Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
-#[logos(extras = TokenKindExtras)]
+#[logos(extras = TokenKindExtras, skip r"[ \t\r\n\f,\ufeff]+|#[^\n\r]*")]
 pub enum TokenKind {
     Error,
 
@@ -130,9 +130,6 @@ pub enum TokenKind {
 
 #[derive(Logos, Debug)]
 pub enum StringToken {
-    #[error]
-    Error,
-
     #[regex(r#"\\["\\/bfnrt]"#)]
     EscapedCharacter,
 
@@ -154,19 +151,21 @@ fn lex_string(lexer: &mut Lexer<'_, TokenKind>) -> bool {
     let mut string_lexer = StringToken::lexer(remainder);
     while let Some(string_token) = string_lexer.next() {
         match string_token {
-            StringToken::Quote => {
+            Ok(StringToken::Quote) => {
                 lexer.bump(string_lexer.span().end);
                 return true;
             }
-            StringToken::LineTerminator => {
+            Ok(StringToken::LineTerminator) => {
                 lexer.bump(string_lexer.span().start);
                 lexer.extras.error_token = Some(TokenKind::ErrorUnterminatedString);
                 return false;
             }
-            StringToken::EscapedCharacter
-            | StringToken::EscapedUnicode
-            | StringToken::StringCharacters => {}
-            StringToken::Error => {
+            Ok(
+                StringToken::EscapedCharacter
+                | StringToken::EscapedUnicode
+                | StringToken::StringCharacters,
+            ) => {}
+            Err(_) => {
                 lexer.extras.error_token = Some(TokenKind::ErrorUnsupportedStringCharacter);
                 return false;
             }
@@ -181,12 +180,12 @@ fn lex_block_string(lexer: &mut Lexer<'_, TokenKind>) -> bool {
     let mut string_lexer = BlockStringToken::lexer(remainder);
     while let Some(string_token) = string_lexer.next() {
         match string_token {
-            BlockStringToken::TripleQuote => {
+            Ok(BlockStringToken::TripleQuote) => {
                 lexer.bump(string_lexer.span().end);
                 return true;
             }
-            BlockStringToken::EscapedTripleQuote | BlockStringToken::Other => {}
-            BlockStringToken::Error => unreachable!(),
+            Ok(BlockStringToken::EscapedTripleQuote | BlockStringToken::Other) => {}
+            Err(_) => unreachable!(),
         }
     }
     lexer.extras.error_token = Some(TokenKind::ErrorUnterminatedBlockString);
@@ -195,9 +194,6 @@ fn lex_block_string(lexer: &mut Lexer<'_, TokenKind>) -> bool {
 
 #[derive(Logos, Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
 pub enum BlockStringToken {
-    #[error]
-    Error,
-
     #[token("\\\"\"\"")]
     EscapedTripleQuote,
 
@@ -256,7 +252,7 @@ mod tests {
         let mut lexer = TokenKind::lexer(source);
         assert_eq!(
             lexer.next(),
-            Some(kind),
+            Some(Ok(kind)),
             "Testing the lexing of string '{}'",
             source
         );
@@ -332,94 +328,94 @@ mod tests {
          ";
         let mut lexer = TokenKind::lexer(input);
 
-        assert_eq!(lexer.next(), Some(TokenKind::Identifier));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::Identifier)));
         assert_eq!(lexer.slice(), "query");
 
-        assert_eq!(lexer.next(), Some(TokenKind::Identifier));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::Identifier)));
         assert_eq!(lexer.slice(), "EmptyQuery");
 
-        assert_eq!(lexer.next(), Some(TokenKind::OpenParen));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::OpenParen)));
         assert_eq!(lexer.slice(), "(");
 
-        assert_eq!(lexer.next(), Some(TokenKind::Dollar));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::Dollar)));
         assert_eq!(lexer.slice(), "$");
 
-        assert_eq!(lexer.next(), Some(TokenKind::Identifier));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::Identifier)));
         assert_eq!(lexer.slice(), "id");
 
-        assert_eq!(lexer.next(), Some(TokenKind::Colon));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::Colon)));
         assert_eq!(lexer.slice(), ":");
 
-        assert_eq!(lexer.next(), Some(TokenKind::Identifier));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::Identifier)));
         assert_eq!(lexer.slice(), "ID");
 
-        assert_eq!(lexer.next(), Some(TokenKind::Exclamation));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::Exclamation)));
         assert_eq!(lexer.slice(), "!");
 
-        assert_eq!(lexer.next(), Some(TokenKind::CloseParen));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::CloseParen)));
         assert_eq!(lexer.slice(), ")");
 
-        assert_eq!(lexer.next(), Some(TokenKind::OpenBrace));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::OpenBrace)));
         assert_eq!(lexer.slice(), "{");
 
-        assert_eq!(lexer.next(), Some(TokenKind::Identifier));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::Identifier)));
         assert_eq!(lexer.slice(), "node");
 
-        assert_eq!(lexer.next(), Some(TokenKind::OpenParen));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::OpenParen)));
         assert_eq!(lexer.slice(), "(");
 
-        assert_eq!(lexer.next(), Some(TokenKind::Identifier));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::Identifier)));
         assert_eq!(lexer.slice(), "id");
 
-        assert_eq!(lexer.next(), Some(TokenKind::Colon));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::Colon)));
         assert_eq!(lexer.slice(), ":");
 
-        assert_eq!(lexer.next(), Some(TokenKind::Dollar));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::Dollar)));
         assert_eq!(lexer.slice(), "$");
 
-        assert_eq!(lexer.next(), Some(TokenKind::Identifier));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::Identifier)));
         assert_eq!(lexer.slice(), "id");
 
-        assert_eq!(lexer.next(), Some(TokenKind::CloseParen));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::CloseParen)));
         assert_eq!(lexer.slice(), ")");
 
-        assert_eq!(lexer.next(), Some(TokenKind::OpenBrace));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::OpenBrace)));
         assert_eq!(lexer.slice(), "{");
 
-        assert_eq!(lexer.next(), Some(TokenKind::Identifier));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::Identifier)));
         assert_eq!(lexer.slice(), "id");
 
-        assert_eq!(lexer.next(), Some(TokenKind::At));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::At)));
         assert_eq!(lexer.slice(), "@");
 
-        assert_eq!(lexer.next(), Some(TokenKind::Identifier));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::Identifier)));
         assert_eq!(lexer.slice(), "skip");
 
-        assert_eq!(lexer.next(), Some(TokenKind::OpenParen));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::OpenParen)));
         assert_eq!(lexer.slice(), "(");
 
-        assert_eq!(lexer.next(), Some(TokenKind::Identifier));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::Identifier)));
         assert_eq!(lexer.slice(), "if");
 
-        assert_eq!(lexer.next(), Some(TokenKind::Colon));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::Colon)));
         assert_eq!(lexer.slice(), ":");
 
-        assert_eq!(lexer.next(), Some(TokenKind::Identifier));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::Identifier)));
         assert_eq!(lexer.slice(), "false");
 
-        assert_eq!(lexer.next(), Some(TokenKind::CloseParen));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::CloseParen)));
         assert_eq!(lexer.slice(), ")");
 
-        assert_eq!(lexer.next(), Some(TokenKind::Spread));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::Spread)));
         assert_eq!(lexer.slice(), "...");
 
-        assert_eq!(lexer.next(), Some(TokenKind::Identifier));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::Identifier)));
         assert_eq!(lexer.slice(), "E1");
 
-        assert_eq!(lexer.next(), Some(TokenKind::CloseBrace));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::CloseBrace)));
         assert_eq!(lexer.slice(), "}");
 
-        assert_eq!(lexer.next(), Some(TokenKind::CloseBrace));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::CloseBrace)));
         assert_eq!(lexer.slice(), "}");
 
         assert_eq!(lexer.next(), None);
@@ -435,13 +431,13 @@ mod tests {
          "#;
         let mut lexer = TokenKind::lexer(input);
 
-        assert_eq!(lexer.next(), Some(TokenKind::StringLiteral));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::StringLiteral)));
         assert_eq!(lexer.slice(), "\"test\"");
 
-        assert_eq!(lexer.next(), Some(TokenKind::StringLiteral));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::StringLiteral)));
         assert_eq!(lexer.slice(), r#""escaped \" quote""#);
 
-        assert_eq!(lexer.next(), Some(TokenKind::Error));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::Error)));
         assert_eq!(
             lexer.extras.error_token,
             Some(TokenKind::ErrorUnterminatedString)
@@ -460,25 +456,25 @@ mod tests {
          "#;
         let mut lexer = TokenKind::lexer(input);
 
-        assert_eq!(lexer.next(), Some(TokenKind::OpenBrace));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::OpenBrace)));
         assert_eq!(lexer.slice(), "{");
 
-        assert_eq!(lexer.next(), Some(TokenKind::Error));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::Error)));
         assert_eq!(lexer.slice(), "%");
 
-        assert_eq!(lexer.next(), Some(TokenKind::Error));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::Error)));
         assert_eq!(lexer.slice(), "%");
 
-        assert_eq!(lexer.next(), Some(TokenKind::Error));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::Error)));
         assert_eq!(lexer.slice(), "%");
 
-        assert_eq!(lexer.next(), Some(TokenKind::Identifier));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::Identifier)));
         assert_eq!(lexer.slice(), "__typename");
 
-        assert_eq!(lexer.next(), Some(TokenKind::Error));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::Error)));
         assert_eq!(lexer.slice(), "*");
 
-        assert_eq!(lexer.next(), Some(TokenKind::CloseBrace));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::CloseBrace)));
         assert_eq!(lexer.slice(), "}");
 
         assert_eq!(lexer.next(), None);
@@ -501,16 +497,16 @@ mod tests {
          "#;
         let mut lexer = TokenKind::lexer(input);
 
-        assert_eq!(lexer.next(), Some(TokenKind::BlockStringLiteral));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::BlockStringLiteral)));
         assert_eq!(lexer.slice(), r#""""tes\"""t""""#);
 
-        assert_eq!(lexer.next(), Some(TokenKind::BlockStringLiteral));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::BlockStringLiteral)));
         assert_eq!(lexer.slice(), r#""""""""#);
 
-        assert_eq!(lexer.next(), Some(TokenKind::BlockStringLiteral));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::BlockStringLiteral)));
         assert_eq!(lexer.slice(), r#"""""" """"#);
 
-        assert_eq!(lexer.next(), Some(TokenKind::BlockStringLiteral));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::BlockStringLiteral)));
         assert_eq!(
             lexer.slice(),
             r#""""
@@ -519,7 +515,7 @@ mod tests {
              """"#
         );
 
-        assert_eq!(lexer.next(), Some(TokenKind::Error));
+        assert_eq!(lexer.next(), Some(Ok(TokenKind::Error)));
         assert_eq!(
             lexer.extras.error_token,
             Some(TokenKind::ErrorUnterminatedBlockString)
