@@ -1,14 +1,13 @@
 use lalrpop_util::lalrpop_mod;
 
 mod ast;
-mod builder;
 mod lexer;
 
 pub use lexer::Lexer;
 pub use schema::ObjectParser;
 
 // TODO: Make this more senseible
-pub use builder::AstBuilder;
+pub use ast::Ast;
 
 lalrpop_mod!(pub schema);
 
@@ -17,7 +16,7 @@ lalrpop_mod!(pub schema);
 
 #[cfg(test)]
 mod tests {
-    use crate::builder::AstBuilder;
+    use crate::ast::Ast;
 
     use super::*;
 
@@ -25,7 +24,7 @@ mod tests {
     fn it_works() {
         let input = "schema { query:Query }";
         let lexer = lexer::Lexer::new(input);
-        let mut builder = AstBuilder::new();
+        let mut builder = Ast::new();
         insta::assert_debug_snapshot!(schema::SchemaDefinitionParser::new().parse(input, &mut builder, lexer).unwrap(), @r###"
         Schema {
             query: "Query",
@@ -37,7 +36,7 @@ mod tests {
     fn test_basic_object() {
         let input = "type MyType { field: Whatever, field: Whatever }";
         let lexer = lexer::Lexer::new(input);
-        let mut builder = AstBuilder::new();
+        let mut builder = Ast::new();
         insta::assert_debug_snapshot!(schema::ObjectParser::new().parse(input, &mut builder, lexer).unwrap(), @r###"
         Object {
             name: "MyType",
@@ -60,7 +59,7 @@ mod tests {
         // Use a keyword as a field name and make sure it's fine
         let input = "type MyType { query: String }";
         let lexer = lexer::Lexer::new(input);
-        let mut builder = AstBuilder::new();
+        let mut builder = Ast::new();
         insta::assert_debug_snapshot!(schema::ObjectParser::new().parse(input, &mut builder, lexer).unwrap(), @r###"
         Object {
             name: "MyType",
