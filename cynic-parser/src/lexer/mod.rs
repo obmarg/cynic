@@ -27,12 +27,10 @@ impl<'input> Iterator for Lexer<'input> {
     type Item = Spanned<Token<'input>, usize, LexicalError>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        loop {
-            match self.token_stream.next() {
-                None => return None,
-                Some((Ok(token), span)) => return Some(Ok((span.start, token, span.end))),
-                Some((Err(_), _)) => return Some(Err(LexicalError::InvalidToken)),
-            }
+        match self.token_stream.next() {
+            None => return None,
+            Some((Ok(token), span)) => return Some(Ok((span.start, token, span.end))),
+            Some((Err(_), _)) => return Some(Err(LexicalError::InvalidToken)),
         }
     }
 }

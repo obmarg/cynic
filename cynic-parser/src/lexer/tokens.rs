@@ -42,8 +42,6 @@ pub struct TokenExtras {
 #[derive(Logos, Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd, Hash)]
 #[logos(extras = TokenExtras, skip r"[ \t\r\n\f,\ufeff]+|#[^\n\r]*")]
 pub enum Token<'a> {
-    Error,
-
     ErrorUnterminatedString,
     ErrorUnsupportedStringCharacter,
     ErrorUnterminatedBlockString,
@@ -228,7 +226,6 @@ impl fmt::Display for Token<'_> {
             Token::Pipe => "pipe ('|')",
             Token::Spread => "spread ('...')",
             Token::BlockStringLiteral => "block string (e.g. '\"\"\"hi\"\"\"')",
-            Token::Error => "error",
             Token::ErrorFloatLiteralMissingZero => "unsupported number (int or float) literal",
             Token::ErrorNumberLiteralLeadingZero => "unsupported number (int or float) literal",
             Token::ErrorNumberLiteralTrailingInvalid => "unsupported number (int or float) literal",
@@ -252,6 +249,22 @@ mod tests {
             lexer.next(),
             Some(Ok(kind)),
             "Testing the lexing of string '{}'",
+            source
+        );
+        assert_eq!(
+            lexer.span(),
+            0..length,
+            "Testing the lexing of string '{}'",
+            source
+        );
+    }
+
+    fn assert_error(source: &str, length: usize) {
+        let mut lexer = Token::lexer(source);
+        assert_eq!(
+            lexer.next(),
+            Some(Err(())),
+            "Testing lexing fails for string '{}'",
             source
         );
         assert_eq!(
@@ -288,13 +301,13 @@ mod tests {
         assert_token("00", Token::ErrorNumberLiteralLeadingZero, 2);
         assert_token("01", Token::ErrorNumberLiteralLeadingZero, 2);
         assert_token("-01", Token::ErrorNumberLiteralLeadingZero, 3);
-        assert_token("+1", Token::Error, 1);
+        assert_error("+1", 1);
         assert_token("01.23", Token::ErrorNumberLiteralLeadingZero, 5);
         assert_token("1.", Token::ErrorNumberLiteralTrailingInvalid, 2);
         assert_token("1e", Token::ErrorNumberLiteralTrailingInvalid, 2);
         assert_token("1.e1", Token::ErrorNumberLiteralTrailingInvalid, 2);
         assert_token("1.A", Token::ErrorNumberLiteralTrailingInvalid, 2);
-        assert_token("-A", Token::Error, 1);
+        assert_error("-A", 1);
         assert_token("1.0e", Token::ErrorNumberLiteralTrailingInvalid, 4);
         assert_token("1.0eA", Token::ErrorNumberLiteralTrailingInvalid, 4);
         assert_token("1.2e3e", Token::ErrorNumberLiteralTrailingInvalid, 6);
@@ -431,7 +444,7 @@ mod tests {
         assert_eq!(lexer.next(), Some(Ok(Token::StringLiteral)));
         assert_eq!(lexer.slice(), r#""escaped \" quote""#);
 
-        assert_eq!(lexer.next(), Some(Ok(Token::Error)));
+        assert_eq!(lexer.next(), Some(Err(())));
         assert_eq!(
             lexer.extras.error_token,
             Some(Token::ErrorUnterminatedString)
@@ -453,19 +466,19 @@ mod tests {
         assert_eq!(lexer.next(), Some(Ok(Token::OpenBrace)));
         assert_eq!(lexer.slice(), "{");
 
-        assert_eq!(lexer.next(), Some(Ok(Token::Error)));
+        assert_eq!(lexer.next(), Some(Err(())));
         assert_eq!(lexer.slice(), "%");
 
-        assert_eq!(lexer.next(), Some(Ok(Token::Error)));
+        assert_eq!(lexer.next(), Some(Err(())));
         assert_eq!(lexer.slice(), "%");
 
-        assert_eq!(lexer.next(), Some(Ok(Token::Error)));
+        assert_eq!(lexer.next(), Some(Err(())));
         assert_eq!(lexer.slice(), "%");
 
         assert_eq!(lexer.next(), Some(Ok(Token::Identifier("__typename"))));
         assert_eq!(lexer.slice(), "__typename");
 
-        assert_eq!(lexer.next(), Some(Ok(Token::Error)));
+        assert_eq!(lexer.next(), Some(Err(())));
         assert_eq!(lexer.slice(), "*");
 
         assert_eq!(lexer.next(), Some(Ok(Token::CloseBrace)));
@@ -509,7 +522,7 @@ mod tests {
              """"#
         );
 
-        assert_eq!(lexer.next(), Some(Ok(Token::Error)));
+        assert_eq!(lexer.next(), Some(Err(())));
         assert_eq!(
             lexer.extras.error_token,
             Some(Token::ErrorUnterminatedBlockString)
