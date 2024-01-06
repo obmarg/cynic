@@ -41,6 +41,8 @@ pub enum Token<'a> {
     Schema,
     #[token("query")]
     Query,
+    #[token("type")]
+    Type,
 
     #[regex(r"[_A-Za-z][_0-9A-Za-z]*", |lex| lex.slice())]
     Name(&'a str),
@@ -101,7 +103,7 @@ impl<'input> Iterator for Lexer<'input> {
         loop {
             match self.token_stream.next() {
                 None => return None,
-                Some((Ok(Token::Whitespace), _)) => continue,
+                Some((Ok(Token::Whitespace | Token::Comma), _)) => continue,
                 Some((Ok(token), span)) => return Some(Ok((span.start, token, span.end))),
                 Some((Err(_), _)) => return Some(Err(LexicalError::InvalidToken)),
             }

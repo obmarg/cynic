@@ -1,15 +1,23 @@
 use std::str::FromStr;
 
-use crate::ast::Schema;
+use crate::ast::{Schema, Field, Object};
 use crate::lexer;
 
 grammar<'input>(input: &'input str);
 
 pub Schema: Schema = {
-    schema "{" query ":" <query:TypeName> "}" => Schema {
-        query: query
-    }
+    schema "{" query ":" <query:TypeName> "}" => Schema { <> }
 };
+
+pub Object: Object = {
+    ty <name:TypeName> "{" <fields:Fields> "}" => Object { <> }
+};
+
+Fields: Vec<Field> = {
+    (Field+)
+};
+
+Field: Field = <name:TypeName> ":" <ty:TypeName> => Field { <> };
 
 TypeName: String = <s:Name> => String::from_str(s).unwrap();
 
@@ -31,5 +39,6 @@ extern {
 
         schema => lexer::Token::Schema,
         query => lexer::Token::Query,
+        ty => lexer::Token::Type,
     }
 }
