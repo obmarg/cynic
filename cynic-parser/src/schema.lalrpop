@@ -3,24 +3,40 @@ use std::str::FromStr;
 use crate::ast::{Schema, Field, Object};
 use crate::lexer;
 
-grammar<'input>(input: &'input str);
-
-pub Schema: Schema = {
-    schema "{" query ":" <query:TypeName> "}" => Schema { <> }
+use crate::builder::{
+    RootOperationTypeDefinition, OperationType, AstBuilder, NodeId, SchemaDefinition,
+    ObjectDefinition, FieldDefinition
 };
 
-pub Object: Object = {
-    ty <name:TypeName> "{" <fields:Fields> "}" => Object { <> }
+grammar<'input>(input: &'input str, builder: &mut AstBuilder);
+
+pub SchemaDefinition: SchemaDefinition = {
+    schema "{" <roots:RootOperationTypeDefinition*> "}" => SchemaDefinition { <> }
 };
 
-Fields: Vec<Field> = {
-    (Field+)
+pub RootOperationTypeDefinition: RootOperationTypeDefinition = {
+    query ":" <name:NamedType> => RootOperationTypeDefinition {
+        operation_type: OperationType::Query,
+        named_type: name
+    }
+}
+
+pub Object: ObjectDefinition = {
+    ty <name:Name> "{" <fields:FieldDefinitions> "}" => ObjectDefinition { <> }
 };
 
-Field: Field = <name:TypeName> ":" <ty:TypeName> => Field { <> };
+FieldDefinitions: Vec<NodeId> = {
+    (FieldDefinition+)
+};
 
-TypeName: String = <s:Ident> => String::from_str(s).unwrap();
+FieldDefinition: NodeId = <name:Name> ":" <ty:NamedType> =>
+    builder.field_definition(FieldDefinition { <> });
 
+Name: NodeId = <s:Ident> => builder.ident(s);
+
+NamedType: NodeId = <s:Ident> => builder.ident(s);
+
+// TODO: Make this NodeId probably...
 Ident: &'input str = {
     <s:RawIdent> => s,
     schema => "schema",
