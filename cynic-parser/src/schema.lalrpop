@@ -1,0 +1,13 @@
+use std::str::FromStr;
+
+use crate::ast::Schema;
+
+grammar;
+
+pub Schema: Schema = {
+    "schema" "{" "query" ":" <query:TypeRef> "}" => Schema {
+        query: query
+    }
+};
+
+TypeRef: String = <s:r"[_a-zA-z][a-zA-Z0-9_]*"> => String::from_str(s).unwrap();
