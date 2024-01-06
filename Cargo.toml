@@ -10,7 +10,8 @@ members = [
     "examples",
     "schemas/github",
     "tests/querygen-compile-run",
-    "tests/ui-tests"
+    "tests/ui-tests",
+    "cynic-parser"
 ]
 resolver = "2"
 
@@ -20,7 +21,8 @@ default-members = [
     "cynic-codegen",
     "cynic-introspection",
     "cynic-proc-macros",
-    "cynic-querygen"
+    "cynic-querygen",
+    "cynic-parser"
 ]
 
 [workspace.package]
