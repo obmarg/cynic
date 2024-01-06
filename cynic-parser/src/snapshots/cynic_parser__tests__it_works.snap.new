@@ -1,8 +1,0 @@
----
-source: cynic-parser/src/lib.rs
-assertion_line: 14
-expression: "schema::SchemaParser::new().parse(\"schema { query: Query }\").unwrap()"
----
-Schema {
-    query: "Query",
-}

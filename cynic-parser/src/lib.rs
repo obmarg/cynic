@@ -11,8 +11,8 @@ mod tests {
 
     #[test]
     fn it_works() {
-        insta::assert_debug_snapshot!(schema::SchemaParser::new()
-            .parse("schema { query: Query }")
-            .unwrap())
+        let input = "schema { query:Query }";
+        let lexer = lexer::Lexer::new(input);
+        insta::assert_debug_snapshot!(schema::SchemaParser::new().parse(input, lexer).unwrap())
     }
 }

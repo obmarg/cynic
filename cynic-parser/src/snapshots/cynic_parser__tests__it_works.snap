@@ -1,0 +1,7 @@
+---
+source: cynic-parser/src/lib.rs
+expression: "schema::SchemaParser::new().parse(input, lexer).unwrap()"
+---
+Schema {
+    query: "Query",
+}

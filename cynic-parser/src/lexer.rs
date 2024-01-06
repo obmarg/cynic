@@ -1,7 +1,7 @@
-use logos::Logos;
+use logos::{Logos, SpannedIter};
 
 #[derive(Logos, Debug, PartialEq, Clone, Copy)]
-pub enum Token {
+pub enum Token<'a> {
     #[token(",")]
     Comma,
 
@@ -31,13 +31,19 @@ pub enum Token {
     CloseSquare,
     #[token("{")]
     OpenCurly,
-    #[token("|")]
-    Pipe,
     #[token("}")]
     CloseCurly,
+    #[token("|")]
+    Pipe,
 
-    #[regex(r"[_A-Za-z][_0-9A-Za-z]*")]
-    Name,
+    // TODO: These might be temporary, not sure
+    #[token("schema")]
+    Schema,
+    #[token("query")]
+    Query,
+
+    #[regex(r"[_A-Za-z][_0-9A-Za-z]*", |lex| lex.slice())]
+    Name(&'a str),
 
     // Numbers
     #[token("-")]
@@ -68,6 +74,41 @@ pub enum Token {
     LineTerminator,
 }
 
+pub type Spanned<Tok, Loc, Error> = Result<(Loc, Tok, Loc), Error>;
+
+#[derive(Debug)]
+pub enum LexicalError {
+    InvalidToken,
+}
+
+pub struct Lexer<'input> {
+    // instead of an iterator over characters, we have a token iterator
+    token_stream: SpannedIter<'input, Token<'input>>,
+}
+
+impl<'input> Lexer<'input> {
+    pub fn new(input: &'input str) -> Self {
+        Self {
+            token_stream: Token::lexer(input).spanned(),
+        }
+    }
+}
+
+impl<'input> Iterator for Lexer<'input> {
+    type Item = Spanned<Token<'input>, usize, LexicalError>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        loop {
+            match self.token_stream.next() {
+                None => return None,
+                Some((Ok(Token::Whitespace), _)) => continue,
+                Some((Ok(token), span)) => return Some(Ok((span.start, token, span.end))),
+                Some((Err(_), _)) => return Some(Err(LexicalError::InvalidToken)),
+            }
+        }
+    }
+}
+
 #[cfg(test)]
 mod test {
     use super::*;
@@ -88,16 +129,17 @@ mod test {
             res,
             vec![
                 Token::Dollar,
-                Token::Name,
+                Token::Name("name"),
                 Token::Colon,
                 Token::Whitespace,
-                Token::Name,
+                Token::Name("String"),
                 Token::Bang,
                 Token::Whitespace,
                 Token::Equals,
                 Token::Whitespace,
+                // TODO: this is a bad tokenization, i should work on that.
                 Token::Quote,
-                Token::Name,
+                Token::Name("hello"),
                 Token::Quote
             ]
         );

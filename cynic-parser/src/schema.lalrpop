@@ -1,13 +1,35 @@
 use std::str::FromStr;
 
 use crate::ast::Schema;
+use crate::lexer;
 
-grammar;
+grammar<'input>(input: &'input str);
 
 pub Schema: Schema = {
-    "schema" "{" "query" ":" <query:TypeRef> "}" => Schema {
+    schema "{" query ":" <query:TypeName> "}" => Schema {
         query: query
     }
 };
 
-TypeRef: String = <s:r"[_a-zA-z][a-zA-Z0-9_]*"> => String::from_str(s).unwrap();
+TypeName: String = <s:Name> => String::from_str(s).unwrap();
+
+extern {
+    type Location = usize;
+    type Error = lexer::LexicalError;
+
+    enum lexer::Token<'input> {
+        "," => lexer::Token::Comma,
+        "#" => lexer::Token::Hash,
+        "$" => lexer::Token::Dollar,
+
+        ":" => lexer::Token::Colon,
+
+        "{" => lexer::Token::OpenCurly,
+        "}" => lexer::Token::CloseCurly,
+
+        Name => lexer::Token::Name(<&'input str>),
+
+        schema => lexer::Token::Schema,
+        query => lexer::Token::Query,
+    }
+}
