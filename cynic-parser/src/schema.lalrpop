@@ -2,7 +2,7 @@ use std::str::FromStr;
 
 use crate::lexer;
 
-use crate::ast::*;
+use crate::ast::{*, ids::NodeId};
 
 grammar<'input>(input: &'input str, ast: &mut Ast);
 

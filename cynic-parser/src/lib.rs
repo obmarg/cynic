@@ -12,8 +12,16 @@ pub use ast::Ast;
 
 lalrpop_mod!(pub schema);
 
-// TODO: Wonder if the parser should intern strings?
-// Maybe?
+pub fn parse_type_system_document(input: &str) -> Ast {
+    let lexer = lexer::Lexer::new(input);
+    let mut ast = Ast::new();
+
+    schema::TypeSystemDocumentParser::new()
+        .parse(input, &mut ast, lexer)
+        .expect("TODO: error handling");
+
+    ast
+}
 
 #[cfg(test)]
 mod tests {
@@ -23,76 +31,52 @@ mod tests {
 
     #[test]
     fn it_works() {
-        let input = "schema { query:Query }";
-        let lexer = lexer::Lexer::new(input);
-        let mut builder = Ast::new();
-        insta::assert_debug_snapshot!(schema::SchemaDefinitionParser::new().parse(input, &mut builder, lexer).unwrap(), @r###"
-        Schema {
-            query: "Query",
-        }
-        "###)
+        insta::assert_snapshot!(
+            parse_type_system_document("schema { query:Query }").to_sdl(),
+            @""
+        );
     }
 
     #[test]
     fn test_basic_object() {
-        let input = "type MyType { field: Whatever, field: Whatever }";
-        let lexer = lexer::Lexer::new(input);
-        let mut builder = Ast::new();
-        insta::assert_debug_snapshot!(schema::ObjectDefinitionParser::new().parse(input, &mut builder, lexer).unwrap(), @r###"
-        Object {
-            name: "MyType",
-            fields: [
-                Field {
-                    name: "field",
-                    ty: "Whatever",
-                },
-                Field {
-                    name: "field",
-                    ty: "Whatever",
-                },
-            ],
+        insta::assert_snapshot!(
+            parse_type_system_document("type MyType { field: Whatever, field: Whatever }").to_sdl(),
+            @r###"
+        type MyType {
+          field: TODO
+          field: TODO
         }
-        "###)
+        "###
+        );
     }
 
     #[test]
     fn test_schema_field() {
         // Use a keyword as a field name and make sure it's fine
-        let input = "type MyType { query: String }";
-        let lexer = lexer::Lexer::new(input);
-        let mut builder = Ast::new();
-        insta::assert_debug_snapshot!(schema::ObjectDefinitionParser::new().parse(input, &mut builder, lexer).unwrap(), @r###"
-        Object {
-            name: "MyType",
-            fields: [
-                Field {
-                    name: "query",
-                    ty: "String",
-                },
-            ],
+        insta::assert_snapshot!(
+            parse_type_system_document( "type MyType { query: String }").to_sdl(),
+            @r###"
+        type MyType {
+          query: TODO
         }
-        "###)
+        "###
+        )
     }
 
     #[test]
     fn test_input() {
-        // Use a keyword as a field name and make sure it's fine
-        let input = r#"
-        "I am a description"
-        type MyType { query: String }
-        "#;
-        let lexer = lexer::Lexer::new(input);
-        let mut builder = Ast::new();
-        insta::assert_debug_snapshot!(schema::TypeSystemDocumentParser::new().parse(input, &mut builder, lexer).unwrap(), @r###"
-        Object {
-            name: "MyType",
-            fields: [
-                Field {
-                    name: "query",
-                    ty: "String",
-                },
-            ],
+        insta::assert_snapshot!(
+            parse_type_system_document(
+                r#"
+                "I am a description"
+                type MyType { query: String }
+                "#
+            ).to_sdl(),
+            @r###"
+        type MyType {
+          query: TODO
         }
-        "###)
+        "###
+        );
     }
 }
