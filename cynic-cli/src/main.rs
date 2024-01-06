@@ -23,8 +23,8 @@ fn main() {
             println!(
                 "{}",
                 cynic_querygen::document_to_fragment_structs(
-                    &query,
-                    &schema,
+                    query,
+                    schema,
                     &cynic_querygen::QueryGenOptions::default()
                 )
                 .unwrap()
