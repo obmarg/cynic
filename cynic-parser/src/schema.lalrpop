@@ -16,6 +16,7 @@ DefinitionAndDescription: (Option<StringId>, DefinitionId) = {
 
 TypeSystemDefinition: DefinitionId = {
     <def:SchemaDefinition> => ast.schema_definition(def),
+    <def:ScalarDefinition> => ast.scalar_definition(def),
     <def:ObjectDefinition> => ast.object_definition(def),
     <def:InterfaceDefinition> => ast.interface_definition(def),
     <def:UnionDefinition> => ast.union_definition(def),
@@ -31,6 +32,18 @@ RootOperationTypeDefinition: RootOperationTypeDefinition = {
     query ":" <name:NamedType> => RootOperationTypeDefinition {
         operation_type: OperationType::Query,
         named_type: name
+    }
+}
+
+ScalarDefinition: ScalarDefinition = {
+    <start:@L> scalar
+        <name:Name>
+        <directives:Directive*>
+        <end:@R>
+    => ScalarDefinition {
+        name,
+        directives,
+        span: Span::new(start,end)
     }
 }
 
@@ -286,6 +299,7 @@ Ident: &'input str = {
     interface => "interface",
     "enum" => "enum",
     union => "union",
+    scalar => "scalar",
 }
 
 extern {
@@ -332,5 +346,6 @@ extern {
         interface => lexer::Token::Interface,
         "enum" => lexer::Token::Enum,
         union => lexer::Token::Union,
+        scalar => lexer::Token::Scalar,
     }
 }

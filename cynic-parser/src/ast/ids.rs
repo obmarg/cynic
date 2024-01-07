@@ -3,7 +3,7 @@ use crate::Ast;
 use super::{
     Argument, AstDefinition, Directive, EnumDefinition, EnumValueDefinition, FieldDefinition,
     InputObjectDefinition, InputValueDefinition, InterfaceDefinition, ObjectDefinition,
-    SchemaDefinition, Type, UnionDefinition, Value,
+    ScalarDefinition, SchemaDefinition, Type, UnionDefinition, Value,
 };
 
 pub trait AstId {}
@@ -52,6 +52,21 @@ impl AstLookup<SchemaDefinitionId> for Ast {
 
     fn lookup(&self, index: SchemaDefinitionId) -> &Self::Output {
         self.schema_definitions
+            .get(index.0)
+            .expect("objects to be present")
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ScalarDefinitionId(pub(super) usize);
+
+impl AstId for ScalarDefinitionId {}
+
+impl AstLookup<ScalarDefinitionId> for Ast {
+    type Output = ScalarDefinition;
+
+    fn lookup(&self, index: ScalarDefinitionId) -> &Self::Output {
+        self.scalar_definitions
             .get(index.0)
             .expect("objects to be present")
     }

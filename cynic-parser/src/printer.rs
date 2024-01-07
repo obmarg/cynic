@@ -6,7 +6,7 @@ use crate::ast::{
     ids::{
         ArgumentId, DirectiveId, EnumDefinitionId, EnumValueDefinitionId, FieldDefinitionId,
         InputObjectDefinitionId, InputValueDefinitionId, InterfaceDefinitionId, ObjectDefinitionId,
-        SchemaDefinitionId, TypeId, UnionDefinitionId, ValueId,
+        ScalarDefinitionId, SchemaDefinitionId, TypeId, UnionDefinitionId, ValueId,
     },
     AstDefinition, AstReader, Definition,
 };
@@ -18,6 +18,7 @@ impl crate::Ast {
         let builder = allocator
             .concat(self.definitions().map(|definition| match definition {
                 Definition::Schema(reader) => NodeDisplay(reader).pretty(&allocator),
+                Definition::Scalar(reader) => NodeDisplay(reader).pretty(&allocator),
                 Definition::Object(reader) => NodeDisplay(reader).pretty(&allocator),
                 Definition::Interface(reader) => NodeDisplay(reader).pretty(&allocator),
                 Definition::Union(reader) => NodeDisplay(reader).pretty(&allocator),
@@ -61,6 +62,15 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, SchemaDefinitionId> {
         }
 
         builder
+    }
+}
+
+impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, ScalarDefinitionId> {
+    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+        allocator
+            .text(format!("scalar {}", self.0.name()))
+            .append(allocator.space())
+            .append(allocator.intersperse(self.0.directives().map(NodeDisplay), allocator.line()))
     }
 }
 
