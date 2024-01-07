@@ -89,17 +89,26 @@ pub enum Token<'a> {
     #[token("input")]
     Input,
 
+    #[token("true")]
+    True,
+
+    #[token("false")]
+    False,
+
+    #[token("null")]
+    Null,
+
     // IntegerPart:    -?(0|[1-9][0-9]*)
     // FractionalPart: \\.[0-9]+
     // ExponentPart:   [eE][+-]?[0-9]+
-    #[regex("-?(0|[1-9][0-9]*)(\\.[0-9]+[eE][+-]?[0-9]+|\\.[0-9]+|[eE][+-]?[0-9]+)")]
-    FloatLiteral,
+    #[regex("-?(0|[1-9][0-9]*)(\\.[0-9]+[eE][+-]?[0-9]+|\\.[0-9]+|[eE][+-]?[0-9]+)", |lex| lex.slice())]
+    FloatLiteral(&'a str),
 
     #[regex("[a-zA-Z_][a-zA-Z0-9_]*", |lex| lex.slice())]
     Identifier(&'a str),
 
-    #[regex("-?(0|[1-9][0-9]*)")]
-    IntegerLiteral,
+    #[regex("-?(0|[1-9][0-9]*)", |lex| lex.slice())]
+    IntegerLiteral(&'a str),
 
     #[regex("-?0[0-9]+(\\.[0-9]+[eE][+-]?[0-9]+|\\.[0-9]+|[eE][+-]?[0-9]+)?")]
     ErrorNumberLiteralLeadingZero,
@@ -227,9 +236,9 @@ impl fmt::Display for Token<'_> {
             Token::EndOfFile => "end of file",
             Token::Equals => "equals ('=')",
             Token::Exclamation => "exclamation mark ('!')",
-            Token::FloatLiteral => "floating point value (e.g. '3.14')",
+            Token::FloatLiteral(_) => "floating point value (e.g. '3.14')",
             Token::Identifier(_) => "non-variable identifier (e.g. 'x' or 'Foo')",
-            Token::IntegerLiteral => "integer value (e.g. '0' or '42')",
+            Token::IntegerLiteral(_) => "integer value (e.g. '0' or '42')",
             Token::OpenBrace => "open brace ('{')",
             Token::OpenBracket => "open bracket ('[')",
             Token::OpenParen => "open parenthesis ('(')",
@@ -250,6 +259,9 @@ impl fmt::Display for Token<'_> {
             Token::Query => "query",
             Token::Type => "type",
             Token::Input => "input",
+            Token::True => "true",
+            Token::False => "false",
+            Token::Null => "null,",
         };
         f.write_str(message)
     }
@@ -293,23 +305,23 @@ mod tests {
 
     #[test]
     fn test_number_successes() {
-        assert_token("4", Token::IntegerLiteral, 1);
-        assert_token("4.123", Token::FloatLiteral, 5);
-        assert_token("-4", Token::IntegerLiteral, 2);
-        assert_token("9", Token::IntegerLiteral, 1);
-        assert_token("0", Token::IntegerLiteral, 1);
-        assert_token("-4.123", Token::FloatLiteral, 6);
-        assert_token("0.123", Token::FloatLiteral, 5);
-        assert_token("123e4", Token::FloatLiteral, 5);
-        assert_token("123E4", Token::FloatLiteral, 5);
-        assert_token("123e-4", Token::FloatLiteral, 6);
-        assert_token("123e+4", Token::FloatLiteral, 6);
-        assert_token("-1.123e4", Token::FloatLiteral, 8);
-        assert_token("-1.123E4", Token::FloatLiteral, 8);
-        assert_token("-1.123e-4", Token::FloatLiteral, 9);
-        assert_token("-1.123e+4", Token::FloatLiteral, 9);
-        assert_token("-1.123e4567", Token::FloatLiteral, 11);
-        assert_token("-0", Token::IntegerLiteral, 2);
+        assert_token("4", Token::IntegerLiteral("4"), 1);
+        assert_token("4.123", Token::FloatLiteral("4.123"), 5);
+        assert_token("-4", Token::IntegerLiteral("-4"), 2);
+        assert_token("9", Token::IntegerLiteral("9"), 1);
+        assert_token("0", Token::IntegerLiteral("0"), 1);
+        assert_token("-4.123", Token::FloatLiteral("-4.123"), 6);
+        assert_token("0.123", Token::FloatLiteral("0.123"), 5);
+        assert_token("123e4", Token::FloatLiteral("123e4"), 5);
+        assert_token("123E4", Token::FloatLiteral("123E4"), 5);
+        assert_token("123e-4", Token::FloatLiteral("123e-4"), 6);
+        assert_token("123e+4", Token::FloatLiteral("123e+4"), 6);
+        assert_token("-1.123e4", Token::FloatLiteral("-1.123e4"), 8);
+        assert_token("-1.123E4", Token::FloatLiteral("-1.123E4"), 8);
+        assert_token("-1.123e-4", Token::FloatLiteral("-1.123e-4"), 9);
+        assert_token("-1.123e+4", Token::FloatLiteral("-1.123e+4"), 9);
+        assert_token("-1.123e4567", Token::FloatLiteral("-1.123e4567"), 11);
+        assert_token("-0", Token::IntegerLiteral("-0"), 2);
     }
 
     #[test]

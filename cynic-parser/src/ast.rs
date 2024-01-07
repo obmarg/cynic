@@ -27,6 +27,8 @@ pub struct Ast {
 
     string_literals: Vec<StringLiteral>,
 
+    values: Vec<Value>,
+
     definition_descriptions: HashMap<NodeId, NodeId>,
 }
 
@@ -98,6 +100,18 @@ pub enum OperationType {
 pub enum StringLiteral {
     Normal(StringId),
     Block(StringId),
+}
+
+pub enum Value {
+    Variable(StringId),
+    Int(i32),
+    Float(f32),
+    String(StringId),
+    Boolean(bool),
+    Null,
+    Enum(StringId),
+    List(Vec<ValueId>),
+    Object(Vec<(StringId, ValueId)>),
 }
 
 // TODO: Don't forget the spans etc.
@@ -180,6 +194,12 @@ impl Ast {
         let ty_id = TypeId(self.type_references.len());
         self.type_references.push(ty);
         ty_id
+    }
+
+    pub fn value(&mut self, value: Value) -> ValueId {
+        let id = ValueId(self.values.len());
+        self.values.push(value);
+        id
     }
 
     pub fn string_literal(&mut self, literal: StringLiteral) -> NodeId {

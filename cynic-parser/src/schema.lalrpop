@@ -85,6 +85,30 @@ WrappingType: WrappingType = {
     "]" => WrappingType::List
 }
 
+Value: ValueId = {
+    "$" <name:Name> => ast.value(Value::Variable(name)),
+    <int:IntegerLiteral> => ast.value(Value::Int(int.parse().unwrap())),
+    <float:FloatLiteral> => ast.value(Value::Int(float.parse().unwrap())),
+    <s:StringLiteral> => {
+        let id = ast.intern_string(s);
+        ast.value(Value::String(id))
+    },
+    <s:BlockStringLiteral> => {
+        let id = ast.intern_string(s);
+        ast.value(Value::String(id))
+    },
+    true => ast.value(Value::Boolean(true)),
+    false => ast.value(Value::Boolean(false)),
+    null => ast.value(Value::Null),
+    "[" <values:Value*> "]" => ast.value(Value::List(values)),
+    "{" <fields:ObjectField*> "}" => ast.value(Value::Object(fields)),
+    <value:EnumValue> => ast.value(Value::Enum(value)),
+}
+
+ObjectField: (StringId, ValueId) = {
+    <name:Name> ":" <value:Value> => (name, value)
+}
+
 StringValue: NodeId = {
     <s:StringLiteral> => {
         let id = ast.intern_string(s);
@@ -96,6 +120,14 @@ StringValue: NodeId = {
     },
 }
 
+EnumValue: StringId = {
+    <s:RawIdent> => ast.ident(s),
+    schema => ast.ident("schema"),
+    query => ast.ident("query"),
+    ty => ast.ident("type"),
+    input => ast.ident("input"),
+}
+
 // TODO: Make this NodeId probably...
 Ident: &'input str = {
     <s:RawIdent> => s,
@@ -103,6 +135,9 @@ Ident: &'input str = {
     query => "query",
     ty => "type",
     input => "input",
+    true => "true",
+    false => "false",
+    null => "null",
 }
 
 extern {
@@ -129,6 +164,8 @@ extern {
 
         StringLiteral => lexer::Token::StringLiteral(<&'input str>),
         BlockStringLiteral => lexer::Token::BlockStringLiteral(<&'input str>),
+        FloatLiteral => lexer::Token::FloatLiteral(<&'input str>),
+        IntegerLiteral => lexer::Token::FloatLiteral(<&'input str>),
 
         // Would be nice if these could just be aliases of `Identifier` but LARLPOP doesn't
         // seem to support this well: https://github.com/lalrpop/lalrpop/issues/671
@@ -136,5 +173,8 @@ extern {
         query => lexer::Token::Query,
         ty => lexer::Token::Type,
         input => lexer::Token::Input,
+        true => lexer::Token::True,
+        false => lexer::Token::False,
+        null => lexer::Token::Null,
     }
 }

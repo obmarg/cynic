@@ -2,6 +2,7 @@ use crate::Ast;
 
 use super::{
     FieldDefinition, InputObjectDefinition, InputValueDefinition, Node, ObjectDefinition, Type,
+    Value,
 };
 
 pub trait AstId {}
@@ -114,6 +115,19 @@ impl AstLookup<TypeId> for Ast {
         self.type_references
             .get(index.0)
             .expect("types to be present")
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ValueId(pub(super) usize);
+
+impl AstId for ValueId {}
+
+impl AstLookup<ValueId> for Ast {
+    type Output = Value;
+
+    fn lookup(&self, index: ValueId) -> &Self::Output {
+        self.values.get(index.0).expect("values to be present")
     }
 }
 
