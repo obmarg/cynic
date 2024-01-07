@@ -17,6 +17,7 @@ pub struct Ast {
     definitions: Vec<AstDefinition>,
 
     schema_definitions: Vec<SchemaDefinition>,
+    scalar_definitions: Vec<ScalarDefinition>,
     object_definitions: Vec<ObjectDefinition>,
     interface_definitions: Vec<InterfaceDefinition>,
     union_definitions: Vec<UnionDefinition>,
@@ -40,6 +41,7 @@ pub struct Ast {
 
 pub enum AstDefinition {
     Schema(SchemaDefinitionId),
+    Scalar(ScalarDefinitionId),
     Object(ObjectDefinitionId),
     Interface(InterfaceDefinitionId),
     Union(UnionDefinitionId),
@@ -49,6 +51,12 @@ pub enum AstDefinition {
 
 pub struct SchemaDefinition {
     pub roots: Vec<RootOperationTypeDefinition>,
+}
+
+pub struct ScalarDefinition {
+    pub name: StringId,
+    pub directives: Vec<DirectiveId>,
+    pub span: Span,
 }
 
 pub struct ObjectDefinition {
@@ -204,6 +212,16 @@ impl AstBuilder {
 
         let definition_id = DefinitionId(self.ast.definitions.len());
         self.ast.definitions.push(AstDefinition::Schema(id));
+
+        definition_id
+    }
+
+    pub fn scalar_definition(&mut self, definition: ScalarDefinition) -> DefinitionId {
+        let id = ScalarDefinitionId(self.ast.scalar_definitions.len());
+        self.ast.scalar_definitions.push(definition);
+
+        let definition_id = DefinitionId(self.ast.definitions.len());
+        self.ast.definitions.push(AstDefinition::Scalar(id));
 
         definition_id
     }

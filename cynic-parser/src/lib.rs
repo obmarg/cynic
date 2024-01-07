@@ -88,6 +88,17 @@ mod tests {
     }
 
     #[test]
+    fn test_basic_scalar() {
+        insta::assert_snapshot!(
+            parse_type_system_document(r#"
+                scalar MyType @hello(there: [{thing: "other"}])
+                "#
+            ).to_sdl(),
+            @r###"scalar MyType @hello(there: ({thing:"other"}))"###
+        );
+    }
+
+    #[test]
     fn test_basic_enum() {
         insta::assert_snapshot!(
             parse_type_system_document(r#"

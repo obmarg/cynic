@@ -3,7 +3,8 @@ use crate::{ast, Ast};
 use super::{
     ids::{
         ArgumentId, AstId, AstLookup, DirectiveId, EnumDefinitionId, EnumValueDefinitionId,
-        InputValueDefinitionId, InterfaceDefinitionId, TypeId, UnionDefinitionId, ValueId,
+        InputValueDefinitionId, InterfaceDefinitionId, ScalarDefinitionId, TypeId,
+        UnionDefinitionId, ValueId,
     },
     FieldDefinitionId, InputObjectDefinitionId, ObjectDefinitionId, OperationType,
     SchemaDefinitionId, Type, WrappingType,
@@ -27,6 +28,7 @@ impl Ast {
     pub fn definitions<'a>(&'a self) -> impl Iterator<Item = Definition<'a>> + 'a {
         self.definitions.iter().map(|definition| match definition {
             ast::AstDefinition::Schema(id) => Definition::Schema(self.read(*id)),
+            ast::AstDefinition::Scalar(id) => Definition::Scalar(self.read(*id)),
             ast::AstDefinition::Object(id) => Definition::Object(self.read(*id)),
             ast::AstDefinition::Interface(id) => Definition::Interface(self.read(*id)),
             ast::AstDefinition::Union(id) => Definition::Union(self.read(*id)),
@@ -38,6 +40,7 @@ impl Ast {
 
 pub enum Definition<'a> {
     Schema(AstReader<'a, SchemaDefinitionId>),
+    Scalar(AstReader<'a, ScalarDefinitionId>),
     Object(AstReader<'a, ObjectDefinitionId>),
     Interface(AstReader<'a, InterfaceDefinitionId>),
     Union(AstReader<'a, UnionDefinitionId>),
@@ -52,6 +55,20 @@ impl<'a> AstReader<'a, SchemaDefinitionId> {
             .roots
             .iter()
             .map(|root| (root.operation_type, self.ast.lookup(root.named_type)))
+    }
+}
+
+impl<'a> AstReader<'a, ScalarDefinitionId> {
+    pub fn name(&self) -> &str {
+        self.ast.lookup(self.ast.lookup(self.id).name)
+    }
+
+    pub fn directives(&self) -> impl Iterator<Item = AstReader<'a, DirectiveId>> + 'a {
+        self.ast
+            .lookup(self.id)
+            .directives
+            .iter()
+            .map(|id| self.ast.read(*id))
     }
 }
 
