@@ -25,7 +25,6 @@ pub fn parse_type_system_document(input: &str) -> Ast {
 
 #[cfg(test)]
 mod tests {
-    use crate::ast::Ast;
 
     use super::*;
 
