@@ -29,7 +29,7 @@ impl crate::Ast {
 
         #[allow(clippy::needless_borrow)] // This doesn't work without the borrow :|
         {
-            format!("{}", (&*builder).pretty(80))
+            format!("{}\n", (&*builder).pretty(80))
         }
     }
 }
@@ -151,11 +151,17 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, InterfaceDefinitionId> {
 
 impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, UnionDefinitionId> {
     fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
-        let mut builder = allocator
-            .text(format!("union {}", self.0.name()))
-            .append(allocator.space())
-            .append(allocator.intersperse(self.0.directives().map(NodeDisplay), allocator.line()))
-            .append(allocator.space());
+        let mut builder = allocator.text(format!("union {}", self.0.name()));
+
+        let directives = self.0.directives().collect::<Vec<_>>();
+        if !directives.is_empty() {
+            builder = builder
+                .append(allocator.space())
+                .append(
+                    allocator.intersperse(self.0.directives().map(NodeDisplay), allocator.line()),
+                )
+                .append(allocator.space());
+        }
 
         let members = self.0.members().collect::<Vec<_>>();
 
@@ -175,9 +181,16 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, EnumDefinitionId> {
     fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
         let mut builder = allocator
             .text(format!("enum {}", self.0.name()))
-            .append(allocator.space())
-            .append(allocator.intersperse(self.0.directives().map(NodeDisplay), allocator.line()))
             .append(allocator.space());
+
+        let directives = self.0.directives().collect::<Vec<_>>();
+        if !directives.is_empty() {
+            builder = builder
+                .append(
+                    allocator.intersperse(self.0.directives().map(NodeDisplay), allocator.line()),
+                )
+                .append(allocator.space());
+        }
 
         let values = self.0.values().collect::<Vec<_>>();
 
@@ -187,7 +200,9 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, EnumDefinitionId> {
                 .append(allocator.hardline())
                 .append(
                     allocator
-                        .intersperse(values.into_iter().map(NodeDisplay), allocator.hardline()),
+                        .intersperse(values.into_iter().map(NodeDisplay), allocator.hardline())
+                        .indent(2)
+                        .align(),
                 )
                 .append(allocator.hardline())
                 .append(allocator.text("}"));
@@ -199,10 +214,18 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, EnumDefinitionId> {
 
 impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, EnumValueDefinitionId> {
     fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
-        allocator
-            .text(self.0.value().to_string())
-            .append(allocator.space())
-            .append(allocator.intersperse(self.0.directives().map(NodeDisplay), allocator.space()))
+        let mut builder = allocator.text(self.0.value().to_string());
+
+        let directives = self.0.directives().collect::<Vec<_>>();
+        if !directives.is_empty() {
+            builder = builder
+                .append(
+                    allocator.intersperse(self.0.directives().map(NodeDisplay), allocator.line()),
+                )
+                .append(allocator.space());
+        }
+
+        builder
     }
 }
 
