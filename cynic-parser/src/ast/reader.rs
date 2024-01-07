@@ -12,10 +12,6 @@ pub struct AstReader<'a, I> {
 }
 
 impl super::Ast {
-    pub fn reader(&self) -> AstReader<'_, ()> {
-        AstReader { id: (), ast: self }
-    }
-
     pub fn read<Id>(&self, id: Id) -> AstReader<'_, Id>
     where
         Id: AstId,
@@ -24,25 +20,19 @@ impl super::Ast {
     }
 }
 
-impl<'a> AstReader<'a, ()> {
-    pub fn definitions(&self) -> impl Iterator<Item = Definition<'a>> + 'a {
-        self.ast.definition_nodes.iter().map(|definition| {
-            match self.ast.nodes[definition.0].contents {
-                NodeContents::SchemaDefinition(id) => {
-                    Definition::Schema(AstReader { id, ast: self.ast })
-                }
-                NodeContents::ObjectDefiniton(id) => {
-                    Definition::Object(AstReader { id, ast: self.ast })
-                }
-                NodeContents::InputObjectDefiniton(id) => {
-                    Definition::InputObject(AstReader { id, ast: self.ast })
-                }
+impl Ast {
+    pub fn definitions<'a>(&'a self) -> impl Iterator<Item = Definition<'a>> + 'a {
+        self.definition_nodes
+            .iter()
+            .map(|definition| match self.nodes[definition.0].contents {
+                NodeContents::SchemaDefinition(id) => Definition::Schema(self.read(id)),
+                NodeContents::ObjectDefiniton(id) => Definition::Object(self.read(id)),
+                NodeContents::InputObjectDefiniton(id) => Definition::InputObject(self.read(id)),
                 NodeContents::FieldDefinition(_)
                 | NodeContents::InputValueDefinition(_)
                 | NodeContents::StringLiteral(_) => unreachable!(),
                 NodeContents::Ident(_) => unreachable!(),
-            }
-        })
+            })
     }
 }
 

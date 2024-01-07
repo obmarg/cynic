@@ -4,7 +4,7 @@ use crate::lexer;
 
 use crate::ast::{*, ids::*};
 
-grammar<'input>(input: &'input str, ast: &mut Ast);
+grammar<'input>(input: &'input str, ast: &mut AstBuilder);
 
 pub TypeSystemDocument: () = {
     <defs:DefinitionAndDescription+> => ast.definitions(defs),

@@ -8,19 +8,19 @@ pub use lexer::Lexer;
 pub use schema::ObjectDefinitionParser;
 
 // TODO: Make this more senseible
-pub use ast::Ast;
+pub use ast::{Ast, AstBuilder};
 
 lalrpop_mod!(pub schema);
 
 pub fn parse_type_system_document(input: &str) -> Ast {
     let lexer = lexer::Lexer::new(input);
-    let mut ast = Ast::new();
+    let mut ast = AstBuilder::new();
 
     schema::TypeSystemDocumentParser::new()
         .parse(input, &mut ast, lexer)
         .expect("TODO: error handling");
 
-    ast
+    ast.finish()
 }
 
 #[cfg(test)]
