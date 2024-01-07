@@ -7,7 +7,7 @@ use crate::ast::{
         ArgumentId, DirectiveId, FieldDefinitionId, InputObjectDefinitionId,
         InputValueDefinitionId, ObjectDefinitionId, SchemaDefinitionId, TypeId, ValueId,
     },
-    AstReader, Definition,
+    AstDefinition, AstReader, Definition,
 };
 
 impl crate::Ast {
@@ -15,15 +15,11 @@ impl crate::Ast {
         let allocator = BoxAllocator;
 
         let builder = allocator
-            .concat(
-                self.reader()
-                    .definitions()
-                    .map(|definition| match definition {
-                        Definition::Schema(schema) => NodeDisplay(schema).pretty(&allocator),
-                        Definition::Object(object) => NodeDisplay(object).pretty(&allocator),
-                        Definition::InputObject(object) => NodeDisplay(object).pretty(&allocator),
-                    }),
-            )
+            .concat(self.definitions().map(|definition| match definition {
+                Definition::Schema(schema) => NodeDisplay(schema).pretty(&allocator),
+                Definition::Object(object) => NodeDisplay(object).pretty(&allocator),
+                Definition::InputObject(object) => NodeDisplay(object).pretty(&allocator),
+            }))
             .pretty(&allocator);
 
         #[allow(clippy::needless_borrow)] // This doesn't work without the borrow :|
