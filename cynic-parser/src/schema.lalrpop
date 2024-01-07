@@ -32,24 +32,42 @@ pub RootOperationTypeDefinition: RootOperationTypeDefinition = {
 }
 
 pub ObjectDefinition: ObjectDefinition = {
-    ty <name:Name> <directives:Directive*> <fields:FieldsDefinition?> => ObjectDefinition {
+    ty <name:Name> <implements:ImplementsInterfaces?> <directives:Directive*> <fields:FieldsDefinition?> => ObjectDefinition {
         name,
         directives,
+        implements: implements.unwrap_or_default(),
         fields: fields.unwrap_or_default ()
     }
 };
+
+ImplementsInterfaces: Vec<StringId> = {
+    <interfaces:ImplementsInterfaces> "&" <name:NamedType> => {
+        let mut interfaces = interfaces;
+        interfaces.push(name);
+        interfaces
+    },
+    implements "&"? <name:NamedType> => {
+        vec![name]
+    }
+}
+
+ImplementItem: StringId = {
+    "&" <name:NamedType> => name,
+}
 
 FieldsDefinition: Vec<NodeId> = {
     "{" <fields:FieldDefinition+> "}" => fields
 };
 
 FieldDefinition: NodeId = {
-    <description:StringValue?> <name:Name> <arguments:ArgumentsDefinition?> ":" <ty:Type> => ast.field_definition(FieldDefinition {
-        name,
-        ty,
-        arguments: arguments.unwrap_or_default(),
-        description,
-    })
+    <description:StringValue?> <name:Name> <arguments:ArgumentsDefinition?> ":" <ty:Type> <directives:Directive*> =>
+        ast.field_definition(FieldDefinition {
+            name,
+            ty,
+            arguments: arguments.unwrap_or_default(),
+            description,
+            directives
+        })
 };
 
 ArgumentsDefinition: Vec<NodeId> = {
@@ -68,9 +86,9 @@ InputFieldsDefinition: Vec<NodeId> = {
     "{" <fields:InputValueDefinition+> "}" => fields
 };
 
-// TODO: Add directives
 InputValueDefinition: NodeId =
-    <description:StringValue?> <name:Name> ":" <ty:Type> <default:DefaultValue?> => ast.input_value_definition(InputValueDefinition { <> });
+    <description:StringValue?> <name:Name> ":" <ty:Type> <default:DefaultValue?> <directives:Directive*> =>
+        ast.input_value_definition(InputValueDefinition { <> });
 
 DefaultValue: ValueId = {
     "=" <v:Value> => v
@@ -158,6 +176,7 @@ Ident: &'input str = {
     true => "true",
     false => "false",
     null => "null",
+    implements => "implements",
 }
 
 extern {
@@ -181,6 +200,7 @@ extern {
         "!" => lexer::Token::Exclamation,
         "=" => lexer::Token::Equals,
         "@" => lexer::Token::At,
+        "&" => lexer::Token::Ampersand,
 
         RawIdent => lexer::Token::Identifier(<&'input str>),
 
@@ -198,5 +218,6 @@ extern {
         true => lexer::Token::True,
         false => lexer::Token::False,
         null => lexer::Token::Null,
+        implements => lexer::Token::Implements,
     }
 }

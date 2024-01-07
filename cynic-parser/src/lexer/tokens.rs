@@ -98,6 +98,9 @@ pub enum Token<'a> {
     #[token("null")]
     Null,
 
+    #[token("implements")]
+    Implements,
+
     // IntegerPart:    -?(0|[1-9][0-9]*)
     // FractionalPart: \\.[0-9]+
     // ExponentPart:   [eE][+-]?[0-9]+
@@ -262,6 +265,7 @@ impl fmt::Display for Token<'_> {
             Token::True => "true",
             Token::False => "false",
             Token::Null => "null,",
+            Token::Implements => "implements",
         };
         f.write_str(message)
     }
