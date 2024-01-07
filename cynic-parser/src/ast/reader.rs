@@ -67,6 +67,14 @@ impl<'a> AstReader<'a, ObjectDefinitionId> {
         self.ast.lookup(self.ast.lookup(self.id).name)
     }
 
+    pub fn implements_interfaces(&self) -> impl Iterator<Item = &'a str> + 'a {
+        self.ast
+            .lookup(self.id)
+            .implements
+            .iter()
+            .map(|id| self.ast.lookup(*id))
+    }
+
     pub fn fields(&self) -> impl Iterator<Item = AstReader<'a, FieldDefinitionId>> + 'a {
         self.ast
             .lookup(self.id)

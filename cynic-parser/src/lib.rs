@@ -43,13 +43,13 @@ mod tests {
     fn test_basic_object() {
         insta::assert_snapshot!(
             parse_type_system_document(r#"
-                type MyType @hello {
+                type MyType implements Blah & Bloo @hello {
                     field: Whatever @hello(name: ["string"]),
                     other: [[Int!]]!
                 }"#
             ).to_sdl(),
             @r###"
-        type MyType @hello {
+        type MyType implements Blah & Bloo @hello {
           field: Whatever@hello(name: ("string"))
           other: [[Int!]]!
         }

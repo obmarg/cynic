@@ -32,12 +32,28 @@ pub RootOperationTypeDefinition: RootOperationTypeDefinition = {
 }
 
 pub ObjectDefinition: ObjectDefinition = {
-    ty <name:Name> <directives:Directive*> <fields:FieldsDefinition?> => ObjectDefinition {
+    ty <name:Name> <implements:ImplementsInterfaces?> <directives:Directive*> <fields:FieldsDefinition?> => ObjectDefinition {
         name,
         directives,
+        implements: implements.unwrap_or_default(),
         fields: fields.unwrap_or_default ()
     }
 };
+
+ImplementsInterfaces: Vec<StringId> = {
+    <interfaces:ImplementsInterfaces> "&" <name:NamedType> => {
+        let mut interfaces = interfaces;
+        interfaces.push(name);
+        interfaces
+    },
+    implements "&"? <name:NamedType> => {
+        vec![name]
+    }
+}
+
+ImplementItem: StringId = {
+    "&" <name:NamedType> => name,
+}
 
 FieldsDefinition: Vec<NodeId> = {
     "{" <fields:FieldDefinition+> "}" => fields
@@ -160,6 +176,7 @@ Ident: &'input str = {
     true => "true",
     false => "false",
     null => "null",
+    implements => "implements",
 }
 
 extern {
@@ -183,6 +200,7 @@ extern {
         "!" => lexer::Token::Exclamation,
         "=" => lexer::Token::Equals,
         "@" => lexer::Token::At,
+        "&" => lexer::Token::Ampersand,
 
         RawIdent => lexer::Token::Identifier(<&'input str>),
 
@@ -200,5 +218,6 @@ extern {
         true => lexer::Token::True,
         false => lexer::Token::False,
         null => lexer::Token::Null,
+        implements => lexer::Token::Implements,
     }
 }

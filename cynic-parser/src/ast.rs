@@ -58,6 +58,7 @@ pub struct ObjectDefinition {
     pub name: StringId,
     pub fields: Vec<NodeId>,
     pub directives: Vec<DirectiveId>,
+    pub implements: Vec<StringId>,
 }
 
 pub struct FieldDefinition {

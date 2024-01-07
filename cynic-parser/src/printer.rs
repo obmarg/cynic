@@ -66,9 +66,21 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, SchemaDefinitionId> {
 
 impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, ObjectDefinitionId> {
     fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
-        allocator
+        let mut builder = allocator
             .text(format!("type {}", self.0.name()))
-            .append(allocator.space())
+            .append(allocator.space());
+
+        let interfaces = self.0.implements_interfaces().collect::<Vec<_>>();
+
+        if !interfaces.is_empty() {
+            builder = builder
+                .append(allocator.text("implements"))
+                .append(allocator.space())
+                .append(allocator.intersperse(interfaces, " & "))
+                .append(allocator.space());
+        }
+
+        builder
             .append(allocator.intersperse(self.0.directives().map(NodeDisplay), allocator.line()))
             .append(allocator.space())
             .append(allocator.text("{"))
