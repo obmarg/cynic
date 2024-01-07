@@ -82,7 +82,8 @@ mod tests {
                 "#
             ).to_sdl(),
             @r###"
-        union MyType  = Blah | Bloo
+        union MyType = Blah | Bloo
+
         "###
         );
     }
@@ -109,9 +110,9 @@ mod tests {
                 "#
             ).to_sdl(),
             @r###"
-        enum MyEnum  {
-        BLAH 
-        BLOO 
+        enum MyEnum {
+          BLAH
+          BLOO
         }
         "###
         );
@@ -123,7 +124,7 @@ mod tests {
         insta::assert_snapshot!(
             parse_type_system_document( "type MyType { query: String }").to_sdl(),
             @r###"
-        type MyType  {
+        type MyType {
           query: String
         }
         "###
@@ -140,6 +141,7 @@ mod tests {
                 "#
             ).to_sdl(),
             @r###"
+        "I am a description"
         input MyType @hello {
           query: String = "Hello"
         }

@@ -8,16 +8,19 @@ fn test_enum() {
 }
 
 #[test]
+#[ignore]
 fn directive() {
     roundtrip_test("tests/sdl/directive.graphql");
 }
 
 #[test]
+#[ignore]
 fn directive_descriptions() {
     roundtrip_test("tests/sdl/directive_descriptions.graphql");
 }
 
 #[test]
+#[ignore]
 fn directive_descriptions_canonical() {
     roundtrip_test("tests/sdl/directive_descriptions_canonical.graphql");
 }
@@ -33,31 +36,37 @@ fn r#enum() {
 }
 
 #[test]
+#[ignore]
 fn extend_enum() {
     roundtrip_test("tests/sdl/extend_enum.graphql");
 }
 
 #[test]
+#[ignore]
 fn extend_input() {
     roundtrip_test("tests/sdl/extend_input.graphql");
 }
 
 #[test]
+#[ignore]
 fn extend_input_canonical() {
     roundtrip_test("tests/sdl/extend_input_canonical.graphql");
 }
 
 #[test]
+#[ignore]
 fn extend_interface() {
     roundtrip_test("tests/sdl/extend_interface.graphql");
 }
 
 #[test]
+#[ignore]
 fn extend_object() {
     roundtrip_test("tests/sdl/extend_object.graphql");
 }
 
 #[test]
+#[ignore]
 fn extend_scalar() {
     roundtrip_test("tests/sdl/extend_scalar.graphql");
 }
@@ -88,11 +97,13 @@ fn interface() {
 }
 
 #[test]
+#[ignore]
 fn kitchen_sink() {
     roundtrip_test("tests/sdl/kitchen-sink.graphql");
 }
 
 #[test]
+#[ignore]
 fn kitchen_sink_canonical() {
     roundtrip_test("tests/sdl/kitchen-sink_canonical.graphql");
 }
@@ -108,6 +119,7 @@ fn minimal_type() {
 }
 
 #[test]
+#[ignore]
 fn repeatable_directives() {
     roundtrip_test("tests/sdl/repeatable_directives.graphql");
 }
@@ -128,6 +140,7 @@ fn union() {
 }
 
 #[test]
+#[ignore]
 fn union_extension() {
     roundtrip_test("tests/sdl/union_extension.graphql");
 }

@@ -25,7 +25,7 @@ impl super::Ast {
 }
 
 impl Ast {
-    pub fn definitions<'a>(&'a self) -> impl Iterator<Item = Definition<'a>> + 'a {
+    pub fn definitions(&self) -> impl Iterator<Item = Definition<'_>> + '_ {
         self.definitions.iter().map(|definition| match definition {
             ast::AstDefinition::Schema(id) => Definition::Schema(self.read(*id)),
             ast::AstDefinition::Scalar(id) => Definition::Scalar(self.read(*id)),
@@ -49,6 +49,13 @@ pub enum Definition<'a> {
 }
 
 impl<'a> AstReader<'a, SchemaDefinitionId> {
+    pub fn description(&self) -> Option<&str> {
+        self.ast
+            .lookup(self.id)
+            .description
+            .map(|id| self.ast.lookup(id))
+    }
+
     pub fn root_operations(&self) -> impl Iterator<Item = (OperationType, &'a str)> {
         self.ast
             .lookup(self.id)
@@ -61,6 +68,12 @@ impl<'a> AstReader<'a, SchemaDefinitionId> {
 impl<'a> AstReader<'a, ScalarDefinitionId> {
     pub fn name(&self) -> &str {
         self.ast.lookup(self.ast.lookup(self.id).name)
+    }
+    pub fn description(&self) -> Option<&str> {
+        self.ast
+            .lookup(self.id)
+            .description
+            .map(|id| self.ast.lookup(id))
     }
 
     pub fn directives(&self) -> impl Iterator<Item = AstReader<'a, DirectiveId>> + 'a {
@@ -75,6 +88,12 @@ impl<'a> AstReader<'a, ScalarDefinitionId> {
 impl<'a> AstReader<'a, ObjectDefinitionId> {
     pub fn name(&self) -> &str {
         self.ast.lookup(self.ast.lookup(self.id).name)
+    }
+    pub fn description(&self) -> Option<&str> {
+        self.ast
+            .lookup(self.id)
+            .description
+            .map(|id| self.ast.lookup(id))
     }
 
     pub fn implements_interfaces(&self) -> impl Iterator<Item = &'a str> + 'a {
@@ -107,6 +126,13 @@ impl<'a> AstReader<'a, InterfaceDefinitionId> {
         self.ast.lookup(self.ast.lookup(self.id).name)
     }
 
+    pub fn description(&self) -> Option<&str> {
+        self.ast
+            .lookup(self.id)
+            .description
+            .map(|id| self.ast.lookup(id))
+    }
+
     pub fn implements_interfaces(&self) -> impl Iterator<Item = &'a str> + 'a {
         self.ast
             .lookup(self.id)
@@ -137,6 +163,13 @@ impl<'a> AstReader<'a, UnionDefinitionId> {
         self.ast.lookup(self.ast.lookup(self.id).name)
     }
 
+    pub fn description(&self) -> Option<&str> {
+        self.ast
+            .lookup(self.id)
+            .description
+            .map(|id| self.ast.lookup(id))
+    }
+
     pub fn members(&self) -> impl Iterator<Item = &'a str> + 'a {
         self.ast
             .lookup(self.id)
@@ -157,6 +190,12 @@ impl<'a> AstReader<'a, UnionDefinitionId> {
 impl<'a> AstReader<'a, EnumDefinitionId> {
     pub fn name(&self) -> &str {
         self.ast.lookup(self.ast.lookup(self.id).name)
+    }
+    pub fn description(&self) -> Option<&str> {
+        self.ast
+            .lookup(self.id)
+            .description
+            .map(|id| self.ast.lookup(id))
     }
 
     pub fn values(&self) -> impl Iterator<Item = AstReader<'a, EnumValueDefinitionId>> + 'a {
@@ -200,6 +239,12 @@ impl<'a> AstReader<'a, EnumValueDefinitionId> {
 impl<'a> AstReader<'a, InputObjectDefinitionId> {
     pub fn name(&self) -> &str {
         self.ast.lookup(self.ast.lookup(self.id).name)
+    }
+    pub fn description(&self) -> Option<&str> {
+        self.ast
+            .lookup(self.id)
+            .description
+            .map(|id| self.ast.lookup(id))
     }
 
     pub fn fields(&self) -> impl Iterator<Item = AstReader<'a, InputValueDefinitionId>> + 'a {

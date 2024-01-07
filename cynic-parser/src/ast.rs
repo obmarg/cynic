@@ -35,10 +35,9 @@ pub struct Ast {
     values: Vec<Value>,
     directives: Vec<Directive>,
     arguments: Vec<Argument>,
-
-    definition_descriptions: HashMap<DefinitionId, StringId>,
 }
 
+#[derive(Clone, Copy)]
 pub enum AstDefinition {
     Schema(SchemaDefinitionId),
     Scalar(ScalarDefinitionId),
@@ -50,17 +49,20 @@ pub enum AstDefinition {
 }
 
 pub struct SchemaDefinition {
+    pub description: Option<StringId>,
     pub roots: Vec<RootOperationTypeDefinition>,
 }
 
 pub struct ScalarDefinition {
     pub name: StringId,
+    pub description: Option<StringId>,
     pub directives: Vec<DirectiveId>,
     pub span: Span,
 }
 
 pub struct ObjectDefinition {
     pub name: StringId,
+    pub description: Option<StringId>,
     pub fields: Vec<FieldDefinitionId>,
     pub directives: Vec<DirectiveId>,
     pub implements: Vec<StringId>,
@@ -78,6 +80,7 @@ pub struct FieldDefinition {
 
 pub struct InterfaceDefinition {
     pub name: StringId,
+    pub description: Option<StringId>,
     pub fields: Vec<FieldDefinitionId>,
     pub directives: Vec<DirectiveId>,
     pub implements: Vec<StringId>,
@@ -86,6 +89,7 @@ pub struct InterfaceDefinition {
 
 pub struct UnionDefinition {
     pub name: StringId,
+    pub description: Option<StringId>,
     pub members: Vec<StringId>,
     pub directives: Vec<DirectiveId>,
     pub span: Span,
@@ -93,6 +97,7 @@ pub struct UnionDefinition {
 
 pub struct EnumDefinition {
     pub name: StringId,
+    pub description: Option<StringId>,
     pub values: Vec<EnumValueDefinitionId>,
     pub directives: Vec<DirectiveId>,
     pub span: Span,
@@ -107,6 +112,7 @@ pub struct EnumValueDefinition {
 
 pub struct InputObjectDefinition {
     pub name: StringId,
+    pub description: Option<StringId>,
     pub fields: Vec<InputValueDefinitionId>,
     pub directives: Vec<DirectiveId>,
     pub span: Span,
@@ -196,12 +202,30 @@ impl AstBuilder {
         self.ast
     }
 
-    pub fn definition_descriptions(&mut self, ids: Vec<(Option<StringId>, DefinitionId)>) {
-        for (description, definition) in ids {
-            if let Some(description) = description {
-                self.ast
-                    .definition_descriptions
-                    .insert(definition, description);
+    pub fn store_description(&mut self, definition: DefinitionId, description: Option<StringId>) {
+        if let Some(description) = description {
+            match *self.ast.lookup(definition) {
+                AstDefinition::Schema(id) => {
+                    self.ast.schema_definitions[id.0].description = Some(description);
+                }
+                AstDefinition::Scalar(id) => {
+                    self.ast.scalar_definitions[id.0].description = Some(description);
+                }
+                AstDefinition::Object(id) => {
+                    self.ast.object_definitions[id.0].description = Some(description);
+                }
+                AstDefinition::Interface(id) => {
+                    self.ast.interface_definitions[id.0].description = Some(description);
+                }
+                AstDefinition::Union(id) => {
+                    self.ast.union_definitions[id.0].description = Some(description);
+                }
+                AstDefinition::Enum(id) => {
+                    self.ast.enum_definitions[id.0].description = Some(description);
+                }
+                AstDefinition::InputObject(id) => {
+                    self.ast.input_object_definitions[id.0].description = Some(description);
+                }
             }
         }
     }
