@@ -1,9 +1,9 @@
 use crate::Ast;
 
 use super::{
-    ids::{AstId, AstLookup, InputValueDefinitionId},
+    ids::{AstId, AstLookup, InputValueDefinitionId, TypeId},
     FieldDefinitionId, InputObjectDefinitionId, NodeContents, ObjectDefinitionId,
-    SchemaDefinitionId,
+    SchemaDefinitionId, Type, WrappingType,
 };
 
 pub struct AstReader<'a, I> {
@@ -54,10 +54,7 @@ pub enum Definition<'a> {
 
 impl<'a> AstReader<'a, ObjectDefinitionId> {
     pub fn name(&self) -> &str {
-        match self.ast.lookup(self.ast.lookup(self.id).name).contents {
-            NodeContents::Ident(id) => self.ast.lookup(id),
-            _ => unreachable!(),
-        }
+        self.ast.lookup(self.ast.lookup(self.id).name)
     }
 
     pub fn fields(&self) -> impl Iterator<Item = AstReader<'a, FieldDefinitionId>> + 'a {
@@ -74,10 +71,7 @@ impl<'a> AstReader<'a, ObjectDefinitionId> {
 
 impl<'a> AstReader<'a, InputObjectDefinitionId> {
     pub fn name(&self) -> &str {
-        match self.ast.lookup(self.ast.lookup(self.id).name).contents {
-            NodeContents::Ident(id) => self.ast.lookup(id),
-            _ => unreachable!(),
-        }
+        self.ast.lookup(self.ast.lookup(self.id).name)
     }
 
     pub fn fields(&self) -> impl Iterator<Item = AstReader<'a, InputValueDefinitionId>> + 'a {
@@ -94,13 +88,12 @@ impl<'a> AstReader<'a, InputObjectDefinitionId> {
 
 impl<'a> AstReader<'a, FieldDefinitionId> {
     pub fn name(&self) -> &str {
-        match self.ast.lookup(self.ast.lookup(self.id).name).contents {
-            NodeContents::Ident(id) => self.ast.lookup(id),
-            _ => unreachable!(),
-        }
+        self.ast.lookup(self.ast.lookup(self.id).name)
     }
 
-    // pub fn ty(&self) -> AstReader<'a, TypeId> {}
+    pub fn ty(&self) -> AstReader<'a, TypeId> {
+        self.ast.read(self.ast.lookup(self.id).ty)
+    }
 
     pub fn arguments(&self) -> impl Iterator<Item = AstReader<'a, InputValueDefinitionId>> {
         self.ast.lookup(self.id).arguments.iter().map(|node| {
@@ -114,16 +107,30 @@ impl<'a> AstReader<'a, FieldDefinitionId> {
 
 impl<'a> AstReader<'a, InputValueDefinitionId> {
     pub fn name(&self) -> &str {
-        match self.ast.lookup(self.ast.lookup(self.id).name).contents {
-            NodeContents::Ident(id) => self.ast.lookup(id),
-            _ => unreachable!(),
-        }
+        self.ast.lookup(self.ast.lookup(self.id).name)
     }
 
-    pub fn ty(&self) -> &str {
-        match self.ast.lookup(self.ast.lookup(self.id).ty).contents {
-            NodeContents::Ident(id) => self.ast.lookup(id),
-            _ => unreachable!(),
+    pub fn ty(&self) -> AstReader<'a, TypeId> {
+        self.ast.read(self.ast.lookup(self.id).ty)
+    }
+}
+
+impl<'a> AstReader<'a, TypeId> {
+    pub fn to_string(&self) -> String {
+        let Type { name, wrappers } = self.ast.lookup(self.id);
+        let mut output = String::new();
+        for wrapping in wrappers.iter().rev() {
+            if let WrappingType::List = wrapping {
+                output.push('[');
+            }
         }
+        output.push_str(self.ast.lookup(*name));
+        for wrapping in wrappers.iter() {
+            match wrapping {
+                WrappingType::NonNull => output.push('!'),
+                WrappingType::List => output.push(']'),
+            }
+        }
+        output
     }
 }

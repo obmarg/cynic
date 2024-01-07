@@ -2,7 +2,7 @@ use std::str::FromStr;
 
 use crate::lexer;
 
-use crate::ast::{*, ids::NodeId};
+use crate::ast::{*, ids::*};
 
 grammar<'input>(input: &'input str, ast: &mut Ast);
 
@@ -42,9 +42,9 @@ FieldsDefinition: Vec<NodeId> = {
     "{" <fields:FieldDefinition+> "}" => fields
 };
 
-// TODO: add description & directives in a minute
+// TODO: add directives
 FieldDefinition: NodeId = {
-    <description:StringValue?> <name:Name> <arguments:ArgumentsDefinition?> ":" <ty:NamedType> => ast.field_definition(FieldDefinition {
+    <description:StringValue?> <name:Name> <arguments:ArgumentsDefinition?> ":" <ty:Type> => ast.field_definition(FieldDefinition {
         name,
         ty,
         arguments: arguments.unwrap_or_default(),
@@ -71,12 +71,19 @@ InputFieldsDefinition: Vec<NodeId> = {
 InputValueDefinition: NodeId =
     <description:StringValue?> <name:Name> ":" <ty:Type> => ast.input_value_definition(InputValueDefinition { <> });
 
-Name: NodeId = <s:Ident> => ast.ident(s);
+Name: StringId = <s:Ident> => ast.ident(s);
 
-NamedType: NodeId = <s:Ident> => ast.ident(s);
+NamedType: StringId = <s:Ident> => ast.ident(s);
 
-// TODO: This needs to support wrappers - do that sometime...
-Type: NodeId = <s:Ident> => ast.ident(s);
+Type: TypeId = {
+    "[" <ty:Type> => ty,
+    <name:NamedType> <wrappers:WrappingType*> => ast.type_reference(Type { <> })
+}
+
+WrappingType: WrappingType = {
+    "!" => WrappingType::NonNull,
+    "]" => WrappingType::List
+}
 
 StringValue: NodeId = {
     <s:StringLiteral> => {
@@ -112,6 +119,11 @@ extern {
 
         "(" => lexer::Token::OpenParen,
         ")" => lexer::Token::CloseParen,
+
+        "[" => lexer::Token::OpenBracket,
+        "]" => lexer::Token::CloseBracket,
+
+        "!" => lexer::Token::Exclamation,
 
         RawIdent => lexer::Token::Identifier(<&'input str>),
 

@@ -23,6 +23,8 @@ pub struct Ast {
     field_definitions: Vec<FieldDefinition>,
     input_value_definitions: Vec<InputValueDefinition>,
 
+    type_references: Vec<Type>,
+
     string_literals: Vec<StringLiteral>,
 
     definition_descriptions: HashMap<NodeId, NodeId>,
@@ -44,40 +46,46 @@ pub enum NodeContents {
     StringLiteral(StringLiteralId),
 }
 
-#[derive(Debug)]
 pub struct SchemaDefinition {
     pub roots: Vec<RootOperationTypeDefinition>,
 }
 
-#[derive(Debug)]
 pub struct ObjectDefinition {
-    pub name: NodeId,
+    pub name: StringId,
     pub fields: Vec<NodeId>,
 }
 
 pub struct FieldDefinition {
-    pub name: NodeId,
-    pub ty: NodeId,
+    pub name: StringId,
+    pub ty: TypeId,
     pub arguments: Vec<NodeId>,
     pub description: Option<NodeId>,
 }
 
-#[derive(Debug)]
 pub struct InputObjectDefinition {
-    pub name: NodeId,
+    pub name: StringId,
     pub fields: Vec<NodeId>,
 }
 
 pub struct InputValueDefinition {
-    pub name: NodeId,
-    pub ty: NodeId,
+    pub name: StringId,
+    pub ty: TypeId,
     pub description: Option<NodeId>,
 }
 
-#[derive(Debug)]
 pub struct RootOperationTypeDefinition {
     pub operation_type: OperationType,
-    pub named_type: NodeId,
+    pub named_type: StringId,
+}
+
+pub struct Type {
+    pub name: StringId,
+    pub wrappers: Vec<WrappingType>,
+}
+
+pub enum WrappingType {
+    NonNull,
+    List,
 }
 
 #[derive(Debug)]
@@ -168,6 +176,12 @@ impl Ast {
         node_id
     }
 
+    pub fn type_reference(&mut self, ty: Type) -> TypeId {
+        let ty_id = TypeId(self.type_references.len());
+        self.type_references.push(ty);
+        ty_id
+    }
+
     pub fn string_literal(&mut self, literal: StringLiteral) -> NodeId {
         let literal_id = StringLiteralId(self.string_literals.len());
         self.string_literals.push(literal);
@@ -179,13 +193,8 @@ impl Ast {
         node_id
     }
 
-    pub fn ident(&mut self, ident: &str) -> NodeId {
-        let id = NodeId(self.nodes.len());
-        let contents = NodeContents::Ident(self.intern_string(ident));
-
-        self.nodes.push(Node { contents });
-
-        id
+    pub fn ident(&mut self, ident: &str) -> StringId {
+        self.intern_string(ident)
     }
 
     // TOOD: should this be pub? not sure...

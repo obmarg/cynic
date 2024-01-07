@@ -25,7 +25,6 @@ pub fn parse_type_system_document(input: &str) -> Ast {
 
 #[cfg(test)]
 mod tests {
-
     use super::*;
 
     #[test]
@@ -39,11 +38,11 @@ mod tests {
     #[test]
     fn test_basic_object() {
         insta::assert_snapshot!(
-            parse_type_system_document("type MyType { field: Whatever, other: Whatever }").to_sdl(),
+            parse_type_system_document("type MyType { field: Whatever, other: [[Int!]]! }").to_sdl(),
             @r###"
         type MyType {
-          field: TODO
-          field: TODO
+          field: Whatever
+          other: [[Int!]]!
         }
         "###
         );
@@ -73,7 +72,7 @@ mod tests {
             ).to_sdl(),
             @r###"
         type MyType {
-          query: TODO
+          query: String
         }
         "###
         );
