@@ -1,0 +1,202 @@
+use std::str::FromStr;
+
+use crate::lexer;
+
+use crate::ast::{*, ids::*};
+
+grammar<'input>(input: &'input str, ast: &mut Ast);
+
+pub TypeSystemDocument: () = {
+    <defs:DefinitionAndDescription+> => ast.definitions(defs),
+}
+
+pub DefinitionAndDescription: (Option<NodeId>, NodeId) = {
+    <description:StringValue?> <def:TypeSystemDefinition> => (description, def)
+}
+
+pub TypeSystemDefinition: NodeId = {
+    <def:SchemaDefinition> => ast.schema_definition(def),
+    <def:ObjectDefinition> => ast.object_definition(def),
+    <def:InputObjectDefinition> => ast.input_object_definition(def)
+}
+
+pub SchemaDefinition: SchemaDefinition = {
+    schema "{" <roots:RootOperationTypeDefinition*> "}" => SchemaDefinition { <> }
+};
+
+pub RootOperationTypeDefinition: RootOperationTypeDefinition = {
+    query ":" <name:NamedType> => RootOperationTypeDefinition {
+        operation_type: OperationType::Query,
+        named_type: name
+    }
+}
+
+pub ObjectDefinition: ObjectDefinition = {
+    ty <name:Name> <directives:Directive*> <fields:FieldsDefinition?> => ObjectDefinition {
+        name,
+        directives,
+        fields: fields.unwrap_or_default ()
+    }
+};
+
+FieldsDefinition: Vec<NodeId> = {
+    "{" <fields:FieldDefinition+> "}" => fields
+};
+
+FieldDefinition: NodeId = {
+    <description:StringValue?> <name:Name> <arguments:ArgumentsDefinition?> ":" <ty:Type> => ast.field_definition(FieldDefinition {
+        name,
+        ty,
+        arguments: arguments.unwrap_or_default(),
+        description,
+    })
+};
+
+ArgumentsDefinition: Vec<NodeId> = {
+    "(" <arguments:InputValueDefinition+> ")" => arguments,
+};
+
+pub InputObjectDefinition: InputObjectDefinition = {
+    input <name:Name> <directives:Directive*> <fields:InputFieldsDefinition?> => InputObjectDefinition {
+        name,
+        directives,
+        fields: fields.unwrap_or_default()
+    }
+};
+
+InputFieldsDefinition: Vec<NodeId> = {
+    "{" <fields:InputValueDefinition+> "}" => fields
+};
+
+// TODO: Add directives
+InputValueDefinition: NodeId =
+    <description:StringValue?> <name:Name> ":" <ty:Type> <default:DefaultValue?> => ast.input_value_definition(InputValueDefinition { <> });
+
+DefaultValue: ValueId = {
+    "=" <v:Value> => v
+}
+
+Name: StringId = <s:Ident> => ast.ident(s);
+
+NamedType: StringId = <s:Ident> => ast.ident(s);
+
+Type: TypeId = {
+    "[" <ty:Type> => ty,
+    <name:NamedType> <wrappers:WrappingType*> => ast.type_reference(Type { <> })
+}
+
+WrappingType: WrappingType = {
+    "!" => WrappingType::NonNull,
+    "]" => WrappingType::List
+}
+
+Value: ValueId = {
+    "$" <name:Name> => ast.value(Value::Variable(name)),
+    <int:IntegerLiteral> => ast.value(Value::Int(int.parse().unwrap())),
+    <float:FloatLiteral> => ast.value(Value::Int(float.parse().unwrap())),
+    <s:StringLiteral> => {
+        let id = ast.intern_string(s);
+        ast.value(Value::String(id))
+    },
+    <s:BlockStringLiteral> => {
+        let id = ast.intern_string(s);
+        ast.value(Value::String(id))
+    },
+    true => ast.value(Value::Boolean(true)),
+    false => ast.value(Value::Boolean(false)),
+    null => ast.value(Value::Null),
+    "[" <values:Value*> "]" => ast.value(Value::List(values)),
+    "{" <fields:ObjectField*> "}" => ast.value(Value::Object(fields)),
+    <value:EnumValue> => ast.value(Value::Enum(value)),
+}
+
+ObjectField: (StringId, ValueId) = {
+    <name:Name> ":" <value:Value> => (name, value)
+}
+
+StringValue: NodeId = {
+    <s:StringLiteral> => {
+        let id = ast.intern_string(s);
+        ast.string_literal(StringLiteral::Normal(id))
+    },
+    <s:BlockStringLiteral> => {
+        let id = ast.intern_string(s);
+        ast.string_literal(StringLiteral::Block(id))
+    },
+}
+
+EnumValue: StringId = {
+    <s:RawIdent> => ast.ident(s),
+    schema => ast.ident("schema"),
+    query => ast.ident("query"),
+    ty => ast.ident("type"),
+    input => ast.ident("input"),
+}
+
+Directive: DirectiveId = {
+    "@" <name:Name> <arguments:Arguments?> => ast.directive(Directive {
+        name,
+        arguments: arguments.unwrap_or_default()
+    })
+}
+
+Arguments: Vec<ArgumentId> = {
+    "(" <arguments:Argument*> ")" => arguments
+}
+
+Argument: ArgumentId = {
+    <name:Name> ":" <value:Value> => ast.argument(Argument { <> }),
+}
+
+// TODO: Make this NodeId probably...
+Ident: &'input str = {
+    <s:RawIdent> => s,
+    schema => "schema",
+    query => "query",
+    ty => "type",
+    input => "input",
+    true => "true",
+    false => "false",
+    null => "null",
+}
+
+extern {
+    type Location = usize;
+    type Error = lexer::LexicalError;
+
+    enum lexer::Token<'input> {
+        "$" => lexer::Token::Dollar,
+
+        ":" => lexer::Token::Colon,
+
+        "{" => lexer::Token::OpenBrace,
+        "}" => lexer::Token::CloseBrace,
+
+        "(" => lexer::Token::OpenParen,
+        ")" => lexer::Token::CloseParen,
+
+        "[" => lexer::Token::OpenBracket,
+        "]" => lexer::Token::CloseBracket,
+
+        "!" => lexer::Token::Exclamation,
+        "=" => lexer::Token::Equals,
+        "@" => lexer::Token::At,
+
+        RawIdent => lexer::Token::Identifier(<&'input str>),
+
+        StringLiteral => lexer::Token::StringLiteral(<&'input str>),
+        BlockStringLiteral => lexer::Token::BlockStringLiteral(<&'input str>),
+        FloatLiteral => lexer::Token::FloatLiteral(<&'input str>),
+        IntegerLiteral => lexer::Token::FloatLiteral(<&'input str>),
+
+        // Would be nice if these could just be aliases of `Identifier` but LARLPOP doesn't
+        // seem to support this well: https://github.com/lalrpop/lalrpop/issues/671
+        schema => lexer::Token::Schema,
+        query => lexer::Token::Query,
+        ty => lexer::Token::Type,
+        input => lexer::Token::Input,
+        true => lexer::Token::True,
+        false => lexer::Token::False,
+        null => lexer::Token::Null,
+    }
+}

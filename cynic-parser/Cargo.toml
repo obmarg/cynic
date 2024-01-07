@@ -1,0 +1,31 @@
+[package]
+name = "cynic-parser"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[features]
+# TODO: Disable this at some point
+default = ["sdl"]
+sdl = ["pretty"]
+
+[dependencies]
+indexmap = "2"
+lalrpop-util = "0.20.0"
+logos = "0.13"
+pretty = { version = "0.12", optional = true }
+
+[dev-dependencies]
+criterion = "0.4"
+graphql-parser = "0.4"
+insta = "1.29"
+
+[build-dependencies]
+lalrpop = "0.20.0"
+
+
+[[bench]]
+name = "parsing-benchmark"
+harness = false

@@ -1,0 +1,195 @@
+use std::fmt::{Display, Write};
+
+use pretty::{Arena, BoxAllocator, DocAllocator, Pretty};
+
+use crate::ast::{
+    ids::{
+        ArgumentId, DirectiveId, FieldDefinitionId, InputObjectDefinitionId,
+        InputValueDefinitionId, ObjectDefinitionId, SchemaDefinitionId, TypeId, ValueId,
+    },
+    AstReader, Definition,
+};
+
+impl crate::Ast {
+    pub fn to_sdl(&self) -> String {
+        let allocator = BoxAllocator;
+
+        let builder = allocator
+            .concat(
+                self.reader()
+                    .definitions()
+                    .map(|definition| match definition {
+                        Definition::Schema(schema) => NodeDisplay(schema).pretty(&allocator),
+                        Definition::Object(object) => NodeDisplay(object).pretty(&allocator),
+                        Definition::InputObject(object) => NodeDisplay(object).pretty(&allocator),
+                    }),
+            )
+            .pretty(&allocator);
+
+        #[allow(clippy::needless_borrow)] // This doesn't work without the borrow :|
+        {
+            format!("{}", (&*builder).pretty(80))
+        }
+    }
+}
+
+pub struct NodeDisplay<'a, T>(AstReader<'a, T>);
+
+impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, SchemaDefinitionId> {
+    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+        let mut builder = allocator.text("schema");
+        let roots = self.0.root_operations().collect::<Vec<_>>();
+
+        if !roots.is_empty() {
+            builder = builder
+                .append(allocator.space())
+                .append(allocator.text("{"))
+                .append(allocator.hardline())
+                .append("  ")
+                .append(
+                    allocator
+                        .intersperse(
+                            roots.into_iter().map(|(kind, name)| {
+                                allocator.text(kind.to_string()).append(": ").append(name)
+                            }),
+                            allocator.hardline(),
+                        )
+                        .align(),
+                )
+                .append(allocator.hardline())
+                .append(allocator.text("}"))
+        }
+
+        builder
+    }
+}
+
+impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, ObjectDefinitionId> {
+    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+        allocator
+            .text(format!("type {}", self.0.name()))
+            .append(allocator.space())
+            .append(allocator.intersperse(self.0.directives().map(NodeDisplay), allocator.line()))
+            .append(allocator.space())
+            .append(allocator.text("{"))
+            .append(allocator.hardline())
+            .append(allocator.text("  "))
+            .append(
+                allocator
+                    .intersperse(self.0.fields().map(NodeDisplay), allocator.hardline())
+                    .align(),
+            )
+            .append(allocator.hardline())
+            .append(allocator.text("}"))
+    }
+}
+
+impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, FieldDefinitionId> {
+    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+        allocator
+            .text(self.0.name().to_string())
+            .append(allocator.text(":"))
+            .append(allocator.space())
+            .append(NodeDisplay(self.0.ty()))
+    }
+}
+
+impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, InputObjectDefinitionId> {
+    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+        allocator
+            .text(format!("input {}", self.0.name()))
+            .append(allocator.space())
+            .append(allocator.intersperse(self.0.directives().map(NodeDisplay), allocator.line()))
+            .append(allocator.space())
+            .append(allocator.text("{"))
+            .append(allocator.hardline())
+            .append(allocator.text("  "))
+            .append(
+                allocator
+                    .intersperse(self.0.fields().map(NodeDisplay), allocator.hardline())
+                    .align(),
+            )
+            .append(allocator.hardline())
+            .append(allocator.text("}"))
+    }
+}
+
+impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, InputValueDefinitionId> {
+    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+        let mut builder = allocator
+            .text(self.0.name().to_string())
+            .append(allocator.text(":"))
+            .append(allocator.space())
+            .append(NodeDisplay(self.0.ty()));
+
+        if let Some(value) = self.0.default_value() {
+            builder = builder
+                .append(allocator.space())
+                .append(allocator.text("="))
+                .append(allocator.space())
+                .append(NodeDisplay(value));
+        }
+
+        builder
+    }
+}
+
+impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, TypeId> {
+    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+        allocator.text(self.0.to_string())
+    }
+}
+
+impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, DirectiveId> {
+    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+        let mut builder = allocator.text(format!("@{}", self.0.name()));
+
+        let arguments = self.0.arguments().collect::<Vec<_>>();
+        if !arguments.is_empty() {
+            builder = builder.append(
+                allocator
+                    .intersperse(arguments.into_iter().map(NodeDisplay), ", ")
+                    .parens(),
+            );
+        }
+        builder
+    }
+}
+
+impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, ArgumentId> {
+    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+        allocator
+            .text(self.0.name().to_string())
+            .append(allocator.text(":"))
+            .append(allocator.space())
+            .append(NodeDisplay(self.0.value()))
+    }
+}
+
+impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, ValueId> {
+    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+        match self.0.value() {
+            crate::ast::ValueReader::Variable(name) => allocator.text(format!("${name}")),
+            crate::ast::ValueReader::Int(value) => allocator.text(format!("{value}")),
+            crate::ast::ValueReader::Float(value) => allocator.text(format!("{value}")),
+            crate::ast::ValueReader::String(value) => allocator.text(value.to_string()),
+            crate::ast::ValueReader::Boolean(value) => allocator.text(format!("{value}")),
+            crate::ast::ValueReader::Null => allocator.text("null"),
+            crate::ast::ValueReader::Enum(value) => allocator.text(value.to_string()),
+            crate::ast::ValueReader::List(items) => allocator
+                .intersperse(items.into_iter().map(NodeDisplay), ",")
+                .parens(),
+            crate::ast::ValueReader::Object(items) => allocator
+                .intersperse(
+                    items.into_iter().map(|(name, value)| {
+                        allocator
+                            .text(name)
+                            .append(allocator.text(":"))
+                            .append(NodeDisplay(value))
+                    }),
+                    ",",
+                )
+                .braces(),
+        }
+    }
+}
