@@ -32,11 +32,18 @@ pub RootOperationTypeDefinition: RootOperationTypeDefinition = {
 }
 
 pub ObjectDefinition: ObjectDefinition = {
-    ty <name:Name> <implements:ImplementsInterfaces?> <directives:Directive*> <fields:FieldsDefinition?> => ObjectDefinition {
+    <start:@L> ty
+        <name:Name>
+        <implements:ImplementsInterfaces?>
+        <directives:Directive*>
+        <fields:FieldsDefinition?>
+        <end:@R>
+    => ObjectDefinition {
         name,
         directives,
         implements: implements.unwrap_or_default(),
-        fields: fields.unwrap_or_default ()
+        fields: fields.unwrap_or_default(),
+        span: Span::new(start,end)
     }
 };
 
@@ -60,13 +67,20 @@ FieldsDefinition: Vec<NodeId> = {
 };
 
 FieldDefinition: NodeId = {
-    <description:StringValue?> <name:Name> <arguments:ArgumentsDefinition?> ":" <ty:Type> <directives:Directive*> =>
+    <start:@L>
+        <description:StringValue?>
+        <name:Name>
+        <arguments:ArgumentsDefinition?> ":" <ty:Type>
+        <directives:Directive*>
+        <end:@R>
+    =>
         ast.field_definition(FieldDefinition {
             name,
             ty,
             arguments: arguments.unwrap_or_default(),
             description,
             directives
+            span: Span::new(start,end)
         })
 };
 
@@ -75,10 +89,16 @@ ArgumentsDefinition: Vec<NodeId> = {
 };
 
 pub InputObjectDefinition: InputObjectDefinition = {
-    input <name:Name> <directives:Directive*> <fields:InputFieldsDefinition?> => InputObjectDefinition {
+    <start:@L> input
+        <name:Name>
+        <directives:Directive*>
+        <fields:InputFieldsDefinition?>
+        <end:@R>
+    => InputObjectDefinition {
         name,
         directives,
         fields: fields.unwrap_or_default()
+        span: Span::new(start,end)
     }
 };
 
@@ -87,8 +107,20 @@ InputFieldsDefinition: Vec<NodeId> = {
 };
 
 InputValueDefinition: NodeId =
-    <description:StringValue?> <name:Name> ":" <ty:Type> <default:DefaultValue?> <directives:Directive*> =>
-        ast.input_value_definition(InputValueDefinition { <> });
+    <start:@L>
+        <description:StringValue?>
+        <name:Name> ":" <ty:Type> <default:DefaultValue?>
+        <directives:Directive*>
+        <end:@R>
+    =>
+        ast.input_value_definition(InputValueDefinition {
+            name,
+            ty,
+            description
+            directives,
+            default,
+            span: Span::new(start, end)
+        });
 
 DefaultValue: ValueId = {
     "=" <v:Value> => v

@@ -5,8 +5,10 @@ use indexmap::IndexSet;
 
 pub(crate) mod ids;
 mod reader;
+mod span;
 
 pub use reader::{AstReader, Definition, ValueReader};
+pub use span::Span;
 
 #[derive(Default)]
 pub struct Ast {
@@ -59,6 +61,7 @@ pub struct ObjectDefinition {
     pub fields: Vec<NodeId>,
     pub directives: Vec<DirectiveId>,
     pub implements: Vec<StringId>,
+    pub span: Span,
 }
 
 pub struct FieldDefinition {
@@ -67,12 +70,14 @@ pub struct FieldDefinition {
     pub arguments: Vec<NodeId>,
     pub description: Option<NodeId>,
     pub directives: Vec<DirectiveId>,
+    pub span: Span,
 }
 
 pub struct InputObjectDefinition {
     pub name: StringId,
     pub fields: Vec<NodeId>,
     pub directives: Vec<DirectiveId>,
+    pub span: Span,
 }
 
 pub struct InputValueDefinition {
