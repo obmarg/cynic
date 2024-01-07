@@ -67,12 +67,12 @@ mod tests {
             parse_type_system_document(
                 r#"
                 "I am a description"
-                type MyType { query: String }
+                input MyType { query: String = "Hello" }
                 "#
             ).to_sdl(),
             @r###"
         type MyType {
-          query: String
+          query: String = "Hello"
         }
         "###
         );

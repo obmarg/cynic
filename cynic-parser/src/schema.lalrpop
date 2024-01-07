@@ -67,9 +67,13 @@ InputFieldsDefinition: Vec<NodeId> = {
     "{" <fields:InputValueDefinition+> "}" => fields
 };
 
-// TODO: Add default value, directives
+// TODO: Add directives
 InputValueDefinition: NodeId =
-    <description:StringValue?> <name:Name> ":" <ty:Type> => ast.input_value_definition(InputValueDefinition { <> });
+    <description:StringValue?> <name:Name> ":" <ty:Type> <default:DefaultValue?> => ast.input_value_definition(InputValueDefinition { <> });
+
+DefaultValue: ValueId = {
+    "=" <v:Value> => v
+}
 
 Name: StringId = <s:Ident> => ast.ident(s);
 
@@ -159,6 +163,7 @@ extern {
         "]" => lexer::Token::CloseBracket,
 
         "!" => lexer::Token::Exclamation,
+        "=" => lexer::Token::Equals,
 
         RawIdent => lexer::Token::Identifier(<&'input str>),
 

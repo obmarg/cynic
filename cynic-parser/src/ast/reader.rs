@@ -1,7 +1,7 @@
 use crate::Ast;
 
 use super::{
-    ids::{AstId, AstLookup, InputValueDefinitionId, TypeId},
+    ids::{AstId, AstLookup, InputValueDefinitionId, TypeId, ValueId},
     FieldDefinitionId, InputObjectDefinitionId, NodeContents, ObjectDefinitionId,
     SchemaDefinitionId, Type, WrappingType,
 };
@@ -113,6 +113,45 @@ impl<'a> AstReader<'a, InputValueDefinitionId> {
     pub fn ty(&self) -> AstReader<'a, TypeId> {
         self.ast.read(self.ast.lookup(self.id).ty)
     }
+
+    pub fn default_value(&self) -> Option<AstReader<'a, ValueId>> {
+        self.ast.lookup(self.id).default.map(|id| self.ast.read(id))
+    }
+}
+
+impl<'a> AstReader<'a, ValueId> {
+    pub fn value(&self) -> ValueReader<'a> {
+        match self.ast.lookup(self.id) {
+            super::Value::Variable(id) => ValueReader::Variable(self.ast.lookup(*id)),
+            super::Value::Int(num) => ValueReader::Int(*num),
+            super::Value::Float(num) => ValueReader::Float(*num),
+            super::Value::String(id) => ValueReader::String(self.ast.lookup(*id)),
+            super::Value::Boolean(val) => ValueReader::Boolean(*val),
+            super::Value::Null => ValueReader::Null,
+            super::Value::Enum(id) => ValueReader::Enum(self.ast.lookup(*id)),
+            super::Value::List(ids) => {
+                ValueReader::List(ids.iter().map(|id| self.ast.read(*id)).collect())
+            }
+            super::Value::Object(pairs) => ValueReader::Object(
+                pairs
+                    .iter()
+                    .map(|(name, value)| (self.ast.lookup(*name), self.ast.read(*value)))
+                    .collect(),
+            ),
+        }
+    }
+}
+
+pub enum ValueReader<'a> {
+    Variable(&'a str),
+    Int(i32),
+    Float(f32),
+    String(&'a str),
+    Boolean(bool),
+    Null,
+    Enum(&'a str),
+    List(Vec<AstReader<'a, ValueId>>),
+    Object(Vec<(&'a str, AstReader<'a, ValueId>)>),
 }
 
 impl<'a> AstReader<'a, TypeId> {

@@ -5,7 +5,7 @@ use pretty::{Arena, BoxAllocator, DocAllocator, Pretty};
 use crate::ast::{
     ids::{
         FieldDefinitionId, InputObjectDefinitionId, InputValueDefinitionId, ObjectDefinitionId,
-        TypeId,
+        TypeId, ValueId,
     },
     AstReader, Definition,
 };
@@ -21,7 +21,7 @@ impl crate::Ast {
                     .map(|definition| match definition {
                         Definition::Schema(_) => todo!(),
                         Definition::Object(object) => NodeDisplay(object).pretty(&allocator),
-                        Definition::InputObject(_) => todo!(),
+                        Definition::InputObject(object) => NodeDisplay(object).pretty(&allocator),
                     }),
             )
             .pretty(&allocator);
@@ -79,16 +79,54 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, InputObjectDefinitionId> {
 
 impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, InputValueDefinitionId> {
     fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
-        allocator
+        let mut builder = allocator
             .text(self.0.name().to_string())
             .append(allocator.text(":"))
             .append(allocator.space())
-            .append(NodeDisplay(self.0.ty()))
+            .append(NodeDisplay(self.0.ty()));
+
+        if let Some(value) = self.0.default_value() {
+            builder = builder
+                .append(allocator.space())
+                .append(allocator.text("="))
+                .append(allocator.space())
+                .append(NodeDisplay(value));
+        }
+
+        builder
     }
 }
 
 impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, TypeId> {
     fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
         allocator.text(self.0.to_string())
+    }
+}
+
+impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, ValueId> {
+    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+        match self.0.value() {
+            crate::ast::ValueReader::Variable(name) => allocator.text(format!("${name}")),
+            crate::ast::ValueReader::Int(value) => allocator.text(format!("{value}")),
+            crate::ast::ValueReader::Float(value) => allocator.text(format!("{value}")),
+            crate::ast::ValueReader::String(value) => allocator.text(value.to_string()),
+            crate::ast::ValueReader::Boolean(value) => allocator.text(format!("{value}")),
+            crate::ast::ValueReader::Null => allocator.text("null"),
+            crate::ast::ValueReader::Enum(value) => allocator.text(value.to_string()),
+            crate::ast::ValueReader::List(items) => allocator
+                .intersperse(items.into_iter().map(NodeDisplay), ",")
+                .parens(),
+            crate::ast::ValueReader::Object(items) => allocator
+                .intersperse(
+                    items.into_iter().map(|(name, value)| {
+                        allocator
+                            .text(name)
+                            .append(allocator.text(":"))
+                            .append(NodeDisplay(value))
+                    }),
+                    ",",
+                )
+                .braces(),
+        }
     }
 }

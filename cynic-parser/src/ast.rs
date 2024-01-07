@@ -6,7 +6,7 @@ use indexmap::IndexSet;
 pub(crate) mod ids;
 mod reader;
 
-pub use reader::{AstReader, Definition};
+pub use reader::{AstReader, Definition, ValueReader};
 
 #[derive(Default)]
 pub struct Ast {
@@ -73,6 +73,7 @@ pub struct InputValueDefinition {
     pub name: StringId,
     pub ty: TypeId,
     pub description: Option<NodeId>,
+    pub default: Option<ValueId>,
 }
 
 pub struct RootOperationTypeDefinition {
