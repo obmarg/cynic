@@ -7,14 +7,14 @@ use crate::ast::{*, ids::*};
 grammar<'input>(input: &'input str, ast: &mut AstBuilder);
 
 pub TypeSystemDocument: () = {
-    <defs:DefinitionAndDescription+> => ast.definitions(defs),
+    <defs:DefinitionAndDescription+> => ast.definition_descriptions(defs),
 }
 
-pub DefinitionAndDescription: (Option<NodeId>, NodeId) = {
+pub DefinitionAndDescription: (Option<StringId>, DefinitionId) = {
     <description:StringValue?> <def:TypeSystemDefinition> => (description, def)
 }
 
-pub TypeSystemDefinition: NodeId = {
+pub TypeSystemDefinition: DefinitionId = {
     <def:SchemaDefinition> => ast.schema_definition(def),
     <def:ObjectDefinition> => ast.object_definition(def),
     <def:InputObjectDefinition> => ast.input_object_definition(def)
@@ -62,11 +62,11 @@ ImplementItem: StringId = {
     "&" <name:NamedType> => name,
 }
 
-FieldsDefinition: Vec<NodeId> = {
+FieldsDefinition: Vec<FieldDefinitionId> = {
     "{" <fields:FieldDefinition+> "}" => fields
 };
 
-FieldDefinition: NodeId = {
+FieldDefinition: FieldDefinitionId = {
     <start:@L>
         <description:StringValue?>
         <name:Name>
@@ -79,12 +79,12 @@ FieldDefinition: NodeId = {
             ty,
             arguments: arguments.unwrap_or_default(),
             description,
-            directives
+            directives,
             span: Span::new(start,end)
         })
 };
 
-ArgumentsDefinition: Vec<NodeId> = {
+ArgumentsDefinition: Vec<InputValueDefinitionId> = {
     "(" <arguments:InputValueDefinition+> ")" => arguments,
 };
 
@@ -97,16 +97,16 @@ pub InputObjectDefinition: InputObjectDefinition = {
     => InputObjectDefinition {
         name,
         directives,
-        fields: fields.unwrap_or_default()
+        fields: fields.unwrap_or_default(),
         span: Span::new(start,end)
     }
 };
 
-InputFieldsDefinition: Vec<NodeId> = {
+InputFieldsDefinition: Vec<InputValueDefinitionId> = {
     "{" <fields:InputValueDefinition+> "}" => fields
 };
 
-InputValueDefinition: NodeId =
+InputValueDefinition: InputValueDefinitionId=
     <start:@L>
         <description:StringValue?>
         <name:Name> ":" <ty:Type> <default:DefaultValue?>
@@ -116,7 +116,7 @@ InputValueDefinition: NodeId =
         ast.input_value_definition(InputValueDefinition {
             name,
             ty,
-            description
+            description,
             directives,
             default,
             span: Span::new(start, end)
@@ -164,14 +164,12 @@ ObjectField: (StringId, ValueId) = {
     <name:Name> ":" <value:Value> => (name, value)
 }
 
-StringValue: NodeId = {
+StringValue: StringId = {
     <s:StringLiteral> => {
-        let id = ast.intern_string(s);
-        ast.string_literal(StringLiteral::Normal(id))
+        ast.intern_string(s)
     },
     <s:BlockStringLiteral> => {
-        let id = ast.intern_string(s);
-        ast.string_literal(StringLiteral::Block(id))
+        ast.intern_string(s)
     },
 }
 
@@ -198,7 +196,6 @@ Argument: ArgumentId = {
     <name:Name> ":" <value:Value> => ast.argument(Argument { <> }),
 }
 
-// TODO: Make this NodeId probably...
 Ident: &'input str = {
     <s:RawIdent> => s,
     schema => "schema",

@@ -1,8 +1,8 @@
 use crate::Ast;
 
 use super::{
-    Argument, Directive, FieldDefinition, InputObjectDefinition, InputValueDefinition, Node,
-    ObjectDefinition, SchemaDefinition, Type, Value,
+    Argument, AstDefinition, Directive, FieldDefinition, InputObjectDefinition,
+    InputValueDefinition, ObjectDefinition, SchemaDefinition, Type, Value,
 };
 
 pub trait AstId {}
@@ -13,18 +13,20 @@ pub(crate) trait AstLookup<Id> {
     fn lookup(&self, index: Id) -> &Self::Output;
 }
 
+// TODO: NonZeroUsize these?
+
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-pub struct NodeId(pub(super) usize);
+pub struct DefinitionId(pub(super) usize);
 
-impl AstLookup<NodeId> for Ast {
-    type Output = Node;
+impl AstLookup<DefinitionId> for Ast {
+    type Output = AstDefinition;
 
-    fn lookup(&self, index: NodeId) -> &Self::Output {
-        &self.nodes[index.0]
+    fn lookup(&self, index: DefinitionId) -> &Self::Output {
+        &self.definitions[index.0]
     }
 }
 
-impl AstId for NodeId {}
+impl AstId for DefinitionId {}
 
 #[derive(Clone, Copy)]
 pub struct StringId(pub(super) usize);

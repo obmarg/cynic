@@ -14,9 +14,7 @@ pub use span::Span;
 pub struct Ast {
     strings: IndexSet<Box<str>>,
 
-    nodes: Vec<Node>,
-
-    definition_nodes: Vec<NodeId>,
+    definitions: Vec<AstDefinition>,
 
     schema_definitions: Vec<SchemaDefinition>,
     object_definitions: Vec<ObjectDefinition>,
@@ -33,23 +31,14 @@ pub struct Ast {
     directives: Vec<Directive>,
     arguments: Vec<Argument>,
 
-    definition_descriptions: HashMap<NodeId, NodeId>,
+    definition_descriptions: HashMap<DefinitionId, StringId>,
 }
 
-// TODO: NonZeroUsize these?
-pub struct Node {
-    contents: NodeContents,
-    // span: Span
-}
-
-pub enum NodeContents {
-    Ident(StringId),
-    SchemaDefinition(SchemaDefinitionId),
-    ObjectDefiniton(ObjectDefinitionId),
-    FieldDefinition(FieldDefinitionId),
-    InputObjectDefiniton(InputObjectDefinitionId),
-    InputValueDefinition(InputValueDefinitionId),
-    StringLiteral(StringLiteralId),
+// TODO: Do something about the name clash
+pub enum AstDefinition {
+    Schema(SchemaDefinitionId),
+    Object(ObjectDefinitionId),
+    InputObject(InputObjectDefinitionId),
 }
 
 pub struct SchemaDefinition {
@@ -58,7 +47,7 @@ pub struct SchemaDefinition {
 
 pub struct ObjectDefinition {
     pub name: StringId,
-    pub fields: Vec<NodeId>,
+    pub fields: Vec<FieldDefinitionId>,
     pub directives: Vec<DirectiveId>,
     pub implements: Vec<StringId>,
     pub span: Span,
@@ -67,15 +56,15 @@ pub struct ObjectDefinition {
 pub struct FieldDefinition {
     pub name: StringId,
     pub ty: TypeId,
-    pub arguments: Vec<NodeId>,
-    pub description: Option<NodeId>,
+    pub arguments: Vec<InputValueDefinitionId>,
+    pub description: Option<StringId>,
     pub directives: Vec<DirectiveId>,
     pub span: Span,
 }
 
 pub struct InputObjectDefinition {
     pub name: StringId,
-    pub fields: Vec<NodeId>,
+    pub fields: Vec<InputValueDefinitionId>,
     pub directives: Vec<DirectiveId>,
     pub span: Span,
 }
@@ -83,9 +72,10 @@ pub struct InputObjectDefinition {
 pub struct InputValueDefinition {
     pub name: StringId,
     pub ty: TypeId,
-    pub description: Option<NodeId>,
+    pub description: Option<StringId>,
     pub default: Option<ValueId>,
     pub directives: Vec<DirectiveId>,
+    pub span: Span,
 }
 
 pub struct RootOperationTypeDefinition {
@@ -163,74 +153,61 @@ impl AstBuilder {
         self.ast
     }
 
-    pub fn definitions(&mut self, ids: Vec<(Option<NodeId>, NodeId)>) {
+    pub fn definition_descriptions(&mut self, ids: Vec<(Option<StringId>, DefinitionId)>) {
         for (description, definition) in ids {
             if let Some(description) = description {
                 self.ast
                     .definition_descriptions
                     .insert(definition, description);
             }
-            self.ast.definition_nodes.push(definition);
         }
     }
 
-    pub fn schema_definition(&mut self, definition: SchemaDefinition) -> NodeId {
-        let definition_id = SchemaDefinitionId(self.ast.schema_definitions.len());
+    pub fn schema_definition(&mut self, definition: SchemaDefinition) -> DefinitionId {
+        let id = SchemaDefinitionId(self.ast.schema_definitions.len());
         self.ast.schema_definitions.push(definition);
 
-        let node_id = NodeId(self.ast.nodes.len());
-        let contents = NodeContents::SchemaDefinition(definition_id);
+        let definition_id = DefinitionId(self.ast.definitions.len());
+        self.ast.definitions.push(AstDefinition::Schema(id));
 
-        self.ast.nodes.push(Node { contents });
-
-        node_id
+        definition_id
     }
 
-    pub fn object_definition(&mut self, definition: ObjectDefinition) -> NodeId {
-        let definition_id = ObjectDefinitionId(self.ast.object_definitions.len());
+    pub fn object_definition(&mut self, definition: ObjectDefinition) -> DefinitionId {
+        let id = ObjectDefinitionId(self.ast.object_definitions.len());
         self.ast.object_definitions.push(definition);
 
-        let node_id = NodeId(self.ast.nodes.len());
-        let contents = NodeContents::ObjectDefiniton(definition_id);
+        let definition_id = DefinitionId(self.ast.definitions.len());
+        self.ast.definitions.push(AstDefinition::Object(id));
 
-        self.ast.nodes.push(Node { contents });
-
-        node_id
+        definition_id
     }
 
-    pub fn field_definition(&mut self, definition: FieldDefinition) -> NodeId {
+    pub fn field_definition(&mut self, definition: FieldDefinition) -> FieldDefinitionId {
         let definition_id = FieldDefinitionId(self.ast.field_definitions.len());
         self.ast.field_definitions.push(definition);
 
-        let node_id = NodeId(self.ast.nodes.len());
-        let contents = NodeContents::FieldDefinition(definition_id);
-
-        self.ast.nodes.push(Node { contents });
-
-        node_id
+        definition_id
     }
 
-    pub fn input_object_definition(&mut self, definition: InputObjectDefinition) -> NodeId {
-        let definition_id = InputObjectDefinitionId(self.ast.input_object_definitions.len());
+    pub fn input_object_definition(&mut self, definition: InputObjectDefinition) -> DefinitionId {
+        let id = InputObjectDefinitionId(self.ast.input_object_definitions.len());
         self.ast.input_object_definitions.push(definition);
 
-        let node_id = NodeId(self.ast.nodes.len());
-        let contents = NodeContents::InputObjectDefiniton(definition_id);
+        let definition_id = DefinitionId(self.ast.definitions.len());
+        self.ast.definitions.push(AstDefinition::InputObject(id));
 
-        self.ast.nodes.push(Node { contents });
-
-        node_id
+        definition_id
     }
 
-    pub fn input_value_definition(&mut self, definition: InputValueDefinition) -> NodeId {
+    pub fn input_value_definition(
+        &mut self,
+        definition: InputValueDefinition,
+    ) -> InputValueDefinitionId {
         let definition_id = InputValueDefinitionId(self.ast.input_value_definitions.len());
         self.ast.input_value_definitions.push(definition);
 
-        let node_id = NodeId(self.ast.nodes.len());
-        let contents = NodeContents::InputValueDefinition(definition_id);
-        self.ast.nodes.push(Node { contents });
-
-        node_id
+        definition_id
     }
 
     pub fn type_reference(&mut self, ty: Type) -> TypeId {
@@ -257,15 +234,11 @@ impl AstBuilder {
         id
     }
 
-    pub fn string_literal(&mut self, literal: StringLiteral) -> NodeId {
+    pub fn string_literal(&mut self, literal: StringLiteral) -> StringLiteralId {
         let literal_id = StringLiteralId(self.ast.string_literals.len());
         self.ast.string_literals.push(literal);
 
-        let node_id = NodeId(self.ast.nodes.len());
-        let contents = NodeContents::StringLiteral(literal_id);
-        self.ast.nodes.push(Node { contents });
-
-        node_id
+        literal_id
     }
 
     pub fn ident(&mut self, ident: &str) -> StringId {

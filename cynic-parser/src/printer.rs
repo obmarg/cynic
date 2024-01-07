@@ -7,7 +7,7 @@ use crate::ast::{
         ArgumentId, DirectiveId, FieldDefinitionId, InputObjectDefinitionId,
         InputValueDefinitionId, ObjectDefinitionId, SchemaDefinitionId, TypeId, ValueId,
     },
-    AstReader, Definition,
+    AstDefinition, AstReader, Definition,
 };
 
 impl crate::Ast {

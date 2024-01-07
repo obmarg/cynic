@@ -1,8 +1,8 @@
-use crate::Ast;
+use crate::{ast, Ast};
 
 use super::{
     ids::{ArgumentId, AstId, AstLookup, DirectiveId, InputValueDefinitionId, TypeId, ValueId},
-    FieldDefinitionId, InputObjectDefinitionId, NodeContents, ObjectDefinitionId, OperationType,
+    FieldDefinitionId, InputObjectDefinitionId, ObjectDefinitionId, OperationType,
     SchemaDefinitionId, Type, WrappingType,
 };
 
@@ -22,17 +22,11 @@ impl super::Ast {
 
 impl Ast {
     pub fn definitions<'a>(&'a self) -> impl Iterator<Item = Definition<'a>> + 'a {
-        self.definition_nodes
-            .iter()
-            .map(|definition| match self.nodes[definition.0].contents {
-                NodeContents::SchemaDefinition(id) => Definition::Schema(self.read(id)),
-                NodeContents::ObjectDefiniton(id) => Definition::Object(self.read(id)),
-                NodeContents::InputObjectDefiniton(id) => Definition::InputObject(self.read(id)),
-                NodeContents::FieldDefinition(_)
-                | NodeContents::InputValueDefinition(_)
-                | NodeContents::StringLiteral(_) => unreachable!(),
-                NodeContents::Ident(_) => unreachable!(),
-            })
+        self.definitions.iter().map(|definition| match definition {
+            ast::AstDefinition::Schema(id) => Definition::Schema(self.read(*id)),
+            ast::AstDefinition::Object(id) => Definition::Object(self.read(*id)),
+            ast::AstDefinition::InputObject(id) => Definition::InputObject(self.read(*id)),
+        })
     }
 }
 
@@ -70,10 +64,7 @@ impl<'a> AstReader<'a, ObjectDefinitionId> {
             .lookup(self.id)
             .fields
             .iter()
-            .map(|node| match self.ast.lookup(*node).contents {
-                NodeContents::FieldDefinition(id) => self.ast.read(id),
-                _ => unreachable!(),
-            })
+            .map(|id| self.ast.read(*id))
     }
 
     pub fn directives(&self) -> impl Iterator<Item = AstReader<'a, DirectiveId>> + 'a {
@@ -95,10 +86,7 @@ impl<'a> AstReader<'a, InputObjectDefinitionId> {
             .lookup(self.id)
             .fields
             .iter()
-            .map(|node| match self.ast.lookup(*node).contents {
-                NodeContents::InputValueDefinition(id) => self.ast.read(id),
-                _ => unreachable!(),
-            })
+            .map(|id| self.ast.read(*id))
     }
 
     pub fn directives(&self) -> impl Iterator<Item = AstReader<'a, DirectiveId>> + 'a {
@@ -120,12 +108,11 @@ impl<'a> AstReader<'a, FieldDefinitionId> {
     }
 
     pub fn arguments(&self) -> impl Iterator<Item = AstReader<'a, InputValueDefinitionId>> {
-        self.ast.lookup(self.id).arguments.iter().map(|node| {
-            match self.ast.lookup(*node).contents {
-                NodeContents::InputValueDefinition(id) => self.ast.read(id),
-                _ => unreachable!(),
-            }
-        })
+        self.ast
+            .lookup(self.id)
+            .arguments
+            .iter()
+            .map(|id| self.ast.read(*id))
     }
 
     pub fn directives(&self) -> impl Iterator<Item = AstReader<'a, DirectiveId>> + 'a {
