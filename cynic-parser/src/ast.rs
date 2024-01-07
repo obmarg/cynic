@@ -18,6 +18,7 @@ pub struct Ast {
 
     schema_definitions: Vec<SchemaDefinition>,
     object_definitions: Vec<ObjectDefinition>,
+    interface_definitions: Vec<InterfaceDefinition>,
     input_object_definitions: Vec<InputObjectDefinition>,
 
     field_definitions: Vec<FieldDefinition>,
@@ -38,6 +39,7 @@ pub struct Ast {
 pub enum AstDefinition {
     Schema(SchemaDefinitionId),
     Object(ObjectDefinitionId),
+    Interface(InterfaceDefinitionId),
     InputObject(InputObjectDefinitionId),
 }
 
@@ -59,6 +61,14 @@ pub struct FieldDefinition {
     pub arguments: Vec<InputValueDefinitionId>,
     pub description: Option<StringId>,
     pub directives: Vec<DirectiveId>,
+    pub span: Span,
+}
+
+pub struct InterfaceDefinition {
+    pub name: StringId,
+    pub fields: Vec<FieldDefinitionId>,
+    pub directives: Vec<DirectiveId>,
+    pub implements: Vec<StringId>,
     pub span: Span,
 }
 
@@ -186,6 +196,16 @@ impl AstBuilder {
     pub fn field_definition(&mut self, definition: FieldDefinition) -> FieldDefinitionId {
         let definition_id = FieldDefinitionId(self.ast.field_definitions.len());
         self.ast.field_definitions.push(definition);
+
+        definition_id
+    }
+
+    pub fn interface_definition(&mut self, definition: InterfaceDefinition) -> DefinitionId {
+        let id = InterfaceDefinitionId(self.ast.interface_definitions.len());
+        self.ast.interface_definitions.push(definition);
+
+        let definition_id = DefinitionId(self.ast.definitions.len());
+        self.ast.definitions.push(AstDefinition::Interface(id));
 
         definition_id
     }

@@ -2,7 +2,7 @@ use crate::Ast;
 
 use super::{
     Argument, AstDefinition, Directive, FieldDefinition, InputObjectDefinition,
-    InputValueDefinition, ObjectDefinition, SchemaDefinition, Type, Value,
+    InputValueDefinition, InterfaceDefinition, ObjectDefinition, SchemaDefinition, Type, Value,
 };
 
 pub trait AstId {}
@@ -66,6 +66,21 @@ impl AstLookup<ObjectDefinitionId> for Ast {
 
     fn lookup(&self, index: ObjectDefinitionId) -> &Self::Output {
         self.object_definitions
+            .get(index.0)
+            .expect("objects to be present")
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct InterfaceDefinitionId(pub(super) usize);
+
+impl AstId for InterfaceDefinitionId {}
+
+impl AstLookup<InterfaceDefinitionId> for Ast {
+    type Output = InterfaceDefinition;
+
+    fn lookup(&self, index: InterfaceDefinitionId) -> &Self::Output {
+        self.interface_definitions
             .get(index.0)
             .expect("objects to be present")
     }

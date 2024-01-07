@@ -58,6 +58,24 @@ mod tests {
     }
 
     #[test]
+    fn test_basic_interface() {
+        insta::assert_snapshot!(
+            parse_type_system_document(r#"
+                interface MyType implements Blah & Bloo @hello {
+                    field: Whatever @hello(name: ["string"]),
+                    other: [[Int!]]!
+                }"#
+            ).to_sdl(),
+            @r###"
+        interface MyType implements Blah & Bloo @hello {
+          field: Whatever@hello(name: ("string"))
+          other: [[Int!]]!
+        }
+        "###
+        );
+    }
+
+    #[test]
     fn test_schema_field() {
         // Use a keyword as a field name and make sure it's fine
         insta::assert_snapshot!(
