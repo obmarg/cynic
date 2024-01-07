@@ -54,7 +54,7 @@ impl<'a> AstReader<'a, ObjectDefinitionId> {
         }
     }
 
-    pub fn fields(&self) -> impl IntoIterator<Item = AstReader<'a, FieldDefinitionId>> + 'a {
+    pub fn fields(&self) -> impl Iterator<Item = AstReader<'a, FieldDefinitionId>> + 'a {
         self.ast[self.id]
             .fields
             .iter()
@@ -73,7 +73,7 @@ impl<'a> AstReader<'a, InputObjectDefinitionId> {
         }
     }
 
-    pub fn fields(&self) -> impl IntoIterator<Item = AstReader<'a, InputValueDefinitionId>> + 'a {
+    pub fn fields(&self) -> impl Iterator<Item = AstReader<'a, InputValueDefinitionId>> + 'a {
         self.ast[self.id]
             .fields
             .iter()
@@ -94,7 +94,7 @@ impl<'a> AstReader<'a, FieldDefinitionId> {
 
     // pub fn ty(&self) -> AstReader<'a, TypeId> {}
 
-    pub fn arguments(&self) -> impl IntoIterator<Item = AstReader<'a, InputValueDefinitionId>> {
+    pub fn arguments(&self) -> impl Iterator<Item = AstReader<'a, InputValueDefinitionId>> {
         self.ast[self.id]
             .arguments
             .iter()

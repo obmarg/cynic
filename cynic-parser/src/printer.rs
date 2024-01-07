@@ -3,52 +3,79 @@ use std::fmt::{Display, Write};
 use pretty::{Arena, BoxAllocator, DocAllocator, Pretty};
 
 use crate::ast::{
-    ids::{InputObjectDefinitionId, ObjectDefinitionId},
+    ids::{FieldDefinitionId, InputObjectDefinitionId, InputValueDefinitionId, ObjectDefinitionId},
     AstReader, Definition,
 };
 
 impl crate::Ast {
     pub fn to_sdl(&self) -> String {
-        let mut output = String::new();
+        let allocator = BoxAllocator;
 
-        for definition in self.reader().definitions() {
-            match definition {
-                Definition::Schema(_) => {}
-                Definition::Object(object) => {
-                    write!(&mut output, "{}", NodeDisplay(object)).ok();
-                }
-                Definition::InputObject(_) => todo!(),
-            }
+        let builder = allocator
+            .concat(
+                self.reader()
+                    .definitions()
+                    .map(|definition| match definition {
+                        Definition::Schema(_) => todo!(),
+                        Definition::Object(object) => NodeDisplay(object).pretty(&allocator),
+                        Definition::InputObject(_) => todo!(),
+                    }),
+            )
+            .pretty(&allocator);
+
+        #[allow(clippy::needless_borrow)] // This doesn't work without the borrow :|
+        {
+            format!("{}", (&*builder).pretty(80))
         }
-
-        output
-    }
-}
-
-impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, ObjectDefinitionId> {
-    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
-        pretty::docs![allocator, "type", self.0.name()]
     }
 }
 
 pub struct NodeDisplay<'a, T>(AstReader<'a, T>);
 
-impl Display for NodeDisplay<'_, ObjectDefinitionId> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        writeln!(f, "type {} {{", self.0.name())?;
-        for field in self.0.fields() {
-            writeln!(f, "  {}: {}", field.name(), "TODO")?;
-        }
-        writeln!(f, "}}")
+impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, ObjectDefinitionId> {
+    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+        allocator
+            .text(format!("type {} {{", self.0.name()))
+            .append(allocator.hardline())
+            .append(allocator.text("  "))
+            .append(
+                allocator
+                    .intersperse(self.0.fields().map(NodeDisplay), allocator.hardline())
+                    .align(),
+            )
+            .append(allocator.hardline())
+            .append(allocator.text("}"))
     }
 }
 
-impl Display for NodeDisplay<'_, InputObjectDefinitionId> {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        writeln!(f, "input {} {{", self.0.name())?;
-        for field in self.0.fields() {
-            writeln!(f, "  {}: {}", field.name(), "TODO")?;
-        }
-        writeln!(f, "}}")
+impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, FieldDefinitionId> {
+    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+        allocator
+            .text(self.0.name().to_string())
+            .append(allocator.text(": TODO"))
+    }
+}
+
+impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, InputObjectDefinitionId> {
+    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+        allocator
+            .text(format!("input {} {{", self.0.name()))
+            .append(allocator.hardline())
+            .append(allocator.text("  "))
+            .append(
+                allocator
+                    .intersperse(self.0.fields().map(NodeDisplay), allocator.hardline())
+                    .align(),
+            )
+            .append(allocator.hardline())
+            .append(allocator.text("}"))
+    }
+}
+
+impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, InputValueDefinitionId> {
+    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+        allocator
+            .text(self.0.name().to_string())
+            .append(allocator.text(": TODO"))
     }
 }

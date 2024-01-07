@@ -40,7 +40,7 @@ mod tests {
     #[test]
     fn test_basic_object() {
         insta::assert_snapshot!(
-            parse_type_system_document("type MyType { field: Whatever, field: Whatever }").to_sdl(),
+            parse_type_system_document("type MyType { field: Whatever, other: Whatever }").to_sdl(),
             @r###"
         type MyType {
           field: TODO

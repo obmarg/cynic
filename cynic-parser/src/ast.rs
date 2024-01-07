@@ -93,6 +93,8 @@ pub enum StringLiteral {
 }
 
 // TODO: Don't forget the spans etc.
+// TODO: make this whole impl into a builder that wraps an Ast.
+// Then the default Reader stuff can just go on Ast - much more sensible...
 impl Ast {
     pub fn new() -> Self {
         Ast::default()
