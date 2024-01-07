@@ -91,6 +91,7 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, FieldDefinitionId> {
             .append(allocator.text(":"))
             .append(allocator.space())
             .append(NodeDisplay(self.0.ty()))
+            .append(allocator.intersperse(self.0.directives().map(NodeDisplay), " "))
     }
 }
 
@@ -130,7 +131,7 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, InputValueDefinitionId> {
                 .append(NodeDisplay(value));
         }
 
-        builder
+        builder.append(allocator.intersperse(self.0.directives().map(NodeDisplay), " "))
     }
 }
 

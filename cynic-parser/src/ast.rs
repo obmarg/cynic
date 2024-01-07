@@ -65,6 +65,7 @@ pub struct FieldDefinition {
     pub ty: TypeId,
     pub arguments: Vec<NodeId>,
     pub description: Option<NodeId>,
+    pub directives: Vec<DirectiveId>,
 }
 
 pub struct InputObjectDefinition {
@@ -78,6 +79,7 @@ pub struct InputValueDefinition {
     pub ty: TypeId,
     pub description: Option<NodeId>,
     pub default: Option<ValueId>,
+    pub directives: Vec<DirectiveId>,
 }
 
 pub struct RootOperationTypeDefinition {

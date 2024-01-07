@@ -129,6 +129,14 @@ impl<'a> AstReader<'a, FieldDefinitionId> {
             }
         })
     }
+
+    pub fn directives(&self) -> impl Iterator<Item = AstReader<'a, DirectiveId>> + 'a {
+        self.ast
+            .lookup(self.id)
+            .directives
+            .iter()
+            .map(|id| self.ast.read(*id))
+    }
 }
 
 impl<'a> AstReader<'a, InputValueDefinitionId> {
@@ -142,6 +150,14 @@ impl<'a> AstReader<'a, InputValueDefinitionId> {
 
     pub fn default_value(&self) -> Option<AstReader<'a, ValueId>> {
         self.ast.lookup(self.id).default.map(|id| self.ast.read(id))
+    }
+
+    pub fn directives(&self) -> impl Iterator<Item = AstReader<'a, DirectiveId>> + 'a {
+        self.ast
+            .lookup(self.id)
+            .directives
+            .iter()
+            .map(|id| self.ast.read(*id))
     }
 }
 
