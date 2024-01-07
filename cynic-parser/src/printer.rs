@@ -5,7 +5,8 @@ use pretty::{Arena, BoxAllocator, DocAllocator, Pretty};
 use crate::ast::{
     ids::{
         ArgumentId, DirectiveId, FieldDefinitionId, InputObjectDefinitionId,
-        InputValueDefinitionId, ObjectDefinitionId, SchemaDefinitionId, TypeId, ValueId,
+        InputValueDefinitionId, InterfaceDefinitionId, ObjectDefinitionId, SchemaDefinitionId,
+        TypeId, ValueId,
     },
     AstDefinition, AstReader, Definition,
 };
@@ -16,9 +17,10 @@ impl crate::Ast {
 
         let builder = allocator
             .concat(self.definitions().map(|definition| match definition {
-                Definition::Schema(schema) => NodeDisplay(schema).pretty(&allocator),
-                Definition::Object(object) => NodeDisplay(object).pretty(&allocator),
-                Definition::InputObject(object) => NodeDisplay(object).pretty(&allocator),
+                Definition::Schema(reader) => NodeDisplay(reader).pretty(&allocator),
+                Definition::Object(reader) => NodeDisplay(reader).pretty(&allocator),
+                Definition::Interface(reader) => NodeDisplay(reader).pretty(&allocator),
+                Definition::InputObject(reader) => NodeDisplay(reader).pretty(&allocator),
             }))
             .pretty(&allocator);
 
@@ -100,6 +102,38 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, FieldDefinitionId> {
             .append(allocator.space())
             .append(NodeDisplay(self.0.ty()))
             .append(allocator.intersperse(self.0.directives().map(NodeDisplay), " "))
+    }
+}
+
+impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, InterfaceDefinitionId> {
+    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+        let mut builder = allocator
+            .text(format!("interface {}", self.0.name()))
+            .append(allocator.space());
+
+        let interfaces = self.0.implements_interfaces().collect::<Vec<_>>();
+
+        if !interfaces.is_empty() {
+            builder = builder
+                .append(allocator.text("implements"))
+                .append(allocator.space())
+                .append(allocator.intersperse(interfaces, " & "))
+                .append(allocator.space());
+        }
+
+        builder
+            .append(allocator.intersperse(self.0.directives().map(NodeDisplay), allocator.line()))
+            .append(allocator.space())
+            .append(allocator.text("{"))
+            .append(allocator.hardline())
+            .append(allocator.text("  "))
+            .append(
+                allocator
+                    .intersperse(self.0.fields().map(NodeDisplay), allocator.hardline())
+                    .align(),
+            )
+            .append(allocator.hardline())
+            .append(allocator.text("}"))
     }
 }
 

@@ -17,7 +17,8 @@ pub DefinitionAndDescription: (Option<StringId>, DefinitionId) = {
 pub TypeSystemDefinition: DefinitionId = {
     <def:SchemaDefinition> => ast.schema_definition(def),
     <def:ObjectDefinition> => ast.object_definition(def),
-    <def:InputObjectDefinition> => ast.input_object_definition(def)
+    <def:InterfaceDefinition> => ast.interface_definition(def),
+    <def:InputObjectDefinition> => ast.input_object_definition(def),
 }
 
 pub SchemaDefinition: SchemaDefinition = {
@@ -87,6 +88,23 @@ FieldDefinition: FieldDefinitionId = {
 ArgumentsDefinition: Vec<InputValueDefinitionId> = {
     "(" <arguments:InputValueDefinition+> ")" => arguments,
 };
+
+pub InterfaceDefinition: InterfaceDefinition = {
+    <start:@L> interface
+        <name:Name>
+        <implements:ImplementsInterfaces?>
+        <directives:Directive*>
+        <fields:FieldsDefinition?>
+        <end:@R>
+    => InterfaceDefinition {
+        name,
+        directives,
+        implements: implements.unwrap_or_default(),
+        fields: fields.unwrap_or_default(),
+        span: Span::new(start,end)
+    }
+};
+
 
 pub InputObjectDefinition: InputObjectDefinition = {
     <start:@L> input
@@ -206,6 +224,7 @@ Ident: &'input str = {
     false => "false",
     null => "null",
     implements => "implements",
+    interface => "interface",
 }
 
 extern {
@@ -248,5 +267,6 @@ extern {
         false => lexer::Token::False,
         null => lexer::Token::Null,
         implements => lexer::Token::Implements,
+        interface => lexer::Token::Interface,
     }
 }

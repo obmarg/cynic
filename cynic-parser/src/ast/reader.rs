@@ -1,7 +1,10 @@
 use crate::{ast, Ast};
 
 use super::{
-    ids::{ArgumentId, AstId, AstLookup, DirectiveId, InputValueDefinitionId, TypeId, ValueId},
+    ids::{
+        ArgumentId, AstId, AstLookup, DirectiveId, InputValueDefinitionId, InterfaceDefinitionId,
+        TypeId, ValueId,
+    },
     FieldDefinitionId, InputObjectDefinitionId, ObjectDefinitionId, OperationType,
     SchemaDefinitionId, Type, WrappingType,
 };
@@ -25,6 +28,7 @@ impl Ast {
         self.definitions.iter().map(|definition| match definition {
             ast::AstDefinition::Schema(id) => Definition::Schema(self.read(*id)),
             ast::AstDefinition::Object(id) => Definition::Object(self.read(*id)),
+            ast::AstDefinition::Interface(id) => Definition::Interface(self.read(*id)),
             ast::AstDefinition::InputObject(id) => Definition::InputObject(self.read(*id)),
         })
     }
@@ -33,6 +37,7 @@ impl Ast {
 pub enum Definition<'a> {
     Schema(AstReader<'a, SchemaDefinitionId>),
     Object(AstReader<'a, ObjectDefinitionId>),
+    Interface(AstReader<'a, InterfaceDefinitionId>),
     InputObject(AstReader<'a, InputObjectDefinitionId>),
 }
 
@@ -47,6 +52,36 @@ impl<'a> AstReader<'a, SchemaDefinitionId> {
 }
 
 impl<'a> AstReader<'a, ObjectDefinitionId> {
+    pub fn name(&self) -> &str {
+        self.ast.lookup(self.ast.lookup(self.id).name)
+    }
+
+    pub fn implements_interfaces(&self) -> impl Iterator<Item = &'a str> + 'a {
+        self.ast
+            .lookup(self.id)
+            .implements
+            .iter()
+            .map(|id| self.ast.lookup(*id))
+    }
+
+    pub fn fields(&self) -> impl Iterator<Item = AstReader<'a, FieldDefinitionId>> + 'a {
+        self.ast
+            .lookup(self.id)
+            .fields
+            .iter()
+            .map(|id| self.ast.read(*id))
+    }
+
+    pub fn directives(&self) -> impl Iterator<Item = AstReader<'a, DirectiveId>> + 'a {
+        self.ast
+            .lookup(self.id)
+            .directives
+            .iter()
+            .map(|id| self.ast.read(*id))
+    }
+}
+
+impl<'a> AstReader<'a, InterfaceDefinitionId> {
     pub fn name(&self) -> &str {
         self.ast.lookup(self.ast.lookup(self.id).name)
     }
