@@ -19,10 +19,13 @@ pub struct Ast {
     schema_definitions: Vec<SchemaDefinition>,
     object_definitions: Vec<ObjectDefinition>,
     interface_definitions: Vec<InterfaceDefinition>,
+    union_definitions: Vec<UnionDefinition>,
+    enum_definitions: Vec<EnumDefinition>,
     input_object_definitions: Vec<InputObjectDefinition>,
 
     field_definitions: Vec<FieldDefinition>,
     input_value_definitions: Vec<InputValueDefinition>,
+    enum_value_definitions: Vec<EnumValueDefinition>,
 
     type_references: Vec<Type>,
 
@@ -35,11 +38,12 @@ pub struct Ast {
     definition_descriptions: HashMap<DefinitionId, StringId>,
 }
 
-// TODO: Do something about the name clash
 pub enum AstDefinition {
     Schema(SchemaDefinitionId),
     Object(ObjectDefinitionId),
     Interface(InterfaceDefinitionId),
+    Union(UnionDefinitionId),
+    Enum(EnumDefinitionId),
     InputObject(InputObjectDefinitionId),
 }
 
@@ -69,6 +73,27 @@ pub struct InterfaceDefinition {
     pub fields: Vec<FieldDefinitionId>,
     pub directives: Vec<DirectiveId>,
     pub implements: Vec<StringId>,
+    pub span: Span,
+}
+
+pub struct UnionDefinition {
+    pub name: StringId,
+    pub members: Vec<StringId>,
+    pub directives: Vec<DirectiveId>,
+    pub span: Span,
+}
+
+pub struct EnumDefinition {
+    pub name: StringId,
+    pub values: Vec<EnumValueDefinitionId>,
+    pub directives: Vec<DirectiveId>,
+    pub span: Span,
+}
+
+pub struct EnumValueDefinition {
+    pub value: StringId,
+    pub description: Option<StringId>,
+    pub directives: Vec<DirectiveId>,
     pub span: Span,
 }
 
@@ -208,6 +233,36 @@ impl AstBuilder {
         self.ast.definitions.push(AstDefinition::Interface(id));
 
         definition_id
+    }
+
+    pub fn union_definition(&mut self, definition: UnionDefinition) -> DefinitionId {
+        let id = UnionDefinitionId(self.ast.union_definitions.len());
+        self.ast.union_definitions.push(definition);
+
+        let definition_id = DefinitionId(self.ast.definitions.len());
+        self.ast.definitions.push(AstDefinition::Union(id));
+
+        definition_id
+    }
+
+    pub fn enum_definition(&mut self, definition: EnumDefinition) -> DefinitionId {
+        let id = EnumDefinitionId(self.ast.enum_definitions.len());
+        self.ast.enum_definitions.push(definition);
+
+        let definition_id = DefinitionId(self.ast.definitions.len());
+        self.ast.definitions.push(AstDefinition::Enum(id));
+
+        definition_id
+    }
+
+    pub fn enum_value_definition(
+        &mut self,
+        definition: EnumValueDefinition,
+    ) -> EnumValueDefinitionId {
+        let id = EnumValueDefinitionId(self.ast.enum_value_definitions.len());
+        self.ast.enum_value_definitions.push(definition);
+
+        id
     }
 
     pub fn input_object_definition(&mut self, definition: InputObjectDefinition) -> DefinitionId {

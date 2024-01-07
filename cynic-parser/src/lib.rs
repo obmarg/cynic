@@ -5,7 +5,6 @@ mod lexer;
 mod printer;
 
 pub use lexer::Lexer;
-pub use schema::ObjectDefinitionParser;
 
 // TODO: Make this more senseible
 pub use ast::{Ast, AstBuilder};
@@ -70,6 +69,38 @@ mod tests {
         interface MyType implements Blah & Bloo @hello {
           field: Whatever@hello(name: ("string"))
           other: [[Int!]]!
+        }
+        "###
+        );
+    }
+
+    #[test]
+    fn test_basic_union() {
+        insta::assert_snapshot!(
+            parse_type_system_document(r#"
+                union MyType = Blah | Bloo
+                "#
+            ).to_sdl(),
+            @r###"
+        union MyType  = Blah | Bloo
+        "###
+        );
+    }
+
+    #[test]
+    fn test_basic_enum() {
+        insta::assert_snapshot!(
+            parse_type_system_document(r#"
+                enum MyEnum {
+                    BLAH,
+                    BLOO
+                }
+                "#
+            ).to_sdl(),
+            @r###"
+        enum MyEnum  {
+        BLAH 
+        BLOO 
         }
         "###
         );

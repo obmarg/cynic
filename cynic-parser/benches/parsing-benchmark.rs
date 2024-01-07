@@ -5,10 +5,7 @@ pub fn criterion_benchmark(c: &mut Criterion) {
     let input = "type MyType { field: Whatever, field: Whatever }";
     c.bench_function("cynic-parser parse object", |b| {
         b.iter(|| {
-            let lexer = cynic_parser::Lexer::new(input);
-            let object = cynic_parser::ObjectDefinitionParser::new()
-                .parse(input, &mut AstBuilder::new(), lexer)
-                .unwrap();
+            let object = cynic_parser::parse_type_system_document(input);
             black_box(object)
         })
     });

@@ -2,8 +2,8 @@ use crate::{ast, Ast};
 
 use super::{
     ids::{
-        ArgumentId, AstId, AstLookup, DirectiveId, InputValueDefinitionId, InterfaceDefinitionId,
-        TypeId, ValueId,
+        ArgumentId, AstId, AstLookup, DirectiveId, EnumDefinitionId, EnumValueDefinitionId,
+        InputValueDefinitionId, InterfaceDefinitionId, TypeId, UnionDefinitionId, ValueId,
     },
     FieldDefinitionId, InputObjectDefinitionId, ObjectDefinitionId, OperationType,
     SchemaDefinitionId, Type, WrappingType,
@@ -29,6 +29,8 @@ impl Ast {
             ast::AstDefinition::Schema(id) => Definition::Schema(self.read(*id)),
             ast::AstDefinition::Object(id) => Definition::Object(self.read(*id)),
             ast::AstDefinition::Interface(id) => Definition::Interface(self.read(*id)),
+            ast::AstDefinition::Union(id) => Definition::Union(self.read(*id)),
+            ast::AstDefinition::Enum(id) => Definition::Enum(self.read(*id)),
             ast::AstDefinition::InputObject(id) => Definition::InputObject(self.read(*id)),
         })
     }
@@ -38,6 +40,8 @@ pub enum Definition<'a> {
     Schema(AstReader<'a, SchemaDefinitionId>),
     Object(AstReader<'a, ObjectDefinitionId>),
     Interface(AstReader<'a, InterfaceDefinitionId>),
+    Union(AstReader<'a, UnionDefinitionId>),
+    Enum(AstReader<'a, EnumDefinitionId>),
     InputObject(AstReader<'a, InputObjectDefinitionId>),
 }
 
@@ -100,6 +104,71 @@ impl<'a> AstReader<'a, InterfaceDefinitionId> {
             .fields
             .iter()
             .map(|id| self.ast.read(*id))
+    }
+
+    pub fn directives(&self) -> impl Iterator<Item = AstReader<'a, DirectiveId>> + 'a {
+        self.ast
+            .lookup(self.id)
+            .directives
+            .iter()
+            .map(|id| self.ast.read(*id))
+    }
+}
+
+impl<'a> AstReader<'a, UnionDefinitionId> {
+    pub fn name(&self) -> &str {
+        self.ast.lookup(self.ast.lookup(self.id).name)
+    }
+
+    pub fn members(&self) -> impl Iterator<Item = &'a str> + 'a {
+        self.ast
+            .lookup(self.id)
+            .members
+            .iter()
+            .map(|id| self.ast.lookup(*id))
+    }
+
+    pub fn directives(&self) -> impl Iterator<Item = AstReader<'a, DirectiveId>> + 'a {
+        self.ast
+            .lookup(self.id)
+            .directives
+            .iter()
+            .map(|id| self.ast.read(*id))
+    }
+}
+
+impl<'a> AstReader<'a, EnumDefinitionId> {
+    pub fn name(&self) -> &str {
+        self.ast.lookup(self.ast.lookup(self.id).name)
+    }
+
+    pub fn values(&self) -> impl Iterator<Item = AstReader<'a, EnumValueDefinitionId>> + 'a {
+        self.ast
+            .lookup(self.id)
+            .values
+            .iter()
+            .map(|id| self.ast.read(*id))
+    }
+
+    pub fn directives(&self) -> impl Iterator<Item = AstReader<'a, DirectiveId>> + 'a {
+        self.ast
+            .lookup(self.id)
+            .directives
+            .iter()
+            .map(|id| self.ast.read(*id))
+    }
+}
+
+impl<'a> AstReader<'a, EnumValueDefinitionId> {
+    pub fn value(&self) -> &str {
+        self.ast.lookup(self.ast.lookup(self.id).value)
+    }
+
+    pub fn description(&self) -> Option<&'a str> {
+        self.ast
+            .lookup(self.id)
+            .description
+            .map(|id| self.ast.lookup(id))
     }
 
     pub fn directives(&self) -> impl Iterator<Item = AstReader<'a, DirectiveId>> + 'a {

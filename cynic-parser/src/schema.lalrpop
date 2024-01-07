@@ -10,29 +10,31 @@ pub TypeSystemDocument: () = {
     <defs:DefinitionAndDescription+> => ast.definition_descriptions(defs),
 }
 
-pub DefinitionAndDescription: (Option<StringId>, DefinitionId) = {
+DefinitionAndDescription: (Option<StringId>, DefinitionId) = {
     <description:StringValue?> <def:TypeSystemDefinition> => (description, def)
 }
 
-pub TypeSystemDefinition: DefinitionId = {
+TypeSystemDefinition: DefinitionId = {
     <def:SchemaDefinition> => ast.schema_definition(def),
     <def:ObjectDefinition> => ast.object_definition(def),
     <def:InterfaceDefinition> => ast.interface_definition(def),
+    <def:UnionDefinition> => ast.union_definition(def),
+    <def:EnumDefinition> => ast.enum_definition(def),
     <def:InputObjectDefinition> => ast.input_object_definition(def),
 }
 
-pub SchemaDefinition: SchemaDefinition = {
+SchemaDefinition: SchemaDefinition = {
     schema "{" <roots:RootOperationTypeDefinition*> "}" => SchemaDefinition { <> }
 };
 
-pub RootOperationTypeDefinition: RootOperationTypeDefinition = {
+RootOperationTypeDefinition: RootOperationTypeDefinition = {
     query ":" <name:NamedType> => RootOperationTypeDefinition {
         operation_type: OperationType::Query,
         named_type: name
     }
 }
 
-pub ObjectDefinition: ObjectDefinition = {
+ObjectDefinition: ObjectDefinition = {
     <start:@L> ty
         <name:Name>
         <implements:ImplementsInterfaces?>
@@ -105,8 +107,65 @@ pub InterfaceDefinition: InterfaceDefinition = {
     }
 };
 
+UnionDefinition: UnionDefinition = {
+    <start:@L> union
+        <name:Name>
+        <directives:Directive*>
+        <members:UnionMemberTypes?>
+        <end:@R>
+    => UnionDefinition {
+        name,
+        members: members.unwrap_or_default(),
+        directives,
+        span: Span::new(start,end)
+    }
+};
 
-pub InputObjectDefinition: InputObjectDefinition = {
+UnionMemberTypes: Vec<StringId> = {
+    <members:UnionMemberTypes> "|" <name:NamedType> => {
+        let mut members = members;
+        members.push(name);
+        members
+    },
+    "=" "|"? <name:NamedType> => {
+        vec![name]
+    }
+}
+
+EnumDefinition: EnumDefinition = {
+    <start:@L> "enum"
+        <name:Name>
+        <directives:Directive*>
+        <values:EnumValuesDefinition?>
+        <end:@R>
+    => EnumDefinition {
+        name,
+        directives,
+        values: values.unwrap_or_default(),
+        span: Span::new(start,end)
+    }
+};
+
+EnumValuesDefinition: Vec<EnumValueDefinitionId> = {
+    "{" <values:EnumValueDefinition+> "}" => values
+}
+
+EnumValueDefinition: EnumValueDefinitionId = {
+    <start:@L>
+        <description:StringValue?>
+        <value:EnumValue>
+        <directives:Directive*>
+        <end:@R>
+    => ast.enum_value_definition(EnumValueDefinition {
+        value,
+        description,
+        directives,
+        span: Span::new(start,end)
+    })
+
+}
+
+InputObjectDefinition: InputObjectDefinition = {
     <start:@L> input
         <name:Name>
         <directives:Directive*>
@@ -118,13 +177,13 @@ pub InputObjectDefinition: InputObjectDefinition = {
         fields: fields.unwrap_or_default(),
         span: Span::new(start,end)
     }
-};
+}
 
 InputFieldsDefinition: Vec<InputValueDefinitionId> = {
     "{" <fields:InputValueDefinition+> "}" => fields
 };
 
-InputValueDefinition: InputValueDefinitionId=
+InputValueDefinition: InputValueDefinitionId =
     <start:@L>
         <description:StringValue?>
         <name:Name> ":" <ty:Type> <default:DefaultValue?>
@@ -225,6 +284,8 @@ Ident: &'input str = {
     null => "null",
     implements => "implements",
     interface => "interface",
+    "enum" => "enum",
+    union => "union",
 }
 
 extern {
@@ -249,6 +310,7 @@ extern {
         "=" => lexer::Token::Equals,
         "@" => lexer::Token::At,
         "&" => lexer::Token::Ampersand,
+        "|" => lexer::Token::Pipe,
 
         RawIdent => lexer::Token::Identifier(<&'input str>),
 
@@ -268,5 +330,7 @@ extern {
         null => lexer::Token::Null,
         implements => lexer::Token::Implements,
         interface => lexer::Token::Interface,
+        "enum" => lexer::Token::Enum,
+        union => lexer::Token::Union,
     }
 }
