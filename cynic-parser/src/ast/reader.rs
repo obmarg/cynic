@@ -2,7 +2,7 @@ use crate::Ast;
 
 use super::{
     ids::{ArgumentId, AstId, AstLookup, DirectiveId, InputValueDefinitionId, TypeId, ValueId},
-    FieldDefinitionId, InputObjectDefinitionId, NodeContents, ObjectDefinitionId,
+    FieldDefinitionId, InputObjectDefinitionId, NodeContents, ObjectDefinitionId, OperationType,
     SchemaDefinitionId, Type, WrappingType,
 };
 
@@ -50,6 +50,16 @@ pub enum Definition<'a> {
     Schema(AstReader<'a, SchemaDefinitionId>),
     Object(AstReader<'a, ObjectDefinitionId>),
     InputObject(AstReader<'a, InputObjectDefinitionId>),
+}
+
+impl<'a> AstReader<'a, SchemaDefinitionId> {
+    pub fn root_operations(&self) -> impl Iterator<Item = (OperationType, &'a str)> {
+        self.ast
+            .lookup(self.id)
+            .roots
+            .iter()
+            .map(|root| (root.operation_type, self.ast.lookup(root.named_type)))
+    }
 }
 
 impl<'a> AstReader<'a, ObjectDefinitionId> {

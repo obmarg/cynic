@@ -31,7 +31,11 @@ mod tests {
     fn it_works() {
         insta::assert_snapshot!(
             parse_type_system_document("schema { query:Query }").to_sdl(),
-            @""
+            @r###"
+        schema {
+          query: Query
+        }
+        "###
         );
     }
 

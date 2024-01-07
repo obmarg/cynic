@@ -435,7 +435,7 @@ mod tests {
         assert_eq!(lexer.next(), Some(Ok(Token::Colon)));
         assert_eq!(lexer.slice(), ":");
 
-        assert_eq!(lexer.next(), Some(Ok(Token::Identifier("false"))));
+        assert_eq!(lexer.next(), Some(Ok(Token::False)));
         assert_eq!(lexer.slice(), "false");
 
         assert_eq!(lexer.next(), Some(Ok(Token::CloseParen)));

@@ -2,7 +2,7 @@ use crate::Ast;
 
 use super::{
     Argument, Directive, FieldDefinition, InputObjectDefinition, InputValueDefinition, Node,
-    ObjectDefinition, Type, Value,
+    ObjectDefinition, SchemaDefinition, Type, Value,
 };
 
 pub trait AstId {}
@@ -43,6 +43,16 @@ impl AstLookup<StringId> for Ast {
 pub struct SchemaDefinitionId(pub(super) usize);
 
 impl AstId for SchemaDefinitionId {}
+
+impl AstLookup<SchemaDefinitionId> for Ast {
+    type Output = SchemaDefinition;
+
+    fn lookup(&self, index: SchemaDefinitionId) -> &Self::Output {
+        self.schema_definitions
+            .get(index.0)
+            .expect("objects to be present")
+    }
+}
 
 #[derive(Clone, Copy)]
 pub struct ObjectDefinitionId(pub(super) usize);
