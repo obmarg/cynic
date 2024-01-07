@@ -32,8 +32,9 @@ pub RootOperationTypeDefinition: RootOperationTypeDefinition = {
 }
 
 pub ObjectDefinition: ObjectDefinition = {
-    ty <name:Name> <fields:FieldsDefinition?> => ObjectDefinition {
+    ty <name:Name> <directives:Directive*> <fields:FieldsDefinition?> => ObjectDefinition {
         name,
+        directives,
         fields: fields.unwrap_or_default ()
     }
 };
@@ -42,7 +43,6 @@ FieldsDefinition: Vec<NodeId> = {
     "{" <fields:FieldDefinition+> "}" => fields
 };
 
-// TODO: add directives
 FieldDefinition: NodeId = {
     <description:StringValue?> <name:Name> <arguments:ArgumentsDefinition?> ":" <ty:Type> => ast.field_definition(FieldDefinition {
         name,
@@ -57,8 +57,9 @@ ArgumentsDefinition: Vec<NodeId> = {
 };
 
 pub InputObjectDefinition: InputObjectDefinition = {
-    input <name:Name> <fields:InputFieldsDefinition?> => InputObjectDefinition {
+    input <name:Name> <directives:Directive*> <fields:InputFieldsDefinition?> => InputObjectDefinition {
         name,
+        directives,
         fields: fields.unwrap_or_default()
     }
 };
@@ -132,6 +133,21 @@ EnumValue: StringId = {
     input => ast.ident("input"),
 }
 
+Directive: DirectiveId = {
+    "@" <name:Name> <arguments:Arguments?> => ast.directive(Directive {
+        name,
+        arguments: arguments.unwrap_or_default()
+    })
+}
+
+Arguments: Vec<ArgumentId> = {
+    "(" <arguments:Argument*> ")" => arguments
+}
+
+Argument: ArgumentId = {
+    <name:Name> ":" <value:Value> => ast.argument(Argument { <> }),
+}
+
 // TODO: Make this NodeId probably...
 Ident: &'input str = {
     <s:RawIdent> => s,
@@ -164,6 +180,7 @@ extern {
 
         "!" => lexer::Token::Exclamation,
         "=" => lexer::Token::Equals,
+        "@" => lexer::Token::At,
 
         RawIdent => lexer::Token::Identifier(<&'input str>),
 

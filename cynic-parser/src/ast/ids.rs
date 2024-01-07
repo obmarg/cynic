@@ -1,8 +1,8 @@
 use crate::Ast;
 
 use super::{
-    FieldDefinition, InputObjectDefinition, InputValueDefinition, Node, ObjectDefinition, Type,
-    Value,
+    Argument, Directive, FieldDefinition, InputObjectDefinition, InputValueDefinition, Node,
+    ObjectDefinition, Type, Value,
 };
 
 pub trait AstId {}
@@ -115,6 +115,32 @@ impl AstLookup<TypeId> for Ast {
         self.type_references
             .get(index.0)
             .expect("types to be present")
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct DirectiveId(pub(super) usize);
+
+impl AstId for DirectiveId {}
+
+impl AstLookup<DirectiveId> for Ast {
+    type Output = Directive;
+
+    fn lookup(&self, index: DirectiveId) -> &Self::Output {
+        self.directives.get(index.0).expect("values to be present")
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ArgumentId(pub(super) usize);
+
+impl AstId for ArgumentId {}
+
+impl AstLookup<ArgumentId> for Ast {
+    type Output = Argument;
+
+    fn lookup(&self, index: ArgumentId) -> &Self::Output {
+        self.arguments.get(index.0).expect("values to be present")
     }
 }
 

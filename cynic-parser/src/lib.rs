@@ -38,9 +38,9 @@ mod tests {
     #[test]
     fn test_basic_object() {
         insta::assert_snapshot!(
-            parse_type_system_document("type MyType { field: Whatever, other: [[Int!]]! }").to_sdl(),
+            parse_type_system_document("type MyType @hello { field: Whatever, other: [[Int!]]! }").to_sdl(),
             @r###"
-        type MyType {
+        type MyType @hello {
           field: Whatever
           other: [[Int!]]!
         }
@@ -54,8 +54,8 @@ mod tests {
         insta::assert_snapshot!(
             parse_type_system_document( "type MyType { query: String }").to_sdl(),
             @r###"
-        type MyType {
-          query: TODO
+        type MyType  {
+          query: String
         }
         "###
         )
@@ -67,11 +67,11 @@ mod tests {
             parse_type_system_document(
                 r#"
                 "I am a description"
-                input MyType { query: String = "Hello" }
+                input MyType @hello { query: String = "Hello" }
                 "#
             ).to_sdl(),
             @r###"
-        type MyType {
+        input MyType @hello {
           query: String = "Hello"
         }
         "###

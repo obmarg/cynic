@@ -1,7 +1,7 @@
 use crate::Ast;
 
 use super::{
-    ids::{AstId, AstLookup, InputValueDefinitionId, TypeId, ValueId},
+    ids::{ArgumentId, AstId, AstLookup, DirectiveId, InputValueDefinitionId, TypeId, ValueId},
     FieldDefinitionId, InputObjectDefinitionId, NodeContents, ObjectDefinitionId,
     SchemaDefinitionId, Type, WrappingType,
 };
@@ -67,6 +67,14 @@ impl<'a> AstReader<'a, ObjectDefinitionId> {
                 _ => unreachable!(),
             })
     }
+
+    pub fn directives(&self) -> impl Iterator<Item = AstReader<'a, DirectiveId>> + 'a {
+        self.ast
+            .lookup(self.id)
+            .directives
+            .iter()
+            .map(|id| self.ast.read(*id))
+    }
 }
 
 impl<'a> AstReader<'a, InputObjectDefinitionId> {
@@ -83,6 +91,14 @@ impl<'a> AstReader<'a, InputObjectDefinitionId> {
                 NodeContents::InputValueDefinition(id) => self.ast.read(id),
                 _ => unreachable!(),
             })
+    }
+
+    pub fn directives(&self) -> impl Iterator<Item = AstReader<'a, DirectiveId>> + 'a {
+        self.ast
+            .lookup(self.id)
+            .directives
+            .iter()
+            .map(|id| self.ast.read(*id))
     }
 }
 
@@ -116,6 +132,30 @@ impl<'a> AstReader<'a, InputValueDefinitionId> {
 
     pub fn default_value(&self) -> Option<AstReader<'a, ValueId>> {
         self.ast.lookup(self.id).default.map(|id| self.ast.read(id))
+    }
+}
+
+impl<'a> AstReader<'a, DirectiveId> {
+    pub fn name(&self) -> &str {
+        self.ast.lookup(self.ast.lookup(self.id).name)
+    }
+
+    pub fn arguments(&self) -> impl Iterator<Item = AstReader<'a, ArgumentId>> {
+        self.ast
+            .lookup(self.id)
+            .arguments
+            .iter()
+            .map(|id| self.ast.read(*id))
+    }
+}
+
+impl<'a> AstReader<'a, ArgumentId> {
+    pub fn name(&self) -> &str {
+        self.ast.lookup(self.ast.lookup(self.id).name)
+    }
+
+    pub fn value(&self) -> AstReader<'a, ValueId> {
+        self.ast.read(self.ast.lookup(self.id).value)
     }
 }
 

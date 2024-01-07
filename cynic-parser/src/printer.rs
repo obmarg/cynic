@@ -4,8 +4,8 @@ use pretty::{Arena, BoxAllocator, DocAllocator, Pretty};
 
 use crate::ast::{
     ids::{
-        FieldDefinitionId, InputObjectDefinitionId, InputValueDefinitionId, ObjectDefinitionId,
-        TypeId, ValueId,
+        ArgumentId, DirectiveId, FieldDefinitionId, InputObjectDefinitionId,
+        InputValueDefinitionId, ObjectDefinitionId, TypeId, ValueId,
     },
     AstReader, Definition,
 };
@@ -38,7 +38,11 @@ pub struct NodeDisplay<'a, T>(AstReader<'a, T>);
 impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, ObjectDefinitionId> {
     fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
         allocator
-            .text(format!("type {} {{", self.0.name()))
+            .text(format!("type {}", self.0.name()))
+            .append(allocator.space())
+            .append(allocator.intersperse(self.0.directives().map(NodeDisplay), allocator.line()))
+            .append(allocator.space())
+            .append(allocator.text("{"))
             .append(allocator.hardline())
             .append(allocator.text("  "))
             .append(
@@ -64,7 +68,11 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, FieldDefinitionId> {
 impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, InputObjectDefinitionId> {
     fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
         allocator
-            .text(format!("type {} {{", self.0.name()))
+            .text(format!("input {}", self.0.name()))
+            .append(allocator.space())
+            .append(allocator.intersperse(self.0.directives().map(NodeDisplay), allocator.line()))
+            .append(allocator.space())
+            .append(allocator.text("{"))
             .append(allocator.hardline())
             .append(allocator.text("  "))
             .append(
@@ -100,6 +108,32 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, InputValueDefinitionId> {
 impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, TypeId> {
     fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
         allocator.text(self.0.to_string())
+    }
+}
+
+impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, DirectiveId> {
+    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+        let mut builder = allocator.text(format!("@{}", self.0.name()));
+
+        let arguments = self.0.arguments().collect::<Vec<_>>();
+        if !arguments.is_empty() {
+            builder = builder.append(
+                allocator
+                    .intersperse(arguments.into_iter().map(NodeDisplay), ", ")
+                    .parens(),
+            );
+        }
+        builder
+    }
+}
+
+impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, ArgumentId> {
+    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+        allocator
+            .text(self.0.name().to_string())
+            .append(allocator.text(":"))
+            .append(allocator.space())
+            .append(NodeDisplay(self.0.value()))
     }
 }
 

@@ -28,6 +28,8 @@ pub struct Ast {
     string_literals: Vec<StringLiteral>,
 
     values: Vec<Value>,
+    directives: Vec<Directive>,
+    arguments: Vec<Argument>,
 
     definition_descriptions: HashMap<NodeId, NodeId>,
 }
@@ -55,6 +57,7 @@ pub struct SchemaDefinition {
 pub struct ObjectDefinition {
     pub name: StringId,
     pub fields: Vec<NodeId>,
+    pub directives: Vec<DirectiveId>,
 }
 
 pub struct FieldDefinition {
@@ -67,6 +70,7 @@ pub struct FieldDefinition {
 pub struct InputObjectDefinition {
     pub name: StringId,
     pub fields: Vec<NodeId>,
+    pub directives: Vec<DirectiveId>,
 }
 
 pub struct InputValueDefinition {
@@ -101,6 +105,16 @@ pub enum OperationType {
 pub enum StringLiteral {
     Normal(StringId),
     Block(StringId),
+}
+
+pub struct Directive {
+    pub name: StringId,
+    pub arguments: Vec<ArgumentId>,
+}
+
+pub struct Argument {
+    pub name: StringId,
+    pub value: ValueId,
 }
 
 pub enum Value {
@@ -195,6 +209,18 @@ impl Ast {
         let ty_id = TypeId(self.type_references.len());
         self.type_references.push(ty);
         ty_id
+    }
+
+    pub fn directive(&mut self, directive: Directive) -> DirectiveId {
+        let id = DirectiveId(self.directives.len());
+        self.directives.push(directive);
+        id
+    }
+
+    pub fn argument(&mut self, argument: Argument) -> ArgumentId {
+        let id = ArgumentId(self.arguments.len());
+        self.arguments.push(argument);
+        id
     }
 
     pub fn value(&mut self, value: Value) -> ValueId {
