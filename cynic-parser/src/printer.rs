@@ -90,9 +90,16 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, ObjectDefinitionId> {
                 .append(allocator.space());
         }
 
+        let directives = self.0.directives().collect::<Vec<_>>();
+        if !directives.is_empty() {
+            builder = builder
+                .append(
+                    allocator.intersperse(self.0.directives().map(NodeDisplay), allocator.line()),
+                )
+                .append(allocator.space());
+        }
+
         builder
-            .append(allocator.intersperse(self.0.directives().map(NodeDisplay), allocator.line()))
-            .append(allocator.space())
             .append(allocator.text("{"))
             .append(allocator.hardline())
             .append(allocator.text("  "))
