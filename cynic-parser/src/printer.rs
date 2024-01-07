@@ -1,6 +1,9 @@
 use std::fmt::{Display, Write};
 
-use crate::ast::{ids::ObjectDefinitionId, AstReader, Definition};
+use crate::ast::{
+    ids::{InputObjectDefinitionId, ObjectDefinitionId},
+    AstReader, Definition,
+};
 
 impl crate::Ast {
     pub fn to_sdl(&self) -> String {
@@ -25,6 +28,16 @@ pub struct NodeDisplay<'a, T>(AstReader<'a, T>);
 impl Display for NodeDisplay<'_, ObjectDefinitionId> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         writeln!(f, "type {} {{", self.0.name())?;
+        for field in self.0.fields() {
+            writeln!(f, "  {}: {}", field.name(), "TODO")?;
+        }
+        writeln!(f, "}}")
+    }
+}
+
+impl Display for NodeDisplay<'_, InputObjectDefinitionId> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        writeln!(f, "input {} {{", self.0.name())?;
         for field in self.0.fields() {
             writeln!(f, "  {}: {}", field.name(), "TODO")?;
         }

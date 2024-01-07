@@ -47,6 +47,16 @@ impl Index<ObjectDefinitionId> for Ast {
 #[derive(Clone, Copy)]
 pub struct InputObjectDefinitionId(pub(super) usize);
 
+impl Index<InputObjectDefinitionId> for Ast {
+    type Output = InputObjectDefinition;
+
+    fn index(&self, index: InputObjectDefinitionId) -> &Self::Output {
+        self.input_object_definitions
+            .get(index.0)
+            .expect("objects to be present")
+    }
+}
+
 #[derive(Clone, Copy)]
 pub struct FieldDefinitionId(pub(super) usize);
 

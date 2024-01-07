@@ -65,6 +65,25 @@ impl<'a> AstReader<'a, ObjectDefinitionId> {
     }
 }
 
+impl<'a> AstReader<'a, InputObjectDefinitionId> {
+    pub fn name(&self) -> &str {
+        match self.ast[self.ast[self.id].name].contents {
+            NodeContents::Ident(id) => &self.ast[id],
+            _ => unreachable!(),
+        }
+    }
+
+    pub fn fields(&self) -> impl IntoIterator<Item = AstReader<'a, InputValueDefinitionId>> + 'a {
+        self.ast[self.id]
+            .fields
+            .iter()
+            .map(|node| match self.ast[*node].contents {
+                NodeContents::InputValueDefinition(id) => AstReader { id, ast: self.ast },
+                _ => unreachable!(),
+            })
+    }
+}
+
 impl<'a> AstReader<'a, FieldDefinitionId> {
     pub fn name(&self) -> &str {
         match self.ast[self.ast[self.id].name].contents {
