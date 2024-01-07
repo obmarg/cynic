@@ -4,9 +4,9 @@ use pretty::{Arena, BoxAllocator, DocAllocator, Pretty};
 
 use crate::ast::{
     ids::{
-        ArgumentId, DirectiveId, FieldDefinitionId, InputObjectDefinitionId,
-        InputValueDefinitionId, InterfaceDefinitionId, ObjectDefinitionId, SchemaDefinitionId,
-        TypeId, ValueId,
+        ArgumentId, DirectiveId, EnumDefinitionId, EnumValueDefinitionId, FieldDefinitionId,
+        InputObjectDefinitionId, InputValueDefinitionId, InterfaceDefinitionId, ObjectDefinitionId,
+        SchemaDefinitionId, TypeId, UnionDefinitionId, ValueId,
     },
     AstDefinition, AstReader, Definition,
 };
@@ -20,6 +20,8 @@ impl crate::Ast {
                 Definition::Schema(reader) => NodeDisplay(reader).pretty(&allocator),
                 Definition::Object(reader) => NodeDisplay(reader).pretty(&allocator),
                 Definition::Interface(reader) => NodeDisplay(reader).pretty(&allocator),
+                Definition::Union(reader) => NodeDisplay(reader).pretty(&allocator),
+                Definition::Enum(reader) => NodeDisplay(reader).pretty(&allocator),
                 Definition::InputObject(reader) => NodeDisplay(reader).pretty(&allocator),
             }))
             .pretty(&allocator);
@@ -134,6 +136,63 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, InterfaceDefinitionId> {
             )
             .append(allocator.hardline())
             .append(allocator.text("}"))
+    }
+}
+
+impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, UnionDefinitionId> {
+    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+        let mut builder = allocator
+            .text(format!("union {}", self.0.name()))
+            .append(allocator.space())
+            .append(allocator.intersperse(self.0.directives().map(NodeDisplay), allocator.line()))
+            .append(allocator.space());
+
+        let members = self.0.members().collect::<Vec<_>>();
+
+        if !members.is_empty() {
+            builder = builder
+                .append(allocator.text("="))
+                .append(allocator.space())
+                .append(allocator.intersperse(members, allocator.text(" | ")))
+                .append(allocator.hardline());
+        }
+
+        builder
+    }
+}
+
+impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, EnumDefinitionId> {
+    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+        let mut builder = allocator
+            .text(format!("enum {}", self.0.name()))
+            .append(allocator.space())
+            .append(allocator.intersperse(self.0.directives().map(NodeDisplay), allocator.line()))
+            .append(allocator.space());
+
+        let values = self.0.values().collect::<Vec<_>>();
+
+        if !values.is_empty() {
+            builder = builder
+                .append(allocator.text("{"))
+                .append(allocator.hardline())
+                .append(
+                    allocator
+                        .intersperse(values.into_iter().map(NodeDisplay), allocator.hardline()),
+                )
+                .append(allocator.hardline())
+                .append(allocator.text("}"));
+        }
+
+        builder
+    }
+}
+
+impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, EnumValueDefinitionId> {
+    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+        allocator
+            .text(self.0.value().to_string())
+            .append(allocator.space())
+            .append(allocator.intersperse(self.0.directives().map(NodeDisplay), allocator.space()))
     }
 }
 

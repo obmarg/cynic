@@ -1,8 +1,9 @@
 use crate::Ast;
 
 use super::{
-    Argument, AstDefinition, Directive, FieldDefinition, InputObjectDefinition,
-    InputValueDefinition, InterfaceDefinition, ObjectDefinition, SchemaDefinition, Type, Value,
+    Argument, AstDefinition, Directive, EnumDefinition, EnumValueDefinition, FieldDefinition,
+    InputObjectDefinition, InputValueDefinition, InterfaceDefinition, ObjectDefinition,
+    SchemaDefinition, Type, UnionDefinition, Value,
 };
 
 pub trait AstId {}
@@ -81,6 +82,51 @@ impl AstLookup<InterfaceDefinitionId> for Ast {
 
     fn lookup(&self, index: InterfaceDefinitionId) -> &Self::Output {
         self.interface_definitions
+            .get(index.0)
+            .expect("objects to be present")
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct UnionDefinitionId(pub(super) usize);
+
+impl AstId for UnionDefinitionId {}
+
+impl AstLookup<UnionDefinitionId> for Ast {
+    type Output = UnionDefinition;
+
+    fn lookup(&self, index: UnionDefinitionId) -> &Self::Output {
+        self.union_definitions
+            .get(index.0)
+            .expect("objects to be present")
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct EnumDefinitionId(pub(super) usize);
+
+impl AstId for EnumDefinitionId {}
+
+impl AstLookup<EnumDefinitionId> for Ast {
+    type Output = EnumDefinition;
+
+    fn lookup(&self, index: EnumDefinitionId) -> &Self::Output {
+        self.enum_definitions
+            .get(index.0)
+            .expect("objects to be present")
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct EnumValueDefinitionId(pub(super) usize);
+
+impl AstId for EnumValueDefinitionId {}
+
+impl AstLookup<EnumValueDefinitionId> for Ast {
+    type Output = EnumValueDefinition;
+
+    fn lookup(&self, index: EnumValueDefinitionId) -> &Self::Output {
+        self.enum_value_definitions
             .get(index.0)
             .expect("objects to be present")
     }

@@ -104,6 +104,12 @@ pub enum Token<'a> {
     #[token("interface")]
     Interface,
 
+    #[token("enum")]
+    Enum,
+
+    #[token("union")]
+    Union,
+
     // IntegerPart:    -?(0|[1-9][0-9]*)
     // FractionalPart: \\.[0-9]+
     // ExponentPart:   [eE][+-]?[0-9]+
@@ -270,6 +276,8 @@ impl fmt::Display for Token<'_> {
             Token::Null => "null,",
             Token::Implements => "implements",
             Token::Interface => "interface",
+            Token::Enum => "enum",
+            Token::Union => "union",
         };
         f.write_str(message)
     }
