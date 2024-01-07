@@ -1,5 +1,7 @@
 use std::fmt::{Display, Write};
 
+use pretty::{Arena, BoxAllocator, DocAllocator, Pretty};
+
 use crate::ast::{
     ids::{InputObjectDefinitionId, ObjectDefinitionId},
     AstReader, Definition,
@@ -20,6 +22,12 @@ impl crate::Ast {
         }
 
         output
+    }
+}
+
+impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, ObjectDefinitionId> {
+    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+        pretty::docs![allocator, "type", self.0.name()]
     }
 }
 

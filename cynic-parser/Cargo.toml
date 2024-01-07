@@ -5,10 +5,16 @@ edition = "2021"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[features]
+# TODO: Disable this at some point
+default = ["sdl"]
+sdl = ["pretty"]
+
 [dependencies]
 indexmap = "2"
 lalrpop-util = "0.20.0"
 logos = "0.13"
+pretty = { version = "0.12", optional = true }
 
 [dev-dependencies]
 criterion = "0.4"
