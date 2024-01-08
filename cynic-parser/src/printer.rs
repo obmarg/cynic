@@ -4,9 +4,10 @@ use pretty::{Arena, BoxAllocator, DocAllocator, Pretty};
 
 use crate::ast::{
     ids::{
-        ArgumentId, DirectiveId, EnumDefinitionId, EnumValueDefinitionId, FieldDefinitionId,
-        InputObjectDefinitionId, InputValueDefinitionId, InterfaceDefinitionId, ObjectDefinitionId,
-        ScalarDefinitionId, SchemaDefinitionId, TypeId, UnionDefinitionId, ValueId,
+        ArgumentId, DirectiveDefinitionId, DirectiveId, EnumDefinitionId, EnumValueDefinitionId,
+        FieldDefinitionId, InputObjectDefinitionId, InputValueDefinitionId, InterfaceDefinitionId,
+        ObjectDefinitionId, ScalarDefinitionId, SchemaDefinitionId, TypeId, UnionDefinitionId,
+        ValueId,
     },
     AstDefinition, AstReader, Definition,
 };
@@ -25,6 +26,7 @@ impl crate::Ast {
                     Definition::Union(reader) => NodeDisplay(reader).pretty(&allocator),
                     Definition::Enum(reader) => NodeDisplay(reader).pretty(&allocator),
                     Definition::InputObject(reader) => NodeDisplay(reader).pretty(&allocator),
+                    Definition::Directive(reader) => NodeDisplay(reader).pretty(&allocator),
                 }),
                 allocator.concat([allocator.hardline(), allocator.hardline()]),
             )
@@ -346,6 +348,46 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, InputValueDefinitionId> {
         }
 
         builder.append(allocator.intersperse(self.0.directives().map(NodeDisplay), " "))
+    }
+}
+
+impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, DirectiveDefinitionId> {
+    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+        let mut builder = allocator.nil();
+
+        if let Some(description) = self.0.description() {
+            builder = builder
+                .append(description.to_string())
+                .append(allocator.hardline());
+        }
+
+        builder = builder.append(allocator.text(format!("directive @{}", self.0.name())));
+
+        let mut arguments = self.0.arguments().peekable();
+
+        if arguments.peek().is_some() {
+            builder = builder
+                .append(
+                    allocator
+                        .intersperse(arguments.map(NodeDisplay), ", ")
+                        .parens(),
+                )
+                .append(allocator.space())
+        }
+
+        if self.0.is_repeatable() {
+            builder = builder
+                .append(allocator.text("repeatable"))
+                .append(allocator.space())
+        }
+
+        builder
+            .append(allocator.text("on"))
+            .append(allocator.space())
+            .append(allocator.intersperse(
+                self.0.locations().map(|location| location.to_string()),
+                allocator.text(" | "),
+            ))
     }
 }
 

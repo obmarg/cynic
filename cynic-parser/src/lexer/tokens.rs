@@ -113,6 +113,15 @@ pub enum Token<'a> {
     #[token("scalar")]
     Scalar,
 
+    #[token("directive")]
+    Directive,
+
+    #[token("repeatable")]
+    Repeatable,
+
+    #[token("on")]
+    On,
+
     // IntegerPart:    -?(0|[1-9][0-9]*)
     // FractionalPart: \\.[0-9]+
     // ExponentPart:   [eE][+-]?[0-9]+
@@ -282,6 +291,9 @@ impl fmt::Display for Token<'_> {
             Token::Enum => "enum",
             Token::Union => "union",
             Token::Scalar => "scalar",
+            Token::Directive => "directive",
+            Token::Repeatable => "repeatable",
+            Token::On => "on",
         };
         f.write_str(message)
     }
