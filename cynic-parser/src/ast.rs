@@ -1,4 +1,4 @@
-use std::{collections::HashMap, str::FromStr};
+use std::str::FromStr;
 
 use ids::*;
 use indexmap::IndexSet;
@@ -276,6 +276,7 @@ pub enum Value {
     Object(Vec<(StringId, ValueId)>),
 }
 
+#[derive(Default)]
 pub struct AstBuilder {
     ast: Ast,
 }

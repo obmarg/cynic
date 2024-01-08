@@ -403,22 +403,23 @@ pub enum ValueReader<'a> {
     Object(Vec<(&'a str, AstReader<'a, ValueId>)>),
 }
 
-impl<'a> AstReader<'a, TypeId> {
-    pub fn to_string(&self) -> String {
+impl<'a> std::fmt::Display for AstReader<'a, TypeId> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let Type { name, wrappers } = self.ast.lookup(self.id);
-        let mut output = String::new();
+
         for wrapping in wrappers.iter().rev() {
             if let WrappingType::List = wrapping {
-                output.push('[');
+                write!(f, "[")?;
             }
         }
-        output.push_str(self.ast.lookup(*name));
+        write!(f, "{}", self.ast.lookup(*name))?;
         for wrapping in wrappers.iter() {
             match wrapping {
-                WrappingType::NonNull => output.push('!'),
-                WrappingType::List => output.push(']'),
+                WrappingType::NonNull => write!(f, "!")?,
+                WrappingType::List => write!(f, "]")?,
             }
         }
-        output
+
+        Ok(())
     }
 }

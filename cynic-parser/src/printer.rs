@@ -1,6 +1,4 @@
-use std::fmt::{Display, Write};
-
-use pretty::{Arena, BoxAllocator, DocAllocator, Pretty};
+use pretty::{BoxAllocator, DocAllocator, Pretty};
 
 use crate::ast::{
     ids::{
@@ -9,7 +7,7 @@ use crate::ast::{
         ObjectDefinitionId, ScalarDefinitionId, SchemaDefinitionId, TypeId, UnionDefinitionId,
         ValueId,
     },
-    AstDefinition, AstReader, Definition,
+    AstReader, Definition,
 };
 
 impl crate::Ast {
