@@ -16,20 +16,23 @@ impl crate::Ast {
         let allocator = BoxAllocator;
 
         let builder = allocator
-            .concat(self.definitions().map(|definition| match definition {
-                Definition::Schema(reader) => NodeDisplay(reader).pretty(&allocator),
-                Definition::Scalar(reader) => NodeDisplay(reader).pretty(&allocator),
-                Definition::Object(reader) => NodeDisplay(reader).pretty(&allocator),
-                Definition::Interface(reader) => NodeDisplay(reader).pretty(&allocator),
-                Definition::Union(reader) => NodeDisplay(reader).pretty(&allocator),
-                Definition::Enum(reader) => NodeDisplay(reader).pretty(&allocator),
-                Definition::InputObject(reader) => NodeDisplay(reader).pretty(&allocator),
-            }))
+            .intersperse(
+                self.definitions().map(|definition| match definition {
+                    Definition::Schema(reader) => NodeDisplay(reader).pretty(&allocator),
+                    Definition::Scalar(reader) => NodeDisplay(reader).pretty(&allocator),
+                    Definition::Object(reader) => NodeDisplay(reader).pretty(&allocator),
+                    Definition::Interface(reader) => NodeDisplay(reader).pretty(&allocator),
+                    Definition::Union(reader) => NodeDisplay(reader).pretty(&allocator),
+                    Definition::Enum(reader) => NodeDisplay(reader).pretty(&allocator),
+                    Definition::InputObject(reader) => NodeDisplay(reader).pretty(&allocator),
+                }),
+                allocator.concat([allocator.hardline(), allocator.hardline()]),
+            )
             .pretty(&allocator);
 
         #[allow(clippy::needless_borrow)] // This doesn't work without the borrow :|
         {
-            format!("{}", (&*builder).pretty(80))
+            format!("{}\n", (&*builder).pretty(80))
         }
     }
 }
@@ -38,10 +41,18 @@ pub struct NodeDisplay<'a, T>(AstReader<'a, T>);
 
 impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, SchemaDefinitionId> {
     fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
-        let mut builder = allocator.text("schema");
-        let roots = self.0.root_operations().collect::<Vec<_>>();
+        let mut builder = allocator.nil();
 
-        if !roots.is_empty() {
+        if let Some(description) = self.0.description() {
+            builder = builder
+                .append(description.to_string())
+                .append(allocator.hardline());
+        }
+
+        builder = builder.append(allocator.text("schema"));
+
+        let mut roots = self.0.root_operations().peekable();
+        if roots.peek().is_some() {
             builder = builder
                 .append(allocator.space())
                 .append(allocator.text("{"))
@@ -50,7 +61,7 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, SchemaDefinitionId> {
                 .append(
                     allocator
                         .intersperse(
-                            roots.into_iter().map(|(kind, name)| {
+                            roots.map(|(kind, name)| {
                                 allocator.text(kind.to_string()).append(": ").append(name)
                             }),
                             allocator.hardline(),
@@ -67,8 +78,16 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, SchemaDefinitionId> {
 
 impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, ScalarDefinitionId> {
     fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
-        allocator
-            .text(format!("scalar {}", self.0.name()))
+        let mut builder = allocator.nil();
+
+        if let Some(description) = self.0.description() {
+            builder = builder
+                .append(description.to_string())
+                .append(allocator.hardline());
+        }
+
+        builder
+            .append(allocator.text(format!("scalar {}", self.0.name())))
             .append(allocator.space())
             .append(allocator.intersperse(self.0.directives().map(NodeDisplay), allocator.line()))
     }
@@ -76,33 +95,50 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, ScalarDefinitionId> {
 
 impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, ObjectDefinitionId> {
     fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
-        let mut builder = allocator
-            .text(format!("type {}", self.0.name()))
-            .append(allocator.space());
+        let mut builder = allocator.nil();
+
+        if let Some(description) = self.0.description() {
+            builder = builder
+                .append(description.to_string())
+                .append(allocator.hardline());
+        }
+
+        builder = builder.append(allocator.text(format!("type {}", self.0.name())));
 
         let interfaces = self.0.implements_interfaces().collect::<Vec<_>>();
 
         if !interfaces.is_empty() {
             builder = builder
+                .append(allocator.space())
                 .append(allocator.text("implements"))
                 .append(allocator.space())
                 .append(allocator.intersperse(interfaces, " & "))
-                .append(allocator.space());
+        }
+
+        let mut directives = self.0.directives().peekable();
+        if directives.peek().is_some() {
+            builder = builder
+                .append(allocator.space())
+                .append(allocator.intersperse(directives.map(NodeDisplay), allocator.line()));
+        }
+
+        let mut fields = self.0.fields().peekable();
+        if fields.peek().is_some() {
+            builder = builder
+                .append(allocator.space())
+                .append(allocator.text("{"))
+                .append(allocator.hardline())
+                .append(allocator.text("  "))
+                .append(
+                    allocator
+                        .intersperse(fields.map(NodeDisplay), allocator.hardline())
+                        .align(),
+                )
+                .append(allocator.hardline())
+                .append(allocator.text("}"));
         }
 
         builder
-            .append(allocator.intersperse(self.0.directives().map(NodeDisplay), allocator.line()))
-            .append(allocator.space())
-            .append(allocator.text("{"))
-            .append(allocator.hardline())
-            .append(allocator.text("  "))
-            .append(
-                allocator
-                    .intersperse(self.0.fields().map(NodeDisplay), allocator.hardline())
-                    .align(),
-            )
-            .append(allocator.hardline())
-            .append(allocator.text("}"))
     }
 }
 
@@ -119,52 +155,79 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, FieldDefinitionId> {
 
 impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, InterfaceDefinitionId> {
     fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
-        let mut builder = allocator
-            .text(format!("interface {}", self.0.name()))
-            .append(allocator.space());
+        let mut builder = allocator.nil();
+
+        if let Some(description) = self.0.description() {
+            builder = builder
+                .append(description.to_string())
+                .append(allocator.hardline());
+        }
+
+        builder = builder.append(allocator.text(format!("interface {}", self.0.name())));
 
         let interfaces = self.0.implements_interfaces().collect::<Vec<_>>();
-
         if !interfaces.is_empty() {
             builder = builder
+                .append(allocator.space())
                 .append(allocator.text("implements"))
                 .append(allocator.space())
                 .append(allocator.intersperse(interfaces, " & "))
-                .append(allocator.space());
+        }
+
+        let mut directives = self.0.directives().peekable();
+        if directives.peek().is_some() {
+            builder = builder
+                .append(allocator.space())
+                .append(allocator.intersperse(directives.map(NodeDisplay), allocator.line()));
+        }
+
+        let mut fields = self.0.fields().peekable();
+        if fields.peek().is_some() {
+            builder = builder
+                .append(allocator.space())
+                .append(allocator.text("{"))
+                .append(allocator.hardline())
+                .append(allocator.text("  "))
+                .append(
+                    allocator
+                        .intersperse(fields.map(NodeDisplay), allocator.hardline())
+                        .align(),
+                )
+                .append(allocator.hardline())
+                .append(allocator.text("}"));
         }
 
         builder
-            .append(allocator.intersperse(self.0.directives().map(NodeDisplay), allocator.line()))
-            .append(allocator.space())
-            .append(allocator.text("{"))
-            .append(allocator.hardline())
-            .append(allocator.text("  "))
-            .append(
-                allocator
-                    .intersperse(self.0.fields().map(NodeDisplay), allocator.hardline())
-                    .align(),
-            )
-            .append(allocator.hardline())
-            .append(allocator.text("}"))
     }
 }
 
 impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, UnionDefinitionId> {
     fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
-        let mut builder = allocator
-            .text(format!("union {}", self.0.name()))
-            .append(allocator.space())
-            .append(allocator.intersperse(self.0.directives().map(NodeDisplay), allocator.line()))
-            .append(allocator.space());
+        let mut builder = allocator.nil();
+
+        if let Some(description) = self.0.description() {
+            builder = builder
+                .append(description.to_string())
+                .append(allocator.hardline());
+        }
+
+        builder = builder.append(allocator.text(format!("union {}", self.0.name())));
+
+        let mut directives = self.0.directives().peekable();
+        if directives.peek().is_some() {
+            builder = builder
+                .append(allocator.space())
+                .append(allocator.intersperse(directives.map(NodeDisplay), allocator.line()));
+        }
 
         let members = self.0.members().collect::<Vec<_>>();
 
         if !members.is_empty() {
             builder = builder
+                .append(allocator.space())
                 .append(allocator.text("="))
                 .append(allocator.space())
                 .append(allocator.intersperse(members, allocator.text(" | ")))
-                .append(allocator.hardline());
         }
 
         builder
@@ -173,11 +236,24 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, UnionDefinitionId> {
 
 impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, EnumDefinitionId> {
     fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
-        let mut builder = allocator
-            .text(format!("enum {}", self.0.name()))
-            .append(allocator.space())
-            .append(allocator.intersperse(self.0.directives().map(NodeDisplay), allocator.line()))
+        let mut builder = allocator.nil();
+
+        if let Some(description) = self.0.description() {
+            builder = builder
+                .append(description.to_string())
+                .append(allocator.hardline());
+        }
+
+        builder = builder
+            .append(allocator.text(format!("enum {}", self.0.name())))
             .append(allocator.space());
+
+        let mut directives = self.0.directives().peekable();
+        if directives.peek().is_some() {
+            builder = builder
+                .append(allocator.space())
+                .append(allocator.intersperse(directives.map(NodeDisplay), allocator.line()));
+        }
 
         let values = self.0.values().collect::<Vec<_>>();
 
@@ -187,7 +263,9 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, EnumDefinitionId> {
                 .append(allocator.hardline())
                 .append(
                     allocator
-                        .intersperse(values.into_iter().map(NodeDisplay), allocator.hardline()),
+                        .intersperse(values.into_iter().map(NodeDisplay), allocator.hardline())
+                        .indent(2)
+                        .align(),
                 )
                 .append(allocator.hardline())
                 .append(allocator.text("}"));
@@ -199,30 +277,55 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, EnumDefinitionId> {
 
 impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, EnumValueDefinitionId> {
     fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
-        allocator
-            .text(self.0.value().to_string())
-            .append(allocator.space())
-            .append(allocator.intersperse(self.0.directives().map(NodeDisplay), allocator.space()))
+        let mut builder = allocator.text(self.0.value().to_string());
+
+        let mut directives = self.0.directives().peekable();
+        if directives.peek().is_some() {
+            builder = builder
+                .append(allocator.space())
+                .append(allocator.intersperse(directives.map(NodeDisplay), allocator.line()));
+        }
+
+        builder
     }
 }
 
 impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, InputObjectDefinitionId> {
     fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
-        allocator
-            .text(format!("input {}", self.0.name()))
-            .append(allocator.space())
-            .append(allocator.intersperse(self.0.directives().map(NodeDisplay), allocator.line()))
-            .append(allocator.space())
-            .append(allocator.text("{"))
-            .append(allocator.hardline())
-            .append(allocator.text("  "))
-            .append(
-                allocator
-                    .intersperse(self.0.fields().map(NodeDisplay), allocator.hardline())
-                    .align(),
-            )
-            .append(allocator.hardline())
-            .append(allocator.text("}"))
+        let mut builder = allocator.nil();
+
+        if let Some(description) = self.0.description() {
+            builder = builder
+                .append(description.to_string())
+                .append(allocator.hardline());
+        }
+
+        builder = builder.append(allocator.text(format!("input {}", self.0.name())));
+
+        let mut directives = self.0.directives().peekable();
+        if directives.peek().is_some() {
+            builder = builder
+                .append(allocator.space())
+                .append(allocator.intersperse(directives.map(NodeDisplay), allocator.line()));
+        }
+
+        let mut fields = self.0.fields().peekable();
+        if fields.peek().is_some() {
+            builder = builder
+                .append(allocator.space())
+                .append(allocator.text("{"))
+                .append(allocator.hardline())
+                .append(allocator.text("  "))
+                .append(
+                    allocator
+                        .intersperse(fields.map(NodeDisplay), allocator.hardline())
+                        .align(),
+                )
+                .append(allocator.hardline())
+                .append(allocator.text("}"));
+        }
+
+        builder
     }
 }
 
