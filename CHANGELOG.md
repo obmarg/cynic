@@ -9,6 +9,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v3.3.2 - 2024-01-08
+
 ### Changes
 
 - `GraphQlResponse` is now `Clone` provided its contents are also
