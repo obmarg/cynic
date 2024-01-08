@@ -1,5 +1,5 @@
 /// The response to a GraphQl operation
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub struct GraphQlResponse<T, ErrorExtensions = serde::de::IgnoredAny> {
     /// The operation data (if the operation was successful)
     pub data: Option<T>,
