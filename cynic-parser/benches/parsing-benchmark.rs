@@ -1,21 +1,37 @@
-use criterion::{black_box, criterion_group, criterion_main, Criterion};
-
-pub fn criterion_benchmark(c: &mut Criterion) {
-    let input = "type MyType { field: Whatever, field: Whatever }";
-    c.bench_function("cynic-parser parse object", |b| {
-        b.iter(|| {
-            let object = cynic_parser::parse_type_system_document(input);
-            black_box(object)
-        })
-    });
-
-    c.bench_function("graphql_parser parse object", |b| {
-        b.iter(|| {
-            let parsed = graphql_parser::parse_schema::<String>(input).unwrap();
-            black_box(parsed)
-        })
-    });
+fn main() {
+    // Run registered benchmarks.
+    divan::main();
 }
 
-criterion_group!(benches, criterion_benchmark);
-criterion_main!(benches);
+const GITHUB_SCHEMA: &str = include_str!("../../schemas/github.graphql");
+
+#[divan::bench]
+fn cynic_parser() {
+    let parsed = cynic_parser::parse_type_system_document(GITHUB_SCHEMA);
+    divan::black_box(parsed);
+}
+
+#[divan::bench]
+fn graphql_parser_string() {
+    let parsed = graphql_parser::parse_schema::<String>(GITHUB_SCHEMA).unwrap();
+    divan::black_box(parsed);
+}
+
+#[divan::bench]
+fn graphql_parser_str() {
+    let parsed = graphql_parser::parse_schema::<&str>(GITHUB_SCHEMA).unwrap();
+    divan::black_box(parsed);
+}
+
+#[divan::bench]
+fn async_graphql_parser() {
+    let parsed = async_graphql_parser::parse_schema(GITHUB_SCHEMA).unwrap();
+    divan::black_box(parsed);
+}
+
+#[divan::bench]
+fn apollo_parser() {
+    let parser = apollo_parser::Parser::new(GITHUB_SCHEMA);
+    let cst = parser.parse();
+    divan::black_box(cst);
+}

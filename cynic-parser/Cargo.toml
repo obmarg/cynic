@@ -31,13 +31,17 @@ ariadne = { version = "0.4", optional = true }
 pretty = { version = "0.12", optional = true }
 
 [dev-dependencies]
-criterion = "0.4"
-graphql-parser = "0.4"
 insta = "1.29"
 similar-asserts = "1.5"
 
 # Tests need the `print` functionality so enable it here
 cynic-parser = { path = ".", features = ["print", "report"] }
+
+# Benchmark bits & bobs
+async-graphql-parser = "7"
+apollo-parser = "0.7"
+divan = "0.1"
+graphql-parser = "0.4"
 
 [build-dependencies]
 # Commenting this out as parser-generator does this.
