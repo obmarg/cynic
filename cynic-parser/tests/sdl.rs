@@ -8,7 +8,6 @@ fn test_enum() {
 }
 
 #[test]
-#[ignore]
 fn directive() {
     roundtrip_test("tests/sdl/directive.graphql");
 }

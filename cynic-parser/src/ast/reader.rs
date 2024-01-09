@@ -2,12 +2,12 @@ use crate::{ast, Ast};
 
 use super::{
     ids::{
-        ArgumentId, AstId, AstLookup, DirectiveId, EnumDefinitionId, EnumValueDefinitionId,
-        InputValueDefinitionId, InterfaceDefinitionId, ScalarDefinitionId, TypeId,
-        UnionDefinitionId, ValueId,
+        ArgumentId, AstId, AstLookup, DirectiveDefinitionId, DirectiveId, EnumDefinitionId,
+        EnumValueDefinitionId, InputValueDefinitionId, InterfaceDefinitionId, ScalarDefinitionId,
+        TypeId, UnionDefinitionId, ValueId,
     },
-    FieldDefinitionId, InputObjectDefinitionId, ObjectDefinitionId, OperationType,
-    SchemaDefinitionId, Type, WrappingType,
+    DirectiveLocation, FieldDefinitionId, InputObjectDefinitionId, ObjectDefinitionId,
+    OperationType, SchemaDefinitionId, Type, WrappingType,
 };
 
 pub struct AstReader<'a, I> {
@@ -34,6 +34,7 @@ impl Ast {
             ast::AstDefinition::Union(id) => Definition::Union(self.read(*id)),
             ast::AstDefinition::Enum(id) => Definition::Enum(self.read(*id)),
             ast::AstDefinition::InputObject(id) => Definition::InputObject(self.read(*id)),
+            ast::AstDefinition::Directive(id) => Definition::Directive(self.read(*id)),
         })
     }
 }
@@ -46,6 +47,7 @@ pub enum Definition<'a> {
     Union(AstReader<'a, UnionDefinitionId>),
     Enum(AstReader<'a, EnumDefinitionId>),
     InputObject(AstReader<'a, InputObjectDefinitionId>),
+    Directive(AstReader<'a, DirectiveDefinitionId>),
 }
 
 impl<'a> AstReader<'a, SchemaDefinitionId> {
@@ -240,6 +242,7 @@ impl<'a> AstReader<'a, InputObjectDefinitionId> {
     pub fn name(&self) -> &str {
         self.ast.lookup(self.ast.lookup(self.id).name)
     }
+
     pub fn description(&self) -> Option<&str> {
         self.ast
             .lookup(self.id)
@@ -312,6 +315,35 @@ impl<'a> AstReader<'a, InputValueDefinitionId> {
     }
 }
 
+impl<'a> AstReader<'a, DirectiveDefinitionId> {
+    pub fn name(&self) -> &str {
+        self.ast.lookup(self.ast.lookup(self.id).name)
+    }
+
+    pub fn description(&self) -> Option<&str> {
+        self.ast
+            .lookup(self.id)
+            .description
+            .map(|id| self.ast.lookup(id))
+    }
+
+    pub fn arguments(&self) -> impl Iterator<Item = AstReader<'a, InputValueDefinitionId>> {
+        self.ast
+            .lookup(self.id)
+            .arguments
+            .iter()
+            .map(|id| self.ast.read(*id))
+    }
+
+    pub fn is_repeatable(&self) -> bool {
+        self.ast.lookup(self.id).repeatable
+    }
+
+    pub fn locations(&self) -> impl Iterator<Item = DirectiveLocation> + 'a {
+        self.ast.lookup(self.id).locations.iter().copied()
+    }
+}
+
 impl<'a> AstReader<'a, DirectiveId> {
     pub fn name(&self) -> &str {
         self.ast.lookup(self.ast.lookup(self.id).name)
@@ -371,22 +403,23 @@ pub enum ValueReader<'a> {
     Object(Vec<(&'a str, AstReader<'a, ValueId>)>),
 }
 
-impl<'a> AstReader<'a, TypeId> {
-    pub fn to_string(&self) -> String {
+impl<'a> std::fmt::Display for AstReader<'a, TypeId> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let Type { name, wrappers } = self.ast.lookup(self.id);
-        let mut output = String::new();
+
         for wrapping in wrappers.iter().rev() {
             if let WrappingType::List = wrapping {
-                output.push('[');
+                write!(f, "[")?;
             }
         }
-        output.push_str(self.ast.lookup(*name));
+        write!(f, "{}", self.ast.lookup(*name))?;
         for wrapping in wrappers.iter() {
             match wrapping {
-                WrappingType::NonNull => output.push('!'),
-                WrappingType::List => output.push(']'),
+                WrappingType::NonNull => write!(f, "!")?,
+                WrappingType::List => write!(f, "]")?,
             }
         }
-        output
+
+        Ok(())
     }
 }

@@ -1,9 +1,9 @@
 use crate::Ast;
 
 use super::{
-    Argument, AstDefinition, Directive, EnumDefinition, EnumValueDefinition, FieldDefinition,
-    InputObjectDefinition, InputValueDefinition, InterfaceDefinition, ObjectDefinition,
-    ScalarDefinition, SchemaDefinition, Type, UnionDefinition, Value,
+    Argument, AstDefinition, Directive, DirectiveDefinition, EnumDefinition, EnumValueDefinition,
+    FieldDefinition, InputObjectDefinition, InputValueDefinition, InterfaceDefinition,
+    ObjectDefinition, ScalarDefinition, SchemaDefinition, Type, UnionDefinition, Value,
 };
 
 pub trait AstId {}
@@ -149,6 +149,7 @@ impl AstLookup<EnumValueDefinitionId> for Ast {
 
 #[derive(Clone, Copy)]
 pub struct InputObjectDefinitionId(pub(super) usize);
+
 impl AstId for InputObjectDefinitionId {}
 
 impl AstLookup<InputObjectDefinitionId> for Ast {
@@ -158,6 +159,21 @@ impl AstLookup<InputObjectDefinitionId> for Ast {
         self.input_object_definitions
             .get(index.0)
             .expect("objects to be present")
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct DirectiveDefinitionId(pub(super) usize);
+
+impl AstId for DirectiveDefinitionId {}
+
+impl AstLookup<DirectiveDefinitionId> for Ast {
+    type Output = DirectiveDefinition;
+
+    fn lookup(&self, index: DirectiveDefinitionId) -> &Self::Output {
+        self.directive_definitions
+            .get(index.0)
+            .expect("directives to be present")
     }
 }
 

@@ -1,5 +1,3 @@
-use std::str::FromStr;
-
 use crate::lexer;
 
 use crate::ast::{*, ids::*};
@@ -24,6 +22,7 @@ TypeSystemDefinition: DefinitionId = {
     <def:UnionDefinition> => ast.union_definition(def),
     <def:EnumDefinition> => ast.enum_definition(def),
     <def:InputObjectDefinition> => ast.input_object_definition(def),
+    <def:DirectiveDefinition> => ast.directive_definition(def),
 }
 
 SchemaDefinition: SchemaDefinition = {
@@ -207,6 +206,44 @@ InputFieldsDefinition: Vec<InputValueDefinitionId> = {
     "{" <fields:InputValueDefinition+> "}" => fields
 };
 
+DirectiveDefinition: DirectiveDefinition = {
+    <start:@L>
+        directive
+        "@" <name:Name>
+        <arguments:ArgumentsDefinition?>
+        <repeatable:Repeatable?>
+        on
+        <locations:DirectiveLocations>
+        <end:@R>
+    => DirectiveDefinition {
+        name,
+        description: None,
+        arguments: arguments.unwrap_or_default(),
+        repeatable: repeatable.unwrap_or_default(),
+        locations,
+        span: Span::new(start, end)
+    }
+}
+
+Repeatable: bool = {
+    repeatable => true
+}
+
+DirectiveLocations: Vec<DirectiveLocation> = {
+    <locations:DirectiveLocations> "|" <location:DirectiveLocation> => {
+        let mut locations = locations;
+        locations.push(location);
+        locations
+    },
+    "|"? <location:DirectiveLocation> => {
+        vec![location]
+    }
+}
+
+DirectiveLocation: DirectiveLocation = {
+    <s:Ident> => s.parse().expect("TODO: error handling")
+}
+
 InputValueDefinition: InputValueDefinitionId =
     <start:@L>
         <description:StringValue?>
@@ -222,6 +259,7 @@ InputValueDefinition: InputValueDefinitionId =
             default,
             span: Span::new(start, end)
         });
+
 
 DefaultValue: ValueId = {
     "=" <v:Value> => v
@@ -311,6 +349,9 @@ Ident: &'input str = {
     "enum" => "enum",
     union => "union",
     scalar => "scalar",
+    directive => "directive",
+    repeatable => "repeatable",
+    on => "on",
 }
 
 extern {
@@ -358,5 +399,8 @@ extern {
         "enum" => lexer::Token::Enum,
         union => lexer::Token::Union,
         scalar => lexer::Token::Scalar,
+        directive => lexer::Token::Directive,
+        repeatable => lexer::Token::Repeatable,
+        on => lexer::Token::On,
     }
 }
