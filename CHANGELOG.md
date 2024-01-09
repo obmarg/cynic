@@ -9,6 +9,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v3.4.0 - 2024-01-09
+
 ### New Features
 
 - `Enum`s can now opt out of exhaustiveness checking with the `non_exhaustive`
