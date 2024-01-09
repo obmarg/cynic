@@ -21,7 +21,11 @@ enum PostStateStringFallback {
 }
 
 #[derive(Enum, Debug, PartialEq)]
-#[cynic(graphql_type = "PostState", schema_path = "tests/test-schema.graphql")]
+#[cynic(
+    graphql_type = "PostState",
+    schema_path = "tests/test-schema.graphql",
+    non_exhaustive
+)]
 enum PostStateNonexhaustiveFallback {
     Posted,
     #[cynic(fallback)]
