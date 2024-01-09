@@ -26,6 +26,9 @@ pub struct EnumDeriveInput {
 
     #[darling(default)]
     pub(super) rename_all: Option<RenameAll>,
+
+    #[darling(default)]
+    pub(super) non_exhaustive: bool,
 }
 
 impl EnumDeriveInput {

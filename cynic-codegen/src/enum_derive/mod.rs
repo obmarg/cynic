@@ -53,11 +53,20 @@ pub fn enum_derive_impl(
     if let darling::ast::Data::Enum(variants) = &input.data {
         let fallback = variants.iter().find(|variant| *variant.fallback);
 
+        if input.non_exhaustive && fallback.is_none() {
+            return Err(syn::Error::new(
+                enum_span,
+                "Enum marked as non-exhaustive must have a fallback variant".to_string(),
+            )
+            .into());
+        }
+
         let pairs = match join_variants(
             variants.iter().map(|variant| variant.as_ref()),
             &enum_def,
             &input.ident.to_string(),
             rename_all,
+            !input.non_exhaustive,
             &enum_span,
         ) {
             Ok(pairs) => pairs,
@@ -189,6 +198,7 @@ fn join_variants<'a>(
     enum_def: &'a EnumType<'a>,
     enum_name: &str,
     rename_all: RenameAll,
+    exhaustive: bool,
     enum_span: &Span,
 ) -> Result<Vec<(&'a EnumDeriveVariant, &'a EnumValue<'a>)>, TokenStream> {
     let mut has_fallback = false;
@@ -239,7 +249,7 @@ fn join_variants<'a>(
             _ => (),
         }
     }
-    if !has_fallback && !missing_variants.is_empty() {
+    if !missing_variants.is_empty() && (exhaustive || !has_fallback) {
         let missing_variants_string = missing_variants.join(", ");
         errors.extend(
             syn::Error::new(
@@ -320,6 +330,7 @@ mod tests {
             &gql_enum,
             "Desserts",
             rename_rule,
+            true,
             &Span::call_site(),
         );
 
@@ -371,6 +382,7 @@ mod tests {
             &gql_enum,
             "Desserts",
             RenameAll::ScreamingSnakeCase,
+            true,
             &Span::call_site(),
         );
 
@@ -414,10 +426,50 @@ mod tests {
             &gql_enum,
             "Desserts",
             RenameAll::None,
+            true,
             &Span::call_site(),
         );
 
         assert_matches!(result, Err(_));
+    }
+
+    #[test]
+    fn join_variants_missing_rust_variant_in_a_non_exhaustive_enum() {
+        let variants = vec![
+            EnumDeriveVariant {
+                ident: proc_macro2::Ident::new("FIRST", Span::call_site()),
+                rename: None,
+                fallback: Default::default(),
+                fields: darling::ast::Style::Unit.into(),
+            },
+            EnumDeriveVariant {
+                ident: proc_macro2::Ident::new("FALLBACK", Span::call_site()),
+                rename: None,
+                fallback: SpannedValue::new(true, Span::call_site()),
+                fields: darling::ast::Style::Unit.into(),
+            },
+        ];
+        let mut gql_enum = EnumType {
+            name: "Enum".into(),
+            values: vec![],
+        };
+        gql_enum.values.push(EnumValue {
+            name: FieldName::new("FIRST"),
+        });
+        gql_enum.values.push(EnumValue {
+            name: FieldName::new("SECOND"),
+        });
+
+        let result = join_variants(
+            &variants,
+            &gql_enum,
+            "Enum",
+            RenameAll::None,
+            false,
+            &Span::call_site(),
+        );
+
+        assert_matches!(result, Ok(_));
     }
 
     #[test]
@@ -441,6 +493,7 @@ mod tests {
             &gql_enum,
             "Desserts",
             RenameAll::None,
+            true,
             &Span::call_site(),
         );
 
