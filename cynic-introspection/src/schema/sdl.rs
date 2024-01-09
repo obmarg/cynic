@@ -104,11 +104,15 @@ impl std::fmt::Display for TypeDisplay<'_> {
                 interfaces,
             }) => {
                 write!(f, "{}", DescriptionDisplay(description.as_deref()))?;
-                writeln!(f, "type {name}{} {{", ImplementsDisplay(interfaces))?;
-                for field in fields {
-                    writeln!(indented(f), "{}", FieldDisplay(field))?;
+                if fields.is_empty() {
+                    writeln!(f, "type {name}{}", ImplementsDisplay(interfaces))
+                } else {
+                    writeln!(f, "type {name}{} {{", ImplementsDisplay(interfaces))?;
+                    for field in fields {
+                        writeln!(indented(f), "{}", FieldDisplay(field))?;
+                    }
+                    writeln!(f, "}}\n")
                 }
-                writeln!(f, "}}\n")
             }
             Type::InputObject(InputObjectType {
                 name,
@@ -116,11 +120,15 @@ impl std::fmt::Display for TypeDisplay<'_> {
                 fields,
             }) => {
                 write!(f, "{}", DescriptionDisplay(description.as_deref()))?;
-                writeln!(f, "input {name} {{")?;
-                for field in fields {
-                    writeln!(indented(f), "{}", InputValueDisplay(field))?;
+                if fields.is_empty() {
+                    writeln!(f, "input {name}")
+                } else {
+                    writeln!(f, "input {name} {{")?;
+                    for field in fields {
+                        writeln!(indented(f), "{}", InputValueDisplay(field))?;
+                    }
+                    writeln!(f, "}}\n")
                 }
-                writeln!(f, "}}\n")
             }
             Type::Enum(EnumType {
                 name,
@@ -128,11 +136,15 @@ impl std::fmt::Display for TypeDisplay<'_> {
                 values,
             }) => {
                 write!(f, "{}", DescriptionDisplay(description.as_deref()))?;
-                writeln!(f, "enum {name} {{")?;
-                for value in values {
-                    write!(indented(f), "{}", EnumValueDisplay(value))?;
+                if values.is_empty() {
+                    writeln!(f, "enum {name}")
+                } else {
+                    writeln!(f, "enum {name} {{")?;
+                    for value in values {
+                        write!(indented(f), "{}", EnumValueDisplay(value))?;
+                    }
+                    writeln!(f, "}}\n")
                 }
-                writeln!(f, "}}\n")
             }
             Type::Interface(InterfaceType {
                 name,
@@ -142,11 +154,15 @@ impl std::fmt::Display for TypeDisplay<'_> {
                 possible_types: _,
             }) => {
                 write!(f, "{}", DescriptionDisplay(description.as_deref()))?;
-                writeln!(f, "interface {name}{} {{", ImplementsDisplay(interfaces))?;
-                for field in fields {
-                    writeln!(indented(f), "{}", FieldDisplay(field))?;
+                if fields.is_empty() {
+                    writeln!(f, "interface {name}{}", ImplementsDisplay(interfaces))
+                } else {
+                    writeln!(f, "interface {name}{} {{", ImplementsDisplay(interfaces))?;
+                    for field in fields {
+                        writeln!(indented(f), "{}", FieldDisplay(field))?;
+                    }
+                    writeln!(f, "}}\n")
                 }
-                writeln!(f, "}}\n")
             }
             Type::Union(union) => {
                 write!(f, "{}", UnionDisplay(union))
