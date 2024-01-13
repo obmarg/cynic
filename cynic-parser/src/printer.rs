@@ -199,7 +199,7 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, FieldDefinitionId> {
 
         if arguments.peek().is_some() {
             arguments_pretty = allocator
-                .intersperse(arguments.map(NodeDisplay), comma_or_newline(allocator))
+                .intersperse(arguments.map(NodeDisplay), comma_or_nil(allocator))
                 .group();
 
             arguments_pretty = arguments_pretty
@@ -559,6 +559,12 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, ValueId> {
                 .braces(),
         }
     }
+}
+
+fn comma_or_nil(allocator: &BoxAllocator) -> pretty::DocBuilder<'_, BoxAllocator> {
+    allocator
+        .nil()
+        .flat_alt(allocator.text(",").append(allocator.space()))
 }
 
 fn comma_or_newline(allocator: &BoxAllocator) -> pretty::DocBuilder<'_, BoxAllocator> {
