@@ -27,24 +27,22 @@ impl super::Ast {
 impl Ast {
     pub fn definitions(&self) -> impl Iterator<Item = Definition<'_>> + '_ {
         self.definitions.iter().map(|definition| match definition {
-            ast::AstDefinition::Schema(id) => Definition::SchemaDefinition(self.read(*id)),
+            ast::AstDefinition::Schema(id) => Definition::Schema(self.read(*id)),
             ast::AstDefinition::Scalar(id) => {
-                Definition::TypeDefinition(TypeDefinition::Scalar(self.read(*id)))
+                Definition::Type(TypeDefinition::Scalar(self.read(*id)))
             }
             ast::AstDefinition::Object(id) => {
-                Definition::TypeDefinition(TypeDefinition::Object(self.read(*id)))
+                Definition::Type(TypeDefinition::Object(self.read(*id)))
             }
             ast::AstDefinition::Interface(id) => {
-                Definition::TypeDefinition(TypeDefinition::Interface(self.read(*id)))
+                Definition::Type(TypeDefinition::Interface(self.read(*id)))
             }
             ast::AstDefinition::Union(id) => {
-                Definition::TypeDefinition(TypeDefinition::Union(self.read(*id)))
+                Definition::Type(TypeDefinition::Union(self.read(*id)))
             }
-            ast::AstDefinition::Enum(id) => {
-                Definition::TypeDefinition(TypeDefinition::Enum(self.read(*id)))
-            }
+            ast::AstDefinition::Enum(id) => Definition::Type(TypeDefinition::Enum(self.read(*id))),
             ast::AstDefinition::InputObject(id) => {
-                Definition::TypeDefinition(TypeDefinition::InputObject(self.read(*id)))
+                Definition::Type(TypeDefinition::InputObject(self.read(*id)))
             }
             ast::AstDefinition::SchemaExtension(id) => Definition::SchemaExtension(self.read(*id)),
             ast::AstDefinition::ScalarExtension(id) => {
@@ -71,9 +69,9 @@ impl Ast {
 }
 
 pub enum Definition<'a> {
-    SchemaDefinition(AstReader<'a, SchemaDefinitionId>),
+    Schema(AstReader<'a, SchemaDefinitionId>),
     SchemaExtension(AstReader<'a, SchemaDefinitionId>),
-    TypeDefinition(TypeDefinition<'a>),
+    Type(TypeDefinition<'a>),
     TypeExtension(TypeDefinition<'a>),
     Directive(AstReader<'a, DirectiveDefinitionId>),
 }

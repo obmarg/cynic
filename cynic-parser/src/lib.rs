@@ -49,7 +49,7 @@ mod tests {
             ).to_sdl(),
             @r###"
         type MyType implements Blah & Bloo @hello {
-          field: Whatever@hello(name: ("string"))
+          field: Whatever @hello(name: ["string"])
           other: [[Int!]]!
         }
         "###
@@ -67,7 +67,7 @@ mod tests {
             ).to_sdl(),
             @r###"
         interface MyType implements Blah & Bloo @hello {
-          field: Whatever@hello(name: ("string"))
+          field: Whatever @hello(name: ["string"])
           other: [[Int!]]!
         }
         "###
@@ -95,7 +95,9 @@ mod tests {
                 scalar MyType @hello(there: [{thing: "other"}])
                 "#
             ).to_sdl(),
-            @r###"scalar MyType @hello(there: ({thing:"other"}))"###
+            @r###"
+        scalar MyType @hello(there: [{ thing: "other" }])
+        "###
         );
     }
 

@@ -1,4 +1,4 @@
-use pretty::{BoxAllocator, BuildDoc, DocAllocator, Pretty};
+use pretty::{BoxAllocator, DocAllocator, Pretty};
 
 use crate::ast::{
     ids::{
@@ -17,27 +17,27 @@ impl crate::Ast {
         let builder = allocator
             .intersperse(
                 self.definitions().map(|definition| match definition {
-                    Definition::SchemaDefinition(reader) => NodeDisplay(reader).pretty(&allocator),
+                    Definition::Schema(reader) => NodeDisplay(reader).pretty(&allocator),
                     Definition::SchemaExtension(reader) => allocator
                         .text("extend")
                         .append(allocator.space())
                         .append(NodeDisplay(reader).pretty(&allocator)),
-                    Definition::TypeDefinition(TypeDefinition::Scalar(reader)) => {
+                    Definition::Type(TypeDefinition::Scalar(reader)) => {
                         NodeDisplay(reader).pretty(&allocator)
                     }
-                    Definition::TypeDefinition(TypeDefinition::Object(reader)) => {
+                    Definition::Type(TypeDefinition::Object(reader)) => {
                         NodeDisplay(reader).pretty(&allocator)
                     }
-                    Definition::TypeDefinition(TypeDefinition::Interface(reader)) => {
+                    Definition::Type(TypeDefinition::Interface(reader)) => {
                         NodeDisplay(reader).pretty(&allocator)
                     }
-                    Definition::TypeDefinition(TypeDefinition::Union(reader)) => {
+                    Definition::Type(TypeDefinition::Union(reader)) => {
                         NodeDisplay(reader).pretty(&allocator)
                     }
-                    Definition::TypeDefinition(TypeDefinition::Enum(reader)) => {
+                    Definition::Type(TypeDefinition::Enum(reader)) => {
                         NodeDisplay(reader).pretty(&allocator)
                     }
-                    Definition::TypeDefinition(TypeDefinition::InputObject(reader)) => {
+                    Definition::Type(TypeDefinition::InputObject(reader)) => {
                         NodeDisplay(reader).pretty(&allocator)
                     }
                     Definition::TypeExtension(TypeDefinition::Scalar(reader)) => allocator
@@ -126,10 +126,17 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, ScalarDefinitionId> {
                 .append(allocator.hardline());
         }
 
+        let mut directives = self.0.directives().peekable();
+        let mut directives_pretty = allocator.nil();
+        if directives.peek().is_some() {
+            directives_pretty = allocator
+                .space()
+                .append(allocator.intersperse(directives.map(NodeDisplay), allocator.space()));
+        }
+
         builder
             .append(allocator.text(format!("scalar {}", self.0.name())))
-            .append(allocator.space())
-            .append(allocator.intersperse(self.0.directives().map(NodeDisplay), allocator.line()))
+            .append(directives_pretty)
     }
 }
 
@@ -200,13 +207,21 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, FieldDefinitionId> {
                 .flat_alt(arguments_pretty.parens());
         }
 
+        let mut directives = self.0.directives().peekable();
+        let mut directives_pretty = allocator.nil();
+        if directives.peek().is_some() {
+            directives_pretty = allocator
+                .space()
+                .append(allocator.intersperse(directives.map(NodeDisplay), allocator.space()));
+        }
+
         allocator
             .text(self.0.name().to_string())
             .append(arguments_pretty)
             .append(allocator.text(":"))
             .append(allocator.space())
             .append(NodeDisplay(self.0.ty()))
-            .append(allocator.intersperse(self.0.directives().map(NodeDisplay), " "))
+            .append(directives_pretty)
     }
 }
 
@@ -301,9 +316,7 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, EnumDefinitionId> {
                 .append(allocator.hardline());
         }
 
-        builder = builder
-            .append(allocator.text(format!("enum {}", self.0.name())))
-            .append(allocator.space());
+        builder = builder.append(allocator.text(format!("enum {}", self.0.name())));
 
         let mut directives = self.0.directives().peekable();
         if directives.peek().is_some() {
@@ -316,6 +329,7 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, EnumDefinitionId> {
 
         if !values.is_empty() {
             builder = builder
+                .append(allocator.space())
                 .append(allocator.text("{"))
                 .append(allocator.hardline())
                 .append(
@@ -410,8 +424,12 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, InputValueDefinitionId> {
                 .append(NodeDisplay(value));
         }
 
-        value_builder =
-            value_builder.append(allocator.intersperse(self.0.directives().map(NodeDisplay), " "));
+        let mut directives = self.0.directives().peekable();
+        if directives.peek().is_some() {
+            value_builder = value_builder
+                .append(allocator.space())
+                .append(allocator.intersperse(directives.map(NodeDisplay), allocator.space()));
+        }
 
         description
             .append(value_builder.clone())
@@ -506,18 +524,23 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, ValueId> {
             crate::ast::ValueReader::Null => allocator.text("null"),
             crate::ast::ValueReader::Enum(value) => allocator.text(value.to_string()),
             crate::ast::ValueReader::List(items) => allocator
-                .intersperse(items.into_iter().map(NodeDisplay), ",")
-                .parens(),
+                .intersperse(
+                    items.into_iter().map(NodeDisplay),
+                    allocator.text(",").append(allocator.line()),
+                )
+                .brackets(),
             crate::ast::ValueReader::Object(items) => allocator
                 .intersperse(
                     items.into_iter().map(|(name, value)| {
                         allocator
                             .text(name)
                             .append(allocator.text(":"))
+                            .append(allocator.space())
                             .append(NodeDisplay(value))
                     }),
                     ",",
                 )
+                .enclose(allocator.space(), allocator.space())
                 .braces(),
         }
     }

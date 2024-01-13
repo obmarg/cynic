@@ -43,7 +43,15 @@ RootOperationTypeDefinition: RootOperationTypeDefinition = {
     query ":" <name:NamedType> => RootOperationTypeDefinition {
         operation_type: OperationType::Query,
         named_type: name
-    }
+    },
+    mutation ":" <name:NamedType> => RootOperationTypeDefinition {
+        operation_type: OperationType::Mutation,
+        named_type: name
+    },
+    subscription ":" <name:NamedType> => RootOperationTypeDefinition {
+        operation_type: OperationType::Subscription,
+        named_type: name
+    },
 }
 
 ScalarDefinition: ScalarDefinition = {
@@ -346,6 +354,8 @@ Ident: &'input str = {
     <s:RawIdent> => s,
     schema => "schema",
     query => "query",
+    mutation => "mutation",
+    subscription => "subscription",
     ty => "type",
     input => "input",
     true => "true",
@@ -397,6 +407,8 @@ extern {
         // seem to support this well: https://github.com/lalrpop/lalrpop/issues/671
         schema => lexer::Token::Schema,
         query => lexer::Token::Query,
+        mutation => lexer::Token::Mutation,
+        subscription => lexer::Token::Subscription,
         ty => lexer::Token::Type,
         input => lexer::Token::Input,
         true => lexer::Token::True,
