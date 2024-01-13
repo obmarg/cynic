@@ -13,15 +13,8 @@ fn directive() {
 }
 
 #[test]
-#[ignore]
 fn directive_descriptions() {
     roundtrip_test("tests/sdl/directive_descriptions.graphql");
-}
-
-#[test]
-#[ignore]
-fn directive_descriptions_canonical() {
-    roundtrip_test("tests/sdl/directive_descriptions_canonical.graphql");
 }
 
 #[test]

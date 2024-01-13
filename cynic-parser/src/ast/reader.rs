@@ -302,6 +302,13 @@ impl<'a> AstReader<'a, InputValueDefinitionId> {
         self.ast.read(self.ast.lookup(self.id).ty)
     }
 
+    pub fn description(&self) -> Option<&'a str> {
+        self.ast
+            .lookup(self.id)
+            .description
+            .map(|id| self.ast.lookup(id))
+    }
+
     pub fn default_value(&self) -> Option<AstReader<'a, ValueId>> {
         self.ast.lookup(self.id).default.map(|id| self.ast.read(id))
     }
@@ -320,7 +327,7 @@ impl<'a> AstReader<'a, DirectiveDefinitionId> {
         self.ast.lookup(self.ast.lookup(self.id).name)
     }
 
-    pub fn description(&self) -> Option<&str> {
+    pub fn description(&self) -> Option<&'a str> {
         self.ast
             .lookup(self.id)
             .description
