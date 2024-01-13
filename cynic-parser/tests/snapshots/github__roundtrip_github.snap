@@ -24,7 +24,6 @@ directive @possibleTypes(
   """
   abstractType: String
   
-  
   """
   Accepted types of global IDs.
   """

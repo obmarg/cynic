@@ -461,7 +461,7 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, DirectiveDefinitionId> {
 
         if arguments.peek().is_some() {
             let arguments = allocator
-                .intersperse(arguments.map(NodeDisplay), comma_or_newline(allocator))
+                .intersperse(arguments.map(NodeDisplay), comma_or_nil(allocator))
                 .group();
 
             let arguments = arguments
