@@ -2,6 +2,7 @@ use crate::ast::{self, ids::ValueId, AstLookup};
 
 use super::{AstId, ReadContext};
 
+#[derive(Clone)]
 pub enum ValueReader<'a> {
     Variable(&'a str),
     Int(i32),

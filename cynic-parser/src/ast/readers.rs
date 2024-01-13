@@ -31,6 +31,7 @@ pub trait AstId: Copy {
     }
 }
 
+#[derive(Clone, Copy)]
 pub struct ReadContext<'a, I> {
     id: I,
     ast: &'a Ast,

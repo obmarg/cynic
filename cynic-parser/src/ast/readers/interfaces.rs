@@ -2,6 +2,7 @@ use crate::ast::{ids::InterfaceDefinitionId, AstLookup};
 
 use super::{directives::Directive, fields::FieldDefinition, AstId, ReadContext};
 
+#[derive(Clone, Copy)]
 pub struct InterfaceDefinition<'a>(ReadContext<'a, InterfaceDefinitionId>);
 
 impl<'a> InterfaceDefinition<'a> {

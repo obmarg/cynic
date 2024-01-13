@@ -7,6 +7,7 @@ use super::{
     schemas::SchemaDefinition, unions::UnionDefinition,
 };
 
+#[derive(Clone, Copy)]
 pub enum Definition<'a> {
     Schema(SchemaDefinition<'a>),
     SchemaExtension(SchemaDefinition<'a>),
@@ -15,6 +16,7 @@ pub enum Definition<'a> {
     Directive(DirectiveDefinition<'a>),
 }
 
+#[derive(Clone, Copy)]
 pub enum TypeDefinition<'a> {
     Scalar(ScalarDefinition<'a>),
     Object(ObjectDefinition<'a>),

@@ -5,6 +5,7 @@ use crate::ast::{
 
 use super::{arguments::Argument, input_values::InputValueDefinition, AstId, ReadContext};
 
+#[derive(Clone, Copy)]
 pub struct DirectiveDefinition<'a>(ReadContext<'a, DirectiveDefinitionId>);
 
 impl<'a> DirectiveDefinition<'a> {
@@ -38,6 +39,7 @@ impl<'a> DirectiveDefinition<'a> {
     }
 }
 
+#[derive(Clone, Copy)]
 pub struct Directive<'a>(ReadContext<'a, DirectiveId>);
 
 impl<'a> Directive<'a> {

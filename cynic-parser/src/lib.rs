@@ -4,9 +4,10 @@ mod ast;
 mod lexer;
 mod printer;
 
-// TODO: Rethink WrappingType, OperationType & DirectiveLocation at least?
+// TODO: Rethink WrappingType, OperationType & DirectiveLocation & Span at least?
 pub use self::ast::{
-    ids, readers, storage, writer::AstWriter, Ast, DirectiveLocation, OperationType, WrappingType,
+    ids, readers, storage, writer::AstWriter, Ast, DirectiveLocation, OperationType, Span,
+    WrappingType,
 };
 
 lalrpop_mod!(schema);

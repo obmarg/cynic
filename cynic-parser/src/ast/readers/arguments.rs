@@ -2,6 +2,7 @@ use crate::ast::{ids::ArgumentId, AstLookup};
 
 use super::{values::ValueReader, AstId, ReadContext};
 
+#[derive(Clone, Copy)]
 pub struct Argument<'a>(ReadContext<'a, ArgumentId>);
 
 impl<'a> Argument<'a> {

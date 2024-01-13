@@ -2,6 +2,7 @@ use crate::ast::{ids::ObjectDefinitionId, AstLookup};
 
 use super::{directives::Directive, fields::FieldDefinition, AstId, ReadContext};
 
+#[derive(Clone, Copy)]
 pub struct ObjectDefinition<'a>(ReadContext<'a, ObjectDefinitionId>);
 
 impl<'a> ObjectDefinition<'a> {

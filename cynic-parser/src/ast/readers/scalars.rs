@@ -2,6 +2,7 @@ use crate::ast::{ids::ScalarDefinitionId, AstLookup};
 
 use super::{directives::Directive, AstId, ReadContext};
 
+#[derive(Clone, Copy)]
 pub struct ScalarDefinition<'a>(ReadContext<'a, ScalarDefinitionId>);
 
 impl<'a> ScalarDefinition<'a> {

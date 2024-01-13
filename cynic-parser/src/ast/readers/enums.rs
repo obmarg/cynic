@@ -5,6 +5,7 @@ use crate::ast::{
 
 use super::{directives::Directive, AstId, ReadContext};
 
+#[derive(Clone, Copy)]
 pub struct EnumDefinition<'a>(ReadContext<'a, EnumDefinitionId>);
 
 impl<'a> EnumDefinition<'a> {
@@ -35,6 +36,7 @@ impl<'a> EnumDefinition<'a> {
     }
 }
 
+#[derive(Clone, Copy)]
 pub struct EnumValueDefinition<'a>(ReadContext<'a, EnumValueDefinitionId>);
 
 impl<'a> EnumValueDefinition<'a> {

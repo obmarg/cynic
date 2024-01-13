@@ -2,6 +2,7 @@ use crate::ast::{ids::UnionDefinitionId, AstLookup};
 
 use super::{directives::Directive, AstId, ReadContext};
 
+#[derive(Clone, Copy)]
 pub struct UnionDefinition<'a>(ReadContext<'a, UnionDefinitionId>);
 
 impl<'a> UnionDefinition<'a> {

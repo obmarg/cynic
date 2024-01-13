@@ -4,6 +4,7 @@ use super::{
     directives::Directive, input_values::InputValueDefinition, types::Type, AstId, ReadContext,
 };
 
+#[derive(Clone, Copy)]
 pub struct FieldDefinition<'a>(ReadContext<'a, FieldDefinitionId>);
 
 impl<'a> FieldDefinition<'a> {

@@ -2,6 +2,7 @@ use crate::ast::{ids::InputObjectDefinitionId, AstLookup};
 
 use super::{directives::Directive, input_values::InputValueDefinition, AstId, ReadContext};
 
+#[derive(Clone, Copy)]
 pub struct InputObjectDefinition<'a>(ReadContext<'a, InputObjectDefinitionId>);
 
 impl<'a> InputObjectDefinition<'a> {

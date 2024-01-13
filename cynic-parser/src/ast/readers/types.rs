@@ -2,6 +2,7 @@ use crate::ast::{ids::TypeId, AstLookup, WrappingType};
 
 use super::{AstId, ReadContext};
 
+#[derive(Clone, Copy)]
 pub struct Type<'a>(ReadContext<'a, TypeId>);
 
 impl<'a> std::fmt::Display for Type<'a> {
