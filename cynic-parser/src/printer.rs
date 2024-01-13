@@ -17,27 +17,27 @@ impl crate::Ast {
         let builder = allocator
             .intersperse(
                 self.definitions().map(|definition| match definition {
-                    Definition::SchemaDefinition(reader) => NodeDisplay(reader).pretty(&allocator),
+                    Definition::Schema(reader) => NodeDisplay(reader).pretty(&allocator),
                     Definition::SchemaExtension(reader) => allocator
                         .text("extend")
                         .append(allocator.space())
                         .append(NodeDisplay(reader).pretty(&allocator)),
-                    Definition::TypeDefinition(TypeDefinition::Scalar(reader)) => {
+                    Definition::Type(TypeDefinition::Scalar(reader)) => {
                         NodeDisplay(reader).pretty(&allocator)
                     }
-                    Definition::TypeDefinition(TypeDefinition::Object(reader)) => {
+                    Definition::Type(TypeDefinition::Object(reader)) => {
                         NodeDisplay(reader).pretty(&allocator)
                     }
-                    Definition::TypeDefinition(TypeDefinition::Interface(reader)) => {
+                    Definition::Type(TypeDefinition::Interface(reader)) => {
                         NodeDisplay(reader).pretty(&allocator)
                     }
-                    Definition::TypeDefinition(TypeDefinition::Union(reader)) => {
+                    Definition::Type(TypeDefinition::Union(reader)) => {
                         NodeDisplay(reader).pretty(&allocator)
                     }
-                    Definition::TypeDefinition(TypeDefinition::Enum(reader)) => {
+                    Definition::Type(TypeDefinition::Enum(reader)) => {
                         NodeDisplay(reader).pretty(&allocator)
                     }
-                    Definition::TypeDefinition(TypeDefinition::InputObject(reader)) => {
+                    Definition::Type(TypeDefinition::InputObject(reader)) => {
                         NodeDisplay(reader).pretty(&allocator)
                     }
                     Definition::TypeExtension(TypeDefinition::Scalar(reader)) => allocator
