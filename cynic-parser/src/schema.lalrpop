@@ -22,6 +22,13 @@ TypeSystemDefinition: DefinitionId = {
     <def:UnionDefinition> => ast.union_definition(def),
     <def:EnumDefinition> => ast.enum_definition(def),
     <def:InputObjectDefinition> => ast.input_object_definition(def),
+    extend <def:SchemaDefinition> => ast.schema_extension(def),
+    extend <def:ScalarDefinition> => ast.scalar_extension(def),
+    extend <def:ObjectDefinition> => ast.object_extension(def),
+    extend <def:InterfaceDefinition> => ast.interface_extension(def),
+    extend <def:UnionDefinition> => ast.union_extension(def),
+    extend <def:EnumDefinition> => ast.enum_extension(def),
+    extend <def:InputObjectDefinition> => ast.input_object_extension(def),
     <def:DirectiveDefinition> => ast.directive_definition(def),
 }
 
@@ -282,7 +289,7 @@ WrappingType: WrappingType = {
 Value: ValueId = {
     "$" <name:Name> => ast.value(Value::Variable(name)),
     <int:IntegerLiteral> => ast.value(Value::Int(int.parse().unwrap())),
-    <float:FloatLiteral> => ast.value(Value::Int(float.parse().unwrap())),
+    <float:FloatLiteral> => ast.value(Value::Float(float.parse().unwrap())),
     <s:StringLiteral> => {
         let id = ast.intern_string(s);
         ast.value(Value::String(id))
@@ -349,6 +356,7 @@ Ident: &'input str = {
     "enum" => "enum",
     union => "union",
     scalar => "scalar",
+    extend => "extend",
     directive => "directive",
     repeatable => "repeatable",
     on => "on",
@@ -399,6 +407,7 @@ extern {
         "enum" => lexer::Token::Enum,
         union => lexer::Token::Union,
         scalar => lexer::Token::Scalar,
+        extend => lexer::Token::Extend,
         directive => lexer::Token::Directive,
         repeatable => lexer::Token::Repeatable,
         on => lexer::Token::On,

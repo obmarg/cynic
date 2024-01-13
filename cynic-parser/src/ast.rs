@@ -7,7 +7,7 @@ pub(crate) mod ids;
 mod reader;
 mod span;
 
-pub use reader::{AstReader, Definition, ValueReader};
+pub use reader::{AstReader, Definition, TypeDefinition, ValueReader};
 pub use span::Span;
 
 #[derive(Default)]
@@ -47,6 +47,13 @@ pub enum AstDefinition {
     Union(UnionDefinitionId),
     Enum(EnumDefinitionId),
     InputObject(InputObjectDefinitionId),
+    SchemaExtension(SchemaDefinitionId),
+    ScalarExtension(ScalarDefinitionId),
+    ObjectExtension(ObjectDefinitionId),
+    InterfaceExtension(InterfaceDefinitionId),
+    UnionExtension(UnionDefinitionId),
+    EnumExtension(EnumDefinitionId),
+    InputObjectExtension(InputObjectDefinitionId),
     Directive(DirectiveDefinitionId),
 }
 
@@ -317,6 +324,27 @@ impl AstBuilder {
                 AstDefinition::InputObject(id) => {
                     self.ast.input_object_definitions[id.0].description = Some(description);
                 }
+                AstDefinition::SchemaExtension(id) => {
+                    self.ast.schema_definitions[id.0].description = Some(description);
+                }
+                AstDefinition::ScalarExtension(id) => {
+                    self.ast.scalar_definitions[id.0].description = Some(description);
+                }
+                AstDefinition::ObjectExtension(id) => {
+                    self.ast.object_definitions[id.0].description = Some(description);
+                }
+                AstDefinition::InterfaceExtension(id) => {
+                    self.ast.interface_definitions[id.0].description = Some(description);
+                }
+                AstDefinition::UnionExtension(id) => {
+                    self.ast.union_definitions[id.0].description = Some(description);
+                }
+                AstDefinition::EnumExtension(id) => {
+                    self.ast.enum_definitions[id.0].description = Some(description);
+                }
+                AstDefinition::InputObjectExtension(id) => {
+                    self.ast.input_object_definitions[id.0].description = Some(description);
+                }
                 AstDefinition::Directive(id) => {
                     self.ast.directive_definitions[id.0].description = Some(description);
                 }
@@ -417,6 +445,86 @@ impl AstBuilder {
     ) -> InputValueDefinitionId {
         let definition_id = InputValueDefinitionId(self.ast.input_value_definitions.len());
         self.ast.input_value_definitions.push(definition);
+
+        definition_id
+    }
+
+    pub fn schema_extension(&mut self, definition: SchemaDefinition) -> DefinitionId {
+        let id = SchemaDefinitionId(self.ast.schema_definitions.len());
+        self.ast.schema_definitions.push(definition);
+
+        let definition_id = DefinitionId(self.ast.definitions.len());
+        self.ast
+            .definitions
+            .push(AstDefinition::SchemaExtension(id));
+
+        definition_id
+    }
+
+    pub fn scalar_extension(&mut self, definition: ScalarDefinition) -> DefinitionId {
+        let id = ScalarDefinitionId(self.ast.scalar_definitions.len());
+        self.ast.scalar_definitions.push(definition);
+
+        let definition_id = DefinitionId(self.ast.definitions.len());
+        self.ast
+            .definitions
+            .push(AstDefinition::ScalarExtension(id));
+
+        definition_id
+    }
+
+    pub fn object_extension(&mut self, definition: ObjectDefinition) -> DefinitionId {
+        let id = ObjectDefinitionId(self.ast.object_definitions.len());
+        self.ast.object_definitions.push(definition);
+
+        let definition_id = DefinitionId(self.ast.definitions.len());
+        self.ast
+            .definitions
+            .push(AstDefinition::ObjectExtension(id));
+
+        definition_id
+    }
+
+    pub fn interface_extension(&mut self, definition: InterfaceDefinition) -> DefinitionId {
+        let id = InterfaceDefinitionId(self.ast.interface_definitions.len());
+        self.ast.interface_definitions.push(definition);
+
+        let definition_id = DefinitionId(self.ast.definitions.len());
+        self.ast
+            .definitions
+            .push(AstDefinition::InterfaceExtension(id));
+
+        definition_id
+    }
+
+    pub fn union_extension(&mut self, definition: UnionDefinition) -> DefinitionId {
+        let id = UnionDefinitionId(self.ast.union_definitions.len());
+        self.ast.union_definitions.push(definition);
+
+        let definition_id = DefinitionId(self.ast.definitions.len());
+        self.ast.definitions.push(AstDefinition::UnionExtension(id));
+
+        definition_id
+    }
+
+    pub fn enum_extension(&mut self, definition: EnumDefinition) -> DefinitionId {
+        let id = EnumDefinitionId(self.ast.enum_definitions.len());
+        self.ast.enum_definitions.push(definition);
+
+        let definition_id = DefinitionId(self.ast.definitions.len());
+        self.ast.definitions.push(AstDefinition::EnumExtension(id));
+
+        definition_id
+    }
+
+    pub fn input_object_extension(&mut self, definition: InputObjectDefinition) -> DefinitionId {
+        let id = InputObjectDefinitionId(self.ast.input_object_definitions.len());
+        self.ast.input_object_definitions.push(definition);
+
+        let definition_id = DefinitionId(self.ast.definitions.len());
+        self.ast
+            .definitions
+            .push(AstDefinition::InputObjectExtension(id));
 
         definition_id
     }
