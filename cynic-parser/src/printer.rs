@@ -294,14 +294,20 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, UnionDefinitionId> {
                 .append(allocator.intersperse(directives.map(NodeDisplay), allocator.line()));
         }
 
-        let members = self.0.members().collect::<Vec<_>>();
+        let mut members = self.0.members().peekable();
 
-        if !members.is_empty() {
+        if members.peek().is_some() {
+            let members = allocator
+                .intersperse(members, allocator.line().append(allocator.text("| ")))
+                .group();
+
+            let members = members.clone().nest(2).flat_alt(members);
+
             builder = builder
                 .append(allocator.space())
                 .append(allocator.text("="))
                 .append(allocator.space())
-                .append(allocator.intersperse(members, allocator.text(" | ")))
+                .append(members)
         }
 
         builder
