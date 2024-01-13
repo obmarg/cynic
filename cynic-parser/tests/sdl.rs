@@ -111,6 +111,11 @@ fn minimal_type() {
 }
 
 #[test]
+fn object_with_arguemnts() {
+    roundtrip_test("tests/sdl/object_with_arguments.graphql");
+}
+
+#[test]
 #[ignore]
 fn repeatable_directives() {
     roundtrip_test("tests/sdl/repeatable_directives.graphql");
