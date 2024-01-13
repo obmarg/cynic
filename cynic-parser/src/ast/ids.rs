@@ -1,16 +1,13 @@
 use crate::Ast;
 
 use super::{
-    Argument, AstDefinition, Directive, DirectiveDefinition, EnumDefinition, EnumValueDefinition,
-    FieldDefinition, InputObjectDefinition, InputValueDefinition, InterfaceDefinition,
-    ObjectDefinition, ScalarDefinition, SchemaDefinition, Type, UnionDefinition, Value,
+    storage::{
+        Argument, Directive, DirectiveDefinition, EnumDefinition, EnumValueDefinition,
+        FieldDefinition, InputObjectDefinition, InputValueDefinition, InterfaceDefinition,
+        ObjectDefinition, ScalarDefinition, SchemaDefinition, Type, UnionDefinition, Value,
+    },
+    AstDefinition, AstLookup,
 };
-
-pub(crate) trait AstLookup<Id> {
-    type Output: ?Sized;
-
-    fn lookup(&self, index: Id) -> &Self::Output;
-}
 
 // TODO: NonZeroUsize these?
 

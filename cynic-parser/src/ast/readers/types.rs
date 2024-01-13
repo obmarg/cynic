@@ -1,7 +1,4 @@
-use crate::ast::{
-    ids::{AstLookup, TypeId},
-    WrappingType,
-};
+use crate::ast::{ids::TypeId, AstLookup, WrappingType};
 
 use super::{AstId, ReadContext};
 

@@ -1,7 +1,4 @@
-use crate::ast::{
-    ids::{AstLookup, SchemaDefinitionId},
-    OperationType,
-};
+use crate::ast::{ids::SchemaDefinitionId, AstLookup, OperationType};
 
 use super::{AstId, ReadContext};
 

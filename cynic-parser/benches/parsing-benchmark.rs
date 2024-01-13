@@ -1,5 +1,5 @@
 use criterion::{black_box, criterion_group, criterion_main, Criterion};
-use cynic_parser::AstBuilder;
+use cynic_parser::AstWriter;
 
 pub fn criterion_benchmark(c: &mut Criterion) {
     let input = "type MyType { field: Whatever, field: Whatever }";

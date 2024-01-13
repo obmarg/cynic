@@ -1,6 +1,4 @@
-// TODO: Think about ditching Definition from some of these names?
-
-use crate::ast::ids::{AstLookup, ObjectDefinitionId};
+use crate::ast::{ids::ObjectDefinitionId, AstLookup};
 
 use super::{directives::Directive, fields::FieldDefinition, AstId, ReadContext};
 

@@ -1,8 +1,6 @@
-use std::alloc::alloc;
-
 use pretty::{BoxAllocator, DocAllocator, Pretty};
 
-use crate::ast::{ids::*, readers::*, Definition, TypeDefinition};
+use crate::ast::{readers::*, Definition, TypeDefinition};
 
 impl crate::Ast {
     pub fn to_sdl(&self) -> String {

@@ -1,4 +1,7 @@
-use crate::ast::ids::{AstLookup, EnumDefinitionId, EnumValueDefinitionId};
+use crate::ast::{
+    ids::{EnumDefinitionId, EnumValueDefinitionId},
+    AstLookup,
+};
 
 use super::{directives::Directive, AstId, ReadContext};
 

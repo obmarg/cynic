@@ -1,6 +1,6 @@
 use crate::ast::{
-    ids::{AstLookup, DirectiveDefinitionId, DirectiveId},
-    DirectiveLocation,
+    ids::{DirectiveDefinitionId, DirectiveId},
+    AstLookup, DirectiveLocation,
 };
 
 use super::{arguments::Argument, input_values::InputValueDefinition, AstId, ReadContext};

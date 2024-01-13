@@ -1,4 +1,4 @@
-use crate::ast::ids::{ArgumentId, AstLookup};
+use crate::ast::{ids::ArgumentId, AstLookup};
 
 use super::{values::ValueReader, AstId, ReadContext};
 
