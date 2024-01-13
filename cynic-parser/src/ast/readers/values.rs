@@ -3,7 +3,7 @@ use crate::ast::{
     ids::{AstLookup, ValueId},
 };
 
-use super::{AstId, AstReader};
+use super::{AstId, ReadContext};
 
 pub enum ValueReader<'a> {
     Variable(&'a str),
@@ -21,8 +21,8 @@ impl AstId for ValueId {
     type Reader<'a> = ValueReader<'a>;
 }
 
-impl<'a> From<AstReader<'a, ValueId>> for ValueReader<'a> {
-    fn from(reader: AstReader<'a, ValueId>) -> Self {
+impl<'a> From<ReadContext<'a, ValueId>> for ValueReader<'a> {
+    fn from(reader: ReadContext<'a, ValueId>) -> Self {
         let ast = &reader.ast;
 
         match ast.lookup(reader.id) {

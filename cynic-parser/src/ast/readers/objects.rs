@@ -2,9 +2,9 @@
 
 use crate::ast::ids::{AstLookup, ObjectDefinitionId};
 
-use super::{directives::Directive, fields::FieldDefinition, AstId, AstReader};
+use super::{directives::Directive, fields::FieldDefinition, AstId, ReadContext};
 
-pub struct ObjectDefinition<'a>(AstReader<'a, ObjectDefinitionId>);
+pub struct ObjectDefinition<'a>(ReadContext<'a, ObjectDefinitionId>);
 
 impl<'a> ObjectDefinition<'a> {
     pub fn name(&self) -> &str {
@@ -48,8 +48,8 @@ impl AstId for ObjectDefinitionId {
     type Reader<'a> = ObjectDefinition<'a>;
 }
 
-impl<'a> From<AstReader<'a, ObjectDefinitionId>> for ObjectDefinition<'a> {
-    fn from(value: AstReader<'a, ObjectDefinitionId>) -> Self {
+impl<'a> From<ReadContext<'a, ObjectDefinitionId>> for ObjectDefinition<'a> {
+    fn from(value: ReadContext<'a, ObjectDefinitionId>) -> Self {
         Self(value)
     }
 }

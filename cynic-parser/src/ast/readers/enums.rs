@@ -1,8 +1,8 @@
 use crate::ast::ids::{AstLookup, EnumDefinitionId, EnumValueDefinitionId};
 
-use super::{directives::Directive, AstId, AstReader};
+use super::{directives::Directive, AstId, ReadContext};
 
-pub struct EnumDefinition<'a>(AstReader<'a, EnumDefinitionId>);
+pub struct EnumDefinition<'a>(ReadContext<'a, EnumDefinitionId>);
 
 impl<'a> EnumDefinition<'a> {
     pub fn name(&self) -> &str {
@@ -32,7 +32,7 @@ impl<'a> EnumDefinition<'a> {
     }
 }
 
-pub struct EnumValueDefinition<'a>(AstReader<'a, EnumValueDefinitionId>);
+pub struct EnumValueDefinition<'a>(ReadContext<'a, EnumValueDefinitionId>);
 
 impl<'a> EnumValueDefinition<'a> {
     pub fn value(&self) -> &str {
@@ -59,8 +59,9 @@ impl AstId for EnumDefinitionId {
     type Reader<'a> = EnumDefinition<'a>;
 }
 
-impl<'a> From<AstReader<'a, EnumDefinitionId>> for EnumDefinition<'a> {
-    fn from(value: AstReader<'a, EnumDefinitionId>) -> Self {
+// TODO: consider making this a trait, maybe named Reader/Node/not sure...
+impl<'a> From<ReadContext<'a, EnumDefinitionId>> for EnumDefinition<'a> {
+    fn from(value: ReadContext<'a, EnumDefinitionId>) -> Self {
         Self(value)
     }
 }
@@ -69,8 +70,8 @@ impl AstId for EnumValueDefinitionId {
     type Reader<'a> = EnumValueDefinition<'a>;
 }
 
-impl<'a> From<AstReader<'a, EnumValueDefinitionId>> for EnumValueDefinition<'a> {
-    fn from(value: AstReader<'a, EnumValueDefinitionId>) -> Self {
+impl<'a> From<ReadContext<'a, EnumValueDefinitionId>> for EnumValueDefinition<'a> {
+    fn from(value: ReadContext<'a, EnumValueDefinitionId>) -> Self {
         Self(value)
     }
 }

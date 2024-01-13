@@ -24,14 +24,14 @@ pub use self::{
 // TODO: Make this sealed maybe?
 // also think about the name, clashes with existing AstId a bit
 pub trait AstId: Copy {
-    type Reader<'a>: From<AstReader<'a, Self>>;
+    type Reader<'a>: From<ReadContext<'a, Self>>;
 
     fn read(self, ast: &Ast) -> Self::Reader<'_> {
-        AstReader { id: self, ast }.into()
+        ReadContext { id: self, ast }.into()
     }
 }
 
-pub struct AstReader<'a, I> {
+pub struct ReadContext<'a, I> {
     id: I,
     ast: &'a Ast,
 }
@@ -41,7 +41,7 @@ impl super::Ast {
     where
         T: AstId,
     {
-        AstReader { id, ast: self }.into()
+        ReadContext { id, ast: self }.into()
     }
 }
 

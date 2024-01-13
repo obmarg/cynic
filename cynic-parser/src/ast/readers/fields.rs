@@ -1,10 +1,10 @@
 use crate::ast::ids::{AstLookup, FieldDefinitionId};
 
 use super::{
-    directives::Directive, input_values::InputValueDefinition, types::Type, AstId, AstReader,
+    directives::Directive, input_values::InputValueDefinition, types::Type, AstId, ReadContext,
 };
 
-pub struct FieldDefinition<'a>(AstReader<'a, FieldDefinitionId>);
+pub struct FieldDefinition<'a>(ReadContext<'a, FieldDefinitionId>);
 
 impl<'a> FieldDefinition<'a> {
     pub fn name(&self) -> &str {
@@ -38,8 +38,8 @@ impl AstId for FieldDefinitionId {
     type Reader<'a> = FieldDefinition<'a>;
 }
 
-impl<'a> From<AstReader<'a, FieldDefinitionId>> for FieldDefinition<'a> {
-    fn from(value: AstReader<'a, FieldDefinitionId>) -> Self {
+impl<'a> From<ReadContext<'a, FieldDefinitionId>> for FieldDefinition<'a> {
+    fn from(value: ReadContext<'a, FieldDefinitionId>) -> Self {
         Self(value)
     }
 }

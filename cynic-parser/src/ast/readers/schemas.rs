@@ -3,9 +3,9 @@ use crate::ast::{
     OperationType,
 };
 
-use super::{AstId, AstReader};
+use super::{AstId, ReadContext};
 
-pub struct SchemaDefinition<'a>(AstReader<'a, SchemaDefinitionId>);
+pub struct SchemaDefinition<'a>(ReadContext<'a, SchemaDefinitionId>);
 
 impl<'a> SchemaDefinition<'a> {
     pub fn description(&self) -> Option<&str> {
@@ -28,8 +28,8 @@ impl AstId for SchemaDefinitionId {
     type Reader<'a> = SchemaDefinition<'a>;
 }
 
-impl<'a> From<AstReader<'a, SchemaDefinitionId>> for SchemaDefinition<'a> {
-    fn from(value: AstReader<'a, SchemaDefinitionId>) -> Self {
+impl<'a> From<ReadContext<'a, SchemaDefinitionId>> for SchemaDefinition<'a> {
+    fn from(value: ReadContext<'a, SchemaDefinitionId>) -> Self {
         Self(value)
     }
 }

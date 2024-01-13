@@ -1,8 +1,8 @@
 use crate::ast::ids::{AstLookup, ScalarDefinitionId};
 
-use super::{directives::Directive, AstId, AstReader};
+use super::{directives::Directive, AstId, ReadContext};
 
-pub struct ScalarDefinition<'a>(AstReader<'a, ScalarDefinitionId>);
+pub struct ScalarDefinition<'a>(ReadContext<'a, ScalarDefinitionId>);
 
 impl<'a> ScalarDefinition<'a> {
     pub fn name(&self) -> &str {
@@ -30,8 +30,8 @@ impl AstId for ScalarDefinitionId {
     type Reader<'a> = ScalarDefinition<'a>;
 }
 
-impl<'a> From<AstReader<'a, ScalarDefinitionId>> for ScalarDefinition<'a> {
-    fn from(value: AstReader<'a, ScalarDefinitionId>) -> Self {
+impl<'a> From<ReadContext<'a, ScalarDefinitionId>> for ScalarDefinition<'a> {
+    fn from(value: ReadContext<'a, ScalarDefinitionId>) -> Self {
         Self(value)
     }
 }

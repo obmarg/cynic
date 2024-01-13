@@ -3,9 +3,9 @@ use crate::ast::{
     DirectiveLocation,
 };
 
-use super::{arguments::Argument, input_values::InputValueDefinition, AstId, AstReader};
+use super::{arguments::Argument, input_values::InputValueDefinition, AstId, ReadContext};
 
-pub struct DirectiveDefinition<'a>(AstReader<'a, DirectiveDefinitionId>);
+pub struct DirectiveDefinition<'a>(ReadContext<'a, DirectiveDefinitionId>);
 
 impl<'a> DirectiveDefinition<'a> {
     pub fn name(&self) -> &str {
@@ -38,7 +38,7 @@ impl<'a> DirectiveDefinition<'a> {
     }
 }
 
-pub struct Directive<'a>(AstReader<'a, DirectiveId>);
+pub struct Directive<'a>(ReadContext<'a, DirectiveId>);
 
 impl<'a> Directive<'a> {
     pub fn name(&self) -> &str {
@@ -61,8 +61,8 @@ impl AstId for DirectiveDefinitionId {
     type Reader<'a> = DirectiveDefinition<'a>;
 }
 
-impl<'a> From<AstReader<'a, DirectiveDefinitionId>> for DirectiveDefinition<'a> {
-    fn from(value: AstReader<'a, DirectiveDefinitionId>) -> Self {
+impl<'a> From<ReadContext<'a, DirectiveDefinitionId>> for DirectiveDefinition<'a> {
+    fn from(value: ReadContext<'a, DirectiveDefinitionId>) -> Self {
         Self(value)
     }
 }
@@ -71,8 +71,8 @@ impl AstId for DirectiveId {
     type Reader<'a> = Directive<'a>;
 }
 
-impl<'a> From<AstReader<'a, DirectiveId>> for Directive<'a> {
-    fn from(value: AstReader<'a, DirectiveId>) -> Self {
+impl<'a> From<ReadContext<'a, DirectiveId>> for Directive<'a> {
+    fn from(value: ReadContext<'a, DirectiveId>) -> Self {
         Self(value)
     }
 }

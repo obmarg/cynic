@@ -1,8 +1,8 @@
 use crate::ast::ids::{AstLookup, InputValueDefinitionId};
 
-use super::{directives::Directive, types::Type, values::ValueReader, AstId, AstReader};
+use super::{directives::Directive, types::Type, values::ValueReader, AstId, ReadContext};
 
-pub struct InputValueDefinition<'a>(AstReader<'a, InputValueDefinitionId>);
+pub struct InputValueDefinition<'a>(ReadContext<'a, InputValueDefinitionId>);
 
 impl<'a> InputValueDefinition<'a> {
     pub fn name(&self) -> &str {
@@ -39,8 +39,8 @@ impl AstId for InputValueDefinitionId {
     type Reader<'a> = InputValueDefinition<'a>;
 }
 
-impl<'a> From<AstReader<'a, InputValueDefinitionId>> for InputValueDefinition<'a> {
-    fn from(value: AstReader<'a, InputValueDefinitionId>) -> Self {
+impl<'a> From<ReadContext<'a, InputValueDefinitionId>> for InputValueDefinition<'a> {
+    fn from(value: ReadContext<'a, InputValueDefinitionId>) -> Self {
         Self(value)
     }
 }

@@ -1,8 +1,8 @@
 use crate::ast::ids::{ArgumentId, AstLookup};
 
-use super::{values::ValueReader, AstId, AstReader};
+use super::{values::ValueReader, AstId, ReadContext};
 
-pub struct Argument<'a>(AstReader<'a, ArgumentId>);
+pub struct Argument<'a>(ReadContext<'a, ArgumentId>);
 
 impl<'a> Argument<'a> {
     pub fn name(&self) -> &str {
@@ -21,8 +21,8 @@ impl AstId for ArgumentId {
     type Reader<'a> = Argument<'a>;
 }
 
-impl<'a> From<AstReader<'a, ArgumentId>> for Argument<'a> {
-    fn from(value: AstReader<'a, ArgumentId>) -> Self {
+impl<'a> From<ReadContext<'a, ArgumentId>> for Argument<'a> {
+    fn from(value: ReadContext<'a, ArgumentId>) -> Self {
         Self(value)
     }
 }

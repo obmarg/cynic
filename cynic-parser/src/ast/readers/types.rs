@@ -3,9 +3,9 @@ use crate::ast::{
     WrappingType,
 };
 
-use super::{AstId, AstReader};
+use super::{AstId, ReadContext};
 
-pub struct Type<'a>(AstReader<'a, TypeId>);
+pub struct Type<'a>(ReadContext<'a, TypeId>);
 
 impl<'a> std::fmt::Display for Type<'a> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -34,8 +34,8 @@ impl AstId for TypeId {
     type Reader<'a> = Type<'a>;
 }
 
-impl<'a> From<AstReader<'a, TypeId>> for Type<'a> {
-    fn from(value: AstReader<'a, TypeId>) -> Self {
+impl<'a> From<ReadContext<'a, TypeId>> for Type<'a> {
+    fn from(value: ReadContext<'a, TypeId>) -> Self {
         Self(value)
     }
 }

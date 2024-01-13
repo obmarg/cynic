@@ -1,8 +1,8 @@
 use crate::ast::ids::{AstLookup, UnionDefinitionId};
 
-use super::{directives::Directive, AstId, AstReader};
+use super::{directives::Directive, AstId, ReadContext};
 
-pub struct UnionDefinition<'a>(AstReader<'a, UnionDefinitionId>);
+pub struct UnionDefinition<'a>(ReadContext<'a, UnionDefinitionId>);
 
 impl<'a> UnionDefinition<'a> {
     pub fn name(&self) -> &str {
@@ -40,8 +40,8 @@ impl AstId for UnionDefinitionId {
     type Reader<'a> = UnionDefinition<'a>;
 }
 
-impl<'a> From<AstReader<'a, UnionDefinitionId>> for UnionDefinition<'a> {
-    fn from(value: AstReader<'a, UnionDefinitionId>) -> Self {
+impl<'a> From<ReadContext<'a, UnionDefinitionId>> for UnionDefinition<'a> {
+    fn from(value: ReadContext<'a, UnionDefinitionId>) -> Self {
         Self(value)
     }
 }
