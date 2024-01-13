@@ -144,8 +144,25 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, ObjectDefinitionId> {
 
 impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, FieldDefinitionId> {
     fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+        let mut arguments_pretty = allocator.nil();
+
+        let mut arguments = self.0.arguments().peekable();
+
+        if arguments.peek().is_some() {
+            arguments_pretty = allocator
+                .intersperse(arguments.map(NodeDisplay), ", ")
+                .group();
+
+            arguments_pretty = arguments_pretty
+                .clone()
+                .nest(2)
+                .parens()
+                .flat_alt(arguments_pretty.parens());
+        }
+
         allocator
             .text(self.0.name().to_string())
+            .append(arguments_pretty)
             .append(allocator.text(":"))
             .append(allocator.space())
             .append(NodeDisplay(self.0.ty()))
