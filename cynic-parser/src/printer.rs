@@ -1,3 +1,5 @@
+use std::alloc::alloc;
+
 use pretty::{BoxAllocator, DocAllocator, Pretty};
 
 use crate::ast::{
@@ -197,7 +199,7 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, FieldDefinitionId> {
 
         if arguments.peek().is_some() {
             arguments_pretty = allocator
-                .intersperse(arguments.map(NodeDisplay), ", ")
+                .intersperse(arguments.map(NodeDisplay), comma_or_newline(allocator))
                 .group();
 
             arguments_pretty = arguments_pretty
@@ -453,7 +455,7 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, DirectiveDefinitionId> {
 
         if arguments.peek().is_some() {
             let arguments = allocator
-                .intersperse(arguments.map(NodeDisplay), ", ")
+                .intersperse(arguments.map(NodeDisplay), comma_or_newline(allocator))
                 .group();
 
             let arguments = arguments
@@ -491,14 +493,17 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, DirectiveId> {
     fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
         let mut builder = allocator.text(format!("@{}", self.0.name()));
 
-        let arguments = self.0.arguments().collect::<Vec<_>>();
-        if !arguments.is_empty() {
-            builder = builder.append(
-                allocator
-                    .intersperse(arguments.into_iter().map(NodeDisplay), ", ")
-                    .parens(),
-            );
+        let mut arguments = self.0.arguments().peekable();
+
+        if arguments.peek().is_some() {
+            let arguments = allocator
+                .intersperse(arguments.map(NodeDisplay), comma_or_newline(allocator))
+                .group()
+                .enclose(allocator.line_(), allocator.line_());
+
+            builder = builder.append(parens_and_maybe_indent(arguments));
         }
+
         builder
     }
 }
@@ -523,12 +528,15 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, ValueId> {
             crate::ast::ValueReader::Boolean(value) => allocator.text(format!("{value}")),
             crate::ast::ValueReader::Null => allocator.text("null"),
             crate::ast::ValueReader::Enum(value) => allocator.text(value.to_string()),
-            crate::ast::ValueReader::List(items) => allocator
-                .intersperse(
-                    items.into_iter().map(NodeDisplay),
-                    allocator.text(",").append(allocator.line()),
-                )
-                .brackets(),
+            crate::ast::ValueReader::List(items) => brackets_and_maybe_indent(
+                allocator
+                    .intersperse(
+                        items.into_iter().map(NodeDisplay),
+                        allocator.text(",").append(allocator.line()),
+                    )
+                    .group()
+                    .enclose(allocator.line_(), allocator.line_()),
+            ),
             crate::ast::ValueReader::Object(items) => allocator
                 .intersperse(
                     items.into_iter().map(|(name, value)| {
@@ -540,8 +548,33 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, ValueId> {
                     }),
                     ",",
                 )
+                .group()
                 .enclose(allocator.space(), allocator.space())
                 .braces(),
         }
     }
+}
+
+fn comma_or_newline(allocator: &BoxAllocator) -> pretty::DocBuilder<'_, BoxAllocator> {
+    allocator
+        .line()
+        .flat_alt(allocator.text(",").append(allocator.space()))
+}
+
+fn parens_and_maybe_indent(
+    thing: pretty::DocBuilder<'_, BoxAllocator>,
+) -> pretty::DocBuilder<'_, BoxAllocator> {
+    thing.clone().nest(2).parens().flat_alt(thing.parens())
+}
+
+fn brackets_and_maybe_indent(
+    thing: pretty::DocBuilder<'_, BoxAllocator>,
+) -> pretty::DocBuilder<'_, BoxAllocator> {
+    thing.clone().nest(2).brackets().flat_alt(thing.brackets())
+}
+
+fn braces_and_maybe_indent(
+    thing: pretty::DocBuilder<'_, BoxAllocator>,
+) -> pretty::DocBuilder<'_, BoxAllocator> {
+    thing.clone().nest(2).braces().flat_alt(thing.braces())
 }
