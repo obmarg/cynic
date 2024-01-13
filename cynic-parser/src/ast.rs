@@ -3,11 +3,11 @@ use std::str::FromStr;
 use ids::*;
 use indexmap::IndexSet;
 
-pub(crate) mod ids;
-mod reader;
+pub mod ids;
+pub mod readers;
 mod span;
 
-pub use reader::{AstReader, Definition, TypeDefinition, ValueReader};
+pub use readers::{Definition, TypeDefinition, ValueReader};
 pub use span::Span;
 
 #[derive(Default)]

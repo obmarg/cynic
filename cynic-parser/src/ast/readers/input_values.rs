@@ -1,0 +1,46 @@
+use crate::ast::ids::{AstLookup, InputValueDefinitionId};
+
+use super::{directives::Directive, types::Type, values::ValueReader, AstId, AstReader};
+
+pub struct InputValueDefinition<'a>(AstReader<'a, InputValueDefinitionId>);
+
+impl<'a> InputValueDefinition<'a> {
+    pub fn name(&self) -> &str {
+        let ast = &self.0.ast;
+        ast.lookup(ast.lookup(self.0.id).name)
+    }
+
+    pub fn ty(&self) -> Type<'a> {
+        let ast = &self.0.ast;
+
+        ast.read(ast.lookup(self.0.id).ty)
+    }
+
+    pub fn description(&self) -> Option<&'a str> {
+        let ast = &self.0.ast;
+        ast.lookup(self.0.id).description.map(|id| ast.lookup(id))
+    }
+
+    pub fn default_value(&self) -> Option<ValueReader<'a>> {
+        let ast = &self.0.ast;
+        ast.lookup(self.0.id).default.map(|id| ast.read(id))
+    }
+
+    pub fn directives(&self) -> impl Iterator<Item = Directive<'a>> + 'a {
+        let ast = &self.0.ast;
+        ast.lookup(self.0.id)
+            .directives
+            .iter()
+            .map(|id| ast.read(*id))
+    }
+}
+
+impl AstId for InputValueDefinitionId {
+    type Reader<'a> = InputValueDefinition<'a>;
+}
+
+impl<'a> From<AstReader<'a, InputValueDefinitionId>> for InputValueDefinition<'a> {
+    fn from(value: AstReader<'a, InputValueDefinitionId>) -> Self {
+        Self(value)
+    }
+}

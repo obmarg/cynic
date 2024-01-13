@@ -4,12 +4,9 @@ mod ast;
 mod lexer;
 mod printer;
 
-pub use lexer::Lexer;
+pub use self::ast::{ids, readers, Ast, AstBuilder};
 
-// TODO: Make this more senseible
-pub use ast::{Ast, AstBuilder};
-
-lalrpop_mod!(pub schema);
+lalrpop_mod!(schema);
 
 pub fn parse_type_system_document(input: &str) -> Ast {
     let lexer = lexer::Lexer::new(input);

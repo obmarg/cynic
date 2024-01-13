@@ -1,0 +1,55 @@
+// TODO: Think about ditching Definition from some of these names?
+
+use crate::ast::ids::{AstLookup, ObjectDefinitionId};
+
+use super::{directives::Directive, fields::FieldDefinition, AstId, AstReader};
+
+pub struct ObjectDefinition<'a>(AstReader<'a, ObjectDefinitionId>);
+
+impl<'a> ObjectDefinition<'a> {
+    pub fn name(&self) -> &str {
+        let ast = &self.0.ast;
+
+        ast.lookup(ast.lookup(self.0.id).name)
+    }
+
+    pub fn description(&self) -> Option<&str> {
+        let ast = &self.0.ast;
+
+        ast.lookup(self.0.id).description.map(|id| ast.lookup(id))
+    }
+
+    pub fn implements_interfaces(&self) -> impl Iterator<Item = &'a str> + 'a {
+        let ast = &self.0.ast;
+
+        ast.lookup(self.0.id)
+            .implements
+            .iter()
+            .map(|id| ast.lookup(*id))
+    }
+
+    pub fn fields(&self) -> impl Iterator<Item = FieldDefinition<'a>> + 'a {
+        let ast = &self.0.ast;
+
+        ast.lookup(self.0.id).fields.iter().map(|id| ast.read(*id))
+    }
+
+    pub fn directives(&self) -> impl Iterator<Item = Directive<'a>> + 'a {
+        let ast = &self.0.ast;
+
+        ast.lookup(self.0.id)
+            .directives
+            .iter()
+            .map(|id| ast.read(*id))
+    }
+}
+
+impl AstId for ObjectDefinitionId {
+    type Reader<'a> = ObjectDefinition<'a>;
+}
+
+impl<'a> From<AstReader<'a, ObjectDefinitionId>> for ObjectDefinition<'a> {
+    fn from(value: AstReader<'a, ObjectDefinitionId>) -> Self {
+        Self(value)
+    }
+}

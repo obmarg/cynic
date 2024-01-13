@@ -6,8 +6,6 @@ use super::{
     ObjectDefinition, ScalarDefinition, SchemaDefinition, Type, UnionDefinition, Value,
 };
 
-pub trait AstId {}
-
 pub(crate) trait AstLookup<Id> {
     type Output: ?Sized;
 
@@ -27,8 +25,6 @@ impl AstLookup<DefinitionId> for Ast {
     }
 }
 
-impl AstId for DefinitionId {}
-
 #[derive(Clone, Copy)]
 pub struct StringId(pub(super) usize);
 
@@ -45,8 +41,6 @@ impl AstLookup<StringId> for Ast {
 #[derive(Clone, Copy)]
 pub struct SchemaDefinitionId(pub(super) usize);
 
-impl AstId for SchemaDefinitionId {}
-
 impl AstLookup<SchemaDefinitionId> for Ast {
     type Output = SchemaDefinition;
 
@@ -59,8 +53,6 @@ impl AstLookup<SchemaDefinitionId> for Ast {
 
 #[derive(Clone, Copy)]
 pub struct ScalarDefinitionId(pub(super) usize);
-
-impl AstId for ScalarDefinitionId {}
 
 impl AstLookup<ScalarDefinitionId> for Ast {
     type Output = ScalarDefinition;
@@ -75,8 +67,6 @@ impl AstLookup<ScalarDefinitionId> for Ast {
 #[derive(Clone, Copy)]
 pub struct ObjectDefinitionId(pub(super) usize);
 
-impl AstId for ObjectDefinitionId {}
-
 impl AstLookup<ObjectDefinitionId> for Ast {
     type Output = ObjectDefinition;
 
@@ -89,8 +79,6 @@ impl AstLookup<ObjectDefinitionId> for Ast {
 
 #[derive(Clone, Copy)]
 pub struct InterfaceDefinitionId(pub(super) usize);
-
-impl AstId for InterfaceDefinitionId {}
 
 impl AstLookup<InterfaceDefinitionId> for Ast {
     type Output = InterfaceDefinition;
@@ -105,8 +93,6 @@ impl AstLookup<InterfaceDefinitionId> for Ast {
 #[derive(Clone, Copy)]
 pub struct UnionDefinitionId(pub(super) usize);
 
-impl AstId for UnionDefinitionId {}
-
 impl AstLookup<UnionDefinitionId> for Ast {
     type Output = UnionDefinition;
 
@@ -119,8 +105,6 @@ impl AstLookup<UnionDefinitionId> for Ast {
 
 #[derive(Clone, Copy)]
 pub struct EnumDefinitionId(pub(super) usize);
-
-impl AstId for EnumDefinitionId {}
 
 impl AstLookup<EnumDefinitionId> for Ast {
     type Output = EnumDefinition;
@@ -135,8 +119,6 @@ impl AstLookup<EnumDefinitionId> for Ast {
 #[derive(Clone, Copy)]
 pub struct EnumValueDefinitionId(pub(super) usize);
 
-impl AstId for EnumValueDefinitionId {}
-
 impl AstLookup<EnumValueDefinitionId> for Ast {
     type Output = EnumValueDefinition;
 
@@ -149,8 +131,6 @@ impl AstLookup<EnumValueDefinitionId> for Ast {
 
 #[derive(Clone, Copy)]
 pub struct InputObjectDefinitionId(pub(super) usize);
-
-impl AstId for InputObjectDefinitionId {}
 
 impl AstLookup<InputObjectDefinitionId> for Ast {
     type Output = InputObjectDefinition;
@@ -165,8 +145,6 @@ impl AstLookup<InputObjectDefinitionId> for Ast {
 #[derive(Clone, Copy)]
 pub struct DirectiveDefinitionId(pub(super) usize);
 
-impl AstId for DirectiveDefinitionId {}
-
 impl AstLookup<DirectiveDefinitionId> for Ast {
     type Output = DirectiveDefinition;
 
@@ -179,8 +157,6 @@ impl AstLookup<DirectiveDefinitionId> for Ast {
 
 #[derive(Clone, Copy)]
 pub struct FieldDefinitionId(pub(super) usize);
-
-impl AstId for FieldDefinitionId {}
 
 impl AstLookup<FieldDefinitionId> for Ast {
     type Output = FieldDefinition;
@@ -195,8 +171,6 @@ impl AstLookup<FieldDefinitionId> for Ast {
 #[derive(Clone, Copy)]
 pub struct InputValueDefinitionId(pub(super) usize);
 
-impl AstId for InputValueDefinitionId {}
-
 impl AstLookup<InputValueDefinitionId> for Ast {
     type Output = InputValueDefinition;
 
@@ -209,8 +183,6 @@ impl AstLookup<InputValueDefinitionId> for Ast {
 
 #[derive(Clone, Copy)]
 pub struct TypeId(pub(super) usize);
-
-impl AstId for TypeId {}
 
 impl AstLookup<TypeId> for Ast {
     type Output = Type;
@@ -225,8 +197,6 @@ impl AstLookup<TypeId> for Ast {
 #[derive(Clone, Copy)]
 pub struct DirectiveId(pub(super) usize);
 
-impl AstId for DirectiveId {}
-
 impl AstLookup<DirectiveId> for Ast {
     type Output = Directive;
 
@@ -238,8 +208,6 @@ impl AstLookup<DirectiveId> for Ast {
 #[derive(Clone, Copy)]
 pub struct ArgumentId(pub(super) usize);
 
-impl AstId for ArgumentId {}
-
 impl AstLookup<ArgumentId> for Ast {
     type Output = Argument;
 
@@ -250,8 +218,6 @@ impl AstLookup<ArgumentId> for Ast {
 
 #[derive(Clone, Copy)]
 pub struct ValueId(pub(super) usize);
-
-impl AstId for ValueId {}
 
 impl AstLookup<ValueId> for Ast {
     type Output = Value;
