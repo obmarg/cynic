@@ -83,13 +83,11 @@ fn interface() {
 }
 
 #[test]
-#[ignore]
 fn kitchen_sink() {
-    roundtrip_test("tests/sdl/kitchen-sink.graphql");
+    double_roundtrip_test("tests/sdl/kitchen-sink.graphql");
 }
 
 #[test]
-#[ignore]
 fn kitchen_sink_canonical() {
     roundtrip_test("tests/sdl/kitchen-sink_canonical.graphql");
 }
@@ -131,7 +129,6 @@ fn union() {
 }
 
 #[test]
-#[ignore]
 fn union_extension() {
     roundtrip_test("tests/sdl/union_extension.graphql");
 }
