@@ -1,4 +1,4 @@
-use pretty::{BoxAllocator, DocAllocator, Pretty};
+use pretty::{BoxAllocator, BuildDoc, DocAllocator, Pretty};
 
 use crate::ast::{
     ids::{
@@ -311,17 +311,14 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, InputObjectDefinitionId> {
 
         let mut fields = self.0.fields().peekable();
         if fields.peek().is_some() {
+            let fields = allocator.concat(fields.map(NodeDisplay)).nest(2);
+
             builder = builder
                 .append(allocator.space())
                 .append(allocator.text("{"))
                 .append(allocator.hardline())
                 .append(allocator.text("  "))
-                .append(
-                    allocator
-                        .intersperse(fields.map(NodeDisplay), allocator.hardline())
-                        .align(),
-                )
-                .append(allocator.hardline())
+                .append(fields)
                 .append(allocator.text("}"));
         }
 
@@ -331,21 +328,37 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, InputObjectDefinitionId> {
 
 impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, InputValueDefinitionId> {
     fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
-        let mut builder = allocator
+        let description = self
+            .0
+            .description()
+            .map(|description| {
+                allocator
+                    .hardline()
+                    .append(allocator.text(description))
+                    .append(allocator.hardline())
+            })
+            .unwrap_or(allocator.nil());
+
+        let mut value_builder = allocator
             .text(self.0.name().to_string())
             .append(allocator.text(":"))
             .append(allocator.space())
             .append(NodeDisplay(self.0.ty()));
 
         if let Some(value) = self.0.default_value() {
-            builder = builder
+            value_builder = value_builder
                 .append(allocator.space())
                 .append(allocator.text("="))
                 .append(allocator.space())
                 .append(NodeDisplay(value));
         }
 
-        builder.append(allocator.intersperse(self.0.directives().map(NodeDisplay), " "))
+        value_builder =
+            value_builder.append(allocator.intersperse(self.0.directives().map(NodeDisplay), " "));
+
+        description
+            .append(value_builder.clone())
+            .append(allocator.line_())
     }
 }
 
@@ -364,13 +377,17 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, DirectiveDefinitionId> {
         let mut arguments = self.0.arguments().peekable();
 
         if arguments.peek().is_some() {
-            builder = builder
-                .append(
-                    allocator
-                        .intersperse(arguments.map(NodeDisplay), ", ")
-                        .parens(),
-                )
-                .append(allocator.space())
+            let arguments = allocator
+                .intersperse(arguments.map(NodeDisplay), ", ")
+                .group();
+
+            let arguments = arguments
+                .clone()
+                .nest(2)
+                .parens()
+                .flat_alt(arguments.parens());
+
+            builder = builder.append(arguments).append(allocator.space())
         }
 
         if self.0.is_repeatable() {
