@@ -6,12 +6,12 @@ use super::{directives::Directive, AstId, ReadContext};
 pub struct ScalarDefinition<'a>(ReadContext<'a, ScalarDefinitionId>);
 
 impl<'a> ScalarDefinition<'a> {
-    pub fn name(&self) -> &str {
+    pub fn name(&self) -> &'a str {
         let ast = &self.0.ast;
 
         ast.lookup(ast.lookup(self.0.id).name)
     }
-    pub fn description(&self) -> Option<&str> {
+    pub fn description(&self) -> Option<&'a str> {
         let ast = &self.0.ast;
 
         ast.lookup(self.0.id).description.map(|id| ast.lookup(id))

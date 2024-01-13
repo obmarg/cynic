@@ -9,7 +9,7 @@ use super::{arguments::Argument, input_values::InputValueDefinition, AstId, Read
 pub struct DirectiveDefinition<'a>(ReadContext<'a, DirectiveDefinitionId>);
 
 impl<'a> DirectiveDefinition<'a> {
-    pub fn name(&self) -> &str {
+    pub fn name(&self) -> &'a str {
         let ast = &self.0.ast;
 
         ast.lookup(ast.lookup(self.0.id).name)
@@ -43,7 +43,7 @@ impl<'a> DirectiveDefinition<'a> {
 pub struct Directive<'a>(ReadContext<'a, DirectiveId>);
 
 impl<'a> Directive<'a> {
-    pub fn name(&self) -> &str {
+    pub fn name(&self) -> &'a str {
         let ast = &self.0.ast;
 
         ast.lookup(ast.lookup(self.0.id).name)

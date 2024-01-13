@@ -6,11 +6,11 @@ use super::{directives::Directive, input_values::InputValueDefinition, AstId, Re
 pub struct InputObjectDefinition<'a>(ReadContext<'a, InputObjectDefinitionId>);
 
 impl<'a> InputObjectDefinition<'a> {
-    pub fn name(&self) -> &str {
+    pub fn name(&self) -> &'a str {
         self.0.ast.lookup(self.0.ast.lookup(self.0.id).name)
     }
 
-    pub fn description(&self) -> Option<&str> {
+    pub fn description(&self) -> Option<&'a str> {
         self.0
             .ast
             .lookup(self.0.id)

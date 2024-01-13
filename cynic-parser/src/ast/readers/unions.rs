@@ -6,11 +6,11 @@ use super::{directives::Directive, AstId, ReadContext};
 pub struct UnionDefinition<'a>(ReadContext<'a, UnionDefinitionId>);
 
 impl<'a> UnionDefinition<'a> {
-    pub fn name(&self) -> &str {
+    pub fn name(&self) -> &'a str {
         self.0.ast.lookup(self.0.ast.lookup(self.0.id).name)
     }
 
-    pub fn description(&self) -> Option<&str> {
+    pub fn description(&self) -> Option<&'a str> {
         self.0
             .ast
             .lookup(self.0.id)

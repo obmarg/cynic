@@ -6,7 +6,7 @@ use super::{directives::Directive, types::Type, values::ValueReader, AstId, Read
 pub struct InputValueDefinition<'a>(ReadContext<'a, InputValueDefinitionId>);
 
 impl<'a> InputValueDefinition<'a> {
-    pub fn name(&self) -> &str {
+    pub fn name(&self) -> &'a str {
         let ast = &self.0.ast;
         ast.lookup(ast.lookup(self.0.id).name)
     }

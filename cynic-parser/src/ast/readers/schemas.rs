@@ -2,10 +2,11 @@ use crate::ast::{ids::SchemaDefinitionId, AstLookup, OperationType};
 
 use super::{AstId, ReadContext};
 
+#[derive(Clone, Copy)]
 pub struct SchemaDefinition<'a>(ReadContext<'a, SchemaDefinitionId>);
 
 impl<'a> SchemaDefinition<'a> {
-    pub fn description(&self) -> Option<&str> {
+    pub fn description(&self) -> Option<&'a str> {
         let ast = &self.0.ast;
 
         ast.lookup(self.0.id).description.map(|id| ast.lookup(id))

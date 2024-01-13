@@ -6,13 +6,13 @@ use super::{directives::Directive, fields::FieldDefinition, AstId, ReadContext};
 pub struct ObjectDefinition<'a>(ReadContext<'a, ObjectDefinitionId>);
 
 impl<'a> ObjectDefinition<'a> {
-    pub fn name(&self) -> &str {
+    pub fn name(&self) -> &'a str {
         let ast = &self.0.ast;
 
         ast.lookup(ast.lookup(self.0.id).name)
     }
 
-    pub fn description(&self) -> Option<&str> {
+    pub fn description(&self) -> Option<&'a str> {
         let ast = &self.0.ast;
 
         ast.lookup(self.0.id).description.map(|id| ast.lookup(id))

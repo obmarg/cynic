@@ -5,6 +5,16 @@ use super::{AstId, ReadContext};
 #[derive(Clone, Copy)]
 pub struct Type<'a>(ReadContext<'a, TypeId>);
 
+impl<'a> Type<'a> {
+    pub fn name(&self) -> &'a str {
+        self.0.ast.lookup(self.0.ast.lookup(self.0.id).name)
+    }
+
+    pub fn wrappers(&self) -> impl Iterator<Item = crate::ast::WrappingType> + 'a {
+        self.0.ast.lookup(self.0.id).wrappers.iter().copied()
+    }
+}
+
 impl<'a> std::fmt::Display for Type<'a> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let ast = &self.0.ast;

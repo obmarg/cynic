@@ -67,7 +67,7 @@ enum AstDefinition {
     Directive(DirectiveDefinitionId),
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub enum DirectiveLocation {
     Query,
     Mutation,
@@ -146,6 +146,7 @@ impl std::fmt::Display for DirectiveLocation {
     }
 }
 
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum WrappingType {
     NonNull,
     List,
