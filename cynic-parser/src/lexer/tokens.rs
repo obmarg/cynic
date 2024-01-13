@@ -83,6 +83,12 @@ pub enum Token<'a> {
     #[token("query")]
     Query,
 
+    #[token("mutation")]
+    Mutation,
+
+    #[token("subscription")]
+    Subscription,
+
     #[token("type")]
     Type,
 
@@ -284,6 +290,8 @@ impl fmt::Display for Token<'_> {
             Token::Empty => "missing expected kind",
             Token::Schema => "schema",
             Token::Query => "query",
+            Token::Mutation => "mutation",
+            Token::Subscription => "subscription",
             Token::Type => "type",
             Token::Input => "input",
             Token::True => "true",
