@@ -505,7 +505,7 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, DirectiveId> {
             let arguments = allocator
                 .intersperse(arguments.map(NodeDisplay), comma_or_newline(allocator))
                 .group()
-                .enclose(allocator.line_(), allocator.line_());
+                .enclose(allocator.softline_(), allocator.softline_());
 
             builder = builder.append(parens_and_maybe_indent(arguments));
         }

@@ -43,9 +43,7 @@ input AbortQueuedMigrationsInput {
   """
   The ID of the organization that is running the migrations.
   """
-  ownerId: ID! @possibleTypes(
-    concreteTypes: ["Organization"]
-  )
+  ownerId: ID! @possibleTypes(concreteTypes: ["Organization"])
 }
 
 """
@@ -69,9 +67,9 @@ input AcceptEnterpriseAdministratorInvitationInput {
   """
   The id of the invitation being accepted
   """
-  invitationId: ID! @possibleTypes(
-    concreteTypes: ["EnterpriseAdministratorInvitation"]
-  )
+  invitationId: ID! @possibleTypes(concreteTypes: [
+      "EnterpriseAdministratorInvitation"
+    ])
 }
 
 """
@@ -101,9 +99,7 @@ input AcceptTopicSuggestionInput {
   """
   The Node ID of the repository.
   """
-  repositoryId: ID! @possibleTypes(
-    concreteTypes: ["Repository"]
-  )
+  repositoryId: ID! @possibleTypes(concreteTypes: ["Repository"])
 }
 
 """
@@ -156,16 +152,15 @@ input AddAssigneesToAssignableInput {
   """
   The id of the assignable object to add assignees to.
   """
-  assignableId: ID! @possibleTypes(
-    concreteTypes: ["Issue", "PullRequest"], abstractType: "Assignable"
-  )
+  assignableId: ID! @possibleTypes(concreteTypes: [
+      "Issue", "PullRequest"
+    ]
+    abstractType: "Assignable")
   
   """
   The id of users to add as assignees.
   """
-  assigneeIds: [ID!]! @possibleTypes(
-    concreteTypes: ["User"]
-  )
+  assigneeIds: [ID!]! @possibleTypes(concreteTypes: ["User"])
   
   """
   A unique identifier for the client performing the mutation.
@@ -199,9 +194,10 @@ input AddCommentInput {
   """
   The Node ID of the subject to modify.
   """
-  subjectId: ID! @possibleTypes(
-    concreteTypes: ["Issue", "PullRequest"], abstractType: "IssueOrPullRequest"
-  )
+  subjectId: ID! @possibleTypes(concreteTypes: [
+      "Issue", "PullRequest"
+    ]
+    abstractType: "IssueOrPullRequest")
 }
 
 """
@@ -232,16 +228,12 @@ input AddDiscussionCommentInput {
   """
   The Node ID of the discussion to comment on.
   """
-  discussionId: ID! @possibleTypes(
-    concreteTypes: ["Discussion"]
-  )
+  discussionId: ID! @possibleTypes(concreteTypes: ["Discussion"])
   
   """
   The Node ID of the discussion comment within this discussion to reply to.
   """
-  replyToId: ID @possibleTypes(
-    concreteTypes: ["DiscussionComment"]
-  )
+  replyToId: ID @possibleTypes(concreteTypes: ["DiscussionComment"])
 }
 
 """
@@ -265,9 +257,7 @@ input AddDiscussionPollVoteInput {
   """
   The Node ID of the discussion poll option to vote for.
   """
-  pollOptionId: ID! @possibleTypes(
-    concreteTypes: ["DiscussionPollOption"]
-  )
+  pollOptionId: ID! @possibleTypes(concreteTypes: ["DiscussionPollOption"])
 }
 
 """
@@ -291,16 +281,12 @@ input AddEnterpriseOrganizationMemberInput {
   """
   The ID of the enterprise which owns the organization.
   """
-  enterpriseId: ID! @possibleTypes(
-    concreteTypes: ["Enterprise"]
-  )
+  enterpriseId: ID! @possibleTypes(concreteTypes: ["Enterprise"])
   
   """
   The ID of the organization the users will be added to.
   """
-  organizationId: ID! @possibleTypes(
-    concreteTypes: ["Organization"]
-  )
+  organizationId: ID! @possibleTypes(concreteTypes: ["Organization"])
   
   """
   The role to assign the users in the organization
@@ -334,9 +320,7 @@ input AddEnterpriseSupportEntitlementInput {
   """
   The ID of the Enterprise which the admin belongs to.
   """
-  enterpriseId: ID! @possibleTypes(
-    concreteTypes: ["Enterprise"]
-  )
+  enterpriseId: ID! @possibleTypes(concreteTypes: ["Enterprise"])
   
   """
   The login of a member who will receive the support entitlement.
@@ -365,19 +349,15 @@ input AddLabelsToLabelableInput {
   """
   The ids of the labels to add.
   """
-  labelIds: [ID!]! @possibleTypes(
-    concreteTypes: ["Label"]
-  )
+  labelIds: [ID!]! @possibleTypes(concreteTypes: ["Label"])
   
   """
   The id of the labelable object to add labels to.
   """
-  labelableId: ID! @possibleTypes(
-    concreteTypes: [
+  labelableId: ID! @possibleTypes(concreteTypes: [
       "Discussion", "Issue", "PullRequest"
     ]
-    abstractType: "Labelable"
-  )
+    abstractType: "Labelable")
 }
 
 """
@@ -401,9 +381,10 @@ input AddProjectCardInput {
   """
   The content of the card. Must be a member of the ProjectCardItem union
   """
-  contentId: ID @possibleTypes(
-    concreteTypes: ["Issue", "PullRequest"], abstractType: "ProjectCardItem"
-  )
+  contentId: ID @possibleTypes(concreteTypes: [
+      "Issue", "PullRequest"
+    ]
+    abstractType: "ProjectCardItem")
   
   """
   The note on the card.
@@ -413,9 +394,7 @@ input AddProjectCardInput {
   """
   The Node ID of the ProjectColumn.
   """
-  projectColumnId: ID! @possibleTypes(
-    concreteTypes: ["ProjectColumn"]
-  )
+  projectColumnId: ID! @possibleTypes(concreteTypes: ["ProjectColumn"])
 }
 
 """
@@ -445,9 +424,7 @@ input AddProjectColumnInput {
   """
   The Node ID of the project.
   """
-  projectId: ID! @possibleTypes(
-    concreteTypes: ["Project"]
-  )
+  projectId: ID! @possibleTypes(concreteTypes: ["Project"])
 }
 
 """
@@ -467,9 +444,7 @@ input AddProjectV2DraftIssueInput {
   """
   The IDs of the assignees of the draft issue.
   """
-  assigneeIds: [ID!] @possibleTypes(
-    concreteTypes: ["User"]
-  )
+  assigneeIds: [ID!] @possibleTypes(concreteTypes: ["User"])
   
   """
   The body of the draft issue.
@@ -484,9 +459,7 @@ input AddProjectV2DraftIssueInput {
   """
   The ID of the Project to add the draft issue to.
   """
-  projectId: ID! @possibleTypes(
-    concreteTypes: ["ProjectV2"]
-  )
+  projectId: ID! @possibleTypes(concreteTypes: ["ProjectV2"])
   
   """
   The title of the draft issue. A project item can also be created by providing
@@ -516,19 +489,15 @@ input AddProjectV2ItemByIdInput {
   """
   The id of the Issue or Pull Request to add.
   """
-  contentId: ID! @possibleTypes(
-    concreteTypes: [
+  contentId: ID! @possibleTypes(concreteTypes: [
       "DraftIssue", "Issue", "PullRequest"
     ]
-    abstractType: "ProjectV2ItemContent"
-  )
+    abstractType: "ProjectV2ItemContent")
   
   """
   The ID of the Project to add the item to.
   """
-  projectId: ID! @possibleTypes(
-    concreteTypes: ["ProjectV2"]
-  )
+  projectId: ID! @possibleTypes(concreteTypes: ["ProjectV2"])
 }
 
 """
@@ -574,9 +543,7 @@ input AddPullRequestReviewCommentInput {
   **Description:** `inReplyTo` will be removed. use addPullRequestReviewThread or addPullRequestReviewThreadReply instead
   **Reason:** We are deprecating the addPullRequestReviewComment mutation
   """
-  inReplyTo: ID @possibleTypes(
-    concreteTypes: ["PullRequestReviewComment"]
-  )
+  inReplyTo: ID @possibleTypes(concreteTypes: ["PullRequestReviewComment"])
   
   """
   The relative path of the file to comment on.
@@ -604,9 +571,7 @@ input AddPullRequestReviewCommentInput {
   addPullRequestReviewThread or addPullRequestReviewThreadReply instead
   **Reason:** We are deprecating the addPullRequestReviewComment mutation
   """
-  pullRequestId: ID @possibleTypes(
-    concreteTypes: ["PullRequest"]
-  )
+  pullRequestId: ID @possibleTypes(concreteTypes: ["PullRequest"])
   
   """
   The Node ID of the review to modify.
@@ -616,9 +581,7 @@ input AddPullRequestReviewCommentInput {
   addPullRequestReviewThread or addPullRequestReviewThreadReply instead
   **Reason:** We are deprecating the addPullRequestReviewComment mutation
   """
-  pullRequestReviewId: ID @possibleTypes(
-    concreteTypes: ["PullRequestReview"]
-  )
+  pullRequestReviewId: ID @possibleTypes(concreteTypes: ["PullRequestReview"])
 }
 
 """
@@ -667,9 +630,7 @@ input AddPullRequestReviewInput {
   """
   The Node ID of the pull request to modify.
   """
-  pullRequestId: ID! @possibleTypes(
-    concreteTypes: ["PullRequest"]
-  )
+  pullRequestId: ID! @possibleTypes(concreteTypes: ["PullRequest"])
   
   """
   The review line comment threads.
@@ -715,16 +676,12 @@ input AddPullRequestReviewThreadInput {
   """
   The node ID of the pull request reviewing
   """
-  pullRequestId: ID @possibleTypes(
-    concreteTypes: ["PullRequest"]
-  )
+  pullRequestId: ID @possibleTypes(concreteTypes: ["PullRequest"])
   
   """
   The Node ID of the review to modify.
   """
-  pullRequestReviewId: ID @possibleTypes(
-    concreteTypes: ["PullRequestReview"]
-  )
+  pullRequestReviewId: ID @possibleTypes(concreteTypes: ["PullRequestReview"])
   
   """
   The side of the diff on which the line resides. For multi-line comments, this is the side for the end of the line range.
@@ -773,16 +730,14 @@ input AddPullRequestReviewThreadReplyInput {
   """
   The Node ID of the pending review to which the reply will belong.
   """
-  pullRequestReviewId: ID @possibleTypes(
-    concreteTypes: ["PullRequestReview"]
-  )
+  pullRequestReviewId: ID @possibleTypes(concreteTypes: ["PullRequestReview"])
   
   """
   The Node ID of the thread to which this reply is being written.
   """
-  pullRequestReviewThreadId: ID! @possibleTypes(
-    concreteTypes: ["PullRequestReviewThread"]
-  )
+  pullRequestReviewThreadId: ID! @possibleTypes(concreteTypes: [
+      "PullRequestReviewThread"
+    ])
 }
 
 """
@@ -811,8 +766,7 @@ input AddReactionInput {
   """
   The Node ID of the subject to modify.
   """
-  subjectId: ID! @possibleTypes(
-    concreteTypes: [
+  subjectId: ID! @possibleTypes(concreteTypes: [
       "CommitComment",
       "Discussion",
       "DiscussionComment",
@@ -825,8 +779,7 @@ input AddReactionInput {
       "TeamDiscussion",
       "TeamDiscussionComment"
     ]
-    abstractType: "Reactable"
-  )
+    abstractType: "Reactable")
 }
 
 """
@@ -852,9 +805,10 @@ input AddStarInput {
   """
   The Starrable ID to star.
   """
-  starrableId: ID! @possibleTypes(
-    concreteTypes: ["Gist", "Repository", "Topic"], abstractType: "Starrable"
-  )
+  starrableId: ID! @possibleTypes(concreteTypes: [
+      "Gist", "Repository", "Topic"
+    ]
+    abstractType: "Starrable")
 }
 
 """
@@ -878,9 +832,10 @@ input AddUpvoteInput {
   """
   The Node ID of the discussion or comment to upvote.
   """
-  subjectId: ID! @possibleTypes(
-    concreteTypes: ["Discussion", "DiscussionComment"], abstractType: "Votable"
-  )
+  subjectId: ID! @possibleTypes(concreteTypes: [
+      "Discussion", "DiscussionComment"
+    ]
+    abstractType: "Votable")
 }
 
 """
@@ -909,12 +864,10 @@ input AddVerifiableDomainInput {
   """
   The ID of the owner to add the domain to
   """
-  ownerId: ID! @possibleTypes(
-    concreteTypes: [
+  ownerId: ID! @possibleTypes(concreteTypes: [
       "Enterprise", "Organization"
     ]
-    abstractType: "VerifiableDomainOwner"
-  )
+    abstractType: "VerifiableDomainOwner")
 }
 
 """
@@ -945,15 +898,9 @@ type AddedToProjectEvent implements Node {
   createdAt: DateTime!
   databaseId: Int
   id: ID!
-  project: Project @preview(
-    toggledBy: "starfox-preview"
-  )
-  projectCard: ProjectCard @preview(
-    toggledBy: "starfox-preview"
-  )
-  projectColumnName: String! @preview(
-    toggledBy: "starfox-preview"
-  )
+  project: Project @preview(toggledBy: "starfox-preview")
+  projectCard: ProjectCard @preview(toggledBy: "starfox-preview")
+  projectColumnName: String! @preview(toggledBy: "starfox-preview")
 }
 
 """
@@ -1035,9 +982,7 @@ input ApproveDeploymentsInput {
   """
   The node ID of the workflow run containing the pending deployments.
   """
-  workflowRunId: ID! @possibleTypes(
-    concreteTypes: ["WorkflowRun"]
-  )
+  workflowRunId: ID! @possibleTypes(concreteTypes: ["WorkflowRun"])
 }
 
 """
@@ -1061,9 +1006,7 @@ input ApproveVerifiableDomainInput {
   """
   The ID of the verifiable domain to approve.
   """
-  id: ID! @possibleTypes(
-    concreteTypes: ["VerifiableDomain"]
-  )
+  id: ID! @possibleTypes(concreteTypes: ["VerifiableDomain"])
 }
 
 """
@@ -1087,16 +1030,12 @@ input ArchiveProjectV2ItemInput {
   """
   The ID of the ProjectV2Item to archive.
   """
-  itemId: ID! @possibleTypes(
-    concreteTypes: ["ProjectV2Item"]
-  )
+  itemId: ID! @possibleTypes(concreteTypes: ["ProjectV2Item"])
   
   """
   The ID of the Project to archive the item from.
   """
-  projectId: ID! @possibleTypes(
-    concreteTypes: ["ProjectV2"]
-  )
+  projectId: ID! @possibleTypes(concreteTypes: ["ProjectV2"])
 }
 
 """
@@ -1120,9 +1059,7 @@ input ArchiveRepositoryInput {
   """
   The ID of the repository to mark as archived.
   """
-  repositoryId: ID! @possibleTypes(
-    concreteTypes: ["Repository"]
-  )
+  repositoryId: ID! @possibleTypes(concreteTypes: ["Repository"])
 }
 
 """
@@ -1673,9 +1610,10 @@ input BulkSponsorship {
   """
   The ID of the user or organization who is receiving the sponsorship. Required if sponsorableLogin is not given.
   """
-  sponsorableId: ID @possibleTypes(
-    concreteTypes: ["Organization", "User"], abstractType: "Sponsorable"
-  )
+  sponsorableId: ID @possibleTypes(concreteTypes: [
+      "Organization", "User"
+    ]
+    abstractType: "Sponsorable")
   
   """
   The username of the user or organization who is receiving the sponsorship. Required if sponsorableId is not given.
@@ -1791,9 +1729,9 @@ input CancelEnterpriseAdminInvitationInput {
   """
   The Node ID of the pending enterprise administrator invitation.
   """
-  invitationId: ID! @possibleTypes(
-    concreteTypes: ["EnterpriseAdministratorInvitation"]
-  )
+  invitationId: ID! @possibleTypes(concreteTypes: [
+      "EnterpriseAdministratorInvitation"
+    ])
 }
 
 """
@@ -1819,9 +1757,10 @@ input CancelSponsorshipInput {
   The ID of the user or organization who is acting as the sponsor, paying for
   the sponsorship. Required if sponsorLogin is not given.
   """
-  sponsorId: ID @possibleTypes(
-    concreteTypes: ["Organization", "User"], abstractType: "Sponsor"
-  )
+  sponsorId: ID @possibleTypes(concreteTypes: [
+      "Organization", "User"
+    ]
+    abstractType: "Sponsor")
   
   """
   The username of the user or organization who is acting as the sponsor, paying
@@ -1832,9 +1771,10 @@ input CancelSponsorshipInput {
   """
   The ID of the user or organization who is receiving the sponsorship. Required if sponsorableLogin is not given.
   """
-  sponsorableId: ID @possibleTypes(
-    concreteTypes: ["Organization", "User"], abstractType: "Sponsorable"
-  )
+  sponsorableId: ID @possibleTypes(concreteTypes: [
+      "Organization", "User"
+    ]
+    abstractType: "Sponsorable")
   
   """
   The username of the user or organization who is receiving the sponsorship. Required if sponsorableId is not given.
@@ -1884,9 +1824,7 @@ input ChangeUserStatusInput {
   The ID of the organization whose members will be allowed to see the status. If
   omitted, the status will be publicly visible.
   """
-  organizationId: ID @possibleTypes(
-    concreteTypes: ["Organization"]
-  )
+  organizationId: ID @possibleTypes(concreteTypes: ["Organization"])
 }
 
 """
@@ -2482,12 +2420,10 @@ input ClearLabelsFromLabelableInput {
   """
   The id of the labelable object to clear the labels from.
   """
-  labelableId: ID! @possibleTypes(
-    concreteTypes: [
+  labelableId: ID! @possibleTypes(concreteTypes: [
       "Discussion", "Issue", "PullRequest"
     ]
-    abstractType: "Labelable"
-  )
+    abstractType: "Labelable")
 }
 
 """
@@ -2511,26 +2447,20 @@ input ClearProjectV2ItemFieldValueInput {
   """
   The ID of the field to be cleared.
   """
-  fieldId: ID! @possibleTypes(
-    concreteTypes: [
+  fieldId: ID! @possibleTypes(concreteTypes: [
       "ProjectV2Field", "ProjectV2IterationField", "ProjectV2SingleSelectField"
     ]
-    abstractType: "ProjectV2FieldConfiguration"
-  )
+    abstractType: "ProjectV2FieldConfiguration")
   
   """
   The ID of the item to be cleared.
   """
-  itemId: ID! @possibleTypes(
-    concreteTypes: ["ProjectV2Item"]
-  )
+  itemId: ID! @possibleTypes(concreteTypes: ["ProjectV2Item"])
   
   """
   The ID of the Project.
   """
-  projectId: ID! @possibleTypes(
-    concreteTypes: ["ProjectV2"]
-  )
+  projectId: ID! @possibleTypes(concreteTypes: ["ProjectV2"])
 }
 
 """
@@ -2574,19 +2504,15 @@ input CloneProjectInput {
   """
   The source project to clone.
   """
-  sourceId: ID! @possibleTypes(
-    concreteTypes: ["Project"]
-  )
+  sourceId: ID! @possibleTypes(concreteTypes: ["Project"])
   
   """
   The owner ID to create the project under.
   """
-  targetOwnerId: ID! @possibleTypes(
-    concreteTypes: [
+  targetOwnerId: ID! @possibleTypes(concreteTypes: [
       "Organization", "Repository", "User"
     ]
-    abstractType: "ProjectOwner"
-  )
+    abstractType: "ProjectOwner")
 }
 
 """
@@ -2627,16 +2553,15 @@ input CloneTemplateRepositoryInput {
   """
   The ID of the owner for the new repository.
   """
-  ownerId: ID! @possibleTypes(
-    concreteTypes: ["Organization", "User"], abstractType: "RepositoryOwner"
-  )
+  ownerId: ID! @possibleTypes(concreteTypes: [
+      "Organization", "User"
+    ]
+    abstractType: "RepositoryOwner")
   
   """
   The Node ID of the template repository.
   """
-  repositoryId: ID! @possibleTypes(
-    concreteTypes: ["Repository"]
-  )
+  repositoryId: ID! @possibleTypes(concreteTypes: ["Repository"])
   
   """
   Indicates the repository's visibility level.
@@ -2675,9 +2600,7 @@ input CloseDiscussionInput {
   """
   ID of the discussion to be closed.
   """
-  discussionId: ID! @possibleTypes(
-    concreteTypes: ["Discussion"]
-  )
+  discussionId: ID! @possibleTypes(concreteTypes: ["Discussion"])
   
   """
   The reason why the discussion is being closed.
@@ -2706,9 +2629,7 @@ input CloseIssueInput {
   """
   ID of the issue to be closed.
   """
-  issueId: ID! @possibleTypes(
-    concreteTypes: ["Issue"]
-  )
+  issueId: ID! @possibleTypes(concreteTypes: ["Issue"])
   
   """
   The reason the issue is to be closed.
@@ -2737,9 +2658,7 @@ input ClosePullRequestInput {
   """
   ID of the pull request to be closed.
   """
-  pullRequestId: ID! @possibleTypes(
-    concreteTypes: ["PullRequest"]
-  )
+  pullRequestId: ID! @possibleTypes(concreteTypes: ["PullRequest"])
 }
 
 """
@@ -3096,8 +3015,7 @@ type Commit implements GitObject & Node & Subscribable & UniformResourceLocatabl
     last: Int
   ): CommitConnection!
   pushedDate: DateTime @deprecated(
-    reason: "`pushedDate` is no longer supported. Removal on 2023-07-01 UTC."
-  )
+    reason: "`pushedDate` is no longer supported. Removal on 2023-07-01 UTC.")
   repository: Repository!
   resourcePath: URI!
   signature: GitSignature
@@ -3960,16 +3878,12 @@ input ConvertProjectCardNoteToIssueInput {
   """
   The ProjectCard ID to convert.
   """
-  projectCardId: ID! @possibleTypes(
-    concreteTypes: ["ProjectCard"]
-  )
+  projectCardId: ID! @possibleTypes(concreteTypes: ["ProjectCard"])
   
   """
   The ID of the repository to create the issue in.
   """
-  repositoryId: ID! @possibleTypes(
-    concreteTypes: ["Repository"]
-  )
+  repositoryId: ID! @possibleTypes(concreteTypes: ["Repository"])
   
   """
   The title of the newly created issue. Defaults to the card's note text.
@@ -3998,9 +3912,7 @@ input ConvertPullRequestToDraftInput {
   """
   ID of the pull request to convert to draft
   """
-  pullRequestId: ID! @possibleTypes(
-    concreteTypes: ["PullRequest"]
-  )
+  pullRequestId: ID! @possibleTypes(concreteTypes: ["PullRequest"])
 }
 
 """
@@ -4031,15 +3943,9 @@ type ConvertedNoteToIssueEvent implements Node {
   createdAt: DateTime!
   databaseId: Int
   id: ID!
-  project: Project @preview(
-    toggledBy: "starfox-preview"
-  )
-  projectCard: ProjectCard @preview(
-    toggledBy: "starfox-preview"
-  )
-  projectColumnName: String! @preview(
-    toggledBy: "starfox-preview"
-  )
+  project: Project @preview(toggledBy: "starfox-preview")
+  projectCard: ProjectCard @preview(toggledBy: "starfox-preview")
+  projectColumnName: String! @preview(toggledBy: "starfox-preview")
 }
 
 """
@@ -4070,16 +3976,15 @@ input CopyProjectV2Input {
   """
   The owner ID of the new project.
   """
-  ownerId: ID! @possibleTypes(
-    concreteTypes: ["Organization", "User"], abstractType: "OrganizationOrUser"
-  )
+  ownerId: ID! @possibleTypes(concreteTypes: [
+      "Organization", "User"
+    ]
+    abstractType: "OrganizationOrUser")
   
   """
   The ID of the source Project to copy.
   """
-  projectId: ID! @possibleTypes(
-    concreteTypes: ["ProjectV2"]
-  )
+  projectId: ID! @possibleTypes(concreteTypes: ["ProjectV2"])
   
   """
   The title of the project.
@@ -4108,23 +4013,23 @@ input CreateAttributionInvitationInput {
   """
   The Node ID of the owner scoping the reattributable data.
   """
-  ownerId: ID! @possibleTypes(
-    concreteTypes: ["Bot", "Enterprise", "Mannequin", "Organization", "User"]
-  )
+  ownerId: ID! @possibleTypes(concreteTypes: [
+      "Bot", "Enterprise", "Mannequin", "Organization", "User"
+    ])
   
   """
   The Node ID of the account owning the data to reattribute.
   """
-  sourceId: ID! @possibleTypes(
-    concreteTypes: ["Bot", "Enterprise", "Mannequin", "Organization", "User"]
-  )
+  sourceId: ID! @possibleTypes(concreteTypes: [
+      "Bot", "Enterprise", "Mannequin", "Organization", "User"
+    ])
   
   """
   The Node ID of the account which may claim the data.
   """
-  targetId: ID! @possibleTypes(
-    concreteTypes: ["Bot", "Enterprise", "Mannequin", "Organization", "User"]
-  )
+  targetId: ID! @possibleTypes(concreteTypes: [
+      "Bot", "Enterprise", "Mannequin", "Organization", "User"
+    ])
 }
 
 """
@@ -4206,9 +4111,7 @@ input CreateBranchProtectionRuleInput {
   """
   The global relay id of the repository in which a new branch protection rule should be created in.
   """
-  repositoryId: ID! @possibleTypes(
-    concreteTypes: ["Repository"]
-  )
+  repositoryId: ID! @possibleTypes(concreteTypes: ["Repository"])
   
   """
   Whether the most recent push must be approved by someone other than the person who pushed it
@@ -4352,9 +4255,7 @@ input CreateCheckRunInput {
   """
   The node ID of the repository.
   """
-  repositoryId: ID! @possibleTypes(
-    concreteTypes: ["Repository"]
-  )
+  repositoryId: ID! @possibleTypes(concreteTypes: ["Repository"])
   
   """
   The time that the check run began.
@@ -4393,9 +4294,7 @@ input CreateCheckSuiteInput {
   """
   The Node ID of the repository.
   """
-  repositoryId: ID! @possibleTypes(
-    concreteTypes: ["Repository"]
-  )
+  repositoryId: ID! @possibleTypes(concreteTypes: ["Repository"])
 }
 
 """
@@ -4449,9 +4348,7 @@ type CreateCommitOnBranchPayload {
 """
 Autogenerated input type of CreateDeployment
 """
-input CreateDeploymentInput @preview(
-  toggledBy: "flash-preview"
-) {
+input CreateDeploymentInput @preview(toggledBy: "flash-preview") {
   
   """
   Attempt to automatically merge the default branch into the requested ref, defaults to true.
@@ -4481,16 +4378,12 @@ input CreateDeploymentInput @preview(
   """
   The node ID of the ref to be deployed.
   """
-  refId: ID! @possibleTypes(
-    concreteTypes: ["Ref"]
-  )
+  refId: ID! @possibleTypes(concreteTypes: ["Ref"])
   
   """
   The node ID of the repository.
   """
-  repositoryId: ID! @possibleTypes(
-    concreteTypes: ["Repository"]
-  )
+  repositoryId: ID! @possibleTypes(concreteTypes: ["Repository"])
   
   """
   The status contexts to verify against commit status checks. To bypass required
@@ -4507,9 +4400,7 @@ input CreateDeploymentInput @preview(
 """
 Autogenerated return type of CreateDeployment
 """
-type CreateDeploymentPayload @preview(
-  toggledBy: "flash-preview"
-) {
+type CreateDeploymentPayload @preview(toggledBy: "flash-preview") {
   autoMerged: Boolean
   clientMutationId: String
   deployment: Deployment
@@ -4518,9 +4409,7 @@ type CreateDeploymentPayload @preview(
 """
 Autogenerated input type of CreateDeploymentStatus
 """
-input CreateDeploymentStatusInput @preview(
-  toggledBy: "flash-preview"
-) {
+input CreateDeploymentStatusInput @preview(toggledBy: "flash-preview") {
   
   """
   Adds a new inactive status to all non-transient, non-production environment
@@ -4537,9 +4426,7 @@ input CreateDeploymentStatusInput @preview(
   """
   The node ID of the deployment.
   """
-  deploymentId: ID! @possibleTypes(
-    concreteTypes: ["Deployment"]
-  )
+  deploymentId: ID! @possibleTypes(concreteTypes: ["Deployment"])
   
   """
   A short description of the status. Maximum length of 140 characters.
@@ -4572,9 +4459,7 @@ input CreateDeploymentStatusInput @preview(
 """
 Autogenerated return type of CreateDeploymentStatus
 """
-type CreateDeploymentStatusPayload @preview(
-  toggledBy: "flash-preview"
-) {
+type CreateDeploymentStatusPayload @preview(toggledBy: "flash-preview") {
   clientMutationId: String
   deploymentStatus: DeploymentStatus
 }
@@ -4592,9 +4477,7 @@ input CreateDiscussionInput {
   """
   The id of the discussion category to associate with this discussion.
   """
-  categoryId: ID! @possibleTypes(
-    concreteTypes: ["DiscussionCategory"]
-  )
+  categoryId: ID! @possibleTypes(concreteTypes: ["DiscussionCategory"])
   
   """
   A unique identifier for the client performing the mutation.
@@ -4604,9 +4487,7 @@ input CreateDiscussionInput {
   """
   The id of the repository on which to create the discussion.
   """
-  repositoryId: ID! @possibleTypes(
-    concreteTypes: ["Repository"]
-  )
+  repositoryId: ID! @possibleTypes(concreteTypes: ["Repository"])
   
   """
   The title of the discussion.
@@ -4645,9 +4526,7 @@ input CreateEnterpriseOrganizationInput {
   """
   The ID of the enterprise owning the new organization.
   """
-  enterpriseId: ID! @possibleTypes(
-    concreteTypes: ["Enterprise"]
-  )
+  enterpriseId: ID! @possibleTypes(concreteTypes: ["Enterprise"])
   
   """
   The login of the new organization.
@@ -4687,9 +4566,7 @@ input CreateEnvironmentInput {
   """
   The node ID of the repository.
   """
-  repositoryId: ID! @possibleTypes(
-    concreteTypes: ["Repository"]
-  )
+  repositoryId: ID! @possibleTypes(concreteTypes: ["Repository"])
 }
 
 """
@@ -4728,12 +4605,10 @@ input CreateIpAllowListEntryInput {
   """
   The ID of the owner for which to create the new IP allow list entry.
   """
-  ownerId: ID! @possibleTypes(
-    concreteTypes: [
+  ownerId: ID! @possibleTypes(concreteTypes: [
       "App", "Enterprise", "Organization"
     ]
-    abstractType: "IpAllowListOwner"
-  )
+    abstractType: "IpAllowListOwner")
 }
 
 """
@@ -4752,9 +4627,7 @@ input CreateIssueInput {
   """
   The Node ID for the user assignee for this issue.
   """
-  assigneeIds: [ID!] @possibleTypes(
-    concreteTypes: ["User"]
-  )
+  assigneeIds: [ID!] @possibleTypes(concreteTypes: ["User"])
   
   """
   The body for the issue description.
@@ -4774,30 +4647,22 @@ input CreateIssueInput {
   """
   An array of Node IDs of labels for this issue.
   """
-  labelIds: [ID!] @possibleTypes(
-    concreteTypes: ["Label"]
-  )
+  labelIds: [ID!] @possibleTypes(concreteTypes: ["Label"])
   
   """
   The Node ID of the milestone for this issue.
   """
-  milestoneId: ID @possibleTypes(
-    concreteTypes: ["Milestone"]
-  )
+  milestoneId: ID @possibleTypes(concreteTypes: ["Milestone"])
   
   """
   An array of Node IDs for projects associated with this issue.
   """
-  projectIds: [ID!] @possibleTypes(
-    concreteTypes: ["Project"]
-  )
+  projectIds: [ID!] @possibleTypes(concreteTypes: ["Project"])
   
   """
   The Node ID of the repository.
   """
-  repositoryId: ID! @possibleTypes(
-    concreteTypes: ["Repository"]
-  )
+  repositoryId: ID! @possibleTypes(concreteTypes: ["Repository"])
   
   """
   The title for the issue.
@@ -4816,9 +4681,7 @@ type CreateIssuePayload {
 """
 Autogenerated input type of CreateLabel
 """
-input CreateLabelInput @preview(
-  toggledBy: "bane-preview"
-) {
+input CreateLabelInput @preview(toggledBy: "bane-preview") {
   
   """
   A unique identifier for the client performing the mutation.
@@ -4843,17 +4706,13 @@ input CreateLabelInput @preview(
   """
   The Node ID of the repository.
   """
-  repositoryId: ID! @possibleTypes(
-    concreteTypes: ["Repository"]
-  )
+  repositoryId: ID! @possibleTypes(concreteTypes: ["Repository"])
 }
 
 """
 Autogenerated return type of CreateLabel
 """
-type CreateLabelPayload @preview(
-  toggledBy: "bane-preview"
-) {
+type CreateLabelPayload @preview(toggledBy: "bane-preview") {
   clientMutationId: String
   label: Label
 }
@@ -4871,9 +4730,7 @@ input CreateLinkedBranchInput {
   """
   ID of the issue to link to.
   """
-  issueId: ID! @possibleTypes(
-    concreteTypes: ["Issue"]
-  )
+  issueId: ID! @possibleTypes(concreteTypes: ["Issue"])
   
   """
   The name of the new branch. Defaults to issue number and title.
@@ -4888,9 +4745,7 @@ input CreateLinkedBranchInput {
   """
   ID of the repository to create the branch in. Defaults to the issue repository.
   """
-  repositoryId: ID @possibleTypes(
-    concreteTypes: ["Repository"]
-  )
+  repositoryId: ID @possibleTypes(concreteTypes: ["Repository"])
 }
 
 """
@@ -4930,9 +4785,7 @@ input CreateMigrationSourceInput {
   """
   The ID of the organization that will own the migration source.
   """
-  ownerId: ID! @possibleTypes(
-    concreteTypes: ["Organization"]
-  )
+  ownerId: ID! @possibleTypes(concreteTypes: ["Organization"])
   
   """
   The migration source type.
@@ -4976,19 +4829,15 @@ input CreateProjectInput {
   """
   The owner ID to create the project under.
   """
-  ownerId: ID! @possibleTypes(
-    concreteTypes: [
+  ownerId: ID! @possibleTypes(concreteTypes: [
       "Organization", "Repository", "User"
     ]
-    abstractType: "ProjectOwner"
-  )
+    abstractType: "ProjectOwner")
   
   """
   A list of repository IDs to create as linked repositories for the project
   """
-  repositoryIds: [ID!] @possibleTypes(
-    concreteTypes: ["Repository"]
-  )
+  repositoryIds: [ID!] @possibleTypes(concreteTypes: ["Repository"])
   
   """
   The name of the GitHub-provided template.
@@ -5027,9 +4876,7 @@ input CreateProjectV2FieldInput {
   """
   The ID of the Project to create the field in.
   """
-  projectId: ID! @possibleTypes(
-    concreteTypes: ["ProjectV2"]
-  )
+  projectId: ID! @possibleTypes(concreteTypes: ["ProjectV2"])
   
   """
   Options for a single select field. At least one value is required if data_type is SINGLE_SELECT
@@ -5058,23 +4905,20 @@ input CreateProjectV2Input {
   """
   The owner ID to create the project under.
   """
-  ownerId: ID! @possibleTypes(
-    concreteTypes: ["Organization", "User"], abstractType: "OrganizationOrUser"
-  )
+  ownerId: ID! @possibleTypes(concreteTypes: [
+      "Organization", "User"
+    ]
+    abstractType: "OrganizationOrUser")
   
   """
   The repository to link the project to.
   """
-  repositoryId: ID @possibleTypes(
-    concreteTypes: ["Repository"]
-  )
+  repositoryId: ID @possibleTypes(concreteTypes: ["Repository"])
   
   """
   The team to link the project to. The team will be granted read permissions.
   """
-  teamId: ID @possibleTypes(
-    concreteTypes: ["Team"]
-  )
+  teamId: ID @possibleTypes(concreteTypes: ["Team"])
   
   """
   The title of the project.
@@ -5126,9 +4970,7 @@ input CreatePullRequestInput {
   """
   The Node ID of the head repository.
   """
-  headRepositoryId: ID @possibleTypes(
-    concreteTypes: ["Repository"]
-  )
+  headRepositoryId: ID @possibleTypes(concreteTypes: ["Repository"])
   
   """
   Indicates whether maintainers can modify the pull request.
@@ -5138,9 +4980,7 @@ input CreatePullRequestInput {
   """
   The Node ID of the repository.
   """
-  repositoryId: ID! @possibleTypes(
-    concreteTypes: ["Repository"]
-  )
+  repositoryId: ID! @possibleTypes(concreteTypes: ["Repository"])
   
   """
   The title of the pull request.
@@ -5179,9 +5019,7 @@ input CreateRefInput {
   """
   The Node ID of the Repository to create the Ref in.
   """
-  repositoryId: ID! @possibleTypes(
-    concreteTypes: ["Repository"]
-  )
+  repositoryId: ID! @possibleTypes(concreteTypes: ["Repository"])
 }
 
 """
@@ -5230,17 +5068,16 @@ input CreateRepositoryInput {
   """
   The ID of the owner for the new repository.
   """
-  ownerId: ID @possibleTypes(
-    concreteTypes: ["Organization", "User"], abstractType: "RepositoryOwner"
-  )
+  ownerId: ID @possibleTypes(concreteTypes: [
+      "Organization", "User"
+    ]
+    abstractType: "RepositoryOwner")
   
   """
   When an organization is specified as the owner, this ID identifies the team
   that should be granted access to the new repository.
   """
-  teamId: ID @possibleTypes(
-    concreteTypes: ["Team"]
-  )
+  teamId: ID @possibleTypes(concreteTypes: ["Team"])
   
   """
   Whether this repository should be marked as a template such that anyone who
@@ -5300,9 +5137,10 @@ input CreateRepositoryRulesetInput {
   """
   The global relay id of the source in which a new ruleset should be created in.
   """
-  sourceId: ID! @possibleTypes(
-    concreteTypes: ["Organization", "Repository"], abstractType: "RuleSource"
-  )
+  sourceId: ID! @possibleTypes(concreteTypes: [
+      "Organization", "Repository"
+    ]
+    abstractType: "RuleSource")
   
   """
   The target of the ruleset.
@@ -5424,9 +5262,7 @@ input CreateSponsorsTierInput {
   Optional ID of the private repository that sponsors at this tier should gain
   read-only access to. Must be owned by an organization.
   """
-  repositoryId: ID @possibleTypes(
-    concreteTypes: ["Repository"]
-  )
+  repositoryId: ID @possibleTypes(concreteTypes: ["Repository"])
   
   """
   Optional name of the private repository that sponsors at this tier should gain
@@ -5446,9 +5282,10 @@ input CreateSponsorsTierInput {
   The ID of the user or organization who owns the GitHub Sponsors profile.
   Defaults to the current user if omitted and sponsorableLogin is not given.
   """
-  sponsorableId: ID @possibleTypes(
-    concreteTypes: ["Organization", "User"], abstractType: "Sponsorable"
-  )
+  sponsorableId: ID @possibleTypes(concreteTypes: [
+      "Organization", "User"
+    ]
+    abstractType: "Sponsorable")
   
   """
   The username of the user or organization who owns the GitHub Sponsors profile.
@@ -5505,9 +5342,10 @@ input CreateSponsorshipInput {
   The ID of the user or organization who is acting as the sponsor, paying for
   the sponsorship. Required if sponsorLogin is not given.
   """
-  sponsorId: ID @possibleTypes(
-    concreteTypes: ["Organization", "User"], abstractType: "Sponsor"
-  )
+  sponsorId: ID @possibleTypes(concreteTypes: [
+      "Organization", "User"
+    ]
+    abstractType: "Sponsor")
   
   """
   The username of the user or organization who is acting as the sponsor, paying
@@ -5518,9 +5356,10 @@ input CreateSponsorshipInput {
   """
   The ID of the user or organization who is receiving the sponsorship. Required if sponsorableLogin is not given.
   """
-  sponsorableId: ID @possibleTypes(
-    concreteTypes: ["Organization", "User"], abstractType: "Sponsorable"
-  )
+  sponsorableId: ID @possibleTypes(concreteTypes: [
+      "Organization", "User"
+    ]
+    abstractType: "Sponsorable")
   
   """
   The username of the user or organization who is receiving the sponsorship. Required if sponsorableId is not given.
@@ -5530,9 +5369,7 @@ input CreateSponsorshipInput {
   """
   The ID of one of sponsorable's existing tiers to sponsor at. Required if amount is not specified.
   """
-  tierId: ID @possibleTypes(
-    concreteTypes: ["SponsorsTier"]
-  )
+  tierId: ID @possibleTypes(concreteTypes: ["SponsorsTier"])
 }
 
 """
@@ -5614,9 +5451,7 @@ input CreateTeamDiscussionCommentInput {
   find a suitable replacement.
   **Reason:** The Team Discussions feature is deprecated in favor of Organization Discussions.
   """
-  discussionId: ID @possibleTypes(
-    concreteTypes: ["TeamDiscussion"]
-  )
+  discussionId: ID @possibleTypes(concreteTypes: ["TeamDiscussion"])
 }
 
 """
@@ -5672,9 +5507,7 @@ input CreateTeamDiscussionInput {
   find a suitable replacement.
   **Reason:** The Team Discussions feature is deprecated in favor of Organization Discussions.
   """
-  teamId: ID @possibleTypes(
-    concreteTypes: ["Team"]
-  )
+  teamId: ID @possibleTypes(concreteTypes: ["Team"])
   
   """
   The title of the discussion. This field is required.
@@ -5918,9 +5751,7 @@ input DeclineTopicSuggestionInput {
   """
   The Node ID of the repository.
   """
-  repositoryId: ID! @possibleTypes(
-    concreteTypes: ["Repository"]
-  )
+  repositoryId: ID! @possibleTypes(concreteTypes: ["Repository"])
 }
 
 """
@@ -5956,9 +5787,9 @@ input DeleteBranchProtectionRuleInput {
   """
   The global relay id of the branch protection rule to be deleted.
   """
-  branchProtectionRuleId: ID! @possibleTypes(
-    concreteTypes: ["BranchProtectionRule"]
-  )
+  branchProtectionRuleId: ID! @possibleTypes(concreteTypes: [
+      "BranchProtectionRule"
+    ])
   
   """
   A unique identifier for the client performing the mutation.
@@ -5986,9 +5817,7 @@ input DeleteDeploymentInput {
   """
   The Node ID of the deployment to be deleted.
   """
-  id: ID! @possibleTypes(
-    concreteTypes: ["Deployment"]
-  )
+  id: ID! @possibleTypes(concreteTypes: ["Deployment"])
 }
 
 """
@@ -6011,9 +5840,7 @@ input DeleteDiscussionCommentInput {
   """
   The Node id of the discussion comment to delete.
   """
-  id: ID! @possibleTypes(
-    concreteTypes: ["DiscussionComment"]
-  )
+  id: ID! @possibleTypes(concreteTypes: ["DiscussionComment"])
 }
 
 """
@@ -6037,9 +5864,7 @@ input DeleteDiscussionInput {
   """
   The id of the discussion to delete.
   """
-  id: ID! @possibleTypes(
-    concreteTypes: ["Discussion"]
-  )
+  id: ID! @possibleTypes(concreteTypes: ["Discussion"])
 }
 
 """
@@ -6063,9 +5888,7 @@ input DeleteEnvironmentInput {
   """
   The Node ID of the environment to be deleted.
   """
-  id: ID! @possibleTypes(
-    concreteTypes: ["Environment"]
-  )
+  id: ID! @possibleTypes(concreteTypes: ["Environment"])
 }
 
 """
@@ -6088,9 +5911,7 @@ input DeleteIpAllowListEntryInput {
   """
   The ID of the IP allow list entry to delete.
   """
-  ipAllowListEntryId: ID! @possibleTypes(
-    concreteTypes: ["IpAllowListEntry"]
-  )
+  ipAllowListEntryId: ID! @possibleTypes(concreteTypes: ["IpAllowListEntry"])
 }
 
 """
@@ -6114,9 +5935,7 @@ input DeleteIssueCommentInput {
   """
   The ID of the comment to delete.
   """
-  id: ID! @possibleTypes(
-    concreteTypes: ["IssueComment"]
-  )
+  id: ID! @possibleTypes(concreteTypes: ["IssueComment"])
 }
 
 """
@@ -6139,9 +5958,7 @@ input DeleteIssueInput {
   """
   The ID of the issue to delete.
   """
-  issueId: ID! @possibleTypes(
-    concreteTypes: ["Issue"]
-  )
+  issueId: ID! @possibleTypes(concreteTypes: ["Issue"])
 }
 
 """
@@ -6155,9 +5972,7 @@ type DeleteIssuePayload {
 """
 Autogenerated input type of DeleteLabel
 """
-input DeleteLabelInput @preview(
-  toggledBy: "bane-preview"
-) {
+input DeleteLabelInput @preview(toggledBy: "bane-preview") {
   
   """
   A unique identifier for the client performing the mutation.
@@ -6167,17 +5982,13 @@ input DeleteLabelInput @preview(
   """
   The Node ID of the label to be deleted.
   """
-  id: ID! @possibleTypes(
-    concreteTypes: ["Label"]
-  )
+  id: ID! @possibleTypes(concreteTypes: ["Label"])
 }
 
 """
 Autogenerated return type of DeleteLabel
 """
-type DeleteLabelPayload @preview(
-  toggledBy: "bane-preview"
-) {
+type DeleteLabelPayload @preview(toggledBy: "bane-preview") {
   clientMutationId: String
 }
 
@@ -6194,9 +6005,7 @@ input DeleteLinkedBranchInput {
   """
   The ID of the linked branch
   """
-  linkedBranchId: ID! @possibleTypes(
-    concreteTypes: ["LinkedBranch"]
-  )
+  linkedBranchId: ID! @possibleTypes(concreteTypes: ["LinkedBranch"])
 }
 
 """
@@ -6220,9 +6029,7 @@ input DeletePackageVersionInput {
   """
   The ID of the package version to be deleted.
   """
-  packageVersionId: ID! @possibleTypes(
-    concreteTypes: ["PackageVersion"]
-  )
+  packageVersionId: ID! @possibleTypes(concreteTypes: ["PackageVersion"])
 }
 
 """
@@ -6241,9 +6048,7 @@ input DeleteProjectCardInput {
   """
   The id of the card to delete.
   """
-  cardId: ID! @possibleTypes(
-    concreteTypes: ["ProjectCard"]
-  )
+  cardId: ID! @possibleTypes(concreteTypes: ["ProjectCard"])
   
   """
   A unique identifier for the client performing the mutation.
@@ -6273,9 +6078,7 @@ input DeleteProjectColumnInput {
   """
   The id of the column to delete.
   """
-  columnId: ID! @possibleTypes(
-    concreteTypes: ["ProjectColumn"]
-  )
+  columnId: ID! @possibleTypes(concreteTypes: ["ProjectColumn"])
 }
 
 """
@@ -6300,9 +6103,7 @@ input DeleteProjectInput {
   """
   The Project ID to update.
   """
-  projectId: ID! @possibleTypes(
-    concreteTypes: ["Project"]
-  )
+  projectId: ID! @possibleTypes(concreteTypes: ["Project"])
 }
 
 """
@@ -6326,12 +6127,10 @@ input DeleteProjectV2FieldInput {
   """
   The ID of the field to delete.
   """
-  fieldId: ID! @possibleTypes(
-    concreteTypes: [
+  fieldId: ID! @possibleTypes(concreteTypes: [
       "ProjectV2Field", "ProjectV2IterationField", "ProjectV2SingleSelectField"
     ]
-    abstractType: "ProjectV2FieldConfiguration"
-  )
+    abstractType: "ProjectV2FieldConfiguration")
 }
 
 """
@@ -6355,9 +6154,7 @@ input DeleteProjectV2Input {
   """
   The ID of the Project to delete.
   """
-  projectId: ID! @possibleTypes(
-    concreteTypes: ["ProjectV2"]
-  )
+  projectId: ID! @possibleTypes(concreteTypes: ["ProjectV2"])
 }
 
 """
@@ -6373,16 +6170,12 @@ input DeleteProjectV2ItemInput {
   """
   The ID of the item to be removed.
   """
-  itemId: ID! @possibleTypes(
-    concreteTypes: ["ProjectV2Item"]
-  )
+  itemId: ID! @possibleTypes(concreteTypes: ["ProjectV2Item"])
   
   """
   The ID of the Project from which the item should be removed.
   """
-  projectId: ID! @possibleTypes(
-    concreteTypes: ["ProjectV2"]
-  )
+  projectId: ID! @possibleTypes(concreteTypes: ["ProjectV2"])
 }
 
 """
@@ -6414,9 +6207,7 @@ input DeleteProjectV2WorkflowInput {
   """
   The ID of the workflow to be removed.
   """
-  workflowId: ID! @possibleTypes(
-    concreteTypes: ["ProjectV2Workflow"]
-  )
+  workflowId: ID! @possibleTypes(concreteTypes: ["ProjectV2Workflow"])
 }
 
 """
@@ -6441,9 +6232,7 @@ input DeletePullRequestReviewCommentInput {
   """
   The ID of the comment to delete.
   """
-  id: ID! @possibleTypes(
-    concreteTypes: ["PullRequestReviewComment"]
-  )
+  id: ID! @possibleTypes(concreteTypes: ["PullRequestReviewComment"])
 }
 
 """
@@ -6468,9 +6257,7 @@ input DeletePullRequestReviewInput {
   """
   The Node ID of the pull request review to delete.
   """
-  pullRequestReviewId: ID! @possibleTypes(
-    concreteTypes: ["PullRequestReview"]
-  )
+  pullRequestReviewId: ID! @possibleTypes(concreteTypes: ["PullRequestReview"])
 }
 
 """
@@ -6494,9 +6281,7 @@ input DeleteRefInput {
   """
   The Node ID of the Ref to be deleted.
   """
-  refId: ID! @possibleTypes(
-    concreteTypes: ["Ref"]
-  )
+  refId: ID! @possibleTypes(concreteTypes: ["Ref"])
 }
 
 """
@@ -6519,9 +6304,7 @@ input DeleteRepositoryRulesetInput {
   """
   The global relay id of the repository ruleset to be deleted.
   """
-  repositoryRulesetId: ID! @possibleTypes(
-    concreteTypes: ["RepositoryRuleset"]
-  )
+  repositoryRulesetId: ID! @possibleTypes(concreteTypes: ["RepositoryRuleset"])
 }
 
 """
@@ -6544,9 +6327,7 @@ input DeleteTeamDiscussionCommentInput {
   """
   The ID of the comment to delete.
   """
-  id: ID! @possibleTypes(
-    concreteTypes: ["TeamDiscussionComment"]
-  )
+  id: ID! @possibleTypes(concreteTypes: ["TeamDiscussionComment"])
 }
 
 """
@@ -6569,9 +6350,7 @@ input DeleteTeamDiscussionInput {
   """
   The discussion ID to delete.
   """
-  id: ID! @possibleTypes(
-    concreteTypes: ["TeamDiscussion"]
-  )
+  id: ID! @possibleTypes(concreteTypes: ["TeamDiscussion"])
 }
 
 """
@@ -6594,9 +6373,7 @@ input DeleteVerifiableDomainInput {
   """
   The ID of the verifiable domain to delete.
   """
-  id: ID! @possibleTypes(
-    concreteTypes: ["VerifiableDomain"]
-  )
+  id: ID! @possibleTypes(concreteTypes: ["VerifiableDomain"])
 }
 
 """
@@ -6639,9 +6416,7 @@ type DependabotUpdateError {
 """
 A dependency manifest entry
 """
-type DependencyGraphDependency @preview(
-  toggledBy: "hawkgirl-preview"
-) {
+type DependencyGraphDependency @preview(toggledBy: "hawkgirl-preview") {
   hasDependencies: Boolean!
   packageLabel: String! @deprecated(
     reason: "`packageLabel` will be removed. Use normalized `packageName` field instead. Removal on 2022-10-01 UTC."
@@ -6655,8 +6430,7 @@ type DependencyGraphDependency @preview(
 """
 The connection type for DependencyGraphDependency.
 """
-type DependencyGraphDependencyConnection @preview(
-  toggledBy: "hawkgirl-preview"
+type DependencyGraphDependencyConnection @preview(toggledBy: "hawkgirl-preview"
 ) {
   edges: [DependencyGraphDependencyEdge]
   nodes: [DependencyGraphDependency]
@@ -6667,9 +6441,7 @@ type DependencyGraphDependencyConnection @preview(
 """
 An edge in a connection.
 """
-type DependencyGraphDependencyEdge @preview(
-  toggledBy: "hawkgirl-preview"
-) {
+type DependencyGraphDependencyEdge @preview(toggledBy: "hawkgirl-preview") {
   cursor: String!
   node: DependencyGraphDependency
 }
@@ -6695,8 +6467,7 @@ enum DependencyGraphEcosystem {
 Dependency manifest for a repository
 """
 type DependencyGraphManifest implements Node @preview(
-  toggledBy: "hawkgirl-preview"
-) {
+  toggledBy: "hawkgirl-preview") {
   blobPath: String!
   dependencies(
     """
@@ -6730,9 +6501,7 @@ type DependencyGraphManifest implements Node @preview(
 """
 The connection type for DependencyGraphManifest.
 """
-type DependencyGraphManifestConnection @preview(
-  toggledBy: "hawkgirl-preview"
-) {
+type DependencyGraphManifestConnection @preview(toggledBy: "hawkgirl-preview") {
   edges: [DependencyGraphManifestEdge]
   nodes: [DependencyGraphManifest]
   pageInfo: PageInfo!
@@ -6742,9 +6511,7 @@ type DependencyGraphManifestConnection @preview(
 """
 An edge in a connection.
 """
-type DependencyGraphManifestEdge @preview(
-  toggledBy: "hawkgirl-preview"
-) {
+type DependencyGraphManifestEdge @preview(toggledBy: "hawkgirl-preview") {
   cursor: String!
   node: DependencyGraphManifest
 }
@@ -7099,9 +6866,7 @@ type DeploymentStatus implements Node {
   creator: Actor!
   deployment: Deployment!
   description: String
-  environment: String @preview(
-    toggledBy: "flash-preview"
-  )
+  environment: String @preview(toggledBy: "flash-preview")
   environmentUrl: URI
   id: ID!
   logUrl: URI
@@ -7154,9 +6919,7 @@ input DequeuePullRequestInput {
   """
   The ID of the pull request to be dequeued.
   """
-  id: ID! @possibleTypes(
-    concreteTypes: ["PullRequest"]
-  )
+  id: ID! @possibleTypes(concreteTypes: ["PullRequest"])
 }
 
 """
@@ -7188,9 +6951,7 @@ input DisablePullRequestAutoMergeInput {
   """
   ID of the pull request to disable auto merge on.
   """
-  pullRequestId: ID! @possibleTypes(
-    concreteTypes: ["PullRequest"]
-  )
+  pullRequestId: ID! @possibleTypes(concreteTypes: ["PullRequest"])
 }
 
 """
@@ -7704,9 +7465,7 @@ input DismissPullRequestReviewInput {
   """
   The Node ID of the pull request review to modify.
   """
-  pullRequestReviewId: ID! @possibleTypes(
-    concreteTypes: ["PullRequestReview"]
-  )
+  pullRequestReviewId: ID! @possibleTypes(concreteTypes: ["PullRequestReview"])
 }
 
 """
@@ -7746,9 +7505,9 @@ input DismissRepositoryVulnerabilityAlertInput {
   """
   The Dependabot alert ID to dismiss.
   """
-  repositoryVulnerabilityAlertId: ID! @possibleTypes(
-    concreteTypes: ["RepositoryVulnerabilityAlert"]
-  )
+  repositoryVulnerabilityAlertId: ID! @possibleTypes(concreteTypes: [
+      "RepositoryVulnerabilityAlert"
+    ])
 }
 
 """
@@ -7936,9 +7695,7 @@ input EnablePullRequestAutoMergeInput {
   """
   ID of the pull request to enable auto-merge on.
   """
-  pullRequestId: ID! @possibleTypes(
-    concreteTypes: ["PullRequest"]
-  )
+  pullRequestId: ID! @possibleTypes(concreteTypes: ["PullRequest"])
 }
 
 """
@@ -7973,9 +7730,7 @@ input EnqueuePullRequestInput {
   """
   The ID of the pull request to enqueue.
   """
-  pullRequestId: ID! @possibleTypes(
-    concreteTypes: ["PullRequest"]
-  )
+  pullRequestId: ID! @possibleTypes(concreteTypes: ["PullRequest"])
 }
 
 """
@@ -10137,9 +9892,7 @@ input FollowOrganizationInput {
   """
   ID of the organization to follow.
   """
-  organizationId: ID! @possibleTypes(
-    concreteTypes: ["Organization"]
-  )
+  organizationId: ID! @possibleTypes(concreteTypes: ["Organization"])
 }
 
 """
@@ -10163,9 +9916,7 @@ input FollowUserInput {
   """
   ID of the user to follow.
   """
-  userId: ID! @possibleTypes(
-    concreteTypes: ["User"]
-  )
+  userId: ID! @possibleTypes(concreteTypes: ["User"])
 }
 
 """
@@ -10538,9 +10289,7 @@ scalar GitObjectID
 """
 A fully qualified reference name (e.g. `refs/heads/master`).
 """
-scalar GitRefname @preview(
-  toggledBy: "update-refs-preview"
-)
+scalar GitRefname @preview(toggledBy: "update-refs-preview")
 
 """
 Git SSH string
@@ -10615,9 +10364,7 @@ input GrantEnterpriseOrganizationsMigratorRoleInput {
   """
   The ID of the enterprise to which all organizations managed by it will be granted the migrator role.
   """
-  enterpriseId: ID! @possibleTypes(
-    concreteTypes: ["Enterprise"]
-  )
+  enterpriseId: ID! @possibleTypes(concreteTypes: ["Enterprise"])
   
   """
   The login of the user to grant the migrator role
@@ -10676,9 +10423,7 @@ input GrantMigratorRoleInput {
   """
   The ID of the organization that the user/team belongs to.
   """
-  organizationId: ID! @possibleTypes(
-    concreteTypes: ["Organization"]
-  )
+  organizationId: ID! @possibleTypes(concreteTypes: ["Organization"])
 }
 
 """
@@ -10815,9 +10560,7 @@ input InviteEnterpriseAdminInput {
   """
   The ID of the enterprise to which you want to invite an administrator.
   """
-  enterpriseId: ID! @possibleTypes(
-    concreteTypes: ["Enterprise"]
-  )
+  enterpriseId: ID! @possibleTypes(concreteTypes: ["Enterprise"])
   
   """
   The login of a user to invite as an administrator.
@@ -12116,16 +11859,12 @@ input LinkProjectV2ToRepositoryInput {
   """
   The ID of the project to link to the repository.
   """
-  projectId: ID! @possibleTypes(
-    concreteTypes: ["ProjectV2"]
-  )
+  projectId: ID! @possibleTypes(concreteTypes: ["ProjectV2"])
   
   """
   The ID of the repository to link to the project.
   """
-  repositoryId: ID! @possibleTypes(
-    concreteTypes: ["Repository"]
-  )
+  repositoryId: ID! @possibleTypes(concreteTypes: ["Repository"])
 }
 
 """
@@ -12149,16 +11888,12 @@ input LinkProjectV2ToTeamInput {
   """
   The ID of the project to link to the team.
   """
-  projectId: ID! @possibleTypes(
-    concreteTypes: ["ProjectV2"]
-  )
+  projectId: ID! @possibleTypes(concreteTypes: ["ProjectV2"])
   
   """
   The ID of the team to link to the project.
   """
-  teamId: ID! @possibleTypes(
-    concreteTypes: ["Team"]
-  )
+  teamId: ID! @possibleTypes(concreteTypes: ["Team"])
 }
 
 """
@@ -12182,16 +11917,12 @@ input LinkRepositoryToProjectInput {
   """
   The ID of the Project to link to a Repository
   """
-  projectId: ID! @possibleTypes(
-    concreteTypes: ["Project"]
-  )
+  projectId: ID! @possibleTypes(concreteTypes: ["Project"])
   
   """
   The ID of the Repository to link to a Project.
   """
-  repositoryId: ID! @possibleTypes(
-    concreteTypes: ["Repository"]
-  )
+  repositoryId: ID! @possibleTypes(concreteTypes: ["Repository"])
 }
 
 """
@@ -12247,12 +11978,10 @@ input LockLockableInput {
   """
   ID of the item to be locked.
   """
-  lockableId: ID! @possibleTypes(
-    concreteTypes: [
+  lockableId: ID! @possibleTypes(concreteTypes: [
       "Discussion", "Issue", "PullRequest"
     ]
-    abstractType: "Lockable"
-  )
+    abstractType: "Lockable")
 }
 
 """
@@ -12369,9 +12098,7 @@ input MarkDiscussionCommentAsAnswerInput {
   """
   The Node ID of the discussion comment to mark as an answer.
   """
-  id: ID! @possibleTypes(
-    concreteTypes: ["DiscussionComment"]
-  )
+  id: ID! @possibleTypes(concreteTypes: ["DiscussionComment"])
 }
 
 """
@@ -12400,9 +12127,7 @@ input MarkFileAsViewedInput {
   """
   The Node ID of the pull request.
   """
-  pullRequestId: ID! @possibleTypes(
-    concreteTypes: ["PullRequest"]
-  )
+  pullRequestId: ID! @possibleTypes(concreteTypes: ["PullRequest"])
 }
 
 """
@@ -12426,9 +12151,7 @@ input MarkProjectV2AsTemplateInput {
   """
   The ID of the Project to mark as a template.
   """
-  projectId: ID! @possibleTypes(
-    concreteTypes: ["ProjectV2"]
-  )
+  projectId: ID! @possibleTypes(concreteTypes: ["ProjectV2"])
 }
 
 """
@@ -12452,9 +12175,7 @@ input MarkPullRequestReadyForReviewInput {
   """
   ID of the pull request to be marked as ready for review.
   """
-  pullRequestId: ID! @possibleTypes(
-    concreteTypes: ["PullRequest"]
-  )
+  pullRequestId: ID! @possibleTypes(concreteTypes: ["PullRequest"])
 }
 
 """
@@ -12733,9 +12454,7 @@ input MergeBranchInput {
   """
   The Node ID of the Repository containing the base branch that will be modified.
   """
-  repositoryId: ID! @possibleTypes(
-    concreteTypes: ["Repository"]
-  )
+  repositoryId: ID! @possibleTypes(concreteTypes: ["Repository"])
 }
 
 """
@@ -12801,9 +12520,7 @@ input MergePullRequestInput {
   """
   ID of the pull request to be merged.
   """
-  pullRequestId: ID! @possibleTypes(
-    concreteTypes: ["PullRequest"]
-  )
+  pullRequestId: ID! @possibleTypes(concreteTypes: ["PullRequest"])
 }
 
 """
@@ -13210,16 +12927,14 @@ input MinimizeCommentInput {
   """
   The Node ID of the subject to modify.
   """
-  subjectId: ID! @possibleTypes(
-    concreteTypes: [
+  subjectId: ID! @possibleTypes(concreteTypes: [
       "CommitComment",
       "DiscussionComment",
       "GistComment",
       "IssueComment",
       "PullRequestReviewComment"
     ]
-    abstractType: "Minimizable"
-  )
+    abstractType: "Minimizable")
 }
 
 """
@@ -13238,16 +12953,12 @@ input MoveProjectCardInput {
   """
   Place the new card after the card with this id. Pass null to place it at the top.
   """
-  afterCardId: ID @possibleTypes(
-    concreteTypes: ["ProjectCard"]
-  )
+  afterCardId: ID @possibleTypes(concreteTypes: ["ProjectCard"])
   
   """
   The id of the card to move.
   """
-  cardId: ID! @possibleTypes(
-    concreteTypes: ["ProjectCard"]
-  )
+  cardId: ID! @possibleTypes(concreteTypes: ["ProjectCard"])
   
   """
   A unique identifier for the client performing the mutation.
@@ -13257,9 +12968,7 @@ input MoveProjectCardInput {
   """
   The id of the column to move it into.
   """
-  columnId: ID! @possibleTypes(
-    concreteTypes: ["ProjectColumn"]
-  )
+  columnId: ID! @possibleTypes(concreteTypes: ["ProjectColumn"])
 }
 
 """
@@ -13278,9 +12987,7 @@ input MoveProjectColumnInput {
   """
   Place the new column after the column with this id. Pass null to place it at the front.
   """
-  afterColumnId: ID @possibleTypes(
-    concreteTypes: ["ProjectColumn"]
-  )
+  afterColumnId: ID @possibleTypes(concreteTypes: ["ProjectColumn"])
   
   """
   A unique identifier for the client performing the mutation.
@@ -13290,9 +12997,7 @@ input MoveProjectColumnInput {
   """
   The id of the column to move.
   """
-  columnId: ID! @possibleTypes(
-    concreteTypes: ["ProjectColumn"]
-  )
+  columnId: ID! @possibleTypes(concreteTypes: ["ProjectColumn"])
 }
 
 """
@@ -13311,18 +13016,10 @@ type MovedColumnsInProjectEvent implements Node {
   createdAt: DateTime!
   databaseId: Int
   id: ID!
-  previousProjectColumnName: String! @preview(
-    toggledBy: "starfox-preview"
-  )
-  project: Project @preview(
-    toggledBy: "starfox-preview"
-  )
-  projectCard: ProjectCard @preview(
-    toggledBy: "starfox-preview"
-  )
-  projectColumnName: String! @preview(
-    toggledBy: "starfox-preview"
-  )
+  previousProjectColumnName: String! @preview(toggledBy: "starfox-preview")
+  project: Project @preview(toggledBy: "starfox-preview")
+  projectCard: ProjectCard @preview(toggledBy: "starfox-preview")
+  projectColumnName: String! @preview(toggledBy: "starfox-preview")
 }
 
 """
@@ -13598,17 +13295,13 @@ type Mutation {
     Parameters for CreateDeployment
     """
     input: CreateDeploymentInput!
-  ): CreateDeploymentPayload @preview(
-    toggledBy: "flash-preview"
-  )
+  ): CreateDeploymentPayload @preview(toggledBy: "flash-preview")
   createDeploymentStatus(
     """
     Parameters for CreateDeploymentStatus
     """
     input: CreateDeploymentStatusInput!
-  ): CreateDeploymentStatusPayload @preview(
-    toggledBy: "flash-preview"
-  )
+  ): CreateDeploymentStatusPayload @preview(toggledBy: "flash-preview")
   createDiscussion(
     """
     Parameters for CreateDiscussion
@@ -13644,9 +13337,7 @@ type Mutation {
     Parameters for CreateLabel
     """
     input: CreateLabelInput!
-  ): CreateLabelPayload @preview(
-    toggledBy: "bane-preview"
-  )
+  ): CreateLabelPayload @preview(toggledBy: "bane-preview")
   createLinkedBranch(
     """
     Parameters for CreateLinkedBranch
@@ -13796,9 +13487,7 @@ type Mutation {
     Parameters for DeleteLabel
     """
     input: DeleteLabelInput!
-  ): DeleteLabelPayload @preview(
-    toggledBy: "bane-preview"
-  )
+  ): DeleteLabelPayload @preview(toggledBy: "bane-preview")
   deleteLinkedBranch(
     """
     Parameters for DeleteLinkedBranch
@@ -13810,9 +13499,7 @@ type Mutation {
     Parameters for DeletePackageVersion
     """
     input: DeletePackageVersionInput!
-  ): DeletePackageVersionPayload @preview(
-    toggledBy: "package-deletes-preview"
-  )
+  ): DeletePackageVersionPayload @preview(toggledBy: "package-deletes-preview")
   deleteProject(
     """
     Parameters for DeleteProject
@@ -13962,9 +13649,7 @@ type Mutation {
     Parameters for ImportProject
     """
     input: ImportProjectInput!
-  ): ImportProjectPayload @preview(
-    toggledBy: "slothette-preview"
-  )
+  ): ImportProjectPayload @preview(toggledBy: "slothette-preview")
   inviteEnterpriseAdmin(
     """
     Parameters for InviteEnterpriseAdmin
@@ -14522,9 +14207,7 @@ type Mutation {
     Parameters for UpdateLabel
     """
     input: UpdateLabelInput!
-  ): UpdateLabelPayload @preview(
-    toggledBy: "bane-preview"
-  )
+  ): UpdateLabelPayload @preview(toggledBy: "bane-preview")
   updateNotificationRestrictionSetting(
     """
     Parameters for UpdateNotificationRestrictionSetting
@@ -14626,9 +14309,7 @@ type Mutation {
     Parameters for UpdateRefs
     """
     input: UpdateRefsInput!
-  ): UpdateRefsPayload @preview(
-    toggledBy: "update-refs-preview"
-  )
+  ): UpdateRefsPayload @preview(toggledBy: "update-refs-preview")
   updateRepository(
     """
     Parameters for UpdateRepository
@@ -14676,9 +14357,7 @@ type Mutation {
     Parameters for UpdateTeamReviewAssignment
     """
     input: UpdateTeamReviewAssignmentInput!
-  ): UpdateTeamReviewAssignmentPayload @preview(
-    toggledBy: "stone-crop-preview"
-  )
+  ): UpdateTeamReviewAssignmentPayload @preview(toggledBy: "stone-crop-preview")
   updateTeamsRepository(
     """
     Parameters for UpdateTeamsRepository
@@ -17540,9 +17219,7 @@ input PinIssueInput {
   """
   The ID of the issue to be pinned
   """
-  issueId: ID! @possibleTypes(
-    concreteTypes: ["Issue"]
-  )
+  issueId: ID! @possibleTypes(concreteTypes: ["Issue"])
 }
 
 """
@@ -18457,16 +18134,12 @@ input ProjectV2Collaborator {
   """
   The ID of the team as a collaborator.
   """
-  teamId: ID @possibleTypes(
-    concreteTypes: ["Team"]
-  )
+  teamId: ID @possibleTypes(concreteTypes: ["Team"])
   
   """
   The ID of the user as a collaborator.
   """
-  userId: ID @possibleTypes(
-    concreteTypes: ["User"]
-  )
+  userId: ID @possibleTypes(concreteTypes: ["User"])
 }
 
 """
@@ -19680,9 +19353,7 @@ input PublishSponsorsTierInput {
   """
   The ID of the draft tier to publish.
   """
-  tierId: ID! @possibleTypes(
-    concreteTypes: ["SponsorsTier"]
-  )
+  tierId: ID! @possibleTypes(concreteTypes: ["SponsorsTier"])
 }
 
 """
@@ -19730,9 +19401,7 @@ type PullRequest implements Assignable & Closable & Comment & Labelable & Lockab
   body: String!
   bodyHTML: HTML!
   bodyText: String!
-  canBeRebased: Boolean! @preview(
-    toggledBy: "merge-info-preview"
-  )
+  canBeRebased: Boolean! @preview(toggledBy: "merge-info-preview")
   changedFiles: Int!
   checksResourcePath: URI!
   checksUrl: URI!
@@ -19936,9 +19605,7 @@ type PullRequest implements Assignable & Closable & Comment & Labelable & Lockab
   maintainerCanModify: Boolean!
   mergeCommit: Commit
   mergeQueueEntry: MergeQueueEntry
-  mergeStateStatus: MergeStateStatus! @preview(
-    toggledBy: "merge-info-preview"
-  )
+  mergeStateStatus: MergeStateStatus! @preview(toggledBy: "merge-info-preview")
   mergeable: MergeableState!
   merged: Boolean!
   mergedAt: DateTime
@@ -22039,9 +21706,7 @@ enum RefOrderField {
 """
 A ref update
 """
-input RefUpdate @preview(
-  toggledBy: "update-refs-preview"
-) {
+input RefUpdate @preview(toggledBy: "update-refs-preview") {
   
   """
   The value this ref should be updated to.
@@ -22114,9 +21779,7 @@ input RegenerateEnterpriseIdentityProviderRecoveryCodesInput {
   """
   The ID of the enterprise on which to set an identity provider.
   """
-  enterpriseId: ID! @possibleTypes(
-    concreteTypes: ["Enterprise"]
-  )
+  enterpriseId: ID! @possibleTypes(concreteTypes: ["Enterprise"])
 }
 
 """
@@ -22140,9 +21803,7 @@ input RegenerateVerifiableDomainTokenInput {
   """
   The ID of the verifiable domain to regenerate the verification token of.
   """
-  id: ID! @possibleTypes(
-    concreteTypes: ["VerifiableDomain"]
-  )
+  id: ID! @possibleTypes(concreteTypes: ["VerifiableDomain"])
 }
 
 """
@@ -22176,9 +21837,7 @@ input RejectDeploymentsInput {
   """
   The node ID of the workflow run containing the pending deployments.
   """
-  workflowRunId: ID! @possibleTypes(
-    concreteTypes: ["WorkflowRun"]
-  )
+  workflowRunId: ID! @possibleTypes(concreteTypes: ["WorkflowRun"])
 }
 
 """
@@ -22384,16 +22043,15 @@ input RemoveAssigneesFromAssignableInput {
   """
   The id of the assignable object to remove assignees from.
   """
-  assignableId: ID! @possibleTypes(
-    concreteTypes: ["Issue", "PullRequest"], abstractType: "Assignable"
-  )
+  assignableId: ID! @possibleTypes(concreteTypes: [
+      "Issue", "PullRequest"
+    ]
+    abstractType: "Assignable")
   
   """
   The id of users to remove as assignees.
   """
-  assigneeIds: [ID!]! @possibleTypes(
-    concreteTypes: ["User"]
-  )
+  assigneeIds: [ID!]! @possibleTypes(concreteTypes: ["User"])
   
   """
   A unique identifier for the client performing the mutation.
@@ -22422,9 +22080,7 @@ input RemoveEnterpriseAdminInput {
   """
   The Enterprise ID from which to remove the administrator.
   """
-  enterpriseId: ID! @possibleTypes(
-    concreteTypes: ["Enterprise"]
-  )
+  enterpriseId: ID! @possibleTypes(concreteTypes: ["Enterprise"])
   
   """
   The login of the user to remove as an administrator.
@@ -22456,9 +22112,7 @@ input RemoveEnterpriseIdentityProviderInput {
   """
   The ID of the enterprise from which to remove the identity provider.
   """
-  enterpriseId: ID! @possibleTypes(
-    concreteTypes: ["Enterprise"]
-  )
+  enterpriseId: ID! @possibleTypes(concreteTypes: ["Enterprise"])
 }
 
 """
@@ -22482,16 +22136,12 @@ input RemoveEnterpriseMemberInput {
   """
   The ID of the enterprise from which the user should be removed.
   """
-  enterpriseId: ID! @possibleTypes(
-    concreteTypes: ["Enterprise"]
-  )
+  enterpriseId: ID! @possibleTypes(concreteTypes: ["Enterprise"])
   
   """
   The ID of the user to remove from the enterprise.
   """
-  userId: ID! @possibleTypes(
-    concreteTypes: ["User"]
-  )
+  userId: ID! @possibleTypes(concreteTypes: ["User"])
 }
 
 """
@@ -22517,16 +22167,12 @@ input RemoveEnterpriseOrganizationInput {
   """
   The ID of the enterprise from which the organization should be removed.
   """
-  enterpriseId: ID! @possibleTypes(
-    concreteTypes: ["Enterprise"]
-  )
+  enterpriseId: ID! @possibleTypes(concreteTypes: ["Enterprise"])
   
   """
   The ID of the organization to remove from the enterprise.
   """
-  organizationId: ID! @possibleTypes(
-    concreteTypes: ["Organization"]
-  )
+  organizationId: ID! @possibleTypes(concreteTypes: ["Organization"])
 }
 
 """
@@ -22552,9 +22198,7 @@ input RemoveEnterpriseSupportEntitlementInput {
   """
   The ID of the Enterprise which the admin belongs to.
   """
-  enterpriseId: ID! @possibleTypes(
-    concreteTypes: ["Enterprise"]
-  )
+  enterpriseId: ID! @possibleTypes(concreteTypes: ["Enterprise"])
   
   """
   The login of a member who will lose the support entitlement.
@@ -22583,19 +22227,15 @@ input RemoveLabelsFromLabelableInput {
   """
   The ids of labels to remove.
   """
-  labelIds: [ID!]! @possibleTypes(
-    concreteTypes: ["Label"]
-  )
+  labelIds: [ID!]! @possibleTypes(concreteTypes: ["Label"])
   
   """
   The id of the Labelable to remove labels from.
   """
-  labelableId: ID! @possibleTypes(
-    concreteTypes: [
+  labelableId: ID! @possibleTypes(concreteTypes: [
       "Discussion", "Issue", "PullRequest"
     ]
-    abstractType: "Labelable"
-  )
+    abstractType: "Labelable")
 }
 
 """
@@ -22619,16 +22259,12 @@ input RemoveOutsideCollaboratorInput {
   """
   The ID of the organization to remove the outside collaborator from.
   """
-  organizationId: ID! @possibleTypes(
-    concreteTypes: ["Organization"]
-  )
+  organizationId: ID! @possibleTypes(concreteTypes: ["Organization"])
   
   """
   The ID of the outside collaborator to remove.
   """
-  userId: ID! @possibleTypes(
-    concreteTypes: ["User"]
-  )
+  userId: ID! @possibleTypes(concreteTypes: ["User"])
 }
 
 """
@@ -22657,8 +22293,7 @@ input RemoveReactionInput {
   """
   The Node ID of the subject to modify.
   """
-  subjectId: ID! @possibleTypes(
-    concreteTypes: [
+  subjectId: ID! @possibleTypes(concreteTypes: [
       "CommitComment",
       "Discussion",
       "DiscussionComment",
@@ -22671,8 +22306,7 @@ input RemoveReactionInput {
       "TeamDiscussion",
       "TeamDiscussionComment"
     ]
-    abstractType: "Reactable"
-  )
+    abstractType: "Reactable")
 }
 
 """
@@ -22698,9 +22332,10 @@ input RemoveStarInput {
   """
   The Starrable ID to unstar.
   """
-  starrableId: ID! @possibleTypes(
-    concreteTypes: ["Gist", "Repository", "Topic"], abstractType: "Starrable"
-  )
+  starrableId: ID! @possibleTypes(concreteTypes: [
+      "Gist", "Repository", "Topic"
+    ]
+    abstractType: "Starrable")
 }
 
 """
@@ -22724,9 +22359,10 @@ input RemoveUpvoteInput {
   """
   The Node ID of the discussion or comment to remove upvote.
   """
-  subjectId: ID! @possibleTypes(
-    concreteTypes: ["Discussion", "DiscussionComment"], abstractType: "Votable"
-  )
+  subjectId: ID! @possibleTypes(concreteTypes: [
+      "Discussion", "DiscussionComment"
+    ]
+    abstractType: "Votable")
 }
 
 """
@@ -22759,12 +22395,8 @@ type RemovedFromProjectEvent implements Node {
   createdAt: DateTime!
   databaseId: Int
   id: ID!
-  project: Project @preview(
-    toggledBy: "starfox-preview"
-  )
-  projectColumnName: String! @preview(
-    toggledBy: "starfox-preview"
-  )
+  project: Project @preview(toggledBy: "starfox-preview")
+  projectColumnName: String! @preview(toggledBy: "starfox-preview")
 }
 
 """
@@ -22797,9 +22429,7 @@ input ReopenDiscussionInput {
   """
   ID of the discussion to be reopened.
   """
-  discussionId: ID! @possibleTypes(
-    concreteTypes: ["Discussion"]
-  )
+  discussionId: ID! @possibleTypes(concreteTypes: ["Discussion"])
 }
 
 """
@@ -22823,9 +22453,7 @@ input ReopenIssueInput {
   """
   ID of the issue to be opened.
   """
-  issueId: ID! @possibleTypes(
-    concreteTypes: ["Issue"]
-  )
+  issueId: ID! @possibleTypes(concreteTypes: ["Issue"])
 }
 
 """
@@ -22849,9 +22477,7 @@ input ReopenPullRequestInput {
   """
   ID of the pull request to be reopened.
   """
-  pullRequestId: ID! @possibleTypes(
-    concreteTypes: ["PullRequest"]
-  )
+  pullRequestId: ID! @possibleTypes(concreteTypes: ["PullRequest"])
 }
 
 """
@@ -23653,9 +23279,7 @@ type Repository implements Node & PackageOwner & ProjectOwner & ProjectV2Recent 
     Flag to scope to only manifests with dependencies
     """
     withDependencies: Boolean
-  ): DependencyGraphManifestConnection @preview(
-    toggledBy: "hawkgirl-preview"
-  )
+  ): DependencyGraphManifestConnection @preview(toggledBy: "hawkgirl-preview")
   deployKeys(
     """
     Returns the elements in the list that come after the specified cursor.
@@ -25296,9 +24920,7 @@ input RepositoryRuleInput {
   """
   Optional ID of this rule when updating
   """
-  id: ID @possibleTypes(
-    concreteTypes: ["RepositoryRule"]
-  )
+  id: ID @possibleTypes(concreteTypes: ["RepositoryRule"])
   
   """
   The parameters for the rule.
@@ -25649,16 +25271,12 @@ input RequestReviewsInput {
   """
   The Node ID of the pull request to modify.
   """
-  pullRequestId: ID! @possibleTypes(
-    concreteTypes: ["PullRequest"]
-  )
+  pullRequestId: ID! @possibleTypes(concreteTypes: ["PullRequest"])
   
   """
   The Node IDs of the team to request.
   """
-  teamIds: [ID!] @possibleTypes(
-    concreteTypes: ["Team"]
-  )
+  teamIds: [ID!] @possibleTypes(concreteTypes: ["Team"])
   
   """
   Add users to the set rather than replace.
@@ -25668,9 +25286,7 @@ input RequestReviewsInput {
   """
   The Node IDs of the user to request.
   """
-  userIds: [ID!] @possibleTypes(
-    concreteTypes: ["User"]
-  )
+  userIds: [ID!] @possibleTypes(concreteTypes: ["User"])
 }
 
 """
@@ -25818,9 +25434,7 @@ input RerequestCheckSuiteInput {
   """
   The Node ID of the check suite.
   """
-  checkSuiteId: ID! @possibleTypes(
-    concreteTypes: ["CheckSuite"]
-  )
+  checkSuiteId: ID! @possibleTypes(concreteTypes: ["CheckSuite"])
   
   """
   A unique identifier for the client performing the mutation.
@@ -25830,9 +25444,7 @@ input RerequestCheckSuiteInput {
   """
   The Node ID of the repository.
   """
-  repositoryId: ID! @possibleTypes(
-    concreteTypes: ["Repository"]
-  )
+  repositoryId: ID! @possibleTypes(concreteTypes: ["Repository"])
 }
 
 """
@@ -25856,9 +25468,7 @@ input ResolveReviewThreadInput {
   """
   The ID of the thread to resolve
   """
-  threadId: ID! @possibleTypes(
-    concreteTypes: ["PullRequestReviewThread"]
-  )
+  threadId: ID! @possibleTypes(concreteTypes: ["PullRequestReviewThread"])
 }
 
 """
@@ -25893,9 +25503,7 @@ input RetireSponsorsTierInput {
   """
   The ID of the published tier to retire.
   """
-  tierId: ID! @possibleTypes(
-    concreteTypes: ["SponsorsTier"]
-  )
+  tierId: ID! @possibleTypes(concreteTypes: ["SponsorsTier"])
 }
 
 """
@@ -25929,9 +25537,7 @@ input RevertPullRequestInput {
   """
   The ID of the pull request to revert.
   """
-  pullRequestId: ID! @possibleTypes(
-    concreteTypes: ["PullRequest"]
-  )
+  pullRequestId: ID! @possibleTypes(concreteTypes: ["PullRequest"])
   
   """
   The title of the revert pull request.
@@ -26072,9 +25678,7 @@ input RevokeEnterpriseOrganizationsMigratorRoleInput {
   """
   The ID of the enterprise to which all organizations managed by it will be granted the migrator role.
   """
-  enterpriseId: ID! @possibleTypes(
-    concreteTypes: ["Enterprise"]
-  )
+  enterpriseId: ID! @possibleTypes(concreteTypes: ["Enterprise"])
   
   """
   The login of the user to revoke the migrator role
@@ -26133,9 +25737,7 @@ input RevokeMigratorRoleInput {
   """
   The ID of the organization that the user/team belongs to.
   """
-  organizationId: ID! @possibleTypes(
-    concreteTypes: ["Organization"]
-  )
+  organizationId: ID! @possibleTypes(concreteTypes: ["Organization"])
 }
 
 """
@@ -26646,9 +26248,7 @@ input SetEnterpriseIdentityProviderInput {
   """
   The ID of the enterprise on which to set an identity provider.
   """
-  enterpriseId: ID! @possibleTypes(
-    concreteTypes: ["Enterprise"]
-  )
+  enterpriseId: ID! @possibleTypes(concreteTypes: ["Enterprise"])
   
   """
   The x509 certificate used by the identity provider to sign assertions and responses.
@@ -26702,9 +26302,7 @@ input SetOrganizationInteractionLimitInput {
   """
   The ID of the organization to set a limit for.
   """
-  organizationId: ID! @possibleTypes(
-    concreteTypes: ["Organization"]
-  )
+  organizationId: ID! @possibleTypes(concreteTypes: ["Organization"])
 }
 
 """
@@ -26738,9 +26336,7 @@ input SetRepositoryInteractionLimitInput {
   """
   The ID of the repository to set a limit for.
   """
-  repositoryId: ID! @possibleTypes(
-    concreteTypes: ["Repository"]
-  )
+  repositoryId: ID! @possibleTypes(concreteTypes: ["Repository"])
 }
 
 """
@@ -26774,9 +26370,7 @@ input SetUserInteractionLimitInput {
   """
   The ID of the user to set a limit for.
   """
-  userId: ID! @possibleTypes(
-    concreteTypes: ["User"]
-  )
+  userId: ID! @possibleTypes(concreteTypes: ["User"])
 }
 
 """
@@ -28036,9 +27630,7 @@ input StartOrganizationMigrationInput {
   """
   The ID of the enterprise the target organization belongs to.
   """
-  targetEnterpriseId: ID! @possibleTypes(
-    concreteTypes: ["Enterprise"]
-  )
+  targetEnterpriseId: ID! @possibleTypes(concreteTypes: ["Enterprise"])
   
   """
   The name of the target organization.
@@ -28097,9 +27689,7 @@ input StartRepositoryMigrationInput {
   """
   The ID of the organization that will own the imported repository.
   """
-  ownerId: ID! @possibleTypes(
-    concreteTypes: ["Organization"]
-  )
+  ownerId: ID! @possibleTypes(concreteTypes: ["Organization"])
   
   """
   The name of the imported repository.
@@ -28114,9 +27704,7 @@ input StartRepositoryMigrationInput {
   """
   The ID of the migration source.
   """
-  sourceId: ID! @possibleTypes(
-    concreteTypes: ["MigrationSource"]
-  )
+  sourceId: ID! @possibleTypes(concreteTypes: ["MigrationSource"])
   
   """
   The URL of the source repository.
@@ -28340,16 +27928,12 @@ input SubmitPullRequestReviewInput {
   """
   The Pull Request ID to submit any pending reviews.
   """
-  pullRequestId: ID @possibleTypes(
-    concreteTypes: ["PullRequest"]
-  )
+  pullRequestId: ID @possibleTypes(concreteTypes: ["PullRequest"])
   
   """
   The Pull Request Review ID to submit.
   """
-  pullRequestReviewId: ID @possibleTypes(
-    concreteTypes: ["PullRequestReview"]
-  )
+  pullRequestReviewId: ID @possibleTypes(concreteTypes: ["PullRequestReview"])
 }
 
 """
@@ -28776,17 +28360,13 @@ type Team implements MemberStatusable & Node & Subscribable {
   repositoriesUrl: URI!
   resourcePath: URI!
   reviewRequestDelegationAlgorithm: TeamReviewAssignmentAlgorithm @preview(
-    toggledBy: "stone-crop-preview"
-  )
+    toggledBy: "stone-crop-preview")
   reviewRequestDelegationEnabled: Boolean! @preview(
-    toggledBy: "stone-crop-preview"
-  )
+    toggledBy: "stone-crop-preview")
   reviewRequestDelegationMemberCount: Int @preview(
-    toggledBy: "stone-crop-preview"
-  )
+    toggledBy: "stone-crop-preview")
   reviewRequestDelegationNotifyTeam: Boolean! @preview(
-    toggledBy: "stone-crop-preview"
-  )
+    toggledBy: "stone-crop-preview")
   slug: String!
   teamsResourcePath: URI!
   teamsUrl: URI!
@@ -29462,9 +29042,7 @@ enum TeamRepositoryOrderField {
 """
 The possible team review assignment algorithms
 """
-enum TeamReviewAssignmentAlgorithm @preview(
-  toggledBy: "stone-crop-preview"
-) {
+enum TeamReviewAssignmentAlgorithm @preview(toggledBy: "stone-crop-preview") {
   LOAD_BALANCE
   ROUND_ROBIN
 }
@@ -29662,16 +29240,12 @@ input TransferEnterpriseOrganizationInput {
   """
   The ID of the enterprise where the organization should be transferred.
   """
-  destinationEnterpriseId: ID! @possibleTypes(
-    concreteTypes: ["Enterprise"]
-  )
+  destinationEnterpriseId: ID! @possibleTypes(concreteTypes: ["Enterprise"])
   
   """
   The ID of the organization to transfer.
   """
-  organizationId: ID! @possibleTypes(
-    concreteTypes: ["Organization"]
-  )
+  organizationId: ID! @possibleTypes(concreteTypes: ["Organization"])
 }
 
 """
@@ -29700,16 +29274,12 @@ input TransferIssueInput {
   """
   The Node ID of the issue to be transferred
   """
-  issueId: ID! @possibleTypes(
-    concreteTypes: ["Issue"]
-  )
+  issueId: ID! @possibleTypes(concreteTypes: ["Issue"])
   
   """
   The Node ID of the repository the issue should be transferred to
   """
-  repositoryId: ID! @possibleTypes(
-    concreteTypes: ["Repository"]
-  )
+  repositoryId: ID! @possibleTypes(concreteTypes: ["Repository"])
 }
 
 """
@@ -29783,16 +29353,12 @@ input UnarchiveProjectV2ItemInput {
   """
   The ID of the ProjectV2Item to unarchive.
   """
-  itemId: ID! @possibleTypes(
-    concreteTypes: ["ProjectV2Item"]
-  )
+  itemId: ID! @possibleTypes(concreteTypes: ["ProjectV2Item"])
   
   """
   The ID of the Project to archive the item from.
   """
-  projectId: ID! @possibleTypes(
-    concreteTypes: ["ProjectV2"]
-  )
+  projectId: ID! @possibleTypes(concreteTypes: ["ProjectV2"])
 }
 
 """
@@ -29816,9 +29382,7 @@ input UnarchiveRepositoryInput {
   """
   The ID of the repository to unarchive.
   """
-  repositoryId: ID! @possibleTypes(
-    concreteTypes: ["Repository"]
-  )
+  repositoryId: ID! @possibleTypes(concreteTypes: ["Repository"])
 }
 
 """
@@ -29856,9 +29420,7 @@ input UnfollowOrganizationInput {
   """
   ID of the organization to unfollow.
   """
-  organizationId: ID! @possibleTypes(
-    concreteTypes: ["Organization"]
-  )
+  organizationId: ID! @possibleTypes(concreteTypes: ["Organization"])
 }
 
 """
@@ -29882,9 +29444,7 @@ input UnfollowUserInput {
   """
   ID of the user to unfollow.
   """
-  userId: ID! @possibleTypes(
-    concreteTypes: ["User"]
-  )
+  userId: ID! @possibleTypes(concreteTypes: ["User"])
 }
 
 """
@@ -29940,16 +29500,12 @@ input UnlinkProjectV2FromRepositoryInput {
   """
   The ID of the project to unlink from the repository.
   """
-  projectId: ID! @possibleTypes(
-    concreteTypes: ["ProjectV2"]
-  )
+  projectId: ID! @possibleTypes(concreteTypes: ["ProjectV2"])
   
   """
   The ID of the repository to unlink from the project.
   """
-  repositoryId: ID! @possibleTypes(
-    concreteTypes: ["Repository"]
-  )
+  repositoryId: ID! @possibleTypes(concreteTypes: ["Repository"])
 }
 
 """
@@ -29973,16 +29529,12 @@ input UnlinkProjectV2FromTeamInput {
   """
   The ID of the project to unlink from the team.
   """
-  projectId: ID! @possibleTypes(
-    concreteTypes: ["ProjectV2"]
-  )
+  projectId: ID! @possibleTypes(concreteTypes: ["ProjectV2"])
   
   """
   The ID of the team to unlink from the project.
   """
-  teamId: ID! @possibleTypes(
-    concreteTypes: ["Team"]
-  )
+  teamId: ID! @possibleTypes(concreteTypes: ["Team"])
 }
 
 """
@@ -30006,16 +29558,12 @@ input UnlinkRepositoryFromProjectInput {
   """
   The ID of the Project linked to the Repository.
   """
-  projectId: ID! @possibleTypes(
-    concreteTypes: ["Project"]
-  )
+  projectId: ID! @possibleTypes(concreteTypes: ["Project"])
   
   """
   The ID of the Repository linked to the Project.
   """
-  repositoryId: ID! @possibleTypes(
-    concreteTypes: ["Repository"]
-  )
+  repositoryId: ID! @possibleTypes(concreteTypes: ["Repository"])
 }
 
 """
@@ -30040,12 +29588,10 @@ input UnlockLockableInput {
   """
   ID of the item to be unlocked.
   """
-  lockableId: ID! @possibleTypes(
-    concreteTypes: [
+  lockableId: ID! @possibleTypes(concreteTypes: [
       "Discussion", "Issue", "PullRequest"
     ]
-    abstractType: "Lockable"
-  )
+    abstractType: "Lockable")
 }
 
 """
@@ -30080,9 +29626,7 @@ input UnmarkDiscussionCommentAsAnswerInput {
   """
   The Node ID of the discussion comment to unmark as an answer.
   """
-  id: ID! @possibleTypes(
-    concreteTypes: ["DiscussionComment"]
-  )
+  id: ID! @possibleTypes(concreteTypes: ["DiscussionComment"])
 }
 
 """
@@ -30111,9 +29655,7 @@ input UnmarkFileAsViewedInput {
   """
   The Node ID of the pull request.
   """
-  pullRequestId: ID! @possibleTypes(
-    concreteTypes: ["PullRequest"]
-  )
+  pullRequestId: ID! @possibleTypes(concreteTypes: ["PullRequest"])
 }
 
 """
@@ -30132,9 +29674,10 @@ input UnmarkIssueAsDuplicateInput {
   """
   ID of the issue or pull request currently considered canonical/authoritative/original.
   """
-  canonicalId: ID! @possibleTypes(
-    concreteTypes: ["Issue", "PullRequest"], abstractType: "IssueOrPullRequest"
-  )
+  canonicalId: ID! @possibleTypes(concreteTypes: [
+      "Issue", "PullRequest"
+    ]
+    abstractType: "IssueOrPullRequest")
   
   """
   A unique identifier for the client performing the mutation.
@@ -30144,9 +29687,10 @@ input UnmarkIssueAsDuplicateInput {
   """
   ID of the issue or pull request currently marked as a duplicate.
   """
-  duplicateId: ID! @possibleTypes(
-    concreteTypes: ["Issue", "PullRequest"], abstractType: "IssueOrPullRequest"
-  )
+  duplicateId: ID! @possibleTypes(concreteTypes: [
+      "Issue", "PullRequest"
+    ]
+    abstractType: "IssueOrPullRequest")
 }
 
 """
@@ -30170,9 +29714,7 @@ input UnmarkProjectV2AsTemplateInput {
   """
   The ID of the Project to unmark as a template.
   """
-  projectId: ID! @possibleTypes(
-    concreteTypes: ["ProjectV2"]
-  )
+  projectId: ID! @possibleTypes(concreteTypes: ["ProjectV2"])
 }
 
 """
@@ -30208,16 +29750,14 @@ input UnminimizeCommentInput {
   """
   The Node ID of the subject to modify.
   """
-  subjectId: ID! @possibleTypes(
-    concreteTypes: [
+  subjectId: ID! @possibleTypes(concreteTypes: [
       "CommitComment",
       "DiscussionComment",
       "GistComment",
       "IssueComment",
       "PullRequestReviewComment"
     ]
-    abstractType: "Minimizable"
-  )
+    abstractType: "Minimizable")
 }
 
 """
@@ -30241,9 +29781,7 @@ input UnpinIssueInput {
   """
   The ID of the issue to be unpinned
   """
-  issueId: ID! @possibleTypes(
-    concreteTypes: ["Issue"]
-  )
+  issueId: ID! @possibleTypes(concreteTypes: ["Issue"])
 }
 
 """
@@ -30277,9 +29815,7 @@ input UnresolveReviewThreadInput {
   """
   The ID of the thread to unresolve
   """
-  threadId: ID! @possibleTypes(
-    concreteTypes: ["PullRequestReviewThread"]
-  )
+  threadId: ID! @possibleTypes(concreteTypes: ["PullRequestReviewThread"])
 }
 
 """
@@ -30337,9 +29873,9 @@ input UpdateBranchProtectionRuleInput {
   """
   The global relay id of the branch protection rule to be updated.
   """
-  branchProtectionRuleId: ID! @possibleTypes(
-    concreteTypes: ["BranchProtectionRule"]
-  )
+  branchProtectionRuleId: ID! @possibleTypes(concreteTypes: [
+      "BranchProtectionRule"
+    ])
   
   """
   A list of User, Team, or App IDs allowed to bypass force push targeting matching branches.
@@ -30489,9 +30025,7 @@ input UpdateCheckRunInput {
   """
   The node of the check.
   """
-  checkRunId: ID! @possibleTypes(
-    concreteTypes: ["CheckRun"]
-  )
+  checkRunId: ID! @possibleTypes(concreteTypes: ["CheckRun"])
   
   """
   A unique identifier for the client performing the mutation.
@@ -30531,9 +30065,7 @@ input UpdateCheckRunInput {
   """
   The node ID of the repository.
   """
-  repositoryId: ID! @possibleTypes(
-    concreteTypes: ["Repository"]
-  )
+  repositoryId: ID! @possibleTypes(concreteTypes: ["Repository"])
   
   """
   The time that the check run began.
@@ -30572,9 +30104,7 @@ input UpdateCheckSuitePreferencesInput {
   """
   The Node ID of the repository.
   """
-  repositoryId: ID! @possibleTypes(
-    concreteTypes: ["Repository"]
-  )
+  repositoryId: ID! @possibleTypes(concreteTypes: ["Repository"])
 }
 
 """
@@ -30603,9 +30133,7 @@ input UpdateDiscussionCommentInput {
   """
   The Node ID of the discussion comment to update.
   """
-  commentId: ID! @possibleTypes(
-    concreteTypes: ["DiscussionComment"]
-  )
+  commentId: ID! @possibleTypes(concreteTypes: ["DiscussionComment"])
 }
 
 """
@@ -30629,9 +30157,7 @@ input UpdateDiscussionInput {
   """
   The Node ID of a discussion category within the same repository to change this discussion to.
   """
-  categoryId: ID @possibleTypes(
-    concreteTypes: ["DiscussionCategory"]
-  )
+  categoryId: ID @possibleTypes(concreteTypes: ["DiscussionCategory"])
   
   """
   A unique identifier for the client performing the mutation.
@@ -30641,9 +30167,7 @@ input UpdateDiscussionInput {
   """
   The Node ID of the discussion to update.
   """
-  discussionId: ID! @possibleTypes(
-    concreteTypes: ["Discussion"]
-  )
+  discussionId: ID! @possibleTypes(concreteTypes: ["Discussion"])
   
   """
   The new discussion title.
@@ -30672,9 +30196,7 @@ input UpdateEnterpriseAdministratorRoleInput {
   """
   The ID of the Enterprise which the admin belongs to.
   """
-  enterpriseId: ID! @possibleTypes(
-    concreteTypes: ["Enterprise"]
-  )
+  enterpriseId: ID! @possibleTypes(concreteTypes: ["Enterprise"])
   
   """
   The login of a administrator whose role is being changed.
@@ -30708,9 +30230,7 @@ input UpdateEnterpriseAllowPrivateRepositoryForkingSettingInput {
   """
   The ID of the enterprise on which to set the allow private repository forking setting.
   """
-  enterpriseId: ID! @possibleTypes(
-    concreteTypes: ["Enterprise"]
-  )
+  enterpriseId: ID! @possibleTypes(concreteTypes: ["Enterprise"])
   
   """
   The value for the allow private repository forking policy on the enterprise.
@@ -30745,9 +30265,7 @@ input UpdateEnterpriseDefaultRepositoryPermissionSettingInput {
   """
   The ID of the enterprise on which to set the base repository permission setting.
   """
-  enterpriseId: ID! @possibleTypes(
-    concreteTypes: ["Enterprise"]
-  )
+  enterpriseId: ID! @possibleTypes(concreteTypes: ["Enterprise"])
   
   """
   The value for the base repository permission setting on the enterprise.
@@ -30777,9 +30295,7 @@ input UpdateEnterpriseMembersCanChangeRepositoryVisibilitySettingInput {
   """
   The ID of the enterprise on which to set the members can change repository visibility setting.
   """
-  enterpriseId: ID! @possibleTypes(
-    concreteTypes: ["Enterprise"]
-  )
+  enterpriseId: ID! @possibleTypes(concreteTypes: ["Enterprise"])
   
   """
   The value for the members can change repository visibility setting on the enterprise.
@@ -30809,9 +30325,7 @@ input UpdateEnterpriseMembersCanCreateRepositoriesSettingInput {
   """
   The ID of the enterprise on which to set the members can create repositories setting.
   """
-  enterpriseId: ID! @possibleTypes(
-    concreteTypes: ["Enterprise"]
-  )
+  enterpriseId: ID! @possibleTypes(concreteTypes: ["Enterprise"])
   
   """
   Allow members to create internal repositories. Defaults to current value.
@@ -30862,9 +30376,7 @@ input UpdateEnterpriseMembersCanDeleteIssuesSettingInput {
   """
   The ID of the enterprise on which to set the members can delete issues setting.
   """
-  enterpriseId: ID! @possibleTypes(
-    concreteTypes: ["Enterprise"]
-  )
+  enterpriseId: ID! @possibleTypes(concreteTypes: ["Enterprise"])
   
   """
   The value for the members can delete issues setting on the enterprise.
@@ -30894,9 +30406,7 @@ input UpdateEnterpriseMembersCanDeleteRepositoriesSettingInput {
   """
   The ID of the enterprise on which to set the members can delete repositories setting.
   """
-  enterpriseId: ID! @possibleTypes(
-    concreteTypes: ["Enterprise"]
-  )
+  enterpriseId: ID! @possibleTypes(concreteTypes: ["Enterprise"])
   
   """
   The value for the members can delete repositories setting on the enterprise.
@@ -30926,9 +30436,7 @@ input UpdateEnterpriseMembersCanInviteCollaboratorsSettingInput {
   """
   The ID of the enterprise on which to set the members can invite collaborators setting.
   """
-  enterpriseId: ID! @possibleTypes(
-    concreteTypes: ["Enterprise"]
-  )
+  enterpriseId: ID! @possibleTypes(concreteTypes: ["Enterprise"])
   
   """
   The value for the members can invite collaborators setting on the enterprise.
@@ -30958,9 +30466,7 @@ input UpdateEnterpriseMembersCanMakePurchasesSettingInput {
   """
   The ID of the enterprise on which to set the members can make purchases setting.
   """
-  enterpriseId: ID! @possibleTypes(
-    concreteTypes: ["Enterprise"]
-  )
+  enterpriseId: ID! @possibleTypes(concreteTypes: ["Enterprise"])
   
   """
   The value for the members can make purchases setting on the enterprise.
@@ -30990,9 +30496,7 @@ input UpdateEnterpriseMembersCanUpdateProtectedBranchesSettingInput {
   """
   The ID of the enterprise on which to set the members can update protected branches setting.
   """
-  enterpriseId: ID! @possibleTypes(
-    concreteTypes: ["Enterprise"]
-  )
+  enterpriseId: ID! @possibleTypes(concreteTypes: ["Enterprise"])
   
   """
   The value for the members can update protected branches setting on the enterprise.
@@ -31022,9 +30526,7 @@ input UpdateEnterpriseMembersCanViewDependencyInsightsSettingInput {
   """
   The ID of the enterprise on which to set the members can view dependency insights setting.
   """
-  enterpriseId: ID! @possibleTypes(
-    concreteTypes: ["Enterprise"]
-  )
+  enterpriseId: ID! @possibleTypes(concreteTypes: ["Enterprise"])
   
   """
   The value for the members can view dependency insights setting on the enterprise.
@@ -31054,9 +30556,7 @@ input UpdateEnterpriseOrganizationProjectsSettingInput {
   """
   The ID of the enterprise on which to set the organization projects setting.
   """
-  enterpriseId: ID! @possibleTypes(
-    concreteTypes: ["Enterprise"]
-  )
+  enterpriseId: ID! @possibleTypes(concreteTypes: ["Enterprise"])
   
   """
   The value for the organization projects setting on the enterprise.
@@ -31086,16 +30586,12 @@ input UpdateEnterpriseOwnerOrganizationRoleInput {
   """
   The ID of the Enterprise which the owner belongs to.
   """
-  enterpriseId: ID! @possibleTypes(
-    concreteTypes: ["Enterprise"]
-  )
+  enterpriseId: ID! @possibleTypes(concreteTypes: ["Enterprise"])
   
   """
   The ID of the organization for membership change.
   """
-  organizationId: ID! @possibleTypes(
-    concreteTypes: ["Organization"]
-  )
+  organizationId: ID! @possibleTypes(concreteTypes: ["Organization"])
   
   """
   The role to assume in the organization.
@@ -31129,9 +30625,7 @@ input UpdateEnterpriseProfileInput {
   """
   The Enterprise ID to update.
   """
-  enterpriseId: ID! @possibleTypes(
-    concreteTypes: ["Enterprise"]
-  )
+  enterpriseId: ID! @possibleTypes(concreteTypes: ["Enterprise"])
   
   """
   The location of the enterprise.
@@ -31170,9 +30664,7 @@ input UpdateEnterpriseRepositoryProjectsSettingInput {
   """
   The ID of the enterprise on which to set the repository projects setting.
   """
-  enterpriseId: ID! @possibleTypes(
-    concreteTypes: ["Enterprise"]
-  )
+  enterpriseId: ID! @possibleTypes(concreteTypes: ["Enterprise"])
   
   """
   The value for the repository projects setting on the enterprise.
@@ -31202,9 +30694,7 @@ input UpdateEnterpriseTeamDiscussionsSettingInput {
   """
   The ID of the enterprise on which to set the team discussions setting.
   """
-  enterpriseId: ID! @possibleTypes(
-    concreteTypes: ["Enterprise"]
-  )
+  enterpriseId: ID! @possibleTypes(concreteTypes: ["Enterprise"])
   
   """
   The value for the team discussions setting on the enterprise.
@@ -31234,9 +30724,7 @@ input UpdateEnterpriseTwoFactorAuthenticationRequiredSettingInput {
   """
   The ID of the enterprise on which to set the two factor authentication required setting.
   """
-  enterpriseId: ID! @possibleTypes(
-    concreteTypes: ["Enterprise"]
-  )
+  enterpriseId: ID! @possibleTypes(concreteTypes: ["Enterprise"])
   
   """
   The value for the two factor authentication required setting on the enterprise.
@@ -31266,9 +30754,7 @@ input UpdateEnvironmentInput {
   """
   The node ID of the environment.
   """
-  environmentId: ID! @possibleTypes(
-    concreteTypes: ["Environment"]
-  )
+  environmentId: ID! @possibleTypes(concreteTypes: ["Environment"])
   
   """
   The ids of users or teams that can approve deployments to this environment
@@ -31302,12 +30788,10 @@ input UpdateIpAllowListEnabledSettingInput {
   """
   The ID of the owner on which to set the IP allow list enabled setting.
   """
-  ownerId: ID! @possibleTypes(
-    concreteTypes: [
+  ownerId: ID! @possibleTypes(concreteTypes: [
       "App", "Enterprise", "Organization"
     ]
-    abstractType: "IpAllowListOwner"
-  )
+    abstractType: "IpAllowListOwner")
   
   """
   The value for the IP allow list enabled setting.
@@ -31341,9 +30825,7 @@ input UpdateIpAllowListEntryInput {
   """
   The ID of the IP allow list entry to update.
   """
-  ipAllowListEntryId: ID! @possibleTypes(
-    concreteTypes: ["IpAllowListEntry"]
-  )
+  ipAllowListEntryId: ID! @possibleTypes(concreteTypes: ["IpAllowListEntry"])
   
   """
   Whether the IP allow list entry is active when an IP allow list is enabled.
@@ -31377,12 +30859,10 @@ input UpdateIpAllowListForInstalledAppsEnabledSettingInput {
   """
   The ID of the owner.
   """
-  ownerId: ID! @possibleTypes(
-    concreteTypes: [
+  ownerId: ID! @possibleTypes(concreteTypes: [
       "App", "Enterprise", "Organization"
     ]
-    abstractType: "IpAllowListOwner"
-  )
+    abstractType: "IpAllowListOwner")
   
   """
   The value for the IP allow list configuration for installed GitHub Apps setting.
@@ -31416,9 +30896,7 @@ input UpdateIssueCommentInput {
   """
   The ID of the IssueComment to modify.
   """
-  id: ID! @possibleTypes(
-    concreteTypes: ["IssueComment"]
-  )
+  id: ID! @possibleTypes(concreteTypes: ["IssueComment"])
 }
 
 """
@@ -31437,9 +30915,7 @@ input UpdateIssueInput {
   """
   An array of Node IDs of users for this issue.
   """
-  assigneeIds: [ID!] @possibleTypes(
-    concreteTypes: ["User"]
-  )
+  assigneeIds: [ID!] @possibleTypes(concreteTypes: ["User"])
   
   """
   The body for the issue description.
@@ -31454,23 +30930,17 @@ input UpdateIssueInput {
   """
   The ID of the Issue to modify.
   """
-  id: ID! @possibleTypes(
-    concreteTypes: ["Issue"]
-  )
+  id: ID! @possibleTypes(concreteTypes: ["Issue"])
   
   """
   An array of Node IDs of labels for this issue.
   """
-  labelIds: [ID!] @possibleTypes(
-    concreteTypes: ["Label"]
-  )
+  labelIds: [ID!] @possibleTypes(concreteTypes: ["Label"])
   
   """
   The Node ID of the milestone for this issue.
   """
-  milestoneId: ID @possibleTypes(
-    concreteTypes: ["Milestone"]
-  )
+  milestoneId: ID @possibleTypes(concreteTypes: ["Milestone"])
   
   """
   An array of Node IDs for projects associated with this issue.
@@ -31500,9 +30970,7 @@ type UpdateIssuePayload {
 """
 Autogenerated input type of UpdateLabel
 """
-input UpdateLabelInput @preview(
-  toggledBy: "bane-preview"
-) {
+input UpdateLabelInput @preview(toggledBy: "bane-preview") {
   
   """
   A unique identifier for the client performing the mutation.
@@ -31522,9 +30990,7 @@ input UpdateLabelInput @preview(
   """
   The Node ID of the label to be updated.
   """
-  id: ID! @possibleTypes(
-    concreteTypes: ["Label"]
-  )
+  id: ID! @possibleTypes(concreteTypes: ["Label"])
   
   """
   The updated name of the label.
@@ -31535,9 +31001,7 @@ input UpdateLabelInput @preview(
 """
 Autogenerated return type of UpdateLabel
 """
-type UpdateLabelPayload @preview(
-  toggledBy: "bane-preview"
-) {
+type UpdateLabelPayload @preview(toggledBy: "bane-preview") {
   clientMutationId: String
   label: Label
 }
@@ -31555,12 +31019,10 @@ input UpdateNotificationRestrictionSettingInput {
   """
   The ID of the owner on which to set the restrict notifications setting.
   """
-  ownerId: ID! @possibleTypes(
-    concreteTypes: [
+  ownerId: ID! @possibleTypes(concreteTypes: [
       "Enterprise", "Organization"
     ]
-    abstractType: "VerifiableDomainOwner"
-  )
+    abstractType: "VerifiableDomainOwner")
   
   """
   The value for the restrict notifications setting.
@@ -31594,9 +31056,7 @@ input UpdateOrganizationAllowPrivateRepositoryForkingSettingInput {
   """
   The ID of the organization on which to set the allow private repository forking setting.
   """
-  organizationId: ID! @possibleTypes(
-    concreteTypes: ["Organization"]
-  )
+  organizationId: ID! @possibleTypes(concreteTypes: ["Organization"])
 }
 
 """
@@ -31621,9 +31081,7 @@ input UpdateOrganizationWebCommitSignoffSettingInput {
   """
   The ID of the organization on which to set the web commit signoff setting.
   """
-  organizationId: ID! @possibleTypes(
-    concreteTypes: ["Organization"]
-  )
+  organizationId: ID! @possibleTypes(concreteTypes: ["Organization"])
   
   """
   Enable signoff on web-based commits for repositories in the organization?
@@ -31681,9 +31139,7 @@ input UpdateProjectCardInput {
   """
   The ProjectCard ID to update.
   """
-  projectCardId: ID! @possibleTypes(
-    concreteTypes: ["ProjectCard"]
-  )
+  projectCardId: ID! @possibleTypes(concreteTypes: ["ProjectCard"])
 }
 
 """
@@ -31712,9 +31168,7 @@ input UpdateProjectColumnInput {
   """
   The ProjectColumn ID to update.
   """
-  projectColumnId: ID! @possibleTypes(
-    concreteTypes: ["ProjectColumn"]
-  )
+  projectColumnId: ID! @possibleTypes(concreteTypes: ["ProjectColumn"])
 }
 
 """
@@ -31748,9 +31202,7 @@ input UpdateProjectInput {
   """
   The Project ID to update.
   """
-  projectId: ID! @possibleTypes(
-    concreteTypes: ["Project"]
-  )
+  projectId: ID! @possibleTypes(concreteTypes: ["Project"])
   
   """
   Whether the project is public or not.
@@ -31789,9 +31241,7 @@ input UpdateProjectV2CollaboratorsInput {
   """
   The ID of the project to update the collaborators for.
   """
-  projectId: ID! @possibleTypes(
-    concreteTypes: ["ProjectV2"]
-  )
+  projectId: ID! @possibleTypes(concreteTypes: ["ProjectV2"])
 }
 
 """
@@ -31830,9 +31280,7 @@ input UpdateProjectV2DraftIssueInput {
   """
   The IDs of the assignees of the draft issue.
   """
-  assigneeIds: [ID!] @possibleTypes(
-    concreteTypes: ["User"]
-  )
+  assigneeIds: [ID!] @possibleTypes(concreteTypes: ["User"])
   
   """
   The body of the draft issue.
@@ -31847,9 +31295,7 @@ input UpdateProjectV2DraftIssueInput {
   """
   The ID of the draft issue to update.
   """
-  draftIssueId: ID! @possibleTypes(
-    concreteTypes: ["DraftIssue"]
-  )
+  draftIssueId: ID! @possibleTypes(concreteTypes: ["DraftIssue"])
   
   """
   The title of the draft issue.
@@ -31883,9 +31329,7 @@ input UpdateProjectV2Input {
   """
   The ID of the Project to update.
   """
-  projectId: ID! @possibleTypes(
-    concreteTypes: ["ProjectV2"]
-  )
+  projectId: ID! @possibleTypes(concreteTypes: ["ProjectV2"])
   
   """
   Set the project to public or private.
@@ -31921,26 +31365,20 @@ input UpdateProjectV2ItemFieldValueInput {
   """
   The ID of the field to be updated.
   """
-  fieldId: ID! @possibleTypes(
-    concreteTypes: [
+  fieldId: ID! @possibleTypes(concreteTypes: [
       "ProjectV2Field", "ProjectV2IterationField", "ProjectV2SingleSelectField"
     ]
-    abstractType: "ProjectV2FieldConfiguration"
-  )
+    abstractType: "ProjectV2FieldConfiguration")
   
   """
   The ID of the item to be updated.
   """
-  itemId: ID! @possibleTypes(
-    concreteTypes: ["ProjectV2Item"]
-  )
+  itemId: ID! @possibleTypes(concreteTypes: ["ProjectV2Item"])
   
   """
   The ID of the Project.
   """
-  projectId: ID! @possibleTypes(
-    concreteTypes: ["ProjectV2"]
-  )
+  projectId: ID! @possibleTypes(concreteTypes: ["ProjectV2"])
   
   """
   The value which will be set on the field.
@@ -31964,9 +31402,7 @@ input UpdateProjectV2ItemPositionInput {
   """
   The ID of the item to position this item after. If omitted or set to null the item will be moved to top.
   """
-  afterId: ID @possibleTypes(
-    concreteTypes: ["ProjectV2Item"]
-  )
+  afterId: ID @possibleTypes(concreteTypes: ["ProjectV2Item"])
   
   """
   A unique identifier for the client performing the mutation.
@@ -31976,16 +31412,12 @@ input UpdateProjectV2ItemPositionInput {
   """
   The ID of the item to be moved.
   """
-  itemId: ID! @possibleTypes(
-    concreteTypes: ["ProjectV2Item"]
-  )
+  itemId: ID! @possibleTypes(concreteTypes: ["ProjectV2Item"])
   
   """
   The ID of the Project.
   """
-  projectId: ID! @possibleTypes(
-    concreteTypes: ["ProjectV2"]
-  )
+  projectId: ID! @possibleTypes(concreteTypes: ["ProjectV2"])
 }
 
 """
@@ -32042,9 +31474,7 @@ input UpdatePullRequestBranchInput {
   """
   The Node ID of the pull request.
   """
-  pullRequestId: ID! @possibleTypes(
-    concreteTypes: ["PullRequest"]
-  )
+  pullRequestId: ID! @possibleTypes(concreteTypes: ["PullRequest"])
   
   """
   The update branch method to use. If omitted, defaults to 'MERGE'
@@ -32068,9 +31498,7 @@ input UpdatePullRequestInput {
   """
   An array of Node IDs of users for this pull request.
   """
-  assigneeIds: [ID!] @possibleTypes(
-    concreteTypes: ["User"]
-  )
+  assigneeIds: [ID!] @possibleTypes(concreteTypes: ["User"])
   
   """
   The name of the branch you want your changes pulled into. This should be an existing branch
@@ -32091,9 +31519,7 @@ input UpdatePullRequestInput {
   """
   An array of Node IDs of labels for this pull request.
   """
-  labelIds: [ID!] @possibleTypes(
-    concreteTypes: ["Label"]
-  )
+  labelIds: [ID!] @possibleTypes(concreteTypes: ["Label"])
   
   """
   Indicates whether maintainers can modify the pull request.
@@ -32103,9 +31529,7 @@ input UpdatePullRequestInput {
   """
   The Node ID of the milestone for this pull request.
   """
-  milestoneId: ID @possibleTypes(
-    concreteTypes: ["Milestone"]
-  )
+  milestoneId: ID @possibleTypes(concreteTypes: ["Milestone"])
   
   """
   An array of Node IDs for projects associated with this pull request.
@@ -32115,9 +31539,7 @@ input UpdatePullRequestInput {
   """
   The Node ID of the pull request.
   """
-  pullRequestId: ID! @possibleTypes(
-    concreteTypes: ["PullRequest"]
-  )
+  pullRequestId: ID! @possibleTypes(concreteTypes: ["PullRequest"])
   
   """
   The target state of the pull request.
@@ -32157,9 +31579,9 @@ input UpdatePullRequestReviewCommentInput {
   """
   The Node ID of the comment to modify.
   """
-  pullRequestReviewCommentId: ID! @possibleTypes(
-    concreteTypes: ["PullRequestReviewComment"]
-  )
+  pullRequestReviewCommentId: ID! @possibleTypes(concreteTypes: [
+      "PullRequestReviewComment"
+    ])
 }
 
 """
@@ -32188,9 +31610,7 @@ input UpdatePullRequestReviewInput {
   """
   The Node ID of the pull request review to modify.
   """
-  pullRequestReviewId: ID! @possibleTypes(
-    concreteTypes: ["PullRequestReview"]
-  )
+  pullRequestReviewId: ID! @possibleTypes(concreteTypes: ["PullRequestReview"])
 }
 
 """
@@ -32224,9 +31644,7 @@ input UpdateRefInput {
   """
   The Node ID of the Ref to be updated.
   """
-  refId: ID! @possibleTypes(
-    concreteTypes: ["Ref"]
-  )
+  refId: ID! @possibleTypes(concreteTypes: ["Ref"])
 }
 
 """
@@ -32240,9 +31658,7 @@ type UpdateRefPayload {
 """
 Autogenerated input type of UpdateRefs
 """
-input UpdateRefsInput @preview(
-  toggledBy: "update-refs-preview"
-) {
+input UpdateRefsInput @preview(toggledBy: "update-refs-preview") {
   
   """
   A unique identifier for the client performing the mutation.
@@ -32257,17 +31673,13 @@ input UpdateRefsInput @preview(
   """
   The Node ID of the repository.
   """
-  repositoryId: ID! @possibleTypes(
-    concreteTypes: ["Repository"]
-  )
+  repositoryId: ID! @possibleTypes(concreteTypes: ["Repository"])
 }
 
 """
 Autogenerated return type of UpdateRefs
 """
-type UpdateRefsPayload @preview(
-  toggledBy: "update-refs-preview"
-) {
+type UpdateRefsPayload @preview(toggledBy: "update-refs-preview") {
   clientMutationId: String
 }
 
@@ -32319,9 +31731,7 @@ input UpdateRepositoryInput {
   """
   The ID of the repository to update.
   """
-  repositoryId: ID! @possibleTypes(
-    concreteTypes: ["Repository"]
-  )
+  repositoryId: ID! @possibleTypes(concreteTypes: ["Repository"])
   
   """
   Whether this repository should be marked as a template such that anyone who
@@ -32371,9 +31781,7 @@ input UpdateRepositoryRulesetInput {
   """
   The global relay id of the repository ruleset to be updated.
   """
-  repositoryRulesetId: ID! @possibleTypes(
-    concreteTypes: ["RepositoryRuleset"]
-  )
+  repositoryRulesetId: ID! @possibleTypes(concreteTypes: ["RepositoryRuleset"])
   
   """
   The list of rules for this ruleset
@@ -32407,9 +31815,7 @@ input UpdateRepositoryWebCommitSignoffSettingInput {
   """
   The ID of the repository to update.
   """
-  repositoryId: ID! @possibleTypes(
-    concreteTypes: ["Repository"]
-  )
+  repositoryId: ID! @possibleTypes(concreteTypes: ["Repository"])
   
   """
   Indicates if the repository should require signoff on web-based commits.
@@ -32451,9 +31857,10 @@ input UpdateSponsorshipPreferencesInput {
   The ID of the user or organization who is acting as the sponsor, paying for
   the sponsorship. Required if sponsorLogin is not given.
   """
-  sponsorId: ID @possibleTypes(
-    concreteTypes: ["Organization", "User"], abstractType: "Sponsor"
-  )
+  sponsorId: ID @possibleTypes(concreteTypes: [
+      "Organization", "User"
+    ]
+    abstractType: "Sponsor")
   
   """
   The username of the user or organization who is acting as the sponsor, paying
@@ -32464,9 +31871,10 @@ input UpdateSponsorshipPreferencesInput {
   """
   The ID of the user or organization who is receiving the sponsorship. Required if sponsorableLogin is not given.
   """
-  sponsorableId: ID @possibleTypes(
-    concreteTypes: ["Organization", "User"], abstractType: "Sponsorable"
-  )
+  sponsorableId: ID @possibleTypes(concreteTypes: [
+      "Organization", "User"
+    ]
+    abstractType: "Sponsorable")
   
   """
   The username of the user or organization who is receiving the sponsorship. Required if sponsorableId is not given.
@@ -32500,8 +31908,7 @@ input UpdateSubscriptionInput {
   """
   The Node ID of the subscribable object to modify.
   """
-  subscribableId: ID! @possibleTypes(
-    concreteTypes: [
+  subscribableId: ID! @possibleTypes(concreteTypes: [
       "Commit",
       "Discussion",
       "Issue",
@@ -32510,8 +31917,7 @@ input UpdateSubscriptionInput {
       "Team",
       "TeamDiscussion"
     ]
-    abstractType: "Subscribable"
-  )
+    abstractType: "Subscribable")
 }
 
 """
@@ -32545,9 +31951,7 @@ input UpdateTeamDiscussionCommentInput {
   """
   The ID of the comment to modify.
   """
-  id: ID! @possibleTypes(
-    concreteTypes: ["TeamDiscussionComment"]
-  )
+  id: ID! @possibleTypes(concreteTypes: ["TeamDiscussionComment"])
 }
 
 """
@@ -32582,9 +31986,7 @@ input UpdateTeamDiscussionInput {
   """
   The Node ID of the discussion to modify.
   """
-  id: ID! @possibleTypes(
-    concreteTypes: ["TeamDiscussion"]
-  )
+  id: ID! @possibleTypes(concreteTypes: ["TeamDiscussion"])
   
   """
   If provided, sets the pinned state of the updated discussion.
@@ -32608,8 +32010,7 @@ type UpdateTeamDiscussionPayload {
 """
 Autogenerated input type of UpdateTeamReviewAssignment
 """
-input UpdateTeamReviewAssignmentInput @preview(
-  toggledBy: "stone-crop-preview"
+input UpdateTeamReviewAssignmentInput @preview(toggledBy: "stone-crop-preview"
 ) {
   
   """
@@ -32630,16 +32031,12 @@ input UpdateTeamReviewAssignmentInput @preview(
   """
   An array of team member IDs to exclude
   """
-  excludedTeamMemberIds: [ID!] @possibleTypes(
-    concreteTypes: ["User"]
-  )
+  excludedTeamMemberIds: [ID!] @possibleTypes(concreteTypes: ["User"])
   
   """
   The Node ID of the team to update review assignments of
   """
-  id: ID! @possibleTypes(
-    concreteTypes: ["Team"]
-  )
+  id: ID! @possibleTypes(concreteTypes: ["Team"])
   
   """
   Notify the entire team of the PR if it is delegated
@@ -32678,16 +32075,12 @@ input UpdateTeamsRepositoryInput {
   """
   Repository ID being granted access to.
   """
-  repositoryId: ID! @possibleTypes(
-    concreteTypes: ["Repository"]
-  )
+  repositoryId: ID! @possibleTypes(concreteTypes: ["Repository"])
   
   """
   A list of teams being granted access. Limit: 10
   """
-  teamIds: [ID!]! @possibleTypes(
-    concreteTypes: ["Team"]
-  )
+  teamIds: [ID!]! @possibleTypes(concreteTypes: ["Team"])
 }
 
 """
@@ -32712,9 +32105,7 @@ input UpdateTopicsInput {
   """
   The Node ID of the repository.
   """
-  repositoryId: ID! @possibleTypes(
-    concreteTypes: ["Repository"]
-  )
+  repositoryId: ID! @possibleTypes(concreteTypes: ["Repository"])
   
   """
   An array of topic names.
@@ -34190,9 +33581,7 @@ input VerifyVerifiableDomainInput {
   """
   The ID of the verifiable domain to verify.
   """
-  id: ID! @possibleTypes(
-    concreteTypes: ["VerifiableDomain"]
-  )
+  id: ID! @possibleTypes(concreteTypes: ["VerifiableDomain"])
 }
 
 """
