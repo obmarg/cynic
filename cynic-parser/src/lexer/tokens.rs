@@ -113,6 +113,9 @@ pub enum Token<'a> {
     #[token("scalar")]
     Scalar,
 
+    #[token("extend")]
+    Extend,
+
     #[token("directive")]
     Directive,
 
@@ -294,6 +297,7 @@ impl fmt::Display for Token<'_> {
             Token::Directive => "directive",
             Token::Repeatable => "repeatable",
             Token::On => "on",
+            Token::Extend => "extend",
         };
         f.write_str(message)
     }

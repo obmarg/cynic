@@ -27,27 +27,64 @@ impl super::Ast {
 impl Ast {
     pub fn definitions(&self) -> impl Iterator<Item = Definition<'_>> + '_ {
         self.definitions.iter().map(|definition| match definition {
-            ast::AstDefinition::Schema(id) => Definition::Schema(self.read(*id)),
-            ast::AstDefinition::Scalar(id) => Definition::Scalar(self.read(*id)),
-            ast::AstDefinition::Object(id) => Definition::Object(self.read(*id)),
-            ast::AstDefinition::Interface(id) => Definition::Interface(self.read(*id)),
-            ast::AstDefinition::Union(id) => Definition::Union(self.read(*id)),
-            ast::AstDefinition::Enum(id) => Definition::Enum(self.read(*id)),
-            ast::AstDefinition::InputObject(id) => Definition::InputObject(self.read(*id)),
+            ast::AstDefinition::Schema(id) => Definition::SchemaDefinition(self.read(*id)),
+            ast::AstDefinition::Scalar(id) => {
+                Definition::TypeDefinition(TypeDefinition::Scalar(self.read(*id)))
+            }
+            ast::AstDefinition::Object(id) => {
+                Definition::TypeDefinition(TypeDefinition::Object(self.read(*id)))
+            }
+            ast::AstDefinition::Interface(id) => {
+                Definition::TypeDefinition(TypeDefinition::Interface(self.read(*id)))
+            }
+            ast::AstDefinition::Union(id) => {
+                Definition::TypeDefinition(TypeDefinition::Union(self.read(*id)))
+            }
+            ast::AstDefinition::Enum(id) => {
+                Definition::TypeDefinition(TypeDefinition::Enum(self.read(*id)))
+            }
+            ast::AstDefinition::InputObject(id) => {
+                Definition::TypeDefinition(TypeDefinition::InputObject(self.read(*id)))
+            }
+            ast::AstDefinition::SchemaExtension(id) => Definition::SchemaExtension(self.read(*id)),
+            ast::AstDefinition::ScalarExtension(id) => {
+                Definition::TypeExtension(TypeDefinition::Scalar(self.read(*id)))
+            }
+            ast::AstDefinition::ObjectExtension(id) => {
+                Definition::TypeExtension(TypeDefinition::Object(self.read(*id)))
+            }
+            ast::AstDefinition::InterfaceExtension(id) => {
+                Definition::TypeExtension(TypeDefinition::Interface(self.read(*id)))
+            }
+            ast::AstDefinition::UnionExtension(id) => {
+                Definition::TypeExtension(TypeDefinition::Union(self.read(*id)))
+            }
+            ast::AstDefinition::EnumExtension(id) => {
+                Definition::TypeExtension(TypeDefinition::Enum(self.read(*id)))
+            }
+            ast::AstDefinition::InputObjectExtension(id) => {
+                Definition::TypeExtension(TypeDefinition::InputObject(self.read(*id)))
+            }
             ast::AstDefinition::Directive(id) => Definition::Directive(self.read(*id)),
         })
     }
 }
 
 pub enum Definition<'a> {
-    Schema(AstReader<'a, SchemaDefinitionId>),
+    SchemaDefinition(AstReader<'a, SchemaDefinitionId>),
+    SchemaExtension(AstReader<'a, SchemaDefinitionId>),
+    TypeDefinition(TypeDefinition<'a>),
+    TypeExtension(TypeDefinition<'a>),
+    Directive(AstReader<'a, DirectiveDefinitionId>),
+}
+
+pub enum TypeDefinition<'a> {
     Scalar(AstReader<'a, ScalarDefinitionId>),
     Object(AstReader<'a, ObjectDefinitionId>),
     Interface(AstReader<'a, InterfaceDefinitionId>),
     Union(AstReader<'a, UnionDefinitionId>),
     Enum(AstReader<'a, EnumDefinitionId>),
     InputObject(AstReader<'a, InputObjectDefinitionId>),
-    Directive(AstReader<'a, DirectiveDefinitionId>),
 }
 
 impl<'a> AstReader<'a, SchemaDefinitionId> {

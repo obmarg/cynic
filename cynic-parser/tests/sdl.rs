@@ -28,37 +28,31 @@ fn r#enum() {
 }
 
 #[test]
-#[ignore]
 fn extend_enum() {
     roundtrip_test("tests/sdl/extend_enum.graphql");
 }
 
 #[test]
-#[ignore]
 fn extend_input() {
-    roundtrip_test("tests/sdl/extend_input.graphql");
+    double_roundtrip_test("tests/sdl/extend_input.graphql");
 }
 
 #[test]
-#[ignore]
 fn extend_input_canonical() {
     roundtrip_test("tests/sdl/extend_input_canonical.graphql");
 }
 
 #[test]
-#[ignore]
 fn extend_interface() {
     roundtrip_test("tests/sdl/extend_interface.graphql");
 }
 
 #[test]
-#[ignore]
 fn extend_object() {
     roundtrip_test("tests/sdl/extend_object.graphql");
 }
 
 #[test]
-#[ignore]
 fn extend_scalar() {
     roundtrip_test("tests/sdl/extend_scalar.graphql");
 }
@@ -155,4 +149,21 @@ fn roundtrip_test(filename: &str) {
     let output = ast.to_sdl();
 
     assert_eq!(data, output);
+}
+
+fn double_roundtrip_test(filename: &str) {
+    // In some cases the file on disk is not the same as what we output
+    // but we still want to make sure we can parse it.
+    //
+    // For those cases we do a double roundtrip instead of just one
+    let data = std::fs::read_to_string(filename).unwrap();
+    let ast = cynic_parser::parse_type_system_document(&data);
+
+    let round_one_output = ast.to_sdl();
+
+    let ast = cynic_parser::parse_type_system_document(&round_one_output);
+
+    let round_two_output = ast.to_sdl();
+
+    assert_eq!(round_one_output, round_two_output);
 }

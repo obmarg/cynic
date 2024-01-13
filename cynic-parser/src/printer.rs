@@ -7,7 +7,7 @@ use crate::ast::{
         ObjectDefinitionId, ScalarDefinitionId, SchemaDefinitionId, TypeId, UnionDefinitionId,
         ValueId,
     },
-    AstReader, Definition,
+    AstReader, Definition, TypeDefinition,
 };
 
 impl crate::Ast {
@@ -17,13 +17,53 @@ impl crate::Ast {
         let builder = allocator
             .intersperse(
                 self.definitions().map(|definition| match definition {
-                    Definition::Schema(reader) => NodeDisplay(reader).pretty(&allocator),
-                    Definition::Scalar(reader) => NodeDisplay(reader).pretty(&allocator),
-                    Definition::Object(reader) => NodeDisplay(reader).pretty(&allocator),
-                    Definition::Interface(reader) => NodeDisplay(reader).pretty(&allocator),
-                    Definition::Union(reader) => NodeDisplay(reader).pretty(&allocator),
-                    Definition::Enum(reader) => NodeDisplay(reader).pretty(&allocator),
-                    Definition::InputObject(reader) => NodeDisplay(reader).pretty(&allocator),
+                    Definition::SchemaDefinition(reader) => NodeDisplay(reader).pretty(&allocator),
+                    Definition::SchemaExtension(reader) => allocator
+                        .text("extend")
+                        .append(allocator.space())
+                        .append(NodeDisplay(reader).pretty(&allocator)),
+                    Definition::TypeDefinition(TypeDefinition::Scalar(reader)) => {
+                        NodeDisplay(reader).pretty(&allocator)
+                    }
+                    Definition::TypeDefinition(TypeDefinition::Object(reader)) => {
+                        NodeDisplay(reader).pretty(&allocator)
+                    }
+                    Definition::TypeDefinition(TypeDefinition::Interface(reader)) => {
+                        NodeDisplay(reader).pretty(&allocator)
+                    }
+                    Definition::TypeDefinition(TypeDefinition::Union(reader)) => {
+                        NodeDisplay(reader).pretty(&allocator)
+                    }
+                    Definition::TypeDefinition(TypeDefinition::Enum(reader)) => {
+                        NodeDisplay(reader).pretty(&allocator)
+                    }
+                    Definition::TypeDefinition(TypeDefinition::InputObject(reader)) => {
+                        NodeDisplay(reader).pretty(&allocator)
+                    }
+                    Definition::TypeExtension(TypeDefinition::Scalar(reader)) => allocator
+                        .text("extend")
+                        .append(allocator.space())
+                        .append(NodeDisplay(reader).pretty(&allocator)),
+                    Definition::TypeExtension(TypeDefinition::Object(reader)) => allocator
+                        .text("extend")
+                        .append(allocator.space())
+                        .append(NodeDisplay(reader).pretty(&allocator)),
+                    Definition::TypeExtension(TypeDefinition::Interface(reader)) => allocator
+                        .text("extend")
+                        .append(allocator.space())
+                        .append(NodeDisplay(reader).pretty(&allocator)),
+                    Definition::TypeExtension(TypeDefinition::Union(reader)) => allocator
+                        .text("extend")
+                        .append(allocator.space())
+                        .append(NodeDisplay(reader).pretty(&allocator)),
+                    Definition::TypeExtension(TypeDefinition::Enum(reader)) => allocator
+                        .text("extend")
+                        .append(allocator.space())
+                        .append(NodeDisplay(reader).pretty(&allocator)),
+                    Definition::TypeExtension(TypeDefinition::InputObject(reader)) => allocator
+                        .text("extend")
+                        .append(allocator.space())
+                        .append(NodeDisplay(reader).pretty(&allocator)),
                     Definition::Directive(reader) => NodeDisplay(reader).pretty(&allocator),
                 }),
                 allocator.concat([allocator.hardline(), allocator.hardline()]),
