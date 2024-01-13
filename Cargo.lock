@@ -1067,6 +1067,7 @@ dependencies = [
  "assert_matches",
  "counter",
  "criterion",
+ "cynic-parser",
  "darling",
  "graphql-parser",
  "insta",

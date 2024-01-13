@@ -15,8 +15,10 @@ pub type ScalarType = graphql_parser::schema::ScalarType<'static, String>;
 pub type InputValue = graphql_parser::schema::InputValue<'static, String>;
 
 /// Loads a schema from a string
-pub fn load_schema(sdl: &str) -> Result<Document, SchemaLoadError> {
-    Ok(add_typenames(parse_schema(sdl)?))
+pub fn load_schema(sdl: &str) -> Result<(Document, cynic_parser::Ast), SchemaLoadError> {
+    let document = parse_schema(sdl)?;
+    let ast = cynic_parser::parse_type_system_document(&sdl);
+    Ok((add_typenames(document), ast))
 }
 
 fn add_typenames(mut schema: Document) -> Document {

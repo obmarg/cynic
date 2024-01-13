@@ -15,6 +15,7 @@ use crate::schema::{
 
 #[ouroboros::self_referencing]
 pub struct SchemaBackedTypeIndex {
+    ast: cynic_parser::Ast,
     document: Document,
     query_root: String,
     mutation_root: Option<String>,
@@ -25,7 +26,7 @@ pub struct SchemaBackedTypeIndex {
 }
 
 impl SchemaBackedTypeIndex {
-    pub fn for_schema(document: Document) -> Self {
+    pub fn for_schema(document: Document, ast: cynic_parser::Ast) -> Self {
         let mut query_root = "Query".to_string();
         let mut mutation_root = None;
         let mut subscription_root = None;
@@ -42,6 +43,7 @@ impl SchemaBackedTypeIndex {
         }
 
         SchemaBackedTypeIndex::new(
+            todo!(),
             document,
             query_root,
             mutation_root,
@@ -389,7 +391,8 @@ mod tests {
     fn test_schema_validation_on_good_schemas(#[case] schema_file: &'static str) {
         let schema = fs::read_to_string(PathBuf::from("../schemas/").join(schema_file)).unwrap();
         let document = parser::parse_schema(&schema).unwrap();
-        let index = SchemaBackedTypeIndex::for_schema(document);
+        let ast = cynic_parser::parse_type_system_document(&schema);
+        let index = SchemaBackedTypeIndex::for_schema(document, ast);
         index.validate_all().unwrap();
     }
 

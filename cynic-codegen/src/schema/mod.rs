@@ -32,8 +32,8 @@ pub struct Schema<'a, State> {
 impl<'a> Schema<'a, Unvalidated> {
     pub fn new(input: SchemaInput) -> Self {
         let type_index: Box<dyn TypeIndex> = match input {
-            SchemaInput::Document(document) => {
-                Box::new(type_index::SchemaBackedTypeIndex::for_schema(document))
+            SchemaInput::Document(document, ast) => {
+                Box::new(type_index::SchemaBackedTypeIndex::for_schema(document, ast))
             }
             #[cfg(feature = "rkyv")]
             SchemaInput::Archive(data) => Box::new(
