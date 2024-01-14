@@ -10,8 +10,9 @@ impl<'a> Type<'a> {
         self.0.ast.lookup(self.0.ast.lookup(self.0.id).name)
     }
 
+    /// The wrapper types from the outermost to innermost
     pub fn wrappers(&self) -> impl Iterator<Item = crate::ast::WrappingType> + 'a {
-        self.0.ast.lookup(self.0.id).wrappers.iter().copied()
+        self.0.ast.lookup(self.0.id).wrappers.iter().copied().rev()
     }
 }
 
