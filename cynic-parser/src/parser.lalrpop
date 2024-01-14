@@ -125,7 +125,7 @@ ArgumentsDefinition: Vec<InputValueDefinitionId> = {
     "(" <arguments:InputValueDefinition+> ")" => arguments,
 };
 
-pub InterfaceDefinition: InterfaceDefinition = {
+InterfaceDefinition: InterfaceDefinition = {
     <start:@L> interface
         <name:Name>
         <implements:ImplementsInterfaces?>
