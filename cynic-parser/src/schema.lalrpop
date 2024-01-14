@@ -1,8 +1,8 @@
 use crate::lexer;
 
-use crate::ast::{*, ids::*};
+use crate::ast::{storage::*, ids::*, writer::AstWriter, *};
 
-grammar<'input>(input: &'input str, ast: &mut AstBuilder);
+grammar<'input>(input: &'input str, ast: &mut AstWriter);
 
 pub TypeSystemDocument: () = {
     <defs:DefinitionAndDescription+> => {}

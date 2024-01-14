@@ -1,16 +1,6 @@
-use std::alloc::alloc;
-
 use pretty::{BoxAllocator, DocAllocator, Pretty};
 
-use crate::ast::{
-    ids::{
-        ArgumentId, DirectiveDefinitionId, DirectiveId, EnumDefinitionId, EnumValueDefinitionId,
-        FieldDefinitionId, InputObjectDefinitionId, InputValueDefinitionId, InterfaceDefinitionId,
-        ObjectDefinitionId, ScalarDefinitionId, SchemaDefinitionId, TypeId, UnionDefinitionId,
-        ValueId,
-    },
-    AstReader, Definition, TypeDefinition,
-};
+use crate::ast::{readers::*, Definition, TypeDefinition};
 
 impl crate::Ast {
     pub fn to_sdl(&self) -> String {
@@ -79,9 +69,9 @@ impl crate::Ast {
     }
 }
 
-pub struct NodeDisplay<'a, T>(AstReader<'a, T>);
+pub struct NodeDisplay<T>(T);
 
-impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, SchemaDefinitionId> {
+impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<SchemaDefinition<'a>> {
     fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
         let mut builder = allocator.nil();
 
@@ -118,7 +108,7 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, SchemaDefinitionId> {
     }
 }
 
-impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, ScalarDefinitionId> {
+impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<ScalarDefinition<'a>> {
     fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
         let mut builder = allocator.nil();
 
@@ -142,7 +132,7 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, ScalarDefinitionId> {
     }
 }
 
-impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, ObjectDefinitionId> {
+impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<ObjectDefinition<'a>> {
     fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
         let mut builder = allocator.nil();
 
@@ -191,7 +181,7 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, ObjectDefinitionId> {
     }
 }
 
-impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, FieldDefinitionId> {
+impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<FieldDefinition<'a>> {
     fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
         let mut arguments_pretty = allocator.nil();
 
@@ -227,7 +217,7 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, FieldDefinitionId> {
     }
 }
 
-impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, InterfaceDefinitionId> {
+impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<InterfaceDefinition<'a>> {
     fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
         let mut builder = allocator.nil();
 
@@ -275,7 +265,7 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, InterfaceDefinitionId> {
     }
 }
 
-impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, UnionDefinitionId> {
+impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<UnionDefinition<'a>> {
     fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
         let mut builder = allocator.nil();
 
@@ -314,7 +304,7 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, UnionDefinitionId> {
     }
 }
 
-impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, EnumDefinitionId> {
+impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<EnumDefinition<'a>> {
     fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
         let mut builder = allocator.nil();
 
@@ -354,7 +344,7 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, EnumDefinitionId> {
     }
 }
 
-impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, EnumValueDefinitionId> {
+impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<EnumValueDefinition<'a>> {
     fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
         let mut builder = allocator.text(self.0.value().to_string());
 
@@ -369,7 +359,7 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, EnumValueDefinitionId> {
     }
 }
 
-impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, InputObjectDefinitionId> {
+impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<InputObjectDefinition<'a>> {
     fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
         let mut builder = allocator.nil();
 
@@ -405,7 +395,7 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, InputObjectDefinitionId> {
     }
 }
 
-impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, InputValueDefinitionId> {
+impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<InputValueDefinition<'a>> {
     fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
         let description = self
             .0
@@ -445,7 +435,7 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, InputValueDefinitionId> {
     }
 }
 
-impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, DirectiveDefinitionId> {
+impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<DirectiveDefinition<'a>> {
     fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
         let mut builder = allocator.nil();
 
@@ -489,13 +479,13 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, DirectiveDefinitionId> {
     }
 }
 
-impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, TypeId> {
+impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<Type<'a>> {
     fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
         allocator.text(self.0.to_string())
     }
 }
 
-impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, DirectiveId> {
+impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<Directive<'a>> {
     fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
         let mut builder = allocator.text(format!("@{}", self.0.name()));
 
@@ -514,7 +504,7 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, DirectiveId> {
     }
 }
 
-impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, ArgumentId> {
+impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<Argument<'a>> {
     fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
         allocator
             .text(self.0.name().to_string())
@@ -524,9 +514,9 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, ArgumentId> {
     }
 }
 
-impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<'a, ValueId> {
+impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<ValueReader<'a>> {
     fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
-        match self.0.value() {
+        match self.0 {
             crate::ast::ValueReader::Variable(name) => allocator.text(format!("${name}")),
             crate::ast::ValueReader::Int(value) => allocator.text(format!("{value}")),
             crate::ast::ValueReader::Float(value) => allocator.text(format!("{value}")),

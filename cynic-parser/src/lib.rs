@@ -4,16 +4,17 @@ mod ast;
 mod lexer;
 mod printer;
 
-pub use lexer::Lexer;
+// TODO: Rethink WrappingType, OperationType & DirectiveLocation & Span at least?
+pub use self::ast::{
+    ids, readers, storage, writer::AstWriter, Ast, DirectiveLocation, OperationType, Span,
+    WrappingType,
+};
 
-// TODO: Make this more senseible
-pub use ast::{Ast, AstBuilder};
-
-lalrpop_mod!(pub schema);
+lalrpop_mod!(schema);
 
 pub fn parse_type_system_document(input: &str) -> Ast {
     let lexer = lexer::Lexer::new(input);
-    let mut ast = AstBuilder::new();
+    let mut ast = AstWriter::new();
 
     schema::TypeSystemDocumentParser::new()
         .parse(input, &mut ast, lexer)
