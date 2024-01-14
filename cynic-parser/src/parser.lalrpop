@@ -79,7 +79,7 @@ ObjectDefinition: ObjectDefinition = {
         description: None,
         directives,
         implements: implements.unwrap_or_default(),
-        fields: fields.unwrap_or_default(),
+        fields: ast.field_range(),
         span: Span::new(start,end)
     }
 };
@@ -99,18 +99,18 @@ ImplementItem: StringId = {
     "&" <name:NamedType> => name,
 }
 
-FieldsDefinition: Vec<FieldDefinitionId> = {
+FieldsDefinition: Vec<()> = {
     "{" <fields:FieldDefinition+> "}" => fields
 };
 
-FieldDefinition: FieldDefinitionId = {
+FieldDefinition: () = {
     <start:@L>
         <description:StringValue?>
         <name:Name>
         <arguments:ArgumentsDefinition?> ":" <ty:Type>
         <directives:Directive*>
         <end:@R>
-    =>
+    => {
         ast.field_definition(FieldDefinition {
             name,
             ty,
@@ -118,7 +118,8 @@ FieldDefinition: FieldDefinitionId = {
             description,
             directives,
             span: Span::new(start,end)
-        })
+        });
+    }
 };
 
 ArgumentsDefinition: Vec<InputValueDefinitionId> = {
@@ -137,7 +138,7 @@ InterfaceDefinition: InterfaceDefinition = {
         description: None,
         directives,
         implements: implements.unwrap_or_default(),
-        fields: fields.unwrap_or_default(),
+        fields: ast.field_range(),
         span: Span::new(start,end)
     }
 };

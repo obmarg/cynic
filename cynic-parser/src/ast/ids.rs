@@ -10,6 +10,19 @@ use super::{
 };
 use crate::Ast;
 
+#[derive(Clone, Copy)]
+/// A half open range of Ids.
+pub struct IdRange<Id> {
+    start: Id,
+    end: Id,
+}
+
+impl<Id> IdRange<Id> {
+    pub fn new(start: Id, end: Id) -> Self {
+        IdRange { start, end }
+    }
+}
+
 macro_rules! make_id {
     ($name:ident, $output:ident, $field:ident) => {
         #[derive(Clone, Copy)]
@@ -33,6 +46,13 @@ macro_rules! make_id {
 
             fn lookup_mut(&mut self, index: $name) -> &mut Self::Output {
                 &mut self.$field[(index.0.get() - 1) as usize]
+            }
+        }
+
+        impl IdRange<$name> {
+            pub fn iter(&self) -> impl Iterator<Item = $name> {
+                (self.start.0.get()..self.end.0.get())
+                    .map(|num| $name(NonZeroU32::new(num).expect("range is too large")))
             }
         }
     };

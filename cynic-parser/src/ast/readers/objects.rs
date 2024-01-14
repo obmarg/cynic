@@ -30,7 +30,7 @@ impl<'a> ObjectDefinition<'a> {
     pub fn fields(&self) -> impl Iterator<Item = FieldDefinition<'a>> + 'a {
         let ast = &self.0.ast;
 
-        ast.lookup(self.0.id).fields.iter().map(|id| ast.read(*id))
+        ast.lookup(self.0.id).fields.iter().map(|id| ast.read(id))
     }
 
     pub fn directives(&self) -> impl Iterator<Item = Directive<'a>> + 'a {

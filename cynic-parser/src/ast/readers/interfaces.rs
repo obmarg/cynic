@@ -33,7 +33,7 @@ impl<'a> InterfaceDefinition<'a> {
             .lookup(self.0.id)
             .fields
             .iter()
-            .map(|id| self.0.ast.read(*id))
+            .map(|id| self.0.ast.read(id))
     }
 
     pub fn directives(&self) -> impl Iterator<Item = Directive<'a>> + 'a {

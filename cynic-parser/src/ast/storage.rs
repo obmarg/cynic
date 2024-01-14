@@ -15,7 +15,8 @@ pub struct ScalarDefinition {
 pub struct ObjectDefinition {
     pub name: StringId,
     pub description: Option<StringId>,
-    pub fields: Vec<FieldDefinitionId>,
+    pub fields: IdRange<FieldDefinitionId>,
+    // pub fields: Vec<FieldDefinitionId>,
     pub directives: Vec<DirectiveId>,
     pub implements: Vec<StringId>,
     pub span: Span,
@@ -33,7 +34,8 @@ pub struct FieldDefinition {
 pub struct InterfaceDefinition {
     pub name: StringId,
     pub description: Option<StringId>,
-    pub fields: Vec<FieldDefinitionId>,
+    pub fields: IdRange<FieldDefinitionId>,
+    // pub fields: Vec<FieldDefinitionId>,
     pub directives: Vec<DirectiveId>,
     pub implements: Vec<StringId>,
     pub span: Span,

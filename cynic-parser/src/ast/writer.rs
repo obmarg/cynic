@@ -3,9 +3,9 @@ use crate::ids::StringId;
 use super::{ids::*, storage::*, AstLookup};
 use super::{Ast, AstDefinition};
 
-#[derive(Default)]
 pub struct AstWriter {
     ast: Ast,
+    field_id_cursor: FieldDefinitionId,
 }
 
 // TODO: Don't forget the spans etc.
@@ -13,14 +13,19 @@ impl AstWriter {
     pub fn new() -> Self {
         AstWriter {
             ast: Default::default(),
+            field_id_cursor: FieldDefinitionId::new(0),
         }
     }
 
     pub fn update(ast: Ast) -> Self {
-        AstWriter { ast }
+        AstWriter {
+            field_id_cursor: FieldDefinitionId::new(ast.field_definitions.len()),
+            ast,
+        }
     }
 
     pub fn finish(self) -> Ast {
+        // TODO: Possibly assert things in here for safety...
         self.ast
     }
 
@@ -97,6 +102,8 @@ impl AstWriter {
     }
 
     pub fn object_definition(&mut self, definition: ObjectDefinition) -> DefinitionId {
+        // TODO: Maybe assert in here too?
+
         let id = ObjectDefinitionId::new(self.ast.object_definitions.len());
         self.ast.object_definitions.push(definition);
 
@@ -111,6 +118,16 @@ impl AstWriter {
         self.ast.field_definitions.push(definition);
 
         definition_id
+    }
+
+    pub fn field_range(&mut self) -> IdRange<FieldDefinitionId> {
+        // TODO: Could pass in the expected count here to make sure
+        // we've not fucked up?
+        let start = self.field_id_cursor;
+        let end = FieldDefinitionId::new(self.ast.field_definitions.len());
+        self.field_id_cursor = end;
+
+        IdRange::new(start, end)
     }
 
     pub fn interface_definition(&mut self, definition: InterfaceDefinition) -> DefinitionId {
@@ -302,5 +319,11 @@ impl AstWriter {
     pub fn intern_string(&mut self, string: &str) -> StringId {
         let (id, _) = self.ast.strings.insert_full(string.into());
         StringId::new(id)
+    }
+}
+
+impl Default for AstWriter {
+    fn default() -> Self {
+        Self::new()
     }
 }
