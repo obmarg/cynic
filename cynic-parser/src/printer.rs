@@ -574,9 +574,3 @@ fn brackets_and_maybe_indent(
 ) -> pretty::DocBuilder<'_, BoxAllocator> {
     thing.clone().nest(2).brackets().flat_alt(thing.brackets())
 }
-
-fn braces_and_maybe_indent(
-    thing: pretty::DocBuilder<'_, BoxAllocator>,
-) -> pretty::DocBuilder<'_, BoxAllocator> {
-    thing.clone().nest(2).braces().flat_alt(thing.braces())
-}
