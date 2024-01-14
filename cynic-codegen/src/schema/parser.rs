@@ -1,43 +1,7 @@
-// TODO: It would be good to make these use &'str since this is compile time
-// and max speed is best.
-
-// TODO: It would be good to make these use &'str since this is compile time
-// and max speed is best.
-
-// Alias all the graphql_parser schema types so we don't have to specify generic parameters
-// everywhere
-pub type Document = graphql_parser::schema::Document<'static, String>;
-pub type Type = graphql_parser::schema::Type<'static, String>;
-pub type Field = graphql_parser::schema::Field<'static, String>;
-pub type Definition = graphql_parser::schema::Definition<'static, String>;
-pub type TypeDefinition = graphql_parser::schema::TypeDefinition<'static, String>;
-pub type ScalarType = graphql_parser::schema::ScalarType<'static, String>;
-pub type InputValue = graphql_parser::schema::InputValue<'static, String>;
-
 /// Loads a schema from a string
-pub fn load_schema(sdl: &str) -> Result<(Document, cynic_parser::Ast), SchemaLoadError> {
-    let document = parse_schema(sdl)?;
-    let ast = cynic_parser::parse_type_system_document(&sdl);
-    Ok((add_typenames(document), ast))
-}
-
-fn add_typenames(mut schema: Document) -> Document {
-    for definition in &mut schema.definitions {
-        match definition {
-            Definition::TypeDefinition(TypeDefinition::Object(def)) => {
-                def.fields.push(typename_field());
-            }
-            Definition::TypeDefinition(TypeDefinition::Interface(def)) => {
-                def.fields.push(typename_field());
-            }
-            _ => {}
-        }
-    }
-    schema
-}
-
-pub(crate) fn parse_schema(schema: &str) -> Result<Document, SchemaLoadError> {
-    Ok(graphql_parser::schema::parse_schema::<String>(schema)?.into_static())
+pub fn load_schema(sdl: &str) -> Result<cynic_parser::Ast, SchemaLoadError> {
+    let ast = cynic_parser::parse_type_system_document(sdl);
+    Ok(ast)
 }
 
 #[derive(Debug, PartialEq, Eq, Clone)]
@@ -87,50 +51,8 @@ impl std::fmt::Display for SchemaLoadError {
 const SCHEMA_DOCUMENTATION_TEXT: &str =
     "See the cynic documentation on regsistering schemas if you need help.";
 
-impl From<graphql_parser::schema::ParseError> for SchemaLoadError {
-    fn from(e: graphql_parser::schema::ParseError) -> SchemaLoadError {
-        SchemaLoadError::ParseError(e.to_string())
-    }
-}
-
 impl From<std::io::Error> for SchemaLoadError {
     fn from(e: std::io::Error) -> SchemaLoadError {
         SchemaLoadError::IoError(e.to_string())
-    }
-}
-
-/// Extension trait for the schema Type type
-pub trait TypeExt {
-    fn inner_name(&self) -> &str;
-}
-
-impl TypeExt for Type {
-    fn inner_name(&self) -> &str {
-        match self {
-            Type::NamedType(s) => s,
-            Type::ListType(inner) => inner.inner_name(),
-            Type::NonNullType(inner) => inner.inner_name(),
-        }
-    }
-}
-
-pub trait ScalarTypeExt {
-    fn is_builtin(&self) -> bool;
-}
-
-impl ScalarTypeExt for ScalarType {
-    fn is_builtin(&self) -> bool {
-        matches!(self.name.as_ref(), "String" | "Int" | "Boolean" | "ID")
-    }
-}
-
-fn typename_field() -> Field {
-    Field {
-        position: graphql_parser::Pos { line: 0, column: 0 },
-        description: None,
-        name: "__typename".into(),
-        arguments: vec![],
-        field_type: Type::NonNullType(Box::new(Type::NamedType("String".into()))),
-        directives: vec![],
     }
 }

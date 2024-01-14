@@ -178,12 +178,10 @@ impl SchemaRegistration<'_> {
 
     fn schema(&self) -> Result<&Schema<'_, schema::Validated>, SchemaRegistrationError> {
         self.schema.get_or_try_init(|| {
-            let (document, ast) = crate::schema::load_schema(self.data.as_ref())
+            let ast = crate::schema::load_schema(self.data.as_ref())
                 .map_err(|error| SchemaRegistrationError::SchemaErrors(error.to_string()))?;
 
-            let document = document.into_static();
-
-            let schema = Schema::new(SchemaInput::Document(document, ast))
+            let schema = Schema::new(SchemaInput::Document(ast))
                 .validate()
                 .map_err(|errors| SchemaRegistrationError::SchemaErrors(errors.to_string()))?;
 

@@ -10,17 +10,11 @@ use cynic_parser::{
     WrappingType,
 };
 
-use crate::schema::{
-    names::FieldName,
-    parser::{self, Document, TypeExt},
-    types::*,
-    SchemaError,
-};
+use crate::schema::{names::FieldName, types::*, SchemaError};
 
 #[ouroboros::self_referencing]
 pub struct SchemaBackedTypeIndex {
     ast: cynic_parser::Ast,
-    document: Document,
     query_root: String,
     mutation_root: Option<String>,
     subscription_root: Option<String>,
@@ -31,18 +25,18 @@ pub struct SchemaBackedTypeIndex {
 }
 
 impl SchemaBackedTypeIndex {
-    pub fn for_schema(document: Document, ast: cynic_parser::Ast) -> Self {
+    pub fn for_schema(ast: cynic_parser::Ast) -> Self {
         let mut query_root = "Query".to_string();
         let mut mutation_root = None;
         let mut subscription_root = None;
 
-        for definition in &document.definitions {
-            if let graphql_parser::schema::Definition::SchemaDefinition(schema) = definition {
-                if let Some(query_type) = &schema.query {
-                    query_root = query_type.clone();
+        for definition in ast.definitions() {
+            if let Definition::Schema(schema) = definition {
+                if let Some(query_type) = schema.query_type() {
+                    query_root = query_type.to_owned();
                 }
-                mutation_root = schema.mutation.clone();
-                subscription_root = schema.subscription.clone();
+                mutation_root = schema.mutation_type().map(ToOwned::to_owned);
+                subscription_root = schema.subscription_type().map(ToOwned::to_owned);
                 break;
             }
         }
@@ -75,7 +69,6 @@ impl SchemaBackedTypeIndex {
 
         SchemaBackedTypeIndex::new(
             ast,
-            document,
             query_root,
             mutation_root,
             subscription_root,
@@ -406,9 +399,8 @@ mod tests {
     #[case::github("github.graphql")]
     fn test_schema_validation_on_good_schemas(#[case] schema_file: &'static str) {
         let schema = fs::read_to_string(PathBuf::from("../schemas/").join(schema_file)).unwrap();
-        let document = parser::parse_schema(&schema).unwrap();
         let ast = cynic_parser::parse_type_system_document(&schema);
-        let index = SchemaBackedTypeIndex::for_schema(document, ast);
+        let index = SchemaBackedTypeIndex::for_schema(ast);
         index.validate_all().unwrap();
     }
 

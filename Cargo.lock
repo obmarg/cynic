@@ -1069,7 +1069,6 @@ dependencies = [
  "criterion",
  "cynic-parser",
  "darling",
- "graphql-parser",
  "insta",
  "maplit",
  "once_cell",
