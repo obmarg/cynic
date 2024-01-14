@@ -1,5 +1,5 @@
 // auto-generated: "lalrpop 0.20.0"
-// sha3: 9ab7220527eebf40ea8d1cf00b2715217873253b78a7e6f3027b808292ff4bfc
+// sha3: 018ef05dd9c6352d9bbb1dbfcf9d5cb85875d146cd7993af23eb17037164cdec
 use crate::ast::{ids::*, storage::*, writer::AstWriter, *};
 use crate::lexer;
 #[allow(unused_extern_crates)]
@@ -1324,14 +1324,14 @@ mod __parse__TypeSystemDocument {
         }).collect()
     }
     pub(crate) struct __StateMachine<'input, '__1>
-    where 
+    where
     {
         input: &'input str,
         ast: &'__1 mut AstWriter,
         __phantom: core::marker::PhantomData<(&'input ())>,
     }
     impl<'input, '__1> __state_machine::ParserDefinition for __StateMachine<'input, '__1>
-    where 
+    where
     {
         type Location = usize;
         type Error = lexer::LexicalError;
@@ -8678,7 +8678,10 @@ fn __action49<'input>(
     (_, name, _): (usize, StringId, usize),
     (_, wrappers, _): (usize, alloc::vec::Vec<WrappingType>, usize),
 ) -> TypeId {
-    ast.type_reference(Type { name, wrappers })
+    ast.type_reference(Type {
+        name,
+        wrappers: TypeWrappers::from_iter(wrappers),
+    })
 }
 
 #[allow(unused_variables)]

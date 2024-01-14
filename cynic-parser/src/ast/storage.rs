@@ -95,7 +95,7 @@ pub struct RootOperationTypeDefinition {
 
 pub struct Type {
     pub name: StringId,
-    pub wrappers: Vec<WrappingType>,
+    pub wrappers: TypeWrappers,
 }
 
 pub enum StringLiteral {
@@ -128,8 +128,9 @@ pub enum Value {
 /// GraphQL wrappers encoded into a single u32
 ///
 /// Bit 0: Whether the inner type is null
-/// Bit 1..5: Number of list wrappers
-/// Bits 5..32: List wrappers, where 0 is nullable 1 is non-null
+/// Bits 1..5: Number of list wrappers
+/// Bits 5..21: List wrappers, where 0 is nullable 1 is non-null
+/// The rest: dead bits
 #[derive(Debug)]
 pub struct TypeWrappers(u32);
 
@@ -143,17 +144,18 @@ impl TypeWrappers {
     }
 
     pub fn wrap_list(&self) -> Self {
-        let current_wrappers = (self.0 & NUM_LISTS_MASK) >> 1;
+        let current_wrappers = self.num_list_wrappers();
+
         let new_wrappers = current_wrappers + 1;
-        assert!(new_wrappers < 16);
+        assert!(new_wrappers < 16, "list wrapper overflow");
 
         Self((new_wrappers << 1) | (self.0 & NON_NUM_LISTS_MASK))
     }
 
     pub fn wrap_non_null(&self) -> Self {
-        let index = (self.0 & NUM_LISTS_MASK) >> 1;
+        let index = self.num_list_wrappers();
         if index == 0 {
-            return Self(1);
+            return Self(INNER_NULLABILITY_MASK);
         }
 
         let new = self.0 | (1 << (4 + index));
@@ -162,13 +164,28 @@ impl TypeWrappers {
     }
 
     pub fn iter(&self) -> TypeWrappersIter {
-        let current_wrappers = (self.0 & NUM_LISTS_MASK) >> 1;
+        let current_wrappers = self.num_list_wrappers();
         TypeWrappersIter {
             encoded: self.0,
             mask: (1 << (4 + current_wrappers)),
             next: None,
-            last: ((1 & self.0) == 1).then_some(WrappingType::NonNull),
+            last: ((INNER_NULLABILITY_MASK & self.0) == INNER_NULLABILITY_MASK)
+                .then_some(WrappingType::NonNull),
         }
+    }
+
+    fn num_list_wrappers(&self) -> u32 {
+        (self.0 & NUM_LISTS_MASK) >> 1
+    }
+}
+
+impl FromIterator<WrappingType> for TypeWrappers {
+    fn from_iter<T: IntoIterator<Item = WrappingType>>(iter: T) -> Self {
+        iter.into_iter()
+            .fold(TypeWrappers::none(), |wrappers, wrapping| match wrapping {
+                WrappingType::NonNull => wrappers.wrap_non_null(),
+                WrappingType::List => wrappers.wrap_list(),
+            })
     }
 }
 
