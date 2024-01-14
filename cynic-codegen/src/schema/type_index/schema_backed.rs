@@ -474,6 +474,23 @@ mod tests {
         );
     }
 
+    #[test]
+    fn test_build_type_ref_option_list_of_required() {
+        let ast = ast_for_type("[User!]");
+        let optional_list = extract_type(&ast);
+
+        assert_matches!(
+            build_type_ref::<InputType<'_>>(optional_list),
+            TypeRef::Nullable(inner) => {
+                assert_matches!(*inner, TypeRef::List(inner) => {
+                    assert_matches!(*inner, TypeRef::Named(name, _) => {
+                        assert_eq!(name, "User")
+                    })
+                })
+            }
+        );
+    }
+
     fn ast_for_type(sdl_ty: &str) -> cynic_parser::Ast {
         cynic_parser::parse_type_system_document(&format!("type Blah {{ foo: {sdl_ty} }}"))
     }
