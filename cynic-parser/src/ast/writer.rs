@@ -28,116 +28,116 @@ impl AstWriter {
         if let Some(description) = description {
             match *self.ast.lookup(definition) {
                 AstDefinition::Schema(id) => {
-                    self.ast.schema_definitions[id.0].description = Some(description);
+                    self.ast.lookup_mut(id).description = Some(description);
                 }
                 AstDefinition::Scalar(id) => {
-                    self.ast.scalar_definitions[id.0].description = Some(description);
+                    self.ast.lookup_mut(id).description = Some(description);
                 }
                 AstDefinition::Object(id) => {
-                    self.ast.object_definitions[id.0].description = Some(description);
+                    self.ast.lookup_mut(id).description = Some(description);
                 }
                 AstDefinition::Interface(id) => {
-                    self.ast.interface_definitions[id.0].description = Some(description);
+                    self.ast.lookup_mut(id).description = Some(description);
                 }
                 AstDefinition::Union(id) => {
-                    self.ast.union_definitions[id.0].description = Some(description);
+                    self.ast.lookup_mut(id).description = Some(description);
                 }
                 AstDefinition::Enum(id) => {
-                    self.ast.enum_definitions[id.0].description = Some(description);
+                    self.ast.lookup_mut(id).description = Some(description);
                 }
                 AstDefinition::InputObject(id) => {
-                    self.ast.input_object_definitions[id.0].description = Some(description);
+                    self.ast.lookup_mut(id).description = Some(description);
                 }
                 AstDefinition::SchemaExtension(id) => {
-                    self.ast.schema_definitions[id.0].description = Some(description);
+                    self.ast.lookup_mut(id).description = Some(description);
                 }
                 AstDefinition::ScalarExtension(id) => {
-                    self.ast.scalar_definitions[id.0].description = Some(description);
+                    self.ast.lookup_mut(id).description = Some(description);
                 }
                 AstDefinition::ObjectExtension(id) => {
-                    self.ast.object_definitions[id.0].description = Some(description);
+                    self.ast.lookup_mut(id).description = Some(description);
                 }
                 AstDefinition::InterfaceExtension(id) => {
-                    self.ast.interface_definitions[id.0].description = Some(description);
+                    self.ast.lookup_mut(id).description = Some(description);
                 }
                 AstDefinition::UnionExtension(id) => {
-                    self.ast.union_definitions[id.0].description = Some(description);
+                    self.ast.lookup_mut(id).description = Some(description);
                 }
                 AstDefinition::EnumExtension(id) => {
-                    self.ast.enum_definitions[id.0].description = Some(description);
+                    self.ast.lookup_mut(id).description = Some(description);
                 }
                 AstDefinition::InputObjectExtension(id) => {
-                    self.ast.input_object_definitions[id.0].description = Some(description);
+                    self.ast.lookup_mut(id).description = Some(description);
                 }
                 AstDefinition::Directive(id) => {
-                    self.ast.directive_definitions[id.0].description = Some(description);
+                    self.ast.lookup_mut(id).description = Some(description);
                 }
             }
         }
     }
 
     pub fn schema_definition(&mut self, definition: SchemaDefinition) -> DefinitionId {
-        let id = SchemaDefinitionId(self.ast.schema_definitions.len());
+        let id = SchemaDefinitionId::new(self.ast.schema_definitions.len());
         self.ast.schema_definitions.push(definition);
 
-        let definition_id = DefinitionId(self.ast.definitions.len());
+        let definition_id = DefinitionId::new(self.ast.definitions.len());
         self.ast.definitions.push(AstDefinition::Schema(id));
 
         definition_id
     }
 
     pub fn scalar_definition(&mut self, definition: ScalarDefinition) -> DefinitionId {
-        let id = ScalarDefinitionId(self.ast.scalar_definitions.len());
+        let id = ScalarDefinitionId::new(self.ast.scalar_definitions.len());
         self.ast.scalar_definitions.push(definition);
 
-        let definition_id = DefinitionId(self.ast.definitions.len());
+        let definition_id = DefinitionId::new(self.ast.definitions.len());
         self.ast.definitions.push(AstDefinition::Scalar(id));
 
         definition_id
     }
 
     pub fn object_definition(&mut self, definition: ObjectDefinition) -> DefinitionId {
-        let id = ObjectDefinitionId(self.ast.object_definitions.len());
+        let id = ObjectDefinitionId::new(self.ast.object_definitions.len());
         self.ast.object_definitions.push(definition);
 
-        let definition_id = DefinitionId(self.ast.definitions.len());
+        let definition_id = DefinitionId::new(self.ast.definitions.len());
         self.ast.definitions.push(AstDefinition::Object(id));
 
         definition_id
     }
 
     pub fn field_definition(&mut self, definition: FieldDefinition) -> FieldDefinitionId {
-        let definition_id = FieldDefinitionId(self.ast.field_definitions.len());
+        let definition_id = FieldDefinitionId::new(self.ast.field_definitions.len());
         self.ast.field_definitions.push(definition);
 
         definition_id
     }
 
     pub fn interface_definition(&mut self, definition: InterfaceDefinition) -> DefinitionId {
-        let id = InterfaceDefinitionId(self.ast.interface_definitions.len());
+        let id = InterfaceDefinitionId::new(self.ast.interface_definitions.len());
         self.ast.interface_definitions.push(definition);
 
-        let definition_id = DefinitionId(self.ast.definitions.len());
+        let definition_id = DefinitionId::new(self.ast.definitions.len());
         self.ast.definitions.push(AstDefinition::Interface(id));
 
         definition_id
     }
 
     pub fn union_definition(&mut self, definition: UnionDefinition) -> DefinitionId {
-        let id = UnionDefinitionId(self.ast.union_definitions.len());
+        let id = UnionDefinitionId::new(self.ast.union_definitions.len());
         self.ast.union_definitions.push(definition);
 
-        let definition_id = DefinitionId(self.ast.definitions.len());
+        let definition_id = DefinitionId::new(self.ast.definitions.len());
         self.ast.definitions.push(AstDefinition::Union(id));
 
         definition_id
     }
 
     pub fn enum_definition(&mut self, definition: EnumDefinition) -> DefinitionId {
-        let id = EnumDefinitionId(self.ast.enum_definitions.len());
+        let id = EnumDefinitionId::new(self.ast.enum_definitions.len());
         self.ast.enum_definitions.push(definition);
 
-        let definition_id = DefinitionId(self.ast.definitions.len());
+        let definition_id = DefinitionId::new(self.ast.definitions.len());
         self.ast.definitions.push(AstDefinition::Enum(id));
 
         definition_id
@@ -147,17 +147,17 @@ impl AstWriter {
         &mut self,
         definition: EnumValueDefinition,
     ) -> EnumValueDefinitionId {
-        let id = EnumValueDefinitionId(self.ast.enum_value_definitions.len());
+        let id = EnumValueDefinitionId::new(self.ast.enum_value_definitions.len());
         self.ast.enum_value_definitions.push(definition);
 
         id
     }
 
     pub fn input_object_definition(&mut self, definition: InputObjectDefinition) -> DefinitionId {
-        let id = InputObjectDefinitionId(self.ast.input_object_definitions.len());
+        let id = InputObjectDefinitionId::new(self.ast.input_object_definitions.len());
         self.ast.input_object_definitions.push(definition);
 
-        let definition_id = DefinitionId(self.ast.definitions.len());
+        let definition_id = DefinitionId::new(self.ast.definitions.len());
         self.ast.definitions.push(AstDefinition::InputObject(id));
 
         definition_id
@@ -167,17 +167,17 @@ impl AstWriter {
         &mut self,
         definition: InputValueDefinition,
     ) -> InputValueDefinitionId {
-        let definition_id = InputValueDefinitionId(self.ast.input_value_definitions.len());
+        let definition_id = InputValueDefinitionId::new(self.ast.input_value_definitions.len());
         self.ast.input_value_definitions.push(definition);
 
         definition_id
     }
 
     pub fn schema_extension(&mut self, definition: SchemaDefinition) -> DefinitionId {
-        let id = SchemaDefinitionId(self.ast.schema_definitions.len());
+        let id = SchemaDefinitionId::new(self.ast.schema_definitions.len());
         self.ast.schema_definitions.push(definition);
 
-        let definition_id = DefinitionId(self.ast.definitions.len());
+        let definition_id = DefinitionId::new(self.ast.definitions.len());
         self.ast
             .definitions
             .push(AstDefinition::SchemaExtension(id));
@@ -186,10 +186,10 @@ impl AstWriter {
     }
 
     pub fn scalar_extension(&mut self, definition: ScalarDefinition) -> DefinitionId {
-        let id = ScalarDefinitionId(self.ast.scalar_definitions.len());
+        let id = ScalarDefinitionId::new(self.ast.scalar_definitions.len());
         self.ast.scalar_definitions.push(definition);
 
-        let definition_id = DefinitionId(self.ast.definitions.len());
+        let definition_id = DefinitionId::new(self.ast.definitions.len());
         self.ast
             .definitions
             .push(AstDefinition::ScalarExtension(id));
@@ -198,10 +198,10 @@ impl AstWriter {
     }
 
     pub fn object_extension(&mut self, definition: ObjectDefinition) -> DefinitionId {
-        let id = ObjectDefinitionId(self.ast.object_definitions.len());
+        let id = ObjectDefinitionId::new(self.ast.object_definitions.len());
         self.ast.object_definitions.push(definition);
 
-        let definition_id = DefinitionId(self.ast.definitions.len());
+        let definition_id = DefinitionId::new(self.ast.definitions.len());
         self.ast
             .definitions
             .push(AstDefinition::ObjectExtension(id));
@@ -210,10 +210,10 @@ impl AstWriter {
     }
 
     pub fn interface_extension(&mut self, definition: InterfaceDefinition) -> DefinitionId {
-        let id = InterfaceDefinitionId(self.ast.interface_definitions.len());
+        let id = InterfaceDefinitionId::new(self.ast.interface_definitions.len());
         self.ast.interface_definitions.push(definition);
 
-        let definition_id = DefinitionId(self.ast.definitions.len());
+        let definition_id = DefinitionId::new(self.ast.definitions.len());
         self.ast
             .definitions
             .push(AstDefinition::InterfaceExtension(id));
@@ -222,30 +222,30 @@ impl AstWriter {
     }
 
     pub fn union_extension(&mut self, definition: UnionDefinition) -> DefinitionId {
-        let id = UnionDefinitionId(self.ast.union_definitions.len());
+        let id = UnionDefinitionId::new(self.ast.union_definitions.len());
         self.ast.union_definitions.push(definition);
 
-        let definition_id = DefinitionId(self.ast.definitions.len());
+        let definition_id = DefinitionId::new(self.ast.definitions.len());
         self.ast.definitions.push(AstDefinition::UnionExtension(id));
 
         definition_id
     }
 
     pub fn enum_extension(&mut self, definition: EnumDefinition) -> DefinitionId {
-        let id = EnumDefinitionId(self.ast.enum_definitions.len());
+        let id = EnumDefinitionId::new(self.ast.enum_definitions.len());
         self.ast.enum_definitions.push(definition);
 
-        let definition_id = DefinitionId(self.ast.definitions.len());
+        let definition_id = DefinitionId::new(self.ast.definitions.len());
         self.ast.definitions.push(AstDefinition::EnumExtension(id));
 
         definition_id
     }
 
     pub fn input_object_extension(&mut self, definition: InputObjectDefinition) -> DefinitionId {
-        let id = InputObjectDefinitionId(self.ast.input_object_definitions.len());
+        let id = InputObjectDefinitionId::new(self.ast.input_object_definitions.len());
         self.ast.input_object_definitions.push(definition);
 
-        let definition_id = DefinitionId(self.ast.definitions.len());
+        let definition_id = DefinitionId::new(self.ast.definitions.len());
         self.ast
             .definitions
             .push(AstDefinition::InputObjectExtension(id));
@@ -254,35 +254,35 @@ impl AstWriter {
     }
 
     pub fn directive_definition(&mut self, definition: DirectiveDefinition) -> DefinitionId {
-        let id = DirectiveDefinitionId(self.ast.directive_definitions.len());
+        let id = DirectiveDefinitionId::new(self.ast.directive_definitions.len());
         self.ast.directive_definitions.push(definition);
 
-        let definition_id = DefinitionId(self.ast.definitions.len());
+        let definition_id = DefinitionId::new(self.ast.definitions.len());
         self.ast.definitions.push(AstDefinition::Directive(id));
 
         definition_id
     }
 
     pub fn type_reference(&mut self, ty: Type) -> TypeId {
-        let ty_id = TypeId(self.ast.type_references.len());
+        let ty_id = TypeId::new(self.ast.type_references.len());
         self.ast.type_references.push(ty);
         ty_id
     }
 
     pub fn directive(&mut self, directive: Directive) -> DirectiveId {
-        let id = DirectiveId(self.ast.directives.len());
+        let id = DirectiveId::new(self.ast.directives.len());
         self.ast.directives.push(directive);
         id
     }
 
     pub fn argument(&mut self, argument: Argument) -> ArgumentId {
-        let id = ArgumentId(self.ast.arguments.len());
+        let id = ArgumentId::new(self.ast.arguments.len());
         self.ast.arguments.push(argument);
         id
     }
 
     pub fn value(&mut self, value: Value) -> ValueId {
-        let id = ValueId(self.ast.values.len());
+        let id = ValueId::new(self.ast.values.len());
         self.ast.values.push(value);
         id
     }
@@ -301,6 +301,6 @@ impl AstWriter {
     // TOOD: should this be pub? not sure...
     pub fn intern_string(&mut self, string: &str) -> StringId {
         let (id, _) = self.ast.strings.insert_full(string.into());
-        StringId(id)
+        StringId::new(id)
     }
 }
