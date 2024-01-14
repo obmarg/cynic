@@ -124,3 +124,161 @@ pub enum Value {
     List(Vec<ValueId>),
     Object(Vec<(StringId, ValueId)>),
 }
+
+/// GraphQL wrappers encoded into a single u32
+///
+/// Bit 0: Whether the inner type is null
+/// Bit 1..5: Number of list wrappers
+/// Bits 5..32: List wrappers, where 0 is nullable 1 is non-null
+#[derive(Debug)]
+pub struct TypeWrappers(u32);
+
+static INNER_NULLABILITY_MASK: u32 = 1;
+static NUM_LISTS_MASK: u32 = 32 - 2;
+static NON_NUM_LISTS_MASK: u32 = u32::MAX ^ NUM_LISTS_MASK;
+
+impl TypeWrappers {
+    pub fn none() -> Self {
+        TypeWrappers(0)
+    }
+
+    pub fn wrap_list(&self) -> Self {
+        let current_wrappers = (self.0 & NUM_LISTS_MASK) >> 1;
+        let new_wrappers = current_wrappers + 1;
+        assert!(new_wrappers < 16);
+
+        Self((new_wrappers << 1) | (self.0 & NON_NUM_LISTS_MASK))
+    }
+
+    pub fn wrap_non_null(&self) -> Self {
+        let index = (self.0 & NUM_LISTS_MASK) >> 1;
+        if index == 0 {
+            return Self(1);
+        }
+
+        let new = self.0 | (1 << (4 + index));
+
+        TypeWrappers(new)
+    }
+
+    pub fn iter(&self) -> TypeWrappersIter {
+        let current_wrappers = (self.0 & NUM_LISTS_MASK) >> 1;
+        TypeWrappersIter {
+            encoded: self.0,
+            mask: (1 << (4 + current_wrappers)),
+            next: None,
+            last: ((1 & self.0) == 1).then_some(WrappingType::NonNull),
+        }
+    }
+}
+
+pub struct TypeWrappersIter {
+    encoded: u32,
+    mask: u32,
+    next: Option<WrappingType>,
+    last: Option<WrappingType>,
+}
+
+impl Iterator for TypeWrappersIter {
+    type Item = WrappingType;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if let Some(next) = self.next.take() {
+            return Some(next);
+        }
+        if (self.mask & NUM_LISTS_MASK) != 0 {
+            if let Some(last) = self.last.take() {
+                return Some(last);
+            }
+            return None;
+        }
+
+        // Otherwise we still have list wrappers
+        let current_is_non_null = (self.encoded & self.mask) != 0;
+        self.mask >>= 1;
+
+        if current_is_non_null {
+            self.next = Some(WrappingType::List);
+            Some(WrappingType::NonNull)
+        } else {
+            Some(WrappingType::List)
+        }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::{storage::TypeWrappers, WrappingType};
+
+    #[test]
+    fn test_wrappers() {
+        assert_eq!(TypeWrappers::none().iter().collect::<Vec<_>>(), vec![]);
+        assert_eq!(
+            TypeWrappers::none()
+                .wrap_non_null()
+                .iter()
+                .collect::<Vec<_>>(),
+            vec![WrappingType::NonNull]
+        );
+
+        assert_eq!(
+            TypeWrappers::none().wrap_list().iter().collect::<Vec<_>>(),
+            vec![WrappingType::List]
+        );
+
+        assert_eq!(
+            TypeWrappers::none()
+                .wrap_non_null()
+                .wrap_list()
+                .iter()
+                .collect::<Vec<_>>(),
+            vec![WrappingType::List, WrappingType::NonNull]
+        );
+
+        assert_eq!(
+            TypeWrappers::none()
+                .wrap_non_null()
+                .wrap_list()
+                .wrap_non_null()
+                .iter()
+                .collect::<Vec<_>>(),
+            vec![
+                WrappingType::NonNull,
+                WrappingType::List,
+                WrappingType::NonNull
+            ]
+        );
+
+        assert_eq!(
+            TypeWrappers::none()
+                .wrap_list()
+                .wrap_list()
+                .wrap_list()
+                .wrap_non_null()
+                .iter()
+                .collect::<Vec<_>>(),
+            vec![
+                WrappingType::NonNull,
+                WrappingType::List,
+                WrappingType::List,
+                WrappingType::List,
+            ]
+        );
+
+        assert_eq!(
+            TypeWrappers::none()
+                .wrap_non_null()
+                .wrap_list()
+                .wrap_non_null()
+                .wrap_list()
+                .iter()
+                .collect::<Vec<_>>(),
+            vec![
+                WrappingType::List,
+                WrappingType::NonNull,
+                WrappingType::List,
+                WrappingType::NonNull
+            ]
+        );
+    }
+}
