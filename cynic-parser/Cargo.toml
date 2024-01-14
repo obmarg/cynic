@@ -24,7 +24,9 @@ insta = "1.29"
 similar-asserts = "1.5"
 
 [build-dependencies]
-lalrpop = "0.20.0"
+# Commenting this out as parser-generator does this.
+# If actively developing the parser you might want to uncomment this.
+# lalrpop = "0.20.0"
 
 
 [[bench]]
