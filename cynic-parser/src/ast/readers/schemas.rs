@@ -12,6 +12,24 @@ impl<'a> SchemaDefinition<'a> {
         ast.lookup(self.0.id).description.map(|id| ast.lookup(id))
     }
 
+    pub fn query_type(&self) -> Option<&'a str> {
+        self.root_operations()
+            .find(|(ty, _)| matches!(ty, OperationType::Query))
+            .map(|(_, name)| name)
+    }
+
+    pub fn mutation_type(&self) -> Option<&'a str> {
+        self.root_operations()
+            .find(|(ty, _)| matches!(ty, OperationType::Mutation))
+            .map(|(_, name)| name)
+    }
+
+    pub fn subscription_type(&self) -> Option<&'a str> {
+        self.root_operations()
+            .find(|(ty, _)| matches!(ty, OperationType::Subscription))
+            .map(|(_, name)| name)
+    }
+
     pub fn root_operations(&self) -> impl Iterator<Item = (OperationType, &'a str)> {
         let ast = &self.0.ast;
 
