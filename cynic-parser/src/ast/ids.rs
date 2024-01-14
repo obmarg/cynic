@@ -1,4 +1,4 @@
-use crate::Ast;
+use std::num::NonZeroU32;
 
 use super::{
     storage::{
@@ -8,219 +8,94 @@ use super::{
     },
     AstDefinition, AstLookup,
 };
+use crate::Ast;
 
-// TODO: NonZeroUsize these?
+macro_rules! make_id {
+    ($name:ident, $output:ident, $field:ident) => {
+        #[derive(Clone, Copy)]
+        pub struct $name(NonZeroU32);
 
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
-pub struct DefinitionId(pub(super) usize);
+        impl $name {
+            pub(super) fn new(index: usize) -> Self {
+                Self(
+                    NonZeroU32::new(u32::try_from(index + 1).expect("too many indices"))
+                        .expect("also too many indices"),
+                )
+            }
+        }
 
-impl AstLookup<DefinitionId> for Ast {
-    type Output = AstDefinition;
+        impl AstLookup<$name> for Ast {
+            type Output = $output;
 
-    fn lookup(&self, index: DefinitionId) -> &Self::Output {
-        &self.definitions[index.0]
-    }
+            fn lookup(&self, index: $name) -> &Self::Output {
+                &self.$field[(index.0.get() - 1) as usize]
+            }
+
+            fn lookup_mut(&mut self, index: $name) -> &mut Self::Output {
+                &mut self.$field[(index.0.get() - 1) as usize]
+            }
+        }
+    };
 }
 
+make_id!(DefinitionId, AstDefinition, definitions);
+make_id!(SchemaDefinitionId, SchemaDefinition, schema_definitions);
+make_id!(ScalarDefinitionId, ScalarDefinition, scalar_definitions);
+make_id!(ObjectDefinitionId, ObjectDefinition, object_definitions);
+make_id!(
+    InterfaceDefinitionId,
+    InterfaceDefinition,
+    interface_definitions
+);
+make_id!(UnionDefinitionId, UnionDefinition, union_definitions);
+make_id!(EnumDefinitionId, EnumDefinition, enum_definitions);
+make_id!(
+    EnumValueDefinitionId,
+    EnumValueDefinition,
+    enum_value_definitions
+);
+make_id!(
+    InputObjectDefinitionId,
+    InputObjectDefinition,
+    input_object_definitions
+);
+make_id!(
+    DirectiveDefinitionId,
+    DirectiveDefinition,
+    directive_definitions
+);
+make_id!(FieldDefinitionId, FieldDefinition, field_definitions);
+make_id!(
+    InputValueDefinitionId,
+    InputValueDefinition,
+    input_value_definitions
+);
+make_id!(TypeId, Type, type_references);
+make_id!(DirectiveId, Directive, directives);
+make_id!(ArgumentId, Argument, arguments);
+make_id!(ValueId, Value, values);
+
 #[derive(Clone, Copy)]
-pub struct StringId(pub(super) usize);
+pub struct StringId(NonZeroU32);
+
+impl StringId {
+    pub(super) fn new(index: usize) -> Self {
+        Self(
+            NonZeroU32::new(u32::try_from(index + 1).expect("too many indices"))
+                .expect("also too many indices"),
+        )
+    }
+}
 
 impl AstLookup<StringId> for Ast {
     type Output = str;
 
     fn lookup(&self, index: StringId) -> &Self::Output {
-        self.strings
-            .get_index(index.0)
-            .expect("strings to be present")
+        &self.strings[(index.0.get() - 1) as usize]
     }
-}
 
-#[derive(Clone, Copy)]
-pub struct SchemaDefinitionId(pub(super) usize);
-
-impl AstLookup<SchemaDefinitionId> for Ast {
-    type Output = SchemaDefinition;
-
-    fn lookup(&self, index: SchemaDefinitionId) -> &Self::Output {
-        self.schema_definitions
-            .get(index.0)
-            .expect("objects to be present")
-    }
-}
-
-#[derive(Clone, Copy)]
-pub struct ScalarDefinitionId(pub(super) usize);
-
-impl AstLookup<ScalarDefinitionId> for Ast {
-    type Output = ScalarDefinition;
-
-    fn lookup(&self, index: ScalarDefinitionId) -> &Self::Output {
-        self.scalar_definitions
-            .get(index.0)
-            .expect("objects to be present")
-    }
-}
-
-#[derive(Clone, Copy)]
-pub struct ObjectDefinitionId(pub(super) usize);
-
-impl AstLookup<ObjectDefinitionId> for Ast {
-    type Output = ObjectDefinition;
-
-    fn lookup(&self, index: ObjectDefinitionId) -> &Self::Output {
-        self.object_definitions
-            .get(index.0)
-            .expect("objects to be present")
-    }
-}
-
-#[derive(Clone, Copy)]
-pub struct InterfaceDefinitionId(pub(super) usize);
-
-impl AstLookup<InterfaceDefinitionId> for Ast {
-    type Output = InterfaceDefinition;
-
-    fn lookup(&self, index: InterfaceDefinitionId) -> &Self::Output {
-        self.interface_definitions
-            .get(index.0)
-            .expect("objects to be present")
-    }
-}
-
-#[derive(Clone, Copy)]
-pub struct UnionDefinitionId(pub(super) usize);
-
-impl AstLookup<UnionDefinitionId> for Ast {
-    type Output = UnionDefinition;
-
-    fn lookup(&self, index: UnionDefinitionId) -> &Self::Output {
-        self.union_definitions
-            .get(index.0)
-            .expect("objects to be present")
-    }
-}
-
-#[derive(Clone, Copy)]
-pub struct EnumDefinitionId(pub(super) usize);
-
-impl AstLookup<EnumDefinitionId> for Ast {
-    type Output = EnumDefinition;
-
-    fn lookup(&self, index: EnumDefinitionId) -> &Self::Output {
-        self.enum_definitions
-            .get(index.0)
-            .expect("objects to be present")
-    }
-}
-
-#[derive(Clone, Copy)]
-pub struct EnumValueDefinitionId(pub(super) usize);
-
-impl AstLookup<EnumValueDefinitionId> for Ast {
-    type Output = EnumValueDefinition;
-
-    fn lookup(&self, index: EnumValueDefinitionId) -> &Self::Output {
-        self.enum_value_definitions
-            .get(index.0)
-            .expect("objects to be present")
-    }
-}
-
-#[derive(Clone, Copy)]
-pub struct InputObjectDefinitionId(pub(super) usize);
-
-impl AstLookup<InputObjectDefinitionId> for Ast {
-    type Output = InputObjectDefinition;
-
-    fn lookup(&self, index: InputObjectDefinitionId) -> &Self::Output {
-        self.input_object_definitions
-            .get(index.0)
-            .expect("objects to be present")
-    }
-}
-
-#[derive(Clone, Copy)]
-pub struct DirectiveDefinitionId(pub(super) usize);
-
-impl AstLookup<DirectiveDefinitionId> for Ast {
-    type Output = DirectiveDefinition;
-
-    fn lookup(&self, index: DirectiveDefinitionId) -> &Self::Output {
-        self.directive_definitions
-            .get(index.0)
-            .expect("directives to be present")
-    }
-}
-
-#[derive(Clone, Copy)]
-pub struct FieldDefinitionId(pub(super) usize);
-
-impl AstLookup<FieldDefinitionId> for Ast {
-    type Output = FieldDefinition;
-
-    fn lookup(&self, index: FieldDefinitionId) -> &Self::Output {
-        self.field_definitions
-            .get(index.0)
-            .expect("objects to be present")
-    }
-}
-
-#[derive(Clone, Copy)]
-pub struct InputValueDefinitionId(pub(super) usize);
-
-impl AstLookup<InputValueDefinitionId> for Ast {
-    type Output = InputValueDefinition;
-
-    fn lookup(&self, index: InputValueDefinitionId) -> &Self::Output {
-        self.input_value_definitions
-            .get(index.0)
-            .expect("objects to be present")
-    }
-}
-
-#[derive(Clone, Copy)]
-pub struct TypeId(pub(super) usize);
-
-impl AstLookup<TypeId> for Ast {
-    type Output = Type;
-
-    fn lookup(&self, index: TypeId) -> &Self::Output {
-        self.type_references
-            .get(index.0)
-            .expect("types to be present")
-    }
-}
-
-#[derive(Clone, Copy)]
-pub struct DirectiveId(pub(super) usize);
-
-impl AstLookup<DirectiveId> for Ast {
-    type Output = Directive;
-
-    fn lookup(&self, index: DirectiveId) -> &Self::Output {
-        self.directives.get(index.0).expect("values to be present")
-    }
-}
-
-#[derive(Clone, Copy)]
-pub struct ArgumentId(pub(super) usize);
-
-impl AstLookup<ArgumentId> for Ast {
-    type Output = Argument;
-
-    fn lookup(&self, index: ArgumentId) -> &Self::Output {
-        self.arguments.get(index.0).expect("values to be present")
-    }
-}
-
-#[derive(Clone, Copy)]
-pub struct ValueId(pub(super) usize);
-
-impl AstLookup<ValueId> for Ast {
-    type Output = Value;
-
-    fn lookup(&self, index: ValueId) -> &Self::Output {
-        self.values.get(index.0).expect("values to be present")
+    fn lookup_mut(&mut self, _index: StringId) -> &mut Self::Output {
+        unimplemented!("strings aren't mutable so can't do this")
     }
 }
 
