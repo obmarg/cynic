@@ -22,7 +22,6 @@ pub use self::{
 };
 
 // TODO: Make this sealed maybe?
-// also think about the name, clashes with existing AstId a bit
 pub trait AstId: Copy {
     type Reader<'a>: From<ReadContext<'a, Self>>;
 

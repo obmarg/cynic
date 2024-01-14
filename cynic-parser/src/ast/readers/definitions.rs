@@ -1,6 +1,3 @@
-// TODO: should these even be labelled as _readers_?
-// Possibly not...
-
 use super::{
     directives::DirectiveDefinition, enums::EnumDefinition, input_objects::InputObjectDefinition,
     interfaces::InterfaceDefinition, objects::ObjectDefinition, scalars::ScalarDefinition,
