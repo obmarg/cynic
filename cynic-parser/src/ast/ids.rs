@@ -50,6 +50,14 @@ macro_rules! make_id {
         }
 
         impl IdRange<$name> {
+            pub fn len(&self) -> usize {
+                (self.end.0.get() - self.start.0.get()) as usize
+            }
+
+            pub fn is_empty(&self) -> bool {
+                (self.end.0.get() - self.start.0.get()) == 0
+            }
+
             pub fn iter(&self) -> impl Iterator<Item = $name> {
                 (self.start.0.get()..self.end.0.get())
                     .map(|num| $name(NonZeroU32::new(num).expect("range is too large")))

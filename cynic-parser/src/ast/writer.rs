@@ -6,6 +6,7 @@ use super::{Ast, AstDefinition};
 pub struct AstWriter {
     ast: Ast,
     field_id_cursor: FieldDefinitionId,
+    input_value_id_cursor: InputValueDefinitionId,
 }
 
 // TODO: Don't forget the spans etc.
@@ -14,12 +15,14 @@ impl AstWriter {
         AstWriter {
             ast: Default::default(),
             field_id_cursor: FieldDefinitionId::new(0),
+            input_value_id_cursor: InputValueDefinitionId::new(0),
         }
     }
 
     pub fn update(ast: Ast) -> Self {
         AstWriter {
             field_id_cursor: FieldDefinitionId::new(ast.field_definitions.len()),
+            input_value_id_cursor: InputValueDefinitionId::new(ast.input_value_definitions.len()),
             ast,
         }
     }
@@ -120,14 +123,20 @@ impl AstWriter {
         definition_id
     }
 
-    pub fn field_range(&mut self) -> IdRange<FieldDefinitionId> {
-        // TODO: Could pass in the expected count here to make sure
-        // we've not fucked up?
+    pub fn field_definition_range(
+        &mut self,
+        expected_count: Option<usize>,
+    ) -> IdRange<FieldDefinitionId> {
         let start = self.field_id_cursor;
         let end = FieldDefinitionId::new(self.ast.field_definitions.len());
         self.field_id_cursor = end;
+        let range = IdRange::new(start, end);
 
-        IdRange::new(start, end)
+        if let Some(expected_count) = expected_count {
+            assert_eq!(range.len(), expected_count);
+        }
+
+        range
     }
 
     pub fn interface_definition(&mut self, definition: InterfaceDefinition) -> DefinitionId {
@@ -188,6 +197,22 @@ impl AstWriter {
         self.ast.input_value_definitions.push(definition);
 
         definition_id
+    }
+
+    pub fn input_value_definition_range(
+        &mut self,
+        expected_count: Option<usize>,
+    ) -> IdRange<InputValueDefinitionId> {
+        let start = self.input_value_id_cursor;
+        let end = InputValueDefinitionId::new(self.ast.input_value_definitions.len());
+        self.input_value_id_cursor = end;
+        let range = IdRange::new(start, end);
+
+        if let Some(expected_count) = expected_count {
+            assert_eq!(range.len(), expected_count);
+        }
+
+        range
     }
 
     pub fn schema_extension(&mut self, definition: SchemaDefinition) -> DefinitionId {

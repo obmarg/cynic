@@ -79,7 +79,7 @@ ObjectDefinition: ObjectDefinition = {
         description: None,
         directives,
         implements: implements.unwrap_or_default(),
-        fields: ast.field_range(),
+        fields: ast.field_definition_range(Some(fields.map(|fields| fields.len()).unwrap_or_default())),
         span: Span::new(start,end)
     }
 };
@@ -111,10 +111,13 @@ FieldDefinition: () = {
         <directives:Directive*>
         <end:@R>
     => {
+        let arguments = ast.input_value_definition_range(
+            Some(arguments.map(|arguments| arguments.len()).unwrap_or_default())
+        );
         ast.field_definition(FieldDefinition {
             name,
             ty,
-            arguments: arguments.unwrap_or_default(),
+            arguments,
             description,
             directives,
             span: Span::new(start,end)
@@ -122,7 +125,7 @@ FieldDefinition: () = {
     }
 };
 
-ArgumentsDefinition: Vec<InputValueDefinitionId> = {
+ArgumentsDefinition: Vec<()> = {
     "(" <arguments:InputValueDefinition+> ")" => arguments,
 };
 
@@ -138,7 +141,7 @@ InterfaceDefinition: InterfaceDefinition = {
         description: None,
         directives,
         implements: implements.unwrap_or_default(),
-        fields: ast.field_range(),
+        fields: ast.field_definition_range(Some(fields.map(|fields| fields.len()).unwrap_or_default())),
         span: Span::new(start,end)
     }
 };
@@ -213,12 +216,12 @@ InputObjectDefinition: InputObjectDefinition = {
         name,
         description: None,
         directives,
-        fields: fields.unwrap_or_default(),
+        fields: ast.input_value_definition_range(Some(fields.map(|fields| fields.len()).unwrap_or_default())),
         span: Span::new(start,end)
     }
 }
 
-InputFieldsDefinition: Vec<InputValueDefinitionId> = {
+InputFieldsDefinition: Vec<()> = {
     "{" <fields:InputValueDefinition+> "}" => fields
 };
 
@@ -234,7 +237,7 @@ DirectiveDefinition: DirectiveDefinition = {
     => DirectiveDefinition {
         name,
         description: None,
-        arguments: arguments.unwrap_or_default(),
+        arguments: ast.input_value_definition_range(Some(arguments.map(|arguments| arguments.len()).unwrap_or_default())),
         repeatable: repeatable.unwrap_or_default(),
         locations,
         span: Span::new(start, end)
@@ -260,13 +263,13 @@ DirectiveLocation: DirectiveLocation = {
     <s:Ident> => s.parse().expect("TODO: error handling")
 }
 
-InputValueDefinition: InputValueDefinitionId =
+InputValueDefinition: () = {
     <start:@L>
         <description:StringValue?>
         <name:Name> ":" <ty:Type> <default:DefaultValue?>
         <directives:Directive*>
         <end:@R>
-    =>
+    => {
         ast.input_value_definition(InputValueDefinition {
             name,
             ty,
@@ -275,6 +278,8 @@ InputValueDefinition: InputValueDefinitionId =
             default,
             span: Span::new(start, end)
         });
+    }
+}
 
 
 DefaultValue: ValueId = {

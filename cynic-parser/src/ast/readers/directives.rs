@@ -27,7 +27,7 @@ impl<'a> DirectiveDefinition<'a> {
         ast.lookup(self.0.id)
             .arguments
             .iter()
-            .map(|id| ast.read(*id))
+            .map(|id| ast.read(id))
     }
 
     pub fn is_repeatable(&self) -> bool {
