@@ -1,3 +1,9 @@
+use divan::AllocProfiler;
+use std::collections::*;
+
+#[global_allocator]
+static ALLOC: AllocProfiler = AllocProfiler::system();
+
 fn main() {
     // Run registered benchmarks.
     divan::main();
