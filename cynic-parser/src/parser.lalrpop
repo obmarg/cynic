@@ -286,7 +286,10 @@ NamedType: StringId = <s:Ident> => ast.ident(s);
 
 Type: TypeId = {
     "[" <ty:Type> => ty,
-    <name:NamedType> <wrappers:WrappingType*> => ast.type_reference(Type { <> })
+    <name:NamedType> <wrappers:WrappingType*> => ast.type_reference(Type {
+        name,
+        wrappers: TypeWrappers::from_iter(wrappers)
+    })
 }
 
 WrappingType: WrappingType = {
