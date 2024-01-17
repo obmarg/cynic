@@ -18,7 +18,7 @@ pub struct IdRange<Id> {
 }
 
 impl<Id> IdRange<Id> {
-    pub fn new(start: Id, end: Id) -> Self {
+    pub(crate) fn new(start: Id, end: Id) -> Self {
         IdRange { start, end }
     }
 }
@@ -48,7 +48,11 @@ macro_rules! make_id {
                 &mut self.$field[(index.0.get() - 1) as usize]
             }
         }
+    };
+}
 
+macro_rules! impl_id_range {
+    ($name: ident) => {
         impl IdRange<$name> {
             pub fn len(&self) -> usize {
                 (self.end.0.get() - self.start.0.get()) as usize
@@ -67,40 +71,57 @@ macro_rules! make_id {
 }
 
 make_id!(DefinitionId, AstDefinition, definitions);
+
 make_id!(SchemaDefinitionId, SchemaDefinition, schema_definitions);
+
 make_id!(ScalarDefinitionId, ScalarDefinition, scalar_definitions);
+
 make_id!(ObjectDefinitionId, ObjectDefinition, object_definitions);
+
 make_id!(
     InterfaceDefinitionId,
     InterfaceDefinition,
     interface_definitions
 );
+
 make_id!(UnionDefinitionId, UnionDefinition, union_definitions);
+
 make_id!(EnumDefinitionId, EnumDefinition, enum_definitions);
+
 make_id!(
     EnumValueDefinitionId,
     EnumValueDefinition,
     enum_value_definitions
 );
+
 make_id!(
     InputObjectDefinitionId,
     InputObjectDefinition,
     input_object_definitions
 );
+
 make_id!(
     DirectiveDefinitionId,
     DirectiveDefinition,
     directive_definitions
 );
+
 make_id!(FieldDefinitionId, FieldDefinition, field_definitions);
+impl_id_range!(FieldDefinitionId);
+
 make_id!(
     InputValueDefinitionId,
     InputValueDefinition,
     input_value_definitions
 );
+impl_id_range!(InputValueDefinitionId);
+
 make_id!(TypeId, Type, type_references);
+
 make_id!(DirectiveId, Directive, directives);
+
 make_id!(ArgumentId, Argument, arguments);
+
 make_id!(ValueId, Value, values);
 
 #[derive(Clone, Copy)]
