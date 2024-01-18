@@ -119,6 +119,7 @@ impl_id_range!(InputValueDefinitionId);
 make_id!(TypeId, Type, type_references);
 
 make_id!(DirectiveId, Directive, directives);
+impl_id_range!(DirectiveId);
 
 make_id!(ArgumentId, Argument, arguments);
 

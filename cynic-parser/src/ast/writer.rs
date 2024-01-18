@@ -7,6 +7,7 @@ pub struct AstWriter {
     ast: Ast,
     field_id_cursor: FieldDefinitionId,
     input_value_id_cursor: InputValueDefinitionId,
+    directive_id_cursor: DirectiveId,
 }
 
 // TODO: Don't forget the spans etc.
@@ -16,6 +17,7 @@ impl AstWriter {
             ast: Default::default(),
             field_id_cursor: FieldDefinitionId::new(0),
             input_value_id_cursor: InputValueDefinitionId::new(0),
+            directive_id_cursor: DirectiveId::new(0),
         }
     }
 
@@ -23,6 +25,7 @@ impl AstWriter {
         AstWriter {
             field_id_cursor: FieldDefinitionId::new(ast.field_definitions.len()),
             input_value_id_cursor: InputValueDefinitionId::new(ast.input_value_definitions.len()),
+            directive_id_cursor: DirectiveId::new(ast.directives.len()),
             ast,
         }
     }
@@ -303,6 +306,19 @@ impl AstWriter {
         self.ast.definitions.push(AstDefinition::Directive(id));
 
         definition_id
+    }
+
+    pub fn directive_range(&mut self, expected_count: Option<usize>) -> IdRange<DirectiveId> {
+        let start = self.directive_id_cursor;
+        let end = DirectiveId::new(self.ast.directives.len());
+        self.directive_id_cursor = end;
+        let range = IdRange::new(start, end);
+
+        if let Some(expected_count) = expected_count {
+            assert_eq!(range.len(), expected_count);
+        }
+
+        range
     }
 
     pub fn type_reference(&mut self, ty: Type) -> TypeId {

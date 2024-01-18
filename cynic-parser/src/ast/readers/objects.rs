@@ -39,7 +39,7 @@ impl<'a> ObjectDefinition<'a> {
         ast.lookup(self.0.id)
             .directives
             .iter()
-            .map(|id| ast.read(*id))
+            .map(|id| ast.read(id))
     }
 }
 

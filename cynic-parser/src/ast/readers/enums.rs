@@ -32,7 +32,7 @@ impl<'a> EnumDefinition<'a> {
         ast.lookup(self.0.id)
             .directives
             .iter()
-            .map(|id| ast.read(*id))
+            .map(|id| ast.read(id))
     }
 }
 
@@ -56,7 +56,7 @@ impl<'a> EnumValueDefinition<'a> {
         ast.lookup(self.0.id)
             .directives
             .iter()
-            .map(|id| ast.read(*id))
+            .map(|id| ast.read(id))
     }
 }
 

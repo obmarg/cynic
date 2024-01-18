@@ -57,7 +57,7 @@ RootOperationTypeDefinition: RootOperationTypeDefinition = {
 ScalarDefinition: ScalarDefinition = {
     <start:@L> scalar
         <name:Name>
-        <directives:Directive*>
+        <directives:Directives>
         <end:@R>
     => ScalarDefinition {
         name,
@@ -71,7 +71,7 @@ ObjectDefinition: ObjectDefinition = {
     <start:@L> ty
         <name:Name>
         <implements:ImplementsInterfaces?>
-        <directives:Directive*>
+        <directives:Directives>
         <fields:FieldsDefinition?>
         <end:@R>
     => ObjectDefinition {
@@ -108,7 +108,7 @@ FieldDefinition: () = {
         <description:StringValue?>
         <name:Name>
         <arguments:ArgumentsDefinition?> ":" <ty:Type>
-        <directives:Directive*>
+        <directives:Directives>
         <end:@R>
     => {
         let arguments = ast.input_value_definition_range(
@@ -133,7 +133,7 @@ InterfaceDefinition: InterfaceDefinition = {
     <start:@L> interface
         <name:Name>
         <implements:ImplementsInterfaces?>
-        <directives:Directive*>
+        <directives:Directives>
         <fields:FieldsDefinition?>
         <end:@R>
     => InterfaceDefinition {
@@ -149,7 +149,7 @@ InterfaceDefinition: InterfaceDefinition = {
 UnionDefinition: UnionDefinition = {
     <start:@L> union
         <name:Name>
-        <directives:Directive*>
+        <directives:Directives>
         <members:UnionMemberTypes?>
         <end:@R>
     => UnionDefinition {
@@ -175,7 +175,7 @@ UnionMemberTypes: Vec<StringId> = {
 EnumDefinition: EnumDefinition = {
     <start:@L> "enum"
         <name:Name>
-        <directives:Directive*>
+        <directives:Directives>
         <values:EnumValuesDefinition?>
         <end:@R>
     => EnumDefinition {
@@ -195,7 +195,7 @@ EnumValueDefinition: EnumValueDefinitionId = {
     <start:@L>
         <description:StringValue?>
         <value:EnumValue>
-        <directives:Directive*>
+        <directives:Directives>
         <end:@R>
     => ast.enum_value_definition(EnumValueDefinition {
         value,
@@ -209,7 +209,7 @@ EnumValueDefinition: EnumValueDefinitionId = {
 InputObjectDefinition: InputObjectDefinition = {
     <start:@L> input
         <name:Name>
-        <directives:Directive*>
+        <directives:Directives>
         <fields:InputFieldsDefinition?>
         <end:@R>
     => InputObjectDefinition {
@@ -267,7 +267,7 @@ InputValueDefinition: () = {
     <start:@L>
         <description:StringValue?>
         <name:Name> ":" <ty:Type> <default:DefaultValue?>
-        <directives:Directive*>
+        <directives:Directives>
         <end:@R>
     => {
         ast.input_value_definition(InputValueDefinition {
@@ -344,11 +344,19 @@ EnumValue: StringId = {
     input => ast.ident("input"),
 }
 
-Directive: DirectiveId = {
-    "@" <name:Name> <arguments:Arguments?> => ast.directive(Directive {
-        name,
-        arguments: arguments.unwrap_or_default()
-    })
+Directives: IdRange<DirectiveId> = {
+    <directives:Directive*> => {
+        ast.directive_range(Some(directives.len()))
+    }
+}
+
+Directive: () = {
+    "@" <name:Name> <arguments:Arguments?> => {
+        ast.directive(Directive {
+            name,
+            arguments: arguments.unwrap_or_default()
+        });
+    }
 }
 
 Arguments: Vec<ArgumentId> = {
