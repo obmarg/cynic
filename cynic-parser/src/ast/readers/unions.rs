@@ -33,7 +33,7 @@ impl<'a> UnionDefinition<'a> {
             .lookup(self.0.id)
             .directives
             .iter()
-            .map(|id| self.0.ast.read(*id))
+            .map(|id| self.0.ast.read(id))
     }
 }
 

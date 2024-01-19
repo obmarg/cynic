@@ -8,15 +8,15 @@ pub struct SchemaDefinition {
 pub struct ScalarDefinition {
     pub name: StringId,
     pub description: Option<StringId>,
-    pub directives: Vec<DirectiveId>,
+    pub directives: IdRange<DirectiveId>,
     pub span: Span,
 }
 
 pub struct ObjectDefinition {
     pub name: StringId,
     pub description: Option<StringId>,
-    pub fields: Vec<FieldDefinitionId>,
-    pub directives: Vec<DirectiveId>,
+    pub fields: IdRange<FieldDefinitionId>,
+    pub directives: IdRange<DirectiveId>,
     pub implements: Vec<StringId>,
     pub span: Span,
 }
@@ -24,17 +24,17 @@ pub struct ObjectDefinition {
 pub struct FieldDefinition {
     pub name: StringId,
     pub ty: TypeId,
-    pub arguments: Vec<InputValueDefinitionId>,
+    pub arguments: IdRange<InputValueDefinitionId>,
     pub description: Option<StringId>,
-    pub directives: Vec<DirectiveId>,
+    pub directives: IdRange<DirectiveId>,
     pub span: Span,
 }
 
 pub struct InterfaceDefinition {
     pub name: StringId,
     pub description: Option<StringId>,
-    pub fields: Vec<FieldDefinitionId>,
-    pub directives: Vec<DirectiveId>,
+    pub fields: IdRange<FieldDefinitionId>,
+    pub directives: IdRange<DirectiveId>,
     pub implements: Vec<StringId>,
     pub span: Span,
 }
@@ -43,7 +43,7 @@ pub struct UnionDefinition {
     pub name: StringId,
     pub description: Option<StringId>,
     pub members: Vec<StringId>,
-    pub directives: Vec<DirectiveId>,
+    pub directives: IdRange<DirectiveId>,
     pub span: Span,
 }
 
@@ -51,22 +51,22 @@ pub struct EnumDefinition {
     pub name: StringId,
     pub description: Option<StringId>,
     pub values: Vec<EnumValueDefinitionId>,
-    pub directives: Vec<DirectiveId>,
+    pub directives: IdRange<DirectiveId>,
     pub span: Span,
 }
 
 pub struct EnumValueDefinition {
     pub value: StringId,
     pub description: Option<StringId>,
-    pub directives: Vec<DirectiveId>,
+    pub directives: IdRange<DirectiveId>,
     pub span: Span,
 }
 
 pub struct InputObjectDefinition {
     pub name: StringId,
     pub description: Option<StringId>,
-    pub fields: Vec<InputValueDefinitionId>,
-    pub directives: Vec<DirectiveId>,
+    pub fields: IdRange<InputValueDefinitionId>,
+    pub directives: IdRange<DirectiveId>,
     pub span: Span,
 }
 
@@ -75,14 +75,14 @@ pub struct InputValueDefinition {
     pub ty: TypeId,
     pub description: Option<StringId>,
     pub default: Option<ValueId>,
-    pub directives: Vec<DirectiveId>,
+    pub directives: IdRange<DirectiveId>,
     pub span: Span,
 }
 
 pub struct DirectiveDefinition {
     pub name: StringId,
     pub description: Option<StringId>,
-    pub arguments: Vec<InputValueDefinitionId>,
+    pub arguments: IdRange<InputValueDefinitionId>,
     pub repeatable: bool,
     pub locations: Vec<DirectiveLocation>,
     pub span: Span,
