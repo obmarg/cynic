@@ -1107,6 +1107,7 @@ name = "cynic-parser"
 version = "0.1.0"
 dependencies = [
  "criterion",
+ "cynic-parser",
  "graphql-parser",
  "indexmap 2.1.0",
  "insta",
