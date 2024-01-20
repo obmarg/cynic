@@ -460,16 +460,17 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<DirectiveDefinition<'a>> {
                 .parens()
                 .flat_alt(arguments.parens());
 
-            builder = builder.append(arguments).append(allocator.space())
+            builder = builder.append(arguments)
         }
 
         if self.0.is_repeatable() {
             builder = builder
-                .append(allocator.text("repeatable"))
                 .append(allocator.space())
+                .append(allocator.text("repeatable"))
         }
 
         builder
+            .append(allocator.space())
             .append(allocator.text("on"))
             .append(allocator.space())
             .append(allocator.intersperse(
