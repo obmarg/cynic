@@ -1,13 +1,17 @@
 mod tokens;
 
+use std::fmt;
+
 use logos::{Logos, SpannedIter};
 pub use tokens::*;
 
+use crate::Span;
+
 pub type Spanned<Tok, Loc, Error> = Result<(Loc, Tok, Loc), Error>;
 
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub enum LexicalError {
-    InvalidToken,
+    InvalidToken(Span),
 }
 
 pub struct Lexer<'input> {
@@ -30,7 +34,27 @@ impl<'input> Iterator for Lexer<'input> {
         match self.token_stream.next() {
             None => None,
             Some((Ok(token), span)) => Some(Ok((span.start, token, span.end))),
-            Some((Err(_), _)) => Some(Err(LexicalError::InvalidToken)),
+            Some((Err(_), span)) => Some(Err(LexicalError::InvalidToken(Span::new(
+                span.start, span.end,
+            )))),
         }
     }
 }
+
+impl LexicalError {
+    pub fn span(&self) -> Span {
+        match self {
+            LexicalError::InvalidToken(span) => *span,
+        }
+    }
+}
+
+impl fmt::Display for LexicalError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            LexicalError::InvalidToken(_) => write!(f, "invalid token"),
+        }
+    }
+}
+
+impl std::error::Error for LexicalError {}

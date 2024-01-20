@@ -136,12 +136,12 @@ fn union_extension() {
 #[allow(dead_code)]
 fn parse_test(filename: &str) -> Ast {
     let data = std::fs::read_to_string(filename).unwrap();
-    cynic_parser::parse_type_system_document(&data)
+    cynic_parser::parse_type_system_document(&data).unwrap()
 }
 
 fn roundtrip_test(filename: &str) {
     let data = std::fs::read_to_string(filename).unwrap();
-    let ast = cynic_parser::parse_type_system_document(&data);
+    let ast = cynic_parser::parse_type_system_document(&data).unwrap();
 
     let output = ast.to_sdl();
 
@@ -154,11 +154,11 @@ fn double_roundtrip_test(filename: &str) {
     //
     // For those cases we do a double roundtrip instead of just one
     let data = std::fs::read_to_string(filename).unwrap();
-    let ast = cynic_parser::parse_type_system_document(&data);
+    let ast = cynic_parser::parse_type_system_document(&data).unwrap();
 
     let round_one_output = ast.to_sdl();
 
-    let ast = cynic_parser::parse_type_system_document(&round_one_output);
+    let ast = cynic_parser::parse_type_system_document(&round_one_output).unwrap();
 
     let round_two_output = ast.to_sdl();
 
