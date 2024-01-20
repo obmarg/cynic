@@ -9,11 +9,14 @@ publish = false
 [features]
 default = []
 print = ["pretty"]
+report = ["ariadne"]
 
 [dependencies]
 indexmap = "2"
 lalrpop-util = "0.20.0"
 logos = "0.13"
+
+ariadne = { version = "0.4", optional = true }
 pretty = { version = "0.12", optional = true }
 
 [dev-dependencies]
@@ -23,7 +26,7 @@ insta = "1.29"
 similar-asserts = "1.5"
 
 # Tests need the `print` functionality so enable it here
-cynic-parser = { path = ".", features = ["print"] }
+cynic-parser = { path = ".", features = ["print", "report"] }
 
 [build-dependencies]
 # Commenting this out as parser-generator does this.

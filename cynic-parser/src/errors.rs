@@ -1,4 +1,10 @@
+#[cfg(feature = "report")]
+mod report;
+
 use std::fmt;
+
+#[cfg(feature = "report")]
+pub use report::Report;
 
 use crate::{
     lexer::{self, LexicalError},
