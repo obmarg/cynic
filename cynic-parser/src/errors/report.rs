@@ -45,7 +45,7 @@ impl Error {
                 expected,
             } => (
                 format!("unexpected {}", token),
-                Label::new(*start..*end).with_message("didn't expect to see this"),
+                Label::new(*dbg!(start)..*dbg!(end)).with_message("didn't expect to see this"),
                 Some(format!("expected one of {}", expected.join(", "))),
             ),
             Error::ExtraToken {
