@@ -9,6 +9,10 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+### Bug Fixes
+
+- Fixed an issue with object literals inside arguments
+
 ## v3.4.0 - 2024-01-09
 
 ### New Features
