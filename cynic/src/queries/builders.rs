@@ -4,12 +4,15 @@ use crate::{coercions::CoercesTo, schema, variables::VariableDefinition};
 
 use super::{ast::*, to_input_literal, FlattensInto, IsFieldType, Recursable};
 
+// The maximum depth we'll recurse to before assuming something is wrong
+// and giving up
+const MAX_DEPTH: u16 = 4096;
+
 /// Builds a SelectionSet for the given `SchemaType` and `VariablesFields`
 pub struct SelectionBuilder<'a, SchemaType, VariablesFields> {
     phantom: PhantomData<fn() -> (SchemaType, VariablesFields)>,
     selection_set: &'a mut SelectionSet,
     has_typename: bool,
-    recurse_depth: Option<u8>,
     context: BuilderContext<'a>,
 }
 
@@ -19,7 +22,6 @@ impl<'a, T, U> SelectionBuilder<'a, Vec<T>, U> {
             selection_set: self.selection_set,
             has_typename: self.has_typename,
             phantom: PhantomData,
-            recurse_depth: self.recurse_depth,
             context: self.context,
         }
     }
@@ -31,7 +33,6 @@ impl<'a, T, U> SelectionBuilder<'a, Option<T>, U> {
             selection_set: self.selection_set,
             has_typename: self.has_typename,
             phantom: PhantomData,
-            recurse_depth: self.recurse_depth,
             context: self.context,
         }
     }
@@ -46,6 +47,8 @@ impl<'a, SchemaType, VariablesFields> SelectionBuilder<'a, SchemaType, Variables
         SelectionBuilder::private_new(
             selection_set,
             BuilderContext {
+                recurse_depth: None,
+                overall_depth: 0,
                 features_enabled,
                 variables_used,
             },
@@ -57,7 +60,6 @@ impl<'a, SchemaType, VariablesFields> SelectionBuilder<'a, SchemaType, Variables
             phantom: PhantomData,
             has_typename: false,
             selection_set,
-            recurse_depth: None,
             context,
         }
     }
@@ -76,7 +78,6 @@ impl<'a, SchemaType, VariablesFields> SelectionBuilder<'a, SchemaType, Variables
         FieldType: IsFieldType<SchemaType::Type>,
     {
         FieldSelectionBuilder {
-            recurse_depth: self.recurse_depth,
             context: self.context,
             field: self.push_selection(FieldMarker::NAME),
             phantom: PhantomData,
@@ -98,7 +99,6 @@ impl<'a, SchemaType, VariablesFields> SelectionBuilder<'a, SchemaType, Variables
         FieldType: IsFieldType<SchemaType::Type>,
     {
         FieldSelectionBuilder {
-            recurse_depth: self.recurse_depth,
             context: self.context,
             field: self.push_selection(FieldMarker::NAME),
             phantom: PhantomData,
@@ -118,14 +118,14 @@ impl<'a, SchemaType, VariablesFields> SelectionBuilder<'a, SchemaType, Variables
         SchemaType: schema::HasField<FieldMarker>,
         FieldType: Recursable<FieldMarker::Type>,
     {
-        let new_depth = self.recurse_depth.map(|d| d + 1).unwrap_or(0);
+        let context = self.context.recurse();
+        let new_depth = context.recurse_depth.unwrap();
         if new_depth >= max_depth {
             return None;
         }
 
         Some(FieldSelectionBuilder {
-            recurse_depth: Some(new_depth),
-            context: self.context,
+            context,
             field: self.push_selection(FieldMarker::NAME),
             phantom: PhantomData,
         })
@@ -181,7 +181,6 @@ pub struct FieldSelectionBuilder<'a, Field, SchemaType, VariablesFields> {
     #[allow(clippy::type_complexity)]
     phantom: PhantomData<fn() -> (Field, SchemaType, VariablesFields)>,
     field: &'a mut FieldSelection,
-    recurse_depth: Option<u8>,
     context: BuilderContext<'a>,
 }
 
@@ -220,10 +219,7 @@ impl<'a, Field, FieldSchemaType, VariablesFields>
     where
         VariablesFields: VariableMatch<InnerVariables>,
     {
-        SelectionBuilder {
-            recurse_depth: self.recurse_depth,
-            ..SelectionBuilder::private_new(&mut self.field.children, self.context)
-        }
+        SelectionBuilder::private_new(&mut self.field.children, self.context.descend())
     }
 }
 
@@ -260,7 +256,7 @@ impl<'a, SchemaType, VariablesFields> InlineFragmentBuilder<'a, SchemaType, Vari
     where
         VariablesFields: VariableMatch<InnerVariablesFields>,
     {
-        SelectionBuilder::private_new(&mut self.inline_fragment.children, self.context)
+        SelectionBuilder::private_new(&mut self.inline_fragment.children, self.context.descend())
     }
 }
 
@@ -323,7 +319,7 @@ where
 
         ObjectArgumentBuilder {
             fields,
-            context: self.context,
+            context: self.context.descend(),
             phantom: PhantomData,
         }
     }
@@ -365,7 +361,7 @@ impl<'a, SchemaType, VariablesFields> InputBuilder<'a, Vec<SchemaType>, Variable
 
         ListArgumentBuilder {
             items,
-            context: self.context,
+            context: self.context.descend(),
             phantom: PhantomData,
         }
     }
@@ -445,4 +441,29 @@ impl<T> VariableMatch<()> for T where T: crate::QueryVariablesFields {}
 struct BuilderContext<'a> {
     features_enabled: &'a HashSet<String>,
     variables_used: &'a Sender<&'static str>,
+    recurse_depth: Option<u8>,
+    overall_depth: u16,
+}
+
+impl BuilderContext<'_> {
+    pub fn descend(&self) -> Self {
+        let overall_depth = self.overall_depth + 1;
+
+        assert!(
+            overall_depth < MAX_DEPTH,
+            "Maximum query depth exceeded.  Have you forgotten to mark a query as recursive?",
+        );
+
+        Self {
+            overall_depth,
+            ..*self
+        }
+    }
+
+    pub fn recurse(&self) -> Self {
+        Self {
+            recurse_depth: self.recurse_depth.map(|d| d + 1).or(Some(0)),
+            ..self.descend()
+        }
+    }
 }

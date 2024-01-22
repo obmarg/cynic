@@ -33,6 +33,9 @@ type Author implements Node {
   # A nonsense self referential field
   # Don't think this would make sense usually, but it's useful for testing.
   me: Author!
+
+  # an even more nonsense self referential field
+  sillyMe: PostOrAuthor!
 }
 
 type EmptyType {

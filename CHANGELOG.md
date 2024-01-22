@@ -9,6 +9,18 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+### Changes
+
+- If you accidentally write a recursive query without the `recurse` attribute
+  you'll now get a panic suggesting to use `recurse`.  This may cause false
+  positives if you're writing a particularly large query - users should raise
+  an issue if I've picked a number that's too low.
+
+### Bug Fixes
+
+- The `recurse` attribute now works if an `InlineFragments` derive is used in
+  the recursive path.
+
 ## v3.4.1 - 2024-01-22
 
 ### Bug Fixes
