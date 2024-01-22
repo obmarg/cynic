@@ -12,7 +12,7 @@ fn main() {
     match cli.command {
         Some(Commands::Introspect(args)) => {
             if let Err(error) = introspect::introspect(args) {
-                let output = format!("Error during introspection: {error}").red();
+                let output = format!("{error}").red();
                 eprintln!("{output}");
             }
         }

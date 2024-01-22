@@ -7,7 +7,10 @@ impl crate::query::IntrospectionQuery {
     /// Converts the results of an IntrospectionQuery into a `Schema`,
     /// which has some stronger types than those offered by the introspection query
     pub fn into_schema(self) -> Result<Schema, SchemaError> {
-        Schema::try_from(self.introspected_schema)
+        Schema::try_from(
+            self.introspected_schema
+                .ok_or(SchemaError::IntrospectionQueryFailed)?,
+        )
     }
 }
 
@@ -321,6 +324,9 @@ pub enum SchemaError {
     /// Found a wrapping type that was too nested
     #[error("Found a wrapping type that was too nested")]
     TooMuchWrapping,
+    /// The introspection query didn't return results
+    #[error("The introspection query returned no data.  Try looking in the response for errors")]
+    IntrospectionQueryFailed,
 }
 
 impl TryFrom<crate::query::IntrospectedSchema> for Schema {

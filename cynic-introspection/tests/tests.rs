@@ -1,4 +1,6 @@
-use cynic_introspection::{query::IntrospectionQuery, SpecificationVersion};
+use cynic::GraphQlResponse;
+use cynic_introspection::{query::IntrospectionQuery, SchemaError, SpecificationVersion};
+use serde_json::json;
 
 #[test]
 fn test_2018_introspection_query() {
@@ -90,4 +92,21 @@ fn test_2021_schema_conversion() {
         panic!("Errors executing query: {errors:?}");
     }
     insta::assert_debug_snapshot!(result.data.unwrap().into_schema().unwrap());
+}
+
+#[test]
+fn test_deserializing_disabled_introspection() {
+    let response = serde_json::from_value::<GraphQlResponse<IntrospectionQuery>>(json!(
+        {
+            "data": {"__schema": null},
+            "errors": [{"message": "Introspection disabled"}]
+        }
+    ))
+    .unwrap();
+
+    assert_eq!(response.errors.unwrap().len(), 1);
+    assert_eq!(
+        response.data.unwrap().into_schema(),
+        Err(SchemaError::IntrospectionQueryFailed)
+    );
 }

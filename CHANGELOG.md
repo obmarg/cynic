@@ -9,6 +9,14 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v3.4.3 - 2024-01-22
+
+### Bug Fixes
+
+- Handle disabled introspection better in `cynic-introspection` & `cynic-cli`.
+  This is technically a breaking change, but it's small and fixes a bug so I'll
+  allow it.
+
 ## v3.4.2 - 2024-01-22
 
 ### Changes

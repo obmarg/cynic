@@ -15,13 +15,25 @@ pub(crate) fn introspect(args: IntrospectArgs) -> Result<(), IntrospectError> {
         GraphQlVersion::AutoDetect => detect_capabilities(&client, &args)?,
     };
 
-    let introspection_data = client
+    let response = client
         .build(&args)?
-        .run_graphql(IntrospectionQuery::with_capabilities(capabilities))?
-        .data
-        .ok_or(IntrospectError::GraphQlError)?;
+        .run_graphql(IntrospectionQuery::with_capabilities(capabilities))?;
 
-    let schema = introspection_data.into_schema()?;
+    let errors = response.errors.unwrap_or_default();
+    if !errors.is_empty() {
+        eprintln!("{}", "Errors while introspecting: ".red(),);
+
+        for error in errors {
+            eprintln!("- {}", error.message.red());
+        }
+        eprintln!();
+    }
+
+    let Some(data) = response.data else {
+        return Err(IntrospectError::IntrospectionQueryFailed);
+    };
+
+    let schema = data.into_schema()?;
 
     match args.output {
         None => print!("{}", schema.to_sdl()),
@@ -43,9 +55,24 @@ pub(crate) enum IntrospectError {
     #[error("Couldn't parse a header from {0}.  Make sure you've passed a header of the form `Name: Value`")]
     MalformedHeaderArgument(String),
     #[error("Couldn't convert introspection result into schema: {0}")]
-    SchemaError(#[from] cynic_introspection::SchemaError),
+    SchemaError(cynic_introspection::SchemaError),
+    #[error(
+        "The introspection query seems to have failed.  Try looking in the response for errors"
+    )]
+    IntrospectionQueryFailed,
     #[error("Couldn't write the schema to file: {0}")]
     IOError(#[from] std::io::Error),
+}
+
+impl From<cynic_introspection::SchemaError> for IntrospectError {
+    fn from(value: cynic_introspection::SchemaError) -> Self {
+        match value {
+            cynic_introspection::SchemaError::IntrospectionQueryFailed => {
+                IntrospectError::IntrospectionQueryFailed
+            }
+            other => IntrospectError::SchemaError(other),
+        }
+    }
 }
 
 fn detect_capabilities(
