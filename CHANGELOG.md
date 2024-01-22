@@ -9,6 +9,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v3.4.2 - 2024-01-22
+
 ### Changes
 
 - If you accidentally write a recursive query without the `recurse` attribute
