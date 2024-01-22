@@ -13,7 +13,7 @@
 pub struct IntrospectionQuery {
     #[cynic(rename = "__schema")]
     /// The schema returned from the query
-    pub introspected_schema: IntrospectedSchema,
+    pub introspected_schema: Option<IntrospectedSchema>,
 }
 
 #[derive(cynic::QueryFragment, Debug)]
