@@ -41,8 +41,12 @@ impl cynic::QueryFragment for MyQuery {
                     builder
                         .value()
                         .list()
-                        .item(|builder| builder.literal(PostStatePosted))
-                        .item(|builder| builder.literal(PostStateDraft));
+                        .item(|builder| {
+                            builder.literal(PostStatePosted);
+                        })
+                        .item(|builder| {
+                            builder.literal(PostStateDraft);
+                        });
                 });
         }
         <Vec<BlogPostOutput> as cynic::QueryFragment>::query(field_builder.select_children());

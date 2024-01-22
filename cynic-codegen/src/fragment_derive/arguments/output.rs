@@ -95,7 +95,7 @@ impl ToTokens for ArgumentValueTokens<'_> {
                 for item in items {
                     let inner = self.wrap_value(item);
                     tokens.append_all(quote! {
-                        .item(|builder| { builder #inner })
+                        .item(|builder| { builder #inner; })
                     })
                 }
             }
