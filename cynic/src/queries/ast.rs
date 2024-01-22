@@ -132,11 +132,15 @@ impl std::fmt::Display for Selection {
                 write!(f, "{}", field_selection.children)
             }
             Selection::InlineFragment(inline_fragment) => {
-                write!(f, "...")?;
-                if let Some(on_type) = inline_fragment.on_clause {
-                    write!(f, " on {}", on_type)?;
+                // Don't print any empty fragments - this can happen in recursive queries...
+                if !inline_fragment.children.selections.is_empty() {
+                    write!(f, "...")?;
+                    if let Some(on_type) = inline_fragment.on_clause {
+                        write!(f, " on {}", on_type)?;
+                    }
+                    write!(f, "{}", inline_fragment.children)?;
                 }
-                write!(f, "{}", inline_fragment.children)
+                Ok(())
             }
         }
     }

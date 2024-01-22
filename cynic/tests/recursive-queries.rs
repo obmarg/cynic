@@ -187,3 +187,56 @@ mod required_recursive_types {
         insta::assert_yaml_snapshot!(serde_json::from_value::<FriendsQuery>(data).unwrap());
     }
 }
+
+mod recursing_through_inline_fragments {
+    use cynic_proc_macros::InlineFragments;
+
+    #[test]
+    fn test_inline_fragment_preserves_recurse_behaviour() {
+        use super::*;
+
+        #[derive(QueryFragment, Serialize)]
+        #[cynic(graphql_type = "Query", schema_path = "tests/test-schema.graphql")]
+        struct AllDataQuery {
+            all_data: Vec<PostOrAuthor>,
+        }
+
+        #[derive(InlineFragments, Serialize)]
+        #[cynic(schema_path = "tests/test-schema.graphql")]
+        enum PostOrAuthor {
+            Author(Author),
+            #[cynic(fallback)]
+            Other,
+        }
+
+        #[derive(QueryFragment, Serialize)]
+        #[cynic(schema_path = "tests/test-schema.graphql")]
+        struct Author {
+            #[cynic(recurse = "2")]
+            silly_me: Option<Box<PostOrAuthor>>,
+        }
+
+        use cynic::QueryBuilder;
+
+        let operation = AllDataQuery::build(());
+
+        insta::assert_display_snapshot!(operation.query, @r###"
+        query AllDataQuery {
+          allData {
+            __typename
+            ... on Author {
+              sillyMe {
+                __typename
+                ... on Author {
+                  sillyMe {
+                    __typename
+                  }
+                }
+              }
+            }
+          }
+        }
+
+        "###);
+    }
+}
