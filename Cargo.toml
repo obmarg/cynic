@@ -27,7 +27,7 @@ default-members = [
 ]
 
 [workspace.package]
-authors = ["Graeme Coupar <graeme@polyandglot.dev>"]
+authors = ["Graeme Coupar <graeme@turbofish.tech>"]
 edition = "2021"
 homepage = "https://cynic-rs.dev"
 repository = "https://github.com/obmarg/cynic"

@@ -1,8 +1,19 @@
 [package]
 name = "cynic-parser"
+description = "A fast, correct and easy to use GraphQL parser"
+keywords = ["graphql", "parser", "api"]
+readme = "README.md"
+
 version = "0.1.0"
-edition = "2021"
-publish = false
+
+homepage = "https://docs.rs/cynic-parser"
+documentation = "https://docs.rs/cynic-parser"
+
+authors.workspace = true
+edition.workspace = true
+license.workspace = true
+repository.workspace = true
+rust-version.workspace = true
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
@@ -32,7 +43,6 @@ cynic-parser = { path = ".", features = ["print", "report"] }
 # Commenting this out as parser-generator does this.
 # If actively developing the parser you might want to uncomment this.
 # lalrpop = "0.20.0"
-
 
 [[bench]]
 name = "parsing-benchmark"
