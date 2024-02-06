@@ -64,7 +64,7 @@ dependencies = [
 
 [[package]]
 name = "cynic"
-version = "3.3.0"
+version = "3.4.3"
 dependencies = [
  "cynic-proc-macros",
  "ref-cast",
@@ -75,7 +75,7 @@ dependencies = [
 
 [[package]]
 name = "cynic-codegen"
-version = "3.3.0"
+version = "3.4.3"
 dependencies = [
  "counter",
  "darling",
@@ -91,7 +91,7 @@ dependencies = [
 
 [[package]]
 name = "cynic-proc-macros"
-version = "3.3.0"
+version = "3.4.3"
 dependencies = [
  "cynic-codegen",
  "darling",
