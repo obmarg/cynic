@@ -4,6 +4,7 @@ mod type_index;
 mod type_refs;
 
 pub use fields::*;
+#[cfg(test)]
 pub use parser::Document;
 pub use type_index::{GraphPath, TypeIndex};
 pub use type_refs::{InputTypeRef, InterfaceTypeRef, OutputTypeRef, TypeRef};
