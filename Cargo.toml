@@ -13,7 +13,7 @@ members = [
     "tests/ui-tests",
     "cynic-parser"
 ]
-exclude = ["parser-generator"]
+exclude = ["cynic-parser/parser-generator"]
 resolver = "2"
 
 default-members = [
