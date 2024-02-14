@@ -1,0 +1,25 @@
+use crate::lexer;
+
+use crate::ast::{storage::*, ids::*, writer::AstWriter, *};
+
+grammar<'input>(input: &'input str, ast: &mut AstWriter);
+
+pub ExecutableDocument: () = {
+    <defs:DefinitionAndDescription+> => {}
+}
+
+DefinitionAndDescription: () = {
+    <description:StringValue?> <def:ExecutableDefinition> => {
+        ast.store_description(def, description)
+    }
+}
+
+// TODO: Can't re-use DefinitionId here...
+ExecutableDefinition: DefinitionId = {
+    <def:OperationDefinition> => ast.operation_definition(def),
+    <def:FragmentDefinition> => ast.fragment_definition(def),
+}
+
+OperationDefinition: OperationDefinition = {
+    // TODO
+};
