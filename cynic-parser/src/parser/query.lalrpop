@@ -21,8 +21,44 @@ ExecutableDefinition: DefinitionId = {
 }
 
 OperationDefinition: OperationDefinition = {
+    query => {}
+};
+
+FragmentDefinition: FragmentDefinition = {
     "$" => {}
 };
+
+StringValue: StringId = {
+    <s:StringLiteral> => {
+        ast.intern_string(s)
+    },
+    <s:BlockStringLiteral> => {
+        ast.intern_string(s)
+    },
+}
+
+Ident: &'input str = {
+    <s:RawIdent> => s,
+    schema => "schema",
+    query => "query",
+    mutation => "mutation",
+    subscription => "subscription",
+    ty => "type",
+    input => "input",
+    true => "true",
+    false => "false",
+    null => "null",
+    implements => "implements",
+    interface => "interface",
+    "enum" => "enum",
+    union => "union",
+    scalar => "scalar",
+    extend => "extend",
+    directive => "directive",
+    repeatable => "repeatable",
+    on => "on",
+}
+
 
 extern {
     type Location = usize;
