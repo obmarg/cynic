@@ -21,5 +21,59 @@ ExecutableDefinition: DefinitionId = {
 }
 
 OperationDefinition: OperationDefinition = {
-    // TODO
+    "$" => {}
 };
+
+extern {
+    type Location = usize;
+    type Error = lexer::LexicalError;
+
+    enum lexer::Token<'input> {
+        "$" => lexer::Token::Dollar,
+
+        ":" => lexer::Token::Colon,
+
+        "{" => lexer::Token::OpenBrace,
+        "}" => lexer::Token::CloseBrace,
+
+        "(" => lexer::Token::OpenParen,
+        ")" => lexer::Token::CloseParen,
+
+        "[" => lexer::Token::OpenBracket,
+        "]" => lexer::Token::CloseBracket,
+
+        "!" => lexer::Token::Exclamation,
+        "=" => lexer::Token::Equals,
+        "@" => lexer::Token::At,
+        "&" => lexer::Token::Ampersand,
+        "|" => lexer::Token::Pipe,
+
+        RawIdent => lexer::Token::Identifier(<&'input str>),
+
+        StringLiteral => lexer::Token::StringLiteral(<&'input str>),
+        BlockStringLiteral => lexer::Token::BlockStringLiteral(<&'input str>),
+        FloatLiteral => lexer::Token::FloatLiteral(<&'input str>),
+        IntegerLiteral => lexer::Token::IntegerLiteral(<&'input str>),
+
+        // Would be nice if these could just be aliases of `Identifier` but LARLPOP doesn't
+        // seem to support this well: https://github.com/lalrpop/lalrpop/issues/671
+        schema => lexer::Token::Schema,
+        query => lexer::Token::Query,
+        mutation => lexer::Token::Mutation,
+        subscription => lexer::Token::Subscription,
+        ty => lexer::Token::Type,
+        input => lexer::Token::Input,
+        true => lexer::Token::True,
+        false => lexer::Token::False,
+        null => lexer::Token::Null,
+        implements => lexer::Token::Implements,
+        interface => lexer::Token::Interface,
+        "enum" => lexer::Token::Enum,
+        union => lexer::Token::Union,
+        scalar => lexer::Token::Scalar,
+        extend => lexer::Token::Extend,
+        directive => lexer::Token::Directive,
+        repeatable => lexer::Token::Repeatable,
+        on => lexer::Token::On,
+    }
+}
