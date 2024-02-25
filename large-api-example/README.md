@@ -1,5 +1,3 @@
-# Best practice setup of Rust and GraphQL using `cynic`
-
 ```
 $ tree . -I target -I Cargo.lock
 .           <-- workspace root
