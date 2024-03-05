@@ -1,26 +1,17 @@
-mod ast;
 mod lexer;
-
-#[cfg(feature = "print")]
-mod printer;
+pub mod type_system;
 
 mod errors;
+mod span;
 
 #[allow(clippy::all)]
 mod parser;
 
-pub use self::{
-    // TODO: Rethink exporting WrappingType, OperationType & DirectiveLocation & Span at least?
-    ast::{
-        ids, readers, storage, writer::AstWriter, Ast, DirectiveLocation, OperationType, Span,
-        WrappingType,
-    },
-    errors::Error,
-};
+pub use self::{errors::Error, span::Span};
 
-pub fn parse_type_system_document(input: &str) -> Result<Ast, Error> {
+pub fn parse_type_system_document(input: &str) -> Result<type_system::Ast, Error> {
     let lexer = lexer::Lexer::new(input);
-    let mut ast = AstWriter::new();
+    let mut ast = type_system::writer::AstWriter::new();
 
     parser::TypeSystemDocumentParser::new().parse(input, &mut ast, lexer)?;
 

@@ -1,6 +1,12 @@
 use crate::lexer;
 
-use crate::ast::{storage::*, ids::*, writer::AstWriter, *};
+use crate::{
+    Span,
+    type_system::{
+        storage::*, ids::*, writer::AstWriter,
+        DirectiveLocation,
+    }
+};
 
 grammar<'input>(input: &'input str, ast: &mut AstWriter);
 

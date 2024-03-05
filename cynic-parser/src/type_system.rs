@@ -3,14 +3,17 @@ use std::str::FromStr;
 use ids::*;
 use indexmap::IndexSet;
 
+#[cfg(feature = "print")]
+mod printer;
+
 pub mod ids;
 pub mod readers;
-mod span;
 pub mod storage;
 pub mod writer;
 
+// TODO: Possibly pub use all readers
+use crate::span::Span;
 pub use readers::{Definition, TypeDefinition, ValueReader};
-pub use span::Span;
 
 use storage::*;
 

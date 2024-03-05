@@ -1,4 +1,4 @@
-use crate::ast::{
+use crate::type_system::{
     ids::{DirectiveDefinitionId, DirectiveId},
     AstLookup, DirectiveLocation,
 };
