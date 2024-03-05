@@ -1,20 +1,28 @@
 // auto-generated: "lalrpop 0.20.0"
-// sha3: eaca7eb4b4aa3e9fb566b625cd272d0f5e3792c86b949f235e84450e401d7734
+// sha3: 9b75d3f2cb08b4e95bca6827dc7c368dc981f119beae5affe06f0fe3632a776a
 use crate::lexer;
-use crate::ast::{storage::*, ids::*, writer::AstWriter, *};
+use crate::{
+    type_system::{ids::*, storage::*, writer::AstWriter},
+    Span,
+};
 #[allow(unused_extern_crates)]
 extern crate lalrpop_util as __lalrpop_util;
 #[allow(unused_imports)]
 use self::__lalrpop_util::state_machine as __state_machine;
-extern crate core;
 extern crate alloc;
+extern crate core;
 
 #[rustfmt::skip]
 #[allow(non_snake_case, non_camel_case_types, unused_mut, unused_variables, unused_imports, unused_parens, clippy::all)]
 mod __parse__ExecutableDocument {
 
     use crate::lexer;
-    use crate::ast::{storage::*, ids::*, writer::AstWriter, *};
+    use crate::{
+    Span,
+    type_system::{
+        storage::*, ids::*, writer::AstWriter
+    }
+};
     #[allow(unused_extern_crates)]
     extern crate lalrpop_util as __lalrpop_util;
     #[allow(unused_imports)]
@@ -181,14 +189,14 @@ mod __parse__ExecutableDocument {
         }).collect()
     }
     pub(crate) struct __StateMachine<'input, '__1>
-    where 
+    where
     {
         input: &'input str,
         ast: &'__1 mut AstWriter,
         __phantom: core::marker::PhantomData<(&'input ())>,
     }
     impl<'input, '__1> __state_machine::ParserDefinition for __StateMachine<'input, '__1>
-    where 
+    where
     {
         type Location = usize;
         type Error = lexer::LexicalError;
@@ -1434,40 +1442,26 @@ pub use self::__parse__ExecutableDocument::ExecutableDocumentParser;
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action0<
-    'input,
->(
-    input: &'input str,
-    ast: &mut AstWriter,
-    (_, __0, _): (usize, (), usize),
-)
-{
-}
+fn __action0<'input>(input: &'input str, ast: &mut AstWriter, (_, __0, _): (usize, (), usize)) {}
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action1<
-    'input,
->(
+fn __action1<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, defs, _): (usize, alloc::vec::Vec<()>, usize),
-)
-{
+) {
     {}
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action2<
-    'input,
->(
+fn __action2<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, description, _): (usize, core::option::Option<StringId>, usize),
     (_, def, _): (usize, DefinitionId, usize),
-)
-{
+) {
     {
         ast.store_description(def, description)
     }
@@ -1475,66 +1469,51 @@ fn __action2<
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action3<
-    'input,
->(
+fn __action3<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, def, _): (usize, OperationDefinition, usize),
-) -> DefinitionId
-{
+) -> DefinitionId {
     ast.operation_definition(def)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action4<
-    'input,
->(
+fn __action4<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, def, _): (usize, FragmentDefinition, usize),
-) -> DefinitionId
-{
+) -> DefinitionId {
     ast.fragment_definition(def)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action5<
-    'input,
->(
+fn __action5<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> OperationDefinition
-{
+) -> OperationDefinition {
     {}
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action6<
-    'input,
->(
+fn __action6<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> FragmentDefinition
-{
+) -> FragmentDefinition {
     {}
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action7<
-    'input,
->(
+fn __action7<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, s, _): (usize, &'input str, usize),
-) -> StringId
-{
+) -> StringId {
     {
         ast.intern_string(s)
     }
@@ -1542,14 +1521,11 @@ fn __action7<
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action8<
-    'input,
->(
+fn __action8<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, s, _): (usize, &'input str, usize),
-) -> StringId
-{
+) -> StringId {
     {
         ast.intern_string(s)
     }
@@ -1557,374 +1533,294 @@ fn __action8<
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action9<
-    'input,
->(
+fn __action9<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, s, _): (usize, &'input str, usize),
-) -> &'input str
-{
+) -> &'input str {
     s
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action10<
-    'input,
->(
+fn __action10<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> &'input str
-{
+) -> &'input str {
     "schema"
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action11<
-    'input,
->(
+fn __action11<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> &'input str
-{
+) -> &'input str {
     "query"
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action12<
-    'input,
->(
+fn __action12<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> &'input str
-{
+) -> &'input str {
     "mutation"
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action13<
-    'input,
->(
+fn __action13<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> &'input str
-{
+) -> &'input str {
     "subscription"
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action14<
-    'input,
->(
+fn __action14<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> &'input str
-{
+) -> &'input str {
     "type"
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action15<
-    'input,
->(
+fn __action15<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> &'input str
-{
+) -> &'input str {
     "input"
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action16<
-    'input,
->(
+fn __action16<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> &'input str
-{
+) -> &'input str {
     "true"
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action17<
-    'input,
->(
+fn __action17<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> &'input str
-{
+) -> &'input str {
     "false"
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action18<
-    'input,
->(
+fn __action18<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> &'input str
-{
+) -> &'input str {
     "null"
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action19<
-    'input,
->(
+fn __action19<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> &'input str
-{
+) -> &'input str {
     "implements"
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action20<
-    'input,
->(
+fn __action20<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> &'input str
-{
+) -> &'input str {
     "interface"
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action21<
-    'input,
->(
+fn __action21<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> &'input str
-{
+) -> &'input str {
     "enum"
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action22<
-    'input,
->(
+fn __action22<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> &'input str
-{
+) -> &'input str {
     "union"
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action23<
-    'input,
->(
+fn __action23<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> &'input str
-{
+) -> &'input str {
     "scalar"
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action24<
-    'input,
->(
+fn __action24<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> &'input str
-{
+) -> &'input str {
     "extend"
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action25<
-    'input,
->(
+fn __action25<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> &'input str
-{
+) -> &'input str {
     "directive"
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action26<
-    'input,
->(
+fn __action26<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> &'input str
-{
+) -> &'input str {
     "repeatable"
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action27<
-    'input,
->(
+fn __action27<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> &'input str
-{
+) -> &'input str {
     "on"
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action28<
-    'input,
->(
+fn __action28<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, StringId, usize),
-) -> core::option::Option<StringId>
-{
+) -> core::option::Option<StringId> {
     Some(__0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action29<
-    'input,
->(
+fn __action29<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
-) -> core::option::Option<StringId>
-{
+) -> core::option::Option<StringId> {
     None
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action30<
-    'input,
->(
+fn __action30<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, (), usize),
-) -> alloc::vec::Vec<()>
-{
+) -> alloc::vec::Vec<()> {
     alloc::vec![__0]
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action31<
-    'input,
->(
+fn __action31<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, v, _): (usize, alloc::vec::Vec<()>, usize),
     (_, e, _): (usize, (), usize),
-) -> alloc::vec::Vec<()>
-{
-    { let mut v = v; v.push(e); v }
+) -> alloc::vec::Vec<()> {
+    {
+        let mut v = v;
+        v.push(e);
+        v
+    }
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action32<
-    'input,
->(
+fn __action32<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, StringId, usize),
     __1: (usize, DefinitionId, usize),
-)
-{
+) {
     let __start0 = __0.0;
     let __end0 = __0.2;
-    let __temp0 = __action28(
-        input,
-        ast,
-        __0,
-    );
+    let __temp0 = __action28(input, ast, __0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action2(
-        input,
-        ast,
-        __temp0,
-        __1,
-    )
+    __action2(input, ast, __temp0, __1)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action33<
-    'input,
->(
-    input: &'input str,
-    ast: &mut AstWriter,
-    __0: (usize, DefinitionId, usize),
-)
-{
+fn __action33<'input>(input: &'input str, ast: &mut AstWriter, __0: (usize, DefinitionId, usize)) {
     let __start0 = __0.0;
     let __end0 = __0.0;
-    let __temp0 = __action29(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action29(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action2(
-        input,
-        ast,
-        __temp0,
-        __0,
-    )
+    __action2(input, ast, __temp0, __0)
 }
 #[allow(clippy::type_complexity)]
 
-pub trait __ToTriple<'input, >
-{
-    fn to_triple(value: Self) -> Result<(usize,lexer::Token<'input>,usize), __lalrpop_util::ParseError<usize, lexer::Token<'input>, lexer::LexicalError>>;
+pub trait __ToTriple<'input> {
+    fn to_triple(
+        value: Self,
+    ) -> Result<
+        (usize, lexer::Token<'input>, usize),
+        __lalrpop_util::ParseError<usize, lexer::Token<'input>, lexer::LexicalError>,
+    >;
 }
 
-impl<'input, > __ToTriple<'input, > for (usize, lexer::Token<'input>, usize)
-{
-    fn to_triple(value: Self) -> Result<(usize,lexer::Token<'input>,usize), __lalrpop_util::ParseError<usize, lexer::Token<'input>, lexer::LexicalError>> {
+impl<'input> __ToTriple<'input> for (usize, lexer::Token<'input>, usize) {
+    fn to_triple(
+        value: Self,
+    ) -> Result<
+        (usize, lexer::Token<'input>, usize),
+        __lalrpop_util::ParseError<usize, lexer::Token<'input>, lexer::LexicalError>,
+    > {
         Ok(value)
     }
 }
-impl<'input, > __ToTriple<'input, > for Result<(usize, lexer::Token<'input>, usize), lexer::LexicalError>
+impl<'input> __ToTriple<'input>
+    for Result<(usize, lexer::Token<'input>, usize), lexer::LexicalError>
 {
-    fn to_triple(value: Self) -> Result<(usize,lexer::Token<'input>,usize), __lalrpop_util::ParseError<usize, lexer::Token<'input>, lexer::LexicalError>> {
+    fn to_triple(
+        value: Self,
+    ) -> Result<
+        (usize, lexer::Token<'input>, usize),
+        __lalrpop_util::ParseError<usize, lexer::Token<'input>, lexer::LexicalError>,
+    > {
         match value {
             Ok(v) => Ok(v),
             Err(error) => Err(__lalrpop_util::ParseError::User { error }),
