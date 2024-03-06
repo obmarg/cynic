@@ -1,8 +1,10 @@
 // auto-generated: "lalrpop 0.20.0"
-// sha3: ee5f13bb41c00d352f648aab867fd529a579216a5559ae9c62a511125bd18a65
+// sha3: e30f3b59e90ab303da9c548f80d240277995e389b75f3ef8dc71eca4bab65943
 use crate::lexer;
 use crate::{
-    type_system::{ids::*, storage::*, writer::AstWriter, DirectiveLocation},
+    type_system::{
+        ids::*, storage::*, writer::AstWriter, DirectiveLocation, OperationType, WrappingType,
+    },
     Span,
 };
 #[allow(unused_extern_crates)]
@@ -21,7 +23,7 @@ mod __parse__TypeSystemDocument {
     Span,
     type_system::{
         storage::*, ids::*, writer::AstWriter,
-        DirectiveLocation,
+        DirectiveLocation, WrappingType, OperationType
     }
 };
     #[allow(unused_extern_crates)]
@@ -1290,14 +1292,14 @@ mod __parse__TypeSystemDocument {
         }).collect()
     }
     pub(crate) struct __StateMachine<'input, '__1>
-    where 
+    where
     {
         input: &'input str,
         ast: &'__1 mut AstWriter,
         __phantom: core::marker::PhantomData<(&'input ())>,
     }
     impl<'input, '__1> __state_machine::ParserDefinition for __StateMachine<'input, '__1>
-    where 
+    where
     {
         type Location = usize;
         type Error = lexer::LexicalError;
