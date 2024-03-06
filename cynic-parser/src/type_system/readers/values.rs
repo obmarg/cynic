@@ -1,4 +1,7 @@
-use crate::type_system::{self, ids::ValueId, AstLookup};
+use crate::{
+    type_system::{self, ids::ValueId},
+    AstLookup,
+};
 
 use super::{AstId, ReadContext};
 

@@ -1,7 +1,5 @@
-use crate::type_system::{
-    ids::{EnumDefinitionId, EnumValueDefinitionId},
-    AstLookup,
-};
+use crate::type_system::ids::{EnumDefinitionId, EnumValueDefinitionId};
+use crate::AstLookup;
 
 use super::{directives::Directive, AstId, ReadContext};
 

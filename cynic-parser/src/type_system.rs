@@ -45,13 +45,6 @@ pub struct Ast {
     arguments: Vec<Argument>,
 }
 
-trait AstLookup<Id> {
-    type Output: ?Sized;
-
-    fn lookup(&self, index: Id) -> &Self::Output;
-    fn lookup_mut(&mut self, index: Id) -> &mut Self::Output;
-}
-
 #[derive(Clone, Copy)]
 enum AstDefinition {
     Schema(SchemaDefinitionId),

@@ -1,4 +1,4 @@
-use crate::type_system::{ids::UnionDefinitionId, AstLookup};
+use crate::{type_system::ids::UnionDefinitionId, AstLookup};
 
 use super::{directives::Directive, AstId, ReadContext};
 

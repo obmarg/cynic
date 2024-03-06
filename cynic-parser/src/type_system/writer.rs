@@ -1,4 +1,6 @@
-use super::{ids::*, storage::*, AstLookup};
+use crate::AstLookup;
+
+use super::{ids::*, storage::*};
 use super::{Ast, AstDefinition};
 
 pub struct AstWriter {

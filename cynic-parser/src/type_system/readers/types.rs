@@ -1,4 +1,7 @@
-use crate::type_system::{ids::TypeId, AstLookup, WrappingType};
+use crate::{
+    type_system::{ids::TypeId, WrappingType},
+    AstLookup,
+};
 
 use super::{AstId, ReadContext};
 

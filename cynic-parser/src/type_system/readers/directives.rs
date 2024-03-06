@@ -1,7 +1,8 @@
 use crate::type_system::{
     ids::{DirectiveDefinitionId, DirectiveId},
-    AstLookup, DirectiveLocation,
+    DirectiveLocation,
 };
+use crate::AstLookup;
 
 use super::{arguments::Argument, input_values::InputValueDefinition, AstId, ReadContext};
 

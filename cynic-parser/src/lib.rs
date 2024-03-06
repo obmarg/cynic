@@ -1,7 +1,8 @@
-mod lexer;
+pub mod executable;
 pub mod type_system;
 
 mod errors;
+mod lexer;
 mod span;
 
 #[allow(clippy::all)]
@@ -16,6 +17,13 @@ pub fn parse_type_system_document(input: &str) -> Result<type_system::Ast, Error
     parser::TypeSystemDocumentParser::new().parse(input, &mut ast, lexer)?;
 
     Ok(ast.finish())
+}
+
+trait AstLookup<Id> {
+    type Output: ?Sized;
+
+    fn lookup(&self, index: Id) -> &Self::Output;
+    fn lookup_mut(&mut self, index: Id) -> &mut Self::Output;
 }
 
 #[cfg(test)]
