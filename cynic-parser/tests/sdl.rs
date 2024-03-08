@@ -1,6 +1,6 @@
 use similar_asserts::assert_eq;
 
-use cynic_parser::Ast;
+use cynic_parser::type_system::Ast;
 
 #[test]
 fn test_enum() {

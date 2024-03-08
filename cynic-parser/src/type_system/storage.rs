@@ -225,7 +225,7 @@ impl Iterator for TypeWrappersIter {
 
 #[cfg(test)]
 mod tests {
-    use crate::{storage::TypeWrappers, WrappingType};
+    use super::{TypeWrappers, WrappingType};
 
     #[test]
     fn test_wrappers() {
