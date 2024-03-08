@@ -1,20 +1,17 @@
 // auto-generated: "lalrpop 0.20.0"
-// sha3: b555c833954e320b647b3720fd34cbef0ec553a98777fb52232846ac5431fd1f
+// sha3: 9568971e58de7d5d17bf4dd45261627a965e1218032b06ebfb9c9bcf99c15719
 use crate::lexer;
 use crate::{
+    common::{IdRange, OperationType},
+    type_system::{ids::*, storage::*, writer::AstWriter, DirectiveLocation, WrappingType},
     Span,
-    type_system::{
-        storage::*, ids::*, writer::AstWriter,
-        DirectiveLocation, WrappingType,
-    },
-    common::{OperationType}
 };
 #[allow(unused_extern_crates)]
 extern crate lalrpop_util as __lalrpop_util;
 #[allow(unused_imports)]
 use self::__lalrpop_util::state_machine as __state_machine;
-extern crate core;
 extern crate alloc;
+extern crate core;
 
 #[rustfmt::skip]
 #[allow(non_snake_case, non_camel_case_types, unused_mut, unused_variables, unused_imports, unused_parens, clippy::all)]
@@ -27,7 +24,7 @@ mod __parse__TypeSystemDocument {
         storage::*, ids::*, writer::AstWriter,
         DirectiveLocation, WrappingType,
     },
-    common::{OperationType}
+    common::{OperationType, IdRange}
 };
     #[allow(unused_extern_crates)]
     extern crate lalrpop_util as __lalrpop_util;
@@ -1295,14 +1292,14 @@ mod __parse__TypeSystemDocument {
         }).collect()
     }
     pub(crate) struct __StateMachine<'input, '__1>
-    where 
+    where
     {
         input: &'input str,
         ast: &'__1 mut AstWriter,
         __phantom: core::marker::PhantomData<(&'input ())>,
     }
     impl<'input, '__1> __state_machine::ParserDefinition for __StateMachine<'input, '__1>
-    where 
+    where
     {
         type Location = usize;
         type Error = lexer::LexicalError;
@@ -7178,40 +7175,26 @@ pub use self::__parse__TypeSystemDocument::TypeSystemDocumentParser;
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action0<
-    'input,
->(
-    input: &'input str,
-    ast: &mut AstWriter,
-    (_, __0, _): (usize, (), usize),
-)
-{
-}
+fn __action0<'input>(input: &'input str, ast: &mut AstWriter, (_, __0, _): (usize, (), usize)) {}
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action1<
-    'input,
->(
+fn __action1<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, defs, _): (usize, alloc::vec::Vec<()>, usize),
-)
-{
+) {
     {}
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action2<
-    'input,
->(
+fn __action2<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, description, _): (usize, core::option::Option<StringId>, usize),
     (_, def, _): (usize, DefinitionId, usize),
-)
-{
+) {
     {
         ast.store_description(def, description)
     }
@@ -7219,219 +7202,171 @@ fn __action2<
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action3<
-    'input,
->(
+fn __action3<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, def, _): (usize, SchemaDefinition, usize),
-) -> DefinitionId
-{
+) -> DefinitionId {
     ast.schema_definition(def)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action4<
-    'input,
->(
+fn __action4<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, def, _): (usize, ScalarDefinition, usize),
-) -> DefinitionId
-{
+) -> DefinitionId {
     ast.scalar_definition(def)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action5<
-    'input,
->(
+fn __action5<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, def, _): (usize, ObjectDefinition, usize),
-) -> DefinitionId
-{
+) -> DefinitionId {
     ast.object_definition(def)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action6<
-    'input,
->(
+fn __action6<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, def, _): (usize, InterfaceDefinition, usize),
-) -> DefinitionId
-{
+) -> DefinitionId {
     ast.interface_definition(def)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action7<
-    'input,
->(
+fn __action7<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, def, _): (usize, UnionDefinition, usize),
-) -> DefinitionId
-{
+) -> DefinitionId {
     ast.union_definition(def)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action8<
-    'input,
->(
+fn __action8<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, def, _): (usize, EnumDefinition, usize),
-) -> DefinitionId
-{
+) -> DefinitionId {
     ast.enum_definition(def)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action9<
-    'input,
->(
+fn __action9<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, def, _): (usize, InputObjectDefinition, usize),
-) -> DefinitionId
-{
+) -> DefinitionId {
     ast.input_object_definition(def)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action10<
-    'input,
->(
+fn __action10<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, def, _): (usize, SchemaDefinition, usize),
-) -> DefinitionId
-{
+) -> DefinitionId {
     ast.schema_extension(def)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action11<
-    'input,
->(
+fn __action11<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, def, _): (usize, ScalarDefinition, usize),
-) -> DefinitionId
-{
+) -> DefinitionId {
     ast.scalar_extension(def)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action12<
-    'input,
->(
+fn __action12<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, def, _): (usize, ObjectDefinition, usize),
-) -> DefinitionId
-{
+) -> DefinitionId {
     ast.object_extension(def)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action13<
-    'input,
->(
+fn __action13<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, def, _): (usize, InterfaceDefinition, usize),
-) -> DefinitionId
-{
+) -> DefinitionId {
     ast.interface_extension(def)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action14<
-    'input,
->(
+fn __action14<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, def, _): (usize, UnionDefinition, usize),
-) -> DefinitionId
-{
+) -> DefinitionId {
     ast.union_extension(def)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action15<
-    'input,
->(
+fn __action15<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, def, _): (usize, EnumDefinition, usize),
-) -> DefinitionId
-{
+) -> DefinitionId {
     ast.enum_extension(def)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action16<
-    'input,
->(
+fn __action16<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, def, _): (usize, InputObjectDefinition, usize),
-) -> DefinitionId
-{
+) -> DefinitionId {
     ast.input_object_extension(def)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action17<
-    'input,
->(
+fn __action17<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, def, _): (usize, DirectiveDefinition, usize),
-) -> DefinitionId
-{
+) -> DefinitionId {
     ast.directive_definition(def)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action18<
-    'input,
->(
+fn __action18<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, roots, _): (usize, alloc::vec::Vec<RootOperationTypeDefinition>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
-) -> SchemaDefinition
-{
+) -> SchemaDefinition {
     SchemaDefinition {
         description: None,
         roots,
@@ -7440,63 +7375,52 @@ fn __action18<
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action19<
-    'input,
->(
+fn __action19<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, name, _): (usize, StringId, usize),
-) -> RootOperationTypeDefinition
-{
+) -> RootOperationTypeDefinition {
     RootOperationTypeDefinition {
         operation_type: OperationType::Query,
-        named_type: name
+        named_type: name,
     }
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action20<
-    'input,
->(
+fn __action20<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, name, _): (usize, StringId, usize),
-) -> RootOperationTypeDefinition
-{
+) -> RootOperationTypeDefinition {
     RootOperationTypeDefinition {
         operation_type: OperationType::Mutation,
-        named_type: name
+        named_type: name,
     }
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action21<
-    'input,
->(
+fn __action21<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, name, _): (usize, StringId, usize),
-) -> RootOperationTypeDefinition
-{
+) -> RootOperationTypeDefinition {
     RootOperationTypeDefinition {
         operation_type: OperationType::Subscription,
-        named_type: name
+        named_type: name,
     }
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action22<
-    'input,
->(
+fn __action22<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, start, _): (usize, usize, usize),
@@ -7504,21 +7428,18 @@ fn __action22<
     (_, name, _): (usize, StringId, usize),
     (_, directives, _): (usize, IdRange<DirectiveId>, usize),
     (_, end, _): (usize, usize, usize),
-) -> ScalarDefinition
-{
+) -> ScalarDefinition {
     ScalarDefinition {
         name,
         description: None,
         directives,
-        span: Span::new(start,end)
+        span: Span::new(start, end),
     }
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action23<
-    'input,
->(
+fn __action23<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, start, _): (usize, usize, usize),
@@ -7528,30 +7449,27 @@ fn __action23<
     (_, directives, _): (usize, IdRange<DirectiveId>, usize),
     (_, fields, _): (usize, core::option::Option<Vec<()>>, usize),
     (_, end, _): (usize, usize, usize),
-) -> ObjectDefinition
-{
+) -> ObjectDefinition {
     ObjectDefinition {
         name,
         description: None,
         directives,
         implements: implements.unwrap_or_default(),
-        fields: ast.field_definition_range(Some(fields.map(|fields| fields.len()).unwrap_or_default())),
-        span: Span::new(start,end)
+        fields: ast
+            .field_definition_range(Some(fields.map(|fields| fields.len()).unwrap_or_default())),
+        span: Span::new(start, end),
     }
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action24<
-    'input,
->(
+fn __action24<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, interfaces, _): (usize, Vec<StringId>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, name, _): (usize, StringId, usize),
-) -> Vec<StringId>
-{
+) -> Vec<StringId> {
     {
         let mut interfaces = interfaces;
         interfaces.push(name);
@@ -7561,16 +7479,13 @@ fn __action24<
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action25<
-    'input,
->(
+fn __action25<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, _, _): (usize, core::option::Option<lexer::Token<'input>>, usize),
     (_, name, _): (usize, StringId, usize),
-) -> Vec<StringId>
-{
+) -> Vec<StringId> {
     {
         vec![name]
     }
@@ -7578,38 +7493,30 @@ fn __action25<
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action26<
-    'input,
->(
+fn __action26<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, name, _): (usize, StringId, usize),
-) -> StringId
-{
+) -> StringId {
     name
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action27<
-    'input,
->(
+fn __action27<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, fields, _): (usize, alloc::vec::Vec<()>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
-) -> Vec<()>
-{
+) -> Vec<()> {
     fields
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action28<
-    'input,
->(
+fn __action28<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, start, _): (usize, usize, usize),
@@ -7620,43 +7527,39 @@ fn __action28<
     (_, ty, _): (usize, TypeId, usize),
     (_, directives, _): (usize, IdRange<DirectiveId>, usize),
     (_, end, _): (usize, usize, usize),
-)
-{
+) {
     {
-        let arguments = ast.input_value_definition_range(
-            Some(arguments.map(|arguments| arguments.len()).unwrap_or_default())
-        );
+        let arguments = ast.input_value_definition_range(Some(
+            arguments
+                .map(|arguments| arguments.len())
+                .unwrap_or_default(),
+        ));
         ast.field_definition(FieldDefinition {
             name,
             ty,
             arguments,
             description,
             directives,
-            span: Span::new(start,end)
+            span: Span::new(start, end),
         });
     }
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action29<
-    'input,
->(
+fn __action29<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, arguments, _): (usize, alloc::vec::Vec<()>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
-) -> Vec<()>
-{
+) -> Vec<()> {
     arguments
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action30<
-    'input,
->(
+fn __action30<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, start, _): (usize, usize, usize),
@@ -7666,23 +7569,21 @@ fn __action30<
     (_, directives, _): (usize, IdRange<DirectiveId>, usize),
     (_, fields, _): (usize, core::option::Option<Vec<()>>, usize),
     (_, end, _): (usize, usize, usize),
-) -> InterfaceDefinition
-{
+) -> InterfaceDefinition {
     InterfaceDefinition {
         name,
         description: None,
         directives,
         implements: implements.unwrap_or_default(),
-        fields: ast.field_definition_range(Some(fields.map(|fields| fields.len()).unwrap_or_default())),
-        span: Span::new(start,end)
+        fields: ast
+            .field_definition_range(Some(fields.map(|fields| fields.len()).unwrap_or_default())),
+        span: Span::new(start, end),
     }
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action31<
-    'input,
->(
+fn __action31<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, start, _): (usize, usize, usize),
@@ -7691,29 +7592,25 @@ fn __action31<
     (_, directives, _): (usize, IdRange<DirectiveId>, usize),
     (_, members, _): (usize, core::option::Option<Vec<StringId>>, usize),
     (_, end, _): (usize, usize, usize),
-) -> UnionDefinition
-{
+) -> UnionDefinition {
     UnionDefinition {
         name,
         description: None,
         members: members.unwrap_or_default(),
         directives,
-        span: Span::new(start,end)
+        span: Span::new(start, end),
     }
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action32<
-    'input,
->(
+fn __action32<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, members, _): (usize, Vec<StringId>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, name, _): (usize, StringId, usize),
-) -> Vec<StringId>
-{
+) -> Vec<StringId> {
     {
         let mut members = members;
         members.push(name);
@@ -7723,16 +7620,13 @@ fn __action32<
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action33<
-    'input,
->(
+fn __action33<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, _, _): (usize, core::option::Option<lexer::Token<'input>>, usize),
     (_, name, _): (usize, StringId, usize),
-) -> Vec<StringId>
-{
+) -> Vec<StringId> {
     {
         vec![name]
     }
@@ -7740,48 +7634,44 @@ fn __action33<
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action34<
-    'input,
->(
+fn __action34<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, start, _): (usize, usize, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, name, _): (usize, StringId, usize),
     (_, directives, _): (usize, IdRange<DirectiveId>, usize),
-    (_, values, _): (usize, core::option::Option<Vec<EnumValueDefinitionId>>, usize),
+    (_, values, _): (
+        usize,
+        core::option::Option<Vec<EnumValueDefinitionId>>,
+        usize,
+    ),
     (_, end, _): (usize, usize, usize),
-) -> EnumDefinition
-{
+) -> EnumDefinition {
     EnumDefinition {
         name,
         description: None,
         directives,
         values: values.unwrap_or_default(),
-        span: Span::new(start,end)
+        span: Span::new(start, end),
     }
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action35<
-    'input,
->(
+fn __action35<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, values, _): (usize, alloc::vec::Vec<EnumValueDefinitionId>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
-) -> Vec<EnumValueDefinitionId>
-{
+) -> Vec<EnumValueDefinitionId> {
     values
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action36<
-    'input,
->(
+fn __action36<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, start, _): (usize, usize, usize),
@@ -7789,21 +7679,18 @@ fn __action36<
     (_, value, _): (usize, StringId, usize),
     (_, directives, _): (usize, IdRange<DirectiveId>, usize),
     (_, end, _): (usize, usize, usize),
-) -> EnumValueDefinitionId
-{
+) -> EnumValueDefinitionId {
     ast.enum_value_definition(EnumValueDefinition {
         value,
         description,
         directives,
-        span: Span::new(start,end)
+        span: Span::new(start, end),
     })
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action37<
-    'input,
->(
+fn __action37<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, start, _): (usize, usize, usize),
@@ -7812,37 +7699,33 @@ fn __action37<
     (_, directives, _): (usize, IdRange<DirectiveId>, usize),
     (_, fields, _): (usize, core::option::Option<Vec<()>>, usize),
     (_, end, _): (usize, usize, usize),
-) -> InputObjectDefinition
-{
+) -> InputObjectDefinition {
     InputObjectDefinition {
         name,
         description: None,
         directives,
-        fields: ast.input_value_definition_range(Some(fields.map(|fields| fields.len()).unwrap_or_default())),
-        span: Span::new(start,end)
+        fields: ast.input_value_definition_range(Some(
+            fields.map(|fields| fields.len()).unwrap_or_default(),
+        )),
+        span: Span::new(start, end),
     }
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action38<
-    'input,
->(
+fn __action38<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, fields, _): (usize, alloc::vec::Vec<()>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
-) -> Vec<()>
-{
+) -> Vec<()> {
     fields
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action39<
-    'input,
->(
+fn __action39<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, start, _): (usize, usize, usize),
@@ -7854,43 +7737,40 @@ fn __action39<
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, locations, _): (usize, Vec<DirectiveLocation>, usize),
     (_, end, _): (usize, usize, usize),
-) -> DirectiveDefinition
-{
+) -> DirectiveDefinition {
     DirectiveDefinition {
         name,
         description: None,
-        arguments: ast.input_value_definition_range(Some(arguments.map(|arguments| arguments.len()).unwrap_or_default())),
+        arguments: ast.input_value_definition_range(Some(
+            arguments
+                .map(|arguments| arguments.len())
+                .unwrap_or_default(),
+        )),
         repeatable: repeatable.unwrap_or_default(),
         locations,
-        span: Span::new(start, end)
+        span: Span::new(start, end),
     }
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action40<
-    'input,
->(
+fn __action40<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> bool
-{
+) -> bool {
     true
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action41<
-    'input,
->(
+fn __action41<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, locations, _): (usize, Vec<DirectiveLocation>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, location, _): (usize, DirectiveLocation, usize),
-) -> Vec<DirectiveLocation>
-{
+) -> Vec<DirectiveLocation> {
     {
         let mut locations = locations;
         locations.push(location);
@@ -7900,15 +7780,12 @@ fn __action41<
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action42<
-    'input,
->(
+fn __action42<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, _, _): (usize, core::option::Option<lexer::Token<'input>>, usize),
     (_, location, _): (usize, DirectiveLocation, usize),
-) -> Vec<DirectiveLocation>
-{
+) -> Vec<DirectiveLocation> {
     {
         vec![location]
     }
@@ -7916,22 +7793,17 @@ fn __action42<
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action43<
-    'input,
->(
+fn __action43<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, s, _): (usize, &'input str, usize),
-) -> DirectiveLocation
-{
+) -> DirectiveLocation {
     s.parse().expect("TODO: error handling")
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action44<
-    'input,
->(
+fn __action44<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, start, _): (usize, usize, usize),
@@ -7942,8 +7814,7 @@ fn __action44<
     (_, default, _): (usize, core::option::Option<ValueId>, usize),
     (_, directives, _): (usize, IdRange<DirectiveId>, usize),
     (_, end, _): (usize, usize, usize),
-)
-{
+) {
     {
         ast.input_value_definition(InputValueDefinition {
             name,
@@ -7951,158 +7822,125 @@ fn __action44<
             description,
             directives,
             default,
-            span: Span::new(start, end)
+            span: Span::new(start, end),
         });
     }
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action45<
-    'input,
->(
+fn __action45<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, v, _): (usize, ValueId, usize),
-) -> ValueId
-{
+) -> ValueId {
     v
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action46<
-    'input,
->(
+fn __action46<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, s, _): (usize, &'input str, usize),
-) -> StringId
-{
+) -> StringId {
     ast.ident(s)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action47<
-    'input,
->(
+fn __action47<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, s, _): (usize, &'input str, usize),
-) -> StringId
-{
+) -> StringId {
     ast.ident(s)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action48<
-    'input,
->(
+fn __action48<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, ty, _): (usize, TypeId, usize),
-) -> TypeId
-{
+) -> TypeId {
     ty
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action49<
-    'input,
->(
+fn __action49<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, name, _): (usize, StringId, usize),
     (_, wrappers, _): (usize, alloc::vec::Vec<WrappingType>, usize),
-) -> TypeId
-{
+) -> TypeId {
     ast.type_reference(Type {
         name,
-        wrappers: TypeWrappers::from_iter(wrappers)
+        wrappers: TypeWrappers::from_iter(wrappers),
     })
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action50<
-    'input,
->(
+fn __action50<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> WrappingType
-{
+) -> WrappingType {
     WrappingType::NonNull
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action51<
-    'input,
->(
+fn __action51<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> WrappingType
-{
+) -> WrappingType {
     WrappingType::List
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action52<
-    'input,
->(
+fn __action52<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, name, _): (usize, StringId, usize),
-) -> ValueId
-{
+) -> ValueId {
     ast.value(Value::Variable(name))
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action53<
-    'input,
->(
+fn __action53<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, int, _): (usize, &'input str, usize),
-) -> ValueId
-{
+) -> ValueId {
     ast.value(Value::Int(int.parse().unwrap()))
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action54<
-    'input,
->(
+fn __action54<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, float, _): (usize, &'input str, usize),
-) -> ValueId
-{
+) -> ValueId {
     ast.value(Value::Float(float.parse().unwrap()))
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action55<
-    'input,
->(
+fn __action55<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, s, _): (usize, &'input str, usize),
-) -> ValueId
-{
+) -> ValueId {
     {
         let id = ast.intern_string(s);
         ast.value(Value::String(id))
@@ -8111,14 +7949,11 @@ fn __action55<
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action56<
-    'input,
->(
+fn __action56<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, s, _): (usize, &'input str, usize),
-) -> ValueId
-{
+) -> ValueId {
     {
         let id = ast.intern_string(s);
         ast.value(Value::String(id))
@@ -8127,111 +7962,87 @@ fn __action56<
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action57<
-    'input,
->(
+fn __action57<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> ValueId
-{
+) -> ValueId {
     ast.value(Value::Boolean(true))
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action58<
-    'input,
->(
+fn __action58<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> ValueId
-{
+) -> ValueId {
     ast.value(Value::Boolean(false))
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action59<
-    'input,
->(
+fn __action59<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> ValueId
-{
+) -> ValueId {
     ast.value(Value::Null)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action60<
-    'input,
->(
+fn __action60<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, values, _): (usize, alloc::vec::Vec<ValueId>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
-) -> ValueId
-{
+) -> ValueId {
     ast.value(Value::List(values))
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action61<
-    'input,
->(
+fn __action61<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, fields, _): (usize, alloc::vec::Vec<(StringId, ValueId)>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
-) -> ValueId
-{
+) -> ValueId {
     ast.value(Value::Object(fields))
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action62<
-    'input,
->(
+fn __action62<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, value, _): (usize, StringId, usize),
-) -> ValueId
-{
+) -> ValueId {
     ast.value(Value::Enum(value))
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action63<
-    'input,
->(
+fn __action63<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, name, _): (usize, StringId, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, value, _): (usize, ValueId, usize),
-) -> (StringId, ValueId)
-{
+) -> (StringId, ValueId) {
     (name, value)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action64<
-    'input,
->(
+fn __action64<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, s, _): (usize, &'input str, usize),
-) -> StringId
-{
+) -> StringId {
     {
         ast.intern_string(s)
     }
@@ -8239,14 +8050,11 @@ fn __action64<
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action65<
-    'input,
->(
+fn __action65<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, s, _): (usize, &'input str, usize),
-) -> StringId
-{
+) -> StringId {
     {
         ast.intern_string(s)
     }
@@ -8254,79 +8062,61 @@ fn __action65<
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action66<
-    'input,
->(
+fn __action66<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, s, _): (usize, &'input str, usize),
-) -> StringId
-{
+) -> StringId {
     ast.ident(s)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action67<
-    'input,
->(
+fn __action67<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> StringId
-{
+) -> StringId {
     ast.ident("schema")
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action68<
-    'input,
->(
+fn __action68<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> StringId
-{
+) -> StringId {
     ast.ident("query")
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action69<
-    'input,
->(
+fn __action69<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> StringId
-{
+) -> StringId {
     ast.ident("type")
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action70<
-    'input,
->(
+fn __action70<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> StringId
-{
+) -> StringId {
     ast.ident("input")
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action71<
-    'input,
->(
+fn __action71<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, directives, _): (usize, alloc::vec::Vec<()>, usize),
-) -> IdRange<DirectiveId>
-{
+) -> IdRange<DirectiveId> {
     {
         ast.directive_range(Some(directives.len()))
     }
@@ -8334,1258 +8124,977 @@ fn __action71<
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action72<
-    'input,
->(
+fn __action72<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, name, _): (usize, StringId, usize),
     (_, arguments, _): (usize, core::option::Option<Vec<ArgumentId>>, usize),
-)
-{
+) {
     {
         ast.directive(Directive {
             name,
-            arguments: arguments.unwrap_or_default()
+            arguments: arguments.unwrap_or_default(),
         });
     }
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action73<
-    'input,
->(
+fn __action73<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, arguments, _): (usize, alloc::vec::Vec<ArgumentId>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
-) -> Vec<ArgumentId>
-{
+) -> Vec<ArgumentId> {
     arguments
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action74<
-    'input,
->(
+fn __action74<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, name, _): (usize, StringId, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, value, _): (usize, ValueId, usize),
-) -> ArgumentId
-{
+) -> ArgumentId {
     ast.argument(Argument { name, value })
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action75<
-    'input,
->(
+fn __action75<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, s, _): (usize, &'input str, usize),
-) -> &'input str
-{
+) -> &'input str {
     s
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action76<
-    'input,
->(
+fn __action76<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> &'input str
-{
+) -> &'input str {
     "schema"
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action77<
-    'input,
->(
+fn __action77<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> &'input str
-{
+) -> &'input str {
     "query"
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action78<
-    'input,
->(
+fn __action78<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> &'input str
-{
+) -> &'input str {
     "mutation"
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action79<
-    'input,
->(
+fn __action79<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> &'input str
-{
+) -> &'input str {
     "subscription"
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action80<
-    'input,
->(
+fn __action80<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> &'input str
-{
+) -> &'input str {
     "type"
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action81<
-    'input,
->(
+fn __action81<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> &'input str
-{
+) -> &'input str {
     "input"
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action82<
-    'input,
->(
+fn __action82<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> &'input str
-{
+) -> &'input str {
     "true"
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action83<
-    'input,
->(
+fn __action83<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> &'input str
-{
+) -> &'input str {
     "false"
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action84<
-    'input,
->(
+fn __action84<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> &'input str
-{
+) -> &'input str {
     "null"
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action85<
-    'input,
->(
+fn __action85<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> &'input str
-{
+) -> &'input str {
     "implements"
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action86<
-    'input,
->(
+fn __action86<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> &'input str
-{
+) -> &'input str {
     "interface"
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action87<
-    'input,
->(
+fn __action87<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> &'input str
-{
+) -> &'input str {
     "enum"
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action88<
-    'input,
->(
+fn __action88<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> &'input str
-{
+) -> &'input str {
     "union"
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action89<
-    'input,
->(
+fn __action89<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> &'input str
-{
+) -> &'input str {
     "scalar"
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action90<
-    'input,
->(
+fn __action90<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> &'input str
-{
+) -> &'input str {
     "extend"
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action91<
-    'input,
->(
+fn __action91<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> &'input str
-{
+) -> &'input str {
     "directive"
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action92<
-    'input,
->(
+fn __action92<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> &'input str
-{
+) -> &'input str {
     "repeatable"
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action93<
-    'input,
->(
+fn __action93<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> &'input str
-{
+) -> &'input str {
     "on"
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action94<
-    'input,
->(
+fn __action94<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
-) -> alloc::vec::Vec<ArgumentId>
-{
+) -> alloc::vec::Vec<ArgumentId> {
     alloc::vec![]
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action95<
-    'input,
->(
+fn __action95<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, v, _): (usize, alloc::vec::Vec<ArgumentId>, usize),
-) -> alloc::vec::Vec<ArgumentId>
-{
+) -> alloc::vec::Vec<ArgumentId> {
     v
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action96<
-    'input,
->(
+fn __action96<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, Vec<ArgumentId>, usize),
-) -> core::option::Option<Vec<ArgumentId>>
-{
+) -> core::option::Option<Vec<ArgumentId>> {
     Some(__0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action97<
-    'input,
->(
+fn __action97<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
-) -> core::option::Option<Vec<ArgumentId>>
-{
+) -> core::option::Option<Vec<ArgumentId>> {
     None
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action98<
-    'input,
->(
+fn __action98<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
-) -> alloc::vec::Vec<()>
-{
+) -> alloc::vec::Vec<()> {
     alloc::vec![]
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action99<
-    'input,
->(
+fn __action99<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, v, _): (usize, alloc::vec::Vec<()>, usize),
-) -> alloc::vec::Vec<()>
-{
+) -> alloc::vec::Vec<()> {
     v
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action100<
-    'input,
->(
+fn __action100<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
-) -> alloc::vec::Vec<(StringId, ValueId)>
-{
+) -> alloc::vec::Vec<(StringId, ValueId)> {
     alloc::vec![]
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action101<
-    'input,
->(
+fn __action101<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, v, _): (usize, alloc::vec::Vec<(StringId, ValueId)>, usize),
-) -> alloc::vec::Vec<(StringId, ValueId)>
-{
+) -> alloc::vec::Vec<(StringId, ValueId)> {
     v
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action102<
-    'input,
->(
+fn __action102<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
-) -> alloc::vec::Vec<ValueId>
-{
+) -> alloc::vec::Vec<ValueId> {
     alloc::vec![]
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action103<
-    'input,
->(
+fn __action103<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, v, _): (usize, alloc::vec::Vec<ValueId>, usize),
-) -> alloc::vec::Vec<ValueId>
-{
+) -> alloc::vec::Vec<ValueId> {
     v
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action104<
-    'input,
->(
+fn __action104<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
-) -> alloc::vec::Vec<WrappingType>
-{
+) -> alloc::vec::Vec<WrappingType> {
     alloc::vec![]
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action105<
-    'input,
->(
+fn __action105<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, v, _): (usize, alloc::vec::Vec<WrappingType>, usize),
-) -> alloc::vec::Vec<WrappingType>
-{
+) -> alloc::vec::Vec<WrappingType> {
     v
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action106<
-    'input,
->(
+fn __action106<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, ValueId, usize),
-) -> core::option::Option<ValueId>
-{
+) -> core::option::Option<ValueId> {
     Some(__0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action107<
-    'input,
->(
+fn __action107<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
-) -> core::option::Option<ValueId>
-{
+) -> core::option::Option<ValueId> {
     None
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action108<
-    'input,
->(
+fn __action108<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, bool, usize),
-) -> core::option::Option<bool>
-{
+) -> core::option::Option<bool> {
     Some(__0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action109<
-    'input,
->(
+fn __action109<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
-) -> core::option::Option<bool>
-{
+) -> core::option::Option<bool> {
     None
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action110<
-    'input,
->(
+fn __action110<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, Vec<()>, usize),
-) -> core::option::Option<Vec<()>>
-{
+) -> core::option::Option<Vec<()>> {
     Some(__0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action111<
-    'input,
->(
+fn __action111<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
-) -> core::option::Option<Vec<()>>
-{
+) -> core::option::Option<Vec<()>> {
     None
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action112<
-    'input,
->(
+fn __action112<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, EnumValueDefinitionId, usize),
-) -> alloc::vec::Vec<EnumValueDefinitionId>
-{
+) -> alloc::vec::Vec<EnumValueDefinitionId> {
     alloc::vec![__0]
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action113<
-    'input,
->(
+fn __action113<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, v, _): (usize, alloc::vec::Vec<EnumValueDefinitionId>, usize),
     (_, e, _): (usize, EnumValueDefinitionId, usize),
-) -> alloc::vec::Vec<EnumValueDefinitionId>
-{
-    { let mut v = v; v.push(e); v }
+) -> alloc::vec::Vec<EnumValueDefinitionId> {
+    {
+        let mut v = v;
+        v.push(e);
+        v
+    }
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action114<
-    'input,
->(
+fn __action114<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, Vec<EnumValueDefinitionId>, usize),
-) -> core::option::Option<Vec<EnumValueDefinitionId>>
-{
+) -> core::option::Option<Vec<EnumValueDefinitionId>> {
     Some(__0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action115<
-    'input,
->(
+fn __action115<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
-) -> core::option::Option<Vec<EnumValueDefinitionId>>
-{
+) -> core::option::Option<Vec<EnumValueDefinitionId>> {
     None
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action116<
-    'input,
->(
+fn __action116<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> core::option::Option<lexer::Token<'input>>
-{
+) -> core::option::Option<lexer::Token<'input>> {
     Some(__0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action117<
-    'input,
->(
+fn __action117<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
-) -> core::option::Option<lexer::Token<'input>>
-{
+) -> core::option::Option<lexer::Token<'input>> {
     None
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action118<
-    'input,
->(
+fn __action118<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, Vec<StringId>, usize),
-) -> core::option::Option<Vec<StringId>>
-{
+) -> core::option::Option<Vec<StringId>> {
     Some(__0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action119<
-    'input,
->(
+fn __action119<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
-) -> core::option::Option<Vec<StringId>>
-{
+) -> core::option::Option<Vec<StringId>> {
     None
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action120<
-    'input,
->(
+fn __action120<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, (), usize),
-) -> alloc::vec::Vec<()>
-{
+) -> alloc::vec::Vec<()> {
     alloc::vec![__0]
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action121<
-    'input,
->(
+fn __action121<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, v, _): (usize, alloc::vec::Vec<()>, usize),
     (_, e, _): (usize, (), usize),
-) -> alloc::vec::Vec<()>
-{
-    { let mut v = v; v.push(e); v }
+) -> alloc::vec::Vec<()> {
+    {
+        let mut v = v;
+        v.push(e);
+        v
+    }
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action122<
-    'input,
->(
+fn __action122<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, Vec<()>, usize),
-) -> core::option::Option<Vec<()>>
-{
+) -> core::option::Option<Vec<()>> {
     Some(__0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action123<
-    'input,
->(
+fn __action123<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
-) -> core::option::Option<Vec<()>>
-{
+) -> core::option::Option<Vec<()>> {
     None
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action124<
-    'input,
->(
+fn __action124<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, (), usize),
-) -> alloc::vec::Vec<()>
-{
+) -> alloc::vec::Vec<()> {
     alloc::vec![__0]
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action125<
-    'input,
->(
+fn __action125<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, v, _): (usize, alloc::vec::Vec<()>, usize),
     (_, e, _): (usize, (), usize),
-) -> alloc::vec::Vec<()>
-{
-    { let mut v = v; v.push(e); v }
+) -> alloc::vec::Vec<()> {
+    {
+        let mut v = v;
+        v.push(e);
+        v
+    }
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action126<
-    'input,
->(
+fn __action126<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> core::option::Option<lexer::Token<'input>>
-{
+) -> core::option::Option<lexer::Token<'input>> {
     Some(__0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action127<
-    'input,
->(
+fn __action127<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
-) -> core::option::Option<lexer::Token<'input>>
-{
+) -> core::option::Option<lexer::Token<'input>> {
     None
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action128<
-    'input,
->(
+fn __action128<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, Vec<()>, usize),
-) -> core::option::Option<Vec<()>>
-{
+) -> core::option::Option<Vec<()>> {
     Some(__0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action129<
-    'input,
->(
+fn __action129<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
-) -> core::option::Option<Vec<()>>
-{
+) -> core::option::Option<Vec<()>> {
     None
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action130<
-    'input,
->(
+fn __action130<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, Vec<StringId>, usize),
-) -> core::option::Option<Vec<StringId>>
-{
+) -> core::option::Option<Vec<StringId>> {
     Some(__0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action131<
-    'input,
->(
+fn __action131<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
-) -> core::option::Option<Vec<StringId>>
-{
+) -> core::option::Option<Vec<StringId>> {
     None
 }
 
 #[allow(unused_variables)]
-fn __action132<
-    'input,
->(
+fn __action132<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
-) -> usize
-{
+) -> usize {
     *__lookbehind
 }
 
 #[allow(unused_variables)]
-fn __action133<
-    'input,
->(
+fn __action133<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
-) -> usize
-{
+) -> usize {
     *__lookahead
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action134<
-    'input,
->(
+fn __action134<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
-) -> alloc::vec::Vec<RootOperationTypeDefinition>
-{
+) -> alloc::vec::Vec<RootOperationTypeDefinition> {
     alloc::vec![]
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action135<
-    'input,
->(
+fn __action135<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, v, _): (usize, alloc::vec::Vec<RootOperationTypeDefinition>, usize),
-) -> alloc::vec::Vec<RootOperationTypeDefinition>
-{
+) -> alloc::vec::Vec<RootOperationTypeDefinition> {
     v
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action136<
-    'input,
->(
+fn __action136<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, StringId, usize),
-) -> core::option::Option<StringId>
-{
+) -> core::option::Option<StringId> {
     Some(__0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action137<
-    'input,
->(
+fn __action137<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
-) -> core::option::Option<StringId>
-{
+) -> core::option::Option<StringId> {
     None
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action138<
-    'input,
->(
+fn __action138<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, (), usize),
-) -> alloc::vec::Vec<()>
-{
+) -> alloc::vec::Vec<()> {
     alloc::vec![__0]
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action139<
-    'input,
->(
+fn __action139<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, v, _): (usize, alloc::vec::Vec<()>, usize),
     (_, e, _): (usize, (), usize),
-) -> alloc::vec::Vec<()>
-{
-    { let mut v = v; v.push(e); v }
+) -> alloc::vec::Vec<()> {
+    {
+        let mut v = v;
+        v.push(e);
+        v
+    }
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action140<
-    'input,
->(
+fn __action140<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, RootOperationTypeDefinition, usize),
-) -> alloc::vec::Vec<RootOperationTypeDefinition>
-{
+) -> alloc::vec::Vec<RootOperationTypeDefinition> {
     alloc::vec![__0]
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action141<
-    'input,
->(
+fn __action141<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, v, _): (usize, alloc::vec::Vec<RootOperationTypeDefinition>, usize),
     (_, e, _): (usize, RootOperationTypeDefinition, usize),
-) -> alloc::vec::Vec<RootOperationTypeDefinition>
-{
-    { let mut v = v; v.push(e); v }
+) -> alloc::vec::Vec<RootOperationTypeDefinition> {
+    {
+        let mut v = v;
+        v.push(e);
+        v
+    }
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action142<
-    'input,
->(
+fn __action142<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, WrappingType, usize),
-) -> alloc::vec::Vec<WrappingType>
-{
+) -> alloc::vec::Vec<WrappingType> {
     alloc::vec![__0]
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action143<
-    'input,
->(
+fn __action143<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, v, _): (usize, alloc::vec::Vec<WrappingType>, usize),
     (_, e, _): (usize, WrappingType, usize),
-) -> alloc::vec::Vec<WrappingType>
-{
-    { let mut v = v; v.push(e); v }
+) -> alloc::vec::Vec<WrappingType> {
+    {
+        let mut v = v;
+        v.push(e);
+        v
+    }
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action144<
-    'input,
->(
+fn __action144<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, ValueId, usize),
-) -> alloc::vec::Vec<ValueId>
-{
+) -> alloc::vec::Vec<ValueId> {
     alloc::vec![__0]
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action145<
-    'input,
->(
+fn __action145<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, v, _): (usize, alloc::vec::Vec<ValueId>, usize),
     (_, e, _): (usize, ValueId, usize),
-) -> alloc::vec::Vec<ValueId>
-{
-    { let mut v = v; v.push(e); v }
+) -> alloc::vec::Vec<ValueId> {
+    {
+        let mut v = v;
+        v.push(e);
+        v
+    }
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action146<
-    'input,
->(
+fn __action146<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, (StringId, ValueId), usize),
-) -> alloc::vec::Vec<(StringId, ValueId)>
-{
+) -> alloc::vec::Vec<(StringId, ValueId)> {
     alloc::vec![__0]
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action147<
-    'input,
->(
+fn __action147<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, v, _): (usize, alloc::vec::Vec<(StringId, ValueId)>, usize),
     (_, e, _): (usize, (StringId, ValueId), usize),
-) -> alloc::vec::Vec<(StringId, ValueId)>
-{
-    { let mut v = v; v.push(e); v }
+) -> alloc::vec::Vec<(StringId, ValueId)> {
+    {
+        let mut v = v;
+        v.push(e);
+        v
+    }
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action148<
-    'input,
->(
+fn __action148<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, (), usize),
-) -> alloc::vec::Vec<()>
-{
+) -> alloc::vec::Vec<()> {
     alloc::vec![__0]
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action149<
-    'input,
->(
+fn __action149<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, v, _): (usize, alloc::vec::Vec<()>, usize),
     (_, e, _): (usize, (), usize),
-) -> alloc::vec::Vec<()>
-{
-    { let mut v = v; v.push(e); v }
+) -> alloc::vec::Vec<()> {
+    {
+        let mut v = v;
+        v.push(e);
+        v
+    }
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action150<
-    'input,
->(
+fn __action150<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, ArgumentId, usize),
-) -> alloc::vec::Vec<ArgumentId>
-{
+) -> alloc::vec::Vec<ArgumentId> {
     alloc::vec![__0]
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action151<
-    'input,
->(
+fn __action151<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, v, _): (usize, alloc::vec::Vec<ArgumentId>, usize),
     (_, e, _): (usize, ArgumentId, usize),
-) -> alloc::vec::Vec<ArgumentId>
-{
-    { let mut v = v; v.push(e); v }
+) -> alloc::vec::Vec<ArgumentId> {
+    {
+        let mut v = v;
+        v.push(e);
+        v
+    }
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action152<
-    'input,
->(
+fn __action152<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, lexer::Token<'input>, usize),
     __2: (usize, StringId, usize),
-) -> Vec<StringId>
-{
+) -> Vec<StringId> {
     let __start0 = __1.0;
     let __end0 = __1.2;
-    let __temp0 = __action126(
-        input,
-        ast,
-        __1,
-    );
+    let __temp0 = __action126(input, ast, __1);
     let __temp0 = (__start0, __temp0, __end0);
-    __action25(
-        input,
-        ast,
-        __0,
-        __temp0,
-        __2,
-    )
+    __action25(input, ast, __0, __temp0, __2)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action153<
-    'input,
->(
+fn __action153<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
-) -> Vec<StringId>
-{
+) -> Vec<StringId> {
     let __start0 = __0.2;
     let __end0 = __1.0;
-    let __temp0 = __action127(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action127(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action25(
-        input,
-        ast,
-        __0,
-        __temp0,
-        __1,
-    )
+    __action25(input, ast, __0, __temp0, __1)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action154<
-    'input,
->(
+fn __action154<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, DirectiveLocation, usize),
-) -> Vec<DirectiveLocation>
-{
+) -> Vec<DirectiveLocation> {
     let __start0 = __0.0;
     let __end0 = __0.2;
-    let __temp0 = __action116(
-        input,
-        ast,
-        __0,
-    );
+    let __temp0 = __action116(input, ast, __0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action42(
-        input,
-        ast,
-        __temp0,
-        __1,
-    )
+    __action42(input, ast, __temp0, __1)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action155<
-    'input,
->(
+fn __action155<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, DirectiveLocation, usize),
-) -> Vec<DirectiveLocation>
-{
+) -> Vec<DirectiveLocation> {
     let __start0 = __0.0;
     let __end0 = __0.0;
-    let __temp0 = __action117(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action117(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action42(
-        input,
-        ast,
-        __temp0,
-        __0,
-    )
+    __action42(input, ast, __temp0, __0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action156<
-    'input,
->(
+fn __action156<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, lexer::Token<'input>, usize),
     __2: (usize, StringId, usize),
-) -> Vec<StringId>
-{
+) -> Vec<StringId> {
     let __start0 = __1.0;
     let __end0 = __1.2;
-    let __temp0 = __action116(
-        input,
-        ast,
-        __1,
-    );
+    let __temp0 = __action116(input, ast, __1);
     let __temp0 = (__start0, __temp0, __end0);
-    __action33(
-        input,
-        ast,
-        __0,
-        __temp0,
-        __2,
-    )
+    __action33(input, ast, __0, __temp0, __2)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action157<
-    'input,
->(
+fn __action157<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
-) -> Vec<StringId>
-{
+) -> Vec<StringId> {
     let __start0 = __0.2;
     let __end0 = __1.0;
-    let __temp0 = __action117(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action117(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action33(
-        input,
-        ast,
-        __0,
-        __temp0,
-        __1,
-    )
+    __action33(input, ast, __0, __temp0, __1)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action158<
-    'input,
->(
+fn __action158<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
@@ -9596,105 +9105,56 @@ fn __action158<
     __5: (usize, lexer::Token<'input>, usize),
     __6: (usize, Vec<DirectiveLocation>, usize),
     __7: (usize, usize, usize),
-) -> DirectiveDefinition
-{
+) -> DirectiveDefinition {
     let __start0 = __0.0;
     let __end0 = __0.0;
-    let __temp0 = __action133(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action133(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action39(
-        input,
-        ast,
-        __temp0,
-        __0,
-        __1,
-        __2,
-        __3,
-        __4,
-        __5,
-        __6,
-        __7,
-    )
+    __action39(input, ast, __temp0, __0, __1, __2, __3, __4, __5, __6, __7)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action159<
-    'input,
->(
+fn __action159<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
-    __3: (usize, core::option::Option<Vec<EnumValueDefinitionId>>, usize),
+    __3: (
+        usize,
+        core::option::Option<Vec<EnumValueDefinitionId>>,
+        usize,
+    ),
     __4: (usize, usize, usize),
-) -> EnumDefinition
-{
+) -> EnumDefinition {
     let __start0 = __0.0;
     let __end0 = __0.0;
-    let __temp0 = __action133(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action133(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action34(
-        input,
-        ast,
-        __temp0,
-        __0,
-        __1,
-        __2,
-        __3,
-        __4,
-    )
+    __action34(input, ast, __temp0, __0, __1, __2, __3, __4)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action160<
-    'input,
->(
+fn __action160<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, core::option::Option<StringId>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
     __3: (usize, usize, usize),
-) -> EnumValueDefinitionId
-{
+) -> EnumValueDefinitionId {
     let __start0 = __0.0;
     let __end0 = __0.0;
-    let __temp0 = __action133(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action133(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action36(
-        input,
-        ast,
-        __temp0,
-        __0,
-        __1,
-        __2,
-        __3,
-    )
+    __action36(input, ast, __temp0, __0, __1, __2, __3)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action161<
-    'input,
->(
+fn __action161<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, core::option::Option<StringId>, usize),
@@ -9704,36 +9164,17 @@ fn __action161<
     __4: (usize, TypeId, usize),
     __5: (usize, IdRange<DirectiveId>, usize),
     __6: (usize, usize, usize),
-)
-{
+) {
     let __start0 = __0.0;
     let __end0 = __0.0;
-    let __temp0 = __action133(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action133(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action28(
-        input,
-        ast,
-        __temp0,
-        __0,
-        __1,
-        __2,
-        __3,
-        __4,
-        __5,
-        __6,
-    )
+    __action28(input, ast, __temp0, __0, __1, __2, __3, __4, __5, __6)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action162<
-    'input,
->(
+fn __action162<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
@@ -9741,34 +9182,17 @@ fn __action162<
     __2: (usize, IdRange<DirectiveId>, usize),
     __3: (usize, core::option::Option<Vec<()>>, usize),
     __4: (usize, usize, usize),
-) -> InputObjectDefinition
-{
+) -> InputObjectDefinition {
     let __start0 = __0.0;
     let __end0 = __0.0;
-    let __temp0 = __action133(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action133(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action37(
-        input,
-        ast,
-        __temp0,
-        __0,
-        __1,
-        __2,
-        __3,
-        __4,
-    )
+    __action37(input, ast, __temp0, __0, __1, __2, __3, __4)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action163<
-    'input,
->(
+fn __action163<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, core::option::Option<StringId>, usize),
@@ -9778,36 +9202,17 @@ fn __action163<
     __4: (usize, core::option::Option<ValueId>, usize),
     __5: (usize, IdRange<DirectiveId>, usize),
     __6: (usize, usize, usize),
-)
-{
+) {
     let __start0 = __0.0;
     let __end0 = __0.0;
-    let __temp0 = __action133(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action133(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action44(
-        input,
-        ast,
-        __temp0,
-        __0,
-        __1,
-        __2,
-        __3,
-        __4,
-        __5,
-        __6,
-    )
+    __action44(input, ast, __temp0, __0, __1, __2, __3, __4, __5, __6)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action164<
-    'input,
->(
+fn __action164<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
@@ -9816,35 +9221,17 @@ fn __action164<
     __3: (usize, IdRange<DirectiveId>, usize),
     __4: (usize, core::option::Option<Vec<()>>, usize),
     __5: (usize, usize, usize),
-) -> InterfaceDefinition
-{
+) -> InterfaceDefinition {
     let __start0 = __0.0;
     let __end0 = __0.0;
-    let __temp0 = __action133(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action133(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action30(
-        input,
-        ast,
-        __temp0,
-        __0,
-        __1,
-        __2,
-        __3,
-        __4,
-        __5,
-    )
+    __action30(input, ast, __temp0, __0, __1, __2, __3, __4, __5)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action165<
-    'input,
->(
+fn __action165<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
@@ -9853,68 +9240,34 @@ fn __action165<
     __3: (usize, IdRange<DirectiveId>, usize),
     __4: (usize, core::option::Option<Vec<()>>, usize),
     __5: (usize, usize, usize),
-) -> ObjectDefinition
-{
+) -> ObjectDefinition {
     let __start0 = __0.0;
     let __end0 = __0.0;
-    let __temp0 = __action133(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action133(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action23(
-        input,
-        ast,
-        __temp0,
-        __0,
-        __1,
-        __2,
-        __3,
-        __4,
-        __5,
-    )
+    __action23(input, ast, __temp0, __0, __1, __2, __3, __4, __5)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action166<
-    'input,
->(
+fn __action166<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
     __3: (usize, usize, usize),
-) -> ScalarDefinition
-{
+) -> ScalarDefinition {
     let __start0 = __0.0;
     let __end0 = __0.0;
-    let __temp0 = __action133(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action133(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action22(
-        input,
-        ast,
-        __temp0,
-        __0,
-        __1,
-        __2,
-        __3,
-    )
+    __action22(input, ast, __temp0, __0, __1, __2, __3)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action167<
-    'input,
->(
+fn __action167<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
@@ -9922,34 +9275,17 @@ fn __action167<
     __2: (usize, IdRange<DirectiveId>, usize),
     __3: (usize, core::option::Option<Vec<StringId>>, usize),
     __4: (usize, usize, usize),
-) -> UnionDefinition
-{
+) -> UnionDefinition {
     let __start0 = __0.0;
     let __end0 = __0.0;
-    let __temp0 = __action133(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action133(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action31(
-        input,
-        ast,
-        __temp0,
-        __0,
-        __1,
-        __2,
-        __3,
-        __4,
-    )
+    __action31(input, ast, __temp0, __0, __1, __2, __3, __4)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action168<
-    'input,
->(
+fn __action168<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
@@ -9959,100 +9295,54 @@ fn __action168<
     __4: (usize, core::option::Option<bool>, usize),
     __5: (usize, lexer::Token<'input>, usize),
     __6: (usize, Vec<DirectiveLocation>, usize),
-) -> DirectiveDefinition
-{
+) -> DirectiveDefinition {
     let __start0 = __6.2;
     let __end0 = __6.2;
-    let __temp0 = __action132(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action132(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action158(
-        input,
-        ast,
-        __0,
-        __1,
-        __2,
-        __3,
-        __4,
-        __5,
-        __6,
-        __temp0,
-    )
+    __action158(input, ast, __0, __1, __2, __3, __4, __5, __6, __temp0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action169<
-    'input,
->(
+fn __action169<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
-    __3: (usize, core::option::Option<Vec<EnumValueDefinitionId>>, usize),
-) -> EnumDefinition
-{
+    __3: (
+        usize,
+        core::option::Option<Vec<EnumValueDefinitionId>>,
+        usize,
+    ),
+) -> EnumDefinition {
     let __start0 = __3.2;
     let __end0 = __3.2;
-    let __temp0 = __action132(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action132(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action159(
-        input,
-        ast,
-        __0,
-        __1,
-        __2,
-        __3,
-        __temp0,
-    )
+    __action159(input, ast, __0, __1, __2, __3, __temp0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action170<
-    'input,
->(
+fn __action170<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, core::option::Option<StringId>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
-) -> EnumValueDefinitionId
-{
+) -> EnumValueDefinitionId {
     let __start0 = __2.2;
     let __end0 = __2.2;
-    let __temp0 = __action132(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action132(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action160(
-        input,
-        ast,
-        __0,
-        __1,
-        __2,
-        __temp0,
-    )
+    __action160(input, ast, __0, __1, __2, __temp0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action171<
-    'input,
->(
+fn __action171<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, core::option::Option<StringId>, usize),
@@ -10061,68 +9351,34 @@ fn __action171<
     __3: (usize, lexer::Token<'input>, usize),
     __4: (usize, TypeId, usize),
     __5: (usize, IdRange<DirectiveId>, usize),
-)
-{
+) {
     let __start0 = __5.2;
     let __end0 = __5.2;
-    let __temp0 = __action132(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action132(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action161(
-        input,
-        ast,
-        __0,
-        __1,
-        __2,
-        __3,
-        __4,
-        __5,
-        __temp0,
-    )
+    __action161(input, ast, __0, __1, __2, __3, __4, __5, __temp0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action172<
-    'input,
->(
+fn __action172<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
     __3: (usize, core::option::Option<Vec<()>>, usize),
-) -> InputObjectDefinition
-{
+) -> InputObjectDefinition {
     let __start0 = __3.2;
     let __end0 = __3.2;
-    let __temp0 = __action132(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action132(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action162(
-        input,
-        ast,
-        __0,
-        __1,
-        __2,
-        __3,
-        __temp0,
-    )
+    __action162(input, ast, __0, __1, __2, __3, __temp0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action173<
-    'input,
->(
+fn __action173<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, core::option::Option<StringId>, usize),
@@ -10131,35 +9387,17 @@ fn __action173<
     __3: (usize, TypeId, usize),
     __4: (usize, core::option::Option<ValueId>, usize),
     __5: (usize, IdRange<DirectiveId>, usize),
-)
-{
+) {
     let __start0 = __5.2;
     let __end0 = __5.2;
-    let __temp0 = __action132(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action132(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action163(
-        input,
-        ast,
-        __0,
-        __1,
-        __2,
-        __3,
-        __4,
-        __5,
-        __temp0,
-    )
+    __action163(input, ast, __0, __1, __2, __3, __4, __5, __temp0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action174<
-    'input,
->(
+fn __action174<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
@@ -10167,34 +9405,17 @@ fn __action174<
     __2: (usize, core::option::Option<Vec<StringId>>, usize),
     __3: (usize, IdRange<DirectiveId>, usize),
     __4: (usize, core::option::Option<Vec<()>>, usize),
-) -> InterfaceDefinition
-{
+) -> InterfaceDefinition {
     let __start0 = __4.2;
     let __end0 = __4.2;
-    let __temp0 = __action132(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action132(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action164(
-        input,
-        ast,
-        __0,
-        __1,
-        __2,
-        __3,
-        __4,
-        __temp0,
-    )
+    __action164(input, ast, __0, __1, __2, __3, __4, __temp0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action175<
-    'input,
->(
+fn __action175<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
@@ -10202,214 +9423,112 @@ fn __action175<
     __2: (usize, core::option::Option<Vec<StringId>>, usize),
     __3: (usize, IdRange<DirectiveId>, usize),
     __4: (usize, core::option::Option<Vec<()>>, usize),
-) -> ObjectDefinition
-{
+) -> ObjectDefinition {
     let __start0 = __4.2;
     let __end0 = __4.2;
-    let __temp0 = __action132(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action132(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action165(
-        input,
-        ast,
-        __0,
-        __1,
-        __2,
-        __3,
-        __4,
-        __temp0,
-    )
+    __action165(input, ast, __0, __1, __2, __3, __4, __temp0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action176<
-    'input,
->(
+fn __action176<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
-) -> ScalarDefinition
-{
+) -> ScalarDefinition {
     let __start0 = __2.2;
     let __end0 = __2.2;
-    let __temp0 = __action132(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action132(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action166(
-        input,
-        ast,
-        __0,
-        __1,
-        __2,
-        __temp0,
-    )
+    __action166(input, ast, __0, __1, __2, __temp0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action177<
-    'input,
->(
+fn __action177<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
     __3: (usize, core::option::Option<Vec<StringId>>, usize),
-) -> UnionDefinition
-{
+) -> UnionDefinition {
     let __start0 = __3.2;
     let __end0 = __3.2;
-    let __temp0 = __action132(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action132(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action167(
-        input,
-        ast,
-        __0,
-        __1,
-        __2,
-        __3,
-        __temp0,
-    )
+    __action167(input, ast, __0, __1, __2, __3, __temp0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action178<
-    'input,
->(
+fn __action178<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, lexer::Token<'input>, usize),
-) -> Vec<ArgumentId>
-{
+) -> Vec<ArgumentId> {
     let __start0 = __0.2;
     let __end0 = __1.0;
-    let __temp0 = __action94(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action94(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action73(
-        input,
-        ast,
-        __0,
-        __temp0,
-        __1,
-    )
+    __action73(input, ast, __0, __temp0, __1)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action179<
-    'input,
->(
+fn __action179<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, alloc::vec::Vec<ArgumentId>, usize),
     __2: (usize, lexer::Token<'input>, usize),
-) -> Vec<ArgumentId>
-{
+) -> Vec<ArgumentId> {
     let __start0 = __1.0;
     let __end0 = __1.2;
-    let __temp0 = __action95(
-        input,
-        ast,
-        __1,
-    );
+    let __temp0 = __action95(input, ast, __1);
     let __temp0 = (__start0, __temp0, __end0);
-    __action73(
-        input,
-        ast,
-        __0,
-        __temp0,
-        __2,
-    )
+    __action73(input, ast, __0, __temp0, __2)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action180<
-    'input,
->(
+fn __action180<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, Vec<ArgumentId>, usize),
-)
-{
+) {
     let __start0 = __2.0;
     let __end0 = __2.2;
-    let __temp0 = __action96(
-        input,
-        ast,
-        __2,
-    );
+    let __temp0 = __action96(input, ast, __2);
     let __temp0 = (__start0, __temp0, __end0);
-    __action72(
-        input,
-        ast,
-        __0,
-        __1,
-        __temp0,
-    )
+    __action72(input, ast, __0, __1, __temp0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action181<
-    'input,
->(
+fn __action181<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
-)
-{
+) {
     let __start0 = __1.2;
     let __end0 = __1.2;
-    let __temp0 = __action97(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action97(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action72(
-        input,
-        ast,
-        __0,
-        __1,
-        __temp0,
-    )
+    __action72(input, ast, __0, __1, __temp0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action182<
-    'input,
->(
+fn __action182<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
@@ -10419,34 +9538,17 @@ fn __action182<
     __4: (usize, core::option::Option<bool>, usize),
     __5: (usize, lexer::Token<'input>, usize),
     __6: (usize, Vec<DirectiveLocation>, usize),
-) -> DirectiveDefinition
-{
+) -> DirectiveDefinition {
     let __start0 = __3.0;
     let __end0 = __3.2;
-    let __temp0 = __action122(
-        input,
-        ast,
-        __3,
-    );
+    let __temp0 = __action122(input, ast, __3);
     let __temp0 = (__start0, __temp0, __end0);
-    __action168(
-        input,
-        ast,
-        __0,
-        __1,
-        __2,
-        __temp0,
-        __4,
-        __5,
-        __6,
-    )
+    __action168(input, ast, __0, __1, __2, __temp0, __4, __5, __6)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action183<
-    'input,
->(
+fn __action183<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
@@ -10455,35 +9557,17 @@ fn __action183<
     __3: (usize, core::option::Option<bool>, usize),
     __4: (usize, lexer::Token<'input>, usize),
     __5: (usize, Vec<DirectiveLocation>, usize),
-) -> DirectiveDefinition
-{
+) -> DirectiveDefinition {
     let __start0 = __2.2;
     let __end0 = __3.0;
-    let __temp0 = __action123(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action123(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action168(
-        input,
-        ast,
-        __0,
-        __1,
-        __2,
-        __temp0,
-        __3,
-        __4,
-        __5,
-    )
+    __action168(input, ast, __0, __1, __2, __temp0, __3, __4, __5)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action184<
-    'input,
->(
+fn __action184<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, core::option::Option<StringId>, usize),
@@ -10492,33 +9576,17 @@ fn __action184<
     __3: (usize, lexer::Token<'input>, usize),
     __4: (usize, TypeId, usize),
     __5: (usize, IdRange<DirectiveId>, usize),
-)
-{
+) {
     let __start0 = __2.0;
     let __end0 = __2.2;
-    let __temp0 = __action122(
-        input,
-        ast,
-        __2,
-    );
+    let __temp0 = __action122(input, ast, __2);
     let __temp0 = (__start0, __temp0, __end0);
-    __action171(
-        input,
-        ast,
-        __0,
-        __1,
-        __temp0,
-        __3,
-        __4,
-        __5,
-    )
+    __action171(input, ast, __0, __1, __temp0, __3, __4, __5)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action185<
-    'input,
->(
+fn __action185<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, core::option::Option<StringId>, usize),
@@ -10526,34 +9594,17 @@ fn __action185<
     __2: (usize, lexer::Token<'input>, usize),
     __3: (usize, TypeId, usize),
     __4: (usize, IdRange<DirectiveId>, usize),
-)
-{
+) {
     let __start0 = __1.2;
     let __end0 = __2.0;
-    let __temp0 = __action123(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action123(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action171(
-        input,
-        ast,
-        __0,
-        __1,
-        __temp0,
-        __2,
-        __3,
-        __4,
-    )
+    __action171(input, ast, __0, __1, __temp0, __2, __3, __4)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action186<
-    'input,
->(
+fn __action186<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, core::option::Option<StringId>, usize),
@@ -10562,33 +9613,17 @@ fn __action186<
     __3: (usize, TypeId, usize),
     __4: (usize, ValueId, usize),
     __5: (usize, IdRange<DirectiveId>, usize),
-)
-{
+) {
     let __start0 = __4.0;
     let __end0 = __4.2;
-    let __temp0 = __action106(
-        input,
-        ast,
-        __4,
-    );
+    let __temp0 = __action106(input, ast, __4);
     let __temp0 = (__start0, __temp0, __end0);
-    __action173(
-        input,
-        ast,
-        __0,
-        __1,
-        __2,
-        __3,
-        __temp0,
-        __5,
-    )
+    __action173(input, ast, __0, __1, __2, __3, __temp0, __5)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action187<
-    'input,
->(
+fn __action187<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, core::option::Option<StringId>, usize),
@@ -10596,148 +9631,79 @@ fn __action187<
     __2: (usize, lexer::Token<'input>, usize),
     __3: (usize, TypeId, usize),
     __4: (usize, IdRange<DirectiveId>, usize),
-)
-{
+) {
     let __start0 = __3.2;
     let __end0 = __4.0;
-    let __temp0 = __action107(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action107(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action173(
-        input,
-        ast,
-        __0,
-        __1,
-        __2,
-        __3,
-        __temp0,
-        __4,
-    )
+    __action173(input, ast, __0, __1, __2, __3, __temp0, __4)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action188<
-    'input,
->(
+fn __action188<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
-) -> IdRange<DirectiveId>
-{
+) -> IdRange<DirectiveId> {
     let __start0 = *__lookbehind;
     let __end0 = *__lookahead;
-    let __temp0 = __action98(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action98(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action71(
-        input,
-        ast,
-        __temp0,
-    )
+    __action71(input, ast, __temp0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action189<
-    'input,
->(
+fn __action189<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, alloc::vec::Vec<()>, usize),
-) -> IdRange<DirectiveId>
-{
+) -> IdRange<DirectiveId> {
     let __start0 = __0.0;
     let __end0 = __0.2;
-    let __temp0 = __action99(
-        input,
-        ast,
-        __0,
-    );
+    let __temp0 = __action99(input, ast, __0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action71(
-        input,
-        ast,
-        __temp0,
-    )
+    __action71(input, ast, __temp0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action190<
-    'input,
->(
+fn __action190<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
     __3: (usize, Vec<EnumValueDefinitionId>, usize),
-) -> EnumDefinition
-{
+) -> EnumDefinition {
     let __start0 = __3.0;
     let __end0 = __3.2;
-    let __temp0 = __action114(
-        input,
-        ast,
-        __3,
-    );
+    let __temp0 = __action114(input, ast, __3);
     let __temp0 = (__start0, __temp0, __end0);
-    __action169(
-        input,
-        ast,
-        __0,
-        __1,
-        __2,
-        __temp0,
-    )
+    __action169(input, ast, __0, __1, __2, __temp0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action191<
-    'input,
->(
+fn __action191<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
-) -> EnumDefinition
-{
+) -> EnumDefinition {
     let __start0 = __2.2;
     let __end0 = __2.2;
-    let __temp0 = __action115(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action115(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action169(
-        input,
-        ast,
-        __0,
-        __1,
-        __2,
-        __temp0,
-    )
+    __action169(input, ast, __0, __1, __2, __temp0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action192<
-    'input,
->(
+fn __action192<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
@@ -10745,65 +9711,34 @@ fn __action192<
     __2: (usize, core::option::Option<Vec<StringId>>, usize),
     __3: (usize, IdRange<DirectiveId>, usize),
     __4: (usize, Vec<()>, usize),
-) -> InterfaceDefinition
-{
+) -> InterfaceDefinition {
     let __start0 = __4.0;
     let __end0 = __4.2;
-    let __temp0 = __action128(
-        input,
-        ast,
-        __4,
-    );
+    let __temp0 = __action128(input, ast, __4);
     let __temp0 = (__start0, __temp0, __end0);
-    __action174(
-        input,
-        ast,
-        __0,
-        __1,
-        __2,
-        __3,
-        __temp0,
-    )
+    __action174(input, ast, __0, __1, __2, __3, __temp0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action193<
-    'input,
->(
+fn __action193<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, core::option::Option<Vec<StringId>>, usize),
     __3: (usize, IdRange<DirectiveId>, usize),
-) -> InterfaceDefinition
-{
+) -> InterfaceDefinition {
     let __start0 = __3.2;
     let __end0 = __3.2;
-    let __temp0 = __action129(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action129(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action174(
-        input,
-        ast,
-        __0,
-        __1,
-        __2,
-        __3,
-        __temp0,
-    )
+    __action174(input, ast, __0, __1, __2, __3, __temp0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action194<
-    'input,
->(
+fn __action194<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
@@ -10811,65 +9746,34 @@ fn __action194<
     __2: (usize, core::option::Option<Vec<StringId>>, usize),
     __3: (usize, IdRange<DirectiveId>, usize),
     __4: (usize, Vec<()>, usize),
-) -> ObjectDefinition
-{
+) -> ObjectDefinition {
     let __start0 = __4.0;
     let __end0 = __4.2;
-    let __temp0 = __action128(
-        input,
-        ast,
-        __4,
-    );
+    let __temp0 = __action128(input, ast, __4);
     let __temp0 = (__start0, __temp0, __end0);
-    __action175(
-        input,
-        ast,
-        __0,
-        __1,
-        __2,
-        __3,
-        __temp0,
-    )
+    __action175(input, ast, __0, __1, __2, __3, __temp0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action195<
-    'input,
->(
+fn __action195<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, core::option::Option<Vec<StringId>>, usize),
     __3: (usize, IdRange<DirectiveId>, usize),
-) -> ObjectDefinition
-{
+) -> ObjectDefinition {
     let __start0 = __3.2;
     let __end0 = __3.2;
-    let __temp0 = __action129(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action129(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action175(
-        input,
-        ast,
-        __0,
-        __1,
-        __2,
-        __3,
-        __temp0,
-    )
+    __action175(input, ast, __0, __1, __2, __3, __temp0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action196<
-    'input,
->(
+fn __action196<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
@@ -10877,127 +9781,67 @@ fn __action196<
     __2: (usize, Vec<StringId>, usize),
     __3: (usize, IdRange<DirectiveId>, usize),
     __4: (usize, Vec<()>, usize),
-) -> InterfaceDefinition
-{
+) -> InterfaceDefinition {
     let __start0 = __2.0;
     let __end0 = __2.2;
-    let __temp0 = __action130(
-        input,
-        ast,
-        __2,
-    );
+    let __temp0 = __action130(input, ast, __2);
     let __temp0 = (__start0, __temp0, __end0);
-    __action192(
-        input,
-        ast,
-        __0,
-        __1,
-        __temp0,
-        __3,
-        __4,
-    )
+    __action192(input, ast, __0, __1, __temp0, __3, __4)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action197<
-    'input,
->(
+fn __action197<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
     __3: (usize, Vec<()>, usize),
-) -> InterfaceDefinition
-{
+) -> InterfaceDefinition {
     let __start0 = __1.2;
     let __end0 = __2.0;
-    let __temp0 = __action131(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action131(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action192(
-        input,
-        ast,
-        __0,
-        __1,
-        __temp0,
-        __2,
-        __3,
-    )
+    __action192(input, ast, __0, __1, __temp0, __2, __3)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action198<
-    'input,
->(
+fn __action198<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, Vec<StringId>, usize),
     __3: (usize, IdRange<DirectiveId>, usize),
-) -> InterfaceDefinition
-{
+) -> InterfaceDefinition {
     let __start0 = __2.0;
     let __end0 = __2.2;
-    let __temp0 = __action130(
-        input,
-        ast,
-        __2,
-    );
+    let __temp0 = __action130(input, ast, __2);
     let __temp0 = (__start0, __temp0, __end0);
-    __action193(
-        input,
-        ast,
-        __0,
-        __1,
-        __temp0,
-        __3,
-    )
+    __action193(input, ast, __0, __1, __temp0, __3)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action199<
-    'input,
->(
+fn __action199<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
-) -> InterfaceDefinition
-{
+) -> InterfaceDefinition {
     let __start0 = __1.2;
     let __end0 = __2.0;
-    let __temp0 = __action131(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action131(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action193(
-        input,
-        ast,
-        __0,
-        __1,
-        __temp0,
-        __2,
-    )
+    __action193(input, ast, __0, __1, __temp0, __2)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action200<
-    'input,
->(
+fn __action200<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
@@ -11005,247 +9849,131 @@ fn __action200<
     __2: (usize, Vec<StringId>, usize),
     __3: (usize, IdRange<DirectiveId>, usize),
     __4: (usize, Vec<()>, usize),
-) -> ObjectDefinition
-{
+) -> ObjectDefinition {
     let __start0 = __2.0;
     let __end0 = __2.2;
-    let __temp0 = __action130(
-        input,
-        ast,
-        __2,
-    );
+    let __temp0 = __action130(input, ast, __2);
     let __temp0 = (__start0, __temp0, __end0);
-    __action194(
-        input,
-        ast,
-        __0,
-        __1,
-        __temp0,
-        __3,
-        __4,
-    )
+    __action194(input, ast, __0, __1, __temp0, __3, __4)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action201<
-    'input,
->(
+fn __action201<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
     __3: (usize, Vec<()>, usize),
-) -> ObjectDefinition
-{
+) -> ObjectDefinition {
     let __start0 = __1.2;
     let __end0 = __2.0;
-    let __temp0 = __action131(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action131(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action194(
-        input,
-        ast,
-        __0,
-        __1,
-        __temp0,
-        __2,
-        __3,
-    )
+    __action194(input, ast, __0, __1, __temp0, __2, __3)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action202<
-    'input,
->(
+fn __action202<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, Vec<StringId>, usize),
     __3: (usize, IdRange<DirectiveId>, usize),
-) -> ObjectDefinition
-{
+) -> ObjectDefinition {
     let __start0 = __2.0;
     let __end0 = __2.2;
-    let __temp0 = __action130(
-        input,
-        ast,
-        __2,
-    );
+    let __temp0 = __action130(input, ast, __2);
     let __temp0 = (__start0, __temp0, __end0);
-    __action195(
-        input,
-        ast,
-        __0,
-        __1,
-        __temp0,
-        __3,
-    )
+    __action195(input, ast, __0, __1, __temp0, __3)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action203<
-    'input,
->(
+fn __action203<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
-) -> ObjectDefinition
-{
+) -> ObjectDefinition {
     let __start0 = __1.2;
     let __end0 = __2.0;
-    let __temp0 = __action131(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action131(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action195(
-        input,
-        ast,
-        __0,
-        __1,
-        __temp0,
-        __2,
-    )
+    __action195(input, ast, __0, __1, __temp0, __2)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action204<
-    'input,
->(
+fn __action204<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
     __3: (usize, Vec<()>, usize),
-) -> InputObjectDefinition
-{
+) -> InputObjectDefinition {
     let __start0 = __3.0;
     let __end0 = __3.2;
-    let __temp0 = __action110(
-        input,
-        ast,
-        __3,
-    );
+    let __temp0 = __action110(input, ast, __3);
     let __temp0 = (__start0, __temp0, __end0);
-    __action172(
-        input,
-        ast,
-        __0,
-        __1,
-        __2,
-        __temp0,
-    )
+    __action172(input, ast, __0, __1, __2, __temp0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action205<
-    'input,
->(
+fn __action205<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
-) -> InputObjectDefinition
-{
+) -> InputObjectDefinition {
     let __start0 = __2.2;
     let __end0 = __2.2;
-    let __temp0 = __action111(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action111(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action172(
-        input,
-        ast,
-        __0,
-        __1,
-        __2,
-        __temp0,
-    )
+    __action172(input, ast, __0, __1, __2, __temp0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action206<
-    'input,
->(
+fn __action206<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, lexer::Token<'input>, usize),
-) -> ValueId
-{
+) -> ValueId {
     let __start0 = __0.2;
     let __end0 = __1.0;
-    let __temp0 = __action100(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action100(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action61(
-        input,
-        ast,
-        __0,
-        __temp0,
-        __1,
-    )
+    __action61(input, ast, __0, __temp0, __1)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action207<
-    'input,
->(
+fn __action207<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, alloc::vec::Vec<(StringId, ValueId)>, usize),
     __2: (usize, lexer::Token<'input>, usize),
-) -> ValueId
-{
+) -> ValueId {
     let __start0 = __1.0;
     let __end0 = __1.2;
-    let __temp0 = __action101(
-        input,
-        ast,
-        __1,
-    );
+    let __temp0 = __action101(input, ast, __1);
     let __temp0 = (__start0, __temp0, __end0);
-    __action61(
-        input,
-        ast,
-        __0,
-        __temp0,
-        __2,
-    )
+    __action61(input, ast, __0, __temp0, __2)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action208<
-    'input,
->(
+fn __action208<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
@@ -11255,34 +9983,17 @@ fn __action208<
     __4: (usize, bool, usize),
     __5: (usize, lexer::Token<'input>, usize),
     __6: (usize, Vec<DirectiveLocation>, usize),
-) -> DirectiveDefinition
-{
+) -> DirectiveDefinition {
     let __start0 = __4.0;
     let __end0 = __4.2;
-    let __temp0 = __action108(
-        input,
-        ast,
-        __4,
-    );
+    let __temp0 = __action108(input, ast, __4);
     let __temp0 = (__start0, __temp0, __end0);
-    __action182(
-        input,
-        ast,
-        __0,
-        __1,
-        __2,
-        __3,
-        __temp0,
-        __5,
-        __6,
-    )
+    __action182(input, ast, __0, __1, __2, __3, __temp0, __5, __6)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action209<
-    'input,
->(
+fn __action209<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
@@ -11291,35 +10002,17 @@ fn __action209<
     __3: (usize, Vec<()>, usize),
     __4: (usize, lexer::Token<'input>, usize),
     __5: (usize, Vec<DirectiveLocation>, usize),
-) -> DirectiveDefinition
-{
+) -> DirectiveDefinition {
     let __start0 = __3.2;
     let __end0 = __4.0;
-    let __temp0 = __action109(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action109(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action182(
-        input,
-        ast,
-        __0,
-        __1,
-        __2,
-        __3,
-        __temp0,
-        __4,
-        __5,
-    )
+    __action182(input, ast, __0, __1, __2, __3, __temp0, __4, __5)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action210<
-    'input,
->(
+fn __action210<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
@@ -11328,33 +10021,17 @@ fn __action210<
     __3: (usize, bool, usize),
     __4: (usize, lexer::Token<'input>, usize),
     __5: (usize, Vec<DirectiveLocation>, usize),
-) -> DirectiveDefinition
-{
+) -> DirectiveDefinition {
     let __start0 = __3.0;
     let __end0 = __3.2;
-    let __temp0 = __action108(
-        input,
-        ast,
-        __3,
-    );
+    let __temp0 = __action108(input, ast, __3);
     let __temp0 = (__start0, __temp0, __end0);
-    __action183(
-        input,
-        ast,
-        __0,
-        __1,
-        __2,
-        __temp0,
-        __4,
-        __5,
-    )
+    __action183(input, ast, __0, __1, __2, __temp0, __4, __5)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action211<
-    'input,
->(
+fn __action211<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
@@ -11362,208 +10039,106 @@ fn __action211<
     __2: (usize, StringId, usize),
     __3: (usize, lexer::Token<'input>, usize),
     __4: (usize, Vec<DirectiveLocation>, usize),
-) -> DirectiveDefinition
-{
+) -> DirectiveDefinition {
     let __start0 = __2.2;
     let __end0 = __3.0;
-    let __temp0 = __action109(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action109(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action183(
-        input,
-        ast,
-        __0,
-        __1,
-        __2,
-        __temp0,
-        __3,
-        __4,
-    )
+    __action183(input, ast, __0, __1, __2, __temp0, __3, __4)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action212<
-    'input,
->(
+fn __action212<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, lexer::Token<'input>, usize),
     __2: (usize, lexer::Token<'input>, usize),
-) -> SchemaDefinition
-{
+) -> SchemaDefinition {
     let __start0 = __1.2;
     let __end0 = __2.0;
-    let __temp0 = __action134(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action134(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action18(
-        input,
-        ast,
-        __0,
-        __1,
-        __temp0,
-        __2,
-    )
+    __action18(input, ast, __0, __1, __temp0, __2)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action213<
-    'input,
->(
+fn __action213<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, lexer::Token<'input>, usize),
     __2: (usize, alloc::vec::Vec<RootOperationTypeDefinition>, usize),
     __3: (usize, lexer::Token<'input>, usize),
-) -> SchemaDefinition
-{
+) -> SchemaDefinition {
     let __start0 = __2.0;
     let __end0 = __2.2;
-    let __temp0 = __action135(
-        input,
-        ast,
-        __2,
-    );
+    let __temp0 = __action135(input, ast, __2);
     let __temp0 = (__start0, __temp0, __end0);
-    __action18(
-        input,
-        ast,
-        __0,
-        __1,
-        __temp0,
-        __3,
-    )
+    __action18(input, ast, __0, __1, __temp0, __3)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action214<
-    'input,
->(
+fn __action214<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, StringId, usize),
     __1: (usize, DefinitionId, usize),
-)
-{
+) {
     let __start0 = __0.0;
     let __end0 = __0.2;
-    let __temp0 = __action136(
-        input,
-        ast,
-        __0,
-    );
+    let __temp0 = __action136(input, ast, __0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action2(
-        input,
-        ast,
-        __temp0,
-        __1,
-    )
+    __action2(input, ast, __temp0, __1)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action215<
-    'input,
->(
-    input: &'input str,
-    ast: &mut AstWriter,
-    __0: (usize, DefinitionId, usize),
-)
-{
+fn __action215<'input>(input: &'input str, ast: &mut AstWriter, __0: (usize, DefinitionId, usize)) {
     let __start0 = __0.0;
     let __end0 = __0.0;
-    let __temp0 = __action137(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action137(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action2(
-        input,
-        ast,
-        __temp0,
-        __0,
-    )
+    __action2(input, ast, __temp0, __0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action216<
-    'input,
->(
+fn __action216<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, StringId, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
-) -> EnumValueDefinitionId
-{
+) -> EnumValueDefinitionId {
     let __start0 = __0.0;
     let __end0 = __0.2;
-    let __temp0 = __action136(
-        input,
-        ast,
-        __0,
-    );
+    let __temp0 = __action136(input, ast, __0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action170(
-        input,
-        ast,
-        __temp0,
-        __1,
-        __2,
-    )
+    __action170(input, ast, __temp0, __1, __2)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action217<
-    'input,
->(
+fn __action217<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, StringId, usize),
     __1: (usize, IdRange<DirectiveId>, usize),
-) -> EnumValueDefinitionId
-{
+) -> EnumValueDefinitionId {
     let __start0 = __0.0;
     let __end0 = __0.0;
-    let __temp0 = __action137(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action137(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action170(
-        input,
-        ast,
-        __temp0,
-        __0,
-        __1,
-    )
+    __action170(input, ast, __temp0, __0, __1)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action218<
-    'input,
->(
+fn __action218<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, StringId, usize),
@@ -11572,33 +10147,17 @@ fn __action218<
     __3: (usize, lexer::Token<'input>, usize),
     __4: (usize, TypeId, usize),
     __5: (usize, IdRange<DirectiveId>, usize),
-)
-{
+) {
     let __start0 = __0.0;
     let __end0 = __0.2;
-    let __temp0 = __action136(
-        input,
-        ast,
-        __0,
-    );
+    let __temp0 = __action136(input, ast, __0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action184(
-        input,
-        ast,
-        __temp0,
-        __1,
-        __2,
-        __3,
-        __4,
-        __5,
-    )
+    __action184(input, ast, __temp0, __1, __2, __3, __4, __5)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action219<
-    'input,
->(
+fn __action219<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, StringId, usize),
@@ -11606,34 +10165,17 @@ fn __action219<
     __2: (usize, lexer::Token<'input>, usize),
     __3: (usize, TypeId, usize),
     __4: (usize, IdRange<DirectiveId>, usize),
-)
-{
+) {
     let __start0 = __0.0;
     let __end0 = __0.0;
-    let __temp0 = __action137(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action137(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action184(
-        input,
-        ast,
-        __temp0,
-        __0,
-        __1,
-        __2,
-        __3,
-        __4,
-    )
+    __action184(input, ast, __temp0, __0, __1, __2, __3, __4)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action220<
-    'input,
->(
+fn __action220<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, StringId, usize),
@@ -11641,65 +10183,34 @@ fn __action220<
     __2: (usize, lexer::Token<'input>, usize),
     __3: (usize, TypeId, usize),
     __4: (usize, IdRange<DirectiveId>, usize),
-)
-{
+) {
     let __start0 = __0.0;
     let __end0 = __0.2;
-    let __temp0 = __action136(
-        input,
-        ast,
-        __0,
-    );
+    let __temp0 = __action136(input, ast, __0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action185(
-        input,
-        ast,
-        __temp0,
-        __1,
-        __2,
-        __3,
-        __4,
-    )
+    __action185(input, ast, __temp0, __1, __2, __3, __4)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action221<
-    'input,
->(
+fn __action221<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, StringId, usize),
     __1: (usize, lexer::Token<'input>, usize),
     __2: (usize, TypeId, usize),
     __3: (usize, IdRange<DirectiveId>, usize),
-)
-{
+) {
     let __start0 = __0.0;
     let __end0 = __0.0;
-    let __temp0 = __action137(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action137(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action185(
-        input,
-        ast,
-        __temp0,
-        __0,
-        __1,
-        __2,
-        __3,
-    )
+    __action185(input, ast, __temp0, __0, __1, __2, __3)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action222<
-    'input,
->(
+fn __action222<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, StringId, usize),
@@ -11708,33 +10219,17 @@ fn __action222<
     __3: (usize, TypeId, usize),
     __4: (usize, ValueId, usize),
     __5: (usize, IdRange<DirectiveId>, usize),
-)
-{
+) {
     let __start0 = __0.0;
     let __end0 = __0.2;
-    let __temp0 = __action136(
-        input,
-        ast,
-        __0,
-    );
+    let __temp0 = __action136(input, ast, __0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action186(
-        input,
-        ast,
-        __temp0,
-        __1,
-        __2,
-        __3,
-        __4,
-        __5,
-    )
+    __action186(input, ast, __temp0, __1, __2, __3, __4, __5)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action223<
-    'input,
->(
+fn __action223<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, StringId, usize),
@@ -11742,34 +10237,17 @@ fn __action223<
     __2: (usize, TypeId, usize),
     __3: (usize, ValueId, usize),
     __4: (usize, IdRange<DirectiveId>, usize),
-)
-{
+) {
     let __start0 = __0.0;
     let __end0 = __0.0;
-    let __temp0 = __action137(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action137(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action186(
-        input,
-        ast,
-        __temp0,
-        __0,
-        __1,
-        __2,
-        __3,
-        __4,
-    )
+    __action186(input, ast, __temp0, __0, __1, __2, __3, __4)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action224<
-    'input,
->(
+fn __action224<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, StringId, usize),
@@ -11777,249 +10255,153 @@ fn __action224<
     __2: (usize, lexer::Token<'input>, usize),
     __3: (usize, TypeId, usize),
     __4: (usize, IdRange<DirectiveId>, usize),
-)
-{
+) {
     let __start0 = __0.0;
     let __end0 = __0.2;
-    let __temp0 = __action136(
-        input,
-        ast,
-        __0,
-    );
+    let __temp0 = __action136(input, ast, __0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action187(
-        input,
-        ast,
-        __temp0,
-        __1,
-        __2,
-        __3,
-        __4,
-    )
+    __action187(input, ast, __temp0, __1, __2, __3, __4)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action225<
-    'input,
->(
+fn __action225<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, StringId, usize),
     __1: (usize, lexer::Token<'input>, usize),
     __2: (usize, TypeId, usize),
     __3: (usize, IdRange<DirectiveId>, usize),
-)
-{
+) {
     let __start0 = __0.0;
     let __end0 = __0.0;
-    let __temp0 = __action137(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action137(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action187(
-        input,
-        ast,
-        __temp0,
-        __0,
-        __1,
-        __2,
-        __3,
-    )
+    __action187(input, ast, __temp0, __0, __1, __2, __3)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action226<
-    'input,
->(
+fn __action226<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
     __3: (usize, Vec<StringId>, usize),
-) -> UnionDefinition
-{
+) -> UnionDefinition {
     let __start0 = __3.0;
     let __end0 = __3.2;
-    let __temp0 = __action118(
-        input,
-        ast,
-        __3,
-    );
+    let __temp0 = __action118(input, ast, __3);
     let __temp0 = (__start0, __temp0, __end0);
-    __action177(
-        input,
-        ast,
-        __0,
-        __1,
-        __2,
-        __temp0,
-    )
+    __action177(input, ast, __0, __1, __2, __temp0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action227<
-    'input,
->(
+fn __action227<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
-) -> UnionDefinition
-{
+) -> UnionDefinition {
     let __start0 = __2.2;
     let __end0 = __2.2;
-    let __temp0 = __action119(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action119(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action177(
-        input,
-        ast,
-        __0,
-        __1,
-        __2,
-        __temp0,
-    )
+    __action177(input, ast, __0, __1, __2, __temp0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action228<
-    'input,
->(
+fn __action228<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, lexer::Token<'input>, usize),
-) -> ValueId
-{
+) -> ValueId {
     let __start0 = __0.2;
     let __end0 = __1.0;
-    let __temp0 = __action102(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action102(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action60(
-        input,
-        ast,
-        __0,
-        __temp0,
-        __1,
-    )
+    __action60(input, ast, __0, __temp0, __1)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action229<
-    'input,
->(
+fn __action229<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, alloc::vec::Vec<ValueId>, usize),
     __2: (usize, lexer::Token<'input>, usize),
-) -> ValueId
-{
+) -> ValueId {
     let __start0 = __1.0;
     let __end0 = __1.2;
-    let __temp0 = __action103(
-        input,
-        ast,
-        __1,
-    );
+    let __temp0 = __action103(input, ast, __1);
     let __temp0 = (__start0, __temp0, __end0);
-    __action60(
-        input,
-        ast,
-        __0,
-        __temp0,
-        __2,
-    )
+    __action60(input, ast, __0, __temp0, __2)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action230<
-    'input,
->(
+fn __action230<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, StringId, usize),
-) -> TypeId
-{
+) -> TypeId {
     let __start0 = __0.2;
     let __end0 = __0.2;
-    let __temp0 = __action104(
-        input,
-        ast,
-        &__start0,
-        &__end0,
-    );
+    let __temp0 = __action104(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action49(
-        input,
-        ast,
-        __0,
-        __temp0,
-    )
+    __action49(input, ast, __0, __temp0)
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action231<
-    'input,
->(
+fn __action231<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, StringId, usize),
     __1: (usize, alloc::vec::Vec<WrappingType>, usize),
-) -> TypeId
-{
+) -> TypeId {
     let __start0 = __1.0;
     let __end0 = __1.2;
-    let __temp0 = __action105(
-        input,
-        ast,
-        __1,
-    );
+    let __temp0 = __action105(input, ast, __1);
     let __temp0 = (__start0, __temp0, __end0);
-    __action49(
-        input,
-        ast,
-        __0,
-        __temp0,
-    )
+    __action49(input, ast, __0, __temp0)
 }
 #[allow(clippy::type_complexity)]
 
-pub trait __ToTriple<'input, >
-{
-    fn to_triple(value: Self) -> Result<(usize,lexer::Token<'input>,usize), __lalrpop_util::ParseError<usize, lexer::Token<'input>, lexer::LexicalError>>;
+pub trait __ToTriple<'input> {
+    fn to_triple(
+        value: Self,
+    ) -> Result<
+        (usize, lexer::Token<'input>, usize),
+        __lalrpop_util::ParseError<usize, lexer::Token<'input>, lexer::LexicalError>,
+    >;
 }
 
-impl<'input, > __ToTriple<'input, > for (usize, lexer::Token<'input>, usize)
-{
-    fn to_triple(value: Self) -> Result<(usize,lexer::Token<'input>,usize), __lalrpop_util::ParseError<usize, lexer::Token<'input>, lexer::LexicalError>> {
+impl<'input> __ToTriple<'input> for (usize, lexer::Token<'input>, usize) {
+    fn to_triple(
+        value: Self,
+    ) -> Result<
+        (usize, lexer::Token<'input>, usize),
+        __lalrpop_util::ParseError<usize, lexer::Token<'input>, lexer::LexicalError>,
+    > {
         Ok(value)
     }
 }
-impl<'input, > __ToTriple<'input, > for Result<(usize, lexer::Token<'input>, usize), lexer::LexicalError>
+impl<'input> __ToTriple<'input>
+    for Result<(usize, lexer::Token<'input>, usize), lexer::LexicalError>
 {
-    fn to_triple(value: Self) -> Result<(usize,lexer::Token<'input>,usize), __lalrpop_util::ParseError<usize, lexer::Token<'input>, lexer::LexicalError>> {
+    fn to_triple(
+        value: Self,
+    ) -> Result<
+        (usize, lexer::Token<'input>, usize),
+        __lalrpop_util::ParseError<usize, lexer::Token<'input>, lexer::LexicalError>,
+    > {
         match value {
             Ok(v) => Ok(v),
             Err(error) => Err(__lalrpop_util::ParseError::User { error }),

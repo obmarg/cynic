@@ -5,13 +5,13 @@ use crate::{
     executable::{
         storage::*, ids::*, writer::AstWriter
     },
-    common::OperationType
+    common::{OperationType, IdRange}
 };
 
 grammar<'input>(input: &'input str, ast: &mut AstWriter);
 
 pub ExecutableDocument: () = {
-    <defs:ExecutableDefinition+> => {}
+    <defs:ExecutableDefinition*> => {}
 }
 
 ExecutableDefinition: ExecutableDefinitionId = {
@@ -20,16 +20,122 @@ ExecutableDefinition: ExecutableDefinitionId = {
 }
 
 OperationDefinition: OperationDefinitionRecord = {
-    query => {
-        todo!()
+    <operation_type:OperationType> <name:Name?> <selection_set:SelectionSet> => {
+        OperationDefinitionRecord {
+            <>
+        }
+    },
+    <selection_set:SelectionSet> => {
+        OperationDefinitionRecord {
+            operation_type: OperationType::Query,
+            name: None,
+            selection_set,
+        }
     }
 };
 
 FragmentDefinition: FragmentDefinitionRecord = {
-    "$" => {
+    interface => {
         todo!()
     }
 };
+
+OperationType: OperationType = {
+    query => OperationType::Query,
+    mutation => OperationType::Mutation,
+    subscription => OperationType::Subscription
+}
+
+SelectionSet: IdRange<SelectionId> = {
+    "{" <selections:Selection+> "}" => {
+        ast.selection_set(selections)
+    }
+}
+
+Selection: SelectionRecord = {
+    <alias:Alias?> <name:Name> <arguments:Arguments?> <directives:Directives> <selection_set:SelectionSet> => {
+        let arguments = ast.argument_range(arguments.map(|args| args.len()));
+        SelectionRecord::Field(
+            ast.field_selection(FieldSelectionRecord {
+                <>
+            })
+        )
+    },
+    "..." <name:FragmentName> <directives:Directives> => {
+        SelectionRecord::FragmentSpread(
+            ast.fragment_spread(FragmentSpreadRecord {
+                <>
+            })
+        )
+    },
+    "..." <type_condition:TypeCondition?> <directives:Directives> <selection_set:SelectionSet> => {
+        SelectionRecord::InlineFragment(
+            ast.inline_fragment(InlineFragmentRecord {
+                <>
+            })
+        )
+    }
+}
+
+Alias: StringId = {
+    <alias:Name> ":" => {
+        alias
+    }
+}
+
+TypeCondition: StringId = {
+    on <name:Name> => {
+        name
+    }
+}
+
+
+Directives: IdRange<DirectiveId> = {
+    <directives:Directive*> => {
+        ast.directive_range(Some(directives.len()))
+    }
+}
+
+Directive: () = {
+    "@" <name:Name> <arguments:Arguments?> => {
+        let arguments = ast.argument_range(arguments.map(|args| args.len()));
+        ast.directive(DirectiveRecord { <> });
+    }
+}
+
+Arguments: Vec<()> = {
+    "(" <arguments:Argument*> ")" => arguments
+}
+
+Argument: () = {
+    <name:Name> ":" <value:Value> => {
+        ast.argument(ArgumentRecord { <> });
+    }
+}
+
+Value: ValueId = {
+    "$" <name:Name> => ast.value(ValueRecord::Variable(name)),
+    <int:IntegerLiteral> => ast.value(ValueRecord::Int(int.parse().unwrap())),
+    <float:FloatLiteral> => ast.value(ValueRecord::Float(float.parse().unwrap())),
+    <s:StringLiteral> => {
+        let id = ast.intern_string(s);
+        ast.value(ValueRecord::String(id))
+    },
+    <s:BlockStringLiteral> => {
+        let id = ast.intern_string(s);
+        ast.value(ValueRecord::String(id))
+    },
+    true => ast.value(ValueRecord::Boolean(true)),
+    false => ast.value(ValueRecord::Boolean(false)),
+    null => ast.value(ValueRecord::Null),
+    "[" <values:Value*> "]" => ast.value(ValueRecord::List(values)),
+    "{" <fields:ObjectField*> "}" => ast.value(ValueRecord::Object(fields)),
+    <value:EnumValue> => ast.value(ValueRecord::Enum(value)),
+}
+
+ObjectField: (StringId, ValueId) = {
+    <name:Name> ":" <value:Value> => (name, value)
+}
 
 StringValue: StringId = {
     <s:StringLiteral> => {
@@ -38,6 +144,39 @@ StringValue: StringId = {
     <s:BlockStringLiteral> => {
         ast.intern_string(s)
     },
+}
+
+EnumValue: StringId = {
+    <s:RawIdent> => ast.ident(s),
+    schema => ast.ident("schema"),
+    query => ast.ident("query"),
+    ty => ast.ident("type"),
+    input => ast.ident("input"),
+}
+
+Name: StringId = <s:Ident> => ast.ident(s);
+
+FragmentName: StringId = <s:RawFragmentName> => ast.ident(s);
+
+RawFragmentName: &'input str = {
+    <s:RawIdent> => s,
+    schema => "schema",
+    query => "query",
+    mutation => "mutation",
+    subscription => "subscription",
+    ty => "type",
+    input => "input",
+    true => "true",
+    false => "false",
+    null => "null",
+    implements => "implements",
+    interface => "interface",
+    "enum" => "enum",
+    union => "union",
+    scalar => "scalar",
+    extend => "extend",
+    directive => "directive",
+    repeatable => "repeatable",
 }
 
 Ident: &'input str = {
@@ -86,6 +225,8 @@ extern {
         "@" => lexer::Token::At,
         "&" => lexer::Token::Ampersand,
         "|" => lexer::Token::Pipe,
+
+        "..." => lexer::Token::Spread,
 
         RawIdent => lexer::Token::Identifier(<&'input str>),
 

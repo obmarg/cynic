@@ -6,7 +6,7 @@ use crate::{
         storage::*, ids::*, writer::AstWriter,
         DirectiveLocation, WrappingType,
     },
-    common::{OperationType}
+    common::{OperationType, IdRange}
 };
 
 grammar<'input>(input: &'input str, ast: &mut AstWriter);

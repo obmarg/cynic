@@ -8,20 +8,7 @@ use super::{
     },
     Ast, AstDefinition,
 };
-use crate::AstLookup;
-
-#[derive(Clone, Copy)]
-/// A half open range of Ids.
-pub struct IdRange<Id> {
-    start: Id,
-    end: Id,
-}
-
-impl<Id> IdRange<Id> {
-    pub(crate) fn new(start: Id, end: Id) -> Self {
-        IdRange { start, end }
-    }
-}
+use crate::{common::IdRange, AstLookup};
 
 macro_rules! make_id {
     ($name:ident, $output:ident, $field:ident) => {

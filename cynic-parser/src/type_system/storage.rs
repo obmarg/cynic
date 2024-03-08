@@ -1,4 +1,4 @@
-use crate::common::OperationType;
+use crate::common::{IdRange, OperationType};
 
 use super::{ids::*, DirectiveLocation, Span, WrappingType};
 
@@ -114,6 +114,9 @@ pub struct Argument {
     pub name: StringId,
     pub value: ValueId,
 }
+
+// TODO: This is the type_system value so it should maybe be
+// ConstValue
 
 pub enum Value {
     Variable(StringId),
