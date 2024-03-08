@@ -1,4 +1,6 @@
-use super::{ids::*, DirectiveLocation, OperationType, Span, WrappingType};
+use crate::common::OperationType;
+
+use super::{ids::*, DirectiveLocation, Span, WrappingType};
 
 pub struct SchemaDefinition {
     pub description: Option<StringId>,

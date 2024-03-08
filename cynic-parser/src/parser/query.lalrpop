@@ -2,35 +2,33 @@ use crate::lexer;
 
 use crate::{
     Span,
-    type_system::{
+    executable::{
         storage::*, ids::*, writer::AstWriter
-    }
+    },
+    common::OperationType
 };
 
 grammar<'input>(input: &'input str, ast: &mut AstWriter);
 
 pub ExecutableDocument: () = {
-    <defs:DefinitionAndDescription+> => {}
+    <defs:ExecutableDefinition+> => {}
 }
 
-DefinitionAndDescription: () = {
-    <description:StringValue?> <def:ExecutableDefinition> => {
-        ast.store_description(def, description)
-    }
-}
-
-// TODO: Can't re-use DefinitionId here...
-ExecutableDefinition: DefinitionId = {
+ExecutableDefinition: ExecutableDefinitionId = {
     <def:OperationDefinition> => ast.operation_definition(def),
     <def:FragmentDefinition> => ast.fragment_definition(def),
 }
 
-OperationDefinition: OperationDefinition = {
-    query => {}
+OperationDefinition: OperationDefinitionRecord = {
+    query => {
+        todo!()
+    }
 };
 
-FragmentDefinition: FragmentDefinition = {
-    "$" => {}
+FragmentDefinition: FragmentDefinitionRecord = {
+    "$" => {
+        todo!()
+    }
 };
 
 StringValue: StringId = {

@@ -4,8 +4,9 @@ use crate::{
     Span,
     type_system::{
         storage::*, ids::*, writer::AstWriter,
-        DirectiveLocation, WrappingType, OperationType
-    }
+        DirectiveLocation, WrappingType,
+    },
+    common::{OperationType}
 };
 
 grammar<'input>(input: &'input str, ast: &mut AstWriter);

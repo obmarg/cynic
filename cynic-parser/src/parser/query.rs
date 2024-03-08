@@ -1,8 +1,9 @@
 // auto-generated: "lalrpop 0.20.0"
-// sha3: 9b75d3f2cb08b4e95bca6827dc7c368dc981f119beae5affe06f0fe3632a776a
+// sha3: 390c9e7e9c15298e669c917b5ab9326ca4f71f55a0044f3fdf32f845fffc8c58
 use crate::lexer;
 use crate::{
-    type_system::{ids::*, storage::*, writer::AstWriter},
+    common::OperationType,
+    executable::{ids::*, storage::*, writer::AstWriter},
     Span,
 };
 #[allow(unused_extern_crates)]
@@ -19,9 +20,10 @@ mod __parse__ExecutableDocument {
     use crate::lexer;
     use crate::{
     Span,
-    type_system::{
+    executable::{
         storage::*, ids::*, writer::AstWriter
-    }
+    },
+    common::OperationType
 };
     #[allow(unused_extern_crates)]
     extern crate lalrpop_util as __lalrpop_util;
@@ -35,43 +37,32 @@ mod __parse__ExecutableDocument {
      {
         Variant0(lexer::Token<'input>),
         Variant1(&'input str),
-        Variant2(()),
-        Variant3(alloc::vec::Vec<()>),
-        Variant4(DefinitionId),
-        Variant5(FragmentDefinition),
-        Variant6(OperationDefinition),
+        Variant2(ExecutableDefinitionId),
+        Variant3(alloc::vec::Vec<ExecutableDefinitionId>),
+        Variant4(()),
+        Variant5(FragmentDefinitionRecord),
+        Variant6(OperationDefinitionRecord),
         Variant7(StringId),
-        Variant8(core::option::Option<StringId>),
     }
     const __ACTION: &[i8] = &[
         // State 0
-        0, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0,
+        0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0,
         // State 1
-        0, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 10, 0, 0, 0, 11, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0,
+        0, 7, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 0, 0, 0, 0, 0, 0, 0,
         // State 2
-        0, 9, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 12, 0, 0, 0, 0, 0, 0, 0,
+        0, -3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -3, 0, 0, 0, 0, 0, 0, 0,
         // State 3
-        0, -3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -3, 0, 0, 0, -3, 0, 0, 0, 0, 0, 0, 0, 0, 0, -3, 0, 0, 0, 0, 0, 0, 0,
-        // State 4
-        0, -2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -2, 0, 0, 0, -2, 0, 0, 0, 0, 0, 0, 0, 0, 0, -2, 0, 0, 0, 0, 0, 0, 0,
-        // State 5
         0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        // State 4
+        0, -2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -2, 0, 0, 0, 0, 0, 0, 0,
+        // State 5
+        0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0,
         // State 6
-        0, -6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -6, 0, 0, 0, -6, 0, 0, 0, 0, 0, 0, 0, 0, 0, -6, 0, 0, 0, 0, 0, 0, 0,
+        0, -6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -6, 0, 0, 0, 0, 0, 0, 0,
         // State 7
-        0, -5, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -5, 0, 0, 0, -5, 0, 0, 0, 0, 0, 0, 0, 0, 0, -5, 0, 0, 0, 0, 0, 0, 0,
+        0, -26, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -26, 0, 0, 0, 0, 0, 0, 0,
         // State 8
-        0, -8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -8, 0, 0, 0, -8, 0, 0, 0, 0, 0, 0, 0, 0, 0, -8, 0, 0, 0, 0, 0, 0, 0,
-        // State 9
-        0, -30, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -30, 0, 0, 0, 0, 0, 0, 0,
-        // State 10
-        0, -29, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -29, 0, 0, 0, 0, 0, 0, 0,
-        // State 11
-        0, -28, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -28, 0, 0, 0, -28, 0, 0, 0, 0, 0, 0, 0, 0, 0, -28, 0, 0, 0, 0, 0, 0, 0,
-        // State 12
-        0, -4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -4, 0, 0, 0, -4, 0, 0, 0, 0, 0, 0, 0, 0, 0, -4, 0, 0, 0, 0, 0, 0, 0,
-        // State 13
-        0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, 0, 0, 0, 0, 0, 0, 0,
+        0, -4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -4, 0, 0, 0, 0, 0, 0, 0,
     ];
     fn __action(state: i8, integer: usize) -> i8 {
         __ACTION[(state as usize) * 36 + integer]
@@ -80,47 +71,32 @@ mod __parse__ExecutableDocument {
         // State 0
         0,
         // State 1
-        -7,
+        -5,
         // State 2
-        0,
-        // State 3
         -3,
+        // State 3
+        -29,
         // State 4
         -2,
         // State 5
-        -33,
+        -1,
         // State 6
         -6,
         // State 7
-        -5,
+        -26,
         // State 8
-        -8,
-        // State 9
-        0,
-        // State 10
-        0,
-        // State 11
-        -28,
-        // State 12
         -4,
-        // State 13
-        -1,
     ];
     fn __goto(state: i8, nt: usize) -> i8 {
         match nt {
             0 => match state {
-                1 => 12,
-                _ => 3,
+                1 => 8,
+                _ => 2,
             },
             1 => 1,
-            2 => match state {
-                2 => 13,
-                _ => 4,
-            },
-            3 => 5,
-            4 => 6,
-            6 => 7,
-            7 => 2,
+            2 => 3,
+            3 => 4,
+            5 => 5,
             _ => 0,
         }
     }
@@ -366,7 +342,7 @@ mod __parse__ExecutableDocument {
         match __reduce_index {
             0 => {
                 __state_machine::SimulatedReduce::Reduce {
-                    states_to_pop: 2,
+                    states_to_pop: 1,
                     nonterminal_produced: 0,
                 }
             }
@@ -397,13 +373,13 @@ mod __parse__ExecutableDocument {
             5 => {
                 __state_machine::SimulatedReduce::Reduce {
                     states_to_pop: 1,
-                    nonterminal_produced: 2,
+                    nonterminal_produced: 3,
                 }
             }
             6 => {
                 __state_machine::SimulatedReduce::Reduce {
                     states_to_pop: 1,
-                    nonterminal_produced: 3,
+                    nonterminal_produced: 4,
                 }
             }
             7 => {
@@ -415,103 +391,103 @@ mod __parse__ExecutableDocument {
             8 => {
                 __state_machine::SimulatedReduce::Reduce {
                     states_to_pop: 1,
-                    nonterminal_produced: 5,
+                    nonterminal_produced: 4,
                 }
             }
             9 => {
                 __state_machine::SimulatedReduce::Reduce {
                     states_to_pop: 1,
-                    nonterminal_produced: 5,
+                    nonterminal_produced: 4,
                 }
             }
             10 => {
                 __state_machine::SimulatedReduce::Reduce {
                     states_to_pop: 1,
-                    nonterminal_produced: 5,
+                    nonterminal_produced: 4,
                 }
             }
             11 => {
                 __state_machine::SimulatedReduce::Reduce {
                     states_to_pop: 1,
-                    nonterminal_produced: 5,
+                    nonterminal_produced: 4,
                 }
             }
             12 => {
                 __state_machine::SimulatedReduce::Reduce {
                     states_to_pop: 1,
-                    nonterminal_produced: 5,
+                    nonterminal_produced: 4,
                 }
             }
             13 => {
                 __state_machine::SimulatedReduce::Reduce {
                     states_to_pop: 1,
-                    nonterminal_produced: 5,
+                    nonterminal_produced: 4,
                 }
             }
             14 => {
                 __state_machine::SimulatedReduce::Reduce {
                     states_to_pop: 1,
-                    nonterminal_produced: 5,
+                    nonterminal_produced: 4,
                 }
             }
             15 => {
                 __state_machine::SimulatedReduce::Reduce {
                     states_to_pop: 1,
-                    nonterminal_produced: 5,
+                    nonterminal_produced: 4,
                 }
             }
             16 => {
                 __state_machine::SimulatedReduce::Reduce {
                     states_to_pop: 1,
-                    nonterminal_produced: 5,
+                    nonterminal_produced: 4,
                 }
             }
             17 => {
                 __state_machine::SimulatedReduce::Reduce {
                     states_to_pop: 1,
-                    nonterminal_produced: 5,
+                    nonterminal_produced: 4,
                 }
             }
             18 => {
                 __state_machine::SimulatedReduce::Reduce {
                     states_to_pop: 1,
-                    nonterminal_produced: 5,
+                    nonterminal_produced: 4,
                 }
             }
             19 => {
                 __state_machine::SimulatedReduce::Reduce {
                     states_to_pop: 1,
-                    nonterminal_produced: 5,
+                    nonterminal_produced: 4,
                 }
             }
             20 => {
                 __state_machine::SimulatedReduce::Reduce {
                     states_to_pop: 1,
-                    nonterminal_produced: 5,
+                    nonterminal_produced: 4,
                 }
             }
             21 => {
                 __state_machine::SimulatedReduce::Reduce {
                     states_to_pop: 1,
-                    nonterminal_produced: 5,
+                    nonterminal_produced: 4,
                 }
             }
             22 => {
                 __state_machine::SimulatedReduce::Reduce {
                     states_to_pop: 1,
-                    nonterminal_produced: 5,
+                    nonterminal_produced: 4,
                 }
             }
             23 => {
                 __state_machine::SimulatedReduce::Reduce {
                     states_to_pop: 1,
-                    nonterminal_produced: 5,
+                    nonterminal_produced: 4,
                 }
             }
             24 => {
                 __state_machine::SimulatedReduce::Reduce {
                     states_to_pop: 1,
-                    nonterminal_produced: 5,
+                    nonterminal_produced: 4,
                 }
             }
             25 => {
@@ -523,7 +499,7 @@ mod __parse__ExecutableDocument {
             26 => {
                 __state_machine::SimulatedReduce::Reduce {
                     states_to_pop: 1,
-                    nonterminal_produced: 5,
+                    nonterminal_produced: 6,
                 }
             }
             27 => {
@@ -532,31 +508,7 @@ mod __parse__ExecutableDocument {
                     nonterminal_produced: 6,
                 }
             }
-            28 => {
-                __state_machine::SimulatedReduce::Reduce {
-                    states_to_pop: 1,
-                    nonterminal_produced: 7,
-                }
-            }
-            29 => {
-                __state_machine::SimulatedReduce::Reduce {
-                    states_to_pop: 1,
-                    nonterminal_produced: 7,
-                }
-            }
-            30 => {
-                __state_machine::SimulatedReduce::Reduce {
-                    states_to_pop: 1,
-                    nonterminal_produced: 8,
-                }
-            }
-            31 => {
-                __state_machine::SimulatedReduce::Reduce {
-                    states_to_pop: 0,
-                    nonterminal_produced: 8,
-                }
-            }
-            32 => __state_machine::SimulatedReduce::Accept,
+            28 => __state_machine::SimulatedReduce::Accept,
             _ => panic!("invalid reduction index {}", __reduce_index)
         }
     }
@@ -727,20 +679,8 @@ mod __parse__ExecutableDocument {
                 __reduce27(input, ast, __lookahead_start, __symbols, core::marker::PhantomData::<(&())>)
             }
             28 => {
-                __reduce28(input, ast, __lookahead_start, __symbols, core::marker::PhantomData::<(&())>)
-            }
-            29 => {
-                __reduce29(input, ast, __lookahead_start, __symbols, core::marker::PhantomData::<(&())>)
-            }
-            30 => {
-                __reduce30(input, ast, __lookahead_start, __symbols, core::marker::PhantomData::<(&())>)
-            }
-            31 => {
-                __reduce31(input, ast, __lookahead_start, __symbols, core::marker::PhantomData::<(&())>)
-            }
-            32 => {
                 // __ExecutableDocument = ExecutableDocument => ActionFn(0);
-                let __sym0 = __pop_Variant2(__symbols);
+                let __sym0 = __pop_Variant4(__symbols);
                 let __start = __sym0.0;
                 let __end = __sym0.2;
                 let __nt = super::__action0::<>(input, ast, __sym0);
@@ -759,25 +699,25 @@ mod __parse__ExecutableDocument {
     fn __symbol_type_mismatch() -> ! {
         panic!("symbol type mismatch")
     }
-    fn __pop_Variant2<
+    fn __pop_Variant4<
       'input,
     >(
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
     ) -> (usize, (), usize)
      {
         match __symbols.pop() {
-            Some((__l, __Symbol::Variant2(__v), __r)) => (__l, __v, __r),
+            Some((__l, __Symbol::Variant4(__v), __r)) => (__l, __v, __r),
             _ => __symbol_type_mismatch()
         }
     }
-    fn __pop_Variant4<
+    fn __pop_Variant2<
       'input,
     >(
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, DefinitionId, usize)
+    ) -> (usize, ExecutableDefinitionId, usize)
      {
         match __symbols.pop() {
-            Some((__l, __Symbol::Variant4(__v), __r)) => (__l, __v, __r),
+            Some((__l, __Symbol::Variant2(__v), __r)) => (__l, __v, __r),
             _ => __symbol_type_mismatch()
         }
     }
@@ -785,7 +725,7 @@ mod __parse__ExecutableDocument {
       'input,
     >(
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, FragmentDefinition, usize)
+    ) -> (usize, FragmentDefinitionRecord, usize)
      {
         match __symbols.pop() {
             Some((__l, __Symbol::Variant5(__v), __r)) => (__l, __v, __r),
@@ -796,7 +736,7 @@ mod __parse__ExecutableDocument {
       'input,
     >(
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, OperationDefinition, usize)
+    ) -> (usize, OperationDefinitionRecord, usize)
      {
         match __symbols.pop() {
             Some((__l, __Symbol::Variant6(__v), __r)) => (__l, __v, __r),
@@ -818,21 +758,10 @@ mod __parse__ExecutableDocument {
       'input,
     >(
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, alloc::vec::Vec<()>, usize)
+    ) -> (usize, alloc::vec::Vec<ExecutableDefinitionId>, usize)
      {
         match __symbols.pop() {
             Some((__l, __Symbol::Variant3(__v), __r)) => (__l, __v, __r),
-            _ => __symbol_type_mismatch()
-        }
-    }
-    fn __pop_Variant8<
-      'input,
-    >(
-        __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, core::option::Option<StringId>, usize)
-     {
-        match __symbols.pop() {
-            Some((__l, __Symbol::Variant8(__v), __r)) => (__l, __v, __r),
             _ => __symbol_type_mismatch()
         }
     }
@@ -868,15 +797,13 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // DefinitionAndDescription = StringValue, ExecutableDefinition => ActionFn(32);
-        assert!(__symbols.len() >= 2);
-        let __sym1 = __pop_Variant4(__symbols);
-        let __sym0 = __pop_Variant7(__symbols);
+        // ExecutableDefinition = OperationDefinition => ActionFn(2);
+        let __sym0 = __pop_Variant6(__symbols);
         let __start = __sym0.0;
-        let __end = __sym1.2;
-        let __nt = super::__action32::<>(input, ast, __sym0, __sym1);
+        let __end = __sym0.2;
+        let __nt = super::__action2::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant2(__nt), __end));
-        (2, 0)
+        (1, 0)
     }
     pub(crate) fn __reduce1<
         'input,
@@ -888,11 +815,11 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // DefinitionAndDescription = ExecutableDefinition => ActionFn(33);
-        let __sym0 = __pop_Variant4(__symbols);
+        // ExecutableDefinition = FragmentDefinition => ActionFn(3);
+        let __sym0 = __pop_Variant5(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action33::<>(input, ast, __sym0);
+        let __nt = super::__action3::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant2(__nt), __end));
         (1, 0)
     }
@@ -906,11 +833,11 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // DefinitionAndDescription+ = DefinitionAndDescription => ActionFn(30);
+        // ExecutableDefinition+ = ExecutableDefinition => ActionFn(27);
         let __sym0 = __pop_Variant2(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action30::<>(input, ast, __sym0);
+        let __nt = super::__action27::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant3(__nt), __end));
         (1, 1)
     }
@@ -924,13 +851,13 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // DefinitionAndDescription+ = DefinitionAndDescription+, DefinitionAndDescription => ActionFn(31);
+        // ExecutableDefinition+ = ExecutableDefinition+, ExecutableDefinition => ActionFn(28);
         assert!(__symbols.len() >= 2);
         let __sym1 = __pop_Variant2(__symbols);
         let __sym0 = __pop_Variant3(__symbols);
         let __start = __sym0.0;
         let __end = __sym1.2;
-        let __nt = super::__action31::<>(input, ast, __sym0, __sym1);
+        let __nt = super::__action28::<>(input, ast, __sym0, __sym1);
         __symbols.push((__start, __Symbol::Variant3(__nt), __end));
         (2, 1)
     }
@@ -944,11 +871,11 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // ExecutableDefinition = OperationDefinition => ActionFn(3);
-        let __sym0 = __pop_Variant6(__symbols);
+        // ExecutableDocument = ExecutableDefinition+ => ActionFn(1);
+        let __sym0 = __pop_Variant3(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action3::<>(input, ast, __sym0);
+        let __nt = super::__action1::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant4(__nt), __end));
         (1, 2)
     }
@@ -962,13 +889,13 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // ExecutableDefinition = FragmentDefinition => ActionFn(4);
-        let __sym0 = __pop_Variant5(__symbols);
+        // FragmentDefinition = "$" => ActionFn(5);
+        let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action4::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant4(__nt), __end));
-        (1, 2)
+        let __nt = super::__action5::<>(input, ast, __sym0);
+        __symbols.push((__start, __Symbol::Variant5(__nt), __end));
+        (1, 3)
     }
     pub(crate) fn __reduce6<
         'input,
@@ -980,13 +907,13 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // ExecutableDocument = DefinitionAndDescription+ => ActionFn(1);
-        let __sym0 = __pop_Variant3(__symbols);
+        // Ident = RawIdent => ActionFn(8);
+        let __sym0 = __pop_Variant1(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action1::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant2(__nt), __end));
-        (1, 3)
+        let __nt = super::__action8::<>(input, ast, __sym0);
+        __symbols.push((__start, __Symbol::Variant1(__nt), __end));
+        (1, 4)
     }
     pub(crate) fn __reduce7<
         'input,
@@ -998,12 +925,12 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // FragmentDefinition = "$" => ActionFn(6);
+        // Ident = schema => ActionFn(9);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action6::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant5(__nt), __end));
+        let __nt = super::__action9::<>(input, ast, __sym0);
+        __symbols.push((__start, __Symbol::Variant1(__nt), __end));
         (1, 4)
     }
     pub(crate) fn __reduce8<
@@ -1016,13 +943,13 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Ident = RawIdent => ActionFn(9);
-        let __sym0 = __pop_Variant1(__symbols);
+        // Ident = query => ActionFn(10);
+        let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action9::<>(input, ast, __sym0);
+        let __nt = super::__action10::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant1(__nt), __end));
-        (1, 5)
+        (1, 4)
     }
     pub(crate) fn __reduce9<
         'input,
@@ -1034,13 +961,13 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Ident = schema => ActionFn(10);
+        // Ident = mutation => ActionFn(11);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action10::<>(input, ast, __sym0);
+        let __nt = super::__action11::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant1(__nt), __end));
-        (1, 5)
+        (1, 4)
     }
     pub(crate) fn __reduce10<
         'input,
@@ -1052,13 +979,13 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Ident = query => ActionFn(11);
+        // Ident = subscription => ActionFn(12);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action11::<>(input, ast, __sym0);
+        let __nt = super::__action12::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant1(__nt), __end));
-        (1, 5)
+        (1, 4)
     }
     pub(crate) fn __reduce11<
         'input,
@@ -1070,13 +997,13 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Ident = mutation => ActionFn(12);
+        // Ident = ty => ActionFn(13);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action12::<>(input, ast, __sym0);
+        let __nt = super::__action13::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant1(__nt), __end));
-        (1, 5)
+        (1, 4)
     }
     pub(crate) fn __reduce12<
         'input,
@@ -1088,13 +1015,13 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Ident = subscription => ActionFn(13);
+        // Ident = input => ActionFn(14);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action13::<>(input, ast, __sym0);
+        let __nt = super::__action14::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant1(__nt), __end));
-        (1, 5)
+        (1, 4)
     }
     pub(crate) fn __reduce13<
         'input,
@@ -1106,13 +1033,13 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Ident = ty => ActionFn(14);
+        // Ident = true => ActionFn(15);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action14::<>(input, ast, __sym0);
+        let __nt = super::__action15::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant1(__nt), __end));
-        (1, 5)
+        (1, 4)
     }
     pub(crate) fn __reduce14<
         'input,
@@ -1124,13 +1051,13 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Ident = input => ActionFn(15);
+        // Ident = false => ActionFn(16);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action15::<>(input, ast, __sym0);
+        let __nt = super::__action16::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant1(__nt), __end));
-        (1, 5)
+        (1, 4)
     }
     pub(crate) fn __reduce15<
         'input,
@@ -1142,13 +1069,13 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Ident = true => ActionFn(16);
+        // Ident = null => ActionFn(17);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action16::<>(input, ast, __sym0);
+        let __nt = super::__action17::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant1(__nt), __end));
-        (1, 5)
+        (1, 4)
     }
     pub(crate) fn __reduce16<
         'input,
@@ -1160,13 +1087,13 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Ident = false => ActionFn(17);
+        // Ident = implements => ActionFn(18);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action17::<>(input, ast, __sym0);
+        let __nt = super::__action18::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant1(__nt), __end));
-        (1, 5)
+        (1, 4)
     }
     pub(crate) fn __reduce17<
         'input,
@@ -1178,13 +1105,13 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Ident = null => ActionFn(18);
+        // Ident = interface => ActionFn(19);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action18::<>(input, ast, __sym0);
+        let __nt = super::__action19::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant1(__nt), __end));
-        (1, 5)
+        (1, 4)
     }
     pub(crate) fn __reduce18<
         'input,
@@ -1196,13 +1123,13 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Ident = implements => ActionFn(19);
+        // Ident = "enum" => ActionFn(20);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action19::<>(input, ast, __sym0);
+        let __nt = super::__action20::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant1(__nt), __end));
-        (1, 5)
+        (1, 4)
     }
     pub(crate) fn __reduce19<
         'input,
@@ -1214,13 +1141,13 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Ident = interface => ActionFn(20);
+        // Ident = union => ActionFn(21);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action20::<>(input, ast, __sym0);
+        let __nt = super::__action21::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant1(__nt), __end));
-        (1, 5)
+        (1, 4)
     }
     pub(crate) fn __reduce20<
         'input,
@@ -1232,13 +1159,13 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Ident = "enum" => ActionFn(21);
+        // Ident = scalar => ActionFn(22);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action21::<>(input, ast, __sym0);
+        let __nt = super::__action22::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant1(__nt), __end));
-        (1, 5)
+        (1, 4)
     }
     pub(crate) fn __reduce21<
         'input,
@@ -1250,13 +1177,13 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Ident = union => ActionFn(22);
+        // Ident = extend => ActionFn(23);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action22::<>(input, ast, __sym0);
+        let __nt = super::__action23::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant1(__nt), __end));
-        (1, 5)
+        (1, 4)
     }
     pub(crate) fn __reduce22<
         'input,
@@ -1268,13 +1195,13 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Ident = scalar => ActionFn(23);
+        // Ident = directive => ActionFn(24);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action23::<>(input, ast, __sym0);
+        let __nt = super::__action24::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant1(__nt), __end));
-        (1, 5)
+        (1, 4)
     }
     pub(crate) fn __reduce23<
         'input,
@@ -1286,13 +1213,13 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Ident = extend => ActionFn(24);
+        // Ident = repeatable => ActionFn(25);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action24::<>(input, ast, __sym0);
+        let __nt = super::__action25::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant1(__nt), __end));
-        (1, 5)
+        (1, 4)
     }
     pub(crate) fn __reduce24<
         'input,
@@ -1304,13 +1231,13 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Ident = directive => ActionFn(25);
+        // Ident = on => ActionFn(26);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action25::<>(input, ast, __sym0);
+        let __nt = super::__action26::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant1(__nt), __end));
-        (1, 5)
+        (1, 4)
     }
     pub(crate) fn __reduce25<
         'input,
@@ -1322,12 +1249,12 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Ident = repeatable => ActionFn(26);
+        // OperationDefinition = query => ActionFn(4);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action26::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant1(__nt), __end));
+        let __nt = super::__action4::<>(input, ast, __sym0);
+        __symbols.push((__start, __Symbol::Variant6(__nt), __end));
         (1, 5)
     }
     pub(crate) fn __reduce26<
@@ -1340,13 +1267,13 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Ident = on => ActionFn(27);
-        let __sym0 = __pop_Variant0(__symbols);
+        // StringValue = StringLiteral => ActionFn(6);
+        let __sym0 = __pop_Variant1(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action27::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant1(__nt), __end));
-        (1, 5)
+        let __nt = super::__action6::<>(input, ast, __sym0);
+        __symbols.push((__start, __Symbol::Variant7(__nt), __end));
+        (1, 6)
     }
     pub(crate) fn __reduce27<
         'input,
@@ -1358,84 +1285,13 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // OperationDefinition = query => ActionFn(5);
-        let __sym0 = __pop_Variant0(__symbols);
-        let __start = __sym0.0;
-        let __end = __sym0.2;
-        let __nt = super::__action5::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant6(__nt), __end));
-        (1, 6)
-    }
-    pub(crate) fn __reduce28<
-        'input,
-    >(
-        input: &'input str,
-        ast: &mut AstWriter,
-        __lookahead_start: Option<&usize>,
-        __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
-        _: core::marker::PhantomData<(&'input ())>,
-    ) -> (usize, usize)
-    {
-        // StringValue = StringLiteral => ActionFn(7);
+        // StringValue = BlockStringLiteral => ActionFn(7);
         let __sym0 = __pop_Variant1(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action7::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant7(__nt), __end));
-        (1, 7)
-    }
-    pub(crate) fn __reduce29<
-        'input,
-    >(
-        input: &'input str,
-        ast: &mut AstWriter,
-        __lookahead_start: Option<&usize>,
-        __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
-        _: core::marker::PhantomData<(&'input ())>,
-    ) -> (usize, usize)
-    {
-        // StringValue = BlockStringLiteral => ActionFn(8);
-        let __sym0 = __pop_Variant1(__symbols);
-        let __start = __sym0.0;
-        let __end = __sym0.2;
-        let __nt = super::__action8::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant7(__nt), __end));
-        (1, 7)
-    }
-    pub(crate) fn __reduce30<
-        'input,
-    >(
-        input: &'input str,
-        ast: &mut AstWriter,
-        __lookahead_start: Option<&usize>,
-        __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
-        _: core::marker::PhantomData<(&'input ())>,
-    ) -> (usize, usize)
-    {
-        // StringValue? = StringValue => ActionFn(28);
-        let __sym0 = __pop_Variant7(__symbols);
-        let __start = __sym0.0;
-        let __end = __sym0.2;
-        let __nt = super::__action28::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant8(__nt), __end));
-        (1, 8)
-    }
-    pub(crate) fn __reduce31<
-        'input,
-    >(
-        input: &'input str,
-        ast: &mut AstWriter,
-        __lookahead_start: Option<&usize>,
-        __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
-        _: core::marker::PhantomData<(&'input ())>,
-    ) -> (usize, usize)
-    {
-        // StringValue? =  => ActionFn(29);
-        let __start = __lookahead_start.cloned().or_else(|| __symbols.last().map(|s| s.2.clone())).unwrap_or_default();
-        let __end = __start.clone();
-        let __nt = super::__action29::<>(input, ast, &__start, &__end);
-        __symbols.push((__start, __Symbol::Variant8(__nt), __end));
-        (0, 8)
+        (1, 6)
     }
 }
 pub use self::__parse__ExecutableDocument::ExecutableDocumentParser;
@@ -1449,7 +1305,7 @@ fn __action0<'input>(input: &'input str, ast: &mut AstWriter, (_, __0, _): (usiz
 fn __action1<'input>(
     input: &'input str,
     ast: &mut AstWriter,
-    (_, defs, _): (usize, alloc::vec::Vec<()>, usize),
+    (_, defs, _): (usize, alloc::vec::Vec<ExecutableDefinitionId>, usize),
 ) {
     {}
 }
@@ -1459,12 +1315,9 @@ fn __action1<'input>(
 fn __action2<'input>(
     input: &'input str,
     ast: &mut AstWriter,
-    (_, description, _): (usize, core::option::Option<StringId>, usize),
-    (_, def, _): (usize, DefinitionId, usize),
-) {
-    {
-        ast.store_description(def, description)
-    }
+    (_, def, _): (usize, OperationDefinitionRecord, usize),
+) -> ExecutableDefinitionId {
+    ast.operation_definition(def)
 }
 
 #[allow(unused_variables)]
@@ -1472,9 +1325,9 @@ fn __action2<'input>(
 fn __action3<'input>(
     input: &'input str,
     ast: &mut AstWriter,
-    (_, def, _): (usize, OperationDefinition, usize),
-) -> DefinitionId {
-    ast.operation_definition(def)
+    (_, def, _): (usize, FragmentDefinitionRecord, usize),
+) -> ExecutableDefinitionId {
+    ast.fragment_definition(def)
 }
 
 #[allow(unused_variables)]
@@ -1482,9 +1335,11 @@ fn __action3<'input>(
 fn __action4<'input>(
     input: &'input str,
     ast: &mut AstWriter,
-    (_, def, _): (usize, FragmentDefinition, usize),
-) -> DefinitionId {
-    ast.fragment_definition(def)
+    (_, __0, _): (usize, lexer::Token<'input>, usize),
+) -> OperationDefinitionRecord {
+    {
+        todo!()
+    }
 }
 
 #[allow(unused_variables)]
@@ -1493,8 +1348,10 @@ fn __action5<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> OperationDefinition {
-    {}
+) -> FragmentDefinitionRecord {
+    {
+        todo!()
+    }
 }
 
 #[allow(unused_variables)]
@@ -1502,9 +1359,11 @@ fn __action5<'input>(
 fn __action6<'input>(
     input: &'input str,
     ast: &mut AstWriter,
-    (_, __0, _): (usize, lexer::Token<'input>, usize),
-) -> FragmentDefinition {
-    {}
+    (_, s, _): (usize, &'input str, usize),
+) -> StringId {
+    {
+        ast.intern_string(s)
+    }
 }
 
 #[allow(unused_variables)]
@@ -1525,25 +1384,13 @@ fn __action8<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, s, _): (usize, &'input str, usize),
-) -> StringId {
-    {
-        ast.intern_string(s)
-    }
-}
-
-#[allow(unused_variables)]
-#[allow(clippy::too_many_arguments)]
-fn __action9<'input>(
-    input: &'input str,
-    ast: &mut AstWriter,
-    (_, s, _): (usize, &'input str, usize),
 ) -> &'input str {
     s
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action10<'input>(
+fn __action9<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
@@ -1553,7 +1400,7 @@ fn __action10<'input>(
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action11<'input>(
+fn __action10<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
@@ -1563,7 +1410,7 @@ fn __action11<'input>(
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action12<'input>(
+fn __action11<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
@@ -1573,7 +1420,7 @@ fn __action12<'input>(
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action13<'input>(
+fn __action12<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
@@ -1583,7 +1430,7 @@ fn __action13<'input>(
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action14<'input>(
+fn __action13<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
@@ -1593,7 +1440,7 @@ fn __action14<'input>(
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action15<'input>(
+fn __action14<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
@@ -1603,7 +1450,7 @@ fn __action15<'input>(
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action16<'input>(
+fn __action15<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
@@ -1613,7 +1460,7 @@ fn __action16<'input>(
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action17<'input>(
+fn __action16<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
@@ -1623,7 +1470,7 @@ fn __action17<'input>(
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action18<'input>(
+fn __action17<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
@@ -1633,7 +1480,7 @@ fn __action18<'input>(
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action19<'input>(
+fn __action18<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
@@ -1643,7 +1490,7 @@ fn __action19<'input>(
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action20<'input>(
+fn __action19<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
@@ -1653,7 +1500,7 @@ fn __action20<'input>(
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action21<'input>(
+fn __action20<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
@@ -1663,7 +1510,7 @@ fn __action21<'input>(
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action22<'input>(
+fn __action21<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
@@ -1673,7 +1520,7 @@ fn __action22<'input>(
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action23<'input>(
+fn __action22<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
@@ -1683,7 +1530,7 @@ fn __action23<'input>(
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action24<'input>(
+fn __action23<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
@@ -1693,7 +1540,7 @@ fn __action24<'input>(
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action25<'input>(
+fn __action24<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
@@ -1703,7 +1550,7 @@ fn __action25<'input>(
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action26<'input>(
+fn __action25<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
@@ -1713,7 +1560,7 @@ fn __action26<'input>(
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action27<'input>(
+fn __action26<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
@@ -1723,73 +1570,27 @@ fn __action27<'input>(
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action28<'input>(
+fn __action27<'input>(
     input: &'input str,
     ast: &mut AstWriter,
-    (_, __0, _): (usize, StringId, usize),
-) -> core::option::Option<StringId> {
-    Some(__0)
-}
-
-#[allow(unused_variables)]
-#[allow(clippy::too_many_arguments)]
-fn __action29<'input>(
-    input: &'input str,
-    ast: &mut AstWriter,
-    __lookbehind: &usize,
-    __lookahead: &usize,
-) -> core::option::Option<StringId> {
-    None
-}
-
-#[allow(unused_variables)]
-#[allow(clippy::too_many_arguments)]
-fn __action30<'input>(
-    input: &'input str,
-    ast: &mut AstWriter,
-    (_, __0, _): (usize, (), usize),
-) -> alloc::vec::Vec<()> {
+    (_, __0, _): (usize, ExecutableDefinitionId, usize),
+) -> alloc::vec::Vec<ExecutableDefinitionId> {
     alloc::vec![__0]
 }
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action31<'input>(
+fn __action28<'input>(
     input: &'input str,
     ast: &mut AstWriter,
-    (_, v, _): (usize, alloc::vec::Vec<()>, usize),
-    (_, e, _): (usize, (), usize),
-) -> alloc::vec::Vec<()> {
+    (_, v, _): (usize, alloc::vec::Vec<ExecutableDefinitionId>, usize),
+    (_, e, _): (usize, ExecutableDefinitionId, usize),
+) -> alloc::vec::Vec<ExecutableDefinitionId> {
     {
         let mut v = v;
         v.push(e);
         v
     }
-}
-
-#[allow(unused_variables)]
-#[allow(clippy::too_many_arguments)]
-fn __action32<'input>(
-    input: &'input str,
-    ast: &mut AstWriter,
-    __0: (usize, StringId, usize),
-    __1: (usize, DefinitionId, usize),
-) {
-    let __start0 = __0.0;
-    let __end0 = __0.2;
-    let __temp0 = __action28(input, ast, __0);
-    let __temp0 = (__start0, __temp0, __end0);
-    __action2(input, ast, __temp0, __1)
-}
-
-#[allow(unused_variables)]
-#[allow(clippy::too_many_arguments)]
-fn __action33<'input>(input: &'input str, ast: &mut AstWriter, __0: (usize, DefinitionId, usize)) {
-    let __start0 = __0.0;
-    let __end0 = __0.0;
-    let __temp0 = __action29(input, ast, &__start0, &__end0);
-    let __temp0 = (__start0, __temp0, __end0);
-    __action2(input, ast, __temp0, __0)
 }
 #[allow(clippy::type_complexity)]
 
