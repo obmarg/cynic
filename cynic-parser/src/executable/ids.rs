@@ -1,12 +1,8 @@
 use std::num::NonZeroU32;
 
 use super::{
-    storage::{
-        Argument, Directive, DirectiveDefinition, EnumDefinition, EnumValueDefinition,
-        FieldDefinition, InputObjectDefinition, InputValueDefinition, InterfaceDefinition,
-        ObjectDefinition, ScalarDefinition, SchemaDefinition, Type, UnionDefinition, Value,
-    },
-    Ast, AstDefinition,
+    argument::ArgumentRecord, definition::ExecutableDefinitionRecord, directive::DirectiveRecord,
+    storage::*, value::ValueRecord, Ast,
 };
 use crate::{common::IdRange, AstLookup};
 
@@ -57,60 +53,29 @@ macro_rules! impl_id_range {
     };
 }
 
-make_id!(DefinitionId, AstDefinition, definitions);
-
-make_id!(SchemaDefinitionId, SchemaDefinition, schema_definitions);
-
-make_id!(ScalarDefinitionId, ScalarDefinition, scalar_definitions);
-
-make_id!(ObjectDefinitionId, ObjectDefinition, object_definitions);
-
 make_id!(
-    InterfaceDefinitionId,
-    InterfaceDefinition,
-    interface_definitions
+    ExecutableDefinitionId,
+    ExecutableDefinitionRecord,
+    definitions
 );
 
-make_id!(UnionDefinitionId, UnionDefinition, union_definitions);
+make_id!(OperationDefinitionId, OperationDefinitionRecord, operations);
 
-make_id!(EnumDefinitionId, EnumDefinition, enum_definitions);
+make_id!(FragmentDefinitionId, FragmentDefinitionRecord, fragments);
 
-make_id!(
-    EnumValueDefinitionId,
-    EnumValueDefinition,
-    enum_value_definitions
-);
+make_id!(SelectionId, SelectionRecord, selections);
+impl_id_range!(SelectionId);
 
-make_id!(
-    InputObjectDefinitionId,
-    InputObjectDefinition,
-    input_object_definitions
-);
+make_id!(FieldSelectionId, FieldSelectionRecord, field_selections);
+make_id!(InlineFragmentId, InlineFragmentRecord, inline_fragments);
+make_id!(FragmentSpreadId, FragmentSpreadRecord, fragment_spreads);
 
-make_id!(
-    DirectiveDefinitionId,
-    DirectiveDefinition,
-    directive_definitions
-);
-
-make_id!(FieldDefinitionId, FieldDefinition, field_definitions);
-impl_id_range!(FieldDefinitionId);
-
-make_id!(
-    InputValueDefinitionId,
-    InputValueDefinition,
-    input_value_definitions
-);
-impl_id_range!(InputValueDefinitionId);
-
-make_id!(TypeId, Type, type_references);
-
-make_id!(DirectiveId, Directive, directives);
+make_id!(DirectiveId, DirectiveRecord, directives);
+make_id!(ArgumentId, ArgumentRecord, arguments);
 impl_id_range!(DirectiveId);
+impl_id_range!(ArgumentId);
 
-make_id!(ArgumentId, Argument, arguments);
-
-make_id!(ValueId, Value, values);
+make_id!(ValueId, ValueRecord, values);
 
 #[derive(Clone, Copy)]
 pub struct StringId(NonZeroU32);
@@ -135,6 +100,3 @@ impl AstLookup<StringId> for Ast {
         unimplemented!("strings aren't mutable so can't do this")
     }
 }
-
-#[derive(Clone, Copy)]
-pub struct StringLiteralId(pub(super) usize);

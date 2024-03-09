@@ -4,8 +4,9 @@ use crate::{
     Span,
     type_system::{
         storage::*, ids::*, writer::AstWriter,
-        DirectiveLocation, WrappingType, OperationType
-    }
+        DirectiveLocation, WrappingType,
+    },
+    common::{OperationType, IdRange}
 };
 
 grammar<'input>(input: &'input str, ast: &mut AstWriter);
@@ -393,6 +394,7 @@ Ident: &'input str = {
     directive => "directive",
     repeatable => "repeatable",
     on => "on",
+    fragment => "fragment",
 }
 
 extern {
@@ -446,5 +448,6 @@ extern {
         directive => lexer::Token::Directive,
         repeatable => lexer::Token::Repeatable,
         on => lexer::Token::On,
+        fragment => lexer::Token::Fragment,
     }
 }

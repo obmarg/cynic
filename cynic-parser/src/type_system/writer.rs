@@ -1,4 +1,7 @@
-use super::{ids::*, storage::*, AstLookup};
+use crate::common::IdRange;
+use crate::AstLookup;
+
+use super::{ids::*, storage::*};
 use super::{Ast, AstDefinition};
 
 pub struct AstWriter {
@@ -209,9 +212,7 @@ impl AstWriter {
         self.input_value_id_cursor = end;
         let range = IdRange::new(start, end);
 
-        if let Some(expected_count) = expected_count {
-            assert_eq!(range.len(), expected_count);
-        }
+        assert_eq!(range.len(), expected_count.unwrap_or_default());
 
         range
     }
@@ -312,9 +313,7 @@ impl AstWriter {
         self.directive_id_cursor = end;
         let range = IdRange::new(start, end);
 
-        if let Some(expected_count) = expected_count {
-            assert_eq!(range.len(), expected_count);
-        }
+        assert_eq!(range.len(), expected_count.unwrap_or_default());
 
         range
     }

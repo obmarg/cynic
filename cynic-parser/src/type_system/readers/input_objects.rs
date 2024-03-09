@@ -1,4 +1,4 @@
-use crate::type_system::{ids::InputObjectDefinitionId, AstLookup};
+use crate::{type_system::ids::InputObjectDefinitionId, AstLookup};
 
 use super::{directives::Directive, input_values::InputValueDefinition, AstId, ReadContext};
 

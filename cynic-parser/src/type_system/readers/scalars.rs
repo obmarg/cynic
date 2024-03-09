@@ -1,4 +1,4 @@
-use crate::type_system::{ids::ScalarDefinitionId, AstLookup};
+use crate::{type_system::ids::ScalarDefinitionId, AstLookup};
 
 use super::{directives::Directive, AstId, ReadContext};
 
