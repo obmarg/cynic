@@ -76,7 +76,8 @@ SelectionSet: IdRange<SelectionId> = {
 }
 
 Selection: SelectionRecord = {
-    <alias:Alias?> <name:Name> <arguments:Arguments?> <directives:Directives> <selection_set:SelectionSet> => {
+    <alias:Alias?> <name:Name> <arguments:Arguments?> <directives:Directives> <selection_set:SelectionSet?> => {
+        let selection_set = selection_set.unwrap_or_default();
         let arguments = ast.argument_range(arguments.map(|args| args.len()));
         SelectionRecord::Field(
             ast.field_selection(FieldSelectionRecord {

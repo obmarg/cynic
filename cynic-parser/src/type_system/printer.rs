@@ -543,7 +543,7 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<ValueReader<'a>> {
                             .append(allocator.space())
                             .append(NodeDisplay(value))
                     }),
-                    ",",
+                    allocator.text(",").append(allocator.space()),
                 )
                 .group()
                 .enclose(allocator.space(), allocator.space())

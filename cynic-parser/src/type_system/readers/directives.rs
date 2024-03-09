@@ -22,7 +22,7 @@ impl<'a> DirectiveDefinition<'a> {
         ast.lookup(self.0.id).description.map(|id| ast.lookup(id))
     }
 
-    pub fn arguments(&self) -> impl Iterator<Item = InputValueDefinition<'a>> {
+    pub fn arguments(&self) -> impl ExactSizeIterator<Item = InputValueDefinition<'a>> {
         let ast = &self.0.ast;
 
         ast.lookup(self.0.id)
@@ -35,7 +35,7 @@ impl<'a> DirectiveDefinition<'a> {
         self.0.ast.lookup(self.0.id).repeatable
     }
 
-    pub fn locations(&self) -> impl Iterator<Item = DirectiveLocation> + 'a {
+    pub fn locations(&self) -> impl ExactSizeIterator<Item = DirectiveLocation> + 'a {
         self.0.ast.lookup(self.0.id).locations.iter().copied()
     }
 }
@@ -50,7 +50,7 @@ impl<'a> Directive<'a> {
         ast.lookup(ast.lookup(self.0.id).name)
     }
 
-    pub fn arguments(&self) -> impl Iterator<Item = Argument<'a>> {
+    pub fn arguments(&self) -> impl ExactSizeIterator<Item = Argument<'a>> {
         let ast = &self.0.ast;
 
         ast.lookup(self.0.id)

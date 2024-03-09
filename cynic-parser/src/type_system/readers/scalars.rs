@@ -17,7 +17,7 @@ impl<'a> ScalarDefinition<'a> {
         ast.lookup(self.0.id).description.map(|id| ast.lookup(id))
     }
 
-    pub fn directives(&self) -> impl Iterator<Item = Directive<'a>> + 'a {
+    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
         let ast = &self.0.ast;
 
         ast.lookup(self.0.id)

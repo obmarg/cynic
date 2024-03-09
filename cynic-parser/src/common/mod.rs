@@ -4,7 +4,7 @@ mod types;
 pub use id_range::IdRange;
 pub use types::*;
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum OperationType {
     Query,
     Mutation,

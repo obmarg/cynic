@@ -33,7 +33,7 @@ impl<'a> OperationDefinition<'a> {
         ast.lookup(self.0.id).name.map(|id| ast.lookup(id))
     }
 
-    pub fn variable_definitions(&self) -> impl Iterator<Item = VariableDefinition<'a>> {
+    pub fn variable_definitions(&self) -> impl ExactSizeIterator<Item = VariableDefinition<'a>> {
         self.0
             .ast
             .lookup(self.0.id)
@@ -42,7 +42,7 @@ impl<'a> OperationDefinition<'a> {
             .map(|id| self.0.ast.read(id))
     }
 
-    pub fn directives(&self) -> impl Iterator<Item = Directive<'a>> {
+    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> {
         self.0
             .ast
             .lookup(self.0.id)
@@ -51,7 +51,7 @@ impl<'a> OperationDefinition<'a> {
             .map(|id| self.0.ast.read(id))
     }
 
-    pub fn selection_set(&self) -> impl Iterator<Item = Selection<'a>> {
+    pub fn selection_set(&self) -> impl ExactSizeIterator<Item = Selection<'a>> {
         self.0
             .ast
             .lookup(self.0.id)

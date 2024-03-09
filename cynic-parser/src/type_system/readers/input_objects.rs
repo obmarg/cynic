@@ -18,7 +18,7 @@ impl<'a> InputObjectDefinition<'a> {
             .map(|id| self.0.ast.lookup(id))
     }
 
-    pub fn fields(&self) -> impl Iterator<Item = InputValueDefinition<'a>> + 'a {
+    pub fn fields(&self) -> impl ExactSizeIterator<Item = InputValueDefinition<'a>> + 'a {
         self.0
             .ast
             .lookup(self.0.id)
@@ -27,7 +27,7 @@ impl<'a> InputObjectDefinition<'a> {
             .map(|id| self.0.ast.read(id))
     }
 
-    pub fn directives(&self) -> impl Iterator<Item = Directive<'a>> + 'a {
+    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
         self.0
             .ast
             .lookup(self.0.id)

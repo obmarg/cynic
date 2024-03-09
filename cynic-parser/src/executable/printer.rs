@@ -1,17 +1,35 @@
 use pretty::{BoxAllocator, DocAllocator, Pretty};
 
+use crate::common::OperationType;
+
 use super::*;
 
 impl super::Ast {
     pub fn to_sdl(&self) -> String {
         let allocator = BoxAllocator;
 
-        // TODO: Possibly want some logic that detects whether we can just print a single
-        // selection set or not...
+        let use_short_form = {
+            let mut operation_iter = self.operations();
+            let first_op = operation_iter.next();
+            match (first_op, operation_iter.next()) {
+                (Some(first_op), None) => {
+                    first_op.name().is_none()
+                        && first_op.operation_type() == OperationType::Query
+                        && first_op.directives().len() == 0
+                        && first_op.variable_definitions().len() == 0
+                }
+                _ => false,
+            }
+        };
 
         let builder = allocator
             .intersperse(
                 self.definitions().map(|definition| match definition {
+                    ExecutableDefinition::Operation(reader) if use_short_form => {
+                        SelectionSetDisplay::new(reader.selection_set())
+                            .without_leading_space()
+                            .pretty(&allocator)
+                    }
                     ExecutableDefinition::Operation(reader) => {
                         NodeDisplay(reader).pretty(&allocator)
                     }
@@ -87,6 +105,7 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<FragmentDefinition<'a>> {
             .append(allocator.text(self.0.name()))
             .append(allocator.space())
             .append(allocator.text("on"))
+            .append(allocator.space())
             .append(allocator.text(self.0.type_condition()))
             .append(directives_pretty)
             .append(SelectionSetDisplay::new(self.0.selection_set()))
@@ -101,6 +120,7 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<VariableDefinition<'a>> {
             default_pretty = allocator
                 .space()
                 .append(allocator.text("="))
+                .append(allocator.space())
                 .append(NodeDisplay(default_value))
         }
 
@@ -116,35 +136,57 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<VariableDefinition<'a>> {
             .text("$")
             .append(allocator.text(self.0.name()))
             .append(allocator.text(":"))
+            .append(allocator.space())
             .append(NodeDisplay(self.0.ty()))
             .append(default_pretty)
             .append(directives_pretty)
     }
 }
 
-struct SelectionSetDisplay<'a>(Box<dyn Iterator<Item = Selection<'a>> + 'a>);
+struct SelectionSetDisplay<'a> {
+    selections: Box<dyn Iterator<Item = Selection<'a>> + 'a>,
+    leading_space: bool,
+}
 
 impl<'a> SelectionSetDisplay<'a> {
-    pub fn new(iter: impl Iterator<Item = Selection<'a>> + 'a) -> Self {
-        Self(Box::new(iter))
+    pub fn new(iter: impl ExactSizeIterator<Item = Selection<'a>> + 'a) -> Self {
+        Self {
+            selections: Box::new(iter),
+            leading_space: true,
+        }
+    }
+
+    pub fn without_leading_space(self) -> Self {
+        Self {
+            leading_space: false,
+            ..self
+        }
     }
 }
 
 impl<'a> Pretty<'a, BoxAllocator> for SelectionSetDisplay<'a> {
     fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
-        let mut selections = self.0.peekable();
+        let mut selections = self.selections.peekable();
         if selections.peek().is_none() {
             return allocator.nil();
         }
 
-        let selections = allocator.concat(selections.map(NodeDisplay)).nest(2);
+        let selections = allocator
+            .intersperse(selections.map(NodeDisplay), allocator.hardline())
+            .align();
 
-        allocator
-            .space()
+        let mut builder = allocator.nil();
+
+        if self.leading_space {
+            builder = allocator.space();
+        }
+
+        builder
             .append(allocator.text("{"))
             .append(allocator.hardline())
             .append(allocator.text("  "))
             .append(selections)
+            .append(allocator.hardline())
             .append(allocator.text("}"))
     }
 }
@@ -164,17 +206,12 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<Selection<'a>> {
                 let mut arguments = field.arguments().peekable();
 
                 let mut arguments_pretty = allocator.nil();
-
                 if arguments.peek().is_some() {
                     arguments_pretty = allocator
-                        .intersperse(arguments.map(NodeDisplay), comma_or_nil(allocator))
+                        .intersperse(arguments.map(NodeDisplay), comma_or_newline(allocator))
                         .group();
 
-                    arguments_pretty = arguments_pretty
-                        .clone()
-                        .nest(2)
-                        .parens()
-                        .flat_alt(arguments_pretty.parens());
+                    arguments_pretty = parens_and_maybe_indent(allocator, arguments_pretty);
                 }
 
                 let mut directives = field.directives().peekable();
@@ -226,7 +263,6 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<Selection<'a>> {
 
                 allocator
                     .text("...")
-                    .append(allocator.space())
                     .append(spread.fragment_name())
                     .append(directives_pretty)
             }
@@ -249,10 +285,9 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<Directive<'a>> {
         if arguments.peek().is_some() {
             let arguments = allocator
                 .intersperse(arguments.map(NodeDisplay), comma_or_newline(allocator))
-                .group()
-                .enclose(allocator.softline_(), allocator.softline_());
+                .group();
 
-            builder = builder.append(parens_and_maybe_indent(arguments));
+            builder = builder.append(parens_and_maybe_indent(allocator, arguments));
         }
 
         builder
@@ -297,7 +332,7 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<Value<'a>> {
                             .append(allocator.space())
                             .append(NodeDisplay(value))
                     }),
-                    ",",
+                    allocator.text(",").append(allocator.space()),
                 )
                 .group()
                 .enclose(allocator.space(), allocator.space())
@@ -318,10 +353,16 @@ fn comma_or_newline(allocator: &BoxAllocator) -> pretty::DocBuilder<'_, BoxAlloc
         .flat_alt(allocator.text(",").append(allocator.space()))
 }
 
-fn parens_and_maybe_indent(
-    thing: pretty::DocBuilder<'_, BoxAllocator>,
-) -> pretty::DocBuilder<'_, BoxAllocator> {
-    thing.clone().nest(2).parens().flat_alt(thing.parens())
+fn parens_and_maybe_indent<'a>(
+    allocator: &'a BoxAllocator,
+    thing: pretty::DocBuilder<'a, BoxAllocator>,
+) -> pretty::DocBuilder<'a, BoxAllocator> {
+    thing
+        .clone()
+        .enclose(allocator.softline_(), allocator.softline_())
+        .nest(2)
+        .parens()
+        .flat_alt(thing.parens())
 }
 
 fn brackets_and_maybe_indent(

@@ -1,4 +1,4 @@
-query {
+{
   node {
     id
     ...something

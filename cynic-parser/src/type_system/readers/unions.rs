@@ -18,7 +18,7 @@ impl<'a> UnionDefinition<'a> {
             .map(|id| self.0.ast.lookup(id))
     }
 
-    pub fn members(&self) -> impl Iterator<Item = &'a str> + 'a {
+    pub fn members(&self) -> impl ExactSizeIterator<Item = &'a str> + 'a {
         self.0
             .ast
             .lookup(self.0.id)
@@ -27,7 +27,7 @@ impl<'a> UnionDefinition<'a> {
             .map(|id| self.0.ast.lookup(*id))
     }
 
-    pub fn directives(&self) -> impl Iterator<Item = Directive<'a>> + 'a {
+    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
         self.0
             .ast
             .lookup(self.0.id)

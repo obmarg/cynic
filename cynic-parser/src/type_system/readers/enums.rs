@@ -18,13 +18,13 @@ impl<'a> EnumDefinition<'a> {
         ast.lookup(self.0.id).description.map(|id| ast.lookup(id))
     }
 
-    pub fn values(&self) -> impl Iterator<Item = EnumValueDefinition<'a>> + 'a {
+    pub fn values(&self) -> impl ExactSizeIterator<Item = EnumValueDefinition<'a>> + 'a {
         let ast = &self.0.ast;
 
         ast.lookup(self.0.id).values.iter().map(|id| ast.read(*id))
     }
 
-    pub fn directives(&self) -> impl Iterator<Item = Directive<'a>> + 'a {
+    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
         let ast = &self.0.ast;
 
         ast.lookup(self.0.id)
@@ -49,7 +49,7 @@ impl<'a> EnumValueDefinition<'a> {
         ast.lookup(self.0.id).description.map(|id| ast.lookup(id))
     }
 
-    pub fn directives(&self) -> impl Iterator<Item = Directive<'a>> {
+    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> {
         let ast = &self.0.ast;
         ast.lookup(self.0.id)
             .directives
