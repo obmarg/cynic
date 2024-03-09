@@ -24,7 +24,7 @@ impl TypeSystemId for ValueId {
 
 impl<'a> From<ReadContext<'a, ValueId>> for ValueReader<'a> {
     fn from(reader: ReadContext<'a, ValueId>) -> Self {
-        let ast = &reader.ast;
+        let ast = &reader.document;
 
         match ast.lookup(reader.id) {
             type_system::Value::Variable(id) => ValueReader::Variable(ast.lookup(*id)),

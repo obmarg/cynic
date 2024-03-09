@@ -7,28 +7,28 @@ pub struct InputValueDefinition<'a>(ReadContext<'a, InputValueDefinitionId>);
 
 impl<'a> InputValueDefinition<'a> {
     pub fn name(&self) -> &'a str {
-        let ast = &self.0.ast;
+        let ast = &self.0.document;
         ast.lookup(ast.lookup(self.0.id).name)
     }
 
     pub fn ty(&self) -> Type<'a> {
-        let ast = &self.0.ast;
+        let ast = &self.0.document;
 
         ast.read(ast.lookup(self.0.id).ty)
     }
 
     pub fn description(&self) -> Option<&'a str> {
-        let ast = &self.0.ast;
+        let ast = &self.0.document;
         ast.lookup(self.0.id).description.map(|id| ast.lookup(id))
     }
 
     pub fn default_value(&self) -> Option<ValueReader<'a>> {
-        let ast = &self.0.ast;
+        let ast = &self.0.document;
         ast.lookup(self.0.id).default.map(|id| ast.read(id))
     }
 
     pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
-        let ast = &self.0.ast;
+        let ast = &self.0.document;
         ast.lookup(self.0.id)
             .directives
             .iter()

@@ -4,7 +4,7 @@ use crate::common::OperationType;
 
 use super::*;
 
-impl super::Ast {
+impl super::ExecutableDocument {
     pub fn to_sdl(&self) -> String {
         let allocator = BoxAllocator;
 

@@ -6,7 +6,7 @@ use super::{
         FieldDefinition, InputObjectDefinition, InputValueDefinition, InterfaceDefinition,
         ObjectDefinition, ScalarDefinition, SchemaDefinition, Type, UnionDefinition, Value,
     },
-    Ast, AstDefinition,
+    AstDefinition, TypeSystemDocument,
 };
 use crate::{common::IdRange, AstLookup};
 
@@ -24,7 +24,7 @@ macro_rules! make_id {
             }
         }
 
-        impl AstLookup<$name> for Ast {
+        impl AstLookup<$name> for TypeSystemDocument {
             type Output = $output;
 
             fn lookup(&self, index: $name) -> &Self::Output {
@@ -130,7 +130,7 @@ impl StringId {
     }
 }
 
-impl AstLookup<StringId> for Ast {
+impl AstLookup<StringId> for TypeSystemDocument {
     type Output = str;
 
     fn lookup(&self, index: StringId) -> &Self::Output {

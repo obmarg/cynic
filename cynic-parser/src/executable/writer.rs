@@ -1,26 +1,26 @@
-use crate::{common::IdRange, AstLookup};
+use crate::common::IdRange;
 
 use super::{
     definition::ExecutableDefinitionRecord, directive::DirectiveRecord, ids::*, storage::*,
-    variable::VariableDefinitionRecord, Ast,
+    variable::VariableDefinitionRecord, ExecutableDocument,
 };
 
-pub struct AstWriter {
-    ast: Ast,
+pub struct ExecutableAstWriter {
+    ast: ExecutableDocument,
     directive_cursor: DirectiveId,
     variable_definition_cursor: VariableDefinitionId,
 }
 
-impl AstWriter {
+impl ExecutableAstWriter {
     pub fn new() -> Self {
-        AstWriter {
-            ast: Ast::default(),
+        ExecutableAstWriter {
+            ast: ExecutableDocument::default(),
             directive_cursor: DirectiveId::new(0),
             variable_definition_cursor: VariableDefinitionId::new(0),
         }
     }
 
-    pub fn finish(self) -> Ast {
+    pub fn finish(self) -> ExecutableDocument {
         // TODO: Possibly assert things in here for safety...
         self.ast
     }
@@ -152,5 +152,11 @@ impl AstWriter {
     pub fn intern_string(&mut self, string: &str) -> StringId {
         let (id, _) = self.ast.strings.insert_full(string.into());
         StringId::new(id)
+    }
+}
+
+impl Default for ExecutableAstWriter {
+    fn default() -> Self {
+        Self::new()
     }
 }

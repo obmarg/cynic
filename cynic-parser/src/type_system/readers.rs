@@ -1,4 +1,4 @@
-use crate::type_system::{self, Ast};
+use crate::type_system::{self, TypeSystemDocument};
 
 mod arguments;
 mod definitions;
@@ -25,27 +25,31 @@ pub use self::{
 pub trait TypeSystemId: Copy {
     type Reader<'a>: From<ReadContext<'a, Self>>;
 
-    fn read(self, ast: &Ast) -> Self::Reader<'_> {
-        ReadContext { id: self, ast }.into()
+    fn read(self, ast: &TypeSystemDocument) -> Self::Reader<'_> {
+        ReadContext {
+            id: self,
+            document: ast,
+        }
+        .into()
     }
 }
 
 #[derive(Clone, Copy)]
 pub struct ReadContext<'a, I> {
     id: I,
-    ast: &'a Ast,
+    document: &'a TypeSystemDocument,
 }
 
-impl super::Ast {
+impl super::TypeSystemDocument {
     pub fn read<T>(&self, id: T) -> T::Reader<'_>
     where
         T: TypeSystemId,
     {
-        ReadContext { id, ast: self }.into()
+        ReadContext { id, document: self }.into()
     }
 }
 
-impl Ast {
+impl TypeSystemDocument {
     pub fn definitions(&self) -> impl Iterator<Item = Definition<'_>> + '_ {
         self.definitions.iter().map(|definition| match definition {
             type_system::AstDefinition::Schema(id) => Definition::Schema(self.read(*id)),

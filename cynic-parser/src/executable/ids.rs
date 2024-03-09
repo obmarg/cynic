@@ -2,7 +2,8 @@ use std::num::NonZeroU32;
 
 use super::{
     argument::ArgumentRecord, definition::ExecutableDefinitionRecord, directive::DirectiveRecord,
-    storage::*, types::TypeRecord, value::ValueRecord, variable::VariableDefinitionRecord, Ast,
+    storage::*, types::TypeRecord, value::ValueRecord, variable::VariableDefinitionRecord,
+    ExecutableDocument,
 };
 use crate::{common::IdRange, AstLookup};
 
@@ -20,7 +21,7 @@ macro_rules! make_id {
             }
         }
 
-        impl AstLookup<$name> for Ast {
+        impl AstLookup<$name> for ExecutableDocument {
             type Output = $output;
 
             fn lookup(&self, index: $name) -> &Self::Output {
@@ -100,7 +101,7 @@ impl StringId {
     }
 }
 
-impl AstLookup<StringId> for Ast {
+impl AstLookup<StringId> for ExecutableDocument {
     type Output = str;
 
     fn lookup(&self, index: StringId) -> &Self::Output {

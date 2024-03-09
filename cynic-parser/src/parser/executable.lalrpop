@@ -1,14 +1,13 @@
 use crate::lexer;
 
 use crate::{
-    Span,
     executable::{
-        storage::*, ids::*, writer::AstWriter
+        storage::*, ids::*, writer::ExecutableAstWriter
     },
     common::{OperationType, IdRange, WrappingType, TypeWrappers}
 };
 
-grammar<'input>(input: &'input str, ast: &mut AstWriter);
+grammar<'input>(input: &'input str, ast: &mut ExecutableAstWriter);
 
 pub ExecutableDocument: () = {
     <defs:ExecutableDefinition*> => {}

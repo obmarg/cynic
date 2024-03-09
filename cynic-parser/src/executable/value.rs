@@ -39,7 +39,7 @@ impl ExecutableId for ValueId {
 
 impl<'a> From<ReadContext<'a, ValueId>> for Value<'a> {
     fn from(reader: ReadContext<'a, ValueId>) -> Self {
-        let ast = &reader.ast;
+        let ast = &reader.document;
 
         match ast.lookup(reader.id) {
             ValueRecord::Variable(id) => Value::Variable(ast.lookup(*id)),
