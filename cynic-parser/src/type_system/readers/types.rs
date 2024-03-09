@@ -7,18 +7,20 @@ pub struct Type<'a>(ReadContext<'a, TypeId>);
 
 impl<'a> Type<'a> {
     pub fn name(&self) -> &'a str {
-        self.0.ast.lookup(self.0.ast.lookup(self.0.id).name)
+        self.0
+            .document
+            .lookup(self.0.document.lookup(self.0.id).name)
     }
 
     /// The wrapper types from the outermost to innermost
     pub fn wrappers(&self) -> impl Iterator<Item = WrappingType> + 'a {
-        self.0.ast.lookup(self.0.id).wrappers.iter()
+        self.0.document.lookup(self.0.id).wrappers.iter()
     }
 }
 
 impl<'a> std::fmt::Display for Type<'a> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let ast = &self.0.ast;
+        let ast = &self.0.document;
 
         let crate::type_system::Type { name, wrappers } = ast.lookup(self.0.id);
 

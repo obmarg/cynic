@@ -18,7 +18,7 @@ pub use readers::{Definition, TypeDefinition, ValueReader};
 use storage::*;
 
 #[derive(Default)]
-pub struct Ast {
+pub struct TypeSystemDocument {
     strings: IndexSet<Box<str>>,
 
     definitions: Vec<AstDefinition>,

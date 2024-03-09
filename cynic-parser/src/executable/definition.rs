@@ -18,7 +18,7 @@ pub enum ExecutableDefinition<'a> {
     Fragment(FragmentDefinition<'a>),
 }
 
-impl super::Ast {
+impl super::ExecutableDocument {
     pub fn definitions(&self) -> impl ExactSizeIterator<Item = ExecutableDefinition<'_>> {
         self.definitions.iter().map(|record| match record {
             ExecutableDefinitionRecord::Operation(id) => {
@@ -51,12 +51,12 @@ impl ExecutableId for ExecutableDefinitionId {
 
 impl<'a> From<ReadContext<'a, ExecutableDefinitionId>> for ExecutableDefinition<'a> {
     fn from(value: ReadContext<'a, ExecutableDefinitionId>) -> Self {
-        match value.ast.lookup(value.id) {
+        match value.document.lookup(value.id) {
             ExecutableDefinitionRecord::Operation(id) => {
-                ExecutableDefinition::Operation(value.ast.read(*id))
+                ExecutableDefinition::Operation(value.document.read(*id))
             }
             ExecutableDefinitionRecord::Fragment(id) => {
-                ExecutableDefinition::Fragment(value.ast.read(*id))
+                ExecutableDefinition::Fragment(value.document.read(*id))
             }
         }
     }

@@ -47,10 +47,14 @@ impl ExecutableId for SelectionId {
 
 impl<'a> From<ReadContext<'a, SelectionId>> for Selection<'a> {
     fn from(value: ReadContext<'a, SelectionId>) -> Self {
-        match value.ast.lookup(value.id) {
-            SelectionRecord::Field(id) => Selection::Field(value.ast.read(*id)),
-            SelectionRecord::InlineFragment(id) => Selection::InlineFragment(value.ast.read(*id)),
-            SelectionRecord::FragmentSpread(id) => Selection::FragmentSpread(value.ast.read(*id)),
+        match value.document.lookup(value.id) {
+            SelectionRecord::Field(id) => Selection::Field(value.document.read(*id)),
+            SelectionRecord::InlineFragment(id) => {
+                Selection::InlineFragment(value.document.read(*id))
+            }
+            SelectionRecord::FragmentSpread(id) => {
+                Selection::FragmentSpread(value.document.read(*id))
+            }
         }
     }
 }
@@ -61,18 +65,20 @@ pub struct FieldSelection<'a>(ReadContext<'a, FieldSelectionId>);
 impl<'a> FieldSelection<'a> {
     pub fn alias(&self) -> Option<&'a str> {
         self.0
-            .ast
+            .document
             .lookup(self.0.id)
             .alias
-            .map(|id| self.0.ast.lookup(id))
+            .map(|id| self.0.document.lookup(id))
     }
 
     pub fn name(&self) -> &'a str {
-        self.0.ast.lookup(self.0.ast.lookup(self.0.id).name)
+        self.0
+            .document
+            .lookup(self.0.document.lookup(self.0.id).name)
     }
 
     pub fn arguments(&self) -> impl ExactSizeIterator<Item = Argument<'a>> {
-        let ast = &self.0.ast;
+        let ast = &self.0.document;
 
         ast.lookup(self.0.id)
             .arguments
@@ -82,20 +88,20 @@ impl<'a> FieldSelection<'a> {
 
     pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> {
         self.0
-            .ast
+            .document
             .lookup(self.0.id)
             .directives
             .iter()
-            .map(|id| self.0.ast.read(id))
+            .map(|id| self.0.document.read(id))
     }
 
     pub fn selection_set(&self) -> impl ExactSizeIterator<Item = Selection<'a>> {
         self.0
-            .ast
+            .document
             .lookup(self.0.id)
             .selection_set
             .iter()
-            .map(|id| self.0.ast.read(id))
+            .map(|id| self.0.document.read(id))
     }
 }
 
@@ -114,7 +120,7 @@ pub struct InlineFragment<'a>(ReadContext<'a, InlineFragmentId>);
 
 impl<'a> InlineFragment<'a> {
     pub fn type_condition(&self) -> Option<&'a str> {
-        let ast = &self.0.ast;
+        let ast = &self.0.document;
         ast.lookup(self.0.id)
             .type_condition
             .map(|id| ast.lookup(id))
@@ -122,20 +128,20 @@ impl<'a> InlineFragment<'a> {
 
     pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> {
         self.0
-            .ast
+            .document
             .lookup(self.0.id)
             .directives
             .iter()
-            .map(|id| self.0.ast.read(id))
+            .map(|id| self.0.document.read(id))
     }
 
     pub fn selection_set(&self) -> impl ExactSizeIterator<Item = Selection<'a>> {
         self.0
-            .ast
+            .document
             .lookup(self.0.id)
             .selection_set
             .iter()
-            .map(|id| self.0.ast.read(id))
+            .map(|id| self.0.document.read(id))
     }
 }
 
@@ -155,17 +161,17 @@ pub struct FragmentSpread<'a>(ReadContext<'a, FragmentSpreadId>);
 impl<'a> FragmentSpread<'a> {
     pub fn fragment_name(&self) -> &'a str {
         self.0
-            .ast
-            .lookup(self.0.ast.lookup(self.0.id).fragment_name)
+            .document
+            .lookup(self.0.document.lookup(self.0.id).fragment_name)
     }
 
     pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> {
         self.0
-            .ast
+            .document
             .lookup(self.0.id)
             .directives
             .iter()
-            .map(|id| self.0.ast.read(id))
+            .map(|id| self.0.document.read(id))
     }
 }
 

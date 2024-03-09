@@ -3,13 +3,13 @@ use crate::lexer;
 use crate::{
     Span,
     type_system::{
-        storage::*, ids::*, writer::AstWriter,
+        storage::*, ids::*, writer::TypeSystemAstWriter,
         DirectiveLocation,
     },
     common::{OperationType, IdRange, WrappingType, TypeWrappers}
 };
 
-grammar<'input>(input: &'input str, ast: &mut AstWriter);
+grammar<'input>(input: &'input str, ast: &mut TypeSystemAstWriter);
 
 pub TypeSystemDocument: () = {
     <defs:DefinitionAndDescription+> => {}

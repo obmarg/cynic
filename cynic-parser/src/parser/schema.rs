@@ -1,9 +1,9 @@
 // auto-generated: "lalrpop 0.20.0"
-// sha3: a595e160f3237a8436b77b7d2890b5e11d96900df9b06433c8e4b4dc3cf6592c
+// sha3: c142fb7b9cebab6360bc27d9348c9f58b83232f60c515eecd877892f5f7f8051
 use crate::lexer;
 use crate::{
     common::{IdRange, OperationType, TypeWrappers, WrappingType},
-    type_system::{ids::*, storage::*, writer::AstWriter, DirectiveLocation},
+    type_system::{ids::*, storage::*, writer::TypeSystemAstWriter, DirectiveLocation},
     Span,
 };
 #[allow(unused_extern_crates)]
@@ -21,7 +21,7 @@ mod __parse__TypeSystemDocument {
     use crate::{
     Span,
     type_system::{
-        storage::*, ids::*, writer::AstWriter,
+        storage::*, ids::*, writer::TypeSystemAstWriter,
         DirectiveLocation,
     },
     common::{OperationType, IdRange, WrappingType, TypeWrappers}
@@ -1300,7 +1300,7 @@ mod __parse__TypeSystemDocument {
     where
     {
         input: &'input str,
-        ast: &'__1 mut AstWriter,
+        ast: &'__1 mut TypeSystemAstWriter,
         __phantom: core::marker::PhantomData<(&'input ())>,
     }
     impl<'input, '__1> __state_machine::ParserDefinition for __StateMachine<'input, '__1>
@@ -2588,7 +2588,7 @@ mod __parse__TypeSystemDocument {
         >(
             &self,
             input: &'input str,
-            ast: &mut AstWriter,
+            ast: &mut TypeSystemAstWriter,
             __tokens0: __TOKENS,
         ) -> Result<(), __lalrpop_util::ParseError<usize, lexer::Token<'input>, lexer::LexicalError>>
         {
@@ -2642,7 +2642,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __action: i16,
         __lookahead_start: Option<&usize>,
         __states: &mut alloc::vec::Vec<i16>,
@@ -3706,7 +3706,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -3724,7 +3724,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -3741,7 +3741,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -3759,7 +3759,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -3776,7 +3776,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -3793,7 +3793,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -3810,7 +3810,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -3831,7 +3831,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -3848,7 +3848,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -3866,7 +3866,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -3884,7 +3884,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -3904,7 +3904,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -3924,7 +3924,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -3945,7 +3945,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -3963,7 +3963,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -3980,7 +3980,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4001,7 +4001,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4019,7 +4019,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4036,7 +4036,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4056,7 +4056,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4074,7 +4074,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4091,7 +4091,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4111,7 +4111,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4129,7 +4129,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4147,7 +4147,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4167,7 +4167,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4188,7 +4188,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4208,7 +4208,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4225,7 +4225,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4243,7 +4243,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4261,7 +4261,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4281,7 +4281,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4306,7 +4306,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4330,7 +4330,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4354,7 +4354,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4377,7 +4377,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4395,7 +4395,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4416,7 +4416,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4436,7 +4436,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4454,7 +4454,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4471,7 +4471,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4489,7 +4489,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4511,7 +4511,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4532,7 +4532,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4550,7 +4550,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4568,7 +4568,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4586,7 +4586,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4604,7 +4604,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4622,7 +4622,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4643,7 +4643,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4663,7 +4663,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4681,7 +4681,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4701,7 +4701,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4722,7 +4722,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4740,7 +4740,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4757,7 +4757,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4781,7 +4781,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4804,7 +4804,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4827,7 +4827,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4849,7 +4849,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4867,7 +4867,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4887,7 +4887,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4908,7 +4908,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4926,7 +4926,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4943,7 +4943,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4961,7 +4961,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4979,7 +4979,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -4997,7 +4997,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5015,7 +5015,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5033,7 +5033,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5051,7 +5051,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5069,7 +5069,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5087,7 +5087,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5105,7 +5105,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5123,7 +5123,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5141,7 +5141,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5159,7 +5159,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5177,7 +5177,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5195,7 +5195,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5213,7 +5213,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5231,7 +5231,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5249,7 +5249,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5267,7 +5267,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5285,7 +5285,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5303,7 +5303,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5323,7 +5323,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5344,7 +5344,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5365,7 +5365,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5385,7 +5385,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5403,7 +5403,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5420,7 +5420,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5441,7 +5441,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5459,7 +5459,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5476,7 +5476,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5498,7 +5498,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5519,7 +5519,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5543,7 +5543,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5566,7 +5566,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5589,7 +5589,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5611,7 +5611,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5629,7 +5629,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5649,7 +5649,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5672,7 +5672,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5694,7 +5694,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5716,7 +5716,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5737,7 +5737,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5755,7 +5755,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5773,7 +5773,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5796,7 +5796,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5818,7 +5818,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5840,7 +5840,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5861,7 +5861,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5882,7 +5882,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5899,7 +5899,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5917,7 +5917,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5935,7 +5935,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5955,7 +5955,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5973,7 +5973,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -5991,7 +5991,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6008,7 +6008,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6029,7 +6029,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6050,7 +6050,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6071,7 +6071,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6088,7 +6088,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6106,7 +6106,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6124,7 +6124,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6144,7 +6144,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6165,7 +6165,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6186,7 +6186,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6208,7 +6208,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6226,7 +6226,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6244,7 +6244,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6262,7 +6262,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6279,7 +6279,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6299,7 +6299,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6317,7 +6317,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6337,7 +6337,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6355,7 +6355,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6373,7 +6373,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6391,7 +6391,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6409,7 +6409,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6427,7 +6427,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6445,7 +6445,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6463,7 +6463,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6483,7 +6483,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6503,7 +6503,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6523,7 +6523,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6543,7 +6543,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6563,7 +6563,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6583,7 +6583,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6603,7 +6603,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6621,7 +6621,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6639,7 +6639,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6661,7 +6661,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6682,7 +6682,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6703,7 +6703,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6724,7 +6724,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6744,7 +6744,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6762,7 +6762,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6779,7 +6779,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6799,7 +6799,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6817,7 +6817,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6835,7 +6835,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6853,7 +6853,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6871,7 +6871,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6889,7 +6889,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6907,7 +6907,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6925,7 +6925,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6945,7 +6945,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6966,7 +6966,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -6986,7 +6986,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -7007,7 +7007,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -7025,7 +7025,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -7042,7 +7042,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -7060,7 +7060,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -7078,7 +7078,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -7098,7 +7098,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -7116,7 +7116,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -7134,7 +7134,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -7151,7 +7151,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -7169,7 +7169,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -7187,7 +7187,7 @@ mod __parse__TypeSystemDocument {
         'input,
     >(
         input: &'input str,
-        ast: &mut AstWriter,
+        ast: &mut TypeSystemAstWriter,
         __lookahead_start: Option<&usize>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
@@ -7208,13 +7208,18 @@ pub use self::__parse__TypeSystemDocument::TypeSystemDocumentParser;
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action0<'input>(input: &'input str, ast: &mut AstWriter, (_, __0, _): (usize, (), usize)) {}
+fn __action0<'input>(
+    input: &'input str,
+    ast: &mut TypeSystemAstWriter,
+    (_, __0, _): (usize, (), usize),
+) {
+}
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
 fn __action1<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, defs, _): (usize, alloc::vec::Vec<()>, usize),
 ) {
     {}
@@ -7224,7 +7229,7 @@ fn __action1<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action2<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, description, _): (usize, core::option::Option<StringId>, usize),
     (_, def, _): (usize, DefinitionId, usize),
 ) {
@@ -7237,7 +7242,7 @@ fn __action2<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action3<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, def, _): (usize, SchemaDefinition, usize),
 ) -> DefinitionId {
     ast.schema_definition(def)
@@ -7247,7 +7252,7 @@ fn __action3<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action4<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, def, _): (usize, ScalarDefinition, usize),
 ) -> DefinitionId {
     ast.scalar_definition(def)
@@ -7257,7 +7262,7 @@ fn __action4<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action5<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, def, _): (usize, ObjectDefinition, usize),
 ) -> DefinitionId {
     ast.object_definition(def)
@@ -7267,7 +7272,7 @@ fn __action5<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action6<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, def, _): (usize, InterfaceDefinition, usize),
 ) -> DefinitionId {
     ast.interface_definition(def)
@@ -7277,7 +7282,7 @@ fn __action6<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action7<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, def, _): (usize, UnionDefinition, usize),
 ) -> DefinitionId {
     ast.union_definition(def)
@@ -7287,7 +7292,7 @@ fn __action7<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action8<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, def, _): (usize, EnumDefinition, usize),
 ) -> DefinitionId {
     ast.enum_definition(def)
@@ -7297,7 +7302,7 @@ fn __action8<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action9<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, def, _): (usize, InputObjectDefinition, usize),
 ) -> DefinitionId {
     ast.input_object_definition(def)
@@ -7307,7 +7312,7 @@ fn __action9<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action10<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, def, _): (usize, SchemaDefinition, usize),
 ) -> DefinitionId {
@@ -7318,7 +7323,7 @@ fn __action10<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action11<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, def, _): (usize, ScalarDefinition, usize),
 ) -> DefinitionId {
@@ -7329,7 +7334,7 @@ fn __action11<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action12<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, def, _): (usize, ObjectDefinition, usize),
 ) -> DefinitionId {
@@ -7340,7 +7345,7 @@ fn __action12<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action13<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, def, _): (usize, InterfaceDefinition, usize),
 ) -> DefinitionId {
@@ -7351,7 +7356,7 @@ fn __action13<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action14<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, def, _): (usize, UnionDefinition, usize),
 ) -> DefinitionId {
@@ -7362,7 +7367,7 @@ fn __action14<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action15<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, def, _): (usize, EnumDefinition, usize),
 ) -> DefinitionId {
@@ -7373,7 +7378,7 @@ fn __action15<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action16<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, def, _): (usize, InputObjectDefinition, usize),
 ) -> DefinitionId {
@@ -7384,7 +7389,7 @@ fn __action16<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action17<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, def, _): (usize, DirectiveDefinition, usize),
 ) -> DefinitionId {
     ast.directive_definition(def)
@@ -7394,7 +7399,7 @@ fn __action17<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action18<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, roots, _): (usize, alloc::vec::Vec<RootOperationTypeDefinition>, usize),
@@ -7410,7 +7415,7 @@ fn __action18<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action19<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, name, _): (usize, StringId, usize),
@@ -7425,7 +7430,7 @@ fn __action19<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action20<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, name, _): (usize, StringId, usize),
@@ -7440,7 +7445,7 @@ fn __action20<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action21<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, name, _): (usize, StringId, usize),
@@ -7455,7 +7460,7 @@ fn __action21<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action22<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, start, _): (usize, usize, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, name, _): (usize, StringId, usize),
@@ -7474,7 +7479,7 @@ fn __action22<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action23<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, start, _): (usize, usize, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, name, _): (usize, StringId, usize),
@@ -7498,7 +7503,7 @@ fn __action23<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action24<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, interfaces, _): (usize, Vec<StringId>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, name, _): (usize, StringId, usize),
@@ -7514,7 +7519,7 @@ fn __action24<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action25<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, _, _): (usize, core::option::Option<lexer::Token<'input>>, usize),
     (_, name, _): (usize, StringId, usize),
@@ -7528,7 +7533,7 @@ fn __action25<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action26<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, name, _): (usize, StringId, usize),
 ) -> StringId {
@@ -7539,7 +7544,7 @@ fn __action26<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action27<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, fields, _): (usize, alloc::vec::Vec<()>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
@@ -7551,7 +7556,7 @@ fn __action27<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action28<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, start, _): (usize, usize, usize),
     (_, description, _): (usize, core::option::Option<StringId>, usize),
     (_, name, _): (usize, StringId, usize),
@@ -7582,7 +7587,7 @@ fn __action28<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action29<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, arguments, _): (usize, alloc::vec::Vec<()>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
@@ -7594,7 +7599,7 @@ fn __action29<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action30<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, start, _): (usize, usize, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, name, _): (usize, StringId, usize),
@@ -7618,7 +7623,7 @@ fn __action30<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action31<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, start, _): (usize, usize, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, name, _): (usize, StringId, usize),
@@ -7639,7 +7644,7 @@ fn __action31<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action32<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, members, _): (usize, Vec<StringId>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, name, _): (usize, StringId, usize),
@@ -7655,7 +7660,7 @@ fn __action32<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action33<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, _, _): (usize, core::option::Option<lexer::Token<'input>>, usize),
     (_, name, _): (usize, StringId, usize),
@@ -7669,7 +7674,7 @@ fn __action33<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action34<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, start, _): (usize, usize, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, name, _): (usize, StringId, usize),
@@ -7694,7 +7699,7 @@ fn __action34<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action35<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, values, _): (usize, alloc::vec::Vec<EnumValueDefinitionId>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
@@ -7706,7 +7711,7 @@ fn __action35<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action36<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, start, _): (usize, usize, usize),
     (_, description, _): (usize, core::option::Option<StringId>, usize),
     (_, value, _): (usize, StringId, usize),
@@ -7725,7 +7730,7 @@ fn __action36<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action37<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, start, _): (usize, usize, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, name, _): (usize, StringId, usize),
@@ -7748,7 +7753,7 @@ fn __action37<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action38<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, fields, _): (usize, alloc::vec::Vec<()>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
@@ -7760,7 +7765,7 @@ fn __action38<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action39<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, start, _): (usize, usize, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
@@ -7789,7 +7794,7 @@ fn __action39<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action40<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> bool {
     true
@@ -7799,7 +7804,7 @@ fn __action40<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action41<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, locations, _): (usize, Vec<DirectiveLocation>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, location, _): (usize, DirectiveLocation, usize),
@@ -7815,7 +7820,7 @@ fn __action41<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action42<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, _, _): (usize, core::option::Option<lexer::Token<'input>>, usize),
     (_, location, _): (usize, DirectiveLocation, usize),
 ) -> Vec<DirectiveLocation> {
@@ -7828,7 +7833,7 @@ fn __action42<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action43<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, s, _): (usize, &'input str, usize),
 ) -> DirectiveLocation {
     s.parse().expect("TODO: error handling")
@@ -7838,7 +7843,7 @@ fn __action43<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action44<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, start, _): (usize, usize, usize),
     (_, description, _): (usize, core::option::Option<StringId>, usize),
     (_, name, _): (usize, StringId, usize),
@@ -7864,7 +7869,7 @@ fn __action44<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action45<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, v, _): (usize, ValueId, usize),
 ) -> ValueId {
@@ -7875,7 +7880,7 @@ fn __action45<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action46<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, s, _): (usize, &'input str, usize),
 ) -> StringId {
     ast.ident(s)
@@ -7885,7 +7890,7 @@ fn __action46<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action47<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, s, _): (usize, &'input str, usize),
 ) -> StringId {
     ast.ident(s)
@@ -7895,7 +7900,7 @@ fn __action47<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action48<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, ty, _): (usize, TypeId, usize),
 ) -> TypeId {
@@ -7906,7 +7911,7 @@ fn __action48<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action49<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, name, _): (usize, StringId, usize),
     (_, wrappers, _): (usize, alloc::vec::Vec<WrappingType>, usize),
 ) -> TypeId {
@@ -7920,7 +7925,7 @@ fn __action49<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action50<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> WrappingType {
     WrappingType::NonNull
@@ -7930,7 +7935,7 @@ fn __action50<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action51<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> WrappingType {
     WrappingType::List
@@ -7940,7 +7945,7 @@ fn __action51<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action52<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, name, _): (usize, StringId, usize),
 ) -> ValueId {
@@ -7951,7 +7956,7 @@ fn __action52<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action53<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, int, _): (usize, &'input str, usize),
 ) -> ValueId {
     ast.value(Value::Int(int.parse().unwrap()))
@@ -7961,7 +7966,7 @@ fn __action53<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action54<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, float, _): (usize, &'input str, usize),
 ) -> ValueId {
     ast.value(Value::Float(float.parse().unwrap()))
@@ -7971,7 +7976,7 @@ fn __action54<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action55<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, s, _): (usize, &'input str, usize),
 ) -> ValueId {
     {
@@ -7984,7 +7989,7 @@ fn __action55<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action56<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, s, _): (usize, &'input str, usize),
 ) -> ValueId {
     {
@@ -7997,7 +8002,7 @@ fn __action56<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action57<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> ValueId {
     ast.value(Value::Boolean(true))
@@ -8007,7 +8012,7 @@ fn __action57<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action58<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> ValueId {
     ast.value(Value::Boolean(false))
@@ -8017,7 +8022,7 @@ fn __action58<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action59<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> ValueId {
     ast.value(Value::Null)
@@ -8027,7 +8032,7 @@ fn __action59<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action60<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, values, _): (usize, alloc::vec::Vec<ValueId>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
@@ -8039,7 +8044,7 @@ fn __action60<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action61<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, fields, _): (usize, alloc::vec::Vec<(StringId, ValueId)>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
@@ -8051,7 +8056,7 @@ fn __action61<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action62<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, value, _): (usize, StringId, usize),
 ) -> ValueId {
     ast.value(Value::Enum(value))
@@ -8061,7 +8066,7 @@ fn __action62<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action63<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, name, _): (usize, StringId, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, value, _): (usize, ValueId, usize),
@@ -8073,7 +8078,7 @@ fn __action63<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action64<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, s, _): (usize, &'input str, usize),
 ) -> StringId {
     {
@@ -8085,7 +8090,7 @@ fn __action64<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action65<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, s, _): (usize, &'input str, usize),
 ) -> StringId {
     {
@@ -8097,7 +8102,7 @@ fn __action65<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action66<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, s, _): (usize, &'input str, usize),
 ) -> StringId {
     ast.ident(s)
@@ -8107,7 +8112,7 @@ fn __action66<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action67<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> StringId {
     ast.ident("schema")
@@ -8117,7 +8122,7 @@ fn __action67<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action68<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> StringId {
     ast.ident("query")
@@ -8127,7 +8132,7 @@ fn __action68<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action69<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> StringId {
     ast.ident("type")
@@ -8137,7 +8142,7 @@ fn __action69<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action70<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> StringId {
     ast.ident("input")
@@ -8147,7 +8152,7 @@ fn __action70<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action71<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, directives, _): (usize, alloc::vec::Vec<()>, usize),
 ) -> IdRange<DirectiveId> {
     {
@@ -8159,7 +8164,7 @@ fn __action71<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action72<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, name, _): (usize, StringId, usize),
     (_, arguments, _): (usize, core::option::Option<Vec<ArgumentId>>, usize),
@@ -8176,7 +8181,7 @@ fn __action72<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action73<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, arguments, _): (usize, alloc::vec::Vec<ArgumentId>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
@@ -8188,7 +8193,7 @@ fn __action73<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action74<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, name, _): (usize, StringId, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, value, _): (usize, ValueId, usize),
@@ -8200,7 +8205,7 @@ fn __action74<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action75<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, s, _): (usize, &'input str, usize),
 ) -> &'input str {
     s
@@ -8210,7 +8215,7 @@ fn __action75<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action76<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> &'input str {
     "schema"
@@ -8220,7 +8225,7 @@ fn __action76<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action77<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> &'input str {
     "query"
@@ -8230,7 +8235,7 @@ fn __action77<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action78<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> &'input str {
     "mutation"
@@ -8240,7 +8245,7 @@ fn __action78<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action79<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> &'input str {
     "subscription"
@@ -8250,7 +8255,7 @@ fn __action79<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action80<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> &'input str {
     "type"
@@ -8260,7 +8265,7 @@ fn __action80<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action81<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> &'input str {
     "input"
@@ -8270,7 +8275,7 @@ fn __action81<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action82<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> &'input str {
     "true"
@@ -8280,7 +8285,7 @@ fn __action82<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action83<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> &'input str {
     "false"
@@ -8290,7 +8295,7 @@ fn __action83<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action84<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> &'input str {
     "null"
@@ -8300,7 +8305,7 @@ fn __action84<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action85<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> &'input str {
     "implements"
@@ -8310,7 +8315,7 @@ fn __action85<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action86<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> &'input str {
     "interface"
@@ -8320,7 +8325,7 @@ fn __action86<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action87<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> &'input str {
     "enum"
@@ -8330,7 +8335,7 @@ fn __action87<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action88<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> &'input str {
     "union"
@@ -8340,7 +8345,7 @@ fn __action88<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action89<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> &'input str {
     "scalar"
@@ -8350,7 +8355,7 @@ fn __action89<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action90<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> &'input str {
     "extend"
@@ -8360,7 +8365,7 @@ fn __action90<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action91<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> &'input str {
     "directive"
@@ -8370,7 +8375,7 @@ fn __action91<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action92<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> &'input str {
     "repeatable"
@@ -8380,7 +8385,7 @@ fn __action92<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action93<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> &'input str {
     "on"
@@ -8390,7 +8395,7 @@ fn __action93<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action94<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> &'input str {
     "fragment"
@@ -8400,7 +8405,7 @@ fn __action94<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action95<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
 ) -> alloc::vec::Vec<ArgumentId> {
@@ -8411,7 +8416,7 @@ fn __action95<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action96<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, v, _): (usize, alloc::vec::Vec<ArgumentId>, usize),
 ) -> alloc::vec::Vec<ArgumentId> {
     v
@@ -8421,7 +8426,7 @@ fn __action96<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action97<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, Vec<ArgumentId>, usize),
 ) -> core::option::Option<Vec<ArgumentId>> {
     Some(__0)
@@ -8431,7 +8436,7 @@ fn __action97<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action98<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
 ) -> core::option::Option<Vec<ArgumentId>> {
@@ -8442,7 +8447,7 @@ fn __action98<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action99<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
 ) -> alloc::vec::Vec<()> {
@@ -8453,7 +8458,7 @@ fn __action99<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action100<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, v, _): (usize, alloc::vec::Vec<()>, usize),
 ) -> alloc::vec::Vec<()> {
     v
@@ -8463,7 +8468,7 @@ fn __action100<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action101<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
 ) -> alloc::vec::Vec<(StringId, ValueId)> {
@@ -8474,7 +8479,7 @@ fn __action101<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action102<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, v, _): (usize, alloc::vec::Vec<(StringId, ValueId)>, usize),
 ) -> alloc::vec::Vec<(StringId, ValueId)> {
     v
@@ -8484,7 +8489,7 @@ fn __action102<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action103<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
 ) -> alloc::vec::Vec<ValueId> {
@@ -8495,7 +8500,7 @@ fn __action103<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action104<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, v, _): (usize, alloc::vec::Vec<ValueId>, usize),
 ) -> alloc::vec::Vec<ValueId> {
     v
@@ -8505,7 +8510,7 @@ fn __action104<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action105<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
 ) -> alloc::vec::Vec<WrappingType> {
@@ -8516,7 +8521,7 @@ fn __action105<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action106<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, v, _): (usize, alloc::vec::Vec<WrappingType>, usize),
 ) -> alloc::vec::Vec<WrappingType> {
     v
@@ -8526,7 +8531,7 @@ fn __action106<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action107<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, ValueId, usize),
 ) -> core::option::Option<ValueId> {
     Some(__0)
@@ -8536,7 +8541,7 @@ fn __action107<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action108<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
 ) -> core::option::Option<ValueId> {
@@ -8547,7 +8552,7 @@ fn __action108<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action109<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, bool, usize),
 ) -> core::option::Option<bool> {
     Some(__0)
@@ -8557,7 +8562,7 @@ fn __action109<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action110<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
 ) -> core::option::Option<bool> {
@@ -8568,7 +8573,7 @@ fn __action110<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action111<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, Vec<()>, usize),
 ) -> core::option::Option<Vec<()>> {
     Some(__0)
@@ -8578,7 +8583,7 @@ fn __action111<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action112<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
 ) -> core::option::Option<Vec<()>> {
@@ -8589,7 +8594,7 @@ fn __action112<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action113<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, EnumValueDefinitionId, usize),
 ) -> alloc::vec::Vec<EnumValueDefinitionId> {
     alloc::vec![__0]
@@ -8599,7 +8604,7 @@ fn __action113<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action114<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, v, _): (usize, alloc::vec::Vec<EnumValueDefinitionId>, usize),
     (_, e, _): (usize, EnumValueDefinitionId, usize),
 ) -> alloc::vec::Vec<EnumValueDefinitionId> {
@@ -8614,7 +8619,7 @@ fn __action114<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action115<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, Vec<EnumValueDefinitionId>, usize),
 ) -> core::option::Option<Vec<EnumValueDefinitionId>> {
     Some(__0)
@@ -8624,7 +8629,7 @@ fn __action115<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action116<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
 ) -> core::option::Option<Vec<EnumValueDefinitionId>> {
@@ -8635,7 +8640,7 @@ fn __action116<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action117<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> core::option::Option<lexer::Token<'input>> {
     Some(__0)
@@ -8645,7 +8650,7 @@ fn __action117<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action118<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
 ) -> core::option::Option<lexer::Token<'input>> {
@@ -8656,7 +8661,7 @@ fn __action118<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action119<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, Vec<StringId>, usize),
 ) -> core::option::Option<Vec<StringId>> {
     Some(__0)
@@ -8666,7 +8671,7 @@ fn __action119<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action120<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
 ) -> core::option::Option<Vec<StringId>> {
@@ -8677,7 +8682,7 @@ fn __action120<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action121<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, (), usize),
 ) -> alloc::vec::Vec<()> {
     alloc::vec![__0]
@@ -8687,7 +8692,7 @@ fn __action121<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action122<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, v, _): (usize, alloc::vec::Vec<()>, usize),
     (_, e, _): (usize, (), usize),
 ) -> alloc::vec::Vec<()> {
@@ -8702,7 +8707,7 @@ fn __action122<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action123<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, Vec<()>, usize),
 ) -> core::option::Option<Vec<()>> {
     Some(__0)
@@ -8712,7 +8717,7 @@ fn __action123<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action124<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
 ) -> core::option::Option<Vec<()>> {
@@ -8723,7 +8728,7 @@ fn __action124<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action125<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, (), usize),
 ) -> alloc::vec::Vec<()> {
     alloc::vec![__0]
@@ -8733,7 +8738,7 @@ fn __action125<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action126<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, v, _): (usize, alloc::vec::Vec<()>, usize),
     (_, e, _): (usize, (), usize),
 ) -> alloc::vec::Vec<()> {
@@ -8748,7 +8753,7 @@ fn __action126<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action127<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> core::option::Option<lexer::Token<'input>> {
     Some(__0)
@@ -8758,7 +8763,7 @@ fn __action127<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action128<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
 ) -> core::option::Option<lexer::Token<'input>> {
@@ -8769,7 +8774,7 @@ fn __action128<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action129<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, Vec<()>, usize),
 ) -> core::option::Option<Vec<()>> {
     Some(__0)
@@ -8779,7 +8784,7 @@ fn __action129<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action130<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
 ) -> core::option::Option<Vec<()>> {
@@ -8790,7 +8795,7 @@ fn __action130<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action131<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, Vec<StringId>, usize),
 ) -> core::option::Option<Vec<StringId>> {
     Some(__0)
@@ -8800,7 +8805,7 @@ fn __action131<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action132<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
 ) -> core::option::Option<Vec<StringId>> {
@@ -8810,7 +8815,7 @@ fn __action132<'input>(
 #[allow(unused_variables)]
 fn __action133<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
 ) -> usize {
@@ -8820,7 +8825,7 @@ fn __action133<'input>(
 #[allow(unused_variables)]
 fn __action134<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
 ) -> usize {
@@ -8831,7 +8836,7 @@ fn __action134<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action135<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
 ) -> alloc::vec::Vec<RootOperationTypeDefinition> {
@@ -8842,7 +8847,7 @@ fn __action135<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action136<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, v, _): (usize, alloc::vec::Vec<RootOperationTypeDefinition>, usize),
 ) -> alloc::vec::Vec<RootOperationTypeDefinition> {
     v
@@ -8852,7 +8857,7 @@ fn __action136<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action137<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, StringId, usize),
 ) -> core::option::Option<StringId> {
     Some(__0)
@@ -8862,7 +8867,7 @@ fn __action137<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action138<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
 ) -> core::option::Option<StringId> {
@@ -8873,7 +8878,7 @@ fn __action138<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action139<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, (), usize),
 ) -> alloc::vec::Vec<()> {
     alloc::vec![__0]
@@ -8883,7 +8888,7 @@ fn __action139<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action140<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, v, _): (usize, alloc::vec::Vec<()>, usize),
     (_, e, _): (usize, (), usize),
 ) -> alloc::vec::Vec<()> {
@@ -8898,7 +8903,7 @@ fn __action140<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action141<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, RootOperationTypeDefinition, usize),
 ) -> alloc::vec::Vec<RootOperationTypeDefinition> {
     alloc::vec![__0]
@@ -8908,7 +8913,7 @@ fn __action141<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action142<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, v, _): (usize, alloc::vec::Vec<RootOperationTypeDefinition>, usize),
     (_, e, _): (usize, RootOperationTypeDefinition, usize),
 ) -> alloc::vec::Vec<RootOperationTypeDefinition> {
@@ -8923,7 +8928,7 @@ fn __action142<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action143<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, WrappingType, usize),
 ) -> alloc::vec::Vec<WrappingType> {
     alloc::vec![__0]
@@ -8933,7 +8938,7 @@ fn __action143<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action144<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, v, _): (usize, alloc::vec::Vec<WrappingType>, usize),
     (_, e, _): (usize, WrappingType, usize),
 ) -> alloc::vec::Vec<WrappingType> {
@@ -8948,7 +8953,7 @@ fn __action144<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action145<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, ValueId, usize),
 ) -> alloc::vec::Vec<ValueId> {
     alloc::vec![__0]
@@ -8958,7 +8963,7 @@ fn __action145<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action146<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, v, _): (usize, alloc::vec::Vec<ValueId>, usize),
     (_, e, _): (usize, ValueId, usize),
 ) -> alloc::vec::Vec<ValueId> {
@@ -8973,7 +8978,7 @@ fn __action146<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action147<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, (StringId, ValueId), usize),
 ) -> alloc::vec::Vec<(StringId, ValueId)> {
     alloc::vec![__0]
@@ -8983,7 +8988,7 @@ fn __action147<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action148<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, v, _): (usize, alloc::vec::Vec<(StringId, ValueId)>, usize),
     (_, e, _): (usize, (StringId, ValueId), usize),
 ) -> alloc::vec::Vec<(StringId, ValueId)> {
@@ -8998,7 +9003,7 @@ fn __action148<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action149<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, (), usize),
 ) -> alloc::vec::Vec<()> {
     alloc::vec![__0]
@@ -9008,7 +9013,7 @@ fn __action149<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action150<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, v, _): (usize, alloc::vec::Vec<()>, usize),
     (_, e, _): (usize, (), usize),
 ) -> alloc::vec::Vec<()> {
@@ -9023,7 +9028,7 @@ fn __action150<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action151<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, ArgumentId, usize),
 ) -> alloc::vec::Vec<ArgumentId> {
     alloc::vec![__0]
@@ -9033,7 +9038,7 @@ fn __action151<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action152<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     (_, v, _): (usize, alloc::vec::Vec<ArgumentId>, usize),
     (_, e, _): (usize, ArgumentId, usize),
 ) -> alloc::vec::Vec<ArgumentId> {
@@ -9048,7 +9053,7 @@ fn __action152<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action153<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, lexer::Token<'input>, usize),
     __2: (usize, StringId, usize),
@@ -9064,7 +9069,7 @@ fn __action153<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action154<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
 ) -> Vec<StringId> {
@@ -9079,7 +9084,7 @@ fn __action154<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action155<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, DirectiveLocation, usize),
 ) -> Vec<DirectiveLocation> {
@@ -9094,7 +9099,7 @@ fn __action155<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action156<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, DirectiveLocation, usize),
 ) -> Vec<DirectiveLocation> {
     let __start0 = __0.0;
@@ -9108,7 +9113,7 @@ fn __action156<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action157<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, lexer::Token<'input>, usize),
     __2: (usize, StringId, usize),
@@ -9124,7 +9129,7 @@ fn __action157<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action158<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
 ) -> Vec<StringId> {
@@ -9139,7 +9144,7 @@ fn __action158<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action159<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, lexer::Token<'input>, usize),
     __2: (usize, StringId, usize),
@@ -9160,7 +9165,7 @@ fn __action159<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action160<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
@@ -9182,7 +9187,7 @@ fn __action160<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action161<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, core::option::Option<StringId>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
@@ -9199,7 +9204,7 @@ fn __action161<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action162<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, core::option::Option<StringId>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, core::option::Option<Vec<()>>, usize),
@@ -9219,7 +9224,7 @@ fn __action162<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action163<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
@@ -9237,7 +9242,7 @@ fn __action163<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action164<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, core::option::Option<StringId>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, lexer::Token<'input>, usize),
@@ -9257,7 +9262,7 @@ fn __action164<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action165<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, core::option::Option<Vec<StringId>>, usize),
@@ -9276,7 +9281,7 @@ fn __action165<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action166<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, core::option::Option<Vec<StringId>>, usize),
@@ -9295,7 +9300,7 @@ fn __action166<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action167<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
@@ -9312,7 +9317,7 @@ fn __action167<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action168<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
@@ -9330,7 +9335,7 @@ fn __action168<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action169<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, lexer::Token<'input>, usize),
     __2: (usize, StringId, usize),
@@ -9350,7 +9355,7 @@ fn __action169<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action170<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
@@ -9371,7 +9376,7 @@ fn __action170<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action171<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, core::option::Option<StringId>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
@@ -9387,7 +9392,7 @@ fn __action171<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action172<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, core::option::Option<StringId>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, core::option::Option<Vec<()>>, usize),
@@ -9406,7 +9411,7 @@ fn __action172<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action173<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
@@ -9423,7 +9428,7 @@ fn __action173<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action174<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, core::option::Option<StringId>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, lexer::Token<'input>, usize),
@@ -9442,7 +9447,7 @@ fn __action174<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action175<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, core::option::Option<Vec<StringId>>, usize),
@@ -9460,7 +9465,7 @@ fn __action175<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action176<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, core::option::Option<Vec<StringId>>, usize),
@@ -9478,7 +9483,7 @@ fn __action176<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action177<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
@@ -9494,7 +9499,7 @@ fn __action177<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action178<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
@@ -9511,7 +9516,7 @@ fn __action178<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action179<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, lexer::Token<'input>, usize),
 ) -> Vec<ArgumentId> {
@@ -9526,7 +9531,7 @@ fn __action179<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action180<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, alloc::vec::Vec<ArgumentId>, usize),
     __2: (usize, lexer::Token<'input>, usize),
@@ -9542,7 +9547,7 @@ fn __action180<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action181<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, Vec<ArgumentId>, usize),
@@ -9558,7 +9563,7 @@ fn __action181<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action182<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
 ) {
@@ -9573,7 +9578,7 @@ fn __action182<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action183<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, lexer::Token<'input>, usize),
     __2: (usize, StringId, usize),
@@ -9593,7 +9598,7 @@ fn __action183<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action184<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, lexer::Token<'input>, usize),
     __2: (usize, StringId, usize),
@@ -9612,7 +9617,7 @@ fn __action184<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action185<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, core::option::Option<StringId>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, Vec<()>, usize),
@@ -9631,7 +9636,7 @@ fn __action185<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action186<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, core::option::Option<StringId>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, lexer::Token<'input>, usize),
@@ -9649,7 +9654,7 @@ fn __action186<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action187<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, core::option::Option<StringId>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, lexer::Token<'input>, usize),
@@ -9668,7 +9673,7 @@ fn __action187<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action188<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, core::option::Option<StringId>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, lexer::Token<'input>, usize),
@@ -9686,7 +9691,7 @@ fn __action188<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action189<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
 ) -> IdRange<DirectiveId> {
@@ -9701,7 +9706,7 @@ fn __action189<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action190<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, alloc::vec::Vec<()>, usize),
 ) -> IdRange<DirectiveId> {
     let __start0 = __0.0;
@@ -9715,7 +9720,7 @@ fn __action190<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action191<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
@@ -9732,7 +9737,7 @@ fn __action191<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action192<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
@@ -9748,7 +9753,7 @@ fn __action192<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action193<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, core::option::Option<Vec<StringId>>, usize),
@@ -9766,7 +9771,7 @@ fn __action193<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action194<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, core::option::Option<Vec<StringId>>, usize),
@@ -9783,7 +9788,7 @@ fn __action194<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action195<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, core::option::Option<Vec<StringId>>, usize),
@@ -9801,7 +9806,7 @@ fn __action195<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action196<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, core::option::Option<Vec<StringId>>, usize),
@@ -9818,7 +9823,7 @@ fn __action196<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action197<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, Vec<StringId>, usize),
@@ -9836,7 +9841,7 @@ fn __action197<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action198<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
@@ -9853,7 +9858,7 @@ fn __action198<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action199<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, Vec<StringId>, usize),
@@ -9870,7 +9875,7 @@ fn __action199<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action200<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
@@ -9886,7 +9891,7 @@ fn __action200<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action201<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, Vec<StringId>, usize),
@@ -9904,7 +9909,7 @@ fn __action201<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action202<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
@@ -9921,7 +9926,7 @@ fn __action202<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action203<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, Vec<StringId>, usize),
@@ -9938,7 +9943,7 @@ fn __action203<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action204<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
@@ -9954,7 +9959,7 @@ fn __action204<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action205<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
@@ -9971,7 +9976,7 @@ fn __action205<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action206<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
@@ -9987,7 +9992,7 @@ fn __action206<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action207<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, lexer::Token<'input>, usize),
 ) -> ValueId {
@@ -10002,7 +10007,7 @@ fn __action207<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action208<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, alloc::vec::Vec<(StringId, ValueId)>, usize),
     __2: (usize, lexer::Token<'input>, usize),
@@ -10018,7 +10023,7 @@ fn __action208<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action209<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, lexer::Token<'input>, usize),
     __2: (usize, StringId, usize),
@@ -10038,7 +10043,7 @@ fn __action209<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action210<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, lexer::Token<'input>, usize),
     __2: (usize, StringId, usize),
@@ -10057,7 +10062,7 @@ fn __action210<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action211<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, lexer::Token<'input>, usize),
     __2: (usize, StringId, usize),
@@ -10076,7 +10081,7 @@ fn __action211<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action212<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, lexer::Token<'input>, usize),
     __2: (usize, StringId, usize),
@@ -10094,7 +10099,7 @@ fn __action212<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action213<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, lexer::Token<'input>, usize),
     __2: (usize, lexer::Token<'input>, usize),
@@ -10110,7 +10115,7 @@ fn __action213<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action214<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, lexer::Token<'input>, usize),
     __2: (usize, alloc::vec::Vec<RootOperationTypeDefinition>, usize),
@@ -10127,7 +10132,7 @@ fn __action214<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action215<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, StringId, usize),
     __1: (usize, DefinitionId, usize),
 ) {
@@ -10140,7 +10145,11 @@ fn __action215<'input>(
 
 #[allow(unused_variables)]
 #[allow(clippy::too_many_arguments)]
-fn __action216<'input>(input: &'input str, ast: &mut AstWriter, __0: (usize, DefinitionId, usize)) {
+fn __action216<'input>(
+    input: &'input str,
+    ast: &mut TypeSystemAstWriter,
+    __0: (usize, DefinitionId, usize),
+) {
     let __start0 = __0.0;
     let __end0 = __0.0;
     let __temp0 = __action138(input, ast, &__start0, &__end0);
@@ -10152,7 +10161,7 @@ fn __action216<'input>(input: &'input str, ast: &mut AstWriter, __0: (usize, Def
 #[allow(clippy::too_many_arguments)]
 fn __action217<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, StringId, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
@@ -10168,7 +10177,7 @@ fn __action217<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action218<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, StringId, usize),
     __1: (usize, IdRange<DirectiveId>, usize),
 ) -> EnumValueDefinitionId {
@@ -10183,7 +10192,7 @@ fn __action218<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action219<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, StringId, usize),
     __1: (usize, StringId, usize),
     __2: (usize, Vec<()>, usize),
@@ -10202,7 +10211,7 @@ fn __action219<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action220<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, StringId, usize),
     __1: (usize, Vec<()>, usize),
     __2: (usize, lexer::Token<'input>, usize),
@@ -10220,7 +10229,7 @@ fn __action220<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action221<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, StringId, usize),
     __1: (usize, StringId, usize),
     __2: (usize, lexer::Token<'input>, usize),
@@ -10238,7 +10247,7 @@ fn __action221<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action222<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, StringId, usize),
     __1: (usize, lexer::Token<'input>, usize),
     __2: (usize, TypeId, usize),
@@ -10255,7 +10264,7 @@ fn __action222<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action223<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, StringId, usize),
     __1: (usize, StringId, usize),
     __2: (usize, lexer::Token<'input>, usize),
@@ -10274,7 +10283,7 @@ fn __action223<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action224<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, StringId, usize),
     __1: (usize, lexer::Token<'input>, usize),
     __2: (usize, TypeId, usize),
@@ -10292,7 +10301,7 @@ fn __action224<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action225<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, StringId, usize),
     __1: (usize, StringId, usize),
     __2: (usize, lexer::Token<'input>, usize),
@@ -10310,7 +10319,7 @@ fn __action225<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action226<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, StringId, usize),
     __1: (usize, lexer::Token<'input>, usize),
     __2: (usize, TypeId, usize),
@@ -10327,7 +10336,7 @@ fn __action226<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action227<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
@@ -10344,7 +10353,7 @@ fn __action227<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action228<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
@@ -10360,7 +10369,7 @@ fn __action228<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action229<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, lexer::Token<'input>, usize),
 ) -> ValueId {
@@ -10375,7 +10384,7 @@ fn __action229<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action230<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, alloc::vec::Vec<ValueId>, usize),
     __2: (usize, lexer::Token<'input>, usize),
@@ -10391,7 +10400,7 @@ fn __action230<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action231<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, StringId, usize),
 ) -> TypeId {
     let __start0 = __0.2;
@@ -10405,7 +10414,7 @@ fn __action231<'input>(
 #[allow(clippy::too_many_arguments)]
 fn __action232<'input>(
     input: &'input str,
-    ast: &mut AstWriter,
+    ast: &mut TypeSystemAstWriter,
     __0: (usize, StringId, usize),
     __1: (usize, alloc::vec::Vec<WrappingType>, usize),
 ) -> TypeId {

@@ -30,7 +30,7 @@ pub use self::{
 };
 
 #[derive(Default)]
-pub struct Ast {
+pub struct ExecutableDocument {
     strings: IndexSet<Box<str>>,
 
     definitions: Vec<definition::ExecutableDefinitionRecord>,
@@ -55,23 +55,27 @@ pub struct Ast {
 pub trait ExecutableId: Copy {
     type Reader<'a>: From<ReadContext<'a, Self>>;
 
-    fn read(self, ast: &Ast) -> Self::Reader<'_> {
-        ReadContext { id: self, ast }.into()
+    fn read(self, ast: &ExecutableDocument) -> Self::Reader<'_> {
+        ReadContext {
+            id: self,
+            document: ast,
+        }
+        .into()
     }
 }
 
 #[derive(Clone, Copy)]
 pub struct ReadContext<'a, I> {
     id: I,
-    ast: &'a Ast,
+    document: &'a ExecutableDocument,
 }
 
-impl Ast {
+impl ExecutableDocument {
     pub fn read<T>(&self, id: T) -> T::Reader<'_>
     where
         T: ExecutableId,
     {
-        ReadContext { id, ast: self }.into()
+        ReadContext { id, document: self }.into()
     }
 }
 

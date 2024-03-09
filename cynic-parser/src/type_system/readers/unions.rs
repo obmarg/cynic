@@ -7,33 +7,35 @@ pub struct UnionDefinition<'a>(ReadContext<'a, UnionDefinitionId>);
 
 impl<'a> UnionDefinition<'a> {
     pub fn name(&self) -> &'a str {
-        self.0.ast.lookup(self.0.ast.lookup(self.0.id).name)
+        self.0
+            .document
+            .lookup(self.0.document.lookup(self.0.id).name)
     }
 
     pub fn description(&self) -> Option<&'a str> {
         self.0
-            .ast
+            .document
             .lookup(self.0.id)
             .description
-            .map(|id| self.0.ast.lookup(id))
+            .map(|id| self.0.document.lookup(id))
     }
 
     pub fn members(&self) -> impl ExactSizeIterator<Item = &'a str> + 'a {
         self.0
-            .ast
+            .document
             .lookup(self.0.id)
             .members
             .iter()
-            .map(|id| self.0.ast.lookup(*id))
+            .map(|id| self.0.document.lookup(*id))
     }
 
     pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
         self.0
-            .ast
+            .document
             .lookup(self.0.id)
             .directives
             .iter()
-            .map(|id| self.0.ast.read(id))
+            .map(|id| self.0.document.read(id))
     }
 }
 

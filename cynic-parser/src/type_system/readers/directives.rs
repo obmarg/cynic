@@ -11,19 +11,19 @@ pub struct DirectiveDefinition<'a>(ReadContext<'a, DirectiveDefinitionId>);
 
 impl<'a> DirectiveDefinition<'a> {
     pub fn name(&self) -> &'a str {
-        let ast = &self.0.ast;
+        let ast = &self.0.document;
 
         ast.lookup(ast.lookup(self.0.id).name)
     }
 
     pub fn description(&self) -> Option<&'a str> {
-        let ast = &self.0.ast;
+        let ast = &self.0.document;
 
         ast.lookup(self.0.id).description.map(|id| ast.lookup(id))
     }
 
     pub fn arguments(&self) -> impl ExactSizeIterator<Item = InputValueDefinition<'a>> {
-        let ast = &self.0.ast;
+        let ast = &self.0.document;
 
         ast.lookup(self.0.id)
             .arguments
@@ -32,11 +32,11 @@ impl<'a> DirectiveDefinition<'a> {
     }
 
     pub fn is_repeatable(&self) -> bool {
-        self.0.ast.lookup(self.0.id).repeatable
+        self.0.document.lookup(self.0.id).repeatable
     }
 
     pub fn locations(&self) -> impl ExactSizeIterator<Item = DirectiveLocation> + 'a {
-        self.0.ast.lookup(self.0.id).locations.iter().copied()
+        self.0.document.lookup(self.0.id).locations.iter().copied()
     }
 }
 
@@ -45,13 +45,13 @@ pub struct Directive<'a>(ReadContext<'a, DirectiveId>);
 
 impl<'a> Directive<'a> {
     pub fn name(&self) -> &'a str {
-        let ast = &self.0.ast;
+        let ast = &self.0.document;
 
         ast.lookup(ast.lookup(self.0.id).name)
     }
 
     pub fn arguments(&self) -> impl ExactSizeIterator<Item = Argument<'a>> {
-        let ast = &self.0.ast;
+        let ast = &self.0.document;
 
         ast.lookup(self.0.id)
             .arguments

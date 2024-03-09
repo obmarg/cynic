@@ -10,17 +10,17 @@ pub struct FieldDefinition<'a>(ReadContext<'a, FieldDefinitionId>);
 
 impl<'a> FieldDefinition<'a> {
     pub fn name(&self) -> &'a str {
-        let ast = &self.0.ast;
+        let ast = &self.0.document;
         ast.lookup(ast.lookup(self.0.id).name)
     }
 
     pub fn ty(&self) -> Type<'a> {
-        let ast = &self.0.ast;
+        let ast = &self.0.document;
         ast.read(ast.lookup(self.0.id).ty)
     }
 
     pub fn arguments(&self) -> impl ExactSizeIterator<Item = InputValueDefinition<'a>> {
-        let ast = &self.0.ast;
+        let ast = &self.0.document;
         ast.lookup(self.0.id)
             .arguments
             .iter()
@@ -28,7 +28,7 @@ impl<'a> FieldDefinition<'a> {
     }
 
     pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
-        let ast = &self.0.ast;
+        let ast = &self.0.document;
         ast.lookup(self.0.id)
             .directives
             .iter()

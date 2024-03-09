@@ -2,19 +2,19 @@ use crate::common::IdRange;
 use crate::AstLookup;
 
 use super::{ids::*, storage::*};
-use super::{Ast, AstDefinition};
+use super::{AstDefinition, TypeSystemDocument};
 
-pub struct AstWriter {
-    ast: Ast,
+pub struct TypeSystemAstWriter {
+    ast: TypeSystemDocument,
     field_id_cursor: FieldDefinitionId,
     input_value_id_cursor: InputValueDefinitionId,
     directive_id_cursor: DirectiveId,
 }
 
 // TODO: Don't forget the spans etc.
-impl AstWriter {
+impl TypeSystemAstWriter {
     pub fn new() -> Self {
-        AstWriter {
+        TypeSystemAstWriter {
             ast: Default::default(),
             field_id_cursor: FieldDefinitionId::new(0),
             input_value_id_cursor: InputValueDefinitionId::new(0),
@@ -22,8 +22,8 @@ impl AstWriter {
         }
     }
 
-    pub fn update(ast: Ast) -> Self {
-        AstWriter {
+    pub fn update(ast: TypeSystemDocument) -> Self {
+        TypeSystemAstWriter {
             field_id_cursor: FieldDefinitionId::new(ast.field_definitions.len()),
             input_value_id_cursor: InputValueDefinitionId::new(ast.input_value_definitions.len()),
             directive_id_cursor: DirectiveId::new(ast.directives.len()),
@@ -31,7 +31,7 @@ impl AstWriter {
         }
     }
 
-    pub fn finish(self) -> Ast {
+    pub fn finish(self) -> TypeSystemDocument {
         // TODO: Possibly assert things in here for safety...
         self.ast
     }
@@ -360,7 +360,7 @@ impl AstWriter {
     }
 }
 
-impl Default for AstWriter {
+impl Default for TypeSystemAstWriter {
     fn default() -> Self {
         Self::new()
     }

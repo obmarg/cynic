@@ -7,7 +7,7 @@ pub struct SchemaDefinition<'a>(ReadContext<'a, SchemaDefinitionId>);
 
 impl<'a> SchemaDefinition<'a> {
     pub fn description(&self) -> Option<&'a str> {
-        let ast = &self.0.ast;
+        let ast = &self.0.document;
 
         ast.lookup(self.0.id).description.map(|id| ast.lookup(id))
     }
@@ -31,7 +31,7 @@ impl<'a> SchemaDefinition<'a> {
     }
 
     pub fn root_operations(&self) -> impl ExactSizeIterator<Item = (OperationType, &'a str)> {
-        let ast = &self.0.ast;
+        let ast = &self.0.document;
 
         ast.lookup(self.0.id)
             .roots

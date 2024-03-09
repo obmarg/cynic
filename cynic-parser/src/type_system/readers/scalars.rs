@@ -7,18 +7,18 @@ pub struct ScalarDefinition<'a>(ReadContext<'a, ScalarDefinitionId>);
 
 impl<'a> ScalarDefinition<'a> {
     pub fn name(&self) -> &'a str {
-        let ast = &self.0.ast;
+        let ast = &self.0.document;
 
         ast.lookup(ast.lookup(self.0.id).name)
     }
     pub fn description(&self) -> Option<&'a str> {
-        let ast = &self.0.ast;
+        let ast = &self.0.document;
 
         ast.lookup(self.0.id).description.map(|id| ast.lookup(id))
     }
 
     pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
-        let ast = &self.0.ast;
+        let ast = &self.0.document;
 
         ast.lookup(self.0.id)
             .directives

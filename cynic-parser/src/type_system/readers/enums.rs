@@ -8,24 +8,24 @@ pub struct EnumDefinition<'a>(ReadContext<'a, EnumDefinitionId>);
 
 impl<'a> EnumDefinition<'a> {
     pub fn name(&self) -> &'a str {
-        let ast = &self.0.ast;
+        let ast = &self.0.document;
 
         ast.lookup(ast.lookup(self.0.id).name)
     }
 
     pub fn description(&self) -> Option<&'a str> {
-        let ast = &self.0.ast;
+        let ast = &self.0.document;
         ast.lookup(self.0.id).description.map(|id| ast.lookup(id))
     }
 
     pub fn values(&self) -> impl ExactSizeIterator<Item = EnumValueDefinition<'a>> + 'a {
-        let ast = &self.0.ast;
+        let ast = &self.0.document;
 
         ast.lookup(self.0.id).values.iter().map(|id| ast.read(*id))
     }
 
     pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
-        let ast = &self.0.ast;
+        let ast = &self.0.document;
 
         ast.lookup(self.0.id)
             .directives
@@ -39,18 +39,18 @@ pub struct EnumValueDefinition<'a>(ReadContext<'a, EnumValueDefinitionId>);
 
 impl<'a> EnumValueDefinition<'a> {
     pub fn value(&self) -> &'a str {
-        let ast = &self.0.ast;
+        let ast = &self.0.document;
 
         ast.lookup(ast.lookup(self.0.id).value)
     }
 
     pub fn description(&self) -> Option<&'a str> {
-        let ast = &self.0.ast;
+        let ast = &self.0.document;
         ast.lookup(self.0.id).description.map(|id| ast.lookup(id))
     }
 
     pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> {
-        let ast = &self.0.ast;
+        let ast = &self.0.document;
         ast.lookup(self.0.id)
             .directives
             .iter()

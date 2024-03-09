@@ -8,12 +8,12 @@ pub struct Argument<'a>(ReadContext<'a, ArgumentId>);
 
 impl<'a> Argument<'a> {
     pub fn name(&self) -> &'a str {
-        let ast = &self.0.ast;
+        let ast = &self.0.document;
         ast.lookup(ast.lookup(self.0.id).name)
     }
 
     pub fn value(&self) -> ValueReader<'a> {
-        let ast = &self.0.ast;
+        let ast = &self.0.document;
 
         ast.read(ast.lookup(self.0.id).value)
     }
