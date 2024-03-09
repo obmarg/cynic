@@ -6,26 +6,26 @@ use std::{
 };
 
 use cynic_parser::{
-    readers::{self, Definition, TypeDefinition},
-    WrappingType,
+    common::{TypeWrappers, WrappingType},
+    type_system::readers::{self, Definition, TypeDefinition},
 };
 
 use crate::schema::{names::FieldName, types::*, SchemaError};
 
 #[ouroboros::self_referencing]
 pub struct SchemaBackedTypeIndex {
-    ast: cynic_parser::Ast,
+    ast: cynic_parser::type_system::Ast,
     query_root: String,
     mutation_root: Option<String>,
     subscription_root: Option<String>,
-    typename_field: cynic_parser::ids::FieldDefinitionId,
+    typename_field: cynic_parser::type_system::ids::FieldDefinitionId,
     #[borrows(ast)]
     #[covariant]
     types: HashMap<&'this str, TypeDefinition<'this>>,
 }
 
 impl SchemaBackedTypeIndex {
-    pub fn for_schema(ast: cynic_parser::Ast) -> Self {
+    pub fn for_schema(ast: cynic_parser::type_system::Ast) -> Self {
         let mut query_root = "Query".to_string();
         let mut mutation_root = None;
         let mut subscription_root = None;
@@ -41,30 +41,31 @@ impl SchemaBackedTypeIndex {
             }
         }
 
-        let mut writer = cynic_parser::AstWriter::update(ast);
+        let mut writer = cynic_parser::type_system::writer::AstWriter::update(ast);
         for builtin in BUILTIN_SCALARS {
             let name = writer.ident(builtin);
-            writer.scalar_definition(cynic_parser::storage::ScalarDefinition {
+            writer.scalar_definition(cynic_parser::type_system::storage::ScalarDefinition {
                 name,
                 description: None,
-                directives: vec![],
+                directives: Default::default(),
                 span: cynic_parser::Span::new(0, 0),
             });
         }
         let typename_string = writer.ident("__typename");
         let string_ident = writer.ident("String");
-        let typename_type = writer.type_reference(cynic_parser::storage::Type {
+        let typename_type = writer.type_reference(cynic_parser::type_system::storage::Type {
             name: string_ident,
-            wrappers: vec![WrappingType::NonNull],
+            wrappers: TypeWrappers::none().wrap_non_null(),
         });
-        let typename_field = writer.field_definition(cynic_parser::storage::FieldDefinition {
-            name: typename_string,
-            ty: typename_type,
-            arguments: vec![],
-            description: None,
-            directives: vec![],
-            span: cynic_parser::Span::new(0, 0),
-        });
+        let typename_field =
+            writer.field_definition(cynic_parser::type_system::storage::FieldDefinition {
+                name: typename_string,
+                ty: typename_type,
+                arguments: Default::default(),
+                description: None,
+                directives: Default::default(),
+                span: cynic_parser::Span::new(0, 0),
+            });
         let ast = writer.finish();
 
         SchemaBackedTypeIndex::new(
@@ -336,7 +337,9 @@ fn name_for_type(type_def: TypeDefinition<'_>) -> &str {
     }
 }
 
-fn convert_input_value(val: cynic_parser::readers::InputValueDefinition<'_>) -> InputValue<'_> {
+fn convert_input_value(
+    val: cynic_parser::type_system::readers::InputValueDefinition<'_>,
+) -> InputValue<'_> {
     InputValue {
         name: FieldName {
             graphql_name: Cow::Borrowed(val.name()),
@@ -399,7 +402,7 @@ mod tests {
     #[case::github("github.graphql")]
     fn test_schema_validation_on_good_schemas(#[case] schema_file: &'static str) {
         let schema = fs::read_to_string(PathBuf::from("../schemas/").join(schema_file)).unwrap();
-        let ast = cynic_parser::parse_type_system_document(&schema);
+        let ast = cynic_parser::parse_type_system_document(&schema).unwrap();
         let index = SchemaBackedTypeIndex::for_schema(ast);
         index.validate_all().unwrap();
     }
@@ -483,11 +486,11 @@ mod tests {
         );
     }
 
-    fn ast_for_type(sdl_ty: &str) -> cynic_parser::Ast {
-        cynic_parser::parse_type_system_document(&format!("type Blah {{ foo: {sdl_ty} }}"))
+    fn ast_for_type(sdl_ty: &str) -> cynic_parser::type_system::Ast {
+        cynic_parser::parse_type_system_document(&format!("type Blah {{ foo: {sdl_ty} }}")).unwrap()
     }
 
-    fn extract_type(ast: &cynic_parser::Ast) -> readers::Type<'_> {
+    fn extract_type(ast: &cynic_parser::type_system::Ast) -> readers::Type<'_> {
         let readers::Definition::Type(readers::TypeDefinition::Object(obj)) =
             ast.definitions().next().unwrap()
         else {
