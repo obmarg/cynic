@@ -133,12 +133,6 @@ fn union_extension() {
     roundtrip_test("tests/sdl/union_extension.graphql");
 }
 
-#[allow(dead_code)]
-fn parse_test(filename: &str) -> Ast {
-    let data = std::fs::read_to_string(filename).unwrap();
-    cynic_parser::parse_type_system_document(&data).unwrap()
-}
-
 fn roundtrip_test(filename: &str) {
     let data = std::fs::read_to_string(filename).unwrap();
     let ast = cynic_parser::parse_type_system_document(&data).unwrap();
