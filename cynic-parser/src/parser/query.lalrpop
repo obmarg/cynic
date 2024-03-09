@@ -5,7 +5,7 @@ use crate::{
     executable::{
         storage::*, ids::*, writer::AstWriter
     },
-    common::{OperationType, IdRange}
+    common::{OperationType, IdRange, WrappingType, TypeWrappers}
 };
 
 grammar<'input>(input: &'input str, ast: &mut AstWriter);
@@ -20,7 +20,8 @@ ExecutableDefinition: ExecutableDefinitionId = {
 }
 
 OperationDefinition: OperationDefinitionRecord = {
-    <operation_type:OperationType> <name:Name?> <selection_set:SelectionSet> => {
+    <operation_type:OperationType> <name:Name?> <variable_definitions:VariableDefinitions?> <directives:Directives> <selection_set:SelectionSet> => {
+        let variable_definitions = ast.variable_definition_range(variable_definitions.map(|defs| defs.len()));
         OperationDefinitionRecord {
             <>
         }
@@ -30,6 +31,8 @@ OperationDefinition: OperationDefinitionRecord = {
             operation_type: OperationType::Query,
             name: None,
             selection_set,
+            variable_definitions: Default::default(),
+            directives: Default::default()
         }
     }
 };
@@ -46,6 +49,24 @@ OperationType: OperationType = {
     query => OperationType::Query,
     mutation => OperationType::Mutation,
     subscription => OperationType::Subscription
+}
+
+VariableDefinitions: Vec<()> = {
+    "(" <entries:VariableDefinition+> ")" => {
+        entries
+    }
+}
+
+VariableDefinition: () = {
+    "$" <name:Name> ":" <ty:Type> <default_value:DefaultValue?> <directives:Directives> => {
+        ast.variable_definition(VariableDefinitionRecord { <> });
+    }
+}
+
+DefaultValue: ValueId = {
+    "=" <value:Value> => {
+        value
+    }
 }
 
 SelectionSet: IdRange<SelectionId> = {
@@ -86,9 +107,24 @@ Alias: StringId = {
 }
 
 TypeCondition: StringId = {
-    on <name:Name> => {
+    on <name:NamedType> => {
         name
     }
+}
+
+NamedType: StringId = <s:Ident> => ast.ident(s);
+
+Type: TypeId = {
+    "[" <ty:Type> => ty,
+    <name:NamedType> <wrappers:WrappingType*> => ast.type_reference(TypeRecord {
+        name,
+        wrappers: TypeWrappers::from_iter(wrappers)
+    })
+}
+
+WrappingType: WrappingType = {
+    "!" => WrappingType::NonNull,
+    "]" => WrappingType::List
 }
 
 

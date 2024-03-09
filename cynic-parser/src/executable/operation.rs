@@ -1,11 +1,11 @@
 use crate::common::{IdRange, OperationType};
 
-use super::ids::{SelectionId, StringId};
+use super::ids::{DirectiveId, SelectionId, StringId, VariableDefinitionId};
 
 pub struct OperationDefinitionRecord {
     pub operation_type: OperationType,
     pub name: Option<StringId>,
-    // variables: IdRange<VariableId>,
-    // directives: IdRange<DirectiveId>,
+    pub variable_definitions: IdRange<VariableDefinitionId>,
+    pub directives: IdRange<DirectiveId>,
     pub selection_set: IdRange<SelectionId>,
 }

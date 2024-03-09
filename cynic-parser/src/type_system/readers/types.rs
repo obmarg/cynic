@@ -1,7 +1,4 @@
-use crate::{
-    type_system::{ids::TypeId, WrappingType},
-    AstLookup,
-};
+use crate::{common::WrappingType, type_system::ids::TypeId, AstLookup};
 
 use super::{AstId, ReadContext};
 
@@ -14,7 +11,7 @@ impl<'a> Type<'a> {
     }
 
     /// The wrapper types from the outermost to innermost
-    pub fn wrappers(&self) -> impl Iterator<Item = crate::type_system::WrappingType> + 'a {
+    pub fn wrappers(&self) -> impl Iterator<Item = WrappingType> + 'a {
         self.0.ast.lookup(self.0.id).wrappers.iter()
     }
 }

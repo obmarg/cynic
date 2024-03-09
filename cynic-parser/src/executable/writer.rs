@@ -1,13 +1,15 @@
 use crate::{common::IdRange, AstLookup};
 
 use super::{
-    definition::ExecutableDefinitionRecord, directive::DirectiveRecord, ids::*, storage::*, Ast,
+    definition::ExecutableDefinitionRecord, directive::DirectiveRecord, ids::*, storage::*,
+    variable::VariableDefinitionRecord, Ast,
 };
 
 pub struct AstWriter {
     ast: Ast,
     argument_cursor: ArgumentId,
     directive_cursor: DirectiveId,
+    variable_definition_cursor: VariableDefinitionId,
     // field_id_cursor: FieldDefinitionId,
     // input_value_id_cursor: InputValueDefinitionId,
     // directive_id_cursor: DirectiveId,
@@ -19,6 +21,7 @@ impl AstWriter {
             ast: Ast::default(),
             argument_cursor: ArgumentId::new(0),
             directive_cursor: DirectiveId::new(0),
+            variable_definition_cursor: VariableDefinitionId::new(0),
             // field_id_cursor: FieldDefinitionId::new(0),
             // input_value_id_cursor: InputValueDefinitionId::new(0),
             // directive_id_cursor: DirectiveId::new(0),
@@ -58,6 +61,35 @@ impl AstWriter {
             .push(ExecutableDefinitionRecord::Fragment(id));
 
         definition_id
+    }
+
+    pub fn variable_definition(
+        &mut self,
+        record: VariableDefinitionRecord,
+    ) -> VariableDefinitionId {
+        let id = VariableDefinitionId::new(self.ast.variables.len());
+        self.ast.variables.push(record);
+        id
+    }
+
+    pub fn variable_definition_range(
+        &mut self,
+        expected_count: Option<usize>,
+    ) -> IdRange<VariableDefinitionId> {
+        let start = self.variable_definition_cursor;
+        let end = VariableDefinitionId::new(self.ast.variables.len());
+        self.variable_definition_cursor = end;
+        let range = IdRange::new(start, end);
+
+        assert_eq!(range.len(), expected_count.unwrap_or_default());
+
+        range
+    }
+
+    pub fn type_reference(&mut self, ty: TypeRecord) -> TypeId {
+        let ty_id = TypeId::new(self.ast.types.len());
+        self.ast.types.push(ty);
+        ty_id
     }
 
     pub fn selection_set(&mut self, selection_set: Vec<SelectionRecord>) -> IdRange<SelectionId> {

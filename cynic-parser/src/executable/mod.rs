@@ -2,14 +2,16 @@ use indexmap::IndexSet;
 
 pub mod ids;
 
+mod argument;
 mod definition;
+mod directive;
 mod fragment;
 mod operation;
 mod selections;
 mod value;
+mod variable;
 
-mod argument;
-mod directive;
+mod types;
 pub mod writer;
 
 #[derive(Default)]
@@ -27,6 +29,9 @@ pub struct Ast {
 
     directives: Vec<directive::DirectiveRecord>,
     arguments: Vec<argument::ArgumentRecord>,
+    variables: Vec<variable::VariableDefinitionRecord>,
+
+    types: Vec<types::TypeRecord>,
 
     values: Vec<value::ValueRecord>,
 }
@@ -41,6 +46,8 @@ pub mod storage {
         selections::{
             FieldSelectionRecord, FragmentSpreadRecord, InlineFragmentRecord, SelectionRecord,
         },
+        types::TypeRecord,
         value::ValueRecord,
+        variable::VariableDefinitionRecord,
     };
 }

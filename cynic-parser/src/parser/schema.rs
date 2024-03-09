@@ -1,9 +1,9 @@
 // auto-generated: "lalrpop 0.20.0"
-// sha3: e94de5419fe61394dd840987ab8fe4ae1cf810f374772b79334b2d7f4b0b7748
+// sha3: a595e160f3237a8436b77b7d2890b5e11d96900df9b06433c8e4b4dc3cf6592c
 use crate::lexer;
 use crate::{
-    common::{IdRange, OperationType},
-    type_system::{ids::*, storage::*, writer::AstWriter, DirectiveLocation, WrappingType},
+    common::{IdRange, OperationType, TypeWrappers, WrappingType},
+    type_system::{ids::*, storage::*, writer::AstWriter, DirectiveLocation},
     Span,
 };
 #[allow(unused_extern_crates)]
@@ -22,9 +22,9 @@ mod __parse__TypeSystemDocument {
     Span,
     type_system::{
         storage::*, ids::*, writer::AstWriter,
-        DirectiveLocation, WrappingType,
+        DirectiveLocation,
     },
-    common::{OperationType, IdRange}
+    common::{OperationType, IdRange, WrappingType, TypeWrappers}
 };
     #[allow(unused_extern_crates)]
     extern crate lalrpop_util as __lalrpop_util;
