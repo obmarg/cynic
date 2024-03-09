@@ -142,9 +142,3 @@ impl std::fmt::Display for DirectiveLocation {
         write!(f, "{str}")
     }
 }
-
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub enum WrappingType {
-    NonNull,
-    List,
-}

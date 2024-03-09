@@ -2,7 +2,7 @@ use std::num::NonZeroU32;
 
 use super::{
     argument::ArgumentRecord, definition::ExecutableDefinitionRecord, directive::DirectiveRecord,
-    storage::*, value::ValueRecord, Ast,
+    storage::*, types::TypeRecord, value::ValueRecord, variable::VariableDefinitionRecord, Ast,
 };
 use crate::{common::IdRange, AstLookup};
 
@@ -50,6 +50,12 @@ macro_rules! impl_id_range {
                     .map(|num| $name(NonZeroU32::new(num).expect("range is too large")))
             }
         }
+
+        impl Default for IdRange<$name> {
+            fn default() -> Self {
+                Self::new($name::new(0), $name::new(0))
+            }
+        }
     };
 }
 
@@ -74,6 +80,11 @@ make_id!(DirectiveId, DirectiveRecord, directives);
 make_id!(ArgumentId, ArgumentRecord, arguments);
 impl_id_range!(DirectiveId);
 impl_id_range!(ArgumentId);
+
+make_id!(TypeId, TypeRecord, types);
+
+make_id!(VariableDefinitionId, VariableDefinitionRecord, variables);
+impl_id_range!(VariableDefinitionId);
 
 make_id!(ValueId, ValueRecord, values);
 
