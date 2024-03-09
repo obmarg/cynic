@@ -54,6 +54,12 @@ macro_rules! impl_id_range {
                     .map(|num| $name(NonZeroU32::new(num).expect("range is too large")))
             }
         }
+
+        impl Default for IdRange<$name> {
+            fn default() -> Self {
+                Self::new($name::new(0), $name::new(0))
+            }
+        }
     };
 }
 
