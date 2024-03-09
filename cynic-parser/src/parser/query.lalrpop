@@ -35,8 +35,10 @@ OperationDefinition: OperationDefinitionRecord = {
 };
 
 FragmentDefinition: FragmentDefinitionRecord = {
-    interface => {
-        todo!()
+    fragment <name:FragmentName> <type_condition:TypeCondition> <directives:Directives> <selection_set:SelectionSet> => {
+        FragmentDefinitionRecord {
+            <>
+        }
     }
 };
 
@@ -177,6 +179,7 @@ RawFragmentName: &'input str = {
     extend => "extend",
     directive => "directive",
     repeatable => "repeatable",
+    fragment => "fragment",
 }
 
 Ident: &'input str = {
@@ -199,6 +202,7 @@ Ident: &'input str = {
     directive => "directive",
     repeatable => "repeatable",
     on => "on",
+    fragment => "fragment",
 }
 
 
@@ -255,5 +259,6 @@ extern {
         directive => lexer::Token::Directive,
         repeatable => lexer::Token::Repeatable,
         on => lexer::Token::On,
+        fragment => lexer::Token::Fragment
     }
 }

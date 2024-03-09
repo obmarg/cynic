@@ -394,6 +394,7 @@ Ident: &'input str = {
     directive => "directive",
     repeatable => "repeatable",
     on => "on",
+    fragment => "fragment",
 }
 
 extern {
@@ -447,5 +448,6 @@ extern {
         directive => lexer::Token::Directive,
         repeatable => lexer::Token::Repeatable,
         on => lexer::Token::On,
+        fragment => lexer::Token::Fragment,
     }
 }
