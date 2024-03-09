@@ -1,6 +1,6 @@
 use crate::{type_system::ids::ObjectDefinitionId, AstLookup};
 
-use super::{directives::Directive, fields::FieldDefinition, AstId, ReadContext};
+use super::{directives::Directive, fields::FieldDefinition, ReadContext, TypeSystemId};
 
 #[derive(Clone, Copy)]
 pub struct ObjectDefinition<'a>(ReadContext<'a, ObjectDefinitionId>);
@@ -43,7 +43,7 @@ impl<'a> ObjectDefinition<'a> {
     }
 }
 
-impl AstId for ObjectDefinitionId {
+impl TypeSystemId for ObjectDefinitionId {
     type Reader<'a> = ObjectDefinition<'a>;
 }
 

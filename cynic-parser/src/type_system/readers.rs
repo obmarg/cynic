@@ -22,7 +22,7 @@ pub use self::{
 };
 
 // TODO: Make this sealed maybe?
-pub trait AstId: Copy {
+pub trait TypeSystemId: Copy {
     type Reader<'a>: From<ReadContext<'a, Self>>;
 
     fn read(self, ast: &Ast) -> Self::Reader<'_> {
@@ -39,7 +39,7 @@ pub struct ReadContext<'a, I> {
 impl super::Ast {
     pub fn read<T>(&self, id: T) -> T::Reader<'_>
     where
-        T: AstId,
+        T: TypeSystemId,
     {
         ReadContext { id, ast: self }.into()
     }

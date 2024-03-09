@@ -3,7 +3,7 @@ use crate::{
     AstLookup,
 };
 
-use super::{AstId, ReadContext};
+use super::{ReadContext, TypeSystemId};
 
 #[derive(Clone)]
 pub enum ValueReader<'a> {
@@ -18,7 +18,7 @@ pub enum ValueReader<'a> {
     Object(Vec<(&'a str, ValueReader<'a>)>),
 }
 
-impl AstId for ValueId {
+impl TypeSystemId for ValueId {
     type Reader<'a> = ValueReader<'a>;
 }
 

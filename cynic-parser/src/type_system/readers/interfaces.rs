@@ -1,6 +1,6 @@
 use crate::{type_system::ids::InterfaceDefinitionId, AstLookup};
 
-use super::{directives::Directive, fields::FieldDefinition, AstId, ReadContext};
+use super::{directives::Directive, fields::FieldDefinition, ReadContext, TypeSystemId};
 
 #[derive(Clone, Copy)]
 pub struct InterfaceDefinition<'a>(ReadContext<'a, InterfaceDefinitionId>);
@@ -46,7 +46,7 @@ impl<'a> InterfaceDefinition<'a> {
     }
 }
 
-impl AstId for InterfaceDefinitionId {
+impl TypeSystemId for InterfaceDefinitionId {
     type Reader<'a> = InterfaceDefinition<'a>;
 }
 

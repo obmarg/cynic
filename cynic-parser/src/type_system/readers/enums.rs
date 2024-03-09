@@ -1,7 +1,7 @@
 use crate::type_system::ids::{EnumDefinitionId, EnumValueDefinitionId};
 use crate::AstLookup;
 
-use super::{directives::Directive, AstId, ReadContext};
+use super::{directives::Directive, ReadContext, TypeSystemId};
 
 #[derive(Clone, Copy)]
 pub struct EnumDefinition<'a>(ReadContext<'a, EnumDefinitionId>);
@@ -58,7 +58,7 @@ impl<'a> EnumValueDefinition<'a> {
     }
 }
 
-impl AstId for EnumDefinitionId {
+impl TypeSystemId for EnumDefinitionId {
     type Reader<'a> = EnumDefinition<'a>;
 }
 
@@ -69,7 +69,7 @@ impl<'a> From<ReadContext<'a, EnumDefinitionId>> for EnumDefinition<'a> {
     }
 }
 
-impl AstId for EnumValueDefinitionId {
+impl TypeSystemId for EnumValueDefinitionId {
     type Reader<'a> = EnumValueDefinition<'a>;
 }
 
