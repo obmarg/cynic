@@ -14,9 +14,6 @@ mod variable;
 mod types;
 pub mod writer;
 
-#[cfg(feature = "print")]
-mod printer;
-
 pub use self::{
     argument::Argument,
     definition::ExecutableDefinition,

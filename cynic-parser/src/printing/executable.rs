@@ -2,9 +2,9 @@ use pretty::{BoxAllocator, DocAllocator, Pretty};
 
 use crate::common::OperationType;
 
-use super::*;
+use crate::executable::*;
 
-impl super::ExecutableDocument {
+impl crate::ExecutableDocument {
     pub fn to_sdl(&self) -> String {
         let allocator = BoxAllocator;
 

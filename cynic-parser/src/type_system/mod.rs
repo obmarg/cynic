@@ -3,9 +3,6 @@ use std::str::FromStr;
 use ids::*;
 use indexmap::IndexSet;
 
-#[cfg(feature = "print")]
-mod printer;
-
 pub mod ids;
 pub mod readers;
 pub mod storage;

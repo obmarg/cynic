@@ -2,7 +2,7 @@ use pretty::{BoxAllocator, DocAllocator, Pretty};
 
 use crate::type_system::{readers::*, Definition, TypeDefinition};
 
-impl super::TypeSystemDocument {
+impl crate::TypeSystemDocument {
     pub fn to_sdl(&self) -> String {
         let allocator = BoxAllocator;
 
