@@ -1,5 +1,5 @@
 ---
-source: cynic-parser/tests/github.rs
+source: cynic-parser/tests/actual_schemas.rs
 expression: parsed.to_sdl()
 ---
 directive @requiredCapabilities(requiredCapabilities: [String!]
@@ -944,7 +944,7 @@ type App implements Node {
     """
     Ordering options for IP allow list entries returned.
     """
-    orderBy: IpAllowListEntryOrder = { field: ALLOW_LIST_VALUE,direction: ASC }
+    orderBy: IpAllowListEntryOrder = { field: ALLOW_LIST_VALUE, direction: ASC }
   ): IpAllowListEntryConnection!
   logoBackgroundColor: String!
   logoUrl(
@@ -2818,7 +2818,7 @@ type Commit implements GitObject & Node & Subscribable & UniformResourceLocatabl
     """
     Ordering options for pull requests.
     """
-    orderBy: PullRequestOrder = { field: CREATED_AT,direction: ASC }
+    orderBy: PullRequestOrder = { field: CREATED_AT, direction: ASC }
   ): PullRequestConnection
   author: GitActor
   authoredByCommitter: Boolean!
@@ -2936,7 +2936,7 @@ type Commit implements GitObject & Node & Subscribable & UniformResourceLocatabl
     """
     Ordering options for deployments returned from the connection.
     """
-    orderBy: DeploymentOrder = { field: CREATED_AT,direction: ASC }
+    orderBy: DeploymentOrder = { field: CREATED_AT, direction: ASC }
   ): DeploymentConnection
   file(
     """
@@ -3304,7 +3304,7 @@ type CommitContributionsByRepository {
     """
     Ordering options for commit contributions returned from the connection.
     """
-    orderBy: CommitContributionOrder = { field: OCCURRED_AT,direction: DESC }
+    orderBy: CommitContributionOrder = { field: OCCURRED_AT, direction: DESC }
   ): CreatedCommitContributionConnection!
   repository: Repository!
   resourcePath: URI!
@@ -7043,7 +7043,7 @@ type Discussion implements Closable & Comment & Deletable & Labelable & Lockable
     """
     Ordering options for labels returned from the connection.
     """
-    orderBy: LabelOrder = { field: CREATED_AT,direction: ASC }
+    orderBy: LabelOrder = { field: CREATED_AT, direction: ASC }
   ): LabelConnection
   lastEditedAt: DateTime
   locked: Boolean!
@@ -7368,7 +7368,7 @@ type DiscussionPoll implements Node {
     """
     How to order the options for the discussion poll.
     """
-    orderBy: DiscussionPollOptionOrder = { field: AUTHORED_ORDER,direction: ASC }
+    orderBy: DiscussionPollOptionOrder = { field: AUTHORED_ORDER, direction: ASC }
   ): DiscussionPollOptionConnection
   question: String!
   totalVoteCount: Int!
@@ -7796,7 +7796,7 @@ type Enterprise implements AnnouncementBanner & Node {
     """
     Ordering options for members returned from the connection.
     """
-    orderBy: EnterpriseMemberOrder = { field: LOGIN,direction: ASC }
+    orderBy: EnterpriseMemberOrder = { field: LOGIN, direction: ASC }
     
     """
     Only return members within the organizations with these logins
@@ -7838,7 +7838,7 @@ type Enterprise implements AnnouncementBanner & Node {
     """
     Ordering options for organizations returned from the connection.
     """
-    orderBy: OrganizationOrder = { field: LOGIN,direction: ASC }
+    orderBy: OrganizationOrder = { field: LOGIN, direction: ASC }
     
     """
     The search string to look for.
@@ -8251,7 +8251,7 @@ type EnterpriseOutsideCollaboratorEdge {
     """
     Ordering options for repositories.
     """
-    orderBy: RepositoryOrder = { field: NAME,direction: ASC }
+    orderBy: RepositoryOrder = { field: NAME, direction: ASC }
   ): EnterpriseRepositoryInfoConnection!
 }
 
@@ -8289,7 +8289,7 @@ type EnterpriseOwnerInfo {
     """
     Ordering options for administrators returned from the connection.
     """
-    orderBy: EnterpriseMemberOrder = { field: LOGIN,direction: ASC }
+    orderBy: EnterpriseMemberOrder = { field: LOGIN, direction: ASC }
     
     """
     Only return members within the organizations with these logins
@@ -8353,7 +8353,7 @@ type EnterpriseOwnerInfo {
     """
     Ordering options for organizations with this setting.
     """
-    orderBy: OrganizationOrder = { field: LOGIN,direction: ASC }
+    orderBy: OrganizationOrder = { field: LOGIN, direction: ASC }
     
     """
     The setting value to find organizations for.
@@ -8386,7 +8386,7 @@ type EnterpriseOwnerInfo {
     """
     Ordering options for organizations with this setting.
     """
-    orderBy: OrganizationOrder = { field: LOGIN,direction: ASC }
+    orderBy: OrganizationOrder = { field: LOGIN, direction: ASC }
     
     """
     The permission to find organizations for.
@@ -8427,7 +8427,7 @@ type EnterpriseOwnerInfo {
     """
     Ordering options for verifiable domains returned.
     """
-    orderBy: VerifiableDomainOrder = { field: DOMAIN,direction: ASC }
+    orderBy: VerifiableDomainOrder = { field: DOMAIN, direction: ASC }
   ): VerifiableDomainConnection!
   enterpriseServerInstallations(
     """
@@ -8458,7 +8458,7 @@ type EnterpriseOwnerInfo {
     """
     Ordering options for Enterprise Server installations returned.
     """
-    orderBy: EnterpriseServerInstallationOrder = { field: HOST_NAME,direction: ASC }
+    orderBy: EnterpriseServerInstallationOrder = { field: HOST_NAME, direction: ASC }
   ): EnterpriseServerInstallationConnection!
   failedInvitations(
     """
@@ -8511,7 +8511,7 @@ type EnterpriseOwnerInfo {
     """
     Ordering options for IP allow list entries returned.
     """
-    orderBy: IpAllowListEntryOrder = { field: ALLOW_LIST_VALUE,direction: ASC }
+    orderBy: IpAllowListEntryOrder = { field: ALLOW_LIST_VALUE, direction: ASC }
   ): IpAllowListEntryConnection!
   ipAllowListForInstalledAppsEnabledSetting: IpAllowListForInstalledAppsEnabledSettingValue!
   isUpdatingDefaultRepositoryPermission: Boolean!
@@ -8541,7 +8541,7 @@ type EnterpriseOwnerInfo {
     """
     Ordering options for organizations with this setting.
     """
-    orderBy: OrganizationOrder = { field: LOGIN,direction: ASC }
+    orderBy: OrganizationOrder = { field: LOGIN, direction: ASC }
     
     """
     The setting value to find organizations for.
@@ -8576,7 +8576,7 @@ type EnterpriseOwnerInfo {
     """
     Ordering options for organizations with this setting.
     """
-    orderBy: OrganizationOrder = { field: LOGIN,direction: ASC }
+    orderBy: OrganizationOrder = { field: LOGIN, direction: ASC }
     
     """
     The setting to find organizations for.
@@ -8608,7 +8608,7 @@ type EnterpriseOwnerInfo {
     """
     Ordering options for organizations with this setting.
     """
-    orderBy: OrganizationOrder = { field: LOGIN,direction: ASC }
+    orderBy: OrganizationOrder = { field: LOGIN, direction: ASC }
     
     """
     The setting value to find organizations for.
@@ -8640,7 +8640,7 @@ type EnterpriseOwnerInfo {
     """
     Ordering options for organizations with this setting.
     """
-    orderBy: OrganizationOrder = { field: LOGIN,direction: ASC }
+    orderBy: OrganizationOrder = { field: LOGIN, direction: ASC }
     
     """
     The setting value to find organizations for.
@@ -8672,7 +8672,7 @@ type EnterpriseOwnerInfo {
     """
     Ordering options for organizations with this setting.
     """
-    orderBy: OrganizationOrder = { field: LOGIN,direction: ASC }
+    orderBy: OrganizationOrder = { field: LOGIN, direction: ASC }
     
     """
     The setting value to find organizations for.
@@ -8705,7 +8705,7 @@ type EnterpriseOwnerInfo {
     """
     Ordering options for organizations with this setting.
     """
-    orderBy: OrganizationOrder = { field: LOGIN,direction: ASC }
+    orderBy: OrganizationOrder = { field: LOGIN, direction: ASC }
     
     """
     The setting value to find organizations for.
@@ -8737,7 +8737,7 @@ type EnterpriseOwnerInfo {
     """
     Ordering options for organizations with this setting.
     """
-    orderBy: OrganizationOrder = { field: LOGIN,direction: ASC }
+    orderBy: OrganizationOrder = { field: LOGIN, direction: ASC }
     
     """
     The setting value to find organizations for.
@@ -8771,7 +8771,7 @@ type EnterpriseOwnerInfo {
     """
     Ordering options for organizations with this setting.
     """
-    orderBy: OrganizationOrder = { field: LOGIN,direction: ASC }
+    orderBy: OrganizationOrder = { field: LOGIN, direction: ASC }
     
     """
     The setting value to find organizations for.
@@ -8812,7 +8812,7 @@ type EnterpriseOwnerInfo {
     """
     Ordering options for outside collaborators returned from the connection.
     """
-    orderBy: EnterpriseMemberOrder = { field: LOGIN,direction: ASC }
+    orderBy: EnterpriseMemberOrder = { field: LOGIN, direction: ASC }
     
     """
     Only return outside collaborators within the organizations with these logins
@@ -8853,7 +8853,7 @@ type EnterpriseOwnerInfo {
     """
     Ordering options for pending enterprise administrator invitations returned from the connection.
     """
-    orderBy: EnterpriseAdministratorInvitationOrder = { field: CREATED_AT,direction: DESC }
+    orderBy: EnterpriseAdministratorInvitationOrder = { field: CREATED_AT, direction: DESC }
     
     """
     The search string to look for.
@@ -8889,7 +8889,7 @@ type EnterpriseOwnerInfo {
     """
     Ordering options for pending repository collaborator invitations returned from the connection.
     """
-    orderBy: RepositoryInvitationOrder = { field: CREATED_AT,direction: DESC }
+    orderBy: RepositoryInvitationOrder = { field: CREATED_AT, direction: DESC }
     
     """
     The search string to look for.
@@ -8957,7 +8957,7 @@ type EnterpriseOwnerInfo {
     """
     Ordering options for organizations with this setting.
     """
-    orderBy: OrganizationOrder = { field: LOGIN,direction: ASC }
+    orderBy: OrganizationOrder = { field: LOGIN, direction: ASC }
     
     """
     The setting value to find organizations for.
@@ -8989,7 +8989,7 @@ type EnterpriseOwnerInfo {
     """
     Ordering options for organizations with this setting.
     """
-    orderBy: OrganizationOrder = { field: LOGIN,direction: ASC }
+    orderBy: OrganizationOrder = { field: LOGIN, direction: ASC }
     
     """
     The setting value to find organizations for.
@@ -9020,7 +9020,7 @@ type EnterpriseOwnerInfo {
     """
     Ordering options for support entitlement users returned from the connection.
     """
-    orderBy: EnterpriseMemberOrder = { field: LOGIN,direction: ASC }
+    orderBy: EnterpriseMemberOrder = { field: LOGIN, direction: ASC }
   ): EnterpriseMemberConnection!
   teamDiscussionsSetting: EnterpriseEnabledDisabledSettingValue!
   teamDiscussionsSettingOrganizations(
@@ -9047,7 +9047,7 @@ type EnterpriseOwnerInfo {
     """
     Ordering options for organizations with this setting.
     """
-    orderBy: OrganizationOrder = { field: LOGIN,direction: ASC }
+    orderBy: OrganizationOrder = { field: LOGIN, direction: ASC }
     
     """
     The setting value to find organizations for.
@@ -9079,7 +9079,7 @@ type EnterpriseOwnerInfo {
     """
     Ordering options for organizations with this setting.
     """
-    orderBy: OrganizationOrder = { field: LOGIN,direction: ASC }
+    orderBy: OrganizationOrder = { field: LOGIN, direction: ASC }
     
     """
     The setting value to find organizations for.
@@ -9169,7 +9169,7 @@ type EnterpriseServerInstallation implements Node {
     """
     Ordering options for Enterprise Server user accounts returned from the connection.
     """
-    orderBy: EnterpriseServerUserAccountOrder = { field: LOGIN,direction: ASC }
+    orderBy: EnterpriseServerUserAccountOrder = { field: LOGIN, direction: ASC }
   ): EnterpriseServerUserAccountConnection!
   userAccountsUploads(
     """
@@ -9195,7 +9195,7 @@ type EnterpriseServerInstallation implements Node {
     """
     Ordering options for Enterprise Server user accounts uploads returned from the connection.
     """
-    orderBy: EnterpriseServerUserAccountsUploadOrder = { field: CREATED_AT,direction: DESC }
+    orderBy: EnterpriseServerUserAccountsUploadOrder = { field: CREATED_AT, direction: DESC }
   ): EnterpriseServerUserAccountsUploadConnection!
 }
 
@@ -9290,7 +9290,7 @@ type EnterpriseServerUserAccount implements Node {
     """
     Ordering options for Enterprise Server user account emails returned from the connection.
     """
-    orderBy: EnterpriseServerUserAccountEmailOrder = { field: EMAIL,direction: ASC }
+    orderBy: EnterpriseServerUserAccountEmailOrder = { field: EMAIL, direction: ASC }
   ): EnterpriseServerUserAccountEmailConnection!
   enterpriseServerInstallation: EnterpriseServerInstallation!
   id: ID!
@@ -9496,7 +9496,7 @@ type EnterpriseUserAccount implements Actor & Node {
     """
     Ordering options for installations returned from the connection.
     """
-    orderBy: EnterpriseServerInstallationOrder = { field: HOST_NAME,direction: ASC }
+    orderBy: EnterpriseServerInstallationOrder = { field: HOST_NAME, direction: ASC }
     
     """
     The search string to look for.
@@ -9535,7 +9535,7 @@ type EnterpriseUserAccount implements Actor & Node {
     """
     Ordering options for organizations returned from the connection.
     """
-    orderBy: OrganizationOrder = { field: LOGIN,direction: ASC }
+    orderBy: OrganizationOrder = { field: LOGIN, direction: ASC }
     
     """
     The search string to look for.
@@ -10757,7 +10757,7 @@ type Issue implements Assignable & Closable & Comment & Deletable & Labelable & 
     """
     Ordering options for labels returned from the connection.
     """
-    orderBy: LabelOrder = { field: CREATED_AT,direction: ASC }
+    orderBy: LabelOrder = { field: CREATED_AT, direction: ASC }
   ): LabelConnection
   lastEditedAt: DateTime
   linkedBranches(
@@ -10889,7 +10889,7 @@ type Issue implements Assignable & Closable & Comment & Deletable & Labelable & 
     """
     How to order the returned projects.
     """
-    orderBy: ProjectV2Order = { field: NUMBER,direction: DESC }
+    orderBy: ProjectV2Order = { field: NUMBER, direction: DESC }
     
     """
     A project to search for under the the owner.
@@ -11425,7 +11425,7 @@ type IssueTemplate {
     """
     Ordering options for labels returned from the connection.
     """
-    orderBy: LabelOrder = { field: CREATED_AT,direction: ASC }
+    orderBy: LabelOrder = { field: CREATED_AT, direction: ASC }
   ): LabelConnection
   name: String!
   title: String
@@ -11749,7 +11749,7 @@ interface Labelable {
     """
     Ordering options for labels returned from the connection.
     """
-    orderBy: LabelOrder = { field: CREATED_AT,direction: ASC }
+    orderBy: LabelOrder = { field: CREATED_AT, direction: ASC }
   ): LabelConnection
 }
 
@@ -12326,7 +12326,7 @@ interface MemberStatusable {
     """
     Ordering options for user statuses returned from the connection.
     """
-    orderBy: UserStatusOrder = { field: UPDATED_AT,direction: DESC }
+    orderBy: UserStatusOrder = { field: UPDATED_AT, direction: DESC }
   ): UserStatusConnection!
 }
 
@@ -15446,7 +15446,7 @@ type Organization implements Actor & AnnouncementBanner & MemberStatusable & Nod
     """
     Ordering options for the returned audit log entries.
     """
-    orderBy: AuditLogOrder = { field: CREATED_AT,direction: DESC }
+    orderBy: AuditLogOrder = { field: CREATED_AT, direction: DESC }
     
     """
     The query string to filter audit entries
@@ -15497,7 +15497,7 @@ type Organization implements Actor & AnnouncementBanner & MemberStatusable & Nod
     """
     Ordering options for verifiable domains returned.
     """
-    orderBy: VerifiableDomainOrder = { field: DOMAIN,direction: ASC }
+    orderBy: VerifiableDomainOrder = { field: DOMAIN, direction: ASC }
   ): VerifiableDomainConnection
   email: String
   enterpriseOwners(
@@ -15524,7 +15524,7 @@ type Organization implements Actor & AnnouncementBanner & MemberStatusable & Nod
     """
     Ordering options for enterprise owners returned from the connection.
     """
-    orderBy: OrgEnterpriseOwnerOrder = { field: LOGIN,direction: ASC }
+    orderBy: OrgEnterpriseOwnerOrder = { field: LOGIN, direction: ASC }
     
     """
     The organization role to filter by.
@@ -15565,7 +15565,7 @@ type Organization implements Actor & AnnouncementBanner & MemberStatusable & Nod
     """
     Ordering options for IP allow list entries returned.
     """
-    orderBy: IpAllowListEntryOrder = { field: ALLOW_LIST_VALUE,direction: ASC }
+    orderBy: IpAllowListEntryOrder = { field: ALLOW_LIST_VALUE, direction: ASC }
   ): IpAllowListEntryConnection!
   ipAllowListForInstalledAppsEnabledSetting: IpAllowListForInstalledAppsEnabledSettingValue!
   isSponsoredBy(
@@ -15608,7 +15608,7 @@ type Organization implements Actor & AnnouncementBanner & MemberStatusable & Nod
     """
     Ordering options for mannequins returned from the connection.
     """
-    orderBy: MannequinOrder = { field: CREATED_AT,direction: ASC }
+    orderBy: MannequinOrder = { field: CREATED_AT, direction: ASC }
   ): MannequinConnection!
   memberStatuses(
     """
@@ -15634,7 +15634,7 @@ type Organization implements Actor & AnnouncementBanner & MemberStatusable & Nod
     """
     Ordering options for user statuses returned from the connection.
     """
-    orderBy: UserStatusOrder = { field: UPDATED_AT,direction: DESC }
+    orderBy: UserStatusOrder = { field: UPDATED_AT, direction: DESC }
   ): UserStatusConnection!
   membersCanForkPrivateRepositories: Boolean!
   membersWithRole(
@@ -15693,7 +15693,7 @@ type Organization implements Actor & AnnouncementBanner & MemberStatusable & Nod
     """
     Ordering of the returned packages.
     """
-    orderBy: PackageOrder = { field: CREATED_AT,direction: DESC }
+    orderBy: PackageOrder = { field: CREATED_AT, direction: DESC }
     
     """
     Filter registry package by type.
@@ -15853,7 +15853,7 @@ type Organization implements Actor & AnnouncementBanner & MemberStatusable & Nod
     """
     How to order the returned projects.
     """
-    orderBy: ProjectV2Order = { field: NUMBER,direction: DESC }
+    orderBy: ProjectV2Order = { field: NUMBER, direction: DESC }
     
     """
     A project to search for under the the owner.
@@ -16020,7 +16020,7 @@ type Organization implements Actor & AnnouncementBanner & MemberStatusable & Nod
     """
     Ordering options for discussions returned from the connection.
     """
-    orderBy: DiscussionOrder = { field: CREATED_AT,direction: DESC }
+    orderBy: DiscussionOrder = { field: CREATED_AT, direction: DESC }
     
     """
     Filter discussions to only those in a specific repository.
@@ -16058,7 +16058,7 @@ type Organization implements Actor & AnnouncementBanner & MemberStatusable & Nod
     """
     Ordering options for repository migrations returned.
     """
-    orderBy: RepositoryMigrationOrder = { field: CREATED_AT,direction: ASC }
+    orderBy: RepositoryMigrationOrder = { field: CREATED_AT, direction: ASC }
     
     """
     Filter repository migrations by repository name.
@@ -16129,7 +16129,7 @@ type Organization implements Actor & AnnouncementBanner & MemberStatusable & Nod
     """
     Ordering options for the users and organizations returned from the connection.
     """
-    orderBy: SponsorOrder = { field: RELEVANCE,direction: DESC }
+    orderBy: SponsorOrder = { field: RELEVANCE, direction: DESC }
   ): SponsorConnection!
   sponsors(
     """
@@ -16155,7 +16155,7 @@ type Organization implements Actor & AnnouncementBanner & MemberStatusable & Nod
     """
     Ordering options for sponsors returned from the connection.
     """
-    orderBy: SponsorOrder = { field: RELEVANCE,direction: DESC }
+    orderBy: SponsorOrder = { field: RELEVANCE, direction: DESC }
     
     """
     If given, will filter for sponsors at the given tier. Will only return
@@ -16206,7 +16206,7 @@ type Organization implements Actor & AnnouncementBanner & MemberStatusable & Nod
     """
     Ordering options for activity returned from the connection.
     """
-    orderBy: SponsorsActivityOrder = { field: TIMESTAMP,direction: DESC }
+    orderBy: SponsorsActivityOrder = { field: TIMESTAMP, direction: DESC }
     
     """
     Filter activities returned to only those that occurred in the most recent
@@ -16264,7 +16264,7 @@ type Organization implements Actor & AnnouncementBanner & MemberStatusable & Nod
     """
     Ordering options for sponsorship updates returned from the connection.
     """
-    orderBy: SponsorshipNewsletterOrder = { field: CREATED_AT,direction: DESC }
+    orderBy: SponsorshipNewsletterOrder = { field: CREATED_AT, direction: DESC }
   ): SponsorshipNewsletterConnection!
   sponsorshipsAsMaintainer(
     """
@@ -16893,7 +16893,7 @@ type Package implements Node {
     """
     Ordering of the returned packages.
     """
-    orderBy: PackageVersionOrder = { field: CREATED_AT,direction: DESC }
+    orderBy: PackageVersionOrder = { field: CREATED_AT, direction: DESC }
   ): PackageVersionConnection!
 }
 
@@ -17028,7 +17028,7 @@ interface PackageOwner {
     """
     Ordering of the returned packages.
     """
-    orderBy: PackageOrder = { field: CREATED_AT,direction: DESC }
+    orderBy: PackageOrder = { field: CREATED_AT, direction: DESC }
     
     """
     Filter registry package by type.
@@ -17109,7 +17109,7 @@ type PackageVersion implements Node {
     """
     Ordering of the returned package files.
     """
-    orderBy: PackageFileOrder = { field: CREATED_AT,direction: ASC }
+    orderBy: PackageFileOrder = { field: CREATED_AT, direction: ASC }
   ): PackageFileConnection!
   id: ID!
   package: Package
@@ -17938,7 +17938,7 @@ type ProjectV2 implements Closable & Node & Updatable {
     """
     Ordering options for project v2 fields returned from the connection
     """
-    orderBy: ProjectV2FieldOrder = { field: POSITION,direction: ASC }
+    orderBy: ProjectV2FieldOrder = { field: POSITION, direction: ASC }
   ): ProjectV2FieldConfigurationConnection!
   id: ID!
   items(
@@ -17965,7 +17965,7 @@ type ProjectV2 implements Closable & Node & Updatable {
     """
     Ordering options for project v2 items returned from the connection
     """
-    orderBy: ProjectV2ItemOrder = { field: POSITION,direction: ASC }
+    orderBy: ProjectV2ItemOrder = { field: POSITION, direction: ASC }
   ): ProjectV2ItemConnection!
   number: Int!
   owner: ProjectV2Owner!
@@ -17995,7 +17995,7 @@ type ProjectV2 implements Closable & Node & Updatable {
     """
     Ordering options for repositories returned from the connection
     """
-    orderBy: RepositoryOrder = { field: CREATED_AT,direction: DESC }
+    orderBy: RepositoryOrder = { field: CREATED_AT, direction: DESC }
   ): RepositoryConnection!
   resourcePath: URI!
   shortDescription: String
@@ -18023,7 +18023,7 @@ type ProjectV2 implements Closable & Node & Updatable {
     """
     Ordering options for teams returned from this connection.
     """
-    orderBy: TeamOrder = { field: NAME,direction: ASC }
+    orderBy: TeamOrder = { field: NAME, direction: ASC }
   ): TeamConnection!
   template: Boolean!
   title: String!
@@ -18062,7 +18062,7 @@ type ProjectV2 implements Closable & Node & Updatable {
     """
     Ordering options for project v2 views returned from the connection
     """
-    orderBy: ProjectV2ViewOrder = { field: POSITION,direction: ASC }
+    orderBy: ProjectV2ViewOrder = { field: POSITION, direction: ASC }
   ): ProjectV2ViewConnection!
   workflow(
     """
@@ -18094,7 +18094,7 @@ type ProjectV2 implements Closable & Node & Updatable {
     """
     Ordering options for project v2 workflows returned from the connection
     """
-    orderBy: ProjectV2WorkflowOrder = { field: NAME,direction: ASC }
+    orderBy: ProjectV2WorkflowOrder = { field: NAME, direction: ASC }
   ): ProjectV2WorkflowConnection!
 }
 
@@ -18364,7 +18364,7 @@ type ProjectV2Item implements Node {
     """
     Ordering options for project v2 item field values returned from the connection
     """
-    orderBy: ProjectV2ItemFieldValueOrder = { field: POSITION,direction: ASC }
+    orderBy: ProjectV2ItemFieldValueOrder = { field: POSITION, direction: ASC }
   ): ProjectV2ItemFieldValueConnection!
   id: ID!
   isArchived: Boolean!
@@ -18507,7 +18507,7 @@ type ProjectV2ItemFieldPullRequestValue {
     """
     Ordering options for pull requests.
     """
-    orderBy: PullRequestOrder = { field: CREATED_AT,direction: ASC }
+    orderBy: PullRequestOrder = { field: CREATED_AT, direction: ASC }
   ): PullRequestConnection
 }
 
@@ -18806,7 +18806,7 @@ interface ProjectV2Owner {
     """
     How to order the returned projects.
     """
-    orderBy: ProjectV2Order = { field: NUMBER,direction: DESC }
+    orderBy: ProjectV2Order = { field: NUMBER, direction: DESC }
     
     """
     A project to search for under the the owner.
@@ -19008,7 +19008,7 @@ type ProjectV2View implements Node {
     """
     Ordering options for the project v2 fields returned from the connection.
     """
-    orderBy: ProjectV2FieldOrder = { field: POSITION,direction: ASC }
+    orderBy: ProjectV2FieldOrder = { field: POSITION, direction: ASC }
   ): ProjectV2FieldConfigurationConnection
   filter: String
   groupBy(
@@ -19035,7 +19035,7 @@ type ProjectV2View implements Node {
     """
     Ordering options for the project v2 fields returned from the connection.
     """
-    orderBy: ProjectV2FieldOrder = { field: POSITION,direction: ASC }
+    orderBy: ProjectV2FieldOrder = { field: POSITION, direction: ASC }
   ): ProjectV2FieldConnection @deprecated(
     reason: "The `ProjectV2View#order_by` API is deprecated in favour of the more capable `ProjectV2View#group_by_field` API. Check out the `ProjectV2View#group_by_fields` API as an example for the more capable alternative. Removal on 2023-04-01 UTC."
   )
@@ -19063,7 +19063,7 @@ type ProjectV2View implements Node {
     """
     Ordering options for the project v2 fields returned from the connection.
     """
-    orderBy: ProjectV2FieldOrder = { field: POSITION,direction: ASC }
+    orderBy: ProjectV2FieldOrder = { field: POSITION, direction: ASC }
   ): ProjectV2FieldConfigurationConnection
   id: ID!
   layout: ProjectV2ViewLayout!
@@ -19139,7 +19139,7 @@ type ProjectV2View implements Node {
     """
     Ordering options for the project v2 fields returned from the connection.
     """
-    orderBy: ProjectV2FieldOrder = { field: POSITION,direction: ASC }
+    orderBy: ProjectV2FieldOrder = { field: POSITION, direction: ASC }
   ): ProjectV2FieldConnection @deprecated(
     reason: "The `ProjectV2View#vertical_group_by` API is deprecated in favour of the more capable `ProjectV2View#vertical_group_by_fields` API. Check out the `ProjectV2View#vertical_group_by_fields` API as an example for the more capable alternative. Removal on 2023-04-01 UTC."
   )
@@ -19167,7 +19167,7 @@ type ProjectV2View implements Node {
     """
     Ordering options for the project v2 fields returned from the connection.
     """
-    orderBy: ProjectV2FieldOrder = { field: POSITION,direction: ASC }
+    orderBy: ProjectV2FieldOrder = { field: POSITION, direction: ASC }
   ): ProjectV2FieldConfigurationConnection
   visibleFields(
     """
@@ -19193,7 +19193,7 @@ type ProjectV2View implements Node {
     """
     Ordering options for the project v2 fields returned from the connection.
     """
-    orderBy: ProjectV2FieldOrder = { field: POSITION,direction: ASC }
+    orderBy: ProjectV2FieldOrder = { field: POSITION, direction: ASC }
   ): ProjectV2FieldConnection @deprecated(
     reason: "The `ProjectV2View#visibleFields` API is deprecated in favour of the more capable `ProjectV2View#fields` API. Check out the `ProjectV2View#fields` API as an example for the more capable alternative. Removal on 2023-01-01 UTC."
   )
@@ -19551,7 +19551,7 @@ type PullRequest implements Assignable & Closable & Comment & Labelable & Lockab
     """
     Ordering options for labels returned from the connection.
     """
-    orderBy: LabelOrder = { field: CREATED_AT,direction: ASC }
+    orderBy: LabelOrder = { field: CREATED_AT, direction: ASC }
   ): LabelConnection
   lastEditedAt: DateTime
   latestOpinionatedReviews(
@@ -19719,7 +19719,7 @@ type PullRequest implements Assignable & Closable & Comment & Labelable & Lockab
     """
     How to order the returned projects.
     """
-    orderBy: ProjectV2Order = { field: NUMBER,direction: DESC }
+    orderBy: ProjectV2Order = { field: NUMBER, direction: DESC }
     
     """
     A project to search for under the the owner.
@@ -21201,7 +21201,7 @@ type Query {
     """
     Ordering options for the returned topics.
     """
-    orderBy: SecurityAdvisoryOrder = { field: UPDATED_AT,direction: DESC }
+    orderBy: SecurityAdvisoryOrder = { field: UPDATED_AT, direction: DESC }
     
     """
     Filter advisories to those published since a time in the past.
@@ -21253,7 +21253,7 @@ type Query {
     """
     Ordering options for the returned topics.
     """
-    orderBy: SecurityVulnerabilityOrder = { field: UPDATED_AT,direction: DESC }
+    orderBy: SecurityVulnerabilityOrder = { field: UPDATED_AT, direction: DESC }
     
     """
     A package name to filter vulnerabilities by.
@@ -21315,7 +21315,7 @@ type Query {
     """
     Ordering options for users and organizations returned from the connection.
     """
-    orderBy: SponsorableOrder = { field: LOGIN,direction: ASC }
+    orderBy: SponsorableOrder = { field: LOGIN, direction: ASC }
     
     """
     Optional organization username for whose dependencies should be checked.
@@ -23330,7 +23330,7 @@ type Repository implements Node & PackageOwner & ProjectOwner & ProjectV2Recent 
     """
     Ordering options for deployments returned from the connection.
     """
-    orderBy: DeploymentOrder = { field: CREATED_AT,direction: ASC }
+    orderBy: DeploymentOrder = { field: CREATED_AT, direction: ASC }
   ): DeploymentConnection!
   description: String
   descriptionHTML: HTML!
@@ -23406,7 +23406,7 @@ type Repository implements Node & PackageOwner & ProjectOwner & ProjectV2Recent 
     """
     Ordering options for discussions returned from the connection.
     """
-    orderBy: DiscussionOrder = { field: UPDATED_AT,direction: DESC }
+    orderBy: DiscussionOrder = { field: UPDATED_AT, direction: DESC }
     
     """
     A list of states to filter the discussions by.
@@ -23446,7 +23446,7 @@ type Repository implements Node & PackageOwner & ProjectOwner & ProjectV2Recent 
     """
     Ordering options for the environments
     """
-    orderBy: Environments = { field: NAME,direction: ASC }
+    orderBy: Environments = { field: NAME, direction: ASC }
   ): EnvironmentConnection!
   forkCount: Int!
   forkingAllowed: Boolean!
@@ -23612,7 +23612,7 @@ type Repository implements Node & PackageOwner & ProjectOwner & ProjectV2Recent 
     """
     Ordering options for labels returned from the connection.
     """
-    orderBy: LabelOrder = { field: CREATED_AT,direction: ASC }
+    orderBy: LabelOrder = { field: CREATED_AT, direction: ASC }
     
     """
     If provided, searches labels by name and description.
@@ -23770,7 +23770,7 @@ type Repository implements Node & PackageOwner & ProjectOwner & ProjectV2Recent 
     """
     Ordering of the returned packages.
     """
-    orderBy: PackageOrder = { field: CREATED_AT,direction: DESC }
+    orderBy: PackageOrder = { field: CREATED_AT, direction: DESC }
     
     """
     Filter registry package by type.
@@ -23900,7 +23900,7 @@ type Repository implements Node & PackageOwner & ProjectOwner & ProjectV2Recent 
     """
     How to order the returned projects.
     """
-    orderBy: ProjectV2Order = { field: NUMBER,direction: DESC }
+    orderBy: ProjectV2Order = { field: NUMBER, direction: DESC }
     
     """
     A project to search for linked to the repo.
@@ -24385,7 +24385,7 @@ interface RepositoryDiscussionAuthor {
     """
     Ordering options for discussions returned from the connection.
     """
-    orderBy: DiscussionOrder = { field: CREATED_AT,direction: DESC }
+    orderBy: DiscussionOrder = { field: CREATED_AT, direction: DESC }
     
     """
     Filter discussions to only those in a specific repository.
@@ -26030,7 +26030,7 @@ type SecurityAdvisory implements Node {
     """
     Ordering options for the returned topics.
     """
-    orderBy: SecurityVulnerabilityOrder = { field: UPDATED_AT,direction: DESC }
+    orderBy: SecurityVulnerabilityOrder = { field: UPDATED_AT, direction: DESC }
     
     """
     A package name to filter vulnerabilities by.
@@ -26522,7 +26522,7 @@ interface Sponsorable {
     """
     Ordering options for the users and organizations returned from the connection.
     """
-    orderBy: SponsorOrder = { field: RELEVANCE,direction: DESC }
+    orderBy: SponsorOrder = { field: RELEVANCE, direction: DESC }
   ): SponsorConnection!
   sponsors(
     """
@@ -26548,7 +26548,7 @@ interface Sponsorable {
     """
     Ordering options for sponsors returned from the connection.
     """
-    orderBy: SponsorOrder = { field: RELEVANCE,direction: DESC }
+    orderBy: SponsorOrder = { field: RELEVANCE, direction: DESC }
     
     """
     If given, will filter for sponsors at the given tier. Will only return
@@ -26599,7 +26599,7 @@ interface Sponsorable {
     """
     Ordering options for activity returned from the connection.
     """
-    orderBy: SponsorsActivityOrder = { field: TIMESTAMP,direction: DESC }
+    orderBy: SponsorsActivityOrder = { field: TIMESTAMP, direction: DESC }
     
     """
     Filter activities returned to only those that occurred in the most recent
@@ -26657,7 +26657,7 @@ interface Sponsorable {
     """
     Ordering options for sponsorship updates returned from the connection.
     """
-    orderBy: SponsorshipNewsletterOrder = { field: CREATED_AT,direction: DESC }
+    orderBy: SponsorshipNewsletterOrder = { field: CREATED_AT, direction: DESC }
   ): SponsorshipNewsletterConnection!
   sponsorshipsAsMaintainer(
     """
@@ -27217,7 +27217,7 @@ type SponsorsListing implements Node {
     """
     Ordering options for Sponsors tiers returned from the connection.
     """
-    orderBy: SponsorsTierOrder = { field: MONTHLY_PRICE_IN_CENTS,direction: ASC }
+    orderBy: SponsorsTierOrder = { field: MONTHLY_PRICE_IN_CENTS, direction: ASC }
   ): SponsorsTierConnection
   url: URI!
 }
@@ -28231,7 +28231,7 @@ type Team implements MemberStatusable & Node & Subscribable {
     """
     Ordering options for user statuses returned from the connection.
     """
-    orderBy: UserStatusOrder = { field: UPDATED_AT,direction: DESC }
+    orderBy: UserStatusOrder = { field: UPDATED_AT, direction: DESC }
   ): UserStatusConnection!
   members(
     """
@@ -28318,7 +28318,7 @@ type Team implements MemberStatusable & Node & Subscribable {
     """
     How to order the returned projects.
     """
-    orderBy: ProjectV2Order = { field: NUMBER,direction: DESC }
+    orderBy: ProjectV2Order = { field: NUMBER, direction: DESC }
     
     """
     The query to search projects by.
@@ -32219,7 +32219,7 @@ type User implements Actor & Node & PackageOwner & ProfileOwner & ProjectOwner &
     """
     Ordering options for the User's enterprises.
     """
-    orderBy: EnterpriseOrder = { field: NAME,direction: ASC }
+    orderBy: EnterpriseOrder = { field: NAME, direction: ASC }
   ): EnterpriseConnection
   estimatedNextSponsorsPayoutInCents: Int!
   followers(
@@ -32486,7 +32486,7 @@ type User implements Actor & Node & PackageOwner & ProfileOwner & ProjectOwner &
     """
     Ordering of the returned packages.
     """
-    orderBy: PackageOrder = { field: CREATED_AT,direction: DESC }
+    orderBy: PackageOrder = { field: CREATED_AT, direction: DESC }
     
     """
     Filter registry package by type.
@@ -32625,7 +32625,7 @@ type User implements Actor & Node & PackageOwner & ProfileOwner & ProjectOwner &
     """
     How to order the returned projects.
     """
-    orderBy: ProjectV2Order = { field: NUMBER,direction: DESC }
+    orderBy: ProjectV2Order = { field: NUMBER, direction: DESC }
     
     """
     A project to search for under the the owner.
@@ -32912,7 +32912,7 @@ type User implements Actor & Node & PackageOwner & ProfileOwner & ProjectOwner &
     """
     Ordering options for discussions returned from the connection.
     """
-    orderBy: DiscussionOrder = { field: CREATED_AT,direction: DESC }
+    orderBy: DiscussionOrder = { field: CREATED_AT, direction: DESC }
     
     """
     Filter discussions to only those in a specific repository.
@@ -32951,7 +32951,7 @@ type User implements Actor & Node & PackageOwner & ProfileOwner & ProjectOwner &
     """
     The field to order saved replies by.
     """
-    orderBy: SavedReplyOrder = { field: UPDATED_AT,direction: DESC }
+    orderBy: SavedReplyOrder = { field: UPDATED_AT, direction: DESC }
   ): SavedReplyConnection
   socialAccounts(
     """
@@ -32998,7 +32998,7 @@ type User implements Actor & Node & PackageOwner & ProfileOwner & ProjectOwner &
     """
     Ordering options for the users and organizations returned from the connection.
     """
-    orderBy: SponsorOrder = { field: RELEVANCE,direction: DESC }
+    orderBy: SponsorOrder = { field: RELEVANCE, direction: DESC }
   ): SponsorConnection!
   sponsors(
     """
@@ -33024,7 +33024,7 @@ type User implements Actor & Node & PackageOwner & ProfileOwner & ProjectOwner &
     """
     Ordering options for sponsors returned from the connection.
     """
-    orderBy: SponsorOrder = { field: RELEVANCE,direction: DESC }
+    orderBy: SponsorOrder = { field: RELEVANCE, direction: DESC }
     
     """
     If given, will filter for sponsors at the given tier. Will only return
@@ -33075,7 +33075,7 @@ type User implements Actor & Node & PackageOwner & ProfileOwner & ProjectOwner &
     """
     Ordering options for activity returned from the connection.
     """
-    orderBy: SponsorsActivityOrder = { field: TIMESTAMP,direction: DESC }
+    orderBy: SponsorsActivityOrder = { field: TIMESTAMP, direction: DESC }
     
     """
     Filter activities returned to only those that occurred in the most recent
@@ -33133,7 +33133,7 @@ type User implements Actor & Node & PackageOwner & ProfileOwner & ProjectOwner &
     """
     Ordering options for sponsorship updates returned from the connection.
     """
-    orderBy: SponsorshipNewsletterOrder = { field: CREATED_AT,direction: DESC }
+    orderBy: SponsorshipNewsletterOrder = { field: CREATED_AT, direction: DESC }
   ): SponsorshipNewsletterConnection!
   sponsorshipsAsMaintainer(
     """
@@ -33643,7 +33643,7 @@ type Workflow implements Node & UniformResourceLocatable {
     """
     Ordering options for the connection
     """
-    orderBy: WorkflowRunOrder = { field: CREATED_AT,direction: DESC }
+    orderBy: WorkflowRunOrder = { field: CREATED_AT, direction: DESC }
   ): WorkflowRunConnection!
   state: WorkflowState!
   updatedAt: DateTime!

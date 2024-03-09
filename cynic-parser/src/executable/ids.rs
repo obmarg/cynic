@@ -45,7 +45,7 @@ macro_rules! impl_id_range {
                 (self.end.0.get() - self.start.0.get()) == 0
             }
 
-            pub fn iter(&self) -> impl Iterator<Item = $name> {
+            pub fn iter(&self) -> impl ExactSizeIterator<Item = $name> {
                 (self.start.0.get()..self.end.0.get())
                     .map(|num| $name(NonZeroU32::new(num).expect("range is too large")))
             }

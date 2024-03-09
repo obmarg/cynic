@@ -7,7 +7,6 @@ use super::{
 
 pub struct AstWriter {
     ast: Ast,
-    argument_cursor: ArgumentId,
     directive_cursor: DirectiveId,
     variable_definition_cursor: VariableDefinitionId,
 }
@@ -16,7 +15,6 @@ impl AstWriter {
     pub fn new() -> Self {
         AstWriter {
             ast: Ast::default(),
-            argument_cursor: ArgumentId::new(0),
             directive_cursor: DirectiveId::new(0),
             variable_definition_cursor: VariableDefinitionId::new(0),
         }
@@ -115,21 +113,12 @@ impl AstWriter {
         id
     }
 
-    pub fn argument(&mut self, record: ArgumentRecord) -> ArgumentId {
-        let id = ArgumentId::new(self.ast.arguments.len());
-        self.ast.arguments.push(record);
-        id
-    }
-
-    pub fn argument_range(&mut self, expected_count: Option<usize>) -> IdRange<ArgumentId> {
-        let start = self.argument_cursor;
+    pub fn arguments(&mut self, mut records: Vec<ArgumentRecord>) -> IdRange<ArgumentId> {
+        let start = ArgumentId::new(self.ast.arguments.len());
+        self.ast.arguments.append(&mut records);
         let end = ArgumentId::new(self.ast.arguments.len());
-        self.argument_cursor = end;
-        let range = IdRange::new(start, end);
 
-        assert_eq!(range.len(), expected_count.unwrap_or_default());
-
-        range
+        IdRange::new(start, end)
     }
 
     pub fn directive(&mut self, directive: DirectiveRecord) -> DirectiveId {

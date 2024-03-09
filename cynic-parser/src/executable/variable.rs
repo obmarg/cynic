@@ -38,7 +38,7 @@ impl<'a> VariableDefinition<'a> {
             .map(|id| self.0.ast.read(id))
     }
 
-    pub fn directives(&self) -> impl Iterator<Item = Directive<'a>> {
+    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> {
         self.0
             .ast
             .lookup(self.0.id)

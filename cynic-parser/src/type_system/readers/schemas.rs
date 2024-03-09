@@ -30,7 +30,7 @@ impl<'a> SchemaDefinition<'a> {
             .map(|(_, name)| name)
     }
 
-    pub fn root_operations(&self) -> impl Iterator<Item = (OperationType, &'a str)> {
+    pub fn root_operations(&self) -> impl ExactSizeIterator<Item = (OperationType, &'a str)> {
         let ast = &self.0.ast;
 
         ast.lookup(self.0.id)

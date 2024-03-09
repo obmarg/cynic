@@ -28,7 +28,7 @@ impl<'a> FragmentDefinition<'a> {
         ast.lookup(ast.lookup(self.0.id).type_condition)
     }
 
-    pub fn directives(&self) -> impl Iterator<Item = Directive<'a>> {
+    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> {
         self.0
             .ast
             .lookup(self.0.id)
@@ -37,7 +37,7 @@ impl<'a> FragmentDefinition<'a> {
             .map(|id| self.0.ast.read(id))
     }
 
-    pub fn selection_set(&self) -> impl Iterator<Item = Selection<'a>> {
+    pub fn selection_set(&self) -> impl ExactSizeIterator<Item = Selection<'a>> {
         self.0
             .ast
             .lookup(self.0.id)

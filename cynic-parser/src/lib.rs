@@ -20,6 +20,15 @@ pub fn parse_type_system_document(input: &str) -> Result<type_system::Ast, Error
     Ok(ast.finish())
 }
 
+pub fn parse_executable_document(input: &str) -> Result<executable::Ast, Error> {
+    let lexer = lexer::Lexer::new(input);
+    let mut ast = executable::writer::AstWriter::new();
+
+    parser::ExecutableDocumentParser::new().parse(input, &mut ast, lexer)?;
+
+    Ok(ast.finish())
+}
+
 trait AstLookup<Id> {
     type Output: ?Sized;
 

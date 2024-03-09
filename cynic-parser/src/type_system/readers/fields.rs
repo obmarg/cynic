@@ -19,7 +19,7 @@ impl<'a> FieldDefinition<'a> {
         ast.read(ast.lookup(self.0.id).ty)
     }
 
-    pub fn arguments(&self) -> impl Iterator<Item = InputValueDefinition<'a>> {
+    pub fn arguments(&self) -> impl ExactSizeIterator<Item = InputValueDefinition<'a>> {
         let ast = &self.0.ast;
         ast.lookup(self.0.id)
             .arguments
@@ -27,7 +27,7 @@ impl<'a> FieldDefinition<'a> {
             .map(|id| ast.read(id))
     }
 
-    pub fn directives(&self) -> impl Iterator<Item = Directive<'a>> + 'a {
+    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
         let ast = &self.0.ast;
         ast.lookup(self.0.id)
             .directives

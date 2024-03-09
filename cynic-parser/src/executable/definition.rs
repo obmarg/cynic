@@ -19,7 +19,7 @@ pub enum ExecutableDefinition<'a> {
 }
 
 impl super::Ast {
-    pub fn definitions(&self) -> impl Iterator<Item = ExecutableDefinition<'_>> {
+    pub fn definitions(&self) -> impl ExactSizeIterator<Item = ExecutableDefinition<'_>> {
         self.definitions.iter().map(|record| match record {
             ExecutableDefinitionRecord::Operation(id) => {
                 ExecutableDefinition::Operation(self.read(*id))
@@ -27,6 +27,20 @@ impl super::Ast {
             ExecutableDefinitionRecord::Fragment(id) => {
                 ExecutableDefinition::Fragment(self.read(*id))
             }
+        })
+    }
+
+    pub fn operations(&self) -> impl Iterator<Item = OperationDefinition<'_>> {
+        self.definitions().filter_map(|op| match op {
+            ExecutableDefinition::Operation(reader) => Some(reader),
+            ExecutableDefinition::Fragment(_) => None,
+        })
+    }
+
+    pub fn fragments(&self) -> impl Iterator<Item = FragmentDefinition<'_>> {
+        self.definitions().filter_map(|op| match op {
+            ExecutableDefinition::Operation(_) => None,
+            ExecutableDefinition::Fragment(reader) => Some(reader),
         })
     }
 }
