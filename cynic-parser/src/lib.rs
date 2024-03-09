@@ -9,9 +9,11 @@ mod span;
 #[allow(clippy::all)]
 mod parser;
 
-pub use self::{errors::Error, span::Span};
+pub use self::{
+    errors::Error, executable::ExecutableDocument, span::Span, type_system::TypeSystemDocument,
+};
 
-pub fn parse_type_system_document(input: &str) -> Result<type_system::TypeSystemDocument, Error> {
+pub fn parse_type_system_document(input: &str) -> Result<TypeSystemDocument, Error> {
     let lexer = lexer::Lexer::new(input);
     let mut ast = type_system::writer::TypeSystemAstWriter::new();
 
@@ -20,7 +22,7 @@ pub fn parse_type_system_document(input: &str) -> Result<type_system::TypeSystem
     Ok(ast.finish())
 }
 
-pub fn parse_executable_document(input: &str) -> Result<executable::ExecutableDocument, Error> {
+pub fn parse_executable_document(input: &str) -> Result<ExecutableDocument, Error> {
     let lexer = lexer::Lexer::new(input);
     let mut ast = executable::writer::ExecutableAstWriter::new();
 
