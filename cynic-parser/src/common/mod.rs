@@ -11,12 +11,18 @@ pub enum OperationType {
     Subscription,
 }
 
+impl OperationType {
+    pub fn as_str(&self) -> &'static str {
+        match self {
+            OperationType::Query => "query",
+            OperationType::Mutation => "mutation",
+            OperationType::Subscription => "subscription",
+        }
+    }
+}
+
 impl std::fmt::Display for OperationType {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        match self {
-            OperationType::Query => write!(f, "query"),
-            OperationType::Mutation => write!(f, "mutation"),
-            OperationType::Subscription => write!(f, "subscription"),
-        }
+        write!(f, "{}", self.as_str())
     }
 }

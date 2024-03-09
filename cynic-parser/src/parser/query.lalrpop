@@ -84,7 +84,7 @@ Selection: SelectionRecord = {
             })
         )
     },
-    "..." <name:FragmentName> <directives:Directives> => {
+    "..." <fragment_name:FragmentName> <directives:Directives> => {
         SelectionRecord::FragmentSpread(
             ast.fragment_spread(FragmentSpreadRecord {
                 <>

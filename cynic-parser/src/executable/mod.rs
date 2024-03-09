@@ -14,6 +14,21 @@ mod variable;
 mod types;
 pub mod writer;
 
+#[cfg(feature = "print")]
+mod printer;
+
+pub use self::{
+    argument::Argument,
+    definition::ExecutableDefinition,
+    directive::Directive,
+    fragment::FragmentDefinition,
+    operation::OperationDefinition,
+    selections::{FieldSelection, FragmentSpread, InlineFragment, Selection},
+    types::Type,
+    value::Value,
+    variable::VariableDefinition,
+};
+
 #[derive(Default)]
 pub struct Ast {
     strings: IndexSet<Box<str>>,
