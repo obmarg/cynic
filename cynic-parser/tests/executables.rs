@@ -26,13 +26,11 @@ fn inline_fragment_dir() {
 }
 
 #[test]
-#[ignore] // This needs fixed
 fn kitchen_sink() {
-    roundtrip_test("tests/executables/kitchen-sink.graphql");
+    double_roundtrip_test("tests/executables/kitchen-sink.graphql");
 }
 
 #[test]
-#[ignore] // This needs fixed
 fn kitchen_sink_canonical() {
     roundtrip_test("tests/executables/kitchen-sink_canonical.graphql");
 }

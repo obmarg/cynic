@@ -78,7 +78,7 @@ SelectionSet: IdRange<SelectionId> = {
 Selection: SelectionRecord = {
     <alias:Alias?> <name:Name> <arguments:Arguments?> <directives:Directives> <selection_set:SelectionSet?> => {
         let selection_set = selection_set.unwrap_or_default();
-        let arguments = ast.argument_range(arguments.map(|args| args.len()));
+        let arguments = arguments.map(|args| ast.arguments(args)).unwrap_or_default();
         SelectionRecord::Field(
             ast.field_selection(FieldSelectionRecord {
                 <>
@@ -137,18 +137,18 @@ Directives: IdRange<DirectiveId> = {
 
 Directive: () = {
     "@" <name:Name> <arguments:Arguments?> => {
-        let arguments = ast.argument_range(arguments.map(|args| args.len()));
+        let arguments = arguments.map(|args| ast.arguments(args)).unwrap_or_default();
         ast.directive(DirectiveRecord { <> });
     }
 }
 
-Arguments: Vec<()> = {
+Arguments: Vec<ArgumentRecord> = {
     "(" <arguments:Argument*> ")" => arguments
 }
 
-Argument: () = {
+Argument: ArgumentRecord = {
     <name:Name> ":" <value:Value> => {
-        ast.argument(ArgumentRecord { <> });
+        ArgumentRecord { <> }
     }
 }
 

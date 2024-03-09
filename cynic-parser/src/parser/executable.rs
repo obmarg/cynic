@@ -1,5 +1,5 @@
 // auto-generated: "lalrpop 0.20.0"
-// sha3: c7e93ab09003247ae249cf3503e173b42b963ce4b771210edfc15b12a47b261a
+// sha3: 970c21d4f4f3c314113ff5c16b3337f35a8b733541c687fc666dec889ff0b2f3
 use crate::lexer;
 use crate::{
     common::{IdRange, OperationType, TypeWrappers, WrappingType},
@@ -39,28 +39,32 @@ mod __parse__ExecutableDocument {
         Variant1(&'input str),
         Variant2(StringId),
         Variant3(core::option::Option<StringId>),
-        Variant4(()),
-        Variant5(alloc::vec::Vec<()>),
-        Variant6(Vec<()>),
-        Variant7(core::option::Option<Vec<()>>),
+        Variant4(ArgumentRecord),
+        Variant5(alloc::vec::Vec<ArgumentRecord>),
+        Variant6(Vec<ArgumentRecord>),
+        Variant7(core::option::Option<Vec<ArgumentRecord>>),
         Variant8(ValueId),
         Variant9(core::option::Option<ValueId>),
-        Variant10(IdRange<DirectiveId>),
-        Variant11(ExecutableDefinitionId),
-        Variant12(alloc::vec::Vec<ExecutableDefinitionId>),
-        Variant13(FragmentDefinitionRecord),
-        Variant14((StringId, ValueId)),
-        Variant15(alloc::vec::Vec<(StringId, ValueId)>),
-        Variant16(OperationDefinitionRecord),
-        Variant17(OperationType),
-        Variant18(SelectionRecord),
-        Variant19(alloc::vec::Vec<SelectionRecord>),
-        Variant20(IdRange<SelectionId>),
-        Variant21(core::option::Option<IdRange<SelectionId>>),
-        Variant22(TypeId),
-        Variant23(alloc::vec::Vec<ValueId>),
-        Variant24(WrappingType),
-        Variant25(alloc::vec::Vec<WrappingType>),
+        Variant10(()),
+        Variant11(alloc::vec::Vec<()>),
+        Variant12(IdRange<DirectiveId>),
+        Variant13(ExecutableDefinitionId),
+        Variant14(alloc::vec::Vec<ExecutableDefinitionId>),
+        Variant15(FragmentDefinitionRecord),
+        Variant16((StringId, ValueId)),
+        Variant17(alloc::vec::Vec<(StringId, ValueId)>),
+        Variant18(OperationDefinitionRecord),
+        Variant19(OperationType),
+        Variant20(SelectionRecord),
+        Variant21(alloc::vec::Vec<SelectionRecord>),
+        Variant22(IdRange<SelectionId>),
+        Variant23(core::option::Option<IdRange<SelectionId>>),
+        Variant24(TypeId),
+        Variant25(alloc::vec::Vec<ValueId>),
+        Variant26(Vec<()>),
+        Variant27(core::option::Option<Vec<()>>),
+        Variant28(WrappingType),
+        Variant29(alloc::vec::Vec<WrappingType>),
     }
     const __ACTION: &[i16] = &[
         // State 0
@@ -2522,7 +2526,7 @@ mod __parse__ExecutableDocument {
             }
             148 => {
                 // __ExecutableDocument = ExecutableDocument => ActionFn(0);
-                let __sym0 = __pop_Variant4(__symbols);
+                let __sym0 = __pop_Variant10(__symbols);
                 let __start = __sym0.0;
                 let __end = __sym0.2;
                 let __nt = super::__action0::<>(input, ast, __sym0);
@@ -2541,69 +2545,14 @@ mod __parse__ExecutableDocument {
     fn __symbol_type_mismatch() -> ! {
         panic!("symbol type mismatch")
     }
-    fn __pop_Variant4<
+    fn __pop_Variant10<
       'input,
     >(
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
     ) -> (usize, (), usize)
      {
         match __symbols.pop() {
-            Some((__l, __Symbol::Variant4(__v), __r)) => (__l, __v, __r),
-            _ => __symbol_type_mismatch()
-        }
-    }
-    fn __pop_Variant14<
-      'input,
-    >(
-        __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, (StringId, ValueId), usize)
-     {
-        match __symbols.pop() {
-            Some((__l, __Symbol::Variant14(__v), __r)) => (__l, __v, __r),
-            _ => __symbol_type_mismatch()
-        }
-    }
-    fn __pop_Variant11<
-      'input,
-    >(
-        __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, ExecutableDefinitionId, usize)
-     {
-        match __symbols.pop() {
-            Some((__l, __Symbol::Variant11(__v), __r)) => (__l, __v, __r),
-            _ => __symbol_type_mismatch()
-        }
-    }
-    fn __pop_Variant13<
-      'input,
-    >(
-        __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, FragmentDefinitionRecord, usize)
-     {
-        match __symbols.pop() {
-            Some((__l, __Symbol::Variant13(__v), __r)) => (__l, __v, __r),
-            _ => __symbol_type_mismatch()
-        }
-    }
-    fn __pop_Variant10<
-      'input,
-    >(
-        __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, IdRange<DirectiveId>, usize)
-     {
-        match __symbols.pop() {
             Some((__l, __Symbol::Variant10(__v), __r)) => (__l, __v, __r),
-            _ => __symbol_type_mismatch()
-        }
-    }
-    fn __pop_Variant20<
-      'input,
-    >(
-        __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, IdRange<SelectionId>, usize)
-     {
-        match __symbols.pop() {
-            Some((__l, __Symbol::Variant20(__v), __r)) => (__l, __v, __r),
             _ => __symbol_type_mismatch()
         }
     }
@@ -2611,21 +2560,65 @@ mod __parse__ExecutableDocument {
       'input,
     >(
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, OperationDefinitionRecord, usize)
+    ) -> (usize, (StringId, ValueId), usize)
      {
         match __symbols.pop() {
             Some((__l, __Symbol::Variant16(__v), __r)) => (__l, __v, __r),
             _ => __symbol_type_mismatch()
         }
     }
-    fn __pop_Variant17<
+    fn __pop_Variant4<
       'input,
     >(
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, OperationType, usize)
+    ) -> (usize, ArgumentRecord, usize)
      {
         match __symbols.pop() {
-            Some((__l, __Symbol::Variant17(__v), __r)) => (__l, __v, __r),
+            Some((__l, __Symbol::Variant4(__v), __r)) => (__l, __v, __r),
+            _ => __symbol_type_mismatch()
+        }
+    }
+    fn __pop_Variant13<
+      'input,
+    >(
+        __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
+    ) -> (usize, ExecutableDefinitionId, usize)
+     {
+        match __symbols.pop() {
+            Some((__l, __Symbol::Variant13(__v), __r)) => (__l, __v, __r),
+            _ => __symbol_type_mismatch()
+        }
+    }
+    fn __pop_Variant15<
+      'input,
+    >(
+        __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
+    ) -> (usize, FragmentDefinitionRecord, usize)
+     {
+        match __symbols.pop() {
+            Some((__l, __Symbol::Variant15(__v), __r)) => (__l, __v, __r),
+            _ => __symbol_type_mismatch()
+        }
+    }
+    fn __pop_Variant12<
+      'input,
+    >(
+        __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
+    ) -> (usize, IdRange<DirectiveId>, usize)
+     {
+        match __symbols.pop() {
+            Some((__l, __Symbol::Variant12(__v), __r)) => (__l, __v, __r),
+            _ => __symbol_type_mismatch()
+        }
+    }
+    fn __pop_Variant22<
+      'input,
+    >(
+        __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
+    ) -> (usize, IdRange<SelectionId>, usize)
+     {
+        match __symbols.pop() {
+            Some((__l, __Symbol::Variant22(__v), __r)) => (__l, __v, __r),
             _ => __symbol_type_mismatch()
         }
     }
@@ -2633,10 +2626,32 @@ mod __parse__ExecutableDocument {
       'input,
     >(
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, SelectionRecord, usize)
+    ) -> (usize, OperationDefinitionRecord, usize)
      {
         match __symbols.pop() {
             Some((__l, __Symbol::Variant18(__v), __r)) => (__l, __v, __r),
+            _ => __symbol_type_mismatch()
+        }
+    }
+    fn __pop_Variant19<
+      'input,
+    >(
+        __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
+    ) -> (usize, OperationType, usize)
+     {
+        match __symbols.pop() {
+            Some((__l, __Symbol::Variant19(__v), __r)) => (__l, __v, __r),
+            _ => __symbol_type_mismatch()
+        }
+    }
+    fn __pop_Variant20<
+      'input,
+    >(
+        __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
+    ) -> (usize, SelectionRecord, usize)
+     {
+        match __symbols.pop() {
+            Some((__l, __Symbol::Variant20(__v), __r)) => (__l, __v, __r),
             _ => __symbol_type_mismatch()
         }
     }
@@ -2651,14 +2666,14 @@ mod __parse__ExecutableDocument {
             _ => __symbol_type_mismatch()
         }
     }
-    fn __pop_Variant22<
+    fn __pop_Variant24<
       'input,
     >(
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
     ) -> (usize, TypeId, usize)
      {
         match __symbols.pop() {
-            Some((__l, __Symbol::Variant22(__v), __r)) => (__l, __v, __r),
+            Some((__l, __Symbol::Variant24(__v), __r)) => (__l, __v, __r),
             _ => __symbol_type_mismatch()
         }
     }
@@ -2673,25 +2688,58 @@ mod __parse__ExecutableDocument {
             _ => __symbol_type_mismatch()
         }
     }
-    fn __pop_Variant6<
+    fn __pop_Variant26<
       'input,
     >(
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
     ) -> (usize, Vec<()>, usize)
      {
         match __symbols.pop() {
+            Some((__l, __Symbol::Variant26(__v), __r)) => (__l, __v, __r),
+            _ => __symbol_type_mismatch()
+        }
+    }
+    fn __pop_Variant6<
+      'input,
+    >(
+        __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
+    ) -> (usize, Vec<ArgumentRecord>, usize)
+     {
+        match __symbols.pop() {
             Some((__l, __Symbol::Variant6(__v), __r)) => (__l, __v, __r),
             _ => __symbol_type_mismatch()
         }
     }
-    fn __pop_Variant24<
+    fn __pop_Variant28<
       'input,
     >(
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
     ) -> (usize, WrappingType, usize)
      {
         match __symbols.pop() {
-            Some((__l, __Symbol::Variant24(__v), __r)) => (__l, __v, __r),
+            Some((__l, __Symbol::Variant28(__v), __r)) => (__l, __v, __r),
+            _ => __symbol_type_mismatch()
+        }
+    }
+    fn __pop_Variant11<
+      'input,
+    >(
+        __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
+    ) -> (usize, alloc::vec::Vec<()>, usize)
+     {
+        match __symbols.pop() {
+            Some((__l, __Symbol::Variant11(__v), __r)) => (__l, __v, __r),
+            _ => __symbol_type_mismatch()
+        }
+    }
+    fn __pop_Variant17<
+      'input,
+    >(
+        __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
+    ) -> (usize, alloc::vec::Vec<(StringId, ValueId)>, usize)
+     {
+        match __symbols.pop() {
+            Some((__l, __Symbol::Variant17(__v), __r)) => (__l, __v, __r),
             _ => __symbol_type_mismatch()
         }
     }
@@ -2699,65 +2747,21 @@ mod __parse__ExecutableDocument {
       'input,
     >(
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, alloc::vec::Vec<()>, usize)
+    ) -> (usize, alloc::vec::Vec<ArgumentRecord>, usize)
      {
         match __symbols.pop() {
             Some((__l, __Symbol::Variant5(__v), __r)) => (__l, __v, __r),
             _ => __symbol_type_mismatch()
         }
     }
-    fn __pop_Variant15<
-      'input,
-    >(
-        __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, alloc::vec::Vec<(StringId, ValueId)>, usize)
-     {
-        match __symbols.pop() {
-            Some((__l, __Symbol::Variant15(__v), __r)) => (__l, __v, __r),
-            _ => __symbol_type_mismatch()
-        }
-    }
-    fn __pop_Variant12<
+    fn __pop_Variant14<
       'input,
     >(
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
     ) -> (usize, alloc::vec::Vec<ExecutableDefinitionId>, usize)
      {
         match __symbols.pop() {
-            Some((__l, __Symbol::Variant12(__v), __r)) => (__l, __v, __r),
-            _ => __symbol_type_mismatch()
-        }
-    }
-    fn __pop_Variant19<
-      'input,
-    >(
-        __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, alloc::vec::Vec<SelectionRecord>, usize)
-     {
-        match __symbols.pop() {
-            Some((__l, __Symbol::Variant19(__v), __r)) => (__l, __v, __r),
-            _ => __symbol_type_mismatch()
-        }
-    }
-    fn __pop_Variant23<
-      'input,
-    >(
-        __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, alloc::vec::Vec<ValueId>, usize)
-     {
-        match __symbols.pop() {
-            Some((__l, __Symbol::Variant23(__v), __r)) => (__l, __v, __r),
-            _ => __symbol_type_mismatch()
-        }
-    }
-    fn __pop_Variant25<
-      'input,
-    >(
-        __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, alloc::vec::Vec<WrappingType>, usize)
-     {
-        match __symbols.pop() {
-            Some((__l, __Symbol::Variant25(__v), __r)) => (__l, __v, __r),
+            Some((__l, __Symbol::Variant14(__v), __r)) => (__l, __v, __r),
             _ => __symbol_type_mismatch()
         }
     }
@@ -2765,10 +2769,43 @@ mod __parse__ExecutableDocument {
       'input,
     >(
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, core::option::Option<IdRange<SelectionId>>, usize)
+    ) -> (usize, alloc::vec::Vec<SelectionRecord>, usize)
      {
         match __symbols.pop() {
             Some((__l, __Symbol::Variant21(__v), __r)) => (__l, __v, __r),
+            _ => __symbol_type_mismatch()
+        }
+    }
+    fn __pop_Variant25<
+      'input,
+    >(
+        __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
+    ) -> (usize, alloc::vec::Vec<ValueId>, usize)
+     {
+        match __symbols.pop() {
+            Some((__l, __Symbol::Variant25(__v), __r)) => (__l, __v, __r),
+            _ => __symbol_type_mismatch()
+        }
+    }
+    fn __pop_Variant29<
+      'input,
+    >(
+        __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
+    ) -> (usize, alloc::vec::Vec<WrappingType>, usize)
+     {
+        match __symbols.pop() {
+            Some((__l, __Symbol::Variant29(__v), __r)) => (__l, __v, __r),
+            _ => __symbol_type_mismatch()
+        }
+    }
+    fn __pop_Variant23<
+      'input,
+    >(
+        __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
+    ) -> (usize, core::option::Option<IdRange<SelectionId>>, usize)
+     {
+        match __symbols.pop() {
+            Some((__l, __Symbol::Variant23(__v), __r)) => (__l, __v, __r),
             _ => __symbol_type_mismatch()
         }
     }
@@ -2794,11 +2831,22 @@ mod __parse__ExecutableDocument {
             _ => __symbol_type_mismatch()
         }
     }
-    fn __pop_Variant7<
+    fn __pop_Variant27<
       'input,
     >(
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
     ) -> (usize, core::option::Option<Vec<()>>, usize)
+     {
+        match __symbols.pop() {
+            Some((__l, __Symbol::Variant27(__v), __r)) => (__l, __v, __r),
+            _ => __symbol_type_mismatch()
+        }
+    }
+    fn __pop_Variant7<
+      'input,
+    >(
+        __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
+    ) -> (usize, core::option::Option<Vec<ArgumentRecord>>, usize)
      {
         match __symbols.pop() {
             Some((__l, __Symbol::Variant7(__v), __r)) => (__l, __v, __r),
@@ -3125,7 +3173,7 @@ mod __parse__ExecutableDocument {
         let __start = __sym0.0;
         let __end = __sym2.2;
         let __nt = super::__action134::<>(input, ast, __sym0, __sym1, __sym2);
-        __symbols.push((__start, __Symbol::Variant4(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant10(__nt), __end));
         (3, 9)
     }
     pub(crate) fn __reduce16<
@@ -3145,7 +3193,7 @@ mod __parse__ExecutableDocument {
         let __start = __sym0.0;
         let __end = __sym1.2;
         let __nt = super::__action135::<>(input, ast, __sym0, __sym1);
-        __symbols.push((__start, __Symbol::Variant4(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant10(__nt), __end));
         (2, 9)
     }
     pub(crate) fn __reduce17<
@@ -3162,7 +3210,7 @@ mod __parse__ExecutableDocument {
         let __start = __lookahead_start.cloned().or_else(|| __symbols.last().map(|s| s.2.clone())).unwrap_or_default();
         let __end = __start.clone();
         let __nt = super::__action94::<>(input, ast, &__start, &__end);
-        __symbols.push((__start, __Symbol::Variant5(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant11(__nt), __end));
         (0, 10)
     }
     pub(crate) fn __reduce18<
@@ -3176,11 +3224,11 @@ mod __parse__ExecutableDocument {
     ) -> (usize, usize)
     {
         // Directive* = Directive+ => ActionFn(95);
-        let __sym0 = __pop_Variant5(__symbols);
+        let __sym0 = __pop_Variant11(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action95::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant5(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant11(__nt), __end));
         (1, 10)
     }
     pub(crate) fn __reduce19<
@@ -3194,11 +3242,11 @@ mod __parse__ExecutableDocument {
     ) -> (usize, usize)
     {
         // Directive+ = Directive => ActionFn(122);
-        let __sym0 = __pop_Variant4(__symbols);
+        let __sym0 = __pop_Variant10(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action122::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant5(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant11(__nt), __end));
         (1, 11)
     }
     pub(crate) fn __reduce20<
@@ -3213,12 +3261,12 @@ mod __parse__ExecutableDocument {
     {
         // Directive+ = Directive+, Directive => ActionFn(123);
         assert!(__symbols.len() >= 2);
-        let __sym1 = __pop_Variant4(__symbols);
-        let __sym0 = __pop_Variant5(__symbols);
+        let __sym1 = __pop_Variant10(__symbols);
+        let __sym0 = __pop_Variant11(__symbols);
         let __start = __sym0.0;
         let __end = __sym1.2;
         let __nt = super::__action123::<>(input, ast, __sym0, __sym1);
-        __symbols.push((__start, __Symbol::Variant5(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant11(__nt), __end));
         (2, 11)
     }
     pub(crate) fn __reduce21<
@@ -3235,7 +3283,7 @@ mod __parse__ExecutableDocument {
         let __start = __lookahead_start.cloned().or_else(|| __symbols.last().map(|s| s.2.clone())).unwrap_or_default();
         let __end = __start.clone();
         let __nt = super::__action142::<>(input, ast, &__start, &__end);
-        __symbols.push((__start, __Symbol::Variant10(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant12(__nt), __end));
         (0, 12)
     }
     pub(crate) fn __reduce22<
@@ -3249,11 +3297,11 @@ mod __parse__ExecutableDocument {
     ) -> (usize, usize)
     {
         // Directives = Directive+ => ActionFn(143);
-        let __sym0 = __pop_Variant5(__symbols);
+        let __sym0 = __pop_Variant11(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action143::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant10(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant12(__nt), __end));
         (1, 12)
     }
     pub(crate) fn __reduce23<
@@ -3357,11 +3405,11 @@ mod __parse__ExecutableDocument {
     ) -> (usize, usize)
     {
         // ExecutableDefinition = OperationDefinition => ActionFn(2);
-        let __sym0 = __pop_Variant16(__symbols);
+        let __sym0 = __pop_Variant18(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action2::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant11(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant13(__nt), __end));
         (1, 14)
     }
     pub(crate) fn __reduce29<
@@ -3375,11 +3423,11 @@ mod __parse__ExecutableDocument {
     ) -> (usize, usize)
     {
         // ExecutableDefinition = FragmentDefinition => ActionFn(3);
-        let __sym0 = __pop_Variant13(__symbols);
+        let __sym0 = __pop_Variant15(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action3::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant11(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant13(__nt), __end));
         (1, 14)
     }
     pub(crate) fn __reduce30<
@@ -3396,7 +3444,7 @@ mod __parse__ExecutableDocument {
         let __start = __lookahead_start.cloned().or_else(|| __symbols.last().map(|s| s.2.clone())).unwrap_or_default();
         let __end = __start.clone();
         let __nt = super::__action116::<>(input, ast, &__start, &__end);
-        __symbols.push((__start, __Symbol::Variant12(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant14(__nt), __end));
         (0, 15)
     }
     pub(crate) fn __reduce31<
@@ -3410,11 +3458,11 @@ mod __parse__ExecutableDocument {
     ) -> (usize, usize)
     {
         // ExecutableDefinition* = ExecutableDefinition+ => ActionFn(117);
-        let __sym0 = __pop_Variant12(__symbols);
+        let __sym0 = __pop_Variant14(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action117::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant12(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant14(__nt), __end));
         (1, 15)
     }
     pub(crate) fn __reduce32<
@@ -3428,11 +3476,11 @@ mod __parse__ExecutableDocument {
     ) -> (usize, usize)
     {
         // ExecutableDefinition+ = ExecutableDefinition => ActionFn(118);
-        let __sym0 = __pop_Variant11(__symbols);
+        let __sym0 = __pop_Variant13(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action118::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant12(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant14(__nt), __end));
         (1, 16)
     }
     pub(crate) fn __reduce33<
@@ -3447,12 +3495,12 @@ mod __parse__ExecutableDocument {
     {
         // ExecutableDefinition+ = ExecutableDefinition+, ExecutableDefinition => ActionFn(119);
         assert!(__symbols.len() >= 2);
-        let __sym1 = __pop_Variant11(__symbols);
-        let __sym0 = __pop_Variant12(__symbols);
+        let __sym1 = __pop_Variant13(__symbols);
+        let __sym0 = __pop_Variant14(__symbols);
         let __start = __sym0.0;
         let __end = __sym1.2;
         let __nt = super::__action119::<>(input, ast, __sym0, __sym1);
-        __symbols.push((__start, __Symbol::Variant12(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant14(__nt), __end));
         (2, 16)
     }
     pub(crate) fn __reduce34<
@@ -3469,7 +3517,7 @@ mod __parse__ExecutableDocument {
         let __start = __lookahead_start.cloned().or_else(|| __symbols.last().map(|s| s.2.clone())).unwrap_or_default();
         let __end = __start.clone();
         let __nt = super::__action144::<>(input, ast, &__start, &__end);
-        __symbols.push((__start, __Symbol::Variant4(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant10(__nt), __end));
         (0, 17)
     }
     pub(crate) fn __reduce35<
@@ -3483,11 +3531,11 @@ mod __parse__ExecutableDocument {
     ) -> (usize, usize)
     {
         // ExecutableDocument = ExecutableDefinition+ => ActionFn(145);
-        let __sym0 = __pop_Variant12(__symbols);
+        let __sym0 = __pop_Variant14(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action145::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant4(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant10(__nt), __end));
         (1, 17)
     }
     pub(crate) fn __reduce36<
@@ -3502,15 +3550,15 @@ mod __parse__ExecutableDocument {
     {
         // FragmentDefinition = fragment, FragmentName, TypeCondition, Directives, SelectionSet => ActionFn(6);
         assert!(__symbols.len() >= 5);
-        let __sym4 = __pop_Variant20(__symbols);
-        let __sym3 = __pop_Variant10(__symbols);
+        let __sym4 = __pop_Variant22(__symbols);
+        let __sym3 = __pop_Variant12(__symbols);
         let __sym2 = __pop_Variant2(__symbols);
         let __sym1 = __pop_Variant2(__symbols);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym4.2;
         let __nt = super::__action6::<>(input, ast, __sym0, __sym1, __sym2, __sym3, __sym4);
-        __symbols.push((__start, __Symbol::Variant13(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant15(__nt), __end));
         (5, 18)
     }
     pub(crate) fn __reduce37<
@@ -3980,7 +4028,7 @@ mod __parse__ExecutableDocument {
         let __start = __sym0.0;
         let __end = __sym2.2;
         let __nt = super::__action39::<>(input, ast, __sym0, __sym1, __sym2);
-        __symbols.push((__start, __Symbol::Variant14(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant16(__nt), __end));
         (3, 24)
     }
     pub(crate) fn __reduce63<
@@ -3997,7 +4045,7 @@ mod __parse__ExecutableDocument {
         let __start = __lookahead_start.cloned().or_else(|| __symbols.last().map(|s| s.2.clone())).unwrap_or_default();
         let __end = __start.clone();
         let __nt = super::__action88::<>(input, ast, &__start, &__end);
-        __symbols.push((__start, __Symbol::Variant15(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant17(__nt), __end));
         (0, 25)
     }
     pub(crate) fn __reduce64<
@@ -4011,11 +4059,11 @@ mod __parse__ExecutableDocument {
     ) -> (usize, usize)
     {
         // ObjectField* = ObjectField+ => ActionFn(89);
-        let __sym0 = __pop_Variant15(__symbols);
+        let __sym0 = __pop_Variant17(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action89::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant15(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant17(__nt), __end));
         (1, 25)
     }
     pub(crate) fn __reduce65<
@@ -4029,11 +4077,11 @@ mod __parse__ExecutableDocument {
     ) -> (usize, usize)
     {
         // ObjectField+ = ObjectField => ActionFn(128);
-        let __sym0 = __pop_Variant14(__symbols);
+        let __sym0 = __pop_Variant16(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action128::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant15(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant17(__nt), __end));
         (1, 26)
     }
     pub(crate) fn __reduce66<
@@ -4048,12 +4096,12 @@ mod __parse__ExecutableDocument {
     {
         // ObjectField+ = ObjectField+, ObjectField => ActionFn(129);
         assert!(__symbols.len() >= 2);
-        let __sym1 = __pop_Variant14(__symbols);
-        let __sym0 = __pop_Variant15(__symbols);
+        let __sym1 = __pop_Variant16(__symbols);
+        let __sym0 = __pop_Variant17(__symbols);
         let __start = __sym0.0;
         let __end = __sym1.2;
         let __nt = super::__action129::<>(input, ast, __sym0, __sym1);
-        __symbols.push((__start, __Symbol::Variant15(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant17(__nt), __end));
         (2, 26)
     }
     pub(crate) fn __reduce67<
@@ -4068,15 +4116,15 @@ mod __parse__ExecutableDocument {
     {
         // OperationDefinition = OperationType, Name, VariableDefinitions, Directives, SelectionSet => ActionFn(162);
         assert!(__symbols.len() >= 5);
-        let __sym4 = __pop_Variant20(__symbols);
-        let __sym3 = __pop_Variant10(__symbols);
-        let __sym2 = __pop_Variant6(__symbols);
+        let __sym4 = __pop_Variant22(__symbols);
+        let __sym3 = __pop_Variant12(__symbols);
+        let __sym2 = __pop_Variant26(__symbols);
         let __sym1 = __pop_Variant2(__symbols);
-        let __sym0 = __pop_Variant17(__symbols);
+        let __sym0 = __pop_Variant19(__symbols);
         let __start = __sym0.0;
         let __end = __sym4.2;
         let __nt = super::__action162::<>(input, ast, __sym0, __sym1, __sym2, __sym3, __sym4);
-        __symbols.push((__start, __Symbol::Variant16(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant18(__nt), __end));
         (5, 27)
     }
     pub(crate) fn __reduce68<
@@ -4091,14 +4139,14 @@ mod __parse__ExecutableDocument {
     {
         // OperationDefinition = OperationType, Name, Directives, SelectionSet => ActionFn(163);
         assert!(__symbols.len() >= 4);
-        let __sym3 = __pop_Variant20(__symbols);
-        let __sym2 = __pop_Variant10(__symbols);
+        let __sym3 = __pop_Variant22(__symbols);
+        let __sym2 = __pop_Variant12(__symbols);
         let __sym1 = __pop_Variant2(__symbols);
-        let __sym0 = __pop_Variant17(__symbols);
+        let __sym0 = __pop_Variant19(__symbols);
         let __start = __sym0.0;
         let __end = __sym3.2;
         let __nt = super::__action163::<>(input, ast, __sym0, __sym1, __sym2, __sym3);
-        __symbols.push((__start, __Symbol::Variant16(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant18(__nt), __end));
         (4, 27)
     }
     pub(crate) fn __reduce69<
@@ -4113,14 +4161,14 @@ mod __parse__ExecutableDocument {
     {
         // OperationDefinition = OperationType, VariableDefinitions, Directives, SelectionSet => ActionFn(164);
         assert!(__symbols.len() >= 4);
-        let __sym3 = __pop_Variant20(__symbols);
-        let __sym2 = __pop_Variant10(__symbols);
-        let __sym1 = __pop_Variant6(__symbols);
-        let __sym0 = __pop_Variant17(__symbols);
+        let __sym3 = __pop_Variant22(__symbols);
+        let __sym2 = __pop_Variant12(__symbols);
+        let __sym1 = __pop_Variant26(__symbols);
+        let __sym0 = __pop_Variant19(__symbols);
         let __start = __sym0.0;
         let __end = __sym3.2;
         let __nt = super::__action164::<>(input, ast, __sym0, __sym1, __sym2, __sym3);
-        __symbols.push((__start, __Symbol::Variant16(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant18(__nt), __end));
         (4, 27)
     }
     pub(crate) fn __reduce70<
@@ -4135,13 +4183,13 @@ mod __parse__ExecutableDocument {
     {
         // OperationDefinition = OperationType, Directives, SelectionSet => ActionFn(165);
         assert!(__symbols.len() >= 3);
-        let __sym2 = __pop_Variant20(__symbols);
-        let __sym1 = __pop_Variant10(__symbols);
-        let __sym0 = __pop_Variant17(__symbols);
+        let __sym2 = __pop_Variant22(__symbols);
+        let __sym1 = __pop_Variant12(__symbols);
+        let __sym0 = __pop_Variant19(__symbols);
         let __start = __sym0.0;
         let __end = __sym2.2;
         let __nt = super::__action165::<>(input, ast, __sym0, __sym1, __sym2);
-        __symbols.push((__start, __Symbol::Variant16(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant18(__nt), __end));
         (3, 27)
     }
     pub(crate) fn __reduce71<
@@ -4155,11 +4203,11 @@ mod __parse__ExecutableDocument {
     ) -> (usize, usize)
     {
         // OperationDefinition = SelectionSet => ActionFn(5);
-        let __sym0 = __pop_Variant20(__symbols);
+        let __sym0 = __pop_Variant22(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action5::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant16(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant18(__nt), __end));
         (1, 27)
     }
     pub(crate) fn __reduce72<
@@ -4177,7 +4225,7 @@ mod __parse__ExecutableDocument {
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action7::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant17(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant19(__nt), __end));
         (1, 28)
     }
     pub(crate) fn __reduce73<
@@ -4195,7 +4243,7 @@ mod __parse__ExecutableDocument {
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action8::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant17(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant19(__nt), __end));
         (1, 28)
     }
     pub(crate) fn __reduce74<
@@ -4213,7 +4261,7 @@ mod __parse__ExecutableDocument {
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action9::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant17(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant19(__nt), __end));
         (1, 28)
     }
     pub(crate) fn __reduce75<
@@ -4570,15 +4618,15 @@ mod __parse__ExecutableDocument {
     {
         // Selection = Alias, Name, Arguments, Directives, SelectionSet => ActionFn(150);
         assert!(__symbols.len() >= 5);
-        let __sym4 = __pop_Variant20(__symbols);
-        let __sym3 = __pop_Variant10(__symbols);
+        let __sym4 = __pop_Variant22(__symbols);
+        let __sym3 = __pop_Variant12(__symbols);
         let __sym2 = __pop_Variant6(__symbols);
         let __sym1 = __pop_Variant2(__symbols);
         let __sym0 = __pop_Variant2(__symbols);
         let __start = __sym0.0;
         let __end = __sym4.2;
         let __nt = super::__action150::<>(input, ast, __sym0, __sym1, __sym2, __sym3, __sym4);
-        __symbols.push((__start, __Symbol::Variant18(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant20(__nt), __end));
         (5, 30)
     }
     pub(crate) fn __reduce95<
@@ -4593,14 +4641,14 @@ mod __parse__ExecutableDocument {
     {
         // Selection = Alias, Name, Arguments, Directives => ActionFn(151);
         assert!(__symbols.len() >= 4);
-        let __sym3 = __pop_Variant10(__symbols);
+        let __sym3 = __pop_Variant12(__symbols);
         let __sym2 = __pop_Variant6(__symbols);
         let __sym1 = __pop_Variant2(__symbols);
         let __sym0 = __pop_Variant2(__symbols);
         let __start = __sym0.0;
         let __end = __sym3.2;
         let __nt = super::__action151::<>(input, ast, __sym0, __sym1, __sym2, __sym3);
-        __symbols.push((__start, __Symbol::Variant18(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant20(__nt), __end));
         (4, 30)
     }
     pub(crate) fn __reduce96<
@@ -4615,14 +4663,14 @@ mod __parse__ExecutableDocument {
     {
         // Selection = Alias, Name, Directives, SelectionSet => ActionFn(152);
         assert!(__symbols.len() >= 4);
-        let __sym3 = __pop_Variant20(__symbols);
-        let __sym2 = __pop_Variant10(__symbols);
+        let __sym3 = __pop_Variant22(__symbols);
+        let __sym2 = __pop_Variant12(__symbols);
         let __sym1 = __pop_Variant2(__symbols);
         let __sym0 = __pop_Variant2(__symbols);
         let __start = __sym0.0;
         let __end = __sym3.2;
         let __nt = super::__action152::<>(input, ast, __sym0, __sym1, __sym2, __sym3);
-        __symbols.push((__start, __Symbol::Variant18(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant20(__nt), __end));
         (4, 30)
     }
     pub(crate) fn __reduce97<
@@ -4637,13 +4685,13 @@ mod __parse__ExecutableDocument {
     {
         // Selection = Alias, Name, Directives => ActionFn(153);
         assert!(__symbols.len() >= 3);
-        let __sym2 = __pop_Variant10(__symbols);
+        let __sym2 = __pop_Variant12(__symbols);
         let __sym1 = __pop_Variant2(__symbols);
         let __sym0 = __pop_Variant2(__symbols);
         let __start = __sym0.0;
         let __end = __sym2.2;
         let __nt = super::__action153::<>(input, ast, __sym0, __sym1, __sym2);
-        __symbols.push((__start, __Symbol::Variant18(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant20(__nt), __end));
         (3, 30)
     }
     pub(crate) fn __reduce98<
@@ -4658,14 +4706,14 @@ mod __parse__ExecutableDocument {
     {
         // Selection = Name, Arguments, Directives, SelectionSet => ActionFn(154);
         assert!(__symbols.len() >= 4);
-        let __sym3 = __pop_Variant20(__symbols);
-        let __sym2 = __pop_Variant10(__symbols);
+        let __sym3 = __pop_Variant22(__symbols);
+        let __sym2 = __pop_Variant12(__symbols);
         let __sym1 = __pop_Variant6(__symbols);
         let __sym0 = __pop_Variant2(__symbols);
         let __start = __sym0.0;
         let __end = __sym3.2;
         let __nt = super::__action154::<>(input, ast, __sym0, __sym1, __sym2, __sym3);
-        __symbols.push((__start, __Symbol::Variant18(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant20(__nt), __end));
         (4, 30)
     }
     pub(crate) fn __reduce99<
@@ -4680,13 +4728,13 @@ mod __parse__ExecutableDocument {
     {
         // Selection = Name, Arguments, Directives => ActionFn(155);
         assert!(__symbols.len() >= 3);
-        let __sym2 = __pop_Variant10(__symbols);
+        let __sym2 = __pop_Variant12(__symbols);
         let __sym1 = __pop_Variant6(__symbols);
         let __sym0 = __pop_Variant2(__symbols);
         let __start = __sym0.0;
         let __end = __sym2.2;
         let __nt = super::__action155::<>(input, ast, __sym0, __sym1, __sym2);
-        __symbols.push((__start, __Symbol::Variant18(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant20(__nt), __end));
         (3, 30)
     }
     pub(crate) fn __reduce100<
@@ -4701,13 +4749,13 @@ mod __parse__ExecutableDocument {
     {
         // Selection = Name, Directives, SelectionSet => ActionFn(156);
         assert!(__symbols.len() >= 3);
-        let __sym2 = __pop_Variant20(__symbols);
-        let __sym1 = __pop_Variant10(__symbols);
+        let __sym2 = __pop_Variant22(__symbols);
+        let __sym1 = __pop_Variant12(__symbols);
         let __sym0 = __pop_Variant2(__symbols);
         let __start = __sym0.0;
         let __end = __sym2.2;
         let __nt = super::__action156::<>(input, ast, __sym0, __sym1, __sym2);
-        __symbols.push((__start, __Symbol::Variant18(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant20(__nt), __end));
         (3, 30)
     }
     pub(crate) fn __reduce101<
@@ -4722,12 +4770,12 @@ mod __parse__ExecutableDocument {
     {
         // Selection = Name, Directives => ActionFn(157);
         assert!(__symbols.len() >= 2);
-        let __sym1 = __pop_Variant10(__symbols);
+        let __sym1 = __pop_Variant12(__symbols);
         let __sym0 = __pop_Variant2(__symbols);
         let __start = __sym0.0;
         let __end = __sym1.2;
         let __nt = super::__action157::<>(input, ast, __sym0, __sym1);
-        __symbols.push((__start, __Symbol::Variant18(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant20(__nt), __end));
         (2, 30)
     }
     pub(crate) fn __reduce102<
@@ -4742,13 +4790,13 @@ mod __parse__ExecutableDocument {
     {
         // Selection = "...", FragmentName, Directives => ActionFn(15);
         assert!(__symbols.len() >= 3);
-        let __sym2 = __pop_Variant10(__symbols);
+        let __sym2 = __pop_Variant12(__symbols);
         let __sym1 = __pop_Variant2(__symbols);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym2.2;
         let __nt = super::__action15::<>(input, ast, __sym0, __sym1, __sym2);
-        __symbols.push((__start, __Symbol::Variant18(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant20(__nt), __end));
         (3, 30)
     }
     pub(crate) fn __reduce103<
@@ -4763,14 +4811,14 @@ mod __parse__ExecutableDocument {
     {
         // Selection = "...", TypeCondition, Directives, SelectionSet => ActionFn(158);
         assert!(__symbols.len() >= 4);
-        let __sym3 = __pop_Variant20(__symbols);
-        let __sym2 = __pop_Variant10(__symbols);
+        let __sym3 = __pop_Variant22(__symbols);
+        let __sym2 = __pop_Variant12(__symbols);
         let __sym1 = __pop_Variant2(__symbols);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym3.2;
         let __nt = super::__action158::<>(input, ast, __sym0, __sym1, __sym2, __sym3);
-        __symbols.push((__start, __Symbol::Variant18(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant20(__nt), __end));
         (4, 30)
     }
     pub(crate) fn __reduce104<
@@ -4785,13 +4833,13 @@ mod __parse__ExecutableDocument {
     {
         // Selection = "...", Directives, SelectionSet => ActionFn(159);
         assert!(__symbols.len() >= 3);
-        let __sym2 = __pop_Variant20(__symbols);
-        let __sym1 = __pop_Variant10(__symbols);
+        let __sym2 = __pop_Variant22(__symbols);
+        let __sym1 = __pop_Variant12(__symbols);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym2.2;
         let __nt = super::__action159::<>(input, ast, __sym0, __sym1, __sym2);
-        __symbols.push((__start, __Symbol::Variant18(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant20(__nt), __end));
         (3, 30)
     }
     pub(crate) fn __reduce105<
@@ -4805,11 +4853,11 @@ mod __parse__ExecutableDocument {
     ) -> (usize, usize)
     {
         // Selection+ = Selection => ActionFn(106);
-        let __sym0 = __pop_Variant18(__symbols);
+        let __sym0 = __pop_Variant20(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action106::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant19(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant21(__nt), __end));
         (1, 31)
     }
     pub(crate) fn __reduce106<
@@ -4824,12 +4872,12 @@ mod __parse__ExecutableDocument {
     {
         // Selection+ = Selection+, Selection => ActionFn(107);
         assert!(__symbols.len() >= 2);
-        let __sym1 = __pop_Variant18(__symbols);
-        let __sym0 = __pop_Variant19(__symbols);
+        let __sym1 = __pop_Variant20(__symbols);
+        let __sym0 = __pop_Variant21(__symbols);
         let __start = __sym0.0;
         let __end = __sym1.2;
         let __nt = super::__action107::<>(input, ast, __sym0, __sym1);
-        __symbols.push((__start, __Symbol::Variant19(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant21(__nt), __end));
         (2, 31)
     }
     pub(crate) fn __reduce107<
@@ -4845,12 +4893,12 @@ mod __parse__ExecutableDocument {
         // SelectionSet = "{", Selection+, "}" => ActionFn(13);
         assert!(__symbols.len() >= 3);
         let __sym2 = __pop_Variant0(__symbols);
-        let __sym1 = __pop_Variant19(__symbols);
+        let __sym1 = __pop_Variant21(__symbols);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym2.2;
         let __nt = super::__action13::<>(input, ast, __sym0, __sym1, __sym2);
-        __symbols.push((__start, __Symbol::Variant20(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant22(__nt), __end));
         (3, 32)
     }
     pub(crate) fn __reduce108<
@@ -4864,11 +4912,11 @@ mod __parse__ExecutableDocument {
     ) -> (usize, usize)
     {
         // SelectionSet? = SelectionSet => ActionFn(100);
-        let __sym0 = __pop_Variant20(__symbols);
+        let __sym0 = __pop_Variant22(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action100::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant21(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant23(__nt), __end));
         (1, 33)
     }
     pub(crate) fn __reduce109<
@@ -4885,7 +4933,7 @@ mod __parse__ExecutableDocument {
         let __start = __lookahead_start.cloned().or_else(|| __symbols.last().map(|s| s.2.clone())).unwrap_or_default();
         let __end = __start.clone();
         let __nt = super::__action101::<>(input, ast, &__start, &__end);
-        __symbols.push((__start, __Symbol::Variant21(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant23(__nt), __end));
         (0, 33)
     }
     pub(crate) fn __reduce110<
@@ -4936,12 +4984,12 @@ mod __parse__ExecutableDocument {
     {
         // Type = "[", Type => ActionFn(20);
         assert!(__symbols.len() >= 2);
-        let __sym1 = __pop_Variant22(__symbols);
+        let __sym1 = __pop_Variant24(__symbols);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym1.2;
         let __nt = super::__action20::<>(input, ast, __sym0, __sym1);
-        __symbols.push((__start, __Symbol::Variant22(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant24(__nt), __end));
         (2, 35)
     }
     pub(crate) fn __reduce113<
@@ -4959,7 +5007,7 @@ mod __parse__ExecutableDocument {
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action166::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant22(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant24(__nt), __end));
         (1, 35)
     }
     pub(crate) fn __reduce114<
@@ -4974,12 +5022,12 @@ mod __parse__ExecutableDocument {
     {
         // Type = NamedType, WrappingType+ => ActionFn(167);
         assert!(__symbols.len() >= 2);
-        let __sym1 = __pop_Variant25(__symbols);
+        let __sym1 = __pop_Variant29(__symbols);
         let __sym0 = __pop_Variant2(__symbols);
         let __start = __sym0.0;
         let __end = __sym1.2;
         let __nt = super::__action167::<>(input, ast, __sym0, __sym1);
-        __symbols.push((__start, __Symbol::Variant22(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant24(__nt), __end));
         (2, 35)
     }
     pub(crate) fn __reduce115<
@@ -5216,7 +5264,7 @@ mod __parse__ExecutableDocument {
         // Value = "[", Value+, "]" => ActionFn(161);
         assert!(__symbols.len() >= 3);
         let __sym2 = __pop_Variant0(__symbols);
-        let __sym1 = __pop_Variant23(__symbols);
+        let __sym1 = __pop_Variant25(__symbols);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym2.2;
@@ -5257,7 +5305,7 @@ mod __parse__ExecutableDocument {
         // Value = "{", ObjectField+, "}" => ActionFn(149);
         assert!(__symbols.len() >= 3);
         let __sym2 = __pop_Variant0(__symbols);
-        let __sym1 = __pop_Variant15(__symbols);
+        let __sym1 = __pop_Variant17(__symbols);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym2.2;
@@ -5297,7 +5345,7 @@ mod __parse__ExecutableDocument {
         let __start = __lookahead_start.cloned().or_else(|| __symbols.last().map(|s| s.2.clone())).unwrap_or_default();
         let __end = __start.clone();
         let __nt = super::__action90::<>(input, ast, &__start, &__end);
-        __symbols.push((__start, __Symbol::Variant23(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant25(__nt), __end));
         (0, 39)
     }
     pub(crate) fn __reduce132<
@@ -5311,11 +5359,11 @@ mod __parse__ExecutableDocument {
     ) -> (usize, usize)
     {
         // Value* = Value+ => ActionFn(91);
-        let __sym0 = __pop_Variant23(__symbols);
+        let __sym0 = __pop_Variant25(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action91::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant23(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant25(__nt), __end));
         (1, 39)
     }
     pub(crate) fn __reduce133<
@@ -5333,7 +5381,7 @@ mod __parse__ExecutableDocument {
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action126::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant23(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant25(__nt), __end));
         (1, 40)
     }
     pub(crate) fn __reduce134<
@@ -5349,11 +5397,11 @@ mod __parse__ExecutableDocument {
         // Value+ = Value+, Value => ActionFn(127);
         assert!(__symbols.len() >= 2);
         let __sym1 = __pop_Variant8(__symbols);
-        let __sym0 = __pop_Variant23(__symbols);
+        let __sym0 = __pop_Variant25(__symbols);
         let __start = __sym0.0;
         let __end = __sym1.2;
         let __nt = super::__action127::<>(input, ast, __sym0, __sym1);
-        __symbols.push((__start, __Symbol::Variant23(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant25(__nt), __end));
         (2, 40)
     }
     pub(crate) fn __reduce135<
@@ -5368,16 +5416,16 @@ mod __parse__ExecutableDocument {
     {
         // VariableDefinition = "$", Name, ":", Type, DefaultValue, Directives => ActionFn(140);
         assert!(__symbols.len() >= 6);
-        let __sym5 = __pop_Variant10(__symbols);
+        let __sym5 = __pop_Variant12(__symbols);
         let __sym4 = __pop_Variant8(__symbols);
-        let __sym3 = __pop_Variant22(__symbols);
+        let __sym3 = __pop_Variant24(__symbols);
         let __sym2 = __pop_Variant0(__symbols);
         let __sym1 = __pop_Variant2(__symbols);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym5.2;
         let __nt = super::__action140::<>(input, ast, __sym0, __sym1, __sym2, __sym3, __sym4, __sym5);
-        __symbols.push((__start, __Symbol::Variant4(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant10(__nt), __end));
         (6, 41)
     }
     pub(crate) fn __reduce136<
@@ -5392,15 +5440,15 @@ mod __parse__ExecutableDocument {
     {
         // VariableDefinition = "$", Name, ":", Type, Directives => ActionFn(141);
         assert!(__symbols.len() >= 5);
-        let __sym4 = __pop_Variant10(__symbols);
-        let __sym3 = __pop_Variant22(__symbols);
+        let __sym4 = __pop_Variant12(__symbols);
+        let __sym3 = __pop_Variant24(__symbols);
         let __sym2 = __pop_Variant0(__symbols);
         let __sym1 = __pop_Variant2(__symbols);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym4.2;
         let __nt = super::__action141::<>(input, ast, __sym0, __sym1, __sym2, __sym3, __sym4);
-        __symbols.push((__start, __Symbol::Variant4(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant10(__nt), __end));
         (5, 41)
     }
     pub(crate) fn __reduce137<
@@ -5414,11 +5462,11 @@ mod __parse__ExecutableDocument {
     ) -> (usize, usize)
     {
         // VariableDefinition+ = VariableDefinition => ActionFn(110);
-        let __sym0 = __pop_Variant4(__symbols);
+        let __sym0 = __pop_Variant10(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action110::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant5(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant11(__nt), __end));
         (1, 42)
     }
     pub(crate) fn __reduce138<
@@ -5433,12 +5481,12 @@ mod __parse__ExecutableDocument {
     {
         // VariableDefinition+ = VariableDefinition+, VariableDefinition => ActionFn(111);
         assert!(__symbols.len() >= 2);
-        let __sym1 = __pop_Variant4(__symbols);
-        let __sym0 = __pop_Variant5(__symbols);
+        let __sym1 = __pop_Variant10(__symbols);
+        let __sym0 = __pop_Variant11(__symbols);
         let __start = __sym0.0;
         let __end = __sym1.2;
         let __nt = super::__action111::<>(input, ast, __sym0, __sym1);
-        __symbols.push((__start, __Symbol::Variant5(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant11(__nt), __end));
         (2, 42)
     }
     pub(crate) fn __reduce139<
@@ -5454,12 +5502,12 @@ mod __parse__ExecutableDocument {
         // VariableDefinitions = "(", VariableDefinition+, ")" => ActionFn(10);
         assert!(__symbols.len() >= 3);
         let __sym2 = __pop_Variant0(__symbols);
-        let __sym1 = __pop_Variant5(__symbols);
+        let __sym1 = __pop_Variant11(__symbols);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym2.2;
         let __nt = super::__action10::<>(input, ast, __sym0, __sym1, __sym2);
-        __symbols.push((__start, __Symbol::Variant6(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant26(__nt), __end));
         (3, 43)
     }
     pub(crate) fn __reduce140<
@@ -5473,11 +5521,11 @@ mod __parse__ExecutableDocument {
     ) -> (usize, usize)
     {
         // VariableDefinitions? = VariableDefinitions => ActionFn(112);
-        let __sym0 = __pop_Variant6(__symbols);
+        let __sym0 = __pop_Variant26(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action112::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant7(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant27(__nt), __end));
         (1, 44)
     }
     pub(crate) fn __reduce141<
@@ -5494,7 +5542,7 @@ mod __parse__ExecutableDocument {
         let __start = __lookahead_start.cloned().or_else(|| __symbols.last().map(|s| s.2.clone())).unwrap_or_default();
         let __end = __start.clone();
         let __nt = super::__action113::<>(input, ast, &__start, &__end);
-        __symbols.push((__start, __Symbol::Variant7(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant27(__nt), __end));
         (0, 44)
     }
     pub(crate) fn __reduce142<
@@ -5512,7 +5560,7 @@ mod __parse__ExecutableDocument {
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action22::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant24(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant28(__nt), __end));
         (1, 45)
     }
     pub(crate) fn __reduce143<
@@ -5530,7 +5578,7 @@ mod __parse__ExecutableDocument {
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action23::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant24(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant28(__nt), __end));
         (1, 45)
     }
     pub(crate) fn __reduce144<
@@ -5547,7 +5595,7 @@ mod __parse__ExecutableDocument {
         let __start = __lookahead_start.cloned().or_else(|| __symbols.last().map(|s| s.2.clone())).unwrap_or_default();
         let __end = __start.clone();
         let __nt = super::__action96::<>(input, ast, &__start, &__end);
-        __symbols.push((__start, __Symbol::Variant25(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant29(__nt), __end));
         (0, 46)
     }
     pub(crate) fn __reduce145<
@@ -5561,11 +5609,11 @@ mod __parse__ExecutableDocument {
     ) -> (usize, usize)
     {
         // WrappingType* = WrappingType+ => ActionFn(97);
-        let __sym0 = __pop_Variant25(__symbols);
+        let __sym0 = __pop_Variant29(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action97::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant25(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant29(__nt), __end));
         (1, 46)
     }
     pub(crate) fn __reduce146<
@@ -5579,11 +5627,11 @@ mod __parse__ExecutableDocument {
     ) -> (usize, usize)
     {
         // WrappingType+ = WrappingType => ActionFn(120);
-        let __sym0 = __pop_Variant24(__symbols);
+        let __sym0 = __pop_Variant28(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action120::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant25(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant29(__nt), __end));
         (1, 47)
     }
     pub(crate) fn __reduce147<
@@ -5598,12 +5646,12 @@ mod __parse__ExecutableDocument {
     {
         // WrappingType+ = WrappingType+, WrappingType => ActionFn(121);
         assert!(__symbols.len() >= 2);
-        let __sym1 = __pop_Variant24(__symbols);
-        let __sym0 = __pop_Variant25(__symbols);
+        let __sym1 = __pop_Variant28(__symbols);
+        let __sym0 = __pop_Variant29(__symbols);
         let __start = __sym0.0;
         let __end = __sym1.2;
         let __nt = super::__action121::<>(input, ast, __sym0, __sym1);
-        __symbols.push((__start, __Symbol::Variant25(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant29(__nt), __end));
         (2, 47)
     }
 }
@@ -5806,13 +5854,15 @@ fn __action14<'input>(
     ast: &mut AstWriter,
     (_, alias, _): (usize, core::option::Option<StringId>, usize),
     (_, name, _): (usize, StringId, usize),
-    (_, arguments, _): (usize, core::option::Option<Vec<()>>, usize),
+    (_, arguments, _): (usize, core::option::Option<Vec<ArgumentRecord>>, usize),
     (_, directives, _): (usize, IdRange<DirectiveId>, usize),
     (_, selection_set, _): (usize, core::option::Option<IdRange<SelectionId>>, usize),
 ) -> SelectionRecord {
     {
         let selection_set = selection_set.unwrap_or_default();
-        let arguments = ast.argument_range(arguments.map(|args| args.len()));
+        let arguments = arguments
+            .map(|args| ast.arguments(args))
+            .unwrap_or_default();
         SelectionRecord::Field(ast.field_selection(FieldSelectionRecord {
             alias,
             name,
@@ -5959,10 +6009,12 @@ fn __action25<'input>(
     ast: &mut AstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, name, _): (usize, StringId, usize),
-    (_, arguments, _): (usize, core::option::Option<Vec<()>>, usize),
+    (_, arguments, _): (usize, core::option::Option<Vec<ArgumentRecord>>, usize),
 ) {
     {
-        let arguments = ast.argument_range(arguments.map(|args| args.len()));
+        let arguments = arguments
+            .map(|args| ast.arguments(args))
+            .unwrap_or_default();
         ast.directive(DirectiveRecord { name, arguments });
     }
 }
@@ -5973,9 +6025,9 @@ fn __action26<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
-    (_, arguments, _): (usize, alloc::vec::Vec<()>, usize),
+    (_, arguments, _): (usize, alloc::vec::Vec<ArgumentRecord>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
-) -> Vec<()> {
+) -> Vec<ArgumentRecord> {
     arguments
 }
 
@@ -5987,9 +6039,9 @@ fn __action27<'input>(
     (_, name, _): (usize, StringId, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, value, _): (usize, ValueId, usize),
-) {
+) -> ArgumentRecord {
     {
-        ast.argument(ArgumentRecord { name, value });
+        ArgumentRecord { name, value }
     }
 }
 
@@ -6659,7 +6711,7 @@ fn __action92<'input>(
     ast: &mut AstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
-) -> alloc::vec::Vec<()> {
+) -> alloc::vec::Vec<ArgumentRecord> {
     alloc::vec![]
 }
 
@@ -6668,8 +6720,8 @@ fn __action92<'input>(
 fn __action93<'input>(
     input: &'input str,
     ast: &mut AstWriter,
-    (_, v, _): (usize, alloc::vec::Vec<()>, usize),
-) -> alloc::vec::Vec<()> {
+    (_, v, _): (usize, alloc::vec::Vec<ArgumentRecord>, usize),
+) -> alloc::vec::Vec<ArgumentRecord> {
     v
 }
 
@@ -6762,8 +6814,8 @@ fn __action101<'input>(
 fn __action102<'input>(
     input: &'input str,
     ast: &mut AstWriter,
-    (_, __0, _): (usize, Vec<()>, usize),
-) -> core::option::Option<Vec<()>> {
+    (_, __0, _): (usize, Vec<ArgumentRecord>, usize),
+) -> core::option::Option<Vec<ArgumentRecord>> {
     Some(__0)
 }
 
@@ -6774,7 +6826,7 @@ fn __action103<'input>(
     ast: &mut AstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
-) -> core::option::Option<Vec<()>> {
+) -> core::option::Option<Vec<ArgumentRecord>> {
     None
 }
 
@@ -7013,8 +7065,8 @@ fn __action123<'input>(
 fn __action124<'input>(
     input: &'input str,
     ast: &mut AstWriter,
-    (_, __0, _): (usize, (), usize),
-) -> alloc::vec::Vec<()> {
+    (_, __0, _): (usize, ArgumentRecord, usize),
+) -> alloc::vec::Vec<ArgumentRecord> {
     alloc::vec![__0]
 }
 
@@ -7023,9 +7075,9 @@ fn __action124<'input>(
 fn __action125<'input>(
     input: &'input str,
     ast: &mut AstWriter,
-    (_, v, _): (usize, alloc::vec::Vec<()>, usize),
-    (_, e, _): (usize, (), usize),
-) -> alloc::vec::Vec<()> {
+    (_, v, _): (usize, alloc::vec::Vec<ArgumentRecord>, usize),
+    (_, e, _): (usize, ArgumentRecord, usize),
+) -> alloc::vec::Vec<ArgumentRecord> {
     {
         let mut v = v;
         v.push(e);
@@ -7090,7 +7142,7 @@ fn __action130<'input>(
     ast: &mut AstWriter,
     __0: (usize, StringId, usize),
     __1: (usize, StringId, usize),
-    __2: (usize, core::option::Option<Vec<()>>, usize),
+    __2: (usize, core::option::Option<Vec<ArgumentRecord>>, usize),
     __3: (usize, IdRange<DirectiveId>, usize),
     __4: (usize, core::option::Option<IdRange<SelectionId>>, usize),
 ) -> SelectionRecord {
@@ -7107,7 +7159,7 @@ fn __action131<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, StringId, usize),
-    __1: (usize, core::option::Option<Vec<()>>, usize),
+    __1: (usize, core::option::Option<Vec<ArgumentRecord>>, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
     __3: (usize, core::option::Option<IdRange<SelectionId>>, usize),
 ) -> SelectionRecord {
@@ -7125,7 +7177,7 @@ fn __action132<'input>(
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, lexer::Token<'input>, usize),
-) -> Vec<()> {
+) -> Vec<ArgumentRecord> {
     let __start0 = __0.2;
     let __end0 = __1.0;
     let __temp0 = __action92(input, ast, &__start0, &__end0);
@@ -7139,9 +7191,9 @@ fn __action133<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
-    __1: (usize, alloc::vec::Vec<()>, usize),
+    __1: (usize, alloc::vec::Vec<ArgumentRecord>, usize),
     __2: (usize, lexer::Token<'input>, usize),
-) -> Vec<()> {
+) -> Vec<ArgumentRecord> {
     let __start0 = __1.0;
     let __end0 = __1.2;
     let __temp0 = __action93(input, ast, __1);
@@ -7156,7 +7208,7 @@ fn __action134<'input>(
     ast: &mut AstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
-    __2: (usize, Vec<()>, usize),
+    __2: (usize, Vec<ArgumentRecord>, usize),
 ) {
     let __start0 = __2.0;
     let __end0 = __2.2;
@@ -7187,7 +7239,7 @@ fn __action136<'input>(
     ast: &mut AstWriter,
     __0: (usize, StringId, usize),
     __1: (usize, StringId, usize),
-    __2: (usize, Vec<()>, usize),
+    __2: (usize, Vec<ArgumentRecord>, usize),
     __3: (usize, IdRange<DirectiveId>, usize),
     __4: (usize, core::option::Option<IdRange<SelectionId>>, usize),
 ) -> SelectionRecord {
@@ -7221,7 +7273,7 @@ fn __action138<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, StringId, usize),
-    __1: (usize, Vec<()>, usize),
+    __1: (usize, Vec<ArgumentRecord>, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
     __3: (usize, core::option::Option<IdRange<SelectionId>>, usize),
 ) -> SelectionRecord {
@@ -7416,7 +7468,7 @@ fn __action150<'input>(
     ast: &mut AstWriter,
     __0: (usize, StringId, usize),
     __1: (usize, StringId, usize),
-    __2: (usize, Vec<()>, usize),
+    __2: (usize, Vec<ArgumentRecord>, usize),
     __3: (usize, IdRange<DirectiveId>, usize),
     __4: (usize, IdRange<SelectionId>, usize),
 ) -> SelectionRecord {
@@ -7434,7 +7486,7 @@ fn __action151<'input>(
     ast: &mut AstWriter,
     __0: (usize, StringId, usize),
     __1: (usize, StringId, usize),
-    __2: (usize, Vec<()>, usize),
+    __2: (usize, Vec<ArgumentRecord>, usize),
     __3: (usize, IdRange<DirectiveId>, usize),
 ) -> SelectionRecord {
     let __start0 = __3.2;
@@ -7483,7 +7535,7 @@ fn __action154<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, StringId, usize),
-    __1: (usize, Vec<()>, usize),
+    __1: (usize, Vec<ArgumentRecord>, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
     __3: (usize, IdRange<SelectionId>, usize),
 ) -> SelectionRecord {
@@ -7500,7 +7552,7 @@ fn __action155<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     __0: (usize, StringId, usize),
-    __1: (usize, Vec<()>, usize),
+    __1: (usize, Vec<ArgumentRecord>, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
 ) -> SelectionRecord {
     let __start0 = __2.2;
