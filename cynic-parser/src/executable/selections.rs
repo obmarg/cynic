@@ -31,7 +31,7 @@ pub struct InlineFragmentRecord {
 }
 
 pub struct FragmentSpreadRecord {
-    pub name: StringId,
+    pub fragment_name: StringId,
     pub directives: IdRange<DirectiveId>,
 }
 
@@ -112,7 +112,32 @@ impl<'a> From<ReadContext<'a, FieldSelectionId>> for FieldSelection<'a> {
 #[derive(Clone, Copy)]
 pub struct InlineFragment<'a>(ReadContext<'a, InlineFragmentId>);
 
-impl<'a> InlineFragment<'a> {}
+impl<'a> InlineFragment<'a> {
+    pub fn type_condition(&self) -> Option<&'a str> {
+        let ast = &self.0.ast;
+        ast.lookup(self.0.id)
+            .type_condition
+            .map(|id| ast.lookup(id))
+    }
+
+    pub fn directives(&self) -> impl Iterator<Item = Directive<'a>> {
+        self.0
+            .ast
+            .lookup(self.0.id)
+            .directives
+            .iter()
+            .map(|id| self.0.ast.read(id))
+    }
+
+    pub fn selection_set(&self) -> impl Iterator<Item = Selection<'a>> {
+        self.0
+            .ast
+            .lookup(self.0.id)
+            .selection_set
+            .iter()
+            .map(|id| self.0.ast.read(id))
+    }
+}
 
 impl ExecutableId for InlineFragmentId {
     type Reader<'a> = InlineFragment<'a>;
@@ -127,7 +152,22 @@ impl<'a> From<ReadContext<'a, InlineFragmentId>> for InlineFragment<'a> {
 #[derive(Clone, Copy)]
 pub struct FragmentSpread<'a>(ReadContext<'a, FragmentSpreadId>);
 
-impl<'a> FragmentSpread<'a> {}
+impl<'a> FragmentSpread<'a> {
+    pub fn fragment_name(&self) -> &'a str {
+        self.0
+            .ast
+            .lookup(self.0.ast.lookup(self.0.id).fragment_name)
+    }
+
+    pub fn directives(&self) -> impl Iterator<Item = Directive<'a>> {
+        self.0
+            .ast
+            .lookup(self.0.id)
+            .directives
+            .iter()
+            .map(|id| self.0.ast.read(id))
+    }
+}
 
 impl ExecutableId for FragmentSpreadId {
     type Reader<'a> = FragmentSpread<'a>;

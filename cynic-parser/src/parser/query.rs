@@ -1,5 +1,5 @@
 // auto-generated: "lalrpop 0.20.0"
-// sha3: 396f3a9f15e8142f64a053ff083067a30c4043e1641757c9ca4fe780632f03bf
+// sha3: 9397a5d180cc5b6fb5bc37b567541e73dc8eea90df32e3a1f6e7e89a5a2a79d2
 use crate::lexer;
 use crate::{
     common::{IdRange, OperationType, TypeWrappers, WrappingType},
@@ -5643,13 +5643,14 @@ fn __action15<'input>(
     input: &'input str,
     ast: &mut AstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
-    (_, name, _): (usize, StringId, usize),
+    (_, fragment_name, _): (usize, StringId, usize),
     (_, directives, _): (usize, IdRange<DirectiveId>, usize),
 ) -> SelectionRecord {
     {
-        SelectionRecord::FragmentSpread(
-            ast.fragment_spread(FragmentSpreadRecord { name, directives }),
-        )
+        SelectionRecord::FragmentSpread(ast.fragment_spread(FragmentSpreadRecord {
+            fragment_name,
+            directives,
+        }))
     }
 }
 
