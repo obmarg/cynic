@@ -49,5 +49,9 @@ graphql-parser = "0.4"
 # lalrpop = "0.20.0"
 
 [[bench]]
-name = "parsing-benchmark"
+name = "executable"
+harness = false
+
+[[bench]]
+name = "schema"
 harness = false

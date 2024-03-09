@@ -11,8 +11,8 @@ fn main() {
 const GITHUB_SCHEMA: &str = include_str!("../../schemas/github.graphql");
 
 #[divan::bench]
-fn cynic_parser() -> cynic_parser::Ast {
-    let parsed = cynic_parser::parse_type_system_document(GITHUB_SCHEMA);
+fn cynic_parser() -> cynic_parser::TypeSystemDocument {
+    let parsed = cynic_parser::parse_type_system_document(GITHUB_SCHEMA).unwrap();
     divan::black_box(parsed)
 }
 
