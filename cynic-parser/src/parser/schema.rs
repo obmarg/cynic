@@ -1,7 +1,12 @@
 // auto-generated: "lalrpop 0.20.0"
-// sha3: 6d6bd6af09c4cddce4b8ec4936edd9717c54fae1d5e7e5e81bd6b5c3a19e5727
-use crate::ast::{ids::*, storage::*, writer::AstWriter, *};
+// sha3: e30f3b59e90ab303da9c548f80d240277995e389b75f3ef8dc71eca4bab65943
 use crate::lexer;
+use crate::{
+    type_system::{
+        ids::*, storage::*, writer::AstWriter, DirectiveLocation, OperationType, WrappingType,
+    },
+    Span,
+};
 #[allow(unused_extern_crates)]
 extern crate lalrpop_util as __lalrpop_util;
 #[allow(unused_imports)]
@@ -14,7 +19,13 @@ extern crate core;
 mod __parse__TypeSystemDocument {
 
     use crate::lexer;
-    use crate::ast::{storage::*, ids::*, writer::AstWriter, *};
+    use crate::{
+    Span,
+    type_system::{
+        storage::*, ids::*, writer::AstWriter,
+        DirectiveLocation, WrappingType, OperationType
+    }
+};
     #[allow(unused_extern_crates)]
     extern crate lalrpop_util as __lalrpop_util;
     #[allow(unused_imports)]
@@ -1281,14 +1292,14 @@ mod __parse__TypeSystemDocument {
         }).collect()
     }
     pub(crate) struct __StateMachine<'input, '__1>
-    where 
+    where
     {
         input: &'input str,
         ast: &'__1 mut AstWriter,
         __phantom: core::marker::PhantomData<(&'input ())>,
     }
     impl<'input, '__1> __state_machine::ParserDefinition for __StateMachine<'input, '__1>
-    where 
+    where
     {
         type Location = usize;
         type Error = lexer::LexicalError;

@@ -1,5 +1,3 @@
-use cynic_parser::Error;
-
 #[test]
 fn test_report() {
     let document = "type Blah {}";

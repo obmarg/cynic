@@ -1,5 +1,3 @@
-use crate::ids::StringId;
-
 use super::{ids::*, storage::*, AstLookup};
 use super::{Ast, AstDefinition};
 

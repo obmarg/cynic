@@ -1,4 +1,4 @@
-use crate::ast::{self, ids::ValueId, AstLookup};
+use crate::type_system::{self, ids::ValueId, AstLookup};
 
 use super::{AstId, ReadContext};
 
@@ -24,17 +24,17 @@ impl<'a> From<ReadContext<'a, ValueId>> for ValueReader<'a> {
         let ast = &reader.ast;
 
         match ast.lookup(reader.id) {
-            ast::Value::Variable(id) => ValueReader::Variable(ast.lookup(*id)),
-            ast::Value::Int(num) => ValueReader::Int(*num),
-            ast::Value::Float(num) => ValueReader::Float(*num),
-            ast::Value::String(id) => ValueReader::String(ast.lookup(*id)),
-            ast::Value::Boolean(val) => ValueReader::Boolean(*val),
-            ast::Value::Null => ValueReader::Null,
-            ast::Value::Enum(id) => ValueReader::Enum(ast.lookup(*id)),
-            ast::Value::List(ids) => {
+            type_system::Value::Variable(id) => ValueReader::Variable(ast.lookup(*id)),
+            type_system::Value::Int(num) => ValueReader::Int(*num),
+            type_system::Value::Float(num) => ValueReader::Float(*num),
+            type_system::Value::String(id) => ValueReader::String(ast.lookup(*id)),
+            type_system::Value::Boolean(val) => ValueReader::Boolean(*val),
+            type_system::Value::Null => ValueReader::Null,
+            type_system::Value::Enum(id) => ValueReader::Enum(ast.lookup(*id)),
+            type_system::Value::List(ids) => {
                 ValueReader::List(ids.iter().map(|id| ast.read(*id)).collect())
             }
-            ast::Value::Object(pairs) => ValueReader::Object(
+            type_system::Value::Object(pairs) => ValueReader::Object(
                 pairs
                     .iter()
                     .map(|(name, value)| (ast.lookup(*name), ast.read(*value)))

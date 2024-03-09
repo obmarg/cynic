@@ -1,5 +1,6 @@
 use std::num::NonZeroU32;
 
+use super::Ast;
 use super::{
     storage::{
         Argument, Directive, DirectiveDefinition, EnumDefinition, EnumValueDefinition,
@@ -8,7 +9,6 @@ use super::{
     },
     AstDefinition, AstLookup,
 };
-use crate::Ast;
 
 #[derive(Clone, Copy)]
 /// A half open range of Ids.
