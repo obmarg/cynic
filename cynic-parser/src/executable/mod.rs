@@ -36,6 +36,30 @@ pub struct Ast {
     values: Vec<value::ValueRecord>,
 }
 
+// TODO: Make this sealed maybe?
+pub trait ExecutableId: Copy {
+    type Reader<'a>: From<ReadContext<'a, Self>>;
+
+    fn read(self, ast: &Ast) -> Self::Reader<'_> {
+        ReadContext { id: self, ast }.into()
+    }
+}
+
+#[derive(Clone, Copy)]
+pub struct ReadContext<'a, I> {
+    id: I,
+    ast: &'a Ast,
+}
+
+impl Ast {
+    pub fn read<T>(&self, id: T) -> T::Reader<'_>
+    where
+        T: ExecutableId,
+    {
+        ReadContext { id, ast: self }.into()
+    }
+}
+
 pub mod storage {
     pub use super::{
         argument::ArgumentRecord,

@@ -1,7 +1,7 @@
 use crate::type_system::ids::ArgumentId;
 use crate::AstLookup;
 
-use super::{values::ValueReader, AstId, ReadContext};
+use super::{values::ValueReader, ReadContext, TypeSystemId};
 
 #[derive(Clone, Copy)]
 pub struct Argument<'a>(ReadContext<'a, ArgumentId>);
@@ -19,7 +19,7 @@ impl<'a> Argument<'a> {
     }
 }
 
-impl AstId for ArgumentId {
+impl TypeSystemId for ArgumentId {
     type Reader<'a> = Argument<'a>;
 }
 

@@ -10,9 +10,6 @@ pub struct AstWriter {
     argument_cursor: ArgumentId,
     directive_cursor: DirectiveId,
     variable_definition_cursor: VariableDefinitionId,
-    // field_id_cursor: FieldDefinitionId,
-    // input_value_id_cursor: InputValueDefinitionId,
-    // directive_id_cursor: DirectiveId,
 }
 
 impl AstWriter {
@@ -22,9 +19,6 @@ impl AstWriter {
             argument_cursor: ArgumentId::new(0),
             directive_cursor: DirectiveId::new(0),
             variable_definition_cursor: VariableDefinitionId::new(0),
-            // field_id_cursor: FieldDefinitionId::new(0),
-            // input_value_id_cursor: InputValueDefinitionId::new(0),
-            // directive_id_cursor: DirectiveId::new(0),
         }
     }
 
@@ -92,8 +86,15 @@ impl AstWriter {
         ty_id
     }
 
-    pub fn selection_set(&mut self, selection_set: Vec<SelectionRecord>) -> IdRange<SelectionId> {
-        todo!()
+    pub fn selection_set(
+        &mut self,
+        mut selection_set: Vec<SelectionRecord>,
+    ) -> IdRange<SelectionId> {
+        let start_range = SelectionId::new(self.ast.selections.len());
+        self.ast.selections.append(&mut selection_set);
+        let end_range = SelectionId::new(self.ast.selections.len());
+
+        IdRange::new(start_range, end_range)
     }
 
     pub fn field_selection(&mut self, record: FieldSelectionRecord) -> FieldSelectionId {

@@ -1,7 +1,8 @@
 use crate::{type_system::ids::FieldDefinitionId, AstLookup};
 
 use super::{
-    directives::Directive, input_values::InputValueDefinition, types::Type, AstId, ReadContext,
+    directives::Directive, input_values::InputValueDefinition, types::Type, ReadContext,
+    TypeSystemId,
 };
 
 #[derive(Clone, Copy)]
@@ -35,7 +36,7 @@ impl<'a> FieldDefinition<'a> {
     }
 }
 
-impl AstId for FieldDefinitionId {
+impl TypeSystemId for FieldDefinitionId {
     type Reader<'a> = FieldDefinition<'a>;
 }
 

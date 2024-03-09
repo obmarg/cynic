@@ -1,6 +1,6 @@
 use crate::{common::OperationType, type_system::ids::SchemaDefinitionId, AstLookup};
 
-use super::{AstId, ReadContext};
+use super::{ReadContext, TypeSystemId};
 
 #[derive(Clone, Copy)]
 pub struct SchemaDefinition<'a>(ReadContext<'a, SchemaDefinitionId>);
@@ -40,7 +40,7 @@ impl<'a> SchemaDefinition<'a> {
     }
 }
 
-impl AstId for SchemaDefinitionId {
+impl TypeSystemId for SchemaDefinitionId {
     type Reader<'a> = SchemaDefinition<'a>;
 }
 

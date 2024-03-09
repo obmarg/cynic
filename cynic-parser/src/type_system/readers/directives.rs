@@ -4,7 +4,7 @@ use crate::type_system::{
 };
 use crate::AstLookup;
 
-use super::{arguments::Argument, input_values::InputValueDefinition, AstId, ReadContext};
+use super::{arguments::Argument, input_values::InputValueDefinition, ReadContext, TypeSystemId};
 
 #[derive(Clone, Copy)]
 pub struct DirectiveDefinition<'a>(ReadContext<'a, DirectiveDefinitionId>);
@@ -60,7 +60,7 @@ impl<'a> Directive<'a> {
     }
 }
 
-impl AstId for DirectiveDefinitionId {
+impl TypeSystemId for DirectiveDefinitionId {
     type Reader<'a> = DirectiveDefinition<'a>;
 }
 
@@ -70,7 +70,7 @@ impl<'a> From<ReadContext<'a, DirectiveDefinitionId>> for DirectiveDefinition<'a
     }
 }
 
-impl AstId for DirectiveId {
+impl TypeSystemId for DirectiveId {
     type Reader<'a> = Directive<'a>;
 }
 

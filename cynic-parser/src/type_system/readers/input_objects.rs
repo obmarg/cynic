@@ -1,6 +1,6 @@
 use crate::{type_system::ids::InputObjectDefinitionId, AstLookup};
 
-use super::{directives::Directive, input_values::InputValueDefinition, AstId, ReadContext};
+use super::{directives::Directive, input_values::InputValueDefinition, ReadContext, TypeSystemId};
 
 #[derive(Clone, Copy)]
 pub struct InputObjectDefinition<'a>(ReadContext<'a, InputObjectDefinitionId>);
@@ -37,7 +37,7 @@ impl<'a> InputObjectDefinition<'a> {
     }
 }
 
-impl AstId for InputObjectDefinitionId {
+impl TypeSystemId for InputObjectDefinitionId {
     type Reader<'a> = InputObjectDefinition<'a>;
 }
 

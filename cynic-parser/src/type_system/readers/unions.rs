@@ -1,6 +1,6 @@
 use crate::{type_system::ids::UnionDefinitionId, AstLookup};
 
-use super::{directives::Directive, AstId, ReadContext};
+use super::{directives::Directive, ReadContext, TypeSystemId};
 
 #[derive(Clone, Copy)]
 pub struct UnionDefinition<'a>(ReadContext<'a, UnionDefinitionId>);
@@ -37,7 +37,7 @@ impl<'a> UnionDefinition<'a> {
     }
 }
 
-impl AstId for UnionDefinitionId {
+impl TypeSystemId for UnionDefinitionId {
     type Reader<'a> = UnionDefinition<'a>;
 }
 

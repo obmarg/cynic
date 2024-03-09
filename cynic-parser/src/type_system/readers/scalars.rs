@@ -1,6 +1,6 @@
 use crate::{type_system::ids::ScalarDefinitionId, AstLookup};
 
-use super::{directives::Directive, AstId, ReadContext};
+use super::{directives::Directive, ReadContext, TypeSystemId};
 
 #[derive(Clone, Copy)]
 pub struct ScalarDefinition<'a>(ReadContext<'a, ScalarDefinitionId>);
@@ -27,7 +27,7 @@ impl<'a> ScalarDefinition<'a> {
     }
 }
 
-impl AstId for ScalarDefinitionId {
+impl TypeSystemId for ScalarDefinitionId {
     type Reader<'a> = ScalarDefinition<'a>;
 }
 

@@ -1,6 +1,6 @@
 use crate::{common::WrappingType, type_system::ids::TypeId, AstLookup};
 
-use super::{AstId, ReadContext};
+use super::{ReadContext, TypeSystemId};
 
 #[derive(Clone, Copy)]
 pub struct Type<'a>(ReadContext<'a, TypeId>);
@@ -40,7 +40,7 @@ impl<'a> std::fmt::Display for Type<'a> {
     }
 }
 
-impl AstId for TypeId {
+impl TypeSystemId for TypeId {
     type Reader<'a> = Type<'a>;
 }
 
