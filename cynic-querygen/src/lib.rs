@@ -5,7 +5,6 @@ mod naming;
 mod output;
 mod query_parsing;
 mod schema;
-mod type_ext;
 
 use output::Output;
 use schema::{GraphPath, TypeIndex};
@@ -16,10 +15,10 @@ pub enum Error {
     UnsupportedQueryDocument(String),
 
     #[error("could not parse query document: {0}")]
-    QueryParseError(#[from] graphql_parser::query::ParseError),
+    QueryParseError(graphql_parser::query::ParseError),
 
     #[error("could not parse schema document: {0}")]
-    SchemaParseError(#[from] graphql_parser::schema::ParseError),
+    SchemaParseError(cynic_parser::Error),
 
     #[error("could not find field `{0}` on `{1}`")]
     UnknownField(String, String),
@@ -113,10 +112,13 @@ pub fn document_to_fragment_structs(
 ) -> Result<String, Error> {
     use std::fmt::Write;
 
-    let schema = graphql_parser::parse_schema::<&str>(schema.as_ref())?;
-    let query = graphql_parser::parse_query::<&str>(query.as_ref())?;
+    let schema = cynic_parser::parse_type_system_document(schema.as_ref())
+        .map_err(Error::SchemaParseError)?;
 
-    let type_index = Rc::new(TypeIndex::from_schema(&schema));
+    let query =
+        graphql_parser::parse_query::<&str>(query.as_ref()).map_err(Error::QueryParseError)?;
+
+    let type_index = Rc::new(TypeIndex::from_schema(schema));
     let mut parsed_output = query_parsing::parse_query_document(&query, &type_index)?;
 
     add_schema_name(&mut parsed_output, options.schema_name.as_deref());

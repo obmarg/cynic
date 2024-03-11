@@ -1,7 +1,8 @@
 use std::{borrow::Cow, rc::Rc};
 
+use cynic_parser::type_system as parser;
 use {
-    super::{parser, InputTypeRef, OutputTypeRef, TypeIndex},
+    super::{InputTypeRef, OutputTypeRef, TypeIndex},
     crate::Error,
 };
 
@@ -38,15 +39,14 @@ pub enum OutputFieldType<'schema> {
 
 impl<'schema> OutputField<'schema> {
     pub(super) fn from_parser(
-        field: &parser::Field<'schema>,
+        field: cynic_parser::type_system::FieldDefinition<'schema>,
         type_index: &Rc<TypeIndex<'schema>>,
     ) -> OutputField<'schema> {
         OutputField {
-            name: field.name,
-            value_type: OutputFieldType::from_parser(&field.field_type, type_index),
+            name: field.name(),
+            value_type: OutputFieldType::from_parser(field.ty(), type_index),
             arguments: field
-                .arguments
-                .iter()
+                .arguments()
                 .map(|arg| InputField::from_parser(arg, type_index))
                 .collect(),
         }
@@ -65,12 +65,12 @@ impl<'schema> OutputFieldType<'schema> {
 
 impl<'schema> InputField<'schema> {
     pub(super) fn from_parser(
-        field: &parser::InputValue<'schema>,
+        field: parser::InputValueDefinition<'schema>,
         type_index: &Rc<TypeIndex<'schema>>,
     ) -> InputField<'schema> {
         InputField {
-            name: field.name,
-            value_type: InputFieldType::from_parser(&field.value_type, type_index),
+            name: field.name(),
+            value_type: InputFieldType::from_parser(field.ty(), type_index),
         }
     }
 }
@@ -87,7 +87,7 @@ impl<'schema> InputFieldType<'schema> {
         query_type: &graphql_parser::query::Type<'query, &'query str>,
         type_index: &Rc<TypeIndex<'schema>>,
     ) -> Self {
-        use parser::Type;
+        use graphql_parser::schema::Type;
 
         match query_type {
             Type::NamedType(name) => {
@@ -249,21 +249,19 @@ macro_rules! impl_field_type_from_parser_type {
     ($target:ident, $ref_type:ident) => {
         impl<'schema> $target<'schema> {
             fn from_parser(
-                parser_type: &parser::Type<'schema>,
+                parser_type: parser::Type<'schema>,
                 type_index: &Rc<TypeIndex<'schema>>,
             ) -> Self {
-                use parser::Type;
+                use cynic_parser::common::WrappingType;
 
-                match parser_type {
-                    Type::NamedType(name) => $target::NamedType($ref_type::new(name, type_index)),
-                    Type::ListType(inner) => $target::ListType(Box::new($target::from_parser(
-                        inner.as_ref(),
-                        type_index,
-                    ))),
-                    Type::NonNullType(inner) => $target::NonNullType(Box::new(
-                        $target::from_parser(inner.as_ref(), type_index),
-                    )),
+                let mut ty = $target::NamedType($ref_type::new(parser_type.name(), type_index));
+                for wrapping in parser_type.wrappers() {
+                    match wrapping {
+                        WrappingType::NonNull => ty = $target::NonNullType(Box::new(ty)),
+                        WrappingType::List => ty = $target::ListType(Box::new(ty)),
+                    }
                 }
+                ty
             }
         }
     };

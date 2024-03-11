@@ -155,7 +155,7 @@ mod tests {
     #[test]
     fn deduplicates_input_types_if_same() {
         let schema = load_graphql_schema();
-        let type_index = Rc::new(TypeIndex::from_schema(&schema));
+        let type_index = Rc::new(TypeIndex::from_schema(schema));
         let query = graphql_parser::parse_query::<&str>(
             r#"
               query ($filterOne: IssueFilters!, $filterTwo: IssueFilters!) {
@@ -187,7 +187,7 @@ mod tests {
     #[test]
     fn finds_variable_input_types() {
         let schema = load_graphql_schema();
-        let type_index = Rc::new(TypeIndex::from_schema(&schema));
+        let type_index = Rc::new(TypeIndex::from_schema(schema));
         let query = graphql_parser::parse_query::<&str>(
             r#"
               query MyQuery($input: IssueFilters!) {
@@ -219,7 +219,7 @@ mod tests {
     #[test]
     fn test_extracting_recursive_types() {
         let schema = load_test_schema();
-        let type_index = Rc::new(TypeIndex::from_schema(&schema));
+        let type_index = Rc::new(TypeIndex::from_schema(schema));
 
         let query = graphql_parser::parse_query::<&str>(
             r#"
@@ -236,13 +236,15 @@ mod tests {
         assert_eq!(input_objects.len(), 3);
     }
 
-    fn load_graphql_schema() -> schema::Document<'static> {
-        graphql_parser::parse_schema::<&str>(include_str!("../../../schemas/github.graphql"))
+    fn load_graphql_schema() -> cynic_parser::TypeSystemDocument {
+        cynic_parser::parse_type_system_document(include_str!("../../../schemas/github.graphql"))
             .unwrap()
     }
 
-    fn load_test_schema() -> schema::Document<'static> {
-        graphql_parser::parse_schema::<&str>(include_str!("../../../schemas/test_cases.graphql"))
-            .unwrap()
+    fn load_test_schema() -> cynic_parser::TypeSystemDocument {
+        cynic_parser::parse_type_system_document(include_str!(
+            "../../../schemas/test_cases.graphql"
+        ))
+        .unwrap()
     }
 }
