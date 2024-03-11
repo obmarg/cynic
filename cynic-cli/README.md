@@ -21,14 +21,14 @@
 
 # Overview
 
-Cynic is a code first GraphQL client for Rust. `cynic-cli` is
-a CLI that provides utilities for working with `cynic`
-specifically and GraphQL in general.
+Cynic is a code first GraphQL client for Rust. `cynic-cli` is a CLI that
+provides utilities for working with `cynic` specifically and GraphQL in
+general.
 
 ## Features
 
 - Can introspect a remote server and dump it's schema.
-- Intelligent feature detection for introspection - checks which features a 
+- Intelligent feature detection for introspection - checks which features a
   server supports and only introspects for those.
 
 ## Usage
@@ -94,4 +94,3 @@ Options:
           Print help (see a summary with '-h')
 
 ```
-
