@@ -1,5 +1,5 @@
 /// Loads a schema from a string
-pub fn load_schema(sdl: &str) -> Result<cynic_parser::type_system::Ast, SchemaLoadError> {
+pub fn load_schema(sdl: &str) -> Result<cynic_parser::TypeSystemDocument, SchemaLoadError> {
     let ast = cynic_parser::parse_type_system_document(sdl)
         .map_err(|error| SchemaLoadError::ParseError(error.to_string()))?;
     Ok(ast)

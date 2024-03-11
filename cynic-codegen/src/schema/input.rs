@@ -3,7 +3,7 @@ use crate::schema::load_schema;
 use super::parser::SchemaLoadError;
 
 pub enum SchemaInput {
-    Document(cynic_parser::type_system::Ast),
+    Document(cynic_parser::TypeSystemDocument),
     #[cfg(feature = "rkyv")]
     Archive(Vec<u8>),
 }
@@ -62,7 +62,7 @@ impl SchemaInput {
     }
 
     pub fn from_sdl(sdl: &str) -> Result<SchemaInput, SchemaLoadError> {
-        load_schema(sdl).map(|ast| SchemaInput::Document(ast))
+        load_schema(sdl).map(SchemaInput::Document)
     }
 
     #[cfg(feature = "rkyv")]
@@ -78,7 +78,7 @@ impl SchemaInput {
 
 fn document_from_path(
     filename: impl AsRef<std::path::Path>,
-) -> Result<Option<cynic_parser::type_system::Ast>, SchemaLoadError> {
+) -> Result<Option<cynic_parser::TypeSystemDocument>, SchemaLoadError> {
     use std::path::PathBuf;
     let mut pathbuf = PathBuf::new();
 

@@ -14,7 +14,7 @@ use crate::schema::{names::FieldName, types::*, SchemaError};
 
 #[ouroboros::self_referencing]
 pub struct SchemaBackedTypeIndex {
-    ast: cynic_parser::type_system::Ast,
+    ast: cynic_parser::TypeSystemDocument,
     query_root: String,
     mutation_root: Option<String>,
     subscription_root: Option<String>,
@@ -25,7 +25,7 @@ pub struct SchemaBackedTypeIndex {
 }
 
 impl SchemaBackedTypeIndex {
-    pub fn for_schema(ast: cynic_parser::type_system::Ast) -> Self {
+    pub fn for_schema(ast: cynic_parser::TypeSystemDocument) -> Self {
         let mut query_root = "Query".to_string();
         let mut mutation_root = None;
         let mut subscription_root = None;
@@ -41,7 +41,7 @@ impl SchemaBackedTypeIndex {
             }
         }
 
-        let mut writer = cynic_parser::type_system::writer::AstWriter::update(ast);
+        let mut writer = cynic_parser::type_system::writer::TypeSystemAstWriter::update(ast);
         for builtin in BUILTIN_SCALARS {
             let name = writer.ident(builtin);
             writer.scalar_definition(cynic_parser::type_system::storage::ScalarDefinition {
@@ -213,7 +213,7 @@ impl super::TypeIndex for SchemaBackedTypeIndex {
 
 impl SchemaBackedTypeIndex {
     fn lookup_type<'a>(&'a self, name: &str) -> Option<TypeDefinition<'a>> {
-        self.borrow_types().get(name).map(|d| *d)
+        self.borrow_types().get(name).copied()
     }
 
     /// Validates that all the types contained within the given types do exist.
@@ -277,8 +277,7 @@ impl SchemaBackedTypeIndex {
                             validate!(name, Input);
                         }
                     }
-                    for iface in obj.implements_interfaces() {
-                        let name = iface.as_ref();
+                    for name in obj.implements_interfaces() {
                         validate!(
                             name,
                             TypeDefinition::Interface(_),
@@ -304,8 +303,7 @@ impl SchemaBackedTypeIndex {
                             validate!(name, Input);
                         }
                     }
-                    for iface in iface.implements_interfaces() {
-                        let name = iface.as_ref();
+                    for name in iface.implements_interfaces() {
                         validate!(
                             name,
                             TypeDefinition::Interface(_),
@@ -486,11 +484,11 @@ mod tests {
         );
     }
 
-    fn ast_for_type(sdl_ty: &str) -> cynic_parser::type_system::Ast {
+    fn ast_for_type(sdl_ty: &str) -> cynic_parser::TypeSystemDocument {
         cynic_parser::parse_type_system_document(&format!("type Blah {{ foo: {sdl_ty} }}")).unwrap()
     }
 
-    fn extract_type(ast: &cynic_parser::type_system::Ast) -> readers::Type<'_> {
+    fn extract_type(ast: &cynic_parser::TypeSystemDocument) -> readers::Type<'_> {
         let readers::Definition::Type(readers::TypeDefinition::Object(obj)) =
             ast.definitions().next().unwrap()
         else {
