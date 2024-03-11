@@ -7,6 +7,7 @@ on:
     branches: [main]
 
 env:
+  COLUMNS: 250
   CARGO_INCREMENTAL: 0
   # TODO: Would be nice to disable warnings here too, but there are too many of them.
   RUSTFLAGS: "-W rust-2021-compatibility"
