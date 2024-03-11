@@ -9,6 +9,9 @@ mod span;
 #[allow(clippy::all)]
 mod parser;
 
+#[cfg(feature = "print")]
+mod printing;
+
 pub use self::{
     errors::Error, executable::ExecutableDocument, span::Span, type_system::TypeSystemDocument,
 };
