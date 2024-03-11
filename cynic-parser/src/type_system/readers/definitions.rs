@@ -22,3 +22,16 @@ pub enum TypeDefinition<'a> {
     Enum(EnumDefinition<'a>),
     InputObject(InputObjectDefinition<'a>),
 }
+
+impl<'a> TypeDefinition<'a> {
+    pub fn name(&self) -> &'a str {
+        match self {
+            TypeDefinition::Scalar(inner) => inner.name(),
+            TypeDefinition::Object(inner) => inner.name(),
+            TypeDefinition::Interface(inner) => inner.name(),
+            TypeDefinition::Union(inner) => inner.name(),
+            TypeDefinition::Enum(inner) => inner.name(),
+            TypeDefinition::InputObject(inner) => inner.name(),
+        }
+    }
+}
