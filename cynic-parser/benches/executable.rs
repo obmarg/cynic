@@ -12,8 +12,7 @@ const QUERY: &str = include_str!("../tests/executables/kitchen-sink.graphql");
 
 #[divan::bench]
 fn cynic_parser() -> cynic_parser::ExecutableDocument {
-    let parsed = cynic_parser::parse_executable_document(QUERY).unwrap();
-    divan::black_box(parsed)
+    cynic_parser::parse_executable_document(QUERY).unwrap()
 }
 
 #[divan::bench(
@@ -26,19 +25,15 @@ fn graphql_parser<T>() -> graphql_parser::query::Document<'static, T>
 where
     T: graphql_parser::query::Text<'static>,
 {
-    let parsed = graphql_parser::parse_query(QUERY).unwrap();
-    divan::black_box(parsed)
+    graphql_parser::parse_query(QUERY).unwrap()
 }
 
 #[divan::bench]
 fn async_graphql_parser() -> async_graphql_parser::types::ExecutableDocument {
-    let parsed = async_graphql_parser::parse_query(QUERY).unwrap();
-    divan::black_box(parsed)
+    async_graphql_parser::parse_query(QUERY).unwrap()
 }
 
 #[divan::bench]
 fn apollo_parser() -> apollo_parser::SyntaxTree {
-    let parser = apollo_parser::Parser::new(QUERY);
-    let cst = parser.parse();
-    divan::black_box(cst)
+    apollo_parser::Parser::new(QUERY).parse()
 }
