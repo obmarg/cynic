@@ -23,13 +23,14 @@ counter = "0.5"
 darling.workspace = true
 graphql-parser = "0.4.0"
 once_cell = "1.9.0"
-ouroboros = "0.18"
 proc-macro2 = "1.0"
 quote = "1.0"
+self_cell = { version = "1" }
 strsim = "0.10.0"
 syn = { workspace = true , features = ["visit-mut"] }
 thiserror = "1"
 
+# Optional deps
 rkyv = { version = "0.7.41", features = ["validation"], optional = true }
 
 [dev-dependencies]
