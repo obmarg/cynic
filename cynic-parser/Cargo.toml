@@ -55,3 +55,7 @@ harness = false
 [[bench]]
 name = "schema"
 harness = false
+
+[[bench]]
+name = "to-string"
+harness = false
