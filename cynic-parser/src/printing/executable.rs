@@ -280,7 +280,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Type<'a>> {
 
 impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Directive<'a>> {
     fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
-        let mut builder = allocator.text(format!("@{}", self.0.name()));
+        let mut builder = allocator.text("@").append(self.0.name());
 
         let mut arguments = self.0.arguments().peekable();
 
@@ -299,7 +299,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Directive<'a>> {
 impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Argument<'a>> {
     fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
         allocator
-            .text(self.0.name().to_string())
+            .text(self.0.name())
             .append(allocator.text(":"))
             .append(allocator.space())
             .append(NodeDisplay(self.0.value()))
@@ -312,10 +312,10 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Value<'a>> {
             Value::Variable(name) => allocator.text(format!("${name}")),
             Value::Int(value) => allocator.text(format!("{value}")),
             Value::Float(value) => allocator.text(format!("{value}")),
-            Value::String(value) => allocator.text(value.to_string()),
+            Value::String(value) => allocator.text(value),
             Value::Boolean(value) => allocator.text(format!("{value}")),
             Value::Null => allocator.text("null"),
-            Value::Enum(value) => allocator.text(value.to_string()),
+            Value::Enum(value) => allocator.text(value),
             Value::List(items) => brackets_and_maybe_indent(
                 allocator
                     .intersperse(
