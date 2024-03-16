@@ -5,7 +5,7 @@ use crate::common::OperationType;
 use crate::executable::*;
 
 impl crate::ExecutableDocument {
-    pub fn to_sdl(&self) -> String {
+    pub fn to_executable_string(&self) -> String {
         let allocator = BoxAllocator;
 
         let use_short_form = {

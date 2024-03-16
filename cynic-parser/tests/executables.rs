@@ -146,7 +146,7 @@ fn roundtrip_test(filename: &str) {
     let data = std::fs::read_to_string(filename).unwrap();
     let ast = cynic_parser::parse_executable_document(&data).unwrap();
 
-    let output = ast.to_sdl();
+    let output = ast.to_executable_string();
 
     assert_eq!(data, output);
 }
@@ -159,11 +159,11 @@ fn double_roundtrip_test(filename: &str) {
     let data = std::fs::read_to_string(filename).unwrap();
     let ast = cynic_parser::parse_executable_document(&data).unwrap();
 
-    let round_one_output = ast.to_sdl();
+    let round_one_output = ast.to_executable_string();
 
     let ast = cynic_parser::parse_executable_document(&round_one_output).unwrap();
 
-    let round_two_output = ast.to_sdl();
+    let round_two_output = ast.to_executable_string();
 
     assert_eq!(round_one_output, round_two_output);
 }
