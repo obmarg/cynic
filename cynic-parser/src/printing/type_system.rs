@@ -1,10 +1,12 @@
-use pretty::{BoxAllocator, DocAllocator, Pretty};
+use pretty::{DocAllocator, Pretty};
 
 use crate::type_system::{readers::*, Definition, TypeDefinition};
 
+type Allocator<'a> = pretty::Arena<'a>;
+
 impl crate::TypeSystemDocument {
     pub fn to_sdl(&self) -> String {
-        let allocator = BoxAllocator;
+        let allocator = pretty::Arena::new();
 
         let builder = allocator
             .intersperse(
@@ -71,8 +73,8 @@ impl crate::TypeSystemDocument {
 
 pub struct NodeDisplay<T>(T);
 
-impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<SchemaDefinition<'a>> {
-    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<SchemaDefinition<'a>> {
+    fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
         let mut builder = allocator.nil();
 
         if let Some(description) = self.0.description() {
@@ -108,8 +110,8 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<SchemaDefinition<'a>> {
     }
 }
 
-impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<ScalarDefinition<'a>> {
-    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<ScalarDefinition<'a>> {
+    fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
         let mut builder = allocator.nil();
 
         if let Some(description) = self.0.description() {
@@ -132,8 +134,8 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<ScalarDefinition<'a>> {
     }
 }
 
-impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<ObjectDefinition<'a>> {
-    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<ObjectDefinition<'a>> {
+    fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
         let mut builder = allocator.nil();
 
         if let Some(description) = self.0.description() {
@@ -181,8 +183,8 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<ObjectDefinition<'a>> {
     }
 }
 
-impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<FieldDefinition<'a>> {
-    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<FieldDefinition<'a>> {
+    fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
         let mut arguments_pretty = allocator.nil();
 
         let mut arguments = self.0.arguments().peekable();
@@ -217,8 +219,8 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<FieldDefinition<'a>> {
     }
 }
 
-impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<InterfaceDefinition<'a>> {
-    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<InterfaceDefinition<'a>> {
+    fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
         let mut builder = allocator.nil();
 
         if let Some(description) = self.0.description() {
@@ -265,8 +267,8 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<InterfaceDefinition<'a>> {
     }
 }
 
-impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<UnionDefinition<'a>> {
-    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<UnionDefinition<'a>> {
+    fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
         let mut builder = allocator.nil();
 
         if let Some(description) = self.0.description() {
@@ -304,8 +306,8 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<UnionDefinition<'a>> {
     }
 }
 
-impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<EnumDefinition<'a>> {
-    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<EnumDefinition<'a>> {
+    fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
         let mut builder = allocator.nil();
 
         if let Some(description) = self.0.description() {
@@ -344,8 +346,8 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<EnumDefinition<'a>> {
     }
 }
 
-impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<EnumValueDefinition<'a>> {
-    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<EnumValueDefinition<'a>> {
+    fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
         let mut builder = allocator.text(self.0.value().to_string());
 
         let mut directives = self.0.directives().peekable();
@@ -359,8 +361,8 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<EnumValueDefinition<'a>> {
     }
 }
 
-impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<InputObjectDefinition<'a>> {
-    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<InputObjectDefinition<'a>> {
+    fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
         let mut builder = allocator.nil();
 
         if let Some(description) = self.0.description() {
@@ -395,8 +397,8 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<InputObjectDefinition<'a>> {
     }
 }
 
-impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<InputValueDefinition<'a>> {
-    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<InputValueDefinition<'a>> {
+    fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
         let description = self
             .0
             .description()
@@ -435,8 +437,8 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<InputValueDefinition<'a>> {
     }
 }
 
-impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<DirectiveDefinition<'a>> {
-    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<DirectiveDefinition<'a>> {
+    fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
         let mut builder = allocator.nil();
 
         if let Some(description) = self.0.description() {
@@ -480,14 +482,14 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<DirectiveDefinition<'a>> {
     }
 }
 
-impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<Type<'a>> {
-    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Type<'a>> {
+    fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
         allocator.text(self.0.to_string())
     }
 }
 
-impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<Directive<'a>> {
-    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Directive<'a>> {
+    fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
         let mut builder = allocator.text(format!("@{}", self.0.name()));
 
         let mut arguments = self.0.arguments().peekable();
@@ -505,8 +507,8 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<Directive<'a>> {
     }
 }
 
-impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<Argument<'a>> {
-    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Argument<'a>> {
+    fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
         allocator
             .text(self.0.name().to_string())
             .append(allocator.text(":"))
@@ -515,8 +517,8 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<Argument<'a>> {
     }
 }
 
-impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<ValueReader<'a>> {
-    fn pretty(self, allocator: &'a BoxAllocator) -> pretty::DocBuilder<'a, BoxAllocator, ()> {
+impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<ValueReader<'a>> {
+    fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
         match self.0 {
             crate::type_system::ValueReader::Variable(name) => allocator.text(format!("${name}")),
             crate::type_system::ValueReader::Int(value) => allocator.text(format!("{value}")),
@@ -552,26 +554,26 @@ impl<'a> Pretty<'a, BoxAllocator> for NodeDisplay<ValueReader<'a>> {
     }
 }
 
-fn comma_or_nil(allocator: &BoxAllocator) -> pretty::DocBuilder<'_, BoxAllocator> {
+fn comma_or_nil<'a>(allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>> {
     allocator
         .nil()
         .flat_alt(allocator.text(",").append(allocator.space()))
 }
 
-fn comma_or_newline(allocator: &BoxAllocator) -> pretty::DocBuilder<'_, BoxAllocator> {
+fn comma_or_newline<'a>(allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>> {
     allocator
         .line()
         .flat_alt(allocator.text(",").append(allocator.space()))
 }
 
-fn parens_and_maybe_indent(
-    thing: pretty::DocBuilder<'_, BoxAllocator>,
-) -> pretty::DocBuilder<'_, BoxAllocator> {
+fn parens_and_maybe_indent<'a>(
+    thing: pretty::DocBuilder<'a, Allocator<'a>>,
+) -> pretty::DocBuilder<'a, Allocator<'a>> {
     thing.clone().nest(2).parens().flat_alt(thing.parens())
 }
 
-fn brackets_and_maybe_indent(
-    thing: pretty::DocBuilder<'_, BoxAllocator>,
-) -> pretty::DocBuilder<'_, BoxAllocator> {
+fn brackets_and_maybe_indent<'a>(
+    thing: pretty::DocBuilder<'a, Allocator<'a>>,
+) -> pretty::DocBuilder<'a, Allocator<'a>> {
     thing.clone().nest(2).brackets().flat_alt(thing.brackets())
 }
