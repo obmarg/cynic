@@ -3,6 +3,7 @@ mod strings;
 mod types;
 
 pub use id_range::IdRange;
+pub use strings::{unquote_block_string, unquote_string, MalformedStringError};
 pub use types::*;
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]

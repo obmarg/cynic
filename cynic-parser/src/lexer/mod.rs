@@ -5,7 +5,7 @@ use std::fmt;
 use logos::{Logos, SpannedIter};
 pub use tokens::*;
 
-use crate::Span;
+use crate::{parser::AdditionalErrors, Span};
 
 pub type Spanned<Tok, Loc, Error> = Result<(Loc, Tok, Loc), Error>;
 
@@ -28,15 +28,15 @@ impl<'input> Lexer<'input> {
 }
 
 impl<'input> Iterator for Lexer<'input> {
-    type Item = Spanned<Token<'input>, usize, LexicalError>;
+    type Item = Spanned<Token<'input>, usize, AdditionalErrors>;
 
     fn next(&mut self) -> Option<Self::Item> {
         match self.token_stream.next() {
             None => None,
             Some((Ok(token), span)) => Some(Ok((span.start, token, span.end))),
-            Some((Err(_), span)) => Some(Err(LexicalError::InvalidToken(Span::new(
-                span.start, span.end,
-            )))),
+            Some((Err(_), span)) => Some(Err(AdditionalErrors::Lexical(
+                LexicalError::InvalidToken(Span::new(span.start, span.end)),
+            ))),
         }
     }
 }

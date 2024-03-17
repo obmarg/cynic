@@ -1,6 +1,12 @@
 use std::fmt;
 
-fn unquote_block_string(src: &str) -> Result<String, ()> {
+use crate::{
+    lexer::{self, LexicalError},
+    parser::AdditionalErrors,
+    Span,
+};
+
+pub fn unquote_block_string(src: &str) -> String {
     assert!(src.starts_with("\"\"\"") && src.ends_with("\"\"\""));
 
     let lines = src[3..src.len() - 3].lines();
@@ -24,7 +30,7 @@ fn unquote_block_string(src: &str) -> Result<String, ()> {
 
     let Some(first_non_empty_line) = first_non_empty_line else {
         // The block string contains only whitespace.
-        return Ok("".to_string());
+        return "".to_string();
     };
 
     let mut result = String::with_capacity(src.len() - 6);
@@ -48,37 +54,48 @@ fn unquote_block_string(src: &str) -> Result<String, ()> {
         result.push_str(&line);
 
         for line in lines {
-            result.push_str("\n");
+            result.push('\n');
             result.push_str(&line);
         }
     }
 
-    Ok(result)
+    result
 }
 
-fn unquote_string(s: &str) -> Result<String, MalformedStringError> {
+pub fn unquote_string(s: &str, start_span: usize) -> Result<String, MalformedStringError> {
     let mut res = String::with_capacity(s.len());
     assert!(s.starts_with('"') && s.ends_with('"'));
-    let mut chars = s[1..s.len() - 1].chars();
+
+    let mut chars = s[1..s.len() - 1].char_indices();
+
+    // Count the '"' in our span
+    let start_span = start_span + 1;
+
     let mut temp_code_point = String::with_capacity(4);
-    while let Some(c) = chars.next() {
+    while let Some((index, c)) = chars.next() {
         match c {
             '\\' => {
                 match chars.next().expect("slash cant be at the end") {
-                    c @ '"' | c @ '\\' | c @ '/' => res.push(c),
-                    'b' => res.push('\u{0010}'),
-                    'f' => res.push('\u{000C}'),
-                    'n' => res.push('\n'),
-                    'r' => res.push('\r'),
-                    't' => res.push('\t'),
-                    'u' => {
+                    (_, c @ '"' | c @ '\\' | c @ '/') => res.push(c),
+                    (_, 'b') => res.push('\u{0010}'),
+                    (_, 'f') => res.push('\u{000C}'),
+                    (_, 'n') => res.push('\n'),
+                    (_, 'r') => res.push('\r'),
+                    (_, 't') => res.push('\t'),
+                    (_, 'u') => {
                         temp_code_point.clear();
+                        let mut end_index = index;
                         for _ in 0..4 {
                             match chars.next() {
-                                Some(inner_c) => temp_code_point.push(inner_c),
+                                Some((index, inner_c)) => {
+                                    temp_code_point.push(inner_c);
+                                    end_index = index;
+                                }
                                 None => {
                                     return Err(MalformedStringError::MalformedCodePoint(
                                         temp_code_point,
+                                        index + start_span,
+                                        end_index + start_span,
                                     ));
                                 }
                             }
@@ -90,12 +107,18 @@ fn unquote_string(s: &str) -> Result<String, MalformedStringError> {
                             _ => {
                                 return Err(MalformedStringError::UnknownCodePoint(
                                     temp_code_point,
+                                    index + start_span,
+                                    end_index + start_span,
                                 ));
                             }
                         }
                     }
-                    c => {
-                        return Err(MalformedStringError::UnknownEscapeChar(c));
+                    (end_index, c) => {
+                        return Err(MalformedStringError::UnknownEscapeChar(
+                            c,
+                            index + start_span,
+                            end_index + start_span,
+                        ));
                     }
                 }
             }
@@ -106,11 +129,23 @@ fn unquote_string(s: &str) -> Result<String, MalformedStringError> {
     Ok(res)
 }
 
-#[derive(Debug)]
-enum MalformedStringError {
-    MalformedCodePoint(String),
-    UnknownCodePoint(String),
-    UnknownEscapeChar(char),
+#[derive(Clone, Debug, PartialEq, Eq)]
+pub enum MalformedStringError {
+    MalformedCodePoint(String, usize, usize),
+    UnknownCodePoint(String, usize, usize),
+    UnknownEscapeChar(char, usize, usize),
+}
+
+impl MalformedStringError {
+    pub fn span(&self) -> Span {
+        let (start, end) = match self {
+            MalformedStringError::MalformedCodePoint(_, start, end) => (start, end),
+            MalformedStringError::UnknownCodePoint(_, start, end) => (start, end),
+            MalformedStringError::UnknownEscapeChar(_, start, end) => (start, end),
+        };
+
+        Span::new(*start, *end)
+    }
 }
 
 impl std::error::Error for MalformedStringError {}
@@ -118,18 +153,28 @@ impl std::error::Error for MalformedStringError {}
 impl fmt::Display for MalformedStringError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         match self {
-            MalformedStringError::MalformedCodePoint(code_point) => {
+            MalformedStringError::MalformedCodePoint(code_point, _, _) => {
                 write!(
                     f,
                     "\\u must have 4 characters after it, only found '{code_point}'"
                 )
             }
-            MalformedStringError::UnknownCodePoint(code_point) => {
+            MalformedStringError::UnknownCodePoint(code_point, _, _) => {
                 write!(f, "{code_point} is not a valid unicode code point",)
             }
-            MalformedStringError::UnknownEscapeChar(char) => {
+            MalformedStringError::UnknownEscapeChar(char, _, _) => {
                 write!(f, "unknown escape character {char}")
             }
+        }
+    }
+}
+
+impl From<MalformedStringError>
+    for lalrpop_util::ParseError<usize, lexer::Token<'static>, AdditionalErrors>
+{
+    fn from(value: MalformedStringError) -> Self {
+        lalrpop_util::ParseError::User {
+            error: AdditionalErrors::MalformedString(value),
         }
     }
 }

@@ -399,7 +399,7 @@ Ident: &'input str = {
 
 extern {
     type Location = usize;
-    type Error = lexer::LexicalError;
+    type Error = crate::parser::AdditionalErrors;
 
     enum lexer::Token<'input> {
         "$" => lexer::Token::Dollar,

@@ -55,11 +55,19 @@ impl Error {
                 Label::new(*start..*end).with_message("we expected the document to end here"),
                 None,
             ),
-            Error::User { error } => {
+            Error::Lexical(error) => {
                 let span = error.span();
                 (
                     "invalid token".into(),
                     Label::new(span.start..span.end).with_message("could not parse a token here"),
+                    None,
+                )
+            }
+            Error::MalformedStringLiteral(error) => {
+                let span = self.span();
+                (
+                    "malformed string literal".into(),
+                    Label::new(span.start..span.end).with_message("error occurred here"),
                     None,
                 )
             }

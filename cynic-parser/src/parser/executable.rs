@@ -1,5 +1,5 @@
 // auto-generated: "lalrpop 0.20.0"
-// sha3: b77e15abc1d8e6bc1fe79b787991aad929cc351c539cf9db62f2286c15794716
+// sha3: 2782e5938f080f175830d4a4f4f27341fa457ee210ab4ac7ed1fe3c197a33c24
 use crate::lexer;
 use crate::{
     common::{IdRange, OperationType, TypeWrappers, WrappingType},
@@ -937,7 +937,7 @@ mod __parse__ExecutableDocument {
     where
     {
         type Location = usize;
-        type Error = lexer::LexicalError;
+        type Error = crate::parser::AdditionalErrors;
         type Token = lexer::Token<'input>;
         type TokenIndex = usize;
         type Symbol = __Symbol<'input>;
@@ -2017,7 +2017,7 @@ mod __parse__ExecutableDocument {
             input: &'input str,
             ast: &mut ExecutableAstWriter,
             __tokens0: __TOKENS,
-        ) -> Result<(), __lalrpop_util::ParseError<usize, lexer::Token<'input>, lexer::LexicalError>>
+        ) -> Result<(), __lalrpop_util::ParseError<usize, lexer::Token<'input>, crate::parser::AdditionalErrors>>
         {
             let __tokens = __tokens0.into_iter();
             let mut __tokens = __tokens.map(|t| __ToTriple::to_triple(t));
@@ -2075,7 +2075,7 @@ mod __parse__ExecutableDocument {
         __states: &mut alloc::vec::Vec<i16>,
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>,
         _: core::marker::PhantomData<(&'input ())>,
-    ) -> Option<Result<(),__lalrpop_util::ParseError<usize, lexer::Token<'input>, lexer::LexicalError>>>
+    ) -> Option<Result<(),__lalrpop_util::ParseError<usize, lexer::Token<'input>, crate::parser::AdditionalErrors>>>
     {
         let (__pop_states, __nonterminal) = match __action {
             0 => {
@@ -6101,7 +6101,7 @@ fn __action32<'input>(
 ) -> ValueId {
     {
         let id = ast.intern_string(s);
-        ast.value(ValueRecord::String(id))
+        Ok(ast.value(ValueRecord::String(id)))
     }
 }
 
@@ -7763,7 +7763,7 @@ pub trait __ToTriple<'input> {
         value: Self,
     ) -> Result<
         (usize, lexer::Token<'input>, usize),
-        __lalrpop_util::ParseError<usize, lexer::Token<'input>, lexer::LexicalError>,
+        __lalrpop_util::ParseError<usize, lexer::Token<'input>, crate::parser::AdditionalErrors>,
     >;
 }
 
@@ -7772,19 +7772,19 @@ impl<'input> __ToTriple<'input> for (usize, lexer::Token<'input>, usize) {
         value: Self,
     ) -> Result<
         (usize, lexer::Token<'input>, usize),
-        __lalrpop_util::ParseError<usize, lexer::Token<'input>, lexer::LexicalError>,
+        __lalrpop_util::ParseError<usize, lexer::Token<'input>, crate::parser::AdditionalErrors>,
     > {
         Ok(value)
     }
 }
 impl<'input> __ToTriple<'input>
-    for Result<(usize, lexer::Token<'input>, usize), lexer::LexicalError>
+    for Result<(usize, lexer::Token<'input>, usize), crate::parser::AdditionalErrors>
 {
     fn to_triple(
         value: Self,
     ) -> Result<
         (usize, lexer::Token<'input>, usize),
-        __lalrpop_util::ParseError<usize, lexer::Token<'input>, lexer::LexicalError>,
+        __lalrpop_util::ParseError<usize, lexer::Token<'input>, crate::parser::AdditionalErrors>,
     > {
         match value {
             Ok(v) => Ok(v),
