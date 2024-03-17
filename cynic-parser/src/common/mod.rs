@@ -1,4 +1,5 @@
 mod id_range;
+mod strings;
 mod types;
 
 pub use id_range::IdRange;

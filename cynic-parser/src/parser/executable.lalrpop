@@ -175,6 +175,7 @@ ObjectField: (StringId, ValueId) = {
     <name:Name> ":" <value:Value> => (name, value)
 }
 
+// TODO: This appears to be unused?
 StringValue: StringId = {
     <s:StringLiteral> => {
         ast.intern_string(s)
