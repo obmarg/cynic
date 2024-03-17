@@ -78,9 +78,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<SchemaDefinition<'a>> {
         let mut builder = allocator.nil();
 
         if let Some(description) = self.0.description() {
-            builder = builder
-                .append(description.to_string())
-                .append(allocator.hardline());
+            builder = builder.append(description).append(allocator.hardline());
         }
 
         builder = builder.append(allocator.text("schema"));
@@ -96,7 +94,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<SchemaDefinition<'a>> {
                     allocator
                         .intersperse(
                             roots.map(|(kind, name)| {
-                                allocator.text(kind.to_string()).append(": ").append(name)
+                                allocator.text(kind.as_str()).append(": ").append(name)
                             }),
                             allocator.hardline(),
                         )
@@ -115,9 +113,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<ScalarDefinition<'a>> {
         let mut builder = allocator.nil();
 
         if let Some(description) = self.0.description() {
-            builder = builder
-                .append(description.to_string())
-                .append(allocator.hardline());
+            builder = builder.append(description).append(allocator.hardline());
         }
 
         let mut directives = self.0.directives().peekable();
@@ -139,9 +135,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<ObjectDefinition<'a>> {
         let mut builder = allocator.nil();
 
         if let Some(description) = self.0.description() {
-            builder = builder
-                .append(description.to_string())
-                .append(allocator.hardline());
+            builder = builder.append(description).append(allocator.hardline());
         }
 
         builder = builder.append(allocator.text(format!("type {}", self.0.name())));
@@ -210,7 +204,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<FieldDefinition<'a>> {
         }
 
         allocator
-            .text(self.0.name().to_string())
+            .text(self.0.name())
             .append(arguments_pretty)
             .append(allocator.text(":"))
             .append(allocator.space())
@@ -224,9 +218,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<InterfaceDefinition<'a>> {
         let mut builder = allocator.nil();
 
         if let Some(description) = self.0.description() {
-            builder = builder
-                .append(description.to_string())
-                .append(allocator.hardline());
+            builder = builder.append(description).append(allocator.hardline());
         }
 
         builder = builder.append(allocator.text(format!("interface {}", self.0.name())));
@@ -272,9 +264,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<UnionDefinition<'a>> {
         let mut builder = allocator.nil();
 
         if let Some(description) = self.0.description() {
-            builder = builder
-                .append(description.to_string())
-                .append(allocator.hardline());
+            builder = builder.append(description).append(allocator.hardline());
         }
 
         builder = builder.append(allocator.text(format!("union {}", self.0.name())));
@@ -311,9 +301,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<EnumDefinition<'a>> {
         let mut builder = allocator.nil();
 
         if let Some(description) = self.0.description() {
-            builder = builder
-                .append(description.to_string())
-                .append(allocator.hardline());
+            builder = builder.append(description).append(allocator.hardline());
         }
 
         builder = builder.append(allocator.text(format!("enum {}", self.0.name())));
@@ -348,7 +336,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<EnumDefinition<'a>> {
 
 impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<EnumValueDefinition<'a>> {
     fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
-        let mut builder = allocator.text(self.0.value().to_string());
+        let mut builder = allocator.text(self.0.value());
 
         let mut directives = self.0.directives().peekable();
         if directives.peek().is_some() {
@@ -366,9 +354,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<InputObjectDefinition<'a>> {
         let mut builder = allocator.nil();
 
         if let Some(description) = self.0.description() {
-            builder = builder
-                .append(description.to_string())
-                .append(allocator.hardline());
+            builder = builder.append(description).append(allocator.hardline());
         }
 
         builder = builder.append(allocator.text(format!("input {}", self.0.name())));
@@ -411,7 +397,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<InputValueDefinition<'a>> {
             .unwrap_or(allocator.nil());
 
         let mut value_builder = allocator
-            .text(self.0.name().to_string())
+            .text(self.0.name())
             .append(allocator.text(":"))
             .append(allocator.space())
             .append(NodeDisplay(self.0.ty()));
@@ -442,9 +428,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<DirectiveDefinition<'a>> {
         let mut builder = allocator.nil();
 
         if let Some(description) = self.0.description() {
-            builder = builder
-                .append(description.to_string())
-                .append(allocator.hardline());
+            builder = builder.append(description).append(allocator.hardline());
         }
 
         builder = builder.append(allocator.text(format!("directive @{}", self.0.name())));
@@ -476,7 +460,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<DirectiveDefinition<'a>> {
             .append(allocator.text("on"))
             .append(allocator.space())
             .append(allocator.intersperse(
-                self.0.locations().map(|location| location.to_string()),
+                self.0.locations().map(|location| location.as_str()),
                 allocator.text(" | "),
             ))
     }
@@ -490,7 +474,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Type<'a>> {
 
 impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Directive<'a>> {
     fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
-        let mut builder = allocator.text(format!("@{}", self.0.name()));
+        let mut builder = allocator.text("@").append(self.0.name());
 
         let mut arguments = self.0.arguments().peekable();
 
@@ -510,7 +494,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Directive<'a>> {
 impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Argument<'a>> {
     fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
         allocator
-            .text(self.0.name().to_string())
+            .text(self.0.name())
             .append(allocator.text(":"))
             .append(allocator.space())
             .append(NodeDisplay(self.0.value()))
@@ -523,10 +507,10 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<ValueReader<'a>> {
             crate::type_system::ValueReader::Variable(name) => allocator.text(format!("${name}")),
             crate::type_system::ValueReader::Int(value) => allocator.text(format!("{value}")),
             crate::type_system::ValueReader::Float(value) => allocator.text(format!("{value}")),
-            crate::type_system::ValueReader::String(value) => allocator.text(value.to_string()),
+            crate::type_system::ValueReader::String(value) => allocator.text(value),
             crate::type_system::ValueReader::Boolean(value) => allocator.text(format!("{value}")),
             crate::type_system::ValueReader::Null => allocator.text("null"),
-            crate::type_system::ValueReader::Enum(value) => allocator.text(value.to_string()),
+            crate::type_system::ValueReader::Enum(value) => allocator.text(value),
             crate::type_system::ValueReader::List(items) => brackets_and_maybe_indent(
                 allocator
                     .intersperse(

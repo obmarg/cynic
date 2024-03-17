@@ -84,6 +84,32 @@ pub enum DirectiveLocation {
     VariableDefinition,
 }
 
+impl DirectiveLocation {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            DirectiveLocation::Query => "QUERY",
+            DirectiveLocation::Mutation => "MUTATION",
+            DirectiveLocation::Subscription => "SUBSCRIPTION",
+            DirectiveLocation::Field => "FIELD",
+            DirectiveLocation::FragmentDefinition => "FRAGMENT_DEFINITION",
+            DirectiveLocation::FragmentSpread => "FRAGMENT_SPREAD",
+            DirectiveLocation::InlineFragment => "INLINE_FRAGMENT",
+            DirectiveLocation::Schema => "SCHEMA",
+            DirectiveLocation::Scalar => "SCALAR",
+            DirectiveLocation::Object => "OBJECT",
+            DirectiveLocation::FieldDefinition => "FIELD_DEFINITION",
+            DirectiveLocation::ArgumentDefinition => "ARGUMENT_DEFINITION",
+            DirectiveLocation::Interface => "INTERFACE",
+            DirectiveLocation::Union => "UNION",
+            DirectiveLocation::Enum => "ENUM",
+            DirectiveLocation::EnumValue => "ENUM_VALUE",
+            DirectiveLocation::InputObject => "INPUT_OBJECT",
+            DirectiveLocation::InputFieldDefinition => "INPUT_FIELD_DEFINITION",
+            DirectiveLocation::VariableDefinition => "VARIABLE_DEFINITION",
+        }
+    }
+}
+
 impl FromStr for DirectiveLocation {
     type Err = ();
 
@@ -115,27 +141,6 @@ impl FromStr for DirectiveLocation {
 
 impl std::fmt::Display for DirectiveLocation {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        let str = match self {
-            DirectiveLocation::Query => "QUERY",
-            DirectiveLocation::Mutation => "MUTATION",
-            DirectiveLocation::Subscription => "SUBSCRIPTION",
-            DirectiveLocation::Field => "FIELD",
-            DirectiveLocation::FragmentDefinition => "FRAGMENT_DEFINITION",
-            DirectiveLocation::FragmentSpread => "FRAGMENT_SPREAD",
-            DirectiveLocation::InlineFragment => "INLINE_FRAGMENT",
-            DirectiveLocation::Schema => "SCHEMA",
-            DirectiveLocation::Scalar => "SCALAR",
-            DirectiveLocation::Object => "OBJECT",
-            DirectiveLocation::FieldDefinition => "FIELD_DEFINITION",
-            DirectiveLocation::ArgumentDefinition => "ARGUMENT_DEFINITION",
-            DirectiveLocation::Interface => "INTERFACE",
-            DirectiveLocation::Union => "UNION",
-            DirectiveLocation::Enum => "ENUM",
-            DirectiveLocation::EnumValue => "ENUM_VALUE",
-            DirectiveLocation::InputObject => "INPUT_OBJECT",
-            DirectiveLocation::InputFieldDefinition => "INPUT_FIELD_DEFINITION",
-            DirectiveLocation::VariableDefinition => "VARIABLE_DEFINITION",
-        };
-        write!(f, "{str}")
+        write!(f, "{}", self.as_str())
     }
 }
