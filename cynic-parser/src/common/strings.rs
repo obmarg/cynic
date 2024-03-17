@@ -1,21 +1,17 @@
 use std::fmt;
 
-use crate::{
-    lexer::{self, LexicalError},
-    parser::AdditionalErrors,
-    Span,
-};
+use crate::{lexer, parser::AdditionalErrors, Span};
 
 pub fn unquote_block_string(src: &str) -> String {
     assert!(src.starts_with("\"\"\"") && src.ends_with("\"\"\""));
 
-    let lines = src[3..src.len() - 3].lines();
+    let lines = src[3..src.len() - 3].lines().collect::<Vec<_>>();
 
     let mut common_indent = usize::MAX;
     let mut first_non_empty_line: Option<usize> = None;
     let mut last_non_empty_line = 0;
-    for (idx, line) in lines.clone().enumerate() {
-        let indent = line.len() - line.trim_start().len();
+    for (idx, line) in lines.iter().enumerate() {
+        let indent = line.len() - line.find(|c: char| !c.is_whitespace()).unwrap_or_default();
         if indent == line.len() {
             continue;
         }
@@ -35,22 +31,27 @@ pub fn unquote_block_string(src: &str) -> String {
 
     let mut result = String::with_capacity(src.len() - 6);
     let mut lines = lines
+        .into_iter()
         .enumerate()
         // Skip leading and trailing empty lines.
         .skip(first_non_empty_line)
         .take(last_non_empty_line - first_non_empty_line + 1)
         // Remove indent, except the first line.
         .map(|(idx, line)| {
-            if idx != 0 && line.len() >= common_indent {
+            if idx != 0 {
+                line
+            } else if line.len() >= common_indent {
                 &line[common_indent..]
             } else {
-                line
+                ""
             }
         })
         // Handle escaped triple-quote (\""").
         .map(|x| x.replace(r#"\""""#, r#"""""#));
 
     if let Some(line) = lines.next() {
+        // TODO: Handle replacing the escaped tripe quote inline here maybe?
+        // Or possibly just don't, I don't know.
         result.push_str(&line);
 
         for line in lines {

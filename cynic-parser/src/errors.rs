@@ -7,7 +7,7 @@ use std::fmt;
 pub use report::Report;
 
 use crate::{
-    lexer::{self, LexicalError},
+    lexer::{self},
     parser::AdditionalErrors,
     Span,
 };

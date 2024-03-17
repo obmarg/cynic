@@ -7,7 +7,7 @@ pub use schema::*;
 
 use crate::{common::MalformedStringError, lexer::LexicalError};
 
-pub(crate) enum AdditionalErrors {
+pub enum AdditionalErrors {
     Lexical(LexicalError),
     MalformedString(MalformedStringError),
 }

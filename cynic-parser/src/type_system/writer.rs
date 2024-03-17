@@ -358,6 +358,12 @@ impl TypeSystemAstWriter {
         let (id, _) = self.ast.strings.insert_full(string.into());
         StringId::new(id)
     }
+
+    // TOOD: should this be pub? not sure...
+    pub fn intern_owned_string(&mut self, string: String) -> StringId {
+        let (id, _) = self.ast.strings.insert_full(string.into());
+        StringId::new(id)
+    }
 }
 
 impl Default for TypeSystemAstWriter {

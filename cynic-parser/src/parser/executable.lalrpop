@@ -4,7 +4,7 @@ use crate::{
     executable::{
         storage::*, ids::*, writer::ExecutableAstWriter
     },
-    common::{OperationType, IdRange, WrappingType, TypeWrappers}
+    common::{OperationType, IdRange, WrappingType, TypeWrappers, unquote_string, unquote_block_string}
 };
 
 grammar<'input>(input: &'input str, ast: &mut ExecutableAstWriter);
@@ -155,13 +155,13 @@ Value: ValueId = {
     "$" <name:Name> => ast.value(ValueRecord::Variable(name)),
     <int:IntegerLiteral> => ast.value(ValueRecord::Int(int.parse().unwrap())),
     <float:FloatLiteral> => ast.value(ValueRecord::Float(float.parse().unwrap())),
-    <s:StringLiteral> =>? {
-        let id = ast.intern_string(s);
-        ast.value(ValueRecord::String(id))
+    <start:@L> <s:StringLiteral> =>? {
+        let id = ast.intern_owned_string(unquote_string(s, start)?);
+        Ok(ast.value(ValueRecord::String(id)))
     },
     <s:BlockStringLiteral> => {
-        let id = ast.intern_string(s);
-        Ok(ast.value(ValueRecord::String(id)))
+        let id = ast.intern_owned_string(unquote_block_string(s));
+        ast.value(ValueRecord::String(id))
     },
     true => ast.value(ValueRecord::Boolean(true)),
     false => ast.value(ValueRecord::Boolean(false)),
@@ -173,16 +173,6 @@ Value: ValueId = {
 
 ObjectField: (StringId, ValueId) = {
     <name:Name> ":" <value:Value> => (name, value)
-}
-
-// TODO: This appears to be unused?
-StringValue: StringId = {
-    <s:StringLiteral> => {
-        ast.intern_string(s)
-    },
-    <s:BlockStringLiteral> => {
-        ast.intern_string(s)
-    },
 }
 
 EnumValue: StringId = {

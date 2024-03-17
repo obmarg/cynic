@@ -6,7 +6,7 @@ use crate::{
         storage::*, ids::*, writer::TypeSystemAstWriter,
         DirectiveLocation,
     },
-    common::{OperationType, IdRange, WrappingType, TypeWrappers}
+    common::{OperationType, IdRange, WrappingType, TypeWrappers, unquote_string, unquote_block_string}
 };
 
 grammar<'input>(input: &'input str, ast: &mut TypeSystemAstWriter);
@@ -314,12 +314,12 @@ Value: ValueId = {
     "$" <name:Name> => ast.value(Value::Variable(name)),
     <int:IntegerLiteral> => ast.value(Value::Int(int.parse().unwrap())),
     <float:FloatLiteral> => ast.value(Value::Float(float.parse().unwrap())),
-    <s:StringLiteral> => {
-        let id = ast.intern_string(s);
-        ast.value(Value::String(id))
+    <start:@L> <s:StringLiteral> =>? {
+        let id = ast.intern_owned_string(unquote_string(s, start)?);
+        Ok(ast.value(Value::String(id)))
     },
     <s:BlockStringLiteral> => {
-        let id = ast.intern_string(s);
+        let id = ast.intern_owned_string(unquote_block_string(s));
         ast.value(Value::String(id))
     },
     true => ast.value(Value::Boolean(true)),
@@ -335,11 +335,11 @@ ObjectField: (StringId, ValueId) = {
 }
 
 StringValue: StringId = {
-    <s:StringLiteral> => {
-        ast.intern_string(s)
+    <start:@L> <s:StringLiteral> =>? {
+        Ok(ast.intern_owned_string(unquote_string(s, start)?))
     },
     <s:BlockStringLiteral> => {
-        ast.intern_string(s)
+        ast.intern_owned_string(unquote_block_string(s))
     },
 }
 

@@ -66,7 +66,7 @@ impl Error {
             Error::MalformedStringLiteral(error) => {
                 let span = self.span();
                 (
-                    "malformed string literal".into(),
+                    error.to_string(),
                     Label::new(span.start..span.end).with_message("error occurred here"),
                     None,
                 )
