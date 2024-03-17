@@ -204,6 +204,8 @@ pub enum StringToken {
 fn lex_string<'a>(lexer: &mut Lexer<'a, Token<'a>>) -> Option<&'a str> {
     let remainder = lexer.remainder();
     let mut string_lexer = StringToken::lexer(remainder);
+    // TODO: Maybe track the properties of the string at parsing time,
+    // so we only need to unescape/split when absolutely required...
     while let Some(string_token) = string_lexer.next() {
         match string_token {
             Ok(StringToken::Quote) => {

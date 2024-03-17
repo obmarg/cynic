@@ -342,9 +342,20 @@ impl TypeSystemAstWriter {
         id
     }
 
-    pub fn string_literal(&mut self, literal: StringLiteral) -> StringLiteralId {
+    pub fn block_string_literal(&mut self, string: &str) -> StringLiteralId {
         let literal_id = StringLiteralId(self.ast.string_literals.len());
-        self.ast.string_literals.push(literal);
+        self.ast
+            .string_literals
+            .push(StringLiteral::Block(string.into()));
+
+        literal_id
+    }
+
+    pub fn string_literal(&mut self, string: String) -> StringLiteralId {
+        let literal_id = StringLiteralId(self.ast.string_literals.len());
+        self.ast
+            .string_literals
+            .push(StringLiteral::String(string.into()));
 
         literal_id
     }

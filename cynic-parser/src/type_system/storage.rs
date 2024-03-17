@@ -100,11 +100,6 @@ pub struct Type {
     pub wrappers: TypeWrappers,
 }
 
-pub enum StringLiteral {
-    Normal(StringId),
-    Block(StringId),
-}
-
 pub struct Directive {
     pub name: StringId,
     pub arguments: Vec<ArgumentId>,
@@ -113,6 +108,11 @@ pub struct Directive {
 pub struct Argument {
     pub name: StringId,
     pub value: ValueId,
+}
+
+pub enum StringLiteral {
+    String(Box<str>),
+    Block(Box<str>),
 }
 
 // TODO: This is the type_system value so it should maybe be

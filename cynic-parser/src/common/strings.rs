@@ -2,7 +2,7 @@ use std::fmt;
 
 use crate::{lexer, parser::AdditionalErrors, Span};
 
-pub fn unquote_block_string(src: &str) -> String {
+pub(crate) fn unquote_block_string(src: &str) -> String {
     assert!(src.starts_with("\"\"\"") && src.ends_with("\"\"\""));
 
     let lines = src[3..src.len() - 3].lines().collect::<Vec<_>>();
@@ -63,7 +63,7 @@ pub fn unquote_block_string(src: &str) -> String {
     result
 }
 
-pub fn unquote_string(s: &str, start_span: usize) -> Result<String, MalformedStringError> {
+pub(crate) fn unquote_string(s: &str, start_span: usize) -> Result<String, MalformedStringError> {
     let mut res = String::with_capacity(s.len());
     assert!(s.starts_with('"') && s.ends_with('"'));
 

@@ -315,6 +315,7 @@ Value: ValueId = {
     <int:IntegerLiteral> => ast.value(Value::Int(int.parse().unwrap())),
     <float:FloatLiteral> => ast.value(Value::Float(float.parse().unwrap())),
     <start:@L> <s:StringLiteral> =>? {
+        ast.string_literal(s)
         let id = ast.intern_owned_string(unquote_string(s, start)?);
         Ok(ast.value(Value::String(id)))
     },

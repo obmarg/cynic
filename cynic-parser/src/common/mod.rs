@@ -3,8 +3,10 @@ mod strings;
 mod types;
 
 pub use id_range::IdRange;
-pub use strings::{unquote_block_string, unquote_string, MalformedStringError};
+pub use strings::MalformedStringError;
 pub use types::*;
+
+pub(crate) use strings::{unquote_block_string, unquote_string};
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum OperationType {
