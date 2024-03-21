@@ -1,6 +1,6 @@
 use crate::{type_system::ids::UnionDefinitionId, AstLookup};
 
-use super::{directives::Directive, ReadContext, TypeSystemId};
+use super::{directives::Directive, ReadContext, StringLiteral, TypeSystemId};
 
 #[derive(Clone, Copy)]
 pub struct UnionDefinition<'a>(ReadContext<'a, UnionDefinitionId>);
@@ -12,12 +12,12 @@ impl<'a> UnionDefinition<'a> {
             .lookup(self.0.document.lookup(self.0.id).name)
     }
 
-    pub fn description(&self) -> Option<&'a str> {
+    pub fn description(&self) -> Option<StringLiteral<'a>> {
         self.0
             .document
             .lookup(self.0.id)
             .description
-            .map(|id| self.0.document.lookup(id))
+            .map(|id| self.0.document.read(id))
     }
 
     pub fn members(&self) -> impl ExactSizeIterator<Item = &'a str> + 'a {

@@ -29,6 +29,7 @@ pub use self::{
 #[derive(Default)]
 pub struct ExecutableDocument {
     strings: IndexSet<Box<str>>,
+    block_strings: Vec<Box<str>>,
 
     definitions: Vec<definition::ExecutableDefinitionRecord>,
     operations: Vec<operation::OperationDefinitionRecord>,

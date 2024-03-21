@@ -144,6 +144,13 @@ impl ExecutableAstWriter {
         id
     }
 
+    pub fn block_string(&mut self, string: &str) -> BlockStringLiteralId {
+        let literal_id = BlockStringLiteralId::new(self.ast.block_strings.len());
+        self.ast.block_strings.push(string.into());
+
+        literal_id
+    }
+
     pub fn ident(&mut self, ident: &str) -> StringId {
         self.intern_string(ident)
     }

@@ -1,6 +1,8 @@
 use crate::{type_system::ids::InterfaceDefinitionId, AstLookup};
 
-use super::{directives::Directive, fields::FieldDefinition, ReadContext, TypeSystemId};
+use super::{
+    directives::Directive, fields::FieldDefinition, ReadContext, StringLiteral, TypeSystemId,
+};
 
 #[derive(Clone, Copy)]
 pub struct InterfaceDefinition<'a>(ReadContext<'a, InterfaceDefinitionId>);
@@ -12,12 +14,12 @@ impl<'a> InterfaceDefinition<'a> {
             .lookup(self.0.document.lookup(self.0.id).name)
     }
 
-    pub fn description(&self) -> Option<&'a str> {
+    pub fn description(&self) -> Option<StringLiteral<'a>> {
         self.0
             .document
             .lookup(self.0.id)
             .description
-            .map(|id| self.0.document.lookup(id))
+            .map(|id| self.0.document.read(id))
     }
 
     pub fn implements_interfaces(&self) -> impl ExactSizeIterator<Item = &'a str> + 'a {

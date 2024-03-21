@@ -1,6 +1,7 @@
 use crate::type_system::ids::{EnumDefinitionId, EnumValueDefinitionId};
 use crate::AstLookup;
 
+use super::StringLiteral;
 use super::{directives::Directive, ReadContext, TypeSystemId};
 
 #[derive(Clone, Copy)]
@@ -13,9 +14,9 @@ impl<'a> EnumDefinition<'a> {
         ast.lookup(ast.lookup(self.0.id).name)
     }
 
-    pub fn description(&self) -> Option<&'a str> {
+    pub fn description(&self) -> Option<StringLiteral<'a>> {
         let ast = &self.0.document;
-        ast.lookup(self.0.id).description.map(|id| ast.lookup(id))
+        ast.lookup(self.0.id).description.map(|id| ast.read(id))
     }
 
     pub fn values(&self) -> impl ExactSizeIterator<Item = EnumValueDefinition<'a>> + 'a {
@@ -44,9 +45,9 @@ impl<'a> EnumValueDefinition<'a> {
         ast.lookup(ast.lookup(self.0.id).value)
     }
 
-    pub fn description(&self) -> Option<&'a str> {
+    pub fn description(&self) -> Option<StringLiteral<'a>> {
         let ast = &self.0.document;
-        ast.lookup(self.0.id).description.map(|id| ast.lookup(id))
+        ast.lookup(self.0.id).description.map(|id| ast.read(id))
     }
 
     pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> {

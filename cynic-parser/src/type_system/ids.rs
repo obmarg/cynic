@@ -118,6 +118,8 @@ make_id!(ArgumentId, Argument, arguments);
 
 make_id!(ValueId, Value, values);
 
+make_id!(BlockStringLiteralId, str, block_strings);
+
 #[derive(Clone, Copy)]
 pub struct StringId(NonZeroU32);
 
@@ -141,6 +143,3 @@ impl AstLookup<StringId> for TypeSystemDocument {
         unimplemented!("strings aren't mutable so can't do this")
     }
 }
-
-#[derive(Clone, Copy)]
-pub struct StringLiteralId(pub(super) usize);

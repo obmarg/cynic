@@ -36,7 +36,11 @@ impl TypeSystemAstWriter {
         self.ast
     }
 
-    pub fn store_description(&mut self, definition: DefinitionId, description: Option<StringId>) {
+    pub fn store_description(
+        &mut self,
+        definition: DefinitionId,
+        description: Option<StringLiteralRef>,
+    ) {
         if let Some(description) = description {
             match *self.ast.lookup(definition) {
                 AstDefinition::Schema(id) => {
@@ -342,20 +346,9 @@ impl TypeSystemAstWriter {
         id
     }
 
-    pub fn block_string_literal(&mut self, string: &str) -> StringLiteralId {
-        let literal_id = StringLiteralId(self.ast.string_literals.len());
-        self.ast
-            .string_literals
-            .push(StringLiteral::Block(string.into()));
-
-        literal_id
-    }
-
-    pub fn string_literal(&mut self, string: String) -> StringLiteralId {
-        let literal_id = StringLiteralId(self.ast.string_literals.len());
-        self.ast
-            .string_literals
-            .push(StringLiteral::String(string.into()));
+    pub fn block_string(&mut self, string: &str) -> BlockStringLiteralId {
+        let literal_id = BlockStringLiteralId::new(self.ast.block_strings.len());
+        self.ast.block_strings.push(string.into());
 
         literal_id
     }

@@ -3,20 +3,20 @@ use crate::common::{IdRange, OperationType, TypeWrappers};
 use super::{ids::*, DirectiveLocation, Span};
 
 pub struct SchemaDefinition {
-    pub description: Option<StringId>,
+    pub description: Option<StringLiteralRef>,
     pub roots: Vec<RootOperationTypeDefinition>,
 }
 
 pub struct ScalarDefinition {
     pub name: StringId,
-    pub description: Option<StringId>,
+    pub description: Option<StringLiteralRef>,
     pub directives: IdRange<DirectiveId>,
     pub span: Span,
 }
 
 pub struct ObjectDefinition {
     pub name: StringId,
-    pub description: Option<StringId>,
+    pub description: Option<StringLiteralRef>,
     pub fields: IdRange<FieldDefinitionId>,
     pub directives: IdRange<DirectiveId>,
     pub implements: Vec<StringId>,
@@ -27,14 +27,14 @@ pub struct FieldDefinition {
     pub name: StringId,
     pub ty: TypeId,
     pub arguments: IdRange<InputValueDefinitionId>,
-    pub description: Option<StringId>,
+    pub description: Option<StringLiteralRef>,
     pub directives: IdRange<DirectiveId>,
     pub span: Span,
 }
 
 pub struct InterfaceDefinition {
     pub name: StringId,
-    pub description: Option<StringId>,
+    pub description: Option<StringLiteralRef>,
     pub fields: IdRange<FieldDefinitionId>,
     pub directives: IdRange<DirectiveId>,
     pub implements: Vec<StringId>,
@@ -43,7 +43,7 @@ pub struct InterfaceDefinition {
 
 pub struct UnionDefinition {
     pub name: StringId,
-    pub description: Option<StringId>,
+    pub description: Option<StringLiteralRef>,
     pub members: Vec<StringId>,
     pub directives: IdRange<DirectiveId>,
     pub span: Span,
@@ -51,7 +51,7 @@ pub struct UnionDefinition {
 
 pub struct EnumDefinition {
     pub name: StringId,
-    pub description: Option<StringId>,
+    pub description: Option<StringLiteralRef>,
     pub values: Vec<EnumValueDefinitionId>,
     pub directives: IdRange<DirectiveId>,
     pub span: Span,
@@ -59,14 +59,14 @@ pub struct EnumDefinition {
 
 pub struct EnumValueDefinition {
     pub value: StringId,
-    pub description: Option<StringId>,
+    pub description: Option<StringLiteralRef>,
     pub directives: IdRange<DirectiveId>,
     pub span: Span,
 }
 
 pub struct InputObjectDefinition {
     pub name: StringId,
-    pub description: Option<StringId>,
+    pub description: Option<StringLiteralRef>,
     pub fields: IdRange<InputValueDefinitionId>,
     pub directives: IdRange<DirectiveId>,
     pub span: Span,
@@ -75,7 +75,7 @@ pub struct InputObjectDefinition {
 pub struct InputValueDefinition {
     pub name: StringId,
     pub ty: TypeId,
-    pub description: Option<StringId>,
+    pub description: Option<StringLiteralRef>,
     pub default: Option<ValueId>,
     pub directives: IdRange<DirectiveId>,
     pub span: Span,
@@ -83,7 +83,7 @@ pub struct InputValueDefinition {
 
 pub struct DirectiveDefinition {
     pub name: StringId,
-    pub description: Option<StringId>,
+    pub description: Option<StringLiteralRef>,
     pub arguments: IdRange<InputValueDefinitionId>,
     pub repeatable: bool,
     pub locations: Vec<DirectiveLocation>,
@@ -110,9 +110,10 @@ pub struct Argument {
     pub value: ValueId,
 }
 
-pub enum StringLiteral {
-    String(Box<str>),
-    Block(Box<str>),
+#[derive(Clone, Copy)]
+pub enum StringLiteralRef {
+    String(StringId),
+    Block(BlockStringLiteralId),
 }
 
 // TODO: This is the type_system value so it should maybe be
@@ -123,6 +124,7 @@ pub enum Value {
     Int(i32),
     Float(f32),
     String(StringId),
+    BlockString(BlockStringLiteralId),
     Boolean(bool),
     Null,
     Enum(StringId),

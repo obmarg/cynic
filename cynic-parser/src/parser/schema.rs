@@ -1,5 +1,5 @@
 // auto-generated: "lalrpop 0.20.0"
-// sha3: 56df8c8ca080eebcc44e59c3674be35554988c2b0c9ccc70ffb137ab8a0c87d8
+// sha3: da698db52bd4d2e017e944c04dba3933efb365c25e812aeb491739e95cfadfb7
 use crate::lexer;
 use crate::{
     common::{
@@ -26,7 +26,10 @@ mod __parse__TypeSystemDocument {
         storage::*, ids::*, writer::TypeSystemAstWriter,
         DirectiveLocation,
     },
-    common::{OperationType, IdRange, WrappingType, TypeWrappers, unquote_string, unquote_block_string}
+    common::{
+        OperationType, IdRange, WrappingType, TypeWrappers,
+        unquote_string, unquote_block_string
+    }
 };
     #[allow(unused_extern_crates)]
     extern crate lalrpop_util as __lalrpop_util;
@@ -75,13 +78,14 @@ mod __parse__TypeSystemDocument {
         Variant34(alloc::vec::Vec<RootOperationTypeDefinition>),
         Variant35(ScalarDefinition),
         Variant36(SchemaDefinition),
-        Variant37(core::option::Option<StringId>),
-        Variant38(TypeId),
-        Variant39(DefinitionId),
-        Variant40(UnionDefinition),
-        Variant41(alloc::vec::Vec<ValueId>),
-        Variant42(WrappingType),
-        Variant43(alloc::vec::Vec<WrappingType>),
+        Variant37(StringLiteralRef),
+        Variant38(core::option::Option<StringLiteralRef>),
+        Variant39(TypeId),
+        Variant40(DefinitionId),
+        Variant41(UnionDefinition),
+        Variant42(alloc::vec::Vec<ValueId>),
+        Variant43(WrappingType),
+        Variant44(alloc::vec::Vec<WrappingType>),
     }
     const __ACTION: &[i16] = &[
         // State 0
@@ -3049,7 +3053,7 @@ mod __parse__TypeSystemDocument {
                     Ok(v) => v,
                     Err(e) => return Some(Err(e)),
                 };
-                __symbols.push((__start, __Symbol::Variant19(__nt), __end));
+                __symbols.push((__start, __Symbol::Variant37(__nt), __end));
                 (1, 55)
             }
             130 => {
@@ -3271,14 +3275,14 @@ mod __parse__TypeSystemDocument {
             _ => __symbol_type_mismatch()
         }
     }
-    fn __pop_Variant39<
+    fn __pop_Variant40<
       'input,
     >(
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
     ) -> (usize, DefinitionId, usize)
      {
         match __symbols.pop() {
-            Some((__l, __Symbol::Variant39(__v), __r)) => (__l, __v, __r),
+            Some((__l, __Symbol::Variant40(__v), __r)) => (__l, __v, __r),
             _ => __symbol_type_mismatch()
         }
     }
@@ -3414,25 +3418,36 @@ mod __parse__TypeSystemDocument {
             _ => __symbol_type_mismatch()
         }
     }
-    fn __pop_Variant38<
+    fn __pop_Variant37<
+      'input,
+    >(
+        __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
+    ) -> (usize, StringLiteralRef, usize)
+     {
+        match __symbols.pop() {
+            Some((__l, __Symbol::Variant37(__v), __r)) => (__l, __v, __r),
+            _ => __symbol_type_mismatch()
+        }
+    }
+    fn __pop_Variant39<
       'input,
     >(
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
     ) -> (usize, TypeId, usize)
      {
         match __symbols.pop() {
-            Some((__l, __Symbol::Variant38(__v), __r)) => (__l, __v, __r),
+            Some((__l, __Symbol::Variant39(__v), __r)) => (__l, __v, __r),
             _ => __symbol_type_mismatch()
         }
     }
-    fn __pop_Variant40<
+    fn __pop_Variant41<
       'input,
     >(
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
     ) -> (usize, UnionDefinition, usize)
      {
         match __symbols.pop() {
-            Some((__l, __Symbol::Variant40(__v), __r)) => (__l, __v, __r),
+            Some((__l, __Symbol::Variant41(__v), __r)) => (__l, __v, __r),
             _ => __symbol_type_mismatch()
         }
     }
@@ -3502,14 +3517,14 @@ mod __parse__TypeSystemDocument {
             _ => __symbol_type_mismatch()
         }
     }
-    fn __pop_Variant42<
+    fn __pop_Variant43<
       'input,
     >(
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
     ) -> (usize, WrappingType, usize)
      {
         match __symbols.pop() {
-            Some((__l, __Symbol::Variant42(__v), __r)) => (__l, __v, __r),
+            Some((__l, __Symbol::Variant43(__v), __r)) => (__l, __v, __r),
             _ => __symbol_type_mismatch()
         }
     }
@@ -3568,25 +3583,25 @@ mod __parse__TypeSystemDocument {
             _ => __symbol_type_mismatch()
         }
     }
-    fn __pop_Variant41<
+    fn __pop_Variant42<
       'input,
     >(
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
     ) -> (usize, alloc::vec::Vec<ValueId>, usize)
      {
         match __symbols.pop() {
-            Some((__l, __Symbol::Variant41(__v), __r)) => (__l, __v, __r),
+            Some((__l, __Symbol::Variant42(__v), __r)) => (__l, __v, __r),
             _ => __symbol_type_mismatch()
         }
     }
-    fn __pop_Variant43<
+    fn __pop_Variant44<
       'input,
     >(
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
     ) -> (usize, alloc::vec::Vec<WrappingType>, usize)
      {
         match __symbols.pop() {
-            Some((__l, __Symbol::Variant43(__v), __r)) => (__l, __v, __r),
+            Some((__l, __Symbol::Variant44(__v), __r)) => (__l, __v, __r),
             _ => __symbol_type_mismatch()
         }
     }
@@ -3601,14 +3616,14 @@ mod __parse__TypeSystemDocument {
             _ => __symbol_type_mismatch()
         }
     }
-    fn __pop_Variant37<
+    fn __pop_Variant38<
       'input,
     >(
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, core::option::Option<StringId>, usize)
+    ) -> (usize, core::option::Option<StringLiteralRef>, usize)
      {
         match __symbols.pop() {
-            Some((__l, __Symbol::Variant37(__v), __r)) => (__l, __v, __r),
+            Some((__l, __Symbol::Variant38(__v), __r)) => (__l, __v, __r),
             _ => __symbol_type_mismatch()
         }
     }
@@ -4119,8 +4134,8 @@ mod __parse__TypeSystemDocument {
     {
         // DefinitionAndDescription = StringValue, TypeSystemDefinition => ActionFn(217);
         assert!(__symbols.len() >= 2);
-        let __sym1 = __pop_Variant39(__symbols);
-        let __sym0 = __pop_Variant19(__symbols);
+        let __sym1 = __pop_Variant40(__symbols);
+        let __sym0 = __pop_Variant37(__symbols);
         let __start = __sym0.0;
         let __end = __sym1.2;
         let __nt = super::__action217::<>(input, ast, __sym0, __sym1);
@@ -4138,7 +4153,7 @@ mod __parse__TypeSystemDocument {
     ) -> (usize, usize)
     {
         // DefinitionAndDescription = TypeSystemDefinition => ActionFn(218);
-        let __sym0 = __pop_Variant39(__symbols);
+        let __sym0 = __pop_Variant40(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action218::<>(input, ast, __sym0);
@@ -4652,7 +4667,7 @@ mod __parse__TypeSystemDocument {
         assert!(__symbols.len() >= 3);
         let __sym2 = __pop_Variant17(__symbols);
         let __sym1 = __pop_Variant19(__symbols);
-        let __sym0 = __pop_Variant19(__symbols);
+        let __sym0 = __pop_Variant37(__symbols);
         let __start = __sym0.0;
         let __end = __sym2.2;
         let __nt = super::__action219::<>(input, ast, __sym0, __sym1, __sym2);
@@ -4786,11 +4801,11 @@ mod __parse__TypeSystemDocument {
         // FieldDefinition = StringValue, Name, ArgumentsDefinition, ":", Type, Directives => ActionFn(221);
         assert!(__symbols.len() >= 6);
         let __sym5 = __pop_Variant17(__symbols);
-        let __sym4 = __pop_Variant38(__symbols);
+        let __sym4 = __pop_Variant39(__symbols);
         let __sym3 = __pop_Variant0(__symbols);
         let __sym2 = __pop_Variant8(__symbols);
         let __sym1 = __pop_Variant19(__symbols);
-        let __sym0 = __pop_Variant19(__symbols);
+        let __sym0 = __pop_Variant37(__symbols);
         let __start = __sym0.0;
         let __end = __sym5.2;
         let __nt = super::__action221::<>(input, ast, __sym0, __sym1, __sym2, __sym3, __sym4, __sym5);
@@ -4810,7 +4825,7 @@ mod __parse__TypeSystemDocument {
         // FieldDefinition = Name, ArgumentsDefinition, ":", Type, Directives => ActionFn(222);
         assert!(__symbols.len() >= 5);
         let __sym4 = __pop_Variant17(__symbols);
-        let __sym3 = __pop_Variant38(__symbols);
+        let __sym3 = __pop_Variant39(__symbols);
         let __sym2 = __pop_Variant0(__symbols);
         let __sym1 = __pop_Variant8(__symbols);
         let __sym0 = __pop_Variant19(__symbols);
@@ -4833,10 +4848,10 @@ mod __parse__TypeSystemDocument {
         // FieldDefinition = StringValue, Name, ":", Type, Directives => ActionFn(223);
         assert!(__symbols.len() >= 5);
         let __sym4 = __pop_Variant17(__symbols);
-        let __sym3 = __pop_Variant38(__symbols);
+        let __sym3 = __pop_Variant39(__symbols);
         let __sym2 = __pop_Variant0(__symbols);
         let __sym1 = __pop_Variant19(__symbols);
-        let __sym0 = __pop_Variant19(__symbols);
+        let __sym0 = __pop_Variant37(__symbols);
         let __start = __sym0.0;
         let __end = __sym4.2;
         let __nt = super::__action223::<>(input, ast, __sym0, __sym1, __sym2, __sym3, __sym4);
@@ -4856,7 +4871,7 @@ mod __parse__TypeSystemDocument {
         // FieldDefinition = Name, ":", Type, Directives => ActionFn(224);
         assert!(__symbols.len() >= 4);
         let __sym3 = __pop_Variant17(__symbols);
-        let __sym2 = __pop_Variant38(__symbols);
+        let __sym2 = __pop_Variant39(__symbols);
         let __sym1 = __pop_Variant0(__symbols);
         let __sym0 = __pop_Variant19(__symbols);
         let __start = __sym0.0;
@@ -5549,10 +5564,10 @@ mod __parse__TypeSystemDocument {
         assert!(__symbols.len() >= 6);
         let __sym5 = __pop_Variant17(__symbols);
         let __sym4 = __pop_Variant10(__symbols);
-        let __sym3 = __pop_Variant38(__symbols);
+        let __sym3 = __pop_Variant39(__symbols);
         let __sym2 = __pop_Variant0(__symbols);
         let __sym1 = __pop_Variant19(__symbols);
-        let __sym0 = __pop_Variant19(__symbols);
+        let __sym0 = __pop_Variant37(__symbols);
         let __start = __sym0.0;
         let __end = __sym5.2;
         let __nt = super::__action225::<>(input, ast, __sym0, __sym1, __sym2, __sym3, __sym4, __sym5);
@@ -5573,7 +5588,7 @@ mod __parse__TypeSystemDocument {
         assert!(__symbols.len() >= 5);
         let __sym4 = __pop_Variant17(__symbols);
         let __sym3 = __pop_Variant10(__symbols);
-        let __sym2 = __pop_Variant38(__symbols);
+        let __sym2 = __pop_Variant39(__symbols);
         let __sym1 = __pop_Variant0(__symbols);
         let __sym0 = __pop_Variant19(__symbols);
         let __start = __sym0.0;
@@ -5595,10 +5610,10 @@ mod __parse__TypeSystemDocument {
         // InputValueDefinition = StringValue, Name, ":", Type, Directives => ActionFn(227);
         assert!(__symbols.len() >= 5);
         let __sym4 = __pop_Variant17(__symbols);
-        let __sym3 = __pop_Variant38(__symbols);
+        let __sym3 = __pop_Variant39(__symbols);
         let __sym2 = __pop_Variant0(__symbols);
         let __sym1 = __pop_Variant19(__symbols);
-        let __sym0 = __pop_Variant19(__symbols);
+        let __sym0 = __pop_Variant37(__symbols);
         let __start = __sym0.0;
         let __end = __sym4.2;
         let __nt = super::__action227::<>(input, ast, __sym0, __sym1, __sym2, __sym3, __sym4);
@@ -5618,7 +5633,7 @@ mod __parse__TypeSystemDocument {
         // InputValueDefinition = Name, ":", Type, Directives => ActionFn(228);
         assert!(__symbols.len() >= 4);
         let __sym3 = __pop_Variant17(__symbols);
-        let __sym2 = __pop_Variant38(__symbols);
+        let __sym2 = __pop_Variant39(__symbols);
         let __sym1 = __pop_Variant0(__symbols);
         let __sym0 = __pop_Variant19(__symbols);
         let __start = __sym0.0;
@@ -6239,7 +6254,7 @@ mod __parse__TypeSystemDocument {
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action65::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant19(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant37(__nt), __end));
         (1, 55)
     }
     pub(crate) fn __reduce131<
@@ -6253,11 +6268,11 @@ mod __parse__TypeSystemDocument {
     ) -> (usize, usize)
     {
         // StringValue? = StringValue => ActionFn(137);
-        let __sym0 = __pop_Variant19(__symbols);
+        let __sym0 = __pop_Variant37(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action137::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant37(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant38(__nt), __end));
         (1, 56)
     }
     pub(crate) fn __reduce132<
@@ -6274,7 +6289,7 @@ mod __parse__TypeSystemDocument {
         let __start = __lookahead_start.cloned().or_else(|| __symbols.last().map(|s| s.2.clone())).unwrap_or_default();
         let __end = __start.clone();
         let __nt = super::__action138::<>(input, ast, &__start, &__end);
-        __symbols.push((__start, __Symbol::Variant37(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant38(__nt), __end));
         (0, 56)
     }
     pub(crate) fn __reduce133<
@@ -6289,12 +6304,12 @@ mod __parse__TypeSystemDocument {
     {
         // Type = "[", Type => ActionFn(48);
         assert!(__symbols.len() >= 2);
-        let __sym1 = __pop_Variant38(__symbols);
+        let __sym1 = __pop_Variant39(__symbols);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym1.2;
         let __nt = super::__action48::<>(input, ast, __sym0, __sym1);
-        __symbols.push((__start, __Symbol::Variant38(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant39(__nt), __end));
         (2, 57)
     }
     pub(crate) fn __reduce134<
@@ -6312,7 +6327,7 @@ mod __parse__TypeSystemDocument {
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action233::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant38(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant39(__nt), __end));
         (1, 57)
     }
     pub(crate) fn __reduce135<
@@ -6327,12 +6342,12 @@ mod __parse__TypeSystemDocument {
     {
         // Type = NamedType, WrappingType+ => ActionFn(234);
         assert!(__symbols.len() >= 2);
-        let __sym1 = __pop_Variant43(__symbols);
+        let __sym1 = __pop_Variant44(__symbols);
         let __sym0 = __pop_Variant19(__symbols);
         let __start = __sym0.0;
         let __end = __sym1.2;
         let __nt = super::__action234::<>(input, ast, __sym0, __sym1);
-        __symbols.push((__start, __Symbol::Variant38(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant39(__nt), __end));
         (2, 57)
     }
     pub(crate) fn __reduce136<
@@ -6350,7 +6365,7 @@ mod __parse__TypeSystemDocument {
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action3::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant39(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant40(__nt), __end));
         (1, 58)
     }
     pub(crate) fn __reduce137<
@@ -6368,7 +6383,7 @@ mod __parse__TypeSystemDocument {
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action4::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant39(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant40(__nt), __end));
         (1, 58)
     }
     pub(crate) fn __reduce138<
@@ -6386,7 +6401,7 @@ mod __parse__TypeSystemDocument {
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action5::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant39(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant40(__nt), __end));
         (1, 58)
     }
     pub(crate) fn __reduce139<
@@ -6404,7 +6419,7 @@ mod __parse__TypeSystemDocument {
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action6::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant39(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant40(__nt), __end));
         (1, 58)
     }
     pub(crate) fn __reduce140<
@@ -6418,11 +6433,11 @@ mod __parse__TypeSystemDocument {
     ) -> (usize, usize)
     {
         // TypeSystemDefinition = UnionDefinition => ActionFn(7);
-        let __sym0 = __pop_Variant40(__symbols);
+        let __sym0 = __pop_Variant41(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action7::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant39(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant40(__nt), __end));
         (1, 58)
     }
     pub(crate) fn __reduce141<
@@ -6440,7 +6455,7 @@ mod __parse__TypeSystemDocument {
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action8::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant39(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant40(__nt), __end));
         (1, 58)
     }
     pub(crate) fn __reduce142<
@@ -6458,7 +6473,7 @@ mod __parse__TypeSystemDocument {
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action9::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant39(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant40(__nt), __end));
         (1, 58)
     }
     pub(crate) fn __reduce143<
@@ -6478,7 +6493,7 @@ mod __parse__TypeSystemDocument {
         let __start = __sym0.0;
         let __end = __sym1.2;
         let __nt = super::__action10::<>(input, ast, __sym0, __sym1);
-        __symbols.push((__start, __Symbol::Variant39(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant40(__nt), __end));
         (2, 58)
     }
     pub(crate) fn __reduce144<
@@ -6498,7 +6513,7 @@ mod __parse__TypeSystemDocument {
         let __start = __sym0.0;
         let __end = __sym1.2;
         let __nt = super::__action11::<>(input, ast, __sym0, __sym1);
-        __symbols.push((__start, __Symbol::Variant39(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant40(__nt), __end));
         (2, 58)
     }
     pub(crate) fn __reduce145<
@@ -6518,7 +6533,7 @@ mod __parse__TypeSystemDocument {
         let __start = __sym0.0;
         let __end = __sym1.2;
         let __nt = super::__action12::<>(input, ast, __sym0, __sym1);
-        __symbols.push((__start, __Symbol::Variant39(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant40(__nt), __end));
         (2, 58)
     }
     pub(crate) fn __reduce146<
@@ -6538,7 +6553,7 @@ mod __parse__TypeSystemDocument {
         let __start = __sym0.0;
         let __end = __sym1.2;
         let __nt = super::__action13::<>(input, ast, __sym0, __sym1);
-        __symbols.push((__start, __Symbol::Variant39(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant40(__nt), __end));
         (2, 58)
     }
     pub(crate) fn __reduce147<
@@ -6553,12 +6568,12 @@ mod __parse__TypeSystemDocument {
     {
         // TypeSystemDefinition = extend, UnionDefinition => ActionFn(14);
         assert!(__symbols.len() >= 2);
-        let __sym1 = __pop_Variant40(__symbols);
+        let __sym1 = __pop_Variant41(__symbols);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym1.2;
         let __nt = super::__action14::<>(input, ast, __sym0, __sym1);
-        __symbols.push((__start, __Symbol::Variant39(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant40(__nt), __end));
         (2, 58)
     }
     pub(crate) fn __reduce148<
@@ -6578,7 +6593,7 @@ mod __parse__TypeSystemDocument {
         let __start = __sym0.0;
         let __end = __sym1.2;
         let __nt = super::__action15::<>(input, ast, __sym0, __sym1);
-        __symbols.push((__start, __Symbol::Variant39(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant40(__nt), __end));
         (2, 58)
     }
     pub(crate) fn __reduce149<
@@ -6598,7 +6613,7 @@ mod __parse__TypeSystemDocument {
         let __start = __sym0.0;
         let __end = __sym1.2;
         let __nt = super::__action16::<>(input, ast, __sym0, __sym1);
-        __symbols.push((__start, __Symbol::Variant39(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant40(__nt), __end));
         (2, 58)
     }
     pub(crate) fn __reduce150<
@@ -6616,7 +6631,7 @@ mod __parse__TypeSystemDocument {
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action17::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant39(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant40(__nt), __end));
         (1, 58)
     }
     pub(crate) fn __reduce151<
@@ -6656,7 +6671,7 @@ mod __parse__TypeSystemDocument {
         let __start = __sym0.0;
         let __end = __sym3.2;
         let __nt = super::__action229::<>(input, ast, __sym0, __sym1, __sym2, __sym3);
-        __symbols.push((__start, __Symbol::Variant40(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant41(__nt), __end));
         (4, 60)
     }
     pub(crate) fn __reduce153<
@@ -6677,7 +6692,7 @@ mod __parse__TypeSystemDocument {
         let __start = __sym0.0;
         let __end = __sym2.2;
         let __nt = super::__action230::<>(input, ast, __sym0, __sym1, __sym2);
-        __symbols.push((__start, __Symbol::Variant40(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant41(__nt), __end));
         (3, 60)
     }
     pub(crate) fn __reduce154<
@@ -6938,7 +6953,7 @@ mod __parse__TypeSystemDocument {
         // Value = "[", Value+, "]" => ActionFn(232);
         assert!(__symbols.len() >= 3);
         let __sym2 = __pop_Variant0(__symbols);
-        let __sym1 = __pop_Variant41(__symbols);
+        let __sym1 = __pop_Variant42(__symbols);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym2.2;
@@ -7019,7 +7034,7 @@ mod __parse__TypeSystemDocument {
         let __start = __lookahead_start.cloned().or_else(|| __symbols.last().map(|s| s.2.clone())).unwrap_or_default();
         let __end = __start.clone();
         let __nt = super::__action103::<>(input, ast, &__start, &__end);
-        __symbols.push((__start, __Symbol::Variant41(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant42(__nt), __end));
         (0, 64)
     }
     pub(crate) fn __reduce173<
@@ -7033,11 +7048,11 @@ mod __parse__TypeSystemDocument {
     ) -> (usize, usize)
     {
         // Value* = Value+ => ActionFn(104);
-        let __sym0 = __pop_Variant41(__symbols);
+        let __sym0 = __pop_Variant42(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action104::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant41(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant42(__nt), __end));
         (1, 64)
     }
     pub(crate) fn __reduce174<
@@ -7055,7 +7070,7 @@ mod __parse__TypeSystemDocument {
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action145::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant41(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant42(__nt), __end));
         (1, 65)
     }
     pub(crate) fn __reduce175<
@@ -7071,11 +7086,11 @@ mod __parse__TypeSystemDocument {
         // Value+ = Value+, Value => ActionFn(146);
         assert!(__symbols.len() >= 2);
         let __sym1 = __pop_Variant10(__symbols);
-        let __sym0 = __pop_Variant41(__symbols);
+        let __sym0 = __pop_Variant42(__symbols);
         let __start = __sym0.0;
         let __end = __sym1.2;
         let __nt = super::__action146::<>(input, ast, __sym0, __sym1);
-        __symbols.push((__start, __Symbol::Variant41(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant42(__nt), __end));
         (2, 65)
     }
     pub(crate) fn __reduce176<
@@ -7093,7 +7108,7 @@ mod __parse__TypeSystemDocument {
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action50::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant42(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant43(__nt), __end));
         (1, 66)
     }
     pub(crate) fn __reduce177<
@@ -7111,7 +7126,7 @@ mod __parse__TypeSystemDocument {
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action51::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant42(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant43(__nt), __end));
         (1, 66)
     }
     pub(crate) fn __reduce178<
@@ -7128,7 +7143,7 @@ mod __parse__TypeSystemDocument {
         let __start = __lookahead_start.cloned().or_else(|| __symbols.last().map(|s| s.2.clone())).unwrap_or_default();
         let __end = __start.clone();
         let __nt = super::__action105::<>(input, ast, &__start, &__end);
-        __symbols.push((__start, __Symbol::Variant43(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant44(__nt), __end));
         (0, 67)
     }
     pub(crate) fn __reduce179<
@@ -7142,11 +7157,11 @@ mod __parse__TypeSystemDocument {
     ) -> (usize, usize)
     {
         // WrappingType* = WrappingType+ => ActionFn(106);
-        let __sym0 = __pop_Variant43(__symbols);
+        let __sym0 = __pop_Variant44(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action106::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant43(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant44(__nt), __end));
         (1, 67)
     }
     pub(crate) fn __reduce180<
@@ -7160,11 +7175,11 @@ mod __parse__TypeSystemDocument {
     ) -> (usize, usize)
     {
         // WrappingType+ = WrappingType => ActionFn(143);
-        let __sym0 = __pop_Variant42(__symbols);
+        let __sym0 = __pop_Variant43(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
         let __nt = super::__action143::<>(input, ast, __sym0);
-        __symbols.push((__start, __Symbol::Variant43(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant44(__nt), __end));
         (1, 68)
     }
     pub(crate) fn __reduce181<
@@ -7179,12 +7194,12 @@ mod __parse__TypeSystemDocument {
     {
         // WrappingType+ = WrappingType+, WrappingType => ActionFn(144);
         assert!(__symbols.len() >= 2);
-        let __sym1 = __pop_Variant42(__symbols);
-        let __sym0 = __pop_Variant43(__symbols);
+        let __sym1 = __pop_Variant43(__symbols);
+        let __sym0 = __pop_Variant44(__symbols);
         let __start = __sym0.0;
         let __end = __sym1.2;
         let __nt = super::__action144::<>(input, ast, __sym0, __sym1);
-        __symbols.push((__start, __Symbol::Variant43(__nt), __end));
+        __symbols.push((__start, __Symbol::Variant44(__nt), __end));
         (2, 68)
     }
 }
@@ -7214,7 +7229,7 @@ fn __action1<'input>(
 fn __action2<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    (_, description, _): (usize, core::option::Option<StringId>, usize),
+    (_, description, _): (usize, core::option::Option<StringLiteralRef>, usize),
     (_, def, _): (usize, DefinitionId, usize),
 ) {
     {
@@ -7542,7 +7557,7 @@ fn __action28<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
     (_, start, _): (usize, usize, usize),
-    (_, description, _): (usize, core::option::Option<StringId>, usize),
+    (_, description, _): (usize, core::option::Option<StringLiteralRef>, usize),
     (_, name, _): (usize, StringId, usize),
     (_, arguments, _): (usize, core::option::Option<Vec<()>>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
@@ -7697,7 +7712,7 @@ fn __action36<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
     (_, start, _): (usize, usize, usize),
-    (_, description, _): (usize, core::option::Option<StringId>, usize),
+    (_, description, _): (usize, core::option::Option<StringLiteralRef>, usize),
     (_, value, _): (usize, StringId, usize),
     (_, directives, _): (usize, IdRange<DirectiveId>, usize),
     (_, end, _): (usize, usize, usize),
@@ -7829,7 +7844,7 @@ fn __action44<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
     (_, start, _): (usize, usize, usize),
-    (_, description, _): (usize, core::option::Option<StringId>, usize),
+    (_, description, _): (usize, core::option::Option<StringLiteralRef>, usize),
     (_, name, _): (usize, StringId, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, ty, _): (usize, TypeId, usize),
@@ -7981,8 +7996,8 @@ fn __action56<'input>(
     (_, s, _): (usize, &'input str, usize),
 ) -> ValueId {
     {
-        let id = ast.intern_owned_string(unquote_block_string(s));
-        ast.value(Value::String(id))
+        let id = ast.block_string(unquote_block_string(s));
+        ast.value(Value::BlockString(id))
     }
 }
 
@@ -8070,11 +8085,13 @@ fn __action64<'input>(
     (_, start, _): (usize, usize, usize),
     (_, s, _): (usize, &'input str, usize),
 ) -> Result<
-    StringId,
+    StringLiteralRef,
     __lalrpop_util::ParseError<usize, lexer::Token<'input>, crate::parser::AdditionalErrors>,
 > {
     {
-        Ok(ast.intern_owned_string(unquote_string(s, start)?))
+        Ok(StringLiteralRef::String(
+            ast.intern_owned_string(unquote_string(s, start)?),
+        ))
     }
 }
 
@@ -8084,9 +8101,10 @@ fn __action65<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
     (_, s, _): (usize, &'input str, usize),
-) -> StringId {
+) -> StringLiteralRef {
     {
-        ast.intern_owned_string(unquote_block_string(s))
+        let id = ast.block_string(unquote_block_string(s));
+        StringLiteralRef::Block(id)
     }
 }
 
@@ -8850,8 +8868,8 @@ fn __action136<'input>(
 fn __action137<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    (_, __0, _): (usize, StringId, usize),
-) -> core::option::Option<StringId> {
+    (_, __0, _): (usize, StringLiteralRef, usize),
+) -> core::option::Option<StringLiteralRef> {
     Some(__0)
 }
 
@@ -8862,7 +8880,7 @@ fn __action138<'input>(
     ast: &mut TypeSystemAstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
-) -> core::option::Option<StringId> {
+) -> core::option::Option<StringLiteralRef> {
     None
 }
 
@@ -9180,7 +9198,7 @@ fn __action160<'input>(
 fn __action161<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    __0: (usize, core::option::Option<StringId>, usize),
+    __0: (usize, core::option::Option<StringLiteralRef>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
     __3: (usize, usize, usize),
@@ -9197,7 +9215,7 @@ fn __action161<'input>(
 fn __action162<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    __0: (usize, core::option::Option<StringId>, usize),
+    __0: (usize, core::option::Option<StringLiteralRef>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, core::option::Option<Vec<()>>, usize),
     __3: (usize, lexer::Token<'input>, usize),
@@ -9235,7 +9253,7 @@ fn __action163<'input>(
 fn __action164<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    __0: (usize, core::option::Option<StringId>, usize),
+    __0: (usize, core::option::Option<StringLiteralRef>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, lexer::Token<'input>, usize),
     __3: (usize, TypeId, usize),
@@ -9312,7 +9330,7 @@ fn __action168<'input>(
     ast: &mut TypeSystemAstWriter,
     __0: (usize, &'input str, usize),
 ) -> Result<
-    StringId,
+    StringLiteralRef,
     __lalrpop_util::ParseError<usize, lexer::Token<'input>, crate::parser::AdditionalErrors>,
 > {
     let __start0 = __0.0;
@@ -9403,7 +9421,7 @@ fn __action172<'input>(
 fn __action173<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    __0: (usize, core::option::Option<StringId>, usize),
+    __0: (usize, core::option::Option<StringLiteralRef>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
 ) -> EnumValueDefinitionId {
@@ -9419,7 +9437,7 @@ fn __action173<'input>(
 fn __action174<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    __0: (usize, core::option::Option<StringId>, usize),
+    __0: (usize, core::option::Option<StringLiteralRef>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, core::option::Option<Vec<()>>, usize),
     __3: (usize, lexer::Token<'input>, usize),
@@ -9455,7 +9473,7 @@ fn __action175<'input>(
 fn __action176<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    __0: (usize, core::option::Option<StringId>, usize),
+    __0: (usize, core::option::Option<StringLiteralRef>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, lexer::Token<'input>, usize),
     __3: (usize, TypeId, usize),
@@ -9644,7 +9662,7 @@ fn __action186<'input>(
 fn __action187<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    __0: (usize, core::option::Option<StringId>, usize),
+    __0: (usize, core::option::Option<StringLiteralRef>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, Vec<()>, usize),
     __3: (usize, lexer::Token<'input>, usize),
@@ -9663,7 +9681,7 @@ fn __action187<'input>(
 fn __action188<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    __0: (usize, core::option::Option<StringId>, usize),
+    __0: (usize, core::option::Option<StringLiteralRef>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, lexer::Token<'input>, usize),
     __3: (usize, TypeId, usize),
@@ -9681,7 +9699,7 @@ fn __action188<'input>(
 fn __action189<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    __0: (usize, core::option::Option<StringId>, usize),
+    __0: (usize, core::option::Option<StringLiteralRef>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, lexer::Token<'input>, usize),
     __3: (usize, TypeId, usize),
@@ -9700,7 +9718,7 @@ fn __action189<'input>(
 fn __action190<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    __0: (usize, core::option::Option<StringId>, usize),
+    __0: (usize, core::option::Option<StringLiteralRef>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, lexer::Token<'input>, usize),
     __3: (usize, TypeId, usize),
@@ -10159,7 +10177,7 @@ fn __action216<'input>(
 fn __action217<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    __0: (usize, StringId, usize),
+    __0: (usize, StringLiteralRef, usize),
     __1: (usize, DefinitionId, usize),
 ) {
     let __start0 = __0.0;
@@ -10188,7 +10206,7 @@ fn __action218<'input>(
 fn __action219<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    __0: (usize, StringId, usize),
+    __0: (usize, StringLiteralRef, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
 ) -> EnumValueDefinitionId {
@@ -10219,7 +10237,7 @@ fn __action220<'input>(
 fn __action221<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    __0: (usize, StringId, usize),
+    __0: (usize, StringLiteralRef, usize),
     __1: (usize, StringId, usize),
     __2: (usize, Vec<()>, usize),
     __3: (usize, lexer::Token<'input>, usize),
@@ -10256,7 +10274,7 @@ fn __action222<'input>(
 fn __action223<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    __0: (usize, StringId, usize),
+    __0: (usize, StringLiteralRef, usize),
     __1: (usize, StringId, usize),
     __2: (usize, lexer::Token<'input>, usize),
     __3: (usize, TypeId, usize),
@@ -10291,7 +10309,7 @@ fn __action224<'input>(
 fn __action225<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    __0: (usize, StringId, usize),
+    __0: (usize, StringLiteralRef, usize),
     __1: (usize, StringId, usize),
     __2: (usize, lexer::Token<'input>, usize),
     __3: (usize, TypeId, usize),
@@ -10328,7 +10346,7 @@ fn __action226<'input>(
 fn __action227<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    __0: (usize, StringId, usize),
+    __0: (usize, StringLiteralRef, usize),
     __1: (usize, StringId, usize),
     __2: (usize, lexer::Token<'input>, usize),
     __3: (usize, TypeId, usize),

@@ -6,7 +6,7 @@ pub use id_range::IdRange;
 pub use strings::MalformedStringError;
 pub use types::*;
 
-pub(crate) use strings::{unquote_block_string, unquote_string};
+pub(crate) use strings::{trim_block_string_whitespace, unquote_block_string, unquote_string};
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum OperationType {

@@ -2,10 +2,14 @@ use std::fmt;
 
 use crate::{lexer, parser::AdditionalErrors, Span};
 
-pub(crate) fn unquote_block_string(src: &str) -> String {
+pub(crate) fn unquote_block_string(src: &str) -> &str {
     assert!(src.starts_with("\"\"\"") && src.ends_with("\"\"\""));
 
-    let lines = src[3..src.len() - 3].lines().collect::<Vec<_>>();
+    &src[3..src.len() - 3]
+}
+
+pub(crate) fn trim_block_string_whitespace(src: &str) -> String {
+    let lines = src.lines().collect::<Vec<_>>();
 
     let mut common_indent = usize::MAX;
     let mut first_non_empty_line: Option<usize> = None;

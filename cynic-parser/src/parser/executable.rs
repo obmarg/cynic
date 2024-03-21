@@ -1,9 +1,10 @@
 // auto-generated: "lalrpop 0.20.0"
-// sha3: adea4d8656c52deb12f4167a48f218dcae3bfadfd4afadac5adbf8440e0d406a
+// sha3: 08c754fe6dffbd7e3b3919f55eff9d7ea855a65d3a7cea10e782098565a47755
 use crate::lexer;
 use crate::{
     common::{
-        unquote_block_string, unquote_string, IdRange, OperationType, TypeWrappers, WrappingType,
+        trim_block_string_whitespace, unquote_block_string, unquote_string, IdRange, OperationType,
+        TypeWrappers, WrappingType,
     },
     executable::{ids::*, storage::*, writer::ExecutableAstWriter},
 };
@@ -23,7 +24,10 @@ mod __parse__ExecutableDocument {
     executable::{
         storage::*, ids::*, writer::ExecutableAstWriter
     },
-    common::{OperationType, IdRange, WrappingType, TypeWrappers, unquote_string, unquote_block_string}
+    common::{
+        OperationType, IdRange, WrappingType, TypeWrappers,
+        unquote_string, unquote_block_string, trim_block_string_whitespace
+    }
 };
     #[allow(unused_extern_crates)]
     extern crate lalrpop_util as __lalrpop_util;
@@ -6081,7 +6085,7 @@ fn __action32<'input>(
     (_, s, _): (usize, &'input str, usize),
 ) -> ValueId {
     {
-        let id = ast.intern_owned_string(unquote_block_string(s));
+        let id = ast.intern_owned_string(trim_block_string_whitespace(unquote_block_string(s)));
         ast.value(ValueRecord::String(id))
     }
 }
