@@ -564,7 +564,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<StringLiteral<'a>> {
         match self.0.kind() {
             StringLiteralKind::String => allocator.text(self.0.to_cow()).double_quotes(),
             StringLiteralKind::Block => allocator
-                .text(self.0.to_cow())
+                .text(self.0.raw_str())
                 .double_quotes()
                 .double_quotes()
                 .double_quotes(),

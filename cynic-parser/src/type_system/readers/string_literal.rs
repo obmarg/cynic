@@ -22,7 +22,7 @@ pub enum StringLiteralKind {
 impl<'a> StringLiteral<'a> {
     pub fn to_cow(&self) -> Cow<'a, str> {
         match self.0 {
-            StringLiteralInner::String(context) => Cow::Borrowed(context),
+            StringLiteralInner::String(string) => Cow::Borrowed(string),
             StringLiteralInner::BlockString(string) => {
                 // This is more intense - we need to unquote the string
                 //
@@ -33,7 +33,10 @@ impl<'a> StringLiteral<'a> {
     }
 
     pub fn raw_str(&self) -> &'a str {
-        todo!()
+        match self.0 {
+            StringLiteralInner::String(string) => string,
+            StringLiteralInner::BlockString(string) => string,
+        }
     }
 
     pub fn kind(&self) -> StringLiteralKind {
