@@ -207,3 +207,17 @@ pub enum TypeKind {
 
 #[cynic::schema("introspection")]
 pub(crate) mod schema {}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn snapshot_test_query() {
+        use cynic::QueryBuilder;
+
+        let operation = IntrospectionQuery::build(());
+
+        insta::assert_snapshot!(operation.query);
+    }
+}
