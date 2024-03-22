@@ -1,7 +1,7 @@
 use super::{
     directives::DirectiveDefinition, enums::EnumDefinition, input_objects::InputObjectDefinition,
     interfaces::InterfaceDefinition, objects::ObjectDefinition, scalars::ScalarDefinition,
-    schemas::SchemaDefinition, unions::UnionDefinition,
+    schemas::SchemaDefinition, unions::UnionDefinition, Directive,
 };
 
 #[derive(Clone, Copy)]
@@ -33,5 +33,18 @@ impl<'a> TypeDefinition<'a> {
             TypeDefinition::Enum(inner) => inner.name(),
             TypeDefinition::InputObject(inner) => inner.name(),
         }
+    }
+
+    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
+        let rv: Box<dyn ExactSizeIterator<Item = Directive<'a>> + 'a> = match self {
+            TypeDefinition::Scalar(inner) => Box::new(inner.directives()),
+            TypeDefinition::Object(inner) => Box::new(inner.directives()),
+            TypeDefinition::Interface(inner) => Box::new(inner.directives()),
+            TypeDefinition::Union(inner) => Box::new(inner.directives()),
+            TypeDefinition::Enum(inner) => Box::new(inner.directives()),
+            TypeDefinition::InputObject(inner) => Box::new(inner.directives()),
+        };
+
+        rv
     }
 }

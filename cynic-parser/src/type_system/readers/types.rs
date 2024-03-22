@@ -12,6 +12,14 @@ impl<'a> Type<'a> {
             .lookup(self.0.document.lookup(self.0.id).name)
     }
 
+    pub fn is_list(&self) -> bool {
+        self.wrappers().any(|wrapper| wrapper == WrappingType::List)
+    }
+
+    pub fn is_non_null(&self) -> bool {
+        self.wrappers().next() == Some(WrappingType::NonNull)
+    }
+
     /// The wrapper types from the outermost to innermost
     pub fn wrappers(&self) -> impl Iterator<Item = WrappingType> + 'a {
         self.0.document.lookup(self.0.id).wrappers.iter()

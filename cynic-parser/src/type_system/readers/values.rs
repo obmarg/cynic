@@ -19,6 +19,15 @@ pub enum ValueReader<'a> {
     Object(Vec<(&'a str, ValueReader<'a>)>),
 }
 
+impl<'a> ValueReader<'a> {
+    pub fn as_str(&self) -> Option<&'a str> {
+        match self {
+            Self::String(inner) => Some(inner),
+            _ => None,
+        }
+    }
+}
+
 impl TypeSystemId for ValueId {
     type Reader<'a> = ValueReader<'a>;
 }

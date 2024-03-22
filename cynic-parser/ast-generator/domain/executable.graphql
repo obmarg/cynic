@@ -1,0 +1,59 @@
+scalar String
+
+scalar OperationType @inline
+
+# Think this one should be done by hand
+# as it doesnt exist in storage.
+# union ExecutableDefinition = OperationDefintion | FragmentDefinition
+
+type OperationDefinition @file(name: "operation") {
+  operation_type: OperationType
+  name: String!
+  variable_definitions: [VariableDefinition]
+  directives: [Directive]
+  selection_set: [Selection]
+}
+
+type FragmentDefinition @file(name: "fragment") {
+  name: String!
+  type_condition: String
+  directives: [Directive]
+  selection_set: [Selection]
+}
+
+union Selection = FieldSelection | InlineFragment | FragmentSpread
+
+type FieldSelection {
+  alias: String
+  name: String!
+  arguments: [Argument]
+  directives: [Directive]
+  selection_set: [Selection]
+}
+
+type InlineFragment {
+  type_condition: String
+  directives: [Directive]
+  selection_set: [Selection]
+}
+
+type FragmentSpread {
+  fragment_name: String!
+  directives: [Directive]
+}
+
+type Directive {
+  name: String!
+  value: Value!
+}
+
+type Argument {
+  name: String!
+  value: Value!
+}
+
+type VariableDefinition
+
+scalar Type
+
+type Value
