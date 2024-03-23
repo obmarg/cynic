@@ -337,13 +337,13 @@ ObjectField: (StringId, ValueId) = {
     <name:Name> ":" <value:Value> => (name, value)
 }
 
-StringValue: StringLiteralRef = {
+StringValue: StringLiteralId = {
     <start:@L> <s:StringLiteral> =>? {
-        Ok(StringLiteralRef::String(ast.intern_owned_string(unquote_string(s, start)?)))
+        Ok(StringLiteralId::String(ast.intern_owned_string(unquote_string(s, start)?)))
     },
     <s:BlockStringLiteral> => {
         let id = ast.block_string(unquote_block_string(s));
-        StringLiteralRef::Block(id)
+        StringLiteralId::Block(id)
     },
 }
 

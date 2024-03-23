@@ -143,3 +143,9 @@ impl AstLookup<StringId> for TypeSystemDocument {
         unimplemented!("strings aren't mutable so can't do this")
     }
 }
+
+#[derive(Clone, Copy)]
+pub enum StringLiteralId {
+    String(StringId),
+    Block(BlockStringLiteralId),
+}
