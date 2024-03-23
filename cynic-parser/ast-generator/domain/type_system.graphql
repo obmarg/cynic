@@ -3,6 +3,11 @@ type SchemaDefinition @file(name: "schemas") {
   root_operations: [RootOperationTypeDefinition!]!
 }
 
+type RootOperationTypeDefinition @file(name: "schemas") {
+  operation_type: OperationType!
+  named_type: String!
+}
+
 type ScalarDefinition @file(name: "scalars") {
   name: String!
   description: StringLiteral
@@ -96,7 +101,6 @@ type Argument @file(name: "arguments") {
   value: Value
 }
 
-scalar RootOperationTypeDefinition @inline
 scalar Span @inline
 scalar DirectiveLocation @inline
 scalar OperationType @inline

@@ -174,11 +174,15 @@ impl quote::ToTokens for ReaderFunction<'_> {
         };
 
         let body = match self.0.target {
-            TypeDefinition::Scalar(scalar)
-                if scalar
-                    .directives()
-                    .any(|directive| directive.name() == "inline") =>
-            {
+            TypeDefinition::Scalar(scalar) if scalar.is_inline() && self.0.field.ty().is_list() => {
+                // I'm assuming inline scalars are copy here.
+                quote! {
+                    let document = self.0.document;
+
+                    document.lookup(self.0.id).#field_name.iter().cloned()
+                }
+            }
+            TypeDefinition::Scalar(scalar) if scalar.is_inline() => {
                 // I'm assuming inline scalars are copy here.
                 quote! {
                     let document = self.0.document;
