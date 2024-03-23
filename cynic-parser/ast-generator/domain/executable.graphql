@@ -64,4 +64,4 @@ type VariableDefinition @file(name: "variable") {
 
 scalar Type
 
-type Value
+scalar Value @file(name: "value")
