@@ -39,6 +39,12 @@ fn main() -> anyhow::Result<()> {
             }
         }
 
+        let id_trait = match module {
+            "executable" => "ExecutableId",
+            "type_system" => "TypeSystemId",
+            _ => todo!(),
+        };
+
         let outputs = model_index
             .values()
             .map(|model| {
@@ -65,12 +71,6 @@ fn main() -> anyhow::Result<()> {
                 .flat_map(|entity| entity.requires.clone().into_iter())
                 .collect();
             let current_entities = output.iter().map(|entity| entity.id.clone()).collect();
-
-            let id_trait = match module {
-                "executable" => "ExecutableId",
-                "type_system" => "TypeSystemId",
-                _ => todo!(),
-            };
 
             let imports =
                 imports(requires, current_entities, id_trait, shared_imports(module)).unwrap();
