@@ -113,31 +113,29 @@ impl quote::ToTokens for ObjectField<'_> {
         let field_name = Ident::new(self.0.field.name(), Span::call_site());
 
         let target_id = IdIdent(self.0.target.name());
+
         let ty = match self.0.target {
             TypeDefinition::Scalar(scalar) if scalar.is_inline() => {
+                // I'm assuming inline scalars are copy here.
                 let ident = Ident::new(self.0.target.name(), Span::call_site());
-                if self.0.field.ty().is_non_null() {
+                if self.0.field.ty().is_list() {
+                    quote! { Vec<#ident> }
+                } else if self.0.field.ty().is_non_null() {
                     quote! { #ident }
                 } else {
                     quote! { Option<#ident> }
                 }
             }
-            TypeDefinition::Object(_) | TypeDefinition::Union(_) | TypeDefinition::Scalar(_)
-                if self.0.field.ty().is_list() =>
-            {
-                quote! {
-                    IdRange<#target_id>
+            TypeDefinition::Object(_) | TypeDefinition::Union(_) | TypeDefinition::Scalar(_) => {
+                if self.0.field.ty().is_list() {
+                    quote! { IdRange<#target_id> }
+                } else if self.0.field.ty().is_non_null() {
+                    quote! { #target_id }
+                } else {
+                    quote! { Option<#target_id> }
                 }
             }
-            TypeDefinition::Object(_) | TypeDefinition::Union(_) | TypeDefinition::Scalar(_)
-                if self.0.field.ty().is_non_null() =>
-            {
-                quote! { #target_id }
-            }
-            TypeDefinition::Object(_) | TypeDefinition::Union(_) | TypeDefinition::Scalar(_) => {
-                quote! { Option<#target_id> }
-            }
-            _ => unimplemented!("No support for this target type"),
+            _ => unimplemented!(),
         };
 
         tokens.append_all(quote! {
