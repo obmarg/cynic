@@ -7,12 +7,17 @@ use cynic_parser::type_system::{
     TypeDefinition,
 };
 
-use crate::{format_code, idents::IdIdent};
+use crate::{
+    exts::ScalarExt,
+    file::{EntityOutput, EntityRef},
+    format_code,
+    idents::IdIdent,
+};
 
 pub fn object_output(
     object: ObjectDefinition<'_>,
     model_index: &IndexMap<&str, TypeDefinition<'_>>,
-) -> anyhow::Result<String> {
+) -> anyhow::Result<EntityOutput> {
     let record_name = Ident::new(&format!("{}Record", object.name()), Span::call_site());
     let reader_name = Ident::new(object.name(), Span::call_site());
     let id_name = IdIdent(object.name());
@@ -66,7 +71,7 @@ pub fn object_output(
         }
     })?;
 
-    Ok(indoc::formatdoc!(
+    let contents = indoc::formatdoc!(
         r#"
         {record}
 
@@ -78,7 +83,17 @@ pub fn object_output(
 
         {from_impl}
     "#
-    ))
+    );
+
+    Ok(EntityOutput {
+        requires: edges
+            .iter()
+            .copied()
+            .filter_map(|edge| EntityRef::new(edge.target))
+            .collect(),
+        id: EntityRef::new(TypeDefinition::Object(object)).unwrap(),
+        contents,
+    })
 }
 
 #[derive(Clone, Copy)]
@@ -96,11 +111,7 @@ impl quote::ToTokens for ObjectField<'_> {
 
         let target_id = IdIdent(self.0.target.name());
         let ty = match self.0.target {
-            TypeDefinition::Scalar(scalar)
-                if scalar
-                    .directives()
-                    .any(|directive| directive.name() == "inline") =>
-            {
+            TypeDefinition::Scalar(scalar) if scalar.is_inline() => {
                 let ident = Ident::new(self.0.target.name(), Span::call_site());
                 if self.0.field.ty().is_non_null() {
                     quote! { #ident }
@@ -140,11 +151,7 @@ impl quote::ToTokens for ReaderFunction<'_> {
         let target_type = Ident::new(self.0.target.name(), Span::call_site());
 
         let ty = match self.0.target {
-            TypeDefinition::Scalar(scalar)
-                if scalar
-                    .directives()
-                    .any(|directive| directive.name() == "inline") =>
-            {
+            TypeDefinition::Scalar(scalar) if scalar.is_inline() => {
                 // I'm assuming inline scalars are copy here.
                 quote! { #target_type }
             }

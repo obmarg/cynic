@@ -1,7 +1,10 @@
+mod exts;
+mod file;
 mod idents;
 mod object;
 
 use indexmap::IndexMap;
+use indoc::formatdoc;
 use itertools::Itertools;
 use proc_macro2::{Ident, Span};
 use quote::{quote, TokenStreamExt};
@@ -12,7 +15,7 @@ use cynic_parser::type_system::{
     Definition, TypeDefinition,
 };
 
-use crate::idents::IdIdent;
+use crate::{exts::FileDirectiveExt, file::imports, idents::IdIdent};
 
 fn main() -> anyhow::Result<()> {
     eprintln!("{:?}", std::env::current_dir());
@@ -55,13 +58,7 @@ fn main() -> anyhow::Result<()> {
                     _ => anyhow::bail!("unsupported definition"),
                 };
 
-                let file_name = model
-                    .directives()
-                    .find(|directive| directive.name() == "file")
-                    .and_then(|directive| directive.arguments().next()?.value().as_str())
-                    .unwrap_or(name);
-
-                Ok(Some((file_name, output)))
+                Ok(Some((model.file_name(), output)))
             })
             .filter_map(Result::transpose)
             .collect::<Result<Vec<(_, _)>, _>>()
@@ -70,7 +67,27 @@ fn main() -> anyhow::Result<()> {
             .into_group_map();
 
         for (file_name, output) in outputs {
-            std::fs::write(format!("output/{file_name}.rs"), output.join("\n\n")).unwrap();
+            let requires = output
+                .iter()
+                .flat_map(|entity| entity.requires.clone().into_iter())
+                .collect();
+            let current_entities = output.iter().map(|entity| entity.id.clone()).collect();
+
+            let imports = imports(requires, current_entities).unwrap();
+
+            let doc = formatdoc!(
+                r#"
+                {imports}
+
+                {}
+            "#,
+                output
+                    .into_iter()
+                    .map(|entity| entity.contents)
+                    .join("\n\n")
+            );
+
+            std::fs::write(format!("output/{file_name}.rs"), doc).unwrap();
         }
     }
 
