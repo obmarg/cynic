@@ -1,8 +1,7 @@
 use std::num::NonZeroU32;
 
 use super::{
-    argument::ArgumentRecord, definition::ExecutableDefinitionRecord, directive::DirectiveRecord,
-    storage::*, types::TypeRecord, value::ValueRecord, variable::VariableDefinitionRecord,
+    storage::*, types::TypeRecord, value::ValueRecord,
     ExecutableDocument,
 };
 use crate::{common::IdRange, AstLookup};

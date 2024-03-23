@@ -1,10 +1,8 @@
 use crate::AstLookup;
 
 use super::{
-    fragment::FragmentDefinition,
     ids::{ExecutableDefinitionId, FragmentDefinitionId, OperationDefinitionId},
-    operation::OperationDefinition,
-    ExecutableId, ReadContext,
+    ExecutableId, FragmentDefinition, OperationDefinition, ReadContext,
 };
 
 pub enum ExecutableDefinitionRecord {
