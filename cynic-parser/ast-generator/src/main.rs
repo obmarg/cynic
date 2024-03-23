@@ -127,7 +127,7 @@ fn shared_imports(name: &str) -> proc_macro2::TokenStream {
         quote::quote! {
             #[allow(unused_imports)]
             use crate::{
-                common::{IdRange, OperationType},
+                common::{IdRange, OperationType, Span},
                 AstLookup,
             };
             #[allow(unused_imports)]
