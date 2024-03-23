@@ -66,7 +66,11 @@ fn main() -> anyhow::Result<()> {
                 .collect();
             let current_entities = output.iter().map(|entity| entity.id.clone()).collect();
 
-            let imports = imports(requires, current_entities).unwrap();
+            let id_trait = match module {
+                "executable" => "ExecutableId",
+                _ => todo!(),
+            };
+            let imports = imports(requires, current_entities, id_trait).unwrap();
 
             let doc = formatdoc!(
                 r#"

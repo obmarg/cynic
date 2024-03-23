@@ -51,6 +51,7 @@ pub struct EntityOutput {
 pub fn imports(
     mut requires: BTreeSet<EntityRef>,
     current_file_entities: Vec<EntityRef>,
+    id_trait: &str,
 ) -> anyhow::Result<String> {
     for id in &current_file_entities {
         requires.remove(id);
@@ -74,6 +75,8 @@ pub fn imports(
         })
         .collect::<Vec<_>>();
 
+    let id_trait = Ident::new(id_trait, Span::call_site());
+
     format_code(quote! {
         #[allow(unused_imports)]
         use crate::{
@@ -85,7 +88,8 @@ pub fn imports(
 
         use super::{
             #(#reader_imports)*
-            ids::{#(#id_imports)*}
+            ids::{#(#id_imports)*},
+            ReadContext, #id_trait
         };
     })
 }
