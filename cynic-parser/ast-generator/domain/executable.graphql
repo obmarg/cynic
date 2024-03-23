@@ -7,8 +7,8 @@ scalar OperationType @inline
 # union ExecutableDefinition = OperationDefintion | FragmentDefinition
 
 type OperationDefinition @file(name: "operation") {
-  operation_type: OperationType
-  name: String!
+  operation_type: OperationType!
+  name: String
   variable_definitions: [VariableDefinition]
   directives: [Directive]
   selection_set: [Selection]
@@ -21,9 +21,12 @@ type FragmentDefinition @file(name: "fragment") {
   selection_set: [Selection]
 }
 
-union Selection = FieldSelection | InlineFragment | FragmentSpread
+union Selection @file(name: "selections") =
+    FieldSelection
+  | InlineFragment
+  | FragmentSpread
 
-type FieldSelection {
+type FieldSelection @file(name: "selections") {
   alias: String
   name: String!
   arguments: [Argument]
@@ -31,28 +34,33 @@ type FieldSelection {
   selection_set: [Selection]
 }
 
-type InlineFragment {
+type InlineFragment @file(name: "selections") {
   type_condition: String
   directives: [Directive]
   selection_set: [Selection]
 }
 
-type FragmentSpread {
+type FragmentSpread @file(name: "selections") {
   fragment_name: String!
   directives: [Directive]
 }
 
-type Directive {
+type Directive @file(name: "directive") {
+  name: String!
+  arguments: [Argument]
+}
+
+type Argument @file(name: "argument") {
   name: String!
   value: Value!
 }
 
-type Argument {
+type VariableDefinition @file(name: "variable") {
   name: String!
-  value: Value!
+  ty: Type!
+  default_value: Value
+  directives: [Directive]
 }
-
-type VariableDefinition
 
 scalar Type
 

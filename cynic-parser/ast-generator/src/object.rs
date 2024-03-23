@@ -42,6 +42,7 @@ pub fn object_output(
     })?;
 
     let reader = format_code(quote! {
+        #[derive(Clone, Copy)]
         pub struct #reader_name<'a>(ReadContext<'a, #id_name>);
     })?;
 
@@ -58,7 +59,7 @@ pub fn object_output(
     })?;
 
     let from_impl = format_code(quote! {
-        impl <'a> From<ReadContext<'a, #id_name>> for FieldSelection<'a> {
+        impl <'a> From<ReadContext<'a, #id_name>> for #reader_name<'a> {
             fn from(value: ReadContext<'a, #id_name>) -> Self {
                 Self(value)
             }
@@ -126,7 +127,7 @@ impl quote::ToTokens for ObjectField<'_> {
         };
 
         tokens.append_all(quote! {
-            #field_name: #ty
+            pub #field_name: #ty
         });
     }
 }

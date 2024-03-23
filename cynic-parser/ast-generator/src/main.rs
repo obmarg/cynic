@@ -69,8 +69,8 @@ fn main() -> anyhow::Result<()> {
             .into_iter()
             .into_group_map();
 
-        for (name, output) in outputs {
-            println!("Output for {name}:\n\n{output}\n\n");
+        for (file_name, output) in outputs {
+            std::fs::write(format!("output/{file_name}.rs"), output.join("\n\n")).unwrap();
         }
     }
 
