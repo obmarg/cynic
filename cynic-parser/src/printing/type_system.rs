@@ -517,22 +517,22 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Argument<'a>> {
     }
 }
 
-impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<ValueReader<'a>> {
+impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Value<'a>> {
     fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
         match self.0 {
-            crate::type_system::ValueReader::Variable(name) => allocator.text(format!("${name}")),
-            crate::type_system::ValueReader::Int(value) => allocator.text(format!("{value}")),
-            crate::type_system::ValueReader::Float(value) => allocator.text(format!("{value}")),
-            crate::type_system::ValueReader::String(value) => allocator.text(value).double_quotes(),
-            crate::type_system::ValueReader::BlockString(value) => allocator
+            crate::type_system::Value::Variable(name) => allocator.text(format!("${name}")),
+            crate::type_system::Value::Int(value) => allocator.text(format!("{value}")),
+            crate::type_system::Value::Float(value) => allocator.text(format!("{value}")),
+            crate::type_system::Value::String(value) => allocator.text(value).double_quotes(),
+            crate::type_system::Value::BlockString(value) => allocator
                 .text(value)
                 .double_quotes()
                 .double_quotes()
                 .double_quotes(),
-            crate::type_system::ValueReader::Boolean(value) => allocator.text(format!("{value}")),
-            crate::type_system::ValueReader::Null => allocator.text("null"),
-            crate::type_system::ValueReader::Enum(value) => allocator.text(value),
-            crate::type_system::ValueReader::List(items) => brackets_and_maybe_indent(
+            crate::type_system::Value::Boolean(value) => allocator.text(format!("{value}")),
+            crate::type_system::Value::Null => allocator.text("null"),
+            crate::type_system::Value::Enum(value) => allocator.text(value),
+            crate::type_system::Value::List(items) => brackets_and_maybe_indent(
                 allocator
                     .intersperse(
                         items.into_iter().map(NodeDisplay),
@@ -541,7 +541,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<ValueReader<'a>> {
                     .group()
                     .enclose(allocator.line_(), allocator.line_()),
             ),
-            crate::type_system::ValueReader::Object(items) => allocator
+            crate::type_system::Value::Object(items) => allocator
                 .intersperse(
                     items.into_iter().map(|(name, value)| {
                         allocator

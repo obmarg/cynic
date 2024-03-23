@@ -7948,7 +7948,7 @@ fn __action52<'input>(
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, name, _): (usize, StringId, usize),
 ) -> ValueId {
-    ast.value(Value::Variable(name))
+    ast.value(ValueRecord::Variable(name))
 }
 
 #[allow(unused_variables)]
@@ -7958,7 +7958,7 @@ fn __action53<'input>(
     ast: &mut TypeSystemAstWriter,
     (_, int, _): (usize, &'input str, usize),
 ) -> ValueId {
-    ast.value(Value::Int(int.parse().unwrap()))
+    ast.value(ValueRecord::Int(int.parse().unwrap()))
 }
 
 #[allow(unused_variables)]
@@ -7968,7 +7968,7 @@ fn __action54<'input>(
     ast: &mut TypeSystemAstWriter,
     (_, float, _): (usize, &'input str, usize),
 ) -> ValueId {
-    ast.value(Value::Float(float.parse().unwrap()))
+    ast.value(ValueRecord::Float(float.parse().unwrap()))
 }
 
 #[allow(unused_variables)]
@@ -7984,7 +7984,7 @@ fn __action55<'input>(
 > {
     {
         let id = ast.intern_owned_string(unquote_string(s, start)?);
-        Ok(ast.value(Value::String(id)))
+        Ok(ast.value(ValueRecord::String(id)))
     }
 }
 
@@ -7997,7 +7997,7 @@ fn __action56<'input>(
 ) -> ValueId {
     {
         let id = ast.block_string(unquote_block_string(s));
-        ast.value(Value::BlockString(id))
+        ast.value(ValueRecord::BlockString(id))
     }
 }
 
@@ -8008,7 +8008,7 @@ fn __action57<'input>(
     ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> ValueId {
-    ast.value(Value::Boolean(true))
+    ast.value(ValueRecord::Boolean(true))
 }
 
 #[allow(unused_variables)]
@@ -8018,7 +8018,7 @@ fn __action58<'input>(
     ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> ValueId {
-    ast.value(Value::Boolean(false))
+    ast.value(ValueRecord::Boolean(false))
 }
 
 #[allow(unused_variables)]
@@ -8028,7 +8028,7 @@ fn __action59<'input>(
     ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> ValueId {
-    ast.value(Value::Null)
+    ast.value(ValueRecord::Null)
 }
 
 #[allow(unused_variables)]
@@ -8040,7 +8040,7 @@ fn __action60<'input>(
     (_, values, _): (usize, alloc::vec::Vec<ValueId>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
 ) -> ValueId {
-    ast.value(Value::List(values))
+    ast.value(ValueRecord::List(values))
 }
 
 #[allow(unused_variables)]
@@ -8052,7 +8052,7 @@ fn __action61<'input>(
     (_, fields, _): (usize, alloc::vec::Vec<(StringId, ValueId)>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
 ) -> ValueId {
-    ast.value(Value::Object(fields))
+    ast.value(ValueRecord::Object(fields))
 }
 
 #[allow(unused_variables)]
@@ -8062,7 +8062,7 @@ fn __action62<'input>(
     ast: &mut TypeSystemAstWriter,
     (_, value, _): (usize, StringId, usize),
 ) -> ValueId {
-    ast.value(Value::Enum(value))
+    ast.value(ValueRecord::Enum(value))
 }
 
 #[allow(unused_variables)]

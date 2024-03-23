@@ -119,7 +119,7 @@ pub enum StringLiteralRef {
 // TODO: This is the type_system value so it should maybe be
 // ConstValue
 
-pub enum Value {
+pub enum ValueRecord {
     Variable(StringId),
     Int(i32),
     Float(f32),

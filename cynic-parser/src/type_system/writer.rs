@@ -340,7 +340,7 @@ impl TypeSystemAstWriter {
         id
     }
 
-    pub fn value(&mut self, value: Value) -> ValueId {
+    pub fn value(&mut self, value: ValueRecord) -> ValueId {
         let id = ValueId::new(self.ast.values.len());
         self.ast.values.push(value);
         id
