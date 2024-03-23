@@ -2,13 +2,9 @@ use indexmap::IndexMap;
 use proc_macro2::{Ident, Span};
 use quote::{quote, TokenStreamExt};
 
-use cynic_parser::type_system::{
-    readers::{FieldDefinition, ObjectDefinition, UnionDefinition},
-    TypeDefinition,
-};
+use cynic_parser::type_system::{readers::UnionDefinition, TypeDefinition};
 
 use crate::{
-    exts::ScalarExt,
     file::{EntityOutput, EntityRef},
     format_code,
     idents::IdIdent,
@@ -133,7 +129,6 @@ impl quote::ToTokens for FromBranch<'_> {
         );
         let this_reader = Ident::new(self.0.container.name(), Span::call_site());
         let variant_name = Ident::new(self.0.target.name(), Span::call_site());
-        let reader = Ident::new(self.0.target.name(), Span::call_site());
 
         tokens.append_all(quote! {
             #this_record::#variant_name(id) => #this_reader::#variant_name(id)

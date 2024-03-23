@@ -97,6 +97,7 @@ pub fn object_output(
 
 #[derive(Clone, Copy)]
 pub struct FieldEdge<'a> {
+    #[allow(dead_code)]
     container: ObjectDefinition<'a>,
     field: FieldDefinition<'a>,
     target: TypeDefinition<'a>,
@@ -149,27 +150,26 @@ impl quote::ToTokens for ReaderFunction<'_> {
         let field_name = Ident::new(self.0.field.name(), Span::call_site());
         let target_type = Ident::new(self.0.target.name(), Span::call_site());
 
-        let ty = match self.0.target {
+        let inner_ty = match self.0.target {
             TypeDefinition::Scalar(scalar) if scalar.is_inline() => {
                 // I'm assuming inline scalars are copy here.
                 quote! { #target_type }
             }
-            TypeDefinition::Object(_) | TypeDefinition::Union(_) | TypeDefinition::Scalar(_)
-                if self.0.field.ty().is_list() =>
-            {
-                quote! {
-                    impl ExactSizeIterator<Item = #target_type<'a>>
-                }
-            }
-            TypeDefinition::Object(_) | TypeDefinition::Union(_) | TypeDefinition::Scalar(_)
-                if self.0.field.ty().is_non_null() =>
-            {
-                quote! { #target_type<'a> }
+            TypeDefinition::Scalar(scalar) if scalar.reader_fn_override().is_some() => {
+                scalar.reader_fn_override().unwrap()
             }
             TypeDefinition::Object(_) | TypeDefinition::Union(_) | TypeDefinition::Scalar(_) => {
-                quote! { Option<#target_type<'a>> }
+                quote! { #target_type<'a> }
             }
-            _ => unimplemented!("No support for this target type"),
+            _ => unimplemented!(),
+        };
+
+        let ty = if self.0.field.ty().is_list() {
+            quote! { impl ExactSizeIterator<Item = #inner_ty> }
+        } else if self.0.field.ty().is_non_null() {
+            quote! { #inner_ty }
+        } else {
+            quote! { Option<#inner_ty> }
         };
 
         let body = match self.0.target {
@@ -183,6 +183,23 @@ impl quote::ToTokens for ReaderFunction<'_> {
                     let document = self.0.document;
 
                     document.lookup(self.0.id).#field_name
+                }
+            }
+            TypeDefinition::Scalar(scalar)
+                if scalar.reader_fn_override().is_some() && self.0.field.ty().is_non_null() =>
+            {
+                // Scalars with reader_fn_override return the scalar directly _not_ a reader
+                quote! {
+                    let ast = &self.0.document;
+                    ast.lookup(ast.lookup(self.0.id).#field_name)
+                }
+            }
+            TypeDefinition::Scalar(scalar) if scalar.reader_fn_override().is_some() => {
+                // Scalars with reader_fn_override return the scalar directly _not_ a reader
+                quote! {
+                    let document = self.0.document;
+
+                    document.lookup(self.0.id).#field_name.map(|id| document.lookup(id))
                 }
             }
             TypeDefinition::Object(_) | TypeDefinition::Union(_) | TypeDefinition::Scalar(_)

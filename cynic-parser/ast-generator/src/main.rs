@@ -7,16 +7,10 @@ mod union;
 use indexmap::IndexMap;
 use indoc::formatdoc;
 use itertools::Itertools;
-use proc_macro2::{Ident, Span};
-use quote::{quote, TokenStreamExt};
-use std::{collections::HashMap, ops::Deref};
 
-use cynic_parser::type_system::{
-    readers::{FieldDefinition, ObjectDefinition},
-    Definition, TypeDefinition,
-};
+use cynic_parser::type_system::{Definition, TypeDefinition};
 
-use crate::{exts::FileDirectiveExt, file::imports, idents::IdIdent};
+use crate::{exts::FileDirectiveExt, file::imports};
 
 fn main() -> anyhow::Result<()> {
     eprintln!("{:?}", std::env::current_dir());

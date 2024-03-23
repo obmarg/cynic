@@ -1,4 +1,4 @@
-use std::collections::{BTreeSet, HashSet};
+use std::collections::BTreeSet;
 
 use cynic_parser::type_system::TypeDefinition;
 use proc_macro2::{Ident, Span};
@@ -21,7 +21,7 @@ impl EntityRef {
     pub fn new(ty: TypeDefinition<'_>) -> Option<Self> {
         match ty {
             TypeDefinition::Scalar(scalar) if scalar.is_inline() => None,
-            TypeDefinition::Scalar(scalar) => Some(EntityRef {
+            TypeDefinition::Scalar(_) => Some(EntityRef {
                 module_name: ty.file_name().to_string(),
                 name: ty.name().to_string(),
                 has_id: true,
