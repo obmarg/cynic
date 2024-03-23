@@ -8,12 +8,13 @@ use super::{
 #[allow(unused_imports)]
 use crate::{
     common::{IdRange, OperationType},
-    AstLookup,
+    type_system::DirectiveLocation,
+    AstLookup, Span,
 };
 
 pub struct ArgumentRecord {
     pub name: StringId,
-    pub value: Option<ValueId>,
+    pub value: ValueId,
 }
 
 #[derive(Clone, Copy)]
@@ -21,12 +22,12 @@ pub struct Argument<'a>(ReadContext<'a, ArgumentId>);
 
 impl<'a> Argument<'a> {
     pub fn name(&self) -> &'a str {
-        let ast = &self.0.document;
-        ast.lookup(ast.lookup(self.0.id).name)
+        let document = &self.0.document;
+        document.lookup(document.lookup(self.0.id).name)
     }
-    pub fn value(&self) -> Option<Value<'a>> {
+    pub fn value(&self) -> Value<'a> {
         let document = self.0.document;
-        document.lookup(self.0.id).value.map(|id| document.read(id))
+        document.read(document.lookup(self.0.id).value)
     }
 }
 

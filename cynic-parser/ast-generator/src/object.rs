@@ -2,10 +2,7 @@ use indexmap::IndexMap;
 use proc_macro2::{Ident, Span};
 use quote::{quote, TokenStreamExt};
 
-use cynic_parser::type_system::{
-    readers::{FieldDefinition, ObjectDefinition},
-    TypeDefinition,
-};
+use cynic_parser::type_system::{FieldDefinition, ObjectDefinition, TypeDefinition};
 
 use crate::{
     exts::ScalarExt,

@@ -4,14 +4,14 @@ use super::{
     directives::Directive,
     fields::FieldDefinition,
     ids::{DirectiveId, FieldDefinitionId, InterfaceDefinitionId, StringLiteralId},
-    ReadContext,
-    StringLiteral::StringLiteral,
-    TypeSystemId,
+    strings::StringLiteral,
+    ReadContext, TypeSystemId,
 };
 #[allow(unused_imports)]
 use crate::{
     common::{IdRange, OperationType},
-    AstLookup,
+    type_system::DirectiveLocation,
+    AstLookup, Span,
 };
 
 pub struct InterfaceDefinitionRecord {
@@ -19,8 +19,8 @@ pub struct InterfaceDefinitionRecord {
     pub description: Option<StringLiteralId>,
     pub fields: IdRange<FieldDefinitionId>,
     pub directives: IdRange<DirectiveId>,
-    pub implements: IdRange<StringId>,
-    pub span: Option<Span>,
+    pub implements_interfaces: Vec<StringId>,
+    pub span: Span,
 }
 
 #[derive(Clone, Copy)]
@@ -28,8 +28,8 @@ pub struct InterfaceDefinition<'a>(ReadContext<'a, InterfaceDefinitionId>);
 
 impl<'a> InterfaceDefinition<'a> {
     pub fn name(&self) -> &'a str {
-        let ast = &self.0.document;
-        ast.lookup(ast.lookup(self.0.id).name)
+        let document = &self.0.document;
+        document.lookup(document.lookup(self.0.id).name)
     }
     pub fn description(&self) -> Option<StringLiteral<'a>> {
         let document = self.0.document;
@@ -38,7 +38,7 @@ impl<'a> InterfaceDefinition<'a> {
             .description
             .map(|id| document.read(id))
     }
-    pub fn fields(&self) -> impl ExactSizeIterator<Item = FieldDefinition<'a>> {
+    pub fn fields(&self) -> impl ExactSizeIterator<Item = FieldDefinition<'a>> + 'a {
         let document = self.0.document;
         document
             .lookup(self.0.id)
@@ -46,7 +46,7 @@ impl<'a> InterfaceDefinition<'a> {
             .iter()
             .map(|id| document.read(id))
     }
-    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> {
+    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
         let document = self.0.document;
         document
             .lookup(self.0.id)
@@ -54,14 +54,15 @@ impl<'a> InterfaceDefinition<'a> {
             .iter()
             .map(|id| document.read(id))
     }
-    pub fn implements(&self) -> impl ExactSizeIterator<Item = &'a str> {
-        let document = self.0.document;
+    pub fn implements_interfaces(&self) -> impl ExactSizeIterator<Item = &'a str> + 'a {
+        let document = &self.0.document;
         document
             .lookup(self.0.id)
-            .implements
-            .map(|id| document.lookup(id))
+            .implements_interfaces
+            .iter()
+            .map(|id| document.lookup(*id))
     }
-    pub fn span(&self) -> Option<Span> {
+    pub fn span(&self) -> Span {
         let document = self.0.document;
         document.lookup(self.0.id).span
     }

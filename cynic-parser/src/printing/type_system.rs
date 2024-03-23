@@ -1,6 +1,6 @@
 use pretty::{DocAllocator, Pretty};
 
-use crate::type_system::{readers::*, Definition, TypeDefinition};
+use crate::type_system::*;
 
 type Allocator<'a> = pretty::Arena<'a>;
 
@@ -95,8 +95,11 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<SchemaDefinition<'a>> {
                 .append(
                     allocator
                         .intersperse(
-                            roots.map(|(kind, name)| {
-                                allocator.text(kind.as_str()).append(": ").append(name)
+                            roots.map(|operation| {
+                                allocator
+                                    .text(operation.operation_type().as_str())
+                                    .append(": ")
+                                    .append(operation.named_type())
                             }),
                             allocator.hardline(),
                         )

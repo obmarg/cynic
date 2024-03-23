@@ -1,5 +1,5 @@
 // auto-generated: "lalrpop 0.20.0"
-// sha3: da698db52bd4d2e017e944c04dba3933efb365c25e812aeb491739e95cfadfb7
+// sha3: 662c73877f80e7b198ae52fe57df6a62119db188313aecfccb3723e23a5f47d3
 use crate::lexer;
 use crate::{
     common::{
@@ -55,11 +55,11 @@ mod __parse__TypeSystemDocument {
         Variant11(core::option::Option<ValueId>),
         Variant12(()),
         Variant13(alloc::vec::Vec<()>),
-        Variant14(DirectiveDefinition),
+        Variant14(DirectiveDefinitionRecord),
         Variant15(DirectiveLocation),
         Variant16(Vec<DirectiveLocation>),
         Variant17(IdRange<DirectiveId>),
-        Variant18(EnumDefinition),
+        Variant18(EnumDefinitionRecord),
         Variant19(StringId),
         Variant20(EnumValueDefinitionId),
         Variant21(alloc::vec::Vec<EnumValueDefinitionId>),
@@ -67,22 +67,22 @@ mod __parse__TypeSystemDocument {
         Variant23(core::option::Option<Vec<EnumValueDefinitionId>>),
         Variant24(Vec<StringId>),
         Variant25(core::option::Option<Vec<StringId>>),
-        Variant26(InputObjectDefinition),
-        Variant27(InterfaceDefinition),
-        Variant28(ObjectDefinition),
+        Variant26(InputObjectDefinitionRecord),
+        Variant27(InterfaceDefinitionRecord),
+        Variant28(ObjectDefinitionRecord),
         Variant29((StringId, ValueId)),
         Variant30(alloc::vec::Vec<(StringId, ValueId)>),
         Variant31(bool),
         Variant32(core::option::Option<bool>),
-        Variant33(RootOperationTypeDefinition),
-        Variant34(alloc::vec::Vec<RootOperationTypeDefinition>),
-        Variant35(ScalarDefinition),
-        Variant36(SchemaDefinition),
+        Variant33(RootOperationTypeDefinitionRecord),
+        Variant34(alloc::vec::Vec<RootOperationTypeDefinitionRecord>),
+        Variant35(ScalarDefinitionRecord),
+        Variant36(SchemaDefinitionRecord),
         Variant37(StringLiteralId),
         Variant38(core::option::Option<StringLiteralId>),
         Variant39(TypeId),
         Variant40(DefinitionId),
-        Variant41(UnionDefinition),
+        Variant41(UnionDefinitionRecord),
         Variant42(alloc::vec::Vec<ValueId>),
         Variant43(WrappingType),
         Variant44(alloc::vec::Vec<WrappingType>),
@@ -3290,7 +3290,7 @@ mod __parse__TypeSystemDocument {
       'input,
     >(
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, DirectiveDefinition, usize)
+    ) -> (usize, DirectiveDefinitionRecord, usize)
      {
         match __symbols.pop() {
             Some((__l, __Symbol::Variant14(__v), __r)) => (__l, __v, __r),
@@ -3312,7 +3312,7 @@ mod __parse__TypeSystemDocument {
       'input,
     >(
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, EnumDefinition, usize)
+    ) -> (usize, EnumDefinitionRecord, usize)
      {
         match __symbols.pop() {
             Some((__l, __Symbol::Variant18(__v), __r)) => (__l, __v, __r),
@@ -3345,7 +3345,7 @@ mod __parse__TypeSystemDocument {
       'input,
     >(
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, InputObjectDefinition, usize)
+    ) -> (usize, InputObjectDefinitionRecord, usize)
      {
         match __symbols.pop() {
             Some((__l, __Symbol::Variant26(__v), __r)) => (__l, __v, __r),
@@ -3356,7 +3356,7 @@ mod __parse__TypeSystemDocument {
       'input,
     >(
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, InterfaceDefinition, usize)
+    ) -> (usize, InterfaceDefinitionRecord, usize)
      {
         match __symbols.pop() {
             Some((__l, __Symbol::Variant27(__v), __r)) => (__l, __v, __r),
@@ -3367,7 +3367,7 @@ mod __parse__TypeSystemDocument {
       'input,
     >(
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, ObjectDefinition, usize)
+    ) -> (usize, ObjectDefinitionRecord, usize)
      {
         match __symbols.pop() {
             Some((__l, __Symbol::Variant28(__v), __r)) => (__l, __v, __r),
@@ -3378,7 +3378,7 @@ mod __parse__TypeSystemDocument {
       'input,
     >(
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, RootOperationTypeDefinition, usize)
+    ) -> (usize, RootOperationTypeDefinitionRecord, usize)
      {
         match __symbols.pop() {
             Some((__l, __Symbol::Variant33(__v), __r)) => (__l, __v, __r),
@@ -3389,7 +3389,7 @@ mod __parse__TypeSystemDocument {
       'input,
     >(
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, ScalarDefinition, usize)
+    ) -> (usize, ScalarDefinitionRecord, usize)
      {
         match __symbols.pop() {
             Some((__l, __Symbol::Variant35(__v), __r)) => (__l, __v, __r),
@@ -3400,7 +3400,7 @@ mod __parse__TypeSystemDocument {
       'input,
     >(
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, SchemaDefinition, usize)
+    ) -> (usize, SchemaDefinitionRecord, usize)
      {
         match __symbols.pop() {
             Some((__l, __Symbol::Variant36(__v), __r)) => (__l, __v, __r),
@@ -3444,7 +3444,7 @@ mod __parse__TypeSystemDocument {
       'input,
     >(
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, UnionDefinition, usize)
+    ) -> (usize, UnionDefinitionRecord, usize)
      {
         match __symbols.pop() {
             Some((__l, __Symbol::Variant41(__v), __r)) => (__l, __v, __r),
@@ -3576,7 +3576,7 @@ mod __parse__TypeSystemDocument {
       'input,
     >(
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, alloc::vec::Vec<RootOperationTypeDefinition>, usize)
+    ) -> (usize, alloc::vec::Vec<RootOperationTypeDefinitionRecord>, usize)
      {
         match __symbols.pop() {
             Some((__l, __Symbol::Variant34(__v), __r)) => (__l, __v, __r),
@@ -7242,7 +7242,7 @@ fn __action2<'input>(
 fn __action3<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    (_, def, _): (usize, SchemaDefinition, usize),
+    (_, def, _): (usize, SchemaDefinitionRecord, usize),
 ) -> DefinitionId {
     ast.schema_definition(def)
 }
@@ -7252,7 +7252,7 @@ fn __action3<'input>(
 fn __action4<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    (_, def, _): (usize, ScalarDefinition, usize),
+    (_, def, _): (usize, ScalarDefinitionRecord, usize),
 ) -> DefinitionId {
     ast.scalar_definition(def)
 }
@@ -7262,7 +7262,7 @@ fn __action4<'input>(
 fn __action5<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    (_, def, _): (usize, ObjectDefinition, usize),
+    (_, def, _): (usize, ObjectDefinitionRecord, usize),
 ) -> DefinitionId {
     ast.object_definition(def)
 }
@@ -7272,7 +7272,7 @@ fn __action5<'input>(
 fn __action6<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    (_, def, _): (usize, InterfaceDefinition, usize),
+    (_, def, _): (usize, InterfaceDefinitionRecord, usize),
 ) -> DefinitionId {
     ast.interface_definition(def)
 }
@@ -7282,7 +7282,7 @@ fn __action6<'input>(
 fn __action7<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    (_, def, _): (usize, UnionDefinition, usize),
+    (_, def, _): (usize, UnionDefinitionRecord, usize),
 ) -> DefinitionId {
     ast.union_definition(def)
 }
@@ -7292,7 +7292,7 @@ fn __action7<'input>(
 fn __action8<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    (_, def, _): (usize, EnumDefinition, usize),
+    (_, def, _): (usize, EnumDefinitionRecord, usize),
 ) -> DefinitionId {
     ast.enum_definition(def)
 }
@@ -7302,7 +7302,7 @@ fn __action8<'input>(
 fn __action9<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    (_, def, _): (usize, InputObjectDefinition, usize),
+    (_, def, _): (usize, InputObjectDefinitionRecord, usize),
 ) -> DefinitionId {
     ast.input_object_definition(def)
 }
@@ -7313,7 +7313,7 @@ fn __action10<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
-    (_, def, _): (usize, SchemaDefinition, usize),
+    (_, def, _): (usize, SchemaDefinitionRecord, usize),
 ) -> DefinitionId {
     ast.schema_extension(def)
 }
@@ -7324,7 +7324,7 @@ fn __action11<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
-    (_, def, _): (usize, ScalarDefinition, usize),
+    (_, def, _): (usize, ScalarDefinitionRecord, usize),
 ) -> DefinitionId {
     ast.scalar_extension(def)
 }
@@ -7335,7 +7335,7 @@ fn __action12<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
-    (_, def, _): (usize, ObjectDefinition, usize),
+    (_, def, _): (usize, ObjectDefinitionRecord, usize),
 ) -> DefinitionId {
     ast.object_extension(def)
 }
@@ -7346,7 +7346,7 @@ fn __action13<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
-    (_, def, _): (usize, InterfaceDefinition, usize),
+    (_, def, _): (usize, InterfaceDefinitionRecord, usize),
 ) -> DefinitionId {
     ast.interface_extension(def)
 }
@@ -7357,7 +7357,7 @@ fn __action14<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
-    (_, def, _): (usize, UnionDefinition, usize),
+    (_, def, _): (usize, UnionDefinitionRecord, usize),
 ) -> DefinitionId {
     ast.union_extension(def)
 }
@@ -7368,7 +7368,7 @@ fn __action15<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
-    (_, def, _): (usize, EnumDefinition, usize),
+    (_, def, _): (usize, EnumDefinitionRecord, usize),
 ) -> DefinitionId {
     ast.enum_extension(def)
 }
@@ -7379,7 +7379,7 @@ fn __action16<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
-    (_, def, _): (usize, InputObjectDefinition, usize),
+    (_, def, _): (usize, InputObjectDefinitionRecord, usize),
 ) -> DefinitionId {
     ast.input_object_extension(def)
 }
@@ -7389,7 +7389,7 @@ fn __action16<'input>(
 fn __action17<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    (_, def, _): (usize, DirectiveDefinition, usize),
+    (_, def, _): (usize, DirectiveDefinitionRecord, usize),
 ) -> DefinitionId {
     ast.directive_definition(def)
 }
@@ -7401,12 +7401,16 @@ fn __action18<'input>(
     ast: &mut TypeSystemAstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
-    (_, roots, _): (usize, alloc::vec::Vec<RootOperationTypeDefinition>, usize),
+    (_, root_operations, _): (
+        usize,
+        alloc::vec::Vec<RootOperationTypeDefinitionRecord>,
+        usize,
+    ),
     (_, _, _): (usize, lexer::Token<'input>, usize),
-) -> SchemaDefinition {
-    SchemaDefinition {
+) -> SchemaDefinitionRecord {
+    SchemaDefinitionRecord {
         description: None,
-        roots,
+        root_operations: ast.root_operation_definitions(root_operations),
     }
 }
 
@@ -7418,8 +7422,8 @@ fn __action19<'input>(
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, name, _): (usize, StringId, usize),
-) -> RootOperationTypeDefinition {
-    RootOperationTypeDefinition {
+) -> RootOperationTypeDefinitionRecord {
+    RootOperationTypeDefinitionRecord {
         operation_type: OperationType::Query,
         named_type: name,
     }
@@ -7433,8 +7437,8 @@ fn __action20<'input>(
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, name, _): (usize, StringId, usize),
-) -> RootOperationTypeDefinition {
-    RootOperationTypeDefinition {
+) -> RootOperationTypeDefinitionRecord {
+    RootOperationTypeDefinitionRecord {
         operation_type: OperationType::Mutation,
         named_type: name,
     }
@@ -7448,8 +7452,8 @@ fn __action21<'input>(
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, name, _): (usize, StringId, usize),
-) -> RootOperationTypeDefinition {
-    RootOperationTypeDefinition {
+) -> RootOperationTypeDefinitionRecord {
+    RootOperationTypeDefinitionRecord {
         operation_type: OperationType::Subscription,
         named_type: name,
     }
@@ -7465,8 +7469,8 @@ fn __action22<'input>(
     (_, name, _): (usize, StringId, usize),
     (_, directives, _): (usize, IdRange<DirectiveId>, usize),
     (_, end, _): (usize, usize, usize),
-) -> ScalarDefinition {
-    ScalarDefinition {
+) -> ScalarDefinitionRecord {
+    ScalarDefinitionRecord {
         name,
         description: None,
         directives,
@@ -7486,12 +7490,12 @@ fn __action23<'input>(
     (_, directives, _): (usize, IdRange<DirectiveId>, usize),
     (_, fields, _): (usize, core::option::Option<Vec<()>>, usize),
     (_, end, _): (usize, usize, usize),
-) -> ObjectDefinition {
-    ObjectDefinition {
+) -> ObjectDefinitionRecord {
+    ObjectDefinitionRecord {
         name,
         description: None,
         directives,
-        implements: implements.unwrap_or_default(),
+        implements_interfaces: implements.unwrap_or_default(),
         fields: ast
             .field_definition_range(Some(fields.map(|fields| fields.len()).unwrap_or_default())),
         span: Span::new(start, end),
@@ -7571,7 +7575,7 @@ fn __action28<'input>(
                 .map(|arguments| arguments.len())
                 .unwrap_or_default(),
         ));
-        ast.field_definition(FieldDefinition {
+        ast.field_definition(FieldDefinitionRecord {
             name,
             ty,
             arguments,
@@ -7606,12 +7610,12 @@ fn __action30<'input>(
     (_, directives, _): (usize, IdRange<DirectiveId>, usize),
     (_, fields, _): (usize, core::option::Option<Vec<()>>, usize),
     (_, end, _): (usize, usize, usize),
-) -> InterfaceDefinition {
-    InterfaceDefinition {
+) -> InterfaceDefinitionRecord {
+    InterfaceDefinitionRecord {
         name,
         description: None,
         directives,
-        implements: implements.unwrap_or_default(),
+        implements_interfaces: implements.unwrap_or_default(),
         fields: ast
             .field_definition_range(Some(fields.map(|fields| fields.len()).unwrap_or_default())),
         span: Span::new(start, end),
@@ -7629,8 +7633,8 @@ fn __action31<'input>(
     (_, directives, _): (usize, IdRange<DirectiveId>, usize),
     (_, members, _): (usize, core::option::Option<Vec<StringId>>, usize),
     (_, end, _): (usize, usize, usize),
-) -> UnionDefinition {
-    UnionDefinition {
+) -> UnionDefinitionRecord {
+    UnionDefinitionRecord {
         name,
         description: None,
         members: members.unwrap_or_default(),
@@ -7684,12 +7688,12 @@ fn __action34<'input>(
         usize,
     ),
     (_, end, _): (usize, usize, usize),
-) -> EnumDefinition {
-    EnumDefinition {
+) -> EnumDefinitionRecord {
+    EnumDefinitionRecord {
         name,
         description: None,
         directives,
-        values: values.unwrap_or_default(),
+        values: ast.enum_value_definition_range(values.map(|values| values.len())),
         span: Span::new(start, end),
     }
 }
@@ -7717,7 +7721,7 @@ fn __action36<'input>(
     (_, directives, _): (usize, IdRange<DirectiveId>, usize),
     (_, end, _): (usize, usize, usize),
 ) -> EnumValueDefinitionId {
-    ast.enum_value_definition(EnumValueDefinition {
+    ast.enum_value_definition(EnumValueDefinitionRecord {
         value,
         description,
         directives,
@@ -7736,8 +7740,8 @@ fn __action37<'input>(
     (_, directives, _): (usize, IdRange<DirectiveId>, usize),
     (_, fields, _): (usize, core::option::Option<Vec<()>>, usize),
     (_, end, _): (usize, usize, usize),
-) -> InputObjectDefinition {
-    InputObjectDefinition {
+) -> InputObjectDefinitionRecord {
+    InputObjectDefinitionRecord {
         name,
         description: None,
         directives,
@@ -7774,8 +7778,8 @@ fn __action39<'input>(
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, locations, _): (usize, Vec<DirectiveLocation>, usize),
     (_, end, _): (usize, usize, usize),
-) -> DirectiveDefinition {
-    DirectiveDefinition {
+) -> DirectiveDefinitionRecord {
+    DirectiveDefinitionRecord {
         name,
         description: None,
         arguments: ast.input_value_definition_range(Some(
@@ -7783,7 +7787,7 @@ fn __action39<'input>(
                 .map(|arguments| arguments.len())
                 .unwrap_or_default(),
         )),
-        repeatable: repeatable.unwrap_or_default(),
+        is_repeatable: repeatable.unwrap_or_default(),
         locations,
         span: Span::new(start, end),
     }
@@ -7853,12 +7857,12 @@ fn __action44<'input>(
     (_, end, _): (usize, usize, usize),
 ) {
     {
-        ast.input_value_definition(InputValueDefinition {
+        ast.input_value_definition(InputValueDefinitionRecord {
             name,
             ty,
             description,
             directives,
-            default,
+            default_value: default,
             span: Span::new(start, end),
         });
     }
@@ -7914,7 +7918,7 @@ fn __action49<'input>(
     (_, name, _): (usize, StringId, usize),
     (_, wrappers, _): (usize, alloc::vec::Vec<WrappingType>, usize),
 ) -> TypeId {
-    ast.type_reference(Type {
+    ast.type_reference(TypeRecord {
         name,
         wrappers: TypeWrappers::from_iter(wrappers),
     })
@@ -8180,10 +8184,9 @@ fn __action72<'input>(
     (_, arguments, _): (usize, core::option::Option<Vec<ArgumentId>>, usize),
 ) {
     {
-        ast.directive(Directive {
-            name,
-            arguments: arguments.unwrap_or_default(),
-        });
+        let arguments = ast.argument_range(arguments.map(|arguments| arguments.len()));
+
+        ast.directive(DirectiveRecord { name, arguments });
     }
 }
 
@@ -8208,7 +8211,7 @@ fn __action74<'input>(
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, value, _): (usize, ValueId, usize),
 ) -> ArgumentId {
-    ast.argument(Argument { name, value })
+    ast.argument(ArgumentRecord { name, value })
 }
 
 #[allow(unused_variables)]
@@ -8849,7 +8852,7 @@ fn __action135<'input>(
     ast: &mut TypeSystemAstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
-) -> alloc::vec::Vec<RootOperationTypeDefinition> {
+) -> alloc::vec::Vec<RootOperationTypeDefinitionRecord> {
     alloc::vec![]
 }
 
@@ -8858,8 +8861,12 @@ fn __action135<'input>(
 fn __action136<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    (_, v, _): (usize, alloc::vec::Vec<RootOperationTypeDefinition>, usize),
-) -> alloc::vec::Vec<RootOperationTypeDefinition> {
+    (_, v, _): (
+        usize,
+        alloc::vec::Vec<RootOperationTypeDefinitionRecord>,
+        usize,
+    ),
+) -> alloc::vec::Vec<RootOperationTypeDefinitionRecord> {
     v
 }
 
@@ -8914,8 +8921,8 @@ fn __action140<'input>(
 fn __action141<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    (_, __0, _): (usize, RootOperationTypeDefinition, usize),
-) -> alloc::vec::Vec<RootOperationTypeDefinition> {
+    (_, __0, _): (usize, RootOperationTypeDefinitionRecord, usize),
+) -> alloc::vec::Vec<RootOperationTypeDefinitionRecord> {
     alloc::vec![__0]
 }
 
@@ -8924,9 +8931,13 @@ fn __action141<'input>(
 fn __action142<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    (_, v, _): (usize, alloc::vec::Vec<RootOperationTypeDefinition>, usize),
-    (_, e, _): (usize, RootOperationTypeDefinition, usize),
-) -> alloc::vec::Vec<RootOperationTypeDefinition> {
+    (_, v, _): (
+        usize,
+        alloc::vec::Vec<RootOperationTypeDefinitionRecord>,
+        usize,
+    ),
+    (_, e, _): (usize, RootOperationTypeDefinitionRecord, usize),
+) -> alloc::vec::Vec<RootOperationTypeDefinitionRecord> {
     {
         let mut v = v;
         v.push(e);
@@ -9163,7 +9174,7 @@ fn __action159<'input>(
     __5: (usize, lexer::Token<'input>, usize),
     __6: (usize, Vec<DirectiveLocation>, usize),
     __7: (usize, usize, usize),
-) -> DirectiveDefinition {
+) -> DirectiveDefinitionRecord {
     let __start0 = __0.0;
     let __end0 = __0.0;
     let __temp0 = __action134(input, ast, &__start0, &__end0);
@@ -9185,7 +9196,7 @@ fn __action160<'input>(
         usize,
     ),
     __4: (usize, usize, usize),
-) -> EnumDefinition {
+) -> EnumDefinitionRecord {
     let __start0 = __0.0;
     let __end0 = __0.0;
     let __temp0 = __action134(input, ast, &__start0, &__end0);
@@ -9240,7 +9251,7 @@ fn __action163<'input>(
     __2: (usize, IdRange<DirectiveId>, usize),
     __3: (usize, core::option::Option<Vec<()>>, usize),
     __4: (usize, usize, usize),
-) -> InputObjectDefinition {
+) -> InputObjectDefinitionRecord {
     let __start0 = __0.0;
     let __end0 = __0.0;
     let __temp0 = __action134(input, ast, &__start0, &__end0);
@@ -9279,7 +9290,7 @@ fn __action165<'input>(
     __3: (usize, IdRange<DirectiveId>, usize),
     __4: (usize, core::option::Option<Vec<()>>, usize),
     __5: (usize, usize, usize),
-) -> InterfaceDefinition {
+) -> InterfaceDefinitionRecord {
     let __start0 = __0.0;
     let __end0 = __0.0;
     let __temp0 = __action134(input, ast, &__start0, &__end0);
@@ -9298,7 +9309,7 @@ fn __action166<'input>(
     __3: (usize, IdRange<DirectiveId>, usize),
     __4: (usize, core::option::Option<Vec<()>>, usize),
     __5: (usize, usize, usize),
-) -> ObjectDefinition {
+) -> ObjectDefinitionRecord {
     let __start0 = __0.0;
     let __end0 = __0.0;
     let __temp0 = __action134(input, ast, &__start0, &__end0);
@@ -9315,7 +9326,7 @@ fn __action167<'input>(
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
     __3: (usize, usize, usize),
-) -> ScalarDefinition {
+) -> ScalarDefinitionRecord {
     let __start0 = __0.0;
     let __end0 = __0.0;
     let __temp0 = __action134(input, ast, &__start0, &__end0);
@@ -9350,7 +9361,7 @@ fn __action169<'input>(
     __2: (usize, IdRange<DirectiveId>, usize),
     __3: (usize, core::option::Option<Vec<StringId>>, usize),
     __4: (usize, usize, usize),
-) -> UnionDefinition {
+) -> UnionDefinitionRecord {
     let __start0 = __0.0;
     let __end0 = __0.0;
     let __temp0 = __action134(input, ast, &__start0, &__end0);
@@ -9387,7 +9398,7 @@ fn __action171<'input>(
     __4: (usize, core::option::Option<bool>, usize),
     __5: (usize, lexer::Token<'input>, usize),
     __6: (usize, Vec<DirectiveLocation>, usize),
-) -> DirectiveDefinition {
+) -> DirectiveDefinitionRecord {
     let __start0 = __6.2;
     let __end0 = __6.2;
     let __temp0 = __action133(input, ast, &__start0, &__end0);
@@ -9408,7 +9419,7 @@ fn __action172<'input>(
         core::option::Option<Vec<EnumValueDefinitionId>>,
         usize,
     ),
-) -> EnumDefinition {
+) -> EnumDefinitionRecord {
     let __start0 = __3.2;
     let __end0 = __3.2;
     let __temp0 = __action133(input, ast, &__start0, &__end0);
@@ -9460,7 +9471,7 @@ fn __action175<'input>(
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
     __3: (usize, core::option::Option<Vec<()>>, usize),
-) -> InputObjectDefinition {
+) -> InputObjectDefinitionRecord {
     let __start0 = __3.2;
     let __end0 = __3.2;
     let __temp0 = __action133(input, ast, &__start0, &__end0);
@@ -9497,7 +9508,7 @@ fn __action177<'input>(
     __2: (usize, core::option::Option<Vec<StringId>>, usize),
     __3: (usize, IdRange<DirectiveId>, usize),
     __4: (usize, core::option::Option<Vec<()>>, usize),
-) -> InterfaceDefinition {
+) -> InterfaceDefinitionRecord {
     let __start0 = __4.2;
     let __end0 = __4.2;
     let __temp0 = __action133(input, ast, &__start0, &__end0);
@@ -9515,7 +9526,7 @@ fn __action178<'input>(
     __2: (usize, core::option::Option<Vec<StringId>>, usize),
     __3: (usize, IdRange<DirectiveId>, usize),
     __4: (usize, core::option::Option<Vec<()>>, usize),
-) -> ObjectDefinition {
+) -> ObjectDefinitionRecord {
     let __start0 = __4.2;
     let __end0 = __4.2;
     let __temp0 = __action133(input, ast, &__start0, &__end0);
@@ -9531,7 +9542,7 @@ fn __action179<'input>(
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
-) -> ScalarDefinition {
+) -> ScalarDefinitionRecord {
     let __start0 = __2.2;
     let __end0 = __2.2;
     let __temp0 = __action133(input, ast, &__start0, &__end0);
@@ -9548,7 +9559,7 @@ fn __action180<'input>(
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
     __3: (usize, core::option::Option<Vec<StringId>>, usize),
-) -> UnionDefinition {
+) -> UnionDefinitionRecord {
     let __start0 = __3.2;
     let __end0 = __3.2;
     let __temp0 = __action133(input, ast, &__start0, &__end0);
@@ -9630,7 +9641,7 @@ fn __action185<'input>(
     __4: (usize, core::option::Option<bool>, usize),
     __5: (usize, lexer::Token<'input>, usize),
     __6: (usize, Vec<DirectiveLocation>, usize),
-) -> DirectiveDefinition {
+) -> DirectiveDefinitionRecord {
     let __start0 = __3.0;
     let __end0 = __3.2;
     let __temp0 = __action123(input, ast, __3);
@@ -9649,7 +9660,7 @@ fn __action186<'input>(
     __3: (usize, core::option::Option<bool>, usize),
     __4: (usize, lexer::Token<'input>, usize),
     __5: (usize, Vec<DirectiveLocation>, usize),
-) -> DirectiveDefinition {
+) -> DirectiveDefinitionRecord {
     let __start0 = __2.2;
     let __end0 = __3.0;
     let __temp0 = __action124(input, ast, &__start0, &__end0);
@@ -9769,7 +9780,7 @@ fn __action193<'input>(
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
     __3: (usize, Vec<EnumValueDefinitionId>, usize),
-) -> EnumDefinition {
+) -> EnumDefinitionRecord {
     let __start0 = __3.0;
     let __end0 = __3.2;
     let __temp0 = __action115(input, ast, __3);
@@ -9785,7 +9796,7 @@ fn __action194<'input>(
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
-) -> EnumDefinition {
+) -> EnumDefinitionRecord {
     let __start0 = __2.2;
     let __end0 = __2.2;
     let __temp0 = __action116(input, ast, &__start0, &__end0);
@@ -9803,7 +9814,7 @@ fn __action195<'input>(
     __2: (usize, core::option::Option<Vec<StringId>>, usize),
     __3: (usize, IdRange<DirectiveId>, usize),
     __4: (usize, Vec<()>, usize),
-) -> InterfaceDefinition {
+) -> InterfaceDefinitionRecord {
     let __start0 = __4.0;
     let __end0 = __4.2;
     let __temp0 = __action129(input, ast, __4);
@@ -9820,7 +9831,7 @@ fn __action196<'input>(
     __1: (usize, StringId, usize),
     __2: (usize, core::option::Option<Vec<StringId>>, usize),
     __3: (usize, IdRange<DirectiveId>, usize),
-) -> InterfaceDefinition {
+) -> InterfaceDefinitionRecord {
     let __start0 = __3.2;
     let __end0 = __3.2;
     let __temp0 = __action130(input, ast, &__start0, &__end0);
@@ -9838,7 +9849,7 @@ fn __action197<'input>(
     __2: (usize, core::option::Option<Vec<StringId>>, usize),
     __3: (usize, IdRange<DirectiveId>, usize),
     __4: (usize, Vec<()>, usize),
-) -> ObjectDefinition {
+) -> ObjectDefinitionRecord {
     let __start0 = __4.0;
     let __end0 = __4.2;
     let __temp0 = __action129(input, ast, __4);
@@ -9855,7 +9866,7 @@ fn __action198<'input>(
     __1: (usize, StringId, usize),
     __2: (usize, core::option::Option<Vec<StringId>>, usize),
     __3: (usize, IdRange<DirectiveId>, usize),
-) -> ObjectDefinition {
+) -> ObjectDefinitionRecord {
     let __start0 = __3.2;
     let __end0 = __3.2;
     let __temp0 = __action130(input, ast, &__start0, &__end0);
@@ -9873,7 +9884,7 @@ fn __action199<'input>(
     __2: (usize, Vec<StringId>, usize),
     __3: (usize, IdRange<DirectiveId>, usize),
     __4: (usize, Vec<()>, usize),
-) -> InterfaceDefinition {
+) -> InterfaceDefinitionRecord {
     let __start0 = __2.0;
     let __end0 = __2.2;
     let __temp0 = __action131(input, ast, __2);
@@ -9890,7 +9901,7 @@ fn __action200<'input>(
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
     __3: (usize, Vec<()>, usize),
-) -> InterfaceDefinition {
+) -> InterfaceDefinitionRecord {
     let __start0 = __1.2;
     let __end0 = __2.0;
     let __temp0 = __action132(input, ast, &__start0, &__end0);
@@ -9907,7 +9918,7 @@ fn __action201<'input>(
     __1: (usize, StringId, usize),
     __2: (usize, Vec<StringId>, usize),
     __3: (usize, IdRange<DirectiveId>, usize),
-) -> InterfaceDefinition {
+) -> InterfaceDefinitionRecord {
     let __start0 = __2.0;
     let __end0 = __2.2;
     let __temp0 = __action131(input, ast, __2);
@@ -9923,7 +9934,7 @@ fn __action202<'input>(
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
-) -> InterfaceDefinition {
+) -> InterfaceDefinitionRecord {
     let __start0 = __1.2;
     let __end0 = __2.0;
     let __temp0 = __action132(input, ast, &__start0, &__end0);
@@ -9941,7 +9952,7 @@ fn __action203<'input>(
     __2: (usize, Vec<StringId>, usize),
     __3: (usize, IdRange<DirectiveId>, usize),
     __4: (usize, Vec<()>, usize),
-) -> ObjectDefinition {
+) -> ObjectDefinitionRecord {
     let __start0 = __2.0;
     let __end0 = __2.2;
     let __temp0 = __action131(input, ast, __2);
@@ -9958,7 +9969,7 @@ fn __action204<'input>(
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
     __3: (usize, Vec<()>, usize),
-) -> ObjectDefinition {
+) -> ObjectDefinitionRecord {
     let __start0 = __1.2;
     let __end0 = __2.0;
     let __temp0 = __action132(input, ast, &__start0, &__end0);
@@ -9975,7 +9986,7 @@ fn __action205<'input>(
     __1: (usize, StringId, usize),
     __2: (usize, Vec<StringId>, usize),
     __3: (usize, IdRange<DirectiveId>, usize),
-) -> ObjectDefinition {
+) -> ObjectDefinitionRecord {
     let __start0 = __2.0;
     let __end0 = __2.2;
     let __temp0 = __action131(input, ast, __2);
@@ -9991,7 +10002,7 @@ fn __action206<'input>(
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
-) -> ObjectDefinition {
+) -> ObjectDefinitionRecord {
     let __start0 = __1.2;
     let __end0 = __2.0;
     let __temp0 = __action132(input, ast, &__start0, &__end0);
@@ -10008,7 +10019,7 @@ fn __action207<'input>(
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
     __3: (usize, Vec<()>, usize),
-) -> InputObjectDefinition {
+) -> InputObjectDefinitionRecord {
     let __start0 = __3.0;
     let __end0 = __3.2;
     let __temp0 = __action111(input, ast, __3);
@@ -10024,7 +10035,7 @@ fn __action208<'input>(
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
-) -> InputObjectDefinition {
+) -> InputObjectDefinitionRecord {
     let __start0 = __2.2;
     let __end0 = __2.2;
     let __temp0 = __action112(input, ast, &__start0, &__end0);
@@ -10075,7 +10086,7 @@ fn __action211<'input>(
     __4: (usize, bool, usize),
     __5: (usize, lexer::Token<'input>, usize),
     __6: (usize, Vec<DirectiveLocation>, usize),
-) -> DirectiveDefinition {
+) -> DirectiveDefinitionRecord {
     let __start0 = __4.0;
     let __end0 = __4.2;
     let __temp0 = __action109(input, ast, __4);
@@ -10094,7 +10105,7 @@ fn __action212<'input>(
     __3: (usize, Vec<()>, usize),
     __4: (usize, lexer::Token<'input>, usize),
     __5: (usize, Vec<DirectiveLocation>, usize),
-) -> DirectiveDefinition {
+) -> DirectiveDefinitionRecord {
     let __start0 = __3.2;
     let __end0 = __4.0;
     let __temp0 = __action110(input, ast, &__start0, &__end0);
@@ -10113,7 +10124,7 @@ fn __action213<'input>(
     __3: (usize, bool, usize),
     __4: (usize, lexer::Token<'input>, usize),
     __5: (usize, Vec<DirectiveLocation>, usize),
-) -> DirectiveDefinition {
+) -> DirectiveDefinitionRecord {
     let __start0 = __3.0;
     let __end0 = __3.2;
     let __temp0 = __action109(input, ast, __3);
@@ -10131,7 +10142,7 @@ fn __action214<'input>(
     __2: (usize, StringId, usize),
     __3: (usize, lexer::Token<'input>, usize),
     __4: (usize, Vec<DirectiveLocation>, usize),
-) -> DirectiveDefinition {
+) -> DirectiveDefinitionRecord {
     let __start0 = __2.2;
     let __end0 = __3.0;
     let __temp0 = __action110(input, ast, &__start0, &__end0);
@@ -10147,7 +10158,7 @@ fn __action215<'input>(
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, lexer::Token<'input>, usize),
     __2: (usize, lexer::Token<'input>, usize),
-) -> SchemaDefinition {
+) -> SchemaDefinitionRecord {
     let __start0 = __1.2;
     let __end0 = __2.0;
     let __temp0 = __action135(input, ast, &__start0, &__end0);
@@ -10162,9 +10173,13 @@ fn __action216<'input>(
     ast: &mut TypeSystemAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, lexer::Token<'input>, usize),
-    __2: (usize, alloc::vec::Vec<RootOperationTypeDefinition>, usize),
+    __2: (
+        usize,
+        alloc::vec::Vec<RootOperationTypeDefinitionRecord>,
+        usize,
+    ),
     __3: (usize, lexer::Token<'input>, usize),
-) -> SchemaDefinition {
+) -> SchemaDefinitionRecord {
     let __start0 = __2.0;
     let __end0 = __2.2;
     let __temp0 = __action136(input, ast, __2);
@@ -10385,7 +10400,7 @@ fn __action229<'input>(
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
     __3: (usize, Vec<StringId>, usize),
-) -> UnionDefinition {
+) -> UnionDefinitionRecord {
     let __start0 = __3.0;
     let __end0 = __3.2;
     let __temp0 = __action119(input, ast, __3);
@@ -10401,7 +10416,7 @@ fn __action230<'input>(
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
-) -> UnionDefinition {
+) -> UnionDefinitionRecord {
     let __start0 = __2.2;
     let __end0 = __2.2;
     let __temp0 = __action120(input, ast, &__start0, &__end0);

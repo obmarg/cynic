@@ -1,13 +1,6 @@
 use std::num::NonZeroU32;
 
-use super::{
-    storage::{
-        Argument, Directive, DirectiveDefinition, EnumDefinition, EnumValueDefinition,
-        FieldDefinition, InputObjectDefinition, InputValueDefinition, InterfaceDefinition,
-        ObjectDefinition, ScalarDefinition, SchemaDefinition, Type, UnionDefinition, ValueRecord,
-    },
-    AstDefinition, TypeSystemDocument,
-};
+use super::{storage::*, DefinitionRecord, TypeSystemDocument};
 use crate::{common::IdRange, AstLookup};
 
 macro_rules! make_id {
@@ -63,58 +56,78 @@ macro_rules! impl_id_range {
     };
 }
 
-make_id!(DefinitionId, AstDefinition, definitions);
+make_id!(DefinitionId, DefinitionRecord, definitions);
 
-make_id!(SchemaDefinitionId, SchemaDefinition, schema_definitions);
+make_id!(
+    SchemaDefinitionId,
+    SchemaDefinitionRecord,
+    schema_definitions
+);
+make_id!(
+    RootOperationTypeDefinitionId,
+    RootOperationTypeDefinitionRecord,
+    root_operation_definitions
+);
+impl_id_range!(RootOperationTypeDefinitionId);
 
-make_id!(ScalarDefinitionId, ScalarDefinition, scalar_definitions);
+make_id!(
+    ScalarDefinitionId,
+    ScalarDefinitionRecord,
+    scalar_definitions
+);
 
-make_id!(ObjectDefinitionId, ObjectDefinition, object_definitions);
+make_id!(
+    ObjectDefinitionId,
+    ObjectDefinitionRecord,
+    object_definitions
+);
 
 make_id!(
     InterfaceDefinitionId,
-    InterfaceDefinition,
+    InterfaceDefinitionRecord,
     interface_definitions
 );
 
-make_id!(UnionDefinitionId, UnionDefinition, union_definitions);
+make_id!(UnionDefinitionId, UnionDefinitionRecord, union_definitions);
 
-make_id!(EnumDefinitionId, EnumDefinition, enum_definitions);
+make_id!(EnumDefinitionId, EnumDefinitionRecord, enum_definitions);
 
 make_id!(
     EnumValueDefinitionId,
-    EnumValueDefinition,
+    EnumValueDefinitionRecord,
     enum_value_definitions
 );
+impl_id_range!(EnumValueDefinitionId);
 
 make_id!(
     InputObjectDefinitionId,
-    InputObjectDefinition,
+    InputObjectDefinitionRecord,
     input_object_definitions
 );
 
 make_id!(
     DirectiveDefinitionId,
-    DirectiveDefinition,
+    DirectiveDefinitionRecord,
     directive_definitions
 );
 
-make_id!(FieldDefinitionId, FieldDefinition, field_definitions);
+make_id!(FieldDefinitionId, FieldDefinitionRecord, field_definitions);
 impl_id_range!(FieldDefinitionId);
 
 make_id!(
     InputValueDefinitionId,
-    InputValueDefinition,
+    InputValueDefinitionRecord,
     input_value_definitions
 );
 impl_id_range!(InputValueDefinitionId);
 
-make_id!(TypeId, Type, type_references);
+make_id!(TypeId, TypeRecord, type_references);
 
-make_id!(DirectiveId, Directive, directives);
+make_id!(DirectiveId, DirectiveRecord, directives);
 impl_id_range!(DirectiveId);
 
-make_id!(ArgumentId, Argument, arguments);
+make_id!(ArgumentId, ArgumentRecord, arguments);
+impl_id_range!(ArgumentId);
 
 make_id!(ValueId, ValueRecord, values);
 

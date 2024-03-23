@@ -4,24 +4,24 @@ use super::{
     directives::Directive,
     ids::{DirectiveId, FieldDefinitionId, InputValueDefinitionId, StringLiteralId, TypeId},
     input_values::InputValueDefinition,
+    strings::StringLiteral,
     types::Type,
-    ReadContext,
-    StringLiteral::StringLiteral,
-    TypeSystemId,
+    ReadContext, TypeSystemId,
 };
 #[allow(unused_imports)]
 use crate::{
     common::{IdRange, OperationType},
-    AstLookup,
+    type_system::DirectiveLocation,
+    AstLookup, Span,
 };
 
 pub struct FieldDefinitionRecord {
     pub name: StringId,
-    pub ty: Option<TypeId>,
+    pub ty: TypeId,
     pub arguments: IdRange<InputValueDefinitionId>,
     pub description: Option<StringLiteralId>,
     pub directives: IdRange<DirectiveId>,
-    pub span: Option<Span>,
+    pub span: Span,
 }
 
 #[derive(Clone, Copy)]
@@ -29,14 +29,14 @@ pub struct FieldDefinition<'a>(ReadContext<'a, FieldDefinitionId>);
 
 impl<'a> FieldDefinition<'a> {
     pub fn name(&self) -> &'a str {
-        let ast = &self.0.document;
-        ast.lookup(ast.lookup(self.0.id).name)
+        let document = &self.0.document;
+        document.lookup(document.lookup(self.0.id).name)
     }
-    pub fn ty(&self) -> Option<Type<'a>> {
+    pub fn ty(&self) -> Type<'a> {
         let document = self.0.document;
-        document.lookup(self.0.id).ty.map(|id| document.read(id))
+        document.read(document.lookup(self.0.id).ty)
     }
-    pub fn arguments(&self) -> impl ExactSizeIterator<Item = InputValueDefinition<'a>> {
+    pub fn arguments(&self) -> impl ExactSizeIterator<Item = InputValueDefinition<'a>> + 'a {
         let document = self.0.document;
         document
             .lookup(self.0.id)
@@ -51,7 +51,7 @@ impl<'a> FieldDefinition<'a> {
             .description
             .map(|id| document.read(id))
     }
-    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> {
+    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
         let document = self.0.document;
         document
             .lookup(self.0.id)
@@ -59,7 +59,7 @@ impl<'a> FieldDefinition<'a> {
             .iter()
             .map(|id| document.read(id))
     }
-    pub fn span(&self) -> Option<Span> {
+    pub fn span(&self) -> Span {
         let document = self.0.document;
         document.lookup(self.0.id).span
     }

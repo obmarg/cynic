@@ -3,22 +3,22 @@ use super::ids::StringId;
 use super::{
     directives::Directive,
     ids::{DirectiveId, StringLiteralId, UnionDefinitionId},
-    ReadContext,
-    StringLiteral::StringLiteral,
-    TypeSystemId,
+    strings::StringLiteral,
+    ReadContext, TypeSystemId,
 };
 #[allow(unused_imports)]
 use crate::{
     common::{IdRange, OperationType},
-    AstLookup,
+    type_system::DirectiveLocation,
+    AstLookup, Span,
 };
 
 pub struct UnionDefinitionRecord {
     pub name: StringId,
     pub description: Option<StringLiteralId>,
-    pub members: IdRange<StringId>,
+    pub members: Vec<StringId>,
     pub directives: IdRange<DirectiveId>,
-    pub span: Option<Span>,
+    pub span: Span,
 }
 
 #[derive(Clone, Copy)]
@@ -26,8 +26,8 @@ pub struct UnionDefinition<'a>(ReadContext<'a, UnionDefinitionId>);
 
 impl<'a> UnionDefinition<'a> {
     pub fn name(&self) -> &'a str {
-        let ast = &self.0.document;
-        ast.lookup(ast.lookup(self.0.id).name)
+        let document = &self.0.document;
+        document.lookup(document.lookup(self.0.id).name)
     }
     pub fn description(&self) -> Option<StringLiteral<'a>> {
         let document = self.0.document;
@@ -36,14 +36,15 @@ impl<'a> UnionDefinition<'a> {
             .description
             .map(|id| document.read(id))
     }
-    pub fn members(&self) -> impl ExactSizeIterator<Item = &'a str> {
-        let document = self.0.document;
+    pub fn members(&self) -> impl ExactSizeIterator<Item = &'a str> + 'a {
+        let document = &self.0.document;
         document
             .lookup(self.0.id)
             .members
-            .map(|id| document.lookup(id))
+            .iter()
+            .map(|id| document.lookup(*id))
     }
-    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> {
+    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
         let document = self.0.document;
         document
             .lookup(self.0.id)
@@ -51,7 +52,7 @@ impl<'a> UnionDefinition<'a> {
             .iter()
             .map(|id| document.read(id))
     }
-    pub fn span(&self) -> Option<Span> {
+    pub fn span(&self) -> Span {
         let document = self.0.document;
         document.lookup(self.0.id).span
     }

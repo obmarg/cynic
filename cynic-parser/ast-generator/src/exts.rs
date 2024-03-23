@@ -1,4 +1,4 @@
-use cynic_parser::type_system::{readers::ScalarDefinition, TypeDefinition};
+use cynic_parser::type_system::{ScalarDefinition, TypeDefinition};
 use quote::quote;
 
 pub trait ScalarExt {

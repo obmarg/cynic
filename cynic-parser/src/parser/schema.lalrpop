@@ -42,34 +42,34 @@ TypeSystemDefinition: DefinitionId = {
     <def:DirectiveDefinition> => ast.directive_definition(def),
 }
 
-SchemaDefinition: SchemaDefinition = {
-    schema "{" <roots:RootOperationTypeDefinition*> "}" => SchemaDefinition {
+SchemaDefinition: SchemaDefinitionRecord = {
+    schema "{" <root_operations:RootOperationTypeDefinition*> "}" => SchemaDefinitionRecord {
         description: None,
-        roots,
+        root_operations: ast.root_operation_definitions(root_operations),
     }
 };
 
-RootOperationTypeDefinition: RootOperationTypeDefinition = {
-    query ":" <name:NamedType> => RootOperationTypeDefinition {
+RootOperationTypeDefinition: RootOperationTypeDefinitionRecord = {
+    query ":" <name:NamedType> => RootOperationTypeDefinitionRecord {
         operation_type: OperationType::Query,
         named_type: name
     },
-    mutation ":" <name:NamedType> => RootOperationTypeDefinition {
+    mutation ":" <name:NamedType> => RootOperationTypeDefinitionRecord {
         operation_type: OperationType::Mutation,
         named_type: name
     },
-    subscription ":" <name:NamedType> => RootOperationTypeDefinition {
+    subscription ":" <name:NamedType> => RootOperationTypeDefinitionRecord {
         operation_type: OperationType::Subscription,
         named_type: name
     },
 }
 
-ScalarDefinition: ScalarDefinition = {
+ScalarDefinition: ScalarDefinitionRecord = {
     <start:@L> scalar
         <name:Name>
         <directives:Directives>
         <end:@R>
-    => ScalarDefinition {
+    => ScalarDefinitionRecord {
         name,
         description: None,
         directives,
@@ -77,18 +77,18 @@ ScalarDefinition: ScalarDefinition = {
     }
 }
 
-ObjectDefinition: ObjectDefinition = {
+ObjectDefinition: ObjectDefinitionRecord = {
     <start:@L> ty
         <name:Name>
         <implements:ImplementsInterfaces?>
         <directives:Directives>
         <fields:FieldsDefinition?>
         <end:@R>
-    => ObjectDefinition {
+    => ObjectDefinitionRecord {
         name,
         description: None,
         directives,
-        implements: implements.unwrap_or_default(),
+        implements_interfaces: implements.unwrap_or_default(),
         fields: ast.field_definition_range(Some(fields.map(|fields| fields.len()).unwrap_or_default())),
         span: Span::new(start,end)
     }
@@ -124,7 +124,7 @@ FieldDefinition: () = {
         let arguments = ast.input_value_definition_range(
             Some(arguments.map(|arguments| arguments.len()).unwrap_or_default())
         );
-        ast.field_definition(FieldDefinition {
+        ast.field_definition(FieldDefinitionRecord {
             name,
             ty,
             arguments,
@@ -139,30 +139,30 @@ ArgumentsDefinition: Vec<()> = {
     "(" <arguments:InputValueDefinition+> ")" => arguments,
 };
 
-InterfaceDefinition: InterfaceDefinition = {
+InterfaceDefinition: InterfaceDefinitionRecord = {
     <start:@L> interface
         <name:Name>
         <implements:ImplementsInterfaces?>
         <directives:Directives>
         <fields:FieldsDefinition?>
         <end:@R>
-    => InterfaceDefinition {
+    => InterfaceDefinitionRecord {
         name,
         description: None,
         directives,
-        implements: implements.unwrap_or_default(),
+        implements_interfaces: implements.unwrap_or_default(),
         fields: ast.field_definition_range(Some(fields.map(|fields| fields.len()).unwrap_or_default())),
         span: Span::new(start,end)
     }
 };
 
-UnionDefinition: UnionDefinition = {
+UnionDefinition: UnionDefinitionRecord = {
     <start:@L> union
         <name:Name>
         <directives:Directives>
         <members:UnionMemberTypes?>
         <end:@R>
-    => UnionDefinition {
+    => UnionDefinitionRecord {
         name,
         description: None,
         members: members.unwrap_or_default(),
@@ -182,17 +182,17 @@ UnionMemberTypes: Vec<StringId> = {
     }
 }
 
-EnumDefinition: EnumDefinition = {
+EnumDefinition: EnumDefinitionRecord = {
     <start:@L> "enum"
         <name:Name>
         <directives:Directives>
         <values:EnumValuesDefinition?>
         <end:@R>
-    => EnumDefinition {
+    => EnumDefinitionRecord {
         name,
         description: None,
         directives,
-        values: values.unwrap_or_default(),
+        values: ast.enum_value_definition_range(values.map(|values| values.len())),
         span: Span::new(start,end)
     }
 };
@@ -207,7 +207,7 @@ EnumValueDefinition: EnumValueDefinitionId = {
         <value:EnumValue>
         <directives:Directives>
         <end:@R>
-    => ast.enum_value_definition(EnumValueDefinition {
+    => ast.enum_value_definition(EnumValueDefinitionRecord {
         value,
         description,
         directives,
@@ -216,13 +216,13 @@ EnumValueDefinition: EnumValueDefinitionId = {
 
 }
 
-InputObjectDefinition: InputObjectDefinition = {
+InputObjectDefinition: InputObjectDefinitionRecord = {
     <start:@L> input
         <name:Name>
         <directives:Directives>
         <fields:InputFieldsDefinition?>
         <end:@R>
-    => InputObjectDefinition {
+    => InputObjectDefinitionRecord {
         name,
         description: None,
         directives,
@@ -235,7 +235,7 @@ InputFieldsDefinition: Vec<()> = {
     "{" <fields:InputValueDefinition+> "}" => fields
 };
 
-DirectiveDefinition: DirectiveDefinition = {
+DirectiveDefinition: DirectiveDefinitionRecord = {
     <start:@L>
         directive
         "@" <name:Name>
@@ -244,11 +244,11 @@ DirectiveDefinition: DirectiveDefinition = {
         on
         <locations:DirectiveLocations>
         <end:@R>
-    => DirectiveDefinition {
+    => DirectiveDefinitionRecord {
         name,
         description: None,
         arguments: ast.input_value_definition_range(Some(arguments.map(|arguments| arguments.len()).unwrap_or_default())),
-        repeatable: repeatable.unwrap_or_default(),
+        is_repeatable: repeatable.unwrap_or_default(),
         locations,
         span: Span::new(start, end)
     }
@@ -280,12 +280,12 @@ InputValueDefinition: () = {
         <directives:Directives>
         <end:@R>
     => {
-        ast.input_value_definition(InputValueDefinition {
+        ast.input_value_definition(InputValueDefinitionRecord {
             name,
             ty,
             description,
             directives,
-            default,
+            default_value: default,
             span: Span::new(start, end)
         });
     }
@@ -302,7 +302,7 @@ NamedType: StringId = <s:Ident> => ast.ident(s);
 
 Type: TypeId = {
     "[" <ty:Type> => ty,
-    <name:NamedType> <wrappers:WrappingType*> => ast.type_reference(Type {
+    <name:NamedType> <wrappers:WrappingType*> => ast.type_reference(TypeRecord {
         name,
         wrappers: TypeWrappers::from_iter(wrappers)
     })
@@ -314,23 +314,23 @@ WrappingType: WrappingType = {
 }
 
 Value: ValueId = {
-    "$" <name:Name> => ast.value(Value::Variable(name)),
-    <int:IntegerLiteral> => ast.value(Value::Int(int.parse().unwrap())),
-    <float:FloatLiteral> => ast.value(Value::Float(float.parse().unwrap())),
+    "$" <name:Name> => ast.value(ValueRecord::Variable(name)),
+    <int:IntegerLiteral> => ast.value(ValueRecord::Int(int.parse().unwrap())),
+    <float:FloatLiteral> => ast.value(ValueRecord::Float(float.parse().unwrap())),
     <start:@L> <s:StringLiteral> =>? {
         let id = ast.intern_owned_string(unquote_string(s, start)?);
-        Ok(ast.value(Value::String(id)))
+        Ok(ast.value(ValueRecord::String(id)))
     },
     <s:BlockStringLiteral> => {
         let id = ast.block_string(unquote_block_string(s));
-        ast.value(Value::BlockString(id))
+        ast.value(ValueRecord::BlockString(id))
     },
-    true => ast.value(Value::Boolean(true)),
-    false => ast.value(Value::Boolean(false)),
-    null => ast.value(Value::Null),
-    "[" <values:Value*> "]" => ast.value(Value::List(values)),
-    "{" <fields:ObjectField*> "}" => ast.value(Value::Object(fields)),
-    <value:EnumValue> => ast.value(Value::Enum(value)),
+    true => ast.value(ValueRecord::Boolean(true)),
+    false => ast.value(ValueRecord::Boolean(false)),
+    null => ast.value(ValueRecord::Null),
+    "[" <values:Value*> "]" => ast.value(ValueRecord::List(values)),
+    "{" <fields:ObjectField*> "}" => ast.value(ValueRecord::Object(fields)),
+    <value:EnumValue> => ast.value(ValueRecord::Enum(value)),
 }
 
 ObjectField: (StringId, ValueId) = {
@@ -363,10 +363,9 @@ Directives: IdRange<DirectiveId> = {
 
 Directive: () = {
     "@" <name:Name> <arguments:Arguments?> => {
-        ast.directive(Directive {
-            name,
-            arguments: arguments.unwrap_or_default()
-        });
+        let arguments = ast.argument_range(arguments.map(|arguments| arguments.len()));
+
+        ast.directive(DirectiveRecord { <> });
     }
 }
 
@@ -375,7 +374,7 @@ Arguments: Vec<ArgumentId> = {
 }
 
 Argument: ArgumentId = {
-    <name:Name> ":" <value:Value> => ast.argument(Argument { <> }),
+    <name:Name> ":" <value:Value> => ast.argument(ArgumentRecord { <> }),
 }
 
 Ident: &'input str = {

@@ -3,25 +3,25 @@ use super::ids::StringId;
 use super::{
     directives::Directive,
     ids::{DirectiveId, InputValueDefinitionId, StringLiteralId, TypeId, ValueId},
+    strings::StringLiteral,
     types::Type,
     value::Value,
-    ReadContext,
-    StringLiteral::StringLiteral,
-    TypeSystemId,
+    ReadContext, TypeSystemId,
 };
 #[allow(unused_imports)]
 use crate::{
     common::{IdRange, OperationType},
-    AstLookup,
+    type_system::DirectiveLocation,
+    AstLookup, Span,
 };
 
 pub struct InputValueDefinitionRecord {
     pub name: StringId,
-    pub ty: Option<TypeId>,
+    pub ty: TypeId,
     pub description: Option<StringLiteralId>,
-    pub default: Option<ValueId>,
+    pub default_value: Option<ValueId>,
     pub directives: IdRange<DirectiveId>,
-    pub span: Option<Span>,
+    pub span: Span,
 }
 
 #[derive(Clone, Copy)]
@@ -29,12 +29,12 @@ pub struct InputValueDefinition<'a>(ReadContext<'a, InputValueDefinitionId>);
 
 impl<'a> InputValueDefinition<'a> {
     pub fn name(&self) -> &'a str {
-        let ast = &self.0.document;
-        ast.lookup(ast.lookup(self.0.id).name)
+        let document = &self.0.document;
+        document.lookup(document.lookup(self.0.id).name)
     }
-    pub fn ty(&self) -> Option<Type<'a>> {
+    pub fn ty(&self) -> Type<'a> {
         let document = self.0.document;
-        document.lookup(self.0.id).ty.map(|id| document.read(id))
+        document.read(document.lookup(self.0.id).ty)
     }
     pub fn description(&self) -> Option<StringLiteral<'a>> {
         let document = self.0.document;
@@ -43,14 +43,14 @@ impl<'a> InputValueDefinition<'a> {
             .description
             .map(|id| document.read(id))
     }
-    pub fn default(&self) -> Option<Value<'a>> {
+    pub fn default_value(&self) -> Option<Value<'a>> {
         let document = self.0.document;
         document
             .lookup(self.0.id)
-            .default
+            .default_value
             .map(|id| document.read(id))
     }
-    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> {
+    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
         let document = self.0.document;
         document
             .lookup(self.0.id)
@@ -58,7 +58,7 @@ impl<'a> InputValueDefinition<'a> {
             .iter()
             .map(|id| document.read(id))
     }
-    pub fn span(&self) -> Option<Span> {
+    pub fn span(&self) -> Span {
         let document = self.0.document;
         document.lookup(self.0.id).span
     }
