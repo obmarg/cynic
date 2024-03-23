@@ -81,7 +81,7 @@ type DirectiveDefinition @file(name: "directives") {
   name: String!
   description: StringLiteral
   arguments: [InputValueDefinition!]!
-  repeatable: Boolean
+  repeatable: bool
   locations: [DirectiveLocation!]!
   span: Span
 }
@@ -109,6 +109,6 @@ scalar Value @file(name: "value")
 # String is built in, but easier to implement stuff if its just in the .graphql file
 # It is also special cased a bit in the rust code
 scalar String
-scalar Boolean @inline
+scalar bool @inline
 
 scalar StringLiteral
