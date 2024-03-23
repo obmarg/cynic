@@ -1,13 +1,13 @@
 type SchemaDefinition @file(name: "schemas") {
   description: StringLiteral
-  roots: [RootOperationTypeDefinition]
+  root_operations: [RootOperationTypeDefinition!]!
 }
 
 type ScalarDefinition @file(name: "scalars") {
   name: String!
   description: StringLiteral
   directives: [Directive]
-  span: Span
+  span: Span!
 }
 
 type ObjectDefinition @file(name: "objects") {
@@ -15,8 +15,8 @@ type ObjectDefinition @file(name: "objects") {
   description: StringLiteral
   fields: [FieldDefinition]
   directives: [Directive]
-  implements: [String]
-  span: Span
+  implements_interfaces: [String]
+  span: Span!
 }
 
 type FieldDefinition @file(name: "fields") {
@@ -25,7 +25,7 @@ type FieldDefinition @file(name: "fields") {
   arguments: [InputValueDefinition!]!
   description: StringLiteral
   directives: [Directive!]!
-  span: Span
+  span: Span!
 }
 
 type InterfaceDefinition @file(name: "interfaces") {
@@ -33,8 +33,8 @@ type InterfaceDefinition @file(name: "interfaces") {
   description: StringLiteral
   fields: [FieldDefinition!]!
   directives: [Directive!]!
-  implements: [String]
-  span: Span
+  implements_interfaces: [String]
+  span: Span!
 }
 
 type UnionDefinition @file(name: "unions") {
@@ -42,7 +42,7 @@ type UnionDefinition @file(name: "unions") {
   description: StringLiteral
   members: [String]
   directives: [Directive!]!
-  span: Span
+  span: Span!
 }
 
 type EnumDefinition @file(name: "enums") {
@@ -50,14 +50,14 @@ type EnumDefinition @file(name: "enums") {
   description: StringLiteral
   values: [EnumValueDefinition!]!
   directives: [Directive!]!
-  span: Span
+  span: Span!
 }
 
 type EnumValueDefinition @file(name: "enums") {
   value: String!
   description: StringLiteral
   directives: [Directive!]!
-  span: Span
+  span: Span!
 }
 
 type InputObjectDefinition @file(name: "input_objects") {
@@ -65,25 +65,25 @@ type InputObjectDefinition @file(name: "input_objects") {
   description: StringLiteral
   fields: [InputValueDefinition!]!
   directives: [Directive!]!
-  span: Span
+  span: Span!
 }
 
 type InputValueDefinition @file(name: "input_values") {
   name: String!
   ty: Type
   description: StringLiteral
-  default: Value
+  default_value: Value
   directives: [Directive!]!
-  span: Span
+  span: Span!
 }
 
 type DirectiveDefinition @file(name: "directives") {
   name: String!
   description: StringLiteral
   arguments: [InputValueDefinition!]!
-  repeatable: bool
+  is_repeatable: bool
   locations: [DirectiveLocation!]!
-  span: Span
+  span: Span!
 }
 
 type Directive @file(name: "directives") {
