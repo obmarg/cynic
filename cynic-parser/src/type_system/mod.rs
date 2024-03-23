@@ -3,6 +3,8 @@ use std::str::FromStr;
 use ids::*;
 use indexmap::IndexSet;
 
+mod generated;
+
 pub mod ids;
 pub mod readers;
 pub mod storage;
@@ -141,5 +143,32 @@ impl FromStr for DirectiveLocation {
 impl std::fmt::Display for DirectiveLocation {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.as_str())
+    }
+}
+
+trait TypeSystemId: Copy {
+    type Reader<'a>: From<ReadContext<'a, Self>>;
+
+    fn read(self, ast: &TypeSystemDocument) -> Self::Reader<'_> {
+        ReadContext {
+            id: self,
+            document: ast,
+        }
+        .into()
+    }
+}
+
+#[derive(Clone, Copy)]
+struct ReadContext<'a, I> {
+    id: I,
+    document: &'a TypeSystemDocument,
+}
+
+impl super::TypeSystemDocument {
+    pub fn read<T>(&self, id: T) -> T::Reader<'_>
+    where
+        T: TypeSystemId,
+    {
+        ReadContext { id, document: self }.into()
     }
 }

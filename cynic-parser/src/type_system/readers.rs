@@ -97,20 +97,3 @@ impl TypeSystemDocument {
         })
     }
 }
-
-// pub enum Definition<'a> {
-//     Schema(AstReader<'a, SchemaDefinitionId>),
-//     SchemaExtension(AstReader<'a, SchemaDefinitionId>),
-//     Type(TypeDefinition<'a>),
-//     TypeExtension(TypeDefinition<'a>),
-//     Directive(AstReader<'a, DirectiveDefinitionId>),
-// }
-
-// pub enum TypeDefinition<'a> {
-//     Scalar(AstReader<'a, ScalarDefinitionId>),
-//     Object(AstReader<'a, ObjectDefinitionId>),
-//     Interface(AstReader<'a, InterfaceDefinitionId>),
-//     Union(AstReader<'a, UnionDefinitionId>),
-//     Enum(AstReader<'a, EnumDefinitionId>),
-//     InputObject(AstReader<'a, InputObjectDefinitionId>),
-// }
