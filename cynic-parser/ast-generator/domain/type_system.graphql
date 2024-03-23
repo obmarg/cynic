@@ -1,0 +1,116 @@
+type SchemaDefinition {
+  description: StringLiteral
+  roots: [RootOperationTypeDefinition]
+}
+
+type ScalarDefinition {
+  name: String!
+  description: StringLiteral
+  directives: [Directive]
+  span: Span
+}
+
+type ObjectDefinition {
+  name: String!
+  description: StringLiteral
+  fields: [FieldDefinition]
+  directives: [Directive]
+  implements: [String]
+  span: Span
+}
+
+type FieldDefinition {
+  name: String!
+  ty: TypeId
+  arguments: [InputValueDefinition!]!
+  description: StringLiteral
+  directives: [Directive!]!
+  span: Span
+}
+
+type InterfaceDefinition {
+  name: String!
+  description: StringLiteral
+  fields: [FieldDefinition!]!
+  directives: [Directive!]!
+  implements: [String]
+  span: Span
+}
+
+type UnionDefinition {
+  name: String!
+  description: StringLiteral
+  members: [String]
+  directives: [Directive!]!
+  span: Span
+}
+
+type EnumDefinition {
+  name: String!
+  description: StringLiteral
+  values: [EnumValueDefinitionId!]!
+  directives: [Directive!]!
+  span: Span
+}
+
+type EnumValueDefinition {
+  value: String!
+  description: StringLiteral
+  directives: [Directive!]!
+  span: Span
+}
+
+type InputObjectDefinition {
+  name: String!
+  description: StringLiteral
+  fields: [InputValueDefinition!]!
+  directives: [Directive!]!
+  span: Span
+}
+
+type InputValueDefinition {
+  name: String!
+  ty: TypeId
+  description: StringLiteral
+  default: Value
+  directives: [Directive!]!
+  span: Span
+}
+
+type DirectiveDefinition {
+  name: String!
+  description: StringLiteral
+  arguments: [InputValueDefinition!]!
+  repeatable: bool
+  locations: [DirectiveLocation!]!
+  span: Span
+}
+
+type RootOperationTypeDefinition {
+  operation_type: OperationType
+  named_type: String!
+}
+
+type Directive {
+  name: String!
+  arguments: [Argument!]!
+}
+
+type Argument {
+  name: String!
+  value: ValueId
+}
+
+scalar RootOperationTypeDefinition @inline
+scalar Span @inline
+scalar DirectiveLocation @inline
+scalar OperationType @inline
+
+# Type & Value are kind of special cases that aren't worth automating
+# so we make them scalars and implement them by hand
+scalar Type @file(name: "types")
+scalar Value @file(name: "value")
+
+# String is built in, but easier to implement stuff if its just in the .graphql file
+# It is also special cased a bit in the rust code
+scalar String
