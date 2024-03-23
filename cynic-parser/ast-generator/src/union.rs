@@ -131,7 +131,7 @@ impl quote::ToTokens for FromBranch<'_> {
         let variant_name = Ident::new(self.0.target.name(), Span::call_site());
 
         tokens.append_all(quote! {
-            #this_record::#variant_name(id) => #this_reader::#variant_name(id)
+            #this_record::#variant_name(id) => #this_reader::#variant_name(value.document.read(*id))
         });
     }
 }
