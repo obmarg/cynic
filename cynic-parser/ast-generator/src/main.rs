@@ -130,7 +130,7 @@ fn shared_imports(name: &str) -> proc_macro2::TokenStream {
                 common::{IdRange, OperationType},
                 AstLookup,
                 Span,
-                type_system::DirectiveLocation
+                type_system::{DirectiveLocation, RootOperationTypeDefinition}
             };
             #[allow(unused_imports)]
             use super::ids::StringId;

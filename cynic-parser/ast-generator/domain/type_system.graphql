@@ -111,4 +111,4 @@ scalar Value @file(name: "value")
 scalar String
 scalar bool @inline
 
-scalar StringLiteral
+scalar StringLiteral @file(name: "strings")
