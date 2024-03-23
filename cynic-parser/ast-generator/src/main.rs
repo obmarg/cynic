@@ -14,9 +14,10 @@ use crate::{exts::FileDirectiveExt, file::imports};
 
 fn main() -> anyhow::Result<()> {
     eprintln!("{:?}", std::env::current_dir());
-    for module in ["executable", "type_system"] {
-        let document =
-            std::fs::read_to_string("cynic-parser/ast-generator/domain/executable.graphql")?;
+    for module in ["executable"] {
+        let document = std::fs::read_to_string(format!(
+            "cynic-parser/ast-generator/domain/{module}.graphql"
+        ))?;
 
         let domain = match cynic_parser::parse_type_system_document(&document) {
             Ok(domain) => domain,
@@ -79,7 +80,11 @@ fn main() -> anyhow::Result<()> {
                     .join("\n\n")
             );
 
-            std::fs::write(format!("output/{file_name}.rs"), doc).unwrap();
+            std::fs::write(
+                format!("cynic-parser/ast-generator/output/{module}/{file_name}.rs"),
+                doc,
+            )
+            .unwrap();
         }
     }
 
