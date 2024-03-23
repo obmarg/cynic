@@ -11,7 +11,7 @@ use super::{
 };
 
 pub enum SelectionRecord {
-    Field(FieldSelectionId),
+    FieldSelection(FieldSelectionId),
     InlineFragment(InlineFragmentId),
     FragmentSpread(FragmentSpreadId),
 }
@@ -48,7 +48,7 @@ impl ExecutableId for SelectionId {
 impl<'a> From<ReadContext<'a, SelectionId>> for Selection<'a> {
     fn from(value: ReadContext<'a, SelectionId>) -> Self {
         match value.document.lookup(value.id) {
-            SelectionRecord::Field(id) => Selection::Field(value.document.read(*id)),
+            SelectionRecord::FieldSelection(id) => Selection::Field(value.document.read(*id)),
             SelectionRecord::InlineFragment(id) => {
                 Selection::InlineFragment(value.document.read(*id))
             }

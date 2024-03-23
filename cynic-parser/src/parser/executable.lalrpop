@@ -81,7 +81,7 @@ Selection: SelectionRecord = {
     <alias:Alias?> <name:Name> <arguments:Arguments?> <directives:Directives> <selection_set:SelectionSet?> => {
         let selection_set = selection_set.unwrap_or_default();
         let arguments = arguments.map(|args| ast.arguments(args)).unwrap_or_default();
-        SelectionRecord::Field(
+        SelectionRecord::FieldSelection(
             ast.field_selection(FieldSelectionRecord {
                 <>
             })
