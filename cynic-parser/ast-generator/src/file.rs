@@ -21,6 +21,7 @@ impl EntityRef {
     pub fn new(ty: TypeDefinition<'_>) -> Option<Self> {
         match ty {
             TypeDefinition::Scalar(scalar) if scalar.is_inline() => None,
+            TypeDefinition::Scalar(scalar) if scalar.reader_fn_override().is_some() => None,
             TypeDefinition::Scalar(_) => Some(EntityRef {
                 module_name: ty.file_name().to_string(),
                 name: ty.name().to_string(),
@@ -74,7 +75,7 @@ pub fn imports(
         .collect::<Vec<_>>();
 
     format_code(quote! {
-        #[allow(unused_import)]
+        #[allow(unused_imports)]
         use crate::{
             common::{IdRange, OperationType},
             AstLookup,
