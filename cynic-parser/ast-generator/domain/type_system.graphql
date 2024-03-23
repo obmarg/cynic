@@ -1,16 +1,16 @@
-type SchemaDefinition {
+type SchemaDefinition @file(name: "schemas") {
   description: StringLiteral
   roots: [RootOperationTypeDefinition]
 }
 
-type ScalarDefinition {
+type ScalarDefinition @file(name: "scalars") {
   name: String!
   description: StringLiteral
   directives: [Directive]
   span: Span
 }
 
-type ObjectDefinition {
+type ObjectDefinition @file(name: "objects") {
   name: String!
   description: StringLiteral
   fields: [FieldDefinition]
@@ -19,16 +19,16 @@ type ObjectDefinition {
   span: Span
 }
 
-type FieldDefinition {
+type FieldDefinition @file(name: "fields") {
   name: String!
-  ty: TypeId
+  ty: Type
   arguments: [InputValueDefinition!]!
   description: StringLiteral
   directives: [Directive!]!
   span: Span
 }
 
-type InterfaceDefinition {
+type InterfaceDefinition @file(name: "interfaces") {
   name: String!
   description: StringLiteral
   fields: [FieldDefinition!]!
@@ -37,7 +37,7 @@ type InterfaceDefinition {
   span: Span
 }
 
-type UnionDefinition {
+type UnionDefinition @file(name: "unions") {
   name: String!
   description: StringLiteral
   members: [String]
@@ -45,22 +45,22 @@ type UnionDefinition {
   span: Span
 }
 
-type EnumDefinition {
+type EnumDefinition @file(name: "enums") {
   name: String!
   description: StringLiteral
-  values: [EnumValueDefinitionId!]!
+  values: [EnumValueDefinition!]!
   directives: [Directive!]!
   span: Span
 }
 
-type EnumValueDefinition {
+type EnumValueDefinition @file(name: "enums") {
   value: String!
   description: StringLiteral
   directives: [Directive!]!
   span: Span
 }
 
-type InputObjectDefinition {
+type InputObjectDefinition @file(name: "input_objects") {
   name: String!
   description: StringLiteral
   fields: [InputValueDefinition!]!
@@ -68,37 +68,32 @@ type InputObjectDefinition {
   span: Span
 }
 
-type InputValueDefinition {
+type InputValueDefinition @file(name: "input_values") {
   name: String!
-  ty: TypeId
+  ty: Type
   description: StringLiteral
   default: Value
   directives: [Directive!]!
   span: Span
 }
 
-type DirectiveDefinition {
+type DirectiveDefinition @file(name: "directives") {
   name: String!
   description: StringLiteral
   arguments: [InputValueDefinition!]!
-  repeatable: bool
+  repeatable: Boolean
   locations: [DirectiveLocation!]!
   span: Span
 }
 
-type RootOperationTypeDefinition {
-  operation_type: OperationType
-  named_type: String!
-}
-
-type Directive {
+type Directive @file(name: "directives") {
   name: String!
   arguments: [Argument!]!
 }
 
-type Argument {
+type Argument @file(name: "arguments") {
   name: String!
-  value: ValueId
+  value: Value
 }
 
 scalar RootOperationTypeDefinition @inline
@@ -114,3 +109,6 @@ scalar Value @file(name: "value")
 # String is built in, but easier to implement stuff if its just in the .graphql file
 # It is also special cased a bit in the rust code
 scalar String
+scalar Boolean @inline
+
+scalar StringLiteral

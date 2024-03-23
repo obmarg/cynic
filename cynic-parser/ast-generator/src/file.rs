@@ -52,6 +52,7 @@ pub fn imports(
     mut requires: BTreeSet<EntityRef>,
     current_file_entities: Vec<EntityRef>,
     id_trait: &str,
+    shared_imports: proc_macro2::TokenStream,
 ) -> anyhow::Result<String> {
     for id in &current_file_entities {
         requires.remove(id);
@@ -78,13 +79,7 @@ pub fn imports(
     let id_trait = Ident::new(id_trait, Span::call_site());
 
     format_code(quote! {
-        #[allow(unused_imports)]
-        use crate::{
-            common::{IdRange, OperationType},
-            AstLookup,
-        };
-        #[allow(unused_imports)]
-        use super::ids::StringId;
+        #shared_imports
 
         use super::{
             #(#reader_imports)*

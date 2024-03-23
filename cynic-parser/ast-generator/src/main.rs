@@ -14,7 +14,7 @@ use crate::{exts::FileDirectiveExt, file::imports};
 
 fn main() -> anyhow::Result<()> {
     eprintln!("{:?}", std::env::current_dir());
-    for module in ["executable"] {
+    for module in ["executable", "type_system"] {
         let document = std::fs::read_to_string(format!(
             "cynic-parser/ast-generator/domain/{module}.graphql"
         ))?;
@@ -68,9 +68,12 @@ fn main() -> anyhow::Result<()> {
 
             let id_trait = match module {
                 "executable" => "ExecutableId",
+                "type_system" => "TypeSystemId",
                 _ => todo!(),
             };
-            let imports = imports(requires, current_entities, id_trait).unwrap();
+
+            let imports =
+                imports(requires, current_entities, id_trait, shared_imports(module)).unwrap();
 
             let doc = format_code(formatdoc!(
                 r#"
@@ -103,4 +106,30 @@ fn format_code(text: impl ToString) -> anyhow::Result<String> {
     let stdout = cmd!(sh, "rustfmt").stdin(&text.to_string()).read()?;
 
     Ok(stdout)
+}
+
+fn shared_imports(name: &str) -> proc_macro2::TokenStream {
+    if name == "executable" {
+        quote::quote! {
+            #[allow(unused_imports)]
+            use crate::{
+                common::{IdRange, OperationType},
+                AstLookup,
+            };
+            #[allow(unused_imports)]
+            use super::ids::StringId;
+        }
+    } else if name == "type_system" {
+        quote::quote! {
+            #[allow(unused_imports)]
+            use crate::{
+                common::{IdRange, OperationType},
+                AstLookup,
+            };
+            #[allow(unused_imports)]
+            use super::ids::StringId;
+        }
+    } else {
+        unimplemented!()
+    }
 }
