@@ -80,6 +80,8 @@ pub fn imports(
             common::{IdRange, OperationType},
             AstLookup,
         };
+        #[allow(unused_imports)]
+        use super::ids::StringId;
 
         use super::{
             #(#reader_imports)*
