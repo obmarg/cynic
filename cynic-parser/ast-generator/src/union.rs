@@ -13,6 +13,7 @@ use crate::{
 pub fn union_output(
     object: UnionDefinition<'_>,
     model_index: &IndexMap<&str, TypeDefinition<'_>>,
+    id_trait: &str,
 ) -> anyhow::Result<EntityOutput> {
     let record_name = Ident::new(&format!("{}Record", object.name()), Span::call_site());
     let reader_name = Ident::new(object.name(), Span::call_site());
@@ -48,8 +49,10 @@ pub fn union_output(
         }
     })?;
 
+    let id_trait = Ident::new(id_trait, Span::call_site());
+
     let executable_id = format_code(quote! {
-        impl ExecutableId for #id_name {
+        impl #id_trait for #id_name {
             type Reader<'a> = #reader_name<'a>;
         }
     })?;

@@ -49,11 +49,15 @@ fn main() -> anyhow::Result<()> {
             .values()
             .map(|model| {
                 let output = match model {
-                    TypeDefinition::Object(object) => object::object_output(*object, &model_index)?,
+                    TypeDefinition::Object(object) => {
+                        object::object_output(*object, &model_index, id_trait)?
+                    }
                     TypeDefinition::Scalar(_) => {
                         return Ok(None);
                     }
-                    TypeDefinition::Union(union) => union::union_output(*union, &model_index)?,
+                    TypeDefinition::Union(union) => {
+                        union::union_output(*union, &model_index, id_trait)?
+                    }
                     _ => anyhow::bail!("unsupported definition"),
                 };
 
