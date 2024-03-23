@@ -11,7 +11,8 @@ members = [
     "schemas/github",
     "tests/querygen-compile-run",
     "tests/ui-tests",
-    "cynic-parser"
+    "cynic-parser",
+    "cynic-parser/ast-generator"
 ]
 exclude = ["cynic-parser/parser-generator"]
 resolver = "2"

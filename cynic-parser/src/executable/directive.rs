@@ -1,9 +1,14 @@
-use crate::{common::IdRange, AstLookup};
-
+#[allow(unused_imports)]
+use super::ids::StringId;
 use super::{
     argument::Argument,
-    ids::{ArgumentId, DirectiveId, StringId},
+    ids::{ArgumentId, DirectiveId},
     ExecutableId, ReadContext,
+};
+#[allow(unused_imports)]
+use crate::{
+    common::{IdRange, OperationType},
+    AstLookup,
 };
 
 pub struct DirectiveRecord {
@@ -17,17 +22,15 @@ pub struct Directive<'a>(ReadContext<'a, DirectiveId>);
 impl<'a> Directive<'a> {
     pub fn name(&self) -> &'a str {
         let ast = &self.0.document;
-
         ast.lookup(ast.lookup(self.0.id).name)
     }
-
     pub fn arguments(&self) -> impl ExactSizeIterator<Item = Argument<'a>> {
-        let ast = &self.0.document;
-
-        ast.lookup(self.0.id)
+        let document = self.0.document;
+        document
+            .lookup(self.0.id)
             .arguments
             .iter()
-            .map(|id| ast.read(id))
+            .map(|id| document.read(id))
     }
 }
 

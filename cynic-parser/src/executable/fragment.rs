@@ -1,10 +1,15 @@
-use crate::{common::IdRange, AstLookup};
-
+#[allow(unused_imports)]
+use super::ids::StringId;
 use super::{
     directive::Directive,
-    ids::{DirectiveId, FragmentDefinitionId, SelectionId, StringId},
+    ids::{DirectiveId, FragmentDefinitionId, SelectionId},
     selections::Selection,
     ExecutableId, ReadContext,
+};
+#[allow(unused_imports)]
+use crate::{
+    common::{IdRange, OperationType},
+    AstLookup,
 };
 
 pub struct FragmentDefinitionRecord {
@@ -22,28 +27,25 @@ impl<'a> FragmentDefinition<'a> {
         let ast = &self.0.document;
         ast.lookup(ast.lookup(self.0.id).name)
     }
-
     pub fn type_condition(&self) -> &'a str {
         let ast = &self.0.document;
         ast.lookup(ast.lookup(self.0.id).type_condition)
     }
-
     pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> {
-        self.0
-            .document
+        let document = self.0.document;
+        document
             .lookup(self.0.id)
             .directives
             .iter()
-            .map(|id| self.0.document.read(id))
+            .map(|id| document.read(id))
     }
-
     pub fn selection_set(&self) -> impl ExactSizeIterator<Item = Selection<'a>> {
-        self.0
-            .document
+        let document = self.0.document;
+        document
             .lookup(self.0.id)
             .selection_set
             .iter()
-            .map(|id| self.0.document.read(id))
+            .map(|id| document.read(id))
     }
 }
 

@@ -1,9 +1,14 @@
-use crate::AstLookup;
-
+#[allow(unused_imports)]
+use super::ids::StringId;
 use super::{
-    ids::{ArgumentId, StringId, ValueId},
+    ids::{ArgumentId, ValueId},
     value::Value,
     ExecutableId, ReadContext,
+};
+#[allow(unused_imports)]
+use crate::{
+    common::{IdRange, OperationType},
+    AstLookup,
 };
 
 pub struct ArgumentRecord {
@@ -19,11 +24,9 @@ impl<'a> Argument<'a> {
         let ast = &self.0.document;
         ast.lookup(ast.lookup(self.0.id).name)
     }
-
     pub fn value(&self) -> Value<'a> {
-        let ast = &self.0.document;
-
-        ast.read(ast.lookup(self.0.id).value)
+        let document = self.0.document;
+        document.read(document.lookup(self.0.id).value)
     }
 }
 

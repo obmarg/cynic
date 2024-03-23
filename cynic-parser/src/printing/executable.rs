@@ -197,7 +197,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for SelectionSetDisplay<'a> {
 impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Selection<'a>> {
     fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
         match self.0 {
-            Selection::Field(field) => {
+            Selection::FieldSelection(field) => {
                 let mut alias_pretty = allocator.nil();
                 if let Some(alias) = field.alias() {
                     alias_pretty = allocator

@@ -1,11 +1,16 @@
-use crate::{common::IdRange, AstLookup};
-
+#[allow(unused_imports)]
+use super::ids::StringId;
 use super::{
     directive::Directive,
-    ids::{DirectiveId, StringId, TypeId, ValueId, VariableDefinitionId},
+    ids::{DirectiveId, TypeId, ValueId, VariableDefinitionId},
     types::Type,
     value::Value,
     ExecutableId, ReadContext,
+};
+#[allow(unused_imports)]
+use crate::{
+    common::{IdRange, OperationType},
+    AstLookup,
 };
 
 pub struct VariableDefinitionRecord {
@@ -21,30 +26,26 @@ pub struct VariableDefinition<'a>(ReadContext<'a, VariableDefinitionId>);
 impl<'a> VariableDefinition<'a> {
     pub fn name(&self) -> &'a str {
         let ast = &self.0.document;
-
         ast.lookup(ast.lookup(self.0.id).name)
     }
-
     pub fn ty(&self) -> Type<'a> {
-        let ast = &self.0.document;
-        ast.read(ast.lookup(self.0.id).ty)
+        let document = self.0.document;
+        document.read(document.lookup(self.0.id).ty)
     }
-
     pub fn default_value(&self) -> Option<Value<'a>> {
-        let ast = &self.0.document;
-
-        ast.lookup(self.0.id)
+        let document = self.0.document;
+        document
+            .lookup(self.0.id)
             .default_value
-            .map(|id| self.0.document.read(id))
+            .map(|id| document.read(id))
     }
-
     pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> {
-        self.0
-            .document
+        let document = self.0.document;
+        document
             .lookup(self.0.id)
             .directives
             .iter()
-            .map(|id| self.0.document.read(id))
+            .map(|id| document.read(id))
     }
 }
 

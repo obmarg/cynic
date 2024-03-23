@@ -75,6 +75,8 @@ impl Error {
     }
 }
 
+impl std::error::Error for Report<'_> {}
+
 impl fmt::Display for Report<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         let mut output = Vec::<u8>::new();

@@ -1,0 +1,73 @@
+# Defines most of the executable AST.
+# The ast-generator reads this file and uses it to generate a ton of boilerplate
+
+# TODO: Generate ExecutableDefinition (it's totally possible I think)
+
+type OperationDefinition @file(name: "operation") {
+  operation_type: OperationType!
+  name: String
+  variable_definitions: [VariableDefinition]
+  directives: [Directive]
+  selection_set: [Selection]
+}
+
+type FragmentDefinition @file(name: "fragment") {
+  name: String!
+  type_condition: String!
+  directives: [Directive]
+  selection_set: [Selection]
+}
+
+union Selection @file(name: "selections") =
+    FieldSelection
+  | InlineFragment
+  | FragmentSpread
+
+type FieldSelection @file(name: "selections") {
+  alias: String
+  name: String!
+  arguments: [Argument]
+  directives: [Directive]
+  selection_set: [Selection]
+}
+
+type InlineFragment @file(name: "selections") {
+  type_condition: String
+  directives: [Directive]
+  selection_set: [Selection]
+}
+
+type FragmentSpread @file(name: "selections") {
+  fragment_name: String!
+  directives: [Directive]
+}
+
+type Directive @file(name: "directive") {
+  name: String!
+  arguments: [Argument]
+}
+
+type Argument @file(name: "argument") {
+  name: String!
+  value: Value!
+}
+
+type VariableDefinition @file(name: "variable") {
+  name: String!
+  ty: Type!
+  default_value: Value
+  directives: [Directive]
+}
+
+# OperationType is marked as @inline which means it just gets
+# stored inside records instead of getting IDs & records.
+scalar OperationType @inline
+
+# Type & Value are kind of special cases that aren't worth automating
+# so we make them scalars and implement them by hand
+scalar Type @file(name: "types")
+scalar Value @file(name: "value")
+
+# String is built in, but easier to implement stuff if its just in the .graphql file
+# It is also special cased a bit in the rust code
+scalar String

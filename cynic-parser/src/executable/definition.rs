@@ -20,14 +20,10 @@ pub enum ExecutableDefinition<'a> {
 
 impl super::ExecutableDocument {
     pub fn definitions(&self) -> impl ExactSizeIterator<Item = ExecutableDefinition<'_>> {
-        self.definitions.iter().map(|record| match record {
-            ExecutableDefinitionRecord::Operation(id) => {
-                ExecutableDefinition::Operation(self.read(*id))
-            }
-            ExecutableDefinitionRecord::Fragment(id) => {
-                ExecutableDefinition::Fragment(self.read(*id))
-            }
-        })
+        self.definitions
+            .iter()
+            .enumerate()
+            .map(|(i, _)| self.read(ExecutableDefinitionId::new(i)))
     }
 
     pub fn operations(&self) -> impl Iterator<Item = OperationDefinition<'_>> {
