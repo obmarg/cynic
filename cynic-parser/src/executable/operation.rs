@@ -24,12 +24,12 @@ pub struct OperationDefinition<'a>(ReadContext<'a, OperationDefinitionId>);
 
 impl<'a> OperationDefinition<'a> {
     pub fn operation_type(&self) -> OperationType {
-        let ast = &self.0.document;
+        let ast = self.0.document;
         ast.lookup(self.0.id).operation_type
     }
 
     pub fn name(&self) -> Option<&'a str> {
-        let ast = &self.0.document;
+        let ast = self.0.document;
         ast.lookup(self.0.id).name.map(|id| ast.lookup(id))
     }
 

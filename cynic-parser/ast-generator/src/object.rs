@@ -145,8 +145,8 @@ impl quote::ToTokens for ReaderFunction<'_> {
                     .directives()
                     .any(|directive| directive.name() == "inline") =>
             {
-                // For now I'm not generating scalar accessors, will revisit
-                return;
+                // I'm assuming inline scalars are copy here.
+                quote! { #target_type }
             }
             TypeDefinition::Object(_) | TypeDefinition::Union(_) | TypeDefinition::Scalar(_)
                 if self.0.field.ty().is_list() =>
@@ -172,8 +172,12 @@ impl quote::ToTokens for ReaderFunction<'_> {
                     .directives()
                     .any(|directive| directive.name() == "inline") =>
             {
-                // For now I'm not generating scalar accessors, will revisit
-                return;
+                // I'm assuming inline scalars are copy here.
+                quote! {
+                    let document = self.0.document;
+
+                    document.lookup(self.0.id).#field_name
+                }
             }
             TypeDefinition::Object(_) | TypeDefinition::Union(_) | TypeDefinition::Scalar(_)
                 if self.0.field.ty().is_list() =>
@@ -204,7 +208,7 @@ impl quote::ToTokens for ReaderFunction<'_> {
         };
 
         tokens.append_all(quote! {
-            fn #field_name(&self) -> #ty {
+            pub fn #field_name(&self) -> #ty {
                 #body
             }
         });
