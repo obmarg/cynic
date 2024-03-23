@@ -62,6 +62,6 @@ type VariableDefinition @file(name: "variable") {
   directives: [Directive]
 }
 
-scalar Type
+scalar Type @file(name: "types")
 
 scalar Value @file(name: "value")
