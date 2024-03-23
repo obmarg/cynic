@@ -1,10 +1,7 @@
-scalar String
+# Defines most of the executable AST.
+# The ast-generator reads this file and uses it to generate a ton of boilerplate
 
-scalar OperationType @inline
-
-# Think this one should be done by hand
-# as it doesnt exist in storage.
-# union ExecutableDefinition = OperationDefintion | FragmentDefinition
+# TODO: Generate ExecutableDefinition (it's totally possible I think)
 
 type OperationDefinition @file(name: "operation") {
   operation_type: OperationType!
@@ -62,6 +59,15 @@ type VariableDefinition @file(name: "variable") {
   directives: [Directive]
 }
 
-scalar Type @file(name: "types")
+# OperationType is marked as @inline which means it just gets
+# stored inside records instead of getting IDs & records.
+scalar OperationType @inline
 
+# Type & Value are kind of special cases that aren't worth automating
+# so we make them scalars and implement them by hand
+scalar Type @file(name: "types")
 scalar Value @file(name: "value")
+
+# String is built in, but easier to implement stuff if its just in the .graphql file
+# It is also special cased a bit in the rust code
+scalar String
