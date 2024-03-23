@@ -39,4 +39,3 @@ impl<'a> From<ReadContext<'a, ArgumentId>> for Argument<'a> {
         Self(value)
     }
 }
-

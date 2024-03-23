@@ -58,4 +58,3 @@ impl<'a> From<ReadContext<'a, VariableDefinitionId>> for VariableDefinition<'a> 
         Self(value)
     }
 }
-

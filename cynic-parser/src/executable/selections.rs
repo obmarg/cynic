@@ -47,7 +47,6 @@ impl<'a> From<ReadContext<'a, SelectionId>> for Selection<'a> {
     }
 }
 
-
 pub struct FieldSelectionRecord {
     pub alias: Option<StringId>,
     pub name: StringId,
@@ -107,7 +106,6 @@ impl<'a> From<ReadContext<'a, FieldSelectionId>> for FieldSelection<'a> {
     }
 }
 
-
 pub struct InlineFragmentRecord {
     pub type_condition: Option<StringId>,
     pub directives: IdRange<DirectiveId>,
@@ -153,7 +151,6 @@ impl<'a> From<ReadContext<'a, InlineFragmentId>> for InlineFragment<'a> {
     }
 }
 
-
 pub struct FragmentSpreadRecord {
     pub fragment_name: StringId,
     pub directives: IdRange<DirectiveId>,
@@ -186,4 +183,3 @@ impl<'a> From<ReadContext<'a, FragmentSpreadId>> for FragmentSpread<'a> {
         Self(value)
     }
 }
-

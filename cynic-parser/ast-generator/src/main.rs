@@ -72,17 +72,18 @@ fn main() -> anyhow::Result<()> {
             };
             let imports = imports(requires, current_entities, id_trait).unwrap();
 
-            let doc = formatdoc!(
+            let doc = format_code(formatdoc!(
                 r#"
                 {imports}
 
                 {}
-            "#,
+                "#,
                 output
                     .into_iter()
                     .map(|entity| entity.contents)
                     .join("\n\n")
-            );
+            ))
+            .unwrap();
 
             std::fs::write(
                 format!("cynic-parser/ast-generator/output/{module}/{file_name}.rs"),

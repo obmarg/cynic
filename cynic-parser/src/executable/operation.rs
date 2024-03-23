@@ -71,4 +71,3 @@ impl<'a> From<ReadContext<'a, OperationDefinitionId>> for OperationDefinition<'a
         Self(value)
     }
 }
-

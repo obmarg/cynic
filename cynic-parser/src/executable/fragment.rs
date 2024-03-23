@@ -58,4 +58,3 @@ impl<'a> From<ReadContext<'a, FragmentDefinitionId>> for FragmentDefinition<'a> 
         Self(value)
     }
 }
-

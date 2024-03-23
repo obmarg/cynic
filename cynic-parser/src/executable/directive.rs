@@ -43,4 +43,3 @@ impl<'a> From<ReadContext<'a, DirectiveId>> for Directive<'a> {
         Self(value)
     }
 }
-
