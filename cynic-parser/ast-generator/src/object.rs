@@ -39,7 +39,6 @@ pub fn object_output(
     let record_fields = edges.iter().copied().map(ObjectField);
     let reader_functions = edges.iter().copied().map(ReaderFunction);
 
-    // TODO: Split these up and format individually
     let record = format_code(quote! {
         pub struct #record_name {
             #(#record_fields),*

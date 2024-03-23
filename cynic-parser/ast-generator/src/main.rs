@@ -2,6 +2,7 @@ mod exts;
 mod file;
 mod idents;
 mod object;
+mod union;
 
 use indexmap::IndexMap;
 use indoc::formatdoc;
@@ -44,17 +45,14 @@ fn main() -> anyhow::Result<()> {
         }
 
         let outputs = model_index
-            .iter()
-            .map(|(name, model)| {
+            .values()
+            .map(|model| {
                 let output = match model {
                     TypeDefinition::Object(object) => object::object_output(*object, &model_index)?,
                     TypeDefinition::Scalar(_) => {
                         return Ok(None);
                     }
-                    TypeDefinition::Union(_) => {
-                        // TODO
-                        return Ok(None);
-                    }
+                    TypeDefinition::Union(union) => union::union_output(*union, &model_index)?,
                     _ => anyhow::bail!("unsupported definition"),
                 };
 
