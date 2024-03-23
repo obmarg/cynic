@@ -89,6 +89,8 @@ impl_id_range!(VariableDefinitionId);
 
 make_id!(ValueId, ValueRecord, values);
 
+make_id!(BlockStringLiteralId, str, block_strings);
+
 #[derive(Clone, Copy)]
 pub struct StringId(NonZeroU32);
 

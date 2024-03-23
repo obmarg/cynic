@@ -1,6 +1,6 @@
 use crate::{type_system::ids::ScalarDefinitionId, AstLookup};
 
-use super::{directives::Directive, ReadContext, TypeSystemId};
+use super::{directives::Directive, ReadContext, StringLiteral, TypeSystemId};
 
 #[derive(Clone, Copy)]
 pub struct ScalarDefinition<'a>(ReadContext<'a, ScalarDefinitionId>);
@@ -11,10 +11,10 @@ impl<'a> ScalarDefinition<'a> {
 
         ast.lookup(ast.lookup(self.0.id).name)
     }
-    pub fn description(&self) -> Option<&'a str> {
+    pub fn description(&self) -> Option<StringLiteral<'a>> {
         let ast = &self.0.document;
 
-        ast.lookup(self.0.id).description.map(|id| ast.lookup(id))
+        ast.lookup(self.0.id).description.map(|id| ast.read(id))
     }
 
     pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {

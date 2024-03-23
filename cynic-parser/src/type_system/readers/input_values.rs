@@ -1,6 +1,9 @@
 use crate::{type_system::ids::InputValueDefinitionId, AstLookup};
 
-use super::{directives::Directive, types::Type, values::ValueReader, ReadContext, TypeSystemId};
+use super::{
+    directives::Directive, types::Type, values::ValueReader, ReadContext, StringLiteral,
+    TypeSystemId,
+};
 
 #[derive(Clone, Copy)]
 pub struct InputValueDefinition<'a>(ReadContext<'a, InputValueDefinitionId>);
@@ -17,9 +20,9 @@ impl<'a> InputValueDefinition<'a> {
         ast.read(ast.lookup(self.0.id).ty)
     }
 
-    pub fn description(&self) -> Option<&'a str> {
+    pub fn description(&self) -> Option<StringLiteral<'a>> {
         let ast = &self.0.document;
-        ast.lookup(self.0.id).description.map(|id| ast.lookup(id))
+        ast.lookup(self.0.id).description.map(|id| ast.read(id))
     }
 
     pub fn default_value(&self) -> Option<ValueReader<'a>> {

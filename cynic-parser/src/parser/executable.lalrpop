@@ -4,7 +4,10 @@ use crate::{
     executable::{
         storage::*, ids::*, writer::ExecutableAstWriter
     },
-    common::{OperationType, IdRange, WrappingType, TypeWrappers}
+    common::{
+        OperationType, IdRange, WrappingType, TypeWrappers,
+        unquote_string, unquote_block_string, trim_block_string_whitespace
+    }
 };
 
 grammar<'input>(input: &'input str, ast: &mut ExecutableAstWriter);
@@ -155,12 +158,16 @@ Value: ValueId = {
     "$" <name:Name> => ast.value(ValueRecord::Variable(name)),
     <int:IntegerLiteral> => ast.value(ValueRecord::Int(int.parse().unwrap())),
     <float:FloatLiteral> => ast.value(ValueRecord::Float(float.parse().unwrap())),
-    <s:StringLiteral> => {
-        let id = ast.intern_string(s);
-        ast.value(ValueRecord::String(id))
+    <start:@L> <s:StringLiteral> =>? {
+        let id = ast.intern_owned_string(unquote_string(s, start)?);
+        Ok(ast.value(ValueRecord::String(id)))
     },
     <s:BlockStringLiteral> => {
-        let id = ast.intern_string(s);
+        let id = ast.intern_owned_string(
+            trim_block_string_whitespace(
+                unquote_block_string(s)
+            )
+        );
         ast.value(ValueRecord::String(id))
     },
     true => ast.value(ValueRecord::Boolean(true)),
@@ -173,15 +180,6 @@ Value: ValueId = {
 
 ObjectField: (StringId, ValueId) = {
     <name:Name> ":" <value:Value> => (name, value)
-}
-
-StringValue: StringId = {
-    <s:StringLiteral> => {
-        ast.intern_string(s)
-    },
-    <s:BlockStringLiteral> => {
-        ast.intern_string(s)
-    },
 }
 
 EnumValue: StringId = {
@@ -244,7 +242,7 @@ Ident: &'input str = {
 
 extern {
     type Location = usize;
-    type Error = lexer::LexicalError;
+    type Error = crate::parser::AdditionalErrors;
 
     enum lexer::Token<'input> {
         "$" => lexer::Token::Dollar,

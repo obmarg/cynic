@@ -17,6 +17,7 @@ use storage::*;
 #[derive(Default)]
 pub struct TypeSystemDocument {
     strings: IndexSet<Box<str>>,
+    block_strings: Vec<Box<str>>,
 
     definitions: Vec<AstDefinition>,
 
@@ -34,8 +35,6 @@ pub struct TypeSystemDocument {
     enum_value_definitions: Vec<EnumValueDefinition>,
 
     type_references: Vec<Type>,
-
-    string_literals: Vec<StringLiteral>,
 
     values: Vec<Value>,
     directives: Vec<Directive>,

@@ -1,6 +1,8 @@
 use crate::{type_system::ids::ObjectDefinitionId, AstLookup};
 
-use super::{directives::Directive, fields::FieldDefinition, ReadContext, TypeSystemId};
+use super::{
+    directives::Directive, fields::FieldDefinition, ReadContext, StringLiteral, TypeSystemId,
+};
 
 #[derive(Clone, Copy)]
 pub struct ObjectDefinition<'a>(ReadContext<'a, ObjectDefinitionId>);
@@ -12,10 +14,10 @@ impl<'a> ObjectDefinition<'a> {
         ast.lookup(ast.lookup(self.0.id).name)
     }
 
-    pub fn description(&self) -> Option<&'a str> {
+    pub fn description(&self) -> Option<StringLiteral<'a>> {
         let ast = &self.0.document;
 
-        ast.lookup(self.0.id).description.map(|id| ast.lookup(id))
+        ast.lookup(self.0.id).description.map(|id| ast.read(id))
     }
 
     pub fn implements_interfaces(&self) -> impl ExactSizeIterator<Item = &'a str> + 'a {

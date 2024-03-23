@@ -11,14 +11,15 @@ mod interfaces;
 mod objects;
 mod scalars;
 mod schemas;
+mod string_literal;
 mod types;
 mod unions;
 mod values;
 
 pub use self::{
     arguments::*, definitions::*, directives::*, enums::*, fields::*, input_objects::*,
-    input_values::*, interfaces::*, objects::*, scalars::*, schemas::*, types::*, unions::*,
-    values::*,
+    input_values::*, interfaces::*, objects::*, scalars::*, schemas::*, string_literal::*,
+    types::*, unions::*, values::*,
 };
 
 // TODO: Make this sealed maybe?

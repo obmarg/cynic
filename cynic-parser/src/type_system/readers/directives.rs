@@ -4,7 +4,10 @@ use crate::type_system::{
 };
 use crate::AstLookup;
 
-use super::{arguments::Argument, input_values::InputValueDefinition, ReadContext, TypeSystemId};
+use super::{
+    arguments::Argument, input_values::InputValueDefinition, string_literal::StringLiteral,
+    ReadContext, TypeSystemId,
+};
 
 #[derive(Clone, Copy)]
 pub struct DirectiveDefinition<'a>(ReadContext<'a, DirectiveDefinitionId>);
@@ -16,10 +19,10 @@ impl<'a> DirectiveDefinition<'a> {
         ast.lookup(ast.lookup(self.0.id).name)
     }
 
-    pub fn description(&self) -> Option<&'a str> {
+    pub fn description(&self) -> Option<StringLiteral<'a>> {
         let ast = &self.0.document;
 
-        ast.lookup(self.0.id).description.map(|id| ast.lookup(id))
+        ast.lookup(self.0.id).description.map(|id| ast.read(id))
     }
 
     pub fn arguments(&self) -> impl ExactSizeIterator<Item = InputValueDefinition<'a>> {

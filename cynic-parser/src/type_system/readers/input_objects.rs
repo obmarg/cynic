@@ -1,6 +1,9 @@
 use crate::{type_system::ids::InputObjectDefinitionId, AstLookup};
 
-use super::{directives::Directive, input_values::InputValueDefinition, ReadContext, TypeSystemId};
+use super::{
+    directives::Directive, input_values::InputValueDefinition, ReadContext, StringLiteral,
+    TypeSystemId,
+};
 
 #[derive(Clone, Copy)]
 pub struct InputObjectDefinition<'a>(ReadContext<'a, InputObjectDefinitionId>);
@@ -12,12 +15,12 @@ impl<'a> InputObjectDefinition<'a> {
             .lookup(self.0.document.lookup(self.0.id).name)
     }
 
-    pub fn description(&self) -> Option<&'a str> {
+    pub fn description(&self) -> Option<StringLiteral<'a>> {
         self.0
             .document
             .lookup(self.0.id)
             .description
-            .map(|id| self.0.document.lookup(id))
+            .map(|id| self.0.document.read(id))
     }
 
     pub fn fields(&self) -> impl ExactSizeIterator<Item = InputValueDefinition<'a>> + 'a {

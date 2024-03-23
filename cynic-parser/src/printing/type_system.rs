@@ -78,7 +78,9 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<SchemaDefinition<'a>> {
         let mut builder = allocator.nil();
 
         if let Some(description) = self.0.description() {
-            builder = builder.append(description).append(allocator.hardline());
+            builder = builder
+                .append(NodeDisplay(description))
+                .append(allocator.hardline());
         }
 
         builder = builder.append(allocator.text("schema"));
@@ -113,7 +115,9 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<ScalarDefinition<'a>> {
         let mut builder = allocator.nil();
 
         if let Some(description) = self.0.description() {
-            builder = builder.append(description).append(allocator.hardline());
+            builder = builder
+                .append(NodeDisplay(description))
+                .append(allocator.hardline());
         }
 
         let mut directives = self.0.directives().peekable();
@@ -135,7 +139,9 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<ObjectDefinition<'a>> {
         let mut builder = allocator.nil();
 
         if let Some(description) = self.0.description() {
-            builder = builder.append(description).append(allocator.hardline());
+            builder = builder
+                .append(NodeDisplay(description))
+                .append(allocator.hardline());
         }
 
         builder = builder.append(allocator.text(format!("type {}", self.0.name())));
@@ -218,7 +224,9 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<InterfaceDefinition<'a>> {
         let mut builder = allocator.nil();
 
         if let Some(description) = self.0.description() {
-            builder = builder.append(description).append(allocator.hardline());
+            builder = builder
+                .append(NodeDisplay(description))
+                .append(allocator.hardline());
         }
 
         builder = builder.append(allocator.text(format!("interface {}", self.0.name())));
@@ -264,7 +272,9 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<UnionDefinition<'a>> {
         let mut builder = allocator.nil();
 
         if let Some(description) = self.0.description() {
-            builder = builder.append(description).append(allocator.hardline());
+            builder = builder
+                .append(NodeDisplay(description))
+                .append(allocator.hardline());
         }
 
         builder = builder.append(allocator.text(format!("union {}", self.0.name())));
@@ -301,7 +311,9 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<EnumDefinition<'a>> {
         let mut builder = allocator.nil();
 
         if let Some(description) = self.0.description() {
-            builder = builder.append(description).append(allocator.hardline());
+            builder = builder
+                .append(NodeDisplay(description))
+                .append(allocator.hardline());
         }
 
         builder = builder.append(allocator.text(format!("enum {}", self.0.name())));
@@ -354,7 +366,9 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<InputObjectDefinition<'a>> {
         let mut builder = allocator.nil();
 
         if let Some(description) = self.0.description() {
-            builder = builder.append(description).append(allocator.hardline());
+            builder = builder
+                .append(NodeDisplay(description))
+                .append(allocator.hardline());
         }
 
         builder = builder.append(allocator.text(format!("input {}", self.0.name())));
@@ -391,7 +405,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<InputValueDefinition<'a>> {
             .map(|description| {
                 allocator
                     .hardline()
-                    .append(allocator.text(description))
+                    .append(NodeDisplay(description))
                     .append(allocator.hardline())
             })
             .unwrap_or(allocator.nil());
@@ -428,7 +442,9 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<DirectiveDefinition<'a>> {
         let mut builder = allocator.nil();
 
         if let Some(description) = self.0.description() {
-            builder = builder.append(description).append(allocator.hardline());
+            builder = builder
+                .append(NodeDisplay(description))
+                .append(allocator.hardline());
         }
 
         builder = builder.append(allocator.text(format!("directive @{}", self.0.name())));
@@ -507,7 +523,12 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<ValueReader<'a>> {
             crate::type_system::ValueReader::Variable(name) => allocator.text(format!("${name}")),
             crate::type_system::ValueReader::Int(value) => allocator.text(format!("{value}")),
             crate::type_system::ValueReader::Float(value) => allocator.text(format!("{value}")),
-            crate::type_system::ValueReader::String(value) => allocator.text(value),
+            crate::type_system::ValueReader::String(value) => allocator.text(value).double_quotes(),
+            crate::type_system::ValueReader::BlockString(value) => allocator
+                .text(value)
+                .double_quotes()
+                .double_quotes()
+                .double_quotes(),
             crate::type_system::ValueReader::Boolean(value) => allocator.text(format!("{value}")),
             crate::type_system::ValueReader::Null => allocator.text("null"),
             crate::type_system::ValueReader::Enum(value) => allocator.text(value),
@@ -534,6 +555,19 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<ValueReader<'a>> {
                 .group()
                 .enclose(allocator.space(), allocator.space())
                 .braces(),
+        }
+    }
+}
+
+impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<StringLiteral<'a>> {
+    fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
+        match self.0.kind() {
+            StringLiteralKind::String => allocator.text(self.0.to_cow()).double_quotes(),
+            StringLiteralKind::Block => allocator
+                .text(self.0.raw_str())
+                .double_quotes()
+                .double_quotes()
+                .double_quotes(),
         }
     }
 }

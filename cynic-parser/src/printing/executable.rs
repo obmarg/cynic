@@ -3,6 +3,7 @@ use pretty::{DocAllocator, Pretty};
 use crate::common::OperationType;
 
 use crate::executable::*;
+use crate::type_system::readers::{StringLiteral, StringLiteralKind};
 
 type Allocator<'a> = pretty::Arena<'a>;
 
@@ -312,7 +313,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Value<'a>> {
             Value::Variable(name) => allocator.text(format!("${name}")),
             Value::Int(value) => allocator.text(format!("{value}")),
             Value::Float(value) => allocator.text(format!("{value}")),
-            Value::String(value) => allocator.text(value),
+            Value::String(value) => allocator.text(value).double_quotes(),
             Value::Boolean(value) => allocator.text(format!("{value}")),
             Value::Null => allocator.text("null"),
             Value::Enum(value) => allocator.text(value),
@@ -339,6 +340,19 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Value<'a>> {
                 .group()
                 .enclose(allocator.space(), allocator.space())
                 .braces(),
+        }
+    }
+}
+
+impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<StringLiteral<'a>> {
+    fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
+        match self.0.kind() {
+            StringLiteralKind::String => allocator.text(self.0.to_cow()).double_quotes(),
+            StringLiteralKind::Block => allocator
+                .text(self.0.to_cow())
+                .double_quotes()
+                .double_quotes()
+                .double_quotes(),
         }
     }
 }
