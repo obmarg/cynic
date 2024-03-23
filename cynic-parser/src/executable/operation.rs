@@ -1,14 +1,16 @@
-use crate::{
-    common::{IdRange, OperationType},
-    AstLookup,
-};
-
+#[allow(unused_imports)]
+use super::ids::StringId;
 use super::{
     directive::Directive,
-    ids::{DirectiveId, OperationDefinitionId, SelectionId, StringId, VariableDefinitionId},
+    ids::{DirectiveId, OperationDefinitionId, SelectionId, VariableDefinitionId},
     selections::Selection,
     variable::VariableDefinition,
     ExecutableId, ReadContext,
+};
+#[allow(unused_imports)]
+use crate::{
+    common::{IdRange, OperationType},
+    AstLookup,
 };
 
 pub struct OperationDefinitionRecord {
@@ -24,40 +26,39 @@ pub struct OperationDefinition<'a>(ReadContext<'a, OperationDefinitionId>);
 
 impl<'a> OperationDefinition<'a> {
     pub fn operation_type(&self) -> OperationType {
-        let ast = self.0.document;
-        ast.lookup(self.0.id).operation_type
+        let document = self.0.document;
+        document.lookup(self.0.id).operation_type
     }
-
     pub fn name(&self) -> Option<&'a str> {
-        let ast = self.0.document;
-        ast.lookup(self.0.id).name.map(|id| ast.lookup(id))
+        let document = self.0.document;
+        document
+            .lookup(self.0.id)
+            .name
+            .map(|id| document.lookup(id))
     }
-
     pub fn variable_definitions(&self) -> impl ExactSizeIterator<Item = VariableDefinition<'a>> {
-        self.0
-            .document
+        let document = self.0.document;
+        document
             .lookup(self.0.id)
             .variable_definitions
             .iter()
-            .map(|id| self.0.document.read(id))
+            .map(|id| document.read(id))
     }
-
     pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> {
-        self.0
-            .document
+        let document = self.0.document;
+        document
             .lookup(self.0.id)
             .directives
             .iter()
-            .map(|id| self.0.document.read(id))
+            .map(|id| document.read(id))
     }
-
     pub fn selection_set(&self) -> impl ExactSizeIterator<Item = Selection<'a>> {
-        self.0
-            .document
+        let document = self.0.document;
+        document
             .lookup(self.0.id)
             .selection_set
             .iter()
-            .map(|id| self.0.document.read(id))
+            .map(|id| document.read(id))
     }
 }
 
@@ -70,3 +71,4 @@ impl<'a> From<ReadContext<'a, OperationDefinitionId>> for OperationDefinition<'a
         Self(value)
     }
 }
+
