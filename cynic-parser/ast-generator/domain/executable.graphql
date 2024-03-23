@@ -16,7 +16,7 @@ type OperationDefinition @file(name: "operation") {
 
 type FragmentDefinition @file(name: "fragment") {
   name: String!
-  type_condition: String
+  type_condition: String!
   directives: [Directive]
   selection_set: [Selection]
 }
