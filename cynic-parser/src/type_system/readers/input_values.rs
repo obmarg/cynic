@@ -1,8 +1,7 @@
 use crate::{type_system::ids::InputValueDefinitionId, AstLookup};
 
 use super::{
-    directives::Directive, types::Type, values::ValueReader, ReadContext, StringLiteral,
-    TypeSystemId,
+    directives::Directive, types::Type, values::Value, ReadContext, StringLiteral, TypeSystemId,
 };
 
 #[derive(Clone, Copy)]
@@ -25,7 +24,7 @@ impl<'a> InputValueDefinition<'a> {
         ast.lookup(self.0.id).description.map(|id| ast.read(id))
     }
 
-    pub fn default_value(&self) -> Option<ValueReader<'a>> {
+    pub fn default_value(&self) -> Option<Value<'a>> {
         let ast = &self.0.document;
         ast.lookup(self.0.id).default.map(|id| ast.read(id))
     }

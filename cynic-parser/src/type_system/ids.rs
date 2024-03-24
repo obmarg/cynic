@@ -4,7 +4,7 @@ use super::{
     storage::{
         Argument, Directive, DirectiveDefinition, EnumDefinition, EnumValueDefinition,
         FieldDefinition, InputObjectDefinition, InputValueDefinition, InterfaceDefinition,
-        ObjectDefinition, ScalarDefinition, SchemaDefinition, Type, UnionDefinition, Value,
+        ObjectDefinition, ScalarDefinition, SchemaDefinition, Type, UnionDefinition, ValueRecord,
     },
     AstDefinition, TypeSystemDocument,
 };
@@ -116,7 +116,7 @@ impl_id_range!(DirectiveId);
 
 make_id!(ArgumentId, Argument, arguments);
 
-make_id!(ValueId, Value, values);
+make_id!(ValueId, ValueRecord, values);
 
 make_id!(BlockStringLiteralId, str, block_strings);
 
@@ -142,4 +142,10 @@ impl AstLookup<StringId> for TypeSystemDocument {
     fn lookup_mut(&mut self, _index: StringId) -> &mut Self::Output {
         unimplemented!("strings aren't mutable so can't do this")
     }
+}
+
+#[derive(Clone, Copy)]
+pub enum StringLiteralId {
+    String(StringId),
+    Block(BlockStringLiteralId),
 }

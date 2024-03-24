@@ -78,8 +78,8 @@ mod __parse__TypeSystemDocument {
         Variant34(alloc::vec::Vec<RootOperationTypeDefinition>),
         Variant35(ScalarDefinition),
         Variant36(SchemaDefinition),
-        Variant37(StringLiteralRef),
-        Variant38(core::option::Option<StringLiteralRef>),
+        Variant37(StringLiteralId),
+        Variant38(core::option::Option<StringLiteralId>),
         Variant39(TypeId),
         Variant40(DefinitionId),
         Variant41(UnionDefinition),
@@ -3422,7 +3422,7 @@ mod __parse__TypeSystemDocument {
       'input,
     >(
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, StringLiteralRef, usize)
+    ) -> (usize, StringLiteralId, usize)
      {
         match __symbols.pop() {
             Some((__l, __Symbol::Variant37(__v), __r)) => (__l, __v, __r),
@@ -3620,7 +3620,7 @@ mod __parse__TypeSystemDocument {
       'input,
     >(
         __symbols: &mut alloc::vec::Vec<(usize,__Symbol<'input>,usize)>
-    ) -> (usize, core::option::Option<StringLiteralRef>, usize)
+    ) -> (usize, core::option::Option<StringLiteralId>, usize)
      {
         match __symbols.pop() {
             Some((__l, __Symbol::Variant38(__v), __r)) => (__l, __v, __r),
@@ -7229,7 +7229,7 @@ fn __action1<'input>(
 fn __action2<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    (_, description, _): (usize, core::option::Option<StringLiteralRef>, usize),
+    (_, description, _): (usize, core::option::Option<StringLiteralId>, usize),
     (_, def, _): (usize, DefinitionId, usize),
 ) {
     {
@@ -7557,7 +7557,7 @@ fn __action28<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
     (_, start, _): (usize, usize, usize),
-    (_, description, _): (usize, core::option::Option<StringLiteralRef>, usize),
+    (_, description, _): (usize, core::option::Option<StringLiteralId>, usize),
     (_, name, _): (usize, StringId, usize),
     (_, arguments, _): (usize, core::option::Option<Vec<()>>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
@@ -7712,7 +7712,7 @@ fn __action36<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
     (_, start, _): (usize, usize, usize),
-    (_, description, _): (usize, core::option::Option<StringLiteralRef>, usize),
+    (_, description, _): (usize, core::option::Option<StringLiteralId>, usize),
     (_, value, _): (usize, StringId, usize),
     (_, directives, _): (usize, IdRange<DirectiveId>, usize),
     (_, end, _): (usize, usize, usize),
@@ -7844,7 +7844,7 @@ fn __action44<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
     (_, start, _): (usize, usize, usize),
-    (_, description, _): (usize, core::option::Option<StringLiteralRef>, usize),
+    (_, description, _): (usize, core::option::Option<StringLiteralId>, usize),
     (_, name, _): (usize, StringId, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, ty, _): (usize, TypeId, usize),
@@ -7948,7 +7948,7 @@ fn __action52<'input>(
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, name, _): (usize, StringId, usize),
 ) -> ValueId {
-    ast.value(Value::Variable(name))
+    ast.value(ValueRecord::Variable(name))
 }
 
 #[allow(unused_variables)]
@@ -7958,7 +7958,7 @@ fn __action53<'input>(
     ast: &mut TypeSystemAstWriter,
     (_, int, _): (usize, &'input str, usize),
 ) -> ValueId {
-    ast.value(Value::Int(int.parse().unwrap()))
+    ast.value(ValueRecord::Int(int.parse().unwrap()))
 }
 
 #[allow(unused_variables)]
@@ -7968,7 +7968,7 @@ fn __action54<'input>(
     ast: &mut TypeSystemAstWriter,
     (_, float, _): (usize, &'input str, usize),
 ) -> ValueId {
-    ast.value(Value::Float(float.parse().unwrap()))
+    ast.value(ValueRecord::Float(float.parse().unwrap()))
 }
 
 #[allow(unused_variables)]
@@ -7984,7 +7984,7 @@ fn __action55<'input>(
 > {
     {
         let id = ast.intern_owned_string(unquote_string(s, start)?);
-        Ok(ast.value(Value::String(id)))
+        Ok(ast.value(ValueRecord::String(id)))
     }
 }
 
@@ -7997,7 +7997,7 @@ fn __action56<'input>(
 ) -> ValueId {
     {
         let id = ast.block_string(unquote_block_string(s));
-        ast.value(Value::BlockString(id))
+        ast.value(ValueRecord::BlockString(id))
     }
 }
 
@@ -8008,7 +8008,7 @@ fn __action57<'input>(
     ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> ValueId {
-    ast.value(Value::Boolean(true))
+    ast.value(ValueRecord::Boolean(true))
 }
 
 #[allow(unused_variables)]
@@ -8018,7 +8018,7 @@ fn __action58<'input>(
     ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> ValueId {
-    ast.value(Value::Boolean(false))
+    ast.value(ValueRecord::Boolean(false))
 }
 
 #[allow(unused_variables)]
@@ -8028,7 +8028,7 @@ fn __action59<'input>(
     ast: &mut TypeSystemAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> ValueId {
-    ast.value(Value::Null)
+    ast.value(ValueRecord::Null)
 }
 
 #[allow(unused_variables)]
@@ -8040,7 +8040,7 @@ fn __action60<'input>(
     (_, values, _): (usize, alloc::vec::Vec<ValueId>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
 ) -> ValueId {
-    ast.value(Value::List(values))
+    ast.value(ValueRecord::List(values))
 }
 
 #[allow(unused_variables)]
@@ -8052,7 +8052,7 @@ fn __action61<'input>(
     (_, fields, _): (usize, alloc::vec::Vec<(StringId, ValueId)>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
 ) -> ValueId {
-    ast.value(Value::Object(fields))
+    ast.value(ValueRecord::Object(fields))
 }
 
 #[allow(unused_variables)]
@@ -8062,7 +8062,7 @@ fn __action62<'input>(
     ast: &mut TypeSystemAstWriter,
     (_, value, _): (usize, StringId, usize),
 ) -> ValueId {
-    ast.value(Value::Enum(value))
+    ast.value(ValueRecord::Enum(value))
 }
 
 #[allow(unused_variables)]
@@ -8085,11 +8085,11 @@ fn __action64<'input>(
     (_, start, _): (usize, usize, usize),
     (_, s, _): (usize, &'input str, usize),
 ) -> Result<
-    StringLiteralRef,
+    StringLiteralId,
     __lalrpop_util::ParseError<usize, lexer::Token<'input>, crate::parser::AdditionalErrors>,
 > {
     {
-        Ok(StringLiteralRef::String(
+        Ok(StringLiteralId::String(
             ast.intern_owned_string(unquote_string(s, start)?),
         ))
     }
@@ -8101,10 +8101,10 @@ fn __action65<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
     (_, s, _): (usize, &'input str, usize),
-) -> StringLiteralRef {
+) -> StringLiteralId {
     {
         let id = ast.block_string(unquote_block_string(s));
-        StringLiteralRef::Block(id)
+        StringLiteralId::Block(id)
     }
 }
 
@@ -8868,8 +8868,8 @@ fn __action136<'input>(
 fn __action137<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    (_, __0, _): (usize, StringLiteralRef, usize),
-) -> core::option::Option<StringLiteralRef> {
+    (_, __0, _): (usize, StringLiteralId, usize),
+) -> core::option::Option<StringLiteralId> {
     Some(__0)
 }
 
@@ -8880,7 +8880,7 @@ fn __action138<'input>(
     ast: &mut TypeSystemAstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
-) -> core::option::Option<StringLiteralRef> {
+) -> core::option::Option<StringLiteralId> {
     None
 }
 
@@ -9198,7 +9198,7 @@ fn __action160<'input>(
 fn __action161<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    __0: (usize, core::option::Option<StringLiteralRef>, usize),
+    __0: (usize, core::option::Option<StringLiteralId>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
     __3: (usize, usize, usize),
@@ -9215,7 +9215,7 @@ fn __action161<'input>(
 fn __action162<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    __0: (usize, core::option::Option<StringLiteralRef>, usize),
+    __0: (usize, core::option::Option<StringLiteralId>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, core::option::Option<Vec<()>>, usize),
     __3: (usize, lexer::Token<'input>, usize),
@@ -9253,7 +9253,7 @@ fn __action163<'input>(
 fn __action164<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    __0: (usize, core::option::Option<StringLiteralRef>, usize),
+    __0: (usize, core::option::Option<StringLiteralId>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, lexer::Token<'input>, usize),
     __3: (usize, TypeId, usize),
@@ -9330,7 +9330,7 @@ fn __action168<'input>(
     ast: &mut TypeSystemAstWriter,
     __0: (usize, &'input str, usize),
 ) -> Result<
-    StringLiteralRef,
+    StringLiteralId,
     __lalrpop_util::ParseError<usize, lexer::Token<'input>, crate::parser::AdditionalErrors>,
 > {
     let __start0 = __0.0;
@@ -9421,7 +9421,7 @@ fn __action172<'input>(
 fn __action173<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    __0: (usize, core::option::Option<StringLiteralRef>, usize),
+    __0: (usize, core::option::Option<StringLiteralId>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
 ) -> EnumValueDefinitionId {
@@ -9437,7 +9437,7 @@ fn __action173<'input>(
 fn __action174<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    __0: (usize, core::option::Option<StringLiteralRef>, usize),
+    __0: (usize, core::option::Option<StringLiteralId>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, core::option::Option<Vec<()>>, usize),
     __3: (usize, lexer::Token<'input>, usize),
@@ -9473,7 +9473,7 @@ fn __action175<'input>(
 fn __action176<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    __0: (usize, core::option::Option<StringLiteralRef>, usize),
+    __0: (usize, core::option::Option<StringLiteralId>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, lexer::Token<'input>, usize),
     __3: (usize, TypeId, usize),
@@ -9662,7 +9662,7 @@ fn __action186<'input>(
 fn __action187<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    __0: (usize, core::option::Option<StringLiteralRef>, usize),
+    __0: (usize, core::option::Option<StringLiteralId>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, Vec<()>, usize),
     __3: (usize, lexer::Token<'input>, usize),
@@ -9681,7 +9681,7 @@ fn __action187<'input>(
 fn __action188<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    __0: (usize, core::option::Option<StringLiteralRef>, usize),
+    __0: (usize, core::option::Option<StringLiteralId>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, lexer::Token<'input>, usize),
     __3: (usize, TypeId, usize),
@@ -9699,7 +9699,7 @@ fn __action188<'input>(
 fn __action189<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    __0: (usize, core::option::Option<StringLiteralRef>, usize),
+    __0: (usize, core::option::Option<StringLiteralId>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, lexer::Token<'input>, usize),
     __3: (usize, TypeId, usize),
@@ -9718,7 +9718,7 @@ fn __action189<'input>(
 fn __action190<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    __0: (usize, core::option::Option<StringLiteralRef>, usize),
+    __0: (usize, core::option::Option<StringLiteralId>, usize),
     __1: (usize, StringId, usize),
     __2: (usize, lexer::Token<'input>, usize),
     __3: (usize, TypeId, usize),
@@ -10177,7 +10177,7 @@ fn __action216<'input>(
 fn __action217<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    __0: (usize, StringLiteralRef, usize),
+    __0: (usize, StringLiteralId, usize),
     __1: (usize, DefinitionId, usize),
 ) {
     let __start0 = __0.0;
@@ -10206,7 +10206,7 @@ fn __action218<'input>(
 fn __action219<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    __0: (usize, StringLiteralRef, usize),
+    __0: (usize, StringLiteralId, usize),
     __1: (usize, StringId, usize),
     __2: (usize, IdRange<DirectiveId>, usize),
 ) -> EnumValueDefinitionId {
@@ -10237,7 +10237,7 @@ fn __action220<'input>(
 fn __action221<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    __0: (usize, StringLiteralRef, usize),
+    __0: (usize, StringLiteralId, usize),
     __1: (usize, StringId, usize),
     __2: (usize, Vec<()>, usize),
     __3: (usize, lexer::Token<'input>, usize),
@@ -10274,7 +10274,7 @@ fn __action222<'input>(
 fn __action223<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    __0: (usize, StringLiteralRef, usize),
+    __0: (usize, StringLiteralId, usize),
     __1: (usize, StringId, usize),
     __2: (usize, lexer::Token<'input>, usize),
     __3: (usize, TypeId, usize),
@@ -10309,7 +10309,7 @@ fn __action224<'input>(
 fn __action225<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    __0: (usize, StringLiteralRef, usize),
+    __0: (usize, StringLiteralId, usize),
     __1: (usize, StringId, usize),
     __2: (usize, lexer::Token<'input>, usize),
     __3: (usize, TypeId, usize),
@@ -10346,7 +10346,7 @@ fn __action226<'input>(
 fn __action227<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
-    __0: (usize, StringLiteralRef, usize),
+    __0: (usize, StringLiteralId, usize),
     __1: (usize, StringId, usize),
     __2: (usize, lexer::Token<'input>, usize),
     __3: (usize, TypeId, usize),

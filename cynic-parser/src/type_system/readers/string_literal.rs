@@ -1,6 +1,6 @@
 use std::borrow::Cow;
 
-use crate::{common::trim_block_string_whitespace, type_system::StringLiteralRef, AstLookup};
+use crate::{common::trim_block_string_whitespace, type_system::StringLiteralId, AstLookup};
 
 use super::{ReadContext, TypeSystemId};
 
@@ -47,15 +47,15 @@ impl<'a> StringLiteral<'a> {
     }
 }
 
-impl TypeSystemId for StringLiteralRef {
+impl TypeSystemId for StringLiteralId {
     type Reader<'a> = StringLiteral<'a>;
 }
 
-impl<'a> From<ReadContext<'a, StringLiteralRef>> for StringLiteral<'a> {
-    fn from(value: ReadContext<'a, StringLiteralRef>) -> Self {
+impl<'a> From<ReadContext<'a, StringLiteralId>> for StringLiteral<'a> {
+    fn from(value: ReadContext<'a, StringLiteralId>) -> Self {
         StringLiteral(match value.id {
-            StringLiteralRef::String(id) => StringLiteralInner::String(value.document.lookup(id)),
-            StringLiteralRef::Block(id) => {
+            StringLiteralId::String(id) => StringLiteralInner::String(value.document.lookup(id)),
+            StringLiteralId::Block(id) => {
                 StringLiteralInner::BlockString(value.document.lookup(id))
             }
         })

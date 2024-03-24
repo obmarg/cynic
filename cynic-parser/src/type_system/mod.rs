@@ -10,7 +10,7 @@ pub mod writer;
 
 // TODO: Possibly pub use all readers
 use crate::span::Span;
-pub use readers::{Definition, TypeDefinition, ValueReader};
+pub use readers::{Definition, TypeDefinition, Value};
 
 use storage::*;
 
@@ -36,7 +36,7 @@ pub struct TypeSystemDocument {
 
     type_references: Vec<Type>,
 
-    values: Vec<Value>,
+    values: Vec<ValueRecord>,
     directives: Vec<Directive>,
     arguments: Vec<Argument>,
 }

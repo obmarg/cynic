@@ -1,7 +1,7 @@
 use crate::type_system::ids::ArgumentId;
 use crate::AstLookup;
 
-use super::{values::ValueReader, ReadContext, TypeSystemId};
+use super::{values::Value, ReadContext, TypeSystemId};
 
 #[derive(Clone, Copy)]
 pub struct Argument<'a>(ReadContext<'a, ArgumentId>);
@@ -12,7 +12,7 @@ impl<'a> Argument<'a> {
         ast.lookup(ast.lookup(self.0.id).name)
     }
 
-    pub fn value(&self) -> ValueReader<'a> {
+    pub fn value(&self) -> Value<'a> {
         let ast = &self.0.document;
 
         ast.read(ast.lookup(self.0.id).value)

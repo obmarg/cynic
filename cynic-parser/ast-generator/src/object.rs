@@ -17,6 +17,7 @@ use crate::{
 pub fn object_output(
     object: ObjectDefinition<'_>,
     model_index: &IndexMap<&str, TypeDefinition<'_>>,
+    id_trait: &str,
 ) -> anyhow::Result<EntityOutput> {
     let record_name = Ident::new(&format!("{}Record", object.name()), Span::call_site());
     let reader_name = Ident::new(object.name(), Span::call_site());
@@ -56,8 +57,10 @@ pub fn object_output(
         }
     })?;
 
+    let id_trait = Ident::new(id_trait, Span::call_site());
+
     let executable_id = format_code(quote! {
-        impl ExecutableId for #id_name {
+        impl #id_trait for #id_name {
             type Reader<'a> = #reader_name<'a>;
         }
     })?;
@@ -110,31 +113,38 @@ impl quote::ToTokens for ObjectField<'_> {
         let field_name = Ident::new(self.0.field.name(), Span::call_site());
 
         let target_id = IdIdent(self.0.target.name());
+
         let ty = match self.0.target {
             TypeDefinition::Scalar(scalar) if scalar.is_inline() => {
+                // I'm assuming inline scalars are copy here.
                 let ident = Ident::new(self.0.target.name(), Span::call_site());
-                if self.0.field.ty().is_non_null() {
+                if self.0.field.ty().is_list() {
+                    quote! { Vec<#ident> }
+                } else if self.0.field.ty().is_non_null() {
                     quote! { #ident }
                 } else {
                     quote! { Option<#ident> }
                 }
             }
-            TypeDefinition::Object(_) | TypeDefinition::Union(_) | TypeDefinition::Scalar(_)
-                if self.0.field.ty().is_list() =>
-            {
-                quote! {
-                    IdRange<#target_id>
+            TypeDefinition::Scalar(scalar) if scalar.reader_fn_override().is_some() => {
+                if self.0.field.ty().is_list() {
+                    quote! { Vec<#target_id> }
+                } else if self.0.field.ty().is_non_null() {
+                    quote! { #target_id }
+                } else {
+                    quote! { Option<#target_id> }
                 }
             }
-            TypeDefinition::Object(_) | TypeDefinition::Union(_) | TypeDefinition::Scalar(_)
-                if self.0.field.ty().is_non_null() =>
-            {
-                quote! { #target_id }
-            }
             TypeDefinition::Object(_) | TypeDefinition::Union(_) | TypeDefinition::Scalar(_) => {
-                quote! { Option<#target_id> }
+                if self.0.field.ty().is_list() {
+                    quote! { IdRange<#target_id> }
+                } else if self.0.field.ty().is_non_null() {
+                    quote! { #target_id }
+                } else {
+                    quote! { Option<#target_id> }
+                }
             }
-            _ => unimplemented!("No support for this target type"),
+            _ => unimplemented!(),
         };
 
         tokens.append_all(quote! {
@@ -165,7 +175,7 @@ impl quote::ToTokens for ReaderFunction<'_> {
         };
 
         let ty = if self.0.field.ty().is_list() {
-            quote! { impl ExactSizeIterator<Item = #inner_ty> }
+            quote! { impl ExactSizeIterator<Item = #inner_ty> + 'a }
         } else if self.0.field.ty().is_non_null() {
             quote! { #inner_ty }
         } else {
@@ -173,11 +183,15 @@ impl quote::ToTokens for ReaderFunction<'_> {
         };
 
         let body = match self.0.target {
-            TypeDefinition::Scalar(scalar)
-                if scalar
-                    .directives()
-                    .any(|directive| directive.name() == "inline") =>
-            {
+            TypeDefinition::Scalar(scalar) if scalar.is_inline() && self.0.field.ty().is_list() => {
+                // I'm assuming inline scalars are copy here.
+                quote! {
+                    let document = self.0.document;
+
+                    document.lookup(self.0.id).#field_name.iter().cloned()
+                }
+            }
+            TypeDefinition::Scalar(scalar) if scalar.is_inline() => {
                 // I'm assuming inline scalars are copy here.
                 quote! {
                     let document = self.0.document;
@@ -186,12 +200,22 @@ impl quote::ToTokens for ReaderFunction<'_> {
                 }
             }
             TypeDefinition::Scalar(scalar)
+                if scalar.reader_fn_override().is_some() && self.0.field.ty().is_list() =>
+            {
+                // Scalars with reader_fn_override return the scalar directly _not_ a reader
+                quote! {
+                    let document = &self.0.document;
+
+                    document.lookup(self.0.id).#field_name.iter().map(|id| document.lookup(*id))
+                }
+            }
+            TypeDefinition::Scalar(scalar)
                 if scalar.reader_fn_override().is_some() && self.0.field.ty().is_non_null() =>
             {
                 // Scalars with reader_fn_override return the scalar directly _not_ a reader
                 quote! {
-                    let ast = &self.0.document;
-                    ast.lookup(ast.lookup(self.0.id).#field_name)
+                    let document = &self.0.document;
+                    document.lookup(document.lookup(self.0.id).#field_name)
                 }
             }
             TypeDefinition::Scalar(scalar) if scalar.reader_fn_override().is_some() => {

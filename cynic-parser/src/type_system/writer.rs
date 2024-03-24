@@ -39,7 +39,7 @@ impl TypeSystemAstWriter {
     pub fn store_description(
         &mut self,
         definition: DefinitionId,
-        description: Option<StringLiteralRef>,
+        description: Option<StringLiteralId>,
     ) {
         if let Some(description) = description {
             match *self.ast.lookup(definition) {
@@ -340,7 +340,7 @@ impl TypeSystemAstWriter {
         id
     }
 
-    pub fn value(&mut self, value: Value) -> ValueId {
+    pub fn value(&mut self, value: ValueRecord) -> ValueId {
         let id = ValueId::new(self.ast.values.len());
         self.ast.values.push(value);
         id

@@ -1,0 +1,118 @@
+type SchemaDefinition @file(name: "schemas") {
+  description: StringLiteral
+  root_operations: [RootOperationTypeDefinition!]!
+}
+
+type RootOperationTypeDefinition @file(name: "schemas") {
+  operation_type: OperationType!
+  named_type: String!
+}
+
+type ScalarDefinition @file(name: "scalars") {
+  name: String!
+  description: StringLiteral
+  directives: [Directive]
+  span: Span!
+}
+
+type ObjectDefinition @file(name: "objects") {
+  name: String!
+  description: StringLiteral
+  fields: [FieldDefinition]
+  directives: [Directive]
+  implements_interfaces: [String]
+  span: Span!
+}
+
+type FieldDefinition @file(name: "fields") {
+  name: String!
+  ty: Type!
+  arguments: [InputValueDefinition!]!
+  description: StringLiteral
+  directives: [Directive!]!
+  span: Span!
+}
+
+type InterfaceDefinition @file(name: "interfaces") {
+  name: String!
+  description: StringLiteral
+  fields: [FieldDefinition!]!
+  directives: [Directive!]!
+  implements_interfaces: [String]
+  span: Span!
+}
+
+type UnionDefinition @file(name: "unions") {
+  name: String!
+  description: StringLiteral
+  members: [String]
+  directives: [Directive!]!
+  span: Span!
+}
+
+type EnumDefinition @file(name: "enums") {
+  name: String!
+  description: StringLiteral
+  values: [EnumValueDefinition!]!
+  directives: [Directive!]!
+  span: Span!
+}
+
+type EnumValueDefinition @file(name: "enums") {
+  value: String!
+  description: StringLiteral
+  directives: [Directive!]!
+  span: Span!
+}
+
+type InputObjectDefinition @file(name: "input_objects") {
+  name: String!
+  description: StringLiteral
+  fields: [InputValueDefinition!]!
+  directives: [Directive!]!
+  span: Span!
+}
+
+type InputValueDefinition @file(name: "input_values") {
+  name: String!
+  ty: Type!
+  description: StringLiteral
+  default_value: Value
+  directives: [Directive!]!
+  span: Span!
+}
+
+type DirectiveDefinition @file(name: "directives") {
+  name: String!
+  description: StringLiteral
+  arguments: [InputValueDefinition!]!
+  is_repeatable: bool!
+  locations: [DirectiveLocation!]!
+  span: Span!
+}
+
+type Directive @file(name: "directives") {
+  name: String!
+  arguments: [Argument!]!
+}
+
+type Argument @file(name: "arguments") {
+  name: String!
+  value: Value!
+}
+
+scalar Span @inline
+scalar DirectiveLocation @inline
+scalar OperationType @inline
+
+# Type & Value are kind of special cases that aren't worth automating
+# so we make them scalars and implement them by hand
+scalar Type @file(name: "types")
+scalar Value @file(name: "value")
+
+# String is built in, but easier to implement stuff if its just in the .graphql file
+# It is also special cased a bit in the rust code
+scalar String
+scalar bool @inline
+
+scalar StringLiteral @file(name: "strings")
