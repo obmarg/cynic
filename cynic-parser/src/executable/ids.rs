@@ -1,9 +1,6 @@
 use std::num::NonZeroU32;
 
-use super::{
-    storage::*, types::TypeRecord, value::ValueRecord,
-    ExecutableDocument,
-};
+use super::{storage::*, types::TypeRecord, value::ValueRecord, ExecutableDocument};
 use crate::{common::IdRange, AstLookup};
 
 macro_rules! make_id {
