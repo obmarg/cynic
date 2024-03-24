@@ -1,6 +1,7 @@
 use super::{ids, types, value, ExecutableId, ReadContext};
 
 pub mod argument;
+pub mod definition;
 pub mod directive;
 pub mod fragment;
 pub mod operation;

@@ -2,17 +2,17 @@ use indexmap::IndexSet;
 
 pub mod ids;
 
-mod definition;
 mod generated;
 mod value;
 
 mod types;
 pub mod writer;
 
+use self::ids::ExecutableDefinitionId;
 pub use self::{
-    definition::ExecutableDefinition,
     generated::{
         argument::Argument,
+        definition::ExecutableDefinition,
         directive::Directive,
         fragment::FragmentDefinition,
         operation::OperationDefinition,
@@ -28,7 +28,7 @@ pub struct ExecutableDocument {
     strings: IndexSet<Box<str>>,
     block_strings: Vec<Box<str>>,
 
-    definitions: Vec<definition::ExecutableDefinitionRecord>,
+    definitions: Vec<storage::ExecutableDefinitionRecord>,
     operations: Vec<storage::OperationDefinitionRecord>,
     fragments: Vec<storage::FragmentDefinitionRecord>,
 
@@ -74,11 +74,34 @@ impl ExecutableDocument {
     }
 }
 
+impl ExecutableDocument {
+    pub fn definitions(&self) -> impl ExactSizeIterator<Item = ExecutableDefinition<'_>> {
+        self.definitions
+            .iter()
+            .enumerate()
+            .map(|(i, _)| self.read(ExecutableDefinitionId::new(i)))
+    }
+
+    pub fn operations(&self) -> impl Iterator<Item = OperationDefinition<'_>> {
+        self.definitions().filter_map(|op| match op {
+            ExecutableDefinition::Operation(reader) => Some(reader),
+            ExecutableDefinition::Fragment(_) => None,
+        })
+    }
+
+    pub fn fragments(&self) -> impl Iterator<Item = FragmentDefinition<'_>> {
+        self.definitions().filter_map(|op| match op {
+            ExecutableDefinition::Operation(_) => None,
+            ExecutableDefinition::Fragment(reader) => Some(reader),
+        })
+    }
+}
+
 pub mod storage {
     pub use super::{
-        definition::ExecutableDefinitionRecord,
         generated::{
             argument::ArgumentRecord,
+            definition::ExecutableDefinitionRecord,
             directive::DirectiveRecord,
             fragment::FragmentDefinitionRecord,
             operation::OperationDefinitionRecord,
