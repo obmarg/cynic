@@ -1,9 +1,6 @@
 use crate::common::IdRange;
 
-use super::{
-    definition::ExecutableDefinitionRecord, directive::DirectiveRecord, ids::*, storage::*,
-    variable::VariableDefinitionRecord, ExecutableDocument,
-};
+use super::{ids::*, storage::*, ExecutableDocument};
 
 pub struct ExecutableAstWriter {
     ast: ExecutableDocument,

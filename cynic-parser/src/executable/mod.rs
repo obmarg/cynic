@@ -2,28 +2,25 @@ use indexmap::IndexSet;
 
 pub mod ids;
 
-mod argument;
 mod definition;
-mod directive;
-mod fragment;
-mod operation;
-mod selections;
+mod generated;
 mod value;
-mod variable;
 
 mod types;
 pub mod writer;
 
 pub use self::{
-    argument::Argument,
     definition::ExecutableDefinition,
-    directive::Directive,
-    fragment::FragmentDefinition,
-    operation::OperationDefinition,
-    selections::{FieldSelection, FragmentSpread, InlineFragment, Selection},
+    generated::{
+        argument::Argument,
+        directive::Directive,
+        fragment::FragmentDefinition,
+        operation::OperationDefinition,
+        selections::{FieldSelection, FragmentSpread, InlineFragment, Selection},
+        variable::VariableDefinition,
+    },
     types::Type,
     value::Value,
-    variable::VariableDefinition,
 };
 
 #[derive(Default)]
@@ -32,17 +29,17 @@ pub struct ExecutableDocument {
     block_strings: Vec<Box<str>>,
 
     definitions: Vec<definition::ExecutableDefinitionRecord>,
-    operations: Vec<operation::OperationDefinitionRecord>,
-    fragments: Vec<fragment::FragmentDefinitionRecord>,
+    operations: Vec<storage::OperationDefinitionRecord>,
+    fragments: Vec<storage::FragmentDefinitionRecord>,
 
-    selections: Vec<selections::SelectionRecord>,
-    field_selections: Vec<selections::FieldSelectionRecord>,
-    inline_fragments: Vec<selections::InlineFragmentRecord>,
-    fragment_spreads: Vec<selections::FragmentSpreadRecord>,
+    selections: Vec<storage::SelectionRecord>,
+    field_selections: Vec<storage::FieldSelectionRecord>,
+    inline_fragments: Vec<storage::InlineFragmentRecord>,
+    fragment_spreads: Vec<storage::FragmentSpreadRecord>,
 
-    directives: Vec<directive::DirectiveRecord>,
-    arguments: Vec<argument::ArgumentRecord>,
-    variables: Vec<variable::VariableDefinitionRecord>,
+    directives: Vec<storage::DirectiveRecord>,
+    arguments: Vec<storage::ArgumentRecord>,
+    variables: Vec<storage::VariableDefinitionRecord>,
 
     types: Vec<types::TypeRecord>,
 
@@ -79,16 +76,18 @@ impl ExecutableDocument {
 
 pub mod storage {
     pub use super::{
-        argument::ArgumentRecord,
         definition::ExecutableDefinitionRecord,
-        directive::DirectiveRecord,
-        fragment::FragmentDefinitionRecord,
-        operation::OperationDefinitionRecord,
-        selections::{
-            FieldSelectionRecord, FragmentSpreadRecord, InlineFragmentRecord, SelectionRecord,
+        generated::{
+            argument::ArgumentRecord,
+            directive::DirectiveRecord,
+            fragment::FragmentDefinitionRecord,
+            operation::OperationDefinitionRecord,
+            selections::{
+                FieldSelectionRecord, FragmentSpreadRecord, InlineFragmentRecord, SelectionRecord,
+            },
+            variable::VariableDefinitionRecord,
         },
         types::TypeRecord,
         value::ValueRecord,
-        variable::VariableDefinitionRecord,
     };
 }
