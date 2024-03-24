@@ -36,6 +36,13 @@ impl<'a> Value<'a> {
             _ => None,
         }
     }
+
+    pub fn as_list_iter(&self) -> Option<impl ExactSizeIterator<Item = Value<'a>>> {
+        match self {
+            Self::List(inner) => Some(inner.clone().into_iter()),
+            _ => None,
+        }
+    }
 }
 
 impl TypeSystemId for ValueId {

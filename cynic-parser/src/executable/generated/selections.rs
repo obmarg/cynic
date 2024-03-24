@@ -15,14 +15,14 @@ use crate::{
 };
 
 pub enum SelectionRecord {
-    FieldSelection(FieldSelectionId),
+    Field(FieldSelectionId),
     InlineFragment(InlineFragmentId),
     FragmentSpread(FragmentSpreadId),
 }
 
 #[derive(Clone, Copy)]
 pub enum Selection<'a> {
-    FieldSelection(FieldSelection<'a>),
+    Field(FieldSelection<'a>),
     InlineFragment(InlineFragment<'a>),
     FragmentSpread(FragmentSpread<'a>),
 }
@@ -34,9 +34,7 @@ impl ExecutableId for SelectionId {
 impl<'a> From<ReadContext<'a, SelectionId>> for Selection<'a> {
     fn from(value: ReadContext<'a, SelectionId>) -> Self {
         match value.document.lookup(value.id) {
-            SelectionRecord::FieldSelection(id) => {
-                Selection::FieldSelection(value.document.read(*id))
-            }
+            SelectionRecord::Field(id) => Selection::Field(value.document.read(*id)),
             SelectionRecord::InlineFragment(id) => {
                 Selection::InlineFragment(value.document.read(*id))
             }
@@ -67,10 +65,10 @@ impl<'a> FieldSelection<'a> {
             .map(|id| document.lookup(id))
     }
     pub fn name(&self) -> &'a str {
-        let ast = &self.0.document;
-        ast.lookup(ast.lookup(self.0.id).name)
+        let document = &self.0.document;
+        document.lookup(document.lookup(self.0.id).name)
     }
-    pub fn arguments(&self) -> impl ExactSizeIterator<Item = Argument<'a>> {
+    pub fn arguments(&self) -> impl ExactSizeIterator<Item = Argument<'a>> + 'a {
         let document = self.0.document;
         document
             .lookup(self.0.id)
@@ -78,7 +76,7 @@ impl<'a> FieldSelection<'a> {
             .iter()
             .map(|id| document.read(id))
     }
-    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> {
+    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
         let document = self.0.document;
         document
             .lookup(self.0.id)
@@ -86,7 +84,7 @@ impl<'a> FieldSelection<'a> {
             .iter()
             .map(|id| document.read(id))
     }
-    pub fn selection_set(&self) -> impl ExactSizeIterator<Item = Selection<'a>> {
+    pub fn selection_set(&self) -> impl ExactSizeIterator<Item = Selection<'a>> + 'a {
         let document = self.0.document;
         document
             .lookup(self.0.id)
@@ -123,7 +121,7 @@ impl<'a> InlineFragment<'a> {
             .type_condition
             .map(|id| document.lookup(id))
     }
-    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> {
+    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
         let document = self.0.document;
         document
             .lookup(self.0.id)
@@ -131,7 +129,7 @@ impl<'a> InlineFragment<'a> {
             .iter()
             .map(|id| document.read(id))
     }
-    pub fn selection_set(&self) -> impl ExactSizeIterator<Item = Selection<'a>> {
+    pub fn selection_set(&self) -> impl ExactSizeIterator<Item = Selection<'a>> + 'a {
         let document = self.0.document;
         document
             .lookup(self.0.id)
@@ -161,10 +159,10 @@ pub struct FragmentSpread<'a>(ReadContext<'a, FragmentSpreadId>);
 
 impl<'a> FragmentSpread<'a> {
     pub fn fragment_name(&self) -> &'a str {
-        let ast = &self.0.document;
-        ast.lookup(ast.lookup(self.0.id).fragment_name)
+        let document = &self.0.document;
+        document.lookup(document.lookup(self.0.id).fragment_name)
     }
-    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> {
+    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
         let document = self.0.document;
         document
             .lookup(self.0.id)
