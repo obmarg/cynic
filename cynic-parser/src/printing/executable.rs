@@ -3,7 +3,7 @@ use pretty::{DocAllocator, Pretty};
 use crate::common::OperationType;
 
 use crate::executable::*;
-use crate::type_system::readers::{StringLiteral, StringLiteralKind};
+use crate::type_system::{StringLiteral, StringLiteralKind};
 
 type Allocator<'a> = pretty::Arena<'a>;
 

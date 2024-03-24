@@ -2,7 +2,7 @@ use indexmap::IndexMap;
 use proc_macro2::{Ident, Span};
 use quote::{quote, TokenStreamExt};
 
-use cynic_parser::type_system::{readers::UnionDefinition, TypeDefinition};
+use cynic_parser::type_system::{TypeDefinition, UnionDefinition};
 
 use crate::{
     file::{EntityOutput, EntityRef},

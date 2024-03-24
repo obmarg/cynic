@@ -3,46 +3,67 @@ use std::str::FromStr;
 use ids::*;
 use indexmap::IndexSet;
 
+mod generated;
+
+mod definitions;
 pub mod ids;
-pub mod readers;
-pub mod storage;
+mod schemas;
+mod string_literal;
+mod types;
+mod values;
 pub mod writer;
 
-// TODO: Possibly pub use all readers
-use crate::span::Span;
-pub use readers::{Definition, TypeDefinition, Value};
-
-use storage::*;
+pub use self::{
+    definitions::{Definition, TypeDefinition},
+    generated::{
+        arguments::Argument,
+        directives::{Directive, DirectiveDefinition},
+        enums::{EnumDefinition, EnumValueDefinition},
+        fields::FieldDefinition,
+        input_objects::InputObjectDefinition,
+        input_values::InputValueDefinition,
+        interfaces::InterfaceDefinition,
+        objects::ObjectDefinition,
+        scalars::ScalarDefinition,
+        schemas::{RootOperationTypeDefinition, SchemaDefinition},
+        unions::UnionDefinition,
+    },
+    string_literal::{StringLiteral, StringLiteralKind},
+    types::Type,
+    values::Value,
+};
 
 #[derive(Default)]
 pub struct TypeSystemDocument {
     strings: IndexSet<Box<str>>,
     block_strings: Vec<Box<str>>,
 
-    definitions: Vec<AstDefinition>,
+    definitions: Vec<storage::DefinitionRecord>,
 
-    schema_definitions: Vec<SchemaDefinition>,
-    scalar_definitions: Vec<ScalarDefinition>,
-    object_definitions: Vec<ObjectDefinition>,
-    interface_definitions: Vec<InterfaceDefinition>,
-    union_definitions: Vec<UnionDefinition>,
-    enum_definitions: Vec<EnumDefinition>,
-    input_object_definitions: Vec<InputObjectDefinition>,
-    directive_definitions: Vec<DirectiveDefinition>,
+    schema_definitions: Vec<storage::SchemaDefinitionRecord>,
+    scalar_definitions: Vec<storage::ScalarDefinitionRecord>,
+    object_definitions: Vec<storage::ObjectDefinitionRecord>,
+    interface_definitions: Vec<storage::InterfaceDefinitionRecord>,
+    union_definitions: Vec<storage::UnionDefinitionRecord>,
+    enum_definitions: Vec<storage::EnumDefinitionRecord>,
+    input_object_definitions: Vec<storage::InputObjectDefinitionRecord>,
+    directive_definitions: Vec<storage::DirectiveDefinitionRecord>,
 
-    field_definitions: Vec<FieldDefinition>,
-    input_value_definitions: Vec<InputValueDefinition>,
-    enum_value_definitions: Vec<EnumValueDefinition>,
+    root_operation_definitions: Vec<storage::RootOperationTypeDefinitionRecord>,
 
-    type_references: Vec<Type>,
+    field_definitions: Vec<storage::FieldDefinitionRecord>,
+    input_value_definitions: Vec<storage::InputValueDefinitionRecord>,
+    enum_value_definitions: Vec<storage::EnumValueDefinitionRecord>,
 
-    values: Vec<ValueRecord>,
-    directives: Vec<Directive>,
-    arguments: Vec<Argument>,
+    type_references: Vec<storage::TypeRecord>,
+
+    values: Vec<storage::ValueRecord>,
+    directives: Vec<storage::DirectiveRecord>,
+    arguments: Vec<storage::ArgumentRecord>,
 }
 
 #[derive(Clone, Copy)]
-pub(crate) enum AstDefinition {
+pub enum DefinitionRecord {
     Schema(SchemaDefinitionId),
     Scalar(ScalarDefinitionId),
     Object(ObjectDefinitionId),
@@ -142,4 +163,95 @@ impl std::fmt::Display for DirectiveLocation {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.as_str())
     }
+}
+
+trait TypeSystemId: Copy {
+    type Reader<'a>: From<ReadContext<'a, Self>>;
+
+    fn read(self, ast: &TypeSystemDocument) -> Self::Reader<'_> {
+        ReadContext {
+            id: self,
+            document: ast,
+        }
+        .into()
+    }
+}
+
+#[derive(Clone, Copy)]
+struct ReadContext<'a, I> {
+    id: I,
+    document: &'a TypeSystemDocument,
+}
+
+impl super::TypeSystemDocument {
+    fn read<T>(&self, id: T) -> T::Reader<'_>
+    where
+        T: TypeSystemId,
+    {
+        ReadContext { id, document: self }.into()
+    }
+}
+
+impl TypeSystemDocument {
+    pub fn definitions(&self) -> impl Iterator<Item = Definition<'_>> + '_ {
+        self.definitions.iter().map(|definition| match definition {
+            DefinitionRecord::Schema(id) => Definition::Schema(self.read(*id)),
+            DefinitionRecord::Scalar(id) => {
+                Definition::Type(TypeDefinition::Scalar(self.read(*id)))
+            }
+            DefinitionRecord::Object(id) => {
+                Definition::Type(TypeDefinition::Object(self.read(*id)))
+            }
+            DefinitionRecord::Interface(id) => {
+                Definition::Type(TypeDefinition::Interface(self.read(*id)))
+            }
+            DefinitionRecord::Union(id) => Definition::Type(TypeDefinition::Union(self.read(*id))),
+            DefinitionRecord::Enum(id) => Definition::Type(TypeDefinition::Enum(self.read(*id))),
+            DefinitionRecord::InputObject(id) => {
+                Definition::Type(TypeDefinition::InputObject(self.read(*id)))
+            }
+            DefinitionRecord::SchemaExtension(id) => Definition::SchemaExtension(self.read(*id)),
+            DefinitionRecord::ScalarExtension(id) => {
+                Definition::TypeExtension(TypeDefinition::Scalar(self.read(*id)))
+            }
+            DefinitionRecord::ObjectExtension(id) => {
+                Definition::TypeExtension(TypeDefinition::Object(self.read(*id)))
+            }
+            DefinitionRecord::InterfaceExtension(id) => {
+                Definition::TypeExtension(TypeDefinition::Interface(self.read(*id)))
+            }
+            DefinitionRecord::UnionExtension(id) => {
+                Definition::TypeExtension(TypeDefinition::Union(self.read(*id)))
+            }
+            DefinitionRecord::EnumExtension(id) => {
+                Definition::TypeExtension(TypeDefinition::Enum(self.read(*id)))
+            }
+            DefinitionRecord::InputObjectExtension(id) => {
+                Definition::TypeExtension(TypeDefinition::InputObject(self.read(*id)))
+            }
+            DefinitionRecord::Directive(id) => Definition::Directive(self.read(*id)),
+        })
+    }
+}
+
+pub mod storage {
+    pub use super::{
+        generated::{
+            arguments::ArgumentRecord,
+            directives::{DirectiveDefinitionRecord, DirectiveRecord},
+            enums::EnumDefinitionRecord,
+            enums::EnumValueDefinitionRecord,
+            fields::FieldDefinitionRecord,
+            input_objects::InputObjectDefinitionRecord,
+            input_values::InputValueDefinitionRecord,
+            interfaces::InterfaceDefinitionRecord,
+            objects::ObjectDefinitionRecord,
+            scalars::ScalarDefinitionRecord,
+            schemas::{RootOperationTypeDefinitionRecord, SchemaDefinitionRecord},
+            unions::UnionDefinitionRecord,
+        },
+        types::TypeRecord,
+        values::ValueRecord,
+        DefinitionRecord,
+    };
 }

@@ -1,7 +1,6 @@
 use super::{
-    directives::DirectiveDefinition, enums::EnumDefinition, input_objects::InputObjectDefinition,
-    interfaces::InterfaceDefinition, objects::ObjectDefinition, scalars::ScalarDefinition,
-    schemas::SchemaDefinition, unions::UnionDefinition, Directive,
+    Directive, DirectiveDefinition, EnumDefinition, InputObjectDefinition, InterfaceDefinition,
+    ObjectDefinition, ScalarDefinition, SchemaDefinition, UnionDefinition,
 };
 
 #[derive(Clone, Copy)]

@@ -1,6 +1,15 @@
-use crate::{common::WrappingType, type_system::ids::TypeId, AstLookup};
+use crate::{
+    common::{TypeWrappers, WrappingType},
+    type_system::ids::TypeId,
+    AstLookup,
+};
 
-use super::{ReadContext, TypeSystemId};
+use super::{ReadContext, StringId, TypeSystemId};
+
+pub struct TypeRecord {
+    pub name: StringId,
+    pub wrappers: TypeWrappers,
+}
 
 #[derive(Clone, Copy)]
 pub struct Type<'a>(ReadContext<'a, TypeId>);
@@ -26,11 +35,11 @@ impl<'a> Type<'a> {
     }
 }
 
-impl<'a> std::fmt::Display for Type<'a> {
+impl std::fmt::Display for Type<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let ast = &self.0.document;
 
-        let crate::type_system::Type { name, wrappers } = ast.lookup(self.0.id);
+        let TypeRecord { name, wrappers } = ast.lookup(self.0.id);
 
         let wrappers = wrappers.iter().collect::<Vec<_>>();
         for wrapping in &wrappers {
