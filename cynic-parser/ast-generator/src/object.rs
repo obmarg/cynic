@@ -126,6 +126,15 @@ impl quote::ToTokens for ObjectField<'_> {
                     quote! { Option<#ident> }
                 }
             }
+            TypeDefinition::Scalar(scalar) if scalar.reader_fn_override().is_some() => {
+                if self.0.field.ty().is_list() {
+                    quote! { Vec<#target_id> }
+                } else if self.0.field.ty().is_non_null() {
+                    quote! { #target_id }
+                } else {
+                    quote! { Option<#target_id> }
+                }
+            }
             TypeDefinition::Object(_) | TypeDefinition::Union(_) | TypeDefinition::Scalar(_) => {
                 if self.0.field.ty().is_list() {
                     quote! { IdRange<#target_id> }
@@ -166,7 +175,7 @@ impl quote::ToTokens for ReaderFunction<'_> {
         };
 
         let ty = if self.0.field.ty().is_list() {
-            quote! { impl ExactSizeIterator<Item = #inner_ty> }
+            quote! { impl ExactSizeIterator<Item = #inner_ty> + 'a }
         } else if self.0.field.ty().is_non_null() {
             quote! { #inner_ty }
         } else {
@@ -191,12 +200,22 @@ impl quote::ToTokens for ReaderFunction<'_> {
                 }
             }
             TypeDefinition::Scalar(scalar)
+                if scalar.reader_fn_override().is_some() && self.0.field.ty().is_list() =>
+            {
+                // Scalars with reader_fn_override return the scalar directly _not_ a reader
+                quote! {
+                    let document = &self.0.document;
+
+                    document.lookup(self.0.id).#field_name.iter().map(|id| document.lookup(*id))
+                }
+            }
+            TypeDefinition::Scalar(scalar)
                 if scalar.reader_fn_override().is_some() && self.0.field.ty().is_non_null() =>
             {
                 // Scalars with reader_fn_override return the scalar directly _not_ a reader
                 quote! {
-                    let ast = &self.0.document;
-                    ast.lookup(ast.lookup(self.0.id).#field_name)
+                    let document = &self.0.document;
+                    document.lookup(document.lookup(self.0.id).#field_name)
                 }
             }
             TypeDefinition::Scalar(scalar) if scalar.reader_fn_override().is_some() => {

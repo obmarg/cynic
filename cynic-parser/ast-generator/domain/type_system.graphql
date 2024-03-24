@@ -26,7 +26,7 @@ type ObjectDefinition @file(name: "objects") {
 
 type FieldDefinition @file(name: "fields") {
   name: String!
-  ty: Type
+  ty: Type!
   arguments: [InputValueDefinition!]!
   description: StringLiteral
   directives: [Directive!]!
@@ -75,7 +75,7 @@ type InputObjectDefinition @file(name: "input_objects") {
 
 type InputValueDefinition @file(name: "input_values") {
   name: String!
-  ty: Type
+  ty: Type!
   description: StringLiteral
   default_value: Value
   directives: [Directive!]!
@@ -86,7 +86,7 @@ type DirectiveDefinition @file(name: "directives") {
   name: String!
   description: StringLiteral
   arguments: [InputValueDefinition!]!
-  is_repeatable: bool
+  is_repeatable: bool!
   locations: [DirectiveLocation!]!
   span: Span!
 }
@@ -98,7 +98,7 @@ type Directive @file(name: "directives") {
 
 type Argument @file(name: "arguments") {
   name: String!
-  value: Value
+  value: Value!
 }
 
 scalar Span @inline
