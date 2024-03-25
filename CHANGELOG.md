@@ -9,7 +9,13 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
-- Update reqwest to 0.12
+## v3.5.0 - 2024-03-25
+
+### Changes
+
+- Updates reqwest to 0.12 - this is breaking for users of the `http-reqwest` or
+  `http-reqwest-blocking` features who will need to upgrade to reqwest 0.12.
+- Fixed some unused code warnings
 
 ## v3.4.3 - 2024-01-22
 
