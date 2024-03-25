@@ -11,11 +11,7 @@ pub mod markers;
 use std::convert::Infallible;
 use std::marker::PhantomData;
 
-pub use self::{
-    input::SchemaInput,
-    names::FieldName,
-    parser::{load_schema, Document},
-};
+pub use self::{input::SchemaInput, names::FieldName, parser::load_schema};
 use self::{type_index::TypeIndex, types::SchemaRoots};
 
 // TODO: Uncomment this
@@ -32,8 +28,8 @@ pub struct Schema<'a, State> {
 impl<'a> Schema<'a, Unvalidated> {
     pub fn new(input: SchemaInput) -> Self {
         let type_index: Box<dyn TypeIndex> = match input {
-            SchemaInput::Document(document) => {
-                Box::new(type_index::SchemaBackedTypeIndex::for_schema(document))
+            SchemaInput::Document(ast) => {
+                Box::new(type_index::SchemaBackedTypeIndex::for_schema(ast))
             }
             #[cfg(feature = "rkyv")]
             SchemaInput::Archive(data) => Box::new(
