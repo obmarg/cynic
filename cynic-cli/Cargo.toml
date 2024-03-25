@@ -24,7 +24,7 @@ colored = "2"
 cynic = { path = "../cynic", version = "3.4.3", features = ["http-reqwest-blocking"] }
 cynic-introspection = { path = "../cynic-introspection", version = "3.4.3" }
 cynic-querygen = { path = "../cynic-querygen", version = "3.4.3" }
-reqwest = { version = "0.11", features = ["blocking"] }
+reqwest = { version = "0.12", features = ["blocking"] }
 thiserror = "1"
 
 [dev-dependencies]
