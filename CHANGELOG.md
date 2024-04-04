@@ -9,6 +9,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v3.5.1 - 2024-04-04
+
 ### Changes
 
 - `Operation` is now `Debug` when `Variables` is `Debug`
