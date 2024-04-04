@@ -1,7 +1,6 @@
 # Defines most of the executable AST.
 # The ast-generator reads this file and uses it to generate a ton of boilerplate
 
-# TODO: Generate ExecutableDefinition (it's totally possible I think)
 union ExecutableDefinition
   @file(name: "definition")
   @variant(names: ["Operation", "Fragment"]) =
