@@ -1,5 +1,5 @@
 // auto-generated: "lalrpop 0.20.0"
-// sha3: 1f33caee019cede583b4a420743c12e9657283866c75db08d26eb01b72735da7
+// sha3: 08c754fe6dffbd7e3b3919f55eff9d7ea855a65d3a7cea10e782098565a47755
 use crate::lexer;
 use crate::{
     common::{
@@ -5847,7 +5847,7 @@ fn __action14<'input>(
         let arguments = arguments
             .map(|args| ast.arguments(args))
             .unwrap_or_default();
-        SelectionRecord::FieldSelection(ast.field_selection(FieldSelectionRecord {
+        SelectionRecord::Field(ast.field_selection(FieldSelectionRecord {
             alias,
             name,
             arguments,

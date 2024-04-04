@@ -5,28 +5,38 @@ use quote::{quote, TokenStreamExt};
 use cynic_parser::type_system::{TypeDefinition, UnionDefinition};
 
 use crate::{
+    exts::UnionExt,
     file::{EntityOutput, EntityRef},
     format_code,
     idents::IdIdent,
 };
 
 pub fn union_output(
-    object: UnionDefinition<'_>,
+    union_definition: UnionDefinition<'_>,
     model_index: &IndexMap<&str, TypeDefinition<'_>>,
     id_trait: &str,
 ) -> anyhow::Result<EntityOutput> {
-    let record_name = Ident::new(&format!("{}Record", object.name()), Span::call_site());
-    let reader_name = Ident::new(object.name(), Span::call_site());
-    let id_name = IdIdent(object.name());
+    let record_name = Ident::new(
+        &format!("{}Record", union_definition.name()),
+        Span::call_site(),
+    );
+    let reader_name = Ident::new(union_definition.name(), Span::call_site());
+    let id_name = IdIdent(union_definition.name());
 
-    let edges = object
+    let edges = union_definition
         .members()
-        .map(|ty| -> anyhow::Result<TypeEdge> {
+        .enumerate()
+        .map(|(variant_index, ty)| -> anyhow::Result<TypeEdge> {
+            let target = *model_index
+                .get(ty)
+                .ok_or_else(|| anyhow::anyhow!("Could not find type {ty}"))?;
+
             Ok(TypeEdge {
-                container: object,
-                target: *model_index
-                    .get(ty)
-                    .ok_or_else(|| anyhow::anyhow!("Could not find type {ty}"))?,
+                container: union_definition,
+                variant_name: union_definition
+                    .variant_name_override(variant_index)
+                    .unwrap_or(target.name()),
+                target,
             })
         })
         .collect::<Result<Vec<_>, _>>()
@@ -85,7 +95,7 @@ pub fn union_output(
             .copied()
             .filter_map(|edge| EntityRef::new(edge.target))
             .collect(),
-        id: EntityRef::new(TypeDefinition::Union(object)).unwrap(),
+        id: EntityRef::new(TypeDefinition::Union(union_definition)).unwrap(),
         contents,
     })
 }
@@ -93,6 +103,7 @@ pub fn union_output(
 #[derive(Clone, Copy)]
 pub struct TypeEdge<'a> {
     container: UnionDefinition<'a>,
+    variant_name: &'a str,
     target: TypeDefinition<'a>,
 }
 
@@ -100,7 +111,7 @@ pub struct RecordVariant<'a>(TypeEdge<'a>);
 
 impl quote::ToTokens for RecordVariant<'_> {
     fn to_tokens(&self, tokens: &mut proc_macro2::TokenStream) {
-        let variant_name = Ident::new(self.0.target.name(), Span::call_site());
+        let variant_name = Ident::new(self.0.variant_name, Span::call_site());
         let id = IdIdent(self.0.target.name());
 
         tokens.append_all(quote! {
@@ -113,7 +124,7 @@ pub struct ReaderVariant<'a>(TypeEdge<'a>);
 
 impl quote::ToTokens for ReaderVariant<'_> {
     fn to_tokens(&self, tokens: &mut proc_macro2::TokenStream) {
-        let variant_name = Ident::new(self.0.target.name(), Span::call_site());
+        let variant_name = Ident::new(self.0.variant_name, Span::call_site());
         let reader = Ident::new(self.0.target.name(), Span::call_site());
 
         tokens.append_all(quote! {
@@ -131,7 +142,7 @@ impl quote::ToTokens for FromBranch<'_> {
             Span::call_site(),
         );
         let this_reader = Ident::new(self.0.container.name(), Span::call_site());
-        let variant_name = Ident::new(self.0.target.name(), Span::call_site());
+        let variant_name = Ident::new(self.0.variant_name, Span::call_site());
 
         tokens.append_all(quote! {
             #this_record::#variant_name(id) => #this_reader::#variant_name(value.document.read(*id))

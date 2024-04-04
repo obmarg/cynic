@@ -1,7 +1,11 @@
 # Defines most of the executable AST.
 # The ast-generator reads this file and uses it to generate a ton of boilerplate
 
-# TODO: Generate ExecutableDefinition (it's totally possible I think)
+union ExecutableDefinition
+  @file(name: "definition")
+  @variant(names: ["Operation", "Fragment"]) =
+    OperationDefinition
+  | FragmentDefinition
 
 type OperationDefinition @file(name: "operation") {
   operation_type: OperationType!
@@ -18,7 +22,9 @@ type FragmentDefinition @file(name: "fragment") {
   selection_set: [Selection]
 }
 
-union Selection @file(name: "selections") =
+union Selection
+  @file(name: "selections")
+  @variant(names: ["Field", "InlineFragment", "FragmentSpread"]) =
     FieldSelection
   | InlineFragment
   | FragmentSpread

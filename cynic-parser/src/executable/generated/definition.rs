@@ -1,8 +1,15 @@
-use crate::AstLookup;
-
+#[allow(unused_imports)]
+use super::ids::StringId;
 use super::{
+    fragment::FragmentDefinition,
     ids::{ExecutableDefinitionId, FragmentDefinitionId, OperationDefinitionId},
-    ExecutableId, FragmentDefinition, OperationDefinition, ReadContext,
+    operation::OperationDefinition,
+    ExecutableId, ReadContext,
+};
+#[allow(unused_imports)]
+use crate::{
+    common::{IdRange, OperationType},
+    AstLookup,
 };
 
 pub enum ExecutableDefinitionRecord {
@@ -14,29 +21,6 @@ pub enum ExecutableDefinitionRecord {
 pub enum ExecutableDefinition<'a> {
     Operation(OperationDefinition<'a>),
     Fragment(FragmentDefinition<'a>),
-}
-
-impl super::ExecutableDocument {
-    pub fn definitions(&self) -> impl ExactSizeIterator<Item = ExecutableDefinition<'_>> {
-        self.definitions
-            .iter()
-            .enumerate()
-            .map(|(i, _)| self.read(ExecutableDefinitionId::new(i)))
-    }
-
-    pub fn operations(&self) -> impl Iterator<Item = OperationDefinition<'_>> {
-        self.definitions().filter_map(|op| match op {
-            ExecutableDefinition::Operation(reader) => Some(reader),
-            ExecutableDefinition::Fragment(_) => None,
-        })
-    }
-
-    pub fn fragments(&self) -> impl Iterator<Item = FragmentDefinition<'_>> {
-        self.definitions().filter_map(|op| match op {
-            ExecutableDefinition::Operation(_) => None,
-            ExecutableDefinition::Fragment(reader) => Some(reader),
-        })
-    }
 }
 
 impl ExecutableId for ExecutableDefinitionId {

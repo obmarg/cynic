@@ -1,4 +1,4 @@
-use cynic_parser::type_system::{ScalarDefinition, TypeDefinition};
+use cynic_parser::type_system::{ScalarDefinition, TypeDefinition, UnionDefinition};
 use quote::quote;
 
 pub trait ScalarExt {
@@ -30,5 +30,22 @@ impl<'a> FileDirectiveExt<'a> for TypeDefinition<'a> {
             .find(|directive| directive.name() == "file")
             .and_then(|directive| directive.arguments().next()?.value().as_str())
             .unwrap_or(self.name())
+    }
+}
+
+pub trait UnionExt<'a> {
+    fn variant_name_override(&self, index: usize) -> Option<&'a str>;
+}
+
+impl<'a> UnionExt<'a> for UnionDefinition<'a> {
+    fn variant_name_override(&self, index: usize) -> Option<&'a str> {
+        self.directives()
+            .find(|directive| directive.name() == "variant")?
+            .arguments()
+            .next()?
+            .value()
+            .as_list_iter()?
+            .nth(index)?
+            .as_str()
     }
 }
