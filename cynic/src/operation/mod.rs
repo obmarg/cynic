@@ -15,7 +15,6 @@ pub use builder::{OperationBuildError, OperationBuilder};
 ///
 /// This contains a GraphQL query string and variable HashMap.  It can be
 /// serialized into JSON with `serde::Serialize` and sent to a remote server.
-#[derive(Debug)]
 pub struct Operation<QueryFragment, Variables = ()> {
     /// The graphql query string that will be sent to the server
     pub query: String,
@@ -27,6 +26,19 @@ pub struct Operation<QueryFragment, Variables = ()> {
     pub operation_name: Option<Cow<'static, str>>,
 
     phantom: PhantomData<fn() -> QueryFragment>,
+}
+
+impl<QueryFragment, Variables> std::fmt::Debug for Operation<QueryFragment, Variables>
+where
+    Variables: std::fmt::Debug,
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Operation")
+            .field("query", &self.query)
+            .field("variables", &self.variables)
+            .field("operation_name", &self.operation_name)
+            .finish()
+    }
 }
 
 impl<QueryFragment, Variables> serde::Serialize for Operation<QueryFragment, Variables>
