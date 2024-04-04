@@ -59,8 +59,7 @@ supported:
 - Query arguments including input objects
 - Interfaces & union types
 - Introspection via [`cynic-cli`][6] or [`cynic-introspection`][7]
-- GraphQL Subscriptions via [`graphql-ws-client`](https://github.com/obmarg/graphql-ws-client).
-  (though `graphql-ws-client` is fairly alpha quality)
+- GraphQL Subscriptions via [`graphql-ws-client`][8].
 
 The following features are not yet supported, though should be soon (if you
 want to help out with the project I'd be happy for someone else to try and
@@ -96,3 +95,4 @@ Cynic is documented in a few places:
 [5]: https://serde.rs
 [6]: https://crates.io/crates/cynic-cli
 [7]: https://crates.io/crates/cynic-introspection
+[8]: https://github.com/obmarg/graphql-ws-client
