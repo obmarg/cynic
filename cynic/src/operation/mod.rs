@@ -15,6 +15,7 @@ pub use builder::{OperationBuildError, OperationBuilder};
 ///
 /// This contains a GraphQL query string and variable HashMap.  It can be
 /// serialized into JSON with `serde::Serialize` and sent to a remote server.
+#[derive(Debug)]
 pub struct Operation<QueryFragment, Variables = ()> {
     /// The graphql query string that will be sent to the server
     pub query: String,
