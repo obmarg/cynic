@@ -61,10 +61,7 @@ supported:
 - Introspection via [`cynic-cli`][6] or [`cynic-introspection`][7]
 - GraphQL Subscriptions via [`graphql-ws-client`][8].
 
-The following features are not yet supported, though should be soon (if you
-want to help out with the project I'd be happy for someone else to try and
-implement these - if you open an issue I'd be happy to give pointers on how to
-go about implementing any of them)
+The following features are not currently supported, but may be one day.
 
 - Directives
 - Potentially other things (please open an issue if you find anything obviously
