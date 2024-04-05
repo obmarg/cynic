@@ -4,6 +4,7 @@ mod idents;
 mod object;
 mod union;
 
+use anyhow::Context;
 use indexmap::IndexMap;
 use indoc::formatdoc;
 use itertools::Itertools;
@@ -15,6 +16,9 @@ use crate::{exts::FileDirectiveExt, file::imports};
 fn main() -> anyhow::Result<()> {
     eprintln!("{:?}", std::env::current_dir());
     for module in ["executable", "type_system"] {
+        let module_path = format!("cynic-parser/ast-generator/output/{module}");
+        std::fs::create_dir_all(&module_path).with_context(|| format!("creating {module_path}"))?;
+
         let document = std::fs::read_to_string(format!(
             "cynic-parser/ast-generator/domain/{module}.graphql"
         ))?;
@@ -92,11 +96,7 @@ fn main() -> anyhow::Result<()> {
             ))
             .unwrap();
 
-            std::fs::write(
-                format!("cynic-parser/ast-generator/output/{module}/{file_name}.rs"),
-                doc,
-            )
-            .unwrap();
+            std::fs::write(format!("{module_path}/{file_name}.rs"), doc).unwrap();
         }
     }
 
