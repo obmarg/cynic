@@ -1,0 +1,27 @@
+[workspace]
+# we release most of the repo as a group so disable things for individual packages
+changelog_update = false
+git_release_enable = false
+git_tag_enable = false
+
+[[package]]
+name = "cynic"
+
+git_tag_name = "v${version}"
+git_tag_enable = true
+git_release_enable = true
+
+changelog_update = true
+changelog_path = "./CHANGELOG.md"
+changelog_include = [
+    "cynic-cli",
+    "cynic-codgen",
+    "cynic-introspection",
+    "cynic-proc-macros",
+    "cynic-querygen-web"
+]
+
+[[package]]
+name = "cynic-parser"
+git_tag_enable = true
+git_release_enable = true
