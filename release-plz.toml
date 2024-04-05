@@ -15,7 +15,7 @@ changelog_update = true
 changelog_path = "./CHANGELOG.md"
 changelog_include = [
     "cynic-cli",
-    "cynic-codgen",
+    "cynic-codegen",
     "cynic-introspection",
     "cynic-proc-macros",
     "cynic-querygen-web"
