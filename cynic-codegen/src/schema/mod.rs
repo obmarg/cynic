@@ -128,8 +128,8 @@ impl std::fmt::Display for SchemaError {
                 found,
             } => write!(
                 f,
-                "Expected type `{}` to be a {} but it was a {}",
-                name, expected, found
+                "The type `{}` is a {} in the GraphQL schema but is being used where we expect a {}",
+                name, found, expected,
             ),
             Self::InvalidTypeInSchema { name, details } => {
                 write!(f, "Invalid schema when validating `{}`: {}", name, details)
