@@ -21,14 +21,28 @@ jobs:
         uses: actions/create-github-app-token@v1
         id: generate-token
         with:
-          app-id: ${{ secrets.RELEASE_APP_ID }} 
-          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }} 
+          app-id: ${{ secrets.RELEASE_APP_ID }}
+          private-key: ${{ secrets.RELEASE_APP_PRIVATE_KEY }}
+
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
+        
+      - name: Set git CLI credentials
+        shell: bash
+        env:
+          GITHUB_TOKEN: ${{ steps.generate-token.outputs.token }} 
+        run: |
+          # release-plz sometimes uses command line git which will use the GHA default creds
+          # we swap that out for our GitHub App instead
+          git config --global user.email "166170668+cynic-releaser[bot]@users.noreply.github.com"
+          git config --global user.name "cynic-releaser[bot]"
+          git config --global user.password ${GITHUB_TOKEN}
+          echo "GIT_USER=${INPUT_ACTOR}:${INPUT_TOKEN}" >> $GITHUB_ENV
+          
       - name: Run release-plz
         uses: MarcoIeni/release-plz-action@v0.5
         env:
