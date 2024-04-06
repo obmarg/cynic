@@ -240,3 +240,128 @@ mod recursing_through_inline_fragments {
         "###);
     }
 }
+
+mod recursing_without_recursse {
+    use cynic_proc_macros::InlineFragments;
+
+    #[test]
+    #[should_panic(
+        expected = "Maximum query depth exceeded.  Have you forgotten to mark a query as recursive?"
+    )]
+    fn test_recursion_without_recurse_panics_correctly() {
+        // This example _should_ hit a panic I've added rather than just overflowing
+        // the stack.  This test makes sure it does.
+        use super::*;
+
+        #[derive(QueryFragment, Serialize)]
+        #[cynic(graphql_type = "Query", schema_path = "tests/test-schema.graphql")]
+        struct AllDataQuery {
+            all_data: Vec<PostOrAuthor>,
+        }
+
+        #[derive(InlineFragments, Serialize)]
+        #[cynic(schema_path = "tests/test-schema.graphql")]
+        enum PostOrAuthor {
+            Author(Author),
+            Post(Post),
+            #[cynic(fallback)]
+            Other,
+        }
+
+        #[derive(QueryFragment, Serialize)]
+        #[cynic(graphql_type = "BlogPost", schema_path = "tests/test-schema.graphql")]
+        struct Post {
+            __typename: String,
+        }
+
+        #[derive(QueryFragment, Serialize)]
+        #[cynic(schema_path = "tests/test-schema.graphql")]
+        struct Author {
+            // #[cynic(recurse = "2")]
+            #[cynic(flatten)]
+            friends: Vec<Author>,
+        }
+
+        use cynic::QueryBuilder;
+
+        AllDataQuery::build(());
+    }
+}
+
+mod try_github_thing {
+    use cynic::{InlineFragments, QueryFragment};
+
+    mod schema {
+        cynic::use_schema!("../schemas/github.graphql");
+    }
+
+    #[test]
+    #[should_panic(
+        expected = "Maximum query depth exceeded.  Have you forgotten to mark a query as recursive?"
+    )]
+    fn test_recursion_without_recurse_panics_correctly() {
+        // This example _should_ hit a panic I've added rather than just overflowing
+        // the stack.  This test makes sure it does.
+
+        #[derive(cynic::QueryFragment)]
+        #[cynic(schema_path = "../schemas/github.graphql")]
+        pub struct Tree {
+            #[cynic(flatten)]
+            pub entries: Vec<TreeEntry>,
+        }
+
+        #[derive(cynic::QueryFragment)]
+        #[cynic(schema_path = "../schemas/github.graphql")]
+        pub struct TreeEntry {
+            pub name: String,
+            // #[cynic(recurse = "1")]
+            pub object: Option<GitObject>,
+        }
+
+        #[derive(cynic::QueryVariables)]
+        pub struct GetDirectoryContentVariables<'a> {
+            owner: &'a str,
+            name: &'a str,
+            expression: &'a str,
+        }
+
+        #[derive(cynic::QueryFragment)]
+        #[cynic(graphql_type = "Query", variables = "GetDirectoryContentVariables")]
+        #[cynic(schema_path = "../schemas/github.graphql")]
+        pub struct GetDirectoryContentWithText {
+            #[arguments(owner: $owner, name: $name)]
+            pub repository: Option<Repository>,
+        }
+
+        #[derive(cynic::QueryFragment)]
+        #[cynic(variables = "GetDirectoryContentVariables")]
+        #[cynic(schema_path = "../schemas/github.graphql")]
+        pub struct Repository {
+            #[arguments(expression: $expression)]
+            pub object: Option<GitObject>,
+        }
+
+        #[derive(cynic::QueryFragment)]
+        #[cynic(schema_path = "../schemas/github.graphql")]
+        pub struct Blob {
+            pub text: Option<String>,
+        }
+
+        #[derive(cynic::InlineFragments)]
+        #[cynic(schema_path = "../schemas/github.graphql")]
+        pub enum GitObject {
+            Tree(Tree),
+            Blob(Blob),
+            #[cynic(fallback)]
+            Unknown,
+        }
+
+        use cynic::QueryBuilder;
+
+        GetDirectoryContentWithText::build(GetDirectoryContentVariables {
+            owner: "blah",
+            name: "blah",
+            expression: "blah",
+        });
+    }
+}
