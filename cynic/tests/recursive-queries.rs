@@ -240,3 +240,50 @@ mod recursing_through_inline_fragments {
         "###);
     }
 }
+
+mod recursing_without_recursse {
+    use cynic_proc_macros::InlineFragments;
+
+    #[test]
+    #[should_panic(
+        expected = "Maximum query depth exceeded.  Have you forgotten to mark a query as recursive?"
+    )]
+    fn test_recursion_without_recurse_panics_correctly() {
+        // This example _should_ hit a panic I've added rather than just overflowing
+        // the stack.  This test makes sure it does.
+        use super::*;
+
+        #[derive(QueryFragment, Serialize)]
+        #[cynic(graphql_type = "Query", schema_path = "tests/test-schema.graphql")]
+        struct AllDataQuery {
+            all_data: Vec<PostOrAuthor>,
+        }
+
+        #[derive(InlineFragments, Serialize)]
+        #[cynic(schema_path = "tests/test-schema.graphql")]
+        enum PostOrAuthor {
+            Author(Author),
+            Post(Post),
+            #[cynic(fallback)]
+            Other,
+        }
+
+        #[derive(QueryFragment, Serialize)]
+        #[cynic(graphql_type = "BlogPost", schema_path = "tests/test-schema.graphql")]
+        struct Post {
+            __typename: String,
+        }
+
+        #[derive(QueryFragment, Serialize)]
+        #[cynic(schema_path = "tests/test-schema.graphql")]
+        struct Author {
+            // #[cynic(recurse = "2")]
+            #[cynic(flatten)]
+            friends: Vec<Author>,
+        }
+
+        use cynic::QueryBuilder;
+
+        AllDataQuery::build(());
+    }
+}
