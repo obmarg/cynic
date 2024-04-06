@@ -7,7 +7,7 @@ git_tag_enable = false
 [[package]]
 name = "cynic"
 
-git_tag_name = "v${version}"
+git_tag_name = "v{{version}}"
 git_tag_enable = true
 git_release_enable = true
 
