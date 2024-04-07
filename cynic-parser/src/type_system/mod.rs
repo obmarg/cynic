@@ -165,7 +165,7 @@ impl std::fmt::Display for DirectiveLocation {
     }
 }
 
-trait TypeSystemId: Copy {
+pub trait TypeSystemId: Copy {
     type Reader<'a>: From<ReadContext<'a, Self>>;
 
     fn read(self, ast: &TypeSystemDocument) -> Self::Reader<'_> {
@@ -178,13 +178,13 @@ trait TypeSystemId: Copy {
 }
 
 #[derive(Clone, Copy)]
-struct ReadContext<'a, I> {
+pub struct ReadContext<'a, I> {
     id: I,
     document: &'a TypeSystemDocument,
 }
 
 impl super::TypeSystemDocument {
-    fn read<T>(&self, id: T) -> T::Reader<'_>
+    pub fn read<T>(&self, id: T) -> T::Reader<'_>
     where
         T: TypeSystemId,
     {

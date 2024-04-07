@@ -7,7 +7,7 @@ use std::{
 
 use cynic_parser::{
     common::{TypeWrappers, WrappingType},
-    type_system::readers::{self, Definition, TypeDefinition},
+    type_system::{self as parser, Definition, TypeDefinition},
 };
 
 use crate::schema::{names::FieldName, types::*, SchemaError};
@@ -44,7 +44,7 @@ impl SchemaBackedTypeIndex {
         let mut writer = cynic_parser::type_system::writer::TypeSystemAstWriter::update(ast);
         for builtin in BUILTIN_SCALARS {
             let name = writer.ident(builtin);
-            writer.scalar_definition(cynic_parser::type_system::storage::ScalarDefinition {
+            writer.scalar_definition(cynic_parser::type_system::storage::ScalarDefinitionRecord {
                 name,
                 description: None,
                 directives: Default::default(),
@@ -53,12 +53,12 @@ impl SchemaBackedTypeIndex {
         }
         let typename_string = writer.ident("__typename");
         let string_ident = writer.ident("String");
-        let typename_type = writer.type_reference(cynic_parser::type_system::storage::Type {
+        let typename_type = writer.type_reference(cynic_parser::type_system::storage::TypeRecord {
             name: string_ident,
             wrappers: TypeWrappers::none().wrap_non_null(),
         });
         let typename_field =
-            writer.field_definition(cynic_parser::type_system::storage::FieldDefinition {
+            writer.field_definition(cynic_parser::type_system::storage::FieldDefinitionRecord {
                 name: typename_string,
                 ty: typename_type,
                 arguments: Default::default(),
@@ -335,9 +335,7 @@ fn name_for_type(type_def: TypeDefinition<'_>) -> &str {
     }
 }
 
-fn convert_input_value(
-    val: cynic_parser::type_system::readers::InputValueDefinition<'_>,
-) -> InputValue<'_> {
+fn convert_input_value(val: cynic_parser::type_system::InputValueDefinition<'_>) -> InputValue<'_> {
     InputValue {
         name: FieldName {
             graphql_name: Cow::Borrowed(val.name()),
@@ -347,7 +345,7 @@ fn convert_input_value(
     }
 }
 
-fn build_type_ref<T>(ty: readers::Type<'_>) -> TypeRef<'_, T> {
+fn build_type_ref<T>(ty: parser::Type<'_>) -> TypeRef<'_, T> {
     fn inner_fn<T>(
         mut wrappers: Peekable<impl Iterator<Item = WrappingType>>,
         name: &str,
@@ -375,7 +373,7 @@ fn build_type_ref<T>(ty: readers::Type<'_>) -> TypeRef<'_, T> {
     inner_fn::<T>(ty.wrappers().peekable(), ty.name(), true)
 }
 
-fn build_field<'a>(field: readers::FieldDefinition<'a>, parent_type_name: &'a str) -> Field<'a> {
+fn build_field<'a>(field: parser::FieldDefinition<'a>, parent_type_name: &'a str) -> Field<'a> {
     Field {
         name: FieldName {
             graphql_name: Cow::Borrowed(field.name()),
@@ -488,8 +486,8 @@ mod tests {
         cynic_parser::parse_type_system_document(&format!("type Blah {{ foo: {sdl_ty} }}")).unwrap()
     }
 
-    fn extract_type(ast: &cynic_parser::TypeSystemDocument) -> readers::Type<'_> {
-        let readers::Definition::Type(readers::TypeDefinition::Object(obj)) =
+    fn extract_type(ast: &cynic_parser::TypeSystemDocument) -> parser::Type<'_> {
+        let parser::Definition::Type(parser::TypeDefinition::Object(obj)) =
             ast.definitions().next().unwrap()
         else {
             panic!("something went wrong");
