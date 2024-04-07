@@ -1,9 +1,9 @@
 use crate::schema::load_schema;
 
-use super::{parser::SchemaLoadError, Document};
+use super::parser::SchemaLoadError;
 
 pub enum SchemaInput {
-    Document(Document),
+    Document(cynic_parser::TypeSystemDocument),
     #[cfg(feature = "rkyv")]
     Archive(Vec<u8>),
 }
@@ -53,8 +53,8 @@ impl SchemaInput {
         path: impl AsRef<std::path::Path>,
     ) -> Result<SchemaInput, SchemaLoadError> {
         let path = path.as_ref();
-        if let Some(document) = document_from_path(path)? {
-            return Ok(SchemaInput::Document(document));
+        if let Some(ast) = document_from_path(path)? {
+            return Ok(SchemaInput::Document(ast));
         }
         return Err(SchemaLoadError::FileNotFound(
             path.to_string_lossy().to_string(),
@@ -78,7 +78,7 @@ impl SchemaInput {
 
 fn document_from_path(
     filename: impl AsRef<std::path::Path>,
-) -> Result<Option<Document>, SchemaLoadError> {
+) -> Result<Option<cynic_parser::TypeSystemDocument>, SchemaLoadError> {
     use std::path::PathBuf;
     let mut pathbuf = PathBuf::new();
 

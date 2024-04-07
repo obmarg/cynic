@@ -1,60 +1,85 @@
 use std::{
     borrow::Cow,
     collections::{BTreeSet, HashMap, HashSet},
+    iter::Peekable,
     marker::PhantomData,
 };
 
-use once_cell::sync::Lazy;
-
-use crate::schema::{
-    names::FieldName,
-    parser::{self, Definition, Document, TypeDefinition, TypeExt},
-    types::*,
-    SchemaError,
+use cynic_parser::{
+    common::{TypeWrappers, WrappingType},
+    type_system::readers::{self, Definition, TypeDefinition},
 };
+
+use crate::schema::{names::FieldName, types::*, SchemaError};
 
 #[ouroboros::self_referencing]
 pub struct SchemaBackedTypeIndex {
-    document: Document,
+    ast: cynic_parser::TypeSystemDocument,
     query_root: String,
     mutation_root: Option<String>,
     subscription_root: Option<String>,
-    #[borrows(document)]
+    typename_field: cynic_parser::type_system::ids::FieldDefinitionId,
+    #[borrows(ast)]
     #[covariant]
-    types: HashMap<&'this str, &'this TypeDefinition>,
+    types: HashMap<&'this str, TypeDefinition<'this>>,
 }
 
 impl SchemaBackedTypeIndex {
-    pub fn for_schema(document: Document) -> Self {
+    pub fn for_schema(ast: cynic_parser::TypeSystemDocument) -> Self {
         let mut query_root = "Query".to_string();
         let mut mutation_root = None;
         let mut subscription_root = None;
 
-        for definition in &document.definitions {
-            if let Definition::SchemaDefinition(schema) = definition {
-                if let Some(query_type) = &schema.query {
-                    query_root = query_type.clone();
+        for definition in ast.definitions() {
+            if let Definition::Schema(schema) = definition {
+                if let Some(query_type) = schema.query_type() {
+                    query_root = query_type.to_owned();
                 }
-                mutation_root = schema.mutation.clone();
-                subscription_root = schema.subscription.clone();
+                mutation_root = schema.mutation_type().map(ToOwned::to_owned);
+                subscription_root = schema.subscription_type().map(ToOwned::to_owned);
                 break;
             }
         }
 
+        let mut writer = cynic_parser::type_system::writer::TypeSystemAstWriter::update(ast);
+        for builtin in BUILTIN_SCALARS {
+            let name = writer.ident(builtin);
+            writer.scalar_definition(cynic_parser::type_system::storage::ScalarDefinition {
+                name,
+                description: None,
+                directives: Default::default(),
+                span: cynic_parser::Span::new(0, 0),
+            });
+        }
+        let typename_string = writer.ident("__typename");
+        let string_ident = writer.ident("String");
+        let typename_type = writer.type_reference(cynic_parser::type_system::storage::Type {
+            name: string_ident,
+            wrappers: TypeWrappers::none().wrap_non_null(),
+        });
+        let typename_field =
+            writer.field_definition(cynic_parser::type_system::storage::FieldDefinition {
+                name: typename_string,
+                ty: typename_type,
+                arguments: Default::default(),
+                description: None,
+                directives: Default::default(),
+                span: cynic_parser::Span::new(0, 0),
+            });
+        let ast = writer.finish();
+
         SchemaBackedTypeIndex::new(
-            document,
+            ast,
             query_root,
             mutation_root,
             subscription_root,
-            |document| {
+            typename_field,
+            |ast| {
                 let mut types = HashMap::new();
-                for definition in &document.definitions {
-                    if let Definition::TypeDefinition(type_def) = definition {
+                for definition in ast.definitions() {
+                    if let Definition::Type(type_def) = definition {
                         types.insert(name_for_type(type_def), type_def);
                     }
-                }
-                for def in BUILTIN_SCALARS.as_ref() {
-                    types.insert(name_for_type(def), def);
                 }
                 types
             },
@@ -114,51 +139,64 @@ impl super::TypeIndex for SchemaBackedTypeIndex {
 
         Some(match type_def {
             TypeDefinition::Scalar(def) => Type::Scalar(ScalarType {
-                name: Cow::Borrowed(&def.name),
-                builtin: scalar_is_builtin(&def.name),
+                name: Cow::Borrowed(def.name()),
+                builtin: scalar_is_builtin(def.name()),
             }),
-            TypeDefinition::Object(def) => Type::Object(ObjectType {
-                name: Cow::Borrowed(&def.name),
-                fields: def
-                    .fields
-                    .iter()
-                    .map(|field| build_field(field, &def.name))
-                    .collect(),
-                implements_interfaces: def
-                    .implements_interfaces
-                    .iter()
-                    .map(|iface| InterfaceRef(Cow::Borrowed(iface.as_ref())))
-                    .collect(),
-            }),
-            TypeDefinition::Interface(def) => Type::Interface(InterfaceType {
-                name: Cow::Borrowed(&def.name),
-                fields: def
-                    .fields
-                    .iter()
-                    .map(|f| build_field(f, &def.name))
-                    .collect(),
-            }),
+            TypeDefinition::Object(def) => {
+                let mut fields = def
+                    .fields()
+                    .map(|field| build_field(field, def.name()))
+                    .collect::<Vec<_>>();
+
+                fields.push(build_field(
+                    self.borrow_ast().read(*self.borrow_typename_field()),
+                    def.name(),
+                ));
+
+                Type::Object(ObjectType {
+                    name: Cow::Borrowed(def.name()),
+                    fields,
+                    implements_interfaces: def
+                        .implements_interfaces()
+                        .map(|iface| InterfaceRef(Cow::Borrowed(iface)))
+                        .collect(),
+                })
+            }
+            TypeDefinition::Interface(def) => {
+                let mut fields = def
+                    .fields()
+                    .map(|field| build_field(field, def.name()))
+                    .collect::<Vec<_>>();
+
+                fields.push(build_field(
+                    self.borrow_ast().read(*self.borrow_typename_field()),
+                    def.name(),
+                ));
+
+                Type::Interface(InterfaceType {
+                    name: Cow::Borrowed(def.name()),
+                    fields,
+                })
+            }
             TypeDefinition::Union(def) => Type::Union(UnionType {
-                name: Cow::Borrowed(&def.name),
+                name: Cow::Borrowed(def.name()),
                 types: def
-                    .types
-                    .iter()
-                    .map(|name| ObjectRef(Cow::Borrowed(name.as_str())))
+                    .members()
+                    .map(|name| ObjectRef(Cow::Borrowed(name)))
                     .collect(),
             }),
             TypeDefinition::Enum(def) => Type::Enum(EnumType {
-                name: Cow::Borrowed(&def.name),
+                name: Cow::Borrowed(def.name()),
                 values: def
-                    .values
-                    .iter()
+                    .values()
                     .map(|val| EnumValue {
-                        name: FieldName::new(&val.name),
+                        name: FieldName::new(val.value()),
                     })
                     .collect(),
             }),
             TypeDefinition::InputObject(def) => Type::InputObject(InputObjectType {
-                name: Cow::Borrowed(&def.name),
-                fields: def.fields.iter().map(convert_input_value).collect(),
+                name: Cow::Borrowed(def.name()),
+                fields: def.fields().map(convert_input_value).collect(),
             }),
         })
     }
@@ -174,15 +212,14 @@ impl super::TypeIndex for SchemaBackedTypeIndex {
 }
 
 impl SchemaBackedTypeIndex {
-    fn lookup_type<'a>(&'a self, name: &str) -> Option<&'a TypeDefinition> {
-        #[allow(clippy::map_clone)]
-        self.borrow_types().get(name).map(|d| *d)
+    fn lookup_type<'a>(&'a self, name: &str) -> Option<TypeDefinition<'a>> {
+        self.borrow_types().get(name).copied()
     }
 
     /// Validates that all the types contained within the given types do exist.
     ///
     /// So we can just directly use refs to them.
-    fn validate<'a>(&'a self, mut defs: Vec<&'a TypeDefinition>) -> Result<(), SchemaError> {
+    fn validate<'a>(&'a self, mut defs: Vec<TypeDefinition<'a>>) -> Result<(), SchemaError> {
         let mut validated = HashSet::<&str>::new();
 
         macro_rules! validate {
@@ -224,24 +261,23 @@ impl SchemaBackedTypeIndex {
         while let Some(def) = defs.pop() {
             match def {
                 TypeDefinition::InputObject(obj) => {
-                    for field in &obj.fields {
-                        let name = field.value_type.inner_name();
+                    for field in obj.fields() {
+                        let name = field.ty().name();
                         validate!(name, Input);
                     }
                 }
                 TypeDefinition::Scalar(_) => {}
                 TypeDefinition::Enum(_) => {}
                 TypeDefinition::Object(obj) => {
-                    for field in &obj.fields {
-                        let name = field.field_type.inner_name();
+                    for field in obj.fields() {
+                        let name = field.ty().name();
                         validate!(name, Output);
-                        for field in &field.arguments {
-                            let name = field.value_type.inner_name();
+                        for field in field.arguments() {
+                            let name = field.ty().name();
                             validate!(name, Input);
                         }
                     }
-                    for iface in &obj.implements_interfaces {
-                        let name = iface.as_ref();
+                    for name in obj.implements_interfaces() {
                         validate!(
                             name,
                             TypeDefinition::Interface(_),
@@ -250,22 +286,24 @@ impl SchemaBackedTypeIndex {
                     }
                 }
                 TypeDefinition::Union(union_def) => {
-                    for member in &union_def.types {
-                        let name = member.as_ref();
-                        validate!(name, TypeDefinition::Object(_), "expected to be an object");
+                    for member in union_def.members() {
+                        validate!(
+                            member,
+                            TypeDefinition::Object(_),
+                            "expected to be an object"
+                        );
                     }
                 }
                 TypeDefinition::Interface(iface) => {
-                    for field in &iface.fields {
-                        let name = field.field_type.inner_name();
+                    for field in iface.fields() {
+                        let name = field.ty().name();
                         validate!(name, Output);
-                        for field in &field.arguments {
-                            let name = field.value_type.inner_name();
+                        for field in field.arguments() {
+                            let name = field.ty().name();
                             validate!(name, Input);
                         }
                     }
-                    for iface in &iface.implements_interfaces {
-                        let name = iface.as_ref();
+                    for name in iface.implements_interfaces() {
                         validate!(
                             name,
                             TypeDefinition::Interface(_),
@@ -280,96 +318,70 @@ impl SchemaBackedTypeIndex {
     }
 }
 
-static BUILTIN_SCALARS: Lazy<[TypeDefinition; 5]> = Lazy::new(|| {
-    [
-        TypeDefinition::Scalar(parser::ScalarType {
-            position: graphql_parser::Pos { line: 0, column: 0 },
-            description: None,
-            name: "String".to_string(),
-            directives: Vec::new(),
-        }),
-        TypeDefinition::Scalar(parser::ScalarType {
-            position: graphql_parser::Pos { line: 0, column: 0 },
-            description: None,
-            name: "ID".to_string(),
-            directives: Vec::new(),
-        }),
-        TypeDefinition::Scalar(parser::ScalarType {
-            position: graphql_parser::Pos { line: 0, column: 0 },
-            description: None,
-            name: "Int".to_string(),
-            directives: Vec::new(),
-        }),
-        TypeDefinition::Scalar(parser::ScalarType {
-            position: graphql_parser::Pos { line: 0, column: 0 },
-            description: None,
-            name: "Float".to_string(),
-            directives: Vec::new(),
-        }),
-        TypeDefinition::Scalar(parser::ScalarType {
-            position: graphql_parser::Pos { line: 0, column: 0 },
-            description: None,
-            name: "Boolean".to_string(),
-            directives: Vec::new(),
-        }),
-    ]
-});
+static BUILTIN_SCALARS: [&str; 5] = ["String", "ID", "Int", "Float", "Boolean"];
 
 fn scalar_is_builtin(name: &str) -> bool {
-    BUILTIN_SCALARS
-        .iter()
-        .any(|s| matches!(s, TypeDefinition::Scalar(s) if s.name == name))
+    BUILTIN_SCALARS.iter().any(|builtin| name == *builtin)
 }
 
-fn name_for_type(type_def: &TypeDefinition) -> &str {
+fn name_for_type(type_def: TypeDefinition<'_>) -> &str {
     match type_def {
-        TypeDefinition::Scalar(inner) => &inner.name,
-        TypeDefinition::Object(inner) => &inner.name,
-        TypeDefinition::Interface(inner) => &inner.name,
-        TypeDefinition::Union(inner) => &inner.name,
-        TypeDefinition::Enum(inner) => &inner.name,
-        TypeDefinition::InputObject(inner) => &inner.name,
+        TypeDefinition::Scalar(inner) => inner.name(),
+        TypeDefinition::Object(inner) => inner.name(),
+        TypeDefinition::Interface(inner) => inner.name(),
+        TypeDefinition::Union(inner) => inner.name(),
+        TypeDefinition::Enum(inner) => inner.name(),
+        TypeDefinition::InputObject(inner) => inner.name(),
     }
 }
 
-fn convert_input_value(val: &parser::InputValue) -> InputValue<'_> {
+fn convert_input_value(
+    val: cynic_parser::type_system::readers::InputValueDefinition<'_>,
+) -> InputValue<'_> {
     InputValue {
         name: FieldName {
-            graphql_name: Cow::Borrowed(&val.name),
+            graphql_name: Cow::Borrowed(val.name()),
         },
-        value_type: build_type_ref::<InputType<'_>>(&val.value_type),
-        has_default: val.default_value.is_some(),
+        value_type: build_type_ref::<InputType<'_>>(val.ty()),
+        has_default: val.default_value().is_some(),
     }
 }
 
-fn build_type_ref<T>(ty: &parser::Type) -> TypeRef<'_, T> {
-    fn inner_fn<T>(ty: &parser::Type, nullable: bool) -> TypeRef<'_, T> {
-        if let parser::Type::NonNullType(inner) = ty {
-            return inner_fn::<T>(inner, false);
+fn build_type_ref<T>(ty: readers::Type<'_>) -> TypeRef<'_, T> {
+    fn inner_fn<T>(
+        mut wrappers: Peekable<impl Iterator<Item = WrappingType>>,
+        name: &str,
+        nullable: bool,
+    ) -> TypeRef<'_, T> {
+        let next = wrappers.peek().copied();
+        if next == Some(WrappingType::NonNull) {
+            wrappers.next();
+            return inner_fn::<T>(wrappers, name, false);
         }
 
         if nullable {
-            return TypeRef::<T>::Nullable(Box::new(inner_fn::<T>(ty, false)));
+            return TypeRef::<T>::Nullable(Box::new(inner_fn::<T>(wrappers, name, false)));
         }
 
-        match ty {
-            parser::Type::NamedType(name) => TypeRef::<T>::Named(Cow::Borrowed(name), PhantomData),
-            parser::Type::ListType(inner) => {
-                TypeRef::<T>::List(Box::new(inner_fn::<T>(inner, true)))
+        match wrappers.next() {
+            None => TypeRef::<T>::Named(Cow::Borrowed(name), PhantomData),
+            Some(WrappingType::List) => {
+                TypeRef::<T>::List(Box::new(inner_fn::<T>(wrappers, name, true)))
             }
             _ => panic!("This should be impossible"),
         }
     }
-    inner_fn::<T>(ty, true)
+
+    inner_fn::<T>(ty.wrappers().peekable(), ty.name(), true)
 }
 
-fn build_field<'a>(field: &'a parser::Field, parent_type_name: &'a str) -> Field<'a> {
+fn build_field<'a>(field: readers::FieldDefinition<'a>, parent_type_name: &'a str) -> Field<'a> {
     Field {
         name: FieldName {
-            graphql_name: Cow::Borrowed(&field.name),
+            graphql_name: Cow::Borrowed(field.name()),
         },
-        arguments: field.arguments.iter().map(convert_input_value).collect(),
-        field_type: build_type_ref::<OutputType<'_>>(&field.field_type),
+        arguments: field.arguments().map(convert_input_value).collect(),
+        field_type: build_type_ref::<OutputType<'_>>(field.ty()),
         parent_type_name: Cow::Borrowed(parent_type_name),
     }
 }
@@ -388,18 +400,18 @@ mod tests {
     #[case::github("github.graphql")]
     fn test_schema_validation_on_good_schemas(#[case] schema_file: &'static str) {
         let schema = fs::read_to_string(PathBuf::from("../schemas/").join(schema_file)).unwrap();
-        let document = parser::parse_schema(&schema).unwrap();
-        let index = SchemaBackedTypeIndex::for_schema(document);
+        let ast = cynic_parser::parse_type_system_document(&schema).unwrap();
+        let index = SchemaBackedTypeIndex::for_schema(ast);
         index.validate_all().unwrap();
     }
 
     #[test]
     fn test_build_type_ref_non_null_type() {
-        let non_null_type =
-            parser::Type::NonNullType(Box::new(parser::Type::NamedType("User".to_string())));
+        let ast = ast_for_type("User!");
+        let non_null_type = extract_type(&ast);
 
         assert_matches!(
-            build_type_ref::<InputType<'_>>(&non_null_type),
+            build_type_ref::<InputType<'_>>(non_null_type),
             TypeRef::Named(name, _) => {
                 assert_eq!(name, "User");
             }
@@ -408,10 +420,11 @@ mod tests {
 
     #[test]
     fn test_build_type_ref_null_type() {
-        let nullable_type = parser::Type::NamedType("User".to_string());
+        let ast = ast_for_type("User");
+        let nullable_type = extract_type(&ast);
 
         assert_matches!(
-            build_type_ref::<InputType<'_>>(&nullable_type),
+            build_type_ref::<InputType<'_>>(nullable_type),
             TypeRef::Nullable(inner) => {
                 assert_matches!(*inner, TypeRef::Named(name, _) => {
                     assert_eq!(name, "User")
@@ -422,12 +435,11 @@ mod tests {
 
     #[test]
     fn test_build_type_ref_required_list_type() {
-        let required_list = parser::Type::NonNullType(Box::new(parser::Type::ListType(Box::new(
-            parser::Type::NonNullType(Box::new(parser::Type::NamedType("User".to_string()))),
-        ))));
+        let ast = ast_for_type("[User!]!");
+        let required_list = extract_type(&ast);
 
         assert_matches!(
-            build_type_ref::<InputType<'_>>(&required_list),
+            build_type_ref::<InputType<'_>>(required_list),
             TypeRef::List(inner) => {
                 assert_matches!(*inner, TypeRef::Named(name, _) => {
                     assert_eq!(name, "User")
@@ -438,11 +450,11 @@ mod tests {
 
     #[test]
     fn test_build_type_ref_option_list_type() {
-        let optional_list =
-            parser::Type::ListType(Box::new(parser::Type::NamedType("User".to_string())));
+        let ast = ast_for_type("[User]");
+        let optional_list = extract_type(&ast);
 
         assert_matches!(
-            build_type_ref::<InputType<'_>>(&optional_list),
+            build_type_ref::<InputType<'_>>(optional_list),
             TypeRef::Nullable(inner) => {
                 assert_matches!(*inner, TypeRef::List(inner) => {
                     assert_matches!(*inner, TypeRef::Nullable(inner) => {
@@ -453,5 +465,36 @@ mod tests {
                 })
             }
         );
+    }
+
+    #[test]
+    fn test_build_type_ref_option_list_of_required() {
+        let ast = ast_for_type("[User!]");
+        let optional_list = extract_type(&ast);
+
+        assert_matches!(
+            build_type_ref::<InputType<'_>>(optional_list),
+            TypeRef::Nullable(inner) => {
+                assert_matches!(*inner, TypeRef::List(inner) => {
+                    assert_matches!(*inner, TypeRef::Named(name, _) => {
+                        assert_eq!(name, "User")
+                    })
+                })
+            }
+        );
+    }
+
+    fn ast_for_type(sdl_ty: &str) -> cynic_parser::TypeSystemDocument {
+        cynic_parser::parse_type_system_document(&format!("type Blah {{ foo: {sdl_ty} }}")).unwrap()
+    }
+
+    fn extract_type(ast: &cynic_parser::TypeSystemDocument) -> readers::Type<'_> {
+        let readers::Definition::Type(readers::TypeDefinition::Object(obj)) =
+            ast.definitions().next().unwrap()
+        else {
+            panic!("something went wrong");
+        };
+
+        obj.fields().next().unwrap().ty()
     }
 }
