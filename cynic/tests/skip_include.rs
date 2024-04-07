@@ -72,7 +72,22 @@ mod skip_directive {
             ]
         }))
         .unwrap();
-        insta::assert_json_snapshot!(decoded, @"")
+        insta::assert_json_snapshot!(decoded, @r###"
+        {
+          "filtered_posts": [
+            {
+              "id": null,
+              "has_metadata": null,
+              "state": null
+            },
+            {
+              "id": "1",
+              "has_metadata": true,
+              "state": "DRAFT"
+            }
+          ]
+        }
+        "###)
     }
 }
 
@@ -144,6 +159,21 @@ mod include_directive {
             ]
         }))
         .unwrap();
-        insta::assert_json_snapshot!(decoded, @"")
+        insta::assert_json_snapshot!(decoded, @r###"
+        {
+          "filtered_posts": [
+            {
+              "id": null,
+              "has_metadata": null,
+              "state": null
+            },
+            {
+              "id": "1",
+              "has_metadata": true,
+              "state": "DRAFT"
+            }
+          ]
+        }
+        "###)
     }
 }
