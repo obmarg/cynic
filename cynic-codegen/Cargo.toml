@@ -34,10 +34,12 @@ rkyv = { version = "0.7.41", features = ["validation"], optional = true }
 
 [dev-dependencies]
 assert_matches = "1.4.0"
-criterion = "0.4"
 insta = "1.17"
 maplit = "1.0.2"
 rstest.workspace = true
+
+# Benchmarking
+divan = "0.1"
 
 [[bench]]
 name = "registration"
