@@ -17,6 +17,7 @@ env:
 
 jobs:
   build-rust:
+    if: (!startsWith(github.ref, 'refs/heads/release-plz')) || github.event.pull_request.draft == false
     runs-on: ubuntu-latest
 
     steps:
