@@ -138,6 +138,22 @@ impl std::fmt::Display for Selection {
                     }
                     write!(f, ")")?;
                 }
+
+                for Directive { name, arguments } in &field_selection.directives {
+                    write!(f, " @{name}")?;
+                    if !arguments.is_empty() {
+                        write!(f, "(")?;
+                        let mut first = true;
+                        for arg in arguments {
+                            if !first {
+                                write!(f, ", ")?;
+                            }
+                            first = false;
+                            write!(f, "{}", arg)?;
+                        }
+                        write!(f, ")")?;
+                    }
+                }
                 write!(f, "{}", field_selection.children)
             }
             Selection::InlineFragment(inline_fragment) => {
