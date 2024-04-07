@@ -41,6 +41,7 @@ enum Selection<'a> {
 
 struct FieldSelection<'a> {
     rust_field_type: syn::Type,
+    schema_module_path: &'a syn::Path,
     field_marker_type_path: syn::Path,
     graphql_field_kind: FieldKind,
     graphql_field: &'a Field<'a>,
@@ -74,7 +75,7 @@ impl<'schema, 'a: 'schema> FragmentImpl<'schema, 'a> {
         name: &'a syn::Ident,
         generics: &'a syn::Generics,
         schema_type: &FragmentDeriveType<'schema>,
-        schema_module_path: &syn::Path,
+        schema_module_path: &'a syn::Path,
         graphql_type_name: &str,
         variables: Option<&syn::Path>,
     ) -> Result<Self, Errors> {
@@ -124,7 +125,7 @@ fn process_field<'a>(
     field: &FragmentDeriveField,
     schema_field: Option<&'a Field<'a>>,
     field_module_path: &syn::Path,
-    schema_module_path: &syn::Path,
+    schema_module_path: &'a syn::Path,
     variables_fields: Option<&syn::Path>,
 ) -> Result<Selection<'a>, Errors> {
     let ty = &field.raw_field.ty;
@@ -173,6 +174,7 @@ fn process_field<'a>(
     Ok(Selection::Field(FieldSelection {
         rust_field_type: field.raw_field.ty.clone(),
         arguments,
+        schema_module_path: &schema_module_path,
         field_marker_type_path,
         graphql_field: schema_field,
         recurse_limit: field.raw_field.recurse.as_ref().map(|f| **f),
@@ -257,6 +259,15 @@ impl quote::ToTokens for FieldSelection<'_> {
             }
         });
 
+        let directives = self
+            .directives
+            .iter()
+            .map(|analysed| super::directives::Output {
+                analysed,
+                schema_module: self.schema_module_path,
+            })
+            .collect::<Vec<_>>();
+
         let selection_mode = match (&self.graphql_field_kind, self.flatten, self.recurse_limit) {
             (FieldKind::Enum | FieldKind::Scalar, true, _) => SelectionMode::FlattenLeaf,
             (FieldKind::Enum | FieldKind::Scalar, false, _) => SelectionMode::Leaf,
@@ -308,6 +319,7 @@ impl quote::ToTokens for FieldSelection<'_> {
 
                     #alias
                     #arguments
+                    #(#directives)*
 
                     <#aligned_type as cynic::QueryFragment>::query(
                         field_builder.select_children()
@@ -325,6 +337,7 @@ impl quote::ToTokens for FieldSelection<'_> {
 
                     #alias
                     #arguments
+                    #(#directives)*
 
                     <#aligned_type as cynic::QueryFragment>::query(
                         field_builder.select_children()
@@ -342,6 +355,7 @@ impl quote::ToTokens for FieldSelection<'_> {
 
                     #alias
                     #arguments
+                    #(#directives)*
                 }
             }
             SelectionMode::Recurse(limit) => {
@@ -354,6 +368,7 @@ impl quote::ToTokens for FieldSelection<'_> {
                     {
                         #alias
                         #arguments
+                        #(#directives)*
 
                         <#aligned_type as cynic::QueryFragment>::query(
                             field_builder.select_children()
@@ -371,6 +386,7 @@ impl quote::ToTokens for FieldSelection<'_> {
 
                     #alias
                     #arguments
+                    #(#directives)*
                 }
             }
         };

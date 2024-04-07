@@ -52,13 +52,15 @@ mod skip_directive {
         let query = Query::build(Vars { should_skip: true });
 
         insta::assert_display_snapshot!(query.query, @r###"
-    query Query {
-      filteredPosts(filters: {states: [DRAFT, ], }) {
-        hasMetadata
-      }
-    }
+        query Query($shouldSkip: Boolean!) {
+          filteredPosts(filters: {states: [DRAFT, ], }) {
+            id @skip(if: $shouldSkip)
+            hasMetadata @skip(if: true)
+            state @skip(if: false)
+          }
+        }
 
-    "###);
+        "###);
     }
 
     #[test]
@@ -122,13 +124,15 @@ mod include_directive {
         });
 
         insta::assert_display_snapshot!(query.query, @r###"
-    query Query {
-      filteredPosts(filters: {states: [DRAFT, ], }) {
-        hasMetadata
-      }
-    }
+        query Query($shouldInclude: Boolean!) {
+          filteredPosts(filters: {states: [DRAFT, ], }) {
+            id @include(if: $shouldInclude)
+            hasMetadata @include(if: true)
+            state @include(if: false)
+          }
+        }
 
-    "###);
+        "###);
     }
 
     #[test]

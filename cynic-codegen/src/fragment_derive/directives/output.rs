@@ -5,8 +5,8 @@ use crate::fragment_derive::arguments::output::{ArgumentValueTokens, VariantDeta
 use super::AnalysedFieldDirective;
 
 pub struct Output<'a> {
-    pub(super) analysed: AnalysedFieldDirective<'a>,
-    pub(super) schema_module: syn::Path,
+    pub analysed: &'a AnalysedFieldDirective<'a>,
+    pub schema_module: &'a syn::Path,
 }
 
 impl ToTokens for Output<'_> {
@@ -55,7 +55,7 @@ impl ToTokens for Output<'_> {
         tokens.append_all(quote! {
             {
                 #(#variant_structs)*
-                let directive_builder = field_builder.directive::<#directive_marker>();
+                let mut directive_builder = field_builder.directive::<#directive_marker>();
                 #(
                     directive_builder.argument::<#argument_module::#arg_markers>()
                     #arg_values;

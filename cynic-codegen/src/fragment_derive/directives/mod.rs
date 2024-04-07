@@ -1,13 +1,17 @@
 mod output;
 mod parsing;
 
-pub use parsing::{directives_from_field_attrs, FieldDirective};
 use proc_macro2::Span;
 use syn::Ident;
 
 use crate::{
     error::Errors,
     schema::{types::Directive, Schema, Unvalidated},
+};
+
+pub use self::{
+    output::Output,
+    parsing::{directives_from_field_attrs, FieldDirective},
 };
 
 use super::arguments::{analyse::AnalysedDirectiveArguments, ArgumentLiteral, FieldArgument};
