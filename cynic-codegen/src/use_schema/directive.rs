@@ -13,6 +13,7 @@ impl ToTokens for FieldDirectiveOutput<'_> {
         let directive_marker = self.directive.marker_ident().to_rust_ident();
         let directive_name_literal = proc_macro2::Literal::string(&self.directive.name);
         tokens.append_all(quote! {
+            #[allow(non_camel_case_types)]
             pub struct #directive_marker;
 
             impl cynic::schema::FieldDirective for #directive_marker {
@@ -28,6 +29,7 @@ impl ToTokens for FieldDirectiveOutput<'_> {
                 });
 
             tokens.append_all(quote! {
+                #[allow(non_camel_case_types)]
                 pub mod #argument_module {
                     #(#arguments)*
                 }
