@@ -23,6 +23,7 @@ pub struct FieldSelection {
     pub(super) name: &'static str,
     pub(super) alias: Option<Cow<'static, str>>,
     pub(super) arguments: Vec<Argument>,
+    pub(super) directives: Vec<Directive>,
     pub(super) children: SelectionSet,
 }
 
@@ -75,6 +76,13 @@ pub enum InputLiteral {
     EnumValue(&'static str),
 }
 
+#[derive(Debug, PartialEq)]
+/// A directive
+pub struct Directive {
+    pub(super) name: Cow<'static, str>,
+    pub(super) arguments: Vec<Argument>,
+}
+
 #[derive(Debug, Default)]
 /// An inline fragment that selects fields from one possible type
 pub struct InlineFragment {
@@ -89,6 +97,7 @@ impl FieldSelection {
             name,
             alias: None,
             arguments: Vec::new(),
+            directives: Vec::new(),
             children: SelectionSet::default(),
         }
     }

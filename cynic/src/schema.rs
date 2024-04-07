@@ -176,3 +176,10 @@ impl NamedType for crate::Id {
 
 /// Indicates that a type is an `InputObject`
 pub trait InputObjectMarker {}
+
+/// Indicates that a type represents a GraphQL directive that can be used
+/// in field position.
+pub trait FieldDirective {
+    /// The name of the directive in GraphQL
+    const NAME: &'static str;
+}
