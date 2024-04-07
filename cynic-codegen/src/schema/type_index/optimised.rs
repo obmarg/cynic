@@ -71,6 +71,18 @@ impl super::TypeIndex for ArchiveBacked {
             .expect("infalliable"))
     }
 
+    fn lookup_directive<'b>(&'b self, name: &str) -> Result<Option<Directive<'b>>, SchemaError> {
+        let Some(directive) = self.borrow_archived().directives.get(name) else {
+            return Ok(None);
+        };
+
+        Ok(Some(
+            directive
+                .deserialize(&mut rkyv::Infallible)
+                .expect("infalliable"),
+        ))
+    }
+
     fn root_types(&self) -> Result<schema::types::SchemaRoots<'_>, SchemaError> {
         Ok(self
             .borrow_archived()

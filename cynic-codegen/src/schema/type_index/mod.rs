@@ -13,6 +13,7 @@ pub use self::schema_backed::SchemaBackedTypeIndex;
 pub trait TypeIndex {
     fn validate_all(&self) -> Result<(), SchemaError>;
     fn lookup_valid_type<'a>(&'a self, name: &str) -> Result<Type<'a>, SchemaError>;
+    fn lookup_directive<'b>(&'b self, name: &str) -> Result<Option<Directive<'b>>, SchemaError>;
     fn root_types(&self) -> Result<SchemaRoots<'_>, SchemaError>;
 
     // These are only safe to call if the TypeIndex has been validated.

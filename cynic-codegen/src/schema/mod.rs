@@ -58,6 +58,13 @@ impl<'a> Schema<'a, Unvalidated> {
         })
     }
 
+    pub fn lookup_directive<'b>(
+        &'b self,
+        name: &str,
+    ) -> Result<Option<Directive<'b>>, SchemaError> {
+        self.type_index.lookup_directive(name)
+    }
+
     pub fn lookup<'b, Kind>(&'b self, name: &str) -> Result<Kind, SchemaError>
     where
         Kind: TryFrom<types::Type<'b>> + 'b,

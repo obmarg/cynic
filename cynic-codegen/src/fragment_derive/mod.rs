@@ -38,7 +38,7 @@ pub fn fragment_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error
 
 pub fn fragment_derive_impl(input: FragmentDeriveInput) -> Result<TokenStream, Errors> {
     let mut input = input;
-    input.validate()?;
+    let fields = input.validate()?;
     input.detect_aliases();
 
     let schema = Schema::new(input.schema_input()?);
@@ -50,33 +50,25 @@ pub fn fragment_derive_impl(input: FragmentDeriveInput) -> Result<TokenStream, E
     let graphql_name = &(input.graphql_type_name());
     let schema_module = input.schema_module();
     let variables = input.variables();
-    if let darling::ast::Data::Struct(fields) = input.data {
-        let fields = pair_fields(fields.into_iter(), &schema_type)?;
+    let fields = pair_fields(fields.into_iter(), &schema_type)?;
 
-        let fragment_impl = FragmentImpl::new_for(
-            &schema,
-            &fields,
-            &input.ident,
-            &input.generics,
-            &schema_type,
-            &schema_module,
-            graphql_name,
-            variables.as_ref(),
-        )?;
+    let fragment_impl = FragmentImpl::new_for(
+        &schema,
+        &fields,
+        &input.ident,
+        &input.generics,
+        &schema_type,
+        &schema_module,
+        graphql_name,
+        variables.as_ref(),
+    )?;
 
-        let deserialize_impl = DeserializeImpl::new(&fields, &input.ident, &input.generics);
+    let deserialize_impl = DeserializeImpl::new(&fields, &input.ident, &input.generics);
 
-        Ok(quote::quote! {
-            #fragment_impl
-            #deserialize_impl
-        })
-    } else {
-        Err(syn::Error::new(
-            Span::call_site(),
-            "QueryFragment can only be derived from a struct".to_string(),
-        )
-        .into())
-    }
+    Ok(quote::quote! {
+        #fragment_impl
+        #deserialize_impl
+    })
 }
 
 fn pair_fields<'a>(
@@ -87,7 +79,7 @@ fn pair_fields<'a>(
     let mut unknown_fields = Vec::new();
     for field in rust_fields {
         let ident = field.graphql_ident();
-        match (schema_type.field(&ident), *field.spread) {
+        match (schema_type.field(&ident), field.spread()) {
             (Some(schema_field), _) => result.push((field, Some(schema_field.clone()))),
             (None, false) => unknown_fields.push(ident),
             (None, true) => result.push((field, None)),

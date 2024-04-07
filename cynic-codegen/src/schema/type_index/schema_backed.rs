@@ -189,33 +189,22 @@ impl super::TypeIndex for SchemaBackedTypeIndex {
         Ok(self.unsafe_lookup(name))
     }
 
+    fn lookup_directive<'b>(&'b self, name: &str) -> Result<Option<Directive<'b>>, SchemaError> {
+        let Some(directive) = self.borrow_directives().get(name) else {
+            return Ok(None);
+        };
+
+        self.validate_directive(directive)?;
+
+        // Safe because we validated
+        Ok(self.unsafe_directive_lookup(name))
+    }
+
     fn validate_all(&self) -> Result<(), SchemaError> {
         self.validate(self.borrow_types().values().copied().collect())?;
 
         for directive in self.borrow_directives().values() {
-            for argument in directive.arguments() {
-                let named_type = argument.ty().name();
-                let def = self.lookup_type(named_type);
-                let Some(ty) = def else {
-                    return Err(SchemaError::CouldNotFindType {
-                        name: named_type.to_string(),
-                    });
-                };
-
-                if !matches!(
-                    ty,
-                    TypeDefinition::InputObject(_)
-                        | TypeDefinition::Enum(_)
-                        | TypeDefinition::Scalar(_)
-                ) {
-                    return Err(SchemaError::InvalidDirectiveArgument {
-                        directive_name: directive.name().to_string(),
-                        argument_name: argument.name().to_string(),
-                        expected: Kind::InputType,
-                        found: Kind::of_definition(ty),
-                    });
-                }
-            }
+            self.validate_directive(directive)?;
         }
 
         Ok(())
@@ -449,6 +438,36 @@ impl SchemaBackedTypeIndex {
             }
         }
 
+        Ok(())
+    }
+
+    fn validate_directive(&self, directive: &DirectiveDefinition<'_>) -> Result<(), SchemaError> {
+        let mut definitions = vec![];
+        for argument in directive.arguments() {
+            let named_type = argument.ty().name();
+            let def = self.lookup_type(named_type);
+            let Some(ty) = def else {
+                return Err(SchemaError::CouldNotFindType {
+                    name: named_type.to_string(),
+                });
+            };
+            definitions.push(ty);
+
+            if !matches!(
+                ty,
+                TypeDefinition::InputObject(_)
+                    | TypeDefinition::Enum(_)
+                    | TypeDefinition::Scalar(_)
+            ) {
+                return Err(SchemaError::InvalidDirectiveArgument {
+                    directive_name: directive.name().to_string(),
+                    argument_name: argument.name().to_string(),
+                    expected: Kind::InputType,
+                    found: Kind::of_definition(ty),
+                });
+            }
+        }
+        self.validate(definitions)?;
         Ok(())
     }
 }

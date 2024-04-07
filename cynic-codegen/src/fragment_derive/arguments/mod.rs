@@ -1,5 +1,5 @@
-mod analyse;
-mod output;
+pub(super) mod analyse;
+pub(super) mod output;
 mod parsing;
 
 use proc_macro2::Span;
@@ -24,7 +24,8 @@ pub fn process_arguments<'a>(
     variables_fields: Option<&syn::Path>,
     span: Span,
 ) -> Result<Output<'a>, Errors> {
-    let analysed = analyse::analyse(schema, literals, field, variables_fields, span)?;
+    let analysed =
+        analyse::analyse_field_arguments(schema, literals, field, variables_fields, span)?;
 
     Ok(Output {
         analysed,

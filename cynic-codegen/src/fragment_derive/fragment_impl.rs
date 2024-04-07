@@ -15,8 +15,10 @@ use crate::{
 };
 
 use super::{
-    arguments::{arguments_from_field_attrs, process_arguments},
-    directives::{directives_from_field_attrs, FieldDirective},
+    arguments::{
+        analyse::AnalysedDirectiveArguments, arguments_from_field_attrs, process_arguments,
+    },
+    directives::{process_directive, AnalysedFieldDirective, FieldDirective},
     fragment_derive_type::FragmentDeriveType,
 };
 
@@ -48,7 +50,7 @@ struct FieldSelection<'a> {
     recurse_limit: Option<u8>,
     span: proc_macro2::Span,
     requires_feature: Option<String>,
-    directives: Vec<FieldDirective>,
+    directives: Vec<AnalysedFieldDirective<'a>>,
 }
 
 struct SpreadSelection {
@@ -125,21 +127,20 @@ fn process_field<'a>(
     schema_module_path: &syn::Path,
     variables_fields: Option<&syn::Path>,
 ) -> Result<Selection<'a>, Errors> {
+    let ty = &field.raw_field.ty;
     if field.type_check_mode() == CheckMode::Spreading {
-        check_spread_type(&field.ty)?;
+        check_spread_type(ty)?;
 
         return Ok(Selection::Spread(SpreadSelection {
-            rust_field_type: field.ty.clone(),
-            span: field.ty.span(),
+            rust_field_type: ty.clone(),
+            span: ty.span(),
         }));
     }
 
     let schema_field = schema_field.expect("only spread fields should have schema_field == None");
 
-    let (arguments, argument_span) =
-        arguments_from_field_attrs(&field.attrs)?.unwrap_or_else(|| (vec![], Span::call_site()));
-
-    let directives = directives_from_field_attrs(&field.attrs)?;
+    let (arguments, argument_span) = arguments_from_field_attrs(&field.raw_field.attrs)?
+        .unwrap_or_else(|| (vec![], Span::call_site()));
 
     let arguments = process_arguments(
         schema,
@@ -150,21 +151,37 @@ fn process_field<'a>(
         argument_span,
     )?;
 
-    check_types_are_compatible(&schema_field.field_type, &field.ty, field.type_check_mode())?;
+    let mut directives = vec![];
+    for directive in &field.directives {
+        directives.push(process_directive(
+            schema,
+            directive.clone(),
+            schema_module_path.clone(),
+            variables_fields,
+            argument_span,
+        )?);
+    }
+
+    check_types_are_compatible(
+        &schema_field.field_type,
+        &field.raw_field.ty,
+        field.type_check_mode(),
+    )?;
 
     let field_marker_type_path = schema_field.marker_ident().to_path(field_module_path);
 
     Ok(Selection::Field(FieldSelection {
-        rust_field_type: field.ty.clone(),
+        rust_field_type: field.raw_field.ty.clone(),
         arguments,
         field_marker_type_path,
         graphql_field: schema_field,
-        recurse_limit: field.recurse.as_ref().map(|f| **f),
-        span: field.ty.span(),
+        recurse_limit: field.raw_field.recurse.as_ref().map(|f| **f),
+        span: ty.span(),
         alias: field.alias(),
         graphql_field_kind: schema_field.field_type.inner_type(schema).as_kind(),
-        flatten: *field.flatten,
+        flatten: *field.raw_field.flatten,
         requires_feature: field
+            .raw_field
             .feature
             .as_ref()
             .map(|feature| feature.as_ref().clone()),
