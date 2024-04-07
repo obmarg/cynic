@@ -17,7 +17,9 @@ env:
 
 jobs:
   build-rust:
+    # Skip draft release PRs
     if: ${{ github.actor_id != '166170668' || github.event_name != 'pull_request' || github.event.pull_request.draft == false }}
+
     runs-on: ubuntu-latest
 
     steps:
