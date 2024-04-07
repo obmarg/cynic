@@ -17,6 +17,28 @@ pub struct UUID {}
 impl cynic::schema::NamedType for UUID {
     const NAME: &'static str = "UUID";
 }
+pub struct include;
+impl cynic::schema::FieldDirective for include {
+    const NAME: &'static str = "include";
+}
+pub mod _include_arguments {
+    pub struct r#if;
+    impl cynic::schema::HasArgument<r#if> for super::include {
+        type ArgumentType = super::Boolean;
+        const NAME: &'static str = "if";
+    }
+}
+pub struct skip;
+impl cynic::schema::FieldDirective for skip {
+    const NAME: &'static str = "skip";
+}
+pub mod _skip_arguments {
+    pub struct r#if;
+    impl cynic::schema::HasArgument<r#if> for super::skip {
+        type ArgumentType = super::Boolean;
+        const NAME: &'static str = "if";
+    }
+}
 impl cynic::schema::NamedType for Bar {
     const NAME: &'static str = "Bar";
 }

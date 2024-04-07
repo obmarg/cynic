@@ -1,5 +1,5 @@
 use super::{
-    types::{SchemaRoots, Type},
+    types::{Directive, SchemaRoots, Type},
     SchemaError,
 };
 
@@ -17,6 +17,8 @@ pub trait TypeIndex {
 
     // These are only safe to call if the TypeIndex has been validated.
     // The Schema should make sure that's the case...
-    fn unsafe_lookup<'a>(&'a self, name: &str) -> Option<Type<'a>>;
+    fn unsafe_lookup<'a>(&'a self, name: &str) -> Type<'a>;
     fn unsafe_iter<'a>(&'a self) -> Box<dyn Iterator<Item = Type<'a>> + 'a>;
+    fn unsafe_directive_lookup<'b>(&'b self, name: &str) -> Option<Directive<'b>>;
+    fn unsafe_directive_iter<'a>(&'a self) -> Box<dyn Iterator<Item = Directive<'a>> + 'a>;
 }

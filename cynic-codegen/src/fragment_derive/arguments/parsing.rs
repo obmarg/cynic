@@ -4,7 +4,7 @@ use syn::{
     parse::{Parse, ParseStream},
     punctuated::Punctuated,
     spanned::Spanned,
-    Field, Ident, Result, Token,
+    Ident, Result, Token,
 };
 
 pub fn arguments_from_field_attrs(

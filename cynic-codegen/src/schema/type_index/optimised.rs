@@ -15,6 +15,7 @@ use crate::schema::{
 /// for quicker re-loading.
 pub struct OptimisedTypes<'a> {
     types: HashMap<String, Type<'a>>,
+    directives: HashMap<String, Directive<'a>>,
     schema_roots: SchemaRoots<'a>,
 }
 
@@ -25,6 +26,11 @@ impl Schema<'_, schema::Validated> {
                 .type_index
                 .unsafe_iter()
                 .map(|ty| (ty.name().to_string(), ty))
+                .collect(),
+            directives: self
+                .type_index
+                .unsafe_directive_iter()
+                .map(|directive| (directive.name().to_string(), directive))
                 .collect(),
             schema_roots: self.type_index.root_types().expect("valid root types"),
         }
@@ -90,6 +96,29 @@ impl super::TypeIndex for ArchiveBacked {
                 .deserialize(&mut rkyv::Infallible)
                 .expect("infallible")
         }))
+    }
+
+    fn unsafe_directive_lookup<'b>(&'b self, name: &str) -> Option<Directive<'b>> {
+        Some(
+            self.borrow_archived()
+                .directives
+                .get(name)?
+                .deserialize(&mut rkyv::Infallible)
+                .expect("infallible"),
+        )
+    }
+
+    fn unsafe_directive_iter<'a>(&'a self) -> Box<dyn Iterator<Item = Directive<'a>> + 'a> {
+        Box::new(
+            self.borrow_archived()
+                .directives
+                .values()
+                .map(|archived_type| {
+                    archived_type
+                        .deserialize(&mut rkyv::Infallible)
+                        .expect("infallible")
+                }),
+        )
     }
 }
 

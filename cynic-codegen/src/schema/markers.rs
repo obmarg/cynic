@@ -36,6 +36,18 @@ pub struct ArgumentMarkerModule<'a> {
     field_name: Cow<'a, str>,
 }
 
+/// Ident for a directive marker type
+#[derive(Clone, Debug)]
+pub struct DirectiveMarkerIdent<'a> {
+    graphql_name: &'a str,
+}
+
+/// A module that contains everything associated with an argument to a directive
+#[derive(Debug)]
+pub struct DirectiveArgumentMarkerModule<'a> {
+    directive_name: &'a str,
+}
+
 /// Marker to the type of a field - handles options & vecs and whatever the inner
 /// type is
 #[derive(Clone)]
@@ -169,6 +181,30 @@ impl ArgumentMarkerModule<'_> {
     }
 }
 
+impl<'a> DirectiveMarkerIdent<'a> {
+    pub fn to_path(&self, schema_module_path: &syn::Path) -> syn::Path {
+        let mut path = schema_module_path.clone();
+        path.push(self.to_rust_ident());
+        path
+    }
+
+    pub fn to_rust_ident(&self) -> proc_macro2::Ident {
+        format_ident!("{}", transform_keywords(self.graphql_name))
+    }
+}
+
+impl DirectiveArgumentMarkerModule<'_> {
+    pub fn ident(&self) -> proc_macro2::Ident {
+        format_ident!("_{}_arguments", self.directive_name)
+    }
+
+    pub fn to_path(&self, schema_module_path: &syn::Path) -> syn::Path {
+        let mut path = schema_module_path.clone();
+        path.push(self.ident());
+        path
+    }
+}
+
 macro_rules! marker_ident_for_named {
     () => {};
     ($kind:ident) => {
@@ -256,6 +292,20 @@ impl<'a> InterfaceRef<'a> {
     pub fn marker_ident(&self) -> TypeMarkerIdent<'a> {
         TypeMarkerIdent {
             graphql_name: self.0.clone(),
+        }
+    }
+}
+
+impl<'a> Directive<'a> {
+    pub fn argument_module(&self) -> DirectiveArgumentMarkerModule<'_> {
+        DirectiveArgumentMarkerModule {
+            directive_name: self.name.borrow(),
+        }
+    }
+
+    pub fn marker_ident(&self) -> DirectiveMarkerIdent<'_> {
+        DirectiveMarkerIdent {
+            graphql_name: self.name.borrow(),
         }
     }
 }
