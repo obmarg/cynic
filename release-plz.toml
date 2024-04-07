@@ -4,6 +4,9 @@ changelog_update = false
 git_release_enable = false
 git_tag_enable = false
 
+# create the release PR in draft to avoid running CI till we're ready
+pr_draft = true
+
 [[package]]
 name = "cynic"
 
