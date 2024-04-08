@@ -177,3 +177,88 @@ mod include_directive {
         "###)
     }
 }
+
+mod other_directives {
+    use serde::Deserialize;
+    use serde_json::json;
+
+    use super::*;
+
+    #[derive(cynic::QueryVariables)]
+    struct Vars {
+        an_int: i32,
+    }
+
+    #[derive(cynic::QueryFragment, Serialize)]
+    #[cynic(schema_path = "tests/test-schema.graphql", variables = "Vars")]
+    struct BlogPost {
+        #[directives(foo)]
+        id: Option<cynic::Id>,
+
+        #[directives(foo(blah: {optionalInt: $an_int}))]
+        has_metadata: Option<bool>,
+
+        #[directives(foo(blah: {optionalInt: 1}))]
+        state: Option<PostState>,
+    }
+
+    #[derive(cynic::Enum)]
+    #[cynic(schema_path = "tests/test-schema.graphql")]
+    enum PostState {
+        Posted,
+        Draft,
+    }
+
+    #[derive(cynic::QueryFragment, Serialize)]
+    #[cynic(schema_path = "tests/test-schema.graphql", variables = "Vars")]
+    struct Query {
+        #[allow(dead_code)]
+        #[arguments(filters: { states: DRAFT })]
+        filtered_posts: Vec<BlogPost>,
+    }
+
+    #[test]
+    fn test_query() {
+        use cynic::QueryBuilder;
+
+        let query = Query::build(Vars { an_int: 120 });
+
+        insta::assert_display_snapshot!(query.query, @r###"
+        query Query($anInt: Int!) {
+          filteredPosts(filters: {states: [DRAFT]}) {
+            id @foo
+            hasMetadata @foo(blah: {optionalInt: $anInt})
+            state @foo(blah: {optionalInt: 1})
+          }
+        }
+
+        "###);
+    }
+
+    #[test]
+    fn test_deser() {
+        let decoded = Query::deserialize(json!({
+            "filteredPosts": [
+                {},
+                {"id": "1", "hasMetadata": true, "state": "DRAFT"}
+            ]
+        }))
+        .unwrap();
+        insta::assert_json_snapshot!(decoded, @r###"
+        {
+          "filtered_posts": [
+            {
+              "id": null,
+              "has_metadata": null,
+              "state": null
+            },
+            {
+              "id": "1",
+              "has_metadata": true,
+              "state": "DRAFT"
+            }
+          ]
+        }
+        "###)
+    }
+}

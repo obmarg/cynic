@@ -15,10 +15,8 @@ use crate::{
 };
 
 use super::{
-    arguments::{
-        analyse::AnalysedDirectiveArguments, arguments_from_field_attrs, process_arguments,
-    },
-    directives::{process_directive, AnalysedFieldDirective, FieldDirective},
+    arguments::{arguments_from_field_attrs, process_arguments},
+    directives::{process_directive, AnalysedFieldDirective},
     fragment_derive_type::FragmentDeriveType,
 };
 
@@ -157,7 +155,6 @@ fn process_field<'a>(
         directives.push(process_directive(
             schema,
             directive.clone(),
-            schema_module_path.clone(),
             variables_fields,
             argument_span,
         )?);
@@ -174,7 +171,7 @@ fn process_field<'a>(
     Ok(Selection::Field(FieldSelection {
         rust_field_type: field.raw_field.ty.clone(),
         arguments,
-        schema_module_path: &schema_module_path,
+        schema_module_path,
         field_marker_type_path,
         graphql_field: schema_field,
         recurse_limit: field.raw_field.recurse.as_ref().map(|f| **f),

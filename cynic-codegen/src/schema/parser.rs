@@ -1,5 +1,3 @@
-use super::types::Kind;
-
 /// Loads a schema from a string
 pub fn load_schema(sdl: &str) -> Result<cynic_parser::TypeSystemDocument, SchemaLoadError> {
     let ast = cynic_parser::parse_type_system_document(sdl)

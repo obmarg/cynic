@@ -8,10 +8,8 @@ use std::{
 use cynic_parser::{
     common::{TypeWrappers, WrappingType},
     type_system::{
-        self as parser,
-        ids::FieldDefinitionId,
-        storage::{ArgumentRecord, DirectiveDefinitionRecord, InputValueDefinitionRecord},
-        Definition, DirectiveDefinition, TypeDefinition,
+        self as parser, ids::FieldDefinitionId, storage::InputValueDefinitionRecord, Definition,
+        DirectiveDefinition, TypeDefinition,
     },
 };
 

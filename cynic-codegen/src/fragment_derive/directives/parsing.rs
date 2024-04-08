@@ -5,7 +5,7 @@ use syn::{
     parse::{Parse, ParseStream},
     punctuated::Punctuated,
     spanned::Spanned,
-    MetaList, Token,
+    Meta, Token,
 };
 
 use crate::fragment_derive::arguments::FieldArgumentValue;
@@ -49,22 +49,35 @@ struct FieldDirectiveAttribute {
 
 impl Parse for FieldDirectiveAttribute {
     fn parse(input: ParseStream<'_>) -> syn::Result<Self> {
-        let lists = Punctuated::<MetaList, Token![,]>::parse_terminated(input)?;
+        let metas = Punctuated::<Meta, Token![,]>::parse_terminated(input)?;
         let mut directives = vec![];
-        for list in lists {
-            let list_span = list.span();
-            let arguments = syn::parse2::<CynicArguments>(list.tokens)?.into_inner();
+        for meta in metas {
+            let span = meta.span();
 
-            if list.path.is_ident("skip") {
-                let value = validate_if_or_skip(&arguments, list_span)?;
+            let (path, arguments) = match meta {
+                Meta::Path(path) => (path, vec![]),
+                Meta::List(list) => (
+                    list.path,
+                    syn::parse2::<CynicArguments>(list.tokens)?.into_inner(),
+                ),
+                Meta::NameValue(_) => {
+                    return Err(syn::Error::new_spanned(
+                        meta,
+                        "directives cannot use name = value syntax",
+                    ))
+                }
+            };
+
+            if path.is_ident("skip") {
+                let value = validate_if_or_skip(&arguments, span)?;
                 directives.push(FieldDirective::Skip(value));
-            } else if list.path.is_ident("include") {
-                let value = validate_if_or_skip(&arguments, list_span)?;
+            } else if path.is_ident("include") {
+                let value = validate_if_or_skip(&arguments, span)?;
                 directives.push(FieldDirective::Include(value));
             } else {
-                let Some(name) = list.path.get_ident().cloned() else {
+                let Some(name) = path.get_ident().cloned() else {
                     return Err(syn::Error::new_spanned(
-                        list.path,
+                        path,
                         "malformed directive - could not determine its name",
                     ));
                 };

@@ -5,7 +5,7 @@ use {
     syn::parse_quote,
 };
 
-use crate::schema::types::{Field, InputValue};
+use crate::schema::types::Field;
 
 pub struct FieldOutput<'a> {
     pub(super) field: &'a Field<'a>,

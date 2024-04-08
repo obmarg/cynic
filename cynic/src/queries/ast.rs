@@ -190,15 +190,23 @@ impl std::fmt::Display for InputLiteral {
             InputLiteral::Id(val) => write!(f, "\"{}\"", val),
             InputLiteral::Object(fields) => {
                 write!(f, "{{")?;
-                for field in fields {
-                    write!(f, "{}: {}, ", field.name, field.value)?;
+                let mut field_iter = fields.iter().peekable();
+                while let Some(field) = field_iter.next() {
+                    write!(f, "{}: {}", field.name, field.value)?;
+                    if field_iter.peek().is_some() {
+                        write!(f, ", ")?;
+                    }
                 }
                 write!(f, "}}")
             }
             InputLiteral::List(vals) => {
                 write!(f, "[")?;
-                for val in vals {
-                    write!(f, "{}, ", val)?;
+                let mut value_iter = vals.iter().peekable();
+                while let Some(val) = value_iter.next() {
+                    write!(f, "{}", val)?;
+                    if value_iter.peek().is_some() {
+                        write!(f, ", ")?;
+                    }
                 }
                 write!(f, "]")
             }

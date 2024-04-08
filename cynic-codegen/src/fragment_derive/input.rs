@@ -287,7 +287,7 @@ impl FragmentDeriveField {
 mod tests {
     use super::*;
 
-    use {assert_matches::assert_matches, quote::format_ident};
+    use quote::format_ident;
 
     #[test]
     fn test_fragment_derive_validate_pass() {

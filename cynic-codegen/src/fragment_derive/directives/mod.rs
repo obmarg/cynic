@@ -17,7 +17,6 @@ pub use self::{
 use super::arguments::{analyse::AnalysedDirectiveArguments, ArgumentLiteral, FieldArgument};
 
 pub struct AnalysedFieldDirective<'a> {
-    name: syn::Ident,
     directive: Directive<'a>,
     arguments: AnalysedDirectiveArguments<'a>,
 }
@@ -25,7 +24,6 @@ pub struct AnalysedFieldDirective<'a> {
 pub fn process_directive<'a>(
     schema: &'a Schema<'a, Unvalidated>,
     directive: parsing::FieldDirective,
-    schema_module: syn::Path,
     variables_fields: Option<&syn::Path>,
     span: Span,
 ) -> Result<AnalysedFieldDirective<'a>, Errors> {
@@ -56,7 +54,6 @@ pub fn process_directive<'a>(
             )?;
 
             Ok(AnalysedFieldDirective {
-                name: Ident::new("skip", span),
                 directive,
                 arguments,
             })
@@ -86,7 +83,6 @@ pub fn process_directive<'a>(
             )?;
 
             Ok(AnalysedFieldDirective {
-                name: Ident::new("include", span),
                 directive,
                 arguments,
             })
@@ -104,7 +100,6 @@ pub fn process_directive<'a>(
             )?;
 
             Ok(AnalysedFieldDirective {
-                name,
                 directive,
                 arguments,
             })
