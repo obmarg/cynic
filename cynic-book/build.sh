@@ -19,7 +19,7 @@ rustup default stable
 
 if ! command -v mdbook-linkcheck &> /dev/null
 then
-	cargo install mdbook-linkcheck
+	cargo install mdbook-linkcheck --locked 
 fi
 
 ./mdbook build
