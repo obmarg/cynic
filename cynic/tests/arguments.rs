@@ -28,7 +28,7 @@ fn test_literal_object_inside_list() {
 
     insta::assert_display_snapshot!(query.query, @r###"
     query Query {
-      filteredPosts(filters: {any: [{states: [DRAFT, ], }, ], }) {
+      filteredPosts(filters: {any: [{states: [DRAFT]}]}) {
         hasMetadata
       }
     }

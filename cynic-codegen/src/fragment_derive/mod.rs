@@ -38,8 +38,9 @@ pub fn fragment_derive(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error
 
 pub fn fragment_derive_impl(input: FragmentDeriveInput) -> Result<TokenStream, Errors> {
     let mut input = input;
-    let fields = input.validate()?;
+
     input.detect_aliases();
+    let fields = input.validate()?;
 
     let schema = Schema::new(input.schema_input()?);
 

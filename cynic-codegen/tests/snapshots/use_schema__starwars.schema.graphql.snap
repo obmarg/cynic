@@ -56,10 +56,12 @@ pub struct VehiclePilotsConnection;
 pub struct VehiclePilotsEdge;
 pub struct VehiclesConnection;
 pub struct VehiclesEdge;
+#[allow(non_camel_case_types)]
 pub struct include;
 impl cynic::schema::FieldDirective for include {
     const NAME: &'static str = "include";
 }
+#[allow(non_camel_case_types)]
 pub mod _include_arguments {
     pub struct r#if;
     impl cynic::schema::HasArgument<r#if> for super::include {
@@ -67,10 +69,12 @@ pub mod _include_arguments {
         const NAME: &'static str = "if";
     }
 }
+#[allow(non_camel_case_types)]
 pub struct skip;
 impl cynic::schema::FieldDirective for skip {
     const NAME: &'static str = "skip";
 }
+#[allow(non_camel_case_types)]
 pub mod _skip_arguments {
     pub struct r#if;
     impl cynic::schema::HasArgument<r#if> for super::skip {

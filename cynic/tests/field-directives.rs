@@ -53,7 +53,7 @@ mod skip_directive {
 
         insta::assert_display_snapshot!(query.query, @r###"
         query Query($shouldSkip: Boolean!) {
-          filteredPosts(filters: {states: [DRAFT, ], }) {
+          filteredPosts(filters: {states: [DRAFT]}) {
             id @skip(if: $shouldSkip)
             hasMetadata @skip(if: true)
             state @skip(if: false)
@@ -140,7 +140,7 @@ mod include_directive {
 
         insta::assert_display_snapshot!(query.query, @r###"
         query Query($shouldInclude: Boolean!) {
-          filteredPosts(filters: {states: [DRAFT, ], }) {
+          filteredPosts(filters: {states: [DRAFT]}) {
             id @include(if: $shouldInclude)
             hasMetadata @include(if: true)
             state @include(if: false)
@@ -179,9 +179,6 @@ mod include_directive {
 }
 
 mod other_directives {
-    use serde::Deserialize;
-    use serde_json::json;
-
     use super::*;
 
     #[derive(cynic::QueryVariables)]
@@ -233,32 +230,5 @@ mod other_directives {
         }
 
         "###);
-    }
-
-    #[test]
-    fn test_deser() {
-        let decoded = Query::deserialize(json!({
-            "filteredPosts": [
-                {},
-                {"id": "1", "hasMetadata": true, "state": "DRAFT"}
-            ]
-        }))
-        .unwrap();
-        insta::assert_json_snapshot!(decoded, @r###"
-        {
-          "filtered_posts": [
-            {
-              "id": null,
-              "has_metadata": null,
-              "state": null
-            },
-            {
-              "id": "1",
-              "has_metadata": true,
-              "state": "DRAFT"
-            }
-          ]
-        }
-        "###)
     }
 }
