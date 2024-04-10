@@ -58,6 +58,14 @@ pub trait HasArgument<ArgumentMarker> {
 pub trait IsScalar<SchemaType> {
     /// The schema marker type this scalar represents.
     type SchemaType;
+
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer;
+
+    fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>;
 }
 
 impl<T, U: ?Sized> IsScalar<T> for &U
@@ -65,6 +73,20 @@ where
     U: IsScalar<T>,
 {
     type SchemaType = U::SchemaType;
+
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        <U as IsScalar<U>>::serialize(self, serializer)
+    }
+
+    fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        <U as IsScalar<U>>::deserialize(serializer)
+    }
 }
 
 impl<T, U> IsScalar<Option<T>> for Option<U>

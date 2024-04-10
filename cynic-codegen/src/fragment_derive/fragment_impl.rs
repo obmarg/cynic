@@ -18,6 +18,7 @@ use super::{
     arguments::{arguments_from_field_attrs, process_arguments},
     directives::{process_directive, AnalysedFieldDirective},
     fragment_derive_type::FragmentDeriveType,
+    FieldKind,
 };
 
 use super::input::FragmentDeriveField;
@@ -55,14 +56,6 @@ struct FieldSelection<'a> {
 struct SpreadSelection {
     rust_field_type: syn::Type,
     span: proc_macro2::Span,
-}
-
-enum FieldKind {
-    Composite,
-    Scalar,
-    Enum,
-    Interface,
-    Union,
 }
 
 impl<'schema, 'a: 'schema> FragmentImpl<'schema, 'a> {
@@ -414,17 +407,5 @@ impl quote::ToTokens for SpreadSelection {
                     .select_children::<<#field_type as cynic::QueryFragment>::VariablesFields>()
             );
         })
-    }
-}
-
-impl OutputType<'_> {
-    fn as_kind(&self) -> FieldKind {
-        match self {
-            OutputType::Scalar(_) => FieldKind::Scalar,
-            OutputType::Enum(_) => FieldKind::Enum,
-            OutputType::Object(_) => FieldKind::Composite,
-            OutputType::Interface(_) => FieldKind::Interface,
-            OutputType::Union(_) => FieldKind::Union,
-        }
     }
 }
