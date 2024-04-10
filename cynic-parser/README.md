@@ -21,7 +21,7 @@
   </h4>
 </div>
 
-`cynic-parser` is a GraphQL schema parser - it is part of `cynic` but can also
+`cynic-parser` is a GraphQL parser - it is part of `cynic` but can also
 be used as a standalone parser.
 
 ### Design Goals
