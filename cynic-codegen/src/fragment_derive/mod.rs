@@ -2,7 +2,7 @@ use proc_macro2::{Span, TokenStream};
 
 use crate::{
     schema::{
-        types::{self as schema},
+        types::{self as schema, OutputType},
         Schema,
     },
     suggestions::FieldSuggestionError,
@@ -121,6 +121,27 @@ fn pair_fields<'a>(
         .collect();
 
     Err(errors)
+}
+
+impl OutputType<'_> {
+    fn as_kind(&self) -> FieldKind {
+        match self {
+            OutputType::Scalar(_) => FieldKind::Scalar,
+            OutputType::Enum(_) => FieldKind::Enum,
+            OutputType::Object(_) => FieldKind::Composite,
+            OutputType::Interface(_) => FieldKind::Interface,
+            OutputType::Union(_) => FieldKind::Union,
+        }
+    }
+}
+
+#[derive(Clone, Copy)]
+enum FieldKind {
+    Composite,
+    Scalar,
+    Enum,
+    Interface,
+    Union,
 }
 
 #[cfg(test)]
