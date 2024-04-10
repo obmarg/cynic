@@ -5,8 +5,8 @@ on:
     types: [published]
 
 jobs:
-  if: ${{ startsWith(github.ref, 'refs/tags/v') }}
   upload-artifacts:
+    if: ${{ startsWith(github.ref, 'refs/tags/v') }}
     strategy:
       matrix:
         os:
