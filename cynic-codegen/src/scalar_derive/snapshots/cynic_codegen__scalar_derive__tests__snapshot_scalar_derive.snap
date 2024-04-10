@@ -8,7 +8,7 @@ impl cynic::serde::Serialize for DateTime {
     where
         __S: cynic::serde::Serializer,
     {
-        self.0.serialize(serializer)
+        <String as cynic::serde::Serialize>::serialize(&self.0, serializer)
     }
 }
 #[automatically_derived]
