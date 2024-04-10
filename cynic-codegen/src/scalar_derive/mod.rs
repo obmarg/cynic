@@ -67,7 +67,7 @@ pub fn scalar_derive_impl(input: ScalarDeriveInput) -> Result<TokenStream, syn::
             where
                 __S: cynic::serde::Serializer,
             {
-                self.0.serialize(serializer)
+                <#inner_type as cynic::serde::Serialize>::serialize(&self.0, serializer)
             }
         }
 
