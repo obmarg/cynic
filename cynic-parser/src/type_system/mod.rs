@@ -1,6 +1,5 @@
 use std::str::FromStr;
 
-use ids::*;
 use indexmap::IndexSet;
 
 mod generated;
@@ -32,6 +31,7 @@ pub use self::{
     types::Type,
     values::Value,
 };
+use self::{ids::*, storage::DefinitionRecord};
 
 #[derive(Default)]
 pub struct TypeSystemDocument {
@@ -60,25 +60,6 @@ pub struct TypeSystemDocument {
     values: Vec<storage::ValueRecord>,
     directives: Vec<storage::DirectiveRecord>,
     arguments: Vec<storage::ArgumentRecord>,
-}
-
-#[derive(Clone, Copy)]
-pub enum DefinitionRecord {
-    Schema(SchemaDefinitionId),
-    Scalar(ScalarDefinitionId),
-    Object(ObjectDefinitionId),
-    Interface(InterfaceDefinitionId),
-    Union(UnionDefinitionId),
-    Enum(EnumDefinitionId),
-    InputObject(InputObjectDefinitionId),
-    SchemaExtension(SchemaDefinitionId),
-    ScalarExtension(ScalarDefinitionId),
-    ObjectExtension(ObjectDefinitionId),
-    InterfaceExtension(InterfaceDefinitionId),
-    UnionExtension(UnionDefinitionId),
-    EnumExtension(EnumDefinitionId),
-    InputObjectExtension(InputObjectDefinitionId),
-    Directive(DirectiveDefinitionId),
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -252,6 +233,26 @@ pub mod storage {
         },
         types::TypeRecord,
         values::ValueRecord,
-        DefinitionRecord,
     };
+
+    use super::ids::*;
+
+    #[derive(Clone, Copy)]
+    pub enum DefinitionRecord {
+        Schema(SchemaDefinitionId),
+        Scalar(ScalarDefinitionId),
+        Object(ObjectDefinitionId),
+        Interface(InterfaceDefinitionId),
+        Union(UnionDefinitionId),
+        Enum(EnumDefinitionId),
+        InputObject(InputObjectDefinitionId),
+        SchemaExtension(SchemaDefinitionId),
+        ScalarExtension(ScalarDefinitionId),
+        ObjectExtension(ObjectDefinitionId),
+        InterfaceExtension(InterfaceDefinitionId),
+        UnionExtension(UnionDefinitionId),
+        EnumExtension(EnumDefinitionId),
+        InputObjectExtension(InputObjectDefinitionId),
+        Directive(DirectiveDefinitionId),
+    }
 }
