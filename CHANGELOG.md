@@ -9,6 +9,19 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## [3.6.0](https://github.com/obmarg/cynic/compare/v3.5.1...v3.6.2) - 2024-04-12
+
+### Fixed
+
+- Fixed an issue where `derive(Scalar) would fail on types with a `serialize`
+  function that was not `serde::Serialize::serialize` ([#909](https://github.com/obmarg/cynic/pull/909))
+
+### Changed
+
+- Improved errors when users use a derive on the wrong kind of GraphQL type
+  ([#889](https://github.com/obmarg/cynic/pull/889))
+- `cynic-codegen` now uses `cynic-parser` instead of `graphql-parser` ([#824](https://github.com/obmarg/cynic/pull/824))
+
 ## v3.5.1 - 2024-04-04
 
 ### Changes

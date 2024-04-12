@@ -28,3 +28,4 @@ changelog_include = [
 name = "cynic-parser"
 git_tag_enable = true
 git_release_enable = true
+changelog_update = true
