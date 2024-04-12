@@ -96,6 +96,11 @@ fn kitchen_sink_canonical() {
 }
 
 #[test]
+fn long_argument_wrapping() {
+    roundtrip_test("tests/sdl/long_argument_wrapping.graphql");
+}
+
+#[test]
 fn minimal() {
     roundtrip_test("tests/sdl/minimal.graphql");
 }

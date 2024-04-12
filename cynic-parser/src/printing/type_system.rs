@@ -93,7 +93,6 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<SchemaDefinition<'a>> {
                 .append(allocator.space())
                 .append(allocator.text("{"))
                 .append(allocator.hardline())
-                .append("  ")
                 .append(
                     allocator
                         .intersperse(
@@ -105,7 +104,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<SchemaDefinition<'a>> {
                             }),
                             allocator.hardline(),
                         )
-                        .align(),
+                        .indent(2),
                 )
                 .append(allocator.hardline())
                 .append(allocator.text("}"))
@@ -197,11 +196,22 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<FieldDefinition<'a>> {
 
         if arguments.peek().is_some() {
             arguments_pretty = allocator
-                .intersperse(arguments.map(NodeDisplay), comma_or_newline(allocator))
+                .line_()
+                .append(
+                    allocator.intersperse(arguments.map(NodeDisplay), comma_or_newline(allocator)),
+                )
                 .nest(2)
-                .append(allocator.softline_())
+                .append(allocator.line_())
                 .parens()
                 .group();
+
+            // builder = builder.append(arguments);
+            // arguments_pretty = allocator
+            //     .intersperse(arguments.map(NodeDisplay), comma_or_newline(allocator))
+            //     .nest(2)
+            //     .append(allocator.softline_())
+            //     .parens()
+            //     .group();
         }
 
         let mut directives = self.0.directives().peekable();
@@ -342,8 +352,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<EnumDefinition<'a>> {
                 .append(
                     allocator
                         .intersperse(values.into_iter().map(NodeDisplay), allocator.hardline())
-                        .indent(2)
-                        .align(),
+                        .indent(2),
                 )
                 .append(allocator.hardline())
                 .append(allocator.text("}"));
@@ -597,9 +606,7 @@ fn comma_or_nil<'a>(allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allo
 }
 
 fn comma_or_newline<'a>(allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>> {
-    allocator
-        .softline()
-        .flat_alt(allocator.text(",").append(allocator.space()))
+    allocator.line().flat_alt(allocator.text(", "))
 }
 
 fn parens_and_maybe_indent<'a>(
