@@ -111,7 +111,6 @@ fn object_with_arguemnts() {
 }
 
 #[test]
-#[ignore]
 fn repeatable_directives() {
     roundtrip_test("tests/sdl/repeatable_directives.graphql");
 }
