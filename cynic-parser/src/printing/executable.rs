@@ -289,9 +289,11 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Directive<'a>> {
         if arguments.peek().is_some() {
             let arguments = allocator
                 .intersperse(arguments.map(NodeDisplay), comma_or_newline(allocator))
+                .nest(2)
+                .parens()
                 .group();
 
-            builder = builder.append(parens_and_maybe_indent(allocator, arguments));
+            builder = builder.append(arguments);
         }
 
         builder

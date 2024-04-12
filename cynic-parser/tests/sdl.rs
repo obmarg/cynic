@@ -11,6 +11,11 @@ fn directive() {
 }
 
 #[test]
+fn directive_wrapping() {
+    roundtrip_test("tests/sdl/directive_wrapping.graphql");
+}
+
+#[test]
 fn directive_descriptions() {
     roundtrip_test("tests/sdl/directive_descriptions.graphql");
 }
