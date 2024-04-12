@@ -539,6 +539,9 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Value<'a>> {
             crate::type_system::Value::Boolean(value) => allocator.text(format!("{value}")),
             crate::type_system::Value::Null => allocator.text("null"),
             crate::type_system::Value::Enum(value) => allocator.text(value),
+            crate::type_system::Value::List(items) if items.is_empty() => {
+                allocator.nil().brackets()
+            }
             crate::type_system::Value::List(items) => brackets_and_maybe_indent(
                 allocator
                     .intersperse(
@@ -548,6 +551,9 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Value<'a>> {
                     .group()
                     .enclose(allocator.line_(), allocator.line_()),
             ),
+            crate::type_system::Value::Object(items) if items.is_empty() => {
+                allocator.nil().braces()
+            }
             crate::type_system::Value::Object(items) => allocator
                 .intersperse(
                     items.into_iter().map(|(name, value)| {
@@ -560,7 +566,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Value<'a>> {
                     allocator.text(",").append(allocator.space()),
                 )
                 .group()
-                .enclose(allocator.space(), allocator.space())
+                .enclose(allocator.softline(), allocator.softline())
                 .braces(),
         }
     }
