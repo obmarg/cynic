@@ -9,6 +9,12 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.2.2 - 2024-04-12
+
+### Fixes
+
+- Pretty printing will now escape strings
+
 ## v0.2.1 - 2024-04-04
 
 ### Changes
