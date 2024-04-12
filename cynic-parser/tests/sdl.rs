@@ -127,6 +127,11 @@ fn union() {
 }
 
 #[test]
+fn string_escaping() {
+    insta::assert_snapshot!(double_roundtrip_test("tests/sdl/string_escaping.graphql"))
+}
+
+#[test]
 fn union_extension() {
     roundtrip_test("tests/sdl/union_extension.graphql");
 }
@@ -140,7 +145,7 @@ fn roundtrip_test(filename: &str) {
     assert_eq!(data, output);
 }
 
-fn double_roundtrip_test(filename: &str) {
+fn double_roundtrip_test(filename: &str) -> String {
     // In some cases the file on disk is not the same as what we output
     // but we still want to make sure we can parse it.
     //
@@ -155,4 +160,6 @@ fn double_roundtrip_test(filename: &str) {
     let round_two_output = ast.to_sdl();
 
     assert_eq!(round_one_output, round_two_output);
+
+    round_two_output
 }

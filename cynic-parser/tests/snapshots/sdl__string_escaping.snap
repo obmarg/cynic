@@ -1,0 +1,17 @@
+---
+source: cynic-parser/tests/sdl.rs
+expression: "double_roundtrip_test(\"tests/sdl/string_escaping.graphql\")"
+---
+"hello \"you\"\n\t\tdo you like my escapes☠"
+input Thing {
+  field: String = "hello \"you\"\n\t\tdo you like my escapes☠"
+}
+
+"""
+I am a thing that doesn't need escaped \t\n
+\"""
+"""
+input Thing {
+  field: String = "hello \"you\"\n\t\tdo you like my escapes☠"
+}
+

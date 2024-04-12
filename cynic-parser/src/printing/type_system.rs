@@ -2,6 +2,8 @@ use pretty::{DocAllocator, Pretty};
 
 use crate::type_system::*;
 
+use super::escape_string;
+
 type Allocator<'a> = pretty::Arena<'a>;
 
 impl crate::TypeSystemDocument {
@@ -526,7 +528,9 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Value<'a>> {
             crate::type_system::Value::Variable(name) => allocator.text(format!("${name}")),
             crate::type_system::Value::Int(value) => allocator.text(format!("{value}")),
             crate::type_system::Value::Float(value) => allocator.text(format!("{value}")),
-            crate::type_system::Value::String(value) => allocator.text(value).double_quotes(),
+            crate::type_system::Value::String(value) => {
+                allocator.text(escape_string(value)).double_quotes()
+            }
             crate::type_system::Value::BlockString(value) => allocator
                 .text(value)
                 .double_quotes()
@@ -565,7 +569,9 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Value<'a>> {
 impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<StringLiteral<'a>> {
     fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
         match self.0.kind() {
-            StringLiteralKind::String => allocator.text(self.0.to_cow()).double_quotes(),
+            StringLiteralKind::String => allocator
+                .text(escape_string(self.0.to_cow().as_ref()))
+                .double_quotes(),
             StringLiteralKind::Block => allocator
                 .text(self.0.raw_str())
                 .double_quotes()
