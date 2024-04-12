@@ -133,6 +133,13 @@ fn string_literal() {
 }
 
 #[test]
+fn string_escaping() {
+    insta::assert_snapshot!(double_roundtrip_test(
+        "tests/executables/string_escaping.graphql"
+    ))
+}
+
+#[test]
 fn subscription_directive() {
     roundtrip_test("tests/executables/subscription_directive.graphql");
 }
@@ -144,26 +151,34 @@ fn variable_directive() {
 
 fn roundtrip_test(filename: &str) {
     let data = std::fs::read_to_string(filename).unwrap();
-    let ast = cynic_parser::parse_executable_document(&data).unwrap();
+    let ast = cynic_parser::parse_executable_document(&data)
+        .map_err(|error| error.to_report(&data))
+        .unwrap();
 
     let output = ast.to_executable_string();
 
     assert_eq!(data, output);
 }
 
-fn double_roundtrip_test(filename: &str) {
+fn double_roundtrip_test(filename: &str) -> String {
     // In some cases the file on disk is not the same as what we output
     // but we still want to make sure we can parse it.
     //
     // For those cases we do a double roundtrip instead of just one
     let data = std::fs::read_to_string(filename).unwrap();
-    let ast = cynic_parser::parse_executable_document(&data).unwrap();
+    let ast = cynic_parser::parse_executable_document(&data)
+        .map_err(|error| error.to_report(&data))
+        .unwrap();
 
     let round_one_output = ast.to_executable_string();
 
-    let ast = cynic_parser::parse_executable_document(&round_one_output).unwrap();
+    let ast = cynic_parser::parse_executable_document(&round_one_output)
+        .map_err(|error| error.to_report(&data))
+        .unwrap();
 
     let round_two_output = ast.to_executable_string();
 
     assert_eq!(round_one_output, round_two_output);
+
+    round_two_output
 }
