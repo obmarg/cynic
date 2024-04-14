@@ -219,14 +219,6 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<FieldDefinition<'a>> {
                 .append(allocator.line_())
                 .parens()
                 .group();
-
-            // builder = builder.append(arguments);
-            // arguments_pretty = allocator
-            //     .intersperse(arguments.map(NodeDisplay), comma_or_newline(allocator))
-            //     .nest(2)
-            //     .append(allocator.softline_())
-            //     .parens()
-            //     .group();
         }
 
         let mut directives = self.0.directives().peekable();
