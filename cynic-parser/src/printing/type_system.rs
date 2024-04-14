@@ -162,9 +162,13 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<ObjectDefinition<'a>> {
 
         let mut directives = self.0.directives().peekable();
         if directives.peek().is_some() {
-            builder = builder
-                .append(allocator.space())
-                .append(allocator.intersperse(directives.map(NodeDisplay), allocator.softline()));
+            builder = builder.append(
+                allocator
+                    .line()
+                    .append(allocator.intersperse(directives.map(NodeDisplay), allocator.line()))
+                    .nest(2)
+                    .group(),
+            );
         }
 
         let mut fields = self.0.fields().peekable();
@@ -259,9 +263,13 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<InterfaceDefinition<'a>> {
 
         let mut directives = self.0.directives().peekable();
         if directives.peek().is_some() {
-            builder = builder
-                .append(allocator.space())
-                .append(allocator.intersperse(directives.map(NodeDisplay), allocator.softline()));
+            builder = builder.append(
+                allocator
+                    .line()
+                    .append(allocator.intersperse(directives.map(NodeDisplay), allocator.line()))
+                    .nest(2)
+                    .group(),
+            );
         }
 
         let mut fields = self.0.fields().peekable();
@@ -298,9 +306,13 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<UnionDefinition<'a>> {
 
         let mut directives = self.0.directives().peekable();
         if directives.peek().is_some() {
-            builder = builder
-                .append(allocator.space())
-                .append(allocator.intersperse(directives.map(NodeDisplay), allocator.softline()));
+            builder = builder.append(
+                allocator
+                    .line()
+                    .append(allocator.intersperse(directives.map(NodeDisplay), allocator.line()))
+                    .nest(2)
+                    .group(),
+            );
         }
 
         let mut members = self.0.members().peekable();
@@ -337,9 +349,13 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<EnumDefinition<'a>> {
 
         let mut directives = self.0.directives().peekable();
         if directives.peek().is_some() {
-            builder = builder
-                .append(allocator.space())
-                .append(allocator.intersperse(directives.map(NodeDisplay), allocator.softline()));
+            builder = builder.append(
+                allocator
+                    .line()
+                    .append(allocator.intersperse(directives.map(NodeDisplay), allocator.line()))
+                    .nest(2)
+                    .group(),
+            );
         }
 
         let values = self.0.values().collect::<Vec<_>>();
@@ -391,9 +407,13 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<InputObjectDefinition<'a>> {
 
         let mut directives = self.0.directives().peekable();
         if directives.peek().is_some() {
-            builder = builder
-                .append(allocator.space())
-                .append(allocator.intersperse(directives.map(NodeDisplay), allocator.softline()));
+            builder = builder.append(
+                allocator
+                    .line()
+                    .append(allocator.intersperse(directives.map(NodeDisplay), allocator.line()))
+                    .nest(2)
+                    .group(),
+            );
         }
 
         let mut fields = self.0.fields().peekable();
