@@ -194,6 +194,22 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<ObjectDefinition<'a>> {
 
 impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<FieldDefinition<'a>> {
     fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
+        let description = self
+            .0
+            .description()
+            .map(|description| {
+                let leading = if self.1 == 0 {
+                    allocator.nil()
+                } else {
+                    allocator.hardline()
+                };
+
+                leading
+                    .append(NodeDisplay(description))
+                    .append(allocator.hardline())
+            })
+            .unwrap_or(allocator.softline_());
+
         let mut arguments_pretty = allocator.nil();
 
         let mut arguments = self.0.arguments().peekable();
@@ -228,8 +244,8 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<FieldDefinition<'a>> {
                 .group();
         }
 
-        allocator
-            .text(self.0.name())
+        description
+            .append(allocator.text(self.0.name()))
             .append(arguments_pretty)
             .append(allocator.text(":"))
             .append(allocator.space())
@@ -378,7 +394,18 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<EnumDefinition<'a>> {
 
 impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<EnumValueDefinition<'a>> {
     fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
-        let mut builder = allocator.text(self.0.value());
+        let description = self
+            .0
+            .description()
+            .map(|description| {
+                allocator
+                    .nil()
+                    .append(NodeDisplay(description))
+                    .append(allocator.hardline())
+            })
+            .unwrap_or(allocator.softline_());
+
+        let mut builder = description.append(allocator.text(self.0.value()));
 
         let mut directives = self.0.directives().peekable();
         if directives.peek().is_some() {

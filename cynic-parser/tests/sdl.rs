@@ -61,6 +61,11 @@ fn extend_scalar() {
 }
 
 #[test]
+fn field_description() {
+    roundtrip_test("tests/sdl/field_description.graphql");
+}
+
+#[test]
 fn implements() {
     roundtrip_test("tests/sdl/implements.graphql");
 }
