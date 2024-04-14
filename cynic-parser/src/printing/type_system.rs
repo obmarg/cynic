@@ -574,15 +574,20 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Value<'a>> {
             crate::type_system::Value::List(items) if items.is_empty() => {
                 allocator.nil().brackets()
             }
-            crate::type_system::Value::List(items) => brackets_and_maybe_indent(
-                allocator
-                    .intersperse(
+            crate::type_system::Value::List(items) => allocator
+                .line_()
+                .append(
+                    allocator.intersperse(
                         items.into_iter().map(NodeDisplay),
-                        allocator.text(",").append(allocator.line()),
-                    )
-                    .group()
-                    .enclose(allocator.line_(), allocator.line_()),
-            ),
+                        allocator
+                            .line_()
+                            .append(allocator.nil().flat_alt(allocator.text(", "))),
+                    ),
+                )
+                .nest(2)
+                .append(allocator.line_())
+                .brackets()
+                .group(),
             crate::type_system::Value::Object(items) if items.is_empty() => {
                 allocator.nil().braces()
             }
@@ -633,10 +638,4 @@ fn parens_and_maybe_indent<'a>(
     thing: pretty::DocBuilder<'a, Allocator<'a>>,
 ) -> pretty::DocBuilder<'a, Allocator<'a>> {
     thing.clone().nest(2).parens().flat_alt(thing.parens())
-}
-
-fn brackets_and_maybe_indent<'a>(
-    thing: pretty::DocBuilder<'a, Allocator<'a>>,
-) -> pretty::DocBuilder<'a, Allocator<'a>> {
-    thing.clone().nest(2).brackets().flat_alt(thing.brackets())
 }
