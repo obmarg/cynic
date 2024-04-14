@@ -198,13 +198,8 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<FieldDefinition<'a>> {
             .0
             .description()
             .map(|description| {
-                let leading = if self.1 == 0 {
-                    allocator.nil()
-                } else {
-                    allocator.hardline()
-                };
-
-                leading
+                allocator
+                    .nil()
                     .append(NodeDisplay(description))
                     .append(allocator.hardline())
             })
