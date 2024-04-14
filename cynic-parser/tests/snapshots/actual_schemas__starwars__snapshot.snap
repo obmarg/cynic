@@ -7,37 +7,43 @@ schema {
 }
 
 type Root {
-  allFilms(after: String
+  allFilms(
+    after: String
     first: Int
     before: String
     last: Int
   ): FilmsConnection
   film(id: ID, filmID: ID): Film
-  allPeople(after: String
+  allPeople(
+    after: String
     first: Int
     before: String
     last: Int
   ): PeopleConnection
   person(id: ID, personID: ID): Person
-  allPlanets(after: String
+  allPlanets(
+    after: String
     first: Int
     before: String
     last: Int
   ): PlanetsConnection
   planet(id: ID, planetID: ID): Planet
-  allSpecies(after: String
+  allSpecies(
+    after: String
     first: Int
     before: String
     last: Int
   ): SpeciesConnection
   species(id: ID, speciesID: ID): Species
-  allStarships(after: String
+  allStarships(
+    after: String
     first: Int
     before: String
     last: Int
   ): StarshipsConnection
   starship(id: ID, starshipID: ID): Starship
-  allVehicles(after: String
+  allVehicles(
+    after: String
     first: Int
     before: String
     last: Int
@@ -89,27 +95,32 @@ type Film implements Node {
   director: String
   producers: [String]
   releaseDate: String
-  speciesConnection(after: String
+  speciesConnection(
+    after: String
     first: Int
     before: String
     last: Int
   ): FilmSpeciesConnection
-  starshipConnection(after: String
+  starshipConnection(
+    after: String
     first: Int
     before: String
     last: Int
   ): FilmStarshipsConnection
-  vehicleConnection(after: String
+  vehicleConnection(
+    after: String
     first: Int
     before: String
     last: Int
   ): FilmVehiclesConnection
-  characterConnection(after: String
+  characterConnection(
+    after: String
     first: Int
     before: String
     last: Int
   ): FilmCharactersConnection
-  planetConnection(after: String
+  planetConnection(
+    after: String
     first: Int
     before: String
     last: Int
@@ -158,12 +169,14 @@ type Species implements Node {
   skinColors: [String]
   language: String
   homeworld: Planet
-  personConnection(after: String
+  personConnection(
+    after: String
     first: Int
     before: String
     last: Int
   ): SpeciesPeopleConnection
-  filmConnection(after: String
+  filmConnection(
+    after: String
     first: Int
     before: String
     last: Int
@@ -187,12 +200,14 @@ type Planet implements Node {
   climates: [String]
   terrains: [String]
   surfaceWater: Float
-  residentConnection(after: String
+  residentConnection(
+    after: String
     first: Int
     before: String
     last: Int
   ): PlanetResidentsConnection
-  filmConnection(after: String
+  filmConnection(
+    after: String
     first: Int
     before: String
     last: Int
@@ -233,18 +248,21 @@ type Person implements Node {
   mass: Float
   skinColor: String
   homeworld: Planet
-  filmConnection(after: String
+  filmConnection(
+    after: String
     first: Int
     before: String
     last: Int
   ): PersonFilmsConnection
   species: Species
-  starshipConnection(after: String
+  starshipConnection(
+    after: String
     first: Int
     before: String
     last: Int
   ): PersonStarshipsConnection
-  vehicleConnection(after: String
+  vehicleConnection(
+    after: String
     first: Int
     before: String
     last: Int
@@ -307,12 +325,14 @@ type Starship implements Node {
   MGLT: Int
   cargoCapacity: Float
   consumables: String
-  pilotConnection(after: String
+  pilotConnection(
+    after: String
     first: Int
     before: String
     last: Int
   ): StarshipPilotsConnection
-  filmConnection(after: String
+  filmConnection(
+    after: String
     first: Int
     before: String
     last: Int
@@ -391,12 +411,14 @@ type Vehicle implements Node {
   maxAtmospheringSpeed: Int
   cargoCapacity: Float
   consumables: String
-  pilotConnection(after: String
+  pilotConnection(
+    after: String
     first: Int
     before: String
     last: Int
   ): VehiclePilotsConnection
-  filmConnection(after: String
+  filmConnection(
+    after: String
     first: Int
     before: String
     last: Int

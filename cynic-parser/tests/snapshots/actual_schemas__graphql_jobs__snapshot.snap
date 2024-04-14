@@ -8,7 +8,8 @@ type City {
   slug: String!
   country: Country!
   type: String!
-  jobs(where: JobWhereInput
+  jobs(
+    where: JobWhereInput
     orderBy: JobOrderByInput
     skip: Int
     after: String
@@ -121,7 +122,8 @@ type Commitment {
   id: ID!
   title: String!
   slug: String!
-  jobs(where: JobWhereInput
+  jobs(
+    where: JobWhereInput
     orderBy: JobOrderByInput
     skip: Int
     after: String
@@ -206,7 +208,8 @@ type Company {
   slug: String!
   websiteUrl: String!
   logoUrl: String
-  jobs(where: JobWhereInput
+  jobs(
+    where: JobWhereInput
     orderBy: JobOrderByInput
     skip: Int
     after: String
@@ -337,7 +340,8 @@ type Country {
   slug: String!
   type: String!
   isoCode: String
-  cities(where: CityWhereInput
+  cities(
+    where: CityWhereInput
     orderBy: CityOrderByInput
     skip: Int
     after: String
@@ -345,7 +349,8 @@ type Country {
     first: Int
     last: Int
   ): [City!]
-  jobs(where: JobWhereInput
+  jobs(
+    where: JobWhereInput
     orderBy: JobOrderByInput
     skip: Int
     after: String
@@ -479,7 +484,8 @@ type Job {
   title: String!
   slug: String!
   commitment: Commitment!
-  cities(where: CityWhereInput
+  cities(
+    where: CityWhereInput
     orderBy: CityOrderByInput
     skip: Int
     after: String
@@ -487,7 +493,8 @@ type Job {
     first: Int
     last: Int
   ): [City!]
-  countries(where: CountryWhereInput
+  countries(
+    where: CountryWhereInput
     orderBy: CountryOrderByInput
     skip: Int
     after: String
@@ -495,7 +502,8 @@ type Job {
     first: Int
     last: Int
   ): [Country!]
-  remotes(where: RemoteWhereInput
+  remotes(
+    where: RemoteWhereInput
     orderBy: RemoteOrderByInput
     skip: Int
     after: String
@@ -506,7 +514,8 @@ type Job {
   description: String
   applyUrl: String
   company: Company
-  tags(where: TagWhereInput
+  tags(
+    where: TagWhereInput
     orderBy: TagOrderByInput
     skip: Int
     after: String
@@ -757,7 +766,8 @@ type Remote {
   name: String!
   slug: String!
   type: String!
-  jobs(where: JobWhereInput
+  jobs(
+    where: JobWhereInput
     orderBy: JobOrderByInput
     skip: Int
     after: String
@@ -874,7 +884,8 @@ type Tag {
   id: ID!
   name: String!
   slug: String!
-  jobs(where: JobWhereInput
+  jobs(
+    where: JobWhereInput
     orderBy: JobOrderByInput
     skip: Int
     after: String

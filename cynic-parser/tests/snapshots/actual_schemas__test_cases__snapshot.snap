@@ -14,7 +14,8 @@ type Foo {
   async: Boolean
   bar(id: UUID!): Bar
   fieldWithKeywordArg(where: Int): [Int!]!
-  recursiveInputField(recursive: SelfRecursiveInput
+  recursiveInputField(
+    recursive: SelfRecursiveInput
     recursive2: RecursiveInputParent
   ): Boolean
   fieldWithStringArg(input: String!): Int

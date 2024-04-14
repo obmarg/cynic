@@ -634,18 +634,6 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<StringLiteral<'a>> {
     }
 }
 
-fn comma_or_nil<'a>(allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>> {
-    allocator
-        .nil()
-        .flat_alt(allocator.text(",").append(allocator.space()))
-}
-
 fn comma_or_newline<'a>(allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>> {
     allocator.line().flat_alt(allocator.text(", "))
-}
-
-fn parens_and_maybe_indent<'a>(
-    thing: pretty::DocBuilder<'a, Allocator<'a>>,
-) -> pretty::DocBuilder<'a, Allocator<'a>> {
-    thing.clone().nest(2).parens().flat_alt(thing.parens())
 }
