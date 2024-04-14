@@ -222,12 +222,10 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<FieldDefinition<'a>> {
         let mut directives_pretty = allocator.nil();
         if directives.peek().is_some() {
             directives_pretty = allocator
-                .softline()
+                .line()
                 .append(allocator.intersperse(directives.map(NodeDisplay), allocator.line()))
                 .nest(2)
                 .group();
-
-            // directives_pretty = allocator.space().append(directives_pretty);
         }
 
         allocator
@@ -465,9 +463,13 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<InputValueDefinition<'a>> {
 
         let mut directives = self.0.directives().peekable();
         if directives.peek().is_some() {
-            value_builder = value_builder
-                .append(allocator.space())
-                .append(allocator.intersperse(directives.map(NodeDisplay), allocator.softline()));
+            let directives_pretty = allocator
+                .line()
+                .append(allocator.intersperse(directives.map(NodeDisplay), allocator.line()))
+                .nest(2)
+                .group();
+
+            value_builder = value_builder.append(directives_pretty);
         }
 
         description.append(value_builder)
@@ -532,7 +534,15 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Directive<'a>> {
 
         if arguments.peek().is_some() {
             let arguments = allocator
-                .intersperse(arguments.map(NodeDisplay), comma_or_newline(allocator))
+                .line_()
+                .append(
+                    allocator.intersperse(
+                        arguments.map(NodeDisplay),
+                        allocator
+                            .line_()
+                            .append(allocator.nil().flat_alt(allocator.text(", "))),
+                    ),
+                )
                 .nest(2)
                 .append(allocator.line_())
                 .parens()

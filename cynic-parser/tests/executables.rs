@@ -51,9 +51,8 @@ fn minimal_query() {
 }
 
 #[test]
-#[ignore] // This needs fixed
 fn multiline_string() {
-    roundtrip_test("tests/executables/multiline_string.graphql");
+    double_roundtrip_test("tests/executables/multiline_string.graphql");
 }
 
 #[test]
