@@ -174,7 +174,7 @@ impl super::TypeSystemDocument {
 }
 
 impl TypeSystemDocument {
-    pub fn definitions(&self) -> impl Iterator<Item = Definition<'_>> + '_ {
+    pub fn definitions(&self) -> impl ExactSizeIterator<Item = Definition<'_>> + '_ {
         self.definitions.iter().map(|definition| match definition {
             DefinitionRecord::Schema(id) => Definition::Schema(self.read(*id)),
             DefinitionRecord::Scalar(id) => {
