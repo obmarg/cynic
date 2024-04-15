@@ -54,7 +54,7 @@ SchemaExtensionDefinition: SchemaDefinitionRecord = {
     schema <directives:Directives> <root_operations:RootOperationTypeDefinitions?> => SchemaDefinitionRecord {
         description: None,
         directives,
-        root_operations: root_operations.unwrap_or_else(|| ast.no_root_operations()),
+        root_operations: root_operations.unwrap_or_default(),
     }
 };
 

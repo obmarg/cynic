@@ -108,11 +108,6 @@ impl TypeSystemAstWriter {
         definition_id
     }
 
-    pub fn no_root_operations(&mut self) -> IdRange<RootOperationTypeDefinitionId> {
-        let [start, end] = [RootOperationTypeDefinitionId::new(0); 2];
-        IdRange { start, end }
-    }
-
     pub fn root_operation_definitions(
         &mut self,
         definitions: Vec<RootOperationTypeDefinitionRecord>,

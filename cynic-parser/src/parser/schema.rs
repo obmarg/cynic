@@ -1,5 +1,5 @@
 // auto-generated: "lalrpop 0.20.0"
-// sha3: ddceefaf1457a093927b789ac0a99a2bbef8856b54fa85a70e26bd83dd3188e5
+// sha3: 21c556d17b504666f618a8e83bf4cefaedc07aed6e5507194e8307e2f6cc4d5b
 use crate::lexer;
 use crate::{
     common::{
@@ -7614,7 +7614,7 @@ fn __action19<'input>(
     SchemaDefinitionRecord {
         description: None,
         directives,
-        root_operations: root_operations.unwrap_or_else(|| ast.no_root_operations()),
+        root_operations: root_operations.unwrap_or_default(),
     }
 }
 
