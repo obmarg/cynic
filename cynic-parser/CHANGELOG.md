@@ -12,7 +12,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ## [0.2.3](https://github.com/obmarg/cynic/compare/cynic-parser-v0.2.2...cynic-parser-v0.2.3) - 2024-04-15
 
 ### Fixed
-- a lot of bugs in cynic-parser pretty printing ([#916](https://github.com/obmarg/cynic/pull/916))
+- Pretty printing output is now significantly improved, but still not perfect
+  ([#916](https://github.com/obmarg/cynic/pull/916))
 
 ## v0.2.2 - 2024-04-12
 
