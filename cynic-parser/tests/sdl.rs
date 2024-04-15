@@ -11,6 +11,11 @@ fn directive() {
 }
 
 #[test]
+fn directive_wrapping() {
+    roundtrip_test("tests/sdl/directive_wrapping.graphql");
+}
+
+#[test]
 fn directive_descriptions() {
     roundtrip_test("tests/sdl/directive_descriptions.graphql");
 }
@@ -56,6 +61,11 @@ fn extend_scalar() {
 }
 
 #[test]
+fn field_description() {
+    roundtrip_test("tests/sdl/field_description.graphql");
+}
+
+#[test]
 fn implements() {
     roundtrip_test("tests/sdl/implements.graphql");
 }
@@ -91,6 +101,11 @@ fn kitchen_sink_canonical() {
 }
 
 #[test]
+fn long_argument_wrapping() {
+    roundtrip_test("tests/sdl/long_argument_wrapping.graphql");
+}
+
+#[test]
 fn minimal() {
     roundtrip_test("tests/sdl/minimal.graphql");
 }
@@ -106,7 +121,6 @@ fn object_with_arguemnts() {
 }
 
 #[test]
-#[ignore]
 fn repeatable_directives() {
     roundtrip_test("tests/sdl/repeatable_directives.graphql");
 }

@@ -1,0 +1,4 @@
+type Whatever {
+  mappedImage(identifier: String!): Images
+    @deprecated(reason: "Please use \"mappedImages\"")
+}

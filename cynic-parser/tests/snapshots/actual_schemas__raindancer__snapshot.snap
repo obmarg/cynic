@@ -8,6 +8,9 @@ type Device {
 }
 
 type MutationRoot {
+  """
+  Returns a device with a certain `id`.
+  """
   createDevice(name: String!): Int
   signIn(input: SignInInput!): String!
   refresh(token: String!): String!
@@ -15,6 +18,9 @@ type MutationRoot {
 }
 
 type QueryRoot {
+  """
+  Returns a device with a certain `id`.
+  """
   user(id: Int!): Device
 }
 
