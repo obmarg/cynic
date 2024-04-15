@@ -12,7 +12,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ## [0.2.4](https://github.com/obmarg/cynic/compare/cynic-parser-v0.2.3...cynic-parser-v0.2.4) - 2024-04-15
 
 ### Fixed
-- Make TypeSystemDocument::definitions() return an ExactSizeIterator ([#919](https://github.com/obmarg/cynic/pull/919))
+- TypeSystemDocument::definitions() now returns an ExactSizeIterator ([#919](https://github.com/obmarg/cynic/pull/919))
 
 ## [0.2.3](https://github.com/obmarg/cynic/compare/cynic-parser-v0.2.2...cynic-parser-v0.2.3) - 2024-04-15
 
