@@ -49,3 +49,16 @@ impl<'a> UnionExt<'a> for UnionDefinition<'a> {
             .as_str()
     }
 }
+
+pub trait TypeDefinitionExt {
+    fn is_string(&self) -> bool;
+}
+
+impl TypeDefinitionExt for TypeDefinition<'_> {
+    fn is_string(&self) -> bool {
+        match self {
+            TypeDefinition::Scalar(scalar) => scalar.name() == "String",
+            _ => false,
+        }
+    }
+}

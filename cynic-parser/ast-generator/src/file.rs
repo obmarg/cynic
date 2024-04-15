@@ -46,6 +46,13 @@ pub struct EntityOutput {
     pub requires: BTreeSet<EntityRef>,
     pub id: EntityRef,
     pub contents: String,
+    pub kind: EntityKind,
+}
+
+#[derive(Clone, Copy, PartialEq)]
+pub enum EntityKind {
+    Union,
+    Object,
 }
 
 pub fn imports(
@@ -77,8 +84,10 @@ pub fn imports(
         .collect::<Vec<_>>();
 
     let id_trait = Ident::new(id_trait, Span::call_site());
-
     format_code(quote! {
+        #[allow(unused_imports)]
+        use std::fmt::{self, Write};
+
         #shared_imports
 
         use super::{
