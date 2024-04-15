@@ -11,8 +11,9 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## [3.6.1](https://github.com/obmarg/cynic/compare/v3.6.0...v3.6.1) - 2024-04-15
 
-### Other
-- update Cargo.lock dependencies
+### Fixes
+- Fixed a regresion in 3.6.0: schemas with directives on the `schema`
+  definition will now parse
 
 ## [3.6.0](https://github.com/obmarg/cynic/compare/v3.5.1...v3.6.2) - 2024-04-12
 
