@@ -59,6 +59,12 @@ impl std::fmt::Display for Type<'_> {
     }
 }
 
+impl std::fmt::Debug for Type<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_tuple("Type").field(&self.to_string()).finish()
+    }
+}
+
 impl TypeSystemId for TypeId {
     type Reader<'a> = Type<'a>;
 }
