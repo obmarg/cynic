@@ -11,13 +11,15 @@ use crate::{
     common::{IdRange, OperationType},
     AstLookup,
 };
+#[allow(unused_imports)]
+use std::fmt::{self, Write};
 
 pub enum ExecutableDefinitionRecord {
     Operation(OperationDefinitionId),
     Fragment(FragmentDefinitionId),
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub enum ExecutableDefinition<'a> {
     Operation(OperationDefinition<'a>),
     Fragment(FragmentDefinition<'a>),

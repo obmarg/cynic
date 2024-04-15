@@ -12,6 +12,8 @@ use crate::{
     common::{IdRange, OperationType},
     AstLookup,
 };
+#[allow(unused_imports)]
+use std::fmt::{self, Write};
 
 pub struct OperationDefinitionRecord {
     pub operation_type: OperationType,
@@ -36,7 +38,9 @@ impl<'a> OperationDefinition<'a> {
             .name
             .map(|id| document.lookup(id))
     }
-    pub fn variable_definitions(&self) -> impl ExactSizeIterator<Item = VariableDefinition<'a>> {
+    pub fn variable_definitions(
+        &self,
+    ) -> impl ExactSizeIterator<Item = VariableDefinition<'a>> + 'a {
         let document = self.0.document;
         document
             .lookup(self.0.id)
@@ -44,7 +48,7 @@ impl<'a> OperationDefinition<'a> {
             .iter()
             .map(|id| document.read(id))
     }
-    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> {
+    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
         let document = self.0.document;
         document
             .lookup(self.0.id)
@@ -52,13 +56,28 @@ impl<'a> OperationDefinition<'a> {
             .iter()
             .map(|id| document.read(id))
     }
-    pub fn selection_set(&self) -> impl ExactSizeIterator<Item = Selection<'a>> {
+    pub fn selection_set(&self) -> impl ExactSizeIterator<Item = Selection<'a>> + 'a {
         let document = self.0.document;
         document
             .lookup(self.0.id)
             .selection_set
             .iter()
             .map(|id| document.read(id))
+    }
+}
+
+impl fmt::Debug for OperationDefinition<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("OperationDefinition")
+            .field("operation_type", &self.operation_type())
+            .field("name", &self.name())
+            .field(
+                "variable_definitions",
+                &self.variable_definitions().collect::<Vec<_>>(),
+            )
+            .field("directives", &self.directives().collect::<Vec<_>>())
+            .field("selection_set", &self.selection_set().collect::<Vec<_>>())
+            .finish()
     }
 }
 

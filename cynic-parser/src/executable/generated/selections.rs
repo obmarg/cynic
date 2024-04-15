@@ -13,6 +13,8 @@ use crate::{
     common::{IdRange, OperationType},
     AstLookup,
 };
+#[allow(unused_imports)]
+use std::fmt::{self, Write};
 
 pub enum SelectionRecord {
     Field(FieldSelectionId),
@@ -20,7 +22,7 @@ pub enum SelectionRecord {
     FragmentSpread(FragmentSpreadId),
 }
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub enum Selection<'a> {
     Field(FieldSelection<'a>),
     InlineFragment(InlineFragment<'a>),
@@ -94,6 +96,18 @@ impl<'a> FieldSelection<'a> {
     }
 }
 
+impl fmt::Debug for FieldSelection<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("FieldSelection")
+            .field("alias", &self.alias())
+            .field("name", &self.name())
+            .field("arguments", &self.arguments().collect::<Vec<_>>())
+            .field("directives", &self.directives().collect::<Vec<_>>())
+            .field("selection_set", &self.selection_set().collect::<Vec<_>>())
+            .finish()
+    }
+}
+
 impl ExecutableId for FieldSelectionId {
     type Reader<'a> = FieldSelection<'a>;
 }
@@ -139,6 +153,16 @@ impl<'a> InlineFragment<'a> {
     }
 }
 
+impl fmt::Debug for InlineFragment<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("InlineFragment")
+            .field("type_condition", &self.type_condition())
+            .field("directives", &self.directives().collect::<Vec<_>>())
+            .field("selection_set", &self.selection_set().collect::<Vec<_>>())
+            .finish()
+    }
+}
+
 impl ExecutableId for InlineFragmentId {
     type Reader<'a> = InlineFragment<'a>;
 }
@@ -169,6 +193,15 @@ impl<'a> FragmentSpread<'a> {
             .directives
             .iter()
             .map(|id| document.read(id))
+    }
+}
+
+impl fmt::Debug for FragmentSpread<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("FragmentSpread")
+            .field("fragment_name", &self.fragment_name())
+            .field("directives", &self.directives().collect::<Vec<_>>())
+            .finish()
     }
 }
 

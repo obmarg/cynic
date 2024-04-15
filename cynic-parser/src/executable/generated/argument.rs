@@ -10,6 +10,8 @@ use crate::{
     common::{IdRange, OperationType},
     AstLookup,
 };
+#[allow(unused_imports)]
+use std::fmt::{self, Write};
 
 pub struct ArgumentRecord {
     pub name: StringId,
@@ -21,12 +23,21 @@ pub struct Argument<'a>(ReadContext<'a, ArgumentId>);
 
 impl<'a> Argument<'a> {
     pub fn name(&self) -> &'a str {
-        let ast = &self.0.document;
-        ast.lookup(ast.lookup(self.0.id).name)
+        let document = &self.0.document;
+        document.lookup(document.lookup(self.0.id).name)
     }
     pub fn value(&self) -> Value<'a> {
         let document = self.0.document;
         document.read(document.lookup(self.0.id).value)
+    }
+}
+
+impl fmt::Debug for Argument<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("Argument")
+            .field("name", &self.name())
+            .field("value", &self.value())
+            .finish()
     }
 }
 
