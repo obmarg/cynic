@@ -87,6 +87,16 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<SchemaDefinition<'a>> {
 
         builder = builder.append(allocator.text("schema"));
 
+        let mut directives = self.0.directives().peekable();
+        let mut directives_pretty = allocator.nil();
+        if directives.peek().is_some() {
+            directives_pretty = allocator
+                .space()
+                .append(allocator.intersperse(directives.map(NodeDisplay), allocator.softline()));
+        }
+
+        builder = builder.append(directives_pretty);
+
         let mut roots = self.0.root_operations().peekable();
         if roots.peek().is_some() {
             builder = builder

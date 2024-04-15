@@ -1,7 +1,8 @@
 #[allow(unused_imports)]
 use super::ids::StringId;
 use super::{
-    ids::{RootOperationTypeDefinitionId, SchemaDefinitionId, StringLiteralId},
+    directives::Directive,
+    ids::{DirectiveId, RootOperationTypeDefinitionId, SchemaDefinitionId, StringLiteralId},
     strings::StringLiteral,
     ReadContext, TypeSystemId,
 };
@@ -14,6 +15,7 @@ use crate::{
 
 pub struct SchemaDefinitionRecord {
     pub description: Option<StringLiteralId>,
+    pub directives: IdRange<DirectiveId>,
     pub root_operations: IdRange<RootOperationTypeDefinitionId>,
 }
 
@@ -26,6 +28,14 @@ impl<'a> SchemaDefinition<'a> {
         document
             .lookup(self.0.id)
             .description
+            .map(|id| document.read(id))
+    }
+    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
+        let document = self.0.document;
+        document
+            .lookup(self.0.id)
+            .directives
+            .iter()
             .map(|id| document.read(id))
     }
     pub fn root_operations(

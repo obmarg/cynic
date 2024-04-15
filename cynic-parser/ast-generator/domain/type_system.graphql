@@ -1,5 +1,6 @@
 type SchemaDefinition @file(name: "schemas") {
   description: StringLiteral
+  directives: [Directive!]!
   root_operations: [RootOperationTypeDefinition!]!
 }
 

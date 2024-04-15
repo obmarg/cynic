@@ -43,8 +43,14 @@ TypeSystemDefinition: DefinitionId = {
 }
 
 SchemaDefinition: SchemaDefinitionRecord = {
-    schema "{" <root_operations:RootOperationTypeDefinition*> "}" => SchemaDefinitionRecord {
+    schema <directives:Directives> => SchemaDefinitionRecord {
         description: None,
+        directives,
+        root_operations: ast.no_root_operations(),
+    },
+    schema <directives:Directives> "{" <root_operations:RootOperationTypeDefinition*> "}" => SchemaDefinitionRecord {
+        description: None,
+        directives,
         root_operations: ast.root_operation_definitions(root_operations),
     }
 };
