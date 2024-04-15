@@ -4,4 +4,11 @@ fn main() {
         .set_out_dir("../src/parser")
         .process()
         .unwrap();
+
+    for input in ["../src/parser/executable.rs", "../src/parser/schema.rs"] {
+        std::process::Command::new("cargo")
+            .args(["fmt", "--", input])
+            .spawn()
+            .ok();
+    }
 }
