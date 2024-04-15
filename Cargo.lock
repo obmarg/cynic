@@ -986,7 +986,7 @@ dependencies = [
 
 [[package]]
 name = "cynic"
-version = "3.6.0"
+version = "3.6.1"
 dependencies = [
  "assert_matches",
  "chrono",
@@ -1006,7 +1006,7 @@ dependencies = [
 
 [[package]]
 name = "cynic-cli"
-version = "3.6.0"
+version = "3.6.1"
 dependencies = [
  "clap",
  "colored",
@@ -1020,7 +1020,7 @@ dependencies = [
 
 [[package]]
 name = "cynic-codegen"
-version = "3.6.0"
+version = "3.6.1"
 dependencies = [
  "assert_matches",
  "counter",
@@ -1057,7 +1057,7 @@ dependencies = [
 
 [[package]]
 name = "cynic-introspection"
-version = "3.6.0"
+version = "3.6.1"
 dependencies = [
  "assert_matches",
  "cynic",
@@ -1072,7 +1072,7 @@ dependencies = [
 
 [[package]]
 name = "cynic-parser"
-version = "0.2.4"
+version = "0.2.5"
 dependencies = [
  "apollo-parser",
  "ariadne",
@@ -1090,7 +1090,7 @@ dependencies = [
 
 [[package]]
 name = "cynic-proc-macros"
-version = "3.6.0"
+version = "3.6.1"
 dependencies = [
  "cynic-codegen",
  "darling",
@@ -1100,7 +1100,7 @@ dependencies = [
 
 [[package]]
 name = "cynic-querygen"
-version = "3.6.0"
+version = "3.6.1"
 dependencies = [
  "Inflector",
  "assert_matches",
