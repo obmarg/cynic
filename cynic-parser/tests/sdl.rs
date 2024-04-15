@@ -150,6 +150,11 @@ fn union_extension() {
     roundtrip_test("tests/sdl/union_extension.graphql");
 }
 
+#[test]
+fn schema_definition_directives_only() {
+    roundtrip_test("tests/sdl/schema_definition_directives_only.graphql");
+}
+
 fn roundtrip_test(filename: &str) {
     let data = std::fs::read_to_string(filename).unwrap();
     let ast = cynic_parser::parse_type_system_document(&data).unwrap();
