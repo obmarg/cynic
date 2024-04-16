@@ -17,6 +17,20 @@ where
     document: &'a super::ExecutableDocument,
 }
 
+impl<'a, T> Iter<'a, T>
+where
+    T: IdReader,
+    T::Id: IdOperations,
+{
+    pub(crate) fn new(range: IdRange<T::Id>, document: &'a super::ExecutableDocument) -> Self {
+        Iter {
+            current: range.start,
+            range,
+            document,
+        }
+    }
+}
+
 pub trait IdReader {
     type Id: ExecutableId;
 }
