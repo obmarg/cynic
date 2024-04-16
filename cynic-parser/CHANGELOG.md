@@ -9,26 +9,28 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
-## [0.2.5](https://github.com/obmarg/cynic/compare/cynic-parser-v0.2.4...cynic-parser-v0.2.5) - 2024-04-15
+## [v0.2.6](https://github.com/obmarg/cynic/compare/cynic-parser-v0.2.5...cynic-parser-v0.2.6) - 2024-04-16
+
+### Features
+- implement PartialEq for Type and Value ([#924](https://github.com/obmarg/cynic/pull/924))
+
+## [v0.2.5](https://github.com/obmarg/cynic/compare/cynic-parser-v0.2.4...cynic-parser-v0.2.5) - 2024-04-15
 
 ### Fixes
-
 - Directives on schema definitions are now parsed correctly
   ([#921](https://github.com/obmarg/cynic/pull/921))
 - Schema extensions without operation definitions are now parsed correctly
   ([#921](https://github.com/obmarg/cynic/pull/921))
 
-## [0.2.4](https://github.com/obmarg/cynic/compare/cynic-parser-v0.2.3...cynic-parser-v0.2.4) - 2024-04-15
+## [v0.2.4](https://github.com/obmarg/cynic/compare/cynic-parser-v0.2.3...cynic-parser-v0.2.4) - 2024-04-15
 
 ### Fixes
-
 - TypeSystemDocument::definitions() now returns an ExactSizeIterator
   ([#919](https://github.com/obmarg/cynic/pull/919))
 
 ## [0.2.3](https://github.com/obmarg/cynic/compare/cynic-parser-v0.2.2...cynic-parser-v0.2.3) - 2024-04-15
 
 ### Fixes
-
 - Pretty printing output is now significantly improved, but still not perfect
   ([#916](https://github.com/obmarg/cynic/pull/916))
 
