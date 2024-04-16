@@ -1,12 +1,12 @@
 use indexmap::IndexSet;
 
 pub mod ids;
+mod iter;
+pub mod writer;
 
 mod generated;
-mod value;
-
 mod types;
-pub mod writer;
+mod value;
 
 use self::ids::ExecutableDefinitionId;
 pub use self::{
@@ -46,7 +46,7 @@ pub struct ExecutableDocument {
     values: Vec<value::ValueRecord>,
 }
 
-// TODO: Make this sealed maybe?
+// TODO: Make this sealed maybe?  Could also move into id module...
 pub trait ExecutableId: Copy {
     type Reader<'a>: From<ReadContext<'a, Self>>;
 
