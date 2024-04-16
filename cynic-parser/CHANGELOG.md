@@ -9,7 +9,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
-## [v0.3.0](https://github.com/obmarg/cynic/compare/cynic-parser-v0.2.5...cynic-parser-v0.3.0) - 2024-04-16
+## [v0.2.6](https://github.com/obmarg/cynic/compare/cynic-parser-v0.2.5...cynic-parser-v0.2.6) - 2024-04-16
 
 ### Features
 - implement PartialEq for Type and Value ([#924](https://github.com/obmarg/cynic/pull/924))
