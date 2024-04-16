@@ -76,6 +76,7 @@ make_id!(
     ExecutableDefinitionRecord,
     definitions
 );
+impl_id_range!(ExecutableDefinitionId);
 
 make_id!(OperationDefinitionId, OperationDefinitionRecord, operations);
 

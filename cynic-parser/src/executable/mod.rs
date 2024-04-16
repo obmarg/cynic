@@ -8,7 +8,8 @@ mod generated;
 mod types;
 mod value;
 
-use self::ids::ExecutableDefinitionId;
+use crate::common::IdRange;
+
 pub use self::{
     generated::{
         argument::Argument,
@@ -22,6 +23,8 @@ pub use self::{
     types::Type,
     value::Value,
 };
+
+use self::{ids::ExecutableDefinitionId, iter::Iter};
 
 #[derive(Default)]
 pub struct ExecutableDocument {
@@ -75,21 +78,24 @@ impl ExecutableDocument {
 }
 
 impl ExecutableDocument {
-    pub fn definitions(&self) -> impl ExactSizeIterator<Item = ExecutableDefinition<'_>> {
-        self.definitions
-            .iter()
-            .enumerate()
-            .map(|(i, _)| self.read(ExecutableDefinitionId::new(i)))
+    pub fn definitions(&self) -> Iter<'_, ExecutableDefinition<'_>> {
+        Iter::new(
+            IdRange::new(
+                ExecutableDefinitionId::new(0),
+                ExecutableDefinitionId::new(self.definitions.len()),
+            ),
+            self,
+        )
     }
 
-    pub fn operations(&self) -> impl Iterator<Item = OperationDefinition<'_>> {
+    pub fn operations(&self) -> impl DoubleEndedIterator<Item = OperationDefinition<'_>> + '_ {
         self.definitions().filter_map(|op| match op {
             ExecutableDefinition::Operation(reader) => Some(reader),
             ExecutableDefinition::Fragment(_) => None,
         })
     }
 
-    pub fn fragments(&self) -> impl Iterator<Item = FragmentDefinition<'_>> {
+    pub fn fragments(&self) -> impl DoubleEndedIterator<Item = FragmentDefinition<'_>> + '_ {
         self.definitions().filter_map(|op| match op {
             ExecutableDefinition::Operation(_) => None,
             ExecutableDefinition::Fragment(reader) => Some(reader),
