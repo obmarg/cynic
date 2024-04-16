@@ -16,6 +16,14 @@ pub struct TypeRecord {
 #[derive(Clone, Copy)]
 pub struct Type<'a>(ReadContext<'a, TypeId>);
 
+impl PartialEq for Type<'_> {
+    fn eq(&self, other: &Self) -> bool {
+        self.name() == other.name() && self.wrappers().eq(other.wrappers())
+    }
+}
+
+impl Eq for Type<'_> {}
+
 impl<'a> Type<'a> {
     pub fn name(&self) -> &'a str {
         self.0
