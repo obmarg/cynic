@@ -1,5 +1,3 @@
-#[allow(unused_imports)]
-use super::ids::StringId;
 use super::{
     directive::Directive,
     ids::{DirectiveId, TypeId, ValueId, VariableDefinitionId},
@@ -7,6 +5,8 @@ use super::{
     value::Value,
     ExecutableId, ReadContext,
 };
+#[allow(unused_imports)]
+use super::{ids::StringId, Iter};
 #[allow(unused_imports)]
 use crate::{
     common::{IdRange, OperationType},
@@ -41,13 +41,9 @@ impl<'a> VariableDefinition<'a> {
             .default_value
             .map(|id| document.read(id))
     }
-    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
+    pub fn directives(&self) -> Iter<'a, Directive<'a>> {
         let document = self.0.document;
-        document
-            .lookup(self.0.id)
-            .directives
-            .iter()
-            .map(|id| document.read(id))
+        super::Iter::new(document.lookup(self.0.id).directives, document)
     }
 }
 
@@ -64,6 +60,10 @@ impl fmt::Debug for VariableDefinition<'_> {
 
 impl ExecutableId for VariableDefinitionId {
     type Reader<'a> = VariableDefinition<'a>;
+}
+
+impl super::IdReader for VariableDefinition<'_> {
+    type Id = VariableDefinitionId;
 }
 
 impl<'a> From<ReadContext<'a, VariableDefinitionId>> for VariableDefinition<'a> {

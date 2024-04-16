@@ -1,11 +1,11 @@
-#[allow(unused_imports)]
-use super::ids::StringId;
 use super::{
     fragment::FragmentDefinition,
     ids::{ExecutableDefinitionId, FragmentDefinitionId, OperationDefinitionId},
     operation::OperationDefinition,
     ExecutableId, ReadContext,
 };
+#[allow(unused_imports)]
+use super::{ids::StringId, Iter};
 #[allow(unused_imports)]
 use crate::{
     common::{IdRange, OperationType},
@@ -27,6 +27,10 @@ pub enum ExecutableDefinition<'a> {
 
 impl ExecutableId for ExecutableDefinitionId {
     type Reader<'a> = ExecutableDefinition<'a>;
+}
+
+impl super::IdReader for ExecutableDefinition<'_> {
+    type Id = ExecutableDefinitionId;
 }
 
 impl<'a> From<ReadContext<'a, ExecutableDefinitionId>> for ExecutableDefinition<'a> {

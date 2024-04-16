@@ -1,5 +1,3 @@
-#[allow(unused_imports)]
-use super::ids::StringId;
 use super::{
     argument::Argument,
     directive::Directive,
@@ -8,6 +6,8 @@ use super::{
     },
     ExecutableId, ReadContext,
 };
+#[allow(unused_imports)]
+use super::{ids::StringId, Iter};
 #[allow(unused_imports)]
 use crate::{
     common::{IdRange, OperationType},
@@ -31,6 +31,10 @@ pub enum Selection<'a> {
 
 impl ExecutableId for SelectionId {
     type Reader<'a> = Selection<'a>;
+}
+
+impl super::IdReader for Selection<'_> {
+    type Id = SelectionId;
 }
 
 impl<'a> From<ReadContext<'a, SelectionId>> for Selection<'a> {
@@ -70,29 +74,17 @@ impl<'a> FieldSelection<'a> {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).name)
     }
-    pub fn arguments(&self) -> impl ExactSizeIterator<Item = Argument<'a>> + 'a {
+    pub fn arguments(&self) -> Iter<'a, Argument<'a>> {
         let document = self.0.document;
-        document
-            .lookup(self.0.id)
-            .arguments
-            .iter()
-            .map(|id| document.read(id))
+        super::Iter::new(document.lookup(self.0.id).arguments, document)
     }
-    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
+    pub fn directives(&self) -> Iter<'a, Directive<'a>> {
         let document = self.0.document;
-        document
-            .lookup(self.0.id)
-            .directives
-            .iter()
-            .map(|id| document.read(id))
+        super::Iter::new(document.lookup(self.0.id).directives, document)
     }
-    pub fn selection_set(&self) -> impl ExactSizeIterator<Item = Selection<'a>> + 'a {
+    pub fn selection_set(&self) -> Iter<'a, Selection<'a>> {
         let document = self.0.document;
-        document
-            .lookup(self.0.id)
-            .selection_set
-            .iter()
-            .map(|id| document.read(id))
+        super::Iter::new(document.lookup(self.0.id).selection_set, document)
     }
 }
 
@@ -110,6 +102,10 @@ impl fmt::Debug for FieldSelection<'_> {
 
 impl ExecutableId for FieldSelectionId {
     type Reader<'a> = FieldSelection<'a>;
+}
+
+impl super::IdReader for FieldSelection<'_> {
+    type Id = FieldSelectionId;
 }
 
 impl<'a> From<ReadContext<'a, FieldSelectionId>> for FieldSelection<'a> {
@@ -135,21 +131,13 @@ impl<'a> InlineFragment<'a> {
             .type_condition
             .map(|id| document.lookup(id))
     }
-    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
+    pub fn directives(&self) -> Iter<'a, Directive<'a>> {
         let document = self.0.document;
-        document
-            .lookup(self.0.id)
-            .directives
-            .iter()
-            .map(|id| document.read(id))
+        super::Iter::new(document.lookup(self.0.id).directives, document)
     }
-    pub fn selection_set(&self) -> impl ExactSizeIterator<Item = Selection<'a>> + 'a {
+    pub fn selection_set(&self) -> Iter<'a, Selection<'a>> {
         let document = self.0.document;
-        document
-            .lookup(self.0.id)
-            .selection_set
-            .iter()
-            .map(|id| document.read(id))
+        super::Iter::new(document.lookup(self.0.id).selection_set, document)
     }
 }
 
@@ -165,6 +153,10 @@ impl fmt::Debug for InlineFragment<'_> {
 
 impl ExecutableId for InlineFragmentId {
     type Reader<'a> = InlineFragment<'a>;
+}
+
+impl super::IdReader for InlineFragment<'_> {
+    type Id = InlineFragmentId;
 }
 
 impl<'a> From<ReadContext<'a, InlineFragmentId>> for InlineFragment<'a> {
@@ -186,13 +178,9 @@ impl<'a> FragmentSpread<'a> {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).fragment_name)
     }
-    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
+    pub fn directives(&self) -> Iter<'a, Directive<'a>> {
         let document = self.0.document;
-        document
-            .lookup(self.0.id)
-            .directives
-            .iter()
-            .map(|id| document.read(id))
+        super::Iter::new(document.lookup(self.0.id).directives, document)
     }
 }
 
@@ -207,6 +195,10 @@ impl fmt::Debug for FragmentSpread<'_> {
 
 impl ExecutableId for FragmentSpreadId {
     type Reader<'a> = FragmentSpread<'a>;
+}
+
+impl super::IdReader for FragmentSpread<'_> {
+    type Id = FragmentSpreadId;
 }
 
 impl<'a> From<ReadContext<'a, FragmentSpreadId>> for FragmentSpread<'a> {

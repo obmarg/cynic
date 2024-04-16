@@ -1,5 +1,5 @@
 #[allow(unused_imports)]
-use super::ids::StringId;
+use super::{ids::StringId, Iter};
 use super::{
     ids::{ArgumentId, ValueId},
     value::Value,
@@ -43,6 +43,10 @@ impl fmt::Debug for Argument<'_> {
 
 impl ExecutableId for ArgumentId {
     type Reader<'a> = Argument<'a>;
+}
+
+impl super::IdReader for Argument<'_> {
+    type Id = ArgumentId;
 }
 
 impl<'a> From<ReadContext<'a, ArgumentId>> for Argument<'a> {

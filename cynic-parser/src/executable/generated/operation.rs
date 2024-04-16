@@ -1,5 +1,3 @@
-#[allow(unused_imports)]
-use super::ids::StringId;
 use super::{
     directive::Directive,
     ids::{DirectiveId, OperationDefinitionId, SelectionId, VariableDefinitionId},
@@ -7,6 +5,8 @@ use super::{
     variable::VariableDefinition,
     ExecutableId, ReadContext,
 };
+#[allow(unused_imports)]
+use super::{ids::StringId, Iter};
 #[allow(unused_imports)]
 use crate::{
     common::{IdRange, OperationType},
@@ -38,31 +38,17 @@ impl<'a> OperationDefinition<'a> {
             .name
             .map(|id| document.lookup(id))
     }
-    pub fn variable_definitions(
-        &self,
-    ) -> impl ExactSizeIterator<Item = VariableDefinition<'a>> + 'a {
+    pub fn variable_definitions(&self) -> Iter<'a, VariableDefinition<'a>> {
         let document = self.0.document;
-        document
-            .lookup(self.0.id)
-            .variable_definitions
-            .iter()
-            .map(|id| document.read(id))
+        super::Iter::new(document.lookup(self.0.id).variable_definitions, document)
     }
-    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
+    pub fn directives(&self) -> Iter<'a, Directive<'a>> {
         let document = self.0.document;
-        document
-            .lookup(self.0.id)
-            .directives
-            .iter()
-            .map(|id| document.read(id))
+        super::Iter::new(document.lookup(self.0.id).directives, document)
     }
-    pub fn selection_set(&self) -> impl ExactSizeIterator<Item = Selection<'a>> + 'a {
+    pub fn selection_set(&self) -> Iter<'a, Selection<'a>> {
         let document = self.0.document;
-        document
-            .lookup(self.0.id)
-            .selection_set
-            .iter()
-            .map(|id| document.read(id))
+        super::Iter::new(document.lookup(self.0.id).selection_set, document)
     }
 }
 
@@ -83,6 +69,10 @@ impl fmt::Debug for OperationDefinition<'_> {
 
 impl ExecutableId for OperationDefinitionId {
     type Reader<'a> = OperationDefinition<'a>;
+}
+
+impl super::IdReader for OperationDefinition<'_> {
+    type Id = OperationDefinitionId;
 }
 
 impl<'a> From<ReadContext<'a, OperationDefinitionId>> for OperationDefinition<'a> {

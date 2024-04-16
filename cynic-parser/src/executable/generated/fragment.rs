@@ -1,11 +1,11 @@
-#[allow(unused_imports)]
-use super::ids::StringId;
 use super::{
     directive::Directive,
     ids::{DirectiveId, FragmentDefinitionId, SelectionId},
     selections::Selection,
     ExecutableId, ReadContext,
 };
+#[allow(unused_imports)]
+use super::{ids::StringId, Iter};
 #[allow(unused_imports)]
 use crate::{
     common::{IdRange, OperationType},
@@ -33,21 +33,13 @@ impl<'a> FragmentDefinition<'a> {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).type_condition)
     }
-    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
+    pub fn directives(&self) -> Iter<'a, Directive<'a>> {
         let document = self.0.document;
-        document
-            .lookup(self.0.id)
-            .directives
-            .iter()
-            .map(|id| document.read(id))
+        super::Iter::new(document.lookup(self.0.id).directives, document)
     }
-    pub fn selection_set(&self) -> impl ExactSizeIterator<Item = Selection<'a>> + 'a {
+    pub fn selection_set(&self) -> Iter<'a, Selection<'a>> {
         let document = self.0.document;
-        document
-            .lookup(self.0.id)
-            .selection_set
-            .iter()
-            .map(|id| document.read(id))
+        super::Iter::new(document.lookup(self.0.id).selection_set, document)
     }
 }
 
@@ -64,6 +56,10 @@ impl fmt::Debug for FragmentDefinition<'_> {
 
 impl ExecutableId for FragmentDefinitionId {
     type Reader<'a> = FragmentDefinition<'a>;
+}
+
+impl super::IdReader for FragmentDefinition<'_> {
+    type Id = FragmentDefinitionId;
 }
 
 impl<'a> From<ReadContext<'a, FragmentDefinitionId>> for FragmentDefinition<'a> {

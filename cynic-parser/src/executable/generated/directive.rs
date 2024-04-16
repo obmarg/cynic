@@ -1,10 +1,10 @@
-#[allow(unused_imports)]
-use super::ids::StringId;
 use super::{
     argument::Argument,
     ids::{ArgumentId, DirectiveId},
     ExecutableId, ReadContext,
 };
+#[allow(unused_imports)]
+use super::{ids::StringId, Iter};
 #[allow(unused_imports)]
 use crate::{
     common::{IdRange, OperationType},
@@ -26,13 +26,9 @@ impl<'a> Directive<'a> {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).name)
     }
-    pub fn arguments(&self) -> impl ExactSizeIterator<Item = Argument<'a>> + 'a {
+    pub fn arguments(&self) -> Iter<'a, Argument<'a>> {
         let document = self.0.document;
-        document
-            .lookup(self.0.id)
-            .arguments
-            .iter()
-            .map(|id| document.read(id))
+        super::Iter::new(document.lookup(self.0.id).arguments, document)
     }
 }
 
@@ -47,6 +43,10 @@ impl fmt::Debug for Directive<'_> {
 
 impl ExecutableId for DirectiveId {
     type Reader<'a> = Directive<'a>;
+}
+
+impl super::IdReader for Directive<'_> {
+    type Id = DirectiveId;
 }
 
 impl<'a> From<ReadContext<'a, DirectiveId>> for Directive<'a> {
