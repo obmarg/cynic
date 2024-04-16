@@ -1,16 +1,19 @@
-use crate::common::IdRange;
+use std::iter::FusedIterator;
+
+use crate::common::{IdOperations, IdRange};
 
 use super::ExecutableId;
 
 /// Iterator for readers in the executable module
 ///
 /// T indicates the type that will be yielded by the Iterator
+#[derive(Clone, Copy)]
 struct Iter<'a, T>
 where
     T: IdReader,
 {
     range: IdRange<T::Id>,
-    next: Option<T::Id>,
+    current: T::Id,
     document: &'a super::ExecutableDocument,
 }
 
@@ -21,12 +24,47 @@ pub trait IdReader {
 impl<'a, T> Iterator for Iter<'a, T>
 where
     T: IdReader,
+    T::Id: IdOperations,
 {
-    type Item = T;
+    type Item = <T::Id as ExecutableId>::Reader<'a>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if let Some(current) = self.next()? {
-            let next = current.
-        }
+        let next = self.range.next(self.current)?;
+        self.current = next;
+
+        Some(self.document.read(next))
+    }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let remaining = IdOperations::distance(self.current, self.range.end);
+        (remaining, Some(remaining))
+    }
+}
+
+impl<'a, T> ExactSizeIterator for Iter<'a, T>
+where
+    T: IdReader,
+    T::Id: IdOperations,
+{
+}
+
+impl<'a, T> FusedIterator for Iter<'a, T>
+where
+    T: IdReader,
+    T::Id: IdOperations,
+{
+}
+
+impl<'a, T> DoubleEndedIterator for Iter<'a, T>
+where
+    T: IdReader,
+    T::Id: IdOperations,
+{
+    // Required method
+    fn next_back(&mut self) -> Option<Self::Item> {
+        let next = self.range.previous(self.current)?;
+        self.current = next;
+
+        Some(self.document.read(next))
     }
 }

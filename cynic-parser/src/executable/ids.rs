@@ -53,6 +53,21 @@ macro_rules! impl_id_range {
                 Self::new($name::new(0), $name::new(0))
             }
         }
+
+        impl crate::common::IdOperations for $name {
+            fn forward(self) -> Option<Self> {
+                Some(Self(NonZeroU32::new(self.0.get() + 1)?))
+            }
+            fn back(self) -> Option<Self> {
+                Some(Self(NonZeroU32::new(self.0.get() - 1)?))
+            }
+            fn cmp(self, other: Self) -> std::cmp::Ordering {
+                self.0.get().cmp(&other.0.get())
+            }
+            fn distance(lhs: Self, rhs: Self) -> usize {
+                rhs.0.get().saturating_sub(lhs.0.get()) as usize
+            }
+        }
     };
 }
 
