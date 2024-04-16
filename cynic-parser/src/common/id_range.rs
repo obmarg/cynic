@@ -7,7 +7,7 @@ pub struct IdRange<Id> {
     pub(crate) end: Id,
 }
 
-pub(crate) trait IdOperations: Copy {
+pub trait IdOperations: Copy {
     fn forward(self) -> Option<Self>;
     fn back(self) -> Option<Self>;
     fn cmp(self, other: Self) -> Ordering;

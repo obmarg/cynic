@@ -62,9 +62,15 @@ pub fn object_output(
 
     let id_trait = Ident::new(id_trait, Span::call_site());
 
-    let executable_id = format_code(quote! {
+    let id_trait_impl = format_code(quote! {
         impl #id_trait for #id_name {
             type Reader<'a> = #reader_name<'a>;
+        }
+    })?;
+
+    let id_reader_impl = format_code(quote! {
+        impl super::IdReader for #reader_name<'_> {
+            type Id = #id_name;
         }
     })?;
 
@@ -86,7 +92,9 @@ pub fn object_output(
 
         {reader_debug}
 
-        {executable_id}
+        {id_trait_impl}
+
+        {id_reader_impl}
 
         {from_impl}
     "#
@@ -184,10 +192,10 @@ impl quote::ToTokens for ReaderFunction<'_> {
             TypeDefinition::Scalar(scalar) if scalar.is_inline() && self.0.field.ty().is_list() => {
                 // I'm assuming inline scalars are copy here.
                 quote! {
-                    pub fn #field_name(&self) -> Iter<'a, #inner_ty> {
+                    pub fn #field_name(&self) -> impl ExactSizeIterator<'a, Item = #inner_ty> + 'a {
                         let document = self.0.document;
 
-                        super::Iter::new(document.lookup(self.0.id).#field_name, document)
+                        document.lookup(self.0.id).#field_name.iter().map(|id| document.lookup(*id))
                     }
                 }
             }
@@ -259,7 +267,7 @@ impl quote::ToTokens for ReaderFunction<'_> {
                     pub fn #field_name(&self) -> #inner_ty {
                         let document = self.0.document;
 
-                        super::Iter::new(document.lookup(self.0.id).#field_name, document)
+                        document.read(document.lookup(self.0.id).#field_name)
                     }
                 }
             }

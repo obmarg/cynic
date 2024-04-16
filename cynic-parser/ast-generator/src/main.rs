@@ -121,7 +121,7 @@ fn shared_imports(name: &str) -> proc_macro2::TokenStream {
                 AstLookup,
             };
             #[allow(unused_imports)]
-            use super::ids::StringId;
+            use super::{ids::StringId, Iter};
         }
     } else if name == "type_system" {
         quote::quote! {

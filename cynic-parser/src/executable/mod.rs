@@ -1,7 +1,7 @@
 use indexmap::IndexSet;
 
 pub mod ids;
-mod iter;
+pub mod iter;
 pub mod writer;
 
 mod generated;

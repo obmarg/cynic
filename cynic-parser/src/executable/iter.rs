@@ -8,7 +8,7 @@ use super::ExecutableId;
 ///
 /// T indicates the type that will be yielded by the Iterator
 #[derive(Clone, Copy)]
-struct Iter<'a, T>
+pub struct Iter<'a, T>
 where
     T: IdReader,
 {
