@@ -131,7 +131,11 @@ pub enum CynicReqwestError {
 #[cfg(feature = "http-reqwest")]
 mod reqwest_ext {
     use super::CynicReqwestError;
-    use std::{future::Future, pin::Pin};
+    use std::{
+        future::Future,
+        pin::Pin,
+        task::{ready, Poll},
+    };
 
     use crate::{GraphQlResponse, Operation};
 
@@ -195,50 +199,125 @@ mod reqwest_ext {
         fn run_graphql<ResponseData, Vars>(
             self,
             operation: Operation<ResponseData, Vars>,
-        ) -> BoxFuture<'static, Result<GraphQlResponse<ResponseData>, CynicReqwestError>>
+        ) -> DelayedResponse<ResponseData>
         where
             Vars: serde::Serialize,
             ResponseData: serde::de::DeserializeOwned + 'static;
+    }
+
+    /// Wrapper type to allow for backwards compatible extraction of extensions from GraphQL responses
+    pub struct DelayedResponse<ResponseData> {
+        builder: reqwest::RequestBuilder,
+        _marker: std::marker::PhantomData<ResponseData>,
+    }
+
+    impl<ResponseData> DelayedResponse<ResponseData> {
+        pub fn new(builder: reqwest::RequestBuilder) -> Self {
+            Self {
+                builder,
+                _marker: std::marker::PhantomData,
+            }
+        }
+    }
+
+    /// Constructed by immediately `awaiting` a [DelayedResponse]. Will use
+    /// [serde::de::IgnoredAny] to ignore the contents of the "extensions" field.
+    pub struct ImmediateResponseFuture<ResponseData> {
+        response: BoxFuture<'static, Result<reqwest::Response, reqwest::Error>>,
+        _marker: std::marker::PhantomData<ResponseData>,
+    }
+
+    impl<ResponseData: serde::de::DeserializeOwned + Send + Unpin> std::future::IntoFuture
+        for DelayedResponse<ResponseData>
+    {
+        type Output = Result<GraphQlResponse<ResponseData>, CynicReqwestError>;
+
+        type IntoFuture = ImmediateResponseFuture<ResponseData>;
+
+        fn into_future(self) -> Self::IntoFuture {
+            Self::IntoFuture {
+                response: Box::pin(self.builder.send()),
+                _marker: self._marker,
+            }
+        }
+    }
+
+    impl<ResponseData> std::future::Future for ImmediateResponseFuture<ResponseData>
+    where
+        ResponseData: serde::de::DeserializeOwned + Unpin,
+    {
+        type Output =
+            Result<GraphQlResponse<ResponseData, serde::de::IgnoredAny>, CynicReqwestError>;
+
+        fn poll(self: Pin<&mut Self>, cx: &mut std::task::Context<'_>) -> Poll<Self::Output> {
+            let this = Pin::into_inner(self);
+
+            use futures_lite::FutureExt;
+            let response = ready!(this.response.poll(cx));
+
+            let deser_fut = deser_gql::<ResponseData, serde::de::IgnoredAny>(response);
+            std::pin::pin!(deser_fut).poll(cx)
+        }
+    }
+
+    impl<ResponseData> DelayedResponse<ResponseData>
+    where
+        ResponseData: serde::de::DeserializeOwned,
+    {
+        /// Deserialise GraphQL response and paying attention to, and deserialising the "extensions" field.
+        pub async fn retain_extensions<ErrorExtensions>(
+            self,
+        ) -> Result<GraphQlResponse<ResponseData, ErrorExtensions>, CynicReqwestError>
+        where
+            ErrorExtensions: serde::de::DeserializeOwned,
+        {
+            let response_fut = self.builder.send().await;
+            deser_gql::<ResponseData, ErrorExtensions>(response_fut).await
+        }
+    }
+
+    async fn deser_gql<ResponseData, ErrorExtensions>(
+        response: Result<reqwest::Response, reqwest::Error>,
+    ) -> Result<GraphQlResponse<ResponseData, ErrorExtensions>, CynicReqwestError>
+    where
+        ResponseData: serde::de::DeserializeOwned,
+        ErrorExtensions: serde::de::DeserializeOwned,
+    {
+        let response = match response {
+            Ok(response) => response,
+            Err(e) => return Err(CynicReqwestError::ReqwestError(e)),
+        };
+
+        let status = response.status();
+        if !status.is_success() {
+            let text = response.text().await;
+            let text = match text {
+                Ok(text) => text,
+                Err(e) => return Err(CynicReqwestError::ReqwestError(e)),
+            };
+
+            let Ok(deserred) = serde_json::from_str(&text) else {
+                let response = CynicReqwestError::ErrorResponse(status, text);
+                return Err(response);
+            };
+
+            Ok(deserred)
+        } else {
+            let json = response.json().await;
+            json.map_err(CynicReqwestError::ReqwestError)
+        }
     }
 
     impl ReqwestExt for reqwest::RequestBuilder {
         fn run_graphql<ResponseData, Vars>(
             self,
             operation: Operation<ResponseData, Vars>,
-        ) -> BoxFuture<'static, Result<GraphQlResponse<ResponseData>, CynicReqwestError>>
+        ) -> DelayedResponse<ResponseData>
         where
             Vars: serde::Serialize,
             ResponseData: serde::de::DeserializeOwned + 'static,
         {
-            let builder = self.json(&operation);
-            Box::pin(async move {
-                match builder.send().await {
-                    Ok(response) => {
-                        let status = response.status();
-                        if !status.is_success() {
-                            let body_string = response.text().await?;
-
-                            match serde_json::from_str::<GraphQlResponse<ResponseData>>(
-                                &body_string,
-                            ) {
-                                Ok(response) => return Ok(response),
-                                Err(_) => {
-                                    return Err(CynicReqwestError::ErrorResponse(
-                                        status,
-                                        body_string,
-                                    ));
-                                }
-                            };
-                        }
-
-                        response
-                            .json::<GraphQlResponse<ResponseData>>()
-                            .await
-                            .map_err(CynicReqwestError::ReqwestError)
-                    }
-                    Err(e) => Err(CynicReqwestError::ReqwestError(e)),
-                }
-            })
+            DelayedResponse::new(self.json(&operation))
         }
     }
 }
