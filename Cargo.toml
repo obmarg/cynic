@@ -34,7 +34,7 @@ homepage = "https://cynic-rs.dev"
 repository = "https://github.com/obmarg/cynic"
 license = "MPL-2.0"
 version = "3.6.1"
-rust-version = "1.69"
+rust-version = "1.72"
 
 [workspace.dependencies]
 cynic-parser = { path = "cynic-parser", version = "0.2.6" }
