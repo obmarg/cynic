@@ -2,39 +2,44 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is roughly based on [Keep a
-Changelog](http://keepachangelog.com/en/1.0.0/).
+The format is roughly based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/).
 
 This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased - xxxx-xx-xx
 
-## [3.7.0](https://github.com/obmarg/cynic/compare/v3.6.1...v3.7.0) - 2024-04-28
+## [v3.7.0](https://github.com/obmarg/cynic/compare/v3.6.1...v3.7.0) - 2024-04-28
 
-### Added
-- error extension parsing for async `reqwest` ([#928](https://github.com/obmarg/cynic/pull/928))
+### New Features
 
-### Other
-- update Cargo.lock dependencies
+- Users of the `reqwest` integration can now control the type used for error
+  extensions ([#928](https://github.com/obmarg/cynic/pull/928))
 
-## [3.6.1](https://github.com/obmarg/cynic/compare/v3.6.0...v3.6.1) - 2024-04-15
+### Changes
 
-### Fixes
+- MSRV is now officially 1.72 (although it was unofficially 1.72 before)
+
+## [v3.6.1](https://github.com/obmarg/cynic/compare/v3.6.0...v3.6.1) - 2024-04-15
+
+### Fixed
+
 - Fixed a regresion in 3.6.0: schemas with directives on the `schema`
   definition will now parse
 
 ## [3.6.0](https://github.com/obmarg/cynic/compare/v3.5.1...v3.6.2) - 2024-04-12
 
-### Fixed
+### Fixes
 
-- Fixed an issue where `derive(Scalar) would fail on types with a `serialize`
-  function that was not `serde::Serialize::serialize` ([#909](https://github.com/obmarg/cynic/pull/909))
+- Fixed an issue where `derive(Scalar)` would fail on types with a `serialize`
+  function that was not `serde::Serialize::serialize`
+  ([#909](https://github.com/obmarg/cynic/pull/909))
 
-### Changed
+### Changes
 
 - Improved errors when users use a derive on the wrong kind of GraphQL type
   ([#889](https://github.com/obmarg/cynic/pull/889))
-- `cynic-codegen` now uses `cynic-parser` instead of `graphql-parser` ([#824](https://github.com/obmarg/cynic/pull/824))
+- `cynic-codegen` now uses `cynic-parser` instead of `graphql-parser`
+  ([#824](https://github.com/obmarg/cynic/pull/824))
 
 ## v3.5.1 - 2024-04-04
 
