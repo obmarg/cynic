@@ -131,11 +131,7 @@ pub enum CynicReqwestError {
 #[cfg(feature = "http-reqwest")]
 mod reqwest_ext {
     use super::CynicReqwestError;
-    use std::{
-        future::Future,
-        pin::Pin,
-        task::{ready, Poll},
-    };
+    use std::{future::Future, marker::PhantomData, pin::Pin};
 
     use crate::{GraphQlResponse, Operation};
 
@@ -199,19 +195,22 @@ mod reqwest_ext {
         fn run_graphql<ResponseData, Vars>(
             self,
             operation: Operation<ResponseData, Vars>,
-        ) -> DelayedResponse<ResponseData>
+        ) -> CynicReqwestBuilder<ResponseData>
         where
             Vars: serde::Serialize,
             ResponseData: serde::de::DeserializeOwned + 'static;
     }
 
-    /// Wrapper type to allow for backwards compatible extraction of extensions from GraphQL responses
-    pub struct DelayedResponse<ResponseData> {
+    /// A builder for cynics reqwest integration
+    ///
+    /// Implements `IntoFuture`, users should `.await` the builder or call
+    /// `into_future` directly when they're ready to send the request.
+    pub struct CynicReqwestBuilder<ResponseData, ErrorExtensions = serde::de::IgnoredAny> {
         builder: reqwest::RequestBuilder,
-        _marker: std::marker::PhantomData<ResponseData>,
+        _marker: std::marker::PhantomData<fn() -> (ResponseData, ErrorExtensions)>,
     }
 
-    impl<ResponseData> DelayedResponse<ResponseData> {
+    impl<ResponseData, Errors> CynicReqwestBuilder<ResponseData, Errors> {
         pub fn new(builder: reqwest::RequestBuilder) -> Self {
             Self {
                 builder,
@@ -220,59 +219,36 @@ mod reqwest_ext {
         }
     }
 
-    /// Constructed by immediately `awaiting` a [DelayedResponse]. Will use
-    /// [serde::de::IgnoredAny] to ignore the contents of the "extensions" field.
-    pub struct ImmediateResponseFuture<ResponseData> {
-        response: BoxFuture<'static, Result<reqwest::Response, reqwest::Error>>,
-        _marker: std::marker::PhantomData<ResponseData>,
-    }
-
-    impl<ResponseData: serde::de::DeserializeOwned + Send + Unpin> std::future::IntoFuture
-        for DelayedResponse<ResponseData>
+    impl<ResponseData: serde::de::DeserializeOwned, Errors: serde::de::DeserializeOwned>
+        std::future::IntoFuture for CynicReqwestBuilder<ResponseData, Errors>
     {
-        type Output = Result<GraphQlResponse<ResponseData>, CynicReqwestError>;
+        type Output = Result<GraphQlResponse<ResponseData, Errors>, CynicReqwestError>;
 
-        type IntoFuture = ImmediateResponseFuture<ResponseData>;
+        type IntoFuture =
+            BoxFuture<'static, Result<GraphQlResponse<ResponseData, Errors>, CynicReqwestError>>;
 
         fn into_future(self) -> Self::IntoFuture {
-            Self::IntoFuture {
-                response: Box::pin(self.builder.send()),
-                _marker: self._marker,
-            }
+            Box::pin(async move {
+                let http_result = self.builder.send().await;
+                deser_gql(http_result).await
+            })
         }
     }
 
-    impl<ResponseData> std::future::Future for ImmediateResponseFuture<ResponseData>
-    where
-        ResponseData: serde::de::DeserializeOwned + Unpin,
-    {
-        type Output =
-            Result<GraphQlResponse<ResponseData, serde::de::IgnoredAny>, CynicReqwestError>;
-
-        fn poll(self: Pin<&mut Self>, cx: &mut std::task::Context<'_>) -> Poll<Self::Output> {
-            let this = Pin::into_inner(self);
-
-            use futures_lite::FutureExt;
-            let response = ready!(this.response.poll(cx));
-
-            let deser_fut = deser_gql::<ResponseData, serde::de::IgnoredAny>(response);
-            std::pin::pin!(deser_fut).poll(cx)
-        }
-    }
-
-    impl<ResponseData> DelayedResponse<ResponseData>
-    where
-        ResponseData: serde::de::DeserializeOwned,
-    {
-        /// Deserialise GraphQL response and paying attention to, and deserialising the "extensions" field.
-        pub async fn retain_extensions<ErrorExtensions>(
+    impl<ResponseData> CynicReqwestBuilder<ResponseData, serde::de::IgnoredAny> {
+        /// Sets the type that will be deserialized for the extensions fields of any errors in the response
+        pub fn retain_extensions<ErrorExtensions>(
             self,
-        ) -> Result<GraphQlResponse<ResponseData, ErrorExtensions>, CynicReqwestError>
+        ) -> CynicReqwestBuilder<ResponseData, ErrorExtensions>
         where
             ErrorExtensions: serde::de::DeserializeOwned,
         {
-            let response_fut = self.builder.send().await;
-            deser_gql::<ResponseData, ErrorExtensions>(response_fut).await
+            let CynicReqwestBuilder { builder, _marker } = self;
+
+            CynicReqwestBuilder {
+                builder,
+                _marker: PhantomData,
+            }
         }
     }
 
@@ -312,12 +288,12 @@ mod reqwest_ext {
         fn run_graphql<ResponseData, Vars>(
             self,
             operation: Operation<ResponseData, Vars>,
-        ) -> DelayedResponse<ResponseData>
+        ) -> CynicReqwestBuilder<ResponseData>
         where
             Vars: serde::Serialize,
             ResponseData: serde::de::DeserializeOwned + 'static,
         {
-            DelayedResponse::new(self.json(&operation))
+            CynicReqwestBuilder::new(self.json(&operation))
         }
     }
 }

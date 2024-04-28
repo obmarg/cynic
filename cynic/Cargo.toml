@@ -36,7 +36,6 @@ surf = { version = "2.3", default-features = false, optional = true }
 
 # Reqwest feature deps
 reqwest = { version = "0.12", optional = true, features = ["json"], default-features = false }
-futures-lite = "2.3.0"
 
 [dev-dependencies]
 assert_matches = "1.4"
@@ -48,6 +47,9 @@ mockito = "1.4.0"
 rstest.workspace = true
 serde_json = { version = "1.0" }
 tokio = { version = "1", features = ["macros"] }
+
+# Depend on ourself for tests
+cynic = { path = ".", features = ["http-reqwest"] }
 
 [package.metadata.docs.rs]
 features = ["all"]
