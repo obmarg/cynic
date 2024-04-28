@@ -21,14 +21,14 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## [v3.6.1](https://github.com/obmarg/cynic/compare/v3.6.0...v3.6.1) - 2024-04-15
 
-### Fixed
+### Bug Fixes
 
 - Fixed a regresion in 3.6.0: schemas with directives on the `schema`
   definition will now parse
 
 ## [3.6.0](https://github.com/obmarg/cynic/compare/v3.5.1...v3.6.2) - 2024-04-12
 
-### Fixes
+### Bug Fixes
 
 - Fixed an issue where `derive(Scalar)` would fail on types with a `serialize`
   function that was not `serde::Serialize::serialize`
@@ -116,7 +116,6 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 - `cynic-cli` has a new `querygen` command as an alternative to the 
    web-based generator (Note: this is experimental and may be subject
    to change)
-
 
 ### Changes
 
@@ -210,8 +209,6 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 See the [upgrade guide in the book](https://cynic-rs.dev/upgrading/v2-v3.html)
 for help upgrading.
-
-### New Features
 
 ### Breaking Changes
 

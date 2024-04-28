@@ -7,6 +7,24 @@ git_tag_enable = false
 # create the release PR in draft to avoid running CI till we're ready
 pr_draft = true
 
+[changelog] 
+commit_parsers = [
+    { message = "^feat!*", group = "<!-- 0 -->Breaking Changes" },
+    { message = "^feat*", group = "<!-- 1 -->New Features" },
+    { message = "^fix*", group = "<!-- 2 -->Bug Fixes" },
+    { message = "^chore*", group = "<!-- 3 -->Changes" },
+]
+body = """
+## [{{ version }}] - {{ timestamp | date(format="%Y-%m-%d") }}
+
+{% for group, commits in commits | group_by(attribute="group") %}
+### {{ group | striptags | trim | upper_first }}
+{% for commit in commits %}
+- {% if commit.breaking %}[**breaking**] {% endif %}{{ commit.message }}
+{% endfor -%}
+{% endfor %}
+"""
+
 [[package]]
 name = "cynic"
 
