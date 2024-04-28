@@ -9,6 +9,14 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## [3.7.0](https://github.com/obmarg/cynic/compare/v3.6.1...v3.7.0) - 2024-04-28
+
+### Added
+- error extension parsing for async `reqwest` ([#928](https://github.com/obmarg/cynic/pull/928))
+
+### Other
+- update Cargo.lock dependencies
+
 ## [3.6.1](https://github.com/obmarg/cynic/compare/v3.6.0...v3.6.1) - 2024-04-15
 
 ### Fixes
