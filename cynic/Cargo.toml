@@ -43,10 +43,17 @@ chrono = { version = "0.4.19", features = ["serde"] }
 graphql-parser = "0.4"
 insta = { version = "1.17", features = ["yaml"] }
 maplit = "1.0.2"
+mockito = "1.4.0"
 rstest.workspace = true
 serde_json = { version = "1.0" }
+tokio = { version = "1", features = ["macros"] }
+
+# Depend on ourself for tests
+cynic = { path = ".", features = ["http-reqwest"] }
 
 [package.metadata.docs.rs]
 features = ["all"]
 rustdoc-args = ["--cfg", "docsrs"]
+
+
 

@@ -131,7 +131,7 @@ pub enum CynicReqwestError {
 #[cfg(feature = "http-reqwest")]
 mod reqwest_ext {
     use super::CynicReqwestError;
-    use std::{future::Future, pin::Pin};
+    use std::{future::Future, marker::PhantomData, pin::Pin};
 
     use crate::{GraphQlResponse, Operation};
 
@@ -195,50 +195,105 @@ mod reqwest_ext {
         fn run_graphql<ResponseData, Vars>(
             self,
             operation: Operation<ResponseData, Vars>,
-        ) -> BoxFuture<'static, Result<GraphQlResponse<ResponseData>, CynicReqwestError>>
+        ) -> CynicReqwestBuilder<ResponseData>
         where
             Vars: serde::Serialize,
             ResponseData: serde::de::DeserializeOwned + 'static;
+    }
+
+    /// A builder for cynics reqwest integration
+    ///
+    /// Implements `IntoFuture`, users should `.await` the builder or call
+    /// `into_future` directly when they're ready to send the request.
+    pub struct CynicReqwestBuilder<ResponseData, ErrorExtensions = serde::de::IgnoredAny> {
+        builder: reqwest::RequestBuilder,
+        _marker: std::marker::PhantomData<fn() -> (ResponseData, ErrorExtensions)>,
+    }
+
+    impl<ResponseData, Errors> CynicReqwestBuilder<ResponseData, Errors> {
+        pub fn new(builder: reqwest::RequestBuilder) -> Self {
+            Self {
+                builder,
+                _marker: std::marker::PhantomData,
+            }
+        }
+    }
+
+    impl<ResponseData: serde::de::DeserializeOwned, Errors: serde::de::DeserializeOwned>
+        std::future::IntoFuture for CynicReqwestBuilder<ResponseData, Errors>
+    {
+        type Output = Result<GraphQlResponse<ResponseData, Errors>, CynicReqwestError>;
+
+        type IntoFuture =
+            BoxFuture<'static, Result<GraphQlResponse<ResponseData, Errors>, CynicReqwestError>>;
+
+        fn into_future(self) -> Self::IntoFuture {
+            Box::pin(async move {
+                let http_result = self.builder.send().await;
+                deser_gql(http_result).await
+            })
+        }
+    }
+
+    impl<ResponseData> CynicReqwestBuilder<ResponseData, serde::de::IgnoredAny> {
+        /// Sets the type that will be deserialized for the extensions fields of any errors in the response
+        pub fn retain_extensions<ErrorExtensions>(
+            self,
+        ) -> CynicReqwestBuilder<ResponseData, ErrorExtensions>
+        where
+            ErrorExtensions: serde::de::DeserializeOwned,
+        {
+            let CynicReqwestBuilder { builder, _marker } = self;
+
+            CynicReqwestBuilder {
+                builder,
+                _marker: PhantomData,
+            }
+        }
+    }
+
+    async fn deser_gql<ResponseData, ErrorExtensions>(
+        response: Result<reqwest::Response, reqwest::Error>,
+    ) -> Result<GraphQlResponse<ResponseData, ErrorExtensions>, CynicReqwestError>
+    where
+        ResponseData: serde::de::DeserializeOwned,
+        ErrorExtensions: serde::de::DeserializeOwned,
+    {
+        let response = match response {
+            Ok(response) => response,
+            Err(e) => return Err(CynicReqwestError::ReqwestError(e)),
+        };
+
+        let status = response.status();
+        if !status.is_success() {
+            let text = response.text().await;
+            let text = match text {
+                Ok(text) => text,
+                Err(e) => return Err(CynicReqwestError::ReqwestError(e)),
+            };
+
+            let Ok(deserred) = serde_json::from_str(&text) else {
+                let response = CynicReqwestError::ErrorResponse(status, text);
+                return Err(response);
+            };
+
+            Ok(deserred)
+        } else {
+            let json = response.json().await;
+            json.map_err(CynicReqwestError::ReqwestError)
+        }
     }
 
     impl ReqwestExt for reqwest::RequestBuilder {
         fn run_graphql<ResponseData, Vars>(
             self,
             operation: Operation<ResponseData, Vars>,
-        ) -> BoxFuture<'static, Result<GraphQlResponse<ResponseData>, CynicReqwestError>>
+        ) -> CynicReqwestBuilder<ResponseData>
         where
             Vars: serde::Serialize,
             ResponseData: serde::de::DeserializeOwned + 'static,
         {
-            let builder = self.json(&operation);
-            Box::pin(async move {
-                match builder.send().await {
-                    Ok(response) => {
-                        let status = response.status();
-                        if !status.is_success() {
-                            let body_string = response.text().await?;
-
-                            match serde_json::from_str::<GraphQlResponse<ResponseData>>(
-                                &body_string,
-                            ) {
-                                Ok(response) => return Ok(response),
-                                Err(_) => {
-                                    return Err(CynicReqwestError::ErrorResponse(
-                                        status,
-                                        body_string,
-                                    ));
-                                }
-                            };
-                        }
-
-                        response
-                            .json::<GraphQlResponse<ResponseData>>()
-                            .await
-                            .map_err(CynicReqwestError::ReqwestError)
-                    }
-                    Err(e) => Err(CynicReqwestError::ReqwestError(e)),
-                }
-            })
+            CynicReqwestBuilder::new(self.json(&operation))
         }
     }
 }
