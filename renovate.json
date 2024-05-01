@@ -5,6 +5,9 @@
     "config:recommended",
     ":semanticCommitType(chore)"
   ],
+  "ignorePresets": [
+    ":semanticPrefixFixDepsChoreOthers"
+  ],
   "packageRules": [
     {
       "groupName": "dependencies-non-major",
