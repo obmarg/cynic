@@ -9,7 +9,7 @@
   "ignorePresets": [
     ":semanticPrefixFixDepsChoreOthers"
   ],
-  "rangeStrategy": "update-lockfile"
+  "rangeStrategy": "update-lockfile",
   "packageRules": [
     {
       "groupName": "dependencies-non-major",
