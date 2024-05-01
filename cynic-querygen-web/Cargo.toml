@@ -15,7 +15,7 @@ wasm-bindgen-test = "0.3.28"
 
 [dependencies]
 seed = "0.10.0"
-gloo-console = "0.2"
+gloo-console = "0.3"
 
 cynic-querygen = { path = "../cynic-querygen" }
 
