@@ -176,8 +176,9 @@ impl<'a> Pretty<'a, Allocator<'a>> for SelectionSetDisplay<'a> {
         }
 
         let selections = allocator
-            .intersperse(selections.map(NodeDisplay), allocator.hardline())
-            .align();
+            .hardline()
+            .append(allocator.intersperse(selections.map(NodeDisplay), allocator.hardline()))
+            .nest(2);
 
         let mut builder = allocator.nil();
 
@@ -187,8 +188,6 @@ impl<'a> Pretty<'a, Allocator<'a>> for SelectionSetDisplay<'a> {
 
         builder
             .append(allocator.text("{"))
-            .append(allocator.hardline())
-            .append(allocator.text("  "))
             .append(selections)
             .append(allocator.hardline())
             .append(allocator.text("}"))
@@ -211,11 +210,17 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Selection<'a>> {
 
                 let mut arguments_pretty = allocator.nil();
                 if arguments.peek().is_some() {
-                    arguments_pretty = allocator
-                        .intersperse(arguments.map(NodeDisplay), comma_or_newline(allocator))
-                        .group();
-
-                    arguments_pretty = parens_and_maybe_indent(allocator, arguments_pretty);
+                    arguments_pretty =
+                        allocator
+                            .line_()
+                            .append(allocator.intersperse(
+                                arguments.map(NodeDisplay),
+                                comma_or_newline(allocator),
+                            ))
+                            .nest(2)
+                            .append(allocator.line_())
+                            .parens()
+                            .group();
                 }
 
                 let mut directives = field.directives().peekable();
@@ -231,6 +236,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Selection<'a>> {
                     .append(arguments_pretty)
                     .append(directives_pretty)
                     .append(SelectionSetDisplay::new(field.selection_set()))
+                    .group()
             }
             Selection::InlineFragment(fragment) => {
                 let mut type_condition_pretty = allocator.nil();
@@ -255,6 +261,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Selection<'a>> {
                     .append(type_condition_pretty)
                     .append(directives_pretty)
                     .append(SelectionSetDisplay::new(fragment.selection_set()))
+                    .group()
             }
             Selection::FragmentSpread(spread) => {
                 let mut directives = spread.directives().peekable();
@@ -269,6 +276,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Selection<'a>> {
                     .text("...")
                     .append(spread.fragment_name())
                     .append(directives_pretty)
+                    .group()
             }
         }
     }
@@ -359,18 +367,6 @@ fn comma_or_newline<'a>(allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'_, 
     allocator
         .line()
         .flat_alt(allocator.text(",").append(allocator.space()))
-}
-
-fn parens_and_maybe_indent<'a>(
-    allocator: &'a Allocator<'a>,
-    thing: pretty::DocBuilder<'a, Allocator<'a>>,
-) -> pretty::DocBuilder<'a, Allocator<'a>> {
-    thing
-        .clone()
-        .enclose(allocator.softline_(), allocator.softline_())
-        .nest(2)
-        .parens()
-        .flat_alt(thing.parens())
 }
 
 fn brackets_and_maybe_indent<'a>(
