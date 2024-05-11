@@ -76,9 +76,10 @@ fn query_aliases() {
 }
 
 #[test]
-#[ignore] // This needs fixed
 fn query_arguments() {
-    roundtrip_test("tests/executables/query_arguments.graphql");
+    insta::assert_snapshot!(double_roundtrip_test(
+        "tests/executables/query_arguments.graphql"
+    ));
 }
 
 #[test]
