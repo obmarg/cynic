@@ -61,9 +61,15 @@ pub fn union_output(
 
     let id_trait = Ident::new(id_trait, Span::call_site());
 
-    let executable_id = format_code(quote! {
+    let id_trait_impl = format_code(quote! {
         impl #id_trait for #id_name {
             type Reader<'a> = #reader_name<'a>;
+        }
+    })?;
+
+    let id_reader_impl = format_code(quote! {
+        impl IdReader for #reader_name<'_> {
+            type Id = #id_name;
         }
     })?;
 
@@ -83,7 +89,9 @@ pub fn union_output(
 
         {reader}
 
-        {executable_id}
+        {id_trait_impl}
+
+        {id_reader_impl}
 
         {from_impl}
     "#

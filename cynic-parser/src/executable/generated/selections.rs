@@ -1,5 +1,4 @@
-#[allow(unused_imports)]
-use super::ids::StringId;
+use super::prelude::*;
 use super::{
     argument::Argument,
     directive::Directive,
@@ -7,11 +6,6 @@ use super::{
         ArgumentId, DirectiveId, FieldSelectionId, FragmentSpreadId, InlineFragmentId, SelectionId,
     },
     ExecutableId, ReadContext,
-};
-#[allow(unused_imports)]
-use crate::{
-    common::{IdRange, OperationType},
-    AstLookup,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};
@@ -31,6 +25,10 @@ pub enum Selection<'a> {
 
 impl ExecutableId for SelectionId {
     type Reader<'a> = Selection<'a>;
+}
+
+impl IdReader for Selection<'_> {
+    type Id = SelectionId;
 }
 
 impl<'a> From<ReadContext<'a, SelectionId>> for Selection<'a> {
@@ -70,29 +68,17 @@ impl<'a> FieldSelection<'a> {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).name)
     }
-    pub fn arguments(&self) -> impl ExactSizeIterator<Item = Argument<'a>> + 'a {
+    pub fn arguments(&self) -> Iter<'a, Argument<'a>> {
         let document = self.0.document;
-        document
-            .lookup(self.0.id)
-            .arguments
-            .iter()
-            .map(|id| document.read(id))
+        super::Iter::new(document.lookup(self.0.id).arguments, document)
     }
-    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
+    pub fn directives(&self) -> Iter<'a, Directive<'a>> {
         let document = self.0.document;
-        document
-            .lookup(self.0.id)
-            .directives
-            .iter()
-            .map(|id| document.read(id))
+        super::Iter::new(document.lookup(self.0.id).directives, document)
     }
-    pub fn selection_set(&self) -> impl ExactSizeIterator<Item = Selection<'a>> + 'a {
+    pub fn selection_set(&self) -> Iter<'a, Selection<'a>> {
         let document = self.0.document;
-        document
-            .lookup(self.0.id)
-            .selection_set
-            .iter()
-            .map(|id| document.read(id))
+        super::Iter::new(document.lookup(self.0.id).selection_set, document)
     }
 }
 
@@ -101,15 +87,19 @@ impl fmt::Debug for FieldSelection<'_> {
         f.debug_struct("FieldSelection")
             .field("alias", &self.alias())
             .field("name", &self.name())
-            .field("arguments", &self.arguments().collect::<Vec<_>>())
-            .field("directives", &self.directives().collect::<Vec<_>>())
-            .field("selection_set", &self.selection_set().collect::<Vec<_>>())
+            .field("arguments", &self.arguments())
+            .field("directives", &self.directives())
+            .field("selection_set", &self.selection_set())
             .finish()
     }
 }
 
 impl ExecutableId for FieldSelectionId {
     type Reader<'a> = FieldSelection<'a>;
+}
+
+impl IdReader for FieldSelection<'_> {
+    type Id = FieldSelectionId;
 }
 
 impl<'a> From<ReadContext<'a, FieldSelectionId>> for FieldSelection<'a> {
@@ -135,21 +125,13 @@ impl<'a> InlineFragment<'a> {
             .type_condition
             .map(|id| document.lookup(id))
     }
-    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
+    pub fn directives(&self) -> Iter<'a, Directive<'a>> {
         let document = self.0.document;
-        document
-            .lookup(self.0.id)
-            .directives
-            .iter()
-            .map(|id| document.read(id))
+        super::Iter::new(document.lookup(self.0.id).directives, document)
     }
-    pub fn selection_set(&self) -> impl ExactSizeIterator<Item = Selection<'a>> + 'a {
+    pub fn selection_set(&self) -> Iter<'a, Selection<'a>> {
         let document = self.0.document;
-        document
-            .lookup(self.0.id)
-            .selection_set
-            .iter()
-            .map(|id| document.read(id))
+        super::Iter::new(document.lookup(self.0.id).selection_set, document)
     }
 }
 
@@ -157,14 +139,18 @@ impl fmt::Debug for InlineFragment<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("InlineFragment")
             .field("type_condition", &self.type_condition())
-            .field("directives", &self.directives().collect::<Vec<_>>())
-            .field("selection_set", &self.selection_set().collect::<Vec<_>>())
+            .field("directives", &self.directives())
+            .field("selection_set", &self.selection_set())
             .finish()
     }
 }
 
 impl ExecutableId for InlineFragmentId {
     type Reader<'a> = InlineFragment<'a>;
+}
+
+impl IdReader for InlineFragment<'_> {
+    type Id = InlineFragmentId;
 }
 
 impl<'a> From<ReadContext<'a, InlineFragmentId>> for InlineFragment<'a> {
@@ -186,13 +172,9 @@ impl<'a> FragmentSpread<'a> {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).fragment_name)
     }
-    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
+    pub fn directives(&self) -> Iter<'a, Directive<'a>> {
         let document = self.0.document;
-        document
-            .lookup(self.0.id)
-            .directives
-            .iter()
-            .map(|id| document.read(id))
+        super::Iter::new(document.lookup(self.0.id).directives, document)
     }
 }
 
@@ -200,13 +182,17 @@ impl fmt::Debug for FragmentSpread<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("FragmentSpread")
             .field("fragment_name", &self.fragment_name())
-            .field("directives", &self.directives().collect::<Vec<_>>())
+            .field("directives", &self.directives())
             .finish()
     }
 }
 
 impl ExecutableId for FragmentSpreadId {
     type Reader<'a> = FragmentSpread<'a>;
+}
+
+impl IdReader for FragmentSpread<'_> {
+    type Id = FragmentSpreadId;
 }
 
 impl<'a> From<ReadContext<'a, FragmentSpreadId>> for FragmentSpread<'a> {

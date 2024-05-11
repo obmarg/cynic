@@ -1,17 +1,10 @@
-#[allow(unused_imports)]
-use super::ids::StringId;
+use super::prelude::*;
 use super::{
     directives::Directive,
     ids::{DirectiveId, InputObjectDefinitionId, InputValueDefinitionId, StringLiteralId},
     input_values::InputValueDefinition,
     strings::StringLiteral,
     ReadContext, TypeSystemId,
-};
-#[allow(unused_imports)]
-use crate::{
-    common::{IdRange, OperationType},
-    type_system::DirectiveLocation,
-    AstLookup, Span,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};
@@ -39,21 +32,13 @@ impl<'a> InputObjectDefinition<'a> {
             .description
             .map(|id| document.read(id))
     }
-    pub fn fields(&self) -> impl ExactSizeIterator<Item = InputValueDefinition<'a>> + 'a {
+    pub fn fields(&self) -> Iter<'a, InputValueDefinition<'a>> {
         let document = self.0.document;
-        document
-            .lookup(self.0.id)
-            .fields
-            .iter()
-            .map(|id| document.read(id))
+        super::Iter::new(document.lookup(self.0.id).fields, document)
     }
-    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
+    pub fn directives(&self) -> Iter<'a, Directive<'a>> {
         let document = self.0.document;
-        document
-            .lookup(self.0.id)
-            .directives
-            .iter()
-            .map(|id| document.read(id))
+        super::Iter::new(document.lookup(self.0.id).directives, document)
     }
     pub fn span(&self) -> Span {
         let document = self.0.document;
@@ -66,8 +51,8 @@ impl fmt::Debug for InputObjectDefinition<'_> {
         f.debug_struct("InputObjectDefinition")
             .field("name", &self.name())
             .field("description", &self.description())
-            .field("fields", &self.fields().collect::<Vec<_>>())
-            .field("directives", &self.directives().collect::<Vec<_>>())
+            .field("fields", &self.fields())
+            .field("directives", &self.directives())
             .field("span", &self.span())
             .finish()
     }
@@ -75,6 +60,10 @@ impl fmt::Debug for InputObjectDefinition<'_> {
 
 impl TypeSystemId for InputObjectDefinitionId {
     type Reader<'a> = InputObjectDefinition<'a>;
+}
+
+impl IdReader for InputObjectDefinition<'_> {
+    type Id = InputObjectDefinitionId;
 }
 
 impl<'a> From<ReadContext<'a, InputObjectDefinitionId>> for InputObjectDefinition<'a> {

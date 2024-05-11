@@ -1,16 +1,9 @@
-#[allow(unused_imports)]
-use super::ids::StringId;
+use super::prelude::*;
 use super::{
     directives::Directive,
     ids::{DirectiveId, StringLiteralId, UnionDefinitionId},
     strings::StringLiteral,
     ReadContext, TypeSystemId,
-};
-#[allow(unused_imports)]
-use crate::{
-    common::{IdRange, OperationType},
-    type_system::DirectiveLocation,
-    AstLookup, Span,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};
@@ -46,13 +39,9 @@ impl<'a> UnionDefinition<'a> {
             .iter()
             .map(|id| document.lookup(*id))
     }
-    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
+    pub fn directives(&self) -> Iter<'a, Directive<'a>> {
         let document = self.0.document;
-        document
-            .lookup(self.0.id)
-            .directives
-            .iter()
-            .map(|id| document.read(id))
+        super::Iter::new(document.lookup(self.0.id).directives, document)
     }
     pub fn span(&self) -> Span {
         let document = self.0.document;
@@ -66,7 +55,7 @@ impl fmt::Debug for UnionDefinition<'_> {
             .field("name", &self.name())
             .field("description", &self.description())
             .field("members", &self.members().collect::<Vec<_>>())
-            .field("directives", &self.directives().collect::<Vec<_>>())
+            .field("directives", &self.directives())
             .field("span", &self.span())
             .finish()
     }
@@ -74,6 +63,10 @@ impl fmt::Debug for UnionDefinition<'_> {
 
 impl TypeSystemId for UnionDefinitionId {
     type Reader<'a> = UnionDefinition<'a>;
+}
+
+impl IdReader for UnionDefinition<'_> {
+    type Id = UnionDefinitionId;
 }
 
 impl<'a> From<ReadContext<'a, UnionDefinitionId>> for UnionDefinition<'a> {

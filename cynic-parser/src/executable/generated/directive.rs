@@ -1,14 +1,8 @@
-#[allow(unused_imports)]
-use super::ids::StringId;
+use super::prelude::*;
 use super::{
     argument::Argument,
     ids::{ArgumentId, DirectiveId},
     ExecutableId, ReadContext,
-};
-#[allow(unused_imports)]
-use crate::{
-    common::{IdRange, OperationType},
-    AstLookup,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};
@@ -26,13 +20,9 @@ impl<'a> Directive<'a> {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).name)
     }
-    pub fn arguments(&self) -> impl ExactSizeIterator<Item = Argument<'a>> + 'a {
+    pub fn arguments(&self) -> Iter<'a, Argument<'a>> {
         let document = self.0.document;
-        document
-            .lookup(self.0.id)
-            .arguments
-            .iter()
-            .map(|id| document.read(id))
+        super::Iter::new(document.lookup(self.0.id).arguments, document)
     }
 }
 
@@ -40,13 +30,17 @@ impl fmt::Debug for Directive<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("Directive")
             .field("name", &self.name())
-            .field("arguments", &self.arguments().collect::<Vec<_>>())
+            .field("arguments", &self.arguments())
             .finish()
     }
 }
 
 impl ExecutableId for DirectiveId {
     type Reader<'a> = Directive<'a>;
+}
+
+impl IdReader for Directive<'_> {
+    type Id = DirectiveId;
 }
 
 impl<'a> From<ReadContext<'a, DirectiveId>> for Directive<'a> {

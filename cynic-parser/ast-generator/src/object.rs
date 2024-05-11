@@ -62,9 +62,15 @@ pub fn object_output(
 
     let id_trait = Ident::new(id_trait, Span::call_site());
 
-    let executable_id = format_code(quote! {
+    let id_trait_impl = format_code(quote! {
         impl #id_trait for #id_name {
             type Reader<'a> = #reader_name<'a>;
+        }
+    })?;
+
+    let id_reader_impl = format_code(quote! {
+        impl IdReader for #reader_name<'_> {
+            type Id = #id_name;
         }
     })?;
 
@@ -86,7 +92,9 @@ pub fn object_output(
 
         {reader_debug}
 
-        {executable_id}
+        {id_trait_impl}
+
+        {id_reader_impl}
 
         {from_impl}
     "#
@@ -180,29 +188,31 @@ impl quote::ToTokens for ReaderFunction<'_> {
             _ => unimplemented!(),
         };
 
-        let ty = if self.0.field.ty().is_list() {
-            quote! { impl ExactSizeIterator<Item = #inner_ty> + 'a }
-        } else if self.0.field.ty().is_non_null() {
-            quote! { #inner_ty }
-        } else {
-            quote! { Option<#inner_ty> }
-        };
-
-        let body = match self.0.target {
+        tokens.append_all(match self.0.target {
             TypeDefinition::Scalar(scalar) if scalar.is_inline() && self.0.field.ty().is_list() => {
                 // I'm assuming inline scalars are copy here.
                 quote! {
-                    let document = self.0.document;
+                    pub fn #field_name(&self) -> impl ExactSizeIterator<Item = #inner_ty> + 'a {
+                        let document = self.0.document;
 
-                    document.lookup(self.0.id).#field_name.iter().cloned()
+                        document.lookup(self.0.id).#field_name.iter().copied()
+                    }
                 }
             }
             TypeDefinition::Scalar(scalar) if scalar.is_inline() => {
+                let ty = if self.0.field.ty().is_non_null() {
+                    quote! { #inner_ty }
+                } else {
+                    quote! { Option<#inner_ty> }
+                };
+
                 // I'm assuming inline scalars are copy here.
                 quote! {
-                    let document = self.0.document;
+                    pub fn #field_name(&self) -> #ty {
+                        let document = self.0.document;
 
-                    document.lookup(self.0.id).#field_name
+                        document.lookup(self.0.id).#field_name
+                    }
                 }
             }
             TypeDefinition::Scalar(scalar)
@@ -210,9 +220,11 @@ impl quote::ToTokens for ReaderFunction<'_> {
             {
                 // Scalars with reader_fn_override return the scalar directly _not_ a reader
                 quote! {
-                    let document = &self.0.document;
+                    pub fn #field_name(&self) -> impl ExactSizeIterator<Item = #inner_ty> + 'a {
+                        let document = &self.0.document;
 
-                    document.lookup(self.0.id).#field_name.iter().map(|id| document.lookup(*id))
+                        document.lookup(self.0.id).#field_name.iter().map(|id| document.lookup(*id))
+                    }
                 }
             }
             TypeDefinition::Scalar(scalar)
@@ -220,50 +232,55 @@ impl quote::ToTokens for ReaderFunction<'_> {
             {
                 // Scalars with reader_fn_override return the scalar directly _not_ a reader
                 quote! {
-                    let document = &self.0.document;
-                    document.lookup(document.lookup(self.0.id).#field_name)
+                    pub fn #field_name(&self) -> #inner_ty {
+                        let document = &self.0.document;
+
+                        document.lookup(document.lookup(self.0.id).#field_name)
+                    }
                 }
             }
             TypeDefinition::Scalar(scalar) if scalar.reader_fn_override().is_some() => {
                 // Scalars with reader_fn_override return the scalar directly _not_ a reader
                 quote! {
-                    let document = self.0.document;
+                    pub fn #field_name(&self) -> Option<#inner_ty> {
+                        let document = self.0.document;
 
-                    document.lookup(self.0.id).#field_name.map(|id| document.lookup(id))
+                        document.lookup(self.0.id).#field_name.map(|id| document.lookup(id))
+                    }
                 }
             }
             TypeDefinition::Object(_) | TypeDefinition::Union(_) | TypeDefinition::Scalar(_)
                 if self.0.field.ty().is_list() =>
             {
                 quote! {
-                    let document = self.0.document;
+                    pub fn #field_name(&self) -> Iter<'a, #inner_ty> {
+                        let document = self.0.document;
 
-                    document.lookup(self.0.id).#field_name.iter().map(|id| document.read(id))
+                        super::Iter::new(document.lookup(self.0.id).#field_name, document)
+                    }
                 }
             }
             TypeDefinition::Object(_) | TypeDefinition::Union(_) | TypeDefinition::Scalar(_)
                 if self.0.field.ty().is_non_null() =>
             {
                 quote! {
-                    let document = self.0.document;
+                    pub fn #field_name(&self) -> #inner_ty {
+                        let document = self.0.document;
 
-                    document.read(document.lookup(self.0.id).#field_name)
+                        document.read(document.lookup(self.0.id).#field_name)
+                    }
                 }
             }
             TypeDefinition::Object(_) | TypeDefinition::Union(_) | TypeDefinition::Scalar(_) => {
                 quote! {
-                    let document = self.0.document;
+                    pub fn #field_name(&self) -> Option<#inner_ty> {
+                        let document = self.0.document;
 
-                    document.lookup(self.0.id).#field_name.map(|id| document.read(id))
+                        document.lookup(self.0.id).#field_name.map(|id| document.read(id))
+                    }
                 }
             }
             _ => unimplemented!("No support for this target type"),
-        };
-
-        tokens.append_all(quote! {
-            pub fn #field_name(&self) -> #ty {
-                #body
-            }
         });
     }
 }

@@ -1,15 +1,8 @@
-#[allow(unused_imports)]
-use super::ids::StringId;
+use super::prelude::*;
 use super::{
     ids::{ArgumentId, ValueId},
     value::Value,
     ReadContext, TypeSystemId,
-};
-#[allow(unused_imports)]
-use crate::{
-    common::{IdRange, OperationType},
-    type_system::DirectiveLocation,
-    AstLookup, Span,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};
@@ -44,6 +37,10 @@ impl fmt::Debug for Argument<'_> {
 
 impl TypeSystemId for ArgumentId {
     type Reader<'a> = Argument<'a>;
+}
+
+impl IdReader for Argument<'_> {
+    type Id = ArgumentId;
 }
 
 impl<'a> From<ReadContext<'a, ArgumentId>> for Argument<'a> {

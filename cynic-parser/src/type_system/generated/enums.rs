@@ -1,16 +1,9 @@
-#[allow(unused_imports)]
-use super::ids::StringId;
+use super::prelude::*;
 use super::{
     directives::Directive,
     ids::{DirectiveId, EnumDefinitionId, EnumValueDefinitionId, StringLiteralId},
     strings::StringLiteral,
     ReadContext, TypeSystemId,
-};
-#[allow(unused_imports)]
-use crate::{
-    common::{IdRange, OperationType},
-    type_system::DirectiveLocation,
-    AstLookup, Span,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};
@@ -38,21 +31,13 @@ impl<'a> EnumDefinition<'a> {
             .description
             .map(|id| document.read(id))
     }
-    pub fn values(&self) -> impl ExactSizeIterator<Item = EnumValueDefinition<'a>> + 'a {
+    pub fn values(&self) -> Iter<'a, EnumValueDefinition<'a>> {
         let document = self.0.document;
-        document
-            .lookup(self.0.id)
-            .values
-            .iter()
-            .map(|id| document.read(id))
+        super::Iter::new(document.lookup(self.0.id).values, document)
     }
-    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
+    pub fn directives(&self) -> Iter<'a, Directive<'a>> {
         let document = self.0.document;
-        document
-            .lookup(self.0.id)
-            .directives
-            .iter()
-            .map(|id| document.read(id))
+        super::Iter::new(document.lookup(self.0.id).directives, document)
     }
     pub fn span(&self) -> Span {
         let document = self.0.document;
@@ -65,8 +50,8 @@ impl fmt::Debug for EnumDefinition<'_> {
         f.debug_struct("EnumDefinition")
             .field("name", &self.name())
             .field("description", &self.description())
-            .field("values", &self.values().collect::<Vec<_>>())
-            .field("directives", &self.directives().collect::<Vec<_>>())
+            .field("values", &self.values())
+            .field("directives", &self.directives())
             .field("span", &self.span())
             .finish()
     }
@@ -74,6 +59,10 @@ impl fmt::Debug for EnumDefinition<'_> {
 
 impl TypeSystemId for EnumDefinitionId {
     type Reader<'a> = EnumDefinition<'a>;
+}
+
+impl IdReader for EnumDefinition<'_> {
+    type Id = EnumDefinitionId;
 }
 
 impl<'a> From<ReadContext<'a, EnumDefinitionId>> for EnumDefinition<'a> {
@@ -104,13 +93,9 @@ impl<'a> EnumValueDefinition<'a> {
             .description
             .map(|id| document.read(id))
     }
-    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
+    pub fn directives(&self) -> Iter<'a, Directive<'a>> {
         let document = self.0.document;
-        document
-            .lookup(self.0.id)
-            .directives
-            .iter()
-            .map(|id| document.read(id))
+        super::Iter::new(document.lookup(self.0.id).directives, document)
     }
     pub fn span(&self) -> Span {
         let document = self.0.document;
@@ -123,7 +108,7 @@ impl fmt::Debug for EnumValueDefinition<'_> {
         f.debug_struct("EnumValueDefinition")
             .field("value", &self.value())
             .field("description", &self.description())
-            .field("directives", &self.directives().collect::<Vec<_>>())
+            .field("directives", &self.directives())
             .field("span", &self.span())
             .finish()
     }
@@ -131,6 +116,10 @@ impl fmt::Debug for EnumValueDefinition<'_> {
 
 impl TypeSystemId for EnumValueDefinitionId {
     type Reader<'a> = EnumValueDefinition<'a>;
+}
+
+impl IdReader for EnumValueDefinition<'_> {
+    type Id = EnumValueDefinitionId;
 }
 
 impl<'a> From<ReadContext<'a, EnumValueDefinitionId>> for EnumValueDefinition<'a> {

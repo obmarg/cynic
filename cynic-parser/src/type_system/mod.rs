@@ -2,15 +2,16 @@ use std::str::FromStr;
 
 use indexmap::IndexSet;
 
-mod generated;
+pub mod ids;
+pub mod iter;
+pub mod writer;
 
 mod definitions;
-pub mod ids;
+mod generated;
 mod schemas;
 mod string_literal;
 mod types;
 mod values;
-pub mod writer;
 
 pub use self::{
     definitions::{Definition, TypeDefinition},

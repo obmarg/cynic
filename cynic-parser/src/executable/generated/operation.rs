@@ -1,16 +1,10 @@
-#[allow(unused_imports)]
-use super::ids::StringId;
+use super::prelude::*;
 use super::{
     directive::Directive,
     ids::{DirectiveId, OperationDefinitionId, SelectionId, VariableDefinitionId},
     selections::Selection,
     variable::VariableDefinition,
     ExecutableId, ReadContext,
-};
-#[allow(unused_imports)]
-use crate::{
-    common::{IdRange, OperationType},
-    AstLookup,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};
@@ -38,31 +32,17 @@ impl<'a> OperationDefinition<'a> {
             .name
             .map(|id| document.lookup(id))
     }
-    pub fn variable_definitions(
-        &self,
-    ) -> impl ExactSizeIterator<Item = VariableDefinition<'a>> + 'a {
+    pub fn variable_definitions(&self) -> Iter<'a, VariableDefinition<'a>> {
         let document = self.0.document;
-        document
-            .lookup(self.0.id)
-            .variable_definitions
-            .iter()
-            .map(|id| document.read(id))
+        super::Iter::new(document.lookup(self.0.id).variable_definitions, document)
     }
-    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
+    pub fn directives(&self) -> Iter<'a, Directive<'a>> {
         let document = self.0.document;
-        document
-            .lookup(self.0.id)
-            .directives
-            .iter()
-            .map(|id| document.read(id))
+        super::Iter::new(document.lookup(self.0.id).directives, document)
     }
-    pub fn selection_set(&self) -> impl ExactSizeIterator<Item = Selection<'a>> + 'a {
+    pub fn selection_set(&self) -> Iter<'a, Selection<'a>> {
         let document = self.0.document;
-        document
-            .lookup(self.0.id)
-            .selection_set
-            .iter()
-            .map(|id| document.read(id))
+        super::Iter::new(document.lookup(self.0.id).selection_set, document)
     }
 }
 
@@ -71,18 +51,19 @@ impl fmt::Debug for OperationDefinition<'_> {
         f.debug_struct("OperationDefinition")
             .field("operation_type", &self.operation_type())
             .field("name", &self.name())
-            .field(
-                "variable_definitions",
-                &self.variable_definitions().collect::<Vec<_>>(),
-            )
-            .field("directives", &self.directives().collect::<Vec<_>>())
-            .field("selection_set", &self.selection_set().collect::<Vec<_>>())
+            .field("variable_definitions", &self.variable_definitions())
+            .field("directives", &self.directives())
+            .field("selection_set", &self.selection_set())
             .finish()
     }
 }
 
 impl ExecutableId for OperationDefinitionId {
     type Reader<'a> = OperationDefinition<'a>;
+}
+
+impl IdReader for OperationDefinition<'_> {
+    type Id = OperationDefinitionId;
 }
 
 impl<'a> From<ReadContext<'a, OperationDefinitionId>> for OperationDefinition<'a> {

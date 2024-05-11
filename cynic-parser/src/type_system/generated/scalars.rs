@@ -1,16 +1,9 @@
-#[allow(unused_imports)]
-use super::ids::StringId;
+use super::prelude::*;
 use super::{
     directives::Directive,
     ids::{DirectiveId, ScalarDefinitionId, StringLiteralId},
     strings::StringLiteral,
     ReadContext, TypeSystemId,
-};
-#[allow(unused_imports)]
-use crate::{
-    common::{IdRange, OperationType},
-    type_system::DirectiveLocation,
-    AstLookup, Span,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};
@@ -37,13 +30,9 @@ impl<'a> ScalarDefinition<'a> {
             .description
             .map(|id| document.read(id))
     }
-    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
+    pub fn directives(&self) -> Iter<'a, Directive<'a>> {
         let document = self.0.document;
-        document
-            .lookup(self.0.id)
-            .directives
-            .iter()
-            .map(|id| document.read(id))
+        super::Iter::new(document.lookup(self.0.id).directives, document)
     }
     pub fn span(&self) -> Span {
         let document = self.0.document;
@@ -56,7 +45,7 @@ impl fmt::Debug for ScalarDefinition<'_> {
         f.debug_struct("ScalarDefinition")
             .field("name", &self.name())
             .field("description", &self.description())
-            .field("directives", &self.directives().collect::<Vec<_>>())
+            .field("directives", &self.directives())
             .field("span", &self.span())
             .finish()
     }
@@ -64,6 +53,10 @@ impl fmt::Debug for ScalarDefinition<'_> {
 
 impl TypeSystemId for ScalarDefinitionId {
     type Reader<'a> = ScalarDefinition<'a>;
+}
+
+impl IdReader for ScalarDefinition<'_> {
+    type Id = ScalarDefinitionId;
 }
 
 impl<'a> From<ReadContext<'a, ScalarDefinitionId>> for ScalarDefinition<'a> {
