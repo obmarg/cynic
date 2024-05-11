@@ -15,14 +15,15 @@ commit_parsers = [
     { message = "^chore*", group = "<!-- 3 -->Changes" },
 ]
 body = """
-## [{{ version }}] - {{ timestamp | date(format="%Y-%m-%d") }}
 
+## v{{ version }} - {{ timestamp | date(format="%Y-%m-%d") }}
 {% for group, commits in commits | group_by(attribute="group") %}
 ### {{ group | striptags | trim | upper_first }}
-{% for commit in commits %}
+
+{% for commit in commits -%}
 - {% if commit.breaking %}[**breaking**] {% endif %}{{ commit.message }}
 {% endfor -%}
-{% endfor %}
+{% endfor -%}
 """
 
 [[package]]
