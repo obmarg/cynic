@@ -13,21 +13,15 @@ where
     T: IdReader,
 {
     range: IdRange<T::Id>,
-    current: T::Id,
     document: &'a super::ExecutableDocument,
 }
 
 impl<'a, T> Iter<'a, T>
 where
     T: IdReader,
-    T::Id: IdOperations,
 {
     pub(crate) fn new(range: IdRange<T::Id>, document: &'a super::ExecutableDocument) -> Self {
-        Iter {
-            current: range.start,
-            range,
-            document,
-        }
+        Iter { range, document }
     }
 }
 
@@ -43,15 +37,11 @@ where
     type Item = <T::Id as ExecutableId>::Reader<'a>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        let next = self.range.next(self.current)?;
-        self.current = next;
-
-        Some(self.document.read(next))
+        Some(self.document.read(self.range.next()?))
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
-        let remaining = IdOperations::distance(self.current, self.range.end);
-        (remaining, Some(remaining))
+        self.range.size_hint()
     }
 }
 
@@ -76,9 +66,6 @@ where
 {
     // Required method
     fn next_back(&mut self) -> Option<Self::Item> {
-        let next = self.range.previous(self.current)?;
-        self.current = next;
-
-        Some(self.document.read(next))
+        Some(self.document.read(self.range.next_back()?))
     }
 }

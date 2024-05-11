@@ -31,30 +31,12 @@ macro_rules! make_id {
     };
 }
 
-macro_rules! impl_id_range {
+macro_rules! impl_id_range_ops {
     ($name: ident) => {
-        impl IdRange<$name> {
-            pub fn len(&self) -> usize {
-                (self.end.0.get() - self.start.0.get()) as usize
-            }
-
-            pub fn is_empty(&self) -> bool {
-                (self.end.0.get() - self.start.0.get()) == 0
-            }
-
-            pub fn iter(&self) -> impl ExactSizeIterator<Item = $name> {
-                (self.start.0.get()..self.end.0.get())
-                    .map(|num| $name(NonZeroU32::new(num).expect("range is too large")))
-            }
-        }
-
-        impl Default for IdRange<$name> {
-            fn default() -> Self {
-                Self::new($name::new(0), $name::new(0))
-            }
-        }
-
         impl crate::common::IdOperations for $name {
+            fn empty_range() -> IdRange<Self> {
+                IdRange::new(Self::new(0), Self::new(0))
+            }
             fn forward(self) -> Option<Self> {
                 Some(Self(NonZeroU32::new(self.0.get() + 1)?))
             }
@@ -76,14 +58,14 @@ make_id!(
     ExecutableDefinitionRecord,
     definitions
 );
-impl_id_range!(ExecutableDefinitionId);
+impl_id_range_ops!(ExecutableDefinitionId);
 
 make_id!(OperationDefinitionId, OperationDefinitionRecord, operations);
 
 make_id!(FragmentDefinitionId, FragmentDefinitionRecord, fragments);
 
 make_id!(SelectionId, SelectionRecord, selections);
-impl_id_range!(SelectionId);
+impl_id_range_ops!(SelectionId);
 
 make_id!(FieldSelectionId, FieldSelectionRecord, field_selections);
 make_id!(InlineFragmentId, InlineFragmentRecord, inline_fragments);
@@ -91,13 +73,13 @@ make_id!(FragmentSpreadId, FragmentSpreadRecord, fragment_spreads);
 
 make_id!(DirectiveId, DirectiveRecord, directives);
 make_id!(ArgumentId, ArgumentRecord, arguments);
-impl_id_range!(DirectiveId);
-impl_id_range!(ArgumentId);
+impl_id_range_ops!(DirectiveId);
+impl_id_range_ops!(ArgumentId);
 
 make_id!(TypeId, TypeRecord, types);
 
 make_id!(VariableDefinitionId, VariableDefinitionRecord, variables);
-impl_id_range!(VariableDefinitionId);
+impl_id_range_ops!(VariableDefinitionId);
 
 make_id!(ValueId, ValueRecord, values);
 
