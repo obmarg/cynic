@@ -34,12 +34,4 @@ impl<Id> IdRange<Id> {
         let next = current.back()?;
         matches!(next.cmp(self.start), Ordering::Equal | Ordering::Greater).then_some(next)
     }
-
-    pub(crate) fn contains(&self, id: Id) -> bool
-    where
-        Id: IdOperations,
-    {
-        matches!(id.cmp(self.start), Ordering::Equal | Ordering::Greater)
-            && matches!(id.cmp(self.end), Ordering::Less)
-    }
 }
