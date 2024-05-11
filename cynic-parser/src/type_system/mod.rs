@@ -110,10 +110,37 @@ impl DirectiveLocation {
             DirectiveLocation::VariableDefinition => "VARIABLE_DEFINITION",
         }
     }
+
+    pub(crate) fn all_locations() -> &'static [&'static str] {
+        &[
+            "QUERY",
+            "MUTATION",
+            "SUBSCRIPTION",
+            "FIELD",
+            "FRAGMENT_DEFINITION",
+            "FRAGMENT_SPREAD",
+            "INLINE_FRAGMENT",
+            "SCHEMA",
+            "SCALAR",
+            "OBJECT",
+            "FIELD_DEFINITION",
+            "ARGUMENT_DEFINITION",
+            "INTERFACE",
+            "UNION",
+            "ENUM",
+            "ENUM_VALUE",
+            "INPUT_OBJECT",
+            "INPUT_FIELD_DEFINITION",
+            "VARIABLE_DEFINITION",
+        ]
+    }
 }
 
+#[derive(Debug)]
+pub struct MalformedDirectiveLocation(pub String);
+
 impl FromStr for DirectiveLocation {
-    type Err = ();
+    type Err = MalformedDirectiveLocation;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         Ok(match s {
@@ -136,7 +163,7 @@ impl FromStr for DirectiveLocation {
             "INPUT_OBJECT" => DirectiveLocation::InputObject,
             "INPUT_FIELD_DEFINITION" => DirectiveLocation::InputFieldDefinition,
             "VARIABLE_DEFINITION" => DirectiveLocation::VariableDefinition,
-            _ => return Err(()),
+            _ => return Err(MalformedDirectiveLocation(s.to_string())),
         })
     }
 }

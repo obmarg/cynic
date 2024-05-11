@@ -71,6 +71,15 @@ impl Error {
                     None,
                 )
             }
+            Error::MalformedDirectiveLocation(_, _, _) => {
+                let span = self.span();
+                (
+                    self.to_string(),
+                    Label::new(span.start..span.end)
+                        .with_message("this is not a valid directive location"),
+                    None,
+                )
+            }
         }
     }
 }

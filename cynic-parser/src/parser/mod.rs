@@ -10,4 +10,5 @@ use crate::{common::MalformedStringError, lexer::LexicalError};
 pub enum AdditionalErrors {
     Lexical(LexicalError),
     MalformedString(MalformedStringError),
+    MalformedDirectiveLocation(usize, String, usize),
 }

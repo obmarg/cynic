@@ -283,7 +283,10 @@ DirectiveLocations: Vec<DirectiveLocation> = {
 }
 
 DirectiveLocation: DirectiveLocation = {
-    <s:Ident> => s.parse().expect("TODO: error handling")
+    <start:@L> <s:Ident> <end:@R> =>? {
+        s.parse::<DirectiveLocation>()
+            .map_err(|error| error.into_lalrpop_error((start, end)))
+    }
 }
 
 InputValueDefinition: () = {

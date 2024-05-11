@@ -7,8 +7,9 @@ use std::fmt;
 pub use report::Report;
 
 use crate::{
-    lexer::{self},
+    lexer,
     parser::AdditionalErrors,
+    type_system::{DirectiveLocation, MalformedDirectiveLocation},
     Span,
 };
 
@@ -48,6 +49,9 @@ pub enum Error {
 
     /// Malformed string literal
     MalformedStringLiteral(crate::common::MalformedStringError),
+
+    /// Malformed string literal
+    MalformedDirectiveLocation(usize, String, usize),
 }
 
 impl Error {
@@ -65,6 +69,7 @@ impl Error {
             } => Span::new(*start, *end),
             Error::Lexical(error) => error.span(),
             Error::MalformedStringLiteral(error) => error.span(),
+            Error::MalformedDirectiveLocation(lhs, _, rhs) => Span::new(*lhs, *rhs),
         }
     }
 }
@@ -75,7 +80,8 @@ impl std::error::Error for Error {
             Error::InvalidToken { .. }
             | Error::UnrecognizedEof { .. }
             | Error::UnrecognizedToken { .. }
-            | Error::ExtraToken { .. } => None,
+            | Error::ExtraToken { .. }
+            | Error::MalformedDirectiveLocation(..) => None,
             Error::Lexical(error) => Some(error),
             Error::MalformedStringLiteral(error) => Some(error),
         }
@@ -125,6 +131,20 @@ impl fmt::Display for Error {
             Error::MalformedStringLiteral(error) => {
                 write!(f, "malformed string literal: {error}")
             }
+            Error::MalformedDirectiveLocation(_, location, _) => {
+                write!(
+                    f,
+                    "unknown directive location: {location}. expected one of "
+                )?;
+
+                for (i, location) in DirectiveLocation::all_locations().iter().enumerate() {
+                    if i != 0 {
+                        write!(f, ", ")?;
+                    }
+                    write!(f, "{location}")?;
+                }
+                Ok(())
+            }
         }
     }
 }
@@ -155,6 +175,20 @@ impl From<lalrpop_util::ParseError<usize, lexer::Token<'_>, AdditionalErrors>> f
             ParseError::User {
                 error: AdditionalErrors::MalformedString(error),
             } => Error::MalformedStringLiteral(error),
+            ParseError::User {
+                error: AdditionalErrors::MalformedDirectiveLocation(lhs, location, rhs),
+            } => Error::MalformedDirectiveLocation(lhs, location, rhs),
+        }
+    }
+}
+
+impl MalformedDirectiveLocation {
+    pub(crate) fn into_lalrpop_error<'a>(
+        self,
+        (lhs, rhs): (usize, usize),
+    ) -> lalrpop_util::ParseError<usize, lexer::Token<'a>, AdditionalErrors> {
+        lalrpop_util::ParseError::User {
+            error: AdditionalErrors::MalformedDirectiveLocation(lhs, self.0, rhs),
         }
     }
 }
