@@ -47,7 +47,7 @@ impl fmt::Debug for VariableDefinition<'_> {
             .field("name", &self.name())
             .field("ty", &self.ty())
             .field("default_value", &self.default_value())
-            .field("directives", &self.directives().collect::<Vec<_>>())
+            .field("directives", &self.directives())
             .finish()
     }
 }

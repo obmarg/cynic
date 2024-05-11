@@ -55,7 +55,7 @@ impl fmt::Debug for UnionDefinition<'_> {
             .field("name", &self.name())
             .field("description", &self.description())
             .field("members", &self.members().collect::<Vec<_>>())
-            .field("directives", &self.directives().collect::<Vec<_>>())
+            .field("directives", &self.directives())
             .field("span", &self.span())
             .finish()
     }

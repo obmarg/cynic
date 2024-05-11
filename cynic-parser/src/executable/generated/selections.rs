@@ -87,9 +87,9 @@ impl fmt::Debug for FieldSelection<'_> {
         f.debug_struct("FieldSelection")
             .field("alias", &self.alias())
             .field("name", &self.name())
-            .field("arguments", &self.arguments().collect::<Vec<_>>())
-            .field("directives", &self.directives().collect::<Vec<_>>())
-            .field("selection_set", &self.selection_set().collect::<Vec<_>>())
+            .field("arguments", &self.arguments())
+            .field("directives", &self.directives())
+            .field("selection_set", &self.selection_set())
             .finish()
     }
 }
@@ -139,8 +139,8 @@ impl fmt::Debug for InlineFragment<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("InlineFragment")
             .field("type_condition", &self.type_condition())
-            .field("directives", &self.directives().collect::<Vec<_>>())
-            .field("selection_set", &self.selection_set().collect::<Vec<_>>())
+            .field("directives", &self.directives())
+            .field("selection_set", &self.selection_set())
             .finish()
     }
 }
@@ -182,7 +182,7 @@ impl fmt::Debug for FragmentSpread<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("FragmentSpread")
             .field("fragment_name", &self.fragment_name())
-            .field("directives", &self.directives().collect::<Vec<_>>())
+            .field("directives", &self.directives())
             .finish()
     }
 }

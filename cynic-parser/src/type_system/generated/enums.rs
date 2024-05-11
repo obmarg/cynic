@@ -50,8 +50,8 @@ impl fmt::Debug for EnumDefinition<'_> {
         f.debug_struct("EnumDefinition")
             .field("name", &self.name())
             .field("description", &self.description())
-            .field("values", &self.values().collect::<Vec<_>>())
-            .field("directives", &self.directives().collect::<Vec<_>>())
+            .field("values", &self.values())
+            .field("directives", &self.directives())
             .field("span", &self.span())
             .finish()
     }
@@ -108,7 +108,7 @@ impl fmt::Debug for EnumValueDefinition<'_> {
         f.debug_struct("EnumValueDefinition")
             .field("value", &self.value())
             .field("description", &self.description())
-            .field("directives", &self.directives().collect::<Vec<_>>())
+            .field("directives", &self.directives())
             .field("span", &self.span())
             .finish()
     }

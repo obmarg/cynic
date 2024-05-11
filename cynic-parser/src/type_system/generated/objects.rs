@@ -60,8 +60,8 @@ impl fmt::Debug for ObjectDefinition<'_> {
         f.debug_struct("ObjectDefinition")
             .field("name", &self.name())
             .field("description", &self.description())
-            .field("fields", &self.fields().collect::<Vec<_>>())
-            .field("directives", &self.directives().collect::<Vec<_>>())
+            .field("fields", &self.fields())
+            .field("directives", &self.directives())
             .field(
                 "implements_interfaces",
                 &self.implements_interfaces().collect::<Vec<_>>(),

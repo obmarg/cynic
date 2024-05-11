@@ -57,9 +57,9 @@ impl fmt::Debug for FieldDefinition<'_> {
         f.debug_struct("FieldDefinition")
             .field("name", &self.name())
             .field("ty", &self.ty())
-            .field("arguments", &self.arguments().collect::<Vec<_>>())
+            .field("arguments", &self.arguments())
             .field("description", &self.description())
-            .field("directives", &self.directives().collect::<Vec<_>>())
+            .field("directives", &self.directives())
             .field("span", &self.span())
             .finish()
     }

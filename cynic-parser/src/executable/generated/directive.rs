@@ -30,7 +30,7 @@ impl fmt::Debug for Directive<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("Directive")
             .field("name", &self.name())
-            .field("arguments", &self.arguments().collect::<Vec<_>>())
+            .field("arguments", &self.arguments())
             .finish()
     }
 }

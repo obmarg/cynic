@@ -39,11 +39,8 @@ impl fmt::Debug for SchemaDefinition<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("SchemaDefinition")
             .field("description", &self.description())
-            .field("directives", &self.directives().collect::<Vec<_>>())
-            .field(
-                "root_operations",
-                &self.root_operations().collect::<Vec<_>>(),
-            )
+            .field("directives", &self.directives())
+            .field("root_operations", &self.root_operations())
             .finish()
     }
 }

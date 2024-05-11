@@ -51,8 +51,8 @@ impl fmt::Debug for InputObjectDefinition<'_> {
         f.debug_struct("InputObjectDefinition")
             .field("name", &self.name())
             .field("description", &self.description())
-            .field("fields", &self.fields().collect::<Vec<_>>())
-            .field("directives", &self.directives().collect::<Vec<_>>())
+            .field("fields", &self.fields())
+            .field("directives", &self.directives())
             .field("span", &self.span())
             .finish()
     }

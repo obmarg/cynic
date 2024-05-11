@@ -62,7 +62,7 @@ impl fmt::Debug for InputValueDefinition<'_> {
             .field("ty", &self.ty())
             .field("description", &self.description())
             .field("default_value", &self.default_value())
-            .field("directives", &self.directives().collect::<Vec<_>>())
+            .field("directives", &self.directives())
             .field("span", &self.span())
             .finish()
     }

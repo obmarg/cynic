@@ -51,12 +51,9 @@ impl fmt::Debug for OperationDefinition<'_> {
         f.debug_struct("OperationDefinition")
             .field("operation_type", &self.operation_type())
             .field("name", &self.name())
-            .field(
-                "variable_definitions",
-                &self.variable_definitions().collect::<Vec<_>>(),
-            )
-            .field("directives", &self.directives().collect::<Vec<_>>())
-            .field("selection_set", &self.selection_set().collect::<Vec<_>>())
+            .field("variable_definitions", &self.variable_definitions())
+            .field("directives", &self.directives())
+            .field("selection_set", &self.selection_set())
             .finish()
     }
 }

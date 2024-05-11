@@ -45,7 +45,7 @@ impl fmt::Debug for ScalarDefinition<'_> {
         f.debug_struct("ScalarDefinition")
             .field("name", &self.name())
             .field("description", &self.description())
-            .field("directives", &self.directives().collect::<Vec<_>>())
+            .field("directives", &self.directives())
             .field("span", &self.span())
             .finish()
     }
