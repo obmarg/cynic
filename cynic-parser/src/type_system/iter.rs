@@ -1,4 +1,4 @@
-use std::iter::FusedIterator;
+use std::{fmt, iter::FusedIterator};
 
 use crate::common::{IdOperations, IdRange};
 
@@ -67,5 +67,16 @@ where
     // Required method
     fn next_back(&mut self) -> Option<Self::Item> {
         Some(self.document.read(self.range.next_back()?))
+    }
+}
+
+impl<'a, T> fmt::Debug for Iter<'a, T>
+where
+    T: IdReader + Copy,
+    Self: Iterator,
+    <Self as Iterator>::Item: fmt::Debug,
+{
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_list().entries(*self).finish()
     }
 }

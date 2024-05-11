@@ -1,5 +1,8 @@
+use cynic_parser::type_system::TypeDefinition;
 use proc_macro2::{Ident, Span};
 use quote::{quote, ToTokens, TokenStreamExt};
+
+use crate::exts::ScalarExt;
 
 use super::FieldEdge;
 
@@ -34,7 +37,10 @@ impl ToTokens for DebugField<'_> {
         let name = Ident::new(name_string, Span::call_site());
         let name_string = proc_macro2::Literal::string(name_string);
 
-        if edge.field.ty().is_list() {
+        let needs_collect = edge.field.ty().is_list()
+            && (matches!(edge.target, TypeDefinition::Scalar(scalar) if scalar.is_inline() || scalar.reader_fn_override().is_some()));
+
+        if needs_collect {
             tokens.append_all(quote! { .field(#name_string, &self.#name().collect::<Vec<_>>()) });
         } else {
             tokens.append_all(quote! { .field(#name_string, &self.#name()) });
