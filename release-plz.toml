@@ -9,10 +9,10 @@ pr_draft = true
 
 [changelog] 
 commit_parsers = [
-    { message = "^feat!*", group = "<!-- 0 -->Breaking Changes" },
-    { message = "^feat*", group = "<!-- 1 -->New Features" },
-    { message = "^fix*", group = "<!-- 2 -->Bug Fixes" },
-    { message = "^chore*", group = "<!-- 3 -->Changes" },
+    { message = "^feat!", group = "<!-- 0 -->Breaking Changes" },
+    { message = "^feat", group = "<!-- 1 -->New Features" },
+    { message = "^fix", group = "<!-- 2 -->Bug Fixes" },
+    { message = "^chore", group = "<!-- 3 -->Changes" },
 ]
 body = """
 
