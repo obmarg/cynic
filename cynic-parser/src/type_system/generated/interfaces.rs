@@ -1,17 +1,10 @@
-#[allow(unused_imports)]
-use super::ids::StringId;
+use super::prelude::*;
 use super::{
     directives::Directive,
     fields::FieldDefinition,
     ids::{DirectiveId, FieldDefinitionId, InterfaceDefinitionId, StringLiteralId},
     strings::StringLiteral,
     ReadContext, TypeSystemId,
-};
-#[allow(unused_imports)]
-use crate::{
-    common::{IdRange, OperationType},
-    type_system::DirectiveLocation,
-    AstLookup, Span,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};
@@ -40,21 +33,13 @@ impl<'a> InterfaceDefinition<'a> {
             .description
             .map(|id| document.read(id))
     }
-    pub fn fields(&self) -> impl ExactSizeIterator<Item = FieldDefinition<'a>> + 'a {
+    pub fn fields(&self) -> Iter<'a, FieldDefinition<'a>> {
         let document = self.0.document;
-        document
-            .lookup(self.0.id)
-            .fields
-            .iter()
-            .map(|id| document.read(id))
+        super::Iter::new(document.lookup(self.0.id).fields, document)
     }
-    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
+    pub fn directives(&self) -> Iter<'a, Directive<'a>> {
         let document = self.0.document;
-        document
-            .lookup(self.0.id)
-            .directives
-            .iter()
-            .map(|id| document.read(id))
+        super::Iter::new(document.lookup(self.0.id).directives, document)
     }
     pub fn implements_interfaces(&self) -> impl ExactSizeIterator<Item = &'a str> + 'a {
         let document = &self.0.document;
@@ -88,6 +73,10 @@ impl fmt::Debug for InterfaceDefinition<'_> {
 
 impl TypeSystemId for InterfaceDefinitionId {
     type Reader<'a> = InterfaceDefinition<'a>;
+}
+
+impl IdReader for InterfaceDefinition<'_> {
+    type Id = InterfaceDefinitionId;
 }
 
 impl<'a> From<ReadContext<'a, InterfaceDefinitionId>> for InterfaceDefinition<'a> {

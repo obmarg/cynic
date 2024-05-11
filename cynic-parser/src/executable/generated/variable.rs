@@ -56,7 +56,7 @@ impl ExecutableId for VariableDefinitionId {
     type Reader<'a> = VariableDefinition<'a>;
 }
 
-impl super::IdReader for VariableDefinition<'_> {
+impl IdReader for VariableDefinition<'_> {
     type Id = VariableDefinitionId;
 }
 

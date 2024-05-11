@@ -69,7 +69,7 @@ pub fn object_output(
     })?;
 
     let id_reader_impl = format_code(quote! {
-        impl super::IdReader for #reader_name<'_> {
+        impl IdReader for #reader_name<'_> {
             type Id = #id_name;
         }
     })?;
@@ -192,10 +192,10 @@ impl quote::ToTokens for ReaderFunction<'_> {
             TypeDefinition::Scalar(scalar) if scalar.is_inline() && self.0.field.ty().is_list() => {
                 // I'm assuming inline scalars are copy here.
                 quote! {
-                    pub fn #field_name(&self) -> impl ExactSizeIterator<'a, Item = #inner_ty> + 'a {
+                    pub fn #field_name(&self) -> impl ExactSizeIterator<Item = #inner_ty> + 'a {
                         let document = self.0.document;
 
-                        document.lookup(self.0.id).#field_name.iter().map(|id| document.lookup(*id))
+                        document.lookup(self.0.id).#field_name.iter().copied()
                     }
                 }
             }
@@ -220,7 +220,7 @@ impl quote::ToTokens for ReaderFunction<'_> {
             {
                 // Scalars with reader_fn_override return the scalar directly _not_ a reader
                 quote! {
-                    pub fn #field_name(&self) -> impl ExactSizeIterator<'a, Item = #inner_ty> + 'a {
+                    pub fn #field_name(&self) -> impl ExactSizeIterator<Item = #inner_ty> + 'a {
                         let document = &self.0.document;
 
                         document.lookup(self.0.id).#field_name.iter().map(|id| document.lookup(*id))

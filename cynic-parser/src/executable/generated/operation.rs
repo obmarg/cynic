@@ -65,7 +65,7 @@ impl ExecutableId for OperationDefinitionId {
     type Reader<'a> = OperationDefinition<'a>;
 }
 
-impl super::IdReader for OperationDefinition<'_> {
+impl IdReader for OperationDefinition<'_> {
     type Id = OperationDefinitionId;
 }
 

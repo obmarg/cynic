@@ -23,7 +23,7 @@ impl ExecutableId for ExecutableDefinitionId {
     type Reader<'a> = ExecutableDefinition<'a>;
 }
 
-impl super::IdReader for ExecutableDefinition<'_> {
+impl IdReader for ExecutableDefinition<'_> {
     type Id = ExecutableDefinitionId;
 }
 

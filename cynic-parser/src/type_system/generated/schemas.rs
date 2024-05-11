@@ -1,16 +1,9 @@
-#[allow(unused_imports)]
-use super::ids::StringId;
+use super::prelude::*;
 use super::{
     directives::Directive,
     ids::{DirectiveId, RootOperationTypeDefinitionId, SchemaDefinitionId, StringLiteralId},
     strings::StringLiteral,
     ReadContext, TypeSystemId,
-};
-#[allow(unused_imports)]
-use crate::{
-    common::{IdRange, OperationType},
-    type_system::DirectiveLocation,
-    AstLookup, Span,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};
@@ -32,23 +25,13 @@ impl<'a> SchemaDefinition<'a> {
             .description
             .map(|id| document.read(id))
     }
-    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
+    pub fn directives(&self) -> Iter<'a, Directive<'a>> {
         let document = self.0.document;
-        document
-            .lookup(self.0.id)
-            .directives
-            .iter()
-            .map(|id| document.read(id))
+        super::Iter::new(document.lookup(self.0.id).directives, document)
     }
-    pub fn root_operations(
-        &self,
-    ) -> impl ExactSizeIterator<Item = RootOperationTypeDefinition<'a>> + 'a {
+    pub fn root_operations(&self) -> Iter<'a, RootOperationTypeDefinition<'a>> {
         let document = self.0.document;
-        document
-            .lookup(self.0.id)
-            .root_operations
-            .iter()
-            .map(|id| document.read(id))
+        super::Iter::new(document.lookup(self.0.id).root_operations, document)
     }
 }
 
@@ -67,6 +50,10 @@ impl fmt::Debug for SchemaDefinition<'_> {
 
 impl TypeSystemId for SchemaDefinitionId {
     type Reader<'a> = SchemaDefinition<'a>;
+}
+
+impl IdReader for SchemaDefinition<'_> {
+    type Id = SchemaDefinitionId;
 }
 
 impl<'a> From<ReadContext<'a, SchemaDefinitionId>> for SchemaDefinition<'a> {
@@ -105,6 +92,10 @@ impl fmt::Debug for RootOperationTypeDefinition<'_> {
 
 impl TypeSystemId for RootOperationTypeDefinitionId {
     type Reader<'a> = RootOperationTypeDefinition<'a>;
+}
+
+impl IdReader for RootOperationTypeDefinition<'_> {
+    type Id = RootOperationTypeDefinitionId;
 }
 
 impl<'a> From<ReadContext<'a, RootOperationTypeDefinitionId>> for RootOperationTypeDefinition<'a> {

@@ -39,7 +39,7 @@ impl ExecutableId for DirectiveId {
     type Reader<'a> = Directive<'a>;
 }
 
-impl super::IdReader for Directive<'_> {
+impl IdReader for Directive<'_> {
     type Id = DirectiveId;
 }
 

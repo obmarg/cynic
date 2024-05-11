@@ -1,4 +1,5 @@
-use super::{ids, ReadContext, TypeSystemId, Value};
+use super::iter::Iter;
+use super::{ids, ReadContext, TypeSystemId};
 
 /// A prelude module for all the generated modules
 ///
@@ -8,7 +9,15 @@ use super::{ids, ReadContext, TypeSystemId, Value};
 /// figure out how to import everything external it needs - it can just
 /// `use prelude::*` and be done with it.
 mod prelude {
-    pub(super) use crate::type_system::{ReadContext, TypeSystemId};
+    pub(super) use crate::{
+        common::{IdRange, OperationType},
+        type_system::{
+            ids::StringId,
+            iter::{IdReader, Iter},
+            DirectiveLocation,
+        },
+        AstLookup, Span,
+    };
 
     pub(super) mod value {
         pub use crate::type_system::Value;

@@ -27,7 +27,7 @@ impl ExecutableId for SelectionId {
     type Reader<'a> = Selection<'a>;
 }
 
-impl super::IdReader for Selection<'_> {
+impl IdReader for Selection<'_> {
     type Id = SelectionId;
 }
 
@@ -98,7 +98,7 @@ impl ExecutableId for FieldSelectionId {
     type Reader<'a> = FieldSelection<'a>;
 }
 
-impl super::IdReader for FieldSelection<'_> {
+impl IdReader for FieldSelection<'_> {
     type Id = FieldSelectionId;
 }
 
@@ -149,7 +149,7 @@ impl ExecutableId for InlineFragmentId {
     type Reader<'a> = InlineFragment<'a>;
 }
 
-impl super::IdReader for InlineFragment<'_> {
+impl IdReader for InlineFragment<'_> {
     type Id = InlineFragmentId;
 }
 
@@ -191,7 +191,7 @@ impl ExecutableId for FragmentSpreadId {
     type Reader<'a> = FragmentSpread<'a>;
 }
 
-impl super::IdReader for FragmentSpread<'_> {
+impl IdReader for FragmentSpread<'_> {
     type Id = FragmentSpreadId;
 }
 

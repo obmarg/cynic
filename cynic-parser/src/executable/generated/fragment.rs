@@ -52,7 +52,7 @@ impl ExecutableId for FragmentDefinitionId {
     type Reader<'a> = FragmentDefinition<'a>;
 }
 
-impl super::IdReader for FragmentDefinition<'_> {
+impl IdReader for FragmentDefinition<'_> {
     type Id = FragmentDefinitionId;
 }
 

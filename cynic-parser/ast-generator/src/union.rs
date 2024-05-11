@@ -68,7 +68,7 @@ pub fn union_output(
     })?;
 
     let id_reader_impl = format_code(quote! {
-        impl super::IdReader for #reader_name<'_> {
+        impl IdReader for #reader_name<'_> {
             type Id = #id_name;
         }
     })?;

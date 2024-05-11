@@ -31,26 +31,23 @@ macro_rules! make_id {
     };
 }
 
-macro_rules! impl_id_range {
+macro_rules! impl_id_range_ops {
     ($name: ident) => {
-        impl IdRange<$name> {
-            pub fn len(&self) -> usize {
-                (self.end.0.get() - self.start.0.get()) as usize
+        impl crate::common::IdOperations for $name {
+            fn empty_range() -> IdRange<Self> {
+                IdRange::new(Self::new(0), Self::new(0))
             }
-
-            pub fn is_empty(&self) -> bool {
-                (self.end.0.get() - self.start.0.get()) == 0
+            fn forward(self) -> Option<Self> {
+                Some(Self(NonZeroU32::new(self.0.get() + 1)?))
             }
-
-            pub fn iter(&self) -> impl ExactSizeIterator<Item = $name> {
-                (self.start.0.get()..self.end.0.get())
-                    .map(|num| $name(NonZeroU32::new(num).expect("range is too large")))
+            fn back(self) -> Option<Self> {
+                Some(Self(NonZeroU32::new(self.0.get() - 1)?))
             }
-        }
-
-        impl Default for IdRange<$name> {
-            fn default() -> Self {
-                Self::new($name::new(0), $name::new(0))
+            fn cmp(self, other: Self) -> std::cmp::Ordering {
+                self.0.get().cmp(&other.0.get())
+            }
+            fn distance(lhs: Self, rhs: Self) -> usize {
+                rhs.0.get().saturating_sub(lhs.0.get()) as usize
             }
         }
     };
@@ -68,7 +65,7 @@ make_id!(
     RootOperationTypeDefinitionRecord,
     root_operation_definitions
 );
-impl_id_range!(RootOperationTypeDefinitionId);
+impl_id_range_ops!(RootOperationTypeDefinitionId);
 
 make_id!(
     ScalarDefinitionId,
@@ -97,7 +94,7 @@ make_id!(
     EnumValueDefinitionRecord,
     enum_value_definitions
 );
-impl_id_range!(EnumValueDefinitionId);
+impl_id_range_ops!(EnumValueDefinitionId);
 
 make_id!(
     InputObjectDefinitionId,
@@ -112,22 +109,22 @@ make_id!(
 );
 
 make_id!(FieldDefinitionId, FieldDefinitionRecord, field_definitions);
-impl_id_range!(FieldDefinitionId);
+impl_id_range_ops!(FieldDefinitionId);
 
 make_id!(
     InputValueDefinitionId,
     InputValueDefinitionRecord,
     input_value_definitions
 );
-impl_id_range!(InputValueDefinitionId);
+impl_id_range_ops!(InputValueDefinitionId);
 
 make_id!(TypeId, TypeRecord, type_references);
 
 make_id!(DirectiveId, DirectiveRecord, directives);
-impl_id_range!(DirectiveId);
+impl_id_range_ops!(DirectiveId);
 
 make_id!(ArgumentId, ArgumentRecord, arguments);
-impl_id_range!(ArgumentId);
+impl_id_range_ops!(ArgumentId);
 
 make_id!(ValueId, ValueRecord, values);
 

@@ -59,7 +59,6 @@ pub fn imports(
     mut requires: BTreeSet<EntityRef>,
     current_file_entities: Vec<EntityRef>,
     id_trait: &str,
-    shared_imports: proc_macro2::TokenStream,
 ) -> anyhow::Result<String> {
     for id in &current_file_entities {
         requires.remove(id);

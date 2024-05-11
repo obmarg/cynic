@@ -1,5 +1,4 @@
-#[allow(unused_imports)]
-use super::ids::StringId;
+use super::prelude::*;
 use super::{
     directives::Directive,
     ids::{DirectiveId, FieldDefinitionId, InputValueDefinitionId, StringLiteralId, TypeId},
@@ -7,12 +6,6 @@ use super::{
     strings::StringLiteral,
     types::Type,
     ReadContext, TypeSystemId,
-};
-#[allow(unused_imports)]
-use crate::{
-    common::{IdRange, OperationType},
-    type_system::DirectiveLocation,
-    AstLookup, Span,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};
@@ -38,13 +31,9 @@ impl<'a> FieldDefinition<'a> {
         let document = self.0.document;
         document.read(document.lookup(self.0.id).ty)
     }
-    pub fn arguments(&self) -> impl ExactSizeIterator<Item = InputValueDefinition<'a>> + 'a {
+    pub fn arguments(&self) -> Iter<'a, InputValueDefinition<'a>> {
         let document = self.0.document;
-        document
-            .lookup(self.0.id)
-            .arguments
-            .iter()
-            .map(|id| document.read(id))
+        super::Iter::new(document.lookup(self.0.id).arguments, document)
     }
     pub fn description(&self) -> Option<StringLiteral<'a>> {
         let document = self.0.document;
@@ -53,13 +42,9 @@ impl<'a> FieldDefinition<'a> {
             .description
             .map(|id| document.read(id))
     }
-    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
+    pub fn directives(&self) -> Iter<'a, Directive<'a>> {
         let document = self.0.document;
-        document
-            .lookup(self.0.id)
-            .directives
-            .iter()
-            .map(|id| document.read(id))
+        super::Iter::new(document.lookup(self.0.id).directives, document)
     }
     pub fn span(&self) -> Span {
         let document = self.0.document;
@@ -82,6 +67,10 @@ impl fmt::Debug for FieldDefinition<'_> {
 
 impl TypeSystemId for FieldDefinitionId {
     type Reader<'a> = FieldDefinition<'a>;
+}
+
+impl IdReader for FieldDefinition<'_> {
+    type Id = FieldDefinitionId;
 }
 
 impl<'a> From<ReadContext<'a, FieldDefinitionId>> for FieldDefinition<'a> {

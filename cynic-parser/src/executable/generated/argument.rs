@@ -39,7 +39,7 @@ impl ExecutableId for ArgumentId {
     type Reader<'a> = Argument<'a>;
 }
 
-impl super::IdReader for Argument<'_> {
+impl IdReader for Argument<'_> {
     type Id = ArgumentId;
 }
 

@@ -1,5 +1,4 @@
-#[allow(unused_imports)]
-use super::ids::StringId;
+use super::prelude::*;
 use super::{
     directives::Directive,
     ids::{DirectiveId, InputValueDefinitionId, StringLiteralId, TypeId, ValueId},
@@ -7,12 +6,6 @@ use super::{
     types::Type,
     value::Value,
     ReadContext, TypeSystemId,
-};
-#[allow(unused_imports)]
-use crate::{
-    common::{IdRange, OperationType},
-    type_system::DirectiveLocation,
-    AstLookup, Span,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};
@@ -52,13 +45,9 @@ impl<'a> InputValueDefinition<'a> {
             .default_value
             .map(|id| document.read(id))
     }
-    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
+    pub fn directives(&self) -> Iter<'a, Directive<'a>> {
         let document = self.0.document;
-        document
-            .lookup(self.0.id)
-            .directives
-            .iter()
-            .map(|id| document.read(id))
+        super::Iter::new(document.lookup(self.0.id).directives, document)
     }
     pub fn span(&self) -> Span {
         let document = self.0.document;
@@ -81,6 +70,10 @@ impl fmt::Debug for InputValueDefinition<'_> {
 
 impl TypeSystemId for InputValueDefinitionId {
     type Reader<'a> = InputValueDefinition<'a>;
+}
+
+impl IdReader for InputValueDefinition<'_> {
+    type Id = InputValueDefinitionId;
 }
 
 impl<'a> From<ReadContext<'a, InputValueDefinitionId>> for InputValueDefinition<'a> {
