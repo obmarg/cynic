@@ -88,7 +88,7 @@ pub fn imports(
         #[allow(unused_imports)]
         use std::fmt::{self, Write};
 
-        #shared_imports
+        use super::prelude::*;
 
         use super::{
             #(#reader_imports)*
