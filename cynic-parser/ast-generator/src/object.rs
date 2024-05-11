@@ -1,15 +1,19 @@
 use indexmap::IndexMap;
 use proc_macro2::{Ident, Span};
-use quote::{quote, TokenStreamExt};
+use quote::{quote, ToTokens, TokenStreamExt};
 
 use cynic_parser::type_system::{FieldDefinition, ObjectDefinition, TypeDefinition};
 
 use crate::{
     exts::ScalarExt,
-    file::{EntityOutput, EntityRef},
+    file::{EntityKind, EntityOutput, EntityRef},
     format_code,
     idents::IdIdent,
 };
+
+use self::debug::ObjectDebug;
+
+mod debug;
 
 pub fn object_output(
     object: ObjectDefinition<'_>,
@@ -48,6 +52,8 @@ pub fn object_output(
         pub struct #reader_name<'a>(ReadContext<'a, #id_name>);
     })?;
 
+    let reader_debug = format_code(ObjectDebug(&reader_name, &edges).to_token_stream())?;
+
     let reader_impl = format_code(quote! {
         impl <'a> #reader_name<'a> {
             #(#reader_functions)*
@@ -78,6 +84,8 @@ pub fn object_output(
 
         {reader_impl}
 
+        {reader_debug}
+
         {executable_id}
 
         {from_impl}
@@ -92,6 +100,7 @@ pub fn object_output(
             .collect(),
         id: EntityRef::new(TypeDefinition::Object(object)).unwrap(),
         contents,
+        kind: EntityKind::Object,
     })
 }
 

@@ -12,6 +12,8 @@ use crate::{
     type_system::DirectiveLocation,
     AstLookup, Span,
 };
+#[allow(unused_imports)]
+use std::fmt::{self, Write};
 
 pub struct SchemaDefinitionRecord {
     pub description: Option<StringLiteralId>,
@@ -50,6 +52,19 @@ impl<'a> SchemaDefinition<'a> {
     }
 }
 
+impl fmt::Debug for SchemaDefinition<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("SchemaDefinition")
+            .field("description", &self.description())
+            .field("directives", &self.directives().collect::<Vec<_>>())
+            .field(
+                "root_operations",
+                &self.root_operations().collect::<Vec<_>>(),
+            )
+            .finish()
+    }
+}
+
 impl TypeSystemId for SchemaDefinitionId {
     type Reader<'a> = SchemaDefinition<'a>;
 }
@@ -76,6 +91,15 @@ impl<'a> RootOperationTypeDefinition<'a> {
     pub fn named_type(&self) -> &'a str {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).named_type)
+    }
+}
+
+impl fmt::Debug for RootOperationTypeDefinition<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("RootOperationTypeDefinition")
+            .field("operation_type", &self.operation_type())
+            .field("named_type", &self.named_type())
+            .finish()
     }
 }
 

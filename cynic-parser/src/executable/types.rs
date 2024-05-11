@@ -37,7 +37,7 @@ impl<'a> Type<'a> {
     }
 }
 
-impl<'a> std::fmt::Display for Type<'a> {
+impl std::fmt::Display for Type<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let ast = &self.0.document;
 
@@ -58,6 +58,12 @@ impl<'a> std::fmt::Display for Type<'a> {
         }
 
         Ok(())
+    }
+}
+
+impl std::fmt::Debug for Type<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_tuple("Type").field(&self.to_string()).finish()
     }
 }
 

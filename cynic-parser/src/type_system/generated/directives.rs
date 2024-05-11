@@ -15,6 +15,8 @@ use crate::{
     type_system::DirectiveLocation,
     AstLookup, Span,
 };
+#[allow(unused_imports)]
+use std::fmt::{self, Write};
 
 pub struct DirectiveDefinitionRecord {
     pub name: StringId,
@@ -62,6 +64,19 @@ impl<'a> DirectiveDefinition<'a> {
     }
 }
 
+impl fmt::Debug for DirectiveDefinition<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("DirectiveDefinition")
+            .field("name", &self.name())
+            .field("description", &self.description())
+            .field("arguments", &self.arguments().collect::<Vec<_>>())
+            .field("is_repeatable", &self.is_repeatable())
+            .field("locations", &self.locations().collect::<Vec<_>>())
+            .field("span", &self.span())
+            .finish()
+    }
+}
+
 impl TypeSystemId for DirectiveDefinitionId {
     type Reader<'a> = DirectiveDefinition<'a>;
 }
@@ -92,6 +107,15 @@ impl<'a> Directive<'a> {
             .arguments
             .iter()
             .map(|id| document.read(id))
+    }
+}
+
+impl fmt::Debug for Directive<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("Directive")
+            .field("name", &self.name())
+            .field("arguments", &self.arguments().collect::<Vec<_>>())
+            .finish()
     }
 }
 

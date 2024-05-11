@@ -11,6 +11,8 @@ use crate::{
     type_system::DirectiveLocation,
     AstLookup, Span,
 };
+#[allow(unused_imports)]
+use std::fmt::{self, Write};
 
 pub struct ArgumentRecord {
     pub name: StringId,
@@ -28,6 +30,15 @@ impl<'a> Argument<'a> {
     pub fn value(&self) -> Value<'a> {
         let document = self.0.document;
         document.read(document.lookup(self.0.id).value)
+    }
+}
+
+impl fmt::Debug for Argument<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("Argument")
+            .field("name", &self.name())
+            .field("value", &self.value())
+            .finish()
     }
 }
 

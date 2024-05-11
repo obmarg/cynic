@@ -20,7 +20,7 @@ pub enum ValueRecord {
     Object(Vec<(StringId, ValueId)>),
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub enum Value<'a> {
     Variable(&'a str),
     Int(i32),

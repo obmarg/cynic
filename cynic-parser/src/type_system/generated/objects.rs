@@ -13,6 +13,8 @@ use crate::{
     type_system::DirectiveLocation,
     AstLookup, Span,
 };
+#[allow(unused_imports)]
+use std::fmt::{self, Write};
 
 pub struct ObjectDefinitionRecord {
     pub name: StringId,
@@ -65,6 +67,22 @@ impl<'a> ObjectDefinition<'a> {
     pub fn span(&self) -> Span {
         let document = self.0.document;
         document.lookup(self.0.id).span
+    }
+}
+
+impl fmt::Debug for ObjectDefinition<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("ObjectDefinition")
+            .field("name", &self.name())
+            .field("description", &self.description())
+            .field("fields", &self.fields().collect::<Vec<_>>())
+            .field("directives", &self.directives().collect::<Vec<_>>())
+            .field(
+                "implements_interfaces",
+                &self.implements_interfaces().collect::<Vec<_>>(),
+            )
+            .field("span", &self.span())
+            .finish()
     }
 }
 

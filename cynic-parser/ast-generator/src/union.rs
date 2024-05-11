@@ -6,7 +6,7 @@ use cynic_parser::type_system::{TypeDefinition, UnionDefinition};
 
 use crate::{
     exts::UnionExt,
-    file::{EntityOutput, EntityRef},
+    file::{EntityKind, EntityOutput, EntityRef},
     format_code,
     idents::IdIdent,
 };
@@ -53,7 +53,7 @@ pub fn union_output(
     })?;
 
     let reader = format_code(quote! {
-        #[derive(Clone, Copy)]
+        #[derive(Clone, Copy, Debug)]
         pub enum #reader_name<'a> {
             #(#reader_variants),*
         }
@@ -97,6 +97,7 @@ pub fn union_output(
             .collect(),
         id: EntityRef::new(TypeDefinition::Union(union_definition)).unwrap(),
         contents,
+        kind: EntityKind::Union,
     })
 }
 

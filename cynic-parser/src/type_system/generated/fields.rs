@@ -14,6 +14,8 @@ use crate::{
     type_system::DirectiveLocation,
     AstLookup, Span,
 };
+#[allow(unused_imports)]
+use std::fmt::{self, Write};
 
 pub struct FieldDefinitionRecord {
     pub name: StringId,
@@ -62,6 +64,19 @@ impl<'a> FieldDefinition<'a> {
     pub fn span(&self) -> Span {
         let document = self.0.document;
         document.lookup(self.0.id).span
+    }
+}
+
+impl fmt::Debug for FieldDefinition<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("FieldDefinition")
+            .field("name", &self.name())
+            .field("ty", &self.ty())
+            .field("arguments", &self.arguments().collect::<Vec<_>>())
+            .field("description", &self.description())
+            .field("directives", &self.directives().collect::<Vec<_>>())
+            .field("span", &self.span())
+            .finish()
     }
 }
 

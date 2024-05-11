@@ -4,10 +4,10 @@ use crate::{common::trim_block_string_whitespace, type_system::StringLiteralId, 
 
 use super::{ReadContext, TypeSystemId};
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub struct StringLiteral<'a>(StringLiteralInner<'a>);
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 enum StringLiteralInner<'a> {
     String(&'a str),
     BlockString(&'a str),

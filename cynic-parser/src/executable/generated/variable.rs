@@ -12,6 +12,8 @@ use crate::{
     common::{IdRange, OperationType},
     AstLookup,
 };
+#[allow(unused_imports)]
+use std::fmt::{self, Write};
 
 pub struct VariableDefinitionRecord {
     pub name: StringId,
@@ -25,8 +27,8 @@ pub struct VariableDefinition<'a>(ReadContext<'a, VariableDefinitionId>);
 
 impl<'a> VariableDefinition<'a> {
     pub fn name(&self) -> &'a str {
-        let ast = &self.0.document;
-        ast.lookup(ast.lookup(self.0.id).name)
+        let document = &self.0.document;
+        document.lookup(document.lookup(self.0.id).name)
     }
     pub fn ty(&self) -> Type<'a> {
         let document = self.0.document;
@@ -39,13 +41,24 @@ impl<'a> VariableDefinition<'a> {
             .default_value
             .map(|id| document.read(id))
     }
-    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> {
+    pub fn directives(&self) -> impl ExactSizeIterator<Item = Directive<'a>> + 'a {
         let document = self.0.document;
         document
             .lookup(self.0.id)
             .directives
             .iter()
             .map(|id| document.read(id))
+    }
+}
+
+impl fmt::Debug for VariableDefinition<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("VariableDefinition")
+            .field("name", &self.name())
+            .field("ty", &self.ty())
+            .field("default_value", &self.default_value())
+            .field("directives", &self.directives().collect::<Vec<_>>())
+            .finish()
     }
 }
 
