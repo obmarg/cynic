@@ -8,6 +8,12 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v3.7.1 - 2024-05-14
+
+### Bug Fixes
+
+- disable clippy::nursery in schema module ([#951](https://github.com/obmarg/cynic/pull/951))
+
 ## [v3.7.0](https://github.com/obmarg/cynic/compare/v3.6.1...v3.7.0) - 2024-04-28
 
 ### New Features

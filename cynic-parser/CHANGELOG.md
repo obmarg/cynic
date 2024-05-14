@@ -9,6 +9,18 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.2.7 - 2024-05-14
+
+### New Features
+
+- add iterator type to cynic-parser ([#945](https://github.com/obmarg/cynic/pull/945))
+- debug impls for parser ast ([#923](https://github.com/obmarg/cynic/pull/923))
+
+### Bug Fixes
+
+- directive location panic in cynic-parser ([#948](https://github.com/obmarg/cynic/pull/948))
+- a query formatting issue in parser ([#947](https://github.com/obmarg/cynic/pull/947))
+
 ## [v0.2.6](https://github.com/obmarg/cynic/compare/cynic-parser-v0.2.5...cynic-parser-v0.2.6) - 2024-04-16
 
 ### Features
