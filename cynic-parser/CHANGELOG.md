@@ -13,22 +13,28 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### New Features
 
-- add iterator type to cynic-parser ([#945](https://github.com/obmarg/cynic/pull/945))
-- debug impls for parser ast ([#923](https://github.com/obmarg/cynic/pull/923))
+- Updated most functions to return the named type `Iter` rather than
+  `impl ExactSizedIterator` ([#945](https://github.com/obmarg/cynic/pull/945))
+- All the readers now `impl Debug`
+  ([#923](https://github.com/obmarg/cynic/pull/923))
 
 ### Bug Fixes
 
-- directive location panic in cynic-parser ([#948](https://github.com/obmarg/cynic/pull/948))
-- a query formatting issue in parser ([#947](https://github.com/obmarg/cynic/pull/947))
+- Parser now errors on an invalid directive location instead of panicing
+  ([#948](https://github.com/obmarg/cynic/pull/948))
+- Pretty printing now formats long arguments correctly
+  ([#947](https://github.com/obmarg/cynic/pull/947))
 
 ## [v0.2.6](https://github.com/obmarg/cynic/compare/cynic-parser-v0.2.5...cynic-parser-v0.2.6) - 2024-04-16
 
 ### Features
+
 - implement PartialEq for Type and Value ([#924](https://github.com/obmarg/cynic/pull/924))
 
 ## [v0.2.5](https://github.com/obmarg/cynic/compare/cynic-parser-v0.2.4...cynic-parser-v0.2.5) - 2024-04-15
 
 ### Fixes
+
 - Directives on schema definitions are now parsed correctly
   ([#921](https://github.com/obmarg/cynic/pull/921))
 - Schema extensions without operation definitions are now parsed correctly
@@ -37,12 +43,14 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ## [v0.2.4](https://github.com/obmarg/cynic/compare/cynic-parser-v0.2.3...cynic-parser-v0.2.4) - 2024-04-15
 
 ### Fixes
+
 - TypeSystemDocument::definitions() now returns an ExactSizeIterator
   ([#919](https://github.com/obmarg/cynic/pull/919))
 
 ## [0.2.3](https://github.com/obmarg/cynic/compare/cynic-parser-v0.2.2...cynic-parser-v0.2.3) - 2024-04-15
 
 ### Fixes
+
 - Pretty printing output is now significantly improved, but still not perfect
   ([#916](https://github.com/obmarg/cynic/pull/916))
 
@@ -67,7 +75,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Changes
 
-- Probably a ton of other things.  I'm not going to list the changes
+- Probably a ton of other things. I'm not going to list the changes
   exhaustively because of how early this library is - I'd be surprised
   if anyone was using it (if I'm wrong please let me know).
 

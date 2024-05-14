@@ -12,7 +12,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Bug Fixes
 
-- disable clippy::nursery in schema module ([#951](https://github.com/obmarg/cynic/pull/951))
+- Schema file should no longer cause clippy warnings if `clippy::nursery` is on.
+  ([#951](https://github.com/obmarg/cynic/pull/951))
 
 ## [v3.7.0](https://github.com/obmarg/cynic/compare/v3.6.1...v3.7.0) - 2024-04-28
 
@@ -74,7 +75,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ### Changes
 
 - If you accidentally write a recursive query without the `recurse` attribute
-  you'll now get a panic suggesting to use `recurse`.  This may cause false
+  you'll now get a panic suggesting to use `recurse`. This may cause false
   positives if you're writing a particularly large query - users should raise
   an issue if I've picked a number that's too low.
 
@@ -119,9 +120,9 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ### New Features
 
 - The `QueryVariables` derive now supports `skip_serializing_if`
-- `cynic-cli` has a new `querygen` command as an alternative to the 
-   web-based generator (Note: this is experimental and may be subject
-   to change)
+- `cynic-cli` has a new `querygen` command as an alternative to the
+  web-based generator (Note: this is experimental and may be subject
+  to change)
 
 ### Changes
 
