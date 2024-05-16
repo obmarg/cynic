@@ -64,9 +64,14 @@ where
         let mut document = allocator.nil();
         for (index, item) in self.iterator {
             if index != 0 {
-                document = document.append(allocator.hardline());
                 if item.has_docstring() {
-                    document = document.append(allocator.hardline().nest(-2))
+                    // We use a hardcoded `\n` for the first newline here because
+                    // pretty always adds an indent but we want this line blank
+                    document = document
+                        .append(allocator.text("\n"))
+                        .append(allocator.hardline());
+                } else {
+                    document = document.append(allocator.hardline());
                 }
             }
             document = document.append(NodeDisplay(item));

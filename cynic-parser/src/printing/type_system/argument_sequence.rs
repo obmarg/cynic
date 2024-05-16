@@ -30,9 +30,13 @@ impl<'a> Pretty<'a, Allocator<'a>> for ArgumentSequence<'a> {
         let mut document = allocator.nil();
         for (index, item) in self.iterator {
             if index != 0 {
-                document = document.append(comma_or_newline(allocator));
                 if item.description().is_some() {
+                    // We use a hardcoded `\n` for the first newline here because
+                    // pretty always adds an indent on line but we want this line blank
+                    document = document.append(allocator.text("\n").flat_alt(allocator.text(", ")));
                     document = document.append(allocator.hardline());
+                } else {
+                    document = document.append(allocator.line().flat_alt(allocator.text(", ")));
                 }
             }
             document = document.append(NodeDisplay(item));
