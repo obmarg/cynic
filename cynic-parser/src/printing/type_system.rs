@@ -1,6 +1,11 @@
+mod argument_sequence;
+mod field_sequence;
+
 use pretty::{DocAllocator, Pretty};
 
 use crate::type_system::*;
+
+use self::{argument_sequence::ArgumentSequence, field_sequence::FieldSequence};
 
 use super::escape_string;
 
@@ -181,17 +186,15 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<ObjectDefinition<'a>> {
             );
         }
 
-        let mut fields = self.0.fields().peekable();
-        if fields.peek().is_some() {
+        let fields = self.0.fields();
+        if fields.len() != 0 {
             builder = builder
                 .append(allocator.space())
                 .append(allocator.text("{"))
                 .append(
                     allocator
                         .hardline()
-                        .append(
-                            allocator.intersperse(fields.map(NodeDisplay), allocator.hardline()),
-                        )
+                        .append(FieldSequence::new(fields))
                         .nest(2),
                 )
                 .append(allocator.hardline())
@@ -217,14 +220,12 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<FieldDefinition<'a>> {
 
         let mut arguments_pretty = allocator.nil();
 
-        let mut arguments = self.0.arguments().peekable();
+        let arguments = self.0.arguments();
 
-        if arguments.peek().is_some() {
+        if arguments.len() != 0 {
             arguments_pretty = allocator
                 .line_()
-                .append(
-                    allocator.intersperse(arguments.map(NodeDisplay), comma_or_newline(allocator)),
-                )
+                .append(ArgumentSequence::new(arguments))
                 .nest(2)
                 .append(allocator.line_())
                 .parens()
@@ -283,17 +284,16 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<InterfaceDefinition<'a>> {
             );
         }
 
-        let mut fields = self.0.fields().peekable();
-        if fields.peek().is_some() {
+        let fields = self.0.fields();
+        if fields.len() != 0 {
             builder = builder
                 .append(allocator.space())
                 .append(allocator.text("{"))
-                .append(allocator.hardline())
-                .append(allocator.text("  "))
                 .append(
                     allocator
-                        .intersperse(fields.map(NodeDisplay), allocator.hardline())
-                        .align(),
+                        .hardline()
+                        .append(FieldSequence::new(fields))
+                        .nest(2),
                 )
                 .append(allocator.hardline())
                 .append(allocator.text("}"));
@@ -438,17 +438,15 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<InputObjectDefinition<'a>> {
             );
         }
 
-        let mut fields = self.0.fields().peekable();
-        if fields.peek().is_some() {
+        let fields = self.0.fields();
+        if fields.len() != 0 {
             builder = builder
                 .append(allocator.space())
                 .append(allocator.text("{"))
                 .append(
                     allocator
                         .hardline()
-                        .append(
-                            allocator.intersperse(fields.map(NodeDisplay), allocator.hardline()),
-                        )
+                        .append(FieldSequence::new(fields))
                         .nest(2),
                 )
                 .append(allocator.hardline())
@@ -515,14 +513,12 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<DirectiveDefinition<'a>> {
             .append("@")
             .append(self.0.name());
 
-        let mut arguments = self.0.arguments().peekable();
+        let arguments = self.0.arguments();
 
-        if arguments.peek().is_some() {
+        if arguments.len() != 0 {
             let arguments = allocator
                 .line_()
-                .append(
-                    allocator.intersperse(arguments.map(NodeDisplay), comma_or_newline(allocator)),
-                )
+                .append(ArgumentSequence::new(arguments))
                 .nest(2)
                 .append(allocator.line_())
                 .parens()
