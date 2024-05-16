@@ -653,7 +653,3 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<StringLiteral<'a>> {
         }
     }
 }
-
-fn comma_or_newline<'a>(allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>> {
-    allocator.line().flat_alt(allocator.text(", "))
-}
