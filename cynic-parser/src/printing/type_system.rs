@@ -369,17 +369,19 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<EnumDefinition<'a>> {
             );
         }
 
-        let values = self.0.values().collect::<Vec<_>>();
+        let values = self.0.values();
 
-        if !values.is_empty() {
+        if values.len() != 0 {
             builder = builder
                 .append(allocator.space())
                 .append(allocator.text("{"))
-                .append(allocator.hardline())
                 .append(
                     allocator
-                        .intersperse(values.into_iter().map(NodeDisplay), allocator.hardline())
-                        .indent(2),
+                        .hardline()
+                        .append(FieldSequence::new(values))
+                        // allocator
+                        //     .intersperse(values.into_iter().map(NodeDisplay), allocator.hardline())
+                        .nest(2),
                 )
                 .append(allocator.hardline())
                 .append(allocator.text("}"));

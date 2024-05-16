@@ -5,7 +5,8 @@ use pretty::{DocAllocator, Pretty};
 use crate::common::IdOperations;
 
 use super::{
-    iter::IdReader, Allocator, FieldDefinition, InputValueDefinition, NodeDisplay, TypeSystemId,
+    iter::IdReader, Allocator, EnumValueDefinition, FieldDefinition, InputValueDefinition,
+    NodeDisplay, TypeSystemId,
 };
 
 /// A sequence of things with docstrings attached.
@@ -47,6 +48,12 @@ impl DocstringedItem for FieldDefinition<'_> {
 }
 
 impl DocstringedItem for InputValueDefinition<'_> {
+    fn has_docstring(&self) -> bool {
+        self.description().is_some()
+    }
+}
+
+impl DocstringedItem for EnumValueDefinition<'_> {
     fn has_docstring(&self) -> bool {
         self.description().is_some()
     }

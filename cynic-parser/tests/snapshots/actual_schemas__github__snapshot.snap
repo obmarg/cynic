@@ -200,6 +200,7 @@ enum ActorType {
   Indicates a team actor.
   """
   TEAM
+
   """
   Indicates a user actor.
   """
@@ -2971,10 +2972,12 @@ enum CheckAnnotationLevel {
   An annotation indicating an inescapable error.
   """
   FAILURE
+
   """
   An annotation indicating some information.
   """
   NOTICE
+
   """
   An annotation indicating an ignorable error.
   """
@@ -3044,34 +3047,42 @@ enum CheckConclusionState {
   The check suite or run requires action.
   """
   ACTION_REQUIRED
+
   """
   The check suite or run has been cancelled.
   """
   CANCELLED
+
   """
   The check suite or run has failed.
   """
   FAILURE
+
   """
   The check suite or run was neutral.
   """
   NEUTRAL
+
   """
   The check suite or run was skipped.
   """
   SKIPPED
+
   """
   The check suite or run was marked stale by GitHub. Only GitHub can use this conclusion.
   """
   STALE
+
   """
   The check suite or run has failed at startup.
   """
   STARTUP_FAILURE
+
   """
   The check suite or run has succeeded.
   """
   SUCCESS
+
   """
   The check suite or run has timed out.
   """
@@ -3397,54 +3408,67 @@ enum CheckRunState {
   The check run requires action.
   """
   ACTION_REQUIRED
+
   """
   The check run has been cancelled.
   """
   CANCELLED
+
   """
   The check run has been completed.
   """
   COMPLETED
+
   """
   The check run has failed.
   """
   FAILURE
+
   """
   The check run is in progress.
   """
   IN_PROGRESS
+
   """
   The check run was neutral.
   """
   NEUTRAL
+
   """
   The check run is in pending state.
   """
   PENDING
+
   """
   The check run has been queued.
   """
   QUEUED
+
   """
   The check run was skipped.
   """
   SKIPPED
+
   """
   The check run was marked stale by GitHub. Only GitHub can use this conclusion.
   """
   STALE
+
   """
   The check run has failed at startup.
   """
   STARTUP_FAILURE
+
   """
   The check run has succeeded.
   """
   SUCCESS
+
   """
   The check run has timed out.
   """
   TIMED_OUT
+
   """
   The check run is in waiting state.
   """
@@ -3474,6 +3498,7 @@ enum CheckRunType {
   Every check run available.
   """
   ALL
+
   """
   The latest check run.
   """
@@ -3488,22 +3513,27 @@ enum CheckStatusState {
   The check suite or run has been completed.
   """
   COMPLETED
+
   """
   The check suite or run is in progress.
   """
   IN_PROGRESS
+
   """
   The check suite or run is in pending state.
   """
   PENDING
+
   """
   The check suite or run has been queued.
   """
   QUEUED
+
   """
   The check suite or run has been requested.
   """
   REQUESTED
+
   """
   The check suite or run is in waiting state.
   """
@@ -4242,10 +4272,12 @@ enum CollaboratorAffiliation {
   All collaborators the authenticated user can see.
   """
   ALL
+
   """
   All collaborators with permissions to an organization-owned subject, regardless of organization membership status.
   """
   DIRECT
+
   """
   All outside collaborators of an organization-owned subject.
   """
@@ -4356,30 +4388,37 @@ enum CommentAuthorAssociation {
   Author has been invited to collaborate on the repository.
   """
   COLLABORATOR
+
   """
   Author has previously committed to the repository.
   """
   CONTRIBUTOR
+
   """
   Author has not previously committed to GitHub.
   """
   FIRST_TIMER
+
   """
   Author has not previously committed to the repository.
   """
   FIRST_TIME_CONTRIBUTOR
+
   """
   Author is a placeholder for an unclaimed user.
   """
   MANNEQUIN
+
   """
   Author is a member of the organization that owns the repository.
   """
   MEMBER
+
   """
   Author has no association with the repository.
   """
   NONE
+
   """
   Author is the owner of the repository.
   """
@@ -4394,26 +4433,32 @@ enum CommentCannotUpdateReason {
   Unable to create comment because repository is archived.
   """
   ARCHIVED
+
   """
   You cannot update this comment
   """
   DENIED
+
   """
   You must be the author or have write access to this repository to update this comment.
   """
   INSUFFICIENT_ACCESS
+
   """
   Unable to create comment because issue is locked.
   """
   LOCKED
+
   """
   You must be logged in to update this comment.
   """
   LOGIN_REQUIRED
+
   """
   Repository is under maintenance.
   """
   MAINTENANCE
+
   """
   At least one email address must be verified to update this comment.
   """
@@ -5310,6 +5355,7 @@ enum CommitContributionOrderField {
   Order commit contributions by how many commits they represent.
   """
   COMMIT_COUNT
+
   """
   Order commit contributions by when they were made.
   """
@@ -5655,14 +5701,17 @@ enum ComparisonStatus {
   The head ref is ahead of the base ref.
   """
   AHEAD
+
   """
   The head ref is behind the base ref.
   """
   BEHIND
+
   """
   The head ref is both ahead and behind of the base ref, indicating git history has diverged.
   """
   DIVERGED
+
   """
   The head ref and base ref are identical.
   """
@@ -5861,18 +5910,22 @@ enum ContributionLevel {
   Lowest 25% of days of contributions.
   """
   FIRST_QUARTILE
+
   """
   Highest 25% of days of contributions. More contributions than the third quartile.
   """
   FOURTH_QUARTILE
+
   """
   No contributions occurred.
   """
   NONE
+
   """
   Second lowest 25% of days of contributions. More contributions than the first quartile.
   """
   SECOND_QUARTILE
+
   """
   Second highest 25% of days of contributions. More contributions than second quartile, less than the fourth quartile.
   """
@@ -8789,14 +8842,17 @@ enum DefaultRepositoryPermissionField {
   Can read, write, and administrate repos by default
   """
   ADMIN
+
   """
   No access
   """
   NONE
+
   """
   Can read repos by default
   """
   READ
+
   """
   Can read and write repos by default
   """
@@ -9705,42 +9761,52 @@ enum DependencyGraphEcosystem {
   GitHub Actions
   """
   ACTIONS
+
   """
   PHP packages hosted at packagist.org
   """
   COMPOSER
+
   """
   Go modules
   """
   GO
+
   """
   Java artifacts hosted at the Maven central repository
   """
   MAVEN
+
   """
   JavaScript packages hosted at npmjs.com
   """
   NPM
+
   """
   .NET packages hosted at the NuGet Gallery
   """
   NUGET
+
   """
   Python packages hosted at PyPI.org
   """
   PIP
+
   """
   Dart packages hosted at pub.dev
   """
   PUB
+
   """
   Ruby gems hosted at RubyGems.org
   """
   RUBYGEMS
+
   """
   Rust crates
   """
   RUST
+
   """
   Swift packages
   """
@@ -10251,6 +10317,7 @@ enum DeploymentProtectionRuleType {
   Required reviewers
   """
   REQUIRED_REVIEWERS
+
   """
   Wait timer
   """
@@ -10446,6 +10513,7 @@ enum DeploymentReviewState {
   The deployment was approved.
   """
   APPROVED
+
   """
   The deployment was rejected.
   """
@@ -10505,42 +10573,52 @@ enum DeploymentState {
   The pending deployment was not updated after 30 minutes.
   """
   ABANDONED
+
   """
   The deployment is currently active.
   """
   ACTIVE
+
   """
   An inactive transient deployment.
   """
   DESTROYED
+
   """
   The deployment experienced an error.
   """
   ERROR
+
   """
   The deployment has failed.
   """
   FAILURE
+
   """
   The deployment is inactive.
   """
   INACTIVE
+
   """
   The deployment is in progress.
   """
   IN_PROGRESS
+
   """
   The deployment is pending.
   """
   PENDING
+
   """
   The deployment has queued
   """
   QUEUED
+
   """
   The deployment was successful.
   """
   SUCCESS
+
   """
   The deployment is waiting.
   """
@@ -10646,30 +10724,37 @@ enum DeploymentStatusState {
   The deployment experienced an error.
   """
   ERROR
+
   """
   The deployment has failed.
   """
   FAILURE
+
   """
   The deployment is inactive.
   """
   INACTIVE
+
   """
   The deployment is in progress.
   """
   IN_PROGRESS
+
   """
   The deployment is pending.
   """
   PENDING
+
   """
   The deployment is queued
   """
   QUEUED
+
   """
   The deployment was successful.
   """
   SUCCESS
+
   """
   The deployment is waiting.
   """
@@ -10714,6 +10799,7 @@ enum DiffSide {
   The left side of the diff.
   """
   LEFT
+
   """
   The right side of the diff.
   """
@@ -11211,10 +11297,12 @@ enum DiscussionCloseReason {
   The discussion is a duplicate of another
   """
   DUPLICATE
+
   """
   The discussion is no longer relevant
   """
   OUTDATED
+
   """
   The discussion has been resolved
   """
@@ -11582,6 +11670,7 @@ enum DiscussionOrderField {
   Order discussions by creation time.
   """
   CREATED_AT
+
   """
   Order discussions by most recent modification time.
   """
@@ -11740,6 +11829,7 @@ enum DiscussionPollOptionOrderField {
   Order poll options by the order that the poll author specified when creating the poll.
   """
   AUTHORED_ORDER
+
   """
   Order poll options by the number of votes it has.
   """
@@ -11754,6 +11844,7 @@ enum DiscussionState {
   A discussion that has been closed
   """
   CLOSED
+
   """
   A discussion that is open
   """
@@ -11768,14 +11859,17 @@ enum DiscussionStateReason {
   The discussion is a duplicate of another
   """
   DUPLICATE
+
   """
   The discussion is no longer relevant
   """
   OUTDATED
+
   """
   The discussion was reopened
   """
   REOPENED
+
   """
   The discussion has been resolved
   """
@@ -11825,18 +11919,22 @@ enum DismissReason {
   A fix has already been started
   """
   FIX_STARTED
+
   """
   This alert is inaccurate or incorrect
   """
   INACCURATE
+
   """
   Vulnerable code is not actually used
   """
   NOT_USED
+
   """
   No bandwidth to fix this
   """
   NO_BANDWIDTH
+
   """
   Risk is tolerable to this project
   """
@@ -12502,6 +12600,7 @@ enum EnterpriseAdministratorRole {
   Represents a billing manager of the enterprise account.
   """
   BILLING_MANAGER
+
   """
   Represents an owner of the enterprise account.
   """
@@ -12516,22 +12615,27 @@ enum EnterpriseAllowPrivateRepositoryForkingPolicyValue {
   Members can fork a repository to an organization within this enterprise.
   """
   ENTERPRISE_ORGANIZATIONS
+
   """
   Members can fork a repository to their enterprise-managed user account or an organization inside this enterprise.
   """
   ENTERPRISE_ORGANIZATIONS_USER_ACCOUNTS
+
   """
   Members can fork a repository to their user account or an organization, either inside or outside of this enterprise.
   """
   EVERYWHERE
+
   """
   Members can fork a repository only within the same organization (intra-org).
   """
   SAME_ORGANIZATION
+
   """
   Members can fork a repository to their user account or within the same organization.
   """
   SAME_ORGANIZATION_USER_ACCOUNTS
+
   """
   Members can fork a repository to their user account.
   """
@@ -12646,18 +12750,22 @@ enum EnterpriseDefaultRepositoryPermissionSettingValue {
   Organization members will be able to clone, pull, push, and add new collaborators to all organization repositories.
   """
   ADMIN
+
   """
   Organization members will only be able to clone and pull public repositories.
   """
   NONE
+
   """
   Organizations in the enterprise choose base repository permissions for their members.
   """
   NO_POLICY
+
   """
   Organization members will be able to clone and pull all organization repositories.
   """
   READ
+
   """
   Organization members will be able to clone, pull, and push all organization repositories.
   """
@@ -12687,10 +12795,12 @@ enum EnterpriseEnabledDisabledSettingValue {
   The setting is disabled for organizations in the enterprise.
   """
   DISABLED
+
   """
   The setting is enabled for organizations in the enterprise.
   """
   ENABLED
+
   """
   There is no policy set for organizations in the enterprise.
   """
@@ -12705,6 +12815,7 @@ enum EnterpriseEnabledSettingValue {
   The setting is enabled for organizations in the enterprise.
   """
   ENABLED
+
   """
   There is no policy set for organizations in the enterprise.
   """
@@ -12907,6 +13018,7 @@ enum EnterpriseMemberOrderField {
   Order enterprise members by creation time
   """
   CREATED_AT
+
   """
   Order enterprise members by login
   """
@@ -12921,18 +13033,22 @@ enum EnterpriseMembersCanCreateRepositoriesSettingValue {
   Members will be able to create public and private repositories.
   """
   ALL
+
   """
   Members will not be able to create public or private repositories.
   """
   DISABLED
+
   """
   Organization administrators choose whether to allow members to create repositories.
   """
   NO_POLICY
+
   """
   Members will be able to create only private repositories.
   """
   PRIVATE
+
   """
   Members will be able to create only public repositories.
   """
@@ -12947,6 +13063,7 @@ enum EnterpriseMembersCanMakePurchasesSettingValue {
   The setting is disabled for organizations in the enterprise.
   """
   DISABLED
+
   """
   The setting is enabled for organizations in the enterprise.
   """
@@ -12961,14 +13078,17 @@ enum EnterpriseMembershipType {
   Returns all enterprises in which the user is an admin.
   """
   ADMIN
+
   """
   Returns all enterprises in which the user is a member, admin, or billing manager.
   """
   ALL
+
   """
   Returns all enterprises in which the user is a billing manager.
   """
   BILLING_MANAGER
+
   """
   Returns all enterprises in which the user is a member of an org that is owned by the enterprise.
   """
@@ -14464,10 +14584,12 @@ enum EnterpriseServerInstallationOrderField {
   Order Enterprise Server installations by creation time
   """
   CREATED_AT
+
   """
   Order Enterprise Server installations by customer name
   """
   CUSTOMER_NAME
+
   """
   Order Enterprise Server installations by host name
   """
@@ -14710,6 +14832,7 @@ enum EnterpriseServerUserAccountOrderField {
   Order user accounts by login
   """
   LOGIN
+
   """
   Order user accounts by creation time on the Enterprise Server installation
   """
@@ -14825,10 +14948,12 @@ enum EnterpriseServerUserAccountsUploadSyncState {
   The synchronization of the upload failed.
   """
   FAILURE
+
   """
   The synchronization of the upload is pending.
   """
   PENDING
+
   """
   The synchronization of the upload succeeded.
   """
@@ -14980,10 +15105,12 @@ enum EnterpriseUserAccountMembershipRole {
   The user is a member of an organization in the enterprise.
   """
   MEMBER
+
   """
   The user is an owner of an organization in the enterprise.
   """
   OWNER
+
   """
   The user is not an owner of the enterprise, and not a member or owner of any
   organizations in the enterprise; only for EMU-enabled enterprises.
@@ -14999,6 +15126,7 @@ enum EnterpriseUserDeployment {
   The user is part of a GitHub Enterprise Cloud deployment.
   """
   CLOUD
+
   """
   The user is part of a GitHub Enterprise Server deployment.
   """
@@ -15439,10 +15567,12 @@ enum FileViewedState {
   The file has new changes since last viewed.
   """
   DISMISSED
+
   """
   The file has not been marked as viewed.
   """
   UNVIEWED
+
   """
   The file has been marked as viewed.
   """
@@ -15582,42 +15712,52 @@ enum FundingPlatform {
   Community Bridge funding platform.
   """
   COMMUNITY_BRIDGE
+
   """
   Custom funding platform.
   """
   CUSTOM
+
   """
   GitHub funding platform.
   """
   GITHUB
+
   """
   IssueHunt funding platform.
   """
   ISSUEHUNT
+
   """
   Ko-fi funding platform.
   """
   KO_FI
+
   """
   LFX Crowdfunding funding platform.
   """
   LFX_CROWDFUNDING
+
   """
   Liberapay funding platform.
   """
   LIBERAPAY
+
   """
   Open Collective funding platform.
   """
   OPEN_COLLECTIVE
+
   """
   Otechie funding platform.
   """
   OTECHIE
+
   """
   Patreon funding platform.
   """
   PATREON
+
   """
   Tidelift funding platform.
   """
@@ -16101,10 +16241,12 @@ enum GistOrderField {
   Order gists by creation time
   """
   CREATED_AT
+
   """
   Order gists by push time
   """
   PUSHED_AT
+
   """
   Order gists by update time
   """
@@ -16119,10 +16261,12 @@ enum GistPrivacy {
   Gists that are public and secret
   """
   ALL
+
   """
   Public
   """
   PUBLIC
+
   """
   Secret
   """
@@ -16339,66 +16483,82 @@ enum GitSignatureState {
   The signing certificate or its chain could not be verified
   """
   BAD_CERT
+
   """
   Invalid email used for signing
   """
   BAD_EMAIL
+
   """
   Signing key expired
   """
   EXPIRED_KEY
+
   """
   Internal error - the GPG verification service misbehaved
   """
   GPGVERIFY_ERROR
+
   """
   Internal error - the GPG verification service is unavailable at the moment
   """
   GPGVERIFY_UNAVAILABLE
+
   """
   Invalid signature
   """
   INVALID
+
   """
   Malformed signature
   """
   MALFORMED_SIG
+
   """
   The usage flags for the key that signed this don't allow signing
   """
   NOT_SIGNING_KEY
+
   """
   Email used for signing not known to GitHub
   """
   NO_USER
+
   """
   Valid signature, though certificate revocation check failed
   """
   OCSP_ERROR
+
   """
   Valid signature, pending certificate revocation checking
   """
   OCSP_PENDING
+
   """
   One or more certificates in chain has been revoked
   """
   OCSP_REVOKED
+
   """
   Key used for signing not known to GitHub
   """
   UNKNOWN_KEY
+
   """
   Unknown signature type
   """
   UNKNOWN_SIG_TYPE
+
   """
   Unsigned
   """
   UNSIGNED
+
   """
   Email used for signing unverified on GitHub
   """
   UNVERIFIED_EMAIL
+
   """
   Valid signature and verified by GitHub
   """
@@ -16677,10 +16837,12 @@ enum IdentityProviderConfigurationState {
   Authentication with an identity provider is configured but not enforced.
   """
   CONFIGURED
+
   """
   Authentication with an identity provider is configured and enforced.
   """
   ENFORCED
+
   """
   Authentication with an identity provider is not configured.
   """
@@ -16790,6 +16952,7 @@ enum IpAllowListEnabledSettingValue {
   The setting is disabled for the owner.
   """
   DISABLED
+
   """
   The setting is enabled for the owner.
   """
@@ -16895,6 +17058,7 @@ enum IpAllowListEntryOrderField {
   Order IP allow list entries by the allow list value.
   """
   ALLOW_LIST_VALUE
+
   """
   Order IP allow list entries by creation time.
   """
@@ -16909,6 +17073,7 @@ enum IpAllowListForInstalledAppsEnabledSettingValue {
   The setting is disabled for the owner.
   """
   DISABLED
+
   """
   The setting is enabled for the owner.
   """
@@ -17592,6 +17757,7 @@ enum IssueClosedStateReason {
   An issue that has been closed as completed
   """
   COMPLETED
+
   """
   An issue that has been closed as not planned
   """
@@ -18035,10 +18201,12 @@ enum IssueOrderField {
   Order issues by comment count
   """
   COMMENTS
+
   """
   Order issues by creation time
   """
   CREATED_AT
+
   """
   Order issues by update time
   """
@@ -18053,6 +18221,7 @@ enum IssueState {
   An issue that has been closed
   """
   CLOSED
+
   """
   An issue that is still open
   """
@@ -18067,10 +18236,12 @@ enum IssueStateReason {
   An issue that has been closed as completed
   """
   COMPLETED
+
   """
   An issue that has been closed as not planned
   """
   NOT_PLANNED
+
   """
   An issue that has been reopened
   """
@@ -18323,122 +18494,152 @@ enum IssueTimelineItemsItemType {
   Represents a 'added_to_project' event on a given issue or pull request.
   """
   ADDED_TO_PROJECT_EVENT
+
   """
   Represents an 'assigned' event on any assignable object.
   """
   ASSIGNED_EVENT
+
   """
   Represents a 'closed' event on any `Closable`.
   """
   CLOSED_EVENT
+
   """
   Represents a 'comment_deleted' event on a given issue or pull request.
   """
   COMMENT_DELETED_EVENT
+
   """
   Represents a 'connected' event on a given issue or pull request.
   """
   CONNECTED_EVENT
+
   """
   Represents a 'converted_note_to_issue' event on a given issue or pull request.
   """
   CONVERTED_NOTE_TO_ISSUE_EVENT
+
   """
   Represents a 'converted_to_discussion' event on a given issue.
   """
   CONVERTED_TO_DISCUSSION_EVENT
+
   """
   Represents a mention made by one issue or pull request to another.
   """
   CROSS_REFERENCED_EVENT
+
   """
   Represents a 'demilestoned' event on a given issue or pull request.
   """
   DEMILESTONED_EVENT
+
   """
   Represents a 'disconnected' event on a given issue or pull request.
   """
   DISCONNECTED_EVENT
+
   """
   Represents a comment on an Issue.
   """
   ISSUE_COMMENT
+
   """
   Represents a 'labeled' event on a given issue or pull request.
   """
   LABELED_EVENT
+
   """
   Represents a 'locked' event on a given issue or pull request.
   """
   LOCKED_EVENT
+
   """
   Represents a 'marked_as_duplicate' event on a given issue or pull request.
   """
   MARKED_AS_DUPLICATE_EVENT
+
   """
   Represents a 'mentioned' event on a given issue or pull request.
   """
   MENTIONED_EVENT
+
   """
   Represents a 'milestoned' event on a given issue or pull request.
   """
   MILESTONED_EVENT
+
   """
   Represents a 'moved_columns_in_project' event on a given issue or pull request.
   """
   MOVED_COLUMNS_IN_PROJECT_EVENT
+
   """
   Represents a 'pinned' event on a given issue or pull request.
   """
   PINNED_EVENT
+
   """
   Represents a 'referenced' event on a given `ReferencedSubject`.
   """
   REFERENCED_EVENT
+
   """
   Represents a 'removed_from_project' event on a given issue or pull request.
   """
   REMOVED_FROM_PROJECT_EVENT
+
   """
   Represents a 'renamed' event on a given issue or pull request
   """
   RENAMED_TITLE_EVENT
+
   """
   Represents a 'reopened' event on any `Closable`.
   """
   REOPENED_EVENT
+
   """
   Represents a 'subscribed' event on a given `Subscribable`.
   """
   SUBSCRIBED_EVENT
+
   """
   Represents a 'transferred' event on a given issue or pull request.
   """
   TRANSFERRED_EVENT
+
   """
   Represents an 'unassigned' event on any assignable object.
   """
   UNASSIGNED_EVENT
+
   """
   Represents an 'unlabeled' event on a given issue or pull request.
   """
   UNLABELED_EVENT
+
   """
   Represents an 'unlocked' event on a given issue or pull request.
   """
   UNLOCKED_EVENT
+
   """
   Represents an 'unmarked_as_duplicate' event on a given issue or pull request.
   """
   UNMARKED_AS_DUPLICATE_EVENT
+
   """
   Represents an 'unpinned' event on a given issue or pull request.
   """
   UNPINNED_EVENT
+
   """
   Represents an 'unsubscribed' event on a given `Subscribable`.
   """
   UNSUBSCRIBED_EVENT
+
   """
   Represents a 'user_blocked' event on a given user.
   """
@@ -18686,6 +18887,7 @@ enum LabelOrderField {
   Order labels by creation time
   """
   CREATED_AT
+
   """
   Order labels by name
   """
@@ -19147,14 +19349,17 @@ enum LockReason {
   The issue or pull request was locked because the conversation was off-topic.
   """
   OFF_TOPIC
+
   """
   The issue or pull request was locked because the conversation was resolved.
   """
   RESOLVED
+
   """
   The issue or pull request was locked because the conversation was spam.
   """
   SPAM
+
   """
   The issue or pull request was locked because the conversation was too heated.
   """
@@ -19321,6 +19526,7 @@ enum MannequinOrderField {
   Order mannequins why when they were created.
   """
   CREATED_AT
+
   """
   Order mannequins alphabetically by their source login.
   """
@@ -20294,10 +20500,12 @@ enum MergeCommitMessage {
   Default to a blank commit message.
   """
   BLANK
+
   """
   Default to the pull request's body.
   """
   PR_BODY
+
   """
   Default to the pull request's title.
   """
@@ -20312,6 +20520,7 @@ enum MergeCommitTitle {
   Default to the classic title for a merge message (e.g., Merge pull request #123 from branch-name).
   """
   MERGE_MESSAGE
+
   """
   Default to the pull request's title.
   """
@@ -20584,18 +20793,22 @@ enum MergeQueueEntryState {
   The entry is currently waiting for checks to pass.
   """
   AWAITING_CHECKS
+
   """
   The entry is currently locked.
   """
   LOCKED
+
   """
   The entry is currently mergeable.
   """
   MERGEABLE
+
   """
   The entry is currently queued.
   """
   QUEUED
+
   """
   The entry is currently unmergeable.
   """
@@ -20610,6 +20823,7 @@ enum MergeQueueMergingStrategy {
   Entries only allowed to merge if they are passing.
   """
   ALLGREEN
+
   """
   Failing Entires are allowed to merge if they are with a passing entry.
   """
@@ -20624,32 +20838,39 @@ enum MergeStateStatus {
   The head ref is out of date.
   """
   BEHIND
+
   """
   The merge is blocked.
   """
   BLOCKED
+
   """
   Mergeable and passing commit status.
   """
   CLEAN
+
   """
   The merge commit cannot be cleanly created.
   """
   DIRTY
+
   """
   The merge is blocked due to the pull request being a draft.
   """
   DRAFT @deprecated(
     reason: "DRAFT state will be removed from this enum and `isDraft` should be used instead Use PullRequest.isDraft instead. Removal on 2021-01-01 UTC."
   )
+
   """
   Mergeable with passing commit status and pre-receive hooks.
   """
   HAS_HOOKS
+
   """
   The state cannot currently be determined.
   """
   UNKNOWN
+
   """
   Mergeable with non-passing commit status.
   """
@@ -20664,10 +20885,12 @@ enum MergeableState {
   The pull request cannot be merged due to merge conflicts.
   """
   CONFLICTING
+
   """
   The pull request can be merged.
   """
   MERGEABLE
+
   """
   The mergeability of the pull request is still being calculated.
   """
@@ -20807,10 +21030,12 @@ enum MigrationSourceType {
   An Azure DevOps migration source.
   """
   AZURE_DEVOPS
+
   """
   A Bitbucket Server migration source.
   """
   BITBUCKET_SERVER
+
   """
   A GitHub Migration API source.
   """
@@ -20825,26 +21050,32 @@ enum MigrationState {
   The migration has failed.
   """
   FAILED
+
   """
   The migration has invalid credentials.
   """
   FAILED_VALIDATION
+
   """
   The migration is in progress.
   """
   IN_PROGRESS
+
   """
   The migration has not started.
   """
   NOT_STARTED
+
   """
   The migration needs to have its credentials validated.
   """
   PENDING_VALIDATION
+
   """
   The migration has been queued.
   """
   QUEUED
+
   """
   The migration has succeeded.
   """
@@ -21100,14 +21331,17 @@ enum MilestoneOrderField {
   Order milestones by when they were created.
   """
   CREATED_AT
+
   """
   Order milestones by when they are due.
   """
   DUE_DATE
+
   """
   Order milestones by their number.
   """
   NUMBER
+
   """
   Order milestones by when they were last updated.
   """
@@ -21122,6 +21356,7 @@ enum MilestoneState {
   A milestone that has been closed.
   """
   CLOSED
+
   """
   A milestone that is still open.
   """
@@ -23674,6 +23909,7 @@ enum NotificationRestrictionSettingValue {
   The setting is disabled for the owner.
   """
   DISABLED
+
   """
   The setting is enabled for the owner.
   """
@@ -23907,10 +24143,12 @@ enum OauthApplicationCreateAuditEntryState {
   The OAuth application was active and allowed to have OAuth Accesses.
   """
   ACTIVE
+
   """
   The OAuth application was in the process of being deleted.
   """
   PENDING_DELETION
+
   """
   The OAuth application was suspended from generating OAuth Accesses due to abuse or security concerns.
   """
@@ -23925,26 +24163,32 @@ enum OperationType {
   An existing resource was accessed
   """
   ACCESS
+
   """
   A resource performed an authentication event
   """
   AUTHENTICATION
+
   """
   A new resource was created
   """
   CREATE
+
   """
   An existing resource was modified
   """
   MODIFY
+
   """
   An existing resource was removed
   """
   REMOVE
+
   """
   An existing resource was restored
   """
   RESTORE
+
   """
   An existing resource was transferred between multiple resources
   """
@@ -23959,6 +24203,7 @@ enum OrderDirection {
   Specifies an ascending order for a given `orderBy` argument.
   """
   ASC
+
   """
   Specifies a descending order for a given `orderBy` argument.
   """
@@ -24165,6 +24410,7 @@ enum OrgAddMemberAuditEntryPermission {
   Can read, clone, push, and add collaborators to repositories.
   """
   ADMIN
+
   """
   Can read and clone repositories.
   """
@@ -24568,18 +24814,22 @@ enum OrgCreateAuditEntryBillingPlan {
   Team Plan
   """
   BUSINESS
+
   """
   Enterprise Cloud Plan
   """
   BUSINESS_PLUS
+
   """
   Free Plan
   """
   FREE
+
   """
   Tiered Per Seat Plan
   """
   TIERED_PER_SEAT
+
   """
   Legacy Unlimited Plan
   """
@@ -26038,10 +26288,12 @@ enum OrgRemoveBillingManagerAuditEntryReason {
   SAML external identity missing
   """
   SAML_EXTERNAL_IDENTITY_MISSING
+
   """
   SAML SSO enforcement requires an external identity
   """
   SAML_SSO_ENFORCEMENT_REQUIRES_EXTERNAL_IDENTITY
+
   """
   The organization required 2FA of its billing managers and this user did not have 2FA enabled.
   """
@@ -26160,24 +26412,29 @@ enum OrgRemoveMemberAuditEntryMembershipType {
   and all of its repositories.
   """
   ADMIN
+
   """
   A billing manager is a user who manages the billing settings for the Organization, such as updating payment information.
   """
   BILLING_MANAGER
+
   """
   A direct member is a user that is a member of the Organization.
   """
   DIRECT_MEMBER
+
   """
   An outside collaborator is a person who isn't explicitly a member of the
   Organization, but who has Read, Write, or Admin permissions to one or more
   repositories in the organization.
   """
   OUTSIDE_COLLABORATOR
+
   """
   A suspended member.
   """
   SUSPENDED
+
   """
   An unaffiliated collaborator is a person who is not a member of the
   Organization and does not have access to any repositories in the Organization.
@@ -26193,18 +26450,22 @@ enum OrgRemoveMemberAuditEntryReason {
   SAML external identity missing
   """
   SAML_EXTERNAL_IDENTITY_MISSING
+
   """
   SAML SSO enforcement requires an external identity
   """
   SAML_SSO_ENFORCEMENT_REQUIRES_EXTERNAL_IDENTITY
+
   """
   User was removed from organization during account recovery
   """
   TWO_FACTOR_ACCOUNT_RECOVERY
+
   """
   The organization required 2FA of its billing managers and this user did not have 2FA enabled.
   """
   TWO_FACTOR_REQUIREMENT_NON_COMPLIANCE
+
   """
   User account has been deleted
   """
@@ -26320,12 +26581,14 @@ enum OrgRemoveOutsideCollaboratorAuditEntryMembershipType {
   A billing manager is a user who manages the billing settings for the Organization, such as updating payment information.
   """
   BILLING_MANAGER
+
   """
   An outside collaborator is a person who isn't explicitly a member of the
   Organization, but who has Read, Write, or Admin permissions to one or more
   repositories in the organization.
   """
   OUTSIDE_COLLABORATOR
+
   """
   An unaffiliated collaborator is a person who is not a member of the
   Organization and does not have access to any repositories in the organization.
@@ -26341,6 +26604,7 @@ enum OrgRemoveOutsideCollaboratorAuditEntryReason {
   SAML external identity missing
   """
   SAML_EXTERNAL_IDENTITY_MISSING
+
   """
   The organization required 2FA of its billing managers and this user did not have 2FA enabled.
   """
@@ -26775,14 +27039,17 @@ enum OrgUpdateDefaultRepositoryPermissionAuditEntryPermission {
   Can read, clone, push, and add collaborators to repositories.
   """
   ADMIN
+
   """
   No default permission value.
   """
   NONE
+
   """
   Can read and clone repositories.
   """
   READ
+
   """
   Can read, clone and push to repositories.
   """
@@ -26898,6 +27165,7 @@ enum OrgUpdateMemberAuditEntryPermission {
   Can read, clone, push, and add collaborators to repositories.
   """
   ADMIN
+
   """
   Can read and clone repositories.
   """
@@ -27013,30 +27281,37 @@ enum OrgUpdateMemberRepositoryCreationPermissionAuditEntryVisibility {
   All organization members are restricted from creating any repositories.
   """
   ALL
+
   """
   All organization members are restricted from creating internal repositories.
   """
   INTERNAL
+
   """
   All organization members are allowed to create any repositories.
   """
   NONE
+
   """
   All organization members are restricted from creating private repositories.
   """
   PRIVATE
+
   """
   All organization members are restricted from creating private or internal repositories.
   """
   PRIVATE_INTERNAL
+
   """
   All organization members are restricted from creating public repositories.
   """
   PUBLIC
+
   """
   All organization members are restricted from creating public or internal repositories.
   """
   PUBLIC_INTERNAL
+
   """
   All organization members are restricted from creating public or private repositories.
   """
@@ -28906,14 +29181,17 @@ enum OrganizationInvitationRole {
   The user is invited to be an admin of the organization.
   """
   ADMIN
+
   """
   The user is invited to be a billing manager of the organization.
   """
   BILLING_MANAGER
+
   """
   The user is invited to be a direct member of the organization.
   """
   DIRECT_MEMBER
+
   """
   The user's previous role will be reinstated.
   """
@@ -28928,10 +29206,12 @@ enum OrganizationInvitationSource {
   The invitation was created from the web interface or from API
   """
   MEMBER
+
   """
   The invitation was created from SCIM
   """
   SCIM
+
   """
   The invitation was sent before this feature was added
   """
@@ -28946,6 +29226,7 @@ enum OrganizationInvitationType {
   The invitation was to an email address.
   """
   EMAIL
+
   """
   The invitation was to an existing user.
   """
@@ -29010,6 +29291,7 @@ enum OrganizationMemberRole {
   The user is an administrator of the organization.
   """
   ADMIN
+
   """
   The user is a member of the organization.
   """
@@ -29024,14 +29306,17 @@ enum OrganizationMembersCanCreateRepositoriesSettingValue {
   Members will be able to create public and private repositories.
   """
   ALL
+
   """
   Members will not be able to create public or private repositories.
   """
   DISABLED
+
   """
   Members will be able to create only internal repositories.
   """
   INTERNAL
+
   """
   Members will be able to create only private repositories.
   """
@@ -29097,38 +29382,47 @@ enum OrganizationMigrationState {
   The Octoshift migration has failed.
   """
   FAILED
+
   """
   The Octoshift migration has invalid credentials.
   """
   FAILED_VALIDATION
+
   """
   The Octoshift migration is in progress.
   """
   IN_PROGRESS
+
   """
   The Octoshift migration has not started.
   """
   NOT_STARTED
+
   """
   The Octoshift migration needs to have its credentials validated.
   """
   PENDING_VALIDATION
+
   """
   The Octoshift migration is performing post repository migrations.
   """
   POST_REPO_MIGRATION
+
   """
   The Octoshift migration is performing pre repository migrations.
   """
   PRE_REPO_MIGRATION
+
   """
   The Octoshift migration has been queued.
   """
   QUEUED
+
   """
   The Octoshift org migration is performing repository migrations.
   """
   REPO_MIGRATION
+
   """
   The Octoshift migration has succeeded.
   """
@@ -29163,6 +29457,7 @@ enum OrganizationOrderField {
   Order organizations by creation time
   """
   CREATED_AT
+
   """
   Order organizations by login
   """
@@ -29610,34 +29905,40 @@ enum PackageType {
   A debian package.
   """
   DEBIAN
+
   """
   A docker image.
   """
   DOCKER @deprecated(
     reason: "DOCKER will be removed from this enum as this type will be migrated to only be used by the Packages REST API. Removal on 2021-06-21 UTC."
   )
+
   """
   A maven package.
   """
   MAVEN @deprecated(
     reason: "MAVEN will be removed from this enum as this type will be migrated to only be used by the Packages REST API. Removal on 2023-02-10 UTC."
   )
+
   """
   An npm package.
   """
   NPM @deprecated(
     reason: "NPM will be removed from this enum as this type will be migrated to only be used by the Packages REST API. Removal on 2022-11-21 UTC."
   )
+
   """
   A nuget package.
   """
   NUGET @deprecated(
     reason: "NUGET will be removed from this enum as this type will be migrated to only be used by the Packages REST API. Removal on 2022-11-21 UTC."
   )
+
   """
   A python package.
   """
   PYPI
+
   """
   A rubygems package.
   """
@@ -29830,22 +30131,27 @@ enum PatchStatus {
   The file was added. Git status 'A'.
   """
   ADDED
+
   """
   The file's type was changed. Git status 'T'.
   """
   CHANGED
+
   """
   The file was copied. Git status 'C'.
   """
   COPIED
+
   """
   The file was deleted. Git status 'D'.
   """
   DELETED
+
   """
   The file's contents were changed. Git status 'M'.
   """
   MODIFIED
+
   """
   The file was renamed. Git status 'R'.
   """
@@ -29960,30 +30266,37 @@ enum PinnableItemType {
   A gist.
   """
   GIST
+
   """
   An issue.
   """
   ISSUE
+
   """
   An organization.
   """
   ORGANIZATION
+
   """
   A project.
   """
   PROJECT
+
   """
   A pull request.
   """
   PULL_REQUEST
+
   """
   A repository.
   """
   REPOSITORY
+
   """
   A team.
   """
   TEAM
+
   """
   A user.
   """
@@ -30089,18 +30402,22 @@ enum PinnedDiscussionGradient {
   A gradient of blue to mint
   """
   BLUE_MINT
+
   """
   A gradient of blue to purple
   """
   BLUE_PURPLE
+
   """
   A gradient of pink to blue
   """
   PINK_BLUE
+
   """
   A gradient of purple to coral
   """
   PURPLE_CORAL
+
   """
   A gradient of red to orange
   """
@@ -30115,22 +30432,27 @@ enum PinnedDiscussionPattern {
   An upward-facing chevron pattern
   """
   CHEVRON_UP
+
   """
   A hollow dot pattern
   """
   DOT
+
   """
   A solid dot pattern
   """
   DOT_FILL
+
   """
   A heart pattern
   """
   HEART_FILL
+
   """
   A plus sign pattern
   """
   PLUS
+
   """
   A lightning bolt pattern
   """
@@ -30869,6 +31191,7 @@ enum ProjectCardArchivedState {
   A project card that is archived
   """
   ARCHIVED
+
   """
   A project card that is not archived
   """
@@ -30943,10 +31266,12 @@ enum ProjectCardState {
   The card has content only.
   """
   CONTENT_ONLY
+
   """
   The card has a note only.
   """
   NOTE_ONLY
+
   """
   The card is redacted.
   """
@@ -31097,10 +31422,12 @@ enum ProjectColumnPurpose {
   The column contains cards which are complete
   """
   DONE
+
   """
   The column contains cards which are currently being worked on
   """
   IN_PROGRESS
+
   """
   The column contains cards still to be worked on
   """
@@ -31170,10 +31497,12 @@ enum ProjectOrderField {
   Order projects by creation time
   """
   CREATED_AT
+
   """
   Order projects by name
   """
   NAME
+
   """
   Order projects by update time
   """
@@ -31300,6 +31629,7 @@ enum ProjectState {
   The project is closed.
   """
   CLOSED
+
   """
   The project is open.
   """
@@ -31314,14 +31644,17 @@ enum ProjectTemplate {
   Create a board with v2 triggers to automatically move cards across To do, In progress and Done columns.
   """
   AUTOMATED_KANBAN_V2
+
   """
   Create a board with triggers to automatically move cards across columns with review automation.
   """
   AUTOMATED_REVIEWS_KANBAN
+
   """
   Create a board with columns for To do, In progress and Done.
   """
   BASIC_KANBAN
+
   """
   Create a board to triage and prioritize bugs with To do, priority, and Done columns.
   """
@@ -31732,14 +32065,17 @@ enum ProjectV2CustomFieldType {
   Date
   """
   DATE
+
   """
   Number
   """
   NUMBER
+
   """
   Single Select
   """
   SINGLE_SELECT
+
   """
   Text
   """
@@ -31943,10 +32279,12 @@ enum ProjectV2FieldOrderField {
   Order project v2 fields by creation time
   """
   CREATED_AT
+
   """
   Order project v2 fields by name
   """
   NAME
+
   """
   Order project v2 fields by position
   """
@@ -31961,54 +32299,67 @@ enum ProjectV2FieldType {
   Assignees
   """
   ASSIGNEES
+
   """
   Date
   """
   DATE
+
   """
   Iteration
   """
   ITERATION
+
   """
   Labels
   """
   LABELS
+
   """
   Linked Pull Requests
   """
   LINKED_PULL_REQUESTS
+
   """
   Milestone
   """
   MILESTONE
+
   """
   Number
   """
   NUMBER
+
   """
   Repository
   """
   REPOSITORY
+
   """
   Reviewers
   """
   REVIEWERS
+
   """
   Single Select
   """
   SINGLE_SELECT
+
   """
   Text
   """
   TEXT
+
   """
   Title
   """
   TITLE
+
   """
   Tracked by
   """
   TRACKED_BY
+
   """
   Tracks
   """
@@ -32760,14 +33111,17 @@ enum ProjectV2ItemType {
   Draft Issue
   """
   DRAFT_ISSUE
+
   """
   Issue
   """
   ISSUE
+
   """
   Pull Request
   """
   PULL_REQUEST
+
   """
   Redacted Item
   """
@@ -32893,14 +33247,17 @@ enum ProjectV2OrderField {
   The project's date and time of creation
   """
   CREATED_AT
+
   """
   The project's number
   """
   NUMBER
+
   """
   The project's title
   """
   TITLE
+
   """
   The project's date and time of update
   """
@@ -32997,14 +33354,17 @@ enum ProjectV2Roles {
   The collaborator can view, edit, and maange the settings of the project
   """
   ADMIN
+
   """
   The collaborator has no direct access to the project
   """
   NONE
+
   """
   The collaborator can view the project
   """
   READER
+
   """
   The collaborator can view and edit the project
   """
@@ -33100,30 +33460,37 @@ enum ProjectV2SingleSelectFieldOptionColor {
   BLUE
   """
   BLUE
+
   """
   GRAY
   """
   GRAY
+
   """
   GREEN
   """
   GREEN
+
   """
   ORANGE
   """
   ORANGE
+
   """
   PINK
   """
   PINK
+
   """
   PURPLE
   """
   PURPLE
+
   """
   RED
   """
   RED
+
   """
   YELLOW
   """
@@ -33268,6 +33635,7 @@ enum ProjectV2State {
   A project v2 that has been closed
   """
   CLOSED
+
   """
   A project v2 that is still open
   """
@@ -33610,10 +33978,12 @@ enum ProjectV2ViewLayout {
   Board layout
   """
   BOARD_LAYOUT
+
   """
   Roadmap layout
   """
   ROADMAP_LAYOUT
+
   """
   Table layout
   """
@@ -33643,10 +34013,12 @@ enum ProjectV2ViewOrderField {
   Order project v2 views by creation time
   """
   CREATED_AT
+
   """
   Order project v2 views by name
   """
   NAME
+
   """
   Order project v2 views by position
   """
@@ -33757,14 +34129,17 @@ enum ProjectV2WorkflowsOrderField {
   The workflows' date and time of creation
   """
   CREATED_AT
+
   """
   The workflows' name
   """
   NAME
+
   """
   The workflows' number
   """
   NUMBER
+
   """
   The workflows' date and time of update
   """
@@ -34886,6 +35261,7 @@ enum PullRequestBranchUpdateMethod {
   Update branch via merge
   """
   MERGE
+
   """
   Update branch via rebase
   """
@@ -35172,10 +35548,12 @@ enum PullRequestMergeMethod {
   Add all commits from the head branch to the base branch with a merge commit.
   """
   MERGE
+
   """
   Add all commits from the head branch onto the base branch individually.
   """
   REBASE
+
   """
   Combine all commits from the head branch into a single commit in the base branch.
   """
@@ -35205,6 +35583,7 @@ enum PullRequestOrderField {
   Order pull_requests by creation time
   """
   CREATED_AT
+
   """
   Order pull_requests by update time
   """
@@ -35854,6 +36233,7 @@ enum PullRequestReviewCommentState {
   A comment that is part of a pending review
   """
   PENDING
+
   """
   A comment that is part of a submitted review
   """
@@ -35933,10 +36313,12 @@ enum PullRequestReviewDecision {
   The pull request has received an approving review.
   """
   APPROVED
+
   """
   Changes have been requested on the pull request.
   """
   CHANGES_REQUESTED
+
   """
   A review is required before the pull request can be merged.
   """
@@ -35966,14 +36348,17 @@ enum PullRequestReviewEvent {
   Submit feedback and approve merging these changes.
   """
   APPROVE
+
   """
   Submit general feedback without explicit approval.
   """
   COMMENT
+
   """
   Dismiss review so it now longer effects merging.
   """
   DISMISS
+
   """
   Submit feedback that must be addressed before merging.
   """
@@ -35988,18 +36373,22 @@ enum PullRequestReviewState {
   A review allowing the pull request to merge.
   """
   APPROVED
+
   """
   A review blocking the pull request from merging.
   """
   CHANGES_REQUESTED
+
   """
   An informational review.
   """
   COMMENTED
+
   """
   A review that has been dismissed.
   """
   DISMISSED
+
   """
   A review that has not yet been submitted.
   """
@@ -36175,6 +36564,7 @@ enum PullRequestReviewThreadSubjectType {
   A comment that has been made against the file of a pull request
   """
   FILE
+
   """
   A comment that has been made against the line of a pull request
   """
@@ -36209,10 +36599,12 @@ enum PullRequestState {
   A pull request that has been closed without being merged.
   """
   CLOSED
+
   """
   A pull request that has been closed by being merged.
   """
   MERGED
+
   """
   A pull request that is still open.
   """
@@ -36552,230 +36944,287 @@ enum PullRequestTimelineItemsItemType {
   Represents an 'added_to_merge_queue' event on a given pull request.
   """
   ADDED_TO_MERGE_QUEUE_EVENT
+
   """
   Represents a 'added_to_project' event on a given issue or pull request.
   """
   ADDED_TO_PROJECT_EVENT
+
   """
   Represents an 'assigned' event on any assignable object.
   """
   ASSIGNED_EVENT
+
   """
   Represents a 'automatic_base_change_failed' event on a given pull request.
   """
   AUTOMATIC_BASE_CHANGE_FAILED_EVENT
+
   """
   Represents a 'automatic_base_change_succeeded' event on a given pull request.
   """
   AUTOMATIC_BASE_CHANGE_SUCCEEDED_EVENT
+
   """
   Represents a 'auto_merge_disabled' event on a given pull request.
   """
   AUTO_MERGE_DISABLED_EVENT
+
   """
   Represents a 'auto_merge_enabled' event on a given pull request.
   """
   AUTO_MERGE_ENABLED_EVENT
+
   """
   Represents a 'auto_rebase_enabled' event on a given pull request.
   """
   AUTO_REBASE_ENABLED_EVENT
+
   """
   Represents a 'auto_squash_enabled' event on a given pull request.
   """
   AUTO_SQUASH_ENABLED_EVENT
+
   """
   Represents a 'base_ref_changed' event on a given issue or pull request.
   """
   BASE_REF_CHANGED_EVENT
+
   """
   Represents a 'base_ref_deleted' event on a given pull request.
   """
   BASE_REF_DELETED_EVENT
+
   """
   Represents a 'base_ref_force_pushed' event on a given pull request.
   """
   BASE_REF_FORCE_PUSHED_EVENT
+
   """
   Represents a 'closed' event on any `Closable`.
   """
   CLOSED_EVENT
+
   """
   Represents a 'comment_deleted' event on a given issue or pull request.
   """
   COMMENT_DELETED_EVENT
+
   """
   Represents a 'connected' event on a given issue or pull request.
   """
   CONNECTED_EVENT
+
   """
   Represents a 'converted_note_to_issue' event on a given issue or pull request.
   """
   CONVERTED_NOTE_TO_ISSUE_EVENT
+
   """
   Represents a 'converted_to_discussion' event on a given issue.
   """
   CONVERTED_TO_DISCUSSION_EVENT
+
   """
   Represents a 'convert_to_draft' event on a given pull request.
   """
   CONVERT_TO_DRAFT_EVENT
+
   """
   Represents a mention made by one issue or pull request to another.
   """
   CROSS_REFERENCED_EVENT
+
   """
   Represents a 'demilestoned' event on a given issue or pull request.
   """
   DEMILESTONED_EVENT
+
   """
   Represents a 'deployed' event on a given pull request.
   """
   DEPLOYED_EVENT
+
   """
   Represents a 'deployment_environment_changed' event on a given pull request.
   """
   DEPLOYMENT_ENVIRONMENT_CHANGED_EVENT
+
   """
   Represents a 'disconnected' event on a given issue or pull request.
   """
   DISCONNECTED_EVENT
+
   """
   Represents a 'head_ref_deleted' event on a given pull request.
   """
   HEAD_REF_DELETED_EVENT
+
   """
   Represents a 'head_ref_force_pushed' event on a given pull request.
   """
   HEAD_REF_FORCE_PUSHED_EVENT
+
   """
   Represents a 'head_ref_restored' event on a given pull request.
   """
   HEAD_REF_RESTORED_EVENT
+
   """
   Represents a comment on an Issue.
   """
   ISSUE_COMMENT
+
   """
   Represents a 'labeled' event on a given issue or pull request.
   """
   LABELED_EVENT
+
   """
   Represents a 'locked' event on a given issue or pull request.
   """
   LOCKED_EVENT
+
   """
   Represents a 'marked_as_duplicate' event on a given issue or pull request.
   """
   MARKED_AS_DUPLICATE_EVENT
+
   """
   Represents a 'mentioned' event on a given issue or pull request.
   """
   MENTIONED_EVENT
+
   """
   Represents a 'merged' event on a given pull request.
   """
   MERGED_EVENT
+
   """
   Represents a 'milestoned' event on a given issue or pull request.
   """
   MILESTONED_EVENT
+
   """
   Represents a 'moved_columns_in_project' event on a given issue or pull request.
   """
   MOVED_COLUMNS_IN_PROJECT_EVENT
+
   """
   Represents a 'pinned' event on a given issue or pull request.
   """
   PINNED_EVENT
+
   """
   Represents a Git commit part of a pull request.
   """
   PULL_REQUEST_COMMIT
+
   """
   Represents a commit comment thread part of a pull request.
   """
   PULL_REQUEST_COMMIT_COMMENT_THREAD
+
   """
   A review object for a given pull request.
   """
   PULL_REQUEST_REVIEW
+
   """
   A threaded list of comments for a given pull request.
   """
   PULL_REQUEST_REVIEW_THREAD
+
   """
   Represents the latest point in the pull request timeline for which the viewer has seen the pull request's commits.
   """
   PULL_REQUEST_REVISION_MARKER
+
   """
   Represents a 'ready_for_review' event on a given pull request.
   """
   READY_FOR_REVIEW_EVENT
+
   """
   Represents a 'referenced' event on a given `ReferencedSubject`.
   """
   REFERENCED_EVENT
+
   """
   Represents a 'removed_from_merge_queue' event on a given pull request.
   """
   REMOVED_FROM_MERGE_QUEUE_EVENT
+
   """
   Represents a 'removed_from_project' event on a given issue or pull request.
   """
   REMOVED_FROM_PROJECT_EVENT
+
   """
   Represents a 'renamed' event on a given issue or pull request
   """
   RENAMED_TITLE_EVENT
+
   """
   Represents a 'reopened' event on any `Closable`.
   """
   REOPENED_EVENT
+
   """
   Represents a 'review_dismissed' event on a given issue or pull request.
   """
   REVIEW_DISMISSED_EVENT
+
   """
   Represents an 'review_requested' event on a given pull request.
   """
   REVIEW_REQUESTED_EVENT
+
   """
   Represents an 'review_request_removed' event on a given pull request.
   """
   REVIEW_REQUEST_REMOVED_EVENT
+
   """
   Represents a 'subscribed' event on a given `Subscribable`.
   """
   SUBSCRIBED_EVENT
+
   """
   Represents a 'transferred' event on a given issue or pull request.
   """
   TRANSFERRED_EVENT
+
   """
   Represents an 'unassigned' event on any assignable object.
   """
   UNASSIGNED_EVENT
+
   """
   Represents an 'unlabeled' event on a given issue or pull request.
   """
   UNLABELED_EVENT
+
   """
   Represents an 'unlocked' event on a given issue or pull request.
   """
   UNLOCKED_EVENT
+
   """
   Represents an 'unmarked_as_duplicate' event on a given issue or pull request.
   """
   UNMARKED_AS_DUPLICATE_EVENT
+
   """
   Represents an 'unpinned' event on a given issue or pull request.
   """
   UNPINNED_EVENT
+
   """
   Represents an 'unsubscribed' event on a given `Subscribable`.
   """
   UNSUBSCRIBED_EVENT
+
   """
   Represents a 'user_blocked' event on a given user.
   """
@@ -36790,6 +37239,7 @@ enum PullRequestUpdateState {
   A pull request that has been closed without being merged.
   """
   CLOSED
+
   """
   A pull request that is still open.
   """
@@ -37613,30 +38063,37 @@ enum ReactionContent {
   Represents the `:confused:` emoji.
   """
   CONFUSED
+
   """
   Represents the `:eyes:` emoji.
   """
   EYES
+
   """
   Represents the `:heart:` emoji.
   """
   HEART
+
   """
   Represents the `:hooray:` emoji.
   """
   HOORAY
+
   """
   Represents the `:laugh:` emoji.
   """
   LAUGH
+
   """
   Represents the `:rocket:` emoji.
   """
   ROCKET
+
   """
   Represents the `:-1:` emoji.
   """
   THUMBS_DOWN
+
   """
   Represents the `:+1:` emoji.
   """
@@ -38035,6 +38492,7 @@ enum RefOrderField {
   Order refs by their alphanumeric name
   """
   ALPHABETICAL
+
   """
   Order refs by underlying commit date if the ref prefix is refs/tags/
   """
@@ -38637,6 +39095,7 @@ enum ReleaseOrderField {
   Order releases by creation time
   """
   CREATED_AT
+
   """
   Order releases alphabetically by name
   """
@@ -39438,10 +39897,12 @@ enum RepoAccessAuditEntryVisibility {
   The repository is visible only to users in the same business.
   """
   INTERNAL
+
   """
   The repository is visible only to those with explicit access.
   """
   PRIVATE
+
   """
   The repository is visible to everyone.
   """
@@ -39572,10 +40033,12 @@ enum RepoAddMemberAuditEntryVisibility {
   The repository is visible only to users in the same business.
   """
   INTERNAL
+
   """
   The repository is visible only to those with explicit access.
   """
   PRIVATE
+
   """
   The repository is visible to everyone.
   """
@@ -39827,10 +40290,12 @@ enum RepoArchivedAuditEntryVisibility {
   The repository is visible only to users in the same business.
   """
   INTERNAL
+
   """
   The repository is visible only to those with explicit access.
   """
   PRIVATE
+
   """
   The repository is visible to everyone.
   """
@@ -39966,10 +40431,12 @@ enum RepoChangeMergeSettingAuditEntryMergeType {
   The pull request is added to the base branch in a merge commit.
   """
   MERGE
+
   """
   Commits from the pull request are added onto the base branch individually without a merge commit.
   """
   REBASE
+
   """
   The pull request's commits are squashed into a single commit before they are merged to the base branch.
   """
@@ -41220,10 +41687,12 @@ enum RepoCreateAuditEntryVisibility {
   The repository is visible only to users in the same business.
   """
   INTERNAL
+
   """
   The repository is visible only to those with explicit access.
   """
   PRIVATE
+
   """
   The repository is visible to everyone.
   """
@@ -41354,10 +41823,12 @@ enum RepoDestroyAuditEntryVisibility {
   The repository is visible only to users in the same business.
   """
   INTERNAL
+
   """
   The repository is visible only to those with explicit access.
   """
   PRIVATE
+
   """
   The repository is visible to everyone.
   """
@@ -41488,10 +41959,12 @@ enum RepoRemoveMemberAuditEntryVisibility {
   The repository is visible only to users in the same business.
   """
   INTERNAL
+
   """
   The repository is visible only to those with explicit access.
   """
   PRIVATE
+
   """
   The repository is visible to everyone.
   """
@@ -41627,22 +42100,27 @@ enum ReportedContentClassifiers {
   An abusive or harassing piece of content
   """
   ABUSE
+
   """
   A duplicated piece of content
   """
   DUPLICATE
+
   """
   An irrelevant piece of content
   """
   OFF_TOPIC
+
   """
   An outdated piece of content
   """
   OUTDATED
+
   """
   The content has been resolved
   """
   RESOLVED
+
   """
   A spammy piece of content
   """
@@ -43308,11 +43786,13 @@ enum RepositoryAffiliation {
   Repositories that the user has been added to as a collaborator.
   """
   COLLABORATOR
+
   """
   Repositories that the user has access to through being a member of an
   organization. This includes every repository on every team that the user is on.
   """
   ORGANIZATION_MEMBER
+
   """
   Repositories that are owned by the authenticated user.
   """
@@ -43498,18 +43978,22 @@ enum RepositoryContributionType {
   Created a commit
   """
   COMMIT
+
   """
   Created an issue
   """
   ISSUE
+
   """
   Created a pull request
   """
   PULL_REQUEST
+
   """
   Reviewed a pull request
   """
   PULL_REQUEST_REVIEW
+
   """
   Created the repository
   """
@@ -43835,14 +44319,17 @@ enum RepositoryInteractionLimit {
   Users that are not collaborators will not be able to interact with the repository.
   """
   COLLABORATORS_ONLY
+
   """
   Users that have not previously committed to a repository’s default branch will be unable to interact with the repository.
   """
   CONTRIBUTORS_ONLY
+
   """
   Users that have recently created their account will be unable to interact with the repository.
   """
   EXISTING_USERS
+
   """
   No interaction limits are enabled.
   """
@@ -43857,18 +44344,22 @@ enum RepositoryInteractionLimitExpiry {
   The interaction limit will expire after 1 day.
   """
   ONE_DAY
+
   """
   The interaction limit will expire after 1 month.
   """
   ONE_MONTH
+
   """
   The interaction limit will expire after 1 week.
   """
   ONE_WEEK
+
   """
   The interaction limit will expire after 6 months.
   """
   SIX_MONTHS
+
   """
   The interaction limit will expire after 3 days.
   """
@@ -43883,10 +44374,12 @@ enum RepositoryInteractionLimitOrigin {
   A limit that is configured at the organization level.
   """
   ORGANIZATION
+
   """
   A limit that is configured at the repository level.
   """
   REPOSITORY
+
   """
   A limit that is configured at the user-wide level.
   """
@@ -44002,18 +44495,22 @@ enum RepositoryLockReason {
   The repository is locked due to a billing related reason.
   """
   BILLING
+
   """
   The repository is locked due to a migration.
   """
   MIGRATING
+
   """
   The repository is locked due to a move.
   """
   MOVING
+
   """
   The repository is locked due to a rename.
   """
   RENAME
+
   """
   The repository is locked due to a trade controls related reason.
   """
@@ -44140,6 +44637,7 @@ enum RepositoryMigrationOrderDirection {
   Specifies an ascending order for a given `orderBy` argument.
   """
   ASC
+
   """
   Specifies a descending order for a given `orderBy` argument.
   """
@@ -44231,18 +44729,22 @@ enum RepositoryOrderField {
   Order repositories by creation time
   """
   CREATED_AT
+
   """
   Order repositories by name
   """
   NAME
+
   """
   Order repositories by push time
   """
   PUSHED_AT
+
   """
   Order repositories by number of stargazers
   """
   STARGAZERS
+
   """
   Order repositories by update time
   """
@@ -44373,18 +44875,22 @@ enum RepositoryPermission {
   requests, and repository settings, including adding collaborators
   """
   ADMIN
+
   """
   Can read, clone, and push to this repository. They can also manage issues, pull requests, and some repository settings
   """
   MAINTAIN
+
   """
   Can read and clone this repository. Can also open and comment on issues and pull requests
   """
   READ
+
   """
   Can read and clone this repository. Can also manage issues and pull requests
   """
   TRIAGE
+
   """
   Can read, clone, and push to this repository. Can also manage issues and pull requests
   """
@@ -44399,6 +44905,7 @@ enum RepositoryPrivacy {
   Private
   """
   PRIVATE
+
   """
   Public
   """
@@ -44535,46 +45042,57 @@ enum RepositoryRuleType {
   Branch name pattern
   """
   BRANCH_NAME_PATTERN
+
   """
   Committer email pattern
   """
   COMMITTER_EMAIL_PATTERN
+
   """
   Commit author email pattern
   """
   COMMIT_AUTHOR_EMAIL_PATTERN
+
   """
   Commit message pattern
   """
   COMMIT_MESSAGE_PATTERN
+
   """
   Only allow users with bypass permission to create matching refs.
   """
   CREATION
+
   """
   Only allow users with bypass permissions to delete matching refs.
   """
   DELETION
+
   """
   Prevent users with push access from force pushing to refs.
   """
   NON_FAST_FORWARD
+
   """
   Require all commits be made to a non-target branch and submitted via a pull request before they can be merged.
   """
   PULL_REQUEST
+
   """
   Choose which environments must be successfully deployed to before refs can be merged into a branch that matches this rule.
   """
   REQUIRED_DEPLOYMENTS
+
   """
   Prevent merge commits from being pushed to matching refs.
   """
   REQUIRED_LINEAR_HISTORY
+
   """
   Commits pushed to matching refs must have verified signatures.
   """
   REQUIRED_SIGNATURES
+
   """
   Choose which status checks must pass before branches can be merged into a
   branch that matches this rule. When enabled, commits must first be pushed to
@@ -44582,10 +45100,12 @@ enum RepositoryRuleType {
   after status checks have passed.
   """
   REQUIRED_STATUS_CHECKS
+
   """
   Tag name pattern
   """
   TAG_NAME_PATTERN
+
   """
   Only allow users with bypass permission to update matching refs.
   """
@@ -44737,6 +45257,7 @@ enum RepositoryRulesetBypassActorBypassMode {
   The actor can always bypass rules
   """
   ALWAYS
+
   """
   The actor can only bypass rules via a pull request
   """
@@ -44857,6 +45378,7 @@ enum RepositoryRulesetTarget {
   Branch
   """
   BRANCH
+
   """
   Tag
   """
@@ -44933,10 +45455,12 @@ enum RepositoryVisibility {
   The repository is visible only to users in the same business.
   """
   INTERNAL
+
   """
   The repository is visible only to those with explicit access.
   """
   PRIVATE
+
   """
   The repository is visible to everyone.
   """
@@ -45279,6 +45803,7 @@ enum RepositoryVulnerabilityAlertDependencyScope {
   A dependency that is only used in development
   """
   DEVELOPMENT
+
   """
   A dependency that is leveraged during application runtime
   """
@@ -45308,14 +45833,17 @@ enum RepositoryVulnerabilityAlertState {
   An alert that has been automatically closed by Dependabot.
   """
   AUTO_DISMISSED
+
   """
   An alert that has been manually closed by a user.
   """
   DISMISSED
+
   """
   An alert that has been resolved by a code change.
   """
   FIXED
+
   """
   An alert that is still open.
   """
@@ -45385,18 +45913,22 @@ enum RequestableCheckStatusState {
   The check suite or run has been completed.
   """
   COMPLETED
+
   """
   The check suite or run is in progress.
   """
   IN_PROGRESS
+
   """
   The check suite or run is in pending state.
   """
   PENDING
+
   """
   The check suite or run has been queued.
   """
   QUEUED
+
   """
   The check suite or run is in waiting state.
   """
@@ -46101,10 +46633,12 @@ enum RoleInOrganization {
   A user who is a direct member of the organization.
   """
   DIRECT_MEMBER
+
   """
   A user with full administrative access to the organization.
   """
   OWNER
+
   """
   A user who is unaffiliated with the organization.
   """
@@ -46119,10 +46653,12 @@ enum RuleEnforcement {
   Rules will be enforced
   """
   ACTIVE
+
   """
   Do not evaluate or enforce rules
   """
   DISABLED
+
   """
   Allow admins to test rules before enforcing them. Admins can view insights on
   the Rule Insights page (`evaluate` is only available with GitHub Enterprise).
@@ -46206,14 +46742,17 @@ enum SamlDigestAlgorithm {
   SHA1
   """
   SHA1
+
   """
   SHA256
   """
   SHA256
+
   """
   SHA384
   """
   SHA384
+
   """
   SHA512
   """
@@ -46228,14 +46767,17 @@ enum SamlSignatureAlgorithm {
   RSA-SHA1
   """
   RSA_SHA1
+
   """
   RSA-SHA256
   """
   RSA_SHA256
+
   """
   RSA-SHA384
   """
   RSA_SHA384
+
   """
   RSA-SHA512
   """
@@ -46440,14 +46982,17 @@ enum SearchType {
   Returns matching discussions in repositories.
   """
   DISCUSSION
+
   """
   Returns results matching issues in repositories.
   """
   ISSUE
+
   """
   Returns results matching repositories.
   """
   REPOSITORY
+
   """
   Returns results matching users and organizations on GitHub.
   """
@@ -46619,6 +47164,7 @@ enum SecurityAdvisoryClassification {
   Classification of general advisories.
   """
   GENERAL
+
   """
   Classification of malware advisories.
   """
@@ -46658,46 +47204,57 @@ enum SecurityAdvisoryEcosystem {
   GitHub Actions
   """
   ACTIONS
+
   """
   PHP packages hosted at packagist.org
   """
   COMPOSER
+
   """
   Erlang/Elixir packages hosted at hex.pm
   """
   ERLANG
+
   """
   Go modules
   """
   GO
+
   """
   Java artifacts hosted at the Maven central repository
   """
   MAVEN
+
   """
   JavaScript packages hosted at npmjs.com
   """
   NPM
+
   """
   .NET packages hosted at the NuGet Gallery
   """
   NUGET
+
   """
   Python packages hosted at PyPI.org
   """
   PIP
+
   """
   Dart packages hosted at pub.dev
   """
   PUB
+
   """
   Ruby gems hosted at RubyGems.org
   """
   RUBYGEMS
+
   """
   Rust crates
   """
   RUST
+
   """
   Swift packages
   """
@@ -46757,6 +47314,7 @@ enum SecurityAdvisoryIdentifierType {
   Common Vulnerabilities and Exposures Identifier.
   """
   CVE
+
   """
   GitHub Security Advisory ID.
   """
@@ -46786,6 +47344,7 @@ enum SecurityAdvisoryOrderField {
   Order advisories by publication time
   """
   PUBLISHED_AT
+
   """
   Order advisories by update time
   """
@@ -46835,14 +47394,17 @@ enum SecurityAdvisorySeverity {
   Critical.
   """
   CRITICAL
+
   """
   High.
   """
   HIGH
+
   """
   Low.
   """
   LOW
+
   """
   Moderate.
   """
@@ -47239,38 +47801,47 @@ enum SocialAccountProvider {
   Social media and networking website.
   """
   FACEBOOK
+
   """
   Catch-all for social media providers that do not yet have specific handling.
   """
   GENERIC
+
   """
   Fork of Mastodon with a greater focus on local posting.
   """
   HOMETOWN
+
   """
   Social media website with a focus on photo and video sharing.
   """
   INSTAGRAM
+
   """
   Professional networking website.
   """
   LINKEDIN
+
   """
   Open-source federated microblogging service.
   """
   MASTODON
+
   """
   Social news aggregation and discussion website.
   """
   REDDIT
+
   """
   Live-streaming service.
   """
   TWITCH
+
   """
   Microblogging website.
   """
   TWITTER
+
   """
   Online video platform.
   """
@@ -47345,6 +47916,7 @@ enum SponsorOrderField {
   Order sponsorable entities by login (username).
   """
   LOGIN
+
   """
   Order sponsors by their relevance to the viewer.
   """
@@ -47814,22 +48386,27 @@ enum SponsorsActivityAction {
   The activity was cancelling a sponsorship.
   """
   CANCELLED_SPONSORSHIP
+
   """
   The activity was starting a sponsorship.
   """
   NEW_SPONSORSHIP
+
   """
   The activity was scheduling a downgrade or cancellation.
   """
   PENDING_CHANGE
+
   """
   The activity was funds being refunded to the sponsor or GitHub.
   """
   REFUND
+
   """
   The activity was disabling matching for a previously matched sponsorship.
   """
   SPONSOR_MATCH_DISABLED
+
   """
   The activity was changing the sponsorship tier, either directly by the sponsor or by a scheduled/pending change.
   """
@@ -47909,14 +48486,17 @@ enum SponsorsActivityPeriod {
   Don't restrict the activity to any date range, include all activity.
   """
   ALL
+
   """
   The previous calendar day.
   """
   DAY
+
   """
   The previous thirty days.
   """
   MONTH
+
   """
   The previous seven days.
   """
@@ -47931,982 +48511,1227 @@ enum SponsorsCountryOrRegionCode {
   Andorra
   """
   AD
+
   """
   United Arab Emirates
   """
   AE
+
   """
   Afghanistan
   """
   AF
+
   """
   Antigua and Barbuda
   """
   AG
+
   """
   Anguilla
   """
   AI
+
   """
   Albania
   """
   AL
+
   """
   Armenia
   """
   AM
+
   """
   Angola
   """
   AO
+
   """
   Antarctica
   """
   AQ
+
   """
   Argentina
   """
   AR
+
   """
   American Samoa
   """
   AS
+
   """
   Austria
   """
   AT
+
   """
   Australia
   """
   AU
+
   """
   Aruba
   """
   AW
+
   """
   Åland
   """
   AX
+
   """
   Azerbaijan
   """
   AZ
+
   """
   Bosnia and Herzegovina
   """
   BA
+
   """
   Barbados
   """
   BB
+
   """
   Bangladesh
   """
   BD
+
   """
   Belgium
   """
   BE
+
   """
   Burkina Faso
   """
   BF
+
   """
   Bulgaria
   """
   BG
+
   """
   Bahrain
   """
   BH
+
   """
   Burundi
   """
   BI
+
   """
   Benin
   """
   BJ
+
   """
   Saint Barthélemy
   """
   BL
+
   """
   Bermuda
   """
   BM
+
   """
   Brunei Darussalam
   """
   BN
+
   """
   Bolivia
   """
   BO
+
   """
   Bonaire, Sint Eustatius and Saba
   """
   BQ
+
   """
   Brazil
   """
   BR
+
   """
   Bahamas
   """
   BS
+
   """
   Bhutan
   """
   BT
+
   """
   Bouvet Island
   """
   BV
+
   """
   Botswana
   """
   BW
+
   """
   Belarus
   """
   BY
+
   """
   Belize
   """
   BZ
+
   """
   Canada
   """
   CA
+
   """
   Cocos (Keeling) Islands
   """
   CC
+
   """
   Congo (Kinshasa)
   """
   CD
+
   """
   Central African Republic
   """
   CF
+
   """
   Congo (Brazzaville)
   """
   CG
+
   """
   Switzerland
   """
   CH
+
   """
   Côte d'Ivoire
   """
   CI
+
   """
   Cook Islands
   """
   CK
+
   """
   Chile
   """
   CL
+
   """
   Cameroon
   """
   CM
+
   """
   China
   """
   CN
+
   """
   Colombia
   """
   CO
+
   """
   Costa Rica
   """
   CR
+
   """
   Cape Verde
   """
   CV
+
   """
   Curaçao
   """
   CW
+
   """
   Christmas Island
   """
   CX
+
   """
   Cyprus
   """
   CY
+
   """
   Czech Republic
   """
   CZ
+
   """
   Germany
   """
   DE
+
   """
   Djibouti
   """
   DJ
+
   """
   Denmark
   """
   DK
+
   """
   Dominica
   """
   DM
+
   """
   Dominican Republic
   """
   DO
+
   """
   Algeria
   """
   DZ
+
   """
   Ecuador
   """
   EC
+
   """
   Estonia
   """
   EE
+
   """
   Egypt
   """
   EG
+
   """
   Western Sahara
   """
   EH
+
   """
   Eritrea
   """
   ER
+
   """
   Spain
   """
   ES
+
   """
   Ethiopia
   """
   ET
+
   """
   Finland
   """
   FI
+
   """
   Fiji
   """
   FJ
+
   """
   Falkland Islands
   """
   FK
+
   """
   Micronesia
   """
   FM
+
   """
   Faroe Islands
   """
   FO
+
   """
   France
   """
   FR
+
   """
   Gabon
   """
   GA
+
   """
   United Kingdom
   """
   GB
+
   """
   Grenada
   """
   GD
+
   """
   Georgia
   """
   GE
+
   """
   French Guiana
   """
   GF
+
   """
   Guernsey
   """
   GG
+
   """
   Ghana
   """
   GH
+
   """
   Gibraltar
   """
   GI
+
   """
   Greenland
   """
   GL
+
   """
   Gambia
   """
   GM
+
   """
   Guinea
   """
   GN
+
   """
   Guadeloupe
   """
   GP
+
   """
   Equatorial Guinea
   """
   GQ
+
   """
   Greece
   """
   GR
+
   """
   South Georgia and South Sandwich Islands
   """
   GS
+
   """
   Guatemala
   """
   GT
+
   """
   Guam
   """
   GU
+
   """
   Guinea-Bissau
   """
   GW
+
   """
   Guyana
   """
   GY
+
   """
   Hong Kong
   """
   HK
+
   """
   Heard and McDonald Islands
   """
   HM
+
   """
   Honduras
   """
   HN
+
   """
   Croatia
   """
   HR
+
   """
   Haiti
   """
   HT
+
   """
   Hungary
   """
   HU
+
   """
   Indonesia
   """
   ID
+
   """
   Ireland
   """
   IE
+
   """
   Israel
   """
   IL
+
   """
   Isle of Man
   """
   IM
+
   """
   India
   """
   IN
+
   """
   British Indian Ocean Territory
   """
   IO
+
   """
   Iraq
   """
   IQ
+
   """
   Iran
   """
   IR
+
   """
   Iceland
   """
   IS
+
   """
   Italy
   """
   IT
+
   """
   Jersey
   """
   JE
+
   """
   Jamaica
   """
   JM
+
   """
   Jordan
   """
   JO
+
   """
   Japan
   """
   JP
+
   """
   Kenya
   """
   KE
+
   """
   Kyrgyzstan
   """
   KG
+
   """
   Cambodia
   """
   KH
+
   """
   Kiribati
   """
   KI
+
   """
   Comoros
   """
   KM
+
   """
   Saint Kitts and Nevis
   """
   KN
+
   """
   Korea, South
   """
   KR
+
   """
   Kuwait
   """
   KW
+
   """
   Cayman Islands
   """
   KY
+
   """
   Kazakhstan
   """
   KZ
+
   """
   Laos
   """
   LA
+
   """
   Lebanon
   """
   LB
+
   """
   Saint Lucia
   """
   LC
+
   """
   Liechtenstein
   """
   LI
+
   """
   Sri Lanka
   """
   LK
+
   """
   Liberia
   """
   LR
+
   """
   Lesotho
   """
   LS
+
   """
   Lithuania
   """
   LT
+
   """
   Luxembourg
   """
   LU
+
   """
   Latvia
   """
   LV
+
   """
   Libya
   """
   LY
+
   """
   Morocco
   """
   MA
+
   """
   Monaco
   """
   MC
+
   """
   Moldova
   """
   MD
+
   """
   Montenegro
   """
   ME
+
   """
   Saint Martin (French part)
   """
   MF
+
   """
   Madagascar
   """
   MG
+
   """
   Marshall Islands
   """
   MH
+
   """
   Macedonia
   """
   MK
+
   """
   Mali
   """
   ML
+
   """
   Myanmar
   """
   MM
+
   """
   Mongolia
   """
   MN
+
   """
   Macau
   """
   MO
+
   """
   Northern Mariana Islands
   """
   MP
+
   """
   Martinique
   """
   MQ
+
   """
   Mauritania
   """
   MR
+
   """
   Montserrat
   """
   MS
+
   """
   Malta
   """
   MT
+
   """
   Mauritius
   """
   MU
+
   """
   Maldives
   """
   MV
+
   """
   Malawi
   """
   MW
+
   """
   Mexico
   """
   MX
+
   """
   Malaysia
   """
   MY
+
   """
   Mozambique
   """
   MZ
+
   """
   Namibia
   """
   NA
+
   """
   New Caledonia
   """
   NC
+
   """
   Niger
   """
   NE
+
   """
   Norfolk Island
   """
   NF
+
   """
   Nigeria
   """
   NG
+
   """
   Nicaragua
   """
   NI
+
   """
   Netherlands
   """
   NL
+
   """
   Norway
   """
   NO
+
   """
   Nepal
   """
   NP
+
   """
   Nauru
   """
   NR
+
   """
   Niue
   """
   NU
+
   """
   New Zealand
   """
   NZ
+
   """
   Oman
   """
   OM
+
   """
   Panama
   """
   PA
+
   """
   Peru
   """
   PE
+
   """
   French Polynesia
   """
   PF
+
   """
   Papua New Guinea
   """
   PG
+
   """
   Philippines
   """
   PH
+
   """
   Pakistan
   """
   PK
+
   """
   Poland
   """
   PL
+
   """
   Saint Pierre and Miquelon
   """
   PM
+
   """
   Pitcairn
   """
   PN
+
   """
   Puerto Rico
   """
   PR
+
   """
   Palestine
   """
   PS
+
   """
   Portugal
   """
   PT
+
   """
   Palau
   """
   PW
+
   """
   Paraguay
   """
   PY
+
   """
   Qatar
   """
   QA
+
   """
   Reunion
   """
   RE
+
   """
   Romania
   """
   RO
+
   """
   Serbia
   """
   RS
+
   """
   Russian Federation
   """
   RU
+
   """
   Rwanda
   """
   RW
+
   """
   Saudi Arabia
   """
   SA
+
   """
   Solomon Islands
   """
   SB
+
   """
   Seychelles
   """
   SC
+
   """
   Sudan
   """
   SD
+
   """
   Sweden
   """
   SE
+
   """
   Singapore
   """
   SG
+
   """
   Saint Helena
   """
   SH
+
   """
   Slovenia
   """
   SI
+
   """
   Svalbard and Jan Mayen Islands
   """
   SJ
+
   """
   Slovakia
   """
   SK
+
   """
   Sierra Leone
   """
   SL
+
   """
   San Marino
   """
   SM
+
   """
   Senegal
   """
   SN
+
   """
   Somalia
   """
   SO
+
   """
   Suriname
   """
   SR
+
   """
   South Sudan
   """
   SS
+
   """
   Sao Tome and Principe
   """
   ST
+
   """
   El Salvador
   """
   SV
+
   """
   Sint Maarten (Dutch part)
   """
   SX
+
   """
   Swaziland
   """
   SZ
+
   """
   Turks and Caicos Islands
   """
   TC
+
   """
   Chad
   """
   TD
+
   """
   French Southern Lands
   """
   TF
+
   """
   Togo
   """
   TG
+
   """
   Thailand
   """
   TH
+
   """
   Tajikistan
   """
   TJ
+
   """
   Tokelau
   """
   TK
+
   """
   Timor-Leste
   """
   TL
+
   """
   Turkmenistan
   """
   TM
+
   """
   Tunisia
   """
   TN
+
   """
   Tonga
   """
   TO
+
   """
   Turkey
   """
   TR
+
   """
   Trinidad and Tobago
   """
   TT
+
   """
   Tuvalu
   """
   TV
+
   """
   Taiwan
   """
   TW
+
   """
   Tanzania
   """
   TZ
+
   """
   Ukraine
   """
   UA
+
   """
   Uganda
   """
   UG
+
   """
   United States Minor Outlying Islands
   """
   UM
+
   """
   United States of America
   """
   US
+
   """
   Uruguay
   """
   UY
+
   """
   Uzbekistan
   """
   UZ
+
   """
   Vatican City
   """
   VA
+
   """
   Saint Vincent and the Grenadines
   """
   VC
+
   """
   Venezuela
   """
   VE
+
   """
   Virgin Islands, British
   """
   VG
+
   """
   Virgin Islands, U.S.
   """
   VI
+
   """
   Vietnam
   """
   VN
+
   """
   Vanuatu
   """
   VU
+
   """
   Wallis and Futuna Islands
   """
   WF
+
   """
   Samoa
   """
   WS
+
   """
   Yemen
   """
   YE
+
   """
   Mayotte
   """
   YT
+
   """
   South Africa
   """
   ZA
+
   """
   Zambia
   """
   ZM
+
   """
   Zimbabwe
   """
@@ -48952,6 +49777,7 @@ enum SponsorsGoalKind {
   The goal is about getting a certain amount in USD from sponsorships each month.
   """
   MONTHLY_SPONSORSHIP_AMOUNT
+
   """
   The goal is about reaching a certain number of sponsors.
   """
@@ -49173,6 +49999,7 @@ enum SponsorsListingFeaturedItemFeatureableType {
   A repository owned by the user or organization with the GitHub Sponsors profile.
   """
   REPOSITORY
+
   """
   A user who belongs to the organization with the GitHub Sponsors profile.
   """
@@ -49378,6 +50205,7 @@ enum SponsorsTierOrderField {
   Order tiers by creation time.
   """
   CREATED_AT
+
   """
   Order tiers by their monthly price in cents
   """
@@ -49644,6 +50472,7 @@ enum SponsorshipPrivacy {
   Private
   """
   PRIVATE
+
   """
   Public
   """
@@ -49658,10 +50487,12 @@ enum SquashMergeCommitMessage {
   Default to a blank commit message.
   """
   BLANK
+
   """
   Default to the branch's commit messages.
   """
   COMMIT_MESSAGES
+
   """
   Default to the pull request's body.
   """
@@ -49676,6 +50507,7 @@ enum SquashMergeCommitTitle {
   Default to the commit's title (if only one commit) or the pull request's title (when more than one commit).
   """
   COMMIT_OR_PR_TITLE
+
   """
   Default to the pull request's title.
   """
@@ -50298,18 +51130,22 @@ enum StatusState {
   Status is errored.
   """
   ERROR
+
   """
   Status is expected.
   """
   EXPECTED
+
   """
   Status is failing.
   """
   FAILURE
+
   """
   Status is pending.
   """
   PENDING
+
   """
   Status is successful.
   """
@@ -50544,10 +51380,12 @@ enum SubscriptionState {
   The User is never notified.
   """
   IGNORED
+
   """
   The User is notified of all conversations.
   """
   SUBSCRIBED
+
   """
   The User is only notified when participating or @mentioned.
   """
@@ -52331,6 +53169,7 @@ enum TeamMemberOrderField {
   Order team members by creation time
   """
   CREATED_AT
+
   """
   Order team members by login
   """
@@ -52345,6 +53184,7 @@ enum TeamMemberRole {
   A team maintainer has permission to add and remove team members.
   """
   MAINTAINER
+
   """
   A team member has no administrative permissions on the team.
   """
@@ -52359,10 +53199,12 @@ enum TeamMembershipType {
   Includes immediate and child team members for the team.
   """
   ALL
+
   """
   Includes only child team members for the team.
   """
   CHILD_TEAM
+
   """
   Includes only immediate members of the team.
   """
@@ -52377,6 +53219,7 @@ enum TeamNotificationSetting {
   No one will receive notifications.
   """
   NOTIFICATIONS_DISABLED
+
   """
   Everyone will receive notifications when the team is @mentioned.
   """
@@ -52416,6 +53259,7 @@ enum TeamPrivacy {
   A secret team can only be seen by its members.
   """
   SECRET
+
   """
   A visible team can be seen and @mentioned by every member of the organization.
   """
@@ -52738,22 +53582,27 @@ enum TeamRepositoryOrderField {
   Order repositories by creation time
   """
   CREATED_AT
+
   """
   Order repositories by name
   """
   NAME
+
   """
   Order repositories by permission
   """
   PERMISSION
+
   """
   Order repositories by push time
   """
   PUSHED_AT
+
   """
   Order repositories by number of stargazers
   """
   STARGAZERS
+
   """
   Order repositories by update time
   """
@@ -52768,6 +53617,7 @@ enum TeamReviewAssignmentAlgorithm @preview(toggledBy: "stone-crop-preview") {
   Balance review load across the entire team
   """
   LOAD_BALANCE
+
   """
   Alternate reviews between each team member
   """
@@ -52782,6 +53632,7 @@ enum TeamRole {
   User has admin rights on the team.
   """
   ADMIN
+
   """
   User is a member of the team.
   """
@@ -52836,10 +53687,12 @@ enum ThreadSubscriptionFormAction {
   The User cannot subscribe or unsubscribe to the thread
   """
   NONE
+
   """
   The User can subscribe to the thread
   """
   SUBSCRIBE
+
   """
   The User can unsubscribe to the thread
   """
@@ -52854,34 +53707,42 @@ enum ThreadSubscriptionState {
   The subscription status is currently disabled.
   """
   DISABLED
+
   """
   The User is never notified because they are ignoring the list
   """
   IGNORING_LIST
+
   """
   The User is never notified because they are ignoring the thread
   """
   IGNORING_THREAD
+
   """
   The User is not recieving notifications from this thread
   """
   NONE
+
   """
   The User is notified becuase they are watching the list
   """
   SUBSCRIBED_TO_LIST
+
   """
   The User is notified because they are subscribed to the thread
   """
   SUBSCRIBED_TO_THREAD
+
   """
   The User is notified because they chose custom settings for this thread.
   """
   SUBSCRIBED_TO_THREAD_EVENTS
+
   """
   The User is notified because they chose custom settings for this thread.
   """
   SUBSCRIBED_TO_THREAD_TYPE
+
   """
   The subscription status is currently unavailable.
   """
@@ -53038,14 +53899,17 @@ enum TopicSuggestionDeclineReason {
   The suggested topic is not relevant to the repository.
   """
   NOT_RELEVANT
+
   """
   The viewer does not like the suggested topic.
   """
   PERSONAL_PREFERENCE
+
   """
   The suggested topic is too general for the repository.
   """
   TOO_GENERAL
+
   """
   The suggested topic is too specific for the repository (e.g. #ruby-on-rails-version-4-2-1).
   """
@@ -53060,6 +53924,7 @@ enum TrackedIssueStates {
   The tracked issue is closed
   """
   CLOSED
+
   """
   The tracked issue is open
   """
@@ -58327,18 +59192,22 @@ enum UserBlockDuration {
   The user was blocked for 1 day
   """
   ONE_DAY
+
   """
   The user was blocked for 30 days
   """
   ONE_MONTH
+
   """
   The user was blocked for 7 days
   """
   ONE_WEEK
+
   """
   The user was blocked permanently
   """
   PERMANENT
+
   """
   The user was blocked for 3 days
   """
@@ -58767,6 +59636,7 @@ enum VerifiableDomainOrderField {
   Order verifiable domains by their creation date.
   """
   CREATED_AT
+
   """
   Order verifiable domains by the domain name.
   """
@@ -59145,18 +60015,22 @@ enum WorkflowState {
   The workflow is active.
   """
   ACTIVE
+
   """
   The workflow was deleted from the git repository.
   """
   DELETED
+
   """
   The workflow was disabled by default on a fork.
   """
   DISABLED_FORK
+
   """
   The workflow was disabled for inactivity in the repository.
   """
   DISABLED_INACTIVITY
+
   """
   The workflow was disabled manually.
   """
