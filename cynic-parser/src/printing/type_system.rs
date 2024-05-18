@@ -307,12 +307,6 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<UnionDefinition<'a>> {
     fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
         let mut builder = allocator.nil();
 
-        if let Some(description) = self.0.description() {
-            builder = builder
-                .append(NodeDisplay(description))
-                .append(allocator.hardline());
-        }
-
         builder = builder.append(allocator.text(format!("union {}", self.0.name())));
 
         let mut directives = self.0.directives().peekable();
@@ -348,7 +342,17 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<UnionDefinition<'a>> {
                 .append(members)
         }
 
-        builder.group()
+        builder = builder.group();
+
+        if let Some(description) = self.0.description() {
+            builder = NodeDisplay(description)
+                .pretty(allocator)
+                .append(allocator.hardline())
+                .append(builder)
+                .group();
+        }
+
+        builder
     }
 }
 

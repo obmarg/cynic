@@ -6,3 +6,8 @@ union SomeUnion =
   | ThingD
   | Whatever
   | Blah
+
+"""
+Thing
+"""
+union SomeOtherUnion = Whatever | Thing
