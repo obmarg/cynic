@@ -136,11 +136,6 @@ fn simple_object() {
 }
 
 #[test]
-fn union() {
-    roundtrip_test("tests/sdl/union.graphql");
-}
-
-#[test]
 fn string_escaping() {
     insta::assert_snapshot!(double_roundtrip_test("tests/sdl/string_escaping.graphql"))
 }
@@ -148,6 +143,16 @@ fn string_escaping() {
 #[test]
 fn union_extension() {
     roundtrip_test("tests/sdl/union_extension.graphql");
+}
+
+#[test]
+fn union_formatting() {
+    roundtrip_test("tests/sdl/union_formatting.graphql");
+}
+
+#[test]
+fn union() {
+    roundtrip_test("tests/sdl/union.graphql");
 }
 
 #[test]

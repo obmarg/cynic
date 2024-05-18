@@ -330,19 +330,25 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<UnionDefinition<'a>> {
 
         if members.peek().is_some() {
             let members = allocator
-                .intersperse(members, allocator.line().append(allocator.text("| ")))
-                .group();
-
-            let members = members.clone().nest(2).flat_alt(members);
+                .line()
+                .append(
+                    allocator
+                        .space()
+                        .append(allocator.space())
+                        .flat_alt(allocator.nil()),
+                )
+                .append(
+                    allocator.intersperse(members, allocator.line().append(allocator.text("| "))),
+                )
+                .nest(2);
 
             builder = builder
                 .append(allocator.space())
                 .append(allocator.text("="))
-                .append(allocator.space())
                 .append(members)
         }
 
-        builder
+        builder.group()
     }
 }
 

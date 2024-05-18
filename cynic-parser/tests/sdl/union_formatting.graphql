@@ -1,0 +1,8 @@
+union SomeUnion =
+    ThingA
+  | ThingB
+  | ThingC
+  | ALongerThing
+  | ThingD
+  | Whatever
+  | Blah
