@@ -49,6 +49,7 @@ type Root {
     last: Int
   ): VehiclesConnection
   vehicle(id: ID, vehicleID: ID): Vehicle
+
   """
   Fetches an object given its ID
   """
@@ -68,10 +69,12 @@ type FilmsConnection {
   Information to aid in pagination.
   """
   pageInfo: PageInfo!
+
   """
   A list of edges.
   """
   edges: [FilmsEdge]
+
   """
   A count of the total number of objects in this connection, ignoring pagination.
   This allows a client to fetch the first five objects by passing "5" as the
@@ -79,6 +82,7 @@ type FilmsConnection {
   for example.
   """
   totalCount: Int
+
   """
   A list of all of the objects returned in the connection. This is a convenience
   field provided for quickly exploring the API; rather than querying for
@@ -98,14 +102,17 @@ type PageInfo {
   When paginating forwards, are there more items?
   """
   hasNextPage: Boolean!
+
   """
   When paginating backwards, are there more items?
   """
   hasPreviousPage: Boolean!
+
   """
   When paginating backwards, the cursor to continue.
   """
   startCursor: String
+
   """
   When paginating forwards, the cursor to continue.
   """
@@ -120,6 +127,7 @@ type FilmsEdge {
   The item at the end of the edge
   """
   node: Film
+
   """
   A cursor for use in pagination
   """
@@ -134,22 +142,27 @@ type Film implements Node {
   The title of this film.
   """
   title: String
+
   """
   The episode number of this film.
   """
   episodeID: Int
+
   """
   The opening paragraphs at the beginning of this film.
   """
   openingCrawl: String
+
   """
   The name of the director of this film.
   """
   director: String
+
   """
   The name(s) of the producer(s) of this film.
   """
   producers: [String]
+
   """
   The ISO 8601 date format of film release at original creator country.
   """
@@ -184,14 +197,17 @@ type Film implements Node {
     before: String
     last: Int
   ): FilmPlanetsConnection
+
   """
   The ISO 8601 date format of the time that this resource was created.
   """
   created: String
+
   """
   The ISO 8601 date format of the time that this resource was edited.
   """
   edited: String
+
   """
   The ID of an object
   """
@@ -216,10 +232,12 @@ type FilmSpeciesConnection {
   Information to aid in pagination.
   """
   pageInfo: PageInfo!
+
   """
   A list of edges.
   """
   edges: [FilmSpeciesEdge]
+
   """
   A count of the total number of objects in this connection, ignoring pagination.
   This allows a client to fetch the first five objects by passing "5" as the
@@ -227,6 +245,7 @@ type FilmSpeciesConnection {
   for example.
   """
   totalCount: Int
+
   """
   A list of all of the objects returned in the connection. This is a convenience
   field provided for quickly exploring the API; rather than querying for
@@ -246,6 +265,7 @@ type FilmSpeciesEdge {
   The item at the end of the edge
   """
   node: Species
+
   """
   A cursor for use in pagination
   """
@@ -260,41 +280,50 @@ type Species implements Node {
   The name of this species.
   """
   name: String
+
   """
   The classification of this species, such as "mammal" or "reptile".
   """
   classification: String
+
   """
   The designation of this species, such as "sentient".
   """
   designation: String
+
   """
   The average height of this species in centimeters.
   """
   averageHeight: Float
+
   """
   The average lifespan of this species in years, null if unknown.
   """
   averageLifespan: Int
+
   """
   Common eye colors for this species, null if this species does not typically
   have eyes.
   """
   eyeColors: [String]
+
   """
   Common hair colors for this species, null if this species does not typically
   have hair.
   """
   hairColors: [String]
+
   """
   Common skin colors for this species, null if this species does not typically
   have skin.
   """
   skinColors: [String]
+
   """
   The language commonly spoken by this species.
   """
   language: String
+
   """
   A planet that this species originates from.
   """
@@ -311,14 +340,17 @@ type Species implements Node {
     before: String
     last: Int
   ): SpeciesFilmsConnection
+
   """
   The ISO 8601 date format of the time that this resource was created.
   """
   created: String
+
   """
   The ISO 8601 date format of the time that this resource was edited.
   """
   edited: String
+
   """
   The ID of an object
   """
@@ -334,37 +366,45 @@ type Planet implements Node {
   The name of this planet.
   """
   name: String
+
   """
   The diameter of this planet in kilometers.
   """
   diameter: Int
+
   """
   The number of standard hours it takes for this planet to complete a single
   rotation on its axis.
   """
   rotationPeriod: Int
+
   """
   The number of standard days it takes for this planet to complete a single orbit
   of its local star.
   """
   orbitalPeriod: Int
+
   """
   A number denoting the gravity of this planet, where "1" is normal or 1 standard
   G. "2" is twice or 2 standard Gs. "0.5" is half or 0.5 standard Gs.
   """
   gravity: String
+
   """
   The average population of sentient beings inhabiting this planet.
   """
   population: Float
+
   """
   The climates of this planet.
   """
   climates: [String]
+
   """
   The terrains of this planet.
   """
   terrains: [String]
+
   """
   The percentage of the planet surface that is naturally occurring water or bodies
   of water.
@@ -382,14 +422,17 @@ type Planet implements Node {
     before: String
     last: Int
   ): PlanetFilmsConnection
+
   """
   The ISO 8601 date format of the time that this resource was created.
   """
   created: String
+
   """
   The ISO 8601 date format of the time that this resource was edited.
   """
   edited: String
+
   """
   The ID of an object
   """
@@ -404,10 +447,12 @@ type PlanetResidentsConnection {
   Information to aid in pagination.
   """
   pageInfo: PageInfo!
+
   """
   A list of edges.
   """
   edges: [PlanetResidentsEdge]
+
   """
   A count of the total number of objects in this connection, ignoring pagination.
   This allows a client to fetch the first five objects by passing "5" as the
@@ -415,6 +460,7 @@ type PlanetResidentsConnection {
   for example.
   """
   totalCount: Int
+
   """
   A list of all of the objects returned in the connection. This is a convenience
   field provided for quickly exploring the API; rather than querying for
@@ -434,6 +480,7 @@ type PlanetResidentsEdge {
   The item at the end of the edge
   """
   node: Person
+
   """
   A cursor for use in pagination
   """
@@ -448,39 +495,47 @@ type Person implements Node {
   The name of this person.
   """
   name: String
+
   """
   The birth year of the person, using the in-universe standard of BBY or ABY -
   Before the Battle of Yavin or After the Battle of Yavin. The Battle of Yavin is
   a battle that occurs at the end of Star Wars episode IV: A New Hope.
   """
   birthYear: String
+
   """
   The eye color of this person. Will be "unknown" if not known or "n/a" if the
   person does not have an eye.
   """
   eyeColor: String
+
   """
   The gender of this person. Either "Male", "Female" or "unknown",
   "n/a" if the person does not have a gender.
   """
   gender: String
+
   """
   The hair color of this person. Will be "unknown" if not known or "n/a" if the
   person does not have hair.
   """
   hairColor: String
+
   """
   The height of the person in centimeters.
   """
   height: Int
+
   """
   The mass of the person in kilograms.
   """
   mass: Float
+
   """
   The skin color of this person.
   """
   skinColor: String
+
   """
   A planet that this person was born on or inhabits.
   """
@@ -491,6 +546,7 @@ type Person implements Node {
     before: String
     last: Int
   ): PersonFilmsConnection
+
   """
   The species that this person belongs to, or null if unknown.
   """
@@ -507,14 +563,17 @@ type Person implements Node {
     before: String
     last: Int
   ): PersonVehiclesConnection
+
   """
   The ISO 8601 date format of the time that this resource was created.
   """
   created: String
+
   """
   The ISO 8601 date format of the time that this resource was edited.
   """
   edited: String
+
   """
   The ID of an object
   """
@@ -529,10 +588,12 @@ type PersonFilmsConnection {
   Information to aid in pagination.
   """
   pageInfo: PageInfo!
+
   """
   A list of edges.
   """
   edges: [PersonFilmsEdge]
+
   """
   A count of the total number of objects in this connection, ignoring pagination.
   This allows a client to fetch the first five objects by passing "5" as the
@@ -540,6 +601,7 @@ type PersonFilmsConnection {
   for example.
   """
   totalCount: Int
+
   """
   A list of all of the objects returned in the connection. This is a convenience
   field provided for quickly exploring the API; rather than querying for
@@ -559,6 +621,7 @@ type PersonFilmsEdge {
   The item at the end of the edge
   """
   node: Film
+
   """
   A cursor for use in pagination
   """
@@ -573,10 +636,12 @@ type PersonStarshipsConnection {
   Information to aid in pagination.
   """
   pageInfo: PageInfo!
+
   """
   A list of edges.
   """
   edges: [PersonStarshipsEdge]
+
   """
   A count of the total number of objects in this connection, ignoring pagination.
   This allows a client to fetch the first five objects by passing "5" as the
@@ -584,6 +649,7 @@ type PersonStarshipsConnection {
   for example.
   """
   totalCount: Int
+
   """
   A list of all of the objects returned in the connection. This is a convenience
   field provided for quickly exploring the API; rather than querying for
@@ -603,6 +669,7 @@ type PersonStarshipsEdge {
   The item at the end of the edge
   """
   node: Starship
+
   """
   A cursor for use in pagination
   """
@@ -617,45 +684,55 @@ type Starship implements Node {
   The name of this starship. The common name, such as "Death Star".
   """
   name: String
+
   """
   The model or official name of this starship. Such as "T-65 X-wing" or "DS-1
   Orbital Battle Station".
   """
   model: String
+
   """
   The class of this starship, such as "Starfighter" or "Deep Space Mobile
   Battlestation"
   """
   starshipClass: String
+
   """
   The manufacturers of this starship.
   """
   manufacturers: [String]
+
   """
   The cost of this starship new, in galactic credits.
   """
   costInCredits: Float
+
   """
   The length of this starship in meters.
   """
   length: Float
+
   """
   The number of personnel needed to run or pilot this starship.
   """
   crew: String
+
   """
   The number of non-essential people this starship can transport.
   """
   passengers: String
+
   """
   The maximum speed of this starship in atmosphere. null if this starship is
   incapable of atmosphering flight.
   """
   maxAtmospheringSpeed: Int
+
   """
   The class of this starships hyperdrive.
   """
   hyperdriveRating: Float
+
   """
   The Maximum number of Megalights this starship can travel in a standard hour.
   A "Megalight" is a standard unit of distance and has never been defined before
@@ -664,10 +741,12 @@ type Starship implements Node {
   distance between our Sun (Sol) and Earth.
   """
   MGLT: Int
+
   """
   The maximum number of kilograms that this starship can transport.
   """
   cargoCapacity: Float
+
   """
   The maximum length of time that this starship can provide consumables for its
   entire crew without having to resupply.
@@ -685,14 +764,17 @@ type Starship implements Node {
     before: String
     last: Int
   ): StarshipFilmsConnection
+
   """
   The ISO 8601 date format of the time that this resource was created.
   """
   created: String
+
   """
   The ISO 8601 date format of the time that this resource was edited.
   """
   edited: String
+
   """
   The ID of an object
   """
@@ -707,10 +789,12 @@ type StarshipPilotsConnection {
   Information to aid in pagination.
   """
   pageInfo: PageInfo!
+
   """
   A list of edges.
   """
   edges: [StarshipPilotsEdge]
+
   """
   A count of the total number of objects in this connection, ignoring pagination.
   This allows a client to fetch the first five objects by passing "5" as the
@@ -718,6 +802,7 @@ type StarshipPilotsConnection {
   for example.
   """
   totalCount: Int
+
   """
   A list of all of the objects returned in the connection. This is a convenience
   field provided for quickly exploring the API; rather than querying for
@@ -737,6 +822,7 @@ type StarshipPilotsEdge {
   The item at the end of the edge
   """
   node: Person
+
   """
   A cursor for use in pagination
   """
@@ -751,10 +837,12 @@ type StarshipFilmsConnection {
   Information to aid in pagination.
   """
   pageInfo: PageInfo!
+
   """
   A list of edges.
   """
   edges: [StarshipFilmsEdge]
+
   """
   A count of the total number of objects in this connection, ignoring pagination.
   This allows a client to fetch the first five objects by passing "5" as the
@@ -762,6 +850,7 @@ type StarshipFilmsConnection {
   for example.
   """
   totalCount: Int
+
   """
   A list of all of the objects returned in the connection. This is a convenience
   field provided for quickly exploring the API; rather than querying for
@@ -781,6 +870,7 @@ type StarshipFilmsEdge {
   The item at the end of the edge
   """
   node: Film
+
   """
   A cursor for use in pagination
   """
@@ -795,10 +885,12 @@ type PersonVehiclesConnection {
   Information to aid in pagination.
   """
   pageInfo: PageInfo!
+
   """
   A list of edges.
   """
   edges: [PersonVehiclesEdge]
+
   """
   A count of the total number of objects in this connection, ignoring pagination.
   This allows a client to fetch the first five objects by passing "5" as the
@@ -806,6 +898,7 @@ type PersonVehiclesConnection {
   for example.
   """
   totalCount: Int
+
   """
   A list of all of the objects returned in the connection. This is a convenience
   field provided for quickly exploring the API; rather than querying for
@@ -825,6 +918,7 @@ type PersonVehiclesEdge {
   The item at the end of the edge
   """
   node: Vehicle
+
   """
   A cursor for use in pagination
   """
@@ -840,43 +934,53 @@ type Vehicle implements Node {
   bike".
   """
   name: String
+
   """
   The model or official name of this vehicle. Such as "All-Terrain Attack
   Transport".
   """
   model: String
+
   """
   The class of this vehicle, such as "Wheeled" or "Repulsorcraft".
   """
   vehicleClass: String
+
   """
   The manufacturers of this vehicle.
   """
   manufacturers: [String]
+
   """
   The cost of this vehicle new, in Galactic Credits.
   """
   costInCredits: Float
+
   """
   The length of this vehicle in meters.
   """
   length: Float
+
   """
   The number of personnel needed to run or pilot this vehicle.
   """
   crew: String
+
   """
   The number of non-essential people this vehicle can transport.
   """
   passengers: String
+
   """
   The maximum speed of this vehicle in atmosphere.
   """
   maxAtmospheringSpeed: Int
+
   """
   The maximum number of kilograms that this vehicle can transport.
   """
   cargoCapacity: Float
+
   """
   The maximum length of time that this vehicle can provide consumables for its
   entire crew without having to resupply.
@@ -894,14 +998,17 @@ type Vehicle implements Node {
     before: String
     last: Int
   ): VehicleFilmsConnection
+
   """
   The ISO 8601 date format of the time that this resource was created.
   """
   created: String
+
   """
   The ISO 8601 date format of the time that this resource was edited.
   """
   edited: String
+
   """
   The ID of an object
   """
@@ -916,10 +1023,12 @@ type VehiclePilotsConnection {
   Information to aid in pagination.
   """
   pageInfo: PageInfo!
+
   """
   A list of edges.
   """
   edges: [VehiclePilotsEdge]
+
   """
   A count of the total number of objects in this connection, ignoring pagination.
   This allows a client to fetch the first five objects by passing "5" as the
@@ -927,6 +1036,7 @@ type VehiclePilotsConnection {
   for example.
   """
   totalCount: Int
+
   """
   A list of all of the objects returned in the connection. This is a convenience
   field provided for quickly exploring the API; rather than querying for
@@ -946,6 +1056,7 @@ type VehiclePilotsEdge {
   The item at the end of the edge
   """
   node: Person
+
   """
   A cursor for use in pagination
   """
@@ -960,10 +1071,12 @@ type VehicleFilmsConnection {
   Information to aid in pagination.
   """
   pageInfo: PageInfo!
+
   """
   A list of edges.
   """
   edges: [VehicleFilmsEdge]
+
   """
   A count of the total number of objects in this connection, ignoring pagination.
   This allows a client to fetch the first five objects by passing "5" as the
@@ -971,6 +1084,7 @@ type VehicleFilmsConnection {
   for example.
   """
   totalCount: Int
+
   """
   A list of all of the objects returned in the connection. This is a convenience
   field provided for quickly exploring the API; rather than querying for
@@ -990,6 +1104,7 @@ type VehicleFilmsEdge {
   The item at the end of the edge
   """
   node: Film
+
   """
   A cursor for use in pagination
   """
@@ -1004,10 +1119,12 @@ type PlanetFilmsConnection {
   Information to aid in pagination.
   """
   pageInfo: PageInfo!
+
   """
   A list of edges.
   """
   edges: [PlanetFilmsEdge]
+
   """
   A count of the total number of objects in this connection, ignoring pagination.
   This allows a client to fetch the first five objects by passing "5" as the
@@ -1015,6 +1132,7 @@ type PlanetFilmsConnection {
   for example.
   """
   totalCount: Int
+
   """
   A list of all of the objects returned in the connection. This is a convenience
   field provided for quickly exploring the API; rather than querying for
@@ -1034,6 +1152,7 @@ type PlanetFilmsEdge {
   The item at the end of the edge
   """
   node: Film
+
   """
   A cursor for use in pagination
   """
@@ -1048,10 +1167,12 @@ type SpeciesPeopleConnection {
   Information to aid in pagination.
   """
   pageInfo: PageInfo!
+
   """
   A list of edges.
   """
   edges: [SpeciesPeopleEdge]
+
   """
   A count of the total number of objects in this connection, ignoring pagination.
   This allows a client to fetch the first five objects by passing "5" as the
@@ -1059,6 +1180,7 @@ type SpeciesPeopleConnection {
   for example.
   """
   totalCount: Int
+
   """
   A list of all of the objects returned in the connection. This is a convenience
   field provided for quickly exploring the API; rather than querying for
@@ -1078,6 +1200,7 @@ type SpeciesPeopleEdge {
   The item at the end of the edge
   """
   node: Person
+
   """
   A cursor for use in pagination
   """
@@ -1092,10 +1215,12 @@ type SpeciesFilmsConnection {
   Information to aid in pagination.
   """
   pageInfo: PageInfo!
+
   """
   A list of edges.
   """
   edges: [SpeciesFilmsEdge]
+
   """
   A count of the total number of objects in this connection, ignoring pagination.
   This allows a client to fetch the first five objects by passing "5" as the
@@ -1103,6 +1228,7 @@ type SpeciesFilmsConnection {
   for example.
   """
   totalCount: Int
+
   """
   A list of all of the objects returned in the connection. This is a convenience
   field provided for quickly exploring the API; rather than querying for
@@ -1122,6 +1248,7 @@ type SpeciesFilmsEdge {
   The item at the end of the edge
   """
   node: Film
+
   """
   A cursor for use in pagination
   """
@@ -1136,10 +1263,12 @@ type FilmStarshipsConnection {
   Information to aid in pagination.
   """
   pageInfo: PageInfo!
+
   """
   A list of edges.
   """
   edges: [FilmStarshipsEdge]
+
   """
   A count of the total number of objects in this connection, ignoring pagination.
   This allows a client to fetch the first five objects by passing "5" as the
@@ -1147,6 +1276,7 @@ type FilmStarshipsConnection {
   for example.
   """
   totalCount: Int
+
   """
   A list of all of the objects returned in the connection. This is a convenience
   field provided for quickly exploring the API; rather than querying for
@@ -1166,6 +1296,7 @@ type FilmStarshipsEdge {
   The item at the end of the edge
   """
   node: Starship
+
   """
   A cursor for use in pagination
   """
@@ -1180,10 +1311,12 @@ type FilmVehiclesConnection {
   Information to aid in pagination.
   """
   pageInfo: PageInfo!
+
   """
   A list of edges.
   """
   edges: [FilmVehiclesEdge]
+
   """
   A count of the total number of objects in this connection, ignoring pagination.
   This allows a client to fetch the first five objects by passing "5" as the
@@ -1191,6 +1324,7 @@ type FilmVehiclesConnection {
   for example.
   """
   totalCount: Int
+
   """
   A list of all of the objects returned in the connection. This is a convenience
   field provided for quickly exploring the API; rather than querying for
@@ -1210,6 +1344,7 @@ type FilmVehiclesEdge {
   The item at the end of the edge
   """
   node: Vehicle
+
   """
   A cursor for use in pagination
   """
@@ -1224,10 +1359,12 @@ type FilmCharactersConnection {
   Information to aid in pagination.
   """
   pageInfo: PageInfo!
+
   """
   A list of edges.
   """
   edges: [FilmCharactersEdge]
+
   """
   A count of the total number of objects in this connection, ignoring pagination.
   This allows a client to fetch the first five objects by passing "5" as the
@@ -1235,6 +1372,7 @@ type FilmCharactersConnection {
   for example.
   """
   totalCount: Int
+
   """
   A list of all of the objects returned in the connection. This is a convenience
   field provided for quickly exploring the API; rather than querying for
@@ -1254,6 +1392,7 @@ type FilmCharactersEdge {
   The item at the end of the edge
   """
   node: Person
+
   """
   A cursor for use in pagination
   """
@@ -1268,10 +1407,12 @@ type FilmPlanetsConnection {
   Information to aid in pagination.
   """
   pageInfo: PageInfo!
+
   """
   A list of edges.
   """
   edges: [FilmPlanetsEdge]
+
   """
   A count of the total number of objects in this connection, ignoring pagination.
   This allows a client to fetch the first five objects by passing "5" as the
@@ -1279,6 +1420,7 @@ type FilmPlanetsConnection {
   for example.
   """
   totalCount: Int
+
   """
   A list of all of the objects returned in the connection. This is a convenience
   field provided for quickly exploring the API; rather than querying for
@@ -1298,6 +1440,7 @@ type FilmPlanetsEdge {
   The item at the end of the edge
   """
   node: Planet
+
   """
   A cursor for use in pagination
   """
@@ -1312,10 +1455,12 @@ type PeopleConnection {
   Information to aid in pagination.
   """
   pageInfo: PageInfo!
+
   """
   A list of edges.
   """
   edges: [PeopleEdge]
+
   """
   A count of the total number of objects in this connection, ignoring pagination.
   This allows a client to fetch the first five objects by passing "5" as the
@@ -1323,6 +1468,7 @@ type PeopleConnection {
   for example.
   """
   totalCount: Int
+
   """
   A list of all of the objects returned in the connection. This is a convenience
   field provided for quickly exploring the API; rather than querying for
@@ -1342,6 +1488,7 @@ type PeopleEdge {
   The item at the end of the edge
   """
   node: Person
+
   """
   A cursor for use in pagination
   """
@@ -1356,10 +1503,12 @@ type PlanetsConnection {
   Information to aid in pagination.
   """
   pageInfo: PageInfo!
+
   """
   A list of edges.
   """
   edges: [PlanetsEdge]
+
   """
   A count of the total number of objects in this connection, ignoring pagination.
   This allows a client to fetch the first five objects by passing "5" as the
@@ -1367,6 +1516,7 @@ type PlanetsConnection {
   for example.
   """
   totalCount: Int
+
   """
   A list of all of the objects returned in the connection. This is a convenience
   field provided for quickly exploring the API; rather than querying for
@@ -1386,6 +1536,7 @@ type PlanetsEdge {
   The item at the end of the edge
   """
   node: Planet
+
   """
   A cursor for use in pagination
   """
@@ -1400,10 +1551,12 @@ type SpeciesConnection {
   Information to aid in pagination.
   """
   pageInfo: PageInfo!
+
   """
   A list of edges.
   """
   edges: [SpeciesEdge]
+
   """
   A count of the total number of objects in this connection, ignoring pagination.
   This allows a client to fetch the first five objects by passing "5" as the
@@ -1411,6 +1564,7 @@ type SpeciesConnection {
   for example.
   """
   totalCount: Int
+
   """
   A list of all of the objects returned in the connection. This is a convenience
   field provided for quickly exploring the API; rather than querying for
@@ -1430,6 +1584,7 @@ type SpeciesEdge {
   The item at the end of the edge
   """
   node: Species
+
   """
   A cursor for use in pagination
   """
@@ -1444,10 +1599,12 @@ type StarshipsConnection {
   Information to aid in pagination.
   """
   pageInfo: PageInfo!
+
   """
   A list of edges.
   """
   edges: [StarshipsEdge]
+
   """
   A count of the total number of objects in this connection, ignoring pagination.
   This allows a client to fetch the first five objects by passing "5" as the
@@ -1455,6 +1612,7 @@ type StarshipsConnection {
   for example.
   """
   totalCount: Int
+
   """
   A list of all of the objects returned in the connection. This is a convenience
   field provided for quickly exploring the API; rather than querying for
@@ -1474,6 +1632,7 @@ type StarshipsEdge {
   The item at the end of the edge
   """
   node: Starship
+
   """
   A cursor for use in pagination
   """
@@ -1488,10 +1647,12 @@ type VehiclesConnection {
   Information to aid in pagination.
   """
   pageInfo: PageInfo!
+
   """
   A list of edges.
   """
   edges: [VehiclesEdge]
+
   """
   A count of the total number of objects in this connection, ignoring pagination.
   This allows a client to fetch the first five objects by passing "5" as the
@@ -1499,6 +1660,7 @@ type VehiclesConnection {
   for example.
   """
   totalCount: Int
+
   """
   A list of all of the objects returned in the connection. This is a convenience
   field provided for quickly exploring the API; rather than querying for
@@ -1518,6 +1680,7 @@ type VehiclesEdge {
   The item at the end of the edge
   """
   node: Vehicle
+
   """
   A cursor for use in pagination
   """
