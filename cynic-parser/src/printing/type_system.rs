@@ -628,19 +628,25 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Value<'a>> {
                 allocator.nil().braces()
             }
             crate::type_system::Value::Object(items) => allocator
-                .intersperse(
-                    items.into_iter().map(|(name, value)| {
+                .line()
+                .append(
+                    allocator.intersperse(
+                        items.into_iter().map(|(name, value)| {
+                            allocator
+                                .text(name)
+                                .append(allocator.text(":"))
+                                .append(allocator.space())
+                                .append(NodeDisplay(value))
+                        }),
                         allocator
-                            .text(name)
-                            .append(allocator.text(":"))
-                            .append(allocator.space())
-                            .append(NodeDisplay(value))
-                    }),
-                    allocator.text(",").append(allocator.space()),
+                            .line_()
+                            .append(allocator.nil().flat_alt(allocator.text(", "))),
+                    ),
                 )
-                .group()
-                .enclose(allocator.softline(), allocator.softline())
-                .braces(),
+                .nest(2)
+                .append(allocator.line())
+                .braces()
+                .group(),
         }
     }
 }

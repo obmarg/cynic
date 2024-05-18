@@ -1,6 +1,11 @@
 use similar_asserts::assert_eq;
 
 #[test]
+fn test_argument_default_value_formatting() {
+    roundtrip_test("tests/sdl/argument_default_value_formatting.graphql");
+}
+
+#[test]
 fn test_enum() {
     roundtrip_test("tests/sdl/enum.graphql");
 }
@@ -162,7 +167,9 @@ fn schema_definition_directives_only() {
 
 fn roundtrip_test(filename: &str) {
     let data = std::fs::read_to_string(filename).unwrap();
-    let ast = cynic_parser::parse_type_system_document(&data).unwrap();
+    let ast = cynic_parser::parse_type_system_document(&data)
+        .map_err(|error| error.to_report(&data))
+        .unwrap();
 
     let output = ast.to_sdl();
 
