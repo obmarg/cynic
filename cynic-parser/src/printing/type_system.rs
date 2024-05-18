@@ -416,9 +416,13 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<EnumValueDefinition<'a>> {
 
         let mut directives = self.0.directives().peekable();
         if directives.peek().is_some() {
-            builder = builder
-                .append(allocator.space())
-                .append(allocator.intersperse(directives.map(NodeDisplay), allocator.softline()));
+            let directives_pretty = allocator
+                .line()
+                .append(allocator.intersperse(directives.map(NodeDisplay), allocator.line()))
+                .nest(2)
+                .group();
+
+            builder = builder.append(directives_pretty);
         }
 
         builder
