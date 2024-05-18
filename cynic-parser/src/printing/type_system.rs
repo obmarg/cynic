@@ -379,8 +379,6 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<EnumDefinition<'a>> {
                     allocator
                         .hardline()
                         .append(FieldSequence::new(values))
-                        // allocator
-                        //     .intersperse(values.into_iter().map(NodeDisplay), allocator.hardline())
                         .nest(2),
                 )
                 .append(allocator.hardline())
