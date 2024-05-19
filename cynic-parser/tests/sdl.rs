@@ -1,6 +1,11 @@
 use similar_asserts::assert_eq;
 
 #[test]
+fn test_argument_default_value_formatting() {
+    roundtrip_test("tests/sdl/argument_default_value_formatting.graphql");
+}
+
+#[test]
 fn test_enum() {
     roundtrip_test("tests/sdl/enum.graphql");
 }
@@ -136,11 +141,6 @@ fn simple_object() {
 }
 
 #[test]
-fn union() {
-    roundtrip_test("tests/sdl/union.graphql");
-}
-
-#[test]
 fn string_escaping() {
     insta::assert_snapshot!(double_roundtrip_test("tests/sdl/string_escaping.graphql"))
 }
@@ -151,13 +151,25 @@ fn union_extension() {
 }
 
 #[test]
+fn union_formatting() {
+    roundtrip_test("tests/sdl/union_formatting.graphql");
+}
+
+#[test]
+fn union() {
+    roundtrip_test("tests/sdl/union.graphql");
+}
+
+#[test]
 fn schema_definition_directives_only() {
     roundtrip_test("tests/sdl/schema_definition_directives_only.graphql");
 }
 
 fn roundtrip_test(filename: &str) {
     let data = std::fs::read_to_string(filename).unwrap();
-    let ast = cynic_parser::parse_type_system_document(&data).unwrap();
+    let ast = cynic_parser::parse_type_system_document(&data)
+        .map_err(|error| error.to_report(&data))
+        .unwrap();
 
     let output = ast.to_sdl();
 

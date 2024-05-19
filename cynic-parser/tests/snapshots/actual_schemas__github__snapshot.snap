@@ -8477,7 +8477,8 @@ type CreatedIssueContributionEdge {
 """
 Represents either a issue the viewer can access or a restricted contribution.
 """
-union CreatedIssueOrRestrictedContribution = CreatedIssueContribution
+union CreatedIssueOrRestrictedContribution =
+    CreatedIssueContribution
   | RestrictedContribution
 
 """
@@ -8560,7 +8561,8 @@ type CreatedPullRequestContributionEdge {
 """
 Represents either a pull request the viewer can access or a restricted contribution.
 """
-union CreatedPullRequestOrRestrictedContribution = CreatedPullRequestContribution
+union CreatedPullRequestOrRestrictedContribution =
+    CreatedPullRequestContribution
   | RestrictedContribution
 
 """
@@ -8730,7 +8732,8 @@ type CreatedRepositoryContributionEdge {
 """
 Represents either a repository the viewer can access or a restricted contribution.
 """
-union CreatedRepositoryOrRestrictedContribution = CreatedRepositoryContribution
+union CreatedRepositoryOrRestrictedContribution =
+    CreatedRepositoryContribution
   | RestrictedContribution
 
 """
@@ -11714,7 +11717,9 @@ type DiscussionPoll implements Node {
     """
     How to order the options for the discussion poll.
     """
-    orderBy: DiscussionPollOptionOrder = { field: AUTHORED_ORDER, direction: ASC
+    orderBy: DiscussionPollOptionOrder = {
+      field: AUTHORED_ORDER
+      direction: ASC
     }
   ): DiscussionPollOptionConnection
 
@@ -13479,7 +13484,9 @@ type EnterpriseOwnerInfo {
     Ordering options for Enterprise Server installations returned.
     """
     orderBy: EnterpriseServerInstallationOrder = {
-    field: HOST_NAME, direction: ASC }
+      field: HOST_NAME
+      direction: ASC
+    }
   ): EnterpriseServerInstallationConnection!
 
   """
@@ -13998,7 +14005,9 @@ type EnterpriseOwnerInfo {
     Ordering options for pending enterprise administrator invitations returned from the connection.
     """
     orderBy: EnterpriseAdministratorInvitationOrder = {
-    field: CREATED_AT, direction: DESC }
+      field: CREATED_AT
+      direction: DESC
+    }
 
     """
     The search string to look for.
@@ -14472,7 +14481,9 @@ type EnterpriseServerInstallation implements Node {
     Ordering options for Enterprise Server user accounts uploads returned from the connection.
     """
     orderBy: EnterpriseServerUserAccountsUploadOrder = {
-    field: CREATED_AT, direction: DESC }
+      field: CREATED_AT
+      direction: DESC
+    }
   ): EnterpriseServerUserAccountsUploadConnection!
 }
 
@@ -14633,7 +14644,9 @@ type EnterpriseServerUserAccount implements Node {
     Ordering options for Enterprise Server user account emails returned from the connection.
     """
     orderBy: EnterpriseServerUserAccountEmailOrder = {
-    field: EMAIL, direction: ASC }
+      field: EMAIL
+      direction: ASC
+    }
   ): EnterpriseServerUserAccountEmailConnection!
 
   """
@@ -15012,7 +15025,9 @@ type EnterpriseUserAccount implements Actor & Node {
     Ordering options for installations returned from the connection.
     """
     orderBy: EnterpriseServerInstallationOrder = {
-    field: HOST_NAME, direction: ASC }
+      field: HOST_NAME
+      direction: ASC
+    }
 
     """
     The search string to look for.
@@ -18361,7 +18376,8 @@ type IssueTimelineConnection {
 """
 An item in an issue timeline
 """
-union IssueTimelineItem = AssignedEvent
+union IssueTimelineItem =
+    AssignedEvent
   | ClosedEvent
   | Commit
   | CrossReferencedEvent
@@ -18399,7 +18415,8 @@ type IssueTimelineItemEdge {
 """
 An item in an issue timeline
 """
-union IssueTimelineItems = AddedToProjectEvent
+union IssueTimelineItems =
+    AddedToProjectEvent
   | AssignedEvent
   | ClosedEvent
   | CommentDeletedEvent
@@ -20857,9 +20874,10 @@ enum MergeStateStatus {
   """
   The merge is blocked due to the pull request being a draft.
   """
-  DRAFT @deprecated(
-    reason: "DRAFT state will be removed from this enum and `isDraft` should be used instead Use PullRequest.isDraft instead. Removal on 2021-01-01 UTC."
-  )
+  DRAFT
+    @deprecated(
+      reason: "DRAFT state will be removed from this enum and `isDraft` should be used instead Use PullRequest.isDraft instead. Removal on 2021-01-01 UTC."
+    )
 
   """
   Mergeable with passing commit status and pre-receive hooks.
@@ -26740,7 +26758,8 @@ type OrgRestoreMemberAuditEntry implements AuditEntry & Node & OrganizationAudit
 """
 Types of memberships that can be restored for an Organization member.
 """
-union OrgRestoreMemberAuditEntryMembership = OrgRestoreMemberMembershipOrganizationAuditEntryData
+union OrgRestoreMemberAuditEntryMembership =
+    OrgRestoreMemberMembershipOrganizationAuditEntryData
   | OrgRestoreMemberMembershipRepositoryAuditEntryData
   | OrgRestoreMemberMembershipTeamAuditEntryData
 
@@ -28797,7 +28816,8 @@ type Organization implements Actor & AnnouncementBanner & MemberStatusable & Nod
 """
 An audit entry in an organization audit log.
 """
-union OrganizationAuditEntry = MembersCanDeleteReposClearAuditEntry
+union OrganizationAuditEntry =
+    MembersCanDeleteReposClearAuditEntry
   | MembersCanDeleteReposDisableAuditEntry
   | MembersCanDeleteReposEnableAuditEntry
   | OauthApplicationCreateAuditEntry
@@ -29909,30 +29929,34 @@ enum PackageType {
   """
   A docker image.
   """
-  DOCKER @deprecated(
-    reason: "DOCKER will be removed from this enum as this type will be migrated to only be used by the Packages REST API. Removal on 2021-06-21 UTC."
-  )
+  DOCKER
+    @deprecated(
+      reason: "DOCKER will be removed from this enum as this type will be migrated to only be used by the Packages REST API. Removal on 2021-06-21 UTC."
+    )
 
   """
   A maven package.
   """
-  MAVEN @deprecated(
-    reason: "MAVEN will be removed from this enum as this type will be migrated to only be used by the Packages REST API. Removal on 2023-02-10 UTC."
-  )
+  MAVEN
+    @deprecated(
+      reason: "MAVEN will be removed from this enum as this type will be migrated to only be used by the Packages REST API. Removal on 2023-02-10 UTC."
+    )
 
   """
   An npm package.
   """
-  NPM @deprecated(
-    reason: "NPM will be removed from this enum as this type will be migrated to only be used by the Packages REST API. Removal on 2022-11-21 UTC."
-  )
+  NPM
+    @deprecated(
+      reason: "NPM will be removed from this enum as this type will be migrated to only be used by the Packages REST API. Removal on 2022-11-21 UTC."
+    )
 
   """
   A nuget package.
   """
-  NUGET @deprecated(
-    reason: "NUGET will be removed from this enum as this type will be migrated to only be used by the Packages REST API. Removal on 2022-11-21 UTC."
-  )
+  NUGET
+    @deprecated(
+      reason: "NUGET will be removed from this enum as this type will be migrated to only be used by the Packages REST API. Removal on 2022-11-21 UTC."
+    )
 
   """
   A python package.
@@ -29942,9 +29966,10 @@ enum PackageType {
   """
   A rubygems package.
   """
-  RUBYGEMS @deprecated(
-    reason: "RUBYGEMS will be removed from this enum as this type will be migrated to only be used by the Packages REST API. Removal on 2022-12-28 UTC."
-  )
+  RUBYGEMS
+    @deprecated(
+      reason: "RUBYGEMS will be removed from this enum as this type will be migrated to only be used by the Packages REST API. Removal on 2022-12-28 UTC."
+    )
 }
 
 """
@@ -32172,7 +32197,8 @@ interface ProjectV2FieldCommon {
 """
 Configurations for project fields.
 """
-union ProjectV2FieldConfiguration = ProjectV2Field
+union ProjectV2FieldConfiguration =
+    ProjectV2Field
   | ProjectV2IterationField
   | ProjectV2SingleSelectField
 
@@ -32965,7 +32991,8 @@ type ProjectV2ItemFieldUserValue {
 """
 Project field values
 """
-union ProjectV2ItemFieldValue = ProjectV2ItemFieldDateValue
+union ProjectV2ItemFieldValue =
+    ProjectV2ItemFieldDateValue
   | ProjectV2ItemFieldIterationValue
   | ProjectV2ItemFieldLabelValue
   | ProjectV2ItemFieldMilestoneValue
@@ -36770,7 +36797,8 @@ type PullRequestTimelineConnection {
 """
 An item in a pull request timeline
 """
-union PullRequestTimelineItem = AssignedEvent
+union PullRequestTimelineItem =
+    AssignedEvent
   | BaseRefDeletedEvent
   | BaseRefForcePushedEvent
   | ClosedEvent
@@ -36822,7 +36850,8 @@ type PullRequestTimelineItemEdge {
 """
 An item in a pull request timeline
 """
-union PullRequestTimelineItems = AddedToMergeQueueEvent
+union PullRequestTimelineItems =
+    AddedToMergeQueueEvent
   | AddedToProjectEvent
   | AssignedEvent
   | AutoMergeDisabledEvent
@@ -37758,7 +37787,9 @@ type Query {
     """
     Ordering options for the returned topics.
     """
-    orderBy: SecurityVulnerabilityOrder = { field: UPDATED_AT, direction: DESC
+    orderBy: SecurityVulnerabilityOrder = {
+      field: UPDATED_AT
+      direction: DESC
     }
 
     """
@@ -46669,7 +46700,8 @@ enum RuleEnforcement {
 """
 Types which can be parameters for `RepositoryRule` objects.
 """
-union RuleParameters = BranchNamePatternParameters
+union RuleParameters =
+    BranchNamePatternParameters
   | CommitAuthorEmailPatternParameters
   | CommitMessagePatternParameters
   | CommitterEmailPatternParameters
@@ -46883,7 +46915,8 @@ enum SavedReplyOrderField {
 """
 The results of a search.
 """
-union SearchResultItem = App
+union SearchResultItem =
+    App
   | Discussion
   | Issue
   | MarketplaceListing
@@ -47136,7 +47169,9 @@ type SecurityAdvisory implements Node {
     """
     Ordering options for the returned topics.
     """
-    orderBy: SecurityVulnerabilityOrder = { field: UPDATED_AT, direction: DESC
+    orderBy: SecurityVulnerabilityOrder = {
+      field: UPDATED_AT
+      direction: DESC
     }
 
     """
@@ -49937,7 +49972,9 @@ type SponsorsListing implements Node {
     """
     Ordering options for Sponsors tiers returned from the connection.
     """
-    orderBy: SponsorsTierOrder = { field: MONTHLY_PRICE_IN_CENTS, direction: ASC
+    orderBy: SponsorsTierOrder = {
+      field: MONTHLY_PRICE_IN_CENTS
+      direction: ASC
     }
   ): SponsorsTierConnection
 
