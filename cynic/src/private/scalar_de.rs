@@ -1,14 +1,21 @@
-pub struct ScalarDeseralize<T> {
+use std::marker::PhantomData;
+
+use serde::Deserialize;
+
+use crate::schema::IsScalar;
+
+pub struct ScalarDeseralize<T, U> {
     inner: T,
+    phantom: PhantomData<fn() -> U>,
 }
 
-impl<T> ScalarDeseralize<T> {
+impl<T, U> ScalarDeseralize<T, U> {
     pub fn into_inner(self) -> T {
         self.inner
     }
 }
 
-impl<'de, T, U> Deserialize<'de> for ScalarDeseralize<T>
+impl<'de, T, U> Deserialize<'de> for ScalarDeseralize<T, U>
 where
     T: IsScalar<U>,
 {

@@ -11,6 +11,8 @@
 //! usually be marker types and the associated types will also usually be
 //! markers.
 
+use serde::{Deserializer, Serializer};
+
 /// Indicates that a struct represents a Field in a graphql schema.
 pub trait Field {
     /// The schema marker type of this field.
@@ -85,7 +87,7 @@ where
     where
         D: Deserializer<'de>,
     {
-        <U as IsScalar<U>>::deserialize(serializer)
+        <U as IsScalar<U>>::deserialize(deserializer)
     }
 }
 
@@ -94,6 +96,20 @@ where
     U: IsScalar<T>,
 {
     type SchemaType = Option<U::SchemaType>;
+
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        todo!()
+    }
+
+    fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        todo!()
+    }
 }
 
 impl<T, U> IsScalar<Vec<T>> for Vec<U>
@@ -101,6 +117,20 @@ where
     U: IsScalar<T>,
 {
     type SchemaType = Vec<U::SchemaType>;
+
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        todo!()
+    }
+
+    fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        todo!()
+    }
 }
 
 impl<T, U> IsScalar<Vec<T>> for [U]
@@ -108,6 +138,20 @@ where
     U: IsScalar<T>,
 {
     type SchemaType = Vec<U::SchemaType>;
+
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        todo!()
+    }
+
+    fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        todo!()
+    }
 }
 
 impl<T, U, const SIZE: usize> IsScalar<Vec<T>> for [U; SIZE]
@@ -115,6 +159,20 @@ where
     U: IsScalar<T>,
 {
     type SchemaType = Vec<U::SchemaType>;
+
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        todo!()
+    }
+
+    fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        todo!()
+    }
 }
 
 impl<T, U: ?Sized> IsScalar<Box<T>> for Box<U>
@@ -122,6 +180,20 @@ where
     U: IsScalar<T>,
 {
     type SchemaType = Box<U::SchemaType>;
+
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        todo!()
+    }
+
+    fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        todo!()
+    }
 }
 
 impl<T, U: ?Sized> IsScalar<T> for std::borrow::Cow<'_, U>
@@ -129,30 +201,128 @@ where
     U: IsScalar<T> + ToOwned,
 {
     type SchemaType = U::SchemaType;
+
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        todo!()
+    }
+
+    fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        todo!()
+    }
 }
 
 impl IsScalar<bool> for bool {
     type SchemaType = bool;
+
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        todo!()
+    }
+
+    fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        todo!()
+    }
 }
 
 impl IsScalar<String> for String {
     type SchemaType = String;
+
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        todo!()
+    }
+
+    fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        todo!()
+    }
 }
 
 impl IsScalar<String> for str {
     type SchemaType = String;
+
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        todo!()
+    }
+
+    fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        todo!()
+    }
 }
 
 impl IsScalar<i32> for i32 {
     type SchemaType = i32;
+
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        todo!()
+    }
+
+    fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        todo!()
+    }
 }
 
 impl IsScalar<f64> for f64 {
     type SchemaType = f64;
+
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        todo!()
+    }
+
+    fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        todo!()
+    }
 }
 
 impl IsScalar<crate::Id> for crate::Id {
     type SchemaType = crate::Id;
+
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        todo!()
+    }
+
+    fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        todo!()
+    }
 }
 
 /// A marker trait that indicates a particular type is at the root of a GraphQL
