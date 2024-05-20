@@ -46,6 +46,12 @@ impl<'a> OperationDefinition<'a> {
     }
 }
 
+impl OperationDefinition<'_> {
+    pub fn id(&self) -> OperationDefinitionId {
+        self.0.id
+    }
+}
+
 impl fmt::Debug for OperationDefinition<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("OperationDefinition")

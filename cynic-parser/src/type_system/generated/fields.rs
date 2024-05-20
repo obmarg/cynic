@@ -52,6 +52,12 @@ impl<'a> FieldDefinition<'a> {
     }
 }
 
+impl FieldDefinition<'_> {
+    pub fn id(&self) -> FieldDefinitionId {
+        self.0.id
+    }
+}
+
 impl fmt::Debug for FieldDefinition<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("FieldDefinition")

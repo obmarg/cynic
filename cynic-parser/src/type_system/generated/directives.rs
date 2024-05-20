@@ -53,6 +53,12 @@ impl<'a> DirectiveDefinition<'a> {
     }
 }
 
+impl DirectiveDefinition<'_> {
+    pub fn id(&self) -> DirectiveDefinitionId {
+        self.0.id
+    }
+}
+
 impl fmt::Debug for DirectiveDefinition<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("DirectiveDefinition")
@@ -96,6 +102,12 @@ impl<'a> Directive<'a> {
     pub fn arguments(&self) -> Iter<'a, Argument<'a>> {
         let document = self.0.document;
         super::Iter::new(document.lookup(self.0.id).arguments, document)
+    }
+}
+
+impl Directive<'_> {
+    pub fn id(&self) -> DirectiveId {
+        self.0.id
     }
 }
 

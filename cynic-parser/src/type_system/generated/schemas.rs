@@ -35,6 +35,12 @@ impl<'a> SchemaDefinition<'a> {
     }
 }
 
+impl SchemaDefinition<'_> {
+    pub fn id(&self) -> SchemaDefinitionId {
+        self.0.id
+    }
+}
+
 impl fmt::Debug for SchemaDefinition<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("SchemaDefinition")
@@ -75,6 +81,12 @@ impl<'a> RootOperationTypeDefinition<'a> {
     pub fn named_type(&self) -> &'a str {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).named_type)
+    }
+}
+
+impl RootOperationTypeDefinition<'_> {
+    pub fn id(&self) -> RootOperationTypeDefinitionId {
+        self.0.id
     }
 }
 

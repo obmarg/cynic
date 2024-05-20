@@ -45,6 +45,12 @@ impl<'a> EnumDefinition<'a> {
     }
 }
 
+impl EnumDefinition<'_> {
+    pub fn id(&self) -> EnumDefinitionId {
+        self.0.id
+    }
+}
+
 impl fmt::Debug for EnumDefinition<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("EnumDefinition")
@@ -100,6 +106,12 @@ impl<'a> EnumValueDefinition<'a> {
     pub fn span(&self) -> Span {
         let document = self.0.document;
         document.lookup(self.0.id).span
+    }
+}
+
+impl EnumValueDefinition<'_> {
+    pub fn id(&self) -> EnumValueDefinitionId {
+        self.0.id
     }
 }
 

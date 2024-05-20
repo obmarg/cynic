@@ -41,6 +41,12 @@ impl<'a> VariableDefinition<'a> {
     }
 }
 
+impl VariableDefinition<'_> {
+    pub fn id(&self) -> VariableDefinitionId {
+        self.0.id
+    }
+}
+
 impl fmt::Debug for VariableDefinition<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("VariableDefinition")

@@ -40,6 +40,12 @@ impl<'a> ScalarDefinition<'a> {
     }
 }
 
+impl ScalarDefinition<'_> {
+    pub fn id(&self) -> ScalarDefinitionId {
+        self.0.id
+    }
+}
+
 impl fmt::Debug for ScalarDefinition<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("ScalarDefinition")

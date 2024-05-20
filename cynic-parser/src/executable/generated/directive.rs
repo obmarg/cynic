@@ -26,6 +26,12 @@ impl<'a> Directive<'a> {
     }
 }
 
+impl Directive<'_> {
+    pub fn id(&self) -> DirectiveId {
+        self.0.id
+    }
+}
+
 impl fmt::Debug for Directive<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("Directive")
