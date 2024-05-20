@@ -2,7 +2,7 @@ use std::iter::Enumerate;
 
 use pretty::{DocAllocator, Pretty};
 
-use super::{comma_or_newline, Allocator, InputValueDefinition, NodeDisplay};
+use super::{Allocator, InputValueDefinition, NodeDisplay};
 
 /// A sequence of things with docstrings attached.
 ///
