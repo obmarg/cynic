@@ -12,7 +12,7 @@ use super::escape_string;
 type Allocator<'a> = pretty::Arena<'a>;
 
 impl crate::TypeSystemDocument {
-    pub fn to_sdl(&self) -> String {
+    pub fn to_sdl_pretty(&self) -> String {
         let allocator = pretty::Arena::new();
 
         let builder = allocator

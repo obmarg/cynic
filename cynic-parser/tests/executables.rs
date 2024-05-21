@@ -155,7 +155,7 @@ fn roundtrip_test(filename: &str) {
         .map_err(|error| error.to_report(&data))
         .unwrap();
 
-    let output = ast.to_executable_string();
+    let output = ast.to_string_pretty();
 
     assert_eq!(data, output);
 }
@@ -170,13 +170,13 @@ fn double_roundtrip_test(filename: &str) -> String {
         .map_err(|error| error.to_report(&data))
         .unwrap();
 
-    let round_one_output = ast.to_executable_string();
+    let round_one_output = ast.to_string_pretty();
 
     let ast = cynic_parser::parse_executable_document(&round_one_output)
         .map_err(|error| error.to_report(&data))
         .unwrap();
 
-    let round_two_output = ast.to_executable_string();
+    let round_two_output = ast.to_string_pretty();
 
     assert_eq!(round_one_output, round_two_output);
 

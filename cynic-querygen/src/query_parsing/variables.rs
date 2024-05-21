@@ -125,10 +125,7 @@ impl<'query, 'schema> SelectionArguments<'query, 'schema> {
     fn build_parent_map<'a>(&'a self, parent_map: &mut HashMap<&'a Self, HashSet<&'a Self>>) {
         for field in &self.fields {
             if let SelectionArgument::NestedArguments(child) = field {
-                parent_map
-                    .entry(child)
-                    .or_insert_with(HashSet::new)
-                    .insert(self);
+                parent_map.entry(child).or_default().insert(self);
             }
         }
     }

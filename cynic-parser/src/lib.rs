@@ -48,7 +48,7 @@ mod tests {
     #[test]
     fn it_works() {
         insta::assert_snapshot!(
-            parse_type_system_document("schema { query:Query }").unwrap().to_sdl(),
+            parse_type_system_document("schema { query:Query }").unwrap().to_sdl_pretty(),
             @r###"
         schema {
           query: Query
@@ -65,7 +65,7 @@ mod tests {
                     field: Whatever @hello(name: ["string"]),
                     other: [[Int!]]!
                 }"#
-            ).unwrap().to_sdl(),
+            ).unwrap().to_sdl_pretty(),
             @r###"
         type MyType implements Blah & Bloo @hello {
           field: Whatever @hello(name: ["string"])
@@ -83,7 +83,7 @@ mod tests {
                     field: Whatever @hello(name: ["string"]),
                     other: [[Int!]]!
                 }"#
-            ).unwrap().to_sdl(),
+            ).unwrap().to_sdl_pretty(),
             @r###"
         interface MyType implements Blah & Bloo @hello {
           field: Whatever @hello(name: ["string"])
@@ -99,7 +99,7 @@ mod tests {
             parse_type_system_document(r#"
                 union MyType = Blah | Bloo
                 "#
-            ).unwrap().to_sdl(),
+            ).unwrap().to_sdl_pretty(),
             @r###"
         union MyType = Blah | Bloo
 
@@ -113,7 +113,7 @@ mod tests {
             parse_type_system_document(r#"
                 scalar MyType @hello(there: [{thing: "other"}])
                 "#
-            ).unwrap().to_sdl(),
+            ).unwrap().to_sdl_pretty(),
             @r###"
         scalar MyType @hello(there: [{ thing: "other" }])
         "###
@@ -129,7 +129,7 @@ mod tests {
                     BLOO
                 }
                 "#
-            ).unwrap().to_sdl(),
+            ).unwrap().to_sdl_pretty(),
             @r###"
         enum MyEnum {
           BLAH
@@ -143,7 +143,7 @@ mod tests {
     fn test_schema_field() {
         // Use a keyword as a field name and make sure it's fine
         insta::assert_snapshot!(
-            parse_type_system_document( "type MyType { query: String }").unwrap().to_sdl(),
+            parse_type_system_document( "type MyType { query: String }").unwrap().to_sdl_pretty(),
             @r###"
         type MyType {
           query: String
@@ -160,7 +160,7 @@ mod tests {
                 "I am a description"
                 input MyType @hello { query: String = "Hello" }
                 "#
-            ).unwrap().to_sdl(),
+            ).unwrap().to_sdl_pretty(),
             @r###"
         "I am a description"
         input MyType @hello {
