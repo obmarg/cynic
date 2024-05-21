@@ -1,0 +1,10 @@
+---
+source: cynic-parser/tests/executables.rs
+expression: output
+---
+{
+  node {
+    id
+    ... something
+  }
+}

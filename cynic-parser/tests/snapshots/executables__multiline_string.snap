@@ -1,0 +1,7 @@
+---
+source: cynic-parser/tests/executables.rs
+expression: output
+---
+{
+  a(s: "    a\n    b\n\n    c")
+}
