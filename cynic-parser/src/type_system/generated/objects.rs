@@ -55,6 +55,12 @@ impl<'a> ObjectDefinition<'a> {
     }
 }
 
+impl ObjectDefinition<'_> {
+    pub fn id(&self) -> ObjectDefinitionId {
+        self.0.id
+    }
+}
+
 impl fmt::Debug for ObjectDefinition<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("ObjectDefinition")

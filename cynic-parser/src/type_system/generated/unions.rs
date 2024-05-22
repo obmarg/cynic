@@ -49,6 +49,12 @@ impl<'a> UnionDefinition<'a> {
     }
 }
 
+impl UnionDefinition<'_> {
+    pub fn id(&self) -> UnionDefinitionId {
+        self.0.id
+    }
+}
+
 impl fmt::Debug for UnionDefinition<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("UnionDefinition")

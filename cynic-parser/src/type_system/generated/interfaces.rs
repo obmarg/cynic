@@ -55,6 +55,12 @@ impl<'a> InterfaceDefinition<'a> {
     }
 }
 
+impl InterfaceDefinition<'_> {
+    pub fn id(&self) -> InterfaceDefinitionId {
+        self.0.id
+    }
+}
+
 impl fmt::Debug for InterfaceDefinition<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("InterfaceDefinition")

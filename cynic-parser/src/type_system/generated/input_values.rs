@@ -55,6 +55,12 @@ impl<'a> InputValueDefinition<'a> {
     }
 }
 
+impl InputValueDefinition<'_> {
+    pub fn id(&self) -> InputValueDefinitionId {
+        self.0.id
+    }
+}
+
 impl fmt::Debug for InputValueDefinition<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("InputValueDefinition")

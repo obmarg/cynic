@@ -37,6 +37,12 @@ impl<'a> FragmentDefinition<'a> {
     }
 }
 
+impl FragmentDefinition<'_> {
+    pub fn id(&self) -> FragmentDefinitionId {
+        self.0.id
+    }
+}
+
 impl fmt::Debug for FragmentDefinition<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("FragmentDefinition")

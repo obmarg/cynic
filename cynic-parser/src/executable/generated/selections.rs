@@ -82,6 +82,12 @@ impl<'a> FieldSelection<'a> {
     }
 }
 
+impl FieldSelection<'_> {
+    pub fn id(&self) -> FieldSelectionId {
+        self.0.id
+    }
+}
+
 impl fmt::Debug for FieldSelection<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("FieldSelection")
@@ -135,6 +141,12 @@ impl<'a> InlineFragment<'a> {
     }
 }
 
+impl InlineFragment<'_> {
+    pub fn id(&self) -> InlineFragmentId {
+        self.0.id
+    }
+}
+
 impl fmt::Debug for InlineFragment<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("InlineFragment")
@@ -175,6 +187,12 @@ impl<'a> FragmentSpread<'a> {
     pub fn directives(&self) -> Iter<'a, Directive<'a>> {
         let document = self.0.document;
         super::Iter::new(document.lookup(self.0.id).directives, document)
+    }
+}
+
+impl FragmentSpread<'_> {
+    pub fn id(&self) -> FragmentSpreadId {
+        self.0.id
     }
 }
 

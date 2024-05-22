@@ -26,6 +26,12 @@ impl<'a> Argument<'a> {
     }
 }
 
+impl Argument<'_> {
+    pub fn id(&self) -> ArgumentId {
+        self.0.id
+    }
+}
+
 impl fmt::Debug for Argument<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("Argument")

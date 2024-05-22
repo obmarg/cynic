@@ -60,6 +60,14 @@ pub fn object_output(
         }
     })?;
 
+    let reader_id_impl = format_code(quote! {
+        impl #reader_name<'_> {
+            pub fn id(&self) -> #id_name {
+                self.0.id
+            }
+        }
+    })?;
+
     let id_trait = Ident::new(id_trait, Span::call_site());
 
     let id_trait_impl = format_code(quote! {
@@ -89,6 +97,8 @@ pub fn object_output(
         {reader}
 
         {reader_impl}
+
+        {reader_id_impl}
 
         {reader_debug}
 
