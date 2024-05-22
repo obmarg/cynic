@@ -171,7 +171,7 @@ fn roundtrip_test(filename: &str) {
         .map_err(|error| error.to_report(&data))
         .unwrap();
 
-    let output = ast.to_sdl();
+    let output = ast.to_sdl_pretty();
 
     assert_eq!(data, output);
 }
@@ -184,11 +184,11 @@ fn double_roundtrip_test(filename: &str) -> String {
     let data = std::fs::read_to_string(filename).unwrap();
     let ast = cynic_parser::parse_type_system_document(&data).unwrap();
 
-    let round_one_output = ast.to_sdl();
+    let round_one_output = ast.to_sdl_pretty();
 
     let ast = cynic_parser::parse_type_system_document(&round_one_output).unwrap();
 
-    let round_two_output = ast.to_sdl();
+    let round_two_output = ast.to_sdl_pretty();
 
     assert_eq!(round_one_output, round_two_output);
 

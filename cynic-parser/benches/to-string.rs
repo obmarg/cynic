@@ -15,7 +15,7 @@ mod executable {
     fn cynic_parser(bencher: divan::Bencher) {
         bencher
             .with_inputs(|| cynic_parser::parse_executable_document(QUERY).unwrap())
-            .bench_refs(|document| document.to_executable_string());
+            .bench_refs(|document| document.to_string_pretty());
     }
 
     #[divan::bench(
@@ -41,7 +41,7 @@ mod type_system {
     fn cynic_parser(bencher: divan::Bencher) {
         bencher
             .with_inputs(|| cynic_parser::parse_type_system_document(GITHUB_SCHEMA).unwrap())
-            .bench_refs(|document| document.to_sdl());
+            .bench_refs(|document| document.to_sdl_pretty());
     }
 
     #[divan::bench(
