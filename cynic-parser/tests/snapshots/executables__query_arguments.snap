@@ -1,18 +1,8 @@
 ---
 source: cynic-parser/tests/executables.rs
-expression: "double_roundtrip_test(\"tests/executables/query_arguments.graphql\")"
+expression: output
 ---
 {
   node(id: 1)
-  node2(
-    id: -1
-    id1: 0
-    id2: 0
-    id3: -1.23
-    id4: 1.23
-    id5: 123
-    id6: 123
-    id7: 0.123
-  )
+  node2(id: -1, id1: 0, id2: 0, id3: -1.23, id4: 1.23, id5: 123, id6: 123, id7: 0.123)
 }
-

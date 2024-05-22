@@ -3,11 +3,9 @@ mod field_sequence;
 
 use pretty::{DocAllocator, Pretty};
 
-use crate::type_system::*;
+use crate::{printing::escape_string, type_system::*};
 
 use self::{argument_sequence::ArgumentSequence, field_sequence::FieldSequence};
-
-use super::escape_string;
 
 type Allocator<'a> = pretty::Arena<'a>;
 

@@ -1,0 +1,7 @@
+---
+source: cynic-parser/tests/executables.rs
+expression: output
+---
+{
+  node(id: 1, list: [123, 456])
+}
