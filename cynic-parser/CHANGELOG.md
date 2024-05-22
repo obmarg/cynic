@@ -9,6 +9,24 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.3.1 - 2024-05-22
+
+### New Features
+
+- impl Display for executable ([#962](https://github.com/obmarg/cynic/pull/962))
+- make cynic-parser ids hashable ([#961](https://github.com/obmarg/cynic/pull/961))
+- expose ids in cynic-parser ([#959](https://github.com/obmarg/cynic/pull/959))
+
+### Bug Fixes
+
+- compile warnings ([#958](https://github.com/obmarg/cynic/pull/958))
+- a bunch of formatting inconsistencies ([#957](https://github.com/obmarg/cynic/pull/957))
+- blank lines between things with docstrings ([#954](https://github.com/obmarg/cynic/pull/954))
+
+### Changes
+
+- update rust crate logos to 0.14 ([#942](https://github.com/obmarg/cynic/pull/942))
+
 ## v0.2.7 - 2024-05-14
 
 ### New Features
