@@ -13,7 +13,7 @@ pub struct DirectiveRecord {
 }
 
 #[derive(Clone, Copy)]
-pub struct Directive<'a>(ReadContext<'a, DirectiveId>);
+pub struct Directive<'a>(pub(in super::super) ReadContext<'a, DirectiveId>);
 
 impl<'a> Directive<'a> {
     pub fn name(&self) -> &'a str {

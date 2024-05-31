@@ -13,7 +13,7 @@ pub struct ArgumentRecord {
 }
 
 #[derive(Clone, Copy)]
-pub struct Argument<'a>(ReadContext<'a, ArgumentId>);
+pub struct Argument<'a>(pub(in super::super) ReadContext<'a, ArgumentId>);
 
 impl<'a> Argument<'a> {
     pub fn name(&self) -> &'a str {

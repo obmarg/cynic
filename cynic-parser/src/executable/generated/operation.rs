@@ -18,7 +18,7 @@ pub struct OperationDefinitionRecord {
 }
 
 #[derive(Clone, Copy)]
-pub struct OperationDefinition<'a>(ReadContext<'a, OperationDefinitionId>);
+pub struct OperationDefinition<'a>(pub(in super::super) ReadContext<'a, OperationDefinitionId>);
 
 impl<'a> OperationDefinition<'a> {
     pub fn operation_type(&self) -> OperationType {

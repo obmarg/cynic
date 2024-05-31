@@ -16,7 +16,7 @@ pub struct FragmentDefinitionRecord {
 }
 
 #[derive(Clone, Copy)]
-pub struct FragmentDefinition<'a>(ReadContext<'a, FragmentDefinitionId>);
+pub struct FragmentDefinition<'a>(pub(in super::super) ReadContext<'a, FragmentDefinitionId>);
 
 impl<'a> FragmentDefinition<'a> {
     pub fn name(&self) -> &'a str {

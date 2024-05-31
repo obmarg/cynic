@@ -19,7 +19,7 @@ pub struct ObjectDefinitionRecord {
 }
 
 #[derive(Clone, Copy)]
-pub struct ObjectDefinition<'a>(ReadContext<'a, ObjectDefinitionId>);
+pub struct ObjectDefinition<'a>(pub(in super::super) ReadContext<'a, ObjectDefinitionId>);
 
 impl<'a> ObjectDefinition<'a> {
     pub fn name(&self) -> &'a str {

@@ -17,7 +17,7 @@ pub struct UnionDefinitionRecord {
 }
 
 #[derive(Clone, Copy)]
-pub struct UnionDefinition<'a>(ReadContext<'a, UnionDefinitionId>);
+pub struct UnionDefinition<'a>(pub(in super::super) ReadContext<'a, UnionDefinitionId>);
 
 impl<'a> UnionDefinition<'a> {
     pub fn name(&self) -> &'a str {

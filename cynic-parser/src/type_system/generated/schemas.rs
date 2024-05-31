@@ -15,7 +15,7 @@ pub struct SchemaDefinitionRecord {
 }
 
 #[derive(Clone, Copy)]
-pub struct SchemaDefinition<'a>(ReadContext<'a, SchemaDefinitionId>);
+pub struct SchemaDefinition<'a>(pub(in super::super) ReadContext<'a, SchemaDefinitionId>);
 
 impl<'a> SchemaDefinition<'a> {
     pub fn description(&self) -> Option<StringLiteral<'a>> {
@@ -71,7 +71,9 @@ pub struct RootOperationTypeDefinitionRecord {
 }
 
 #[derive(Clone, Copy)]
-pub struct RootOperationTypeDefinition<'a>(ReadContext<'a, RootOperationTypeDefinitionId>);
+pub struct RootOperationTypeDefinition<'a>(
+    pub(in super::super) ReadContext<'a, RootOperationTypeDefinitionId>,
+);
 
 impl<'a> RootOperationTypeDefinition<'a> {
     pub fn operation_type(&self) -> OperationType {
