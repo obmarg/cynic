@@ -13,7 +13,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### New Features
 
-- add `Value::variables_used` to parser ([#963](https://github.com/obmarg/cynic/pull/963))
+- Added `Value::variables_used` to find variables used in a value
+  ([#963](https://github.com/obmarg/cynic/pull/963))
 
 ## v0.4.0 - 2024-05-2
 
