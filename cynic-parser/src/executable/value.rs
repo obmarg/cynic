@@ -33,6 +33,18 @@ pub enum Value<'a> {
     Object(Vec<(&'a str, Value<'a>)>),
 }
 
+impl<'a> Value<'a> {
+    /// Returns an iterator over all the variables that appear somewhere in this Value.
+    ///
+    /// Note that this is not deduplicated - if a variable appears more than once in
+    /// the value it'll appear more than once in this iterator.
+    pub fn variables_used(&self) -> impl Iterator<Item = &'a str> + '_ {
+        VariableIterator {
+            value_stack: vec![&self],
+        }
+    }
+}
+
 impl PartialEq for Value<'_> {
     fn eq(&self, other: &Self) -> bool {
         match (self, other) {
@@ -83,5 +95,27 @@ impl<'a> From<ReadContext<'a, ValueId>> for Value<'a> {
                     .collect(),
             ),
         }
+    }
+}
+
+struct VariableIterator<'document, 'value> {
+    value_stack: Vec<&'value Value<'document>>,
+}
+
+impl<'document, 'value> Iterator for VariableIterator<'document, 'value> {
+    type Item = &'document str;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        while let Some(value) = self.value_stack.pop() {
+            match value {
+                Value::Object(fields) => self
+                    .value_stack
+                    .extend(fields.iter().map(|(_, value)| value)),
+                Value::List(values) => self.value_stack.extend(values.iter()),
+                Value::Variable(variable) => return Some(variable),
+                _ => {}
+            }
+        }
+        None
     }
 }
