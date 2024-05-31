@@ -9,6 +9,12 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.4.1 - 2024-05-31
+
+### New Features
+
+- add `Value::variables_used` to parser ([#963](https://github.com/obmarg/cynic/pull/963))
+
 ## v0.4.0 - 2024-05-2
 
 ### Breaking Changes
