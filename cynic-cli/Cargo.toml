@@ -28,4 +28,4 @@ reqwest = { version = "0.12", features = ["blocking"] }
 thiserror = "1"
 
 [dev-dependencies]
-trycmd = "0.14"
+trycmd = "0.15"
