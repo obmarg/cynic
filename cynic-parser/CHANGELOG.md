@@ -13,7 +13,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Bug Fixes
 
-- missing lifetime on `FragmentSpread::fragment` ([#978](https://github.com/obmarg/cynic/pull/978))
+- `FragmentSpread::fragment` had a missing lifetime
+  ([#978](https://github.com/obmarg/cynic/pull/978))
 
 ## v0.4.2 - 2024-06-04
 
