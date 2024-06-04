@@ -4,6 +4,7 @@ pub mod ids;
 pub mod iter;
 pub mod writer;
 
+mod extensions;
 mod generated;
 mod types;
 mod value;

@@ -54,7 +54,7 @@ pub struct FieldSelectionRecord {
 }
 
 #[derive(Clone, Copy)]
-pub struct FieldSelection<'a>(ReadContext<'a, FieldSelectionId>);
+pub struct FieldSelection<'a>(pub(in super::super) ReadContext<'a, FieldSelectionId>);
 
 impl<'a> FieldSelection<'a> {
     pub fn alias(&self) -> Option<&'a str> {
@@ -121,7 +121,7 @@ pub struct InlineFragmentRecord {
 }
 
 #[derive(Clone, Copy)]
-pub struct InlineFragment<'a>(ReadContext<'a, InlineFragmentId>);
+pub struct InlineFragment<'a>(pub(in super::super) ReadContext<'a, InlineFragmentId>);
 
 impl<'a> InlineFragment<'a> {
     pub fn type_condition(&self) -> Option<&'a str> {
@@ -177,7 +177,7 @@ pub struct FragmentSpreadRecord {
 }
 
 #[derive(Clone, Copy)]
-pub struct FragmentSpread<'a>(ReadContext<'a, FragmentSpreadId>);
+pub struct FragmentSpread<'a>(pub(in super::super) ReadContext<'a, FragmentSpreadId>);
 
 impl<'a> FragmentSpread<'a> {
     pub fn fragment_name(&self) -> &'a str {

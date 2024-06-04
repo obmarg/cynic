@@ -17,7 +17,7 @@ pub struct EnumDefinitionRecord {
 }
 
 #[derive(Clone, Copy)]
-pub struct EnumDefinition<'a>(ReadContext<'a, EnumDefinitionId>);
+pub struct EnumDefinition<'a>(pub(in super::super) ReadContext<'a, EnumDefinitionId>);
 
 impl<'a> EnumDefinition<'a> {
     pub fn name(&self) -> &'a str {
@@ -85,7 +85,7 @@ pub struct EnumValueDefinitionRecord {
 }
 
 #[derive(Clone, Copy)]
-pub struct EnumValueDefinition<'a>(ReadContext<'a, EnumValueDefinitionId>);
+pub struct EnumValueDefinition<'a>(pub(in super::super) ReadContext<'a, EnumValueDefinitionId>);
 
 impl<'a> EnumValueDefinition<'a> {
     pub fn value(&self) -> &'a str {

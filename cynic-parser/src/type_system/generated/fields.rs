@@ -20,7 +20,7 @@ pub struct FieldDefinitionRecord {
 }
 
 #[derive(Clone, Copy)]
-pub struct FieldDefinition<'a>(ReadContext<'a, FieldDefinitionId>);
+pub struct FieldDefinition<'a>(pub(in super::super) ReadContext<'a, FieldDefinitionId>);
 
 impl<'a> FieldDefinition<'a> {
     pub fn name(&self) -> &'a str {

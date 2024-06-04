@@ -20,7 +20,7 @@ pub struct InputValueDefinitionRecord {
 }
 
 #[derive(Clone, Copy)]
-pub struct InputValueDefinition<'a>(ReadContext<'a, InputValueDefinitionId>);
+pub struct InputValueDefinition<'a>(pub(in super::super) ReadContext<'a, InputValueDefinitionId>);
 
 impl<'a> InputValueDefinition<'a> {
     pub fn name(&self) -> &'a str {

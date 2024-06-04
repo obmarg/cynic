@@ -17,7 +17,7 @@ pub struct VariableDefinitionRecord {
 }
 
 #[derive(Clone, Copy)]
-pub struct VariableDefinition<'a>(ReadContext<'a, VariableDefinitionId>);
+pub struct VariableDefinition<'a>(pub(in super::super) ReadContext<'a, VariableDefinitionId>);
 
 impl<'a> VariableDefinition<'a> {
     pub fn name(&self) -> &'a str {

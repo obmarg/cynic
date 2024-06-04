@@ -16,7 +16,7 @@ pub struct ScalarDefinitionRecord {
 }
 
 #[derive(Clone, Copy)]
-pub struct ScalarDefinition<'a>(ReadContext<'a, ScalarDefinitionId>);
+pub struct ScalarDefinition<'a>(pub(in super::super) ReadContext<'a, ScalarDefinitionId>);
 
 impl<'a> ScalarDefinition<'a> {
     pub fn name(&self) -> &'a str {

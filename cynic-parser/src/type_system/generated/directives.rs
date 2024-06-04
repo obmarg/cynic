@@ -21,7 +21,7 @@ pub struct DirectiveDefinitionRecord {
 }
 
 #[derive(Clone, Copy)]
-pub struct DirectiveDefinition<'a>(ReadContext<'a, DirectiveDefinitionId>);
+pub struct DirectiveDefinition<'a>(pub(in super::super) ReadContext<'a, DirectiveDefinitionId>);
 
 impl<'a> DirectiveDefinition<'a> {
     pub fn name(&self) -> &'a str {
@@ -92,7 +92,7 @@ pub struct DirectiveRecord {
 }
 
 #[derive(Clone, Copy)]
-pub struct Directive<'a>(ReadContext<'a, DirectiveId>);
+pub struct Directive<'a>(pub(in super::super) ReadContext<'a, DirectiveId>);
 
 impl<'a> Directive<'a> {
     pub fn name(&self) -> &'a str {

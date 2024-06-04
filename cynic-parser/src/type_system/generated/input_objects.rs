@@ -18,7 +18,7 @@ pub struct InputObjectDefinitionRecord {
 }
 
 #[derive(Clone, Copy)]
-pub struct InputObjectDefinition<'a>(ReadContext<'a, InputObjectDefinitionId>);
+pub struct InputObjectDefinition<'a>(pub(in super::super) ReadContext<'a, InputObjectDefinitionId>);
 
 impl<'a> InputObjectDefinition<'a> {
     pub fn name(&self) -> &'a str {

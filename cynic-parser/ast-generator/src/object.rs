@@ -49,7 +49,7 @@ pub fn object_output(
 
     let reader = format_code(quote! {
         #[derive(Clone, Copy)]
-        pub struct #reader_name<'a>(ReadContext<'a, #id_name>);
+        pub struct #reader_name<'a>(pub(in super::super) ReadContext<'a, #id_name>);
     })?;
 
     let reader_debug = format_code(ObjectDebug(&reader_name, &edges).to_token_stream())?;

@@ -19,7 +19,7 @@ pub struct InterfaceDefinitionRecord {
 }
 
 #[derive(Clone, Copy)]
-pub struct InterfaceDefinition<'a>(ReadContext<'a, InterfaceDefinitionId>);
+pub struct InterfaceDefinition<'a>(pub(in super::super) ReadContext<'a, InterfaceDefinitionId>);
 
 impl<'a> InterfaceDefinition<'a> {
     pub fn name(&self) -> &'a str {
