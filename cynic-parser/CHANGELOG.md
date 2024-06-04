@@ -13,7 +13,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### New Features
 
-- fragment spread -> fragment lookup function ([#976](https://github.com/obmarg/cynic/pull/976))
+- Added `FragmentSpread::fragment` function that looks up the named fragment
+  ([#976](https://github.com/obmarg/cynic/pull/976))
 
 ## v0.4.1 - 2024-05-31
 
