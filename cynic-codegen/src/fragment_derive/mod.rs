@@ -64,7 +64,15 @@ pub fn fragment_derive_impl(input: FragmentDeriveInput) -> Result<TokenStream, E
         variables.as_ref(),
     )?;
 
-    let deserialize_impl = DeserializeImpl::new(&schema, &fields, &input.ident, &input.generics);
+    let field_module_path = schema_type.field_module.to_path(&schema_module);
+
+    let deserialize_impl = DeserializeImpl::new(
+        &schema,
+        &fields,
+        &input.ident,
+        &input.generics,
+        &field_module_path,
+    );
 
     Ok(quote::quote! {
         #fragment_impl

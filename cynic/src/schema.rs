@@ -54,6 +54,8 @@ pub trait HasArgument<ArgumentMarker> {
     const NAME: &'static str;
 }
 
+// TODO: Think about the names of the scalar traits....
+
 /// Indicates that a type is a scalar that maps to the given schema scalar.
 ///
 /// Note that this type is actually implemented on the users types.
@@ -64,7 +66,10 @@ pub trait IsScalar<SchemaType> {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer;
+}
 
+// TODO: better name on this
+pub trait ScalarDeser<SchemaType>: IsScalar<SchemaType> + Sized {
     fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>;
@@ -80,14 +85,7 @@ where
     where
         S: Serializer,
     {
-        <U as IsScalar<U>>::serialize(self, serializer)
-    }
-
-    fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        <U as IsScalar<U>>::deserialize(deserializer)
+        <U as IsScalar<T>>::serialize(self, serializer)
     }
 }
 
@@ -103,7 +101,12 @@ where
     {
         todo!()
     }
+}
 
+impl<T, U> ScalarDeser<Option<T>> for Option<U>
+where
+    U: ScalarDeser<T>,
+{
     fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -124,7 +127,12 @@ where
     {
         todo!()
     }
+}
 
+impl<T, U> ScalarDeser<Vec<T>> for Vec<U>
+where
+    U: ScalarDeser<T>,
+{
     fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -145,13 +153,6 @@ where
     {
         todo!()
     }
-
-    fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        todo!()
-    }
 }
 
 impl<T, U, const SIZE: usize> IsScalar<Vec<T>> for [U; SIZE]
@@ -163,13 +164,6 @@ where
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
-    {
-        todo!()
-    }
-
-    fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: Deserializer<'de>,
     {
         todo!()
     }
@@ -187,7 +181,12 @@ where
     {
         todo!()
     }
+}
 
+impl<T, U: ?Sized> ScalarDeser<Box<T>> for Box<U>
+where
+    U: ScalarDeser<T>,
+{
     fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -208,7 +207,12 @@ where
     {
         todo!()
     }
+}
 
+impl<T, U: ?Sized> ScalarDeser<T> for std::borrow::Cow<'_, U>
+where
+    U: ScalarDeser<T> + ToOwned,
+{
     fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -226,7 +230,9 @@ impl IsScalar<bool> for bool {
     {
         todo!()
     }
+}
 
+impl ScalarDeser<bool> for bool {
     fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -244,7 +250,9 @@ impl IsScalar<String> for String {
     {
         todo!()
     }
+}
 
+impl ScalarDeser<String> for String {
     fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -262,13 +270,6 @@ impl IsScalar<String> for str {
     {
         todo!()
     }
-
-    fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
-    where
-        D: Deserializer<'de>,
-    {
-        todo!()
-    }
 }
 
 impl IsScalar<i32> for i32 {
@@ -280,7 +281,9 @@ impl IsScalar<i32> for i32 {
     {
         todo!()
     }
+}
 
+impl ScalarDeser<i32> for i32 {
     fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -298,7 +301,9 @@ impl IsScalar<f64> for f64 {
     {
         todo!()
     }
+}
 
+impl ScalarDeser<f64> for f64 {
     fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -316,7 +321,9 @@ impl IsScalar<crate::Id> for crate::Id {
     {
         todo!()
     }
+}
 
+impl ScalarDeser<crate::Id> for crate::Id {
     fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,

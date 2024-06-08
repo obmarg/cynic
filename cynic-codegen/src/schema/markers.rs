@@ -231,6 +231,18 @@ marker_ident_for_named!(
     ScalarType
 );
 
+impl<'a> OutputType<'a> {
+    pub fn marker_ident(&'a self) -> TypeMarkerIdent<'a> {
+        match self {
+            OutputType::Scalar(inner) => inner.marker_ident(),
+            OutputType::Object(inner) => inner.marker_ident(),
+            OutputType::Interface(inner) => inner.marker_ident(),
+            OutputType::Union(inner) => inner.marker_ident(),
+            OutputType::Enum(inner) => inner.marker_ident(),
+        }
+    }
+}
+
 impl<'a> Field<'a> {
     pub fn marker_ident(&'a self) -> FieldMarkerIdent<'a> {
         FieldMarkerIdent {

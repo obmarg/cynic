@@ -33,6 +33,7 @@ struct Field {
     field_variant_name: proc_macro2::Ident,
     serialized_name: Option<String>,
     inner_kind: Option<FieldKind>,
+    field_marker: syn::Path,
     is_spread: bool,
     is_flattened: bool,
     is_recurse: bool,
@@ -46,13 +47,16 @@ impl<'a> DeserializeImpl<'a> {
         fields: &[(FragmentDeriveField, Option<schema::Field<'_>>)],
         name: &'a syn::Ident,
         generics: &'a syn::Generics,
+        field_module_path: &syn::Path,
     ) -> Self {
         let spreading = fields.iter().any(|f| f.0.spread());
 
         let target_struct = name;
         let fields = fields
             .iter()
-            .map(|(field, schema_field)| process_field(schema, field, schema_field.as_ref()))
+            .map(|(field, schema_field)| {
+                process_field(schema, field, schema_field.as_ref(), field_module_path)
+            })
             .collect();
 
         match spreading {
@@ -103,11 +107,13 @@ impl quote::ToTokens for StandardDeserializeImpl<'_> {
         let field_names = self.fields.iter().map(|f| &f.rust_name).collect::<Vec<_>>();
         let field_decodes = self.fields.iter().map(|f| {
             let field_name = &f.rust_name;
-            let mut ty = quote! { &f.ty };
+            let field_marker = &f.field_marker;
+            let ty = &f.ty;
+            let mut ty = quote! { #ty };
             let mut trailer = quote! {};
 
             if matches!(f.inner_kind, Some(FieldKind::Scalar)) {
-                ty = quote! { cynic::__private::ScalarDeseralize<#ty> };
+                ty = quote! { cynic::__private::ScalarDeseralize<#ty, <#field_marker as cynic::schema::Field>::Type> };
                 trailer.append_all(quote! { .into_inner() });
             }
 
@@ -288,11 +294,18 @@ fn process_field(
     schema: &Schema<'_, Unvalidated>,
     field: &FragmentDeriveField,
     schema_field: Option<&schema::Field<'_>>,
+    field_module_path: &syn::Path,
 ) -> Field {
     // Should be ok to unwrap since we only accept struct style input
     let rust_name = field.ident().unwrap();
     let field_variant_name = rust_name.clone();
-    let inner_kind = schema_field.map(|field| field.field_type.inner_type(schema).as_kind());
+    let schema_type = schema_field.map(|field| field.field_type.inner_type(schema));
+    let inner_kind = schema_type.as_ref().map(|ty| ty.as_kind());
+
+    let field_marker = match schema_field {
+        Some(field) => field.marker_ident().to_path(field_module_path),
+        None => syn::parse_quote!(String),
+    };
 
     Field {
         field_variant_name,
@@ -307,5 +320,6 @@ fn process_field(
         is_feature_flagged: field.raw_field.feature.is_some(),
         is_skippable: field.is_skippable(),
         inner_kind,
+        field_marker,
     }
 }
