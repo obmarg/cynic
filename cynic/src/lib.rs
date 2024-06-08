@@ -237,6 +237,23 @@ macro_rules! impl_scalar {
         #[automatically_derived]
         impl $crate::schema::IsScalar<$schema_module$(::$schema_module_rest)*::$type_lock> for $type {
             type SchemaType = $schema_module$(::$schema_module_rest)*::$type_lock;
+
+            fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+            where
+                S: $crate::serde::Serializer
+            {
+                $crate::serde::Serialize::serialize(self, serializer)
+            }
+        }
+
+        #[automatically_derived]
+        impl $crate::schema::ScalarDeser<$schema_module$(::$schema_module_rest)*::$type_lock> for $type {
+            fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
+            where
+                D: $crate::serde::Deserializer<'de>
+            {
+                <Self as $crate::serde::Deserialize>::deserialize(deserializer)
+            }
         }
 
         // We derive a simple CoercesTo here, but since we don't own $type we can't
