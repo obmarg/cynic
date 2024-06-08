@@ -247,7 +247,9 @@ macro_rules! impl_scalar {
         }
 
         #[automatically_derived]
-        impl $crate::schema::ScalarDeser<$schema_module$(::$schema_module_rest)*::$type_lock> for $type {
+        impl $crate::schema::IsOutputScalar<$schema_module$(::$schema_module_rest)*::$type_lock> for $type {
+            type SchemaType = $schema_module$(::$schema_module_rest)*::$type_lock;
+
             fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
             where
                 D: $crate::serde::Deserializer<'de>
