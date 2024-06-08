@@ -11,7 +11,7 @@ impl cynic::QueryFragment for BlogPostOutput {
         mut builder: cynic::queries::SelectionBuilder<'_, Self::SchemaType, Self::VariablesFields>,
     ) {
         #![allow(unused_mut)]
-        let mut field_builder = builder . select_field :: < schema :: __fields :: BlogPost :: hasMetadata , < Option < bool > as cynic :: schema :: IsScalar < < schema :: __fields :: BlogPost :: hasMetadata as cynic :: schema :: Field > :: Type >> :: SchemaType > () ;
+        let mut field_builder = builder . select_field :: < schema :: __fields :: BlogPost :: hasMetadata , < Option < bool > as cynic :: schema :: IsOutputScalar < < schema :: __fields :: BlogPost :: hasMetadata as cynic :: schema :: Field > :: Type >> :: SchemaType > () ;
         let mut field_builder = builder . select_field :: < schema :: __fields :: BlogPost :: author , < AuthorOutput as cynic :: QueryFragment > :: SchemaType > () ;
         <AuthorOutput as cynic::QueryFragment>::query(field_builder.select_children());
     }
@@ -59,13 +59,13 @@ impl<'de> cynic::serde::Deserialize<'de> for BlogPostOutput {
                                     "hasMetadata",
                                 ));
                             }
-                            has_metadata = Some(__map.next_value()?);
+                            has_metadata = Some (__map . next_value :: < cynic :: __private :: ScalarDeserialize < Option < bool > , < schema :: __fields :: BlogPost :: hasMetadata as cynic :: schema :: Field > :: Type > > () ? . into_inner ()) ;
                         }
                         __FragmentDeriveField::author => {
                             if author.is_some() {
                                 return Err(cynic::serde::de::Error::duplicate_field("author"));
                             }
-                            author = Some(__map.next_value()?);
+                            author = Some(__map.next_value::<AuthorOutput>()?);
                         }
                         __FragmentDeriveField::__Other => {
                             __map.next_value::<cynic::serde::de::IgnoredAny>()?;
