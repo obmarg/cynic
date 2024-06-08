@@ -113,7 +113,7 @@ impl quote::ToTokens for StandardDeserializeImpl<'_> {
             let mut trailer = quote! {};
 
             if matches!(f.inner_kind, Some(FieldKind::Scalar)) {
-                ty = quote! { cynic::__private::ScalarDeseralize<#ty, <#field_marker as cynic::schema::Field>::Type> };
+                ty = quote! { cynic::__private::ScalarDeserialize<#ty, <#field_marker as cynic::schema::Field>::Type> };
                 trailer.append_all(quote! { .into_inner() });
             }
 
