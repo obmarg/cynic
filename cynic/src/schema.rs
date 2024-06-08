@@ -63,13 +63,18 @@ pub trait IsScalar<SchemaType> {
     /// The schema marker type this scalar represents.
     type SchemaType;
 
+    // TODO: serialize should maybe be on an OutputScalar trait
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer;
 }
 
-// TODO: better name on this
-pub trait ScalarDeser<SchemaType>: IsScalar<SchemaType> + Sized {
+// TODO: serialize should maybe be on an InputScalar trait
+// or maybe just ScalarSerialize/ScalarDeserialize?  not sure...
+pub trait IsOutputScalar<SchemaType>: Sized {
+    /// The schema marker type this scalar represents.
+    type SchemaType;
+
     fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>;
@@ -103,10 +108,12 @@ where
     }
 }
 
-impl<T, U> ScalarDeser<Option<T>> for Option<U>
+impl<T, U> IsOutputScalar<Option<T>> for Option<U>
 where
-    U: ScalarDeser<T>,
+    U: IsOutputScalar<T>,
 {
+    type SchemaType = Option<U::SchemaType>;
+
     fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -129,10 +136,12 @@ where
     }
 }
 
-impl<T, U> ScalarDeser<Vec<T>> for Vec<U>
+impl<T, U> IsOutputScalar<Vec<T>> for Vec<U>
 where
-    U: ScalarDeser<T>,
+    U: IsOutputScalar<T>,
 {
+    type SchemaType = Vec<U::SchemaType>;
+
     fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -183,10 +192,12 @@ where
     }
 }
 
-impl<T, U: ?Sized> ScalarDeser<Box<T>> for Box<U>
+impl<T, U: ?Sized> IsOutputScalar<Box<T>> for Box<U>
 where
-    U: ScalarDeser<T>,
+    U: IsOutputScalar<T>,
 {
+    type SchemaType = Box<U::SchemaType>;
+
     fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -209,10 +220,12 @@ where
     }
 }
 
-impl<T, U: ?Sized> ScalarDeser<T> for std::borrow::Cow<'_, U>
+impl<T, U: ?Sized> IsOutputScalar<T> for std::borrow::Cow<'_, U>
 where
-    U: ScalarDeser<T> + ToOwned,
+    U: IsOutputScalar<T> + ToOwned,
 {
+    type SchemaType = U::SchemaType;
+
     fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -232,7 +245,9 @@ impl IsScalar<bool> for bool {
     }
 }
 
-impl ScalarDeser<bool> for bool {
+impl IsOutputScalar<bool> for bool {
+    type SchemaType = bool;
+
     fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -252,7 +267,9 @@ impl IsScalar<String> for String {
     }
 }
 
-impl ScalarDeser<String> for String {
+impl IsOutputScalar<String> for String {
+    type SchemaType = String;
+
     fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -283,7 +300,9 @@ impl IsScalar<i32> for i32 {
     }
 }
 
-impl ScalarDeser<i32> for i32 {
+impl IsOutputScalar<i32> for i32 {
+    type SchemaType = i32;
+
     fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -303,7 +322,9 @@ impl IsScalar<f64> for f64 {
     }
 }
 
-impl ScalarDeser<f64> for f64 {
+impl IsOutputScalar<f64> for f64 {
+    type SchemaType = f64;
+
     fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -323,7 +344,9 @@ impl IsScalar<crate::Id> for crate::Id {
     }
 }
 
-impl ScalarDeser<crate::Id> for crate::Id {
+impl IsOutputScalar<crate::Id> for crate::Id {
+    type SchemaType = crate::Id;
+
     fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,

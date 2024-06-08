@@ -286,10 +286,10 @@ impl quote::ToTokens for FieldSelection<'_> {
                 }
             }
             FieldKind::Scalar if self.flatten => quote_spanned! { self.span =>
-                <#aligned_type as cynic::schema::IsScalar<#aligned_type>>::SchemaType
+                <#aligned_type as cynic::schema::IsOutputScalar<#aligned_type>>::SchemaType
             },
             FieldKind::Scalar => quote_spanned! { self.span =>
-                <#aligned_type as cynic::schema::IsScalar<
+                <#aligned_type as cynic::schema::IsOutputScalar<
                     <#field_marker_type_path as cynic::schema::Field>::Type
                 >>::SchemaType
             },
@@ -407,5 +407,14 @@ impl quote::ToTokens for SpreadSelection {
                     .select_children::<<#field_type as cynic::QueryFragment>::VariablesFields>()
             );
         })
+    }
+}
+
+impl OutputType<'_> {
+    fn is_composite(&self) -> bool {
+        matches!(
+            self,
+            OutputType::Object(_) | OutputType::Interface(_) | OutputType::Union(_)
+        )
     }
 }
