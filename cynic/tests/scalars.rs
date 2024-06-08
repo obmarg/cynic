@@ -14,7 +14,9 @@ cynic::impl_scalar!(chrono::DateTime<chrono::Utc>, schema::DateTime);
 pub struct DateTimeInner<DT>(pub DT);
 
 // Make sure we can use impl scalar on built in types
+#[derive(serde::Serialize, serde::Deserialize)]
 pub struct MyString(String);
+
 cynic::impl_scalar!(MyString, schema::String);
 
 pub struct MyInt(i64);
