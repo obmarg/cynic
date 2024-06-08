@@ -11,7 +11,11 @@
 //! usually be marker types and the associated types will also usually be
 //! markers.
 
-use serde::{Deserializer, Serializer};
+use std::borrow::{Borrow, Cow};
+
+use serde::{ser::SerializeSeq, Deserialize, Deserializer, Serializer};
+
+use crate::__private::{ScalarDeserialize, ScalarSerialize};
 
 /// Indicates that a struct represents a Field in a graphql schema.
 pub trait Field {
@@ -104,7 +108,10 @@ where
     where
         S: Serializer,
     {
-        todo!()
+        match self {
+            Some(inner) => inner.serialize(serializer),
+            None => serializer.serialize_none(),
+        }
     }
 }
 
@@ -118,7 +125,10 @@ where
     where
         D: Deserializer<'de>,
     {
-        todo!()
+        Ok(
+            Option::<ScalarDeserialize<U, T>>::deserialize(deserializer)?
+                .map(ScalarDeserialize::into_inner),
+        )
     }
 }
 
@@ -132,7 +142,11 @@ where
     where
         S: Serializer,
     {
-        todo!()
+        let mut seq = serializer.serialize_seq(Some(self.len()))?;
+        for item in self {
+            seq.serialize_element(&ScalarSerialize::new(item))?;
+        }
+        seq.end()
     }
 }
 
@@ -146,7 +160,10 @@ where
     where
         D: Deserializer<'de>,
     {
-        todo!()
+        Ok(Vec::<ScalarDeserialize<U, T>>::deserialize(deserializer)?
+            .into_iter()
+            .map(ScalarDeserialize::into_inner)
+            .collect())
     }
 }
 
@@ -160,7 +177,11 @@ where
     where
         S: Serializer,
     {
-        todo!()
+        let mut seq = serializer.serialize_seq(Some(self.len()))?;
+        for item in self {
+            seq.serialize_element(&ScalarSerialize::new(item))?;
+        }
+        seq.end()
     }
 }
 
@@ -174,7 +195,11 @@ where
     where
         S: Serializer,
     {
-        todo!()
+        let mut seq = serializer.serialize_seq(Some(self.len()))?;
+        for item in self {
+            seq.serialize_element(&ScalarSerialize::new(item))?;
+        }
+        seq.end()
     }
 }
 
@@ -188,7 +213,7 @@ where
     where
         S: Serializer,
     {
-        todo!()
+        self.as_ref().serialize(serializer)
     }
 }
 
@@ -202,7 +227,7 @@ where
     where
         D: Deserializer<'de>,
     {
-        todo!()
+        U::deserialize(deserializer).map(Box::new)
     }
 }
 
@@ -216,7 +241,7 @@ where
     where
         S: Serializer,
     {
-        todo!()
+        self.as_ref().serialize(serializer)
     }
 }
 
@@ -230,7 +255,20 @@ where
     where
         D: Deserializer<'de>,
     {
-        todo!()
+        Ok(Cow::Owned(U::deserialize(deserializer)?.to_owned()))
+    }
+}
+
+impl IsOutputScalar<String> for std::borrow::Cow<'static, str> {
+    type SchemaType = String;
+
+    fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        Ok(Cow::Owned(
+            <String as serde::Deserialize>::deserialize(deserializer)?.to_owned(),
+        ))
     }
 }
 
@@ -241,7 +279,7 @@ impl IsScalar<bool> for bool {
     where
         S: Serializer,
     {
-        todo!()
+        serde::Serialize::serialize(self, serializer)
     }
 }
 
@@ -252,7 +290,7 @@ impl IsOutputScalar<bool> for bool {
     where
         D: Deserializer<'de>,
     {
-        todo!()
+        serde::Deserialize::deserialize(deserializer)
     }
 }
 
@@ -263,7 +301,7 @@ impl IsScalar<String> for String {
     where
         S: Serializer,
     {
-        todo!()
+        serde::Serialize::serialize(self, serializer)
     }
 }
 
@@ -274,7 +312,7 @@ impl IsOutputScalar<String> for String {
     where
         D: Deserializer<'de>,
     {
-        todo!()
+        serde::Deserialize::deserialize(deserializer)
     }
 }
 
@@ -285,7 +323,7 @@ impl IsScalar<String> for str {
     where
         S: Serializer,
     {
-        todo!()
+        serde::Serialize::serialize(self, serializer)
     }
 }
 
@@ -296,7 +334,7 @@ impl IsScalar<i32> for i32 {
     where
         S: Serializer,
     {
-        todo!()
+        serde::Serialize::serialize(self, serializer)
     }
 }
 
@@ -307,7 +345,7 @@ impl IsOutputScalar<i32> for i32 {
     where
         D: Deserializer<'de>,
     {
-        todo!()
+        serde::Deserialize::deserialize(deserializer)
     }
 }
 
@@ -318,7 +356,7 @@ impl IsScalar<f64> for f64 {
     where
         S: Serializer,
     {
-        todo!()
+        serde::Serialize::serialize(self, serializer)
     }
 }
 
@@ -329,7 +367,7 @@ impl IsOutputScalar<f64> for f64 {
     where
         D: Deserializer<'de>,
     {
-        todo!()
+        serde::Deserialize::deserialize(deserializer)
     }
 }
 
@@ -340,7 +378,7 @@ impl IsScalar<crate::Id> for crate::Id {
     where
         S: Serializer,
     {
-        todo!()
+        serde::Serialize::serialize(self, serializer)
     }
 }
 
@@ -351,7 +389,7 @@ impl IsOutputScalar<crate::Id> for crate::Id {
     where
         D: Deserializer<'de>,
     {
-        todo!()
+        serde::Deserialize::deserialize(deserializer)
     }
 }
 

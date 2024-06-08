@@ -11,10 +11,7 @@ impl cynic::QueryFragment for MyQuery {
         mut builder: cynic::queries::SelectionBuilder<'_, Self::SchemaType, Self::VariablesFields>,
     ) {
         #![allow(unused_mut)]
-        let mut field_builder = builder
-            .select_field::<schema::__fields::Query::__typename, <String as cynic::schema::IsScalar<
-                <schema::__fields::Query::__typename as cynic::schema::Field>::Type,
-            >>::SchemaType>();
+        let mut field_builder = builder . select_field :: < schema :: __fields :: Query :: __typename , < String as cynic :: schema :: IsOutputScalar < < schema :: __fields :: Query :: __typename as cynic :: schema :: Field > :: Type >> :: SchemaType > () ;
         if builder.is_feature_enabled("2018") {
             let mut field_builder = builder . select_field :: < schema :: __fields :: Query :: filteredPosts , < Vec < BlogPostOutput > as cynic :: QueryFragment > :: SchemaType > () ;
             <Vec<BlogPostOutput> as cynic::QueryFragment>::query(field_builder.select_children());
@@ -62,7 +59,7 @@ impl<'de> cynic::serde::Deserialize<'de> for MyQuery {
                             if __typename.is_some() {
                                 return Err(cynic::serde::de::Error::duplicate_field("__typename"));
                             }
-                            __typename = Some(__map.next_value()?);
+                            __typename = Some (__map . next_value :: < cynic :: __private :: ScalarDeserialize < String , < schema :: __fields :: Query :: __typename as cynic :: schema :: Field > :: Type > > () ? . into_inner ()) ;
                         }
                         __FragmentDeriveField::filteredPosts => {
                             if filteredPosts.is_some() {
@@ -70,7 +67,7 @@ impl<'de> cynic::serde::Deserialize<'de> for MyQuery {
                                     "filteredPosts",
                                 ));
                             }
-                            filteredPosts = Some(__map.next_value()?);
+                            filteredPosts = Some(__map.next_value::<Vec<BlogPostOutput>>()?);
                         }
                         __FragmentDeriveField::__Other => {
                             __map.next_value::<cynic::serde::de::IgnoredAny>()?;

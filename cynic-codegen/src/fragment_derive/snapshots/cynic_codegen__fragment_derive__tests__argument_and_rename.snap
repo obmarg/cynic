@@ -63,13 +63,13 @@ impl<'de> cynic::serde::Deserialize<'de> for MyQuery {
                             if post.is_some() {
                                 return Err(cynic::serde::de::Error::duplicate_field("post"));
                             }
-                            post = Some(__map.next_value()?);
+                            post = Some(__map.next_value::<Option<BlogPostOutput>>()?);
                         }
                         __FragmentDeriveField::posts => {
                             if posts.is_some() {
                                 return Err(cynic::serde::de::Error::duplicate_field("allPosts"));
                             }
-                            posts = Some(__map.next_value()?);
+                            posts = Some(__map.next_value::<Vec<BlogPostOutput>>()?);
                         }
                         __FragmentDeriveField::__Other => {
                             __map.next_value::<cynic::serde::de::IgnoredAny>()?;
