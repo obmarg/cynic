@@ -1,3 +1,5 @@
+use serde::Serialize;
+
 mod schema {
     cynic::use_schema!("tests/test-schema.graphql");
 }
@@ -11,7 +13,7 @@ cynic::impl_scalar!(chrono::DateTime<chrono::Utc>, schema::DateTime);
 
 #[derive(cynic::Scalar)]
 #[cynic(graphql_type = "DateTime")]
-pub struct DateTimeInner<DT>(pub DT);
+pub struct DateTimeInner<DT: Serialize>(pub DT);
 
 // Make sure we can use impl scalar on built in types
 pub struct MyString(#[allow(dead_code)] String);
