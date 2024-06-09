@@ -17,7 +17,7 @@ pub struct VariableDefinitionRecord {
 }
 
 #[derive(Clone, Copy)]
-pub struct VariableDefinition<'a>(ReadContext<'a, VariableDefinitionId>);
+pub struct VariableDefinition<'a>(pub(in super::super) ReadContext<'a, VariableDefinitionId>);
 
 impl<'a> VariableDefinition<'a> {
     pub fn name(&self) -> &'a str {
@@ -38,6 +38,12 @@ impl<'a> VariableDefinition<'a> {
     pub fn directives(&self) -> Iter<'a, Directive<'a>> {
         let document = self.0.document;
         super::Iter::new(document.lookup(self.0.id).directives, document)
+    }
+}
+
+impl VariableDefinition<'_> {
+    pub fn id(&self) -> VariableDefinitionId {
+        self.0.id
     }
 }
 

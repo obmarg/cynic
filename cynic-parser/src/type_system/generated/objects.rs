@@ -19,7 +19,7 @@ pub struct ObjectDefinitionRecord {
 }
 
 #[derive(Clone, Copy)]
-pub struct ObjectDefinition<'a>(ReadContext<'a, ObjectDefinitionId>);
+pub struct ObjectDefinition<'a>(pub(in super::super) ReadContext<'a, ObjectDefinitionId>);
 
 impl<'a> ObjectDefinition<'a> {
     pub fn name(&self) -> &'a str {
@@ -52,6 +52,12 @@ impl<'a> ObjectDefinition<'a> {
     pub fn span(&self) -> Span {
         let document = self.0.document;
         document.lookup(self.0.id).span
+    }
+}
+
+impl ObjectDefinition<'_> {
+    pub fn id(&self) -> ObjectDefinitionId {
+        self.0.id
     }
 }
 

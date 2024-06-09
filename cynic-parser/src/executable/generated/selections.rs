@@ -54,7 +54,7 @@ pub struct FieldSelectionRecord {
 }
 
 #[derive(Clone, Copy)]
-pub struct FieldSelection<'a>(ReadContext<'a, FieldSelectionId>);
+pub struct FieldSelection<'a>(pub(in super::super) ReadContext<'a, FieldSelectionId>);
 
 impl<'a> FieldSelection<'a> {
     pub fn alias(&self) -> Option<&'a str> {
@@ -79,6 +79,12 @@ impl<'a> FieldSelection<'a> {
     pub fn selection_set(&self) -> Iter<'a, Selection<'a>> {
         let document = self.0.document;
         super::Iter::new(document.lookup(self.0.id).selection_set, document)
+    }
+}
+
+impl FieldSelection<'_> {
+    pub fn id(&self) -> FieldSelectionId {
+        self.0.id
     }
 }
 
@@ -115,7 +121,7 @@ pub struct InlineFragmentRecord {
 }
 
 #[derive(Clone, Copy)]
-pub struct InlineFragment<'a>(ReadContext<'a, InlineFragmentId>);
+pub struct InlineFragment<'a>(pub(in super::super) ReadContext<'a, InlineFragmentId>);
 
 impl<'a> InlineFragment<'a> {
     pub fn type_condition(&self) -> Option<&'a str> {
@@ -132,6 +138,12 @@ impl<'a> InlineFragment<'a> {
     pub fn selection_set(&self) -> Iter<'a, Selection<'a>> {
         let document = self.0.document;
         super::Iter::new(document.lookup(self.0.id).selection_set, document)
+    }
+}
+
+impl InlineFragment<'_> {
+    pub fn id(&self) -> InlineFragmentId {
+        self.0.id
     }
 }
 
@@ -165,7 +177,7 @@ pub struct FragmentSpreadRecord {
 }
 
 #[derive(Clone, Copy)]
-pub struct FragmentSpread<'a>(ReadContext<'a, FragmentSpreadId>);
+pub struct FragmentSpread<'a>(pub(in super::super) ReadContext<'a, FragmentSpreadId>);
 
 impl<'a> FragmentSpread<'a> {
     pub fn fragment_name(&self) -> &'a str {
@@ -175,6 +187,12 @@ impl<'a> FragmentSpread<'a> {
     pub fn directives(&self) -> Iter<'a, Directive<'a>> {
         let document = self.0.document;
         super::Iter::new(document.lookup(self.0.id).directives, document)
+    }
+}
+
+impl FragmentSpread<'_> {
+    pub fn id(&self) -> FragmentSpreadId {
+        self.0.id
     }
 }
 

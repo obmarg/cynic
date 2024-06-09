@@ -18,7 +18,7 @@ pub struct OperationDefinitionRecord {
 }
 
 #[derive(Clone, Copy)]
-pub struct OperationDefinition<'a>(ReadContext<'a, OperationDefinitionId>);
+pub struct OperationDefinition<'a>(pub(in super::super) ReadContext<'a, OperationDefinitionId>);
 
 impl<'a> OperationDefinition<'a> {
     pub fn operation_type(&self) -> OperationType {
@@ -43,6 +43,12 @@ impl<'a> OperationDefinition<'a> {
     pub fn selection_set(&self) -> Iter<'a, Selection<'a>> {
         let document = self.0.document;
         super::Iter::new(document.lookup(self.0.id).selection_set, document)
+    }
+}
+
+impl OperationDefinition<'_> {
+    pub fn id(&self) -> OperationDefinitionId {
+        self.0.id
     }
 }
 

@@ -13,7 +13,7 @@ pub struct ArgumentRecord {
 }
 
 #[derive(Clone, Copy)]
-pub struct Argument<'a>(ReadContext<'a, ArgumentId>);
+pub struct Argument<'a>(pub(in super::super) ReadContext<'a, ArgumentId>);
 
 impl<'a> Argument<'a> {
     pub fn name(&self) -> &'a str {
@@ -23,6 +23,12 @@ impl<'a> Argument<'a> {
     pub fn value(&self) -> Value<'a> {
         let document = self.0.document;
         document.read(document.lookup(self.0.id).value)
+    }
+}
+
+impl Argument<'_> {
+    pub fn id(&self) -> ArgumentId {
+        self.0.id
     }
 }
 

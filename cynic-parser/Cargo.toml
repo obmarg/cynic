@@ -4,7 +4,7 @@ description = "A fast, correct and easy to use GraphQL parser"
 keywords = ["graphql", "parser", "api"]
 readme = "README.md"
 
-version = "0.3.0"
+version = "0.4.3"
 
 homepage = "https://docs.rs/cynic-parser"
 documentation = "https://docs.rs/cynic-parser"
@@ -19,7 +19,8 @@ rust-version.workspace = true
 
 [features]
 default = []
-print = ["pretty"]
+pretty = ["print", "dep:pretty"]
+print = []
 report = ["ariadne"]
 
 [dependencies]
@@ -34,8 +35,8 @@ pretty = { version = "0.12", optional = true }
 insta = "1.29"
 similar-asserts = "1.5"
 
-# Tests need the `print` functionality so enable it here
-cynic-parser = { path = ".", features = ["print", "report"] }
+# Tests need the `pretty` functionality so enable it here
+cynic-parser = { path = ".", features = ["pretty", "report"] }
 
 # Benchmark bits & bobs
 async-graphql-parser = "7"

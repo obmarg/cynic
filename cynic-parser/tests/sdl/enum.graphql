@@ -2,3 +2,11 @@ enum Site {
   DESKTOP
   MOBILE
 }
+
+enum Whatever {
+  OldThing
+    @deprecated(
+      reason: "A really long string: This value will be removed from this enum as this type will be migrated to not be used. Removal on 2022-11-21 UTC."
+    )
+  NewThing
+}

@@ -5,7 +5,7 @@ use crate::{common::IdRange, AstLookup};
 
 macro_rules! make_id {
     ($name:ident, $output:ident, $field:ident) => {
-        #[derive(Clone, Copy)]
+        #[derive(Clone, Copy, Debug, Hash, Eq, PartialEq)]
         pub struct $name(NonZeroU32);
 
         impl $name {

@@ -11,7 +11,7 @@ macro_rules! schema_tests {
                 let parsed = cynic_parser::parse_type_system_document(SCHEMA)
                     .map_err(|error| error.to_report(SCHEMA))
                     .unwrap();
-                insta::assert_snapshot!(parsed.to_sdl());
+                insta::assert_snapshot!(parsed.to_sdl_pretty());
             }
 
             #[test]
@@ -29,13 +29,13 @@ macro_rules! schema_tests {
                 let parsed = cynic_parser::parse_type_system_document(SCHEMA)
                     .map_err(|error| error.to_report(SCHEMA))
                     .unwrap();
-                let sdl = parsed.to_sdl();
+                let sdl = parsed.to_sdl_pretty();
 
                 let reparsed = cynic_parser::parse_type_system_document(&sdl)
                     .map_err(|error| error.to_report(&sdl))
                     .unwrap();
 
-                assert_eq!(sdl, reparsed.to_sdl());
+                assert_eq!(sdl, reparsed.to_sdl_pretty());
             }
         }
     };

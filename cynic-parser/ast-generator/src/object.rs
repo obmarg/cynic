@@ -49,7 +49,7 @@ pub fn object_output(
 
     let reader = format_code(quote! {
         #[derive(Clone, Copy)]
-        pub struct #reader_name<'a>(ReadContext<'a, #id_name>);
+        pub struct #reader_name<'a>(pub(in super::super) ReadContext<'a, #id_name>);
     })?;
 
     let reader_debug = format_code(ObjectDebug(&reader_name, &edges).to_token_stream())?;
@@ -57,6 +57,14 @@ pub fn object_output(
     let reader_impl = format_code(quote! {
         impl <'a> #reader_name<'a> {
             #(#reader_functions)*
+        }
+    })?;
+
+    let reader_id_impl = format_code(quote! {
+        impl #reader_name<'_> {
+            pub fn id(&self) -> #id_name {
+                self.0.id
+            }
         }
     })?;
 
@@ -89,6 +97,8 @@ pub fn object_output(
         {reader}
 
         {reader_impl}
+
+        {reader_id_impl}
 
         {reader_debug}
 

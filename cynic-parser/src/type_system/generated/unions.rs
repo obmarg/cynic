@@ -17,7 +17,7 @@ pub struct UnionDefinitionRecord {
 }
 
 #[derive(Clone, Copy)]
-pub struct UnionDefinition<'a>(ReadContext<'a, UnionDefinitionId>);
+pub struct UnionDefinition<'a>(pub(in super::super) ReadContext<'a, UnionDefinitionId>);
 
 impl<'a> UnionDefinition<'a> {
     pub fn name(&self) -> &'a str {
@@ -46,6 +46,12 @@ impl<'a> UnionDefinition<'a> {
     pub fn span(&self) -> Span {
         let document = self.0.document;
         document.lookup(self.0.id).span
+    }
+}
+
+impl UnionDefinition<'_> {
+    pub fn id(&self) -> UnionDefinitionId {
+        self.0.id
     }
 }
 

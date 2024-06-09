@@ -17,7 +17,7 @@ pub struct EnumDefinitionRecord {
 }
 
 #[derive(Clone, Copy)]
-pub struct EnumDefinition<'a>(ReadContext<'a, EnumDefinitionId>);
+pub struct EnumDefinition<'a>(pub(in super::super) ReadContext<'a, EnumDefinitionId>);
 
 impl<'a> EnumDefinition<'a> {
     pub fn name(&self) -> &'a str {
@@ -42,6 +42,12 @@ impl<'a> EnumDefinition<'a> {
     pub fn span(&self) -> Span {
         let document = self.0.document;
         document.lookup(self.0.id).span
+    }
+}
+
+impl EnumDefinition<'_> {
+    pub fn id(&self) -> EnumDefinitionId {
+        self.0.id
     }
 }
 
@@ -79,7 +85,7 @@ pub struct EnumValueDefinitionRecord {
 }
 
 #[derive(Clone, Copy)]
-pub struct EnumValueDefinition<'a>(ReadContext<'a, EnumValueDefinitionId>);
+pub struct EnumValueDefinition<'a>(pub(in super::super) ReadContext<'a, EnumValueDefinitionId>);
 
 impl<'a> EnumValueDefinition<'a> {
     pub fn value(&self) -> &'a str {
@@ -100,6 +106,12 @@ impl<'a> EnumValueDefinition<'a> {
     pub fn span(&self) -> Span {
         let document = self.0.document;
         document.lookup(self.0.id).span
+    }
+}
+
+impl EnumValueDefinition<'_> {
+    pub fn id(&self) -> EnumValueDefinitionId {
+        self.0.id
     }
 }
 

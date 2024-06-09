@@ -9,6 +9,58 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.4.3 - 2024-06-04
+
+### Bug Fixes
+
+- `FragmentSpread::fragment` had a missing lifetime
+  ([#978](https://github.com/obmarg/cynic/pull/978))
+
+## v0.4.2 - 2024-06-04
+
+### New Features
+
+- Added `FragmentSpread::fragment` function that looks up the named fragment
+  ([#976](https://github.com/obmarg/cynic/pull/976))
+
+## v0.4.1 - 2024-05-31
+
+### New Features
+
+- Added `Value::variables_used` to find variables used in a value
+  ([#963](https://github.com/obmarg/cynic/pull/963))
+
+## v0.4.0 - 2024-05-2
+
+### Breaking Changes
+
+- Pretty printing has been moved behind a new feature flag `pretty`
+- The names of the pretty printing functions have been updated with a `_pretty`
+  prefix.
+
+### New Features
+
+- All of the readers in the executable module now impl Display, allowing you
+  to use them with `print!` and friends. This is hidden behind the `print`
+  feature. ([#962](https://github.com/obmarg/cynic/pull/962))
+- All of the `Id` types now impl `Hash`, `PartialEq`, `Eq` & `Debug`
+  ([#961](https://github.com/obmarg/cynic/pull/961))
+- All of the readers now have an `id` function that allows you to retreive an
+  `Id` for that reader. ([#959](https://github.com/obmarg/cynic/pull/959))
+- `Iter` now exposes a function `ids` that allows you to retrieve the underlying
+  `IdRange` ([#959](https://github.com/obmarg/cynic/pull/959))
+
+### Bug Fixes
+
+- Fixed a lot of bad formatting in the pretty printing of schema documents
+  ([#957](https://github.com/obmarg/cynic/pull/957))
+- Pretty printing will now add whitespace between fields & arguments that have
+  a docstring ([#954](https://github.com/obmarg/cynic/pull/954))
+
+### Changes
+
+- update rust crate logos to 0.14 ([#942](https://github.com/obmarg/cynic/pull/942))
+
 ## v0.2.7 - 2024-05-14
 
 ### New Features

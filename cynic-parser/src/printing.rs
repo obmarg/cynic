@@ -1,7 +1,10 @@
 use std::fmt::Write;
 
-mod executable;
-mod type_system;
+mod display;
+mod indent;
+
+#[cfg(feature = "pretty")]
+mod pretty;
 
 fn escape_string(src: &str) -> String {
     let mut dest = String::with_capacity(src.len());

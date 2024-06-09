@@ -23,6 +23,10 @@ where
     pub(crate) fn new(range: IdRange<T::Id>, document: &'a super::ExecutableDocument) -> Self {
         Iter { range, document }
     }
+
+    pub fn ids(&self) -> IdRange<T::Id> {
+        self.range
+    }
 }
 
 pub trait IdReader {

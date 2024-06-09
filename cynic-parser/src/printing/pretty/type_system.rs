@@ -3,16 +3,14 @@ mod field_sequence;
 
 use pretty::{DocAllocator, Pretty};
 
-use crate::type_system::*;
+use crate::{printing::escape_string, type_system::*};
 
 use self::{argument_sequence::ArgumentSequence, field_sequence::FieldSequence};
-
-use super::escape_string;
 
 type Allocator<'a> = pretty::Arena<'a>;
 
 impl crate::TypeSystemDocument {
-    pub fn to_sdl(&self) -> String {
+    pub fn to_sdl_pretty(&self) -> String {
         let allocator = pretty::Arena::new();
 
         let builder = allocator
@@ -307,12 +305,6 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<UnionDefinition<'a>> {
     fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
         let mut builder = allocator.nil();
 
-        if let Some(description) = self.0.description() {
-            builder = builder
-                .append(NodeDisplay(description))
-                .append(allocator.hardline());
-        }
-
         builder = builder.append(allocator.text(format!("union {}", self.0.name())));
 
         let mut directives = self.0.directives().peekable();
@@ -330,16 +322,32 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<UnionDefinition<'a>> {
 
         if members.peek().is_some() {
             let members = allocator
-                .intersperse(members, allocator.line().append(allocator.text("| ")))
-                .group();
-
-            let members = members.clone().nest(2).flat_alt(members);
+                .line()
+                .append(
+                    allocator
+                        .space()
+                        .append(allocator.space())
+                        .flat_alt(allocator.nil()),
+                )
+                .append(
+                    allocator.intersperse(members, allocator.line().append(allocator.text("| "))),
+                )
+                .nest(2);
 
             builder = builder
                 .append(allocator.space())
                 .append(allocator.text("="))
-                .append(allocator.space())
                 .append(members)
+        }
+
+        builder = builder.group();
+
+        if let Some(description) = self.0.description() {
+            builder = NodeDisplay(description)
+                .pretty(allocator)
+                .append(allocator.hardline())
+                .append(builder)
+                .group();
         }
 
         builder
@@ -406,9 +414,13 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<EnumValueDefinition<'a>> {
 
         let mut directives = self.0.directives().peekable();
         if directives.peek().is_some() {
-            builder = builder
-                .append(allocator.space())
-                .append(allocator.intersperse(directives.map(NodeDisplay), allocator.softline()));
+            let directives_pretty = allocator
+                .line()
+                .append(allocator.intersperse(directives.map(NodeDisplay), allocator.line()))
+                .nest(2)
+                .group();
+
+            builder = builder.append(directives_pretty);
         }
 
         builder
@@ -622,19 +634,25 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Value<'a>> {
                 allocator.nil().braces()
             }
             crate::type_system::Value::Object(items) => allocator
-                .intersperse(
-                    items.into_iter().map(|(name, value)| {
+                .line()
+                .append(
+                    allocator.intersperse(
+                        items.into_iter().map(|(name, value)| {
+                            allocator
+                                .text(name)
+                                .append(allocator.text(":"))
+                                .append(allocator.space())
+                                .append(NodeDisplay(value))
+                        }),
                         allocator
-                            .text(name)
-                            .append(allocator.text(":"))
-                            .append(allocator.space())
-                            .append(NodeDisplay(value))
-                    }),
-                    allocator.text(",").append(allocator.space()),
+                            .line_()
+                            .append(allocator.nil().flat_alt(allocator.text(", "))),
+                    ),
                 )
-                .group()
-                .enclose(allocator.softline(), allocator.softline())
-                .braces(),
+                .nest(2)
+                .append(allocator.line())
+                .braces()
+                .group(),
         }
     }
 }

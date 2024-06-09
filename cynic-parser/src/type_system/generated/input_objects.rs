@@ -18,7 +18,7 @@ pub struct InputObjectDefinitionRecord {
 }
 
 #[derive(Clone, Copy)]
-pub struct InputObjectDefinition<'a>(ReadContext<'a, InputObjectDefinitionId>);
+pub struct InputObjectDefinition<'a>(pub(in super::super) ReadContext<'a, InputObjectDefinitionId>);
 
 impl<'a> InputObjectDefinition<'a> {
     pub fn name(&self) -> &'a str {
@@ -43,6 +43,12 @@ impl<'a> InputObjectDefinition<'a> {
     pub fn span(&self) -> Span {
         let document = self.0.document;
         document.lookup(self.0.id).span
+    }
+}
+
+impl InputObjectDefinition<'_> {
+    pub fn id(&self) -> InputObjectDefinitionId {
+        self.0.id
     }
 }
 

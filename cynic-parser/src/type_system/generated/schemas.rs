@@ -15,7 +15,7 @@ pub struct SchemaDefinitionRecord {
 }
 
 #[derive(Clone, Copy)]
-pub struct SchemaDefinition<'a>(ReadContext<'a, SchemaDefinitionId>);
+pub struct SchemaDefinition<'a>(pub(in super::super) ReadContext<'a, SchemaDefinitionId>);
 
 impl<'a> SchemaDefinition<'a> {
     pub fn description(&self) -> Option<StringLiteral<'a>> {
@@ -32,6 +32,12 @@ impl<'a> SchemaDefinition<'a> {
     pub fn root_operations(&self) -> Iter<'a, RootOperationTypeDefinition<'a>> {
         let document = self.0.document;
         super::Iter::new(document.lookup(self.0.id).root_operations, document)
+    }
+}
+
+impl SchemaDefinition<'_> {
+    pub fn id(&self) -> SchemaDefinitionId {
+        self.0.id
     }
 }
 
@@ -65,7 +71,9 @@ pub struct RootOperationTypeDefinitionRecord {
 }
 
 #[derive(Clone, Copy)]
-pub struct RootOperationTypeDefinition<'a>(ReadContext<'a, RootOperationTypeDefinitionId>);
+pub struct RootOperationTypeDefinition<'a>(
+    pub(in super::super) ReadContext<'a, RootOperationTypeDefinitionId>,
+);
 
 impl<'a> RootOperationTypeDefinition<'a> {
     pub fn operation_type(&self) -> OperationType {
@@ -75,6 +83,12 @@ impl<'a> RootOperationTypeDefinition<'a> {
     pub fn named_type(&self) -> &'a str {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).named_type)
+    }
+}
+
+impl RootOperationTypeDefinition<'_> {
+    pub fn id(&self) -> RootOperationTypeDefinitionId {
+        self.0.id
     }
 }
 

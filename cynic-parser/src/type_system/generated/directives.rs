@@ -21,7 +21,7 @@ pub struct DirectiveDefinitionRecord {
 }
 
 #[derive(Clone, Copy)]
-pub struct DirectiveDefinition<'a>(ReadContext<'a, DirectiveDefinitionId>);
+pub struct DirectiveDefinition<'a>(pub(in super::super) ReadContext<'a, DirectiveDefinitionId>);
 
 impl<'a> DirectiveDefinition<'a> {
     pub fn name(&self) -> &'a str {
@@ -50,6 +50,12 @@ impl<'a> DirectiveDefinition<'a> {
     pub fn span(&self) -> Span {
         let document = self.0.document;
         document.lookup(self.0.id).span
+    }
+}
+
+impl DirectiveDefinition<'_> {
+    pub fn id(&self) -> DirectiveDefinitionId {
+        self.0.id
     }
 }
 
@@ -86,7 +92,7 @@ pub struct DirectiveRecord {
 }
 
 #[derive(Clone, Copy)]
-pub struct Directive<'a>(ReadContext<'a, DirectiveId>);
+pub struct Directive<'a>(pub(in super::super) ReadContext<'a, DirectiveId>);
 
 impl<'a> Directive<'a> {
     pub fn name(&self) -> &'a str {
@@ -96,6 +102,12 @@ impl<'a> Directive<'a> {
     pub fn arguments(&self) -> Iter<'a, Argument<'a>> {
         let document = self.0.document;
         super::Iter::new(document.lookup(self.0.id).arguments, document)
+    }
+}
+
+impl Directive<'_> {
+    pub fn id(&self) -> DirectiveId {
+        self.0.id
     }
 }
 

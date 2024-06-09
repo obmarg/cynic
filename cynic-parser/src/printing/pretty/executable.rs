@@ -3,13 +3,12 @@ use pretty::{DocAllocator, Pretty};
 use crate::common::OperationType;
 
 use crate::executable::*;
-
-use super::escape_string;
+use crate::printing::escape_string;
 
 type Allocator<'a> = pretty::Arena<'a>;
 
 impl crate::ExecutableDocument {
-    pub fn to_executable_string(&self) -> String {
+    pub fn to_string_pretty(&self) -> String {
         let allocator = pretty::Arena::new();
 
         let use_short_form = {

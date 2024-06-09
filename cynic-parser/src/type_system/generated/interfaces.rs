@@ -19,7 +19,7 @@ pub struct InterfaceDefinitionRecord {
 }
 
 #[derive(Clone, Copy)]
-pub struct InterfaceDefinition<'a>(ReadContext<'a, InterfaceDefinitionId>);
+pub struct InterfaceDefinition<'a>(pub(in super::super) ReadContext<'a, InterfaceDefinitionId>);
 
 impl<'a> InterfaceDefinition<'a> {
     pub fn name(&self) -> &'a str {
@@ -52,6 +52,12 @@ impl<'a> InterfaceDefinition<'a> {
     pub fn span(&self) -> Span {
         let document = self.0.document;
         document.lookup(self.0.id).span
+    }
+}
+
+impl InterfaceDefinition<'_> {
+    pub fn id(&self) -> InterfaceDefinitionId {
+        self.0.id
     }
 }
 

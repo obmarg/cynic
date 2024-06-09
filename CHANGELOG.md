@@ -8,6 +8,19 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v3.7.3 - 2024-06-04
+
+### Changes
+
+- update Cargo.toml dependencies
+- update rust crate trycmd to 0.15 ([#971](https://github.com/obmarg/cynic/pull/971))
+
+## v3.7.2 - 2024-05-22
+
+### Changes
+
+- Pulled in the latest cynic-parser, this should have no user facing impact.
+
 ## v3.7.1 - 2024-05-14
 
 ### Bug Fixes
