@@ -1032,7 +1032,7 @@ dependencies = [
 
 [[package]]
 name = "cynic"
-version = "3.7.4"
+version = "3.7.3"
 dependencies = [
  "assert_matches",
  "chrono",
@@ -1055,7 +1055,7 @@ dependencies = [
 
 [[package]]
 name = "cynic-cli"
-version = "3.7.4"
+version = "3.7.3"
 dependencies = [
  "clap",
  "colored",
@@ -1069,7 +1069,7 @@ dependencies = [
 
 [[package]]
 name = "cynic-codegen"
-version = "3.7.4"
+version = "3.7.3"
 dependencies = [
  "assert_matches",
  "counter",
@@ -1106,7 +1106,7 @@ dependencies = [
 
 [[package]]
 name = "cynic-introspection"
-version = "3.7.4"
+version = "3.7.3"
 dependencies = [
  "assert_matches",
  "cynic",
@@ -1139,7 +1139,7 @@ dependencies = [
 
 [[package]]
 name = "cynic-proc-macros"
-version = "3.7.4"
+version = "3.7.3"
 dependencies = [
  "cynic-codegen",
  "darling",
@@ -1149,7 +1149,7 @@ dependencies = [
 
 [[package]]
 name = "cynic-querygen"
-version = "3.7.4"
+version = "3.7.3"
 dependencies = [
  "Inflector",
  "assert_matches",
