@@ -11,7 +11,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## v0.4.4 - 2024-06-10
 
-### Bug Fixes
+### New Features
 
 - impl Ord for parser id types ([#981](https://github.com/obmarg/cynic/pull/981))
 
