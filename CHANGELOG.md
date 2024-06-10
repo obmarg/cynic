@@ -8,6 +8,12 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v3.7.4 - 2024-06-10
+
+### Changes
+
+- update Cargo.lock dependencies
+
 ## v3.7.3 - 2024-06-04
 
 ### Changes
