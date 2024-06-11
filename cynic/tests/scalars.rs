@@ -1,3 +1,5 @@
+use serde::{de::DeserializeOwned, Deserialize, Serialize};
+
 mod schema {
     cynic::use_schema!("tests/test-schema.graphql");
 }
@@ -9,23 +11,30 @@ pub struct DateTime(pub chrono::DateTime<chrono::Utc>);
 // Make sure we can impl_scalar for third party types.
 cynic::impl_scalar!(chrono::DateTime<chrono::Utc>, schema::DateTime);
 
-#[derive(cynic::Scalar)]
-#[cynic(graphql_type = "DateTime")]
-pub struct DateTimeInner<DT>(pub DT);
+// TODO: Reinstate this...
+// #[derive(cynic::Scalar)]
+// #[cynic(graphql_type = "DateTime")]
+// pub struct DateTimeInner<DT>(pub DT);
 
 // Make sure we can use impl scalar on built in types
+#[derive(serde::Serialize, serde::Deserialize)]
 pub struct MyString(String);
+
 cynic::impl_scalar!(MyString, schema::String);
 
+#[derive(serde::Serialize, serde::Deserialize)]
 pub struct MyInt(i64);
 cynic::impl_scalar!(MyInt, schema::Int);
 
+#[derive(serde::Serialize, serde::Deserialize)]
 pub struct MyFloat(f64);
 cynic::impl_scalar!(MyFloat, schema::Float);
 
+#[derive(serde::Serialize, serde::Deserialize)]
 pub struct MyBool(bool);
 cynic::impl_scalar!(MyBool, schema::Boolean);
 
+#[derive(serde::Serialize, serde::Deserialize)]
 pub struct MyId(cynic::Id);
 cynic::impl_scalar!(MyId, schema::ID);
 

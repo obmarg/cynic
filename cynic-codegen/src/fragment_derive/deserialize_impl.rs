@@ -1,6 +1,10 @@
 use proc_macro2::TokenStream;
 use quote::quote_spanned;
 
+use crate::schema::{types::OutputType, Schema, Unvalidated};
+
+use super::FieldKind;
+
 use {
     super::FragmentDeriveField,
     crate::{generics_for_serde, schema::types as schema},
@@ -28,6 +32,8 @@ struct Field {
     ty: syn::Type,
     field_variant_name: proc_macro2::Ident,
     serialized_name: Option<String>,
+    inner_kind: Option<FieldKind>,
+    field_marker: syn::Path,
     is_spread: bool,
     is_flattened: bool,
     is_recurse: bool,
@@ -36,16 +42,20 @@ struct Field {
 
 impl<'a> DeserializeImpl<'a> {
     pub fn new(
+        schema: &Schema<'_, Unvalidated>,
         fields: &[(FragmentDeriveField, Option<schema::Field<'_>>)],
         name: &'a syn::Ident,
         generics: &'a syn::Generics,
+        field_module_path: &syn::Path,
     ) -> Self {
         let spreading = fields.iter().any(|f| *f.0.spread);
 
         let target_struct = name;
         let fields = fields
             .iter()
-            .map(|(field, schema_field)| process_field(field, schema_field.as_ref()))
+            .map(|(field, schema_field)| {
+                process_field(schema, field, schema_field.as_ref(), field_module_path)
+            })
             .collect();
 
         match spreading {
@@ -96,15 +106,23 @@ impl quote::ToTokens for StandardDeserializeImpl<'_> {
         let field_names = self.fields.iter().map(|f| &f.rust_name).collect::<Vec<_>>();
         let field_decodes = self.fields.iter().map(|f| {
             let field_name = &f.rust_name;
+            let field_marker = &f.field_marker;
             let ty = &f.ty;
+            let mut ty = quote! { #ty };
+            let mut trailer = quote! {};
+
+            if matches!(f.inner_kind, Some(FieldKind::Scalar)) {
+                ty = quote! { cynic::__private::ScalarDeserialize<#ty, <#field_marker as cynic::schema::Field>::Type> };
+                trailer.append_all(quote! { .into_inner() });
+            }
+
             if f.is_flattened {
-                quote! {
-                    #field_name = Some(__map.next_value::<cynic::__private::Flattened<#ty>>()?.into_inner());
-                }
-            } else {
-                quote! {
-                    #field_name = Some(__map.next_value()?);
-                }
+                ty = quote! { cynic::__private::Flattened<#ty> };
+                trailer.append_all(quote! { .into_inner() });
+            }
+
+            quote! {
+                #field_name = Some(__map.next_value::<#ty>()? #trailer);
             }
         });
 
@@ -267,10 +285,22 @@ impl quote::ToTokens for SpreadingDeserializeImpl<'_> {
     }
 }
 
-fn process_field(field: &FragmentDeriveField, schema_field: Option<&schema::Field<'_>>) -> Field {
+fn process_field(
+    schema: &Schema<'_, Unvalidated>,
+    field: &FragmentDeriveField,
+    schema_field: Option<&schema::Field<'_>>,
+    field_module_path: &syn::Path,
+) -> Field {
     // Should be ok to unwrap since we only accept struct style input
     let rust_name = field.ident.as_ref().unwrap();
     let field_variant_name = rust_name.clone();
+    let schema_type = schema_field.map(|field| field.field_type.inner_type(schema));
+    let inner_kind = schema_type.as_ref().map(|ty| ty.as_kind());
+
+    let field_marker = match schema_field {
+        Some(field) => field.marker_ident().to_path(field_module_path),
+        None => syn::parse_quote!(String),
+    };
 
     Field {
         field_variant_name,
@@ -283,5 +313,7 @@ fn process_field(field: &FragmentDeriveField, schema_field: Option<&schema::Fiel
         is_flattened: *field.flatten,
         is_recurse: field.recurse.is_some(),
         is_feature_flagged: field.feature.is_some(),
+        inner_kind,
+        field_marker,
     }
 }
