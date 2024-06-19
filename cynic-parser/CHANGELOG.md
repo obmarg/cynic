@@ -13,7 +13,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### New Features
 
-- add IdIter to cynic-parser ([#984](https://github.com/obmarg/cynic/pull/984))
+- Add `Iter::with_ids` for iterating over readers and their corresponding `Id`s 
+  ([#984](https://github.com/obmarg/cynic/pull/984))
 
 ## v0.4.4 - 2024-06-10
 
