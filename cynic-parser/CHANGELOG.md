@@ -9,6 +9,12 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.4.5 - 2024-06-19
+
+### New Features
+
+- add IdIter to cynic-parser ([#984](https://github.com/obmarg/cynic/pull/984))
+
 ## v0.4.4 - 2024-06-10
 
 ### New Features
