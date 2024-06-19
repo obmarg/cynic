@@ -18,18 +18,6 @@ mod prelude {
         },
         AstLookup, Span,
     };
-
-    pub(super) mod value {
-        pub use crate::type_system::Value;
-    }
-
-    pub(super) mod types {
-        pub use super::super::super::Type;
-    }
-
-    pub(super) mod strings {
-        pub use super::super::super::StringLiteral;
-    }
 }
 
 pub(super) mod value {
