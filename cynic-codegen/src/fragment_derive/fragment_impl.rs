@@ -16,6 +16,7 @@ use crate::{
 
 use super::{
     arguments::{arguments_from_field_attrs, process_arguments},
+    directives::{process_directive, AnalysedFieldDirective},
     fragment_derive_type::FragmentDeriveType,
 };
 
@@ -38,6 +39,7 @@ enum Selection<'a> {
 
 struct FieldSelection<'a> {
     rust_field_type: syn::Type,
+    schema_module_path: &'a syn::Path,
     field_marker_type_path: syn::Path,
     graphql_field_kind: FieldKind,
     graphql_field: &'a Field<'a>,
@@ -47,6 +49,7 @@ struct FieldSelection<'a> {
     recurse_limit: Option<u8>,
     span: proc_macro2::Span,
     requires_feature: Option<String>,
+    directives: Vec<AnalysedFieldDirective<'a>>,
 }
 
 struct SpreadSelection {
@@ -70,7 +73,7 @@ impl<'schema, 'a: 'schema> FragmentImpl<'schema, 'a> {
         name: &'a syn::Ident,
         generics: &'a syn::Generics,
         schema_type: &FragmentDeriveType<'schema>,
-        schema_module_path: &syn::Path,
+        schema_module_path: &'a syn::Path,
         graphql_type_name: &str,
         variables: Option<&syn::Path>,
     ) -> Result<Self, Errors> {
@@ -120,22 +123,23 @@ fn process_field<'a>(
     field: &FragmentDeriveField,
     schema_field: Option<&'a Field<'a>>,
     field_module_path: &syn::Path,
-    schema_module_path: &syn::Path,
+    schema_module_path: &'a syn::Path,
     variables_fields: Option<&syn::Path>,
 ) -> Result<Selection<'a>, Errors> {
+    let ty = &field.raw_field.ty;
     if field.type_check_mode() == CheckMode::Spreading {
-        check_spread_type(&field.ty)?;
+        check_spread_type(ty)?;
 
         return Ok(Selection::Spread(SpreadSelection {
-            rust_field_type: field.ty.clone(),
-            span: field.ty.span(),
+            rust_field_type: ty.clone(),
+            span: ty.span(),
         }));
     }
 
     let schema_field = schema_field.expect("only spread fields should have schema_field == None");
 
-    let (arguments, argument_span) =
-        arguments_from_field_attrs(&field.attrs)?.unwrap_or_else(|| (vec![], Span::call_site()));
+    let (arguments, argument_span) = arguments_from_field_attrs(&field.raw_field.attrs)?
+        .unwrap_or_else(|| (vec![], Span::call_site()));
 
     let arguments = process_arguments(
         schema,
@@ -146,24 +150,41 @@ fn process_field<'a>(
         argument_span,
     )?;
 
-    check_types_are_compatible(&schema_field.field_type, &field.ty, field.type_check_mode())?;
+    let mut directives = vec![];
+    for directive in &field.directives {
+        directives.push(process_directive(
+            schema,
+            directive.clone(),
+            variables_fields,
+            argument_span,
+        )?);
+    }
+
+    check_types_are_compatible(
+        &schema_field.field_type,
+        &field.raw_field.ty,
+        field.type_check_mode(),
+    )?;
 
     let field_marker_type_path = schema_field.marker_ident().to_path(field_module_path);
 
     Ok(Selection::Field(FieldSelection {
-        rust_field_type: field.ty.clone(),
+        rust_field_type: field.raw_field.ty.clone(),
         arguments,
+        schema_module_path,
         field_marker_type_path,
         graphql_field: schema_field,
-        recurse_limit: field.recurse.as_ref().map(|f| **f),
-        span: field.ty.span(),
+        recurse_limit: field.raw_field.recurse.as_ref().map(|f| **f),
+        span: ty.span(),
         alias: field.alias(),
         graphql_field_kind: schema_field.field_type.inner_type(schema).as_kind(),
-        flatten: *field.flatten,
+        flatten: *field.raw_field.flatten,
         requires_feature: field
+            .raw_field
             .feature
             .as_ref()
             .map(|feature| feature.as_ref().clone()),
+        directives,
     }))
 }
 
@@ -235,6 +256,15 @@ impl quote::ToTokens for FieldSelection<'_> {
             }
         });
 
+        let directives = self
+            .directives
+            .iter()
+            .map(|analysed| super::directives::Output {
+                analysed,
+                schema_module: self.schema_module_path,
+            })
+            .collect::<Vec<_>>();
+
         let selection_mode = match (&self.graphql_field_kind, self.flatten, self.recurse_limit) {
             (FieldKind::Enum | FieldKind::Scalar, true, _) => SelectionMode::FlattenLeaf,
             (FieldKind::Enum | FieldKind::Scalar, false, _) => SelectionMode::Leaf,
@@ -286,6 +316,7 @@ impl quote::ToTokens for FieldSelection<'_> {
 
                     #alias
                     #arguments
+                    #(#directives)*
 
                     <#aligned_type as cynic::QueryFragment>::query(
                         field_builder.select_children()
@@ -303,6 +334,7 @@ impl quote::ToTokens for FieldSelection<'_> {
 
                     #alias
                     #arguments
+                    #(#directives)*
 
                     <#aligned_type as cynic::QueryFragment>::query(
                         field_builder.select_children()
@@ -320,6 +352,7 @@ impl quote::ToTokens for FieldSelection<'_> {
 
                     #alias
                     #arguments
+                    #(#directives)*
                 }
             }
             SelectionMode::Recurse(limit) => {
@@ -332,6 +365,7 @@ impl quote::ToTokens for FieldSelection<'_> {
                     {
                         #alias
                         #arguments
+                        #(#directives)*
 
                         <#aligned_type as cynic::QueryFragment>::query(
                             field_builder.select_children()
@@ -349,6 +383,7 @@ impl quote::ToTokens for FieldSelection<'_> {
 
                     #alias
                     #arguments
+                    #(#directives)*
                 }
             }
         };

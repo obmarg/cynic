@@ -16,6 +16,7 @@ rust-version = { workspace = true }
 [features]
 default = []
 rkyv = ["cynic-codegen/rkyv"]
+directives = []
 
 [lib]
 proc-macro = true

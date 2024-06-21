@@ -1,4 +1,5 @@
 use proc_macro2::Span;
+use syn::spanned::Spanned;
 
 use {
     super::parsing::{parse_rust_type, RustType},
@@ -11,6 +12,7 @@ pub enum CheckMode {
     Flattening,
     Recursing,
     Spreading,
+    Skippable,
 }
 
 pub fn check_types_are_compatible(
@@ -18,11 +20,21 @@ pub fn check_types_are_compatible(
     rust_type: &syn::Type,
     mode: CheckMode,
 ) -> Result<(), syn::Error> {
-    let rust_type = parse_rust_type(rust_type);
+    let parsed_rust_type = parse_rust_type(rust_type);
     match mode {
-        CheckMode::Flattening => output_type_check(gql_type, &rust_type, true)?,
-        CheckMode::OutputTypes => output_type_check(gql_type, &rust_type, false)?,
-        CheckMode::Recursing => recursing_check(gql_type, &rust_type)?,
+        CheckMode::Flattening => output_type_check(gql_type, &parsed_rust_type, true)?,
+        CheckMode::OutputTypes => output_type_check(gql_type, &parsed_rust_type, false)?,
+        CheckMode::Recursing => recursing_check(gql_type, &parsed_rust_type)?,
+        CheckMode::Skippable => {
+            if !outer_type_is_option(rust_type) {
+                return Err(TypeValidationError::SkippableFieldWithoutError {
+                    provided_type: rust_type.to_string(),
+                    span: rust_type.span(),
+                }
+                .into());
+            }
+            output_type_check(gql_type, &parsed_rust_type, false)?;
+        }
         CheckMode::Spreading => {
             panic!("check_types_are_compatible shouldn't be called with CheckMode::Spreading")
         }
@@ -231,6 +243,7 @@ enum TypeValidationError {
     RecursiveFieldWithoutOption { provided_type: String, span: Span },
     SpreadOnOption { span: Span },
     SpreadOnVec { span: Span },
+    SkippableFieldWithoutError { provided_type: String, span: Span },
 }
 
 impl From<TypeValidationError> for syn::Error {
@@ -255,6 +268,7 @@ impl From<TypeValidationError> for syn::Error {
             }
             TypeValidationError::SpreadOnOption { .. } => "You can't spread on an optional field".to_string(),
             TypeValidationError::SpreadOnVec { .. } => "You can't spread on a list field".to_string(),
+            TypeValidationError::SkippableFieldWithoutError { provided_type,.. } => format!("This field has @skip or @include on it so it must be optional.  Did you mean Option<{provided_type}>"),
         };
 
         syn::Error::new(span, message)
@@ -278,6 +292,7 @@ impl TypeValidationError {
             TypeValidationError::RecursiveFieldWithoutOption { span, .. } => *span,
             TypeValidationError::SpreadOnOption { span } => *span,
             TypeValidationError::SpreadOnVec { span } => *span,
+            TypeValidationError::SkippableFieldWithoutError { span, .. } => *span,
         }
     }
 }

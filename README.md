@@ -60,12 +60,8 @@ supported:
 - Interfaces & union types
 - Introspection via [`cynic-cli`][6] or [`cynic-introspection`][7]
 - GraphQL Subscriptions via [`graphql-ws-client`][8].
-
-The following features are not currently supported, but may be one day.
-
-- Directives
-- Potentially other things (please open an issue if you find anything obviously
-  missing)
+- Field directives (`@skip`, `@include` and any custom directives that don't
+  require client support)
 
 ### Documentation
 
