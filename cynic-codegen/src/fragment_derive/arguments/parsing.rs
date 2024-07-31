@@ -34,6 +34,12 @@ impl Parse for CynicArguments {
     }
 }
 
+impl CynicArguments {
+    pub fn into_inner(self) -> Vec<FieldArgument> {
+        self.arguments.into_iter().collect()
+    }
+}
+
 #[derive(Debug, Clone)]
 pub struct FieldArgument {
     pub argument_name: Ident,
@@ -79,7 +85,7 @@ pub enum ArgumentLiteral {
 }
 
 impl ArgumentLiteral {
-    pub(super) fn span(&self) -> Span {
+    pub fn span(&self) -> Span {
         match self {
             ArgumentLiteral::Literal(lit) => lit.span(),
             ArgumentLiteral::Enum(ident) => ident.span(),

@@ -23,6 +23,7 @@ pub struct FieldSelection {
     pub(super) name: &'static str,
     pub(super) alias: Option<Cow<'static, str>>,
     pub(super) arguments: Vec<Argument>,
+    pub(super) directives: Vec<Directive>,
     pub(super) children: SelectionSet,
 }
 
@@ -75,6 +76,13 @@ pub enum InputLiteral {
     EnumValue(&'static str),
 }
 
+#[derive(Debug, PartialEq)]
+/// A directive
+pub struct Directive {
+    pub(super) name: Cow<'static, str>,
+    pub(super) arguments: Vec<Argument>,
+}
+
 #[derive(Debug, Default)]
 /// An inline fragment that selects fields from one possible type
 pub struct InlineFragment {
@@ -89,6 +97,7 @@ impl FieldSelection {
             name,
             alias: None,
             arguments: Vec::new(),
+            directives: Vec::new(),
             children: SelectionSet::default(),
         }
     }
@@ -129,6 +138,22 @@ impl std::fmt::Display for Selection {
                     }
                     write!(f, ")")?;
                 }
+
+                for Directive { name, arguments } in &field_selection.directives {
+                    write!(f, " @{name}")?;
+                    if !arguments.is_empty() {
+                        write!(f, "(")?;
+                        let mut first = true;
+                        for arg in arguments {
+                            if !first {
+                                write!(f, ", ")?;
+                            }
+                            first = false;
+                            write!(f, "{}", arg)?;
+                        }
+                        write!(f, ")")?;
+                    }
+                }
                 write!(f, "{}", field_selection.children)
             }
             Selection::InlineFragment(inline_fragment) => {
@@ -165,15 +190,23 @@ impl std::fmt::Display for InputLiteral {
             InputLiteral::Id(val) => write!(f, "\"{}\"", val),
             InputLiteral::Object(fields) => {
                 write!(f, "{{")?;
-                for field in fields {
-                    write!(f, "{}: {}, ", field.name, field.value)?;
+                let mut field_iter = fields.iter().peekable();
+                while let Some(field) = field_iter.next() {
+                    write!(f, "{}: {}", field.name, field.value)?;
+                    if field_iter.peek().is_some() {
+                        write!(f, ", ")?;
+                    }
                 }
                 write!(f, "}}")
             }
             InputLiteral::List(vals) => {
                 write!(f, "[")?;
-                for val in vals {
-                    write!(f, "{}, ", val)?;
+                let mut value_iter = vals.iter().peekable();
+                while let Some(val) = value_iter.next() {
+                    write!(f, "{}", val)?;
+                    if value_iter.peek().is_some() {
+                        write!(f, ", ")?;
+                    }
                 }
                 write!(f, "]")
             }

@@ -211,6 +211,29 @@ impl<'a, Field, FieldSchemaType, VariablesFields>
         }
     }
 
+    /// Adds an argument to this field.
+    ///
+    /// Accepts `ArgumentName` - the schema marker struct for the argument you
+    /// wish to add.
+    pub fn directive<DirectiveMarker>(
+        &'_ mut self,
+    ) -> DirectiveBuilder<'_, DirectiveMarker, VariablesFields>
+    where
+        DirectiveMarker: schema::FieldDirective,
+    {
+        self.field.directives.push(Directive {
+            name: Cow::Borrowed(DirectiveMarker::NAME),
+            arguments: vec![],
+        });
+        let directive = self.field.directives.last_mut().unwrap();
+
+        DirectiveBuilder {
+            arguments: &mut directive.arguments,
+            context: self.context,
+            phantom: PhantomData,
+        }
+    }
+
     /// Returns a SelectionBuilder that can be used to select fields
     /// within this field.
     pub fn select_children<InnerVariables>(
@@ -425,6 +448,34 @@ impl<'a> InputLiteralContainer<'a> {
 
                 arguments.last_mut().unwrap()
             }
+        }
+    }
+}
+
+pub struct DirectiveBuilder<'a, DirectiveMarker, VariablesFields> {
+    arguments: &'a mut Vec<Argument>,
+    context: BuilderContext<'a>,
+    phantom: PhantomData<fn() -> (DirectiveMarker, VariablesFields)>,
+}
+
+impl<'a, DirectiveMarker, VariablesFields> DirectiveBuilder<'a, DirectiveMarker, VariablesFields> {
+    /// Adds an argument to this directive.
+    ///
+    /// Accepts `ArgumentName` - the schema marker struct for the argument you
+    /// wish to add.
+    pub fn argument<ArgumentName>(
+        &'_ mut self,
+    ) -> InputBuilder<'_, DirectiveMarker::ArgumentType, VariablesFields>
+    where
+        DirectiveMarker: schema::HasArgument<ArgumentName>,
+    {
+        InputBuilder {
+            destination: InputLiteralContainer::object(
+                <DirectiveMarker as schema::HasArgument<ArgumentName>>::NAME,
+                self.arguments,
+            ),
+            context: self.context,
+            phantom: PhantomData,
         }
     }
 }
