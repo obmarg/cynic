@@ -40,7 +40,7 @@ cynic-parser = { path = ".", features = ["pretty", "report"] }
 
 # Benchmark bits & bobs
 async-graphql-parser = "7"
-apollo-parser = "0.7"
+apollo-parser = "0.8"
 divan = "0.1"
 graphql-parser = "0.4"
 
