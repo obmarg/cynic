@@ -1,5 +1,6 @@
 use std::str::FromStr;
 
+use gxhash::GxBuildHasher;
 use indexmap::IndexSet;
 
 pub mod ids;
@@ -36,7 +37,7 @@ use self::{ids::*, storage::DefinitionRecord};
 
 #[derive(Default)]
 pub struct TypeSystemDocument {
-    strings: IndexSet<Box<str>>,
+    strings: IndexSet<Box<str>, GxBuildHasher>,
     block_strings: Vec<Box<str>>,
 
     definitions: Vec<storage::DefinitionRecord>,

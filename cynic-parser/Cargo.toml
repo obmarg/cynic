@@ -24,6 +24,7 @@ print = []
 report = ["ariadne"]
 
 [dependencies]
+gxhash = "3"
 indexmap = "2"
 lalrpop-util = "0.20.0"
 logos = "0.14"

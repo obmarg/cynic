@@ -1,3 +1,4 @@
+use gxhash::GxBuildHasher;
 use indexmap::IndexSet;
 
 pub mod ids;
@@ -29,7 +30,7 @@ use self::{ids::ExecutableDefinitionId, iter::Iter};
 
 #[derive(Default)]
 pub struct ExecutableDocument {
-    strings: IndexSet<Box<str>>,
+    strings: IndexSet<Box<str>, GxBuildHasher>,
     block_strings: Vec<Box<str>>,
 
     definitions: Vec<storage::ExecutableDefinitionRecord>,
