@@ -92,7 +92,7 @@ impl<'de> cynic::serde::Deserialize<'de> for MyQuery {
                                     "filteredPosts",
                                 ));
                             }
-                            filteredPosts = Some(__map.next_value()?);
+                            filteredPosts = Some(__map.next_value::<Vec<BlogPostOutput>>()?);
                         }
                         __FragmentDeriveField::__Other => {
                             __map.next_value::<cynic::serde::de::IgnoredAny>()?;
