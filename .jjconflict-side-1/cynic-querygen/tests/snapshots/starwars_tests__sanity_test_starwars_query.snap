@@ -1,0 +1,23 @@
+---
+source: cynic-querygen/tests/starwars-tests.rs
+expression: "document_to_fragment_structs(query, schema,\n        &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
+---
+#[derive(cynic::QueryVariables, Debug)]
+pub struct SanityCheckQueryVariables<'a> {
+    pub film_id: Option<&'a cynic::Id>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(graphql_type = "Root", variables = "SanityCheckQueryVariables")]
+pub struct SanityCheckQuery {
+    #[arguments(id: $film_id)]
+    pub film: Option<Film>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+pub struct Film {
+    pub title: Option<String>,
+    pub director: Option<String>,
+}
+
+

@@ -1,0 +1,15 @@
+# Careful with this file - VSCode keeps on prettiering it for me
+# and wiping the stuff I want to test.
+
+"hello \"you\"\n\t\tdo you like my escapes\u2620"
+input Thing {
+  field: String = "hello \"you\"\n\t\tdo you like my escapes\u2620"
+}
+
+"""
+I am a thing that doesn't need escaped \t\n
+\"""
+"""
+input Thing {
+  field: String = "hello \"you\"\n\t\tdo you like my escapes\u2620"
+}

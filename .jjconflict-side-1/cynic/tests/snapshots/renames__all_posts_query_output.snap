@@ -1,0 +1,26 @@
+---
+source: cynic/tests/renames.rs
+expression: operation.query
+---
+query AllPostsQuery {
+  allPosts {
+    hasMetadata
+    metadata {
+      _
+    }
+  }
+  allData {
+    __typename
+    ... on BlogPost {
+      hasMetadata
+      metadata {
+        _
+      }
+    }
+    ... on Author {
+      name
+    }
+  }
+}
+
+

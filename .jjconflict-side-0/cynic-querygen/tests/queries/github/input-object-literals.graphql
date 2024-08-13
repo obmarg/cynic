@@ -1,0 +1,9 @@
+query PullRequestTitles {
+  repository(name: "cynic", owner: "obmarg") {
+    pullRequests(orderBy: { field: CREATED_AT, direction: ASC }) {
+      nodes {
+        title
+      }
+    }
+  }
+}

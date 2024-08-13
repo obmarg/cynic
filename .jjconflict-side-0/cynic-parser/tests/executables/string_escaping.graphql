@@ -1,0 +1,5 @@
+# Careful with this file - VSCode keeps on prettiering it for me
+# and wiping the stuff I want to test.
+{
+  node(id: "hello \"you\"\n\t\tdo you like my escapes\u2620")
+}

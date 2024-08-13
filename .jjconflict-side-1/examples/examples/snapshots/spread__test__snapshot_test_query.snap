@@ -1,0 +1,20 @@
+---
+source: examples/examples/spread.rs
+expression: query.query
+---
+query FilmDirectorQuery($id: ID) {
+  film(id: $id) {
+    id
+    __typename
+    ... {
+      title
+      director
+    }
+    ... {
+      releaseDate
+    }
+    producers
+  }
+}
+
+

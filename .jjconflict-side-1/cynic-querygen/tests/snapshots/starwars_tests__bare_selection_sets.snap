@@ -1,0 +1,22 @@
+---
+source: cynic-querygen/tests/starwars-tests.rs
+expression: "document_to_fragment_structs(query, schema,\n        &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
+---
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(graphql_type = "Root")]
+pub struct UnnamedQuery {
+    pub all_films: Option<FilmsConnection>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+pub struct FilmsConnection {
+    pub films: Option<Vec<Option<Film>>>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+pub struct Film {
+    pub id: cynic::Id,
+    pub title: Option<String>,
+}
+
+

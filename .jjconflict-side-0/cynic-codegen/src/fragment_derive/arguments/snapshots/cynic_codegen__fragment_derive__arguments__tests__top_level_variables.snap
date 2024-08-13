@@ -1,0 +1,76 @@
+---
+source: cynic-codegen/src/fragment_derive/arguments/tests.rs
+expression: "analyse(&schema, literals, field, Some(&format_ident!(\"MyArguments\").into()),\n        Span::call_site()).map(|o| o.arguments)"
+---
+Ok(
+    [
+        Field {
+            schema_field: InputValue {
+                name: FieldName {
+                    graphql_name: "filters",
+                },
+                value_type: NamedInputType(
+                    "BookFilters",
+                ),
+                has_default: false,
+            },
+            value: Variable(
+                Variable {
+                    ident: Ident(
+                        aVaraible,
+                    ),
+                    value_type: NamedInputType(
+                        "BookFilters",
+                    ),
+                    variables_fields_struct: Path {
+                        leading_colon: None,
+                        segments: [
+                            PathSegment {
+                                ident: Ident(
+                                    MyArguments,
+                                ),
+                                arguments: PathArguments::None,
+                            },
+                        ],
+                    },
+                },
+            ),
+        },
+        Field {
+            schema_field: InputValue {
+                name: FieldName {
+                    graphql_name: "optionalFilters",
+                },
+                value_type: NullableType(
+                    NamedInputType(
+                        "BookFilters",
+                    ),
+                ),
+                has_default: false,
+            },
+            value: Variable(
+                Variable {
+                    ident: Ident(
+                        anotherVar,
+                    ),
+                    value_type: NullableType(
+                        NamedInputType(
+                            "BookFilters",
+                        ),
+                    ),
+                    variables_fields_struct: Path {
+                        leading_colon: None,
+                        segments: [
+                            PathSegment {
+                                ident: Ident(
+                                    MyArguments,
+                                ),
+                                arguments: PathArguments::None,
+                            },
+                        ],
+                    },
+                },
+            ),
+        },
+    ],
+)

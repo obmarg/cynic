@@ -1,0 +1,14 @@
+---
+source: examples/examples/github-mutation.rs
+expression: query.query
+---
+mutation CommentOnMutationSupportIssue($commentBody: String!) {
+  addComment(input: {body: $commentBody, subjectId: "MDU6SXNzdWU2ODU4NzUxMzQ=", clientMutationId: null}) {
+    commentEdge {
+      node {
+        id
+      }
+    }
+  }
+}
+

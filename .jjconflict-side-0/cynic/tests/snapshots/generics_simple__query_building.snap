@@ -1,0 +1,11 @@
+---
+source: cynic/tests/generics_simple.rs
+expression: operation.query
+---
+query TestQuery($aStr: String) {
+  testStruct {
+    fieldOne(x: 1, y: $aStr)
+  }
+}
+
+

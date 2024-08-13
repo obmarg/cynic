@@ -1,0 +1,6 @@
+query RecursiveInputQuery(
+  $input: SelfRecursiveInput
+  $input2: RecursiveInputParent
+) {
+  recursiveInputField(recursive: $input, recursive2: $input2)
+}

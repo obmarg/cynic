@@ -1,0 +1,45 @@
+[package]
+name = "cynic-codegen"
+description = "Procedural macro code generation for cynic - a code first GraphQL client for Rust"
+documentation = "https://docs.rs/cynic-codegen"
+
+authors = { workspace = true }
+edition = { workspace = true }
+homepage = { workspace = true }
+license = { workspace = true }
+repository = { workspace = true }
+version = { workspace = true }
+rust-version = { workspace = true }
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[features]
+default = ["rustfmt"]
+rustfmt = []
+rkyv = ["dep:rkyv"]
+
+[dependencies]
+cynic-parser.workspace = true
+darling.workspace = true
+once_cell = "1.9.0"
+ouroboros = "0.18"
+proc-macro2 = "1.0"
+quote = "1.0"
+strsim = "0.10.0"
+syn = { workspace = true , features = ["visit-mut"] }
+thiserror = "1"
+
+rkyv = { version = "0.7.41", features = ["validation"], optional = true }
+
+[dev-dependencies]
+assert_matches = "1.4.0"
+insta = "1.17"
+maplit = "1.0.2"
+rstest.workspace = true
+
+# Benchmarking
+divan = "0.1"
+
+[[bench]]
+name = "registration"
+harness = false

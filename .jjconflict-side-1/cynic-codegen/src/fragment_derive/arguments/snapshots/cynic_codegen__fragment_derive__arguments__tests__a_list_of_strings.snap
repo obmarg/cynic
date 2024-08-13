@@ -1,0 +1,85 @@
+---
+source: cynic-codegen/src/fragment_derive/arguments/tests.rs
+expression: "analyse(&schema, literals, field, Some(&format_ident!(\"MyArguments\").into()),\n        Span::call_site()).map(|o| o.arguments)"
+---
+Ok(
+    [
+        Field {
+            schema_field: InputValue {
+                name: FieldName {
+                    graphql_name: "filters",
+                },
+                value_type: NamedInputType(
+                    "BookFilters",
+                ),
+                has_default: false,
+            },
+            value: Object(
+                Object {
+                    schema_obj: InputObjectType {
+                        name: "BookFilters",
+                        fields: [
+                            InputValue {
+                                name: FieldName {
+                                    graphql_name: "authors",
+                                },
+                                value_type: NullableType(
+                                    ListType(
+                                        NamedInputType(
+                                            "String",
+                                        ),
+                                    ),
+                                ),
+                                has_default: false,
+                            },
+                            InputValue {
+                                name: FieldName {
+                                    graphql_name: "state",
+                                },
+                                value_type: NullableType(
+                                    NamedInputType(
+                                        "BookState",
+                                    ),
+                                ),
+                                has_default: false,
+                            },
+                        ],
+                    },
+                    fields: [
+                        Field {
+                            schema_field: InputValue {
+                                name: FieldName {
+                                    graphql_name: "authors",
+                                },
+                                value_type: NullableType(
+                                    ListType(
+                                        NamedInputType(
+                                            "String",
+                                        ),
+                                    ),
+                                ),
+                                has_default: false,
+                            },
+                            value: Some(
+                                List(
+                                    [
+                                        Literal(
+                                            Lit::Str {
+                                                token: "Charles Stross",
+                                            },
+                                        ),
+                                        Literal(
+                                            Lit::Str {
+                                                token: "Ann Leckie",
+                                            },
+                                        ),
+                                    ],
+                                ),
+                            ),
+                        },
+                    ],
+                },
+            ),
+        },
+    ],
+)

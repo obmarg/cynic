@@ -1,0 +1,19 @@
+query NestedArgsQuery(
+  $filmId: ID!
+  $planetCursor: String
+  $residentConnection: String
+) {
+  film(id: $filmId) {
+    title
+    director
+    planetConnection(after: $planetCursor) {
+      planets {
+        residentConnection(after: $residentConnection) {
+          residents {
+            name
+          }
+        }
+      }
+    }
+  }
+}

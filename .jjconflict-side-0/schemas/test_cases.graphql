@@ -1,0 +1,50 @@
+schema {
+  query: Foo
+}
+
+type Foo {
+  _: Boolean
+  self: Boolean
+  super: Boolean
+  crate: Boolean
+  async: Boolean
+  bar(id: UUID!): Bar
+
+  fieldWithKeywordArg(where: Int): [Int!]!
+
+  recursiveInputField(
+    recursive: SelfRecursiveInput
+    recursive2: RecursiveInputParent
+  ): Boolean
+
+  fieldWithStringArg(input: String!): Int
+}
+
+type Bar {
+  id: UUID!
+  name: String
+}
+
+scalar UUID
+
+enum States {
+  OPEN
+  CLOSED
+  DELETED
+}
+
+input SelfRecursiveInput {
+  recurse: SelfRecursiveInput
+}
+
+input RecursiveInputParent {
+  recurse: RecursiveInputChild
+}
+
+input RecursiveInputChild {
+  recurse: RecursiveInputParent
+}
+
+type FlattenableEnums {
+  states: [States]
+}

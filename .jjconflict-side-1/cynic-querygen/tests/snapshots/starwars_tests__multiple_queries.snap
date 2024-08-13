@@ -1,0 +1,86 @@
+---
+source: cynic-querygen/tests/starwars-tests.rs
+expression: "document_to_fragment_structs(query, schema,\n        &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
+---
+#[derive(cynic::QueryVariables, Debug)]
+pub struct SingleFilmVariables<'a> {
+    pub id: &'a cynic::Id,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(graphql_type = "Root", variables = "SingleFilmVariables")]
+pub struct SingleFilm {
+    #[arguments(id: $id)]
+    pub film: Option<Film>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(graphql_type = "Root")]
+pub struct StarshipsAndFilms {
+    pub all_starships: Option<StarshipsConnection>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+pub struct StarshipsConnection {
+    pub starships: Option<Vec<Option<Starship>>>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+pub struct Starship {
+    pub id: cynic::Id,
+    pub starship_class: Option<String>,
+    pub film_connection: Option<StarshipFilmsConnection>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+pub struct StarshipFilmsConnection {
+    pub films: Option<Vec<Option<Film>>>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(graphql_type = "Root")]
+pub struct PlanetsAndFilms {
+    pub all_planets: Option<PlanetsConnection>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(graphql_type = "Root")]
+pub struct AllFilms {
+    pub all_films: Option<FilmsConnection>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+pub struct PlanetsConnection {
+    pub planets: Option<Vec<Option<Planet>>>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+pub struct Planet {
+    pub film_connection: Option<PlanetFilmsConnection>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+pub struct PlanetFilmsConnection {
+    pub films: Option<Vec<Option<Film2>>>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+pub struct FilmsConnection {
+    pub films: Option<Vec<Option<Film>>>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(graphql_type = "Film")]
+pub struct Film2 {
+    pub id: cynic::Id,
+    pub title: Option<String>,
+    pub edited: Option<String>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+pub struct Film {
+    pub id: cynic::Id,
+    pub title: Option<String>,
+}
+
+

@@ -1,0 +1,6 @@
+{
+  node {
+    id
+    ...something
+  }
+}

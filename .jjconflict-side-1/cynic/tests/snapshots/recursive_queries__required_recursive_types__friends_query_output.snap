@@ -1,0 +1,13 @@
+---
+source: cynic/tests/recursive-queries.rs
+expression: operation.query
+---
+query FriendsQuery {
+  allAuthors {
+    me {
+      me
+    }
+  }
+}
+
+

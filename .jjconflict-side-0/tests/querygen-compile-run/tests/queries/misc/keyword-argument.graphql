@@ -1,0 +1,3 @@
+query KeywordArgumentQuery {
+  fieldWithKeywordArg(where: 10)
+}

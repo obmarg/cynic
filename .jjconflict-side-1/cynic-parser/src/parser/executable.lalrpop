@@ -1,0 +1,298 @@
+use crate::lexer;
+
+use crate::{
+    executable::{
+        storage::*, ids::*, writer::ExecutableAstWriter
+    },
+    common::{
+        OperationType, IdRange, WrappingType, TypeWrappers,
+        unquote_string, unquote_block_string, trim_block_string_whitespace
+    }
+};
+
+grammar<'input>(input: &'input str, ast: &mut ExecutableAstWriter);
+
+pub ExecutableDocument: () = {
+    <defs:ExecutableDefinition*> => {}
+}
+
+ExecutableDefinition: ExecutableDefinitionId = {
+    <def:OperationDefinition> => ast.operation_definition(def),
+    <def:FragmentDefinition> => ast.fragment_definition(def),
+}
+
+OperationDefinition: OperationDefinitionRecord = {
+    <operation_type:OperationType> <name:Name?> <variable_definitions:VariableDefinitions?> <directives:Directives> <selection_set:SelectionSet> => {
+        let variable_definitions = ast.variable_definition_range(variable_definitions.map(|defs| defs.len()));
+        OperationDefinitionRecord {
+            <>
+        }
+    },
+    <selection_set:SelectionSet> => {
+        OperationDefinitionRecord {
+            operation_type: OperationType::Query,
+            name: None,
+            selection_set,
+            variable_definitions: Default::default(),
+            directives: Default::default()
+        }
+    }
+};
+
+FragmentDefinition: FragmentDefinitionRecord = {
+    fragment <name:FragmentName> <type_condition:TypeCondition> <directives:Directives> <selection_set:SelectionSet> => {
+        FragmentDefinitionRecord {
+            <>
+        }
+    }
+};
+
+OperationType: OperationType = {
+    query => OperationType::Query,
+    mutation => OperationType::Mutation,
+    subscription => OperationType::Subscription
+}
+
+VariableDefinitions: Vec<()> = {
+    "(" <entries:VariableDefinition+> ")" => {
+        entries
+    }
+}
+
+VariableDefinition: () = {
+    "$" <name:Name> ":" <ty:Type> <default_value:DefaultValue?> <directives:Directives> => {
+        ast.variable_definition(VariableDefinitionRecord { <> });
+    }
+}
+
+DefaultValue: ValueId = {
+    "=" <value:Value> => {
+        value
+    }
+}
+
+SelectionSet: IdRange<SelectionId> = {
+    "{" <selections:Selection+> "}" => {
+        ast.selection_set(selections)
+    }
+}
+
+Selection: SelectionRecord = {
+    <alias:Alias?> <name:Name> <arguments:Arguments?> <directives:Directives> <selection_set:SelectionSet?> => {
+        let selection_set = selection_set.unwrap_or_default();
+        let arguments = arguments.map(|args| ast.arguments(args)).unwrap_or_default();
+        SelectionRecord::Field(
+            ast.field_selection(FieldSelectionRecord {
+                <>
+            })
+        )
+    },
+    "..." <fragment_name:FragmentName> <directives:Directives> => {
+        SelectionRecord::FragmentSpread(
+            ast.fragment_spread(FragmentSpreadRecord {
+                <>
+            })
+        )
+    },
+    "..." <type_condition:TypeCondition?> <directives:Directives> <selection_set:SelectionSet> => {
+        SelectionRecord::InlineFragment(
+            ast.inline_fragment(InlineFragmentRecord {
+                <>
+            })
+        )
+    }
+}
+
+Alias: StringId = {
+    <alias:Name> ":" => {
+        alias
+    }
+}
+
+TypeCondition: StringId = {
+    on <name:NamedType> => {
+        name
+    }
+}
+
+NamedType: StringId = <s:Ident> => ast.ident(s);
+
+Type: TypeId = {
+    "[" <ty:Type> => ty,
+    <name:NamedType> <wrappers:WrappingType*> => ast.type_reference(TypeRecord {
+        name,
+        wrappers: TypeWrappers::from_iter(wrappers)
+    })
+}
+
+WrappingType: WrappingType = {
+    "!" => WrappingType::NonNull,
+    "]" => WrappingType::List
+}
+
+
+Directives: IdRange<DirectiveId> = {
+    <directives:Directive*> => {
+        ast.directive_range(Some(directives.len()))
+    }
+}
+
+Directive: () = {
+    "@" <name:Name> <arguments:Arguments?> => {
+        let arguments = arguments.map(|args| ast.arguments(args)).unwrap_or_default();
+        ast.directive(DirectiveRecord { <> });
+    }
+}
+
+Arguments: Vec<ArgumentRecord> = {
+    "(" <arguments:Argument*> ")" => arguments
+}
+
+Argument: ArgumentRecord = {
+    <name:Name> ":" <value:Value> => {
+        ArgumentRecord { <> }
+    }
+}
+
+Value: ValueId = {
+    "$" <name:Name> => ast.value(ValueRecord::Variable(name)),
+    <int:IntegerLiteral> => ast.value(ValueRecord::Int(int.parse().unwrap())),
+    <float:FloatLiteral> => ast.value(ValueRecord::Float(float.parse().unwrap())),
+    <start:@L> <s:StringLiteral> =>? {
+        let id = ast.intern_owned_string(unquote_string(s, start)?);
+        Ok(ast.value(ValueRecord::String(id)))
+    },
+    <s:BlockStringLiteral> => {
+        let id = ast.intern_owned_string(
+            trim_block_string_whitespace(
+                unquote_block_string(s)
+            )
+        );
+        ast.value(ValueRecord::String(id))
+    },
+    true => ast.value(ValueRecord::Boolean(true)),
+    false => ast.value(ValueRecord::Boolean(false)),
+    null => ast.value(ValueRecord::Null),
+    "[" <values:Value*> "]" => ast.value(ValueRecord::List(values)),
+    "{" <fields:ObjectField*> "}" => ast.value(ValueRecord::Object(fields)),
+    <value:EnumValue> => ast.value(ValueRecord::Enum(value)),
+}
+
+ObjectField: (StringId, ValueId) = {
+    <name:Name> ":" <value:Value> => (name, value)
+}
+
+EnumValue: StringId = {
+    <s:RawIdent> => ast.ident(s),
+    schema => ast.ident("schema"),
+    query => ast.ident("query"),
+    ty => ast.ident("type"),
+    input => ast.ident("input"),
+}
+
+Name: StringId = <s:Ident> => ast.ident(s);
+
+FragmentName: StringId = <s:RawFragmentName> => ast.ident(s);
+
+RawFragmentName: &'input str = {
+    <s:RawIdent> => s,
+    schema => "schema",
+    query => "query",
+    mutation => "mutation",
+    subscription => "subscription",
+    ty => "type",
+    input => "input",
+    true => "true",
+    false => "false",
+    null => "null",
+    implements => "implements",
+    interface => "interface",
+    "enum" => "enum",
+    union => "union",
+    scalar => "scalar",
+    extend => "extend",
+    directive => "directive",
+    repeatable => "repeatable",
+    fragment => "fragment",
+}
+
+Ident: &'input str = {
+    <s:RawIdent> => s,
+    schema => "schema",
+    query => "query",
+    mutation => "mutation",
+    subscription => "subscription",
+    ty => "type",
+    input => "input",
+    true => "true",
+    false => "false",
+    null => "null",
+    implements => "implements",
+    interface => "interface",
+    "enum" => "enum",
+    union => "union",
+    scalar => "scalar",
+    extend => "extend",
+    directive => "directive",
+    repeatable => "repeatable",
+    on => "on",
+    fragment => "fragment",
+}
+
+
+extern {
+    type Location = usize;
+    type Error = crate::parser::AdditionalErrors;
+
+    enum lexer::Token<'input> {
+        "$" => lexer::Token::Dollar,
+
+        ":" => lexer::Token::Colon,
+
+        "{" => lexer::Token::OpenBrace,
+        "}" => lexer::Token::CloseBrace,
+
+        "(" => lexer::Token::OpenParen,
+        ")" => lexer::Token::CloseParen,
+
+        "[" => lexer::Token::OpenBracket,
+        "]" => lexer::Token::CloseBracket,
+
+        "!" => lexer::Token::Exclamation,
+        "=" => lexer::Token::Equals,
+        "@" => lexer::Token::At,
+        "&" => lexer::Token::Ampersand,
+        "|" => lexer::Token::Pipe,
+
+        "..." => lexer::Token::Spread,
+
+        RawIdent => lexer::Token::Identifier(<&'input str>),
+
+        StringLiteral => lexer::Token::StringLiteral(<&'input str>),
+        BlockStringLiteral => lexer::Token::BlockStringLiteral(<&'input str>),
+        FloatLiteral => lexer::Token::FloatLiteral(<&'input str>),
+        IntegerLiteral => lexer::Token::IntegerLiteral(<&'input str>),
+
+        // Would be nice if these could just be aliases of `Identifier` but LARLPOP doesn't
+        // seem to support this well: https://github.com/lalrpop/lalrpop/issues/671
+        schema => lexer::Token::Schema,
+        query => lexer::Token::Query,
+        mutation => lexer::Token::Mutation,
+        subscription => lexer::Token::Subscription,
+        ty => lexer::Token::Type,
+        input => lexer::Token::Input,
+        true => lexer::Token::True,
+        false => lexer::Token::False,
+        null => lexer::Token::Null,
+        implements => lexer::Token::Implements,
+        interface => lexer::Token::Interface,
+        "enum" => lexer::Token::Enum,
+        union => lexer::Token::Union,
+        scalar => lexer::Token::Scalar,
+        extend => lexer::Token::Extend,
+        directive => lexer::Token::Directive,
+        repeatable => lexer::Token::Repeatable,
+        on => lexer::Token::On,
+        fragment => lexer::Token::Fragment
+    }
+}
