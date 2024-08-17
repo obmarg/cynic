@@ -1,4 +1,6 @@
-use std::{borrow::Cow, collections::HashSet, marker::PhantomData, rc::Rc, sync::mpsc};
+use std::{
+    borrow::Cow, collections::HashSet, marker::PhantomData, rc::Rc, sync::mpsc,
+};
 
 use crate::{
     queries::{SelectionBuilder, SelectionSet},
@@ -98,10 +100,23 @@ where
     }
 
     /// Tries to builds an [Operation]
-    pub fn build(self) -> Result<super::Operation<Fragment, Variables>, OperationBuildError> {
-        use std::fmt::Write;
+    pub fn build(
+        self,
+    ) -> Result<super::Operation<Fragment, Variables>, OperationBuildError>
+    {
+        Ok(Operation {
+            query: self.serialize(),
+            variables: self
+                .variables
+                .ok_or(OperationBuildError::VariablesNotSet)?,
+            operation_name: self.operation_name,
+            phantom: PhantomData,
+        })
+    }
 
-        let features_enabled = Rc::new(self.features);
+    /// Serializes operation into GraphQL code
+    pub fn serialize(&self) -> String {
+        let features_enabled = Rc::new(self.features.to_owned());
         let mut selection_set = SelectionSet::default();
         let (variable_tx, variable_rx) = mpsc::channel();
         let builder = SelectionBuilder::<_, Fragment::VariablesFields>::new(
@@ -112,7 +127,9 @@ where
 
         Fragment::query(builder);
 
-        let vars = VariableDefinitions::new::<Variables>(variable_rx.try_iter().collect());
+        let vars = VariableDefinitions::new::<Variables>(
+            variable_rx.try_iter().collect(),
+        );
 
         let name_str = self.operation_name.as_deref().unwrap_or("");
 
@@ -122,25 +139,16 @@ where
             OperationKind::Subscription => "subscription",
         };
 
-        let mut query = String::new();
-        writeln!(
-            &mut query,
-            "{declaration_str} {name_str}{vars}{selection_set}"
-        )?;
-
-        Ok(Operation {
-            query,
-            variables: self.variables.ok_or(OperationBuildError::VariablesNotSet)?,
-            operation_name: self.operation_name,
-            phantom: PhantomData,
-        })
+        format!("{declaration_str} {name_str}{vars}{selection_set}")
     }
 }
 
 #[derive(thiserror::Error, Debug)]
 /// Errors that can occur when building the operation
 pub enum OperationBuildError {
-    #[error("You need to call with_variables or set_variables before calling build")]
+    #[error(
+        "You need to call with_variables or set_variables before calling build"
+    )]
     /// Error for when `set_variables` or `with_variables` was not called
     VariablesNotSet,
     #[error("Couldn't format the query into a string: {0}")]
