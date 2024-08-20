@@ -132,3 +132,14 @@ fn pascal_type_renaming() {
             .expect("QueryGen Failed")
     )
 }
+
+#[test]
+fn test_keyword_arguments() {
+    let schema = include_str!("../../schemas/test_cases.graphql");
+    let query = include_str!("queries/misc/keyword-argument.graphql");
+
+    assert_snapshot!(
+        document_to_fragment_structs(query, schema, &QueryGenOptions::default())
+            .expect("QueryGen Failed")
+    )
+}
