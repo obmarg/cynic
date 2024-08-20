@@ -1,6 +1,11 @@
 use std::fmt::Write;
 
-use crate::{casings::CasingExt, output::attr_output::Attributes, schema::TypeSpec};
+use crate::{
+    casings::CasingExt,
+    output::{attr_output::Attributes, field::rust_field_name},
+    query_parsing::LiteralContext,
+    schema::{InputType, TypeSpec},
+};
 
 use {
     super::indented,
@@ -166,8 +171,75 @@ impl<'query, 'schema> FieldArgument<'query, 'schema> {
     }
 
     pub fn to_literal(&self) -> Result<String, Error> {
-        use crate::query_parsing::LiteralContext;
-
         self.value.to_literal(LiteralContext::Argument)
     }
+}
+
+impl<'query, 'schema> TypedValue<'query, 'schema> {
+    pub fn to_literal(&self, _context: LiteralContext) -> Result<String, Error> {
+        Ok(match self {
+            TypedValue::Variable {
+                name,
+                field_type: _,
+                value_type: _,
+            } => {
+                let name = name.to_snake_case();
+                let name = rust_field_name(&name);
+                format!("${name}")
+            }
+            TypedValue::Int(num, _) => num.to_string(),
+            TypedValue::Float(num, _) => num
+                .map(|d| d.to_string())
+                .unwrap_or_else(|| "null".to_string()),
+            TypedValue::String(s, _) => {
+                if string_needs_raw_literal(s) {
+                    format!("r#\"{s}\"#")
+                } else {
+                    format!("\"{s}\"")
+                }
+            }
+            TypedValue::Boolean(b, _) => b.to_string(),
+            TypedValue::Null(_) => "null".into(),
+            TypedValue::Enum(v, field_type) => {
+                if let InputType::Enum(_) = field_type.inner_ref().lookup()? {
+                    format!("\"{v}\"")
+                } else {
+                    return Err(Error::ArgumentNotEnum);
+                }
+            }
+            TypedValue::List(values, _) => {
+                let inner = values
+                    .iter()
+                    .map(|v| v.to_literal(LiteralContext::ListItem))
+                    .collect::<Result<Vec<_>, Error>>()?
+                    .join(", ");
+
+                format!("[{inner}]")
+            }
+            TypedValue::Object(object_literal, field_type) => {
+                if let InputType::InputObject(_) = field_type.inner_ref().lookup()? {
+                    let fields = object_literal
+                        .iter()
+                        .map(|(name, value)| {
+                            Ok(format!(
+                                "{}: {}",
+                                name,
+                                value.to_literal(LiteralContext::InputObjectField)?
+                            ))
+                        })
+                        .collect::<Result<Vec<_>, Error>>()?;
+
+                    let fields = fields.join(", ");
+
+                    format!("{{ {fields} }}")
+                } else {
+                    return Err(Error::ArgumentNotInputObject);
+                }
+            }
+        })
+    }
+}
+
+fn string_needs_raw_literal(s: &str) -> bool {
+    s.chars().any(|c| c.is_ascii_control() || c == '"')
 }

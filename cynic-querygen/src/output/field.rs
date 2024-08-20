@@ -24,15 +24,7 @@ impl<'a> Field<'a> {
     }
 
     fn name(&self) -> Cow<'a, str> {
-        if KEYWORDS.contains(self.name) {
-            return Cow::Owned(format!("{}_", self.name));
-        }
-
-        if self.name == "_" {
-            return Cow::Borrowed("__underscore");
-        }
-
-        Cow::Borrowed(self.name)
+        rust_field_name(self.name)
     }
 
     fn rename(&self) -> Option<&'a str> {
@@ -54,6 +46,18 @@ impl std::fmt::Display for Field<'_> {
         }
         writeln!(f, "pub {}: {},", self.name(), self.type_spec.name)
     }
+}
+
+pub fn rust_field_name(name: &str) -> Cow<'_, str> {
+    if KEYWORDS.contains(name) {
+        return Cow::Owned(format!("{}_", name));
+    }
+
+    if name == "_" {
+        return Cow::Borrowed("__underscore");
+    }
+
+    Cow::Borrowed(name)
 }
 
 // A list of keywords in rust that can be converted to raw identifiers
