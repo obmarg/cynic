@@ -97,7 +97,7 @@ where
         self.operation_name = Some(Cow::Owned(name.to_string()));
     }
 
-    /// Tries to builds an [Operation]
+    /// Tries to build an [Operation]
     pub fn build(self) -> Result<super::Operation<Fragment, Variables>, OperationBuildError> {
         use std::fmt::Write;
 
