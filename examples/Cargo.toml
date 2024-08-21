@@ -25,6 +25,9 @@ chrono = { version = "0.4", features = ["serde"] }
 # have to recompile it as often.
 github-schema = { path = "../schemas/github" }
 
+# Required for the query inlining example
+graphql-query = "1"
+
 [dev-dependencies]
 insta = "1.17"
 
