@@ -7,7 +7,6 @@ use crate::{
 };
 
 mod builder;
-mod variables;
 
 pub use builder::{OperationBuildError, OperationBuilder};
 

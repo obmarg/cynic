@@ -1,14 +1,12 @@
-use std::{
-    borrow::Cow, collections::HashSet, marker::PhantomData, rc::Rc, sync::mpsc,
-};
+use std::{borrow::Cow, collections::HashSet, marker::PhantomData};
 
 use crate::{
-    queries::{SelectionBuilder, SelectionSet},
+    queries::{build_executable_document, OperationType},
     schema::{MutationRoot, QueryRoot, SubscriptionRoot},
     QueryFragment, QueryVariables,
 };
 
-use super::{variables::VariableDefinitions, Operation};
+use super::Operation;
 
 /// Low level builder for [Operation].
 ///
@@ -17,7 +15,7 @@ use super::{variables::VariableDefinitions, Operation};
 /// this builder.
 pub struct OperationBuilder<QueryFragment, Variables = ()> {
     variables: Option<Variables>,
-    operation_kind: OperationKind,
+    operation_kind: OperationType,
     operation_name: Option<Cow<'static, str>>,
     features: HashSet<String>,
     phantom: PhantomData<fn() -> QueryFragment>,
@@ -28,7 +26,7 @@ where
     Fragment: QueryFragment,
     Variables: QueryVariables,
 {
-    fn new(operation_kind: OperationKind) -> Self {
+    fn new(operation_kind: OperationType) -> Self {
         OperationBuilder {
             variables: None,
             operation_kind,
@@ -43,7 +41,7 @@ where
     where
         Fragment::SchemaType: QueryRoot,
     {
-        Self::new(OperationKind::Query)
+        Self::new(OperationType::Query)
     }
 
     /// Creates an `OperationBuilder` for a mutation operation
@@ -51,7 +49,7 @@ where
     where
         Fragment::SchemaType: MutationRoot,
     {
-        Self::new(OperationKind::Mutation)
+        Self::new(OperationType::Mutation)
     }
 
     /// Creates an `OperationBuilder` for a subscription operation
@@ -59,7 +57,7 @@ where
     where
         Fragment::SchemaType: SubscriptionRoot,
     {
-        Self::new(OperationKind::Subscription)
+        Self::new(OperationType::Subscription)
     }
 
     /// Adds variables for the operation
@@ -100,64 +98,27 @@ where
     }
 
     /// Tries to builds an [Operation]
-    pub fn build(
-        self,
-    ) -> Result<super::Operation<Fragment, Variables>, OperationBuildError>
-    {
+    pub fn build(self) -> Result<super::Operation<Fragment, Variables>, OperationBuildError> {
         Ok(Operation {
-            query: self.serialize(),
-            variables: self
-                .variables
-                .ok_or(OperationBuildError::VariablesNotSet)?,
+            query: build_executable_document::<Fragment, Variables>(
+                self.operation_kind,
+                self.operation_name.as_deref(),
+                self.features.clone(),
+            ),
+            variables: self.variables.ok_or(OperationBuildError::VariablesNotSet)?,
             operation_name: self.operation_name,
             phantom: PhantomData,
         })
-    }
-
-    /// Serializes operation into GraphQL code
-    pub fn serialize(&self) -> String {
-        let features_enabled = Rc::new(self.features.to_owned());
-        let mut selection_set = SelectionSet::default();
-        let (variable_tx, variable_rx) = mpsc::channel();
-        let builder = SelectionBuilder::<_, Fragment::VariablesFields>::new(
-            &mut selection_set,
-            &variable_tx,
-            &features_enabled,
-        );
-
-        Fragment::query(builder);
-
-        let vars = VariableDefinitions::new::<Variables>(
-            variable_rx.try_iter().collect(),
-        );
-
-        let name_str = self.operation_name.as_deref().unwrap_or("");
-
-        let declaration_str = match self.operation_kind {
-            OperationKind::Query => "query",
-            OperationKind::Mutation => "mutation",
-            OperationKind::Subscription => "subscription",
-        };
-
-        format!("{declaration_str} {name_str}{vars}{selection_set}")
     }
 }
 
 #[derive(thiserror::Error, Debug)]
 /// Errors that can occur when building the operation
 pub enum OperationBuildError {
-    #[error(
-        "You need to call with_variables or set_variables before calling build"
-    )]
+    #[error("You need to call with_variables or set_variables before calling build")]
     /// Error for when `set_variables` or `with_variables` was not called
     VariablesNotSet,
     #[error("Couldn't format the query into a string: {0}")]
     /// Error when a write! call that builds the query string failed
     CouldntBuildQueryString(#[from] std::fmt::Error),
-}
-
-enum OperationKind {
-    Query,
-    Mutation,
-    Subscription,
 }
