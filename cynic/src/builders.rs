@@ -1,11 +1,22 @@
-use super::{Operation, QueryFragment, QueryVariables, StreamingOperation};
+use std::collections::HashSet;
 
-// TODO maybe swap into `let operation = variables.build_query();`
+use crate::{
+    queries::{build_executable_document, OperationType},
+    OperationBuilder,
+};
+
+use super::{Operation, QueryFragment, QueryVariables, StreamingOperation};
 
 /// Provides a `build` function on `QueryFragment`s that represent a query
 pub trait QueryBuilder<Variables>: Sized {
     /// Constructs a query operation for this QueryFragment.
     fn build(vars: Variables) -> Operation<Self, Variables>;
+
+    /// Creates an operation buidler for this query
+    fn operation_builder(vars: Variables) -> OperationBuilder<Self, Variables>;
+
+    /// Returns the executable document for this query
+    fn executable_document() -> String;
 }
 
 impl<T, Variables> QueryBuilder<Variables> for T
@@ -17,9 +28,19 @@ where
     fn build(vars: Variables) -> Operation<T, Variables> {
         Operation::<T, Variables>::query(vars)
     }
-}
 
-// TODO: update mutation builder to support new query structure stuff...
+    fn operation_builder(vars: Variables) -> OperationBuilder<Self, Variables> {
+        OperationBuilder::query().with_variables(vars)
+    }
+
+    fn executable_document() -> String {
+        build_executable_document::<T, Variables>(
+            OperationType::Query,
+            T::name().as_deref(),
+            HashSet::new(),
+        )
+    }
+}
 
 /// Provides a `build` function on `QueryFragment`s that represent a mutation
 pub trait MutationBuilder<Variables>: Sized {
@@ -28,6 +49,12 @@ pub trait MutationBuilder<Variables>: Sized {
 
     /// Constructs a mutation operation for this QueryFragment.
     fn build(args: Variables) -> Operation<Self, Variables>;
+
+    /// Creates an operation buidler for this mutation
+    fn operation_builder(vars: Variables) -> OperationBuilder<Self, Variables>;
+
+    /// Returns the executable document for this mutation
+    fn executable_document() -> String;
 }
 
 impl<T, Variables> MutationBuilder<Variables> for T
@@ -39,6 +66,18 @@ where
     fn build(vars: Variables) -> Operation<Self, Variables> {
         Operation::<T, Variables>::mutation(vars)
     }
+
+    fn operation_builder(vars: Variables) -> OperationBuilder<Self, Variables> {
+        OperationBuilder::mutation().with_variables(vars)
+    }
+
+    fn executable_document() -> String {
+        build_executable_document::<T, Variables>(
+            OperationType::Mutation,
+            T::name().as_deref(),
+            HashSet::new(),
+        )
+    }
 }
 
 /// Provides a `build` function on `QueryFragment`s that represent a subscription
@@ -48,6 +87,12 @@ pub trait SubscriptionBuilder<Variables>: Sized {
 
     /// Constructs a subscription operation for this QueryFragment.
     fn build(vars: Variables) -> StreamingOperation<Self, Variables>;
+
+    /// Creates an operation buidler for this subscription
+    fn operation_builder(vars: Variables) -> OperationBuilder<Self, Variables>;
+
+    /// Returns the executable document for this subscription
+    fn executable_document() -> String;
 }
 
 impl<T, Variables> SubscriptionBuilder<Variables> for T
@@ -59,5 +104,17 @@ where
     /// Constructs a subscription operation for this QueryFragment.
     fn build(vars: Variables) -> StreamingOperation<Self, Variables> {
         StreamingOperation::<T, Variables>::subscription(vars)
+    }
+
+    fn operation_builder(vars: Variables) -> OperationBuilder<Self, Variables> {
+        OperationBuilder::subscription().with_variables(vars)
+    }
+
+    fn executable_document() -> String {
+        build_executable_document::<T, Variables>(
+            OperationType::Subscription,
+            T::name().as_deref(),
+            HashSet::new(),
+        )
     }
 }
