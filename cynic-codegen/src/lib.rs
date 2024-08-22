@@ -4,6 +4,7 @@ pub mod fragment_derive;
 pub mod generics_for_serde;
 pub mod inline_fragments_derive;
 pub mod input_object_derive;
+pub mod query_variable_literals_derive;
 pub mod query_variables_derive;
 pub mod registration;
 pub mod scalar_derive;
