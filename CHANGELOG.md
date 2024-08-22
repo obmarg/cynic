@@ -8,6 +8,13 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+### New Features
+
+- Added functions to `QueryBuilder`, `MutationBuilder` & `SubscriptionBuilder`:
+  - `executable_document` to build a `String` of the executable document without needing to
+    build an `Operation`.
+  - `operation_builder` to make it easier to get an `OperationBuilder` for the `QueryFragment`
+
 ## v3.7.3 - 2024-06-04
 
 ### Changes
