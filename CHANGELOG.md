@@ -8,6 +8,10 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+### Bug Fixes
+
+- Tidied up the output of object & list literals in the clients GraphQl output.
+
 ## v3.7.3 - 2024-06-04
 
 ### Changes

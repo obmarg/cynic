@@ -10,7 +10,8 @@ use proc_macro::TokenStream;
 
 use cynic_codegen::{
     enum_derive, fragment_derive, inline_fragments_derive, input_object_derive,
-    query_variables_derive, scalar_derive, schema_for_derives, schema_module_attr, use_schema,
+    query_variable_literals_derive, query_variables_derive, scalar_derive, schema_for_derives,
+    schema_module_attr, use_schema,
 };
 
 /// Imports a schema for use by cynic.
@@ -60,6 +61,19 @@ pub fn query_variables_derive(input: TokenStream) -> TokenStream {
     let ast = syn::parse_macro_input!(input as syn::DeriveInput);
 
     let rv = match query_variables_derive::query_variables_derive(&ast) {
+        Ok(tokens) => tokens.into(),
+        Err(e) => e.to_compile_error().into(),
+    };
+
+    rv
+}
+
+/// Derives `cynic::QueryVariableLiterals`
+#[proc_macro_derive(QueryVariableLiterals, attributes(cynic))]
+pub fn query_variable_literals_derive(input: TokenStream) -> TokenStream {
+    let ast = syn::parse_macro_input!(input as syn::DeriveInput);
+
+    let rv = match query_variable_literals_derive::query_variable_literals_derive(&ast) {
         Ok(tokens) => tokens.into(),
         Err(e) => e.to_compile_error().into(),
     };
