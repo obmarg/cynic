@@ -11,6 +11,8 @@ mod variables;
 
 use variables::VariableDefinitions;
 
+use crate::QueryVariableLiterals;
+
 pub use self::{
     ast::{Argument, InputLiteral, SelectionSet},
     builders::{SelectionBuilder, VariableMatch},
@@ -36,6 +38,7 @@ pub fn build_executable_document<Fragment, Variables>(
     r#type: OperationType,
     operation_name: Option<&str>,
     features_enabled: HashSet<String>,
+    inline_variables: Option<&dyn QueryVariableLiterals>,
 ) -> String
 where
     Fragment: crate::QueryFragment,
@@ -48,6 +51,7 @@ where
         &mut selection_set,
         &variable_tx,
         &features_enabled,
+        inline_variables,
     );
 
     Fragment::query(builder);

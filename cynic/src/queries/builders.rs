@@ -1,6 +1,6 @@
 use std::{borrow::Cow, collections::HashSet, marker::PhantomData, sync::mpsc::Sender};
 
-use crate::{coercions::CoercesTo, schema, variables::VariableDefinition};
+use crate::{coercions::CoercesTo, schema, variables::VariableDefinition, QueryVariableLiterals};
 
 use super::{ast::*, to_input_literal, FlattensInto, IsFieldType, Recursable};
 
@@ -43,6 +43,7 @@ impl<'a, SchemaType, VariablesFields> SelectionBuilder<'a, SchemaType, Variables
         selection_set: &'a mut SelectionSet,
         variables_used: &'a Sender<&'static str>,
         features_enabled: &'a HashSet<String>,
+        inline_variables: Option<&'a dyn QueryVariableLiterals>,
     ) -> Self {
         SelectionBuilder::private_new(
             selection_set,
@@ -51,6 +52,7 @@ impl<'a, SchemaType, VariablesFields> SelectionBuilder<'a, SchemaType, Variables
                 overall_depth: 0,
                 features_enabled,
                 variables_used,
+                inline_variables,
             },
         )
     }
@@ -273,12 +275,22 @@ impl<'a, SchemaType, VariablesFields> InputBuilder<'a, SchemaType, VariablesFiel
     where
         Type: CoercesTo<SchemaType>,
     {
-        self.context
-            .variables_used
-            .send(def.name)
-            .expect("the variables_used channel to be open");
+        match &self.context.inline_variables {
+            None => {
+                self.context
+                    .variables_used
+                    .send(def.name)
+                    .expect("the variables_used channel to be open");
 
-        self.destination.push(InputLiteral::Variable(def.name));
+                self.destination.push(InputLiteral::Variable(def.name));
+            }
+            Some(variables) => {
+                // If the variable returns None we assume it hit a skip_serializing_if and skip it
+                if let Some(literal) = variables.get(def.name) {
+                    self.destination.push(literal);
+                }
+            }
+        }
     }
 }
 
@@ -443,6 +455,7 @@ struct BuilderContext<'a> {
     variables_used: &'a Sender<&'static str>,
     recurse_depth: Option<u8>,
     overall_depth: u16,
+    inline_variables: Option<&'a dyn QueryVariableLiterals>,
 }
 
 impl BuilderContext<'_> {

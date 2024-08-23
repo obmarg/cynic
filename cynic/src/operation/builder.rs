@@ -3,7 +3,7 @@ use std::{borrow::Cow, collections::HashSet, marker::PhantomData};
 use crate::{
     queries::{build_executable_document, OperationType},
     schema::{MutationRoot, QueryRoot, SubscriptionRoot},
-    QueryFragment, QueryVariables,
+    QueryFragment, QueryVariableLiterals, QueryVariables,
 };
 
 use super::Operation;
@@ -104,8 +104,34 @@ where
                 self.operation_kind,
                 self.operation_name.as_deref(),
                 self.features.clone(),
+                None,
             ),
             variables: self.variables.ok_or(OperationBuildError::VariablesNotSet)?,
+            operation_name: self.operation_name,
+            phantom: PhantomData,
+        })
+    }
+
+    /// Builds an Operation with all of the current variables inlined into the executable document
+    /// as arguments.
+    ///
+    /// You should derive `QueryVariableLiterals` on your `QueryArguments` struct to use this
+    /// functionality.
+    pub fn build_with_variables_inlined(
+        self,
+    ) -> Result<super::Operation<Fragment, ()>, OperationBuildError>
+    where
+        Variables: QueryVariableLiterals,
+    {
+        let variables = self.variables.ok_or(OperationBuildError::VariablesNotSet)?;
+        Ok(Operation {
+            query: build_executable_document::<Fragment, Variables>(
+                self.operation_kind,
+                self.operation_name.as_deref(),
+                self.features.clone(),
+                Some(&variables),
+            ),
+            variables: (),
             operation_name: self.operation_name,
             phantom: PhantomData,
         })
