@@ -1,9 +1,9 @@
 use super::prelude::*;
 use super::{
+    descriptions::Description,
     directives::Directive,
-    ids::{DirectiveId, InputObjectDefinitionId, InputValueDefinitionId, StringLiteralId},
+    ids::{DescriptionId, DirectiveId, InputObjectDefinitionId, InputValueDefinitionId},
     input_values::InputValueDefinition,
-    strings::StringLiteral,
     ReadContext, TypeSystemId,
 };
 #[allow(unused_imports)]
@@ -11,7 +11,7 @@ use std::fmt::{self, Write};
 
 pub struct InputObjectDefinitionRecord {
     pub name: StringId,
-    pub description: Option<StringLiteralId>,
+    pub description: Option<DescriptionId>,
     pub fields: IdRange<InputValueDefinitionId>,
     pub directives: IdRange<DirectiveId>,
     pub span: Span,
@@ -25,7 +25,7 @@ impl<'a> InputObjectDefinition<'a> {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).name)
     }
-    pub fn description(&self) -> Option<StringLiteral<'a>> {
+    pub fn description(&self) -> Option<Description<'a>> {
         let document = self.0.document;
         document
             .lookup(self.0.id)

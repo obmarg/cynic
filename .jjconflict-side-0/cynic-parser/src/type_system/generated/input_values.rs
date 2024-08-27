@@ -1,8 +1,8 @@
 use super::prelude::*;
 use super::{
+    descriptions::Description,
     directives::Directive,
-    ids::{DirectiveId, InputValueDefinitionId, StringLiteralId, TypeId, ValueId},
-    strings::StringLiteral,
+    ids::{DescriptionId, DirectiveId, InputValueDefinitionId, TypeId, ValueId},
     types::Type,
     value::Value,
     ReadContext, TypeSystemId,
@@ -13,7 +13,7 @@ use std::fmt::{self, Write};
 pub struct InputValueDefinitionRecord {
     pub name: StringId,
     pub ty: TypeId,
-    pub description: Option<StringLiteralId>,
+    pub description: Option<DescriptionId>,
     pub default_value: Option<ValueId>,
     pub default_value_span: Span,
     pub directives: IdRange<DirectiveId>,
@@ -32,7 +32,7 @@ impl<'a> InputValueDefinition<'a> {
         let document = self.0.document;
         document.read(document.lookup(self.0.id).ty)
     }
-    pub fn description(&self) -> Option<StringLiteral<'a>> {
+    pub fn description(&self) -> Option<Description<'a>> {
         let document = self.0.document;
         document
             .lookup(self.0.id)

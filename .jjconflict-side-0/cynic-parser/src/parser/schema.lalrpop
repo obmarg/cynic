@@ -19,8 +19,15 @@ pub TypeSystemDocument: () = {
 }
 
 DefinitionAndDescription: () = {
-    <description:StringValue?> <def:TypeSystemDefinition> => {
-        ast.store_description(def, description)
+    <start:@L> <description:StringValue> <end:@R> <def:TypeSystemDefinition> => {
+        let description_id = ast.description(DescriptionRecord {
+            description,
+            span: Span::new(start, end),
+        });
+        ast.store_description(def, Some(description_id))
+    },
+    <def:TypeSystemDefinition> => {
+        ast.store_description(def, None)
     }
 }
 

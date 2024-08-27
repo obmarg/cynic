@@ -132,6 +132,8 @@ impl_id_range_ops!(ArgumentId);
 
 make_id!(ValueId, ValueRecord, values);
 
+make_id!(DescriptionId, DescriptionRecord, descriptions);
+
 make_id!(BlockStringLiteralId, str, block_strings);
 
 #[derive(Clone, Copy)]

@@ -84,7 +84,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<SchemaDefinition<'a>> {
 
         if let Some(description) = self.0.description() {
             builder = builder
-                .append(NodeDisplay(description))
+                .append(NodeDisplay(description.description()))
                 .append(allocator.hardline());
         }
 
@@ -133,7 +133,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<ScalarDefinition<'a>> {
 
         if let Some(description) = self.0.description() {
             builder = builder
-                .append(NodeDisplay(description))
+                .append(NodeDisplay(description.description()))
                 .append(allocator.hardline());
         }
 
@@ -157,7 +157,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<ObjectDefinition<'a>> {
 
         if let Some(description) = self.0.description() {
             builder = builder
-                .append(NodeDisplay(description))
+                .append(NodeDisplay(description.description()))
                 .append(allocator.hardline());
         }
 
@@ -211,7 +211,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<FieldDefinition<'a>> {
             .map(|description| {
                 allocator
                     .nil()
-                    .append(NodeDisplay(description))
+                    .append(NodeDisplay(description.description()))
                     .append(allocator.hardline())
             })
             .unwrap_or(allocator.softline_());
@@ -256,7 +256,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<InterfaceDefinition<'a>> {
 
         if let Some(description) = self.0.description() {
             builder = builder
-                .append(NodeDisplay(description))
+                .append(NodeDisplay(description.description()))
                 .append(allocator.hardline());
         }
 
@@ -343,7 +343,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<UnionDefinition<'a>> {
         builder = builder.group();
 
         if let Some(description) = self.0.description() {
-            builder = NodeDisplay(description)
+            builder = NodeDisplay(description.description())
                 .pretty(allocator)
                 .append(allocator.hardline())
                 .append(builder)
@@ -360,7 +360,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<EnumDefinition<'a>> {
 
         if let Some(description) = self.0.description() {
             builder = builder
-                .append(NodeDisplay(description))
+                .append(NodeDisplay(description.description()))
                 .append(allocator.hardline());
         }
 
@@ -405,7 +405,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<EnumValueDefinition<'a>> {
             .map(|description| {
                 allocator
                     .nil()
-                    .append(NodeDisplay(description))
+                    .append(NodeDisplay(description.description()))
                     .append(allocator.hardline())
             })
             .unwrap_or(allocator.softline_());
@@ -433,7 +433,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<InputObjectDefinition<'a>> {
 
         if let Some(description) = self.0.description() {
             builder = builder
-                .append(NodeDisplay(description))
+                .append(NodeDisplay(description.description()))
                 .append(allocator.hardline());
         }
 
@@ -477,7 +477,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<InputValueDefinition<'a>> {
             .map(|description| {
                 allocator
                     .nil()
-                    .append(NodeDisplay(description))
+                    .append(NodeDisplay(description.description()))
                     .append(allocator.hardline())
             })
             .unwrap_or(allocator.softline_());
@@ -516,7 +516,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<DirectiveDefinition<'a>> {
 
         if let Some(description) = self.0.description() {
             builder = builder
-                .append(NodeDisplay(description))
+                .append(NodeDisplay(description.description()))
                 .append(allocator.hardline());
         }
 

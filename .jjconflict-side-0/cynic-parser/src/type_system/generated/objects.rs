@@ -1,9 +1,9 @@
 use super::prelude::*;
 use super::{
+    descriptions::Description,
     directives::Directive,
     fields::FieldDefinition,
-    ids::{DirectiveId, FieldDefinitionId, ObjectDefinitionId, StringLiteralId},
-    strings::StringLiteral,
+    ids::{DescriptionId, DirectiveId, FieldDefinitionId, ObjectDefinitionId},
     ReadContext, TypeSystemId,
 };
 #[allow(unused_imports)]
@@ -11,7 +11,7 @@ use std::fmt::{self, Write};
 
 pub struct ObjectDefinitionRecord {
     pub name: StringId,
-    pub description: Option<StringLiteralId>,
+    pub description: Option<DescriptionId>,
     pub fields: IdRange<FieldDefinitionId>,
     pub directives: IdRange<DirectiveId>,
     pub implements_interfaces: Vec<StringId>,
@@ -26,7 +26,7 @@ impl<'a> ObjectDefinition<'a> {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).name)
     }
-    pub fn description(&self) -> Option<StringLiteral<'a>> {
+    pub fn description(&self) -> Option<Description<'a>> {
         let document = self.0.document;
         document
             .lookup(self.0.id)

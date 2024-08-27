@@ -65,6 +65,7 @@ pub struct TypeSystemDocument {
     values: Vec<storage::ValueRecord>,
     directives: Vec<storage::DirectiveRecord>,
     arguments: Vec<storage::ArgumentRecord>,
+    descriptions: Vec<storage::DescriptionRecord>,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -222,6 +223,7 @@ pub mod storage {
         definitions::DefinitionRecord,
         generated::{
             arguments::ArgumentRecord,
+            descriptions::DescriptionRecord,
             directives::{DirectiveDefinitionRecord, DirectiveRecord},
             enums::EnumDefinitionRecord,
             enums::EnumValueDefinitionRecord,

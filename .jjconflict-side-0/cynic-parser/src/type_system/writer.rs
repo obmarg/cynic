@@ -48,7 +48,7 @@ impl TypeSystemAstWriter {
     pub fn store_description(
         &mut self,
         definition: DefinitionId,
-        description: Option<StringLiteralId>,
+        description: Option<DescriptionId>,
     ) {
         if let Some(description) = description {
             match *self.ast.lookup(definition) {
@@ -99,6 +99,12 @@ impl TypeSystemAstWriter {
                 }
             }
         }
+    }
+
+    pub fn description(&mut self, description: DescriptionRecord) -> DescriptionId {
+        let id = DescriptionId::new(self.ast.descriptions.len());
+        self.ast.descriptions.push(description);
+        id
     }
 
     pub fn schema_definition(&mut self, definition: SchemaDefinitionRecord) -> DefinitionId {

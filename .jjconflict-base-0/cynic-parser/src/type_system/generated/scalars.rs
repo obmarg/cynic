@@ -1,8 +1,8 @@
 use super::prelude::*;
 use super::{
+    descriptions::Description,
     directives::Directive,
-    ids::{DirectiveId, ScalarDefinitionId, StringLiteralId},
-    strings::StringLiteral,
+    ids::{DescriptionId, DirectiveId, ScalarDefinitionId},
     ReadContext, TypeSystemId,
 };
 #[allow(unused_imports)]
@@ -10,7 +10,7 @@ use std::fmt::{self, Write};
 
 pub struct ScalarDefinitionRecord {
     pub name: StringId,
-    pub description: Option<StringLiteralId>,
+    pub description: Option<DescriptionId>,
     pub directives: IdRange<DirectiveId>,
     pub span: Span,
 }
@@ -23,7 +23,7 @@ impl<'a> ScalarDefinition<'a> {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).name)
     }
-    pub fn description(&self) -> Option<StringLiteral<'a>> {
+    pub fn description(&self) -> Option<Description<'a>> {
         let document = self.0.document;
         document
             .lookup(self.0.id)

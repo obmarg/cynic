@@ -1,15 +1,15 @@
 use super::prelude::*;
 use super::{
+    descriptions::Description,
     directives::Directive,
-    ids::{DirectiveId, RootOperationTypeDefinitionId, SchemaDefinitionId, StringLiteralId},
-    strings::StringLiteral,
+    ids::{DescriptionId, DirectiveId, RootOperationTypeDefinitionId, SchemaDefinitionId},
     ReadContext, TypeSystemId,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};
 
 pub struct SchemaDefinitionRecord {
-    pub description: Option<StringLiteralId>,
+    pub description: Option<DescriptionId>,
     pub directives: IdRange<DirectiveId>,
     pub root_operations: IdRange<RootOperationTypeDefinitionId>,
     pub span: Span,
@@ -19,7 +19,7 @@ pub struct SchemaDefinitionRecord {
 pub struct SchemaDefinition<'a>(pub(in super::super) ReadContext<'a, SchemaDefinitionId>);
 
 impl<'a> SchemaDefinition<'a> {
-    pub fn description(&self) -> Option<StringLiteral<'a>> {
+    pub fn description(&self) -> Option<Description<'a>> {
         let document = self.0.document;
         document
             .lookup(self.0.id)
