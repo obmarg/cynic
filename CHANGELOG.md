@@ -8,6 +8,23 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v3.8.0 - 2024-08-28
+
+### New Features
+
+- add variable inlining to OperationBuilder ([#1012](https://github.com/obmarg/cynic/pull/1012))
+- add QueryVariableLiterals ([#1009](https://github.com/obmarg/cynic/pull/1009))
+- extract document building from OperationBuilder ([#1004](https://github.com/obmarg/cynic/pull/1004))
+
+### Bug Fixes
+
+- rename keyword arguments in generator ([#1005](https://github.com/obmarg/cynic/pull/1005))
+- fragments on interfaces in the generator ([#994](https://github.com/obmarg/cynic/pull/994))
+
+### Changes
+
+- update Cargo.lock dependencies
+
 ### Bug Fixes
 
 - Tidied up the output of object & list literals in the clients GraphQl output.

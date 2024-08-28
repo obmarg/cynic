@@ -9,6 +9,12 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.4.6 - 2024-08-28
+
+### Changes
+
+- update rust crate apollo-parser to 0.8 ([#996](https://github.com/obmarg/cynic/pull/996))
+
 ## v0.4.5 - 2024-06-19
 
 ### New Features
