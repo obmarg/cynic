@@ -41,6 +41,7 @@ changelog_include = [
     "cynic-codegen",
     "cynic-introspection",
     "cynic-proc-macros",
+    "cynic-querygen"
     "cynic-querygen-web"
 ]
 
