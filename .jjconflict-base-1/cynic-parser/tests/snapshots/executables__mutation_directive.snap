@@ -1,0 +1,8 @@
+---
+source: cynic-parser/tests/executables.rs
+expression: output
+---
+mutation @directive {
+  node
+}
+

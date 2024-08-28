@@ -1,0 +1,40 @@
+---
+source: cynic-querygen/tests/misc-tests.rs
+expression: "document_to_fragment_structs(query, schema,\n        &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
+---
+#[derive(cynic::QueryVariables, Debug)]
+pub struct MyQueryVariables {
+    pub input: Option<InputType>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(graphql_type = "my_query", variables = "MyQueryVariables")]
+pub struct MyQuery {
+    #[arguments(in: $input)]
+    pub field: Option<NestedType>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(graphql_type = "nested_type")]
+pub struct NestedType {
+    pub scalar: Option<MyScalar>,
+}
+
+#[derive(cynic::Enum, Clone, Copy, Debug)]
+#[cynic(graphql_type = "an_enum")]
+pub enum AnEnum {
+    #[cynic(rename = "value")]
+    Value,
+}
+
+#[derive(cynic::InputObject, Debug)]
+#[cynic(graphql_type = "input_type")]
+pub struct InputType {
+    pub en: Option<AnEnum>,
+}
+
+#[derive(cynic::Scalar, Debug, Clone)]
+#[cynic(graphql_type = "my_scalar")]
+pub struct MyScalar(pub String);
+
+

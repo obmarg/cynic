@@ -1,0 +1,18 @@
+---
+source: examples/examples/querying-interfaces.rs
+assertion_line: 124
+expression: result.data
+---
+Some(
+    Query {
+        node: Some(
+            Planet(
+                Planet {
+                    name: Some(
+                        "Dorin",
+                    ),
+                },
+            ),
+        ),
+    },
+)

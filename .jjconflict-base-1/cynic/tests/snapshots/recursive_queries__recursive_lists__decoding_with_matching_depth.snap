@@ -1,0 +1,16 @@
+---
+source: cynic/tests/recursive-queries.rs
+assertion_line: 49
+expression: "serde_json::from_value::<AllPostsQuery>(data).unwrap()"
+---
+all_posts:
+  - comments:
+      - author:
+          posts:
+            - comments:
+                - author:
+                    posts:
+                      - comments:
+                          - author:
+                              posts: ~
+

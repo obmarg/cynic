@@ -1,0 +1,19 @@
+---
+source: examples/examples/starwars.rs
+assertion_line: 81
+expression: result.data
+---
+Some(
+    FilmDirectorQuery {
+        film: Some(
+            Film {
+                title: Some(
+                    "A New Hope",
+                ),
+                director: Some(
+                    "George Lucas",
+                ),
+            },
+        ),
+    },
+)

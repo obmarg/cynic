@@ -1,0 +1,5 @@
+error: no field `fiim` on the GraphQL type `Root`.  Did you mean `film`?
+  --> tests/cases/fragment-guess-validation.rs:15:13
+   |
+15 |         pub fiim: Option<Film>,
+   |             ^^^^

@@ -1,0 +1,25 @@
+---
+source: cynic/tests/recursive-queries.rs
+expression: operation.query
+---
+query AllPostsQuery {
+  allPosts {
+    comments {
+      author {
+        posts {
+          comments {
+            author {
+              posts {
+                comments {
+                  author
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+

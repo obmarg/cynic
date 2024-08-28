@@ -1,0 +1,18 @@
+---
+source: cynic-querygen/tests/misc-tests.rs
+expression: "document_to_fragment_structs(query, schema,\n        &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
+---
+#[derive(cynic::QueryVariables, Debug)]
+pub struct SignInVariables<'a> {
+    pub password: &'a str,
+    pub username: &'a str,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(graphql_type = "MutationRoot", variables = "SignInVariables")]
+pub struct SignIn {
+    #[arguments(input: { password: $password, username: $username })]
+    pub sign_in: String,
+}
+
+

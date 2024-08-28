@@ -1,0 +1,41 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "branchPrefix": "renovate-",
+  "extends": [
+    "config:recommended",
+    ":semanticCommitTypeAll(chore)",
+    ":semanticCommitScopeDisabled"
+  ],
+  "ignorePresets": [
+    ":semanticPrefixFixDepsChoreOthers"
+  ],
+  "rangeStrategy": "update-lockfile",
+  "packageRules": [
+    {
+      "groupName": "lalrpop",
+      "matchPackageNames": ["lalrpop", "lalrpop-util"]
+    },
+    {
+      "groupName": "dependencies-non-major",
+      "matchCurrentVersion": "!/^0/",
+      "matchUpdateTypes": [
+        "digest",
+        "minor",
+        "patch",
+        "pin"
+      ]
+    },
+    {
+      "groupName": "dependencies-non-major",
+      "matchCurrentVersion": "/^0/",
+      "matchUpdateTypes": [
+        "digest",
+        "patch",
+        "pin"
+      ]
+    }
+  ],
+  "schedule": [
+    "after 10am on the first day of the month"
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  allFilms {
+    films {
+      id
+      title
+    }
+  }
+}

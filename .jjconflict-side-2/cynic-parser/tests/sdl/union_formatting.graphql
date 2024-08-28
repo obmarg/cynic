@@ -1,0 +1,13 @@
+union SomeUnion =
+    ThingA
+  | ThingB
+  | ThingC
+  | ALongerThing
+  | ThingD
+  | Whatever
+  | Blah
+
+"""
+Thing
+"""
+union SomeOtherUnion = Whatever | Thing

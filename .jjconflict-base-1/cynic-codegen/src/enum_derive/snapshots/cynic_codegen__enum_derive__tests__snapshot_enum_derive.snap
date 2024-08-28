@@ -1,0 +1,45 @@
+---
+source: cynic-codegen/src/enum_derive/mod.rs
+expression: "format_code(format!(\"{}\", tokens))"
+---
+#[automatically_derived]
+impl cynic::Enum for States {
+    type SchemaType = schema::States;
+}
+#[automatically_derived]
+impl cynic::serde::Serialize for States {
+    fn serialize<__S>(&self, serializer: __S) -> Result<__S::Ok, __S::Error>
+    where
+        __S: cynic::serde::Serializer,
+    {
+        match self {
+            States::Closed => serializer.serialize_unit_variant("States", 0u32, "CLOSED"),
+            States::Deleted => serializer.serialize_unit_variant("States", 1u32, "DELETED"),
+            States::Open => serializer.serialize_unit_variant("States", 2u32, "OPEN"),
+        }
+    }
+}
+#[automatically_derived]
+impl<'de> cynic::serde::Deserialize<'de> for States {
+    fn deserialize<__D>(deserializer: __D) -> Result<Self, __D::Error>
+    where
+        __D: cynic::serde::Deserializer<'de>,
+    {
+        let desered_string = <String as cynic::serde::Deserialize>::deserialize(deserializer)?;
+        match desered_string.as_ref() {
+            "CLOSED" => Ok(States::Closed),
+            "DELETED" => Ok(States::Deleted),
+            "OPEN" => Ok(States::Open),
+            unknown => {
+                const VARIANTS: &'static [&'static str] = &["CLOSED", "DELETED", "OPEN"];
+                Err(cynic::serde::de::Error::unknown_variant(unknown, VARIANTS))
+            }
+        }
+    }
+}
+cynic::impl_coercions!(States, schema::States);
+#[automatically_derived]
+impl schema::variable::Variable for States {
+    const TYPE: cynic::variables::VariableType = cynic::variables::VariableType::Named("States");
+}
+

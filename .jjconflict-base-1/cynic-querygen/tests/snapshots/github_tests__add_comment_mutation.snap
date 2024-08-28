@@ -1,0 +1,32 @@
+---
+source: cynic-querygen/tests/github-tests.rs
+expression: "document_to_fragment_structs(query, schema,\n        &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
+---
+#[derive(cynic::QueryVariables, Debug)]
+pub struct CommentOnMutationSupportIssueVariables<'a> {
+    pub comment_body: &'a str,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(graphql_type = "Mutation", variables = "CommentOnMutationSupportIssueVariables")]
+pub struct CommentOnMutationSupportIssue {
+    #[arguments(input: { body: $comment_body, subjectId: "MDU6SXNzdWU2ODU4NzUxMzQ=" })]
+    pub add_comment: Option<AddCommentPayload>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+pub struct AddCommentPayload {
+    pub comment_edge: Option<IssueCommentEdge>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+pub struct IssueCommentEdge {
+    pub node: Option<IssueComment>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+pub struct IssueComment {
+    pub id: cynic::Id,
+}
+
+

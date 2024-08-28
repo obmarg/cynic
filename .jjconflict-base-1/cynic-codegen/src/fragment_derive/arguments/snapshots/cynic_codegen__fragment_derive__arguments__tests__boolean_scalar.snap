@@ -1,0 +1,28 @@
+---
+source: cynic-codegen/src/fragment_derive/arguments/tests.rs
+expression: "analyse(&schema, literals, field, Some(&format_ident!(\"MyArguments\").into()),\n        Span::call_site()).map(|o| o.arguments)"
+---
+Ok(
+    [
+        Field {
+            schema_field: InputValue {
+                name: FieldName {
+                    graphql_name: "aBool",
+                },
+                value_type: NullableType(
+                    NamedInputType(
+                        "Boolean",
+                    ),
+                ),
+                has_default: false,
+            },
+            value: Some(
+                Literal(
+                    Lit::Bool {
+                        value: true,
+                    },
+                ),
+            ),
+        },
+    ],
+)

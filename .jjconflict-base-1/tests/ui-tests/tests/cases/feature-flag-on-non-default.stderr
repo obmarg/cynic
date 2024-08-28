@@ -1,0 +1,19 @@
+error[E0277]: the trait bound `queries::PullRequestConnection: Default` is not satisfied
+  --> tests/cases/feature-flag-on-non-default.rs:12:13
+   |
+12 |         pub pull_requests: PullRequestConnection,
+   |             ^^^^^^^^^^^^^ the trait `Default` is not implemented for `queries::PullRequestConnection`
+   |
+note: required by a bound in `std::option::Option::<T>::unwrap_or_default`
+  --> $RUST/core/src/option.rs
+   |
+   |     pub fn unwrap_or_default(self) -> T
+   |            ----------------- required by a bound in this associated function
+   |     where
+   |         T: Default,
+   |            ^^^^^^^ required by this bound in `Option::<T>::unwrap_or_default`
+help: consider annotating `queries::PullRequestConnection` with `#[derive(Default)]`
+   |
+16   +     #[derive(Default)]
+17   |     pub struct PullRequestConnection {
+     |

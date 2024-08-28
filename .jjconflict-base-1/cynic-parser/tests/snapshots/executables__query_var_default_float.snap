@@ -1,0 +1,8 @@
+---
+source: cynic-parser/tests/executables.rs
+expression: output
+---
+query Foo($site: Float = 0.5) {
+  field
+}
+

@@ -20,6 +20,7 @@ pub use self::{
     definitions::{Definition, TypeDefinition},
     generated::{
         arguments::Argument,
+        descriptions::Description,
         directives::{Directive, DirectiveDefinition},
         enums::{EnumDefinition, EnumValueDefinition},
         fields::FieldDefinition,

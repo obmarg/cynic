@@ -1,0 +1,3 @@
+mutation SignIn($username: String!, $password: String!) {
+  signIn(input: { username: $username, password: $password })
+}

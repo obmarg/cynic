@@ -1,0 +1,10 @@
+type Whatever {
+  userImages(
+    withNonAggregate: Boolean = true
+    sortByNewest: Boolean = false
+    limit: Float
+    subjectId: Float!
+    subjectReferenceId: Float!
+    sectionTagIds: [Float!]
+  ): [UserImages!]!
+}

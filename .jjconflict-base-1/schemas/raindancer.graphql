@@ -1,0 +1,35 @@
+type Device {
+  id: Int!
+  name: String!
+}
+type MutationRoot {
+  """
+  Returns a device with a certain `id`.
+  """
+  createDevice(name: String!): Int
+  signIn(input: SignInInput!): String!
+  refresh(token: String!): String!
+  create(input: UserData!): ID
+}
+type QueryRoot {
+  """
+  Returns a device with a certain `id`.
+  """
+  user(id: Int!): Device
+}
+input SignInInput {
+  username: String!
+  password: String!
+}
+type SubscriptionRoot {
+  interval(n: Int! = 1): Int!
+}
+input UserData {
+  username: String!
+  password: String!
+}
+schema {
+  query: QueryRoot
+  mutation: MutationRoot
+  subscription: SubscriptionRoot
+}

@@ -1,0 +1,22 @@
+name: Upload release binaries
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  upload-artifacts:
+    if: ${{ startsWith(github.ref, 'refs/tags/v') }}
+    strategy:
+      matrix:
+        os:
+          - ubuntu-latest
+          - macos-latest
+          - windows-latest
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: taiki-e/upload-rust-binary-action@v1
+        with:
+          bin: cynic
+          token: ${{ secrets.GITHUB_TOKEN }}

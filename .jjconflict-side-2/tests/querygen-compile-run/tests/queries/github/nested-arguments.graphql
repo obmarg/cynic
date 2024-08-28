@@ -1,0 +1,13 @@
+query PullRequestTitles(
+  $repo: String!
+  $owner: String!
+  $prOrder: IssueOrder!
+) {
+  repository(name: $repo, owner: $owner) {
+    pullRequests(orderBy: $prOrder) {
+      nodes {
+        title
+      }
+    }
+  }
+}

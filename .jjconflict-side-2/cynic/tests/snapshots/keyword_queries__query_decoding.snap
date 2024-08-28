@@ -1,0 +1,12 @@
+---
+source: cynic/tests/keyword-queries.rs
+assertion_line: 26
+expression: data
+---
+whatevs: false
+whatevs2: false
+whatevs3: false
+self_: false
+super_: false
+field_with_keyword_arg: []
+

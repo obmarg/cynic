@@ -1,0 +1,7 @@
+type MutationRoot {
+  """
+  Returns a device with a certain `id`.
+  """
+  createDevice(name: String!): Int
+  signIn(input: SignInInput!): String!
+}

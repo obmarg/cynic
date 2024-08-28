@@ -1,0 +1,14 @@
+---
+source: cynic/tests/keyword-queries.rs
+expression: query.query
+---
+query KeywordQuery {
+  _
+  async
+  crate
+  self
+  super
+  fieldWithKeywordArg(where: 10)
+}
+
+

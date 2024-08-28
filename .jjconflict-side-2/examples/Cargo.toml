@@ -1,0 +1,32 @@
+[package]
+name = "cynic-examples"
+version = "3.4.0"
+authors = ["Graeme Coupar <grambo@grambo.me.uk>"]
+edition = "2018"
+publish = false
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+cynic = { path = "../cynic", features = ["http-surf", "http-reqwest-blocking"] }
+cynic-codegen = { path = "../cynic-codegen" }
+
+# Reqwest example requirements
+reqwest = { version = "0.12", features = ["json", "blocking"] }
+tokio = { version = "1.15", features = ["macros"] }
+
+# Surf example requirements
+surf = { version = "2.3", features = ["h1-client-rustls"] }
+async-std = "1.10"
+
+chrono = { version = "0.4", features = ["serde"] }
+
+# We pull the github schema from a separate crate so we don't
+# have to recompile it as often.
+github-schema = { path = "../schemas/github" }
+
+[dev-dependencies]
+insta = "1.17"
+
+[build-dependencies]
+cynic-codegen = { path = "../cynic-codegen" }
