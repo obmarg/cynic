@@ -108,6 +108,7 @@ type Directive @file(name: "directives") {
 type Argument @file(name: "arguments") {
   name: String!
   value: Value!
+  span: Span!
 }
 
 type Description @file(name: "descriptions") {

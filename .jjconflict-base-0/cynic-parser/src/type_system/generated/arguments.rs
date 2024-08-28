@@ -10,6 +10,7 @@ use std::fmt::{self, Write};
 pub struct ArgumentRecord {
     pub name: StringId,
     pub value: ValueId,
+    pub span: Span,
 }
 
 #[derive(Clone, Copy)]
@@ -24,6 +25,10 @@ impl<'a> Argument<'a> {
         let document = self.0.document;
         document.read(document.lookup(self.0.id).value)
     }
+    pub fn span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).span
+    }
 }
 
 impl Argument<'_> {
@@ -37,6 +42,7 @@ impl fmt::Debug for Argument<'_> {
         f.debug_struct("Argument")
             .field("name", &self.name())
             .field("value", &self.value())
+            .field("span", &self.span())
             .finish()
     }
 }

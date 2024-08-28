@@ -18,16 +18,18 @@ pub TypeSystemDocument: () = {
     <defs:DefinitionAndDescription+> => {}
 }
 
-DefinitionAndDescription: () = {
-    <start:@L> <description:StringValue> <end:@R> <def:TypeSystemDefinition> => {
-        let description_id = ast.description(DescriptionRecord {
+Description: DescriptionId = {
+    <start:@L> <description:StringValue> <end:@R> => {
+        ast.description(DescriptionRecord {
             description,
             span: Span::new(start, end),
-        });
-        ast.store_description(def, Some(description_id))
-    },
-    <def:TypeSystemDefinition> => {
-        ast.store_description(def, None)
+        })
+    }
+}
+
+DefinitionAndDescription: () = {
+    <description:Description?> <def:TypeSystemDefinition> => {
+        ast.store_description(def, description)
     }
 }
 
@@ -140,11 +142,11 @@ FieldsDefinition: Vec<()> = {
 
 FieldDefinition: () = {
     <start:@L>
-        <description:StringValue?>
+        <description:Description?>
         <name:Name>
         <arguments:ArgumentsDefinition?> ":" <ty:Type>
         <directives:Directives>
-        <end:@R>
+    <end:@R>
     => {
         let arguments = ast.input_value_definition_range(
             Some(arguments.map(|arguments| arguments.len()).unwrap_or_default())
@@ -228,7 +230,7 @@ EnumValuesDefinition: Vec<EnumValueDefinitionId> = {
 
 EnumValueDefinition: EnumValueDefinitionId = {
     <start:@L>
-        <description:StringValue?>
+        <description:Description?>
         <value:EnumValue>
         <directives:Directives>
         <end:@R>
@@ -303,7 +305,7 @@ DirectiveLocation: DirectiveLocation = {
 
 InputValueDefinition: () = {
     <start:@L>
-        <description:StringValue?>
+        <description:Description?>
         <name:Name> ":" <ty:Type> <default_start:@L> <default:DefaultValue?> <default_end:@R>
         <directives:Directives>
         <end:@R>
