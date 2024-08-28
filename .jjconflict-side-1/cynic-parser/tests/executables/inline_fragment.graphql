@@ -1,8 +1,0 @@
-{
-  node {
-    id
-    ... on User {
-      name
-    }
-  }
-}

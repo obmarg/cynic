@@ -1,7 +1,0 @@
----
-source: cynic-parser/tests/executables.rs
-expression: output
----
-{
-  node @dir(a: 1, b: "2", c: true, d: false, e: null)
-}

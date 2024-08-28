@@ -1,8 +1,0 @@
----
-source: cynic-parser/tests/executables.rs
-expression: output
----
-query Foo($a: Int = 10 @directive, $b: Int @directive) {
-  value
-}
-

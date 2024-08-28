@@ -1,7 +1,0 @@
-query Jobs($input: LocationInput!) {
-  city(input: $input) {
-    jobs {
-      title
-    }
-  }
-}

@@ -1,7 +1,0 @@
-# A nonsense name for a UUID field, but it's good enough for the test
-query MyQuery($type: UUID!) {
-  bar(id: $type) {
-    id
-    name
-  }
-}

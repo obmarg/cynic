@@ -1,9 +1,0 @@
-type Whatever {
-  whatever(
-    orderBy: EnterpriseServerInstallationOrder = {
-      field: HOST_NAME
-      direction: ASC
-    }
-  ): String
-  whatever(orderBy: Smaller = { field: HOST_NAME, direction: ASC }): String
-}

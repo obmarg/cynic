@@ -1,8 +1,0 @@
----
-source: cynic-parser/tests/executables.rs
-expression: output
----
-subscription @directive {
-  node
-}
-

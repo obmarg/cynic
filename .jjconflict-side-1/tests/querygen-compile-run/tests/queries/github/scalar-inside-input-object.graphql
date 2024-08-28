@@ -1,7 +1,0 @@
-mutation AddPRComment($body: String!, $commit: GitObjectID!) {
-  addPullRequestReviewComment(input: { body: $body, commitOID: $commit }) {
-    comment {
-      bodyText
-    }
-  }
-}

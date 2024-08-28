@@ -1,0 +1,487 @@
+use crate::lexer;
+
+use crate::{
+    Span,
+    type_system::{
+        storage::*, ids::*, writer::TypeSystemAstWriter,
+        DirectiveLocation,
+    },
+    common::{
+        OperationType, IdRange, WrappingType, TypeWrappers,
+        unquote_string, unquote_block_string
+    }
+};
+
+grammar<'input>(input: &'input str, ast: &mut TypeSystemAstWriter);
+
+pub TypeSystemDocument: () = {
+    <defs:DefinitionAndDescription+> => {}
+}
+
+Description: DescriptionId = {
+    <start:@L> <description:StringValue> <end:@R> => {
+        ast.description(DescriptionRecord {
+            description,
+            span: Span::new(start, end),
+        })
+    }
+}
+
+DefinitionAndDescription: () = {
+    <description:Description?> <def:TypeSystemDefinition> => {
+        ast.store_description(def, description)
+    }
+}
+
+TypeSystemDefinition: DefinitionId = {
+    <def:SchemaDefinition> => ast.schema_definition(def),
+    <def:ScalarDefinition> => ast.scalar_definition(def),
+    <def:ObjectDefinition> => ast.object_definition(def),
+    <def:InterfaceDefinition> => ast.interface_definition(def),
+    <def:UnionDefinition> => ast.union_definition(def),
+    <def:EnumDefinition> => ast.enum_definition(def),
+    <def:InputObjectDefinition> => ast.input_object_definition(def),
+    extend <def:SchemaExtensionDefinition> => ast.schema_extension(def),
+    extend <def:ScalarDefinition> => ast.scalar_extension(def),
+    extend <def:ObjectDefinition> => ast.object_extension(def),
+    extend <def:InterfaceDefinition> => ast.interface_extension(def),
+    extend <def:UnionDefinition> => ast.union_extension(def),
+    extend <def:EnumDefinition> => ast.enum_extension(def),
+    extend <def:InputObjectDefinition> => ast.input_object_extension(def),
+    <def:DirectiveDefinition> => ast.directive_definition(def),
+}
+
+SchemaDefinition: SchemaDefinitionRecord = {
+    <start:@L> schema <directives:Directives> <root_operations:RootOperationTypeDefinitions> <end:@R> => SchemaDefinitionRecord {
+        description: None,
+        directives,
+        root_operations,
+        span: Span::new(start, end),
+    }
+};
+
+SchemaExtensionDefinition: SchemaDefinitionRecord = {
+    <start:@L> schema <directives:Directives> <root_operations:RootOperationTypeDefinitions?> <end:@R> => SchemaDefinitionRecord {
+        description: None,
+        directives,
+        root_operations: root_operations.unwrap_or_default(),
+        span: Span::new(start, end),
+    }
+};
+
+RootOperationTypeDefinitions: IdRange<RootOperationTypeDefinitionId> = {
+    "{" <root_operations:RootOperationTypeDefinition*> "}" => ast.root_operation_definitions(root_operations),
+}
+
+RootOperationTypeDefinition: RootOperationTypeDefinitionRecord = {
+    query ":" <start:@L> <name:NamedType> <end:@R> => RootOperationTypeDefinitionRecord {
+        operation_type: OperationType::Query,
+        named_type: name,
+        span: Span::new(start, end)
+    },
+    mutation ":" <start:@L> <name:NamedType> <end:@R> => RootOperationTypeDefinitionRecord {
+        operation_type: OperationType::Mutation,
+        named_type: name,
+        span: Span::new(start, end)
+    },
+    subscription ":" <start:@L> <name:NamedType> <end:@R> => RootOperationTypeDefinitionRecord {
+        operation_type: OperationType::Subscription,
+        named_type: name,
+        span: Span::new(start, end)
+    },
+}
+
+ScalarDefinition: ScalarDefinitionRecord = {
+    <start:@L> scalar
+        <name:Name>
+        <directives:Directives>
+        <end:@R>
+    => ScalarDefinitionRecord {
+        name,
+        description: None,
+        directives,
+        span: Span::new(start,end)
+    }
+}
+
+ObjectDefinition: ObjectDefinitionRecord = {
+    <start:@L> ty
+        <name:Name>
+        <implements:ImplementsInterfaces?>
+        <directives:Directives>
+        <fields:FieldsDefinition?>
+        <end:@R>
+    => ObjectDefinitionRecord {
+        name,
+        description: None,
+        directives,
+        implements_interfaces: implements.unwrap_or_default(),
+        fields: ast.field_definition_range(Some(fields.map(|fields| fields.len()).unwrap_or_default())),
+        span: Span::new(start,end)
+    }
+};
+
+ImplementsInterfaces: Vec<StringId> = {
+    <interfaces:ImplementsInterfaces> "&" <name:NamedType> => {
+        let mut interfaces = interfaces;
+        interfaces.push(name);
+        interfaces
+    },
+    implements "&"? <name:NamedType> => {
+        vec![name]
+    }
+}
+
+ImplementItem: StringId = {
+    "&" <name:NamedType> => name,
+}
+
+FieldsDefinition: Vec<()> = {
+    "{" <fields:FieldDefinition+> "}" => fields
+};
+
+FieldDefinition: () = {
+    <start:@L>
+        <description:Description?>
+        <name:Name>
+        <arguments:ArgumentsDefinition?> ":" <ty:Type>
+        <directives:Directives>
+    <end:@R>
+    => {
+        let arguments = ast.input_value_definition_range(
+            Some(arguments.map(|arguments| arguments.len()).unwrap_or_default())
+        );
+        ast.field_definition(FieldDefinitionRecord {
+            name,
+            ty,
+            arguments,
+            description,
+            directives,
+            span: Span::new(start,end)
+        });
+    }
+};
+
+ArgumentsDefinition: Vec<()> = {
+    "(" <arguments:InputValueDefinition+> ")" => arguments,
+};
+
+InterfaceDefinition: InterfaceDefinitionRecord = {
+    <start:@L> interface
+        <name:Name>
+        <implements:ImplementsInterfaces?>
+        <directives:Directives>
+        <fields:FieldsDefinition?>
+        <end:@R>
+    => InterfaceDefinitionRecord {
+        name,
+        description: None,
+        directives,
+        implements_interfaces: implements.unwrap_or_default(),
+        fields: ast.field_definition_range(Some(fields.map(|fields| fields.len()).unwrap_or_default())),
+        span: Span::new(start,end)
+    }
+};
+
+UnionDefinition: UnionDefinitionRecord = {
+    <start:@L> union
+        <name:Name>
+        <directives:Directives>
+        <members:UnionMemberTypes?>
+        <end:@R>
+    => UnionDefinitionRecord {
+        name,
+        description: None,
+        members: ast.union_member_range(members.map(|members| members.len())),
+        directives,
+        span: Span::new(start,end)
+    }
+};
+
+UnionMemberTypes: Vec<UnionMemberId> = {
+    <members:UnionMemberTypes> "|" <start:@L> <name:NamedType> <end:@R> => {
+        let mut members = members;
+        members.push(ast.union_member(UnionMemberRecord { name, span: Span::new(start, end) }));
+        members
+    },
+    "=" "|"? <start:@L> <name:NamedType> <end:@R> => {
+        vec![ast.union_member(UnionMemberRecord { name, span: Span::new(start, end) })]
+    }
+}
+
+EnumDefinition: EnumDefinitionRecord = {
+    <start:@L> "enum"
+        <name:Name>
+        <directives:Directives>
+        <values:EnumValuesDefinition?>
+        <end:@R>
+    => EnumDefinitionRecord {
+        name,
+        description: None,
+        directives,
+        values: ast.enum_value_definition_range(values.map(|values| values.len())),
+        span: Span::new(start,end)
+    }
+};
+
+EnumValuesDefinition: Vec<EnumValueDefinitionId> = {
+    "{" <values:EnumValueDefinition+> "}" => values
+}
+
+EnumValueDefinition: EnumValueDefinitionId = {
+    <start:@L>
+        <description:Description?>
+        <value:EnumValue>
+        <directives:Directives>
+        <end:@R>
+    => ast.enum_value_definition(EnumValueDefinitionRecord {
+        value,
+        description,
+        directives,
+        span: Span::new(start,end)
+    })
+
+}
+
+InputObjectDefinition: InputObjectDefinitionRecord = {
+    <start:@L> input
+        <name:Name>
+        <directives:Directives>
+        <fields:InputFieldsDefinition?>
+        <end:@R>
+    => InputObjectDefinitionRecord {
+        name,
+        description: None,
+        directives,
+        fields: ast.input_value_definition_range(Some(fields.map(|fields| fields.len()).unwrap_or_default())),
+        span: Span::new(start,end)
+    }
+}
+
+InputFieldsDefinition: Vec<()> = {
+    "{" <fields:InputValueDefinition+> "}" => fields
+};
+
+DirectiveDefinition: DirectiveDefinitionRecord = {
+    <start:@L>
+        directive
+        "@" <name:Name>
+        <arguments:ArgumentsDefinition?>
+        <repeatable:Repeatable?>
+        on
+        <locations:DirectiveLocations>
+        <end:@R>
+    => DirectiveDefinitionRecord {
+        name,
+        description: None,
+        arguments: ast.input_value_definition_range(Some(arguments.map(|arguments| arguments.len()).unwrap_or_default())),
+        is_repeatable: repeatable.unwrap_or_default(),
+        locations,
+        span: Span::new(start, end)
+    }
+}
+
+Repeatable: bool = {
+    repeatable => true
+}
+
+DirectiveLocations: Vec<DirectiveLocation> = {
+    <locations:DirectiveLocations> "|" <location:DirectiveLocation> => {
+        let mut locations = locations;
+        locations.push(location);
+        locations
+    },
+    "|"? <location:DirectiveLocation> => {
+        vec![location]
+    }
+}
+
+DirectiveLocation: DirectiveLocation = {
+    <start:@L> <s:Ident> <end:@R> =>? {
+        s.parse::<DirectiveLocation>()
+            .map_err(|error| error.into_lalrpop_error((start, end)))
+    }
+}
+
+InputValueDefinition: () = {
+    <start:@L>
+        <description:Description?>
+        <name:Name> ":" <ty:Type> <default_start:@L> <default:DefaultValue?> <default_end:@R>
+        <directives:Directives>
+        <end:@R>
+    => {
+        ast.input_value_definition(InputValueDefinitionRecord {
+            name,
+            ty,
+            description,
+            directives,
+            default_value: default,
+            default_value_span: Span::new(default_start, default_end),
+            span: Span::new(start, end)
+        });
+    }
+}
+
+
+DefaultValue: ValueId = {
+    "=" <v:Value> => v
+}
+
+Name: StringId = <s:Ident> => ast.ident(s);
+
+NamedType: StringId = <s:Ident> => ast.ident(s);
+
+Type: TypeId = {
+    <start:@L> "["* <name:NamedType> <wrappers:WrappingType*> <end:@R> => ast.type_reference(TypeRecord {
+        name,
+        wrappers: TypeWrappers::from_iter(wrappers),
+        span: Span::new(start, end)
+    })
+}
+
+WrappingType: WrappingType = {
+    "!" => WrappingType::NonNull,
+    "]" => WrappingType::List
+}
+
+Value: ValueId = {
+    "$" <name:Name> => ast.value(ValueRecord::Variable(name)),
+    <int:IntegerLiteral> => ast.value(ValueRecord::Int(int.parse().unwrap())),
+    <float:FloatLiteral> => ast.value(ValueRecord::Float(float.parse().unwrap())),
+    <start:@L> <s:StringLiteral> =>? {
+        let id = ast.intern_owned_string(unquote_string(s, start)?);
+        Ok(ast.value(ValueRecord::String(id)))
+    },
+    <s:BlockStringLiteral> => {
+        let id = ast.block_string(unquote_block_string(s));
+        ast.value(ValueRecord::BlockString(id))
+    },
+    true => ast.value(ValueRecord::Boolean(true)),
+    false => ast.value(ValueRecord::Boolean(false)),
+    null => ast.value(ValueRecord::Null),
+    "[" <values:Value*> "]" => ast.value(ValueRecord::List(values)),
+    "{" <fields:ObjectField*> "}" => ast.value(ValueRecord::Object(fields)),
+    <value:EnumValue> => ast.value(ValueRecord::Enum(value)),
+}
+
+ObjectField: (StringId, ValueId) = {
+    <name:Name> ":" <value:Value> => (name, value)
+}
+
+StringValue: StringLiteralId = {
+    <start:@L> <s:StringLiteral> =>? {
+        Ok(StringLiteralId::String(ast.intern_owned_string(unquote_string(s, start)?)))
+    },
+    <s:BlockStringLiteral> => {
+        let id = ast.block_string(unquote_block_string(s));
+        StringLiteralId::Block(id)
+    },
+}
+
+EnumValue: StringId = {
+    <s:RawIdent> => ast.ident(s),
+    schema => ast.ident("schema"),
+    query => ast.ident("query"),
+    ty => ast.ident("type"),
+    input => ast.ident("input"),
+}
+
+Directives: IdRange<DirectiveId> = {
+    <directives:Directive*> => {
+        ast.directive_range(Some(directives.len()))
+    }
+}
+
+Directive: () = {
+    "@" <name:Name> <arguments:Arguments?> => {
+        let arguments = ast.argument_range(arguments.map(|arguments| arguments.len()));
+
+        ast.directive(DirectiveRecord { <> });
+    }
+}
+
+Arguments: Vec<ArgumentId> = {
+    "(" <arguments:Argument*> ")" => arguments
+}
+
+Argument: ArgumentId = {
+    <start:@L> <name:Name> ":" <value:Value> <end:@R> => ast.argument(ArgumentRecord { name, value, span: Span::new(start, end) }),
+}
+
+Ident: &'input str = {
+    <s:RawIdent> => s,
+    schema => "schema",
+    query => "query",
+    mutation => "mutation",
+    subscription => "subscription",
+    ty => "type",
+    input => "input",
+    true => "true",
+    false => "false",
+    null => "null",
+    implements => "implements",
+    interface => "interface",
+    "enum" => "enum",
+    union => "union",
+    scalar => "scalar",
+    extend => "extend",
+    directive => "directive",
+    repeatable => "repeatable",
+    on => "on",
+    fragment => "fragment",
+}
+
+extern {
+    type Location = usize;
+    type Error = crate::parser::AdditionalErrors;
+
+    enum lexer::Token<'input> {
+        "$" => lexer::Token::Dollar,
+
+        ":" => lexer::Token::Colon,
+
+        "{" => lexer::Token::OpenBrace,
+        "}" => lexer::Token::CloseBrace,
+
+        "(" => lexer::Token::OpenParen,
+        ")" => lexer::Token::CloseParen,
+
+        "[" => lexer::Token::OpenBracket,
+        "]" => lexer::Token::CloseBracket,
+
+        "!" => lexer::Token::Exclamation,
+        "=" => lexer::Token::Equals,
+        "@" => lexer::Token::At,
+        "&" => lexer::Token::Ampersand,
+        "|" => lexer::Token::Pipe,
+
+        RawIdent => lexer::Token::Identifier(<&'input str>),
+
+        StringLiteral => lexer::Token::StringLiteral(<&'input str>),
+        BlockStringLiteral => lexer::Token::BlockStringLiteral(<&'input str>),
+        FloatLiteral => lexer::Token::FloatLiteral(<&'input str>),
+        IntegerLiteral => lexer::Token::IntegerLiteral(<&'input str>),
+
+        // Would be nice if these could just be aliases of `Identifier` but LARLPOP doesn't
+        // seem to support this well: https://github.com/lalrpop/lalrpop/issues/671
+        schema => lexer::Token::Schema,
+        query => lexer::Token::Query,
+        mutation => lexer::Token::Mutation,
+        subscription => lexer::Token::Subscription,
+        ty => lexer::Token::Type,
+        input => lexer::Token::Input,
+        true => lexer::Token::True,
+        false => lexer::Token::False,
+        null => lexer::Token::Null,
+        implements => lexer::Token::Implements,
+        interface => lexer::Token::Interface,
+        "enum" => lexer::Token::Enum,
+        union => lexer::Token::Union,
+        scalar => lexer::Token::Scalar,
+        extend => lexer::Token::Extend,
+        directive => lexer::Token::Directive,
+        repeatable => lexer::Token::Repeatable,
+        on => lexer::Token::On,
+        fragment => lexer::Token::Fragment,
+    }
+}

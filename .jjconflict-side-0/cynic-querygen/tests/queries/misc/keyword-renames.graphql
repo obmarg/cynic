@@ -1,7 +1,0 @@
-query KeywordRenames {
-  _
-  self
-  super
-  crate
-  async
-}

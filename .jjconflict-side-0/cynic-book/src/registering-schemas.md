@@ -1,1 +1,0 @@
-# Registering Schemas

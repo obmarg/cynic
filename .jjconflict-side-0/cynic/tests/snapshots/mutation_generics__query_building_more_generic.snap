@@ -1,9 +1,0 @@
----
-source: cynic/tests/mutation_generics.rs
-expression: operation.query
----
-mutation SignInMoreGeneric($input: SignInInput!) {
-  signIn(input: $input)
-}
-
-
