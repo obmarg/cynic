@@ -88,7 +88,7 @@ pub trait SubscriptionBuilder<Variables>: Sized {
     /// Constructs a subscription operation for this QueryFragment.
     fn build(vars: Variables) -> StreamingOperation<Self, Variables>;
 
-    /// Creates an operation buidler for this subscription
+    /// Creates an operation builder for this subscription
     fn operation_builder(vars: Variables) -> OperationBuilder<Self, Variables>;
 
     /// Returns the executable document for this subscription
