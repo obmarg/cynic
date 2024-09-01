@@ -12,6 +12,10 @@
   "rangeStrategy": "update-lockfile",
   "packageRules": [
     {
+      "groupName": "lalrpop",
+      "matchPackageNames": ["lalrpop", "lalrpop-util"]
+    },
+    {
       "groupName": "dependencies-non-major",
       "matchCurrentVersion": "!/^0/",
       "matchUpdateTypes": [
