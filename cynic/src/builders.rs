@@ -12,7 +12,7 @@ pub trait QueryBuilder<Variables>: Sized {
     /// Constructs a query operation for this QueryFragment.
     fn build(vars: Variables) -> Operation<Self, Variables>;
 
-    /// Creates an operation buidler for this query
+    /// Creates an operation builder for this query
     fn operation_builder(vars: Variables) -> OperationBuilder<Self, Variables>;
 
     /// Returns the executable document for this query
