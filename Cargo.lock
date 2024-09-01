@@ -889,15 +889,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e496a50fda8aacccc86d7529e2c1e0892dbd0f898a6b5645b5561b89c3210efa"
 
 [[package]]
-name = "counter"
-version = "0.5.7"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2d458e66999348f56fd3ffcfbb7f7951542075ca8359687c703de6500c1ddccd"
-dependencies = [
- "num-traits",
-]
-
-[[package]]
 name = "countme"
 version = "3.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1072,7 +1063,6 @@ name = "cynic-codegen"
 version = "3.8.0"
 dependencies = [
  "assert_matches",
- "counter",
  "cynic-parser",
  "darling",
  "divan",

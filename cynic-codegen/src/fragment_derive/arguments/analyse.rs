@@ -1,8 +1,11 @@
-use std::{collections::HashSet, rc::Rc};
+use std::{
+    collections::{BTreeMap, HashSet},
+    rc::Rc,
+};
 
 use crate::schema::{Schema, Unvalidated};
 
-use {counter::Counter, proc_macro2::Span, syn::Lit};
+use {proc_macro2::Span, syn::Lit};
 
 use {
     super::parsing,
@@ -302,10 +305,13 @@ fn validate(
         .collect::<Vec<_>>();
     let unknown_args = provided_args.difference(&all_args).collect::<Vec<_>>();
 
-    let counts = literals
-        .iter()
-        .map(|lit| &lit.argument_name)
-        .collect::<Counter<_>>();
+    let counts = literals.iter().map(|lit| &lit.argument_name).fold(
+        BTreeMap::<_, usize>::new(),
+        |mut counts, name| {
+            *counts.entry(name).or_default() += 1;
+            counts
+        },
+    );
 
     let mut errors = Vec::new();
     if !missing_args.is_empty() {
