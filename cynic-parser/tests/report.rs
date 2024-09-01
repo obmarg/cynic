@@ -14,7 +14,7 @@ fn test_report() {
        │            ┬  
        │            ╰── didn't expect to see this
        │ 
-       │ Note: expected one of "enum", BlockStringLiteral, RawIdent, StringLiteral, directive, extend, false, fragment, implements, input, interface, mutation, null, on, query, repeatable, scalar, schema, subscription, true, ty, union
+       │ Note: expected one of RawIdent, StringLiteral, BlockStringLiteral, schema, query, mutation, subscription, ty, input, true, false, null, implements, interface, "enum", union, scalar, extend, directive, repeatable, on, fragment
     ───╯
     "###);
 }
