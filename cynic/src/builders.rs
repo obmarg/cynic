@@ -50,7 +50,7 @@ pub trait MutationBuilder<Variables>: Sized {
     /// Constructs a mutation operation for this QueryFragment.
     fn build(args: Variables) -> Operation<Self, Variables>;
 
-    /// Creates an operation buidler for this mutation
+    /// Creates an operation builder for this mutation
     fn operation_builder(vars: Variables) -> OperationBuilder<Self, Variables>;
 
     /// Returns the executable document for this mutation
