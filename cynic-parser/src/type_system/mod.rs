@@ -1,6 +1,7 @@
 use std::str::FromStr;
 
 use indexmap::IndexSet;
+use iter::Iter;
 
 pub mod ids;
 pub mod iter;
@@ -12,6 +13,8 @@ mod schemas;
 mod string_literal;
 mod types;
 mod values;
+
+use crate::common::IdRange;
 
 pub use self::{
     definitions::{Definition, TypeDefinition},
@@ -202,49 +205,20 @@ impl super::TypeSystemDocument {
 }
 
 impl TypeSystemDocument {
-    pub fn definitions(&self) -> impl ExactSizeIterator<Item = Definition<'_>> + '_ {
-        self.definitions.iter().map(|definition| match definition {
-            DefinitionRecord::Schema(id) => Definition::Schema(self.read(*id)),
-            DefinitionRecord::Scalar(id) => {
-                Definition::Type(TypeDefinition::Scalar(self.read(*id)))
-            }
-            DefinitionRecord::Object(id) => {
-                Definition::Type(TypeDefinition::Object(self.read(*id)))
-            }
-            DefinitionRecord::Interface(id) => {
-                Definition::Type(TypeDefinition::Interface(self.read(*id)))
-            }
-            DefinitionRecord::Union(id) => Definition::Type(TypeDefinition::Union(self.read(*id))),
-            DefinitionRecord::Enum(id) => Definition::Type(TypeDefinition::Enum(self.read(*id))),
-            DefinitionRecord::InputObject(id) => {
-                Definition::Type(TypeDefinition::InputObject(self.read(*id)))
-            }
-            DefinitionRecord::SchemaExtension(id) => Definition::SchemaExtension(self.read(*id)),
-            DefinitionRecord::ScalarExtension(id) => {
-                Definition::TypeExtension(TypeDefinition::Scalar(self.read(*id)))
-            }
-            DefinitionRecord::ObjectExtension(id) => {
-                Definition::TypeExtension(TypeDefinition::Object(self.read(*id)))
-            }
-            DefinitionRecord::InterfaceExtension(id) => {
-                Definition::TypeExtension(TypeDefinition::Interface(self.read(*id)))
-            }
-            DefinitionRecord::UnionExtension(id) => {
-                Definition::TypeExtension(TypeDefinition::Union(self.read(*id)))
-            }
-            DefinitionRecord::EnumExtension(id) => {
-                Definition::TypeExtension(TypeDefinition::Enum(self.read(*id)))
-            }
-            DefinitionRecord::InputObjectExtension(id) => {
-                Definition::TypeExtension(TypeDefinition::InputObject(self.read(*id)))
-            }
-            DefinitionRecord::Directive(id) => Definition::Directive(self.read(*id)),
-        })
+    pub fn definitions(&self) -> Iter<'_, Definition<'_>> {
+        Iter::new(
+            IdRange::new(
+                DefinitionId::new(0),
+                DefinitionId::new(self.definitions.len()),
+            ),
+            self,
+        )
     }
 }
 
 pub mod storage {
     pub use super::{
+        definitions::DefinitionRecord,
         generated::{
             arguments::ArgumentRecord,
             directives::{DirectiveDefinitionRecord, DirectiveRecord},
@@ -262,25 +236,4 @@ pub mod storage {
         types::TypeRecord,
         values::ValueRecord,
     };
-
-    use super::ids::*;
-
-    #[derive(Clone, Copy)]
-    pub enum DefinitionRecord {
-        Schema(SchemaDefinitionId),
-        Scalar(ScalarDefinitionId),
-        Object(ObjectDefinitionId),
-        Interface(InterfaceDefinitionId),
-        Union(UnionDefinitionId),
-        Enum(EnumDefinitionId),
-        InputObject(InputObjectDefinitionId),
-        SchemaExtension(SchemaDefinitionId),
-        ScalarExtension(ScalarDefinitionId),
-        ObjectExtension(ObjectDefinitionId),
-        InterfaceExtension(InterfaceDefinitionId),
-        UnionExtension(UnionDefinitionId),
-        EnumExtension(EnumDefinitionId),
-        InputObjectExtension(InputObjectDefinitionId),
-        Directive(DirectiveDefinitionId),
-    }
 }

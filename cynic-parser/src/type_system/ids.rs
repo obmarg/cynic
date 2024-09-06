@@ -54,6 +54,7 @@ macro_rules! impl_id_range_ops {
 }
 
 make_id!(DefinitionId, DefinitionRecord, definitions);
+impl_id_range_ops!(DefinitionId);
 
 make_id!(
     SchemaDefinitionId,
