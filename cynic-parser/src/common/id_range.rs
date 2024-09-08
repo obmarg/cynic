@@ -7,6 +7,19 @@ pub struct IdRange<Id> {
     pub(crate) end: Id,
 }
 
+impl<Id> IdRange<Id>
+where
+    Id: IdOperations,
+{
+    pub fn is_empty(&self) -> bool {
+        self.len() == 0
+    }
+
+    pub fn len(&self) -> usize {
+        IdOperations::distance(self.start, self.end)
+    }
+}
+
 pub trait IdOperations: Copy {
     fn empty_range() -> IdRange<Self>;
     fn forward(self) -> Option<Self>;
@@ -30,43 +43,68 @@ where
     }
 }
 
-impl<Id> Iterator for IdRange<Id>
+impl<Id> IntoIterator for IdRange<Id>
+where
+    Id: IdOperations,
+{
+    type Item = Id;
+
+    type IntoIter = IdRangeIter<Id>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        IdRangeIter(self)
+    }
+}
+
+#[derive(Clone)]
+pub struct IdRangeIter<Id>(IdRange<Id>);
+
+impl<Id> IdRangeIter<Id> {
+    pub fn current_range(&self) -> IdRange<Id>
+    where
+        Id: Clone,
+    {
+        self.0.clone()
+    }
+}
+
+impl<Id> Iterator for IdRangeIter<Id>
 where
     Id: IdOperations,
 {
     type Item = Id;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if IdOperations::cmp(self.start, self.end).is_eq() {
+        if IdOperations::cmp(self.0.start, self.0.end).is_eq() {
             return None;
         }
-        let current = self.start;
-        self.start = self.start.forward()?;
+        let current = self.0.start;
+        self.0.start = self.0.start.forward()?;
         Some(current)
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
-        let size = IdOperations::distance(self.start, self.end);
+        let size = IdOperations::distance(self.0.start, self.0.end);
         (size, Some(size))
     }
 }
 
-impl<Id> DoubleEndedIterator for IdRange<Id>
+impl<Id> DoubleEndedIterator for IdRangeIter<Id>
 where
     Id: IdOperations,
 {
     fn next_back(&mut self) -> Option<Self::Item> {
-        if IdOperations::cmp(self.start, self.end).is_eq() {
+        if IdOperations::cmp(self.0.start, self.0.end).is_eq() {
             return None;
         }
-        let current = self.end.back()?;
-        self.end = current;
+        let current = self.0.end.back()?;
+        self.0.end = current;
         Some(current)
     }
 }
 
-impl<Id> ExactSizeIterator for IdRange<Id> where Id: IdOperations {}
-impl<Id> FusedIterator for IdRange<Id> where Id: IdOperations {}
+impl<Id> ExactSizeIterator for IdRangeIter<Id> where Id: IdOperations {}
+impl<Id> FusedIterator for IdRangeIter<Id> where Id: IdOperations {}
 
 #[cfg(test)]
 mod tests {
@@ -79,16 +117,17 @@ mod tests {
     fn test_id_range() {
         let default = IdRange::<TestId>::default();
         assert_eq!(default.len(), 0);
-        assert_eq!(default.clone().next(), None);
+        assert_eq!(default.into_iter().len(), 0);
+        assert_eq!(default.into_iter().next(), None);
 
         let range = IdRange::new(TestId(0), TestId(3));
         assert_eq!(
-            range.collect::<Vec<_>>(),
+            range.into_iter().collect::<Vec<_>>(),
             vec![TestId(0), TestId(1), TestId(2)]
         );
 
         assert_eq!(
-            range.rev().collect::<Vec<_>>(),
+            range.into_iter().rev().collect::<Vec<_>>(),
             vec![TestId(2), TestId(1), TestId(0)]
         );
     }
