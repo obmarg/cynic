@@ -1,8 +1,10 @@
 mod id_range;
+mod int_value;
 mod strings;
 mod types;
 
 pub use id_range::{IdOperations, IdRange, IdRangeIter};
+pub use int_value::IntValue;
 pub use strings::MalformedStringError;
 pub use types::*;
 

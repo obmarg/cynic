@@ -1,10 +1,10 @@
-use crate::{type_system::ids::ValueId, AstLookup};
+use crate::{common::IntValue, type_system::ids::ValueId, AstLookup};
 
 use super::{BlockStringLiteralId, ReadContext, StringId, TypeSystemId};
 
 pub enum ValueRecord {
     Variable(StringId),
-    Int(i32),
+    Int(i64),
     Float(f32),
     String(StringId),
     BlockString(BlockStringLiteralId),
@@ -18,7 +18,7 @@ pub enum ValueRecord {
 #[derive(Clone, Debug)]
 pub enum Value<'a> {
     Variable(&'a str),
-    Int(i32),
+    Int(IntValue),
     Float(f32),
     String(&'a str),
     BlockString(&'a str),
@@ -84,7 +84,7 @@ impl<'a> From<ReadContext<'a, ValueId>> for Value<'a> {
 
         match ast.lookup(reader.id) {
             ValueRecord::Variable(id) => Value::Variable(ast.lookup(*id)),
-            ValueRecord::Int(num) => Value::Int(*num),
+            ValueRecord::Int(num) => Value::Int(IntValue(*num)),
             ValueRecord::Float(num) => Value::Float(*num),
             ValueRecord::String(id) => Value::String(ast.lookup(*id)),
             ValueRecord::BlockString(id) => Value::BlockString(ast.lookup(*id)),

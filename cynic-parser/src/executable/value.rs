@@ -1,4 +1,4 @@
-use crate::AstLookup;
+use crate::{common::IntValue, AstLookup};
 
 use super::{
     ids::{StringId, ValueId},
@@ -7,7 +7,7 @@ use super::{
 
 pub enum ValueRecord {
     Variable(StringId),
-    Int(i32),
+    Int(i64),
     Float(f32),
     String(StringId),
     Boolean(bool),
@@ -23,7 +23,7 @@ pub enum ValueRecord {
 #[derive(Clone, Debug)]
 pub enum Value<'a> {
     Variable(&'a str),
-    Int(i32),
+    Int(IntValue),
     Float(f32),
     String(&'a str),
     Boolean(bool),
@@ -81,7 +81,7 @@ impl<'a> From<ReadContext<'a, ValueId>> for Value<'a> {
 
         match ast.lookup(reader.id) {
             ValueRecord::Variable(id) => Value::Variable(ast.lookup(*id)),
-            ValueRecord::Int(num) => Value::Int(*num),
+            ValueRecord::Int(num) => Value::Int(IntValue(*num)),
             ValueRecord::Float(num) => Value::Float(*num),
             ValueRecord::String(id) => Value::String(ast.lookup(*id)),
             ValueRecord::Boolean(val) => Value::Boolean(*val),
