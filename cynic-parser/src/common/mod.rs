@@ -2,7 +2,7 @@ mod id_range;
 mod strings;
 mod types;
 
-pub use id_range::{IdOperations, IdRange};
+pub use id_range::{IdOperations, IdRange, IdRangeIter};
 pub use strings::MalformedStringError;
 pub use types::*;
 

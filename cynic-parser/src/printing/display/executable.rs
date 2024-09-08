@@ -76,7 +76,7 @@ impl fmt::Display for iter::Iter<'_, VariableDefinition<'_>> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if self.len() != 0 {
             write!(f, "(")?;
-            for (i, definition) in self.enumerate() {
+            for (i, definition) in self.clone().enumerate() {
                 if i != 0 {
                     write!(f, ", ")?;
                 }
@@ -104,7 +104,7 @@ impl std::fmt::Display for iter::Iter<'_, Selection<'_>> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         if self.len() != 0 {
             writeln!(f, "{{")?;
-            for child in *self {
+            for child in self.clone() {
                 writeln!(indented(f, 2), "{}", child)?;
             }
             write!(f, "}}")?;
@@ -172,7 +172,7 @@ impl fmt::Display for FragmentSpread<'_> {
 
 impl fmt::Display for iter::Iter<'_, Directive<'_>> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        for directive in *self {
+        for directive in self.clone() {
             write!(f, " {directive}")?;
         }
         Ok(())
@@ -189,7 +189,7 @@ impl fmt::Display for iter::Iter<'_, Argument<'_>> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if self.len() != 0 {
             write!(f, "(")?;
-            for (i, arg) in self.enumerate() {
+            for (i, arg) in self.clone().enumerate() {
                 if i != 0 {
                     write!(f, ", ")?;
                 }
