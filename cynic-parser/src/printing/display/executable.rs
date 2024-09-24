@@ -61,7 +61,7 @@ impl fmt::Display for FragmentDefinition<'_> {
             f,
             "fragment {} on {}{} {}",
             self.name(),
-            self.type_condition(),
+            self.type_condition().on(),
             self.directives(),
             self.selection_set()
         )
@@ -152,8 +152,8 @@ impl fmt::Display for InlineFragment<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "...")?;
 
-        if let Some(on_type) = self.type_condition() {
-            write!(f, " on {}", on_type)?;
+        if let Some(condition) = self.type_condition() {
+            write!(f, " on {}", condition.on())?;
         }
 
         write!(f, "{} {}", self.directives(), self.selection_set())

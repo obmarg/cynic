@@ -73,10 +73,12 @@ make_id!(DirectiveId, DirectiveRecord, directives);
 
 make_id!(ArgumentId, ArgumentRecord, arguments);
 
+make_id!(TypeConditionId, TypeConditionRecord, type_conditions);
+
 impl_id_range_ops!(DirectiveId);
 impl_id_range_ops!(ArgumentId);
 
-// make_id!(NameId, NameRecord, names);
+make_id!(NameId, NameRecord, names);
 
 make_id!(TypeId, TypeRecord, types);
 

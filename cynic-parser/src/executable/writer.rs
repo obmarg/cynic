@@ -25,6 +25,9 @@ pub struct ExecutableAstWriter {
     arguments: Vec<ArgumentRecord>,
     variables: Vec<VariableDefinitionRecord>,
 
+    type_conditions: Vec<TypeConditionRecord>,
+
+    names: Vec<NameRecord>,
     types: Vec<TypeRecord>,
 
     directive_cursor: DirectiveId,
@@ -46,7 +49,9 @@ impl Default for ExecutableAstWriter {
             directives: Default::default(),
             arguments: Default::default(),
             variables: Default::default(),
+            type_conditions: Default::default(),
             types: Default::default(),
+            names: Default::default(),
             values: Default::default(),
             directive_cursor: DirectiveId::new(0),
             variable_definition_cursor: VariableDefinitionId::new(0),
@@ -74,7 +79,9 @@ impl ExecutableAstWriter {
             directives,
             arguments,
             variables,
+            type_conditions,
             types,
+            names,
             values,
             directive_cursor: _,
             variable_definition_cursor: _,
@@ -96,7 +103,9 @@ impl ExecutableAstWriter {
             directives,
             arguments,
             variables,
+            type_conditions,
             types,
+            names,
             values,
         }
     }
