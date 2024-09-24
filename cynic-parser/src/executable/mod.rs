@@ -46,6 +46,7 @@ pub struct ExecutableDocument {
     arguments: Vec<storage::ArgumentRecord>,
     variables: Vec<storage::VariableDefinitionRecord>,
 
+    // names: Vec<storage::Name>,
     types: Vec<types::TypeRecord>,
 
     values: crate::values::ValueStore,

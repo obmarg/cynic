@@ -13,6 +13,7 @@ type OperationDefinition @file(name: "operation") {
   variable_definitions: [VariableDefinition]
   directives: [Directive]
   selection_set: [Selection]
+  span: Span!
 }
 
 type FragmentDefinition @file(name: "fragment") {
@@ -20,6 +21,7 @@ type FragmentDefinition @file(name: "fragment") {
   type_condition: String!
   directives: [Directive]
   selection_set: [Selection]
+  span: Span!
 }
 
 union Selection
@@ -35,39 +37,51 @@ type FieldSelection @file(name: "selections") {
   arguments: [Argument]
   directives: [Directive]
   selection_set: [Selection]
+  span: Span!
 }
 
 type InlineFragment @file(name: "selections") {
   type_condition: String
   directives: [Directive]
   selection_set: [Selection]
+  span: Span!
 }
 
 type FragmentSpread @file(name: "selections") {
-  fragment_name: String!
+  fragment_name: Name
   directives: [Directive]
+  span: Span!
+}
+
+type Name @file(name: "name") {
+  text: String!
+  span: Span!
 }
 
 type Directive @file(name: "directive") {
-  name: String!
+  name: Name
   arguments: [Argument]
+  span: Span!
 }
 
 type Argument @file(name: "argument") {
-  name: String!
+  name: Name
   value: Value!
+  span: Span!
 }
 
 type VariableDefinition @file(name: "variable") {
-  name: String!
+  name: Name!
   ty: Type!
   default_value: ConstValue
   directives: [Directive]
+  span: Span!
 }
 
-# OperationType is marked as @inline which means it just gets
-# stored inside records instead of getting IDs & records.
+# OperationType & Scan are marked as @inline which means they just gets
+# stored inside records instead of being stored by an Id in the root store
 scalar OperationType @inline
+scalar Span @inline
 
 # Type & Value are kind of special cases that aren't worth automating
 # so we make them scalars and implement them by hand

@@ -1,7 +1,7 @@
-// use divan::AllocProfiler;
+use divan::AllocProfiler;
 
-// #[global_allocator]
-// static ALLOC: AllocProfiler = AllocProfiler::system();
+#[global_allocator]
+static ALLOC: AllocProfiler = AllocProfiler::system();
 
 fn main() {
     // Run registered benchmarks.

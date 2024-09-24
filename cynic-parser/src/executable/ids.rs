@@ -76,6 +76,8 @@ make_id!(ArgumentId, ArgumentRecord, arguments);
 impl_id_range_ops!(DirectiveId);
 impl_id_range_ops!(ArgumentId);
 
+// make_id!(NameId, NameRecord, names);
+
 make_id!(TypeId, TypeRecord, types);
 
 make_id!(VariableDefinitionId, VariableDefinitionRecord, variables);
