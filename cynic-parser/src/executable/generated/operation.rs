@@ -1,7 +1,8 @@
 use super::prelude::*;
 use super::{
     directive::Directive,
-    ids::{DirectiveId, OperationDefinitionId, SelectionId, VariableDefinitionId},
+    ids::{DirectiveId, NameId, OperationDefinitionId, SelectionId, VariableDefinitionId},
+    name::Name,
     selections::Selection,
     variable::VariableDefinition,
     ExecutableId,
@@ -11,10 +12,11 @@ use std::fmt::{self, Write};
 
 pub struct OperationDefinitionRecord {
     pub operation_type: OperationType,
-    pub name: Option<StringId>,
+    pub name: Option<NameId>,
     pub variable_definitions: IdRange<VariableDefinitionId>,
     pub directives: IdRange<DirectiveId>,
     pub selection_set: IdRange<SelectionId>,
+    pub span: Span,
 }
 
 #[derive(Clone, Copy)]
@@ -25,12 +27,9 @@ impl<'a> OperationDefinition<'a> {
         let document = self.0.document;
         document.lookup(self.0.id).operation_type
     }
-    pub fn name(&self) -> Option<&'a str> {
+    pub fn name(&self) -> Option<Name<'a>> {
         let document = self.0.document;
-        document
-            .lookup(self.0.id)
-            .name
-            .map(|id| document.lookup(id))
+        document.lookup(self.0.id).name.map(|id| document.read(id))
     }
     pub fn variable_definitions(&self) -> Iter<'a, VariableDefinition<'a>> {
         let document = self.0.document;
@@ -43,6 +42,10 @@ impl<'a> OperationDefinition<'a> {
     pub fn selection_set(&self) -> Iter<'a, Selection<'a>> {
         let document = self.0.document;
         super::Iter::new(document.lookup(self.0.id).selection_set, document)
+    }
+    pub fn span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).span
     }
 }
 
@@ -60,6 +63,7 @@ impl fmt::Debug for OperationDefinition<'_> {
             .field("variable_definitions", &self.variable_definitions())
             .field("directives", &self.directives())
             .field("selection_set", &self.selection_set())
+            .field("span", &self.span())
             .finish()
     }
 }
