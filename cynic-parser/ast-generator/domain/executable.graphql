@@ -9,7 +9,7 @@ union ExecutableDefinition
 
 type OperationDefinition @file(name: "operation") {
   operation_type: OperationType!
-  name: String
+  name: Name
   variable_definitions: [VariableDefinition]
   directives: [Directive]
   selection_set: [Selection]
@@ -17,10 +17,15 @@ type OperationDefinition @file(name: "operation") {
 }
 
 type FragmentDefinition @file(name: "fragment") {
-  name: String!
-  type_condition: String!
+  name: Name!
+  type_condition: TypeCondition!
   directives: [Directive]
   selection_set: [Selection]
+  span: Span!
+}
+
+type TypeCondition @file(name: "type_conditions") {
+  on: String!
   span: Span!
 }
 
@@ -32,8 +37,8 @@ union Selection
   | FragmentSpread
 
 type FieldSelection @file(name: "selections") {
-  alias: String
-  name: String!
+  alias: Name
+  name: Name!
   arguments: [Argument]
   directives: [Directive]
   selection_set: [Selection]
@@ -41,14 +46,14 @@ type FieldSelection @file(name: "selections") {
 }
 
 type InlineFragment @file(name: "selections") {
-  type_condition: String
+  type_condition: TypeCondition
   directives: [Directive]
   selection_set: [Selection]
   span: Span!
 }
 
 type FragmentSpread @file(name: "selections") {
-  fragment_name: Name
+  fragment_name: Name!
   directives: [Directive]
   span: Span!
 }
@@ -59,13 +64,13 @@ type Name @file(name: "name") {
 }
 
 type Directive @file(name: "directive") {
-  name: Name
+  name: Name!
   arguments: [Argument]
   span: Span!
 }
 
 type Argument @file(name: "argument") {
-  name: Name
+  name: Name!
   value: Value!
   span: Span!
 }
