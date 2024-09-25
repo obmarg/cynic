@@ -9,6 +9,26 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.5.0 - 2024-09-25
+
+### New Features
+
+- sorting in cynic-parser pretty printing ([#1038](https://github.com/obmarg/cynic/pull/1038))
+
+### Bug Fixes
+
+- rework Description in cynic-parser a bit ([#1039](https://github.com/obmarg/cynic/pull/1039))
+- [**breaking**] support ints larger than i32 in parser ([#1037](https://github.com/obmarg/cynic/pull/1037))
+- [**breaking**] remove copy footgun from parser iterators ([#1036](https://github.com/obmarg/cynic/pull/1036))
+- use Iter in more places in parser ([#1030](https://github.com/obmarg/cynic/pull/1030))
+
+### Changes
+
+- fix cynic-parser tests after lalrpop update
+- update rust crate lalrpop-util to 0.21.0
+- update rust crate lalrpop to 0.21.0
+- update rust crate apollo-parser to 0.8 ([#996](https://github.com/obmarg/cynic/pull/996))
+
 ## v0.4.5 - 2024-06-19
 
 ### New Features

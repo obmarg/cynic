@@ -33,11 +33,11 @@ edition = "2021"
 homepage = "https://cynic-rs.dev"
 repository = "https://github.com/obmarg/cynic"
 license = "MPL-2.0"
-version = "3.8.0"
+version = "3.8.1"
 rust-version = "1.72"
 
 [workspace.dependencies]
-cynic-parser = { path = "cynic-parser", version = "0.4.5" }
+cynic-parser = { path = "cynic-parser", version = "0.5.0" }
 darling = "0.20"
 rstest = "0.22"
 syn = "2"
