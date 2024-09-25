@@ -8,7 +8,7 @@ use super::{
 use std::fmt::{self, Write};
 
 pub struct DescriptionRecord {
-    pub description: StringLiteralId,
+    pub literal: StringLiteralId,
     pub span: Span,
 }
 
@@ -16,9 +16,9 @@ pub struct DescriptionRecord {
 pub struct Description<'a>(pub(in super::super) ReadContext<'a, DescriptionId>);
 
 impl<'a> Description<'a> {
-    pub fn description(&self) -> StringLiteral<'a> {
+    pub fn literal(&self) -> StringLiteral<'a> {
         let document = self.0.document;
-        document.read(document.lookup(self.0.id).description)
+        document.read(document.lookup(self.0.id).literal)
     }
     pub fn span(&self) -> Span {
         let document = self.0.document;
@@ -35,7 +35,7 @@ impl Description<'_> {
 impl fmt::Debug for Description<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("Description")
-            .field("description", &self.description())
+            .field("literal", &self.literal())
             .field("span", &self.span())
             .finish()
     }

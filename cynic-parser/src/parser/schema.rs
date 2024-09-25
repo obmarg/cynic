@@ -1,5 +1,5 @@
 // auto-generated: "lalrpop 0.21.0"
-// sha3: 95aa74acd6d446bc6135fe7fbfede28a7d3db53a669861b074f7c8b7c86637da
+// sha3: b60f4f8beb0fe63e9646619ee5f1a5eca15e01942cf12fafc9a11d7ace16c101
 use crate::lexer;
 use crate::{
     common::{
@@ -1354,14 +1354,14 @@ mod __parse__TypeSystemDocument {
         }).collect()
     }
     struct __StateMachine<'input, '__1>
-    where 
+    where
     {
         input: &'input str,
         ast: &'__1 mut TypeSystemAstWriter,
         __phantom: core::marker::PhantomData<(&'input ())>,
     }
     impl<'input, '__1> __state_machine::ParserDefinition for __StateMachine<'input, '__1>
-    where 
+    where
     {
         type Location = usize;
         type Error = crate::parser::AdditionalErrors;
@@ -7658,12 +7658,12 @@ fn __action2<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
     (_, start, _): (usize, usize, usize),
-    (_, description, _): (usize, StringLiteralId, usize),
+    (_, literal, _): (usize, StringLiteralId, usize),
     (_, end, _): (usize, usize, usize),
 ) -> DescriptionId {
     {
         ast.description(DescriptionRecord {
-            description,
+            literal,
             span: Span::new(start, end),
         })
     }

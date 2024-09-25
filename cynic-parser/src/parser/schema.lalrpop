@@ -19,9 +19,9 @@ pub TypeSystemDocument: () = {
 }
 
 Description: DescriptionId = {
-    <start:@L> <description:StringValue> <end:@R> => {
+    <start:@L> <literal:StringValue> <end:@R> => {
         ast.description(DescriptionRecord {
-            description,
+            literal,
             span: Span::new(start, end),
         })
     }
