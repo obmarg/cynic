@@ -11,23 +11,29 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## v0.5.0 - 2024-09-25
 
+### Breaking Changes
+
+- Integer values are now represented by `IntValue` rather than an i32.
+  Although the GraphQl `Int` type is represented by `i32` this restriction is
+  not specified for the grammar.
+  ([#1037](https://github.com/obmarg/cynic/pull/1037))
+- `Iter` is no longer `Copy` as this could cause subtle bugs.  It remains
+  `Clone` so you can use that if you need to.
+  ([#1036](https://github.com/obmarg/cynic/pull/1036))
+- `IdRange` now implements `IntoIterator` instead of directly implementing
+  `Iterator`. ([#1036](https://github.com/obmarg/cynic/pull/1036))
+
 ### New Features
 
-- sorting in cynic-parser pretty printing ([#1038](https://github.com/obmarg/cynic/pull/1038))
+- Pretty printer can now optionally sort definitions & fields in its output
+  ([#1038](https://github.com/obmarg/cynic/pull/1038))
+- The type ystem AST now has spans in more places
+  ([#998](https://github.com/obmarg/cynic/pull/998/files)).
 
 ### Bug Fixes
 
-- rework Description in cynic-parser a bit ([#1039](https://github.com/obmarg/cynic/pull/1039))
-- [**breaking**] support ints larger than i32 in parser ([#1037](https://github.com/obmarg/cynic/pull/1037))
-- [**breaking**] remove copy footgun from parser iterators ([#1036](https://github.com/obmarg/cynic/pull/1036))
+- Support ints larger than i32 in parser ([#1037](https://github.com/obmarg/cynic/pull/1037))
 - use Iter in more places in parser ([#1030](https://github.com/obmarg/cynic/pull/1030))
-
-### Changes
-
-- fix cynic-parser tests after lalrpop update
-- update rust crate lalrpop-util to 0.21.0
-- update rust crate lalrpop to 0.21.0
-- update rust crate apollo-parser to 0.8 ([#996](https://github.com/obmarg/cynic/pull/996))
 
 ## v0.4.5 - 2024-06-19
 
