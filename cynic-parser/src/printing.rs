@@ -6,6 +6,9 @@ mod indent;
 #[cfg(feature = "pretty")]
 mod pretty;
 
+#[cfg(feature = "pretty")]
+pub use pretty::PrettyPrinter;
+
 fn escape_string(src: &str) -> String {
     let mut dest = String::with_capacity(src.len());
 
