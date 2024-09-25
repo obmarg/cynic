@@ -1,11 +1,13 @@
+use std::borrow::Cow;
+
 use super::Description;
 
 impl<'a> Description<'a> {
     pub fn to_cow(&self) -> Cow<'a, str> {
-        self.description().to_cow()
+        self.literal().to_cow()
     }
 
     pub fn raw_str(&self) -> &'a str {
-        self.description().raw_str()
+        self.literal().raw_str()
     }
 }
