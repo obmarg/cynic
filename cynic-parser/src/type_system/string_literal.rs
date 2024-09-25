@@ -1,4 +1,4 @@
-use std::borrow::Cow;
+use std::{borrow::Cow, fmt};
 
 use crate::{common::trim_block_string_whitespace, type_system::StringLiteralId, AstLookup};
 
@@ -44,6 +44,12 @@ impl<'a> StringLiteral<'a> {
             StringLiteralInner::String(_) => StringLiteralKind::String,
             StringLiteralInner::BlockString(_) => StringLiteralKind::Block,
         }
+    }
+}
+
+impl fmt::Display for StringLiteral<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str(self.to_cow().as_ref())
     }
 }
 
