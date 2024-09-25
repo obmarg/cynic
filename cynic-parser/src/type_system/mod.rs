@@ -20,6 +20,7 @@ pub use self::{
     definitions::{Definition, TypeDefinition},
     generated::{
         arguments::Argument,
+        descriptions::Description,
         directives::{Directive, DirectiveDefinition},
         enums::{EnumDefinition, EnumValueDefinition},
         fields::FieldDefinition,
@@ -29,7 +30,7 @@ pub use self::{
         objects::ObjectDefinition,
         scalars::ScalarDefinition,
         schemas::{RootOperationTypeDefinition, SchemaDefinition},
-        unions::UnionDefinition,
+        unions::{UnionDefinition, UnionMember},
     },
     string_literal::{StringLiteral, StringLiteralKind},
     types::Type,
@@ -58,12 +59,14 @@ pub struct TypeSystemDocument {
     field_definitions: Vec<storage::FieldDefinitionRecord>,
     input_value_definitions: Vec<storage::InputValueDefinitionRecord>,
     enum_value_definitions: Vec<storage::EnumValueDefinitionRecord>,
+    union_members: Vec<storage::UnionMemberRecord>,
 
     type_references: Vec<storage::TypeRecord>,
 
     values: Vec<storage::ValueRecord>,
     directives: Vec<storage::DirectiveRecord>,
     arguments: Vec<storage::ArgumentRecord>,
+    descriptions: Vec<storage::DescriptionRecord>,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -221,6 +224,7 @@ pub mod storage {
         definitions::DefinitionRecord,
         generated::{
             arguments::ArgumentRecord,
+            descriptions::DescriptionRecord,
             directives::{DirectiveDefinitionRecord, DirectiveRecord},
             enums::EnumDefinitionRecord,
             enums::EnumValueDefinitionRecord,
@@ -231,7 +235,7 @@ pub mod storage {
             objects::ObjectDefinitionRecord,
             scalars::ScalarDefinitionRecord,
             schemas::{RootOperationTypeDefinitionRecord, SchemaDefinitionRecord},
-            unions::UnionDefinitionRecord,
+            unions::{UnionDefinitionRecord, UnionMemberRecord},
         },
         types::TypeRecord,
         values::ValueRecord,

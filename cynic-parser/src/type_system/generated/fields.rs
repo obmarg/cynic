@@ -1,9 +1,9 @@
 use super::prelude::*;
 use super::{
+    descriptions::Description,
     directives::Directive,
-    ids::{DirectiveId, FieldDefinitionId, InputValueDefinitionId, StringLiteralId, TypeId},
+    ids::{DescriptionId, DirectiveId, FieldDefinitionId, InputValueDefinitionId, TypeId},
     input_values::InputValueDefinition,
-    strings::StringLiteral,
     types::Type,
     ReadContext, TypeSystemId,
 };
@@ -14,7 +14,7 @@ pub struct FieldDefinitionRecord {
     pub name: StringId,
     pub ty: TypeId,
     pub arguments: IdRange<InputValueDefinitionId>,
-    pub description: Option<StringLiteralId>,
+    pub description: Option<DescriptionId>,
     pub directives: IdRange<DirectiveId>,
     pub span: Span,
 }
@@ -35,7 +35,7 @@ impl<'a> FieldDefinition<'a> {
         let document = self.0.document;
         super::Iter::new(document.lookup(self.0.id).arguments, document)
     }
-    pub fn description(&self) -> Option<StringLiteral<'a>> {
+    pub fn description(&self) -> Option<Description<'a>> {
         let document = self.0.document;
         document
             .lookup(self.0.id)

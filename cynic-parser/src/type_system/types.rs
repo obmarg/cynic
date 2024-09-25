@@ -1,7 +1,7 @@
 use crate::{
     common::{TypeWrappers, WrappingType},
     type_system::ids::TypeId,
-    AstLookup,
+    AstLookup, Span,
 };
 
 use super::{ReadContext, StringId, TypeSystemId};
@@ -9,6 +9,7 @@ use super::{ReadContext, StringId, TypeSystemId};
 pub struct TypeRecord {
     pub name: StringId,
     pub wrappers: TypeWrappers,
+    pub span: Span,
 }
 
 #[derive(Clone, Copy)]
@@ -37,6 +38,10 @@ impl<'a> Type<'a> {
         self.wrappers().next() == Some(WrappingType::NonNull)
     }
 
+    pub fn span(&self) -> Span {
+        self.0.document.lookup(self.0.id).span
+    }
+
     /// The wrapper types from the outermost to innermost
     pub fn wrappers(&self) -> impl Iterator<Item = WrappingType> + 'a {
         self.0.document.lookup(self.0.id).wrappers.iter()
@@ -47,7 +52,11 @@ impl std::fmt::Display for Type<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let ast = &self.0.document;
 
-        let TypeRecord { name, wrappers } = ast.lookup(self.0.id);
+        let TypeRecord {
+            name,
+            wrappers,
+            span: _,
+        } = ast.lookup(self.0.id);
 
         let wrappers = wrappers.iter().collect::<Vec<_>>();
         for wrapping in &wrappers {

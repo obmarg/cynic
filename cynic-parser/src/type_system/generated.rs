@@ -33,6 +33,7 @@ mod strings {
 }
 
 pub mod arguments;
+pub mod descriptions;
 pub mod directives;
 pub mod enums;
 pub mod fields;
