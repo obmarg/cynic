@@ -38,10 +38,13 @@ where
         self.ids.current_range()
     }
 
-    pub fn with_ids(self) -> IdIter<'a, T> {
+    pub fn with_ids(&self) -> IdIter<'a, T> {
         let Iter { ids, document } = self;
 
-        IdIter { ids, document }
+        IdIter {
+            ids: ids.clone(),
+            document,
+        }
     }
 }
 
