@@ -13,11 +13,14 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### New Features
 
-- `impl Display for Description` ([#1044](https://github.com/obmarg/cynic/pull/1044))
+- `Description` is now Display
+  ([#1044](https://github.com/obmarg/cynic/pull/1044))
 
 ### Bug Fixes
 
-- make `Iter::with_ids` take by reference ([#1045](https://github.com/obmarg/cynic/pull/1045))
+- `Iter::with_ids` now takes self by reference, which works better with
+  `Iter` no longer being `Copy`
+  ([#1045](https://github.com/obmarg/cynic/pull/1045))
 
 ## v0.5.1 - 2024-09-25
 

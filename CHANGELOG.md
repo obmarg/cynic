@@ -8,14 +8,6 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
-## v3.8.1 - 2024-09-25
-
-### Changes
-
-- update Cargo.toml dependencies
-- update Cargo.lock dependencies
-- remove counter dependency ([#1027](https://github.com/obmarg/cynic/pull/1027))
-
 ## v3.8.0 - 2024-08-28
 
 ### New Features
