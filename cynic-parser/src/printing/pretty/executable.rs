@@ -5,10 +5,21 @@ use crate::common::OperationType;
 use crate::executable::*;
 use crate::printing::escape_string;
 
+use super::printer::PrettyOptions;
+
 type Allocator<'a> = pretty::Arena<'a>;
 
 impl crate::ExecutableDocument {
     pub fn to_string_pretty(&self) -> String {
+        self.pretty_printer().to_string()
+    }
+
+    // TODO: Make this public at some point?
+    fn pretty_printer(&self) -> super::PrettyPrinter<'_> {
+        super::PrettyPrinter::new_executable(self)
+    }
+
+    pub(super) fn pretty_print(&self, _options: &PrettyOptions) -> String {
         let allocator = pretty::Arena::new();
 
         let use_short_form = {

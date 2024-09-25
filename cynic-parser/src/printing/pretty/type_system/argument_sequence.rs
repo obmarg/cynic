@@ -2,6 +2,8 @@ use std::iter::Enumerate;
 
 use pretty::{DocAllocator, Pretty};
 
+use crate::printing::pretty::printer::PrettyOptions;
+
 use super::{Allocator, InputValueDefinition, NodeDisplay};
 
 /// A sequence of things with docstrings attached.
@@ -13,14 +15,24 @@ use super::{Allocator, InputValueDefinition, NodeDisplay};
 ///
 /// This is used for displaying fields (both input fields & output fields)
 /// but arguments should use ArgumentSequence
-pub struct ArgumentSequence<'a> {
-    iterator: Enumerate<crate::type_system::iter::Iter<'a, InputValueDefinition<'a>>>,
+pub(super) struct ArgumentSequence<'a> {
+    iterator: Enumerate<std::vec::IntoIter<InputValueDefinition<'a>>>,
+    options: PrettyOptions,
 }
 
 impl<'a> ArgumentSequence<'a> {
-    pub fn new(iterator: crate::type_system::iter::Iter<'a, InputValueDefinition<'a>>) -> Self {
+    pub fn new(
+        iterator: crate::type_system::iter::Iter<'a, InputValueDefinition<'a>>,
+        options: PrettyOptions,
+    ) -> Self {
+        let mut arguments = iterator.collect::<Vec<_>>();
+        if options.sort {
+            arguments.sort_by_key(|arg| arg.name());
+        }
+
         ArgumentSequence {
-            iterator: iterator.enumerate(),
+            iterator: arguments.into_iter().enumerate(),
+            options,
         }
     }
 }
@@ -39,7 +51,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for ArgumentSequence<'a> {
                     document = document.append(allocator.line().flat_alt(allocator.text(", ")));
                 }
             }
-            document = document.append(NodeDisplay(item));
+            document = document.append(NodeDisplay(item, self.options));
         }
         document
     }
