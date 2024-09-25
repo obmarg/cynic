@@ -88,6 +88,9 @@ make_id!(
 
 make_id!(UnionDefinitionId, UnionDefinitionRecord, union_definitions);
 
+make_id!(UnionMemberId, UnionMemberRecord, union_members);
+impl_id_range_ops!(UnionMemberId);
+
 make_id!(EnumDefinitionId, EnumDefinitionRecord, enum_definitions);
 
 make_id!(
@@ -128,6 +131,8 @@ make_id!(ArgumentId, ArgumentRecord, arguments);
 impl_id_range_ops!(ArgumentId);
 
 make_id!(ValueId, ValueRecord, values);
+
+make_id!(DescriptionId, DescriptionRecord, descriptions);
 
 make_id!(BlockStringLiteralId, str, block_strings);
 

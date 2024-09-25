@@ -1,8 +1,8 @@
 use super::prelude::*;
 use super::{
+    descriptions::Description,
     directives::Directive,
-    ids::{DirectiveId, EnumDefinitionId, EnumValueDefinitionId, StringLiteralId},
-    strings::StringLiteral,
+    ids::{DescriptionId, DirectiveId, EnumDefinitionId, EnumValueDefinitionId},
     ReadContext, TypeSystemId,
 };
 #[allow(unused_imports)]
@@ -10,7 +10,7 @@ use std::fmt::{self, Write};
 
 pub struct EnumDefinitionRecord {
     pub name: StringId,
-    pub description: Option<StringLiteralId>,
+    pub description: Option<DescriptionId>,
     pub values: IdRange<EnumValueDefinitionId>,
     pub directives: IdRange<DirectiveId>,
     pub span: Span,
@@ -24,7 +24,7 @@ impl<'a> EnumDefinition<'a> {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).name)
     }
-    pub fn description(&self) -> Option<StringLiteral<'a>> {
+    pub fn description(&self) -> Option<Description<'a>> {
         let document = self.0.document;
         document
             .lookup(self.0.id)
@@ -79,7 +79,7 @@ impl<'a> From<ReadContext<'a, EnumDefinitionId>> for EnumDefinition<'a> {
 
 pub struct EnumValueDefinitionRecord {
     pub value: StringId,
-    pub description: Option<StringLiteralId>,
+    pub description: Option<DescriptionId>,
     pub directives: IdRange<DirectiveId>,
     pub span: Span,
 }
@@ -92,7 +92,7 @@ impl<'a> EnumValueDefinition<'a> {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).value)
     }
-    pub fn description(&self) -> Option<StringLiteral<'a>> {
+    pub fn description(&self) -> Option<Description<'a>> {
         let document = self.0.document;
         document
             .lookup(self.0.id)

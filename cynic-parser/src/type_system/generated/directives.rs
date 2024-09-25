@@ -1,11 +1,9 @@
 use super::prelude::*;
 use super::{
     arguments::Argument,
-    ids::{
-        ArgumentId, DirectiveDefinitionId, DirectiveId, InputValueDefinitionId, StringLiteralId,
-    },
+    descriptions::Description,
+    ids::{ArgumentId, DescriptionId, DirectiveDefinitionId, DirectiveId, InputValueDefinitionId},
     input_values::InputValueDefinition,
-    strings::StringLiteral,
     ReadContext, TypeSystemId,
 };
 #[allow(unused_imports)]
@@ -13,7 +11,7 @@ use std::fmt::{self, Write};
 
 pub struct DirectiveDefinitionRecord {
     pub name: StringId,
-    pub description: Option<StringLiteralId>,
+    pub description: Option<DescriptionId>,
     pub arguments: IdRange<InputValueDefinitionId>,
     pub is_repeatable: bool,
     pub locations: Vec<DirectiveLocation>,
@@ -28,7 +26,7 @@ impl<'a> DirectiveDefinition<'a> {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).name)
     }
-    pub fn description(&self) -> Option<StringLiteral<'a>> {
+    pub fn description(&self) -> Option<Description<'a>> {
         let document = self.0.document;
         document
             .lookup(self.0.id)

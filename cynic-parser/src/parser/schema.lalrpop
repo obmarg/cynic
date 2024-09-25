@@ -18,8 +18,17 @@ pub TypeSystemDocument: () = {
     <defs:DefinitionAndDescription+> => {}
 }
 
+Description: DescriptionId = {
+    <start:@L> <description:StringValue> <end:@R> => {
+        ast.description(DescriptionRecord {
+            description,
+            span: Span::new(start, end),
+        })
+    }
+}
+
 DefinitionAndDescription: () = {
-    <description:StringValue?> <def:TypeSystemDefinition> => {
+    <description:Description?> <def:TypeSystemDefinition> => {
         ast.store_description(def, description)
     }
 }
@@ -43,18 +52,20 @@ TypeSystemDefinition: DefinitionId = {
 }
 
 SchemaDefinition: SchemaDefinitionRecord = {
-    schema <directives:Directives> <root_operations:RootOperationTypeDefinitions> => SchemaDefinitionRecord {
+    <start:@L> schema <directives:Directives> <root_operations:RootOperationTypeDefinitions> <end:@R> => SchemaDefinitionRecord {
         description: None,
         directives,
         root_operations,
+        span: Span::new(start, end),
     }
 };
 
 SchemaExtensionDefinition: SchemaDefinitionRecord = {
-    schema <directives:Directives> <root_operations:RootOperationTypeDefinitions?> => SchemaDefinitionRecord {
+    <start:@L> schema <directives:Directives> <root_operations:RootOperationTypeDefinitions?> <end:@R> => SchemaDefinitionRecord {
         description: None,
         directives,
         root_operations: root_operations.unwrap_or_default(),
+        span: Span::new(start, end),
     }
 };
 
@@ -63,17 +74,20 @@ RootOperationTypeDefinitions: IdRange<RootOperationTypeDefinitionId> = {
 }
 
 RootOperationTypeDefinition: RootOperationTypeDefinitionRecord = {
-    query ":" <name:NamedType> => RootOperationTypeDefinitionRecord {
+    query ":" <start:@L> <name:NamedType> <end:@R> => RootOperationTypeDefinitionRecord {
         operation_type: OperationType::Query,
-        named_type: name
+        named_type: name,
+        span: Span::new(start, end)
     },
-    mutation ":" <name:NamedType> => RootOperationTypeDefinitionRecord {
+    mutation ":" <start:@L> <name:NamedType> <end:@R> => RootOperationTypeDefinitionRecord {
         operation_type: OperationType::Mutation,
-        named_type: name
+        named_type: name,
+        span: Span::new(start, end)
     },
-    subscription ":" <name:NamedType> => RootOperationTypeDefinitionRecord {
+    subscription ":" <start:@L> <name:NamedType> <end:@R> => RootOperationTypeDefinitionRecord {
         operation_type: OperationType::Subscription,
-        named_type: name
+        named_type: name,
+        span: Span::new(start, end)
     },
 }
 
@@ -128,11 +142,11 @@ FieldsDefinition: Vec<()> = {
 
 FieldDefinition: () = {
     <start:@L>
-        <description:StringValue?>
+        <description:Description?>
         <name:Name>
         <arguments:ArgumentsDefinition?> ":" <ty:Type>
         <directives:Directives>
-        <end:@R>
+    <end:@R>
     => {
         let arguments = ast.input_value_definition_range(
             Some(arguments.map(|arguments| arguments.len()).unwrap_or_default())
@@ -178,20 +192,20 @@ UnionDefinition: UnionDefinitionRecord = {
     => UnionDefinitionRecord {
         name,
         description: None,
-        members: members.unwrap_or_default(),
+        members: ast.union_member_range(members.map(|members| members.len())),
         directives,
         span: Span::new(start,end)
     }
 };
 
-UnionMemberTypes: Vec<StringId> = {
-    <members:UnionMemberTypes> "|" <name:NamedType> => {
+UnionMemberTypes: Vec<UnionMemberId> = {
+    <members:UnionMemberTypes> "|" <start:@L> <name:NamedType> <end:@R> => {
         let mut members = members;
-        members.push(name);
+        members.push(ast.union_member(UnionMemberRecord { name, span: Span::new(start, end) }));
         members
     },
-    "=" "|"? <name:NamedType> => {
-        vec![name]
+    "=" "|"? <start:@L> <name:NamedType> <end:@R> => {
+        vec![ast.union_member(UnionMemberRecord { name, span: Span::new(start, end) })]
     }
 }
 
@@ -216,7 +230,7 @@ EnumValuesDefinition: Vec<EnumValueDefinitionId> = {
 
 EnumValueDefinition: EnumValueDefinitionId = {
     <start:@L>
-        <description:StringValue?>
+        <description:Description?>
         <value:EnumValue>
         <directives:Directives>
         <end:@R>
@@ -291,8 +305,8 @@ DirectiveLocation: DirectiveLocation = {
 
 InputValueDefinition: () = {
     <start:@L>
-        <description:StringValue?>
-        <name:Name> ":" <ty:Type> <default:DefaultValue?>
+        <description:Description?>
+        <name:Name> ":" <ty:Type> <default_start:@L> <default:DefaultValue?> <default_end:@R>
         <directives:Directives>
         <end:@R>
     => {
@@ -302,6 +316,7 @@ InputValueDefinition: () = {
             description,
             directives,
             default_value: default,
+            default_value_span: Span::new(default_start, default_end),
             span: Span::new(start, end)
         });
     }
@@ -317,10 +332,10 @@ Name: StringId = <s:Ident> => ast.ident(s);
 NamedType: StringId = <s:Ident> => ast.ident(s);
 
 Type: TypeId = {
-    "[" <ty:Type> => ty,
-    <name:NamedType> <wrappers:WrappingType*> => ast.type_reference(TypeRecord {
+    <start:@L> "["* <name:NamedType> <wrappers:WrappingType*> <end:@R> => ast.type_reference(TypeRecord {
         name,
-        wrappers: TypeWrappers::from_iter(wrappers)
+        wrappers: TypeWrappers::from_iter(wrappers),
+        span: Span::new(start, end)
     })
 }
 
@@ -390,7 +405,7 @@ Arguments: Vec<ArgumentId> = {
 }
 
 Argument: ArgumentId = {
-    <name:Name> ":" <value:Value> => ast.argument(ArgumentRecord { <> }),
+    <start:@L> <name:Name> ":" <value:Value> <end:@R> => ast.argument(ArgumentRecord { name, value, span: Span::new(start, end) }),
 }
 
 Ident: &'input str = {

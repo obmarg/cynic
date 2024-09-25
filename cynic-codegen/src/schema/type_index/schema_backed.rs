@@ -33,10 +33,16 @@ impl SchemaBackedTypeIndex {
         for definition in ast.definitions() {
             if let Definition::Schema(schema) = definition {
                 if let Some(query_type) = schema.query_type() {
-                    query_root = query_type.to_owned();
+                    query_root = query_type.named_type().to_owned();
                 }
-                mutation_root = schema.mutation_type().map(ToOwned::to_owned);
-                subscription_root = schema.subscription_type().map(ToOwned::to_owned);
+                mutation_root = schema
+                    .mutation_type()
+                    .map(|mutation| mutation.named_type())
+                    .map(ToOwned::to_owned);
+                subscription_root = schema
+                    .subscription_type()
+                    .map(|subscription| subscription.named_type())
+                    .map(ToOwned::to_owned);
                 break;
             }
         }
@@ -56,6 +62,7 @@ impl SchemaBackedTypeIndex {
         let typename_type = writer.type_reference(cynic_parser::type_system::storage::TypeRecord {
             name: string_ident,
             wrappers: TypeWrappers::none().wrap_non_null(),
+            span: cynic_parser::Span::new(0, 0),
         });
         let typename_field =
             writer.field_definition(cynic_parser::type_system::storage::FieldDefinitionRecord {
@@ -182,6 +189,7 @@ impl super::TypeIndex for SchemaBackedTypeIndex {
                 name: Cow::Borrowed(def.name()),
                 types: def
                     .members()
+                    .map(|member| member.name())
                     .map(|name| ObjectRef(Cow::Borrowed(name)))
                     .collect(),
             }),
@@ -287,11 +295,8 @@ impl SchemaBackedTypeIndex {
                 }
                 TypeDefinition::Union(union_def) => {
                     for member in union_def.members() {
-                        validate!(
-                            member,
-                            TypeDefinition::Object(_),
-                            "expected to be an object"
-                        );
+                        let name = member.name();
+                        validate!(name, TypeDefinition::Object(_), "expected to be an object");
                     }
                 }
                 TypeDefinition::Interface(iface) => {
