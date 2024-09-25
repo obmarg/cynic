@@ -2,6 +2,7 @@
 # we release most of the repo as a group so disable things for individual packages
 changelog_update = false
 git_release_enable = false
+git_release_latest = false
 git_tag_enable = false
 
 # create the release PR in draft to avoid running CI till we're ready
@@ -32,6 +33,7 @@ name = "cynic"
 git_tag_name = "v{{version}}"
 git_tag_enable = true
 git_release_enable = true
+git_release_latest = true
 git_release_name = "v{{version}}"
 
 changelog_update = true
