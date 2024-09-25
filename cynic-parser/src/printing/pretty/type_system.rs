@@ -288,8 +288,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<InterfaceDefinition<'a>> {
 
         if let Some(description) = self.0.description() {
             builder = builder
-                .append(self.with_node(description))
-                .append(NodeDisplay(description.description()))
+                .append(self.with_node(description.description()))
                 .append(allocator.hardline());
         }
 
