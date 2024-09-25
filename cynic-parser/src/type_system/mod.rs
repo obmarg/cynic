@@ -8,6 +8,7 @@ pub mod iter;
 pub mod writer;
 
 mod definitions;
+mod extensions;
 mod generated;
 mod schemas;
 mod string_literal;
