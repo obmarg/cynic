@@ -112,7 +112,7 @@ type Argument @file(name: "arguments") {
 }
 
 type Description @file(name: "descriptions") {
-  description: StringLiteral!
+  literal: StringLiteral!
   span: Span!
 }
 
