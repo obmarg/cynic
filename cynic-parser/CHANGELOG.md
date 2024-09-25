@@ -9,6 +9,13 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.5.1 - 2024-09-25
+
+### Bug Fixes
+
+- Added the `Description` convenience functions that were missed in v0.5.0
+  ([#1041](https://github.com/obmarg/cynic/pull/1041))
+
 ## v0.5.0 - 2024-09-25
 
 ### Breaking Changes
