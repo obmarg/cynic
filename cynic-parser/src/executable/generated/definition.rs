@@ -3,7 +3,7 @@ use super::{
     fragment::FragmentDefinition,
     ids::{ExecutableDefinitionId, FragmentDefinitionId, OperationDefinitionId},
     operation::OperationDefinition,
-    ExecutableId, ReadContext,
+    ExecutableId,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};

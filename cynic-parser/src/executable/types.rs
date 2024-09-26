@@ -69,10 +69,8 @@ impl std::fmt::Debug for Type<'_> {
 
 impl ExecutableId for TypeId {
     type Reader<'a> = Type<'a>;
-}
 
-impl<'a> From<ReadContext<'a, TypeId>> for Type<'a> {
-    fn from(value: ReadContext<'a, TypeId>) -> Self {
-        Self(value)
+    fn read(self, document: &super::ExecutableDocument) -> Self::Reader<'_> {
+        Type(ReadContext { id: self, document })
     }
 }
