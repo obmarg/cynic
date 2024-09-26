@@ -10,15 +10,15 @@ use super::ValueStoreId;
 #[derive(Clone)]
 pub struct Iter<'a, T>
 where
-    T: IdReader,
+    T: ValueStoreReader<'a>,
 {
     ids: IdRangeIter<T::Id>,
-    document: &'a super::ValueStore,
+    store: &'a super::ValueStore,
 }
 
 impl<'a, T> Iter<'a, T>
 where
-    T: IdReader,
+    T: ValueStoreReader<'a>,
 {
     pub(crate) fn new(range: IdRange<T::Id>, document: &'a super::ValueStore) -> Self
     where
@@ -26,7 +26,7 @@ where
     {
         Iter {
             ids: range.into_iter(),
-            document,
+            store: document,
         }
     }
 
@@ -35,19 +35,19 @@ where
     }
 }
 
-pub trait IdReader {
-    type Id: ValueStoreId;
+pub trait ValueStoreReader<'a> {
+    type Id: ValueStoreId<Reader<'a> = Self>;
 }
 
 impl<'a, T> Iterator for Iter<'a, T>
 where
-    T: IdReader,
+    T: ValueStoreReader<'a>,
     T::Id: IdOperations,
 {
     type Item = <T::Id as ValueStoreId>::Reader<'a>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        Some(self.document.read(self.ids.next()?))
+        Some(self.store.read(self.ids.next()?))
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
@@ -57,32 +57,32 @@ where
 
 impl<'a, T> ExactSizeIterator for Iter<'a, T>
 where
-    T: IdReader,
+    T: ValueStoreReader<'a>,
     T::Id: IdOperations,
 {
 }
 
 impl<'a, T> FusedIterator for Iter<'a, T>
 where
-    T: IdReader,
+    T: ValueStoreReader<'a>,
     T::Id: IdOperations,
 {
 }
 
 impl<'a, T> DoubleEndedIterator for Iter<'a, T>
 where
-    T: IdReader,
+    T: ValueStoreReader<'a>,
     T::Id: IdOperations,
 {
     // Required method
     fn next_back(&mut self) -> Option<Self::Item> {
-        Some(self.document.read(self.ids.next_back()?))
+        Some(self.store.read(self.ids.next_back()?))
     }
 }
 
 impl<'a, T> fmt::Debug for Iter<'a, T>
 where
-    T: IdReader + Copy,
+    T: ValueStoreReader<'a> + Copy,
     Self: Iterator,
     <Self as Iterator>::Item: fmt::Debug,
 {

@@ -1,6 +1,6 @@
 use std::num::NonZeroU32;
 
-use super::{storage::*, FieldRecord, ValueStore};
+use super::{storage::*, ValueStore};
 use crate::{common::IdRange, AstLookup};
 
 macro_rules! make_id {
@@ -35,10 +35,29 @@ make_id!(ValueId, ValueRecord, values);
 make_id!(FieldId, FieldRecord, fields);
 make_id!(ListItemId, ValueId, list_items);
 
-// TODO: Figure out the best way to just store values in the storage
-// and index everything from that...
-#[derive(Clone, Copy, Debug, Hash, Eq, PartialEq, Ord, PartialOrd)]
-pub struct BooleanValueId(ValueId);
+macro_rules! impl_id_range_ops {
+    ($name: ident) => {
+        impl crate::common::IdOperations for $name {
+            fn empty_range() -> IdRange<Self> {
+                IdRange::new(Self::new(0), Self::new(0))
+            }
+            fn forward(self) -> Option<Self> {
+                Some(Self(NonZeroU32::new(self.0.get() + 1)?))
+            }
+            fn back(self) -> Option<Self> {
+                Some(Self(NonZeroU32::new(self.0.get() - 1)?))
+            }
+            fn cmp(self, other: Self) -> std::cmp::Ordering {
+                self.0.get().cmp(&other.0.get())
+            }
+            fn distance(lhs: Self, rhs: Self) -> usize {
+                rhs.0.get().saturating_sub(lhs.0.get()) as usize
+            }
+        }
+    };
+}
+
+impl_id_range_ops!(FieldId);
 
 #[derive(Clone, Copy)]
 pub struct StringId(NonZeroU32);

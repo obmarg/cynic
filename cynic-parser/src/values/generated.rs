@@ -21,7 +21,7 @@ mod prelude {
         common::{IdRange, OperationType},
         values::{
             ids::StringId,
-            iter::{IdReader, Iter},
+            iter::{Iter, ValueStoreReader},
         },
         AstLookup, Span,
     };
