@@ -25,7 +25,10 @@ use ids::*;
 use indexmap::IndexSet;
 
 pub mod storage {
-    pub use super::{objects::FieldRecord, value::ValueRecord};
+    pub use super::{
+        objects::FieldRecord,
+        value::{ValueKind, ValueRecord},
+    };
 }
 
 #[derive(Default)]

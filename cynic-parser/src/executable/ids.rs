@@ -93,6 +93,10 @@ impl StringId {
                 .expect("also too many indices"),
         )
     }
+
+    pub(in crate::values::ids) fn inner(&self) -> usize {
+        (self.0.get() - 1) as usize
+    }
 }
 
 impl AstLookup<StringId> for ExecutableDocument {

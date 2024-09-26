@@ -4,11 +4,12 @@ use crate::{
     executable::{
         storage::*, ids::*, writer::ExecutableAstWriter
     },
-    values::{storage::*, ids::*},
+    values::{storage::*, ids::ValueId, self},
     common::{
         OperationType, IdRange, WrappingType, TypeWrappers,
         unquote_string, unquote_block_string, trim_block_string_whitespace
-    }
+    },
+    Span
 };
 
 grammar<'input>(input: &'input str, ast: &mut ExecutableAstWriter);
@@ -156,31 +157,90 @@ Argument: ArgumentRecord = {
 }
 
 Value: ValueId = {
-    "$" <name:Name> => ast.values.value(ValueRecord::Variable(name)),
-    <int:IntegerLiteral> => ast.values.value(ValueRecord::Int(int.parse().unwrap())),
-    <float:FloatLiteral> => ast.values.value(ValueRecord::Float(float.parse().unwrap())),
-    <start:@L> <s:StringLiteral> =>? {
-        let id = ast.intern_owned_string(unquote_string(s, start)?);
-        Ok(ast.values.value(ValueRecord::String(id)))
+    <start:@L> "$" <name:Name> <end:@R> => {
+        ast.values.value(ValueRecord {
+            span: Span::new(start, end),
+            kind: ValueKind::Variable(values::ids::StringId::from_executable_id(name))
+        })
     },
-    <s:BlockStringLiteral> => {
+    <start:@L> <int:IntegerLiteral> <end:@R> => {
+        ast.values.value(ValueRecord {
+            span: Span::new(start, end),
+            kind: ValueKind::Int(int.parse().unwrap())
+        })
+    },
+    <start:@L> <float:FloatLiteral> <end:@R> => {
+        ast.values.value(ValueRecord {
+            span: Span::new(start, end),
+            kind: ValueKind::Float(float.parse().unwrap())
+        })
+    },
+    <start:@L> <s:StringLiteral> <end:@R> =>? {
+        let id = ast.intern_owned_string(unquote_string(s, start)?);
+        Ok(ast.values.value(ValueRecord {
+            span: Span::new(start, end),
+            kind: ValueKind::String(values::ids::StringId::from_executable_id(id))
+        }))
+    },
+    <start:@L> <s:BlockStringLiteral> <end:@R> => {
         let id = ast.intern_owned_string(
             trim_block_string_whitespace(
                 unquote_block_string(s)
             )
         );
-        ast.values.value(ValueRecord::String(id))
+        ast.values.value(ValueRecord {
+            span: Span::new(start, end),
+            kind: ValueKind::String(values::ids::StringId::from_executable_id(id))
+        })
     },
-    true => ast.values.value(ValueRecord::Boolean(true)),
-    false => ast.values.value(ValueRecord::Boolean(false)),
-    null => ast.values.value(ValueRecord::Null),
-    "[" <values:Value*> "]" => ast.values.value(ValueRecord::List(values)),
-    "{" <fields:ObjectField*> "}" => ast.values.value(ValueRecord::Object(fields)),
-    <value:EnumValue> => ast.values.value(ValueRecord::Enum(value)),
+    <start:@L> true <end:@R> => {
+        ast.values.value(ValueRecord {
+            span: Span::new(start, end),
+            kind: ValueKind::Boolean(true)
+        })
+    },
+    <start:@L> false <end:@R> => {
+        ast.values.value(ValueRecord {
+            span: Span::new(start, end),
+            kind: ValueKind::Boolean(false)
+        })
+    },
+    <start:@L> null <end:@R> => {
+        ast.values.value(ValueRecord {
+            span: Span::new(start, end),
+            kind: ValueKind::Null
+        })
+    },
+    <start:@L> "[" <values:Value*> "]" <end:@R> => {
+        let id = ast.values.list_items(values);
+        ast.values.value(ValueRecord {
+            span: Span::new(start, end),
+            kind: ValueKind::List(id)
+        })
+    },
+    <start:@L> "{" <fields:ObjectField*> "}" <end:@R> => {
+        let fields = ast.values.fields(fields);
+        ast.values.value(ValueRecord {
+            span: Span::new(start, end),
+            kind: ValueKind::Object(fields)
+        })
+    },
+    <start:@L> <value:EnumValue> <end:@R> => {
+        ast.values.value(ValueRecord {
+            span: Span::new(start, end),
+            kind: ValueKind::Enum(values::ids::StringId::from_executable_id(value))
+        })
+    },
 }
 
-ObjectField: (StringId, ValueId) = {
-    <name:Name> ":" <value:Value> => (name, value)
+ObjectField: (values::ids::StringId, Span, ValueId) = {
+    <name_start:@L> <name:Name> <name_end:@R> ":" <value:Value> => {
+        (
+            values::ids::StringId::from_executable_id(name),
+            Span::new(name_start, name_end),
+            value
+        )
+    }
 }
 
 EnumValue: StringId = {

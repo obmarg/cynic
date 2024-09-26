@@ -69,6 +69,10 @@ impl StringId {
                 .expect("also too many indices"),
         )
     }
+
+    pub(crate) fn from_executable_id(id: crate::executable::ids::StringId) -> Self {
+        Self::new(id.inner())
+    }
 }
 
 impl AstLookup<StringId> for ValueStore {
