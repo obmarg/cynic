@@ -43,14 +43,11 @@ impl fmt::Debug for Argument<'_> {
 
 impl ExecutableId for ArgumentId {
     type Reader<'a> = Argument<'a>;
+    fn read(self, document: &ExecutableDocument) -> Self::Reader<'_> {
+        Argument(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for Argument<'_> {
     type Id = ArgumentId;
-}
-
-impl<'a> From<ReadContext<'a, ArgumentId>> for Argument<'a> {
-    fn from(value: ReadContext<'a, ArgumentId>) -> Self {
-        Self(value)
-    }
 }

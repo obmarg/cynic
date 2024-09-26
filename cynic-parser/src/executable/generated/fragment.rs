@@ -56,14 +56,11 @@ impl fmt::Debug for FragmentDefinition<'_> {
 
 impl ExecutableId for FragmentDefinitionId {
     type Reader<'a> = FragmentDefinition<'a>;
+    fn read(self, document: &ExecutableDocument) -> Self::Reader<'_> {
+        FragmentDefinition(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for FragmentDefinition<'_> {
     type Id = FragmentDefinitionId;
-}
-
-impl<'a> From<ReadContext<'a, FragmentDefinitionId>> for FragmentDefinition<'a> {
-    fn from(value: ReadContext<'a, FragmentDefinitionId>) -> Self {
-        Self(value)
-    }
 }

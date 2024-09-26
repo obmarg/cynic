@@ -21,21 +21,18 @@ pub enum ExecutableDefinition<'a> {
 
 impl ExecutableId for ExecutableDefinitionId {
     type Reader<'a> = ExecutableDefinition<'a>;
+    fn read(self, document: &ExecutableDocument) -> Self::Reader<'_> {
+        match document.lookup(self) {
+            ExecutableDefinitionRecord::Operation(id) => {
+                ExecutableDefinition::Operation(document.read(*id))
+            }
+            ExecutableDefinitionRecord::Fragment(id) => {
+                ExecutableDefinition::Fragment(document.read(*id))
+            }
+        }
+    }
 }
 
 impl IdReader for ExecutableDefinition<'_> {
     type Id = ExecutableDefinitionId;
-}
-
-impl<'a> From<ReadContext<'a, ExecutableDefinitionId>> for ExecutableDefinition<'a> {
-    fn from(value: ReadContext<'a, ExecutableDefinitionId>) -> Self {
-        match value.document.lookup(value.id) {
-            ExecutableDefinitionRecord::Operation(id) => {
-                ExecutableDefinition::Operation(value.document.read(*id))
-            }
-            ExecutableDefinitionRecord::Fragment(id) => {
-                ExecutableDefinition::Fragment(value.document.read(*id))
-            }
-        }
-    }
 }

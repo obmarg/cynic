@@ -66,14 +66,11 @@ impl fmt::Debug for OperationDefinition<'_> {
 
 impl ExecutableId for OperationDefinitionId {
     type Reader<'a> = OperationDefinition<'a>;
+    fn read(self, document: &ExecutableDocument) -> Self::Reader<'_> {
+        OperationDefinition(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for OperationDefinition<'_> {
     type Id = OperationDefinitionId;
-}
-
-impl<'a> From<ReadContext<'a, OperationDefinitionId>> for OperationDefinition<'a> {
-    fn from(value: ReadContext<'a, OperationDefinitionId>) -> Self {
-        Self(value)
-    }
 }
