@@ -1,5 +1,5 @@
 // auto-generated: "lalrpop 0.21.0"
-// sha3: 08c754fe6dffbd7e3b3919f55eff9d7ea855a65d3a7cea10e782098565a47755
+// sha3: c7a8e58db7e94b529465f232c87b0f896bf6e5ceccb9e09a99ac154b86a6caff
 use crate::lexer;
 use crate::{
     common::{
@@ -7,6 +7,7 @@ use crate::{
         TypeWrappers, WrappingType,
     },
     executable::{ids::*, storage::*, writer::ExecutableAstWriter},
+    values::{ids::*, storage::*},
 };
 #[allow(unused_extern_crates)]
 extern crate lalrpop_util as __lalrpop_util;
@@ -24,6 +25,7 @@ mod __parse__ExecutableDocument {
     executable::{
         storage::*, ids::*, writer::ExecutableAstWriter
     },
+    values::{storage::*, ids::*},
     common::{
         OperationType, IdRange, WrappingType, TypeWrappers,
         unquote_string, unquote_block_string, trim_block_string_whitespace
@@ -934,14 +936,14 @@ mod __parse__ExecutableDocument {
         }).collect()
     }
     struct __StateMachine<'input, '__1>
-    where 
+    where
     {
         input: &'input str,
         ast: &'__1 mut ExecutableAstWriter,
         __phantom: core::marker::PhantomData<(&'input ())>,
     }
     impl<'input, '__1> __state_machine::ParserDefinition for __StateMachine<'input, '__1>
-    where 
+    where
     {
         type Location = usize;
         type Error = crate::parser::AdditionalErrors;
@@ -6155,7 +6157,7 @@ fn __action28<'input>(
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, name, _): (usize, StringId, usize),
 ) -> ValueId {
-    ast.value(ValueRecord::Variable(name))
+    ast.values.value(ValueRecord::Variable(name))
 }
 
 #[allow(unused_variables)]
@@ -6169,7 +6171,7 @@ fn __action29<'input>(
     ast: &mut ExecutableAstWriter,
     (_, int, _): (usize, &'input str, usize),
 ) -> ValueId {
-    ast.value(ValueRecord::Int(int.parse().unwrap()))
+    ast.values.value(ValueRecord::Int(int.parse().unwrap()))
 }
 
 #[allow(unused_variables)]
@@ -6183,7 +6185,7 @@ fn __action30<'input>(
     ast: &mut ExecutableAstWriter,
     (_, float, _): (usize, &'input str, usize),
 ) -> ValueId {
-    ast.value(ValueRecord::Float(float.parse().unwrap()))
+    ast.values.value(ValueRecord::Float(float.parse().unwrap()))
 }
 
 #[allow(unused_variables)]
@@ -6203,7 +6205,7 @@ fn __action31<'input>(
 > {
     {
         let id = ast.intern_owned_string(unquote_string(s, start)?);
-        Ok(ast.value(ValueRecord::String(id)))
+        Ok(ast.values.value(ValueRecord::String(id)))
     }
 }
 
@@ -6220,7 +6222,7 @@ fn __action32<'input>(
 ) -> ValueId {
     {
         let id = ast.intern_owned_string(trim_block_string_whitespace(unquote_block_string(s)));
-        ast.value(ValueRecord::String(id))
+        ast.values.value(ValueRecord::String(id))
     }
 }
 
@@ -6235,7 +6237,7 @@ fn __action33<'input>(
     ast: &mut ExecutableAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> ValueId {
-    ast.value(ValueRecord::Boolean(true))
+    ast.values.value(ValueRecord::Boolean(true))
 }
 
 #[allow(unused_variables)]
@@ -6249,7 +6251,7 @@ fn __action34<'input>(
     ast: &mut ExecutableAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> ValueId {
-    ast.value(ValueRecord::Boolean(false))
+    ast.values.value(ValueRecord::Boolean(false))
 }
 
 #[allow(unused_variables)]
@@ -6263,7 +6265,7 @@ fn __action35<'input>(
     ast: &mut ExecutableAstWriter,
     (_, __0, _): (usize, lexer::Token<'input>, usize),
 ) -> ValueId {
-    ast.value(ValueRecord::Null)
+    ast.values.value(ValueRecord::Null)
 }
 
 #[allow(unused_variables)]
@@ -6279,7 +6281,7 @@ fn __action36<'input>(
     (_, values, _): (usize, alloc::vec::Vec<ValueId>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
 ) -> ValueId {
-    ast.value(ValueRecord::List(values))
+    ast.values.value(ValueRecord::List(values))
 }
 
 #[allow(unused_variables)]
@@ -6295,7 +6297,7 @@ fn __action37<'input>(
     (_, fields, _): (usize, alloc::vec::Vec<(StringId, ValueId)>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
 ) -> ValueId {
-    ast.value(ValueRecord::Object(fields))
+    ast.values.value(ValueRecord::Object(fields))
 }
 
 #[allow(unused_variables)]
@@ -6309,7 +6311,7 @@ fn __action38<'input>(
     ast: &mut ExecutableAstWriter,
     (_, value, _): (usize, StringId, usize),
 ) -> ValueId {
-    ast.value(ValueRecord::Enum(value))
+    ast.values.value(ValueRecord::Enum(value))
 }
 
 #[allow(unused_variables)]

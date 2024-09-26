@@ -4,6 +4,7 @@ use crate::{
     executable::{
         storage::*, ids::*, writer::ExecutableAstWriter
     },
+    values::{storage::*, ids::*},
     common::{
         OperationType, IdRange, WrappingType, TypeWrappers,
         unquote_string, unquote_block_string, trim_block_string_whitespace
@@ -155,12 +156,12 @@ Argument: ArgumentRecord = {
 }
 
 Value: ValueId = {
-    "$" <name:Name> => ast.value(ValueRecord::Variable(name)),
-    <int:IntegerLiteral> => ast.value(ValueRecord::Int(int.parse().unwrap())),
-    <float:FloatLiteral> => ast.value(ValueRecord::Float(float.parse().unwrap())),
+    "$" <name:Name> => ast.values.value(ValueRecord::Variable(name)),
+    <int:IntegerLiteral> => ast.values.value(ValueRecord::Int(int.parse().unwrap())),
+    <float:FloatLiteral> => ast.values.value(ValueRecord::Float(float.parse().unwrap())),
     <start:@L> <s:StringLiteral> =>? {
         let id = ast.intern_owned_string(unquote_string(s, start)?);
-        Ok(ast.value(ValueRecord::String(id)))
+        Ok(ast.values.value(ValueRecord::String(id)))
     },
     <s:BlockStringLiteral> => {
         let id = ast.intern_owned_string(
@@ -168,14 +169,14 @@ Value: ValueId = {
                 unquote_block_string(s)
             )
         );
-        ast.value(ValueRecord::String(id))
+        ast.values.value(ValueRecord::String(id))
     },
-    true => ast.value(ValueRecord::Boolean(true)),
-    false => ast.value(ValueRecord::Boolean(false)),
-    null => ast.value(ValueRecord::Null),
-    "[" <values:Value*> "]" => ast.value(ValueRecord::List(values)),
-    "{" <fields:ObjectField*> "}" => ast.value(ValueRecord::Object(fields)),
-    <value:EnumValue> => ast.value(ValueRecord::Enum(value)),
+    true => ast.values.value(ValueRecord::Boolean(true)),
+    false => ast.values.value(ValueRecord::Boolean(false)),
+    null => ast.values.value(ValueRecord::Null),
+    "[" <values:Value*> "]" => ast.values.value(ValueRecord::List(values)),
+    "{" <fields:ObjectField*> "}" => ast.values.value(ValueRecord::Object(fields)),
+    <value:EnumValue> => ast.values.value(ValueRecord::Enum(value)),
 }
 
 ObjectField: (StringId, ValueId) = {

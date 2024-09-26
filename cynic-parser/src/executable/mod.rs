@@ -9,7 +9,6 @@ pub mod writer;
 mod extensions;
 mod generated;
 mod types;
-mod value;
 
 use crate::common::IdRange;
 
@@ -24,7 +23,6 @@ pub use self::{
         variable::VariableDefinition,
     },
     types::Type,
-    value::Value,
 };
 
 use self::{ids::ExecutableDefinitionId, iter::Iter};
@@ -49,7 +47,7 @@ pub struct ExecutableDocument {
 
     types: Vec<types::TypeRecord>,
 
-    values: Vec<value::ValueRecord>,
+    values: crate::values::ValueStore,
 }
 
 // TODO: Make this sealed maybe?  Could also move into id module...
@@ -114,6 +112,5 @@ pub mod storage {
             variable::VariableDefinitionRecord,
         },
         types::TypeRecord,
-        value::ValueRecord,
     };
 }

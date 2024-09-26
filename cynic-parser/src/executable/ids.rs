@@ -81,8 +81,6 @@ make_id!(TypeId, TypeRecord, types);
 make_id!(VariableDefinitionId, VariableDefinitionRecord, variables);
 impl_id_range_ops!(VariableDefinitionId);
 
-make_id!(ValueId, ValueRecord, values);
-
 make_id!(BlockStringLiteralId, str, block_strings);
 
 #[derive(Clone, Copy)]

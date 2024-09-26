@@ -1,4 +1,4 @@
-use super::{ids, iter::Iter, types, value, ExecutableId, ReadContext};
+use super::{ids, iter::Iter, types, ExecutableId, ReadContext};
 
 /// A prelude module for all the generated modules
 ///

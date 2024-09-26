@@ -7,6 +7,8 @@ use crate::common::IdRange;
 use super::{ids::*, storage::*, ExecutableDocument};
 
 pub struct ExecutableAstWriter {
+    pub values: crate::values::writer::ValueWriter,
+
     strings: IndexSet<Box<str>>,
     block_strings: Vec<Box<str>>,
 
@@ -24,8 +26,6 @@ pub struct ExecutableAstWriter {
     variables: Vec<VariableDefinitionRecord>,
 
     types: Vec<TypeRecord>,
-
-    values: Vec<ValueRecord>,
 
     directive_cursor: DirectiveId,
     variable_definition_cursor: VariableDefinitionId,
@@ -81,6 +81,7 @@ impl ExecutableAstWriter {
         } = self;
 
         let strings = Arc::new(strings);
+        let values = values.finish(Arc::clone(&strings));
 
         ExecutableDocument {
             strings,
@@ -209,12 +210,6 @@ impl ExecutableAstWriter {
         assert_eq!(range.len(), expected_count.unwrap_or_default());
 
         range
-    }
-
-    pub fn value(&mut self, record: ValueRecord) -> ValueId {
-        let id = ValueId::new(self.values.len());
-        self.values.push(record);
-        id
     }
 
     pub fn block_string(&mut self, string: &str) -> BlockStringLiteralId {

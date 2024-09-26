@@ -9,6 +9,7 @@ mod variables;
 
 pub mod ids;
 pub mod iter;
+pub mod writer;
 
 use std::sync::Arc;
 
@@ -27,6 +28,7 @@ pub mod storage {
     pub use super::{objects::FieldRecord, value::ValueRecord};
 }
 
+#[derive(Default)]
 pub struct ValueStore {
     // TODO: Figure out if this arc approach works ok...
     strings: Arc<IndexSet<Box<str>>>,
