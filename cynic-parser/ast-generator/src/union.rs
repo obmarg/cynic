@@ -15,6 +15,7 @@ pub fn union_output(
     union_definition: UnionDefinition<'_>,
     model_index: &IndexMap<&str, TypeDefinition<'_>>,
     id_trait: &str,
+    document_type: &str,
 ) -> anyhow::Result<EntityOutput> {
     let record_name = Ident::new(
         &format!("{}Record", union_definition.name()),
@@ -44,7 +45,7 @@ pub fn union_output(
 
     let record_variants = edges.iter().copied().map(RecordVariant);
     let reader_variants = edges.iter().copied().map(ReaderVariant);
-    let from_branches = edges.iter().copied().map(FromBranch);
+    let read_branches = edges.iter().copied().map(ReadImplBranch);
 
     let record = format_code(quote! {
         pub enum #record_name {
@@ -60,26 +61,23 @@ pub fn union_output(
     })?;
 
     let id_trait = Ident::new(id_trait, Span::call_site());
+    let document_type = Ident::new(document_type, Span::call_site());
 
     let id_trait_impl = format_code(quote! {
         impl #id_trait for #id_name {
             type Reader<'a> = #reader_name<'a>;
+
+            fn read(self, document: &#document_type) -> Self::Reader<'_> {
+                match document.lookup(self) {
+                    #(#read_branches),*
+                }
+            }
         }
     })?;
 
     let id_reader_impl = format_code(quote! {
         impl IdReader for #reader_name<'_> {
             type Id = #id_name;
-        }
-    })?;
-
-    let from_impl = format_code(quote! {
-        impl <'a> From<ReadContext<'a, #id_name>> for #reader_name<'a> {
-            fn from(value: ReadContext<'a, #id_name>) -> Self {
-                match value.document.lookup(value.id) {
-                    #(#from_branches),*
-                }
-            }
         }
     })?;
 
@@ -92,8 +90,6 @@ pub fn union_output(
         {id_trait_impl}
 
         {id_reader_impl}
-
-        {from_impl}
     "#
     );
 
@@ -142,9 +138,9 @@ impl quote::ToTokens for ReaderVariant<'_> {
     }
 }
 
-pub struct FromBranch<'a>(TypeEdge<'a>);
+pub struct ReadImplBranch<'a>(TypeEdge<'a>);
 
-impl quote::ToTokens for FromBranch<'_> {
+impl quote::ToTokens for ReadImplBranch<'_> {
     fn to_tokens(&self, tokens: &mut proc_macro2::TokenStream) {
         let this_record = Ident::new(
             &format!("{}Record", self.0.container.name()),
@@ -154,7 +150,7 @@ impl quote::ToTokens for FromBranch<'_> {
         let variant_name = Ident::new(self.0.variant_name, Span::call_site());
 
         tokens.append_all(quote! {
-            #this_record::#variant_name(id) => #this_reader::#variant_name(value.document.read(*id))
+            #this_record::#variant_name(id) => #this_reader::#variant_name(document.read(*id))
         });
     }
 }
