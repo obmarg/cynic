@@ -2,15 +2,16 @@ use crate::{common::IdRange, AstLookup, Span};
 
 use super::{
     enums::EnumValue,
-    ids::{FieldId, ListItemId, StringId},
+    ids::{FieldId, StringId},
     iter::ValueStoreReader,
     lists::ListValue,
     objects::ObjectValue,
     scalars::{BooleanValue, FloatValue, IntValue, NullValue, StringValue},
     variables::VariableValue,
-    ValueId,
+    Cursor, ValueId,
 };
 
+#[derive(Debug)]
 pub enum Value<'a> {
     Variable(VariableValue<'a>),
     Int(IntValue<'a>),
@@ -37,7 +38,19 @@ impl super::ValueStoreId for ValueId {
     type Reader<'a> = Value<'a>;
 
     fn read(self, store: &super::ValueStore) -> Self::Reader<'_> {
-        todo!("impl me")
+        let cursor = Cursor { id: self, store };
+
+        match store.lookup(self).kind {
+            ValueKind::Variable(_) => Value::Variable(VariableValue(cursor)),
+            ValueKind::Int(_) => Value::Int(IntValue(cursor)),
+            ValueKind::Float(_) => Value::Float(FloatValue(cursor)),
+            ValueKind::String(_) => Value::String(StringValue(cursor)),
+            ValueKind::Boolean(_) => Value::Boolean(BooleanValue(cursor)),
+            ValueKind::Null => Value::Null(NullValue(cursor)),
+            ValueKind::Enum(_) => Value::Enum(EnumValue(cursor)),
+            ValueKind::List(_) => Value::List(ListValue(cursor)),
+            ValueKind::Object(_) => Value::Object(ObjectValue(cursor)),
+        }
     }
 }
 
@@ -54,7 +67,7 @@ pub enum ValueKind {
     Boolean(bool),
     Null,
     Enum(StringId),
-    List(IdRange<ListItemId>),
+    List(IdRange<ValueId>),
     Object(IdRange<FieldId>),
 }
 
@@ -108,7 +121,7 @@ impl ValueKind {
         }
     }
 
-    pub fn as_list(&self) -> Option<IdRange<ListItemId>> {
+    pub fn as_list(&self) -> Option<IdRange<ValueId>> {
         match self {
             ValueKind::List(inner) => Some(*inner),
             _ => None,
@@ -120,5 +133,15 @@ impl ValueKind {
             ValueKind::Object(inner) => Some(*inner),
             _ => None,
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::ValueRecord;
+
+    #[test]
+    fn test_size_of_record() {
+        assert_eq!(std::mem::size_of::<ValueRecord>(), 32);
     }
 }

@@ -9,6 +9,7 @@ pub mod writer;
 mod extensions;
 mod generated;
 mod types;
+mod values;
 
 use crate::common::IdRange;
 
@@ -54,7 +55,7 @@ pub struct ExecutableDocument {
 pub trait ExecutableId: Copy {
     type Reader<'a>;
 
-    fn read(self, ast: &ExecutableDocument) -> Self::Reader<'_>;
+    fn read(self, document: &ExecutableDocument) -> Self::Reader<'_>;
 }
 
 #[derive(Clone, Copy)]

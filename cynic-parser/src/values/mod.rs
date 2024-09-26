@@ -38,10 +38,6 @@ pub struct ValueStore {
 
     values: Vec<storage::ValueRecord>,
 
-    // TODO: Can this just be incorporated straight into values?
-    // maybe...
-    list_items: Vec<ValueId>,
-
     fields: Vec<storage::FieldRecord>,
 }
 

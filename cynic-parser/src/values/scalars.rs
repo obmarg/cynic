@@ -5,7 +5,7 @@ use crate::{AstLookup, Span};
 use super::{ids::ValueId, Cursor};
 
 #[derive(Clone, Copy)]
-pub struct IntValue<'a>(pub(in super::super) Cursor<'a, ValueId>);
+pub struct IntValue<'a>(pub(super) Cursor<'a, ValueId>);
 
 impl<'a> IntValue<'a> {
     pub fn as_i64(&self) -> i64 {
@@ -46,7 +46,7 @@ impl std::fmt::Display for IntValue<'_> {
 }
 
 #[derive(Clone, Copy)]
-pub struct FloatValue<'a>(pub(in super::super) Cursor<'a, ValueId>);
+pub struct FloatValue<'a>(pub(super) Cursor<'a, ValueId>);
 
 impl<'a> FloatValue<'a> {
     pub fn value(&self) -> f32 {
@@ -79,13 +79,14 @@ impl fmt::Display for FloatValue<'_> {
 }
 
 #[derive(Clone, Copy)]
-pub struct StringValue<'a>(pub(in super::super) Cursor<'a, ValueId>);
+pub struct StringValue<'a>(pub(super) Cursor<'a, ValueId>);
 
 impl<'a> StringValue<'a> {
     pub fn value(&self) -> &'a str {
         let store = &self.0.store;
         store.lookup(store.lookup(self.0.id).kind.as_string().unwrap())
     }
+
     pub fn span(&self) -> Span {
         let store = self.0.store;
         store.lookup(self.0.id).span
@@ -111,7 +112,7 @@ impl fmt::Display for StringValue<'_> {
 }
 
 #[derive(Clone, Copy)]
-pub struct BooleanValue<'a>(pub(in super::super) Cursor<'a, ValueId>);
+pub struct BooleanValue<'a>(pub(super) Cursor<'a, ValueId>);
 
 impl<'a> BooleanValue<'a> {
     pub fn value(&self) -> bool {
@@ -144,7 +145,7 @@ impl fmt::Display for BooleanValue<'_> {
 }
 
 #[derive(Clone, Copy)]
-pub struct NullValue<'a>(pub(in super::super) Cursor<'a, ValueId>);
+pub struct NullValue<'a>(pub(super) Cursor<'a, ValueId>);
 
 impl<'a> NullValue<'a> {
     pub fn span(&self) -> Span {

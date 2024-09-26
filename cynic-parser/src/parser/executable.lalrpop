@@ -157,30 +157,36 @@ Argument: ArgumentRecord = {
 }
 
 Value: ValueId = {
+    <record:ValueRecord> => {
+        ast.values.value(record)
+    }
+}
+
+ValueRecord: ValueRecord = {
     <start:@L> "$" <name:Name> <end:@R> => {
-        ast.values.value(ValueRecord {
+        ValueRecord {
             span: Span::new(start, end),
             kind: ValueKind::Variable(values::ids::StringId::from_executable_id(name))
-        })
+        }
     },
     <start:@L> <int:IntegerLiteral> <end:@R> => {
-        ast.values.value(ValueRecord {
+        ValueRecord {
             span: Span::new(start, end),
             kind: ValueKind::Int(int.parse().unwrap())
-        })
+        }
     },
     <start:@L> <float:FloatLiteral> <end:@R> => {
-        ast.values.value(ValueRecord {
+        ValueRecord {
             span: Span::new(start, end),
             kind: ValueKind::Float(float.parse().unwrap())
-        })
+        }
     },
     <start:@L> <s:StringLiteral> <end:@R> =>? {
         let id = ast.intern_owned_string(unquote_string(s, start)?);
-        Ok(ast.values.value(ValueRecord {
+        Ok(ValueRecord {
             span: Span::new(start, end),
             kind: ValueKind::String(values::ids::StringId::from_executable_id(id))
-        }))
+        })
     },
     <start:@L> <s:BlockStringLiteral> <end:@R> => {
         let id = ast.intern_owned_string(
@@ -188,48 +194,48 @@ Value: ValueId = {
                 unquote_block_string(s)
             )
         );
-        ast.values.value(ValueRecord {
+        ValueRecord {
             span: Span::new(start, end),
             kind: ValueKind::String(values::ids::StringId::from_executable_id(id))
-        })
+        }
     },
     <start:@L> true <end:@R> => {
-        ast.values.value(ValueRecord {
+        ValueRecord {
             span: Span::new(start, end),
             kind: ValueKind::Boolean(true)
-        })
+        }
     },
     <start:@L> false <end:@R> => {
-        ast.values.value(ValueRecord {
+        ValueRecord {
             span: Span::new(start, end),
             kind: ValueKind::Boolean(false)
-        })
+        }
     },
     <start:@L> null <end:@R> => {
-        ast.values.value(ValueRecord {
+        ValueRecord {
             span: Span::new(start, end),
             kind: ValueKind::Null
-        })
+        }
     },
-    <start:@L> "[" <values:Value*> "]" <end:@R> => {
-        let id = ast.values.list_items(values);
-        ast.values.value(ValueRecord {
+    <start:@L> "[" <values:ValueRecord*> "]" <end:@R> => {
+        let id = ast.values.list(values);
+        ValueRecord {
             span: Span::new(start, end),
             kind: ValueKind::List(id)
-        })
+        }
     },
     <start:@L> "{" <fields:ObjectField*> "}" <end:@R> => {
         let fields = ast.values.fields(fields);
-        ast.values.value(ValueRecord {
+        ValueRecord {
             span: Span::new(start, end),
             kind: ValueKind::Object(fields)
-        })
+        }
     },
     <start:@L> <value:EnumValue> <end:@R> => {
-        ast.values.value(ValueRecord {
+        ValueRecord {
             span: Span::new(start, end),
             kind: ValueKind::Enum(values::ids::StringId::from_executable_id(value))
-        })
+        }
     },
 }
 

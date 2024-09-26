@@ -1,5 +1,7 @@
 use std::sync::Arc;
 
+use indexmap::IndexSet;
+
 use crate::{common::IdRange, Span};
 
 pub use super::{ids::*, storage::*};
@@ -7,10 +9,6 @@ pub use super::{ids::*, storage::*};
 #[derive(Default)]
 pub struct ValueWriter {
     values: Vec<ValueRecord>,
-
-    // TODO: Can this just be incorporated straight into values?
-    // maybe...
-    list_items: Vec<ValueId>,
 
     fields: Vec<FieldRecord>,
 }
@@ -22,25 +20,40 @@ impl ValueWriter {
         id
     }
 
-    pub fn list_items(&mut self, values: Vec<ValueId>) -> IdRange<ListItemId> {
-        todo!()
+    pub fn list(&mut self, values: Vec<ValueRecord>) -> IdRange<ValueId> {
+        let start = ValueId::new(self.values.len());
+
+        self.values.extend(values);
+
+        let end = ValueId::new(self.values.len());
+
+        IdRange::new(start, end)
     }
 
     pub fn fields(&mut self, records: Vec<(StringId, Span, ValueId)>) -> IdRange<FieldId> {
-        todo!()
+        let start = FieldId::new(self.fields.len());
+
+        self.fields.extend(
+            records
+                .into_iter()
+                .map(|(name, name_span, value)| FieldRecord {
+                    name,
+                    name_span,
+                    value,
+                }),
+        );
+
+        let end = FieldId::new(self.fields.len());
+
+        IdRange::new(start, end)
     }
 
-    pub(crate) fn finish(self, strings: Arc<indexmap::IndexSet<Box<str>>>) -> super::ValueStore {
-        let ValueWriter {
-            values,
-            list_items,
-            fields,
-        } = self;
+    pub(crate) fn finish(self, strings: Arc<IndexSet<Box<str>>>) -> super::ValueStore {
+        let ValueWriter { values, fields } = self;
 
         super::ValueStore {
             strings,
             values,
-            list_items,
             fields,
         }
     }

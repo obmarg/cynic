@@ -1,7 +1,9 @@
 use std::num::NonZeroU32;
 
-use super::{storage::*, types::TypeRecord, value::ValueRecord, ExecutableDocument};
+use super::{storage::*, types::TypeRecord, ExecutableDocument};
 use crate::{common::IdRange, AstLookup};
+
+pub use crate::values::ids::ValueId;
 
 macro_rules! make_id {
     ($name:ident, $output:ident, $field:ident) => {
@@ -94,7 +96,8 @@ impl StringId {
         )
     }
 
-    pub(in crate::values::ids) fn inner(&self) -> usize {
+    // TODO: Not especially happy with this pub(crate) - figure it out...
+    pub(crate) fn inner(&self) -> usize {
         (self.0.get() - 1) as usize
     }
 }

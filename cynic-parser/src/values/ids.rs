@@ -33,7 +33,6 @@ macro_rules! make_id {
 
 make_id!(ValueId, ValueRecord, values);
 make_id!(FieldId, FieldRecord, fields);
-make_id!(ListItemId, ValueId, list_items);
 
 macro_rules! impl_id_range_ops {
     ($name: ident) => {
@@ -57,6 +56,7 @@ macro_rules! impl_id_range_ops {
     };
 }
 
+impl_id_range_ops!(ValueId);
 impl_id_range_ops!(FieldId);
 
 #[derive(Clone, Copy)]

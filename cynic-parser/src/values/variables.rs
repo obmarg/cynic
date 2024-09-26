@@ -5,7 +5,7 @@ use crate::{AstLookup, Span};
 use super::{ids::ValueId, Cursor};
 
 #[derive(Clone, Copy)]
-pub struct VariableValue<'a>(pub(in super::super) Cursor<'a, ValueId>);
+pub struct VariableValue<'a>(pub(super) Cursor<'a, ValueId>);
 
 impl<'a> VariableValue<'a> {
     pub fn name(&self) -> &'a str {
@@ -22,6 +22,12 @@ impl<'a> VariableValue<'a> {
 impl VariableValue<'_> {
     pub fn id(&self) -> ValueId {
         self.0.id
+    }
+}
+
+impl fmt::Display for VariableValue<'_> {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "${}", self.name())
     }
 }
 

@@ -26,3 +26,5 @@ pub mod fragment;
 pub mod operation;
 pub mod selections;
 pub mod variable;
+
+mod value;

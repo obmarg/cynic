@@ -3,11 +3,9 @@ use pretty::{DocAllocator, Pretty};
 use crate::common::OperationType;
 
 use crate::executable::*;
-use crate::printing::escape_string;
 
 use super::printer::PrettyOptions;
-
-type Allocator<'a> = pretty::Arena<'a>;
+use super::{Allocator, NodeDisplay};
 
 impl crate::ExecutableDocument {
     pub fn to_string_pretty(&self) -> String {
@@ -61,8 +59,6 @@ impl crate::ExecutableDocument {
         }
     }
 }
-
-pub struct NodeDisplay<T>(T);
 
 impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<OperationDefinition<'a>> {
     fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
@@ -328,45 +324,6 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Argument<'a>> {
     }
 }
 
-impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Value<'a>> {
-    fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
-        match self.0 {
-            Value::Variable(name) => allocator.text(format!("${name}")),
-            Value::Int(value) => allocator.text(format!("{value}")),
-            Value::Float(value) => allocator.text(format!("{value}")),
-            Value::String(value) => allocator.text(escape_string(value)).double_quotes(),
-            Value::Boolean(value) => allocator.text(format!("{value}")),
-            Value::Null => allocator.text("null"),
-            Value::Enum(value) => allocator.text(value),
-            Value::List(items) if items.is_empty() => allocator.nil().brackets(),
-            Value::List(items) => brackets_and_maybe_indent(
-                allocator
-                    .intersperse(
-                        items.into_iter().map(NodeDisplay),
-                        allocator.text(",").append(allocator.line()),
-                    )
-                    .group()
-                    .enclose(allocator.line_(), allocator.line_()),
-            ),
-            Value::Object(items) if items.is_empty() => allocator.nil().braces(),
-            Value::Object(items) => allocator
-                .intersperse(
-                    items.into_iter().map(|(name, value)| {
-                        allocator
-                            .text(name)
-                            .append(allocator.text(":"))
-                            .append(allocator.space())
-                            .append(NodeDisplay(value))
-                    }),
-                    allocator.text(",").append(allocator.space()),
-                )
-                .group()
-                .enclose(allocator.softline(), allocator.softline())
-                .braces(),
-        }
-    }
-}
-
 fn comma_or_nil<'a>(allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>> {
     allocator
         .nil()
@@ -377,10 +334,4 @@ fn comma_or_newline<'a>(allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'_, 
     allocator
         .line()
         .flat_alt(allocator.text(",").append(allocator.space()))
-}
-
-fn brackets_and_maybe_indent<'a>(
-    thing: pretty::DocBuilder<'a, Allocator<'a>>,
-) -> pretty::DocBuilder<'a, Allocator<'a>> {
-    thing.clone().nest(2).brackets().flat_alt(thing.brackets())
 }

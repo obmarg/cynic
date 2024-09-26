@@ -1,10 +1,6 @@
 use std::fmt::{self, Write};
 
-use crate::{
-    common::OperationType,
-    executable::*,
-    printing::{escape_string, indent::indented},
-};
+use crate::{common::OperationType, executable::*, printing::indent::indented};
 
 impl fmt::Display for ExecutableDocument {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -204,48 +200,5 @@ impl fmt::Display for iter::Iter<'_, Argument<'_>> {
 impl fmt::Display for Argument<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}: {}", self.name(), self.value())
-    }
-}
-
-impl fmt::Display for Value<'_> {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        match self {
-            Value::Int(val) => write!(f, "{}", val),
-            Value::Float(val) => write!(f, "{}", val),
-            Value::Boolean(val) => write!(f, "{}", val),
-            Value::String(val) => {
-                let val = escape_string(val);
-                write!(f, "\"{val}\"")
-            }
-            Value::Object(fields) => {
-                write!(f, "{{")?;
-                for (i, (name, value)) in fields.iter().enumerate() {
-                    if i != 0 {
-                        write!(f, ", ")?;
-                    }
-                    write!(f, "{}: {}", name, value)?;
-                }
-                write!(f, "}}")
-            }
-            Value::List(vals) => {
-                write!(f, "[")?;
-                for (i, val) in vals.iter().enumerate() {
-                    if i != 0 {
-                        write!(f, ", ")?;
-                    }
-                    write!(f, "{}", val)?;
-                }
-                write!(f, "]")
-            }
-            Value::Variable(name) => {
-                write!(f, "${}", name)
-            }
-            Value::Null => {
-                write!(f, "null")
-            }
-            Value::Enum(name) => {
-                write!(f, "{name}")
-            }
-        }
     }
 }

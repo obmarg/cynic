@@ -6,7 +6,7 @@ use super::{ids::ValueId, Cursor};
 pub struct EnumValue<'a>(pub(in super::super) Cursor<'a, ValueId>);
 
 impl<'a> EnumValue<'a> {
-    fn name(&self) -> &'a str {
+    pub fn name(&self) -> &'a str {
         let store = self.0.store;
         store.lookup(store.lookup(self.0.id).kind.as_enum_value().unwrap())
     }
