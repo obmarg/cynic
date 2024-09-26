@@ -59,14 +59,11 @@ impl fmt::Debug for ScalarDefinition<'_> {
 
 impl TypeSystemId for ScalarDefinitionId {
     type Reader<'a> = ScalarDefinition<'a>;
+    fn read(self, document: &TypeSystemDocument) -> Self::Reader<'_> {
+        ScalarDefinition(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for ScalarDefinition<'_> {
     type Id = ScalarDefinitionId;
-}
-
-impl<'a> From<ReadContext<'a, ScalarDefinitionId>> for ScalarDefinition<'a> {
-    fn from(value: ReadContext<'a, ScalarDefinitionId>) -> Self {
-        Self(value)
-    }
 }

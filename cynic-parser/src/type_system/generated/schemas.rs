@@ -59,16 +59,13 @@ impl fmt::Debug for SchemaDefinition<'_> {
 
 impl TypeSystemId for SchemaDefinitionId {
     type Reader<'a> = SchemaDefinition<'a>;
+    fn read(self, document: &TypeSystemDocument) -> Self::Reader<'_> {
+        SchemaDefinition(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for SchemaDefinition<'_> {
     type Id = SchemaDefinitionId;
-}
-
-impl<'a> From<ReadContext<'a, SchemaDefinitionId>> for SchemaDefinition<'a> {
-    fn from(value: ReadContext<'a, SchemaDefinitionId>) -> Self {
-        Self(value)
-    }
 }
 
 pub struct RootOperationTypeDefinitionRecord {
@@ -115,14 +112,11 @@ impl fmt::Debug for RootOperationTypeDefinition<'_> {
 
 impl TypeSystemId for RootOperationTypeDefinitionId {
     type Reader<'a> = RootOperationTypeDefinition<'a>;
+    fn read(self, document: &TypeSystemDocument) -> Self::Reader<'_> {
+        RootOperationTypeDefinition(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for RootOperationTypeDefinition<'_> {
     type Id = RootOperationTypeDefinitionId;
-}
-
-impl<'a> From<ReadContext<'a, RootOperationTypeDefinitionId>> for RootOperationTypeDefinition<'a> {
-    fn from(value: ReadContext<'a, RootOperationTypeDefinitionId>) -> Self {
-        Self(value)
-    }
 }

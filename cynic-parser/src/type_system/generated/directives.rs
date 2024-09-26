@@ -72,16 +72,13 @@ impl fmt::Debug for DirectiveDefinition<'_> {
 
 impl TypeSystemId for DirectiveDefinitionId {
     type Reader<'a> = DirectiveDefinition<'a>;
+    fn read(self, document: &TypeSystemDocument) -> Self::Reader<'_> {
+        DirectiveDefinition(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for DirectiveDefinition<'_> {
     type Id = DirectiveDefinitionId;
-}
-
-impl<'a> From<ReadContext<'a, DirectiveDefinitionId>> for DirectiveDefinition<'a> {
-    fn from(value: ReadContext<'a, DirectiveDefinitionId>) -> Self {
-        Self(value)
-    }
 }
 
 pub struct DirectiveRecord {
@@ -120,14 +117,11 @@ impl fmt::Debug for Directive<'_> {
 
 impl TypeSystemId for DirectiveId {
     type Reader<'a> = Directive<'a>;
+    fn read(self, document: &TypeSystemDocument) -> Self::Reader<'_> {
+        Directive(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for Directive<'_> {
     type Id = DirectiveId;
-}
-
-impl<'a> From<ReadContext<'a, DirectiveId>> for Directive<'a> {
-    fn from(value: ReadContext<'a, DirectiveId>) -> Self {
-        Self(value)
-    }
 }

@@ -79,14 +79,11 @@ impl fmt::Debug for InterfaceDefinition<'_> {
 
 impl TypeSystemId for InterfaceDefinitionId {
     type Reader<'a> = InterfaceDefinition<'a>;
+    fn read(self, document: &TypeSystemDocument) -> Self::Reader<'_> {
+        InterfaceDefinition(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for InterfaceDefinition<'_> {
     type Id = InterfaceDefinitionId;
-}
-
-impl<'a> From<ReadContext<'a, InterfaceDefinitionId>> for InterfaceDefinition<'a> {
-    fn from(value: ReadContext<'a, InterfaceDefinitionId>) -> Self {
-        Self(value)
-    }
 }

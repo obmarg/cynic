@@ -79,14 +79,11 @@ impl fmt::Debug for ObjectDefinition<'_> {
 
 impl TypeSystemId for ObjectDefinitionId {
     type Reader<'a> = ObjectDefinition<'a>;
+    fn read(self, document: &TypeSystemDocument) -> Self::Reader<'_> {
+        ObjectDefinition(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for ObjectDefinition<'_> {
     type Id = ObjectDefinitionId;
-}
-
-impl<'a> From<ReadContext<'a, ObjectDefinitionId>> for ObjectDefinition<'a> {
-    fn from(value: ReadContext<'a, ObjectDefinitionId>) -> Self {
-        Self(value)
-    }
 }

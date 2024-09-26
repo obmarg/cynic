@@ -43,14 +43,11 @@ impl fmt::Debug for Description<'_> {
 
 impl TypeSystemId for DescriptionId {
     type Reader<'a> = Description<'a>;
+    fn read(self, document: &TypeSystemDocument) -> Self::Reader<'_> {
+        Description(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for Description<'_> {
     type Id = DescriptionId;
-}
-
-impl<'a> From<ReadContext<'a, DescriptionId>> for Description<'a> {
-    fn from(value: ReadContext<'a, DescriptionId>) -> Self {
-        Self(value)
-    }
 }
