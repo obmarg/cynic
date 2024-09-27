@@ -38,6 +38,23 @@ impl<'a> ObjectValue<'a> {
     }
 }
 
+impl PartialEq for ObjectValue<'_> {
+    fn eq(&self, other: &Self) -> bool {
+        self.len() == other.len()
+            && self.fields().all(|field| {
+                let needle = field.name();
+                let Some(b_field) = other
+                    .fields()
+                    .find(|other_field| other_field.name() == needle)
+                else {
+                    return false;
+                };
+
+                field.value() == b_field.value()
+            })
+    }
+}
+
 impl fmt::Debug for ObjectValue<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_map()

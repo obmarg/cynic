@@ -33,6 +33,14 @@ impl IntValue<'_> {
     }
 }
 
+impl PartialEq for IntValue<'_> {
+    fn eq(&self, other: &Self) -> bool {
+        self.value() == other.value()
+    }
+}
+
+impl Eq for IntValue<'_> {}
+
 impl std::fmt::Debug for IntValue<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "{}", self.value())
@@ -63,6 +71,12 @@ impl<'a> FloatValue<'a> {
 impl FloatValue<'_> {
     pub fn id(&self) -> ValueId {
         self.0.id
+    }
+}
+
+impl PartialEq for FloatValue<'_> {
+    fn eq(&self, other: &Self) -> bool {
+        self.value() == other.value()
     }
 }
 
@@ -99,6 +113,14 @@ impl StringValue<'_> {
     }
 }
 
+impl PartialEq for StringValue<'_> {
+    fn eq(&self, other: &Self) -> bool {
+        self.value() == other.value()
+    }
+}
+
+impl Eq for StringValue<'_> {}
+
 impl fmt::Debug for StringValue<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", self.value())
@@ -132,6 +154,14 @@ impl BooleanValue<'_> {
     }
 }
 
+impl PartialEq for BooleanValue<'_> {
+    fn eq(&self, other: &Self) -> bool {
+        self.value() == other.value()
+    }
+}
+
+impl Eq for BooleanValue<'_> {}
+
 impl fmt::Debug for BooleanValue<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", self.value())
@@ -159,6 +189,14 @@ impl NullValue<'_> {
         self.0.id
     }
 }
+
+impl PartialEq for NullValue<'_> {
+    fn eq(&self, _: &Self) -> bool {
+        true
+    }
+}
+
+impl Eq for NullValue<'_> {}
 
 impl fmt::Debug for NullValue<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {

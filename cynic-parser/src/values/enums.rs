@@ -3,7 +3,7 @@ use crate::{AstLookup, Span};
 use super::{ids::ValueId, Cursor};
 
 #[derive(Clone, Copy)]
-pub struct EnumValue<'a>(pub(in super::super) Cursor<'a, ValueId>);
+pub struct EnumValue<'a>(pub(super) Cursor<'a, ValueId>);
 
 impl<'a> EnumValue<'a> {
     pub fn name(&self) -> &'a str {
@@ -22,6 +22,14 @@ impl EnumValue<'_> {
         self.0.id
     }
 }
+
+impl PartialEq for EnumValue<'_> {
+    fn eq(&self, other: &Self) -> bool {
+        self.name() == other.name()
+    }
+}
+
+impl Eq for EnumValue<'_> {}
 
 impl std::fmt::Debug for EnumValue<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {

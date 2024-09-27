@@ -25,6 +25,14 @@ impl VariableValue<'_> {
     }
 }
 
+impl PartialEq for VariableValue<'_> {
+    fn eq(&self, other: &Self) -> bool {
+        self.name() == other.name()
+    }
+}
+
+impl Eq for VariableValue<'_> {}
+
 impl fmt::Display for VariableValue<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "${}", self.name())

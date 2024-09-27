@@ -27,6 +27,12 @@ impl<'a> ListValue<'a> {
     }
 }
 
+impl PartialEq for ListValue<'_> {
+    fn eq(&self, other: &Self) -> bool {
+        self.len() == other.len() && self.items().zip(other.items()).all(|(lhs, rhs)| lhs == rhs)
+    }
+}
+
 impl fmt::Debug for ListValue<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_list().entries(self.items()).finish()
