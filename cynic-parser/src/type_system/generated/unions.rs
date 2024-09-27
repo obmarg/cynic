@@ -65,16 +65,13 @@ impl fmt::Debug for UnionDefinition<'_> {
 
 impl TypeSystemId for UnionDefinitionId {
     type Reader<'a> = UnionDefinition<'a>;
+    fn read(self, document: &TypeSystemDocument) -> Self::Reader<'_> {
+        UnionDefinition(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for UnionDefinition<'_> {
     type Id = UnionDefinitionId;
-}
-
-impl<'a> From<ReadContext<'a, UnionDefinitionId>> for UnionDefinition<'a> {
-    fn from(value: ReadContext<'a, UnionDefinitionId>) -> Self {
-        Self(value)
-    }
 }
 
 pub struct UnionMemberRecord {
@@ -113,14 +110,11 @@ impl fmt::Debug for UnionMember<'_> {
 
 impl TypeSystemId for UnionMemberId {
     type Reader<'a> = UnionMember<'a>;
+    fn read(self, document: &TypeSystemDocument) -> Self::Reader<'_> {
+        UnionMember(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for UnionMember<'_> {
     type Id = UnionMemberId;
-}
-
-impl<'a> From<ReadContext<'a, UnionMemberId>> for UnionMember<'a> {
-    fn from(value: ReadContext<'a, UnionMemberId>) -> Self {
-        Self(value)
-    }
 }

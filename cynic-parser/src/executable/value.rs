@@ -2,7 +2,7 @@ use crate::{common::IntValue, AstLookup};
 
 use super::{
     ids::{StringId, ValueId},
-    ExecutableId, ReadContext,
+    ExecutableId,
 };
 
 pub enum ValueRecord {
@@ -73,25 +73,23 @@ impl PartialEq for Value<'_> {
 
 impl ExecutableId for ValueId {
     type Reader<'a> = Value<'a>;
-}
 
-impl<'a> From<ReadContext<'a, ValueId>> for Value<'a> {
-    fn from(reader: ReadContext<'a, ValueId>) -> Self {
-        let ast = &reader.document;
-
-        match ast.lookup(reader.id) {
-            ValueRecord::Variable(id) => Value::Variable(ast.lookup(*id)),
+    fn read(self, document: &super::ExecutableDocument) -> Self::Reader<'_> {
+        match document.lookup(self) {
+            ValueRecord::Variable(id) => Value::Variable(document.lookup(*id)),
             ValueRecord::Int(num) => Value::Int(IntValue(*num)),
             ValueRecord::Float(num) => Value::Float(*num),
-            ValueRecord::String(id) => Value::String(ast.lookup(*id)),
+            ValueRecord::String(id) => Value::String(document.lookup(*id)),
             ValueRecord::Boolean(val) => Value::Boolean(*val),
             ValueRecord::Null => Value::Null,
-            ValueRecord::Enum(id) => Value::Enum(ast.lookup(*id)),
-            ValueRecord::List(ids) => Value::List(ids.iter().map(|id| ast.read(*id)).collect()),
+            ValueRecord::Enum(id) => Value::Enum(document.lookup(*id)),
+            ValueRecord::List(ids) => {
+                Value::List(ids.iter().map(|id| document.read(*id)).collect())
+            }
             ValueRecord::Object(pairs) => Value::Object(
                 pairs
                     .iter()
-                    .map(|(name, value)| (ast.lookup(*name), ast.read(*value)))
+                    .map(|(name, value)| (document.lookup(*name), document.read(*value)))
                     .collect(),
             ),
         }

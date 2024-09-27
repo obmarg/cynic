@@ -182,19 +182,13 @@ impl std::fmt::Display for DirectiveLocation {
 }
 
 pub trait TypeSystemId: Copy {
-    type Reader<'a>: From<ReadContext<'a, Self>>;
+    type Reader<'a>;
 
-    fn read(self, ast: &TypeSystemDocument) -> Self::Reader<'_> {
-        ReadContext {
-            id: self,
-            document: ast,
-        }
-        .into()
-    }
+    fn read(self, ast: &TypeSystemDocument) -> Self::Reader<'_>;
 }
 
 #[derive(Clone, Copy)]
-pub struct ReadContext<'a, I> {
+struct ReadContext<'a, I> {
     id: I,
     document: &'a TypeSystemDocument,
 }
@@ -204,7 +198,7 @@ impl super::TypeSystemDocument {
     where
         T: TypeSystemId,
     {
-        ReadContext { id, document: self }.into()
+        id.read(self)
     }
 }
 

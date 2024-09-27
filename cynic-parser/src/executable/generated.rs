@@ -13,6 +13,7 @@ mod prelude {
         executable::{
             ids::StringId,
             iter::{IdReader, Iter},
+            ExecutableDocument,
         },
         AstLookup,
     };

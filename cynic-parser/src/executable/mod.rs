@@ -52,19 +52,13 @@ pub struct ExecutableDocument {
 
 // TODO: Make this sealed maybe?  Could also move into id module...
 pub trait ExecutableId: Copy {
-    type Reader<'a>: From<ReadContext<'a, Self>>;
+    type Reader<'a>;
 
-    fn read(self, ast: &ExecutableDocument) -> Self::Reader<'_> {
-        ReadContext {
-            id: self,
-            document: ast,
-        }
-        .into()
-    }
+    fn read(self, ast: &ExecutableDocument) -> Self::Reader<'_>;
 }
 
 #[derive(Clone, Copy)]
-pub struct ReadContext<'a, I> {
+struct ReadContext<'a, I> {
     id: I,
     document: &'a ExecutableDocument,
 }
@@ -74,7 +68,7 @@ impl ExecutableDocument {
     where
         T: ExecutableId,
     {
-        ReadContext { id, document: self }.into()
+        id.read(self)
     }
 }
 

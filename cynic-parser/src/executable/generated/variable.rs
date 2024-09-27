@@ -60,14 +60,11 @@ impl fmt::Debug for VariableDefinition<'_> {
 
 impl ExecutableId for VariableDefinitionId {
     type Reader<'a> = VariableDefinition<'a>;
+    fn read(self, document: &ExecutableDocument) -> Self::Reader<'_> {
+        VariableDefinition(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for VariableDefinition<'_> {
     type Id = VariableDefinitionId;
-}
-
-impl<'a> From<ReadContext<'a, VariableDefinitionId>> for VariableDefinition<'a> {
-    fn from(value: ReadContext<'a, VariableDefinitionId>) -> Self {
-        Self(value)
-    }
 }

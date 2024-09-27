@@ -25,24 +25,17 @@ pub enum Selection<'a> {
 
 impl ExecutableId for SelectionId {
     type Reader<'a> = Selection<'a>;
+    fn read(self, document: &ExecutableDocument) -> Self::Reader<'_> {
+        match document.lookup(self) {
+            SelectionRecord::Field(id) => Selection::Field(document.read(*id)),
+            SelectionRecord::InlineFragment(id) => Selection::InlineFragment(document.read(*id)),
+            SelectionRecord::FragmentSpread(id) => Selection::FragmentSpread(document.read(*id)),
+        }
+    }
 }
 
 impl IdReader for Selection<'_> {
     type Id = SelectionId;
-}
-
-impl<'a> From<ReadContext<'a, SelectionId>> for Selection<'a> {
-    fn from(value: ReadContext<'a, SelectionId>) -> Self {
-        match value.document.lookup(value.id) {
-            SelectionRecord::Field(id) => Selection::Field(value.document.read(*id)),
-            SelectionRecord::InlineFragment(id) => {
-                Selection::InlineFragment(value.document.read(*id))
-            }
-            SelectionRecord::FragmentSpread(id) => {
-                Selection::FragmentSpread(value.document.read(*id))
-            }
-        }
-    }
 }
 
 pub struct FieldSelectionRecord {
@@ -102,16 +95,13 @@ impl fmt::Debug for FieldSelection<'_> {
 
 impl ExecutableId for FieldSelectionId {
     type Reader<'a> = FieldSelection<'a>;
+    fn read(self, document: &ExecutableDocument) -> Self::Reader<'_> {
+        FieldSelection(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for FieldSelection<'_> {
     type Id = FieldSelectionId;
-}
-
-impl<'a> From<ReadContext<'a, FieldSelectionId>> for FieldSelection<'a> {
-    fn from(value: ReadContext<'a, FieldSelectionId>) -> Self {
-        Self(value)
-    }
 }
 
 pub struct InlineFragmentRecord {
@@ -159,16 +149,13 @@ impl fmt::Debug for InlineFragment<'_> {
 
 impl ExecutableId for InlineFragmentId {
     type Reader<'a> = InlineFragment<'a>;
+    fn read(self, document: &ExecutableDocument) -> Self::Reader<'_> {
+        InlineFragment(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for InlineFragment<'_> {
     type Id = InlineFragmentId;
-}
-
-impl<'a> From<ReadContext<'a, InlineFragmentId>> for InlineFragment<'a> {
-    fn from(value: ReadContext<'a, InlineFragmentId>) -> Self {
-        Self(value)
-    }
 }
 
 pub struct FragmentSpreadRecord {
@@ -207,14 +194,11 @@ impl fmt::Debug for FragmentSpread<'_> {
 
 impl ExecutableId for FragmentSpreadId {
     type Reader<'a> = FragmentSpread<'a>;
+    fn read(self, document: &ExecutableDocument) -> Self::Reader<'_> {
+        FragmentSpread(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for FragmentSpread<'_> {
     type Id = FragmentSpreadId;
-}
-
-impl<'a> From<ReadContext<'a, FragmentSpreadId>> for FragmentSpread<'a> {
-    fn from(value: ReadContext<'a, FragmentSpreadId>) -> Self {
-        Self(value)
-    }
 }

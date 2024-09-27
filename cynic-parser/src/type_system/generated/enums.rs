@@ -65,16 +65,13 @@ impl fmt::Debug for EnumDefinition<'_> {
 
 impl TypeSystemId for EnumDefinitionId {
     type Reader<'a> = EnumDefinition<'a>;
+    fn read(self, document: &TypeSystemDocument) -> Self::Reader<'_> {
+        EnumDefinition(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for EnumDefinition<'_> {
     type Id = EnumDefinitionId;
-}
-
-impl<'a> From<ReadContext<'a, EnumDefinitionId>> for EnumDefinition<'a> {
-    fn from(value: ReadContext<'a, EnumDefinitionId>) -> Self {
-        Self(value)
-    }
 }
 
 pub struct EnumValueDefinitionRecord {
@@ -128,14 +125,11 @@ impl fmt::Debug for EnumValueDefinition<'_> {
 
 impl TypeSystemId for EnumValueDefinitionId {
     type Reader<'a> = EnumValueDefinition<'a>;
+    fn read(self, document: &TypeSystemDocument) -> Self::Reader<'_> {
+        EnumValueDefinition(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for EnumValueDefinition<'_> {
     type Id = EnumValueDefinitionId;
-}
-
-impl<'a> From<ReadContext<'a, EnumValueDefinitionId>> for EnumValueDefinition<'a> {
-    fn from(value: ReadContext<'a, EnumValueDefinitionId>) -> Self {
-        Self(value)
-    }
 }

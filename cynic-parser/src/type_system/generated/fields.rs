@@ -73,14 +73,11 @@ impl fmt::Debug for FieldDefinition<'_> {
 
 impl TypeSystemId for FieldDefinitionId {
     type Reader<'a> = FieldDefinition<'a>;
+    fn read(self, document: &TypeSystemDocument) -> Self::Reader<'_> {
+        FieldDefinition(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for FieldDefinition<'_> {
     type Id = FieldDefinitionId;
-}
-
-impl<'a> From<ReadContext<'a, FieldDefinitionId>> for FieldDefinition<'a> {
-    fn from(value: ReadContext<'a, FieldDefinitionId>) -> Self {
-        Self(value)
-    }
 }

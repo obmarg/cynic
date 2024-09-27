@@ -49,14 +49,11 @@ impl fmt::Debug for Argument<'_> {
 
 impl TypeSystemId for ArgumentId {
     type Reader<'a> = Argument<'a>;
+    fn read(self, document: &TypeSystemDocument) -> Self::Reader<'_> {
+        Argument(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for Argument<'_> {
     type Id = ArgumentId;
-}
-
-impl<'a> From<ReadContext<'a, ArgumentId>> for Argument<'a> {
-    fn from(value: ReadContext<'a, ArgumentId>) -> Self {
-        Self(value)
-    }
 }

@@ -84,6 +84,10 @@ impl std::fmt::Debug for Type<'_> {
 
 impl TypeSystemId for TypeId {
     type Reader<'a> = Type<'a>;
+
+    fn read(self, document: &super::TypeSystemDocument) -> Self::Reader<'_> {
+        Type(ReadContext { id: self, document })
+    }
 }
 
 impl<'a> From<ReadContext<'a, TypeId>> for Type<'a> {

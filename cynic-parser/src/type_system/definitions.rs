@@ -4,7 +4,7 @@ use super::{
     ids::*,
     iter::{IdReader, Iter},
     DefinitionId, Description, Directive, DirectiveDefinition, EnumDefinition,
-    InputObjectDefinition, InterfaceDefinition, ObjectDefinition, ReadContext, ScalarDefinition,
+    InputObjectDefinition, InterfaceDefinition, ObjectDefinition, ScalarDefinition,
     SchemaDefinition, TypeSystemId, UnionDefinition,
 };
 
@@ -104,16 +104,9 @@ impl<'a> TypeDefinition<'a> {
 
 impl TypeSystemId for DefinitionId {
     type Reader<'a> = Definition<'a>;
-}
 
-impl IdReader for Definition<'_> {
-    type Id = DefinitionId;
-}
-
-impl<'a> From<ReadContext<'a, DefinitionId>> for Definition<'a> {
-    fn from(value: ReadContext<'a, DefinitionId>) -> Self {
-        let document = value.document;
-        match document.lookup(value.id) {
+    fn read(self, document: &super::TypeSystemDocument) -> Self::Reader<'_> {
+        match document.lookup(self) {
             DefinitionRecord::Schema(id) => Definition::Schema(document.read(*id)),
             DefinitionRecord::Scalar(id) => {
                 Definition::Type(TypeDefinition::Scalar(document.read(*id)))
@@ -157,4 +150,8 @@ impl<'a> From<ReadContext<'a, DefinitionId>> for Definition<'a> {
             DefinitionRecord::Directive(id) => Definition::Directive(document.read(*id)),
         }
     }
+}
+
+impl IdReader for Definition<'_> {
+    type Id = DefinitionId;
 }

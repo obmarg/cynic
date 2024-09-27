@@ -1,6 +1,6 @@
 use crate::{common::IntValue, type_system::ids::ValueId, AstLookup};
 
-use super::{BlockStringLiteralId, ReadContext, StringId, TypeSystemId};
+use super::{BlockStringLiteralId, StringId, TypeSystemId};
 
 pub enum ValueRecord {
     Variable(StringId),
@@ -76,13 +76,9 @@ impl<'a> Value<'a> {
 
 impl TypeSystemId for ValueId {
     type Reader<'a> = Value<'a>;
-}
 
-impl<'a> From<ReadContext<'a, ValueId>> for Value<'a> {
-    fn from(reader: ReadContext<'a, ValueId>) -> Self {
-        let ast = &reader.document;
-
-        match ast.lookup(reader.id) {
+    fn read(self, ast: &super::TypeSystemDocument) -> Self::Reader<'_> {
+        match ast.lookup(self) {
             ValueRecord::Variable(id) => Value::Variable(ast.lookup(*id)),
             ValueRecord::Int(num) => Value::Int(IntValue(*num)),
             ValueRecord::Float(num) => Value::Float(*num),

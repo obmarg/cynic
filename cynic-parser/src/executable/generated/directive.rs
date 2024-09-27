@@ -43,14 +43,11 @@ impl fmt::Debug for Directive<'_> {
 
 impl ExecutableId for DirectiveId {
     type Reader<'a> = Directive<'a>;
+    fn read(self, document: &ExecutableDocument) -> Self::Reader<'_> {
+        Directive(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for Directive<'_> {
     type Id = DirectiveId;
-}
-
-impl<'a> From<ReadContext<'a, DirectiveId>> for Directive<'a> {
-    fn from(value: ReadContext<'a, DirectiveId>) -> Self {
-        Self(value)
-    }
 }

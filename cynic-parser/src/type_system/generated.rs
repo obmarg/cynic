@@ -14,7 +14,7 @@ mod prelude {
         type_system::{
             ids::StringId,
             iter::{IdReader, Iter},
-            DirectiveLocation,
+            DirectiveLocation, TypeSystemDocument,
         },
         AstLookup, Span,
     };

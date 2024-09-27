@@ -66,14 +66,11 @@ impl fmt::Debug for InputObjectDefinition<'_> {
 
 impl TypeSystemId for InputObjectDefinitionId {
     type Reader<'a> = InputObjectDefinition<'a>;
+    fn read(self, document: &TypeSystemDocument) -> Self::Reader<'_> {
+        InputObjectDefinition(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for InputObjectDefinition<'_> {
     type Id = InputObjectDefinitionId;
-}
-
-impl<'a> From<ReadContext<'a, InputObjectDefinitionId>> for InputObjectDefinition<'a> {
-    fn from(value: ReadContext<'a, InputObjectDefinitionId>) -> Self {
-        Self(value)
-    }
 }
