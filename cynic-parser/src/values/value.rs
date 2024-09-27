@@ -38,6 +38,16 @@ impl<'a> Value<'a> {
             Value::Object(inner) => inner.span(),
         }
     }
+
+    /// Returns an iterator over all the variables that appear somewhere in this Value.
+    ///
+    /// Note that this is not deduplicated - if a variable appears more than once in
+    /// the value it'll appear more than once in this iterator.
+    pub fn variables_used(&self) -> impl Iterator<Item = &'a str> + '_ {
+        VariableIterator {
+            value_stack: vec![*self],
+        }
+    }
 }
 
 impl<'a> Value<'a> {
@@ -51,6 +61,20 @@ impl<'a> Value<'a> {
     pub fn as_list_iter(&self) -> Option<Iter<'a, Value<'a>>> {
         match self {
             Self::List(inner) => Some(inner.items()),
+            _ => None,
+        }
+    }
+
+    pub fn as_bool(&self) -> Option<bool> {
+        match self {
+            Value::Boolean(boolean_value) => Some(boolean_value.value()),
+            _ => None,
+        }
+    }
+
+    pub fn as_enum_value(&self) -> Option<&'a str> {
+        match self {
+            Value::Enum(value) => Some(value.name()),
             _ => None,
         }
     }
@@ -176,6 +200,28 @@ impl ValueKind {
             ValueKind::Object(inner) => Some(*inner),
             _ => None,
         }
+    }
+}
+
+pub struct VariableIterator<'a> {
+    value_stack: Vec<Value<'a>>,
+}
+
+impl<'a> Iterator for VariableIterator<'a> {
+    type Item = &'a str;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        while let Some(value) = self.value_stack.pop() {
+            match value {
+                Value::Object(fields) => self
+                    .value_stack
+                    .extend(fields.fields().map(|field| field.value())),
+                Value::List(values) => self.value_stack.extend(values.items()),
+                Value::Variable(variable) => return Some(variable.name()),
+                _ => {}
+            }
+        }
+        None
     }
 }
 
