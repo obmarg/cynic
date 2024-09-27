@@ -8,6 +8,7 @@ use super::{
     ConstFieldId, ConstValueId, ValueStoreId,
 };
 
+#[derive(Clone, Copy)]
 pub struct ConstObjectValue<'a>(pub(super) super::Cursor<'a, ConstValueId>);
 
 impl<'a> ConstObjectValue<'a> {

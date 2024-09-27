@@ -7,10 +7,10 @@ use super::{
     iter::{Iter, ValueStoreReader},
     scalars::{BooleanValue, FloatValue, IntValue, NullValue, StringValue},
     value::ValueKind,
-    ConstValueId, Cursor, ValueId,
+    ConstValueId, Cursor, Value, ValueId,
 };
 
-#[derive(Debug)]
+#[derive(Debug, Copy, Clone)]
 pub enum ConstValue<'a> {
     Int(IntValue<'a>),
     Float(FloatValue<'a>),
@@ -41,6 +41,27 @@ impl<'a> ConstValue<'a> {
             Self::List(inner) => Some(inner.items()),
             _ => None,
         }
+    }
+}
+
+impl PartialEq for ConstValue<'_> {
+    #[allow(clippy::cmp_owned)]
+    fn eq(&self, other: &Self) -> bool {
+        Value::from(*self) == Value::from(*other)
+    }
+}
+
+impl PartialEq<Value<'_>> for ConstValue<'_> {
+    #[allow(clippy::cmp_owned)]
+    fn eq(&self, other: &Value<'_>) -> bool {
+        Value::from(*self) == *other
+    }
+}
+
+impl PartialEq<ConstValue<'_>> for Value<'_> {
+    #[allow(clippy::cmp_owned)]
+    fn eq(&self, other: &ConstValue<'_>) -> bool {
+        *self == Value::from(*other)
     }
 }
 

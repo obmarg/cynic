@@ -4,6 +4,7 @@ use crate::{common::IdRange, AstLookup, Span};
 
 use super::{const_value::ConstValue, iter::Iter, ConstValueId};
 
+#[derive(Clone, Copy)]
 pub struct ConstListValue<'a>(pub(super) super::Cursor<'a, ConstValueId>);
 
 impl<'a> ConstListValue<'a> {
