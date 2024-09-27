@@ -58,7 +58,7 @@ pub trait ExecutableId: Copy {
 }
 
 #[derive(Clone, Copy)]
-pub struct ReadContext<'a, I> {
+struct ReadContext<'a, I> {
     id: I,
     document: &'a ExecutableDocument,
 }
