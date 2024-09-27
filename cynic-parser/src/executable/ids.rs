@@ -25,11 +25,6 @@ macro_rules! make_id {
             fn lookup(&self, index: $name) -> &Self::Output {
                 &self.$field[(index.0.get() - 1) as usize]
             }
-
-            // TODO: Can I bin this?  Maybe
-            fn lookup_mut(&mut self, index: $name) -> &mut Self::Output {
-                &mut self.$field[(index.0.get() - 1) as usize]
-            }
         }
     };
 }
@@ -108,9 +103,5 @@ impl AstLookup<StringId> for ExecutableDocument {
 
     fn lookup(&self, index: StringId) -> &Self::Output {
         &self.strings[(index.0.get() - 1) as usize]
-    }
-
-    fn lookup_mut(&mut self, _index: StringId) -> &mut Self::Output {
-        unimplemented!("strings aren't mutable so can't do this")
     }
 }
