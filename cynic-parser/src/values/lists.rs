@@ -2,7 +2,7 @@ use std::fmt;
 
 use crate::{AstLookup, Span};
 
-use super::{ids::ValueId, iter::Iter, value::Value};
+use super::{const_lists::ConstListValue, ids::ValueId, iter::Iter, value::Value, Cursor};
 
 #[derive(Clone, Copy)]
 pub struct ListValue<'a>(pub(super) super::Cursor<'a, ValueId>);
@@ -37,5 +37,15 @@ impl PartialEq for ListValue<'_> {
 impl fmt::Debug for ListValue<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_list().entries(self.items()).finish()
+    }
+}
+
+impl<'a> From<ConstListValue<'a>> for ListValue<'a> {
+    fn from(value: ConstListValue<'a>) -> Self {
+        let Cursor { id, store } = value.0;
+
+        let id = id.into();
+
+        ListValue(Cursor { id, store })
     }
 }

@@ -3,10 +3,11 @@ use std::fmt;
 use crate::{AstLookup, Span};
 
 use super::{
+    const_objects::ConstObjectValue,
     ids::{FieldId, StringId, ValueId},
     iter::{Iter, ValueStoreReader},
     value::Value,
-    ValueStoreId,
+    Cursor, ValueStoreId,
 };
 
 pub struct FieldRecord {
@@ -61,6 +62,16 @@ impl fmt::Debug for Object<'_> {
         f.debug_map()
             .entries(self.fields().map(|field| (field.name(), field.value())))
             .finish()
+    }
+}
+
+impl<'a> From<ConstObjectValue<'a>> for ObjectValue<'a> {
+    fn from(value: ConstObjectValue<'a>) -> Self {
+        let Cursor { id, store } = value.0;
+
+        let id = id.into();
+
+        ObjectValue(Cursor { id, store })
     }
 }
 

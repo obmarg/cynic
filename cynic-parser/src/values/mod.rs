@@ -1,3 +1,6 @@
+mod const_lists;
+mod const_objects;
+mod const_value;
 mod enums;
 mod lists;
 mod objects;
