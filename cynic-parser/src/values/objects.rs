@@ -15,6 +15,7 @@ pub struct FieldRecord {
     pub value: ValueId,
 }
 
+#[derive(Clone, Copy)]
 pub struct ObjectValue<'a>(pub(super) super::Cursor<'a, ValueId>);
 
 impl<'a> ObjectValue<'a> {
@@ -65,6 +66,7 @@ impl fmt::Debug for ObjectValue<'_> {
 
 // TODO: Make sure this ObjectField name has no obvious clashes
 // and rename if it does
+#[derive(Clone, Copy)]
 pub struct ObjectField<'a>(super::Cursor<'a, FieldId>);
 
 impl<'a> ObjectField<'a> {

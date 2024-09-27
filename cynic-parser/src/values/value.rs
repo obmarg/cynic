@@ -11,7 +11,7 @@ use super::{
     Cursor, ValueId,
 };
 
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 pub enum Value<'a> {
     Variable(VariableValue<'a>),
     Int(IntValue<'a>),
@@ -26,7 +26,17 @@ pub enum Value<'a> {
 
 impl<'a> Value<'a> {
     pub fn span(&self) -> Span {
-        todo!()
+        match self {
+            Value::Variable(inner) => inner.span(),
+            Value::Int(inner) => inner.span(),
+            Value::Float(inner) => inner.span(),
+            Value::String(inner) => inner.span(),
+            Value::Boolean(inner) => inner.span(),
+            Value::Null(inner) => inner.span(),
+            Value::Enum(inner) => inner.span(),
+            Value::List(inner) => inner.span(),
+            Value::Object(inner) => inner.span(),
+        }
     }
 }
 

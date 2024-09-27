@@ -4,6 +4,7 @@ use crate::{AstLookup, Span};
 
 use super::{ids::ValueId, iter::Iter, value::Value};
 
+#[derive(Clone, Copy)]
 pub struct ListValue<'a>(pub(super) super::Cursor<'a, ValueId>);
 
 impl<'a> ListValue<'a> {

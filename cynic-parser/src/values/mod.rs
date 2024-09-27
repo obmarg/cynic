@@ -1,5 +1,3 @@
-// mod store;
-// mod generated;
 mod enums;
 mod lists;
 mod objects;
@@ -10,8 +8,6 @@ mod variables;
 pub mod ids;
 pub mod iter;
 pub mod writer;
-
-// TODO: Impl PartialEq etc. like the old Value
 
 use std::sync::Arc;
 
@@ -36,7 +32,6 @@ pub mod storage {
 
 #[derive(Default)]
 pub struct ValueStore {
-    // TODO: Figure out if this arc approach works ok...
     strings: Arc<IndexSet<Box<str>>>,
 
     values: Vec<storage::ValueRecord>,
