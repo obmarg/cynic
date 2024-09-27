@@ -71,7 +71,11 @@ impl StringId {
     }
 
     pub(crate) fn from_executable_id(id: crate::executable::ids::StringId) -> Self {
-        Self::new(id.inner())
+        Self::new(id.get())
+    }
+
+    pub(crate) fn from_type_system_id(id: crate::type_system::ids::StringId) -> Self {
+        Self::new(id.get())
     }
 }
 

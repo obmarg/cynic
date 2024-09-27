@@ -26,6 +26,7 @@ macro_rules! make_id {
                 &self.$field[(index.0.get() - 1) as usize]
             }
 
+            // TODO: Can I bin this?  Maybe
             fn lookup_mut(&mut self, index: $name) -> &mut Self::Output {
                 &mut self.$field[(index.0.get() - 1) as usize]
             }
@@ -97,7 +98,7 @@ impl StringId {
     }
 
     // TODO: Not especially happy with this pub(crate) - figure it out...
-    pub(crate) fn inner(&self) -> usize {
+    pub(crate) fn get(&self) -> usize {
         (self.0.get() - 1) as usize
     }
 }

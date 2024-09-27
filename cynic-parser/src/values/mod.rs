@@ -11,6 +11,8 @@ pub mod ids;
 pub mod iter;
 pub mod writer;
 
+// TODO: Impl PartialEq etc. like the old Value
+
 use std::sync::Arc;
 
 pub use self::{

@@ -20,8 +20,8 @@ mod prelude {
     };
 }
 
-pub(super) mod value {
-    pub use crate::type_system::Value;
+pub mod value {
+    pub use crate::values::Value;
 }
 
 mod types {

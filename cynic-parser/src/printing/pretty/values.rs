@@ -6,7 +6,7 @@ use super::{brackets_and_maybe_indent, Allocator, NodeDisplay};
 
 impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Value<'a>> {
     fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
-        match self.0 {
+        match &self.0 {
             Value::Variable(variable) => allocator.text(format!("{variable}")),
             Value::Int(value) => allocator.text(format!("{value}")),
             Value::Float(value) => allocator.text(format!("{value}")),
@@ -20,7 +20,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Value<'a>> {
             Value::List(list) => brackets_and_maybe_indent(
                 allocator
                     .intersperse(
-                        list.items().map(NodeDisplay),
+                        list.items().map(self.mapper()),
                         allocator.text(",").append(allocator.line()),
                     )
                     .group()
@@ -34,7 +34,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Value<'a>> {
                             .text(field.name())
                             .append(allocator.text(":"))
                             .append(allocator.space())
-                            .append(NodeDisplay(field.value()))
+                            .append(self.with_node(field.value()))
                     }),
                     allocator.text(",").append(allocator.space()),
                 )

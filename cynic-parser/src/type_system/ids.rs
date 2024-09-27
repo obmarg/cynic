@@ -3,6 +3,8 @@ use std::num::NonZeroU32;
 use super::{storage::*, DefinitionRecord, TypeSystemDocument};
 use crate::{common::IdRange, AstLookup};
 
+pub use crate::values::ids::ValueId;
+
 macro_rules! make_id {
     ($name:ident, $output:ident, $field:ident) => {
         #[derive(Clone, Copy, Debug, Hash, Eq, PartialEq, Ord, PartialOrd)]
@@ -15,6 +17,10 @@ macro_rules! make_id {
                         .expect("also too many indices"),
                 )
             }
+
+            pub(super) fn get(&self) -> usize {
+                (self.0.get() - 1) as usize
+            }
         }
 
         impl AstLookup<$name> for TypeSystemDocument {
@@ -24,6 +30,7 @@ macro_rules! make_id {
                 &self.$field[(index.0.get() - 1) as usize]
             }
 
+            // TODO: Can I bin this?  Maybe
             fn lookup_mut(&mut self, index: $name) -> &mut Self::Output {
                 &mut self.$field[(index.0.get() - 1) as usize]
             }
@@ -130,8 +137,6 @@ impl_id_range_ops!(DirectiveId);
 make_id!(ArgumentId, ArgumentRecord, arguments);
 impl_id_range_ops!(ArgumentId);
 
-make_id!(ValueId, ValueRecord, values);
-
 make_id!(DescriptionId, DescriptionRecord, descriptions);
 
 make_id!(BlockStringLiteralId, str, block_strings);
@@ -145,6 +150,10 @@ impl StringId {
             NonZeroU32::new(u32::try_from(index + 1).expect("too many indices"))
                 .expect("also too many indices"),
         )
+    }
+
+    pub(crate) fn get(&self) -> usize {
+        (self.0.get() - 1) as usize
     }
 }
 

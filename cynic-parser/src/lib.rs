@@ -1,6 +1,7 @@
 pub mod common;
 pub mod executable;
 pub mod type_system;
+pub mod values;
 
 mod errors;
 mod lexer;
@@ -11,7 +12,6 @@ mod parser;
 
 #[cfg(feature = "print")]
 pub mod printing;
-mod values;
 
 pub use self::{
     errors::Error, executable::ExecutableDocument, span::Span, type_system::TypeSystemDocument,

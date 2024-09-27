@@ -14,6 +14,16 @@ pub struct ValueWriter {
 }
 
 impl ValueWriter {
+    pub fn update(store: super::ValueStore) -> Self {
+        let super::ValueStore {
+            strings: _,
+            values,
+            fields,
+        } = store;
+
+        Self { values, fields }
+    }
+
     pub fn value(&mut self, record: ValueRecord) -> ValueId {
         let id = ValueId::new(self.values.len());
         self.values.push(record);
