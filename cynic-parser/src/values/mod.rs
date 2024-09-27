@@ -53,7 +53,7 @@ impl ValueStore {
 }
 
 #[derive(Clone, Copy)]
-pub struct Cursor<'a, I> {
+struct Cursor<'a, I> {
     id: I,
     store: &'a ValueStore,
 }
