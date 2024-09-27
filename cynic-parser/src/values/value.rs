@@ -3,7 +3,7 @@ use crate::{common::IdRange, AstLookup, Span};
 use super::{
     enums::EnumValue,
     ids::{FieldId, StringId},
-    iter::ValueStoreReader,
+    iter::{Iter, ValueStoreReader},
     lists::ListValue,
     objects::ObjectValue,
     scalars::{BooleanValue, FloatValue, IntValue, NullValue, StringValue},
@@ -27,6 +27,22 @@ pub enum Value<'a> {
 impl<'a> Value<'a> {
     pub fn span(&self) -> Span {
         todo!()
+    }
+}
+
+impl<'a> Value<'a> {
+    pub fn as_str(&self) -> Option<&'a str> {
+        match self {
+            Self::String(inner) => Some(inner.value()),
+            _ => None,
+        }
+    }
+
+    pub fn as_list_iter(&self) -> Option<Iter<'a, Value<'a>>> {
+        match self {
+            Self::List(inner) => Some(inner.items()),
+            _ => None,
+        }
     }
 }
 
