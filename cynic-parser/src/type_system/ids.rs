@@ -18,6 +18,7 @@ macro_rules! make_id {
                 )
             }
 
+            #[allow(dead_code)]
             pub(super) fn get(&self) -> usize {
                 (self.0.get() - 1) as usize
             }

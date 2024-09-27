@@ -13,6 +13,9 @@ mod parser;
 #[cfg(feature = "print")]
 pub mod printing;
 
+#[cfg(feature = "report")]
+pub use errors::Report;
+
 pub use self::{
     errors::Error, executable::ExecutableDocument, span::Span, type_system::TypeSystemDocument,
 };

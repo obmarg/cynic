@@ -711,7 +711,7 @@ mod tests {
 
         assert_eq!(film_selections.len(), 1);
 
-        insta::assert_debug_snapshot!(film_selections.get(0).unwrap().selections);
+        insta::assert_debug_snapshot!(film_selections.first().unwrap().selections);
     }
 
     #[test]
@@ -826,7 +826,7 @@ mod tests {
 
         assert_eq!(film_selections.len(), 1);
 
-        insta::assert_debug_snapshot!(film_selections.get(0).unwrap().selections);
+        insta::assert_debug_snapshot!(film_selections.first().unwrap().selections);
     }
 
     #[test]
