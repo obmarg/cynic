@@ -55,30 +55,14 @@ macro_rules! impl_id_range_ops {
 impl_id_range_ops!(ValueId);
 impl_id_range_ops!(FieldId);
 
-#[derive(Clone, Copy)]
-pub struct StringId(NonZeroU32);
+make_id!(StringId, str, strings);
 
 impl StringId {
-    pub(super) fn new(index: usize) -> Self {
-        Self(
-            NonZeroU32::new(u32::try_from(index + 1).expect("too many indices"))
-                .expect("also too many indices"),
-        )
-    }
-
     pub(crate) fn from_executable_id(id: crate::executable::ids::StringId) -> Self {
         Self::new(id.get())
     }
 
     pub(crate) fn from_type_system_id(id: crate::type_system::ids::StringId) -> Self {
         Self::new(id.get())
-    }
-}
-
-impl AstLookup<StringId> for ValueStore {
-    type Output = str;
-
-    fn lookup(&self, index: StringId) -> &Self::Output {
-        &self.strings[(index.0.get() - 1) as usize]
     }
 }
