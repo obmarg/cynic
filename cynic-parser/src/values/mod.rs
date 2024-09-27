@@ -18,9 +18,10 @@ use std::sync::Arc;
 pub use self::{
     enums::EnumValue,
     lists::ListValue,
-    objects::{FieldRecord, ObjectField, ObjectValue},
+    objects::{ObjectField, ObjectValue},
     scalars::{BooleanValue, FloatValue, IntValue, NullValue, StringValue},
     value::Value,
+    variables::VariableValue,
 };
 
 use ids::*;
