@@ -85,7 +85,7 @@ type InputValueDefinition @file(name: "input_values") {
   name: String!
   ty: Type!
   description: Description
-  default_value: Value
+  default_value: ConstValue
   default_value_span: Span!
   directives: [Directive!]!
   span: Span!
@@ -107,7 +107,7 @@ type Directive @file(name: "directives") {
 
 type Argument @file(name: "arguments") {
   name: String!
-  value: Value!
+  value: ConstValue!
   span: Span!
 }
 
@@ -123,7 +123,7 @@ scalar OperationType @inline
 # Type & Value are kind of special cases that aren't worth automating
 # so we make them scalars and implement them by hand
 scalar Type @file(name: "types")
-scalar Value @file(name: "value")
+scalar ConstValue @file(name: "value")
 
 # String is built in, but easier to implement stuff if its just in the .graphql file
 # It is also special cased a bit in the rust code

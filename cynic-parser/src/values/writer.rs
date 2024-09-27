@@ -30,6 +30,14 @@ impl ValueWriter {
         id
     }
 
+    pub fn const_value(&mut self, record: ValueRecord) -> ConstValueId {
+        if let ValueKind::Variable(_) = record.kind {
+            panic!("Don't pass a variable into const_value");
+        }
+        let value_id = self.value(record);
+        ConstValueId::new(value_id.get())
+    }
+
     pub fn list(&mut self, values: Vec<ValueRecord>) -> IdRange<ValueId> {
         let start = ValueId::new(self.values.len());
 
