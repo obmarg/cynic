@@ -38,6 +38,11 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 - Added `ConstValue` ([#1057](https://github.com/obmarg/cynic/pull/1057))
 - The ExecutableId & TypeSystemId traits have been changed ([#1047](https://github.com/obmarg/cynic/pull/1047))
 
+### Breaking Changes
+
+- Removed `InputValueDefiniton::default_value_span` - you should now fetch the
+  span from the `default_value` itself.
+
 ### Changes
 
 - MSRV is now 1.76

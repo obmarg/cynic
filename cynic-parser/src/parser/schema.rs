@@ -1,5 +1,5 @@
 // auto-generated: "lalrpop 0.21.0"
-// sha3: 42a9bcdc947996d2ccdc87b6444b7ee866ed754e1cf55d25ded43a9db554c2c3
+// sha3: 25f2508b042556101e2b7e758d756de383fbd0f637c2733fa7ada027448d7a12
 use crate::lexer;
 use crate::{
     common::{
@@ -8664,9 +8664,7 @@ fn __action47<'input>(
     (_, name_end, _): (usize, usize, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, ty, _): (usize, TypeId, usize),
-    (_, default_start, _): (usize, usize, usize),
     (_, default, _): (usize, Option<ConstValueId>, usize),
-    (_, default_end, _): (usize, usize, usize),
     (_, directives, _): (usize, IdRange<DirectiveId>, usize),
     (_, end, _): (usize, usize, usize),
 ) {
@@ -8678,7 +8676,6 @@ fn __action47<'input>(
             description,
             directives,
             default_value: default,
-            default_value_span: Span::new(default_start, default_end),
             span: Span::new(start, end),
         });
     }
@@ -10944,24 +10941,19 @@ fn __action180<'input>(
     __3: (usize, lexer::Token<'input>, usize),
     __4: (usize, TypeId, usize),
     __5: (usize, Option<ConstValueId>, usize),
-    __6: (usize, usize, usize),
-    __7: (usize, IdRange<DirectiveId>, usize),
-    __8: (usize, usize, usize),
+    __6: (usize, IdRange<DirectiveId>, usize),
+    __7: (usize, usize, usize),
 ) {
     let __start0 = __0.0;
     let __end0 = __0.0;
     let __start1 = __0.2;
     let __end1 = __1.0;
-    let __start2 = __4.2;
-    let __end2 = __5.0;
     let __temp0 = __action146(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
     let __temp1 = __action146(input, ast, &__start1, &__end1);
     let __temp1 = (__start1, __temp1, __end1);
-    let __temp2 = __action146(input, ast, &__start2, &__end2);
-    let __temp2 = (__start2, __temp2, __end2);
     __action47(
-        input, ast, __temp0, __0, __temp1, __1, __2, __3, __4, __temp2, __5, __6, __7, __8,
+        input, ast, __temp0, __0, __temp1, __1, __2, __3, __4, __5, __6, __7,
     )
 }
 
@@ -11810,19 +11802,13 @@ fn __action217<'input>(
 ) {
     let __start0 = __1.2;
     let __end0 = __2.0;
-    let __start1 = __4.2;
-    let __end1 = __5.0;
-    let __start2 = __5.2;
-    let __end2 = __5.2;
+    let __start1 = __5.2;
+    let __end1 = __5.2;
     let __temp0 = __action145(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
     let __temp1 = __action145(input, ast, &__start1, &__end1);
     let __temp1 = (__start1, __temp1, __end1);
-    let __temp2 = __action145(input, ast, &__start2, &__end2);
-    let __temp2 = (__start2, __temp2, __end2);
-    __action180(
-        input, ast, __0, __1, __temp0, __2, __3, __4, __temp1, __5, __temp2,
-    )
+    __action180(input, ast, __0, __1, __temp0, __2, __3, __4, __5, __temp1)
 }
 
 #[allow(unused_variables)]
