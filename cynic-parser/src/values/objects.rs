@@ -16,9 +16,9 @@ pub struct FieldRecord {
 }
 
 #[derive(Clone, Copy)]
-pub struct ObjectValue<'a>(pub(super) super::Cursor<'a, ValueId>);
+pub struct Object<'a>(pub(super) super::Cursor<'a, ValueId>);
 
-impl<'a> ObjectValue<'a> {
+impl<'a> Object<'a> {
     pub fn is_empty(&self) -> bool {
         self.len() == 0
     }
@@ -39,7 +39,7 @@ impl<'a> ObjectValue<'a> {
     }
 }
 
-impl PartialEq for ObjectValue<'_> {
+impl PartialEq for Object<'_> {
     fn eq(&self, other: &Self) -> bool {
         self.len() == other.len()
             && self.fields().all(|field| {
@@ -56,7 +56,7 @@ impl PartialEq for ObjectValue<'_> {
     }
 }
 
-impl fmt::Debug for ObjectValue<'_> {
+impl fmt::Debug for Object<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_map()
             .entries(self.fields().map(|field| (field.name(), field.value())))

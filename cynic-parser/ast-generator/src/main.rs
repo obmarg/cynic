@@ -14,6 +14,7 @@ use cynic_parser::type_system::{Definition, TypeDefinition};
 use crate::{exts::FileDirectiveExt, file::imports};
 
 fn main() -> anyhow::Result<()> {
+    // TODO: Make this use CARGO_MANIFEST_DIR probably
     eprintln!("{:?}", std::env::current_dir());
     for module in ["executable", "type_system"] {
         let module_path = format!("cynic-parser/ast-generator/output/{module}");

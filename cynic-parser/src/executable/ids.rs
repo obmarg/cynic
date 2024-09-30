@@ -92,7 +92,6 @@ impl StringId {
         )
     }
 
-    // TODO: Not especially happy with this pub(crate) - figure it out...
     pub(crate) fn get(&self) -> usize {
         (self.0.get() - 1) as usize
     }

@@ -44,7 +44,7 @@ impl<'a> UnionExt<'a> for UnionDefinition<'a> {
             .arguments()
             .next()?
             .value()
-            .as_list_iter()?
+            .as_items()?
             .nth(index)?
             .as_str()
     }
