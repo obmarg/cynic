@@ -4,7 +4,7 @@ use super::{
     directives::Directive,
     fields::FieldDefinition,
     ids::{DescriptionId, DirectiveId, FieldDefinitionId, ObjectDefinitionId},
-    ReadContext, TypeSystemId,
+    TypeSystemId,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};

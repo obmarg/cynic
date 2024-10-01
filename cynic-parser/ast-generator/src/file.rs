@@ -92,7 +92,7 @@ pub fn imports(
         use super::{
             #(#reader_imports)*
             ids::{#(#id_imports)*},
-            ReadContext, #id_trait
+            #id_trait
         };
     })
 }

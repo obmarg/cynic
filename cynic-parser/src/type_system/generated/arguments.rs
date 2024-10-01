@@ -2,7 +2,7 @@ use super::prelude::*;
 use super::{
     ids::{ArgumentId, ConstValueId},
     value::ConstValue,
-    ReadContext, TypeSystemId,
+    TypeSystemId,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};

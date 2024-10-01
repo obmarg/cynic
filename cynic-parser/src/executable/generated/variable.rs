@@ -4,7 +4,7 @@ use super::{
     ids::{ConstValueId, DirectiveId, TypeId, VariableDefinitionId},
     types::Type,
     value::ConstValue,
-    ExecutableId, ReadContext,
+    ExecutableId,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};

@@ -4,7 +4,7 @@ use super::{
     ids::{DirectiveId, OperationDefinitionId, SelectionId, VariableDefinitionId},
     selections::Selection,
     variable::VariableDefinition,
-    ExecutableId, ReadContext,
+    ExecutableId,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};

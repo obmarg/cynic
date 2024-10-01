@@ -1,4 +1,4 @@
-use super::{ids, iter::Iter, types, ExecutableId, ReadContext};
+use super::{ids, iter::Iter, types, ExecutableId};
 
 /// A prelude module for all the generated modules
 ///
@@ -13,7 +13,7 @@ mod prelude {
         executable::{
             ids::StringId,
             iter::{IdReader, Iter},
-            ExecutableDocument,
+            ExecutableDocument, ReadContext,
         },
         AstLookup,
     };

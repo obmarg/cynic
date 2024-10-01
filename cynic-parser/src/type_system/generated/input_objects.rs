@@ -4,7 +4,7 @@ use super::{
     directives::Directive,
     ids::{DescriptionId, DirectiveId, InputObjectDefinitionId, InputValueDefinitionId},
     input_values::InputValueDefinition,
-    ReadContext, TypeSystemId,
+    TypeSystemId,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};

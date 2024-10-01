@@ -1,5 +1,5 @@
 use super::iter::Iter;
-use super::{ids, ReadContext, TypeSystemId};
+use super::{ids, TypeSystemId};
 
 /// A prelude module for all the generated modules
 ///
@@ -14,7 +14,7 @@ mod prelude {
         type_system::{
             ids::StringId,
             iter::{IdReader, Iter},
-            DirectiveLocation, TypeSystemDocument,
+            DirectiveLocation, ReadContext, TypeSystemDocument,
         },
         AstLookup, Span,
     };

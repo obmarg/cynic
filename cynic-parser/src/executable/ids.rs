@@ -1,8 +1,6 @@
 use std::num::NonZeroU32;
 
-use super::{
-    generated::argument::ConstArgumentRecord, storage::*, types::TypeRecord, ExecutableDocument,
-};
+use super::{storage::*, types::TypeRecord, ExecutableDocument};
 use crate::{common::IdRange, AstLookup};
 
 pub use crate::values::ids::{ConstValueId, ValueId};
@@ -72,15 +70,11 @@ make_id!(InlineFragmentId, InlineFragmentRecord, inline_fragments);
 make_id!(FragmentSpreadId, FragmentSpreadRecord, fragment_spreads);
 
 make_id!(DirectiveId, DirectiveRecord, directives);
-make_id!(ConstDirectiveId, ConstDirectiveRecord, const_directives);
 
 make_id!(ArgumentId, ArgumentRecord, arguments);
-make_id!(ConstArgumentId, ConstArgumentRecord, const_arguments);
 
 impl_id_range_ops!(DirectiveId);
-impl_id_range_ops!(ConstDirectiveId);
 impl_id_range_ops!(ArgumentId);
-impl_id_range_ops!(ConstArgumentId);
 
 make_id!(TypeId, TypeRecord, types);
 
