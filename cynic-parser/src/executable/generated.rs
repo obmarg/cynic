@@ -31,5 +31,5 @@ mod value {
     // Note: This is just a requirement for some of the generated stuff
     // that assumes it'll be here
 
-    pub use crate::values::Value;
+    pub use crate::values::{ConstValue, Value};
 }

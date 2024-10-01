@@ -15,9 +15,9 @@ use crate::common::IdRange;
 
 pub use self::{
     generated::{
-        argument::Argument,
+        argument::{Argument, ConstArgument},
         definition::ExecutableDefinition,
-        directive::Directive,
+        directive::{ConstDirective, Directive},
         fragment::FragmentDefinition,
         operation::OperationDefinition,
         selections::{FieldSelection, FragmentSpread, InlineFragment, Selection},
@@ -43,7 +43,9 @@ pub struct ExecutableDocument {
     fragment_spreads: Vec<storage::FragmentSpreadRecord>,
 
     directives: Vec<storage::DirectiveRecord>,
+    const_directives: Vec<storage::ConstDirectiveRecord>,
     arguments: Vec<storage::ArgumentRecord>,
+    const_arguments: Vec<storage::ConstArgumentRecord>,
     variables: Vec<storage::VariableDefinitionRecord>,
 
     types: Vec<types::TypeRecord>,
@@ -102,9 +104,9 @@ impl ExecutableDocument {
 pub mod storage {
     pub use super::{
         generated::{
-            argument::ArgumentRecord,
+            argument::{ArgumentRecord, ConstArgumentRecord},
             definition::ExecutableDefinitionRecord,
-            directive::DirectiveRecord,
+            directive::{ConstDirectiveRecord, DirectiveRecord},
             fragment::FragmentDefinitionRecord,
             operation::OperationDefinitionRecord,
             selections::{
