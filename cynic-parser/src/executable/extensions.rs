@@ -10,9 +10,3 @@ impl<'a> FragmentSpread<'a> {
             .find(|fragment| fragment.name() == needle)
     }
 }
-
-// impl<'a> From<ConstDirective<'a>> for Directive<'a> {
-//     fn from(value: ConstDirective<'a>) -> Self {
-//         Directive(value.0)
-//     }
-// }
