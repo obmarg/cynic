@@ -3,7 +3,7 @@ use std::fmt;
 use crate::{AstLookup, Span};
 
 use super::{
-    const_objects::ConstObjectValue,
+    const_objects::ConstObject,
     ids::{FieldId, StringId, ValueId},
     iter::{Iter, ValueStoreReader},
     value::Value,
@@ -65,13 +65,13 @@ impl fmt::Debug for Object<'_> {
     }
 }
 
-impl<'a> From<ConstObjectValue<'a>> for ObjectValue<'a> {
-    fn from(value: ConstObjectValue<'a>) -> Self {
+impl<'a> From<ConstObject<'a>> for Object<'a> {
+    fn from(value: ConstObject<'a>) -> Self {
         let Cursor { id, store } = value.0;
 
         let id = id.into();
 
-        ObjectValue(Cursor { id, store })
+        Object(Cursor { id, store })
     }
 }
 

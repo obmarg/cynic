@@ -11,4 +11,5 @@ pub enum AdditionalErrors {
     Lexical(LexicalError),
     MalformedString(MalformedStringError),
     MalformedDirectiveLocation(usize, String, usize),
+    VariableInConstPosition(usize, String, usize),
 }

@@ -9,9 +9,9 @@ use super::{
 };
 
 #[derive(Clone, Copy)]
-pub struct ConstObjectValue<'a>(pub(super) super::Cursor<'a, ConstValueId>);
+pub struct ConstObject<'a>(pub(super) super::Cursor<'a, ConstValueId>);
 
-impl<'a> ConstObjectValue<'a> {
+impl<'a> ConstObject<'a> {
     pub fn is_empty(&self) -> bool {
         self.len() == 0
     }
@@ -37,7 +37,7 @@ impl<'a> ConstObjectValue<'a> {
     }
 }
 
-impl fmt::Debug for ConstObjectValue<'_> {
+impl fmt::Debug for ConstObject<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_map()
             .entries(self.fields().map(|field| (field.name(), field.value())))

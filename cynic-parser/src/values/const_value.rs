@@ -2,7 +2,7 @@ use crate::{AstLookup, Span};
 
 use super::{
     const_lists::ConstListValue,
-    const_objects::ConstObjectValue,
+    const_objects::ConstObject,
     enums::EnumValue,
     iter::{Iter, ValueStoreReader},
     scalars::{BooleanValue, FloatValue, IntValue, NullValue, StringValue},
@@ -19,7 +19,7 @@ pub enum ConstValue<'a> {
     Null(NullValue<'a>),
     Enum(EnumValue<'a>),
     List(ConstListValue<'a>),
-    Object(ConstObjectValue<'a>),
+    Object(ConstObject<'a>),
 }
 
 impl<'a> ConstValue<'a> {
@@ -89,7 +89,7 @@ impl super::ValueStoreId for ConstValueId {
             ValueKind::Null => ConstValue::Null(NullValue(value_cursor)),
             ValueKind::Enum(_) => ConstValue::Enum(EnumValue(value_cursor)),
             ValueKind::List(_) => ConstValue::List(ConstListValue(cursor)),
-            ValueKind::Object(_) => ConstValue::Object(ConstObjectValue(cursor)),
+            ValueKind::Object(_) => ConstValue::Object(ConstObject(cursor)),
         }
     }
 }
