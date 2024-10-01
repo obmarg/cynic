@@ -1,9 +1,9 @@
 use super::prelude::*;
 use super::{
     directive::Directive,
-    ids::{DirectiveId, TypeId, ValueId, VariableDefinitionId},
+    ids::{ConstValueId, DirectiveId, TypeId, VariableDefinitionId},
     types::Type,
-    value::Value,
+    value::ConstValue,
     ExecutableId, ReadContext,
 };
 #[allow(unused_imports)]
@@ -12,7 +12,7 @@ use std::fmt::{self, Write};
 pub struct VariableDefinitionRecord {
     pub name: StringId,
     pub ty: TypeId,
-    pub default_value: Option<ValueId>,
+    pub default_value: Option<ConstValueId>,
     pub directives: IdRange<DirectiveId>,
 }
 
@@ -28,7 +28,7 @@ impl<'a> VariableDefinition<'a> {
         let document = self.0.document;
         document.read(document.lookup(self.0.id).ty)
     }
-    pub fn default_value(&self) -> Option<Value<'a>> {
+    pub fn default_value(&self) -> Option<ConstValue<'a>> {
         let document = self.0.document;
         document
             .lookup(self.0.id)
