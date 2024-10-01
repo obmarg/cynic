@@ -21,7 +21,7 @@ mod prelude {
 }
 
 pub mod value {
-    pub use crate::values::Value;
+    pub use crate::values::ConstValue;
 }
 
 mod types {
