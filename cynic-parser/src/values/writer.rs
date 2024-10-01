@@ -66,6 +66,27 @@ impl ValueWriter {
         IdRange::new(start, end)
     }
 
+    pub fn const_fields(
+        &mut self,
+        records: Vec<(StringId, Span, ConstValueId)>,
+    ) -> IdRange<FieldId> {
+        let start = FieldId::new(self.fields.len());
+
+        self.fields.extend(
+            records
+                .into_iter()
+                .map(|(name, name_span, value)| FieldRecord {
+                    name,
+                    name_span,
+                    value: ValueId::new(value.get()),
+                }),
+        );
+
+        let end = FieldId::new(self.fields.len());
+
+        IdRange::new(start, end)
+    }
+
     pub(crate) fn finish(self, strings: Arc<IndexSet<Box<str>>>) -> super::ValueStore {
         let ValueWriter { values, fields } = self;
 

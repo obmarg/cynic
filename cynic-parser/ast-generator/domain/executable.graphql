@@ -53,26 +53,16 @@ type Directive @file(name: "directive") {
   arguments: [Argument]
 }
 
-type ConstDirective @file(name: "directive") {
-  name: String!
-  arguments: [ConstArgument]
-}
-
 type Argument @file(name: "argument") {
   name: String!
   value: Value!
-}
-
-type ConstArgument @file(name: "argument") {
-  name: String!
-  value: ConstValue!
 }
 
 type VariableDefinition @file(name: "variable") {
   name: String!
   ty: Type!
   default_value: ConstValue
-  directives: [ConstDirective]
+  directives: [Directive]
 }
 
 # OperationType is marked as @inline which means it just gets
