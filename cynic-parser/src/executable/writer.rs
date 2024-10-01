@@ -2,9 +2,9 @@ use std::sync::Arc;
 
 use indexmap::IndexSet;
 
-use crate::common::IdRange;
+use crate::{common::IdRange, Span};
 
-use super::{ids::*, storage::*, ExecutableDocument};
+use super::{generated::name::Name, ids::*, storage::*, ExecutableDocument};
 
 pub struct ExecutableAstWriter {
     pub values: crate::values::writer::ValueWriter,
@@ -226,6 +226,32 @@ impl ExecutableAstWriter {
         self.block_strings.push(string.into());
 
         literal_id
+    }
+
+    pub fn name(&mut self, ident: &str, span: Span) -> NameId {
+        let string_id = self.intern_string(ident);
+
+        let id = NameId::new(self.names.len());
+
+        self.names.push(NameRecord {
+            text: string_id,
+            span,
+        });
+
+        id
+    }
+
+    pub fn type_condition(&mut self, ident: &str, span: Span) -> TypeConditionId {
+        let string_id = self.intern_string(ident);
+
+        let id = TypeConditionId::new(self.names.len());
+
+        self.type_conditions.push(TypeConditionRecord {
+            on: string_id,
+            span,
+        });
+
+        id
     }
 
     pub fn ident(&mut self, ident: &str) -> StringId {
