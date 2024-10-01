@@ -7,7 +7,7 @@ use super::{
     iter::{Iter, ValueStoreReader},
     scalars::{BooleanValue, FloatValue, IntValue, NullValue, StringValue},
     value::ValueKind,
-    ConstValueId, Cursor, Value, ValueId,
+    ConstObjectField, ConstValueId, Cursor, Value, ValueId,
 };
 
 #[derive(Debug, Copy, Clone)]
@@ -29,6 +29,32 @@ impl<'a> ConstValue<'a> {
 }
 
 impl<'a> ConstValue<'a> {
+    pub fn is_int(&self) -> bool {
+        matches!(self, Self::Int(_))
+    }
+
+    pub fn as_i32(&self) -> Option<i32> {
+        match self {
+            Self::Int(inner) => Some(inner.as_i32()),
+            _ => None,
+        }
+    }
+
+    pub fn is_float(&self) -> bool {
+        matches!(self, Self::Float(_))
+    }
+
+    pub fn as_f32(&self) -> Option<f32> {
+        match self {
+            Self::Float(inner) => Some(inner.value()),
+            _ => None,
+        }
+    }
+
+    pub fn is_string(&self) -> bool {
+        matches!(self, Self::String(_))
+    }
+
     pub fn as_str(&self) -> Option<&'a str> {
         match self {
             Self::String(inner) => Some(inner.value()),
@@ -36,9 +62,71 @@ impl<'a> ConstValue<'a> {
         }
     }
 
-    pub fn as_list_iter(&self) -> Option<Iter<'a, ConstValue<'a>>> {
+    pub fn is_boolean(&self) -> bool {
+        matches!(self, Self::Boolean(_))
+    }
+
+    pub fn as_bool(&self) -> Option<bool> {
+        match self {
+            Self::Boolean(boolean_value) => Some(boolean_value.value()),
+            _ => None,
+        }
+    }
+
+    pub fn is_null(&self) -> bool {
+        matches!(self, Self::Null(_))
+    }
+
+    pub fn as_null(&self) -> Option<()> {
+        match self {
+            Self::Null(_) => Some(()),
+            _ => None,
+        }
+    }
+
+    pub fn is_enum(&self) -> bool {
+        matches!(self, Self::Enum(_))
+    }
+
+    pub fn as_enum_value(&self) -> Option<&'a str> {
+        match self {
+            Self::Enum(value) => Some(value.name()),
+            _ => None,
+        }
+    }
+
+    pub fn is_list(&self) -> bool {
+        matches!(self, Self::List(_))
+    }
+
+    pub fn as_list(&self) -> Option<ConstListValue<'a>> {
+        match self {
+            Self::List(inner) => Some(*inner),
+            _ => None,
+        }
+    }
+
+    pub fn as_items(&self) -> Option<Iter<'a, ConstValue<'a>>> {
         match self {
             Self::List(inner) => Some(inner.items()),
+            _ => None,
+        }
+    }
+
+    pub fn is_object(&self) -> bool {
+        matches!(self, Self::Object(_))
+    }
+
+    pub fn as_object(&self) -> Option<ConstObject<'a>> {
+        match self {
+            Self::Object(inner) => Some(*inner),
+            _ => None,
+        }
+    }
+
+    pub fn as_fields(&self) -> Option<Iter<'a, ConstObjectField<'a>>> {
+        match self {
+            Self::Object(inner) => Some(inner.fields()),
             _ => None,
         }
     }
