@@ -4,8 +4,7 @@ use crate::{common::IdRange, AstLookup, Span};
 
 use super::{
     iter::{Iter, ValueStoreReader},
-    value::Value,
-    ConstFieldId, ConstValueId, ValueStoreId,
+    ConstFieldId, ConstValue, ConstValueId, ValueStoreId,
 };
 
 #[derive(Clone, Copy)]
@@ -60,9 +59,9 @@ impl<'a> ConstObjectField<'a> {
         store.lookup(self.0.id).name_span
     }
 
-    pub fn value(&self) -> Value<'a> {
+    pub fn value(&self) -> ConstValue<'a> {
         let store = self.0.store;
-        store.read(store.lookup(self.0.id).value)
+        store.read(ConstValueId::new(store.lookup(self.0.id).value.get()))
     }
 }
 
