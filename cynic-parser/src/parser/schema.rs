@@ -1373,14 +1373,14 @@ mod __parse__TypeSystemDocument {
         }).collect()
     }
     struct __StateMachine<'input, '__1>
-    where 
+    where
     {
         input: &'input str,
         ast: &'__1 mut TypeSystemAstWriter,
         __phantom: core::marker::PhantomData<(&'input ())>,
     }
     impl<'input, '__1> __state_machine::ParserDefinition for __StateMachine<'input, '__1>
-    where 
+    where
     {
         type Location = usize;
         type Error = crate::parser::AdditionalErrors;

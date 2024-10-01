@@ -1,6 +1,9 @@
 use pretty::{DocAllocator, Pretty};
 
-use crate::{printing::escape_string, values::Value};
+use crate::{
+    printing::escape_string,
+    values::{ConstValue, Value},
+};
 
 use super::{Allocator, NodeDisplay};
 
@@ -51,5 +54,11 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Value<'a>> {
                 .braces()
                 .group(),
         }
+    }
+}
+
+impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<ConstValue<'a>> {
+    fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
+        self.with_node(Value::from(self.0)).pretty(allocator)
     }
 }
