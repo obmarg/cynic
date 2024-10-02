@@ -4,7 +4,7 @@ use indexmap::IndexSet;
 
 use crate::{common::IdRange, Span};
 
-use super::{generated::name::Name, ids::*, storage::*, ExecutableDocument};
+use super::{ids::*, storage::*, ExecutableDocument};
 
 pub struct ExecutableAstWriter {
     pub values: crate::values::writer::ValueWriter,

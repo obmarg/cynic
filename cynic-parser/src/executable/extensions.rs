@@ -1,6 +1,9 @@
-use std::fmt;
+use std::{borrow::Cow, fmt};
 
-use super::{generated::name::Name, FragmentDefinition, FragmentSpread};
+use super::{
+    generated::{name::Name, type_conditions::TypeCondition},
+    FragmentDefinition, FragmentSpread,
+};
 
 impl<'a> FragmentSpread<'a> {
     pub fn fragment(&self) -> Option<FragmentDefinition<'a>> {
@@ -28,5 +31,17 @@ impl PartialEq for Name<'_> {
 impl fmt::Display for Name<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}", self.text())
+    }
+}
+
+impl<'a> From<Name<'a>> for Cow<'a, str> {
+    fn from(value: Name<'a>) -> Self {
+        Cow::Borrowed(value.text())
+    }
+}
+
+impl<'a> From<TypeCondition<'a>> for Cow<'a, str> {
+    fn from(value: TypeCondition<'a>) -> Self {
+        Cow::Borrowed(value.on())
     }
 }

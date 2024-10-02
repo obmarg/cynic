@@ -290,7 +290,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Selection<'a>> {
 
                 allocator
                     .text("...")
-                    .append(spread.fragment_name())
+                    .append(allocator.text(spread.fragment_name()))
                     .append(directives_pretty)
                     .group()
             }
@@ -306,7 +306,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Type<'a>> {
 
 impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Directive<'a>> {
     fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
-        let mut builder = allocator.text("@").append(self.0.name());
+        let mut builder = allocator.text("@").append(allocator.text(self.0.name()));
 
         let mut arguments = self.0.arguments().peekable();
 
