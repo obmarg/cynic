@@ -14,7 +14,7 @@ use std::sync::Arc;
 pub use self::{
     enums::EnumValue,
     lists::ListValue,
-    objects::{ObjectField, ObjectValue},
+    objects::{Object, ObjectField},
     scalars::{BooleanValue, FloatValue, IntValue, NullValue, StringValue},
     value::Value,
     variables::VariableValue,

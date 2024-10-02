@@ -5,10 +5,10 @@ use super::{
     ids::{FieldId, StringId},
     iter::{Iter, ValueStoreReader},
     lists::ListValue,
-    objects::ObjectValue,
+    objects::Object,
     scalars::{BooleanValue, FloatValue, IntValue, NullValue, StringValue},
     variables::VariableValue,
-    Cursor, ValueId,
+    Cursor, ObjectField, ValueId,
 };
 
 #[derive(Debug, Clone, Copy)]
@@ -21,7 +21,7 @@ pub enum Value<'a> {
     Null(NullValue<'a>),
     Enum(EnumValue<'a>),
     List(ListValue<'a>),
-    Object(ObjectValue<'a>),
+    Object(Object<'a>),
 }
 
 impl<'a> Value<'a> {
@@ -51,6 +51,43 @@ impl<'a> Value<'a> {
 }
 
 impl<'a> Value<'a> {
+    pub fn is_variable(&self) -> bool {
+        matches!(self, Value::Boolean(_))
+    }
+
+    pub fn as_variable(&self) -> Option<&'a str> {
+        match self {
+            Self::Variable(inner) => Some(inner.name()),
+            _ => None,
+        }
+    }
+
+    pub fn is_int(&self) -> bool {
+        matches!(self, Value::Int(_))
+    }
+
+    pub fn as_i32(&self) -> Option<i32> {
+        match self {
+            Self::Int(inner) => Some(inner.as_i32()),
+            _ => None,
+        }
+    }
+
+    pub fn is_float(&self) -> bool {
+        matches!(self, Value::Float(_))
+    }
+
+    pub fn as_f32(&self) -> Option<f32> {
+        match self {
+            Self::Float(inner) => Some(inner.value()),
+            _ => None,
+        }
+    }
+
+    pub fn is_string(&self) -> bool {
+        matches!(self, Value::String(_))
+    }
+
     pub fn as_str(&self) -> Option<&'a str> {
         match self {
             Self::String(inner) => Some(inner.value()),
@@ -58,11 +95,8 @@ impl<'a> Value<'a> {
         }
     }
 
-    pub fn as_list_iter(&self) -> Option<Iter<'a, Value<'a>>> {
-        match self {
-            Self::List(inner) => Some(inner.items()),
-            _ => None,
-        }
+    pub fn is_boolean(&self) -> bool {
+        matches!(self, Value::Boolean(_))
     }
 
     pub fn as_bool(&self) -> Option<bool> {
@@ -72,9 +106,60 @@ impl<'a> Value<'a> {
         }
     }
 
+    pub fn is_null(&self) -> bool {
+        matches!(self, Value::Null(_))
+    }
+
+    pub fn as_null(&self) -> Option<()> {
+        match self {
+            Value::Null(_) => Some(()),
+            _ => None,
+        }
+    }
+
+    pub fn is_enum(&self) -> bool {
+        matches!(self, Value::Enum(_))
+    }
+
     pub fn as_enum_value(&self) -> Option<&'a str> {
         match self {
             Value::Enum(value) => Some(value.name()),
+            _ => None,
+        }
+    }
+
+    pub fn is_list(&self) -> bool {
+        matches!(self, Value::List(_))
+    }
+
+    pub fn as_list(&self) -> Option<ListValue<'a>> {
+        match self {
+            Self::List(inner) => Some(*inner),
+            _ => None,
+        }
+    }
+
+    pub fn as_items(&self) -> Option<Iter<'a, Value<'a>>> {
+        match self {
+            Self::List(inner) => Some(inner.items()),
+            _ => None,
+        }
+    }
+
+    pub fn is_object(&self) -> bool {
+        matches!(self, Value::Object(_))
+    }
+
+    pub fn as_object(&self) -> Option<Object<'a>> {
+        match self {
+            Self::Object(inner) => Some(*inner),
+            _ => None,
+        }
+    }
+
+    pub fn as_fields(&self) -> Option<Iter<'a, ObjectField<'a>>> {
+        match self {
+            Self::Object(inner) => Some(inner.fields()),
             _ => None,
         }
     }
@@ -116,7 +201,7 @@ impl super::ValueStoreId for ValueId {
             ValueKind::Null => Value::Null(NullValue(cursor)),
             ValueKind::Enum(_) => Value::Enum(EnumValue(cursor)),
             ValueKind::List(_) => Value::List(ListValue(cursor)),
-            ValueKind::Object(_) => Value::Object(ObjectValue(cursor)),
+            ValueKind::Object(_) => Value::Object(Object(cursor)),
         }
     }
 }
