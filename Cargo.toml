@@ -39,7 +39,7 @@ rust-version = "1.76"
 [workspace.dependencies]
 cynic-parser = { path = "cynic-parser", version = "0.5.2" }
 darling = "0.20"
-rstest = "0.22"
+rstest = "0.23"
 syn = "2"
 
 [profile.dev]
