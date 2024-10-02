@@ -1,7 +1,9 @@
 use std::num::NonZeroU32;
 
-use super::{storage::*, types::TypeRecord, value::ValueRecord, ExecutableDocument};
+use super::{storage::*, types::TypeRecord, ExecutableDocument};
 use crate::{common::IdRange, AstLookup};
+
+pub use crate::values::ids::ValueId;
 
 macro_rules! make_id {
     ($name:ident, $output:ident, $field:ident) => {
@@ -22,10 +24,6 @@ macro_rules! make_id {
 
             fn lookup(&self, index: $name) -> &Self::Output {
                 &self.$field[(index.0.get() - 1) as usize]
-            }
-
-            fn lookup_mut(&mut self, index: $name) -> &mut Self::Output {
-                &mut self.$field[(index.0.get() - 1) as usize]
             }
         }
     };
@@ -81,8 +79,6 @@ make_id!(TypeId, TypeRecord, types);
 make_id!(VariableDefinitionId, VariableDefinitionRecord, variables);
 impl_id_range_ops!(VariableDefinitionId);
 
-make_id!(ValueId, ValueRecord, values);
-
 make_id!(BlockStringLiteralId, str, block_strings);
 
 #[derive(Clone, Copy)]
@@ -95,6 +91,11 @@ impl StringId {
                 .expect("also too many indices"),
         )
     }
+
+    // TODO: Not especially happy with this pub(crate) - figure it out...
+    pub(crate) fn get(&self) -> usize {
+        (self.0.get() - 1) as usize
+    }
 }
 
 impl AstLookup<StringId> for ExecutableDocument {
@@ -102,9 +103,5 @@ impl AstLookup<StringId> for ExecutableDocument {
 
     fn lookup(&self, index: StringId) -> &Self::Output {
         &self.strings[(index.0.get() - 1) as usize]
-    }
-
-    fn lookup_mut(&mut self, _index: StringId) -> &mut Self::Output {
-        unimplemented!("strings aren't mutable so can't do this")
     }
 }

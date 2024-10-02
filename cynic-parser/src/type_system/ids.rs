@@ -3,6 +3,8 @@ use std::num::NonZeroU32;
 use super::{storage::*, DefinitionRecord, TypeSystemDocument};
 use crate::{common::IdRange, AstLookup};
 
+pub use crate::values::ids::ValueId;
+
 macro_rules! make_id {
     ($name:ident, $output:ident, $field:ident) => {
         #[derive(Clone, Copy, Debug, Hash, Eq, PartialEq, Ord, PartialOrd)]
@@ -15,6 +17,11 @@ macro_rules! make_id {
                         .expect("also too many indices"),
                 )
             }
+
+            #[allow(dead_code)]
+            pub(super) fn get(&self) -> usize {
+                (self.0.get() - 1) as usize
+            }
         }
 
         impl AstLookup<$name> for TypeSystemDocument {
@@ -22,10 +29,6 @@ macro_rules! make_id {
 
             fn lookup(&self, index: $name) -> &Self::Output {
                 &self.$field[(index.0.get() - 1) as usize]
-            }
-
-            fn lookup_mut(&mut self, index: $name) -> &mut Self::Output {
-                &mut self.$field[(index.0.get() - 1) as usize]
             }
         }
     };
@@ -130,8 +133,6 @@ impl_id_range_ops!(DirectiveId);
 make_id!(ArgumentId, ArgumentRecord, arguments);
 impl_id_range_ops!(ArgumentId);
 
-make_id!(ValueId, ValueRecord, values);
-
 make_id!(DescriptionId, DescriptionRecord, descriptions);
 
 make_id!(BlockStringLiteralId, str, block_strings);
@@ -146,6 +147,10 @@ impl StringId {
                 .expect("also too many indices"),
         )
     }
+
+    pub(crate) fn get(&self) -> usize {
+        (self.0.get() - 1) as usize
+    }
 }
 
 impl AstLookup<StringId> for TypeSystemDocument {
@@ -153,10 +158,6 @@ impl AstLookup<StringId> for TypeSystemDocument {
 
     fn lookup(&self, index: StringId) -> &Self::Output {
         &self.strings[(index.0.get() - 1) as usize]
-    }
-
-    fn lookup_mut(&mut self, _index: StringId) -> &mut Self::Output {
-        unimplemented!("strings aren't mutable so can't do this")
     }
 }
 

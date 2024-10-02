@@ -1,3 +1,5 @@
+use std::sync::Arc;
+
 use indexmap::IndexSet;
 
 pub mod ids;
@@ -7,7 +9,7 @@ pub mod writer;
 mod extensions;
 mod generated;
 mod types;
-mod value;
+mod values;
 
 use crate::common::IdRange;
 
@@ -22,14 +24,13 @@ pub use self::{
         variable::VariableDefinition,
     },
     types::Type,
-    value::Value,
 };
 
 use self::{ids::ExecutableDefinitionId, iter::Iter};
 
 #[derive(Default)]
 pub struct ExecutableDocument {
-    strings: IndexSet<Box<str>>,
+    strings: Arc<IndexSet<Box<str>>>,
     block_strings: Vec<Box<str>>,
 
     definitions: Vec<storage::ExecutableDefinitionRecord>,
@@ -47,14 +48,14 @@ pub struct ExecutableDocument {
 
     types: Vec<types::TypeRecord>,
 
-    values: Vec<value::ValueRecord>,
+    values: crate::values::ValueStore,
 }
 
 // TODO: Make this sealed maybe?  Could also move into id module...
 pub trait ExecutableId: Copy {
     type Reader<'a>;
 
-    fn read(self, ast: &ExecutableDocument) -> Self::Reader<'_>;
+    fn read(self, document: &ExecutableDocument) -> Self::Reader<'_>;
 }
 
 #[derive(Clone, Copy)]
@@ -112,6 +113,5 @@ pub mod storage {
             variable::VariableDefinitionRecord,
         },
         types::TypeRecord,
-        value::ValueRecord,
     };
 }

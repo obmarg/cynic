@@ -8,6 +8,10 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+### Changes
+
+- MSRV is now 1.76
+
 ## v3.8.0 - 2024-08-28
 
 ### New Features

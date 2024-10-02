@@ -1,4 +1,4 @@
-use std::str::FromStr;
+use std::{str::FromStr, sync::Arc};
 
 use indexmap::IndexSet;
 use iter::Iter;
@@ -14,6 +14,7 @@ mod schemas;
 mod string_literal;
 mod types;
 mod values;
+// mod values;
 
 use crate::common::IdRange;
 
@@ -35,13 +36,12 @@ pub use self::{
     },
     string_literal::{StringLiteral, StringLiteralKind},
     types::Type,
-    values::Value,
 };
 use self::{ids::*, storage::DefinitionRecord};
 
 #[derive(Default)]
 pub struct TypeSystemDocument {
-    strings: IndexSet<Box<str>>,
+    strings: Arc<IndexSet<Box<str>>>,
     block_strings: Vec<Box<str>>,
 
     definitions: Vec<storage::DefinitionRecord>,
@@ -64,10 +64,11 @@ pub struct TypeSystemDocument {
 
     type_references: Vec<storage::TypeRecord>,
 
-    values: Vec<storage::ValueRecord>,
     directives: Vec<storage::DirectiveRecord>,
     arguments: Vec<storage::ArgumentRecord>,
     descriptions: Vec<storage::DescriptionRecord>,
+
+    values: crate::values::ValueStore,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -233,6 +234,5 @@ pub mod storage {
             unions::{UnionDefinitionRecord, UnionMemberRecord},
         },
         types::TypeRecord,
-        values::ValueRecord,
     };
 }

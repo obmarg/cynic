@@ -1,6 +1,7 @@
 pub mod common;
 pub mod executable;
 pub mod type_system;
+pub mod values;
 
 mod errors;
 mod lexer;
@@ -11,6 +12,9 @@ mod parser;
 
 #[cfg(feature = "print")]
 pub mod printing;
+
+#[cfg(feature = "report")]
+pub use errors::Report;
 
 pub use self::{
     errors::Error, executable::ExecutableDocument, span::Span, type_system::TypeSystemDocument,
@@ -38,7 +42,6 @@ trait AstLookup<Id> {
     type Output: ?Sized;
 
     fn lookup(&self, index: Id) -> &Self::Output;
-    fn lookup_mut(&mut self, index: Id) -> &mut Self::Output;
 }
 
 #[cfg(test)]

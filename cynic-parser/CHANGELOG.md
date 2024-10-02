@@ -9,6 +9,10 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+### Changes
+
+- MSRV is now 1.76
+
 ## v0.5.2 - 2024-09-25
 
 ### New Features
@@ -37,7 +41,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
   Although the GraphQl `Int` type is represented by `i32` this restriction is
   not specified for the grammar.
   ([#1037](https://github.com/obmarg/cynic/pull/1037))
-- `Iter` is no longer `Copy` as this could cause subtle bugs.  It remains
+- `Iter` is no longer `Copy` as this could cause subtle bugs. It remains
   `Clone` so you can use that if you need to.
   ([#1036](https://github.com/obmarg/cynic/pull/1036))
 - `IdRange` now implements `IntoIterator` instead of directly implementing
@@ -59,7 +63,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### New Features
 
-- Add `Iter::with_ids` for iterating over readers and their corresponding `Id`s 
+- Add `Iter::with_ids` for iterating over readers and their corresponding `Id`s
   ([#984](https://github.com/obmarg/cynic/pull/984))
 
 ## v0.4.4 - 2024-06-10

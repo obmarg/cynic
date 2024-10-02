@@ -7,9 +7,7 @@ use crate::{printing::escape_string, type_system::*};
 
 use self::{argument_sequence::ArgumentSequence, field_sequence::FieldSequence};
 
-use super::{printer::PrettyOptions, sorting::sort_key_for};
-
-type Allocator<'a> = pretty::Arena<'a>;
+use super::{printer::PrettyOptions, sorting::sort_key_for, Allocator, NodeDisplay};
 
 impl crate::TypeSystemDocument {
     pub fn to_sdl_pretty(&self) -> String {
@@ -94,19 +92,6 @@ impl crate::TypeSystemDocument {
         {
             format!("{}\n", (&*builder).pretty(80))
         }
-    }
-}
-
-pub struct NodeDisplay<T>(T, PrettyOptions);
-
-impl<T> NodeDisplay<T> {
-    pub fn with_node<N>(&self, node: N) -> NodeDisplay<N> {
-        NodeDisplay(node, self.1)
-    }
-
-    pub fn mapper<N>(&self) -> impl Fn(N) -> NodeDisplay<N> {
-        let options = self.1;
-        move |node| NodeDisplay(node, options)
     }
 }
 
@@ -626,67 +611,6 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Argument<'a>> {
             .text(self.0.name())
             .append(allocator.text(": "))
             .append(self.with_node(self.0.value()))
-    }
-}
-
-impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Value<'a>> {
-    fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
-        match self.0.clone() {
-            crate::type_system::Value::Variable(name) => allocator.text(format!("${name}")),
-            crate::type_system::Value::Int(value) => allocator.text(format!("{value}")),
-            crate::type_system::Value::Float(value) => allocator.text(format!("{value}")),
-            crate::type_system::Value::String(value) => {
-                allocator.text(escape_string(value)).double_quotes()
-            }
-            crate::type_system::Value::BlockString(value) => allocator
-                .text(value)
-                .double_quotes()
-                .double_quotes()
-                .double_quotes(),
-            crate::type_system::Value::Boolean(value) => allocator.text(format!("{value}")),
-            crate::type_system::Value::Null => allocator.text("null"),
-            crate::type_system::Value::Enum(value) => allocator.text(value),
-            crate::type_system::Value::List(items) if items.is_empty() => {
-                allocator.nil().brackets()
-            }
-            crate::type_system::Value::List(items) => allocator
-                .line_()
-                .append(
-                    allocator.intersperse(
-                        items.into_iter().map(self.mapper()),
-                        allocator
-                            .line_()
-                            .append(allocator.nil().flat_alt(allocator.text(", "))),
-                    ),
-                )
-                .nest(2)
-                .append(allocator.line_())
-                .brackets()
-                .group(),
-            crate::type_system::Value::Object(items) if items.is_empty() => {
-                allocator.nil().braces()
-            }
-            crate::type_system::Value::Object(items) => allocator
-                .line()
-                .append(
-                    allocator.intersperse(
-                        items.into_iter().map(|(name, value)| {
-                            allocator
-                                .text(name)
-                                .append(allocator.text(":"))
-                                .append(allocator.space())
-                                .append(self.with_node(value))
-                        }),
-                        allocator
-                            .line_()
-                            .append(allocator.nil().flat_alt(allocator.text(", "))),
-                    ),
-                )
-                .nest(2)
-                .append(allocator.line())
-                .braces()
-                .group(),
-        }
     }
 }
 
