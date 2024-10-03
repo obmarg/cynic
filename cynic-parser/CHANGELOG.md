@@ -9,6 +9,14 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.6.0 - 2024-10-03
+
+### New Features
+
+- Rework `Value` significantly ([#1048](https://github.com/obmarg/cynic/pull/1048))
+- Added `ConstValue` ([#1057](https://github.com/obmarg/cynic/pull/1057))
+- The ExecutableId & TypeSystemId traits have been changed ([#1047](https://github.com/obmarg/cynic/pull/1047))
+
 ### Changes
 
 - MSRV is now 1.76

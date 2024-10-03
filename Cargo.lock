@@ -1111,7 +1111,7 @@ dependencies = [
 
 [[package]]
 name = "cynic-parser"
-version = "0.5.2"
+version = "0.6.0"
 dependencies = [
  "apollo-parser",
  "ariadne",
