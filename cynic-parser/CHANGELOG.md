@@ -13,14 +13,9 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### New Features
 
-- ConstValue in parser ([#1057](https://github.com/obmarg/cynic/pull/1057))
-- utility functions on Value ([#1056](https://github.com/obmarg/cynic/pull/1056))
-- rework `Value` in parser ([#1048](https://github.com/obmarg/cynic/pull/1048))
-
-### Bug Fixes
-
-- some value tweaks in parser ([#1058](https://github.com/obmarg/cynic/pull/1058))
-- [**breaking**] rework ExecutableId & TypeSystemId in parser ([#1047](https://github.com/obmarg/cynic/pull/1047))
+- Rework `Value` significantly ([#1048](https://github.com/obmarg/cynic/pull/1048))
+- Added `ConstValue` ([#1057](https://github.com/obmarg/cynic/pull/1057))
+- The ExecutableId & TypeSystemId traits have been changed ([#1047](https://github.com/obmarg/cynic/pull/1047))
 
 ### Changes
 
