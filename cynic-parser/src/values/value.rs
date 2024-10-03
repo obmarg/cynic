@@ -1,6 +1,7 @@
 use crate::{common::IdRange, AstLookup, Span};
 
 use super::{
+    const_value::ConstValue,
     enums::EnumValue,
     ids::{FieldId, StringId},
     iter::{Iter, ValueStoreReader},
@@ -307,6 +308,21 @@ impl<'a> Iterator for VariableIterator<'a> {
             }
         }
         None
+    }
+}
+
+impl<'a> From<ConstValue<'a>> for Value<'a> {
+    fn from(value: ConstValue<'a>) -> Self {
+        match value {
+            ConstValue::Int(inner) => Value::Int(inner),
+            ConstValue::Float(inner) => Value::Float(inner),
+            ConstValue::String(inner) => Value::String(inner),
+            ConstValue::Boolean(inner) => Value::Boolean(inner),
+            ConstValue::Null(inner) => Value::Null(inner),
+            ConstValue::Enum(inner) => Value::Enum(inner),
+            ConstValue::List(inner) => Value::List(inner.into()),
+            ConstValue::Object(inner) => Value::Object(inner.into()),
+        }
     }
 }
 

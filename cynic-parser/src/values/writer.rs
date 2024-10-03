@@ -30,6 +30,14 @@ impl ValueWriter {
         id
     }
 
+    pub fn const_value(&mut self, record: ValueRecord) -> ConstValueId {
+        if let ValueKind::Variable(_) = record.kind {
+            panic!("Don't pass a variable into const_value");
+        }
+        let value_id = self.value(record);
+        ConstValueId::new(value_id.get())
+    }
+
     pub fn list(&mut self, values: Vec<ValueRecord>) -> IdRange<ValueId> {
         let start = ValueId::new(self.values.len());
 
@@ -50,6 +58,27 @@ impl ValueWriter {
                     name,
                     name_span,
                     value,
+                }),
+        );
+
+        let end = FieldId::new(self.fields.len());
+
+        IdRange::new(start, end)
+    }
+
+    pub fn const_fields(
+        &mut self,
+        records: Vec<(StringId, Span, ConstValueId)>,
+    ) -> IdRange<FieldId> {
+        let start = FieldId::new(self.fields.len());
+
+        self.fields.extend(
+            records
+                .into_iter()
+                .map(|(name, name_span, value)| FieldRecord {
+                    name,
+                    name_span,
+                    value: ValueId::new(value.get()),
                 }),
         );
 

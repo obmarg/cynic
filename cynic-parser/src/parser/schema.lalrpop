@@ -6,11 +6,12 @@ use crate::{
         storage::*, ids::*, writer::TypeSystemAstWriter,
         DirectiveLocation,
     },
-    values::{storage::*, ids::ValueId, self},
+    values::{storage::*, ids::ConstValueId, self},
     common::{
         OperationType, IdRange, WrappingType, TypeWrappers,
         unquote_string, unquote_block_string, trim_block_string_whitespace
-    }
+    },
+    parser::AdditionalErrors
 };
 
 grammar<'input>(input: &'input str, ast: &mut TypeSystemAstWriter);
@@ -324,8 +325,8 @@ InputValueDefinition: () = {
 }
 
 
-DefaultValue: ValueId = {
-    "=" <v:Value> => v
+DefaultValue: ConstValueId = {
+    "=" <v:ConstValue> => v
 }
 
 Name: StringId = <s:Ident> => ast.ident(s);
@@ -345,6 +346,12 @@ WrappingType: WrappingType = {
     "]" => WrappingType::List
 }
 
+ConstValue: ConstValueId = {
+    <record:ValueRecord> => {
+        ast.values.const_value(record)
+    }
+}
+
 Value: ValueId = {
     <record:ValueRecord> => {
         ast.values.value(record)
@@ -352,11 +359,10 @@ Value: ValueId = {
 }
 
 ValueRecord: ValueRecord = {
-    <start:@L> "$" <name:Name> <end:@R> => {
-        ValueRecord {
-            span: Span::new(start, end),
-            kind: ValueKind::Variable(values::ids::StringId::from_type_system_id(name))
-        }
+    <start:@L> "$" <name:Ident> <end:@R> =>? {
+        Err(lalrpop_util::ParseError::User {
+            error: AdditionalErrors::VariableInConstPosition(start, name.to_string(), end)
+        })
     },
     <start:@L> <int:IntegerLiteral> <end:@R> => {
         ValueRecord {
@@ -476,7 +482,7 @@ Arguments: Vec<ArgumentId> = {
 }
 
 Argument: ArgumentId = {
-    <start:@L> <name:Name> ":" <value:Value> <end:@R> => ast.argument(ArgumentRecord { name, value, span: Span::new(start, end) }),
+    <start:@L> <name:Name> ":" <value:ConstValue> <end:@R> => ast.argument(ArgumentRecord { name, value, span: Span::new(start, end) }),
 }
 
 Ident: &'input str = {

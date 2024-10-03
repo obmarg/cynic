@@ -4,7 +4,7 @@ use crate::{
     executable::{
         storage::*, ids::*, writer::ExecutableAstWriter
     },
-    values::{storage::*, ids::ValueId, self},
+    values::{storage::*, ids::{ValueId, ConstValueId}, self},
     common::{
         OperationType, IdRange, WrappingType, TypeWrappers,
         unquote_string, unquote_block_string, trim_block_string_whitespace
@@ -67,8 +67,8 @@ VariableDefinition: () = {
     }
 }
 
-DefaultValue: ValueId = {
-    "=" <value:Value> => {
+DefaultValue: ConstValueId = {
+    "=" <value:ConstValue> => {
         value
     }
 }
@@ -156,6 +156,40 @@ Argument: ArgumentRecord = {
     }
 }
 
+ConstValue: ConstValueId = {
+    <record:ConstValueRecord> => {
+        ast.values.const_value(record)
+    }
+}
+
+ConstValueRecord: ValueRecord = {
+    <scalar:ScalarValueRecord> => scalar,
+    <start:@L> "[" <values:ConstValueRecord*> "]" <end:@R> => {
+        let id = ast.values.list(values);
+        ValueRecord {
+            span: Span::new(start, end),
+            kind: ValueKind::List(id)
+        }
+    },
+    <start:@L> "{" <fields:ConstObjectField*> "}" <end:@R> => {
+        let fields = ast.values.const_fields(fields);
+        ValueRecord {
+            span: Span::new(start, end),
+            kind: ValueKind::Object(fields)
+        }
+    },
+}
+
+ConstObjectField: (values::ids::StringId, Span, ConstValueId) = {
+    <name_start:@L> <name:Name> <name_end:@R> ":" <value:ConstValue> => {
+        (
+            values::ids::StringId::from_executable_id(name),
+            Span::new(name_start, name_end),
+            value
+        )
+    }
+}
+
 Value: ValueId = {
     <record:ValueRecord> => {
         ast.values.value(record)
@@ -169,6 +203,35 @@ ValueRecord: ValueRecord = {
             kind: ValueKind::Variable(values::ids::StringId::from_executable_id(name))
         }
     },
+    <scalar:ScalarValueRecord> => scalar,
+    <start:@L> "[" <values:ValueRecord*> "]" <end:@R> => {
+        let id = ast.values.list(values);
+        ValueRecord {
+            span: Span::new(start, end),
+            kind: ValueKind::List(id)
+        }
+    },
+    <start:@L> "{" <fields:ObjectField*> "}" <end:@R> => {
+        let fields = ast.values.fields(fields);
+        ValueRecord {
+            span: Span::new(start, end),
+            kind: ValueKind::Object(fields)
+        }
+    },
+}
+
+ObjectField: (values::ids::StringId, Span, ValueId) = {
+    <name_start:@L> <name:Name> <name_end:@R> ":" <value:Value> => {
+        (
+            values::ids::StringId::from_executable_id(name),
+            Span::new(name_start, name_end),
+            value
+        )
+    }
+}
+
+
+ScalarValueRecord: ValueRecord = {
     <start:@L> <int:IntegerLiteral> <end:@R> => {
         ValueRecord {
             span: Span::new(start, end),
@@ -217,36 +280,12 @@ ValueRecord: ValueRecord = {
             kind: ValueKind::Null
         }
     },
-    <start:@L> "[" <values:ValueRecord*> "]" <end:@R> => {
-        let id = ast.values.list(values);
-        ValueRecord {
-            span: Span::new(start, end),
-            kind: ValueKind::List(id)
-        }
-    },
-    <start:@L> "{" <fields:ObjectField*> "}" <end:@R> => {
-        let fields = ast.values.fields(fields);
-        ValueRecord {
-            span: Span::new(start, end),
-            kind: ValueKind::Object(fields)
-        }
-    },
     <start:@L> <value:EnumValue> <end:@R> => {
         ValueRecord {
             span: Span::new(start, end),
             kind: ValueKind::Enum(values::ids::StringId::from_executable_id(value))
         }
     },
-}
-
-ObjectField: (values::ids::StringId, Span, ValueId) = {
-    <name_start:@L> <name:Name> <name_end:@R> ":" <value:Value> => {
-        (
-            values::ids::StringId::from_executable_id(name),
-            Span::new(name_start, name_end),
-            value
-        )
-    }
 }
 
 EnumValue: StringId = {

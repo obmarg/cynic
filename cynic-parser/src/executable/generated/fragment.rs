@@ -3,7 +3,7 @@ use super::{
     directive::Directive,
     ids::{DirectiveId, FragmentDefinitionId, SelectionId},
     selections::Selection,
-    ExecutableId, ReadContext,
+    ExecutableId,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};

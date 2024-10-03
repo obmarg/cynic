@@ -3,7 +3,7 @@ use std::num::NonZeroU32;
 use super::{storage::*, DefinitionRecord, TypeSystemDocument};
 use crate::{common::IdRange, AstLookup};
 
-pub use crate::values::ids::ValueId;
+pub use crate::values::ids::{ConstValueId, ValueId};
 
 macro_rules! make_id {
     ($name:ident, $output:ident, $field:ident) => {

@@ -1,15 +1,15 @@
 use super::prelude::*;
 use super::{
-    ids::{ArgumentId, ValueId},
-    value::Value,
-    ReadContext, TypeSystemId,
+    ids::{ArgumentId, ConstValueId},
+    value::ConstValue,
+    TypeSystemId,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};
 
 pub struct ArgumentRecord {
     pub name: StringId,
-    pub value: ValueId,
+    pub value: ConstValueId,
     pub span: Span,
 }
 
@@ -21,7 +21,7 @@ impl<'a> Argument<'a> {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).name)
     }
-    pub fn value(&self) -> Value<'a> {
+    pub fn value(&self) -> ConstValue<'a> {
         let document = self.0.document;
         document.read(document.lookup(self.0.id).value)
     }

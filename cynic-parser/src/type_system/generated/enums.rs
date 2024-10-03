@@ -3,7 +3,7 @@ use super::{
     descriptions::Description,
     directives::Directive,
     ids::{DescriptionId, DirectiveId, EnumDefinitionId, EnumValueDefinitionId},
-    ReadContext, TypeSystemId,
+    TypeSystemId,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};

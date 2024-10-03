@@ -15,6 +15,11 @@ macro_rules! make_id {
                         .expect("also too many indices"),
                 )
             }
+
+            #[allow(dead_code)]
+            pub(super) fn get(&self) -> usize {
+                (self.0.get() - 1) as usize
+            }
         }
 
         impl AstLookup<$name> for ValueStore {
@@ -28,7 +33,17 @@ macro_rules! make_id {
 }
 
 make_id!(ValueId, ValueRecord, values);
+make_id!(ConstValueId, ValueRecord, values);
 make_id!(FieldId, FieldRecord, fields);
+make_id!(ConstFieldId, FieldRecord, fields);
+
+// ConstValue can always be treated as a Value but not the
+// other way round
+impl From<ConstValueId> for ValueId {
+    fn from(value: ConstValueId) -> Self {
+        ValueId(value.0)
+    }
+}
 
 macro_rules! impl_id_range_ops {
     ($name: ident) => {
@@ -53,7 +68,9 @@ macro_rules! impl_id_range_ops {
 }
 
 impl_id_range_ops!(ValueId);
+impl_id_range_ops!(ConstValueId);
 impl_id_range_ops!(FieldId);
+impl_id_range_ops!(ConstFieldId);
 
 make_id!(StringId, str, strings);
 

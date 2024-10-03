@@ -50,8 +50,11 @@ pub enum Error {
     /// Malformed string literal
     MalformedStringLiteral(crate::common::MalformedStringError),
 
-    /// Malformed string literal
+    /// Malformed directive location
     MalformedDirectiveLocation(usize, String, usize),
+
+    /// Variable found in const position
+    VariableInConstPosition(usize, String, usize),
 }
 
 impl Error {
@@ -70,6 +73,7 @@ impl Error {
             Error::Lexical(error) => error.span(),
             Error::MalformedStringLiteral(error) => error.span(),
             Error::MalformedDirectiveLocation(lhs, _, rhs) => Span::new(*lhs, *rhs),
+            Error::VariableInConstPosition(lhs, _, rhs) => Span::new(*lhs, *rhs),
         }
     }
 }
@@ -81,9 +85,10 @@ impl std::error::Error for Error {
             | Error::UnrecognizedEof { .. }
             | Error::UnrecognizedToken { .. }
             | Error::ExtraToken { .. }
-            | Error::MalformedDirectiveLocation(..) => None,
+            | Error::MalformedStringLiteral(..)
+            | Error::MalformedDirectiveLocation(..)
+            | Error::VariableInConstPosition(..) => None,
             Error::Lexical(error) => Some(error),
-            Error::MalformedStringLiteral(error) => Some(error),
         }
     }
 }
@@ -145,6 +150,13 @@ impl fmt::Display for Error {
                 }
                 Ok(())
             }
+            Error::VariableInConstPosition(_, name, _) => {
+                write!(
+                    f,
+                    "the variable ${name} was found in a position that does not allow variables"
+                )?;
+                Ok(())
+            }
         }
     }
 }
@@ -178,6 +190,9 @@ impl From<lalrpop_util::ParseError<usize, lexer::Token<'_>, AdditionalErrors>> f
             ParseError::User {
                 error: AdditionalErrors::MalformedDirectiveLocation(lhs, location, rhs),
             } => Error::MalformedDirectiveLocation(lhs, location, rhs),
+            ParseError::User {
+                error: AdditionalErrors::VariableInConstPosition(lhs, name, rhs),
+            } => Error::MalformedDirectiveLocation(lhs, name, rhs),
         }
     }
 }

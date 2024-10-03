@@ -5,7 +5,7 @@ use super::{
     ids::{DescriptionId, DirectiveId, FieldDefinitionId, InputValueDefinitionId, TypeId},
     input_values::InputValueDefinition,
     types::Type,
-    ReadContext, TypeSystemId,
+    TypeSystemId,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};

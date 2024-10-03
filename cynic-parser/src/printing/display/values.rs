@@ -1,6 +1,9 @@
 use std::fmt;
 
-use crate::{printing::escape_string, values::Value};
+use crate::{
+    printing::escape_string,
+    values::{ConstValue, Value},
+};
 
 impl fmt::Display for Value<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
@@ -42,5 +45,11 @@ impl fmt::Display for Value<'_> {
                 write!(f, "{name}")
             }
         }
+    }
+}
+
+impl fmt::Display for ConstValue<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        Value::from(*self).fmt(f)
     }
 }

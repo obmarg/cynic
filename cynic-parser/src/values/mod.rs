@@ -1,3 +1,6 @@
+mod const_lists;
+mod const_objects;
+mod const_value;
 mod enums;
 mod lists;
 mod objects;
@@ -12,6 +15,9 @@ pub mod writer;
 use std::sync::Arc;
 
 pub use self::{
+    const_lists::ConstListValue,
+    const_objects::{ConstObject, ConstObjectField},
+    const_value::ConstValue,
     enums::EnumValue,
     lists::ListValue,
     objects::{Object, ObjectField},

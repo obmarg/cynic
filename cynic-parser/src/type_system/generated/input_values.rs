@@ -2,10 +2,10 @@ use super::prelude::*;
 use super::{
     descriptions::Description,
     directives::Directive,
-    ids::{DescriptionId, DirectiveId, InputValueDefinitionId, TypeId, ValueId},
+    ids::{ConstValueId, DescriptionId, DirectiveId, InputValueDefinitionId, TypeId},
     types::Type,
-    value::Value,
-    ReadContext, TypeSystemId,
+    value::ConstValue,
+    TypeSystemId,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};
@@ -14,7 +14,7 @@ pub struct InputValueDefinitionRecord {
     pub name: StringId,
     pub ty: TypeId,
     pub description: Option<DescriptionId>,
-    pub default_value: Option<ValueId>,
+    pub default_value: Option<ConstValueId>,
     pub default_value_span: Span,
     pub directives: IdRange<DirectiveId>,
     pub span: Span,
@@ -39,7 +39,7 @@ impl<'a> InputValueDefinition<'a> {
             .description
             .map(|id| document.read(id))
     }
-    pub fn default_value(&self) -> Option<Value<'a>> {
+    pub fn default_value(&self) -> Option<ConstValue<'a>> {
         let document = self.0.document;
         document
             .lookup(self.0.id)

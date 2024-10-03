@@ -2,7 +2,7 @@ use super::prelude::*;
 use super::{
     argument::Argument,
     ids::{ArgumentId, DirectiveId},
-    ExecutableId, ReadContext,
+    ExecutableId,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};

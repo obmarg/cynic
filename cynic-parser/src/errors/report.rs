@@ -80,6 +80,16 @@ impl Error {
                     None,
                 )
             }
+
+            Error::VariableInConstPosition(_, _, _) => {
+                let span = self.span();
+                (
+                    self.to_string(),
+                    Label::new(span.start..span.end)
+                        .with_message("only non-variable values can be used here"),
+                    None,
+                )
+            }
         }
     }
 }
