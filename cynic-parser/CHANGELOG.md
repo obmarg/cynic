@@ -9,6 +9,19 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.6.0 - 2024-10-03
+
+### New Features
+
+- ConstValue in parser ([#1057](https://github.com/obmarg/cynic/pull/1057))
+- utility functions on Value ([#1056](https://github.com/obmarg/cynic/pull/1056))
+- rework `Value` in parser ([#1048](https://github.com/obmarg/cynic/pull/1048))
+
+### Bug Fixes
+
+- some value tweaks in parser ([#1058](https://github.com/obmarg/cynic/pull/1058))
+- [**breaking**] rework ExecutableId & TypeSystemId in parser ([#1047](https://github.com/obmarg/cynic/pull/1047))
+
 ### Changes
 
 - MSRV is now 1.76
