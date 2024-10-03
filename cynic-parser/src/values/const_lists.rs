@@ -5,9 +5,9 @@ use crate::{common::IdRange, AstLookup, Span};
 use super::{const_value::ConstValue, iter::Iter, ConstValueId};
 
 #[derive(Clone, Copy)]
-pub struct ConstListValue<'a>(pub(super) super::Cursor<'a, ConstValueId>);
+pub struct ConstList<'a>(pub(super) super::Cursor<'a, ConstValueId>);
 
-impl<'a> ConstListValue<'a> {
+impl<'a> ConstList<'a> {
     pub fn is_empty(&self) -> bool {
         self.len() == 0
     }
@@ -33,7 +33,7 @@ impl<'a> ConstListValue<'a> {
     }
 }
 
-impl fmt::Debug for ConstListValue<'_> {
+impl fmt::Debug for ConstList<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_list().entries(self.items()).finish()
     }

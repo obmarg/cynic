@@ -1,7 +1,7 @@
 use crate::{AstLookup, Span};
 
 use super::{
-    const_lists::ConstListValue,
+    const_lists::ConstList,
     const_objects::ConstObject,
     enums::EnumValue,
     iter::{Iter, ValueStoreReader},
@@ -18,7 +18,7 @@ pub enum ConstValue<'a> {
     Boolean(BooleanValue<'a>),
     Null(NullValue<'a>),
     Enum(EnumValue<'a>),
-    List(ConstListValue<'a>),
+    List(ConstList<'a>),
     Object(ConstObject<'a>),
 }
 
@@ -99,7 +99,7 @@ impl<'a> ConstValue<'a> {
         matches!(self, Self::List(_))
     }
 
-    pub fn as_list(&self) -> Option<ConstListValue<'a>> {
+    pub fn as_list(&self) -> Option<ConstList<'a>> {
         match self {
             Self::List(inner) => Some(*inner),
             _ => None,
@@ -176,8 +176,56 @@ impl super::ValueStoreId for ConstValueId {
             ValueKind::Boolean(_) => ConstValue::Boolean(BooleanValue(value_cursor)),
             ValueKind::Null => ConstValue::Null(NullValue(value_cursor)),
             ValueKind::Enum(_) => ConstValue::Enum(EnumValue(value_cursor)),
-            ValueKind::List(_) => ConstValue::List(ConstListValue(cursor)),
+            ValueKind::List(_) => ConstValue::List(ConstList(cursor)),
             ValueKind::Object(_) => ConstValue::Object(ConstObject(cursor)),
         }
+    }
+}
+
+impl<'a> TryFrom<Value<'a>> for ConstValue<'a> {
+    type Error = ();
+
+    fn try_from(value: Value<'a>) -> Result<Self, Self::Error> {
+        if !const_safe(value) {
+            return Err(());
+        }
+
+        Ok(match value {
+            Value::Variable(_) => unreachable!(),
+            Value::Int(int_value) => ConstValue::Int(int_value),
+            Value::Float(float_value) => ConstValue::Float(float_value),
+            Value::String(string_value) => ConstValue::String(string_value),
+            Value::Boolean(boolean_value) => ConstValue::Boolean(boolean_value),
+            Value::Null(null_value) => ConstValue::Null(null_value),
+            Value::Enum(enum_value) => ConstValue::Enum(enum_value),
+            Value::List(list_value) => {
+                let id = ConstValueId::new(list_value.0.id.get());
+                ConstValue::List(ConstList(Cursor {
+                    id,
+                    store: list_value.0.store,
+                }))
+            }
+            Value::Object(object) => {
+                let id = ConstValueId::new(object.0.id.get());
+                ConstValue::Object(ConstObject(Cursor {
+                    id,
+                    store: object.0.store,
+                }))
+            }
+        })
+    }
+}
+
+fn const_safe(value: Value<'_>) -> bool {
+    match value {
+        Value::Variable(_) => false,
+        Value::Int(_)
+        | Value::Float(_)
+        | Value::String(_)
+        | Value::Boolean(_)
+        | Value::Null(_)
+        | Value::Enum(_) => true,
+        Value::List(items) => items.items().any(const_safe),
+        Value::Object(object) => object.fields().any(|field| const_safe(field.value())),
     }
 }
