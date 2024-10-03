@@ -15,11 +15,11 @@ pub mod writer;
 use std::sync::Arc;
 
 pub use self::{
-    const_lists::ConstListValue,
+    const_lists::ConstList,
     const_objects::{ConstObject, ConstObjectField},
     const_value::ConstValue,
     enums::EnumValue,
-    lists::ListValue,
+    lists::List,
     objects::{Object, ObjectField},
     scalars::{BooleanValue, FloatValue, IntValue, NullValue, StringValue},
     value::Value,

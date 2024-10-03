@@ -2,12 +2,12 @@ use std::fmt;
 
 use crate::{AstLookup, Span};
 
-use super::{const_lists::ConstListValue, ids::ValueId, iter::Iter, value::Value, Cursor};
+use super::{const_lists::ConstList, ids::ValueId, iter::Iter, value::Value, Cursor};
 
 #[derive(Clone, Copy)]
-pub struct ListValue<'a>(pub(super) super::Cursor<'a, ValueId>);
+pub struct List<'a>(pub(super) super::Cursor<'a, ValueId>);
 
-impl<'a> ListValue<'a> {
+impl<'a> List<'a> {
     pub fn is_empty(&self) -> bool {
         self.len() == 0
     }
@@ -28,24 +28,24 @@ impl<'a> ListValue<'a> {
     }
 }
 
-impl PartialEq for ListValue<'_> {
+impl PartialEq for List<'_> {
     fn eq(&self, other: &Self) -> bool {
         self.len() == other.len() && self.items().zip(other.items()).all(|(lhs, rhs)| lhs == rhs)
     }
 }
 
-impl fmt::Debug for ListValue<'_> {
+impl fmt::Debug for List<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_list().entries(self.items()).finish()
     }
 }
 
-impl<'a> From<ConstListValue<'a>> for ListValue<'a> {
-    fn from(value: ConstListValue<'a>) -> Self {
+impl<'a> From<ConstList<'a>> for List<'a> {
+    fn from(value: ConstList<'a>) -> Self {
         let Cursor { id, store } = value.0;
 
         let id = id.into();
 
-        ListValue(Cursor { id, store })
+        List(Cursor { id, store })
     }
 }

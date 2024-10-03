@@ -5,7 +5,7 @@ use super::{
     enums::EnumValue,
     ids::{FieldId, StringId},
     iter::{Iter, ValueStoreReader},
-    lists::ListValue,
+    lists::List,
     objects::Object,
     scalars::{BooleanValue, FloatValue, IntValue, NullValue, StringValue},
     variables::VariableValue,
@@ -21,7 +21,7 @@ pub enum Value<'a> {
     Boolean(BooleanValue<'a>),
     Null(NullValue<'a>),
     Enum(EnumValue<'a>),
-    List(ListValue<'a>),
+    List(List<'a>),
     Object(Object<'a>),
 }
 
@@ -133,7 +133,7 @@ impl<'a> Value<'a> {
         matches!(self, Value::List(_))
     }
 
-    pub fn as_list(&self) -> Option<ListValue<'a>> {
+    pub fn as_list(&self) -> Option<List<'a>> {
         match self {
             Self::List(inner) => Some(*inner),
             _ => None,
@@ -201,7 +201,7 @@ impl super::ValueStoreId for ValueId {
             ValueKind::Boolean(_) => Value::Boolean(BooleanValue(cursor)),
             ValueKind::Null => Value::Null(NullValue(cursor)),
             ValueKind::Enum(_) => Value::Enum(EnumValue(cursor)),
-            ValueKind::List(_) => Value::List(ListValue(cursor)),
+            ValueKind::List(_) => Value::List(List(cursor)),
             ValueKind::Object(_) => Value::Object(Object(cursor)),
         }
     }
