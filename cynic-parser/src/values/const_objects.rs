@@ -44,8 +44,6 @@ impl fmt::Debug for ConstObject<'_> {
     }
 }
 
-// TODO: Make sure this ConstObjectField name has no obvious clashes
-// and rename if it does
 pub struct ConstObjectField<'a>(super::Cursor<'a, ConstFieldId>);
 
 impl<'a> ConstObjectField<'a> {
