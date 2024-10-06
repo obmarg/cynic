@@ -9,6 +9,12 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.6.1 - 2024-10-06
+
+### Bug Fixes
+
+- block string trimming in parser ([#1060](https://github.com/obmarg/cynic/pull/1060))
+
 ## v0.6.0 - 2024-10-03
 
 ### New Features
