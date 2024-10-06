@@ -13,7 +13,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Bug Fixes
 
-- block string trimming in parser ([#1060](https://github.com/obmarg/cynic/pull/1060))
+- Fixed some issues with block string trimming ([#1060](https://github.com/obmarg/cynic/pull/1060))
 
 ## v0.6.0 - 2024-10-03
 
