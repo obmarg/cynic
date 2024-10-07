@@ -244,7 +244,7 @@ impl ExecutableAstWriter {
     pub fn type_condition(&mut self, ident: &str, span: Span) -> TypeConditionId {
         let string_id = self.intern_string(ident);
 
-        let id = TypeConditionId::new(self.names.len());
+        let id = TypeConditionId::new(self.type_conditions.len());
 
         self.type_conditions.push(TypeConditionRecord {
             on: string_id,
