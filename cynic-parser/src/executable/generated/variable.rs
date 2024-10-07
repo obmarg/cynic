@@ -1,7 +1,8 @@
 use super::prelude::*;
 use super::{
     directive::Directive,
-    ids::{ConstValueId, DirectiveId, TypeId, VariableDefinitionId},
+    ids::{ConstValueId, DirectiveId, NameId, TypeId, VariableDefinitionId},
+    name::Name,
     types::Type,
     value::ConstValue,
     ExecutableId,
@@ -10,19 +11,20 @@ use super::{
 use std::fmt::{self, Write};
 
 pub struct VariableDefinitionRecord {
-    pub name: StringId,
+    pub name: NameId,
     pub ty: TypeId,
     pub default_value: Option<ConstValueId>,
     pub directives: IdRange<DirectiveId>,
+    pub span: Span,
 }
 
 #[derive(Clone, Copy)]
 pub struct VariableDefinition<'a>(pub(in super::super) ReadContext<'a, VariableDefinitionId>);
 
 impl<'a> VariableDefinition<'a> {
-    pub fn name(&self) -> &'a str {
-        let document = &self.0.document;
-        document.lookup(document.lookup(self.0.id).name)
+    pub fn name(&self) -> Name<'a> {
+        let document = self.0.document;
+        document.read(document.lookup(self.0.id).name)
     }
     pub fn ty(&self) -> Type<'a> {
         let document = self.0.document;
@@ -39,6 +41,10 @@ impl<'a> VariableDefinition<'a> {
         let document = self.0.document;
         super::Iter::new(document.lookup(self.0.id).directives, document)
     }
+    pub fn span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).span
+    }
 }
 
 impl VariableDefinition<'_> {
@@ -54,6 +60,7 @@ impl fmt::Debug for VariableDefinition<'_> {
             .field("ty", &self.ty())
             .field("default_value", &self.default_value())
             .field("directives", &self.directives())
+            .field("span", &self.span())
             .finish()
     }
 }

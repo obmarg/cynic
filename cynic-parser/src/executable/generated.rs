@@ -15,7 +15,7 @@ mod prelude {
             iter::{IdReader, Iter},
             ExecutableDocument, ReadContext,
         },
-        AstLookup,
+        AstLookup, Span,
     };
 }
 
@@ -23,8 +23,10 @@ pub mod argument;
 pub mod definition;
 pub mod directive;
 pub mod fragment;
+pub mod name;
 pub mod operation;
 pub mod selections;
+pub mod type_conditions;
 pub mod variable;
 
 mod value {

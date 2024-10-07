@@ -19,8 +19,10 @@ pub use self::{
         definition::ExecutableDefinition,
         directive::Directive,
         fragment::FragmentDefinition,
+        name::Name,
         operation::OperationDefinition,
         selections::{FieldSelection, FragmentSpread, InlineFragment, Selection},
+        type_conditions::TypeCondition,
         variable::VariableDefinition,
     },
     types::Type,
@@ -46,6 +48,9 @@ pub struct ExecutableDocument {
     arguments: Vec<storage::ArgumentRecord>,
     variables: Vec<storage::VariableDefinitionRecord>,
 
+    type_conditions: Vec<storage::TypeConditionRecord>,
+
+    names: Vec<storage::NameRecord>,
     types: Vec<types::TypeRecord>,
 
     values: crate::values::ValueStore,
@@ -106,10 +111,12 @@ pub mod storage {
             definition::ExecutableDefinitionRecord,
             directive::DirectiveRecord,
             fragment::FragmentDefinitionRecord,
+            name::NameRecord,
             operation::OperationDefinitionRecord,
             selections::{
                 FieldSelectionRecord, FragmentSpreadRecord, InlineFragmentRecord, SelectionRecord,
             },
+            type_conditions::TypeConditionRecord,
             variable::VariableDefinitionRecord,
         },
         types::TypeRecord,

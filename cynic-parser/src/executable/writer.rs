@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use indexmap::IndexSet;
 
-use crate::common::IdRange;
+use crate::{common::IdRange, Span};
 
 use super::{ids::*, storage::*, ExecutableDocument};
 
@@ -25,6 +25,9 @@ pub struct ExecutableAstWriter {
     arguments: Vec<ArgumentRecord>,
     variables: Vec<VariableDefinitionRecord>,
 
+    type_conditions: Vec<TypeConditionRecord>,
+
+    names: Vec<NameRecord>,
     types: Vec<TypeRecord>,
 
     directive_cursor: DirectiveId,
@@ -46,7 +49,9 @@ impl Default for ExecutableAstWriter {
             directives: Default::default(),
             arguments: Default::default(),
             variables: Default::default(),
+            type_conditions: Default::default(),
             types: Default::default(),
+            names: Default::default(),
             values: Default::default(),
             directive_cursor: DirectiveId::new(0),
             variable_definition_cursor: VariableDefinitionId::new(0),
@@ -74,7 +79,9 @@ impl ExecutableAstWriter {
             directives,
             arguments,
             variables,
+            type_conditions,
             types,
+            names,
             values,
             directive_cursor: _,
             variable_definition_cursor: _,
@@ -96,7 +103,9 @@ impl ExecutableAstWriter {
             directives,
             arguments,
             variables,
+            type_conditions,
             types,
+            names,
             values,
         }
     }
@@ -217,6 +226,32 @@ impl ExecutableAstWriter {
         self.block_strings.push(string.into());
 
         literal_id
+    }
+
+    pub fn name(&mut self, ident: &str, span: Span) -> NameId {
+        let string_id = self.intern_string(ident);
+
+        let id = NameId::new(self.names.len());
+
+        self.names.push(NameRecord {
+            text: string_id,
+            span,
+        });
+
+        id
+    }
+
+    pub fn type_condition(&mut self, ident: &str, span: Span) -> TypeConditionId {
+        let string_id = self.intern_string(ident);
+
+        let id = TypeConditionId::new(self.type_conditions.len());
+
+        self.type_conditions.push(TypeConditionRecord {
+            on: string_id,
+            span,
+        });
+
+        id
     }
 
     pub fn ident(&mut self, ident: &str) -> StringId {
