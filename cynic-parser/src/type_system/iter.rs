@@ -78,7 +78,7 @@ where
 {
     // Required method
     fn next_back(&mut self) -> Option<Self::Item> {
-        Some(self.document.read(self.ids.next_back()?))
+        Some(T::new(self.ids.next_back()?, self.document))
     }
 }
 

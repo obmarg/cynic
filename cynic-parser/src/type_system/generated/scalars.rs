@@ -64,6 +64,9 @@ impl TypeSystemId for ScalarDefinitionId {
     }
 }
 
-impl IdReader for ScalarDefinition<'_> {
+impl<'a> IdReader<'a> for ScalarDefinition<'a> {
     type Id = ScalarDefinitionId;
+    fn new(id: Self::Id, document: &'a TypeSystemDocument) -> Self {
+        document.read(id)
+    }
 }

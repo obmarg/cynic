@@ -84,6 +84,9 @@ impl TypeSystemId for ObjectDefinitionId {
     }
 }
 
-impl IdReader for ObjectDefinition<'_> {
+impl<'a> IdReader<'a> for ObjectDefinition<'a> {
     type Id = ObjectDefinitionId;
+    fn new(id: Self::Id, document: &'a TypeSystemDocument) -> Self {
+        document.read(id)
+    }
 }

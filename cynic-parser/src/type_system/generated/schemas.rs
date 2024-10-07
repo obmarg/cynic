@@ -64,8 +64,11 @@ impl TypeSystemId for SchemaDefinitionId {
     }
 }
 
-impl IdReader for SchemaDefinition<'_> {
+impl<'a> IdReader<'a> for SchemaDefinition<'a> {
     type Id = SchemaDefinitionId;
+    fn new(id: Self::Id, document: &'a TypeSystemDocument) -> Self {
+        document.read(id)
+    }
 }
 
 pub struct RootOperationTypeDefinitionRecord {
@@ -117,6 +120,9 @@ impl TypeSystemId for RootOperationTypeDefinitionId {
     }
 }
 
-impl IdReader for RootOperationTypeDefinition<'_> {
+impl<'a> IdReader<'a> for RootOperationTypeDefinition<'a> {
     type Id = RootOperationTypeDefinitionId;
+    fn new(id: Self::Id, document: &'a TypeSystemDocument) -> Self {
+        document.read(id)
+    }
 }
