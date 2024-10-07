@@ -4,7 +4,7 @@ use crate::{
     AstLookup, Span,
 };
 
-use super::{ReadContext, StringId, TypeSystemId};
+use super::{iter::Iter, Definition, ReadContext, StringId, TypeDefinition, TypeSystemId};
 
 pub struct TypeRecord {
     pub name: StringId,
@@ -45,6 +45,18 @@ impl<'a> Type<'a> {
     /// The wrapper types from the outermost to innermost
     pub fn wrappers(&self) -> impl Iterator<Item = WrappingType> + 'a {
         self.0.document.lookup(self.0.id).wrappers.iter()
+    }
+
+    /// Returns any definitions of the inner named type
+    ///
+    /// Note that this iterator scales linearly with the number of types present
+    /// in a schema, so should not be used if large schemas are expected.
+    pub fn definitions(&self) -> NamedTypeDefinitions<'a> {
+        let document = self.0.document;
+        NamedTypeDefinitions {
+            name: self.name(),
+            iter: document.definitions(),
+        }
     }
 }
 
@@ -93,5 +105,41 @@ impl TypeSystemId for TypeId {
 impl<'a> From<ReadContext<'a, TypeId>> for Type<'a> {
     fn from(value: ReadContext<'a, TypeId>) -> Self {
         Self(value)
+    }
+}
+
+/// An Iterator over the definitions of a named [Type]
+///
+/// Note that this is not optimised and scales linearly with the number of definitions in
+/// the schema.
+#[derive(Clone)]
+pub struct NamedTypeDefinitions<'a> {
+    name: &'a str,
+    iter: Iter<'a, Definition<'a>>,
+}
+
+/// A [TypeDefintion] associated with a named [Type]
+pub enum NamedTypeDefinition<'a> {
+    Definition(TypeDefinition<'a>),
+    Extension(TypeDefinition<'a>),
+}
+
+impl<'a> Iterator for NamedTypeDefinitions<'a> {
+    type Item = NamedTypeDefinition<'a>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        loop {
+            match self.iter.next()? {
+                Definition::Type(type_definition) if type_definition.name() == self.name => {
+                    return Some(NamedTypeDefinition::Definition(type_definition))
+                }
+                Definition::TypeExtension(type_definition)
+                    if type_definition.name() == self.name =>
+                {
+                    return Some(NamedTypeDefinition::Extension(type_definition))
+                }
+                _ => continue,
+            }
+        }
     }
 }
