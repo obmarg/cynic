@@ -4,11 +4,20 @@ changelog_update = false
 git_release_enable = false
 git_release_latest = false
 git_tag_enable = false
+git_release_body = """
+{{ changelog }}
+{% if remote.contributors %}
+### Contributors
+{% for contributor in remote.contributors %}
+* @{{ contributor.username }}
+{% endfor %}
+{% endif %}
+"""
 
 # create the release PR in draft to avoid running CI till we're ready
 pr_draft = true
 
-[changelog] 
+[changelog]
 commit_parsers = [
     { message = "^feat!", group = "<!-- 0 -->Breaking Changes" },
     { message = "^feat", group = "<!-- 1 -->New Features" },
@@ -44,7 +53,7 @@ changelog_include = [
     "cynic-introspection",
     "cynic-proc-macros",
     "cynic-querygen",
-    "cynic-querygen-web"
+    "cynic-querygen-web",
 ]
 
 [[package]]
