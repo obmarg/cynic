@@ -76,8 +76,12 @@ pub fn union_output(
     })?;
 
     let id_reader_impl = format_code(quote! {
-        impl IdReader for #reader_name<'_> {
+        impl<'a> IdReader<'a> for #reader_name<'a> {
             type Id = #id_name;
+
+            fn new(id: Self::Id, document: &'a #document_type) -> Self {
+                document.read(id)
+            }
         }
     })?;
 
