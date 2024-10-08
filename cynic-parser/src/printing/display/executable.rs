@@ -68,7 +68,7 @@ impl fmt::Display for FragmentDefinition<'_> {
     }
 }
 
-impl fmt::Display for iter::Iter<'_, VariableDefinition<'_>> {
+impl<'a> fmt::Display for iter::Iter<'a, VariableDefinition<'a>> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if self.len() != 0 {
             write!(f, "(")?;
@@ -96,7 +96,7 @@ impl std::fmt::Display for VariableDefinition<'_> {
     }
 }
 
-impl std::fmt::Display for iter::Iter<'_, Selection<'_>> {
+impl<'a> std::fmt::Display for iter::Iter<'a, Selection<'a>> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         if self.len() != 0 {
             writeln!(f, "{{")?;
@@ -166,7 +166,7 @@ impl fmt::Display for FragmentSpread<'_> {
     }
 }
 
-impl fmt::Display for iter::Iter<'_, Directive<'_>> {
+impl<'a> fmt::Display for iter::Iter<'a, Directive<'a>> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         for directive in self.clone() {
             write!(f, " {directive}")?;
@@ -181,7 +181,7 @@ impl fmt::Display for Directive<'_> {
     }
 }
 
-impl fmt::Display for iter::Iter<'_, Argument<'_>> {
+impl<'a> fmt::Display for iter::Iter<'a, Argument<'a>> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         if self.len() != 0 {
             write!(f, "(")?;

@@ -34,8 +34,11 @@ impl ExecutableId for SelectionId {
     }
 }
 
-impl IdReader for Selection<'_> {
+impl<'a> IdReader<'a> for Selection<'a> {
     type Id = SelectionId;
+    fn new(id: Self::Id, document: &'a ExecutableDocument) -> Self {
+        document.read(id)
+    }
 }
 
 pub struct FieldSelectionRecord {
@@ -100,8 +103,11 @@ impl ExecutableId for FieldSelectionId {
     }
 }
 
-impl IdReader for FieldSelection<'_> {
+impl<'a> IdReader<'a> for FieldSelection<'a> {
     type Id = FieldSelectionId;
+    fn new(id: Self::Id, document: &'a ExecutableDocument) -> Self {
+        document.read(id)
+    }
 }
 
 pub struct InlineFragmentRecord {
@@ -154,8 +160,11 @@ impl ExecutableId for InlineFragmentId {
     }
 }
 
-impl IdReader for InlineFragment<'_> {
+impl<'a> IdReader<'a> for InlineFragment<'a> {
     type Id = InlineFragmentId;
+    fn new(id: Self::Id, document: &'a ExecutableDocument) -> Self {
+        document.read(id)
+    }
 }
 
 pub struct FragmentSpreadRecord {
@@ -199,6 +208,9 @@ impl ExecutableId for FragmentSpreadId {
     }
 }
 
-impl IdReader for FragmentSpread<'_> {
+impl<'a> IdReader<'a> for FragmentSpread<'a> {
     type Id = FragmentSpreadId;
+    fn new(id: Self::Id, document: &'a ExecutableDocument) -> Self {
+        document.read(id)
+    }
 }
