@@ -48,6 +48,9 @@ impl ExecutableId for DirectiveId {
     }
 }
 
-impl IdReader for Directive<'_> {
+impl<'a> IdReader<'a> for Directive<'a> {
     type Id = DirectiveId;
+    fn new(id: Self::Id, document: &'a ExecutableDocument) -> Self {
+        document.read(id)
+    }
 }
