@@ -70,8 +70,11 @@ impl TypeSystemId for UnionDefinitionId {
     }
 }
 
-impl IdReader for UnionDefinition<'_> {
+impl<'a> IdReader<'a> for UnionDefinition<'a> {
     type Id = UnionDefinitionId;
+    fn new(id: Self::Id, document: &'a TypeSystemDocument) -> Self {
+        document.read(id)
+    }
 }
 
 pub struct UnionMemberRecord {
@@ -115,6 +118,9 @@ impl TypeSystemId for UnionMemberId {
     }
 }
 
-impl IdReader for UnionMember<'_> {
+impl<'a> IdReader<'a> for UnionMember<'a> {
     type Id = UnionMemberId;
+    fn new(id: Self::Id, document: &'a TypeSystemDocument) -> Self {
+        document.read(id)
+    }
 }

@@ -48,6 +48,9 @@ impl TypeSystemId for DescriptionId {
     }
 }
 
-impl IdReader for Description<'_> {
+impl<'a> IdReader<'a> for Description<'a> {
     type Id = DescriptionId;
+    fn new(id: Self::Id, document: &'a TypeSystemDocument) -> Self {
+        document.read(id)
+    }
 }

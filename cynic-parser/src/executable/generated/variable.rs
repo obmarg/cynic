@@ -65,6 +65,9 @@ impl ExecutableId for VariableDefinitionId {
     }
 }
 
-impl IdReader for VariableDefinition<'_> {
+impl<'a> IdReader<'a> for VariableDefinition<'a> {
     type Id = VariableDefinitionId;
+    fn new(id: Self::Id, document: &'a ExecutableDocument) -> Self {
+        document.read(id)
+    }
 }

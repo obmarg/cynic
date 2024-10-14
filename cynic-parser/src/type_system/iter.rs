@@ -2,7 +2,7 @@ use std::{fmt, iter::FusedIterator};
 
 use crate::common::{IdOperations, IdRange, IdRangeIter};
 
-use super::TypeSystemId;
+use super::{TypeSystemDocument, TypeSystemId};
 
 /// Iterator for readers in the executable module
 ///
@@ -10,7 +10,7 @@ use super::TypeSystemId;
 #[derive(Clone)]
 pub struct Iter<'a, T>
 where
-    T: IdReader,
+    T: IdReader<'a>,
 {
     ids: IdRangeIter<T::Id>,
     document: &'a super::TypeSystemDocument,
@@ -18,7 +18,7 @@ where
 
 impl<'a, T> Iter<'a, T>
 where
-    T: IdReader,
+    T: IdReader<'a>,
 {
     pub(crate) fn new(range: IdRange<T::Id>, document: &'a super::TypeSystemDocument) -> Self
     where
@@ -35,19 +35,21 @@ where
     }
 }
 
-pub trait IdReader {
+pub trait IdReader<'a> {
     type Id: TypeSystemId;
+
+    fn new(id: Self::Id, document: &'a TypeSystemDocument) -> Self;
 }
 
 impl<'a, T> Iterator for Iter<'a, T>
 where
-    T: IdReader,
+    T: IdReader<'a>,
     T::Id: IdOperations,
 {
-    type Item = <T::Id as TypeSystemId>::Reader<'a>;
+    type Item = T;
 
     fn next(&mut self) -> Option<Self::Item> {
-        Some(self.document.read(self.ids.next()?))
+        Some(T::new(self.ids.next()?, self.document))
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
@@ -57,32 +59,32 @@ where
 
 impl<'a, T> ExactSizeIterator for Iter<'a, T>
 where
-    T: IdReader,
+    T: IdReader<'a>,
     T::Id: IdOperations,
 {
 }
 
 impl<'a, T> FusedIterator for Iter<'a, T>
 where
-    T: IdReader,
+    T: IdReader<'a>,
     T::Id: IdOperations,
 {
 }
 
 impl<'a, T> DoubleEndedIterator for Iter<'a, T>
 where
-    T: IdReader,
+    T: IdReader<'a>,
     T::Id: IdOperations,
 {
     // Required method
     fn next_back(&mut self) -> Option<Self::Item> {
-        Some(self.document.read(self.ids.next_back()?))
+        Some(T::new(self.ids.next_back()?, self.document))
     }
 }
 
 impl<'a, T> fmt::Debug for Iter<'a, T>
 where
-    T: IdReader + Copy,
+    T: IdReader<'a> + Copy,
     Self: Iterator,
     <Self as Iterator>::Item: fmt::Debug,
 {

@@ -152,6 +152,10 @@ impl TypeSystemId for DefinitionId {
     }
 }
 
-impl IdReader for Definition<'_> {
+impl<'a> IdReader<'a> for Definition<'a> {
     type Id = DefinitionId;
+
+    fn new(id: Self::Id, document: &'a super::TypeSystemDocument) -> Self {
+        document.read(id)
+    }
 }

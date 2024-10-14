@@ -70,8 +70,11 @@ impl TypeSystemId for EnumDefinitionId {
     }
 }
 
-impl IdReader for EnumDefinition<'_> {
+impl<'a> IdReader<'a> for EnumDefinition<'a> {
     type Id = EnumDefinitionId;
+    fn new(id: Self::Id, document: &'a TypeSystemDocument) -> Self {
+        document.read(id)
+    }
 }
 
 pub struct EnumValueDefinitionRecord {
@@ -130,6 +133,9 @@ impl TypeSystemId for EnumValueDefinitionId {
     }
 }
 
-impl IdReader for EnumValueDefinition<'_> {
+impl<'a> IdReader<'a> for EnumValueDefinition<'a> {
     type Id = EnumValueDefinitionId;
+    fn new(id: Self::Id, document: &'a TypeSystemDocument) -> Self {
+        document.read(id)
+    }
 }
