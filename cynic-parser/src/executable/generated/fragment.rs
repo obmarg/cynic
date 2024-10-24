@@ -10,7 +10,9 @@ use std::fmt::{self, Write};
 
 pub struct FragmentDefinitionRecord {
     pub name: StringId,
+    pub name_span: Span,
     pub type_condition: StringId,
+    pub type_condition_span: Span,
     pub directives: IdRange<DirectiveId>,
     pub selection_set: IdRange<SelectionId>,
 }
@@ -23,9 +25,17 @@ impl<'a> FragmentDefinition<'a> {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).name)
     }
+    pub fn name_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).name_span
+    }
     pub fn type_condition(&self) -> &'a str {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).type_condition)
+    }
+    pub fn type_condition_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).type_condition_span
     }
     pub fn directives(&self) -> Iter<'a, Directive<'a>> {
         let document = self.0.document;

@@ -8,16 +8,16 @@ union ExecutableDefinition
   | FragmentDefinition
 
 type OperationDefinition @file(name: "operation") {
-  operation_type: OperationType!
-  name: String
+  operation_type: OperationType! @spanned(nullable: true)
+  name: String @spanned
   variable_definitions: [VariableDefinition]
   directives: [Directive]
   selection_set: [Selection]
 }
 
 type FragmentDefinition @file(name: "fragment") {
-  name: String!
-  type_condition: String!
+  name: String! @spanned
+  type_condition: String! @spanned
   directives: [Directive]
   selection_set: [Selection]
 }
@@ -30,36 +30,36 @@ union Selection
   | FragmentSpread
 
 type FieldSelection @file(name: "selections") {
-  alias: String
-  name: String!
+  alias: String @spanned
+  name: String! @spanned
   arguments: [Argument]
   directives: [Directive]
   selection_set: [Selection]
 }
 
 type InlineFragment @file(name: "selections") {
-  type_condition: String
+  type_condition: String @spanned
   directives: [Directive]
   selection_set: [Selection]
 }
 
 type FragmentSpread @file(name: "selections") {
-  fragment_name: String!
+  fragment_name: String! @spanned
   directives: [Directive]
 }
 
 type Directive @file(name: "directive") {
-  name: String!
+  name: String! @spanned
   arguments: [Argument]
 }
 
 type Argument @file(name: "argument") {
-  name: String!
+  name: String! @spanned
   value: Value!
 }
 
 type VariableDefinition @file(name: "variable") {
-  name: String!
+  name: String! @spanned
   ty: Type!
   default_value: ConstValue
   directives: [Directive]

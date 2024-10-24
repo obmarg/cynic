@@ -11,7 +11,9 @@ use std::fmt::{self, Write};
 
 pub struct OperationDefinitionRecord {
     pub operation_type: OperationType,
+    pub operation_type_span: Option<Span>,
     pub name: Option<StringId>,
+    pub name_span: Option<Span>,
     pub variable_definitions: IdRange<VariableDefinitionId>,
     pub directives: IdRange<DirectiveId>,
     pub selection_set: IdRange<SelectionId>,
@@ -25,12 +27,20 @@ impl<'a> OperationDefinition<'a> {
         let document = self.0.document;
         document.lookup(self.0.id).operation_type
     }
+    pub fn operation_type_span(&self) -> Option<Span> {
+        let document = self.0.document;
+        document.lookup(self.0.id).operation_type_span
+    }
     pub fn name(&self) -> Option<&'a str> {
         let document = self.0.document;
         document
             .lookup(self.0.id)
             .name
             .map(|id| document.lookup(id))
+    }
+    pub fn name_span(&self) -> Option<Span> {
+        let document = self.0.document;
+        document.lookup(self.0.id).name_span
     }
     pub fn variable_definitions(&self) -> Iter<'a, VariableDefinition<'a>> {
         let document = self.0.document;
