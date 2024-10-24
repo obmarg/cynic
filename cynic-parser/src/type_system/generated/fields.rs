@@ -83,9 +83,10 @@ impl TypeSystemId for FieldDefinitionId {
     }
 }
 
-impl<'a> IdReader<'a> for FieldDefinition<'a> {
+impl IdReader for FieldDefinition<'_> {
     type Id = FieldDefinitionId;
-    fn new(id: Self::Id, document: &'a TypeSystemDocument) -> Self {
+    type Reader<'a> = FieldDefinition<'a>;
+    fn new(id: Self::Id, document: &'_ TypeSystemDocument) -> Self::Reader<'_> {
         document.read(id)
     }
 }

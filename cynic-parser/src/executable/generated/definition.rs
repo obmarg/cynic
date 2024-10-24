@@ -33,9 +33,11 @@ impl ExecutableId for ExecutableDefinitionId {
     }
 }
 
-impl<'a> IdReader<'a> for ExecutableDefinition<'a> {
+impl IdReader for ExecutableDefinition<'_> {
     type Id = ExecutableDefinitionId;
-    fn new(id: Self::Id, document: &'a ExecutableDocument) -> Self {
+    type Reader<'a> = ExecutableDefinition<'a>;
+
+    fn new(id: Self::Id, document: &'_ ExecutableDocument) -> Self::Reader<'_> {
         document.read(id)
     }
 }
