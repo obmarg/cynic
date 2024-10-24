@@ -55,10 +55,10 @@ where
     T: IdReader<'a>,
     T::Id: IdOperations,
 {
-    type Item = <T::Id as ExecutableId>::Reader<'a>;
+    type Item = T;
 
     fn next(&mut self) -> Option<Self::Item> {
-        Some(self.document.read(self.ids.next()?))
+        Some(T::new(self.ids.next()?, self.document))
     }
 
     fn size_hint(&self) -> (usize, Option<usize>) {
@@ -87,7 +87,7 @@ where
 {
     // Required method
     fn next_back(&mut self) -> Option<Self::Item> {
-        Some(self.document.read(self.ids.next_back()?))
+        Some(T::new(self.ids.next_back()?, self.document))
     }
 }
 
