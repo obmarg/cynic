@@ -35,7 +35,7 @@ pub use self::{
         unions::{UnionDefinition, UnionMember},
     },
     string_literal::{StringLiteral, StringLiteralKind},
-    types::Type,
+    types::{NamedTypeDefinition, NamedTypeDefinitions, Type},
 };
 use self::{ids::*, storage::DefinitionRecord};
 
