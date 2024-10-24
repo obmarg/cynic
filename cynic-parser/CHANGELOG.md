@@ -9,6 +9,11 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+### Breaking Changes
+
+- `RootOperationTypeDefinition::span` now covers the entire root operation type
+  definition.  For the old spans, use `RootOperationTypeDefinition::named_type_span`.
+
 ## v0.6.2 - 2024-10-24
 
 ### New Features

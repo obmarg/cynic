@@ -395,12 +395,20 @@ Name: StringId = <s:Ident> => ast.ident(s);
 NamedType: StringId = <s:Ident> => ast.ident(s);
 
 Type: TypeId = {
-    <start:@L> "["* <name:NamedType> <wrappers:WrappingType*> <end:@R> => ast.type_reference(TypeRecord {
+    <start:@L>
+        "["*
+        <name_start:@L>
+        <name:NamedType>
+        <wrappers:WrappingType*>
+        <end:@R>
+    => ast.type_reference(TypeRecord {
         name,
+        name_start,
         wrappers: TypeWrappers::from_iter(wrappers),
         span: Span::new(start, end)
     })
 }
+
 
 WrappingType: WrappingType = {
     "!" => WrappingType::NonNull,

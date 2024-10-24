@@ -63,6 +63,7 @@ impl SchemaBackedTypeIndex {
         let string_ident = writer.ident("String");
         let typename_type = writer.type_reference(cynic_parser::type_system::storage::TypeRecord {
             name: string_ident,
+            name_start: 0,
             wrappers: TypeWrappers::none().wrap_non_null(),
             span: cynic_parser::Span::new(0, 0),
         });

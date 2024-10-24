@@ -1,5 +1,5 @@
 // auto-generated: "lalrpop 0.21.0"
-// sha3: 555861470a212bac8ba021bc8166621a8df00ca2d3b0011c179d38f679a2020f
+// sha3: 42a9bcdc947996d2ccdc87b6444b7ee866ed754e1cf55d25ded43a9db554c2c3
 use crate::lexer;
 use crate::{
     common::{
@@ -8738,12 +8738,14 @@ fn __action51<'input>(
     ast: &mut TypeSystemAstWriter,
     (_, start, _): (usize, usize, usize),
     (_, _, _): (usize, alloc::vec::Vec<lexer::Token<'input>>, usize),
+    (_, name_start, _): (usize, usize, usize),
     (_, name, _): (usize, StringId, usize),
     (_, wrappers, _): (usize, alloc::vec::Vec<WrappingType>, usize),
     (_, end, _): (usize, usize, usize),
 ) -> TypeId {
     ast.type_reference(TypeRecord {
         name,
+        name_start,
         wrappers: TypeWrappers::from_iter(wrappers),
         span: Span::new(start, end),
     })
@@ -10585,15 +10587,16 @@ fn __action165<'input>(
     input: &'input str,
     ast: &mut TypeSystemAstWriter,
     __0: (usize, usize, usize),
-    __1: (usize, StringId, usize),
-    __2: (usize, alloc::vec::Vec<WrappingType>, usize),
-    __3: (usize, usize, usize),
+    __1: (usize, usize, usize),
+    __2: (usize, StringId, usize),
+    __3: (usize, alloc::vec::Vec<WrappingType>, usize),
+    __4: (usize, usize, usize),
 ) -> TypeId {
     let __start0 = __0.2;
     let __end0 = __1.0;
     let __temp0 = __action111(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action51(input, ast, __0, __temp0, __1, __2, __3)
+    __action51(input, ast, __0, __temp0, __1, __2, __3, __4)
 }
 
 #[allow(unused_variables)]
@@ -10607,15 +10610,16 @@ fn __action166<'input>(
     ast: &mut TypeSystemAstWriter,
     __0: (usize, usize, usize),
     __1: (usize, alloc::vec::Vec<lexer::Token<'input>>, usize),
-    __2: (usize, StringId, usize),
-    __3: (usize, alloc::vec::Vec<WrappingType>, usize),
-    __4: (usize, usize, usize),
+    __2: (usize, usize, usize),
+    __3: (usize, StringId, usize),
+    __4: (usize, alloc::vec::Vec<WrappingType>, usize),
+    __5: (usize, usize, usize),
 ) -> TypeId {
     let __start0 = __1.0;
     let __end0 = __1.2;
     let __temp0 = __action112(input, ast, __1);
     let __temp0 = (__start0, __temp0, __end0);
-    __action51(input, ast, __0, __temp0, __2, __3, __4)
+    __action51(input, ast, __0, __temp0, __2, __3, __4, __5)
 }
 
 #[allow(unused_variables)]
@@ -11227,9 +11231,13 @@ fn __action191<'input>(
 ) -> TypeId {
     let __start0 = __0.0;
     let __end0 = __0.0;
+    let __start1 = __0.0;
+    let __end1 = __0.0;
     let __temp0 = __action146(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action165(input, ast, __temp0, __0, __1, __2)
+    let __temp1 = __action146(input, ast, &__start1, &__end1);
+    let __temp1 = (__start1, __temp1, __end1);
+    __action165(input, ast, __temp0, __temp1, __0, __1, __2)
 }
 
 #[allow(unused_variables)]
@@ -11248,9 +11256,13 @@ fn __action192<'input>(
 ) -> TypeId {
     let __start0 = __0.0;
     let __end0 = __0.0;
+    let __start1 = __0.2;
+    let __end1 = __1.0;
     let __temp0 = __action146(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action166(input, ast, __temp0, __0, __1, __2, __3)
+    let __temp1 = __action146(input, ast, &__start1, &__end1);
+    let __temp1 = (__start1, __temp1, __end1);
+    __action166(input, ast, __temp0, __0, __temp1, __1, __2, __3)
 }
 
 #[allow(unused_variables)]
