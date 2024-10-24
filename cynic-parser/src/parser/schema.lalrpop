@@ -76,30 +76,60 @@ RootOperationTypeDefinitions: IdRange<RootOperationTypeDefinitionId> = {
 }
 
 RootOperationTypeDefinition: RootOperationTypeDefinitionRecord = {
-    query ":" <start:@L> <name:NamedType> <end:@R> => RootOperationTypeDefinitionRecord {
+    <start:@L> query
+        <operation_type_end:@R>
+        ":"
+        <name_start:@L>
+        <name:NamedType>
+        <name_end:@R>
+        <end:@R>
+    => RootOperationTypeDefinitionRecord {
         operation_type: OperationType::Query,
+        operation_type_span: Span::new(start, operation_type_end),
         named_type: name,
+        named_type_span: Span::new(name_start, name_end),
         span: Span::new(start, end)
     },
-    mutation ":" <start:@L> <name:NamedType> <end:@R> => RootOperationTypeDefinitionRecord {
+    <start:@L> mutation
+        <operation_type_end:@R>
+        ":"
+        <name_start:@L>
+        <name:NamedType>
+        <name_end:@R>
+        <end:@R>
+    => RootOperationTypeDefinitionRecord {
         operation_type: OperationType::Mutation,
+        operation_type_span: Span::new(start, operation_type_end),
         named_type: name,
+        named_type_span: Span::new(name_start, name_end),
         span: Span::new(start, end)
     },
-    subscription ":" <start:@L> <name:NamedType> <end:@R> => RootOperationTypeDefinitionRecord {
+    <start:@L> subscription
+        <operation_type_end:@R>
+        ":"
+        <name_start:@L>
+        <name:NamedType>
+        <name_end:@R>
+        <end:@R>
+    => RootOperationTypeDefinitionRecord {
         operation_type: OperationType::Subscription,
+        operation_type_span: Span::new(start, operation_type_end),
         named_type: name,
+        named_type_span: Span::new(name_start, name_end),
         span: Span::new(start, end)
     },
 }
 
 ScalarDefinition: ScalarDefinitionRecord = {
     <start:@L> scalar
+        <name_start:@L>
         <name:Name>
+        <name_end:@R>
         <directives:Directives>
         <end:@R>
     => ScalarDefinitionRecord {
         name,
+        name_span: Span::new(name_start, name_end),
         description: None,
         directives,
         span: Span::new(start,end)
@@ -108,13 +138,16 @@ ScalarDefinition: ScalarDefinitionRecord = {
 
 ObjectDefinition: ObjectDefinitionRecord = {
     <start:@L> ty
+        <name_start:@L>
         <name:Name>
+        <name_end:@R>
         <implements:ImplementsInterfaces?>
         <directives:Directives>
         <fields:FieldsDefinition?>
         <end:@R>
     => ObjectDefinitionRecord {
         name,
+        name_span: Span::new(name_start, name_end),
         description: None,
         directives,
         implements_interfaces: implements.unwrap_or_default(),
@@ -145,7 +178,9 @@ FieldsDefinition: Vec<()> = {
 FieldDefinition: () = {
     <start:@L>
         <description:Description?>
+        <name_start:@L>
         <name:Name>
+        <name_end:@R>
         <arguments:ArgumentsDefinition?> ":" <ty:Type>
         <directives:Directives>
     <end:@R>
@@ -155,6 +190,7 @@ FieldDefinition: () = {
         );
         ast.field_definition(FieldDefinitionRecord {
             name,
+            name_span: Span::new(name_start, name_end),
             ty,
             arguments,
             description,
@@ -170,13 +206,16 @@ ArgumentsDefinition: Vec<()> = {
 
 InterfaceDefinition: InterfaceDefinitionRecord = {
     <start:@L> interface
+        <name_start:@L>
         <name:Name>
+        <name_end:@R>
         <implements:ImplementsInterfaces?>
         <directives:Directives>
         <fields:FieldsDefinition?>
         <end:@R>
     => InterfaceDefinitionRecord {
         name,
+        name_span: Span::new(name_start, name_end),
         description: None,
         directives,
         implements_interfaces: implements.unwrap_or_default(),
@@ -187,12 +226,15 @@ InterfaceDefinition: InterfaceDefinitionRecord = {
 
 UnionDefinition: UnionDefinitionRecord = {
     <start:@L> union
+        <name_start:@L>
         <name:Name>
+        <name_end:@R>
         <directives:Directives>
         <members:UnionMemberTypes?>
         <end:@R>
     => UnionDefinitionRecord {
         name,
+        name_span: Span::new(name_start, name_end),
         description: None,
         members: ast.union_member_range(members.map(|members| members.len())),
         directives,
@@ -213,12 +255,15 @@ UnionMemberTypes: Vec<UnionMemberId> = {
 
 EnumDefinition: EnumDefinitionRecord = {
     <start:@L> "enum"
+        <name_start:@L>
         <name:Name>
+        <name_end:@R>
         <directives:Directives>
         <values:EnumValuesDefinition?>
         <end:@R>
     => EnumDefinitionRecord {
         name,
+        name_span: Span::new(name_start, name_end),
         description: None,
         directives,
         values: ast.enum_value_definition_range(values.map(|values| values.len())),
@@ -233,11 +278,14 @@ EnumValuesDefinition: Vec<EnumValueDefinitionId> = {
 EnumValueDefinition: EnumValueDefinitionId = {
     <start:@L>
         <description:Description?>
+        <value_start:@L>
         <value:EnumValue>
+        <value_end:@R>
         <directives:Directives>
         <end:@R>
     => ast.enum_value_definition(EnumValueDefinitionRecord {
         value,
+        value_span: Span::new(value_start, value_end),
         description,
         directives,
         span: Span::new(start,end)
@@ -247,12 +295,15 @@ EnumValueDefinition: EnumValueDefinitionId = {
 
 InputObjectDefinition: InputObjectDefinitionRecord = {
     <start:@L> input
+        <name_start:@L>
         <name:Name>
+        <name_end:@R>
         <directives:Directives>
         <fields:InputFieldsDefinition?>
         <end:@R>
     => InputObjectDefinitionRecord {
         name,
+        name_span: Span::new(name_start, name_end),
         description: None,
         directives,
         fields: ast.input_value_definition_range(Some(fields.map(|fields| fields.len()).unwrap_or_default())),
@@ -267,7 +318,9 @@ InputFieldsDefinition: Vec<()> = {
 DirectiveDefinition: DirectiveDefinitionRecord = {
     <start:@L>
         directive
+        <name_start:@L>
         "@" <name:Name>
+        <name_end:@R>
         <arguments:ArgumentsDefinition?>
         <repeatable:Repeatable?>
         on
@@ -275,6 +328,7 @@ DirectiveDefinition: DirectiveDefinitionRecord = {
         <end:@R>
     => DirectiveDefinitionRecord {
         name,
+        name_span: Span::new(name_start, name_end),
         description: None,
         arguments: ast.input_value_definition_range(Some(arguments.map(|arguments| arguments.len()).unwrap_or_default())),
         is_repeatable: repeatable.unwrap_or_default(),
@@ -308,12 +362,19 @@ DirectiveLocation: DirectiveLocation = {
 InputValueDefinition: () = {
     <start:@L>
         <description:Description?>
-        <name:Name> ":" <ty:Type> <default_start:@L> <default:DefaultValue?> <default_end:@R>
+        <name_start:@L>
+        <name:Name>
+        <name_end:@R>
+        ":" <ty:Type>
+        <default_start:@L>
+        <default:DefaultValue?>
+        <default_end:@R>
         <directives:Directives>
         <end:@R>
     => {
         ast.input_value_definition(InputValueDefinitionRecord {
             name,
+            name_span: Span::new(name_start, name_end),
             ty,
             description,
             directives,
@@ -334,12 +395,20 @@ Name: StringId = <s:Ident> => ast.ident(s);
 NamedType: StringId = <s:Ident> => ast.ident(s);
 
 Type: TypeId = {
-    <start:@L> "["* <name:NamedType> <wrappers:WrappingType*> <end:@R> => ast.type_reference(TypeRecord {
+    <start:@L>
+        "["*
+        <name_start:@L>
+        <name:NamedType>
+        <wrappers:WrappingType*>
+        <end:@R>
+    => ast.type_reference(TypeRecord {
         name,
+        name_start,
         wrappers: TypeWrappers::from_iter(wrappers),
         span: Span::new(start, end)
     })
 }
+
 
 WrappingType: WrappingType = {
     "!" => WrappingType::NonNull,
@@ -470,10 +539,18 @@ Directives: IdRange<DirectiveId> = {
 }
 
 Directive: () = {
-    "@" <name:Name> <arguments:Arguments?> => {
+    <name_start:@L>
+        "@" <name:Name>
+        <name_end:@R>
+        <arguments:Arguments?>
+    => {
         let arguments = ast.argument_range(arguments.map(|arguments| arguments.len()));
 
-        ast.directive(DirectiveRecord { <> });
+        ast.directive(DirectiveRecord {
+            name,
+            name_span: Span::new(name_start, name_end),
+            arguments
+        });
     }
 }
 
@@ -482,7 +559,19 @@ Arguments: Vec<ArgumentId> = {
 }
 
 Argument: ArgumentId = {
-    <start:@L> <name:Name> ":" <value:ConstValue> <end:@R> => ast.argument(ArgumentRecord { name, value, span: Span::new(start, end) }),
+    <start:@L>
+        <name:Name>
+        <name_end:@R>
+        ":" <value:ConstValue>
+        <end:@R>
+    => {
+        ast.argument(ArgumentRecord {
+            name,
+            name_span: Span::new(start, name_end),
+            value,
+            span: Span::new(start, end)
+        })
+    }
 }
 
 Ident: &'input str = {

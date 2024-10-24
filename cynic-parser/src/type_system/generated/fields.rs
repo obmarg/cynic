@@ -12,6 +12,7 @@ use std::fmt::{self, Write};
 
 pub struct FieldDefinitionRecord {
     pub name: StringId,
+    pub name_span: Span,
     pub ty: TypeId,
     pub arguments: IdRange<InputValueDefinitionId>,
     pub description: Option<DescriptionId>,
@@ -26,6 +27,10 @@ impl<'a> FieldDefinition<'a> {
     pub fn name(&self) -> &'a str {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).name)
+    }
+    pub fn name_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).name_span
     }
     pub fn ty(&self) -> Type<'a> {
         let document = self.0.document;

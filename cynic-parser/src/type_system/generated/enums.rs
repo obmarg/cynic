@@ -10,6 +10,7 @@ use std::fmt::{self, Write};
 
 pub struct EnumDefinitionRecord {
     pub name: StringId,
+    pub name_span: Span,
     pub description: Option<DescriptionId>,
     pub values: IdRange<EnumValueDefinitionId>,
     pub directives: IdRange<DirectiveId>,
@@ -23,6 +24,10 @@ impl<'a> EnumDefinition<'a> {
     pub fn name(&self) -> &'a str {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).name)
+    }
+    pub fn name_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).name_span
     }
     pub fn description(&self) -> Option<Description<'a>> {
         let document = self.0.document;
@@ -79,6 +84,7 @@ impl<'a> IdReader<'a> for EnumDefinition<'a> {
 
 pub struct EnumValueDefinitionRecord {
     pub value: StringId,
+    pub value_span: Span,
     pub description: Option<DescriptionId>,
     pub directives: IdRange<DirectiveId>,
     pub span: Span,
@@ -91,6 +97,10 @@ impl<'a> EnumValueDefinition<'a> {
     pub fn value(&self) -> &'a str {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).value)
+    }
+    pub fn value_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).value_span
     }
     pub fn description(&self) -> Option<Description<'a>> {
         let document = self.0.document;

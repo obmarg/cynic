@@ -12,6 +12,7 @@ use std::fmt::{self, Write};
 
 pub struct InputValueDefinitionRecord {
     pub name: StringId,
+    pub name_span: Span,
     pub ty: TypeId,
     pub description: Option<DescriptionId>,
     pub default_value: Option<ConstValueId>,
@@ -27,6 +28,10 @@ impl<'a> InputValueDefinition<'a> {
     pub fn name(&self) -> &'a str {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).name)
+    }
+    pub fn name_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).name_span
     }
     pub fn ty(&self) -> Type<'a> {
         let document = self.0.document;

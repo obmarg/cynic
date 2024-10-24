@@ -8,6 +8,7 @@ use super::{iter::Iter, Definition, ReadContext, StringId, TypeDefinition, TypeS
 
 pub struct TypeRecord {
     pub name: StringId,
+    pub name_start: usize,
     pub wrappers: TypeWrappers,
     pub span: Span,
 }
@@ -30,6 +31,16 @@ impl<'a> Type<'a> {
             .lookup(self.0.document.lookup(self.0.id).name)
     }
 
+    /// The span of this types named type
+    pub fn name_span(&self) -> Span {
+        let record = self.0.document.lookup(self.0.id);
+
+        Span::new(
+            record.name_start,
+            record.name_start + self.0.document.lookup(record.name).len(),
+        )
+    }
+
     pub fn is_list(&self) -> bool {
         self.wrappers().any(|wrapper| wrapper == WrappingType::List)
     }
@@ -38,6 +49,7 @@ impl<'a> Type<'a> {
         self.wrappers().next() == Some(WrappingType::NonNull)
     }
 
+    /// The span of the the type, including any wrapppers
     pub fn span(&self) -> Span {
         self.0.document.lookup(self.0.id).span
     }
@@ -64,11 +76,7 @@ impl std::fmt::Display for Type<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         let ast = &self.0.document;
 
-        let TypeRecord {
-            name,
-            wrappers,
-            span: _,
-        } = ast.lookup(self.0.id);
+        let TypeRecord { name, wrappers, .. } = ast.lookup(self.0.id);
 
         let wrappers = wrappers.iter().collect::<Vec<_>>();
         for wrapping in &wrappers {

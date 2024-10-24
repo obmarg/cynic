@@ -8,6 +8,7 @@ use std::{
 use cynic_parser::{
     common::{TypeWrappers, WrappingType},
     type_system::{self as parser, Definition, TypeDefinition},
+    Span,
 };
 
 use crate::schema::{names::FieldName, types::*, SchemaError};
@@ -52,6 +53,7 @@ impl SchemaBackedTypeIndex {
             let name = writer.ident(builtin);
             writer.scalar_definition(cynic_parser::type_system::storage::ScalarDefinitionRecord {
                 name,
+                name_span: Span::new(0, 0),
                 description: None,
                 directives: Default::default(),
                 span: cynic_parser::Span::new(0, 0),
@@ -61,12 +63,14 @@ impl SchemaBackedTypeIndex {
         let string_ident = writer.ident("String");
         let typename_type = writer.type_reference(cynic_parser::type_system::storage::TypeRecord {
             name: string_ident,
+            name_start: 0,
             wrappers: TypeWrappers::none().wrap_non_null(),
             span: cynic_parser::Span::new(0, 0),
         });
         let typename_field =
             writer.field_definition(cynic_parser::type_system::storage::FieldDefinitionRecord {
                 name: typename_string,
+                name_span: Span::new(0, 0),
                 ty: typename_type,
                 arguments: Default::default(),
                 description: None,

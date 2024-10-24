@@ -191,21 +191,18 @@ TypeCondition: StringId = {
 NamedType: StringId = <s:Ident> => ast.ident(s);
 
 Type: TypeId = {
-    <record:TypeRecord> => ast.type_reference(record)
-}
-
-TypeRecord: TypeRecord = {
-    <start:@L> "[" <ty:TypeRecord> => {
-        let mut ty = ty;
-        ty.span.start = start;
-        ty
-    },
-    <name_start:@L> <name:NamedType> <wrappers:WrappingType*> <end:@R> => TypeRecord {
+    <start:@L>
+        "["*
+        <name_start:@L>
+        <name:NamedType>
+        <wrappers:WrappingType*>
+        <end:@R>
+    => ast.type_reference(TypeRecord {
         name,
         name_start,
         wrappers: TypeWrappers::from_iter(wrappers),
-        span: Span::new(name_start, end)
-    },
+        span: Span::new(start, end)
+    })
 }
 
 WrappingType: WrappingType = {

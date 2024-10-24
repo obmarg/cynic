@@ -73,7 +73,9 @@ impl<'a> IdReader<'a> for SchemaDefinition<'a> {
 
 pub struct RootOperationTypeDefinitionRecord {
     pub operation_type: OperationType,
+    pub operation_type_span: Span,
     pub named_type: StringId,
+    pub named_type_span: Span,
     pub span: Span,
 }
 
@@ -87,9 +89,17 @@ impl<'a> RootOperationTypeDefinition<'a> {
         let document = self.0.document;
         document.lookup(self.0.id).operation_type
     }
+    pub fn operation_type_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).operation_type_span
+    }
     pub fn named_type(&self) -> &'a str {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).named_type)
+    }
+    pub fn named_type_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).named_type_span
     }
     pub fn span(&self) -> Span {
         let document = self.0.document;
