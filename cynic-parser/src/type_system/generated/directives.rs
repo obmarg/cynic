@@ -11,6 +11,7 @@ use std::fmt::{self, Write};
 
 pub struct DirectiveDefinitionRecord {
     pub name: StringId,
+    pub name_span: Span,
     pub description: Option<DescriptionId>,
     pub arguments: IdRange<InputValueDefinitionId>,
     pub is_repeatable: bool,
@@ -25,6 +26,10 @@ impl<'a> DirectiveDefinition<'a> {
     pub fn name(&self) -> &'a str {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).name)
+    }
+    pub fn name_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).name_span
     }
     pub fn description(&self) -> Option<Description<'a>> {
         let document = self.0.document;
@@ -86,6 +91,7 @@ impl<'a> IdReader<'a> for DirectiveDefinition<'a> {
 
 pub struct DirectiveRecord {
     pub name: StringId,
+    pub name_span: Span,
     pub arguments: IdRange<ArgumentId>,
 }
 
@@ -96,6 +102,10 @@ impl<'a> Directive<'a> {
     pub fn name(&self) -> &'a str {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).name)
+    }
+    pub fn name_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).name_span
     }
     pub fn arguments(&self) -> Iter<'a, Argument<'a>> {
         let document = self.0.document;

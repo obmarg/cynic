@@ -10,6 +10,7 @@ use std::fmt::{self, Write};
 
 pub struct UnionDefinitionRecord {
     pub name: StringId,
+    pub name_span: Span,
     pub description: Option<DescriptionId>,
     pub members: IdRange<UnionMemberId>,
     pub directives: IdRange<DirectiveId>,
@@ -23,6 +24,10 @@ impl<'a> UnionDefinition<'a> {
     pub fn name(&self) -> &'a str {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).name)
+    }
+    pub fn name_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).name_span
     }
     pub fn description(&self) -> Option<Description<'a>> {
         let document = self.0.document;
