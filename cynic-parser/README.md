@@ -30,7 +30,11 @@ be used as a standalone parser.
 - Fast to compile
 - Correct and up to date
 - Easy to use
+- Minimal memory use
 
 ### Features
 
-TODO
+- Support for parsing executable and type system documents compatible with the
+  2021 GraphQl specification or earlier.
+- Fancy error reports on failure.
+- A prettier compatible pretty printer for GraphQl documents.
