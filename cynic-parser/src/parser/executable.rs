@@ -1,5 +1,5 @@
 // auto-generated: "lalrpop 0.21.0"
-// sha3: a720674d8612a7fdb923d17c4fe90bcd75813120846767144975f8da307feb3f
+// sha3: 4ef701eab15cd03307dfc651ad06a959597e95ac8f0670a4780790b72b824884
 use crate::lexer;
 use crate::{
     common::{
@@ -2638,11 +2638,11 @@ mod __parse__ExecutableDocument {
                 __reduce112(input, ast, __lookahead_start, __symbols, core::marker::PhantomData::<(&())>)
             }
             113 => {
-                // ScalarValueRecord = StringLiteral => ActionFn(166);
+                // ScalarValueRecord = StringLiteral => ActionFn(178);
                 let __sym0 = __pop_Variant1(__symbols);
                 let __start = __sym0.0;
                 let __end = __sym0.2;
-                let __nt = match super::__action166::<>(input, ast, __sym0) {
+                let __nt = match super::__action178::<>(input, ast, __sym0) {
                     Ok(v) => v,
                     Err(e) => return Some(Err(e)),
                 };
@@ -3218,10 +3218,10 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // @L =  => ActionFn(102);
+        // @L =  => ActionFn(126);
         let __start = __lookahead_start.cloned().or_else(|| __symbols.last().map(|s| s.2)).unwrap_or_default();
         let __end = __start;
-        let __nt = super::__action102::<>(input, ast, &__start, &__end);
+        let __nt = super::__action126::<>(input, ast, &__start, &__end);
         __symbols.push((__start, __Symbol::Variant2(__nt), __end));
         (0, 0)
     }
@@ -3235,10 +3235,10 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // @R =  => ActionFn(99);
+        // @R =  => ActionFn(125);
         let __start = __lookahead_start.cloned().or_else(|| __symbols.last().map(|s| s.2)).unwrap_or_default();
         let __end = __start;
-        let __nt = super::__action99::<>(input, ast, &__start, &__end);
+        let __nt = super::__action125::<>(input, ast, &__start, &__end);
         __symbols.push((__start, __Symbol::Variant2(__nt), __end));
         (0, 1)
     }
@@ -3272,11 +3272,11 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Alias? = Alias => ActionFn(115);
+        // Alias? = Alias => ActionFn(113);
         let __sym0 = __pop_Variant3(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action115::<>(input, ast, __sym0);
+        let __nt = super::__action113::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant4(__nt), __end));
         (1, 3)
     }
@@ -3290,10 +3290,10 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Alias? =  => ActionFn(116);
+        // Alias? =  => ActionFn(114);
         let __start = __lookahead_start.cloned().or_else(|| __symbols.last().map(|s| s.2)).unwrap_or_default();
         let __end = __start;
-        let __nt = super::__action116::<>(input, ast, &__start, &__end);
+        let __nt = super::__action114::<>(input, ast, &__start, &__end);
         __symbols.push((__start, __Symbol::Variant4(__nt), __end));
         (0, 3)
     }
@@ -3307,14 +3307,14 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Argument = Name, ":", Value => ActionFn(27);
+        // Argument = Name, ":", Value => ActionFn(168);
         assert!(__symbols.len() >= 3);
         let __sym2 = __pop_Variant30(__symbols);
         let __sym1 = __pop_Variant0(__symbols);
         let __sym0 = __pop_Variant3(__symbols);
         let __start = __sym0.0;
         let __end = __sym2.2;
-        let __nt = super::__action27::<>(input, ast, __sym0, __sym1, __sym2);
+        let __nt = super::__action168::<>(input, ast, __sym0, __sym1, __sym2);
         __symbols.push((__start, __Symbol::Variant5(__nt), __end));
         (3, 4)
     }
@@ -3328,10 +3328,10 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Argument* =  => ActionFn(103);
+        // Argument* =  => ActionFn(101);
         let __start = __lookahead_start.cloned().or_else(|| __symbols.last().map(|s| s.2)).unwrap_or_default();
         let __end = __start;
-        let __nt = super::__action103::<>(input, ast, &__start, &__end);
+        let __nt = super::__action101::<>(input, ast, &__start, &__end);
         __symbols.push((__start, __Symbol::Variant6(__nt), __end));
         (0, 5)
     }
@@ -3345,11 +3345,11 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Argument* = Argument+ => ActionFn(104);
+        // Argument* = Argument+ => ActionFn(102);
         let __sym0 = __pop_Variant6(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action104::<>(input, ast, __sym0);
+        let __nt = super::__action102::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant6(__nt), __end));
         (1, 5)
     }
@@ -3401,13 +3401,13 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Arguments = "(", ")" => ActionFn(177);
+        // Arguments = "(", ")" => ActionFn(192);
         assert!(__symbols.len() >= 2);
         let __sym1 = __pop_Variant0(__symbols);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym1.2;
-        let __nt = super::__action177::<>(input, ast, __sym0, __sym1);
+        let __nt = super::__action192::<>(input, ast, __sym0, __sym1);
         __symbols.push((__start, __Symbol::Variant7(__nt), __end));
         (2, 7)
     }
@@ -3421,14 +3421,14 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Arguments = "(", Argument+, ")" => ActionFn(178);
+        // Arguments = "(", Argument+, ")" => ActionFn(193);
         assert!(__symbols.len() >= 3);
         let __sym2 = __pop_Variant0(__symbols);
         let __sym1 = __pop_Variant6(__symbols);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym2.2;
-        let __nt = super::__action178::<>(input, ast, __sym0, __sym1, __sym2);
+        let __nt = super::__action193::<>(input, ast, __sym0, __sym1, __sym2);
         __symbols.push((__start, __Symbol::Variant7(__nt), __end));
         (3, 7)
     }
@@ -3442,11 +3442,11 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Arguments? = Arguments => ActionFn(113);
+        // Arguments? = Arguments => ActionFn(111);
         let __sym0 = __pop_Variant7(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action113::<>(input, ast, __sym0);
+        let __nt = super::__action111::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant8(__nt), __end));
         (1, 8)
     }
@@ -3460,10 +3460,10 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Arguments? =  => ActionFn(114);
+        // Arguments? =  => ActionFn(112);
         let __start = __lookahead_start.cloned().or_else(|| __symbols.last().map(|s| s.2)).unwrap_or_default();
         let __end = __start;
-        let __nt = super::__action114::<>(input, ast, &__start, &__end);
+        let __nt = super::__action112::<>(input, ast, &__start, &__end);
         __symbols.push((__start, __Symbol::Variant8(__nt), __end));
         (0, 8)
     }
@@ -3477,14 +3477,14 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // ConstObjectField = Name, ":", ConstValue => ActionFn(160);
+        // ConstObjectField = Name, ":", ConstValue => ActionFn(169);
         assert!(__symbols.len() >= 3);
         let __sym2 = __pop_Variant11(__symbols);
         let __sym1 = __pop_Variant0(__symbols);
         let __sym0 = __pop_Variant3(__symbols);
         let __start = __sym0.0;
         let __end = __sym2.2;
-        let __nt = super::__action160::<>(input, ast, __sym0, __sym1, __sym2);
+        let __nt = super::__action169::<>(input, ast, __sym0, __sym1, __sym2);
         __symbols.push((__start, __Symbol::Variant9(__nt), __end));
         (3, 9)
     }
@@ -3607,13 +3607,13 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // ConstValueRecord = "[", "]" => ActionFn(187);
+        // ConstValueRecord = "[", "]" => ActionFn(202);
         assert!(__symbols.len() >= 2);
         let __sym1 = __pop_Variant0(__symbols);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym1.2;
-        let __nt = super::__action187::<>(input, ast, __sym0, __sym1);
+        let __nt = super::__action202::<>(input, ast, __sym0, __sym1);
         __symbols.push((__start, __Symbol::Variant12(__nt), __end));
         (2, 13)
     }
@@ -3627,14 +3627,14 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // ConstValueRecord = "[", ConstValueRecord+, "]" => ActionFn(188);
+        // ConstValueRecord = "[", ConstValueRecord+, "]" => ActionFn(203);
         assert!(__symbols.len() >= 3);
         let __sym2 = __pop_Variant0(__symbols);
         let __sym1 = __pop_Variant13(__symbols);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym2.2;
-        let __nt = super::__action188::<>(input, ast, __sym0, __sym1, __sym2);
+        let __nt = super::__action203::<>(input, ast, __sym0, __sym1, __sym2);
         __symbols.push((__start, __Symbol::Variant12(__nt), __end));
         (3, 13)
     }
@@ -3648,13 +3648,13 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // ConstValueRecord = "{", "}" => ActionFn(185);
+        // ConstValueRecord = "{", "}" => ActionFn(200);
         assert!(__symbols.len() >= 2);
         let __sym1 = __pop_Variant0(__symbols);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym1.2;
-        let __nt = super::__action185::<>(input, ast, __sym0, __sym1);
+        let __nt = super::__action200::<>(input, ast, __sym0, __sym1);
         __symbols.push((__start, __Symbol::Variant12(__nt), __end));
         (2, 13)
     }
@@ -3668,14 +3668,14 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // ConstValueRecord = "{", ConstObjectField+, "}" => ActionFn(186);
+        // ConstValueRecord = "{", ConstObjectField+, "}" => ActionFn(201);
         assert!(__symbols.len() >= 3);
         let __sym2 = __pop_Variant0(__symbols);
         let __sym1 = __pop_Variant10(__symbols);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym2.2;
-        let __nt = super::__action186::<>(input, ast, __sym0, __sym1, __sym2);
+        let __nt = super::__action201::<>(input, ast, __sym0, __sym1, __sym2);
         __symbols.push((__start, __Symbol::Variant12(__nt), __end));
         (3, 13)
     }
@@ -3689,10 +3689,10 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // ConstValueRecord* =  => ActionFn(100);
+        // ConstValueRecord* =  => ActionFn(99);
         let __start = __lookahead_start.cloned().or_else(|| __symbols.last().map(|s| s.2)).unwrap_or_default();
         let __end = __start;
-        let __nt = super::__action100::<>(input, ast, &__start, &__end);
+        let __nt = super::__action99::<>(input, ast, &__start, &__end);
         __symbols.push((__start, __Symbol::Variant13(__nt), __end));
         (0, 14)
     }
@@ -3706,11 +3706,11 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // ConstValueRecord* = ConstValueRecord+ => ActionFn(101);
+        // ConstValueRecord* = ConstValueRecord+ => ActionFn(100);
         let __sym0 = __pop_Variant13(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action101::<>(input, ast, __sym0);
+        let __nt = super::__action100::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant13(__nt), __end));
         (1, 14)
     }
@@ -3782,11 +3782,11 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // DefaultValue? = DefaultValue => ActionFn(119);
+        // DefaultValue? = DefaultValue => ActionFn(117);
         let __sym0 = __pop_Variant11(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action119::<>(input, ast, __sym0);
+        let __nt = super::__action117::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant14(__nt), __end));
         (1, 17)
     }
@@ -3800,10 +3800,10 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // DefaultValue? =  => ActionFn(120);
+        // DefaultValue? =  => ActionFn(118);
         let __start = __lookahead_start.cloned().or_else(|| __symbols.last().map(|s| s.2)).unwrap_or_default();
         let __end = __start;
-        let __nt = super::__action120::<>(input, ast, &__start, &__end);
+        let __nt = super::__action118::<>(input, ast, &__start, &__end);
         __symbols.push((__start, __Symbol::Variant14(__nt), __end));
         (0, 17)
     }
@@ -3817,14 +3817,14 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Directive = "@", Name, Arguments => ActionFn(179);
+        // Directive = "@", Name, Arguments => ActionFn(194);
         assert!(__symbols.len() >= 3);
         let __sym2 = __pop_Variant7(__symbols);
         let __sym1 = __pop_Variant3(__symbols);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym2.2;
-        let __nt = super::__action179::<>(input, ast, __sym0, __sym1, __sym2);
+        let __nt = super::__action194::<>(input, ast, __sym0, __sym1, __sym2);
         __symbols.push((__start, __Symbol::Variant15(__nt), __end));
         (3, 18)
     }
@@ -3838,13 +3838,13 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Directive = "@", Name => ActionFn(180);
+        // Directive = "@", Name => ActionFn(195);
         assert!(__symbols.len() >= 2);
         let __sym1 = __pop_Variant3(__symbols);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym1.2;
-        let __nt = super::__action180::<>(input, ast, __sym0, __sym1);
+        let __nt = super::__action195::<>(input, ast, __sym0, __sym1);
         __symbols.push((__start, __Symbol::Variant15(__nt), __end));
         (2, 18)
     }
@@ -3858,10 +3858,10 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Directive* =  => ActionFn(105);
+        // Directive* =  => ActionFn(103);
         let __start = __lookahead_start.cloned().or_else(|| __symbols.last().map(|s| s.2)).unwrap_or_default();
         let __end = __start;
-        let __nt = super::__action105::<>(input, ast, &__start, &__end);
+        let __nt = super::__action103::<>(input, ast, &__start, &__end);
         __symbols.push((__start, __Symbol::Variant16(__nt), __end));
         (0, 19)
     }
@@ -3875,11 +3875,11 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Directive* = Directive+ => ActionFn(106);
+        // Directive* = Directive+ => ActionFn(104);
         let __sym0 = __pop_Variant16(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action106::<>(input, ast, __sym0);
+        let __nt = super::__action104::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant16(__nt), __end));
         (1, 19)
     }
@@ -3931,10 +3931,10 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Directives =  => ActionFn(191);
+        // Directives =  => ActionFn(206);
         let __start = __lookahead_start.cloned().or_else(|| __symbols.last().map(|s| s.2)).unwrap_or_default();
         let __end = __start;
-        let __nt = super::__action191::<>(input, ast, &__start, &__end);
+        let __nt = super::__action206::<>(input, ast, &__start, &__end);
         __symbols.push((__start, __Symbol::Variant17(__nt), __end));
         (0, 21)
     }
@@ -3948,11 +3948,11 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Directives = Directive+ => ActionFn(192);
+        // Directives = Directive+ => ActionFn(207);
         let __sym0 = __pop_Variant16(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action192::<>(input, ast, __sym0);
+        let __nt = super::__action207::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant17(__nt), __end));
         (1, 21)
     }
@@ -4165,10 +4165,10 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // ExecutableDocument =  => ActionFn(193);
+        // ExecutableDocument =  => ActionFn(208);
         let __start = __lookahead_start.cloned().or_else(|| __symbols.last().map(|s| s.2)).unwrap_or_default();
         let __end = __start;
-        let __nt = super::__action193::<>(input, ast, &__start, &__end);
+        let __nt = super::__action208::<>(input, ast, &__start, &__end);
         __symbols.push((__start, __Symbol::Variant15(__nt), __end));
         (0, 26)
     }
@@ -4182,11 +4182,11 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // ExecutableDocument = ExecutableDefinition+ => ActionFn(194);
+        // ExecutableDocument = ExecutableDefinition+ => ActionFn(209);
         let __sym0 = __pop_Variant19(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action194::<>(input, ast, __sym0);
+        let __nt = super::__action209::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant15(__nt), __end));
         (1, 26)
     }
@@ -4200,7 +4200,7 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // FragmentDefinition = fragment, FragmentName, TypeCondition, Directives, SelectionSet => ActionFn(6);
+        // FragmentDefinition = fragment, FragmentName, TypeCondition, Directives, SelectionSet => ActionFn(173);
         assert!(__symbols.len() >= 5);
         let __sym4 = __pop_Variant27(__symbols);
         let __sym3 = __pop_Variant17(__symbols);
@@ -4209,7 +4209,7 @@ mod __parse__ExecutableDocument {
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym4.2;
-        let __nt = super::__action6::<>(input, ast, __sym0, __sym1, __sym2, __sym3, __sym4);
+        let __nt = super::__action173::<>(input, ast, __sym0, __sym1, __sym2, __sym3, __sym4);
         __symbols.push((__start, __Symbol::Variant20(__nt), __end));
         (5, 27)
     }
@@ -4619,11 +4619,11 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Name? = Name => ActionFn(125);
+        // Name? = Name => ActionFn(123);
         let __sym0 = __pop_Variant3(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action125::<>(input, ast, __sym0);
+        let __nt = super::__action123::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant4(__nt), __end));
         (1, 31)
     }
@@ -4637,10 +4637,10 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Name? =  => ActionFn(126);
+        // Name? =  => ActionFn(124);
         let __start = __lookahead_start.cloned().or_else(|| __symbols.last().map(|s| s.2)).unwrap_or_default();
         let __end = __start;
-        let __nt = super::__action126::<>(input, ast, &__start, &__end);
+        let __nt = super::__action124::<>(input, ast, &__start, &__end);
         __symbols.push((__start, __Symbol::Variant4(__nt), __end));
         (0, 31)
     }
@@ -4672,14 +4672,14 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // ObjectField = Name, ":", Value => ActionFn(163);
+        // ObjectField = Name, ":", Value => ActionFn(174);
         assert!(__symbols.len() >= 3);
         let __sym2 = __pop_Variant30(__symbols);
         let __sym1 = __pop_Variant0(__symbols);
         let __sym0 = __pop_Variant3(__symbols);
         let __start = __sym0.0;
         let __end = __sym2.2;
-        let __nt = super::__action163::<>(input, ast, __sym0, __sym1, __sym2);
+        let __nt = super::__action174::<>(input, ast, __sym0, __sym1, __sym2);
         __symbols.push((__start, __Symbol::Variant21(__nt), __end));
         (3, 33)
     }
@@ -4766,7 +4766,7 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // OperationDefinition = OperationType, Name, VariableDefinitions, Directives, SelectionSet => ActionFn(211);
+        // OperationDefinition = OperationType, Name, VariableDefinitions, Directives, SelectionSet => ActionFn(226);
         assert!(__symbols.len() >= 5);
         let __sym4 = __pop_Variant27(__symbols);
         let __sym3 = __pop_Variant17(__symbols);
@@ -4775,7 +4775,7 @@ mod __parse__ExecutableDocument {
         let __sym0 = __pop_Variant24(__symbols);
         let __start = __sym0.0;
         let __end = __sym4.2;
-        let __nt = super::__action211::<>(input, ast, __sym0, __sym1, __sym2, __sym3, __sym4);
+        let __nt = super::__action226::<>(input, ast, __sym0, __sym1, __sym2, __sym3, __sym4);
         __symbols.push((__start, __Symbol::Variant23(__nt), __end));
         (5, 36)
     }
@@ -4789,7 +4789,7 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // OperationDefinition = OperationType, Name, Directives, SelectionSet => ActionFn(212);
+        // OperationDefinition = OperationType, Name, Directives, SelectionSet => ActionFn(227);
         assert!(__symbols.len() >= 4);
         let __sym3 = __pop_Variant27(__symbols);
         let __sym2 = __pop_Variant17(__symbols);
@@ -4797,7 +4797,7 @@ mod __parse__ExecutableDocument {
         let __sym0 = __pop_Variant24(__symbols);
         let __start = __sym0.0;
         let __end = __sym3.2;
-        let __nt = super::__action212::<>(input, ast, __sym0, __sym1, __sym2, __sym3);
+        let __nt = super::__action227::<>(input, ast, __sym0, __sym1, __sym2, __sym3);
         __symbols.push((__start, __Symbol::Variant23(__nt), __end));
         (4, 36)
     }
@@ -4811,7 +4811,7 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // OperationDefinition = OperationType, VariableDefinitions, Directives, SelectionSet => ActionFn(213);
+        // OperationDefinition = OperationType, VariableDefinitions, Directives, SelectionSet => ActionFn(228);
         assert!(__symbols.len() >= 4);
         let __sym3 = __pop_Variant27(__symbols);
         let __sym2 = __pop_Variant17(__symbols);
@@ -4819,7 +4819,7 @@ mod __parse__ExecutableDocument {
         let __sym0 = __pop_Variant24(__symbols);
         let __start = __sym0.0;
         let __end = __sym3.2;
-        let __nt = super::__action213::<>(input, ast, __sym0, __sym1, __sym2, __sym3);
+        let __nt = super::__action228::<>(input, ast, __sym0, __sym1, __sym2, __sym3);
         __symbols.push((__start, __Symbol::Variant23(__nt), __end));
         (4, 36)
     }
@@ -4833,14 +4833,14 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // OperationDefinition = OperationType, Directives, SelectionSet => ActionFn(214);
+        // OperationDefinition = OperationType, Directives, SelectionSet => ActionFn(229);
         assert!(__symbols.len() >= 3);
         let __sym2 = __pop_Variant27(__symbols);
         let __sym1 = __pop_Variant17(__symbols);
         let __sym0 = __pop_Variant24(__symbols);
         let __start = __sym0.0;
         let __end = __sym2.2;
-        let __nt = super::__action214::<>(input, ast, __sym0, __sym1, __sym2);
+        let __nt = super::__action229::<>(input, ast, __sym0, __sym1, __sym2);
         __symbols.push((__start, __Symbol::Variant23(__nt), __end));
         (3, 36)
     }
@@ -5268,11 +5268,11 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // ScalarValueRecord = IntegerLiteral => ActionFn(164);
+        // ScalarValueRecord = IntegerLiteral => ActionFn(176);
         let __sym0 = __pop_Variant1(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action164::<>(input, ast, __sym0);
+        let __nt = super::__action176::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant12(__nt), __end));
         (1, 39)
     }
@@ -5286,11 +5286,11 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // ScalarValueRecord = FloatLiteral => ActionFn(165);
+        // ScalarValueRecord = FloatLiteral => ActionFn(177);
         let __sym0 = __pop_Variant1(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action165::<>(input, ast, __sym0);
+        let __nt = super::__action177::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant12(__nt), __end));
         (1, 39)
     }
@@ -5304,11 +5304,11 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // ScalarValueRecord = BlockStringLiteral => ActionFn(167);
+        // ScalarValueRecord = BlockStringLiteral => ActionFn(179);
         let __sym0 = __pop_Variant1(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action167::<>(input, ast, __sym0);
+        let __nt = super::__action179::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant12(__nt), __end));
         (1, 39)
     }
@@ -5322,11 +5322,11 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // ScalarValueRecord = true => ActionFn(168);
+        // ScalarValueRecord = true => ActionFn(180);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action168::<>(input, ast, __sym0);
+        let __nt = super::__action180::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant12(__nt), __end));
         (1, 39)
     }
@@ -5340,11 +5340,11 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // ScalarValueRecord = false => ActionFn(169);
+        // ScalarValueRecord = false => ActionFn(181);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action169::<>(input, ast, __sym0);
+        let __nt = super::__action181::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant12(__nt), __end));
         (1, 39)
     }
@@ -5358,11 +5358,11 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // ScalarValueRecord = null => ActionFn(170);
+        // ScalarValueRecord = null => ActionFn(182);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action170::<>(input, ast, __sym0);
+        let __nt = super::__action182::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant12(__nt), __end));
         (1, 39)
     }
@@ -5376,11 +5376,11 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // ScalarValueRecord = EnumValue => ActionFn(171);
+        // ScalarValueRecord = EnumValue => ActionFn(183);
         let __sym0 = __pop_Variant3(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action171::<>(input, ast, __sym0);
+        let __nt = super::__action183::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant12(__nt), __end));
         (1, 39)
     }
@@ -5394,7 +5394,7 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Selection = Alias, Name, Arguments, Directives, SelectionSet => ActionFn(199);
+        // Selection = Alias, Name, Arguments, Directives, SelectionSet => ActionFn(214);
         assert!(__symbols.len() >= 5);
         let __sym4 = __pop_Variant27(__symbols);
         let __sym3 = __pop_Variant17(__symbols);
@@ -5403,7 +5403,7 @@ mod __parse__ExecutableDocument {
         let __sym0 = __pop_Variant3(__symbols);
         let __start = __sym0.0;
         let __end = __sym4.2;
-        let __nt = super::__action199::<>(input, ast, __sym0, __sym1, __sym2, __sym3, __sym4);
+        let __nt = super::__action214::<>(input, ast, __sym0, __sym1, __sym2, __sym3, __sym4);
         __symbols.push((__start, __Symbol::Variant25(__nt), __end));
         (5, 40)
     }
@@ -5417,7 +5417,7 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Selection = Alias, Name, Arguments, Directives => ActionFn(200);
+        // Selection = Alias, Name, Arguments, Directives => ActionFn(215);
         assert!(__symbols.len() >= 4);
         let __sym3 = __pop_Variant17(__symbols);
         let __sym2 = __pop_Variant7(__symbols);
@@ -5425,7 +5425,7 @@ mod __parse__ExecutableDocument {
         let __sym0 = __pop_Variant3(__symbols);
         let __start = __sym0.0;
         let __end = __sym3.2;
-        let __nt = super::__action200::<>(input, ast, __sym0, __sym1, __sym2, __sym3);
+        let __nt = super::__action215::<>(input, ast, __sym0, __sym1, __sym2, __sym3);
         __symbols.push((__start, __Symbol::Variant25(__nt), __end));
         (4, 40)
     }
@@ -5439,7 +5439,7 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Selection = Alias, Name, Directives, SelectionSet => ActionFn(201);
+        // Selection = Alias, Name, Directives, SelectionSet => ActionFn(216);
         assert!(__symbols.len() >= 4);
         let __sym3 = __pop_Variant27(__symbols);
         let __sym2 = __pop_Variant17(__symbols);
@@ -5447,7 +5447,7 @@ mod __parse__ExecutableDocument {
         let __sym0 = __pop_Variant3(__symbols);
         let __start = __sym0.0;
         let __end = __sym3.2;
-        let __nt = super::__action201::<>(input, ast, __sym0, __sym1, __sym2, __sym3);
+        let __nt = super::__action216::<>(input, ast, __sym0, __sym1, __sym2, __sym3);
         __symbols.push((__start, __Symbol::Variant25(__nt), __end));
         (4, 40)
     }
@@ -5461,14 +5461,14 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Selection = Alias, Name, Directives => ActionFn(202);
+        // Selection = Alias, Name, Directives => ActionFn(217);
         assert!(__symbols.len() >= 3);
         let __sym2 = __pop_Variant17(__symbols);
         let __sym1 = __pop_Variant3(__symbols);
         let __sym0 = __pop_Variant3(__symbols);
         let __start = __sym0.0;
         let __end = __sym2.2;
-        let __nt = super::__action202::<>(input, ast, __sym0, __sym1, __sym2);
+        let __nt = super::__action217::<>(input, ast, __sym0, __sym1, __sym2);
         __symbols.push((__start, __Symbol::Variant25(__nt), __end));
         (3, 40)
     }
@@ -5482,7 +5482,7 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Selection = Name, Arguments, Directives, SelectionSet => ActionFn(203);
+        // Selection = Name, Arguments, Directives, SelectionSet => ActionFn(218);
         assert!(__symbols.len() >= 4);
         let __sym3 = __pop_Variant27(__symbols);
         let __sym2 = __pop_Variant17(__symbols);
@@ -5490,7 +5490,7 @@ mod __parse__ExecutableDocument {
         let __sym0 = __pop_Variant3(__symbols);
         let __start = __sym0.0;
         let __end = __sym3.2;
-        let __nt = super::__action203::<>(input, ast, __sym0, __sym1, __sym2, __sym3);
+        let __nt = super::__action218::<>(input, ast, __sym0, __sym1, __sym2, __sym3);
         __symbols.push((__start, __Symbol::Variant25(__nt), __end));
         (4, 40)
     }
@@ -5504,14 +5504,14 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Selection = Name, Arguments, Directives => ActionFn(204);
+        // Selection = Name, Arguments, Directives => ActionFn(219);
         assert!(__symbols.len() >= 3);
         let __sym2 = __pop_Variant17(__symbols);
         let __sym1 = __pop_Variant7(__symbols);
         let __sym0 = __pop_Variant3(__symbols);
         let __start = __sym0.0;
         let __end = __sym2.2;
-        let __nt = super::__action204::<>(input, ast, __sym0, __sym1, __sym2);
+        let __nt = super::__action219::<>(input, ast, __sym0, __sym1, __sym2);
         __symbols.push((__start, __Symbol::Variant25(__nt), __end));
         (3, 40)
     }
@@ -5525,14 +5525,14 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Selection = Name, Directives, SelectionSet => ActionFn(205);
+        // Selection = Name, Directives, SelectionSet => ActionFn(220);
         assert!(__symbols.len() >= 3);
         let __sym2 = __pop_Variant27(__symbols);
         let __sym1 = __pop_Variant17(__symbols);
         let __sym0 = __pop_Variant3(__symbols);
         let __start = __sym0.0;
         let __end = __sym2.2;
-        let __nt = super::__action205::<>(input, ast, __sym0, __sym1, __sym2);
+        let __nt = super::__action220::<>(input, ast, __sym0, __sym1, __sym2);
         __symbols.push((__start, __Symbol::Variant25(__nt), __end));
         (3, 40)
     }
@@ -5546,13 +5546,13 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Selection = Name, Directives => ActionFn(206);
+        // Selection = Name, Directives => ActionFn(221);
         assert!(__symbols.len() >= 2);
         let __sym1 = __pop_Variant17(__symbols);
         let __sym0 = __pop_Variant3(__symbols);
         let __start = __sym0.0;
         let __end = __sym1.2;
-        let __nt = super::__action206::<>(input, ast, __sym0, __sym1);
+        let __nt = super::__action221::<>(input, ast, __sym0, __sym1);
         __symbols.push((__start, __Symbol::Variant25(__nt), __end));
         (2, 40)
     }
@@ -5566,14 +5566,14 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Selection = "...", FragmentName, Directives => ActionFn(15);
+        // Selection = "...", FragmentName, Directives => ActionFn(185);
         assert!(__symbols.len() >= 3);
         let __sym2 = __pop_Variant17(__symbols);
         let __sym1 = __pop_Variant3(__symbols);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym2.2;
-        let __nt = super::__action15::<>(input, ast, __sym0, __sym1, __sym2);
+        let __nt = super::__action185::<>(input, ast, __sym0, __sym1, __sym2);
         __symbols.push((__start, __Symbol::Variant25(__nt), __end));
         (3, 40)
     }
@@ -5587,7 +5587,7 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Selection = "...", TypeCondition, Directives, SelectionSet => ActionFn(207);
+        // Selection = "...", TypeCondition, Directives, SelectionSet => ActionFn(222);
         assert!(__symbols.len() >= 4);
         let __sym3 = __pop_Variant27(__symbols);
         let __sym2 = __pop_Variant17(__symbols);
@@ -5595,7 +5595,7 @@ mod __parse__ExecutableDocument {
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym3.2;
-        let __nt = super::__action207::<>(input, ast, __sym0, __sym1, __sym2, __sym3);
+        let __nt = super::__action222::<>(input, ast, __sym0, __sym1, __sym2, __sym3);
         __symbols.push((__start, __Symbol::Variant25(__nt), __end));
         (4, 40)
     }
@@ -5609,14 +5609,14 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Selection = "...", Directives, SelectionSet => ActionFn(208);
+        // Selection = "...", Directives, SelectionSet => ActionFn(223);
         assert!(__symbols.len() >= 3);
         let __sym2 = __pop_Variant27(__symbols);
         let __sym1 = __pop_Variant17(__symbols);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym2.2;
-        let __nt = super::__action208::<>(input, ast, __sym0, __sym1, __sym2);
+        let __nt = super::__action223::<>(input, ast, __sym0, __sym1, __sym2);
         __symbols.push((__start, __Symbol::Variant25(__nt), __end));
         (3, 40)
     }
@@ -5630,11 +5630,11 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Selection+ = Selection => ActionFn(117);
+        // Selection+ = Selection => ActionFn(115);
         let __sym0 = __pop_Variant25(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action117::<>(input, ast, __sym0);
+        let __nt = super::__action115::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant26(__nt), __end));
         (1, 41)
     }
@@ -5648,13 +5648,13 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Selection+ = Selection+, Selection => ActionFn(118);
+        // Selection+ = Selection+, Selection => ActionFn(116);
         assert!(__symbols.len() >= 2);
         let __sym1 = __pop_Variant25(__symbols);
         let __sym0 = __pop_Variant26(__symbols);
         let __start = __sym0.0;
         let __end = __sym1.2;
-        let __nt = super::__action118::<>(input, ast, __sym0, __sym1);
+        let __nt = super::__action116::<>(input, ast, __sym0, __sym1);
         __symbols.push((__start, __Symbol::Variant26(__nt), __end));
         (2, 41)
     }
@@ -5689,11 +5689,11 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // SelectionSet? = SelectionSet => ActionFn(111);
+        // SelectionSet? = SelectionSet => ActionFn(109);
         let __sym0 = __pop_Variant27(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action111::<>(input, ast, __sym0);
+        let __nt = super::__action109::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant28(__nt), __end));
         (1, 43)
     }
@@ -5707,10 +5707,10 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // SelectionSet? =  => ActionFn(112);
+        // SelectionSet? =  => ActionFn(110);
         let __start = __lookahead_start.cloned().or_else(|| __symbols.last().map(|s| s.2)).unwrap_or_default();
         let __end = __start;
-        let __nt = super::__action112::<>(input, ast, &__start, &__end);
+        let __nt = super::__action110::<>(input, ast, &__start, &__end);
         __symbols.push((__start, __Symbol::Variant28(__nt), __end));
         (0, 43)
     }
@@ -5744,11 +5744,11 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Type = NamedType => ActionFn(215);
+        // Type = NamedType => ActionFn(230);
         let __sym0 = __pop_Variant3(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action215::<>(input, ast, __sym0);
+        let __nt = super::__action230::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant29(__nt), __end));
         (1, 44)
     }
@@ -5762,13 +5762,13 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // Type = NamedType, WrappingType+ => ActionFn(216);
+        // Type = NamedType, WrappingType+ => ActionFn(231);
         assert!(__symbols.len() >= 2);
         let __sym1 = __pop_Variant34(__symbols);
         let __sym0 = __pop_Variant3(__symbols);
         let __start = __sym0.0;
         let __end = __sym1.2;
-        let __nt = super::__action216::<>(input, ast, __sym0, __sym1);
+        let __nt = super::__action231::<>(input, ast, __sym0, __sym1);
         __symbols.push((__start, __Symbol::Variant29(__nt), __end));
         (2, 44)
     }
@@ -5802,11 +5802,11 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // TypeCondition? = TypeCondition => ActionFn(109);
+        // TypeCondition? = TypeCondition => ActionFn(107);
         let __sym0 = __pop_Variant3(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action109::<>(input, ast, __sym0);
+        let __nt = super::__action107::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant4(__nt), __end));
         (1, 46)
     }
@@ -5820,10 +5820,10 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // TypeCondition? =  => ActionFn(110);
+        // TypeCondition? =  => ActionFn(108);
         let __start = __lookahead_start.cloned().or_else(|| __symbols.last().map(|s| s.2)).unwrap_or_default();
         let __end = __start;
-        let __nt = super::__action110::<>(input, ast, &__start, &__end);
+        let __nt = super::__action108::<>(input, ast, &__start, &__end);
         __symbols.push((__start, __Symbol::Variant4(__nt), __end));
         (0, 46)
     }
@@ -5855,13 +5855,13 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // ValueRecord = "$", Name => ActionFn(172);
+        // ValueRecord = "$", Name => ActionFn(186);
         assert!(__symbols.len() >= 2);
         let __sym1 = __pop_Variant3(__symbols);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym1.2;
-        let __nt = super::__action172::<>(input, ast, __sym0, __sym1);
+        let __nt = super::__action186::<>(input, ast, __sym0, __sym1);
         __symbols.push((__start, __Symbol::Variant12(__nt), __end));
         (2, 48)
     }
@@ -5893,13 +5893,13 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // ValueRecord = "[", "]" => ActionFn(209);
+        // ValueRecord = "[", "]" => ActionFn(224);
         assert!(__symbols.len() >= 2);
         let __sym1 = __pop_Variant0(__symbols);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym1.2;
-        let __nt = super::__action209::<>(input, ast, __sym0, __sym1);
+        let __nt = super::__action224::<>(input, ast, __sym0, __sym1);
         __symbols.push((__start, __Symbol::Variant12(__nt), __end));
         (2, 48)
     }
@@ -5913,14 +5913,14 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // ValueRecord = "[", ValueRecord+, "]" => ActionFn(210);
+        // ValueRecord = "[", ValueRecord+, "]" => ActionFn(225);
         assert!(__symbols.len() >= 3);
         let __sym2 = __pop_Variant0(__symbols);
         let __sym1 = __pop_Variant13(__symbols);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym2.2;
-        let __nt = super::__action210::<>(input, ast, __sym0, __sym1, __sym2);
+        let __nt = super::__action225::<>(input, ast, __sym0, __sym1, __sym2);
         __symbols.push((__start, __Symbol::Variant12(__nt), __end));
         (3, 48)
     }
@@ -5934,13 +5934,13 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // ValueRecord = "{", "}" => ActionFn(197);
+        // ValueRecord = "{", "}" => ActionFn(212);
         assert!(__symbols.len() >= 2);
         let __sym1 = __pop_Variant0(__symbols);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym1.2;
-        let __nt = super::__action197::<>(input, ast, __sym0, __sym1);
+        let __nt = super::__action212::<>(input, ast, __sym0, __sym1);
         __symbols.push((__start, __Symbol::Variant12(__nt), __end));
         (2, 48)
     }
@@ -5954,14 +5954,14 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // ValueRecord = "{", ObjectField+, "}" => ActionFn(198);
+        // ValueRecord = "{", ObjectField+, "}" => ActionFn(213);
         assert!(__symbols.len() >= 3);
         let __sym2 = __pop_Variant0(__symbols);
         let __sym1 = __pop_Variant22(__symbols);
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym2.2;
-        let __nt = super::__action198::<>(input, ast, __sym0, __sym1, __sym2);
+        let __nt = super::__action213::<>(input, ast, __sym0, __sym1, __sym2);
         __symbols.push((__start, __Symbol::Variant12(__nt), __end));
         (3, 48)
     }
@@ -6048,7 +6048,7 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // VariableDefinition = "$", Name, ":", Type, DefaultValue, Directives => ActionFn(189);
+        // VariableDefinition = "$", Name, ":", Type, DefaultValue, Directives => ActionFn(204);
         assert!(__symbols.len() >= 6);
         let __sym5 = __pop_Variant17(__symbols);
         let __sym4 = __pop_Variant11(__symbols);
@@ -6058,7 +6058,7 @@ mod __parse__ExecutableDocument {
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym5.2;
-        let __nt = super::__action189::<>(input, ast, __sym0, __sym1, __sym2, __sym3, __sym4, __sym5);
+        let __nt = super::__action204::<>(input, ast, __sym0, __sym1, __sym2, __sym3, __sym4, __sym5);
         __symbols.push((__start, __Symbol::Variant15(__nt), __end));
         (6, 51)
     }
@@ -6072,7 +6072,7 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // VariableDefinition = "$", Name, ":", Type, Directives => ActionFn(190);
+        // VariableDefinition = "$", Name, ":", Type, Directives => ActionFn(205);
         assert!(__symbols.len() >= 5);
         let __sym4 = __pop_Variant17(__symbols);
         let __sym3 = __pop_Variant29(__symbols);
@@ -6081,7 +6081,7 @@ mod __parse__ExecutableDocument {
         let __sym0 = __pop_Variant0(__symbols);
         let __start = __sym0.0;
         let __end = __sym4.2;
-        let __nt = super::__action190::<>(input, ast, __sym0, __sym1, __sym2, __sym3, __sym4);
+        let __nt = super::__action205::<>(input, ast, __sym0, __sym1, __sym2, __sym3, __sym4);
         __symbols.push((__start, __Symbol::Variant15(__nt), __end));
         (5, 51)
     }
@@ -6095,11 +6095,11 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // VariableDefinition+ = VariableDefinition => ActionFn(121);
+        // VariableDefinition+ = VariableDefinition => ActionFn(119);
         let __sym0 = __pop_Variant15(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action121::<>(input, ast, __sym0);
+        let __nt = super::__action119::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant16(__nt), __end));
         (1, 52)
     }
@@ -6113,13 +6113,13 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // VariableDefinition+ = VariableDefinition+, VariableDefinition => ActionFn(122);
+        // VariableDefinition+ = VariableDefinition+, VariableDefinition => ActionFn(120);
         assert!(__symbols.len() >= 2);
         let __sym1 = __pop_Variant15(__symbols);
         let __sym0 = __pop_Variant16(__symbols);
         let __start = __sym0.0;
         let __end = __sym1.2;
-        let __nt = super::__action122::<>(input, ast, __sym0, __sym1);
+        let __nt = super::__action120::<>(input, ast, __sym0, __sym1);
         __symbols.push((__start, __Symbol::Variant16(__nt), __end));
         (2, 52)
     }
@@ -6154,11 +6154,11 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // VariableDefinitions? = VariableDefinitions => ActionFn(123);
+        // VariableDefinitions? = VariableDefinitions => ActionFn(121);
         let __sym0 = __pop_Variant31(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action123::<>(input, ast, __sym0);
+        let __nt = super::__action121::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant32(__nt), __end));
         (1, 54)
     }
@@ -6172,10 +6172,10 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // VariableDefinitions? =  => ActionFn(124);
+        // VariableDefinitions? =  => ActionFn(122);
         let __start = __lookahead_start.cloned().or_else(|| __symbols.last().map(|s| s.2)).unwrap_or_default();
         let __end = __start;
-        let __nt = super::__action124::<>(input, ast, &__start, &__end);
+        let __nt = super::__action122::<>(input, ast, &__start, &__end);
         __symbols.push((__start, __Symbol::Variant32(__nt), __end));
         (0, 54)
     }
@@ -6225,10 +6225,10 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // WrappingType* =  => ActionFn(107);
+        // WrappingType* =  => ActionFn(105);
         let __start = __lookahead_start.cloned().or_else(|| __symbols.last().map(|s| s.2)).unwrap_or_default();
         let __end = __start;
-        let __nt = super::__action107::<>(input, ast, &__start, &__end);
+        let __nt = super::__action105::<>(input, ast, &__start, &__end);
         __symbols.push((__start, __Symbol::Variant34(__nt), __end));
         (0, 56)
     }
@@ -6242,11 +6242,11 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> (usize, usize)
     {
-        // WrappingType* = WrappingType+ => ActionFn(108);
+        // WrappingType* = WrappingType+ => ActionFn(106);
         let __sym0 = __pop_Variant34(__symbols);
         let __start = __sym0.0;
         let __end = __sym0.2;
-        let __nt = super::__action108::<>(input, ast, __sym0);
+        let __nt = super::__action106::<>(input, ast, __sym0);
         __symbols.push((__start, __Symbol::Variant34(__nt), __end));
         (1, 56)
     }
@@ -6356,8 +6356,12 @@ fn __action3<'input>(
 fn __action4<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
+    (_, operation_type_start, _): (usize, usize, usize),
     (_, operation_type, _): (usize, OperationType, usize),
+    (_, operation_type_end, _): (usize, usize, usize),
+    (_, name_start, _): (usize, usize, usize),
     (_, name, _): (usize, Option<StringId>, usize),
+    (_, name_end, _): (usize, usize, usize),
     (_, variable_definitions, _): (usize, Option<Vec<()>>, usize),
     (_, directives, _): (usize, IdRange<DirectiveId>, usize),
     (_, selection_set, _): (usize, IdRange<SelectionId>, usize),
@@ -6367,7 +6371,9 @@ fn __action4<'input>(
             ast.variable_definition_range(variable_definitions.map(|defs| defs.len()));
         OperationDefinitionRecord {
             operation_type,
+            operation_type_span: Some(Span::new(operation_type_start, operation_type_end)),
             name,
+            name_span: Some(Span::new(name_start, name_end)),
             variable_definitions,
             directives,
             selection_set,
@@ -6389,7 +6395,9 @@ fn __action5<'input>(
     {
         OperationDefinitionRecord {
             operation_type: OperationType::Query,
+            operation_type_span: None,
             name: None,
+            name_span: None,
             selection_set,
             variable_definitions: Default::default(),
             directives: Default::default(),
@@ -6407,15 +6415,21 @@ fn __action6<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
+    (_, name_start, _): (usize, usize, usize),
     (_, name, _): (usize, StringId, usize),
+    (_, name_end, _): (usize, usize, usize),
+    (_, type_condition_start, _): (usize, usize, usize),
     (_, type_condition, _): (usize, StringId, usize),
+    (_, type_condition_end, _): (usize, usize, usize),
     (_, directives, _): (usize, IdRange<DirectiveId>, usize),
     (_, selection_set, _): (usize, IdRange<SelectionId>, usize),
 ) -> FragmentDefinitionRecord {
     {
         FragmentDefinitionRecord {
             name,
+            name_span: Span::new(name_start, name_end),
             type_condition,
+            type_condition_span: Span::new(type_condition_start, type_condition_end),
             directives,
             selection_set,
         }
@@ -6491,8 +6505,10 @@ fn __action10<'input>(
 fn __action11<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
+    (_, name_start, _): (usize, usize, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, name, _): (usize, StringId, usize),
+    (_, name_end, _): (usize, usize, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, ty, _): (usize, TypeId, usize),
     (_, default_value, _): (usize, Option<ConstValueId>, usize),
@@ -6501,6 +6517,7 @@ fn __action11<'input>(
     {
         ast.variable_definition(VariableDefinitionRecord {
             name,
+            name_span: Span::new(name_start, name_end),
             ty,
             default_value,
             directives,
@@ -6552,8 +6569,12 @@ fn __action13<'input>(
 fn __action14<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
+    (_, alias_start, _): (usize, usize, usize),
     (_, alias, _): (usize, Option<StringId>, usize),
+    (_, alias_end, _): (usize, usize, usize),
+    (_, name_start, _): (usize, usize, usize),
     (_, name, _): (usize, StringId, usize),
+    (_, name_end, _): (usize, usize, usize),
     (_, arguments, _): (usize, Option<Vec<ArgumentRecord>>, usize),
     (_, directives, _): (usize, IdRange<DirectiveId>, usize),
     (_, selection_set, _): (usize, Option<IdRange<SelectionId>>, usize),
@@ -6564,8 +6585,10 @@ fn __action14<'input>(
             .map(|args| ast.arguments(args))
             .unwrap_or_default();
         SelectionRecord::Field(ast.field_selection(FieldSelectionRecord {
+            alias_span: alias.as_ref().map(|_| Span::new(alias_start, alias_end)),
             alias,
             name,
+            name_span: Span::new(alias_start, alias_end),
             arguments,
             directives,
             selection_set,
@@ -6583,12 +6606,15 @@ fn __action15<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
+    (_, name_start, _): (usize, usize, usize),
     (_, fragment_name, _): (usize, StringId, usize),
+    (_, name_end, _): (usize, usize, usize),
     (_, directives, _): (usize, IdRange<DirectiveId>, usize),
 ) -> SelectionRecord {
     {
         SelectionRecord::FragmentSpread(ast.fragment_spread(FragmentSpreadRecord {
             fragment_name,
+            fragment_name_span: Span::new(name_start, name_end),
             directives,
         }))
     }
@@ -6604,16 +6630,23 @@ fn __action16<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
     (_, _, _): (usize, lexer::Token<'input>, usize),
+    (_, type_condition_start, _): (usize, usize, usize),
     (_, type_condition, _): (usize, Option<StringId>, usize),
+    (_, type_condition_end, _): (usize, usize, usize),
     (_, directives, _): (usize, IdRange<DirectiveId>, usize),
     (_, selection_set, _): (usize, IdRange<SelectionId>, usize),
 ) -> SelectionRecord {
     {
-        SelectionRecord::InlineFragment(ast.inline_fragment(InlineFragmentRecord {
-            type_condition,
-            directives,
-            selection_set,
-        }))
+        SelectionRecord::InlineFragment(
+            ast.inline_fragment(InlineFragmentRecord {
+                type_condition_span: type_condition
+                    .as_ref()
+                    .map(|_| Span::new(type_condition_start, type_condition_end)),
+                type_condition,
+                directives,
+                selection_set,
+            }),
+        )
     }
 }
 
@@ -6751,15 +6784,21 @@ fn __action24<'input>(
 fn __action25<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
+    (_, name_start, _): (usize, usize, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, name, _): (usize, StringId, usize),
+    (_, name_end, _): (usize, usize, usize),
     (_, arguments, _): (usize, Option<Vec<ArgumentRecord>>, usize),
 ) {
     {
         let arguments = arguments
             .map(|args| ast.arguments(args))
             .unwrap_or_default();
-        ast.directive(DirectiveRecord { name, arguments });
+        ast.directive(DirectiveRecord {
+            name,
+            name_span: Span::new(name_start, name_end),
+            arguments,
+        });
     }
 }
 
@@ -6788,12 +6827,18 @@ fn __action26<'input>(
 fn __action27<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
+    (_, name_start, _): (usize, usize, usize),
     (_, name, _): (usize, StringId, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
+    (_, name_end, _): (usize, usize, usize),
     (_, value, _): (usize, ValueId, usize),
 ) -> ArgumentRecord {
     {
-        ArgumentRecord { name, value }
+        ArgumentRecord {
+            name,
+            name_span: Span::new(name_start, name_end),
+            value,
+        }
     }
 }
 
@@ -7944,23 +7989,12 @@ fn __action98<'input>(
 }
 
 #[allow(unused_variables)]
-#[allow(clippy::needless_lifetimes)]
-fn __action99<'input>(
-    input: &'input str,
-    ast: &mut ExecutableAstWriter,
-    __lookbehind: &usize,
-    __lookahead: &usize,
-) -> usize {
-    *__lookbehind
-}
-
-#[allow(unused_variables)]
 #[allow(
     clippy::too_many_arguments,
     clippy::needless_lifetimes,
     clippy::just_underscores_and_digits
 )]
-fn __action100<'input>(
+fn __action99<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
     __lookbehind: &usize,
@@ -7975,7 +8009,7 @@ fn __action100<'input>(
     clippy::needless_lifetimes,
     clippy::just_underscores_and_digits
 )]
-fn __action101<'input>(
+fn __action100<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
     (_, v, _): (usize, alloc::vec::Vec<ValueRecord>, usize),
@@ -7984,14 +8018,32 @@ fn __action101<'input>(
 }
 
 #[allow(unused_variables)]
-#[allow(clippy::needless_lifetimes)]
-fn __action102<'input>(
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action101<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
-) -> usize {
-    *__lookahead
+) -> alloc::vec::Vec<ArgumentRecord> {
+    alloc::vec![]
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action102<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    (_, v, _): (usize, alloc::vec::Vec<ArgumentRecord>, usize),
+) -> alloc::vec::Vec<ArgumentRecord> {
+    v
 }
 
 #[allow(unused_variables)]
@@ -8005,7 +8057,7 @@ fn __action103<'input>(
     ast: &mut ExecutableAstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
-) -> alloc::vec::Vec<ArgumentRecord> {
+) -> alloc::vec::Vec<()> {
     alloc::vec![]
 }
 
@@ -8018,8 +8070,8 @@ fn __action103<'input>(
 fn __action104<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
-    (_, v, _): (usize, alloc::vec::Vec<ArgumentRecord>, usize),
-) -> alloc::vec::Vec<ArgumentRecord> {
+    (_, v, _): (usize, alloc::vec::Vec<()>, usize),
+) -> alloc::vec::Vec<()> {
     v
 }
 
@@ -8034,35 +8086,6 @@ fn __action105<'input>(
     ast: &mut ExecutableAstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
-) -> alloc::vec::Vec<()> {
-    alloc::vec![]
-}
-
-#[allow(unused_variables)]
-#[allow(
-    clippy::too_many_arguments,
-    clippy::needless_lifetimes,
-    clippy::just_underscores_and_digits
-)]
-fn __action106<'input>(
-    input: &'input str,
-    ast: &mut ExecutableAstWriter,
-    (_, v, _): (usize, alloc::vec::Vec<()>, usize),
-) -> alloc::vec::Vec<()> {
-    v
-}
-
-#[allow(unused_variables)]
-#[allow(
-    clippy::too_many_arguments,
-    clippy::needless_lifetimes,
-    clippy::just_underscores_and_digits
-)]
-fn __action107<'input>(
-    input: &'input str,
-    ast: &mut ExecutableAstWriter,
-    __lookbehind: &usize,
-    __lookahead: &usize,
 ) -> alloc::vec::Vec<WrappingType> {
     alloc::vec![]
 }
@@ -8073,7 +8096,7 @@ fn __action107<'input>(
     clippy::needless_lifetimes,
     clippy::just_underscores_and_digits
 )]
-fn __action108<'input>(
+fn __action106<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
     (_, v, _): (usize, alloc::vec::Vec<WrappingType>, usize),
@@ -8087,11 +8110,40 @@ fn __action108<'input>(
     clippy::needless_lifetimes,
     clippy::just_underscores_and_digits
 )]
-fn __action109<'input>(
+fn __action107<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
     (_, __0, _): (usize, StringId, usize),
 ) -> Option<StringId> {
+    Some(__0)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action108<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __lookbehind: &usize,
+    __lookahead: &usize,
+) -> Option<StringId> {
+    None
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action109<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    (_, __0, _): (usize, IdRange<SelectionId>, usize),
+) -> Option<IdRange<SelectionId>> {
     Some(__0)
 }
 
@@ -8106,7 +8158,7 @@ fn __action110<'input>(
     ast: &mut ExecutableAstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
-) -> Option<StringId> {
+) -> Option<IdRange<SelectionId>> {
     None
 }
 
@@ -8119,8 +8171,8 @@ fn __action110<'input>(
 fn __action111<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
-    (_, __0, _): (usize, IdRange<SelectionId>, usize),
-) -> Option<IdRange<SelectionId>> {
+    (_, __0, _): (usize, Vec<ArgumentRecord>, usize),
+) -> Option<Vec<ArgumentRecord>> {
     Some(__0)
 }
 
@@ -8135,7 +8187,7 @@ fn __action112<'input>(
     ast: &mut ExecutableAstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
-) -> Option<IdRange<SelectionId>> {
+) -> Option<Vec<ArgumentRecord>> {
     None
 }
 
@@ -8148,8 +8200,8 @@ fn __action112<'input>(
 fn __action113<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
-    (_, __0, _): (usize, Vec<ArgumentRecord>, usize),
-) -> Option<Vec<ArgumentRecord>> {
+    (_, __0, _): (usize, StringId, usize),
+) -> Option<StringId> {
     Some(__0)
 }
 
@@ -8164,7 +8216,7 @@ fn __action114<'input>(
     ast: &mut ExecutableAstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
-) -> Option<Vec<ArgumentRecord>> {
+) -> Option<StringId> {
     None
 }
 
@@ -8175,35 +8227,6 @@ fn __action114<'input>(
     clippy::just_underscores_and_digits
 )]
 fn __action115<'input>(
-    input: &'input str,
-    ast: &mut ExecutableAstWriter,
-    (_, __0, _): (usize, StringId, usize),
-) -> Option<StringId> {
-    Some(__0)
-}
-
-#[allow(unused_variables)]
-#[allow(
-    clippy::too_many_arguments,
-    clippy::needless_lifetimes,
-    clippy::just_underscores_and_digits
-)]
-fn __action116<'input>(
-    input: &'input str,
-    ast: &mut ExecutableAstWriter,
-    __lookbehind: &usize,
-    __lookahead: &usize,
-) -> Option<StringId> {
-    None
-}
-
-#[allow(unused_variables)]
-#[allow(
-    clippy::too_many_arguments,
-    clippy::needless_lifetimes,
-    clippy::just_underscores_and_digits
-)]
-fn __action117<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
     (_, __0, _): (usize, SelectionRecord, usize),
@@ -8217,7 +8240,7 @@ fn __action117<'input>(
     clippy::needless_lifetimes,
     clippy::just_underscores_and_digits
 )]
-fn __action118<'input>(
+fn __action116<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
     (_, v, _): (usize, alloc::vec::Vec<SelectionRecord>, usize),
@@ -8236,7 +8259,7 @@ fn __action118<'input>(
     clippy::needless_lifetimes,
     clippy::just_underscores_and_digits
 )]
-fn __action119<'input>(
+fn __action117<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
     (_, __0, _): (usize, ConstValueId, usize),
@@ -8250,7 +8273,7 @@ fn __action119<'input>(
     clippy::needless_lifetimes,
     clippy::just_underscores_and_digits
 )]
-fn __action120<'input>(
+fn __action118<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
     __lookbehind: &usize,
@@ -8265,7 +8288,7 @@ fn __action120<'input>(
     clippy::needless_lifetimes,
     clippy::just_underscores_and_digits
 )]
-fn __action121<'input>(
+fn __action119<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
     (_, __0, _): (usize, (), usize),
@@ -8279,7 +8302,7 @@ fn __action121<'input>(
     clippy::needless_lifetimes,
     clippy::just_underscores_and_digits
 )]
-fn __action122<'input>(
+fn __action120<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
     (_, v, _): (usize, alloc::vec::Vec<()>, usize),
@@ -8298,11 +8321,40 @@ fn __action122<'input>(
     clippy::needless_lifetimes,
     clippy::just_underscores_and_digits
 )]
-fn __action123<'input>(
+fn __action121<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
     (_, __0, _): (usize, Vec<()>, usize),
 ) -> Option<Vec<()>> {
+    Some(__0)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action122<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __lookbehind: &usize,
+    __lookahead: &usize,
+) -> Option<Vec<()>> {
+    None
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action123<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    (_, __0, _): (usize, StringId, usize),
+) -> Option<StringId> {
     Some(__0)
 }
 
@@ -8317,37 +8369,30 @@ fn __action124<'input>(
     ast: &mut ExecutableAstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
-) -> Option<Vec<()>> {
+) -> Option<StringId> {
     None
 }
 
 #[allow(unused_variables)]
-#[allow(
-    clippy::too_many_arguments,
-    clippy::needless_lifetimes,
-    clippy::just_underscores_and_digits
-)]
+#[allow(clippy::needless_lifetimes)]
 fn __action125<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
-    (_, __0, _): (usize, StringId, usize),
-) -> Option<StringId> {
-    Some(__0)
+    __lookbehind: &usize,
+    __lookahead: &usize,
+) -> usize {
+    *__lookbehind
 }
 
 #[allow(unused_variables)]
-#[allow(
-    clippy::too_many_arguments,
-    clippy::needless_lifetimes,
-    clippy::just_underscores_and_digits
-)]
+#[allow(clippy::needless_lifetimes)]
 fn __action126<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
     __lookbehind: &usize,
     __lookahead: &usize,
-) -> Option<StringId> {
-    None
+) -> usize {
+    *__lookahead
 }
 
 #[allow(unused_variables)]
@@ -8661,15 +8706,15 @@ fn __action145<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
     __0: (usize, StringId, usize),
-    __1: (usize, usize, usize),
-    __2: (usize, lexer::Token<'input>, usize),
-    __3: (usize, ConstValueId, usize),
-) -> (values::ids::StringId, Span, ConstValueId) {
+    __1: (usize, lexer::Token<'input>, usize),
+    __2: (usize, usize, usize),
+    __3: (usize, ValueId, usize),
+) -> ArgumentRecord {
     let __start0 = __0.0;
     let __end0 = __0.0;
-    let __temp0 = __action102(input, ast, &__start0, &__end0);
+    let __temp0 = __action126(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action32(input, ast, __temp0, __0, __1, __2, __3)
+    __action27(input, ast, __temp0, __0, __1, __2, __3)
 }
 
 #[allow(unused_variables)]
@@ -8681,6 +8726,27 @@ fn __action145<'input>(
 fn __action146<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
+    __0: (usize, StringId, usize),
+    __1: (usize, usize, usize),
+    __2: (usize, lexer::Token<'input>, usize),
+    __3: (usize, ConstValueId, usize),
+) -> (values::ids::StringId, Span, ConstValueId) {
+    let __start0 = __0.0;
+    let __end0 = __0.0;
+    let __temp0 = __action126(input, ast, &__start0, &__end0);
+    let __temp0 = (__start0, __temp0, __end0);
+    __action32(input, ast, __temp0, __0, __1, __2, __3)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action147<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, alloc::vec::Vec<ValueRecord>, usize),
     __2: (usize, lexer::Token<'input>, usize),
@@ -8688,7 +8754,7 @@ fn __action146<'input>(
 ) -> ValueRecord {
     let __start0 = __0.0;
     let __end0 = __0.0;
-    let __temp0 = __action102(input, ast, &__start0, &__end0);
+    let __temp0 = __action126(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
     __action30(input, ast, __temp0, __0, __1, __2, __3)
 }
@@ -8699,7 +8765,7 @@ fn __action146<'input>(
     clippy::needless_lifetimes,
     clippy::just_underscores_and_digits
 )]
-fn __action147<'input>(
+fn __action148<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
@@ -8713,30 +8779,9 @@ fn __action147<'input>(
 ) -> ValueRecord {
     let __start0 = __0.0;
     let __end0 = __0.0;
-    let __temp0 = __action102(input, ast, &__start0, &__end0);
+    let __temp0 = __action126(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
     __action31(input, ast, __temp0, __0, __1, __2, __3)
-}
-
-#[allow(unused_variables)]
-#[allow(
-    clippy::too_many_arguments,
-    clippy::needless_lifetimes,
-    clippy::just_underscores_and_digits
-)]
-fn __action148<'input>(
-    input: &'input str,
-    ast: &mut ExecutableAstWriter,
-    __0: (usize, StringId, usize),
-    __1: (usize, usize, usize),
-    __2: (usize, lexer::Token<'input>, usize),
-    __3: (usize, ValueId, usize),
-) -> (values::ids::StringId, Span, ValueId) {
-    let __start0 = __0.0;
-    let __end0 = __0.0;
-    let __temp0 = __action102(input, ast, &__start0, &__end0);
-    let __temp0 = (__start0, __temp0, __end0);
-    __action38(input, ast, __temp0, __0, __1, __2, __3)
 }
 
 #[allow(unused_variables)]
@@ -8748,14 +8793,16 @@ fn __action148<'input>(
 fn __action149<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
-    __0: (usize, &'input str, usize),
-    __1: (usize, usize, usize),
-) -> ValueRecord {
+    __0: (usize, lexer::Token<'input>, usize),
+    __1: (usize, StringId, usize),
+    __2: (usize, usize, usize),
+    __3: (usize, Option<Vec<ArgumentRecord>>, usize),
+) {
     let __start0 = __0.0;
     let __end0 = __0.0;
-    let __temp0 = __action102(input, ast, &__start0, &__end0);
+    let __temp0 = __action126(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action39(input, ast, __temp0, __0, __1)
+    __action25(input, ast, __temp0, __0, __1, __2, __3)
 }
 
 #[allow(unused_variables)]
@@ -8767,14 +8814,25 @@ fn __action149<'input>(
 fn __action150<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
-    __0: (usize, &'input str, usize),
-    __1: (usize, usize, usize),
-) -> ValueRecord {
-    let __start0 = __0.0;
-    let __end0 = __0.0;
-    let __temp0 = __action102(input, ast, &__start0, &__end0);
+    __0: (usize, lexer::Token<'input>, usize),
+    __1: (usize, StringId, usize),
+    __2: (usize, usize, usize),
+    __3: (usize, StringId, usize),
+    __4: (usize, usize, usize),
+    __5: (usize, IdRange<DirectiveId>, usize),
+    __6: (usize, IdRange<SelectionId>, usize),
+) -> FragmentDefinitionRecord {
+    let __start0 = __0.2;
+    let __end0 = __1.0;
+    let __start1 = __2.2;
+    let __end1 = __3.0;
+    let __temp0 = __action126(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action40(input, ast, __temp0, __0, __1)
+    let __temp1 = __action126(input, ast, &__start1, &__end1);
+    let __temp1 = (__start1, __temp1, __end1);
+    __action6(
+        input, ast, __0, __temp0, __1, __2, __temp1, __3, __4, __5, __6,
+    )
 }
 
 #[allow(unused_variables)]
@@ -8786,17 +8844,16 @@ fn __action150<'input>(
 fn __action151<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
-    __0: (usize, &'input str, usize),
+    __0: (usize, StringId, usize),
     __1: (usize, usize, usize),
-) -> Result<
-    ValueRecord,
-    __lalrpop_util::ParseError<usize, lexer::Token<'input>, crate::parser::AdditionalErrors>,
-> {
+    __2: (usize, lexer::Token<'input>, usize),
+    __3: (usize, ValueId, usize),
+) -> (values::ids::StringId, Span, ValueId) {
     let __start0 = __0.0;
     let __end0 = __0.0;
-    let __temp0 = __action102(input, ast, &__start0, &__end0);
+    let __temp0 = __action126(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action41(input, ast, __temp0, __0, __1)
+    __action38(input, ast, __temp0, __0, __1, __2, __3)
 }
 
 #[allow(unused_variables)]
@@ -8808,14 +8865,25 @@ fn __action151<'input>(
 fn __action152<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
-    __0: (usize, &'input str, usize),
+    __0: (usize, OperationType, usize),
     __1: (usize, usize, usize),
-) -> ValueRecord {
+    __2: (usize, Option<StringId>, usize),
+    __3: (usize, usize, usize),
+    __4: (usize, Option<Vec<()>>, usize),
+    __5: (usize, IdRange<DirectiveId>, usize),
+    __6: (usize, IdRange<SelectionId>, usize),
+) -> OperationDefinitionRecord {
     let __start0 = __0.0;
     let __end0 = __0.0;
-    let __temp0 = __action102(input, ast, &__start0, &__end0);
+    let __start1 = __1.2;
+    let __end1 = __2.0;
+    let __temp0 = __action126(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action42(input, ast, __temp0, __0, __1)
+    let __temp1 = __action126(input, ast, &__start1, &__end1);
+    let __temp1 = (__start1, __temp1, __end1);
+    __action4(
+        input, ast, __temp0, __0, __1, __temp1, __2, __3, __4, __5, __6,
+    )
 }
 
 #[allow(unused_variables)]
@@ -8827,14 +8895,14 @@ fn __action152<'input>(
 fn __action153<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
-    __0: (usize, lexer::Token<'input>, usize),
+    __0: (usize, &'input str, usize),
     __1: (usize, usize, usize),
 ) -> ValueRecord {
     let __start0 = __0.0;
     let __end0 = __0.0;
-    let __temp0 = __action102(input, ast, &__start0, &__end0);
+    let __temp0 = __action126(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action43(input, ast, __temp0, __0, __1)
+    __action39(input, ast, __temp0, __0, __1)
 }
 
 #[allow(unused_variables)]
@@ -8846,14 +8914,14 @@ fn __action153<'input>(
 fn __action154<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
-    __0: (usize, lexer::Token<'input>, usize),
+    __0: (usize, &'input str, usize),
     __1: (usize, usize, usize),
 ) -> ValueRecord {
     let __start0 = __0.0;
     let __end0 = __0.0;
-    let __temp0 = __action102(input, ast, &__start0, &__end0);
+    let __temp0 = __action126(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action44(input, ast, __temp0, __0, __1)
+    __action40(input, ast, __temp0, __0, __1)
 }
 
 #[allow(unused_variables)]
@@ -8865,14 +8933,17 @@ fn __action154<'input>(
 fn __action155<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
-    __0: (usize, lexer::Token<'input>, usize),
+    __0: (usize, &'input str, usize),
     __1: (usize, usize, usize),
-) -> ValueRecord {
+) -> Result<
+    ValueRecord,
+    __lalrpop_util::ParseError<usize, lexer::Token<'input>, crate::parser::AdditionalErrors>,
+> {
     let __start0 = __0.0;
     let __end0 = __0.0;
-    let __temp0 = __action102(input, ast, &__start0, &__end0);
+    let __temp0 = __action126(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action45(input, ast, __temp0, __0, __1)
+    __action41(input, ast, __temp0, __0, __1)
 }
 
 #[allow(unused_variables)]
@@ -8884,14 +8955,14 @@ fn __action155<'input>(
 fn __action156<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
-    __0: (usize, StringId, usize),
+    __0: (usize, &'input str, usize),
     __1: (usize, usize, usize),
 ) -> ValueRecord {
     let __start0 = __0.0;
     let __end0 = __0.0;
-    let __temp0 = __action102(input, ast, &__start0, &__end0);
+    let __temp0 = __action126(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action46(input, ast, __temp0, __0, __1)
+    __action42(input, ast, __temp0, __0, __1)
 }
 
 #[allow(unused_variables)]
@@ -8904,14 +8975,13 @@ fn __action157<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
-    __1: (usize, StringId, usize),
-    __2: (usize, usize, usize),
+    __1: (usize, usize, usize),
 ) -> ValueRecord {
     let __start0 = __0.0;
     let __end0 = __0.0;
-    let __temp0 = __action102(input, ast, &__start0, &__end0);
+    let __temp0 = __action126(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action34(input, ast, __temp0, __0, __1, __2)
+    __action43(input, ast, __temp0, __0, __1)
 }
 
 #[allow(unused_variables)]
@@ -8924,13 +8994,166 @@ fn __action158<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
+    __1: (usize, usize, usize),
+) -> ValueRecord {
+    let __start0 = __0.0;
+    let __end0 = __0.0;
+    let __temp0 = __action126(input, ast, &__start0, &__end0);
+    let __temp0 = (__start0, __temp0, __end0);
+    __action44(input, ast, __temp0, __0, __1)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action159<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __0: (usize, lexer::Token<'input>, usize),
+    __1: (usize, usize, usize),
+) -> ValueRecord {
+    let __start0 = __0.0;
+    let __end0 = __0.0;
+    let __temp0 = __action126(input, ast, &__start0, &__end0);
+    let __temp0 = (__start0, __temp0, __end0);
+    __action45(input, ast, __temp0, __0, __1)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action160<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __0: (usize, StringId, usize),
+    __1: (usize, usize, usize),
+) -> ValueRecord {
+    let __start0 = __0.0;
+    let __end0 = __0.0;
+    let __temp0 = __action126(input, ast, &__start0, &__end0);
+    let __temp0 = (__start0, __temp0, __end0);
+    __action46(input, ast, __temp0, __0, __1)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action161<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __0: (usize, Option<StringId>, usize),
+    __1: (usize, usize, usize),
+    __2: (usize, StringId, usize),
+    __3: (usize, usize, usize),
+    __4: (usize, Option<Vec<ArgumentRecord>>, usize),
+    __5: (usize, IdRange<DirectiveId>, usize),
+    __6: (usize, Option<IdRange<SelectionId>>, usize),
+) -> SelectionRecord {
+    let __start0 = __0.0;
+    let __end0 = __0.0;
+    let __start1 = __1.2;
+    let __end1 = __2.0;
+    let __temp0 = __action126(input, ast, &__start0, &__end0);
+    let __temp0 = (__start0, __temp0, __end0);
+    let __temp1 = __action126(input, ast, &__start1, &__end1);
+    let __temp1 = (__start1, __temp1, __end1);
+    __action14(
+        input, ast, __temp0, __0, __1, __temp1, __2, __3, __4, __5, __6,
+    )
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action162<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __0: (usize, lexer::Token<'input>, usize),
+    __1: (usize, StringId, usize),
+    __2: (usize, usize, usize),
+    __3: (usize, IdRange<DirectiveId>, usize),
+) -> SelectionRecord {
+    let __start0 = __0.2;
+    let __end0 = __1.0;
+    let __temp0 = __action126(input, ast, &__start0, &__end0);
+    let __temp0 = (__start0, __temp0, __end0);
+    __action15(input, ast, __0, __temp0, __1, __2, __3)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action163<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __0: (usize, lexer::Token<'input>, usize),
+    __1: (usize, Option<StringId>, usize),
+    __2: (usize, IdRange<DirectiveId>, usize),
+    __3: (usize, IdRange<SelectionId>, usize),
+) -> SelectionRecord {
+    let __start0 = __0.2;
+    let __end0 = __1.0;
+    let __start1 = __1.2;
+    let __end1 = __2.0;
+    let __temp0 = __action126(input, ast, &__start0, &__end0);
+    let __temp0 = (__start0, __temp0, __end0);
+    let __temp1 = __action126(input, ast, &__start1, &__end1);
+    let __temp1 = (__start1, __temp1, __end1);
+    __action16(input, ast, __0, __temp0, __1, __temp1, __2, __3)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action164<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __0: (usize, lexer::Token<'input>, usize),
+    __1: (usize, StringId, usize),
+    __2: (usize, usize, usize),
+) -> ValueRecord {
+    let __start0 = __0.0;
+    let __end0 = __0.0;
+    let __temp0 = __action126(input, ast, &__start0, &__end0);
+    let __temp0 = (__start0, __temp0, __end0);
+    __action34(input, ast, __temp0, __0, __1, __2)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action165<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, alloc::vec::Vec<ValueRecord>, usize),
     __2: (usize, lexer::Token<'input>, usize),
     __3: (usize, usize, usize),
 ) -> ValueRecord {
     let __start0 = __0.0;
     let __end0 = __0.0;
-    let __temp0 = __action102(input, ast, &__start0, &__end0);
+    let __temp0 = __action126(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
     __action36(input, ast, __temp0, __0, __1, __2, __3)
 }
@@ -8941,7 +9164,7 @@ fn __action158<'input>(
     clippy::needless_lifetimes,
     clippy::just_underscores_and_digits
 )]
-fn __action159<'input>(
+fn __action166<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
@@ -8955,150 +9178,9 @@ fn __action159<'input>(
 ) -> ValueRecord {
     let __start0 = __0.0;
     let __end0 = __0.0;
-    let __temp0 = __action102(input, ast, &__start0, &__end0);
+    let __temp0 = __action126(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
     __action37(input, ast, __temp0, __0, __1, __2, __3)
-}
-
-#[allow(unused_variables)]
-#[allow(
-    clippy::too_many_arguments,
-    clippy::needless_lifetimes,
-    clippy::just_underscores_and_digits
-)]
-fn __action160<'input>(
-    input: &'input str,
-    ast: &mut ExecutableAstWriter,
-    __0: (usize, StringId, usize),
-    __1: (usize, lexer::Token<'input>, usize),
-    __2: (usize, ConstValueId, usize),
-) -> (values::ids::StringId, Span, ConstValueId) {
-    let __start0 = __0.2;
-    let __end0 = __1.0;
-    let __temp0 = __action99(input, ast, &__start0, &__end0);
-    let __temp0 = (__start0, __temp0, __end0);
-    __action145(input, ast, __0, __temp0, __1, __2)
-}
-
-#[allow(unused_variables)]
-#[allow(
-    clippy::too_many_arguments,
-    clippy::needless_lifetimes,
-    clippy::just_underscores_and_digits
-)]
-fn __action161<'input>(
-    input: &'input str,
-    ast: &mut ExecutableAstWriter,
-    __0: (usize, lexer::Token<'input>, usize),
-    __1: (usize, alloc::vec::Vec<ValueRecord>, usize),
-    __2: (usize, lexer::Token<'input>, usize),
-) -> ValueRecord {
-    let __start0 = __2.2;
-    let __end0 = __2.2;
-    let __temp0 = __action99(input, ast, &__start0, &__end0);
-    let __temp0 = (__start0, __temp0, __end0);
-    __action146(input, ast, __0, __1, __2, __temp0)
-}
-
-#[allow(unused_variables)]
-#[allow(
-    clippy::too_many_arguments,
-    clippy::needless_lifetimes,
-    clippy::just_underscores_and_digits
-)]
-fn __action162<'input>(
-    input: &'input str,
-    ast: &mut ExecutableAstWriter,
-    __0: (usize, lexer::Token<'input>, usize),
-    __1: (
-        usize,
-        alloc::vec::Vec<(values::ids::StringId, Span, ConstValueId)>,
-        usize,
-    ),
-    __2: (usize, lexer::Token<'input>, usize),
-) -> ValueRecord {
-    let __start0 = __2.2;
-    let __end0 = __2.2;
-    let __temp0 = __action99(input, ast, &__start0, &__end0);
-    let __temp0 = (__start0, __temp0, __end0);
-    __action147(input, ast, __0, __1, __2, __temp0)
-}
-
-#[allow(unused_variables)]
-#[allow(
-    clippy::too_many_arguments,
-    clippy::needless_lifetimes,
-    clippy::just_underscores_and_digits
-)]
-fn __action163<'input>(
-    input: &'input str,
-    ast: &mut ExecutableAstWriter,
-    __0: (usize, StringId, usize),
-    __1: (usize, lexer::Token<'input>, usize),
-    __2: (usize, ValueId, usize),
-) -> (values::ids::StringId, Span, ValueId) {
-    let __start0 = __0.2;
-    let __end0 = __1.0;
-    let __temp0 = __action99(input, ast, &__start0, &__end0);
-    let __temp0 = (__start0, __temp0, __end0);
-    __action148(input, ast, __0, __temp0, __1, __2)
-}
-
-#[allow(unused_variables)]
-#[allow(
-    clippy::too_many_arguments,
-    clippy::needless_lifetimes,
-    clippy::just_underscores_and_digits
-)]
-fn __action164<'input>(
-    input: &'input str,
-    ast: &mut ExecutableAstWriter,
-    __0: (usize, &'input str, usize),
-) -> ValueRecord {
-    let __start0 = __0.2;
-    let __end0 = __0.2;
-    let __temp0 = __action99(input, ast, &__start0, &__end0);
-    let __temp0 = (__start0, __temp0, __end0);
-    __action149(input, ast, __0, __temp0)
-}
-
-#[allow(unused_variables)]
-#[allow(
-    clippy::too_many_arguments,
-    clippy::needless_lifetimes,
-    clippy::just_underscores_and_digits
-)]
-fn __action165<'input>(
-    input: &'input str,
-    ast: &mut ExecutableAstWriter,
-    __0: (usize, &'input str, usize),
-) -> ValueRecord {
-    let __start0 = __0.2;
-    let __end0 = __0.2;
-    let __temp0 = __action99(input, ast, &__start0, &__end0);
-    let __temp0 = (__start0, __temp0, __end0);
-    __action150(input, ast, __0, __temp0)
-}
-
-#[allow(unused_variables)]
-#[allow(
-    clippy::too_many_arguments,
-    clippy::needless_lifetimes,
-    clippy::just_underscores_and_digits
-)]
-fn __action166<'input>(
-    input: &'input str,
-    ast: &mut ExecutableAstWriter,
-    __0: (usize, &'input str, usize),
-) -> Result<
-    ValueRecord,
-    __lalrpop_util::ParseError<usize, lexer::Token<'input>, crate::parser::AdditionalErrors>,
-> {
-    let __start0 = __0.2;
-    let __end0 = __0.2;
-    let __temp0 = __action99(input, ast, &__start0, &__end0);
-    let __temp0 = (__start0, __temp0, __end0);
-    __action151(input, ast, __0, __temp0)
 }
 
 #[allow(unused_variables)]
@@ -9110,13 +9192,19 @@ fn __action166<'input>(
 fn __action167<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
-    __0: (usize, &'input str, usize),
-) -> ValueRecord {
-    let __start0 = __0.2;
-    let __end0 = __0.2;
-    let __temp0 = __action99(input, ast, &__start0, &__end0);
+    __0: (usize, lexer::Token<'input>, usize),
+    __1: (usize, StringId, usize),
+    __2: (usize, usize, usize),
+    __3: (usize, lexer::Token<'input>, usize),
+    __4: (usize, TypeId, usize),
+    __5: (usize, Option<ConstValueId>, usize),
+    __6: (usize, IdRange<DirectiveId>, usize),
+) {
+    let __start0 = __0.0;
+    let __end0 = __0.0;
+    let __temp0 = __action126(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action152(input, ast, __0, __temp0)
+    __action11(input, ast, __temp0, __0, __1, __2, __3, __4, __5, __6)
 }
 
 #[allow(unused_variables)]
@@ -9128,13 +9216,15 @@ fn __action167<'input>(
 fn __action168<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
-    __0: (usize, lexer::Token<'input>, usize),
-) -> ValueRecord {
-    let __start0 = __0.2;
-    let __end0 = __0.2;
-    let __temp0 = __action99(input, ast, &__start0, &__end0);
+    __0: (usize, StringId, usize),
+    __1: (usize, lexer::Token<'input>, usize),
+    __2: (usize, ValueId, usize),
+) -> ArgumentRecord {
+    let __start0 = __1.2;
+    let __end0 = __2.0;
+    let __temp0 = __action125(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action153(input, ast, __0, __temp0)
+    __action145(input, ast, __0, __1, __temp0, __2)
 }
 
 #[allow(unused_variables)]
@@ -9146,13 +9236,15 @@ fn __action168<'input>(
 fn __action169<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
-    __0: (usize, lexer::Token<'input>, usize),
-) -> ValueRecord {
+    __0: (usize, StringId, usize),
+    __1: (usize, lexer::Token<'input>, usize),
+    __2: (usize, ConstValueId, usize),
+) -> (values::ids::StringId, Span, ConstValueId) {
     let __start0 = __0.2;
-    let __end0 = __0.2;
-    let __temp0 = __action99(input, ast, &__start0, &__end0);
+    let __end0 = __1.0;
+    let __temp0 = __action125(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action154(input, ast, __0, __temp0)
+    __action146(input, ast, __0, __temp0, __1, __2)
 }
 
 #[allow(unused_variables)]
@@ -9165,12 +9257,14 @@ fn __action170<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
+    __1: (usize, alloc::vec::Vec<ValueRecord>, usize),
+    __2: (usize, lexer::Token<'input>, usize),
 ) -> ValueRecord {
-    let __start0 = __0.2;
-    let __end0 = __0.2;
-    let __temp0 = __action99(input, ast, &__start0, &__end0);
+    let __start0 = __2.2;
+    let __end0 = __2.2;
+    let __temp0 = __action125(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action155(input, ast, __0, __temp0)
+    __action147(input, ast, __0, __1, __2, __temp0)
 }
 
 #[allow(unused_variables)]
@@ -9182,13 +9276,19 @@ fn __action170<'input>(
 fn __action171<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
-    __0: (usize, StringId, usize),
+    __0: (usize, lexer::Token<'input>, usize),
+    __1: (
+        usize,
+        alloc::vec::Vec<(values::ids::StringId, Span, ConstValueId)>,
+        usize,
+    ),
+    __2: (usize, lexer::Token<'input>, usize),
 ) -> ValueRecord {
-    let __start0 = __0.2;
-    let __end0 = __0.2;
-    let __temp0 = __action99(input, ast, &__start0, &__end0);
+    let __start0 = __2.2;
+    let __end0 = __2.2;
+    let __temp0 = __action125(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action156(input, ast, __0, __temp0)
+    __action148(input, ast, __0, __1, __2, __temp0)
 }
 
 #[allow(unused_variables)]
@@ -9202,12 +9302,13 @@ fn __action172<'input>(
     ast: &mut ExecutableAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
     __1: (usize, StringId, usize),
-) -> ValueRecord {
+    __2: (usize, Option<Vec<ArgumentRecord>>, usize),
+) {
     let __start0 = __1.2;
-    let __end0 = __1.2;
-    let __temp0 = __action99(input, ast, &__start0, &__end0);
+    let __end0 = __2.0;
+    let __temp0 = __action125(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action157(input, ast, __0, __1, __temp0)
+    __action149(input, ast, __0, __1, __temp0, __2)
 }
 
 #[allow(unused_variables)]
@@ -9220,14 +9321,20 @@ fn __action173<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
-    __1: (usize, alloc::vec::Vec<ValueRecord>, usize),
-    __2: (usize, lexer::Token<'input>, usize),
-) -> ValueRecord {
-    let __start0 = __2.2;
-    let __end0 = __2.2;
-    let __temp0 = __action99(input, ast, &__start0, &__end0);
+    __1: (usize, StringId, usize),
+    __2: (usize, StringId, usize),
+    __3: (usize, IdRange<DirectiveId>, usize),
+    __4: (usize, IdRange<SelectionId>, usize),
+) -> FragmentDefinitionRecord {
+    let __start0 = __1.2;
+    let __end0 = __2.0;
+    let __start1 = __2.2;
+    let __end1 = __3.0;
+    let __temp0 = __action125(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action158(input, ast, __0, __1, __2, __temp0)
+    let __temp1 = __action125(input, ast, &__start1, &__end1);
+    let __temp1 = (__start1, __temp1, __end1);
+    __action150(input, ast, __0, __1, __temp0, __2, __temp1, __3, __4)
 }
 
 #[allow(unused_variables)]
@@ -9239,19 +9346,15 @@ fn __action173<'input>(
 fn __action174<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
-    __0: (usize, lexer::Token<'input>, usize),
-    __1: (
-        usize,
-        alloc::vec::Vec<(values::ids::StringId, Span, ValueId)>,
-        usize,
-    ),
-    __2: (usize, lexer::Token<'input>, usize),
-) -> ValueRecord {
-    let __start0 = __2.2;
-    let __end0 = __2.2;
-    let __temp0 = __action99(input, ast, &__start0, &__end0);
+    __0: (usize, StringId, usize),
+    __1: (usize, lexer::Token<'input>, usize),
+    __2: (usize, ValueId, usize),
+) -> (values::ids::StringId, Span, ValueId) {
+    let __start0 = __0.2;
+    let __end0 = __1.0;
+    let __temp0 = __action125(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action159(input, ast, __0, __1, __2, __temp0)
+    __action151(input, ast, __0, __temp0, __1, __2)
 }
 
 #[allow(unused_variables)]
@@ -9263,17 +9366,21 @@ fn __action174<'input>(
 fn __action175<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
-    __0: (usize, StringId, usize),
-    __1: (usize, StringId, usize),
-    __2: (usize, Option<Vec<ArgumentRecord>>, usize),
+    __0: (usize, OperationType, usize),
+    __1: (usize, Option<StringId>, usize),
+    __2: (usize, Option<Vec<()>>, usize),
     __3: (usize, IdRange<DirectiveId>, usize),
-    __4: (usize, Option<IdRange<SelectionId>>, usize),
-) -> SelectionRecord {
-    let __start0 = __0.0;
-    let __end0 = __0.2;
-    let __temp0 = __action115(input, ast, __0);
+    __4: (usize, IdRange<SelectionId>, usize),
+) -> OperationDefinitionRecord {
+    let __start0 = __0.2;
+    let __end0 = __1.0;
+    let __start1 = __1.2;
+    let __end1 = __2.0;
+    let __temp0 = __action125(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action14(input, ast, __temp0, __1, __2, __3, __4)
+    let __temp1 = __action125(input, ast, &__start1, &__end1);
+    let __temp1 = (__start1, __temp1, __end1);
+    __action152(input, ast, __0, __temp0, __1, __temp1, __2, __3, __4)
 }
 
 #[allow(unused_variables)]
@@ -9285,16 +9392,13 @@ fn __action175<'input>(
 fn __action176<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
-    __0: (usize, StringId, usize),
-    __1: (usize, Option<Vec<ArgumentRecord>>, usize),
-    __2: (usize, IdRange<DirectiveId>, usize),
-    __3: (usize, Option<IdRange<SelectionId>>, usize),
-) -> SelectionRecord {
-    let __start0 = __0.0;
-    let __end0 = __0.0;
-    let __temp0 = __action116(input, ast, &__start0, &__end0);
+    __0: (usize, &'input str, usize),
+) -> ValueRecord {
+    let __start0 = __0.2;
+    let __end0 = __0.2;
+    let __temp0 = __action125(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action14(input, ast, __temp0, __0, __1, __2, __3)
+    __action153(input, ast, __0, __temp0)
 }
 
 #[allow(unused_variables)]
@@ -9306,14 +9410,13 @@ fn __action176<'input>(
 fn __action177<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
-    __0: (usize, lexer::Token<'input>, usize),
-    __1: (usize, lexer::Token<'input>, usize),
-) -> Vec<ArgumentRecord> {
+    __0: (usize, &'input str, usize),
+) -> ValueRecord {
     let __start0 = __0.2;
-    let __end0 = __1.0;
-    let __temp0 = __action103(input, ast, &__start0, &__end0);
+    let __end0 = __0.2;
+    let __temp0 = __action125(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action26(input, ast, __0, __temp0, __1)
+    __action154(input, ast, __0, __temp0)
 }
 
 #[allow(unused_variables)]
@@ -9325,15 +9428,16 @@ fn __action177<'input>(
 fn __action178<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
-    __0: (usize, lexer::Token<'input>, usize),
-    __1: (usize, alloc::vec::Vec<ArgumentRecord>, usize),
-    __2: (usize, lexer::Token<'input>, usize),
-) -> Vec<ArgumentRecord> {
-    let __start0 = __1.0;
-    let __end0 = __1.2;
-    let __temp0 = __action104(input, ast, __1);
+    __0: (usize, &'input str, usize),
+) -> Result<
+    ValueRecord,
+    __lalrpop_util::ParseError<usize, lexer::Token<'input>, crate::parser::AdditionalErrors>,
+> {
+    let __start0 = __0.2;
+    let __end0 = __0.2;
+    let __temp0 = __action125(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action26(input, ast, __0, __temp0, __2)
+    __action155(input, ast, __0, __temp0)
 }
 
 #[allow(unused_variables)]
@@ -9345,15 +9449,13 @@ fn __action178<'input>(
 fn __action179<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
-    __0: (usize, lexer::Token<'input>, usize),
-    __1: (usize, StringId, usize),
-    __2: (usize, Vec<ArgumentRecord>, usize),
-) {
-    let __start0 = __2.0;
-    let __end0 = __2.2;
-    let __temp0 = __action113(input, ast, __2);
+    __0: (usize, &'input str, usize),
+) -> ValueRecord {
+    let __start0 = __0.2;
+    let __end0 = __0.2;
+    let __temp0 = __action125(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action25(input, ast, __0, __1, __temp0)
+    __action156(input, ast, __0, __temp0)
 }
 
 #[allow(unused_variables)]
@@ -9366,13 +9468,12 @@ fn __action180<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
-    __1: (usize, StringId, usize),
-) {
-    let __start0 = __1.2;
-    let __end0 = __1.2;
-    let __temp0 = __action114(input, ast, &__start0, &__end0);
+) -> ValueRecord {
+    let __start0 = __0.2;
+    let __end0 = __0.2;
+    let __temp0 = __action125(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action25(input, ast, __0, __1, __temp0)
+    __action157(input, ast, __0, __temp0)
 }
 
 #[allow(unused_variables)]
@@ -9384,17 +9485,13 @@ fn __action180<'input>(
 fn __action181<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
-    __0: (usize, StringId, usize),
-    __1: (usize, StringId, usize),
-    __2: (usize, Vec<ArgumentRecord>, usize),
-    __3: (usize, IdRange<DirectiveId>, usize),
-    __4: (usize, Option<IdRange<SelectionId>>, usize),
-) -> SelectionRecord {
-    let __start0 = __2.0;
-    let __end0 = __2.2;
-    let __temp0 = __action113(input, ast, __2);
+    __0: (usize, lexer::Token<'input>, usize),
+) -> ValueRecord {
+    let __start0 = __0.2;
+    let __end0 = __0.2;
+    let __temp0 = __action125(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action175(input, ast, __0, __1, __temp0, __3, __4)
+    __action158(input, ast, __0, __temp0)
 }
 
 #[allow(unused_variables)]
@@ -9406,16 +9503,13 @@ fn __action181<'input>(
 fn __action182<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
-    __0: (usize, StringId, usize),
-    __1: (usize, StringId, usize),
-    __2: (usize, IdRange<DirectiveId>, usize),
-    __3: (usize, Option<IdRange<SelectionId>>, usize),
-) -> SelectionRecord {
-    let __start0 = __1.2;
-    let __end0 = __2.0;
-    let __temp0 = __action114(input, ast, &__start0, &__end0);
+    __0: (usize, lexer::Token<'input>, usize),
+) -> ValueRecord {
+    let __start0 = __0.2;
+    let __end0 = __0.2;
+    let __temp0 = __action125(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action175(input, ast, __0, __1, __temp0, __2, __3)
+    __action159(input, ast, __0, __temp0)
 }
 
 #[allow(unused_variables)]
@@ -9428,15 +9522,12 @@ fn __action183<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
     __0: (usize, StringId, usize),
-    __1: (usize, Vec<ArgumentRecord>, usize),
-    __2: (usize, IdRange<DirectiveId>, usize),
-    __3: (usize, Option<IdRange<SelectionId>>, usize),
-) -> SelectionRecord {
-    let __start0 = __1.0;
-    let __end0 = __1.2;
-    let __temp0 = __action113(input, ast, __1);
+) -> ValueRecord {
+    let __start0 = __0.2;
+    let __end0 = __0.2;
+    let __temp0 = __action125(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action176(input, ast, __0, __temp0, __2, __3)
+    __action160(input, ast, __0, __temp0)
 }
 
 #[allow(unused_variables)]
@@ -9448,15 +9539,21 @@ fn __action183<'input>(
 fn __action184<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
-    __0: (usize, StringId, usize),
-    __1: (usize, IdRange<DirectiveId>, usize),
-    __2: (usize, Option<IdRange<SelectionId>>, usize),
+    __0: (usize, Option<StringId>, usize),
+    __1: (usize, StringId, usize),
+    __2: (usize, Option<Vec<ArgumentRecord>>, usize),
+    __3: (usize, IdRange<DirectiveId>, usize),
+    __4: (usize, Option<IdRange<SelectionId>>, usize),
 ) -> SelectionRecord {
     let __start0 = __0.2;
     let __end0 = __1.0;
-    let __temp0 = __action114(input, ast, &__start0, &__end0);
+    let __start1 = __1.2;
+    let __end1 = __2.0;
+    let __temp0 = __action125(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action176(input, ast, __0, __temp0, __1, __2)
+    let __temp1 = __action125(input, ast, &__start1, &__end1);
+    let __temp1 = (__start1, __temp1, __end1);
+    __action161(input, ast, __0, __temp0, __1, __temp1, __2, __3, __4)
 }
 
 #[allow(unused_variables)]
@@ -9469,13 +9566,14 @@ fn __action185<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
-    __1: (usize, lexer::Token<'input>, usize),
-) -> ValueRecord {
-    let __start0 = __0.2;
-    let __end0 = __1.0;
-    let __temp0 = __action97(input, ast, &__start0, &__end0);
+    __1: (usize, StringId, usize),
+    __2: (usize, IdRange<DirectiveId>, usize),
+) -> SelectionRecord {
+    let __start0 = __1.2;
+    let __end0 = __2.0;
+    let __temp0 = __action125(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action162(input, ast, __0, __temp0, __1)
+    __action162(input, ast, __0, __1, __temp0, __2)
 }
 
 #[allow(unused_variables)]
@@ -9488,18 +9586,13 @@ fn __action186<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
-    __1: (
-        usize,
-        alloc::vec::Vec<(values::ids::StringId, Span, ConstValueId)>,
-        usize,
-    ),
-    __2: (usize, lexer::Token<'input>, usize),
+    __1: (usize, StringId, usize),
 ) -> ValueRecord {
-    let __start0 = __1.0;
+    let __start0 = __1.2;
     let __end0 = __1.2;
-    let __temp0 = __action98(input, ast, __1);
+    let __temp0 = __action125(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action162(input, ast, __0, __temp0, __2)
+    __action164(input, ast, __0, __1, __temp0)
 }
 
 #[allow(unused_variables)]
@@ -9512,13 +9605,14 @@ fn __action187<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
-    __1: (usize, lexer::Token<'input>, usize),
+    __1: (usize, alloc::vec::Vec<ValueRecord>, usize),
+    __2: (usize, lexer::Token<'input>, usize),
 ) -> ValueRecord {
-    let __start0 = __0.2;
-    let __end0 = __1.0;
-    let __temp0 = __action100(input, ast, &__start0, &__end0);
+    let __start0 = __2.2;
+    let __end0 = __2.2;
+    let __temp0 = __action125(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action161(input, ast, __0, __temp0, __1)
+    __action165(input, ast, __0, __1, __2, __temp0)
 }
 
 #[allow(unused_variables)]
@@ -9531,14 +9625,18 @@ fn __action188<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
-    __1: (usize, alloc::vec::Vec<ValueRecord>, usize),
+    __1: (
+        usize,
+        alloc::vec::Vec<(values::ids::StringId, Span, ValueId)>,
+        usize,
+    ),
     __2: (usize, lexer::Token<'input>, usize),
 ) -> ValueRecord {
-    let __start0 = __1.0;
-    let __end0 = __1.2;
-    let __temp0 = __action101(input, ast, __1);
+    let __start0 = __2.2;
+    let __end0 = __2.2;
+    let __temp0 = __action125(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action161(input, ast, __0, __temp0, __2)
+    __action166(input, ast, __0, __1, __2, __temp0)
 }
 
 #[allow(unused_variables)]
@@ -9554,14 +9652,14 @@ fn __action189<'input>(
     __1: (usize, StringId, usize),
     __2: (usize, lexer::Token<'input>, usize),
     __3: (usize, TypeId, usize),
-    __4: (usize, ConstValueId, usize),
+    __4: (usize, Option<ConstValueId>, usize),
     __5: (usize, IdRange<DirectiveId>, usize),
 ) {
-    let __start0 = __4.0;
-    let __end0 = __4.2;
-    let __temp0 = __action119(input, ast, __4);
+    let __start0 = __1.2;
+    let __end0 = __2.0;
+    let __temp0 = __action125(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action11(input, ast, __0, __1, __2, __3, __temp0, __5)
+    __action167(input, ast, __0, __1, __temp0, __2, __3, __4, __5)
 }
 
 #[allow(unused_variables)]
@@ -9573,17 +9671,17 @@ fn __action189<'input>(
 fn __action190<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
-    __0: (usize, lexer::Token<'input>, usize),
+    __0: (usize, StringId, usize),
     __1: (usize, StringId, usize),
-    __2: (usize, lexer::Token<'input>, usize),
-    __3: (usize, TypeId, usize),
-    __4: (usize, IdRange<DirectiveId>, usize),
-) {
-    let __start0 = __3.2;
-    let __end0 = __4.0;
-    let __temp0 = __action120(input, ast, &__start0, &__end0);
+    __2: (usize, Option<Vec<ArgumentRecord>>, usize),
+    __3: (usize, IdRange<DirectiveId>, usize),
+    __4: (usize, Option<IdRange<SelectionId>>, usize),
+) -> SelectionRecord {
+    let __start0 = __0.0;
+    let __end0 = __0.2;
+    let __temp0 = __action113(input, ast, __0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action11(input, ast, __0, __1, __2, __3, __temp0, __4)
+    __action184(input, ast, __temp0, __1, __2, __3, __4)
 }
 
 #[allow(unused_variables)]
@@ -9595,14 +9693,16 @@ fn __action190<'input>(
 fn __action191<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
-    __lookbehind: &usize,
-    __lookahead: &usize,
-) -> IdRange<DirectiveId> {
-    let __start0 = *__lookbehind;
-    let __end0 = *__lookahead;
-    let __temp0 = __action105(input, ast, &__start0, &__end0);
+    __0: (usize, StringId, usize),
+    __1: (usize, Option<Vec<ArgumentRecord>>, usize),
+    __2: (usize, IdRange<DirectiveId>, usize),
+    __3: (usize, Option<IdRange<SelectionId>>, usize),
+) -> SelectionRecord {
+    let __start0 = __0.0;
+    let __end0 = __0.0;
+    let __temp0 = __action114(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action24(input, ast, __temp0)
+    __action184(input, ast, __temp0, __0, __1, __2, __3)
 }
 
 #[allow(unused_variables)]
@@ -9614,11 +9714,301 @@ fn __action191<'input>(
 fn __action192<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
-    __0: (usize, alloc::vec::Vec<()>, usize),
+    __0: (usize, lexer::Token<'input>, usize),
+    __1: (usize, lexer::Token<'input>, usize),
+) -> Vec<ArgumentRecord> {
+    let __start0 = __0.2;
+    let __end0 = __1.0;
+    let __temp0 = __action101(input, ast, &__start0, &__end0);
+    let __temp0 = (__start0, __temp0, __end0);
+    __action26(input, ast, __0, __temp0, __1)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action193<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __0: (usize, lexer::Token<'input>, usize),
+    __1: (usize, alloc::vec::Vec<ArgumentRecord>, usize),
+    __2: (usize, lexer::Token<'input>, usize),
+) -> Vec<ArgumentRecord> {
+    let __start0 = __1.0;
+    let __end0 = __1.2;
+    let __temp0 = __action102(input, ast, __1);
+    let __temp0 = (__start0, __temp0, __end0);
+    __action26(input, ast, __0, __temp0, __2)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action194<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __0: (usize, lexer::Token<'input>, usize),
+    __1: (usize, StringId, usize),
+    __2: (usize, Vec<ArgumentRecord>, usize),
+) {
+    let __start0 = __2.0;
+    let __end0 = __2.2;
+    let __temp0 = __action111(input, ast, __2);
+    let __temp0 = (__start0, __temp0, __end0);
+    __action172(input, ast, __0, __1, __temp0)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action195<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __0: (usize, lexer::Token<'input>, usize),
+    __1: (usize, StringId, usize),
+) {
+    let __start0 = __1.2;
+    let __end0 = __1.2;
+    let __temp0 = __action112(input, ast, &__start0, &__end0);
+    let __temp0 = (__start0, __temp0, __end0);
+    __action172(input, ast, __0, __1, __temp0)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action196<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __0: (usize, StringId, usize),
+    __1: (usize, StringId, usize),
+    __2: (usize, Vec<ArgumentRecord>, usize),
+    __3: (usize, IdRange<DirectiveId>, usize),
+    __4: (usize, Option<IdRange<SelectionId>>, usize),
+) -> SelectionRecord {
+    let __start0 = __2.0;
+    let __end0 = __2.2;
+    let __temp0 = __action111(input, ast, __2);
+    let __temp0 = (__start0, __temp0, __end0);
+    __action190(input, ast, __0, __1, __temp0, __3, __4)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action197<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __0: (usize, StringId, usize),
+    __1: (usize, StringId, usize),
+    __2: (usize, IdRange<DirectiveId>, usize),
+    __3: (usize, Option<IdRange<SelectionId>>, usize),
+) -> SelectionRecord {
+    let __start0 = __1.2;
+    let __end0 = __2.0;
+    let __temp0 = __action112(input, ast, &__start0, &__end0);
+    let __temp0 = (__start0, __temp0, __end0);
+    __action190(input, ast, __0, __1, __temp0, __2, __3)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action198<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __0: (usize, StringId, usize),
+    __1: (usize, Vec<ArgumentRecord>, usize),
+    __2: (usize, IdRange<DirectiveId>, usize),
+    __3: (usize, Option<IdRange<SelectionId>>, usize),
+) -> SelectionRecord {
+    let __start0 = __1.0;
+    let __end0 = __1.2;
+    let __temp0 = __action111(input, ast, __1);
+    let __temp0 = (__start0, __temp0, __end0);
+    __action191(input, ast, __0, __temp0, __2, __3)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action199<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __0: (usize, StringId, usize),
+    __1: (usize, IdRange<DirectiveId>, usize),
+    __2: (usize, Option<IdRange<SelectionId>>, usize),
+) -> SelectionRecord {
+    let __start0 = __0.2;
+    let __end0 = __1.0;
+    let __temp0 = __action112(input, ast, &__start0, &__end0);
+    let __temp0 = (__start0, __temp0, __end0);
+    __action191(input, ast, __0, __temp0, __1, __2)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action200<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __0: (usize, lexer::Token<'input>, usize),
+    __1: (usize, lexer::Token<'input>, usize),
+) -> ValueRecord {
+    let __start0 = __0.2;
+    let __end0 = __1.0;
+    let __temp0 = __action97(input, ast, &__start0, &__end0);
+    let __temp0 = (__start0, __temp0, __end0);
+    __action171(input, ast, __0, __temp0, __1)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action201<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __0: (usize, lexer::Token<'input>, usize),
+    __1: (
+        usize,
+        alloc::vec::Vec<(values::ids::StringId, Span, ConstValueId)>,
+        usize,
+    ),
+    __2: (usize, lexer::Token<'input>, usize),
+) -> ValueRecord {
+    let __start0 = __1.0;
+    let __end0 = __1.2;
+    let __temp0 = __action98(input, ast, __1);
+    let __temp0 = (__start0, __temp0, __end0);
+    __action171(input, ast, __0, __temp0, __2)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action202<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __0: (usize, lexer::Token<'input>, usize),
+    __1: (usize, lexer::Token<'input>, usize),
+) -> ValueRecord {
+    let __start0 = __0.2;
+    let __end0 = __1.0;
+    let __temp0 = __action99(input, ast, &__start0, &__end0);
+    let __temp0 = (__start0, __temp0, __end0);
+    __action170(input, ast, __0, __temp0, __1)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action203<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __0: (usize, lexer::Token<'input>, usize),
+    __1: (usize, alloc::vec::Vec<ValueRecord>, usize),
+    __2: (usize, lexer::Token<'input>, usize),
+) -> ValueRecord {
+    let __start0 = __1.0;
+    let __end0 = __1.2;
+    let __temp0 = __action100(input, ast, __1);
+    let __temp0 = (__start0, __temp0, __end0);
+    __action170(input, ast, __0, __temp0, __2)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action204<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __0: (usize, lexer::Token<'input>, usize),
+    __1: (usize, StringId, usize),
+    __2: (usize, lexer::Token<'input>, usize),
+    __3: (usize, TypeId, usize),
+    __4: (usize, ConstValueId, usize),
+    __5: (usize, IdRange<DirectiveId>, usize),
+) {
+    let __start0 = __4.0;
+    let __end0 = __4.2;
+    let __temp0 = __action117(input, ast, __4);
+    let __temp0 = (__start0, __temp0, __end0);
+    __action189(input, ast, __0, __1, __2, __3, __temp0, __5)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action205<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __0: (usize, lexer::Token<'input>, usize),
+    __1: (usize, StringId, usize),
+    __2: (usize, lexer::Token<'input>, usize),
+    __3: (usize, TypeId, usize),
+    __4: (usize, IdRange<DirectiveId>, usize),
+) {
+    let __start0 = __3.2;
+    let __end0 = __4.0;
+    let __temp0 = __action118(input, ast, &__start0, &__end0);
+    let __temp0 = (__start0, __temp0, __end0);
+    __action189(input, ast, __0, __1, __2, __3, __temp0, __4)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action206<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __lookbehind: &usize,
+    __lookahead: &usize,
 ) -> IdRange<DirectiveId> {
-    let __start0 = __0.0;
-    let __end0 = __0.2;
-    let __temp0 = __action106(input, ast, __0);
+    let __start0 = *__lookbehind;
+    let __end0 = *__lookahead;
+    let __temp0 = __action103(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
     __action24(input, ast, __temp0)
 }
@@ -9629,7 +10019,25 @@ fn __action192<'input>(
     clippy::needless_lifetimes,
     clippy::just_underscores_and_digits
 )]
-fn __action193<'input>(
+fn __action207<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __0: (usize, alloc::vec::Vec<()>, usize),
+) -> IdRange<DirectiveId> {
+    let __start0 = __0.0;
+    let __end0 = __0.2;
+    let __temp0 = __action104(input, ast, __0);
+    let __temp0 = (__start0, __temp0, __end0);
+    __action24(input, ast, __temp0)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action208<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
     __lookbehind: &usize,
@@ -9648,7 +10056,7 @@ fn __action193<'input>(
     clippy::needless_lifetimes,
     clippy::just_underscores_and_digits
 )]
-fn __action194<'input>(
+fn __action209<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
     __0: (usize, alloc::vec::Vec<ExecutableDefinitionId>, usize),
@@ -9666,7 +10074,7 @@ fn __action194<'input>(
     clippy::needless_lifetimes,
     clippy::just_underscores_and_digits
 )]
-fn __action195<'input>(
+fn __action210<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
     __0: (usize, OperationType, usize),
@@ -9677,9 +10085,9 @@ fn __action195<'input>(
 ) -> OperationDefinitionRecord {
     let __start0 = __1.0;
     let __end0 = __1.2;
-    let __temp0 = __action125(input, ast, __1);
+    let __temp0 = __action123(input, ast, __1);
     let __temp0 = (__start0, __temp0, __end0);
-    __action4(input, ast, __0, __temp0, __2, __3, __4)
+    __action175(input, ast, __0, __temp0, __2, __3, __4)
 }
 
 #[allow(unused_variables)]
@@ -9688,7 +10096,7 @@ fn __action195<'input>(
     clippy::needless_lifetimes,
     clippy::just_underscores_and_digits
 )]
-fn __action196<'input>(
+fn __action211<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
     __0: (usize, OperationType, usize),
@@ -9698,9 +10106,9 @@ fn __action196<'input>(
 ) -> OperationDefinitionRecord {
     let __start0 = __0.2;
     let __end0 = __1.0;
-    let __temp0 = __action126(input, ast, &__start0, &__end0);
+    let __temp0 = __action124(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action4(input, ast, __0, __temp0, __1, __2, __3)
+    __action175(input, ast, __0, __temp0, __1, __2, __3)
 }
 
 #[allow(unused_variables)]
@@ -9709,7 +10117,7 @@ fn __action196<'input>(
     clippy::needless_lifetimes,
     clippy::just_underscores_and_digits
 )]
-fn __action197<'input>(
+fn __action212<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
@@ -9719,7 +10127,7 @@ fn __action197<'input>(
     let __end0 = __1.0;
     let __temp0 = __action93(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action174(input, ast, __0, __temp0, __1)
+    __action188(input, ast, __0, __temp0, __1)
 }
 
 #[allow(unused_variables)]
@@ -9728,7 +10136,7 @@ fn __action197<'input>(
     clippy::needless_lifetimes,
     clippy::just_underscores_and_digits
 )]
-fn __action198<'input>(
+fn __action213<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
     __0: (usize, lexer::Token<'input>, usize),
@@ -9743,315 +10151,7 @@ fn __action198<'input>(
     let __end0 = __1.2;
     let __temp0 = __action94(input, ast, __1);
     let __temp0 = (__start0, __temp0, __end0);
-    __action174(input, ast, __0, __temp0, __2)
-}
-
-#[allow(unused_variables)]
-#[allow(
-    clippy::too_many_arguments,
-    clippy::needless_lifetimes,
-    clippy::just_underscores_and_digits
-)]
-fn __action199<'input>(
-    input: &'input str,
-    ast: &mut ExecutableAstWriter,
-    __0: (usize, StringId, usize),
-    __1: (usize, StringId, usize),
-    __2: (usize, Vec<ArgumentRecord>, usize),
-    __3: (usize, IdRange<DirectiveId>, usize),
-    __4: (usize, IdRange<SelectionId>, usize),
-) -> SelectionRecord {
-    let __start0 = __4.0;
-    let __end0 = __4.2;
-    let __temp0 = __action111(input, ast, __4);
-    let __temp0 = (__start0, __temp0, __end0);
-    __action181(input, ast, __0, __1, __2, __3, __temp0)
-}
-
-#[allow(unused_variables)]
-#[allow(
-    clippy::too_many_arguments,
-    clippy::needless_lifetimes,
-    clippy::just_underscores_and_digits
-)]
-fn __action200<'input>(
-    input: &'input str,
-    ast: &mut ExecutableAstWriter,
-    __0: (usize, StringId, usize),
-    __1: (usize, StringId, usize),
-    __2: (usize, Vec<ArgumentRecord>, usize),
-    __3: (usize, IdRange<DirectiveId>, usize),
-) -> SelectionRecord {
-    let __start0 = __3.2;
-    let __end0 = __3.2;
-    let __temp0 = __action112(input, ast, &__start0, &__end0);
-    let __temp0 = (__start0, __temp0, __end0);
-    __action181(input, ast, __0, __1, __2, __3, __temp0)
-}
-
-#[allow(unused_variables)]
-#[allow(
-    clippy::too_many_arguments,
-    clippy::needless_lifetimes,
-    clippy::just_underscores_and_digits
-)]
-fn __action201<'input>(
-    input: &'input str,
-    ast: &mut ExecutableAstWriter,
-    __0: (usize, StringId, usize),
-    __1: (usize, StringId, usize),
-    __2: (usize, IdRange<DirectiveId>, usize),
-    __3: (usize, IdRange<SelectionId>, usize),
-) -> SelectionRecord {
-    let __start0 = __3.0;
-    let __end0 = __3.2;
-    let __temp0 = __action111(input, ast, __3);
-    let __temp0 = (__start0, __temp0, __end0);
-    __action182(input, ast, __0, __1, __2, __temp0)
-}
-
-#[allow(unused_variables)]
-#[allow(
-    clippy::too_many_arguments,
-    clippy::needless_lifetimes,
-    clippy::just_underscores_and_digits
-)]
-fn __action202<'input>(
-    input: &'input str,
-    ast: &mut ExecutableAstWriter,
-    __0: (usize, StringId, usize),
-    __1: (usize, StringId, usize),
-    __2: (usize, IdRange<DirectiveId>, usize),
-) -> SelectionRecord {
-    let __start0 = __2.2;
-    let __end0 = __2.2;
-    let __temp0 = __action112(input, ast, &__start0, &__end0);
-    let __temp0 = (__start0, __temp0, __end0);
-    __action182(input, ast, __0, __1, __2, __temp0)
-}
-
-#[allow(unused_variables)]
-#[allow(
-    clippy::too_many_arguments,
-    clippy::needless_lifetimes,
-    clippy::just_underscores_and_digits
-)]
-fn __action203<'input>(
-    input: &'input str,
-    ast: &mut ExecutableAstWriter,
-    __0: (usize, StringId, usize),
-    __1: (usize, Vec<ArgumentRecord>, usize),
-    __2: (usize, IdRange<DirectiveId>, usize),
-    __3: (usize, IdRange<SelectionId>, usize),
-) -> SelectionRecord {
-    let __start0 = __3.0;
-    let __end0 = __3.2;
-    let __temp0 = __action111(input, ast, __3);
-    let __temp0 = (__start0, __temp0, __end0);
-    __action183(input, ast, __0, __1, __2, __temp0)
-}
-
-#[allow(unused_variables)]
-#[allow(
-    clippy::too_many_arguments,
-    clippy::needless_lifetimes,
-    clippy::just_underscores_and_digits
-)]
-fn __action204<'input>(
-    input: &'input str,
-    ast: &mut ExecutableAstWriter,
-    __0: (usize, StringId, usize),
-    __1: (usize, Vec<ArgumentRecord>, usize),
-    __2: (usize, IdRange<DirectiveId>, usize),
-) -> SelectionRecord {
-    let __start0 = __2.2;
-    let __end0 = __2.2;
-    let __temp0 = __action112(input, ast, &__start0, &__end0);
-    let __temp0 = (__start0, __temp0, __end0);
-    __action183(input, ast, __0, __1, __2, __temp0)
-}
-
-#[allow(unused_variables)]
-#[allow(
-    clippy::too_many_arguments,
-    clippy::needless_lifetimes,
-    clippy::just_underscores_and_digits
-)]
-fn __action205<'input>(
-    input: &'input str,
-    ast: &mut ExecutableAstWriter,
-    __0: (usize, StringId, usize),
-    __1: (usize, IdRange<DirectiveId>, usize),
-    __2: (usize, IdRange<SelectionId>, usize),
-) -> SelectionRecord {
-    let __start0 = __2.0;
-    let __end0 = __2.2;
-    let __temp0 = __action111(input, ast, __2);
-    let __temp0 = (__start0, __temp0, __end0);
-    __action184(input, ast, __0, __1, __temp0)
-}
-
-#[allow(unused_variables)]
-#[allow(
-    clippy::too_many_arguments,
-    clippy::needless_lifetimes,
-    clippy::just_underscores_and_digits
-)]
-fn __action206<'input>(
-    input: &'input str,
-    ast: &mut ExecutableAstWriter,
-    __0: (usize, StringId, usize),
-    __1: (usize, IdRange<DirectiveId>, usize),
-) -> SelectionRecord {
-    let __start0 = __1.2;
-    let __end0 = __1.2;
-    let __temp0 = __action112(input, ast, &__start0, &__end0);
-    let __temp0 = (__start0, __temp0, __end0);
-    __action184(input, ast, __0, __1, __temp0)
-}
-
-#[allow(unused_variables)]
-#[allow(
-    clippy::too_many_arguments,
-    clippy::needless_lifetimes,
-    clippy::just_underscores_and_digits
-)]
-fn __action207<'input>(
-    input: &'input str,
-    ast: &mut ExecutableAstWriter,
-    __0: (usize, lexer::Token<'input>, usize),
-    __1: (usize, StringId, usize),
-    __2: (usize, IdRange<DirectiveId>, usize),
-    __3: (usize, IdRange<SelectionId>, usize),
-) -> SelectionRecord {
-    let __start0 = __1.0;
-    let __end0 = __1.2;
-    let __temp0 = __action109(input, ast, __1);
-    let __temp0 = (__start0, __temp0, __end0);
-    __action16(input, ast, __0, __temp0, __2, __3)
-}
-
-#[allow(unused_variables)]
-#[allow(
-    clippy::too_many_arguments,
-    clippy::needless_lifetimes,
-    clippy::just_underscores_and_digits
-)]
-fn __action208<'input>(
-    input: &'input str,
-    ast: &mut ExecutableAstWriter,
-    __0: (usize, lexer::Token<'input>, usize),
-    __1: (usize, IdRange<DirectiveId>, usize),
-    __2: (usize, IdRange<SelectionId>, usize),
-) -> SelectionRecord {
-    let __start0 = __0.2;
-    let __end0 = __1.0;
-    let __temp0 = __action110(input, ast, &__start0, &__end0);
-    let __temp0 = (__start0, __temp0, __end0);
-    __action16(input, ast, __0, __temp0, __1, __2)
-}
-
-#[allow(unused_variables)]
-#[allow(
-    clippy::too_many_arguments,
-    clippy::needless_lifetimes,
-    clippy::just_underscores_and_digits
-)]
-fn __action209<'input>(
-    input: &'input str,
-    ast: &mut ExecutableAstWriter,
-    __0: (usize, lexer::Token<'input>, usize),
-    __1: (usize, lexer::Token<'input>, usize),
-) -> ValueRecord {
-    let __start0 = __0.2;
-    let __end0 = __1.0;
-    let __temp0 = __action95(input, ast, &__start0, &__end0);
-    let __temp0 = (__start0, __temp0, __end0);
-    __action173(input, ast, __0, __temp0, __1)
-}
-
-#[allow(unused_variables)]
-#[allow(
-    clippy::too_many_arguments,
-    clippy::needless_lifetimes,
-    clippy::just_underscores_and_digits
-)]
-fn __action210<'input>(
-    input: &'input str,
-    ast: &mut ExecutableAstWriter,
-    __0: (usize, lexer::Token<'input>, usize),
-    __1: (usize, alloc::vec::Vec<ValueRecord>, usize),
-    __2: (usize, lexer::Token<'input>, usize),
-) -> ValueRecord {
-    let __start0 = __1.0;
-    let __end0 = __1.2;
-    let __temp0 = __action96(input, ast, __1);
-    let __temp0 = (__start0, __temp0, __end0);
-    __action173(input, ast, __0, __temp0, __2)
-}
-
-#[allow(unused_variables)]
-#[allow(
-    clippy::too_many_arguments,
-    clippy::needless_lifetimes,
-    clippy::just_underscores_and_digits
-)]
-fn __action211<'input>(
-    input: &'input str,
-    ast: &mut ExecutableAstWriter,
-    __0: (usize, OperationType, usize),
-    __1: (usize, StringId, usize),
-    __2: (usize, Vec<()>, usize),
-    __3: (usize, IdRange<DirectiveId>, usize),
-    __4: (usize, IdRange<SelectionId>, usize),
-) -> OperationDefinitionRecord {
-    let __start0 = __2.0;
-    let __end0 = __2.2;
-    let __temp0 = __action123(input, ast, __2);
-    let __temp0 = (__start0, __temp0, __end0);
-    __action195(input, ast, __0, __1, __temp0, __3, __4)
-}
-
-#[allow(unused_variables)]
-#[allow(
-    clippy::too_many_arguments,
-    clippy::needless_lifetimes,
-    clippy::just_underscores_and_digits
-)]
-fn __action212<'input>(
-    input: &'input str,
-    ast: &mut ExecutableAstWriter,
-    __0: (usize, OperationType, usize),
-    __1: (usize, StringId, usize),
-    __2: (usize, IdRange<DirectiveId>, usize),
-    __3: (usize, IdRange<SelectionId>, usize),
-) -> OperationDefinitionRecord {
-    let __start0 = __1.2;
-    let __end0 = __2.0;
-    let __temp0 = __action124(input, ast, &__start0, &__end0);
-    let __temp0 = (__start0, __temp0, __end0);
-    __action195(input, ast, __0, __1, __temp0, __2, __3)
-}
-
-#[allow(unused_variables)]
-#[allow(
-    clippy::too_many_arguments,
-    clippy::needless_lifetimes,
-    clippy::just_underscores_and_digits
-)]
-fn __action213<'input>(
-    input: &'input str,
-    ast: &mut ExecutableAstWriter,
-    __0: (usize, OperationType, usize),
-    __1: (usize, Vec<()>, usize),
-    __2: (usize, IdRange<DirectiveId>, usize),
-    __3: (usize, IdRange<SelectionId>, usize),
-) -> OperationDefinitionRecord {
-    let __start0 = __1.0;
-    let __end0 = __1.2;
-    let __temp0 = __action123(input, ast, __1);
-    let __temp0 = (__start0, __temp0, __end0);
-    __action196(input, ast, __0, __temp0, __2, __3)
+    __action188(input, ast, __0, __temp0, __2)
 }
 
 #[allow(unused_variables)]
@@ -10063,15 +10163,17 @@ fn __action213<'input>(
 fn __action214<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
-    __0: (usize, OperationType, usize),
-    __1: (usize, IdRange<DirectiveId>, usize),
-    __2: (usize, IdRange<SelectionId>, usize),
-) -> OperationDefinitionRecord {
-    let __start0 = __0.2;
-    let __end0 = __1.0;
-    let __temp0 = __action124(input, ast, &__start0, &__end0);
+    __0: (usize, StringId, usize),
+    __1: (usize, StringId, usize),
+    __2: (usize, Vec<ArgumentRecord>, usize),
+    __3: (usize, IdRange<DirectiveId>, usize),
+    __4: (usize, IdRange<SelectionId>, usize),
+) -> SelectionRecord {
+    let __start0 = __4.0;
+    let __end0 = __4.2;
+    let __temp0 = __action109(input, ast, __4);
     let __temp0 = (__start0, __temp0, __end0);
-    __action196(input, ast, __0, __temp0, __1, __2)
+    __action196(input, ast, __0, __1, __2, __3, __temp0)
 }
 
 #[allow(unused_variables)]
@@ -10084,12 +10186,15 @@ fn __action215<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
     __0: (usize, StringId, usize),
-) -> TypeId {
-    let __start0 = __0.2;
-    let __end0 = __0.2;
-    let __temp0 = __action107(input, ast, &__start0, &__end0);
+    __1: (usize, StringId, usize),
+    __2: (usize, Vec<ArgumentRecord>, usize),
+    __3: (usize, IdRange<DirectiveId>, usize),
+) -> SelectionRecord {
+    let __start0 = __3.2;
+    let __end0 = __3.2;
+    let __temp0 = __action110(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action21(input, ast, __0, __temp0)
+    __action196(input, ast, __0, __1, __2, __3, __temp0)
 }
 
 #[allow(unused_variables)]
@@ -10102,11 +10207,314 @@ fn __action216<'input>(
     input: &'input str,
     ast: &mut ExecutableAstWriter,
     __0: (usize, StringId, usize),
+    __1: (usize, StringId, usize),
+    __2: (usize, IdRange<DirectiveId>, usize),
+    __3: (usize, IdRange<SelectionId>, usize),
+) -> SelectionRecord {
+    let __start0 = __3.0;
+    let __end0 = __3.2;
+    let __temp0 = __action109(input, ast, __3);
+    let __temp0 = (__start0, __temp0, __end0);
+    __action197(input, ast, __0, __1, __2, __temp0)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action217<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __0: (usize, StringId, usize),
+    __1: (usize, StringId, usize),
+    __2: (usize, IdRange<DirectiveId>, usize),
+) -> SelectionRecord {
+    let __start0 = __2.2;
+    let __end0 = __2.2;
+    let __temp0 = __action110(input, ast, &__start0, &__end0);
+    let __temp0 = (__start0, __temp0, __end0);
+    __action197(input, ast, __0, __1, __2, __temp0)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action218<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __0: (usize, StringId, usize),
+    __1: (usize, Vec<ArgumentRecord>, usize),
+    __2: (usize, IdRange<DirectiveId>, usize),
+    __3: (usize, IdRange<SelectionId>, usize),
+) -> SelectionRecord {
+    let __start0 = __3.0;
+    let __end0 = __3.2;
+    let __temp0 = __action109(input, ast, __3);
+    let __temp0 = (__start0, __temp0, __end0);
+    __action198(input, ast, __0, __1, __2, __temp0)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action219<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __0: (usize, StringId, usize),
+    __1: (usize, Vec<ArgumentRecord>, usize),
+    __2: (usize, IdRange<DirectiveId>, usize),
+) -> SelectionRecord {
+    let __start0 = __2.2;
+    let __end0 = __2.2;
+    let __temp0 = __action110(input, ast, &__start0, &__end0);
+    let __temp0 = (__start0, __temp0, __end0);
+    __action198(input, ast, __0, __1, __2, __temp0)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action220<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __0: (usize, StringId, usize),
+    __1: (usize, IdRange<DirectiveId>, usize),
+    __2: (usize, IdRange<SelectionId>, usize),
+) -> SelectionRecord {
+    let __start0 = __2.0;
+    let __end0 = __2.2;
+    let __temp0 = __action109(input, ast, __2);
+    let __temp0 = (__start0, __temp0, __end0);
+    __action199(input, ast, __0, __1, __temp0)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action221<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __0: (usize, StringId, usize),
+    __1: (usize, IdRange<DirectiveId>, usize),
+) -> SelectionRecord {
+    let __start0 = __1.2;
+    let __end0 = __1.2;
+    let __temp0 = __action110(input, ast, &__start0, &__end0);
+    let __temp0 = (__start0, __temp0, __end0);
+    __action199(input, ast, __0, __1, __temp0)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action222<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __0: (usize, lexer::Token<'input>, usize),
+    __1: (usize, StringId, usize),
+    __2: (usize, IdRange<DirectiveId>, usize),
+    __3: (usize, IdRange<SelectionId>, usize),
+) -> SelectionRecord {
+    let __start0 = __1.0;
+    let __end0 = __1.2;
+    let __temp0 = __action107(input, ast, __1);
+    let __temp0 = (__start0, __temp0, __end0);
+    __action163(input, ast, __0, __temp0, __2, __3)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action223<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __0: (usize, lexer::Token<'input>, usize),
+    __1: (usize, IdRange<DirectiveId>, usize),
+    __2: (usize, IdRange<SelectionId>, usize),
+) -> SelectionRecord {
+    let __start0 = __0.2;
+    let __end0 = __1.0;
+    let __temp0 = __action108(input, ast, &__start0, &__end0);
+    let __temp0 = (__start0, __temp0, __end0);
+    __action163(input, ast, __0, __temp0, __1, __2)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action224<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __0: (usize, lexer::Token<'input>, usize),
+    __1: (usize, lexer::Token<'input>, usize),
+) -> ValueRecord {
+    let __start0 = __0.2;
+    let __end0 = __1.0;
+    let __temp0 = __action95(input, ast, &__start0, &__end0);
+    let __temp0 = (__start0, __temp0, __end0);
+    __action187(input, ast, __0, __temp0, __1)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action225<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __0: (usize, lexer::Token<'input>, usize),
+    __1: (usize, alloc::vec::Vec<ValueRecord>, usize),
+    __2: (usize, lexer::Token<'input>, usize),
+) -> ValueRecord {
+    let __start0 = __1.0;
+    let __end0 = __1.2;
+    let __temp0 = __action96(input, ast, __1);
+    let __temp0 = (__start0, __temp0, __end0);
+    __action187(input, ast, __0, __temp0, __2)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action226<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __0: (usize, OperationType, usize),
+    __1: (usize, StringId, usize),
+    __2: (usize, Vec<()>, usize),
+    __3: (usize, IdRange<DirectiveId>, usize),
+    __4: (usize, IdRange<SelectionId>, usize),
+) -> OperationDefinitionRecord {
+    let __start0 = __2.0;
+    let __end0 = __2.2;
+    let __temp0 = __action121(input, ast, __2);
+    let __temp0 = (__start0, __temp0, __end0);
+    __action210(input, ast, __0, __1, __temp0, __3, __4)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action227<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __0: (usize, OperationType, usize),
+    __1: (usize, StringId, usize),
+    __2: (usize, IdRange<DirectiveId>, usize),
+    __3: (usize, IdRange<SelectionId>, usize),
+) -> OperationDefinitionRecord {
+    let __start0 = __1.2;
+    let __end0 = __2.0;
+    let __temp0 = __action122(input, ast, &__start0, &__end0);
+    let __temp0 = (__start0, __temp0, __end0);
+    __action210(input, ast, __0, __1, __temp0, __2, __3)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action228<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __0: (usize, OperationType, usize),
+    __1: (usize, Vec<()>, usize),
+    __2: (usize, IdRange<DirectiveId>, usize),
+    __3: (usize, IdRange<SelectionId>, usize),
+) -> OperationDefinitionRecord {
+    let __start0 = __1.0;
+    let __end0 = __1.2;
+    let __temp0 = __action121(input, ast, __1);
+    let __temp0 = (__start0, __temp0, __end0);
+    __action211(input, ast, __0, __temp0, __2, __3)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action229<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __0: (usize, OperationType, usize),
+    __1: (usize, IdRange<DirectiveId>, usize),
+    __2: (usize, IdRange<SelectionId>, usize),
+) -> OperationDefinitionRecord {
+    let __start0 = __0.2;
+    let __end0 = __1.0;
+    let __temp0 = __action122(input, ast, &__start0, &__end0);
+    let __temp0 = (__start0, __temp0, __end0);
+    __action211(input, ast, __0, __temp0, __1, __2)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action230<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __0: (usize, StringId, usize),
+) -> TypeId {
+    let __start0 = __0.2;
+    let __end0 = __0.2;
+    let __temp0 = __action105(input, ast, &__start0, &__end0);
+    let __temp0 = (__start0, __temp0, __end0);
+    __action21(input, ast, __0, __temp0)
+}
+
+#[allow(unused_variables)]
+#[allow(
+    clippy::too_many_arguments,
+    clippy::needless_lifetimes,
+    clippy::just_underscores_and_digits
+)]
+fn __action231<'input>(
+    input: &'input str,
+    ast: &mut ExecutableAstWriter,
+    __0: (usize, StringId, usize),
     __1: (usize, alloc::vec::Vec<WrappingType>, usize),
 ) -> TypeId {
     let __start0 = __1.0;
     let __end0 = __1.2;
-    let __temp0 = __action108(input, ast, __1);
+    let __temp0 = __action106(input, ast, __1);
     let __temp0 = (__start0, __temp0, __end0);
     __action21(input, ast, __0, __temp0)
 }

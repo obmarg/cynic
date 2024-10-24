@@ -24,16 +24,32 @@ ExecutableDefinition: ExecutableDefinitionId = {
 }
 
 OperationDefinition: OperationDefinitionRecord = {
-    <operation_type:OperationType> <name:Name?> <variable_definitions:VariableDefinitions?> <directives:Directives> <selection_set:SelectionSet> => {
+    <operation_type_start:@L>
+    <operation_type:OperationType>
+    <operation_type_end:@R>
+    <name_start:@L>
+    <name:Name?>
+    <name_end:@R>
+    <variable_definitions:VariableDefinitions?>
+    <directives:Directives>
+    <selection_set:SelectionSet> => {
         let variable_definitions = ast.variable_definition_range(variable_definitions.map(|defs| defs.len()));
         OperationDefinitionRecord {
-            <>
+            operation_type,
+            operation_type_span: Some(Span::new(operation_type_start, operation_type_end)),
+            name,
+            name_span: Some(Span::new(name_start, name_end)),
+            variable_definitions,
+            directives,
+            selection_set
         }
     },
     <selection_set:SelectionSet> => {
         OperationDefinitionRecord {
             operation_type: OperationType::Query,
+            operation_type_span: None,
             name: None,
+            name_span: None,
             selection_set,
             variable_definitions: Default::default(),
             directives: Default::default()
@@ -42,9 +58,22 @@ OperationDefinition: OperationDefinitionRecord = {
 };
 
 FragmentDefinition: FragmentDefinitionRecord = {
-    fragment <name:FragmentName> <type_condition:TypeCondition> <directives:Directives> <selection_set:SelectionSet> => {
+    fragment
+    <name_start:@L>
+    <name:FragmentName>
+    <name_end:@R>
+    <type_condition_start:@L>
+    <type_condition:TypeCondition>
+    <type_condition_end:@R>
+    <directives:Directives>
+    <selection_set:SelectionSet> => {
         FragmentDefinitionRecord {
-            <>
+            name,
+            name_span: Span::new(name_start, name_end),
+            type_condition,
+            type_condition_span: Span::new(type_condition_start, type_condition_end),
+            directives,
+            selection_set
         }
     }
 };
@@ -62,8 +91,20 @@ VariableDefinitions: Vec<()> = {
 }
 
 VariableDefinition: () = {
-    "$" <name:Name> ":" <ty:Type> <default_value:DefaultValue?> <directives:Directives> => {
-        ast.variable_definition(VariableDefinitionRecord { <> });
+    <name_start:@L>
+    "$" <name:Name>
+    <name_end:@R>
+    ":"
+    <ty:Type>
+    <default_value:DefaultValue?>
+    <directives:Directives> => {
+        ast.variable_definition(VariableDefinitionRecord {
+            name,
+            name_span: Span::new(name_start, name_end),
+            ty,
+            default_value,
+            directives
+        });
     }
 }
 
@@ -80,26 +121,56 @@ SelectionSet: IdRange<SelectionId> = {
 }
 
 Selection: SelectionRecord = {
-    <alias:Alias?> <name:Name> <arguments:Arguments?> <directives:Directives> <selection_set:SelectionSet?> => {
+    <alias_start:@L>
+    <alias:Alias?>
+    <alias_end:@R>
+    <name_start:@L>
+    <name:Name>
+    <name_end:@R>
+    <arguments:Arguments?>
+    <directives:Directives>
+    <selection_set:SelectionSet?> => {
         let selection_set = selection_set.unwrap_or_default();
         let arguments = arguments.map(|args| ast.arguments(args)).unwrap_or_default();
         SelectionRecord::Field(
             ast.field_selection(FieldSelectionRecord {
-                <>
+                alias_span: alias.as_ref().map(|_| Span::new(alias_start, alias_end)),
+                alias,
+                name,
+                name_span: Span::new(alias_start, alias_end),
+                arguments,
+                directives,
+                selection_set
             })
         )
     },
-    "..." <fragment_name:FragmentName> <directives:Directives> => {
+    "..."
+    <name_start:@L>
+    <fragment_name:FragmentName>
+    <name_end:@R>
+    <directives:Directives> => {
         SelectionRecord::FragmentSpread(
             ast.fragment_spread(FragmentSpreadRecord {
-                <>
+                fragment_name,
+                fragment_name_span: Span::new(name_start, name_end),
+                directives
             })
         )
     },
-    "..." <type_condition:TypeCondition?> <directives:Directives> <selection_set:SelectionSet> => {
+    "..."
+    <type_condition_start:@L>
+    <type_condition:TypeCondition?>
+    <type_condition_end:@L>
+    <directives:Directives>
+    <selection_set:SelectionSet> => {
         SelectionRecord::InlineFragment(
             ast.inline_fragment(InlineFragmentRecord {
-                <>
+                type_condition_span: type_condition.as_ref().map(|_|
+                    Span::new(type_condition_start, type_condition_end)
+                ),
+                type_condition,
+                directives,
+                selection_set
             })
         )
     }
@@ -140,9 +211,17 @@ Directives: IdRange<DirectiveId> = {
 }
 
 Directive: () = {
-    "@" <name:Name> <arguments:Arguments?> => {
+    <name_start:@L>
+    "@"
+    <name:Name>
+    <name_end:@R>
+    <arguments:Arguments?> => {
         let arguments = arguments.map(|args| ast.arguments(args)).unwrap_or_default();
-        ast.directive(DirectiveRecord { <> });
+        ast.directive(DirectiveRecord {
+            name,
+            name_span: Span::new(name_start, name_end),
+            arguments
+        });
     }
 }
 
@@ -151,8 +230,16 @@ Arguments: Vec<ArgumentRecord> = {
 }
 
 Argument: ArgumentRecord = {
-    <name:Name> ":" <value:Value> => {
-        ArgumentRecord { <> }
+    <name_start:@L>
+    <name:Name>
+    ":"
+    <name_end:@R>
+    <value:Value> => {
+        ArgumentRecord {
+            name,
+            name_span: Span::new(name_start, name_end),
+            value
+        }
     }
 }
 
