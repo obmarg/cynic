@@ -6,29 +6,31 @@ type SchemaDefinition @file(name: "schemas") {
 }
 
 type RootOperationTypeDefinition @file(name: "schemas") {
-  operation_type: OperationType!
-  named_type: String!
+  operation_type: OperationType! @spanned
+  named_type: String! @spanned
   span: Span!
 }
 
 type ScalarDefinition @file(name: "scalars") {
-  name: String!
+  name: String! @spanned
   description: Description
   directives: [Directive]
   span: Span!
 }
 
 type ObjectDefinition @file(name: "objects") {
-  name: String!
+  name: String! @spanned
   description: Description
   fields: [FieldDefinition]
   directives: [Directive]
+
+  # TODO: How to get spans onto each of these?  Probably need a named type for it...
   implements_interfaces: [String]
   span: Span!
 }
 
 type FieldDefinition @file(name: "fields") {
-  name: String!
+  name: String! @spanned
   ty: Type!
   arguments: [InputValueDefinition!]!
   description: Description
@@ -37,7 +39,7 @@ type FieldDefinition @file(name: "fields") {
 }
 
 type InterfaceDefinition @file(name: "interfaces") {
-  name: String!
+  name: String! @spanned
   description: Description
   fields: [FieldDefinition!]!
   directives: [Directive!]!
@@ -46,7 +48,7 @@ type InterfaceDefinition @file(name: "interfaces") {
 }
 
 type UnionDefinition @file(name: "unions") {
-  name: String!
+  name: String! @spanned
   description: Description
   members: [UnionMember!]
   directives: [Directive!]!
@@ -59,7 +61,7 @@ type UnionMember @file(name: "unions") {
 }
 
 type EnumDefinition @file(name: "enums") {
-  name: String!
+  name: String! @spanned
   description: Description
   values: [EnumValueDefinition!]!
   directives: [Directive!]!
@@ -67,14 +69,14 @@ type EnumDefinition @file(name: "enums") {
 }
 
 type EnumValueDefinition @file(name: "enums") {
-  value: String!
+  value: String! @spanned
   description: Description
   directives: [Directive!]!
   span: Span!
 }
 
 type InputObjectDefinition @file(name: "input_objects") {
-  name: String!
+  name: String! @spanned
   description: Description
   fields: [InputValueDefinition!]!
   directives: [Directive!]!
@@ -82,7 +84,7 @@ type InputObjectDefinition @file(name: "input_objects") {
 }
 
 type InputValueDefinition @file(name: "input_values") {
-  name: String!
+  name: String! @spanned
   ty: Type!
   description: Description
   default_value: ConstValue
@@ -92,7 +94,7 @@ type InputValueDefinition @file(name: "input_values") {
 }
 
 type DirectiveDefinition @file(name: "directives") {
-  name: String!
+  name: String! @spanned
   description: Description
   arguments: [InputValueDefinition!]!
   is_repeatable: bool!
@@ -101,12 +103,12 @@ type DirectiveDefinition @file(name: "directives") {
 }
 
 type Directive @file(name: "directives") {
-  name: String!
+  name: String! @spanned
   arguments: [Argument!]!
 }
 
 type Argument @file(name: "arguments") {
-  name: String!
+  name: String! @spanned
   value: ConstValue!
   span: Span!
 }

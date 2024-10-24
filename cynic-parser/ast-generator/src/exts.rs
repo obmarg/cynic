@@ -1,4 +1,6 @@
-use cynic_parser::type_system::{ScalarDefinition, TypeDefinition, UnionDefinition};
+use cynic_parser::type_system::{
+    FieldDefinition, ScalarDefinition, TypeDefinition, UnionDefinition,
+};
 use quote::quote;
 
 pub trait ScalarExt {
@@ -47,5 +49,31 @@ impl<'a> UnionExt<'a> for UnionDefinition<'a> {
             .as_items()?
             .nth(index)?
             .as_str()
+    }
+}
+
+pub trait FieldExt {
+    fn is_spanned(&self) -> bool;
+    fn should_span_be_option(&self) -> bool;
+}
+
+impl FieldExt for FieldDefinition<'_> {
+    fn is_spanned(&self) -> bool {
+        self.directives()
+            .any(|directive| directive.name() == "spanned")
+    }
+
+    fn should_span_be_option(&self) -> bool {
+        if !self.ty().is_non_null() {
+            return true;
+        }
+
+        self.directives()
+            .find(|directive| directive.name() == "spanned")
+            .expect("only call this if spanned directive is present")
+            .arguments()
+            .find(|arg| arg.name() == "nullable")
+            .and_then(|arg| arg.value().as_bool())
+            .unwrap_or_default()
     }
 }

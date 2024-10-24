@@ -1,11 +1,11 @@
 use indexmap::IndexMap;
 use proc_macro2::{Ident, Span};
-use quote::{quote, ToTokens, TokenStreamExt};
+use quote::{format_ident, quote, ToTokens, TokenStreamExt};
 
 use cynic_parser::type_system::{FieldDefinition, ObjectDefinition, TypeDefinition};
 
 use crate::{
-    exts::ScalarExt,
+    exts::{FieldExt, ScalarExt},
     file::{EntityKind, EntityOutput, EntityRef},
     format_code,
     idents::IdIdent,
@@ -177,6 +177,19 @@ impl quote::ToTokens for ObjectField<'_> {
         tokens.append_all(quote! {
             pub #field_name: #ty
         });
+
+        if self.0.field.is_spanned() {
+            let span_field = format_ident!("{}_span", self.0.field.name());
+            let span_ty = if self.0.field.should_span_be_option() {
+                quote!(Option<Span>)
+            } else {
+                quote!(Span)
+            };
+
+            tokens.append_all(quote! {
+                , pub #span_field: #span_ty
+            })
+        }
     }
 }
 
@@ -295,5 +308,22 @@ impl quote::ToTokens for ReaderFunction<'_> {
             }
             _ => unimplemented!("No support for this target type"),
         });
+
+        if self.0.field.is_spanned() {
+            let span_field = format_ident!("{}_span", self.0.field.name());
+            let span_ty = if self.0.field.should_span_be_option() {
+                quote!(Option<Span>)
+            } else {
+                quote!(Span)
+            };
+
+            tokens.append_all(quote! {
+                pub fn #span_field(&self) -> #span_ty {
+                    let document = self.0.document;
+
+                    document.lookup(self.0.id).#span_field
+                }
+            })
+        }
     }
 }
