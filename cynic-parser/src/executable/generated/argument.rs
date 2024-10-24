@@ -53,9 +53,10 @@ impl ExecutableId for ArgumentId {
     }
 }
 
-impl<'a> IdReader<'a> for Argument<'a> {
+impl IdReader for Argument<'_> {
     type Id = ArgumentId;
-    fn new(id: Self::Id, document: &'a ExecutableDocument) -> Self {
+    type Reader<'a> = Argument<'a>;
+    fn new(id: Self::Id, document: &'_ ExecutableDocument) -> Self::Reader<'_> {
         document.read(id)
     }
 }

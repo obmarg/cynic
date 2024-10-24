@@ -86,10 +86,11 @@ pub fn object_output(
     })?;
 
     let id_reader_impl = format_code(quote! {
-        impl<'a> IdReader<'a> for #reader_name<'a> {
+        impl IdReader for #reader_name<'_> {
             type Id = #id_name;
+            type Reader<'a> = #reader_name<'a>;
 
-            fn new(id: Self::Id, document: &'a #document_type) -> Self {
+            fn new(id: Self::Id, document: &'_ #document_type) -> Self::Reader<'_> {
                 document.read(id)
             }
         }

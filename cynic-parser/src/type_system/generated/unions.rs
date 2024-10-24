@@ -75,9 +75,10 @@ impl TypeSystemId for UnionDefinitionId {
     }
 }
 
-impl<'a> IdReader<'a> for UnionDefinition<'a> {
+impl IdReader for UnionDefinition<'_> {
     type Id = UnionDefinitionId;
-    fn new(id: Self::Id, document: &'a TypeSystemDocument) -> Self {
+    type Reader<'a> = UnionDefinition<'a>;
+    fn new(id: Self::Id, document: &'_ TypeSystemDocument) -> Self::Reader<'_> {
         document.read(id)
     }
 }
@@ -123,9 +124,10 @@ impl TypeSystemId for UnionMemberId {
     }
 }
 
-impl<'a> IdReader<'a> for UnionMember<'a> {
+impl IdReader for UnionMember<'_> {
     type Id = UnionMemberId;
-    fn new(id: Self::Id, document: &'a TypeSystemDocument) -> Self {
+    type Reader<'a> = UnionMember<'a>;
+    fn new(id: Self::Id, document: &'_ TypeSystemDocument) -> Self::Reader<'_> {
         document.read(id)
     }
 }

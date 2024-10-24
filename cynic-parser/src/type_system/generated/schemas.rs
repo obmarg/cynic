@@ -64,9 +64,10 @@ impl TypeSystemId for SchemaDefinitionId {
     }
 }
 
-impl<'a> IdReader<'a> for SchemaDefinition<'a> {
+impl IdReader for SchemaDefinition<'_> {
     type Id = SchemaDefinitionId;
-    fn new(id: Self::Id, document: &'a TypeSystemDocument) -> Self {
+    type Reader<'a> = SchemaDefinition<'a>;
+    fn new(id: Self::Id, document: &'_ TypeSystemDocument) -> Self::Reader<'_> {
         document.read(id)
     }
 }
@@ -130,9 +131,10 @@ impl TypeSystemId for RootOperationTypeDefinitionId {
     }
 }
 
-impl<'a> IdReader<'a> for RootOperationTypeDefinition<'a> {
+impl IdReader for RootOperationTypeDefinition<'_> {
     type Id = RootOperationTypeDefinitionId;
-    fn new(id: Self::Id, document: &'a TypeSystemDocument) -> Self {
+    type Reader<'a> = RootOperationTypeDefinition<'a>;
+    fn new(id: Self::Id, document: &'_ TypeSystemDocument) -> Self::Reader<'_> {
         document.read(id)
     }
 }

@@ -1,4 +1,4 @@
-use std::{iter::Enumerate, marker::PhantomData};
+use std::iter::Enumerate;
 
 use pretty::{DocAllocator, Pretty};
 
@@ -20,16 +20,17 @@ use super::{
 /// but arguments should use ArgumentSequence
 pub(super) struct FieldSequence<'a, T>
 where
-    T: IdReader<'a> + Field<'a>,
+    T: IdReader,
+    T::Reader<'a>: Field<'a>,
 {
-    iterator: Enumerate<std::vec::IntoIter<T>>,
+    iterator: Enumerate<std::vec::IntoIter<T::Reader<'a>>>,
     options: PrettyOptions,
-    phantom: PhantomData<&'a T>,
 }
 
 impl<'a, T> FieldSequence<'a, T>
 where
-    T: IdReader<'a> + Field<'a>,
+    T: IdReader,
+    T::Reader<'a>: Field<'a>,
     T::Id: IdOperations,
 {
     pub fn new(iterator: crate::type_system::iter::Iter<'a, T>, options: PrettyOptions) -> Self {
@@ -41,7 +42,6 @@ where
         FieldSequence {
             iterator: fields.into_iter().enumerate(),
             options,
-            phantom: PhantomData,
         }
     }
 }
@@ -83,9 +83,10 @@ impl<'a> Field<'a> for EnumValueDefinition<'a> {
 
 impl<'a, T> Pretty<'a, Allocator<'a>> for FieldSequence<'a, T>
 where
-    T: Field<'a> + IdReader<'a>,
+    T: IdReader,
+    T::Reader<'a>: Field<'a>,
     T::Id: IdOperations,
-    NodeDisplay<T>: Pretty<'a, Allocator<'a>>,
+    NodeDisplay<T::Reader<'a>>: Pretty<'a, Allocator<'a>>,
 {
     fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
         let mut document = allocator.nil();

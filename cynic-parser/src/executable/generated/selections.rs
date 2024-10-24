@@ -34,9 +34,11 @@ impl ExecutableId for SelectionId {
     }
 }
 
-impl<'a> IdReader<'a> for Selection<'a> {
+impl IdReader for Selection<'_> {
     type Id = SelectionId;
-    fn new(id: Self::Id, document: &'a ExecutableDocument) -> Self {
+    type Reader<'a> = Selection<'a>;
+
+    fn new(id: Self::Id, document: &'_ ExecutableDocument) -> Self::Reader<'_> {
         document.read(id)
     }
 }
@@ -113,9 +115,10 @@ impl ExecutableId for FieldSelectionId {
     }
 }
 
-impl<'a> IdReader<'a> for FieldSelection<'a> {
+impl IdReader for FieldSelection<'_> {
     type Id = FieldSelectionId;
-    fn new(id: Self::Id, document: &'a ExecutableDocument) -> Self {
+    type Reader<'a> = FieldSelection<'a>;
+    fn new(id: Self::Id, document: &'_ ExecutableDocument) -> Self::Reader<'_> {
         document.read(id)
     }
 }
@@ -175,9 +178,10 @@ impl ExecutableId for InlineFragmentId {
     }
 }
 
-impl<'a> IdReader<'a> for InlineFragment<'a> {
+impl IdReader for InlineFragment<'_> {
     type Id = InlineFragmentId;
-    fn new(id: Self::Id, document: &'a ExecutableDocument) -> Self {
+    type Reader<'a> = InlineFragment<'a>;
+    fn new(id: Self::Id, document: &'_ ExecutableDocument) -> Self::Reader<'_> {
         document.read(id)
     }
 }
@@ -228,9 +232,10 @@ impl ExecutableId for FragmentSpreadId {
     }
 }
 
-impl<'a> IdReader<'a> for FragmentSpread<'a> {
+impl IdReader for FragmentSpread<'_> {
     type Id = FragmentSpreadId;
-    fn new(id: Self::Id, document: &'a ExecutableDocument) -> Self {
+    type Reader<'a> = FragmentSpread<'a>;
+    fn new(id: Self::Id, document: &'_ ExecutableDocument) -> Self::Reader<'_> {
         document.read(id)
     }
 }

@@ -82,9 +82,10 @@ impl TypeSystemId for DirectiveDefinitionId {
     }
 }
 
-impl<'a> IdReader<'a> for DirectiveDefinition<'a> {
+impl IdReader for DirectiveDefinition<'_> {
     type Id = DirectiveDefinitionId;
-    fn new(id: Self::Id, document: &'a TypeSystemDocument) -> Self {
+    type Reader<'a> = DirectiveDefinition<'a>;
+    fn new(id: Self::Id, document: &'_ TypeSystemDocument) -> Self::Reader<'_> {
         document.read(id)
     }
 }
@@ -135,9 +136,10 @@ impl TypeSystemId for DirectiveId {
     }
 }
 
-impl<'a> IdReader<'a> for Directive<'a> {
+impl IdReader for Directive<'_> {
     type Id = DirectiveId;
-    fn new(id: Self::Id, document: &'a TypeSystemDocument) -> Self {
+    type Reader<'a> = Directive<'a>;
+    fn new(id: Self::Id, document: &'_ TypeSystemDocument) -> Self::Reader<'_> {
         document.read(id)
     }
 }
