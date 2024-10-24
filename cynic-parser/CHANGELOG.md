@@ -9,6 +9,16 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.6.2 - 2024-10-24
+
+### New Features
+
+- Added `Span::overlaps` function ([#1065](https://github.com/obmarg/cynic/pull/1065))
+
+### Changes
+
+- The IdReader trait now has a lifetime parameter ([#1064](https://github.com/obmarg/cynic/pull/1064))
+
 ## v0.6.1 - 2024-10-06
 
 ### Bug Fixes
