@@ -9,6 +9,7 @@ use std::fmt::{self, Write};
 
 pub struct ArgumentRecord {
     pub name: StringId,
+    pub name_span: Span,
     pub value: ValueId,
 }
 
@@ -19,6 +20,10 @@ impl<'a> Argument<'a> {
     pub fn name(&self) -> &'a str {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).name)
+    }
+    pub fn name_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).name_span
     }
     pub fn value(&self) -> Value<'a> {
         let document = self.0.document;

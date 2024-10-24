@@ -15,7 +15,7 @@ mod prelude {
             iter::{IdReader, Iter},
             ExecutableDocument, ReadContext,
         },
-        AstLookup,
+        AstLookup, Span,
     };
 }
 

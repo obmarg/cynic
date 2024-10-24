@@ -43,7 +43,9 @@ impl<'a> IdReader<'a> for Selection<'a> {
 
 pub struct FieldSelectionRecord {
     pub alias: Option<StringId>,
+    pub alias_span: Option<Span>,
     pub name: StringId,
+    pub name_span: Span,
     pub arguments: IdRange<ArgumentId>,
     pub directives: IdRange<DirectiveId>,
     pub selection_set: IdRange<SelectionId>,
@@ -60,9 +62,17 @@ impl<'a> FieldSelection<'a> {
             .alias
             .map(|id| document.lookup(id))
     }
+    pub fn alias_span(&self) -> Option<Span> {
+        let document = self.0.document;
+        document.lookup(self.0.id).alias_span
+    }
     pub fn name(&self) -> &'a str {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).name)
+    }
+    pub fn name_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).name_span
     }
     pub fn arguments(&self) -> Iter<'a, Argument<'a>> {
         let document = self.0.document;
@@ -112,6 +122,7 @@ impl<'a> IdReader<'a> for FieldSelection<'a> {
 
 pub struct InlineFragmentRecord {
     pub type_condition: Option<StringId>,
+    pub type_condition_span: Option<Span>,
     pub directives: IdRange<DirectiveId>,
     pub selection_set: IdRange<SelectionId>,
 }
@@ -126,6 +137,10 @@ impl<'a> InlineFragment<'a> {
             .lookup(self.0.id)
             .type_condition
             .map(|id| document.lookup(id))
+    }
+    pub fn type_condition_span(&self) -> Option<Span> {
+        let document = self.0.document;
+        document.lookup(self.0.id).type_condition_span
     }
     pub fn directives(&self) -> Iter<'a, Directive<'a>> {
         let document = self.0.document;
@@ -169,6 +184,7 @@ impl<'a> IdReader<'a> for InlineFragment<'a> {
 
 pub struct FragmentSpreadRecord {
     pub fragment_name: StringId,
+    pub fragment_name_span: Span,
     pub directives: IdRange<DirectiveId>,
 }
 
@@ -179,6 +195,10 @@ impl<'a> FragmentSpread<'a> {
     pub fn fragment_name(&self) -> &'a str {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).fragment_name)
+    }
+    pub fn fragment_name_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).fragment_name_span
     }
     pub fn directives(&self) -> Iter<'a, Directive<'a>> {
         let document = self.0.document;
