@@ -8,7 +8,10 @@ git_release_body = """
 {{ changelog }}
 {% if remote.contributors %}
 ### Contributors
-{% for contributor in remote.contributors %}
+
+Thanks to the people who contributed to this release:
+
+{% for contributor in remote.contributors | unique(attribute="username") %}
 * @{{ contributor.username }}
 {% endfor %}
 {% endif %}
