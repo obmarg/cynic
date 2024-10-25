@@ -366,7 +366,9 @@ InputValueDefinition: () = {
         <name:Name>
         <name_end:@R>
         ":" <ty:Type>
+        <default_start:@L>
         <default:DefaultValue?>
+        <default_end:@R>
         <directives:Directives>
         <end:@R>
     => {
@@ -377,6 +379,7 @@ InputValueDefinition: () = {
             description,
             directives,
             default_value: default,
+            default_value_span: Span::new(default_start, default_end),
             span: Span::new(start, end)
         });
     }
