@@ -9,10 +9,26 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.7.0 - 2024-10-25
+
 ### Breaking Changes
 
+- Removed `InputValueDefiniton::default_value_span` - you should now fetch the
+  span from the `default_value` itself.
 - `RootOperationTypeDefinition::span` now covers the entire root operation type
   definition.  For the old spans, use `RootOperationTypeDefinition::named_type_span`.
+
+### New Features
+
+- Added more spans to the type system AST ([#1070](https://github.com/obmarg/cynic/pull/1070))
+- Added more spans to the executable AST ([#1069](https://github.com/obmarg/cynic/pull/1069))
+- Added `Type::definitions` for fetching the definitions associated with a type ([#1067](https://github.com/obmarg/cynic/pull/1067))
+
+### Bug Fixes
+
+- Fixed an issue where explicit lifetimes had to be used on 
+  `Iter<'_, Whatever<'_>>` ([#1072](https://github.com/obmarg/cynic/pull/1072))
+- Fixed some associated type definitions on Iter ([#1068](https://github.com/obmarg/cynic/pull/1068))
 
 ## v0.6.2 - 2024-10-24
 
@@ -37,11 +53,6 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 - Rework `Value` significantly ([#1048](https://github.com/obmarg/cynic/pull/1048))
 - Added `ConstValue` ([#1057](https://github.com/obmarg/cynic/pull/1057))
 - The ExecutableId & TypeSystemId traits have been changed ([#1047](https://github.com/obmarg/cynic/pull/1047))
-
-### Breaking Changes
-
-- Removed `InputValueDefiniton::default_value_span` - you should now fetch the
-  span from the `default_value` itself.
 
 ### Changes
 
