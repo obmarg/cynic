@@ -81,9 +81,10 @@ impl ExecutableId for OperationDefinitionId {
     }
 }
 
-impl<'a> IdReader<'a> for OperationDefinition<'a> {
+impl IdReader for OperationDefinition<'_> {
     type Id = OperationDefinitionId;
-    fn new(id: Self::Id, document: &'a ExecutableDocument) -> Self {
+    type Reader<'a> = OperationDefinition<'a>;
+    fn new(id: Self::Id, document: &'_ ExecutableDocument) -> Self::Reader<'_> {
         document.read(id)
     }
 }

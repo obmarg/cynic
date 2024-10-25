@@ -75,9 +75,10 @@ impl TypeSystemId for EnumDefinitionId {
     }
 }
 
-impl<'a> IdReader<'a> for EnumDefinition<'a> {
+impl IdReader for EnumDefinition<'_> {
     type Id = EnumDefinitionId;
-    fn new(id: Self::Id, document: &'a TypeSystemDocument) -> Self {
+    type Reader<'a> = EnumDefinition<'a>;
+    fn new(id: Self::Id, document: &'_ TypeSystemDocument) -> Self::Reader<'_> {
         document.read(id)
     }
 }
@@ -143,9 +144,10 @@ impl TypeSystemId for EnumValueDefinitionId {
     }
 }
 
-impl<'a> IdReader<'a> for EnumValueDefinition<'a> {
+impl IdReader for EnumValueDefinition<'_> {
     type Id = EnumValueDefinitionId;
-    fn new(id: Self::Id, document: &'a TypeSystemDocument) -> Self {
+    type Reader<'a> = EnumValueDefinition<'a>;
+    fn new(id: Self::Id, document: &'_ TypeSystemDocument) -> Self::Reader<'_> {
         document.read(id)
     }
 }

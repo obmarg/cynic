@@ -59,9 +59,10 @@ impl TypeSystemId for ArgumentId {
     }
 }
 
-impl<'a> IdReader<'a> for Argument<'a> {
+impl IdReader for Argument<'_> {
     type Id = ArgumentId;
-    fn new(id: Self::Id, document: &'a TypeSystemDocument) -> Self {
+    type Reader<'a> = Argument<'a>;
+    fn new(id: Self::Id, document: &'_ TypeSystemDocument) -> Self::Reader<'_> {
         document.read(id)
     }
 }

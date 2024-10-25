@@ -76,9 +76,10 @@ impl TypeSystemId for InputObjectDefinitionId {
     }
 }
 
-impl<'a> IdReader<'a> for InputObjectDefinition<'a> {
+impl IdReader for InputObjectDefinition<'_> {
     type Id = InputObjectDefinitionId;
-    fn new(id: Self::Id, document: &'a TypeSystemDocument) -> Self {
+    type Reader<'a> = InputObjectDefinition<'a>;
+    fn new(id: Self::Id, document: &'_ TypeSystemDocument) -> Self::Reader<'_> {
         document.read(id)
     }
 }

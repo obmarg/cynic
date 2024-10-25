@@ -71,9 +71,10 @@ impl ExecutableId for FragmentDefinitionId {
     }
 }
 
-impl<'a> IdReader<'a> for FragmentDefinition<'a> {
+impl IdReader for FragmentDefinition<'_> {
     type Id = FragmentDefinitionId;
-    fn new(id: Self::Id, document: &'a ExecutableDocument) -> Self {
+    type Reader<'a> = FragmentDefinition<'a>;
+    fn new(id: Self::Id, document: &'_ ExecutableDocument) -> Self::Reader<'_> {
         document.read(id)
     }
 }
