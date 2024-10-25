@@ -9,6 +9,24 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.7.0 - 2024-10-25
+
+### New Features
+
+- more spans on type system document ([#1070](https://github.com/obmarg/cynic/pull/1070))
+- more spans in executable ast ([#1069](https://github.com/obmarg/cynic/pull/1069))
+- add `Type::definitions` ([#1067](https://github.com/obmarg/cynic/pull/1067))
+
+### Bug Fixes
+
+- remove lifetimes from IdReader trait ([#1072](https://github.com/obmarg/cynic/pull/1072))
+- [**breaking**] remove default value span ([#1071](https://github.com/obmarg/cynic/pull/1071))
+- tidy up some iter associated tyes ([#1068](https://github.com/obmarg/cynic/pull/1068))
+
+### Changes
+
+- features in cynic-parser readme ([#1073](https://github.com/obmarg/cynic/pull/1073))
+
 ### Breaking Changes
 
 - `RootOperationTypeDefinition::span` now covers the entire root operation type
