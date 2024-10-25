@@ -9,6 +9,13 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.7.1 - 2024-10-25
+
+### Bug Fixes
+
+- Added `InputValueDefinition::default_value_span` again ([#1077](https://github.com/obmarg/cynic/pull/1077))
+- Implemented `todo!` in `ConstValue::span` ([#1076](https://github.com/obmarg/cynic/pull/1076))
+
 ## v0.7.0 - 2024-10-25
 
 ### Breaking Changes
