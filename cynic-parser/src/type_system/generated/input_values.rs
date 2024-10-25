@@ -16,6 +16,7 @@ pub struct InputValueDefinitionRecord {
     pub ty: TypeId,
     pub description: Option<DescriptionId>,
     pub default_value: Option<ConstValueId>,
+    pub default_value_span: Span,
     pub directives: IdRange<DirectiveId>,
     pub span: Span,
 }
@@ -50,6 +51,10 @@ impl<'a> InputValueDefinition<'a> {
             .default_value
             .map(|id| document.read(id))
     }
+    pub fn default_value_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).default_value_span
+    }
     pub fn directives(&self) -> Iter<'a, Directive<'a>> {
         let document = self.0.document;
         super::Iter::new(document.lookup(self.0.id).directives, document)
@@ -73,6 +78,7 @@ impl fmt::Debug for InputValueDefinition<'_> {
             .field("ty", &self.ty())
             .field("description", &self.description())
             .field("default_value", &self.default_value())
+            .field("default_value_span", &self.default_value_span())
             .field("directives", &self.directives())
             .field("span", &self.span())
             .finish()

@@ -88,6 +88,7 @@ type InputValueDefinition @file(name: "input_values") {
   ty: Type!
   description: Description
   default_value: ConstValue
+  default_value_span: Span!
   directives: [Directive!]!
   span: Span!
 }
