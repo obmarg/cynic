@@ -24,7 +24,16 @@ pub enum ConstValue<'a> {
 
 impl<'a> ConstValue<'a> {
     pub fn span(&self) -> Span {
-        todo!()
+        match self {
+            ConstValue::Int(inner) => inner.span(),
+            ConstValue::Float(inner) => inner.span(),
+            ConstValue::String(inner) => inner.span(),
+            ConstValue::Boolean(inner) => inner.span(),
+            ConstValue::Null(inner) => inner.span(),
+            ConstValue::Enum(inner) => inner.span(),
+            ConstValue::List(inner) => inner.span(),
+            ConstValue::Object(inner) => inner.span(),
+        }
     }
 }
 
