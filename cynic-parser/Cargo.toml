@@ -25,7 +25,7 @@ report = ["ariadne"]
 
 [dependencies]
 indexmap = "2"
-lalrpop-util = "0.22.0"
+lalrpop-util = { version = "0.22.0", default-features = false }
 logos = "0.14"
 
 ariadne = { version = "0.4", optional = true }
