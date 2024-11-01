@@ -1,4 +1,4 @@
-// auto-generated: "lalrpop 0.21.0"
+// auto-generated: "lalrpop 0.22.0"
 // sha3: ffd7978fb7a665ada02920920cd7a4d36a3a9e959ae40128f143a5b67378f406
 use crate::lexer;
 use crate::{
@@ -1168,6 +1168,7 @@ mod __parse__ExecutableDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> Option<usize>
     {
+        #[warn(unused_variables)]
         match __token {
             lexer::Token::Dollar if true => Some(0),
             lexer::Token::Colon if true => Some(1),
@@ -10908,11 +10909,11 @@ fn __action242<'input>(
     let __temp0 = (__start0, __temp0, __end0);
     __action194(input, ast, __0, __1, __temp0)
 }
-#[allow(clippy::type_complexity, dead_code)]
 
+#[allow(clippy::type_complexity, dead_code)]
 pub trait __ToTriple<'input> {
     fn to_triple(
-        value: Self,
+        self,
     ) -> Result<
         (usize, lexer::Token<'input>, usize),
         __lalrpop_util::ParseError<usize, lexer::Token<'input>, crate::parser::AdditionalErrors>,
@@ -10921,26 +10922,23 @@ pub trait __ToTriple<'input> {
 
 impl<'input> __ToTriple<'input> for (usize, lexer::Token<'input>, usize) {
     fn to_triple(
-        value: Self,
+        self,
     ) -> Result<
         (usize, lexer::Token<'input>, usize),
         __lalrpop_util::ParseError<usize, lexer::Token<'input>, crate::parser::AdditionalErrors>,
     > {
-        Ok(value)
+        Ok(self)
     }
 }
 impl<'input> __ToTriple<'input>
     for Result<(usize, lexer::Token<'input>, usize), crate::parser::AdditionalErrors>
 {
     fn to_triple(
-        value: Self,
+        self,
     ) -> Result<
         (usize, lexer::Token<'input>, usize),
         __lalrpop_util::ParseError<usize, lexer::Token<'input>, crate::parser::AdditionalErrors>,
     > {
-        match value {
-            Ok(v) => Ok(v),
-            Err(error) => Err(__lalrpop_util::ParseError::User { error }),
-        }
+        self.map_err(|error| __lalrpop_util::ParseError::User { error })
     }
 }

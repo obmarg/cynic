@@ -1,4 +1,4 @@
-// auto-generated: "lalrpop 0.21.0"
+// auto-generated: "lalrpop 0.22.0"
 // sha3: 42a9bcdc947996d2ccdc87b6444b7ee866ed754e1cf55d25ded43a9db554c2c3
 use crate::lexer;
 use crate::{
@@ -1373,14 +1373,14 @@ mod __parse__TypeSystemDocument {
         }).collect()
     }
     struct __StateMachine<'input, '__1>
-    where
+    where 
     {
         input: &'input str,
         ast: &'__1 mut TypeSystemAstWriter,
         __phantom: core::marker::PhantomData<(&'input ())>,
     }
     impl<'input, '__1> __state_machine::ParserDefinition for __StateMachine<'input, '__1>
-    where
+    where 
     {
         type Location = usize;
         type Error = crate::parser::AdditionalErrors;
@@ -1482,6 +1482,7 @@ mod __parse__TypeSystemDocument {
         _: core::marker::PhantomData<(&'input ())>,
     ) -> Option<usize>
     {
+        #[warn(unused_variables)]
         match __token {
             lexer::Token::Dollar if true => Some(0),
             lexer::Token::Colon if true => Some(1),
@@ -13593,11 +13594,11 @@ fn __action301<'input>(
     let __temp0 = (__start0, __temp0, __end0);
     __action228(input, ast, __0, __1, __temp0)
 }
-#[allow(clippy::type_complexity, dead_code)]
 
+#[allow(clippy::type_complexity, dead_code)]
 pub trait __ToTriple<'input> {
     fn to_triple(
-        value: Self,
+        self,
     ) -> Result<
         (usize, lexer::Token<'input>, usize),
         __lalrpop_util::ParseError<usize, lexer::Token<'input>, crate::parser::AdditionalErrors>,
@@ -13606,26 +13607,23 @@ pub trait __ToTriple<'input> {
 
 impl<'input> __ToTriple<'input> for (usize, lexer::Token<'input>, usize) {
     fn to_triple(
-        value: Self,
+        self,
     ) -> Result<
         (usize, lexer::Token<'input>, usize),
         __lalrpop_util::ParseError<usize, lexer::Token<'input>, crate::parser::AdditionalErrors>,
     > {
-        Ok(value)
+        Ok(self)
     }
 }
 impl<'input> __ToTriple<'input>
     for Result<(usize, lexer::Token<'input>, usize), crate::parser::AdditionalErrors>
 {
     fn to_triple(
-        value: Self,
+        self,
     ) -> Result<
         (usize, lexer::Token<'input>, usize),
         __lalrpop_util::ParseError<usize, lexer::Token<'input>, crate::parser::AdditionalErrors>,
     > {
-        match value {
-            Ok(v) => Ok(v),
-            Err(error) => Err(__lalrpop_util::ParseError::User { error }),
-        }
+        self.map_err(|error| __lalrpop_util::ParseError::User { error })
     }
 }
