@@ -9,6 +9,16 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.7.2 - 2024-11-07
+
+### New Features
+
+- lots of conveniences in parser ([#1085](https://github.com/obmarg/cynic/pull/1085))
+
+### Changes
+
+- update lalrpop to 0.22.0 ([#1082](https://github.com/obmarg/cynic/pull/1082))
+
 ### Breaking Changes
 
 - Lexing failures now include the token that failed to parse
