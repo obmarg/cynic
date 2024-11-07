@@ -38,6 +38,10 @@ impl<'a> Object<'a> {
         let store = self.0.store;
         Iter::new(store.lookup(self.0.id).kind.as_object().unwrap(), store)
     }
+
+    pub fn get(&self, name: &str) -> Option<Value<'a>> {
+        Some(self.fields().find(|field| field.name() == name)?.value())
+    }
 }
 
 impl PartialEq for Object<'_> {
@@ -72,6 +76,16 @@ impl<'a> From<ConstObject<'a>> for Object<'a> {
         let id = id.into();
 
         Object(Cursor { id, store })
+    }
+}
+
+impl<'a> IntoIterator for Object<'a> {
+    type Item = ObjectField<'a>;
+
+    type IntoIter = Iter<'a, ObjectField<'a>>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.fields()
     }
 }
 

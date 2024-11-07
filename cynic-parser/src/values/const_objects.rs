@@ -34,6 +34,10 @@ impl<'a> ConstObject<'a> {
 
         Iter::new(IdRange { start, end }, store)
     }
+
+    pub fn get(&self, name: &str) -> Option<ConstValue<'a>> {
+        Some(self.fields().find(|field| field.name() == name)?.value())
+    }
 }
 
 impl fmt::Debug for ConstObject<'_> {
@@ -41,6 +45,16 @@ impl fmt::Debug for ConstObject<'_> {
         f.debug_map()
             .entries(self.fields().map(|field| (field.name(), field.value())))
             .finish()
+    }
+}
+
+impl<'a> IntoIterator for ConstObject<'a> {
+    type Item = ConstObjectField<'a>;
+
+    type IntoIter = Iter<'a, ConstObjectField<'a>>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.fields()
     }
 }
 

@@ -627,7 +627,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<StringLiteral<'a>> {
                 .text(escape_string(self.0.to_cow().as_ref()))
                 .double_quotes(),
             StringLiteralKind::Block => allocator
-                .text(self.0.raw_str())
+                .text(self.0.raw_untrimmed_str())
                 .double_quotes()
                 .double_quotes()
                 .double_quotes(),

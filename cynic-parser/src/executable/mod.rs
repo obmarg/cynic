@@ -23,10 +23,11 @@ pub use self::{
         selections::{FieldSelection, FragmentSpread, InlineFragment, Selection},
         variable::VariableDefinition,
     },
+    iter::Iter,
     types::Type,
 };
 
-use self::{ids::ExecutableDefinitionId, iter::Iter};
+use self::ids::ExecutableDefinitionId;
 
 #[derive(Default)]
 pub struct ExecutableDocument {

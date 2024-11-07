@@ -78,7 +78,7 @@ impl<'a> Value<'a> {
         matches!(self, Value::Float(_))
     }
 
-    pub fn as_f32(&self) -> Option<f32> {
+    pub fn as_f64(&self) -> Option<f64> {
         match self {
             Self::Float(inner) => Some(inner.value()),
             _ => None,
@@ -215,7 +215,7 @@ pub struct ValueRecord {
 pub enum ValueKind {
     Variable(StringId),
     Int(i64),
-    Float(f32),
+    Float(f64),
     String(StringId),
     Boolean(bool),
     Null,
@@ -239,7 +239,7 @@ impl ValueKind {
         }
     }
 
-    pub fn as_float(&self) -> Option<f32> {
+    pub fn as_float(&self) -> Option<f64> {
         match self {
             ValueKind::Float(inner) => Some(*inner),
             _ => None,

@@ -26,6 +26,10 @@ impl<'a> List<'a> {
         let store = &self.0.store;
         Iter::new(store.lookup(self.0.id).kind.as_list().unwrap(), store)
     }
+
+    pub fn get(&self, index: usize) -> Option<Value<'a>> {
+        self.items().nth(index)
+    }
 }
 
 impl PartialEq for List<'_> {
@@ -47,5 +51,15 @@ impl<'a> From<ConstList<'a>> for List<'a> {
         let id = id.into();
 
         List(Cursor { id, store })
+    }
+}
+
+impl<'a> IntoIterator for List<'a> {
+    type Item = Value<'a>;
+
+    type IntoIter = Iter<'a, Value<'a>>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.items()
     }
 }

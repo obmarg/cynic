@@ -53,7 +53,7 @@ impl<'a> ConstValue<'a> {
         matches!(self, Self::Float(_))
     }
 
-    pub fn as_f32(&self) -> Option<f32> {
+    pub fn as_f64(&self) -> Option<f64> {
         match self {
             Self::Float(inner) => Some(inner.value()),
             _ => None,
