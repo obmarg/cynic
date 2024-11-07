@@ -131,7 +131,7 @@ impl fmt::Display for Error {
                 write!(f, "found a {token} after the expected end of the document")
             }
             Error::Lexical(error) => {
-                write!(f, "lexing error: {error}")
+                write!(f, "{error}")
             }
             Error::MalformedStringLiteral(error) => {
                 write!(f, "malformed string literal: {error}")

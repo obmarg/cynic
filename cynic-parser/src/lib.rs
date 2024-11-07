@@ -17,7 +17,11 @@ pub mod printing;
 pub use errors::Report;
 
 pub use self::{
-    errors::Error, executable::ExecutableDocument, span::Span, type_system::TypeSystemDocument,
+    errors::Error,
+    executable::ExecutableDocument,
+    span::Span,
+    type_system::TypeSystemDocument,
+    values::{ConstValue, Value},
 };
 
 pub fn parse_type_system_document(input: &str) -> Result<TypeSystemDocument, Error> {

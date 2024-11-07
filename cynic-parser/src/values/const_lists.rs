@@ -31,10 +31,24 @@ impl<'a> ConstList<'a> {
 
         Iter::new(IdRange { start, end }, store)
     }
+
+    pub fn get(&self, index: usize) -> Option<ConstValue<'a>> {
+        self.items().nth(index)
+    }
 }
 
 impl fmt::Debug for ConstList<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_list().entries(self.items()).finish()
+    }
+}
+
+impl<'a> IntoIterator for ConstList<'a> {
+    type Item = ConstValue<'a>;
+
+    type IntoIter = Iter<'a, ConstValue<'a>>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.items()
     }
 }

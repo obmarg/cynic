@@ -1,7 +1,6 @@
 use std::{str::FromStr, sync::Arc};
 
 use indexmap::IndexSet;
-use iter::Iter;
 
 pub mod ids;
 pub mod iter;
@@ -34,6 +33,7 @@ pub use self::{
         schemas::{RootOperationTypeDefinition, SchemaDefinition},
         unions::{UnionDefinition, UnionMember},
     },
+    iter::Iter,
     string_literal::{StringLiteral, StringLiteralKind},
     types::{NamedTypeDefinition, NamedTypeDefinitions, Type},
 };

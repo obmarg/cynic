@@ -32,7 +32,7 @@ impl<'a> StringLiteral<'a> {
         }
     }
 
-    pub fn raw_str(&self) -> &'a str {
+    pub fn raw_untrimmed_str(&self) -> &'a str {
         match self.0 {
             StringLiteralInner::String(string) => string,
             StringLiteralInner::BlockString(string) => string,

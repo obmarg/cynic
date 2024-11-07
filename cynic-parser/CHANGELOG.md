@@ -9,6 +9,36 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+### Breaking Changes
+
+- Lexing failures now include the token that failed to parse
+- `Description::raw_str` has been renamed `raw_untrimmed_str` to make its
+  purpose clearer.
+- `StringLiteral::raw_str` has been renamed `raw_untrimmed_str` to make its
+  purpose clearer.
+- `Float`s are now correctly represented as f64 rather than f32
+- `Value::as_f32` & `ConstValue::as_f32` are now `as_f64`
+
+### New Features
+
+- Added convenience functions to `SchemaDefintion` to get the individual
+  definitions from within
+- Added `get` function to `ConstList`, `List,`, `ConstObject` and `Object` to
+  get the value of an item or field from the list or object
+- `ConstList`, `List`, `ConstObject` and `Object` now implement `IntoIterator`,
+  which is equivalent to calling `items` or `fields`
+- Added `as_f64` & `as_str` & `as_bool` functions to the respective scalar
+  value types.
+
+### Bug Fixes
+
+- `Float`s are now correctly represented as f64 rather than f32
+
+### Changes
+
+- `Iter` types are now reexported in the `type_system` and `executable` modules
+- `Value` & `ConstValue` are now reexported from the crate root.
+
 ## v0.7.1 - 2024-10-25
 
 ### Bug Fixes
@@ -23,7 +53,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 - Removed `InputValueDefiniton::default_value_span` - you should now fetch the
   span from the `default_value` itself.
 - `RootOperationTypeDefinition::span` now covers the entire root operation type
-  definition.  For the old spans, use `RootOperationTypeDefinition::named_type_span`.
+  definition. For the old spans, use `RootOperationTypeDefinition::named_type_span`.
 
 ### New Features
 
@@ -33,7 +63,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Bug Fixes
 
-- Fixed an issue where explicit lifetimes had to be used on 
+- Fixed an issue where explicit lifetimes had to be used on
   `Iter<'_, Whatever<'_>>` ([#1072](https://github.com/obmarg/cynic/pull/1072))
 - Fixed some associated type definitions on Iter ([#1068](https://github.com/obmarg/cynic/pull/1068))
 
