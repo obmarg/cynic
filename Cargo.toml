@@ -12,7 +12,7 @@ members = [
     "tests/querygen-compile-run",
     "tests/ui-tests",
     "cynic-parser",
-    "cynic-parser/ast-generator",
+    "cynic-parser/ast-generator", "cynic-value-deser",
 ]
 exclude = ["cynic-parser/parser-generator"]
 resolver = "2"

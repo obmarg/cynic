@@ -1163,6 +1163,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "cynic-value-deser"
+version = "3.8.0"
+dependencies = [
+ "cynic-parser",
+]
+
+[[package]]
 name = "darling"
 version = "0.20.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"

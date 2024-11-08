@@ -19,6 +19,7 @@ pub use self::{
     const_objects::{ConstObject, ConstObjectField},
     const_value::ConstValue,
     enums::EnumValue,
+    iter::Iter,
     lists::List,
     objects::{Object, ObjectField},
     scalars::{BooleanValue, FloatValue, IntValue, NullValue, StringValue},
