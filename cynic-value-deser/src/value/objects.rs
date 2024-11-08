@@ -20,6 +20,12 @@ enum ObjectInner<'a> {
 }
 
 impl<'a> Object<'a> {
+    pub(crate) fn from_type_system_directive(directive: type_system::Directive<'a>) -> Self {
+        Object {
+            inner: ObjectInner::TypeDirective(directive),
+        }
+    }
+
     pub fn is_empty(&self) -> bool {
         match self.inner {
             ObjectInner::Const(inner) => inner.is_empty(),
