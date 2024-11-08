@@ -10,8 +10,12 @@ pub enum Error {
     },
     MissingField {
         name: String,
-        expected: ValueType,
         object_span: Option<Span>,
+    },
+    UnknownField {
+        name: String,
+        field_type: ValueType,
+        // TODO: This needs an appropriate span
     },
     Custom {
         text: String,

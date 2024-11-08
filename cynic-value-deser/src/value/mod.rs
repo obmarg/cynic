@@ -4,6 +4,7 @@ mod objects;
 mod scalars;
 mod value;
 
+use cynic_parser::ConstValue;
 pub use {
     enums::EnumValue,
     lists::{List, ListIter},
@@ -35,6 +36,21 @@ impl From<DeserValue<'_>> for ValueType {
             DeserValue::Enum(_) => ValueType::Enum,
             DeserValue::List(_) => ValueType::List,
             DeserValue::Object(_) => ValueType::Object,
+        }
+    }
+}
+
+impl From<ConstValue<'_>> for ValueType {
+    fn from(value: ConstValue<'_>) -> Self {
+        match value {
+            ConstValue::Int(_) => ValueType::Int,
+            ConstValue::Float(_) => ValueType::Float,
+            ConstValue::String(_) => ValueType::String,
+            ConstValue::Boolean(_) => ValueType::Boolean,
+            ConstValue::Null(_) => ValueType::Null,
+            ConstValue::Enum(_) => ValueType::Enum,
+            ConstValue::List(_) => ValueType::List,
+            ConstValue::Object(_) => ValueType::Object,
         }
     }
 }
