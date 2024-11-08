@@ -1,5 +1,5 @@
 // auto-generated: "lalrpop 0.22.0"
-// sha3: 42a9bcdc947996d2ccdc87b6444b7ee866ed754e1cf55d25ded43a9db554c2c3
+// sha3: af54745d786b700655a6e240eccfa5cfcb83d13ae8cc6416744fa0214f56e9a9
 use crate::lexer;
 use crate::{
     common::{
@@ -1373,14 +1373,14 @@ mod __parse__TypeSystemDocument {
         }).collect()
     }
     struct __StateMachine<'input, '__1>
-    where 
+    where
     {
         input: &'input str,
         ast: &'__1 mut TypeSystemAstWriter,
         __phantom: core::marker::PhantomData<(&'input ())>,
     }
     impl<'input, '__1> __state_machine::ParserDefinition for __StateMachine<'input, '__1>
-    where 
+    where
     {
         type Location = usize;
         type Error = crate::parser::AdditionalErrors;
@@ -9223,7 +9223,9 @@ fn __action76<'input>(
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, name, _): (usize, StringId, usize),
     (_, name_end, _): (usize, usize, usize),
+    (_, arguments_start, _): (usize, usize, usize),
     (_, arguments, _): (usize, Option<Vec<ArgumentId>>, usize),
+    (_, arguments_end, _): (usize, usize, usize),
 ) {
     {
         let arguments = ast.argument_range(arguments.map(|arguments| arguments.len()));
@@ -9232,6 +9234,7 @@ fn __action76<'input>(
             name,
             name_span: Span::new(name_start, name_end),
             arguments,
+            arguments_span: Span::new(arguments_start, arguments_end),
         });
     }
 }
@@ -10757,12 +10760,17 @@ fn __action173<'input>(
     __1: (usize, StringId, usize),
     __2: (usize, usize, usize),
     __3: (usize, Option<Vec<ArgumentId>>, usize),
+    __4: (usize, usize, usize),
 ) {
     let __start0 = __0.0;
     let __end0 = __0.0;
+    let __start1 = __2.2;
+    let __end1 = __3.0;
     let __temp0 = __action146(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action76(input, ast, __temp0, __0, __1, __2, __3)
+    let __temp1 = __action146(input, ast, &__start1, &__end1);
+    let __temp1 = (__start1, __temp1, __end1);
+    __action76(input, ast, __temp0, __0, __1, __2, __temp1, __3, __4)
 }
 
 #[allow(unused_variables)]
@@ -11636,9 +11644,13 @@ fn __action210<'input>(
 ) {
     let __start0 = __1.2;
     let __end0 = __2.0;
+    let __start1 = __2.2;
+    let __end1 = __2.2;
     let __temp0 = __action145(input, ast, &__start0, &__end0);
     let __temp0 = (__start0, __temp0, __end0);
-    __action173(input, ast, __0, __1, __temp0, __2)
+    let __temp1 = __action145(input, ast, &__start1, &__end1);
+    let __temp1 = (__start1, __temp1, __end1);
+    __action173(input, ast, __0, __1, __temp0, __2, __temp1)
 }
 
 #[allow(unused_variables)]
