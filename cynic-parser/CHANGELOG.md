@@ -9,6 +9,12 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.8.1 - 2024-11-11
+
+### New Features
+
+- cynic-parser-deser ([#1087](https://github.com/obmarg/cynic/pull/1087))
+
 ### New Features
 
 - Added a span for directive arguments
