@@ -13,4 +13,4 @@ pub use {
     error::Error,
 };
 
-pub use cynic_value_deser_macros::ValueDeserialize;
+pub use cynic_parser_deser_macros::ValueDeserialize;

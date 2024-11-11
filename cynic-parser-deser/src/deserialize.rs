@@ -63,6 +63,40 @@ impl<'a> ValueDeserialize<'a> for u32 {
     }
 }
 
+impl<'a> ValueDeserialize<'a> for u64 {
+    fn deserialize(input: DeserValue<'a>) -> Result<Self, Error> {
+        let value = i64::deserialize(input)?;
+
+        if value < 0 {
+            return Err(Error::custom(
+                format!("integer was less than zero: {value}"),
+                input.span(),
+            ));
+        }
+
+        value
+            .try_into()
+            .map_err(|_| Error::custom(format!("integer was too large: {value}"), input.span()))
+    }
+}
+
+impl<'a> ValueDeserialize<'a> for usize {
+    fn deserialize(input: DeserValue<'a>) -> Result<Self, Error> {
+        let value = i64::deserialize(input)?;
+
+        if value < 0 {
+            return Err(Error::custom(
+                format!("integer was less than zero: {value}"),
+                input.span(),
+            ));
+        }
+
+        value
+            .try_into()
+            .map_err(|_| Error::custom(format!("integer was too large: {value}"), input.span()))
+    }
+}
+
 impl<'a> ValueDeserialize<'a> for f64 {
     fn deserialize(input: DeserValue<'a>) -> Result<Self, Error> {
         match input {

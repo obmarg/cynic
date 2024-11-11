@@ -4,6 +4,8 @@ use cynic_parser::Span;
 
 use crate::{value::ValueType, DeserValue};
 
+// TODO: Should these errors have paths in them as well?
+
 #[derive(Debug)]
 pub enum Error {
     UnexpectedType {
@@ -20,6 +22,11 @@ pub enum Error {
         field_type: ValueType,
         // TODO: This needs an appropriate span
     },
+    DuplicateField {
+        name: String,
+        // TODO: This needs two spans: the original field
+        // and the duplicate field
+    },
     Custom {
         text: String,
         span: Option<Span>,
@@ -32,9 +39,10 @@ impl fmt::Display for Error {
             Error::UnexpectedType {
                 expected, found, ..
             } => write!(f, "found a {found} where we expected a {expected}"),
-            Error::MissingField { name, object_span } => write!(f, "missing field: {name}"),
-            Error::UnknownField { name, field_type } => write!(f, "unknown field: {name}"),
-            Error::Custom { text, span } => write!(f, "{text}"),
+            Error::MissingField { name, .. } => write!(f, "missing field: {name}"),
+            Error::UnknownField { name, .. } => write!(f, "unknown field: {name}"),
+            Error::DuplicateField { name } => write!(f, "duplicate field: {name}"),
+            Error::Custom { text, .. } => write!(f, "{text}"),
         }
     }
 }

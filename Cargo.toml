@@ -13,8 +13,8 @@ members = [
     "tests/ui-tests",
     "cynic-parser",
     "cynic-parser/ast-generator",
-    "cynic-value-deser",
-    "cynic-value-deser-macros",
+    "cynic-parser-deser",
+    "cynic-parser-deser-macros",
 ]
 exclude = ["cynic-parser/parser-generator"]
 resolver = "2"
@@ -40,7 +40,7 @@ rust-version = "1.76"
 
 [workspace.dependencies]
 cynic-parser = { path = "cynic-parser", version = "0.8.0" }
-cynic-value-deser-macros = { path = "cynic-value-deser-macros" }
+cynic-parser-deser-macros = { path = "cynic-parser-deser-macros" }
 darling = "0.20"
 rstest = "0.23"
 syn = "2"

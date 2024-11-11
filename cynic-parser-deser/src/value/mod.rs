@@ -2,6 +2,7 @@ mod enums;
 mod lists;
 mod objects;
 mod scalars;
+#[allow(clippy::module_inception)]
 mod value;
 
 use std::fmt::Display;
