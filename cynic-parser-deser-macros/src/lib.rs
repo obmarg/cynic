@@ -2,7 +2,7 @@ mod attributes;
 
 use attributes::{FieldAttributes, FieldDefault, StructAttribute};
 use proc_macro2::TokenStream;
-use quote::{quote, ToTokens};
+use quote::{format_ident, quote, ToTokens};
 use syn::{parse_quote, Fields};
 
 #[proc_macro_derive(ValueDeserialize, attributes(deser))]
@@ -67,6 +67,11 @@ fn value_deser_impl(ast: syn::DeriveInput) -> Result<TokenStream, ()> {
         .iter()
         .map(|f| f.ident.clone().unwrap())
         .collect::<Vec<_>>();
+    let field_span_vars = named
+        .named
+        .iter()
+        .map(|f| format_ident!("{}_span", f.ident.clone().unwrap()))
+        .collect::<Vec<_>>();
     let field_name_strings = fields
         .iter()
         .map(|(field, attrs)| {
@@ -128,6 +133,7 @@ fn value_deser_impl(ast: syn::DeriveInput) -> Result<TokenStream, ()> {
                 };
                 #(
                     let mut #field_names = None;
+                    let mut #field_span_vars = None;
                 )*
                 for field in obj.fields() {
                     match field.name() {
@@ -135,9 +141,12 @@ fn value_deser_impl(ast: syn::DeriveInput) -> Result<TokenStream, ()> {
                             #field_name_strings => {
                                 if #field_names.is_some() {
                                     return Err(cynic_parser_deser::Error::DuplicateField {
-                                        name: #field_name_strings.to_string()
+                                        name: #field_name_strings.to_string(),
+                                        original_field_span: #field_span_vars,
+                                        duplicate_field_span: field.name_span()
                                     })
                                 }
+                                #field_span_vars = field.name_span();
                                 #field_decodes
                             },
                         )*
@@ -145,6 +154,7 @@ fn value_deser_impl(ast: syn::DeriveInput) -> Result<TokenStream, ()> {
                             return Err(cynic_parser_deser::Error::UnknownField{
                                 name: other.to_string(),
                                 field_type: field.value().into(),
+                                field_span: field.name_span()
                             });
                         }
                     }

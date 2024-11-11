@@ -20,12 +20,12 @@ pub enum Error {
     UnknownField {
         name: String,
         field_type: ValueType,
-        // TODO: This needs an appropriate span
+        field_span: Option<Span>,
     },
     DuplicateField {
         name: String,
-        // TODO: This needs two spans: the original field
-        // and the duplicate field
+        original_field_span: Option<Span>,
+        duplicate_field_span: Option<Span>,
     },
     Custom {
         text: String,
@@ -41,7 +41,7 @@ impl fmt::Display for Error {
             } => write!(f, "found a {found} where we expected a {expected}"),
             Error::MissingField { name, .. } => write!(f, "missing field: {name}"),
             Error::UnknownField { name, .. } => write!(f, "unknown field: {name}"),
-            Error::DuplicateField { name } => write!(f, "duplicate field: {name}"),
+            Error::DuplicateField { name, .. } => write!(f, "duplicate field: {name}"),
             Error::Custom { text, .. } => write!(f, "{text}"),
         }
     }
