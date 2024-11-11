@@ -542,14 +542,17 @@ Directive: () = {
     <name_start:@L>
         "@" <name:Name>
         <name_end:@R>
+        <arguments_start:@L>
         <arguments:Arguments?>
+        <arguments_end:@R>
     => {
         let arguments = ast.argument_range(arguments.map(|arguments| arguments.len()));
 
         ast.directive(DirectiveRecord {
             name,
             name_span: Span::new(name_start, name_end),
-            arguments
+            arguments,
+            arguments_span: Span::new(arguments_start, arguments_end)
         });
     }
 }

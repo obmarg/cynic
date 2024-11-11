@@ -1128,6 +1128,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "cynic-parser-deser"
+version = "0.8.0"
+dependencies = [
+ "cynic-parser",
+ "cynic-parser-deser-macros",
+]
+
+[[package]]
+name = "cynic-parser-deser-macros"
+version = "3.8.0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 2.0.79",
+]
+
+[[package]]
 name = "cynic-proc-macros"
 version = "3.8.0"
 dependencies = [

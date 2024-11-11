@@ -94,6 +94,7 @@ pub struct DirectiveRecord {
     pub name: StringId,
     pub name_span: Span,
     pub arguments: IdRange<ArgumentId>,
+    pub arguments_span: Span,
 }
 
 #[derive(Clone, Copy)]
@@ -111,6 +112,10 @@ impl<'a> Directive<'a> {
     pub fn arguments(&self) -> Iter<'a, Argument<'a>> {
         let document = self.0.document;
         super::Iter::new(document.lookup(self.0.id).arguments, document)
+    }
+    pub fn arguments_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).arguments_span
     }
 }
 

@@ -104,7 +104,7 @@ type DirectiveDefinition @file(name: "directives") {
 
 type Directive @file(name: "directives") {
   name: String! @spanned
-  arguments: [Argument!]!
+  arguments: [Argument!]! @spanned
 }
 
 type Argument @file(name: "arguments") {

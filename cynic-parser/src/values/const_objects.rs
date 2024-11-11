@@ -58,6 +58,7 @@ impl<'a> IntoIterator for ConstObject<'a> {
     }
 }
 
+#[derive(Clone, Copy)]
 pub struct ConstObjectField<'a>(super::Cursor<'a, ConstFieldId>);
 
 impl<'a> ConstObjectField<'a> {
