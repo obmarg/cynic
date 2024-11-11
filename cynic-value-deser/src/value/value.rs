@@ -141,14 +141,31 @@ impl<'a> DeserValue<'a> {
 impl<'a> DeserValue<'a> {
     pub fn from_const(value: ConstValue<'a>) -> Self {
         match value {
-            ConstValue::Int(int_value) => todo!(),
-            ConstValue::Float(float_value) => todo!(),
-            ConstValue::String(string_value) => todo!(),
-            ConstValue::Boolean(boolean_value) => todo!(),
-            ConstValue::Null(null_value) => todo!(),
-            ConstValue::Enum(enum_value) => todo!(),
-            ConstValue::List(const_list) => todo!(),
-            ConstValue::Object(const_object) => todo!(),
+            ConstValue::Int(val) => DeserValue::Int(IntValue {
+                value: val.value(),
+                span: Some(val.span()),
+            }),
+            ConstValue::Float(val) => DeserValue::Float(FloatValue {
+                value: val.value(),
+                span: Some(val.span()),
+            }),
+            ConstValue::String(val) => DeserValue::String(StringValue {
+                value: val.value(),
+                span: Some(val.span()),
+            }),
+            ConstValue::Boolean(val) => DeserValue::Boolean(BooleanValue {
+                value: val.value(),
+                span: Some(val.span()),
+            }),
+            ConstValue::Null(val) => DeserValue::Null(NullValue {
+                span: Some(val.span()),
+            }),
+            ConstValue::Enum(val) => DeserValue::Enum(EnumValue {
+                name: val.name(),
+                span: Some(val.span()),
+            }),
+            ConstValue::List(val) => DeserValue::List(val.into()),
+            ConstValue::Object(val) => DeserValue::Object(val.into()),
         }
     }
 }

@@ -4,8 +4,8 @@ use cynic_parser::Span;
 
 #[derive(Clone, Copy)]
 pub struct IntValue {
-    value: i64,
-    span: Option<Span>,
+    pub(crate) value: i64,
+    pub(crate) span: Option<Span>,
 }
 
 impl IntValue {
@@ -48,8 +48,8 @@ impl std::fmt::Display for IntValue {
 
 #[derive(Clone, Copy)]
 pub struct FloatValue {
-    value: f64,
-    span: Option<Span>,
+    pub(crate) value: f64,
+    pub(crate) span: Option<Span>,
 }
 
 impl FloatValue {
@@ -86,8 +86,8 @@ impl fmt::Display for FloatValue {
 
 #[derive(Clone, Copy)]
 pub struct StringValue<'a> {
-    value: &'a str,
-    span: Option<Span>,
+    pub(crate) value: &'a str,
+    pub(crate) span: Option<Span>,
 }
 
 impl<'a> StringValue<'a> {
@@ -126,8 +126,8 @@ impl fmt::Display for StringValue<'_> {
 
 #[derive(Clone, Copy)]
 pub struct BooleanValue {
-    value: bool,
-    span: Option<Span>,
+    pub(crate) value: bool,
+    pub(crate) span: Option<Span>,
 }
 
 impl BooleanValue {
@@ -166,7 +166,7 @@ impl fmt::Display for BooleanValue {
 
 #[derive(Clone, Copy)]
 pub struct NullValue {
-    span: Option<Span>,
+    pub(crate) span: Option<Span>,
 }
 
 impl NullValue {

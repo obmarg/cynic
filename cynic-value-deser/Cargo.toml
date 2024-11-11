@@ -12,3 +12,4 @@ rust-version.workspace = true
 
 [dependencies]
 cynic-parser.workspace = true
+cynic-value-deser-macros.workspace = true

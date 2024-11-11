@@ -74,7 +74,7 @@ fn value_deser_impl(ast: syn::DeriveInput) -> Result<TokenStream, ()> {
             let field_name_string = proc_macro2::Literal::string(&field_name.to_string());
             quote! {
                 let #field_name = #field_name.ok_or_else(|| cynic_value_deser::Error::MissingField {
-                    name: #field_name_string,
+                    name: #field_name_string.to_string(),
                     object_span: input.span()
                 })?;
             }
@@ -83,8 +83,8 @@ fn value_deser_impl(ast: syn::DeriveInput) -> Result<TokenStream, ()> {
 
     Ok(quote! {
         #[automatically_derived]
-        impl #impl_generics cynic_value_deser::ValueDeserialize #deser_lifetime for #ident #ty_generics #where_clause {
-            fn deserialize(input: cynic_value_deser::DeserValue #deser_lifetime) -> Result<Self, cynic_value_deser::Error> {
+        impl #impl_generics cynic_value_deser::ValueDeserialize<#deser_lifetime> for #ident #ty_generics #where_clause {
+            fn deserialize(input: cynic_value_deser::DeserValue<#deser_lifetime>) -> Result<Self, cynic_value_deser::Error> {
                 use cynic_value_deser::ConstDeserializer;
                 let cynic_value_deser::DeserValue::Object(obj) = input else {
                     return Err(cynic_value_deser::Error::unexpected_type(
@@ -105,6 +105,12 @@ fn value_deser_impl(ast: syn::DeriveInput) -> Result<TokenStream, ()> {
                                 #field_decodes
                             },
                         )*
+                        other => {
+                            return Err(cynic_value_deser::Error::UnknownField{
+                                name: other.to_string(),
+                                field_type: field.value().into(),
+                            });
+                        }
                     }
                 }
                 #(#field_unwraps)*

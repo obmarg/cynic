@@ -13,6 +13,15 @@ impl<'a> ConstDeserializer<'a> for cynic_parser::ConstValue<'a> {
     }
 }
 
+impl<'a> ConstDeserializer<'a> for DeserValue<'a> {
+    fn deserialize<T>(self) -> Result<T, Error>
+    where
+        T: ValueDeserialize<'a>,
+    {
+        T::deserialize(self)
+    }
+}
+
 impl<'a> ConstDeserializer<'a> for cynic_parser::type_system::Directive<'a> {
     fn deserialize<T>(self) -> Result<T, Error>
     where

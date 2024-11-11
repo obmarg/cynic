@@ -85,3 +85,11 @@ impl<'a> IntoIterator for List<'a> {
         self.items()
     }
 }
+
+impl<'a> From<ConstList<'a>> for List<'a> {
+    fn from(value: ConstList<'a>) -> Self {
+        List {
+            inner: ListInner::Const(value),
+        }
+    }
+}

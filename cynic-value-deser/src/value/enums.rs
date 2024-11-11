@@ -2,8 +2,8 @@ use cynic_parser::Span;
 
 #[derive(Clone, Copy)]
 pub struct EnumValue<'a> {
-    name: &'a str,
-    span: Option<Span>,
+    pub(crate) name: &'a str,
+    pub(crate) span: Option<Span>,
 }
 
 impl<'a> EnumValue<'a> {

@@ -16,7 +16,7 @@ impl<'a> IntValue<'a> {
         self.value() as i32
     }
 
-    fn value(&self) -> i64 {
+    pub fn value(&self) -> i64 {
         let store = self.0.store;
         store.lookup(self.0.id).kind.as_int().unwrap()
     }

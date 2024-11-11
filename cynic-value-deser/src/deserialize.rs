@@ -1,11 +1,14 @@
 use std::collections::HashMap;
 
-use crate::{value::ValueType, DeserValue, Error};
+use crate::{value::ValueType, ConstDeserializer, DeserValue, Error};
 
 // ValueDeserialize vs DeserializeValue
 pub trait ValueDeserialize<'a>: Sized {
     fn deserialize(input: DeserValue<'a>) -> Result<Self, Error>;
 }
+
+pub trait ValueDeserializeOwned: for<'a> ValueDeserialize<'a> {}
+impl<T> ValueDeserializeOwned for T where T: for<'a> ValueDeserialize<'a> {}
 
 impl<'a> ValueDeserialize<'a> for String {
     fn deserialize(input: DeserValue<'a>) -> Result<Self, Error> {
@@ -116,6 +119,27 @@ where
     T: ValueDeserialize<'a>,
 {
     fn deserialize(input: DeserValue<'a>) -> Result<Self, Error> {
-        todo!("implement me")
+        match input {
+            DeserValue::Object(object) => Ok(object
+                .fields()
+                .map(|field| Ok((field.name().to_string(), field.value().deserialize()?)))
+                .collect::<Result<HashMap<_, _>, _>>()?),
+            other => Err(Error::unexpected_type(ValueType::Object, other)),
+        }
+    }
+}
+
+impl<'a, T> ValueDeserialize<'a> for HashMap<&'a str, T>
+where
+    T: ValueDeserialize<'a>,
+{
+    fn deserialize(input: DeserValue<'a>) -> Result<Self, Error> {
+        match input {
+            DeserValue::Object(object) => Ok(object
+                .fields()
+                .map(|field| Ok((field.name(), field.value().deserialize()?)))
+                .collect::<Result<HashMap<_, _>, _>>()?),
+            other => Err(Error::unexpected_type(ValueType::Object, other)),
+        }
     }
 }

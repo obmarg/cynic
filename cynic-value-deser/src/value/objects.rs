@@ -97,6 +97,14 @@ impl<'a> IntoIterator for Object<'a> {
     }
 }
 
+impl<'a> From<ConstObject<'a>> for Object<'a> {
+    fn from(value: ConstObject<'a>) -> Self {
+        Object {
+            inner: ObjectInner::Const(value),
+        }
+    }
+}
+
 pub struct FieldIter<'a>(FieldIterInner<'a>);
 
 enum FieldIterInner<'a> {

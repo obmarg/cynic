@@ -4,6 +4,8 @@ mod objects;
 mod scalars;
 mod value;
 
+use std::fmt::Display;
+
 use cynic_parser::ConstValue;
 pub use {
     enums::EnumValue,
@@ -23,6 +25,12 @@ pub enum ValueType {
     Enum,
     List,
     Object,
+}
+
+impl Display for ValueType {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{self:?}")
+    }
 }
 
 impl From<DeserValue<'_>> for ValueType {
