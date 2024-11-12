@@ -1,8 +1,11 @@
 use syn::{Attribute, Expr, Field, LitStr, Path};
 
-#[derive(Default)]
+use crate::renames::RenameAll;
+
+#[derive(Default, Debug)]
 pub struct StructAttribute {
     pub default: Option<()>,
+    pub rename_all: Option<RenameAll>,
 }
 
 impl StructAttribute {
@@ -13,8 +16,20 @@ impl StructAttribute {
             .map(|attr| {
                 let mut output = StructAttribute::default();
                 attr.parse_nested_meta(|meta| {
+                    // Note: If adding an attribute in here don't forget to add it to
+                    // the merge function below
                     if meta.path.is_ident("default") {
                         output.default = Some(());
+                        Ok(())
+                    } else if meta.path.is_ident("rename_all") {
+                        let value = meta.value()?;
+                        let rename = value.parse::<LitStr>()?;
+                        output.rename_all = Some(
+                            rename
+                                .value()
+                                .parse()
+                                .map_err(|e| syn::Error::new(rename.span(), e))?,
+                        );
                         Ok(())
                     } else {
                         Err(meta.error("unsupported attribute"))
@@ -28,6 +43,7 @@ impl StructAttribute {
 
     fn merge(mut self, other: Self) -> Self {
         self.default = self.default.or(other.default);
+        self.rename_all = self.rename_all.or(other.rename_all);
         self
     }
 
@@ -59,6 +75,8 @@ impl FieldAttributes {
             .iter()
             .filter(|attr| attr.path().is_ident("deser"))
             .map(|attr| {
+                // Note: If adding an attribute in here don't forget to add it to
+                // the merge function below
                 let mut output = FieldAttributes::default();
                 attr.parse_nested_meta(|meta| {
                     if meta.path.is_ident("rename") {
