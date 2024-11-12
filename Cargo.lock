@@ -1111,7 +1111,7 @@ dependencies = [
 
 [[package]]
 name = "cynic-parser"
-version = "0.8.2"
+version = "0.8.3"
 dependencies = [
  "apollo-parser",
  "ariadne",
@@ -1129,7 +1129,7 @@ dependencies = [
 
 [[package]]
 name = "cynic-parser-deser"
-version = "0.8.2"
+version = "0.8.3"
 dependencies = [
  "cynic-parser",
  "cynic-parser-deser-macros",
@@ -1137,7 +1137,7 @@ dependencies = [
 
 [[package]]
 name = "cynic-parser-deser-macros"
-version = "0.8.2"
+version = "0.8.3"
 dependencies = [
  "proc-macro2",
  "quote",

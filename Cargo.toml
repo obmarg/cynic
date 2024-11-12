@@ -39,8 +39,8 @@ version = "3.9.0"
 rust-version = "1.76"
 
 [workspace.dependencies]
-cynic-parser = { path = "cynic-parser", version = "0.8.2" }
-cynic-parser-deser-macros = { path = "cynic-parser-deser-macros", version = "0.8.2" }
+cynic-parser = { path = "cynic-parser", version = "0.8.3" }
+cynic-parser-deser-macros = { path = "cynic-parser-deser-macros", version = "0.8.3" }
 darling = "0.20"
 rstest = "0.23"
 syn = "2"
