@@ -9,7 +9,7 @@ pub struct StructAttribute {
 }
 
 impl StructAttribute {
-    pub fn from_attrs(attrs: &[Attribute]) -> Self {
+    pub fn from_attrs(attrs: &[Attribute]) -> Result<Self, syn::Error> {
         attrs
             .iter()
             .filter(|attr| attr.path().is_ident("deser"))
@@ -34,11 +34,10 @@ impl StructAttribute {
                     } else {
                         Err(meta.error("unsupported attribute"))
                     }
-                })
-                .unwrap();
-                output
+                })?;
+                Ok::<_, syn::Error>(output)
             })
-            .fold(Self::default(), |acc, inc| acc.merge(inc))
+            .try_fold(Self::default(), |acc, inc| Ok(acc.merge(inc?)))
     }
 
     fn merge(mut self, other: Self) -> Self {
@@ -69,7 +68,7 @@ pub enum FieldDefault {
 }
 
 impl FieldAttributes {
-    pub fn from_field(field: &Field, defaults: FieldAttributes) -> Self {
+    pub fn from_field(field: &Field, defaults: FieldAttributes) -> Result<Self, syn::Error> {
         field
             .attrs
             .iter()
@@ -101,11 +100,10 @@ impl FieldAttributes {
                     } else {
                         Err(meta.error("unsupported attribute"))
                     }
-                })
-                .unwrap();
-                output
+                })?;
+                Ok::<_, syn::Error>(output)
             })
-            .fold(defaults, |acc, inc| acc.merge(inc))
+            .try_fold(defaults, |acc, inc| Ok(acc.merge(inc?)))
     }
 
     fn merge(mut self, other: Self) -> Self {

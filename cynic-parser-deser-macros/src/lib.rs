@@ -2,7 +2,7 @@ mod attributes;
 mod renames;
 
 use attributes::{FieldAttributes, FieldDefault, StructAttribute};
-use proc_macro2::TokenStream;
+use proc_macro2::{Span, TokenStream};
 use quote::{format_ident, quote, ToTokens};
 use syn::{parse_quote, Fields};
 
@@ -12,21 +12,25 @@ pub fn value_deserialize(input: proc_macro::TokenStream) -> proc_macro::TokenStr
 
     let ast = syn::parse_macro_input!(input as syn::DeriveInput);
 
-    match value_deser_impl(ast) {
+    match value_deser_impl(&ast) {
         Ok(tokens) => tokens.into(),
-        Err(_) => {
-            todo!("put out a dummy impl as well as the compile errors");
-            // e.to_compile_error().into(),
+        Err(error) => {
+            // TODO: Output a dummy impl...
+            let compile_error = error.to_compile_error();
+            quote! {
+                #compile_error
+            }
+            .into()
         }
     }
 }
 
-fn value_deser_impl(ast: syn::DeriveInput) -> Result<TokenStream, ()> {
-    let syn::Data::Struct(data) = ast.data else {
+fn value_deser_impl(ast: &syn::DeriveInput) -> Result<TokenStream, syn::Error> {
+    let syn::Data::Struct(data) = &ast.data else {
         panic!("ValueDeserialize can only be derived on structs");
     };
 
-    let ident = ast.ident;
+    let ident = &ast.ident;
 
     let (original_impl_generics, ty_generics, where_clause) = ast.generics.split_for_impl();
     let (impl_generics, deser_lifetime) = match ast.generics.lifetimes().next() {
@@ -45,23 +49,26 @@ fn value_deser_impl(ast: syn::DeriveInput) -> Result<TokenStream, ()> {
         }
     };
 
-    let Fields::Named(named) = data.fields else {
-        panic!("ValueDeserialize can only be derived on structs with named fields");
+    let Fields::Named(named) = &data.fields else {
+        return Err(syn::Error::new(
+            Span::call_site(),
+            "ValueDeserialize can only be derived on structs with named fields",
+        ));
     };
 
-    let struct_attrs = StructAttribute::from_attrs(&ast.attrs);
+    let struct_attrs = StructAttribute::from_attrs(&ast.attrs)?;
     let default_field_attrs = struct_attrs.to_field_defaults();
 
     let fields = named
         .named
         .iter()
         .map(|field| {
-            (
+            Ok::<_, syn::Error>((
                 field,
-                FieldAttributes::from_field(field, default_field_attrs.clone()),
-            )
+                FieldAttributes::from_field(field, default_field_attrs.clone())?,
+            ))
         })
-        .collect::<Vec<_>>();
+        .collect::<Result<Vec<_>, _>>()?;
 
     let field_names = named
         .named
