@@ -61,14 +61,14 @@ changelog_include = [
 
 [[package]]
 name = "cynic-parser"
-release_group = "cynic-parser"
+version_group = "cynic-parser"
 git_tag_enable = true
 git_release_enable = true
 changelog_update = true
 
 [[package]]
 name = "cynic-parser-deser"
-release_group = "cynic-parser"
+version_group = "cynic-parser"
 changelog_update = true
 changelog_include = [
     "cynic-parser-deser-macros"
