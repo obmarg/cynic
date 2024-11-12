@@ -5,6 +5,11 @@ use crate::{value::ValueType, ConstDeserializer, DeserValue, Error};
 // ValueDeserialize vs DeserializeValue
 pub trait ValueDeserialize<'a>: Sized {
     fn deserialize(input: DeserValue<'a>) -> Result<Self, Error>;
+
+    /// Provides a default in the case where a field of this type is missing
+    fn default_when_missing() -> Option<Self> {
+        None
+    }
 }
 
 pub trait ValueDeserializeOwned: for<'a> ValueDeserialize<'a> {}
@@ -133,6 +138,10 @@ where
             DeserValue::Null(_) => Ok(None),
             other => T::deserialize(other).map(Some),
         }
+    }
+
+    fn default_when_missing() -> Option<Self> {
+        Some(None)
     }
 }
 

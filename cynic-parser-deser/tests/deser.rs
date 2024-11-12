@@ -21,13 +21,13 @@ fn test_struct_default() {
 #[derive(ValueDeserialize)]
 struct FieldDefault {
     #[deser(default)]
-    foo: Option<usize>,
+    foo: usize,
 }
 
 #[test]
 fn test_field_default() {
-    assert_eq!(deser::<FieldDefault>("@id").unwrap().foo, None);
-    assert_eq!(deser::<FieldDefault>("@id(foo: 10)").unwrap().foo, Some(10));
+    assert_eq!(deser::<FieldDefault>("@id").unwrap().foo, 0);
+    assert_eq!(deser::<FieldDefault>("@id(foo: 10)").unwrap().foo, 10);
 }
 
 #[derive(ValueDeserialize)]
@@ -55,6 +55,20 @@ fn deser_func_for_with(_: DeserValue<'_>) -> Result<usize, cynic_parser_deser::E
 #[test]
 fn test_with() {
     assert_eq!(deser::<WithTest>("@id(foo: 25)").unwrap().foo, 100);
+}
+
+#[derive(ValueDeserialize)]
+struct OptionDefaults {
+    foo: Option<usize>,
+}
+
+#[test]
+fn test_option_defaults() {
+    assert_eq!(deser::<OptionDefaults>("@id").unwrap().foo, None);
+    assert_eq!(
+        deser::<OptionDefaults>("@id(foo: 100)").unwrap().foo,
+        Some(100)
+    );
 }
 
 fn deser<T>(input: &str) -> Result<T, cynic_parser_deser::Error>
