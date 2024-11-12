@@ -109,11 +109,14 @@ fn value_deser_impl(ast: syn::DeriveInput) -> Result<TokenStream, ()> {
                     quote! { let #field_name = #field_name.unwrap_or_else(|| #expr); }
                 }
                 None => {
+                    let ty = &field.ty;
                     quote! {
-                        let #field_name = #field_name.ok_or_else(|| cynic_parser_deser::Error::MissingField {
-                            name: #field_name_string.to_string(),
-                            object_span: input.span()
-                        })?;
+                        let #field_name = #field_name
+                            .or(<#ty as ValueDeserialize<#deser_lifetime>>::default_when_missing())
+                            .ok_or_else(|| cynic_parser_deser::Error::MissingField {
+                                name: #field_name_string.to_string(),
+                                object_span: input.span()
+                            })?;
                     }
                 }
             }
