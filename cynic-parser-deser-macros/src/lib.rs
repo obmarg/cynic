@@ -1,4 +1,5 @@
 mod attributes;
+mod renames;
 
 use attributes::{FieldAttributes, FieldDefault, StructAttribute};
 use proc_macro2::TokenStream;
@@ -75,9 +76,10 @@ fn value_deser_impl(ast: syn::DeriveInput) -> Result<TokenStream, ()> {
     let field_name_strings = fields
         .iter()
         .map(|(field, attrs)| {
-            proc_macro2::Literal::string(&match &attrs.rename {
-                Some(rename) => rename.to_string(),
-                None => field.ident.as_ref().unwrap().to_string(),
+            proc_macro2::Literal::string(&match (&attrs.rename, struct_attrs.rename_all) {
+                (Some(rename), _) => rename.to_string(),
+                (None, Some(rule)) => rule.apply(field.ident.as_ref().unwrap().to_string()),
+                _ => field.ident.as_ref().unwrap().to_string(),
             })
         })
         .collect::<Vec<_>>();

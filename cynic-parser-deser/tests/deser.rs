@@ -71,6 +71,28 @@ fn test_option_defaults() {
     );
 }
 
+#[derive(ValueDeserialize)]
+struct RenameField {
+    #[deser(rename = "fooBar")]
+    foo_bar: usize,
+}
+
+#[test]
+fn test_field_rename() {
+    assert_eq!(deser::<RenameField>("@id(fooBar: 1)").unwrap().foo_bar, 1);
+}
+
+#[derive(ValueDeserialize)]
+#[deser(rename_all = "camelCase")]
+struct RenameRule {
+    foo_bar: usize,
+}
+
+#[test]
+fn test_rename_rule() {
+    assert_eq!(deser::<RenameRule>("@id(fooBar: 1)").unwrap().foo_bar, 1);
+}
+
 fn deser<T>(input: &str) -> Result<T, cynic_parser_deser::Error>
 where
     T: ValueDeserializeOwned,
