@@ -8,6 +8,13 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v3.9.0 - 2024-11-11
+
+### Changes
+
+- Bumped `cynic-parser` dependency
+- Removed dependency on `counter` ([#1027](https://github.com/obmarg/cynic/pull/1027))
+
 ### Changes
 
 - MSRV is now 1.76
