@@ -1,9 +1,16 @@
 [package]
 name = "cynic-parser-deser"
-version = "0.8.0"
+description = "Deserialization for cynic-parser Values"
+keywords = ["graphql", "parser", "deserialization"]
+readme = "README.md"
+
+version = "0.8.1"
+
+homepage = "https://docs.rs/cynic-parser-deser"
+documentation = "https://docs.rs/cynic-parser-deser"
+
 authors.workspace = true
 edition.workspace = true
-homepage.workspace = true
 repository.workspace = true
 license.workspace = true
 rust-version.workspace = true
