@@ -33,6 +33,12 @@ fn inline_fragment_dir() {
 }
 
 #[test]
+fn introspection_query() {
+    roundtrip_test("tests/executables/introspection.graphql");
+    display_test("tests/executables/introspection.graphql");
+}
+
+#[test]
 fn kitchen_sink() {
     double_roundtrip_test("tests/executables/kitchen-sink.graphql");
     display_test("tests/executables/kitchen-sink.graphql");
