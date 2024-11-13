@@ -14,7 +14,6 @@ impl Error {
         let (message, label, note) = self.components();
 
         let mut builder = ariadne::Report::build(ReportKind::Error, (), 0)
-            .with_code(3)
             .with_message(message)
             .with_label(label)
             .with_config(Config::default().with_color(false));

@@ -7,7 +7,7 @@ fn test_report() {
         .to_report(document);
 
     insta::assert_display_snapshot!(report, @r###"
-    [03] Error: unexpected closing brace ('}')
+    Error: unexpected closing brace ('}')
        ╭─[<unknown>:1:1]
        │
      1 │ type Blah {}
@@ -29,7 +29,7 @@ fn test_invalid_directive_location() {
         .to_report(document);
 
     insta::assert_display_snapshot!(report, @r###"
-    [03] Error: unknown directive location: BLAH. expected one of QUERY, MUTATION, SUBSCRIPTION, FIELD, FRAGMENT_DEFINITION, FRAGMENT_SPREAD, INLINE_FRAGMENT, SCHEMA, SCALAR, OBJECT, FIELD_DEFINITION, ARGUMENT_DEFINITION, INTERFACE, UNION, ENUM, ENUM_VALUE, INPUT_OBJECT, INPUT_FIELD_DEFINITION, VARIABLE_DEFINITION
+    Error: unknown directive location: BLAH. expected one of QUERY, MUTATION, SUBSCRIPTION, FIELD, FRAGMENT_DEFINITION, FRAGMENT_SPREAD, INLINE_FRAGMENT, SCHEMA, SCALAR, OBJECT, FIELD_DEFINITION, ARGUMENT_DEFINITION, INTERFACE, UNION, ENUM, ENUM_VALUE, INPUT_OBJECT, INPUT_FIELD_DEFINITION, VARIABLE_DEFINITION
        ╭─[<unknown>:1:1]
        │
      1 │ directive @Blah on BLAH
