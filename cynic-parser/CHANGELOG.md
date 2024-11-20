@@ -9,6 +9,13 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.8.4 - 2024-11-20
+
+### Bug Fixes
+
+- Removed erroneous error code from reports ([#1099](https://github.com/obmarg/cynic/pull/1099))
+- Removed some stray dbg! calls ([#1097](https://github.com/obmarg/cynic/pull/1097))
+
 ## v0.8.1 - 2024-11-11
 
 ### New Features
