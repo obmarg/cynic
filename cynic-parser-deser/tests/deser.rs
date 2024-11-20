@@ -93,6 +93,37 @@ fn test_rename_rule() {
     assert_eq!(deser::<RenameRule>("@id(fooBar: 1)").unwrap().foo_bar, 1);
 }
 
+#[derive(ValueDeserialize, PartialEq, Debug)]
+struct ListCoercion {
+    ints: Vec<u32>,
+    strings: Vec<String>,
+}
+
+#[test]
+fn test_list_coercion() {
+    assert_eq!(
+        deser::<ListCoercion>("@id(ints: 1, strings: \"hello\")").unwrap(),
+        ListCoercion {
+            ints: vec![1],
+            strings: vec!["hello".into()]
+        }
+    );
+
+    assert_eq!(
+        deser::<ListCoercion>("@id(ints: \"hello\", strings: 1)")
+            .unwrap_err()
+            .to_string(),
+        "found a String where we expected a List"
+    );
+
+    assert_eq!(
+        deser::<ListCoercion>("@id(ints: null, strings: 1)")
+            .unwrap_err()
+            .to_string(),
+        "found a Null where we expected a List"
+    );
+}
+
 fn deser<T>(input: &str) -> Result<T, cynic_parser_deser::Error>
 where
     T: ValueDeserializeOwned,
