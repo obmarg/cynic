@@ -11,7 +11,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### New Features
 
-- handle null coercion in cynic-parser-deser ([#1100](https://github.com/obmarg/cynic/pull/1100))
+- `Vec<T>::deserialize` now handles null coercion ([#1100](https://github.com/obmarg/cynic/pull/1100))
 
 ## v0.8.3 - 2024-11-12
 

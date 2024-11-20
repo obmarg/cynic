@@ -73,3 +73,7 @@ changelog_update = true
 changelog_include = [
     "cynic-parser-deser-macros"
 ]
+
+[[package]]
+name = "cynic-parser-deser-macros"
+version_group = "cynic-parser"

@@ -13,12 +13,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Bug Fixes
 
-- remove erroneous error code from reports ([#1099](https://github.com/obmarg/cynic/pull/1099))
-- remove some stray dbg! calls ([#1097](https://github.com/obmarg/cynic/pull/1097))
-
-### Changes
-
-- test & benchmark parsing introspection ([#1098](https://github.com/obmarg/cynic/pull/1098))
+- Removed erroneous error code from reports ([#1099](https://github.com/obmarg/cynic/pull/1099))
+- Removed some stray dbg! calls ([#1097](https://github.com/obmarg/cynic/pull/1097))
 
 ## v0.8.1 - 2024-11-11
 
