@@ -152,7 +152,17 @@ where
     fn deserialize(input: DeserValue<'a>) -> Result<Self, Error> {
         match input {
             DeserValue::List(list) => list.items().map(T::deserialize).collect(),
-            other => Err(Error::unexpected_type(ValueType::List, other)),
+            other => {
+                if !other.is_null() {
+                    // List coercion
+                    //
+                    // I am not 100% sure this is right but lets see...
+                    if let Ok(inner) = T::deserialize(other) {
+                        return Ok(vec![inner]);
+                    }
+                }
+                Err(Error::unexpected_type(ValueType::List, other))
+            }
         }
     }
 }
