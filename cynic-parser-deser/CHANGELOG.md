@@ -7,6 +7,12 @@ Changelog](http://keepachangelog.com/en/1.0.0/).
 
 This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## v0.8.4 - 2024-11-20
+
+### New Features
+
+- handle null coercion in cynic-parser-deser ([#1100](https://github.com/obmarg/cynic/pull/1100))
+
 ## v0.8.3 - 2024-11-12
 
 ### New Features
