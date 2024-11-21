@@ -11,6 +11,10 @@ impl<'a> EnumValue<'a> {
         store.lookup(store.lookup(self.0.id).kind.as_enum_value().unwrap())
     }
 
+    pub fn as_str(&self) -> &'a str {
+        self.name()
+    }
+
     pub fn span(&self) -> Span {
         let store = self.0.store;
         store.lookup(self.0.id).span
