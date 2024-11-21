@@ -15,6 +15,7 @@ pub struct FragmentDefinitionRecord {
     pub type_condition_span: Span,
     pub directives: IdRange<DirectiveId>,
     pub selection_set: IdRange<SelectionId>,
+    pub selection_set_span: Span,
 }
 
 #[derive(Clone, Copy)]
@@ -44,6 +45,10 @@ impl<'a> FragmentDefinition<'a> {
     pub fn selection_set(&self) -> Iter<'a, Selection<'a>> {
         let document = self.0.document;
         super::Iter::new(document.lookup(self.0.id).selection_set, document)
+    }
+    pub fn selection_set_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).selection_set_span
     }
 }
 

@@ -37,7 +37,6 @@ impl ExecutableId for SelectionId {
 impl IdReader for Selection<'_> {
     type Id = SelectionId;
     type Reader<'a> = Selection<'a>;
-
     fn new(id: Self::Id, document: &'_ ExecutableDocument) -> Self::Reader<'_> {
         document.read(id)
     }
@@ -51,6 +50,7 @@ pub struct FieldSelectionRecord {
     pub arguments: IdRange<ArgumentId>,
     pub directives: IdRange<DirectiveId>,
     pub selection_set: IdRange<SelectionId>,
+    pub selection_set_span: Option<Span>,
 }
 
 #[derive(Clone, Copy)]
@@ -87,6 +87,10 @@ impl<'a> FieldSelection<'a> {
     pub fn selection_set(&self) -> Iter<'a, Selection<'a>> {
         let document = self.0.document;
         super::Iter::new(document.lookup(self.0.id).selection_set, document)
+    }
+    pub fn selection_set_span(&self) -> Option<Span> {
+        let document = self.0.document;
+        document.lookup(self.0.id).selection_set_span
     }
 }
 
@@ -128,6 +132,7 @@ pub struct InlineFragmentRecord {
     pub type_condition_span: Option<Span>,
     pub directives: IdRange<DirectiveId>,
     pub selection_set: IdRange<SelectionId>,
+    pub selection_set_span: Span,
 }
 
 #[derive(Clone, Copy)]
@@ -152,6 +157,10 @@ impl<'a> InlineFragment<'a> {
     pub fn selection_set(&self) -> Iter<'a, Selection<'a>> {
         let document = self.0.document;
         super::Iter::new(document.lookup(self.0.id).selection_set, document)
+    }
+    pub fn selection_set_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).selection_set_span
     }
 }
 
