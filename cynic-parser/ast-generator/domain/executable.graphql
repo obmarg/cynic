@@ -12,14 +12,14 @@ type OperationDefinition @file(name: "operation") {
   name: String @spanned
   variable_definitions: [VariableDefinition]
   directives: [Directive]
-  selection_set: [Selection]
+  selection_set: [Selection]! @spanned
 }
 
 type FragmentDefinition @file(name: "fragment") {
   name: String! @spanned
   type_condition: String! @spanned
   directives: [Directive]
-  selection_set: [Selection]
+  selection_set: [Selection]! @spanned
 }
 
 union Selection
@@ -34,13 +34,13 @@ type FieldSelection @file(name: "selections") {
   name: String! @spanned
   arguments: [Argument]
   directives: [Directive]
-  selection_set: [Selection]
+  selection_set: [Selection] @spanned
 }
 
 type InlineFragment @file(name: "selections") {
   type_condition: String @spanned
   directives: [Directive]
-  selection_set: [Selection]
+  selection_set: [Selection]! @spanned
 }
 
 type FragmentSpread @file(name: "selections") {
