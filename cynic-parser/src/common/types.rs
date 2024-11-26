@@ -68,6 +68,7 @@ impl FromIterator<WrappingType> for TypeWrappers {
     }
 }
 
+#[derive(Clone)]
 pub struct TypeWrappersIter {
     encoded: u32,
     mask: u32,
