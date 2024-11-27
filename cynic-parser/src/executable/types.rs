@@ -1,5 +1,5 @@
 use crate::{
-    common::{TypeWrappers, WrappingType},
+    common::{TypeWrappers, TypeWrappersIter, WrappingType},
     AstLookup, Span,
 };
 
@@ -44,7 +44,7 @@ impl<'a> Type<'a> {
     }
 
     /// The wrapper types from the outermost to innermost
-    pub fn wrappers(&self) -> impl Iterator<Item = WrappingType> + 'a {
+    pub fn wrappers(&self) -> TypeWrappersIter {
         self.0.document.lookup(self.0.id).wrappers.iter()
     }
 
