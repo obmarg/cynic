@@ -4,7 +4,7 @@ description = "A fast, correct and easy to use GraphQL parser"
 keywords = ["graphql", "parser", "api"]
 readme = "README.md"
 
-version = "0.8.4"
+version = "0.8.5"
 
 homepage = "https://docs.rs/cynic-parser"
 documentation = "https://docs.rs/cynic-parser"

@@ -9,6 +9,17 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.8.5 - 2024-11-27
+
+### New Features
+
+- selection set spans on executable document
+
+### Bug Fixes
+
+- expose TypeWrappersIter via `wrappers()` functions
+- make `TypeWrappersIter` clone
+
 ## v0.8.4 - 2024-11-20
 
 ### Bug Fixes
