@@ -13,12 +13,12 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### New Features
 
-- selection set spans on executable document
+- Every selection set in `ExecutableDocument` now has a span.
 
 ### Bug Fixes
 
-- expose TypeWrappersIter via `wrappers()` functions
-- make `TypeWrappersIter` clone
+- `Type::wrappers` functions now return `TypeWrappersIter` instead of `impl Iterator`
+- `TypeWrappersIter` is now `Clone`
 
 ## v0.8.4 - 2024-11-20
 
