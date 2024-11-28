@@ -13,7 +13,10 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Bug Fixes
 
-- variable values ([#1104](https://github.com/obmarg/cynic/pull/1104))
+- `Value::is_variable` now works correctly ([#1104](https://github.com/obmarg/cynic/pull/1104))
+- Fixed the `VariableValue` debug impl which was misleading
+  ([#1104](https://github.com/obmarg/cynic/pull/1104))
+
 
 ## v0.8.5 - 2024-11-27
 
