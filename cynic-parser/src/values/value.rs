@@ -53,7 +53,7 @@ impl<'a> Value<'a> {
 
 impl<'a> Value<'a> {
     pub fn is_variable(&self) -> bool {
-        matches!(self, Value::Boolean(_))
+        matches!(self, Value::Variable(_))
     }
 
     pub fn as_variable(&self) -> Option<&'a str> {

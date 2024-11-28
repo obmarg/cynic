@@ -41,8 +41,8 @@ impl fmt::Display for VariableValue<'_> {
 
 impl fmt::Debug for VariableValue<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        f.debug_struct("IntValue")
-            .field("value", &self.name())
+        f.debug_struct("Variable")
+            .field("name", &self.name())
             .field("span", &self.span())
             .finish()
     }
