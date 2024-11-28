@@ -177,7 +177,7 @@ struct Namers<'text> {
     inline_fragments: Namer<Rc<normalisation::InlineFragments<'text, 'text>>>,
 }
 
-impl<'text> Namers<'text> {
+impl Namers<'_> {
     pub fn new() -> Self {
         Namers {
             selection_sets: Namer::new(),

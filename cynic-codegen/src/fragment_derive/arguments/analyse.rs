@@ -90,7 +90,7 @@ struct Analysis<'schema, 'a> {
     variants: HashSet<Rc<VariantDetails<'schema>>>,
 }
 
-impl<'schema, 'a> Analysis<'schema, 'a> {
+impl<'schema> Analysis<'schema, '_> {
     fn enum_variant(
         &mut self,
         en: schema::EnumType<'schema>,

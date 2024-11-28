@@ -132,7 +132,7 @@ impl ToTokens for ArgumentValueTokens<'_> {
     }
 }
 
-impl<'a> VariantDetails<'a> {
+impl VariantDetails<'_> {
     fn ident(&self) -> syn::Ident {
         format_ident!("{}{}", self.en.name, to_pascal_case(&self.variant))
     }
@@ -143,7 +143,7 @@ struct VariantDetailsTokens<'a> {
     schema_module: &'a syn::Path,
 }
 
-impl<'a> quote::ToTokens for VariantDetailsTokens<'a> {
+impl quote::ToTokens for VariantDetailsTokens<'_> {
     fn to_tokens(&self, tokens: &mut proc_macro2::TokenStream) {
         let ident = self.details.ident();
         let variant_str = proc_macro2::Literal::string(&self.details.variant);

@@ -1,8 +1,4 @@
-use {
-    proc_macro2::TokenStream,
-    quote::{format_ident, quote},
-    syn::visit_mut::{self, VisitMut},
-};
+use {proc_macro2::TokenStream, quote::quote};
 
 mod input;
 
@@ -68,12 +64,4 @@ pub fn inlineable_variables_derive_impl(
             }
         }
     })
-}
-
-struct TurnLifetimesToStatic;
-impl VisitMut for TurnLifetimesToStatic {
-    fn visit_lifetime_mut(&mut self, i: &mut syn::Lifetime) {
-        i.ident = format_ident!("static");
-        visit_mut::visit_lifetime_mut(self, i)
-    }
 }

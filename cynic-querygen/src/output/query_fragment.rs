@@ -175,7 +175,7 @@ impl<'query, 'schema> FieldArgument<'query, 'schema> {
     }
 }
 
-impl<'query, 'schema> TypedValue<'query, 'schema> {
+impl TypedValue<'_, '_> {
     pub fn to_literal(&self, _context: LiteralContext) -> Result<String, Error> {
         Ok(match self {
             TypedValue::Variable {
