@@ -112,7 +112,7 @@ impl<'schema> InputFieldType<'schema> {
     }
 
     // Gets the inner InputFieldType of a list, if this type _is_ a list.
-    pub fn list_inner_type<'a>(&'a self) -> Result<&InputFieldType<'schema>, Error> {
+    pub fn list_inner_type<'a>(&'a self) -> Result<&'a InputFieldType<'schema>, Error> {
         match self {
             InputFieldType::NonNullType(inner) => inner.list_inner_type(),
             InputFieldType::NamedType(_) => Err(Error::ExpectedListType),

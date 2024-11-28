@@ -138,7 +138,7 @@ struct VariableStruct<'query, 'schema> {
     fields: BTreeSet<VariableStructField<'query, 'schema>>,
 }
 
-impl<'query, 'schema> crate::naming::Nameable for Rc<VariableStruct<'query, 'schema>> {
+impl crate::naming::Nameable for Rc<VariableStruct<'_, '_>> {
     fn requested_name(&self) -> String {
         format!("{}Variables", self.target_type_name.to_pascal_case())
     }

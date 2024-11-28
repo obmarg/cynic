@@ -4,7 +4,7 @@ pub struct VariableDefinitions<'a> {
     vars: Vec<&'a (&'static str, VariableType)>,
 }
 
-impl<'a> VariableDefinitions<'a> {
+impl VariableDefinitions<'_> {
     pub fn new<T: QueryVariables>(used_variables: Vec<&str>) -> Self {
         let vars = T::VARIABLES
             .iter()

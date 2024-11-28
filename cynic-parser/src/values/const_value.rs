@@ -22,7 +22,7 @@ pub enum ConstValue<'a> {
     Object(ConstObject<'a>),
 }
 
-impl<'a> ConstValue<'a> {
+impl ConstValue<'_> {
     pub fn span(&self) -> Span {
         match self {
             ConstValue::Int(inner) => inner.span(),

@@ -157,20 +157,20 @@ impl<'schema> Type<'schema> {
                         return Ok(());
                     }
                 }
-                return Err(Error::TypeDoesNotImplementInterface(
+                Err(Error::TypeDoesNotImplementInterface(
                     target.name().to_string(),
                     iface.name.to_string(),
-                ));
+                ))
             }
             Type::Union(details) => {
                 if details.has_member(target) {
                     return Ok(());
                 }
 
-                return Err(Error::TypeNotUnionMember(
+                Err(Error::TypeNotUnionMember(
                     target.name().to_string(),
                     self.name().to_string(),
-                ));
+                ))
             }
             Type::Object(obj) => {
                 // If current context is an object, we allow spreads of:
@@ -182,40 +182,36 @@ impl<'schema> Type<'schema> {
                             return Ok(());
                         }
 
-                        return Err(Error::TypeDoesNotImplementInterface(
+                        Err(Error::TypeDoesNotImplementInterface(
                             target.name().to_string(),
                             iface.name.to_string(),
-                        ));
+                        ))
                     }
                     Type::Union(union_details) => {
                         if union_details.has_member(self) {
                             return Ok(());
                         }
 
-                        return Err(Error::TypeNotUnionMember(
-                            target.name().to_string(),
-                            self.name().to_string(),
-                        ));
-                    }
-                    _ => {
-                        return Err(Error::TypeConditionFailed(
+                        Err(Error::TypeNotUnionMember(
                             target.name().to_string(),
                             self.name().to_string(),
                         ))
                     }
+                    _ => Err(Error::TypeConditionFailed(
+                        target.name().to_string(),
+                        self.name().to_string(),
+                    )),
                 }
             }
-            _ => {
-                return Err(Error::TypeConditionFailed(
-                    target.name().to_string(),
-                    self.name().to_string(),
-                ))
-            }
+            _ => Err(Error::TypeConditionFailed(
+                target.name().to_string(),
+                self.name().to_string(),
+            )),
         }
     }
 }
 
-impl<'schema> ScalarDetails<'schema> {
+impl ScalarDetails<'_> {
     pub fn is_builtin(&self) -> bool {
         matches!(self.name, "String" | "Int" | "Boolean" | "ID" | "Float")
     }

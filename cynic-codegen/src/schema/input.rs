@@ -56,9 +56,9 @@ impl SchemaInput {
         if let Some(ast) = document_from_path(path)? {
             return Ok(SchemaInput::Document(ast));
         }
-        return Err(SchemaLoadError::FileNotFound(
+        Err(SchemaLoadError::FileNotFound(
             path.to_string_lossy().to_string(),
-        ));
+        ))
     }
 
     pub fn from_sdl(sdl: &str) -> Result<SchemaInput, SchemaLoadError> {

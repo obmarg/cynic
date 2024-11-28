@@ -7,7 +7,7 @@ use super::{ids::ValueId, Cursor};
 #[derive(Clone, Copy)]
 pub struct IntValue<'a>(pub(super) Cursor<'a, ValueId>);
 
-impl<'a> IntValue<'a> {
+impl IntValue<'_> {
     pub fn as_i64(&self) -> i64 {
         self.value()
     }
@@ -56,7 +56,7 @@ impl std::fmt::Display for IntValue<'_> {
 #[derive(Clone, Copy)]
 pub struct FloatValue<'a>(pub(super) Cursor<'a, ValueId>);
 
-impl<'a> FloatValue<'a> {
+impl FloatValue<'_> {
     pub fn value(&self) -> f64 {
         let store = self.0.store;
         store.lookup(self.0.id).kind.as_float().unwrap()
@@ -144,7 +144,7 @@ impl fmt::Display for StringValue<'_> {
 #[derive(Clone, Copy)]
 pub struct BooleanValue<'a>(pub(super) Cursor<'a, ValueId>);
 
-impl<'a> BooleanValue<'a> {
+impl BooleanValue<'_> {
     pub fn value(&self) -> bool {
         let store = self.0.store;
         store.lookup(self.0.id).kind.as_boolean().unwrap()
@@ -189,7 +189,7 @@ impl fmt::Display for BooleanValue<'_> {
 #[derive(Clone, Copy)]
 pub struct NullValue<'a>(pub(super) Cursor<'a, ValueId>);
 
-impl<'a> NullValue<'a> {
+impl NullValue<'_> {
     pub fn span(&self) -> Span {
         let store = self.0.store;
         store.lookup(self.0.id).span

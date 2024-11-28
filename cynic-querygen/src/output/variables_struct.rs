@@ -22,7 +22,7 @@ pub enum VariablesStructField<'query, 'schema> {
     NestedStruct(String),
 }
 
-impl<'query, 'schema> VariablesStructField<'query, 'schema> {
+impl VariablesStructField<'_, '_> {
     fn name(&self) -> String {
         match self {
             VariablesStructField::Variable(var) => var.name.to_snake_case(),

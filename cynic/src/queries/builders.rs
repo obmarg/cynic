@@ -186,8 +186,8 @@ pub struct FieldSelectionBuilder<'a, Field, SchemaType, VariablesFields> {
     context: BuilderContext<'a>,
 }
 
-impl<'a, Field, FieldSchemaType, VariablesFields>
-    FieldSelectionBuilder<'a, Field, FieldSchemaType, VariablesFields>
+impl<Field, FieldSchemaType, VariablesFields>
+    FieldSelectionBuilder<'_, Field, FieldSchemaType, VariablesFields>
 {
     /// Adds an alias to this field.
     ///
@@ -269,7 +269,7 @@ pub struct InputBuilder<'a, SchemaType, VariablesFields> {
     phantom: PhantomData<fn() -> (SchemaType, VariablesFields)>,
 }
 
-impl<'a, SchemaType, VariablesFields> InputBuilder<'a, SchemaType, VariablesFields> {
+impl<SchemaType, VariablesFields> InputBuilder<'_, SchemaType, VariablesFields> {
     /// Puts a variable into the input.
     pub fn variable<Type>(self, def: VariableDefinition<VariablesFields, Type>)
     where
@@ -310,7 +310,7 @@ impl<'a, SchemaType, ArgumentStruct> InputBuilder<'a, Option<SchemaType>, Argume
     }
 }
 
-impl<'a, T, ArgStruct> InputBuilder<'a, T, ArgStruct> {
+impl<T, ArgStruct> InputBuilder<'_, T, ArgStruct> {
     /// Puts a literal input type into the input.
     pub fn literal(self, l: impl serde::Serialize + CoercesTo<T>) {
         self.destination
@@ -344,7 +344,7 @@ pub struct ObjectArgumentBuilder<'a, ItemType, VariablesFields> {
     phantom: PhantomData<fn() -> (ItemType, VariablesFields)>,
 }
 
-impl<'a, SchemaType, ArgStruct> ObjectArgumentBuilder<'a, SchemaType, ArgStruct> {
+impl<SchemaType, ArgStruct> ObjectArgumentBuilder<'_, SchemaType, ArgStruct> {
     /// Adds a field to the object literal, using the field_fn to determine the
     /// contents of that field.
     pub fn field<FieldMarker, F>(self, field_fn: F) -> Self
@@ -385,7 +385,7 @@ pub struct ListArgumentBuilder<'a, ItemType, VariablesFields> {
     phantom: PhantomData<fn() -> (ItemType, VariablesFields)>,
 }
 
-impl<'a, ItemType, VariablesFields> ListArgumentBuilder<'a, ItemType, VariablesFields> {
+impl<ItemType, VariablesFields> ListArgumentBuilder<'_, ItemType, VariablesFields> {
     /// Adds an item to the list literal, using the item_fn to determine the
     /// contents of that item.
     pub fn item(self, item_fn: impl FnOnce(InputBuilder<'_, ItemType, VariablesFields>)) -> Self {

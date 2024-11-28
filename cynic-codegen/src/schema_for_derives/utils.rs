@@ -34,11 +34,11 @@ fn derive_from_attributes(attrs: &[Attribute]) -> Vec<Derive> {
         }
     };
 
-    return NestedMeta::parse_meta_list(meta_list.tokens.clone())
+    NestedMeta::parse_meta_list(meta_list.tokens.clone())
         .unwrap_or_default()
         .iter()
         .filter_map(derive_for_nested_meta)
-        .collect();
+        .collect()
 }
 
 fn derive_for_nested_meta(nested: &NestedMeta) -> Option<Derive> {

@@ -67,21 +67,21 @@ where
     }
 }
 
-impl<'a, T> ExactSizeIterator for Iter<'a, T>
+impl<T> ExactSizeIterator for Iter<'_, T>
 where
     T: IdReader,
     T::Id: IdOperations,
 {
 }
 
-impl<'a, T> FusedIterator for Iter<'a, T>
+impl<T> FusedIterator for Iter<'_, T>
 where
     T: IdReader,
     T::Id: IdOperations,
 {
 }
 
-impl<'a, T> DoubleEndedIterator for Iter<'a, T>
+impl<T> DoubleEndedIterator for Iter<'_, T>
 where
     T: IdReader,
     T::Id: IdOperations,
@@ -92,7 +92,7 @@ where
     }
 }
 
-impl<'a, T> fmt::Debug for Iter<'a, T>
+impl<T> fmt::Debug for Iter<'_, T>
 where
     T: IdReader + Copy,
     Self: Iterator,
@@ -133,21 +133,21 @@ where
     }
 }
 
-impl<'a, T> ExactSizeIterator for IdIter<'a, T>
+impl<T> ExactSizeIterator for IdIter<'_, T>
 where
     T: IdReader,
     T::Id: IdOperations,
 {
 }
 
-impl<'a, T> FusedIterator for IdIter<'a, T>
+impl<T> FusedIterator for IdIter<'_, T>
 where
     T: IdReader,
     T::Id: IdOperations,
 {
 }
 
-impl<'a, T> DoubleEndedIterator for IdIter<'a, T>
+impl<T> DoubleEndedIterator for IdIter<'_, T>
 where
     T: IdReader,
     T::Id: IdOperations,
@@ -160,7 +160,7 @@ where
     }
 }
 
-impl<'a, T> fmt::Debug for IdIter<'a, T>
+impl<T> fmt::Debug for IdIter<'_, T>
 where
     T: IdReader + Copy,
     Self: Iterator,

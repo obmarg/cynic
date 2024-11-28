@@ -29,25 +29,25 @@ impl<'a> FieldName<'a> {
     }
 }
 
-impl<'a> PartialEq<proc_macro2::Ident> for FieldName<'a> {
+impl PartialEq<proc_macro2::Ident> for FieldName<'_> {
     fn eq(&self, other: &proc_macro2::Ident) -> bool {
         other == self.graphql_name.as_ref()
     }
 }
 
-impl<'a> PartialEq<str> for FieldName<'a> {
+impl PartialEq<str> for FieldName<'_> {
     fn eq(&self, other: &str) -> bool {
         self.graphql_name == other
     }
 }
 
-impl<'a> PartialEq<String> for FieldName<'a> {
+impl PartialEq<String> for FieldName<'_> {
     fn eq(&self, other: &String) -> bool {
         self.graphql_name.as_ref() == other
     }
 }
 
-impl<'a> PartialEq<RenamableFieldIdent> for FieldName<'a> {
+impl PartialEq<RenamableFieldIdent> for FieldName<'_> {
     fn eq(&self, other: &RenamableFieldIdent) -> bool {
         self.graphql_name == other.graphql_name()
     }
