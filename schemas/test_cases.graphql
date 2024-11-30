@@ -18,6 +18,8 @@ type Foo {
   ): Boolean
 
   fieldWithStringArg(input: String!): Int
+
+  clashes: FieldNameClashes
 }
 
 type Bar {
@@ -47,4 +49,11 @@ input RecursiveInputChild {
 
 type FlattenableEnums {
   states: [States]
+}
+
+type FieldNameClashes {
+  str: String
+  bool: Boolean
+  i32: Int
+  u32: Int
 }

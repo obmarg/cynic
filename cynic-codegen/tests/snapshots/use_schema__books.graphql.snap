@@ -1,6 +1,7 @@
 ---
 source: cynic-codegen/tests/use-schema.rs
 expression: "format_code(format!(\"{}\", tokens))"
+snapshot_kind: text
 ---
 impl cynic::schema::QueryRoot for QueryRoot {}
 impl cynic::schema::MutationRoot for MutationRoot {}
@@ -12,19 +13,19 @@ pub struct MutationType {}
 pub struct QueryRoot;
 pub struct SubscriptionRoot;
 impl cynic::schema::NamedType for Book {
-    const NAME: &'static str = "Book";
+    const NAME: &'static ::core::primitive::str = "Book";
 }
 impl cynic::schema::NamedType for BookChanged {
-    const NAME: &'static str = "BookChanged";
+    const NAME: &'static ::core::primitive::str = "BookChanged";
 }
 impl cynic::schema::NamedType for MutationRoot {
-    const NAME: &'static str = "MutationRoot";
+    const NAME: &'static ::core::primitive::str = "MutationRoot";
 }
 impl cynic::schema::NamedType for QueryRoot {
-    const NAME: &'static str = "QueryRoot";
+    const NAME: &'static ::core::primitive::str = "QueryRoot";
 }
 impl cynic::schema::NamedType for SubscriptionRoot {
-    const NAME: &'static str = "SubscriptionRoot";
+    const NAME: &'static ::core::primitive::str = "SubscriptionRoot";
 }
 #[allow(non_snake_case, non_camel_case_types)]
 pub mod __fields {
@@ -32,7 +33,7 @@ pub mod __fields {
         pub struct id;
         impl cynic::schema::Field for id {
             type Type = super::super::String;
-            const NAME: &'static str = "id";
+            const NAME: &'static ::core::primitive::str = "id";
         }
         impl cynic::schema::HasField<id> for super::super::Book {
             type Type = super::super::String;
@@ -40,7 +41,7 @@ pub mod __fields {
         pub struct name;
         impl cynic::schema::Field for name {
             type Type = super::super::String;
-            const NAME: &'static str = "name";
+            const NAME: &'static ::core::primitive::str = "name";
         }
         impl cynic::schema::HasField<name> for super::super::Book {
             type Type = super::super::String;
@@ -48,7 +49,7 @@ pub mod __fields {
         pub struct author;
         impl cynic::schema::Field for author {
             type Type = super::super::String;
-            const NAME: &'static str = "author";
+            const NAME: &'static ::core::primitive::str = "author";
         }
         impl cynic::schema::HasField<author> for super::super::Book {
             type Type = super::super::String;
@@ -56,7 +57,7 @@ pub mod __fields {
         pub struct __typename;
         impl cynic::schema::Field for __typename {
             type Type = super::super::String;
-            const NAME: &'static str = "__typename";
+            const NAME: &'static ::core::primitive::str = "__typename";
         }
         impl cynic::schema::HasField<__typename> for super::super::Book {
             type Type = super::super::String;
@@ -66,7 +67,7 @@ pub mod __fields {
         pub struct mutationType;
         impl cynic::schema::Field for mutationType {
             type Type = super::super::MutationType;
-            const NAME: &'static str = "mutationType";
+            const NAME: &'static ::core::primitive::str = "mutationType";
         }
         impl cynic::schema::HasField<mutationType> for super::super::BookChanged {
             type Type = super::super::MutationType;
@@ -74,7 +75,7 @@ pub mod __fields {
         pub struct id;
         impl cynic::schema::Field for id {
             type Type = super::super::ID;
-            const NAME: &'static str = "id";
+            const NAME: &'static ::core::primitive::str = "id";
         }
         impl cynic::schema::HasField<id> for super::super::BookChanged {
             type Type = super::super::ID;
@@ -82,7 +83,7 @@ pub mod __fields {
         pub struct book;
         impl cynic::schema::Field for book {
             type Type = Option<super::super::Book>;
-            const NAME: &'static str = "book";
+            const NAME: &'static ::core::primitive::str = "book";
         }
         impl cynic::schema::HasField<book> for super::super::BookChanged {
             type Type = Option<super::super::Book>;
@@ -90,7 +91,7 @@ pub mod __fields {
         pub struct __typename;
         impl cynic::schema::Field for __typename {
             type Type = super::super::String;
-            const NAME: &'static str = "__typename";
+            const NAME: &'static ::core::primitive::str = "__typename";
         }
         impl cynic::schema::HasField<__typename> for super::super::BookChanged {
             type Type = super::super::String;
@@ -100,7 +101,7 @@ pub mod __fields {
         pub struct createBook;
         impl cynic::schema::Field for createBook {
             type Type = super::super::ID;
-            const NAME: &'static str = "createBook";
+            const NAME: &'static ::core::primitive::str = "createBook";
         }
         impl cynic::schema::HasField<createBook> for super::super::MutationRoot {
             type Type = super::super::ID;
@@ -109,18 +110,18 @@ pub mod __fields {
             pub struct name;
             impl cynic::schema::HasArgument<name> for super::createBook {
                 type ArgumentType = super::super::super::String;
-                const NAME: &'static str = "name";
+                const NAME: &'static ::core::primitive::str = "name";
             }
             pub struct author;
             impl cynic::schema::HasArgument<author> for super::createBook {
                 type ArgumentType = super::super::super::String;
-                const NAME: &'static str = "author";
+                const NAME: &'static ::core::primitive::str = "author";
             }
         }
         pub struct deleteBook;
         impl cynic::schema::Field for deleteBook {
             type Type = super::super::Boolean;
-            const NAME: &'static str = "deleteBook";
+            const NAME: &'static ::core::primitive::str = "deleteBook";
         }
         impl cynic::schema::HasField<deleteBook> for super::super::MutationRoot {
             type Type = super::super::Boolean;
@@ -129,13 +130,13 @@ pub mod __fields {
             pub struct id;
             impl cynic::schema::HasArgument<id> for super::deleteBook {
                 type ArgumentType = super::super::super::ID;
-                const NAME: &'static str = "id";
+                const NAME: &'static ::core::primitive::str = "id";
             }
         }
         pub struct __typename;
         impl cynic::schema::Field for __typename {
             type Type = super::super::String;
-            const NAME: &'static str = "__typename";
+            const NAME: &'static ::core::primitive::str = "__typename";
         }
         impl cynic::schema::HasField<__typename> for super::super::MutationRoot {
             type Type = super::super::String;
@@ -145,7 +146,7 @@ pub mod __fields {
         pub struct books;
         impl cynic::schema::Field for books {
             type Type = Vec<super::super::Book>;
-            const NAME: &'static str = "books";
+            const NAME: &'static ::core::primitive::str = "books";
         }
         impl cynic::schema::HasField<books> for super::super::QueryRoot {
             type Type = Vec<super::super::Book>;
@@ -153,7 +154,7 @@ pub mod __fields {
         pub struct __typename;
         impl cynic::schema::Field for __typename {
             type Type = super::super::String;
-            const NAME: &'static str = "__typename";
+            const NAME: &'static ::core::primitive::str = "__typename";
         }
         impl cynic::schema::HasField<__typename> for super::super::QueryRoot {
             type Type = super::super::String;
@@ -163,7 +164,7 @@ pub mod __fields {
         pub struct interval;
         impl cynic::schema::Field for interval {
             type Type = super::super::Int;
-            const NAME: &'static str = "interval";
+            const NAME: &'static ::core::primitive::str = "interval";
         }
         impl cynic::schema::HasField<interval> for super::super::SubscriptionRoot {
             type Type = super::super::Int;
@@ -172,13 +173,13 @@ pub mod __fields {
             pub struct n;
             impl cynic::schema::HasArgument<n> for super::interval {
                 type ArgumentType = super::super::super::Int;
-                const NAME: &'static str = "n";
+                const NAME: &'static ::core::primitive::str = "n";
             }
         }
         pub struct books;
         impl cynic::schema::Field for books {
             type Type = super::super::BookChanged;
-            const NAME: &'static str = "books";
+            const NAME: &'static ::core::primitive::str = "books";
         }
         impl cynic::schema::HasField<books> for super::super::SubscriptionRoot {
             type Type = super::super::BookChanged;
@@ -187,13 +188,13 @@ pub mod __fields {
             pub struct mutationType;
             impl cynic::schema::HasArgument<mutationType> for super::books {
                 type ArgumentType = Option<super::super::super::MutationType>;
-                const NAME: &'static str = "mutationType";
+                const NAME: &'static ::core::primitive::str = "mutationType";
             }
         }
         pub struct __typename;
         impl cynic::schema::Field for __typename {
             type Type = super::super::String;
-            const NAME: &'static str = "__typename";
+            const NAME: &'static ::core::primitive::str = "__typename";
         }
         impl cynic::schema::HasField<__typename> for super::super::SubscriptionRoot {
             type Type = super::super::String;
@@ -279,4 +280,3 @@ pub mod variable {
         const TYPE: VariableType = VariableType::Named("ID");
     }
 }
-

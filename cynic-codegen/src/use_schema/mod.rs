@@ -56,7 +56,7 @@ pub(crate) fn use_schema_impl(schema: &Schema<'_, Validated>) -> Result<TokenStr
                 output.append_all(quote! {
                     pub struct #ident {}
                     impl cynic::schema::NamedType for #ident {
-                        const NAME: &'static str = #name;
+                        const NAME: &'static ::core::primitive::str = #name;
                     }
                 });
             }
