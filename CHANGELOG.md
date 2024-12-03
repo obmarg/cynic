@@ -12,12 +12,11 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Bug Fixes
 
-- support fields named str ([#1108](https://github.com/obmarg/cynic/pull/1108))
+- Fields named `str` are now supported ([#1108](https://github.com/obmarg/cynic/pull/1108))
 
 ### Changes
 
-- fix rust 1.83 lints ([#1106](https://github.com/obmarg/cynic/pull/1106))
-- update Cargo.lock dependencies
+- Fixed all rust 1.83 clippy lints ([#1106](https://github.com/obmarg/cynic/pull/1106))
 
 ## v3.9.0 - 2024-11-11
 
