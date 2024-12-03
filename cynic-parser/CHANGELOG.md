@@ -9,6 +9,12 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.8.7 - 2024-12-03
+
+### Changes
+
+- Fixed all rust 1.83 clippy lints ([#1106](https://github.com/obmarg/cynic/pull/1106))
+
 ## v0.8.6 - 2024-11-28
 
 ### Bug Fixes

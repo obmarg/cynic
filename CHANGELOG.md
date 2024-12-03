@@ -8,6 +8,16 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v3.9.1 - 2024-12-03
+
+### Bug Fixes
+
+- Fields named `str` are now supported ([#1108](https://github.com/obmarg/cynic/pull/1108))
+
+### Changes
+
+- Fixed all rust 1.83 clippy lints ([#1106](https://github.com/obmarg/cynic/pull/1106))
+
 ## v3.9.0 - 2024-11-11
 
 ### Changes
