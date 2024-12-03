@@ -330,7 +330,7 @@ impl TestCase {
         writedoc!(
             &mut file,
             r#"
-            #![allow(unused_imports)]
+            #![allow(unused_imports, clippy::large_enum_variant)]
 
             #[test]
             fn generated_test() {{
