@@ -49,7 +49,7 @@ git_release_latest = true
 git_release_name = "v{{version}}"
 
 changelog_update = true
-changelog_path = "./CHANGELOG.md"
+changelog_path = "CHANGELOG.md"
 changelog_include = [
     "cynic-cli",
     "cynic-codegen",
