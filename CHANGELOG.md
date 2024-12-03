@@ -8,6 +8,17 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v3.9.1 - 2024-12-03
+
+### Bug Fixes
+
+- support fields named str ([#1108](https://github.com/obmarg/cynic/pull/1108))
+
+### Changes
+
+- fix rust 1.83 lints ([#1106](https://github.com/obmarg/cynic/pull/1106))
+- update Cargo.lock dependencies
+
 ## v3.9.0 - 2024-11-11
 
 ### Changes
