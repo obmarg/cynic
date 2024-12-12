@@ -25,6 +25,10 @@ pub use self::{
 };
 
 pub fn parse_type_system_document(input: &str) -> Result<TypeSystemDocument, Error> {
+    if input.trim().is_empty() {
+        return Err(Error::EmptyTypeSystemDocument);
+    }
+
     let lexer = lexer::Lexer::new(input);
     let mut ast = type_system::writer::TypeSystemAstWriter::new();
 
@@ -34,6 +38,10 @@ pub fn parse_type_system_document(input: &str) -> Result<TypeSystemDocument, Err
 }
 
 pub fn parse_executable_document(input: &str) -> Result<ExecutableDocument, Error> {
+    if input.trim().is_empty() {
+        return Err(Error::EmptyExecutableDocument);
+    }
+
     let lexer = lexer::Lexer::new(input);
     let mut ast = executable::writer::ExecutableAstWriter::new();
 

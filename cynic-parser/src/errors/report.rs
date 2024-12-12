@@ -15,8 +15,11 @@ impl Error {
 
         let mut builder = ariadne::Report::build(ReportKind::Error, (), 0)
             .with_message(message)
-            .with_label(label)
             .with_config(Config::default().with_color(false));
+
+        if let Some(label) = label {
+            builder.add_label(label);
+        }
 
         if let Some(note) = note {
             builder.set_note(note)
@@ -27,16 +30,20 @@ impl Error {
         Report { inner, document }
     }
 
-    fn components(&self) -> (String, Label, Option<String>) {
+    fn components(&self) -> (String, Option<Label>, Option<String>) {
         match self {
             Error::InvalidToken { location } => (
                 "invalid token".into(),
-                Label::new(*location..*location).with_message("could not understand this token"),
+                Label::new(*location..*location)
+                    .with_message("could not understand this token")
+                    .into(),
                 None,
             ),
             Error::UnrecognizedEof { location, expected } => (
                 "unexpected eof".into(),
-                Label::new(*location..*location).with_message("expected another token here"),
+                Label::new(*location..*location)
+                    .with_message("expected another token here")
+                    .into(),
                 Some(format!("expected one of {}", expected.join(", "))),
             ),
             Error::UnrecognizedToken {
@@ -44,51 +51,63 @@ impl Error {
                 expected,
             } => (
                 format!("unexpected {}", token),
-                Label::new(*start..*end).with_message("didn't expect to see this"),
+                Label::new(*start..*end)
+                    .with_message("didn't expect to see this")
+                    .into(),
                 Some(format!("expected one of {}", expected.join(", "))),
             ),
             Error::ExtraToken {
                 token: (start, token, end),
             } => (
                 format!("extra {}", token),
-                Label::new(*start..*end).with_message("we expected the document to end here"),
+                Label::new(*start..*end)
+                    .with_message("we expected the document to end here")
+                    .into(),
                 None,
             ),
             Error::Lexical(error) => {
                 let span = error.span();
                 (
                     "invalid token".into(),
-                    Label::new(span.start..span.end).with_message("could not parse a token here"),
+                    Label::new(span.start..span.end)
+                        .with_message("could not parse a token here")
+                        .into(),
                     None,
                 )
             }
             Error::MalformedStringLiteral(error) => {
-                let span = self.span();
+                let span = self.span().unwrap();
                 (
                     error.to_string(),
-                    Label::new(span.start..span.end).with_message("error occurred here"),
+                    Label::new(span.start..span.end)
+                        .with_message("error occurred here")
+                        .into(),
                     None,
                 )
             }
             Error::MalformedDirectiveLocation(_, _, _) => {
-                let span = self.span();
+                let span = self.span().unwrap();
                 (
                     self.to_string(),
                     Label::new(span.start..span.end)
-                        .with_message("this is not a valid directive location"),
+                        .with_message("this is not a valid directive location")
+                        .into(),
                     None,
                 )
             }
 
             Error::VariableInConstPosition(_, _, _) => {
-                let span = self.span();
+                let span = self.span().unwrap();
                 (
                     self.to_string(),
                     Label::new(span.start..span.end)
-                        .with_message("only non-variable values can be used here"),
+                        .with_message("only non-variable values can be used here")
+                        .into(),
                     None,
                 )
             }
+            Error::EmptyExecutableDocument => (self.to_string(), None, Some("graphql documents should contain at least one query, mutation or subscription".into())),
+            Error::EmptyTypeSystemDocument => (self.to_string(), None, Some("graphql documents should contain at least one type, schema or directive definition".into())),
         }
     }
 }

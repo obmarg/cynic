@@ -55,25 +55,32 @@ pub enum Error {
 
     /// Variable found in const position
     VariableInConstPosition(usize, String, usize),
+
+    /// The GraphQl document was empty
+    EmptyTypeSystemDocument,
+
+    /// The GraphQl document was empty
+    EmptyExecutableDocument,
 }
 
 impl Error {
-    pub fn span(&self) -> Span {
+    pub fn span(&self) -> Option<Span> {
         match self {
-            Error::InvalidToken { location } => Span::new(*location, *location),
-            Error::UnrecognizedEof { location, .. } => Span::new(*location, *location),
+            Error::InvalidToken { location } => Span::new(*location, *location).into(),
+            Error::UnrecognizedEof { location, .. } => Span::new(*location, *location).into(),
             Error::UnrecognizedToken {
                 token: (start, _, end),
                 ..
-            } => Span::new(*start, *end),
+            } => Span::new(*start, *end).into(),
             Error::ExtraToken {
                 token: (start, _, end),
                 ..
-            } => Span::new(*start, *end),
-            Error::Lexical(error) => error.span(),
-            Error::MalformedStringLiteral(error) => error.span(),
-            Error::MalformedDirectiveLocation(lhs, _, rhs) => Span::new(*lhs, *rhs),
-            Error::VariableInConstPosition(lhs, _, rhs) => Span::new(*lhs, *rhs),
+            } => Span::new(*start, *end).into(),
+            Error::Lexical(error) => error.span().into(),
+            Error::MalformedStringLiteral(error) => error.span().into(),
+            Error::MalformedDirectiveLocation(lhs, _, rhs) => Span::new(*lhs, *rhs).into(),
+            Error::VariableInConstPosition(lhs, _, rhs) => Span::new(*lhs, *rhs).into(),
+            Error::EmptyExecutableDocument | Error::EmptyTypeSystemDocument => None,
         }
     }
 }
@@ -87,7 +94,9 @@ impl std::error::Error for Error {
             | Error::ExtraToken { .. }
             | Error::MalformedStringLiteral(..)
             | Error::MalformedDirectiveLocation(..)
-            | Error::VariableInConstPosition(..) => None,
+            | Error::VariableInConstPosition(..)
+            | Error::EmptyTypeSystemDocument
+            | Error::EmptyExecutableDocument => None,
             Error::Lexical(error) => Some(error),
         }
     }
@@ -156,6 +165,18 @@ impl fmt::Display for Error {
                     "the variable ${name} was found in a position that does not allow variables"
                 )?;
                 Ok(())
+            }
+            Error::EmptyExecutableDocument => {
+                write!(
+                    f,
+                    "the graphql document was empty, please provide an operation"
+                )
+            }
+            Error::EmptyTypeSystemDocument => {
+                write!(
+                    f,
+                    "the graphql document was empty, please provide at least one definition"
+                )
             }
         }
     }
