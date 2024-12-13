@@ -9,6 +9,10 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+### Breaking Changes
+
+- `Error::span` now returns an `Option<Span>` instead of a `Span`
+
 ## v0.8.7 - 2024-12-03
 
 ### Changes
@@ -22,7 +26,6 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 - `Value::is_variable` now works correctly ([#1104](https://github.com/obmarg/cynic/pull/1104))
 - Fixed the `VariableValue` debug impl which was misleading
   ([#1104](https://github.com/obmarg/cynic/pull/1104))
-
 
 ## v0.8.5 - 2024-11-27
 
