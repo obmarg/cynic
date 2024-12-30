@@ -60,7 +60,7 @@ struct SpreadDeserializer<'a, 'de, E> {
     error: PhantomData<fn() -> E>,
 }
 
-impl<'a, 'de, E> Deserializer<'de> for SpreadDeserializer<'a, 'de, E>
+impl<'de, E> Deserializer<'de> for SpreadDeserializer<'_, 'de, E>
 where
     E: de::Error,
 {
@@ -80,7 +80,7 @@ where
     }
 }
 
-impl<'a, 'de, E> MapAccess<'de> for SpreadDeserializer<'a, 'de, E>
+impl<'de, E> MapAccess<'de> for SpreadDeserializer<'_, 'de, E>
 where
     E: de::Error,
 {

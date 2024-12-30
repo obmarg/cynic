@@ -1,16 +1,17 @@
 use super::prelude::*;
 use super::{
+    descriptions::Description,
     directives::Directive,
-    ids::{DirectiveId, EnumDefinitionId, EnumValueDefinitionId, StringLiteralId},
-    strings::StringLiteral,
-    ReadContext, TypeSystemId,
+    ids::{DescriptionId, DirectiveId, EnumDefinitionId, EnumValueDefinitionId},
+    TypeSystemId,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};
 
 pub struct EnumDefinitionRecord {
     pub name: StringId,
-    pub description: Option<StringLiteralId>,
+    pub name_span: Span,
+    pub description: Option<DescriptionId>,
     pub values: IdRange<EnumValueDefinitionId>,
     pub directives: IdRange<DirectiveId>,
     pub span: Span,
@@ -24,7 +25,11 @@ impl<'a> EnumDefinition<'a> {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).name)
     }
-    pub fn description(&self) -> Option<StringLiteral<'a>> {
+    pub fn name_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).name_span
+    }
+    pub fn description(&self) -> Option<Description<'a>> {
         let document = self.0.document;
         document
             .lookup(self.0.id)
@@ -65,21 +70,23 @@ impl fmt::Debug for EnumDefinition<'_> {
 
 impl TypeSystemId for EnumDefinitionId {
     type Reader<'a> = EnumDefinition<'a>;
+    fn read(self, document: &TypeSystemDocument) -> Self::Reader<'_> {
+        EnumDefinition(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for EnumDefinition<'_> {
     type Id = EnumDefinitionId;
-}
-
-impl<'a> From<ReadContext<'a, EnumDefinitionId>> for EnumDefinition<'a> {
-    fn from(value: ReadContext<'a, EnumDefinitionId>) -> Self {
-        Self(value)
+    type Reader<'a> = EnumDefinition<'a>;
+    fn new(id: Self::Id, document: &'_ TypeSystemDocument) -> Self::Reader<'_> {
+        document.read(id)
     }
 }
 
 pub struct EnumValueDefinitionRecord {
     pub value: StringId,
-    pub description: Option<StringLiteralId>,
+    pub value_span: Span,
+    pub description: Option<DescriptionId>,
     pub directives: IdRange<DirectiveId>,
     pub span: Span,
 }
@@ -92,7 +99,11 @@ impl<'a> EnumValueDefinition<'a> {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).value)
     }
-    pub fn description(&self) -> Option<StringLiteral<'a>> {
+    pub fn value_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).value_span
+    }
+    pub fn description(&self) -> Option<Description<'a>> {
         let document = self.0.document;
         document
             .lookup(self.0.id)
@@ -128,14 +139,15 @@ impl fmt::Debug for EnumValueDefinition<'_> {
 
 impl TypeSystemId for EnumValueDefinitionId {
     type Reader<'a> = EnumValueDefinition<'a>;
+    fn read(self, document: &TypeSystemDocument) -> Self::Reader<'_> {
+        EnumValueDefinition(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for EnumValueDefinition<'_> {
     type Id = EnumValueDefinitionId;
-}
-
-impl<'a> From<ReadContext<'a, EnumValueDefinitionId>> for EnumValueDefinition<'a> {
-    fn from(value: ReadContext<'a, EnumValueDefinitionId>) -> Self {
-        Self(value)
+    type Reader<'a> = EnumValueDefinition<'a>;
+    fn new(id: Self::Id, document: &'_ TypeSystemDocument) -> Self::Reader<'_> {
+        document.read(id)
     }
 }

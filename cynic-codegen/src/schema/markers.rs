@@ -134,7 +134,7 @@ impl<'a> TypeMarkerIdent<'a> {
     }
 }
 
-impl<'a> FieldMarkerModule<'a> {
+impl FieldMarkerModule<'_> {
     pub fn ident(&self) -> proc_macro2::Ident {
         format_ident!("{}", transform_keywords(self.type_name.as_ref()))
     }
@@ -150,7 +150,7 @@ impl<'a> FieldMarkerModule<'a> {
     }
 }
 
-impl<'a> FieldMarkerIdent<'a> {
+impl FieldMarkerIdent<'_> {
     pub fn to_path(&self, schema_module_path: &syn::Path) -> syn::Path {
         let mut path = schema_module_path.clone();
         path.push(self.to_rust_ident());

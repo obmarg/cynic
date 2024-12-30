@@ -1,20 +1,21 @@
 use super::prelude::*;
 use super::{
+    descriptions::Description,
     directives::Directive,
-    ids::{DirectiveId, FieldDefinitionId, InputValueDefinitionId, StringLiteralId, TypeId},
+    ids::{DescriptionId, DirectiveId, FieldDefinitionId, InputValueDefinitionId, TypeId},
     input_values::InputValueDefinition,
-    strings::StringLiteral,
     types::Type,
-    ReadContext, TypeSystemId,
+    TypeSystemId,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};
 
 pub struct FieldDefinitionRecord {
     pub name: StringId,
+    pub name_span: Span,
     pub ty: TypeId,
     pub arguments: IdRange<InputValueDefinitionId>,
-    pub description: Option<StringLiteralId>,
+    pub description: Option<DescriptionId>,
     pub directives: IdRange<DirectiveId>,
     pub span: Span,
 }
@@ -27,6 +28,10 @@ impl<'a> FieldDefinition<'a> {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).name)
     }
+    pub fn name_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).name_span
+    }
     pub fn ty(&self) -> Type<'a> {
         let document = self.0.document;
         document.read(document.lookup(self.0.id).ty)
@@ -35,7 +40,7 @@ impl<'a> FieldDefinition<'a> {
         let document = self.0.document;
         super::Iter::new(document.lookup(self.0.id).arguments, document)
     }
-    pub fn description(&self) -> Option<StringLiteral<'a>> {
+    pub fn description(&self) -> Option<Description<'a>> {
         let document = self.0.document;
         document
             .lookup(self.0.id)
@@ -73,14 +78,15 @@ impl fmt::Debug for FieldDefinition<'_> {
 
 impl TypeSystemId for FieldDefinitionId {
     type Reader<'a> = FieldDefinition<'a>;
+    fn read(self, document: &TypeSystemDocument) -> Self::Reader<'_> {
+        FieldDefinition(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for FieldDefinition<'_> {
     type Id = FieldDefinitionId;
-}
-
-impl<'a> From<ReadContext<'a, FieldDefinitionId>> for FieldDefinition<'a> {
-    fn from(value: ReadContext<'a, FieldDefinitionId>) -> Self {
-        Self(value)
+    type Reader<'a> = FieldDefinition<'a>;
+    fn new(id: Self::Id, document: &'_ TypeSystemDocument) -> Self::Reader<'_> {
+        document.read(id)
     }
 }

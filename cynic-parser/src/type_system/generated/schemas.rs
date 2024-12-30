@@ -1,24 +1,25 @@
 use super::prelude::*;
 use super::{
+    descriptions::Description,
     directives::Directive,
-    ids::{DirectiveId, RootOperationTypeDefinitionId, SchemaDefinitionId, StringLiteralId},
-    strings::StringLiteral,
-    ReadContext, TypeSystemId,
+    ids::{DescriptionId, DirectiveId, RootOperationTypeDefinitionId, SchemaDefinitionId},
+    TypeSystemId,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};
 
 pub struct SchemaDefinitionRecord {
-    pub description: Option<StringLiteralId>,
+    pub description: Option<DescriptionId>,
     pub directives: IdRange<DirectiveId>,
     pub root_operations: IdRange<RootOperationTypeDefinitionId>,
+    pub span: Span,
 }
 
 #[derive(Clone, Copy)]
 pub struct SchemaDefinition<'a>(pub(in super::super) ReadContext<'a, SchemaDefinitionId>);
 
 impl<'a> SchemaDefinition<'a> {
-    pub fn description(&self) -> Option<StringLiteral<'a>> {
+    pub fn description(&self) -> Option<Description<'a>> {
         let document = self.0.document;
         document
             .lookup(self.0.id)
@@ -32,6 +33,10 @@ impl<'a> SchemaDefinition<'a> {
     pub fn root_operations(&self) -> Iter<'a, RootOperationTypeDefinition<'a>> {
         let document = self.0.document;
         super::Iter::new(document.lookup(self.0.id).root_operations, document)
+    }
+    pub fn span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).span
     }
 }
 
@@ -47,27 +52,32 @@ impl fmt::Debug for SchemaDefinition<'_> {
             .field("description", &self.description())
             .field("directives", &self.directives())
             .field("root_operations", &self.root_operations())
+            .field("span", &self.span())
             .finish()
     }
 }
 
 impl TypeSystemId for SchemaDefinitionId {
     type Reader<'a> = SchemaDefinition<'a>;
+    fn read(self, document: &TypeSystemDocument) -> Self::Reader<'_> {
+        SchemaDefinition(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for SchemaDefinition<'_> {
     type Id = SchemaDefinitionId;
-}
-
-impl<'a> From<ReadContext<'a, SchemaDefinitionId>> for SchemaDefinition<'a> {
-    fn from(value: ReadContext<'a, SchemaDefinitionId>) -> Self {
-        Self(value)
+    type Reader<'a> = SchemaDefinition<'a>;
+    fn new(id: Self::Id, document: &'_ TypeSystemDocument) -> Self::Reader<'_> {
+        document.read(id)
     }
 }
 
 pub struct RootOperationTypeDefinitionRecord {
     pub operation_type: OperationType,
+    pub operation_type_span: Span,
     pub named_type: StringId,
+    pub named_type_span: Span,
+    pub span: Span,
 }
 
 #[derive(Clone, Copy)]
@@ -80,9 +90,21 @@ impl<'a> RootOperationTypeDefinition<'a> {
         let document = self.0.document;
         document.lookup(self.0.id).operation_type
     }
+    pub fn operation_type_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).operation_type_span
+    }
     pub fn named_type(&self) -> &'a str {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).named_type)
+    }
+    pub fn named_type_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).named_type_span
+    }
+    pub fn span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).span
     }
 }
 
@@ -97,20 +119,22 @@ impl fmt::Debug for RootOperationTypeDefinition<'_> {
         f.debug_struct("RootOperationTypeDefinition")
             .field("operation_type", &self.operation_type())
             .field("named_type", &self.named_type())
+            .field("span", &self.span())
             .finish()
     }
 }
 
 impl TypeSystemId for RootOperationTypeDefinitionId {
     type Reader<'a> = RootOperationTypeDefinition<'a>;
+    fn read(self, document: &TypeSystemDocument) -> Self::Reader<'_> {
+        RootOperationTypeDefinition(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for RootOperationTypeDefinition<'_> {
     type Id = RootOperationTypeDefinitionId;
-}
-
-impl<'a> From<ReadContext<'a, RootOperationTypeDefinitionId>> for RootOperationTypeDefinition<'a> {
-    fn from(value: ReadContext<'a, RootOperationTypeDefinitionId>) -> Self {
-        Self(value)
+    type Reader<'a> = RootOperationTypeDefinition<'a>;
+    fn new(id: Self::Id, document: &'_ TypeSystemDocument) -> Self::Reader<'_> {
+        document.read(id)
     }
 }

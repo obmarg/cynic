@@ -6,10 +6,12 @@ use crate::{
         storage::*, ids::*, writer::TypeSystemAstWriter,
         DirectiveLocation,
     },
+    values::{storage::*, ids::ConstValueId, self},
     common::{
         OperationType, IdRange, WrappingType, TypeWrappers,
-        unquote_string, unquote_block_string
-    }
+        unquote_string, unquote_block_string, trim_block_string_whitespace
+    },
+    parser::AdditionalErrors
 };
 
 grammar<'input>(input: &'input str, ast: &mut TypeSystemAstWriter);
@@ -18,8 +20,17 @@ pub TypeSystemDocument: () = {
     <defs:DefinitionAndDescription+> => {}
 }
 
+Description: DescriptionId = {
+    <start:@L> <literal:StringValue> <end:@R> => {
+        ast.description(DescriptionRecord {
+            literal,
+            span: Span::new(start, end),
+        })
+    }
+}
+
 DefinitionAndDescription: () = {
-    <description:StringValue?> <def:TypeSystemDefinition> => {
+    <description:Description?> <def:TypeSystemDefinition> => {
         ast.store_description(def, description)
     }
 }
@@ -43,18 +54,20 @@ TypeSystemDefinition: DefinitionId = {
 }
 
 SchemaDefinition: SchemaDefinitionRecord = {
-    schema <directives:Directives> <root_operations:RootOperationTypeDefinitions> => SchemaDefinitionRecord {
+    <start:@L> schema <directives:Directives> <root_operations:RootOperationTypeDefinitions> <end:@R> => SchemaDefinitionRecord {
         description: None,
         directives,
         root_operations,
+        span: Span::new(start, end),
     }
 };
 
 SchemaExtensionDefinition: SchemaDefinitionRecord = {
-    schema <directives:Directives> <root_operations:RootOperationTypeDefinitions?> => SchemaDefinitionRecord {
+    <start:@L> schema <directives:Directives> <root_operations:RootOperationTypeDefinitions?> <end:@R> => SchemaDefinitionRecord {
         description: None,
         directives,
         root_operations: root_operations.unwrap_or_default(),
+        span: Span::new(start, end),
     }
 };
 
@@ -63,27 +76,60 @@ RootOperationTypeDefinitions: IdRange<RootOperationTypeDefinitionId> = {
 }
 
 RootOperationTypeDefinition: RootOperationTypeDefinitionRecord = {
-    query ":" <name:NamedType> => RootOperationTypeDefinitionRecord {
+    <start:@L> query
+        <operation_type_end:@R>
+        ":"
+        <name_start:@L>
+        <name:NamedType>
+        <name_end:@R>
+        <end:@R>
+    => RootOperationTypeDefinitionRecord {
         operation_type: OperationType::Query,
-        named_type: name
+        operation_type_span: Span::new(start, operation_type_end),
+        named_type: name,
+        named_type_span: Span::new(name_start, name_end),
+        span: Span::new(start, end)
     },
-    mutation ":" <name:NamedType> => RootOperationTypeDefinitionRecord {
+    <start:@L> mutation
+        <operation_type_end:@R>
+        ":"
+        <name_start:@L>
+        <name:NamedType>
+        <name_end:@R>
+        <end:@R>
+    => RootOperationTypeDefinitionRecord {
         operation_type: OperationType::Mutation,
-        named_type: name
+        operation_type_span: Span::new(start, operation_type_end),
+        named_type: name,
+        named_type_span: Span::new(name_start, name_end),
+        span: Span::new(start, end)
     },
-    subscription ":" <name:NamedType> => RootOperationTypeDefinitionRecord {
+    <start:@L> subscription
+        <operation_type_end:@R>
+        ":"
+        <name_start:@L>
+        <name:NamedType>
+        <name_end:@R>
+        <end:@R>
+    => RootOperationTypeDefinitionRecord {
         operation_type: OperationType::Subscription,
-        named_type: name
+        operation_type_span: Span::new(start, operation_type_end),
+        named_type: name,
+        named_type_span: Span::new(name_start, name_end),
+        span: Span::new(start, end)
     },
 }
 
 ScalarDefinition: ScalarDefinitionRecord = {
     <start:@L> scalar
+        <name_start:@L>
         <name:Name>
+        <name_end:@R>
         <directives:Directives>
         <end:@R>
     => ScalarDefinitionRecord {
         name,
+        name_span: Span::new(name_start, name_end),
         description: None,
         directives,
         span: Span::new(start,end)
@@ -92,13 +138,16 @@ ScalarDefinition: ScalarDefinitionRecord = {
 
 ObjectDefinition: ObjectDefinitionRecord = {
     <start:@L> ty
+        <name_start:@L>
         <name:Name>
+        <name_end:@R>
         <implements:ImplementsInterfaces?>
         <directives:Directives>
         <fields:FieldsDefinition?>
         <end:@R>
     => ObjectDefinitionRecord {
         name,
+        name_span: Span::new(name_start, name_end),
         description: None,
         directives,
         implements_interfaces: implements.unwrap_or_default(),
@@ -128,17 +177,20 @@ FieldsDefinition: Vec<()> = {
 
 FieldDefinition: () = {
     <start:@L>
-        <description:StringValue?>
+        <description:Description?>
+        <name_start:@L>
         <name:Name>
+        <name_end:@R>
         <arguments:ArgumentsDefinition?> ":" <ty:Type>
         <directives:Directives>
-        <end:@R>
+    <end:@R>
     => {
         let arguments = ast.input_value_definition_range(
             Some(arguments.map(|arguments| arguments.len()).unwrap_or_default())
         );
         ast.field_definition(FieldDefinitionRecord {
             name,
+            name_span: Span::new(name_start, name_end),
             ty,
             arguments,
             description,
@@ -154,13 +206,16 @@ ArgumentsDefinition: Vec<()> = {
 
 InterfaceDefinition: InterfaceDefinitionRecord = {
     <start:@L> interface
+        <name_start:@L>
         <name:Name>
+        <name_end:@R>
         <implements:ImplementsInterfaces?>
         <directives:Directives>
         <fields:FieldsDefinition?>
         <end:@R>
     => InterfaceDefinitionRecord {
         name,
+        name_span: Span::new(name_start, name_end),
         description: None,
         directives,
         implements_interfaces: implements.unwrap_or_default(),
@@ -171,38 +226,44 @@ InterfaceDefinition: InterfaceDefinitionRecord = {
 
 UnionDefinition: UnionDefinitionRecord = {
     <start:@L> union
+        <name_start:@L>
         <name:Name>
+        <name_end:@R>
         <directives:Directives>
         <members:UnionMemberTypes?>
         <end:@R>
     => UnionDefinitionRecord {
         name,
+        name_span: Span::new(name_start, name_end),
         description: None,
-        members: members.unwrap_or_default(),
+        members: ast.union_member_range(members.map(|members| members.len())),
         directives,
         span: Span::new(start,end)
     }
 };
 
-UnionMemberTypes: Vec<StringId> = {
-    <members:UnionMemberTypes> "|" <name:NamedType> => {
+UnionMemberTypes: Vec<UnionMemberId> = {
+    <members:UnionMemberTypes> "|" <start:@L> <name:NamedType> <end:@R> => {
         let mut members = members;
-        members.push(name);
+        members.push(ast.union_member(UnionMemberRecord { name, span: Span::new(start, end) }));
         members
     },
-    "=" "|"? <name:NamedType> => {
-        vec![name]
+    "=" "|"? <start:@L> <name:NamedType> <end:@R> => {
+        vec![ast.union_member(UnionMemberRecord { name, span: Span::new(start, end) })]
     }
 }
 
 EnumDefinition: EnumDefinitionRecord = {
     <start:@L> "enum"
+        <name_start:@L>
         <name:Name>
+        <name_end:@R>
         <directives:Directives>
         <values:EnumValuesDefinition?>
         <end:@R>
     => EnumDefinitionRecord {
         name,
+        name_span: Span::new(name_start, name_end),
         description: None,
         directives,
         values: ast.enum_value_definition_range(values.map(|values| values.len())),
@@ -216,12 +277,15 @@ EnumValuesDefinition: Vec<EnumValueDefinitionId> = {
 
 EnumValueDefinition: EnumValueDefinitionId = {
     <start:@L>
-        <description:StringValue?>
+        <description:Description?>
+        <value_start:@L>
         <value:EnumValue>
+        <value_end:@R>
         <directives:Directives>
         <end:@R>
     => ast.enum_value_definition(EnumValueDefinitionRecord {
         value,
+        value_span: Span::new(value_start, value_end),
         description,
         directives,
         span: Span::new(start,end)
@@ -231,12 +295,15 @@ EnumValueDefinition: EnumValueDefinitionId = {
 
 InputObjectDefinition: InputObjectDefinitionRecord = {
     <start:@L> input
+        <name_start:@L>
         <name:Name>
+        <name_end:@R>
         <directives:Directives>
         <fields:InputFieldsDefinition?>
         <end:@R>
     => InputObjectDefinitionRecord {
         name,
+        name_span: Span::new(name_start, name_end),
         description: None,
         directives,
         fields: ast.input_value_definition_range(Some(fields.map(|fields| fields.len()).unwrap_or_default())),
@@ -251,7 +318,9 @@ InputFieldsDefinition: Vec<()> = {
 DirectiveDefinition: DirectiveDefinitionRecord = {
     <start:@L>
         directive
+        <name_start:@L>
         "@" <name:Name>
+        <name_end:@R>
         <arguments:ArgumentsDefinition?>
         <repeatable:Repeatable?>
         on
@@ -259,6 +328,7 @@ DirectiveDefinition: DirectiveDefinitionRecord = {
         <end:@R>
     => DirectiveDefinitionRecord {
         name,
+        name_span: Span::new(name_start, name_end),
         description: None,
         arguments: ast.input_value_definition_range(Some(arguments.map(|arguments| arguments.len()).unwrap_or_default())),
         is_repeatable: repeatable.unwrap_or_default(),
@@ -291,25 +361,33 @@ DirectiveLocation: DirectiveLocation = {
 
 InputValueDefinition: () = {
     <start:@L>
-        <description:StringValue?>
-        <name:Name> ":" <ty:Type> <default:DefaultValue?>
+        <description:Description?>
+        <name_start:@L>
+        <name:Name>
+        <name_end:@R>
+        ":" <ty:Type>
+        <default_start:@L>
+        <default:DefaultValue?>
+        <default_end:@R>
         <directives:Directives>
         <end:@R>
     => {
         ast.input_value_definition(InputValueDefinitionRecord {
             name,
+            name_span: Span::new(name_start, name_end),
             ty,
             description,
             directives,
             default_value: default,
+            default_value_span: Span::new(default_start, default_end),
             span: Span::new(start, end)
         });
     }
 }
 
 
-DefaultValue: ValueId = {
-    "=" <v:Value> => v
+DefaultValue: ConstValueId = {
+    "=" <v:ConstValue> => v
 }
 
 Name: StringId = <s:Ident> => ast.ident(s);
@@ -317,41 +395,124 @@ Name: StringId = <s:Ident> => ast.ident(s);
 NamedType: StringId = <s:Ident> => ast.ident(s);
 
 Type: TypeId = {
-    "[" <ty:Type> => ty,
-    <name:NamedType> <wrappers:WrappingType*> => ast.type_reference(TypeRecord {
+    <start:@L>
+        "["*
+        <name_start:@L>
+        <name:NamedType>
+        <wrappers:WrappingType*>
+        <end:@R>
+    => ast.type_reference(TypeRecord {
         name,
-        wrappers: TypeWrappers::from_iter(wrappers)
+        name_start,
+        wrappers: TypeWrappers::from_iter(wrappers),
+        span: Span::new(start, end)
     })
 }
+
 
 WrappingType: WrappingType = {
     "!" => WrappingType::NonNull,
     "]" => WrappingType::List
 }
 
-Value: ValueId = {
-    "$" <name:Name> => ast.value(ValueRecord::Variable(name)),
-    <int:IntegerLiteral> => ast.value(ValueRecord::Int(int.parse().unwrap())),
-    <float:FloatLiteral> => ast.value(ValueRecord::Float(float.parse().unwrap())),
-    <start:@L> <s:StringLiteral> =>? {
-        let id = ast.intern_owned_string(unquote_string(s, start)?);
-        Ok(ast.value(ValueRecord::String(id)))
-    },
-    <s:BlockStringLiteral> => {
-        let id = ast.block_string(unquote_block_string(s));
-        ast.value(ValueRecord::BlockString(id))
-    },
-    true => ast.value(ValueRecord::Boolean(true)),
-    false => ast.value(ValueRecord::Boolean(false)),
-    null => ast.value(ValueRecord::Null),
-    "[" <values:Value*> "]" => ast.value(ValueRecord::List(values)),
-    "{" <fields:ObjectField*> "}" => ast.value(ValueRecord::Object(fields)),
-    <value:EnumValue> => ast.value(ValueRecord::Enum(value)),
+ConstValue: ConstValueId = {
+    <record:ValueRecord> => {
+        ast.values.const_value(record)
+    }
 }
 
-ObjectField: (StringId, ValueId) = {
-    <name:Name> ":" <value:Value> => (name, value)
+Value: ValueId = {
+    <record:ValueRecord> => {
+        ast.values.value(record)
+    }
 }
+
+ValueRecord: ValueRecord = {
+    <start:@L> "$" <name:Ident> <end:@R> =>? {
+        Err(lalrpop_util::ParseError::User {
+            error: AdditionalErrors::VariableInConstPosition(start, name.to_string(), end)
+        })
+    },
+    <start:@L> <int:IntegerLiteral> <end:@R> => {
+        ValueRecord {
+            span: Span::new(start, end),
+            kind: ValueKind::Int(int.parse().unwrap())
+        }
+    },
+    <start:@L> <float:FloatLiteral> <end:@R> => {
+        ValueRecord {
+            span: Span::new(start, end),
+            kind: ValueKind::Float(float.parse().unwrap())
+        }
+    },
+    <start:@L> <s:StringLiteral> <end:@R> =>? {
+        let id = ast.intern_owned_string(unquote_string(s, start)?);
+        Ok(ValueRecord {
+            span: Span::new(start, end),
+            kind: ValueKind::String(values::ids::StringId::from_type_system_id(id))
+        })
+    },
+    <start:@L> <s:BlockStringLiteral> <end:@R> => {
+        let id = ast.intern_owned_string(
+            trim_block_string_whitespace(
+                unquote_block_string(s)
+            )
+        );
+        ValueRecord {
+            span: Span::new(start, end),
+            kind: ValueKind::String(values::ids::StringId::from_type_system_id(id))
+        }
+    },
+    <start:@L> true <end:@R> => {
+        ValueRecord {
+            span: Span::new(start, end),
+            kind: ValueKind::Boolean(true)
+        }
+    },
+    <start:@L> false <end:@R> => {
+        ValueRecord {
+            span: Span::new(start, end),
+            kind: ValueKind::Boolean(false)
+        }
+    },
+    <start:@L> null <end:@R> => {
+        ValueRecord {
+            span: Span::new(start, end),
+            kind: ValueKind::Null
+        }
+    },
+    <start:@L> "[" <values:ValueRecord*> "]" <end:@R> => {
+        let id = ast.values.list(values);
+        ValueRecord {
+            span: Span::new(start, end),
+            kind: ValueKind::List(id)
+        }
+    },
+    <start:@L> "{" <fields:ObjectField*> "}" <end:@R> => {
+        let fields = ast.values.fields(fields);
+        ValueRecord {
+            span: Span::new(start, end),
+            kind: ValueKind::Object(fields)
+        }
+    },
+    <start:@L> <value:EnumValue> <end:@R> => {
+        ValueRecord {
+            span: Span::new(start, end),
+            kind: ValueKind::Enum(values::ids::StringId::from_type_system_id(value))
+        }
+    },
+}
+
+ObjectField: (values::ids::StringId, Span, ValueId) = {
+    <name_start:@L> <name:Name> <name_end:@R> ":" <value:Value> => {
+        (
+            values::ids::StringId::from_type_system_id(name),
+            Span::new(name_start, name_end),
+            value
+        )
+    }
+}
+
 
 StringValue: StringLiteralId = {
     <start:@L> <s:StringLiteral> =>? {
@@ -378,10 +539,21 @@ Directives: IdRange<DirectiveId> = {
 }
 
 Directive: () = {
-    "@" <name:Name> <arguments:Arguments?> => {
+    <name_start:@L>
+        "@" <name:Name>
+        <name_end:@R>
+        <arguments_start:@L>
+        <arguments:Arguments?>
+        <arguments_end:@R>
+    => {
         let arguments = ast.argument_range(arguments.map(|arguments| arguments.len()));
 
-        ast.directive(DirectiveRecord { <> });
+        ast.directive(DirectiveRecord {
+            name,
+            name_span: Span::new(name_start, name_end),
+            arguments,
+            arguments_span: Span::new(arguments_start, arguments_end)
+        });
     }
 }
 
@@ -390,7 +562,19 @@ Arguments: Vec<ArgumentId> = {
 }
 
 Argument: ArgumentId = {
-    <name:Name> ":" <value:Value> => ast.argument(ArgumentRecord { <> }),
+    <start:@L>
+        <name:Name>
+        <name_end:@R>
+        ":" <value:ConstValue>
+        <end:@R>
+    => {
+        ast.argument(ArgumentRecord {
+            name,
+            name_span: Span::new(start, name_end),
+            value,
+            span: Span::new(start, end)
+        })
+    }
 }
 
 Ident: &'input str = {

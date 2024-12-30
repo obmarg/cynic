@@ -2,11 +2,11 @@ use std::iter::Enumerate;
 
 use pretty::{DocAllocator, Pretty};
 
-use crate::common::IdOperations;
+use crate::{common::IdOperations, printing::pretty::printer::PrettyOptions};
 
 use super::{
     iter::IdReader, Allocator, EnumValueDefinition, FieldDefinition, InputValueDefinition,
-    NodeDisplay, TypeSystemId,
+    NodeDisplay,
 };
 
 /// A sequence of things with docstrings attached.
@@ -18,42 +18,64 @@ use super::{
 ///
 /// This is used for displaying fields (both input fields & output fields)
 /// but arguments should use ArgumentSequence
-pub struct FieldSequence<'a, T>
+pub(super) struct FieldSequence<'a, T>
 where
     T: IdReader,
+    T::Reader<'a>: Field<'a>,
 {
-    iterator: Enumerate<crate::type_system::iter::Iter<'a, T>>,
+    iterator: Enumerate<std::vec::IntoIter<T::Reader<'a>>>,
+    options: PrettyOptions,
 }
 
 impl<'a, T> FieldSequence<'a, T>
 where
     T: IdReader,
+    T::Reader<'a>: Field<'a>,
     T::Id: IdOperations,
 {
-    pub fn new(iterator: crate::type_system::iter::Iter<'a, T>) -> Self {
+    pub fn new(iterator: crate::type_system::iter::Iter<'a, T>, options: PrettyOptions) -> Self {
+        let mut fields = iterator.collect::<Vec<_>>();
+        if options.sort {
+            fields.sort_by_key(|arg| arg.name());
+        }
+
         FieldSequence {
-            iterator: iterator.enumerate(),
+            iterator: fields.into_iter().enumerate(),
+            options,
         }
     }
 }
 
-trait DocstringedItem {
+pub trait Field<'a> {
+    fn name(&self) -> &'a str;
     fn has_docstring(&self) -> bool;
 }
 
-impl DocstringedItem for FieldDefinition<'_> {
+impl<'a> Field<'a> for FieldDefinition<'a> {
+    fn name(&self) -> &'a str {
+        FieldDefinition::name(self)
+    }
+
     fn has_docstring(&self) -> bool {
         self.description().is_some()
     }
 }
 
-impl DocstringedItem for InputValueDefinition<'_> {
+impl<'a> Field<'a> for InputValueDefinition<'a> {
+    fn name(&self) -> &'a str {
+        InputValueDefinition::name(self)
+    }
+
     fn has_docstring(&self) -> bool {
         self.description().is_some()
     }
 }
 
-impl DocstringedItem for EnumValueDefinition<'_> {
+impl<'a> Field<'a> for EnumValueDefinition<'a> {
+    fn name(&self) -> &'a str {
+        EnumValueDefinition::value(self)
+    }
+
     fn has_docstring(&self) -> bool {
         self.description().is_some()
     }
@@ -61,11 +83,10 @@ impl DocstringedItem for EnumValueDefinition<'_> {
 
 impl<'a, T> Pretty<'a, Allocator<'a>> for FieldSequence<'a, T>
 where
-    T: DocstringedItem + IdReader,
+    T: IdReader,
+    T::Reader<'a>: Field<'a>,
     T::Id: IdOperations,
-    // This is a bit much :/
-    <<T as IdReader>::Id as TypeSystemId>::Reader<'a>: DocstringedItem,
-    NodeDisplay<<<T as IdReader>::Id as TypeSystemId>::Reader<'a>>: Pretty<'a, Allocator<'a>>,
+    NodeDisplay<T::Reader<'a>>: Pretty<'a, Allocator<'a>>,
 {
     fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
         let mut document = allocator.nil();
@@ -81,7 +102,7 @@ where
                     document = document.append(allocator.hardline());
                 }
             }
-            document = document.append(NodeDisplay(item));
+            document = document.append(NodeDisplay(item, self.options));
         }
         document
     }

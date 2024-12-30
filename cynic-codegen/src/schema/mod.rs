@@ -28,7 +28,7 @@ pub struct Schema<'a, State> {
     phantom: PhantomData<State>,
 }
 
-impl<'a> Schema<'a, Unvalidated> {
+impl Schema<'_, Unvalidated> {
     pub fn new(input: SchemaInput) -> Self {
         let type_index: Box<dyn TypeIndex> = match input {
             SchemaInput::Document(ast) => {
@@ -75,7 +75,7 @@ impl<'a> Schema<'a, Unvalidated> {
     }
 }
 
-impl<'a> Schema<'a, Validated> {
+impl Schema<'_, Validated> {
     pub fn root_types(&self) -> Result<SchemaRoots<'_>, SchemaError> {
         self.type_index.root_types()
     }

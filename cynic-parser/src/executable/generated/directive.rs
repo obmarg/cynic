@@ -2,13 +2,14 @@ use super::prelude::*;
 use super::{
     argument::Argument,
     ids::{ArgumentId, DirectiveId},
-    ExecutableId, ReadContext,
+    ExecutableId,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};
 
 pub struct DirectiveRecord {
     pub name: StringId,
+    pub name_span: Span,
     pub arguments: IdRange<ArgumentId>,
 }
 
@@ -19,6 +20,10 @@ impl<'a> Directive<'a> {
     pub fn name(&self) -> &'a str {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).name)
+    }
+    pub fn name_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).name_span
     }
     pub fn arguments(&self) -> Iter<'a, Argument<'a>> {
         let document = self.0.document;
@@ -43,14 +48,15 @@ impl fmt::Debug for Directive<'_> {
 
 impl ExecutableId for DirectiveId {
     type Reader<'a> = Directive<'a>;
+    fn read(self, document: &ExecutableDocument) -> Self::Reader<'_> {
+        Directive(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for Directive<'_> {
     type Id = DirectiveId;
-}
-
-impl<'a> From<ReadContext<'a, DirectiveId>> for Directive<'a> {
-    fn from(value: ReadContext<'a, DirectiveId>) -> Self {
-        Self(value)
+    type Reader<'a> = Directive<'a>;
+    fn new(id: Self::Id, document: &'_ ExecutableDocument) -> Self::Reader<'_> {
+        document.read(id)
     }
 }

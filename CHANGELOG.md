@@ -8,6 +8,47 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v3.9.1 - 2024-12-03
+
+### Bug Fixes
+
+- Fields named `str` are now supported ([#1108](https://github.com/obmarg/cynic/pull/1108))
+
+### Changes
+
+- Fixed all rust 1.83 clippy lints ([#1106](https://github.com/obmarg/cynic/pull/1106))
+
+## v3.9.0 - 2024-11-11
+
+### Changes
+
+- Bumped `cynic-parser` dependency
+- Removed dependency on `counter` ([#1027](https://github.com/obmarg/cynic/pull/1027))
+
+### Changes
+
+- MSRV is now 1.76
+
+## v3.8.0 - 2024-08-28
+
+### New Features
+
+- Added `OperationBuilder::build_with_variables_inlined` which can be used to
+  build a query string with variables inlined ([#1012](https://github.com/obmarg/cynic/pull/1012))
+- Added `QueryVariableLiterals`, a trait & derive macro that can be used to
+  enable dynamic fetching of variables ([#1009](https://github.com/obmarg/cynic/pull/1009))
+
+### Bug Fixes
+
+- The generator now consistently renames arguments that share names with rust
+  keywords ([#1005](https://github.com/obmarg/cynic/pull/1005))
+- The generator will no longer panic when using a fragment with an interface
+  as its type condition ([#994](https://github.com/obmarg/cynic/pull/994))
+
+### Bug Fixes
+
+- Tidied up the output of object & list literals in the clients GraphQl output.
+
 ## v3.7.3 - 2024-06-04
 
 ### Changes

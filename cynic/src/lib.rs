@@ -191,12 +191,12 @@ pub use {
     id::Id,
     operation::{Operation, OperationBuildError, OperationBuilder, StreamingOperation},
     result::*,
-    variables::{QueryVariables, QueryVariablesFields},
+    variables::{QueryVariableLiterals, QueryVariables, QueryVariablesFields},
 };
 
 pub use cynic_proc_macros::{
     schema, schema_for_derives, use_schema, Enum, InlineFragments, InputObject, QueryFragment,
-    QueryVariables, Scalar,
+    QueryVariableLiterals, QueryVariables, Scalar,
 };
 
 pub use static_assertions::assert_type_eq_all;

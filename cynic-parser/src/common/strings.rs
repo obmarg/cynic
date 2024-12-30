@@ -15,10 +15,12 @@ pub(crate) fn trim_block_string_whitespace(src: &str) -> String {
     let mut first_non_empty_line: Option<usize> = None;
     let mut last_non_empty_line = 0;
     for (idx, line) in lines.iter().enumerate() {
-        let indent = line.len() - line.find(|c: char| !c.is_whitespace()).unwrap_or_default();
-        if indent == line.len() {
+        let indent = line.find(|c: char| !c.is_whitespace());
+
+        if indent.is_none() || indent.unwrap() == line.len() {
             continue;
         }
+        let indent = indent.unwrap();
 
         first_non_empty_line.get_or_insert(idx);
         last_non_empty_line = idx;
@@ -42,7 +44,7 @@ pub(crate) fn trim_block_string_whitespace(src: &str) -> String {
         .take(last_non_empty_line - first_non_empty_line + 1)
         // Remove indent, except the first line.
         .map(|(idx, line)| {
-            if idx != 0 {
+            if idx == 0 {
                 line
             } else if line.len() >= common_indent {
                 &line[common_indent..]
@@ -181,5 +183,38 @@ impl From<MalformedStringError>
         lalrpop_util::ParseError::User {
             error: AdditionalErrors::MalformedString(value),
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::trim_block_string_whitespace;
+
+    #[test]
+    fn test_block_string_trim() {
+        assert_eq!(
+            trim_block_string_whitespace(
+                r#"Hello there you fool
+
+            I am a thing
+
+                I am indented
+            "#
+            ),
+            "Hello there you fool\n\nI am a thing\n\n    I am indented"
+        );
+
+        assert_eq!(
+            trim_block_string_whitespace(
+                r#"
+            Hello there you fool
+
+            I am a thing
+
+                I am indented
+            "#
+            ),
+            "Hello there you fool\n\nI am a thing\n\n    I am indented"
+        );
     }
 }

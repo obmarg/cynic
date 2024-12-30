@@ -1,42 +1,46 @@
 type SchemaDefinition @file(name: "schemas") {
-  description: StringLiteral
+  description: Description
   directives: [Directive!]!
   root_operations: [RootOperationTypeDefinition!]!
+  span: Span!
 }
 
 type RootOperationTypeDefinition @file(name: "schemas") {
-  operation_type: OperationType!
-  named_type: String!
+  operation_type: OperationType! @spanned
+  named_type: String! @spanned
+  span: Span!
 }
 
 type ScalarDefinition @file(name: "scalars") {
-  name: String!
-  description: StringLiteral
+  name: String! @spanned
+  description: Description
   directives: [Directive]
   span: Span!
 }
 
 type ObjectDefinition @file(name: "objects") {
-  name: String!
-  description: StringLiteral
+  name: String! @spanned
+  description: Description
   fields: [FieldDefinition]
   directives: [Directive]
+
+  # TODO: How to get spans onto each of these?  Probably need a named type for it...
   implements_interfaces: [String]
   span: Span!
 }
 
 type FieldDefinition @file(name: "fields") {
-  name: String!
+  name: String! @spanned
   ty: Type!
   arguments: [InputValueDefinition!]!
-  description: StringLiteral
+  description: Description
   directives: [Directive!]!
   span: Span!
 }
 
 type InterfaceDefinition @file(name: "interfaces") {
-  name: String!
-  description: StringLiteral
+  name: String! @spanned
+  description: Description
   fields: [FieldDefinition!]!
   directives: [Directive!]!
   implements_interfaces: [String]
@@ -44,48 +48,54 @@ type InterfaceDefinition @file(name: "interfaces") {
 }
 
 type UnionDefinition @file(name: "unions") {
-  name: String!
-  description: StringLiteral
-  members: [String]
+  name: String! @spanned
+  description: Description
+  members: [UnionMember!]
   directives: [Directive!]!
   span: Span!
 }
 
-type EnumDefinition @file(name: "enums") {
+type UnionMember @file(name: "unions") {
   name: String!
-  description: StringLiteral
+  span: Span!
+}
+
+type EnumDefinition @file(name: "enums") {
+  name: String! @spanned
+  description: Description
   values: [EnumValueDefinition!]!
   directives: [Directive!]!
   span: Span!
 }
 
 type EnumValueDefinition @file(name: "enums") {
-  value: String!
-  description: StringLiteral
+  value: String! @spanned
+  description: Description
   directives: [Directive!]!
   span: Span!
 }
 
 type InputObjectDefinition @file(name: "input_objects") {
-  name: String!
-  description: StringLiteral
+  name: String! @spanned
+  description: Description
   fields: [InputValueDefinition!]!
   directives: [Directive!]!
   span: Span!
 }
 
 type InputValueDefinition @file(name: "input_values") {
-  name: String!
+  name: String! @spanned
   ty: Type!
-  description: StringLiteral
-  default_value: Value
+  description: Description
+  default_value: ConstValue
+  default_value_span: Span!
   directives: [Directive!]!
   span: Span!
 }
 
 type DirectiveDefinition @file(name: "directives") {
-  name: String!
-  description: StringLiteral
+  name: String! @spanned
+  description: Description
   arguments: [InputValueDefinition!]!
   is_repeatable: bool!
   locations: [DirectiveLocation!]!
@@ -93,13 +103,19 @@ type DirectiveDefinition @file(name: "directives") {
 }
 
 type Directive @file(name: "directives") {
-  name: String!
-  arguments: [Argument!]!
+  name: String! @spanned
+  arguments: [Argument!]! @spanned
 }
 
 type Argument @file(name: "arguments") {
-  name: String!
-  value: Value!
+  name: String! @spanned
+  value: ConstValue!
+  span: Span!
+}
+
+type Description @file(name: "descriptions") {
+  literal: StringLiteral!
+  span: Span!
 }
 
 scalar Span @inline
@@ -109,7 +125,7 @@ scalar OperationType @inline
 # Type & Value are kind of special cases that aren't worth automating
 # so we make them scalars and implement them by hand
 scalar Type @file(name: "types")
-scalar Value @file(name: "value")
+scalar ConstValue @file(name: "value")
 
 # String is built in, but easier to implement stuff if its just in the .graphql file
 # It is also special cased a bit in the rust code

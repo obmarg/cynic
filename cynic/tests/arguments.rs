@@ -32,7 +32,6 @@ fn test_literal_object_inside_list() {
         hasMetadata
       }
     }
-
     "###);
 }
 

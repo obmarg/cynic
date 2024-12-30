@@ -1,8 +1,8 @@
-//! GraphQL has a number of coercion rules that make it easier to use and allow
-//! certain changes to be made in a backwards compatible way.
+//! Tools for enforcing the GraphQL coercion rules
 //!
-//! This module contains some traits & macros that are used to implement these
-//! rules in cynic.
+//! GraphQL has a number of coercion rules that make it easier to use and allow
+//! certain changes to be made in a backwards compatible way, this module provides
+//! some traits and macros to help enforce those.
 
 use crate::Id;
 

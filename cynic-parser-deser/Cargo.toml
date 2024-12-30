@@ -1,0 +1,22 @@
+[package]
+name = "cynic-parser-deser"
+description = "Deserialization for cynic-parser Values"
+keywords = ["graphql", "parser", "deserialization"]
+readme = "README.md"
+
+version = "0.8.7"
+
+homepage = "https://docs.rs/cynic-parser-deser"
+documentation = "https://docs.rs/cynic-parser-deser"
+
+authors.workspace = true
+edition.workspace = true
+repository.workspace = true
+license.workspace = true
+rust-version.workspace = true
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+cynic-parser.workspace = true
+cynic-parser-deser-macros.workspace = true

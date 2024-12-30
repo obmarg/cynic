@@ -1,20 +1,22 @@
 use super::prelude::*;
 use super::{
+    descriptions::Description,
     directives::Directive,
-    ids::{DirectiveId, InputValueDefinitionId, StringLiteralId, TypeId, ValueId},
-    strings::StringLiteral,
+    ids::{ConstValueId, DescriptionId, DirectiveId, InputValueDefinitionId, TypeId},
     types::Type,
-    value::Value,
-    ReadContext, TypeSystemId,
+    value::ConstValue,
+    TypeSystemId,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};
 
 pub struct InputValueDefinitionRecord {
     pub name: StringId,
+    pub name_span: Span,
     pub ty: TypeId,
-    pub description: Option<StringLiteralId>,
-    pub default_value: Option<ValueId>,
+    pub description: Option<DescriptionId>,
+    pub default_value: Option<ConstValueId>,
+    pub default_value_span: Span,
     pub directives: IdRange<DirectiveId>,
     pub span: Span,
 }
@@ -27,23 +29,31 @@ impl<'a> InputValueDefinition<'a> {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).name)
     }
+    pub fn name_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).name_span
+    }
     pub fn ty(&self) -> Type<'a> {
         let document = self.0.document;
         document.read(document.lookup(self.0.id).ty)
     }
-    pub fn description(&self) -> Option<StringLiteral<'a>> {
+    pub fn description(&self) -> Option<Description<'a>> {
         let document = self.0.document;
         document
             .lookup(self.0.id)
             .description
             .map(|id| document.read(id))
     }
-    pub fn default_value(&self) -> Option<Value<'a>> {
+    pub fn default_value(&self) -> Option<ConstValue<'a>> {
         let document = self.0.document;
         document
             .lookup(self.0.id)
             .default_value
             .map(|id| document.read(id))
+    }
+    pub fn default_value_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).default_value_span
     }
     pub fn directives(&self) -> Iter<'a, Directive<'a>> {
         let document = self.0.document;
@@ -68,6 +78,7 @@ impl fmt::Debug for InputValueDefinition<'_> {
             .field("ty", &self.ty())
             .field("description", &self.description())
             .field("default_value", &self.default_value())
+            .field("default_value_span", &self.default_value_span())
             .field("directives", &self.directives())
             .field("span", &self.span())
             .finish()
@@ -76,14 +87,15 @@ impl fmt::Debug for InputValueDefinition<'_> {
 
 impl TypeSystemId for InputValueDefinitionId {
     type Reader<'a> = InputValueDefinition<'a>;
+    fn read(self, document: &TypeSystemDocument) -> Self::Reader<'_> {
+        InputValueDefinition(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for InputValueDefinition<'_> {
     type Id = InputValueDefinitionId;
-}
-
-impl<'a> From<ReadContext<'a, InputValueDefinitionId>> for InputValueDefinition<'a> {
-    fn from(value: ReadContext<'a, InputValueDefinitionId>) -> Self {
-        Self(value)
+    type Reader<'a> = InputValueDefinition<'a>;
+    fn new(id: Self::Id, document: &'_ TypeSystemDocument) -> Self::Reader<'_> {
+        document.read(id)
     }
 }

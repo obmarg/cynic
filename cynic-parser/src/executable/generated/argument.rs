@@ -2,13 +2,14 @@ use super::prelude::*;
 use super::{
     ids::{ArgumentId, ValueId},
     value::Value,
-    ExecutableId, ReadContext,
+    ExecutableId,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};
 
 pub struct ArgumentRecord {
     pub name: StringId,
+    pub name_span: Span,
     pub value: ValueId,
 }
 
@@ -19,6 +20,10 @@ impl<'a> Argument<'a> {
     pub fn name(&self) -> &'a str {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).name)
+    }
+    pub fn name_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).name_span
     }
     pub fn value(&self) -> Value<'a> {
         let document = self.0.document;
@@ -43,14 +48,15 @@ impl fmt::Debug for Argument<'_> {
 
 impl ExecutableId for ArgumentId {
     type Reader<'a> = Argument<'a>;
+    fn read(self, document: &ExecutableDocument) -> Self::Reader<'_> {
+        Argument(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for Argument<'_> {
     type Id = ArgumentId;
-}
-
-impl<'a> From<ReadContext<'a, ArgumentId>> for Argument<'a> {
-    fn from(value: ReadContext<'a, ArgumentId>) -> Self {
-        Self(value)
+    type Reader<'a> = Argument<'a>;
+    fn new(id: Self::Id, document: &'_ ExecutableDocument) -> Self::Reader<'_> {
+        document.read(id)
     }
 }

@@ -1,5 +1,5 @@
 use super::iter::Iter;
-use super::{ids, ReadContext, TypeSystemId};
+use super::{ids, TypeSystemId};
 
 /// A prelude module for all the generated modules
 ///
@@ -14,26 +14,14 @@ mod prelude {
         type_system::{
             ids::StringId,
             iter::{IdReader, Iter},
-            DirectiveLocation,
+            DirectiveLocation, ReadContext, TypeSystemDocument,
         },
         AstLookup, Span,
     };
-
-    pub(super) mod value {
-        pub use crate::type_system::Value;
-    }
-
-    pub(super) mod types {
-        pub use super::super::super::Type;
-    }
-
-    pub(super) mod strings {
-        pub use super::super::super::StringLiteral;
-    }
 }
 
-pub(super) mod value {
-    pub use crate::type_system::Value;
+pub mod value {
+    pub use crate::values::ConstValue;
 }
 
 mod types {
@@ -45,6 +33,7 @@ mod strings {
 }
 
 pub mod arguments;
+pub mod descriptions;
 pub mod directives;
 pub mod enums;
 pub mod fields;

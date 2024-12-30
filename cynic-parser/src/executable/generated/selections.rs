@@ -5,7 +5,7 @@ use super::{
     ids::{
         ArgumentId, DirectiveId, FieldSelectionId, FragmentSpreadId, InlineFragmentId, SelectionId,
     },
-    ExecutableId, ReadContext,
+    ExecutableId,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};
@@ -25,32 +25,32 @@ pub enum Selection<'a> {
 
 impl ExecutableId for SelectionId {
     type Reader<'a> = Selection<'a>;
+    fn read(self, document: &ExecutableDocument) -> Self::Reader<'_> {
+        match document.lookup(self) {
+            SelectionRecord::Field(id) => Selection::Field(document.read(*id)),
+            SelectionRecord::InlineFragment(id) => Selection::InlineFragment(document.read(*id)),
+            SelectionRecord::FragmentSpread(id) => Selection::FragmentSpread(document.read(*id)),
+        }
+    }
 }
 
 impl IdReader for Selection<'_> {
     type Id = SelectionId;
-}
-
-impl<'a> From<ReadContext<'a, SelectionId>> for Selection<'a> {
-    fn from(value: ReadContext<'a, SelectionId>) -> Self {
-        match value.document.lookup(value.id) {
-            SelectionRecord::Field(id) => Selection::Field(value.document.read(*id)),
-            SelectionRecord::InlineFragment(id) => {
-                Selection::InlineFragment(value.document.read(*id))
-            }
-            SelectionRecord::FragmentSpread(id) => {
-                Selection::FragmentSpread(value.document.read(*id))
-            }
-        }
+    type Reader<'a> = Selection<'a>;
+    fn new(id: Self::Id, document: &'_ ExecutableDocument) -> Self::Reader<'_> {
+        document.read(id)
     }
 }
 
 pub struct FieldSelectionRecord {
     pub alias: Option<StringId>,
+    pub alias_span: Option<Span>,
     pub name: StringId,
+    pub name_span: Span,
     pub arguments: IdRange<ArgumentId>,
     pub directives: IdRange<DirectiveId>,
     pub selection_set: IdRange<SelectionId>,
+    pub selection_set_span: Option<Span>,
 }
 
 #[derive(Clone, Copy)]
@@ -64,9 +64,17 @@ impl<'a> FieldSelection<'a> {
             .alias
             .map(|id| document.lookup(id))
     }
+    pub fn alias_span(&self) -> Option<Span> {
+        let document = self.0.document;
+        document.lookup(self.0.id).alias_span
+    }
     pub fn name(&self) -> &'a str {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).name)
+    }
+    pub fn name_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).name_span
     }
     pub fn arguments(&self) -> Iter<'a, Argument<'a>> {
         let document = self.0.document;
@@ -79,6 +87,10 @@ impl<'a> FieldSelection<'a> {
     pub fn selection_set(&self) -> Iter<'a, Selection<'a>> {
         let document = self.0.document;
         super::Iter::new(document.lookup(self.0.id).selection_set, document)
+    }
+    pub fn selection_set_span(&self) -> Option<Span> {
+        let document = self.0.document;
+        document.lookup(self.0.id).selection_set_span
     }
 }
 
@@ -102,22 +114,25 @@ impl fmt::Debug for FieldSelection<'_> {
 
 impl ExecutableId for FieldSelectionId {
     type Reader<'a> = FieldSelection<'a>;
+    fn read(self, document: &ExecutableDocument) -> Self::Reader<'_> {
+        FieldSelection(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for FieldSelection<'_> {
     type Id = FieldSelectionId;
-}
-
-impl<'a> From<ReadContext<'a, FieldSelectionId>> for FieldSelection<'a> {
-    fn from(value: ReadContext<'a, FieldSelectionId>) -> Self {
-        Self(value)
+    type Reader<'a> = FieldSelection<'a>;
+    fn new(id: Self::Id, document: &'_ ExecutableDocument) -> Self::Reader<'_> {
+        document.read(id)
     }
 }
 
 pub struct InlineFragmentRecord {
     pub type_condition: Option<StringId>,
+    pub type_condition_span: Option<Span>,
     pub directives: IdRange<DirectiveId>,
     pub selection_set: IdRange<SelectionId>,
+    pub selection_set_span: Span,
 }
 
 #[derive(Clone, Copy)]
@@ -131,6 +146,10 @@ impl<'a> InlineFragment<'a> {
             .type_condition
             .map(|id| document.lookup(id))
     }
+    pub fn type_condition_span(&self) -> Option<Span> {
+        let document = self.0.document;
+        document.lookup(self.0.id).type_condition_span
+    }
     pub fn directives(&self) -> Iter<'a, Directive<'a>> {
         let document = self.0.document;
         super::Iter::new(document.lookup(self.0.id).directives, document)
@@ -138,6 +157,10 @@ impl<'a> InlineFragment<'a> {
     pub fn selection_set(&self) -> Iter<'a, Selection<'a>> {
         let document = self.0.document;
         super::Iter::new(document.lookup(self.0.id).selection_set, document)
+    }
+    pub fn selection_set_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).selection_set_span
     }
 }
 
@@ -159,20 +182,22 @@ impl fmt::Debug for InlineFragment<'_> {
 
 impl ExecutableId for InlineFragmentId {
     type Reader<'a> = InlineFragment<'a>;
+    fn read(self, document: &ExecutableDocument) -> Self::Reader<'_> {
+        InlineFragment(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for InlineFragment<'_> {
     type Id = InlineFragmentId;
-}
-
-impl<'a> From<ReadContext<'a, InlineFragmentId>> for InlineFragment<'a> {
-    fn from(value: ReadContext<'a, InlineFragmentId>) -> Self {
-        Self(value)
+    type Reader<'a> = InlineFragment<'a>;
+    fn new(id: Self::Id, document: &'_ ExecutableDocument) -> Self::Reader<'_> {
+        document.read(id)
     }
 }
 
 pub struct FragmentSpreadRecord {
     pub fragment_name: StringId,
+    pub fragment_name_span: Span,
     pub directives: IdRange<DirectiveId>,
 }
 
@@ -183,6 +208,10 @@ impl<'a> FragmentSpread<'a> {
     pub fn fragment_name(&self) -> &'a str {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).fragment_name)
+    }
+    pub fn fragment_name_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).fragment_name_span
     }
     pub fn directives(&self) -> Iter<'a, Directive<'a>> {
         let document = self.0.document;
@@ -207,14 +236,15 @@ impl fmt::Debug for FragmentSpread<'_> {
 
 impl ExecutableId for FragmentSpreadId {
     type Reader<'a> = FragmentSpread<'a>;
+    fn read(self, document: &ExecutableDocument) -> Self::Reader<'_> {
+        FragmentSpread(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for FragmentSpread<'_> {
     type Id = FragmentSpreadId;
-}
-
-impl<'a> From<ReadContext<'a, FragmentSpreadId>> for FragmentSpread<'a> {
-    fn from(value: ReadContext<'a, FragmentSpreadId>) -> Self {
-        Self(value)
+    type Reader<'a> = FragmentSpread<'a>;
+    fn new(id: Self::Id, document: &'_ ExecutableDocument) -> Self::Reader<'_> {
+        document.read(id)
     }
 }

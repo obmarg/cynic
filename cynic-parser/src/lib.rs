@@ -1,6 +1,7 @@
 pub mod common;
 pub mod executable;
 pub mod type_system;
+pub mod values;
 
 mod errors;
 mod lexer;
@@ -10,13 +11,24 @@ mod span;
 mod parser;
 
 #[cfg(feature = "print")]
-mod printing;
+pub mod printing;
+
+#[cfg(feature = "report")]
+pub use errors::Report;
 
 pub use self::{
-    errors::Error, executable::ExecutableDocument, span::Span, type_system::TypeSystemDocument,
+    errors::Error,
+    executable::ExecutableDocument,
+    span::Span,
+    type_system::TypeSystemDocument,
+    values::{ConstValue, Value},
 };
 
 pub fn parse_type_system_document(input: &str) -> Result<TypeSystemDocument, Error> {
+    if input.trim().is_empty() {
+        return Err(Error::EmptyTypeSystemDocument);
+    }
+
     let lexer = lexer::Lexer::new(input);
     let mut ast = type_system::writer::TypeSystemAstWriter::new();
 
@@ -26,6 +38,10 @@ pub fn parse_type_system_document(input: &str) -> Result<TypeSystemDocument, Err
 }
 
 pub fn parse_executable_document(input: &str) -> Result<ExecutableDocument, Error> {
+    if input.trim().is_empty() {
+        return Err(Error::EmptyExecutableDocument);
+    }
+
     let lexer = lexer::Lexer::new(input);
     let mut ast = executable::writer::ExecutableAstWriter::new();
 
@@ -38,7 +54,6 @@ trait AstLookup<Id> {
     type Output: ?Sized;
 
     fn lookup(&self, index: Id) -> &Self::Output;
-    fn lookup_mut(&mut self, index: Id) -> &mut Self::Output;
 }
 
 #[cfg(test)]

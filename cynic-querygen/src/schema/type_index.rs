@@ -62,12 +62,17 @@ impl<'schema> TypeIndex<'schema> {
             .get(root_name.as_str())
             .ok_or_else(|| Error::CouldntFindRootType(root_name.clone()))?;
 
-        let field = if let TypeDefinition::Object(root_object) = root {
-            self.find_field_recursive(&root_object.fields, root_name.as_str(), &path.path)?
-        } else {
-            return Err(Error::ExpectedObject(root_name.to_string()));
+        let field = match root {
+            graphql_parser::schema::TypeDefinition::Object(object) => {
+                self.find_field_recursive(&object.fields, root_name.as_str(), &path.path)?
+            }
+            graphql_parser::schema::TypeDefinition::Interface(iface) => {
+                self.find_field_recursive(&iface.fields, root_name.as_str(), &path.path)?
+            }
+            _ => {
+                return Err(Error::ExpectedObject(root_name.to_string()));
+            }
         };
-
         Ok(OutputField::from_parser(&field, self))
     }
 

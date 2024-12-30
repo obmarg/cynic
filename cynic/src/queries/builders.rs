@@ -1,6 +1,6 @@
 use std::{borrow::Cow, collections::HashSet, marker::PhantomData, sync::mpsc::Sender};
 
-use crate::{coercions::CoercesTo, schema, variables::VariableDefinition};
+use crate::{coercions::CoercesTo, schema, variables::VariableDefinition, QueryVariableLiterals};
 
 use super::{ast::*, to_input_literal, FlattensInto, IsFieldType, Recursable};
 
@@ -43,6 +43,7 @@ impl<'a, SchemaType, VariablesFields> SelectionBuilder<'a, SchemaType, Variables
         selection_set: &'a mut SelectionSet,
         variables_used: &'a Sender<&'static str>,
         features_enabled: &'a HashSet<String>,
+        inline_variables: Option<&'a dyn QueryVariableLiterals>,
     ) -> Self {
         SelectionBuilder::private_new(
             selection_set,
@@ -51,6 +52,7 @@ impl<'a, SchemaType, VariablesFields> SelectionBuilder<'a, SchemaType, Variables
                 overall_depth: 0,
                 features_enabled,
                 variables_used,
+                inline_variables,
             },
         )
     }
@@ -184,8 +186,8 @@ pub struct FieldSelectionBuilder<'a, Field, SchemaType, VariablesFields> {
     context: BuilderContext<'a>,
 }
 
-impl<'a, Field, FieldSchemaType, VariablesFields>
-    FieldSelectionBuilder<'a, Field, FieldSchemaType, VariablesFields>
+impl<Field, FieldSchemaType, VariablesFields>
+    FieldSelectionBuilder<'_, Field, FieldSchemaType, VariablesFields>
 {
     /// Adds an alias to this field.
     ///
@@ -290,18 +292,28 @@ pub struct InputBuilder<'a, SchemaType, VariablesFields> {
     phantom: PhantomData<fn() -> (SchemaType, VariablesFields)>,
 }
 
-impl<'a, SchemaType, VariablesFields> InputBuilder<'a, SchemaType, VariablesFields> {
+impl<SchemaType, VariablesFields> InputBuilder<'_, SchemaType, VariablesFields> {
     /// Puts a variable into the input.
     pub fn variable<Type>(self, def: VariableDefinition<VariablesFields, Type>)
     where
         Type: CoercesTo<SchemaType>,
     {
-        self.context
-            .variables_used
-            .send(def.name)
-            .expect("the variables_used channel to be open");
+        match &self.context.inline_variables {
+            None => {
+                self.context
+                    .variables_used
+                    .send(def.name)
+                    .expect("the variables_used channel to be open");
 
-        self.destination.push(InputLiteral::Variable(def.name));
+                self.destination.push(InputLiteral::Variable(def.name));
+            }
+            Some(variables) => {
+                // If the variable returns None we assume it hit a skip_serializing_if and skip it
+                if let Some(literal) = variables.get(def.name) {
+                    self.destination.push(literal);
+                }
+            }
+        }
     }
 }
 
@@ -321,7 +333,7 @@ impl<'a, SchemaType, ArgumentStruct> InputBuilder<'a, Option<SchemaType>, Argume
     }
 }
 
-impl<'a, T, ArgStruct> InputBuilder<'a, T, ArgStruct> {
+impl<T, ArgStruct> InputBuilder<'_, T, ArgStruct> {
     /// Puts a literal input type into the input.
     pub fn literal(self, l: impl serde::Serialize + CoercesTo<T>) {
         self.destination
@@ -355,7 +367,7 @@ pub struct ObjectArgumentBuilder<'a, ItemType, VariablesFields> {
     phantom: PhantomData<fn() -> (ItemType, VariablesFields)>,
 }
 
-impl<'a, SchemaType, ArgStruct> ObjectArgumentBuilder<'a, SchemaType, ArgStruct> {
+impl<SchemaType, ArgStruct> ObjectArgumentBuilder<'_, SchemaType, ArgStruct> {
     /// Adds a field to the object literal, using the field_fn to determine the
     /// contents of that field.
     pub fn field<FieldMarker, F>(self, field_fn: F) -> Self
@@ -396,7 +408,7 @@ pub struct ListArgumentBuilder<'a, ItemType, VariablesFields> {
     phantom: PhantomData<fn() -> (ItemType, VariablesFields)>,
 }
 
-impl<'a, ItemType, VariablesFields> ListArgumentBuilder<'a, ItemType, VariablesFields> {
+impl<ItemType, VariablesFields> ListArgumentBuilder<'_, ItemType, VariablesFields> {
     /// Adds an item to the list literal, using the item_fn to determine the
     /// contents of that item.
     pub fn item(self, item_fn: impl FnOnce(InputBuilder<'_, ItemType, VariablesFields>)) -> Self {
@@ -494,6 +506,7 @@ struct BuilderContext<'a> {
     variables_used: &'a Sender<&'static str>,
     recurse_depth: Option<u8>,
     overall_depth: u16,
+    inline_variables: Option<&'a dyn QueryVariableLiterals>,
 }
 
 impl BuilderContext<'_> {

@@ -12,4 +12,3 @@ mutation CommentOnMutationSupportIssue($commentBody: String!) {
   }
 }
 
-

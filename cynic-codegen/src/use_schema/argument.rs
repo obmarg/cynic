@@ -62,7 +62,7 @@ impl ToTokens for ArgumentOutput<'_> {
             impl cynic::schema::HasArgument<#argument_ident> for super::#field_marker {
                 type ArgumentType = #schema_type;
 
-                const NAME: &'static str = #name;
+                const NAME: &'static ::core::primitive::str = #name;
             }
         })
     }

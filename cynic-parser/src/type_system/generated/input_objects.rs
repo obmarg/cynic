@@ -1,17 +1,18 @@
 use super::prelude::*;
 use super::{
+    descriptions::Description,
     directives::Directive,
-    ids::{DirectiveId, InputObjectDefinitionId, InputValueDefinitionId, StringLiteralId},
+    ids::{DescriptionId, DirectiveId, InputObjectDefinitionId, InputValueDefinitionId},
     input_values::InputValueDefinition,
-    strings::StringLiteral,
-    ReadContext, TypeSystemId,
+    TypeSystemId,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};
 
 pub struct InputObjectDefinitionRecord {
     pub name: StringId,
-    pub description: Option<StringLiteralId>,
+    pub name_span: Span,
+    pub description: Option<DescriptionId>,
     pub fields: IdRange<InputValueDefinitionId>,
     pub directives: IdRange<DirectiveId>,
     pub span: Span,
@@ -25,7 +26,11 @@ impl<'a> InputObjectDefinition<'a> {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).name)
     }
-    pub fn description(&self) -> Option<StringLiteral<'a>> {
+    pub fn name_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).name_span
+    }
+    pub fn description(&self) -> Option<Description<'a>> {
         let document = self.0.document;
         document
             .lookup(self.0.id)
@@ -66,14 +71,15 @@ impl fmt::Debug for InputObjectDefinition<'_> {
 
 impl TypeSystemId for InputObjectDefinitionId {
     type Reader<'a> = InputObjectDefinition<'a>;
+    fn read(self, document: &TypeSystemDocument) -> Self::Reader<'_> {
+        InputObjectDefinition(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for InputObjectDefinition<'_> {
     type Id = InputObjectDefinitionId;
-}
-
-impl<'a> From<ReadContext<'a, InputObjectDefinitionId>> for InputObjectDefinition<'a> {
-    fn from(value: ReadContext<'a, InputObjectDefinitionId>) -> Self {
-        Self(value)
+    type Reader<'a> = InputObjectDefinition<'a>;
+    fn new(id: Self::Id, document: &'_ TypeSystemDocument) -> Self::Reader<'_> {
+        document.read(id)
     }
 }

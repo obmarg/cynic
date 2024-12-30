@@ -1,4 +1,4 @@
-use std::str::FromStr;
+use std::{str::FromStr, sync::Arc};
 
 use indexmap::IndexSet;
 
@@ -7,16 +7,21 @@ pub mod iter;
 pub mod writer;
 
 mod definitions;
+mod extensions;
 mod generated;
 mod schemas;
 mod string_literal;
 mod types;
 mod values;
+// mod values;
+
+use crate::common::IdRange;
 
 pub use self::{
     definitions::{Definition, TypeDefinition},
     generated::{
         arguments::Argument,
+        descriptions::Description,
         directives::{Directive, DirectiveDefinition},
         enums::{EnumDefinition, EnumValueDefinition},
         fields::FieldDefinition,
@@ -26,17 +31,17 @@ pub use self::{
         objects::ObjectDefinition,
         scalars::ScalarDefinition,
         schemas::{RootOperationTypeDefinition, SchemaDefinition},
-        unions::UnionDefinition,
+        unions::{UnionDefinition, UnionMember},
     },
+    iter::Iter,
     string_literal::{StringLiteral, StringLiteralKind},
-    types::Type,
-    values::Value,
+    types::{NamedTypeDefinition, NamedTypeDefinitions, Type},
 };
 use self::{ids::*, storage::DefinitionRecord};
 
 #[derive(Default)]
 pub struct TypeSystemDocument {
-    strings: IndexSet<Box<str>>,
+    strings: Arc<IndexSet<Box<str>>>,
     block_strings: Vec<Box<str>>,
 
     definitions: Vec<storage::DefinitionRecord>,
@@ -55,12 +60,15 @@ pub struct TypeSystemDocument {
     field_definitions: Vec<storage::FieldDefinitionRecord>,
     input_value_definitions: Vec<storage::InputValueDefinitionRecord>,
     enum_value_definitions: Vec<storage::EnumValueDefinitionRecord>,
+    union_members: Vec<storage::UnionMemberRecord>,
 
     type_references: Vec<storage::TypeRecord>,
 
-    values: Vec<storage::ValueRecord>,
     directives: Vec<storage::DirectiveRecord>,
     arguments: Vec<storage::ArgumentRecord>,
+    descriptions: Vec<storage::DescriptionRecord>,
+
+    values: crate::values::ValueStore,
 }
 
 #[derive(Clone, Copy, Debug)]
@@ -175,19 +183,13 @@ impl std::fmt::Display for DirectiveLocation {
 }
 
 pub trait TypeSystemId: Copy {
-    type Reader<'a>: From<ReadContext<'a, Self>>;
+    type Reader<'a>;
 
-    fn read(self, ast: &TypeSystemDocument) -> Self::Reader<'_> {
-        ReadContext {
-            id: self,
-            document: ast,
-        }
-        .into()
-    }
+    fn read(self, ast: &TypeSystemDocument) -> Self::Reader<'_>;
 }
 
 #[derive(Clone, Copy)]
-pub struct ReadContext<'a, I> {
+struct ReadContext<'a, I> {
     id: I,
     document: &'a TypeSystemDocument,
 }
@@ -197,49 +199,19 @@ impl super::TypeSystemDocument {
     where
         T: TypeSystemId,
     {
-        ReadContext { id, document: self }.into()
+        id.read(self)
     }
 }
 
 impl TypeSystemDocument {
-    pub fn definitions(&self) -> impl ExactSizeIterator<Item = Definition<'_>> + '_ {
-        self.definitions.iter().map(|definition| match definition {
-            DefinitionRecord::Schema(id) => Definition::Schema(self.read(*id)),
-            DefinitionRecord::Scalar(id) => {
-                Definition::Type(TypeDefinition::Scalar(self.read(*id)))
-            }
-            DefinitionRecord::Object(id) => {
-                Definition::Type(TypeDefinition::Object(self.read(*id)))
-            }
-            DefinitionRecord::Interface(id) => {
-                Definition::Type(TypeDefinition::Interface(self.read(*id)))
-            }
-            DefinitionRecord::Union(id) => Definition::Type(TypeDefinition::Union(self.read(*id))),
-            DefinitionRecord::Enum(id) => Definition::Type(TypeDefinition::Enum(self.read(*id))),
-            DefinitionRecord::InputObject(id) => {
-                Definition::Type(TypeDefinition::InputObject(self.read(*id)))
-            }
-            DefinitionRecord::SchemaExtension(id) => Definition::SchemaExtension(self.read(*id)),
-            DefinitionRecord::ScalarExtension(id) => {
-                Definition::TypeExtension(TypeDefinition::Scalar(self.read(*id)))
-            }
-            DefinitionRecord::ObjectExtension(id) => {
-                Definition::TypeExtension(TypeDefinition::Object(self.read(*id)))
-            }
-            DefinitionRecord::InterfaceExtension(id) => {
-                Definition::TypeExtension(TypeDefinition::Interface(self.read(*id)))
-            }
-            DefinitionRecord::UnionExtension(id) => {
-                Definition::TypeExtension(TypeDefinition::Union(self.read(*id)))
-            }
-            DefinitionRecord::EnumExtension(id) => {
-                Definition::TypeExtension(TypeDefinition::Enum(self.read(*id)))
-            }
-            DefinitionRecord::InputObjectExtension(id) => {
-                Definition::TypeExtension(TypeDefinition::InputObject(self.read(*id)))
-            }
-            DefinitionRecord::Directive(id) => Definition::Directive(self.read(*id)),
-        })
+    pub fn definitions(&self) -> Iter<'_, Definition<'_>> {
+        Iter::new(
+            IdRange::new(
+                DefinitionId::new(0),
+                DefinitionId::new(self.definitions.len()),
+            ),
+            self,
+        )
     }
 
     pub fn directive_definitions(&self) -> impl Iterator<Item = DirectiveDefinition<'_>> + '_ {
@@ -252,8 +224,10 @@ impl TypeSystemDocument {
 
 pub mod storage {
     pub use super::{
+        definitions::DefinitionRecord,
         generated::{
             arguments::ArgumentRecord,
+            descriptions::DescriptionRecord,
             directives::{DirectiveDefinitionRecord, DirectiveRecord},
             enums::EnumDefinitionRecord,
             enums::EnumValueDefinitionRecord,
@@ -264,30 +238,8 @@ pub mod storage {
             objects::ObjectDefinitionRecord,
             scalars::ScalarDefinitionRecord,
             schemas::{RootOperationTypeDefinitionRecord, SchemaDefinitionRecord},
-            unions::UnionDefinitionRecord,
+            unions::{UnionDefinitionRecord, UnionMemberRecord},
         },
         types::TypeRecord,
-        values::ValueRecord,
     };
-
-    use super::ids::*;
-
-    #[derive(Clone, Copy)]
-    pub enum DefinitionRecord {
-        Schema(SchemaDefinitionId),
-        Scalar(ScalarDefinitionId),
-        Object(ObjectDefinitionId),
-        Interface(InterfaceDefinitionId),
-        Union(UnionDefinitionId),
-        Enum(EnumDefinitionId),
-        InputObject(InputObjectDefinitionId),
-        SchemaExtension(SchemaDefinitionId),
-        ScalarExtension(ScalarDefinitionId),
-        ObjectExtension(ObjectDefinitionId),
-        InterfaceExtension(InterfaceDefinitionId),
-        UnionExtension(UnionDefinitionId),
-        EnumExtension(EnumDefinitionId),
-        InputObjectExtension(InputObjectDefinitionId),
-        Directive(DirectiveDefinitionId),
-    }
 }

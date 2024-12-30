@@ -32,7 +32,6 @@ fn test_enum_argument_literal() {
         hasMetadata
       }
     }
-
     "###);
 }
 
@@ -69,7 +68,6 @@ fn test_enum_argument() {
         hasMetadata
       }
     }
-
     "###);
 }
 

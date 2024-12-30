@@ -1,4 +1,4 @@
-//! Types for describing a GraphQL schema in Rust.
+//! Traits for describing a GraphQL schema in Rust.
 //!
 //! The `use_schema` macro will mostly output types that make use of the
 //! traits in this module to describe the schema.  The derives then combine

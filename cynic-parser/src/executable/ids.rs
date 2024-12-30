@@ -1,11 +1,13 @@
 use std::num::NonZeroU32;
 
-use super::{storage::*, types::TypeRecord, value::ValueRecord, ExecutableDocument};
+use super::{storage::*, types::TypeRecord, ExecutableDocument};
 use crate::{common::IdRange, AstLookup};
+
+pub use crate::values::ids::{ConstValueId, ValueId};
 
 macro_rules! make_id {
     ($name:ident, $output:ident, $field:ident) => {
-        #[derive(Clone, Copy, Debug, Hash, Eq, PartialEq)]
+        #[derive(Clone, Copy, Debug, Hash, Eq, PartialEq, Ord, PartialOrd)]
         pub struct $name(NonZeroU32);
 
         impl $name {
@@ -22,10 +24,6 @@ macro_rules! make_id {
 
             fn lookup(&self, index: $name) -> &Self::Output {
                 &self.$field[(index.0.get() - 1) as usize]
-            }
-
-            fn lookup_mut(&mut self, index: $name) -> &mut Self::Output {
-                &mut self.$field[(index.0.get() - 1) as usize]
             }
         }
     };
@@ -72,7 +70,9 @@ make_id!(InlineFragmentId, InlineFragmentRecord, inline_fragments);
 make_id!(FragmentSpreadId, FragmentSpreadRecord, fragment_spreads);
 
 make_id!(DirectiveId, DirectiveRecord, directives);
+
 make_id!(ArgumentId, ArgumentRecord, arguments);
+
 impl_id_range_ops!(DirectiveId);
 impl_id_range_ops!(ArgumentId);
 
@@ -80,8 +80,6 @@ make_id!(TypeId, TypeRecord, types);
 
 make_id!(VariableDefinitionId, VariableDefinitionRecord, variables);
 impl_id_range_ops!(VariableDefinitionId);
-
-make_id!(ValueId, ValueRecord, values);
 
 make_id!(BlockStringLiteralId, str, block_strings);
 
@@ -95,6 +93,10 @@ impl StringId {
                 .expect("also too many indices"),
         )
     }
+
+    pub(crate) fn get(&self) -> usize {
+        (self.0.get() - 1) as usize
+    }
 }
 
 impl AstLookup<StringId> for ExecutableDocument {
@@ -102,9 +104,5 @@ impl AstLookup<StringId> for ExecutableDocument {
 
     fn lookup(&self, index: StringId) -> &Self::Output {
         &self.strings[(index.0.get() - 1) as usize]
-    }
-
-    fn lookup_mut(&mut self, _index: StringId) -> &mut Self::Output {
-        unimplemented!("strings aren't mutable so can't do this")
     }
 }

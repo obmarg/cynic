@@ -2,6 +2,8 @@
 
 use std::marker::PhantomData;
 
+use crate::queries::InputLiteral;
+
 /// The type of a variable
 #[derive(Debug, Clone, Copy)]
 pub enum VariableType {
@@ -22,6 +24,7 @@ pub trait QueryVariables {
     /// A struct that determines which variables are available when using this
     /// struct.
     type Fields: QueryVariablesFields;
+
     /// An associated constant that contains the variable names & their types.
     ///
     /// This is used to construct the query string we send to a server.
@@ -33,9 +36,21 @@ pub trait QueryVariablesFields {}
 
 impl QueryVariables for () {
     type Fields = ();
+
     const VARIABLES: &'static [(&'static str, VariableType)] = &[];
 }
+
 impl QueryVariablesFields for () {}
+
+/// Allows a query variable struct to be converted to literals for easier inlining
+/// into a graphql document.
+///
+/// Cynic can derive this automatically or you can add it to a QueryVariables struct
+/// yourself.
+pub trait QueryVariableLiterals {
+    /// Gets an InputLiteral for the given variable from this set of variables
+    fn get(&self, variable_name: &str) -> Option<InputLiteral>;
+}
 
 #[doc(hidden)]
 /// A VariableDefinition.
@@ -54,5 +69,20 @@ impl<Variables, Type> VariableDefinition<Variables, Type> {
             name,
             phantom: PhantomData,
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use cynic::QueryVariableLiterals;
+
+    #[test]
+    fn query_variable_literals_is_object_safe() {
+        #[derive(QueryVariableLiterals)]
+        struct Blah {
+            x: String,
+        }
+
+        let _: Box<dyn QueryVariableLiterals> = Box::new(Blah { x: "hello".into() });
     }
 }

@@ -11,6 +11,7 @@ use cynic_parser::{
         self as parser, ids::FieldDefinitionId, storage::InputValueDefinitionRecord, Definition,
         DirectiveDefinition, TypeDefinition,
     },
+    Span,
 };
 
 use crate::schema::{names::FieldName, types::*, SchemaError};
@@ -39,10 +40,16 @@ impl SchemaBackedTypeIndex {
         for definition in ast.definitions() {
             if let Definition::Schema(schema) = definition {
                 if let Some(query_type) = schema.query_type() {
-                    query_root = query_type.to_owned();
+                    query_root = query_type.named_type().to_owned();
                 }
-                mutation_root = schema.mutation_type().map(ToOwned::to_owned);
-                subscription_root = schema.subscription_type().map(ToOwned::to_owned);
+                mutation_root = schema
+                    .mutation_type()
+                    .map(|mutation| mutation.named_type())
+                    .map(ToOwned::to_owned);
+                subscription_root = schema
+                    .subscription_type()
+                    .map(|subscription| subscription.named_type())
+                    .map(ToOwned::to_owned);
                 break;
             }
         }
@@ -98,6 +105,7 @@ fn add_builtins_to_document(
         let name = writer.ident(builtin);
         writer.scalar_definition(parser::storage::ScalarDefinitionRecord {
             name,
+            name_span: Span::new(0, 0),
             description: None,
             directives: Default::default(),
             span,
@@ -107,10 +115,13 @@ fn add_builtins_to_document(
     let string_ident = writer.ident("String");
     let typename_type = writer.type_reference(parser::storage::TypeRecord {
         name: string_ident,
+        name_start: 0,
+        span: Span::new(0, 0),
         wrappers: TypeWrappers::none().wrap_non_null(),
     });
     let typename_field = writer.field_definition(parser::storage::FieldDefinitionRecord {
         name: typename_string,
+        name_span: Span::new(0, 0),
         ty: typename_type,
         arguments: Default::default(),
         description: None,
@@ -121,14 +132,18 @@ fn add_builtins_to_document(
     if !has_skip || !has_include {
         let if_argument_type = parser::storage::TypeRecord {
             name: writer.ident("Boolean"),
+            name_start: 0,
+            span: Span::new(0, 0),
             wrappers: [WrappingType::NonNull].into_iter().collect(),
         };
         let if_argument_type = writer.type_reference(if_argument_type);
         let if_argument = InputValueDefinitionRecord {
             name: writer.ident("if"),
+            name_span: Span::new(0, 0),
             ty: if_argument_type,
             description: None,
             default_value: None,
+            default_value_span: Span::new(0, 0),
             directives: Default::default(),
             span,
         };
@@ -139,6 +154,7 @@ fn add_builtins_to_document(
         if !has_skip {
             let skip = parser::storage::DirectiveDefinitionRecord {
                 name: writer.ident("skip"),
+                name_span: Span::new(0, 0),
                 description: None,
                 arguments,
                 is_repeatable: false,
@@ -155,6 +171,7 @@ fn add_builtins_to_document(
         if !has_include {
             let include = parser::storage::DirectiveDefinitionRecord {
                 name: writer.ident("include"),
+                name_span: Span::new(0, 0),
                 description: None,
                 arguments,
                 is_repeatable: false,
@@ -285,6 +302,7 @@ impl super::TypeIndex for SchemaBackedTypeIndex {
                 name: Cow::Borrowed(def.name()),
                 types: def
                     .members()
+                    .map(|member| member.name())
                     .map(|name| ObjectRef(Cow::Borrowed(name)))
                     .collect(),
             }),
@@ -409,11 +427,8 @@ impl SchemaBackedTypeIndex {
                 }
                 TypeDefinition::Union(union_def) => {
                     for member in union_def.members() {
-                        validate!(
-                            member,
-                            TypeDefinition::Object(_),
-                            "expected to be an object"
-                        );
+                        let name = member.name();
+                        validate!(name, TypeDefinition::Object(_), "expected to be an object");
                     }
                 }
                 TypeDefinition::Interface(iface) => {

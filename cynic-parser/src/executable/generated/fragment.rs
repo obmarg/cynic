@@ -3,16 +3,19 @@ use super::{
     directive::Directive,
     ids::{DirectiveId, FragmentDefinitionId, SelectionId},
     selections::Selection,
-    ExecutableId, ReadContext,
+    ExecutableId,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};
 
 pub struct FragmentDefinitionRecord {
     pub name: StringId,
+    pub name_span: Span,
     pub type_condition: StringId,
+    pub type_condition_span: Span,
     pub directives: IdRange<DirectiveId>,
     pub selection_set: IdRange<SelectionId>,
+    pub selection_set_span: Span,
 }
 
 #[derive(Clone, Copy)]
@@ -23,9 +26,17 @@ impl<'a> FragmentDefinition<'a> {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).name)
     }
+    pub fn name_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).name_span
+    }
     pub fn type_condition(&self) -> &'a str {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).type_condition)
+    }
+    pub fn type_condition_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).type_condition_span
     }
     pub fn directives(&self) -> Iter<'a, Directive<'a>> {
         let document = self.0.document;
@@ -34,6 +45,10 @@ impl<'a> FragmentDefinition<'a> {
     pub fn selection_set(&self) -> Iter<'a, Selection<'a>> {
         let document = self.0.document;
         super::Iter::new(document.lookup(self.0.id).selection_set, document)
+    }
+    pub fn selection_set_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).selection_set_span
     }
 }
 
@@ -56,14 +71,15 @@ impl fmt::Debug for FragmentDefinition<'_> {
 
 impl ExecutableId for FragmentDefinitionId {
     type Reader<'a> = FragmentDefinition<'a>;
+    fn read(self, document: &ExecutableDocument) -> Self::Reader<'_> {
+        FragmentDefinition(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for FragmentDefinition<'_> {
     type Id = FragmentDefinitionId;
-}
-
-impl<'a> From<ReadContext<'a, FragmentDefinitionId>> for FragmentDefinition<'a> {
-    fn from(value: ReadContext<'a, FragmentDefinitionId>) -> Self {
-        Self(value)
+    type Reader<'a> = FragmentDefinition<'a>;
+    fn new(id: Self::Id, document: &'_ ExecutableDocument) -> Self::Reader<'_> {
+        document.read(id)
     }
 }

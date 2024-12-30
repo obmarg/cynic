@@ -4,17 +4,20 @@ use super::{
     ids::{DirectiveId, OperationDefinitionId, SelectionId, VariableDefinitionId},
     selections::Selection,
     variable::VariableDefinition,
-    ExecutableId, ReadContext,
+    ExecutableId,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};
 
 pub struct OperationDefinitionRecord {
     pub operation_type: OperationType,
+    pub operation_type_span: Option<Span>,
     pub name: Option<StringId>,
+    pub name_span: Option<Span>,
     pub variable_definitions: IdRange<VariableDefinitionId>,
     pub directives: IdRange<DirectiveId>,
     pub selection_set: IdRange<SelectionId>,
+    pub selection_set_span: Span,
 }
 
 #[derive(Clone, Copy)]
@@ -25,12 +28,20 @@ impl<'a> OperationDefinition<'a> {
         let document = self.0.document;
         document.lookup(self.0.id).operation_type
     }
+    pub fn operation_type_span(&self) -> Option<Span> {
+        let document = self.0.document;
+        document.lookup(self.0.id).operation_type_span
+    }
     pub fn name(&self) -> Option<&'a str> {
         let document = self.0.document;
         document
             .lookup(self.0.id)
             .name
             .map(|id| document.lookup(id))
+    }
+    pub fn name_span(&self) -> Option<Span> {
+        let document = self.0.document;
+        document.lookup(self.0.id).name_span
     }
     pub fn variable_definitions(&self) -> Iter<'a, VariableDefinition<'a>> {
         let document = self.0.document;
@@ -43,6 +54,10 @@ impl<'a> OperationDefinition<'a> {
     pub fn selection_set(&self) -> Iter<'a, Selection<'a>> {
         let document = self.0.document;
         super::Iter::new(document.lookup(self.0.id).selection_set, document)
+    }
+    pub fn selection_set_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).selection_set_span
     }
 }
 
@@ -66,14 +81,15 @@ impl fmt::Debug for OperationDefinition<'_> {
 
 impl ExecutableId for OperationDefinitionId {
     type Reader<'a> = OperationDefinition<'a>;
+    fn read(self, document: &ExecutableDocument) -> Self::Reader<'_> {
+        OperationDefinition(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for OperationDefinition<'_> {
     type Id = OperationDefinitionId;
-}
-
-impl<'a> From<ReadContext<'a, OperationDefinitionId>> for OperationDefinition<'a> {
-    fn from(value: ReadContext<'a, OperationDefinitionId>) -> Self {
-        Self(value)
+    type Reader<'a> = OperationDefinition<'a>;
+    fn new(id: Self::Id, document: &'_ ExecutableDocument) -> Self::Reader<'_> {
+        document.read(id)
     }
 }

@@ -32,7 +32,7 @@ pub enum RustType<'a> {
     },
 }
 
-impl<'a> RustType<'a> {
+impl RustType<'_> {
     pub fn into_owned(self) -> RustType<'static> {
         match self {
             RustType::Optional { syn, inner, span } => RustType::Optional {

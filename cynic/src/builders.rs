@@ -23,9 +23,6 @@ where
 
 /// Provides a `build` function on `QueryFragment`s that represent a mutation
 pub trait MutationBuilder<Variables>: Sized {
-    /// The type that this mutation takes as variables.
-    /// May be `()` if no variables are accepted.
-
     /// Constructs a mutation operation for this QueryFragment.
     fn build(args: Variables) -> Operation<Self, Variables>;
 }
@@ -43,9 +40,6 @@ where
 
 /// Provides a `build` function on `QueryFragment`s that represent a subscription
 pub trait SubscriptionBuilder<Variables>: Sized {
-    /// The type that this subscription takes as variables.
-    /// May be `()` if no variables are accepted.
-
     /// Constructs a subscription operation for this QueryFragment.
     fn build(vars: Variables) -> StreamingOperation<Self, Variables>;
 }

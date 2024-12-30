@@ -1,18 +1,19 @@
 use super::prelude::*;
 use super::{
     directive::Directive,
-    ids::{DirectiveId, TypeId, ValueId, VariableDefinitionId},
+    ids::{ConstValueId, DirectiveId, TypeId, VariableDefinitionId},
     types::Type,
-    value::Value,
-    ExecutableId, ReadContext,
+    value::ConstValue,
+    ExecutableId,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};
 
 pub struct VariableDefinitionRecord {
     pub name: StringId,
+    pub name_span: Span,
     pub ty: TypeId,
-    pub default_value: Option<ValueId>,
+    pub default_value: Option<ConstValueId>,
     pub directives: IdRange<DirectiveId>,
 }
 
@@ -24,11 +25,15 @@ impl<'a> VariableDefinition<'a> {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).name)
     }
+    pub fn name_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).name_span
+    }
     pub fn ty(&self) -> Type<'a> {
         let document = self.0.document;
         document.read(document.lookup(self.0.id).ty)
     }
-    pub fn default_value(&self) -> Option<Value<'a>> {
+    pub fn default_value(&self) -> Option<ConstValue<'a>> {
         let document = self.0.document;
         document
             .lookup(self.0.id)
@@ -60,14 +65,15 @@ impl fmt::Debug for VariableDefinition<'_> {
 
 impl ExecutableId for VariableDefinitionId {
     type Reader<'a> = VariableDefinition<'a>;
+    fn read(self, document: &ExecutableDocument) -> Self::Reader<'_> {
+        VariableDefinition(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for VariableDefinition<'_> {
     type Id = VariableDefinitionId;
-}
-
-impl<'a> From<ReadContext<'a, VariableDefinitionId>> for VariableDefinition<'a> {
-    fn from(value: ReadContext<'a, VariableDefinitionId>) -> Self {
-        Self(value)
+    type Reader<'a> = VariableDefinition<'a>;
+    fn new(id: Self::Id, document: &'_ ExecutableDocument) -> Self::Reader<'_> {
+        document.read(id)
     }
 }

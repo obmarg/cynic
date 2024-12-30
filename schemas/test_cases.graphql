@@ -18,6 +18,8 @@ type Foo {
   ): Boolean
 
   fieldWithStringArg(input: String!): Int
+
+  clashes: FieldNameClashes
 }
 
 type Bar {
@@ -52,3 +54,10 @@ type FlattenableEnums {
 # Specifically including these here to make sure we can handle that
 directive @skip(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
 directive @include(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
+
+type FieldNameClashes {
+  str: String
+  bool: Boolean
+  i32: Int
+  u32: Int
+}

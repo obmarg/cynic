@@ -1,19 +1,18 @@
 use super::prelude::*;
 use super::{
     arguments::Argument,
-    ids::{
-        ArgumentId, DirectiveDefinitionId, DirectiveId, InputValueDefinitionId, StringLiteralId,
-    },
+    descriptions::Description,
+    ids::{ArgumentId, DescriptionId, DirectiveDefinitionId, DirectiveId, InputValueDefinitionId},
     input_values::InputValueDefinition,
-    strings::StringLiteral,
-    ReadContext, TypeSystemId,
+    TypeSystemId,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};
 
 pub struct DirectiveDefinitionRecord {
     pub name: StringId,
-    pub description: Option<StringLiteralId>,
+    pub name_span: Span,
+    pub description: Option<DescriptionId>,
     pub arguments: IdRange<InputValueDefinitionId>,
     pub is_repeatable: bool,
     pub locations: Vec<DirectiveLocation>,
@@ -28,7 +27,11 @@ impl<'a> DirectiveDefinition<'a> {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).name)
     }
-    pub fn description(&self) -> Option<StringLiteral<'a>> {
+    pub fn name_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).name_span
+    }
+    pub fn description(&self) -> Option<Description<'a>> {
         let document = self.0.document;
         document
             .lookup(self.0.id)
@@ -74,21 +77,24 @@ impl fmt::Debug for DirectiveDefinition<'_> {
 
 impl TypeSystemId for DirectiveDefinitionId {
     type Reader<'a> = DirectiveDefinition<'a>;
+    fn read(self, document: &TypeSystemDocument) -> Self::Reader<'_> {
+        DirectiveDefinition(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for DirectiveDefinition<'_> {
     type Id = DirectiveDefinitionId;
-}
-
-impl<'a> From<ReadContext<'a, DirectiveDefinitionId>> for DirectiveDefinition<'a> {
-    fn from(value: ReadContext<'a, DirectiveDefinitionId>) -> Self {
-        Self(value)
+    type Reader<'a> = DirectiveDefinition<'a>;
+    fn new(id: Self::Id, document: &'_ TypeSystemDocument) -> Self::Reader<'_> {
+        document.read(id)
     }
 }
 
 pub struct DirectiveRecord {
     pub name: StringId,
+    pub name_span: Span,
     pub arguments: IdRange<ArgumentId>,
+    pub arguments_span: Span,
 }
 
 #[derive(Clone, Copy)]
@@ -99,9 +105,17 @@ impl<'a> Directive<'a> {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).name)
     }
+    pub fn name_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).name_span
+    }
     pub fn arguments(&self) -> Iter<'a, Argument<'a>> {
         let document = self.0.document;
         super::Iter::new(document.lookup(self.0.id).arguments, document)
+    }
+    pub fn arguments_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).arguments_span
     }
 }
 
@@ -122,14 +136,15 @@ impl fmt::Debug for Directive<'_> {
 
 impl TypeSystemId for DirectiveId {
     type Reader<'a> = Directive<'a>;
+    fn read(self, document: &TypeSystemDocument) -> Self::Reader<'_> {
+        Directive(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for Directive<'_> {
     type Id = DirectiveId;
-}
-
-impl<'a> From<ReadContext<'a, DirectiveId>> for Directive<'a> {
-    fn from(value: ReadContext<'a, DirectiveId>) -> Self {
-        Self(value)
+    type Reader<'a> = Directive<'a>;
+    fn new(id: Self::Id, document: &'_ TypeSystemDocument) -> Self::Reader<'_> {
+        document.read(id)
     }
 }

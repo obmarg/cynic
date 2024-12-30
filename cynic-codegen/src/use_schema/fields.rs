@@ -30,7 +30,7 @@ impl ToTokens for FieldOutput<'_> {
             impl cynic::schema::Field for #field_marker{
                 type Type = #field_type_marker;
 
-                const NAME: &'static str = #field_name_literal;
+                const NAME: &'static ::core::primitive::str = #field_name_literal;
             }
 
             impl cynic::schema::HasField<#field_marker> for super::super::#parent_marker {

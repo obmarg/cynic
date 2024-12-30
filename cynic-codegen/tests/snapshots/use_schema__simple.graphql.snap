@@ -1,6 +1,7 @@
 ---
 source: cynic-codegen/tests/use-schema.rs
 expression: "format_code(format!(\"{}\", tokens))"
+snapshot_kind: text
 ---
 impl cynic::schema::QueryRoot for Query {}
 pub struct AnInputType;
@@ -8,7 +9,7 @@ impl cynic::schema::InputObjectMarker for AnInputType {}
 pub struct Dessert {}
 pub struct JSON {}
 impl cynic::schema::NamedType for JSON {
-    const NAME: &'static str = "JSON";
+    const NAME: &'static ::core::primitive::str = "JSON";
 }
 pub struct MyUnionType {}
 pub struct Nested;
@@ -24,7 +25,7 @@ pub mod _include_arguments {
     pub struct r#if;
     impl cynic::schema::HasArgument<r#if> for super::include {
         type ArgumentType = super::Boolean;
-        const NAME: &'static str = "if";
+        const NAME: &'static ::core::primitive::str = "if";
     }
 }
 #[allow(non_camel_case_types)]
@@ -37,22 +38,22 @@ pub mod _skip_arguments {
     pub struct r#if;
     impl cynic::schema::HasArgument<r#if> for super::skip {
         type ArgumentType = super::Boolean;
-        const NAME: &'static str = "if";
+        const NAME: &'static ::core::primitive::str = "if";
     }
 }
 impl cynic::schema::HasSubtype<Nested> for MyUnionType {}
 impl cynic::schema::HasSubtype<TestStruct> for MyUnionType {}
 impl cynic::schema::NamedType for MyUnionType {
-    const NAME: &'static str = "MyUnionType";
+    const NAME: &'static ::core::primitive::str = "MyUnionType";
 }
 impl cynic::schema::NamedType for Nested {
-    const NAME: &'static str = "Nested";
+    const NAME: &'static ::core::primitive::str = "Nested";
 }
 impl cynic::schema::NamedType for Query {
-    const NAME: &'static str = "Query";
+    const NAME: &'static ::core::primitive::str = "Query";
 }
 impl cynic::schema::NamedType for TestStruct {
-    const NAME: &'static str = "TestStruct";
+    const NAME: &'static ::core::primitive::str = "TestStruct";
 }
 #[allow(non_snake_case, non_camel_case_types)]
 pub mod __fields {
@@ -60,7 +61,7 @@ pub mod __fields {
         pub struct favouriteDessert;
         impl cynic::schema::Field for favouriteDessert {
             type Type = Option<super::super::Dessert>;
-            const NAME: &'static str = "favouriteDessert";
+            const NAME: &'static ::core::primitive::str = "favouriteDessert";
         }
         impl cynic::schema::HasInputField<favouriteDessert, Option<super::super::Dessert>>
             for super::super::AnInputType
@@ -71,7 +72,7 @@ pub mod __fields {
         pub struct aString;
         impl cynic::schema::Field for aString {
             type Type = super::super::String;
-            const NAME: &'static str = "aString";
+            const NAME: &'static ::core::primitive::str = "aString";
         }
         impl cynic::schema::HasField<aString> for super::super::Nested {
             type Type = super::super::String;
@@ -79,7 +80,7 @@ pub mod __fields {
         pub struct optString;
         impl cynic::schema::Field for optString {
             type Type = Option<super::super::String>;
-            const NAME: &'static str = "optString";
+            const NAME: &'static ::core::primitive::str = "optString";
         }
         impl cynic::schema::HasField<optString> for super::super::Nested {
             type Type = Option<super::super::String>;
@@ -87,7 +88,7 @@ pub mod __fields {
         pub struct __typename;
         impl cynic::schema::Field for __typename {
             type Type = super::super::String;
-            const NAME: &'static str = "__typename";
+            const NAME: &'static ::core::primitive::str = "__typename";
         }
         impl cynic::schema::HasField<__typename> for super::super::Nested {
             type Type = super::super::String;
@@ -97,7 +98,7 @@ pub mod __fields {
         pub struct testStruct;
         impl cynic::schema::Field for testStruct {
             type Type = Option<super::super::TestStruct>;
-            const NAME: &'static str = "testStruct";
+            const NAME: &'static ::core::primitive::str = "testStruct";
         }
         impl cynic::schema::HasField<testStruct> for super::super::Query {
             type Type = Option<super::super::TestStruct>;
@@ -105,7 +106,7 @@ pub mod __fields {
         pub struct myUnion;
         impl cynic::schema::Field for myUnion {
             type Type = Option<super::super::MyUnionType>;
-            const NAME: &'static str = "myUnion";
+            const NAME: &'static ::core::primitive::str = "myUnion";
         }
         impl cynic::schema::HasField<myUnion> for super::super::Query {
             type Type = Option<super::super::MyUnionType>;
@@ -113,7 +114,7 @@ pub mod __fields {
         pub struct __typename;
         impl cynic::schema::Field for __typename {
             type Type = super::super::String;
-            const NAME: &'static str = "__typename";
+            const NAME: &'static ::core::primitive::str = "__typename";
         }
         impl cynic::schema::HasField<__typename> for super::super::Query {
             type Type = super::super::String;
@@ -123,7 +124,7 @@ pub mod __fields {
         pub struct fieldOne;
         impl cynic::schema::Field for fieldOne {
             type Type = super::super::String;
-            const NAME: &'static str = "fieldOne";
+            const NAME: &'static ::core::primitive::str = "fieldOne";
         }
         impl cynic::schema::HasField<fieldOne> for super::super::TestStruct {
             type Type = super::super::String;
@@ -132,18 +133,18 @@ pub mod __fields {
             pub struct x;
             impl cynic::schema::HasArgument<x> for super::fieldOne {
                 type ArgumentType = Option<super::super::super::Int>;
-                const NAME: &'static str = "x";
+                const NAME: &'static ::core::primitive::str = "x";
             }
             pub struct y;
             impl cynic::schema::HasArgument<y> for super::fieldOne {
                 type ArgumentType = Option<super::super::super::String>;
-                const NAME: &'static str = "y";
+                const NAME: &'static ::core::primitive::str = "y";
             }
         }
         pub struct tastyCakes;
         impl cynic::schema::Field for tastyCakes {
             type Type = super::super::Dessert;
-            const NAME: &'static str = "tastyCakes";
+            const NAME: &'static ::core::primitive::str = "tastyCakes";
         }
         impl cynic::schema::HasField<tastyCakes> for super::super::TestStruct {
             type Type = super::super::Dessert;
@@ -152,18 +153,18 @@ pub mod __fields {
             pub struct first;
             impl cynic::schema::HasArgument<first> for super::tastyCakes {
                 type ArgumentType = super::super::super::Dessert;
-                const NAME: &'static str = "first";
+                const NAME: &'static ::core::primitive::str = "first";
             }
             pub struct second;
             impl cynic::schema::HasArgument<second> for super::tastyCakes {
                 type ArgumentType = Option<super::super::super::Dessert>;
-                const NAME: &'static str = "second";
+                const NAME: &'static ::core::primitive::str = "second";
             }
         }
         pub struct fieldWithInput;
         impl cynic::schema::Field for fieldWithInput {
             type Type = super::super::Dessert;
-            const NAME: &'static str = "fieldWithInput";
+            const NAME: &'static ::core::primitive::str = "fieldWithInput";
         }
         impl cynic::schema::HasField<fieldWithInput> for super::super::TestStruct {
             type Type = super::super::Dessert;
@@ -172,13 +173,13 @@ pub mod __fields {
             pub struct input;
             impl cynic::schema::HasArgument<input> for super::fieldWithInput {
                 type ArgumentType = super::super::super::AnInputType;
-                const NAME: &'static str = "input";
+                const NAME: &'static ::core::primitive::str = "input";
             }
         }
         pub struct nested;
         impl cynic::schema::Field for nested {
             type Type = super::super::Nested;
-            const NAME: &'static str = "nested";
+            const NAME: &'static ::core::primitive::str = "nested";
         }
         impl cynic::schema::HasField<nested> for super::super::TestStruct {
             type Type = super::super::Nested;
@@ -186,7 +187,7 @@ pub mod __fields {
         pub struct optNested;
         impl cynic::schema::Field for optNested {
             type Type = Option<super::super::Nested>;
-            const NAME: &'static str = "optNested";
+            const NAME: &'static ::core::primitive::str = "optNested";
         }
         impl cynic::schema::HasField<optNested> for super::super::TestStruct {
             type Type = Option<super::super::Nested>;
@@ -194,7 +195,7 @@ pub mod __fields {
         pub struct dessert;
         impl cynic::schema::Field for dessert {
             type Type = Option<super::super::Dessert>;
-            const NAME: &'static str = "dessert";
+            const NAME: &'static ::core::primitive::str = "dessert";
         }
         impl cynic::schema::HasField<dessert> for super::super::TestStruct {
             type Type = Option<super::super::Dessert>;
@@ -202,7 +203,7 @@ pub mod __fields {
         pub struct json;
         impl cynic::schema::Field for json {
             type Type = Option<super::super::JSON>;
-            const NAME: &'static str = "json";
+            const NAME: &'static ::core::primitive::str = "json";
         }
         impl cynic::schema::HasField<json> for super::super::TestStruct {
             type Type = Option<super::super::JSON>;
@@ -210,7 +211,7 @@ pub mod __fields {
         pub struct __typename;
         impl cynic::schema::Field for __typename {
             type Type = super::super::String;
-            const NAME: &'static str = "__typename";
+            const NAME: &'static ::core::primitive::str = "__typename";
         }
         impl cynic::schema::HasField<__typename> for super::super::TestStruct {
             type Type = super::super::String;
@@ -296,4 +297,3 @@ pub mod variable {
         const TYPE: VariableType = VariableType::Named("ID");
     }
 }
-

@@ -2,12 +2,25 @@
 # we release most of the repo as a group so disable things for individual packages
 changelog_update = false
 git_release_enable = false
+git_release_latest = false
 git_tag_enable = false
+git_release_body = """
+{{ changelog }}
+{% if remote.contributors %}
+### Contributors
+
+Thanks to the people who contributed to this release:
+
+{% for contributor in remote.contributors | unique(attribute="username") %}
+* @{{ contributor.username }}
+{% endfor %}
+{% endif %}
+"""
 
 # create the release PR in draft to avoid running CI till we're ready
 pr_draft = true
 
-[changelog] 
+[changelog]
 commit_parsers = [
     { message = "^feat!", group = "<!-- 0 -->Breaking Changes" },
     { message = "^feat", group = "<!-- 1 -->New Features" },
@@ -32,20 +45,35 @@ name = "cynic"
 git_tag_name = "v{{version}}"
 git_tag_enable = true
 git_release_enable = true
+git_release_latest = true
 git_release_name = "v{{version}}"
 
 changelog_update = true
-changelog_path = "./CHANGELOG.md"
+changelog_path = "CHANGELOG.md"
 changelog_include = [
     "cynic-cli",
     "cynic-codegen",
     "cynic-introspection",
     "cynic-proc-macros",
-    "cynic-querygen-web"
+    "cynic-querygen",
+    "cynic-querygen-web",
 ]
 
 [[package]]
 name = "cynic-parser"
+version_group = "cynic-parser"
 git_tag_enable = true
 git_release_enable = true
 changelog_update = true
+
+[[package]]
+name = "cynic-parser-deser"
+version_group = "cynic-parser"
+changelog_update = true
+changelog_include = [
+    "cynic-parser-deser-macros"
+]
+
+[[package]]
+name = "cynic-parser-deser-macros"
+version_group = "cynic-parser"

@@ -491,7 +491,7 @@ impl<'a, 'query, 'schema, 'doc> Normaliser<'a, 'query, 'schema, 'doc> {
         self.inline_fragments_out
             .insert(Rc::clone(&inline_fragments));
 
-        return Ok(Field::InlineFragments(inline_fragments));
+        Ok(Field::InlineFragments(inline_fragments))
     }
 }
 
@@ -520,7 +520,7 @@ fn extract_fragments<'query, 'doc>(document: &'doc Document<'query>) -> Fragment
         .collect()
 }
 
-impl<'query, 'schema> Vertex for SelectionSet<'query, 'schema> {
+impl Vertex for SelectionSet<'_, '_> {
     fn children(self: &Rc<Self>) -> Vec<Rc<Self>> {
         self.selections
             .iter()
@@ -535,7 +535,7 @@ impl<'query, 'schema> Vertex for SelectionSet<'query, 'schema> {
     }
 }
 
-impl<'query, 'schema> SelectionSet<'query, 'schema> {
+impl<'schema> SelectionSet<'_, 'schema> {
     pub fn leaf_output_types(&self) -> Vec<OutputTypeRef<'schema>> {
         self.selections
             .iter()
@@ -566,13 +566,13 @@ impl<'query, 'schema> SelectionSet<'query, 'schema> {
     }
 }
 
-impl<'query, 'schema> crate::naming::Nameable for Rc<SelectionSet<'query, 'schema>> {
+impl crate::naming::Nameable for Rc<SelectionSet<'_, '_>> {
     fn requested_name(&self) -> String {
         self.target_type.name().to_pascal_case()
     }
 }
 
-impl<'query, 'schema> crate::naming::Nameable for Rc<InlineFragments<'query, 'schema>> {
+impl crate::naming::Nameable for Rc<InlineFragments<'_, '_>> {
     fn requested_name(&self) -> String {
         self.abstract_type.name().to_pascal_case()
     }
@@ -711,7 +711,7 @@ mod tests {
 
         assert_eq!(film_selections.len(), 1);
 
-        insta::assert_debug_snapshot!(film_selections.get(0).unwrap().selections);
+        insta::assert_debug_snapshot!(film_selections.first().unwrap().selections);
     }
 
     #[test]
@@ -826,7 +826,7 @@ mod tests {
 
         assert_eq!(film_selections.len(), 1);
 
-        insta::assert_debug_snapshot!(film_selections.get(0).unwrap().selections);
+        insta::assert_debug_snapshot!(film_selections.first().unwrap().selections);
     }
 
     #[test]

@@ -43,9 +43,9 @@ fn main() -> anyhow::Result<()> {
             }
         }
 
-        let id_trait = match module {
-            "executable" => "ExecutableId",
-            "type_system" => "TypeSystemId",
+        let (id_trait, document_type) = match module {
+            "executable" => ("ExecutableId", "ExecutableDocument"),
+            "type_system" => ("TypeSystemId", "TypeSystemDocument"),
             _ => todo!(),
         };
 
@@ -54,13 +54,13 @@ fn main() -> anyhow::Result<()> {
             .map(|model| {
                 let output = match model {
                     TypeDefinition::Object(object) => {
-                        object::object_output(*object, &model_index, id_trait)?
+                        object::object_output(*object, &model_index, id_trait, document_type)?
                     }
                     TypeDefinition::Scalar(_) => {
                         return Ok(None);
                     }
                     TypeDefinition::Union(union) => {
-                        union::union_output(*union, &model_index, id_trait)?
+                        union::union_output(*union, &model_index, id_trait, document_type)?
                     }
                     _ => anyhow::bail!("unsupported definition"),
                 };

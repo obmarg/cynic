@@ -47,7 +47,7 @@ pub enum Content<'de> {
     Map(Vec<(Cow<'de, str>, Content<'de>)>),
 }
 
-impl<'de> Content<'de> {
+impl Content<'_> {
     #[cold]
     fn unexpected(&self) -> Unexpected<'_> {
         match *self {
@@ -789,7 +789,7 @@ where
 
 /// Used when deserializing an untagged enum because the content may need
 /// to be used more than once.
-impl<'de, 'a, E> Deserializer<'de> for ContentRefDeserializer<'a, 'de, E>
+impl<'de, E> Deserializer<'de> for ContentRefDeserializer<'_, 'de, E>
 where
     E: de::Error,
 {
@@ -1106,7 +1106,7 @@ where
     }
 }
 
-impl<'de, 'a, E> de::IntoDeserializer<'de, E> for ContentRefDeserializer<'a, 'de, E>
+impl<'de, E> de::IntoDeserializer<'de, E> for ContentRefDeserializer<'_, 'de, E>
 where
     E: de::Error,
 {

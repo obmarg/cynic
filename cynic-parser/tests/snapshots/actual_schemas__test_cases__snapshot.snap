@@ -1,6 +1,7 @@
 ---
 source: cynic-parser/tests/actual_schemas.rs
-expression: parsed.to_sdl()
+expression: parsed.to_sdl_pretty()
+snapshot_kind: text
 ---
 schema {
   query: Foo
@@ -19,6 +20,7 @@ type Foo {
     recursive2: RecursiveInputParent
   ): Boolean
   fieldWithStringArg(input: String!): Int
+  clashes: FieldNameClashes
 }
 
 type Bar {
@@ -54,3 +56,9 @@ directive @skip(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
 
 directive @include(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
 
+type FieldNameClashes {
+  str: String
+  bool: Boolean
+  i32: Int
+  u32: Int
+}

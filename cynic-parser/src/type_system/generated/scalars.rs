@@ -1,16 +1,17 @@
 use super::prelude::*;
 use super::{
+    descriptions::Description,
     directives::Directive,
-    ids::{DirectiveId, ScalarDefinitionId, StringLiteralId},
-    strings::StringLiteral,
-    ReadContext, TypeSystemId,
+    ids::{DescriptionId, DirectiveId, ScalarDefinitionId},
+    TypeSystemId,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};
 
 pub struct ScalarDefinitionRecord {
     pub name: StringId,
-    pub description: Option<StringLiteralId>,
+    pub name_span: Span,
+    pub description: Option<DescriptionId>,
     pub directives: IdRange<DirectiveId>,
     pub span: Span,
 }
@@ -23,7 +24,11 @@ impl<'a> ScalarDefinition<'a> {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).name)
     }
-    pub fn description(&self) -> Option<StringLiteral<'a>> {
+    pub fn name_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).name_span
+    }
+    pub fn description(&self) -> Option<Description<'a>> {
         let document = self.0.document;
         document
             .lookup(self.0.id)
@@ -59,14 +64,15 @@ impl fmt::Debug for ScalarDefinition<'_> {
 
 impl TypeSystemId for ScalarDefinitionId {
     type Reader<'a> = ScalarDefinition<'a>;
+    fn read(self, document: &TypeSystemDocument) -> Self::Reader<'_> {
+        ScalarDefinition(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for ScalarDefinition<'_> {
     type Id = ScalarDefinitionId;
-}
-
-impl<'a> From<ReadContext<'a, ScalarDefinitionId>> for ScalarDefinition<'a> {
-    fn from(value: ReadContext<'a, ScalarDefinitionId>) -> Self {
-        Self(value)
+    type Reader<'a> = ScalarDefinition<'a>;
+    fn new(id: Self::Id, document: &'_ TypeSystemDocument) -> Self::Reader<'_> {
+        document.read(id)
     }
 }

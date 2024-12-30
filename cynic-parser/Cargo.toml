@@ -4,7 +4,7 @@ description = "A fast, correct and easy to use GraphQL parser"
 keywords = ["graphql", "parser", "api"]
 readme = "README.md"
 
-version = "0.4.3"
+version = "0.8.7"
 
 homepage = "https://docs.rs/cynic-parser"
 documentation = "https://docs.rs/cynic-parser"
@@ -25,7 +25,7 @@ report = ["ariadne"]
 
 [dependencies]
 indexmap = "2"
-lalrpop-util = "0.20.0"
+lalrpop-util = { version = "0.22.0", default-features = false }
 logos = "0.14"
 
 ariadne = { version = "0.4", optional = true }
@@ -40,7 +40,7 @@ cynic-parser = { path = ".", features = ["pretty", "report"] }
 
 # Benchmark bits & bobs
 async-graphql-parser = "7"
-apollo-parser = "0.7"
+apollo-parser = "0.8"
 divan = "0.1"
 graphql-parser = "0.4"
 

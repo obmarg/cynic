@@ -4,10 +4,12 @@ use crate::{
     executable::{
         storage::*, ids::*, writer::ExecutableAstWriter
     },
+    values::{storage::*, ids::{ValueId, ConstValueId}, self},
     common::{
         OperationType, IdRange, WrappingType, TypeWrappers,
         unquote_string, unquote_block_string, trim_block_string_whitespace
-    }
+    },
+    Span
 };
 
 grammar<'input>(input: &'input str, ast: &mut ExecutableAstWriter);
@@ -22,17 +24,39 @@ ExecutableDefinition: ExecutableDefinitionId = {
 }
 
 OperationDefinition: OperationDefinitionRecord = {
-    <operation_type:OperationType> <name:Name?> <variable_definitions:VariableDefinitions?> <directives:Directives> <selection_set:SelectionSet> => {
+    <operation_type_start:@L>
+    <operation_type:OperationType>
+    <operation_type_end:@R>
+    <name_start:@L>
+    <name:Name?>
+    <name_end:@R>
+    <variable_definitions:VariableDefinitions?>
+    <directives:Directives>
+    <selection_set_start:@L>
+    <selection_set:SelectionSet>
+    <selection_set_end:@R> => {
         let variable_definitions = ast.variable_definition_range(variable_definitions.map(|defs| defs.len()));
         OperationDefinitionRecord {
-            <>
+            operation_type,
+            operation_type_span: Some(Span::new(operation_type_start, operation_type_end)),
+            name,
+            name_span: Some(Span::new(name_start, name_end)),
+            variable_definitions,
+            directives,
+            selection_set,
+            selection_set_span: Span::new(selection_set_start, selection_set_end)
         }
     },
-    <selection_set:SelectionSet> => {
+    <selection_set_start:@L>
+    <selection_set:SelectionSet>
+    <selection_set_end:@R> => {
         OperationDefinitionRecord {
             operation_type: OperationType::Query,
+            operation_type_span: None,
             name: None,
+            name_span: None,
             selection_set,
+            selection_set_span: Span::new(selection_set_start, selection_set_end),
             variable_definitions: Default::default(),
             directives: Default::default()
         }
@@ -40,9 +64,25 @@ OperationDefinition: OperationDefinitionRecord = {
 };
 
 FragmentDefinition: FragmentDefinitionRecord = {
-    fragment <name:FragmentName> <type_condition:TypeCondition> <directives:Directives> <selection_set:SelectionSet> => {
+    fragment
+    <name_start:@L>
+    <name:FragmentName>
+    <name_end:@R>
+    <type_condition_start:@L>
+    <type_condition:TypeCondition>
+    <type_condition_end:@R>
+    <directives:Directives>
+    <selection_set_start:@L>
+    <selection_set:SelectionSet>
+    <selection_set_end:@R> => {
         FragmentDefinitionRecord {
-            <>
+            name,
+            name_span: Span::new(name_start, name_end),
+            type_condition,
+            type_condition_span: Span::new(type_condition_start, type_condition_end),
+            directives,
+            selection_set,
+            selection_set_span: Span::new(selection_set_start, selection_set_end)
         }
     }
 };
@@ -60,13 +100,25 @@ VariableDefinitions: Vec<()> = {
 }
 
 VariableDefinition: () = {
-    "$" <name:Name> ":" <ty:Type> <default_value:DefaultValue?> <directives:Directives> => {
-        ast.variable_definition(VariableDefinitionRecord { <> });
+    <name_start:@L>
+    "$" <name:Name>
+    <name_end:@R>
+    ":"
+    <ty:Type>
+    <default_value:DefaultValue?>
+    <directives:Directives> => {
+        ast.variable_definition(VariableDefinitionRecord {
+            name,
+            name_span: Span::new(name_start, name_end),
+            ty,
+            default_value,
+            directives
+        });
     }
 }
 
-DefaultValue: ValueId = {
-    "=" <value:Value> => {
+DefaultValue: ConstValueId = {
+    "=" <value:ConstValue> => {
         value
     }
 }
@@ -78,26 +130,66 @@ SelectionSet: IdRange<SelectionId> = {
 }
 
 Selection: SelectionRecord = {
-    <alias:Alias?> <name:Name> <arguments:Arguments?> <directives:Directives> <selection_set:SelectionSet?> => {
+    <alias_start:@L>
+    <alias:Alias?>
+    <alias_end:@R>
+    <name_start:@L>
+    <name:Name>
+    <name_end:@R>
+    <arguments:Arguments?>
+    <directives:Directives>
+    <selection_set_start:@L>
+    <selection_set:SelectionSet?>
+    <selection_set_end:@R> => {
         let selection_set = selection_set.unwrap_or_default();
         let arguments = arguments.map(|args| ast.arguments(args)).unwrap_or_default();
         SelectionRecord::Field(
             ast.field_selection(FieldSelectionRecord {
-                <>
+                alias_span: alias.as_ref().map(|_| Span::new(alias_start, alias_end)),
+                alias,
+                name,
+                name_span: Span::new(alias_start, alias_end),
+                arguments,
+                directives,
+                selection_set_span: if selection_set.is_empty() {
+                    None
+                } else {
+                    Some(Span::new(selection_set_start, selection_set_end))
+                },
+                selection_set
             })
         )
     },
-    "..." <fragment_name:FragmentName> <directives:Directives> => {
+    "..."
+    <name_start:@L>
+    <fragment_name:FragmentName>
+    <name_end:@R>
+    <directives:Directives> => {
         SelectionRecord::FragmentSpread(
             ast.fragment_spread(FragmentSpreadRecord {
-                <>
+                fragment_name,
+                fragment_name_span: Span::new(name_start, name_end),
+                directives
             })
         )
     },
-    "..." <type_condition:TypeCondition?> <directives:Directives> <selection_set:SelectionSet> => {
+    "..."
+    <type_condition_start:@L>
+    <type_condition:TypeCondition?>
+    <type_condition_end:@L>
+    <directives:Directives>
+    <selection_set_start:@L>
+    <selection_set:SelectionSet>
+    <selection_set_end:@R> => {
         SelectionRecord::InlineFragment(
             ast.inline_fragment(InlineFragmentRecord {
-                <>
+                type_condition_span: type_condition.as_ref().map(|_|
+                    Span::new(type_condition_start, type_condition_end)
+                ),
+                type_condition,
+                directives,
+                selection_set,
+                selection_set_span: Span::new(selection_set_start, selection_set_end)
             })
         )
     }
@@ -118,10 +210,17 @@ TypeCondition: StringId = {
 NamedType: StringId = <s:Ident> => ast.ident(s);
 
 Type: TypeId = {
-    "[" <ty:Type> => ty,
-    <name:NamedType> <wrappers:WrappingType*> => ast.type_reference(TypeRecord {
+    <start:@L>
+        "["*
+        <name_start:@L>
+        <name:NamedType>
+        <wrappers:WrappingType*>
+        <end:@R>
+    => ast.type_reference(TypeRecord {
         name,
-        wrappers: TypeWrappers::from_iter(wrappers)
+        name_start,
+        wrappers: TypeWrappers::from_iter(wrappers),
+        span: Span::new(start, end)
     })
 }
 
@@ -138,9 +237,17 @@ Directives: IdRange<DirectiveId> = {
 }
 
 Directive: () = {
-    "@" <name:Name> <arguments:Arguments?> => {
+    <name_start:@L>
+    "@"
+    <name:Name>
+    <name_end:@R>
+    <arguments:Arguments?> => {
         let arguments = arguments.map(|args| ast.arguments(args)).unwrap_or_default();
-        ast.directive(DirectiveRecord { <> });
+        ast.directive(DirectiveRecord {
+            name,
+            name_span: Span::new(name_start, name_end),
+            arguments
+        });
     }
 }
 
@@ -149,37 +256,149 @@ Arguments: Vec<ArgumentRecord> = {
 }
 
 Argument: ArgumentRecord = {
-    <name:Name> ":" <value:Value> => {
-        ArgumentRecord { <> }
+    <name_start:@L>
+    <name:Name>
+    ":"
+    <name_end:@R>
+    <value:Value> => {
+        ArgumentRecord {
+            name,
+            name_span: Span::new(name_start, name_end),
+            value
+        }
+    }
+}
+
+ConstValue: ConstValueId = {
+    <record:ConstValueRecord> => {
+        ast.values.const_value(record)
+    }
+}
+
+ConstValueRecord: ValueRecord = {
+    <scalar:ScalarValueRecord> => scalar,
+    <start:@L> "[" <values:ConstValueRecord*> "]" <end:@R> => {
+        let id = ast.values.list(values);
+        ValueRecord {
+            span: Span::new(start, end),
+            kind: ValueKind::List(id)
+        }
+    },
+    <start:@L> "{" <fields:ConstObjectField*> "}" <end:@R> => {
+        let fields = ast.values.const_fields(fields);
+        ValueRecord {
+            span: Span::new(start, end),
+            kind: ValueKind::Object(fields)
+        }
+    },
+}
+
+ConstObjectField: (values::ids::StringId, Span, ConstValueId) = {
+    <name_start:@L> <name:Name> <name_end:@R> ":" <value:ConstValue> => {
+        (
+            values::ids::StringId::from_executable_id(name),
+            Span::new(name_start, name_end),
+            value
+        )
     }
 }
 
 Value: ValueId = {
-    "$" <name:Name> => ast.value(ValueRecord::Variable(name)),
-    <int:IntegerLiteral> => ast.value(ValueRecord::Int(int.parse().unwrap())),
-    <float:FloatLiteral> => ast.value(ValueRecord::Float(float.parse().unwrap())),
-    <start:@L> <s:StringLiteral> =>? {
-        let id = ast.intern_owned_string(unquote_string(s, start)?);
-        Ok(ast.value(ValueRecord::String(id)))
+    <record:ValueRecord> => {
+        ast.values.value(record)
+    }
+}
+
+ValueRecord: ValueRecord = {
+    <start:@L> "$" <name:Name> <end:@R> => {
+        ValueRecord {
+            span: Span::new(start, end),
+            kind: ValueKind::Variable(values::ids::StringId::from_executable_id(name))
+        }
     },
-    <s:BlockStringLiteral> => {
+    <scalar:ScalarValueRecord> => scalar,
+    <start:@L> "[" <values:ValueRecord*> "]" <end:@R> => {
+        let id = ast.values.list(values);
+        ValueRecord {
+            span: Span::new(start, end),
+            kind: ValueKind::List(id)
+        }
+    },
+    <start:@L> "{" <fields:ObjectField*> "}" <end:@R> => {
+        let fields = ast.values.fields(fields);
+        ValueRecord {
+            span: Span::new(start, end),
+            kind: ValueKind::Object(fields)
+        }
+    },
+}
+
+ObjectField: (values::ids::StringId, Span, ValueId) = {
+    <name_start:@L> <name:Name> <name_end:@R> ":" <value:Value> => {
+        (
+            values::ids::StringId::from_executable_id(name),
+            Span::new(name_start, name_end),
+            value
+        )
+    }
+}
+
+
+ScalarValueRecord: ValueRecord = {
+    <start:@L> <int:IntegerLiteral> <end:@R> => {
+        ValueRecord {
+            span: Span::new(start, end),
+            kind: ValueKind::Int(int.parse().unwrap())
+        }
+    },
+    <start:@L> <float:FloatLiteral> <end:@R> => {
+        ValueRecord {
+            span: Span::new(start, end),
+            kind: ValueKind::Float(float.parse().unwrap())
+        }
+    },
+    <start:@L> <s:StringLiteral> <end:@R> =>? {
+        let id = ast.intern_owned_string(unquote_string(s, start)?);
+        Ok(ValueRecord {
+            span: Span::new(start, end),
+            kind: ValueKind::String(values::ids::StringId::from_executable_id(id))
+        })
+    },
+    <start:@L> <s:BlockStringLiteral> <end:@R> => {
         let id = ast.intern_owned_string(
             trim_block_string_whitespace(
                 unquote_block_string(s)
             )
         );
-        ast.value(ValueRecord::String(id))
+        ValueRecord {
+            span: Span::new(start, end),
+            kind: ValueKind::String(values::ids::StringId::from_executable_id(id))
+        }
     },
-    true => ast.value(ValueRecord::Boolean(true)),
-    false => ast.value(ValueRecord::Boolean(false)),
-    null => ast.value(ValueRecord::Null),
-    "[" <values:Value*> "]" => ast.value(ValueRecord::List(values)),
-    "{" <fields:ObjectField*> "}" => ast.value(ValueRecord::Object(fields)),
-    <value:EnumValue> => ast.value(ValueRecord::Enum(value)),
-}
-
-ObjectField: (StringId, ValueId) = {
-    <name:Name> ":" <value:Value> => (name, value)
+    <start:@L> true <end:@R> => {
+        ValueRecord {
+            span: Span::new(start, end),
+            kind: ValueKind::Boolean(true)
+        }
+    },
+    <start:@L> false <end:@R> => {
+        ValueRecord {
+            span: Span::new(start, end),
+            kind: ValueKind::Boolean(false)
+        }
+    },
+    <start:@L> null <end:@R> => {
+        ValueRecord {
+            span: Span::new(start, end),
+            kind: ValueKind::Null
+        }
+    },
+    <start:@L> <value:EnumValue> <end:@R> => {
+        ValueRecord {
+            span: Span::new(start, end),
+            kind: ValueKind::Enum(values::ids::StringId::from_executable_id(value))
+        }
+    },
 }
 
 EnumValue: StringId = {

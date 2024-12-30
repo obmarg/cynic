@@ -1,8 +1,8 @@
-use std::borrow::Cow;
+use std::{borrow::Cow, fmt};
 
 use crate::{common::trim_block_string_whitespace, type_system::StringLiteralId, AstLookup};
 
-use super::{ReadContext, TypeSystemId};
+use super::TypeSystemId;
 
 #[derive(Clone, Copy, Debug)]
 pub struct StringLiteral<'a>(StringLiteralInner<'a>);
@@ -32,7 +32,7 @@ impl<'a> StringLiteral<'a> {
         }
     }
 
-    pub fn raw_str(&self) -> &'a str {
+    pub fn raw_untrimmed_str(&self) -> &'a str {
         match self.0 {
             StringLiteralInner::String(string) => string,
             StringLiteralInner::BlockString(string) => string,
@@ -47,17 +47,19 @@ impl<'a> StringLiteral<'a> {
     }
 }
 
-impl TypeSystemId for StringLiteralId {
-    type Reader<'a> = StringLiteral<'a>;
+impl fmt::Display for StringLiteral<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str(self.to_cow().as_ref())
+    }
 }
 
-impl<'a> From<ReadContext<'a, StringLiteralId>> for StringLiteral<'a> {
-    fn from(value: ReadContext<'a, StringLiteralId>) -> Self {
-        StringLiteral(match value.id {
-            StringLiteralId::String(id) => StringLiteralInner::String(value.document.lookup(id)),
-            StringLiteralId::Block(id) => {
-                StringLiteralInner::BlockString(value.document.lookup(id))
-            }
+impl TypeSystemId for StringLiteralId {
+    type Reader<'a> = StringLiteral<'a>;
+
+    fn read(self, document: &super::TypeSystemDocument) -> Self::Reader<'_> {
+        StringLiteral(match self {
+            StringLiteralId::String(id) => StringLiteralInner::String(document.lookup(id)),
+            StringLiteralId::Block(id) => StringLiteralInner::BlockString(document.lookup(id)),
         })
     }
 }

@@ -50,26 +50,37 @@ pub enum Error {
     /// Malformed string literal
     MalformedStringLiteral(crate::common::MalformedStringError),
 
-    /// Malformed string literal
+    /// Malformed directive location
     MalformedDirectiveLocation(usize, String, usize),
+
+    /// Variable found in const position
+    VariableInConstPosition(usize, String, usize),
+
+    /// The GraphQl document was empty
+    EmptyTypeSystemDocument,
+
+    /// The GraphQl document was empty
+    EmptyExecutableDocument,
 }
 
 impl Error {
-    pub fn span(&self) -> Span {
+    pub fn span(&self) -> Option<Span> {
         match self {
-            Error::InvalidToken { location } => Span::new(*location, *location),
-            Error::UnrecognizedEof { location, .. } => Span::new(*location, *location),
+            Error::InvalidToken { location } => Span::new(*location, *location).into(),
+            Error::UnrecognizedEof { location, .. } => Span::new(*location, *location).into(),
             Error::UnrecognizedToken {
                 token: (start, _, end),
                 ..
-            } => Span::new(*start, *end),
+            } => Span::new(*start, *end).into(),
             Error::ExtraToken {
                 token: (start, _, end),
                 ..
-            } => Span::new(*start, *end),
-            Error::Lexical(error) => error.span(),
-            Error::MalformedStringLiteral(error) => error.span(),
-            Error::MalformedDirectiveLocation(lhs, _, rhs) => Span::new(*lhs, *rhs),
+            } => Span::new(*start, *end).into(),
+            Error::Lexical(error) => error.span().into(),
+            Error::MalformedStringLiteral(error) => error.span().into(),
+            Error::MalformedDirectiveLocation(lhs, _, rhs) => Span::new(*lhs, *rhs).into(),
+            Error::VariableInConstPosition(lhs, _, rhs) => Span::new(*lhs, *rhs).into(),
+            Error::EmptyExecutableDocument | Error::EmptyTypeSystemDocument => None,
         }
     }
 }
@@ -81,9 +92,12 @@ impl std::error::Error for Error {
             | Error::UnrecognizedEof { .. }
             | Error::UnrecognizedToken { .. }
             | Error::ExtraToken { .. }
-            | Error::MalformedDirectiveLocation(..) => None,
+            | Error::MalformedStringLiteral(..)
+            | Error::MalformedDirectiveLocation(..)
+            | Error::VariableInConstPosition(..)
+            | Error::EmptyTypeSystemDocument
+            | Error::EmptyExecutableDocument => None,
             Error::Lexical(error) => Some(error),
-            Error::MalformedStringLiteral(error) => Some(error),
         }
     }
 }
@@ -126,7 +140,7 @@ impl fmt::Display for Error {
                 write!(f, "found a {token} after the expected end of the document")
             }
             Error::Lexical(error) => {
-                write!(f, "lexing error: {error}")
+                write!(f, "{error}")
             }
             Error::MalformedStringLiteral(error) => {
                 write!(f, "malformed string literal: {error}")
@@ -144,6 +158,25 @@ impl fmt::Display for Error {
                     write!(f, "{location}")?;
                 }
                 Ok(())
+            }
+            Error::VariableInConstPosition(_, name, _) => {
+                write!(
+                    f,
+                    "the variable ${name} was found in a position that does not allow variables"
+                )?;
+                Ok(())
+            }
+            Error::EmptyExecutableDocument => {
+                write!(
+                    f,
+                    "the graphql document was empty, please provide an operation"
+                )
+            }
+            Error::EmptyTypeSystemDocument => {
+                write!(
+                    f,
+                    "the graphql document was empty, please provide at least one definition"
+                )
             }
         }
     }
@@ -178,6 +211,9 @@ impl From<lalrpop_util::ParseError<usize, lexer::Token<'_>, AdditionalErrors>> f
             ParseError::User {
                 error: AdditionalErrors::MalformedDirectiveLocation(lhs, location, rhs),
             } => Error::MalformedDirectiveLocation(lhs, location, rhs),
+            ParseError::User {
+                error: AdditionalErrors::VariableInConstPosition(lhs, name, rhs),
+            } => Error::MalformedDirectiveLocation(lhs, name, rhs),
         }
     }
 }

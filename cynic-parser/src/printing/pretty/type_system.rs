@@ -7,63 +7,82 @@ use crate::{printing::escape_string, type_system::*};
 
 use self::{argument_sequence::ArgumentSequence, field_sequence::FieldSequence};
 
-type Allocator<'a> = pretty::Arena<'a>;
+use super::{printer::PrettyOptions, sorting::sort_key_for, Allocator, NodeDisplay};
 
 impl crate::TypeSystemDocument {
     pub fn to_sdl_pretty(&self) -> String {
+        self.pretty_printer().to_string()
+    }
+
+    pub fn pretty_printer(&self) -> super::PrettyPrinter<'_> {
+        super::PrettyPrinter::new_type_system(self)
+    }
+
+    pub(super) fn pretty_print(&self, options: &PrettyOptions) -> String {
         let allocator = pretty::Arena::new();
+
+        let definitions: Box<dyn Iterator<Item = Definition<'_>>> = match options.sort {
+            false => Box::new(self.definitions()),
+            true => {
+                let mut definitions = self.definitions().collect::<Vec<_>>();
+                definitions.sort_by_key(sort_key_for);
+                Box::new(definitions.into_iter())
+            }
+        };
 
         let builder = allocator
             .intersperse(
-                self.definitions().map(|definition| match definition {
-                    Definition::Schema(reader) => NodeDisplay(reader).pretty(&allocator),
+                definitions.map(|definition| match definition {
+                    Definition::Schema(reader) => NodeDisplay(reader, *options).pretty(&allocator),
                     Definition::SchemaExtension(reader) => allocator
                         .text("extend")
                         .append(allocator.space())
-                        .append(NodeDisplay(reader).pretty(&allocator)),
+                        .append(NodeDisplay(reader, *options).pretty(&allocator)),
                     Definition::Type(TypeDefinition::Scalar(reader)) => {
-                        NodeDisplay(reader).pretty(&allocator)
+                        NodeDisplay(reader, *options).pretty(&allocator)
                     }
                     Definition::Type(TypeDefinition::Object(reader)) => {
-                        NodeDisplay(reader).pretty(&allocator)
+                        NodeDisplay(reader, *options).pretty(&allocator)
                     }
                     Definition::Type(TypeDefinition::Interface(reader)) => {
-                        NodeDisplay(reader).pretty(&allocator)
+                        NodeDisplay(reader, *options).pretty(&allocator)
                     }
                     Definition::Type(TypeDefinition::Union(reader)) => {
-                        NodeDisplay(reader).pretty(&allocator)
+                        NodeDisplay(reader, *options).pretty(&allocator)
                     }
                     Definition::Type(TypeDefinition::Enum(reader)) => {
-                        NodeDisplay(reader).pretty(&allocator)
+                        NodeDisplay(reader, *options).pretty(&allocator)
                     }
                     Definition::Type(TypeDefinition::InputObject(reader)) => {
-                        NodeDisplay(reader).pretty(&allocator)
+                        NodeDisplay(reader, *options).pretty(&allocator)
                     }
                     Definition::TypeExtension(TypeDefinition::Scalar(reader)) => allocator
                         .text("extend")
                         .append(allocator.space())
-                        .append(NodeDisplay(reader).pretty(&allocator)),
+                        .append(NodeDisplay(reader, *options).pretty(&allocator)),
                     Definition::TypeExtension(TypeDefinition::Object(reader)) => allocator
                         .text("extend")
                         .append(allocator.space())
-                        .append(NodeDisplay(reader).pretty(&allocator)),
+                        .append(NodeDisplay(reader, *options).pretty(&allocator)),
                     Definition::TypeExtension(TypeDefinition::Interface(reader)) => allocator
                         .text("extend")
                         .append(allocator.space())
-                        .append(NodeDisplay(reader).pretty(&allocator)),
+                        .append(NodeDisplay(reader, *options).pretty(&allocator)),
                     Definition::TypeExtension(TypeDefinition::Union(reader)) => allocator
                         .text("extend")
                         .append(allocator.space())
-                        .append(NodeDisplay(reader).pretty(&allocator)),
+                        .append(NodeDisplay(reader, *options).pretty(&allocator)),
                     Definition::TypeExtension(TypeDefinition::Enum(reader)) => allocator
                         .text("extend")
                         .append(allocator.space())
-                        .append(NodeDisplay(reader).pretty(&allocator)),
+                        .append(NodeDisplay(reader, *options).pretty(&allocator)),
                     Definition::TypeExtension(TypeDefinition::InputObject(reader)) => allocator
                         .text("extend")
                         .append(allocator.space())
-                        .append(NodeDisplay(reader).pretty(&allocator)),
-                    Definition::Directive(reader) => NodeDisplay(reader).pretty(&allocator),
+                        .append(NodeDisplay(reader, *options).pretty(&allocator)),
+                    Definition::Directive(reader) => {
+                        NodeDisplay(reader, *options).pretty(&allocator)
+                    }
                 }),
                 allocator.concat([allocator.hardline(), allocator.hardline()]),
             )
@@ -76,15 +95,13 @@ impl crate::TypeSystemDocument {
     }
 }
 
-pub struct NodeDisplay<T>(T);
-
 impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<SchemaDefinition<'a>> {
     fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
         let mut builder = allocator.nil();
 
         if let Some(description) = self.0.description() {
             builder = builder
-                .append(NodeDisplay(description))
+                .append(self.with_node(description))
                 .append(allocator.hardline());
         }
 
@@ -95,7 +112,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<SchemaDefinition<'a>> {
         if directives.peek().is_some() {
             directives_pretty = allocator
                 .space()
-                .append(allocator.intersperse(directives.map(NodeDisplay), allocator.softline()));
+                .append(allocator.intersperse(directives.map(self.mapper()), allocator.softline()));
         }
 
         builder = builder.append(directives_pretty);
@@ -133,7 +150,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<ScalarDefinition<'a>> {
 
         if let Some(description) = self.0.description() {
             builder = builder
-                .append(NodeDisplay(description))
+                .append(self.with_node(description))
                 .append(allocator.hardline());
         }
 
@@ -142,7 +159,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<ScalarDefinition<'a>> {
         if directives.peek().is_some() {
             directives_pretty = allocator
                 .space()
-                .append(allocator.intersperse(directives.map(NodeDisplay), allocator.softline()));
+                .append(allocator.intersperse(directives.map(self.mapper()), allocator.softline()));
         }
 
         builder
@@ -157,7 +174,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<ObjectDefinition<'a>> {
 
         if let Some(description) = self.0.description() {
             builder = builder
-                .append(NodeDisplay(description))
+                .append(self.with_node(description))
                 .append(allocator.hardline());
         }
 
@@ -178,7 +195,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<ObjectDefinition<'a>> {
             builder = builder.append(
                 allocator
                     .line()
-                    .append(allocator.intersperse(directives.map(NodeDisplay), allocator.line()))
+                    .append(allocator.intersperse(directives.map(self.mapper()), allocator.line()))
                     .nest(2)
                     .group(),
             );
@@ -192,7 +209,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<ObjectDefinition<'a>> {
                 .append(
                     allocator
                         .hardline()
-                        .append(FieldSequence::new(fields))
+                        .append(FieldSequence::new(fields, self.1))
                         .nest(2),
                 )
                 .append(allocator.hardline())
@@ -211,7 +228,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<FieldDefinition<'a>> {
             .map(|description| {
                 allocator
                     .nil()
-                    .append(NodeDisplay(description))
+                    .append(self.with_node(description))
                     .append(allocator.hardline())
             })
             .unwrap_or(allocator.softline_());
@@ -223,7 +240,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<FieldDefinition<'a>> {
         if arguments.len() != 0 {
             arguments_pretty = allocator
                 .line_()
-                .append(ArgumentSequence::new(arguments))
+                .append(ArgumentSequence::new(arguments, self.1))
                 .nest(2)
                 .append(allocator.line_())
                 .parens()
@@ -235,7 +252,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<FieldDefinition<'a>> {
         if directives.peek().is_some() {
             directives_pretty = allocator
                 .line()
-                .append(allocator.intersperse(directives.map(NodeDisplay), allocator.line()))
+                .append(allocator.intersperse(directives.map(self.mapper()), allocator.line()))
                 .nest(2)
                 .group();
         }
@@ -245,7 +262,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<FieldDefinition<'a>> {
             .append(arguments_pretty)
             .append(allocator.text(":"))
             .append(allocator.space())
-            .append(NodeDisplay(self.0.ty()))
+            .append(self.with_node(self.0.ty()))
             .append(directives_pretty)
     }
 }
@@ -256,7 +273,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<InterfaceDefinition<'a>> {
 
         if let Some(description) = self.0.description() {
             builder = builder
-                .append(NodeDisplay(description))
+                .append(self.with_node(description))
                 .append(allocator.hardline());
         }
 
@@ -276,7 +293,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<InterfaceDefinition<'a>> {
             builder = builder.append(
                 allocator
                     .line()
-                    .append(allocator.intersperse(directives.map(NodeDisplay), allocator.line()))
+                    .append(allocator.intersperse(directives.map(self.mapper()), allocator.line()))
                     .nest(2)
                     .group(),
             );
@@ -290,7 +307,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<InterfaceDefinition<'a>> {
                 .append(
                     allocator
                         .hardline()
-                        .append(FieldSequence::new(fields))
+                        .append(FieldSequence::new(fields, self.1))
                         .nest(2),
                 )
                 .append(allocator.hardline())
@@ -312,13 +329,13 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<UnionDefinition<'a>> {
             builder = builder.append(
                 allocator
                     .line()
-                    .append(allocator.intersperse(directives.map(NodeDisplay), allocator.line()))
+                    .append(allocator.intersperse(directives.map(self.mapper()), allocator.line()))
                     .nest(2)
                     .group(),
             );
         }
 
-        let mut members = self.0.members().peekable();
+        let mut members = self.0.members().map(|member| member.name()).peekable();
 
         if members.peek().is_some() {
             let members = allocator
@@ -343,7 +360,8 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<UnionDefinition<'a>> {
         builder = builder.group();
 
         if let Some(description) = self.0.description() {
-            builder = NodeDisplay(description)
+            builder = self
+                .with_node(description)
                 .pretty(allocator)
                 .append(allocator.hardline())
                 .append(builder)
@@ -360,7 +378,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<EnumDefinition<'a>> {
 
         if let Some(description) = self.0.description() {
             builder = builder
-                .append(NodeDisplay(description))
+                .append(self.with_node(description))
                 .append(allocator.hardline());
         }
 
@@ -371,7 +389,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<EnumDefinition<'a>> {
             builder = builder.append(
                 allocator
                     .line()
-                    .append(allocator.intersperse(directives.map(NodeDisplay), allocator.line()))
+                    .append(allocator.intersperse(directives.map(self.mapper()), allocator.line()))
                     .nest(2)
                     .group(),
             );
@@ -386,7 +404,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<EnumDefinition<'a>> {
                 .append(
                     allocator
                         .hardline()
-                        .append(FieldSequence::new(values))
+                        .append(FieldSequence::new(values, self.1))
                         .nest(2),
                 )
                 .append(allocator.hardline())
@@ -405,7 +423,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<EnumValueDefinition<'a>> {
             .map(|description| {
                 allocator
                     .nil()
-                    .append(NodeDisplay(description))
+                    .append(self.with_node(description))
                     .append(allocator.hardline())
             })
             .unwrap_or(allocator.softline_());
@@ -416,7 +434,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<EnumValueDefinition<'a>> {
         if directives.peek().is_some() {
             let directives_pretty = allocator
                 .line()
-                .append(allocator.intersperse(directives.map(NodeDisplay), allocator.line()))
+                .append(allocator.intersperse(directives.map(self.mapper()), allocator.line()))
                 .nest(2)
                 .group();
 
@@ -433,7 +451,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<InputObjectDefinition<'a>> {
 
         if let Some(description) = self.0.description() {
             builder = builder
-                .append(NodeDisplay(description))
+                .append(self.with_node(description))
                 .append(allocator.hardline());
         }
 
@@ -444,7 +462,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<InputObjectDefinition<'a>> {
             builder = builder.append(
                 allocator
                     .line()
-                    .append(allocator.intersperse(directives.map(NodeDisplay), allocator.line()))
+                    .append(allocator.intersperse(directives.map(self.mapper()), allocator.line()))
                     .nest(2)
                     .group(),
             );
@@ -458,7 +476,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<InputObjectDefinition<'a>> {
                 .append(
                     allocator
                         .hardline()
-                        .append(FieldSequence::new(fields))
+                        .append(FieldSequence::new(fields, self.1))
                         .nest(2),
                 )
                 .append(allocator.hardline())
@@ -477,7 +495,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<InputValueDefinition<'a>> {
             .map(|description| {
                 allocator
                     .nil()
-                    .append(NodeDisplay(description))
+                    .append(self.with_node(description))
                     .append(allocator.hardline())
             })
             .unwrap_or(allocator.softline_());
@@ -485,21 +503,21 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<InputValueDefinition<'a>> {
         let mut value_builder = allocator
             .text(self.0.name())
             .append(allocator.text(": "))
-            .append(NodeDisplay(self.0.ty()));
+            .append(self.with_node(self.0.ty()));
 
         if let Some(value) = self.0.default_value() {
             value_builder = value_builder
                 .append(allocator.space())
                 .append(allocator.text("="))
                 .append(allocator.space())
-                .append(NodeDisplay(value));
+                .append(self.with_node(value));
         }
 
         let mut directives = self.0.directives().peekable();
         if directives.peek().is_some() {
             let directives_pretty = allocator
                 .line()
-                .append(allocator.intersperse(directives.map(NodeDisplay), allocator.line()))
+                .append(allocator.intersperse(directives.map(self.mapper()), allocator.line()))
                 .nest(2)
                 .group();
 
@@ -516,7 +534,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<DirectiveDefinition<'a>> {
 
         if let Some(description) = self.0.description() {
             builder = builder
-                .append(NodeDisplay(description))
+                .append(self.with_node(description))
                 .append(allocator.hardline());
         }
 
@@ -530,7 +548,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<DirectiveDefinition<'a>> {
         if arguments.len() != 0 {
             let arguments = allocator
                 .line_()
-                .append(ArgumentSequence::new(arguments))
+                .append(ArgumentSequence::new(arguments, self.1))
                 .nest(2)
                 .append(allocator.line_())
                 .parens()
@@ -569,7 +587,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Directive<'a>> {
                 .line_()
                 .append(
                     allocator.intersperse(
-                        arguments.map(NodeDisplay),
+                        arguments.map(self.mapper()),
                         allocator
                             .line_()
                             .append(allocator.nil().flat_alt(allocator.text(", "))),
@@ -592,68 +610,13 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Argument<'a>> {
         allocator
             .text(self.0.name())
             .append(allocator.text(": "))
-            .append(NodeDisplay(self.0.value()))
+            .append(self.with_node(self.0.value()))
     }
 }
 
-impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Value<'a>> {
+impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Description<'a>> {
     fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
-        match self.0 {
-            crate::type_system::Value::Variable(name) => allocator.text(format!("${name}")),
-            crate::type_system::Value::Int(value) => allocator.text(format!("{value}")),
-            crate::type_system::Value::Float(value) => allocator.text(format!("{value}")),
-            crate::type_system::Value::String(value) => {
-                allocator.text(escape_string(value)).double_quotes()
-            }
-            crate::type_system::Value::BlockString(value) => allocator
-                .text(value)
-                .double_quotes()
-                .double_quotes()
-                .double_quotes(),
-            crate::type_system::Value::Boolean(value) => allocator.text(format!("{value}")),
-            crate::type_system::Value::Null => allocator.text("null"),
-            crate::type_system::Value::Enum(value) => allocator.text(value),
-            crate::type_system::Value::List(items) if items.is_empty() => {
-                allocator.nil().brackets()
-            }
-            crate::type_system::Value::List(items) => allocator
-                .line_()
-                .append(
-                    allocator.intersperse(
-                        items.into_iter().map(NodeDisplay),
-                        allocator
-                            .line_()
-                            .append(allocator.nil().flat_alt(allocator.text(", "))),
-                    ),
-                )
-                .nest(2)
-                .append(allocator.line_())
-                .brackets()
-                .group(),
-            crate::type_system::Value::Object(items) if items.is_empty() => {
-                allocator.nil().braces()
-            }
-            crate::type_system::Value::Object(items) => allocator
-                .line()
-                .append(
-                    allocator.intersperse(
-                        items.into_iter().map(|(name, value)| {
-                            allocator
-                                .text(name)
-                                .append(allocator.text(":"))
-                                .append(allocator.space())
-                                .append(NodeDisplay(value))
-                        }),
-                        allocator
-                            .line_()
-                            .append(allocator.nil().flat_alt(allocator.text(", "))),
-                    ),
-                )
-                .nest(2)
-                .append(allocator.line())
-                .braces()
-                .group(),
-        }
+        NodeDisplay(self.0.literal(), self.1).pretty(allocator)
     }
 }
 
@@ -664,7 +627,7 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<StringLiteral<'a>> {
                 .text(escape_string(self.0.to_cow().as_ref()))
                 .double_quotes(),
             StringLiteralKind::Block => allocator
-                .text(self.0.raw_str())
+                .text(self.0.raw_untrimmed_str())
                 .double_quotes()
                 .double_quotes()
                 .double_quotes(),

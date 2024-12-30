@@ -1,11 +1,11 @@
 use indexmap::IndexMap;
 use proc_macro2::{Ident, Span};
-use quote::{quote, ToTokens, TokenStreamExt};
+use quote::{format_ident, quote, ToTokens, TokenStreamExt};
 
 use cynic_parser::type_system::{FieldDefinition, ObjectDefinition, TypeDefinition};
 
 use crate::{
-    exts::ScalarExt,
+    exts::{FieldExt, ScalarExt},
     file::{EntityKind, EntityOutput, EntityRef},
     format_code,
     idents::IdIdent,
@@ -19,6 +19,7 @@ pub fn object_output(
     object: ObjectDefinition<'_>,
     model_index: &IndexMap<&str, TypeDefinition<'_>>,
     id_trait: &str,
+    document_type: &str,
 ) -> anyhow::Result<EntityOutput> {
     let record_name = Ident::new(&format!("{}Record", object.name()), Span::call_site());
     let reader_name = Ident::new(object.name(), Span::call_site());
@@ -69,23 +70,28 @@ pub fn object_output(
     })?;
 
     let id_trait = Ident::new(id_trait, Span::call_site());
+    let document_type = Ident::new(document_type, Span::call_site());
 
     let id_trait_impl = format_code(quote! {
         impl #id_trait for #id_name {
             type Reader<'a> = #reader_name<'a>;
+
+            fn read(self, document: &#document_type) -> Self::Reader<'_> {
+                #reader_name(ReadContext {
+                    id: self,
+                    document
+                })
+            }
         }
     })?;
 
     let id_reader_impl = format_code(quote! {
         impl IdReader for #reader_name<'_> {
             type Id = #id_name;
-        }
-    })?;
+            type Reader<'a> = #reader_name<'a>;
 
-    let from_impl = format_code(quote! {
-        impl <'a> From<ReadContext<'a, #id_name>> for #reader_name<'a> {
-            fn from(value: ReadContext<'a, #id_name>) -> Self {
-                Self(value)
+            fn new(id: Self::Id, document: &'_ #document_type) -> Self::Reader<'_> {
+                document.read(id)
             }
         }
     })?;
@@ -105,8 +111,6 @@ pub fn object_output(
         {id_trait_impl}
 
         {id_reader_impl}
-
-        {from_impl}
     "#
     );
 
@@ -174,6 +178,19 @@ impl quote::ToTokens for ObjectField<'_> {
         tokens.append_all(quote! {
             pub #field_name: #ty
         });
+
+        if self.0.field.is_spanned() {
+            let span_field = format_ident!("{}_span", self.0.field.name());
+            let span_ty = if self.0.field.should_span_be_option() {
+                quote!(Option<Span>)
+            } else {
+                quote!(Span)
+            };
+
+            tokens.append_all(quote! {
+                , pub #span_field: #span_ty
+            })
+        }
     }
 }
 
@@ -292,5 +309,22 @@ impl quote::ToTokens for ReaderFunction<'_> {
             }
             _ => unimplemented!("No support for this target type"),
         });
+
+        if self.0.field.is_spanned() {
+            let span_field = format_ident!("{}_span", self.0.field.name());
+            let span_ty = if self.0.field.should_span_be_option() {
+                quote!(Option<Span>)
+            } else {
+                quote!(Span)
+            };
+
+            tokens.append_all(quote! {
+                pub fn #span_field(&self) -> #span_ty {
+                    let document = self.0.document;
+
+                    document.lookup(self.0.id).#span_field
+                }
+            })
+        }
     }
 }

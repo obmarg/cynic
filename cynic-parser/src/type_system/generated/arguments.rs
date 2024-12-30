@@ -1,15 +1,17 @@
 use super::prelude::*;
 use super::{
-    ids::{ArgumentId, ValueId},
-    value::Value,
-    ReadContext, TypeSystemId,
+    ids::{ArgumentId, ConstValueId},
+    value::ConstValue,
+    TypeSystemId,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};
 
 pub struct ArgumentRecord {
     pub name: StringId,
-    pub value: ValueId,
+    pub name_span: Span,
+    pub value: ConstValueId,
+    pub span: Span,
 }
 
 #[derive(Clone, Copy)]
@@ -20,9 +22,17 @@ impl<'a> Argument<'a> {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).name)
     }
-    pub fn value(&self) -> Value<'a> {
+    pub fn name_span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).name_span
+    }
+    pub fn value(&self) -> ConstValue<'a> {
         let document = self.0.document;
         document.read(document.lookup(self.0.id).value)
+    }
+    pub fn span(&self) -> Span {
+        let document = self.0.document;
+        document.lookup(self.0.id).span
     }
 }
 
@@ -37,20 +47,22 @@ impl fmt::Debug for Argument<'_> {
         f.debug_struct("Argument")
             .field("name", &self.name())
             .field("value", &self.value())
+            .field("span", &self.span())
             .finish()
     }
 }
 
 impl TypeSystemId for ArgumentId {
     type Reader<'a> = Argument<'a>;
+    fn read(self, document: &TypeSystemDocument) -> Self::Reader<'_> {
+        Argument(ReadContext { id: self, document })
+    }
 }
 
 impl IdReader for Argument<'_> {
     type Id = ArgumentId;
-}
-
-impl<'a> From<ReadContext<'a, ArgumentId>> for Argument<'a> {
-    fn from(value: ReadContext<'a, ArgumentId>) -> Self {
-        Self(value)
+    type Reader<'a> = Argument<'a>;
+    fn new(id: Self::Id, document: &'_ TypeSystemDocument) -> Self::Reader<'_> {
+        document.read(id)
     }
 }
