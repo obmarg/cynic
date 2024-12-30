@@ -43,7 +43,12 @@ struct Query {
 }
 
 fn main() {
-    match run_query("ZmlsbXM6MQ==".into()).data {
+    match run_query(
+        "https://swapi-graphql.netlify.app/.netlify/functions/index",
+        "ZmlsbXM6MQ==".into(),
+    )
+    .data
+    {
         Some(Query {
             node: Some(Node::Planet(planet)),
         }) => {
@@ -65,13 +70,13 @@ fn main() {
     }
 }
 
-fn run_query(id: cynic::Id) -> cynic::GraphQlResponse<Query> {
+fn run_query(url: &str, id: cynic::Id) -> cynic::GraphQlResponse<Query> {
     use cynic::http::ReqwestBlockingExt;
 
     let query = build_query(id);
 
     reqwest::blocking::Client::new()
-        .post("https://swapi-graphql.netlify.app/.netlify/functions/index")
+        .post(url)
         .run_graphql(query)
         .unwrap()
 }
@@ -84,6 +89,8 @@ fn build_query(id: cynic::Id) -> cynic::Operation<Query, Arguments> {
 
 #[cfg(test)]
 mod test {
+    use tokio::task::spawn_blocking;
+
     use super::*;
 
     #[test]
@@ -97,29 +104,65 @@ mod test {
         insta::assert_snapshot!(query.query);
     }
 
-    #[test]
-    fn test_running_query_with_film() {
-        let result = run_query("ZmlsbXM6MQ==".into());
+    #[tokio::test]
+    async fn test_running_query_with_film() {
+        let mock_server = graphql_mocks::mocks::swapi::serve().await;
+
+        let result = spawn_blocking(move || {
+            run_query(&mock_server.url().to_string(), "ZmlsbXM6MQ==".into())
+        })
+        .await
+        .unwrap();
+
         if result.errors.is_some() {
-            assert_eq!(result.errors.unwrap().len(), 0);
+            assert_eq!(
+                result.errors.as_ref().unwrap().len(),
+                0,
+                "Server Errored: {:?}",
+                result.errors
+            );
         }
         insta::assert_debug_snapshot!(result.data);
     }
 
-    #[test]
-    fn test_running_query_with_planet() {
-        let result = run_query("cGxhbmV0czo0OQ==".into());
+    #[tokio::test]
+    async fn test_running_query_with_planet() {
+        let mock_server = graphql_mocks::mocks::swapi::serve().await;
+
+        let result = spawn_blocking(move || {
+            run_query(&mock_server.url().to_string(), "cGxhbmV0czo0OQ==".into())
+        })
+        .await
+        .unwrap();
+
         if result.errors.is_some() {
-            assert_eq!(result.errors.unwrap().len(), 0);
+            assert_eq!(
+                result.errors.as_ref().unwrap().len(),
+                0,
+                "Server Errored: {:?}",
+                result.errors
+            );
         }
         insta::assert_debug_snapshot!(result.data);
     }
 
-    #[test]
-    fn test_running_query_with_starship() {
-        let result = run_query("c3RhcnNoaXBzOjY1".into());
+    #[tokio::test]
+    async fn test_running_query_with_starship() {
+        let mock_server = graphql_mocks::mocks::swapi::serve().await;
+
+        let result = spawn_blocking(move || {
+            run_query(&mock_server.url().to_string(), "c3RhcnNoaXBzOjY1".into())
+        })
+        .await
+        .unwrap();
+
         if result.errors.is_some() {
-            assert_eq!(result.errors.unwrap().len(), 0);
+            assert_eq!(
+                result.errors.as_ref().unwrap().len(),
+                0,
+                "Server Errored: {:?}",
+                result.errors
+            );
         }
         insta::assert_debug_snapshot!(result.data);
     }

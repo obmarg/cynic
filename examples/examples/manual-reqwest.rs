@@ -24,7 +24,7 @@ struct FilmDirectorQuery {
 }
 
 fn main() {
-    match run_query().data {
+    match run_query("https://swapi-graphql.netlify.app/.netlify/functions/index").data {
         Some(FilmDirectorQuery { film: Some(film) }) => {
             println!("{:?} was directed by {:?}", film.title, film.director)
         }
@@ -34,11 +34,11 @@ fn main() {
     }
 }
 
-fn run_query() -> cynic::GraphQlResponse<FilmDirectorQuery> {
+fn run_query(url: &str) -> cynic::GraphQlResponse<FilmDirectorQuery> {
     let query = build_query();
 
     let response = reqwest::blocking::Client::new()
-        .post("https://swapi-graphql.netlify.app/.netlify/functions/index")
+        .post(url)
         .json(&query)
         .send()
         .unwrap();
@@ -56,6 +56,8 @@ fn build_query() -> cynic::Operation<FilmDirectorQuery, FilmArguments> {
 
 #[cfg(test)]
 mod test {
+    use tokio::task::spawn_blocking;
+
     use super::*;
 
     #[test]
@@ -69,9 +71,14 @@ mod test {
         insta::assert_snapshot!(query.query);
     }
 
-    #[test]
-    fn test_running_query() {
-        let result = run_query();
+    #[tokio::test]
+    async fn test_running_query() {
+        let mock_server = graphql_mocks::mocks::swapi::serve().await;
+
+        let result = spawn_blocking(move || run_query(&mock_server.url().to_string()))
+            .await
+            .unwrap();
+
         if result.errors.is_some() {
             assert_eq!(result.errors.unwrap().len(), 0);
         }

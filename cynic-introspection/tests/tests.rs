@@ -1,5 +1,6 @@
-use cynic::GraphQlResponse;
+use cynic::{http::ReqwestExt, GraphQlResponse};
 use cynic_introspection::{query::IntrospectionQuery, SchemaError, SpecificationVersion};
+use graphql_mocks::mocks;
 use serde_json::json;
 
 #[test]
@@ -13,15 +14,16 @@ fn build_2018_query() -> cynic::Operation<IntrospectionQuery, ()> {
     IntrospectionQuery::build(())
 }
 
-#[test]
-fn test_running_2018_query() {
-    use cynic::http::ReqwestBlockingExt;
+#[tokio::test]
+async fn test_running_2018_query() {
+    let mock_server = mocks::swapi::serve().await;
 
     let query = build_2018_query();
 
-    let result = reqwest::blocking::Client::new()
-        .post("https://swapi-graphql.netlify.app/.netlify/functions/index")
+    let result = reqwest::Client::new()
+        .post(mock_server.url())
         .run_graphql(query)
+        .await
         .unwrap();
 
     if result.errors.is_some() {
@@ -31,15 +33,16 @@ fn test_running_2018_query() {
     insta::assert_debug_snapshot!(result.data);
 }
 
-#[test]
-fn test_2018_schema_conversion() {
-    use cynic::http::ReqwestBlockingExt;
+#[tokio::test]
+async fn test_2018_schema_conversion() {
+    let mock_server = mocks::swapi::serve().await;
 
     let query = build_2018_query();
 
-    let result = reqwest::blocking::Client::new()
-        .post("https://swapi-graphql.netlify.app/.netlify/functions/index")
+    let result = reqwest::Client::new()
+        .post(mock_server.url())
         .run_graphql(query)
+        .await
         .unwrap();
 
     if result.errors.is_some() {
