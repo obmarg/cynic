@@ -192,6 +192,26 @@ This `operation` can then be used in exactly the same way as with queries.
 
 <!-- TODO: An example of doing mutations -->
 
+### Directives
+
+Directives can be provided using the `directive` attribute:
+
+```
+#[cynic(
+    graphql_type = "Root",
+    variables = "FilmQueryVariables"
+)]
+struct FilmQuery {
+    #[arguments(id: $id)]
+    #[directives(skip(if: $should_skip))]
+    film: Option<Film>,
+}
+```
+
+Cynic provides build in support for the `skip` & `include` directives.  Any
+other field directives can also be used, provided they don't require special
+support from the client.  
+
 #### Struct Attributes
 
 A QueryFragment can be configured with several attributes on the struct itself:
