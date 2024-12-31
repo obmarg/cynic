@@ -9,6 +9,16 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.9.0 - 2024-12-31
+
+### Breaking Changes
+
+- [**breaking**] better errors on empty graphql documents ([#1117](https://github.com/obmarg/cynic/pull/1117))
+
+### New Features
+
+- directive support ([#900](https://github.com/obmarg/cynic/pull/900))
+
 ### Breaking Changes
 
 - `Error::span` now returns an `Option<Span>` instead of a `Span`
