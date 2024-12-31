@@ -27,7 +27,10 @@ struct FilmDirectorQuery {
 
 #[tokio::main]
 async fn main() {
-    match run_query().await.data {
+    match run_query("https://swapi-graphql.netlify.app/.netlify/functions/index")
+        .await
+        .data
+    {
         Some(FilmDirectorQuery { film: Some(film) }) => {
             println!("{:?} was directed by {:?}", film.title, film.director)
         }
@@ -37,13 +40,13 @@ async fn main() {
     }
 }
 
-async fn run_query() -> cynic::GraphQlResponse<FilmDirectorQuery> {
+async fn run_query(url: &str) -> cynic::GraphQlResponse<FilmDirectorQuery> {
     use cynic::http::ReqwestExt;
 
     let query = build_query();
 
     reqwest::Client::new()
-        .post("https://swapi-graphql.netlify.app/.netlify/functions/index")
+        .post(url)
         .run_graphql(query)
         .await
         .unwrap()
@@ -74,7 +77,9 @@ mod test {
 
     #[tokio::test]
     async fn test_running_query() {
-        let result = run_query().await;
+        let mock_server = graphql_mocks::mocks::swapi::serve().await;
+
+        let result = run_query(&mock_server.url().to_string()).await;
         if result.errors.is_some() {
             assert_eq!(result.errors.unwrap().len(), 0);
         }

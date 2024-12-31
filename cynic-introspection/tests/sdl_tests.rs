@@ -1,15 +1,18 @@
+use cynic::http::ReqwestExt;
 use cynic_introspection::{IntrospectionQuery, SpecificationVersion};
+use graphql_mocks::mocks;
 
-#[test]
-fn test_starwars_sdl_conversion() {
-    use cynic::http::ReqwestBlockingExt;
+#[tokio::test]
+async fn test_starwars_sdl_conversion() {
+    let mock_server = mocks::swapi::serve().await;
 
     let query =
         IntrospectionQuery::with_capabilities(SpecificationVersion::June2018.capabilities());
 
-    let result = reqwest::blocking::Client::new()
-        .post("https://swapi-graphql.netlify.app/.netlify/functions/index")
+    let result = reqwest::Client::new()
+        .post(mock_server.url())
         .run_graphql(query)
+        .await
         .unwrap();
 
     if result.errors.is_some() {

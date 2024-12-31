@@ -10,13 +10,19 @@
 //! results directly.
 //!
 //! ```rust
-//! use cynic::{QueryBuilder, http::ReqwestBlockingExt};
+//! use cynic::{QueryBuilder, http::ReqwestExt};
 //! use cynic_introspection::IntrospectionQuery;
+//! # #[tokio::main]
+//! # async fn main() {
+//! # let server = graphql_mocks::mocks::swapi::serve().await;
+//! # let url = server.url();
+//! # let url = url.as_ref();
 //!
 //! // We can run an introspection query and unwrap the data contained within
-//! let introspection_data = reqwest::blocking::Client::new()
-//!     .post("https://swapi-graphql.netlify.app/.netlify/functions/index")
+//! let introspection_data = reqwest::Client::new()
+//!     .post(url)
 //!     .run_graphql(IntrospectionQuery::build(()))
+//!     .await
 //!     .unwrap()
 //!     .data
 //!     .unwrap();
@@ -25,6 +31,7 @@
 //! let schema = introspection_data.into_schema().unwrap();
 //!
 //! assert_eq!(schema.query_type, "Root");
+//! # }
 //! ```
 //!
 //! ### GraphQL Versions
@@ -68,23 +75,29 @@
 //! `Introspection::with_capabilities`:
 //!
 //! ```rust
-//!
-//! use cynic::{QueryBuilder, http::ReqwestBlockingExt};
+//! use cynic::{QueryBuilder, http::ReqwestExt};
 //! use cynic_introspection::{CapabilitiesQuery, IntrospectionQuery};
+//! # #[tokio::main]
+//! # async fn main() {
+//! # let server = graphql_mocks::mocks::swapi::serve().await;
+//! # let url = server.url();
+//! # let url = url.as_ref();
 //!
 //! // First we run a capabilites query to check what the server supports
-//! let capabilities = reqwest::blocking::Client::new()
-//!     .post("https://swapi-graphql.netlify.app/.netlify/functions/index")
+//! let capabilities = reqwest::Client::new()
+//!     .post(url)
 //!     .run_graphql(CapabilitiesQuery::build(()))
+//!     .await
 //!     .unwrap()
 //!     .data
 //!     .unwrap()
 //!     .capabilities();
 //!
 //! // Now we can safely run introspection, only querying for what the server supports.
-//! let introspection_data = reqwest::blocking::Client::new()
-//!     .post("https://swapi-graphql.netlify.app/.netlify/functions/index")
+//! let introspection_data = reqwest::Client::new()
+//!     .post(url)
 //!     .run_graphql(IntrospectionQuery::with_capabilities(capabilities))
+//!     .await
 //!     .unwrap()
 //!     .data
 //!     .unwrap();
@@ -93,6 +106,7 @@
 //! let schema = introspection_data.into_schema().unwrap();
 //!
 //! assert_eq!(schema.query_type, "Root");
+//! # }
 //! ```
 //!
 //! [1]: http://spec.graphql.org/October2021/#sec-Introspection

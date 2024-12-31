@@ -15,6 +15,7 @@ members = [
     "cynic-parser/ast-generator",
     "cynic-parser-deser",
     "cynic-parser-deser-macros",
+    "graphql-mocks",
 ]
 exclude = ["cynic-parser/parser-generator"]
 resolver = "2"
@@ -42,6 +43,7 @@ rust-version = "1.76"
 cynic-parser = { path = "cynic-parser", version = "0.8.7" }
 cynic-parser-deser-macros = { path = "cynic-parser-deser-macros", version = "0.8.7" }
 darling = "0.20"
+graphql-mocks.path = "graphql-mocks"
 rstest = "0.23"
 syn = "2"
 
