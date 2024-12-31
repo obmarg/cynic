@@ -13,7 +13,9 @@ fn main() {
         "starwars",
         "https://swapi-graphql.netlify.app/.netlify/functions/index",
         "starwars.schema.graphql",
-    );
+    )
+    .with_mock("swapi");
+
     let jobs_schema = Schema::from_repo_schemas(
         "graphql.jobs",
         "https://api.graphql.jobs/",
@@ -317,12 +319,20 @@ impl TestCase {
             "#![allow(unreachable_code)] return;"
         };
 
+        let startup_mock = match &self.schema.mock_name {
+            Some(name) => format!("let mock_server = graphql_mocks::mocks::{name}::serve().await;"),
+            None => "".into(),
+        };
+
         let run_code = if self.is_subscription {
             format!("{};", &self.operation_construct)
         } else {
+            let url = match &self.schema.mock_name {
+                Some(_) => "mock_server.url().as_ref()".into(),
+                None => format!("\"{}\"", self.schema.query_url),
+            };
             format!(
-                r#"querygen_compile_run::send("{url}", {operation_construct}).unwrap();"#,
-                url = self.schema.query_url,
+                r#"querygen_compile_run::send({url}, {operation_construct}).await.unwrap();"#,
                 operation_construct = self.operation_construct
             )
         };
@@ -332,8 +342,9 @@ impl TestCase {
             r#"
             #![allow(unused_imports, clippy::large_enum_variant)]
 
-            #[test]
-            fn generated_test() {{
+            #[tokio::test]
+            async fn generated_test() {{
+                {startup_mock}
                 {norun_code}
                 use cynic::{{QueryBuilder, MutationBuilder, SubscriptionBuilder}};
                 {run_code}
@@ -358,9 +369,15 @@ struct Schema {
     query_url: String,
     schema_name: String,
     path_for_loading: PathBuf,
+    mock_name: Option<String>,
 }
 
 impl Schema {
+    fn with_mock(mut self, name: &str) -> Self {
+        self.mock_name = Some(name.into());
+        self
+    }
+
     /// Constructs a SchemaPath from the examples package
     fn from_repo_schemas(
         schema_name: impl Into<String>,
@@ -379,6 +396,7 @@ impl Schema {
             query_url: query_url.into(),
             path_for_loading: path,
             schema_name,
+            mock_name: None,
         }
     }
 }

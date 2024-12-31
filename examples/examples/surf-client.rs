@@ -27,7 +27,10 @@ struct FilmDirectorQuery {
 
 fn main() {
     async_std::task::block_on(async {
-        match run_query().await.data {
+        match run_query("https://swapi-graphql.netlify.app/.netlify/functions/index")
+            .await
+            .data
+        {
             Some(FilmDirectorQuery { film: Some(film) }) => {
                 println!("{:?} was directed by {:?}", film.title, film.director)
             }
@@ -38,15 +41,12 @@ fn main() {
     })
 }
 
-async fn run_query() -> cynic::GraphQlResponse<FilmDirectorQuery> {
+async fn run_query(url: &str) -> cynic::GraphQlResponse<FilmDirectorQuery> {
     use cynic::http::SurfExt;
 
     let operation = build_query();
 
-    surf::post("https://swapi-graphql.netlify.app/.netlify/functions/index")
-        .run_graphql(operation)
-        .await
-        .unwrap()
+    surf::post(url).run_graphql(operation).await.unwrap()
 }
 
 fn build_query() -> cynic::Operation<FilmDirectorQuery, FilmArguments> {

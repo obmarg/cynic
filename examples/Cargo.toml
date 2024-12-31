@@ -28,5 +28,8 @@ github-schema = { path = "../schemas/github" }
 [dev-dependencies]
 insta = "1.17"
 
-[build-dependencies]
+# Used for the mock starwars API used by some of the examples
+graphql-mocks.workspace = true
+
+[build-dependencies] # Required to fake the Swapi server used in most of these tests
 cynic-codegen = { path = "../cynic-codegen" }

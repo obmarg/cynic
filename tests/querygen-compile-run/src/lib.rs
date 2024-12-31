@@ -1,6 +1,4 @@
-use serde_json::json;
-
-pub fn send<ResponseData, Vars>(
+pub async fn send<ResponseData, Vars>(
     url: &str,
     operation: cynic::Operation<ResponseData, Vars>,
 ) -> Result<ResponseData, Box<dyn std::error::Error>>
@@ -8,12 +6,18 @@ where
     Vars: cynic::serde::Serialize,
     ResponseData: cynic::serde::de::DeserializeOwned,
 {
-    let response = ureq::post(url)
-        .set("User-Agent", "obmarg/cynic")
-        .send_json(json!(operation))
+    let response = reqwest::Client::new()
+        .post(url)
+        .header("User-Agent", "obmarg/cynic")
+        .json(&operation)
+        .send()
+        .await
         .unwrap();
 
-    let response_data = response.into_json::<cynic::GraphQlResponse<ResponseData>>()?;
+    let response_data = response
+        .json::<cynic::GraphQlResponse<ResponseData>>()
+        .await?;
+
     if let Some(_errors) = response_data.errors {
         println!("{:?}", _errors);
         return Err("GraphQL server returned errors".into());

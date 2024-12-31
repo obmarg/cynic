@@ -15,18 +15,25 @@ use super::query::schema;
 /// server has implemented support for.
 ///
 /// ```rust
-/// use cynic::{QueryBuilder, http::ReqwestBlockingExt};
+/// use cynic::{QueryBuilder, http::ReqwestExt};
 /// use cynic_introspection::CapabilitiesQuery;
+/// # #[tokio::main]
+/// # async fn main() {
+/// # let server = graphql_mocks::mocks::swapi::serve().await;
+/// # let url = server.url();
+/// # let url = url.as_ref();
 ///
-/// let data = reqwest::blocking::Client::new()
-///     .post("https://swapi-graphql.netlify.app/.netlify/functions/index")
+/// let data = reqwest::Client::new()
+///     .post(url)
 ///     .run_graphql(CapabilitiesQuery::build(()))
+///     .await
 ///     .unwrap()
 ///     .data
 ///     .unwrap();
 ///
 /// let capabilities = data.capabilities();
 /// println!("This server supports {capabilities:?}");
+/// # }
 /// ```
 pub struct CapabilitiesQuery {
     #[cynic(rename = "__type")]
