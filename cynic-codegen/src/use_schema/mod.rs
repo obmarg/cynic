@@ -1,3 +1,5 @@
+mod argument;
+mod directive;
 mod fields;
 mod input_object;
 mod interface;
@@ -16,12 +18,15 @@ use {
 
 use crate::{
     error::Errors,
-    schema::{types::Type, Schema, SchemaInput, Validated},
+    schema::{
+        types::{DirectiveLocation, Type},
+        Schema, SchemaInput, Validated,
+    },
 };
 
 use self::{
-    input_object::InputObjectOutput, interface::InterfaceOutput, named_type::NamedType,
-    object::ObjectOutput, subtype_markers::SubtypeMarkers,
+    directive::FieldDirectiveOutput, input_object::InputObjectOutput, interface::InterfaceOutput,
+    named_type::NamedType, object::ObjectOutput, subtype_markers::SubtypeMarkers,
 };
 
 pub fn use_schema(input: UseSchemaParams) -> Result<TokenStream, Errors> {
@@ -95,6 +100,17 @@ pub(crate) fn use_schema_impl(schema: &Schema<'_, Validated>) -> Result<TokenStr
                 object.append_fields(&mut field_module);
             }
         }
+    }
+
+    for directive in schema.directives() {
+        if !directive.locations.contains(&DirectiveLocation::Field) {
+            // We only support field directives for now
+            continue;
+        }
+        FieldDirectiveOutput {
+            directive: &directive,
+        }
+        .to_tokens(&mut output);
     }
 
     output.append_all(quote! {

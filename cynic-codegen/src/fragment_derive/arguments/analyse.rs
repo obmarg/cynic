@@ -18,8 +18,14 @@ use {
 };
 
 #[derive(Debug, PartialEq)]
-pub struct AnalysedArguments<'a> {
+pub struct AnalysedFieldArguments<'a> {
     pub schema_field: schema::Field<'a>,
+    pub arguments: Vec<Field<'a>>,
+    pub variants: Vec<Rc<VariantDetails<'a>>>,
+}
+
+#[derive(Debug, PartialEq)]
+pub struct AnalysedDirectiveArguments<'a> {
     pub arguments: Vec<Field<'a>>,
     pub variants: Vec<Rc<VariantDetails<'a>>>,
 }
@@ -61,13 +67,13 @@ pub struct VariantDetails<'a> {
     pub(super) variant: String,
 }
 
-pub fn analyse<'a>(
+pub fn analyse_field_arguments<'a>(
     schema: &'a Schema<'a, Unvalidated>,
     literals: Vec<parsing::FieldArgument>,
     field: &schema::Field<'a>,
     variables_fields: Option<&syn::Path>,
     span: Span,
-) -> Result<AnalysedArguments<'a>, Errors> {
+) -> Result<AnalysedFieldArguments<'a>, Errors> {
     let mut analysis = Analysis {
         variables_fields,
         variants: HashSet::new(),
@@ -78,8 +84,31 @@ pub fn analyse<'a>(
     let mut variants = analysis.variants.into_iter().collect::<Vec<_>>();
     variants.sort_by_key(|v| (v.en.name.clone(), v.variant.clone()));
 
-    Ok(AnalysedArguments {
+    Ok(AnalysedFieldArguments {
         schema_field: field.clone(),
+        arguments,
+        variants,
+    })
+}
+
+pub fn analyse_directive_arguments<'a>(
+    schema: &'a Schema<'a, Unvalidated>,
+    literals: Vec<parsing::FieldArgument>,
+    directive: &schema::Directive<'a>,
+    variables_fields: Option<&syn::Path>,
+    span: Span,
+) -> Result<AnalysedDirectiveArguments<'a>, Errors> {
+    let mut analysis = Analysis {
+        variables_fields,
+        variants: HashSet::new(),
+    };
+
+    let arguments = analyse_fields(&mut analysis, literals, &directive.arguments, span, schema)?;
+
+    let mut variants = analysis.variants.into_iter().collect::<Vec<_>>();
+    variants.sort_by_key(|v| (v.en.name.clone(), v.variant.clone()));
+
+    Ok(AnalysedDirectiveArguments {
         arguments,
         variants,
     })

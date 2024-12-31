@@ -32,6 +32,7 @@ struct Field {
     is_flattened: bool,
     is_recurse: bool,
     is_feature_flagged: bool,
+    is_skippable: bool,
 }
 
 impl<'a> DeserializeImpl<'a> {
@@ -40,7 +41,7 @@ impl<'a> DeserializeImpl<'a> {
         name: &'a syn::Ident,
         generics: &'a syn::Generics,
     ) -> Self {
-        let spreading = fields.iter().any(|f| *f.0.spread);
+        let spreading = fields.iter().any(|f| f.0.spread());
 
         let target_struct = name;
         let fields = fields
@@ -121,6 +122,10 @@ impl quote::ToTokens for StandardDeserializeImpl<'_> {
             if field.is_recurse || field.is_feature_flagged {
                 let span = rust_name.span();
                 quote_spanned!{ span =>
+                    let #rust_name = #rust_name.unwrap_or_default();
+                }
+            } else if field.is_skippable {
+                quote! {
                     let #rust_name = #rust_name.unwrap_or_default();
                 }
             } else {
@@ -269,7 +274,7 @@ impl quote::ToTokens for SpreadingDeserializeImpl<'_> {
 
 fn process_field(field: &FragmentDeriveField, schema_field: Option<&schema::Field<'_>>) -> Field {
     // Should be ok to unwrap since we only accept struct style input
-    let rust_name = field.ident.as_ref().unwrap();
+    let rust_name = field.ident().unwrap();
     let field_variant_name = rust_name.clone();
 
     Field {
@@ -278,10 +283,11 @@ fn process_field(field: &FragmentDeriveField, schema_field: Option<&schema::Fiel
             .alias()
             .or_else(|| schema_field.map(|f| f.name.as_str().to_string())),
         rust_name: rust_name.clone(),
-        ty: field.ty.clone(),
-        is_spread: *field.spread,
-        is_flattened: *field.flatten,
-        is_recurse: field.recurse.is_some(),
-        is_feature_flagged: field.feature.is_some(),
+        ty: field.raw_field.ty.clone(),
+        is_spread: field.spread(),
+        is_flattened: *field.raw_field.flatten,
+        is_recurse: field.raw_field.recurse.is_some(),
+        is_feature_flagged: field.raw_field.feature.is_some(),
+        is_skippable: field.is_skippable(),
     }
 }

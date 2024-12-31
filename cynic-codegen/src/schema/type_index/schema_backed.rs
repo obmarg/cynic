@@ -7,7 +7,10 @@ use std::{
 
 use cynic_parser::{
     common::{TypeWrappers, WrappingType},
-    type_system::{self as parser, Definition, TypeDefinition},
+    type_system::{
+        self as parser, ids::FieldDefinitionId, storage::InputValueDefinitionRecord, Definition,
+        DirectiveDefinition, TypeDefinition,
+    },
     Span,
 };
 
@@ -19,10 +22,13 @@ pub struct SchemaBackedTypeIndex {
     query_root: String,
     mutation_root: Option<String>,
     subscription_root: Option<String>,
-    typename_field: cynic_parser::type_system::ids::FieldDefinitionId,
+    typename_field: FieldDefinitionId,
     #[borrows(ast)]
     #[covariant]
     types: HashMap<&'this str, TypeDefinition<'this>>,
+    #[borrows(ast)]
+    #[covariant]
+    directives: HashMap<&'this str, DirectiveDefinition<'this>>,
 }
 
 impl SchemaBackedTypeIndex {
@@ -48,36 +54,7 @@ impl SchemaBackedTypeIndex {
             }
         }
 
-        let mut writer = cynic_parser::type_system::writer::TypeSystemAstWriter::update(ast);
-        for builtin in BUILTIN_SCALARS {
-            let name = writer.ident(builtin);
-            writer.scalar_definition(cynic_parser::type_system::storage::ScalarDefinitionRecord {
-                name,
-                name_span: Span::new(0, 0),
-                description: None,
-                directives: Default::default(),
-                span: cynic_parser::Span::new(0, 0),
-            });
-        }
-        let typename_string = writer.ident("__typename");
-        let string_ident = writer.ident("String");
-        let typename_type = writer.type_reference(cynic_parser::type_system::storage::TypeRecord {
-            name: string_ident,
-            name_start: 0,
-            wrappers: TypeWrappers::none().wrap_non_null(),
-            span: cynic_parser::Span::new(0, 0),
-        });
-        let typename_field =
-            writer.field_definition(cynic_parser::type_system::storage::FieldDefinitionRecord {
-                name: typename_string,
-                name_span: Span::new(0, 0),
-                ty: typename_type,
-                arguments: Default::default(),
-                description: None,
-                directives: Default::default(),
-                span: cynic_parser::Span::new(0, 0),
-            });
-        let ast = writer.finish();
+        let (typename_field, ast) = add_builtins_to_document(ast);
 
         SchemaBackedTypeIndex::new(
             ast,
@@ -89,13 +66,128 @@ impl SchemaBackedTypeIndex {
                 let mut types = HashMap::new();
                 for definition in ast.definitions() {
                     if let Definition::Type(type_def) = definition {
-                        types.insert(name_for_type(type_def), type_def);
+                        types.insert(type_def.name(), type_def);
                     }
                 }
                 types
             },
+            |ast| {
+                let mut directives = HashMap::new();
+                for definition in ast.definitions() {
+                    if let Definition::Directive(directive) = definition {
+                        directives.insert(directive.name(), directive);
+                    }
+                }
+                directives
+            },
         )
     }
+}
+
+/// Adds the various builtins that might be omitted from the document
+fn add_builtins_to_document(
+    ast: parser::TypeSystemDocument,
+) -> (FieldDefinitionId, parser::TypeSystemDocument) {
+    let mut has_skip = false;
+    let mut has_include = false;
+    for directive in ast.directive_definitions() {
+        if directive.name() == "skip" {
+            has_skip = true;
+        }
+        if directive.name() == "include" {
+            has_include = true;
+        }
+    }
+
+    let mut writer = parser::writer::TypeSystemAstWriter::update(ast);
+    let span = cynic_parser::Span::new(0, 0);
+    for builtin in BUILTIN_SCALARS {
+        let name = writer.ident(builtin);
+        writer.scalar_definition(parser::storage::ScalarDefinitionRecord {
+            name,
+            name_span: Span::new(0, 0),
+            description: None,
+            directives: Default::default(),
+            span,
+        });
+    }
+    let typename_string = writer.ident("__typename");
+    let string_ident = writer.ident("String");
+    let typename_type = writer.type_reference(parser::storage::TypeRecord {
+        name: string_ident,
+        name_start: 0,
+        span: Span::new(0, 0),
+        wrappers: TypeWrappers::none().wrap_non_null(),
+    });
+    let typename_field = writer.field_definition(parser::storage::FieldDefinitionRecord {
+        name: typename_string,
+        name_span: Span::new(0, 0),
+        ty: typename_type,
+        arguments: Default::default(),
+        description: None,
+        directives: Default::default(),
+        span,
+    });
+
+    if !has_skip || !has_include {
+        let if_argument_type = parser::storage::TypeRecord {
+            name: writer.ident("Boolean"),
+            name_start: 0,
+            span: Span::new(0, 0),
+            wrappers: [WrappingType::NonNull].into_iter().collect(),
+        };
+        let if_argument_type = writer.type_reference(if_argument_type);
+        let if_argument = InputValueDefinitionRecord {
+            name: writer.ident("if"),
+            name_span: Span::new(0, 0),
+            ty: if_argument_type,
+            description: None,
+            default_value: None,
+            default_value_span: Span::new(0, 0),
+            directives: Default::default(),
+            span,
+        };
+
+        writer.input_value_definition(if_argument);
+        let arguments = writer.input_value_definition_range(Some(1));
+
+        if !has_skip {
+            let skip = parser::storage::DirectiveDefinitionRecord {
+                name: writer.ident("skip"),
+                name_span: Span::new(0, 0),
+                description: None,
+                arguments,
+                is_repeatable: false,
+                locations: vec![
+                    parser::DirectiveLocation::Field,
+                    parser::DirectiveLocation::FragmentSpread,
+                    parser::DirectiveLocation::InlineFragment,
+                ],
+                span,
+            };
+            writer.directive_definition(skip);
+        }
+
+        if !has_include {
+            let include = parser::storage::DirectiveDefinitionRecord {
+                name: writer.ident("include"),
+                name_span: Span::new(0, 0),
+                description: None,
+                arguments,
+                is_repeatable: false,
+                locations: vec![
+                    parser::DirectiveLocation::Field,
+                    parser::DirectiveLocation::FragmentSpread,
+                    parser::DirectiveLocation::InlineFragment,
+                ],
+                span,
+            };
+            writer.directive_definition(include);
+        }
+    }
+
+    let ast = writer.finish();
+    (typename_field, ast)
 }
 
 impl super::TypeIndex for SchemaBackedTypeIndex {
@@ -109,11 +201,28 @@ impl super::TypeIndex for SchemaBackedTypeIndex {
         self.validate(vec![type_def])?;
 
         // Safe because we validated
-        Ok(self.unsafe_lookup(name).unwrap())
+        Ok(self.unsafe_lookup(name))
+    }
+
+    fn lookup_directive<'b>(&'b self, name: &str) -> Result<Option<Directive<'b>>, SchemaError> {
+        let Some(directive) = self.borrow_directives().get(name) else {
+            return Ok(None);
+        };
+
+        self.validate_directive(directive)?;
+
+        // Safe because we validated
+        Ok(self.unsafe_directive_lookup(name))
     }
 
     fn validate_all(&self) -> Result<(), SchemaError> {
-        self.validate(self.borrow_types().values().copied().collect())
+        self.validate(self.borrow_types().values().copied().collect())?;
+
+        for directive in self.borrow_directives().values() {
+            self.validate_directive(directive)?;
+        }
+
+        Ok(())
     }
 
     fn root_types(&self) -> Result<SchemaRoots<'_>, SchemaError> {
@@ -138,7 +247,7 @@ impl super::TypeIndex for SchemaBackedTypeIndex {
         })
     }
 
-    fn unsafe_lookup<'b>(&'b self, name: &str) -> Option<Type<'b>> {
+    fn unsafe_lookup<'b>(&'b self, name: &str) -> Type<'b> {
         // Note: This function should absolutely only be called after the hierarchy has
         // been validated.  The current module privacy settings enforce this, but don't make this
         // private or call it without being careful.
@@ -148,7 +257,7 @@ impl super::TypeIndex for SchemaBackedTypeIndex {
             .copied()
             .expect("Couldn't find a type - this should be impossible");
 
-        Some(match type_def {
+        match type_def {
             TypeDefinition::Scalar(def) => Type::Scalar(ScalarType {
                 name: Cow::Borrowed(def.name()),
                 builtin: scalar_is_builtin(def.name()),
@@ -210,15 +319,34 @@ impl super::TypeIndex for SchemaBackedTypeIndex {
                 name: Cow::Borrowed(def.name()),
                 fields: def.fields().map(convert_input_value).collect(),
             }),
-        })
+        }
     }
 
     fn unsafe_iter<'b>(&'b self) -> Box<dyn Iterator<Item = Type<'b>> + 'b> {
         let keys = self.borrow_types().keys().collect::<BTreeSet<_>>();
 
+        Box::new(keys.into_iter().map(|name| self.unsafe_lookup(name)))
+    }
+
+    fn unsafe_directive_lookup<'b>(&'b self, name: &str) -> Option<Directive<'b>> {
+        let parser_directive = self.borrow_directives().get(name)?;
+
+        Some(Directive {
+            name: Cow::Borrowed(parser_directive.name()),
+            arguments: parser_directive
+                .arguments()
+                .map(convert_input_value)
+                .collect(),
+            locations: parser_directive.locations().map(Into::into).collect(),
+        })
+    }
+
+    fn unsafe_directive_iter<'a>(&'a self) -> Box<dyn Iterator<Item = Directive<'a>> + 'a> {
+        let keys = self.borrow_directives().keys().collect::<BTreeSet<_>>();
+
         Box::new(
             keys.into_iter()
-                .map(|name| self.unsafe_lookup(name).unwrap()),
+                .map(|name| self.unsafe_directive_lookup(name).unwrap()),
         )
     }
 }
@@ -325,23 +453,42 @@ impl SchemaBackedTypeIndex {
 
         Ok(())
     }
+
+    fn validate_directive(&self, directive: &DirectiveDefinition<'_>) -> Result<(), SchemaError> {
+        let mut definitions = vec![];
+        for argument in directive.arguments() {
+            let named_type = argument.ty().name();
+            let def = self.lookup_type(named_type);
+            let Some(ty) = def else {
+                return Err(SchemaError::CouldNotFindType {
+                    name: named_type.to_string(),
+                });
+            };
+            definitions.push(ty);
+
+            if !matches!(
+                ty,
+                TypeDefinition::InputObject(_)
+                    | TypeDefinition::Enum(_)
+                    | TypeDefinition::Scalar(_)
+            ) {
+                return Err(SchemaError::InvalidDirectiveArgument {
+                    directive_name: directive.name().to_string(),
+                    argument_name: argument.name().to_string(),
+                    expected: Kind::InputType,
+                    found: Kind::of_definition(ty),
+                });
+            }
+        }
+        self.validate(definitions)?;
+        Ok(())
+    }
 }
 
 static BUILTIN_SCALARS: [&str; 5] = ["String", "ID", "Int", "Float", "Boolean"];
 
 fn scalar_is_builtin(name: &str) -> bool {
     BUILTIN_SCALARS.iter().any(|builtin| name == *builtin)
-}
-
-fn name_for_type(type_def: TypeDefinition<'_>) -> &str {
-    match type_def {
-        TypeDefinition::Scalar(inner) => inner.name(),
-        TypeDefinition::Object(inner) => inner.name(),
-        TypeDefinition::Interface(inner) => inner.name(),
-        TypeDefinition::Union(inner) => inner.name(),
-        TypeDefinition::Enum(inner) => inner.name(),
-        TypeDefinition::InputObject(inner) => inner.name(),
-    }
 }
 
 fn convert_input_value(val: cynic_parser::type_system::InputValueDefinition<'_>) -> InputValue<'_> {

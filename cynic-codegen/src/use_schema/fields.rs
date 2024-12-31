@@ -1,18 +1,15 @@
+use super::argument::ArgumentOutput;
+
 use {
     quote::{quote, ToTokens, TokenStreamExt},
     syn::parse_quote,
 };
 
-use crate::schema::types::{Field, InputValue};
+use crate::schema::types::Field;
 
 pub struct FieldOutput<'a> {
     pub(super) field: &'a Field<'a>,
     pub(super) parent_marker: &'a proc_macro2::Ident,
-}
-
-struct ArgumentOutput<'a> {
-    argument: &'a InputValue<'a>,
-    field_marker: &'a proc_macro2::Ident,
 }
 
 impl ToTokens for FieldOutput<'_> {
@@ -43,10 +40,11 @@ impl ToTokens for FieldOutput<'_> {
 
         if !self.field.arguments.is_empty() {
             let argument_module = self.field.argument_module().ident();
-            let arguments = self.field.arguments.iter().map(|argument| ArgumentOutput {
-                argument,
-                field_marker,
-            });
+            let arguments = self
+                .field
+                .arguments
+                .iter()
+                .map(|argument| ArgumentOutput::field_argument(argument, field_marker));
 
             tokens.append_all(quote! {
                 pub mod #argument_module {
@@ -54,29 +52,5 @@ impl ToTokens for FieldOutput<'_> {
                 }
             });
         }
-    }
-}
-
-impl ToTokens for ArgumentOutput<'_> {
-    fn to_tokens(&self, tokens: &mut proc_macro2::TokenStream) {
-        let name = proc_macro2::Literal::string(self.argument.name.as_str());
-        let argument_ident = self.argument.marker_ident().to_rust_ident();
-        let field_marker = self.field_marker;
-
-        let schema_type = self
-            .argument
-            .value_type
-            .marker_type()
-            .to_path(&parse_quote! { super::super::super  });
-
-        tokens.append_all(quote! {
-            pub struct #argument_ident;
-
-            impl cynic::schema::HasArgument<#argument_ident> for super::#field_marker {
-                type ArgumentType = #schema_type;
-
-                const NAME: &'static ::core::primitive::str = #name;
-            }
-        })
     }
 }

@@ -5,7 +5,7 @@ use rkyv::Deserialize;
 
 use crate::schema::{
     self,
-    types::{SchemaRoots, Type},
+    types::{Directive, SchemaRoots, Type},
     Schema, SchemaError,
 };
 
@@ -15,6 +15,7 @@ use crate::schema::{
 /// for quicker re-loading.
 pub struct OptimisedTypes<'a> {
     types: HashMap<String, Type<'a>>,
+    directives: HashMap<String, Directive<'a>>,
     schema_roots: SchemaRoots<'a>,
 }
 
@@ -25,6 +26,11 @@ impl Schema<'_, schema::Validated> {
                 .type_index
                 .unsafe_iter()
                 .map(|ty| (ty.name().to_string(), ty))
+                .collect(),
+            directives: self
+                .type_index
+                .unsafe_directive_iter()
+                .map(|directive| (directive.name.to_string(), directive))
                 .collect(),
             schema_roots: self.type_index.root_types().expect("valid root types"),
         }
@@ -65,6 +71,18 @@ impl super::TypeIndex for ArchiveBacked {
             .expect("infalliable"))
     }
 
+    fn lookup_directive<'b>(&'b self, name: &str) -> Result<Option<Directive<'b>>, SchemaError> {
+        let Some(directive) = self.borrow_archived().directives.get(name) else {
+            return Ok(None);
+        };
+
+        Ok(Some(
+            directive
+                .deserialize(&mut rkyv::Infallible)
+                .expect("infalliable"),
+        ))
+    }
+
     fn root_types(&self) -> Result<schema::types::SchemaRoots<'_>, SchemaError> {
         Ok(self
             .borrow_archived()
@@ -73,15 +91,13 @@ impl super::TypeIndex for ArchiveBacked {
             .expect("infallible"))
     }
 
-    fn unsafe_lookup<'a>(&'a self, name: &str) -> Option<Type<'a>> {
-        Some(
-            self.borrow_archived()
-                .types
-                .get(name)
-                .unwrap()
-                .deserialize(&mut rkyv::Infallible)
-                .expect("infallible"),
-        )
+    fn unsafe_lookup<'a>(&'a self, name: &str) -> Type<'a> {
+        self.borrow_archived()
+            .types
+            .get(name)
+            .unwrap()
+            .deserialize(&mut rkyv::Infallible)
+            .expect("infallible")
     }
 
     fn unsafe_iter<'a>(&'a self) -> Box<dyn Iterator<Item = Type<'a>> + 'a> {
@@ -90,6 +106,29 @@ impl super::TypeIndex for ArchiveBacked {
                 .deserialize(&mut rkyv::Infallible)
                 .expect("infallible")
         }))
+    }
+
+    fn unsafe_directive_lookup<'b>(&'b self, name: &str) -> Option<Directive<'b>> {
+        Some(
+            self.borrow_archived()
+                .directives
+                .get(name)?
+                .deserialize(&mut rkyv::Infallible)
+                .expect("infallible"),
+        )
+    }
+
+    fn unsafe_directive_iter<'a>(&'a self) -> Box<dyn Iterator<Item = Directive<'a>> + 'a> {
+        Box::new(
+            self.borrow_archived()
+                .directives
+                .values()
+                .map(|archived_type| {
+                    archived_type
+                        .deserialize(&mut rkyv::Infallible)
+                        .expect("infallible")
+                }),
+        )
     }
 }
 
@@ -147,7 +186,7 @@ mod tests {
 
         for ty in schema_backed.unsafe_iter() {
             assert_eq!(archive_backed.lookup_valid_type(ty.name()).unwrap(), ty);
-            assert_eq!(archive_backed.unsafe_lookup(ty.name()).unwrap(), ty);
+            assert_eq!(archive_backed.unsafe_lookup(ty.name()), ty);
         }
 
         let all_schema_backed = schema_backed.unsafe_iter().collect::<HashSet<_>>();

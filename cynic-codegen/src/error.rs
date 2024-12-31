@@ -61,6 +61,16 @@ impl std::iter::FromIterator<syn::Error> for Errors {
     }
 }
 
+impl IntoIterator for Errors {
+    type Item = syn::Error;
+
+    type IntoIter = std::vec::IntoIter<syn::Error>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.errors.into_iter()
+    }
+}
+
 impl From<syn::Error> for Errors {
     fn from(err: syn::Error) -> Errors {
         Errors { errors: vec![err] }

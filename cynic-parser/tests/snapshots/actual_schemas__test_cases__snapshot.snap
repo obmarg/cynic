@@ -52,6 +52,10 @@ type FlattenableEnums {
   states: [States]
 }
 
+directive @skip(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
+
+directive @include(if: Boolean!) on FIELD | FRAGMENT_SPREAD | INLINE_FRAGMENT
+
 type FieldNameClashes {
   str: String
   bool: Boolean

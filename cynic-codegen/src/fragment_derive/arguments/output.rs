@@ -2,10 +2,10 @@ use quote::{format_ident, quote, ToTokens, TokenStreamExt};
 
 use crate::idents::to_pascal_case;
 
-use super::analyse::{AnalysedArguments, ArgumentValue, VariantDetails};
+use super::analyse::{AnalysedFieldArguments, ArgumentValue, VariantDetails};
 
 pub struct Output<'a> {
-    pub(super) analysed: AnalysedArguments<'a>,
+    pub(super) analysed: AnalysedFieldArguments<'a>,
     pub(super) schema_module: syn::Path,
 }
 
@@ -59,9 +59,9 @@ impl ToTokens for Output<'_> {
     }
 }
 
-struct ArgumentValueTokens<'a> {
-    value: &'a ArgumentValue<'a>,
-    schema_module: &'a syn::Path,
+pub struct ArgumentValueTokens<'a> {
+    pub value: &'a ArgumentValue<'a>,
+    pub schema_module: &'a syn::Path,
 }
 
 impl<'a> ArgumentValueTokens<'a> {
@@ -138,9 +138,13 @@ impl VariantDetails<'_> {
     }
 }
 
-struct VariantDetailsTokens<'a> {
-    details: &'a VariantDetails<'a>,
-    schema_module: &'a syn::Path,
+/// Tokens for serializing an enum variant literal.
+///
+/// We can't rely on any types outside of our derive for these so we need to construct
+/// individual structs for each variant that we need to serialize.
+pub struct VariantDetailsTokens<'a> {
+    pub details: &'a VariantDetails<'a>,
+    pub schema_module: &'a syn::Path,
 }
 
 impl quote::ToTokens for VariantDetailsTokens<'_> {

@@ -12,7 +12,10 @@ use std::convert::Infallible;
 use std::marker::PhantomData;
 
 pub use self::{input::SchemaInput, names::FieldName, parser::load_schema};
-use self::{type_index::TypeIndex, types::SchemaRoots};
+use self::{
+    type_index::TypeIndex,
+    types::{Directive, SchemaRoots},
+};
 
 // TODO: Uncomment this
 // pub use self::{types::*},
@@ -55,6 +58,13 @@ impl<'a> Schema<'a, Unvalidated> {
         })
     }
 
+    pub fn lookup_directive<'b>(
+        &'b self,
+        name: &str,
+    ) -> Result<Option<Directive<'b>>, SchemaError> {
+        self.type_index.lookup_directive(name)
+    }
+
     pub fn lookup<'b, Kind>(&'b self, name: &str) -> Result<Kind, SchemaError>
     where
         Kind: TryFrom<types::Type<'b>> + 'b,
@@ -89,13 +99,19 @@ impl Schema<'_, Validated> {
         Kind: TryFrom<types::Type<'b>>,
         Kind::Error: Into<SchemaError>,
     {
-        // unsafe_lookup is safe because we're validated
-        Kind::try_from(self.type_index.unsafe_lookup(name).ok_or_else(|| {
-            SchemaError::CouldNotFindType {
-                name: name.to_string(),
-            }
-        })?)
-        .map_err(Into::into)
+        // unsafe_lookup is safe because we're validated and this function
+        // should only be called if we're sure the type is in the schema
+        Kind::try_from(self.type_index.unsafe_lookup(name)).map_err(Into::into)
+    }
+
+    pub fn lookup_directive<'b>(&'b self, name: &str) -> Option<Directive<'b>> {
+        // unsafe_directive_lookup is safe because we're validated and this function
+        // should only be called if we're sure the type is in the schema
+        self.type_index.unsafe_directive_lookup(name)
+    }
+
+    pub fn directives(&self) -> impl Iterator<Item = Directive<'_>> {
+        self.type_index.unsafe_directive_iter()
     }
 }
 
@@ -103,6 +119,12 @@ impl Schema<'_, Validated> {
 pub enum SchemaError {
     UnexpectedKind {
         name: String,
+        expected: types::Kind,
+        found: types::Kind,
+    },
+    InvalidDirectiveArgument {
+        directive_name: String,
+        argument_name: String,
         expected: types::Kind,
         found: types::Kind,
     },
@@ -132,6 +154,9 @@ impl std::fmt::Display for SchemaError {
             }
             Self::CouldNotFindType { name } => {
                 write!(f, "Could not find a type named `{}` in the schema", name)
+            }
+            Self::InvalidDirectiveArgument { directive_name, argument_name, expected, found } => {
+                write!(f, "argument {argument_name} on @{directive_name} is a {found} but needs to be a {expected}")
             }
         }
     }

@@ -1,6 +1,7 @@
 use std::{borrow::Cow, marker::PhantomData};
 
 use super::{names::FieldName, SchemaError};
+use cynic_parser::type_system as parser;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 #[cfg_attr(
@@ -180,6 +181,47 @@ pub struct InputObjectType<'a> {
     derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize),
     archive(check_bytes)
 )]
+pub struct Directive<'a> {
+    #[cfg_attr(feature = "rkyv", with(rkyv::with::AsOwned))]
+    pub name: Cow<'a, str>,
+    pub arguments: Vec<InputValue<'a>>,
+    pub locations: Vec<DirectiveLocation>,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[cfg_attr(
+    feature = "rkyv",
+    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize),
+    archive(check_bytes)
+)]
+pub enum DirectiveLocation {
+    Query,
+    Mutation,
+    Subscription,
+    Field,
+    FragmentDefinition,
+    FragmentSpread,
+    InlineFragment,
+    Schema,
+    Scalar,
+    Object,
+    FieldDefinition,
+    ArgumentDefinition,
+    Interface,
+    Union,
+    Enum,
+    EnumValue,
+    InputObject,
+    InputFieldDefinition,
+    VariableDefinition,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+#[cfg_attr(
+    feature = "rkyv",
+    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize),
+    archive(check_bytes)
+)]
 pub enum Kind {
     InputType,
     OutputType,
@@ -191,6 +233,19 @@ pub enum Kind {
     InputObject,
     ObjectOrInterface,
     UnionOrInterface,
+}
+
+impl Kind {
+    pub fn of_definition(definition: parser::TypeDefinition<'_>) -> Self {
+        match definition {
+            parser::TypeDefinition::Scalar(_) => Kind::Scalar,
+            parser::TypeDefinition::Object(_) => Kind::Object,
+            parser::TypeDefinition::Interface(_) => Kind::Interface,
+            parser::TypeDefinition::Union(_) => Kind::Union,
+            parser::TypeDefinition::Enum(_) => Kind::Enum,
+            parser::TypeDefinition::InputObject(_) => Kind::InputObject,
+        }
+    }
 }
 
 impl<'a> Type<'a> {
@@ -289,12 +344,7 @@ where
                 // Note: We validate types prior to constructing a TypeRef
                 // for them so the unsafe_lookup and unwrap here should
                 // be safe.
-                schema
-                    .type_index
-                    .unsafe_lookup(name)
-                    .unwrap()
-                    .try_into()
-                    .unwrap()
+                schema.type_index.unsafe_lookup(name).try_into().unwrap()
             }
             TypeRef::List(inner) => inner.inner_type(schema),
             TypeRef::Nullable(inner) => inner.inner_type(schema),
@@ -431,5 +481,33 @@ impl std::fmt::Display for Kind {
             Kind::UnionOrInterface => "union or interface",
         };
         write!(f, "{}", s)
+    }
+}
+
+impl From<parser::DirectiveLocation> for DirectiveLocation {
+    fn from(value: parser::DirectiveLocation) -> Self {
+        match value {
+            parser::DirectiveLocation::Query => DirectiveLocation::Query,
+            parser::DirectiveLocation::Mutation => DirectiveLocation::Mutation,
+            parser::DirectiveLocation::Subscription => DirectiveLocation::Subscription,
+            parser::DirectiveLocation::Field => DirectiveLocation::Field,
+            parser::DirectiveLocation::FragmentDefinition => DirectiveLocation::FragmentDefinition,
+            parser::DirectiveLocation::FragmentSpread => DirectiveLocation::FragmentSpread,
+            parser::DirectiveLocation::InlineFragment => DirectiveLocation::InlineFragment,
+            parser::DirectiveLocation::Schema => DirectiveLocation::Schema,
+            parser::DirectiveLocation::Scalar => DirectiveLocation::Scalar,
+            parser::DirectiveLocation::Object => DirectiveLocation::Object,
+            parser::DirectiveLocation::FieldDefinition => DirectiveLocation::FieldDefinition,
+            parser::DirectiveLocation::ArgumentDefinition => DirectiveLocation::ArgumentDefinition,
+            parser::DirectiveLocation::Interface => DirectiveLocation::Interface,
+            parser::DirectiveLocation::Union => DirectiveLocation::Union,
+            parser::DirectiveLocation::Enum => DirectiveLocation::Enum,
+            parser::DirectiveLocation::EnumValue => DirectiveLocation::EnumValue,
+            parser::DirectiveLocation::InputObject => DirectiveLocation::InputObject,
+            parser::DirectiveLocation::InputFieldDefinition => {
+                DirectiveLocation::InputFieldDefinition
+            }
+            parser::DirectiveLocation::VariableDefinition => DirectiveLocation::VariableDefinition,
+        }
     }
 }

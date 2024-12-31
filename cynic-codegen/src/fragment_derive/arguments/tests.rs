@@ -4,7 +4,7 @@ use syn::parse_quote;
 
 use crate::schema::{types::Type, Schema, SchemaInput};
 
-use super::{analyse::analyse, parsing::CynicArguments};
+use super::{analyse::analyse_field_arguments, parsing::CynicArguments};
 
 #[rstest]
 #[case::scalars("scalars", "someScalarParams", parse_quote! { anInt: 1, aFloat: 3, anId: "hello" })]
@@ -34,7 +34,7 @@ fn test_analyse(
 
     insta::assert_debug_snapshot!(
         snapshot_name,
-        analyse(
+        analyse_field_arguments(
             &schema,
             literals,
             field,
@@ -55,9 +55,14 @@ fn test_analyse_errors_without_argument_struct() {
         parse_quote! { filters: $aVaraible, optionalFilters: $anotherVar };
     let literals = literals.arguments.into_iter().collect::<Vec<_>>();
 
-    insta::assert_debug_snapshot!(
-        analyse(&schema, literals, field, None, Span::call_site()).map(|o| o.arguments)
+    insta::assert_debug_snapshot!(analyse_field_arguments(
+        &schema,
+        literals,
+        field,
+        None,
+        Span::call_site()
     )
+    .map(|o| o.arguments))
 }
 
 const SCHEMA: &str = r#"

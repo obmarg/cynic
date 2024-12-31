@@ -15,6 +15,32 @@ pub struct MyUnionType {}
 pub struct Nested;
 pub struct Query;
 pub struct TestStruct;
+#[allow(non_camel_case_types)]
+pub struct include;
+impl cynic::schema::FieldDirective for include {
+    const NAME: &'static str = "include";
+}
+#[allow(non_camel_case_types)]
+pub mod _include_arguments {
+    pub struct r#if;
+    impl cynic::schema::HasArgument<r#if> for super::include {
+        type ArgumentType = super::Boolean;
+        const NAME: &'static ::core::primitive::str = "if";
+    }
+}
+#[allow(non_camel_case_types)]
+pub struct skip;
+impl cynic::schema::FieldDirective for skip {
+    const NAME: &'static str = "skip";
+}
+#[allow(non_camel_case_types)]
+pub mod _skip_arguments {
+    pub struct r#if;
+    impl cynic::schema::HasArgument<r#if> for super::skip {
+        type ArgumentType = super::Boolean;
+        const NAME: &'static ::core::primitive::str = "if";
+    }
+}
 impl cynic::schema::HasSubtype<Nested> for MyUnionType {}
 impl cynic::schema::HasSubtype<TestStruct> for MyUnionType {}
 impl cynic::schema::NamedType for MyUnionType {

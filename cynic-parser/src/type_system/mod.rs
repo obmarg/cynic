@@ -213,6 +213,13 @@ impl TypeSystemDocument {
             self,
         )
     }
+
+    pub fn directive_definitions(&self) -> impl Iterator<Item = DirectiveDefinition<'_>> + '_ {
+        self.directive_definitions
+            .iter()
+            .enumerate()
+            .map(|(index, _)| self.read(DirectiveDefinitionId::new(index)))
+    }
 }
 
 pub mod storage {

@@ -12,6 +12,37 @@ pub struct MutationRoot;
 pub struct MutationType {}
 pub struct QueryRoot;
 pub struct SubscriptionRoot;
+#[allow(non_camel_case_types)]
+pub struct ifdef;
+impl cynic::schema::FieldDirective for ifdef {
+    const NAME: &'static str = "ifdef";
+}
+#[allow(non_camel_case_types)]
+pub struct include;
+impl cynic::schema::FieldDirective for include {
+    const NAME: &'static str = "include";
+}
+#[allow(non_camel_case_types)]
+pub mod _include_arguments {
+    pub struct r#if;
+    impl cynic::schema::HasArgument<r#if> for super::include {
+        type ArgumentType = super::Boolean;
+        const NAME: &'static ::core::primitive::str = "if";
+    }
+}
+#[allow(non_camel_case_types)]
+pub struct skip;
+impl cynic::schema::FieldDirective for skip {
+    const NAME: &'static str = "skip";
+}
+#[allow(non_camel_case_types)]
+pub mod _skip_arguments {
+    pub struct r#if;
+    impl cynic::schema::HasArgument<r#if> for super::skip {
+        type ArgumentType = super::Boolean;
+        const NAME: &'static ::core::primitive::str = "if";
+    }
+}
 impl cynic::schema::NamedType for Book {
     const NAME: &'static ::core::primitive::str = "Book";
 }
