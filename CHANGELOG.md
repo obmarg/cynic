@@ -8,6 +8,17 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v3.10.0 - 2024-12-31
+
+### New Features
+
+- directive support ([#900](https://github.com/obmarg/cynic/pull/900))
+
+### Changes
+
+- update Cargo.lock dependencies
+- remove reliance on hosted swapi ([#1119](https://github.com/obmarg/cynic/pull/1119))
+
 ## v3.9.1 - 2024-12-03
 
 ### Bug Fixes
