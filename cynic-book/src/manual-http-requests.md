@@ -26,7 +26,7 @@ let response = reqwest::blocking::Client::new()
     .send()
     .unwrap();
 
-let all_films_result = response.json::<GraphQlResponse<AllFilmsQuery>>.unwrap();
+let all_films_result = response.json::<GraphQlResponse<AllFilmsQuery>>().unwrap();
 ```
 
 Now you can do whatever you want with the result.
