@@ -14,12 +14,13 @@ rust-version = { workspace = true }
 
 [dependencies]
 Inflector = { version = "0.11.4", default-features = false }
-cynic-parser.path = "../cynic-parser"
 graphql-parser = "0.4"
 once_cell = "1.9"
 rust_decimal = "1.22"
 thiserror = "1.0.30"
 uuid = { version = "1", features = ["v4"] }
+
+cynic-parser.workspace = true
 
 [dev-dependencies]
 assert_matches = "1.4"

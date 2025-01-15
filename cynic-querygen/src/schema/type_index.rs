@@ -1,10 +1,5 @@
 use cynic_parser::{
-    type_system::{
-        self,
-        ids::FieldDefinitionId,
-        storage::{FieldDefinitionRecord, ScalarDefinitionRecord, TypeRecord},
-        writer, Definition, FieldDefinition, TypeDefinition,
-    },
+    type_system::{self, ids::FieldDefinitionId, Definition, FieldDefinition, TypeDefinition},
     TypeSystemDocument,
 };
 use std::{borrow::Cow, collections::HashMap, rc::Rc};
@@ -15,58 +10,22 @@ use super::{OutputField, Type};
 
 pub struct TypeIndex<'schema> {
     types: HashMap<&'schema str, TypeDefinition<'schema>>,
-    typename_id: FieldDefinitionId,
+    typename_field: FieldDefinition<'schema>,
     query_root: String,
     mutation_root: String,
     subscription_root: String,
 }
 
 impl<'schema> TypeIndex<'schema> {
-    pub fn from_schema(mut schema: TypeSystemDocument) -> TypeIndex<'schema> {
-        let mut writer = writer::TypeSystemAstWriter::update(schema);
-
-        // Add the builtins
-        for name in ["String", "Int", "Float", "Boolean", "ID"] {
-            let name = writer.intern_string(name);
-            writer.scalar_definition(ScalarDefinitionRecord {
-                name,
-                description: None,
-                directives: Default::default(),
-                span: Default::default(),
-                name_span: Default::default(),
-            });
-        }
-
-        let typename_id = {
-            let ty = {
-                let name = writer.intern_string("String");
-                writer.type_reference(TypeRecord {
-                    name,
-                    name_start: Default::default(),
-                    wrappers: Default::default(),
-                    span: Default::default(),
-                })
-            };
-            let name = writer.intern_string("__typename");
-            writer.field_definition(FieldDefinitionRecord {
-                name,
-                name_span: Default::default(),
-                ty,
-                arguments: Default::default(),
-                description: Default::default(),
-                directives: Default::default(),
-                span: Default::default(),
-            })
-        };
-
+    pub fn from_schema(
+        schema: &'schema TypeSystemDocument,
+        typename_id: FieldDefinitionId,
+    ) -> TypeIndex<'schema> {
         let types = schema
             .definitions()
             .filter_map(|definition| match definition {
                 Definition::Type(ty) => Some((ty.name(), ty)),
-                Definition::Schema(_) => todo!(),
-                Definition::SchemaExtension(_) => todo!(),
-                Definition::TypeExtension(_) => todo!(),
-                Definition::Directive(_) => todo!(),
+                // TODO: Someday need to support extensions here...
                 _ => None,
             })
             .collect::<HashMap<_, _>>();
@@ -75,7 +34,7 @@ impl<'schema> TypeIndex<'schema> {
             query_root: "Query".into(),
             mutation_root: "Mutation".into(),
             subscription_root: "Subscription".into(),
-            typename_id,
+            typename_field: schema.read(typename_id),
             types,
         };
 
@@ -163,14 +122,14 @@ impl<'schema> TypeIndex<'schema> {
     }
 
     pub fn typename_field(&self) -> type_system::FieldDefinition<'schema> {
-        todo!("somehow implement this using the id on self")
+        self.typename_field
     }
 
-    fn find_field_recursive<'find, 'path>(
-        &'find self,
+    fn find_field_recursive(
+        &self,
         mut fields: impl Iterator<Item = FieldDefinition<'schema>>,
         current_type_name: &str,
-        path: &[&'path str],
+        path: &[&str],
     ) -> Result<FieldDefinition<'schema>, Error> {
         match path {
             [] => panic!("This shouldn't happen"),
@@ -193,6 +152,7 @@ impl<'schema> TypeIndex<'schema> {
                 let inner_type = self
                     .types
                     .get(inner_name)
+                    .copied()
                     .ok_or_else(|| Error::UnknownType(inner_name.to_string()))?;
 
                 match inner_type {

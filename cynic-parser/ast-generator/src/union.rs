@@ -6,7 +6,7 @@ use cynic_parser::type_system::{TypeDefinition, UnionDefinition};
 
 use crate::{
     exts::UnionExt,
-    file::{EntityKind, EntityOutput, EntityRef},
+    file::{EntityOutput, EntityRef},
     format_code,
     idents::IdIdent,
 };
@@ -106,7 +106,6 @@ pub fn union_output(
             .collect(),
         id: EntityRef::new(TypeDefinition::Union(union_definition)).unwrap(),
         contents,
-        kind: EntityKind::Union,
     })
 }
 

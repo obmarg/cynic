@@ -7,7 +7,7 @@ mod query_parsing;
 mod schema;
 
 use output::Output;
-use schema::{GraphPath, TypeIndex};
+use schema::{add_builtins, GraphPath, TypeIndex};
 
 #[derive(thiserror::Error, Debug)]
 pub enum Error {
@@ -118,7 +118,9 @@ pub fn document_to_fragment_structs(
     let query =
         graphql_parser::parse_query::<&str>(query.as_ref()).map_err(Error::QueryParseError)?;
 
-    let type_index = Rc::new(TypeIndex::from_schema(schema));
+    let (schema, typename_id) = add_builtins(schema);
+
+    let type_index = Rc::new(TypeIndex::from_schema(&schema, typename_id));
     let mut parsed_output = query_parsing::parse_query_document(&query, &type_index)?;
 
     add_schema_name(&mut parsed_output, options.schema_name.as_deref());

@@ -580,14 +580,19 @@ impl crate::naming::Nameable for Rc<InlineFragments<'_, '_>> {
 
 #[cfg(test)]
 mod tests {
-    use {super::*, crate::schema, cynic_parser::TypeSystemDocument};
+    use {
+        super::*,
+        crate::schema::add_builtins,
+        cynic_parser::{type_system::ids::FieldDefinitionId, TypeSystemDocument},
+        std::sync::LazyLock,
+    };
 
     use assert_matches::assert_matches;
 
     #[test]
     fn normalise_deduplicates_identical_selections() {
-        let schema = load_schema();
-        let type_index = Rc::new(TypeIndex::from_schema(schema));
+        let (schema, typename_id) = &*SCHEMA;
+        let type_index = Rc::new(TypeIndex::from_schema(schema, *typename_id));
         let query = graphql_parser::parse_query::<&str>(
             r#"
             {
@@ -620,8 +625,8 @@ mod tests {
 
     #[test]
     fn normalise_does_not_deduplicate_differing_selections() {
-        let schema = load_schema();
-        let type_index = Rc::new(TypeIndex::from_schema(schema));
+        let (schema, typename_id) = &*SCHEMA;
+        let type_index = Rc::new(TypeIndex::from_schema(schema, *typename_id));
         let query = graphql_parser::parse_query::<&str>(
             r#"
             {
@@ -653,8 +658,8 @@ mod tests {
 
     #[test]
     fn check_output_makes_sense() {
-        let schema = load_schema();
-        let type_index = Rc::new(TypeIndex::from_schema(schema));
+        let (schema, typename_id) = &*SCHEMA;
+        let type_index = Rc::new(TypeIndex::from_schema(schema, *typename_id));
         let query = graphql_parser::parse_query::<&str>(
             r#"
             {
@@ -679,8 +684,8 @@ mod tests {
 
     #[test]
     fn check_fragment_spread_output() {
-        let schema = load_schema();
-        let type_index = Rc::new(TypeIndex::from_schema(schema));
+        let (schema, typename_id) = &*SCHEMA;
+        let type_index = Rc::new(TypeIndex::from_schema(schema, *typename_id));
         let query = graphql_parser::parse_query::<&str>(
             r#"
             fragment FilmFields on Film {
@@ -716,8 +721,8 @@ mod tests {
 
     #[test]
     fn check_fragment_type_mismatches() {
-        let schema = load_schema();
-        let type_index = Rc::new(TypeIndex::from_schema(schema));
+        let (schema, typename_id) = &*SCHEMA;
+        let type_index = Rc::new(TypeIndex::from_schema(schema, *typename_id));
         let query = graphql_parser::parse_query::<&str>(
             r#"
             fragment FilmFields on Film {
@@ -742,8 +747,8 @@ mod tests {
 
     #[test]
     fn check_field_selected() {
-        let schema = load_schema();
-        let type_index = Rc::new(TypeIndex::from_schema(schema));
+        let (schema, typename_id) = &*SCHEMA;
+        let type_index = Rc::new(TypeIndex::from_schema(schema, *typename_id));
         let query = graphql_parser::parse_query::<&str>(
             r#"
            query MyQuery {
@@ -773,8 +778,8 @@ mod tests {
 
     #[test]
     fn check_no_field_selected() {
-        let schema = load_schema();
-        let type_index = Rc::new(TypeIndex::from_schema(schema));
+        let (schema, typename_id) = &*SCHEMA;
+        let type_index = Rc::new(TypeIndex::from_schema(schema, *typename_id));
         let query = graphql_parser::parse_query::<&str>(
             r#"
            query MyQuery {
@@ -796,8 +801,8 @@ mod tests {
 
     #[test]
     fn check_inline_fragment_output() {
-        let schema = load_schema();
-        let type_index = Rc::new(TypeIndex::from_schema(schema));
+        let (schema, typename_id) = &*SCHEMA;
+        let type_index = Rc::new(TypeIndex::from_schema(schema, *typename_id));
         let query = graphql_parser::parse_query::<&str>(
             r#"
             query AllFilms {
@@ -831,8 +836,8 @@ mod tests {
 
     #[test]
     fn check_inline_fragment_type_mismatches() {
-        let schema = load_schema();
-        let type_index = Rc::new(TypeIndex::from_schema(schema));
+        let (schema, typename_id) = &*SCHEMA;
+        let type_index = Rc::new(TypeIndex::from_schema(schema, *typename_id));
         let query = graphql_parser::parse_query::<&str>(
             r#"
             query AllFilms {
@@ -852,10 +857,11 @@ mod tests {
         )
     }
 
-    fn load_schema() -> TypeSystemDocument {
-        cynic_parser::parse_type_system_document(include_str!(
+    static SCHEMA: LazyLock<(TypeSystemDocument, FieldDefinitionId)> = LazyLock::new(|| {
+        let schema = cynic_parser::parse_type_system_document(include_str!(
             "../../../schemas/starwars.schema.graphql"
         ))
-        .unwrap()
-    }
+        .unwrap();
+        add_builtins(schema)
+    });
 }

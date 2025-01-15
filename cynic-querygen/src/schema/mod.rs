@@ -1,7 +1,9 @@
+mod builtins;
 mod fields;
 mod type_index;
 mod type_refs;
 
+pub(crate) use builtins::add_builtins;
 pub use fields::*;
 
 pub use type_index::{GraphPath, TypeIndex};

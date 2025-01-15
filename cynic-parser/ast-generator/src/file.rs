@@ -46,13 +46,6 @@ pub struct EntityOutput {
     pub requires: BTreeSet<EntityRef>,
     pub id: EntityRef,
     pub contents: String,
-    pub kind: EntityKind,
-}
-
-#[derive(Clone, Copy, PartialEq)]
-pub enum EntityKind {
-    Union,
-    Object,
 }
 
 pub fn imports(

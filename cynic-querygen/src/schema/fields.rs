@@ -255,7 +255,7 @@ macro_rules! impl_field_type_from_parser_type {
                 use cynic_parser::common::WrappingType;
 
                 let mut ty = $target::NamedType($ref_type::new(parser_type.name(), type_index));
-                for wrapping in parser_type.wrappers() {
+                for wrapping in parser_type.wrappers().collect::<Vec<_>>().into_iter().rev() {
                     match wrapping {
                         WrappingType::NonNull => ty = $target::NonNullType(Box::new(ty)),
                         WrappingType::List => ty = $target::ListType(Box::new(ty)),
