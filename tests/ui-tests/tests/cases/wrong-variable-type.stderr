@@ -5,12 +5,12 @@ error[E0277]: the trait bound `i32: CoercesTo<std::option::Option<cynic::Id>>` i
    |              ^^^^^^^^^^^^^^^^^^^^ the trait `CoercesTo<std::option::Option<cynic::Id>>` is not implemented for `i32`
    |
    = help: the following other types implement trait `CoercesTo<T>`:
-             <i32 as CoercesTo<i32>>
-             <i32 as CoercesTo<Vec<i32>>>
              <i32 as CoercesTo<Vec<Vec<i32>>>>
-             <i32 as CoercesTo<std::option::Option<i32>>>
+             <i32 as CoercesTo<Vec<i32>>>
+             <i32 as CoercesTo<i32>>
              <i32 as CoercesTo<std::option::Option<Vec<i32>>>>
              <i32 as CoercesTo<std::option::Option<Vec<std::option::Option<i32>>>>>
+             <i32 as CoercesTo<std::option::Option<i32>>>
              <i32 as CoercesTo<std::option::Option<std::option::Option<i32>>>>
 note: required by a bound in `cynic::queries::builders::InputBuilder::<'_, SchemaType, VariablesFields>::variable`
   --> $WORKSPACE/cynic/src/queries/builders.rs

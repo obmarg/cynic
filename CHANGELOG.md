@@ -8,6 +8,10 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+### Changes
+
+- Bumped the MSRV to 1.80
+
 ## v3.9.1 - 2024-12-03
 
 ### Bug Fixes
