@@ -1,44 +1,53 @@
-use graphql_parser::schema::{Definition, ScalarType};
+use cynic_parser::{
+    type_system::{self, ids::FieldDefinitionId, Definition, FieldDefinition, TypeDefinition},
+    TypeSystemDocument,
+};
 use std::{borrow::Cow, collections::HashMap, rc::Rc};
 
-use super::parser::{typename_field, Document, Field, TypeDefinition};
-use crate::{type_ext::TypeExt, Error};
+use crate::Error;
 
 use super::{OutputField, Type};
 
 pub struct TypeIndex<'schema> {
     types: HashMap<&'schema str, TypeDefinition<'schema>>,
+    typename_field: FieldDefinition<'schema>,
     query_root: String,
     mutation_root: String,
     subscription_root: String,
 }
 
 impl<'schema> TypeIndex<'schema> {
-    pub fn from_schema(schema: &'_ Document<'schema>) -> TypeIndex<'schema> {
+    pub fn from_schema(
+        schema: &'schema TypeSystemDocument,
+        typename_id: FieldDefinitionId,
+    ) -> TypeIndex<'schema> {
         let types = schema
-            .definitions
-            .iter()
+            .definitions()
             .filter_map(|definition| match definition {
-                Definition::TypeDefinition(type_def) => {
-                    Some((name_for_type(type_def), type_def.clone()))
-                }
+                Definition::Type(ty) => Some((ty.name(), ty)),
+                // TODO: Someday need to support extensions here...
                 _ => None,
             })
             .collect::<HashMap<_, _>>();
 
-        let mut rv = TypeIndex::default();
-        rv.types.extend(types);
+        let mut rv = TypeIndex {
+            query_root: "Query".into(),
+            mutation_root: "Mutation".into(),
+            subscription_root: "Subscription".into(),
+            typename_field: schema.read(typename_id),
+            types,
+        };
 
-        for definition in &schema.definitions {
-            if let Definition::SchemaDefinition(schema_def) = definition {
-                if let Some(query) = schema_def.query {
-                    rv.query_root = query.to_string();
+        for definition in schema.definitions() {
+            if let Definition::Schema(schema_def) = definition {
+                if let Some(query) = schema_def.query_type() {
+                    rv.query_root = query.named_type().to_string();
                 }
-                if let Some(mutation) = schema_def.mutation {
-                    rv.mutation_root = mutation.to_string();
+                if let Some(mutation) = schema_def.mutation_type() {
+                    rv.mutation_root = mutation.named_type().to_string();
                 }
-                if let Some(subscription) = schema_def.subscription {
-                    rv.subscription_root = subscription.to_string();
+                if let Some(subscription) = schema_def.subscription_type() {
+                    rv.subscription_root = subscription.named_type().to_string();
                 }
             }
         }
@@ -63,17 +72,17 @@ impl<'schema> TypeIndex<'schema> {
             .ok_or_else(|| Error::CouldntFindRootType(root_name.clone()))?;
 
         let field = match root {
-            graphql_parser::schema::TypeDefinition::Object(object) => {
-                self.find_field_recursive(&object.fields, root_name.as_str(), &path.path)?
+            TypeDefinition::Object(object) => {
+                self.find_field_recursive(object.fields(), root_name.as_str(), &path.path)?
             }
-            graphql_parser::schema::TypeDefinition::Interface(iface) => {
-                self.find_field_recursive(&iface.fields, root_name.as_str(), &path.path)?
+            TypeDefinition::Interface(iface) => {
+                self.find_field_recursive(iface.fields(), root_name.as_str(), &path.path)?
             }
             _ => {
                 return Err(Error::ExpectedObject(root_name.to_string()));
             }
         };
-        Ok(OutputField::from_parser(&field, self))
+        Ok(OutputField::from_parser(field, self))
     }
 
     // Looks up the name of the type at Path.
@@ -112,84 +121,51 @@ impl<'schema> TypeIndex<'schema> {
         self.lookup_type(type_name.as_ref())
     }
 
-    fn find_field_recursive<'find, 'path>(
-        &'find self,
-        fields: &'find [Field<'schema>],
+    pub fn typename_field(&self) -> type_system::FieldDefinition<'schema> {
+        self.typename_field
+    }
+
+    fn find_field_recursive(
+        &self,
+        mut fields: impl Iterator<Item = FieldDefinition<'schema>>,
         current_type_name: &str,
-        path: &[&'path str],
-    ) -> Result<Field<'schema>, Error> {
+        path: &[&str],
+    ) -> Result<FieldDefinition<'schema>, Error> {
         match path {
             [] => panic!("This shouldn't happen"),
-            ["__typename"] => Ok(typename_field()),
+            ["__typename"] => Ok(self.typename_field()),
             ["__typename", _rest @ ..] => {
                 Err(Error::TriedToSelectFieldsOfNonComposite("String".into()))
             }
-            [first] => fields
-                .iter()
-                .find(|field| field.name == *first)
-                .cloned()
-                .ok_or_else(|| {
-                    Error::UnknownField(first.to_string(), current_type_name.to_string())
-                }),
+            [first] => fields.find(|field| field.name() == *first).ok_or_else(|| {
+                Error::UnknownField(first.to_string(), current_type_name.to_string())
+            }),
             [first, rest @ ..] => {
                 let inner_name = fields
-                    .iter()
-                    .find(|field| field.name == *first)
+                    .find(|field| field.name() == *first)
                     .ok_or_else(|| {
                         Error::UnknownField(first.to_string(), current_type_name.to_string())
                     })?
-                    .field_type
-                    .inner_name();
+                    .ty()
+                    .name();
 
                 let inner_type = self
                     .types
                     .get(inner_name)
+                    .copied()
                     .ok_or_else(|| Error::UnknownType(inner_name.to_string()))?;
 
                 match inner_type {
                     TypeDefinition::Object(object) => {
-                        self.find_field_recursive(&object.fields, inner_name, rest)
+                        self.find_field_recursive(object.fields(), inner_name, rest)
                     }
                     TypeDefinition::Interface(iface) => {
-                        self.find_field_recursive(&iface.fields, inner_name, rest)
+                        self.find_field_recursive(iface.fields(), inner_name, rest)
                     }
                     _ => Err(Error::ExpectedObjectOrInterface(inner_name.to_string())),
                 }
             }
         }
-    }
-}
-
-impl<'a> Default for TypeIndex<'a> {
-    fn default() -> TypeIndex<'a> {
-        let mut types = HashMap::new();
-
-        types.insert("String", TypeDefinition::Scalar(ScalarType::new("String")));
-        types.insert("Int", TypeDefinition::Scalar(ScalarType::new("Int")));
-        types.insert("Float", TypeDefinition::Scalar(ScalarType::new("Float")));
-        types.insert(
-            "Boolean",
-            TypeDefinition::Scalar(ScalarType::new("Boolean")),
-        );
-        types.insert("ID", TypeDefinition::Scalar(ScalarType::new("ID")));
-
-        TypeIndex {
-            query_root: "Query".into(),
-            mutation_root: "Mutation".into(),
-            subscription_root: "Subscription".into(),
-            types,
-        }
-    }
-}
-
-fn name_for_type<'a>(type_def: &TypeDefinition<'a>) -> &'a str {
-    match type_def {
-        TypeDefinition::Scalar(inner) => inner.name,
-        TypeDefinition::Object(inner) => inner.name,
-        TypeDefinition::Interface(inner) => inner.name,
-        TypeDefinition::Union(inner) => inner.name,
-        TypeDefinition::Enum(inner) => inner.name,
-        TypeDefinition::InputObject(inner) => inner.name,
     }
 }
 

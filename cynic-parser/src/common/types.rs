@@ -10,7 +10,7 @@ pub enum WrappingType {
 /// Bits 1..5: Number of list wrappers
 /// Bits 5..21: List wrappers, where 0 is nullable 1 is non-null
 /// The rest: dead bits
-#[derive(Debug)]
+#[derive(Debug, Default)]
 pub struct TypeWrappers(u32);
 
 static INNER_NULLABILITY_MASK: u32 = 1;

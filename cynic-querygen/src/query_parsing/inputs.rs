@@ -150,12 +150,15 @@ mod tests {
     use {
         super::*,
         crate::{query_parsing::normalisation::normalise, TypeIndex},
+        cynic_parser::{type_system::ids::FieldDefinitionId, TypeSystemDocument},
+        schema::add_builtins,
+        std::sync::LazyLock,
     };
 
     #[test]
     fn deduplicates_input_types_if_same() {
-        let schema = load_graphql_schema();
-        let type_index = Rc::new(TypeIndex::from_schema(&schema));
+        let (schema, typename_id) = &*GITHUB_SCHEMA;
+        let type_index = Rc::new(TypeIndex::from_schema(schema, *typename_id));
         let query = graphql_parser::parse_query::<&str>(
             r#"
               query ($filterOne: IssueFilters!, $filterTwo: IssueFilters!) {
@@ -186,8 +189,8 @@ mod tests {
 
     #[test]
     fn finds_variable_input_types() {
-        let schema = load_graphql_schema();
-        let type_index = Rc::new(TypeIndex::from_schema(&schema));
+        let (schema, typename_id) = &*GITHUB_SCHEMA;
+        let type_index = Rc::new(TypeIndex::from_schema(schema, *typename_id));
         let query = graphql_parser::parse_query::<&str>(
             r#"
               query MyQuery($input: IssueFilters!) {
@@ -218,8 +221,8 @@ mod tests {
 
     #[test]
     fn test_extracting_recursive_types() {
-        let schema = load_test_schema();
-        let type_index = Rc::new(TypeIndex::from_schema(&schema));
+        let (schema, typename_id) = &*TEST_CASE_SCHEMA;
+        let type_index = Rc::new(TypeIndex::from_schema(schema, *typename_id));
 
         let query = graphql_parser::parse_query::<&str>(
             r#"
@@ -236,13 +239,20 @@ mod tests {
         assert_eq!(input_objects.len(), 3);
     }
 
-    fn load_graphql_schema() -> schema::Document<'static> {
-        graphql_parser::parse_schema::<&str>(include_str!("../../../schemas/github.graphql"))
-            .unwrap()
-    }
+    static GITHUB_SCHEMA: LazyLock<(TypeSystemDocument, FieldDefinitionId)> = LazyLock::new(|| {
+        let schema = cynic_parser::parse_type_system_document(include_str!(
+            "../../../schemas/github.graphql"
+        ))
+        .unwrap();
+        add_builtins(schema)
+    });
 
-    fn load_test_schema() -> schema::Document<'static> {
-        graphql_parser::parse_schema::<&str>(include_str!("../../../schemas/test_cases.graphql"))
-            .unwrap()
-    }
+    static TEST_CASE_SCHEMA: LazyLock<(TypeSystemDocument, FieldDefinitionId)> =
+        LazyLock::new(|| {
+            let schema = cynic_parser::parse_type_system_document(include_str!(
+                "../../../schemas/test_cases.graphql"
+            ))
+            .unwrap();
+            add_builtins(schema)
+        });
 }

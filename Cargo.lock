@@ -1337,6 +1337,7 @@ version = "3.9.1"
 dependencies = [
  "Inflector",
  "assert_matches",
+ "cynic-parser",
  "graphql-parser",
  "insta",
  "once_cell",

@@ -1,17 +1,19 @@
+mod builtins;
 mod fields;
-mod parser;
 mod type_index;
 mod type_refs;
 
+pub(crate) use builtins::add_builtins;
 pub use fields::*;
-#[cfg(test)]
-pub use parser::Document;
+
 pub use type_index::{GraphPath, TypeIndex};
 pub use type_refs::{InputTypeRef, InterfaceTypeRef, OutputTypeRef, TypeRef};
 
+use cynic_parser::type_system as parser;
+
 use std::{convert::TryFrom, iter, rc::Rc};
 
-use crate::{schema::parser::typename_field, Error};
+use crate::Error;
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub enum Type<'schema> {
@@ -84,50 +86,47 @@ impl<'schema> Type<'schema> {
         type_index: &Rc<TypeIndex<'schema>>,
     ) -> Type<'schema> {
         use parser::TypeDefinition;
-        let typename_field = typename_field();
+        let typename_field = type_index.typename_field();
 
         match type_def {
-            TypeDefinition::Scalar(scalar) => Type::Scalar(ScalarDetails { name: scalar.name }),
+            TypeDefinition::Scalar(scalar) => Type::Scalar(ScalarDetails {
+                name: scalar.name(),
+            }),
             TypeDefinition::Object(obj) => Type::Object(ObjectDetails {
-                name: obj.name,
+                name: obj.name(),
                 fields: obj
-                    .fields
-                    .iter()
-                    .chain(iter::once(&typename_field))
+                    .fields()
+                    .chain(iter::once(typename_field))
                     .map(|field| OutputField::from_parser(field, type_index))
                     .collect(),
                 implements_interfaces: obj
-                    .implements_interfaces
-                    .iter()
+                    .implements_interfaces()
                     .map(|name| InterfaceTypeRef::new(name, type_index))
                     .collect(),
             }),
             TypeDefinition::Interface(iface) => Type::Interface(InterfaceDetails {
-                name: iface.name,
+                name: iface.name(),
                 fields: iface
-                    .fields
-                    .iter()
-                    .chain(iter::once(&typename_field))
+                    .fields()
+                    .chain(iter::once(typename_field))
                     .map(|field| OutputField::from_parser(field, type_index))
                     .collect(),
             }),
             TypeDefinition::Union(union) => Type::Union(UnionDetails {
-                name: union.name,
+                name: union.name(),
                 types: union
-                    .types
-                    .iter()
-                    .map(|name| OutputTypeRef::new(name, type_index))
+                    .members()
+                    .map(|member| OutputTypeRef::new(member.name(), type_index))
                     .collect(),
             }),
             TypeDefinition::Enum(def) => Type::Enum(EnumDetails {
-                name: def.name,
-                values: def.values.iter().map(|v| v.name).collect(),
+                name: def.name(),
+                values: def.values().map(|v| v.value()).collect(),
             }),
             TypeDefinition::InputObject(obj) => Type::InputObject(InputObjectDetails {
-                name: obj.name,
+                name: obj.name(),
                 fields: obj
-                    .fields
-                    .iter()
+                    .fields()
                     .map(|field| InputField::from_parser(field, type_index))
                     .collect(),
             }),

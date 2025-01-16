@@ -6,7 +6,7 @@ use cynic_parser::type_system::{FieldDefinition, ObjectDefinition, TypeDefinitio
 
 use crate::{
     exts::{FieldExt, ScalarExt},
-    file::{EntityKind, EntityOutput, EntityRef},
+    file::{EntityOutput, EntityRef},
     format_code,
     idents::IdIdent,
 };
@@ -122,7 +122,6 @@ pub fn object_output(
             .collect(),
         id: EntityRef::new(TypeDefinition::Object(object)).unwrap(),
         contents,
-        kind: EntityKind::Object,
     })
 }
 

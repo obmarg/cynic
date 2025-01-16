@@ -20,6 +20,8 @@ rust_decimal = "1.22"
 thiserror = "1.0.30"
 uuid = { version = "1", features = ["v4"] }
 
+cynic-parser.workspace = true
+
 [dev-dependencies]
 assert_matches = "1.4"
 insta = "1.17.1"
