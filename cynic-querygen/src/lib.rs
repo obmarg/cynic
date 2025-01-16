@@ -15,7 +15,7 @@ pub enum Error {
     UnsupportedQueryDocument(String),
 
     #[error("could not parse query document: {0}")]
-    QueryParseError(graphql_parser::query::ParseError),
+    QueryParseError(cynic_parser::Error),
 
     #[error("could not parse schema document: {0}")]
     SchemaParseError(cynic_parser::Error),
@@ -116,7 +116,7 @@ pub fn document_to_fragment_structs(
         .map_err(Error::SchemaParseError)?;
 
     let query =
-        graphql_parser::parse_query::<&str>(query.as_ref()).map_err(Error::QueryParseError)?;
+        cynic_parser::parse_executable_document(query.as_ref()).map_err(Error::QueryParseError)?;
 
     let (schema, typename_id) = add_builtins(schema);
 

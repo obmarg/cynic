@@ -1,17 +1,14 @@
 use std::{
     collections::{hash_map::DefaultHasher, BTreeSet, HashMap, HashSet},
-    convert::TryInto,
     hash::{Hash, Hasher},
     rc::Rc,
 };
 
+use cynic_parser::{executable::Iter, ExecutableDocument};
 use inflector::Inflector;
 
 use super::{
-    parser::{
-        self, Definition, Document, FragmentDefinition, OperationDefinition, TypeCondition,
-        VariableDefinition,
-    },
+    parser::{self, FragmentDefinition, OperationDefinition, VariableDefinition},
     sorting::Vertex,
     value::TypedValue,
 };
@@ -123,26 +120,24 @@ pub struct NormalisedDocument<'query, 'schema> {
     pub operations: Vec<NormalisedOperation<'query, 'schema>>,
 }
 
-pub fn normalise<'query, 'doc, 'schema>(
-    document: &'doc Document<'query>,
-    type_index: &'doc Rc<TypeIndex<'schema>>,
-) -> Result<NormalisedDocument<'query, 'schema>, Error> {
+pub fn normalise<'docs>(
+    document: &'docs ExecutableDocument,
+    type_index: &Rc<TypeIndex<'docs>>,
+) -> Result<NormalisedDocument<'docs, 'docs>, Error> {
     let fragment_map = extract_fragments(document);
 
-    let mut selection_sets: SelectionSetSet<'query, 'schema> = BTreeSet::new();
-    let mut inline_fragments: InlineFragmentsSet<'query, 'schema> = BTreeSet::new();
+    let mut selection_sets: SelectionSetSet<'docs, 'docs> = BTreeSet::new();
+    let mut inline_fragments: InlineFragmentsSet<'docs, 'docs> = BTreeSet::new();
     let mut operations = Vec::new();
 
-    for definition in &document.definitions {
-        if let Definition::Operation(operation) = definition {
-            operations.push(normalise_operation(
-                operation,
-                &fragment_map,
-                type_index,
-                &mut selection_sets,
-                &mut inline_fragments,
-            )?);
-        }
+    for operation in document.operations() {
+        operations.push(normalise_operation(
+            operation,
+            &fragment_map,
+            type_index,
+            &mut selection_sets,
+            &mut inline_fragments,
+        )?);
     }
 
     Ok(NormalisedDocument {
@@ -152,111 +147,59 @@ pub fn normalise<'query, 'doc, 'schema>(
     })
 }
 
-fn normalise_operation<'query, 'doc, 'schema>(
-    operation: &'doc OperationDefinition<'query>,
-    fragment_map: &FragmentMap<'query, 'doc>,
-    type_index: &'doc Rc<TypeIndex<'schema>>,
-    selection_sets_out: &mut SelectionSetSet<'query, 'schema>,
-    inline_fragments_out: &mut InlineFragmentsSet<'query, 'schema>,
-) -> Result<NormalisedOperation<'query, 'schema>, Error> {
-    match operation {
-        OperationDefinition::SelectionSet(selection_set) => {
-            let mut normaliser = Normaliser::new(
-                type_index,
-                fragment_map,
-                selection_sets_out,
-                inline_fragments_out,
-                &[],
-            );
-            let root =
-                normaliser.normalise_object_selection_set(selection_set, GraphPath::for_query())?;
+fn normalise_operation<'docs>(
+    operation: OperationDefinition<'docs>,
+    fragment_map: &FragmentMap<'docs>,
+    type_index: &Rc<TypeIndex<'docs>>,
+    selection_sets_out: &mut SelectionSetSet<'docs, 'docs>,
+    inline_fragments_out: &mut InlineFragmentsSet<'docs, 'docs>,
+) -> Result<NormalisedOperation<'docs, 'docs>, Error> {
+    let mut normaliser = Normaliser::new(
+        type_index,
+        fragment_map,
+        selection_sets_out,
+        inline_fragments_out,
+        operation.variable_definitions(),
+    );
 
-            Ok(NormalisedOperation {
-                root,
-                name: None,
-                kind: OperationKind::Query,
-                variables: normaliser.variables,
-            })
+    let (kind, starting_path) = match operation.operation_type() {
+        cynic_parser::common::OperationType::Query => {
+            (OperationKind::Query, GraphPath::for_query())
         }
-        OperationDefinition::Query(query) => {
-            let mut normaliser = Normaliser::new(
-                type_index,
-                fragment_map,
-                selection_sets_out,
-                inline_fragments_out,
-                &query.variable_definitions,
-            );
-
-            let root = normaliser
-                .normalise_object_selection_set(&query.selection_set, GraphPath::for_query())?;
-
-            Ok(NormalisedOperation {
-                root,
-                name: query.name.map(Inflector::to_pascal_case),
-                kind: OperationKind::Query,
-                variables: normaliser.variables,
-            })
+        cynic_parser::common::OperationType::Mutation => {
+            (OperationKind::Mutation, GraphPath::for_mutation())
         }
-        OperationDefinition::Mutation(mutation) => {
-            let mut normaliser = Normaliser::new(
-                type_index,
-                fragment_map,
-                selection_sets_out,
-                inline_fragments_out,
-                &mutation.variable_definitions,
-            );
-
-            let root = normaliser.normalise_object_selection_set(
-                &mutation.selection_set,
-                GraphPath::for_mutation(),
-            )?;
-
-            Ok(NormalisedOperation {
-                root,
-                name: mutation.name.map(Inflector::to_pascal_case),
-                kind: OperationKind::Mutation,
-                variables: normaliser.variables,
-            })
+        cynic_parser::common::OperationType::Subscription => {
+            (OperationKind::Subscription, GraphPath::for_subscription())
         }
-        OperationDefinition::Subscription(subscription) => {
-            let mut normaliser = Normaliser::new(
-                type_index,
-                fragment_map,
-                selection_sets_out,
-                inline_fragments_out,
-                &subscription.variable_definitions,
-            );
+    };
 
-            let root = normaliser.normalise_object_selection_set(
-                &subscription.selection_set,
-                GraphPath::for_subscription(),
-            )?;
+    let root =
+        normaliser.normalise_object_selection_set(operation.selection_set(), starting_path)?;
 
-            Ok(NormalisedOperation {
-                root,
-                name: subscription.name.map(Inflector::to_pascal_case),
-                kind: OperationKind::Subscription,
-                variables: normaliser.variables,
-            })
-        }
-    }
+    Ok(NormalisedOperation {
+        root,
+        name: operation.name().map(Inflector::to_pascal_case),
+        kind,
+        variables: normaliser.variables,
+    })
 }
 
-struct Normaliser<'a, 'query, 'schema, 'doc> {
-    type_index: &'a Rc<TypeIndex<'schema>>,
-    fragment_map: &'a FragmentMap<'query, 'doc>,
-    selection_sets_out: &'a mut SelectionSetSet<'query, 'schema>,
-    inline_fragments_out: &'a mut InlineFragmentsSet<'query, 'schema>,
-    variables: Vec<Variable<'query, 'schema>>,
+struct Normaliser<'a, 'docs> {
+    type_index: &'a Rc<TypeIndex<'docs>>,
+    fragment_map: &'a FragmentMap<'docs>,
+    selection_sets_out: &'a mut SelectionSetSet<'docs, 'docs>,
+    inline_fragments_out: &'a mut InlineFragmentsSet<'docs, 'docs>,
+    variables: Vec<Variable<'docs, 'docs>>,
 }
 
-impl<'a, 'query, 'schema, 'doc> Normaliser<'a, 'query, 'schema, 'doc> {
+impl<'a, 'docs> Normaliser<'a, 'docs> {
     fn new(
-        type_index: &'a Rc<TypeIndex<'schema>>,
-        fragment_map: &'a FragmentMap<'query, 'doc>,
-        selection_sets_out: &'a mut SelectionSetSet<'query, 'schema>,
-        inline_fragments_out: &'a mut InlineFragmentsSet<'query, 'schema>,
-        variable_definitions: &'a [parser::VariableDefinition<'query>],
+        type_index: &'a Rc<TypeIndex<'docs>>,
+        fragment_map: &'a FragmentMap<'docs>,
+        selection_sets_out: &'a mut SelectionSetSet<'docs, 'docs>,
+        inline_fragments_out: &'a mut InlineFragmentsSet<'docs, 'docs>,
+        variable_definitions: Iter<'docs, VariableDefinition<'docs>>,
     ) -> Self {
         Normaliser {
             type_index,
@@ -264,7 +207,6 @@ impl<'a, 'query, 'schema, 'doc> Normaliser<'a, 'query, 'schema, 'doc> {
             selection_sets_out,
             inline_fragments_out,
             variables: variable_definitions
-                .iter()
                 .map(|var| Variable::from(var, type_index))
                 .collect(),
         }
@@ -272,9 +214,9 @@ impl<'a, 'query, 'schema, 'doc> Normaliser<'a, 'query, 'schema, 'doc> {
 
     fn normalise_object_selection_set(
         &mut self,
-        selection_set: &parser::SelectionSet<'query>,
-        current_path: GraphPath<'query>,
-    ) -> Result<Rc<SelectionSet<'query, 'schema>>, Error> {
+        selection_sets: impl Iterator<Item = parser::Selection<'docs>>,
+        current_path: GraphPath<'docs>,
+    ) -> Result<Rc<SelectionSet<'docs, 'docs>>, Error> {
         let current_type = self.type_index.type_for_path(&current_path)?;
 
         // Awkwardly using a set of hashes & to dedup so we don't fuck
@@ -282,7 +224,7 @@ impl<'a, 'query, 'schema, 'doc> Normaliser<'a, 'query, 'schema, 'doc> {
         let mut seen_selections = HashSet::new();
         let mut selections = Vec::new();
 
-        for item in &selection_set.items {
+        for item in selection_sets {
             let new_selections = self.convert_selection(item, &current_path)?;
             for selection in new_selections {
                 let mut hasher = DefaultHasher::new();
@@ -312,35 +254,38 @@ impl<'a, 'query, 'schema, 'doc> Normaliser<'a, 'query, 'schema, 'doc> {
 
     fn convert_selection(
         &mut self,
-        selection: &parser::Selection<'query>,
-        current_path: &GraphPath<'query>,
-    ) -> Result<Vec<Selection<'query, 'schema>>, Error> {
+        selection: parser::Selection<'docs>,
+        current_path: &GraphPath<'docs>,
+    ) -> Result<Vec<Selection<'docs, 'docs>>, Error> {
         match selection {
             parser::Selection::Field(field) => {
-                let new_path = current_path.push(field.name);
+                let new_path = current_path.push(field.name());
 
                 let schema_field = self.type_index.field_for_path(&new_path)?;
 
                 let inner_field = match schema_field.value_type.inner_ref().lookup()? {
-                    OutputType::Object(_) if field.selection_set.items.is_empty() => {
+                    OutputType::Object(_) if field.selection_set().len() == 0 => {
                         return Err(Error::NoFieldSelected(schema_field.name.into()));
                     }
                     OutputType::Object(_) => Field::Composite(
-                        self.normalise_object_selection_set(&field.selection_set, new_path)?,
+                        self.normalise_object_selection_set(field.selection_set(), new_path)?,
                     ),
                     OutputType::Interface(_) | OutputType::Union(_) => {
-                        self.normalise_abstract_selection_set(&field.selection_set, new_path)?
+                        self.normalise_abstract_selection_set(field.selection_set(), new_path)?
                     }
                     OutputType::Enum(_) | OutputType::Scalar(_) => Field::Leaf,
                 };
 
                 let mut arguments = Vec::new();
-                for (name, value) in &field.arguments {
+                for argument in field.arguments() {
+                    let name = argument.name();
+                    let value = argument.value();
+
                     let schema_arg = schema_field
                         .arguments
                         .iter()
-                        .find(|arg| arg.name == *name)
-                        .ok_or_else(|| Error::UnknownArgument(name.to_string()))?;
+                        .find(|arg| arg.name == name)
+                        .ok_or_else(|| dbg!(Error::UnknownArgument(name.to_string())))?;
 
                     arguments.push((
                         schema_arg.name,
@@ -353,8 +298,8 @@ impl<'a, 'query, 'schema, 'doc> Normaliser<'a, 'query, 'schema, 'doc> {
                 }
 
                 Ok(vec![Selection::Field(FieldSelection::new(
-                    field.name,
-                    field.alias,
+                    field.name(),
+                    field.alias(),
                     arguments,
                     schema_field,
                     inner_field,
@@ -363,19 +308,16 @@ impl<'a, 'query, 'schema, 'doc> Normaliser<'a, 'query, 'schema, 'doc> {
             parser::Selection::FragmentSpread(spread) => {
                 let fragment = self
                     .fragment_map
-                    .get(spread.fragment_name)
-                    .ok_or_else(|| Error::UnknownFragment(spread.fragment_name.to_string()))?;
+                    .get(spread.fragment_name())
+                    .ok_or_else(|| Error::UnknownFragment(spread.fragment_name().to_string()))?;
 
-                let TypeCondition::On(target_type_name) = fragment.type_condition;
                 let current_type = self.type_index.type_for_path(current_path)?;
-                let target_type = self.type_index.lookup_type(target_type_name)?;
+                let target_type = self.type_index.lookup_type(fragment.type_condition())?;
 
                 current_type.allows_fragment_target_of(&target_type)?;
 
                 Ok(fragment
-                    .selection_set
-                    .items
-                    .iter()
+                    .selection_set()
                     .map(|item| self.convert_selection(item, current_path))
                     .collect::<Result<Vec<_>, _>>()?
                     .into_iter()
@@ -383,7 +325,7 @@ impl<'a, 'query, 'schema, 'doc> Normaliser<'a, 'query, 'schema, 'doc> {
                     .collect())
             }
             parser::Selection::InlineFragment(fragment) => {
-                if let Some(TypeCondition::On(target_type_name)) = fragment.type_condition {
+                if let Some(target_type_name) = fragment.type_condition() {
                     let current_type = self.type_index.type_for_path(current_path)?;
                     let target_type = self.type_index.lookup_type(target_type_name)?;
 
@@ -391,9 +333,7 @@ impl<'a, 'query, 'schema, 'doc> Normaliser<'a, 'query, 'schema, 'doc> {
                 }
 
                 Ok(fragment
-                    .selection_set
-                    .items
-                    .iter()
+                    .selection_set()
                     .map(|item| self.convert_selection(item, current_path))
                     .collect::<Result<Vec<_>, _>>()?
                     .into_iter()
@@ -405,14 +345,13 @@ impl<'a, 'query, 'schema, 'doc> Normaliser<'a, 'query, 'schema, 'doc> {
 
     fn normalise_abstract_selection_set(
         &mut self,
-        selection_set: &parser::SelectionSet<'query>,
-        current_path: GraphPath<'query>,
-    ) -> Result<Field<'query, 'schema>, Error> {
+        selection_set: Iter<'docs, parser::Selection<'docs>>,
+        current_path: GraphPath<'docs>,
+    ) -> Result<Field<'docs, 'docs>, Error> {
         let schema_field = self.type_index.field_for_path(&current_path)?;
 
         let spread_selections = selection_set
-            .items
-            .iter()
+            .clone()
             .filter(|s| !matches!(s, parser::Selection::Field(_)))
             .collect::<Vec<_>>();
 
@@ -424,10 +363,7 @@ impl<'a, 'query, 'schema, 'doc> Normaliser<'a, 'query, 'schema, 'doc> {
         }
 
         let non_spread_selections = selection_set
-            .items
-            .iter()
             .filter(|s| matches!(s, parser::Selection::Field(_)))
-            .cloned()
             .collect::<Vec<_>>();
 
         let mut fragment_selections = vec![];
@@ -438,40 +374,41 @@ impl<'a, 'query, 'schema, 'doc> Normaliser<'a, 'query, 'schema, 'doc> {
         for selection in spread_selections {
             match selection {
                 parser::Selection::FragmentSpread(spread) => {
-                    let fragment = self
-                        .fragment_map
-                        .get(spread.fragment_name)
-                        .ok_or_else(|| Error::UnknownFragment(spread.fragment_name.to_string()))?;
+                    let fragment =
+                        self.fragment_map
+                            .get(spread.fragment_name())
+                            .ok_or_else(|| {
+                                Error::UnknownFragment(spread.fragment_name().to_string())
+                            })?;
 
-                    let parser::TypeCondition::On(target_type) = fragment.type_condition;
+                    schema_field_type.allows_fragment_target_of(
+                        &self.type_index.lookup_type(fragment.type_condition())?,
+                    )?;
 
-                    schema_field_type
-                        .allows_fragment_target_of(&self.type_index.lookup_type(target_type)?)?;
-
-                    let mut selection_set = fragment.selection_set.clone();
-
-                    selection_set.items.extend(non_spread_selections.clone());
+                    let selections = fragment
+                        .selection_set()
+                        .chain(non_spread_selections.iter().copied());
 
                     fragment_selections.push(self.normalise_object_selection_set(
-                        &selection_set,
-                        GraphPath::for_named_type(target_type),
+                        selections,
+                        GraphPath::for_named_type(fragment.type_condition()),
                     )?)
                 }
                 parser::Selection::InlineFragment(inline_fragment) => {
-                    let target_type = match inline_fragment.type_condition {
+                    let target_type = match inline_fragment.type_condition() {
                         None => return Err(Error::MissingTypeCondition),
-                        Some(parser::TypeCondition::On(target_type)) => target_type,
+                        Some(target_type) => target_type,
                     };
 
                     schema_field_type
                         .allows_fragment_target_of(&self.type_index.lookup_type(target_type)?)?;
 
-                    let mut selection_set = inline_fragment.selection_set.clone();
-
-                    selection_set.items.extend(non_spread_selections.clone());
+                    let selections = inline_fragment
+                        .selection_set()
+                        .chain(non_spread_selections.iter().copied());
 
                     fragment_selections.push(self.normalise_object_selection_set(
-                        &selection_set,
+                        selections,
                         GraphPath::for_named_type(target_type),
                     )?)
                 }
@@ -495,28 +432,21 @@ impl<'a, 'query, 'schema, 'doc> Normaliser<'a, 'query, 'schema, 'doc> {
     }
 }
 
-impl<'query, 'schema> Variable<'query, 'schema> {
-    fn from(def: &VariableDefinition<'query>, type_index: &Rc<TypeIndex<'schema>>) -> Self {
+impl<'a> Variable<'a, 'a> {
+    fn from(def: VariableDefinition<'a>, type_index: &Rc<TypeIndex<'a>>) -> Self {
         Variable {
-            name: def.name,
+            name: def.name(),
             value_type: InputFieldType::from_variable_definition(def, type_index),
         }
     }
 }
 
-type FragmentMap<'query, 'doc> = HashMap<&'query str, &'doc FragmentDefinition<'query>>;
+type FragmentMap<'query> = HashMap<&'query str, FragmentDefinition<'query>>;
 
-fn extract_fragments<'query, 'doc>(document: &'doc Document<'query>) -> FragmentMap<'query, 'doc> {
+fn extract_fragments(document: &ExecutableDocument) -> FragmentMap<'_> {
     document
-        .definitions
-        .iter()
-        .flat_map(|definition| {
-            if let Definition::Fragment(fragment) = definition {
-                Some((fragment.name, fragment))
-            } else {
-                None
-            }
-        })
+        .fragments()
+        .flat_map(|fragment| Some((fragment.name(), fragment)))
         .collect()
 }
 
@@ -593,7 +523,7 @@ mod tests {
     fn normalise_deduplicates_identical_selections() {
         let (schema, typename_id) = &*SCHEMA;
         let type_index = Rc::new(TypeIndex::from_schema(schema, *typename_id));
-        let query = graphql_parser::parse_query::<&str>(
+        let query = cynic_parser::parse_executable_document(
             r#"
             {
               allFilms {
@@ -627,7 +557,7 @@ mod tests {
     fn normalise_does_not_deduplicate_differing_selections() {
         let (schema, typename_id) = &*SCHEMA;
         let type_index = Rc::new(TypeIndex::from_schema(schema, *typename_id));
-        let query = graphql_parser::parse_query::<&str>(
+        let query = cynic_parser::parse_executable_document(
             r#"
             {
               allFilms {
@@ -660,7 +590,7 @@ mod tests {
     fn check_output_makes_sense() {
         let (schema, typename_id) = &*SCHEMA;
         let type_index = Rc::new(TypeIndex::from_schema(schema, *typename_id));
-        let query = graphql_parser::parse_query::<&str>(
+        let query = cynic_parser::parse_executable_document(
             r#"
             {
               allFilms {
@@ -686,7 +616,7 @@ mod tests {
     fn check_fragment_spread_output() {
         let (schema, typename_id) = &*SCHEMA;
         let type_index = Rc::new(TypeIndex::from_schema(schema, *typename_id));
-        let query = graphql_parser::parse_query::<&str>(
+        let query = cynic_parser::parse_executable_document(
             r#"
             fragment FilmFields on Film {
               id
@@ -723,7 +653,7 @@ mod tests {
     fn check_fragment_type_mismatches() {
         let (schema, typename_id) = &*SCHEMA;
         let type_index = Rc::new(TypeIndex::from_schema(schema, *typename_id));
-        let query = graphql_parser::parse_query::<&str>(
+        let query = cynic_parser::parse_executable_document(
             r#"
             fragment FilmFields on Film {
               id
@@ -749,7 +679,7 @@ mod tests {
     fn check_field_selected() {
         let (schema, typename_id) = &*SCHEMA;
         let type_index = Rc::new(TypeIndex::from_schema(schema, *typename_id));
-        let query = graphql_parser::parse_query::<&str>(
+        let query = cynic_parser::parse_executable_document(
             r#"
            query MyQuery {
               allFilms(after: "") {
@@ -780,7 +710,7 @@ mod tests {
     fn check_no_field_selected() {
         let (schema, typename_id) = &*SCHEMA;
         let type_index = Rc::new(TypeIndex::from_schema(schema, *typename_id));
-        let query = graphql_parser::parse_query::<&str>(
+        let query = cynic_parser::parse_executable_document(
             r#"
            query MyQuery {
               allFilms(after: "") {
@@ -803,7 +733,7 @@ mod tests {
     fn check_inline_fragment_output() {
         let (schema, typename_id) = &*SCHEMA;
         let type_index = Rc::new(TypeIndex::from_schema(schema, *typename_id));
-        let query = graphql_parser::parse_query::<&str>(
+        let query = cynic_parser::parse_executable_document(
             r#"
             query AllFilms {
               allFilms {
@@ -838,7 +768,7 @@ mod tests {
     fn check_inline_fragment_type_mismatches() {
         let (schema, typename_id) = &*SCHEMA;
         let type_index = Rc::new(TypeIndex::from_schema(schema, *typename_id));
-        let query = graphql_parser::parse_query::<&str>(
+        let query = cynic_parser::parse_executable_document(
             r#"
             query AllFilms {
               allFilms {

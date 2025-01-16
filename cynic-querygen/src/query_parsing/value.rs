@@ -6,7 +6,7 @@ use crate::{
     Error,
 };
 
-use super::{normalisation::Variable, parser};
+use super::normalisation::Variable;
 
 /// A literal value from a GraphQL query, along with it's type
 #[derive(Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -31,17 +31,21 @@ pub enum TypedValue<'query, 'schema> {
 
 impl<'query, 'schema> TypedValue<'query, 'schema> {
     pub fn from_query_value(
-        value: &parser::Value<'query>,
+        value: cynic_parser::Value<'query>,
         field_type: InputFieldType<'schema>,
         variable_definitions: &[Variable<'query, 'schema>],
     ) -> Result<Self, Error> {
         Ok(match value {
-            parser::Value::Variable(name) => {
+            cynic_parser::Value::Variable(variable) => {
+                let name = variable.name();
+
+                dbg!(variable_definitions);
+
                 // If this is just a variable then we'll take it's type as our value type.
                 let value_type = variable_definitions
                     .iter()
-                    .find(|var| var.name == *name)
-                    .ok_or_else(|| Error::UnknownArgument(name.to_string()))?
+                    .find(|var| var.name == name)
+                    .ok_or_else(|| dbg!(Error::UnknownArgument(name.to_string())))?
                     .value_type
                     .clone();
 
@@ -51,17 +55,19 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
                     field_type,
                 }
             }
-            parser::Value::Int(num) => TypedValue::Int(num.as_i64().unwrap(), field_type),
-            parser::Value::Float(num) => TypedValue::Float(Decimal::from_f64(*num), field_type),
-            parser::Value::String(s) => TypedValue::String(s.clone(), field_type),
-            parser::Value::Boolean(b) => TypedValue::Boolean(*b, field_type),
-            parser::Value::Null => TypedValue::Null(field_type),
-            parser::Value::Enum(e) => TypedValue::Enum(e, field_type),
-            parser::Value::List(values) => {
+            cynic_parser::Value::Int(num) => TypedValue::Int(num.as_i64(), field_type),
+            cynic_parser::Value::Float(num) => {
+                TypedValue::Float(Decimal::from_f64(num.as_f64()), field_type)
+            }
+            cynic_parser::Value::String(s) => TypedValue::String(s.to_string(), field_type),
+            cynic_parser::Value::Boolean(b) => TypedValue::Boolean(b.value(), field_type),
+            cynic_parser::Value::Null(_) => TypedValue::Null(field_type),
+            cynic_parser::Value::Enum(e) => TypedValue::Enum(e.name(), field_type),
+            cynic_parser::Value::List(values) => {
                 let inner_type = field_type.list_inner_type()?;
                 TypedValue::List(
                     values
-                        .iter()
+                        .items()
                         .map(|val| {
                             TypedValue::from_query_value(
                                 val,
@@ -73,22 +79,24 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
                     field_type,
                 )
             }
-            parser::Value::Object(obj) => {
+            cynic_parser::Value::Object(obj) => {
                 if let InputType::InputObject(obj_type) = field_type.inner_ref().lookup()? {
                     TypedValue::Object(
-                        obj.iter()
-                            .map(|(k, v)| {
-                                let field = obj_type
+                        obj.fields()
+                            .map(|query_field| {
+                                let field_name = query_field.name();
+
+                                let schema_field = obj_type
                                     .fields
                                     .iter()
-                                    .find(|field| field.name == *k)
-                                    .ok_or_else(|| Error::UnknownType(k.to_string()))?;
+                                    .find(|schema_field| schema_field.name == field_name)
+                                    .ok_or_else(|| Error::UnknownType(field_name.to_string()))?;
 
                                 Ok((
-                                    *k,
+                                    field_name,
                                     TypedValue::from_query_value(
-                                        v,
-                                        field.value_type.clone(),
+                                        query_field.value(),
+                                        schema_field.value_type.clone(),
                                         variable_definitions,
                                     )?,
                                 ))

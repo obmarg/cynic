@@ -76,31 +76,27 @@ impl<'schema> InputField<'schema> {
 }
 
 impl<'schema> InputFieldType<'schema> {
-    pub fn from_variable_definition<'query>(
-        def: &graphql_parser::query::VariableDefinition<'query, &'query str>,
+    pub fn from_variable_definition(
+        def: cynic_parser::executable::VariableDefinition<'schema>,
         type_index: &Rc<TypeIndex<'schema>>,
     ) -> Self {
-        InputFieldType::from_query_type(&def.var_type, type_index)
+        InputFieldType::from_query_type(&def.ty(), type_index)
     }
 
-    fn from_query_type<'query>(
-        query_type: &graphql_parser::query::Type<'query, &'query str>,
+    fn from_query_type(
+        query_type: &cynic_parser::executable::Type<'schema>,
         type_index: &Rc<TypeIndex<'schema>>,
     ) -> Self {
-        use graphql_parser::schema::Type;
+        use cynic_parser::common::WrappingType;
 
-        match query_type {
-            Type::NamedType(name) => {
-                InputFieldType::NamedType(InputTypeRef::new_owned(name.to_string(), type_index))
+        let mut ty = InputFieldType::NamedType(InputTypeRef::new(query_type.name(), type_index));
+        for wrapping in query_type.wrappers().collect::<Vec<_>>().into_iter().rev() {
+            match wrapping {
+                WrappingType::NonNull => ty = InputFieldType::NonNullType(Box::new(ty)),
+                WrappingType::List => ty = InputFieldType::ListType(Box::new(ty)),
             }
-            Type::ListType(inner) => InputFieldType::ListType(Box::new(Self::from_query_type(
-                inner.as_ref(),
-                type_index,
-            ))),
-            Type::NonNullType(inner) => InputFieldType::NonNullType(Box::new(
-                Self::from_query_type(inner.as_ref(), type_index),
-            )),
         }
+        ty
     }
 
     pub fn inner_name(&self) -> Cow<'schema, str> {

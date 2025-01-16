@@ -159,7 +159,7 @@ mod tests {
     fn deduplicates_input_types_if_same() {
         let (schema, typename_id) = &*GITHUB_SCHEMA;
         let type_index = Rc::new(TypeIndex::from_schema(schema, *typename_id));
-        let query = graphql_parser::parse_query::<&str>(
+        let query = cynic_parser::parse_executable_document(
             r#"
               query ($filterOne: IssueFilters!, $filterTwo: IssueFilters!) {
                 cynic: repository(owner: "obmarg", name: "cynic") {
@@ -191,7 +191,7 @@ mod tests {
     fn finds_variable_input_types() {
         let (schema, typename_id) = &*GITHUB_SCHEMA;
         let type_index = Rc::new(TypeIndex::from_schema(schema, *typename_id));
-        let query = graphql_parser::parse_query::<&str>(
+        let query = cynic_parser::parse_executable_document(
             r#"
               query MyQuery($input: IssueFilters!) {
                 cynic: repository(owner: "obmarg", name: "cynic") {
@@ -224,7 +224,7 @@ mod tests {
         let (schema, typename_id) = &*TEST_CASE_SCHEMA;
         let type_index = Rc::new(TypeIndex::from_schema(schema, *typename_id));
 
-        let query = graphql_parser::parse_query::<&str>(
+        let query = cynic_parser::parse_executable_document(
             r#"
                 query MyQuery($input: SelfRecursiveInput!, $input2: RecursiveInputParent!) {
                     recursiveInputField(recursive: $input, recursive2: $input2)
