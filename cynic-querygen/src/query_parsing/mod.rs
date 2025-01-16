@@ -3,16 +3,16 @@ use std::rc::Rc;
 mod inputs;
 mod leaf_types;
 mod normalisation;
-mod parser;
 mod sorting;
 mod value;
 mod variables;
 
-use parser::Document;
 use variables::VariableStructDetails;
 
 pub use normalisation::Variable;
 pub use value::{LiteralContext, TypedValue};
+
+use cynic_parser::{executable as parser, ExecutableDocument};
 
 use crate::{
     casings::CasingExt,
@@ -21,10 +21,10 @@ use crate::{
     Error, TypeIndex,
 };
 
-pub fn parse_query_document<'text>(
-    doc: &Document<'text>,
-    type_index: &Rc<TypeIndex<'text>>,
-) -> Result<Output<'text, 'text>, Error> {
+pub fn parse_query_document<'a>(
+    doc: &'a ExecutableDocument,
+    type_index: &Rc<TypeIndex<'a>>,
+) -> Result<Output<'a, 'a>, Error> {
     let normalised = normalisation::normalise(doc, type_index)?;
     let input_objects = inputs::extract_input_objects(&normalised)?;
 
@@ -42,7 +42,7 @@ pub fn parse_query_document<'text>(
 
         namers
             .selection_sets
-            .force_name(&operation.root, &operation_name);
+            .force_name(&operation.root, operation_name.clone());
 
         variable_struct_details
             .force_name_variables_for(&operation.root, format!("{operation_name}Variables"));

@@ -1338,7 +1338,6 @@ dependencies = [
  "Inflector",
  "assert_matches",
  "cynic-parser",
- "graphql-parser",
  "insta",
  "once_cell",
  "rstest",
