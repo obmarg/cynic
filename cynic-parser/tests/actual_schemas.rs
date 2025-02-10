@@ -44,3 +44,5 @@ schema_tests!(simple, "../../schemas/simple.graphql");
 schema_tests!(starwars, "../../schemas/starwars.schema.graphql");
 
 schema_tests!(test_cases, "../../schemas/test_cases.graphql");
+
+schema_tests!(octopus, "../../schemas/octopus.graphql");
