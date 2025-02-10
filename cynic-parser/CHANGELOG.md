@@ -9,9 +9,23 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.9.0 - 2025-02-10
+
 ### Breaking Changes
 
+- Added new variants to `cynic_parser::Error` to handle empty documents, these
+  errors were previous ambiguous parser errors (#1117)
 - `Error::span` now returns an `Option<Span>` instead of a `Span`
+
+### Bug Fixes
+
+- Parsing will no longer fail if keywords like `mutation` are used as enum
+  values. (#1128)
+
+### Changes
+
+- Parse schema with `cynic_parser` in querygen (#1124)
+- Bumped the MSRV to 1.80
 
 ## v0.8.7 - 2024-12-03
 

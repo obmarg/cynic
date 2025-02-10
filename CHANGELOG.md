@@ -8,6 +8,24 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v3.10.0 - 2025-02-10
+
+### New Features
+
+- Added initial suppport for directives: `@skip`, `@include` are supported, and
+  other field level directives can be provided provided they don't require
+  specific client support (#900)
+
+### Bug Fixes
+
+- Parsing will no longer fail if keywords like `mutation` are used as enum
+  values. (#1128)
+
+### Changes
+
+- Querygen now parses schemas and queries with `cynic_parser`
+  (#1124, #1125)
+
 ### Changes
 
 - Bumped the MSRV to 1.80
