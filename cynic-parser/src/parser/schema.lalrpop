@@ -528,8 +528,20 @@ EnumValue: StringId = {
     <s:RawIdent> => ast.ident(s),
     schema => ast.ident("schema"),
     query => ast.ident("query"),
+    mutation => ast.ident("mutation"),
+    subscription => ast.ident("subscription"),
     ty => ast.ident("type"),
     input => ast.ident("input"),
+    implements => ast.ident("implements"),
+    interface => ast.ident("interface"),
+    "enum" => ast.ident("enum"),
+    union => ast.ident("union"),
+    scalar => ast.ident("scalar"),
+    extend => ast.ident("extend"),
+    directive => ast.ident("directive"),
+    repeatable => ast.ident("repeatable"),
+    on => ast.ident("on"),
+    fragment => ast.ident("fragment"),
 }
 
 Directives: IdRange<DirectiveId> = {
