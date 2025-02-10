@@ -8,6 +8,19 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v3.10.0 - 2025-02-10
+
+### New Features
+
+- directive support (#900)
+
+### Changes
+
+- parse schema with cynic_parser in querygen (#1124)
+- update Cargo.lock dependencies
+- remove reliance on hosted swapi (#1119)
+- parse query w/ cynic-parser in querygen (#1125)
+
 ### Changes
 
 - Bumped the MSRV to 1.80

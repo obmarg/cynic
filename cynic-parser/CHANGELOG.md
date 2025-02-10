@@ -9,6 +9,24 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.9.0 - 2025-02-10
+
+### Breaking Changes
+
+- [**breaking**] better errors on empty graphql documents (#1117)
+
+### New Features
+
+- directive support (#900)
+
+### Bug Fixes
+
+- support more keywords as enum variants (#1128)
+
+### Changes
+
+- parse schema with cynic_parser in querygen (#1124)
+
 ### Breaking Changes
 
 - `Error::span` now returns an `Option<Span>` instead of a `Span`
