@@ -13,23 +13,19 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Breaking Changes
 
-- [**breaking**] better errors on empty graphql documents (#1117)
-
-### New Features
-
-- directive support (#900)
+- Added new variants to `cynic_parser::Error` to handle empty documents, these
+  errors were previous ambiguous parser errors (#1117)
+- `Error::span` now returns an `Option<Span>` instead of a `Span`
 
 ### Bug Fixes
 
-- support more keywords as enum variants (#1128)
+- Parsing will no longer fail if keywords like `mutation` are used as enum
+  values. (#1128)
 
 ### Changes
 
-- parse schema with cynic_parser in querygen (#1124)
-
-### Breaking Changes
-
-- `Error::span` now returns an `Option<Span>` instead of a `Span`
+- Parse schema with `cynic_parser` in querygen (#1124)
+- Bumped the MSRV to 1.80
 
 ## v0.8.7 - 2024-12-03
 
