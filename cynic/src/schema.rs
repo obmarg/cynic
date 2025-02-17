@@ -60,14 +60,18 @@ pub trait HasArgument<ArgumentMarker> {
 
 // TODO: Think about the names of the scalar traits....
 
-/// Indicates that a type is a scalar that maps to the given schema scalar.
+/// Indicates that a type can be used as a graphql scalar in input position
 ///
-/// Note that this type is actually implemented on the users types.
+/// This should be implemented for any scalar types that need to be used as arguments
+/// or appear on fields of input objects.
+///
+/// The SchemaType generic parameter should be set to a marker type from the users schema module -
+/// this indicates which scalar(s) this type represents in a graphql schema.
 pub trait IsScalar<SchemaType> {
     /// The schema marker type this scalar represents.
     type SchemaType;
 
-    // TODO: serialize should maybe be on an OutputScalar trait
+    /// Serializes Self using the provided Serializer
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer;
@@ -75,10 +79,19 @@ pub trait IsScalar<SchemaType> {
 
 // TODO: serialize should maybe be on an InputScalar trait
 // or maybe just ScalarSerialize/ScalarDeserialize?  not sure...
+
+/// Indicates that a type can be used as a graphql scalar in output position
+///
+/// This should be implemented for any scalars that are used as fields in types implementing
+/// QueryFragment.
+///
+/// The SchemaType generic parameter should be set to a marker type from the users schema module -
+/// this indicates which scalar(s) this type represents in a graphql schema.
 pub trait IsOutputScalar<'de, SchemaType>: Sized {
     /// The schema marker type this scalar represents.
     type SchemaType;
 
+    /// Deserializes Self using the provided Deserializer
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>;

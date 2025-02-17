@@ -1,10 +1,42 @@
-error[E0277]: the trait bound `u64: IsScalar<i32>` is not satisfied
+error[E0277]: the trait bound `u64: IsOutputScalar<'_, i32>` is not satisfied
   --> tests/cases/wrong-scalar-type.rs:15:21
    |
 15 |         episode_id: Option<u64>,
-   |                     ^^^^^^ the trait `IsScalar<i32>` is not implemented for `u64`, which is required by `std::option::Option<u64>: IsScalar<std::option::Option<i32>>`
+   |                     ^^^^^^ the trait `IsOutputScalar<'_, i32>` is not implemented for `u64`, which is required by `std::option::Option<u64>: IsOutputScalar<'_, std::option::Option<i32>>`
    |
-   = help: the following other types implement trait `IsScalar<SchemaType>`:
-             <f64 as IsScalar<f64>>
-             <i32 as IsScalar<i32>>
-   = note: required for `std::option::Option<u64>` to implement `IsScalar<std::option::Option<i32>>`
+   = help: the following other types implement trait `IsOutputScalar<'de, SchemaType>`:
+             <f64 as IsOutputScalar<'de, f64>>
+             <i32 as IsOutputScalar<'de, i32>>
+   = note: required for `std::option::Option<u64>` to implement `IsOutputScalar<'_, std::option::Option<i32>>`
+
+error[E0277]: the trait bound `u64: IsOutputScalar<'_, i32>` is not satisfied
+  --> tests/cases/wrong-scalar-type.rs:15:21
+   |
+15 |         episode_id: Option<u64>,
+   |                     ^^^^^^^^^^^ the trait `IsOutputScalar<'_, i32>` is not implemented for `u64`, which is required by `std::option::Option<u64>: IsOutputScalar<'_, std::option::Option<i32>>`
+   |
+   = help: the following other types implement trait `IsOutputScalar<'de, SchemaType>`:
+             <f64 as IsOutputScalar<'de, f64>>
+             <i32 as IsOutputScalar<'de, i32>>
+   = note: required for `std::option::Option<u64>` to implement `IsOutputScalar<'_, std::option::Option<i32>>`
+
+error[E0277]: the trait bound `u64: IsOutputScalar<'_, i32>` is not satisfied
+  --> tests/cases/wrong-scalar-type.rs:12:14
+   |
+12 |     #[derive(cynic::QueryFragment, Debug)]
+   |              ^^^^^^^^^^^^^^^^^^^^ the trait `IsOutputScalar<'_, i32>` is not implemented for `u64`, which is required by `ScalarDeserialize<std::option::Option<u64>, std::option::Option<i32>>: Deserialize<'de>`
+   |
+   = help: the following other types implement trait `IsOutputScalar<'de, SchemaType>`:
+             <f64 as IsOutputScalar<'de, f64>>
+             <i32 as IsOutputScalar<'de, i32>>
+   = note: required for `std::option::Option<u64>` to implement `IsOutputScalar<'_, std::option::Option<i32>>`
+   = note: required for `ScalarDeserialize<std::option::Option<u64>, std::option::Option<i32>>` to implement `Deserialize<'de>`
+note: required by a bound in `next_value`
+  --> $CARGO/serde-1.0.210/src/de/mod.rs
+   |
+   |     fn next_value<V>(&mut self) -> Result<V, Self::Error>
+   |        ---------- required by a bound in this associated function
+   |     where
+   |         V: Deserialize<'de>,
+   |            ^^^^^^^^^^^^^^^^ required by this bound in `MapAccess::next_value`
+   = note: this error originates in the derive macro `cynic::QueryFragment` (in Nightly builds, run with -Z macro-backtrace for more info)
