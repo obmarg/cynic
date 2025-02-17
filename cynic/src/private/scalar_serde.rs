@@ -5,8 +5,8 @@ use serde::Deserialize;
 use crate::schema::{IsOutputScalar, IsScalar};
 
 pub struct ScalarDeserialize<T, U> {
-    inner: T,
-    phantom: PhantomData<fn() -> U>,
+    pub(super) inner: T,
+    pub(super) phantom: PhantomData<fn() -> U>,
 }
 
 impl<T, U> ScalarDeserialize<T, U> {
@@ -27,7 +27,7 @@ impl<T, U> ScalarDeserialize<T, U> {
 
 impl<'de, T, U> Deserialize<'de> for ScalarDeserialize<T, U>
 where
-    T: IsOutputScalar<U>,
+    T: IsOutputScalar<'de, U>,
 {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where

@@ -11,7 +11,7 @@
 //! usually be marker types and the associated types will also usually be
 //! markers.
 
-use std::borrow::{Borrow, Cow};
+use std::borrow::Cow;
 
 use serde::{ser::SerializeSeq, Deserialize, Deserializer, Serializer};
 
@@ -75,11 +75,11 @@ pub trait IsScalar<SchemaType> {
 
 // TODO: serialize should maybe be on an InputScalar trait
 // or maybe just ScalarSerialize/ScalarDeserialize?  not sure...
-pub trait IsOutputScalar<SchemaType>: Sized {
+pub trait IsOutputScalar<'de, SchemaType>: Sized {
     /// The schema marker type this scalar represents.
     type SchemaType;
 
-    fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>;
 }
@@ -115,13 +115,13 @@ where
     }
 }
 
-impl<T, U> IsOutputScalar<Option<T>> for Option<U>
+impl<'de, T, U> IsOutputScalar<'de, Option<T>> for Option<U>
 where
-    U: IsOutputScalar<T>,
+    U: IsOutputScalar<'de, T>,
 {
     type SchemaType = Option<U::SchemaType>;
 
-    fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
     {
@@ -150,13 +150,13 @@ where
     }
 }
 
-impl<T, U> IsOutputScalar<Vec<T>> for Vec<U>
+impl<'de, T, U> IsOutputScalar<'de, Vec<T>> for Vec<U>
 where
-    U: IsOutputScalar<T>,
+    U: IsOutputScalar<'de, T>,
 {
     type SchemaType = Vec<U::SchemaType>;
 
-    fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
     {
@@ -217,13 +217,13 @@ where
     }
 }
 
-impl<T, U: ?Sized> IsOutputScalar<Box<T>> for Box<U>
+impl<'de, T, U: ?Sized> IsOutputScalar<'de, Box<T>> for Box<U>
 where
-    U: IsOutputScalar<T>,
+    U: IsOutputScalar<'de, T>,
 {
     type SchemaType = Box<U::SchemaType>;
 
-    fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
     {
@@ -245,13 +245,13 @@ where
     }
 }
 
-impl<T, U: ?Sized> IsOutputScalar<T> for std::borrow::Cow<'_, U>
+impl<'de, T, U: ?Sized> IsOutputScalar<'de, T> for std::borrow::Cow<'_, U>
 where
-    U: IsOutputScalar<T> + ToOwned,
+    U: IsOutputScalar<'de, T> + ToOwned,
 {
     type SchemaType = U::SchemaType;
 
-    fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
     {
@@ -259,10 +259,10 @@ where
     }
 }
 
-impl IsOutputScalar<String> for std::borrow::Cow<'static, str> {
+impl<'de> IsOutputScalar<'de, String> for std::borrow::Cow<'static, str> {
     type SchemaType = String;
 
-    fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
     {
@@ -283,10 +283,10 @@ impl IsScalar<bool> for bool {
     }
 }
 
-impl IsOutputScalar<bool> for bool {
+impl<'de> IsOutputScalar<'de, bool> for bool {
     type SchemaType = bool;
 
-    fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
     {
@@ -305,10 +305,10 @@ impl IsScalar<String> for String {
     }
 }
 
-impl IsOutputScalar<String> for String {
+impl<'de> IsOutputScalar<'de, String> for String {
     type SchemaType = String;
 
-    fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
     {
@@ -338,10 +338,10 @@ impl IsScalar<i32> for i32 {
     }
 }
 
-impl IsOutputScalar<i32> for i32 {
+impl<'de> IsOutputScalar<'de, i32> for i32 {
     type SchemaType = i32;
 
-    fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
     {
@@ -360,10 +360,10 @@ impl IsScalar<f64> for f64 {
     }
 }
 
-impl IsOutputScalar<f64> for f64 {
+impl<'de> IsOutputScalar<'de, f64> for f64 {
     type SchemaType = f64;
 
-    fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
     {
@@ -382,10 +382,10 @@ impl IsScalar<crate::Id> for crate::Id {
     }
 }
 
-impl IsOutputScalar<crate::Id> for crate::Id {
+impl<'de> IsOutputScalar<'de, crate::Id> for crate::Id {
     type SchemaType = crate::Id;
 
-    fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
     {

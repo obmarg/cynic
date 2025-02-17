@@ -1,3 +1,5 @@
+use std::marker::PhantomData;
+
 use serde::Deserialize;
 
 use crate::schema::IsOutputScalar;
@@ -44,19 +46,21 @@ where
 
 impl<'de, T, U> Deserialize<'de> for Flattened<super::ScalarDeserialize<Vec<T>, U>>
 where
-    Option<Vec<Option<T>>>: IsOutputScalar<U>,
+    Option<Vec<Option<T>>>: IsOutputScalar<'de, U>,
 {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: serde::Deserializer<'de>,
     {
         super::ScalarDeserialize::<Option<Vec<Option<T>>>, U>::deserialize(deserializer).map(
-            |opt_vec| Flattened {
-                inner: todo!(
-                    "opt_vec
-                    .map(|vec| vec.into_iter().flatten().collect::<Vec<_>>())
-                    .unwrap_or_default(),"
-                ),
+            |deser| Flattened {
+                inner: super::ScalarDeserialize {
+                    inner: deser
+                        .into_inner()
+                        .map(|vec| vec.into_iter().flatten().collect::<Vec<_>>())
+                        .unwrap_or_default(),
+                    phantom: PhantomData,
+                },
             },
         )
     }
@@ -64,7 +68,7 @@ where
 
 impl<'de, T, U> Deserialize<'de> for Flattened<super::ScalarDeserialize<Option<Vec<T>>, U>>
 where
-    Option<Vec<Option<T>>>: IsOutputScalar<U>,
+    Option<Vec<Option<T>>>: IsOutputScalar<'de, U>,
 {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where

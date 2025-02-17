@@ -40,9 +40,11 @@ pub struct SignIn {
     variables = "SignInVariablesMoreGeneric",
     schema_path = "../schemas/raindancer.graphql"
 )]
-pub struct SignInMoreGeneric<SI: cynic::schema::IsOutputScalar<String>>
+pub struct SignInMoreGeneric<SI>
 where
-    <SI as cynic::schema::IsOutputScalar<String>>::SchemaType: cynic::queries::IsFieldType<String>,
+    for<'de2> SI: cynic::schema::IsOutputScalar<'de2, String>,
+    for<'de2> <SI as cynic::schema::IsOutputScalar<'de2, String>>::SchemaType:
+        cynic::queries::IsFieldType<String>,
 {
     #[arguments(input: $input)]
     pub sign_in: SI,

@@ -6,10 +6,7 @@ use {
 
 use crate::{
     error::Errors,
-    schema::{
-        types::{Field, OutputType},
-        Schema, Unvalidated,
-    },
+    schema::{types::Field, Schema, Unvalidated},
     types::{self, check_spread_type, check_types_are_compatible, CheckMode},
     variables_fields_path,
 };
@@ -407,14 +404,5 @@ impl quote::ToTokens for SpreadSelection {
                     .select_children::<<#field_type as cynic::QueryFragment>::VariablesFields>()
             );
         })
-    }
-}
-
-impl OutputType<'_> {
-    fn is_composite(&self) -> bool {
-        matches!(
-            self,
-            OutputType::Object(_) | OutputType::Interface(_) | OutputType::Union(_)
-        )
     }
 }

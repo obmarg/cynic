@@ -1,7 +1,7 @@
 use proc_macro2::TokenStream;
 use quote::quote_spanned;
 
-use crate::schema::{types::OutputType, Schema, Unvalidated};
+use crate::schema::{Schema, Unvalidated};
 
 use super::FieldKind;
 
