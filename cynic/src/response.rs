@@ -1,17 +1,34 @@
 /// The response to a GraphQl operation
 #[derive(Debug, Clone)]
-pub struct GraphQlResponse<T, ErrorExtensions = serde::de::IgnoredAny> {
+pub struct GraphQlResponse<T> {
     /// The operation data (if the operation was successful)
     pub data: Option<T>,
 
     /// Any errors that occurred as part of this operation
-    pub errors: Option<Vec<GraphQlError<ErrorExtensions>>>,
+    pub errors: Option<Vec<GraphQlError>>,
+
+    /// Optional arbitrary extra data describing the error in more detail.
+    extensions: Option<serde_json::Value>,
+}
+
+impl<T> GraphQlResponse<T> {
+    /// Deserialize the extensions field on this response as an instance of E
+    pub fn extensions<'a, E>(&'a self) -> Result<E, serde_json::Error>
+    where
+        E: serde::Deserialize<'a>,
+    {
+        let Some(extensions) = self.extensions.as_ref() else {
+            return E::deserialize(serde_json::Value::Null);
+        };
+
+        E::deserialize(extensions)
+    }
 }
 
 /// A model describing an error which has taken place during execution.
 #[derive(Clone, Debug, Eq, PartialEq, serde::Deserialize, thiserror::Error)]
 #[error("{message}")]
-pub struct GraphQlError<Extensions = serde::de::IgnoredAny> {
+pub struct GraphQlError {
     /// A description of the error which has taken place.
     pub message: String,
     /// Optional description of the locations where the errors have taken place.
@@ -19,23 +36,52 @@ pub struct GraphQlError<Extensions = serde::de::IgnoredAny> {
     /// Optional path to the response field which experienced the associated error.
     pub path: Option<Vec<GraphQlErrorPathSegment>>,
     /// Optional arbitrary extra data describing the error in more detail.
-    pub extensions: Option<Extensions>,
+    extensions: Option<serde_json::Value>,
 }
 
-impl<ErrorExtensions> GraphQlError<ErrorExtensions> {
+impl GraphQlError {
     /// Construct a new instance.
     pub fn new(
         message: String,
         locations: Option<Vec<GraphQlErrorLocation>>,
         path: Option<Vec<GraphQlErrorPathSegment>>,
-        extensions: Option<ErrorExtensions>,
     ) -> Self {
         GraphQlError {
             message,
             locations,
             path,
-            extensions,
+            extensions: None,
         }
+    }
+
+    /// Populate the extensions field of this error
+    pub fn with_extensions<E>(mut self, extensions: E) -> Result<Self, serde_json::Error>
+    where
+        E: serde::Serialize,
+    {
+        self.set_extensions(extensions)?;
+        Ok(self)
+    }
+
+    /// Populate the extensions field of this error
+    pub fn set_extensions<E>(&mut self, extensions: E) -> Result<(), serde_json::Error>
+    where
+        E: serde::Serialize,
+    {
+        self.extensions = Some(serde_json::to_value(extensions)?);
+        Ok(())
+    }
+
+    /// Deserialize the extensions field on this error as an instance of E
+    pub fn extensions<'a, E>(&'a self) -> Result<E, serde_json::Error>
+    where
+        E: serde::Deserialize<'a>,
+    {
+        let Some(extensions) = self.extensions.as_ref() else {
+            return E::deserialize(serde_json::Value::Null);
+        };
+
+        E::deserialize(extensions)
     }
 }
 
@@ -58,10 +104,9 @@ pub enum GraphQlErrorPathSegment {
     Index(i32),
 }
 
-impl<'de, T, ErrorExtensions> serde::Deserialize<'de> for GraphQlResponse<T, ErrorExtensions>
+impl<'de, T> serde::Deserialize<'de> for GraphQlResponse<T>
 where
     T: serde::Deserialize<'de>,
-    ErrorExtensions: serde::Deserialize<'de>,
 {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
@@ -70,15 +115,21 @@ where
         use serde::de::Error;
 
         #[derive(serde::Deserialize)]
-        struct ResponseDeser<T, ErrorExtensions> {
+        struct ResponseDeser<T> {
             /// The operation data (if the operation was successful)
             data: Option<T>,
 
             /// Any errors that occurred as part of this operation
-            errors: Option<Vec<GraphQlError<ErrorExtensions>>>,
+            errors: Option<Vec<GraphQlError>>,
+
+            extensions: Option<serde_json::Value>,
         }
 
-        let ResponseDeser { data, errors } = ResponseDeser::deserialize(deserializer)?;
+        let ResponseDeser {
+            data,
+            errors,
+            extensions,
+        } = ResponseDeser::deserialize(deserializer)?;
 
         if data.is_none() && errors.is_none() {
             return Err(D::Error::custom(
@@ -86,7 +137,11 @@ where
             ));
         }
 
-        Ok(GraphQlResponse { data, errors })
+        Ok(GraphQlResponse {
+            data,
+            errors,
+            extensions,
+        })
     }
 }
 
