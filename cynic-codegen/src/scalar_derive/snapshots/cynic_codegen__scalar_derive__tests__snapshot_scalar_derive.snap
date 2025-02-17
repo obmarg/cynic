@@ -1,6 +1,7 @@
 ---
 source: cynic-codegen/src/scalar_derive/tests.rs
 expression: "format_code(format!(\"{}\", tokens))"
+snapshot_kind: text
 ---
 #[automatically_derived]
 impl cynic::serde::Serialize for DateTime {
@@ -31,9 +32,9 @@ impl cynic::schema::IsScalar<schema::DateTime> for DateTime {
     }
 }
 #[automatically_derived]
-impl cynic::schema::IsOutputScalar<schema::DateTime> for DateTime {
+impl<'de> cynic::schema::IsOutputScalar<'de, schema::DateTime> for DateTime {
     type SchemaType = schema::DateTime;
-    fn deserialize<'de, D>(deserializer: D) -> Result<Self, D::Error>
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: cynic::serde::Deserializer<'de>,
     {
@@ -45,4 +46,3 @@ impl schema::variable::Variable for DateTime {
     const TYPE: cynic::variables::VariableType = cynic::variables::VariableType::Named("DateTime");
 }
 cynic :: impl_coercions ! (DateTime [] [] , schema :: DateTime);
-
