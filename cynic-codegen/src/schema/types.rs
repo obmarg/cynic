@@ -42,6 +42,12 @@ pub enum InputType<'a> {
     InputObject(InputObjectType<'a>),
 }
 
+impl InputType<'_> {
+    pub fn is_scalar(&self) -> bool {
+        matches!(self, InputType::Scalar(_))
+    }
+}
+
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 #[cfg_attr(
     feature = "rkyv",

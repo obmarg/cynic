@@ -10,7 +10,6 @@ mod inline_fragment_de;
 mod key_de;
 mod scalar_serde;
 mod spread_de;
-mod variable_serde;
 
 pub use flatten_de::Flattened;
 pub use inline_fragment_de::InlineFragmentVisitor;

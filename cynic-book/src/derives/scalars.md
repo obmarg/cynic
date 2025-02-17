@@ -8,6 +8,7 @@ to your `QueryFragment` struct.
 - `Int` fields in GraphQL should be `i32` in Rust.
 - `Boolean` fields in GraphQL map to `bool` in Rust.
 - `ID` fields in GraphQL map to the `cynic::Id` type in Rust.
+- `Float` fields in GraphQL map to the `f64` type in Rust
 
 ## Custom Scalars
 
@@ -25,7 +26,7 @@ use chrono::{DateTime, Utc};
 impl_scalar!(DateTime<Utc>, schema::DateTime);
 ```
 
-You can now use a `DateTime<Utc>` type for any `DateTime` in your scheam.
+You can now use a `DateTime<Utc>` type for any `DateTime` in your schema.
 
 ```admonish info
 This `impl_scalar` call should be placed in the crate that defines the the
@@ -62,3 +63,17 @@ A Scalar derive can be configured with several attributes on the struct itself:
 - `schema_module` tells cynic where to find your schema module. This is
   optional and should only be needed if your schema module is not in scope or
   named `schema`.
+
+### Manually Implementing Scalars
+
+GraphQL servers sometimes expect differing formats for scalar types. For
+example, a DateTime could be serialized as an ISO 8601 string, or it could be
+serialized a unix timestamp integer. In scenarios like this it can be useful
+to manually implement the scalar traits.
+
+For example, to make `chrono::DateTime<Utc>` implement a `Timestamp` scalar
+(which serializes as a unix timestamp) you can do the following:
+
+```rust
+// TODO
+```

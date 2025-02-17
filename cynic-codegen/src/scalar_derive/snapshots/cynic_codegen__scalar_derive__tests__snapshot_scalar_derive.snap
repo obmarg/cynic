@@ -42,5 +42,11 @@ impl<'de> cynic::schema::OutputScalar<'de, schema::DateTime> for DateTime {
 #[automatically_derived]
 impl schema::variable::Variable for DateTime {
     const TYPE: cynic::variables::VariableType = cynic::variables::VariableType::Named("DateTime");
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: cynic::serde::Serializer,
+    {
+        <Self as cynic::schema::InputScalar<schema::DateTime>>::serialize(self, serializer)
+    }
 }
 cynic :: impl_coercions ! (DateTime [] [] , schema :: DateTime);

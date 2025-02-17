@@ -144,7 +144,7 @@ pub(crate) fn use_schema_impl(schema: &Schema<'_, Validated>) -> Result<TokenStr
                     S: Serializer;
             }
 
-            struct VariableSerialize<T>(T);
+            pub struct VariableSerialize<T>(pub T);
 
             impl<T> Serialize for VariableSerialize<T> where T: Variable {
                 fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -289,7 +289,7 @@ pub(crate) fn use_schema_impl(schema: &Schema<'_, Validated>) -> Result<TokenStr
                 where
                     S: Serializer
                 {
-                    <Self as serde::Serialize>::serialize(self, serializer)
+                    <Self as cynic::serde::Serialize>::serialize(self, serializer)
                 }
             }
 
@@ -300,7 +300,7 @@ pub(crate) fn use_schema_impl(schema: &Schema<'_, Validated>) -> Result<TokenStr
                 where
                     S: Serializer
                 {
-                    <Self as serde::Serialize>::serialize(self, serializer)
+                    <Self as cynic::serde::Serialize>::serialize(self, serializer)
                 }
             }
 
@@ -311,7 +311,7 @@ pub(crate) fn use_schema_impl(schema: &Schema<'_, Validated>) -> Result<TokenStr
                 where
                     S: Serializer
                 {
-                    <Self as serde::Serialize>::serialize(self, serializer)
+                    <Self as cynic::serde::Serialize>::serialize(self, serializer)
                 }
             }
 
@@ -322,7 +322,7 @@ pub(crate) fn use_schema_impl(schema: &Schema<'_, Validated>) -> Result<TokenStr
                 where
                     S: Serializer
                 {
-                    <Self as serde::Serialize>::serialize(self, serializer)
+                    <Self as cynic::serde::Serialize>::serialize(self, serializer)
                 }
             }
 
@@ -333,7 +333,7 @@ pub(crate) fn use_schema_impl(schema: &Schema<'_, Validated>) -> Result<TokenStr
                 where
                     S: Serializer
                 {
-                    <Self as serde::Serialize>::serialize(self, serializer)
+                    <Self as cynic::serde::Serialize>::serialize(self, serializer)
                 }
             }
 
@@ -344,7 +344,7 @@ pub(crate) fn use_schema_impl(schema: &Schema<'_, Validated>) -> Result<TokenStr
                 where
                     S: Serializer
                 {
-                    <Self as serde::Serialize>::serialize(self, serializer)
+                    <Self as cynic::serde::Serialize>::serialize(self, serializer)
                 }
             }
         }
