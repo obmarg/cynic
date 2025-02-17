@@ -82,16 +82,34 @@ impl<'a> FieldSerializer<'a> {
         }
     }
 
-    pub fn field_insert_call(&self, serializer_ident: &proc_macro2::Ident) -> TokenStream {
+    pub fn field_insert_call(
+        &self,
+        serializer_ident: &proc_macro2::Ident,
+        schema: &Schema<'a, Unvalidated>,
+    ) -> TokenStream {
         let field_span = self.rust_field.ident.span();
         let rust_field_name = &self.rust_field.ident;
         let graphql_field_name = proc_macro2::Literal::string(self.graphql_field.name.as_str());
 
-        let insert_call = quote_spanned! { field_span =>
-            #serializer_ident.serialize_entry(
-                #graphql_field_name,
-                &self.#rust_field_name
-            )?;
+        // TODO: This needs to use OutputScalar stuff...
+
+        let insert_call = match self.graphql_field.value_type.inner_type(schema) {
+            InputType::Scalar(_) => {
+                quote_spanned! { field_span =>
+                    #serializer_ident.serialize_entry(
+                        #graphql_field_name,
+                        &cynic::__private::ScalarSerialize::new(&self.#rust_field_name)
+                    )?;
+                }
+            }
+            _ => {
+                quote_spanned! { field_span =>
+                    #serializer_ident.serialize_entry(
+                        #graphql_field_name,
+                        &self.#rust_field_name
+                    )?;
+                }
+            }
         };
 
         match (

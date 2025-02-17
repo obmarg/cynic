@@ -102,8 +102,15 @@ pub fn scalar_derive_impl(input: ScalarDeriveInput) -> Result<TokenStream, syn::
         }
 
         #[automatically_derived]
-        impl #impl_generics #schema_module::variable::Variable for #ident #ty_generics #where_clause {
+        impl #impl_generics #schema_module::variable::Variable for #ident #ty_generics #where_clause_with_ser {
             const TYPE: cynic::variables::VariableType = cynic::variables::VariableType::Named(#graphql_type_name);
+
+            fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+            where
+                S: cynic::serde::Serializer
+            {
+                <Self as cynic::schema::InputScalar<#marker_ident>>::serialize(self, serializer)
+            }
         }
 
         cynic::impl_coercions!(#ident #ty_generics [#impl_generics] [#where_clause], #marker_ident);

@@ -129,12 +129,30 @@ pub(crate) fn use_schema_impl(schema: &Schema<'_, Validated>) -> Result<TokenStr
         pub type ID = cynic::Id;
 
         pub mod variable {
-            use cynic::variables::VariableType;
+            use cynic::{
+                variables::VariableType,
+                serde::{Serialize, Serializer, ser::SerializeSeq}
+            };
 
             /// Used to determine the type of a given variable that
-            /// appears in an argument struct.
+            /// appears in a variable struct.
             pub trait Variable {
                 const TYPE: VariableType;
+
+                fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                where
+                    S: Serializer;
+            }
+
+            struct VariableSerialize<T>(T);
+
+            impl<T> Serialize for VariableSerialize<T> where T: Variable {
+                fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                where
+                    S: Serializer
+                {
+                    Variable::serialize(&self.0, serializer)
+                }
             }
 
             impl<T> Variable for &T
@@ -142,6 +160,13 @@ pub(crate) fn use_schema_impl(schema: &Schema<'_, Validated>) -> Result<TokenStr
                 T: ?::core::marker::Sized + Variable,
             {
                 const TYPE: VariableType = T::TYPE;
+
+                fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                where
+                    S: Serializer
+                {
+                    <T as Variable>::serialize(self, serializer)
+                }
             }
 
             impl<T> Variable for Option<T>
@@ -149,6 +174,20 @@ pub(crate) fn use_schema_impl(schema: &Schema<'_, Validated>) -> Result<TokenStr
                 T: Variable
             {
                 const TYPE: VariableType = VariableType::Nullable(&T::TYPE);
+
+                fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                where
+                    S: Serializer
+                {
+                    match self {
+                        Some(inner) => {
+                            serializer.serialize_some(&VariableSerialize(inner))
+                        },
+                        None => {
+                            serializer.serialize_none()
+                        }
+                    }
+                }
             }
 
             impl<T> Variable for [T]
@@ -156,6 +195,17 @@ pub(crate) fn use_schema_impl(schema: &Schema<'_, Validated>) -> Result<TokenStr
                 T: Variable,
             {
                 const TYPE: VariableType = VariableType::List(&T::TYPE);
+
+                fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                where
+                    S: Serializer
+                {
+                    let mut seq = serializer.serialize_seq(Some(self.len()))?;
+                    for element in self {
+                        seq.serialize_element(&VariableSerialize(element))?;
+                    }
+                    seq.end()
+                }
             }
 
             impl<T> Variable for Vec<T>
@@ -163,6 +213,17 @@ pub(crate) fn use_schema_impl(schema: &Schema<'_, Validated>) -> Result<TokenStr
                 T: Variable,
             {
                 const TYPE: VariableType = VariableType::List(&T::TYPE);
+
+                fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                where
+                    S: Serializer
+                {
+                    let mut seq = serializer.serialize_seq(Some(self.len()))?;
+                    for element in self {
+                        seq.serialize_element(&VariableSerialize(element))?;
+                    }
+                    seq.end()
+                }
             }
 
             impl<T> Variable for Box<T>
@@ -170,6 +231,13 @@ pub(crate) fn use_schema_impl(schema: &Schema<'_, Validated>) -> Result<TokenStr
                 T: Variable,
             {
                 const TYPE: VariableType = T::TYPE;
+
+                fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                where
+                    S: Serializer
+                {
+                    <T as Variable>::serialize(self.as_ref(), serializer)
+                }
             }
 
             impl<T> Variable for std::rc::Rc<T>
@@ -177,6 +245,13 @@ pub(crate) fn use_schema_impl(schema: &Schema<'_, Validated>) -> Result<TokenStr
                 T: Variable,
             {
                 const TYPE: VariableType = T::TYPE;
+
+                fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                where
+                    S: Serializer
+                {
+                    <T as Variable>::serialize(self.as_ref(), serializer)
+                }
             }
 
             impl<T> Variable for std::sync::Arc<T>
@@ -184,6 +259,13 @@ pub(crate) fn use_schema_impl(schema: &Schema<'_, Validated>) -> Result<TokenStr
                 T: Variable,
             {
                 const TYPE: VariableType = T::TYPE;
+
+                fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                where
+                    S: Serializer
+                {
+                    <T as Variable>::serialize(self.as_ref(), serializer)
+                }
             }
 
             impl<T> Variable for std::borrow::Cow<'_, T>
@@ -191,30 +273,79 @@ pub(crate) fn use_schema_impl(schema: &Schema<'_, Validated>) -> Result<TokenStr
                 T: ?::core::marker::Sized + Variable + ToOwned,
             {
                 const TYPE: VariableType = T::TYPE;
+
+                fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                where
+                    S: Serializer
+                {
+                    <T as Variable>::serialize(self.as_ref(), serializer)
+                }
             }
 
             impl Variable for bool {
                 const TYPE: VariableType = VariableType::Named("Boolean");
+
+                fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                where
+                    S: Serializer
+                {
+                    <Self as serde::Serialize>::serialize(self, serializer)
+                }
             }
 
             impl Variable for str {
                 const TYPE: VariableType = VariableType::Named("String");
+
+                fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                where
+                    S: Serializer
+                {
+                    <Self as serde::Serialize>::serialize(self, serializer)
+                }
             }
 
             impl Variable for String {
                 const TYPE: VariableType = <str as Variable>::TYPE;
+
+                fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                where
+                    S: Serializer
+                {
+                    <Self as serde::Serialize>::serialize(self, serializer)
+                }
             }
 
             impl Variable for f64 {
                 const TYPE: VariableType = VariableType::Named("Float");
+
+                fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                where
+                    S: Serializer
+                {
+                    <Self as serde::Serialize>::serialize(self, serializer)
+                }
             }
 
             impl Variable for i32 {
                 const TYPE: VariableType = VariableType::Named("Int");
+
+                fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                where
+                    S: Serializer
+                {
+                    <Self as serde::Serialize>::serialize(self, serializer)
+                }
             }
 
             impl Variable for cynic::Id {
                 const TYPE: VariableType = VariableType::Named("ID");
+
+                fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                where
+                    S: Serializer
+                {
+                    <Self as serde::Serialize>::serialize(self, serializer)
+                }
             }
         }
     });

@@ -259,11 +259,54 @@ macro_rules! impl_scalar {
         #[automatically_derived]
         impl $crate::coercions::CoercesTo<$schema_module$(::$schema_module_rest)*::$type_lock> for $type {}
 
+        $crate::impl_scalar_variable!($type, $type_lock, $schema_module$(::$schema_module_rest)*);
+    };
+}
+
+/// Allows a scalar type to be used as a variable of the given schema type.
+///
+/// This should only be used on scalar types - InputObject and Enum types
+/// generate this code as part of their associated derives.
+///
+/// ```rust
+/// # #[macro_use] extern crate cynic;
+/// # // Faking the uuid module here because it's easier than
+/// # // actually pulling it in
+/// #
+/// # mod schema { cynic::use_schema!("../schemas/test_cases.graphql"); }
+/// # mod uuid { pub struct Uuid(String); }
+/// impl_variable!(uuid::Uuid, schema::UUID);
+/// ```
+///
+/// This macro should be used in the case where you've manually implemented
+/// `OutputScalar` and/or `InputScalar` for a type.  Otherwise `impl_scalar`
+/// or `derive(Scalar)` handle this registration for you.
+#[macro_export]
+macro_rules! impl_scalar_variable {
+    ($type:path, $type_lock:ident) => {
+        $crate::impl_scalar_variable!($type, $type_lock, self);
+    };
+    ($type:path, $type_lock_segment:ident $(:: $type_lock_rest :ident)::+) => {
+        $crate::impl_scalar_variable!($type, $($type_lock_rest)::*, $type_lock_segment);
+    };
+    ($type:path, $type_lock_segment:ident $(:: $type_lock_rest :ident)::+, $schema_module:ident $(:: $schema_module_rest : ident)*) => {
+        $crate::impl_scalar_variable!($type, $($type_lock_rest)::*, $schema_module(::$schema_module_rest)*::$type_lock_segment)
+    };
+    ($type:path, $type_lock:ident, $schema_module:ident $(:: $schema_module_rest : ident)*) => {
         #[automatically_derived]
         impl $schema_module$(::$schema_module_rest)*::variable::Variable for $type {
             const TYPE: cynic::variables::VariableType = cynic::variables::VariableType::Named(
                 <$schema_module$(::$schema_module_rest)*::$type_lock as $crate::schema::NamedType>::NAME,
             );
+
+            fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+            where
+                S: cynic::serde::Serializer
+            {
+                <$type as $crate::schema::InputScalar<
+                    $schema_module$(::$schema_module_rest)*::$type_lock
+                >>::serialize(self, serializer)
+            }
         }
     };
 }

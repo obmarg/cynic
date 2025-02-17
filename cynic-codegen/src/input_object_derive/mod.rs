@@ -91,7 +91,7 @@ pub fn input_object_derive_impl(
         let map_serializer_ident = proc_macro2::Ident::new("map_serializer", Span::call_site());
         let field_inserts = field_serializers
             .iter()
-            .map(|fs| fs.field_insert_call(&map_serializer_ident));
+            .map(|fs| fs.field_insert_call(&map_serializer_ident, &schema));
 
         let map_len = field_serializers.len();
 
@@ -123,6 +123,13 @@ pub fn input_object_derive_impl(
             #[automatically_derived]
             impl #impl_generics #schema_module::variable::Variable for #ident #ty_generics #where_clause {
                 const TYPE: cynic::variables::VariableType = cynic::variables::VariableType::Named(#graphql_type_name);
+
+                fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                where
+                    S: cynic::serde::Serializer
+                {
+                    <Self as cynic::serde::Serialize>::serialize(self, serializer)
+                }
             }
         })
     } else {
