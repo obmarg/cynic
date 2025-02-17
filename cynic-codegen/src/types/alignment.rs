@@ -20,7 +20,7 @@ fn align_output_type_impl<'a>(
     gql_ty: &TypeRef<'_, OutputType<'_>>,
 ) -> RustType<'a> {
     match (&ty, &gql_ty) {
-        (RustType::Unknown { .. } | RustType::SimpleType { .. }, _) => ty.clone(),
+        (RustType::SimpleType { .. }, _) => ty.clone(),
         (RustType::Optional { inner, .. }, TypeRef::Named(_, _) | TypeRef::List(_)) => {
             // If the rust type is optional but the schema type isn't
             // then we just ignore the `Option<_>` and recurse
@@ -94,7 +94,7 @@ fn align_input_type_impl<'a>(
             let parsed = parse_quote! { ::core::option::Option<#syn> };
             align_input_type_impl(&parse_rust_type(&parsed), gql_ty, false).into_owned()
         }
-        (RustType::Unknown { .. } | RustType::SimpleType { .. }, _) => ty.clone(),
+        (RustType::SimpleType { .. }, _) => ty.clone(),
         (RustType::Optional { .. } | RustType::List { .. }, _) => {
             // Something weird is up if we hit this path so don't mess with anything.
             ty.clone()

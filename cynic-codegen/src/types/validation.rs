@@ -57,11 +57,6 @@ pub fn check_input_types_are_compatible(
 pub fn check_spread_type(rust_type: &syn::Type) -> Result<(), syn::Error> {
     fn inner_fn(rust_type: &RustType<'_>) -> Result<(), syn::Error> {
         match rust_type {
-            RustType::Unknown { .. } => {
-                // If we can't parse the type just ignore it - the compiler will still tell us
-                // if it's wrong.
-                Ok(())
-            }
             RustType::Ref { inner, .. } => {
                 // Box is a transparent container for the purposes of checking compatibility
                 // so just recurse
@@ -95,7 +90,6 @@ pub fn outer_type_is_option(rust_type: &syn::Type) -> bool {
             RustType::List { .. } => false,
             RustType::Ref { inner, .. } => inner_fn(inner.as_ref()),
             RustType::SimpleType { .. } => false,
-            RustType::Unknown { .. } => false,
         }
     }
 
@@ -116,9 +110,6 @@ fn output_type_check<'a>(
         (TypeRef::Nullable(inner_gql), RustType::Optional { inner, .. }) => {
             output_type_check(inner_gql, inner.as_ref(), flattening)
         }
-        (TypeRef::Nullable(_), RustType::Unknown { .. }) => Err(TypeValidationError::UnknownType {
-            span: rust_type.span(),
-        }),
         (TypeRef::Nullable(inner_gql), _) if flattening => {
             // If we're flattening then we should still check the inner types line up...
             output_type_check(inner_gql, rust_type, flattening)
@@ -149,12 +140,6 @@ fn output_type_check<'a>(
             span: rust_type.span(),
         }),
         (TypeRef::Named(_, _), RustType::SimpleType { .. }) => Ok(()),
-        (TypeRef::Named(_, _), RustType::Unknown { .. }) => {
-            // This is probably some type with generic params.
-            // But we've satisfied any list/nullable requirements by here
-            // so should probably just allow it
-            Ok(())
-        }
     }
 }
 
@@ -199,12 +184,6 @@ fn input_type_check<'a>(
             span: rust_type.span(),
         }),
         (TypeRef::Named(_, _), RustType::SimpleType { .. }) => Ok(()),
-        (TypeRef::Named(_, _), RustType::Unknown { .. }) => {
-            // This is probably some type with generic params.
-            // But we've satisfied any list/nullable requirements by here
-            // so should probably just allow it
-            Ok(())
-        }
     }
 }
 
@@ -212,12 +191,6 @@ fn recursing_check(
     gql_type: &TypeRef<'_, OutputType<'_>>,
     rust_type: &RustType<'_>,
 ) -> Result<(), TypeValidationError> {
-    if let RustType::Unknown { .. } = rust_type {
-        return Err(TypeValidationError::UnknownType {
-            span: rust_type.span(),
-        });
-    };
-
     if let TypeRef::Nullable(_) = gql_type {
         // If the field is nullable then we just defer to the normal checks.
         return output_type_check(gql_type, rust_type, false);
@@ -239,7 +212,6 @@ enum TypeValidationError {
     FieldIsRequired { provided_type: String, span: Span },
     FieldIsList { provided_type: String, span: Span },
     FieldIsNotList { provided_type: String, span: Span },
-    UnknownType { span: Span },
     RecursiveFieldWithoutOption { provided_type: String, span: Span },
     SpreadOnOption { span: Span },
     SpreadOnVec { span: Span },
@@ -259,9 +231,6 @@ impl From<TypeValidationError> for syn::Error {
             },
             TypeValidationError::FieldIsNotList { provided_type, .. } => {
                 format!("This field is not a list but you're wrapping the type in Vec.  Did you mean {}", provided_type)
-            },
-            TypeValidationError::UnknownType { .. } => {
-                "Cynic does not understand this type. Only un-parameterised types, Vecs, Options & Box are accepted currently.".to_string()
             },
             TypeValidationError::RecursiveFieldWithoutOption { provided_type, .. } => {
                 format!("Recursive types must be wrapped in Option.  Did you mean Option<{}>", provided_type)
@@ -288,7 +257,6 @@ impl TypeValidationError {
             TypeValidationError::FieldIsRequired { span, .. } => *span,
             TypeValidationError::FieldIsList { span, .. } => *span,
             TypeValidationError::FieldIsNotList { span, .. } => *span,
-            TypeValidationError::UnknownType { span } => *span,
             TypeValidationError::RecursiveFieldWithoutOption { span, .. } => *span,
             TypeValidationError::SpreadOnOption { span } => *span,
             TypeValidationError::SpreadOnVec { span } => *span,
@@ -532,14 +500,6 @@ mod tests {
             Err(TypeValidationError::FieldIsList { provided_type, .. }) => {
                 assert_eq!(provided_type, "i32")
             }
-        );
-        assert_matches!(
-            call_output_type_check(
-                &optional_list,
-                &syn::parse2(quote! { DateTime<Vec<i32>> }).unwrap(),
-                true
-            ),
-            Err(TypeValidationError::UnknownType { .. })
         );
     }
 
