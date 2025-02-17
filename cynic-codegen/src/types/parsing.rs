@@ -26,10 +26,6 @@ pub enum RustType<'a> {
         syn: Cow<'a, syn::Type>,
         span: Span,
     },
-    Unknown {
-        syn: Cow<'a, syn::Type>,
-        span: Span,
-    },
 }
 
 impl RustType<'_> {
@@ -54,10 +50,6 @@ impl RustType<'_> {
                 syn: Cow::Owned(syn.into_owned()),
                 span,
             },
-            RustType::Unknown { syn, span } => RustType::Unknown {
-                syn: Cow::Owned(syn.into_owned()),
-                span,
-            },
         }
     }
 
@@ -67,7 +59,6 @@ impl RustType<'_> {
             RustType::List { span, .. } => *span,
             RustType::Ref { span, .. } => *span,
             RustType::SimpleType { span, .. } => *span,
-            RustType::Unknown { span, .. } => *span,
         }
     }
 }
@@ -77,13 +68,6 @@ pub fn parse_rust_type(ty: &syn::Type) -> RustType<'_> {
     match ty {
         syn::Type::Path(type_path) => {
             if let Some(last_segment) = type_path.path.segments.last() {
-                if let syn::PathArguments::None = last_segment.arguments {
-                    return RustType::SimpleType {
-                        syn: Cow::Borrowed(ty),
-                        span,
-                    };
-                }
-
                 match last_segment.ident.to_string().as_str() {
                     "Box" | "Arc" | "Rc" => {
                         if let Some(inner_type) = extract_generic_argument(last_segment) {
@@ -152,7 +136,7 @@ pub fn parse_rust_type(ty: &syn::Type) -> RustType<'_> {
         _ => {}
     }
 
-    RustType::Unknown {
+    RustType::SimpleType {
         syn: Cow::Borrowed(ty),
         span,
     }
@@ -178,13 +162,12 @@ impl<'a> RustType<'a> {
             RustType::List { syn, .. } => syn.clone().into_owned(),
             RustType::Ref { syn, .. } => syn.clone().into_owned(),
             RustType::SimpleType { syn, .. } => syn.clone().into_owned(),
-            RustType::Unknown { syn, .. } => syn.clone().into_owned(),
         }
     }
 
     pub fn replace_inner(self, new_inner: RustType<'a>) -> RustType<'a> {
         match self {
-            RustType::SimpleType { .. } | RustType::Unknown { .. } => {
+            RustType::SimpleType { .. } => {
                 panic!("Can't replace inner on simple or unknown types")
             }
             RustType::Optional { mut syn, span, .. } => {
