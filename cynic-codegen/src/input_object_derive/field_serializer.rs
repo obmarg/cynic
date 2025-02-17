@@ -64,7 +64,7 @@ impl<'a> FieldSerializer<'a> {
             .to_path(self.schema_module);
 
         let trait_bound = match self.graphql_field.value_type.inner_type(schema) {
-            InputType::Scalar(_) => quote! { cynic::schema::IsScalar<#marker_type> },
+            InputType::Scalar(_) => quote! { cynic::schema::InputScalar<#marker_type> },
             InputType::Enum(_) => quote! { cynic::Enum<SchemaType = #marker_type> },
             InputType::InputObject(_) => {
                 quote! { cynic::InputObject<SchemaType = #marker_type> }

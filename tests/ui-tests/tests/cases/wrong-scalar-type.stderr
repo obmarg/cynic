@@ -4,12 +4,12 @@ error[E0277]: u64 cannot be used for fields of type i32
 15 |         episode_id: Option<u64>,
    |                     ^^^^^^ The GraphQL schema expects a i32 here but u64 is not registered for use with fields of that type
    |
-   = help: the trait `IsOutputScalar<'_, i32>` is not implemented for `u64`, which is required by `ScalarDeserialize<std::option::Option<u64>, std::option::Option<i32>>: Deserialize<'de>`
+   = help: the trait `OutputScalar<'_, i32>` is not implemented for `u64`, which is required by `ScalarDeserialize<std::option::Option<u64>, std::option::Option<i32>>: Deserialize<'de>`
    = note: You either need to fix the type used on this field, or register u64 for use as a i32
-   = help: the following other types implement trait `IsOutputScalar<'de, SchemaType>`:
-             <f64 as IsOutputScalar<'de, f64>>
-             <i32 as IsOutputScalar<'de, i32>>
-   = note: required for `std::option::Option<u64>` to implement `IsOutputScalar<'_, std::option::Option<i32>>`
+   = help: the following other types implement trait `OutputScalar<'de, SchemaType>`:
+             <f64 as OutputScalar<'de, f64>>
+             <i32 as OutputScalar<'de, i32>>
+   = note: required for `std::option::Option<u64>` to implement `OutputScalar<'_, std::option::Option<i32>>`
    = note: required for `ScalarDeserialize<std::option::Option<u64>, std::option::Option<i32>>` to implement `Deserialize<'de>`
 note: required by a bound in `next_value`
   --> $CARGO/serde-1.0.210/src/de/mod.rs

@@ -235,7 +235,7 @@ macro_rules! impl_scalar {
     };
     ($type:path, $type_lock:ident, $schema_module:ident $(:: $schema_module_rest : ident)*) => {
         #[automatically_derived]
-        impl $crate::schema::IsScalar<$schema_module$(::$schema_module_rest)*::$type_lock> for $type {
+        impl $crate::schema::InputScalar<$schema_module$(::$schema_module_rest)*::$type_lock> for $type {
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
                 S: $crate::serde::Serializer
@@ -245,7 +245,7 @@ macro_rules! impl_scalar {
         }
 
         #[automatically_derived]
-        impl<'de> $crate::schema::IsOutputScalar<'de, $schema_module$(::$schema_module_rest)*::$type_lock> for $type {
+        impl<'de> $crate::schema::OutputScalar<'de, $schema_module$(::$schema_module_rest)*::$type_lock> for $type {
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
             where
                 D: $crate::serde::Deserializer<'de>

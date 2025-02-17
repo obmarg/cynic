@@ -58,8 +58,6 @@ pub trait HasArgument<ArgumentMarker> {
     const NAME: &'static str;
 }
 
-// TODO: Think about the names of the scalar traits....
-
 /// Indicates that a type can be used as a graphql scalar in input position
 ///
 /// This should be implemented for any scalar types that need to be used as arguments
@@ -72,15 +70,12 @@ pub trait HasArgument<ArgumentMarker> {
     label = "The GraphQL schema expects a {SchemaType} here but {Self} is not registered for use with fields of that type",
     note = "You either need to fix the type used on this field, or register {Self} for use as a {SchemaType}"
 )]
-pub trait IsScalar<SchemaType> {
+pub trait InputScalar<SchemaType> {
     /// Serializes Self using the provided Serializer
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer;
 }
-
-// TODO: serialize should maybe be on an InputScalar trait
-// or maybe just ScalarSerialize/ScalarDeserialize?  not sure...
 
 /// Indicates that a type can be used as a graphql scalar in output position
 ///
@@ -94,28 +89,28 @@ pub trait IsScalar<SchemaType> {
     label = "The GraphQL schema expects a {SchemaType} here but {Self} is not registered for use with fields of that type",
     note = "You either need to fix the type used on this field, or register {Self} for use as a {SchemaType}"
 )]
-pub trait IsOutputScalar<'de, SchemaType>: Sized {
+pub trait OutputScalar<'de, SchemaType>: Sized {
     /// Deserializes Self using the provided Deserializer
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>;
 }
 
-impl<T, U: ?Sized> IsScalar<T> for &U
+impl<T, U: ?Sized> InputScalar<T> for &U
 where
-    U: IsScalar<T>,
+    U: InputScalar<T>,
 {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
     {
-        <U as IsScalar<T>>::serialize(self, serializer)
+        <U as InputScalar<T>>::serialize(self, serializer)
     }
 }
 
-impl<T, U> IsScalar<Option<T>> for Option<U>
+impl<T, U> InputScalar<Option<T>> for Option<U>
 where
-    U: IsScalar<T>,
+    U: InputScalar<T>,
 {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -128,9 +123,9 @@ where
     }
 }
 
-impl<'de, T, U> IsOutputScalar<'de, Option<T>> for Option<U>
+impl<'de, T, U> OutputScalar<'de, Option<T>> for Option<U>
 where
-    U: IsOutputScalar<'de, T>,
+    U: OutputScalar<'de, T>,
 {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
@@ -143,9 +138,9 @@ where
     }
 }
 
-impl<T, U> IsScalar<Vec<T>> for Vec<U>
+impl<T, U> InputScalar<Vec<T>> for Vec<U>
 where
-    U: IsScalar<T>,
+    U: InputScalar<T>,
 {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -159,9 +154,9 @@ where
     }
 }
 
-impl<'de, T, U> IsOutputScalar<'de, Vec<T>> for Vec<U>
+impl<'de, T, U> OutputScalar<'de, Vec<T>> for Vec<U>
 where
-    U: IsOutputScalar<'de, T>,
+    U: OutputScalar<'de, T>,
 {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
@@ -174,9 +169,9 @@ where
     }
 }
 
-impl<T, U> IsScalar<Vec<T>> for [U]
+impl<T, U> InputScalar<Vec<T>> for [U]
 where
-    U: IsScalar<T>,
+    U: InputScalar<T>,
 {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -190,9 +185,9 @@ where
     }
 }
 
-impl<T, U, const SIZE: usize> IsScalar<Vec<T>> for [U; SIZE]
+impl<T, U, const SIZE: usize> InputScalar<Vec<T>> for [U; SIZE]
 where
-    U: IsScalar<T>,
+    U: InputScalar<T>,
 {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -206,9 +201,9 @@ where
     }
 }
 
-impl<T, U: ?Sized> IsScalar<Box<T>> for Box<U>
+impl<T, U: ?Sized> InputScalar<Box<T>> for Box<U>
 where
-    U: IsScalar<T>,
+    U: InputScalar<T>,
 {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -218,9 +213,9 @@ where
     }
 }
 
-impl<'de, T, U: ?Sized> IsOutputScalar<'de, Box<T>> for Box<U>
+impl<'de, T, U: ?Sized> OutputScalar<'de, Box<T>> for Box<U>
 where
-    U: IsOutputScalar<'de, T>,
+    U: OutputScalar<'de, T>,
 {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
@@ -230,9 +225,9 @@ where
     }
 }
 
-impl<T, U: ?Sized> IsScalar<T> for std::borrow::Cow<'_, U>
+impl<T, U: ?Sized> InputScalar<T> for std::borrow::Cow<'_, U>
 where
-    U: IsScalar<T> + ToOwned,
+    U: InputScalar<T> + ToOwned,
 {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -242,9 +237,9 @@ where
     }
 }
 
-impl<'de, T, U: ?Sized> IsOutputScalar<'de, T> for std::borrow::Cow<'_, U>
+impl<'de, T, U: ?Sized> OutputScalar<'de, T> for std::borrow::Cow<'_, U>
 where
-    U: IsOutputScalar<'de, T> + ToOwned,
+    U: OutputScalar<'de, T> + ToOwned,
 {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
@@ -254,7 +249,7 @@ where
     }
 }
 
-impl<'de> IsOutputScalar<'de, String> for std::borrow::Cow<'static, str> {
+impl<'de> OutputScalar<'de, String> for std::borrow::Cow<'static, str> {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -265,7 +260,7 @@ impl<'de> IsOutputScalar<'de, String> for std::borrow::Cow<'static, str> {
     }
 }
 
-impl IsScalar<bool> for bool {
+impl InputScalar<bool> for bool {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -274,7 +269,7 @@ impl IsScalar<bool> for bool {
     }
 }
 
-impl<'de> IsOutputScalar<'de, bool> for bool {
+impl<'de> OutputScalar<'de, bool> for bool {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -283,7 +278,7 @@ impl<'de> IsOutputScalar<'de, bool> for bool {
     }
 }
 
-impl IsScalar<String> for String {
+impl InputScalar<String> for String {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -292,7 +287,7 @@ impl IsScalar<String> for String {
     }
 }
 
-impl<'de> IsOutputScalar<'de, String> for String {
+impl<'de> OutputScalar<'de, String> for String {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -301,7 +296,7 @@ impl<'de> IsOutputScalar<'de, String> for String {
     }
 }
 
-impl IsScalar<String> for str {
+impl InputScalar<String> for str {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -310,7 +305,7 @@ impl IsScalar<String> for str {
     }
 }
 
-impl IsScalar<i32> for i32 {
+impl InputScalar<i32> for i32 {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -319,7 +314,7 @@ impl IsScalar<i32> for i32 {
     }
 }
 
-impl<'de> IsOutputScalar<'de, i32> for i32 {
+impl<'de> OutputScalar<'de, i32> for i32 {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -328,7 +323,7 @@ impl<'de> IsOutputScalar<'de, i32> for i32 {
     }
 }
 
-impl IsScalar<f64> for f64 {
+impl InputScalar<f64> for f64 {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -337,7 +332,7 @@ impl IsScalar<f64> for f64 {
     }
 }
 
-impl<'de> IsOutputScalar<'de, f64> for f64 {
+impl<'de> OutputScalar<'de, f64> for f64 {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -346,7 +341,7 @@ impl<'de> IsOutputScalar<'de, f64> for f64 {
     }
 }
 
-impl IsScalar<crate::Id> for crate::Id {
+impl InputScalar<crate::Id> for crate::Id {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -355,7 +350,7 @@ impl IsScalar<crate::Id> for crate::Id {
     }
 }
 
-impl<'de> IsOutputScalar<'de, crate::Id> for crate::Id {
+impl<'de> OutputScalar<'de, crate::Id> for crate::Id {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,

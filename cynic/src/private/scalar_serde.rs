@@ -2,7 +2,7 @@ use std::marker::PhantomData;
 
 use serde::Deserialize;
 
-use crate::schema::{IsOutputScalar, IsScalar};
+use crate::schema::{InputScalar, OutputScalar};
 
 pub struct ScalarDeserialize<T, U> {
     pub(super) inner: T,
@@ -27,13 +27,13 @@ impl<T, U> ScalarDeserialize<T, U> {
 
 impl<'de, T, U> Deserialize<'de> for ScalarDeserialize<T, U>
 where
-    T: IsOutputScalar<'de, U>,
+    T: OutputScalar<'de, U>,
 {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: serde::Deserializer<'de>,
     {
-        let inner = <T as IsOutputScalar<U>>::deserialize(deserializer)?;
+        let inner = <T as OutputScalar<U>>::deserialize(deserializer)?;
 
         Ok(ScalarDeserialize {
             inner,
@@ -58,12 +58,12 @@ impl<'a, T, U> ScalarSerialize<'a, T, U> {
 
 impl<T, U> serde::Serialize for ScalarSerialize<'_, T, U>
 where
-    T: IsScalar<U>,
+    T: InputScalar<U>,
 {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: serde::Serializer,
     {
-        IsScalar::serialize(self.inner, serializer)
+        InputScalar::serialize(self.inner, serializer)
     }
 }

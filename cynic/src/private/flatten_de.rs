@@ -2,7 +2,7 @@ use std::marker::PhantomData;
 
 use serde::Deserialize;
 
-use crate::schema::IsOutputScalar;
+use crate::schema::OutputScalar;
 
 pub struct Flattened<T> {
     inner: T,
@@ -46,7 +46,7 @@ where
 
 impl<'de, T, U> Deserialize<'de> for Flattened<super::ScalarDeserialize<Vec<T>, U>>
 where
-    Option<Vec<Option<T>>>: IsOutputScalar<'de, U>,
+    Option<Vec<Option<T>>>: OutputScalar<'de, U>,
 {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
@@ -68,7 +68,7 @@ where
 
 impl<'de, T, U> Deserialize<'de> for Flattened<super::ScalarDeserialize<Option<Vec<T>>, U>>
 where
-    Option<Vec<Option<T>>>: IsOutputScalar<'de, U>,
+    Option<Vec<Option<T>>>: OutputScalar<'de, U>,
 {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
