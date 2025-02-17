@@ -68,8 +68,8 @@ pub trait HasArgument<ArgumentMarker> {
 /// The SchemaType generic parameter should be set to a marker type from the users schema module -
 /// this indicates which scalar(s) this type represents in a graphql schema.
 pub trait IsScalar<SchemaType> {
-    /// The schema marker type this scalar represents.
-    type SchemaType;
+    // /// The schema marker type this scalar represents.
+    // type SchemaType;
 
     /// Serializes Self using the provided Serializer
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
@@ -88,8 +88,8 @@ pub trait IsScalar<SchemaType> {
 /// The SchemaType generic parameter should be set to a marker type from the users schema module -
 /// this indicates which scalar(s) this type represents in a graphql schema.
 pub trait IsOutputScalar<'de, SchemaType>: Sized {
-    /// The schema marker type this scalar represents.
-    type SchemaType;
+    // /// The schema marker type this scalar represents.
+    // type SchemaType;
 
     /// Deserializes Self using the provided Deserializer
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
@@ -101,8 +101,6 @@ impl<T, U: ?Sized> IsScalar<T> for &U
 where
     U: IsScalar<T>,
 {
-    type SchemaType = U::SchemaType;
-
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -115,8 +113,6 @@ impl<T, U> IsScalar<Option<T>> for Option<U>
 where
     U: IsScalar<T>,
 {
-    type SchemaType = Option<U::SchemaType>;
-
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -132,8 +128,6 @@ impl<'de, T, U> IsOutputScalar<'de, Option<T>> for Option<U>
 where
     U: IsOutputScalar<'de, T>,
 {
-    type SchemaType = Option<U::SchemaType>;
-
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -149,8 +143,6 @@ impl<T, U> IsScalar<Vec<T>> for Vec<U>
 where
     U: IsScalar<T>,
 {
-    type SchemaType = Vec<U::SchemaType>;
-
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -167,8 +159,6 @@ impl<'de, T, U> IsOutputScalar<'de, Vec<T>> for Vec<U>
 where
     U: IsOutputScalar<'de, T>,
 {
-    type SchemaType = Vec<U::SchemaType>;
-
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -184,8 +174,6 @@ impl<T, U> IsScalar<Vec<T>> for [U]
 where
     U: IsScalar<T>,
 {
-    type SchemaType = Vec<U::SchemaType>;
-
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -202,8 +190,6 @@ impl<T, U, const SIZE: usize> IsScalar<Vec<T>> for [U; SIZE]
 where
     U: IsScalar<T>,
 {
-    type SchemaType = Vec<U::SchemaType>;
-
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -220,8 +206,6 @@ impl<T, U: ?Sized> IsScalar<Box<T>> for Box<U>
 where
     U: IsScalar<T>,
 {
-    type SchemaType = Box<U::SchemaType>;
-
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -234,8 +218,6 @@ impl<'de, T, U: ?Sized> IsOutputScalar<'de, Box<T>> for Box<U>
 where
     U: IsOutputScalar<'de, T>,
 {
-    type SchemaType = Box<U::SchemaType>;
-
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -248,8 +230,6 @@ impl<T, U: ?Sized> IsScalar<T> for std::borrow::Cow<'_, U>
 where
     U: IsScalar<T> + ToOwned,
 {
-    type SchemaType = U::SchemaType;
-
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -262,8 +242,6 @@ impl<'de, T, U: ?Sized> IsOutputScalar<'de, T> for std::borrow::Cow<'_, U>
 where
     U: IsOutputScalar<'de, T> + ToOwned,
 {
-    type SchemaType = U::SchemaType;
-
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -273,8 +251,6 @@ where
 }
 
 impl<'de> IsOutputScalar<'de, String> for std::borrow::Cow<'static, str> {
-    type SchemaType = String;
-
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -286,8 +262,6 @@ impl<'de> IsOutputScalar<'de, String> for std::borrow::Cow<'static, str> {
 }
 
 impl IsScalar<bool> for bool {
-    type SchemaType = bool;
-
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -297,8 +271,6 @@ impl IsScalar<bool> for bool {
 }
 
 impl<'de> IsOutputScalar<'de, bool> for bool {
-    type SchemaType = bool;
-
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -308,8 +280,6 @@ impl<'de> IsOutputScalar<'de, bool> for bool {
 }
 
 impl IsScalar<String> for String {
-    type SchemaType = String;
-
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -319,8 +289,6 @@ impl IsScalar<String> for String {
 }
 
 impl<'de> IsOutputScalar<'de, String> for String {
-    type SchemaType = String;
-
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -330,8 +298,6 @@ impl<'de> IsOutputScalar<'de, String> for String {
 }
 
 impl IsScalar<String> for str {
-    type SchemaType = String;
-
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -341,8 +307,6 @@ impl IsScalar<String> for str {
 }
 
 impl IsScalar<i32> for i32 {
-    type SchemaType = i32;
-
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -352,8 +316,6 @@ impl IsScalar<i32> for i32 {
 }
 
 impl<'de> IsOutputScalar<'de, i32> for i32 {
-    type SchemaType = i32;
-
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -363,8 +325,6 @@ impl<'de> IsOutputScalar<'de, i32> for i32 {
 }
 
 impl IsScalar<f64> for f64 {
-    type SchemaType = f64;
-
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -374,8 +334,6 @@ impl IsScalar<f64> for f64 {
 }
 
 impl<'de> IsOutputScalar<'de, f64> for f64 {
-    type SchemaType = f64;
-
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,
@@ -385,8 +343,6 @@ impl<'de> IsOutputScalar<'de, f64> for f64 {
 }
 
 impl IsScalar<crate::Id> for crate::Id {
-    type SchemaType = crate::Id;
-
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
         S: Serializer,
@@ -396,8 +352,6 @@ impl IsScalar<crate::Id> for crate::Id {
 }
 
 impl<'de> IsOutputScalar<'de, crate::Id> for crate::Id {
-    type SchemaType = crate::Id;
-
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: Deserializer<'de>,

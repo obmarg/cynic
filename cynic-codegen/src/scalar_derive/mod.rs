@@ -83,8 +83,6 @@ pub fn scalar_derive_impl(input: ScalarDeriveInput) -> Result<TokenStream, syn::
 
         #[automatically_derived]
         impl #impl_generics_with_ser cynic::schema::IsScalar<#marker_ident> for #ident #ty_generics #where_clause_with_ser {
-            type SchemaType = #marker_ident;
-
             fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
             where
                 S: cynic::serde::Serializer
@@ -95,8 +93,6 @@ pub fn scalar_derive_impl(input: ScalarDeriveInput) -> Result<TokenStream, syn::
 
         #[automatically_derived]
         impl #impl_generics_with_de cynic::schema::IsOutputScalar<'de, #marker_ident> for #ident #ty_generics #where_clause_with_de {
-            type SchemaType = #marker_ident;
-
             fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
             where
                 D: cynic::serde::Deserializer<'de>,
