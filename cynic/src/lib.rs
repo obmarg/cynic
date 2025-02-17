@@ -173,7 +173,7 @@ mod builders;
 mod core;
 mod id;
 mod operation;
-mod result;
+mod response;
 
 pub mod coercions;
 pub mod queries;
@@ -190,7 +190,7 @@ pub use {
     builders::{MutationBuilder, QueryBuilder, SubscriptionBuilder},
     id::Id,
     operation::{Operation, OperationBuildError, OperationBuilder, StreamingOperation},
-    result::*,
+    response::*,
     variables::{QueryVariableLiterals, QueryVariables, QueryVariablesFields},
 };
 

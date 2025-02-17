@@ -1,4 +1,5 @@
 use cynic::QueryBuilder;
+use serde_json::json;
 
 mod schema {
     cynic::use_schema!("tests/test-schema.graphql");
@@ -17,7 +18,7 @@ pub struct FieldWithString {
     pub field_with_string: i32,
 }
 
-#[derive(serde::Deserialize)]
+#[derive(serde::Deserialize, PartialEq, Debug)]
 struct Extensions {
     code: u16,
 }
@@ -54,7 +55,6 @@ async fn test_reqwest_extensions() {
         .run_graphql(FieldWithString::build(FieldWithStringVariables {
             input: "InputGoesHere",
         }))
-        .retain_extensions::<Extensions>()
         .await;
     assert!(output.is_ok());
 
@@ -64,7 +64,10 @@ async fn test_reqwest_extensions() {
     let errors = err.errors.unwrap();
 
     let error = &errors[0];
-    assert!(matches!(error.extensions, Some(Extensions { code: 401 })));
+    assert_eq!(
+        error.extensions::<Extensions>().unwrap(),
+        Extensions { code: 401 }
+    );
 
     response_with_extension.assert();
 }
@@ -110,7 +113,10 @@ async fn test_reqwest_ignored() {
     let errors = err.errors.unwrap();
 
     let error = &errors[0];
-    assert!(matches!(error.extensions, Some(serde::de::IgnoredAny)));
+    assert_eq!(
+        error.extensions::<serde_json::Value>().unwrap(),
+        json!({"code": 401})
+    );
 
     response_with_extension.assert();
 }

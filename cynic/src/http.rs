@@ -131,7 +131,7 @@ pub enum CynicReqwestError {
 #[cfg(feature = "http-reqwest")]
 mod reqwest_ext {
     use super::CynicReqwestError;
-    use std::{future::Future, marker::PhantomData, pin::Pin};
+    use std::{future::Future, pin::Pin};
 
     use crate::{GraphQlResponse, Operation};
 
@@ -219,13 +219,13 @@ mod reqwest_ext {
         }
     }
 
-    impl<ResponseData: serde::de::DeserializeOwned, Errors: serde::de::DeserializeOwned>
-        std::future::IntoFuture for CynicReqwestBuilder<ResponseData, Errors>
+    impl<ResponseData: serde::de::DeserializeOwned> std::future::IntoFuture
+        for CynicReqwestBuilder<ResponseData>
     {
-        type Output = Result<GraphQlResponse<ResponseData, Errors>, CynicReqwestError>;
+        type Output = Result<GraphQlResponse<ResponseData>, CynicReqwestError>;
 
         type IntoFuture =
-            BoxFuture<'static, Result<GraphQlResponse<ResponseData, Errors>, CynicReqwestError>>;
+            BoxFuture<'static, Result<GraphQlResponse<ResponseData>, CynicReqwestError>>;
 
         fn into_future(self) -> Self::IntoFuture {
             Box::pin(async move {
@@ -235,29 +235,11 @@ mod reqwest_ext {
         }
     }
 
-    impl<ResponseData> CynicReqwestBuilder<ResponseData, serde::de::IgnoredAny> {
-        /// Sets the type that will be deserialized for the extensions fields of any errors in the response
-        pub fn retain_extensions<ErrorExtensions>(
-            self,
-        ) -> CynicReqwestBuilder<ResponseData, ErrorExtensions>
-        where
-            ErrorExtensions: serde::de::DeserializeOwned,
-        {
-            let CynicReqwestBuilder { builder, _marker } = self;
-
-            CynicReqwestBuilder {
-                builder,
-                _marker: PhantomData,
-            }
-        }
-    }
-
-    async fn deser_gql<ResponseData, ErrorExtensions>(
+    async fn deser_gql<ResponseData>(
         response: Result<reqwest::Response, reqwest::Error>,
-    ) -> Result<GraphQlResponse<ResponseData, ErrorExtensions>, CynicReqwestError>
+    ) -> Result<GraphQlResponse<ResponseData>, CynicReqwestError>
     where
         ResponseData: serde::de::DeserializeOwned,
-        ErrorExtensions: serde::de::DeserializeOwned,
     {
         let response = match response {
             Ok(response) => response,
