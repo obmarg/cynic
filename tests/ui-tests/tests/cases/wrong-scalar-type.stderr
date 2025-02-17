@@ -1,9 +1,11 @@
-error[E0277]: the trait bound `u64: IsOutputScalar<'_, i32>` is not satisfied
-  --> tests/cases/wrong-scalar-type.rs:12:14
+error[E0277]: u64 cannot be used for fields of type i32
+  --> tests/cases/wrong-scalar-type.rs:15:21
    |
-12 |     #[derive(cynic::QueryFragment, Debug)]
-   |              ^^^^^^^^^^^^^^^^^^^^ the trait `IsOutputScalar<'_, i32>` is not implemented for `u64`, which is required by `ScalarDeserialize<std::option::Option<u64>, std::option::Option<i32>>: Deserialize<'de>`
+15 |         episode_id: Option<u64>,
+   |                     ^^^^^^ The GraphQL schema expects a i32 here but u64 is not registered for use with fields of that type
    |
+   = help: the trait `IsOutputScalar<'_, i32>` is not implemented for `u64`, which is required by `ScalarDeserialize<std::option::Option<u64>, std::option::Option<i32>>: Deserialize<'de>`
+   = note: You either need to fix the type used on this field, or register u64 for use as a i32
    = help: the following other types implement trait `IsOutputScalar<'de, SchemaType>`:
              <f64 as IsOutputScalar<'de, f64>>
              <i32 as IsOutputScalar<'de, i32>>
@@ -17,4 +19,3 @@ note: required by a bound in `next_value`
    |     where
    |         V: Deserialize<'de>,
    |            ^^^^^^^^^^^^^^^^ required by this bound in `MapAccess::next_value`
-   = note: this error originates in the derive macro `cynic::QueryFragment` (in Nightly builds, run with -Z macro-backtrace for more info)

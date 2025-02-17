@@ -67,10 +67,12 @@ pub trait HasArgument<ArgumentMarker> {
 ///
 /// The SchemaType generic parameter should be set to a marker type from the users schema module -
 /// this indicates which scalar(s) this type represents in a graphql schema.
+#[diagnostic::on_unimplemented(
+    message = "{Self} cannot be used for fields of type {SchemaType}",
+    label = "The GraphQL schema expects a {SchemaType} here but {Self} is not registered for use with fields of that type",
+    note = "You either need to fix the type used on this field, or register {Self} for use as a {SchemaType}"
+)]
 pub trait IsScalar<SchemaType> {
-    // /// The schema marker type this scalar represents.
-    // type SchemaType;
-
     /// Serializes Self using the provided Serializer
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
     where
@@ -87,10 +89,12 @@ pub trait IsScalar<SchemaType> {
 ///
 /// The SchemaType generic parameter should be set to a marker type from the users schema module -
 /// this indicates which scalar(s) this type represents in a graphql schema.
+#[diagnostic::on_unimplemented(
+    message = "{Self} cannot be used for fields of type {SchemaType}",
+    label = "The GraphQL schema expects a {SchemaType} here but {Self} is not registered for use with fields of that type",
+    note = "You either need to fix the type used on this field, or register {Self} for use as a {SchemaType}"
+)]
 pub trait IsOutputScalar<'de, SchemaType>: Sized {
-    // /// The schema marker type this scalar represents.
-    // type SchemaType;
-
     /// Deserializes Self using the provided Deserializer
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where

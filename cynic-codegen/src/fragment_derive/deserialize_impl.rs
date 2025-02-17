@@ -1,5 +1,6 @@
 use proc_macro2::TokenStream;
 use quote::quote_spanned;
+use syn::spanned::Spanned;
 
 use crate::schema::{Schema, Unvalidated};
 
@@ -109,20 +110,26 @@ impl quote::ToTokens for StandardDeserializeImpl<'_> {
             let field_name = &f.rust_name;
             let field_marker = &f.field_marker;
             let ty = &f.ty;
-            let mut ty = quote! { #ty };
+            let span = f.ty.span();
+
+            let mut ty = quote_spanned! { span => #ty };
             let mut trailer = quote! {};
 
             if matches!(f.inner_kind, Some(FieldKind::Scalar)) {
-                ty = quote! { cynic::__private::ScalarDeserialize<#ty, <#field_marker as cynic::schema::Field>::Type> };
+                ty = quote_spanned! { span =>
+                    cynic::__private::ScalarDeserialize<#ty, <#field_marker as cynic::schema::Field>::Type>
+                };
                 trailer.append_all(quote! { .into_inner() });
             }
 
             if f.is_flattened {
-                ty = quote! { cynic::__private::Flattened<#ty> };
+                ty = quote_spanned! { span =>
+                    cynic::__private::Flattened<#ty>
+                };
                 trailer.append_all(quote! { .into_inner() });
             }
 
-            quote! {
+            quote_spanned! { span =>
                 #field_name = Some(__map.next_value::<#ty>()? #trailer);
             }
         });
