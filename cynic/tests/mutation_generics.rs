@@ -43,8 +43,8 @@ pub struct SignIn {
 pub struct SignInMoreGeneric<SI>
 where
     for<'de2> SI: cynic::schema::IsOutputScalar<'de2, String>,
-    for<'de2> <SI as cynic::schema::IsOutputScalar<'de2, String>>::SchemaType:
-        cynic::queries::IsFieldType<String>,
+    // for<'de2> <SI as cynic::schema::IsOutputScalar<'de2, String>>::SchemaType:
+    //     cynic::queries::IsFieldType<String>,
 {
     #[arguments(input: $input)]
     pub sign_in: SI,

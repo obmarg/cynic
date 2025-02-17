@@ -283,12 +283,10 @@ impl quote::ToTokens for FieldSelection<'_> {
                 }
             }
             FieldKind::Scalar if self.flatten => quote_spanned! { self.span =>
-                <#aligned_type as cynic::schema::IsOutputScalar<#aligned_type>>::SchemaType
+                #aligned_type
             },
             FieldKind::Scalar => quote_spanned! { self.span =>
-                <#aligned_type as cynic::schema::IsOutputScalar<
-                    <#field_marker_type_path as cynic::schema::Field>::Type
-                >>::SchemaType
+                <#field_marker_type_path as cynic::schema::Field>::Type
             },
             FieldKind::Enum => quote_spanned! { self.span =>
                 <#aligned_type as cynic::Enum>::SchemaType

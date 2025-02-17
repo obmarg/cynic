@@ -1,6 +1,7 @@
 ---
 source: cynic-codegen/src/fragment_derive/tests.rs
 expression: "format_code(format!(\"{}\", tokens))"
+snapshot_kind: text
 ---
 #[automatically_derived]
 impl cynic::QueryFragment for MyQuery {
@@ -11,7 +12,7 @@ impl cynic::QueryFragment for MyQuery {
         mut builder: cynic::queries::SelectionBuilder<'_, Self::SchemaType, Self::VariablesFields>,
     ) {
         #![allow(unused_mut)]
-        let mut field_builder = builder . select_field :: < schema :: __fields :: Query :: __typename , < String as cynic :: schema :: IsOutputScalar < < schema :: __fields :: Query :: __typename as cynic :: schema :: Field > :: Type >> :: SchemaType > () ;
+        let mut field_builder = builder . select_field :: < schema :: __fields :: Query :: __typename , < schema :: __fields :: Query :: __typename as cynic :: schema :: Field > :: Type > () ;
         if builder.is_feature_enabled("2018") {
             let mut field_builder = builder . select_field :: < schema :: __fields :: Query :: filteredPosts , < Vec < BlogPostOutput > as cynic :: QueryFragment > :: SchemaType > () ;
             <Vec<BlogPostOutput> as cynic::QueryFragment>::query(field_builder.select_children());
@@ -94,4 +95,3 @@ impl<'de> cynic::serde::Deserialize<'de> for MyQuery {
         )
     }
 }
-

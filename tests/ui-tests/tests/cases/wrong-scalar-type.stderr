@@ -1,26 +1,4 @@
 error[E0277]: the trait bound `u64: IsOutputScalar<'_, i32>` is not satisfied
-  --> tests/cases/wrong-scalar-type.rs:15:21
-   |
-15 |         episode_id: Option<u64>,
-   |                     ^^^^^^ the trait `IsOutputScalar<'_, i32>` is not implemented for `u64`, which is required by `std::option::Option<u64>: IsOutputScalar<'_, std::option::Option<i32>>`
-   |
-   = help: the following other types implement trait `IsOutputScalar<'de, SchemaType>`:
-             <f64 as IsOutputScalar<'de, f64>>
-             <i32 as IsOutputScalar<'de, i32>>
-   = note: required for `std::option::Option<u64>` to implement `IsOutputScalar<'_, std::option::Option<i32>>`
-
-error[E0277]: the trait bound `u64: IsOutputScalar<'_, i32>` is not satisfied
-  --> tests/cases/wrong-scalar-type.rs:15:21
-   |
-15 |         episode_id: Option<u64>,
-   |                     ^^^^^^^^^^^ the trait `IsOutputScalar<'_, i32>` is not implemented for `u64`, which is required by `std::option::Option<u64>: IsOutputScalar<'_, std::option::Option<i32>>`
-   |
-   = help: the following other types implement trait `IsOutputScalar<'de, SchemaType>`:
-             <f64 as IsOutputScalar<'de, f64>>
-             <i32 as IsOutputScalar<'de, i32>>
-   = note: required for `std::option::Option<u64>` to implement `IsOutputScalar<'_, std::option::Option<i32>>`
-
-error[E0277]: the trait bound `u64: IsOutputScalar<'_, i32>` is not satisfied
   --> tests/cases/wrong-scalar-type.rs:12:14
    |
 12 |     #[derive(cynic::QueryFragment, Debug)]
