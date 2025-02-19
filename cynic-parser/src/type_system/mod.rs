@@ -71,7 +71,7 @@ pub struct TypeSystemDocument {
     values: crate::values::ValueStore,
 }
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash)]
 pub enum DirectiveLocation {
     Query,
     Mutation,
