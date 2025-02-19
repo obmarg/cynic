@@ -1203,6 +1203,7 @@ dependencies = [
  "chrono",
  "cynic",
  "cynic-proc-macros",
+ "graphql-mocks",
  "graphql-parser",
  "insta",
  "maplit",

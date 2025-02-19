@@ -8,6 +8,18 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+### Breaking Changes
+
+- The `IsScalar` trait has been removed in favour of `InputScalar` & `OutputScalar`
+
+### New Features
+
+- Scalar serialization/deserialization has been decoupled from `serde` and can
+  now be specified per schema. This allows users to directly use scalar types
+  with any server, even if that server expects a non-default serialization of
+  a particular type. This reduces the need for scalar newtypes in a bunch of
+  situations.
+
 ## v3.10.0 - 2025-02-10
 
 ### New Features

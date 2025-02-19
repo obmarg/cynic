@@ -100,12 +100,12 @@ pub fn query_variables_derive_impl(
                 let skip_check_fn = &*skip_check_fn;
                 field_inserts.push(quote! {
                     if !#skip_check_fn(&self.#name) {
-                        map_serializer.serialize_entry(#name_str, &self.#name)?;
+                        map_serializer.serialize_entry(#name_str, &#schema_module::variable::VariableSerialize(&self.#name))?;
                     }
                 })
             }
             None => field_inserts.push(quote! {
-                map_serializer.serialize_entry(#name_str, &self.#name)?;
+                map_serializer.serialize_entry(#name_str, &#schema_module::variable::VariableSerialize(&self.#name))?;
             }),
         }
     }
