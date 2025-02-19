@@ -94,11 +94,16 @@ impl<'a> FieldSerializer<'a> {
         // TODO: This needs to use OutputScalar stuff...
 
         let insert_call = match self.graphql_field.value_type.inner_type(schema) {
-            InputType::Scalar(_) => {
+            InputType::Scalar(scalar) => {
+                // TODO: Fix this...
+                let scalar_marker = scalar.marker_type();
                 quote_spanned! { field_span =>
                     #serializer_ident.serialize_entry(
                         #graphql_field_name,
-                        &cynic::__private::ScalarSerialize::new(&self.#rust_field_name)
+                        &cynic::__private::ScalarSerialize::<
+                            _,
+                            #scalar_marker
+                        >::new(&self.#rust_field_name)
                     )?;
                 }
             }
