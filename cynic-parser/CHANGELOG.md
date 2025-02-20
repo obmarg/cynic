@@ -13,7 +13,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Bug Fixes
 
-- proper behavior of const_safe for list & objects (#1133)
+- `TryFrom<Value<'_>> for ConstValue<'_>` now returns an error when an object
+  or list contains a `Value`, rather than panicing (#1133)
 
 ## v0.9.0 - 2025-02-10
 
