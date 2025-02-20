@@ -9,6 +9,13 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.9.1 - 2025-02-20
+
+### Bug Fixes
+
+- `TryFrom<Value<'_>> for ConstValue<'_>` now returns an error when an object
+  or list contains a `Value`, rather than panicing (#1133)
+
 ## v0.9.0 - 2025-02-10
 
 ### Breaking Changes
