@@ -9,6 +9,12 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.9.1 - 2025-02-20
+
+### Bug Fixes
+
+- proper behavior of const_safe for list & objects (#1133)
+
 ## v0.9.0 - 2025-02-10
 
 ### Breaking Changes
