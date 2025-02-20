@@ -234,7 +234,7 @@ fn const_safe(value: Value<'_>) -> bool {
         | Value::Boolean(_)
         | Value::Null(_)
         | Value::Enum(_) => true,
-        Value::List(items) => items.items().any(const_safe),
-        Value::Object(object) => object.fields().any(|field| const_safe(field.value())),
+        Value::List(items) => items.items().all(const_safe),
+        Value::Object(object) => object.fields().all(|field| const_safe(field.value())),
     }
 }
