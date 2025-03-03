@@ -25,7 +25,7 @@ cynic = { path = "../cynic", version = "3.10.0", features = ["http-reqwest-block
 cynic-introspection = { path = "../cynic-introspection", version = "3.10.0" }
 cynic-querygen = { path = "../cynic-querygen", version = "3.10.0" }
 reqwest = { version = "0.12", features = ["blocking"] }
-thiserror = "1"
+thiserror = "2"
 
 [dev-dependencies]
 trycmd = "0.15"
