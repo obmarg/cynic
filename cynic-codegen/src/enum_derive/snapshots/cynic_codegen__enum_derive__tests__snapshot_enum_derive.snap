@@ -1,6 +1,7 @@
 ---
 source: cynic-codegen/src/enum_derive/mod.rs
 expression: "format_code(format!(\"{}\", tokens))"
+snapshot_kind: text
 ---
 #[automatically_derived]
 impl cynic::Enum for States {
@@ -41,5 +42,10 @@ cynic::impl_coercions!(States, schema::States);
 #[automatically_derived]
 impl schema::variable::Variable for States {
     const TYPE: cynic::variables::VariableType = cynic::variables::VariableType::Named("States");
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: cynic::serde::Serializer,
+    {
+        <Self as cynic::serde::Serialize>::serialize(self, serializer)
+    }
 }
-

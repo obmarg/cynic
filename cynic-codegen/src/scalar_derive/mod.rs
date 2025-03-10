@@ -82,13 +82,35 @@ pub fn scalar_derive_impl(input: ScalarDeriveInput) -> Result<TokenStream, syn::
         }
 
         #[automatically_derived]
-        impl #impl_generics cynic::schema::IsScalar<#marker_ident> for #ident #ty_generics #where_clause {
-            type SchemaType = #marker_ident;
+        impl #impl_generics_with_ser cynic::schema::InputScalar<#marker_ident> for #ident #ty_generics #where_clause_with_ser {
+            fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+            where
+                S: cynic::serde::Serializer
+            {
+                cynic::serde::Serialize::serialize(self, serializer)
+            }
         }
 
         #[automatically_derived]
-        impl #impl_generics #schema_module::variable::Variable for #ident #ty_generics #where_clause {
+        impl #impl_generics_with_de cynic::schema::OutputScalar<'de, #marker_ident> for #ident #ty_generics #where_clause_with_de {
+            fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+            where
+                D: cynic::serde::Deserializer<'de>,
+            {
+                <Self as cynic::serde::Deserialize>::deserialize(deserializer)
+            }
+        }
+
+        #[automatically_derived]
+        impl #impl_generics #schema_module::variable::Variable for #ident #ty_generics #where_clause_with_ser {
             const TYPE: cynic::variables::VariableType = cynic::variables::VariableType::Named(#graphql_type_name);
+
+            fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+            where
+                S: cynic::serde::Serializer
+            {
+                <Self as cynic::schema::InputScalar<#marker_ident>>::serialize(self, serializer)
+            }
         }
 
         cynic::impl_coercions!(#ident #ty_generics [#impl_generics] [#where_clause], #marker_ident);

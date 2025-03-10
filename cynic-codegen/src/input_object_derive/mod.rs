@@ -15,6 +15,7 @@ use crate::{
 };
 
 mod field_serializer;
+use darling::usage::{CollectTypeParams, GenericsExt};
 use field_serializer::FieldSerializer;
 
 pub(crate) mod input;
@@ -54,12 +55,9 @@ pub fn input_object_derive_impl(
 
     if let darling::ast::Data::Struct(fields) = &input.data {
         let ident = &input.ident;
-        let (impl_generics, ty_generics, where_clause) = input.generics.split_for_impl();
-        let generics_with_ser = generics_for_serde::with_serialize_bounds(&input.generics);
-        let (impl_generics_with_ser, _, where_clause_with_ser) = generics_with_ser.split_for_impl();
+        let graphql_type_name = proc_macro2::Literal::string(input_object.name.as_ref());
         let input_marker_ident = input_object.marker_ident().to_rust_ident();
         let schema_module = input.schema_module();
-        let graphql_type_name = proc_macro2::Literal::string(input_object.name.as_ref());
 
         let pairs = pair_fields(
             &fields.fields,
@@ -68,6 +66,26 @@ pub fn input_object_derive_impl(
             input.require_all_fields,
             &struct_span,
         )?;
+
+        let (impl_generics, ty_generics, where_clause) = input.generics.split_for_impl();
+
+        // TODO: Don't add serialize bound if the generic is only used on scalar fields...
+        let generics_with_ser = {
+            let declared_params = input.generics.declared_type_params();
+
+            let generics_that_need_serialize = pairs
+                .iter()
+                .filter(|(_, value)| !value.value_type.inner_type(&schema).is_scalar())
+                .map(|(field, _)| &field.ty)
+                .collect_type_params(&darling::usage::Purpose::BoundImpl.into(), &declared_params);
+
+            generics_for_serde::with_selective_serialize_bounds(
+                &input.generics,
+                generics_that_need_serialize,
+            )
+        };
+
+        let (impl_generics_with_ser, _, where_clause_with_ser) = generics_with_ser.split_for_impl();
 
         let field_serializers = pairs
             .into_iter()
@@ -91,7 +109,7 @@ pub fn input_object_derive_impl(
         let map_serializer_ident = proc_macro2::Ident::new("map_serializer", Span::call_site());
         let field_inserts = field_serializers
             .iter()
-            .map(|fs| fs.field_insert_call(&map_serializer_ident));
+            .map(|fs| fs.field_insert_call(&map_serializer_ident, &schema));
 
         let map_len = field_serializers.len();
 
@@ -123,6 +141,13 @@ pub fn input_object_derive_impl(
             #[automatically_derived]
             impl #impl_generics #schema_module::variable::Variable for #ident #ty_generics #where_clause {
                 const TYPE: cynic::variables::VariableType = cynic::variables::VariableType::Named(#graphql_type_name);
+
+                fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                where
+                    S: cynic::serde::Serializer
+                {
+                    <Self as cynic::serde::Serialize>::serialize(self, serializer)
+                }
             }
         })
     } else {

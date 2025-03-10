@@ -308,76 +308,189 @@ pub type Float = f64;
 pub type Int = i32;
 pub type ID = cynic::Id;
 pub mod variable {
-    use cynic::variables::VariableType;
+    use cynic::{
+        serde::{ser::SerializeSeq, Serialize, Serializer},
+        variables::VariableType,
+    };
     #[doc = r" Used to determine the type of a given variable that"]
-    #[doc = r" appears in an argument struct."]
+    #[doc = r" appears in a variable struct."]
     pub trait Variable {
         const TYPE: VariableType;
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: Serializer;
+    }
+    struct VariableSerialize<T>(T);
+    impl<T> Serialize for VariableSerialize<T>
+    where
+        T: Variable,
+    {
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: Serializer,
+        {
+            Variable::serialize(&self.0, serializer)
+        }
     }
     impl<T> Variable for &T
     where
         T: ?::core::marker::Sized + Variable,
     {
         const TYPE: VariableType = T::TYPE;
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: Serializer,
+        {
+            <T as Variable>::serialize(self, serializer)
+        }
     }
     impl<T> Variable for Option<T>
     where
         T: Variable,
     {
         const TYPE: VariableType = VariableType::Nullable(&T::TYPE);
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: Serializer,
+        {
+            match self {
+                Some(inner) => serializer.serialize_some(&VariableSerialize(inner)),
+                None => serializer.serialize_none(),
+            }
+        }
     }
     impl<T> Variable for [T]
     where
         T: Variable,
     {
         const TYPE: VariableType = VariableType::List(&T::TYPE);
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: Serializer,
+        {
+            let mut seq = serializer.serialize_seq(Some(self.len()))?;
+            for element in self {
+                seq.serialize_element(&VariableSerialize(element))?;
+            }
+            seq.end()
+        }
     }
     impl<T> Variable for Vec<T>
     where
         T: Variable,
     {
         const TYPE: VariableType = VariableType::List(&T::TYPE);
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: Serializer,
+        {
+            let mut seq = serializer.serialize_seq(Some(self.len()))?;
+            for element in self {
+                seq.serialize_element(&VariableSerialize(element))?;
+            }
+            seq.end()
+        }
     }
     impl<T> Variable for Box<T>
     where
         T: Variable,
     {
         const TYPE: VariableType = T::TYPE;
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: Serializer,
+        {
+            <T as Variable>::serialize(self.as_ref(), serializer)
+        }
     }
     impl<T> Variable for std::rc::Rc<T>
     where
         T: Variable,
     {
         const TYPE: VariableType = T::TYPE;
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: Serializer,
+        {
+            <T as Variable>::serialize(self.as_ref(), serializer)
+        }
     }
     impl<T> Variable for std::sync::Arc<T>
     where
         T: Variable,
     {
         const TYPE: VariableType = T::TYPE;
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: Serializer,
+        {
+            <T as Variable>::serialize(self.as_ref(), serializer)
+        }
     }
     impl<T> Variable for std::borrow::Cow<'_, T>
     where
         T: ?::core::marker::Sized + Variable + ToOwned,
     {
         const TYPE: VariableType = T::TYPE;
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: Serializer,
+        {
+            <T as Variable>::serialize(self.as_ref(), serializer)
+        }
     }
     impl Variable for bool {
         const TYPE: VariableType = VariableType::Named("Boolean");
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: Serializer,
+        {
+            <Self as cynic::serde::Serialize>::serialize(self, serializer)
+        }
     }
     impl Variable for str {
         const TYPE: VariableType = VariableType::Named("String");
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: Serializer,
+        {
+            <Self as cynic::serde::Serialize>::serialize(self, serializer)
+        }
     }
     impl Variable for String {
         const TYPE: VariableType = <str as Variable>::TYPE;
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: Serializer,
+        {
+            <Self as cynic::serde::Serialize>::serialize(self, serializer)
+        }
     }
     impl Variable for f64 {
         const TYPE: VariableType = VariableType::Named("Float");
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: Serializer,
+        {
+            <Self as cynic::serde::Serialize>::serialize(self, serializer)
+        }
     }
     impl Variable for i32 {
         const TYPE: VariableType = VariableType::Named("Int");
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: Serializer,
+        {
+            <Self as cynic::serde::Serialize>::serialize(self, serializer)
+        }
     }
     impl Variable for cynic::Id {
         const TYPE: VariableType = VariableType::Named("ID");
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: Serializer,
+        {
+            <Self as cynic::serde::Serialize>::serialize(self, serializer)
+        }
     }
 }
