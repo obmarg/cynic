@@ -1,4 +1,5 @@
 scalar JSON
+scalar DateTime
 
 type Query {
   testStruct: TestStruct
@@ -13,6 +14,7 @@ type TestStruct {
   optNested: Nested
   dessert: Dessert
   json: JSON
+  date: DateTime
 }
 
 union MyUnionType = Nested | TestStruct
