@@ -59,6 +59,8 @@ pub struct FieldSelection<'query, 'schema> {
 
     pub arguments: Vec<(&'schema str, TypedValue<'query, 'schema>)>,
 
+    pub directives: Vec<(&'schema str, TypedValue<'query, 'schema>)>,
+
     pub field: Field<'query, 'schema>,
 }
 
@@ -95,6 +97,7 @@ impl<'query, 'schema> FieldSelection<'query, 'schema> {
         name: &'query str,
         alias: Option<&'query str>,
         arguments: Vec<(&'schema str, TypedValue<'query, 'schema>)>,
+        directives: Vec<(&'schema str, TypedValue<'query, 'schema>)>,
         schema_field: OutputField<'schema>,
         field: Field<'query, 'schema>,
     ) -> FieldSelection<'query, 'schema> {
@@ -102,6 +105,7 @@ impl<'query, 'schema> FieldSelection<'query, 'schema> {
             name,
             alias,
             arguments,
+            directives,
             schema_field,
             field,
         }
@@ -297,10 +301,21 @@ impl<'a, 'docs> Normaliser<'a, 'docs> {
                     ));
                 }
 
+                let directives = field
+                    .directives()
+                    .map(|directive| {
+                        let name = directive.name();
+                        let schema_directive = self.type_index.directive(name)?;
+
+                        (schema_directive.name(), todo!())
+                    })
+                    .collect::<Result<_, _>>()?;
+
                 Ok(vec![Selection::Field(FieldSelection::new(
                     field.name(),
                     field.alias(),
                     arguments,
+                    directives,
                     schema_field,
                     inner_field,
                 ))])

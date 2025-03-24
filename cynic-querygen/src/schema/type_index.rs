@@ -1,5 +1,9 @@
 use cynic_parser::{
-    type_system::{self, ids::FieldDefinitionId, Definition, FieldDefinition, TypeDefinition},
+    executable::Directive,
+    type_system::{
+        self, ids::FieldDefinitionId, Definition, DirectiveDefinition, FieldDefinition,
+        TypeDefinition,
+    },
     TypeSystemDocument,
 };
 use std::{borrow::Cow, collections::HashMap, rc::Rc};
@@ -10,6 +14,7 @@ use super::{OutputField, Type};
 
 pub struct TypeIndex<'schema> {
     types: HashMap<&'schema str, TypeDefinition<'schema>>,
+    directives: HashMap<&'schema str, DirectiveDefinition<'schema>>,
     typename_field: FieldDefinition<'schema>,
     query_root: String,
     mutation_root: String,
@@ -30,12 +35,21 @@ impl<'schema> TypeIndex<'schema> {
             })
             .collect::<HashMap<_, _>>();
 
+        let directives = schema
+            .definitions()
+            .filter_map(|definition| match definition {
+                Definition::Directive(def) => Some((def.name(), def)),
+                _ => None,
+            })
+            .collect::<HashMap<_, _>>();
+
         let mut rv = TypeIndex {
             query_root: "Query".into(),
             mutation_root: "Mutation".into(),
             subscription_root: "Subscription".into(),
             typename_field: schema.read(typename_id),
             types,
+            directives,
         };
 
         for definition in schema.definitions() {
@@ -111,6 +125,13 @@ impl<'schema> TypeIndex<'schema> {
             .ok_or_else(|| Error::UnknownType(name.to_string()))?;
 
         Ok(Type::from_type_definition(type_def, self))
+    }
+
+    pub fn directive(self: &Rc<Self>, name: &str) -> Result<DirectiveDefinition<'schema>, Error> {
+        self.directives
+            .get(name)
+            .copied()
+            .ok_or_else(|| Error::UnknownDirective(name.to_string()))
     }
 
     pub fn type_for_path<'path>(
