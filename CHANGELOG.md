@@ -8,6 +8,16 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v3.10.1 - 2025-03-24
+
+### Bug Fixes
+
+- allow generic inner types on fields (#1131)
+
+### Changes
+
+- update Cargo.lock dependencies
+
 ## v3.10.0 - 2025-02-10
 
 ### New Features
