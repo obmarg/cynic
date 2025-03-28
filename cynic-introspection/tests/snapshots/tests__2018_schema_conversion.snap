@@ -5129,6 +5129,7 @@ Schema {
                     default_value: None,
                 },
             ],
+            is_repeatable: false,
             locations: [
                 Field,
                 FragmentSpread,
@@ -5153,6 +5154,7 @@ Schema {
                     default_value: None,
                 },
             ],
+            is_repeatable: false,
             locations: [
                 Field,
                 FragmentSpread,

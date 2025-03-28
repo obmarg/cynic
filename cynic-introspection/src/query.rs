@@ -44,6 +44,9 @@ pub struct Directive {
     pub args: Vec<InputValue>,
     /// The locations where the directive may be used
     pub locations: Vec<DirectiveLocation>,
+    /// Whether the directive is repeatable or not
+    #[cynic(feature = "2021")]
+    pub is_repeatable: bool,
 }
 
 #[derive(cynic::QueryFragment, Debug)]

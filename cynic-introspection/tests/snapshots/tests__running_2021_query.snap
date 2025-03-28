@@ -1,6 +1,7 @@
 ---
 source: cynic-introspection/tests/tests.rs
 expression: result.data
+snapshot_kind: text
 ---
 Some(
     IntrospectionQuery {
@@ -13576,6 +13577,7 @@ Some(
                         locations: [
                             Schema,
                         ],
+                        is_repeatable: false,
                     },
                     Directive {
                         name: "link",
@@ -13639,6 +13641,7 @@ Some(
                         locations: [
                             Schema,
                         ],
+                        is_repeatable: true,
                     },
                     Directive {
                         name: "key",
@@ -13681,6 +13684,7 @@ Some(
                             Object,
                             Interface,
                         ],
+                        is_repeatable: true,
                     },
                     Directive {
                         name: "federation__requires",
@@ -13708,6 +13712,7 @@ Some(
                         locations: [
                             FieldDefinition,
                         ],
+                        is_repeatable: false,
                     },
                     Directive {
                         name: "federation__provides",
@@ -13735,6 +13740,7 @@ Some(
                         locations: [
                             FieldDefinition,
                         ],
+                        is_repeatable: false,
                     },
                     Directive {
                         name: "federation__external",
@@ -13757,6 +13763,7 @@ Some(
                             Object,
                             FieldDefinition,
                         ],
+                        is_repeatable: false,
                     },
                     Directive {
                         name: "federation__tag",
@@ -13794,6 +13801,7 @@ Some(
                             InputFieldDefinition,
                             Schema,
                         ],
+                        is_repeatable: true,
                     },
                     Directive {
                         name: "federation__extends",
@@ -13803,6 +13811,7 @@ Some(
                             Object,
                             Interface,
                         ],
+                        is_repeatable: false,
                     },
                     Directive {
                         name: "federation__shareable",
@@ -13812,6 +13821,7 @@ Some(
                             Object,
                             FieldDefinition,
                         ],
+                        is_repeatable: true,
                     },
                     Directive {
                         name: "federation__inaccessible",
@@ -13829,6 +13839,7 @@ Some(
                             InputObject,
                             InputFieldDefinition,
                         ],
+                        is_repeatable: false,
                     },
                     Directive {
                         name: "federation__override",
@@ -13856,6 +13867,7 @@ Some(
                         locations: [
                             FieldDefinition,
                         ],
+                        is_repeatable: false,
                     },
                     Directive {
                         name: "federation__composeDirective",
@@ -13877,6 +13889,7 @@ Some(
                         locations: [
                             Schema,
                         ],
+                        is_repeatable: true,
                     },
                     Directive {
                         name: "federation__interfaceObject",
@@ -13885,6 +13898,7 @@ Some(
                         locations: [
                             Object,
                         ],
+                        is_repeatable: false,
                     },
                     Directive {
                         name: "include",
@@ -13918,6 +13932,7 @@ Some(
                             FragmentSpread,
                             InlineFragment,
                         ],
+                        is_repeatable: false,
                     },
                     Directive {
                         name: "skip",
@@ -13951,6 +13966,7 @@ Some(
                             FragmentSpread,
                             InlineFragment,
                         ],
+                        is_repeatable: false,
                     },
                     Directive {
                         name: "deprecated",
@@ -13981,6 +13997,7 @@ Some(
                             InputFieldDefinition,
                             EnumValue,
                         ],
+                        is_repeatable: false,
                     },
                     Directive {
                         name: "specifiedBy",
@@ -14012,6 +14029,7 @@ Some(
                         locations: [
                             Scalar,
                         ],
+                        is_repeatable: false,
                     },
                 ],
             },

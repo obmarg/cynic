@@ -8086,6 +8086,7 @@ Some(
                             FragmentSpread,
                             InlineFragment,
                         ],
+                        is_repeatable: false,
                     },
                     Directive {
                         name: "skip",
@@ -8119,6 +8120,7 @@ Some(
                             FragmentSpread,
                             InlineFragment,
                         ],
+                        is_repeatable: false,
                     },
                 ],
             },

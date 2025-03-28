@@ -1,6 +1,7 @@
 ---
 source: cynic-introspection/tests/tests.rs
 expression: build_2021_query().query
+snapshot_kind: text
 ---
 query IntrospectionQuery {
   __schema {
@@ -168,8 +169,7 @@ query IntrospectionQuery {
         defaultValue
       }
       locations
+      isRepeatable
     }
   }
 }
-
-
