@@ -32,7 +32,7 @@ ariadne = { version = "0.4", optional = true }
 pretty = { version = "0.12", optional = true }
 
 [dev-dependencies]
-insta = "1.29"
+insta.workspace = true
 similar-asserts = "1.5"
 
 # Tests need the `pretty` functionality so enable it here

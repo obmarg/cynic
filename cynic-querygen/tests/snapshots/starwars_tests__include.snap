@@ -1,0 +1,25 @@
+---
+source: cynic-querygen/tests/starwars-tests.rs
+expression: "document_to_fragment_structs(query, schema,\n        &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
+snapshot_kind: text
+---
+#[derive(cynic::QueryVariables, Debug)]
+pub struct IncludeTestVariables<'a> {
+    pub film_id: &'a cynic::Id,
+    pub include_title: bool,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(graphql_type = "Root", variables = "IncludeTestVariables")]
+pub struct IncludeTest {
+    #[arguments(id: $film_id)]
+    pub film: Option<Film>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(variables = "IncludeTestVariables")]
+pub struct Film {
+    #[directives(include(if: $include_title))]
+    pub title: Option<String>,
+    pub director: Option<String>,
+}

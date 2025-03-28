@@ -1,6 +1,7 @@
 ---
 source: cynic-querygen/src/query_parsing/normalisation.rs
 expression: normalised
+snapshot_kind: text
 ---
 NormalisedDocument {
     selection_sets: {
@@ -340,6 +341,7 @@ NormalisedDocument {
                             arguments: [],
                         },
                         arguments: [],
+                        directives: [],
                         field: Leaf,
                     },
                 ),
@@ -357,6 +359,7 @@ NormalisedDocument {
                             arguments: [],
                         },
                         arguments: [],
+                        directives: [],
                         field: Leaf,
                     },
                 ),
@@ -696,6 +699,7 @@ NormalisedDocument {
                             arguments: [],
                         },
                         arguments: [],
+                        directives: [],
                         field: Leaf,
                     },
                 ),
@@ -780,6 +784,7 @@ NormalisedDocument {
                             arguments: [],
                         },
                         arguments: [],
+                        directives: [],
                         field: Composite(
                             SelectionSet {
                                 target_type: Object(
@@ -1117,6 +1122,7 @@ NormalisedDocument {
                                                 arguments: [],
                                             },
                                             arguments: [],
+                                            directives: [],
                                             field: Leaf,
                                         },
                                     ),
@@ -1134,6 +1140,7 @@ NormalisedDocument {
                                                 arguments: [],
                                             },
                                             arguments: [],
+                                            directives: [],
                                             field: Leaf,
                                         },
                                     ),
@@ -1640,6 +1647,7 @@ NormalisedDocument {
                             ],
                         },
                         arguments: [],
+                        directives: [],
                         field: Composite(
                             SelectionSet {
                                 target_type: Object(
@@ -1720,6 +1728,7 @@ NormalisedDocument {
                                                 arguments: [],
                                             },
                                             arguments: [],
+                                            directives: [],
                                             field: Composite(
                                                 SelectionSet {
                                                     target_type: Object(
@@ -2057,6 +2066,7 @@ NormalisedDocument {
                                                                     arguments: [],
                                                                 },
                                                                 arguments: [],
+                                                                directives: [],
                                                                 field: Leaf,
                                                             },
                                                         ),
@@ -2074,6 +2084,7 @@ NormalisedDocument {
                                                                     arguments: [],
                                                                 },
                                                                 arguments: [],
+                                                                directives: [],
                                                                 field: Leaf,
                                                             },
                                                         ),
@@ -2118,9 +2129,9 @@ NormalisedDocument {
                             ],
                         },
                         arguments: [
-                            (
-                                "id",
-                                String(
+                            Argument {
+                                name: "id",
+                                value: String(
                                     "abcd",
                                     NamedType(
                                         InputTypeRef {
@@ -2128,8 +2139,9 @@ NormalisedDocument {
                                         },
                                     ),
                                 ),
-                            ),
+                            },
                         ],
+                        directives: [],
                         field: Composite(
                             SelectionSet {
                                 target_type: Object(
@@ -2465,6 +2477,7 @@ NormalisedDocument {
                                                 arguments: [],
                                             },
                                             arguments: [],
+                                            directives: [],
                                             field: Leaf,
                                         },
                                     ),
@@ -2975,6 +2988,7 @@ NormalisedDocument {
                                 ],
                             },
                             arguments: [],
+                            directives: [],
                             field: Composite(
                                 SelectionSet {
                                     target_type: Object(
@@ -3055,6 +3069,7 @@ NormalisedDocument {
                                                     arguments: [],
                                                 },
                                                 arguments: [],
+                                                directives: [],
                                                 field: Composite(
                                                     SelectionSet {
                                                         target_type: Object(
@@ -3392,6 +3407,7 @@ NormalisedDocument {
                                                                         arguments: [],
                                                                     },
                                                                     arguments: [],
+                                                                    directives: [],
                                                                     field: Leaf,
                                                                 },
                                                             ),
@@ -3409,6 +3425,7 @@ NormalisedDocument {
                                                                         arguments: [],
                                                                     },
                                                                     arguments: [],
+                                                                    directives: [],
                                                                     field: Leaf,
                                                                 },
                                                             ),
@@ -3453,9 +3470,9 @@ NormalisedDocument {
                                 ],
                             },
                             arguments: [
-                                (
-                                    "id",
-                                    String(
+                                Argument {
+                                    name: "id",
+                                    value: String(
                                         "abcd",
                                         NamedType(
                                             InputTypeRef {
@@ -3463,8 +3480,9 @@ NormalisedDocument {
                                             },
                                         ),
                                     ),
-                                ),
+                                },
                             ],
+                            directives: [],
                             field: Composite(
                                 SelectionSet {
                                     target_type: Object(
@@ -3800,6 +3818,7 @@ NormalisedDocument {
                                                     arguments: [],
                                                 },
                                                 arguments: [],
+                                                directives: [],
                                                 field: Leaf,
                                             },
                                         ),

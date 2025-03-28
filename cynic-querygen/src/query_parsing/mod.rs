@@ -9,7 +9,7 @@ mod variables;
 
 use variables::VariableStructDetails;
 
-pub use normalisation::Variable;
+pub use normalisation::{Directive, Variable};
 pub use value::{LiteralContext, TypedValue};
 
 use cynic_parser::{executable as parser, ExecutableDocument};
@@ -121,11 +121,12 @@ fn make_query_fragment<'text>(
                     arguments: field
                         .arguments
                         .iter()
-                        .map(|(name, value)| -> Result<FieldArgument, Error> {
-                            Ok(FieldArgument::new(name, value.clone()))
+                        .map(|argument| -> Result<FieldArgument, Error> {
+                            Ok(FieldArgument::new(argument.name, argument.value.clone()))
                         })
                         .collect::<Result<Vec<_>, _>>()
                         .unwrap(),
+                    directives: field.directives.clone(),
                 }
             })
             .collect(),

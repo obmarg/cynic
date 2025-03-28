@@ -244,7 +244,7 @@ fn input_type_spec_imp(
 macro_rules! impl_field_type_from_parser_type {
     ($target:ident, $ref_type:ident) => {
         impl<'schema> $target<'schema> {
-            fn from_parser(
+            pub fn from_parser(
                 parser_type: parser::Type<'schema>,
                 type_index: &Rc<TypeIndex<'schema>>,
             ) -> Self {

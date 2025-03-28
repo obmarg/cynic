@@ -1,0 +1,15 @@
+query ($skipAll: Boolean!) {
+  repository(owner: "obmarg", name: "cynic") @skip(if: $skipAll) {
+    issueOrPullRequest(number: 1) @skip(if: false) {
+      ... on Issue {
+        id
+        title
+        lastEditedAt
+      }
+      ... on PullRequest {
+        id
+        title
+      }
+    }
+  }
+}

@@ -26,14 +26,14 @@ ouroboros = "0.18"
 proc-macro2 = "1.0"
 quote = "1.0"
 strsim = "0.10.0"
-syn = { workspace = true , features = ["visit-mut"] }
+syn = { workspace = true, features = ["visit-mut"] }
 thiserror = "1"
 
 rkyv = { version = "0.7.41", features = ["validation"], optional = true }
 
 [dev-dependencies]
 assert_matches = "1.4.0"
-insta = "1.17"
+insta.workspace = true
 maplit = "1.0.2"
 rstest.workspace = true
 

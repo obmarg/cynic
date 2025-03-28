@@ -26,7 +26,7 @@ chrono = { version = "0.4", features = ["serde"] }
 github-schema = { path = "../schemas/github" }
 
 [dev-dependencies]
-insta = "1.17"
+insta.workspace = true
 
 # Used for the mock starwars API used by some of the examples
 graphql-mocks.workspace = true

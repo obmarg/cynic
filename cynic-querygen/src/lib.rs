@@ -29,6 +29,9 @@ pub enum Error {
     #[error("could not find type `{0}`")]
     UnknownType(String),
 
+    #[error("could not find directive `{0}`")]
+    UnknownDirective(String),
+
     #[error("expected type `{0}` to be an object")]
     ExpectedObject(String),
 

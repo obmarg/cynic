@@ -35,5 +35,6 @@ test_query!(input_object_arguments, "input-object-arguments.graphql");
 test_query!(input_object_literals, "input-object-literals.graphql");
 test_query!(literal_enums, "literal-enums.graphql");
 test_query!(queries_with_typename, "queries-with-typename.graphql");
-
-test_query!(issue_786, "issue-786.graphql");
+test_query!(query_with_all_derives, "query-with-all-derives.graphql");
+test_query!(test_include, "test-include.graphql");
+test_query!(test_skip, "test-skip.graphql");

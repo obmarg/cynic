@@ -47,9 +47,16 @@ impl<'query, 'schema> SelectionArguments<'query, 'schema> {
         let mut fields = Vec::new();
         for selection in &selection_set.selections {
             let Selection::Field(field) = selection;
-            for (_, value) in &field.arguments {
-                for variable in value.variables() {
+            for arg in &field.arguments {
+                for variable in arg.value.variables() {
                     fields.push(SelectionArgument::VariableArgument(variable));
+                }
+            }
+            for directive in &field.directives {
+                for argument in &directive.arguments {
+                    for variable in argument.value.variables() {
+                        fields.push(SelectionArgument::VariableArgument(variable));
+                    }
                 }
             }
 
