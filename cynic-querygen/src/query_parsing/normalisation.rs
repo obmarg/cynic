@@ -57,11 +57,23 @@ pub struct FieldSelection<'query, 'schema> {
 
     pub schema_field: OutputField<'schema>,
 
-    pub arguments: Vec<(&'schema str, TypedValue<'query, 'schema>)>,
+    pub arguments: Vec<Argument<'query, 'schema>>,
 
-    pub directives: Vec<(&'schema str, TypedValue<'query, 'schema>)>,
+    pub directives: Vec<Directive<'query, 'schema>>,
 
     pub field: Field<'query, 'schema>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct Argument<'query, 'schema> {
+    pub name: &'schema str,
+    pub value: TypedValue<'query, 'schema>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+pub struct Directive<'query, 'schema> {
+    pub name: &'schema str,
+    pub arguments: Vec<Argument<'query, 'schema>>,
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -96,8 +108,8 @@ impl<'query, 'schema> FieldSelection<'query, 'schema> {
     fn new(
         name: &'query str,
         alias: Option<&'query str>,
-        arguments: Vec<(&'schema str, TypedValue<'query, 'schema>)>,
-        directives: Vec<(&'schema str, TypedValue<'query, 'schema>)>,
+        arguments: Vec<Argument<'query, 'schema>>,
+        directives: Vec<Directive<'query, 'schema>>,
         schema_field: OutputField<'schema>,
         field: Field<'query, 'schema>,
     ) -> FieldSelection<'query, 'schema> {
@@ -282,23 +294,7 @@ impl<'a, 'docs> Normaliser<'a, 'docs> {
 
                 let mut arguments = Vec::new();
                 for argument in field.arguments() {
-                    let name = argument.name();
-                    let value = argument.value();
-
-                    let schema_arg = schema_field
-                        .arguments
-                        .iter()
-                        .find(|arg| arg.name == name)
-                        .ok_or_else(|| dbg!(Error::UnknownArgument(name.to_string())))?;
-
-                    arguments.push((
-                        schema_arg.name,
-                        TypedValue::from_query_value(
-                            value,
-                            schema_arg.value_type.clone(),
-                            &self.variables,
-                        )?,
-                    ));
+                    arguments.push(self.convert_argument(&schema_field, argument)?);
                 }
 
                 let directives = field
@@ -307,9 +303,28 @@ impl<'a, 'docs> Normaliser<'a, 'docs> {
                         let name = directive.name();
                         let schema_directive = self.type_index.directive(name)?;
 
-                        (schema_directive.name(), todo!())
+                        let mut arguments = Vec::new();
+                        for argument in directive.arguments() {
+                            let name = argument.name();
+                            let schema_arg = schema_directive
+                                .arguments()
+                                .find(|arg| arg.name() == name)
+                                .ok_or_else(|| Error::UnknownArgument(name.to_string()))?;
+
+                            arguments.push(Argument {
+                                name,
+                                value: TypedValue::from_query_value(
+                                    argument.value(),
+                                    InputFieldType::from_parser(schema_arg.ty(), self.type_index),
+                                    &self.variables,
+                                )?,
+                            });
+                        }
+
+                        dbg!(&arguments);
+                        Ok(Directive { name, arguments })
                     })
-                    .collect::<Result<_, _>>()?;
+                    .collect::<Result<_, Error>>()?;
 
                 Ok(vec![Selection::Field(FieldSelection::new(
                     field.name(),
@@ -356,6 +371,29 @@ impl<'a, 'docs> Normaliser<'a, 'docs> {
                     .collect())
             }
         }
+    }
+
+    fn convert_argument(
+        &self,
+        schema_field: &OutputField<'docs>,
+        argument: parser::Argument<'docs>,
+    ) -> Result<Argument<'docs, 'docs>, Error> {
+        let name = argument.name();
+        let value = argument.value();
+        let schema_arg = schema_field
+            .arguments
+            .iter()
+            .find(|arg| arg.name == name)
+            .ok_or_else(|| dbg!(Error::UnknownArgument(name.to_string())))?;
+
+        Ok(Argument {
+            name: schema_arg.name,
+            value: TypedValue::from_query_value(
+                value,
+                schema_arg.value_type.clone(),
+                &self.variables,
+            )?,
+        })
     }
 
     fn normalise_abstract_selection_set(
@@ -504,7 +542,7 @@ impl<'schema> SelectionSet<'_, 'schema> {
                 field
                     .arguments
                     .iter()
-                    .map(|(_, arg)| arg.value_type().inner_ref().clone())
+                    .map(|arg| arg.value.value_type().inner_ref().clone())
                     .collect::<Vec<_>>()
             })
             .collect()

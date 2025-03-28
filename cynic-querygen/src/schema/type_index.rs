@@ -1,5 +1,4 @@
 use cynic_parser::{
-    executable::Directive,
     type_system::{
         self, ids::FieldDefinitionId, Definition, DirectiveDefinition, FieldDefinition,
         TypeDefinition,

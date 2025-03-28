@@ -3,7 +3,7 @@ use std::fmt::Write;
 use crate::{
     casings::CasingExt,
     output::{attr_output::Attributes, field::rust_field_name},
-    query_parsing::LiteralContext,
+    query_parsing::{Directive, LiteralContext},
     schema::{InputType, TypeSpec},
 };
 
@@ -56,6 +56,7 @@ pub struct OutputField<'query, 'schema> {
     pub field_type: RustOutputFieldType,
 
     pub arguments: Vec<FieldArgument<'query, 'schema>>,
+    pub directives: Vec<Directive<'query, 'schema>>,
 }
 
 impl std::fmt::Display for OutputField<'_, '_> {
@@ -71,6 +72,35 @@ impl std::fmt::Display for OutputField<'_, '_> {
                 .join(", ");
 
             writeln!(f, "#[arguments({})]", arguments_string)?;
+        }
+        if !self.directives.is_empty() {
+            let directive_string = self
+                .directives
+                .iter()
+                .map(|directive| {
+                    let Directive { name, arguments } = directive;
+                    if arguments.is_empty() {
+                        return name.to_string();
+                    }
+                    let argument_strings = arguments
+                        .iter()
+                        .map(|argument| {
+                            Ok(format!(
+                                "{}: {}",
+                                argument.name,
+                                argument.value.to_literal(LiteralContext::Argument)?
+                            ))
+                        })
+                        .collect::<Result<Vec<_>, Error>>()
+                        .unwrap()
+                        .join(", ");
+
+                    format!("{name}({argument_strings})")
+                })
+                .collect::<Vec<_>>()
+                .join(", ");
+
+            writeln!(f, "#[directives({directive_string})]")?;
         }
 
         let name = self.name.to_snake_case();
