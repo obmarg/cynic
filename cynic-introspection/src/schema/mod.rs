@@ -40,6 +40,8 @@ pub struct Directive {
     pub description: Option<String>,
     /// Any arguments that can be provided to the directive
     pub args: Vec<InputValue>,
+    /// Whether the directive is repeatable or not
+    pub is_repeatable: bool,
     /// The locations where the directive may be used
     pub locations: Vec<DirectiveLocation>,
 }
@@ -529,6 +531,7 @@ impl TryFrom<crate::query::Directive> for Directive {
                 .map(TryInto::try_into)
                 .collect::<Result<Vec<_>, _>>()?,
             locations: value.locations,
+            is_repeatable: value.is_repeatable,
         })
     }
 }
