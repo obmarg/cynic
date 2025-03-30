@@ -35,7 +35,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ### New Features
 
 - Optional fields on a `QueryFragment` can now be marked with
-  `#[cynic(default)]`.  If this directive is present the field does not have to
+  `#[cynic(default)]`. If this directive is present the field does not have to
   be wrapped in `Option` and the `Default` impl of the type will be used if the
   field is null (#1144)
 - The generator now supports directives (#1139)

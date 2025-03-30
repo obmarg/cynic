@@ -6,8 +6,7 @@ use cynic_parser::type_system as parser;
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 #[cfg_attr(
     feature = "rkyv",
-    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize),
-    archive(check_bytes)
+    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)
 )]
 pub struct SchemaRoots<'a> {
     pub query: ObjectType<'a>,
@@ -18,8 +17,7 @@ pub struct SchemaRoots<'a> {
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 #[cfg_attr(
     feature = "rkyv",
-    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize),
-    archive(check_bytes)
+    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)
 )]
 pub enum Type<'a> {
     Scalar(ScalarType<'a>),
@@ -33,8 +31,7 @@ pub enum Type<'a> {
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 #[cfg_attr(
     feature = "rkyv",
-    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize),
-    archive(check_bytes)
+    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)
 )]
 pub enum InputType<'a> {
     Scalar(ScalarType<'a>),
@@ -45,8 +42,7 @@ pub enum InputType<'a> {
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 #[cfg_attr(
     feature = "rkyv",
-    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize),
-    archive(check_bytes)
+    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)
 )]
 pub enum OutputType<'a> {
     Scalar(ScalarType<'a>),
@@ -59,11 +55,10 @@ pub enum OutputType<'a> {
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 #[cfg_attr(
     feature = "rkyv",
-    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize),
-    archive(check_bytes)
+    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)
 )]
 pub struct ScalarType<'a> {
-    #[cfg_attr(feature = "rkyv", with(rkyv::with::AsOwned))]
+    #[cfg_attr(feature = "rkyv", rkyv(with = rkyv::with::AsOwned))]
     pub name: Cow<'a, str>,
     pub builtin: bool,
 }
@@ -71,11 +66,10 @@ pub struct ScalarType<'a> {
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 #[cfg_attr(
     feature = "rkyv",
-    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize),
-    archive(check_bytes)
+    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)
 )]
 pub struct ObjectType<'a> {
-    #[cfg_attr(feature = "rkyv", with(rkyv::with::AsOwned))]
+    #[cfg_attr(feature = "rkyv", rkyv(with = rkyv::with::AsOwned))]
     pub name: Cow<'a, str>,
     pub implements_interfaces: Vec<InterfaceRef<'a>>,
     pub fields: Vec<Field<'a>>,
@@ -84,22 +78,20 @@ pub struct ObjectType<'a> {
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 #[cfg_attr(
     feature = "rkyv",
-    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize),
-    archive(check_bytes)
+    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)
 )]
 pub struct Field<'a> {
     pub name: FieldName<'a>,
     pub arguments: Vec<InputValue<'a>>,
     pub field_type: TypeRef<'a, OutputType<'a>>,
-    #[cfg_attr(feature = "rkyv", with(rkyv::with::AsOwned))]
+    #[cfg_attr(feature = "rkyv", rkyv(with = rkyv::with::AsOwned))]
     pub(super) parent_type_name: Cow<'a, str>,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 #[cfg_attr(
     feature = "rkyv",
-    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize),
-    archive(check_bytes)
+    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)
 )]
 pub struct InputValue<'a> {
     pub name: FieldName<'a>,
@@ -120,11 +112,10 @@ impl InputValue<'_> {
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 #[cfg_attr(
     feature = "rkyv",
-    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize),
-    archive(check_bytes)
+    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)
 )]
 pub struct InterfaceType<'a> {
-    #[cfg_attr(feature = "rkyv", with(rkyv::with::AsOwned))]
+    #[cfg_attr(feature = "rkyv", rkyv(with = rkyv::with::AsOwned))]
     pub name: Cow<'a, str>,
     pub fields: Vec<Field<'a>>,
 }
@@ -132,11 +123,10 @@ pub struct InterfaceType<'a> {
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 #[cfg_attr(
     feature = "rkyv",
-    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize),
-    archive(check_bytes)
+    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)
 )]
 pub struct UnionType<'a> {
-    #[cfg_attr(feature = "rkyv", with(rkyv::with::AsOwned))]
+    #[cfg_attr(feature = "rkyv", rkyv(with = rkyv::with::AsOwned))]
     pub name: Cow<'a, str>,
     pub types: Vec<ObjectRef<'a>>,
 }
@@ -144,11 +134,10 @@ pub struct UnionType<'a> {
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 #[cfg_attr(
     feature = "rkyv",
-    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize),
-    archive(check_bytes)
+    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)
 )]
 pub struct EnumType<'a> {
-    #[cfg_attr(feature = "rkyv", with(rkyv::with::AsOwned))]
+    #[cfg_attr(feature = "rkyv", rkyv(with = rkyv::with::AsOwned))]
     pub name: Cow<'a, str>,
     pub values: Vec<EnumValue<'a>>,
 }
@@ -156,8 +145,7 @@ pub struct EnumType<'a> {
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 #[cfg_attr(
     feature = "rkyv",
-    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize),
-    archive(check_bytes)
+    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)
 )]
 pub struct EnumValue<'a> {
     pub name: FieldName<'a>,
@@ -166,11 +154,10 @@ pub struct EnumValue<'a> {
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 #[cfg_attr(
     feature = "rkyv",
-    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize),
-    archive(check_bytes)
+    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)
 )]
 pub struct InputObjectType<'a> {
-    #[cfg_attr(feature = "rkyv", with(rkyv::with::AsOwned))]
+    #[cfg_attr(feature = "rkyv", rkyv(with = rkyv::with::AsOwned))]
     pub name: Cow<'a, str>,
     pub fields: Vec<InputValue<'a>>,
     pub is_one_of: bool,
@@ -179,11 +166,10 @@ pub struct InputObjectType<'a> {
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 #[cfg_attr(
     feature = "rkyv",
-    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize),
-    archive(check_bytes)
+    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)
 )]
 pub struct Directive<'a> {
-    #[cfg_attr(feature = "rkyv", with(rkyv::with::AsOwned))]
+    #[cfg_attr(feature = "rkyv", rkyv(with = rkyv::with::AsOwned))]
     pub name: Cow<'a, str>,
     pub arguments: Vec<InputValue<'a>>,
     pub locations: Vec<DirectiveLocation>,
@@ -192,8 +178,7 @@ pub struct Directive<'a> {
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 #[cfg_attr(
     feature = "rkyv",
-    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize),
-    archive(check_bytes)
+    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)
 )]
 pub enum DirectiveLocation {
     Query,
@@ -220,8 +205,7 @@ pub enum DirectiveLocation {
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
 #[cfg_attr(
     feature = "rkyv",
-    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize),
-    archive(check_bytes)
+    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)
 )]
 pub enum Kind {
     InputType,
@@ -290,11 +274,10 @@ impl<'a> EnumType<'a> {
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 #[cfg_attr(
     feature = "rkyv",
-    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize),
-    archive(check_bytes)
+    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)
 )]
 pub struct ObjectRef<'a>(
-    #[cfg_attr(feature = "rkyv", with(rkyv::with::AsOwned))] pub(super) Cow<'a, str>,
+    #[cfg_attr(feature = "rkyv", rkyv(with = rkyv::with::AsOwned))] pub(super) Cow<'a, str>,
 );
 
 impl std::fmt::Display for ObjectRef<'_> {
@@ -306,32 +289,32 @@ impl std::fmt::Display for ObjectRef<'_> {
 #[derive(Clone, Debug, PartialEq, Eq, Hash)]
 #[cfg_attr(
     feature = "rkyv",
-    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize),
-    archive(check_bytes)
+    derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize)
 )]
 pub struct InterfaceRef<'a>(
-    #[cfg_attr(feature = "rkyv", with(rkyv::with::AsOwned))] pub(super) Cow<'a, str>,
+    #[cfg_attr(feature = "rkyv", rkyv(with = rkyv::with::AsOwned))] pub(super) Cow<'a, str>,
 );
 
 #[derive(Clone, PartialEq, Eq, Hash)]
 #[cfg_attr(
     feature = "rkyv",
     derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize),
-    archive(check_bytes, bound(serialize = "__S: rkyv::ser::Serializer")),
-    archive_attr(check_bytes(
-        bound = "__C: rkyv::validation::ArchiveContext, <__C as rkyv::Fallible>::Error: rkyv::bytecheck::Error"
-    ))
+    rkyv(
+        serialize_bounds(__S: rkyv::ser::Writer),
+        deserialize_bounds(__D::Error: rkyv::rancor::Source),
+        bytecheck(
+            bounds ( __C: rkyv::validation::ArchiveContext )
+        )
+    )
 )]
 pub enum TypeRef<'a, T> {
     Named(
-        #[cfg_attr(feature = "rkyv", with(rkyv::with::AsOwned))] Cow<'a, str>,
+        #[cfg_attr(feature = "rkyv", rkyv(with = rkyv::with::AsOwned))] Cow<'a, str>,
         PhantomData<fn() -> T>,
     ),
 
-    List(#[cfg_attr(feature = "rkyv", omit_bounds, archive_attr(omit_bounds))] Box<TypeRef<'a, T>>),
-    Nullable(
-        #[cfg_attr(feature = "rkyv", omit_bounds, archive_attr(omit_bounds))] Box<TypeRef<'a, T>>,
-    ),
+    List(#[cfg_attr(feature = "rkyv", rkyv(omit_bounds))] Box<TypeRef<'a, T>>),
+    Nullable(#[cfg_attr(feature = "rkyv", rkyv(omit_bounds))] Box<TypeRef<'a, T>>),
 }
 
 impl<'a, T> TypeRef<'a, T>
