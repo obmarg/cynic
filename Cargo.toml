@@ -37,7 +37,7 @@ homepage = "https://cynic-rs.dev"
 repository = "https://github.com/obmarg/cynic"
 license = "MPL-2.0"
 version = "3.10.0"
-rust-version = "1.80"
+rust-version = "1.81"
 
 [workspace.dependencies]
 darling = "0.20"
