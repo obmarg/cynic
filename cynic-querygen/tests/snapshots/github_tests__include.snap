@@ -1,0 +1,48 @@
+---
+source: cynic-querygen/tests/github-tests.rs
+expression: "document_to_fragment_structs(query, schema,\n        &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
+snapshot_kind: text
+---
+#[derive(cynic::QueryVariables, Debug)]
+pub struct UnnamedQueryVariables {
+    pub include_all: bool,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(graphql_type = "Query", variables = "UnnamedQueryVariables")]
+pub struct UnnamedQuery {
+    #[arguments(owner: "obmarg", name: "cynic")]
+    #[directives(include(if: $include_all))]
+    pub repository: Option<Repository>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+pub struct Repository {
+    #[arguments(number: 1)]
+    #[directives(include(if: false))]
+    pub issue_or_pull_request: Option<IssueOrPullRequest>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+pub struct PullRequest {
+    pub id: cynic::Id,
+    pub title: String,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+pub struct Issue {
+    pub id: cynic::Id,
+    pub title: String,
+    pub last_edited_at: Option<DateTime>,
+}
+
+#[derive(cynic::InlineFragments, Debug)]
+pub enum IssueOrPullRequest {
+    Issue(Issue),
+    PullRequest(PullRequest),
+    #[cynic(fallback)]
+    Unknown
+}
+
+#[derive(cynic::Scalar, Debug, Clone)]
+pub struct DateTime(pub String);

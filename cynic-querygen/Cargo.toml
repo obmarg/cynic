@@ -23,5 +23,5 @@ cynic-parser.workspace = true
 
 [dev-dependencies]
 assert_matches = "1.4"
-insta = "1.17.1"
+insta.workspace = true
 rstest.workspace = true

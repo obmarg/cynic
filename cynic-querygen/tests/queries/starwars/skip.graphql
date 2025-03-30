@@ -1,0 +1,6 @@
+query SkipTest($filmId: ID!, $skipTitle: Boolean!) {
+  film(id: $filmId) {
+    title @skip(if: $skipTitle)
+    director
+  }
+}

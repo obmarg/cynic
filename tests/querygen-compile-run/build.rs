@@ -4,7 +4,7 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use indoc::writedoc;
+use indoc::{formatdoc, writedoc};
 
 use cynic_querygen::{document_to_fragment_structs, QueryGenOptions};
 
@@ -221,6 +221,16 @@ fn main() {
                 input2: None
             })"#,
         ),
+        TestCase::query(
+            &starwars_schema,
+            "../../cynic-querygen/tests/queries/starwars/include.graphql",
+            r#"IncludeTest::build(IncludeTestVariables { film_id: &"ZmlsbXM6MQ==".into(), include_title: false })"#,
+        ),
+        TestCase::query(
+            &starwars_schema,
+            "../../cynic-querygen/tests/queries/starwars/skip.graphql",
+            r#"SkipTest::build(SkipTestVariables { film_id: &"ZmlsbXM6MQ==".into(), skip_title: true })"#,
+        ),
     ];
 
     for case in cases {
@@ -234,6 +244,7 @@ struct TestCase {
     operation_construct: String,
     should_run: bool,
     is_subscription: bool,
+    should_snapshot_test: bool,
 }
 
 impl TestCase {
@@ -248,6 +259,7 @@ impl TestCase {
             operation_construct: operation_construct.into(),
             should_run: true,
             is_subscription: false,
+            should_snapshot_test: false,
         }
     }
 
@@ -262,6 +274,7 @@ impl TestCase {
             operation_construct: operation_construct.into(),
             should_run: false,
             is_subscription: false,
+            should_snapshot_test: false,
         }
     }
 
@@ -277,6 +290,7 @@ impl TestCase {
             // We don't run mutations by default
             should_run: false,
             is_subscription: false,
+            should_snapshot_test: false,
         }
     }
 
@@ -292,6 +306,7 @@ impl TestCase {
             // We don't run subscriptions by default
             should_run: false,
             is_subscription: true,
+            should_snapshot_test: false,
         }
     }
 
@@ -331,10 +346,21 @@ impl TestCase {
                 Some(_) => "mock_server.url().as_ref()".into(),
                 None => format!("\"{}\"", self.schema.query_url),
             };
-            format!(
-                r#"querygen_compile_run::send({url}, {operation_construct}).await.unwrap();"#,
-                operation_construct = self.operation_construct
-            )
+            if self.should_snapshot_test {
+                formatdoc!(
+                    r#"
+                    let response = querygen_compile_run::send({url}, {operation_construct}).await.unwrap();
+
+                    insta::assert_json_snapshot!(response);
+                    "#,
+                    operation_construct = self.operation_construct
+                )
+            } else {
+                format!(
+                    r#"querygen_compile_run::send({url}, {operation_construct}).await.unwrap();"#,
+                    operation_construct = self.operation_construct
+                )
+            }
         };
 
         writedoc!(

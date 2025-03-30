@@ -2,8 +2,11 @@ use cynic_parser::{
     common::TypeWrappers,
     type_system::{
         ids::FieldDefinitionId,
-        storage::{FieldDefinitionRecord, ScalarDefinitionRecord, TypeRecord},
-        writer,
+        storage::{
+            DirectiveDefinitionRecord, FieldDefinitionRecord, InputValueDefinitionRecord,
+            ScalarDefinitionRecord, TypeRecord,
+        },
+        writer, DirectiveLocation,
     },
     TypeSystemDocument,
 };
@@ -33,6 +36,7 @@ pub(crate) fn add_builtins(schema: TypeSystemDocument) -> (TypeSystemDocument, F
                 span: Default::default(),
             })
         };
+
         let name = writer.intern_string("__typename");
         writer.field_definition(FieldDefinitionRecord {
             name,
@@ -44,6 +48,45 @@ pub(crate) fn add_builtins(schema: TypeSystemDocument) -> (TypeSystemDocument, F
             span: Default::default(),
         })
     };
+
+    let bool = writer.intern_string("Boolean");
+    for name in ["skip", "include"] {
+        let arguments = {
+            let ty = writer.type_reference(TypeRecord {
+                name: bool,
+                name_start: Default::default(),
+                wrappers: TypeWrappers::none().wrap_non_null(),
+                span: Default::default(),
+            });
+            let name = writer.intern_string("if");
+            writer.input_value_definition(InputValueDefinitionRecord {
+                name,
+                name_span: Default::default(),
+                ty,
+                description: None,
+                default_value: None,
+                default_value_span: Default::default(),
+                directives: Default::default(),
+                span: Default::default(),
+            });
+            writer.input_value_definition_range(Some(1))
+        };
+
+        let name = writer.intern_string(name);
+        writer.directive_definition(DirectiveDefinitionRecord {
+            name,
+            name_span: Default::default(),
+            description: None,
+            arguments,
+            is_repeatable: false,
+            locations: vec![
+                DirectiveLocation::Field,
+                DirectiveLocation::FragmentSpread,
+                DirectiveLocation::InlineFragment,
+            ],
+            span: Default::default(),
+        });
+    }
 
     (writer.finish(), typename_id)
 }

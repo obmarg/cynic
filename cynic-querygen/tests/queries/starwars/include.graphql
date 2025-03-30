@@ -1,0 +1,6 @@
+query IncludeTest($filmId: ID!, $includeTitle: Boolean!) {
+  film(id: $filmId) {
+    title @include(if: $includeTitle)
+    director
+  }
+}

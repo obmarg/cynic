@@ -1,0 +1,15 @@
+query ($includeAll: Boolean!) {
+  repository(owner: "obmarg", name: "cynic") @include(if: $includeAll) {
+    issueOrPullRequest(number: 1) @include(if: false) {
+      ... on Issue {
+        id
+        title
+        lastEditedAt
+      }
+      ... on PullRequest {
+        id
+        title
+      }
+    }
+  }
+}
