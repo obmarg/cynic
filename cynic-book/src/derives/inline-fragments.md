@@ -61,7 +61,7 @@ pub enum Actor {
 }
 
 #[derive(cynic::QueryFragment)]
-enum ActorFallback {
+struct ActorFallback {
     pub login: String
 }
 ```
