@@ -29,7 +29,7 @@ strsim = "0.10.0"
 syn = { workspace = true, features = ["visit-mut"] }
 thiserror = "1"
 
-rkyv = { version = "0.7.41", features = ["validation"], optional = true }
+rkyv = { version = "0.8.0", features = ["bytecheck"], optional = true }
 
 [dev-dependencies]
 assert_matches = "1.4.0"
