@@ -1,6 +1,7 @@
 ---
 source: cynic-introspection/tests/tests.rs
 expression: result.data.unwrap().into_schema().unwrap()
+snapshot_kind: text
 ---
 Schema {
     query_type: "Query",
@@ -8934,6 +8935,7 @@ Schema {
                     default_value: None,
                 },
             ],
+            is_repeatable: false,
             locations: [
                 Schema,
             ],
@@ -8979,6 +8981,7 @@ Schema {
                     default_value: None,
                 },
             ],
+            is_repeatable: true,
             locations: [
                 Schema,
             ],
@@ -9008,6 +9011,7 @@ Schema {
                     ),
                 },
             ],
+            is_repeatable: true,
             locations: [
                 Object,
                 Interface,
@@ -9027,6 +9031,7 @@ Schema {
                     default_value: None,
                 },
             ],
+            is_repeatable: false,
             locations: [
                 FieldDefinition,
             ],
@@ -9045,6 +9050,7 @@ Schema {
                     default_value: None,
                 },
             ],
+            is_repeatable: false,
             locations: [
                 FieldDefinition,
             ],
@@ -9063,6 +9069,7 @@ Schema {
                     default_value: None,
                 },
             ],
+            is_repeatable: false,
             locations: [
                 Object,
                 FieldDefinition,
@@ -9082,6 +9089,7 @@ Schema {
                     default_value: None,
                 },
             ],
+            is_repeatable: true,
             locations: [
                 FieldDefinition,
                 Object,
@@ -9100,6 +9108,7 @@ Schema {
             name: "federation__extends",
             description: None,
             args: [],
+            is_repeatable: false,
             locations: [
                 Object,
                 Interface,
@@ -9109,6 +9118,7 @@ Schema {
             name: "federation__shareable",
             description: None,
             args: [],
+            is_repeatable: true,
             locations: [
                 Object,
                 FieldDefinition,
@@ -9118,6 +9128,7 @@ Schema {
             name: "federation__inaccessible",
             description: None,
             args: [],
+            is_repeatable: false,
             locations: [
                 FieldDefinition,
                 Object,
@@ -9145,6 +9156,7 @@ Schema {
                     default_value: None,
                 },
             ],
+            is_repeatable: false,
             locations: [
                 FieldDefinition,
             ],
@@ -9163,6 +9175,7 @@ Schema {
                     default_value: None,
                 },
             ],
+            is_repeatable: true,
             locations: [
                 Schema,
             ],
@@ -9171,6 +9184,7 @@ Schema {
             name: "federation__interfaceObject",
             description: None,
             args: [],
+            is_repeatable: false,
             locations: [
                 Object,
             ],
@@ -9193,6 +9207,7 @@ Schema {
                     default_value: None,
                 },
             ],
+            is_repeatable: false,
             locations: [
                 Field,
                 FragmentSpread,
@@ -9217,6 +9232,7 @@ Schema {
                     default_value: None,
                 },
             ],
+            is_repeatable: false,
             locations: [
                 Field,
                 FragmentSpread,
@@ -9243,6 +9259,7 @@ Schema {
                     ),
                 },
             ],
+            is_repeatable: false,
             locations: [
                 FieldDefinition,
                 ArgumentDefinition,
@@ -9268,6 +9285,7 @@ Schema {
                     default_value: None,
                 },
             ],
+            is_repeatable: false,
             locations: [
                 Scalar,
             ],

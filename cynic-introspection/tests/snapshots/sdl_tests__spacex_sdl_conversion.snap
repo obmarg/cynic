@@ -1,6 +1,7 @@
 ---
 source: cynic-introspection/tests/sdl_tests.rs
 expression: result.data.unwrap().into_schema().unwrap().to_sdl()
+snapshot_kind: text
 ---
 type Address {
   address: String
@@ -1147,4 +1148,41 @@ type _Service {
   sdl: String
 }
 
+directive @contact(
+  """
+  Contact title of the subgraph owner
+  """
+  name: String!
+  """
+  URL where the subgraph's owner can be reached
+  """
+  url: String
+  """
+  Other relevant notes can be included here; supports markdown links
+  """
+  description: String
+) on SCHEMA
 
+directive @link(url: String, as: String, for: link__Purpose, import: [link__Import]) repeatable on SCHEMA
+
+directive @key(fields: federation__FieldSet!, resolvable: Boolean = true) repeatable on OBJECT | INTERFACE
+
+directive @federation__requires(fields: federation__FieldSet!) on FIELD_DEFINITION
+
+directive @federation__provides(fields: federation__FieldSet!) on FIELD_DEFINITION
+
+directive @federation__external(reason: String) on OBJECT | FIELD_DEFINITION
+
+directive @federation__tag(name: String!) repeatable on FIELD_DEFINITION | OBJECT | INTERFACE | UNION | ARGUMENT_DEFINITION | SCALAR | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION | SCHEMA
+
+directive @federation__extends on OBJECT | INTERFACE
+
+directive @federation__shareable repeatable on OBJECT | FIELD_DEFINITION
+
+directive @federation__inaccessible on FIELD_DEFINITION | OBJECT | INTERFACE | UNION | ARGUMENT_DEFINITION | SCALAR | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION
+
+directive @federation__override(from: String!) on FIELD_DEFINITION
+
+directive @federation__composeDirective(name: String) repeatable on SCHEMA
+
+directive @federation__interfaceObject on OBJECT

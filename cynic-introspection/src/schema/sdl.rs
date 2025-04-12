@@ -1,11 +1,11 @@
 use std::fmt::{self, Display, Write};
 
 use crate::{
-    Deprecated, EnumType, EnumValue, Field, FieldType, InputObjectType, InputValue, InterfaceType,
-    ObjectType, ScalarType, Type, UnionType,
+    Deprecated, DirectiveLocation, EnumType, EnumValue, Field, FieldType, InputObjectType,
+    InputValue, InterfaceType, ObjectType, ScalarType, Type, UnionType,
 };
 
-use super::Schema;
+use super::{Directive, Schema};
 
 impl Schema {
     /// Writes the SDL for this schema into `f`
@@ -43,6 +43,14 @@ impl Display for SchemaDisplay<'_> {
         for ty in &schema.types {
             let ty = TypeDisplay(ty);
             write!(f, "{ty}")?;
+        }
+
+        for directive in &schema.directives {
+            if ["skip", "include", "deprecated", "specifiedBy"].contains(&directive.name.as_str()) {
+                // Skip built in directives, we don't need those...
+                continue;
+            }
+            write!(f, "{}", DirectiveDisplay(directive))?;
         }
 
         Ok(())
@@ -361,6 +369,93 @@ impl Display for SpecifiedByDisplay<'_> {
             Some(url) => write!(f, " @specifiedBy(url: {url})")?,
         }
         Ok(())
+    }
+}
+
+struct DirectiveDisplay<'a>(&'a Directive);
+
+impl Display for DirectiveDisplay<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        let name = &self.0.name;
+
+        write!(f, "{}", DescriptionDisplay(self.0.description.as_deref()))?;
+        write!(f, "directive @{name}")?;
+        if !self.0.args.is_empty() {
+            let wrap = self.should_wrap_arguments();
+            if wrap {
+                writeln!(f, "(")?;
+                for (i, arg) in self.0.args.iter().enumerate() {
+                    if i != 0 {
+                        writeln!(f)?;
+                    }
+                    write!(indented(f), "{}", InputValueDisplay(arg))?;
+                }
+                write!(f, "\n)")?;
+            } else {
+                write!(f, "(")?;
+                for (i, arg) in self.0.args.iter().enumerate() {
+                    if i != 0 {
+                        write!(f, ", ")?;
+                    }
+                    write!(f, "{}", InputValueDisplay(arg))?;
+                }
+                write!(f, ")")?;
+            }
+        }
+        if self.0.is_repeatable {
+            write!(f, " repeatable")?;
+        }
+        write!(f, " on ")?;
+        for (i, location) in self.0.locations.iter().enumerate() {
+            if i != 0 {
+                write!(f, " | ")?;
+            }
+            write!(f, "{}", location.as_str())?;
+        }
+        writeln!(f, "\n")?;
+        Ok(())
+    }
+}
+
+impl DirectiveDisplay<'_> {
+    /// Hacky heuristic for whether we should wrap the field arguments
+    fn should_wrap_arguments(&self) -> bool {
+        if self.0.args.iter().any(|arg| arg.description.is_some()) {
+            return true;
+        }
+        let arg_len = self
+            .0
+            .args
+            .iter()
+            .map(|arg| arg.name.len() + arg.ty.name.len())
+            .sum::<usize>();
+        arg_len + self.0.name.len() > 80
+    }
+}
+
+impl DirectiveLocation {
+    fn as_str(self) -> &'static str {
+        match self {
+            DirectiveLocation::Query => "QUERY",
+            DirectiveLocation::Mutation => "MUTATION",
+            DirectiveLocation::Subscription => "SUBSCRIPTION",
+            DirectiveLocation::Field => "FIELD",
+            DirectiveLocation::FragmentDefinition => "FRAGMENT_DEFINITION",
+            DirectiveLocation::FragmentSpread => "FRAGMENT_SPREAD",
+            DirectiveLocation::InlineFragment => "INLINE_FRAGMENT",
+            DirectiveLocation::VariableDefinition => "VARIABLE_DEFINITION",
+            DirectiveLocation::Schema => "SCHEMA",
+            DirectiveLocation::Scalar => "SCALAR",
+            DirectiveLocation::Object => "OBJECT",
+            DirectiveLocation::FieldDefinition => "FIELD_DEFINITION",
+            DirectiveLocation::ArgumentDefinition => "ARGUMENT_DEFINITION",
+            DirectiveLocation::Interface => "INTERFACE",
+            DirectiveLocation::Union => "UNION",
+            DirectiveLocation::Enum => "ENUM",
+            DirectiveLocation::EnumValue => "ENUM_VALUE",
+            DirectiveLocation::InputObject => "INPUT_OBJECT",
+            DirectiveLocation::InputFieldDefinition => "INPUT_FIELD_DEFINITION",
+        }
     }
 }
 
