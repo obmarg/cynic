@@ -19,19 +19,48 @@ impl<T, TypeLock> CoercesTo<Vec<TypeLock>> for [T] where T: CoercesTo<TypeLock> 
 impl<Target: ?Sized, Typelock> CoercesTo<Typelock> for &'_ Target where Target: CoercesTo<Typelock> {}
 
 #[macro_export(local_inner_macros)]
-/// Implements the default GraphQL list & option coercion rules for a type.
+/// Implements the default GraphQL list & option coercion rules for a type that the user owns.
 macro_rules! impl_coercions {
     ($target:ty, $typelock:ty) => {
         impl_coercions!($target[][], $typelock);
     };
     ($target:ty [$($impl_generics: tt)*] [$($where_clause: tt)*], $typelock:ty) => {
+        #[automatically_derived]
         impl $($impl_generics)* $crate::coercions::CoercesTo<$typelock> for $target $($where_clause)* {}
+
+        #[automatically_derived]
         impl $($impl_generics)* $crate::coercions::CoercesTo<Option<$typelock>> for $target $($where_clause)* {}
+
+        #[automatically_derived]
         impl $($impl_generics)* $crate::coercions::CoercesTo<Vec<$typelock>> for $target $($where_clause)* {}
+
+        #[automatically_derived]
         impl $($impl_generics)* $crate::coercions::CoercesTo<Option<Vec<$typelock>>> for $target $($where_clause)* {}
+
+        #[automatically_derived]
         impl $($impl_generics)* $crate::coercions::CoercesTo<Option<Vec<Option<$typelock>>>> for $target $($where_clause)* {}
+
+        #[automatically_derived]
         impl $($impl_generics)* $crate::coercions::CoercesTo<Option<Option<$typelock>>> for $target $($where_clause)* {}
+
+        #[automatically_derived]
         impl $($impl_generics)* $crate::coercions::CoercesTo<Vec<Vec<$typelock>>> for $target $($where_clause)* {}
+    };
+}
+
+#[macro_export(local_inner_macros)]
+/// Implements limited GraphQL coercion rules for a type that the user does not own.
+///
+/// This is useful when implementing Scalar manually for a foreign type.  For types that the user owns
+/// `impl_coercions` should be used, or if not implementing Scalar manually `then `impl_scalar!` or
+/// `derive(Scalar)` are a better fit.
+macro_rules! impl_foreign_coercions {
+    ($target:ty, $typelock:ty) => {
+        impl_foreign_coercions!($target[][], $typelock);
+    };
+    ($target:ty [$($impl_generics: tt)*] [$($where_clause: tt)*], $typelock:ty) => {
+        #[automatically_derived]
+        impl $($impl_generics)* $crate::coercions::CoercesTo<$typelock> for $target $($where_clause)* {}
     };
 }
 

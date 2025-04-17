@@ -64,7 +64,7 @@ impl<'a> FieldSerializer<'a> {
             .to_path(self.schema_module);
 
         let trait_bound = match self.graphql_field.value_type.inner_type(schema) {
-            InputType::Scalar(_) => quote! { cynic::schema::IsScalar<#marker_type> },
+            InputType::Scalar(_) => quote! { cynic::schema::InputScalar<#marker_type> },
             InputType::Enum(_) => quote! { cynic::Enum<SchemaType = #marker_type> },
             InputType::InputObject(_) => {
                 quote! { cynic::InputObject<SchemaType = #marker_type> }
@@ -82,16 +82,39 @@ impl<'a> FieldSerializer<'a> {
         }
     }
 
-    pub fn field_insert_call(&self, serializer_ident: &proc_macro2::Ident) -> TokenStream {
+    pub fn field_insert_call(
+        &self,
+        serializer_ident: &proc_macro2::Ident,
+        schema: &Schema<'a, Unvalidated>,
+    ) -> TokenStream {
         let field_span = self.rust_field.ident.span();
         let rust_field_name = &self.rust_field.ident;
         let graphql_field_name = proc_macro2::Literal::string(self.graphql_field.name.as_str());
 
-        let insert_call = quote_spanned! { field_span =>
-            #serializer_ident.serialize_entry(
-                #graphql_field_name,
-                &self.#rust_field_name
-            )?;
+        // TODO: This needs to use OutputScalar stuff...
+
+        let insert_call = match self.graphql_field.value_type.inner_type(schema) {
+            InputType::Scalar(scalar) => {
+                // TODO: Fix this...
+                let scalar_marker = scalar.marker_type();
+                quote_spanned! { field_span =>
+                    #serializer_ident.serialize_entry(
+                        #graphql_field_name,
+                        &cynic::__private::ScalarSerialize::<
+                            _,
+                            #scalar_marker
+                        >::new(&self.#rust_field_name)
+                    )?;
+                }
+            }
+            _ => {
+                quote_spanned! { field_span =>
+                    #serializer_ident.serialize_entry(
+                        #graphql_field_name,
+                        &self.#rust_field_name
+                    )?;
+                }
+            }
         };
 
         match (

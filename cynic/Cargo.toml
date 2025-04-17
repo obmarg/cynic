@@ -43,6 +43,7 @@ reqwest = { version = "0.12", optional = true, features = [
 [dev-dependencies]
 assert_matches = "1.4"
 chrono = { version = "0.4.19", features = ["serde"] }
+graphql-mocks.workspace = true
 graphql-parser = "0.4"
 insta.workspace = true
 maplit = "1.0.2"

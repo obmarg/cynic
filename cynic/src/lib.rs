@@ -235,8 +235,23 @@ macro_rules! impl_scalar {
     };
     ($type:path, $type_lock:ident, $schema_module:ident $(:: $schema_module_rest : ident)*) => {
         #[automatically_derived]
-        impl $crate::schema::IsScalar<$schema_module$(::$schema_module_rest)*::$type_lock> for $type {
-            type SchemaType = $schema_module$(::$schema_module_rest)*::$type_lock;
+        impl $crate::schema::InputScalar<$schema_module$(::$schema_module_rest)*::$type_lock> for $type {
+            fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+            where
+                S: $crate::serde::Serializer
+            {
+                $crate::serde::Serialize::serialize(self, serializer)
+            }
+        }
+
+        #[automatically_derived]
+        impl<'de> $crate::schema::OutputScalar<'de, $schema_module$(::$schema_module_rest)*::$type_lock> for $type {
+            fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+            where
+                D: $crate::serde::Deserializer<'de>
+            {
+                <Self as $crate::serde::Deserialize>::deserialize(deserializer)
+            }
         }
 
         // We derive a simple CoercesTo here, but since we don't own $type we can't
@@ -244,11 +259,54 @@ macro_rules! impl_scalar {
         #[automatically_derived]
         impl $crate::coercions::CoercesTo<$schema_module$(::$schema_module_rest)*::$type_lock> for $type {}
 
+        $crate::impl_scalar_variable!($type, $type_lock, $schema_module$(::$schema_module_rest)*);
+    };
+}
+
+/// Allows a scalar type to be used as a variable of the given schema type.
+///
+/// This should only be used on scalar types - InputObject and Enum types
+/// generate this code as part of their associated derives.
+///
+/// ```rust
+/// # #[macro_use] extern crate cynic;
+/// # // Faking the uuid module here because it's easier than
+/// # // actually pulling it in
+/// #
+/// # mod schema { cynic::use_schema!("../schemas/test_cases.graphql"); }
+/// # mod uuid { pub struct Uuid(String); }
+/// impl_variable!(uuid::Uuid, schema::UUID);
+/// ```
+///
+/// This macro should be used in the case where you've manually implemented
+/// `OutputScalar` and/or `InputScalar` for a type.  Otherwise `impl_scalar`
+/// or `derive(Scalar)` handle this registration for you.
+#[macro_export]
+macro_rules! impl_scalar_variable {
+    ($type:path, $type_lock:ident) => {
+        $crate::impl_scalar_variable!($type, $type_lock, self);
+    };
+    ($type:path, $type_lock_segment:ident $(:: $type_lock_rest :ident)::+) => {
+        $crate::impl_scalar_variable!($type, $($type_lock_rest)::*, $type_lock_segment);
+    };
+    ($type:path, $type_lock_segment:ident $(:: $type_lock_rest :ident)::+, $schema_module:ident $(:: $schema_module_rest : ident)*) => {
+        $crate::impl_scalar_variable!($type, $($type_lock_rest)::*, $schema_module(::$schema_module_rest)*::$type_lock_segment)
+    };
+    ($type:path, $type_lock:ident, $schema_module:ident $(:: $schema_module_rest : ident)*) => {
         #[automatically_derived]
         impl $schema_module$(::$schema_module_rest)*::variable::Variable for $type {
             const TYPE: cynic::variables::VariableType = cynic::variables::VariableType::Named(
                 <$schema_module$(::$schema_module_rest)*::$type_lock as $crate::schema::NamedType>::NAME,
             );
+
+            fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+            where
+                S: cynic::serde::Serializer
+            {
+                <$type as $crate::schema::InputScalar<
+                    $schema_module$(::$schema_module_rest)*::$type_lock
+                >>::serialize(self, serializer)
+            }
         }
     };
 }

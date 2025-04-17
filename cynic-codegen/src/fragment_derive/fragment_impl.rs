@@ -6,10 +6,7 @@ use {
 
 use crate::{
     error::Errors,
-    schema::{
-        types::{Field, OutputType},
-        Schema, Unvalidated,
-    },
+    schema::{types::Field, Schema, Unvalidated},
     types::{self, check_spread_type, check_types_are_compatible, CheckMode},
     variables_fields_path,
 };
@@ -18,6 +15,7 @@ use super::{
     arguments::{arguments_from_field_attrs, process_arguments},
     directives::{process_directive, AnalysedFieldDirective},
     fragment_derive_type::FragmentDeriveType,
+    FieldKind,
 };
 
 use super::input::FragmentDeriveField;
@@ -55,14 +53,6 @@ struct FieldSelection<'a> {
 struct SpreadSelection {
     rust_field_type: syn::Type,
     span: proc_macro2::Span,
-}
-
-enum FieldKind {
-    Composite,
-    Scalar,
-    Enum,
-    Interface,
-    Union,
 }
 
 impl<'schema, 'a: 'schema> FragmentImpl<'schema, 'a> {
@@ -293,12 +283,10 @@ impl quote::ToTokens for FieldSelection<'_> {
                 }
             }
             FieldKind::Scalar if self.flatten => quote_spanned! { self.span =>
-                <#aligned_type as cynic::schema::IsScalar<#aligned_type>>::SchemaType
+                #aligned_type
             },
             FieldKind::Scalar => quote_spanned! { self.span =>
-                <#aligned_type as cynic::schema::IsScalar<
-                    <#field_marker_type_path as cynic::schema::Field>::Type
-                >>::SchemaType
+                <#field_marker_type_path as cynic::schema::Field>::Type
             },
             FieldKind::Enum => quote_spanned! { self.span =>
                 <#aligned_type as cynic::Enum>::SchemaType
@@ -414,17 +402,5 @@ impl quote::ToTokens for SpreadSelection {
                     .select_children::<<#field_type as cynic::QueryFragment>::VariablesFields>()
             );
         })
-    }
-}
-
-impl OutputType<'_> {
-    fn as_kind(&self) -> FieldKind {
-        match self {
-            OutputType::Scalar(_) => FieldKind::Scalar,
-            OutputType::Enum(_) => FieldKind::Enum,
-            OutputType::Object(_) => FieldKind::Composite,
-            OutputType::Interface(_) => FieldKind::Interface,
-            OutputType::Union(_) => FieldKind::Union,
-        }
     }
 }

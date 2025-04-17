@@ -61,6 +61,9 @@ type Query {
   ): Int!
 
   fieldWithString(input: String!): Int!
+
+  timestampEcho(input: Timestamp!): Timestamp!
+  timestampInputEcho(input: TimestampInput!): Timestamp!
 }
 
 union PostOrAuthor = BlogPost | Author
@@ -104,3 +107,9 @@ schema {
 }
 
 directive @foo(blah: InputWithDefaults) repeatable on FIELD
+
+scalar Timestamp
+
+input TimestampInput {
+  timestamp: Timestamp!
+}

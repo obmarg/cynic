@@ -1,6 +1,7 @@
 ---
 source: cynic-codegen/src/scalar_derive/tests.rs
 expression: "format_code(format!(\"{}\", tokens))"
+snapshot_kind: text
 ---
 #[automatically_derived]
 impl cynic::serde::Serialize for DateTime {
@@ -21,12 +22,31 @@ impl<'de> cynic::serde::Deserialize<'de> for DateTime {
     }
 }
 #[automatically_derived]
-impl cynic::schema::IsScalar<schema::DateTime> for DateTime {
-    type SchemaType = schema::DateTime;
+impl cynic::schema::InputScalar<schema::DateTime> for DateTime {
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: cynic::serde::Serializer,
+    {
+        cynic::serde::Serialize::serialize(self, serializer)
+    }
+}
+#[automatically_derived]
+impl<'de> cynic::schema::OutputScalar<'de, schema::DateTime> for DateTime {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: cynic::serde::Deserializer<'de>,
+    {
+        <Self as cynic::serde::Deserialize>::deserialize(deserializer)
+    }
 }
 #[automatically_derived]
 impl schema::variable::Variable for DateTime {
     const TYPE: cynic::variables::VariableType = cynic::variables::VariableType::Named("DateTime");
+    fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: cynic::serde::Serializer,
+    {
+        <Self as cynic::schema::InputScalar<schema::DateTime>>::serialize(self, serializer)
+    }
 }
 cynic :: impl_coercions ! (DateTime [] [] , schema :: DateTime);
-

@@ -182,6 +182,13 @@ pub fn enum_derive_impl(
             #[automatically_derived]
             impl #schema_module::variable::Variable for #ident {
                 const TYPE: cynic::variables::VariableType = cynic::variables::VariableType::Named(#graphql_type_name);
+
+                fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+                where
+                    S: cynic::serde::Serializer
+                {
+                    <Self as cynic::serde::Serialize>::serialize(self, serializer)
+                }
             }
         })
     } else {

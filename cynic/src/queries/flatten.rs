@@ -2,6 +2,11 @@
 /// via the `#[cynic(flatten)]` attribute.
 ///
 /// This trait is sealed and can't be implemented by users of cynic.
+#[diagnostic::on_unimplemented(
+    message = "{Self} cannot be flattened into a {T}",
+    label = "In the GraphQL schema this field has type {Self}.  We can't flatten that type into {T}",
+    note = "Change this fields type to be closer to {Self}"
+)]
 pub trait FlattensInto<T>: private::Sealed<T> {}
 
 impl<T> FlattensInto<Vec<T>> for Vec<Option<T>> {}

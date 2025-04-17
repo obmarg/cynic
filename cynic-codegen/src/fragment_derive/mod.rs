@@ -2,7 +2,7 @@ use proc_macro2::TokenStream;
 
 use crate::{
     schema::{
-        types::{self as schema},
+        types::{self as schema, OutputType},
         Schema,
     },
     suggestions::FieldSuggestionError,
@@ -64,7 +64,15 @@ pub fn fragment_derive_impl(input: FragmentDeriveInput) -> Result<TokenStream, E
         variables.as_ref(),
     )?;
 
-    let deserialize_impl = DeserializeImpl::new(&fields, &input.ident, &input.generics);
+    let field_module_path = schema_type.field_module.to_path(&schema_module);
+
+    let deserialize_impl = DeserializeImpl::new(
+        &schema,
+        &fields,
+        &input.ident,
+        &input.generics,
+        &field_module_path,
+    );
 
     Ok(quote::quote! {
         #fragment_impl
@@ -115,6 +123,27 @@ fn pair_fields<'a>(
         .collect();
 
     Err(errors)
+}
+
+impl OutputType<'_> {
+    fn as_kind(&self) -> FieldKind {
+        match self {
+            OutputType::Scalar(_) => FieldKind::Scalar,
+            OutputType::Enum(_) => FieldKind::Enum,
+            OutputType::Object(_) => FieldKind::Composite,
+            OutputType::Interface(_) => FieldKind::Interface,
+            OutputType::Union(_) => FieldKind::Union,
+        }
+    }
+}
+
+#[derive(Clone, Copy)]
+enum FieldKind {
+    Composite,
+    Scalar,
+    Enum,
+    Interface,
+    Union,
 }
 
 #[cfg(test)]

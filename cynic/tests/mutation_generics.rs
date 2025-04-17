@@ -11,14 +11,14 @@ pub struct SignInVariables<'a> {
 }
 
 #[derive(cynic::QueryVariables, Debug)]
-pub struct SignInVariablesMoreGeneric<'a, Username: cynic::schema::IsScalar<String>> {
+pub struct SignInVariablesMoreGeneric<'a, Username: cynic::schema::InputScalar<String>> {
     #[cynic(graphql_type = "SignInInput")]
     pub input: SignInInput<'a, Username>,
 }
 
 #[derive(cynic::InputObject, Debug)]
 #[cynic(schema_path = "../schemas/raindancer.graphql")]
-pub struct SignInInput<'a, Username: cynic::schema::IsScalar<String>> {
+pub struct SignInInput<'a, Username: cynic::schema::InputScalar<String>> {
     pub password: &'a str,
     pub username: Username,
 }
@@ -40,9 +40,9 @@ pub struct SignIn {
     variables = "SignInVariablesMoreGeneric",
     schema_path = "../schemas/raindancer.graphql"
 )]
-pub struct SignInMoreGeneric<SI: cynic::schema::IsScalar<String>>
+pub struct SignInMoreGeneric<SI>
 where
-    <SI as cynic::schema::IsScalar<String>>::SchemaType: cynic::queries::IsFieldType<String>,
+    for<'de2> SI: cynic::schema::OutputScalar<'de2, String>,
 {
     #[arguments(input: $input)]
     pub sign_in: SI,

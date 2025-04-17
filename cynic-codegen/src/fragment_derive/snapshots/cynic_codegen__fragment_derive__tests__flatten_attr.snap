@@ -1,6 +1,7 @@
 ---
 source: cynic-codegen/src/fragment_derive/tests.rs
 expression: "format_code(format!(\"{}\", tokens))"
+snapshot_kind: text
 ---
 #[automatically_derived]
 impl cynic::QueryFragment for Film {
@@ -11,7 +12,7 @@ impl cynic::QueryFragment for Film {
         mut builder: cynic::queries::SelectionBuilder<'_, Self::SchemaType, Self::VariablesFields>,
     ) {
         #![allow(unused_mut)]
-        let mut field_builder = builder . select_flattened_field :: < schema :: __fields :: Film :: producers , < Vec < String > as cynic :: schema :: IsScalar < Vec < String > >> :: SchemaType , < schema :: __fields :: Film :: producers as cynic :: schema :: Field > :: Type , > () ;
+        let mut field_builder = builder . select_flattened_field :: < schema :: __fields :: Film :: producers , Vec < String > , < schema :: __fields :: Film :: producers as cynic :: schema :: Field > :: Type , > () ;
     }
     fn name() -> Option<std::borrow::Cow<'static, str>> {
         Some(std::borrow::Cow::Borrowed("Film"))
@@ -52,11 +53,7 @@ impl<'de> cynic::serde::Deserialize<'de> for Film {
                             if producers.is_some() {
                                 return Err(cynic::serde::de::Error::duplicate_field("producers"));
                             }
-                            producers = Some(
-                                __map
-                                    .next_value::<cynic::__private::Flattened<Vec<String>>>()?
-                                    .into_inner(),
-                            );
+                            producers = Some (__map . next_value :: < cynic :: __private :: Flattened < cynic :: __private :: ScalarDeserialize < Vec < String > , < schema :: __fields :: Film :: producers as cynic :: schema :: Field > :: Type > > > () ? . into_inner () . into_inner ()) ;
                         }
                         __FragmentDeriveField::__Other => {
                             __map.next_value::<cynic::serde::de::IgnoredAny>()?;
@@ -79,4 +76,3 @@ impl<'de> cynic::serde::Deserialize<'de> for Film {
         )
     }
 }
-
