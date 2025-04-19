@@ -68,3 +68,30 @@ fn test_input_object_auth_skip_serializing_on_default_fields() {
 
     assert_eq!(with_value, json!({ "requiredWithDefault": 123 }));
 }
+
+#[test]
+fn test_default_directive_deserialize() {
+    #[derive(cynic::QueryFragment, Debug)]
+    #[cynic(graphql_type = "Query", schema_path = "tests/test-schema.graphql")]
+    struct Query {
+        #[arguments(id: "hello")]
+        #[cynic(default)]
+        #[allow(dead_code)]
+        post: BlogPost,
+    }
+
+    #[derive(cynic::QueryFragment, Default, Debug)]
+    #[cynic(schema_path = "tests/test-schema.graphql")]
+    struct BlogPost {
+        #[allow(dead_code)]
+        id: Option<cynic::Id>,
+    }
+
+    insta::assert_debug_snapshot!(serde_json::from_value::<Query>(json!({"post": null})).unwrap(), @r"
+    Query {
+        post: BlogPost {
+            id: None,
+        },
+    }
+    ");
+}

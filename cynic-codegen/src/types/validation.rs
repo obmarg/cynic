@@ -13,6 +13,7 @@ pub enum CheckMode {
     Recursing,
     Spreading,
     Skippable,
+    Defaulted,
 }
 
 pub fn check_types_are_compatible(
@@ -34,6 +35,13 @@ pub fn check_types_are_compatible(
                 .into());
             }
             output_type_check(gql_type, &parsed_rust_type, false)?;
+        }
+        CheckMode::Defaulted => {
+            let gql_type = match gql_type.clone() {
+                TypeRef::Nullable(inner_ty) => *inner_ty,
+                ty => ty,
+            };
+            output_type_check(&gql_type, &parsed_rust_type, false)?;
         }
         CheckMode::Spreading => {
             panic!("check_types_are_compatible shouldn't be called with CheckMode::Spreading")
@@ -81,8 +89,7 @@ pub fn check_spread_type(rust_type: &syn::Type) -> Result<(), syn::Error> {
     inner_fn(&parse_rust_type(rust_type))
 }
 
-/// Returns the type inside `Option` if the type is `Option`.
-/// Otherwise returns None
+/// Checks if the type is `Option`, `&Option`, `Box<Option>` etc.
 pub fn outer_type_is_option(rust_type: &syn::Type) -> bool {
     fn inner_fn(rust_type: &RustType<'_>) -> bool {
         match rust_type {

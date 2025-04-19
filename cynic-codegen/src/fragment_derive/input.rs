@@ -146,6 +146,9 @@ pub struct RawFragmentDeriveField {
 
     #[darling(default)]
     pub(super) feature: Option<SpannedValue<String>>,
+
+    #[darling(default)]
+    pub(super) default: SpannedValue<bool>,
 }
 
 pub struct FragmentDeriveField {
@@ -184,6 +187,30 @@ impl RawFragmentDeriveField {
             return Err(syn::Error::new(
                 self.alias.span(),
                 "You can only alias a renamed field.  Try removing `alias` or adding a rename",
+            )
+            .into());
+        }
+
+        if *self.default && *self.spread {
+            return Err(syn::Error::new(
+                self.default.span(),
+                "A field can't be defaulted if it's also being spread",
+            )
+            .into());
+        }
+
+        if *self.default && self.recurse.is_some() {
+            return Err(syn::Error::new(
+                self.recurse.unwrap().span(),
+                "A field can't be recurse if it's also being defaulted",
+            )
+            .into());
+        }
+
+        if *self.default && *self.flatten {
+            return Err(syn::Error::new(
+                self.default.span(),
+                "A field can't be defaulted if it's being flattened",
             )
             .into());
         }
@@ -233,6 +260,8 @@ impl FragmentDeriveField {
             CheckMode::Recursing
         } else if *self.raw_field.spread {
             CheckMode::Spreading
+        } else if self.has_default() {
+            CheckMode::Defaulted
         } else if self.is_skippable() {
             CheckMode::Skippable
         } else {
@@ -281,6 +310,10 @@ impl FragmentDeriveField {
                 .to_string()
         })
     }
+
+    pub(super) fn has_default(&self) -> bool {
+        *self.raw_field.default
+    }
 }
 
 #[cfg(test)]
@@ -306,6 +339,7 @@ mod tests {
                         rename: None,
                         alias: false.into(),
                         feature: None,
+                        default: false.into(),
                     },
                     RawFragmentDeriveField {
                         ident: Some(format_ident!("field_two")),
@@ -317,6 +351,7 @@ mod tests {
                         rename: None,
                         alias: false.into(),
                         feature: None,
+                        default: false.into(),
                     },
                     RawFragmentDeriveField {
                         ident: Some(format_ident!("field_three")),
@@ -328,6 +363,7 @@ mod tests {
                         rename: Some("fieldThree".to_string().into()),
                         alias: false.into(),
                         feature: None,
+                        default: false.into(),
                     },
                     RawFragmentDeriveField {
                         ident: Some(format_ident!("some_spread")),
@@ -339,6 +375,7 @@ mod tests {
                         rename: Some("fieldThree".to_string().into()),
                         alias: true.into(),
                         feature: None,
+                        default: false.into(),
                     },
                 ],
             )),
@@ -370,6 +407,7 @@ mod tests {
                         rename: None,
                         alias: false.into(),
                         feature: None,
+                        default: false.into(),
                     },
                     RawFragmentDeriveField {
                         ident: Some(format_ident!("field_two")),
@@ -381,6 +419,7 @@ mod tests {
                         rename: None,
                         alias: false.into(),
                         feature: None,
+                        default: false.into(),
                     },
                     RawFragmentDeriveField {
                         ident: Some(format_ident!("field_three")),
@@ -392,6 +431,7 @@ mod tests {
                         rename: None,
                         alias: false.into(),
                         feature: None,
+                        default: false.into(),
                     },
                     RawFragmentDeriveField {
                         ident: Some(format_ident!("some_spread")),
@@ -403,6 +443,7 @@ mod tests {
                         rename: None,
                         alias: false.into(),
                         feature: None,
+                        default: false.into(),
                     },
                     RawFragmentDeriveField {
                         ident: Some(format_ident!("some_other_spread")),
@@ -414,6 +455,7 @@ mod tests {
                         rename: None,
                         alias: false.into(),
                         feature: None,
+                        default: false.into(),
                     },
                     RawFragmentDeriveField {
                         ident: Some(format_ident!("some_other_spread")),
@@ -425,6 +467,7 @@ mod tests {
                         rename: None,
                         alias: true.into(),
                         feature: None,
+                        default: false.into(),
                     },
                 ],
             )),
@@ -476,6 +519,7 @@ mod tests {
                         rename: None,
                         alias: false.into(),
                         feature: None,
+                        default: false.into(),
                     },
                     RawFragmentDeriveField {
                         ident: Some(format_ident!("field_two")),
@@ -487,6 +531,7 @@ mod tests {
                         rename: None,
                         alias: false.into(),
                         feature: None,
+                        default: false.into(),
                     },
                     RawFragmentDeriveField {
                         ident: Some(format_ident!("field_three")),
@@ -498,6 +543,7 @@ mod tests {
                         rename: None,
                         alias: false.into(),
                         feature: None,
+                        default: false.into(),
                     },
                 ],
             )),
