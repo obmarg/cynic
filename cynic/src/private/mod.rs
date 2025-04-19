@@ -10,6 +10,6 @@ mod inline_fragment_de;
 mod key_de;
 mod spread_de;
 
-pub use flatten_de::Flattened;
-pub use inline_fragment_de::InlineFragmentVisitor;
-pub use spread_de::Spreadable;
+pub use self::{
+    flatten_de::Flattened, inline_fragment_de::InlineFragmentVisitor, spread_de::Spreadable,
+};

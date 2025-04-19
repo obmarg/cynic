@@ -49,6 +49,14 @@ fn align_output_type_impl<'a>(
     }
 }
 
+pub fn align_defaulted_output_type(
+    ty: &syn::Type,
+    gql_ty: &TypeRef<'_, OutputType<'_>>,
+) -> syn::Type {
+    let inner = align_output_type(ty, gql_ty);
+    parse_quote! { Option<#inner> }
+}
+
 pub fn align_input_type(
     ty: &syn::Type,
     gql_ty: &TypeRef<'_, InputType<'_>>,
