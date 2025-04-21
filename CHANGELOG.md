@@ -8,6 +8,22 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v3.11.0 - 2025-04-21
+
+### New Features
+
+- `#[cynic(default)]` attribute on fields ([#1144](https://github.com/obmarg/cynic/pull/1144))
+- add directive support to generator ([#1139](https://github.com/obmarg/cynic/pull/1139))
+- include directives in introspection SDL output ([#1140](https://github.com/obmarg/cynic/pull/1140))
+
+### Bug Fixes
+
+- allow generic inner types on fields ([#1131](https://github.com/obmarg/cynic/pull/1131))
+
+### Changes
+
+- update Cargo.lock dependencies
+
 ## v3.10.0 - 2025-02-10
 
 ### New Features
