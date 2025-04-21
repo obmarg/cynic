@@ -210,7 +210,7 @@ struct FilmQuery {
 
 Cynic provides build in support for the `skip` & `include` directives.  Any
 other field directives can also be used, provided they don't require special
-support from the client.  
+support from the client.
 
 #### Struct Attributes
 
@@ -255,6 +255,8 @@ Each field can also have it's own attributes:
 - The `feature` attribute can be used to feature flag parts of a query,
   allowing cynic to support different versions of a schema with the same
   `QueryFragments`.  See [feature flagging queries][2] for more details.
+- The `default` attribute tells cynic to use a fields `Default` impl instead of
+  `Option::None` when a field is null.
 
 ### Related
 

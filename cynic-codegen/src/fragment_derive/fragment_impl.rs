@@ -45,6 +45,7 @@ struct FieldSelection<'a> {
     graphql_field: &'a Field<'a>,
     arguments: super::arguments::Output<'a>,
     flatten: bool,
+    default: bool,
     alias: Option<String>,
     recurse_limit: Option<u8>,
     span: proc_macro2::Span,
@@ -179,6 +180,7 @@ fn process_field<'a>(
         alias: field.alias(),
         graphql_field_kind: schema_field.field_type.inner_type(schema).as_kind(),
         flatten: *field.raw_field.flatten,
+        default: field.has_default(),
         requires_feature: field
             .raw_field
             .feature
@@ -275,9 +277,12 @@ impl quote::ToTokens for FieldSelection<'_> {
         };
 
         let aligned_type = match selection_mode {
-            SelectionMode::Composite | SelectionMode::Leaf => {
+            SelectionMode::Composite | SelectionMode::Leaf if !self.default => {
                 // If we're doing a normal select we need to align types.
                 types::align_output_type(field_type, &self.graphql_field.field_type)
+            }
+            _ if self.default => {
+                types::align_defaulted_output_type(field_type, &self.graphql_field.field_type)
             }
             _ => {
                 // Recursive & flatten selections don't need types aligned

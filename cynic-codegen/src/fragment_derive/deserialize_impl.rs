@@ -33,6 +33,7 @@ struct Field {
     is_recurse: bool,
     is_feature_flagged: bool,
     is_skippable: bool,
+    has_default: bool,
 }
 
 impl<'a> DeserializeImpl<'a> {
@@ -102,6 +103,10 @@ impl quote::ToTokens for StandardDeserializeImpl<'_> {
                 quote! {
                     #field_name = Some(__map.next_value::<cynic::__private::Flattened<#ty>>()?.into_inner());
                 }
+            } else if f.has_default {
+                quote! {
+                    #field_name = Some(__map.next_value::<Option<#ty>>()?.unwrap_or_default());
+                }
             } else {
                 quote! {
                     #field_name = Some(__map.next_value()?);
@@ -119,13 +124,9 @@ impl quote::ToTokens for StandardDeserializeImpl<'_> {
 
         let field_unwraps = self.fields.iter().zip(&serialized_names).map(|(field, serialized_name)| {
             let rust_name = &field.rust_name;
-            if field.is_recurse || field.is_feature_flagged {
+            if field.is_recurse || field.is_feature_flagged || field.is_skippable {
                 let span = rust_name.span();
                 quote_spanned!{ span =>
-                    let #rust_name = #rust_name.unwrap_or_default();
-                }
-            } else if field.is_skippable {
-                quote! {
                     let #rust_name = #rust_name.unwrap_or_default();
                 }
             } else {
@@ -289,5 +290,6 @@ fn process_field(field: &FragmentDeriveField, schema_field: Option<&schema::Fiel
         is_recurse: field.raw_field.recurse.is_some(),
         is_feature_flagged: field.raw_field.feature.is_some(),
         is_skippable: field.is_skippable(),
+        has_default: field.has_default(),
     }
 }
