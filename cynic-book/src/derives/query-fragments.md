@@ -208,7 +208,7 @@ struct FilmQuery {
 }
 ```
 
-Cynic provides build in support for the `skip` & `include` directives.  Any
+Cynic provides build in support for the `skip` & `include` directives. Any
 other field directives can also be used, provided they don't require special
 support from the client.
 
@@ -221,14 +221,18 @@ A QueryFragment can be configured with several attributes on the struct itself:
 - `variables` defines the `QueryVariables` struct that is available to
   `arguments` attributes on fields of the given struct.
 - `schema` tells cynic which schema to use to validate your InlineFragments.
-  The schema you provide should have been registered in your `build.rs`.  This
+  The schema you provide should have been registered in your `build.rs`. This
   is optional if you're using the schema that was registered as default, or if
   you're using `schema_path` instead.
 - `schema_path` sets a path to the GraphQL schema. This is only required
   if you're using a schema that wasn't registered in `build.rs`.
-- `schema_module` tells cynic where to find your schema module.  This is
+- `schema_module` tells cynic where to find your schema module. This is
   optional and should only be needed if your schema module is not in scope or
   named `schema`.
+- `no_deserialize` will tell cynic to not output a `serde::Deserialize` impl, for
+  cases where you wish to do this yourself. Note that it is your responsibility
+  to ensure the Deserialize impl is correct: many of cynics guarantees only hold
+  when cynic generates the Deserialize impl.
 
 #### Field Attributes
 
@@ -254,7 +258,7 @@ Each field can also have it's own attributes:
   GraphQL type.
 - The `feature` attribute can be used to feature flag parts of a query,
   allowing cynic to support different versions of a schema with the same
-  `QueryFragments`.  See [feature flagging queries][2] for more details.
+  `QueryFragments`. See [feature flagging queries][2] for more details.
 - The `default` attribute tells cynic to use a fields `Default` impl instead of
   `Option::None` when a field is null.
 
