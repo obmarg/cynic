@@ -1,4 +1,5 @@
 use proc_macro2::TokenStream;
+use quote::ToTokens;
 
 use crate::{
     schema::{
@@ -66,10 +67,13 @@ pub fn fragment_derive_impl(input: FragmentDeriveInput) -> Result<TokenStream, E
 
     let deserialize_impl = DeserializeImpl::new(&fields, &input.ident, &input.generics);
 
-    Ok(quote::quote! {
-        #fragment_impl
-        #deserialize_impl
-    })
+    let mut output = TokenStream::new();
+    fragment_impl.to_tokens(&mut output);
+    if !input.no_deserialize {
+        deserialize_impl.to_tokens(&mut output);
+    }
+
+    Ok(output)
 }
 
 fn pair_fields<'a>(

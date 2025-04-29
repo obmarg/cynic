@@ -23,6 +23,9 @@ pub struct FragmentDeriveInput {
     pub graphql_type: Option<SpannedValue<String>>,
 
     #[darling(default)]
+    pub(super) no_deserialize: bool,
+
+    #[darling(default)]
     variables: Option<syn::Path>,
 }
 
@@ -385,6 +388,7 @@ mod tests {
             schema_module_: None,
             graphql_type: Some("abcd".to_string().into()),
             variables: None,
+            no_deserialize: false,
         };
 
         assert!(input.validate().is_ok());
@@ -477,6 +481,7 @@ mod tests {
             schema_module_: Some(syn::parse2(quote::quote! { abcd }).unwrap()),
             graphql_type: Some("abcd".to_string().into()),
             variables: None,
+            no_deserialize: false,
         };
 
         let errors = input.validate().map(|_| ()).unwrap_err();
@@ -497,6 +502,7 @@ mod tests {
             schema_module_: Some(syn::parse2(quote::quote! { abcd }).unwrap()),
             graphql_type: Some("abcd".to_string().into()),
             variables: None,
+            no_deserialize: false,
         };
         let errors = input.validate().map(|_| ()).unwrap_err();
         insta::assert_snapshot!(errors.to_compile_errors().to_string(), @r###":: core :: compile_error ! { "At least one field should be selected for `TestInput`." }"###);
@@ -553,6 +559,7 @@ mod tests {
             schema_module_: Some(syn::parse2(quote::quote! { abcd }).unwrap()),
             graphql_type: None,
             variables: None,
+            no_deserialize: false,
         };
 
         assert!(input.validate().is_ok())
