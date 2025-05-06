@@ -8,6 +8,21 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+### Breaking Changes
+
+- Removed the `ErrorExtensions` generic parameter from `GraphQlResponse`
+- `GraphQlResponse::new` no longer accepts error extensions - use the new
+  `set_extensions` or `with_extensions` functions to set these
+- The `extensions` field of `GraphQlError` is now private.
+- Removed `CynicReqwestBuilder::retain_extensions` - users should use the
+  `GraphQlError::extensions` instead.
+
+### New Features
+
+- Added new methods for deserializing extensions in responses:
+  - `GraphQlResponse::extensions` for deserializing response extensions.
+  - `GraphQlError::extensions` for reading error extensions
+
 ## v3.10.0 - 2025-02-10
 
 ### New Features
