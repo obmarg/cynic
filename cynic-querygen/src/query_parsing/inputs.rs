@@ -79,54 +79,93 @@ fn extract_whole_input_object<'schema>(
 ) -> Result<Rc<InputObject<'schema>>, Error> {
     let mut fields = Vec::new();
     let mut children = Vec::new();
-    let mut push_child = |child: Rc<InputObject<'schema>>| {
+    let mut push_child = |child: Rc<InputObject<'schema>>| -> bool {
         let this_one_needs_lifetime_a = child.needs_lifetime_a;
         children.push(child);
         this_one_needs_lifetime_a
     };
-    let mut needs_lifetime_a = false;
+    let mut needs_lifetime_a_for_current_object = false;
 
     seen_objects.insert(input_object.clone());
 
     for field in &input_object.fields {
-        let field_type = field.value_type.inner_ref().lookup()?;
-        let mut needs_boxed = false;
+        let field_type_as_inputtype = field.value_type.inner_ref().lookup()?;
+        let mut needs_boxed_field = false;
 
-        let is_sub_object_with_lifetime = if let InputType::InputObject(inner_obj) = field_type {
-            if let Some(existing_obj) = input_objects.get(&inner_obj) {
-                push_child(Rc::clone(existing_obj))
-            } else if seen_objects.contains(&inner_obj) {
-                // If we hit this path we've got a recursive object.
-                // going to skip pushing into children in that case.
-                // technically it'll end up with a bad "graph" but good enough for topological
-                // sort which is precisely the exact only thing we're doing afterwards.
-
-                // We do however need to mark this field as recursive.
-                needs_boxed = true;
-
-                // This is correct because we are iterating in DFS
-                // post-order, so this means
-                // we will always have processed all children before self
-                // (except in case of cycle).
-                // In case of cycle if we have done all objects except cyclic ones and we found
-                // no field that needs a lifetime, this means we don't actually need a lifetime
-                // on the whole recursive type
-                false
+        let is_sub_object_with_lifetime_for_field_type =
+            if let InputType::InputObject(inner_obj_details) = field_type_as_inputtype {
+                if let Some(existing_obj_rc) = input_objects.get(&inner_obj_details) {
+                    push_child(Rc::clone(existing_obj_rc))
+                } else if seen_objects.contains(&inner_obj_details) {
+                    needs_boxed_field = true;
+                    // Enhanced heuristic for recursive types:
+                    let mut has_lifetime_source = false;
+                    for f_of_recursive_obj in &inner_obj_details.fields {
+                        // Iterate fields of the recursive type definition
+                        let type_of_f = f_of_recursive_obj.value_type.inner_ref().lookup()?;
+                        match type_of_f {
+                            InputType::Scalar(s) if s.name == "String" || s.name == "ID" => {
+                                has_lifetime_source = true;
+                                break;
+                            }
+                            InputType::InputObject(nested_details) => {
+                                // Check if this nested input object (that is part of the recursive type's definition)
+                                // itself implies a lifetime.
+                                // Avoid infinite recursion if nested_details is the same as inner_obj_details for this specific check path.
+                                if nested_details.name != inner_obj_details.name {
+                                    if let Some(processed_nested_obj) =
+                                        input_objects.get(&nested_details)
+                                    {
+                                        if processed_nested_obj.needs_lifetime_a {
+                                            has_lifetime_source = true;
+                                            break;
+                                        }
+                                    } else {
+                                        // Not yet fully processed (and not on current stack implies it would be a new branch if explored from here).
+                                        // Perform a shallow check on its fields for immediate lifetime sources.
+                                        for f_of_nested in &nested_details.fields {
+                                            if let InputType::Scalar(s_nested) =
+                                                f_of_nested.value_type.inner_ref().lookup()?
+                                            {
+                                                if s_nested.name == "String"
+                                                    || s_nested.name == "ID"
+                                                {
+                                                    has_lifetime_source = true;
+                                                    break; // Breaks inner loop (f_of_nested)
+                                                }
+                                            }
+                                        }
+                                        if has_lifetime_source {
+                                            break;
+                                        } // Breaks outer loop (f_of_recursive_obj)
+                                    }
+                                }
+                            }
+                            _ => {} // Other scalar types, Enums don't confer lifetimes this way
+                        }
+                    }
+                    has_lifetime_source
+                } else {
+                    push_child(extract_whole_input_object(
+                        &inner_obj_details,
+                        input_objects,
+                        seen_objects,
+                    )?)
+                }
             } else {
-                push_child(extract_whole_input_object(
-                    &inner_obj,
-                    input_objects,
-                    seen_objects,
-                )?)
-            }
-        } else {
-            false
-        };
+                false
+            };
 
-        let type_spec = field
-            .value_type
-            .type_spec(needs_boxed, false, is_sub_object_with_lifetime);
-        needs_lifetime_a |= type_spec.contains_lifetime_a;
+        let type_spec = field.value_type.type_spec(
+            needs_boxed_field,
+            false,
+            is_sub_object_with_lifetime_for_field_type,
+        );
+
+        if type_spec.contains_lifetime_a {
+            needs_lifetime_a_for_current_object = true;
+        }
+
         fields.push(InputObjectField {
             type_spec,
             schema_field: field.clone(),
@@ -137,10 +176,11 @@ fn extract_whole_input_object<'schema>(
         schema_type: input_object.clone(),
         children_: children,
         fields,
-        needs_lifetime_a,
+        needs_lifetime_a: needs_lifetime_a_for_current_object,
     });
 
     input_objects.insert(input_object.clone(), Rc::clone(&rv));
+    seen_objects.remove(input_object);
 
     Ok(rv)
 }

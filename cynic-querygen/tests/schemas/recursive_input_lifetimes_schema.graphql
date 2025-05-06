@@ -1,0 +1,31 @@
+schema {
+  mutation: Mutation
+}
+
+type Query {
+  "Ensures Query is not empty if Mutation is not used for a test case"
+  _dummy: Boolean
+}
+
+type Mutation {
+  complexRecursiveMutation(
+    direct: ComplexRecursiveInput!
+    optDirect: ComplexRecursiveInput
+    listDirect: [ComplexRecursiveInput!]!
+    optListDirect: [ComplexRecursiveInput!]
+    listOpt: [ComplexRecursiveInput]!
+    optListOpt: [ComplexRecursiveInput]
+  ): Boolean
+}
+
+input ComplexRecursiveInput {
+  name: String! # Ensures the struct needs a lifetime 'a
+  value: Int
+  # Recursive fields demonstrating boxing and lifetime propagation
+  directNext: ComplexRecursiveInput
+  optNext: ComplexRecursiveInput
+  listNext: [ComplexRecursiveInput!]
+  optListNext: [ComplexRecursiveInput!]
+  listOptNext: [ComplexRecursiveInput]
+  optListOptNext: [ComplexRecursiveInput]
+}

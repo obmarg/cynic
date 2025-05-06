@@ -1,0 +1,17 @@
+mutation TestRecursiveInputLifetimes(
+  $direct: ComplexRecursiveInput!
+  $optDirect: ComplexRecursiveInput
+  $listDirect: [ComplexRecursiveInput!]!
+  $optListDirect: [ComplexRecursiveInput!]
+  $listOpt: [ComplexRecursiveInput]!
+  $optListOpt: [ComplexRecursiveInput]
+) {
+  complexRecursiveMutation(
+    direct: $direct
+    optDirect: $optDirect
+    listDirect: $listDirect
+    optListDirect: $optListDirect
+    listOpt: $listOpt
+    optListOpt: $optListOpt
+  )
+}
