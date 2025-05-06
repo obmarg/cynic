@@ -143,3 +143,14 @@ fn test_keyword_arguments() {
             .expect("QueryGen Failed")
     )
 }
+
+#[test]
+fn test_recursive_input_lifetimes() {
+    let schema = include_str!("schemas/recursive_input_lifetimes_schema.graphql");
+    let query = include_str!("queries/misc/recursive_input_lifetimes_query.graphql");
+
+    assert_snapshot!(
+        document_to_fragment_structs(query, schema, &QueryGenOptions::default())
+            .expect("QueryGen Failed for recursive input lifetimes test")
+    )
+}
