@@ -34,7 +34,6 @@ impl VariablesStructField<'_, '_> {
         match self {
             VariablesStructField::Variable(var) => var.value_type.type_spec(
                 false,
-                false,
                 input_objects_need_lifetime
                     .get(&*var.value_type.inner_name())
                     .copied()

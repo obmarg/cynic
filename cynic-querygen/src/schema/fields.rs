@@ -121,16 +121,9 @@ impl<'schema> InputFieldType<'schema> {
     pub fn type_spec(
         &self,
         needs_boxed: bool,
-        needs_owned: bool,
         is_subobject_with_lifetime: bool,
     ) -> TypeSpec<'static> {
-        input_type_spec_imp(
-            self,
-            true,
-            needs_boxed,
-            needs_owned,
-            is_subobject_with_lifetime,
-        )
+        input_type_spec_imp(self, true, needs_boxed, is_subobject_with_lifetime)
     }
 }
 
@@ -170,35 +163,22 @@ fn input_type_spec_imp(
     ty: &InputFieldType<'_>,
     nullable: bool,
     needs_boxed: bool,
-    needs_owned: bool,
     is_subobject_with_lifetime: bool,
 ) -> TypeSpec<'static> {
     use crate::casings::CasingExt;
 
     if let InputFieldType::NonNullType(inner) = ty {
-        return input_type_spec_imp(
-            inner,
-            false,
-            needs_boxed,
-            needs_owned,
-            is_subobject_with_lifetime,
-        );
+        return input_type_spec_imp(inner, false, needs_boxed, is_subobject_with_lifetime);
     }
 
     if nullable {
-        return input_type_spec_imp(
-            ty,
-            false,
-            needs_boxed,
-            needs_owned,
-            is_subobject_with_lifetime,
-        )
-        .map(|type_spec| format!("Option<{type_spec}>",));
+        return input_type_spec_imp(ty, false, needs_boxed, is_subobject_with_lifetime)
+            .map(|type_spec| format!("Option<{type_spec}>",));
     }
 
     match ty {
         InputFieldType::ListType(inner) => {
-            input_type_spec_imp(inner, true, false, needs_owned, is_subobject_with_lifetime)
+            input_type_spec_imp(inner, true, false, is_subobject_with_lifetime)
                 .map(|type_spec| format!("Vec<{type_spec}>",))
         }
 
@@ -206,16 +186,15 @@ fn input_type_spec_imp(
 
         InputFieldType::NamedType(s) => {
             let mut contains_lifetime_a = false;
-            let mut name = match (s.type_name.as_ref(), needs_owned) {
-                ("Int", _) => Cow::Borrowed("i32"),
-                ("Float", _) => Cow::Borrowed("f64"),
-                ("Boolean", _) => Cow::Borrowed("bool"),
-                ("ID", true) => Cow::Borrowed("cynic::Id"),
-                ("ID", false) => {
+            let mut name = match s.type_name.as_ref() {
+                "Int" => Cow::Borrowed("i32"),
+                "Float" => Cow::Borrowed("f64"),
+                "Boolean" => Cow::Borrowed("bool"),
+                "ID" => {
                     contains_lifetime_a = true;
                     Cow::Borrowed("&'a cynic::Id")
                 }
-                ("String", false) => {
+                "String" => {
                     contains_lifetime_a = true;
                     Cow::Borrowed("&'a str")
                 }

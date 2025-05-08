@@ -1,7 +1,7 @@
 //! Handles "leaf types" - i.e. enums & scalars that don't have any nested fields.
 use std::collections::HashSet;
 
-use super::{inputs::InputObjectSet, normalisation::NormalisedDocument};
+use super::{inputs::InputObjects, normalisation::NormalisedDocument};
 use crate::{
     output::Scalar,
     schema::{EnumDetails, Type, TypeRef},
@@ -10,7 +10,7 @@ use crate::{
 
 pub fn extract_leaf_types<'schema>(
     doc: &NormalisedDocument<'_, 'schema>,
-    inputs: &InputObjectSet<'schema>,
+    inputs: &InputObjects<'schema>,
 ) -> Result<(Vec<EnumDetails<'schema>>, Vec<Scalar<'schema>>), Error> {
     let mut leaf_types = doc
         .selection_sets
@@ -33,12 +33,7 @@ pub fn extract_leaf_types<'schema>(
             .flat_map(|selection_set| selection_set.required_input_types())
             .map(TypeRef::from),
     );
-    leaf_types.extend(
-        inputs
-            .iter()
-            .flat_map(|input_object| input_object.required_input_types())
-            .map(TypeRef::from),
-    );
+    leaf_types.extend(inputs.required_input_types().map(TypeRef::from));
 
     let mut enums = Vec::new();
     let mut scalars = Vec::new();

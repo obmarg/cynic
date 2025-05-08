@@ -7,6 +7,7 @@ mod sorting;
 mod value;
 mod variables;
 
+use inputs::InputObjects;
 use variables::VariableStructDetails;
 
 pub use normalisation::{Directive, Variable};
@@ -26,7 +27,7 @@ pub fn parse_query_document<'a>(
     type_index: &Rc<TypeIndex<'a>>,
 ) -> Result<Output<'a, 'a>, Error> {
     let normalised = normalisation::normalise(doc, type_index)?;
-    let input_objects = inputs::extract_input_objects(&normalised)?;
+    let input_objects = InputObjects::new(&normalised);
 
     let (mut enums, mut scalars) = leaf_types::extract_leaf_types(&normalised, &input_objects)?;
 
@@ -59,10 +60,7 @@ pub fn parse_query_document<'a>(
         .map(|fragment| make_inline_fragments(fragment, &mut namers, &variable_struct_details))
         .collect::<Vec<_>>();
 
-    let input_objects = sorting::topological_sort(input_objects.into_iter())
-        .into_iter()
-        .map(make_input_object)
-        .collect::<Vec<_>>();
+    let input_objects = input_objects.processed_objects();
 
     let enums = enums
         .into_iter()
@@ -160,14 +158,6 @@ fn make_inline_fragments<'text>(
             .filter_map(|selection| variable_struct_details.variables_name_for_selection(selection))
             .next(),
         name: namers.inline_fragments.name_subject(&inline_fragments),
-        schema_name: None,
-    }
-}
-
-fn make_input_object(input: Rc<inputs::InputObject>) -> crate::output::InputObject {
-    crate::output::InputObject {
-        name: input.schema_type.name.to_string(),
-        fields: input.fields.clone(),
         schema_name: None,
     }
 }

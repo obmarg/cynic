@@ -1,6 +1,7 @@
 ---
 source: cynic-querygen/tests/misc-tests.rs
 expression: "document_to_fragment_structs(query, schema,\n        &QueryGenOptions::default()).expect(\"QueryGen Failed\")"
+snapshot_kind: text
 ---
 #[derive(cynic::QueryVariables, Debug)]
 pub struct MyQueryVariables {
@@ -16,11 +17,6 @@ pub struct MyQuery {
 }
 
 #[derive(cynic::InputObject, Debug)]
-pub struct SelfRecursiveInput {
-    pub recurse: Option<Box<SelfRecursiveInput>>,
-}
-
-#[derive(cynic::InputObject, Debug)]
 pub struct RecursiveInputParent {
     pub recurse: Option<RecursiveInputChild>,
 }
@@ -30,4 +26,7 @@ pub struct RecursiveInputChild {
     pub recurse: Option<Box<RecursiveInputParent>>,
 }
 
-
+#[derive(cynic::InputObject, Debug)]
+pub struct SelfRecursiveInput {
+    pub recurse: Option<Box<SelfRecursiveInput>>,
+}
