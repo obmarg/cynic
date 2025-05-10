@@ -230,9 +230,9 @@ impl From<TypeValidationError> for syn::Error {
         let span = err.span();
         let message = match err {
             TypeValidationError::FieldIsOptional { provided_type, .. } =>
-                format!("This field is nullable but you're not wrapping the type in Option.  Did you mean Option<{}>", provided_type),
+                format!("This field is nullable but you're not wrapping the type in MaybeUndefined or Option.  Did you mean cynic::MaybeUndefined<{}> or Option<{}>", provided_type, provided_type),
             TypeValidationError::FieldIsRequired { provided_type, .. } =>
-                format!("This field is not nullable but you're wrapping the type in Option.  Did you mean {}", provided_type),
+                format!("This field is not nullable but you're wrapping the type in Option or MaybeUndefined.  Did you mean {}", provided_type),
             TypeValidationError::FieldIsList { provided_type, .. } => {
                 format!("This field is a list but you're not wrapping the type in Vec.  Did you mean Vec<{}>", provided_type)
             },
@@ -240,7 +240,7 @@ impl From<TypeValidationError> for syn::Error {
                 format!("This field is not a list but you're wrapping the type in Vec.  Did you mean {}", provided_type)
             },
             TypeValidationError::RecursiveFieldWithoutOption { provided_type, .. } => {
-                format!("Recursive types must be wrapped in Option.  Did you mean Option<{}>", provided_type)
+                format!("Recursive types must be wrapped in MaybeUndefined or Option.  Did you mean cynic::MaybeUndefined<{}> or Option<{}>", provided_type, provided_type)
             }
             TypeValidationError::SpreadOnOption { .. } => "You can't spread on an optional field".to_string(),
             TypeValidationError::SpreadOnVec { .. } => "You can't spread on a list field".to_string(),

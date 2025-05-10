@@ -151,6 +151,13 @@ pub(crate) fn use_schema_impl(schema: &Schema<'_, Validated>) -> Result<TokenStr
                 const TYPE: VariableType = VariableType::Nullable(&T::TYPE);
             }
 
+            impl<T> Variable for cynic::MaybeUndefined<T>
+            where
+                T: Variable
+            {
+                const TYPE: VariableType = VariableType::Nullable(&T::TYPE);
+            }
+
             impl<T> Variable for [T]
             where
                 T: Variable,

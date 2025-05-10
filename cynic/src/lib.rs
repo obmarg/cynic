@@ -172,6 +172,7 @@
 mod builders;
 mod core;
 mod id;
+mod maybe_undefined;
 mod operation;
 mod result;
 
@@ -189,6 +190,7 @@ pub use {
     self::core::{Enum, InlineFragments, InputObject, QueryFragment},
     builders::{MutationBuilder, QueryBuilder, SubscriptionBuilder},
     id::Id,
+    maybe_undefined::MaybeUndefined,
     operation::{Operation, OperationBuildError, OperationBuilder, StreamingOperation},
     result::*,
     variables::{QueryVariableLiterals, QueryVariables, QueryVariablesFields},
