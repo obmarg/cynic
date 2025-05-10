@@ -1200,6 +1200,7 @@ name = "cynic"
 version = "3.10.0"
 dependencies = [
  "assert_matches",
+ "async-graphql",
  "chrono",
  "cynic",
  "cynic-proc-macros",
@@ -1337,6 +1338,7 @@ version = "3.10.0"
 dependencies = [
  "Inflector",
  "assert_matches",
+ "async-graphql",
  "cynic-parser",
  "insta",
  "once_cell",

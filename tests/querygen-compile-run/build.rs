@@ -37,7 +37,7 @@ fn main() {
             "../../cynic-querygen/tests/queries/starwars/sanity.graphql",
             r#"SanityCheckQuery::build(
                 SanityCheckQueryVariables {
-                    film_id: Some((&String::from("ZmlsbXM6MQ==")).into())
+                    film_id: Some((&String::from("ZmlsbXM6MQ==")).into()).into()
                 }
             )"#,
         ),
@@ -166,7 +166,7 @@ fn main() {
             "tests/queries/github/optional-input-object-argument.graphql",
             r#"PullRequestTitles::build(
                 PullRequestTitlesVariables {
-                    pr_order: None
+                    pr_order: None.into()
                 },
             )"#,
         ),
@@ -217,8 +217,8 @@ fn main() {
             &test_schema,
             "tests/queries/misc/recursive-inputs.graphql",
             r#"RecursiveInputQuery::build(RecursiveInputQueryVariables {
-                input: None,
-                input2: None
+                input: None.into(),
+                input2: None.into()
             })"#,
         ),
         TestCase::query(

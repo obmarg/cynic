@@ -1,6 +1,6 @@
 use std::borrow::Cow;
 
-use crate::{queries::SelectionBuilder, QueryVariablesFields};
+use crate::{queries::SelectionBuilder, MaybeUndefined, QueryVariablesFields};
 
 /// A trait that marks a type as part of a GraphQL query.
 ///
@@ -26,6 +26,18 @@ pub trait QueryFragment: Sized {
 }
 
 impl<T> QueryFragment for Option<T>
+where
+    T: QueryFragment,
+{
+    type SchemaType = Option<T::SchemaType>;
+    type VariablesFields = T::VariablesFields;
+
+    fn query(builder: SelectionBuilder<'_, Self::SchemaType, Self::VariablesFields>) {
+        T::query(builder.into_inner())
+    }
+}
+
+impl<T> QueryFragment for MaybeUndefined<T>
 where
     T: QueryFragment,
 {
@@ -157,6 +169,13 @@ pub trait InputObject: serde::Serialize {
 }
 
 impl<T> InputObject for Option<T>
+where
+    T: InputObject,
+{
+    type SchemaType = Option<T::SchemaType>;
+}
+
+impl<T> InputObject for MaybeUndefined<T>
 where
     T: InputObject,
 {

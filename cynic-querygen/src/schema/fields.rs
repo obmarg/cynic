@@ -193,7 +193,7 @@ fn input_type_spec_imp(
             needs_owned,
             is_subobject_with_lifetime,
         )
-        .map(|type_spec| format!("Option<{type_spec}>",));
+        .map(|type_spec| format!("cynic::MaybeUndefined<{type_spec}>",));
     }
 
     match ty {

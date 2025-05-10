@@ -78,7 +78,7 @@ pub fn parse_rust_type(ty: &syn::Type) -> RustType<'_> {
                             };
                         }
                     }
-                    "Option" => {
+                    "MaybeUndefined" | "Option" => {
                         if let Some(inner_type) = extract_generic_argument(last_segment) {
                             return RustType::Optional {
                                 syn: Cow::Borrowed(type_path),
