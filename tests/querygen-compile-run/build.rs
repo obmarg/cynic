@@ -37,7 +37,7 @@ fn main() {
             "../../cynic-querygen/tests/queries/starwars/sanity.graphql",
             r#"SanityCheckQuery::build(
                 SanityCheckQueryVariables {
-                    film_id: Some((&String::from("ZmlsbXM6MQ==")).into()).into()
+                    film_id: Some::<&String>(&String::from("ZmlsbXM6MQ==")).into()
                 }
             )"#,
         ),

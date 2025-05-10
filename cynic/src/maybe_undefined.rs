@@ -47,10 +47,13 @@ impl<T> DerefMut for MaybeUndefined<T> {
     }
 }
 
-impl<T> From<Option<T>> for MaybeUndefined<T> {
-    fn from(value: Option<T>) -> Self {
+impl<T1, T2> From<Option<T1>> for MaybeUndefined<T2>
+where
+    T2: From<T1>,
+{
+    fn from(value: Option<T1>) -> Self {
         Self(match value {
-            Some(value) => async_graphql::MaybeUndefined::Value(value),
+            Some(value) => async_graphql::MaybeUndefined::Value(T2::from(value)),
             None => async_graphql::MaybeUndefined::Null,
         })
     }
@@ -69,7 +72,7 @@ mod tests {
     #[test]
     fn test() {
         assert_eq!(
-            MaybeUndefined::from(None),
+            MaybeUndefined::from(None::<bool>),
             MaybeUndefined(async_graphql::MaybeUndefined::<bool>::Null)
         );
         assert_eq!(

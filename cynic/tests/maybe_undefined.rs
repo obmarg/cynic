@@ -31,7 +31,10 @@ fn test_query_building_null() {
     use cynic::QueryBuilder;
 
     insta::assert_snapshot!(serde_json::to_string(
-        &TestQuery::build(TestArgs { a_str: None.into() }).variables
+        &TestQuery::build(TestArgs {
+            a_str: None::<&str>.into(),
+        })
+        .variables
     )
     .unwrap());
 }
