@@ -186,56 +186,71 @@ fn input_type_spec_imp(
     }
 
     if nullable {
-        return input_type_spec_imp(
+        let inner_spec = input_type_spec_imp(
             ty,
             false,
             needs_boxed,
             needs_owned,
             is_subobject_with_lifetime,
-        )
-        .map(|type_spec| format!("Option<{type_spec}>",));
+        );
+        return TypeSpec {
+            name: Cow::Owned(format!("Option<{}>", inner_spec.name)),
+            contains_lifetime_a: inner_spec.contains_lifetime_a,
+        };
     }
 
     match ty {
-        InputFieldType::ListType(inner) => {
-            input_type_spec_imp(inner, true, false, needs_owned, is_subobject_with_lifetime)
-                .map(|type_spec| format!("Vec<{type_spec}>",))
-        }
-
+        InputFieldType::ListType(inner) => input_type_spec_imp(
+            inner,
+            true,
+            needs_boxed,
+            needs_owned,
+            is_subobject_with_lifetime,
+        )
+        .map(|type_spec| format!("Vec<{type_spec}>",)),
         InputFieldType::NonNullType(_) => panic!("NonNullType somehow got past an if let"),
-
         InputFieldType::NamedType(s) => {
-            let mut contains_lifetime_a = false;
-            let mut name = match (s.type_name.as_ref(), needs_owned) {
-                ("Int", _) => Cow::Borrowed("i32"),
-                ("Float", _) => Cow::Borrowed("f64"),
-                ("Boolean", _) => Cow::Borrowed("bool"),
-                ("ID", true) => Cow::Borrowed("cynic::Id"),
-                ("ID", false) => {
-                    contains_lifetime_a = true;
-                    Cow::Borrowed("&'a cynic::Id")
-                }
-                ("String", false) => {
-                    contains_lifetime_a = true;
-                    Cow::Borrowed("&'a str")
-                }
-                _ => Cow::Owned({
-                    let mut type_ = s.type_name.to_pascal_case();
-                    if is_subobject_with_lifetime {
-                        type_ += "<'a>";
-                        contains_lifetime_a = true;
+            let mut base_type_name_str: String;
+            let mut base_type_contains_lifetime = false;
+
+            match s.type_name.as_ref() {
+                "Int" => base_type_name_str = "i32".to_string(),
+                "Float" => base_type_name_str = "f64".to_string(),
+                "Boolean" => base_type_name_str = "bool".to_string(),
+                "ID" => {
+                    if needs_owned {
+                        base_type_name_str = "cynic::Id".to_string();
+                    } else {
+                        base_type_name_str = "&'a cynic::Id".to_string();
+                        base_type_contains_lifetime = true;
                     }
-                    type_
-                }),
+                }
+                "String" => {
+                    if needs_owned {
+                        base_type_name_str = "String".to_string();
+                    } else {
+                        base_type_name_str = "&'a str".to_string();
+                        base_type_contains_lifetime = true;
+                    }
+                }
+                _ => {
+                    base_type_name_str = s.type_name.to_pascal_case();
+                    if is_subobject_with_lifetime {
+                        base_type_name_str = format!("{}<'a>", base_type_name_str);
+                        base_type_contains_lifetime = true;
+                    }
+                }
             };
 
-            if needs_boxed {
-                name = Cow::Owned(format!("Box<{}>", name));
-            }
+            let final_name_str = if needs_boxed {
+                format!("Box<{}>", base_type_name_str)
+            } else {
+                base_type_name_str
+            };
 
             TypeSpec {
-                name,
-                contains_lifetime_a,
+                name: Cow::Owned(final_name_str),
+                contains_lifetime_a: base_type_contains_lifetime,
             }
         }
     }
