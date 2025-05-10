@@ -44,6 +44,12 @@ impl std::fmt::Display for Field<'_> {
         if let Some(rename) = self.rename() {
             writeln!(f, r#"#[cynic(rename = "{}")]"#, rename)?;
         }
+        if self.type_spec.name.starts_with("cynic::MaybeUndefined<") {
+            writeln!(
+                f,
+                r#"#[cynic(skip_serializing_if = "cynic::MaybeUndefined::is_undefined")]"#
+            )?;
+        }
         writeln!(f, "pub {}: {},", self.name(), self.type_spec.name)
     }
 }

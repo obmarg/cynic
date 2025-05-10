@@ -4,7 +4,7 @@
 //! certain changes to be made in a backwards compatible way, this module provides
 //! some traits and macros to help enforce those.
 
-use crate::Id;
+use crate::{Id, MaybeUndefined};
 
 /// Determines whether a type can be coerced into a given schema type.
 ///
@@ -13,6 +13,12 @@ use crate::Id;
 pub trait CoercesTo<T> {}
 
 impl<T, TypeLock> CoercesTo<Option<TypeLock>> for Option<T> where T: CoercesTo<TypeLock> {}
+impl<T, TypeLock> CoercesTo<Option<TypeLock>> for MaybeUndefined<T> where T: CoercesTo<TypeLock> {}
+impl<T, TypeLock> CoercesTo<MaybeUndefined<TypeLock>> for Option<T> where T: CoercesTo<TypeLock> {}
+impl<T, TypeLock> CoercesTo<MaybeUndefined<TypeLock>> for MaybeUndefined<T> where
+    T: CoercesTo<TypeLock>
+{
+}
 impl<T, TypeLock> CoercesTo<Vec<TypeLock>> for Vec<T> where T: CoercesTo<TypeLock> {}
 impl<T, TypeLock> CoercesTo<Vec<TypeLock>> for [T] where T: CoercesTo<TypeLock> {}
 
@@ -27,10 +33,14 @@ macro_rules! impl_coercions {
     ($target:ty [$($impl_generics: tt)*] [$($where_clause: tt)*], $typelock:ty) => {
         impl $($impl_generics)* $crate::coercions::CoercesTo<$typelock> for $target $($where_clause)* {}
         impl $($impl_generics)* $crate::coercions::CoercesTo<Option<$typelock>> for $target $($where_clause)* {}
+        impl $($impl_generics)* $crate::coercions::CoercesTo<$crate::MaybeUndefined<$typelock>> for $target $($where_clause)* {}
         impl $($impl_generics)* $crate::coercions::CoercesTo<Vec<$typelock>> for $target $($where_clause)* {}
         impl $($impl_generics)* $crate::coercions::CoercesTo<Option<Vec<$typelock>>> for $target $($where_clause)* {}
         impl $($impl_generics)* $crate::coercions::CoercesTo<Option<Vec<Option<$typelock>>>> for $target $($where_clause)* {}
         impl $($impl_generics)* $crate::coercions::CoercesTo<Option<Option<$typelock>>> for $target $($where_clause)* {}
+        impl $($impl_generics)* $crate::coercions::CoercesTo<$crate::MaybeUndefined<Vec<$typelock>>> for $target $($where_clause)* {}
+        impl $($impl_generics)* $crate::coercions::CoercesTo<$crate::MaybeUndefined<Vec<$crate::MaybeUndefined<$typelock>>>> for $target $($where_clause)* {}
+        impl $($impl_generics)* $crate::coercions::CoercesTo<$crate::MaybeUndefined<$crate::MaybeUndefined<$typelock>>> for $target $($where_clause)* {}
         impl $($impl_generics)* $crate::coercions::CoercesTo<Vec<Vec<$typelock>>> for $target $($where_clause)* {}
     };
 }
@@ -63,17 +73,26 @@ mod tests {
     fn test_coercions() {
         assert_impl_all!(i32: CoercesTo<i32>);
         assert_impl_all!(i32: CoercesTo<Option<i32>>);
+        assert_impl_all!(i32: CoercesTo<MaybeUndefined<i32>>);
         assert_impl_all!(i32: CoercesTo<Vec<i32>>);
         assert_impl_all!(i32: CoercesTo<Option<Vec<i32>>>);
+        assert_impl_all!(i32: CoercesTo<MaybeUndefined<Vec<i32>>>);
         assert_impl_all!(i32: CoercesTo<Vec<Vec<i32>>>);
 
         assert_impl_all!(Option<i32>: CoercesTo<Option<i32>>);
         assert_impl_all!(Option<i32>: CoercesTo<Option<Option<i32>>>);
+
+        assert_impl_all!(MaybeUndefined<i32>: CoercesTo<MaybeUndefined<i32>>);
+        assert_impl_all!(MaybeUndefined<i32>: CoercesTo<MaybeUndefined<Option<i32>>>);
+
+        assert_impl_all!(MaybeUndefined<i32>: CoercesTo<Option<i32>>);
+        assert_impl_all!(Option<i32>: CoercesTo<MaybeUndefined<i32>>);
 
         assert_impl_all!(Vec<i32>: CoercesTo<Vec<i32>>);
         assert_impl_all!(Vec<i32>: CoercesTo<Vec<Vec<i32>>>);
 
         assert_not_impl_any!(Vec<i32>: CoercesTo<i32>);
         assert_not_impl_any!(Option<i32>: CoercesTo<i32>);
+        assert_not_impl_any!(MaybeUndefined<i32>: CoercesTo<i32>);
     }
 }

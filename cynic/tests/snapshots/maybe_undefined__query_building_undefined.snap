@@ -1,0 +1,5 @@
+---
+source: cynic/tests/maybe_undefined.rs
+expression: "serde_json::to_string(&TestQuery::build(TestArgs {\n                        a_str: Default::default(),\n                    }).variables).unwrap()"
+---
+{}

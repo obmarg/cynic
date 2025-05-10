@@ -11,6 +11,8 @@
 //! usually be marker types and the associated types will also usually be
 //! markers.
 
+use crate::MaybeUndefined;
+
 /// Indicates that a struct represents a Field in a graphql schema.
 pub trait Field {
     /// The schema marker type of this field.
@@ -68,6 +70,20 @@ where
 }
 
 impl<T, U> IsScalar<Option<T>> for Option<U>
+where
+    U: IsScalar<T>,
+{
+    type SchemaType = Option<U::SchemaType>;
+}
+
+impl<T, U> IsScalar<MaybeUndefined<T>> for MaybeUndefined<U>
+where
+    U: IsScalar<T>,
+{
+    type SchemaType = MaybeUndefined<U::SchemaType>;
+}
+
+impl<T, U> IsScalar<Option<T>> for MaybeUndefined<U>
 where
     U: IsScalar<T>,
 {
