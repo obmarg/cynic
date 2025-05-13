@@ -1,158 +1,203 @@
-use std::{
-    collections::{BTreeSet, HashMap, HashSet},
-    rc::Rc,
-};
+use std::collections::HashSet;
+
+use crate::schema::{InputFieldType, InputObjectDetails};
+
+use super::Variable;
 
 use {
-    super::{normalisation::NormalisedDocument, sorting::Vertex},
-    crate::{
-        output::InputObjectField,
-        schema::{self, InputType, InputTypeRef},
-        Error,
-    },
+    super::normalisation::NormalisedDocument,
+    crate::schema::{InputType, InputTypeRef},
 };
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
-pub struct InputObject<'schema> {
-    pub schema_type: schema::InputObjectDetails<'schema>,
-    pub fields: Vec<InputObjectField<'schema>>,
-    // Named children_ so as not to clash with the children func in the Vertex trait
-    children_: Vec<Rc<InputObject<'schema>>>,
-    needs_lifetime_a: bool,
-}
-
-impl<'schema> InputObject<'schema> {
+impl<'schema> InputObjectDetails<'schema> {
     /// Extracts any input types used by this InputObject
     pub fn required_input_types(&self) -> Vec<InputTypeRef<'schema>> {
         self.fields
             .iter()
-            .map(|field| field.schema_field.value_type.inner_ref().clone())
+            .map(|field| field.value_type.inner_ref().clone())
             .collect()
     }
 }
 
-impl<'schema> Vertex for InputObject<'schema> {
-    fn children(self: &Rc<InputObject<'schema>>) -> Vec<Rc<InputObject<'schema>>> {
-        self.children_.clone()
+pub struct InputObjects<'a> {
+    objects: Vec<InputObjectDetails<'a>>,
+    recursive_objects: HashSet<&'a str>,
+
+    objects_with_lifetime: HashSet<&'a str>,
+}
+
+impl<'a> InputObjects<'a> {
+    pub fn new(document: &NormalisedDocument<'a, 'a>) -> Self {
+        let objects = InputObjectIter::from_variables(
+            document
+                .operations
+                .iter()
+                .flat_map(|operation| operation.variables.iter().cloned()),
+        )
+        .collect();
+        let recursive_objects = recursive_objects(document);
+        let objects_with_lifetime = lifetimed_objects(document);
+
+        InputObjects {
+            objects,
+            recursive_objects,
+            objects_with_lifetime,
+        }
+    }
+
+    pub fn required_input_types(&self) -> impl Iterator<Item = InputTypeRef<'a>> + '_ {
+        self.objects
+            .iter()
+            .flat_map(|object| object.required_input_types())
+    }
+
+    pub fn processed_objects(&self) -> Vec<crate::output::InputObject<'a>> {
+        self.objects
+            .iter()
+            .map(|object| crate::output::InputObject {
+                name: object.name.to_string(),
+                fields: object
+                    .fields
+                    .iter()
+                    .map(|field| {
+                        let inner_type = field.value_type.inner_name();
+                        let inner_type = inner_type.as_ref();
+                        let needs_boxed = self.recursive_objects.contains(inner_type);
+                        let requires_lifetime = self.objects_with_lifetime.contains(inner_type);
+                        crate::output::InputObjectField {
+                            schema_field: field.clone(),
+                            type_spec: field.value_type.type_spec(needs_boxed, requires_lifetime),
+                        }
+                    })
+                    .collect(),
+                schema_name: None,
+            })
+            .collect()
     }
 }
 
-pub type InputObjectSet<'schema> = BTreeSet<Rc<InputObject<'schema>>>;
+fn recursive_objects<'a>(document: &NormalisedDocument<'a, 'a>) -> HashSet<&'a str> {
+    let mut recursive_objects = HashSet::new();
+    for document in &document.operations {
+        for variable in &document.variables {
+            let mut stack = vec![(variable.value_type.clone(), vec![])];
+            let mut seen_objects = HashSet::new();
+            while let Some((field_type, mut ancestors)) = stack.pop() {
+                let Ok(InputType::InputObject(object)) = field_type.inner_ref().lookup() else {
+                    continue;
+                };
+                if ancestors.contains(&object.name) {
+                    recursive_objects.insert(object.name);
+                }
+                if seen_objects.contains(object.name) {
+                    continue;
+                }
+                seen_objects.insert(object.name);
+                ancestors.push(object.name);
 
-pub fn extract_input_objects<'schema>(
-    doc: &NormalisedDocument<'_, 'schema>,
-) -> Result<InputObjectSet<'schema>, Error> {
-    let mut result = InputObjectSet::new();
+                for field in object.fields {
+                    stack.push((field.value_type, ancestors.clone()))
+                }
+            }
+        }
+    }
+    recursive_objects
+}
 
-    // Find any query variables that are input objects
-    for operation in &doc.operations {
-        for variable in &operation.variables {
-            let variable_type = variable.value_type.inner_ref().lookup()?;
+fn lifetimed_objects<'a>(document: &NormalisedDocument<'a, 'a>) -> HashSet<&'a str> {
+    let mut lifetimed_objects = HashSet::new();
+    for document in &document.operations {
+        for variable in &document.variables {
+            let mut stack = vec![variable.value_type.clone()];
+            let mut visited = HashSet::new();
 
-            if let InputType::InputObject(input_obj) = variable_type {
-                extract_whole_input_object_tree(&input_obj, &mut result)?;
+            while !stack.is_empty() {
+                if let Ok(InputType::InputObject(object)) =
+                    stack.last().unwrap().inner_ref().lookup()
+                {
+                    for field in &object.fields {
+                        if !visited.contains(&field.value_type.inner_name()) {
+                            stack.push(field.value_type.clone());
+                            continue;
+                        }
+                    }
+
+                    // If we get here all child field types have been seen.
+                    // We need to check whether any child fields need a lifetime...
+                    for field in object.fields {
+                        if lifetimed_objects.contains(field.value_type.inner_name().as_ref())
+                            || field.value_type.requires_lifetime()
+                        {
+                            lifetimed_objects.insert(object.name);
+                        }
+                    }
+                }
+
+                let visited_node = stack.pop().unwrap();
+                visited.insert(visited_node.inner_name());
             }
         }
     }
 
-    Ok(result)
+    lifetimed_objects
 }
 
-pub fn extract_whole_input_object_tree<'schema>(
-    input_object: &schema::InputObjectDetails<'schema>,
-    input_objects: &mut InputObjectSet<'schema>,
-) -> Result<Rc<InputObject<'schema>>, Error> {
-    let mut object_map = HashMap::new();
-    let mut seen_objects = HashSet::new();
-
-    let rv = extract_whole_input_object(input_object, &mut object_map, &mut seen_objects)?;
-
-    input_objects.extend(object_map.into_values());
-
-    Ok(rv)
-}
-
-fn extract_whole_input_object<'schema>(
-    input_object: &schema::InputObjectDetails<'schema>,
-    input_objects: &mut HashMap<schema::InputObjectDetails<'schema>, Rc<InputObject<'schema>>>,
-    seen_objects: &mut HashSet<schema::InputObjectDetails<'schema>>,
-) -> Result<Rc<InputObject<'schema>>, Error> {
-    let mut fields = Vec::new();
-    let mut children = Vec::new();
-    let mut push_child = |child: Rc<InputObject<'schema>>| {
-        let this_one_needs_lifetime_a = child.needs_lifetime_a;
-        children.push(child);
-        this_one_needs_lifetime_a
-    };
-    let mut needs_lifetime_a = false;
-
-    seen_objects.insert(input_object.clone());
-
-    for field in &input_object.fields {
-        let field_type = field.value_type.inner_ref().lookup()?;
-        let mut needs_boxed = false;
-
-        let is_sub_object_with_lifetime = if let InputType::InputObject(inner_obj) = field_type {
-            if let Some(existing_obj) = input_objects.get(&inner_obj) {
-                push_child(Rc::clone(existing_obj))
-            } else if seen_objects.contains(&inner_obj) {
-                // If we hit this path we've got a recursive object.
-                // going to skip pushing into children in that case.
-                // technically it'll end up with a bad "graph" but good enough for topological
-                // sort which is precisely the exact only thing we're doing afterwards.
-
-                // We do however need to mark this field as recursive.
-                needs_boxed = true;
-
-                // This is correct because we are iterating in DFS
-                // post-order, so this means
-                // we will always have processed all children before self
-                // (except in case of cycle).
-                // In case of cycle if we have done all objects except cyclic ones and we found
-                // no field that needs a lifetime, this means we don't actually need a lifetime
-                // on the whole recursive type
-                false
-            } else {
-                push_child(extract_whole_input_object(
-                    &inner_obj,
-                    input_objects,
-                    seen_objects,
-                )?)
-            }
-        } else {
-            false
-        };
-
-        let type_spec = field
-            .value_type
-            .type_spec(needs_boxed, false, is_sub_object_with_lifetime);
-        needs_lifetime_a |= type_spec.contains_lifetime_a;
-        fields.push(InputObjectField {
-            type_spec,
-            schema_field: field.clone(),
-        });
+impl InputFieldType<'_> {
+    pub fn requires_lifetime(&self) -> bool {
+        matches!(self.inner_name().as_ref(), "String" | "ID")
     }
+}
 
-    let rv = Rc::new(InputObject {
-        schema_type: input_object.clone(),
-        children_: children,
-        fields,
-        needs_lifetime_a,
-    });
+#[derive(Clone)]
+struct InputObjectIter<'a> {
+    stack: Vec<InputType<'a>>,
+    seen: HashSet<&'a str>,
+}
 
-    input_objects.insert(input_object.clone(), Rc::clone(&rv));
+impl<'a> InputObjectIter<'a> {
+    fn from_variables(variables: impl IntoIterator<Item = Variable<'a, 'a>>) -> Self {
+        InputObjectIter {
+            stack: variables
+                .into_iter()
+                .filter_map(|variable| variable.value_type.inner_ref().lookup().ok())
+                .collect(),
+            seen: HashSet::new(),
+        }
+    }
+}
 
-    Ok(rv)
+impl<'a> Iterator for InputObjectIter<'a> {
+    type Item = InputObjectDetails<'a>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        loop {
+            match self.stack.pop()? {
+                InputType::Scalar(_) | InputType::Enum(_) => continue,
+                InputType::InputObject(input_object_details)
+                    if self.seen.contains(input_object_details.name) =>
+                {
+                    continue
+                }
+                InputType::InputObject(input_object_details) => {
+                    self.seen.insert(input_object_details.name);
+                    for field in input_object_details.fields.iter().rev() {
+                        self.stack
+                            .extend(field.value_type.inner_ref().lookup().ok())
+                    }
+                    return Some(input_object_details);
+                }
+            }
+        }
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use {
         super::*,
-        crate::{query_parsing::normalisation::normalise, TypeIndex},
+        crate::{add_builtins, query_parsing::normalisation::normalise, TypeIndex},
         cynic_parser::{type_system::ids::FieldDefinitionId, TypeSystemDocument},
-        schema::add_builtins,
-        std::sync::LazyLock,
+        std::{rc::Rc, sync::LazyLock},
     };
 
     #[test]
@@ -182,9 +227,9 @@ mod tests {
         .unwrap();
 
         let normalised = normalise(&query, &type_index).unwrap();
-        let input_objects = extract_input_objects(&normalised).unwrap();
+        let input_objects = InputObjects::new(&normalised);
 
-        assert_eq!(input_objects.len(), 1);
+        assert_eq!(input_objects.objects.len(), 1);
     }
 
     #[test]
@@ -214,9 +259,9 @@ mod tests {
         .unwrap();
 
         let normalised = normalise(&query, &type_index).unwrap();
-        let input_objects = extract_input_objects(&normalised).unwrap();
+        let input_objects = InputObjects::new(&normalised);
 
-        assert_eq!(input_objects.len(), 1);
+        assert_eq!(input_objects.objects.len(), 1);
     }
 
     #[test]
@@ -234,9 +279,9 @@ mod tests {
         .unwrap();
 
         let normalised = normalise(&query, &type_index).unwrap();
-        let input_objects = extract_input_objects(&normalised).unwrap();
+        let input_objects = InputObjects::new(&normalised);
 
-        assert_eq!(input_objects.len(), 3);
+        assert_eq!(input_objects.objects.len(), 3);
     }
 
     static GITHUB_SCHEMA: LazyLock<(TypeSystemDocument, FieldDefinitionId)> = LazyLock::new(|| {

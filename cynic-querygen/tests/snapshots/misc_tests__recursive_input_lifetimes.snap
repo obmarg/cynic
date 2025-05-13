@@ -1,0 +1,33 @@
+---
+source: cynic-querygen/tests/misc-tests.rs
+expression: "document_to_fragment_structs(query, schema,\n        &QueryGenOptions::default()).expect(\"QueryGen Failed for recursive input lifetimes test\")"
+snapshot_kind: text
+---
+#[derive(cynic::QueryVariables, Debug)]
+pub struct TestRecursiveInputLifetimesVariables<'a> {
+    pub direct: ComplexRecursiveInput<'a>,
+    pub list_direct: Vec<ComplexRecursiveInput<'a>>,
+    pub list_opt: Vec<Option<ComplexRecursiveInput<'a>>>,
+    pub opt_direct: Option<ComplexRecursiveInput<'a>>,
+    pub opt_list_direct: Option<Vec<ComplexRecursiveInput<'a>>>,
+    pub opt_list_opt: Option<Vec<Option<ComplexRecursiveInput<'a>>>>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(graphql_type = "Mutation", variables = "TestRecursiveInputLifetimesVariables")]
+pub struct TestRecursiveInputLifetimes {
+    #[arguments(direct: $direct, optDirect: $opt_direct, listDirect: $list_direct, optListDirect: $opt_list_direct, listOpt: $list_opt, optListOpt: $opt_list_opt)]
+    pub complex_recursive_mutation: Option<bool>,
+}
+
+#[derive(cynic::InputObject, Debug)]
+pub struct ComplexRecursiveInput<'a> {
+    pub name: &'a str,
+    pub value: Option<i32>,
+    pub direct_next: Option<Box<ComplexRecursiveInput<'a>>>,
+    pub opt_next: Option<Box<ComplexRecursiveInput<'a>>>,
+    pub list_next: Option<Vec<ComplexRecursiveInput<'a>>>,
+    pub opt_list_next: Option<Vec<ComplexRecursiveInput<'a>>>,
+    pub list_opt_next: Option<Vec<Option<ComplexRecursiveInput<'a>>>>,
+    pub opt_list_opt_next: Option<Vec<Option<ComplexRecursiveInput<'a>>>>,
+}

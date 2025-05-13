@@ -39,8 +39,6 @@ impl<'query, 'schema> TypedValue<'query, 'schema> {
             cynic_parser::Value::Variable(variable) => {
                 let name = variable.name();
 
-                dbg!(variable_definitions);
-
                 // If this is just a variable then we'll take it's type as our value type.
                 let value_type = variable_definitions
                     .iter()

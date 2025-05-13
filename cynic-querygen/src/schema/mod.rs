@@ -25,7 +25,7 @@ pub enum Type<'schema> {
     InputObject(InputObjectDetails<'schema>),
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone)]
 pub struct ScalarDetails<'schema> {
     pub name: &'schema str,
 }
@@ -61,7 +61,7 @@ pub struct InputObjectDetails<'schema> {
     pub fields: Vec<InputField<'schema>>,
 }
 
-#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
+#[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone)]
 pub enum InputType<'schema> {
     Scalar(ScalarDetails<'schema>),
     Enum(EnumDetails<'schema>),
