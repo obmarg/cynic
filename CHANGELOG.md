@@ -12,19 +12,20 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### New Features
 
-- `#[cynic(default)]` attribute on fields (#1144)
-- add directive support to generator (#1139)
-- opt out of Deserialize for QueryFragment (#1147)
-- include directives in introspection SDL output (#1140)
+- Optional fields on a `QueryFragment` can now be marked with
+  `#[cynic(default)]`.  If this directive is present the field does not have to
+  be wrapped in `Option` and the `Default` impl of the type will be used if the
+  field is null (#1144)
+- The generator now supports directives (#1139)
+- Users can opt out of Deserialize for QueryFragment (#1147)
+- `cynic-introspection` now includes directives in its SDL (#1140)
 
 ### Bug Fixes
 
-- allow generic inner types on fields (#1131)
-- lifetime propagation on recursive input types  (#1151)
-
-### Changes
-
-- update Cargo.lock dependencies
+- Fields can now have use types with generic parametesr (e.g. `DateTime<Utc>`
+  is now allowed) (#1131)
+- The generator now correctly applies lifetimes to recursive input fields when
+  they are needed (#1151)
 
 ## v3.10.0 - 2025-02-10
 
