@@ -9,6 +9,12 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.9.2 - 2025-05-13
+
+### New Features
+
+- add directive support to generator (#1139)
+
 ## v0.9.1 - 2025-02-20
 
 ### Bug Fixes
