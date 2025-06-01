@@ -1,3 +1,6 @@
+use darling::usage::{GenericsExt, Purpose, UsesTypeParams};
+use syn::{parse_quote, Token, WhereClause};
+
 use {
     proc_macro2::{Span, TokenStream},
     quote::{quote, quote_spanned},
@@ -29,6 +32,7 @@ pub struct FragmentImpl<'schema, 'a> {
     variables_fields: syn::Type,
     graphql_type_name: String,
     schema_type_path: syn::Path,
+    additional_where: Option<syn::WhereClause>,
 }
 
 #[allow(clippy::large_enum_variant)]
@@ -87,6 +91,14 @@ impl<'schema, 'a: 'schema> FragmentImpl<'schema, 'a> {
         let variables_fields = variables_fields_path(variables);
         let variables_fields = variables_fields.as_ref();
 
+        let additional_where = additional_where_clause(
+            generics,
+            fields,
+            schema,
+            &field_module_path,
+            variables_fields,
+        );
+
         let selections = fields
             .iter()
             .map(|(field, schema_field)| {
@@ -115,6 +127,7 @@ impl<'schema, 'a: 'schema> FragmentImpl<'schema, 'a> {
             variables_fields,
             graphql_type_name: graphql_type_name.to_string(),
             schema_type_path,
+            additional_where,
         })
     }
 }
@@ -190,6 +203,69 @@ fn process_field<'a>(
     }))
 }
 
+fn additional_where_clause(
+    generics: &syn::Generics,
+    fields: &[(FragmentDeriveField, Option<Field<'_>>)],
+    schema: &Schema<'_, Unvalidated>,
+    field_module_path: &syn::Path,
+    variables_fields: Option<&syn::Path>,
+) -> Option<WhereClause> {
+    let all_params = generics.declared_type_params();
+    if all_params.is_empty() {
+        return None;
+    }
+    let options = Purpose::BoundImpl.into();
+
+    let mut predicates: Vec<syn::WherePredicate> = vec![];
+
+    for (field, schema_field) in fields {
+        let Some(schema_field) = schema_field else {
+            continue;
+        };
+        let inner_type = schema_field.field_type.inner_type(schema);
+        if !inner_type.is_composite() {
+            // We only care about generics on composite types for now
+            continue;
+        }
+        if *field.spread || *field.flatten {
+            // We could probably support these, but I don't want to figure it out right now.
+            // Leave it to the user to provide these bounds
+            continue;
+        }
+        if field.ty.uses_type_params(&options, &all_params).is_empty() {
+            // If this field uses no type params we skip it
+            continue;
+        }
+
+        let ty = &field.ty;
+        let marker_ty = schema_field.marker_ident().to_path(field_module_path);
+        predicates.push(parse_quote! {
+            #ty: cynic::QueryFragment<SchemaType = <#marker_ty as cynic::schema::Field>::Type>
+        });
+        match variables_fields {
+            Some(variables_fields) => {
+                predicates.push(parse_quote! {
+                    #variables_fields: cynic::queries::VariableMatch<<#ty as cynic::QueryFragment>::VariablesFields>
+                });
+            }
+            None => {
+                predicates.push(parse_quote! {
+                    (): cynic::queries::VariableMatch<<#ty as cynic::QueryFragment>::VariablesFields>
+                });
+            }
+        }
+    }
+
+    if predicates.is_empty() {
+        return None;
+    }
+
+    Some(WhereClause {
+        where_token: <Token![where]>::default(),
+        predicates: predicates.into_iter().collect(),
+    })
+}
+
 impl quote::ToTokens for FragmentImpl<'_, '_> {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         use quote::TokenStreamExt;
@@ -201,6 +277,17 @@ impl quote::ToTokens for FragmentImpl<'_, '_> {
         let schema_type = &self.schema_type_path;
         let fragment_name = proc_macro2::Literal::string(&target_struct.to_string());
         let (impl_generics, ty_generics, where_clause) = self.generics.split_for_impl();
+
+        let where_clause = match (where_clause, &self.additional_where) {
+            (None, None) => None,
+            (Some(lhs), None) => Some(quote! { #lhs }),
+            (None, Some(rhs)) => Some(quote! { #rhs }),
+            (Some(lhs), Some(rhs)) => {
+                let mut new = lhs.clone();
+                new.predicates.extend(rhs.predicates.clone());
+                Some(quote! { #new })
+            }
+        };
 
         tokens.append_all(quote! {
             #[automatically_derived]
@@ -423,6 +510,13 @@ impl quote::ToTokens for SpreadSelection {
 }
 
 impl OutputType<'_> {
+    fn is_composite(&self) -> bool {
+        matches!(
+            self,
+            OutputType::Object(_) | OutputType::Interface(_) | OutputType::Union(_)
+        )
+    }
+
     fn as_kind(&self) -> FieldKind {
         match self {
             OutputType::Scalar(_) => FieldKind::Scalar,

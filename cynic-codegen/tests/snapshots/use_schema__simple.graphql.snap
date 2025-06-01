@@ -6,6 +6,10 @@ snapshot_kind: text
 impl cynic::schema::QueryRoot for Query {}
 pub struct AnInputType;
 impl cynic::schema::InputObjectMarker for AnInputType {}
+pub struct DateTime {}
+impl cynic::schema::NamedType for DateTime {
+    const NAME: &'static ::core::primitive::str = "DateTime";
+}
 pub struct Dessert {}
 pub struct JSON {}
 impl cynic::schema::NamedType for JSON {
@@ -207,6 +211,14 @@ pub mod __fields {
         }
         impl cynic::schema::HasField<json> for super::super::TestStruct {
             type Type = Option<super::super::JSON>;
+        }
+        pub struct date;
+        impl cynic::schema::Field for date {
+            type Type = Option<super::super::DateTime>;
+            const NAME: &'static ::core::primitive::str = "date";
+        }
+        impl cynic::schema::HasField<date> for super::super::TestStruct {
+            type Type = Option<super::super::DateTime>;
         }
         pub struct __typename;
         impl cynic::schema::Field for __typename {
