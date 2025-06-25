@@ -1,0 +1,8 @@
+---
+source: cynic/tests/mutation_generics.rs
+expression: operation.query
+---
+mutation SendManyBaz($manyBaz: [Baz!]!) {
+  sendManyBaz(many_baz: $manyBaz)
+}
+
