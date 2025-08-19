@@ -122,6 +122,10 @@ fn convert_object(
             field = field.argument(convert_input_value(argument));
         }
 
+        if let Some(reason) = field_def.directives().find_map(DirectiveExt::to_deprecated) {
+            field = field.deprecation(reason);
+        }
+
         object = object.field(field);
     }
 
@@ -161,6 +165,10 @@ fn convert_iface(def: parser::InterfaceDefinition<'_>) -> async_graphql::dynamic
             field = field.argument(convert_input_value(argument));
         }
 
+        if let Some(reason) = field_def.directives().find_map(DirectiveExt::to_deprecated) {
+            field = field.deprecation(reason);
+        }
+
         interface = interface.field(field);
     }
 
@@ -191,6 +199,10 @@ fn convert_enum(def: parser::EnumDefinition<'_>) -> async_graphql::dynamic::Type
 
         if let Some(desc) = value.description() {
             item = item.description(desc.to_cow());
+        }
+
+        if let Some(reason) = value.directives().find_map(DirectiveExt::to_deprecated) {
+            item = item.deprecation(reason);
         }
 
         item
@@ -224,7 +236,7 @@ fn convert_type_ref(ty: parser::Type<'_>) -> async_graphql::dynamic::TypeRef {
 
     let mut output = TypeRef::named(ty.name());
 
-    for wrapper in ty.wrappers() {
+    for wrapper in ty.wrappers().rev() {
         match wrapper {
             WrappingType::NonNull => {
                 output = TypeRef::NonNull(Box::new(output));
@@ -353,5 +365,23 @@ fn default_field_resolver(field_name: &str) -> impl Resolver {
             };
         }
         panic!("Unexpected parent value for tests",)
+    }
+}
+
+trait DirectiveExt<'a> {
+    fn to_deprecated(self) -> Option<Option<&'a str>>;
+}
+
+impl<'a> DirectiveExt<'a> for cynic_parser::type_system::Directive<'a> {
+    fn to_deprecated(self) -> Option<Option<&'a str>> {
+        if self.name() == "deprecated" {
+            Some(
+                self.arguments()
+                    .find(|arg| arg.name() == "reason")
+                    .and_then(|arg| arg.value().as_str()),
+            )
+        } else {
+            None
+        }
     }
 }
