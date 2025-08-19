@@ -199,6 +199,7 @@ pub use cynic_proc_macros::{
     QueryVariableLiterals, QueryVariables, Scalar,
 };
 
+#[doc(hidden)]
 pub use static_assertions::assert_type_eq_all;
 
 // We re-export serde as the output from a lot of our derive macros require it,
@@ -254,6 +255,7 @@ macro_rules! impl_scalar {
 }
 
 #[macro_export(local_inner_macros)]
+#[doc(hidden)]
 /// Asserts that the type implements _all_ of the given traits.
 macro_rules! assert_impl {
     ($type:ty [$($impl_generics: tt)*] [$($where_clause: tt)*]: $($trait:path),+ $(,)?) => {
