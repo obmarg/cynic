@@ -68,5 +68,6 @@ type MutationRoot {
 }
 input Baz {
   id: ID!
-  aString: String! # TODO fix the nullable string case here
+  aString: String!
+  anOptionalString: String
 }

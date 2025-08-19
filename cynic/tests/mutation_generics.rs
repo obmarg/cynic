@@ -129,3 +129,51 @@ fn test_query_building_nested_generic_in_vec() {
 
     insta::assert_snapshot!(operation.query);
 }
+
+#[test]
+fn test_with_optional_string_type() {
+    #[derive(cynic::QueryFragment, Debug)]
+    #[cynic(
+        graphql_type = "MutationRoot",
+        variables = "SendManyBazVariables",
+        schema_path = "../schemas/test_cases.graphql",
+        schema_module = "test_cases"
+    )]
+    pub struct SendManyBaz {
+        #[arguments(many_baz: $many_baz)]
+        #[allow(dead_code)]
+        pub send_many_baz: Option<i32>,
+    }
+
+    #[derive(cynic::QueryVariables, Debug)]
+    #[cynic(schema_module = "test_cases")]
+    pub struct SendManyBazVariables<'a, Id: cynic::schema::IsScalar<cynic::Id>> {
+        #[cynic(graphql_type = "Vec<test_cases::Baz>")]
+        pub many_baz: Vec<Baz<'a, Id>>,
+    }
+
+    #[derive(cynic::InputObject, Debug)]
+    #[cynic(
+        schema_path = "../schemas/test_cases.graphql",
+        schema_module = "test_cases"
+    )]
+    pub struct Baz<'a, Id: cynic::schema::IsScalar<cynic::Id>> {
+        pub id: Id,
+        pub a_string: &'a str,
+        pub an_optional_string: &'a str,
+    }
+
+    let operation = SendManyBaz::build(SendManyBazVariables {
+        many_baz: vec![Baz {
+            id: cynic::Id::new("some-totally-correct-id"),
+            a_string: "baz",
+            an_optional_string: "baz",
+        }],
+    });
+
+    insta::assert_snapshot!(operation.query, @r"
+    mutation SendManyBaz($manyBaz: [Baz!]!) {
+      sendManyBaz(many_baz: $manyBaz)
+    }
+    ");
+}

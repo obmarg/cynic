@@ -5,6 +5,8 @@
 //! that are optional in rust but required in graphql - this is allowed,
 //! but we need to do a bit of work for rust to be ok with it.
 
+use std::borrow::Cow;
+
 use syn::parse_quote;
 
 use crate::schema::types::{InputType, OutputType, TypeRef};
@@ -71,11 +73,38 @@ fn align_input_type_impl<'a>(
     gql_field_has_default: bool,
 ) -> RustType<'a> {
     match (&ty, &gql_ty) {
-        (RustType::Ref { inner, .. }, _) => {
-            // Transform the inner types
-            let new_inner = align_input_type_impl(inner.as_ref(), gql_ty, gql_field_has_default);
-            ty.clone().replace_inner(new_inner)
+        (RustType::Ref { inner, syn, span }, _) => {
+            // We need to be careful with lifetimes - if we're doing any additional wrapping we need to
+            // make sure that the reference goes _inside_ the wrapper, as otherwise we might end up
+            // putting an unsized type inside an Option.  e.g. `&'a Option<str>` which won't compile...
+            match (inner.as_ref(), gql_ty) {
+                (RustType::SimpleType { .. }, TypeRef::List(_)) => {
+                    let syn = Cow::Owned(parse_quote! { ::std::vec::Vec<#syn> });
+                    let wrapped_rust_type = RustType::List {
+                        syn,
+                        inner: Box::new(ty.clone()),
+                        span: *span,
+                    };
+                    align_input_type_impl(&wrapped_rust_type, gql_ty, false)
+                }
+                (RustType::SimpleType { .. }, TypeRef::Nullable(_)) => {
+                    let syn = Cow::Owned(parse_quote! { ::core::option::Option<#syn> });
+                    let wrapped_rust_type = RustType::Optional {
+                        syn,
+                        inner: Box::new(ty.clone()),
+                        span: *span,
+                    };
+                    align_input_type_impl(&wrapped_rust_type, gql_ty, false)
+                }
+                _ => {
+                    // Transform the inner types, preserving the reference.
+                    let new_inner =
+                        align_input_type_impl(inner.as_ref(), gql_ty, gql_field_has_default);
+                    ty.clone().replace_inner(new_inner)
+                }
+            }
         }
+
         (RustType::List { inner, .. }, TypeRef::List(inner_gql)) => {
             // Transform the inner types
             let new_inner = align_input_type_impl(inner.as_ref(), inner_gql, false);
@@ -352,11 +381,39 @@ mod tests {
         let input_quote = quote! { #input };
         let result_quote = quote! { #result };
 
-        assert_eq!(input, result, "Expected {input_quote} got {result_quote}");
+        assert_eq!(input, result, "expected {input_quote} got {result_quote}");
+    }
+
+    #[test]
+    fn test_align_reference_types() {
+        let input = parse2(quote! { &'a str }).unwrap();
+
+        let result = align_input_type(&input, &nullable(string()), true);
+
+        let expected = quote! { ::core::option::Option<&'a str> }.to_string();
+        let result = quote! { #result }.to_string();
+
+        assert_eq!(expected, result, "expected {expected} got {result}");
+    }
+
+    #[test]
+    fn test_align_double_nested_reference_types() {
+        let input = parse2(quote! { &'a str }).unwrap();
+
+        let result = align_input_type(&input, &list(nullable(string())), true);
+
+        let result = quote! { #result }.to_string();
+        let expected = quote! { ::std::vec::Vec<::core::option::Option<&'a str> > }.to_string();
+
+        assert_eq!(expected, result, "expected {expected} got {result}");
     }
 
     fn integer<'a, Kind>() -> TypeRef<'a, Kind> {
         TypeRef::Named("Int".into(), PhantomData)
+    }
+
+    fn string<'a, Kind>() -> TypeRef<'a, Kind> {
+        TypeRef::Named("String".into(), PhantomData)
     }
 
     fn list<Kind>(inner: TypeRef<'_, Kind>) -> TypeRef<'_, Kind> {
