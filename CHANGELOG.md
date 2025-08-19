@@ -8,13 +8,18 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
-## v3.11.1 - 2025-08-19
+## v3.12.0 - 2025-08-19
+
+### New Features
+
+- The `graphql_type` attribute on fields of variable structs can now specify
+  generic types instead of just single named types.
 
 ### Bug Fixes
 
-- support `&str` for `String` input fields (#1160)
-- hide internal macros from docs (#1159)
-- the introspection tests (#1162)
+- Fix using `&str` on input fields of type `String` (#1160)
+- Hide the `assert_type_eq_all` and `assert_impl` macros from the docs - these
+  were never public API and should always have been hidden (#1159)
 
 ## v3.11.0 - 2025-05-13
 
