@@ -61,15 +61,16 @@ fn test_2021_introspection_query() {
     insta::assert_snapshot!(build_2021_query().query);
 }
 
-#[test]
-fn test_running_2021_query() {
-    use cynic::http::ReqwestBlockingExt;
+#[tokio::test]
+async fn test_running_2021_query() {
+    let mock_server = mocks::spacex::serve().await;
 
     let query = build_2021_query();
 
-    let result = reqwest::blocking::Client::new()
-        .post("https://spacex-production.up.railway.app/")
+    let result = reqwest::Client::new()
+        .post(mock_server.url())
         .run_graphql(query)
+        .await
         .unwrap();
 
     if result.errors.is_some() {
@@ -79,15 +80,16 @@ fn test_running_2021_query() {
     insta::assert_debug_snapshot!(result.data);
 }
 
-#[test]
-fn test_2021_schema_conversion() {
-    use cynic::http::ReqwestBlockingExt;
+#[tokio::test]
+async fn test_2021_schema_conversion() {
+    let mock_server = mocks::spacex::serve().await;
 
     let query = build_2021_query();
 
-    let result = reqwest::blocking::Client::new()
-        .post("https://spacex-production.up.railway.app/")
+    let result = reqwest::Client::new()
+        .post(mock_server.url())
         .run_graphql(query)
+        .await
         .unwrap();
 
     if result.errors.is_some() {
