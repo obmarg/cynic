@@ -22,7 +22,7 @@ directives = []
 proc-macro = true
 
 [dependencies]
-cynic-codegen = { path = "../cynic-codegen", version = "3.11.0" }
+cynic-codegen = { path = "../cynic-codegen", version = "3.11.1" }
 darling.workspace = true
 quote = "1"
 syn.workspace = true

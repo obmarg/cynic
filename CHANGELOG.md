@@ -8,6 +8,14 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v3.11.1 - 2025-08-19
+
+### Bug Fixes
+
+- support `&str` for `String` input fields (#1160)
+- hide internal macros from docs (#1159)
+- the introspection tests (#1162)
+
 ## v3.11.0 - 2025-05-13
 
 ### New Features
