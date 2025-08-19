@@ -76,6 +76,16 @@ pub struct TypeWrappersIter {
     last: Option<WrappingType>,
 }
 
+impl TypeWrappersIter {
+    /// Reverses this iterator
+    pub fn rev(
+        self,
+    ) -> impl ExactSizeIterator<Item = WrappingType> + DoubleEndedIterator<Item = WrappingType>
+    {
+        self.collect::<Vec<_>>().into_iter().rev()
+    }
+}
+
 impl Iterator for TypeWrappersIter {
     type Item = WrappingType;
 
