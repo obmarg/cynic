@@ -1,13 +1,16 @@
 ---
 source: cynic-codegen/tests/use-schema.rs
 expression: "format_code(format!(\"{}\", tokens))"
-snapshot_kind: text
 ---
 impl cynic::schema::QueryRoot for Foo {}
+impl cynic::schema::MutationRoot for MutationRoot {}
 pub struct Bar;
+pub struct Baz;
+impl cynic::schema::InputObjectMarker for Baz {}
 pub struct FieldNameClashes;
 pub struct FlattenableEnums;
 pub struct Foo;
+pub struct MutationRoot;
 pub struct RecursiveInputChild;
 impl cynic::schema::InputObjectMarker for RecursiveInputChild {}
 pub struct RecursiveInputParent;
@@ -57,6 +60,9 @@ impl cynic::schema::NamedType for FlattenableEnums {
 impl cynic::schema::NamedType for Foo {
     const NAME: &'static ::core::primitive::str = "Foo";
 }
+impl cynic::schema::NamedType for MutationRoot {
+    const NAME: &'static ::core::primitive::str = "MutationRoot";
+}
 #[allow(non_snake_case, non_camel_case_types)]
 pub mod __fields {
     pub mod Bar {
@@ -84,6 +90,20 @@ pub mod __fields {
         impl cynic::schema::HasField<__typename> for super::super::Bar {
             type Type = super::super::String;
         }
+    }
+    pub mod Baz {
+        pub struct id;
+        impl cynic::schema::Field for id {
+            type Type = super::super::ID;
+            const NAME: &'static ::core::primitive::str = "id";
+        }
+        impl cynic::schema::HasInputField<id, super::super::ID> for super::super::Baz {}
+        pub struct aString;
+        impl cynic::schema::Field for aString {
+            type Type = super::super::String;
+            const NAME: &'static ::core::primitive::str = "aString";
+        }
+        impl cynic::schema::HasInputField<aString, super::super::String> for super::super::Baz {}
     }
     pub mod FieldNameClashes {
         pub struct str;
@@ -268,6 +288,31 @@ pub mod __fields {
             type Type = super::super::String;
         }
     }
+    pub mod MutationRoot {
+        pub struct sendManyBaz;
+        impl cynic::schema::Field for sendManyBaz {
+            type Type = super::super::Int;
+            const NAME: &'static ::core::primitive::str = "sendManyBaz";
+        }
+        impl cynic::schema::HasField<sendManyBaz> for super::super::MutationRoot {
+            type Type = super::super::Int;
+        }
+        pub mod _send_many_baz_arguments {
+            pub struct many_baz;
+            impl cynic::schema::HasArgument<many_baz> for super::sendManyBaz {
+                type ArgumentType = Vec<super::super::super::Baz>;
+                const NAME: &'static ::core::primitive::str = "many_baz";
+            }
+        }
+        pub struct __typename;
+        impl cynic::schema::Field for __typename {
+            type Type = super::super::String;
+            const NAME: &'static ::core::primitive::str = "__typename";
+        }
+        impl cynic::schema::HasField<__typename> for super::super::MutationRoot {
+            type Type = super::super::String;
+        }
+    }
     pub mod RecursiveInputChild {
         pub struct recurse;
         impl cynic::schema::Field for recurse {
@@ -381,3 +426,4 @@ pub mod variable {
         const TYPE: VariableType = VariableType::Named("ID");
     }
 }
+

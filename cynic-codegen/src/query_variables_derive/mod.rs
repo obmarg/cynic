@@ -67,14 +67,27 @@ pub fn query_variables_derive_impl(
                 //   - Adding a separate typecheck in the concrete type for the
                 //     `CoercesTo<schema_type>` (so that we still check for correctness)
 
+                let graphql_type_full_path = match graphql_type.get_ident() {
+                    Some(ident) => {
+                        // They are probably trying to refer to the single type in the schema
+                        // (Also this is necessary for backwards compatibility, now that we
+                        // add the branch below with the ability to have any path)
+                        let span = ident.span();
+                        quote_spanned! {span =>
+                            #schema_module::#ident
+                        }
+                    }
+                    None => quote! { #graphql_type },
+                };
+
                 let new_type_that_coerces_to_schema_type =
                     format_ident!("CoercionProxyForField{field_idx}");
                 field_output_types.push(quote! {
                     #vis struct #new_type_that_coerces_to_schema_type;
-                    cynic::impl_coercions!(#new_type_that_coerces_to_schema_type [] [], #schema_module::#graphql_type);
+                    cynic::impl_coercions!(#new_type_that_coerces_to_schema_type [] [], #graphql_type_full_path);
                 });
                 coercion_checks.push(quote! {
-                    cynic::assert_impl!(#ty [#impl_generics] [#where_clause]: cynic::coercions::CoercesTo<#schema_module::#graphql_type>);
+                    cynic::assert_impl!(#ty [#impl_generics] [#where_clause]: cynic::coercions::CoercesTo<#graphql_type_full_path>);
                 });
 
                 // Turn that from an ident into a type

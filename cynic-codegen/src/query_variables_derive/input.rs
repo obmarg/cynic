@@ -24,7 +24,7 @@ pub(super) struct QueryVariableField {
     pub(super) ty: syn::Type,
 
     #[darling(default)]
-    pub(super) graphql_type: Option<syn::Ident>,
+    pub(super) graphql_type: Option<syn::Path>,
 
     #[darling(default)]
     pub(super) skip_serializing_if: Option<SpannedValue<syn::Path>>,

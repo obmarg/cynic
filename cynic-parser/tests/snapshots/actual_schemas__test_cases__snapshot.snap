@@ -1,10 +1,10 @@
 ---
 source: cynic-parser/tests/actual_schemas.rs
 expression: parsed.to_sdl_pretty()
-snapshot_kind: text
 ---
 schema {
   query: Foo
+  mutation: MutationRoot
 }
 
 type Foo {
@@ -62,3 +62,13 @@ type FieldNameClashes {
   i32: Int
   u32: Int
 }
+
+type MutationRoot {
+  sendManyBaz(many_baz: [Baz!]!): Int!
+}
+
+input Baz {
+  id: ID!
+  aString: String!
+}
+
