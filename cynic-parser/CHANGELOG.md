@@ -9,6 +9,12 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.10.0 - 2025-08-19
+
+### New Features
+
+- Added a `rev` function on TypeWrappersIter (#1161)
+
 ## v0.9.1 - 2025-02-20
 
 ### Bug Fixes

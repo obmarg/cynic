@@ -4,7 +4,7 @@ description = "Deserialization for cynic-parser Values"
 keywords = ["graphql", "parser", "deserialization"]
 readme = "README.md"
 
-version = "0.9.1"
+version = "0.10.0"
 
 homepage = "https://docs.rs/cynic-parser-deser"
 documentation = "https://docs.rs/cynic-parser-deser"
