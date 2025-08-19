@@ -21,9 +21,9 @@ The struct above declares a single variable named `id` of `Option<cynic::Id>`
 ### Using QueryVariables
 
 To use variables in a query you need to tell cynic which `QueryVariables`
-struct is in scope.  You do this by providing a a `variables` parameter to the
-`QueryFragment` derive.  This allows you to provide any of the variables in your
-`QueryVariables` struct to any arguments in this fragment.  For example:
+struct is in scope. You do this by providing a a `variables` parameter to the
+`QueryFragment` derive. This allows you to provide any of the variables in your
+`QueryVariables` struct to any arguments in this fragment. For example:
 
 ```rust
 #[derive(cynic::QueryFragment, Debug)]
@@ -58,6 +58,8 @@ QueryVariables can be configured via attributes at the struct level:
 
 Each field can also have attributes:
 
+- `graphql_type="path"` can be used to override the GraphQL type that cynic
+  detects for the field.
 - `rename="someFieldName"` can be used to map a field to a completely
   different GraphQL field name.
 - `skip_serializing_if="path"` can be used on optional fields to skip
