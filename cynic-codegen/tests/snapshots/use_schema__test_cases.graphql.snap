@@ -1,6 +1,7 @@
 ---
 source: cynic-codegen/tests/use-schema.rs
 expression: "format_code(format!(\"{}\", tokens))"
+snapshot_kind: text
 ---
 impl cynic::schema::QueryRoot for Foo {}
 impl cynic::schema::MutationRoot for MutationRoot {}
@@ -104,6 +105,15 @@ pub mod __fields {
             const NAME: &'static ::core::primitive::str = "aString";
         }
         impl cynic::schema::HasInputField<aString, super::super::String> for super::super::Baz {}
+        pub struct anOptionalString;
+        impl cynic::schema::Field for anOptionalString {
+            type Type = Option<super::super::String>;
+            const NAME: &'static ::core::primitive::str = "anOptionalString";
+        }
+        impl cynic::schema::HasInputField<anOptionalString, Option<super::super::String>>
+            for super::super::Baz
+        {
+        }
     }
     pub mod FieldNameClashes {
         pub struct str;
@@ -426,4 +436,3 @@ pub mod variable {
         const TYPE: VariableType = VariableType::Named("ID");
     }
 }
-
