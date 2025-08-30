@@ -15,7 +15,10 @@ use crate::QueryVariableLiterals;
 
 pub use self::{
     ast::{Argument, InputLiteral, SelectionSet},
-    builders::{SelectionBuilder, VariableMatch},
+    builders::{
+        DirectiveBuilder, FieldSelectionBuilder, InlineFragmentBuilder, InputBuilder,
+        SelectionBuilder, VariableMatch,
+    },
     flatten::FlattensInto,
     input_literal_ser::to_input_literal,
     recurse::Recursable,
