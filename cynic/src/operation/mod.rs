@@ -102,6 +102,12 @@ where
     }
 }
 
+impl<F, V> AsRef<Operation<F, V>> for Operation<F, V> {
+    fn as_ref(&self) -> &Operation<F, V> {
+        self
+    }
+}
+
 /// A StreamingOperation is an Operation that expects a stream of results.
 ///
 /// Currently this is means subscriptions.
