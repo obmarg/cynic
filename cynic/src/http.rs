@@ -57,7 +57,7 @@ mod surf_ext {
     /// let operation = FilmDirectorQuery::build(());
     ///
     /// let response = surf::post("https://swapi-graphql.netlify.app/.netlify/functions/index")
-    ///     .run_graphql(operation)
+    ///     .run_graphql(&operation)
     ///     .await
     ///     .unwrap();
     ///
@@ -76,7 +76,7 @@ mod surf_ext {
         /// the response and returns the result.
         fn run_graphql<ResponseData, Vars>(
             self,
-            operation: Operation<ResponseData, Vars>,
+            operation: &Operation<ResponseData, Vars>,
         ) -> BoxFuture<'static, Result<GraphQlResponse<ResponseData>, surf::Error>>
         where
             Vars: serde::Serialize,
@@ -86,13 +86,13 @@ mod surf_ext {
     impl SurfExt for surf::RequestBuilder {
         fn run_graphql<ResponseData, Vars>(
             self,
-            operation: Operation<ResponseData, Vars>,
+            operation: &Operation<ResponseData, Vars>,
         ) -> BoxFuture<'static, Result<GraphQlResponse<ResponseData>, surf::Error>>
         where
             Vars: serde::Serialize,
             ResponseData: serde::de::DeserializeOwned + 'static,
         {
-            let operation = json!(&operation);
+            let operation = json!(operation);
             Box::pin(async move {
                 let mut response = self.body(operation).await?;
 
@@ -175,7 +175,7 @@ mod reqwest_ext {
     ///
     /// let client = reqwest::Client::new();
     /// let response = client.post("https://swapi-graphql.netlify.app/.netlify/functions/index")
-    ///     .run_graphql(operation)
+    ///     .run_graphql(&operation)
     ///     .await
     ///     .unwrap();
     ///
@@ -194,7 +194,7 @@ mod reqwest_ext {
         /// the and returns the result.
         fn run_graphql<ResponseData, Vars>(
             self,
-            operation: Operation<ResponseData, Vars>,
+            operation: &Operation<ResponseData, Vars>,
         ) -> CynicReqwestBuilder<ResponseData>
         where
             Vars: serde::Serialize,
@@ -287,13 +287,13 @@ mod reqwest_ext {
     impl ReqwestExt for reqwest::RequestBuilder {
         fn run_graphql<ResponseData, Vars>(
             self,
-            operation: Operation<ResponseData, Vars>,
+            operation: &Operation<ResponseData, Vars>,
         ) -> CynicReqwestBuilder<ResponseData>
         where
             Vars: serde::Serialize,
             ResponseData: serde::de::DeserializeOwned + 'static,
         {
-            CynicReqwestBuilder::new(self.json(&operation))
+            CynicReqwestBuilder::new(self.json(operation))
         }
     }
 }
@@ -337,7 +337,7 @@ mod reqwest_blocking_ext {
     ///
     /// let client = reqwest::blocking::Client::new();
     /// let response = client.post("https://swapi-graphql.netlify.app/.netlify/functions/index")
-    ///     .run_graphql(operation)
+    ///     .run_graphql(&operation)
     ///     .unwrap();
     ///
     /// println!(
@@ -354,7 +354,7 @@ mod reqwest_blocking_ext {
         /// the and returns the result.
         fn run_graphql<ResponseData, Vars>(
             self,
-            operation: Operation<ResponseData, Vars>,
+            operation: &Operation<ResponseData, Vars>,
         ) -> Result<GraphQlResponse<ResponseData>, CynicReqwestError>
         where
             Vars: serde::Serialize,
@@ -364,13 +364,13 @@ mod reqwest_blocking_ext {
     impl ReqwestBlockingExt for reqwest::blocking::RequestBuilder {
         fn run_graphql<ResponseData, Vars>(
             self,
-            operation: Operation<ResponseData, Vars>,
+            operation: &Operation<ResponseData, Vars>,
         ) -> Result<GraphQlResponse<ResponseData>, CynicReqwestError>
         where
             Vars: serde::Serialize,
             ResponseData: serde::de::DeserializeOwned + 'static,
         {
-            let response = self.json(&operation).send()?;
+            let response = self.json(operation).send()?;
 
             let status = response.status();
             if !status.is_success() {

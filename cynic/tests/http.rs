@@ -51,7 +51,7 @@ async fn test_reqwest_extensions() {
     let client = reqwest::Client::new();
     let output = client
         .get(format!("http://{}/graphql", graphql.host_with_port()))
-        .run_graphql(FieldWithString::build(FieldWithStringVariables {
+        .run_graphql(&FieldWithString::build(FieldWithStringVariables {
             input: "InputGoesHere",
         }))
         .retain_extensions::<Extensions>()
@@ -98,7 +98,7 @@ async fn test_reqwest_ignored() {
     let client = reqwest::Client::new();
     let output = client
         .get(format!("http://{}/graphql", graphql.host_with_port()))
-        .run_graphql(FieldWithString::build(FieldWithStringVariables {
+        .run_graphql(&FieldWithString::build(FieldWithStringVariables {
             input: "InputGoesHere",
         }))
         .await;

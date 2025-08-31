@@ -17,7 +17,7 @@ pub(crate) fn introspect(args: IntrospectArgs) -> Result<(), IntrospectError> {
 
     let response = client
         .build(&args)?
-        .run_graphql(IntrospectionQuery::with_capabilities(capabilities))?;
+        .run_graphql(&IntrospectionQuery::with_capabilities(capabilities))?;
 
     let errors = response.errors.unwrap_or_default();
     if !errors.is_empty() {
@@ -86,7 +86,7 @@ fn detect_capabilities(
 
     let capabilities = client
         .build(args)?
-        .run_graphql(CapabilitiesQuery::build(()))?
+        .run_graphql(&CapabilitiesQuery::build(()))?
         .data
         .ok_or(IntrospectError::GraphQlError)?
         .capabilities();

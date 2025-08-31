@@ -11,7 +11,7 @@ async fn test_starwars_sdl_conversion() {
 
     let result = reqwest::Client::new()
         .post(mock_server.url())
-        .run_graphql(query)
+        .run_graphql(&query)
         .await
         .unwrap();
 
@@ -31,7 +31,7 @@ fn test_spacex_sdl_conversion() {
 
     let result = reqwest::blocking::Client::new()
         .post("https://spacex-production.up.railway.app/")
-        .run_graphql(query)
+        .run_graphql(&query)
         .unwrap();
 
     if result.errors.is_some() {

@@ -77,7 +77,7 @@ fn run_query(url: &str, id: cynic::Id) -> cynic::GraphQlResponse<Query> {
 
     reqwest::blocking::Client::new()
         .post(url)
-        .run_graphql(query)
+        .run_graphql(&query)
         .unwrap()
 }
 

@@ -22,7 +22,7 @@ async fn test_running_2018_query() {
 
     let result = reqwest::Client::new()
         .post(mock_server.url())
-        .run_graphql(query)
+        .run_graphql(&query)
         .await
         .unwrap();
 
@@ -41,7 +41,7 @@ async fn test_2018_schema_conversion() {
 
     let result = reqwest::Client::new()
         .post(mock_server.url())
-        .run_graphql(query)
+        .run_graphql(&query)
         .await
         .unwrap();
 
@@ -69,7 +69,7 @@ async fn test_running_2021_query() {
 
     let result = reqwest::Client::new()
         .post(mock_server.url())
-        .run_graphql(query)
+        .run_graphql(&query)
         .await
         .unwrap();
 
@@ -88,7 +88,7 @@ async fn test_2021_schema_conversion() {
 
     let result = reqwest::Client::new()
         .post(mock_server.url())
-        .run_graphql(query)
+        .run_graphql(&query)
         .await
         .unwrap();
 
