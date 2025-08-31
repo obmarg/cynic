@@ -63,7 +63,7 @@ fn run_query(url: &str) -> cynic::GraphQlResponse<FilmDirectorQuery> {
 
     reqwest::blocking::Client::new()
         .post(url)
-        .run_graphql(query)
+        .run_graphql(&query)
         .unwrap()
 }
 

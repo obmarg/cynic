@@ -25,7 +25,7 @@ use super::query::schema;
 ///
 /// let data = reqwest::Client::new()
 ///     .post(url)
-///     .run_graphql(CapabilitiesQuery::build(()))
+///     .run_graphql(&CapabilitiesQuery::build(()))
 ///     .await
 ///     .unwrap()
 ///     .data

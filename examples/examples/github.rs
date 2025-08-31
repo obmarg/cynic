@@ -27,7 +27,7 @@ fn run_query() -> cynic::GraphQlResponse<PullRequestTitles> {
         .post("https://api.github.com/graphql")
         .header("Authorization", format!("Bearer {}", token))
         .header("User-Agent", "obmarg")
-        .run_graphql(query)
+        .run_graphql(&query)
         .unwrap()
 }
 

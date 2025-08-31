@@ -46,7 +46,7 @@ async fn run_query(url: &str) -> cynic::GraphQlResponse<FilmDirectorQuery> {
 
     let operation = build_query();
 
-    surf::post(url).run_graphql(operation).await.unwrap()
+    surf::post(url).run_graphql(&operation).await.unwrap()
 }
 
 fn build_query() -> cynic::Operation<FilmDirectorQuery, FilmArguments> {

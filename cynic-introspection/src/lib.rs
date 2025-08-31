@@ -21,7 +21,7 @@
 //! // We can run an introspection query and unwrap the data contained within
 //! let introspection_data = reqwest::Client::new()
 //!     .post(url)
-//!     .run_graphql(IntrospectionQuery::build(()))
+//!     .run_graphql(&IntrospectionQuery::build(()))
 //!     .await
 //!     .unwrap()
 //!     .data
@@ -54,7 +54,7 @@
 //! let introspection_data = reqwest::blocking::Client::new()
 //!     .post("https://spacex-production.up.railway.app/")
 //!     .run_graphql(
-//!         IntrospectionQuery::with_capabilities(
+//!         &IntrospectionQuery::with_capabilities(
 //!             SpecificationVersion::October2021.capabilities()
 //!         )
 //!     )
@@ -86,7 +86,7 @@
 //! // First we run a capabilites query to check what the server supports
 //! let capabilities = reqwest::Client::new()
 //!     .post(url)
-//!     .run_graphql(CapabilitiesQuery::build(()))
+//!     .run_graphql(&CapabilitiesQuery::build(()))
 //!     .await
 //!     .unwrap()
 //!     .data
@@ -96,7 +96,7 @@
 //! // Now we can safely run introspection, only querying for what the server supports.
 //! let introspection_data = reqwest::Client::new()
 //!     .post(url)
-//!     .run_graphql(IntrospectionQuery::with_capabilities(capabilities))
+//!     .run_graphql(&IntrospectionQuery::with_capabilities(capabilities))
 //!     .await
 //!     .unwrap()
 //!     .data

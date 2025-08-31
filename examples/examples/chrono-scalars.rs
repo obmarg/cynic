@@ -39,7 +39,7 @@ fn run_query() -> cynic::GraphQlResponse<JobsQuery> {
 
     reqwest::blocking::Client::new()
         .post("https://api.graphql.jobs")
-        .run_graphql(query)
+        .run_graphql(&query)
         .unwrap()
 }
 
