@@ -1,0 +1,8 @@
+type TestStruct {
+  is_snake_case: Int!
+  isCamelCase: Int!
+}
+
+type Query {
+  test: TestStruct!
+}

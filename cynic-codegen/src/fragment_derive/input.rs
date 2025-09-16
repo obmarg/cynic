@@ -1,8 +1,16 @@
 use super::directives::FieldDirective;
 
-use {darling::util::SpannedValue, proc_macro2::Span, std::collections::HashSet};
+use {
+    darling::util::SpannedValue, proc_macro2::Span, std::collections::HashSet,
+    syn::spanned::Spanned,
+};
 
-use crate::{idents::RenamableFieldIdent, schema::SchemaInput, types::CheckMode, Errors};
+use crate::{
+    idents::{RenamableFieldIdent, RenameAll},
+    schema::SchemaInput,
+    types::CheckMode,
+    Errors,
+};
 
 #[derive(darling::FromDeriveInput)]
 #[darling(attributes(cynic), supports(struct_named))]
@@ -24,6 +32,9 @@ pub struct FragmentDeriveInput {
 
     #[darling(default)]
     pub(super) no_deserialize: bool,
+
+    #[darling(default)]
+    pub(super) rename_all: Option<RenameAll>,
 
     #[darling(default)]
     variables: Option<syn::Path>,
@@ -289,7 +300,7 @@ impl FragmentDeriveField {
         self.raw_field.ident.as_ref()
     }
 
-    pub(super) fn graphql_ident(&self) -> RenamableFieldIdent {
+    pub(super) fn graphql_ident(&self, rename_rule: RenameAll) -> RenamableFieldIdent {
         let mut ident = RenamableFieldIdent::from(
             self.raw_field
                 .ident
@@ -300,6 +311,8 @@ impl FragmentDeriveField {
             let span = rename.span();
             let rename = (**rename).clone();
             ident.set_rename(rename, span)
+        } else {
+            ident.rename_with(rename_rule, self.raw_field.ident.span());
         }
         ident
     }
@@ -389,6 +402,7 @@ mod tests {
             graphql_type: Some("abcd".to_string().into()),
             variables: None,
             no_deserialize: false,
+            rename_all: None,
         };
 
         assert!(input.validate().is_ok());
@@ -482,6 +496,7 @@ mod tests {
             graphql_type: Some("abcd".to_string().into()),
             variables: None,
             no_deserialize: false,
+            rename_all: None,
         };
 
         let errors = input.validate().map(|_| ()).unwrap_err();
@@ -503,6 +518,7 @@ mod tests {
             graphql_type: Some("abcd".to_string().into()),
             variables: None,
             no_deserialize: false,
+            rename_all: None,
         };
         let errors = input.validate().map(|_| ()).unwrap_err();
         insta::assert_snapshot!(errors.to_compile_errors().to_string(), @r###":: core :: compile_error ! { "At least one field should be selected for `TestInput`." }"###);
@@ -560,6 +576,7 @@ mod tests {
             graphql_type: None,
             variables: None,
             no_deserialize: false,
+            rename_all: None,
         };
 
         assert!(input.validate().is_ok())
