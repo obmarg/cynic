@@ -8,11 +8,11 @@ use {
 };
 
 #[derive(darling::FromDeriveInput)]
-#[darling(attributes(cynic), supports(struct_named))]
+#[darling(attributes(cynic), supports(struct_named, enum_newtype))]
 pub struct InputObjectDeriveInput {
     pub(super) ident: proc_macro2::Ident,
     pub(super) generics: syn::Generics,
-    pub(super) data: darling::ast::Data<(), InputObjectDeriveField>,
+    pub(super) data: darling::ast::Data<OneOfDeriveVariant, InputObjectDeriveField>,
 
     #[darling(default)]
     schema: Option<SpannedValue<String>>,
@@ -101,4 +101,38 @@ impl InputObjectDeriveField {
         }
         ident
     }
+}
+
+#[derive(Debug, darling::FromVariant)]
+#[darling(attributes(cynic))]
+pub struct OneOfDeriveVariant {
+    pub(super) ident: proc_macro2::Ident,
+
+    #[darling(default)]
+    pub(super) rename: Option<SpannedValue<String>>,
+
+    pub(super) fields: darling::ast::Fields<OneOfDeriveField>,
+}
+
+impl OneOfDeriveVariant {
+    pub(super) fn graphql_ident(&self, rename_rule: RenameAll) -> RenamableFieldIdent {
+        let mut ident = RenamableFieldIdent::from(self.ident.clone());
+        match &self.rename {
+            Some(rename) => {
+                let span = rename.span();
+                let rename = (**rename).clone();
+                ident.set_rename(rename, span)
+            }
+            None => {
+                ident.rename_with(rename_rule, self.ident.span());
+            }
+        }
+        ident
+    }
+}
+
+#[derive(Debug, darling::FromField)]
+#[darling(attributes(cynic))]
+pub struct OneOfDeriveField {
+    pub(super) ty: syn::Type,
 }

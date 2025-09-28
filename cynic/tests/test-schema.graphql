@@ -104,3 +104,9 @@ schema {
 }
 
 directive @foo(blah: InputWithDefaults) repeatable on FIELD
+
+input OneOfInput @oneOf {
+  foo: String
+  bar: Int
+  nested: InputWithDefaults
+}
