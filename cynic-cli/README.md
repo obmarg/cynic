@@ -88,6 +88,7 @@ Options:
           Possible values:
           - 2018: Run an introspection query compatible with the 2018 GraphQL specification
           - 2021: Run an introspection query compatible with the 2021 GraphQL specification
+          - 2025: Run an introspection query compatible with the 2025 GraphQL specification
           - auto: Run an additional query to determine what the GraphQL server supports
 
   -h, --help

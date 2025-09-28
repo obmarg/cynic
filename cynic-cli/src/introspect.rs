@@ -12,6 +12,7 @@ pub(crate) fn introspect(args: IntrospectArgs) -> Result<(), IntrospectError> {
     let capabilities = match args.server_version {
         GraphQlVersion::TwentyEighteen => SpecificationVersion::June2018.capabilities(),
         GraphQlVersion::TwentyTwentyOne => SpecificationVersion::October2021.capabilities(),
+        GraphQlVersion::TwentyTwentyFive => SpecificationVersion::September2025.capabilities(),
         GraphQlVersion::AutoDetect => detect_capabilities(&client, &args)?,
     };
 

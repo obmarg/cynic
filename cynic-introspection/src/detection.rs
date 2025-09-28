@@ -59,9 +59,15 @@ impl CapabilitiesQuery {
             .iter()
             .find(|field| field.name == "specifiedByURL");
 
-        match specified_by_field {
-            Some(_) => SpecificationVersion::October2021,
-            None => SpecificationVersion::June2018,
+        let one_of_field = type_type
+            .fields
+            .iter()
+            .find(|field| field.name == "isOneOf");
+
+        match (one_of_field, specified_by_field) {
+            (Some(_), _) => SpecificationVersion::September2025,
+            (None, Some(_)) => SpecificationVersion::October2021,
+            _ => SpecificationVersion::June2018,
         }
     }
 }
@@ -78,6 +84,8 @@ pub enum SpecificationVersion {
     June2018,
     /// The GraphQL specification published in October 2021
     October2021,
+    /// The GraphQL specification published in September 2025
+    September2025,
 }
 
 #[derive(cynic::QueryFragment, Debug)]

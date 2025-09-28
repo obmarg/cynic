@@ -80,6 +80,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Scalar,
@@ -95,6 +96,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -233,6 +235,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -279,6 +282,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: InputObject,
@@ -379,6 +383,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -557,6 +562,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: InputObject,
@@ -705,6 +711,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Scalar,
@@ -718,6 +725,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -764,6 +772,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -1096,6 +1105,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -1170,6 +1180,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -1202,6 +1213,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -1304,6 +1316,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -1350,6 +1363,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -1396,6 +1410,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Scalar,
@@ -1411,6 +1426,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -1457,6 +1473,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -1509,6 +1526,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -1625,6 +1643,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: InputObject,
@@ -1689,6 +1708,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Scalar,
@@ -1702,6 +1722,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -1930,6 +1951,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -2004,6 +2026,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Scalar,
@@ -2019,6 +2042,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -2163,6 +2187,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -2459,6 +2484,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: InputObject,
@@ -3195,6 +3221,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -3373,6 +3400,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -3475,6 +3503,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -3549,6 +3578,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -3587,6 +3617,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -3745,6 +3776,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -3797,6 +3829,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -3857,6 +3890,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -3889,6 +3923,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -3941,6 +3976,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -4091,6 +4127,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -4151,6 +4188,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -4225,6 +4263,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -4271,6 +4310,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -4413,6 +4453,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -4465,6 +4506,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: InputObject,
@@ -4529,6 +4571,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -4713,6 +4756,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -4941,6 +4985,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: InputObject,
@@ -5209,6 +5254,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -7503,6 +7549,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -7535,6 +7582,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -7889,6 +7937,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -8207,6 +8256,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -8365,6 +8415,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -8467,6 +8518,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -8513,6 +8565,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -8587,6 +8640,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -8675,6 +8729,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -8721,6 +8776,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -8767,6 +8823,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -8819,6 +8876,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -9171,6 +9229,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -9217,6 +9276,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -9263,6 +9323,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: InputObject,
@@ -9543,6 +9604,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -9595,6 +9657,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Scalar,
@@ -9610,6 +9673,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: InputObject,
@@ -9832,6 +9896,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -10131,6 +10196,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -10177,6 +10243,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -10209,6 +10276,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -10347,6 +10415,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Enum,
@@ -10517,6 +10586,7 @@ Some(
                         ),
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -10605,6 +10675,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -10745,6 +10816,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -10833,6 +10905,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -10975,6 +11048,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -11257,6 +11331,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Enum,
@@ -11339,6 +11414,7 @@ Some(
                         ),
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Enum,
@@ -11405,6 +11481,7 @@ Some(
                         ),
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Scalar,
@@ -11418,6 +11495,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: InputObject,
@@ -11568,6 +11646,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -11670,6 +11749,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -11736,6 +11816,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -11835,6 +11916,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: InputObject,
@@ -11961,6 +12043,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -12037,6 +12120,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Object,
@@ -12113,6 +12197,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: InputObject,
@@ -12191,6 +12276,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Enum,
@@ -12245,6 +12331,7 @@ Some(
                         ),
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: Scalar,
@@ -12258,6 +12345,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                     Type {
                         kind: InputObject,
@@ -12408,6 +12496,7 @@ Some(
                         enum_values: None,
                         possible_types: None,
                         specified_by_url: None,
+                        is_one_of: None,
                     },
                 ],
                 directives: [

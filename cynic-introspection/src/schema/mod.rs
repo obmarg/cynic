@@ -102,6 +102,8 @@ pub struct InputObjectType {
     pub description: Option<String>,
     /// The fields of the input object
     pub fields: Vec<InputValue>,
+    /// Whether this object is a oneOf input object or not
+    pub is_one_of: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -433,6 +435,7 @@ impl TryFrom<crate::query::Type> for Type {
                     .into_iter()
                     .map(InputValue::try_from)
                     .collect::<Result<Vec<_>, _>>()?,
+                is_one_of: ty.is_one_of.unwrap_or_default(),
             })),
             crate::query::TypeKind::List => Err(SchemaError::UnexpectedList),
             crate::query::TypeKind::NonNull => Err(SchemaError::UnexpectedNonNull),
