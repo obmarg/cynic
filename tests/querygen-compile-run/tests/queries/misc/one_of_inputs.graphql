@@ -1,0 +1,3 @@
+query OneOfQuery($input: OneOfObject!) {
+  fieldWithOneOf(input: $input)
+}

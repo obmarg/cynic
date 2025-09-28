@@ -20,6 +20,8 @@ type Foo {
 
   fieldWithStringArg(input: String!): Int
 
+  fieldWithOneOf(input: OneOfObject!): Int
+
   clashes: FieldNameClashes
 }
 
@@ -66,8 +68,15 @@ type FieldNameClashes {
 type MutationRoot {
   sendManyBaz(many_baz: [Baz!]!): Int!
 }
+
 input Baz {
   id: ID!
   aString: String!
   anOptionalString: String
+}
+
+input OneOfObject @oneOf {
+  string: String
+  int: Int
+  nested: Baz
 }

@@ -1,0 +1,30 @@
+---
+source: cynic-querygen/tests/misc-tests.rs
+expression: "document_to_fragment_structs(query, schema,\n&QueryGenOptions::default()).expect(\"QueryGen Failed\")"
+snapshot_kind: text
+---
+#[derive(cynic::QueryVariables, Debug)]
+pub struct MyQueryVariables<'a> {
+    pub input: OneOfObject<'a>,
+}
+
+#[derive(cynic::QueryFragment, Debug)]
+#[cynic(graphql_type = "Foo", variables = "MyQueryVariables")]
+pub struct MyQuery {
+    #[arguments(input: $input)]
+    pub field_with_one_of: Option<i32>,
+}
+
+#[derive(cynic::InputObject, Debug)]
+pub enum OneOfObject<'a> {
+    String(&'a str),
+    Int(i32),
+    Nested(Baz<'a>),
+}
+
+#[derive(cynic::InputObject, Debug)]
+pub struct Baz<'a> {
+    pub id: &'a cynic::Id,
+    pub a_string: &'a str,
+    pub an_optional_string: Option<&'a str>,
+}

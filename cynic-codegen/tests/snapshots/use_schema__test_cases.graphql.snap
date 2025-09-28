@@ -12,6 +12,8 @@ pub struct FieldNameClashes;
 pub struct FlattenableEnums;
 pub struct Foo;
 pub struct MutationRoot;
+pub struct OneOfObject;
+impl cynic::schema::InputObjectMarker for OneOfObject {}
 pub struct RecursiveInputChild;
 impl cynic::schema::InputObjectMarker for RecursiveInputChild {}
 pub struct RecursiveInputParent;
@@ -281,6 +283,21 @@ pub mod __fields {
                 const NAME: &'static ::core::primitive::str = "input";
             }
         }
+        pub struct fieldWithOneOf;
+        impl cynic::schema::Field for fieldWithOneOf {
+            type Type = Option<super::super::Int>;
+            const NAME: &'static ::core::primitive::str = "fieldWithOneOf";
+        }
+        impl cynic::schema::HasField<fieldWithOneOf> for super::super::Foo {
+            type Type = Option<super::super::Int>;
+        }
+        pub mod _field_with_one_of_arguments {
+            pub struct input;
+            impl cynic::schema::HasArgument<input> for super::fieldWithOneOf {
+                type ArgumentType = super::super::super::OneOfObject;
+                const NAME: &'static ::core::primitive::str = "input";
+            }
+        }
         pub struct clashes;
         impl cynic::schema::Field for clashes {
             type Type = Option<super::super::FieldNameClashes>;
@@ -322,6 +339,29 @@ pub mod __fields {
         impl cynic::schema::HasField<__typename> for super::super::MutationRoot {
             type Type = super::super::String;
         }
+    }
+    pub mod OneOfObject {
+        pub struct string;
+        impl cynic::schema::Field for string {
+            type Type = Option<super::super::String>;
+            const NAME: &'static ::core::primitive::str = "string";
+        }
+        impl cynic::schema::HasInputField<string, Option<super::super::String>>
+            for super::super::OneOfObject
+        {
+        }
+        pub struct int;
+        impl cynic::schema::Field for int {
+            type Type = Option<super::super::Int>;
+            const NAME: &'static ::core::primitive::str = "int";
+        }
+        impl cynic::schema::HasInputField<int, Option<super::super::Int>> for super::super::OneOfObject {}
+        pub struct nested;
+        impl cynic::schema::Field for nested {
+            type Type = Option<super::super::Baz>;
+            const NAME: &'static ::core::primitive::str = "nested";
+        }
+        impl cynic::schema::HasInputField<nested, Option<super::super::Baz>> for super::super::OneOfObject {}
     }
     pub mod RecursiveInputChild {
         pub struct recurse;

@@ -12,6 +12,11 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 - The `QueryFragment` derive now supports the `rename_all` attribute
 
+### Bug Fixes
+
+- Fixed an issue with lifetime detection on nested input objects in the
+  generator
+
 ## v3.12.0 - 2025-08-19
 
 ### New Features

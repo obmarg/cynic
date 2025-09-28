@@ -125,6 +125,14 @@ impl<'schema> InputFieldType<'schema> {
     ) -> TypeSpec<'static> {
         input_type_spec_imp(self, true, needs_boxed, is_subobject_with_lifetime)
     }
+
+    pub fn oneof_type_spec(
+        &self,
+        needs_boxed: bool,
+        is_subobject_with_lifetime: bool,
+    ) -> TypeSpec<'static> {
+        input_type_spec_imp(self, false, needs_boxed, is_subobject_with_lifetime)
+    }
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]

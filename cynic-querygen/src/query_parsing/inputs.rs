@@ -66,11 +66,18 @@ impl<'a> InputObjects<'a> {
                         let requires_lifetime = self.objects_with_lifetime.contains(inner_type);
                         crate::output::InputObjectField {
                             schema_field: field.clone(),
-                            type_spec: field.value_type.type_spec(needs_boxed, requires_lifetime),
+                            type_spec: if object.is_oneof {
+                                field
+                                    .value_type
+                                    .oneof_type_spec(needs_boxed, requires_lifetime)
+                            } else {
+                                field.value_type.type_spec(needs_boxed, requires_lifetime)
+                            },
                         }
                     })
                     .collect(),
                 schema_name: None,
+                is_oneof: object.is_oneof,
             })
             .collect()
     }
@@ -111,16 +118,20 @@ fn lifetimed_objects<'a>(document: &NormalisedDocument<'a, 'a>) -> HashSet<&'a s
             let mut stack = vec![variable.value_type.clone()];
             let mut visited = HashSet::new();
 
-            while !stack.is_empty() {
+            'outer: while !stack.is_empty() {
                 if let Ok(InputType::InputObject(object)) =
                     stack.last().unwrap().inner_ref().lookup()
                 {
+                    println!("checking fields of {}", object.name);
                     for field in &object.fields {
                         if !visited.contains(&field.value_type.inner_name()) {
                             stack.push(field.value_type.clone());
-                            continue;
+                            visited.insert(field.value_type.inner_name().into());
+                            continue 'outer;
                         }
                     }
+
+                    println!("visiting {}", object.name);
 
                     // If we get here all child field types have been seen.
                     // We need to check whether any child fields need a lifetime...

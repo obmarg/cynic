@@ -21,6 +21,7 @@ type Foo {
     recursive2: RecursiveInputParent
   ): Boolean
   fieldWithStringArg(input: String!): Int
+  fieldWithOneOf(input: OneOfObject!): Int
   clashes: FieldNameClashes
 }
 
@@ -72,4 +73,10 @@ input Baz {
   id: ID!
   aString: String!
   anOptionalString: String
+}
+
+input OneOfObject @oneOf {
+  string: String
+  int: Int
+  nested: Baz
 }
