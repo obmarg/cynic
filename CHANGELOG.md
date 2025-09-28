@@ -8,6 +8,22 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v4.0.0 - 2025-09-28
+
+### New Features
+
+- automatically handle `oneOf` struct InputObjects (#1179)
+- InputObject derive now supports oneOf (#1174)
+- `impl Clone for Operation` (#1170)
+- accept `&Operation` in reqwest integrations (#1169)
+- support rename_all on `#[derive(QueryFragment)]` (#1167)
+- add `@oneOf` support to introspection (#1177)
+- support oneOf input objects in the generator (#1175)
+
+### Changes
+
+- bump to 1.85, edition 2024 (#1172)
+
 ### New features
 
 - The `QueryFragment` derive now supports the `rename_all` attribute
