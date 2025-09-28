@@ -18,6 +18,7 @@ pub struct FieldSerializer<'a> {
     rust_field: &'a InputObjectDeriveField,
     graphql_field: InputValue<'a>,
     schema_module: &'a syn::Path,
+    parent_is_one_of: bool,
 }
 
 impl<'a> FieldSerializer<'a> {
@@ -25,11 +26,13 @@ impl<'a> FieldSerializer<'a> {
         rust_field: &'a InputObjectDeriveField,
         graphql_field: InputValue<'a>,
         schema_module: &'a syn::Path,
+        parent_is_one_of: bool,
     ) -> FieldSerializer<'a> {
         FieldSerializer {
             rust_field,
             graphql_field,
             schema_module,
+            parent_is_one_of,
         }
     }
 
@@ -118,8 +121,8 @@ impl<'a> FieldSerializer<'a> {
     }
 
     fn should_auto_skip_serializing(&self) -> bool {
-        self.graphql_field.has_default
-            && !self.graphql_field.is_nullable()
-            && types::outer_type_is_option(&self.rust_field.ty)
+        types::outer_type_is_option(&self.rust_field.ty)
+            && (self.parent_is_one_of
+                || (self.graphql_field.has_default && !self.graphql_field.is_nullable()))
     }
 }

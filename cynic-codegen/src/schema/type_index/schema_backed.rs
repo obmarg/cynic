@@ -318,6 +318,7 @@ impl super::TypeIndex for SchemaBackedTypeIndex {
             TypeDefinition::InputObject(def) => Type::InputObject(InputObjectType {
                 name: Cow::Borrowed(def.name()),
                 fields: def.fields().map(convert_input_value).collect(),
+                is_one_of: def.is_one_of(),
             }),
         }
     }

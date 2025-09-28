@@ -32,6 +32,8 @@ pub fn standard_input_object_derive(
     let schema_module = input.schema_module();
     let graphql_type_name = proc_macro2::Literal::string(input_object.name.as_ref());
 
+    let is_one_of = input_object.is_one_of;
+
     let pairs = pair_fields(
         &fields.fields,
         input_object,
@@ -43,7 +45,7 @@ pub fn standard_input_object_derive(
     let field_serializers = pairs
         .into_iter()
         .map(|(rust_field, graphql_field)| {
-            FieldSerializer::new(rust_field, graphql_field, &schema_module)
+            FieldSerializer::new(rust_field, graphql_field, &schema_module, is_one_of)
         })
         .collect::<Vec<_>>();
 
