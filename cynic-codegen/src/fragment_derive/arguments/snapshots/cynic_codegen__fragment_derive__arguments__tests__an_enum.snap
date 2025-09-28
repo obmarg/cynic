@@ -1,6 +1,7 @@
 ---
 source: cynic-codegen/src/fragment_derive/arguments/tests.rs
-expression: "analyse(literals, field, Some(&format_ident!(\"MyArguments\").into()),\n        Span::call_site()).map(|o| o.arguments)"
+expression: "analyse_field_arguments(&schema, literals, field,\nSome(&format_ident!(\"MyArguments\").into()),\nSpan::call_site()).map(|o| o.arguments)"
+snapshot_kind: text
 ---
 Ok(
     [
@@ -44,6 +45,7 @@ Ok(
                                 has_default: false,
                             },
                         ],
+                        is_one_of: false,
                     },
                     fields: [
                         Field {

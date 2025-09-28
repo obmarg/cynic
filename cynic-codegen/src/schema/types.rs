@@ -173,6 +173,7 @@ pub struct InputObjectType<'a> {
     #[cfg_attr(feature = "rkyv", with(rkyv::with::AsOwned))]
     pub name: Cow<'a, str>,
     pub fields: Vec<InputValue<'a>>,
+    pub is_one_of: bool,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
