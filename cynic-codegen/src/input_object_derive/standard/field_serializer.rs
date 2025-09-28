@@ -1,4 +1,7 @@
-use crate::schema::{Schema, Unvalidated};
+use crate::{
+    input_object_derive::input::InputObjectDeriveField,
+    schema::{Schema, Unvalidated},
+};
 
 use {
     proc_macro2::TokenStream,
@@ -6,12 +9,9 @@ use {
     syn::spanned::Spanned,
 };
 
-use {
-    super::InputObjectDeriveField,
-    crate::{
-        schema::types::{InputType, InputValue},
-        types::{self, align_input_type, check_input_types_are_compatible},
-    },
+use crate::{
+    schema::types::{InputType, InputValue},
+    types::{self, align_input_type, check_input_types_are_compatible},
 };
 
 pub struct FieldSerializer<'a> {

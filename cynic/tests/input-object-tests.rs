@@ -86,3 +86,42 @@ fn test_input_object_stable_order() {
     "###
     );
 }
+
+#[test]
+fn test_oneof_objects() {
+    #[derive(cynic::InputObject)]
+    #[cynic(schema_path = "tests/test-schema.graphql")]
+    struct InputWithDefaults {
+        optional_int: i32,
+    }
+
+    #[derive(cynic::InputObject)]
+    #[cynic(schema_path = "tests/test-schema.graphql")]
+    enum OneOfInput {
+        Foo(String),
+        Bar(i32),
+        Nested(InputWithDefaults),
+    }
+
+    insta::assert_json_snapshot!(vec![
+            OneOfInput::Foo("hello".into()),
+            OneOfInput::Bar(123),
+            OneOfInput::Nested(InputWithDefaults { optional_int: 1 })
+        ],
+        @r#"
+    [
+      {
+        "foo": "hello"
+      },
+      {
+        "bar": 123
+      },
+      {
+        "nested": {
+          "optionalInt": 1
+        }
+      }
+    ]
+    "#
+    )
+}
