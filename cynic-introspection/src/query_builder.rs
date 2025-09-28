@@ -9,6 +9,10 @@ impl IntrospectionQuery {
         match capabilities.specification_version {
             SpecificationVersion::Unknown | SpecificationVersion::June2018 => {}
             SpecificationVersion::October2021 => builder.enable_feature("2021"),
+            SpecificationVersion::September2025 => {
+                builder.enable_feature("2021");
+                builder.enable_feature("2025");
+            }
         }
         builder.build().expect("to succeed")
     }

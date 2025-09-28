@@ -96,6 +96,9 @@ enum GraphQlVersion {
     /// Run an introspection query compatible with the 2021 GraphQL specification
     #[value(name = "2021")]
     TwentyTwentyOne,
+    /// Run an introspection query compatible with the 2025 GraphQL specification
+    #[value(name = "2025")]
+    TwentyTwentyFive,
     /// Run an additional query to determine what the GraphQL server supports
     #[value(name = "auto")]
     #[default]
@@ -107,6 +110,7 @@ impl std::fmt::Display for GraphQlVersion {
         match self {
             GraphQlVersion::TwentyEighteen => write!(f, "2018"),
             GraphQlVersion::TwentyTwentyOne => write!(f, "2021"),
+            GraphQlVersion::TwentyTwentyFive => write!(f, "2025"),
             GraphQlVersion::AutoDetect => write!(f, "auto"),
         }
     }

@@ -78,6 +78,12 @@ pub struct Type {
     /// A URL pointing to a specification for this scalar, if there is one
     #[cynic(rename = "specifiedByURL", feature = "2021")]
     pub specified_by_url: Option<String>,
+    /// Whether this type is a oneOf input object.
+    ///
+    /// This will be present on input objects from servers supporting `oneOf`
+    /// and null on other types
+    #[cynic(feature = "2025")]
+    pub is_one_of: Option<bool>,
 }
 
 #[derive(cynic::QueryFragment, Debug)]

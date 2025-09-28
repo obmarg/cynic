@@ -126,17 +126,21 @@ impl std::fmt::Display for TypeDisplay<'_> {
                 name,
                 description,
                 fields,
+                is_one_of,
             }) => {
                 write!(f, "{}", DescriptionDisplay(description.as_deref()))?;
-                if fields.is_empty() {
-                    writeln!(f, "input {name}")
-                } else {
-                    writeln!(f, "input {name} {{")?;
+                write!(f, "input {name}")?;
+                if *is_one_of {
+                    write!(f, " @oneOf")?;
+                }
+                if !fields.is_empty() {
+                    writeln!(f, " {{")?;
                     for field in fields {
                         writeln!(indented(f), "{}", InputValueDisplay(field))?;
                     }
-                    writeln!(f, "}}\n")
+                    writeln!(f, "}}")?;
                 }
+                writeln!(f)
             }
             Type::Enum(EnumType {
                 name,
