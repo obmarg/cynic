@@ -1,8 +1,8 @@
 use std::{borrow::Cow, collections::HashSet, marker::PhantomData, sync::mpsc::Sender};
 
-use crate::{coercions::CoercesTo, schema, variables::VariableDefinition, QueryVariableLiterals};
+use crate::{QueryVariableLiterals, coercions::CoercesTo, schema, variables::VariableDefinition};
 
-use super::{ast::*, to_input_literal, FlattensInto, IsFieldType, Recursable};
+use super::{FlattensInto, IsFieldType, Recursable, ast::*, to_input_literal};
 
 // The maximum depth we'll recurse to before assuming something is wrong
 // and giving up
@@ -470,7 +470,7 @@ pub struct DirectiveBuilder<'a, DirectiveMarker, VariablesFields> {
     phantom: PhantomData<fn() -> (DirectiveMarker, VariablesFields)>,
 }
 
-impl<'a, DirectiveMarker, VariablesFields> DirectiveBuilder<'a, DirectiveMarker, VariablesFields> {
+impl<DirectiveMarker, VariablesFields> DirectiveBuilder<'_, DirectiveMarker, VariablesFields> {
     /// Adds an argument to this directive.
     ///
     /// Accepts `ArgumentName` - the schema marker struct for the argument you

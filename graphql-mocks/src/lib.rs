@@ -12,7 +12,7 @@ mod server;
 
 pub use async_graphql::dynamic::ResolverContext;
 pub use dynamic::{DynamicSchema, DynamicSchemaBuilder};
-pub use server::{builder::MockGraphQlServerBuilder, MockGraphQlServer};
+pub use server::{MockGraphQlServer, builder::MockGraphQlServerBuilder};
 
 #[derive(Debug)]
 pub struct ReceivedRequest {

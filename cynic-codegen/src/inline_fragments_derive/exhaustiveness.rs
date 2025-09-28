@@ -8,7 +8,7 @@ use crate::{
     suggestions::{format_guess, guess_field},
 };
 
-use super::{input::InlineFragmentsDeriveVariant, InlineFragmentType};
+use super::{InlineFragmentType, input::InlineFragmentsDeriveVariant};
 
 pub(super) fn exhaustiveness_check(
     variants: &[SpannedValue<InlineFragmentsDeriveVariant>],

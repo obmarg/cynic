@@ -4,9 +4,8 @@ use std::collections::HashMap;
 use rkyv::Deserialize;
 
 use crate::schema::{
-    self,
+    self, Schema, SchemaError,
     types::{Directive, SchemaRoots, Type},
-    Schema, SchemaError,
 };
 
 #[derive(rkyv::Archive, rkyv::Serialize, rkyv::Deserialize, PartialEq, Eq, Debug)]
@@ -138,7 +137,7 @@ mod tests {
 
     use rkyv::Deserialize;
 
-    use crate::schema::{type_index::TypeIndex, SchemaInput};
+    use crate::schema::{SchemaInput, type_index::TypeIndex};
 
     use super::*;
 

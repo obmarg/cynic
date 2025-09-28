@@ -8,7 +8,7 @@ use serde::Deserialize;
 
 use crate::{MockGraphQlServer, MockGraphQlServerBuilder};
 
-use super::{resolvers::Resolver, DynamicSchema};
+use super::{DynamicSchema, resolvers::Resolver};
 
 pub struct DynamicSchemaBuilder {
     sdl: String,
@@ -352,7 +352,7 @@ fn root_types(schema: &cynic_parser::TypeSystemDocument) -> (&str, Option<&str>,
     (query_name, mutation_name, subscription_name)
 }
 
-fn default_field_resolver(field_name: &str) -> impl Resolver {
+fn default_field_resolver(field_name: &str) -> impl Resolver + 'static {
     let field_name = async_graphql::Name::new(field_name);
 
     move |context: ResolverContext<'_>| {

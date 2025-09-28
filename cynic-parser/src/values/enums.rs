@@ -1,6 +1,6 @@
 use crate::{AstLookup, Span};
 
-use super::{ids::ValueId, Cursor};
+use super::{Cursor, ids::ValueId};
 
 #[derive(Clone, Copy)]
 pub struct EnumValue<'a>(pub(super) Cursor<'a, ValueId>);

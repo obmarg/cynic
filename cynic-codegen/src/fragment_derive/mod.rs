@@ -2,13 +2,13 @@ use proc_macro2::TokenStream;
 use quote::ToTokens;
 
 use crate::{
+    Errors,
     idents::RenameAll,
     schema::{
-        types::{self as schema},
         Schema,
+        types::{self as schema},
     },
     suggestions::FieldSuggestionError,
-    Errors,
 };
 
 mod arguments;

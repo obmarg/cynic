@@ -1,8 +1,8 @@
 use std::fmt;
 
 use cynic_parser::{
-    values::{iter::Iter, ConstList},
     ConstValue, Span,
+    values::{ConstList, iter::Iter},
 };
 
 use super::value::DeserValue;

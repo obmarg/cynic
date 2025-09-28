@@ -1,14 +1,15 @@
 use cynic_parser::{
+    TypeSystemDocument,
     common::TypeWrappers,
     type_system::{
+        DirectiveLocation,
         ids::FieldDefinitionId,
         storage::{
             DirectiveDefinitionRecord, FieldDefinitionRecord, InputValueDefinitionRecord,
             ScalarDefinitionRecord, TypeRecord,
         },
-        writer, DirectiveLocation,
+        writer,
     },
-    TypeSystemDocument,
 };
 
 pub(crate) fn add_builtins(schema: TypeSystemDocument) -> (TypeSystemDocument, FieldDefinitionId) {

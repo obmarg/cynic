@@ -3,7 +3,7 @@ use std::{io::Write, path::PathBuf, process::Stdio};
 use insta::assert_snapshot;
 use rstest::rstest;
 
-use cynic_codegen::use_schema::{use_schema, UseSchemaParams};
+use cynic_codegen::use_schema::{UseSchemaParams, use_schema};
 
 fn format_code(input: String) -> String {
     let mut cmd = std::process::Command::new("rustfmt")

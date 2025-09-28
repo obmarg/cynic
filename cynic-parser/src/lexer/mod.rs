@@ -5,7 +5,7 @@ use std::fmt;
 use logos::{Logos, SpannedIter};
 pub use tokens::*;
 
-use crate::{parser::AdditionalErrors, Span};
+use crate::{Span, parser::AdditionalErrors};
 
 pub type Spanned<Tok, Loc, Error> = Result<(Loc, Tok, Loc), Error>;
 

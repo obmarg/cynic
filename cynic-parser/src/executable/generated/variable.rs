@@ -1,10 +1,10 @@
 use super::prelude::*;
 use super::{
+    ExecutableId,
     directive::Directive,
     ids::{ConstValueId, DirectiveId, TypeId, VariableDefinitionId},
     types::Type,
     value::ConstValue,
-    ExecutableId,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};

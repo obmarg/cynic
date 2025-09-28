@@ -1,6 +1,6 @@
 use std::{borrow::Cow, fmt};
 
-use crate::{common::trim_block_string_whitespace, type_system::StringLiteralId, AstLookup};
+use crate::{AstLookup, common::trim_block_string_whitespace, type_system::StringLiteralId};
 
 use super::TypeSystemId;
 

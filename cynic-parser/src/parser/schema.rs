@@ -2,14 +2,14 @@
 // sha3: 4f6468f81a2d449206c4515618d0732e5ee475a7f0c29a053653bb3e2725c9f0
 use crate::lexer;
 use crate::{
+    Span,
     common::{
-        trim_block_string_whitespace, unquote_block_string, unquote_string, IdRange, OperationType,
-        TypeWrappers, WrappingType,
+        IdRange, OperationType, TypeWrappers, WrappingType, trim_block_string_whitespace,
+        unquote_block_string, unquote_string,
     },
     parser::AdditionalErrors,
-    type_system::{ids::*, storage::*, writer::TypeSystemAstWriter, DirectiveLocation},
+    type_system::{DirectiveLocation, ids::*, storage::*, writer::TypeSystemAstWriter},
     values::{self, ids::ConstValueId, storage::*},
-    Span,
 };
 #[allow(unused_extern_crates)]
 extern crate lalrpop_util as __lalrpop_util;
@@ -8140,9 +8140,7 @@ fn __action3<'input>(
     (_, description, _): (usize, Option<DescriptionId>, usize),
     (_, def, _): (usize, DefinitionId, usize),
 ) {
-    {
-        ast.store_description(def, description)
-    }
+    { ast.store_description(def, description) }
 }
 
 #[allow(unused_variables)]
@@ -8599,9 +8597,7 @@ fn __action28<'input>(
     (_, _, _): (usize, Option<lexer::Token<'input>>, usize),
     (_, name, _): (usize, StringId, usize),
 ) -> Vec<StringId> {
-    {
-        vec![name]
-    }
+    { vec![name] }
 }
 
 #[allow(unused_variables)]
@@ -8994,9 +8990,7 @@ fn __action45<'input>(
     (_, _, _): (usize, Option<lexer::Token<'input>>, usize),
     (_, location, _): (usize, DirectiveLocation, usize),
 ) -> Vec<DirectiveLocation> {
-    {
-        vec![location]
-    }
+    { vec![location] }
 }
 
 #[allow(unused_variables)]
@@ -9163,9 +9157,7 @@ fn __action54<'input>(
     ast: &mut TypeSystemAstWriter,
     (_, record, _): (usize, ValueRecord, usize),
 ) -> ConstValueId {
-    {
-        ast.values.const_value(record)
-    }
+    { ast.values.const_value(record) }
 }
 
 #[allow(unused_variables)]
@@ -9179,9 +9171,7 @@ fn __action55<'input>(
     ast: &mut TypeSystemAstWriter,
     (_, record, _): (usize, ValueRecord, usize),
 ) -> ValueId {
-    {
-        ast.values.value(record)
-    }
+    { ast.values.value(record) }
 }
 
 #[allow(unused_variables)]
@@ -9745,9 +9735,7 @@ fn __action87<'input>(
     ast: &mut TypeSystemAstWriter,
     (_, directives, _): (usize, alloc::vec::Vec<()>, usize),
 ) -> IdRange<DirectiveId> {
-    {
-        ast.directive_range(Some(directives.len()))
-    }
+    { ast.directive_range(Some(directives.len())) }
 }
 
 #[allow(unused_variables)]

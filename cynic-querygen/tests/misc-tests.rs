@@ -1,6 +1,6 @@
 use insta::assert_snapshot;
 
-use cynic_querygen::{document_to_fragment_structs, QueryGenOptions};
+use cynic_querygen::{QueryGenOptions, document_to_fragment_structs};
 
 #[test]
 fn mutation_with_scalar_result_and_input() {
@@ -82,15 +82,17 @@ fn test_with_named_schema() {
     let schema = include_str!("../../schemas/github.graphql");
     let query = include_str!("queries/github/query-with-all-derives.graphql");
 
-    assert_snapshot!(document_to_fragment_structs(
-        query,
-        schema,
-        &QueryGenOptions {
-            schema_name: Some("my-schema".into()),
-            ..QueryGenOptions::default()
-        }
+    assert_snapshot!(
+        document_to_fragment_structs(
+            query,
+            schema,
+            &QueryGenOptions {
+                schema_name: Some("my-schema".into()),
+                ..QueryGenOptions::default()
+            }
+        )
+        .expect("QueryGen Failed")
     )
-    .expect("QueryGen Failed"))
 }
 
 #[test]

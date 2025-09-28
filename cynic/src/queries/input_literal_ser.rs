@@ -1,8 +1,8 @@
 use std::borrow::Cow;
 
 use serde::{
-    ser::{self, Error as _},
     Serialize,
+    ser::{self, Error as _},
 };
 
 use crate::queries::{Argument, InputLiteral};

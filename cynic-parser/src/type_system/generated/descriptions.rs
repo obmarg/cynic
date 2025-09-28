@@ -1,8 +1,8 @@
 use super::prelude::*;
 use super::{
+    TypeSystemId,
     ids::{DescriptionId, StringLiteralId},
     strings::StringLiteral,
-    TypeSystemId,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};

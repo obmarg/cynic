@@ -488,7 +488,7 @@ impl TryFrom<crate::query::FieldType> for FieldType {
                     return Ok(FieldType {
                         name: current_ty.name.ok_or(SchemaError::TypeMissingName)?,
                         wrapping: FieldWrapping(wrapping),
-                    })
+                    });
                 }
             };
         }

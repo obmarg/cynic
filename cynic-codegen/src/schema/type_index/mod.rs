@@ -1,6 +1,6 @@
 use super::{
-    types::{Directive, SchemaRoots, Type},
     SchemaError,
+    types::{Directive, SchemaRoots, Type},
 };
 
 #[cfg(feature = "rkyv")]

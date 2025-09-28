@@ -11,7 +11,7 @@ use syn::parse_quote;
 
 use crate::schema::types::{InputType, OutputType, TypeRef};
 
-use super::parsing::{parse_rust_type, RustType};
+use super::parsing::{RustType, parse_rust_type};
 
 pub fn align_output_type(ty: &syn::Type, gql_ty: &TypeRef<'_, OutputType<'_>>) -> syn::Type {
     align_output_type_impl(&parse_rust_type(ty), gql_ty).to_syn()

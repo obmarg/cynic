@@ -1,7 +1,7 @@
 use darling::util::SpannedValue;
 use syn::spanned::Spanned;
 
-use crate::{idents::RenamableFieldIdent, RenameAll};
+use crate::{RenameAll, idents::RenamableFieldIdent};
 
 #[derive(darling::FromDeriveInput)]
 #[darling(attributes(cynic), supports(struct_named))]

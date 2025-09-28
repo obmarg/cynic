@@ -1,6 +1,6 @@
 use insta::assert_snapshot;
 
-use cynic_querygen::{document_to_fragment_structs, QueryGenOptions};
+use cynic_querygen::{QueryGenOptions, document_to_fragment_structs};
 
 macro_rules! test_query {
     ($name:ident, $filename:literal) => {
@@ -9,12 +9,10 @@ macro_rules! test_query {
             let schema = include_str!("../../schemas/github.graphql");
             let query = include_str!(concat!("queries/github/", $filename));
 
-            assert_snapshot!(document_to_fragment_structs(
-                query,
-                schema,
-                &QueryGenOptions::default()
+            assert_snapshot!(
+                document_to_fragment_structs(query, schema, &QueryGenOptions::default())
+                    .expect("QueryGen Failed")
             )
-            .expect("QueryGen Failed"))
         }
     };
 }

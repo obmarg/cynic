@@ -5,8 +5,8 @@
 use std::{borrow::Cow, fmt, marker::PhantomData};
 
 use serde::{
-    de::{self, EnumAccess, Expected, MapAccess, SeqAccess, Unexpected, Visitor},
     Deserialize, Deserializer,
+    de::{self, EnumAccess, Expected, MapAccess, SeqAccess, Unexpected, Visitor},
 };
 
 use super::key_de::KeyDeserializer;

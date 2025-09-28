@@ -155,8 +155,16 @@ impl std::fmt::Display for SchemaError {
             Self::CouldNotFindType { name } => {
                 write!(f, "Could not find a type named `{}` in the schema", name)
             }
-            Self::InvalidDirectiveArgument { directive_name, argument_name, expected, found } => {
-                write!(f, "argument {argument_name} on @{directive_name} is a {found} but needs to be a {expected}")
+            Self::InvalidDirectiveArgument {
+                directive_name,
+                argument_name,
+                expected,
+                found,
+            } => {
+                write!(
+                    f,
+                    "argument {argument_name} on @{directive_name} is a {found} but needs to be a {expected}"
+                )
             }
         }
     }

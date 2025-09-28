@@ -6,15 +6,15 @@ use syn::Ident;
 
 use crate::{
     error::Errors,
-    schema::{types::Directive, Schema, Unvalidated},
+    schema::{Schema, Unvalidated, types::Directive},
 };
 
 pub use self::{
     output::Output,
-    parsing::{directives_from_field_attrs, FieldDirective},
+    parsing::{FieldDirective, directives_from_field_attrs},
 };
 
-use super::arguments::{analyse::AnalysedDirectiveArguments, ArgumentLiteral, FieldArgument};
+use super::arguments::{ArgumentLiteral, FieldArgument, analyse::AnalysedDirectiveArguments};
 
 pub struct AnalysedFieldDirective<'a> {
     directive: Directive<'a>,

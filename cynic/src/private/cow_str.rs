@@ -1,8 +1,8 @@
 use std::{borrow::Cow, fmt};
 
 use serde::{
-    de::{self, Visitor},
     Deserialize, Deserializer,
+    de::{self, Visitor},
 };
 
 /// Wrapper around a Cow to allow for custom deserialization.

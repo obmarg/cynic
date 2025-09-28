@@ -11,7 +11,7 @@ use crate::{
 
 pub use self::{
     output::Output,
-    parsing::{arguments_from_field_attrs, CynicArguments, FieldArgument, FieldArgumentValue},
+    parsing::{CynicArguments, FieldArgument, FieldArgumentValue, arguments_from_field_attrs},
 };
 
 pub(super) use self::parsing::ArgumentLiteral;

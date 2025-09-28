@@ -1,9 +1,9 @@
 use std::{borrow::Cow, marker::PhantomData};
 
 use crate::{
+    QueryVariables,
     core::QueryFragment,
     schema::{MutationRoot, QueryRoot, SubscriptionRoot},
-    QueryVariables,
 };
 
 mod builder;

@@ -1,11 +1,11 @@
 use super::prelude::*;
 use super::{
+    ExecutableId,
     argument::Argument,
     directive::Directive,
     ids::{
         ArgumentId, DirectiveId, FieldSelectionId, FragmentSpreadId, InlineFragmentId, SelectionId,
     },
-    ExecutableId,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};

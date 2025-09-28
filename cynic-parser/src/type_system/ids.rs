@@ -1,7 +1,7 @@
 use std::num::NonZeroU32;
 
-use super::{storage::*, DefinitionRecord, TypeSystemDocument};
-use crate::{common::IdRange, AstLookup};
+use super::{DefinitionRecord, TypeSystemDocument, storage::*};
+use crate::{AstLookup, common::IdRange};
 
 pub use crate::values::ids::{ConstValueId, ValueId};
 

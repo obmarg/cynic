@@ -7,8 +7,8 @@ use crate::{
     error::Errors,
     idents::RenameAll,
     schema::{
-        types::{EnumType, EnumValue},
         Schema, Unvalidated,
+        types::{EnumType, EnumValue},
     },
 };
 

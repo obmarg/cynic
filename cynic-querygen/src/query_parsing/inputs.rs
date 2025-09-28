@@ -176,7 +176,7 @@ impl<'a> Iterator for InputObjectIter<'a> {
                 InputType::InputObject(input_object_details)
                     if self.seen.contains(input_object_details.name) =>
                 {
-                    continue
+                    continue;
                 }
                 InputType::InputObject(input_object_details) => {
                     self.seen.insert(input_object_details.name);
@@ -195,8 +195,8 @@ impl<'a> Iterator for InputObjectIter<'a> {
 mod tests {
     use {
         super::*,
-        crate::{add_builtins, query_parsing::normalisation::normalise, TypeIndex},
-        cynic_parser::{type_system::ids::FieldDefinitionId, TypeSystemDocument},
+        crate::{TypeIndex, add_builtins, query_parsing::normalisation::normalise},
+        cynic_parser::{TypeSystemDocument, type_system::ids::FieldDefinitionId},
         std::{rc::Rc, sync::LazyLock},
     };
 

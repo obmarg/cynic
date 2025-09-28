@@ -5,8 +5,8 @@ use pretty::{DocAllocator, Pretty};
 use crate::{common::IdOperations, printing::pretty::printer::PrettyOptions};
 
 use super::{
-    iter::IdReader, Allocator, EnumValueDefinition, FieldDefinition, InputValueDefinition,
-    NodeDisplay,
+    Allocator, EnumValueDefinition, FieldDefinition, InputValueDefinition, NodeDisplay,
+    iter::IdReader,
 };
 
 /// A sequence of things with docstrings attached.

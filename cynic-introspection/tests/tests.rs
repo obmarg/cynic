@@ -1,5 +1,5 @@
-use cynic::{http::ReqwestExt, GraphQlResponse};
-use cynic_introspection::{query::IntrospectionQuery, SchemaError, SpecificationVersion};
+use cynic::{GraphQlResponse, http::ReqwestExt};
+use cynic_introspection::{SchemaError, SpecificationVersion, query::IntrospectionQuery};
 use graphql_mocks::mocks;
 use serde_json::json;
 

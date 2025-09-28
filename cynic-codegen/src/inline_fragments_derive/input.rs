@@ -136,8 +136,8 @@ pub(super) enum ValidationMode {
 impl InlineFragmentsDeriveVariant {
     fn validate(&self, mode: ValidationMode, span: proc_macro2::Span) -> Result<(), Errors> {
         use {
-            darling::ast::Style::{Struct, Tuple, Unit},
             ValidationMode::{Interface, Union},
+            darling::ast::Style::{Struct, Tuple, Unit},
         };
 
         if *self.fallback {

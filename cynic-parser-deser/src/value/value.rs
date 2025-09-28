@@ -19,7 +19,7 @@ pub enum DeserValue<'a> {
     Object(Object<'a>),
 }
 
-impl<'a> DeserValue<'a> {
+impl DeserValue<'_> {
     pub fn span(&self) -> Option<Span> {
         match self {
             DeserValue::Int(inner) => inner.span(),

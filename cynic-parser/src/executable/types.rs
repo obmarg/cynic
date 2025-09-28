@@ -1,11 +1,11 @@
 use crate::{
-    common::{TypeWrappers, TypeWrappersIter, WrappingType},
     AstLookup, Span,
+    common::{TypeWrappers, TypeWrappersIter, WrappingType},
 };
 
 use super::{
-    ids::{StringId, TypeId},
     ExecutableId, ReadContext,
+    ids::{StringId, TypeId},
 };
 
 pub struct TypeRecord {

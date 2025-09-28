@@ -1,7 +1,7 @@
 use std::num::NonZeroU32;
 
-use super::{storage::*, ValueStore};
-use crate::{common::IdRange, AstLookup};
+use super::{ValueStore, storage::*};
+use crate::{AstLookup, common::IdRange};
 
 macro_rules! make_id {
     ($name:ident, $output:ident, $field:ident) => {

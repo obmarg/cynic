@@ -2,7 +2,7 @@ use std::borrow::Cow;
 
 use {
     proc_macro2::Span,
-    syn::{spanned::Spanned, GenericArgument, TypePath},
+    syn::{GenericArgument, TypePath, spanned::Spanned},
 };
 
 #[derive(Debug, Clone)]
@@ -117,21 +117,21 @@ pub fn parse_rust_type(ty: &syn::Type) -> RustType<'_> {
                 syn: Cow::Borrowed(ty),
                 inner: Box::new(parse_rust_type(&reference.elem)),
                 span,
-            }
+            };
         }
         syn::Type::Array(array) => {
             return RustType::List {
                 syn: Cow::Borrowed(ty),
                 inner: Box::new(parse_rust_type(&array.elem)),
                 span,
-            }
+            };
         }
         syn::Type::Slice(slice) => {
             return RustType::List {
                 syn: Cow::Borrowed(ty),
                 inner: Box::new(parse_rust_type(&slice.elem)),
                 span,
-            }
+            };
         }
         _ => {}
     }
@@ -181,8 +181,12 @@ impl<'a> RustType<'a> {
             RustType::Ref { mut syn, span, .. } => {
                 match syn.to_mut() {
                     syn::Type::Path(path) => path.replace_generic_param(&new_inner),
-                    syn::Type::Reference(reference) => reference.elem = Box::new(new_inner.to_syn()),
-                    _ => panic!("We shouldn't have constructed RustType::Ref for anything else than these types")
+                    syn::Type::Reference(reference) => {
+                        reference.elem = Box::new(new_inner.to_syn())
+                    }
+                    _ => panic!(
+                        "We shouldn't have constructed RustType::Ref for anything else than these types"
+                    ),
                 }
                 RustType::Ref {
                     syn,
@@ -196,11 +200,16 @@ impl<'a> RustType<'a> {
                     syn::Type::Array(array) => array.elem = Box::new(new_inner.to_syn()),
                     syn::Type::Slice(slice) => slice.elem = Box::new(new_inner.to_syn()),
                     syn::Type::Reference(ref_to_slice) => {
-                        let syn::Type::Slice(slice) = &mut *ref_to_slice.elem
-                            else { panic!("We shouldn't have constructed RustType::List for a Ref unless the type beneath is a Slice") };
+                        let syn::Type::Slice(slice) = &mut *ref_to_slice.elem else {
+                            panic!(
+                                "We shouldn't have constructed RustType::List for a Ref unless the type beneath is a Slice"
+                            )
+                        };
                         slice.elem = Box::new(new_inner.to_syn());
                     }
-                    _ => panic!("We shouldn't have constructed RustType::List for anything else than these types")
+                    _ => panic!(
+                        "We shouldn't have constructed RustType::List for anything else than these types"
+                    ),
                 }
 
                 RustType::List {

@@ -1,4 +1,4 @@
-use quote::{format_ident, quote, ToTokens, TokenStreamExt};
+use quote::{ToTokens, TokenStreamExt, format_ident, quote};
 
 use crate::idents::to_pascal_case;
 

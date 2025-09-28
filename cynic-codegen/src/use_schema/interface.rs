@@ -1,4 +1,4 @@
-use quote::{quote, ToTokens, TokenStreamExt};
+use quote::{ToTokens, TokenStreamExt, quote};
 
 use crate::schema::types::InterfaceType;
 

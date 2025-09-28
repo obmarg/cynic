@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-use crate::{value::ValueType, ConstDeserializer, DeserValue, Error};
+use crate::{ConstDeserializer, DeserValue, Error, value::ValueType};
 
 // ValueDeserialize vs DeserializeValue
 pub trait ValueDeserialize<'a>: Sized {

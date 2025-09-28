@@ -3,8 +3,8 @@ mod renames;
 
 use attributes::{FieldAttributes, FieldDefault, StructAttribute};
 use proc_macro2::{Span, TokenStream};
-use quote::{format_ident, quote, ToTokens};
-use syn::{parse_quote, Fields};
+use quote::{ToTokens, format_ident, quote};
+use syn::{Fields, parse_quote};
 
 #[proc_macro_derive(ValueDeserialize, attributes(deser))]
 pub fn value_deserialize(input: proc_macro::TokenStream) -> proc_macro::TokenStream {

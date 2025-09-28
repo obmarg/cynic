@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use indexmap::IndexSet;
 
-use crate::{common::IdRange, Span};
+use crate::{Span, common::IdRange};
 
 pub use super::{ids::*, storage::*};
 

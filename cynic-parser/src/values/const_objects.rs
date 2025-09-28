@@ -1,10 +1,10 @@
 use std::fmt;
 
-use crate::{common::IdRange, AstLookup, Span};
+use crate::{AstLookup, Span, common::IdRange};
 
 use super::{
-    iter::{Iter, ValueStoreReader},
     ConstFieldId, ConstValue, ConstValueId, ValueStoreId,
+    iter::{Iter, ValueStoreReader},
 };
 
 #[derive(Clone, Copy)]
