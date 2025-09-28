@@ -27,9 +27,9 @@ without error. This maintains the same backwards compatibility guarantees as
 most GraphQL clients: adding a required field is a breaking change, but adding
 an optional field is not.
 
-Currently any missing optional fields will not be serialized in queries,
-whereas optional fields that are present in the struct but set to None will be
-sent as `null`.
+Any missing optional fields will never be serialized in queries. Optional
+fields that are present in the struct but set to None will be sent as `null`,
+unless overidden by `skip_serializing_if` or `@oneOf` (see below).
 
 <!-- TODO: example of the above?  Better wording. -->
 
@@ -41,7 +41,19 @@ handle this smoothly, Cynic matches rust fields up to their equivalent
 specifying a `rename_all = "None"` attribute, or customised via alternative
 `rename_all` values or individual `rename` attributes on the fields.
 
-#### Struct Attributes
+### `@oneOf` input objects
+
+GraphQl 2025 introduced `@oneOf` input objects where only a single field of the
+input object can be provided. This is supported natively in cynic in two ways
+
+1. A struct input object that is defined as `@oneOf` will automatically skip
+   serializing any fields that are set to `None`. In this case it is the
+   responsibility of the user to enusre only one field is set - as a GraphQl
+   server will reject any requests with more than one field.
+2. An enum with one variant per field can be used instead - this will be
+   correctly serialized as an object.
+
+### Struct Attributes
 
 An InputObject can be configured with several attributes on the struct itself:
 
@@ -53,18 +65,18 @@ An InputObject can be configured with several attributes on the struct itself:
   a particular rule to match their GraphQL counterparts. If not provided this
   defaults to camelCase to be consistent with GraphQL conventions.
 - `schema` tells cynic which schema to use to validate your InlineFragments.
-  The schema you provide should have been registered in your `build.rs`.  This
+  The schema you provide should have been registered in your `build.rs`. This
   is optional if you're using the schema that was registered as default, or if
   you're using `schema_path` instead.
 - `schema_path` sets a path to the GraphQL schema. This is only required
   if you're using a schema that wasn't registered in `build.rs`.
-- `schema_module` tells cynic where to find your schema module.  This is
+- `schema_module` tells cynic where to find your schema module. This is
   optional and should only be needed if your schema module is not in scope or
   named `schema`.
 
 <!-- TODO: list of the rename rules, possibly pulled from codegen docs -->
 
-#### Field Attributes
+### Field Attributes
 
 Each field can also have it's own attributes:
 
