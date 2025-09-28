@@ -27,6 +27,20 @@ pub struct Operation<QueryFragment, Variables = ()> {
     phantom: PhantomData<fn() -> QueryFragment>,
 }
 
+impl<F, V> Clone for Operation<F, V>
+where
+    V: Clone,
+{
+    fn clone(&self) -> Self {
+        Self {
+            query: self.query.clone(),
+            variables: self.variables.clone(),
+            operation_name: self.operation_name.clone(),
+            phantom: PhantomData,
+        }
+    }
+}
+
 impl<QueryFragment, Variables> std::fmt::Debug for Operation<QueryFragment, Variables>
 where
     Variables: std::fmt::Debug,
