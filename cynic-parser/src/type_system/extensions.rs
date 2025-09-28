@@ -1,6 +1,6 @@
 use std::{borrow::Cow, fmt};
 
-use crate::common::OperationType;
+use crate::{common::OperationType, type_system::InputObjectDefinition};
 
 use super::{Argument, Description, Directive, RootOperationTypeDefinition, SchemaDefinition};
 
@@ -45,5 +45,12 @@ impl<'a> SchemaDefinition<'a> {
 impl<'a> Directive<'a> {
     pub fn argument(&self, name: &str) -> Option<Argument<'a>> {
         self.arguments().find(|arg| arg.name() == name)
+    }
+}
+
+impl<'a> InputObjectDefinition<'a> {
+    pub fn is_one_of(&self) -> bool {
+        self.directives()
+            .any(|directive| directive.name() == "oneOf")
     }
 }
