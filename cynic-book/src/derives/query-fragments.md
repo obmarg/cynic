@@ -212,6 +212,14 @@ Cynic provides build in support for the `skip` & `include` directives. Any
 other field directives can also be used, provided they don't require special
 support from the client.
 
+### Field Naming
+
+It's a common GraphQL convention for fields to be named in `camelCase`. To
+handle this smoothly, Cynic matches rust fields up to their equivalent
+`camelCase` GraphQL fields. This behaviour can be disabled by
+specifying a `rename_all = "None"` attribute, or customised via alternative
+`rename_all` values or individual `rename` attributes on the fields.
+
 #### Struct Attributes
 
 A QueryFragment can be configured with several attributes on the struct itself:
@@ -233,6 +241,9 @@ A QueryFragment can be configured with several attributes on the struct itself:
   cases where you wish to do this yourself. Note that it is your responsibility
   to ensure the Deserialize impl is correct: many of cynics guarantees only hold
   when cynic generates the Deserialize impl.
+- `rename_all="camelCase"` tells cynic to rename all the rust field names with
+  a particular rule to match their GraphQL counterparts. If not provided this
+  defaults to camelCase to be consistent with GraphQL conventions.
 
 #### Field Attributes
 

@@ -2,6 +2,7 @@ use proc_macro2::TokenStream;
 use quote::ToTokens;
 
 use crate::{
+    idents::RenameAll,
     schema::{
         types::{self as schema},
         Schema,
@@ -49,10 +50,11 @@ pub fn fragment_derive_impl(input: FragmentDeriveInput) -> Result<TokenStream, E
         .lookup::<FragmentDeriveType<'_>>(&input.graphql_type_name())
         .map_err(|e| syn::Error::new(input.graphql_type_span(), e))?;
 
+    let rename_all = input.rename_all.unwrap_or(RenameAll::CamelCase);
     let graphql_name = &(input.graphql_type_name());
     let schema_module = input.schema_module();
     let variables = input.variables();
-    let fields = pair_fields(fields.into_iter(), &schema_type)?;
+    let fields = pair_fields(fields.into_iter(), rename_all, &schema_type)?;
 
     let fragment_impl = FragmentImpl::new_for(
         &schema,
@@ -78,12 +80,13 @@ pub fn fragment_derive_impl(input: FragmentDeriveInput) -> Result<TokenStream, E
 
 fn pair_fields<'a>(
     rust_fields: impl IntoIterator<Item = FragmentDeriveField>,
+    rename_all: RenameAll,
     schema_type: &FragmentDeriveType<'a>,
 ) -> Result<Vec<(FragmentDeriveField, Option<schema::Field<'a>>)>, Errors> {
     let mut result = Vec::new();
     let mut unknown_fields = Vec::new();
     for field in rust_fields {
-        let ident = field.graphql_ident();
+        let ident = field.graphql_ident(rename_all);
         match (schema_type.field(&ident), field.spread()) {
             (Some(schema_field), _) => result.push((field, Some(schema_field.clone()))),
             (None, false) => unknown_fields.push(ident),
