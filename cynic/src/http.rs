@@ -194,7 +194,7 @@ mod reqwest_ext {
         /// the and returns the result.
         fn run_graphql<ResponseData, Vars>(
             self,
-            operation: Operation<ResponseData, Vars>,
+            operation: impl AsRef<Operation<ResponseData, Vars>>,
         ) -> CynicReqwestBuilder<ResponseData>
         where
             Vars: serde::Serialize,
@@ -287,13 +287,13 @@ mod reqwest_ext {
     impl ReqwestExt for reqwest::RequestBuilder {
         fn run_graphql<ResponseData, Vars>(
             self,
-            operation: Operation<ResponseData, Vars>,
+            operation: impl AsRef<Operation<ResponseData, Vars>>,
         ) -> CynicReqwestBuilder<ResponseData>
         where
             Vars: serde::Serialize,
             ResponseData: serde::de::DeserializeOwned + 'static,
         {
-            CynicReqwestBuilder::new(self.json(&operation))
+            CynicReqwestBuilder::new(self.json(operation.as_ref()))
         }
     }
 }
@@ -354,7 +354,7 @@ mod reqwest_blocking_ext {
         /// the and returns the result.
         fn run_graphql<ResponseData, Vars>(
             self,
-            operation: Operation<ResponseData, Vars>,
+            operation: impl AsRef<Operation<ResponseData, Vars>>,
         ) -> Result<GraphQlResponse<ResponseData>, CynicReqwestError>
         where
             Vars: serde::Serialize,
@@ -364,13 +364,13 @@ mod reqwest_blocking_ext {
     impl ReqwestBlockingExt for reqwest::blocking::RequestBuilder {
         fn run_graphql<ResponseData, Vars>(
             self,
-            operation: Operation<ResponseData, Vars>,
+            operation: impl AsRef<Operation<ResponseData, Vars>>,
         ) -> Result<GraphQlResponse<ResponseData>, CynicReqwestError>
         where
             Vars: serde::Serialize,
             ResponseData: serde::de::DeserializeOwned + 'static,
         {
-            let response = self.json(&operation).send()?;
+            let response = self.json(operation.as_ref()).send()?;
 
             let status = response.status();
             if !status.is_success() {
