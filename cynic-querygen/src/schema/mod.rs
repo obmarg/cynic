@@ -59,6 +59,7 @@ pub struct UnionDetails<'schema> {
 pub struct InputObjectDetails<'schema> {
     pub name: &'schema str,
     pub fields: Vec<InputField<'schema>>,
+    pub is_oneof: bool,
 }
 
 #[derive(Debug, PartialEq, Eq, PartialOrd, Ord, Hash, Clone)]
@@ -129,6 +130,9 @@ impl<'schema> Type<'schema> {
                     .fields()
                     .map(|field| InputField::from_parser(field, type_index))
                     .collect(),
+                is_oneof: obj
+                    .directives()
+                    .any(|directive| directive.name() == "oneOf"),
             }),
         }
     }

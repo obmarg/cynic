@@ -231,6 +231,13 @@ fn main() {
             "../../cynic-querygen/tests/queries/starwars/skip.graphql",
             r#"SkipTest::build(SkipTestVariables { film_id: &"ZmlsbXM6MQ==".into(), skip_title: true })"#,
         ),
+        TestCase::query_norun(
+            &test_schema,
+            "tests/queries/misc/one_of_inputs.graphql",
+            r#"OneOfQuery::build(OneOfQueryVariables {
+                input: OneOfObject::Int(1)
+            })"#,
+        ),
     ];
 
     for case in cases {

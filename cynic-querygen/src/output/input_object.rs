@@ -1,3 +1,5 @@
+mod variant;
+
 use std::fmt::Write;
 
 use crate::{casings::CasingExt, output::attr_output::Attributes, schema};
@@ -9,6 +11,7 @@ pub struct InputObject<'schema> {
     pub name: String,
     pub fields: Vec<InputObjectField<'schema>>,
     pub schema_name: Option<String>,
+    pub is_oneof: bool,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Hash)]
@@ -32,28 +35,54 @@ impl std::fmt::Display for InputObject<'_> {
         }
 
         write!(f, "{attributes}")?;
-        writeln!(
-            f,
-            "pub struct {}{} {{",
-            self.name.to_pascal_case(),
-            schema::TypeSpec::lifetime(self.fields.iter().map(|f| &f.type_spec))
-        )?;
+        if self.is_oneof {
+            writeln!(
+                f,
+                "pub enum {}{} {{",
+                self.name.to_pascal_case(),
+                schema::TypeSpec::lifetime(self.fields.iter().map(|f| &f.type_spec))
+            )?;
 
-        for field in self.fields.iter() {
-            let mut f = indented(f, 4);
+            for field in self.fields.iter() {
+                let mut f = indented(f, 4);
 
-            let name = field.schema_field.name.to_snake_case();
-            let mut output = super::Field::new(&name, &field.type_spec);
+                let name = field.schema_field.name.to_pascal_case();
+                let mut output = variant::Variant::new(&name, &field.type_spec);
 
-            if name.to_camel_case() != field.schema_field.name {
-                // If a snake -> camel casing roundtrip is not lossless
-                // we need to explicitly rename this field
-                output.add_rename(field.schema_field.name);
+                if name.to_snake_case() != field.schema_field.name {
+                    // If a snake -> pascal casing roundtrip is not lossless
+                    // we need to explicitly rename this field
+                    output.add_rename(field.schema_field.name);
+                }
+
+                write!(f, "{}", output)?;
             }
 
-            write!(f, "{}", output)?;
-        }
+            writeln!(f, "}}")
+        } else {
+            writeln!(
+                f,
+                "pub struct {}{} {{",
+                self.name.to_pascal_case(),
+                schema::TypeSpec::lifetime(self.fields.iter().map(|f| &f.type_spec))
+            )?;
 
-        writeln!(f, "}}")
+            for field in self.fields.iter() {
+                let mut f = indented(f, 4);
+
+                let name = field.schema_field.name.to_snake_case();
+                let mut output = super::Field::new(&name, &field.type_spec);
+
+                if name.to_camel_case() != field.schema_field.name {
+                    // If a snake -> camel casing roundtrip is not lossless
+                    // we need to explicitly rename this field
+                    output.add_rename(field.schema_field.name);
+                }
+
+                write!(f, "{}", output)?;
+            }
+
+            writeln!(f, "}}")
+        }
     }
 }

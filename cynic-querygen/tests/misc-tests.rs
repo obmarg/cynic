@@ -156,3 +156,18 @@ fn test_recursive_input_lifetimes() {
             .expect("QueryGen Failed for recursive input lifetimes test")
     )
 }
+
+#[test]
+fn test_oneof_inputs() {
+    let schema = include_str!("../../schemas/test_cases.graphql");
+    let query = r#"
+      query MyQuery($input: OneOfObject!) {
+        fieldWithOneOf(input: $input)
+      }
+    "#;
+
+    assert_snapshot!(
+        document_to_fragment_structs(query, schema, &QueryGenOptions::default())
+            .expect("QueryGen Failed")
+    )
+}
