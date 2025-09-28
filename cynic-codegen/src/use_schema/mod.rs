@@ -13,14 +13,14 @@ pub use params::UseSchemaParams;
 
 use {
     proc_macro2::TokenStream,
-    quote::{quote, ToTokens},
+    quote::{ToTokens, quote},
 };
 
 use crate::{
     error::Errors,
     schema::{
-        types::{DirectiveLocation, Type},
         Schema, SchemaInput, Validated,
+        types::{DirectiveLocation, Type},
     },
 };
 

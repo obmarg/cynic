@@ -1,9 +1,9 @@
 use super::prelude::*;
 use super::{
+    ExecutableId,
     directive::Directive,
     ids::{DirectiveId, FragmentDefinitionId, SelectionId},
     selections::Selection,
-    ExecutableId,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};

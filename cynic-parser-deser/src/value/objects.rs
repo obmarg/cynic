@@ -1,9 +1,8 @@
 use std::fmt;
 
 use cynic_parser::{
-    type_system,
+    Span, type_system,
     values::{self, ConstObject, ConstObjectField},
-    Span,
 };
 
 use super::value::DeserValue;

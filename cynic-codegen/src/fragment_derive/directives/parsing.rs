@@ -2,10 +2,10 @@ use std::collections::HashSet;
 
 use proc_macro2::{Ident, Span};
 use syn::{
+    Meta, Token,
     parse::{Parse, ParseStream},
     punctuated::Punctuated,
     spanned::Spanned,
-    Meta, Token,
 };
 
 use crate::fragment_derive::arguments::FieldArgumentValue;
@@ -64,7 +64,7 @@ impl Parse for FieldDirectiveAttribute {
                     return Err(syn::Error::new_spanned(
                         meta,
                         "directives cannot use name = value syntax",
-                    ))
+                    ));
                 }
             };
 
@@ -114,7 +114,7 @@ fn validate_if_or_skip(
                 return Err(syn::Error::new(
                     expr.span(),
                     "unsuppported syntax - use graphql argument syntax here",
-                ))
+                ));
             }
             FieldArgumentValue::Literal(ArgumentLiteral::Literal(syn::Lit::Bool(bool))) => {
                 return_value = Some(BooleanLiteral::Boolean(bool.value));
@@ -142,7 +142,7 @@ fn validate_if_or_skip(
 mod test {
     use assert_matches::assert_matches;
     use quote::quote;
-    use syn::{parse2, parse_quote};
+    use syn::{parse_quote, parse2};
 
     use super::*;
 

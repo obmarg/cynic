@@ -1,10 +1,10 @@
 use crate::{
+    AstLookup, Span,
     common::{TypeWrappers, TypeWrappersIter, WrappingType},
     type_system::ids::TypeId,
-    AstLookup, Span,
 };
 
-use super::{iter::Iter, Definition, ReadContext, StringId, TypeDefinition, TypeSystemId};
+use super::{Definition, ReadContext, StringId, TypeDefinition, TypeSystemId, iter::Iter};
 
 pub struct TypeRecord {
     pub name: StringId,
@@ -139,12 +139,12 @@ impl<'a> Iterator for NamedTypeDefinitions<'a> {
         loop {
             match self.iter.next()? {
                 Definition::Type(type_definition) if type_definition.name() == self.name => {
-                    return Some(NamedTypeDefinition::Definition(type_definition))
+                    return Some(NamedTypeDefinition::Definition(type_definition));
                 }
                 Definition::TypeExtension(type_definition)
                     if type_definition.name() == self.name =>
                 {
-                    return Some(NamedTypeDefinition::Extension(type_definition))
+                    return Some(NamedTypeDefinition::Extension(type_definition));
                 }
                 _ => continue,
             }

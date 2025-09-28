@@ -1,5 +1,5 @@
 use super::iter::Iter;
-use super::{ids, TypeSystemId};
+use super::{TypeSystemId, ids};
 
 /// A prelude module for all the generated modules
 ///
@@ -10,13 +10,13 @@ use super::{ids, TypeSystemId};
 /// `use prelude::*` and be done with it.
 mod prelude {
     pub(super) use crate::{
+        AstLookup, Span,
         common::{IdRange, OperationType},
         type_system::{
+            DirectiveLocation, ReadContext, TypeSystemDocument,
             ids::StringId,
             iter::{IdReader, Iter},
-            DirectiveLocation, ReadContext, TypeSystemDocument,
         },
-        AstLookup, Span,
     };
 }
 

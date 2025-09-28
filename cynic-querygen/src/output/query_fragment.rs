@@ -9,7 +9,7 @@ use crate::{
 
 use {
     super::indented,
-    crate::{query_parsing::TypedValue, schema::OutputFieldType, Error},
+    crate::{Error, query_parsing::TypedValue, schema::OutputFieldType},
 };
 
 #[derive(Debug, PartialEq)]

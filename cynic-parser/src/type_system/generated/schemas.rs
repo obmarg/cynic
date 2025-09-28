@@ -1,9 +1,9 @@
 use super::prelude::*;
 use super::{
+    TypeSystemId,
     descriptions::Description,
     directives::Directive,
     ids::{DescriptionId, DirectiveId, RootOperationTypeDefinitionId, SchemaDefinitionId},
-    TypeSystemId,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};

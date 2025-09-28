@@ -4,7 +4,7 @@ use std::path::PathBuf;
 
 use proc_macro2::TokenStream;
 use quote::quote;
-use syn::{self, parse_quote, Item, LitStr};
+use syn::{self, Item, LitStr, parse_quote};
 
 use crate::schema::parser::SchemaLoadError;
 

@@ -1,5 +1,5 @@
 use {
-    quote::{quote, ToTokens, TokenStreamExt},
+    quote::{ToTokens, TokenStreamExt, quote},
     syn::parse_quote,
 };
 

@@ -49,7 +49,7 @@ impl<'a> SubtypeMarkers<'a> {
 
 impl quote::ToTokens for SubtypeMarkers<'_> {
     fn to_tokens(&self, tokens: &mut TokenStream) {
-        use quote::{quote, TokenStreamExt};
+        use quote::{TokenStreamExt, quote};
 
         let subtype = self.subtype.to_rust_ident();
         let supertypes = self.supertypes.iter().map(|marker| marker.to_rust_ident());

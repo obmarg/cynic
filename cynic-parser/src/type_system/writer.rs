@@ -5,8 +5,8 @@ use indexmap::IndexSet;
 use crate::common::IdRange;
 use crate::values::writer::ValueWriter;
 
-use super::{ids::*, storage::*};
 use super::{DefinitionRecord, TypeSystemDocument};
+use super::{ids::*, storage::*};
 
 pub struct TypeSystemAstWriter {
     pub(crate) values: crate::values::writer::ValueWriter,

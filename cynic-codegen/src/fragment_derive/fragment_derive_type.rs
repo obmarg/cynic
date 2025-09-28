@@ -1,9 +1,9 @@
 use std::borrow::Cow;
 
 use crate::schema::{
+    FieldName, SchemaError,
     markers::{FieldMarkerModule, TypeMarkerIdent},
     types::{Field, Kind, Type},
-    FieldName, SchemaError,
 };
 
 pub struct FragmentDeriveType<'a> {

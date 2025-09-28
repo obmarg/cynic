@@ -32,12 +32,12 @@ default-members = [
 
 [workspace.package]
 authors = ["Graeme Coupar <graeme@turbofish.tech>"]
-edition = "2021"
+edition = "2024"
 homepage = "https://cynic-rs.dev"
 repository = "https://github.com/obmarg/cynic"
 license = "MPL-2.0"
 version = "3.12.0"
-rust-version = "1.80"
+rust-version = "1.85"
 
 [workspace.dependencies]
 darling = "0.20"

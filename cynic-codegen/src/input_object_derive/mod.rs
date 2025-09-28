@@ -8,8 +8,8 @@ use crate::{
     generics_for_serde,
     idents::RenameAll,
     schema::{
-        types::{InputObjectType, InputValue},
         Schema,
+        types::{InputObjectType, InputValue},
     },
     suggestions::FieldSuggestionError,
 };

@@ -33,10 +33,16 @@ impl std::fmt::Display for SchemaLoadError {
                 "Could not find a schema with this name.  Have you registered it in build.rs?  {SCHEMA_DOCUMENTATION_TEXT}",
             ),
             SchemaLoadError::DefaultSchemaNotFound => {
-                write!(f, "This derive is trying to use the default schema but it doesn't look like you've registered a default.  Please provide the `schema` argument or set a default in your build.rs.  {SCHEMA_DOCUMENTATION_TEXT}")
+                write!(
+                    f,
+                    "This derive is trying to use the default schema but it doesn't look like you've registered a default.  Please provide the `schema` argument or set a default in your build.rs.  {SCHEMA_DOCUMENTATION_TEXT}"
+                )
             }
             SchemaLoadError::UnknownOutDirWithNamedSchema(name) => {
-                write!(f, "You requested a schema named {name} but it doesn't look like you've registered any schemas.  {SCHEMA_DOCUMENTATION_TEXT}")
+                write!(
+                    f,
+                    "You requested a schema named {name} but it doesn't look like you've registered any schemas.  {SCHEMA_DOCUMENTATION_TEXT}"
+                )
             }
             SchemaLoadError::UnknownOutDirWithDefaultSchema => {
                 write!(

@@ -13,13 +13,13 @@ use variables::VariableStructDetails;
 pub use normalisation::{Directive, Variable};
 pub use value::{LiteralContext, TypedValue};
 
-use cynic_parser::{executable as parser, ExecutableDocument};
+use cynic_parser::{ExecutableDocument, executable as parser};
 
 use crate::{
+    Error, TypeIndex,
     casings::CasingExt,
     naming::Namer,
     output::{self, Output},
-    Error, TypeIndex,
 };
 
 pub fn parse_query_document<'a>(

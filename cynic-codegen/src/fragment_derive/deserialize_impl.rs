@@ -76,7 +76,7 @@ impl quote::ToTokens for DeserializeImpl<'_> {
 
 impl quote::ToTokens for StandardDeserializeImpl<'_> {
     fn to_tokens(&self, tokens: &mut TokenStream) {
-        use quote::{quote, TokenStreamExt};
+        use quote::{TokenStreamExt, quote};
 
         let target_struct = &self.target_struct;
         let serialized_names = self
@@ -215,7 +215,7 @@ impl quote::ToTokens for StandardDeserializeImpl<'_> {
 
 impl quote::ToTokens for SpreadingDeserializeImpl<'_> {
     fn to_tokens(&self, tokens: &mut TokenStream) {
-        use quote::{quote, TokenStreamExt};
+        use quote::{TokenStreamExt, quote};
 
         let target_struct = &self.target_struct;
 

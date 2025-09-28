@@ -5,7 +5,7 @@
 
 // extern crate proc_macro;
 
-use darling::{ast::NestedMeta, Error};
+use darling::{Error, ast::NestedMeta};
 use proc_macro::TokenStream;
 
 use cynic_codegen::{

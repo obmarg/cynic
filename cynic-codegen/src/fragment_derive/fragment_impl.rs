@@ -7,16 +7,16 @@ use {
 use crate::{
     error::Errors,
     schema::{
-        types::{Field, OutputType},
         Schema, Unvalidated,
+        types::{Field, OutputType},
     },
-    types::{self, check_spread_type, check_types_are_compatible, CheckMode},
+    types::{self, CheckMode, check_spread_type, check_types_are_compatible},
     variables_fields_path,
 };
 
 use super::{
     arguments::{arguments_from_field_attrs, process_arguments},
-    directives::{process_directive, AnalysedFieldDirective},
+    directives::{AnalysedFieldDirective, process_directive},
     fragment_derive_type::FragmentDeriveType,
 };
 

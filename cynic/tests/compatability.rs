@@ -56,6 +56,7 @@ fn input_fields_may_be_singular_when_should_be_list() {
 
     #[derive(InputObject)]
     #[cynic(schema_path = "tests/test-schema.graphql")]
+    #[allow(dead_code)]
     struct SeriesOfBlogs {
         authors: Vec<String>,
         blogs: BlogPostInput,

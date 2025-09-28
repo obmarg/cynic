@@ -2,7 +2,7 @@ use std::fmt;
 
 use crate::{AstLookup, Span};
 
-use super::{const_lists::ConstList, ids::ValueId, iter::Iter, value::Value, Cursor};
+use super::{Cursor, const_lists::ConstList, ids::ValueId, iter::Iter, value::Value};
 
 #[derive(Clone, Copy)]
 pub struct List<'a>(pub(super) super::Cursor<'a, ValueId>);

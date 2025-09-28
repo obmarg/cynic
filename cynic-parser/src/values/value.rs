@@ -1,6 +1,7 @@
-use crate::{common::IdRange, AstLookup, Span};
+use crate::{AstLookup, Span, common::IdRange};
 
 use super::{
+    Cursor, ObjectField, ValueId,
     const_value::ConstValue,
     enums::EnumValue,
     ids::{FieldId, StringId},
@@ -9,7 +10,6 @@ use super::{
     objects::Object,
     scalars::{BooleanValue, FloatValue, IntValue, NullValue, StringValue},
     variables::VariableValue,
-    Cursor, ObjectField, ValueId,
 };
 
 #[derive(Debug, Clone, Copy)]

@@ -7,10 +7,9 @@ use std::fmt;
 pub use report::Report;
 
 use crate::{
-    lexer,
+    Span, lexer,
     parser::AdditionalErrors,
     type_system::{DirectiveLocation, MalformedDirectiveLocation},
-    Span,
 };
 
 #[derive(Clone, Debug, PartialEq, Eq)]

@@ -2,7 +2,7 @@ use proc_macro2::Span;
 use rstest::rstest;
 use syn::parse_quote;
 
-use crate::schema::{types::Type, Schema, SchemaInput};
+use crate::schema::{Schema, SchemaInput, types::Type};
 
 use super::{analyse::analyse_field_arguments, parsing::CynicArguments};
 
@@ -55,14 +55,10 @@ fn test_analyse_errors_without_argument_struct() {
         parse_quote! { filters: $aVaraible, optionalFilters: $anotherVar };
     let literals = literals.arguments.into_iter().collect::<Vec<_>>();
 
-    insta::assert_debug_snapshot!(analyse_field_arguments(
-        &schema,
-        literals,
-        field,
-        None,
-        Span::call_site()
+    insta::assert_debug_snapshot!(
+        analyse_field_arguments(&schema, literals, field, None, Span::call_site())
+            .map(|o| o.arguments)
     )
-    .map(|o| o.arguments))
 }
 
 const SCHEMA: &str = r#"

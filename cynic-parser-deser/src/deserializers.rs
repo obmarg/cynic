@@ -1,4 +1,4 @@
-use crate::{deserialize::ValueDeserialize, value::Object, DeserValue, Error};
+use crate::{DeserValue, Error, deserialize::ValueDeserialize, value::Object};
 
 pub trait ConstDeserializer<'a> {
     fn deserialize<T: ValueDeserialize<'a>>(self) -> Result<T, Error>;

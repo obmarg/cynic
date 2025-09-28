@@ -2,9 +2,10 @@
 // sha3: b4ae9b21642e4e2dfc418c776e2835efbd7497d16f4f26bb16c873fdcd432610
 use crate::lexer;
 use crate::{
+    Span,
     common::{
-        trim_block_string_whitespace, unquote_block_string, unquote_string, IdRange, OperationType,
-        TypeWrappers, WrappingType,
+        IdRange, OperationType, TypeWrappers, WrappingType, trim_block_string_whitespace,
+        unquote_block_string, unquote_string,
     },
     executable::{ids::*, storage::*, writer::ExecutableAstWriter},
     values::{
@@ -12,7 +13,6 @@ use crate::{
         ids::{ConstValueId, ValueId},
         storage::*,
     },
-    Span,
 };
 #[allow(unused_extern_crates)]
 extern crate lalrpop_util as __lalrpop_util;
@@ -7038,9 +7038,7 @@ fn __action10<'input>(
     (_, entries, _): (usize, alloc::vec::Vec<()>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
 ) -> Vec<()> {
-    {
-        entries
-    }
+    { entries }
 }
 
 #[allow(unused_variables)]
@@ -7084,9 +7082,7 @@ fn __action12<'input>(
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, value, _): (usize, ConstValueId, usize),
 ) -> ConstValueId {
-    {
-        value
-    }
+    { value }
 }
 
 #[allow(unused_variables)]
@@ -7102,9 +7098,7 @@ fn __action13<'input>(
     (_, selections, _): (usize, alloc::vec::Vec<SelectionRecord>, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
 ) -> IdRange<SelectionId> {
-    {
-        ast.selection_set(selections)
-    }
+    { ast.selection_set(selections) }
 }
 
 #[allow(unused_variables)]
@@ -7219,9 +7213,7 @@ fn __action17<'input>(
     (_, alias, _): (usize, StringId, usize),
     (_, _, _): (usize, lexer::Token<'input>, usize),
 ) -> StringId {
-    {
-        alias
-    }
+    { alias }
 }
 
 #[allow(unused_variables)]
@@ -7236,9 +7228,7 @@ fn __action18<'input>(
     (_, _, _): (usize, lexer::Token<'input>, usize),
     (_, name, _): (usize, StringId, usize),
 ) -> StringId {
-    {
-        name
-    }
+    { name }
 }
 
 #[allow(unused_variables)]
@@ -7318,9 +7308,7 @@ fn __action23<'input>(
     ast: &mut ExecutableAstWriter,
     (_, directives, _): (usize, alloc::vec::Vec<()>, usize),
 ) -> IdRange<DirectiveId> {
-    {
-        ast.directive_range(Some(directives.len()))
-    }
+    { ast.directive_range(Some(directives.len())) }
 }
 
 #[allow(unused_variables)]
@@ -7401,9 +7389,7 @@ fn __action27<'input>(
     ast: &mut ExecutableAstWriter,
     (_, record, _): (usize, ValueRecord, usize),
 ) -> ConstValueId {
-    {
-        ast.values.const_value(record)
-    }
+    { ast.values.const_value(record) }
 }
 
 #[allow(unused_variables)]
@@ -7507,9 +7493,7 @@ fn __action32<'input>(
     ast: &mut ExecutableAstWriter,
     (_, record, _): (usize, ValueRecord, usize),
 ) -> ValueId {
-    {
-        ast.values.value(record)
-    }
+    { ast.values.value(record) }
 }
 
 #[allow(unused_variables)]

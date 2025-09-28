@@ -18,7 +18,7 @@ pub struct InlineFragmentsImpl<'a> {
 
 impl quote::ToTokens for InlineFragmentsImpl<'_> {
     fn to_tokens(&self, tokens: &mut TokenStream) {
-        use quote::{quote, TokenStreamExt};
+        use quote::{TokenStreamExt, quote};
 
         let target_enum = &self.target_enum;
         let inner_types = self.fragments.iter().map(|fragment| &fragment.inner_type);

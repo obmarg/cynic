@@ -195,8 +195,8 @@ pub use {
 };
 
 pub use cynic_proc_macros::{
-    schema, schema_for_derives, use_schema, Enum, InlineFragments, InputObject, QueryFragment,
-    QueryVariableLiterals, QueryVariables, Scalar,
+    Enum, InlineFragments, InputObject, QueryFragment, QueryVariableLiterals, QueryVariables,
+    Scalar, schema, schema_for_derives, use_schema,
 };
 
 #[doc(hidden)]

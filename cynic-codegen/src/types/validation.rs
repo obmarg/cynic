@@ -2,7 +2,7 @@ use proc_macro2::Span;
 use syn::spanned::Spanned;
 
 use {
-    super::parsing::{parse_rust_type, RustType},
+    super::parsing::{RustType, parse_rust_type},
     crate::schema::types::{InputType, InputValue, OutputType, TypeRef},
 };
 
@@ -229,22 +229,41 @@ impl From<TypeValidationError> for syn::Error {
     fn from(err: TypeValidationError) -> Self {
         let span = err.span();
         let message = match err {
-            TypeValidationError::FieldIsOptional { provided_type, .. } =>
-                format!("This field is nullable but you're not wrapping the type in Option.  Did you mean Option<{}>", provided_type),
-            TypeValidationError::FieldIsRequired { provided_type, .. } =>
-                format!("This field is not nullable but you're wrapping the type in Option.  Did you mean {}", provided_type),
+            TypeValidationError::FieldIsOptional { provided_type, .. } => format!(
+                "This field is nullable but you're not wrapping the type in Option.  Did you mean Option<{}>",
+                provided_type
+            ),
+            TypeValidationError::FieldIsRequired { provided_type, .. } => format!(
+                "This field is not nullable but you're wrapping the type in Option.  Did you mean {}",
+                provided_type
+            ),
             TypeValidationError::FieldIsList { provided_type, .. } => {
-                format!("This field is a list but you're not wrapping the type in Vec.  Did you mean Vec<{}>", provided_type)
-            },
-            TypeValidationError::FieldIsNotList { provided_type, .. } => {
-                format!("This field is not a list but you're wrapping the type in Vec.  Did you mean {}", provided_type)
-            },
-            TypeValidationError::RecursiveFieldWithoutOption { provided_type, .. } => {
-                format!("Recursive types must be wrapped in Option.  Did you mean Option<{}>", provided_type)
+                format!(
+                    "This field is a list but you're not wrapping the type in Vec.  Did you mean Vec<{}>",
+                    provided_type
+                )
             }
-            TypeValidationError::SpreadOnOption { .. } => "You can't spread on an optional field".to_string(),
-            TypeValidationError::SpreadOnVec { .. } => "You can't spread on a list field".to_string(),
-            TypeValidationError::SkippableFieldWithoutError { provided_type,.. } => format!("This field has @skip or @include on it so it must be optional.  Did you mean Option<{provided_type}>"),
+            TypeValidationError::FieldIsNotList { provided_type, .. } => {
+                format!(
+                    "This field is not a list but you're wrapping the type in Vec.  Did you mean {}",
+                    provided_type
+                )
+            }
+            TypeValidationError::RecursiveFieldWithoutOption { provided_type, .. } => {
+                format!(
+                    "Recursive types must be wrapped in Option.  Did you mean Option<{}>",
+                    provided_type
+                )
+            }
+            TypeValidationError::SpreadOnOption { .. } => {
+                "You can't spread on an optional field".to_string()
+            }
+            TypeValidationError::SpreadOnVec { .. } => {
+                "You can't spread on a list field".to_string()
+            }
+            TypeValidationError::SkippableFieldWithoutError { provided_type, .. } => format!(
+                "This field has @skip or @include on it so it must be optional.  Did you mean Option<{provided_type}>"
+            ),
         };
 
         syn::Error::new(span, message)

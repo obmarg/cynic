@@ -52,7 +52,9 @@ pub(crate) enum IntrospectError {
     GraphQlError,
     #[error(transparent)]
     HttpError(#[from] cynic::http::CynicReqwestError),
-    #[error("Couldn't parse a header from {0}.  Make sure you've passed a header of the form `Name: Value`")]
+    #[error(
+        "Couldn't parse a header from {0}.  Make sure you've passed a header of the form `Name: Value`"
+    )]
     MalformedHeaderArgument(String),
     #[error("Couldn't convert introspection result into schema: {0}")]
     SchemaError(cynic_introspection::SchemaError),

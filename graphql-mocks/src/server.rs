@@ -1,7 +1,7 @@
 use std::{sync::Arc, time::Duration};
 
 use async_graphql_axum::GraphQLSubscription;
-use axum::{routing::post, Router};
+use axum::{Router, routing::post};
 use builder::MockGraphQlServerBuilder;
 use handler::graphql_handler;
 use url::Url;

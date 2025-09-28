@@ -1,6 +1,6 @@
 use std::{borrow::Cow, marker::PhantomData};
 
-use super::{names::FieldName, SchemaError};
+use super::{SchemaError, names::FieldName};
 use cynic_parser::type_system as parser;
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]

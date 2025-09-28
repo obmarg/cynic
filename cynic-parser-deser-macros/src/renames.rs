@@ -45,9 +45,9 @@ impl FromStr for RenameAll {
             "camelcase" => Ok(RenameAll::CamelCase),
             "snake_case" => Ok(RenameAll::SnakeCase),
             "screaming_snake_case" => Ok(RenameAll::ScreamingSnakeCase),
-            case => {
-                Err(format!("unknown case: {case}.  expected one of lowercase, UPPERCASE, PascalCAse, camelCase, snake_case, SCREAMING_SNAKE_CASE"))
-            }
+            case => Err(format!(
+                "unknown case: {case}.  expected one of lowercase, UPPERCASE, PascalCAse, camelCase, snake_case, SCREAMING_SNAKE_CASE"
+            )),
         }
     }
 }

@@ -6,15 +6,15 @@ use std::{
 };
 
 use cynic_parser::{
+    Span,
     common::{TypeWrappers, WrappingType},
     type_system::{
-        self as parser, ids::FieldDefinitionId, storage::InputValueDefinitionRecord, Definition,
-        DirectiveDefinition, TypeDefinition,
+        self as parser, Definition, DirectiveDefinition, TypeDefinition, ids::FieldDefinitionId,
+        storage::InputValueDefinitionRecord,
     },
-    Span,
 };
 
-use crate::schema::{names::FieldName, types::*, SchemaError};
+use crate::schema::{SchemaError, names::FieldName, types::*};
 
 #[ouroboros::self_referencing]
 pub struct SchemaBackedTypeIndex {

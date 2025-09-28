@@ -3,9 +3,9 @@ use std::collections::HashSet;
 
 use super::{inputs::InputObjects, normalisation::NormalisedDocument};
 use crate::{
+    Error,
     output::Scalar,
     schema::{EnumDetails, Type, TypeRef},
-    Error,
 };
 
 pub fn extract_leaf_types<'schema>(

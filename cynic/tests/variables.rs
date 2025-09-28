@@ -57,7 +57,7 @@ fn test_unused_variables_not_rendered() {
 mod variable_inlining {
     use cynic::OperationBuilder;
 
-    use super::{schema, TestArgs, TestArgsFields};
+    use super::{TestArgs, TestArgsFields, schema};
 
     #[derive(cynic::QueryFragment, PartialEq, Debug)]
     #[cynic(schema_path = "../schemas/simple.graphql", variables = "TestArgs")]

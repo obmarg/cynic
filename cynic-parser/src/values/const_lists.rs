@@ -1,8 +1,8 @@
 use std::fmt;
 
-use crate::{common::IdRange, AstLookup, Span};
+use crate::{AstLookup, Span, common::IdRange};
 
-use super::{const_value::ConstValue, iter::Iter, ConstValueId};
+use super::{ConstValueId, const_value::ConstValue, iter::Iter};
 
 #[derive(Clone, Copy)]
 pub struct ConstList<'a>(pub(super) super::Cursor<'a, ConstValueId>);

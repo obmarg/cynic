@@ -1,10 +1,10 @@
 use proc_macro2::Span;
 use syn::{
+    Ident, Result, Token,
     ext::IdentExt,
     parse::{Parse, ParseStream},
     punctuated::Punctuated,
     spanned::Spanned,
-    Ident, Result, Token,
 };
 
 pub fn arguments_from_field_attrs(

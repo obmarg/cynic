@@ -6,10 +6,10 @@ use {
 };
 
 use crate::{
+    Errors,
     idents::{RenamableFieldIdent, RenameAll},
     schema::SchemaInput,
     types::CheckMode,
-    Errors,
 };
 
 #[derive(darling::FromDeriveInput)]

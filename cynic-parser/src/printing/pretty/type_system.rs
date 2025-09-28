@@ -7,7 +7,7 @@ use crate::{printing::escape_string, type_system::*};
 
 use self::{argument_sequence::ArgumentSequence, field_sequence::FieldSequence};
 
-use super::{printer::PrettyOptions, sorting::sort_key_for, Allocator, NodeDisplay};
+use super::{Allocator, NodeDisplay, printer::PrettyOptions, sorting::sort_key_for};
 
 impl crate::TypeSystemDocument {
     pub fn to_sdl_pretty(&self) -> String {

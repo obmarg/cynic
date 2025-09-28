@@ -1,4 +1,4 @@
-use crate::{variables::VariableType, QueryVariables};
+use crate::{QueryVariables, variables::VariableType};
 
 pub struct VariableDefinitions<'a> {
     vars: Vec<&'a (&'static str, VariableType)>,

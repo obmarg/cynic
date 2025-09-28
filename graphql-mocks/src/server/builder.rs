@@ -1,6 +1,6 @@
 use std::{future::IntoFuture, sync::Arc};
 
-use futures_lite::{future, FutureExt};
+use futures_lite::{FutureExt, future};
 
 use crate::Schema;
 

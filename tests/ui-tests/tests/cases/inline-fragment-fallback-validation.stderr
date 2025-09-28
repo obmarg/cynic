@@ -25,9 +25,7 @@ error[E0308]: mismatched types
 12 |   enum MyFailingUnionType {
    |  ______-
 13 | |     Nested(Nested),
-14 | |
-15 | |     // This is allowed, but needs to be a string to work.
-16 | |     #[cynic(fallback)]
+...  |
 17 | |     Other(Nested),
    | |         - ^^^^^^ expected `Nested`, found `String`
    | |_________|

@@ -1,6 +1,6 @@
 use std::fmt;
 
-use crate::{lexer, parser::AdditionalErrors, Span};
+use crate::{Span, lexer, parser::AdditionalErrors};
 
 pub(crate) fn unquote_block_string(src: &str) -> &str {
     assert!(src.starts_with("\"\"\"") && src.ends_with("\"\"\""));

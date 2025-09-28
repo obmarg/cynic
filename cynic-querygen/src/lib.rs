@@ -7,7 +7,7 @@ mod query_parsing;
 mod schema;
 
 use output::Output;
-use schema::{add_builtins, GraphPath, TypeIndex};
+use schema::{GraphPath, TypeIndex, add_builtins};
 
 #[derive(thiserror::Error, Debug)]
 pub enum Error {

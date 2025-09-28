@@ -3,11 +3,11 @@ use std::fmt;
 use crate::{AstLookup, Span};
 
 use super::{
+    Cursor, ValueStoreId,
     const_objects::ConstObject,
     ids::{FieldId, StringId, ValueId},
     iter::{Iter, ValueStoreReader},
     value::Value,
-    Cursor, ValueStoreId,
 };
 
 pub struct FieldRecord {

@@ -4,13 +4,14 @@ use {
 };
 
 use crate::{
+    Errors,
     inline_fragments_derive::input::ValidationMode,
     schema::{
+        Schema, SchemaError,
         markers::TypeMarkerIdent,
         types::{InterfaceType, Kind, Type, UnionType},
-        Schema, SchemaError,
     },
-    variables_fields_path, Errors,
+    variables_fields_path,
 };
 
 pub mod input;
@@ -187,7 +188,7 @@ struct QueryFragmentImpl<'a> {
 
 impl quote::ToTokens for QueryFragmentImpl<'_> {
     fn to_tokens(&self, tokens: &mut TokenStream) {
-        use quote::{quote, TokenStreamExt};
+        use quote::{TokenStreamExt, quote};
 
         let target_struct = &self.target_enum;
         let type_lock = &self.type_lock;

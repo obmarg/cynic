@@ -1,5 +1,5 @@
 // TODO: docstring.
-use darling::{util::SpannedValue, FromMeta};
+use darling::{FromMeta, util::SpannedValue};
 use proc_macro2::TokenStream;
 
 mod utils;

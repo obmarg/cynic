@@ -1,6 +1,6 @@
 use std::borrow::Cow;
 
-use crate::{queries::SelectionBuilder, QueryVariablesFields};
+use crate::{QueryVariablesFields, queries::SelectionBuilder};
 
 /// A trait that marks a type as part of a GraphQL query.
 ///

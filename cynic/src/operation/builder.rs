@@ -1,9 +1,9 @@
 use std::{borrow::Cow, collections::HashSet, marker::PhantomData};
 
 use crate::{
-    queries::{build_executable_document, OperationType},
-    schema::{MutationRoot, QueryRoot, SubscriptionRoot},
     QueryFragment, QueryVariableLiterals, QueryVariables,
+    queries::{OperationType, build_executable_document},
+    schema::{MutationRoot, QueryRoot, SubscriptionRoot},
 };
 
 use super::Operation;

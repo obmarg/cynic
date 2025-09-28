@@ -2,7 +2,7 @@ use std::fmt;
 
 use cynic_parser::Span;
 
-use crate::{value::ValueType, DeserValue};
+use crate::{DeserValue, value::ValueType};
 
 // TODO: Should these errors have paths in them as well?
 

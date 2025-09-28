@@ -1,9 +1,9 @@
-use rust_decimal::{prelude::FromPrimitive, Decimal};
+use rust_decimal::{Decimal, prelude::FromPrimitive};
 use std::collections::BTreeMap;
 
 use crate::{
-    schema::{InputFieldType, InputType},
     Error,
+    schema::{InputFieldType, InputType},
 };
 
 use super::normalisation::Variable;

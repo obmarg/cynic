@@ -1,10 +1,10 @@
 use std::{
-    collections::{hash_map::DefaultHasher, BTreeSet, HashMap, HashSet},
+    collections::{BTreeSet, HashMap, HashSet, hash_map::DefaultHasher},
     hash::{Hash, Hasher},
     rc::Rc,
 };
 
-use cynic_parser::{executable::Iter, ExecutableDocument};
+use cynic_parser::{ExecutableDocument, executable::Iter};
 use inflector::Inflector;
 
 use super::{
@@ -14,8 +14,8 @@ use super::{
 };
 
 use crate::{
-    schema::{InputFieldType, InputTypeRef, OutputField, OutputType, OutputTypeRef, Type, TypeRef},
     Error, GraphPath, TypeIndex,
+    schema::{InputFieldType, InputTypeRef, OutputField, OutputType, OutputTypeRef, Type, TypeRef},
 };
 
 #[derive(Debug, PartialEq, Eq)]
@@ -566,7 +566,7 @@ mod tests {
     use {
         super::*,
         crate::schema::add_builtins,
-        cynic_parser::{type_system::ids::FieldDefinitionId, TypeSystemDocument},
+        cynic_parser::{TypeSystemDocument, type_system::ids::FieldDefinitionId},
         std::sync::LazyLock,
     };
 

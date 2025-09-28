@@ -1,11 +1,11 @@
 use super::prelude::*;
 use super::{
+    TypeSystemId,
     descriptions::Description,
     directives::Directive,
     ids::{DescriptionId, DirectiveId, FieldDefinitionId, InputValueDefinitionId, TypeId},
     input_values::InputValueDefinition,
     types::Type,
-    TypeSystemId,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};

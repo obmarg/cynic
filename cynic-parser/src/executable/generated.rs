@@ -1,4 +1,4 @@
-use super::{ids, iter::Iter, types, ExecutableId};
+use super::{ExecutableId, ids, iter::Iter, types};
 
 /// A prelude module for all the generated modules
 ///
@@ -9,13 +9,13 @@ use super::{ids, iter::Iter, types, ExecutableId};
 /// `use prelude::*` and be done with it.
 mod prelude {
     pub(super) use crate::{
+        AstLookup, Span,
         common::{IdRange, OperationType},
         executable::{
+            ExecutableDocument, ReadContext,
             ids::StringId,
             iter::{IdReader, Iter},
-            ExecutableDocument, ReadContext,
         },
-        AstLookup, Span,
     };
 }
 

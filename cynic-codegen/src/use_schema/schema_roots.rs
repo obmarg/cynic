@@ -4,7 +4,7 @@ use crate::schema::types::SchemaRoots;
 
 impl quote::ToTokens for SchemaRoots<'_> {
     fn to_tokens(&self, tokens: &mut TokenStream) {
-        use quote::{quote, TokenStreamExt};
+        use quote::{TokenStreamExt, quote};
 
         let name = self.query.marker_ident().to_rust_ident();
 

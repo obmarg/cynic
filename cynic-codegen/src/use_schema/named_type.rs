@@ -37,7 +37,7 @@ impl<'a> NamedType<'a> {
 
 impl quote::ToTokens for NamedType<'_> {
     fn to_tokens(&self, tokens: &mut TokenStream) {
-        use quote::{quote, TokenStreamExt};
+        use quote::{TokenStreamExt, quote};
 
         let target_struct = self.marker_ident.to_rust_ident();
         let graphql_name = proc_macro2::Literal::string(self.graphql_name.as_ref());

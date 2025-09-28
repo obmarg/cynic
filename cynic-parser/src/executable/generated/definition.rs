@@ -1,9 +1,9 @@
 use super::prelude::*;
 use super::{
+    ExecutableId,
     fragment::FragmentDefinition,
     ids::{ExecutableDefinitionId, FragmentDefinitionId, OperationDefinitionId},
     operation::OperationDefinition,
-    ExecutableId,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};

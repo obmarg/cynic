@@ -1,9 +1,9 @@
 use cynic_parser::{
-    type_system::{
-        self, ids::FieldDefinitionId, Definition, DirectiveDefinition, FieldDefinition,
-        TypeDefinition,
-    },
     TypeSystemDocument,
+    type_system::{
+        self, Definition, DirectiveDefinition, FieldDefinition, TypeDefinition,
+        ids::FieldDefinitionId,
+    },
 };
 use std::{borrow::Cow, collections::HashMap, rc::Rc};
 

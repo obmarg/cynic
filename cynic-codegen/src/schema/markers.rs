@@ -181,7 +181,7 @@ impl ArgumentMarkerModule<'_> {
     }
 }
 
-impl<'a> DirectiveMarkerIdent<'a> {
+impl DirectiveMarkerIdent<'_> {
     pub fn to_path(&self, schema_module_path: &syn::Path) -> syn::Path {
         let mut path = schema_module_path.clone();
         path.push(self.to_rust_ident());
@@ -296,7 +296,7 @@ impl<'a> InterfaceRef<'a> {
     }
 }
 
-impl<'a> Directive<'a> {
+impl Directive<'_> {
     pub fn argument_module(&self) -> DirectiveArgumentMarkerModule<'_> {
         DirectiveArgumentMarkerModule {
             directive_name: self.name.borrow(),

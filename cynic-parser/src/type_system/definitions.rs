@@ -1,11 +1,11 @@
 use crate::AstLookup;
 
 use super::{
-    ids::*,
-    iter::{IdReader, Iter},
     DefinitionId, Description, Directive, DirectiveDefinition, EnumDefinition,
     InputObjectDefinition, InterfaceDefinition, ObjectDefinition, ScalarDefinition,
     SchemaDefinition, TypeSystemId, UnionDefinition,
+    ids::*,
+    iter::{IdReader, Iter},
 };
 
 #[derive(Clone, Copy)]

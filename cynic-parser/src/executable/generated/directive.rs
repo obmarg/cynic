@@ -1,8 +1,8 @@
 use super::prelude::*;
 use super::{
+    ExecutableId,
     argument::Argument,
     ids::{ArgumentId, DirectiveId},
-    ExecutableId,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};

@@ -104,7 +104,7 @@ mod surf_ext {
                             return Err(surf::Error::from_str(
                                 response.status(),
                                 format!("Server returned {}: {}", response.status(), body_string),
-                            ))
+                            ));
                         }
                     };
                 }

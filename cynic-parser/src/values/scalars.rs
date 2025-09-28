@@ -2,7 +2,7 @@ use core::fmt;
 
 use crate::{AstLookup, Span};
 
-use super::{ids::ValueId, Cursor};
+use super::{Cursor, ids::ValueId};
 
 #[derive(Clone, Copy)]
 pub struct IntValue<'a>(pub(super) Cursor<'a, ValueId>);
