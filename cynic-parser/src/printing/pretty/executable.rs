@@ -1,8 +1,11 @@
+mod variable_sequence;
+
 use pretty::{DocAllocator, Pretty};
 
 use crate::common::OperationType;
 
 use crate::executable::*;
+use crate::printing::pretty::executable::variable_sequence::VariableSequence;
 
 use super::printer::PrettyOptions;
 use super::{Allocator, NodeDisplay};
@@ -64,7 +67,15 @@ impl crate::ExecutableDocument {
 
 impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<OperationDefinition<'a>> {
     fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
-        let mut builder = allocator.text(self.0.operation_type().as_str());
+        let mut builder = allocator.nil();
+
+        if let Some(description) = self.0.description() {
+            builder = builder
+                .append(self.with_node(description))
+                .append(allocator.hardline());
+        }
+
+        builder = builder.append(allocator.text(self.0.operation_type().as_str()));
 
         if let Some(name) = self.0.name() {
             builder = builder
@@ -73,17 +84,15 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<OperationDefinition<'a>> {
         }
 
         let mut variables_pretty = allocator.nil();
-        let mut variables = self.0.variable_definitions().peekable();
-        if variables.peek().is_some() {
+        let variables = self.0.variable_definitions();
+        if variables.len() != 0 {
             variables_pretty = allocator
-                .intersperse(variables.map(self.mapper()), comma_or_nil(allocator))
-                .group();
-
-            variables_pretty = variables_pretty
-                .clone()
+                .line_()
+                .append(VariableSequence::new(variables, self.1))
                 .nest(2)
+                .append(allocator.line_())
                 .parens()
-                .flat_alt(variables_pretty.parens());
+                .group()
         }
 
         let mut directives = self.0.directives().peekable();
@@ -111,8 +120,16 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<FragmentDefinition<'a>> {
                 .append(allocator.intersperse(directives.map(self.mapper()), allocator.space()));
         }
 
-        allocator
-            .text("fragment")
+        let mut builder = allocator.nil();
+
+        if let Some(description) = self.0.description() {
+            builder = builder
+                .append(self.with_node(description))
+                .append(allocator.hardline());
+        }
+
+        builder
+            .append(allocator.text("fragment"))
             .append(allocator.space())
             .append(allocator.text(self.0.name()))
             .append(allocator.space())
@@ -144,8 +161,16 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<VariableDefinition<'a>> {
                 .append(allocator.intersperse(directives.map(self.mapper()), allocator.space()));
         }
 
-        allocator
-            .text("$")
+        let mut builder = allocator.nil();
+
+        if let Some(description) = self.0.description() {
+            builder = builder
+                .append(self.with_node(description))
+                .append(allocator.hardline());
+        }
+
+        builder
+            .append(allocator.text("$"))
             .append(allocator.text(self.0.name()))
             .append(allocator.text(":"))
             .append(allocator.space())
@@ -331,6 +356,12 @@ impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Argument<'a>> {
             .append(allocator.text(":"))
             .append(allocator.space())
             .append(self.with_node(self.0.value()))
+    }
+}
+
+impl<'a> Pretty<'a, Allocator<'a>> for NodeDisplay<Description<'a>> {
+    fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
+        NodeDisplay(self.0.literal(), self.1).pretty(allocator)
     }
 }
 

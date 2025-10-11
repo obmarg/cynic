@@ -1,8 +1,9 @@
 use super::prelude::*;
 use super::{
     ExecutableId,
+    descriptions::Description,
     directive::Directive,
-    ids::{DirectiveId, OperationDefinitionId, SelectionId, VariableDefinitionId},
+    ids::{DescriptionId, DirectiveId, OperationDefinitionId, SelectionId, VariableDefinitionId},
     selections::Selection,
     variable::VariableDefinition,
 };
@@ -10,6 +11,7 @@ use super::{
 use std::fmt::{self, Write};
 
 pub struct OperationDefinitionRecord {
+    pub description: Option<DescriptionId>,
     pub operation_type: OperationType,
     pub operation_type_span: Option<Span>,
     pub name: Option<StringId>,
@@ -24,6 +26,13 @@ pub struct OperationDefinitionRecord {
 pub struct OperationDefinition<'a>(pub(in super::super) ReadContext<'a, OperationDefinitionId>);
 
 impl<'a> OperationDefinition<'a> {
+    pub fn description(&self) -> Option<Description<'a>> {
+        let document = self.0.document;
+        document
+            .lookup(self.0.id)
+            .description
+            .map(|id| document.read(id))
+    }
     pub fn operation_type(&self) -> OperationType {
         let document = self.0.document;
         document.lookup(self.0.id).operation_type
@@ -70,6 +79,7 @@ impl OperationDefinition<'_> {
 impl fmt::Debug for OperationDefinition<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("OperationDefinition")
+            .field("description", &self.description())
             .field("operation_type", &self.operation_type())
             .field("name", &self.name())
             .field("variable_definitions", &self.variable_definitions())

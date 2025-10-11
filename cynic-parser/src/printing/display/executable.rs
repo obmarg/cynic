@@ -10,6 +10,7 @@ impl fmt::Display for ExecutableDocument {
             match (first_op, operation_iter.next()) {
                 (Some(first_op), None) => {
                     first_op.name().is_none()
+                        && first_op.description().is_none()
                         && first_op.operation_type() == OperationType::Query
                         && first_op.directives().len() == 0
                         && first_op.variable_definitions().len() == 0
@@ -41,6 +42,9 @@ impl fmt::Display for ExecutableDocument {
 
 impl fmt::Display for OperationDefinition<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if let Some(description) = self.description() {
+            write!(f, "{description}")?;
+        }
         write!(f, "{}", self.operation_type())?;
         if let Some(name) = self.name() {
             write!(f, " {name}")?;
@@ -57,6 +61,9 @@ impl fmt::Display for OperationDefinition<'_> {
 
 impl fmt::Display for FragmentDefinition<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if let Some(description) = self.description() {
+            write!(f, "{description}")?;
+        }
         writeln!(
             f,
             "fragment {} on {}{} {}",
@@ -86,6 +93,9 @@ impl<'a> fmt::Display for iter::Iter<'a, VariableDefinition<'a>> {
 
 impl std::fmt::Display for VariableDefinition<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        if let Some(description) = self.description() {
+            write!(f, "\n{description}")?;
+        }
         write!(f, "${}: {}", self.name(), self.ty())?;
 
         if let Some(default) = self.default_value() {
@@ -200,5 +210,18 @@ impl<'a> fmt::Display for iter::Iter<'a, Argument<'a>> {
 impl fmt::Display for Argument<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(f, "{}: {}", self.name(), self.value())
+    }
+}
+
+impl fmt::Display for Description<'_> {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self.literal().kind() {
+            crate::common::StringLiteralKind::String => {
+                writeln!(f, "\"{}\"", self.literal().raw_untrimmed_str())
+            }
+            crate::common::StringLiteralKind::Block => {
+                writeln!(f, "\"\"\"{}\"\"\"", self.literal().raw_untrimmed_str())
+            }
+        }
     }
 }

@@ -21,6 +21,7 @@ mod prelude {
 
 pub mod argument;
 pub mod definition;
+pub mod descriptions;
 pub mod directive;
 pub mod fragment;
 pub mod operation;
@@ -32,4 +33,8 @@ mod value {
     // that assumes it'll be here
 
     pub use crate::values::{ConstValue, Value};
+}
+
+mod strings {
+    pub(super) use crate::common::StringLiteral;
 }

@@ -1,8 +1,9 @@
 use super::prelude::*;
 use super::{
     ExecutableId,
+    descriptions::Description,
     directive::Directive,
-    ids::{ConstValueId, DirectiveId, TypeId, VariableDefinitionId},
+    ids::{ConstValueId, DescriptionId, DirectiveId, TypeId, VariableDefinitionId},
     types::Type,
     value::ConstValue,
 };
@@ -10,6 +11,7 @@ use super::{
 use std::fmt::{self, Write};
 
 pub struct VariableDefinitionRecord {
+    pub description: Option<DescriptionId>,
     pub name: StringId,
     pub name_span: Span,
     pub ty: TypeId,
@@ -21,6 +23,13 @@ pub struct VariableDefinitionRecord {
 pub struct VariableDefinition<'a>(pub(in super::super) ReadContext<'a, VariableDefinitionId>);
 
 impl<'a> VariableDefinition<'a> {
+    pub fn description(&self) -> Option<Description<'a>> {
+        let document = self.0.document;
+        document
+            .lookup(self.0.id)
+            .description
+            .map(|id| document.read(id))
+    }
     pub fn name(&self) -> &'a str {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).name)
@@ -55,6 +64,7 @@ impl VariableDefinition<'_> {
 impl fmt::Debug for VariableDefinition<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("VariableDefinition")
+            .field("description", &self.description())
             .field("name", &self.name())
             .field("ty", &self.ty())
             .field("default_value", &self.default_value())

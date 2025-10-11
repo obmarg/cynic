@@ -2,34 +2,34 @@ use std::iter::Enumerate;
 
 use pretty::{DocAllocator, Pretty};
 
-use crate::printing::pretty::printer::PrettyOptions;
+use crate::{executable::VariableDefinition, printing::pretty::printer::PrettyOptions};
 
-use super::{Allocator, InputValueDefinition, NodeDisplay};
+use super::{Allocator, NodeDisplay};
 
-/// A sequence of arguments with docstrings attached.
-pub(super) struct ArgumentSequence<'a> {
-    iterator: Enumerate<std::vec::IntoIter<InputValueDefinition<'a>>>,
+/// A sequence of variables with docstrings attached.
+pub(super) struct VariableSequence<'a> {
+    iterator: Enumerate<std::vec::IntoIter<VariableDefinition<'a>>>,
     options: PrettyOptions,
 }
 
-impl<'a> ArgumentSequence<'a> {
+impl<'a> VariableSequence<'a> {
     pub fn new(
-        iterator: crate::type_system::iter::Iter<'a, InputValueDefinition<'a>>,
+        iterator: crate::executable::iter::Iter<'a, VariableDefinition<'a>>,
         options: PrettyOptions,
     ) -> Self {
-        let mut arguments = iterator.collect::<Vec<_>>();
+        let mut variables = iterator.collect::<Vec<_>>();
         if options.sort {
-            arguments.sort_by_key(|arg| arg.name());
+            variables.sort_by_key(|arg| arg.name());
         }
 
-        ArgumentSequence {
-            iterator: arguments.into_iter().enumerate(),
+        VariableSequence {
+            iterator: variables.into_iter().enumerate(),
             options,
         }
     }
 }
 
-impl<'a> Pretty<'a, Allocator<'a>> for ArgumentSequence<'a> {
+impl<'a> Pretty<'a, Allocator<'a>> for VariableSequence<'a> {
     fn pretty(self, allocator: &'a Allocator<'a>) -> pretty::DocBuilder<'a, Allocator<'a>, ()> {
         let mut document = allocator.nil();
         for (index, item) in self.iterator {

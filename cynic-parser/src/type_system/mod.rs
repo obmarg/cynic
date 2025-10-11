@@ -13,7 +13,6 @@ mod schemas;
 mod string_literal;
 mod types;
 mod values;
-// mod values;
 
 use crate::common::IdRange;
 
@@ -34,9 +33,10 @@ pub use self::{
         unions::{UnionDefinition, UnionMember},
     },
     iter::Iter,
-    string_literal::{StringLiteral, StringLiteralKind},
     types::{NamedTypeDefinition, NamedTypeDefinitions, Type},
 };
+pub use crate::common::{StringLiteral, StringLiteralKind};
+
 use self::{ids::*, storage::DefinitionRecord};
 
 #[derive(Default)]
