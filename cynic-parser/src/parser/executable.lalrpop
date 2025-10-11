@@ -24,6 +24,7 @@ ExecutableDefinition: ExecutableDefinitionId = {
 }
 
 OperationDefinition: OperationDefinitionRecord = {
+    <description:Description?>
     <operation_type_start:@L>
     <operation_type:OperationType>
     <operation_type_end:@R>
@@ -37,6 +38,7 @@ OperationDefinition: OperationDefinitionRecord = {
     <selection_set_end:@R> => {
         let variable_definitions = ast.variable_definition_range(variable_definitions.map(|defs| defs.len()));
         OperationDefinitionRecord {
+            description,
             operation_type,
             operation_type_span: Some(Span::new(operation_type_start, operation_type_end)),
             name,
@@ -51,6 +53,7 @@ OperationDefinition: OperationDefinitionRecord = {
     <selection_set:SelectionSet>
     <selection_set_end:@R> => {
         OperationDefinitionRecord {
+            description: None,
             operation_type: OperationType::Query,
             operation_type_span: None,
             name: None,
@@ -64,6 +67,7 @@ OperationDefinition: OperationDefinitionRecord = {
 };
 
 FragmentDefinition: FragmentDefinitionRecord = {
+    <description:Description?>
     fragment
     <name_start:@L>
     <name:FragmentName>
@@ -76,6 +80,7 @@ FragmentDefinition: FragmentDefinitionRecord = {
     <selection_set:SelectionSet>
     <selection_set_end:@R> => {
         FragmentDefinitionRecord {
+            description,
             name,
             name_span: Span::new(name_start, name_end),
             type_condition,
@@ -86,6 +91,15 @@ FragmentDefinition: FragmentDefinitionRecord = {
         }
     }
 };
+
+Description: DescriptionId = {
+    <start:@L> <literal:StringValue> <end:@R> => {
+        ast.description(DescriptionRecord {
+            literal,
+            span: Span::new(start, end),
+        })
+    }
+}
 
 OperationType: OperationType = {
     query => OperationType::Query,
@@ -100,6 +114,7 @@ VariableDefinitions: Vec<()> = {
 }
 
 VariableDefinition: () = {
+    <description:Description?>
     <name_start:@L>
     "$" <name:Name>
     <name_end:@R>
@@ -108,6 +123,7 @@ VariableDefinition: () = {
     <default_value:DefaultValue?>
     <directives:Directives> => {
         ast.variable_definition(VariableDefinitionRecord {
+            description,
             name,
             name_span: Span::new(name_start, name_end),
             ty,
@@ -229,6 +245,15 @@ WrappingType: WrappingType = {
     "]" => WrappingType::List
 }
 
+StringValue: StringLiteralId = {
+    <start:@L> <s:StringLiteral> =>? {
+        Ok(StringLiteralId::String(ast.intern_owned_string(unquote_string(s, start)?)))
+    },
+    <s:BlockStringLiteral> => {
+        let id = ast.block_string(unquote_block_string(s));
+        StringLiteralId::Block(id)
+    },
+}
 
 Directives: IdRange<DirectiveId> = {
     <directives:Directive*> => {

@@ -1,10 +1,12 @@
 mod id_range;
 mod int_value;
+mod string_literal;
 mod strings;
 mod types;
 
 pub use id_range::{IdOperations, IdRange, IdRangeIter};
 pub use int_value::IntValue;
+pub use string_literal::{StringLiteral, StringLiteralKind};
 pub use strings::MalformedStringError;
 pub use types::*;
 

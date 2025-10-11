@@ -24,6 +24,7 @@ pub struct ExecutableAstWriter {
     directives: Vec<DirectiveRecord>,
     arguments: Vec<ArgumentRecord>,
     variables: Vec<VariableDefinitionRecord>,
+    descriptions: Vec<DescriptionRecord>,
 
     types: Vec<TypeRecord>,
 
@@ -46,6 +47,7 @@ impl Default for ExecutableAstWriter {
             directives: Default::default(),
             arguments: Default::default(),
             variables: Default::default(),
+            descriptions: Default::default(),
             types: Default::default(),
             values: Default::default(),
             directive_cursor: DirectiveId::new(0),
@@ -74,6 +76,7 @@ impl ExecutableAstWriter {
             directives,
             arguments,
             variables,
+            descriptions,
             types,
             values,
             directive_cursor: _,
@@ -96,6 +99,7 @@ impl ExecutableAstWriter {
             directives,
             arguments,
             variables,
+            descriptions,
             types,
             values,
         }
@@ -127,6 +131,12 @@ impl ExecutableAstWriter {
             .push(ExecutableDefinitionRecord::Fragment(id));
 
         definition_id
+    }
+
+    pub fn description(&mut self, description: DescriptionRecord) -> DescriptionId {
+        let id = DescriptionId::new(self.descriptions.len());
+        self.descriptions.push(description);
+        id
     }
 
     pub fn variable_definition(

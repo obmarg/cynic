@@ -1,14 +1,16 @@
 use super::prelude::*;
 use super::{
     ExecutableId,
+    descriptions::Description,
     directive::Directive,
-    ids::{DirectiveId, FragmentDefinitionId, SelectionId},
+    ids::{DescriptionId, DirectiveId, FragmentDefinitionId, SelectionId},
     selections::Selection,
 };
 #[allow(unused_imports)]
 use std::fmt::{self, Write};
 
 pub struct FragmentDefinitionRecord {
+    pub description: Option<DescriptionId>,
     pub name: StringId,
     pub name_span: Span,
     pub type_condition: StringId,
@@ -22,6 +24,13 @@ pub struct FragmentDefinitionRecord {
 pub struct FragmentDefinition<'a>(pub(in super::super) ReadContext<'a, FragmentDefinitionId>);
 
 impl<'a> FragmentDefinition<'a> {
+    pub fn description(&self) -> Option<Description<'a>> {
+        let document = self.0.document;
+        document
+            .lookup(self.0.id)
+            .description
+            .map(|id| document.read(id))
+    }
     pub fn name(&self) -> &'a str {
         let document = &self.0.document;
         document.lookup(document.lookup(self.0.id).name)
@@ -61,6 +70,7 @@ impl FragmentDefinition<'_> {
 impl fmt::Debug for FragmentDefinition<'_> {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         f.debug_struct("FragmentDefinition")
+            .field("description", &self.description())
             .field("name", &self.name())
             .field("type_condition", &self.type_condition())
             .field("directives", &self.directives())

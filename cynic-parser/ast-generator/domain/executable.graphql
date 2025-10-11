@@ -4,10 +4,11 @@
 union ExecutableDefinition
   @file(name: "definition")
   @variant(names: ["Operation", "Fragment"]) =
-    OperationDefinition
+  | OperationDefinition
   | FragmentDefinition
 
 type OperationDefinition @file(name: "operation") {
+  description: Description
   operation_type: OperationType! @spanned(nullable: true)
   name: String @spanned
   variable_definitions: [VariableDefinition]
@@ -16,6 +17,7 @@ type OperationDefinition @file(name: "operation") {
 }
 
 type FragmentDefinition @file(name: "fragment") {
+  description: Description
   name: String! @spanned
   type_condition: String! @spanned
   directives: [Directive]
@@ -25,7 +27,7 @@ type FragmentDefinition @file(name: "fragment") {
 union Selection
   @file(name: "selections")
   @variant(names: ["Field", "InlineFragment", "FragmentSpread"]) =
-    FieldSelection
+  | FieldSelection
   | InlineFragment
   | FragmentSpread
 
@@ -59,11 +61,19 @@ type Argument @file(name: "argument") {
 }
 
 type VariableDefinition @file(name: "variable") {
+  description: Description
   name: String! @spanned
   ty: Type!
   default_value: ConstValue
   directives: [Directive]
 }
+
+type Description @file(name: "descriptions") {
+  literal: StringLiteral!
+  span: Span!
+}
+
+scalar Span @inline
 
 # OperationType is marked as @inline which means it just gets
 # stored inside records instead of getting IDs & records.
@@ -78,3 +88,5 @@ scalar ConstValue @file(name: "value")
 # String is built in, but easier to implement stuff if its just in the .graphql file
 # It is also special cased a bit in the rust code
 scalar String
+
+scalar StringLiteral @file(name: "strings")

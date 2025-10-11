@@ -3,6 +3,12 @@ use std::path::PathBuf;
 use similar_asserts::assert_eq;
 
 #[test]
+fn descriptions() {
+    roundtrip_test("tests/executables/descriptions.graphql");
+    display_test("tests/executables/descriptions.graphql");
+}
+
+#[test]
 fn directive_args() {
     roundtrip_test("tests/executables/directive_args.graphql");
     display_test("tests/executables/directive_args.graphql");

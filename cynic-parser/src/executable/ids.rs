@@ -62,6 +62,8 @@ make_id!(OperationDefinitionId, OperationDefinitionRecord, operations);
 
 make_id!(FragmentDefinitionId, FragmentDefinitionRecord, fragments);
 
+make_id!(DescriptionId, DescriptionRecord, descriptions);
+
 make_id!(SelectionId, SelectionRecord, selections);
 impl_id_range_ops!(SelectionId);
 
@@ -105,4 +107,10 @@ impl AstLookup<StringId> for ExecutableDocument {
     fn lookup(&self, index: StringId) -> &Self::Output {
         &self.strings[(index.0.get() - 1) as usize]
     }
+}
+
+#[derive(Clone, Copy)]
+pub enum StringLiteralId {
+    String(StringId),
+    Block(BlockStringLiteralId),
 }

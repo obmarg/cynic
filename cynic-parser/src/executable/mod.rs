@@ -8,6 +8,7 @@ pub mod writer;
 
 mod extensions;
 mod generated;
+mod string_literal;
 mod types;
 mod values;
 
@@ -17,6 +18,7 @@ pub use self::{
     generated::{
         argument::Argument,
         definition::ExecutableDefinition,
+        descriptions::Description,
         directive::Directive,
         fragment::FragmentDefinition,
         operation::OperationDefinition,
@@ -46,6 +48,7 @@ pub struct ExecutableDocument {
     directives: Vec<storage::DirectiveRecord>,
     arguments: Vec<storage::ArgumentRecord>,
     variables: Vec<storage::VariableDefinitionRecord>,
+    descriptions: Vec<storage::DescriptionRecord>,
 
     types: Vec<types::TypeRecord>,
 
@@ -105,6 +108,7 @@ pub mod storage {
         generated::{
             argument::ArgumentRecord,
             definition::ExecutableDefinitionRecord,
+            descriptions::DescriptionRecord,
             directive::DirectiveRecord,
             fragment::FragmentDefinitionRecord,
             operation::OperationDefinitionRecord,
