@@ -9,6 +9,21 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased - xxxx-xx-xx
 
+## v0.11.0 - 2025-10-11
+
+### New Features
+
+- update cynic-introspection for 2025 spec (#1180)
+- support feature flags on arguments (#1181)
+- parse descriptions in executable documents (#1182)
+- add `InputObjectDefinition::is_one_of` (#1176)
+- support oneOf input objects in the generator (#1175)
+
+### Changes
+
+- fix some lints in lalrpop output (#1173)
+- bump to 1.85, edition 2024 (#1172)
+
 ## v0.10.0 - 2025-08-19
 
 ### New Features
